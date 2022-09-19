@@ -118,6 +118,7 @@ const CaseHome: React.FC<Props> = ({
     version,
   } = caseDetails;
   const fullName = splitFullName(name);
+  const statusLabel = definitionVersion.caseStatus[status]?.label ?? status;
 
   const itemRowRenderer = (itemTypeName: string, viewSubroute: CaseSectionSubroute, items: EntryInfo[]) => {
     const itemRows = () => {
@@ -217,9 +218,9 @@ const CaseHome: React.FC<Props> = ({
       <CaseContainer data-testid="CaseHome-CaseDetailsComponent">
         <Box marginLeft="25px" marginTop="13px">
           <CaseDetailsComponent
-            caseId={id}
+            caseId={id.toString()}
             name={fullName}
-            status={status}
+            statusLabel={statusLabel}
             can={can}
             counselor={caseCounselor}
             categories={categories}
