@@ -13,27 +13,6 @@ inputs:
   slack-message:
     description: 'The message to send'
     required: true
-
-on:
-  workflow_call:
-    inputs:
-      changelog:
-        description: Release Changelog - Add a comment about the changes to be included in this release.
-        required: true
-        type: string
-      aws-access-key-id:
-        description: 'AWS credentials for Aselo user'
-        required: true
-      aws-secret-access-key:
-        description: 'AWS credentials for Aselo user'
-        required: true
-      aws-region:
-        description: 'AWS region where parameters are hosted'
-        required: true
-      slack-message:
-        description: 'The message to send'
-        required: true
-
 runs:
   using: "composite"
   steps:
