@@ -14,5 +14,5 @@ export type CaseSectionApi<T> = {
   getSectionFormDefinition: (definitions: DefinitionVersion) => FormDefinition;
   getSectionLayoutDefinition: (definitions: DefinitionVersion) => LayoutDefinition;
   getWorkingCopy: (caseInfo: CaseWorkingCopy, id?: string) => CaseItemEntry | undefined;
-  updateWorkingCopy: (caseInfo: CaseWorkingCopy, item: CaseItemEntry, id?: string) => CaseWorkingCopy;
+  updateWorkingCopy: (caseInfo: CaseWorkingCopy, item?: CaseItemEntry, id?: string) => CaseWorkingCopy;
 };

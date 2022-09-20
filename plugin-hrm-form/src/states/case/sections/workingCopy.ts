@@ -9,16 +9,22 @@ export const getWorkingCopy = (sectionName: string) => (
 
 export const setWorkingCopy = (sectionName: string) => (
   caseWorkingCopy: CaseWorkingCopy,
-  item: CaseItemEntry,
+  item?: CaseItemEntry,
   id?: string,
 ): CaseWorkingCopy => {
   if (!caseWorkingCopy.sections[sectionName]) {
     caseWorkingCopy.sections[sectionName] = { existing: {} };
   }
   if (id) {
-    caseWorkingCopy.sections[sectionName].existing[id] = item;
-  } else {
+    if (item) {
+      caseWorkingCopy.sections[sectionName].existing[id] = item;
+    } else {
+      delete caseWorkingCopy.sections[sectionName].existing[id];
+    }
+  } else if (item) {
     caseWorkingCopy.sections[sectionName].new = item;
+  } else {
+    delete caseWorkingCopy.sections[sectionName].new;
   }
   return caseWorkingCopy;
 };

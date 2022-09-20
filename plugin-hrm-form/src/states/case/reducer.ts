@@ -7,6 +7,7 @@ import {
   CaseActionType,
   INIT_CASE_SECTION_WORKING_COPY,
   MARK_CASE_AS_UPDATED,
+  REMOVE_CASE_SECTION_WORKING_COPY,
   REMOVE_CONNECTED_CASE,
   SET_CONNECTED_CASE,
   TemporaryCaseInfo,
@@ -128,7 +129,7 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           },
         },
       };
-    case INIT_CASE_SECTION_WORKING_COPY:
+    case REMOVE_CASE_SECTION_WORKING_COPY:
       const caseWorkingCopy = state.tasks[action.taskId]?.caseWorkingCopy;
       if (caseWorkingCopy) {
         return {
@@ -137,7 +138,7 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
             ...state.tasks,
             [action.taskId]: {
               ...state.tasks[action.taskId],
-              caseWorkingCopy
+              caseWorkingCopy: action.api.updateWorkingCopy(caseWorkingCopy, undefined, action.id),
             },
           },
         };

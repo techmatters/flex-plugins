@@ -82,6 +82,7 @@ type InitialiseCaseSectionWorkingCopyAction = {
 type RemoveCaseSectionWorkingCopyAction = {
   type: typeof REMOVE_CASE_SECTION_WORKING_COPY;
   taskId: string;
+  api: CaseSectionApi<unknown>;
   id?: string;
 };
 

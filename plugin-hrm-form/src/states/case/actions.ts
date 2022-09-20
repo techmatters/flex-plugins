@@ -69,6 +69,7 @@ export const removeCaseSectionWorkingCopy = (
 ): CaseActionType => ({
   type: REMOVE_CASE_SECTION_WORKING_COPY,
   taskId,
+  api,
   id,
 });
 

@@ -36,8 +36,8 @@ import {
 } from '../common/forms/formGenerators';
 import type { CaseInfo, CaseItemEntry, CustomITask, StandaloneITask } from '../../types/types';
 import {
-  AddCaseSectionRoute, AppRoutes,
-  AppRoutesWithCase,
+  AddCaseSectionRoute,
+  AppRoutes,
   CaseItemAction,
   EditCaseSectionRoute,
   isEditCaseSectionRoute,
@@ -120,7 +120,8 @@ const AddEditCaseItem: React.FC<Props> = ({
   const [l, r] = React.useMemo(() => {
     const updateCallBack = () => {
       const form = getValues();
-      updateCaseSectionWorkingCopy(task.taskSid, sectionApi, { ...workingCopy, form });
+      console.log('Updated case form', form);
+      updateCaseSectionWorkingCopy(task.taskSid, sectionApi, { ...workingCopy, form }, id);
     };
 
     const generatedForm = createFormFromDefinition(formDefinition)([])(initialForm, firstElementRef)(
@@ -132,15 +133,17 @@ const AddEditCaseItem: React.FC<Props> = ({
 
     return splitInHalf(disperseInputs(7)(generatedForm));
   }, [
-    sectionApi,
-    workingCopy,
     formDefinition,
     initialForm,
     firstElementRef,
     customFormHandlers,
     layout.splitFormAt,
     getValues,
+    updateCaseSectionWorkingCopy,
     task.taskSid,
+    sectionApi,
+    workingCopy,
+    id,
   ]);
 
   if (!workingCopy) {
@@ -192,8 +195,6 @@ const AddEditCaseItem: React.FC<Props> = ({
 
   async function saveAndStay() {
     await save();
-    const blankForm = formDefinition.reduce(createStateItem, {});
-    methods.reset(blankForm); // Resets the form.
     closeActions({ ...routing, action: CaseItemAction.Add });
   }
 
@@ -216,9 +217,9 @@ const AddEditCaseItem: React.FC<Props> = ({
     : { added: new Date(), addingCounsellorName: counselor, updated: undefined, updatingCounsellorName: undefined };
 
   const checkForEdits = () => {
-    if (isEqual(getValues(), initialForm)) {
-      setOpenDialog(true);
-    } else close();
+    if (isEqual(workingCopy?.form, initialForm)) {
+      close();
+    } else setOpenDialog(true);
   };
   return (
     <FormProvider {...methods}>
