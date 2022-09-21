@@ -89,7 +89,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     if (!workingCopy) {
       initialiseCaseSectionWorkingCopy(task.taskSid, sectionApi, id);
     }
-  }, [id, sectionApi, task.taskSid, workingCopy]);
+  }, [id, initialiseCaseSectionWorkingCopy, sectionApi, task.taskSid, workingCopy]);
 
   const formDefinition = sectionApi
     .getSectionFormDefinition(definitionVersion)

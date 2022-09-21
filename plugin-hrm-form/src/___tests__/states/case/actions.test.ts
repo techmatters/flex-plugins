@@ -36,10 +36,9 @@ describe('test action creators', () => {
       type: SET_CONNECTED_CASE,
       connectedCase,
       taskId: task.taskSid,
-      caseHasBeenEdited: false,
     };
 
-    expect(actions.setConnectedCase(connectedCase, task.taskSid, false)).toStrictEqual(expectedAction);
+    expect(actions.setConnectedCase(connectedCase, task.taskSid)).toStrictEqual(expectedAction);
   });
 
   test('removeConnectedCase', async () => {

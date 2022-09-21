@@ -76,7 +76,6 @@ const addingNewHouseholdCaseState: RootState[typeof namespace][typeof connectedC
         categories: {},
       },
       prevStatus: '',
-      timelineActivities: [],
     },
   },
 };

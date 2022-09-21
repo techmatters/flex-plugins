@@ -3,7 +3,6 @@ import { v4 as uuidV4 } from 'uuid';
 
 import { Case, CaseItemEntry } from '../../types/types';
 import {
-  Activity,
   CaseActionType,
   INIT_CASE_SECTION_WORKING_COPY,
   MARK_CASE_AS_UPDATED,
@@ -18,7 +17,6 @@ import {
   UPDATE_TEMP_INFO,
 } from './types';
 import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
-import { getActivitiesFromCase } from '../../components/case/caseActivities';
 
 export type CaseWorkingCopy = {
   sections: {
@@ -37,7 +35,6 @@ export type CaseState = {
       temporaryCaseInfo?: TemporaryCaseInfo;
       prevStatus: string; // the status as it comes from the DB (required as it may be locally updated in connectedCase)
       caseWorkingCopy: CaseWorkingCopy;
-      timelineActivities: Activity[];
     };
   };
 };
@@ -59,7 +56,6 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
             temporaryCaseInfo: null,
             prevStatus: action.connectedCase.status,
             caseWorkingCopy: { sections: {} },
-            timelineActivities: getActivitiesFromCase(action.connectedCase),
           },
         },
       };

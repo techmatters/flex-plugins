@@ -7,6 +7,7 @@ import { Case } from '../../../types/types';
 import { REMOVE_CONTACT_STATE } from '../../../states/types';
 import { TemporaryCaseInfo, UPDATE_CASE_CONTACT } from '../../../states/case/types';
 import { CaseItemAction } from '../../../states/routing/types';
+import { connectedCaseBase, namespace, RootState } from '../../../states';
 
 const task = { taskSid: 'task1' };
 
@@ -37,6 +38,7 @@ describe('test reducer', () => {
 
   test('should handle SET_CONNECTED_CASE', async () => {
     const connectedCase: Case = {
+      accountSid: 'ACxxx',
       id: 1,
       helpline: '',
       status: 'open',
@@ -49,14 +51,15 @@ describe('test reducer', () => {
       childName: '',
     };
 
-    const expected = {
-      tasks: { task1: { connectedCase, temporaryCaseInfo: null, caseHasBeenEdited: false, prevStatus: 'open' } },
+    const expected: RootState[typeof namespace][typeof connectedCaseBase] = {
+      tasks: {
+        task1: { connectedCase, temporaryCaseInfo: null, prevStatus: 'open', caseWorkingCopy: { sections: {} } },
+      },
     };
 
-    const result = reduce(state, actions.setConnectedCase(connectedCase, task.taskSid, false));
-    expect(result).toStrictEqual(expected);
-
+    const result = reduce(state, actions.setConnectedCase(connectedCase, task.taskSid));
     state = result;
+    expect(result).toStrictEqual(expected);
   });
 
   test('should handle REMOVE_CONNECTED_CASE', async () => {
@@ -83,7 +86,12 @@ describe('test reducer', () => {
     const { connectedCase, temporaryCaseInfo, prevStatus } = state.tasks.task1;
     const expected = {
       tasks: {
-        task1: { connectedCase: { ...connectedCase, info }, temporaryCaseInfo, caseHasBeenEdited: true, prevStatus },
+        task1: {
+          connectedCase: { ...connectedCase, info },
+          temporaryCaseInfo,
+          caseWorkingCopy: { sections: {} },
+          prevStatus,
+        },
       },
     };
 
@@ -95,11 +103,11 @@ describe('test reducer', () => {
 
   test('should handle UPDATE_TEMP_INFO', async () => {
     const randomTemp: TemporaryCaseInfo = {
-      screen: 'note',
-      action: CaseItemAction.Add,
+      screen: 'caseSummary',
+      action: CaseItemAction.Edit,
       info: {
-        form: true,
-        id: 'TEST_NOTE_ID',
+        form: {},
+        id: '',
         createdAt: new Date().toISOString(),
         twilioWorkerId: 'TEST_WORKER_ID',
       },
@@ -107,7 +115,7 @@ describe('test reducer', () => {
 
     const { connectedCase, prevStatus } = state.tasks.task1;
     const expected = {
-      tasks: { task1: { connectedCase, temporaryCaseInfo: randomTemp, caseHasBeenEdited: true, prevStatus } },
+      tasks: { task1: { connectedCase, temporaryCaseInfo: randomTemp, prevStatus, caseWorkingCopy: { sections: {} } } },
     };
 
     const result = reduce(state, actions.updateTempInfo(randomTemp, task.taskSid));
@@ -117,7 +125,7 @@ describe('test reducer', () => {
   });
 
   test('should handle MARK_CASE_AS_UPDATED', async () => {
-    const expected = { tasks: { task1: { ...state.tasks.task1, caseHasBeenEdited: false } } };
+    const expected = { tasks: { task1: { ...state.tasks.task1 } } };
 
     const result = reduce(state, actions.markCaseAsUpdated(task.taskSid));
     expect(result).toStrictEqual(expected);
