@@ -50,30 +50,3 @@ variable "service_configuration_bump" {
   description = "Used to kick off a service configuration patch. Changes to the configuration will kick off an update automatically, but this can be used to update the config to the configured values anyway - for example if the configuration has been changed outside of terraform and needs to be reset. Simply change this to any value other than the current one to trigger an update next apply."
   default = null
 }
-
-variable "flex_chat_service_sid" {
-  description = "Internal Twilio resource SID provided by another module"
-  type        = string
-}
-
-variable "messaging_studio_flow_sid" {
-  description = "Internal Twilio resource SID provided by another module"
-  type        = string
-}
-
-variable "messaging_flow_contact_identity" {
-  description = "SMS number or whatever for the messaging flow"
-  type = string
-  default = null
-}
-
-variable "custom_flex_messaging_flow_enabled" {
-  description = "Enable or disable Flex SMS Messaging Flow"
-  type = bool
-  default = null
-}
-variable "custom_flex_webchat_flow_enabled" {
-  description = "Enable or disable Flex Webchat Messaging Flow"
-  type = bool
-  default = null
-}

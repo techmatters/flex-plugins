@@ -1,0 +1,199 @@
+${
+  jsonencode(
+  {
+      "states": [
+        {
+          "transitions": [
+            {
+              "event": "incomingMessage",
+              "next": "operating_hours"
+            },
+            {
+              "event": "incomingCall"
+            },
+            {
+              "event": "incomingConversationMessage"
+            },
+            {
+              "event": "incomingRequest"
+            },
+            {
+              "event": "incomingParent"
+            }
+          ],
+          "type": "trigger",
+          "name": "Trigger",
+          "properties": {
+            "offset": {
+              "y": 0,
+              "x": 0
+            }
+          }
+        },
+        {
+          "transitions": [
+            {
+              "event": "callComplete"
+            },
+            {
+              "event": "failedToEnqueue"
+            },
+            {
+              "event": "callFailure"
+            }
+          ],
+          "type": "send-to-flex",
+          "name": "attributes",
+          "properties": {
+            "attributes": channel_attributes,
+            "workflow": master_workflow_sid,
+            "channel": chat_task_channel_sid,
+            "offset": {
+              "y": 850,
+              "x": 860
+            }
+          }
+        },
+        {
+          "transitions": [
+            {
+              "event": "success",
+              "next": "check_office_state"
+            },
+            {
+              "event": "fail"
+            }
+          ],
+          "type": "run-function",
+          "name": "operating_hours",
+          "properties": {
+            "parameters": [
+              {
+                "key": "channel",
+                "value": channel_name
+              }
+            ],
+            "url": "${serverless_url}/operatingHours",
+            "environment_sid": serverless_environment_sid,
+            "offset": {
+              "y": 290,
+              "x": 180
+            },
+            "function_sid": serverless_function_sid,
+            "service_sid": serverless_service_sid
+          }
+        },
+        {
+          "transitions": [
+            {
+              "event": "noMatch",
+              "next": "closed"
+            },
+            {
+              "conditions": [
+                {
+                  "type": "contains",
+                  "friendly_name": "If value contains closed",
+                  "arguments": [
+                    "{{widgets.operating_hours.body}}"
+                  ],
+                  "value": "closed"
+                }
+              ],
+              "event": "match",
+              "next": "closed"
+            },
+            {
+              "conditions": [
+                {
+                  "type": "contains",
+                  "friendly_name": "If value contains holiday",
+                  "arguments": [
+                    "{{widgets.operating_hours.body}}"
+                  ],
+                  "value": "holiday"
+                }
+              ],
+              "event": "match",
+              "next": "holiday"
+            },
+            {
+              "conditions": [
+                {
+                  "type": "contains",
+                  "friendly_name": "If value contains open",
+                  "arguments": [
+                    "{{widgets.operating_hours.body}}"
+                  ],
+                  "value": "open"
+                }
+              ],
+              "event": "match",
+              "next": "attributes"
+            }
+          ],
+          "type": "split-based-on",
+          "name": "check_office_state",
+          "properties": {
+            "input": "{{widgets.operating_hours.body}}",
+            "offset": {
+              "y": 550,
+              "x": 190
+            }
+          }
+        },
+        {
+          "transitions": [
+            {
+              "event": "sent"
+            },
+            {
+              "event": "failed"
+            }
+          ],
+          "type": "send-message",
+          "name": "closed",
+          "properties": {
+            "body": operating_hours_closed,
+            "from": "{{flow.channel.address}}",
+            "service": "{{trigger.message.InstanceSid}}",
+            "to": "{{contact.channel.address}}",
+            "offset": {
+              "y": 860,
+              "x": -220
+            },
+            "channel": "{{trigger.message.ChannelSid}}"
+          }
+        },
+        {
+          "transitions": [
+            {
+              "event": "sent"
+            },
+            {
+              "event": "failed"
+            }
+          ],
+          "type": "send-message",
+          "name": "holiday",
+          "properties": {
+            "body": operating_hours_holiday,
+            "from": "{{flow.channel.address}}",
+            "service": "{{trigger.message.InstanceSid}}",
+            "to": "{{contact.channel.address}}",
+            "offset": {
+              "y": 850,
+              "x": 380
+            },
+            "channel": "{{trigger.message.ChannelSid}}"
+          }
+        }
+      ],
+      "initial_state": "Trigger",
+      "flags": {
+        "allow_concurrent_calls": true
+      },
+      "description": flow_description
+    }
+    )
+  }

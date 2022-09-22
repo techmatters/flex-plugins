@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
 import { v4 as uuidV4 } from 'uuid';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
@@ -57,6 +57,7 @@ const EditCaseSummary: React.FC<Props> = ({
   connectedCaseState,
   setConnectedCase,
   updateTempInfo,
+  definitionVersion,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { temporaryCaseInfo } = connectedCaseState;
@@ -68,38 +69,50 @@ const EditCaseSummary: React.FC<Props> = ({
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const firstElementRef = useFocus();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const formDefinition: FormDefinition = [
-    {
-      name: 'caseStatus',
-      label: 'Case-CaseStatus',
-      type: 'select',
-      options: [
-        { value: 'open', label: 'Open' },
-        { value: 'closed', label: 'Closed' },
-      ],
-    },
-    {
-      name: 'date',
-      type: 'date-input',
-      label: 'Case-CaseDetailsFollowUpDate',
-    },
-    {
-      name: 'inImminentPhysicalDanger',
-      label: 'Case-ChildIsAtRisk',
-      type: 'checkbox',
-    },
-    {
-      name: 'caseSummary',
-      label: 'SectionName-CaseSummary',
-      type: 'textarea',
-    },
-  ];
+  const formDefinition: FormDefinition = useMemo(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    try {
+      let caseStatusOptions = [];
+      if (definitionVersion) {
+        const caseStatusList = Object.values(definitionVersion.caseStatus);
+        const currentStatusItem = caseStatusList.find(cs => cs.value === connectedCaseState.prevStatus);
+        const availableStatusTransitions: string[] = currentStatusItem
+          ? [...(currentStatusItem.transitions ?? []), currentStatusItem.value]
+          : [];
+        caseStatusOptions = caseStatusList.filter(option => availableStatusTransitions.includes(option.value));
+      }
+      return [
+        {
+          name: 'caseStatus',
+          label: 'Case-CaseStatus',
+          type: 'select',
+          options: caseStatusOptions,
+        },
+        {
+          name: 'date',
+          type: 'date-input',
+          label: 'Case-CaseDetailsFollowUpDate',
+        },
+        {
+          name: 'inImminentPhysicalDanger',
+          label: 'Case-ChildIsAtRisk',
+          type: 'checkbox',
+        },
+        {
+          name: 'caseSummary',
+          label: 'SectionName-CaseSummary',
+          type: 'textarea',
+        },
+      ];
+    } catch (e) {
+      console.error('Failed to render edit case summary form', e);
+      return [];
+    }
+  }, [connectedCaseState.prevStatus, definitionVersion]);
 
   // Grab initial values in first render only. If getTemporaryFormContent(temporaryCaseInfo), cherrypick the values using formDefinition, if not build the object with getInitialValue
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [initialForm] = React.useState(() => {
-    const { caseStatus, caseSummary, date, inImminentPhysicalDanger } = temporaryCaseInfo.info.form;
+    const { caseStatus, caseSummary, date, inImminentPhysicalDanger } = editTemporaryCaseInfo.info.form;
     return {
       caseStatus,
       caseSummary,
@@ -122,8 +135,8 @@ const EditCaseSummary: React.FC<Props> = ({
       const isEdited = !isEqual(initialForm, payload);
 
       return {
-        ...temporaryCaseInfo,
-        info: { ...temporaryCaseInfo.info, form: payload },
+        ...editTemporaryCaseInfo,
+        info: { ...editTemporaryCaseInfo.info, form: payload },
         isEdited,
       };
     };
@@ -134,7 +147,11 @@ const EditCaseSummary: React.FC<Props> = ({
     };
     const generatedForm = createFormFromDefinition(formDefinition)([])(initialForm, firstElementRef)(updateCallBack);
     return splitAt(3)(disperseInputs(7)(generatedForm));
-  }, [formDefinition, initialForm, firstElementRef, temporaryCaseInfo, getValues, updateTempInfo, task.taskSid]);
+  }, [formDefinition, initialForm, firstElementRef, editTemporaryCaseInfo, getValues, updateTempInfo, task.taskSid]);
+
+  if (!isEditTemporaryCaseInfo(temporaryCaseInfo)) {
+    return null;
+  }
 
   const save = async () => {
     const { info, id } = connectedCaseState.connectedCase;
