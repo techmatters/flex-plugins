@@ -24,22 +24,7 @@ export type EditTemporaryCaseInfo = {
   isEdited?: boolean;
 };
 
-export function isEditTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is EditTemporaryCaseInfo {
-  return tci && (<EditTemporaryCaseInfo>tci).action === CaseItemAction.Edit;
-}
-
-export type AddTemporaryCaseInfo = {
-  screen: CaseSectionSubroute;
-  action: CaseItemAction.Add;
-  info: t.CaseItemFormValues;
-  isEdited?: boolean;
-};
-
-export function isAddTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is AddTemporaryCaseInfo {
-  return tci && (<AddTemporaryCaseInfo>tci).action === CaseItemAction.Add;
-}
-
-export type TemporaryCaseInfo = AddTemporaryCaseInfo | EditTemporaryCaseInfo;
+export type TemporaryCaseInfo = EditTemporaryCaseInfo;
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;

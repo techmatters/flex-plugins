@@ -30,22 +30,14 @@ import { createFormFromDefinition, disperseInputs, splitAt } from '../common/for
 import type { CaseInfo, CustomITask, StandaloneITask } from '../../types/types';
 import useFocus from '../../utils/useFocus';
 import { recordingErrorHandler } from '../../fullStory';
-import {
-  EditTemporaryCaseInfo,
-  isEditTemporaryCaseInfo,
-  TemporaryCaseInfo,
-  temporaryCaseInfoHistory,
-} from '../../states/case/types';
+import { TemporaryCaseInfo, temporaryCaseInfoHistory } from '../../states/case/types';
 import CloseCaseDialog from './CloseCaseDialog';
 import { upsertCaseSectionItemUsingSectionName } from '../../states/case/sections/update';
 
 type CaseItemPayload = { [key: string]: string | boolean };
 
-const getTemporaryFormContent = (temporaryCaseInfo: TemporaryCaseInfo): CaseItemPayload | null => {
-  if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
-    return temporaryCaseInfo.info.form;
-  }
-  return null;
+const getTemporaryFormContent = (temporaryCaseInfo: TemporaryCaseInfo): CaseItemPayload => {
+  return temporaryCaseInfo.info.form;
 };
 
 export type EditCaseSummaryProps = {
@@ -69,7 +61,7 @@ const EditCaseSummary: React.FC<Props> = ({
 }) => {
   const { temporaryCaseInfo } = connectedCaseState;
 
-  if (!isEditTemporaryCaseInfo(temporaryCaseInfo)) {
+  if (!Boolean(temporaryCaseInfo)) {
     return null;
   }
 
@@ -126,7 +118,7 @@ const EditCaseSummary: React.FC<Props> = ({
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [l, r] = React.useMemo(() => {
-    const createUpdatedTemporaryFormContent = (payload: CaseItemPayload): EditTemporaryCaseInfo => {
+    const createUpdatedTemporaryFormContent = (payload: CaseItemPayload): TemporaryCaseInfo => {
       const isEdited = !isEqual(initialForm, payload);
 
       return {
@@ -188,9 +180,10 @@ const EditCaseSummary: React.FC<Props> = ({
     if (openDialog) setOpenDialog(false);
   });
 
-  const { added, addingCounsellorName, updated, updatingCounsellorName } = isEditTemporaryCaseInfo(temporaryCaseInfo)
-    ? temporaryCaseInfoHistory(temporaryCaseInfo, counselorsHash)
-    : { added: new Date(), addingCounsellorName: counselor, updated: undefined, updatingCounsellorName: undefined };
+  const { added, addingCounsellorName, updated, updatingCounsellorName } = temporaryCaseInfoHistory(
+    temporaryCaseInfo,
+    counselorsHash,
+  );
 
   const checkForEdits = () => {
     if (temporaryCaseInfo.isEdited) {

@@ -1,7 +1,7 @@
 import { Case, SearchContact } from '../../../types/types';
 import {
-  AddTemporaryCaseInfo,
   CaseActionType,
+  EditTemporaryCaseInfo,
   MARK_CASE_AS_UPDATED,
   REMOVE_CONNECTED_CASE,
   SET_CONNECTED_CASE,
@@ -62,13 +62,14 @@ describe('test action creators', () => {
   });
 
   test('updateTempInfo', async () => {
-    const value: AddTemporaryCaseInfo = {
-      screen: NewCaseSubroutes.Note,
-      action: CaseItemAction.Add,
+    const value: EditTemporaryCaseInfo = {
+      screen: NewCaseSubroutes.CaseSummary,
+      action: CaseItemAction.Edit,
       info: {
         id: 'TEST_NOTE_ID',
         createdAt: new Date().toISOString(),
         twilioWorkerId: 'TEST_WORKER_ID',
+        form: {},
       },
     };
     const expectedAction: CaseActionType = {

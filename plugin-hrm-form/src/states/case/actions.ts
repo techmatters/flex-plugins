@@ -1,7 +1,9 @@
 import { Case, CaseInfo, CaseItemEntry, SearchContact } from '../../types/types';
 import {
-  CaseActionType, INIT_CASE_SECTION_WORKING_COPY,
-  MARK_CASE_AS_UPDATED, REMOVE_CASE_SECTION_WORKING_COPY,
+  CaseActionType,
+  INIT_CASE_SECTION_WORKING_COPY,
+  MARK_CASE_AS_UPDATED,
+  REMOVE_CASE_SECTION_WORKING_COPY,
   REMOVE_CONNECTED_CASE,
   SET_CONNECTED_CASE,
   TemporaryCaseInfo,

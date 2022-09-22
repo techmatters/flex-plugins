@@ -84,7 +84,6 @@ const CaseHome: React.FC<Props> = ({
   };
 
   const onAddCaseItemClick = (targetSubroute: CaseSectionSubroute) => () => {
-    updateTempInfo({ screen: targetSubroute, action: CaseItemAction.Add, info: null }, task.taskSid);
     changeRoute({ route, subroute: targetSubroute, action: CaseItemAction.Add } as AppRoutes, task.taskSid);
   };
 
