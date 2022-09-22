@@ -14,7 +14,7 @@ locals {
       master_workflow_sid = var.master_workflow_sid
       chat_task_channel_sid = var.chat_task_channel_sid
       pre_survey_bot_sid = var.pre_survey_bot_sid
-      channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : file("${path.module}/channel-attributes/${var.channel_name}-attributes.tftpl")
+      channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : templatefile("${path.module}/channel-attributes/${var.channel_name}-attributes.tftpl",{language=var.language})
       flow_description = "${title(var.channel_name)} Messaging Flow"
       target_task_name = var.target_task_name
     })
