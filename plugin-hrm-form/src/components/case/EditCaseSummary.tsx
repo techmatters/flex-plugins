@@ -62,10 +62,6 @@ const EditCaseSummary: React.FC<Props> = ({
 }) => {
   const { temporaryCaseInfo } = connectedCaseState;
 
-  if (!Boolean(temporaryCaseInfo)) {
-    return null;
-  }
-
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const firstElementRef = useFocus();
 
@@ -112,7 +108,7 @@ const EditCaseSummary: React.FC<Props> = ({
 
   // Grab initial values in first render only. If getTemporaryFormContent(temporaryCaseInfo), cherrypick the values using formDefinition, if not build the object with getInitialValue
   const [initialForm] = React.useState(() => {
-    const { caseStatus, caseSummary, date, inImminentPhysicalDanger } = editTemporaryCaseInfo.info.form;
+    const { caseStatus, caseSummary, date, inImminentPhysicalDanger } = temporaryCaseInfo.info.form;
     return {
       caseStatus,
       caseSummary,
@@ -135,8 +131,8 @@ const EditCaseSummary: React.FC<Props> = ({
       const isEdited = !isEqual(initialForm, payload);
 
       return {
-        ...editTemporaryCaseInfo,
-        info: { ...editTemporaryCaseInfo.info, form: payload },
+        ...temporaryCaseInfo,
+        info: { ...temporaryCaseInfo.info, form: payload },
         isEdited,
       };
     };
@@ -147,12 +143,11 @@ const EditCaseSummary: React.FC<Props> = ({
     };
     const generatedForm = createFormFromDefinition(formDefinition)([])(initialForm, firstElementRef)(updateCallBack);
     return splitAt(3)(disperseInputs(7)(generatedForm));
-  }, [formDefinition, initialForm, firstElementRef, editTemporaryCaseInfo, getValues, updateTempInfo, task.taskSid]);
+  }, [formDefinition, initialForm, firstElementRef, temporaryCaseInfo, getValues, updateTempInfo, task.taskSid]);
 
-  if (!isEditTemporaryCaseInfo(temporaryCaseInfo)) {
+  if (!Boolean(temporaryCaseInfo)) {
     return null;
   }
-
   const save = async () => {
     const { info, id } = connectedCaseState.connectedCase;
     let { status } = connectedCaseState.connectedCase;
