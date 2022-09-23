@@ -9,7 +9,12 @@ on:
       changelog:
         description: Release Changelog - Add a comment about the changes to be included in this release.
         required: true
-
+  workflow_call:
+    inputs:
+      changelog:
+        description: Release Changelog - Add a comment about the changes to be included in this release.
+        required: true
+        type: string
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
