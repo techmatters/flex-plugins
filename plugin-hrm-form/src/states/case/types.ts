@@ -77,11 +77,6 @@ type UpdateCasesStatusAction = {
   taskId: string;
 };
 
-type MarkCaseAsUpdated = {
-  type: typeof MARK_CASE_AS_UPDATED;
-  taskId: string;
-};
-
 type UpdateCaseContactAction = {
   type: typeof UPDATE_CASE_CONTACT;
   taskId: string;
@@ -96,7 +91,6 @@ export type CaseActionType =
   | UpdateCaseSectionWorkingCopyAction
   | InitialiseCaseSectionWorkingCopyAction
   | UpdateCasesStatusAction
-  | MarkCaseAsUpdated
   | UpdateCaseContactAction
   | RemoveCaseSectionWorkingCopyAction;
 

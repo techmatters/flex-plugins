@@ -126,14 +126,6 @@ describe('test reducer', () => {
     state = result;
   });
 
-  test('should handle MARK_CASE_AS_UPDATED', async () => {
-    const expected = { tasks: { task1: { ...state.tasks.task1 } } };
-
-    const result = reduce(state, actions.markCaseAsUpdated(task.taskSid));
-    expect(result).toStrictEqual(expected);
-
-    state = result;
-  });
   describe('UPDATE_CASE_CONTACT', () => {
     const connectedCase: Case = {
       accountSid: 'ACxxx',

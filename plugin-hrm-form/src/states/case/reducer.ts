@@ -153,16 +153,6 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           },
         },
       };
-    case MARK_CASE_AS_UPDATED:
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...state.tasks[action.taskId],
-          },
-        },
-      };
     case UPDATE_CASE_CONTACT:
       return {
         ...state,

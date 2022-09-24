@@ -2,7 +2,6 @@ import { Case, CaseInfo, CaseItemEntry, SearchContact } from '../../types/types'
 import {
   CaseActionType,
   INIT_CASE_SECTION_WORKING_COPY,
-  MARK_CASE_AS_UPDATED,
   REMOVE_CASE_SECTION_WORKING_COPY,
   REMOVE_CONNECTED_CASE,
   SET_CONNECTED_CASE,
@@ -83,11 +82,6 @@ export const removeCaseSectionWorkingCopy = (
 export const updateCaseStatus = (status: string, taskId: string): CaseActionType => ({
   type: UPDATE_CASE_STATUS,
   status,
-  taskId,
-});
-
-export const markCaseAsUpdated = (taskId: string): CaseActionType => ({
-  type: MARK_CASE_AS_UPDATED,
   taskId,
 });
 

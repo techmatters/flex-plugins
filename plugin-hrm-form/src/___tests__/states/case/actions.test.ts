@@ -2,7 +2,6 @@ import { Case, SearchContact } from '../../../types/types';
 import {
   CaseActionType,
   EditTemporaryCaseInfo,
-  MARK_CASE_AS_UPDATED,
   REMOVE_CONNECTED_CASE,
   SET_CONNECTED_CASE,
   UPDATE_CASE_CONTACT,
@@ -22,6 +21,7 @@ const task = { taskSid: 'task1' };
 describe('test action creators', () => {
   test('setConnectedCase', async () => {
     const connectedCase: Case = {
+      accountSid: 'ACxxx',
       id: 1,
       helpline: '',
       status: 'open',
@@ -30,6 +30,8 @@ describe('test action creators', () => {
       createdAt: '2020-07-31T20:39:37.408Z',
       updatedAt: '2020-07-31T20:39:37.408Z',
       connectedContacts: null,
+      categories: {},
+      childName: '',
     };
 
     const expectedAction: CaseActionType = {
@@ -79,15 +81,6 @@ describe('test action creators', () => {
     };
 
     expect(actions.updateTempInfo(value, task.taskSid)).toStrictEqual(expectedAction);
-  });
-
-  test('markCaseAsUpdated', async () => {
-    const expectedAction: CaseActionType = {
-      type: MARK_CASE_AS_UPDATED,
-      taskId: task.taskSid,
-    };
-
-    expect(actions.markCaseAsUpdated(task.taskSid)).toStrictEqual(expectedAction);
   });
 
   test('searchContactToHrmServiceContact', async () => {
