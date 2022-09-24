@@ -136,6 +136,7 @@ describe('test reducer', () => {
   });
   describe('UPDATE_CASE_CONTACT', () => {
     const connectedCase: Case = {
+      accountSid: 'ACxxx',
       id: 1,
       helpline: '',
       status: 'open',
@@ -171,11 +172,11 @@ describe('test reducer', () => {
         ],
       };
       const expected = {
-        tasks: { task1: { ...state.tasks.task1, connectedCase: expectedConnectedCase, caseHasBeenEdited: false } },
+        tasks: { task1: { ...state.tasks.task1, connectedCase: expectedConnectedCase } },
       };
 
       const result = reduce(
-        { tasks: { task1: { ...state.tasks.task1, connectedCase, caseHasBeenEdited: false } } },
+        { tasks: { task1: { ...state.tasks.task1, connectedCase } } },
         {
           type: UPDATE_CASE_CONTACT,
           taskId: task.taskSid,
@@ -190,7 +191,7 @@ describe('test reducer', () => {
       state = result;
     });
     test('should do nothing if no connectedContact with an ID matching the one in the action', async () => {
-      const startingState = { tasks: { task1: { ...state.tasks.task1, connectedCase, caseHasBeenEdited: false } } };
+      const startingState = { tasks: { task1: { ...state.tasks.task1, connectedCase } } };
 
       const result = reduce(startingState, {
         type: UPDATE_CASE_CONTACT,
@@ -203,7 +204,7 @@ describe('test reducer', () => {
       expect(result).toStrictEqual(startingState);
     });
     test('should do nothing if action contact has no id', async () => {
-      const startingState = { tasks: { task1: { ...state.tasks.task1, connectedCase, caseHasBeenEdited: false } } };
+      const startingState = { tasks: { task1: { ...state.tasks.task1, connectedCase } } };
 
       const result = reduce(startingState, {
         type: UPDATE_CASE_CONTACT,
@@ -216,7 +217,7 @@ describe('test reducer', () => {
     });
 
     test('should throw if action contact is missing', async () => {
-      const startingState = { tasks: { task1: { ...state.tasks.task1, connectedCase, caseHasBeenEdited: false } } };
+      const startingState = { tasks: { task1: { ...state.tasks.task1, connectedCase } } };
 
       expect(() =>
         reduce(startingState, {
@@ -277,7 +278,7 @@ describe('test reducer', () => {
       ).toThrow();
     });
   });
-  describe('UPDATE_CASE_WORKING_COPY', () => {
+  describe('Working copy reducers', () => {
     const baselineDate = new Date(2022, 1, 28);
     const updatedSection: CaseItemEntry = {
       id: 'existingHousehold',
@@ -286,246 +287,266 @@ describe('test reducer', () => {
       createdAt: baselineDate.toISOString(),
     };
 
-    test('Specifies id - updates case working copy using APIs updateWorkingCopy function', () => {
-      const stubUpdateWorkingCopy: CaseWorkingCopy = { sections: { mock: { existing: { mockId: updatedSection } } } };
+    let stubApi: CaseSectionApi<any>;
+    const stubUpdateWorkingCopy: CaseWorkingCopy = { sections: { mock: { existing: { mockId: updatedSection } } } };
 
-      const stubApi: CaseSectionApi<any> = {
+    beforeEach(() => {
+      stubApi = {
         ...householdSectionApi,
         updateWorkingCopy: jest.fn().mockReturnValue(stubUpdateWorkingCopy),
       };
+    });
 
-      const initialState: CaseState = {
-        tasks: {
-          task1: {
-            ...state.tasks.task1,
-            caseWorkingCopy: {
-              sections: {
-                households: {
-                  existing: {
-                    existingHousehold: {
-                      id: 'existingHousehold',
-                      twilioWorkerId: 'worker-sid',
-                      form: { prop: 'value' },
-                      createdAt: baselineDate.toISOString(),
+    describe('UPDATE_CASE_WORKING_COPY', () => {
+      test('Specifies id - updates case working copy using APIs updateWorkingCopy function', () => {
+        const initialState: CaseState = {
+          tasks: {
+            task1: {
+              ...state.tasks.task1,
+              caseWorkingCopy: {
+                sections: {
+                  households: {
+                    existing: {
+                      existingHousehold: {
+                        id: 'existingHousehold',
+                        twilioWorkerId: 'worker-sid',
+                        form: { prop: 'value' },
+                        createdAt: baselineDate.toISOString(),
+                      },
                     },
                   },
                 },
               },
             },
           },
-        },
-      };
+        };
 
-      const expected: CaseState = {
-        tasks: {
-          task1: {
-            ...state.tasks.task1,
-            caseWorkingCopy: stubUpdateWorkingCopy,
-          },
-        },
-      };
-
-      const result = reduce(
-        initialState,
-        actions.updateCaseSectionWorkingCopy(task.taskSid, stubApi, updatedSection, 'existingHousehold'),
-      );
-      expect(result).toStrictEqual(expected);
-      expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
-        initialState.tasks.task1.caseWorkingCopy,
-        updatedSection,
-        'existingHousehold',
-      );
-    });
-    test('Specifies no id - updates case working copy using APIs updateWorkingCopy function without setting an id', () => {
-      const stubUpdateWorkingCopy: CaseWorkingCopy = { sections: { mock: { existing: {}, new: updatedSection } } };
-
-      const stubApi: CaseSectionApi<any> = {
-        ...householdSectionApi,
-        updateWorkingCopy: jest.fn().mockReturnValue(stubUpdateWorkingCopy),
-      };
-
-      const initialState: CaseState = {
-        tasks: {
-          task1: {
-            ...state.tasks.task1,
-            caseWorkingCopy: {
-              sections: {},
+        const expected: CaseState = {
+          tasks: {
+            task1: {
+              ...state.tasks.task1,
+              caseWorkingCopy: stubUpdateWorkingCopy,
             },
           },
-        },
-      };
+        };
 
-      const expected: CaseState = {
-        tasks: {
-          task1: {
-            ...state.tasks.task1,
-            caseWorkingCopy: stubUpdateWorkingCopy,
-          },
-        },
-      };
-
-      const result = reduce(initialState, actions.updateCaseSectionWorkingCopy(task.taskSid, stubApi, updatedSection));
-      expect(result).toStrictEqual(expected);
-      expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
-        initialState.tasks.task1.caseWorkingCopy,
-        updatedSection,
-        undefined,
-      );
-    });
-  });
-  describe('INIT_CASE_WORKING_COPY', () => {
-    const baselineDate = new Date(2022, 1, 28);
-    const updatedSection: CaseItemEntry = {
-      id: 'existingHousehold',
-      twilioWorkerId: 'other-worker-sid',
-      form: { otherProp: 'other-value' },
-      createdAt: baselineDate.toISOString(),
-    };
-
-    test('Specifies id that exists in case - updates case working copy using APIs updateWorkingCopy function, copying the section from the connected case', () => {
-      const stubUpdateWorkingCopy: CaseWorkingCopy = { sections: { mock: { existing: { mockId: updatedSection } } } };
-
-      const stubApi: CaseSectionApi<any> = {
-        ...householdSectionApi,
-        updateWorkingCopy: jest.fn().mockReturnValue(stubUpdateWorkingCopy),
-      };
-
-      const initialState: CaseState = {
-        tasks: {
-          task1: {
-            ...state.tasks.task1,
-            connectedCase: {
-              ...state.tasks.task1.connectedCase,
-              info: {
-                ...state.tasks.task1.connectedCase.info,
-                households: [
-                  {
-                    id: 'existingHousehold',
-                    twilioWorkerId: 'other-worker-sid',
-                    household: { otherProp: 'other-value' },
-                    createdAt: baselineDate.toISOString(),
-                  },
-                ],
+        const result = reduce(
+          initialState,
+          actions.updateCaseSectionWorkingCopy(task.taskSid, stubApi, updatedSection, 'existingHousehold'),
+        );
+        expect(result).toStrictEqual(expected);
+        expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
+          initialState.tasks.task1.caseWorkingCopy,
+          updatedSection,
+          'existingHousehold',
+        );
+      });
+      test('Specifies no id - updates case working copy using APIs updateWorkingCopy function without setting an id', () => {
+        const initialState: CaseState = {
+          tasks: {
+            task1: {
+              ...state.tasks.task1,
+              caseWorkingCopy: {
+                sections: {},
               },
             },
-            caseWorkingCopy: {
-              sections: {},
+          },
+        };
+
+        const expected: CaseState = {
+          tasks: {
+            task1: {
+              ...state.tasks.task1,
+              caseWorkingCopy: stubUpdateWorkingCopy,
             },
           },
-        },
-      };
+        };
 
-      const expected: CaseState = {
-        tasks: {
-          task1: {
-            ...initialState.tasks.task1,
-            caseWorkingCopy: stubUpdateWorkingCopy,
-          },
-        },
-      };
-
-      const result = reduce(
-        initialState,
-        actions.initialiseCaseSectionWorkingCopy(task.taskSid, stubApi, 'existingHousehold'),
-      );
-      expect(result).toStrictEqual(expected);
-      expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
-        initialState.tasks.task1.caseWorkingCopy,
-        updatedSection,
-        'existingHousehold',
-      );
+        const result = reduce(
+          initialState,
+          actions.updateCaseSectionWorkingCopy(task.taskSid, stubApi, updatedSection),
+        );
+        expect(result).toStrictEqual(expected);
+        expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
+          initialState.tasks.task1.caseWorkingCopy,
+          updatedSection,
+          undefined,
+        );
+      });
     });
 
-    test('Specifies no id - updates case working copy using APIs updateWorkingCopy function specifying a blank CaseItemEntry with a random ID', () => {
-      const stubUpdateWorkingCopy: CaseWorkingCopy = { sections: { mock: { existing: { mockId: updatedSection } } } };
-
-      const stubApi: CaseSectionApi<any> = {
-        ...householdSectionApi,
-        updateWorkingCopy: jest.fn().mockReturnValue(stubUpdateWorkingCopy),
-      };
-
-      const initialState: CaseState = {
-        tasks: {
-          task1: {
-            ...state.tasks.task1,
-            caseWorkingCopy: {
-              sections: {},
-            },
-          },
-        },
-      };
-
-      const expected: CaseState = {
-        tasks: {
-          task1: {
-            ...initialState.tasks.task1,
-            caseWorkingCopy: stubUpdateWorkingCopy,
-          },
-        },
-      };
-
-      const result = reduce(initialState, actions.initialiseCaseSectionWorkingCopy(task.taskSid, stubApi));
-      expect(result).toStrictEqual(expected);
-      expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
-        initialState.tasks.task1.caseWorkingCopy,
-        { id: expect.any(String), form: {}, createdAt: null, twilioWorkerId: null },
-        undefined,
-      );
-    });
-
-    test('Specifies id when section not present in the connected case - throws', () => {
-      const stubUpdateWorkingCopy: CaseWorkingCopy = { sections: { mock: { existing: { mockId: updatedSection } } } };
-
-      const stubApi: CaseSectionApi<any> = {
-        ...householdSectionApi,
-        updateWorkingCopy: jest.fn().mockReturnValue(stubUpdateWorkingCopy),
-      };
-
-      const initialState: CaseState = {
-        tasks: {
-          task1: {
-            ...state.tasks.task1,
-            caseWorkingCopy: {
-              sections: {},
-            },
-          },
-        },
-      };
-
-      expect(() =>
-        reduce(initialState, actions.initialiseCaseSectionWorkingCopy(task.taskSid, stubApi, 'existingHousehold')),
-      ).toThrow();
-    });
-
-    test('Specifies id that is not present in the connected case - throws', () => {
-      const stubUpdateWorkingCopy: CaseWorkingCopy = { sections: { mock: { existing: { mockId: updatedSection } } } };
-
-      const stubApi: CaseSectionApi<any> = {
-        ...householdSectionApi,
-        updateWorkingCopy: jest.fn().mockReturnValue(stubUpdateWorkingCopy),
-      };
-
-      const initialState: CaseState = {
-        tasks: {
-          task1: {
-            ...state.tasks.task1,
-            connectedCase: {
-              ...state.tasks.task1.connectedCase,
-              info: {
-                ...state.tasks.task1.connectedCase.info,
-                households: [],
+    describe('INIT_CASE_WORKING_COPY', () => {
+      test('Specifies id that exists in case - updates case working copy using APIs updateWorkingCopy function, copying the section from the connected case', () => {
+        const initialState: CaseState = {
+          tasks: {
+            task1: {
+              ...state.tasks.task1,
+              connectedCase: {
+                ...state.tasks.task1.connectedCase,
+                info: {
+                  ...state.tasks.task1.connectedCase.info,
+                  households: [
+                    {
+                      id: 'existingHousehold',
+                      twilioWorkerId: 'other-worker-sid',
+                      household: { otherProp: 'other-value' },
+                      createdAt: baselineDate.toISOString(),
+                    },
+                  ],
+                },
+              },
+              caseWorkingCopy: {
+                sections: {},
               },
             },
-            caseWorkingCopy: {
-              sections: {},
+          },
+        };
+
+        const expected: CaseState = {
+          tasks: {
+            task1: {
+              ...initialState.tasks.task1,
+              caseWorkingCopy: stubUpdateWorkingCopy,
             },
           },
-        },
-      };
+        };
 
-      expect(() =>
-        reduce(initialState, actions.initialiseCaseSectionWorkingCopy(task.taskSid, stubApi, 'existingHousehold')),
-      ).toThrow();
+        const result = reduce(
+          initialState,
+          actions.initialiseCaseSectionWorkingCopy(task.taskSid, stubApi, 'existingHousehold'),
+        );
+        expect(result).toStrictEqual(expected);
+        expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
+          initialState.tasks.task1.caseWorkingCopy,
+          updatedSection,
+          'existingHousehold',
+        );
+      });
+
+      test('Specifies no id - updates case working copy using APIs updateWorkingCopy function specifying a blank CaseItemEntry with a random ID', () => {
+        const initialState: CaseState = {
+          tasks: {
+            task1: {
+              ...state.tasks.task1,
+              caseWorkingCopy: {
+                sections: {},
+              },
+            },
+          },
+        };
+
+        const expected: CaseState = {
+          tasks: {
+            task1: {
+              ...initialState.tasks.task1,
+              caseWorkingCopy: stubUpdateWorkingCopy,
+            },
+          },
+        };
+
+        const result = reduce(initialState, actions.initialiseCaseSectionWorkingCopy(task.taskSid, stubApi));
+        expect(result).toStrictEqual(expected);
+        expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
+          initialState.tasks.task1.caseWorkingCopy,
+          { id: expect.any(String), form: {}, createdAt: null, twilioWorkerId: null },
+          undefined,
+        );
+      });
+
+      test('Specifies id when section not present in the connected case - throws', () => {
+        const initialState: CaseState = {
+          tasks: {
+            task1: {
+              ...state.tasks.task1,
+              caseWorkingCopy: {
+                sections: {},
+              },
+            },
+          },
+        };
+
+        expect(() =>
+          reduce(initialState, actions.initialiseCaseSectionWorkingCopy(task.taskSid, stubApi, 'existingHousehold')),
+        ).toThrow();
+      });
+
+      test('Specifies id that is not present in the connected case - throws', () => {
+        const initialState: CaseState = {
+          tasks: {
+            task1: {
+              ...state.tasks.task1,
+              connectedCase: {
+                ...state.tasks.task1.connectedCase,
+                info: {
+                  ...state.tasks.task1.connectedCase.info,
+                  households: [],
+                },
+              },
+              caseWorkingCopy: {
+                sections: {},
+              },
+            },
+          },
+        };
+
+        expect(() =>
+          reduce(initialState, actions.initialiseCaseSectionWorkingCopy(task.taskSid, stubApi, 'existingHousehold')),
+        ).toThrow();
+      });
+    });
+
+    describe('REMOVE_CASE_SECTION_WORKING_COPY', () => {
+      test("Task doesn't exist - noop", () => {
+        const initialState: CaseState = {
+          tasks: {},
+        };
+
+        const resultWithNoId = reduce(initialState, actions.removeCaseSectionWorkingCopy('non existent task', stubApi));
+        expect(resultWithNoId).toStrictEqual(initialState);
+
+        const resultWithId = reduce(
+          initialState,
+          actions.removeCaseSectionWorkingCopy('non existent task', stubApi, 'non existent id'),
+        );
+        expect(resultWithId).toStrictEqual(initialState);
+      });
+      test("Task exists - calls api's updateWorkingCopy with id and an undefined item", () => {
+        const initialState: CaseState = {
+          tasks: {
+            task1: {
+              ...state.tasks.task1,
+              caseWorkingCopy: {
+                sections: {},
+              },
+            },
+          },
+        };
+
+        const expected: CaseState = {
+          tasks: {
+            task1: {
+              ...initialState.tasks.task1,
+              caseWorkingCopy: stubUpdateWorkingCopy,
+            },
+          },
+        };
+
+        const resultWithoutId = reduce(initialState, actions.removeCaseSectionWorkingCopy(task.taskSid, stubApi));
+        expect(resultWithoutId).toStrictEqual(expected);
+        expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
+          initialState.tasks.task1.caseWorkingCopy,
+          undefined,
+          undefined,
+        );
+
+        const resultWithId = reduce(initialState, actions.removeCaseSectionWorkingCopy(task.taskSid, stubApi, 'an id'));
+        expect(resultWithId).toStrictEqual(expected);
+        expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
+          initialState.tasks.task1.caseWorkingCopy,
+          undefined,
+          'an id',
+        );
+      });
     });
   });
 });
