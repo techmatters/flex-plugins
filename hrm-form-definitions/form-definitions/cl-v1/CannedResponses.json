@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "label": "Saludo",
+    "text": "¡Hola! , ¡te doy la bienvenida a Línea Libre! Este es un espacio seguro donde podemos conversar con tranquilidad y confianza. Estamos para escucharte, apoyarte y orientarte. Antes de conversar, nos gustaría contarte que trabajamos bajo el Principio de Protección, donde en caso que percibamos que tu integridad o la de un tercero pueda estar en riesgo, nuestro equipo tomará las medidas necesarias para asegurar tu protección y bienestar. Cuéntanos, ¿sobre qué te gustaría conversar hoy?"
+  },
+  {
+    "label": "Duplicada",
+    "text": "¡Hola! Veo que abriste otra conversación. Es muy importante que cada vez que nos contactes, tengamos sólo un chat abierto, de esa manera, nos aseguramos que unx de nuestrxs psicólogxs pueda responderte lo antes posible. Cerraré esta conversación mientras tanto, ¡Te agradecemos muchísimo por tu espera! ¡Estamos haciendo lo posible por responder tan pronto como nos es posible!"
+  },
+  {
+    "label": "No contesta",
+    "text": "Al parecer no estás disponible para hablar ahora. Me gustaría invitarte a que nos vuelvas a contactar cuando tengas disponibilidad, para esto es necesario que abras una nueva conversación, así te aseguras de obtener una respuesta ya que esta conversación se cerrará. Te recuerdo que nuestro horario de atención es de lunes a sábado de 10:00 a 22:00 horas. ¡Te mando un gran abrazo!"
+  },
+  {
+    "label": "Demora",
+    "text": "Lamentamos no haberte podido responder antes, nos encontramos con una alta demanda de conversaciones, sin embargo aquí estamos ahora para acompañarte y escucharte. Es importante para nosotrxs brindarte la mejor ayuda posible, para esto es necesario que mantengamos una conversación fluida, por lo que me gustaría preguntarte, ¿estás disponible para conversar?"
+  },
+  {
+    "label": "Encuadre",
+    "text": "Es importante que sepas que este espacio ofrece una conversación fluida, de manera que es necesario que podamos conversar con menos intervalos de tiempo. Si no puedes dedicarle atención a la conversación en estos momentos, ¡no hay problema! Puedes volver a escribirnos cuando estés disponible, aquí te estaremos esperando."
+  }
+]
