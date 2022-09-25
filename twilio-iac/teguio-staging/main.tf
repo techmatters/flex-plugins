@@ -69,7 +69,7 @@ module twilioChannel {
       serverless_service_sid = var.serverless_service_sid
       master_workflow_sid = module.taskRouter.master_workflow_sid
       chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-      channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl",{language=var.language})
+      channel_attributes = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl",{language=var.language})
       flow_description = "${title(each.key)} Messaging Flow"
       pre_survey_bot_sid = module.custom_chatbots.pre_survey_bot_es_sid
       target_task_name = var.target_task_name
@@ -99,7 +99,7 @@ module customChannel {
       serverless_service_sid = var.serverless_service_sid
       master_workflow_sid = module.taskRouter.master_workflow_sid
       chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-      channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : file("../terraform-modules/channels/custom-channel/channel-attributes/${each.key}-attributes.tftpl")
+      channel_attributes = templatefile("../terraform-modules/channels/custom-channel/channel-attributes/${each.key}-attributes.tftpl",{language=var.language})
       flow_description = "${title(each.key)} Messaging Flow"
       operating_hours_holiday = local.strings.operating_hours_holiday
       operating_hours_closed = local.strings.operating_hours_closed
