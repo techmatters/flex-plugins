@@ -69,7 +69,7 @@ const colors = {
   userUnavailableColor: '#999999',
 };
 
-const overrides = {
+export const overrides = {
   MainHeader: {
     Container: {
       background: colors.base2,

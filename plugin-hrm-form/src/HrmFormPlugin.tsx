@@ -4,9 +4,10 @@ import SyncClient from 'twilio-sync';
 
 import './styles/global-overrides.css';
 import reducers, { namespace, configurationBase, RootState } from './states';
-import HrmTheme from './styles/HrmTheme';
+import HrmTheme, { overrides } from './styles/HrmTheme';
 import { transferModes } from './states/DomainConstants';
 import { initLocalization } from './utils/pluginHelpers';
+import * as Providers from './utils/setUpProviders';
 import * as ActionFunctions from './utils/setUpActions';
 import * as Components from './utils/setUpComponents';
 import setUpMonitoring from './utils/setUpMonitoring';
@@ -251,6 +252,8 @@ export default class HrmFormPlugin extends FlexPlugin {
     console.log(`Welcome to ${PLUGIN_NAME}`);
     this.registerReducers(manager);
 
+    Providers.setMUIProvider();
+
     const config = getConfig();
 
     /*
@@ -265,8 +268,11 @@ export default class HrmFormPlugin extends FlexPlugin {
     setUpComponents(setupObject);
     setUpActions(setupObject);
 
-    const managerConfiguration: any = {
-      colorTheme: HrmTheme,
+    const managerConfiguration = {
+      // colorTheme: HrmTheme,
+      theme: {
+        componentThemeOverrides: overrides,
+      },
     };
     manager.updateConfig(managerConfiguration);
 
