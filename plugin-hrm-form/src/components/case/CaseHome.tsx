@@ -19,7 +19,7 @@ import {
 } from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
 import { connectedCaseBase, contactFormsBase, namespace, RootState, routingBase } from '../../states';
-import { Activity, CaseDetails, CaseDetailsName, EditTemporaryCaseInfo } from '../../states/case/types';
+import { Activity, CaseDetails, CaseDetailsName, CaseState, EditTemporaryCaseInfo } from '../../states/case/types';
 import { CustomITask, EntryInfo, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
 import * as CaseActions from '../../states/case/actions';
@@ -27,7 +27,6 @@ import { getConfig } from '../../HrmFormPlugin';
 import InformationRow from './InformationRow';
 import TimelineInformationRow from './TimelineInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
-import { CaseState } from '../../states/case/reducer';
 import { householdSectionApi } from '../../states/case/sections/household';
 import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
 

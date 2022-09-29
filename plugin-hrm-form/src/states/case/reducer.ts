@@ -1,43 +1,24 @@
 import { omit } from 'lodash';
-import { v4 as uuidV4 } from 'uuid';
 
-import { Case, CaseItemEntry } from '../../types/types';
 import {
   CaseActionType,
-  INIT_CASE_SECTION_WORKING_COPY,
-  MARK_CASE_AS_UPDATED,
-  REMOVE_CASE_SECTION_WORKING_COPY,
+  CaseState,
   REMOVE_CONNECTED_CASE,
   SET_CONNECTED_CASE,
-  TemporaryCaseInfo,
   UPDATE_CASE_CONTACT,
   UPDATE_CASE_INFO,
-  UPDATE_CASE_SECTION_WORKING_COPY,
   UPDATE_CASE_STATUS,
   UPDATE_TEMP_INFO,
 } from './types';
 import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
-
-export type CaseWorkingCopy = {
-  sections: {
-    [section: string]: {
-      new?: CaseItemEntry;
-      existing: { [id: string]: CaseItemEntry };
-    };
-  };
-  summary?: CaseItemEntry;
-};
-
-export type CaseState = {
-  tasks: {
-    [taskId: string]: {
-      connectedCase: Case;
-      temporaryCaseInfo?: TemporaryCaseInfo;
-      prevStatus: string; // the status as it comes from the DB (required as it may be locally updated in connectedCase)
-      caseWorkingCopy: CaseWorkingCopy;
-    };
-  };
-};
+import {
+  INIT_CASE_SECTION_WORKING_COPY,
+  initialiseCaseSectionWorkingCopyReducer,
+  REMOVE_CASE_SECTION_WORKING_COPY,
+  removeCaseSectionWorkingCopyReducer,
+  UPDATE_CASE_SECTION_WORKING_COPY,
+  updateCaseSectionWorkingCopyReducer,
+} from './caseWorkingCopy';
 
 const initialState: CaseState = {
   tasks: {},
@@ -97,49 +78,11 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
         },
       };
     case UPDATE_CASE_SECTION_WORKING_COPY:
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...state.tasks[action.taskId],
-            caseWorkingCopy: action.api.updateWorkingCopy(
-              state.tasks[action.taskId]?.caseWorkingCopy,
-              action.sectionItem,
-              action.id,
-            ),
-          },
-        },
-      };
+      return updateCaseSectionWorkingCopyReducer(state, action);
     case INIT_CASE_SECTION_WORKING_COPY:
-      const item: CaseItemEntry = action.id
-        ? action.api.toForm(action.api.getSectionItemById(state.tasks[action.taskId].connectedCase.info, action.id))
-        : { id: uuidV4(), form: {}, createdAt: null, twilioWorkerId: null };
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...state.tasks[action.taskId],
-            caseWorkingCopy: action.api.updateWorkingCopy(state.tasks[action.taskId]?.caseWorkingCopy, item, action.id),
-          },
-        },
-      };
+      return initialiseCaseSectionWorkingCopyReducer(state, action);
     case REMOVE_CASE_SECTION_WORKING_COPY:
-      const caseWorkingCopy = state.tasks[action.taskId]?.caseWorkingCopy;
-      if (caseWorkingCopy) {
-        return {
-          ...state,
-          tasks: {
-            ...state.tasks,
-            [action.taskId]: {
-              ...state.tasks[action.taskId],
-              caseWorkingCopy: action.api.updateWorkingCopy(caseWorkingCopy, undefined, action.id),
-            },
-          },
-        };
-      }
-      return state;
+      return removeCaseSectionWorkingCopyReducer(state, action);
     case UPDATE_CASE_STATUS:
       const { connectedCase } = state.tasks[action.taskId];
       const updatedCase = { ...connectedCase, status: action.status };

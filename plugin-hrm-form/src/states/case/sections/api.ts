@@ -1,7 +1,7 @@
 import { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
 import { CaseInfo, CaseItemEntry } from '../../../types/types';
-import { CaseWorkingCopy } from '../reducer';
+import { CaseWorkingCopy } from '../types';
 
 export type CaseUpdater = (original: CaseInfo, temporaryInfo: CaseItemEntry) => CaseInfo;
 

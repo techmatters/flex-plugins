@@ -1,20 +1,20 @@
 import { DefinitionVersionId, HelplineEntry } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
-import { CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../routing/types';
-import { CaseItemEntry } from '../../types/types';
-import { CaseSectionApi } from './sections/api';
+import { Case, CaseItemEntry } from '../../types/types';
+import { CaseItemAction, CaseSectionSubroute } from '../routing/types';
+import {
+  InitialiseCaseSectionWorkingCopyAction,
+  RemoveCaseSectionWorkingCopyAction,
+  UpdateCaseSectionWorkingCopyAction,
+} from './caseWorkingCopy';
 
 // Action types
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
 export const REMOVE_CONNECTED_CASE = 'REMOVE_CONNECTED_CASE';
 export const UPDATE_CASE_INFO = 'UPDATE_CASE_INFO';
 export const UPDATE_TEMP_INFO = 'UPDATE_TEMP_INFO';
-export const UPDATE_CASE_SECTION_WORKING_COPY = 'UPDATE_CASE_SECTION_WORKING_COPY';
-export const INIT_CASE_SECTION_WORKING_COPY = 'INIT_CASE_SECTION_WORKING_COPY';
-export const REMOVE_CASE_SECTION_WORKING_COPY = 'REMOVE_CASE_SECTION_WORKING_COPY';
 export const UPDATE_CASE_STATUS = 'UPDATE_CASE_STATUS';
-export const MARK_CASE_AS_UPDATED = 'MARK_CASE_AS_UPDATED';
 export const UPDATE_CASE_CONTACT = 'UPDATE_CASE_CONTACT';
 
 export type EditTemporaryCaseInfo = {
@@ -47,28 +47,6 @@ type TemporaryCaseInfoAction = {
   type: typeof UPDATE_TEMP_INFO;
   value: TemporaryCaseInfo;
   taskId: string;
-};
-
-type UpdateCaseSectionWorkingCopyAction = {
-  type: typeof UPDATE_CASE_SECTION_WORKING_COPY;
-  taskId: string;
-  api: CaseSectionApi<unknown>;
-  id?: string;
-  sectionItem: CaseItemEntry;
-};
-
-type InitialiseCaseSectionWorkingCopyAction = {
-  type: typeof INIT_CASE_SECTION_WORKING_COPY;
-  taskId: string;
-  api: CaseSectionApi<unknown>;
-  id?: string;
-};
-
-type RemoveCaseSectionWorkingCopyAction = {
-  type: typeof REMOVE_CASE_SECTION_WORKING_COPY;
-  taskId: string;
-  api: CaseSectionApi<unknown>;
-  id?: string;
 };
 
 type UpdateCasesStatusAction = {
@@ -176,4 +154,23 @@ export const caseItemHistory = (info: CaseItemEntry, counselorsHash: Record<stri
   const updatingCounsellorName = info.updatedBy ? counselorsHash[info.updatedBy] || 'Unknown' : undefined;
   const updated = info.updatedAt ? new Date(info.updatedAt) : undefined;
   return { addingCounsellorName, added, updatingCounsellorName, updated };
+};
+export type CaseWorkingCopy = {
+  sections: {
+    [section: string]: {
+      new?: CaseItemEntry;
+      existing: { [id: string]: CaseItemEntry };
+    };
+  };
+  summary?: CaseItemEntry;
+};
+export type CaseState = {
+  tasks: {
+    [taskId: string]: {
+      connectedCase: Case;
+      temporaryCaseInfo?: TemporaryCaseInfo;
+      prevStatus: string; // the status as it comes from the DB (required as it may be locally updated in connectedCase)
+      caseWorkingCopy: CaseWorkingCopy;
+    };
+  };
 };

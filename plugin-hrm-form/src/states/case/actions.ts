@@ -1,19 +1,15 @@
-import { Case, CaseInfo, CaseItemEntry, SearchContact } from '../../types/types';
+import { Case, CaseInfo, SearchContact } from '../../types/types';
 import {
   CaseActionType,
-  INIT_CASE_SECTION_WORKING_COPY,
-  REMOVE_CASE_SECTION_WORKING_COPY,
   REMOVE_CONNECTED_CASE,
   SET_CONNECTED_CASE,
   TemporaryCaseInfo,
   UPDATE_CASE_CONTACT,
   UPDATE_CASE_INFO,
-  UPDATE_CASE_SECTION_WORKING_COPY,
   UPDATE_CASE_STATUS,
   UPDATE_TEMP_INFO,
 } from './types';
 import { searchContactToHrmServiceContact } from '../contacts/contactDetailsAdapter';
-import { CaseSectionApi } from './sections/api';
 
 // Action creators
 export const setConnectedCase = (connectedCase: Case, taskId: string): CaseActionType => ({
@@ -37,41 +33,6 @@ export const updateTempInfo = (value: TemporaryCaseInfo, taskId: string): CaseAc
   type: UPDATE_TEMP_INFO,
   value,
   taskId,
-});
-
-export const updateCaseSectionWorkingCopy = (
-  taskId: string,
-  api: CaseSectionApi<unknown>,
-  sectionItem: CaseItemEntry,
-  id?: string,
-): CaseActionType => ({
-  type: UPDATE_CASE_SECTION_WORKING_COPY,
-  taskId,
-  api,
-  sectionItem,
-  id,
-});
-
-export const initialiseCaseSectionWorkingCopy = (
-  taskId: string,
-  api: CaseSectionApi<unknown>,
-  id?: string,
-): CaseActionType => ({
-  type: INIT_CASE_SECTION_WORKING_COPY,
-  taskId,
-  api,
-  id,
-});
-
-export const removeCaseSectionWorkingCopy = (
-  taskId: string,
-  api: CaseSectionApi<unknown>,
-  id?: string,
-): CaseActionType => ({
-  type: REMOVE_CASE_SECTION_WORKING_COPY,
-  taskId,
-  api,
-  id,
 });
 
 /**

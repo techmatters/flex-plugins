@@ -22,7 +22,6 @@ import ActionHeader from './ActionHeader';
 import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
-import { CaseState } from '../../states/case/reducer';
 import { transformValues } from '../../services/ContactService';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
@@ -30,7 +29,7 @@ import { createFormFromDefinition, disperseInputs, splitAt } from '../common/for
 import type { CaseInfo, CustomITask, StandaloneITask } from '../../types/types';
 import useFocus from '../../utils/useFocus';
 import { recordingErrorHandler } from '../../fullStory';
-import { TemporaryCaseInfo, temporaryCaseInfoHistory } from '../../states/case/types';
+import { CaseState, TemporaryCaseInfo, temporaryCaseInfoHistory } from '../../states/case/types';
 import CloseCaseDialog from './CloseCaseDialog';
 import { upsertCaseSectionItemUsingSectionName } from '../../states/case/sections/update';
 

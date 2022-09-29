@@ -22,7 +22,6 @@ import { CaseActionFormContainer, CaseActionLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
-import { CaseState } from '../../states/case/reducer';
 import { transformValues } from '../../services/ContactService';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
@@ -44,12 +43,17 @@ import {
 } from '../../states/routing/types';
 import useFocus from '../../utils/useFocus';
 import { recordingErrorHandler } from '../../fullStory';
-import { caseItemHistory } from '../../states/case/types';
+import { caseItemHistory, CaseState } from '../../states/case/types';
 import CloseCaseDialog from './CloseCaseDialog';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import { lookupApi } from '../../states/case/sections/lookupApi';
 import { copyCaseSectionItem } from '../../states/case/sections/update';
 import { changeRoute } from '../../states/routing/actions';
+import {
+  initialiseCaseSectionWorkingCopy,
+  removeCaseSectionWorkingCopy,
+  updateCaseSectionWorkingCopy,
+} from '../../states/case/caseWorkingCopy';
 
 export type AddEditCaseItemProps = {
   task: CustomITask | StandaloneITask;
@@ -300,10 +304,10 @@ const mapDispatchToProps = (dispatch, props: AddEditCaseItemProps) => {
   const id = isEditCaseSectionRoute(routing) ? routing.id : undefined;
   return {
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
-    updateCaseSectionWorkingCopy: bindActionCreators(CaseActions.updateCaseSectionWorkingCopy, dispatch),
-    initialiseCaseSectionWorkingCopy: bindActionCreators(CaseActions.initialiseCaseSectionWorkingCopy, dispatch),
+    updateCaseSectionWorkingCopy: bindActionCreators(updateCaseSectionWorkingCopy, dispatch),
+    initialiseCaseSectionWorkingCopy: bindActionCreators(initialiseCaseSectionWorkingCopy, dispatch),
     closeActions: route => {
-      dispatch(CaseActions.removeCaseSectionWorkingCopy(task.taskSid, sectionApi, id));
+      dispatch(removeCaseSectionWorkingCopy(task.taskSid, sectionApi, id));
       dispatch(changeRoute(route, task.taskSid));
     },
   };

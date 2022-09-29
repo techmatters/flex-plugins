@@ -1,5 +1,5 @@
 import { CaseItemEntry } from '../../../types/types';
-import { CaseWorkingCopy } from '../reducer';
+import { CaseWorkingCopy } from '../types';
 
 export const getWorkingCopy = (sectionName: string) => (
   caseWorkingCopy: CaseWorkingCopy,
