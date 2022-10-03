@@ -368,7 +368,7 @@ const triggerPostSurvey = async (setupObject, payload) => {
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  * @returns {import('@twilio/flex-ui').ActionFunction}
  */
-export const afterCompleteTask = setupObject => async payload => {
+export const afterWrapupAction = setupObject => async payload => {
   const { featureFlags } = setupObject;
 
   if (featureFlags.enable_post_survey) {
