@@ -159,7 +159,7 @@ resource "twilio_autopilot_assistants_tasks_v1" "pre_survey_bot_es_get_terms_app
                   ]
                 }
               },
-              "question" : "Perfecto,  quiero que  sepas  que  la  conversación que tendrás con el guía  será  completamente confidencial. Sin embargo, como tú sabes, el tema de protección de datos es muy  importante  tanto  para  ti  como  para  nosotros,  por  lo  cual,  debo  preguntarte  si  aceptas los Términos y Condiciones del Servicio (https://bit.ly/TerminosdeUso14) Responde con el número que corresponda: \n1: Sí, acepto. \n2: No, no acepto.",
+              "question" : "Perfecto,  quiero que  sepas  que  la  conversación que tendrás con el guía  será  completamente confidencial. Sin embargo, como tú sabes, el tema de protección de datos es muy  importante  tanto  para  ti  como  para  nosotros,  por  lo  cual,  debo  preguntarte  si  aceptas los Términos y Condiciones del Servicio (https://tinyurl.com/269m72c9) Responde con el número que corresponda: \n1: Sí, acepto. \n2: No, no acepto.",
               "name" : "user_choice"
             }
           ]
