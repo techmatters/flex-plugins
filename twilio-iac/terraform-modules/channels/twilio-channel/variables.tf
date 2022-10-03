@@ -1,3 +1,9 @@
+variable "language" {
+  type = string
+  default = ""
+  description = "Override the default language by setting this"
+}
+
 variable "custom_flow_definition" {
   type = string
   default = ""
