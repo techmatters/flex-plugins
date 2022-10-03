@@ -7,6 +7,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
+import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import CaseTags from './CaseTags';
 import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
@@ -22,21 +23,39 @@ import { Box } from '../../styles/HrmStyles';
 import { PermissionActions } from '../../permissions';
 import { getLocaleDateTime } from '../../utils/helpers';
 
-const CaseDetails = ({
+type Props = {
+  caseId: string;
+  name: string;
+  categories: { [category: string]: { [subcategory: string]: boolean } };
+  counselor: string;
+  createdAt: string;
+  updatedAt: string | undefined;
+  followUpDate: string | undefined;
+  statusLabel: string;
+  definitionVersionName: DefinitionVersionId;
+  office: string | undefined;
+  childIsAtRisk: boolean;
+  isOrphanedCase: boolean | undefined;
+  editCaseSummary: () => void;
+  handlePrintCase: () => void;
+  can: (action: string) => boolean;
+};
+
+const CaseDetails: React.FC<Props> = ({
   caseId,
   name,
   categories,
   counselor,
   createdAt,
-  updatedAt,
-  followUpDate,
-  status,
+  updatedAt = '',
+  followUpDate = '',
+  statusLabel,
   can,
-  office,
+  office = '',
   childIsAtRisk,
   handlePrintCase,
   definitionVersionName,
-  isOrphanedCase,
+  isOrphanedCase = false,
   editCaseSummary,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -68,7 +87,7 @@ const CaseDetails = ({
         </Box>
         {editButton && (
           <Box style={{ display: 'inline-block' }} alignSelf="flex-end" marginTop="-20px" marginRight="50px">
-            <ViewButton secondary roundCorners onClick={editCaseSummary} data-testid="Case-EditButton">
+            <ViewButton onClick={editCaseSummary} data-testid="Case-EditButton">
               <Template code="Case-EditButton" />
             </ViewButton>
           </Box>
@@ -87,7 +106,7 @@ const CaseDetails = ({
               name="Details_CaseStatus"
               aria-labelledby="CaseDetailsStatusLabel"
               disabled={true}
-              defaultValue={status === 'open' ? 'Open' : 'Closed'}
+              defaultValue={statusLabel}
             />
           </div>
           <div style={{ paddingRight: '20px' }}>
@@ -160,29 +179,5 @@ const CaseDetails = ({
 };
 
 CaseDetails.displayName = 'CaseDetails';
-CaseDetails.propTypes = {
-  caseId: PropTypes.number.isRequired,
-  name: PropTypes.string.isRequired,
-  categories: PropTypes.object.isRequired,
-  counselor: PropTypes.string.isRequired,
-  createdAt: PropTypes.string.isRequired,
-  status: PropTypes.string.isRequired,
-  can: PropTypes.func.isRequired,
-  office: PropTypes.string,
-  followUpDate: PropTypes.string,
-  updatedAt: PropTypes.string,
-  childIsAtRisk: PropTypes.bool.isRequired,
-  handlePrintCase: PropTypes.func.isRequired,
-  definitionVersion: PropTypes.shape({}).isRequired,
-  definitionVersionName: PropTypes.string.isRequired,
-  isOrphanedCase: PropTypes.bool,
-};
-
-CaseDetails.defaultProps = {
-  office: '',
-  followUpDate: '',
-  updatedAt: '',
-  isOrphanedCase: false,
-};
 
 export default CaseDetails;

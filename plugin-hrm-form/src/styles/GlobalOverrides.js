@@ -48,12 +48,8 @@ injectGlobal`
   .editingContact .hiddenWhenEditingContact {
     display: none;
   }
-  
-  .Twilio-View-case-list {
-    background-color: #f6f6f6;
-  }
 
-  .Twilio-View-search {
+  .Twilio-ViewCollection {
     background-color: #f6f6f6;
   }
 
