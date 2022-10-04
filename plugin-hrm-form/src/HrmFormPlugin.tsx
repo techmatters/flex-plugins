@@ -216,6 +216,8 @@ const setUpActions = (setupObject: SetupObject) => {
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject);
   const beforeCompleteAction = ActionFunctions.beforeCompleteTask(setupObject);
   const afterWrapupAction = ActionFunctions.afterWrapupTask(setupObject);
+  const afterCompleteAction = ActionFunctions.afterCompleteTask(setupObject);
+
 
   Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
 
@@ -233,6 +235,8 @@ const setUpActions = (setupObject: SetupObject) => {
   Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
 
   Flex.Actions.addListener('afterWrapupTask', afterWrapupAction);
+  
+  Flex.Actions.addListener('afterCompleteTask', afterCompleteAction);
 };
 
 export default class HrmFormPlugin extends FlexPlugin {
