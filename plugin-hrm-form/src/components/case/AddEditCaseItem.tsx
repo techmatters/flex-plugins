@@ -128,7 +128,7 @@ const AddEditCaseItem: React.FC<Props> = ({
       updateCaseSectionWorkingCopy(task.taskSid, sectionApi, { ...workingCopy, form }, id);
     };
 
-    const generatedForm = createFormFromDefinition(formDefinition)([])(initialForm, firstElementRef)(
+    const generatedForm = createFormFromDefinition(formDefinition)([])(workingCopy?.form, firstElementRef)(
       updateCallBack,
       customFormHandlers,
     );
@@ -138,7 +138,6 @@ const AddEditCaseItem: React.FC<Props> = ({
     return splitInHalf(disperseInputs(7)(generatedForm));
   }, [
     formDefinition,
-    initialForm,
     firstElementRef,
     customFormHandlers,
     layout.splitFormAt,
