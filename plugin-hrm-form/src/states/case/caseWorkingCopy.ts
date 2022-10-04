@@ -2,7 +2,7 @@ import { v4 as uuidV4 } from 'uuid';
 
 import { CaseSectionApi } from './sections/api';
 import { CaseItemEntry } from '../../types/types';
-import { CaseState } from './types';
+import { CaseState, CaseSummaryWorkingCopy } from './types';
 
 // Update a section of a case's working copy
 export const UPDATE_CASE_SECTION_WORKING_COPY = 'UPDATE_CASE_SECTION_WORKING_COPY';
@@ -127,3 +127,120 @@ export const removeCaseSectionWorkingCopyReducer = (
   }
   return state;
 };
+
+// Initialise a new section of a case's working copy based on the saved data, or blank if adding a new section
+export const INIT_CASE_SUMMARY_WORKING_COPY = 'INIT_CASE_SUMMARY_WORKING_COPY';
+
+export type InitialiseCaseSummaryWorkingCopyAction = {
+  type: typeof INIT_CASE_SUMMARY_WORKING_COPY;
+  taskId: string;
+};
+
+export const initialiseCaseSummaryWorkingCopy = (taskId: string): InitialiseCaseSummaryWorkingCopyAction => ({
+  type: INIT_CASE_SUMMARY_WORKING_COPY,
+  taskId,
+});
+
+export const initialiseCaseSummaryWorkingCopyReducer = (
+  state: CaseState,
+  action: InitialiseCaseSummaryWorkingCopyAction,
+): CaseState => {
+  const caseState = state.tasks[action.taskId];
+  const { childIsAtRisk, summary, followUpDate } = caseState.connectedCase.info;
+  return {
+    ...state,
+    tasks: {
+      ...state.tasks,
+      [action.taskId]: {
+        ...caseState,
+        caseWorkingCopy: {
+          caseSummary: {
+            status: caseState.connectedCase.status,
+            summary,
+            childIsAtRisk,
+            followUpDate,
+          },
+          ...caseState.caseWorkingCopy,
+        },
+      },
+    },
+  };
+};
+
+// Update a section of a case's working copy
+export const UPDATE_CASE_SUMMARY_WORKING_COPY = 'UPDATE_CASE_SUMMARY_WORKING_COPY';
+
+export type UpdateCaseSummaryWorkingCopyAction = {
+  type: typeof UPDATE_CASE_SUMMARY_WORKING_COPY;
+  taskId: string;
+  caseSummary: CaseSummaryWorkingCopy;
+};
+
+export const updateCaseSummaryWorkingCopy = (
+  taskId: string,
+  caseSummary: CaseSummaryWorkingCopy,
+): UpdateCaseSummaryWorkingCopyAction => ({
+  type: UPDATE_CASE_SUMMARY_WORKING_COPY,
+  taskId,
+  caseSummary,
+});
+
+export const updateCaseSummaryWorkingCopyReducer = (
+  state: CaseState,
+  action: UpdateCaseSummaryWorkingCopyAction,
+): CaseState => ({
+  ...state,
+  tasks: {
+    ...state.tasks,
+    [action.taskId]: {
+      ...state.tasks[action.taskId],
+      caseWorkingCopy: {
+        ...state.tasks[action.taskId].caseWorkingCopy,
+        caseSummary: action.caseSummary,
+      },
+    },
+  },
+});
+
+// Remove the summary working copy
+export const REMOVE_CASE_SUMMARY_WORKING_COPY = 'REMOVE_CASE_SUMMARY_WORKING_COPY';
+
+export type RemoveCaseSummaryWorkingCopyAction = {
+  type: typeof REMOVE_CASE_SUMMARY_WORKING_COPY;
+  taskId: string;
+};
+
+export const removeCaseSummaryWorkingCopy = (taskId: string): RemoveCaseSummaryWorkingCopyAction => ({
+  type: REMOVE_CASE_SUMMARY_WORKING_COPY,
+  taskId,
+});
+
+export const removeCaseSummaryWorkingCopyReducer = (
+  state: CaseState,
+  action: RemoveCaseSummaryWorkingCopyAction,
+): CaseState => {
+  const { caseSummary, ...caseWorkingCopyWithoutSummary } = state.tasks[action.taskId]?.caseWorkingCopy ?? {
+    sections: {},
+  };
+  if (caseWorkingCopyWithoutSummary) {
+    return {
+      ...state,
+      tasks: {
+        ...state.tasks,
+        [action.taskId]: {
+          ...state.tasks[action.taskId],
+          caseWorkingCopy: caseWorkingCopyWithoutSummary,
+        },
+      },
+    };
+  }
+  return state;
+};
+
+export type CaseWorkingCopyActionType =
+  | RemoveCaseSectionWorkingCopyAction
+  | InitialiseCaseSectionWorkingCopyAction
+  | UpdateCaseSectionWorkingCopyAction
+  | InitialiseCaseSummaryWorkingCopyAction
+  | UpdateCaseSummaryWorkingCopyAction
+  | RemoveCaseSummaryWorkingCopyAction;

@@ -110,7 +110,6 @@ const ViewCaseItem: React.FC<Props> = ({
 ViewCaseItem.displayName = 'ViewCaseItem';
 
 const mapToDispatchProps = {
-  updateTempInfo: CaseActions.updateTempInfo,
   changeRoute: RoutingActions.changeRoute,
 };
 

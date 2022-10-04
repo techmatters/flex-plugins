@@ -1,7 +1,7 @@
 import { DefinitionVersionId, HelplineEntry } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
-import { Case, CaseItemEntry } from '../../types/types';
+import { Case, CaseItemEntry, EntryInfo } from '../../types/types';
 import { CaseItemAction, CaseSectionSubroute } from '../routing/types';
 import {
   InitialiseCaseSectionWorkingCopyAction,
@@ -66,11 +66,8 @@ export type CaseActionType =
   | RemoveConnectedCaseAction
   | UpdateCaseInfoAction
   | TemporaryCaseInfoAction
-  | UpdateCaseSectionWorkingCopyAction
-  | InitialiseCaseSectionWorkingCopyAction
   | UpdateCasesStatusAction
-  | UpdateCaseContactAction
-  | RemoveCaseSectionWorkingCopyAction;
+  | UpdateCaseContactAction;
 
 export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
 
@@ -148,13 +145,24 @@ export const temporaryCaseInfoHistory = (
   counselorsHash: Record<string, string>,
 ) => caseItemHistory(temporaryCaseInfo.info, counselorsHash);
 
-export const caseItemHistory = (info: CaseItemEntry, counselorsHash: Record<string, string>) => {
+export const caseItemHistory = (
+  info: { updatedAt?: string; updatedBy?: string; createdAt: string; twilioWorkerId: string },
+  counselorsHash: Record<string, string>,
+) => {
   const addingCounsellorName = counselorsHash[info.twilioWorkerId] || 'Unknown';
   const added = new Date(info.createdAt);
   const updatingCounsellorName = info.updatedBy ? counselorsHash[info.updatedBy] || 'Unknown' : undefined;
   const updated = info.updatedAt ? new Date(info.updatedAt) : undefined;
   return { addingCounsellorName, added, updatingCounsellorName, updated };
 };
+
+export type CaseSummaryWorkingCopy = {
+  status: string;
+  followUpDate: string;
+  childIsAtRisk: boolean;
+  summary: string;
+};
+
 export type CaseWorkingCopy = {
   sections: {
     [section: string]: {
@@ -162,7 +170,7 @@ export type CaseWorkingCopy = {
       existing: { [id: string]: CaseItemEntry };
     };
   };
-  summary?: CaseItemEntry;
+  caseSummary?: CaseSummaryWorkingCopy;
 };
 export type CaseState = {
   tasks: {

@@ -12,12 +12,19 @@ import {
 } from './types';
 import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
 import {
+  CaseWorkingCopyActionType,
   INIT_CASE_SECTION_WORKING_COPY,
+  INIT_CASE_SUMMARY_WORKING_COPY,
   initialiseCaseSectionWorkingCopyReducer,
+  initialiseCaseSummaryWorkingCopyReducer,
   REMOVE_CASE_SECTION_WORKING_COPY,
+  REMOVE_CASE_SUMMARY_WORKING_COPY,
   removeCaseSectionWorkingCopyReducer,
+  removeCaseSummaryWorkingCopyReducer,
   UPDATE_CASE_SECTION_WORKING_COPY,
+  UPDATE_CASE_SUMMARY_WORKING_COPY,
   updateCaseSectionWorkingCopyReducer,
+  updateCaseSummaryWorkingCopyReducer,
 } from './caseWorkingCopy';
 
 const initialState: CaseState = {
@@ -25,7 +32,10 @@ const initialState: CaseState = {
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export function reduce(state = initialState, action: CaseActionType | GeneralActionType): CaseState {
+export function reduce(
+  state = initialState,
+  action: CaseActionType | CaseWorkingCopyActionType | GeneralActionType,
+): CaseState {
   switch (action.type) {
     case SET_CONNECTED_CASE:
       return {
@@ -83,6 +93,12 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
       return initialiseCaseSectionWorkingCopyReducer(state, action);
     case REMOVE_CASE_SECTION_WORKING_COPY:
       return removeCaseSectionWorkingCopyReducer(state, action);
+    case INIT_CASE_SUMMARY_WORKING_COPY:
+      return initialiseCaseSummaryWorkingCopyReducer(state, action);
+    case UPDATE_CASE_SUMMARY_WORKING_COPY:
+      return updateCaseSummaryWorkingCopyReducer(state, action);
+    case REMOVE_CASE_SUMMARY_WORKING_COPY:
+      return removeCaseSummaryWorkingCopyReducer(state, action);
     case UPDATE_CASE_STATUS:
       const { connectedCase } = state.tasks[action.taskId];
       const updatedCase = { ...connectedCase, status: action.status };

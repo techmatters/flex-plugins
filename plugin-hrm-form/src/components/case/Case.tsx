@@ -236,7 +236,7 @@ const Case: React.FC<Props> = ({
   const childIsAtRisk = Boolean(info && info.childIsAtRisk);
   const referrals = info?.referrals;
   const notes: NoteActivity[] = timeline.filter(x => isNoteActivity(x)) as NoteActivity[];
-  const summary = info?.summary;
+  const summary = info?.caseSummary;
   const definitionVersion = props.definitionVersions[version];
   const office = getHelplineData(connectedCase.helpline, definitionVersion.helplineInformation);
 
@@ -379,9 +379,7 @@ const Case: React.FC<Props> = ({
           <EditCaseSummary
             {...{
               ...addScreenProps,
-              followUpDate,
-              caseStatus: status,
-              exitItem: () => changeRoute(closeSubSectionRoute(), task.taskSid),
+              exitRoute: closeSubSectionRoute(),
             }}
           />
         );
@@ -460,7 +458,6 @@ const mapDispatchToProps = dispatch => {
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
     removeConnectedCase: bindActionCreators(CaseActions.removeConnectedCase, dispatch),
     updateCaseInfo: bindActionCreators(CaseActions.updateCaseInfo, dispatch),
-    updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
     updateCaseStatus: bindActionCreators(CaseActions.updateCaseStatus, dispatch),
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     updateDefinitionVersion: bindActionCreators(ConfigActions.updateDefinitionVersion, dispatch),

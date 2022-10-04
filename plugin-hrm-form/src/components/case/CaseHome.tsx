@@ -59,7 +59,6 @@ const CaseHome: React.FC<Props> = ({
   task,
   form,
   routing,
-  updateTempInfo,
   changeRoute,
   isCreating,
   handleClose,
@@ -75,7 +74,7 @@ const CaseHome: React.FC<Props> = ({
 
   const { featureFlags } = getConfig();
   const { connectedCase } = connectedCaseState;
-  const summary = connectedCase.info?.summary || '';
+  const summary = connectedCase.info?.caseSummary || '';
   const { route } = routing;
 
   const onViewCaseItemClick = (targetSubroute: CaseSectionSubroute) => (id: string) => {
@@ -184,29 +183,8 @@ const CaseHome: React.FC<Props> = ({
     ) : null;
   };
 
-  const onEditCaseItemClick = (targetSubroute: CaseSectionSubroute) => {
-    const temporaryCaseInfo: EditTemporaryCaseInfo = {
-      action: CaseItemAction.Edit,
-      info: {
-        createdAt: connectedCase.createdAt,
-        updatedAt: connectedCase.updatedAt,
-        updatedBy: connectedCase.twilioWorkerId,
-        form: {
-          caseStatus: status,
-          date: followUpDate,
-          inImminentPhysicalDanger: childIsAtRisk === undefined ? false : childIsAtRisk,
-          caseSummary: summary,
-        },
-        id: null,
-        twilioWorkerId: connectedCase.twilioWorkerId,
-      },
-      screen: 'caseSummary',
-    };
-    updateTempInfo(
-      { screen: temporaryCaseInfo.screen, action: CaseItemAction.Edit, info: temporaryCaseInfo.info },
-      task.taskSid,
-    );
-    changeRoute({ ...routing, subroute: targetSubroute, action: CaseItemAction.Edit } as AppRoutes, task.taskSid);
+  const onEditCaseSummaryClick = () => {
+    changeRoute({ ...routing, subroute: NewCaseSubroutes.CaseSummary, action: CaseItemAction.Edit } as AppRoutes, task.taskSid);
   };
 
   return (
@@ -228,7 +206,7 @@ const CaseHome: React.FC<Props> = ({
             handlePrintCase={onPrintCase}
             definitionVersionName={version}
             isOrphanedCase={!contact}
-            editCaseSummary={() => onEditCaseItemClick(NewCaseSubroutes.CaseSummary)}
+            editCaseSummary={onEditCaseSummaryClick}
           />
         </Box>
         <Box margin="25px 0 0 25px">
@@ -321,7 +299,6 @@ const mapStateToProps = (state: RootState, ownProps: CaseHomeProps) => {
 
 const mapDispatchToProps = {
   changeRoute: RoutingActions.changeRoute,
-  updateTempInfo: CaseActions.updateTempInfo,
   setConnectedCase: CaseActions.setConnectedCase,
 };
 const connector = connect(mapStateToProps, mapDispatchToProps);
