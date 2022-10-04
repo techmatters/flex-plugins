@@ -20,7 +20,6 @@ import {
 } from '../../styles/case';
 import { Box, Row } from '../../styles/HrmStyles';
 import CaseAddButton from './CaseAddButton';
-import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CustomITask } from '../../types/types';
 import { isConnectedCaseActivity } from './caseActivities';

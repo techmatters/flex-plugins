@@ -13,7 +13,6 @@ import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { caseItemHistory, CaseState } from '../../states/case/types';
 import { ViewCaseSectionRoute, CaseItemAction } from '../../states/routing/types';
-import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseSectionApi } from '../../states/case/sections/api';
 

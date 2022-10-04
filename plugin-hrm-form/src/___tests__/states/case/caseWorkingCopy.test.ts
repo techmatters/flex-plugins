@@ -131,7 +131,6 @@ describe('Working copy reducers', () => {
         categories: {},
         childName: '',
       },
-      prevStatus: '',
       caseWorkingCopy: {
         sections: {},
       },
@@ -324,7 +323,6 @@ describe('Working copy reducers', () => {
       const initialState: CaseState = {
         tasks: {
           task1: {
-            prevStatus: '',
             connectedCase: {
               ...state.tasks.task1.connectedCase,
               status: 'test',
@@ -375,7 +373,6 @@ describe('Working copy reducers', () => {
       const initialState: CaseState = {
         tasks: {
           task1: {
-            prevStatus: '',
             connectedCase: {
               ...state.tasks.task1.connectedCase,
             },
@@ -425,7 +422,6 @@ describe('Working copy reducers', () => {
       const initialState: CaseState = {
         tasks: {
           task1: {
-            prevStatus: '',
             connectedCase: {
               ...state.tasks.task1.connectedCase,
             },

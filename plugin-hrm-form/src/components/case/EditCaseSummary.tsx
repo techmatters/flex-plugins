@@ -59,7 +59,6 @@ const EditCaseSummary: React.FC<Props> = ({
   closeActions,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-
   useEffect(() => {
     if (!workingCopy) {
       initialiseWorkingCopy(task.taskSid);
@@ -139,7 +138,7 @@ const EditCaseSummary: React.FC<Props> = ({
     };
     const generatedForm = createFormFromDefinition(formDefinition)([])(workingCopy, firstElementRef)(updateCallBack);
     return splitAt(3)(disperseInputs(7)(generatedForm));
-  }, [formDefinition, initialForm, firstElementRef, getValues, updateWorkingCopy, task.taskSid]);
+  }, [formDefinition, workingCopy, firstElementRef, getValues, updateWorkingCopy, task.taskSid]);
 
   const save = async () => {
     const { info, id } = connectedCaseState.connectedCase;
@@ -228,7 +227,6 @@ const mapStateToProps = (state: RootState, ownProps: EditCaseSummaryProps) => {
 
 const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
   return {
-    updateCaseInfo: bindActionCreators(CaseActions.updateCaseInfo, dispatch),
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
     initialiseWorkingCopy: bindActionCreators(initialiseCaseSummaryWorkingCopy, dispatch),

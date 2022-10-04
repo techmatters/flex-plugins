@@ -47,7 +47,6 @@ export type CaseHomeProps = {
   handleSaveAndEnd: () => void;
   handleCancelNewCaseAndClose: () => void;
   handleUpdate: () => void;
-  onStatusChange: (value: string | boolean) => void;
   can: (action: string) => boolean;
 };
 

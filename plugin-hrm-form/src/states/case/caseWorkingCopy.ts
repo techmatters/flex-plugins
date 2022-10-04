@@ -7,7 +7,7 @@ import { CaseState, CaseSummaryWorkingCopy } from './types';
 // Update a section of a case's working copy
 export const UPDATE_CASE_SECTION_WORKING_COPY = 'UPDATE_CASE_SECTION_WORKING_COPY';
 
-export type UpdateCaseSectionWorkingCopyAction = {
+type UpdateCaseSectionWorkingCopyAction = {
   type: typeof UPDATE_CASE_SECTION_WORKING_COPY;
   taskId: string;
   api: CaseSectionApi<unknown>;
@@ -51,7 +51,7 @@ export const updateCaseSectionWorkingCopyReducer = (
 // Initialise a new section of a case's working copy based on the saved data, or blank if adding a new section
 export const INIT_CASE_SECTION_WORKING_COPY = 'INIT_CASE_SECTION_WORKING_COPY';
 
-export type InitialiseCaseSectionWorkingCopyAction = {
+type InitialiseCaseSectionWorkingCopyAction = {
   type: typeof INIT_CASE_SECTION_WORKING_COPY;
   taskId: string;
   api: CaseSectionApi<unknown>;
@@ -90,7 +90,8 @@ export const initialiseCaseSectionWorkingCopyReducer = (
 
 // Remove a section's working copy
 export const REMOVE_CASE_SECTION_WORKING_COPY = 'REMOVE_CASE_SECTION_WORKING_COPY';
-export type RemoveCaseSectionWorkingCopyAction = {
+
+type RemoveCaseSectionWorkingCopyAction = {
   type: typeof REMOVE_CASE_SECTION_WORKING_COPY;
   taskId: string;
   api: CaseSectionApi<unknown>;
@@ -131,7 +132,7 @@ export const removeCaseSectionWorkingCopyReducer = (
 // Initialise a new section of a case's working copy based on the saved data, or blank if adding a new section
 export const INIT_CASE_SUMMARY_WORKING_COPY = 'INIT_CASE_SUMMARY_WORKING_COPY';
 
-export type InitialiseCaseSummaryWorkingCopyAction = {
+type InitialiseCaseSummaryWorkingCopyAction = {
   type: typeof INIT_CASE_SUMMARY_WORKING_COPY;
   taskId: string;
 };
@@ -171,7 +172,7 @@ export const initialiseCaseSummaryWorkingCopyReducer = (
 // Update a section of a case's working copy
 export const UPDATE_CASE_SUMMARY_WORKING_COPY = 'UPDATE_CASE_SUMMARY_WORKING_COPY';
 
-export type UpdateCaseSummaryWorkingCopyAction = {
+type UpdateCaseSummaryWorkingCopyAction = {
   type: typeof UPDATE_CASE_SUMMARY_WORKING_COPY;
   taskId: string;
   caseSummary: CaseSummaryWorkingCopy;
@@ -209,7 +210,7 @@ export const updateCaseSummaryWorkingCopyReducer = (
 // Remove the summary working copy
 export const REMOVE_CASE_SUMMARY_WORKING_COPY = 'REMOVE_CASE_SUMMARY_WORKING_COPY';
 
-export type RemoveCaseSummaryWorkingCopyAction = {
+type RemoveCaseSummaryWorkingCopyAction = {
   type: typeof REMOVE_CASE_SUMMARY_WORKING_COPY;
   taskId: string;
 };
