@@ -19,7 +19,7 @@ import {
 } from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
 import { connectedCaseBase, contactFormsBase, namespace, RootState, routingBase } from '../../states';
-import { Activity, CaseDetails, CaseDetailsName, CaseState, EditTemporaryCaseInfo } from '../../states/case/types';
+import { Activity, CaseDetails, CaseDetailsName, CaseState } from '../../states/case/types';
 import { CustomITask, EntryInfo, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
 import * as CaseActions from '../../states/case/actions';
@@ -73,8 +73,6 @@ const CaseHome: React.FC<Props> = ({
   if (!connectedCaseState || !routing || !isAppRouteWithCase(routing)) return null; // narrow type before deconstructing
 
   const { featureFlags } = getConfig();
-  const { connectedCase } = connectedCaseState;
-  const summary = connectedCase.info?.caseSummary || '';
   const { route } = routing;
 
   const onViewCaseItemClick = (targetSubroute: CaseSectionSubroute) => (id: string) => {
@@ -184,7 +182,10 @@ const CaseHome: React.FC<Props> = ({
   };
 
   const onEditCaseSummaryClick = () => {
-    changeRoute({ ...routing, subroute: NewCaseSubroutes.CaseSummary, action: CaseItemAction.Edit } as AppRoutes, task.taskSid);
+    changeRoute(
+      { ...routing, subroute: NewCaseSubroutes.CaseSummary, action: CaseItemAction.Edit } as AppRoutes,
+      task.taskSid,
+    );
   };
 
   return (
