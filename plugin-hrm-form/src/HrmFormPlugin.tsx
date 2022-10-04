@@ -218,7 +218,6 @@ const setUpActions = (setupObject: SetupObject) => {
   const afterWrapupAction = ActionFunctions.afterWrapupTask(setupObject);
   const afterCompleteAction = ActionFunctions.afterCompleteTask(setupObject);
 
-
   Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
 
   Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(setupObject));
@@ -235,7 +234,7 @@ const setUpActions = (setupObject: SetupObject) => {
   Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
 
   Flex.Actions.addListener('afterWrapupTask', afterWrapupAction);
-  
+
   Flex.Actions.addListener('afterCompleteTask', afterCompleteAction);
 };
 
