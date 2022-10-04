@@ -146,6 +146,7 @@ export const initialiseCaseSummaryWorkingCopyReducer = (
   action: InitialiseCaseSummaryWorkingCopyAction,
 ): CaseState => {
   const caseState = state.tasks[action.taskId];
+  if (!caseState) return state;
   const { childIsAtRisk, summary, followUpDate } = caseState.connectedCase.info;
   return {
     ...state,
@@ -188,19 +189,22 @@ export const updateCaseSummaryWorkingCopy = (
 export const updateCaseSummaryWorkingCopyReducer = (
   state: CaseState,
   action: UpdateCaseSummaryWorkingCopyAction,
-): CaseState => ({
-  ...state,
-  tasks: {
-    ...state.tasks,
-    [action.taskId]: {
-      ...state.tasks[action.taskId],
-      caseWorkingCopy: {
-        ...state.tasks[action.taskId].caseWorkingCopy,
-        caseSummary: action.caseSummary,
+): CaseState => {
+  if (!state.tasks[action.taskId]) return state;
+  return {
+    ...state,
+    tasks: {
+      ...state.tasks,
+      [action.taskId]: {
+        ...state.tasks[action.taskId],
+        caseWorkingCopy: {
+          ...state.tasks[action.taskId]?.caseWorkingCopy,
+          caseSummary: action.caseSummary,
+        },
       },
     },
-  },
-});
+  };
+};
 
 // Remove the summary working copy
 export const REMOVE_CASE_SUMMARY_WORKING_COPY = 'REMOVE_CASE_SUMMARY_WORKING_COPY';
@@ -219,6 +223,7 @@ export const removeCaseSummaryWorkingCopyReducer = (
   state: CaseState,
   action: RemoveCaseSummaryWorkingCopyAction,
 ): CaseState => {
+  if (!state.tasks[action.taskId]) return state;
   const { caseSummary, ...caseWorkingCopyWithoutSummary } = state.tasks[action.taskId]?.caseWorkingCopy ?? {
     sections: {},
   };

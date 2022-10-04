@@ -60,7 +60,6 @@ export type CaseInfo = {
   referrals?: ReferralEntry[];
   incidents?: IncidentEntry[];
   documents?: DocumentEntry[];
-  caseSummary?: string;
   followUpDate?: string;
   childIsAtRisk?: boolean;
 };

@@ -236,7 +236,7 @@ const Case: React.FC<Props> = ({
   const childIsAtRisk = Boolean(info && info.childIsAtRisk);
   const referrals = info?.referrals;
   const notes: NoteActivity[] = timeline.filter(x => isNoteActivity(x)) as NoteActivity[];
-  const summary = info?.caseSummary;
+  const summary = info?.summary;
   const definitionVersion = props.definitionVersions[version];
   const office = getHelplineData(connectedCase.helpline, definitionVersion.helplineInformation);
 
