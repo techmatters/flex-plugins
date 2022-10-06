@@ -13,7 +13,7 @@
     },
     {
         "name": "silent",
-        "label": "Silent",
+        "label": "No Response",
         "type": "button",
         "category": "non-data"
     },
