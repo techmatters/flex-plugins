@@ -1,8 +1,13 @@
 import { DefinitionVersionId, HelplineEntry } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
-import { CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../routing/types';
-import { CaseItemEntry } from '../../types/types';
+import { Case, CaseItemEntry } from '../../types/types';
+import { CaseItemAction, CaseSectionSubroute } from '../routing/types';
+import {
+  InitialiseCaseSectionWorkingCopyAction,
+  RemoveCaseSectionWorkingCopyAction,
+  UpdateCaseSectionWorkingCopyAction,
+} from './caseWorkingCopy';
 
 // Action types
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
@@ -10,7 +15,6 @@ export const REMOVE_CONNECTED_CASE = 'REMOVE_CONNECTED_CASE';
 export const UPDATE_CASE_INFO = 'UPDATE_CASE_INFO';
 export const UPDATE_TEMP_INFO = 'UPDATE_TEMP_INFO';
 export const UPDATE_CASE_STATUS = 'UPDATE_CASE_STATUS';
-export const MARK_CASE_AS_UPDATED = 'MARK_CASE_AS_UPDATED';
 export const UPDATE_CASE_CONTACT = 'UPDATE_CASE_CONTACT';
 
 export type EditTemporaryCaseInfo = {
@@ -20,28 +24,12 @@ export type EditTemporaryCaseInfo = {
   isEdited?: boolean;
 };
 
-export function isEditTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is EditTemporaryCaseInfo {
-  return tci && (<EditTemporaryCaseInfo>tci).action === CaseItemAction.Edit;
-}
-
-export type AddTemporaryCaseInfo = {
-  screen: CaseSectionSubroute;
-  action: CaseItemAction.Add;
-  info: t.CaseItemFormValues;
-  isEdited?: boolean;
-};
-
-export function isAddTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is AddTemporaryCaseInfo {
-  return tci && (<AddTemporaryCaseInfo>tci).action === CaseItemAction.Add;
-}
-
-export type TemporaryCaseInfo = AddTemporaryCaseInfo | EditTemporaryCaseInfo;
+export type TemporaryCaseInfo = EditTemporaryCaseInfo;
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;
   connectedCase: t.Case;
   taskId: string;
-  caseHasBeenEdited: Boolean;
 };
 
 type RemoveConnectedCaseAction = {
@@ -67,11 +55,6 @@ type UpdateCasesStatusAction = {
   taskId: string;
 };
 
-type MarkCaseAsUpdated = {
-  type: typeof MARK_CASE_AS_UPDATED;
-  taskId: string;
-};
-
 type UpdateCaseContactAction = {
   type: typeof UPDATE_CASE_CONTACT;
   taskId: string;
@@ -83,9 +66,11 @@ export type CaseActionType =
   | RemoveConnectedCaseAction
   | UpdateCaseInfoAction
   | TemporaryCaseInfoAction
+  | UpdateCaseSectionWorkingCopyAction
+  | InitialiseCaseSectionWorkingCopyAction
   | UpdateCasesStatusAction
-  | MarkCaseAsUpdated
-  | UpdateCaseContactAction;
+  | UpdateCaseContactAction
+  | RemoveCaseSectionWorkingCopyAction;
 
 export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
 
@@ -169,4 +154,23 @@ export const caseItemHistory = (info: CaseItemEntry, counselorsHash: Record<stri
   const updatingCounsellorName = info.updatedBy ? counselorsHash[info.updatedBy] || 'Unknown' : undefined;
   const updated = info.updatedAt ? new Date(info.updatedAt) : undefined;
   return { addingCounsellorName, added, updatingCounsellorName, updated };
+};
+export type CaseWorkingCopy = {
+  sections: {
+    [section: string]: {
+      new?: CaseItemEntry;
+      existing: { [id: string]: CaseItemEntry };
+    };
+  };
+  summary?: CaseItemEntry;
+};
+export type CaseState = {
+  tasks: {
+    [taskId: string]: {
+      connectedCase: Case;
+      temporaryCaseInfo?: TemporaryCaseInfo;
+      prevStatus: string; // the status as it comes from the DB (required as it may be locally updated in connectedCase)
+      caseWorkingCopy: CaseWorkingCopy;
+    };
+  };
 };

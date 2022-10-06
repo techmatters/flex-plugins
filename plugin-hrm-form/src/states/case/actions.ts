@@ -1,7 +1,6 @@
 import { Case, CaseInfo, SearchContact } from '../../types/types';
 import {
   CaseActionType,
-  MARK_CASE_AS_UPDATED,
   REMOVE_CONNECTED_CASE,
   SET_CONNECTED_CASE,
   TemporaryCaseInfo,
@@ -13,11 +12,10 @@ import {
 import { searchContactToHrmServiceContact } from '../contacts/contactDetailsAdapter';
 
 // Action creators
-export const setConnectedCase = (connectedCase: Case, taskId: string, caseHasBeenEdited: Boolean): CaseActionType => ({
+export const setConnectedCase = (connectedCase: Case, taskId: string): CaseActionType => ({
   type: SET_CONNECTED_CASE,
   connectedCase,
   taskId,
-  caseHasBeenEdited,
 });
 
 export const removeConnectedCase = (taskId: string): CaseActionType => ({
@@ -45,11 +43,6 @@ export const updateTempInfo = (value: TemporaryCaseInfo, taskId: string): CaseAc
 export const updateCaseStatus = (status: string, taskId: string): CaseActionType => ({
   type: UPDATE_CASE_STATUS,
   status,
-  taskId,
-});
-
-export const markCaseAsUpdated = (taskId: string): CaseActionType => ({
-  type: MARK_CASE_AS_UPDATED,
   taskId,
 });
 

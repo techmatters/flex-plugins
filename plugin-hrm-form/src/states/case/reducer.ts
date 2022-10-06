@@ -1,29 +1,24 @@
 import { omit } from 'lodash';
 
-import { Case } from '../../types/types';
 import {
   CaseActionType,
-  MARK_CASE_AS_UPDATED,
+  CaseState,
   REMOVE_CONNECTED_CASE,
   SET_CONNECTED_CASE,
-  TemporaryCaseInfo,
   UPDATE_CASE_CONTACT,
   UPDATE_CASE_INFO,
   UPDATE_CASE_STATUS,
   UPDATE_TEMP_INFO,
 } from './types';
 import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
-
-export type CaseState = {
-  tasks: {
-    [taskId: string]: {
-      connectedCase: Case;
-      temporaryCaseInfo?: TemporaryCaseInfo;
-      caseHasBeenEdited: Boolean;
-      prevStatus: string; // the status as it comes from the DB (required as it may be locally updated in connectedCase)
-    };
-  };
-};
+import {
+  INIT_CASE_SECTION_WORKING_COPY,
+  initialiseCaseSectionWorkingCopyReducer,
+  REMOVE_CASE_SECTION_WORKING_COPY,
+  removeCaseSectionWorkingCopyReducer,
+  UPDATE_CASE_SECTION_WORKING_COPY,
+  updateCaseSectionWorkingCopyReducer,
+} from './caseWorkingCopy';
 
 const initialState: CaseState = {
   tasks: {},
@@ -40,8 +35,8 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           [action.taskId]: {
             connectedCase: action.connectedCase,
             temporaryCaseInfo: null,
-            caseHasBeenEdited: action.caseHasBeenEdited,
             prevStatus: action.connectedCase.status,
+            caseWorkingCopy: { sections: {} },
           },
         },
       };
@@ -67,7 +62,6 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
             ...state.tasks[action.taskId],
             connectedCase: updatedCase,
             temporaryCaseInfo: null,
-            caseHasBeenEdited: true,
           },
         },
       };
@@ -83,6 +77,12 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           },
         },
       };
+    case UPDATE_CASE_SECTION_WORKING_COPY:
+      return updateCaseSectionWorkingCopyReducer(state, action);
+    case INIT_CASE_SECTION_WORKING_COPY:
+      return initialiseCaseSectionWorkingCopyReducer(state, action);
+    case REMOVE_CASE_SECTION_WORKING_COPY:
+      return removeCaseSectionWorkingCopyReducer(state, action);
     case UPDATE_CASE_STATUS:
       const { connectedCase } = state.tasks[action.taskId];
       const updatedCase = { ...connectedCase, status: action.status };
@@ -93,18 +93,6 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           [action.taskId]: {
             ...state.tasks[action.taskId],
             connectedCase: updatedCase,
-            caseHasBeenEdited: true,
-          },
-        },
-      };
-    case MARK_CASE_AS_UPDATED:
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...state.tasks[action.taskId],
-            caseHasBeenEdited: false,
           },
         },
       };

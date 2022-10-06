@@ -4,6 +4,9 @@ import { NoteEntry } from '../../../types/types';
 import { CaseSectionApi, CaseUpdater } from './api';
 import { upsertCaseSectionItem } from './update';
 import { getMostRecentSectionItem, getSectionItemById } from './get';
+import { getWorkingCopy, setWorkingCopy } from './workingCopy';
+
+const SECTION_PROPERTY = 'counsellorNotes';
 
 const noteSectionUpdater: CaseUpdater = upsertCaseSectionItem<NoteEntry>(
   ci => {
@@ -36,6 +39,8 @@ export const noteSectionApi: CaseSectionApi<NoteEntry> = {
   getSectionFormDefinition: (definitionVersions: DefinitionVersion) => definitionVersions.caseForms.NoteForm,
   getSectionLayoutDefinition: (definitionVersions: DefinitionVersion) =>
     definitionVersions.layoutVersion.case.notes ?? {},
-  getMostRecentSectionItem: getMostRecentSectionItem('counsellorNotes'),
-  getSectionItemById: getSectionItemById('counsellorNotes'),
+  getMostRecentSectionItem: getMostRecentSectionItem(SECTION_PROPERTY),
+  getSectionItemById: getSectionItemById(SECTION_PROPERTY),
+  getWorkingCopy: getWorkingCopy(SECTION_PROPERTY),
+  updateWorkingCopy: setWorkingCopy(SECTION_PROPERTY),
 };

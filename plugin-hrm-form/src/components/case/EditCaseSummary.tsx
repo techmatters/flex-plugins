@@ -22,7 +22,6 @@ import ActionHeader from './ActionHeader';
 import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
-import { CaseState } from '../../states/case/reducer';
 import { transformValues } from '../../services/ContactService';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
@@ -30,22 +29,14 @@ import { createFormFromDefinition, disperseInputs, splitAt } from '../common/for
 import type { CaseInfo, CustomITask, StandaloneITask } from '../../types/types';
 import useFocus from '../../utils/useFocus';
 import { recordingErrorHandler } from '../../fullStory';
-import {
-  EditTemporaryCaseInfo,
-  isEditTemporaryCaseInfo,
-  TemporaryCaseInfo,
-  temporaryCaseInfoHistory,
-} from '../../states/case/types';
+import { CaseState, TemporaryCaseInfo, temporaryCaseInfoHistory } from '../../states/case/types';
 import CloseCaseDialog from './CloseCaseDialog';
 import { upsertCaseSectionItemUsingSectionName } from '../../states/case/sections/update';
 
 type CaseItemPayload = { [key: string]: string | boolean };
 
-const getTemporaryFormContent = (temporaryCaseInfo: TemporaryCaseInfo): CaseItemPayload | null => {
-  if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
-    return temporaryCaseInfo.info.form;
-  }
-  return null;
+const getTemporaryFormContent = (temporaryCaseInfo: TemporaryCaseInfo): CaseItemPayload => {
+  return temporaryCaseInfo.info.form;
 };
 
 export type EditCaseSummaryProps = {
@@ -69,7 +60,6 @@ const EditCaseSummary: React.FC<Props> = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { temporaryCaseInfo } = connectedCaseState;
-  const editTemporaryCaseInfo = temporaryCaseInfo as EditTemporaryCaseInfo;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const firstElementRef = useFocus();
@@ -117,7 +107,7 @@ const EditCaseSummary: React.FC<Props> = ({
 
   // Grab initial values in first render only. If getTemporaryFormContent(temporaryCaseInfo), cherrypick the values using formDefinition, if not build the object with getInitialValue
   const [initialForm] = React.useState(() => {
-    const { caseStatus, caseSummary, date, inImminentPhysicalDanger } = editTemporaryCaseInfo.info.form;
+    const { caseStatus, caseSummary, date, inImminentPhysicalDanger } = temporaryCaseInfo.info.form;
     return {
       caseStatus,
       caseSummary,
@@ -136,12 +126,12 @@ const EditCaseSummary: React.FC<Props> = ({
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [l, r] = React.useMemo(() => {
-    const createUpdatedTemporaryFormContent = (payload: CaseItemPayload): EditTemporaryCaseInfo => {
+    const createUpdatedTemporaryFormContent = (payload: CaseItemPayload): TemporaryCaseInfo => {
       const isEdited = !isEqual(initialForm, payload);
 
       return {
-        ...editTemporaryCaseInfo,
-        info: { ...editTemporaryCaseInfo.info, form: payload },
+        ...temporaryCaseInfo,
+        info: { ...temporaryCaseInfo.info, form: payload },
         isEdited,
       };
     };
@@ -152,12 +142,11 @@ const EditCaseSummary: React.FC<Props> = ({
     };
     const generatedForm = createFormFromDefinition(formDefinition)([])(initialForm, firstElementRef)(updateCallBack);
     return splitAt(3)(disperseInputs(7)(generatedForm));
-  }, [formDefinition, initialForm, firstElementRef, editTemporaryCaseInfo, getValues, updateTempInfo, task.taskSid]);
+  }, [formDefinition, initialForm, firstElementRef, temporaryCaseInfo, getValues, updateTempInfo, task.taskSid]);
 
-  if (!isEditTemporaryCaseInfo(temporaryCaseInfo)) {
+  if (!Boolean(temporaryCaseInfo)) {
     return null;
   }
-
   const save = async () => {
     const { info, id } = connectedCaseState.connectedCase;
     let { status } = connectedCaseState.connectedCase;
@@ -183,7 +172,7 @@ const EditCaseSummary: React.FC<Props> = ({
       id: temporaryCaseInfo.info.id ?? uuidV4(),
     });
     const updatedCase = await updateCase(id, { status, info: newInfo });
-    setConnectedCase(updatedCase, task.taskSid, connectedCaseState.caseHasBeenEdited);
+    setConnectedCase(updatedCase, task.taskSid);
   };
 
   const close = () => {
@@ -202,9 +191,10 @@ const EditCaseSummary: React.FC<Props> = ({
     if (openDialog) setOpenDialog(false);
   });
 
-  const { added, addingCounsellorName, updated, updatingCounsellorName } = isEditTemporaryCaseInfo(temporaryCaseInfo)
-    ? temporaryCaseInfoHistory(temporaryCaseInfo, counselorsHash)
-    : { added: new Date(), addingCounsellorName: counselor, updated: undefined, updatingCounsellorName: undefined };
+  const { added, addingCounsellorName, updated, updatingCounsellorName } = temporaryCaseInfoHistory(
+    temporaryCaseInfo,
+    counselorsHash,
+  );
 
   const checkForEdits = () => {
     if (temporaryCaseInfo.isEdited) {

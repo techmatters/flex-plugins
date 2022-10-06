@@ -134,7 +134,7 @@ describe('View Contact', () => {
           tasks: {
             'task-id': {
               connectedCase: {},
-              caseHasBeenEdited: false,
+              timelineActivities: [],
             },
           },
         },
