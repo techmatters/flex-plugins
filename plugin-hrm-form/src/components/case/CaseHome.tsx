@@ -9,7 +9,7 @@ import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyl
 import CaseDetailsComponent from './CaseDetails';
 import Timeline from './Timeline';
 import CaseSection from './CaseSection';
-import { PermissionActions } from '../../permissions';
+import { PermissionActions, PermissionActionType } from '../../permissions';
 import {
   AppRoutes,
   CaseItemAction,
@@ -22,7 +22,6 @@ import { connectedCaseBase, contactFormsBase, namespace, RootState, routingBase 
 import { Activity, CaseDetails, CaseDetailsName, CaseState } from '../../states/case/types';
 import { CustomITask, EntryInfo, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
-import * as CaseActions from '../../states/case/actions';
 import { getConfig } from '../../HrmFormPlugin';
 import InformationRow from './InformationRow';
 import TimelineInformationRow from './TimelineInformationRow';
@@ -47,7 +46,7 @@ export type CaseHomeProps = {
   handleSaveAndEnd: () => void;
   handleCancelNewCaseAndClose: () => void;
   handleUpdate: () => void;
-  can: (action: string) => boolean;
+  can: (action: PermissionActionType) => boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -202,6 +201,7 @@ const CaseHome: React.FC<Props> = ({
             updatedAt={updatedAt}
             followUpDate={followUpDate}
             childIsAtRisk={childIsAtRisk}
+            availableStatusTransitions={connectedCaseState.availableStatusTransitions}
             office={office?.label}
             handlePrintCase={onPrintCase}
             definitionVersionName={version}
@@ -299,7 +299,6 @@ const mapStateToProps = (state: RootState, ownProps: CaseHomeProps) => {
 
 const mapDispatchToProps = {
   changeRoute: RoutingActions.changeRoute,
-  setConnectedCase: CaseActions.setConnectedCase,
 };
 const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(CaseHome);

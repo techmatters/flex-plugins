@@ -172,15 +172,16 @@ const Case: React.FC<Props> = ({
    * Check if the definitionVersion for this case exists in redux, and look for it if not.
    */
   useEffect(() => {
-    const fetchDefinitionVersions = async (v: string) => {
+    const fetchDefinitionVersions = async () => {
       const definitionVersion = await getDefinitionVersion(version);
-      updateDefinitionVersion(version, definitionVersion);
+      updateDefinitionVersion(connectedCase, version, definitionVersion);
+      setConnectedCase(connectedCase, task.taskSid);
     };
 
     if (version && !definitionVersions[version]) {
-      fetchDefinitionVersions(version);
+      fetchDefinitionVersions();
     }
-  }, [definitionVersions, updateDefinitionVersion, version]);
+  }, [connectedCase, definitionVersions, setConnectedCase, task.taskSid, updateDefinitionVersion, version]);
 
   if (routing.route === 'csam-report') return null;
 
@@ -373,6 +374,7 @@ const Case: React.FC<Props> = ({
             {...{
               ...addScreenProps,
               exitRoute: closeSubSectionRoute(),
+              can,
             }}
           />
         );
@@ -446,11 +448,15 @@ const mapDispatchToProps = dispatch => {
     );
     dispatch(ContactActions.releaseContacts(loadedContactIds, taskSid));
   };
+  const updateCaseDefinition = (connectedCase: CaseType, taskSid: string, definition) => {
+    dispatch(ConfigActions.updateDefinitionVersion(connectedCase.info.definitionVersion, definition));
+    dispatch(CaseActions.setConnectedCase(connectedCase, taskSid));
+  };
   return {
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
     removeConnectedCase: bindActionCreators(CaseActions.removeConnectedCase, dispatch),
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
-    updateDefinitionVersion: bindActionCreators(ConfigActions.updateDefinitionVersion, dispatch),
+    updateDefinitionVersion: updateCaseDefinition,
     releaseContacts: bindActionCreators(ContactActions.releaseContacts, dispatch),
     loadRawContacts: bindActionCreators(ContactActions.loadRawContacts, dispatch),
     loadContact: bindActionCreators(ContactActions.loadContact, dispatch),

@@ -142,9 +142,12 @@ const calculateOptionsTabIndexes = (currentValue: any[], options: InputOption[])
  * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type.
  * @param {FormItemDefinition} def Definition for a single input.
  */
-export const getInputType = (parents: string[], updateCallback: () => void, customHandlers?: CustomHandlers) => (
-  def: FormItemDefinition,
-) => (
+export const getInputType = (
+  parents: string[],
+  updateCallback: () => void,
+  customHandlers?: CustomHandlers,
+  isEnabled: boolean = true,
+) => (def: FormItemDefinition) => (
   initialValue: any, // TODO: restrict this type
   htmlElRef?: HTMLElementRef,
 ) => {
@@ -183,6 +186,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     register(rules)(innerRef);
                   }}
                   defaultValue={initialValue}
+                  disabled={!isEnabled}
                 />
                 {error && (
                   <FormError>
@@ -226,6 +230,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     })(innerRef);
                   }}
                   defaultValue={initialValue}
+                  disabled={!isEnabled}
                 />
                 {error && (
                   <FormError>
@@ -269,6 +274,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     })(innerRef);
                   }}
                   defaultValue={initialValue}
+                  disabled={!isEnabled}
                   type="email"
                 />
                 {error && (
@@ -296,7 +302,12 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
             const currentValue = watch(path);
 
             return (
-              <FormFieldset error={Boolean(error)} aria-invalid={Boolean(error)} aria-describedby={`${path}-error`}>
+              <FormFieldset
+                error={Boolean(error)}
+                aria-invalid={Boolean(error)}
+                aria-describedby={`${path}-error`}
+                disabled={!isEnabled}
+              >
                 {def.label && (
                   <Row>
                     <Box marginBottom="8px">
@@ -442,6 +453,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                                 register(rules)(innerRef);
                               }}
                               defaultChecked={initialValue.includes(value)}
+                              disabled={!isEnabled}
                             />
                           </Box>
                           <Template code={label} className=".fullstory-unmask" />
@@ -492,6 +504,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                       register(rules)(innerRef);
                     }}
                     defaultValue={initialValue}
+                    disabled={!isEnabled}
                   >
                     {def.options.map(createSelectOptions)}
                   </FormSelect>
@@ -566,7 +579,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
 
                       register({ validate })(innerRef);
                     }}
-                    disabled={disabled}
+                    disabled={!isEnabled || disabled}
                     defaultValue={initialValue}
                   >
                     {options.map(createSelectOptions)}
@@ -608,6 +621,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                         register(rules)(innerRef);
                       }}
                       defaultChecked={initialValue}
+                      disabled={!isEnabled}
                     />
                   </Box>
                   {labelTextComponent}
@@ -664,6 +678,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                           htmlElRef.current = innerRef;
                         }
                       }}
+                      disabled={!isEnabled}
                     />
                   </Box>
                   {labelTextComponent}
@@ -710,6 +725,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   rows={def.rows ? def.rows : 10}
                   width={def.width}
                   defaultValue={initialValue}
+                  disabled={!isEnabled}
                 />
                 {error && (
                   <FormError>
@@ -751,6 +767,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     register(rules)(innerRef);
                   }}
                   defaultValue={initialValue}
+                  disabled={!isEnabled}
                 />
                 {error && (
                   <FormError>
@@ -792,6 +809,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     register(rules)(innerRef);
                   }}
                   defaultValue={initialValue}
+                  disabled={!isEnabled}
                 />
                 {error && (
                   <FormError>
@@ -848,6 +866,7 @@ export type CustomHandlers = FileUploadCustomHandlers;
 export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (
   initialValues: any,
   firstElementRef: HTMLElementRef,
+  isEnabled: (item: FormItemDefinition) => boolean = () => true,
 ) => (updateCallback: () => void, customHandlers?: CustomHandlers): JSX.Element[] => {
   const bindGetInputType = getInputType(parents, updateCallback, customHandlers);
 
