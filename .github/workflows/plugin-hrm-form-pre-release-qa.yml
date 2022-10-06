@@ -52,7 +52,7 @@ jobs:
 
       # Run E2E tests against actual E2E Flex instance
       - name: Run Playwright tests
-        run: DEBUG=pw:api PLAYWRIGHT_BASEURL=${{secrets.PLAYWRIGHT_BASEURL_E2E}} PLAYWRIGHT_USER_USERNAME=${{secrets.PLAYWRIGHT_USER_USERNAME}} PLAYWRIGHT_USER_PASSWORD=${{secrets.PLAYWRIGHT_USER_PASSWORD}} TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npx playwright test
+        run: DEBUG=pw:api PLAYWRIGHT_BASEURL=${{secrets.PLAYWRIGHT_BASEURL_E2E}} PLAYWRIGHT_USER_USERNAME=${{secrets.PLAYWRIGHT_USER_USERNAME}} PLAYWRIGHT_USER_PASSWORD=${{secrets.PLAYWRIGHT_USER_PASSWORD}} TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npx playwright test --workers 1
         working-directory: ./e2e-tests
 
       # Upload artifacts
