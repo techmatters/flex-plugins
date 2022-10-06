@@ -109,7 +109,7 @@ const EditCaseSummary: React.FC<Props> = ({
     }
   }, [connectedCaseState.connectedCase.status, definitionVersion]);
 
-  const initialForm = React.useMemo(() => {
+  const savedForm = React.useMemo(() => {
     const {
       status,
       info: { summary, followUpDate, childIsAtRisk },
@@ -162,7 +162,7 @@ const EditCaseSummary: React.FC<Props> = ({
   const { added, addingCounsellorName, updated } = caseItemHistory(connectedCaseState.connectedCase, counselorsHash);
 
   const checkForEdits = () => {
-    if (isEqual(workingCopy, initialForm)) {
+    if (isEqual(workingCopy, savedForm)) {
       closeActions(exitRoute);
     } else setOpenDialog(true);
   };
