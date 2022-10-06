@@ -16,14 +16,21 @@ export const setWorkingCopy = (sectionName: string) => (
     caseWorkingCopy.sections[sectionName] = { existing: {} };
   }
   if (id) {
+    // Id specified so we are updating an existing section's working copy
     if (item) {
+      // Overwriting
       caseWorkingCopy.sections[sectionName].existing[id] = item;
     } else {
+      // Removing
       delete caseWorkingCopy.sections[sectionName].existing[id];
     }
-  } else if (item) {
+  }
+  // Id not specified so we are updating a 'new', as yet unsaved section's working copy
+  else if (item) {
+    // Overwriting
     caseWorkingCopy.sections[sectionName].new = item;
   } else {
+    // Removing
     delete caseWorkingCopy.sections[sectionName].new;
   }
   return caseWorkingCopy;
