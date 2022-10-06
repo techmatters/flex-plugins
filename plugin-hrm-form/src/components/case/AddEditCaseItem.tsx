@@ -102,7 +102,7 @@ const AddEditCaseItem: React.FC<Props> = ({
   const layout = sectionApi.getSectionLayoutDefinition(definitionVersion);
 
   // Grab initial values in first render only. If getTemporaryFormContent(temporaryCaseInfo), cherrypick the values using formDefinition, if not build the object with getInitialValue
-  const initialForm = React.useMemo(() => {
+  const savedForm = React.useMemo(() => {
     if (id && connectedCase) {
       const { form } = sectionApi.toForm(sectionApi.getSectionItemById(connectedCase.info, id));
       return formDefinition.reduce(
@@ -220,7 +220,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     : { added: new Date(), addingCounsellorName: counselor, updated: undefined, updatingCounsellorName: undefined };
 
   const checkForEdits = () => {
-    if (isEqual(workingCopy?.form, initialForm)) {
+    if (isEqual(workingCopy?.form, savedForm)) {
       close();
     } else setOpenDialog(true);
   };
