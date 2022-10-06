@@ -8,11 +8,10 @@ import { DefinitionVersion, isNonSaveable } from 'hrm-form-definitions';
 import { BottomButtonBar, Box, Container, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseLayout, FullWidthFormTextContainer } from '../../styles/case';
 import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
-import { CaseState } from '../../states/case/reducer';
 import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
-import { caseItemHistory } from '../../states/case/types';
+import { caseItemHistory, CaseState } from '../../states/case/types';
 import { ViewCaseSectionRoute, CaseItemAction } from '../../states/routing/types';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
@@ -43,7 +42,6 @@ const ViewCaseItem: React.FC<Props> = ({
   task,
   routing,
   counselorsHash,
-  updateTempInfo,
   changeRoute,
   exitItem,
   definitionVersion,
@@ -57,7 +55,6 @@ const ViewCaseItem: React.FC<Props> = ({
   const formDefinition = sectionApi.getSectionFormDefinition(definitionVersion).filter(fd => !isNonSaveable(fd));
 
   const onEditCaseItemClick = () => {
-    updateTempInfo({ screen: routing.subroute, action: CaseItemAction.Edit, info: item }, task.taskSid);
     changeRoute({ ...routing, action: CaseItemAction.Edit }, task.taskSid);
   };
 

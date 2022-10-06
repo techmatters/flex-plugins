@@ -4,6 +4,9 @@ import { ReferralEntry } from '../../../types/types';
 import { CaseSectionApi, CaseUpdater } from './api';
 import { upsertCaseSectionItem } from './update';
 import { getMostRecentSectionItem, getSectionItemById } from './get';
+import { getWorkingCopy, setWorkingCopy } from './workingCopy';
+
+const SECTION_PROPERTY = 'referrals';
 
 const referralSectionUpdater: CaseUpdater = upsertCaseSectionItem<ReferralEntry>(
   ci => {
@@ -38,6 +41,8 @@ export const referralSectionApi: CaseSectionApi<ReferralEntry> = {
   getSectionFormDefinition: (definitionVersions: DefinitionVersion) => definitionVersions.caseForms.ReferralForm,
   getSectionLayoutDefinition: (definitionVersions: DefinitionVersion) =>
     definitionVersions.layoutVersion.case.referrals,
-  getMostRecentSectionItem: getMostRecentSectionItem('referrals'),
-  getSectionItemById: getSectionItemById('referrals'),
+  getMostRecentSectionItem: getMostRecentSectionItem(SECTION_PROPERTY),
+  getSectionItemById: getSectionItemById(SECTION_PROPERTY),
+  getWorkingCopy: getWorkingCopy(SECTION_PROPERTY),
+  updateWorkingCopy: setWorkingCopy(SECTION_PROPERTY),
 };

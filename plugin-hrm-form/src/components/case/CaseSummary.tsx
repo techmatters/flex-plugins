@@ -7,9 +7,9 @@ import { connect } from 'react-redux';
 import { CaseDetailsBorder, CaseSectionFont, CaseSummaryTextArea } from '../../styles/case';
 import { namespace, connectedCaseBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
-import { CaseState } from '../../states/case/reducer';
 import { getConfig } from '../../HrmFormPlugin';
 import type { CustomITask, StandaloneITask } from '../../types/types';
+import { CaseState } from '../../states/case/types';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;

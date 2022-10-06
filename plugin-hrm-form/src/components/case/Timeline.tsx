@@ -57,12 +57,10 @@ const Timeline: React.FC<Props> = props => {
   };
 
   const handleAddNoteClick = () => {
-    updateTempInfo({ screen: NewCaseSubroutes.Note, action: CaseItemAction.Add, info: null }, taskSid);
     changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.Add }, taskSid);
   };
 
   const handleAddReferralClick = () => {
-    updateTempInfo({ screen: NewCaseSubroutes.Referral, action: CaseItemAction.Add, info: null }, taskSid);
     changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.Add }, taskSid);
   };
 
