@@ -2,16 +2,19 @@
   "open": { 
     "value": "open", 
     "label": "Open",
+    "color": "green",
     "transitions": ["closed", "passive"] 
   },
   "passive": { 
     "value": "passive", 
     "label": "Passive",
+    "color": "orange",
     "transitions": ["closed", "open"] 
   },
   "closed": { 
     "value": "closed", 
     "label": "Closed",
+    "color": "red",
     "transitions": ["open"] 
   }
 } 
