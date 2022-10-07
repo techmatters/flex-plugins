@@ -1,9 +1,19 @@
 /* eslint-disable camelcase */
 // eslint-disable-next-line no-unused-vars
-import { Manager, TaskHelper, Actions as FlexActions, StateHelper, ChatOrchestrator } from '@twilio/flex-ui';
+import {
+  Manager,
+  TaskHelper,
+  Actions as FlexActions,
+  StateHelper,
+  ChatOrchestrator,
+  ITask,
+  ActionFunction,
+} from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
 
 // eslint-disable-next-line no-unused-vars
+import { isArray } from 'lodash';
+
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
 import {
   transferChatStart,
@@ -23,10 +33,15 @@ import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';
 import { recordEvent } from '../fullStory';
+import { CustomITask } from '../types/types';
 
-/**
- * @param {string} version
- */
+type SetupObject = ReturnType<typeof getConfig> & {
+  translateUI: (language: string) => Promise<void>;
+  getMessage: (messageKey: string) => (language: string) => Promise<string>;
+};
+type ActionPayload = { task: ITask };
+type ActionPayloadWithOptions = ActionPayload & { options: { mode: string }; targetSid: string };
+
 export const loadCurrentDefinitionVersion = async () => {
   const { definitionVersion } = getConfig();
   const definitions = await getDefinitionVersion(definitionVersion);
@@ -40,49 +55,25 @@ export const loadCurrentDefinitionVersion = async () => {
  * Given a taskSid, retrieves the state of the form (stored in redux) for that task
  * @param {string} taskSid
  */
-const getStateContactForms = taskSid => {
+const getStateContactForms = (taskSid: string) => {
   return Manager.getInstance().store.getState()[namespace][contactFormsBase].tasks[taskSid];
-};
-
-/**
- * Given a taskSid, retrieves the state of the connected case (stored in redux) for that task
- * This does not include temporaryCaseInfo
- * @param {string} taskSid
- */
-const getStateCaseForms = taskSid => {
-  return (
-    (Manager.getInstance().store.getState()[namespace][connectedCaseBase] &&
-      Manager.getInstance().store.getState()[namespace][connectedCaseBase].tasks[taskSid] &&
-      Manager.getInstance().store.getState()[namespace][connectedCaseBase].tasks[taskSid].connectedCase) ||
-    {}
-  );
 };
 
 /**
  * @param {import('../types/types').CustomITask} task
  */
-export const shouldSendInsightsData = task => {
+export const shouldSendInsightsData = (task: ITask) => {
   const { featureFlags } = getConfig();
   const hasTaskControl = !featureFlags.enable_transfers || TransferHelpers.hasTaskControl(task);
 
   return hasTaskControl && featureFlags.enable_save_insights && !task.attributes?.skipInsights;
 };
 
-/**
- * Saves the end time of the conversation (used to save the duration of the conversation)
- * @type {import('@twilio/flex-ui').ActionFunction}
- */
-const saveEndMillis = async payload => {
+const saveEndMillis = async (payload: ActionPayload) => {
   Manager.getInstance().store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
 };
 
-/**
- * A function that calls fun with the payload of the replaced action
- * and continues with the Twilio execution
- * @param {import('@twilio/flex-ui').ActionFunction} fun
- * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
- */
-const fromActionFunction = fun => async (payload, original) => {
+const fromActionFunction = (fun: ActionFunction) => async (payload: ActionPayload, original: ActionFunction) => {
   await fun(payload);
   await original(payload);
 };
@@ -91,7 +82,7 @@ const fromActionFunction = fun => async (payload, original) => {
  * Initializes an empty form (in redux store) for the task within payload
  * @param {{ task: any }} payload
  */
-export const initializeContactForm = payload => {
+export const initializeContactForm = (payload: ActionPayload) => {
   const { currentDefinitionVersion } = Manager.getInstance().store.getState()[namespace][configurationBase];
 
   Manager.getInstance().store.dispatch(
@@ -99,11 +90,7 @@ export const initializeContactForm = payload => {
   );
 };
 
-/**
- * If the task within payload is a transferred one, load the form of the previous counselor (if possible)
- * @param {import('@twilio/flex-ui').ITask} task
- */
-const restoreFormIfTransfer = async task => {
+const restoreFormIfTransfer = async (task: ITask) => {
   const form = await loadFormSharedState(task);
   if (form) {
     Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, task.taskSid));
@@ -120,18 +107,11 @@ const restoreFormIfTransfer = async task => {
   }
 };
 
-/**
- * If the task is transferred, set the reservation sid who controls the task (according to transfer mode)
- * @param {import('@twilio/flex-ui').ITask} task
- */
-const takeControlIfTransfer = async task => {
+const takeControlIfTransfer = async (task: ITask) => {
   if (TransferHelpers.isColdTransfer(task)) await TransferHelpers.takeTaskControl(task);
 };
 
-/**
- * @param {import('@twilio/flex-ui').ITask} task
- */
-const handleTransferredTask = async task => {
+const handleTransferredTask = async (task: ITask) => {
   await takeControlIfTransfer(task);
   await restoreFormIfTransfer(task);
 };
@@ -156,14 +136,14 @@ const sendMessageOfKey = messageKey => setupObject => async payload => {
  * @param {string} messageKey
  * @returns {(setupObject: ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }) => import('@twilio/flex-ui').ActionFunction}
  */
-const sendSystemMessageOfKey = messageKey => setupObject => async payload => {
+const sendSystemMessageOfKey = (messageKey: string) => (setupObject: SetupObject) => async (payload: ActionPayload) => {
   const { getMessage } = setupObject;
   const taskLanguage = getTaskLanguage(setupObject)(payload);
   const message = await getMessage(messageKey)(taskLanguage);
   await sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
 };
 
-const sendSystemCustomGoodbyeMessage = customGoodbyeMessage => () => async payload => {
+const sendSystemCustomGoodbyeMessage = (customGoodbyeMessage: string) => () => async (payload: ActionPayload) => {
   const { taskSid } = payload.task;
   Manager.getInstance().store.dispatch(clearCustomGoodbyeMessage(taskSid));
   await sendSystemMessage({ taskSid, message: customGoodbyeMessage, from: 'Bot' });
@@ -181,12 +161,8 @@ const sendGoodbyeMessage = taskSid => {
     : sendSystemMessageOfKey('GoodbyeMsg');
 };
 
-/**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
- * @returns {import('@twilio/flex-ui').ActionFunction}
- */
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export const afterAcceptTask = setupObject => async payload => {
+export const afterAcceptTask = (setupObject: SetupObject) => async (payload: ActionPayload) => {
   const manager = Manager.getInstance();
   const { featureFlags } = setupObject;
   const { task } = payload;
@@ -213,12 +189,7 @@ export const afterAcceptTask = setupObject => async payload => {
   }
 };
 
-/**
- * Prevents wrong task states when transfer fails (e.g. transferring to an offline worker)
- * @param {() => Promise<void>} transferFunction
- * @param {import('@twilio/flex-ui').ITask} task
- */
-const safeTransfer = async (transferFunction, task) => {
+const safeTransfer = async (transferFunction: () => Promise<any>, task: ITask): Promise<void> => {
   try {
     await transferFunction();
   } catch (err) {
@@ -231,7 +202,10 @@ const safeTransfer = async (transferFunction, task) => {
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
  */
-export const customTransferTask = setupObject => async (payload, original) => {
+export const customTransferTask = (setupObject: SetupObject) => async (
+  payload: ActionPayloadWithOptions,
+  original: ActionFunction,
+) => {
   const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
 
   /*
@@ -270,7 +244,7 @@ export const customTransferTask = setupObject => async (payload, original) => {
   return safeTransfer(() => transferChatStart(body), payload.task);
 };
 
-export const afterCancelTransfer = payload => {
+export const afterCancelTransfer = (payload: ActionPayload) => {
   TransferHelpers.clearTransferMeta(payload.task);
 };
 
@@ -280,7 +254,7 @@ export const hangupCall = fromActionFunction(saveEndMillis);
  * Override for WrapupTask action. Sends a message before leaving (if it should) and saves the end time of the conversation
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
-export const wrapupTask = setupObject =>
+export const wrapupTask = (setupObject: SetupObject) =>
   fromActionFunction(async payload => {
     if (TaskHelper.isChatBasedTask(payload.task)) {
       await sendGoodbyeMessage(payload.task.taskSid)(setupObject)(payload);
@@ -292,62 +266,44 @@ export const wrapupTask = setupObject =>
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  * @returns {import('@twilio/flex-ui').ActionFunction}
  */
-const decreaseChatCapacity = setupObject => async payload => {
+const decreaseChatCapacity = (setupObject: SetupObject) => async (payload: ActionPayload): Promise<void> => {
   const { featureFlags } = setupObject;
   const { task } = payload;
   if (featureFlags.enable_manual_pulling && task.taskChannelUniqueName === 'chat') await adjustChatCapacity('decrease');
 };
 
-/**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
- * @returns {import('@twilio/flex-ui').ActionFunction}
- */
-export const beforeCompleteTask = setupObject => async payload => {
+export const beforeCompleteTask = (setupObject: SetupObject) => async (payload: ActionPayload): Promise<void> => {
   await decreaseChatCapacity(setupObject)(payload);
 };
 
-/**
- * Removes the form state from the redux store. Used after a task is completed
- * @param {{ task: any }} payload
- */
-const removeContactForm = payload => {
-  const manager = Manager.getInstance();
-  manager.store.dispatch(GeneralActions.removeContactState(payload.task.taskSid));
-};
-
-/**
- *
- * @param {import('../types/types').CustomITask} task
- */
-const isAseloCustomChannelTask = task => Object.values(customChannelTypes).includes(task.channelType);
+const isAseloCustomChannelTask = (task: CustomITask) =>
+  (<string[]>Object.values(customChannelTypes)).includes(task.channelType);
 
 /**
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
-export const setUpPostSurvey = setupObject => {
+export const setUpPostSurvey = (setupObject: SetupObject) => {
   const { featureFlags } = setupObject;
   if (featureFlags.enable_post_survey) {
     const maybeExcludeDeactivateChatChannel = event => {
       const defaultOrchestrations = ChatOrchestrator.getOrchestrations(event);
-      const excludeDeactivateChatChannel = defaultOrchestrations.filter(e => e !== 'DeactivateChatChannel');
+      if (isArray(defaultOrchestrations)) {
+        const excludeDeactivateChatChannel = defaultOrchestrations.filter(e => e !== 'DeactivateChatChannel');
 
-      ChatOrchestrator.setOrchestrations(
-        event,
-        // Instead than setting the orchestrations as a list of actions (ChatOrchestration[]), we can set it to a callback with type (task: ITask) => ChatOrchestration[]
-        task => (isAseloCustomChannelTask(task) ? defaultOrchestrations : excludeDeactivateChatChannel),
-      );
+        ChatOrchestrator.setOrchestrations(
+          event,
+          // Instead than setting the orchestrations as a list of actions (ChatOrchestration[]), we can set it to a callback with type (task: ITask) => ChatOrchestration[]
+          task => (isAseloCustomChannelTask(task) ? defaultOrchestrations : excludeDeactivateChatChannel),
+        );
+      }
+
+      maybeExcludeDeactivateChatChannel('wrapup');
+      maybeExcludeDeactivateChatChannel('completed');
     };
-
-    maybeExcludeDeactivateChatChannel('wrapup');
-    maybeExcludeDeactivateChatChannel('completed');
   }
 };
 
-/**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
- * @param {{ task: import('@twilio/flex-ui').ITask }} payload
- */
-const triggerPostSurvey = async (setupObject, payload) => {
+const triggerPostSurvey = async (setupObject: SetupObject, payload: ActionPayload): Promise<void> => {
   const { task } = payload;
 
   const shouldTriggerPostSurvey =
@@ -364,19 +320,12 @@ const triggerPostSurvey = async (setupObject, payload) => {
   }
 };
 
-/**
- * @param {ReturnType<typeof getConfig>
- * @returns {import('@twilio/flex-ui').ActionFunction}
- */
-export const afterCompleteTask = async payload => {
-  removeContactForm(payload);
+export const afterCompleteTask = (payload: ActionPayload): void => {
+  const manager = Manager.getInstance();
+  manager.store.dispatch(GeneralActions.removeContactState(payload.task.taskSid));
 };
 
-/**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
- * @returns {import('@twilio/flex-ui').ActionFunction}
- */
-export const afterWrapupTask = setupObject => async payload => {
+export const afterWrapupTask = (setupObject: SetupObject) => async (payload: ActionPayload): Promise<void> => {
   const { featureFlags } = setupObject;
 
   if (featureFlags.enable_post_survey) {

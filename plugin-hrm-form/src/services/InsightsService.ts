@@ -19,6 +19,7 @@ import { Case, CustomITask } from '../types/types';
 import { formatCategories } from '../utils/formatters';
 import { getDefinitionVersions } from '../HrmFormPlugin';
 import { shouldSendInsightsData } from '../utils/setUpActions';
+import { ITask } from '@twilio/flex-ui';
 
 /*
  * 'Any' is the best we can do, since we're limited by Twilio here.
@@ -382,7 +383,7 @@ const getInsightsUpdateFunctionsForConfig = (
 export const buildInsightsData = (task: CustomITask, contactForm: TaskEntry, caseForm: Case) => {
   const previousAttributes = task.attributes;
 
-  if (!shouldSendInsightsData(task)) return previousAttributes;
+  if (!shouldSendInsightsData(task as ITask)) return previousAttributes;
 
   const { currentDefinitionVersion } = getDefinitionVersions();
 
