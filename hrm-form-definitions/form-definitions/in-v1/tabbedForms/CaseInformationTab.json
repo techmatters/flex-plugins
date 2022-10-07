@@ -85,7 +85,14 @@
   {
     "name": "okForCaseWorkerToCall",
     "label": "Ok for case worker to call?",
-    "type": "mixed-checkbox"
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Yes", "label": "Yes" },
+      { "value": "No", "label": "No" },
+      { "value": "Unknown", "label": "Unknown" }
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "didTheChildFeelWeSolvedTheirProblem",
