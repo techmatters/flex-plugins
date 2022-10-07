@@ -10,8 +10,6 @@ import {
   ActionFunction,
 } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
-// eslint-disable-next-line no-unused-vars
-import { isArray } from 'lodash';
 
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
 import {
@@ -286,7 +284,7 @@ export const setUpPostSurvey = (setupObject: SetupObject) => {
   if (featureFlags.enable_post_survey) {
     const maybeExcludeDeactivateChatChannel = event => {
       const defaultOrchestrations = ChatOrchestrator.getOrchestrations(event);
-      if (isArray(defaultOrchestrations)) {
+      if (Array.isArray(defaultOrchestrations)) {
         const excludeDeactivateChatChannel = defaultOrchestrations.filter(e => e !== 'DeactivateChatChannel');
 
         ChatOrchestrator.setOrchestrations(
