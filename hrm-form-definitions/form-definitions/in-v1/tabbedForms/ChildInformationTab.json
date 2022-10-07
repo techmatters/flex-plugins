@@ -974,18 +974,6 @@
     "type": "input"
   },
   {
-    "name": "canContact",
-    "label": "Can the child be contacted for further information?",
-    "type": "select",
-    "options": [
-      { "value": "", "label": "" },
-      { "value": "Yes", "label": "Yes" },
-      { "value": "No", "label": "No" },
-      { "value": "Unknown", "label": "Unknown" }
-    ],
-    "required": { "value": true, "message": "RequiredFieldError" }
-  },
-  {
     "name": "preferredTime",
     "label": "Preferred Time of Contact",
     "type": "input"
