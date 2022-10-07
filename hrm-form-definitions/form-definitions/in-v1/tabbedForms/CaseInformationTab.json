@@ -44,7 +44,8 @@
         "value": "ReferralsToGrievanceOfficers",
         "label": "Referrals to Grievance Officers"
       }
-    ]
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "OtherAction",
