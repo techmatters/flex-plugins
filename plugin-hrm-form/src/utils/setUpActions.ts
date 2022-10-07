@@ -10,7 +10,6 @@ import {
   ActionFunction,
 } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
-
 // eslint-disable-next-line no-unused-vars
 import { isArray } from 'lodash';
 

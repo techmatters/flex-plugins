@@ -10,6 +10,7 @@ import {
   OneToManyConfigSpec,
   OneToManyConfigSpecs,
 } from 'hrm-form-definitions';
+import { ITask } from '@twilio/flex-ui';
 
 import { isNonDataCallType } from '../states/ValidationRules';
 import { mapChannelForInsights } from '../utils/mappers';
@@ -19,7 +20,6 @@ import { Case, CustomITask } from '../types/types';
 import { formatCategories } from '../utils/formatters';
 import { getDefinitionVersions } from '../HrmFormPlugin';
 import { shouldSendInsightsData } from '../utils/setUpActions';
-import { ITask } from '@twilio/flex-ui';
 
 /*
  * 'Any' is the best we can do, since we're limited by Twilio here.
