@@ -113,6 +113,7 @@
           { "value":  "Rajasthan", "label":  "Rajasthan" },
           { "value":  "Sikkim", "label":  "Sikkim" },
           { "value":  "Tamil Nadu", "label":  "Tamil Nadu" },
+          { "value":  "Telangana", "label":  "Telangana" },
           { "value":  "Tripura", "label":  "Tripura" },
           { "value":  "Uttar Pradesh", "label":  "Uttar Pradesh" },
           { "value":  "Uttaranchal", "label":  "Uttaranchal" },
@@ -964,7 +965,8 @@
   {
     "name": "phone1",
     "label": "Phone #1",
-    "type": "input"
+    "type": "input",
+    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "phone2",
@@ -1105,6 +1107,28 @@
       { "value": "Unknown", "label": "Unknown" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
+    "name": "knownPerpetrator",
+    "label": "Does the child know the perpetrator?",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Yes", "label": "Yes" },
+      { "value": "No", "label": "No" },
+      { "value": "Unknown", "label": "Unknown" }
+    ]
+  },
+  {
+    "name": "knownIssue",
+    "label": "Does the parent/trusted adult know about the issue?",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Yes", "label": "Yes" },
+      { "value": "No", "label": "No" },
+      { "value": "Unknown", "label": "Unknown" }
+    ]
   },
   {
     "name": "inConflictWithTheLaw",
