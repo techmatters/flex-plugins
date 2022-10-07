@@ -142,14 +142,12 @@ const calculateOptionsTabIndexes = (currentValue: any[], options: InputOption[])
  * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type.
  * @param {FormItemDefinition} def Definition for a single input.
  */
-export const getInputType = (
-  parents: string[],
-  updateCallback: () => void,
-  customHandlers?: CustomHandlers,
-  isEnabled: boolean = true,
-) => (def: FormItemDefinition) => (
+export const getInputType = (parents: string[], updateCallback: () => void, customHandlers?: CustomHandlers) => (
+  def: FormItemDefinition,
+) => (
   initialValue: any, // TODO: restrict this type
   htmlElRef?: HTMLElementRef,
+  isEnabled: boolean = true,
 ) => {
   const rules = getRules(def);
   const path = [...parents, def.name].join('.');
@@ -874,7 +872,7 @@ export const createFormFromDefinition = (definition: FormDefinition) => (parents
     const elementRef = index === 0 ? firstElementRef : null;
     const maybeValue = get(initialValues, e.name);
     const initialValue = maybeValue === undefined ? getInitialValue(e) : maybeValue;
-    return bindGetInputType(e)(initialValue, elementRef);
+    return bindGetInputType(e)(initialValue, elementRef, isEnabled(e));
   });
 };
 
