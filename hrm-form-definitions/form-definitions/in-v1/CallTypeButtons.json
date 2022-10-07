@@ -48,6 +48,18 @@
         "category": "non-data"
     },
     {
+        "name": "inquiry",
+        "label": "Inquiry",
+        "type": "button",
+        "category": "non-data"
+    },
+    {
+        "name": "irrelevant",
+        "label": "Irrelevant",
+        "type": "button",
+        "category": "non-data"
+    },
+    {
         "name": "abusive",
         "label": "Abusive",
         "type": "button",
