@@ -17,10 +17,17 @@
         "label": "Facilitator"
       }
     ],
-      "required": {
+    "required": {
       "value": true,
       "message": "RequiredFieldError"
     }
+  },
+  {
+    "name": "copyToHousehold",
+    "label": "This perpetrator is also a household member",
+    "type": "copy-to",
+    "target": "households",
+    "saveable": false
   },
   {
     "name": "firstName",
@@ -96,334 +103,334 @@
     "label": "Province",
     "type": "select",
     "options": [
-       {
-          "value":"Abra",
-          "label":"Abra"
-       },
-       {
-          "value":"Agusan Del Norte",
-          "label":"Agusan Del Norte"
-       },
-       {
-          "value":"Agusan Del Sur",
-          "label":"Agusan Del Sur"
-       },
-       {
-          "value":"Aklan",
-          "label":"Aklan"
-       },
-       {
-          "value":"Albay",
-          "label":"Albay"
-       },
-       {
-          "value":"Antique",
-          "label":"Antique"
-       },
-       {
-          "value":"Apayao",
-          "label":"Apayao"
-       },
-       {
-          "value":"Aurora",
-          "label":"Aurora"
-       },
-       {
-          "value":"Basilan",
-          "label":"Basilan"
-       },
-       {
-          "value":"Bataan",
-          "label":"Bataan"
-       },
-       {
-          "value":"Batanes",
-          "label":"Batanes"
-       },
-       {
-          "value":"Batangas",
-          "label":"Batangas"
-       },
-       {
-          "value":"Benguet",
-          "label":"Benguet"
-       },
-       {
-          "value":"Biliran",
-          "label":"Biliran"
-       },
-       {
-          "value":"Bohol",
-          "label":"Bohol"
-       },
-       {
-          "value":"Bukidnon",
-          "label":"Bukidnon"
-       },
-       {
-          "value":"Bulacan",
-          "label":"Bulacan"
-       },
-       {
-          "value":"Cagayan",
-          "label":"Cagayan"
-       },
-       {
-          "value":"Camarines Norte",
-          "label":"Camarines Norte"
-       },
-       {
-          "value":"Camarines Sur",
-          "label":"Camarines Sur"
-       },
-       {
-          "value":"Camiguin",
-          "label":"Camiguin"
-       },
-       {
-          "value":"Capiz",
-          "label":"Capiz"
-       },
-       {
-          "value":"Catanduanes",
-          "label":"Catanduanes"
-       },
-       {
-          "value":"Cavite",
-          "label":"Cavite"
-       },
-       {
-          "value":"Cebu",
-          "label":"Cebu"
-       },
-       {
-          "value":"Compostella Valley",
-          "label":"Compostella Valley"
-       },
-       {
-          "value":"Cotabato",
-          "label":"Cotabato"
-       },
-       {
-          "value":"Davao Del Norte",
-          "label":"Davao Del Norte"
-       },
-       {
-          "value":"Davao Del Sur",
-          "label":"Davao Del Sur"
-       },
-       {
-          "value":"Davao Occidental",
-          "label":"Davao Occidental"
-       },
-       {
-          "value":"Davao Oriental",
-          "label":"Davao Oriental"
-       },
-       {
-          "value":"Dinagat Islands",
-          "label":"Dinagat Islands"
-       },
-       {
-          "value":"Eastern Samar",
-          "label":"Eastern Samar"
-       },
-       {
-          "value":"Guimaras",
-          "label":"Guimaras"
-       },
-       {
-          "value":"Ifugao",
-          "label":"Ifugao"
-       },
-       {
-          "value":"Ilocos Norte",
-          "label":"Ilocos Norte"
-       },
-       {
-          "value":"Ilocos Sur",
-          "label":"Ilocos Sur"
-       },
-       {
-          "value":"Iloilo",
-          "label":"Iloilo"
-       },
-       {
-          "value":"Isabela",
-          "label":"Isabela"
-       },
-       {
-          "value":"Kalinga",
-          "label":"Kalinga"
-       },
-       {
-          "value":"La Union",
-          "label":"La Union"
-       },
-       {
-          "value":"Laguna",
-          "label":"Laguna"
-       },
-       {
-          "value":"Lanao Del Norte",
-          "label":"Lanao Del Norte"
-       },
-       {
-          "value":"Lanao Del Sur",
-          "label":"Lanao Del Sur"
-       },
-       {
-          "value":"Leyte",
-          "label":"Leyte"
-       },
-       {
-          "value":"Maguindanao",
-          "label":"Maguindanao"
-       },
-       {
-          "value":"Marinduque",
-          "label":"Marinduque"
-       },
-       {
-          "value":"Masbate",
-          "label":"Masbate"
-       },
-       {
-          "value":"Misamis Occidental",
-          "label":"Misamis Occidental"
-       },
-       {
-          "value":"Misamis Oriental",
-          "label":"Misamis Oriental"
-       },
-       {
-          "value":"Mountain Province",
-          "label":"Mountain Province"
-       },
-       {
-          "value":"Negros Occidental",
-          "label":"Negros Occidental"
-       },
-       {
-          "value":"Negros Oriental",
-          "label":"Negros Oriental"
-       },
-       {
-          "value":"Northern Samar",
-          "label":"Northern Samar"
-       },
-       {
-          "value":"Nueva Ecija",
-          "label":"Nueva Ecija"
-       },
-       {
-          "value":"Nueva Vizcaya",
-          "label":"Nueva Vizcaya"
-       },
-       {
-          "value":"Occidental Mindoro",
-          "label":"Occidental Mindoro"
-       },
-       {
-          "value":"Oriental Mindoro",
-          "label":"Oriental Mindoro"
-       },
-       {
-          "value":"Palawan",
-          "label":"Palawan"
-       },
-       {
-          "value":"Pampanga",
-          "label":"Pampanga"
-       },
-       {
-          "value":"Pangasinan",
-          "label":"Pangasinan"
-       },
-       {
-          "value":"Quezon",
-          "label":"Quezon"
-       },
-       {
-          "value":"Quirino",
-          "label":"Quirino"
-       },
-       {
-          "value":"Rizal",
-          "label":"Rizal"
-       },
-       {
-          "value":"Romblon",
-          "label":"Romblon"
-       },
-       {
-          "value":"Samar",
-          "label":"Samar"
-       },
-       {
-          "value":"Sarangani",
-          "label":"Sarangani"
-       },
-       {
-          "value":"Siquijor",
-          "label":"Siquijor"
-       },
-       {
-          "value":"Sorsogon",
-          "label":"Sorsogon"
-       },
-       {
-          "value":"South Cotabato",
-          "label":"South Cotabato"
-       },
-       {
-          "value":"Southern Leyte",
-          "label":"Southern Leyte"
-       },
-       {
-          "value":"Sultan Kudarat",
-          "label":"Sultan Kudarat"
-       },
-       {
-          "value":"Sulu",
-          "label":"Sulu"
-       },
-       {
-          "value":"Surigao Del Norte",
-          "label":"Surigao Del Norte"
-       },
-       {
-          "value":"Surigao Del Sur",
-          "label":"Surigao Del Sur"
-       },
-       {
-          "value":"Tarlac",
-          "label":"Tarlac"
-       },
-       {
-          "value":"Tawi-Tawi",
-          "label":"Tawi-Tawi"
-       },
-       {
-          "value":"Zambales",
-          "label":"Zambales"
-       },
-       {
-          "value":"Zamboanga Del Norte",
-          "label":"Zamboanga Del Norte"
-       },
-       {
-          "value":"Zamboanga Del Sur",
-          "label":"Zamboanga Del Sur"
-       },
-       {
-          "value":"Zamboanga Sibugay",
-          "label":"Zamboanga Sibugay"
-       },
-       {
-          "value": "Unknown",
-          "label": "Unknown"
-       }
+      {
+        "value": "Abra",
+        "label": "Abra"
+      },
+      {
+        "value": "Agusan Del Norte",
+        "label": "Agusan Del Norte"
+      },
+      {
+        "value": "Agusan Del Sur",
+        "label": "Agusan Del Sur"
+      },
+      {
+        "value": "Aklan",
+        "label": "Aklan"
+      },
+      {
+        "value": "Albay",
+        "label": "Albay"
+      },
+      {
+        "value": "Antique",
+        "label": "Antique"
+      },
+      {
+        "value": "Apayao",
+        "label": "Apayao"
+      },
+      {
+        "value": "Aurora",
+        "label": "Aurora"
+      },
+      {
+        "value": "Basilan",
+        "label": "Basilan"
+      },
+      {
+        "value": "Bataan",
+        "label": "Bataan"
+      },
+      {
+        "value": "Batanes",
+        "label": "Batanes"
+      },
+      {
+        "value": "Batangas",
+        "label": "Batangas"
+      },
+      {
+        "value": "Benguet",
+        "label": "Benguet"
+      },
+      {
+        "value": "Biliran",
+        "label": "Biliran"
+      },
+      {
+        "value": "Bohol",
+        "label": "Bohol"
+      },
+      {
+        "value": "Bukidnon",
+        "label": "Bukidnon"
+      },
+      {
+        "value": "Bulacan",
+        "label": "Bulacan"
+      },
+      {
+        "value": "Cagayan",
+        "label": "Cagayan"
+      },
+      {
+        "value": "Camarines Norte",
+        "label": "Camarines Norte"
+      },
+      {
+        "value": "Camarines Sur",
+        "label": "Camarines Sur"
+      },
+      {
+        "value": "Camiguin",
+        "label": "Camiguin"
+      },
+      {
+        "value": "Capiz",
+        "label": "Capiz"
+      },
+      {
+        "value": "Catanduanes",
+        "label": "Catanduanes"
+      },
+      {
+        "value": "Cavite",
+        "label": "Cavite"
+      },
+      {
+        "value": "Cebu",
+        "label": "Cebu"
+      },
+      {
+        "value": "Compostella Valley",
+        "label": "Compostella Valley"
+      },
+      {
+        "value": "Cotabato",
+        "label": "Cotabato"
+      },
+      {
+        "value": "Davao Del Norte",
+        "label": "Davao Del Norte"
+      },
+      {
+        "value": "Davao Del Sur",
+        "label": "Davao Del Sur"
+      },
+      {
+        "value": "Davao Occidental",
+        "label": "Davao Occidental"
+      },
+      {
+        "value": "Davao Oriental",
+        "label": "Davao Oriental"
+      },
+      {
+        "value": "Dinagat Islands",
+        "label": "Dinagat Islands"
+      },
+      {
+        "value": "Eastern Samar",
+        "label": "Eastern Samar"
+      },
+      {
+        "value": "Guimaras",
+        "label": "Guimaras"
+      },
+      {
+        "value": "Ifugao",
+        "label": "Ifugao"
+      },
+      {
+        "value": "Ilocos Norte",
+        "label": "Ilocos Norte"
+      },
+      {
+        "value": "Ilocos Sur",
+        "label": "Ilocos Sur"
+      },
+      {
+        "value": "Iloilo",
+        "label": "Iloilo"
+      },
+      {
+        "value": "Isabela",
+        "label": "Isabela"
+      },
+      {
+        "value": "Kalinga",
+        "label": "Kalinga"
+      },
+      {
+        "value": "La Union",
+        "label": "La Union"
+      },
+      {
+        "value": "Laguna",
+        "label": "Laguna"
+      },
+      {
+        "value": "Lanao Del Norte",
+        "label": "Lanao Del Norte"
+      },
+      {
+        "value": "Lanao Del Sur",
+        "label": "Lanao Del Sur"
+      },
+      {
+        "value": "Leyte",
+        "label": "Leyte"
+      },
+      {
+        "value": "Maguindanao",
+        "label": "Maguindanao"
+      },
+      {
+        "value": "Marinduque",
+        "label": "Marinduque"
+      },
+      {
+        "value": "Masbate",
+        "label": "Masbate"
+      },
+      {
+        "value": "Misamis Occidental",
+        "label": "Misamis Occidental"
+      },
+      {
+        "value": "Misamis Oriental",
+        "label": "Misamis Oriental"
+      },
+      {
+        "value": "Mountain Province",
+        "label": "Mountain Province"
+      },
+      {
+        "value": "Negros Occidental",
+        "label": "Negros Occidental"
+      },
+      {
+        "value": "Negros Oriental",
+        "label": "Negros Oriental"
+      },
+      {
+        "value": "Northern Samar",
+        "label": "Northern Samar"
+      },
+      {
+        "value": "Nueva Ecija",
+        "label": "Nueva Ecija"
+      },
+      {
+        "value": "Nueva Vizcaya",
+        "label": "Nueva Vizcaya"
+      },
+      {
+        "value": "Occidental Mindoro",
+        "label": "Occidental Mindoro"
+      },
+      {
+        "value": "Oriental Mindoro",
+        "label": "Oriental Mindoro"
+      },
+      {
+        "value": "Palawan",
+        "label": "Palawan"
+      },
+      {
+        "value": "Pampanga",
+        "label": "Pampanga"
+      },
+      {
+        "value": "Pangasinan",
+        "label": "Pangasinan"
+      },
+      {
+        "value": "Quezon",
+        "label": "Quezon"
+      },
+      {
+        "value": "Quirino",
+        "label": "Quirino"
+      },
+      {
+        "value": "Rizal",
+        "label": "Rizal"
+      },
+      {
+        "value": "Romblon",
+        "label": "Romblon"
+      },
+      {
+        "value": "Samar",
+        "label": "Samar"
+      },
+      {
+        "value": "Sarangani",
+        "label": "Sarangani"
+      },
+      {
+        "value": "Siquijor",
+        "label": "Siquijor"
+      },
+      {
+        "value": "Sorsogon",
+        "label": "Sorsogon"
+      },
+      {
+        "value": "South Cotabato",
+        "label": "South Cotabato"
+      },
+      {
+        "value": "Southern Leyte",
+        "label": "Southern Leyte"
+      },
+      {
+        "value": "Sultan Kudarat",
+        "label": "Sultan Kudarat"
+      },
+      {
+        "value": "Sulu",
+        "label": "Sulu"
+      },
+      {
+        "value": "Surigao Del Norte",
+        "label": "Surigao Del Norte"
+      },
+      {
+        "value": "Surigao Del Sur",
+        "label": "Surigao Del Sur"
+      },
+      {
+        "value": "Tarlac",
+        "label": "Tarlac"
+      },
+      {
+        "value": "Tawi-Tawi",
+        "label": "Tawi-Tawi"
+      },
+      {
+        "value": "Zambales",
+        "label": "Zambales"
+      },
+      {
+        "value": "Zamboanga Del Norte",
+        "label": "Zamboanga Del Norte"
+      },
+      {
+        "value": "Zamboanga Del Sur",
+        "label": "Zamboanga Del Sur"
+      },
+      {
+        "value": "Zamboanga Sibugay",
+        "label": "Zamboanga Sibugay"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
     ]
   },
   {
@@ -435,6 +442,14 @@
     "name": "barangay",
     "label": "Barangay",
     "type": "input"
+  },
+  {
+    "name": "Notes",
+    "label": "Notes/Remarks",
+    "type": "textarea",
+    "placeholder": "Type here to add note...",
+    "rows": 10,
+    "width": 500
   },
   {
     "name": "gender",
@@ -757,20 +772,5 @@
     "name": "passportNo",
     "label": "Passport No.",
     "type": "input"
-  },
-  {
-    "name": "Notes",
-    "label": "Notes/Remarks",
-    "type": "textarea",
-    "placeholder": "Type here to add note...",
-    "rows": 10,
-    "width": 500
-  },
-  {
-    "name": "copyToHousehold",
-    "label": "This perpetrator is also a household member",
-    "type": "copy-to",
-    "target": "households",
-    "saveable": false
   }
 ]
