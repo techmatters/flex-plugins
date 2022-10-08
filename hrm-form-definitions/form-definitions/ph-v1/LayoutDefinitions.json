@@ -19,14 +19,14 @@
           "includeLabel": false
         },
         "relationshipToChild": {
-          "includeLabel": true
+          "includeLabel": false
         },
         "age": {
-          "includeLabel": true
+          "includeLabel": false
         },
         "perpetratorType": {
-          "includeLabel": true
-        },
+          "includeLabel": false
+        }
       },
       "splitFormAt": 6
     },
