@@ -349,8 +349,12 @@
         "label": "59"
       },
       {
-        "value": ">59",
-        "label": ">59"
+        "value": "60",
+        "label": "60"
+      },
+      {
+        "value": ">60",
+        "label": ">60"
       },
       {
         "value": "Unknown",
