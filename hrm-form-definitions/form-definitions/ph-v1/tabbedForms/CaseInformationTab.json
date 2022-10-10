@@ -16,7 +16,7 @@
   {
     "name": "actionTaken",
     "label": "Action Taken",
-    "type": "select",
+     "type": "listbox-multiselect",
     "options": [
       {
         "value": "Unknown",
@@ -71,7 +71,7 @@
   },
   {
     "name": "didWeSolveTheirProblem",
-    "label": "Did the child feel we solved their problem??",
+    "label": "Did the child feel we solved their problem?",
     "type": "mixed-checkbox"
   },
   {
