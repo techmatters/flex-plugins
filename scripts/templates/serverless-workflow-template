@@ -4,6 +4,8 @@ name: <HELPLINE> <ENVIRONMENT> release
 
 # Controls when the action will run.
 on:
+  workflow_dispatch:
+  
   workflow_call:
     inputs:
       changelog:
