@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/no-extra-arguments */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Template } from '@twilio/flex-ui';
 
 import { ErrorText, StyledLabel, StyledMenuItem, StyledSelect, TextField } from '../styles/HrmStyles';
 import RequiredAsterisk from './RequiredAsterisk';
@@ -56,7 +57,7 @@ const FieldSelect = ({
   return (
     <TextField {...rest}>
       <StyledLabel htmlFor={id}>
-        {label}
+        <Template code={label} />
         <RequiredAsterisk field={field} />
       </StyledLabel>
       <StyledSelect
