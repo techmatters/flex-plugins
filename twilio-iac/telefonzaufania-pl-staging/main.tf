@@ -14,6 +14,36 @@ terraform {
   }
 }
 locals {
+  helpline = "Telefon Zaufania (PL)"
+  short_helpline = "PL"
+  operating_info_key = "pl"
+  environment = "Staging"
+  short_environment = "STG"
+  definition_version = "pl-v1"
+  permission_config = "demo"
+  multi_office = false
+  target_task_name = "greeting"
+  twilio_numbers = [""]
+  channel = ""
+  custom_channel_attributes = ""
+  messaging_flow_contact_identity = "+16602359810"
+  feature_flags = {
+    "enable_fullstory_monitoring": false,
+    "enable_upload_documents": true,
+    "enable_post_survey": false,
+    "enable_case_management": true,
+    "enable_offline_contact": true,
+    "enable_filter_cases": true,
+    "enable_sort_cases": true,
+    "enable_transfers": true,
+    "enable_manual_pulling": true,
+    "enable_csam_report": true,
+    "enable_canned_responses": true,
+    "enable_dual_write": false,
+    "enable_save_insights": true,
+    "enable_previous_contacts": true,
+    "enable_contact_editing": true
+  }
   twilio_channels = {
     "web" = {"contact_identity" = "" }
   }
@@ -28,10 +58,10 @@ module "chatbots" {
 module "hrmServiceIntegration" {
   source = "../terraform-modules/hrmServiceIntegration/default"
   local_os = var.local_os
-  helpline = var.helpline
-  short_helpline = var.short_helpline
-  environment = var.environment
-  short_environment = var.short_environment
+  helpline = local.helpline
+  short_helpline = local.short_helpline
+  environment = local.environment
+  short_environment = local.short_environment
 }
 
 module "serverless" {
@@ -41,30 +71,30 @@ module "serverless" {
 module "services" {
   source = "../terraform-modules/services/default"
   local_os = var.local_os
-  helpline = var.helpline
-  short_helpline = var.short_helpline
-  environment = var.environment
-  short_environment = var.short_environment
+  helpline = local.helpline
+  short_helpline = local.short_helpline
+  environment = local.environment
+  short_environment = local.short_environment
   uses_conversation_service = false
 }
 
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
-  helpline = var.helpline
-  custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", var.twilio_numbers))}]"
+  helpline = local.helpline
+  custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
 }
 
 module flex {
   source = "../terraform-modules/flex/service-configuration"
   account_sid = var.account_sid
-  short_environment = var.short_environment
-  operating_info_key = var.operating_info_key
-  permission_config = var.permission_config
-  definition_version = var.definition_version
+  short_environment = local.short_environment
+  operating_info_key = local.operating_info_key
+  permission_config = local.permission_config
+  definition_version = local.definition_version
   serverless_url = var.serverless_url
-  multi_office_support = var.multi_office
-  feature_flags = var.feature_flags
+  multi_office_support = local.multi_office
+  feature_flags = local.feature_flags
 }
 
 module twilioChannel {
@@ -72,7 +102,7 @@ module twilioChannel {
   source = "../terraform-modules/channels/twilio-channel"
   channel_contact_identity = each.value.contact_identity
   pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
-  target_task_name = var.target_task_name
+  target_task_name = local.target_task_name
   channel_name = "${each.key}"
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
@@ -86,24 +116,24 @@ module customChannel {
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
-  short_helpline = var.short_helpline
-  short_environment = var.short_environment
+  short_helpline = local.short_helpline
+  short_environment = local.short_environment
 }
 
 module survey {
   source = "../terraform-modules/survey/default"
-  helpline = var.helpline
+  helpline = local.helpline
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
 }
 
 module aws {
   source = "../terraform-modules/aws/default"
   account_sid = var.account_sid
-  helpline = var.helpline
-  short_helpline = var.short_helpline
-  environment = var.environment
-  short_environment = var.short_environment
-  operating_info_key = var.operating_info_key
+  helpline = local.helpline
+  short_helpline = local.short_helpline
+  environment = local.environment
+  short_environment = local.short_environment
+  operating_info_key = local.operating_info_key
   datadog_app_id = var.datadog_app_id
   datadog_access_token = var.datadog_access_token
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
@@ -117,9 +147,9 @@ module aws {
 
 module aws_monitoring {
   source = "../terraform-modules/aws-monitoring/default"
-  helpline = var.helpline
-  short_helpline = var.short_helpline
-  environment = var.environment
+  helpline = local.helpline
+  short_helpline = local.short_helpline
+  environment = local.environment
   aws_account_id = var.aws_account_id
 }
 
@@ -127,6 +157,6 @@ module github {
   source = "../terraform-modules/github/default"
   twilio_account_sid = var.account_sid
   twilio_auth_token = var.auth_token
-  short_environment = var.short_environment
-  short_helpline = var.short_helpline
+  short_environment = local.short_environment
+  short_helpline = local.short_helpline
 }

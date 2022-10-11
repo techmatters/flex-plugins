@@ -95,7 +95,7 @@ local_os = "Windows" (optional flag for Windows users)
 
 9. Run the script below from `flex-plugins/scripts/` folder. Twilio creates a bunch of default resources on a new account and Aselo uses some of them. We need to import them into terraform first, otherwise terraform assumes they don't exist and will try to create them, resulting in errors.
 ```shell
-npm run twilioResources -- import-account-defaults <helpline>-<environment> [-v full-path-to-my-private.tfvars]
+npm run twilioResources -- import-account-defaults <helpline>-<environment> [-v path-from-tf-root-to-my-private.tfvars]
 ```
 10. From the folder you created for the account (`twilio-iac/<helpline>-<environment>/`), run and review the output of:
 ```shell
