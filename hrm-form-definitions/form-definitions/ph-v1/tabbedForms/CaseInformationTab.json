@@ -20,7 +20,7 @@
     "options": [
       {
         "value": "Unknown",
-        "label": " "
+        "label": "No Action"
       },
       {
         "value": "Recommendations",
