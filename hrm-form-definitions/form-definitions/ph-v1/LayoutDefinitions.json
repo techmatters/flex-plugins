@@ -25,7 +25,7 @@
           "includeLabel": false
         },
         "perpetratorType": {
-          "includeLabel": false
+          "includeLabel": true
         }
       },
       "splitFormAt": 6
