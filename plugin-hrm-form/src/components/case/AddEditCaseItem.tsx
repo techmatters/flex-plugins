@@ -154,7 +154,7 @@ const AddEditCaseItem: React.FC<Props> = ({
   }
 
   const save = async () => {
-    const { info, id } = connectedCase;
+    const { info, id: caseId } = connectedCase;
     const rawForm = workingCopy.form;
     const form = transformValues(formDefinition)(rawForm);
     const now = new Date().toISOString();
@@ -188,7 +188,7 @@ const AddEditCaseItem: React.FC<Props> = ({
         }
       });
     }
-    const updatedCase = await updateCase(id, { info: newInfo });
+    const updatedCase = await updateCase(caseId, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid);
   };
 
