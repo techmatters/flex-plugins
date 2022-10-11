@@ -13,13 +13,12 @@ import { CaseState } from '../../states/case/types';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
-  readonly?: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
-const CaseSummary: React.FC<Props> = ({ connectedCaseState, readonly }) => {
+const CaseSummary: React.FC<Props> = ({ connectedCaseState }) => {
   const { strings } = getConfig();
   const { connectedCase } = connectedCaseState;
   const summary = connectedCase.info?.summary || '';
@@ -34,9 +33,9 @@ const CaseSummary: React.FC<Props> = ({ connectedCaseState, readonly }) => {
         data-testid="Case-CaseSummary-TextArea"
         aria-labelledby="Case-CaseSummary-label"
         // Add Case summary doesn't show up as default value
-        placeholder={readonly ? strings.NoCaseSummary : strings['Case-AddCaseSummaryHere']}
+        placeholder={strings.NoCaseSummary}
         value={summary}
-        readOnly={readonly}
+        readOnly={true}
       />
     </CaseDetailsBorder>
   );

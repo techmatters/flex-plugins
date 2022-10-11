@@ -76,6 +76,31 @@ variable "feature_flags" {
   }
 }
 
+variable "target_task_name" {
+  description = "Pre survey task that the studio flow should trigger"
+  type        = string
+  default = "greeting"
+}
+
+
+variable "twilio_numbers" {
+  default = ["messenger:108893035300837"]
+  type = list(string)
+  description = "List of Twilio Numbers"
+}
+
+variable "channel" {
+  description = "Name of the channel being configured"
+  default = ""
+  type        = string
+}
+
+variable "custom_channel_attributes" {
+  description = "Override the default channel attributes by setting this"
+  type = string
+  default = ""
+}
+
 variable "messaging_flow_contact_identity" {
   default = "+17152201076"
-}	
+}

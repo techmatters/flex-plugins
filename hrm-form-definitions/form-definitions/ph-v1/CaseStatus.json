@@ -4,7 +4,7 @@
     "label": "Open",
     "color": "green",
     "transitions": [
-      "closed"
+      "closed", "inProgress", "archived"
     ]
   },
   "inprogress": {
@@ -12,7 +12,7 @@
     "label": "In Progress",
     "color": "yellow",
     "transitions": [
-      "closed"
+      "closed", "archived"
     ]
   },
   "closed": {
@@ -20,7 +20,7 @@
     "label": "Closed",
     "color": "red",
     "transitions": [
-      "open"
+      "open", "archived"
     ]
   },
   "archived": {
