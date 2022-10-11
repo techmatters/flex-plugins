@@ -210,7 +210,7 @@ const CaseHome: React.FC<Props> = ({
           />
         </Box>
         <Box margin="25px 0 0 25px">
-          <CaseSummary task={task} readonly={true} />
+          <CaseSummary task={task} />
         </Box>
         <Box margin="25px 0 0 25px">
           <Timeline timelineActivities={timeline} taskSid={task.taskSid} form={form} can={can} route={route} />
