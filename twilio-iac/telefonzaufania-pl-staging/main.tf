@@ -51,7 +51,8 @@ module "services" {
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
-  helpline = "ChildLine Zambia (ZM)"
+  helpline = var.helpline
+  custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", var.twilio_numbers))}]"
 }
 
 module flex {

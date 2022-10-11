@@ -84,7 +84,7 @@ variable "target_task_name" {
 
 
 variable "twilio_numbers" {
-  default = []
+  default = [""]
   type = list(string)
   description = "List of Twilio Numbers"
 }
