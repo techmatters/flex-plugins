@@ -8,7 +8,7 @@ You will require the following installed locally:
 
 * Terraform - https://www.terraform.io/downloads
 * _You previously had to build & install the twilio-terraform-provider yourself, but they are being pushed up to the Terraform registry now: https://registry.terraform.io/providers/twilio/twilio_
-* You need the following environment variables: 
+* You need the following environment variables:
   - `AWS_ACCESS_KEY_ID` & `AWS_SECRET_ACCESS_KEY` set for the script user (currently script user is missconfigured, used your personal ones).
   - `TWILIO_ACCOUNT_SID` & `TWILIO_AUTH_TOKEN` set to the account you want to manage.
   - `GITHUB_TOKEN` - a personal access token with write access to the tech matters serverless & flex plugins repo.
@@ -34,7 +34,7 @@ The process for a first run is as follows:
 
 1. Create a new directory in `/twilio-iac` named using the <helpline>-<environment> convention
 2. Copy any `.tf` extension files from the `terraform-poc-account` folder into the new folder (or if it is a production account, copy from the helpline's staging account, this will save a lot of time aligning them later).
-Important notes: 
+Important notes:
     - If you are copying over from `terraform-poc-account`, beware that in `main.tf`, under the `services` module, the flag `uses_conversation_service` is set to `false`. Remove this if you are working with a new Twilio account, as that is intended for compatibility with older setups of Flex.
     - Check under `flex` module, the poc account uses `hrm_url` to specify the target url for the Aselo backend. Remove this and rely on the naming convention to decide if it's staging or production (or specify the target one if the regular notation does not applies to this case).
     - Check under `flex` module, `permission_config` should be set to `var.permission_config` if you are describing it in the `variables.tf` file, or specify the correct one if not.
@@ -91,11 +91,11 @@ local_os = "Windows" (optional flag for Windows users)
 >
 > NOTE (!!)
 >
-> From now on, the above env vars are exported to this console session ~only~ (bash/powershel/whatever). Be sure you continue to use this session, or in case of opening a different one, you repeat the step to export the required variables. 
+> From now on, the above env vars are exported to this console session ~only~ (bash/powershel/whatever). Be sure you continue to use this session, or in case of opening a different one, you repeat the step to export the required variables.
 
 9. Run the script below from `flex-plugins/scripts/` folder. Twilio creates a bunch of default resources on a new account and Aselo uses some of them. We need to import them into terraform first, otherwise terraform assumes they don't exist and will try to create them, resulting in errors.
 ```shell
-npm run twilioResources -- import-account-defaults <helpline>-<environment> [-v my-private.tfvars]
+npm run twilioResources -- import-account-defaults <helpline>-<environment> [-v full-path-to-my-private.tfvars]
 ```
 10. From the folder you created for the account (`twilio-iac/<helpline>-<environment>/`), run and review the output of:
 ```shell
