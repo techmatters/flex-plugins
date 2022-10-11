@@ -3,18 +3,10 @@ import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 import { reduce } from '../../../states/case/reducer';
 import * as actions from '../../../states/case/actions';
 import * as GeneralActions from '../../../states/actions';
-import { Case, CaseItemEntry } from '../../../types/types';
+import { Case } from '../../../types/types';
 import { REMOVE_CONTACT_STATE } from '../../../states/types';
-import { CaseState, CaseWorkingCopy, TemporaryCaseInfo, UPDATE_CASE_CONTACT } from '../../../states/case/types';
-import { CaseItemAction } from '../../../states/routing/types';
+import { CaseState } from '../../../states/case/types';
 import { connectedCaseBase, namespace, RootState } from '../../../states';
-import { householdSectionApi } from '../../../states/case/sections/household';
-import { CaseSectionApi } from '../../../states/case/sections/api';
-import {
-  initialiseCaseSectionWorkingCopy,
-  removeCaseSectionWorkingCopy,
-  updateCaseSectionWorkingCopy,
-} from '../../../states/case/caseWorkingCopy';
 
 const task = { taskSid: 'task1' };
 
@@ -60,7 +52,7 @@ describe('test reducer', () => {
 
     const expected: RootState[typeof namespace][typeof connectedCaseBase] = {
       tasks: {
-        task1: { connectedCase, temporaryCaseInfo: null, prevStatus: 'open', caseWorkingCopy: { sections: {} } },
+        task1: { connectedCase, caseWorkingCopy: { sections: {} } },
       },
     };
 
@@ -85,194 +77,5 @@ describe('test reducer', () => {
     expect(result).toStrictEqual(expected);
 
     // state = result; no assignment here as we don't want to lose the only task in the state, it will be reused in following tests
-  });
-
-  test('should handle UPDATE_CASE_INFO', async () => {
-    const info = { summary: 'Some summary', notes: ['Some note'] };
-
-    const { connectedCase, temporaryCaseInfo, prevStatus } = state.tasks.task1;
-    const expected = {
-      tasks: {
-        task1: {
-          connectedCase: { ...connectedCase, info },
-          temporaryCaseInfo,
-          caseWorkingCopy: { sections: {} },
-          prevStatus,
-        },
-      },
-    };
-
-    const result = reduce(state, actions.updateCaseInfo(info, task.taskSid));
-    expect(result).toStrictEqual(expected);
-
-    state = result;
-  });
-
-  test('should handle UPDATE_TEMP_INFO', async () => {
-    const randomTemp: TemporaryCaseInfo = {
-      screen: 'caseSummary',
-      action: CaseItemAction.Edit,
-      info: {
-        form: {},
-        id: '',
-        createdAt: new Date().toISOString(),
-        twilioWorkerId: 'TEST_WORKER_ID',
-      },
-    };
-
-    const { connectedCase, prevStatus } = state.tasks.task1;
-    const expected = {
-      tasks: { task1: { connectedCase, temporaryCaseInfo: randomTemp, prevStatus, caseWorkingCopy: { sections: {} } } },
-    };
-
-    const result = reduce(state, actions.updateTempInfo(randomTemp, task.taskSid));
-    expect(result).toStrictEqual(expected);
-
-    state = result;
-  });
-
-  describe('UPDATE_CASE_CONTACT', () => {
-    const connectedCase: Case = {
-      accountSid: 'ACxxx',
-      id: 1,
-      helpline: '',
-      status: 'open',
-      twilioWorkerId: 'WK123',
-      info: null,
-      createdAt: '2020-07-31T20:39:37.408Z',
-      updatedAt: '2020-07-31T20:39:37.408Z',
-      categories: {},
-      childName: '',
-      connectedContacts: [
-        {
-          id: 'AN ID',
-          a: 1,
-        },
-        {
-          id: 'ANOTHER ID',
-          b: 2,
-        },
-      ],
-    };
-    test('should update a connectedContact for the connectedCase if one with an ID matching the ID for the action contact exists', async () => {
-      const expectedConnectedCase: Case = {
-        ...connectedCase,
-        connectedContacts: [
-          {
-            id: 'AN ID',
-            b: 100,
-          },
-          {
-            id: 'ANOTHER ID',
-            b: 2,
-          },
-        ],
-      };
-      const expected = {
-        tasks: { task1: { ...state.tasks.task1, connectedCase: expectedConnectedCase } },
-      };
-
-      const result = reduce(
-        { tasks: { task1: { ...state.tasks.task1, connectedCase } } },
-        {
-          type: UPDATE_CASE_CONTACT,
-          taskId: task.taskSid,
-          contact: {
-            id: 'AN ID',
-            b: 100,
-          },
-        },
-      );
-      expect(result).toStrictEqual(expected);
-
-      state = result;
-    });
-    test('should do nothing if no connectedContact with an ID matching the one in the action', async () => {
-      const startingState = { tasks: { task1: { ...state.tasks.task1, connectedCase } } };
-
-      const result = reduce(startingState, {
-        type: UPDATE_CASE_CONTACT,
-        taskId: task.taskSid,
-        contact: {
-          id: 'NOT AN ID',
-          b: 100,
-        },
-      });
-      expect(result).toStrictEqual(startingState);
-    });
-    test('should do nothing if action contact has no id', async () => {
-      const startingState = { tasks: { task1: { ...state.tasks.task1, connectedCase } } };
-
-      const result = reduce(startingState, {
-        type: UPDATE_CASE_CONTACT,
-        taskId: task.taskSid,
-        contact: {
-          b: 100,
-        },
-      });
-      expect(result).toStrictEqual(startingState);
-    });
-
-    test('should throw if action contact is missing', async () => {
-      const startingState = { tasks: { task1: { ...state.tasks.task1, connectedCase } } };
-
-      expect(() =>
-        reduce(startingState, {
-          type: UPDATE_CASE_CONTACT,
-          taskId: task.taskSid,
-          contact: undefined,
-        }),
-      ).toThrow();
-    });
-    test('should add empty connected contacts array if connected case has no connected contacts array', async () => {
-      const startingState = {
-        tasks: {
-          task1: {
-            ...state.tasks.task1,
-            connectedCase: { ...connectedCase, connectedContacts: null },
-          },
-        },
-      };
-
-      const expected = {
-        tasks: {
-          task1: {
-            ...state.tasks.task1,
-            connectedCase: { ...connectedCase, connectedContacts: [] },
-          },
-        },
-      };
-
-      const result = reduce(startingState, {
-        type: UPDATE_CASE_CONTACT,
-        taskId: task.taskSid,
-        contact: {
-          id: 'AN ID',
-          b: 100,
-        },
-      });
-
-      expect(result).toStrictEqual(expected);
-    });
-    test('should throw if target taskId has no connected case', async () => {
-      const startingState = {
-        tasks: {
-          task1: {
-            ...state.tasks.task1,
-            connectedCase: undefined,
-          },
-        },
-      };
-      expect(() =>
-        reduce(startingState, {
-          type: UPDATE_CASE_CONTACT,
-          taskId: task.taskSid,
-          contact: {
-            id: 'AN ID',
-            b: 101,
-          },
-        }),
-      ).toThrow();
-    });
   });
 });

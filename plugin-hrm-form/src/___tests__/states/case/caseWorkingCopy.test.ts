@@ -2,13 +2,16 @@ import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { CaseItemEntry } from '../../../types/types';
 import { CaseSectionApi } from '../../../states/case/sections/api';
-import { CaseState, CaseWorkingCopy } from '../../../states/case/types';
+import { CaseState, CaseSummaryWorkingCopy, CaseWorkingCopy } from '../../../states/case/types';
 import { householdSectionApi } from '../../../states/case/sections/household';
 import { reduce } from '../../../states/case/reducer';
 import {
   initialiseCaseSectionWorkingCopy,
+  initialiseCaseSummaryWorkingCopy,
   removeCaseSectionWorkingCopy,
+  removeCaseSummaryWorkingCopy,
   updateCaseSectionWorkingCopy,
+  updateCaseSummaryWorkingCopy,
 } from '../../../states/case/caseWorkingCopy';
 
 describe('Working copy reducers', () => {
@@ -128,7 +131,6 @@ describe('Working copy reducers', () => {
         categories: {},
         childName: '',
       },
-      prevStatus: '',
       caseWorkingCopy: {
         sections: {},
       },
@@ -301,6 +303,157 @@ describe('Working copy reducers', () => {
         undefined,
         'an id',
       );
+    });
+  });
+  describe('INIT_CASE_SUMMARY_WORKING_COPY', () => {
+    test("Task doesn't exist - noop", () => {
+      const initialState: CaseState = {
+        tasks: {},
+      };
+      const resultWithNoId = reduce(initialState, initialiseCaseSummaryWorkingCopy('non existent task'));
+      expect(resultWithNoId).toStrictEqual(initialState);
+    });
+    test('Task exists with connectedCase- creates a caseSummary in the working copy populated from connectedCase', () => {
+      const initialStateInfo = {
+        ...state.tasks.task1.connectedCase.info,
+        followUpDate: 'In a bit',
+        summary: 'A summary',
+        childIsAtRisk: true,
+      };
+      const initialState: CaseState = {
+        tasks: {
+          task1: {
+            connectedCase: {
+              ...state.tasks.task1.connectedCase,
+              status: 'test',
+              info: initialStateInfo,
+            },
+            caseWorkingCopy: {
+              sections: {},
+            },
+          },
+        },
+      };
+      const result = reduce(initialState, initialiseCaseSummaryWorkingCopy('task1'));
+      expect(result).toStrictEqual({
+        ...initialState,
+        tasks: {
+          task1: {
+            ...initialState.tasks.task1,
+            caseWorkingCopy: {
+              ...initialState.tasks.task1.caseWorkingCopy,
+              caseSummary: {
+                childIsAtRisk: initialStateInfo.childIsAtRisk,
+                followUpDate: initialStateInfo.followUpDate,
+                summary: initialStateInfo.summary,
+                status: initialState.tasks.task1.connectedCase.status,
+              },
+            },
+          },
+        },
+      });
+    });
+  });
+  describe('UPDATE_CASE_SUMMARY_WORKING_COPY', () => {
+    const workingCopy: CaseSummaryWorkingCopy = {
+      summary: 'a new summary',
+      followUpDate: 'Ragnarok',
+      childIsAtRisk: false,
+      status: 'mulching',
+    };
+
+    test("Task doesn't exist - noop", () => {
+      const initialState: CaseState = {
+        tasks: {},
+      };
+      const resultWithNoId = reduce(initialState, updateCaseSummaryWorkingCopy('non existent task', workingCopy));
+      expect(resultWithNoId).toStrictEqual(initialState);
+    });
+    test("Task exists with a working copy- overwrites working copy's caseSummary", () => {
+      const initialState: CaseState = {
+        tasks: {
+          task1: {
+            connectedCase: {
+              ...state.tasks.task1.connectedCase,
+            },
+            caseWorkingCopy: {
+              caseSummary: {
+                status: 'soaking',
+                followUpDate: 'Armageddon',
+                summary: 'A summary',
+                childIsAtRisk: true,
+              },
+              sections: {},
+            },
+          },
+        },
+      };
+      const expectedResult = {
+        ...initialState,
+        tasks: {
+          task1: {
+            ...initialState.tasks.task1,
+            caseWorkingCopy: {
+              ...initialState.tasks.task1.caseWorkingCopy,
+              caseSummary: workingCopy,
+            },
+          },
+        },
+      };
+
+      const replaceResult = reduce(initialState, updateCaseSummaryWorkingCopy('task1', workingCopy));
+      expect(replaceResult).toStrictEqual(expectedResult);
+      delete initialState.tasks.task1.caseWorkingCopy.caseSummary;
+
+      const addResult = reduce(initialState, updateCaseSummaryWorkingCopy('task1', workingCopy));
+      expect(addResult).toStrictEqual(expectedResult);
+    });
+  });
+
+  describe('REMOVE_CASE_SUMMARY_WORKING_COPY', () => {
+    test("Task doesn't exist - noop", () => {
+      const initialState: CaseState = {
+        tasks: {},
+      };
+      const result = reduce(initialState, removeCaseSummaryWorkingCopy('non existent task'));
+      expect(result).toStrictEqual(initialState);
+    });
+    test("Task exists with a working copy- removes working copy's caseSummary", () => {
+      const initialState: CaseState = {
+        tasks: {
+          task1: {
+            connectedCase: {
+              ...state.tasks.task1.connectedCase,
+            },
+            caseWorkingCopy: {
+              caseSummary: {
+                status: 'soaking',
+                followUpDate: 'Armageddon',
+                summary: 'A summary',
+                childIsAtRisk: true,
+              },
+              sections: {},
+            },
+          },
+        },
+      };
+      const { caseSummary, ...workingCopyWithoutSummary } = initialState.tasks.task1.caseWorkingCopy;
+      const expectedResult = {
+        ...initialState,
+        tasks: {
+          task1: {
+            ...initialState.tasks.task1,
+            caseWorkingCopy: workingCopyWithoutSummary,
+          },
+        },
+      };
+
+      const removeResult = reduce(initialState, removeCaseSummaryWorkingCopy('task1'));
+      expect(removeResult).toStrictEqual(expectedResult);
+      delete initialState.tasks.task1.caseWorkingCopy.caseSummary;
+
+      const noopResult = reduce(initialState, removeCaseSummaryWorkingCopy('task1'));
+      expect(noopResult).toStrictEqual(expectedResult);
     });
   });
 });

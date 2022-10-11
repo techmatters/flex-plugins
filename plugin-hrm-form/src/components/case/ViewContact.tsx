@@ -6,7 +6,6 @@ import { Template } from '@twilio/flex-ui';
 import { BottomButtonBar, Container, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseLayout } from '../../styles/case';
 import { connectedCaseBase, contactFormsBase, namespace, RootState } from '../../states';
-import * as CaseActions from '../../states/case/actions';
 import ContactDetails from '../contact/ContactDetails';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { loadContact, loadRawContact, releaseContact } from '../../states/contacts/existingContacts';
@@ -29,7 +28,6 @@ const mapStateToProps = (state: RootState, { task, contactId }: OwnProps) => {
 };
 
 const mapDispatchToProps = {
-  updateCaseContactsWithSearchContact: CaseActions.updateCaseContactsWithSearchContact,
   loadRawContactIntoState: loadRawContact,
   loadContactIntoState: loadContact,
   releaseContactFromState: releaseContact,

@@ -10,7 +10,7 @@ import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import CaseHome, { CaseHomeProps } from '../../../components/case/CaseHome';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace, routingBase } from '../../../states';
 import { HouseholdEntry, PerpetratorEntry, StandaloneITask } from '../../../types/types';
-import { CaseDetails, UPDATE_TEMP_INFO } from '../../../states/case/types';
+import { CaseDetails } from '../../../states/case/types';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
 
@@ -103,8 +103,6 @@ describe('useState mocked', () => {
               info: { definitionVersion: 'v1' },
               connectedContacts: [],
             },
-            temporaryCaseInfo: '',
-            prevStatus: 'open',
           },
         },
       },
@@ -128,7 +126,6 @@ describe('useState mocked', () => {
       childIsAtRisk: false,
       summary: '',
       status: 'open',
-      prevStatus: 'open',
       caseCounselor: '',
       currentCounselor: '',
       createdAt: '2020-06-29T22:26:00.208Z',
