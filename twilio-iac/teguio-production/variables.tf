@@ -45,7 +45,7 @@ variable "short_environment" {
 variable "definition_version" {
   description = "Key that determines which set of form definitions this helpline will use"
   type        = string
-  default = "co-v2"
+  default = "co-v1"
 }
 
 variable "permission_config" {
@@ -93,24 +93,9 @@ variable "twilio_numbers" {
   description = "List of Twilio Numbers"
 }
 
-# variable "serverless_service_sid" {
-#   description = "Manually set variable after first apply"
-#   # default = "ZSbf1bb881cc2e8db613ee6bca0e8e2c29"
-#   default = ""
-#   type        = string
-# }
-
-# variable "serverless_environment_sid" {
-#   description = "Manually set variable after first apply"
-#   # default = "ZEdfa3b7ddc043f75d4bfa83f7044cd096"
-#   default = ""
-#   type        = string
-# }
-
 variable "serverless_function_sid" {
-  description = "Manually set variable after first apply"
-  # default = "ZH5fcc5dee5089c176acd0bd24e7fa873e"
-  default = ""
+  description = "/operatingHours function from serverless-production (manually set variable after first deploy)"
+  default = "ZHb7ef5682d731ce326be6d61c8a2b2fcf"
   type        = string
 }
 
