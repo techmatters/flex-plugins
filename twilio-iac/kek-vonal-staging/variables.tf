@@ -10,7 +10,7 @@ variable "local_os" {
 }
 
 variable "helpline" {
-  default = "International Ukrainian Helpline"
+  default = "Kék Vonal"
 }
 
 variable "short_helpline" {
