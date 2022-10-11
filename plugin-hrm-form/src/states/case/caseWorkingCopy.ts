@@ -75,7 +75,7 @@ export const initialiseCaseSectionWorkingCopyReducer = (
 ): CaseState => {
   const item: CaseItemEntry = action.id
     ? action.api.toForm(action.api.getSectionItemById(state.tasks[action.taskId].connectedCase.info, action.id))
-    : { id: uuidV4(), form: {}, createdAt: null, twilioWorkerId: null };
+    : { id: null, form: {}, createdAt: null, twilioWorkerId: null };
   return {
     ...state,
     tasks: {

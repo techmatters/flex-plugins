@@ -66,8 +66,8 @@ locals {
             x = -330,
             y = 1260
           },
-          workflow = "WW5814cf7617d435faf2103e8bdb3fba52",
-          channel = "TC83c2500c69637fccebd6ca4d83875ac9",
+          workflow = module.taskRouter.master_workflow_sid,
+          channel = module.taskRouter.chat_task_channel_sid,
           attributes = "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
         }
       },
@@ -146,8 +146,8 @@ locals {
             x = -1420,
             y = 1260
           },
-          workflow = "WW5814cf7617d435faf2103e8bdb3fba52",
-          channel = "TCcf0554f1eed13b297c4c7edcc8023679",
+          workflow = module.taskRouter.master_workflow_sid,
+          channel = module.taskRouter.default_task_channel_sid,
           attributes = "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
         }
       },
@@ -170,8 +170,8 @@ locals {
             x = -1060,
             y = 1260
           },
-          workflow = "WW5814cf7617d435faf2103e8bdb3fba52",
-          channel = "TC83c2500c69637fccebd6ca4d83875ac9",
+          workflow = module.taskRouter.master_workflow_sid,
+          channel = module.taskRouter.chat_task_channel_sid,
           attributes = "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
         }
       },
@@ -194,8 +194,8 @@ locals {
             x = -700,
             y = 1260
           },
-          workflow = "WW5814cf7617d435faf2103e8bdb3fba52",
-          channel = "TC83c2500c69637fccebd6ca4d83875ac9",
+          workflow = module.taskRouter.master_workflow_sid,
+          channel = module.taskRouter.chat_task_channel_sid,
           attributes = "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
         }
       },
@@ -218,8 +218,8 @@ locals {
             x = 40,
             y = 1260
           },
-          workflow = "WW5814cf7617d435faf2103e8bdb3fba52",
-          channel = "TC83c2500c69637fccebd6ca4d83875ac9",
+          workflow = module.taskRouter.master_workflow_sid,
+          channel = module.taskRouter.chat_task_channel_sid,
           attributes = "{\"ip\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\"language\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.language}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.helpline}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
         }
       },
