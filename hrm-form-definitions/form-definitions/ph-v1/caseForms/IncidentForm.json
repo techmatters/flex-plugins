@@ -106,7 +106,7 @@
     "type": "textarea",
     "placeholder": "Type here to add note...",
     "rows": 10,
-    "width": 500
+    "width": 250
   },
   {
     "name": "isCaregiverAware",
