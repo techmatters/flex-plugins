@@ -33,6 +33,7 @@ const reducers = {
   [routingBase]: RoutingReducer,
   [csamReportBase]: CSAMReportReducer,
   [dualWriteBase]: DualWriteReducer,
+  // [connectedCaseBase] - this is going to be combined manually, rather than using 'combineReducers', so isn't in this map
 };
 type HrmState = {
   [P in keyof typeof reducers]: ReturnType<typeof reducers[P]>;
@@ -45,6 +46,10 @@ const combinedReducers: (state: HrmState, action) => HrmState = combineReducers(
 const reducer = (state: HrmState, action): HrmState => {
   return {
     ...combinedReducers(state, action),
+    /*
+     * ConnectedCaseReducer's signature includes a parameter for global Hrm State as well as the specific CaseState
+     * This makes it incompatible with combineReducers, so instead, we add the case state property with an explicit call to ConnectedCaseReducer, where we specify the extra parameter
+     */
     [connectedCaseBase]: ConnectedCaseReducer(state, (state ?? {})[connectedCaseBase], action),
   };
 };
