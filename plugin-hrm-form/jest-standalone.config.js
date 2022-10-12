@@ -5,7 +5,7 @@ module.exports = config => {
   config = config || {
     ...defaults,
     rootDir: '.',
-    setupFiles: ['./src/setupTests.js'],
+    setupFilesAfterEnv: ['./src/setupTests.js'],
     testEnvironment: 'jest-environment-jsdom',
     testTimeout: 2 * 60 * 1000, // 2 minutes in ms
     transformIgnorePatterns: [`/node_modules/(?!uuid/.+\\.js)`],
