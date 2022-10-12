@@ -36,11 +36,6 @@
     }
   },
   {
-    "name": "otherSpecify",
-    "label": "If other, specify years/months",
-    "type": "input"
-  },
-  {
     "name": "location",
     "label": "Location",
     "type": "select",
@@ -58,12 +53,8 @@
         "label": "School"
       },
       {
-        "value": "HomeOwn",
-        "label": "Home (own)"
-      },
-      {
-        "value": "HomeOther",
-        "label": "Home (other)"
+        "value": "Home",
+        "label": "Home"
       },
       {
         "value": "Institution",
@@ -78,14 +69,6 @@
         "label": "Public Place"
       },
       {
-        "value": "Community",
-        "label": "Community"
-      },
-      {
-        "value": "Travel & Tourism Establishment",
-        "label": "Travel & Tourism Establishment"
-      },
-      {
         "value": "Other",
         "label": "Other"
       }
@@ -94,19 +77,6 @@
       "value": true,
       "message": "RequiredFieldError"
     }
-  },
-  {
-    "name": "establishmentSpecify",
-    "label": "Specify name of Establishment",
-    "type": "input"
-  },
-  {
-    "name": "note",
-    "label": "Note",
-    "type": "textarea",
-    "placeholder": "Type here to add note...",
-    "rows": 10,
-    "width": 250
   },
   {
     "name": "isCaregiverAware",
