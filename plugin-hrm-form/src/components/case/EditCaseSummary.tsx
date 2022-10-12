@@ -37,11 +37,13 @@ import {
 } from '../../states/case/caseWorkingCopy';
 import { changeRoute } from '../../states/routing/actions';
 import { AppRoutes } from '../../states/routing/types';
+import { PermissionActions, PermissionActionType } from '../../permissions';
 
 export type EditCaseSummaryProps = {
   task: CustomITask | StandaloneITask;
   definitionVersion: DefinitionVersion;
   exitRoute: AppRoutes;
+  can: (action: PermissionActionType) => boolean;
 };
 // eslint-disable-next-line no-use-before-define
 type Props = EditCaseSummaryProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
@@ -52,11 +54,11 @@ const EditCaseSummary: React.FC<Props> = ({
   exitRoute,
   connectedCaseState,
   setConnectedCase,
-  definitionVersion,
   workingCopy,
   initialiseWorkingCopy,
   updateWorkingCopy,
   closeActions,
+  can,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   useEffect(() => {
@@ -70,22 +72,14 @@ const EditCaseSummary: React.FC<Props> = ({
 
   const formDefinition: FormDefinition = useMemo(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
+
     try {
-      let caseStatusOptions = [];
-      if (definitionVersion) {
-        const caseStatusList = Object.values<StatusInfo>(definitionVersion.caseStatus);
-        const currentStatusItem = caseStatusList.find(cs => cs.value === connectedCaseState.connectedCase.status);
-        const availableStatusTransitions: string[] = currentStatusItem
-          ? [...(currentStatusItem.transitions ?? []), currentStatusItem.value]
-          : [];
-        caseStatusOptions = caseStatusList.filter(option => availableStatusTransitions.includes(option.value));
-      }
       return [
         {
           name: 'status',
           label: 'Case-CaseStatus',
           type: 'select',
-          options: caseStatusOptions,
+          options: connectedCaseState.availableStatusTransitions,
         },
         {
           name: 'followUpDate',
@@ -107,7 +101,7 @@ const EditCaseSummary: React.FC<Props> = ({
       console.error('Failed to render edit case summary form', e);
       return [];
     }
-  }, [connectedCaseState.connectedCase.status, definitionVersion]);
+  }, [connectedCaseState.availableStatusTransitions]);
 
   const savedForm = React.useMemo(() => {
     const {
@@ -136,9 +130,20 @@ const EditCaseSummary: React.FC<Props> = ({
       const formValues = getValues();
       updateWorkingCopy(task.taskSid, formValues as CaseSummaryWorkingCopy);
     };
-    const generatedForm = createFormFromDefinition(formDefinition)([])(workingCopy, firstElementRef)(updateCallBack);
+    const generatedForm = createFormFromDefinition(formDefinition)([])(workingCopy, firstElementRef, item => {
+      switch (item.name) {
+        case 'childIsAtRisk':
+          return can(PermissionActions.EDIT_CHILD_IS_AT_RISK);
+        case 'summary':
+          return can(PermissionActions.EDIT_CASE_SUMMARY);
+        case 'followUpDate':
+          return can(PermissionActions.EDIT_FOLLOW_UP_DATE);
+        default:
+          return true;
+      }
+    })(updateCallBack);
     return splitAt(3)(disperseInputs(7)(generatedForm));
-  }, [formDefinition, workingCopy, firstElementRef, getValues, updateWorkingCopy, task.taskSid]);
+  }, [formDefinition, workingCopy, firstElementRef, getValues, updateWorkingCopy, task.taskSid, can]);
 
   const save = async () => {
     const { info, id } = connectedCaseState.connectedCase;

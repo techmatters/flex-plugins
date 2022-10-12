@@ -61,6 +61,7 @@ const state = {
             status: 'open',
             info: {},
           },
+          availableStatusTransitions: [{}],
         },
       },
     },
@@ -96,6 +97,7 @@ describe('Test EditCaseSummary', () => {
       task: task as StandaloneITask,
       exitRoute,
       definitionVersion: mockV1,
+      can: () => true,
     };
     store.dispatch = jest.fn();
   });
