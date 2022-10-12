@@ -3,10 +3,16 @@
     "name": "date",
     "label": "Date",
     "type": "date-input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+  },
+  {
+    "name": "unknownDate",
+    "label": "Unknown Date",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "incidentTime",
+    "label": "Time",
+    "type": "time-input",
   },
   {
     "name": "duration",
@@ -79,14 +85,34 @@
     }
   },
   {
+    "name": "incidentAddress",
+    "label": "Incident Address",
+    "type": "input"
+  },
+  {
     "name": "isCaregiverAware",
     "label": "Is caregiver aware?",
     "type": "mixed-checkbox"
   },
   {
+    "name": "parentReaction",
+    "label": "Reaction of Parents",
+    "type": "input"
+  },
+  {
     "name": "incidentWitnessed",
     "label": "Was the incident witnessed by anyone?",
     "type": "mixed-checkbox"
+  },
+  {
+    "name": "witnessFName",
+    "label": "First Name of Witness",
+    "type": "input"
+  },
+  {
+    "name": "witnessLName",
+    "label": "Last Name of Witness",
+    "type": "input"
   },
   {
     "name": "abuseReportedElsewhere",
@@ -97,5 +123,19 @@
     "name": "whereElseBeenReported",
     "label": "Where else the incident has been reported?",
     "type": "mixed-checkbox"
+  },
+  {
+    "name": "incidentDetails",
+    "label": "Incident Details",
+    "type": "text-area"
+  },
+  {
+    "name": "reportedElsewhere",
+    "label": "Reported Elsewhere",
+    "type": "select",
+    "options": [
+      { "value": "Department of Social Welfare", "label": "Department of Social Welfare" },
+      { "value": "Police", "label": "Police" }
+    ]
   }
 ]
