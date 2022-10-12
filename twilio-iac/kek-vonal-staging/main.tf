@@ -16,7 +16,9 @@ terraform {
 }
 
 locals {
-  custom_messaging_flow_definition = json_encode({
+  ukr_chatbot_state = "Chatbot-ukr-HU"
+  ru_chatbot_state = "Chatbot-ru-HU"
+  custom_messaging_flow_definition = jsonencode({
     description = "Bot flow for creating a Flex messaging task",
     states = [
       {
@@ -318,7 +320,7 @@ locals {
             ]
           },
           {
-            next = "Chatbot-ru-HU",
+            next = local.ru_chatbot_state,
             event = "match",
             conditions = [
               {
@@ -332,7 +334,7 @@ locals {
             ]
           },
           {
-            next = "Chatbot-ukr-HU",
+            next = local.ukr_chatbot_state,
             event = "match",
             conditions = [
               {
@@ -355,7 +357,7 @@ locals {
         }
       },
       {
-        name = "Chatbot-ru-HU",
+        name = local.ru_chatbot_state,
         type = "send-to-auto-pilot",
         transitions = [
           {
@@ -372,7 +374,7 @@ locals {
             x = 150,
             y = 410
           },
-          autopilot_assistant_sid = "UAa3d636d171092e6b2744c3e9c47a8658",
+          autopilot_assistant_sid = twilio_autopilot_assistants_v1.chatbot_ru_HU.sid,
           from = "Bot",
           chat_service = "{{trigger.message.InstanceSid}}",
           body = "{{trigger.message.Body}}",
@@ -381,7 +383,7 @@ locals {
         }
       },
       {
-        name = "Chatbot-ukr-HU",
+        name = local.ukr_chatbot_state
         type = "send-to-auto-pilot",
         transitions = [
           {
@@ -398,7 +400,7 @@ locals {
             x = 700,
             y = 420
           },
-          autopilot_assistant_sid = "UA8ff2157a14d101dbee67eb1821166756",
+          autopilot_assistant_sid = twilio_autopilot_assistants_v1.chatbot_ukr_HU.sid,
           from = "Bot",
           chat_service = "{{trigger.message.InstanceSid}}",
           body = "{{trigger.message.Body}}",
@@ -412,11 +414,6 @@ locals {
       allow_concurrent_calls = true
     }
   })
-}
-module "chatbots" {
-  source = "../terraform-modules/chatbots/default"
-  serverless_url = var.serverless_url
-  gender_field_type = "kek-vonal"
 }
 
 module "hrmServiceIntegration" {
@@ -452,7 +449,8 @@ module studioFlow {
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   default_task_channel_sid = module.taskRouter.default_task_channel_sid
-  pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
+  pre_survey_bot_sid = twilio_autopilot_assistants_v1.chatbot_default.sid
+  custom_flow_definition = local.custom_messaging_flow_definition
 }
 
 module flex {
@@ -492,7 +490,7 @@ module aws {
   shared_state_sync_service_sid = module.services.shared_state_sync_service_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
   flex_proxy_service_sid = module.services.flex_proxy_service_sid
-  post_survey_bot_sid = module.chatbots.post_survey_bot_sid
+  post_survey_bot_sid = twilio_autopilot_assistants_v1.chatbot_postsurvey.sid
   survey_workflow_sid = module.survey.survey_workflow_sid
   bucket_region = "us-east-1"
 }
