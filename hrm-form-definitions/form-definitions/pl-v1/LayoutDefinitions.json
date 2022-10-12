@@ -3,35 +3,15 @@
     "callerInformation": {},
     "childInformation": {},
     "caseInformation": {
-      "splitFormAt": 3
+      "splitFormAt": 4
     }
   },
   "case": {
     "households": {
-      "previewFields": [
-        "firstName",
-        "relationshipToChild",
-        "age",
-        "perpetratorType"
-      ],
-      "layout": {
-        "firstName": {
-          "includeLabel": false
-        },
-        "relationshipToChild": {
-          "includeLabel": false
-        },
-        "age": {
-          "includeLabel": false
-        },
-        "perpetratorType": {
-          "includeLabel": true
-        }
-      },
-      "splitFormAt": 6
+      "splitFormAt": 7
     },
     "perpetrators": {
-      "splitFormAt": 8
+      "splitFormAt": 7
     },
     "incidents": {
       "previewFields": [
@@ -51,7 +31,7 @@
           "includeLabel": true
         }
       },
-      "splitFormAt": 6
+      "splitFormAt": 3
     },
     "referrals": {
       "splitFormAt": 2
