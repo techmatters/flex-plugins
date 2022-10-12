@@ -222,7 +222,7 @@ locals {
           },
           workflow = module.taskRouter.master_workflow_sid,
           channel = module.taskRouter.chat_task_channel_sid,
-          attributes = "{\"ip\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\"language\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.language}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.helpline}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
+          attributes = "{\"language\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.language}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"${var.helpline}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
         }
       },
       {
@@ -440,7 +440,10 @@ module "services" {
 
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
+  custom_task_routing_filter_expression = "phone=='+3680984590' OR phone=='+3612344587' OR channelType=='web'"
   serverless_url = var.serverless_url
+  skip_timeout_expression = "1==1"
+  include_default_filter = true
   helpline = "Kék Vonal"
 }
 
