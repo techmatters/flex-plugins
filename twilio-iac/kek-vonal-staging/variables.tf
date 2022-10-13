@@ -14,11 +14,11 @@ variable "helpline" {
 }
 
 variable "short_helpline" {
-  default = "UKR"
+  default = "HU"
 }
 
 variable "operating_info_key" {
-  default = "ukr"
+  default = "hu"
 }
 
 variable "environment" {
@@ -32,13 +32,13 @@ variable "short_environment" {
 variable "definition_version" {
   description = "Key that determines which set of form definitions this helpline will use"
   type        = string
-  default = "ukr-v1"
+  default = "hu-v1"
 }
 
 variable "permission_config" {
   description = "Key that determines which set of permission rules this helpline will use"
   type        = string
-  default = "demo"
+  default = "hu"
 }
 
 variable multi_office {
