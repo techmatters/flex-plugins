@@ -27,7 +27,6 @@ export enum DefinitionVersionId {
   thV1 = 'th-v1', // Childline Thailand v1
   clV1 = 'cl-v1', // Línea Libre (CL) v1
   coV1 = 'co-v1', // Te Guío (CO) v1
-  plV1 = 'pl-v1', // Telefon Zaufania (PL) v1
   zwV1 = 'zw-v1', // Childline Zimbabwe v1
   roV1 = 'ro-v1', // Telefonul Copilului Romania v1
 }
