@@ -1,6 +1,6 @@
 [
   {
-    "name": "Clase de Contacto",
+    "name": "contactClass",
     "label": "Clase de Contacto",
     "type": "select",
     "unknownOption": "",
@@ -37,6 +37,7 @@
     "name": "age",
     "label": "Edad",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -101,7 +102,7 @@
     "name": "gender",
     "label": "Género",
     "type": "select",
-    "unknownOption": "Desconocido",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -4897,7 +4898,7 @@
     "unknownOption": "Desconocido",
     "options": [
       {
-        "value": "",
+        "value": "Desconocido",
         "label": ""
       },
       {
@@ -5044,7 +5045,7 @@
     "unknownOption": "Desconocido",
     "options": [
       {
-        "value": "",
+        "value": "Desconocido",
         "label": ""
       },
       {
@@ -5061,5 +5062,118 @@
     "name": "childWithDisability",
     "label": "Adolescente en condición de discapacidad",
     "type": "mixed-checkbox"
+  },
+  {
+    "name": "epsType",
+    "label": "Tipo de EPS",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Contributivo",
+        "label": "Contributivo"
+      },
+      {
+        "value": "Subsidiado",
+        "label": "Subsidiado"
+      }
+    ]
+  },
+  {
+    "name": "eps",
+    "label": "EPS",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Aliansalud",
+        "label": "Aliansalud"
+      },
+      {
+        "value": "Cafam EPS",
+        "label": "Cafam EPS"
+      },
+      {
+        "value": "Capital Salud EPS",
+        "label": "Capital Salud EPS"
+      },
+      {
+        "value": "Capresoca",
+        "label": "Capresoca"
+      },
+      {
+        "value": "Colsubsidio",
+        "label": "Colsubsidio"
+      },
+      {
+        "value": "COMFAND",
+        "label": "COMFAND"
+      },
+      {
+        "value": "Compensar",
+        "label": "Compensar"
+      },
+      {
+        "value": "Coomeva",
+        "label": "Coomeva"
+      },
+      {
+        "value": "Coosalud",
+        "label": "Coosalud"
+      },
+      {
+        "value": "EPS Sanitas",
+        "label": "EPS Sanitas"
+      },
+      {
+        "value": "EPS Sura",
+        "label": "EPS Sura"
+      },
+      {
+        "value": "Famisanar",
+        "label": "Famisanar"
+      },
+      {
+        "value": "Medimás",
+        "label": "Medimás"
+      },
+      {
+        "value": "Mutual SER",
+        "label": "Mutual SER"
+      },
+      {
+        "value": "Nueva EPS",
+        "label": "Nueva EPS"
+      },
+      {
+        "value": "Salud Total",
+        "label": "Salud Total"
+      },
+      {
+        "value": "Savia Salud EPS",
+        "label": "Savia Salud EPS"
+      },
+      {
+        "value": "SISBEN IV",
+        "label": "SISBEN IV"
+      },
+      {
+        "value": "Otra",
+        "label": "Otra"
+      }
+    ]
+  },
+  {
+    "name": "epsName",
+    "label": "Nombre de EPS",
+    "type": "input"
   }
 ]
