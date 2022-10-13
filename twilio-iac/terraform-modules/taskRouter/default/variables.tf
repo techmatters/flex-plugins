@@ -32,3 +32,15 @@ variable "custom_task_routing_survey_queue_target_filter_expression" {
   type        = string
   default = ""
 }
+
+variable "skip_timeout_expression" {
+  description = "Setting this will set a skip timeout expression for the workflow, which when matched will not wait for a worker to match the workflow if none match immediately"
+  type = string
+  default = null
+}
+
+variable "include_default_filter" {
+  description = "Setting this will specify a default filter pointing at the helpline queue"
+  type = bool
+  default = false
+}

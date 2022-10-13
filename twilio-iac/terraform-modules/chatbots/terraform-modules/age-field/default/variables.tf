@@ -1,12 +1,6 @@
-variable "serverless_url" {
-  description = "Serverless URL"
+variable "bot_sid" {
+  description = "SID of the Twilio assistant (chatbot) that will use the gender field."
   type        = string
-}
-
-variable "gender_field_type" {
-  description = "Which implementation of the gender field to use, current options: default, safespot"
-  type        = string
-  default     = "default"
 }
 
 variable "unknown_value" {
