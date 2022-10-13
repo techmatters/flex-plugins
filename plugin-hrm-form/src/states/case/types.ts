@@ -1,4 +1,4 @@
-import { DefinitionVersionId, HelplineEntry } from 'hrm-form-definitions';
+import { DefinitionVersionId, HelplineEntry, StatusInfo } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
 import { Case, CaseItemEntry } from '../../types/types';
@@ -122,6 +122,7 @@ export type CaseState = {
     [taskId: string]: {
       connectedCase: Case;
       caseWorkingCopy: CaseWorkingCopy;
+      availableStatusTransitions: StatusInfo[];
     };
   };
 };

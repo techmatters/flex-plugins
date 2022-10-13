@@ -17,6 +17,8 @@ import {
   updateCaseSectionWorkingCopyReducer,
   updateCaseSummaryWorkingCopyReducer,
 } from './caseWorkingCopy';
+import { configurationBase, RootState } from '..';
+import { getAvailableCaseStatusTransitions } from './caseStatus';
 
 const initialState: CaseState = {
   tasks: {},
@@ -24,11 +26,14 @@ const initialState: CaseState = {
 
 // eslint-disable-next-line import/no-unused-modules
 export function reduce(
+  rootState: RootState['plugin-hrm-form'],
   state = initialState,
   action: CaseActionType | CaseWorkingCopyActionType | GeneralActionType,
 ): CaseState {
   switch (action.type) {
     case SET_CONNECTED_CASE:
+      const caseDefinitionVersion =
+        rootState[configurationBase].definitionVersions[action.connectedCase?.info?.definitionVersion];
       return {
         ...state,
         tasks: {
@@ -36,6 +41,9 @@ export function reduce(
           [action.taskId]: {
             connectedCase: action.connectedCase,
             caseWorkingCopy: { sections: {} },
+            availableStatusTransitions: caseDefinitionVersion
+              ? getAvailableCaseStatusTransitions(action.connectedCase, caseDefinitionVersion)
+              : [],
           },
         },
       };

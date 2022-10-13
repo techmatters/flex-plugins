@@ -147,6 +147,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
 ) => (
   initialValue: any, // TODO: restrict this type
   htmlElRef?: HTMLElementRef,
+  isEnabled: boolean = true,
 ) => {
   const rules = getRules(def);
   const path = [...parents, def.name].join('.');
@@ -183,6 +184,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     register(rules)(innerRef);
                   }}
                   defaultValue={initialValue}
+                  disabled={!isEnabled}
                 />
                 {error && (
                   <FormError>
@@ -226,6 +228,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     })(innerRef);
                   }}
                   defaultValue={initialValue}
+                  disabled={!isEnabled}
                 />
                 {error && (
                   <FormError>
@@ -269,6 +272,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     })(innerRef);
                   }}
                   defaultValue={initialValue}
+                  disabled={!isEnabled}
                   type="email"
                 />
                 {error && (
@@ -296,7 +300,12 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
             const currentValue = watch(path);
 
             return (
-              <FormFieldset error={Boolean(error)} aria-invalid={Boolean(error)} aria-describedby={`${path}-error`}>
+              <FormFieldset
+                error={Boolean(error)}
+                aria-invalid={Boolean(error)}
+                aria-describedby={`${path}-error`}
+                disabled={!isEnabled}
+              >
                 {def.label && (
                   <Row>
                     <Box marginBottom="8px">
@@ -442,6 +451,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                                 register(rules)(innerRef);
                               }}
                               defaultChecked={initialValue.includes(value)}
+                              disabled={!isEnabled}
                             />
                           </Box>
                           <Template code={label} className=".fullstory-unmask" />
@@ -492,6 +502,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                       register(rules)(innerRef);
                     }}
                     defaultValue={initialValue}
+                    disabled={!isEnabled}
                   >
                     {def.options.map(createSelectOptions)}
                   </FormSelect>
@@ -566,7 +577,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
 
                       register({ validate })(innerRef);
                     }}
-                    disabled={disabled}
+                    disabled={!isEnabled || disabled}
                     defaultValue={initialValue}
                   >
                     {options.map(createSelectOptions)}
@@ -608,6 +619,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                         register(rules)(innerRef);
                       }}
                       defaultChecked={initialValue}
+                      disabled={!isEnabled}
                     />
                   </Box>
                   {labelTextComponent}
@@ -664,6 +676,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                           htmlElRef.current = innerRef;
                         }
                       }}
+                      disabled={!isEnabled}
                     />
                   </Box>
                   {labelTextComponent}
@@ -710,6 +723,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   rows={def.rows ? def.rows : 10}
                   width={def.width}
                   defaultValue={initialValue}
+                  disabled={!isEnabled}
                 />
                 {error && (
                   <FormError>
@@ -751,6 +765,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     register(rules)(innerRef);
                   }}
                   defaultValue={initialValue}
+                  disabled={!isEnabled}
                 />
                 {error && (
                   <FormError>
@@ -792,6 +807,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     register(rules)(innerRef);
                   }}
                   defaultValue={initialValue}
+                  disabled={!isEnabled}
                 />
                 {error && (
                   <FormError>
@@ -848,6 +864,7 @@ export type CustomHandlers = FileUploadCustomHandlers;
 export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (
   initialValues: any,
   firstElementRef: HTMLElementRef,
+  isEnabled: (item: FormItemDefinition) => boolean = () => true,
 ) => (updateCallback: () => void, customHandlers?: CustomHandlers): JSX.Element[] => {
   const bindGetInputType = getInputType(parents, updateCallback, customHandlers);
 
@@ -855,7 +872,7 @@ export const createFormFromDefinition = (definition: FormDefinition) => (parents
     const elementRef = index === 0 ? firstElementRef : null;
     const maybeValue = get(initialValues, e.name);
     const initialValue = maybeValue === undefined ? getInitialValue(e) : maybeValue;
-    return bindGetInputType(e)(initialValue, elementRef);
+    return bindGetInputType(e)(initialValue, elementRef, isEnabled(e));
   });
 };
 

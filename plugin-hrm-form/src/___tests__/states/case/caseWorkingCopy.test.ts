@@ -13,6 +13,9 @@ import {
   updateCaseSectionWorkingCopy,
   updateCaseSummaryWorkingCopy,
 } from '../../../states/case/caseWorkingCopy';
+import { RootState } from '../../../states';
+
+const stubRootState = {} as RootState['plugin-hrm-form'];
 
 describe('Working copy reducers', () => {
   const task = { taskSid: 'task1' };
@@ -75,6 +78,7 @@ describe('Working copy reducers', () => {
       };
 
       const result = reduce(
+        stubRootState,
         initialState,
         updateCaseSectionWorkingCopy(task.taskSid, stubApi, updatedSection, 'existingHousehold'),
       );
@@ -106,7 +110,11 @@ describe('Working copy reducers', () => {
         },
       };
 
-      const result = reduce(initialState, updateCaseSectionWorkingCopy(task.taskSid, stubApi, updatedSection));
+      const result = reduce(
+        stubRootState,
+        initialState,
+        updateCaseSectionWorkingCopy(task.taskSid, stubApi, updatedSection),
+      );
       expect(result).toStrictEqual(expected);
       expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
         initialState.tasks.task1.caseWorkingCopy,
@@ -134,6 +142,7 @@ describe('Working copy reducers', () => {
       caseWorkingCopy: {
         sections: {},
       },
+      availableStatusTransitions: [],
     };
 
     test('Specifies id that exists in case - updates case working copy using APIs updateWorkingCopy function, copying the section from the connected case', () => {
@@ -171,7 +180,11 @@ describe('Working copy reducers', () => {
         },
       };
 
-      const result = reduce(initialState, initialiseCaseSectionWorkingCopy(task.taskSid, stubApi, 'existingHousehold'));
+      const result = reduce(
+        stubRootState,
+        initialState,
+        initialiseCaseSectionWorkingCopy(task.taskSid, stubApi, 'existingHousehold'),
+      );
       expect(result).toStrictEqual(expected);
       expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
         initialState.tasks.task1.caseWorkingCopy,
@@ -201,7 +214,7 @@ describe('Working copy reducers', () => {
         },
       };
 
-      const result = reduce(initialState, initialiseCaseSectionWorkingCopy(task.taskSid, stubApi));
+      const result = reduce(stubRootState, initialState, initialiseCaseSectionWorkingCopy(task.taskSid, stubApi));
       expect(result).toStrictEqual(expected);
       expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
         initialState.tasks.task1.caseWorkingCopy,
@@ -223,31 +236,11 @@ describe('Working copy reducers', () => {
       };
 
       expect(() =>
-        reduce(initialState, initialiseCaseSectionWorkingCopy(task.taskSid, stubApi, 'existingHousehold')),
-      ).toThrow();
-    });
-
-    test('Specifies id that is not present in the connected case - throws', () => {
-      const initialState: CaseState = {
-        tasks: {
-          task1: {
-            ...state.tasks.task1,
-            connectedCase: {
-              ...state.tasks.task1.connectedCase,
-              info: {
-                ...state.tasks.task1.connectedCase.info,
-                households: [],
-              },
-            },
-            caseWorkingCopy: {
-              sections: {},
-            },
-          },
-        },
-      };
-
-      expect(() =>
-        reduce(initialState, initialiseCaseSectionWorkingCopy(task.taskSid, stubApi, 'existingHousehold')),
+        reduce(
+          stubRootState,
+          initialState,
+          initialiseCaseSectionWorkingCopy(task.taskSid, stubApi, 'existingHousehold'),
+        ),
       ).toThrow();
     });
   });
@@ -258,10 +251,15 @@ describe('Working copy reducers', () => {
         tasks: {},
       };
 
-      const resultWithNoId = reduce(initialState, removeCaseSectionWorkingCopy('non existent task', stubApi));
+      const resultWithNoId = reduce(
+        stubRootState,
+        initialState,
+        removeCaseSectionWorkingCopy('non existent task', stubApi),
+      );
       expect(resultWithNoId).toStrictEqual(initialState);
 
       const resultWithId = reduce(
+        stubRootState,
         initialState,
         removeCaseSectionWorkingCopy('non existent task', stubApi, 'non existent id'),
       );
@@ -288,7 +286,7 @@ describe('Working copy reducers', () => {
         },
       };
 
-      const resultWithoutId = reduce(initialState, removeCaseSectionWorkingCopy(task.taskSid, stubApi));
+      const resultWithoutId = reduce(stubRootState, initialState, removeCaseSectionWorkingCopy(task.taskSid, stubApi));
       expect(resultWithoutId).toStrictEqual(expected);
       expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
         initialState.tasks.task1.caseWorkingCopy,
@@ -296,7 +294,11 @@ describe('Working copy reducers', () => {
         undefined,
       );
 
-      const resultWithId = reduce(initialState, removeCaseSectionWorkingCopy(task.taskSid, stubApi, 'an id'));
+      const resultWithId = reduce(
+        stubRootState,
+        initialState,
+        removeCaseSectionWorkingCopy(task.taskSid, stubApi, 'an id'),
+      );
       expect(resultWithId).toStrictEqual(expected);
       expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
         initialState.tasks.task1.caseWorkingCopy,
@@ -310,7 +312,7 @@ describe('Working copy reducers', () => {
       const initialState: CaseState = {
         tasks: {},
       };
-      const resultWithNoId = reduce(initialState, initialiseCaseSummaryWorkingCopy('non existent task'));
+      const resultWithNoId = reduce(stubRootState, initialState, initialiseCaseSummaryWorkingCopy('non existent task'));
       expect(resultWithNoId).toStrictEqual(initialState);
     });
     test('Task exists with connectedCase- creates a caseSummary in the working copy populated from connectedCase', () => {
@@ -331,10 +333,11 @@ describe('Working copy reducers', () => {
             caseWorkingCopy: {
               sections: {},
             },
+            availableStatusTransitions: [],
           },
         },
       };
-      const result = reduce(initialState, initialiseCaseSummaryWorkingCopy('task1'));
+      const result = reduce(stubRootState, initialState, initialiseCaseSummaryWorkingCopy('task1'));
       expect(result).toStrictEqual({
         ...initialState,
         tasks: {
@@ -366,7 +369,11 @@ describe('Working copy reducers', () => {
       const initialState: CaseState = {
         tasks: {},
       };
-      const resultWithNoId = reduce(initialState, updateCaseSummaryWorkingCopy('non existent task', workingCopy));
+      const resultWithNoId = reduce(
+        stubRootState,
+        initialState,
+        updateCaseSummaryWorkingCopy('non existent task', workingCopy),
+      );
       expect(resultWithNoId).toStrictEqual(initialState);
     });
     test("Task exists with a working copy- overwrites working copy's caseSummary", () => {
@@ -385,6 +392,7 @@ describe('Working copy reducers', () => {
               },
               sections: {},
             },
+            availableStatusTransitions: [],
           },
         },
       };
@@ -401,11 +409,11 @@ describe('Working copy reducers', () => {
         },
       };
 
-      const replaceResult = reduce(initialState, updateCaseSummaryWorkingCopy('task1', workingCopy));
+      const replaceResult = reduce(stubRootState, initialState, updateCaseSummaryWorkingCopy('task1', workingCopy));
       expect(replaceResult).toStrictEqual(expectedResult);
       delete initialState.tasks.task1.caseWorkingCopy.caseSummary;
 
-      const addResult = reduce(initialState, updateCaseSummaryWorkingCopy('task1', workingCopy));
+      const addResult = reduce(stubRootState, initialState, updateCaseSummaryWorkingCopy('task1', workingCopy));
       expect(addResult).toStrictEqual(expectedResult);
     });
   });
@@ -415,7 +423,7 @@ describe('Working copy reducers', () => {
       const initialState: CaseState = {
         tasks: {},
       };
-      const result = reduce(initialState, removeCaseSummaryWorkingCopy('non existent task'));
+      const result = reduce(stubRootState, initialState, removeCaseSummaryWorkingCopy('non existent task'));
       expect(result).toStrictEqual(initialState);
     });
     test("Task exists with a working copy- removes working copy's caseSummary", () => {
@@ -434,6 +442,7 @@ describe('Working copy reducers', () => {
               },
               sections: {},
             },
+            availableStatusTransitions: [],
           },
         },
       };
@@ -448,11 +457,11 @@ describe('Working copy reducers', () => {
         },
       };
 
-      const removeResult = reduce(initialState, removeCaseSummaryWorkingCopy('task1'));
+      const removeResult = reduce(stubRootState, initialState, removeCaseSummaryWorkingCopy('task1'));
       expect(removeResult).toStrictEqual(expectedResult);
       delete initialState.tasks.task1.caseWorkingCopy.caseSummary;
 
-      const noopResult = reduce(initialState, removeCaseSummaryWorkingCopy('task1'));
+      const noopResult = reduce(stubRootState, initialState, removeCaseSummaryWorkingCopy('task1'));
       expect(noopResult).toStrictEqual(expectedResult);
     });
   });
