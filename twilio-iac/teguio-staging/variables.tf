@@ -4,8 +4,14 @@ variable "serverless_url" {}
 variable "datadog_app_id" {}
 variable "datadog_access_token" {}
 
-variable "language" {
+variable "helpline_language" {
   description = "Language used by the helpline"
+  type        = string
+  default     = "es-CO"
+}
+
+variable "task_language" {
+  description = "Language used by the tasks"
   type        = string
   default     = "es-CO"
 }
