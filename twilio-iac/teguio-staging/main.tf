@@ -14,7 +14,7 @@ terraform {
   }
 }
 locals {
-  strings= jsondecode(file("${path.module}/../translations/${var.language}/strings.json"))
+  strings= jsondecode(file("${path.module}/../translations/${var.helpline_language}/strings.json"))
   twilio_channels = {
     "facebook" = {"contact_identity" = "messenger:103574689075106" },
     "web" = {"contact_identity" = "" }
@@ -69,7 +69,7 @@ module twilioChannel {
       serverless_service_sid = var.serverless_service_sid
       master_workflow_sid = module.taskRouter.master_workflow_sid
       chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-      channel_attributes = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl",{language=var.language})
+      channel_attributes = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=var.task_language})
       flow_description = "${title(each.key)} Messaging Flow"
       pre_survey_bot_sid = module.custom_chatbots.pre_survey_bot_es_sid
       target_task_name = var.target_task_name
@@ -99,7 +99,7 @@ module customChannel {
       serverless_service_sid = var.serverless_service_sid
       master_workflow_sid = module.taskRouter.master_workflow_sid
       chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-      channel_attributes = templatefile("../terraform-modules/channels/custom-channel/channel-attributes/${each.key}-attributes.tftpl",{language=var.language})
+      channel_attributes = templatefile("../terraform-modules/channels/custom-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=var.task_language})
       flow_description = "${title(each.key)} Messaging Flow"
       operating_hours_holiday = local.strings.operating_hours_holiday
       operating_hours_closed = local.strings.operating_hours_closed
@@ -124,6 +124,7 @@ module flex {
   hrm_url = "https://hrm-test.tl.techmatters.org"
   multi_office_support = var.multi_office
   feature_flags = var.feature_flags
+  helpline_language =var.helpline_language
 }
 
 module survey {
