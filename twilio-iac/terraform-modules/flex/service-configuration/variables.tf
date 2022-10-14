@@ -35,6 +35,12 @@ variable "definition_version" {
   type        = string
 }
 
+variable "helpline_language" {
+  description = "Keyword that determines the language to be used as default across the helpline"
+  type        = string
+  default = ""
+}
+
 variable "feature_flags" {
   description = "Map of feature flag settings. All values should be boolean"
   type = map(bool)

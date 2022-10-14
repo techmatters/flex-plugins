@@ -36,6 +36,7 @@ type UploadFileInputProps = {
   RequiredAsterisk: any;
   initialValue: any;
   htmlElRef?: HTMLElementRef;
+  isEnabled?: boolean;
 };
 
 const UploadFileInput: React.FC<UploadFileInputProps> = ({
@@ -54,6 +55,7 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
   RequiredAsterisk,
   initialValue,
   htmlElRef,
+  isEnabled = true,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [isLoading, setLoading] = useState(false);
@@ -61,7 +63,7 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
   const fileName = initialValue || watch(path);
 
   const error = get(errors, path);
-  const showUploadButton = !Boolean(fileName);
+  const showUploadButton = isEnabled && !Boolean(fileName);
   const showDeleteButton = !showUploadButton && !initialValue;
 
   const handleChange = async event => {

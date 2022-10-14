@@ -87,8 +87,6 @@ describe('useState mocked', () => {
               info: { definitionVersion: 'v1' },
               connectedContacts: [],
             },
-            temporaryCaseInfo: '',
-            prevStatus: 'open',
           },
         },
       },

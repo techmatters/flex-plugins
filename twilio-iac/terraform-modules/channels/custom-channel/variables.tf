@@ -1,4 +1,4 @@
-variable "language" {
+variable "task_language" {
   type = string
   default = ""
   description = "Override the default language by setting this"

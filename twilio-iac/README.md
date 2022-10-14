@@ -91,7 +91,7 @@ local_os = "Windows" (optional flag for Windows users)
 >
 > NOTE (!!)
 >
-> From now on, the above env vars are exported to this console session ~only~ (bash/powershel/whatever). Be sure you continue to use this session, or in case of opening a different one, you repeat the step to export the required variables.
+> From now on, the above env vars are exported to this console session ~only~ (bash/powershell/whatever). Be sure you continue to use this session, or in case of opening a different one, you repeat the step to export the required variables.
 
 9. Run the script below from `flex-plugins/scripts/` folder. Twilio creates a bunch of default resources on a new account and Aselo uses some of them. We need to import them into terraform first, otherwise terraform assumes they don't exist and will try to create them, resulting in errors.
 ```shell
@@ -99,11 +99,11 @@ npm run twilioResources -- import-account-defaults <helpline>-<environment> [-v 
 ```
 10. From the folder you created for the account (`twilio-iac/<helpline>-<environment>/`), run and review the output of:
 ```shell
-terraform plan [-var-file my-private.tfvars]
+terraform plan [--var-file my-private.tfvars]
 ```
 11. Run:
 ```shell
-terraform apply [-var-file my-private.tfvars]
+terraform apply [--var-file my-private.tfvars]
 ```
 12. Go to the console for your environment, go into Functions > Services > serverless > environments and copy the domain for production (e.g. http://serverless-1234-production.twil.io) and set it as your `serverless_url` (or `TF_VAR_serverless_url` environment variable).
 13. Rerun

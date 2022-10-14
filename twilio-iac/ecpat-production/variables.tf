@@ -10,7 +10,7 @@ variable "local_os" {
 }
 
 variable "helpline" {
-  default = "ECPAT Phillippines"
+  default = "ECPAT"
 }
 
 variable "short_helpline" {

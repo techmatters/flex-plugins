@@ -7,7 +7,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
-import { DefinitionVersionId } from 'hrm-form-definitions';
+import { DefinitionVersionId, StatusInfo } from 'hrm-form-definitions';
 
 import CaseTags from './CaseTags';
 import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
@@ -38,6 +38,7 @@ type Props = {
   isOrphanedCase: boolean | undefined;
   editCaseSummary: () => void;
   handlePrintCase: () => void;
+  availableStatusTransitions: StatusInfo[];
   can: (action: string) => boolean;
 };
 
@@ -53,6 +54,7 @@ const CaseDetails: React.FC<Props> = ({
   can,
   office = '',
   childIsAtRisk,
+  availableStatusTransitions,
   handlePrintCase,
   definitionVersionName,
   isOrphanedCase = false,
@@ -61,7 +63,11 @@ const CaseDetails: React.FC<Props> = ({
 }) => {
   const formattedCreatedAt = getLocaleDateTime(createdAt);
   const formattedUpdatedAt = createdAt === updatedAt ? '—' : getLocaleDateTime(updatedAt);
-  const editButton = can(PermissionActions.EDIT_CASE_SUMMARY);
+  const editButton =
+    can(PermissionActions.EDIT_CASE_SUMMARY) ||
+    can(PermissionActions.EDIT_FOLLOW_UP_DATE) ||
+    can(PermissionActions.EDIT_CHILD_IS_AT_RISK) ||
+    availableStatusTransitions.length > 1; // availableStatusTransitions always includes current status, if that's the only one available, you cannot change it
   const formatFollowUpDate = getLocaleDateTime(followUpDate);
 
   return (
