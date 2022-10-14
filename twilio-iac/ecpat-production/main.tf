@@ -20,6 +20,11 @@ module "chatbots" {
   serverless_url = var.serverless_url
 }
 
+module "custom_chatbots" {
+  source = "../terraform-modules/chatbots/ecpat"
+  serverless_url = var.serverless_url
+}
+
 module "hrmServiceIntegration" {
   source = "../terraform-modules/hrmServiceIntegration/default"
   local_os = var.local_os
