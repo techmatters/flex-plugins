@@ -526,6 +526,14 @@ module aws {
   bucket_region = "us-east-1"
 }
 
+module aws_monitoring {
+  source = "../terraform-modules/aws-monitoring/default"
+  helpline = local.helpline
+  short_helpline = local.short_helpline
+  environment = local.environment
+  aws_account_id = var.aws_account_id
+  cloudwatch_region = "us-east-1"
+}
 
 module github {
   source = "../terraform-modules/github/default"
