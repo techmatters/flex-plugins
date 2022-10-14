@@ -7,5 +7,5 @@ dist/
 private/
 
 # Generated files
-new-flex-plugins-workflow.yml
-new-serverless-workflow.yml
+hungary_production.yml
+hungary_production.yml
