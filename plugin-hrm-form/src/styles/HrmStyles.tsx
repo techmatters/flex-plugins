@@ -8,13 +8,12 @@ import {
   Tabs,
   Tab,
   withStyles,
-  TableRow,
   TabProps,
-  TextField as TextFields,
+  styled as muStyled,
 } from '@material-ui/core';
 import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
 import AssignmentInd from '@material-ui/icons/AssignmentInd';
-import { Button, Icon, styled } from '@twilio/flex-ui';
+import { Button, Icon, styled, CheckboxGroup } from '@twilio/flex-ui';
 import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
 
 import HrmTheme from './HrmTheme';
@@ -173,7 +172,6 @@ export const StyledInput = styled(Input)`
     border: none;
     padding: 0 7px;
     margin-bottom: -2px;
-    z-index: 100;
   }
   input:focus {
     background-color: ${HrmTheme.colors.inputBackgroundColor};
@@ -221,7 +219,7 @@ type StyledSelectProps = {
 };
 
 export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSelectProps) => (
-  <Select {...rest} />
+  <Select disableUnderline {...rest} />
 ))<StyledSelectProps>`
   flex-grow: 0;
   flex-shrink: 0;
@@ -231,19 +229,34 @@ export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSe
     line-height: 22px;
     border-radius: 4px;
     background-color: ${HrmTheme.colors.inputBackgroundColor};
-    border: none;
-    padding: 9px 7px 0 7px;
     color: ${({ isPlaceholder }) => (isPlaceholder ? 'darkgray' : 'currentColor')};
+    border: none;
   }
+
   .Twilio-Dropdown {
     height: 100%;
   }
+
   [class*='MuiSelect-selectMenu'] {
-    padding-top: 7px;
-    padding-bottom: 7px;
-    border-right-width: 0px;
-    &:focus {
-      border-right-width: 1px;
+    padding: 0 7px;
+    font-size: 12px;
+    line-height: 1.33;
+
+    ::-webkit-input-placeholder {
+      /* Chrome/Opera/Safari */
+      margin: 12px 0;
+    }
+    ::-moz-placeholder {
+      /* Firefox 19+ */
+      margin: 12px 0;
+    }
+    :-ms-input-placeholder {
+      /* IE 10+ */
+      margin: 12px 0;
+    }
+    :-moz-placeholder {
+      /* Firefox 18- */
+      margin: 12px 0;
     }
   }
   background-color: ${HrmTheme.colors.base1};
@@ -917,7 +930,7 @@ export const FormCheckBoxWrapper = styled(Row)<FormInputProps>`
 `;
 FormCheckBoxWrapper.displayName = 'FormCheckBoxWrapper';
 
-const CheckboxBase = styled('input')<FormInputProps>`
+const CheckboxBase = styled.input<FormInputProps>`
   &[type='checkbox'] {
     display: inline-block;
     position: relative;
@@ -944,6 +957,7 @@ const CheckboxBase = styled('input')<FormInputProps>`
     background-image: linear-gradient(to bottom, hsl(300, 3%, 73%), hsl(300, 3%, 93%) 30%);
   }
 `;
+CheckboxBase.displayName = 'CheckboxBase';
 
 export const FormCheckbox = styled(CheckboxBase)`
   &[type='checkbox']:checked::before {
@@ -1186,3 +1200,12 @@ export const HeaderCloseButton = styled(ButtonBase)`
   }
 `;
 HeaderCloseButton.displayName = 'HeaderCloseButton';
+
+function outline(
+  arg0: ({ isPlaceholder, ...rest }: StyledSelectProps) => JSX.Element,
+  arg1: string,
+  outline: any,
+  arg3: string,
+) {
+  throw new Error('Function not implemented.');
+}

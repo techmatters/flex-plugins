@@ -69,6 +69,7 @@ const colors = {
   userUnavailableColor: '#999999',
 };
 
+// eslint-disable-next-line import/no-unused-modules
 export const overrides = {
   MainHeader: {
     Container: {

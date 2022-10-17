@@ -590,7 +590,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
               <FormLabel htmlFor={path}>
                 <FormCheckBoxWrapper error={Boolean(error)}>
                   <Box marginRight="5px">
-                    <FormCheckbox
+                    <input
                       id={path}
                       data-testid={path}
                       name={path}

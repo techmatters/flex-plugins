@@ -17,8 +17,6 @@ import {
   FormCheckBoxWrapper,
   FormCheckbox,
   Bold,
-  FormInput,
-  FormDateInput,
 } from '../../../styles/HrmStyles';
 import { SearchTitle } from '../../../styles/search';
 import { searchFormType, taskType } from '../../../types';
@@ -155,7 +153,7 @@ class SearchForm extends Component {
             <Template code="SearchContactsAndCases-Title" />
           </SearchTitle>
           <Row>
-            <FormInput
+            <FieldText
               id="Search_FirstName"
               label={strings['SearchForm-Name']}
               placeholder={strings['SearchForm-First']}
@@ -164,7 +162,7 @@ class SearchForm extends Component {
               style={{ marginRight: 25 }}
               onKeyPress={submitOnEnter}
             />
-            <FormInput
+            <FieldText
               id="Search_LastName"
               placeholder={strings['SearchForm-Last']}
               field={getField(lastName)}
@@ -184,7 +182,7 @@ class SearchForm extends Component {
               {...this.defaultEventHandlers('counselor')}
               style={{ marginRight: 25 }}
             />
-            <FormDateInput
+            <FieldDate
               id="Search_DateFrom"
               label={strings['SearchForm-DateRange']}
               placeholder={strings['SearchForm-Start']}
@@ -192,7 +190,7 @@ class SearchForm extends Component {
               {...this.defaultEventHandlers('dateFrom')}
               style={{ marginRight: '10px' }}
             />
-            <FormDateInput
+            <FieldDate
               id="Search_DateTo"
               label=" "
               placeholder={strings['SearchForm-End']}
@@ -202,7 +200,7 @@ class SearchForm extends Component {
             />
           </Row>
           <Row>
-            <FormInput
+            <FieldText
               id="Search_CustomerPhoneNumber"
               label={strings['SearchForm-Phone']}
               field={getField(phoneNumber)}
