@@ -14,7 +14,7 @@ terraform {
   }
 }
 locals {
-  helpline = "Telefon Zaufania (PL)"
+  helpline = "Telefon Zaufania"
   short_helpline = "PL"
   operating_info_key = "pl"
   environment = "Staging"
@@ -75,7 +75,6 @@ module "services" {
   short_helpline = local.short_helpline
   environment = local.environment
   short_environment = local.short_environment
-  uses_conversation_service = false
 }
 
 module "taskRouter" {
