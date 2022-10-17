@@ -20,7 +20,7 @@ locals {
   environment = "Staging"
   short_environment = "STG"
   definition_version = "pl-v1"
-  permission_config = "demo"
+  permission_config = "pl"
   multi_office = false
   target_task_name = "greeting"
   twilio_numbers = [""]
@@ -94,6 +94,7 @@ module flex {
   serverless_url = var.serverless_url
   multi_office_support = local.multi_office
   feature_flags = local.feature_flags
+  hrm_url = "https://hrm-staging.tl.techmatters.org"
 }
 
 module twilioChannel {
