@@ -5,6 +5,7 @@ import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
+import { ContactMediaType } from '../../types/types';
 import {
   DetailsContainer,
   NameText,
@@ -14,7 +15,7 @@ import {
 } from '../../styles/search';
 import ContactDetailsSection from './ContactDetailsSection';
 import SectionEntry from '../SectionEntry';
-import { channelTypes } from '../../states/DomainConstants';
+import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import { formatCategories, formatDuration, formatName, mapChannelForInsights } from '../../utils';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
@@ -108,6 +109,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
     CHILD_INFORMATION,
     ISSUE_CATEGORIZATION,
     CONTACT_SUMMARY,
+    TRANSCRIPT,
   } = ContactDetailsSections;
   const addedBy = counselorsHash[createdBy];
   const counselorName = counselorsHash[counselor];
@@ -127,13 +129,22 @@ const ContactDetailsHome: React.FC<Props> = function ({
       .map(r => `CSAM on ${format(new Date(r.createdAt), 'yyyy MM dd h:mm aaaaa')}m\n#${r.csamReportId}`)
       .join('\n\n');
 
-  const transcriptOrRecordingAvailable = Boolean(
-    ((featureFlags.enable_voice_recordings && channel === channelTypes.voice) ||
-      (featureFlags.enable_transcripts && channel !== channelTypes.voice)) &&
+  const recordingAvailable = Boolean(
+    featureFlags.enable_voice_recordings &&
+      isVoiceChannel(channel) &&
       canViewTranscript &&
-      savedContact.details.conversationMedia?.length &&
-      typeof savedContact.overview.conversationDuration === 'number',
+      savedContact.details.conversationMedia?.length,
+    // && typeof savedContact.overview.conversationDuration === 'number',
   );
+  const transcriptAvailable = true;
+  /*
+   * const transcriptAvailable = Boolean(
+   *   featureFlags.enable_transcripts &&
+   *     isChatChannel(channel) &&
+   *     canViewTranscript &&
+   *     savedContact.details.mediaUrls?.some(m => m.type === ContactMediaType.TRANSCRIPT),
+   * );
+   */
 
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
@@ -269,16 +280,25 @@ const ContactDetailsHome: React.FC<Props> = function ({
           )}
         </ContactDetailsSection>
       )}
-      {transcriptOrRecordingAvailable && (
+      {recordingAvailable && (
         <SectionTitleContainer style={{ justifyContent: 'right', paddingTop: '10px', paddingBottom: '10px' }}>
           <SectionActionButton type="button" onClick={loadConversationIntoOverlay}>
-            {channel === channelTypes.voice ? (
-              <Template code="ContactDetails-LoadRecording-Button" />
-            ) : (
-              <Template code="ContactDetails-LoadTranscript-Button" />
-            )}
+            <Template code="ContactDetails-LoadRecording-Button" />
           </SectionActionButton>
         </SectionTitleContainer>
+      )}
+      {transcriptAvailable && (
+        <ContactDetailsSection
+          sectionTitle={<Template code="ContactDetails-Transcript" />}
+          expanded={detailsExpanded[TRANSCRIPT]}
+          handleExpandClick={() => toggleSection(TRANSCRIPT)}
+          buttonDataTestid="ContactDetails-Section-Transcript"
+          showEditButton={false}
+        >
+          <SectionActionButton type="button" onClick={() => console.log('>>>> Pressed')}>
+            <Template code="ContactDetails-LoadTranscript-Button" />
+          </SectionActionButton>
+        </ContactDetailsSection>
       )}
     </DetailsContainer>
   );

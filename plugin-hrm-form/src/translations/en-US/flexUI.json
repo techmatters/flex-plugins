@@ -288,6 +288,7 @@
   "ContactDetails-GeneralDetails-WouldRecommend": "Would the child recommend us to a friend?",
   "ContactDetails-LoadRecording-Button": "Open Recording",
   "ContactDetails-LoadTranscript-Button": "View Transcript",
+  "ContactDetails-Transcript": "Transcript",
   "ContactDetails-ActionHeaderAdded": "Added on {{date}} at {{time}} by {{counsellor}}",
   "SectionName-CallerInformation": "Caller Information",
   "SectionName-ChildInformation": "Child Information",

@@ -91,6 +91,13 @@ type TwilioStoredMedia = {
 
 export type ConversationMedia = TwilioStoredMedia;
 
+export enum ContactMediaType {
+  // RECORDING = 'recording',
+  TRANSCRIPT = 'transcript',
+}
+
+export type ContactMediaUrl = { url: string; type: ContactMediaType };
+
 // Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
 export type ContactRawJson = {
   definitionVersion?: DefinitionVersionId;
@@ -100,6 +107,7 @@ export type ContactRawJson = {
   caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
   contactlessTask: { [key: string]: string | boolean };
   conversationMedia: ConversationMedia[];
+  mediaUrls?: ContactMediaUrl[];
 };
 
 // Information about a single contact, as expected from search contacts endpoint (we might want to reuse this type in backend) - (is this a correct placement for this?)
