@@ -119,7 +119,7 @@ locals {
             x = -490,
             y = 390
           },
-          autopilot_assistant_sid = "UAa0d9bf36a5123ecd0308d58a8a2331ac",
+          autopilot_assistant_sid = twilio_autopilot_assistants_v1.chatbot_default.sid,
           from = "Bot",
           chat_service = "{{trigger.message.InstanceSid}}",
           body = "{{trigger.message.Body}}",
@@ -468,9 +468,8 @@ module "services" {
 
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
-  custom_task_routing_filter_expression = "phone=='+3680984590' OR phone=='+3612344587' OR channelType=='web'"
+  custom_task_routing_filter_expression = "phone=='+3680984590' OR phone=='+3612344587' OR channelType=='web' OR isContactlessTask==true"
   serverless_url = var.serverless_url
-  skip_timeout_expression = "1==1"
   include_default_filter = true
   helpline = "Kék Vonal"
 }
