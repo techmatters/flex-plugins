@@ -119,7 +119,7 @@ locals {
             x = -490,
             y = 390
           },
-          autopilot_assistant_sid = "UAa0d9bf36a5123ecd0308d58a8a2331ac",
+          autopilot_assistant_sid = twilio_autopilot_assistants_v1.chatbot_default.sid,
           from = "Bot",
           chat_service = "{{trigger.message.InstanceSid}}",
           body = "{{trigger.message.Body}}",
