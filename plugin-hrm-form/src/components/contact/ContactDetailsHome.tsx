@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { format } from 'date-fns';
 import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
@@ -138,15 +138,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
       savedContact.details.conversationMedia?.length,
     // && typeof savedContact.overview.conversationDuration === 'number',
   );
-  const transcriptAvailable = true;
-  /*
-   * const transcriptAvailable = Boolean(
-   *   featureFlags.enable_transcripts &&
-   *     isChatChannel(channel) &&
-   *     canViewTranscript &&
-   *     savedContact.details.mediaUrls?.some(m => m.type === ContactMediaType.TRANSCRIPT),
-   * );
-   */
+  const showTranscriptSection = featureFlags.enable_transcripts && isChatChannel(channel);
 
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
@@ -289,7 +281,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           </SectionActionButton>
         </SectionTitleContainer>
       )}
-      {transcriptAvailable && (
+      {showTranscriptSection && (
         <ContactDetailsSection
           sectionTitle={<Template code="ContactDetails-Transcript" />}
           expanded={detailsExpanded[TRANSCRIPT]}
@@ -297,10 +289,12 @@ const ContactDetailsHome: React.FC<Props> = function ({
           buttonDataTestid="ContactDetails-Section-Transcript"
           showEditButton={false}
         >
-          {/* <TranscriptSection contactId={contactId} transcriptUrl={savedContact.details.mediaUrls[0].url} /> */}
           <TranscriptSection
             contactId={contactId}
-            transcriptUrl="https://tl-aselo-docs-as-development.s3.amazonaws.com/transcripts/2022/08/09/20220809131844-WT1d7624f7c9d015a52d825e3be75ea105.json"
+            canViewTranscript={canViewTranscript}
+            transcriptAvailable={savedContact.details.mediaUrls?.some(m => m.type === ContactMediaType.TRANSCRIPT)}
+            // transcriptUrl="https://tl-aselo-docs-as-development.s3.amazonaws.com/transcripts/2022/08/09/20220809131844-WT1d7624f7c9d015a52d825e3be75ea105.json"
+            transcriptUrl={savedContact.details.mediaUrls ? savedContact.details.mediaUrls[0].url : undefined}
           />
         </ContactDetailsSection>
       )}

@@ -287,7 +287,7 @@
   "ContactDetails-GeneralDetails-SolvedProblem": "Did the child feel we solved their problem?",
   "ContactDetails-GeneralDetails-WouldRecommend": "Would the child recommend us to a friend?",
   "ContactDetails-LoadRecording-Button": "Open Recording",
-  "ContactDetails-LoadTranscript-Button": "View Transcript",
+  "ContactDetails-LoadTranscript-Button": "Load Transcript",
   "ContactDetails-Transcript": "Transcript",
   "ContactDetails-ActionHeaderAdded": "Added on {{date}} at {{time}} by {{counsellor}}",
   "SectionName-CallerInformation": "Caller Information",
@@ -299,6 +299,8 @@
   "SectionName-Referral": "Referral",
   "SectionName-Notes": "Notes",
   "SectionName-CaseSummary": "Case Summary",
+  "TranscriptSection-TranscriptNotAvailableDifficulties": "Transcript is not available due to technical difficulties. Please contact your support team or supervisor.",
+  "TranscriptSection-TranscriptNotAvailableCheckLater": "Transcript is not available. Please check back later.",
 
   "Contact-EditCaller":"Edit Caller Information",
   "Contact-EditChild":"Edit Child Information",

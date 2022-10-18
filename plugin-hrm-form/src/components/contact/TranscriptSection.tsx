@@ -5,32 +5,63 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { format } from 'date-fns';
 
 import { contactFormsBase, namespace, RootState } from '../../states';
-import { getFileDownloadUrl } from '../../services/ServerlessService';
+import { getFileDownloadUrlFromUrl } from '../../services/ServerlessService';
 import { SectionActionButton } from '../../styles/search';
 import { loadTranscript } from '../../states/contacts/existingContacts';
 import { FontOpenSans } from '../../styles/HrmStyles';
-import { MessageList, MessageBubble, MessageBubbleBody, MessageBubbleHeader } from './TranscriptSection.styles';
+import {
+  MessageList,
+  MessageBubble,
+  MessageBubbleBody,
+  MessageBubbleHeader,
+  ItalicFont,
+} from './TranscriptSection.styles';
 
 type OwnProps = {
   contactId: string;
   transcriptUrl: string;
+  canViewTranscript: boolean;
+  transcriptAvailable: boolean;
 };
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const TranscriptSection: React.FC<Props> = ({ contactId, myIdentity, transcriptUrl, transcript, loadTranscript }) => {
+const TranscriptSection: React.FC<Props> = ({
+  contactId,
+  canViewTranscript,
+  myIdentity,
+  transcriptAvailable,
+  transcriptUrl,
+  transcript,
+  loadTranscript,
+}) => {
   const [loading, setLoading] = useState(false);
 
+  if (!canViewTranscript) {
+    return (
+      <ItalicFont>
+        <Template code="TranscriptSection-TranscriptNotAvailableDifficulties" />
+      </ItalicFont>
+    );
+  }
+
+  if (!transcriptAvailable || !transcriptUrl) {
+    return (
+      <ItalicFont>
+        <Template code="TranscriptSection-TranscriptNotAvailableCheckLater" />
+      </ItalicFont>
+    );
+  }
+
   if (loading) {
-    return <CircularProgress size={50} />;
+    return <CircularProgress size={30} />;
   }
 
   if (!transcript) {
     const fetchAndLoadTranscript = async () => {
       try {
         setLoading(true);
-        const [, fileNameAtAws] = transcriptUrl.split('s3.amazonaws.com/');
-        const transcriptPreSignedUrl = await getFileDownloadUrl(fileNameAtAws, '');
+        const transcriptPreSignedUrl = await getFileDownloadUrlFromUrl(transcriptUrl, '');
         const transcriptJson = await fetch(transcriptPreSignedUrl.downloadUrl);
         const transcriptParsed = await transcriptJson.json();
         // TODO: the current example of a transcript contains more stuff. Here we only want the transcript itself probably?
