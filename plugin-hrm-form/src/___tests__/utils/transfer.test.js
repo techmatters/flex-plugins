@@ -101,7 +101,18 @@ describe('Transfer mode, status and conditionals helpers', () => {
       { transferMeta: { originalReservation: 'task1', transferStatus: transferStatuses.transferring } },
       { sid: 'task2' },
     );
-    const task3 = await task2.accept();
+    const task2Accepted = await task2.accept();
+    const task3 = {
+      ...task2Accepted,
+      sid: 'task3',
+      attributes: {
+        ...task2Accepted.attributes,
+        transferMeta: {
+          ...task2Accepted.attributes.transferMeta,
+          sidWithTaskControl: 'task3',
+        },
+      },
+    };
     const [task4c, task4r] = [{ ...task3 }, { ...task3 }];
     await TransferHelpers.setTransferAccepted(task4c);
     await TransferHelpers.setTransferRejected(task4r);
@@ -219,7 +230,7 @@ describe('Kick, close and helpers', () => {
     await TransferHelpers.closeCallSelf(task);
 
     expect(task.attributes.transferMeta.transferStatus).toBe(transferStatuses.rejected);
-    expect(Flex.Actions.invokeAction).toHaveBeenCalledWith('HangupCall', expected1);
+    expect(Flex.Actions.invokeAction).toHaveBeenCalledWith('CompleteTask', expected1);
   });
 
   test('setTransferAccepted', async () => {

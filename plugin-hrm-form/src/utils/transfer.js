@@ -29,7 +29,7 @@ export const isColdTransfer = task =>
 export const isTransferring = task =>
   Boolean(
     task.attributes.transferMeta && task.attributes.transferMeta.transferStatus === transferStatuses.transferring,
-  ) || !hasTaskControl(task);
+  );
 
 /**
  * @param {ITask} task
@@ -38,13 +38,13 @@ export const shouldShowTransferButton = task =>
   TaskHelper.isTaskAccepted(task) &&
   task.taskStatus === 'assigned' &&
   task.status === 'accepted' &&
-  !isTransferring(task);
+  (!isTransferring(task) || hasTaskControl(task));
 
 /**
  * @param {ITask} task
  */
 export const shouldShowTransferControls = task =>
-  !isOriginalReservation(task) && isTransferring(task) && TaskHelper.isTaskAccepted(task);
+  !isOriginalReservation(task) && isTransferring(task) && hasTaskControl(task) && TaskHelper.isTaskAccepted(task);
 
 /**
  * Indicates if the current counselor has sole control over the task. Used to know if counselor should send form to hrm backend and prevent the form from being edited
