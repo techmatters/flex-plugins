@@ -25,6 +25,7 @@ import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contac
 import { getPermissionsForContact, PermissionActions } from '../../permissions';
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
 import { getConfig } from '../../HrmFormPlugin';
+import TranscriptSection from './TranscriptSection';
 
 // TODO: complete this type
 type OwnProps = {
@@ -40,6 +41,7 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchT
 /* eslint-disable complexity */
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ContactDetailsHome: React.FC<Props> = function ({
+  contactId,
   context,
   detailsExpanded,
   showActionIcons = false,
@@ -295,9 +297,11 @@ const ContactDetailsHome: React.FC<Props> = function ({
           buttonDataTestid="ContactDetails-Section-Transcript"
           showEditButton={false}
         >
-          <SectionActionButton type="button" onClick={() => console.log('>>>> Pressed')}>
-            <Template code="ContactDetails-LoadTranscript-Button" />
-          </SectionActionButton>
+          {/* <TranscriptSection contactId={contactId} transcriptUrl={savedContact.details.mediaUrls[0].url} /> */}
+          <TranscriptSection
+            contactId={contactId}
+            transcriptUrl="https://tl-aselo-docs-as-development.s3.amazonaws.com/transcripts/2022/08/09/20220809131844-WT1d7624f7c9d015a52d825e3be75ea105.json"
+          />
         </ContactDetailsSection>
       )}
     </DetailsContainer>
