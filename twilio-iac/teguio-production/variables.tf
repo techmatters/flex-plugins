@@ -1,7 +1,26 @@
 variable "account_sid" {}
+variable "auth_token" {}
 variable "serverless_url" {}
 variable "datadog_app_id" {}
 variable "datadog_access_token" {}
+
+variable "helpline_language" {
+  description = "Language used by the helpline"
+  type        = string
+  default     = "es-CO"
+}
+
+variable "task_language" {
+  description = "Language used by the tasks"
+  type        = string
+  default     = "es-CO"
+}
+
+variable "aws_account_id" {
+  description = "Numeric AWS account ID used in ARNs"
+  type        = string
+  default     = null
+}
 
 variable "local_os" {
   description = "The OS running the terraform script. The only value that currently changes behaviour from default is 'Windows'"
@@ -10,35 +29,35 @@ variable "local_os" {
 }
 
 variable "helpline" {
-  default = "International Ukrainian Helpline"
+  default = "Te Guío CO"
 }
 
 variable "short_helpline" {
-  default = "UKR"
+  default = "CO"
 }
 
 variable "operating_info_key" {
-  default = "ukr"
+  default = "co"
 }
 
 variable "environment" {
-  default = "Staging"
+  default = "Production"
 }
 
 variable "short_environment" {
-  default = "STG"
+  default = "PROD"
 }
 
 variable "definition_version" {
   description = "Key that determines which set of form definitions this helpline will use"
   type        = string
-  default = "ukr-v1"
+  default = "co-v1"
 }
 
 variable "permission_config" {
   description = "Key that determines which set of permission rules this helpline will use"
   type        = string
-  default = "demo"
+  default = "co"
 }
 
 variable multi_office {
@@ -66,4 +85,28 @@ variable "feature_flags" {
     "enable_save_insights": true,
     "enable_previous_contacts": true
   }
+}
+
+variable "target_task_name" {
+  description = "Pre survey task that the studio flow should trigger"
+  type        = string
+  default = "execute_initial_flow"
+}
+
+variable "twilio_numbers" {
+  default = [""]
+  type = list(string)
+  description = "List of Twilio Numbers"
+}
+
+variable "serverless_function_sid" {
+  description = "/operatingHours function from serverless-production (manually set variable after first deploy)"
+  default = "ZHb7ef5682d731ce326be6d61c8a2b2fcf"
+  type        = string
+}
+
+variable "custom_channel_attributes" {
+  description = "Override the default channel attributes by setting this"
+  type = string
+  default = ""
 }

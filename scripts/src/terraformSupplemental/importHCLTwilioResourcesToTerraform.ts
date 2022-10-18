@@ -128,9 +128,10 @@ export default async function importResources(
   logDebug('Prepopulating sids:', sids);
   Object.assign(knownResourceSids, Object.fromEntries(sids ?? []));
   const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-  const modulePrefix = `${modulePath.length ? 'module.' : ''}${modulePath?.join('.module.')}${
-    modulePath.length ? '.' : ''
-  }`;
+  const sanitisedModulePath = modulePath.filter((pathPart) => pathPart);
+  const modulePrefix = `${sanitisedModulePath.length ? 'module.' : ''}${sanitisedModulePath.join(
+    '.module.',
+  )}${sanitisedModulePath.length ? '.' : ''}`;
   logDebug(`Prefixing imports with this module path: ${modulePrefix}`);
   logDebug(`Processing these types in this order: ${resourceTypes}`);
   // eslint-disable-next-line no-restricted-syntax

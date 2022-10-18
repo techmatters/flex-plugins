@@ -110,4 +110,5 @@ module github {
   twilio_auth_token = var.auth_token
   short_environment = var.short_environment
   short_helpline = var.short_helpline
+  serverless_url = var.serverless_url
 }

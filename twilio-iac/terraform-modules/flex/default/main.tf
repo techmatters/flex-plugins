@@ -65,7 +65,8 @@ locals {
     "pdfImagesSource": "https://tl-public-chat.s3.amazonaws.com",
     "logo_url": "https://aselo-logo.s3.amazonaws.com/145+transparent+background+no+TM.png",
     "multipleOfficeSupport": var.multi_office_support,
-    "serverless_base_url": var.serverless_url
+    "serverless_base_url": var.serverless_url,
+    "helplineLanguage": var.helpline_language
   }})
 }
 

@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        short_helplines: ['CA', 'CL', 'PH', 'ET', 'JM', 'MW', 'IN', 'RO', 'BR', 'ZA', 'CO', 'TH', 'UK', 'UKR', 'ZM', 'ZW']
+        short_helplines: ['CA', 'CL', 'PH', 'ET', 'JM', 'MW', 'IN', 'RO', 'BR', 'ZA', 'CO', 'TH', 'UK', 'UKR', 'ZM', 'ZW', 'PL']
         environment_code: [STG]
     uses: techmatters/flex-plugins/.github/workflows/custom_helpline.yml@master
     secrets: inherit
@@ -26,7 +26,7 @@ jobs:
       environment_code: ${{ matrix.environment_code }}
       changelog: ${{ inputs.changelog }}
 
-  deploy-uk_staging_III: 
+  deploy-uk_staging_III:
     uses: techmatters/flex-plugins/.github/workflows/uk_staging_III.yml@master
     secrets: inherit
     with:
