@@ -7,9 +7,9 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "tl-terraform-state-twilio-ukr-staging"
+    bucket         = "tl-terraform-state-twilio-hu-production"
     key            = "twilio/terraform.tfstate"
-    dynamodb_table = "twilio-terraform-ukr-staging-locks"
+    dynamodb_table = "twilio-terraform-hu-production-locks"
     region = "us-east-1"
     encrypt        = true
   }
@@ -20,28 +20,28 @@ locals {
   helpline  = "Kék Vonal"
   short_helpline = "HU"
   operating_info_key = "hu"
-  environment = "Staging"
-  short_environment = "STG"
+  environment = "Production"
+  short_environment = "PROD"
   definition_version = "hu-v1"
   permission_config = "hu"
   multi_office  = false
 
   feature_flags = {
-      "enable_fullstory_monitoring": false,
-      "enable_upload_documents": true,
-      "enable_post_survey": false,
-      "enable_case_management": true,
-      "enable_offline_contact": true,
-      "enable_filter_cases": true,
-      "enable_sort_cases": true,
-      "enable_transfers": true,
-      "enable_manual_pulling": true,
-      "enable_csam_report": true,
-      "enable_canned_responses": true,
-      "enable_dual_write": false,
-      "enable_save_insights": true,
-      "enable_previous_contacts": true
-    }
+    "enable_fullstory_monitoring": false,
+    "enable_upload_documents": true,
+    "enable_post_survey": false,
+    "enable_case_management": true,
+    "enable_offline_contact": true,
+    "enable_filter_cases": true,
+    "enable_sort_cases": true,
+    "enable_transfers": true,
+    "enable_manual_pulling": true,
+    "enable_csam_report": true,
+    "enable_canned_responses": true,
+    "enable_dual_write": false,
+    "enable_save_insights": true,
+    "enable_previous_contacts": true
+  }
 
   ukr_chatbot_state = "Chatbot-ukr-HU"
   ru_chatbot_state = "Chatbot-ru-HU"
@@ -468,8 +468,9 @@ module "services" {
 
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
-  custom_task_routing_filter_expression = "phone=='+3680984590' OR phone=='+3612344587' OR channelType=='web' OR isContactlessTask==true"
+  custom_task_routing_filter_expression = "phone=='+3680984590' OR phone=='+3612344587' OR channelType=='web'"
   serverless_url = var.serverless_url
+  skip_timeout_expression = "1==1"
   include_default_filter = true
   helpline = "Kék Vonal"
 }
@@ -491,10 +492,10 @@ module flex {
   permission_config = "demo"
   definition_version = local.definition_version
   serverless_url = var.serverless_url
-  hrm_url = "https://hrm-staging-eu.tl.techmatters.org"
+  hrm_url = "https://hrm-production-eu.tl.techmatters.org"
   multi_office_support = local.multi_office
   feature_flags = local.feature_flags
-  messaging_flow_contact_identity = "+12053089376"
+  messaging_flow_contact_identity = "+12014821989"
   flex_chat_service_sid = module.services.flex_chat_service_sid
   messaging_studio_flow_sid = module.studioFlow.messaging_studio_flow_sid
 }
