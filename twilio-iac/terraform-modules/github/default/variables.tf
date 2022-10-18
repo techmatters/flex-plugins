@@ -15,3 +15,8 @@ variable "short_helpline" {
   description = "Short (usually 2 letter) upper case code for helpline"
   type        = string
 }
+
+ variable "serverless_url" {
+   description = "The url used to call serverless endpoints"
+   type        = string
+ }

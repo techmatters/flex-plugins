@@ -125,3 +125,4 @@ jobs:
           aselo-app-secret-key: $ASELO_APP_SECRET_KEY
           aws-region: $AWS_REGION
           s3-bucket: $S3_BUCKET
+          helpline-name: '<SHORT_HELPLINE>_<SHORT_ENVIRONMENT>'
