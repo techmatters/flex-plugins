@@ -1,4 +1,4 @@
-import { Template, MessageListItem, MessageList } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -8,6 +8,8 @@ import { contactFormsBase, namespace, RootState } from '../../states';
 import { getFileDownloadUrl } from '../../services/ServerlessService';
 import { SectionActionButton } from '../../styles/search';
 import { loadTranscript } from '../../states/contacts/existingContacts';
+import { FontOpenSans } from '../../styles/HrmStyles';
+import { MessageList, MessageBubble, MessageBubbleBody, MessageBubbleHeader } from './TranscriptSection.styles';
 
 type OwnProps = {
   contactId: string;
@@ -16,7 +18,7 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const TranscriptSection: React.FC<Props> = ({ contactId, transcriptUrl, transcript, loadTranscript }) => {
+const TranscriptSection: React.FC<Props> = ({ contactId, myIdentity, transcriptUrl, transcript, loadTranscript }) => {
   const [loading, setLoading] = useState(false);
 
   if (loading) {
@@ -45,30 +47,29 @@ const TranscriptSection: React.FC<Props> = ({ contactId, transcriptUrl, transcri
       </SectionActionButton>
     );
   }
-
   console.log(transcript);
   return (
-    <div className="Twilio-MessageList">
+    <MessageList>
       {transcript.messages.map(m => {
+        const isFromMe = m.from === myIdentity;
+
         return (
-          <div className="Twilio-MessageListItem-BubbleContainer" key={m.sid}>
-            <div className="Twilio-MessageBubble-default">
-              <div className="Twilio-MessageBubble-Header">
-                <div className="Twilio-MessageBubble-UserName">{m.from}</div>
-                <div className="Twilio-MessageBubble-Time">{format(new Date(m.dateCreated), 'h:mm aaaaa')}m</div>
-              </div>
-              <div className="Twilio-MessageBubble-Body">{m.body}</div>
-              <div className="Twilio-MessageBubble-end" />
-            </div>
-          </div>
+          <MessageBubble key={m.sid} isFromMe={isFromMe}>
+            <MessageBubbleHeader>
+              <FontOpenSans>{m.from}</FontOpenSans>
+              <FontOpenSans>{format(new Date(m.dateCreated), 'h:mm aaaaa')}m</FontOpenSans>
+            </MessageBubbleHeader>
+            <MessageBubbleBody>{m.body}</MessageBubbleBody>
+          </MessageBubble>
         );
       })}
-    </div>
+    </MessageList>
   );
 };
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   transcript: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.transcript,
+  myIdentity: state.flex.chat.session.client.user.identity,
 });
 
 const mapDispatchToProps = {
