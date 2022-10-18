@@ -3,7 +3,7 @@ import { styled } from '@twilio/flex-ui';
 import { FontOpenSans } from '../../styles/HrmStyles';
 
 export const ItalicFont = styled(FontOpenSans)`
-font-size: 12px;
+  font-size: 12px;
   font-style: italic;
   line-height: 17px;
 `;
