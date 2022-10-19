@@ -12,7 +12,7 @@ import {
   ChatOrchestratorEvent,
 } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
-// import type { ChatOrchestration } from '@twilio/flex-ui/src/ChatOrchestrator';
+import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
 import {
@@ -273,39 +273,28 @@ const isAseloCustomChannelTask = (task: CustomITask) =>
 /**
  * This function manipulates the default chat orchetrations to allow our implementation of post surveys.
  * Since we rely on the same chat channel as the original contact for it, we don't want it to be "deactivated" by Flex.
- * We also don't want the counselor to be part of the channel once the task is wrapped (or the post survey answers will be seen).
  * Hence this function modifies the following orchestration events:
- * - task wrapup: adds LeaveChatChannel and removes DeactivateChatChannel
+ * - task wrapup: removes DeactivateChatChannel
  * - task completed: removes DeactivateChatChannel
  */
 const setChatOrchestrationsForPostSurvey = () => {
-  const excludeDeactivateChatChannel = (orchestrations: ChatOrchestratorEvent[]) =>
-    orchestrations.filter(e => e !== ChatOrchestratorEvent.DeactivateChatChannel);
+  const setExcludedDeactivateChatChannel = (event: keyof ChatOrchestrationsEvents) => {
+    const excludeDeactivateChatChannel = (orchestrations: ChatOrchestratorEvent[]) =>
+      orchestrations.filter(e => e !== ChatOrchestratorEvent.DeactivateChatChannel);
 
-  const includeLeaveChatChannel = (orchestrations: ChatOrchestratorEvent[]) =>
-    orchestrations.some(o => o === ChatOrchestratorEvent.LeaveChatChannel)
-      ? orchestrations
-      : [...orchestrations, ChatOrchestratorEvent.LeaveChatChannel];
+    const defaultOrchestrations = ChatOrchestrator.getOrchestrations(event);
 
-  const defaultWrapupOrchestrations = ChatOrchestrator.getOrchestrations('wrapup');
+    if (Array.isArray(defaultOrchestrations)) {
+      ChatOrchestrator.setOrchestrations(event, task => {
+        return isAseloCustomChannelTask(task)
+          ? defaultOrchestrations
+          : excludeDeactivateChatChannel(defaultOrchestrations);
+      });
+    }
+  };
 
-  if (Array.isArray(defaultWrapupOrchestrations)) {
-    ChatOrchestrator.setOrchestrations('wrapup', task => {
-      return isAseloCustomChannelTask(task)
-        ? defaultWrapupOrchestrations
-        : includeLeaveChatChannel(excludeDeactivateChatChannel(defaultWrapupOrchestrations));
-    });
-  }
-
-  const defaultCompletedOrchestrations = ChatOrchestrator.getOrchestrations('completed');
-
-  if (Array.isArray(defaultCompletedOrchestrations)) {
-    ChatOrchestrator.setOrchestrations('completed', task => {
-      return isAseloCustomChannelTask(task)
-        ? defaultCompletedOrchestrations
-        : excludeDeactivateChatChannel(defaultCompletedOrchestrations);
-    });
-  }
+  setExcludedDeactivateChatChannel('wrapup');
+  setExcludedDeactivateChatChannel('completed');
 };
 
 export const setUpPostSurvey = (setupObject: SetupObject) => {
