@@ -944,7 +944,7 @@ const CheckboxBase = styled.input<FormInputProps>`
     top: 50%;
     left: 7px;
     transform: translate(-50%, -50%);
-    content: '';
+    content: '\f00c';
   }
   &[type='checkbox']::before {
     width: 13px;
