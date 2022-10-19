@@ -331,11 +331,13 @@ export const afterWrapupTask = (setupObject: SetupObject) => async (payload: Act
   const { featureFlags } = setupObject;
 
   if (featureFlags.enable_post_survey) {
-    const channelState = StateHelper.getChatChannelStateForTask(payload.task);
+    if (TaskHelper.isChatBasedTask(payload.task)) {
+      const channelState = StateHelper.getChatChannelStateForTask(payload.task);
 
-    channelState.source?.removeAllListeners('messageAdded');
-    channelState.source?.removeAllListeners('typingStarted');
-    channelState.source?.removeAllListeners('typingEnded');
+      channelState.source?.removeAllListeners('messageAdded');
+      channelState.source?.removeAllListeners('typingStarted');
+      channelState.source?.removeAllListeners('typingEnded');
+    }
 
     // TODO: make this occur in taskrouter callback
     await triggerPostSurvey(setupObject, payload);
