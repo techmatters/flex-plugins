@@ -10,6 +10,7 @@ import {
   ActionFunction,
 } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
+import { ChatOrchestrationsEvents, ChatOrchestration } from '@twilio/flex-ui/src/ChatOrchestrator';
 
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
 import {
@@ -282,10 +283,12 @@ const isAseloCustomChannelTask = (task: CustomITask) =>
 export const setUpPostSurvey = (setupObject: SetupObject) => {
   const { featureFlags } = setupObject;
   if (featureFlags.enable_post_survey) {
-    const maybeExcludeDeactivateChatChannel = event => {
+    const maybeExcludeDeactivateChatChannel = (event: keyof ChatOrchestrationsEvents) => {
       const defaultOrchestrations = ChatOrchestrator.getOrchestrations(event);
       if (Array.isArray(defaultOrchestrations)) {
-        const excludeDeactivateChatChannel = defaultOrchestrations.filter(e => e !== 'DeactivateChatChannel');
+        const excludeDeactivateChatChannel = defaultOrchestrations.filter(
+          e => e !== ChatOrchestration.DeactivateChatChannel,
+        );
 
         ChatOrchestrator.setOrchestrations(
           event,
@@ -293,10 +296,10 @@ export const setUpPostSurvey = (setupObject: SetupObject) => {
           task => (isAseloCustomChannelTask(task) ? defaultOrchestrations : excludeDeactivateChatChannel),
         );
       }
-
-      maybeExcludeDeactivateChatChannel('wrapup');
-      maybeExcludeDeactivateChatChannel('completed');
     };
+
+    maybeExcludeDeactivateChatChannel('wrapup');
+    maybeExcludeDeactivateChatChannel('completed');
   }
 };
 
