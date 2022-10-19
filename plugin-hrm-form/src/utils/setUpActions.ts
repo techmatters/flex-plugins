@@ -8,8 +8,12 @@ import {
   ChatOrchestrator,
   ITask,
   ActionFunction,
+  ReplacedActionFunction,
+  ChatOrchestratorEvent,
+  ChatChannelHelper,
 } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
+import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
 import {
@@ -50,7 +54,6 @@ export const loadCurrentDefinitionVersion = async () => {
 
 /**
  * Given a taskSid, retrieves the state of the form (stored in redux) for that task
- * @param {string} taskSid
  */
 const getStateContactForms = (taskSid: string) => {
   return Manager.getInstance().store.getState()[namespace][contactFormsBase].tasks[taskSid];
@@ -77,7 +80,6 @@ const fromActionFunction = (fun: ActionFunction) => async (payload: ActionPayloa
 
 /**
  * Initializes an empty form (in redux store) for the task within payload
- * @param {{ task: any }} payload
  */
 export const initializeContactForm = (payload: ActionPayload) => {
   const { currentDefinitionVersion } = Manager.getInstance().store.getState()[namespace][configurationBase];
@@ -115,11 +117,9 @@ const handleTransferredTask = async (task: ITask) => {
 
 export const getTaskLanguage = ({ helplineLanguage }) => ({ task }) => task.attributes.language || helplineLanguage;
 
-/**
- * @param {string} messageKey
- * @returns {(setupObject: ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }) => import('@twilio/flex-ui').ActionFunction}
- */
-const sendMessageOfKey = messageKey => setupObject => async payload => {
+const sendMessageOfKey = (messageKey: string) => (setupObject: SetupObject): ActionFunction => async (
+  payload: ActionPayload,
+) => {
   const { getMessage } = setupObject;
   const taskLanguage = getTaskLanguage(setupObject)(payload);
   const message = await getMessage(messageKey)(taskLanguage);
@@ -196,10 +196,8 @@ const safeTransfer = async (transferFunction: () => Promise<any>, task: ITask): 
 
 /**
  * Custom override for TransferTask action. Saves the form to share with another counseler (if possible) and then starts the transfer
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
- * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
  */
-export const customTransferTask = (setupObject: SetupObject) => async (
+export const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction => async (
   payload: ActionPayloadWithOptions,
   original: ActionFunction,
 ) => {
@@ -249,7 +247,6 @@ export const hangupCall = fromActionFunction(saveEndMillis);
 
 /**
  * Override for WrapupTask action. Sends a message before leaving (if it should) and saves the end time of the conversation
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
 export const wrapupTask = (setupObject: SetupObject) =>
   fromActionFunction(async payload => {
@@ -259,11 +256,9 @@ export const wrapupTask = (setupObject: SetupObject) =>
     await saveEndMillis(payload);
   });
 
-/**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
- * @returns {import('@twilio/flex-ui').ActionFunction}
- */
-const decreaseChatCapacity = (setupObject: SetupObject) => async (payload: ActionPayload): Promise<void> => {
+const decreaseChatCapacity = (setupObject: SetupObject): ActionFunction => async (
+  payload: ActionPayload,
+): Promise<void> => {
   const { featureFlags } = setupObject;
   const { task } = payload;
   if (featureFlags.enable_manual_pulling && task.taskChannelUniqueName === 'chat') await adjustChatCapacity('decrease');
@@ -277,26 +272,36 @@ const isAseloCustomChannelTask = (task: CustomITask) =>
   (<string[]>Object.values(customChannelTypes)).includes(task.channelType);
 
 /**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * This function manipulates the default chat orchetrations to allow our implementation of post surveys.
+ * Since we rely on the same chat channel as the original contact for it, we don't want it to be "deactivated" by Flex.
+ * Hence this function modifies the following orchestration events:
+ * - task wrapup: removes DeactivateChatChannel
+ * - task completed: removes DeactivateChatChannel
  */
+const setChatOrchestrationsForPostSurvey = () => {
+  const setExcludedDeactivateChatChannel = (event: keyof ChatOrchestrationsEvents) => {
+    const excludeDeactivateChatChannel = (orchestrations: ChatOrchestratorEvent[]) =>
+      orchestrations.filter(e => e !== ChatOrchestratorEvent.DeactivateChatChannel);
+
+    const defaultOrchestrations = ChatOrchestrator.getOrchestrations(event);
+
+    if (Array.isArray(defaultOrchestrations)) {
+      ChatOrchestrator.setOrchestrations(event, task => {
+        return isAseloCustomChannelTask(task)
+          ? defaultOrchestrations
+          : excludeDeactivateChatChannel(defaultOrchestrations);
+      });
+    }
+  };
+
+  setExcludedDeactivateChatChannel('wrapup');
+  setExcludedDeactivateChatChannel('completed');
+};
+
 export const setUpPostSurvey = (setupObject: SetupObject) => {
   const { featureFlags } = setupObject;
   if (featureFlags.enable_post_survey) {
-    const maybeExcludeDeactivateChatChannel = event => {
-      const defaultOrchestrations = ChatOrchestrator.getOrchestrations(event);
-      if (Array.isArray(defaultOrchestrations)) {
-        const excludeDeactivateChatChannel = defaultOrchestrations.filter(e => e !== 'DeactivateChatChannel');
-
-        ChatOrchestrator.setOrchestrations(
-          event,
-          // Instead than setting the orchestrations as a list of actions (ChatOrchestration[]), we can set it to a callback with type (task: ITask) => ChatOrchestration[]
-          task => (isAseloCustomChannelTask(task) ? defaultOrchestrations : excludeDeactivateChatChannel),
-        );
-      }
-
-      maybeExcludeDeactivateChatChannel('wrapup');
-      maybeExcludeDeactivateChatChannel('completed');
-    };
+    setChatOrchestrationsForPostSurvey();
   }
 };
 
@@ -326,6 +331,15 @@ export const afterWrapupTask = (setupObject: SetupObject) => async (payload: Act
   const { featureFlags } = setupObject;
 
   if (featureFlags.enable_post_survey) {
+    if (TaskHelper.isChatBasedTask(payload.task)) {
+      const channelState = StateHelper.getChatChannelStateForTask(payload.task);
+
+      channelState.source?.removeAllListeners('messageAdded');
+      channelState.source?.removeAllListeners('typingStarted');
+      channelState.source?.removeAllListeners('typingEnded');
+    }
+
+    // TODO: make this occur in taskrouter callback
     await triggerPostSurvey(setupObject, payload);
   }
 };
