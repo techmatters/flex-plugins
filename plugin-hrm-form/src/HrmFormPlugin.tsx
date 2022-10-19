@@ -68,7 +68,7 @@ const readConfig = () => {
   };
 };
 
-let cachedConfig;
+let cachedConfig: ReturnType<typeof readConfig>;
 
 try {
   cachedConfig = readConfig();
