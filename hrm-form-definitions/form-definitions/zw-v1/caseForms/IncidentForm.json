@@ -2,16 +2,16 @@
   {
     "name": "date",
     "label": "Date",
-    "type": "date-input",
+    "type": "date-input"
   },
   {
     "name": "unknownDate",
     "label": "Unknown Date",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "incidentTime",
-    "label": "Time",
+    "label": "Time of Incident",
     "type": "time-input",
   },
   {
@@ -127,7 +127,10 @@
   {
     "name": "incidentDetails",
     "label": "Incident Details",
-    "type": "text-area"
+    "type": "text-area",
+    "placeholder": "",
+    "rows": 20,
+    "width": 250
   },
   {
     "name": "reportedElsewhere",
