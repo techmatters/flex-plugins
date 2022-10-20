@@ -113,7 +113,7 @@ const CategorySection: React.FC<Props> = ({
 
   return (
     <CategoryContainer searchTerm={searchTerm} noMatch={noMatch}>
-      <CategoryHeader onClick={handleExpandCategory}>
+      <CategoryHeader onClick={handleExpandCategory} data-testid={`Categories-${categoryName}`}>
         {!searchTerm && (
           <FiltersCheckbox
             type="checkbox"
@@ -144,7 +144,7 @@ const CategorySection: React.FC<Props> = ({
           const name = `${categoryName}.${subcategory.value}`;
 
           return (
-            <MultiSelectListItem key={j} hidden={hidden}>
+            <MultiSelectListItem key={j} hidden={hidden} data-testid={`Categories-${subcategory.label}`}>
               <FormLabel htmlFor={name} style={{ flexDirection: 'row', alignItems: 'baseline' }}>
                 <FiltersCheckbox
                   id={name}

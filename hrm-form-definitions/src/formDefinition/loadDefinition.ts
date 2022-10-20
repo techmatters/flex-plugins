@@ -23,9 +23,13 @@ export enum DefinitionVersionId {
   caV1 = 'ca-v1', // Kids Help Phone Canada v1
   phV1 = 'ph-v1', // ECPAT Phillippines v1
   ukV1 = 'uk-v1', // Revenge Porn UK v1
-  ukrV1 = 'ukr-v1', // International Ukrainian Helpline v1
+  huV1 = 'hu-v1', // Kek Vonal v1
   thV1 = 'th-v1', // Childline Thailand v1
-  clV1 = 'cl-v1', // Línea Libre Chile v1
+  clV1 = 'cl-v1', // Línea Libre (CL) v1
+  coV1 = 'co-v1', // Te Guío (CO) v1
+  zwV1 = 'zw-v1', // Childline Zimbabwe v1
+  plV1 = 'pl-v1', // Telefon Zaufania (PL) v1
+  roV1 = 'ro-v1', // Telefonul Copilului Romania v1
 }
 
 // Using a variable for the root of the dynamic import confuses webpack :-(

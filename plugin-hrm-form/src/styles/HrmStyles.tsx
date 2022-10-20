@@ -35,6 +35,7 @@ type BoxProps = {
   paddingRight?: string;
   alignSelf?: string;
   textAlign?: string;
+  borderBottom?: string;
 };
 
 export const Box = styled('div')<BoxProps>`

@@ -10,6 +10,7 @@ import {
   OneToManyConfigSpec,
   OneToManyConfigSpecs,
 } from 'hrm-form-definitions';
+import { ITask } from '@twilio/flex-ui';
 
 import { isNonDataCallType } from '../states/ValidationRules';
 import { mapChannelForInsights } from '../utils/mappers';
@@ -382,7 +383,7 @@ const getInsightsUpdateFunctionsForConfig = (
 export const buildInsightsData = (task: CustomITask, contactForm: TaskEntry, caseForm: Case) => {
   const previousAttributes = task.attributes;
 
-  if (!shouldSendInsightsData(task)) return previousAttributes;
+  if (!shouldSendInsightsData(task as ITask)) return previousAttributes;
 
   const { currentDefinitionVersion } = getDefinitionVersions();
 

@@ -1,8 +1,8 @@
 [
   {
     "name": "date",
-    "label": "Date",
     "type": "date-input",
+    "label": "Date of Incident",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -45,32 +45,36 @@
         "label": ""
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
+        "value": "Home(Own)",
+        "label": "Home(Own)"
       },
       {
-        "value": "School",
-        "label": "School"
+        "value": "Home(Other)",
+        "label": "Home(Other)"
       },
       {
-        "value": "Home",
-        "label": "Home"
+        "value": "Educational Establishment",
+        "label": "Educational Establishment"
       },
       {
         "value": "Institution",
         "label": "Institution"
       },
       {
+        "value": "Public place",
+        "label": "Public place"
+      },
+      {
         "value": "Online",
         "label": "Online"
       },
       {
-        "value": "Public Place",
-        "label": "Public Place"
-      },
-      {
         "value": "Other",
         "label": "Other"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ],
     "required": {
@@ -96,6 +100,6 @@
   {
     "name": "whereElseBeenReported",
     "label": "Where else the incident has been reported?",
-    "type": "mixed-checkbox"
+    "type": "input"
   }
 ]

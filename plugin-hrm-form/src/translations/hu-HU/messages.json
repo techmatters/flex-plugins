@@ -1,6 +1,4 @@
 {
-  "WelcomeMsg": "Hi, this is the counsellor. How can I help you?",
-  "GoodbyeMsg": "The counsellor has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
-
-  "SaferNet-CustomGoodbyeMsg": "This chat has ended. Thank you for reaching out. Please help us improve by rating your experience through the following link: "
+  "WelcomeMsg": "Szia, a Kék Vonal ügyelője vagyok. Hogyan tudok segíteni Neked?",
+  "GoodbyeMsg": "Az ügyelő lezárta a beszélgetést. Köszönjük, hogy megkerestél minket. Jelentkezz újra, ha segítségre van szükséged"
 }

@@ -43,6 +43,10 @@
         "label": "Compañero/Compañera"
       },
       {
+        "value": "Amigo/Amiga",
+        "label": "Amigo/Amiga"
+      },
+      {
         "value": "Otro adulto conocido por el adolescente",
         "label": "Otro adulto conocido por el adolescente"
       },
@@ -53,6 +57,14 @@
       {
         "value": "Otro familiar",
         "label": "Otro familiar"
+      },
+      {
+        "value": "No requerido",
+        "label": "No requerido"
+      },
+      {
+        "value": "Desconocido",
+        "label": "Desconocido"
       }
     ],
     "required": {

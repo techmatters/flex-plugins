@@ -4,7 +4,6 @@
     "label": "Abierto",
     "color": "green",
     "transitions": [
-      "inProgress",
       "closed"
     ]
   },
@@ -13,31 +12,7 @@
     "label": "Cerrado",
     "color": "red",
     "transitions": [
-      "inProgress"
-    ]
-  },
-  "inProgress": {
-    "value": "inProgress",
-    "label": "En Progreso",
-    "color": "green",
-    "transitions": [
-      "closed"
-    ]
-  },
-  "deserted": {
-    "value": "deserted",
-    "label": "Deserción o No Asistencia",
-    "color": "yellow",
-    "transitions": [
-      "inProgress"
-    ]
-  },
-  "information": {
-    "value": "information",
-    "label": "Información y Orientación",
-    "color": "blue",
-    "transitions": [
-      "inProgress"
+      "open"
     ]
   }
 }

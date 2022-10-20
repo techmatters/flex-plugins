@@ -16,6 +16,11 @@ inputs:
   aws-region:
     description: 'AWS region where Aselo documents bucket is hosted'
     required: true
+  send-slack-message:
+    description: 'Specifies if should send a Slack message at the end of successful run. Defaults to true'
+    required: false
+    default: 'true'
+    type: string
 runs:
   using: "composite"
   steps:
@@ -118,6 +123,7 @@ runs:
       - name: Slack Aselo channel
         id: slack
         uses: slackapi/slack-github-action@v1.14.0
+        if: ${{ inputs.send-slack-message != 'false' }}
         with:
           channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
           slack-message: "`[FLEX]` Action ${{ github.workflow }} completed with SHA ${{ github.sha }}. Changelog is: ${{ github.event.inputs.changelog }} :rocket:."

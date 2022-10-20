@@ -161,6 +161,7 @@ const Search: React.FC<Props> = props => {
             contact={currentContact}
             handleBack={goToResultsOnContacts}
             handleSelectSearchResult={props.handleSelectSearchResult}
+            // buttonData={props.checkButtonData('ContactDetails-Section-ChildInformation')}
           />
         );
       case SearchPages.case:

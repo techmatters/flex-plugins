@@ -15,7 +15,18 @@ on:
       changelog:
         description: Release Changelog - Add a comment about the changes to be included in this release.
         required: true
-        default: .
+  workflow_call:
+    inputs:
+      helpline_code:
+        required: true
+        type: string
+      environment_code:
+        required: true
+        type: string
+      changelog:
+        description: Release Changelog - Add a comment about the changes to be included in this release.
+        required: true
+        type: string
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -25,8 +36,8 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     env:
-      TWILIO_ACCOUNT_SID_SECRET_NAME: ${{github.event.inputs.helpline_code}}_${{github.event.inputs.environment_code}}_ACCOUNT_SID
-      TWILIO_AUTH_TOKEN_SECRET_NAME: ${{github.event.inputs.helpline_code}}_${{github.event.inputs.environment_code}}_AUTH_TOKEN
+      TWILIO_ACCOUNT_SID_SECRET_NAME: ${{inputs.helpline_code}}_${{inputs.environment_code}}_ACCOUNT_SID
+      TWILIO_AUTH_TOKEN_SECRET_NAME: ${{inputs.helpline_code}}_${{inputs.environment_code}}_AUTH_TOKEN
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:

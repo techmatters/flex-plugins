@@ -24,7 +24,9 @@ type OwnProps = {
 };
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
-  return { editContactFormOpen };
+  const { isCallTypeCaller } = state[namespace][contactFormsBase];
+
+  return { editContactFormOpen, isCallTypeCaller };
 };
 const mapDispatchToProps = {
   loadContactIntoState: loadContact,
@@ -43,6 +45,7 @@ const ContactDetails: React.FC<Props> = ({
   loadContactIntoState,
   releaseContactFromState,
   editContactFormOpen,
+  isCallTypeCaller,
 }: Props) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -50,7 +53,6 @@ const ContactDetails: React.FC<Props> = ({
     loadContactIntoState(contact, task.taskSid);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contact]);
-
   const handleBackToResults = () => {
     releaseContactFromState(contact.contactId, task.taskSid);
     handleBack();
@@ -80,6 +82,7 @@ const ContactDetails: React.FC<Props> = ({
         contact={contact}
         handleConfirm={handleConfirmDialog}
         handleClose={handleCloseDialog}
+        isCallTypeCaller={isCallTypeCaller}
       />
 
       <div className={`${editContactFormOpen ? 'editingContact' : ''} hiddenWhenEditingContact`}>

@@ -248,6 +248,7 @@ const CategoriesFilter: React.FC<Props> = ({
         ref={ref => {
           filterButtonElement.current = ref;
         }}
+        data-testid="FilterBy-Categories-Button"
       >
         {text}
         {drawCount()}
@@ -292,7 +293,12 @@ const CategoriesFilter: React.FC<Props> = ({
                   <Template code="CaseList-Filters-Clear" />
                 </FiltersClearButton>
               </Box>
-              <FiltersApplyButton type="submit" onKeyDown={handleTabForLastElement} ref={lastElement}>
+              <FiltersApplyButton
+                type="submit"
+                onKeyDown={handleTabForLastElement}
+                ref={lastElement}
+                data-testid="Filter-Apply-Button"
+              >
                 <Template code="CaseList-Filters-Apply" />
               </FiltersApplyButton>
             </FiltersBottomButtons>

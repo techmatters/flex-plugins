@@ -1,7 +1,7 @@
 [
   {
     "name": "callSummary",
-    "label": "Contact Summary",
+    "label": "Resumen del Contacto",
     "type": "textarea",
     "required": {
       "value": true,
@@ -9,37 +9,37 @@
     }
   },
   {
-    "name": "repeatCaller",
-    "label": "Repeat Caller?",
-    "type": "mixed-checkbox"
-  },
-  {
     "name": "actionTaken",
-    "label": "Action Taken",
-    "type": "select",
+    "label": "Acción Tomada",
+    "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Unknown",
-        "label": " "
+        "value": "Se entregan recomendaciones",
+        "label": "Se entregan recomendaciones"
       },
       {
-        "value": "Action taken",
-        "label": "Action taken"
+        "value": "Se alcanzan acuerdos",
+        "label": "Se alcanzan acuerdos"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "Derivación",
+        "label": "Derivación"
+      },
+      {
+        "value": "Se activa protocolo de protección",
+        "label": "Se activa protocolo de protección"
       }
     ]
   },
   {
-    "name": "okForCaseWorkerToCall",
-    "label": "Ok for case worker to call?",
-    "type": "mixed-checkbox"
+    "name": "keepConfidential",
+    "label": "Mantener Confidencial",
+    "type": "mixed-checkbox",
+    "initialChecked": true
   },
   {
-    "name": "didYouDiscussRightsWithTheChild",
-    "label": "Did you discuss rights with the child?",
+    "name": "okForCaseWorkerToCall",
+    "label": "¿Se le puede recontactar?",
     "type": "mixed-checkbox"
   }
 ]

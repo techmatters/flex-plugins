@@ -1,3 +1,4 @@
 # File created during tests
 temp/
 .env
+test-results/

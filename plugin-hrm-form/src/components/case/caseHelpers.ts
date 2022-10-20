@@ -8,13 +8,13 @@ import { CustomITask, isOfflineContactTask } from '../../types/types';
  * @param task Twilio Task Sid
  * @param form Entry Form
  */
-export const getDateFromNotSavedContact = (task: CustomITask, form: TaskEntry) => {
+export const getDateFromNotSavedContact = (task: CustomITask, form: TaskEntry): Date => {
   if (isOfflineContactTask(task)) {
     const { date: dateString, time } = form.contactlessTask;
     return new Date(`${dateString}T${time}:00`);
   }
 
-  return Date.now();
+  return new Date();
 };
 
 /**

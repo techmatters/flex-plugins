@@ -1,68 +1,16 @@
-import { DefinitionVersionId, HelplineEntry } from 'hrm-form-definitions';
+import { DefinitionVersionId, HelplineEntry, StatusInfo } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
-import { CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../routing/types';
+import { Case, CaseItemEntry } from '../../types/types';
 
 // Action types
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
 export const REMOVE_CONNECTED_CASE = 'REMOVE_CONNECTED_CASE';
-export const UPDATE_CASE_INFO = 'UPDATE_CASE_INFO';
-export const UPDATE_TEMP_INFO = 'UPDATE_TEMP_INFO';
-export const UPDATE_CASE_STATUS = 'UPDATE_CASE_STATUS';
-export const MARK_CASE_AS_UPDATED = 'MARK_CASE_AS_UPDATED';
-export const UPDATE_CASE_CONTACT = 'UPDATE_CASE_CONTACT';
-
-type ViewContact = {
-  contact?: any; // TODO: create Contact type
-  detailsExpanded: { [section: string]: boolean };
-  createdAt: string;
-  timeOfContact: string;
-  counselor: string;
-};
-
-type Indexable = { index: number };
-
-export type ViewTemporaryCaseInfo = {
-  screen: CaseSectionSubroute;
-  action: CaseItemAction.View;
-  info: t.CaseItemEntry & Indexable;
-};
-
-export function isViewTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is ViewTemporaryCaseInfo {
-  return tci && (<ViewTemporaryCaseInfo>tci).action === CaseItemAction.View;
-}
-
-export type EditTemporaryCaseInfo = {
-  screen: CaseSectionSubroute;
-  action: CaseItemAction.Edit;
-  info: t.CaseItemEntry & Indexable;
-  isEdited?: boolean;
-};
-
-export function isEditTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is EditTemporaryCaseInfo {
-  return tci && (<EditTemporaryCaseInfo>tci).action === CaseItemAction.Edit;
-}
-
-export type AddTemporaryCaseInfo = {
-  screen: CaseSectionSubroute;
-  action: CaseItemAction.Add;
-  info: t.CaseItemFormValues;
-  isEdited?: boolean;
-};
-
-export function isAddTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is AddTemporaryCaseInfo {
-  return tci && (<AddTemporaryCaseInfo>tci).action === CaseItemAction.Add;
-}
-
-export type ViewContactInfo = { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact };
-
-export type TemporaryCaseInfo = ViewContactInfo | ViewTemporaryCaseInfo | AddTemporaryCaseInfo | EditTemporaryCaseInfo;
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;
   connectedCase: t.Case;
   taskId: string;
-  caseHasBeenEdited: Boolean;
 };
 
 type RemoveConnectedCaseAction = {
@@ -70,47 +18,12 @@ type RemoveConnectedCaseAction = {
   taskId: string;
 };
 
-type UpdateCaseInfoAction = {
-  type: typeof UPDATE_CASE_INFO;
-  info: t.CaseInfo;
-  taskId: string;
-};
-
-type TemporaryCaseInfoAction = {
-  type: typeof UPDATE_TEMP_INFO;
-  value: TemporaryCaseInfo;
-  taskId: string;
-};
-
-type UpdateCasesStatusAction = {
-  type: typeof UPDATE_CASE_STATUS;
-  status: string;
-  taskId: string;
-};
-
-type MarkCaseAsUpdated = {
-  type: typeof MARK_CASE_AS_UPDATED;
-  taskId: string;
-};
-
-type UpdateCaseContactAction = {
-  type: typeof UPDATE_CASE_CONTACT;
-  taskId: string;
-  contact: any;
-};
-
-export type CaseActionType =
-  | SetConnectedCaseAction
-  | RemoveConnectedCaseAction
-  | UpdateCaseInfoAction
-  | TemporaryCaseInfoAction
-  | UpdateCasesStatusAction
-  | MarkCaseAsUpdated
-  | UpdateCaseContactAction;
+export type CaseActionType = SetConnectedCaseAction | RemoveConnectedCaseAction;
 
 export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
 
 export type NoteActivity = {
+  id: string;
   date: string;
   type: string;
   text: string;
@@ -118,10 +31,10 @@ export type NoteActivity = {
   twilioWorkerId: string;
   updatedAt?: string;
   updatedBy?: string;
-  originalIndex: number;
 };
 
 export type ReferralActivity = {
+  id: string;
   date: string;
   createdAt: string;
   type: string;
@@ -130,18 +43,17 @@ export type ReferralActivity = {
   twilioWorkerId: string;
   updatedAt?: string;
   updatedBy?: string;
-  originalIndex: number;
 };
 
 export type ConnectedCaseActivity = {
-  contactId?: number;
+  callType: string;
+  contactId?: string;
   date: string;
   createdAt: string;
   type: string;
   text: string;
   twilioWorkerId: string;
   channel: string;
-  originalIndex: number;
 };
 
 export type CaseDetailsName = {
@@ -158,7 +70,6 @@ export type CaseDetails = {
     };
   };
   status: string;
-  prevStatus: string;
   caseCounselor: string;
   currentCounselor: string;
   createdAt: string;
@@ -179,54 +90,39 @@ export type CaseDetails = {
   contacts: any[];
 };
 
-export type CaseUpdater = (
-  original: t.CaseInfo,
-  temporaryInfo: t.CaseItemEntry,
-  index: number | undefined,
-) => t.CaseInfo;
-
-export const updateCaseSectionListByIndex = (
-  listProperty: string,
-  entryProperty: string = listProperty,
-): CaseUpdater => (original: t.CaseInfo, temporaryInfo: t.CaseItemEntry, index: number | undefined) => {
-  const sectionList = [...((original ?? {})[listProperty] ?? [])];
-  const { ...entry } = { ...temporaryInfo, [entryProperty]: temporaryInfo.form };
-  if (entryProperty !== 'form') {
-    delete entry.form;
-  }
-  if (typeof index === 'number') {
-    sectionList[index] = entry;
-  } else {
-    sectionList.push(entry);
-  }
-
-  return original ? { ...original, [listProperty]: sectionList } : { [listProperty]: sectionList };
-};
-
-export const updateCaseListByIndex = <T>(
-  listGetter: (ci: t.CaseInfo) => T[] | undefined,
-  caseItemToListItem: (caseItemEntry: t.CaseItemEntry) => T,
-): CaseUpdater => (original: t.CaseInfo, temporaryInfo: t.CaseItemEntry, index: number | undefined) => {
-  const copy = { ...original };
-  const sectionList = listGetter(copy);
-  const entry: T = caseItemToListItem(temporaryInfo);
-  if (typeof index === 'number') {
-    sectionList[index] = entry;
-  } else {
-    sectionList.push(entry);
-  }
-  return copy;
-};
-
-export const temporaryCaseInfoHistory = (
-  temporaryCaseInfo: EditTemporaryCaseInfo | ViewTemporaryCaseInfo,
+export const caseItemHistory = (
+  info: { updatedAt?: string; updatedBy?: string; createdAt: string; twilioWorkerId: string },
   counselorsHash: Record<string, string>,
 ) => {
-  const addingCounsellorName = counselorsHash[temporaryCaseInfo.info.twilioWorkerId] || 'Unknown';
-  const added = new Date(temporaryCaseInfo.info.createdAt);
-  const updatingCounsellorName = temporaryCaseInfo.info.updatedBy
-    ? counselorsHash[temporaryCaseInfo.info.updatedBy] || 'Unknown'
-    : undefined;
-  const updated = temporaryCaseInfo.info.updatedAt ? new Date(temporaryCaseInfo.info.updatedAt) : undefined;
+  const addingCounsellorName = counselorsHash[info.twilioWorkerId] || 'Unknown';
+  const added = new Date(info.createdAt);
+  const updatingCounsellorName = info.updatedBy ? counselorsHash[info.updatedBy] || 'Unknown' : undefined;
+  const updated = info.updatedAt ? new Date(info.updatedAt) : undefined;
   return { addingCounsellorName, added, updatingCounsellorName, updated };
+};
+
+export type CaseSummaryWorkingCopy = {
+  status: string;
+  followUpDate: string;
+  childIsAtRisk: boolean;
+  summary: string;
+};
+
+export type CaseWorkingCopy = {
+  sections: {
+    [section: string]: {
+      new?: CaseItemEntry;
+      existing: { [id: string]: CaseItemEntry };
+    };
+  };
+  caseSummary?: CaseSummaryWorkingCopy;
+};
+export type CaseState = {
+  tasks: {
+    [taskId: string]: {
+      connectedCase: Case;
+      caseWorkingCopy: CaseWorkingCopy;
+      availableStatusTransitions: StatusInfo[];
+    };
+  };
 };

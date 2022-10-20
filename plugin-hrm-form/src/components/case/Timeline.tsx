@@ -16,22 +16,20 @@ import {
   TimelineDate,
   TimelineText,
   TimelineCallTypeIcon,
+  CaseDetailsBorder,
 } from '../../styles/case';
 import { Box, Row } from '../../styles/HrmStyles';
 import CaseAddButton from './CaseAddButton';
-import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
-import { ContactDetailsSections } from '../common/ContactDetails';
-import { CaseItemEntry, CustomITask } from '../../types/types';
+import { CustomITask } from '../../types/types';
 import { isConnectedCaseActivity } from './caseActivities';
 import { TaskEntry } from '../../states/contacts/reducer';
-import { Activity, NoteActivity, ReferralActivity } from '../../states/case/types';
+import { Activity, ConnectedCaseActivity, NoteActivity, ReferralActivity } from '../../states/case/types';
 import { PermissionActions, PermissionActionType } from '../../permissions';
 import { NewCaseSubroutes, AppRoutesWithCase, CaseItemAction } from '../../states/routing/types';
 
 type OwnProps = {
   timelineActivities: Activity[];
-  contacts: any[];
   can: (action: PermissionActionType) => boolean;
   taskSid: CustomITask['taskSid'];
   form: TaskEntry;
@@ -42,84 +40,28 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const Timeline: React.FC<Props> = props => {
-  const { can, taskSid, form, changeRoute, updateTempInfo, route, timelineActivities } = props;
+  const { can, taskSid, changeRoute, route, timelineActivities } = props;
   const [mockedMessage, setMockedMessage] = useState(null);
 
   const handleViewNoteClick = (activity: NoteActivity) => {
-    const { twilioWorkerId } = activity;
-    const info: CaseItemEntry = {
-      id: null,
-      form: { ...activity.note },
-      twilioWorkerId,
-      createdAt: parseISO(activity.date).toISOString(),
-      updatedAt: activity.updatedAt ? parseISO(activity.updatedAt).toISOString() : undefined,
-      updatedBy: activity.updatedBy,
-    };
-    updateTempInfo(
-      { screen: NewCaseSubroutes.Note, action: CaseItemAction.View, info: { ...info, index: activity.originalIndex } },
-      taskSid,
-    );
-    changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.View }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.View, id: activity.id }, taskSid);
   };
 
   const handleViewReferralClick = (activity: ReferralActivity) => {
-    const { twilioWorkerId } = activity;
-    const info: CaseItemEntry = {
-      id: null,
-      form: { ...activity.referral },
-      twilioWorkerId,
-      createdAt: parseISO(activity.createdAt).toISOString(),
-      updatedAt: activity.updatedAt ? parseISO(activity.updatedAt).toISOString() : undefined,
-      updatedBy: activity.updatedBy,
-    };
-    updateTempInfo(
-      {
-        screen: NewCaseSubroutes.Referral,
-        action: CaseItemAction.View,
-        info: { ...info, index: activity.originalIndex },
-      },
-      taskSid,
-    );
-    changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.View }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.View, id: activity.id }, taskSid);
   };
 
-  const handleViewConnectedCaseActivityClick = activity => {
-    const { twilioWorkerId } = activity;
-
-    const detailsExpanded = {
-      [ContactDetailsSections.GENERAL_DETAILS]: true,
-      [ContactDetailsSections.CALLER_INFORMATION]: false,
-      [ContactDetailsSections.CHILD_INFORMATION]: false,
-      [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
-      [ContactDetailsSections.CONTACT_SUMMARY]: false,
-    };
-    const contact = props.contacts.find(c => c.id === activity.contactId);
-    const tempInfo = {
-      detailsExpanded,
-      contact,
-      createdAt: activity.createdAt,
-      timeOfContact: activity.date,
-      counselor: twilioWorkerId,
-    };
-    updateTempInfo({ screen: NewCaseSubroutes.ViewContact, info: { ...tempInfo } }, taskSid);
-    changeRoute({ route, subroute: NewCaseSubroutes.ViewContact }, taskSid);
+  const handleViewConnectedCaseActivityClick = (activity: ConnectedCaseActivity) => {
+    changeRoute({ route, subroute: NewCaseSubroutes.ViewContact, id: activity.contactId }, taskSid);
   };
 
   const handleAddNoteClick = () => {
-    updateTempInfo({ screen: NewCaseSubroutes.Note, action: CaseItemAction.Add, info: null }, taskSid);
     changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.Add }, taskSid);
   };
 
   const handleAddReferralClick = () => {
-    updateTempInfo({ screen: NewCaseSubroutes.Referral, action: CaseItemAction.Add, info: null }, taskSid);
     changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.Add }, taskSid);
   };
-
-  /*
-   * If case has not been created yet, we should return value from the form.
-   * Else If case was already created we should return rawJson value.
-   */
-  const callType = form?.callType || props.contacts[0]?.rawJson?.callType;
 
   const handleViewClick = activity => {
     if (activity.type === 'note') {
@@ -134,55 +76,57 @@ const Timeline: React.FC<Props> = props => {
   };
 
   return (
-    <Box marginTop="25px">
-      <Dialog onClose={() => setMockedMessage(null)} open={Boolean(mockedMessage)}>
-        <DialogContent>{mockedMessage}</DialogContent>
-      </Dialog>
-      <Box marginBottom="10px">
-        <Row>
-          <CaseSectionFont id="Case-TimelineSection-label">
-            <Template code="Case-TimelineSection" />
-          </CaseSectionFont>
-          <Box marginLeft="auto">
-            <CaseAddButton
-              templateCode="Case-Note"
-              onClick={handleAddNoteClick}
-              disabled={!can(PermissionActions.ADD_NOTE)}
-            />
-            <CaseAddButton
-              templateCode="Case-Referral"
-              onClick={handleAddReferralClick}
-              disabled={!can(PermissionActions.ADD_REFERRAL)}
-              withDivider
-            />
-          </Box>
-        </Row>
-      </Box>
-      {timelineActivities &&
-        timelineActivities.length > 0 &&
-        timelineActivities.map((activity, index) => {
-          const date = parseISO(activity.date).toLocaleDateString(navigator.language);
-          return (
-            <TimelineRow key={index}>
-              <TimelineDate>{date}</TimelineDate>
-              <TimelineIcon type={isConnectedCaseActivity(activity) ? activity.channel : activity.type} />
-              {isConnectedCaseActivity(activity) && (
-                <TimelineCallTypeIcon>
-                  <CallTypeIcon callType={callType} fontSize="18px" />
-                </TimelineCallTypeIcon>
-              )}
-              <TimelineText>{activity?.text}</TimelineText>
-              <Box marginLeft="auto" marginRight="10px">
-                <Box marginLeft="auto" marginRight="10px">
-                  <ViewButton onClick={() => handleViewClick(activity)}>
-                    <Template code="Case-ViewButton" />
-                  </ViewButton>
+    <CaseDetailsBorder>
+      <Box marginTop="25px">
+        <Dialog onClose={() => setMockedMessage(null)} open={Boolean(mockedMessage)}>
+          <DialogContent>{mockedMessage}</DialogContent>
+        </Dialog>
+        <Box marginBottom="10px">
+          <Row>
+            <CaseSectionFont id="Case-TimelineSection-label">
+              <Template code="Case-TimelineSection" />
+            </CaseSectionFont>
+            <Box marginLeft="auto">
+              <CaseAddButton
+                templateCode="Case-Note"
+                onClick={handleAddNoteClick}
+                disabled={!can(PermissionActions.ADD_NOTE)}
+              />
+              <CaseAddButton
+                templateCode="Case-Referral"
+                onClick={handleAddReferralClick}
+                disabled={!can(PermissionActions.ADD_REFERRAL)}
+                withDivider
+              />
+            </Box>
+          </Row>
+        </Box>
+        {timelineActivities &&
+          timelineActivities.length > 0 &&
+          timelineActivities.map((activity, index) => {
+            const date = parseISO(activity.date).toLocaleDateString(navigator.language);
+            return (
+              <TimelineRow key={index}>
+                <TimelineDate>{date}</TimelineDate>
+                <TimelineIcon type={isConnectedCaseActivity(activity) ? activity.channel : activity.type} />
+                {isConnectedCaseActivity(activity) && (
+                  <TimelineCallTypeIcon>
+                    <CallTypeIcon callType={activity.callType} fontSize="18px" />
+                  </TimelineCallTypeIcon>
+                )}
+                <TimelineText>{activity?.text}</TimelineText>
+                <Box marginLeft="auto" marginRight="5px">
+                  <Box marginLeft="auto" marginRight="5px">
+                    <ViewButton onClick={() => handleViewClick(activity)}>
+                      <Template code="Case-ViewButton" />
+                    </ViewButton>
+                  </Box>
                 </Box>
-              </Box>
-            </TimelineRow>
-          );
-        })}
-    </Box>
+              </TimelineRow>
+            );
+          })}
+      </Box>
+    </CaseDetailsBorder>
   );
 };
 
@@ -190,7 +134,6 @@ Timeline.displayName = 'Timeline';
 
 const mapDispatchToProps = dispatch => ({
   changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
-  updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
 });
 
 const connector = connect(null, mapDispatchToProps);

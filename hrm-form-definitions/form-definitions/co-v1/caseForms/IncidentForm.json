@@ -53,20 +53,52 @@
         "label": "Hogar (Ajeno)"
       },
       {
-        "value": "Establecimiento Educacional",
-        "label": "Establecimiento Educacional"
-      },
-      {
-        "value": "Institución",
-        "label": "Institución"
+        "value": "Institución Educativa",
+        "label": "Institución Educativa"
       },
       {
         "value": "Lugar Público",
         "label": "Lugar Público"
       },
       {
-        "value": "En Línea",
-        "label": "En Línea"
+        "value": "En Línea - Facebook",
+        "label": "En Línea - Facebook"
+      },
+      {
+        "value": "En Línea - Tik Tok",
+        "label": "En Línea - Tik Tok"
+      },
+      {
+        "value": "En Línea - Instagram",
+        "label": "En Línea - Instagram"
+      },
+      {
+        "value": "En Línea - Twitter",
+        "label": "En Línea - Twitter"
+      },
+      {
+        "value": "En Línea - Telegram",
+        "label": "En Línea - Telegram"
+      },
+      {
+        "value": "En Línea - Discord",
+        "label": "En Línea - Discord"
+      },
+      {
+        "value": "En Línea - Snapchat",
+        "label": "En Línea - Snapchat"
+      },
+      {
+        "value": "En Línea - WhatsApp",
+        "label": "En Línea - WhatsApp"
+      },
+      {
+        "value": "En Línea - Email",
+        "label": "En Línea - Email"
+      },
+      {
+        "value": "En Línea - Otro",
+        "label": "En Línea - Otro"
       },
       {
         "value": "Otro",

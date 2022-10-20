@@ -195,5 +195,12 @@
     "name": "ethnicity",
     "label": "Ethnicity",
     "type": "input"
+  },
+  {
+    "name": "copyToHousehold",
+    "label": "This perpetrator is also a household member",
+    "type": "copy-to",
+    "target": "households",
+    "saveable": false
   }
 ]

@@ -1,12 +1,21 @@
-export const channelTypes = {
+const defaultChannelTypes = {
   voice: 'voice',
   sms: 'sms',
   facebook: 'facebook',
   whatsapp: 'whatsapp',
   web: 'web',
+} as const;
+
+export const customChannelTypes = {
   twitter: 'twitter',
   instagram: 'instagram',
+  line: 'line',
 } as const;
+
+export const channelTypes = {
+  ...defaultChannelTypes,
+  ...customChannelTypes,
+};
 
 export type ChannelTypes = typeof channelTypes[keyof typeof channelTypes];
 

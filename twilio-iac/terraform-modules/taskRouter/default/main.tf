@@ -9,10 +9,28 @@ terraform {
 
 locals {
   helplines = var.helplines == null ? [var.helpline] : var.helplines
-  helplines_filter = "helpline IN [${join(", ", formatlist("'%s'", local.helplines))}]"
+  helplines_filter = var.helplines == null ? "1==1" : "helpline IN [${join(", ", formatlist("'%s'", local.helplines))}]"
   helplines_friendly_name = join(", ", compact(local.helplines))
-  task_routing_filter_expression = var.custom_task_routing_filter_expression != "" ? var.custom_task_routing_filter_expression : "${local.helplines_filter} OR channelType ==\"web\" "
+  task_routing_filter_expression = var.custom_task_routing_filter_expression != "" ? var.custom_task_routing_filter_expression : "${local.helplines_filter} OR channelType ==\"web\" OR isContactlessTask == true"
   task_routing_survey_queue_target_filter_expression = var.custom_task_routing_survey_queue_target_filter_expression != "" ? var.custom_task_routing_survey_queue_target_filter_expression : file("${path.module}/default_target_expression.tftpl")
+  task_routing_filters = [
+    {
+      "filter_friendly_name": local.helplines_friendly_name,
+      "expression": local.task_routing_filter_expression,
+      "targets": var.skip_timeout_expression != null ? [
+        {
+          expression = local.task_routing_survey_queue_target_filter_expression,
+          queue = twilio_taskrouter_workspaces_task_queues_v1.helpline_queue.sid,
+          skip_if = var.skip_timeout_expression
+        }
+      ] : [
+        {
+          expression = local.task_routing_survey_queue_target_filter_expression,
+          queue = twilio_taskrouter_workspaces_task_queues_v1.helpline_queue.sid,
+        }
+      ]
+    }
+  ]
 }
 
 // Workspaces
@@ -36,20 +54,14 @@ resource "twilio_taskrouter_workspaces_workflows_v1" "master_workflow" {
   workspace_sid = twilio_taskrouter_workspaces_v1.flex_task_assignment.id
   configuration = jsonencode(
   {
-    "task_routing": {
-      "filters": [
-        {
-          "filter_friendly_name": local.helplines_friendly_name,
-          "expression": local.task_routing_filter_expression,
-          "targets": [
-            {
-              "expression": local.task_routing_survey_queue_target_filter_expression,
-              "queue": twilio_taskrouter_workspaces_task_queues_v1.helpline_queue.sid
-            }
-          ]
-        }
-      ]
-    }
+    "task_routing": merge({
+      filters: local.task_routing_filters
+    },
+    coalesce(var.include_default_filter ? {
+      default_filter: {
+        queue: twilio_taskrouter_workspaces_task_queues_v1.helpline_queue.sid
+      }
+    } : null, {}))
   })
 }
 
