@@ -28,3 +28,9 @@ resource "github_actions_secret" "serverless_twilio_auth_token" {
   repository      = "serverless"
   secret_name     = "${var.short_helpline}_${var.short_environment}_AUTH_TOKEN"
 }
+
+resource "github_actions_secret" "webchat_serverless_url" {
+  plaintext_value = var.serverless_url
+  repository      = "webchat"
+  secret_name     = "${var.short_helpline}_${var.short_environment}_SERVERLESS_URL"
+}

@@ -7,17 +7,13 @@ import TagsAndCounselor from './TagsAndCounselor';
 import { contactType } from '../../../types';
 import { ContactWrapper } from '../../../styles/search';
 import { Flex } from '../../../styles/HrmStyles';
-import ConnectContact from './ConnectContact';
 
-const ContactPreview = ({ contact, handleOpenConnectDialog, handleViewDetails, showConnectIcon }) => {
+const ContactPreview = ({ contact, handleViewDetails, showConnectIcon }) => {
   const { counselor } = contact;
   const { callSummary } = contact.details.caseInformation;
 
   return (
     <Flex>
-      {showConnectIcon && (
-        <ConnectContact callType={contact.overview.callType} onOpenConnectDialog={handleOpenConnectDialog} />
-      )}
       <ContactWrapper key={contact.contactId}>
         <ChildNameAndDate
           channel={contact.overview.channel}
@@ -42,7 +38,6 @@ ContactPreview.displayName = 'ContactPreview';
 
 ContactPreview.propTypes = {
   contact: contactType.isRequired,
-  handleOpenConnectDialog: PropTypes.func.isRequired,
   handleViewDetails: PropTypes.func.isRequired,
   showConnectIcon: PropTypes.bool.isRequired,
 };

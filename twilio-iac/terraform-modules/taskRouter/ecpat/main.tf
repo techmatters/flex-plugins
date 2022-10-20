@@ -19,7 +19,7 @@ resource "twilio_taskrouter_workspaces_v1" "flex_task_assignment" {
   friendly_name      = "Flex Task Assignment"
   multi_task_enabled = true
   event_callback_url = "${var.serverless_url}/webhooks/taskrouterCallback"
-  events_filter = "task.created,task.canceled,task.completed" //Ignore the docs where it implies this should be 'EventsFilter=task.created, task.canceled, task.completed'
+  events_filter = "task.created,task.canceled,task.completed,task.deleted,task.system-deleted" //Ignore the docs where it implies this should be 'EventsFilter=task.created, task.canceled, task.completed'
 }
 
 // TaskQueue

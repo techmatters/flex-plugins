@@ -34,6 +34,8 @@ export const mapChannel = (channel: string) => {
       return 'Twitter';
     case channelTypes.instagram:
       return 'Instagram';
+    case channelTypes.line:
+      return 'Line';
     default:
       return 'Undefined';
   }

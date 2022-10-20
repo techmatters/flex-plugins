@@ -7,7 +7,9 @@ import { getDefinitionVersions } from '../HrmFormPlugin';
 // eslint-disable-next-line import/no-unused-modules
 const getMissingDefinitionVersions = async (versions: DefinitionVersionId[]) => {
   const { definitionVersions } = getDefinitionVersions();
-  const missingDefinitionVersions: DefinitionVersionId[] = versions.filter(v => !definitionVersions[v]);
+  const missingDefinitionVersions: DefinitionVersionId[] = versions.filter(
+    v => Object.values(DefinitionVersionId).includes(v) && !definitionVersions[v],
+  );
 
   // eslint-disable-next-line sonarjs/prefer-immediate-return
   const definitions = await getDefinitionVersionsList(missingDefinitionVersions);

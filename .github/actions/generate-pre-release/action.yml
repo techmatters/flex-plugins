@@ -1,0 +1,66 @@
+name: 'Generate pre release'
+description: 'Given a prefix, a suffix and a title, will generate the next iteration for a pre-release name like {prefix}-{suffix}'
+inputs:
+  tag-prefix:
+    description: Release tag name (e.g. v1.2.3).
+    required: true
+  tag-suffix:
+    description: Release tag name (e.g. qa).
+    required: true
+  title:
+    description: Release title - The title that will be given to this pre-release.
+    required: true
+  repository:
+    required: true
+    description: The github repo to compare tags against. Tipically github.repository.
+  repo_token: 
+    description: A GitHub token to access the repo. Tipically secrets.GITHUB_TOKEN.
+    required: true
+outputs:
+  generated-pre-release-tag:
+    description: "The generated pre-release tag"
+    value: ${{ steps.create_pre_release.outputs.automatic_releases_tag }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+
+    # Get latest tag for this version
+    - name: Get latest tag
+      uses: oprypin/find-latest-tag@v1
+      with:
+        repository: ${{ inputs.repository }}
+        # releases-only: false
+        prefix: "${{ inputs.tag-prefix }}-${{ inputs.tag-suffix }}"
+      id: latest_matching_tag
+      continue-on-error: true
+
+    # Generate next tag
+    - name: Generate next tag
+      run: npm run generate-next-tag
+      env:
+        PREFIX: "${{ inputs.tag-prefix }}-${{ inputs.tag-suffix }}"
+        LATEST_MATCHING_TAG: ${{ steps.latest_matching_tag.outputs.tag }}
+      working-directory: ${{ github.action_path }}
+      shell: bash
+      id: generate_next_tag
+
+    - run: echo ${{ steps.generate_next_tag.outputs.generated-tag }}
+      shell: bash
+
+    # Create a pre-release
+    - name: Create a pre-release
+      uses: "marvinpinto/action-automatic-releases@v1.2.1"
+      with:
+        repo_token: ${{ inputs.repo_token }}
+        automatic_release_tag: ${{ steps.generate_next_tag.outputs.generated-tag }}
+        prerelease: true
+        title: ${{ inputs.title }}
+        # files: |
+        #   LICENSE.txt
+        #   *.jar
+      id: create_pre_release

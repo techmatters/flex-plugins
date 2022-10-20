@@ -127,12 +127,13 @@ const ContactDetailsHome: React.FC<Props> = function ({
       .map(r => `CSAM on ${format(new Date(r.createdAt), 'yyyy MM dd h:mm aaaaa')}m\n#${r.csamReportId}`)
       .join('\n\n');
 
-  const transcriptOrRecordingAvailable =
+  const transcriptOrRecordingAvailable = Boolean(
     ((featureFlags.enable_voice_recordings && channel === channelTypes.voice) ||
       (featureFlags.enable_transcripts && channel !== channelTypes.voice)) &&
-    canViewTranscript &&
-    savedContact.details.conversationMedia?.length &&
-    typeof savedContact.overview.conversationDuration === 'number';
+      canViewTranscript &&
+      savedContact.details.conversationMedia?.length &&
+      typeof savedContact.overview.conversationDuration === 'number',
+  );
 
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
@@ -180,6 +181,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
           showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
           handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CALLER_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-CallerInformation"
+          handleOpenConnectDialog={handleOpenConnectDialog}
+          showActionIcons={showActionIcons}
+          callType="caller"
         >
           {definitionVersion.tabbedForms.CallerInformationTab.map(e => (
             <SectionEntry
@@ -201,6 +205,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           buttonDataTestid="ContactDetails-Section-ChildInformation"
           handleOpenConnectDialog={handleOpenConnectDialog}
           showActionIcons={showActionIcons}
+          callType="child"
         >
           {definitionVersion.tabbedForms.ChildInformationTab.map(e => (
             <SectionEntry

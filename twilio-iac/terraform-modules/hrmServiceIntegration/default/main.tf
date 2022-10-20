@@ -3,6 +3,12 @@ locals {
 }
 
 resource "null_resource" "hrm_static_api_key" {
+  triggers = {
+    helpline = var.helpline
+    short_helpline = var.short_helpline
+    environment = var.environment
+    short_environment = var.short_environment
+  }
   provisioner "local-exec" {
     working_dir = "${path.module}/../../../../scripts"
     command = "npm run twilioResources -- new-key-with-ssm-secret hrm-static-key ${var.short_environment}_TWILIO_${var.short_helpline}_HRM_STATIC_KEY \"${var.helpline}\" ${var.environment}"

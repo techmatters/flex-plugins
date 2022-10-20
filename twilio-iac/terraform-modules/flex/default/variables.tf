@@ -35,6 +35,12 @@ variable "definition_version" {
   type        = string
 }
 
+variable "helpline_language" {
+  description = "Keyword that determines the language to be used as default across the helpline"
+  type        = string
+  default = ""
+}
+
 variable "feature_flags" {
   description = "Map of feature flag settings. All values should be boolean"
   type = map(bool)
@@ -64,5 +70,17 @@ variable "messaging_studio_flow_sid" {
 variable "messaging_flow_contact_identity" {
   description = "SMS number or whatever for the messaging flow"
   type = string
+  default = null
+}
+
+variable "custom_flex_messaging_flow_enabled" {
+  description = "Enable or disable Flex SMS Messaging Flow"
+  type = bool
+  default = null
+}
+
+variable "custom_flex_webchat_flow_enabled" {
+  description = "Enable or disable Flex Webchat Messaging Flow"
+  type = bool
   default = null
 }

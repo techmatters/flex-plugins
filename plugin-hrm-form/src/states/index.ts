@@ -10,6 +10,7 @@ import { reduce as ConfigurationReducer } from './configuration/reducer';
 import { reduce as RoutingReducer } from './routing/reducer';
 import { reduce as CSAMReportReducer } from './csam-report/reducer';
 import { reduce as DualWriteReducer } from './dualWrite/reducer';
+import { CaseState } from './case/types';
 
 // Register your redux store under a unique namespace
 export const namespace = 'plugin-hrm-form';
@@ -27,21 +28,30 @@ const reducers = {
   [contactFormsBase]: ContactStateReducer,
   [searchContactsBase]: SearchFormReducer,
   [queuesStatusBase]: QueuesStatusReducer,
-  [connectedCaseBase]: ConnectedCaseReducer,
   [caseListBase]: CaseListReducer,
   [configurationBase]: ConfigurationReducer,
   [routingBase]: RoutingReducer,
   [csamReportBase]: CSAMReportReducer,
   [dualWriteBase]: DualWriteReducer,
+  // [connectedCaseBase] - this is going to be combined manually, rather than using 'combineReducers', so isn't in this map
 };
-
-// Combine the reducers
-const reducer = combineReducers(reducers);
-
-export default reducer;
-
 type HrmState = {
   [P in keyof typeof reducers]: ReturnType<typeof reducers[P]>;
-};
+} & { [connectedCaseBase]: CaseState };
 
 export type RootState = FlexState & { [namespace]: HrmState };
+const combinedReducers = combineReducers(reducers);
+
+// Combine the reducers
+const reducer = (state: HrmState, action): HrmState => {
+  return {
+    ...combinedReducers(state, action),
+    /*
+     * ConnectedCaseReducer's signature includes a parameter for global Hrm State as well as the specific CaseState
+     * This makes it incompatible with combineReducers, so instead, we add the case state property with an explicit call to ConnectedCaseReducer, where we specify the extra parameter
+     */
+    [connectedCaseBase]: ConnectedCaseReducer(state, (state ?? {})[connectedCaseBase], action),
+  };
+};
+
+export default reducer;

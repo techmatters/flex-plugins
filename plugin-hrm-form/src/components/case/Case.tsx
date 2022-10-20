@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types,complexity,sonarjs/cognitive-complexity */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
-import { format } from 'date-fns';
+import { bindActionCreators } from 'redux';
 
 import {
   configurationBase,
@@ -16,25 +16,43 @@ import { getConfig } from '../../HrmFormPlugin';
 import { connectToCase, transformCategories } from '../../services/ContactService';
 import { cancelCase, updateCase } from '../../services/CaseService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
-import { getActivitiesFromCase, isConnectedCaseActivity, sortActivities } from './caseActivities';
+import { getActivitiesFromCase, getActivitiesFromContacts, isNoteActivity, sortActivities } from './caseActivities';
 import { getDateFromNotSavedContact, getHelplineData } from './caseHelpers';
 import { getLocaleDateTime } from '../../utils/helpers';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import ViewContact from './ViewContact';
-import { CaseDetailsName, updateCaseListByIndex, updateCaseSectionListByIndex } from '../../states/case/types';
-import { CustomITask, NoteEntry, ReferralEntry, StandaloneITask } from '../../types/types';
+import { Activity, CaseDetails, CaseDetailsName, ConnectedCaseActivity, NoteActivity } from '../../states/case/types';
+import { Case as CaseType, CustomITask, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
-import { CaseItemAction, isAppRoutesWithCaseAndAction, NewCaseSubroutes } from '../../states/routing/types';
+import {
+  AppRoutes,
+  AppRoutesWithCase,
+  CaseItemAction,
+  isAddCaseSectionRoute,
+  isEditCaseSectionRoute,
+  isViewCaseSectionRoute,
+  NewCaseSubroutes,
+} from '../../states/routing/types';
 import CaseHome from './CaseHome';
-import AddEditCaseItem from './AddEditCaseItem';
+import AddEditCaseItem, { AddEditCaseItemProps } from './AddEditCaseItem';
 import ViewCaseItem from './ViewCaseItem';
 import documentUploadHandler from './documentUploadHandler';
 import { recordBackendError } from '../../fullStory';
 import { completeTask, submitContactForm } from '../../services/formSubmissionHelpers';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
 import { CenteredContainer } from '../../styles/case';
+import EditCaseSummary from './EditCaseSummary';
+import { documentSectionApi } from '../../states/case/sections/document';
+import { incidentSectionApi } from '../../states/case/sections/incident';
+import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
+import { householdSectionApi } from '../../states/case/sections/household';
+import { referralSectionApi } from '../../states/case/sections/referral';
+import { noteSectionApi } from '../../states/case/sections/note';
+import { CaseSectionApi } from '../../states/case/sections/api';
+import * as ContactActions from '../../states/contacts/existingContacts';
+import { searchContactToHrmServiceContact, taskFormToSearchContact } from '../../states/contacts/contactDetailsAdapter';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -63,19 +81,7 @@ const getFirstNameAndLastNameFromContact = (contact): CaseDetailsName => {
   };
 };
 
-const getFirstNameAndLastNameFromForm = (form): CaseDetailsName => {
-  if (form?.childInformation) {
-    const { firstName, lastName } = form.childInformation;
-    return {
-      firstName,
-      lastName,
-    };
-  }
-  return {
-    firstName: 'Unknown',
-    lastName: 'Unknown',
-  };
-};
+const newContactTemporaryId = (connectedCase: CaseType) => `__unsavedFromCase:${connectedCase?.id}`;
 
 const Case: React.FC<Props> = ({
   task,
@@ -83,53 +89,81 @@ const Case: React.FC<Props> = ({
   counselorsHash,
   setConnectedCase,
   removeConnectedCase,
-  updateCaseInfo,
-  updateCaseStatus,
-  markCaseAsUpdated,
   changeRoute,
   isCreating,
   handleClose,
   routing,
+  newContact,
+  savedContacts,
+  loadContact,
+  loadRawContacts,
+  releaseContacts,
+  cancelNewCase,
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
-  const [timeline, setTimeline] = useState([]);
+  const [loadedContactIds, setLoadedContactIds] = useState([]);
+  const { connectedCase } = props?.connectedCaseState ?? {};
+  // This is to provide a stable dep for the useEffect that generates the timeline
+  const savedContactsJson = JSON.stringify(savedContacts);
 
-  useEffect(() => {
-    /**
-     * Gets the activities timeline from current caseId
-     * If the case is just being created, adds the case's description as a new activity.
-     */
-    const getTimeline = () => {
-      if (!props.connectedCaseId) return;
-      setLoading(true);
-      const activities = getActivitiesFromCase(props.connectedCaseState.connectedCase);
-      setLoading(false);
-      let timelineActivities = sortActivities(activities);
+  const timeline: Activity[] = useMemo(
+    () => {
+      /**
+       * Gets the activities timeline from current caseId
+       * If the case is just being created, adds the case's description as a new activity
+       */
+      if (!props.connectedCaseId) return [];
 
-      const isCreatingCase = !timelineActivities.some(isConnectedCaseActivity);
+      const timelineActivities = [
+        ...getActivitiesFromCase(props.connectedCaseState.connectedCase),
+        ...getActivitiesFromContacts(savedContacts ?? []),
+      ];
 
-      if (isCreatingCase) {
-        if (isStandaloneITask(task)) return;
-        const date = getDateFromNotSavedContact(task, form);
+      if (newContact && !isStandaloneITask(task)) {
         const { workerSid } = getConfig();
-        const connectCaseActivity = {
-          date: format(date, 'yyyy-MM-dd HH:mm:ss'),
+        const connectCaseActivity: ConnectedCaseActivity = {
+          contactId: newContact.id,
+          date: newContact.timeOfContact,
           createdAt: new Date().toISOString(),
           type: task.channelType,
-          text: form.caseInformation.callSummary.toString(),
+          text: newContact.rawJson.caseInformation.callSummary.toString(),
           twilioWorkerId: workerSid,
-          channel: task.channelType === 'default' ? form.contactlessTask.channel.toString() : task.channelType,
-          originalIndex: 0,
+          channel:
+            task.channelType === 'default' ? newContact.rawJson.contactlessTask.channel.toString() : task.channelType,
+          callType: newContact.rawJson.callType,
         };
 
-        timelineActivities = sortActivities([...timelineActivities, connectCaseActivity]);
+        timelineActivities.push(connectCaseActivity);
       }
-      setTimeline(timelineActivities);
-    };
+      return sortActivities(timelineActivities);
+    },
+    // savedContacts is not present but savedContactsJson is
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [newContact, savedContactsJson, task, form, props.connectedCaseId, props.connectedCaseState?.connectedCase],
+  );
 
-    getTimeline();
-  }, [task, form, props.connectedCaseId, props.connectedCaseState?.connectedCase, setLoading]);
+  useEffect(() => {
+    if (!connectedCase) return;
+    const { connectedContacts } = connectedCase;
+    if (connectedContacts?.length) {
+      loadRawContacts(connectedContacts, task.taskSid);
+      setLoadedContactIds(connectedContacts.map(cc => cc.id));
+    } else if (!isStandaloneITask(task)) {
+      const { workerSid } = getConfig();
+      setLoadedContactIds([newContactTemporaryId(connectedCase)]);
+      loadContact(
+        taskFormToSearchContact(
+          task,
+          form,
+          getDateFromNotSavedContact(task, form).toISOString(),
+          workerSid,
+          newContactTemporaryId(connectedCase),
+        ),
+        task.taskSid,
+      );
+    }
+  }, [connectedCase, form, loadContact, loadRawContacts, releaseContacts, task]);
 
   const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;
@@ -138,33 +172,37 @@ const Case: React.FC<Props> = ({
    * Check if the definitionVersion for this case exists in redux, and look for it if not.
    */
   useEffect(() => {
-    const fetchDefinitionVersions = async (v: string) => {
+    const fetchDefinitionVersions = async () => {
       const definitionVersion = await getDefinitionVersion(version);
-      updateDefinitionVersion(version, definitionVersion);
+      updateDefinitionVersion(connectedCase, version, definitionVersion);
+      setConnectedCase(connectedCase, task.taskSid);
     };
 
     if (version && !definitionVersions[version]) {
-      fetchDefinitionVersions(version);
+      fetchDefinitionVersions();
     }
-  }, [definitionVersions, updateDefinitionVersion, version]);
+  }, [connectedCase, definitionVersions, setConnectedCase, task.taskSid, updateDefinitionVersion, version]);
 
   if (routing.route === 'csam-report') return null;
 
   // Redirects to the proper view when the user clicks 'Close' button.
-  const handleCloseSubSection = () => {
-    props.updateTempInfo(null, task.taskSid);
-    if (routing.route === 'select-call-type') {
-      changeRoute({ route: 'select-call-type' }, task.taskSid);
-    } else if (routing.route === 'new-case') {
-      changeRoute({ route: 'new-case' }, task.taskSid);
-    } else {
-      changeRoute({ route: 'tabbed-forms', subroute: 'search' }, task.taskSid);
+  const closeSubSectionRoute = (): AppRoutesWithCase => {
+    switch (routing.route) {
+      case 'select-call-type': {
+        return { route: 'select-call-type' };
+      }
+      case 'new-case': {
+        return { route: 'new-case' };
+      }
+      default: {
+        return { route: 'tabbed-forms', subroute: 'search' };
+      }
     }
   };
 
-  if (!props.connectedCaseState) return null;
+  const handleCloseSection = () => changeRoute(closeSubSectionRoute(), task.taskSid);
 
-  const { connectedCase, prevStatus, caseHasBeenEdited } = props.connectedCaseState;
+  if (!props.connectedCaseState) return null;
 
   const getCategories = firstConnectedContact => {
     if (firstConnectedContact?.rawJson?.caseInformation) {
@@ -176,12 +214,10 @@ const Case: React.FC<Props> = ({
     return null;
   };
 
-  const { can } = getPermissionsForCase(connectedCase.twilioWorkerId, prevStatus);
+  const { can } = getPermissionsForCase(connectedCase.twilioWorkerId, connectedCase.status);
 
-  const firstConnectedContact = connectedCase && connectedCase.connectedContacts && connectedCase.connectedContacts[0];
-  const name = firstConnectedContact
-    ? getFirstNameAndLastNameFromContact(firstConnectedContact)
-    : getFirstNameAndLastNameFromForm(form);
+  const firstConnectedContact = (savedContacts && savedContacts[0]) ?? newContact;
+  const name = getFirstNameAndLastNameFromContact(firstConnectedContact);
 
   const categories = getCategories(firstConnectedContact);
   const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase || {};
@@ -196,28 +232,19 @@ const Case: React.FC<Props> = ({
   const perpetrators = info && info.perpetrators ? info.perpetrators : [];
   const incidents = info && info.incidents ? info.incidents : [];
   const documents = info && info.documents ? info.documents : [];
-  const childIsAtRisk = info && info.childIsAtRisk;
+  const childIsAtRisk = Boolean(info && info.childIsAtRisk);
   const referrals = info?.referrals;
-  const notes = timeline.filter(x => x.type === 'note');
+  const notes: NoteActivity[] = timeline.filter(x => isNoteActivity(x)) as NoteActivity[];
   const summary = info?.summary;
   const definitionVersion = props.definitionVersions[version];
   const office = getHelplineData(connectedCase.helpline, definitionVersion.helplineInformation);
-
-  const onInfoChange = (fieldName, value) => {
-    const newInfo = info ? { ...info, [fieldName]: value } : { [fieldName]: value };
-    updateCaseInfo(newInfo, task.taskSid);
-  };
-
-  const onStatusChange = (value: string) => {
-    updateCaseStatus(value, task.taskSid);
-  };
 
   const handleUpdate = async () => {
     setLoading(true);
 
     try {
       const updatedCase = await updateCase(connectedCase.id, { ...connectedCase });
-      setConnectedCase(updatedCase, task.taskSid, false);
+      setConnectedCase(updatedCase, task.taskSid);
     } catch (error) {
       console.error(error);
       recordBackendError('Update Case', error);
@@ -230,9 +257,7 @@ const Case: React.FC<Props> = ({
 
   const handleCancelNewCaseAndClose = async () => {
     await cancelCase(connectedCase.id);
-
-    changeRoute({ route: 'tabbed-forms', subroute: 'caseInformation', autoFocus: true }, task.taskSid);
-    removeConnectedCase(task.taskSid);
+    cancelNewCase(task.taskSid, loadedContactIds);
   };
 
   const handleSaveAndEnd = async () => {
@@ -244,10 +269,10 @@ const Case: React.FC<Props> = ({
     if (isStandaloneITask(task)) return;
 
     try {
+      releaseContacts(loadedContactIds, task.taskSid);
       const contact = await submitContactForm(task, form, connectedCase);
       await updateCase(connectedCase.id, { ...connectedCase });
       await connectToCase(contact.id, connectedCase.id);
-      markCaseAsUpdated(task.taskSid);
       await completeTask(task);
     } catch (error) {
       console.error(error);
@@ -258,15 +283,11 @@ const Case: React.FC<Props> = ({
     }
   };
 
-  const { caseForms } = definitionVersion;
-  const caseLayouts = definitionVersion.layoutVersion.case;
-
-  const caseDetails = {
+  const caseDetails: CaseDetails = {
     id: connectedCase.id,
     name,
     categories,
     status,
-    prevStatus,
     caseCounselor,
     currentCounselor,
     createdAt,
@@ -284,180 +305,76 @@ const Case: React.FC<Props> = ({
     office,
     version,
     contact: firstConnectedContact,
-    contacts: connectedCase?.connectedContacts ?? [],
+    contacts: savedContacts ?? [],
   };
-  if (isAppRoutesWithCaseAndAction(routing)) {
-    const { action, subroute } = routing;
+  if (isAddCaseSectionRoute(routing) || isViewCaseSectionRoute(routing) || isEditCaseSectionRoute(routing)) {
+    const { subroute } = routing;
 
     const addScreenProps = {
       task,
       routing,
       counselor: currentCounselor,
       counselorsHash,
-      exitItem: handleCloseSubSection,
       definitionVersion,
+    };
+
+    const renderCaseItemPage = (
+      sectionApi: CaseSectionApi<unknown>,
+      editPermission: string,
+      extraAddEditProps: Partial<AddEditCaseItemProps> = {},
+    ) => {
+      if (isViewCaseSectionRoute(routing)) {
+        return (
+          <ViewCaseItem
+            {...addScreenProps}
+            routing={routing}
+            sectionApi={sectionApi}
+            canEdit={() => can(editPermission)}
+            exitItem={handleCloseSection}
+          />
+        );
+      }
+      const exitRoute: AppRoutes = isEditCaseSectionRoute(routing)
+        ? ({ ...routing, action: CaseItemAction.View } as AppRoutes)
+        : closeSubSectionRoute();
+      return (
+        <AddEditCaseItem
+          {...{
+            ...addScreenProps,
+            ...extraAddEditProps,
+            sectionApi,
+          }}
+          exitRoute={exitRoute}
+          routing={routing}
+        />
+      );
     };
 
     switch (subroute) {
       case NewCaseSubroutes.Note:
-        if (action === CaseItemAction.View) {
-          return (
-            <ViewCaseItem
-              {...addScreenProps}
-              itemType="Note"
-              formDefinition={caseForms.NoteForm}
-              canEdit={() => can(PermissionActions.EDIT_NOTE)}
-            />
-          );
-        }
-        return (
-          <AddEditCaseItem
-            {...{
-              ...addScreenProps,
-              layout: {},
-              itemType: 'Note',
-              formDefinition: caseForms.NoteForm,
-            }}
-            applyTemporaryInfoToCase={updateCaseListByIndex<NoteEntry>(
-              ci => {
-                ci.counsellorNotes = ci.counsellorNotes ?? [];
-                return ci.counsellorNotes;
-              },
-              temp => {
-                const { form: noteForm, ...entryInfo } = temp;
-                return {
-                  ...noteForm,
-                  ...entryInfo,
-                };
-              },
-            )}
-          />
-        );
+        return renderCaseItemPage(noteSectionApi, PermissionActions.EDIT_NOTE);
       case NewCaseSubroutes.Referral:
-        if (action === CaseItemAction.View) {
-          return (
-            <ViewCaseItem
-              {...addScreenProps}
-              itemType="Referral"
-              formDefinition={caseForms.ReferralForm}
-              canEdit={() => can(PermissionActions.EDIT_REFERRAL)}
-            />
-          );
-        }
-        return (
-          <AddEditCaseItem
-            {...{
-              ...addScreenProps,
-              layout: {},
-              itemType: 'Referral',
-              formDefinition: caseForms.ReferralForm,
-            }}
-            applyTemporaryInfoToCase={updateCaseListByIndex<ReferralEntry>(
-              ci => {
-                ci.referrals = ci.referrals ?? [];
-                return ci.referrals;
-              },
-              temp => {
-                const { form: referralForm, ...entryInfo } = temp;
-                return {
-                  ...referralForm,
-                  referredTo: referralForm.referredTo as string,
-                  date: referralForm.date as string,
-                  ...entryInfo,
-                };
-              },
-            )}
-          />
-        );
+        return renderCaseItemPage(referralSectionApi, PermissionActions.EDIT_REFERRAL);
       case NewCaseSubroutes.Household:
-        if (action === CaseItemAction.View) {
-          return (
-            <ViewCaseItem
-              {...addScreenProps}
-              itemType="Household"
-              formDefinition={caseForms.HouseholdForm}
-              canEdit={() => can(PermissionActions.EDIT_HOUSEHOLD)}
-            />
-          );
-        }
-        return (
-          <AddEditCaseItem
-            {...{
-              ...addScreenProps,
-              layout: caseLayouts.households,
-              itemType: 'Household',
-              applyTemporaryInfoToCase: updateCaseSectionListByIndex('households', 'household'),
-              formDefinition: caseForms.HouseholdForm,
-            }}
-          />
-        );
+        return renderCaseItemPage(householdSectionApi, PermissionActions.EDIT_HOUSEHOLD);
       case NewCaseSubroutes.Perpetrator:
-        if (action === CaseItemAction.View) {
-          return (
-            <ViewCaseItem
-              {...addScreenProps}
-              itemType="Perpetrator"
-              formDefinition={caseForms.PerpetratorForm}
-              canEdit={() => can(PermissionActions.EDIT_PERPETRATOR)}
-            />
-          );
-        }
-        return (
-          <AddEditCaseItem
-            {...{
-              ...addScreenProps,
-              layout: caseLayouts.perpetrators,
-              itemType: 'Perpetrator',
-              applyTemporaryInfoToCase: updateCaseSectionListByIndex('perpetrators', 'perpetrator'),
-              formDefinition: caseForms.PerpetratorForm,
-            }}
-          />
-        );
+        return renderCaseItemPage(perpetratorSectionApi, PermissionActions.EDIT_PERPETRATOR);
       case NewCaseSubroutes.Incident:
-        if (action === CaseItemAction.View) {
-          return (
-            <ViewCaseItem
-              {...addScreenProps}
-              itemType="Incident"
-              formDefinition={caseForms.IncidentForm}
-              canEdit={() => can(PermissionActions.EDIT_INCIDENT)}
-            />
-          );
-        }
-        return (
-          <AddEditCaseItem
-            {...{
-              ...addScreenProps,
-              layout: caseLayouts.incidents,
-              itemType: 'Incident',
-              applyTemporaryInfoToCase: updateCaseSectionListByIndex('incidents', 'incident'),
-              formDefinition: caseForms.IncidentForm,
-            }}
-          />
-        );
+        return renderCaseItemPage(incidentSectionApi, PermissionActions.EDIT_INCIDENT);
       case NewCaseSubroutes.Document:
-        if (action === CaseItemAction.View) {
-          return (
-            <ViewCaseItem
-              {...addScreenProps}
-              itemType="Document"
-              formDefinition={caseForms.DocumentForm}
-              canEdit={() => can(PermissionActions.EDIT_DOCUMENT)}
-            />
-          );
-        }
+        return renderCaseItemPage(documentSectionApi, PermissionActions.EDIT_DOCUMENT, {
+          customFormHandlers: documentUploadHandler,
+          reactHookFormOptions: {
+            shouldUnregister: false,
+          },
+        });
+      case NewCaseSubroutes.CaseSummary:
         return (
-          <AddEditCaseItem
+          <EditCaseSummary
             {...{
               ...addScreenProps,
-              layout: caseLayouts.documents,
-              itemType: 'Document',
-              applyTemporaryInfoToCase: updateCaseSectionListByIndex('documents', 'document'),
-              formDefinition: caseForms.DocumentForm,
-              customFormHandlers: documentUploadHandler,
-              reactHookFormOptions: {
-                shouldUnregister: false,
-              },
+              exitRoute: closeSubSectionRoute(),
+              can,
             }}
           />
         );
@@ -468,12 +385,12 @@ const Case: React.FC<Props> = ({
 
   switch (routing.subroute) {
     case NewCaseSubroutes.ViewContact:
-      return <ViewContact onClickClose={handleCloseSubSection} task={task} />;
+      return <ViewContact onClickClose={handleCloseSection} contactId={routing.id} task={task} />;
     case NewCaseSubroutes.CasePrintView:
       return (
         <CasePrintView
           caseDetails={caseDetails}
-          {...{ counselorsHash, onClickClose: handleCloseSubSection, definitionVersion }}
+          {...{ counselorsHash, onClickClose: handleCloseSection, definitionVersion }}
         />
       );
     default:
@@ -487,14 +404,14 @@ const Case: React.FC<Props> = ({
           definitionVersion={definitionVersion}
           caseDetails={caseDetails}
           timeline={timeline}
-          handleClose={handleClose}
+          handleClose={() => {
+            releaseContacts(loadedContactIds, task.taskSid);
+            handleClose();
+          }}
           handleCancelNewCaseAndClose={handleCancelNewCaseAndClose}
           handleUpdate={handleUpdate}
           handleSaveAndEnd={handleSaveAndEnd}
-          onInfoChange={onInfoChange}
-          onStatusChange={onStatusChange}
           isCreating={isCreating}
-          isEdited={Boolean(caseHasBeenEdited)}
           can={can}
         />
       );
@@ -503,24 +420,48 @@ const Case: React.FC<Props> = ({
 
 Case.displayName = 'Case';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
-  form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
-  connectedCaseState: state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid],
-  connectedCaseId: state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase?.id,
-  counselorsHash: state[namespace][configurationBase].counselors.hash,
-  routing: state[namespace][routingBase].tasks[ownProps.task.taskSid],
-  definitionVersions: state[namespace][configurationBase].definitionVersions,
-});
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+  const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
+  const { connectedCase } = caseState ?? {};
+  const connectedContactIds = new Set((connectedCase?.connectedContacts ?? []).map(cc => cc.id as string));
+  const newSearchContact =
+    state[namespace][contactFormsBase].existingContacts[newContactTemporaryId(connectedCase)]?.savedContact;
+  return {
+    form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
+    connectedCaseState: caseState,
+    connectedCaseId: connectedCase?.id,
+    counselorsHash: state[namespace][configurationBase].counselors.hash,
+    routing: state[namespace][routingBase].tasks[ownProps.task.taskSid],
+    definitionVersions: state[namespace][configurationBase].definitionVersions,
+    savedContacts: Object.values(state[namespace][contactFormsBase].existingContacts)
+      .filter(contact => connectedContactIds.has(contact.savedContact.contactId))
+      .map(ecs => searchContactToHrmServiceContact(ecs.savedContact)),
+    newContact: newSearchContact ? searchContactToHrmServiceContact(newSearchContact) : undefined,
+  };
+};
 
-const mapDispatchToProps = {
-  changeRoute: RoutingActions.changeRoute,
-  removeConnectedCase: CaseActions.removeConnectedCase,
-  updateCaseInfo: CaseActions.updateCaseInfo,
-  updateTempInfo: CaseActions.updateTempInfo,
-  updateCaseStatus: CaseActions.updateCaseStatus,
-  setConnectedCase: CaseActions.setConnectedCase,
-  markCaseAsUpdated: CaseActions.markCaseAsUpdated,
-  updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
+const mapDispatchToProps = dispatch => {
+  const cancelNewCase = (taskSid: string, loadedContactIds: string[]) => {
+    dispatch(CaseActions.removeConnectedCase(taskSid));
+    dispatch(
+      RoutingActions.changeRoute({ route: 'tabbed-forms', subroute: 'caseInformation', autoFocus: true }, taskSid),
+    );
+    dispatch(ContactActions.releaseContacts(loadedContactIds, taskSid));
+  };
+  const updateCaseDefinition = (connectedCase: CaseType, taskSid: string, definition) => {
+    dispatch(ConfigActions.updateDefinitionVersion(connectedCase.info.definitionVersion, definition));
+    dispatch(CaseActions.setConnectedCase(connectedCase, taskSid));
+  };
+  return {
+    changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
+    removeConnectedCase: bindActionCreators(CaseActions.removeConnectedCase, dispatch),
+    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
+    updateDefinitionVersion: updateCaseDefinition,
+    releaseContacts: bindActionCreators(ContactActions.releaseContacts, dispatch),
+    loadRawContacts: bindActionCreators(ContactActions.loadRawContacts, dispatch),
+    loadContact: bindActionCreators(ContactActions.loadContact, dispatch),
+    cancelNewCase,
+  };
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

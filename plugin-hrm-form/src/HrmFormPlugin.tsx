@@ -181,6 +181,7 @@ const setUpComponents = (setupObject: SetupObject) => {
   Components.setUpCustomCRMContainer();
   Components.setupTwitterChatChannel();
   Components.setupInstagramChatChannel();
+  Components.setupLineChatChannel();
   if (featureFlags.enable_transfers) {
     Components.setUpTransferComponents();
     Components.setUpIncomingTransferMessage();
@@ -215,7 +216,7 @@ const setUpActions = (setupObject: SetupObject) => {
   const transferOverride = ActionFunctions.customTransferTask(setupObject);
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject);
   const beforeCompleteAction = ActionFunctions.beforeCompleteTask(setupObject);
-  const afterCompleteAction = ActionFunctions.afterCompleteTask(setupObject);
+  const afterWrapupAction = ActionFunctions.afterWrapupTask(setupObject);
 
   Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
 
@@ -232,7 +233,9 @@ const setUpActions = (setupObject: SetupObject) => {
 
   Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
 
-  Flex.Actions.addListener('afterCompleteTask', afterCompleteAction);
+  Flex.Actions.addListener('afterWrapupTask', afterWrapupAction);
+
+  Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
 };
 
 export default class HrmFormPlugin extends FlexPlugin {

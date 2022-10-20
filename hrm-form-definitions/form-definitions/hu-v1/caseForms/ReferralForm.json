@@ -1,0 +1,20 @@
+[
+    {
+      "name": "date",
+      "type": "date-input",
+      "label": "Dátum",
+      "required": { "value": true, "message": "RequiredFieldError" }
+    },
+    {
+      "name": "referredTo",
+      "label": "Továbbítva",
+      "type": "input"
+    },
+    {
+      "name": "comments",
+      "label": "Megjegyzés",
+      "type": "textarea",
+      "rows": 25,
+      "width": 300
+    }
+  ]

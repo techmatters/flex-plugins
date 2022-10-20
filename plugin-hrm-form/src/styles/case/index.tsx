@@ -259,13 +259,6 @@ export const DetailsHeaderTextContainer = styled('div')`
 
 DetailsHeaderTextContainer.displayName = 'DetailsHeaderTextContainer';
 
-export const DetailsHeaderChildAtRiskContainer = styled('div')`
-  width: 136px;
-  align-self: flex-end;
-`;
-
-DetailsHeaderChildAtRiskContainer.displayName = 'DetailsHeaderChildAtRiskContainer';
-
 export const DetailsHeaderChildName = styled(Typography)`
   font-weight: 600 !important;
 `;
@@ -311,19 +304,14 @@ export const StyledPrintButton = styled(IconButton)`
 
 StyledPrintButton.displayName = 'StyledPrintButton';
 
-export const ChildIsAtRiskWrapper = styled(Row)`
-  align-items: flex-start;
-  box-sizing: border-box;
-  border-radius: 4px;
-  border: 'none';
-  box-shadow: 'none';
-`;
-ChildIsAtRiskWrapper.displayName = 'ChildIsAtRiskWrapper';
+type StyledInputField = {
+  color?: string;
+};
 
-export const StyledInputField = styled(FormInput)`
+export const StyledInputField = styled(FormInput)<StyledInputField>`
   width: 130px !important;
   height: 36px;
-  color: #000000;
+  color: ${props => (props.color ? props.color : '#000000')} !important;
   background-color: ${HrmTheme.colors.inputBackgroundColor};
   font-weight: 600;
   padding-left: 10px !important;
@@ -335,37 +323,6 @@ export const StyledInputField = styled(FormInput)`
 `;
 
 StyledInputField.displayName = 'StyledInputField';
-
-type FormSelectWrapperProps = {
-  disabled?: boolean;
-};
-
-export const StyledSelectWrapper = styled(FormSelectWrapper)<FormSelectWrapperProps>`
-  width: 130px !important;
-  height: 36px;
-  margin-top: 7px;
-
-  &::after {
-    display: ${({ disabled }) => (disabled ? 'none' : 'initial')};
-  }
-`;
-
-StyledSelectWrapper.displayName = 'StyledSelectWrapper';
-
-type StyledSelectFieldProps = {
-  color: string;
-};
-
-export const StyledSelectField = styled(({ color, ...rest }: StyledSelectFieldProps) => <FormSelect {...rest} />)<
-  StyledSelectFieldProps
->`
-  width: 130px !important;
-  height: 36px;
-  font-weight: 600;
-  color: ${({ color }) => (color ? `${color}` : '#000000')};
-`;
-
-StyledSelectField.displayName = 'StyledSelectField';
 
 export const CloseDialogText = styled('p')`
   font-size: 17px;
@@ -386,3 +343,16 @@ export const EditContactContainer = styled('div')`
   overflow-y: clip;
 `;
 EditContactContainer.displayName = 'EditContactContainer';
+
+type CaseDetailsBorderProps = {
+  paddingBottom?: string;
+  sectionTypeId?: boolean;
+  marginBottom?: string;
+};
+
+export const CaseDetailsBorder = styled('div')<CaseDetailsBorderProps>`
+  border-bottom: ${props => (props.sectionTypeId ? 'none' : '2px solid #e5e6e7')};
+  margin-right: 25px;
+  margin-bottom: ${props => (props.marginBottom ? props.marginBottom : '')};
+  padding-bottom: ${props => (props.paddingBottom ? props.paddingBottom : '25px')};
+`;

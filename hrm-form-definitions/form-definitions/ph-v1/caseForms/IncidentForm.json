@@ -101,6 +101,14 @@
     "type": "input"
   },
   {
+    "name": "note",
+    "label": "Note",
+    "type": "textarea",
+    "placeholder": "Type here to add note...",
+    "rows": 10,
+    "width": 250
+  },
+  {
     "name": "isCaregiverAware",
     "label": "Is caregiver aware?",
     "type": "mixed-checkbox"
@@ -119,13 +127,5 @@
     "name": "whereElseBeenReported",
     "label": "Where else the incident has been reported?",
     "type": "mixed-checkbox"
-  },
-  {
-    "name": "note",
-    "label": "Note",
-    "type": "textarea",
-    "placeholder": "Type here to add note...",
-    "rows": 10,
-    "width": 500
   }
 ]

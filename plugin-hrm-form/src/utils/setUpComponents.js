@@ -26,6 +26,7 @@ import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
 import TwitterIcon from '../components/common/icons/TwitterIcon';
 import InstagramIcon from '../components/common/icons/InstagramIcon';
+import LineIcon from '../components/common/icons/LineIcon';
 // eslint-disable-next-line
 import { isInMyBehalfITask } from '../types/types';
 
@@ -36,6 +37,7 @@ const smsColor = Flex.DefaultTaskChannels.ChatSms.colors.main.Accepted;
 const whatsappColor = Flex.DefaultTaskChannels.ChatWhatsApp.colors.main.Accepted;
 const twitterColor = '#1DA1F2';
 const instagramColor = '#833AB4';
+const lineColor = '#00C300';
 
 /**
  * @type {import('../states/DomainConstants').ChannelColors}
@@ -48,6 +50,7 @@ const colors = {
   whatsapp: whatsappColor,
   twitter: twitterColor,
   instagram: instagramColor,
+  line: lineColor,
 };
 
 /**
@@ -487,4 +490,28 @@ export const setupInstagramChatChannel = () => {
   };
 
   Flex.TaskChannels.register(InstagramChatChannel);
+};
+
+export const setupLineChatChannel = () => {
+  const icon = <LineIcon width="24px" height="24px" color="white" />;
+
+  const LineChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel('line', task => task.channelType === 'line');
+
+  LineChatChannel.colors.main = {
+    Accepted: lineColor,
+    Assigned: lineColor,
+    Pending: lineColor,
+    Reserved: lineColor,
+    Wrapping: Flex.DefaultTaskChannels.Chat.colors.main.Wrapping,
+    Completed: Flex.DefaultTaskChannels.Chat.colors.main.Completed,
+    Canceled: Flex.DefaultTaskChannels.Chat.colors.main.Canceled,
+  };
+
+  LineChatChannel.icons = {
+    active: icon,
+    list: icon,
+    main: icon,
+  };
+
+  Flex.TaskChannels.register(LineChatChannel);
 };
