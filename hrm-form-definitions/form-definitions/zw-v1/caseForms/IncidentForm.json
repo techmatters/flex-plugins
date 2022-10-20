@@ -12,7 +12,7 @@
   {
     "name": "incidentTime",
     "label": "Time of Incident",
-    "type": "time-input",
+    "type": "time-input"
   },
   {
     "name": "duration",
@@ -137,8 +137,14 @@
     "label": "Reported Elsewhere",
     "type": "select",
     "options": [
-      { "value": "Department of Social Welfare", "label": "Department of Social Welfare" },
-      { "value": "Police", "label": "Police" }
+      {
+        "value": "Department of Social Welfare",
+        "label": "Department of Social Welfare"
+      },
+      {
+        "value": "Police",
+        "label": "Police"
+      }
     ]
   }
 ]
