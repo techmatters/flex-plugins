@@ -8,3 +8,15 @@ variable "gender_field_type" {
   type        = string
   default     = "default"
 }
+
+variable "unknown_value" {
+  description = "The primary value used to denote an 'unknown' age."
+  type        = string
+  default = "Unknown"
+}
+
+variable "unknown_synonyms" {
+  description = "Any synonyms value used to denote an 'unknown' age."
+  type        = set(string)
+  default = ["Prefer not to answer", "X", "prefer not", "prefer not to"]
+}

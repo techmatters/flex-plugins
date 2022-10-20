@@ -140,6 +140,7 @@
             { "value":  "Rajasthan", "label":  "Rajasthan" },
             { "value":  "Sikkim", "label":  "Sikkim" },
             { "value":  "Tamil Nadu", "label":  "Tamil Nadu" },
+            { "value":  "Telangana", "label":  "Telangana" },
             { "value":  "Tripura", "label":  "Tripura" },
             { "value":  "Uttar Pradesh", "label":  "Uttar Pradesh" },
             { "value":  "Uttaranchal", "label":  "Uttaranchal" },
@@ -1003,6 +1004,13 @@
       "label": "Previous allegations/Prosecution History",
       "type": "input"
     },
+    {
+      "name": "copyToHousehold",
+      "label": "This perpetrator is also a household member",
+      "type": "copy-to",
+      "target": "households",
+      "saveable": false
+    },  
     {
       "name": "additionalInfo",
       "label": "Additional Information/Notes",

@@ -85,7 +85,7 @@ const CaseList: React.FC<Props> = ({
   }, [currentSettings]);
 
   const handleClickViewCase = currentCase => () => {
-    setConnectedCase(currentCase, standaloneTask.taskSid, false);
+    setConnectedCase(currentCase, standaloneTask.taskSid);
     openCaseDetails();
   };
 

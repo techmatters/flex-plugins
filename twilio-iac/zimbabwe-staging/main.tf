@@ -14,6 +14,14 @@ terraform {
   }
 }
 
+locals {
+  twilio_channels = {
+    "facebook" = {"contact_identity" = "messenger:103260519220529" },
+    "web" = {"contact_identity" = ""},
+    "sms" = {"contact_identity" = "+14322743110" }
+  }
+}
+
 module "chatbots" {
   source = "../terraform-modules/chatbots/default"
   serverless_url = var.serverless_url
@@ -45,18 +53,11 @@ module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
   helpline = var.helpline
-}
-
-module studioFlow {
-  source = "../terraform-modules/studioFlow/default"
-  master_workflow_sid = module.taskRouter.master_workflow_sid
-  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-  default_task_channel_sid = module.taskRouter.default_task_channel_sid
-  pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
+  custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", var.twilio_numbers))}]"
 }
 
 module flex {
-  source = "../terraform-modules/flex/default"
+  source = "../terraform-modules/flex/service-configuration"
   account_sid = var.account_sid
   short_environment = var.short_environment
   operating_info_key = var.operating_info_key
@@ -65,9 +66,18 @@ module flex {
   serverless_url = var.serverless_url
   multi_office_support = var.multi_office
   feature_flags = var.feature_flags
+}
+
+module twilioChannel {
+  for_each = local.twilio_channels
+  source = "../terraform-modules/channels/twilio-channel"
+  channel_contact_identity = each.value.contact_identity
+  pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
+  target_task_name = var.target_task_name
+  channel_name = "${each.key}"
+  master_workflow_sid = module.taskRouter.master_workflow_sid
+  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
-  messaging_studio_flow_sid = module.studioFlow.messaging_studio_flow_sid
-  messaging_flow_contact_identity = var.messaging_flow_contact_identity
 }
 
 module survey {
@@ -109,4 +119,5 @@ module github {
   twilio_auth_token = var.auth_token
   short_environment = var.short_environment
   short_helpline = var.short_helpline
+  serverless_url = var.serverless_url
 }

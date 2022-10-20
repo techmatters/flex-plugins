@@ -6,30 +6,47 @@ export const defaultLanguage = 'en-US';
 const defaultTranslation = require(`../translations/${defaultLanguage}/flexUI.json`);
 const defaultMessages = require(`../translations/${defaultLanguage}/messages.json`);
 
-const ptBRTranslation = require(`../translations/pt-BR/flexUI.json`);
-const ptBRMessages = require(`../translations/pt-BR/messages.json`);
-
 const enINTranslation = require(`../translations/en-IN/flexUI.json`);
 const enINMessages = require(`../translations/en-IN/messages.json`);
+
+const esCLTranslation = require(`../translations/es-CL/flexUI.json`);
+const esCLMessages = require(`../translations/es-CL/messages.json`);
+
+const esCOTranslation = require(`../translations/es-CO/flexUI.json`);
+const esCOMessages = require(`../translations/es-CO/messages.json`);
+
 const esESTranslation = require(`../translations/es-ES/flexUI.json`);
 const esESMessages = require(`../translations/es-ES/messages.json`);
+
 const huHUTranslation = require(`../translations/hu-HU/flexUI.json`);
 const huHUMessages = require(`../translations/hu-HU/messages.json`);
 
+const ptBRTranslation = require(`../translations/pt-BR/flexUI.json`);
+const ptBRMessages = require(`../translations/pt-BR/messages.json`);
+
+const thTHTranslation = require(`../translations/th-TH/flexUI.json`);
+const thTHMessages = require(`../translations/th-TH/messages.json`);
+
 const bundledTranslations = {
   [defaultLanguage]: defaultTranslation,
-  'pt-BR': ptBRTranslation,
   'en-IN': enINTranslation,
+  'es-CL': esCLTranslation,
+  'es-CO': esCOTranslation,
   'es-ES': esESTranslation,
   'hu-HU': huHUTranslation,
+  'pt-BR': ptBRTranslation,
+  'th-TH': thTHTranslation,
 };
 
 const bundledMessages = {
   [defaultLanguage]: defaultMessages,
-  'pt-BR': ptBRMessages,
   'en-IN': enINMessages,
+  'es-CL': esCLMessages,
+  'es-CO': esCOMessages,
   'es-ES': esESMessages,
-  'hu-HU': huHUTranslation,
+  'hu-HU': huHUMessages,
+  'pt-BR': ptBRMessages,
+  'th-TH': thTHMessages,
 };
 
 const translationErrorMsg = 'Could not translate, using default';
@@ -68,7 +85,7 @@ export const getMessage = messageKey => async language => {
   try {
     if (!language) return defaultMessages[messageKey];
 
-    if (language in bundledMessages) return bundledMessages[language][messageKey] || defaultMessages[messageKey];
+    if (language in bundledMessages) return bundledMessages[language][messageKey];
 
     // If no translation for this language, try to fetch it
     const body = { language };
@@ -76,7 +93,9 @@ export const getMessage = messageKey => async language => {
     const messages = await (typeof messagesJSON === 'string'
       ? JSON.parse(messagesJSON)
       : Promise.resolve(messagesJSON));
-    return messages[messageKey] || defaultMessages[messageKey];
+    if (messages[messageKey]) return messages[messageKey];
+
+    return defaultMessages[messageKey];
   } catch (err) {
     window.alert(translationErrorMsg);
     console.error(translationErrorMsg, err);

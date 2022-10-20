@@ -3,34 +3,33 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import Edit from '@material-ui/icons/Edit';
-import { FormDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, isNonSaveable } from 'hrm-form-definitions';
 
 import { BottomButtonBar, Box, Container, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseLayout, FullWidthFormTextContainer } from '../../styles/case';
 import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
-import { CaseState } from '../../states/case/reducer';
 import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
-import { isViewTemporaryCaseInfo, temporaryCaseInfoHistory } from '../../states/case/types';
-import { AppRoutesWithCaseAndAction, CaseItemAction } from '../../states/routing/types';
-import * as CaseActions from '../../states/case/actions';
+import { caseItemHistory, CaseState } from '../../states/case/types';
+import { ViewCaseSectionRoute, CaseItemAction } from '../../states/routing/types';
 import * as RoutingActions from '../../states/routing/actions';
+import { CaseSectionApi } from '../../states/case/sections/api';
 
 const mapStateToProps = (state: RootState, ownProps: ViewCaseItemProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
   const caseState: CaseState = state[namespace][connectedCaseBase];
-  const { temporaryCaseInfo } = caseState.tasks[ownProps.task.taskSid];
+  const { connectedCase } = caseState.tasks[ownProps.task.taskSid];
 
-  return { counselorsHash, temporaryCaseInfo };
+  return { counselorsHash, connectedCase };
 };
 
 export type ViewCaseItemProps = {
   task: CustomITask | StandaloneITask;
-  routing: AppRoutesWithCaseAndAction;
+  routing: ViewCaseSectionRoute;
+  definitionVersion: DefinitionVersion;
   exitItem: () => void;
-  itemType: string;
-  formDefinition: FormDefinition;
+  sectionApi: CaseSectionApi<unknown>;
   includeAddedTime?: boolean;
   canEdit: () => boolean;
 };
@@ -42,29 +41,19 @@ const ViewCaseItem: React.FC<Props> = ({
   task,
   routing,
   counselorsHash,
-  temporaryCaseInfo,
-  updateTempInfo,
   changeRoute,
   exitItem,
-  formDefinition,
-  itemType,
+  definitionVersion,
+  sectionApi,
+  connectedCase,
   canEdit,
 }) => {
-  if (!isViewTemporaryCaseInfo(temporaryCaseInfo))
-    throw new Error('This component only supports temporary case info of the ViewTemporaryCaseInfo type');
+  const item = sectionApi.toForm(sectionApi.getSectionItemById(connectedCase.info, routing.id));
 
-  const { addingCounsellorName, added, updatingCounsellorName, updated } = temporaryCaseInfoHistory(
-    temporaryCaseInfo,
-    counselorsHash,
-  );
-
-  const { form } = temporaryCaseInfo.info;
+  const { addingCounsellorName, added, updatingCounsellorName, updated } = caseItemHistory(item, counselorsHash);
+  const formDefinition = sectionApi.getSectionFormDefinition(definitionVersion).filter(fd => !isNonSaveable(fd));
 
   const onEditCaseItemClick = () => {
-    updateTempInfo(
-      { screen: temporaryCaseInfo.screen, action: CaseItemAction.Edit, info: temporaryCaseInfo.info },
-      task.taskSid,
-    );
     changeRoute({ ...routing, action: CaseItemAction.Edit }, task.taskSid);
   };
 
@@ -72,7 +61,7 @@ const ViewCaseItem: React.FC<Props> = ({
     <CaseLayout>
       <Container>
         <ActionHeader
-          titleTemplate={`Case-View${itemType}`}
+          titleTemplate={`Case-View${sectionApi.label}`}
           onClickClose={exitItem}
           addingCounsellor={addingCounsellorName}
           added={added}
@@ -81,7 +70,7 @@ const ViewCaseItem: React.FC<Props> = ({
         />
         {formDefinition.length === 1 && formDefinition[0].type === 'textarea' ? (
           <FullWidthFormTextContainer data-testid="Case-ViewCaseItemScreen-FullWidthTextArea">
-            {form[formDefinition[0].name]}
+            {item.form[formDefinition[0].name]}
           </FullWidthFormTextContainer>
         ) : (
           <Box paddingTop="10px">
@@ -90,7 +79,7 @@ const ViewCaseItem: React.FC<Props> = ({
                 <SectionEntry
                   key={`entry-${e.label}`}
                   description={<Template code={e.label} />}
-                  value={form[e.name]}
+                  value={item.form[e.name]}
                   definition={e}
                 />
               ))}
@@ -120,7 +109,6 @@ const ViewCaseItem: React.FC<Props> = ({
 ViewCaseItem.displayName = 'ViewCaseItem';
 
 const mapToDispatchProps = {
-  updateTempInfo: CaseActions.updateTempInfo,
   changeRoute: RoutingActions.changeRoute,
 };
 

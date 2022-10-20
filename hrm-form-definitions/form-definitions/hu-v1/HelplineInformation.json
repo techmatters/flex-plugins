@@ -1,0 +1,15 @@
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "Kék Vonal",
+      "value": "Kék Vonal",
+      "default": true,
+      "manager": {
+        "name": "Táler Orsolya",
+        "phone": "",
+        "email": ""
+      }
+    }
+  ]
+}

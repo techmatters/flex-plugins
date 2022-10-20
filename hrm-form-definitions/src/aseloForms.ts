@@ -26,6 +26,7 @@ export type AseloFormTemplateDefinitions = {
     PerpetratorForm: FormFileSpecification;
     ReferralForm: FormFileSpecification;
     DocumentForm: FormFileSpecification;
+    CaseSummaryForm: FormFileSpecification;
   };
   tabbedForms: {
     CallerInformationTab: FormFileSpecification;
@@ -500,6 +501,10 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
     },
     DocumentForm: {
       definitionFilePath: './caseForms/DocumentForm.json',
+      items: {},
+    },
+    CaseSummaryForm: {
+      definitionFilePath: './caseForms/CaseSummaryForm.json',
       items: {},
     },
   },

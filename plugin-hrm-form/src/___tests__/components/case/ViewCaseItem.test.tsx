@@ -15,6 +15,7 @@ import ViewCaseItem, { ViewCaseItemProps } from '../../../components/case/ViewCa
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 import { CaseItemEntry, StandaloneITask } from '../../../types/types';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
+import { householdSectionApi } from '../../../states/case/sections/household';
 
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
@@ -34,13 +35,6 @@ const household = {
   postalCode: '1111',
   streetAddress: '123 Fake st',
   relationshipToChild: 'Friend',
-};
-
-const caseItemEntry: CaseItemEntry = {
-  form: household,
-  createdAt: '2020-06-29T22:26:00.208Z',
-  twilioWorkerId: 'worker1',
-  id: null,
 };
 
 const state = {
@@ -65,12 +59,26 @@ const state = {
       tasks: {
         task1: {
           taskSid: 'task1',
-          temporaryCaseInfo: { screen: 'view-household', info: caseItemEntry, action: CaseItemAction.View },
           connectedCase: {
             createdAt: 1593469560208,
             twilioWorkerId: 'worker1',
             status: 'open',
-            info: null,
+            info: {
+              households: [
+                {
+                  household: {},
+                  createdAt: '2020-06-29T22:26:00.208Z',
+                  twilioWorkerId: 'worker1',
+                  id: 'HOUSEHOLD_1',
+                },
+                {
+                  household,
+                  createdAt: '2020-06-29T22:26:00.208Z',
+                  twilioWorkerId: 'worker1',
+                  id: 'HOUSEHOLD_2',
+                },
+              ],
+            },
           },
         },
       },
@@ -100,13 +108,14 @@ describe('Test ViewHousehold', () => {
   beforeEach(async () => {
     ownProps = {
       exitItem,
+      definitionVersion: mockV1,
       task: task as StandaloneITask,
-      formDefinition: mockV1.caseForms.HouseholdForm,
-      itemType: 'Household',
+      sectionApi: householdSectionApi,
       routing: {
         route: 'tabbed-forms',
         subroute: NewCaseSubroutes.Household,
         action: CaseItemAction.View,
+        id: 'HOUSEHOLD_2',
       },
       canEdit: () => true,
     };
