@@ -285,7 +285,8 @@ export const setUpPostSurvey = (setupObject: SetupObject) => {
     const maybeExcludeDeactivateChatChannel = event => {
       const defaultOrchestrations = ChatOrchestrator.getOrchestrations(event);
       if (Array.isArray(defaultOrchestrations)) {
-        const excludeDeactivateChatChannel = defaultOrchestrations.filter(e => e !== 'DeactivateChatChannel');
+        // TS complains that 'DeactivateChatChannel' is not a valid value for ChatOrchestration but leaving the check in to be on the safe side until we're sure we can remove it
+        const excludeDeactivateChatChannel = defaultOrchestrations.filter(e => <string>e !== 'DeactivateChatChannel');
 
         ChatOrchestrator.setOrchestrations(
           event,
