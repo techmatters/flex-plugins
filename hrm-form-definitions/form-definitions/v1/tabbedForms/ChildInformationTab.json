@@ -301,15 +301,20 @@
     "type": "select",
     "options": [
       { "value": "Unknown", "label": "" },
+      { "value": "Arabic", "label": "Arabic" },
+      { "value": "Amharic", "label": "Amharic" },
       { "value": "Bemba", "label": "Bemba" },
       { "value": "en-US", "label": "English" },
+      { "value": "French", "label": "French" },
       { "value": "Kaonde", "label": "Kaonde" },
       { "value": "Lozi", "label": "Lozi" },
       { "value": "Lunda", "label": "Lunda" },
       { "value": "Luvale", "label": "Luvale" },
       { "value": "Nyanja", "label": "Nyanja" },
+      { "value": "Swahili", "label": "Swahili" },
       { "value": "Tonga", "label": "Tonga" }
-    ]  
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "ethnicity",
