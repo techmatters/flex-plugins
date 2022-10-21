@@ -293,7 +293,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
             contactId={contactId}
             canViewTranscript={canViewTranscript}
             transcriptAvailable={savedContact.details.mediaUrls?.some(m => m.type === ContactMediaType.TRANSCRIPT)}
-            // transcriptUrl="https://tl-aselo-docs-as-development.s3.amazonaws.com/transcripts/2022/08/09/20220809131844-WT1d7624f7c9d015a52d825e3be75ea105.json"
             transcriptUrl={savedContact.details.mediaUrls ? savedContact.details.mediaUrls[0].url : undefined}
           />
         </ContactDetailsSection>

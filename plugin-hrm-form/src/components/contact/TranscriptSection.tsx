@@ -64,7 +64,6 @@ const TranscriptSection: React.FC<Props> = ({
         const transcriptPreSignedUrl = await getFileDownloadUrlFromUrl(transcriptUrl, '');
         const transcriptJson = await fetch(transcriptPreSignedUrl.downloadUrl);
         const transcriptParsed = await transcriptJson.json();
-        // TODO: the current example of a transcript contains more stuff. Here we only want the transcript itself probably?
         loadTranscript(contactId, transcriptParsed.transcript);
         setLoading(false);
       } catch (err) {
