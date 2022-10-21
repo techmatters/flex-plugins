@@ -120,6 +120,17 @@
         "Unspecified/Other"
       ]
     },
+    "CHAZ Project": {
+      "color": "#47BA5E",
+      "subcategories": [
+        "Agape Inclusion",
+        "Agape Exclusion",
+        "Covid-19 GBV",
+        "HIV",
+        "TB",
+        "Unspecified/Other"
+      ]
+    },
     "Non-Counselling contacts": {
       "color": "#767777",
       "subcategories": [
@@ -226,6 +237,27 @@
         "Serious Complaints - SCT",
         "Exit - SCT",
         "Unspecified/Other - SCT"
+      ]
+    },
+    "RDA Project": {
+      "color": "#47BA5E",
+      "subcategories": [
+        "SGBV",
+        "Sexual Harassment",
+        "Sexual Exploitation",
+        "GBV",
+        "Unspecified/Other"
+      ]
+    },
+    "CHAZ Project": {
+      "color": "#47BA5E",
+      "subcategories": [
+        "Agape Inclusion",
+        "Agape Exclusion",
+        "Covid-19 GBV",
+        "HIV",
+        "TB",
+        "Unspecified/Other"
       ]
     },
     "Non-Counselling contacts": {
