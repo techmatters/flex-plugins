@@ -1181,12 +1181,3 @@ export const HeaderCloseButton = styled(ButtonBase)`
   }
 `;
 HeaderCloseButton.displayName = 'HeaderCloseButton';
-
-function outline(
-  arg0: ({ isPlaceholder, ...rest }: StyledSelectProps) => JSX.Element,
-  arg1: string,
-  outline: any,
-  arg3: string,
-) {
-  throw new Error('Function not implemented.');
-}
