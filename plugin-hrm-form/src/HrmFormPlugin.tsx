@@ -69,7 +69,7 @@ const readConfig = () => {
   };
 };
 
-let cachedConfig;
+let cachedConfig: ReturnType<typeof readConfig>;
 
 try {
   cachedConfig = readConfig();
@@ -87,6 +87,8 @@ export type SetupObject = ReturnType<typeof getConfig> & {
   translateUI: (language: string) => Promise<void>;
   getMessage: (messageKey: string) => (language: string) => Promise<string>;
 };
+
+console.log('This is me checking for header output', Flex.MainHeader);
 
 /**
  * Helper to expose the forms definitions without the need of calling Manager

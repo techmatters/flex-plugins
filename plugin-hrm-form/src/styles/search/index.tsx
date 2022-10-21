@@ -213,12 +213,14 @@ StyledTabLabel.displayName = 'StyledTabLabel';
 
 export const StyledResultsText = styled('div')`
   display: flex;
+  padding-right: 5px;
 `;
 StyledResultsText.displayName = 'StyledResultsText';
 
 export const StyledFolderIcon = styled(Folder)`
-  font-size: medium !important;
-  padding-right: 10px;
+  font-size: 18px !important;
+  padding: '-1px 10px 0 6px';
+  margin-right: 10px;
 `;
 
 StyledFolderIcon.displayName = 'StyledFolderIcon';
@@ -351,6 +353,7 @@ export const SectionActionButton = styled('button')`
     outline-color: black;
   }
 `;
+SectionActionButton.displayName = 'SectionActionButton';
 
 type CollapseProps = {
   expanded: boolean;
@@ -428,7 +431,7 @@ const containerLeftRightMargin = '5px';
 
 export const ResultsHeader = styled('div')`
   display: flex;
-  padding: 32px 20px 0px 20px;
+  padding: 32px 20px 60px 20px;
   flex-direction: column;
   flex-wrap: nowrap;
   background-color: #ffffff;
@@ -445,7 +448,8 @@ export const ResultsHeader = styled('div')`
 export const ListContainer = styled(BottomButtonBar)`
   flex-basis: 0;
   flex-grow: 1;
-  padding: 0;
+  padding: 10px;
+  margin-top: 2px;
 `;
 
 export const ScrollableList = styled('div')`

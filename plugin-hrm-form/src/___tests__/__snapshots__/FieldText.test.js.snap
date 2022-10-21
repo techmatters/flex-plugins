@@ -11,7 +11,7 @@ exports[`render FieldText with errors 1`] = `
   }
   taskId=""
 >
-  <StyledLabel
+  <FormLabel
     htmlFor="CallerInformation_FirstName"
   >
     First name
@@ -24,11 +24,10 @@ exports[`render FieldText with errors 1`] = `
     >
       *
     </span>
-  </StyledLabel>
-  <StyledInput
+  </FormLabel>
+  <FormInput
     error={true}
     id="CallerInformation_FirstName"
-    multiline={false}
     onBlur={[MockFunction]}
     onChange={[MockFunction]}
     onFocus={[MockFunction]}
@@ -52,15 +51,14 @@ exports[`render basic FieldText 1`] = `
   }
   taskId=""
 >
-  <StyledLabel
+  <FormLabel
     htmlFor="CallerInformation_FirstName"
   >
     First name
-  </StyledLabel>
-  <StyledInput
+  </FormLabel>
+  <FormInput
     error={false}
     id="CallerInformation_FirstName"
-    multiline={false}
     onBlur={[MockFunction]}
     onChange={[MockFunction]}
     onFocus={[MockFunction]}
@@ -81,7 +79,7 @@ exports[`render required FieldText 1`] = `
   }
   taskId=""
 >
-  <StyledLabel
+  <FormLabel
     htmlFor="CallerInformation_FirstName"
   >
     First name
@@ -94,11 +92,10 @@ exports[`render required FieldText 1`] = `
     >
       *
     </span>
-  </StyledLabel>
-  <StyledInput
+  </FormLabel>
+  <FormInput
     error={false}
     id="CallerInformation_FirstName"
-    multiline={false}
     onBlur={[MockFunction]}
     onChange={[MockFunction]}
     onFocus={[MockFunction]}

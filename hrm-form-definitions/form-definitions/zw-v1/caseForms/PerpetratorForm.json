@@ -82,6 +82,11 @@
     "type": "input"
   },
   {
+    "name": "AddressDescription",
+    "label": "Describe the Address",
+    "type": "input"
+  },
+  {
     "name": "province",
     "label": "Province",
     "type": "select",
@@ -175,6 +180,11 @@
       "value": true,
       "message": "RequiredFieldError"
     }
+  },
+  {
+    "name": "DOB",
+    "label": "Date of Birth",
+    "type": "date-input"
   },
   {
     "name": "age",
@@ -465,6 +475,16 @@
   {
     "name": "ethnicity",
     "label": "Ethnicity",
+    "type": "input"
+  },
+  {
+    "name": "race",
+    "label": "Race",
+    "type": "input"
+  },
+  {
+    "name": "idNumber",
+    "label": "ID Number",
     "type": "input"
   }
 ]

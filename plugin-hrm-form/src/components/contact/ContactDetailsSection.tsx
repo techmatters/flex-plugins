@@ -77,14 +77,14 @@ const ContactDetailsSection: React.FC<Props> = ({
               handleSetCallType();
             }}
           >
-            <LinkIcon style={{ fontSize: '18px', padding: '0 6px' }} />
+            <LinkIcon style={{ fontSize: '18px', padding: '-1px 6px 0 6px', marginRight: '6px' }} />
             <Template code="ContactCopyButton" />
           </SectionActionButton>
         )}
         {showEditButton && (
           <>
             <SectionActionButton type="button" onClick={handleEditClick}>
-              <EditIcon style={{ fontSize: '14px', padding: '3px 6px 0 6px' }} />
+              <EditIcon style={{ fontSize: '14px', padding: '-1px 6px 0 6px', marginRight: '6px' }} />
               <Template code="EditButton" />
             </SectionActionButton>
           </>

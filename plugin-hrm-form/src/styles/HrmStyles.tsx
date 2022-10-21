@@ -1,9 +1,9 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
-import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, withStyles, TableRow, TabProps } from '@material-ui/core';
+import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, withStyles, TabProps } from '@material-ui/core';
 import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
 import AssignmentInd from '@material-ui/icons/AssignmentInd';
-import { Button, Icon, styled } from '@twilio/flex-ui';
+import { Button, Icon, styled, CheckboxGroup } from '@twilio/flex-ui';
 import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
 
 import HrmTheme from './HrmTheme';
@@ -116,7 +116,7 @@ export const Container = styled('div')<ContainerProps>`
 Container.displayName = 'Container';
 
 export const ErrorText = styled('p')`
-  color: ${HrmTheme.errorColor};
+  color: ${HrmTheme.colors.errorColor};
   font-size: 10px;
   line-height: 1.5;
 `;
@@ -136,13 +136,13 @@ export const CategorySubtitleSection = styled('div')`
 CategorySubtitleSection.displayName = 'CategorySubtitleSection';
 
 export const CategoryRequiredText = styled('p')`
-  color: ${HrmTheme.darkTextColor};
+  color: ${HrmTheme.colors.darkTextColor};
   font-size: 12px;
   font-weight: 400;
   flex-grow: 1;
 
   &:before {
-    color: ${HrmTheme.errorColor};
+    color: ${HrmTheme.colors.errorColor};
     content: '* ';
   }
 `;
@@ -154,19 +154,22 @@ export const StyledInput = styled(Input)`
   font-size: 12px;
   line-height: 1.33;
   letter-spacing: normal;
+  variant: filled;
   input {
     width: 217px;
     height: 36px;
     border-radius: 4px;
-    background-color: ${HrmTheme.inputBackgroundColor};
+    background-color: ${HrmTheme.colors.inputBackgroundColor};
     border: none;
+    padding: 0 7px;
+    margin-bottom: -2px;
   }
   input:focus {
-    background-color: ${HrmTheme.inputBackgroundColor};
+    background-color: ${HrmTheme.colors.inputBackgroundColor};
     box-shadow: none;
     border: 1px solid rgba(0, 59, 129, 0.37);
   }
-  background-color: ${HrmTheme.base1};
+  background-color: ${HrmTheme.colors.base1};
   color: ${/*
    * props =>
    * props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor
@@ -204,9 +207,9 @@ type StyledSelectProps = {
   isPlaceholder?: boolean;
 };
 
-export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSelectProps) => <Select {...rest} />)<
-  StyledSelectProps
->`
+export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSelectProps) => (
+  <Select disableUnderline {...rest} />
+))<StyledSelectProps>`
   flex-grow: 0;
   flex-shrink: 0;
   width: 217px;
@@ -214,22 +217,38 @@ export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSe
     height: 36px;
     line-height: 22px;
     border-radius: 4px;
-    background-color: ${HrmTheme.inputBackgroundColor};
-    border: none;
+    background-color: ${HrmTheme.colors.inputBackgroundColor};
     color: ${({ isPlaceholder }) => (isPlaceholder ? 'darkgray' : 'currentColor')};
+    border: none;
   }
+
   .Twilio-Dropdown {
     height: 100%;
   }
+
   [class*='MuiSelect-selectMenu'] {
-    padding-top: 7px;
-    padding-bottom: 7px;
-    border-right-width: 0px;
-    &:focus {
-      border-right-width: 1px;
+    padding: 0 7px;
+    font-size: 12px;
+    line-height: 1.33;
+
+    ::-webkit-input-placeholder {
+      /* Chrome/Opera/Safari */
+      margin: 12px 0;
+    }
+    ::-moz-placeholder {
+      /* Firefox 19+ */
+      margin: 12px 0;
+    }
+    :-ms-input-placeholder {
+      /* IE 10+ */
+      margin: 12px 0;
+    }
+    :-moz-placeholder {
+      /* Firefox 18- */
+      margin: 12px 0;
     }
   }
-  background-color: ${HrmTheme.base1};
+  background-color: ${HrmTheme.colors.base1};
   color: ${/*
    * props =>
    * props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor
@@ -506,7 +525,7 @@ TransferStyledButton.displayName = 'TransferStyledButton';
 export const HeaderContainer = styled(Row)`
   width: 100%;
   justify-items: flex-start;
-  background-color: ${HrmTheme.base2};
+  background-color: ${HrmTheme.colors.base2};
   border-width: 0px;
   text-transform: uppercase;
   color: #192b33;
@@ -750,7 +769,7 @@ DependentSelectLabel.displayName = 'DependentSelectLabel';
 
 export const FormError = styled('span')`
   text-transform: none;
-  color: ${HrmTheme.errorColor};
+  color: ${HrmTheme.colors.errorColor};
   font-size: 10px;
   line-height: 1.5;
   letter-spacing: normal;
@@ -772,7 +791,7 @@ export const FormInput = styled('input')<FormInputProps>`
     width: 217px;
     height: 36px;
     border-radius: 4px;
-    background-color: ${HrmTheme.inputBackgroundColor};
+    background-color: ${HrmTheme.colors.inputBackgroundColor};
     color: ${/*
      * props =>
      * props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor
@@ -783,7 +802,7 @@ export const FormInput = styled('input')<FormInputProps>`
     padding: 0 7px;
   }
   &:focus {
-    background-color: ${HrmTheme.inputBackgroundColor};
+    background-color: ${HrmTheme.colors.inputBackgroundColor};
     box-shadow: none;
     border: 1px solid rgba(0, 59, 129, 0.37);
   }
@@ -865,7 +884,7 @@ export const FormTextArea = styled('textarea')<FormInputProps>`
     box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
     width: ${props => (props.width ? props.width : '217')}px;
     border-radius: 4px;
-    background-color: ${HrmTheme.base2};
+    background-color: ${HrmTheme.colors.base2};
     color: ${/*
      * props =>
      * props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor
@@ -877,7 +896,7 @@ export const FormTextArea = styled('textarea')<FormInputProps>`
     border-radius: 4px;
   }
   &:focus {
-    background-color: ${HrmTheme.inputBackgroundColor};
+    background-color: ${HrmTheme.colors.inputBackgroundColor};
     box-shadow: none;
     border: 1px solid rgba(0, 59, 129, 0.37);
   }
@@ -894,7 +913,7 @@ export const FormCheckBoxWrapper = styled(Row)<FormInputProps>`
 `;
 FormCheckBoxWrapper.displayName = 'FormCheckBoxWrapper';
 
-const CheckboxBase = styled('input')<FormInputProps>`
+const CheckboxBase = styled.input<FormInputProps>`
   &[type='checkbox'] {
     display: inline-block;
     position: relative;
@@ -908,7 +927,7 @@ const CheckboxBase = styled('input')<FormInputProps>`
     top: 50%;
     left: 7px;
     transform: translate(-50%, -50%);
-    content: '';
+    content: '\f00c';
   }
   &[type='checkbox']::before {
     width: 13px;
@@ -921,6 +940,7 @@ const CheckboxBase = styled('input')<FormInputProps>`
     background-image: linear-gradient(to bottom, hsl(300, 3%, 73%), hsl(300, 3%, 93%) 30%);
   }
 `;
+CheckboxBase.displayName = 'CheckboxBase';
 
 export const FormCheckbox = styled(CheckboxBase)`
   &[type='checkbox']:checked::before {
@@ -1003,7 +1023,7 @@ export const FormSelect = styled('select')<FormInputProps>`
   letter-spacing: normal;
   box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
   ${props => (props.fullWidth ? 'width: 100%' : 'width: 217px')};
-  background-color: ${HrmTheme.inputBackgroundColor};
+  background-color: ${HrmTheme.colors.inputBackgroundColor};
   color: ${/*
    * props =>
    * props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor
@@ -1107,7 +1127,7 @@ CategoryCheckboxField.displayName = 'CategoryCheckboxField';
 export const TaskCanvasOverride = styled('div')`
   width: 100%;
   height: 100%;
-  background-color: ${HrmTheme.base2};
+  background-color: ${HrmTheme.colors.base2};
 `;
 
 export const CannedResponsesContainer = styled('div')`

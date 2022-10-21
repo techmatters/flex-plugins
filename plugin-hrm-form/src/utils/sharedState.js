@@ -43,6 +43,7 @@ export const saveFormSharedState = async (form, task) => {
 /**
  * Restores the contact form from Sync Client (if there is any)
  * @param {import("@twilio/flex-ui").ITask} task
+ * @returns {Promise<import("../states/contacts/reducer").TaskEntry | null>}
  */
 export const loadFormSharedState = async task => {
   const { featureFlags, sharedStateClient, strings } = getConfig();
