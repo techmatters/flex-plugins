@@ -466,5 +466,25 @@
     "name": "ethnicity",
     "label": "Ethnicity",
     "type": "input"
+  },
+  {
+    "name": "idNumber",
+    "label": "ID Number",
+    "type": "input"
+  },
+  {
+    "name": "DOB",
+    "label": "Date of Birth",
+    "type": "date-input"
+  },
+  {
+    "name": "race",
+    "label": "Race",
+    "type": "input"
+  },
+  {
+    "name": "AddressDescription",
+    "label": "Describe the Address",
+    "type": "input"
   }
 ]

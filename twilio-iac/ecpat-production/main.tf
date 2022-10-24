@@ -20,6 +20,11 @@ module "chatbots" {
   serverless_url = var.serverless_url
 }
 
+module "custom_chatbots" {
+  source = "../terraform-modules/chatbots/ecpat"
+  serverless_url = var.serverless_url
+}
+
 module "hrmServiceIntegration" {
   source = "../terraform-modules/hrmServiceIntegration/default"
   local_os = var.local_os
@@ -47,6 +52,7 @@ module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
   helpline = var.helpline
+  custom_task_routing_filter_expression = "isContactlessTask==true"
 }
 
 module studioFlow {

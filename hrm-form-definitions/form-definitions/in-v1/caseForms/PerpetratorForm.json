@@ -995,6 +995,11 @@
       "type": "input"
     },
     {
+      "name": "perpSocialMedia",
+      "label": "Social Media Account",
+      "type": "input"
+    },
+    {
       "name": "nationality",
       "label": "Nationality",
       "type": "input"

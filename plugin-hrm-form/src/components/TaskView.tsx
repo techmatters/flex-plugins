@@ -83,11 +83,12 @@ const TaskView: React.FC<Props> = props => {
   if (!show) return null;
 
   const { featureFlags } = getConfig();
+  const isFormLocked = !hasTaskControl(task);
 
   return (
-    <Flex flexDirection="column" height="100%">
+    <Flex flexDirection="column" height="100%" style={{ pointerEvents: isFormLocked ? 'none' : 'auto' }}>
       {featureFlags.enable_previous_contacts && <PreviousContactsBanner task={task} />}
-      {!hasTaskControl(task) && <FormNotEditable />}
+      {isFormLocked && <FormNotEditable />}
       <HrmForm task={task} featureFlags={featureFlags} />
     </Flex>
   );

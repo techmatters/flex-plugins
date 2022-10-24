@@ -43,7 +43,6 @@ type TransferChatStartBody = {
   targetSid: string;
   ignoreAgent: string;
   mode: string;
-  memberToKick: string;
 };
 
 type TrasferChatStartReturn = { closed: string; kept: string };
