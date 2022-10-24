@@ -17,10 +17,10 @@ terraform {
 locals {
   strings= jsondecode(file("${path.module}/../translations/${var.helpline_language}/strings.json"))
   twilio_channels = {
-    # "facebook" = {"contact_identity" = "messenger:" },
+    "facebook" = {"contact_identity" = "messenger:103538615719253" },
     "web" = {"contact_identity" = "" }
   }
-  custom_channels=[]
+  custom_channels=["twitter","instagram"]
 }
 
 module "custom_chatbots" {
