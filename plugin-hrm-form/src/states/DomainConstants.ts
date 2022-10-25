@@ -19,6 +19,19 @@ export const channelTypes = {
 
 export type ChannelTypes = typeof channelTypes[keyof typeof channelTypes];
 
+const chatChannels = [
+  channelTypes.whatsapp,
+  channelTypes.facebook,
+  channelTypes.web,
+  channelTypes.sms,
+  channelTypes.twitter,
+  channelTypes.instagram,
+  channelTypes.line,
+];
+
+export const isVoiceChannel = (channel: string) => channel === channelTypes.voice;
+export const isChatChannel = (channel: string) => chatChannels.includes(channel as any);
+
 export type ChannelColors = {
   [C in ChannelTypes]: string;
 };
