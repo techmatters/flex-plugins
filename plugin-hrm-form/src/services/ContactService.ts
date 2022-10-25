@@ -18,6 +18,7 @@ import fetchHrmApi from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getConfig, getDefinitionVersions } from '../HrmFormPlugin';
 import {
+  ContactMediaType,
   ContactRawJson,
   ConversationMedia,
   InformationObject,
@@ -205,9 +206,17 @@ const saveContactToHrm = async (
     if (TaskHelper.isChatBasedTask(task)) {
       ({ channelSid } = task.attributes);
       serviceSid = getConfig().chatServiceSid;
+
+      // Store a pending transcript
+      conversationMedia.push({
+        store: 'S3',
+        type: ContactMediaType.TRANSCRIPT,
+        url: undefined,
+      });
     }
 
     if (TaskHelper.isChatBasedTask(task) || TaskHelper.isCallTask(task)) {
+      // Store reservation sid to use Twilio insights overlay (recordings/transcript)
       conversationMedia.push({
         store: 'twilio',
         reservationSid: task.sid,

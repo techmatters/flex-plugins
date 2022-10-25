@@ -5,7 +5,7 @@ import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
-import { ContactMediaType } from '../../types/types';
+import { isS3StoredTranscript, isTwilioStoredMedia } from '../../types/types';
 import {
   DetailsContainer,
   NameText,
@@ -120,8 +120,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const navigate = (route: ContactDetailsRoute) => createContactDraft(savedContact.contactId, route);
 
   const loadConversationIntoOverlay = async () => {
+    const twilioStoredMedia = savedContact.details.conversationMedia.find(isTwilioStoredMedia);
     await Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_PLAY, {
-      taskSid: savedContact.details.conversationMedia[0].reservationSid,
+      taskSid: twilioStoredMedia.reservationSid,
     });
   };
 
@@ -138,7 +139,17 @@ const ContactDetailsHome: React.FC<Props> = function ({
       savedContact.details.conversationMedia?.length,
     // && typeof savedContact.overview.conversationDuration === 'number',
   );
-  const showTranscriptSection = featureFlags.enable_transcripts && isChatChannel(channel);
+
+  const twilioStoredTranscript =
+    featureFlags.enable_twilio_transcripts && savedContact.details.conversationMedia?.find(isTwilioStoredMedia);
+  const externalStoredTranscript =
+    featureFlags.enable_extrernal_transcripts && savedContact.details.conversationMedia?.find(isS3StoredTranscript);
+  const showTranscriptSection = Boolean(
+    canViewTranscript &&
+      isChatChannel(channel) &&
+      savedContact.details.conversationMedia?.length &&
+      (twilioStoredTranscript || externalStoredTranscript),
+  );
 
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
@@ -291,9 +302,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
         >
           <TranscriptSection
             contactId={contactId}
-            canViewTranscript={canViewTranscript}
-            transcriptAvailable={savedContact.details.mediaUrls?.some(m => m.type === ContactMediaType.TRANSCRIPT)}
-            transcriptUrl={savedContact.details.mediaUrls ? savedContact.details.mediaUrls[0].url : undefined}
+            twilioStoredTranscript={twilioStoredTranscript}
+            externalStoredTranscript={externalStoredTranscript}
+            loadConversationIntoOverlay={loadConversationIntoOverlay}
           />
         </ContactDetailsSection>
       )}

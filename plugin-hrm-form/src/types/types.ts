@@ -83,20 +83,29 @@ export type InformationObject = NestedInformation & {
   [key: string]: string | boolean | NestedInformation[keyof NestedInformation]; // having NestedInformation[keyof NestedInformation] makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
 };
 
-type TwilioStoredMedia = {
-  // In future we will have 'S3' as a possible store also.
+export type TwilioStoredMedia = {
   store: 'twilio';
   reservationSid: string;
 };
-
-export type ConversationMedia = TwilioStoredMedia;
 
 export enum ContactMediaType {
   // RECORDING = 'recording',
   TRANSCRIPT = 'transcript',
 }
 
-export type ContactMediaUrl = { url: string; type: ContactMediaType };
+export type S3StoredTranscript = {
+  store: 'S3';
+  type: ContactMediaType.TRANSCRIPT;
+  url?: string;
+};
+
+type S3StoredMedia = S3StoredTranscript;
+
+export type ConversationMedia = TwilioStoredMedia | S3StoredMedia;
+
+export const isTwilioStoredMedia = (m: ConversationMedia): m is TwilioStoredMedia => m.store === 'twilio';
+export const isS3StoredTranscript = (m: ConversationMedia): m is S3StoredTranscript =>
+  m.store === 'S3' && m.type === ContactMediaType.TRANSCRIPT;
 
 // Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
 export type ContactRawJson = {
@@ -107,7 +116,6 @@ export type ContactRawJson = {
   caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
   contactlessTask: { [key: string]: string | boolean };
   conversationMedia: ConversationMedia[];
-  mediaUrls?: ContactMediaUrl[];
 };
 
 // Information about a single contact, as expected from search contacts endpoint (we might want to reuse this type in backend) - (is this a correct placement for this?)

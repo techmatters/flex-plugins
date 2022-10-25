@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { format } from 'date-fns';
 
+import type { TwilioStoredMedia, S3StoredTranscript } from '../../types/types';
 import { contactFormsBase, namespace, RootState } from '../../states';
 import { getFileDownloadUrlFromUrl } from '../../services/ServerlessService';
 import { SectionActionButton } from '../../styles/search';
@@ -19,55 +20,64 @@ import {
 
 type OwnProps = {
   contactId: string;
-  transcriptUrl: string;
-  canViewTranscript: boolean;
-  transcriptAvailable: boolean;
+  twilioStoredTranscript?: TwilioStoredMedia;
+  externalStoredTranscript?: S3StoredTranscript;
+  loadConversationIntoOverlay: () => Promise<void>;
 };
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 const TranscriptSection: React.FC<Props> = ({
   contactId,
-  canViewTranscript,
+  twilioStoredTranscript,
+  externalStoredTranscript,
+  loadConversationIntoOverlay,
   myIdentity,
-  transcriptAvailable,
-  transcriptUrl,
   transcript,
   loadTranscript,
 }) => {
   const [loading, setLoading] = useState(false);
 
-  if (!canViewTranscript) {
-    return (
-      <ItalicFont>
-        <Template code="TranscriptSection-TranscriptNotAvailableDifficulties" />
-      </ItalicFont>
-    );
-  }
-
-  if (!transcriptAvailable || !transcriptUrl) {
-    return (
-      <ItalicFont>
-        <Template code="TranscriptSection-TranscriptNotAvailableCheckLater" />
-      </ItalicFont>
-    );
-  }
-
   if (loading) {
     return <CircularProgress size={30} />;
   }
 
-  if (!transcript) {
+  // Preferred case, external transcript is already in local state
+  if (transcript) {
+    return (
+      <MessageList>
+        {transcript.messages.map(m => {
+          const isFromMe = m.from === myIdentity;
+
+          return (
+            <MessageBubble key={m.sid} isFromMe={isFromMe}>
+              <MessageBubbleHeader>
+                <FontOpenSans>{m.from}</FontOpenSans>
+                <FontOpenSans>{format(new Date(m.dateCreated), 'h:mm aaaaa')}m</FontOpenSans>
+              </MessageBubbleHeader>
+              <MessageBubbleBody>{m.body}</MessageBubbleBody>
+            </MessageBubble>
+          );
+        })}
+      </MessageList>
+    );
+  }
+
+  // The external transcript is exported but it hasn't been fetched yet
+  if (externalStoredTranscript && externalStoredTranscript.url && !transcript) {
     const fetchAndLoadTranscript = async () => {
       try {
         setLoading(true);
-        const transcriptPreSignedUrl = await getFileDownloadUrlFromUrl(transcriptUrl, '');
+        const transcriptPreSignedUrl = await getFileDownloadUrlFromUrl(externalStoredTranscript.url, '');
         const transcriptJson = await fetch(transcriptPreSignedUrl.downloadUrl);
         const transcriptParsed = await transcriptJson.json();
         loadTranscript(contactId, transcriptParsed.transcript);
         setLoading(false);
       } catch (err) {
-        console.error(`Error loading the transcript for contact ${contactId}, transcriptUrl ${transcriptUrl}`, err);
+        console.error(
+          `Error loading the transcript for contact ${contactId}, transcript url ${externalStoredTranscript.url}`,
+          err,
+        );
       }
     };
 
@@ -77,23 +87,43 @@ const TranscriptSection: React.FC<Props> = ({
       </SectionActionButton>
     );
   }
-  console.log(transcript);
-  return (
-    <MessageList>
-      {transcript.messages.map(m => {
-        const isFromMe = m.from === myIdentity;
 
-        return (
-          <MessageBubble key={m.sid} isFromMe={isFromMe}>
-            <MessageBubbleHeader>
-              <FontOpenSans>{m.from}</FontOpenSans>
-              <FontOpenSans>{format(new Date(m.dateCreated), 'h:mm aaaaa')}m</FontOpenSans>
-            </MessageBubbleHeader>
-            <MessageBubbleBody>{m.body}</MessageBubbleBody>
-          </MessageBubble>
+  // External transcript is pending/disabled but Twilio transcript is enabled
+  if (twilioStoredTranscript) {
+    const loadTwilioStoredTranscript = async () => {
+      try {
+        setLoading(true);
+        await loadConversationIntoOverlay();
+        setLoading(false);
+      } catch (err) {
+        console.error(
+          `Error loading the conversation overlay for contact ${contactId}, Twilio stored transcript details ${twilioStoredTranscript}`,
+          err,
         );
-      })}
-    </MessageList>
+      }
+    };
+
+    return (
+      <SectionActionButton type="button" onClick={loadTwilioStoredTranscript}>
+        <Template code="ContactDetails-LoadTranscript-Button" />
+      </SectionActionButton>
+    );
+  }
+
+  // External is still pending and Twilio transcript is disabled
+  if (externalStoredTranscript && !externalStoredTranscript.url) {
+    return (
+      <ItalicFont>
+        <Template code="TranscriptSection-TranscriptNotAvailableCheckLater" />
+      </ItalicFont>
+    );
+  }
+
+  // Something went wrong
+  return (
+    <ItalicFont>
+      <Template code="TranscriptSection-TranscriptNotAvailableDifficulties" />
+    </ItalicFont>
   );
 };
 
