@@ -141,13 +141,17 @@ const ContactDetailsHome: React.FC<Props> = function ({
   );
 
   const twilioStoredTranscript =
-    featureFlags.enable_twilio_transcripts && savedContact.details.conversationMedia?.find(isTwilioStoredMedia);
+    featureFlags.enable_twilio_transcripts &&
+    canViewTwilioTranscript &&
+    savedContact.details.conversationMedia?.find(isTwilioStoredMedia);
   const externalStoredTranscript =
-    featureFlags.enable_external_transcripts && savedContact.details.conversationMedia?.find(isS3StoredTranscript);
+    featureFlags.enable_external_transcripts &&
+    can(PermissionActions.VIEW_EXTERNAL_TRANSCRIPT) &&
+    savedContact.details.conversationMedia?.find(isS3StoredTranscript);
   const showTranscriptSection = Boolean(
     isChatChannel(channel) &&
       savedContact.details.conversationMedia?.length &&
-      ((canViewTwilioTranscript && twilioStoredTranscript) || externalStoredTranscript),
+      (twilioStoredTranscript || externalStoredTranscript),
   );
 
   return (
