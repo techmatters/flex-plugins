@@ -52,7 +52,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   toggleSectionExpandedForContext,
   createContactDraft,
   enableEditing,
-  canViewTranscript,
+  canViewTwilioTranscript,
 }) {
   const version = savedContact?.details.definitionVersion;
 
@@ -135,7 +135,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const recordingAvailable = Boolean(
     featureFlags.enable_voice_recordings &&
       isVoiceChannel(channel) &&
-      canViewTranscript &&
+      canViewTwilioTranscript &&
       savedContact.details.conversationMedia?.length,
     // && typeof savedContact.overview.conversationDuration === 'number',
   );
@@ -143,12 +143,11 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const twilioStoredTranscript =
     featureFlags.enable_twilio_transcripts && savedContact.details.conversationMedia?.find(isTwilioStoredMedia);
   const externalStoredTranscript =
-    featureFlags.enable_extrernal_transcripts && savedContact.details.conversationMedia?.find(isS3StoredTranscript);
+    featureFlags.enable_external_transcripts && savedContact.details.conversationMedia?.find(isS3StoredTranscript);
   const showTranscriptSection = Boolean(
-    canViewTranscript &&
-      isChatChannel(channel) &&
+    isChatChannel(channel) &&
       savedContact.details.conversationMedia?.length &&
-      (twilioStoredTranscript || externalStoredTranscript),
+      ((canViewTwilioTranscript && twilioStoredTranscript) || externalStoredTranscript),
   );
 
   return (
@@ -325,7 +324,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
   draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
   detailsExpanded: state[namespace][contactFormsBase].contactDetails[ownProps.context].detailsExpanded,
-  canViewTranscript: (state.flex.worker.attributes.roles as string[]).some(
+  canViewTwilioTranscript: (state.flex.worker.attributes.roles as string[]).some(
     role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.quality_process_manager',
   ),
 });
