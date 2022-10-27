@@ -74,7 +74,7 @@ ${
               "x": 180,
               "y": 290
             },
-            "function_sid": serverless_function_sid,
+            "function_sid": operating_hours_function_sid,
             "parameters": [
               {
                 "value": channel_name,
@@ -121,7 +121,7 @@ ${
               ]
             },
             {
-              "next": "chatbot",
+              "next": "ChatBot",
               "event": "match",
               "conditions": [
                 {
@@ -190,7 +190,7 @@ ${
           }
         },
         {
-          "name": "chatbot",
+          "name": "ChatBot",
           "type": "send-to-auto-pilot",
           "transitions": [
             {
@@ -232,7 +232,7 @@ ${
                 {
                   "friendly_name": "If value equal_to counselor_handoff",
                   "arguments": [
-                    "{{widgets.chatbot.CurrentTask}}"
+                    "{{widgets.ChatBot.CurrentTask}}"
                   ],
                   "type": "equal_to",
                   "value": "counselor_handoff"
@@ -241,7 +241,7 @@ ${
             }
           ],
           "properties": {
-            "input": "{{widgets.chatbot.CurrentTask}}",
+            "input": "{{widgets.ChatBot.CurrentTask}}",
             "offset": {
               "x": 930,
               "y": 1150

@@ -44,3 +44,9 @@ variable "short_helpline" {
   description = "Short (usually 2 letter) upper case code for helpline"
   type        = string
 }
+
+variable "janitor_enabled" {
+  description = "Enable or disable Janitor"
+  type        = bool
+  default = true
+}
