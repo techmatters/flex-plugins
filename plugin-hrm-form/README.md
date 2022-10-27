@@ -5,15 +5,34 @@ Twilio Flex Plugins allow you to customize the appearance and behavior of [Twili
 
 ## Setup
 
-Make sure you have [Node.js](https://nodejs.org) as well as [`npm`](https://npmjs.com) installed.
+### Requirements
 
-Afterwards, install the dependencies by running `npm install`:
+See: [top level readme](../README.md)
+
+### NVM (install/use)
+
+Use nvm to ensure we use the same node/npm versions for each product. The first time you setup this repo (or if `nvm use` throws a missing version error), run `nvm install` to install the version of node specified in `.nvmrc`. Then run `nvm use` to switch to that version in the future. Without NVM: YMMV. `nvm-windows` does not support `.nvmrc`. Windows instructions are coming soon!
+
+### NPM install
+
+Install the dependencies by running:
 
 ```bash
-cd 
-
-# If you use npm
 npm install
+```
+
+### Secrets/Configuration download
+
+Download the files required to run locally by running (this requires docker and valid AWS IAM tokens):
+
+```bash
+npm run ssm:local
+```
+
+If you are going to run e2e tests, use:
+
+```bash
+npm run ssm:local:e2e
 ```
 
 ## Development
@@ -21,16 +40,23 @@ npm install
 In order to develop locally, you can use the Webpack Dev Server by running:
 
 ```bash
-npm start
+npm dev:local
 ```
 
-This will automatically start up the Webpack Dev Server and open the browser for you. Your app will run on `http://localhost:8080`. If you want to change that you can do this by setting the `PORT` environment variable:
+This will automatically start up the Webpack Dev Server and open the browser for you. Your app will run on `http://localhost:3000`. If you want to change that you can do this by setting the `PORT` environment variable:
 
 ```bash
-PORT=3000 npm start
+PORT=3001 npm dev:local
 ```
 
 When you make changes to your code, the browser window will be automatically refreshed.
+
+### Run against the local docker hrm-services
+
+```bash
+npm run dev:local:docker
+```
+
 
 ## Testing
 
