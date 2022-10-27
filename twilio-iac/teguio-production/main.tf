@@ -22,7 +22,7 @@ locals {
   operating_info_key = "co"
   environment = "Production"
   short_environment = "PROD"
-  serverless_function_sid = "ZHb7ef5682d731ce326be6d61c8a2b2fcf"
+  operating_hours_function_sid = "ZHb7ef5682d731ce326be6d61c8a2b2fcf"
   definition_version = "co-v1"
   permission_config = "co"
   multi_office = false
@@ -94,13 +94,13 @@ module twilioChannel {
   for_each = local.twilio_channels
   source = "../terraform-modules/channels/twilio-channel"
   custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/opening-hours/with-chatbot.tftpl",
+    "../terraform-modules/channels/flow-templates/operating-hours/with-chatbot.tftpl",
     {
       channel_name = "${each.key}"
       serverless_url=var.serverless_url
       serverless_service_sid = module.serverless.serverless_service_sid
       serverless_environment_sid = module.serverless.serverless_environment_production_sid
-      serverless_function_sid = local.serverless_function_sid
+      operating_hours_function_sid = local.operating_hours_function_sid
       master_workflow_sid = module.taskRouter.master_workflow_sid
       chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
       channel_attributes = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language})
@@ -125,13 +125,13 @@ module customChannel {
   for_each = toset(local.custom_channels)
   source = "../terraform-modules/channels/custom-channel"
   custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/opening-hours/no-chatbot.tftpl",
+    "../terraform-modules/channels/flow-templates/operating-hours/no-chatbot.tftpl",
     {
       channel_name = "${each.key}"
       serverless_url=var.serverless_url
       serverless_service_sid = module.serverless.serverless_service_sid
       serverless_environment_sid = module.serverless.serverless_environment_production_sid
-      serverless_function_sid = local.serverless_function_sid
+      operating_hours_function_sid = local.operating_hours_function_sid
       master_workflow_sid = module.taskRouter.master_workflow_sid
       chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
       channel_attributes = templatefile("../terraform-modules/channels/custom-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language})

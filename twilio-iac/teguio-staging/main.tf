@@ -22,7 +22,7 @@ locals {
   operating_info_key = "co"
   environment = "Staging"
   short_environment = "STG"
-  serverless_function_sid = "ZH5fcc5dee5089c176acd0bd24e7fa873e"
+  operating_hours_function_sid = "ZH5fcc5dee5089c176acd0bd24e7fa873e"
   definition_version = "co-v1"
   permission_config = "co"
   multi_office = false
@@ -100,7 +100,7 @@ module twilioChannel {
       serverless_url=var.serverless_url
       serverless_service_sid = module.serverless.serverless_service_sid
       serverless_environment_sid = module.serverless.serverless_environment_production_sid
-      serverless_function_sid = local.serverless_function_sid
+      operating_hours_function_sid = local.operating_hours_function_sid
       master_workflow_sid = module.taskRouter.master_workflow_sid
       chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
       channel_attributes = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language})
@@ -131,7 +131,7 @@ module customChannel {
       serverless_url=var.serverless_url
       serverless_service_sid = module.serverless.serverless_service_sid
       serverless_environment_sid = module.serverless.serverless_environment_production_sid
-      serverless_function_sid = local.serverless_function_sid
+      operating_hours_function_sid = local.operating_hours_function_sid
       master_workflow_sid = module.taskRouter.master_workflow_sid
       chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
       channel_attributes = templatefile("../terraform-modules/channels/custom-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language})
