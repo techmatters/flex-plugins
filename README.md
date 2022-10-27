@@ -20,4 +20,4 @@ In order to prevent sensitive credentials to be leaked, please follow this instr
 [nvm](https://github.com/nvm-sh/nvm) or [nvm-windows](https://github.com/coreybutler/nvm-windows)
 [docker](https://docs.docker.com/get-docker/)
 
-We depend on aws cli for some setup. You will need valid IAM access keys configured on your local machine to run some commands.
+We depend on aws cli running inside of docker for some setup. You will need valid IAM access keys configured on your local machine to run some commands.
