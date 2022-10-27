@@ -26,18 +26,10 @@ export const isWarmTransfer = task =>
 export const isColdTransfer = task =>
   Boolean(task.attributes.transferMeta && task.attributes.transferMeta.mode === transferModes.cold);
 
-/**
- * @param {string} status
- * @returns {(task: ITask) => boolean}
- */
-const isTaskInTransferStatus = status => task =>
-  Boolean(task.attributes.transferMeta && task.attributes.transferMeta.transferStatus === status);
-
-export const isTransferring = isTaskInTransferStatus(transferStatuses.transferring);
-
-export const isTransferRejected = isTaskInTransferStatus(transferStatuses.rejected);
-
-export const isTransferAccepted = isTaskInTransferStatus(transferStatuses.accepted);
+export const isTransferring = task =>
+  Boolean(
+    task.attributes.transferMeta && task.attributes.transferMeta.transferStatus === transferStatuses.transferring,
+  );
 
 /**
  * @param {ITask} task
@@ -46,13 +38,13 @@ export const shouldShowTransferButton = task =>
   TaskHelper.isTaskAccepted(task) &&
   task.taskStatus === 'assigned' &&
   task.status === 'accepted' &&
-  !isTransferring(task);
+  (!isTransferring(task) || hasTaskControl(task));
 
 /**
  * @param {ITask} task
  */
 export const shouldShowTransferControls = task =>
-  !isOriginalReservation(task) && isTransferring(task) && TaskHelper.isTaskAccepted(task);
+  !isOriginalReservation(task) && isTransferring(task) && hasTaskControl(task) && TaskHelper.isTaskAccepted(task);
 
 /**
  * Indicates if the current counselor has sole control over the task. Used to know if counselor should send form to hrm backend and prevent the form from being edited
@@ -96,16 +88,6 @@ export const takeTaskControl = async task => {
 export const returnTaskControl = async task => {
   if (TaskHelper.isCallTask(task)) {
     await setTaskControl(task, task.attributes.transferMeta.originalReservation);
-  }
-};
-
-/**
- * Removes the control of the given task (only for call tasks for now)
- * @param {ITask} task
- */
-export const clearTaskControl = async task => {
-  if (TaskHelper.isCallTask(task)) {
-    await setTaskControl(task, '');
   }
 };
 
@@ -170,34 +152,6 @@ export const clearTransferMeta = async task => {
   await task.setAttributes(attributes);
 };
 
-const letterNumber = /^[0-9a-zA-Z]+$/;
-/**
- * @param {string} char
- */
-export const shouldReplaceChar = char => !char.match(letterNumber);
-
-/**
- * Helper to match the transformation Twilio does on identity for the member resources
- * @param {string} str
- */
-export const transformIdentity = str => {
-  const transformed = [...str].map(char =>
-    shouldReplaceChar(char) ? `_${char.charCodeAt(0).toString(16).toUpperCase()}` : char,
-  );
-  return transformed.join('');
-};
-
-/**
- * Takes the task and identity of the counselor to kick, and returns it's memberSid
- * @param {ITask} task
- * @param {string} kickIdentity
- */
-export const getMemberToKick = (task, kickIdentity) => {
-  const ChatChannel = StateHelper.getChatChannelStateForTask(task);
-  const Member = ChatChannel.members.get(transformIdentity(kickIdentity));
-  return (Member && Member.source && Member.source.sid) || '';
-};
-
 /**
  * Kicks the other participant in call and then closes the original task
  * @param {ITask} task
@@ -220,38 +174,5 @@ export const closeCallOriginal = async task => {
 export const closeCallSelf = async task => {
   await setTransferRejected(task);
   await returnTaskControl(task);
-  await Actions.invokeAction('HangupCall', { sid: task.sid });
+  await Actions.invokeAction('CompleteTask', { sid: task.sid });
 };
-
-/**
- * Following helpers are used by TransferredTaskJanitor, as it will check for reservations instead of tasks, in order to unify the behavior of chat and call based tasks.
- */
-
-export const someoneHasTaskControl = reservation => reservation.attributes.transferMeta.sidWithTaskControl !== '';
-
-export const reservationHasTaskControl = reservation =>
-  reservation.attributes.transferMeta.sidWithTaskControl === reservation.reservation_sid;
-
-export const taskControlledByOther = reservation =>
-  someoneHasTaskControl(reservation) && !reservationHasTaskControl(reservation);
-
-export const callerLeftWhileTransferring = reservation =>
-  reservation.status === 'wrapup' && !someoneHasTaskControl(reservation);
-
-export const callerLeftAndThisShouldClose = reservation =>
-  callerLeftWhileTransferring(reservation) &&
-  reservation.attributes.transferMeta.originalCounselor !== reservation.worker_sid;
-
-export const shouldInvokeCompleteTask = (reservation, workerSid) =>
-  reservation.status === 'wrapup' &&
-  (taskControlledByOther(reservation) || callerLeftAndThisShouldClose(reservation)) &&
-  reservation.worker_sid === workerSid;
-
-export const transferAborted = reservation =>
-  (reservation.status === 'rejected' || reservation.status === 'timeout') &&
-  reservation.attributes.transferMeta.targetType === 'worker';
-
-export const shouldTakeControlBack = (reservation, workerSid) =>
-  (transferAborted(reservation) || callerLeftWhileTransferring(reservation)) &&
-  reservation.attributes.transferMeta.originalCounselor === workerSid &&
-  reservation.attributes.transferMeta.mode === transferModes.warm;

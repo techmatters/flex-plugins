@@ -199,7 +199,7 @@ export type LayoutVersion = {
   };
 };
 
-type StatusInfo = {
+export type StatusInfo = {
   value: string;
   label: string;
   color: string; // color that represents this status in the UI

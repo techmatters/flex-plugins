@@ -24,13 +24,16 @@ import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import ViewContact from './ViewContact';
 import { Activity, CaseDetails, CaseDetailsName, ConnectedCaseActivity, NoteActivity } from '../../states/case/types';
-import { CustomITask, StandaloneITask, Case as CaseType } from '../../types/types';
+import { Case as CaseType, CustomITask, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import {
-  isViewCaseSectionRoute,
+  AppRoutes,
+  AppRoutesWithCase,
+  CaseItemAction,
   isAddCaseSectionRoute,
-  NewCaseSubroutes,
   isEditCaseSectionRoute,
+  isViewCaseSectionRoute,
+  NewCaseSubroutes,
 } from '../../states/routing/types';
 import CaseHome from './CaseHome';
 import AddEditCaseItem, { AddEditCaseItemProps } from './AddEditCaseItem';
@@ -86,9 +89,6 @@ const Case: React.FC<Props> = ({
   counselorsHash,
   setConnectedCase,
   removeConnectedCase,
-  updateCaseInfo,
-  updateCaseStatus,
-  markCaseAsUpdated,
   changeRoute,
   isCreating,
   handleClose,
@@ -103,7 +103,7 @@ const Case: React.FC<Props> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [loadedContactIds, setLoadedContactIds] = useState([]);
-  const { connectedCase, prevStatus } = props?.connectedCaseState ?? {};
+  const { connectedCase } = props?.connectedCaseState ?? {};
   // This is to provide a stable dep for the useEffect that generates the timeline
   const savedContactsJson = JSON.stringify(savedContacts);
 
@@ -172,29 +172,35 @@ const Case: React.FC<Props> = ({
    * Check if the definitionVersion for this case exists in redux, and look for it if not.
    */
   useEffect(() => {
-    const fetchDefinitionVersions = async (v: string) => {
+    const fetchDefinitionVersions = async () => {
       const definitionVersion = await getDefinitionVersion(version);
-      updateDefinitionVersion(version, definitionVersion);
+      updateDefinitionVersion(connectedCase, version, definitionVersion);
+      setConnectedCase(connectedCase, task.taskSid);
     };
 
     if (version && !definitionVersions[version]) {
-      fetchDefinitionVersions(version);
+      fetchDefinitionVersions();
     }
-  }, [definitionVersions, updateDefinitionVersion, version]);
+  }, [connectedCase, definitionVersions, setConnectedCase, task.taskSid, updateDefinitionVersion, version]);
 
   if (routing.route === 'csam-report') return null;
 
   // Redirects to the proper view when the user clicks 'Close' button.
-  const handleCloseSubSection = () => {
-    props.updateTempInfo(null, task.taskSid);
-    if (routing.route === 'select-call-type') {
-      changeRoute({ route: 'select-call-type' }, task.taskSid);
-    } else if (routing.route === 'new-case') {
-      changeRoute({ route: 'new-case' }, task.taskSid);
-    } else {
-      changeRoute({ route: 'tabbed-forms', subroute: 'search' }, task.taskSid);
+  const closeSubSectionRoute = (): AppRoutesWithCase => {
+    switch (routing.route) {
+      case 'select-call-type': {
+        return { route: 'select-call-type' };
+      }
+      case 'new-case': {
+        return { route: 'new-case' };
+      }
+      default: {
+        return { route: 'tabbed-forms', subroute: 'search' };
+      }
     }
   };
+
+  const handleCloseSection = () => changeRoute(closeSubSectionRoute(), task.taskSid);
 
   if (!props.connectedCaseState) return null;
 
@@ -208,7 +214,7 @@ const Case: React.FC<Props> = ({
     return null;
   };
 
-  const { can } = getPermissionsForCase(connectedCase.twilioWorkerId, prevStatus);
+  const { can } = getPermissionsForCase(connectedCase.twilioWorkerId, connectedCase.status);
 
   const firstConnectedContact = (savedContacts && savedContacts[0]) ?? newContact;
   const name = getFirstNameAndLastNameFromContact(firstConnectedContact);
@@ -233,16 +239,12 @@ const Case: React.FC<Props> = ({
   const definitionVersion = props.definitionVersions[version];
   const office = getHelplineData(connectedCase.helpline, definitionVersion.helplineInformation);
 
-  const onStatusChange = (value: string) => {
-    updateCaseStatus(value, task.taskSid);
-  };
-
   const handleUpdate = async () => {
     setLoading(true);
 
     try {
       const updatedCase = await updateCase(connectedCase.id, { ...connectedCase });
-      setConnectedCase(updatedCase, task.taskSid, false);
+      setConnectedCase(updatedCase, task.taskSid);
     } catch (error) {
       console.error(error);
       recordBackendError('Update Case', error);
@@ -286,7 +288,6 @@ const Case: React.FC<Props> = ({
     name,
     categories,
     status,
-    prevStatus,
     caseCounselor,
     currentCounselor,
     createdAt,
@@ -314,7 +315,6 @@ const Case: React.FC<Props> = ({
       routing,
       counselor: currentCounselor,
       counselorsHash,
-      exitItem: handleCloseSubSection,
       definitionVersion,
     };
 
@@ -330,9 +330,13 @@ const Case: React.FC<Props> = ({
             routing={routing}
             sectionApi={sectionApi}
             canEdit={() => can(editPermission)}
+            exitItem={handleCloseSection}
           />
         );
       }
+      const exitRoute: AppRoutes = isEditCaseSectionRoute(routing)
+        ? ({ ...routing, action: CaseItemAction.View } as AppRoutes)
+        : closeSubSectionRoute();
       return (
         <AddEditCaseItem
           {...{
@@ -340,6 +344,7 @@ const Case: React.FC<Props> = ({
             ...extraAddEditProps,
             sectionApi,
           }}
+          exitRoute={exitRoute}
           routing={routing}
         />
       );
@@ -368,8 +373,8 @@ const Case: React.FC<Props> = ({
           <EditCaseSummary
             {...{
               ...addScreenProps,
-              followUpDate,
-              caseStatus: status,
+              exitRoute: closeSubSectionRoute(),
+              can,
             }}
           />
         );
@@ -380,12 +385,12 @@ const Case: React.FC<Props> = ({
 
   switch (routing.subroute) {
     case NewCaseSubroutes.ViewContact:
-      return <ViewContact onClickClose={handleCloseSubSection} contactId={routing.id} task={task} />;
+      return <ViewContact onClickClose={handleCloseSection} contactId={routing.id} task={task} />;
     case NewCaseSubroutes.CasePrintView:
       return (
         <CasePrintView
           caseDetails={caseDetails}
-          {...{ counselorsHash, onClickClose: handleCloseSubSection, definitionVersion }}
+          {...{ counselorsHash, onClickClose: handleCloseSection, definitionVersion }}
         />
       );
     default:
@@ -406,7 +411,6 @@ const Case: React.FC<Props> = ({
           handleCancelNewCaseAndClose={handleCancelNewCaseAndClose}
           handleUpdate={handleUpdate}
           handleSaveAndEnd={handleSaveAndEnd}
-          onStatusChange={onStatusChange}
           isCreating={isCreating}
           can={can}
         />
@@ -444,15 +448,15 @@ const mapDispatchToProps = dispatch => {
     );
     dispatch(ContactActions.releaseContacts(loadedContactIds, taskSid));
   };
+  const updateCaseDefinition = (connectedCase: CaseType, taskSid: string, definition) => {
+    dispatch(ConfigActions.updateDefinitionVersion(connectedCase.info.definitionVersion, definition));
+    dispatch(CaseActions.setConnectedCase(connectedCase, taskSid));
+  };
   return {
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
     removeConnectedCase: bindActionCreators(CaseActions.removeConnectedCase, dispatch),
-    updateCaseInfo: bindActionCreators(CaseActions.updateCaseInfo, dispatch),
-    updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
-    updateCaseStatus: bindActionCreators(CaseActions.updateCaseStatus, dispatch),
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
-    markCaseAsUpdated: bindActionCreators(CaseActions.markCaseAsUpdated, dispatch),
-    updateDefinitionVersion: bindActionCreators(ConfigActions.updateDefinitionVersion, dispatch),
+    updateDefinitionVersion: updateCaseDefinition,
     releaseContacts: bindActionCreators(ContactActions.releaseContacts, dispatch),
     loadRawContacts: bindActionCreators(ContactActions.loadRawContacts, dispatch),
     loadContact: bindActionCreators(ContactActions.loadContact, dispatch),

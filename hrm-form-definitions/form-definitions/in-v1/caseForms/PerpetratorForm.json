@@ -19,7 +19,8 @@
         { "value": "female", "label": "Female" },
         { "value": "Non-Binary", "label": "Non-Binary" },
         { "value": "Unknown", "label": "Unknown" }
-      ]
+      ],
+      "required": { "value": true, "message": "RequiredFieldError" }
     },
     {
       "name": "age",
@@ -56,7 +57,8 @@
         { "value": ">25", "label": ">25" },
         { "value": "Unknown", "label": "Unknown" },
         { "value": "Other", "label": "Other" }
-      ]
+      ],
+      "required": { "value": true, "message": "RequiredFieldError" }
     },
     {
       "name": "knownToChild",
@@ -140,6 +142,7 @@
             { "value":  "Rajasthan", "label":  "Rajasthan" },
             { "value":  "Sikkim", "label":  "Sikkim" },
             { "value":  "Tamil Nadu", "label":  "Tamil Nadu" },
+            { "value":  "Telangana", "label":  "Telangana" },
             { "value":  "Tripura", "label":  "Tripura" },
             { "value":  "Uttar Pradesh", "label":  "Uttar Pradesh" },
             { "value":  "Uttaranchal", "label":  "Uttaranchal" },
@@ -991,6 +994,11 @@
     {
       "name": "phone1",
       "label": "Phone #1",
+      "type": "input"
+    },
+    {
+      "name": "perpSocialMedia",
+      "label": "Social Media Account",
       "type": "input"
     },
     {

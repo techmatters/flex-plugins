@@ -17,6 +17,21 @@ type RecursivePartial<T> = {
 
 export type SearchContactDraftChanges = RecursivePartial<SearchContact>;
 
+// TODO: Update this type when the Lambda worker is "done"
+type TranscriptMessage = {
+  sid: string;
+  dateCreated: Date;
+  from: string;
+  body: string;
+  index: number;
+  type: string;
+  media?: string;
+};
+// TODO: Update this type when the Lambda worker is "done"
+type TranscriptResult = {
+  messages: TranscriptMessage[];
+};
+
 export type ExistingContactsState = {
   [contactId: string]: {
     references: Set<string>;
@@ -26,6 +41,7 @@ export type ExistingContactsState = {
       gridView: boolean;
       expanded: { [key: string]: boolean };
     };
+    transcript?: TranscriptResult;
   };
 };
 
@@ -129,6 +145,40 @@ export const releaseContactReducer = (state: ExistingContactsState, action: Rele
   return {
     ...omit(state, ...action.ids),
     ...Object.fromEntries(updateKvps),
+  };
+};
+
+export const EXISTING_CONTACT_LOAD_TRANSCRIPT = 'EXISTING_CONTACT_LOAD_TRANSCRIPT';
+
+type LoadTranscriptAction = {
+  type: typeof EXISTING_CONTACT_LOAD_TRANSCRIPT;
+  contactId: string;
+  transcript: TranscriptResult;
+};
+
+export const loadTranscript = (contactId: string, transcript: TranscriptResult): LoadTranscriptAction => ({
+  type: EXISTING_CONTACT_LOAD_TRANSCRIPT,
+  contactId,
+  transcript,
+});
+
+export const loadTranscriptReducer = (
+  state: ExistingContactsState,
+  action: LoadTranscriptAction,
+): ExistingContactsState => {
+  if (!state[action.contactId]) {
+    console.error(
+      `Attempted to load transcript on contact ID '${action.contactId}' but this contact has not been loaded into redux. Load the contact into the existing contacts store using 'loadContact'.`,
+    );
+    return state;
+  }
+
+  return {
+    ...state,
+    [action.contactId]: {
+      ...state[action.contactId],
+      transcript: action.transcript,
+    },
   };
 };
 
@@ -306,6 +356,7 @@ export const createDraftReducer = (state: ExistingContactsState, action: CreateD
 export type ExistingContactAction =
   | LoadContactAction
   | ReleaseContactAction
+  | LoadTranscriptAction
   | ToggleCategoryExpandedAction
   | SetCategoriesGridViewAction
   | UpdateDraftAction

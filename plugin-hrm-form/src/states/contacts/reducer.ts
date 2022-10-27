@@ -17,6 +17,7 @@ import {
   EXISTING_CONTACT_SET_CATEGORIES_GRID_VIEW_ACTION,
   EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION,
   EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
+  EXISTING_CONTACT_LOAD_TRANSCRIPT,
   ExistingContactAction,
   ExistingContactsState,
   LOAD_CONTACT_ACTION,
@@ -26,6 +27,7 @@ import {
   setCategoriesGridViewReducer,
   toggleCategoryExpandedReducer,
   updateDraftReducer,
+  loadTranscriptReducer,
 } from './existingContacts';
 import { CSAMReportEntry } from '../../types/types';
 import {
@@ -295,6 +297,9 @@ export function reduce(
     }
     case RELEASE_CONTACT_ACTION: {
       return { ...state, existingContacts: releaseContactReducer(state.existingContacts, action) };
+    }
+    case EXISTING_CONTACT_LOAD_TRANSCRIPT: {
+      return { ...state, existingContacts: loadTranscriptReducer(state.existingContacts, action) };
     }
     case EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION: {
       return { ...state, existingContacts: toggleCategoryExpandedReducer(state.existingContacts, action) };

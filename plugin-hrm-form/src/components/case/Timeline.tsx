@@ -20,7 +20,6 @@ import {
 } from '../../styles/case';
 import { Box, Row } from '../../styles/HrmStyles';
 import CaseAddButton from './CaseAddButton';
-import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CustomITask } from '../../types/types';
 import { isConnectedCaseActivity } from './caseActivities';
@@ -41,7 +40,7 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const Timeline: React.FC<Props> = props => {
-  const { can, taskSid, changeRoute, updateTempInfo, route, timelineActivities } = props;
+  const { can, taskSid, changeRoute, route, timelineActivities } = props;
   const [mockedMessage, setMockedMessage] = useState(null);
 
   const handleViewNoteClick = (activity: NoteActivity) => {
@@ -57,12 +56,10 @@ const Timeline: React.FC<Props> = props => {
   };
 
   const handleAddNoteClick = () => {
-    updateTempInfo({ screen: NewCaseSubroutes.Note, action: CaseItemAction.Add, info: null }, taskSid);
     changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.Add }, taskSid);
   };
 
   const handleAddReferralClick = () => {
-    updateTempInfo({ screen: NewCaseSubroutes.Referral, action: CaseItemAction.Add, info: null }, taskSid);
     changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.Add }, taskSid);
   };
 
@@ -137,7 +134,6 @@ Timeline.displayName = 'Timeline';
 
 const mapDispatchToProps = dispatch => ({
   changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
-  updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
 });
 
 const connector = connect(null, mapDispatchToProps);

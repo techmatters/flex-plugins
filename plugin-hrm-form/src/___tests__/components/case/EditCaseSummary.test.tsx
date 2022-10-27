@@ -13,7 +13,8 @@ import { configurationBase, connectedCaseBase, contactFormsBase, namespace } fro
 import EditCaseSummary, { EditCaseSummaryProps } from '../../../components/case/EditCaseSummary';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 import { StandaloneITask } from '../../../types/types';
-import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
+import { AppRoutes } from '../../../states/routing/types';
+import { changeRoute } from '../../../states/routing/actions';
 
 let mockV1: DefinitionVersion;
 
@@ -53,13 +54,14 @@ const state = {
     [connectedCaseBase]: {
       tasks: {
         task1: {
-          temporaryCaseInfo: { screen: 'caseSummary', info, action: CaseItemAction.Edit },
+          caseWorkingCopy: { sections: {} },
           connectedCase: {
             createdAt: 1593469560208,
             twilioWorkerId: 'worker1',
             status: 'open',
-            info: null,
+            info: {},
           },
+          availableStatusTransitions: [{}],
         },
       },
     },
@@ -74,7 +76,6 @@ const state = {
   },
 };
 const store = mockStore(state);
-store.dispatch = jest.fn();
 
 const themeConf = {};
 
@@ -83,28 +84,23 @@ const task = {
 };
 
 describe('Test EditCaseSummary', () => {
-  const exitItem = jest.fn();
   let ownProps: EditCaseSummaryProps;
+  const exitRoute: AppRoutes = { route: 'new-case' };
 
   beforeAll(async () => {
     mockV1 = await loadDefinition(DefinitionVersionId.v1);
     mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
   });
 
-  beforeEach(
-    () =>
-      (ownProps = {
-        task: task as StandaloneITask,
-        counselor: 'Someone',
-        exitItem,
-        definitionVersion: mockV1,
-        routing: {
-          route: 'tabbed-forms',
-          subroute: NewCaseSubroutes.CaseSummary,
-          action: CaseItemAction.Edit,
-        },
-      }),
-  );
+  beforeEach(() => {
+    ownProps = {
+      task: task as StandaloneITask,
+      exitRoute,
+      definitionVersion: mockV1,
+      can: () => true,
+    };
+    store.dispatch = jest.fn();
+  });
   test('Test close functionality', async () => {
     render(
       <StorelessThemeProvider themeConf={themeConf}>
@@ -114,19 +110,17 @@ describe('Test EditCaseSummary', () => {
       </StorelessThemeProvider>,
     );
 
-    expect(exitItem).not.toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalledWith(changeRoute(exitRoute, 'task1'));
 
     expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument();
     screen.getByTestId('Case-CloseCross').click();
-    expect(exitItem).toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalledWith(changeRoute(exitRoute, 'task1'));
 
-    exitItem.mockClear();
-
-    expect(exitItem).not.toHaveBeenCalled();
+    store.dispatch.mockClear();
 
     expect(screen.getByTestId('Case-CloseButton')).toBeInTheDocument();
     screen.getByTestId('Case-CloseButton').click();
-    expect(exitItem).toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalledWith(changeRoute(exitRoute, 'task1'));
   });
 
   test('a11y', async () => {

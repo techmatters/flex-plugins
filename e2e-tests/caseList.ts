@@ -29,7 +29,7 @@ export const caseList = (page: Page) => {
     addSectionButton: (sectionTypeId: string) =>
       caseListPage.locator(`//button[@data-testid='Case-${sectionTypeId}-AddButton']`),
     caseSummaryText: caseListPage.locator(`//textarea[@data-testid='Case-CaseSummary-TextArea']`),
-    caseSummaryTextArea: caseListPage.locator(`//textarea[@data-testid='caseSummary']`),
+    caseSummaryTextArea: caseListPage.locator(`//textarea[@data-testid='summary']`),
     casePrintButton: caseListPage.locator(`//button[@data-testid='CasePrint-Button']`),
     casePrintCloseButton: caseListPage.locator(`//button[@data-testid='CasePrint-CloseCross']`),
     caseCloseButton: caseListPage.locator(`//button[@data-testid='CaseHome-CloseButton']`),

@@ -68,7 +68,7 @@ const readConfig = () => {
   };
 };
 
-let cachedConfig;
+let cachedConfig: ReturnType<typeof readConfig>;
 
 try {
   cachedConfig = readConfig();
@@ -127,28 +127,8 @@ const setUpSharedStateClient = () => {
   initSharedStateClient();
 };
 
-const setUpTransferredTaskJanitor = async (setupObject: SetupObject) => {
-  const { workerSid } = setupObject;
-  const query = 'data.attributes.transferStarted == "true"';
-  const reservationQuery = await Flex.Manager.getInstance().insightsClient.liveQuery('tr-reservation', query);
-  reservationQuery.on('itemUpdated', args => {
-    if (TransferHelpers.shouldInvokeCompleteTask(args.value, workerSid)) {
-      Flex.Actions.invokeAction('CompleteTask', { sid: args.value.reservation_sid });
-      return;
-    }
-
-    if (TransferHelpers.shouldTakeControlBack(args.value, workerSid)) {
-      const task = Flex.TaskHelper.getTaskByTaskSid(args.value.attributes.transferMeta.originalReservation);
-      TransferHelpers.takeTaskControl(task).then(async () => {
-        await TransferHelpers.clearTransferMeta(task);
-      });
-    }
-  });
-};
-
 const setUpTransfers = (setupObject: SetupObject) => {
   setUpSharedStateClient();
-  setUpTransferredTaskJanitor(setupObject);
 };
 
 const setUpLocalization = (config: ReturnType<typeof getConfig>) => {
@@ -215,7 +195,7 @@ const setUpActions = (setupObject: SetupObject) => {
   const transferOverride = ActionFunctions.customTransferTask(setupObject);
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject);
   const beforeCompleteAction = ActionFunctions.beforeCompleteTask(setupObject);
-  const afterCompleteAction = ActionFunctions.afterCompleteTask(setupObject);
+  const afterWrapupAction = ActionFunctions.afterWrapupTask(setupObject);
 
   Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
 
@@ -232,7 +212,9 @@ const setUpActions = (setupObject: SetupObject) => {
 
   Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
 
-  Flex.Actions.addListener('afterCompleteTask', afterCompleteAction);
+  Flex.Actions.addListener('afterWrapupTask', afterWrapupAction);
+
+  Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
 };
 
 export default class HrmFormPlugin extends FlexPlugin {

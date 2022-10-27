@@ -153,6 +153,11 @@
     }
   },
   {
+    "name": "DOB",
+    "label": "Date of Birth",
+    "type": "date-input"
+  },
+  {
     "name": "gender",
     "label": "Gender",
     "type": "select",
@@ -277,8 +282,23 @@
     "type": "input"
   },
   {
+    "name": "race",
+    "label": "Race",
+    "type": "input"
+  },
+  {
     "name": "schoolName",
     "label": "School Name",
+    "type": "input"
+  },
+  {
+    "name": "schoolPhone",
+    "label": "School Phone #",
+    "type": "input"
+  },
+  {
+    "name": "teacher",
+    "label": "Name of Teacher",
     "type": "input"
   },
   {
@@ -391,6 +411,11 @@
     "type": "mixed-checkbox"
   },
   {
+    "name": "childSafety",
+    "label": "Is the child safe?",
+    "type": "mixed-checkbox"
+  },
+  {
     "name": "childOnTheMove",
     "label": "Child on the move",
     "type": "select",
@@ -431,5 +456,34 @@
         "label": "Town & semi-dense areas"
       }
     ]
+  },
+  {
+    "name": "childStatus",
+    "label": "Child Status",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Maternal Orphan",
+        "label": "Maternal Orphan"
+      },
+      {
+        "value": "Paternal Orphan",
+        "label": "Paternal Orphan"
+      }
+    ]
+  },
+  {
+    "name": "idNumber",
+    "label": "ID Number",
+    "type": "input"
+  },
+  {
+    "name": "AddressDescription",
+    "label": "Describe the Address",
+    "type": "input"
   }
 ]

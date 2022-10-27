@@ -43,7 +43,6 @@ type TransferChatStartBody = {
   targetSid: string;
   ignoreAgent: string;
   mode: string;
-  memberToKick: string;
 };
 
 type TrasferChatStartReturn = { closed: string; kept: string };
@@ -162,6 +161,16 @@ export const deleteFile = async (fileName: string) => {
  */
 export const getFileDownloadUrl = async (fileNameAtAws: string, fileName: string) => {
   const body = { fileNameAtAws, fileName };
+  const response = await fetchProtectedApi('/getFileDownloadUrl', body);
+  return response;
+};
+
+/**
+ * Gets a file download url from S3, using the object url as constructed by AWS
+ */
+export const getFileDownloadUrlFromUrl = async (objectUrl: string, fileName: string = undefined) => {
+  const [bucketName, fileNameAtAws] = objectUrl.replace('https://', '').split('.s3.amazonaws.com/');
+  const body = { bucketName, fileNameAtAws, fileName };
   const response = await fetchProtectedApi('/getFileDownloadUrl', body);
   return response;
 };

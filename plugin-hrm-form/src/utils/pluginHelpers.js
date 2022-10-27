@@ -27,6 +27,9 @@ const ptBRMessages = require(`../translations/pt-BR/messages.json`);
 const thTHTranslation = require(`../translations/th-TH/flexUI.json`);
 const thTHMessages = require(`../translations/th-TH/messages.json`);
 
+const plPLTranslation = require(`../translations/pl-PL/flexUI.json`);
+const plPLMessages = require(`../translations/pl-PL/messages.json`);
+
 const bundledTranslations = {
   [defaultLanguage]: defaultTranslation,
   'en-IN': enINTranslation,
@@ -36,6 +39,7 @@ const bundledTranslations = {
   'hu-HU': huHUTranslation,
   'pt-BR': ptBRTranslation,
   'th-TH': thTHTranslation,
+  'pl-PL': plPLTranslation,
 };
 
 const bundledMessages = {
@@ -44,9 +48,9 @@ const bundledMessages = {
   'es-CL': esCLMessages,
   'es-CO': esCOMessages,
   'es-ES': esESMessages,
-  'hu-HU': huHUTranslation,
+  'hu-HU': huHUMessages,
   'pt-BR': ptBRMessages,
-  'th-TH': thTHMessages,
+  'pl-PL': plPLMessages,
 };
 
 const translationErrorMsg = 'Could not translate, using default';
@@ -85,7 +89,7 @@ export const getMessage = messageKey => async language => {
   try {
     if (!language) return defaultMessages[messageKey];
 
-    if (language in bundledMessages) return bundledMessages[language][messageKey] || defaultMessages[messageKey];
+    if (language in bundledMessages) return bundledMessages[language][messageKey];
 
     // If no translation for this language, try to fetch it
     const body = { language };
@@ -93,7 +97,9 @@ export const getMessage = messageKey => async language => {
     const messages = await (typeof messagesJSON === 'string'
       ? JSON.parse(messagesJSON)
       : Promise.resolve(messagesJSON));
-    return messages[messageKey] || defaultMessages[messageKey];
+    if (messages[messageKey]) return messages[messageKey];
+
+    return defaultMessages[messageKey];
   } catch (err) {
     window.alert(translationErrorMsg);
     console.error(translationErrorMsg, err);
