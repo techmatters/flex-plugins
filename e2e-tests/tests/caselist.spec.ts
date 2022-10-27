@@ -11,7 +11,7 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     console.log('Plugin page browser session launched');
 
     // Open Case List
-    await pluginPage.goto('/case-list', { waitUntil: 'networkidle', timeout: 20000 });
+    await pluginPage.goto('/case-list', { waitUntil: 'networkidle', timeout: 60000 });
     console.log('Case List plugin page visited.');
   });
 
