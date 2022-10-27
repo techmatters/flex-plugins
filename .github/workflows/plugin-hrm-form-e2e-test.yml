@@ -61,7 +61,7 @@ jobs:
 
       # Run server
       - name: Run Flex Dev Server
-        run: NODE_ENV=development UNBUNDLED_REACT=true TWILIO_ACCOUNT_SID=${secrets.E2E_DEV_ACCOUNT_SID} TWILIO_AUTH_TOKEN=${secrets.E2E_DEV_AUTH_TOKEN} npm run start
+        run: NODE_ENV=development UNBUNDLED_REACT=true TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npm run start
         working-directory: ./plugin-hrm-form
 
       # Build Playwright
