@@ -146,6 +146,7 @@ class SearchForm extends Component {
     };
 
     const source = localizedSource[task.channelType];
+    const maskIdentifiers = false;
 
     return (
       <>
@@ -237,7 +238,13 @@ class SearchForm extends Component {
                     </Box>
                     <span>
                       <Template code="PreviousContacts-OnlyShowRecordsFrom" /> <Template code={source} />{' '}
-                      <Bold>{checkBoxName}</Bold>
+                      {maskIdentifiers ? (
+                        <Bold>{checkBoxName}</Bold>
+                      ) : (
+                        <Bold>
+                          <Template code="MaskIdentifiers" />
+                        </Bold>
+                      )}
                     </span>
                   </FormCheckBoxWrapper>
                 </FormLabel>
