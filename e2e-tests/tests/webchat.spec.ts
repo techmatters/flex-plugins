@@ -37,7 +37,7 @@ test.describe.serial('Web chat caller', () => {
     ]);
   });
   test('Chat ', async () => {
-    test.setTimeout(120000);
+    test.setTimeout(600000);
     await chatPage.openChat();
     // await chatPage.selectHelpline('Fake Helpline'); // Step required in Aselo Dev, not in E2E
     const chatScript = [

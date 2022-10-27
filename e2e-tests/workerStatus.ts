@@ -9,22 +9,23 @@ export enum WorkerStatus {
 
 export function statusIndicator(page: Page) {
   const selectors = {
-    userControlsAvatar: page.locator('button.Twilio-UserControls-UserCard'),
-    userControlsStatusOption: (status: WorkerStatus) =>
-      page.locator(`button.Twilio-AccountMenu-Item:text-is("${status}")`),
-    userCardStatus: page.locator('div.Twilio-UserCard-InfoContainer-SecondLine span'),
+    userActivityDropdownButton: page.locator("//button[@data-test='activity-dropdown-button']"),
+    userActivityDropdownOption: (status: WorkerStatus) =>
+      page.locator(
+        `//div[@aria-label='Actions']//button[@data-paste-element='MENU_ITEM']//span[text()='${status}']`,
+      ),
   };
 
   return {
     setStatus: async function (status: WorkerStatus) {
-      await selectors.userControlsAvatar.click();
+      await selectors.userActivityDropdownButton.click();
       console.log('Worker status dropdown should be open');
-      const statusSelector = selectors.userControlsStatusOption(status);
+      const statusSelector = selectors.userActivityDropdownOption(status);
       await statusSelector.waitFor({ state: 'visible' });
       console.log('Worker status option spotted');
       await statusSelector.click();
       console.log('Worker status option clicked');
-      await expect(selectors.userCardStatus).toContainText(status.toLocaleString());
+      await expect(selectors.userActivityDropdownButton).toContainText(status.toLocaleString());
       console.log('Status changed');
     },
   };
