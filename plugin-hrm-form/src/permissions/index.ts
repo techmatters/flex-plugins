@@ -22,7 +22,7 @@ export const PermissionActions = {
   EDIT_INCIDENT: 'editIncident',
   EDIT_DOCUMENT: 'editDocument',
   EDIT_CONTACT: 'editContact',
-  MASK_IDENTIFIERS: 'maskIdentifiers',
+  // MASK_IDENTIFIERS: 'maskIdentifiers',
 };
 
 type PermissionActionsKeys = keyof typeof PermissionActions;

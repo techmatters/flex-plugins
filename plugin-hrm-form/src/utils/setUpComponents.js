@@ -66,7 +66,6 @@ const queuesStatusUI = setupObject => (
     contactsWaitingChannels={setupObject.contactsWaitingChannels}
   />
 );
-console.log('>>Manager.strings', Flex.Manager.getInstance().strings);
 
 /**
  * Returns the UI for the "Add..." section
