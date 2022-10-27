@@ -1,7 +1,7 @@
 name: End to End Testing CI
 
 # Action 
-on: [pull_request]
+on: [pull_request, ]
 concurrency: e2e
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -61,7 +61,7 @@ jobs:
 
       # Run server
       - name: Run Flex Dev Server
-        run: NODE_ENV=development UNBUNDLED_REACT=true npm run start
+        run: NODE_ENV=development UNBUNDLED_REACT=true TWILIO_ACCOUNT_SID=${secrets.E2E_DEV_ACCOUNT_SID} TWILIO_AUTH_TOKEN=${secrets.E2E_DEV_AUTH_TOKEN} npm run start
         working-directory: ./plugin-hrm-form
 
       # Build Playwright
