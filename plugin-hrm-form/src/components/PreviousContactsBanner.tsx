@@ -46,7 +46,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   changeRoute,
   editContactFormOpen,
 }) => {
-  const maskIdentifiers = false;
+  const maskIdentifiers = true;
 
   useEffect(() => {
     if (isTwilioTask(task) && previousContacts === undefined) {
@@ -107,11 +107,11 @@ const PreviousContactsBanner: React.FC<Props> = ({
           <Template code={localizedSource[task.channelType]} />
           &nbsp;
           {maskIdentifiers ? (
-            <Bold>{contactIdentifier}</Bold>
-          ) : (
             <Bold>
               <Template code="MaskIdentifiers" />
             </Bold>
+          ) : (
+            <Bold>{contactIdentifier}</Bold>
           )}
         </pre>
         <StyledLink underline data-testid="PreviousContacts-ViewRecords" onClick={handleClickViewRecords}>

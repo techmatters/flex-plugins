@@ -39,6 +39,8 @@ const twitterColor = '#1DA1F2';
 const instagramColor = '#833AB4';
 const lineColor = '#00C300';
 
+const maskIdentifiers = true;
+
 /**
  * @type {import('../states/DomainConstants').ChannelColors}
  */
@@ -441,33 +443,26 @@ export const setupTwitterChatChannel = () => {
 
   /*
    * modify TwitterChatChannel here
-   * TwitterChatChannel.templates.IncomingTaskCanvas.firstLine = 'XXIncomingTaskCanvas';
-   * TwitterChatChannel.templates.CallCanvas.firstLine = 'TaskHeaderLineTwitter';
-   * TwitterChatChannel.templates.TaskCard.firstLine = 'TaskHeaderLineTwitter';
-   * TwitterChatChannel.templates.TaskCanvasHeader.title = 'TaskHeaderLineTwitter';
-   * TwitterChatChannel.templates.Supervisor.TaskCanvasHeader.title = 'TaskHeaderLineTwitter';
-   * TwitterChatChannel.templates.Supervisor.TaskOverviewCanvas.title = 'TaskHeaderLineTwitter';
+   * TwitterChatChannel.templates.IncomingTaskCanvas.firstLine = 'TaskHeaderLineTwitter';
    */
-
-  /*
-   * TwitterChatChannel.templates.TaskDetails.firstLine = 'XXTaskDetailsPanel';
-   * TwitterChatChannel.templates.TaskListItem.firstLine = 'XXTaskListItem.firstLine';
-   * TwitterChatChannel.templates.TaskCanvasHeader.name = 'XXTaskCanvasHeader.name';
-   * TwitterChatChannel.templates.MessageInput = 'XXMessageBubble';
-   * TwitterChatChannel.templates.TaskInfo.defaultProps = 'XXTaskInfoPanel.defaultProps';
-   */
-
-  // Task List
-  TwitterChatChannel.templates.TaskListItem.firstLine = 'MaskIdentifiers';
-
-  // - Task panel when a call comes in
-  TwitterChatChannel.templates.IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
-
-  // Task panel during an active call
-  TwitterChatChannel.templates.TaskCanvasHeader.title = 'MaskIdentifiers';
-  TwitterChatChannel.templates.MessageListItem = 'MaskIdentifiers';
-
+  TwitterChatChannel.templates.CallCanvas.firstLine = 'TaskHeaderLineTwitter';
+  TwitterChatChannel.templates.TaskListItem.firstLine = 'TaskHeaderLineTwitter';
   TwitterChatChannel.templates.TaskCard.firstLine = 'TaskHeaderLineTwitter';
+  // TwitterChatChannel.templates.TaskCanvasHeader.title = 'TaskHeaderLineTwitter';
+  TwitterChatChannel.templates.Supervisor.TaskCanvasHeader.title = 'TaskHeaderLineTwitter';
+  TwitterChatChannel.templates.Supervisor.TaskOverviewCanvas.title = 'TaskHeaderLineTwitter';
+
+  if (maskIdentifiers) {
+    // Task List
+    TwitterChatChannel.templates.TaskListItem.firstLine = 'MaskIdentifiers';
+
+    // Task panel when a call comes in
+    TwitterChatChannel.templates.IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
+
+    // Task panel during an active call
+    TwitterChatChannel.templates.TaskCanvasHeader.title = 'MaskIdentifiers';
+    // TwitterChatChannel.templates.MessageListItem = 'MaskIdentifiers';
+  }
 
   TwitterChatChannel.colors.main = {
     Accepted: twitterColor,
@@ -496,15 +491,17 @@ export const setupInstagramChatChannel = () => {
     task => task.channelType === 'instagram',
   );
 
-  // Task List
-  InstagramChatChannel.templates.TaskListItem.firstLine = 'MaskIdentifiers';
+  if (maskIdentifiers) {
+    // Task List
+    InstagramChatChannel.templates.TaskListItem.firstLine = 'MaskIdentifiers';
 
-  // - Task panel when a call comes in
-  InstagramChatChannel.templates.IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
+    // Task panel when a call comes in
+    InstagramChatChannel.templates.IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
 
-  // Task panel during an active call
-  InstagramChatChannel.templates.TaskCanvasHeader.title = 'MaskIdentifiers';
-  InstagramChatChannel.templates.MessageListItem = 'MaskIdentifiers';
+    // Task panel during an active call
+    InstagramChatChannel.templates.TaskCanvasHeader.title = 'MaskIdentifiers';
+    InstagramChatChannel.templates.MessageListItem = 'MaskIdentifiers';
+  }
 
   InstagramChatChannel.colors.main = {
     Accepted: instagramColor,
@@ -530,15 +527,17 @@ export const setupLineChatChannel = () => {
 
   const LineChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel('line', task => task.channelType === 'line');
 
-  // Task List
-  LineChatChannel.templates.TaskListItem.firstLine = 'MaskIdentifiers';
+  if (maskIdentifiers) {
+    // Task List
+    LineChatChannel.templates.TaskListItem.firstLine = 'MaskIdentifiers';
 
-  // - Task panel when a call comes in
-  LineChatChannel.templates.IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
+    // Task panel when a call comes in
+    LineChatChannel.templates.IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
 
-  // Task panel during an active call
-  LineChatChannel.templates.TaskCanvasHeader.title = 'MaskIdentifiers';
-  LineChatChannel.templates.MessageListItem = 'MaskIdentifiers';
+    // Task panel during an active call
+    LineChatChannel.templates.TaskCanvasHeader.title = 'MaskIdentifiers';
+    LineChatChannel.templates.MessageListItem = 'MaskIdentifiers';
+  }
 
   LineChatChannel.colors.main = {
     Accepted: lineColor,
