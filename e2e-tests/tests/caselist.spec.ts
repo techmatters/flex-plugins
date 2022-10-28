@@ -1,17 +1,29 @@
-import { Page, test } from '@playwright/test';
+import { expect, Page, test } from '@playwright/test';
 import { logPageTelemetry } from '../browser-logs';
 import { caseList } from '../caseList';
+import { notificationBar } from '../notificationBar';
 
 test.describe.serial('Open and Edit a Case in Case List page', () => {
   let pluginPage: Page;
 
   test.beforeAll(async ({ browser }) => {
+    test.setTimeout(600000);
     pluginPage = await browser.newPage();
+    const client = await pluginPage.context().newCDPSession(pluginPage);
+    await client.send('Network.enable');
+    await client.send('Network.emulateNetworkConditions', {
+      offline: false,
+      downloadThroughput: (1 * 1024 * 1024) / 8,
+      uploadThroughput: (1 * 1024 * 1024) / 8,
+      latency: 2000,
+      connectionType: 'cellular2g',
+    });
     logPageTelemetry(pluginPage);
     console.log('Plugin page browser session launched');
 
     // Open Case List
-    await pluginPage.goto('/case-list', { waitUntil: 'networkidle', timeout: 60000 });
+
+    await pluginPage.goto('/case-list', { waitUntil: 'networkidle', timeout: 600000 });
     console.log('Case List plugin page visited.');
   });
 
@@ -30,6 +42,9 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     await page.filterCases('Categories', 'Accessibility', 'Education');
 
     await page.openFirstCaseButton();
+
+    // Open notifications cover up the print icon :facepalm
+    await notificationBar(pluginPage).dismissAllNotifications();
 
     await page.viewClosePrintView();
 
