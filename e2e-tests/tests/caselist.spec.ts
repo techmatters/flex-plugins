@@ -9,15 +9,6 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
   test.beforeAll(async ({ browser }) => {
     test.setTimeout(600000);
     pluginPage = await browser.newPage();
-    const client = await pluginPage.context().newCDPSession(pluginPage);
-    await client.send('Network.enable');
-    await client.send('Network.emulateNetworkConditions', {
-      offline: false,
-      downloadThroughput: (1 * 1024 * 1024) / 8,
-      uploadThroughput: (1 * 1024 * 1024) / 8,
-      latency: 2000,
-      connectionType: 'cellular2g',
-    });
     logPageTelemetry(pluginPage);
     console.log('Plugin page browser session launched');
 
