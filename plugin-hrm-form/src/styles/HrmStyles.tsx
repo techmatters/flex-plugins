@@ -444,11 +444,6 @@ export const StyledSearchTab = withStyles({
   selected: {
     backgroundColor: '#ffffff',
   },
-  labelIcon: {
-    '& > span > span': {
-      padding: 0,
-    },
-  },
 })(StyledTab);
 StyledSearchTab.displayName = 'StyledSearchTab';
 

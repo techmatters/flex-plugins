@@ -9,6 +9,7 @@ import {
   ITask,
   ActionFunction,
 } from '@twilio/flex-ui';
+import { Conversation } from '@twilio/conversations';
 import { callTypes } from 'hrm-form-definitions';
 
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
@@ -119,14 +120,11 @@ export const getTaskLanguage = ({ helplineLanguage }) => ({ task }) => task.attr
  * @param {string} messageKey
  * @returns {(setupObject: ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }) => import('@twilio/flex-ui').ActionFunction}
  */
-const sendMessageOfKey = messageKey => setupObject => async payload => {
+const sendMessageOfKey = messageKey => (setupObject, conversation: Conversation) => async payload => {
   const { getMessage } = setupObject;
   const taskLanguage = getTaskLanguage(setupObject)(payload);
   const message = await getMessage(messageKey)(taskLanguage);
-  await FlexActions.invokeAction('SendMessage', {
-    body: message,
-    channelSid: payload.task.attributes.channelSid,
-  });
+  await conversation.sendMessage(message);
 };
 
 /**
@@ -168,21 +166,21 @@ export const afterAcceptTask = (setupObject: SetupObject) => async (payload: Act
   else prepopulateForm(task);
 
   if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
-    const trySendWelcomeMessage = (ms, retries) => {
+    const trySendWelcomeMessage = (convo: Conversation, ms, retries) => {
       setTimeout(() => {
-        const channelState = StateHelper.getChatChannelStateForTask(task);
+        const convoState = StateHelper.getConversationStateForTask(task);
         // if channel is not ready, wait 200ms and retry
-        if (channelState.isLoadingChannel) {
-          if (retries < 10) trySendWelcomeMessage(200, retries + 1);
+        if (convoState.isLoadingConversation) {
+          if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
           else console.error('Failed to send welcome message: max retries reached.');
         } else {
-          sendWelcomeMessage(setupObject)(payload);
+          sendWelcomeMessage(setupObject, convo)(payload);
         }
       }, ms);
     };
 
     // Ignore event payload as we already have everything we want in afterAcceptTask arguments. Start at 0ms as many users are able to send the message right away
-    manager.chatClient.once('channelJoined', () => trySendWelcomeMessage(0, 0));
+    manager.conversationsClient.once('conversationJoined', (c: Conversation) => trySendWelcomeMessage(c, 0, 0));
   }
 };
 
