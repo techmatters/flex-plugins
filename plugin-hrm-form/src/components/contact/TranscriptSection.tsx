@@ -11,11 +11,12 @@ import { SectionActionButton } from '../../styles/search';
 import { loadTranscript } from '../../states/contacts/existingContacts';
 import { FontOpenSans } from '../../styles/HrmStyles';
 import {
+  ErrorFont,
+  ItalicFont,
   MessageList,
   MessageBubble,
   MessageBubbleBody,
   MessageBubbleHeader,
-  ItalicFont,
 } from './TranscriptSection.styles';
 
 type OwnProps = {
@@ -37,9 +38,18 @@ const TranscriptSection: React.FC<Props> = ({
   loadTranscript,
 }) => {
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   if (loading) {
     return <CircularProgress size={30} />;
+  }
+
+  if (errorMessage) {
+    return (
+      <ErrorFont>
+        <Template code={errorMessage} />
+      </ErrorFont>
+    );
   }
 
   // Preferred case, external transcript is already in local state
@@ -63,21 +73,49 @@ const TranscriptSection: React.FC<Props> = ({
     );
   }
 
+  const isErrTemporary = (err) => {
+    // Currently this should only really catch errors when we try to download the file from the signed link.
+    return (err.message === 'Failed to fetch');
+  }
+
+  const handleException = (err) => {
+        console.error(
+          `Error loading the transcript for contact ${contactId}, transcript url ${externalStoredTranscript.url}`,
+          err,
+        );
+
+        const errorMessage = isErrTemporary(err) ?
+          'ContactDetails-LoadTranscript-TemporaryError' :
+          'ContactDetails-LoadTranscript-PermanentError';
+
+        setErrorMessage(errorMessage);
+        setLoading(false);
+  }
+
   // The external transcript is exported but it hasn't been fetched yet
   if (externalStoredTranscript && externalStoredTranscript.url && !transcript) {
     const fetchAndLoadTranscript = async () => {
       try {
         setLoading(true);
+
         const transcriptPreSignedUrl = await getFileDownloadUrlFromUrl(externalStoredTranscript.url, '');
-        const transcriptJson = await fetch(transcriptPreSignedUrl.downloadUrl);
-        const transcriptParsed = await transcriptJson.json();
-        loadTranscript(contactId, transcriptParsed.transcript);
+        const transcriptResponse = await fetch(transcriptPreSignedUrl.downloadUrl);
+
+        /*
+          The underlying s3Client.getSignedUrl() method returns a signed URL even if there is a problem.
+          We need to check the response status code to make sure there isn't a permission or pathing issue with the file.
+        */
+        if (transcriptResponse.status !== 200) {
+          throw {message: 'Error fetching transcript', response: transcriptResponse };
+        }
+        const transcriptJson = await transcriptResponse.json();
+
+        loadTranscript(contactId, transcriptJson.transcript);
+
         setLoading(false);
       } catch (err) {
-        console.error(
-          `Error loading the transcript for contact ${contactId}, transcript url ${externalStoredTranscript.url}`,
-          err,
-        );
+        handleException(err);
+        return;
       }
     };
 

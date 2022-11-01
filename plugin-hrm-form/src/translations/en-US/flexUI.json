@@ -288,6 +288,8 @@
   "ContactDetails-GeneralDetails-WouldRecommend": "Would the child recommend us to a friend?",
   "ContactDetails-LoadRecording-Button": "Open Recording",
   "ContactDetails-LoadTranscript-Button": "Load Transcript",
+  "ContactDetails-LoadTranscript-PermanentError": "Something went wrong on our end. Please contact your support team or supervisor.",
+  "ContactDetails-LoadTranscript-TemporaryError": "Something went wrong on our end. Please check again in a few minutes.",
   "ContactDetails-Transcript": "Transcript",
   "ContactDetails-ActionHeaderAdded": "Added on {{date}} at {{time}} by {{counsellor}}",
   "SectionName-CallerInformation": "Caller Information",

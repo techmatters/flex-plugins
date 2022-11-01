@@ -1,5 +1,12 @@
 import { getConfig } from '../HrmFormPlugin';
 
+class ProtectedApiError extends Error {
+  constructor(message, options) {
+    super(message, options);
+    this.response = options.response;
+  }
+}
+
 /**
  * Factored out function that handles a protected api call hosted in serverless toolkit.
  * Will throw Error if server responses with and http error code.
@@ -22,14 +29,14 @@ const fetchProtectedApi = async (endPoint, body = {}) => {
   const response = await fetch(url, options);
 
   if (response.status === 403) {
-    throw new Error('Server responded with 403 status (Forbidden)');
+    throw new ProtectedApiError('Server responded with 403 status (Forbidden)', {response});
   }
 
   const responseJson = await response.json();
 
   if (!response.ok) {
-    const option = responseJson.stack ? { cause: responseJson.stack } : null;
-    throw new Error(responseJson.message, option);
+    const cause = responseJson?.stack || null;
+    throw new ProtectedApiError(responseJson.message, {cause, response});
   }
 
   return responseJson;
