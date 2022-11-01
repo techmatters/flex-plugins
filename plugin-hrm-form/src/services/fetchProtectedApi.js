@@ -29,14 +29,14 @@ const fetchProtectedApi = async (endPoint, body = {}) => {
   const response = await fetch(url, options);
 
   if (response.status === 403) {
-    throw new ProtectedApiError('Server responded with 403 status (Forbidden)', {response});
+    throw new ProtectedApiError('Server responded with 403 status (Forbidden)', { response });
   }
 
   const responseJson = await response.json();
 
   if (!response.ok) {
     const cause = responseJson?.stack || null;
-    throw new ProtectedApiError(responseJson.message, {cause, response});
+    throw new ProtectedApiError(responseJson.message, { cause, response });
   }
 
   return responseJson;
