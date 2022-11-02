@@ -1124,6 +1124,7 @@ CSAMReportButtonText.displayName = 'CSAMReportButtonText';
 const TabbedFormsHeaderButton = styled(ButtonBase)`
   &:focus {
     outline: auto;
+    padding: 5px;
   }
 `;
 TabbedFormsHeaderButton.displayName = 'TabbedFormsHeaderButton';
@@ -1144,3 +1145,50 @@ export const HeaderCloseButton = styled(ButtonBase)`
   }
 `;
 HeaderCloseButton.displayName = 'HeaderCloseButton';
+
+export const StyledCSAMReportDropdown = styled('ul')`
+  position: absolute;
+  right: 0;
+  left: auto;
+  box-shadow: 0 10px 15px -3px rgba(46, 41, 51, 0.08), 0 4px 6px -2px rgba(71, 63, 79, 0.16);
+  font-size: 0.875rem;
+  z-index: 9999;
+  min-width: 10rem;
+  padding: 10px 40px 10px 24px;
+  list-style: none;
+  background-color: #fff;
+  border-radius: 0 0 5px 5px;
+  margin-right: 20px;
+`;
+
+StyledCSAMReportDropdown.displayName = 'StyledCSAMReportDropdown';
+
+type StyledCSAMReportDropdownProps = {
+  margin?: string;
+};
+
+export const StyledCSAMReportDropdownList = styled('li')<StyledCSAMReportDropdownProps>`
+  position: relative;
+  font-size: 14px;
+  display: block;
+  color: inherit;
+  padding: 7px 0 7px 35px;
+  margin: ${props => (props.margin ? props.margin : '0 -40px 0 -25px')};
+  text-decoration: none;
+  &:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
+  }
+`;
+StyledCSAMReportDropdownList.displayName = 'StyledCSAMReportDropdownList';
+
+export const StyledCSAMReportHeader = styled('li')`
+  position: relative;
+  font-size: 12px;
+  display: block;
+  color: inherit;
+  padding: 7px 0 7px 0;
+  text-decoration: none;
+  font-weight: 900;
+`;
+StyledCSAMReportHeader.displayName = 'StyledCSAMReportHeader';

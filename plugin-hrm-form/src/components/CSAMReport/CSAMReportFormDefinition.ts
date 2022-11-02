@@ -15,6 +15,15 @@ type CSAMFormDefinitionObject = {
   [k in keyof typeof keys]: FormItemDefinition;
 };
 
+export const clcKeys = {
+  childAge: 'childAge',
+  ageVerified: 'ageVerified',
+};
+
+type CSAMCLCFormDefinitionObject = {
+  [k in keyof typeof clcKeys]: FormItemDefinition;
+};
+
 // eslint-disable-next-line prefer-named-capture-group
 const urlRegex = /(https?:\/\/)?([\w\-])+\.{1}([a-zA-Z]{2,63})([\/\w-]*)*\/?\??([^#\n\r]*)?#?([^\n\r]*)/g;
 
@@ -67,6 +76,24 @@ export const definitionObject: CSAMFormDefinitionObject = {
   },
 };
 
+export const definitionObjectForCLC: CSAMCLCFormDefinitionObject = {
+  childAge: {
+    name: 'childAge',
+    label: '',
+    type: 'radio-input',
+    options: [
+      { value: 'under-13-years', label: 'Under 13 years old' },
+      { value: '13-to-15-years', label: '13 to 15 years old' },
+      { value: '16-to-17-years', label: '16 to 17 years old' },
+    ],
+  },
+  ageVerified: {
+    name: 'ageVerified',
+    label: 'Yes, age of child has been verified',
+    type: 'checkbox',
+  },
+};
+
 export const initialValues = {
   webAddress: getInitialValue(definitionObject.webAddress),
   description: getInitialValue(definitionObject.description),
@@ -74,4 +101,9 @@ export const initialValues = {
   firstName: getInitialValue(definitionObject.firstName),
   lastName: getInitialValue(definitionObject.lastName),
   email: getInitialValue(definitionObject.email),
+} as const;
+
+export const initialValuesForCLC = {
+  childAge: getInitialValue(definitionObjectForCLC.childAge),
+  ageVerified: getInitialValue(definitionObjectForCLC.ageVerified),
 } as const;
