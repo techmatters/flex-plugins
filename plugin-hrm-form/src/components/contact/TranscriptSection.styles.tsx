@@ -47,16 +47,14 @@ MessageItemContainer.displayName = 'MessageItemContainer';
 type MessageBubbleProps = {
   isCounsellor: boolean;
 };
-// width: 50%;
+
 export const MessageBubbleContainer = styled(Row)<MessageBubbleProps>`
   border-radius: 4px;
-  border-width: 1px;
-  padding: 3px;
   overflow: hidden;
   ${p => (p.isCounsellor ? 'margin-left: auto;' : 'margin-right: auto;')}
-  ${p => (p.isCounsellor ? 'border-color: blue;' : 'border-color: black;')}
-  ${p => (p.isCounsellor ? 'align-items: right;' : 'align-items: left;')}
+  align-items: ${p => (p.isCounsellor ? 'right' : 'left')};
   background-color: ${props => (props.isCounsellor ? '#057d9e' : props.theme.colors.base2)};
+  padding: 5px 12px 8px 12px;
 `;
 MessageBubbleContainer.displayName = 'MessageBubbleContainer';
 
@@ -65,8 +63,7 @@ export const MessageBubleInnerContainer = styled('div')`
   flex-flow: column nowrap;
   flex:grow: 1;
   flex-shrink: 1;
-  padding: 0 12px 8px 12px;
-  `;
+`;
 MessageBubleInnerContainer.displayName = 'MessageBubleInnerContainer';
 
 export const MessageBubbleHeader = styled('div')`
@@ -107,12 +104,6 @@ export const MessageBubbleBodyText = styled(FontOpenSans)<{ isCounsellor: boolea
   color: ${({ isCounsellor }) => (isCounsellor ? '#FFFFFF' : '#222222')};
 `;
 MessageBubbleBodyText.displayName = 'MessageBubbleBodyText';
-/*
- * padding-bottom: 8px;
- *   padding-left: 12px;
- *   padding-right: 12px;
- *   margin-top: 3px;
- */
 
 export const AvatarContainer = styled('div')<{ isGroupedWithPrevious: boolean }>`
   margin-right: 12px;
@@ -122,8 +113,3 @@ export const AvatarContainer = styled('div')<{ isGroupedWithPrevious: boolean }>
   background: ${props => (props.isGroupedWithPrevious ? 'transparent' : props.theme.colors.base2)};
 `;
 AvatarContainer.displayName = 'AvatarContainer';
-
-/*
- * ${({ isCounsellor }) => isCounsellor && 'padding-: auto;'}
- * ${({ isCounsellor }) => isCounsellor && 'padding-right: auto;'}
- */

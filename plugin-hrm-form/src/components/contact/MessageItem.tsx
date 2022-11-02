@@ -34,7 +34,7 @@ const MessageItem: React.FC<Props> = ({ isCounsellor, isGroupedWithPrevious, mes
           <MessageBubbleHeader>
             <MessageBubbleNameText isCounsellor={isCounsellor}>{message.from}</MessageBubbleNameText>
             <MessageBubbleDateText isCounsellor={isCounsellor}>
-              {format(new Date(message.dateCreated), 'h:mm a..aaa')}
+              {format(new Date(message.dateCreated), 'hh:mm a')}
             </MessageBubbleDateText>
           </MessageBubbleHeader>
           <MessageBubbleBody>
