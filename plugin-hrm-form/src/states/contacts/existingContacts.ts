@@ -18,7 +18,7 @@ type RecursivePartial<T> = {
 export type SearchContactDraftChanges = RecursivePartial<SearchContact>;
 
 // TODO: Update this type when the Lambda worker is "done"
-type TranscriptMessage = {
+export type TranscriptMessage = {
   sid: string;
   dateCreated: Date;
   from: string;
