@@ -27,6 +27,20 @@ npx playwright test --headed webchat.spec.ts
 | TWILIO_AUTH_TOKEN        | E2E twilio auth token | |
 | DEBUG                    | pw:api | optional, but recommended for useable log output |
 
+### Requirements
+
+See: [top level readme](../README.md)
+
+### NVM (install/use)
+
+Use nvm to ensure we use the same node/npm versions for each product. The first time you setup this repo (or if `nvm use` throws a missing version error), run `nvm install` to install the version of node specified in `.nvmrc`. Then run `nvm use` to switch to that version in the future. Without NVM: YMMV. `nvm-windows` does not support `.nvmrc`. Windows instructions are coming soon!
+
+## Run local e2e Tests
+
+1. Start local hrm-service by following the instructions in the hrm repo's readme.md file.
+2. Start plugin-hrm-form by following the instructions in the [readme](../plugin-hrm-form/README.md).
+3. Run the e2e tests with `npm run test:local`
+
 ## TODO
 * Currently the tests rely on a plugin dev server being run separately. There should be a single task that manages starting the dev server, running the tests, then shutting down the dev server
 * Only one E2E test can be run at a time. Because they run from a single user account, multiple tests in the same run cannot be run in parallel, nor can multiple test runs be executed at the same time. This is clearly a problem for scale & stability in the future.

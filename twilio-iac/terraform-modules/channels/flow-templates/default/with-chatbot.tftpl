@@ -7,7 +7,7 @@ ${
             "transitions": [
               {
                 "event": "incomingMessage",
-                "next": "chatbot"
+                "next": "ChatBot"
               },
               {
                 "event": "incomingCall"
@@ -42,7 +42,7 @@ ${
               }
             ],
             "type": "send-to-auto-pilot",
-            "name": "chatbot",
+            "name": "ChatBot",
             "properties": {
               "body": "{{trigger.message.Body}}",
               "from": "Bot",
@@ -68,7 +68,7 @@ ${
                     "type": "equal_to",
                     "friendly_name": "If value equal_to counselor_handoff",
                     "arguments": [
-                      "{{widgets.chatbot.CurrentTask}}"
+                      "{{widgets.ChatBot.CurrentTask}}"
                     ],
                     "value": "counselor_handoff"
                   }
@@ -80,7 +80,7 @@ ${
             "type": "split-based-on",
             "name": "check_counselor_handoff",
             "properties": {
-              "input": "{{widgets.chatbot.CurrentTask}}",
+              "input": "{{widgets.ChatBot.CurrentTask}}",
               "offset": {
                 "y": 400,
                 "x": 70

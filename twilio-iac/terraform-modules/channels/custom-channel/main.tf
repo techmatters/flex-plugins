@@ -29,6 +29,7 @@ locals {
     chat_service_sid = var.flex_chat_service_sid
     friendly_name = "Flex ${title(var.channel_name)} Channel Flow"
     integration_type = "studio"
+    janitor_enabled = var.janitor_enabled
     contact_identity     = "${var.channel_name}"
     integration_flow_sid = twilio_studio_flows_v2.channel_messaging_flow.sid
     enabled = true
