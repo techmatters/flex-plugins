@@ -73,6 +73,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   };
 
   const contactIdentifier = getFormattedNumberFromTask(task);
+  console.log('> PreviousBanner, contactIdentifier', task);
   return (
     <div className={editContactFormOpen ? 'editingContact' : ''}>
       <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenEditingContact">
