@@ -26,6 +26,8 @@ async function globalSetup(config: FullConfig) {
     environmentVariables.PLAYWRIGHT_USER_PASSWORD ?? 'NOT SET',
   );
    */
+
+  process.env.ARTIFACT_PATH = config.projects[0].outputDir;
   console.log(
     'Global setup completed',
     `Took ${differenceInMilliseconds(new Date(), start) / 1000} seconds`,
