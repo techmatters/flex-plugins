@@ -2,21 +2,13 @@ import { Template } from '@twilio/flex-ui';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { format } from 'date-fns';
 
 import type { TwilioStoredMedia, S3StoredTranscript } from '../../types/types';
 import { contactFormsBase, namespace, RootState } from '../../states';
 import { getFileDownloadUrlFromUrl } from '../../services/ServerlessService';
-import { SectionActionButton } from '../../styles/search';
-import { loadTranscript } from '../../states/contacts/existingContacts';
-import { FontOpenSans } from '../../styles/HrmStyles';
-import {
-  MessageList,
-  MessageBubble,
-  MessageBubbleBody,
-  MessageBubbleHeader,
-  ItalicFont,
-} from './TranscriptSection.styles';
+import { loadTranscript, TranscriptMessage } from '../../states/contacts/existingContacts';
+import { MessageList, ItalicFont, LoadTranscriptButton, LoadTranscriptButtonText } from './TranscriptSection.styles';
+import MessageItem from './MessageItem';
 
 type OwnProps = {
   contactId: string;
@@ -44,21 +36,26 @@ const TranscriptSection: React.FC<Props> = ({
 
   // Preferred case, external transcript is already in local state
   if (transcript) {
+    const messagesToRender = transcript.messages.reduce<
+      (TranscriptMessage & { isCounsellor: boolean; isGroupedWithPrevious: boolean })[]
+    >((accum, m, index) => {
+      const isCounsellor = m.from.startsWith('gian');
+      // const isCounsellor = m.from === myIdentity;
+      const isGroupedWithPrevious = Boolean(index && accum[index - 1].from === m.from);
+
+      return [...accum, { ...m, isGroupedWithPrevious, isCounsellor }];
+    }, []);
+
     return (
       <MessageList>
-        {transcript.messages.map(m => {
-          const isFromMe = m.from === myIdentity;
-
-          return (
-            <MessageBubble key={m.sid} isFromMe={isFromMe}>
-              <MessageBubbleHeader>
-                <FontOpenSans>{m.from}</FontOpenSans>
-                <FontOpenSans>{format(new Date(m.dateCreated), 'h:mm aaaaa')}m</FontOpenSans>
-              </MessageBubbleHeader>
-              <MessageBubbleBody>{m.body}</MessageBubbleBody>
-            </MessageBubble>
-          );
-        })}
+        {messagesToRender.map(m => (
+          <MessageItem
+            key={m.sid}
+            message={m}
+            isCounsellor={m.isCounsellor}
+            isGroupedWithPrevious={m.isGroupedWithPrevious}
+          />
+        ))}
       </MessageList>
     );
   }
@@ -82,9 +79,11 @@ const TranscriptSection: React.FC<Props> = ({
     };
 
     return (
-      <SectionActionButton type="button" onClick={fetchAndLoadTranscript}>
-        <Template code="ContactDetails-LoadTranscript-Button" />
-      </SectionActionButton>
+      <LoadTranscriptButton type="button" onClick={fetchAndLoadTranscript}>
+        <LoadTranscriptButtonText>
+          <Template code="ContactDetails-LoadTranscript-Button" />
+        </LoadTranscriptButtonText>
+      </LoadTranscriptButton>
     );
   }
 
@@ -104,9 +103,11 @@ const TranscriptSection: React.FC<Props> = ({
     };
 
     return (
-      <SectionActionButton type="button" onClick={loadTwilioStoredTranscript}>
-        <Template code="ContactDetails-LoadTranscript-Button" />
-      </SectionActionButton>
+      <LoadTranscriptButton type="button" onClick={loadTwilioStoredTranscript}>
+        <LoadTranscriptButtonText>
+          <Template code="ContactDetails-LoadTranscript-Button" />
+        </LoadTranscriptButtonText>
+      </LoadTranscriptButton>
     );
   }
 
