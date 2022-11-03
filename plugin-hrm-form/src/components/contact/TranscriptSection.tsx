@@ -2,12 +2,21 @@ import { Template } from '@twilio/flex-ui';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import format from 'date-fns/format';
 
 import type { TwilioStoredMedia, S3StoredTranscript } from '../../types/types';
 import { contactFormsBase, namespace, RootState } from '../../states';
 import { getFileDownloadUrlFromUrl } from '../../services/ServerlessService';
 import { loadTranscript, TranscriptMessage } from '../../states/contacts/existingContacts';
-import { MessageList, ItalicFont, LoadTranscriptButton, LoadTranscriptButtonText } from './TranscriptSection.styles';
+import {
+  MessageList,
+  ItalicFont,
+  LoadTranscriptButton,
+  LoadTranscriptButtonText,
+  DateRulerContainer,
+  DateRulerHr,
+  DateRulerDateText,
+} from './TranscriptSection.styles';
 import MessageItem from './MessageItem';
 
 type OwnProps = {
@@ -36,28 +45,46 @@ const TranscriptSection: React.FC<Props> = ({
 
   // Preferred case, external transcript is already in local state
   if (transcript) {
-    const messagesToRender = transcript.messages.reduce<
-      (TranscriptMessage & { isCounsellor: boolean; isGroupedWithPrevious: boolean })[]
-    >((accum, m, index) => {
+    const messagesToRender = transcript.messages.reduce<{
+      [dateKey: string]: (TranscriptMessage & { isCounsellor: boolean; isGroupedWithPrevious: boolean })[];
+    }>((accum, m, index) => {
       const isCounsellor = m.from.startsWith('gian');
-      // const isCounsellor = m.from === myIdentity;
-      const isGroupedWithPrevious = Boolean(index && accum[index - 1].from === m.from);
+      // const isCounsellor = m.isCounsellor;
+      const dateKey = format(new Date(m.dateCreated), 'yyyy/MM/dd');
 
-      return [...accum, { ...m, isGroupedWithPrevious, isCounsellor }];
-    }, []);
+      if (!accum[dateKey]) {
+        return { ...accum, [dateKey]: [{ ...m, isGroupedWithPrevious: false, isCounsellor }] };
+      }
 
-    return (
-      <MessageList>
-        {messagesToRender.map(m => (
+      const prevMessage = accum[dateKey][accum[dateKey].length - 1];
+      const isGroupedWithPrevious = Boolean(index && prevMessage.from === m.from);
+
+      return { ...accum, [dateKey]: [...accum[dateKey], { ...m, isGroupedWithPrevious, isCounsellor }] };
+    }, {});
+
+    const messagesComponents = Object.entries(messagesToRender).flatMap(([dateKey, ms]) => {
+      const dateRuler = (
+        <DateRulerContainer>
+          <DateRulerHr />
+          <DateRulerDateText>{dateKey}</DateRulerDateText>
+          <DateRulerHr />
+        </DateRulerContainer>
+      );
+
+      return [
+        dateRuler,
+        ms.map(m => (
           <MessageItem
             key={m.sid}
             message={m}
             isCounsellor={m.isCounsellor}
             isGroupedWithPrevious={m.isGroupedWithPrevious}
           />
-        ))}
-      </MessageList>
-    );
+        )),
+      ];
+    });
+
+    return <MessageList>{messagesComponents}</MessageList>;
   }
 
   // The external transcript is exported but it hasn't been fetched yet
