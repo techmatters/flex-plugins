@@ -28,12 +28,49 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
+type TranscriptMessageGrouped = TranscriptMessage & { isGroupedWithPrevious: boolean };
+type TranscriptMessagesGrouped = { [dateKey: string]: TranscriptMessageGrouped[] };
+const groupMessagesByDate = (accum: TranscriptMessagesGrouped, m: TranscriptMessage, index: number) => {
+  const dateKey = format(new Date(m.dateCreated), 'yyyy/MM/dd');
+
+  if (!accum[dateKey]) {
+    return { ...accum, [dateKey]: [{ ...m, isGroupedWithPrevious: false }] };
+  }
+
+  const prevMessage = accum[dateKey][accum[dateKey].length - 1];
+  const isGroupedWithPrevious = Boolean(index && prevMessage.from === m.from);
+
+  return { ...accum, [dateKey]: [...accum[dateKey], { ...m, isGroupedWithPrevious }] };
+};
+
+const renderGroupedMessages = (groupedMessages: TranscriptMessagesGrouped) =>
+  Object.entries(groupedMessages).flatMap(([dateKey, ms]) => {
+    const dateRuler = (
+      <DateRulerContainer>
+        <DateRulerHr />
+        <DateRulerDateText>{dateKey}</DateRulerDateText>
+        <DateRulerHr />
+      </DateRulerContainer>
+    );
+
+    return [
+      dateRuler,
+      ms.map(m => (
+        <MessageItem
+          key={m.sid}
+          message={m}
+          isCounsellor={m.isCounsellor}
+          isGroupedWithPrevious={m.isGroupedWithPrevious}
+        />
+      )),
+    ];
+  });
+
 const TranscriptSection: React.FC<Props> = ({
   contactId,
   twilioStoredTranscript,
   externalStoredTranscript,
   loadConversationIntoOverlay,
-  myIdentity,
   transcript,
   loadTranscript,
 }) => {
@@ -45,46 +82,9 @@ const TranscriptSection: React.FC<Props> = ({
 
   // Preferred case, external transcript is already in local state
   if (transcript) {
-    const messagesToRender = transcript.messages.reduce<{
-      [dateKey: string]: (TranscriptMessage & { isCounsellor: boolean; isGroupedWithPrevious: boolean })[];
-    }>((accum, m, index) => {
-      const isCounsellor = m.from.startsWith('gian');
-      // const isCounsellor = m.isCounsellor;
-      const dateKey = format(new Date(m.dateCreated), 'yyyy/MM/dd');
+    const groupedMessages = transcript.messages.reduce(groupMessagesByDate, {});
 
-      if (!accum[dateKey]) {
-        return { ...accum, [dateKey]: [{ ...m, isGroupedWithPrevious: false, isCounsellor }] };
-      }
-
-      const prevMessage = accum[dateKey][accum[dateKey].length - 1];
-      const isGroupedWithPrevious = Boolean(index && prevMessage.from === m.from);
-
-      return { ...accum, [dateKey]: [...accum[dateKey], { ...m, isGroupedWithPrevious, isCounsellor }] };
-    }, {});
-
-    const messagesComponents = Object.entries(messagesToRender).flatMap(([dateKey, ms]) => {
-      const dateRuler = (
-        <DateRulerContainer>
-          <DateRulerHr />
-          <DateRulerDateText>{dateKey}</DateRulerDateText>
-          <DateRulerHr />
-        </DateRulerContainer>
-      );
-
-      return [
-        dateRuler,
-        ms.map(m => (
-          <MessageItem
-            key={m.sid}
-            message={m}
-            isCounsellor={m.isCounsellor}
-            isGroupedWithPrevious={m.isGroupedWithPrevious}
-          />
-        )),
-      ];
-    });
-
-    return <MessageList>{messagesComponents}</MessageList>;
+    return <MessageList>{renderGroupedMessages(groupedMessages)}</MessageList>;
   }
 
   // The external transcript is exported but it hasn't been fetched yet
@@ -157,7 +157,6 @@ const TranscriptSection: React.FC<Props> = ({
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   transcript: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.transcript,
-  myIdentity: state.flex.chat.session.client.user.identity,
 });
 
 const mapDispatchToProps = {

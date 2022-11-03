@@ -22,6 +22,8 @@ export type TranscriptMessage = {
   sid: string;
   dateCreated: Date;
   from: string;
+  friendlyName?: string;
+  isCounsellor: boolean;
   body: string;
   index: number;
   type: string;
