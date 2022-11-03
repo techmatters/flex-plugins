@@ -59,7 +59,7 @@ const renderGroupedMessages = (groupedMessages: TranscriptMessagesGrouped) =>
         <MessageItem
           key={m.sid}
           message={m}
-          isCounsellor={m.isCounsellor}
+          isCounselor={m.isCounselor}
           isGroupedWithPrevious={m.isGroupedWithPrevious}
         />
       )),

@@ -35,7 +35,7 @@ export const MessageList = styled('div')`
 `;
 MessageList.displayName = 'MessageList';
 
-export const MessageItemContainer = styled(Row)<{ isCounsellor: boolean; isGroupedWithPrevious: boolean }>`
+export const MessageItemContainer = styled(Row)<{ isCounselor: boolean; isGroupedWithPrevious: boolean }>`
   flex-wrap: nowrap;
   width: 100%;
   align-items: start;
@@ -45,15 +45,15 @@ export const MessageItemContainer = styled(Row)<{ isCounsellor: boolean; isGroup
 MessageItemContainer.displayName = 'MessageItemContainer';
 
 type MessageBubbleProps = {
-  isCounsellor: boolean;
+  isCounselor: boolean;
 };
 
 export const MessageBubbleContainer = styled(Row)<MessageBubbleProps>`
   border-radius: 4px;
   overflow: hidden;
-  ${p => (p.isCounsellor ? 'margin-left: auto;' : 'margin-right: auto;')}
-  align-items: ${p => (p.isCounsellor ? 'right' : 'left')};
-  background-color: ${props => (props.isCounsellor ? '#057d9e' : props.theme.colors.base2)};
+  ${p => (p.isCounselor ? 'margin-left: auto;' : 'margin-right: auto;')}
+  align-items: ${p => (p.isCounselor ? 'right' : 'left')};
+  background-color: ${props => (props.isCounselor ? '#057d9e' : props.theme.colors.base2)};
   padding: 5px 12px 8px 12px;
 `;
 MessageBubbleContainer.displayName = 'MessageBubbleContainer';
@@ -73,18 +73,18 @@ export const MessageBubbleHeader = styled('div')`
 `;
 MessageBubbleHeader.displayName = 'MessageBubbleHeader';
 
-export const MessageBubbleNameText = styled(FontOpenSans)<{ isCounsellor: boolean }>`
+export const MessageBubbleNameText = styled(FontOpenSans)<{ isCounselor: boolean }>`
   white-space: nowrap;
   font-size: 10px;
   font-weight: 700;
   margin-right: 8px;
-  color: ${({ isCounsellor }) => (isCounsellor ? '#FFFFFF' : '#222222')};
+  color: ${({ isCounselor }) => (isCounselor ? '#FFFFFF' : '#222222')};
 `;
 
-export const MessageBubbleDateText = styled(FontOpenSans)<{ isCounsellor: boolean }>`
+export const MessageBubbleDateText = styled(FontOpenSans)<{ isCounselor: boolean }>`
   white-space: nowrap;
   font-size: 10px;
-  color: ${({ isCounsellor }) => (isCounsellor ? '#FFFFFF' : '#222222')};
+  color: ${({ isCounselor }) => (isCounselor ? '#FFFFFF' : '#222222')};
 `;
 MessageBubbleDateText.displayName = 'MessageBubbleDateText';
 
@@ -97,11 +97,11 @@ export const MessageBubbleBody = styled('div')`
 `;
 MessageBubbleBody.displayName = 'MessageBubbleBody';
 
-export const MessageBubbleBodyText = styled(FontOpenSans)<{ isCounsellor: boolean }>`
+export const MessageBubbleBodyText = styled(FontOpenSans)<{ isCounselor: boolean }>`
   font-size: 12px;
   line-height: 1.54;
   overflow-wrap: break-word;
-  color: ${({ isCounsellor }) => (isCounsellor ? '#FFFFFF' : '#222222')};
+  color: ${({ isCounselor }) => (isCounselor ? '#FFFFFF' : '#222222')};
 `;
 MessageBubbleBodyText.displayName = 'MessageBubbleBodyText';
 

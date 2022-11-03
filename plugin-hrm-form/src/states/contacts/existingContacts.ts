@@ -23,7 +23,7 @@ export type TranscriptMessage = {
   dateCreated: Date;
   from: string;
   friendlyName?: string;
-  isCounsellor: boolean;
+  isCounselor: boolean;
   body: string;
   index: number;
   type: string;
