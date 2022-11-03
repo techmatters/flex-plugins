@@ -2,21 +2,22 @@ import { Template } from '@twilio/flex-ui';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { format } from 'date-fns';
+import format from 'date-fns/format';
 
 import type { TwilioStoredMedia, S3StoredTranscript } from '../../types/types';
 import { contactFormsBase, namespace, RootState } from '../../states';
 import { getFileDownloadUrlFromUrl } from '../../services/ServerlessService';
-import { SectionActionButton } from '../../styles/search';
-import { loadTranscript } from '../../states/contacts/existingContacts';
-import { FontOpenSans } from '../../styles/HrmStyles';
+import { loadTranscript, TranscriptMessage } from '../../states/contacts/existingContacts';
 import {
   MessageList,
-  MessageBubble,
-  MessageBubbleBody,
-  MessageBubbleHeader,
   ItalicFont,
+  LoadTranscriptButton,
+  LoadTranscriptButtonText,
+  DateRulerContainer,
+  DateRulerHr,
+  DateRulerDateText,
 } from './TranscriptSection.styles';
+import MessageItem from './MessageItem';
 
 type OwnProps = {
   contactId: string;
@@ -27,12 +28,49 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
+type TranscriptMessageGrouped = TranscriptMessage & { isGroupedWithPrevious: boolean };
+type TranscriptMessagesGrouped = { [dateKey: string]: TranscriptMessageGrouped[] };
+const groupMessagesByDate = (accum: TranscriptMessagesGrouped, m: TranscriptMessage, index: number) => {
+  const dateKey = format(new Date(m.dateCreated), 'yyyy/MM/dd');
+
+  if (!accum[dateKey]) {
+    return { ...accum, [dateKey]: [{ ...m, isGroupedWithPrevious: false }] };
+  }
+
+  const prevMessage = accum[dateKey][accum[dateKey].length - 1];
+  const isGroupedWithPrevious = Boolean(index && prevMessage.from === m.from);
+
+  return { ...accum, [dateKey]: [...accum[dateKey], { ...m, isGroupedWithPrevious }] };
+};
+
+const renderGroupedMessages = (groupedMessages: TranscriptMessagesGrouped) =>
+  Object.entries(groupedMessages).flatMap(([dateKey, ms]) => {
+    const dateRuler = (
+      <DateRulerContainer>
+        <DateRulerHr />
+        <DateRulerDateText>{dateKey}</DateRulerDateText>
+        <DateRulerHr />
+      </DateRulerContainer>
+    );
+
+    return [
+      dateRuler,
+      ms.map(m => (
+        <MessageItem
+          key={m.sid}
+          message={m}
+          isCounselor={m.isCounselor}
+          isGroupedWithPrevious={m.isGroupedWithPrevious}
+        />
+      )),
+    ];
+  });
+
 const TranscriptSection: React.FC<Props> = ({
   contactId,
   twilioStoredTranscript,
   externalStoredTranscript,
   loadConversationIntoOverlay,
-  myIdentity,
   transcript,
   loadTranscript,
 }) => {
@@ -44,23 +82,9 @@ const TranscriptSection: React.FC<Props> = ({
 
   // Preferred case, external transcript is already in local state
   if (transcript) {
-    return (
-      <MessageList>
-        {transcript.messages.map(m => {
-          const isFromMe = m.from === myIdentity;
+    const groupedMessages = transcript.messages.reduce(groupMessagesByDate, {});
 
-          return (
-            <MessageBubble key={m.sid} isFromMe={isFromMe}>
-              <MessageBubbleHeader>
-                <FontOpenSans>{m.from}</FontOpenSans>
-                <FontOpenSans>{format(new Date(m.dateCreated), 'h:mm aaaaa')}m</FontOpenSans>
-              </MessageBubbleHeader>
-              <MessageBubbleBody>{m.body}</MessageBubbleBody>
-            </MessageBubble>
-          );
-        })}
-      </MessageList>
-    );
+    return <MessageList>{renderGroupedMessages(groupedMessages)}</MessageList>;
   }
 
   // The external transcript is exported but it hasn't been fetched yet
@@ -82,9 +106,11 @@ const TranscriptSection: React.FC<Props> = ({
     };
 
     return (
-      <SectionActionButton type="button" onClick={fetchAndLoadTranscript}>
-        <Template code="ContactDetails-LoadTranscript-Button" />
-      </SectionActionButton>
+      <LoadTranscriptButton type="button" onClick={fetchAndLoadTranscript}>
+        <LoadTranscriptButtonText>
+          <Template code="ContactDetails-LoadTranscript-Button" />
+        </LoadTranscriptButtonText>
+      </LoadTranscriptButton>
     );
   }
 
@@ -104,9 +130,11 @@ const TranscriptSection: React.FC<Props> = ({
     };
 
     return (
-      <SectionActionButton type="button" onClick={loadTwilioStoredTranscript}>
-        <Template code="ContactDetails-LoadTranscript-Button" />
-      </SectionActionButton>
+      <LoadTranscriptButton type="button" onClick={loadTwilioStoredTranscript}>
+        <LoadTranscriptButtonText>
+          <Template code="ContactDetails-LoadTranscript-Button" />
+        </LoadTranscriptButtonText>
+      </LoadTranscriptButton>
     );
   }
 
@@ -129,7 +157,6 @@ const TranscriptSection: React.FC<Props> = ({
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   transcript: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.transcript,
-  myIdentity: state.flex.chat.session.client.user.identity,
 });
 
 const mapDispatchToProps = {

@@ -5,6 +5,7 @@ import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
+import { Flex } from '../../styles/HrmStyles';
 import { isS3StoredTranscript, isTwilioStoredMedia } from '../../types/types';
 import {
   DetailsContainer,
@@ -303,12 +304,14 @@ const ContactDetailsHome: React.FC<Props> = function ({
           buttonDataTestid="ContactDetails-Section-Transcript"
           showEditButton={false}
         >
-          <TranscriptSection
-            contactId={contactId}
-            twilioStoredTranscript={twilioStoredTranscript}
-            externalStoredTranscript={externalStoredTranscript}
-            loadConversationIntoOverlay={loadConversationIntoOverlay}
-          />
+          <Flex justifyContent="center" flexDirection="row" paddingTop="20px">
+            <TranscriptSection
+              contactId={contactId}
+              twilioStoredTranscript={twilioStoredTranscript}
+              externalStoredTranscript={externalStoredTranscript}
+              loadConversationIntoOverlay={loadConversationIntoOverlay}
+            />
+          </Flex>
         </ContactDetailsSection>
       )}
     </DetailsContainer>
