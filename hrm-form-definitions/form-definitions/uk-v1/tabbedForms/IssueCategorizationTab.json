@@ -17,71 +17,6 @@
         "Voyeurism",
         "Unspecified/Other"
       ]
-    },
-    "Nature of Images": {
-      "color": "#F8E900",
-      "subcategories": [
-        "Stills",
-        "Photoshopped images",
-        "Stills and Videos",
-        "Videos",
-        "Unspecified/Unknown"
-      ]
-    },
-    "Location of Images": {
-      "color": "#E86B6B",
-      "subcategories": [
-        "Unknown",
-        "Client Didn't Answer",
-        "Client Doesn't Know",
-        "Client Wanted No Data Collected",
-        "Collector site (forums made specifically for sharing content)",
-        "Dating Site",
-        "Discord",
-        "Email/Text/Dms",
-        "Facebook",
-        "General Porn Site",
-        "Hard copy pictures",
-        "Instagram",
-        "Multiple Locations",
-        "Not relevant",
-        "Question Not Asked",
-        "RP Website",
-        "Snapchat",
-        "Subscription Site (OnlyFans, Fansly etc)",
-        "Threat to publish",
-        "Twitch",
-        "Twitter",
-        "Web Cam Capture",
-        "Youtube"
-      ]  
-    },
-    "Location of Threat": {
-      "color": "#8055BA",
-      "subcategories": [
-        "Unknown",
-        "Client Didn't Answer",
-        "Client Doesn't Know",
-        "Client Wanted No Data Collected",
-        "Dating Site",
-        "Discord",
-        "Email/Text/Dms",
-        "Facebook",
-        "General Porn Site",
-        "Hard copy pictures",
-        "Instagram",
-        "Multiple Locations",
-        "Not relevant",
-        "Question Not Asked",
-        "RP Website",
-        "Snapchat",
-        "Subscription Site (OnlyFans, Fansly etc)",
-        "Threat to publish",
-        "Twitch",
-        "Twitter",
-        "Web Cam Capture",
-        "Youtube"
-      ]   
     }
   },
   "RHC": {
@@ -116,6 +51,70 @@
         "Hate speech",
         "Hacked account",
         "Threat to life"
+      ]
+    }
+  },
+  "POSH": {
+    "Primary Issues": {
+      "color": "#F5A623",
+      "subcategories": [
+        "Advertising/ Commercialism",
+        "Cyber-Bulyying",
+        "e-Crime",
+        "Excessive use",
+        "Grooming",
+        "Love/ Relationships/ Sexuality",
+        "Online Reputation",
+        "Potentially Harmful Content",
+        "Hate speech",
+        "Sexting",
+        "Sexual Harassment",
+        "Technical Settings",
+        "Notification",
+        "Data privacy",
+        "Gaming",
+        "Sextortion",
+        "RP resource request",
+        "Prank calls, porn enquiries, etc.",
+        "Volunteering",
+        "Media literacy/ education",
+        "Unspecified/Other"
+      ]
+    },
+    "Peripheral Issues": {
+      "color": "#F8E900",
+      "subcategories": [
+        "Advertising/ Commercialism",
+        "Cyber-Bulyying",
+        "e-Crime",
+        "Excessive use",
+        "Grooming",
+        "Love/ Relationships/ Sexuality",
+        "Online Reputation",
+        "Potentially Harmful Content",
+        "Hate speech",
+        "Sexting",
+        "Sexual Harassment",
+        "Technical Settings",
+        "Notification",
+        "Data privacy",
+        "Gaming",
+        "Sextortion",
+        "RP resource request",
+        "Prank calls, porn enquiries, etc.",
+        "Volunteering",
+        "Media literacy/ education",
+        "Take-down request reponse",
+        "Unspecified/Other"
+      ]
+    },
+    "Enquiries": {
+      "color": "#E86B6B",
+      "subcategories": [
+        "General enquiry",
+        "Media enquiry",
+        "Police enquiry",
+        "Unspecified/Other"
       ]
     }
   }
