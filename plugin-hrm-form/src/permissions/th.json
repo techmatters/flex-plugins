@@ -18,5 +18,6 @@
 "editChildIsAtRisk":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
 "editFollowUpDate":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
 "editContact":  [["isSupervisor"],["isOwner"]],
-"viewPostSurvey":  [["isSupervisor"]]
+"viewPostSurvey":  [["isSupervisor"]],
+"viewExternalTranscript": [["isSupervisor"]]
 }
