@@ -4,7 +4,6 @@ import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import { CallTypes } from 'hrm-form-definitions';
 
-import { getConfig } from '../../../HrmFormPlugin';
 import { Flex, Row } from '../../../styles/HrmStyles';
 import { PrevNameText, ContactButtonsWrapper, DateText, ViewContactButton } from '../../../styles/search';
 import { ViewButton } from '../../../styles/case';

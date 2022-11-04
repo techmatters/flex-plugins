@@ -436,14 +436,10 @@ export const setupTwitterChatChannel = () => {
     'twitter',
     task => task.channelType === 'twitter',
   );
-  /*
-   * modify TwitterChatChannel here
-   * TwitterChatChannel.templates.IncomingTaskCanvas.firstLine = 'TaskHeaderLineTwitter';
-   */
+
   TwitterChatChannel.templates.CallCanvas.firstLine = 'TaskHeaderLineTwitter';
   TwitterChatChannel.templates.TaskListItem.firstLine = 'TaskHeaderLineTwitter';
   TwitterChatChannel.templates.TaskCard.firstLine = 'TaskHeaderLineTwitter';
-  // TwitterChatChannel.templates.TaskCanvasHeader.title = 'TaskHeaderLineTwitter';
   TwitterChatChannel.templates.Supervisor.TaskCanvasHeader.title = 'TaskHeaderLineTwitter';
   TwitterChatChannel.templates.Supervisor.TaskOverviewCanvas.title = 'TaskHeaderLineTwitter';
 
@@ -523,24 +519,23 @@ export const setupLineChatChannel = () => {
   Flex.TaskChannels.register(LineChatChannel);
 };
 
-const maskIdentifiers = false;
+const maskIdentifiers = true;
 const maskIdentifiersByChannel = channelType => {
   // Task list and panel when a call comes in
   channelType.templates.TaskListItem.firstLine = 'MaskIdentifiers';
+  channelType.templates.TaskListItem.secondLine = 'MaskIdentifiersS';
   channelType.templates.IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
   // Task panel during an active call
   channelType.templates.TaskCanvasHeader.title = 'MaskIdentifiers';
   channelType.templates.MessageListItem = 'MaskIdentifiers';
   // Task Status in Agents page
   channelType.templates.TaskCard.firstLine = 'MaskIdentifiers';
-
   // Supervisor
   channelType.templates.Supervisor.TaskCanvasHeader.title = 'MaskIdentifiers';
   channelType.templates.Supervisor.TaskOverviewCanvas.title = 'MaskIdentifiers';
 };
 
 const maskIdentifiersForDefaultChannels = () => {
-  // Mask Identifiers for Default Channels
   maskIdentifiersByChannel(Flex.DefaultTaskChannels.Call);
   maskIdentifiersByChannel(Flex.DefaultTaskChannels.Chat);
   maskIdentifiersByChannel(Flex.DefaultTaskChannels.ChatSms);

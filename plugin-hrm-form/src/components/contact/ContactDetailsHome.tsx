@@ -59,7 +59,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const definitionVersion = definitionVersions[version];
 
-  const { featureFlags } = getConfig();
+  const { featureFlags, strings } = getConfig();
 
   useEffect(
     () => () => {
@@ -154,8 +154,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
       savedContact.details.conversationMedia?.length &&
       (twilioStoredTranscript || externalStoredTranscript),
   );
-
-  const { strings } = getConfig();
 
   const maskIdentifiers = false;
 
