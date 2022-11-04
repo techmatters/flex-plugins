@@ -150,6 +150,10 @@ const ContactDetailsHome: React.FC<Props> = function ({
       ((canViewTwilioTranscript && twilioStoredTranscript) || externalStoredTranscript),
   );
 
+  const { strings } = getConfig();
+
+  const maskIdentifiers = false;
+
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
       <NameText>{childOrUnknown}</NameText>
@@ -171,10 +175,17 @@ const ContactDetailsHome: React.FC<Props> = function ({
           description={<Template code="ContactDetails-GeneralDetails-Channel" />}
           value={formattedChannel}
         />
-        <SectionEntry
-          description={<Template code="ContactDetails-GeneralDetails-PhoneNumber" />}
-          value={isPhoneContact ? customerNumber : ''}
-        />
+        {maskIdentifiers ? (
+          <SectionEntry
+            description={<Template code="ContactDetails-GeneralDetails-PhoneNumber" />}
+            value={strings.MaskIdentifiers}
+          />
+        ) : (
+          <SectionEntry
+            description={<Template code="ContactDetails-GeneralDetails-PhoneNumber" />}
+            value={isPhoneContact ? customerNumber : ''}
+          />
+        )}
         <SectionEntry
           description={<Template code="ContactDetails-GeneralDetails-ConversationDuration" />}
           value={formattedDuration}

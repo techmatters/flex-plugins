@@ -46,7 +46,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   changeRoute,
   editContactFormOpen,
 }) => {
-  const maskIdentifiers = true;
+  const maskIdentifiers = false;
 
   useEffect(() => {
     if (isTwilioTask(task) && previousContacts === undefined) {
@@ -73,7 +73,6 @@ const PreviousContactsBanner: React.FC<Props> = ({
   };
 
   const contactIdentifier = getFormattedNumberFromTask(task);
-  console.log('> PreviousBanner, contactIdentifier', task);
   return (
     <div className={editContactFormOpen ? 'editingContact' : ''}>
       <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenEditingContact">

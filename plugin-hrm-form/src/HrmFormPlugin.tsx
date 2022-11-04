@@ -20,6 +20,8 @@ export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 let sharedStateClient: SyncClient;
 
+const maskIdentifiers = false;
+
 const readConfig = () => {
   const manager = Flex.Manager.getInstance();
 
@@ -42,6 +44,7 @@ const readConfig = () => {
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
   const { strings } = (manager as unknown) as { strings: { [key: string]: string } };
+
   console.log('>strings', strings);
   return {
     hrmBaseUrl,
@@ -181,6 +184,15 @@ const setUpComponents = (setupObject: SetupObject) => {
   Components.setUpStandaloneSearch();
 
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
+
+  if (maskIdentifiers) {
+    const { strings } = getConfig();
+    strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+    Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
+      theirDefaultName: 'XXXXX',
+      theirFriendlyNameOverride: true,
+    };
+  }
 };
 
 const setUpActions = (setupObject: SetupObject) => {

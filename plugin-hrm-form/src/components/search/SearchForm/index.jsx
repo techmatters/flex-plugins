@@ -239,11 +239,11 @@ class SearchForm extends Component {
                     <span>
                       <Template code="PreviousContacts-OnlyShowRecordsFrom" /> <Template code={source} />{' '}
                       {maskIdentifiers ? (
-                        <Bold>{checkBoxName}</Bold>
-                      ) : (
                         <Bold>
                           <Template code="MaskIdentifiers" />
                         </Bold>
+                      ) : (
+                        <Bold>{checkBoxName}</Bold>
                       )}
                     </span>
                   </FormCheckBoxWrapper>

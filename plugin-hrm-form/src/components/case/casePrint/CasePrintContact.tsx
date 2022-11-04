@@ -25,6 +25,7 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
   const formattedChannel =
     channel === 'default' ? mapChannelForInsights(rawJson.contactlessTask?.channel) : mapChannel(channel);
 
+  const maskIdentifiers = false;
   return (
     <View>
       <View style={styles.sectionHeader}>
@@ -43,7 +44,9 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
         </View>
         <View style={styles.sectionItemRowOdd}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-PhoneNumber']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>{presentValue(number, strings)}</Text>
+          <Text style={styles.sectionItemSecondColumn}>
+            {maskIdentifiers ? strings.MaskIdentifers : presentValue(number, strings)}
+          </Text>
         </View>
         <View style={styles.sectionItemRowEven}>
           <Text style={styles.sectionItemFirstColumn}>

@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import { CallTypes } from 'hrm-form-definitions';
 
+import { getConfig } from '../../../HrmFormPlugin';
 import { Flex, Row } from '../../../styles/HrmStyles';
 import { PrevNameText, ContactButtonsWrapper, DateText, ViewContactButton } from '../../../styles/search';
 import { ViewButton } from '../../../styles/case';
@@ -36,13 +37,20 @@ const getNumber = (channel, number) => {
 const ChildNameAndDate: React.FC<Props> = ({ channel, callType, name, number, date, onClickFull }) => {
   const dateString = `${format(new Date(date), 'MMM d, yyyy h:mm aaaaa')}m`;
   const showNumber = isNonDataCallType(callType) && Boolean(number);
+  const maskIdentifiers = false;
 
   return (
     <Row>
       <Flex marginRight="10px">
         <CallTypeIcon callType={callType} fontSize="18px" />
       </Flex>
-      <PrevNameText>{showNumber ? getNumber(channel, number) : name}</PrevNameText>
+      {showNumber && maskIdentifiers && (
+        <PrevNameText>
+          <Template code="MaskIdentifiers" />{' '}
+        </PrevNameText>
+      )}
+      <PrevNameText>{showNumber && !maskIdentifiers ? getNumber(channel, number) : name}</PrevNameText>
+
       <ContactButtonsWrapper>
         <Flex marginRight="20px">
           <DateText>{dateString}</DateText>
