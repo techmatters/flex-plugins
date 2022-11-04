@@ -37,6 +37,7 @@ export const DataCallTypeButton = styled(Button)`
   color: #1d2e36;
   border-radius: 4px;
   background-color: #d1e3f6;
+  border: none;
 
   &:hover {
     background-color: #7fa3cb;
@@ -68,6 +69,7 @@ export const NonDataCallTypeButton = styled(Button)<NonDataCallTypeButtonProps>`
   color: #1d2e36;
   border-radius: 4px;
   background-color: #ecedf1;
+  border: none;
   ${props => props.marginRight && 'margin-right: 20px;'}
 
   &:hover {

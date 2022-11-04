@@ -82,6 +82,7 @@ export const ViewButton = styled(props => <Button roundCorners={false} {...props
   letter-spacing: normal;
   font-size: 12px;
   box-shadow: none;
+  border: none;
 
   :focus {
     outline: auto;

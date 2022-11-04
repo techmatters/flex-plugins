@@ -212,48 +212,26 @@ export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSe
 ))<StyledSelectProps>`
   flex-grow: 0;
   flex-shrink: 0;
+  line-height: 1.33;
+  letter-spacing: normal;
+  box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
   width: 217px;
+  background-color: ${HrmTheme.colors.inputBackgroundColor};
+  height: 36px;
+  line-height: 22px;
+  border-radius: 4px;
+  border: none;
+  boxshadow: none;
+  padding: 0 7px;
+
+  /* hide the arrow */
+  -webkit-appearance: none;
+  appearance: none;
   div[role='button'] {
-    height: 36px;
-    line-height: 22px;
-    border-radius: 4px;
-    background-color: ${HrmTheme.colors.inputBackgroundColor};
     color: ${({ isPlaceholder }) => (isPlaceholder ? 'darkgray' : 'currentColor')};
-    border: none;
-  }
-
-  .Twilio-Dropdown {
-    height: 100%;
-  }
-
-  [class*='MuiSelect-selectMenu'] {
-    padding: 0 7px;
+    font-family: Open Sans;
     font-size: 12px;
-    line-height: 1.33;
-
-    ::-webkit-input-placeholder {
-      /* Chrome/Opera/Safari */
-      margin: 12px 0;
-    }
-    ::-moz-placeholder {
-      /* Firefox 19+ */
-      margin: 12px 0;
-    }
-    :-ms-input-placeholder {
-      /* IE 10+ */
-      margin: 12px 0;
-    }
-    :-moz-placeholder {
-      /* Firefox 18- */
-      margin: 12px 0;
-    }
   }
-  background-color: ${HrmTheme.colors.base1};
-  color: ${/*
-   * props =>
-   * props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor
-   */
-  HrmTheme.colors.darkTextColor};
 `;
 StyledSelect.displayName = 'StyledSelect';
 
@@ -282,14 +260,14 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
   border: none;
   border-radius: 4px;
   margin: ${props => (props.margin ? props.margin : '0')};
-  padding: 7px 23px;
+  padding: 4px 23px;
   background-color: ${props =>
     props.disabled
       ? HrmTheme.colors.disabledColor
       : props.secondary
       ? HrmTheme.colors.secondaryButtonColor
       : HrmTheme.colors.defaultButtonColor};
-  cursor: ${props => (props.disabled ? 'not-allowed' : 'default')};
+  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
   ${p =>
     getBackgroundWithHoverCSS(
       p.disabled
