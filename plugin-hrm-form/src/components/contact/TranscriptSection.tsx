@@ -40,7 +40,6 @@ class TranscriptFetchResponseError extends Error {
 
     this.name = 'TranscriptFetchResponseError';
     this.response = options.response;
-
   }
 }
 

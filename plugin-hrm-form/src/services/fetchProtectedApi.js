@@ -3,6 +3,11 @@ import { getConfig } from '../HrmFormPlugin';
 class ProtectedApiError extends Error {
   constructor(message, options) {
     super(message, options);
+
+    // see: https://github.com/microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work
+    Object.setPrototypeOf(this, ProtectedApiError.prototype);
+
+    this.name = 'ProtectedApiError';
     this.response = options.response;
   }
 }
