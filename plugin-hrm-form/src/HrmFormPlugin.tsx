@@ -155,7 +155,7 @@ const setUpLocalization = (config: ReturnType<typeof getConfig>) => {
 const setUpComponents = (setupObject: SetupObject) => {
   const { helpline, featureFlags } = setupObject;
 
-  const {mask} = getPermissionsForMasking()
+  const { mask } = getPermissionsForMasking();
   const maskIdentifiers = mask(PermissionActions.MASK_IDENTIFIERS);
 
   // setUp (add) dynamic components
@@ -193,7 +193,6 @@ const setUpComponents = (setupObject: SetupObject) => {
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
 
     Components.maskIdentifiersForDefaultChannels();
-    Components.maskIdentifiersByChannel(Components.setupLineChatChannel)
     
     Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
       theirDefaultName: 'XXXXX',
