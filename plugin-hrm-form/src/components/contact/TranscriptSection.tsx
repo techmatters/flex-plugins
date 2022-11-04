@@ -34,7 +34,13 @@ class TranscriptFetchResponseError extends Error {
 
   constructor(message, options) {
     super(message);
+
+    // see: https://github.com/microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work
+    Object.setPrototypeOf(this, TranscriptFetchResponseError.prototype);
+
+    this.name = 'TranscriptFetchResponseError';
     this.response = options.response;
+
   }
 }
 
