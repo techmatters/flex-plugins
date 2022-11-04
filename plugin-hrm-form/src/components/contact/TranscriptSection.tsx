@@ -82,7 +82,6 @@ const renderGroupedMessages = (groupedMessages: TranscriptMessagesGrouped) =>
     ];
   });
 
-
 const TranscriptSection: React.FC<Props> = ({
   contactId,
   twilioStoredTranscript,
