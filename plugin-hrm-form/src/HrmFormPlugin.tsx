@@ -47,7 +47,6 @@ const readConfig = () => {
   const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
   const { strings } = (manager as unknown) as { strings: { [key: string]: string } };
 
-  console.log('>strings', strings);
   return {
     hrmBaseUrl,
     serverlessBaseUrl,
