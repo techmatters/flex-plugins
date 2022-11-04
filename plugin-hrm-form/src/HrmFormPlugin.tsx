@@ -13,14 +13,13 @@ import setUpMonitoring from './utils/setUpMonitoring';
 import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
+import { getPermissionsForMasking, PermissionActions } from './permissions';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
 export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 let sharedStateClient: SyncClient;
-
-const maskIdentifiers = false;
 
 const readConfig = () => {
   const manager = Flex.Manager.getInstance();
@@ -156,6 +155,9 @@ const setUpLocalization = (config: ReturnType<typeof getConfig>) => {
 const setUpComponents = (setupObject: SetupObject) => {
   const { helpline, featureFlags } = setupObject;
 
+  const {mask} = getPermissionsForMasking()
+  const maskIdentifiers = mask(PermissionActions.MASK_IDENTIFIERS);
+
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus(setupObject);
@@ -189,6 +191,10 @@ const setUpComponents = (setupObject: SetupObject) => {
   if (maskIdentifiers) {
     const { strings } = getConfig();
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+
+    Components.maskIdentifiersForDefaultChannels();
+    Components.maskIdentifiersByChannel(Components.setupLineChatChannel)
+    
     Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
       theirDefaultName: 'XXXXX',
       theirFriendlyNameOverride: true,

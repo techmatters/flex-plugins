@@ -8,8 +8,15 @@ import '../mockStyled';
 import { UnconnectedPreviousContactsBanner } from '../../components/PreviousContactsBanner';
 import { channelTypes } from '../../states/DomainConstants';
 import { SearchPages } from '../../states/search/types';
+import {mockPartialConfiguration } from '../mockGetConfig';
 
 jest.mock('../../components/CSAMReport/CSAMReportFormDefinition');
+jest.mock('../../permissions', () => ({
+  getPermissionsForMasking: jest.fn(() => ({
+    mask: () => true,
+  })),
+  PermissionActions: {},
+}));
 
 expect.extend(toHaveNoViolations);
 

@@ -29,6 +29,7 @@ import InstagramIcon from '../components/common/icons/InstagramIcon';
 import LineIcon from '../components/common/icons/LineIcon';
 // eslint-disable-next-line
 import { isInMyBehalfITask } from '../types/types';
+// import { getPermissionsForMasking } from './../permissions';
 
 const voiceColor = Flex.DefaultTaskChannels.Call.colors.main();
 const webColor = Flex.DefaultTaskChannels.Chat.colors.main.Accepted;
@@ -524,7 +525,11 @@ export const setupLineChatChannel = () => {
 };
 
 const maskIdentifiers = false;
-const maskIdentifiersByChannel = channelType => {
+/*
+ * const {mask} = getPermissionsForMasking()
+ * const maskIdentifiers = mask(PermissionActions.MASK_IDENTIFIERS);;
+ */
+export const maskIdentifiersByChannel = channelType => {
   // Task list and panel when a call comes in
   channelType.templates.TaskListItem.firstLine = 'MaskIdentifiers';
   channelType.templates.IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
@@ -539,7 +544,7 @@ const maskIdentifiersByChannel = channelType => {
   channelType.templates.Supervisor.TaskOverviewCanvas.title = 'MaskIdentifiers';
 };
 
-const maskIdentifiersForDefaultChannels = () => {
+export const maskIdentifiersForDefaultChannels = () => {
   // Mask Identifiers for Default Channels
   maskIdentifiersByChannel(Flex.DefaultTaskChannels.Call);
   maskIdentifiersByChannel(Flex.DefaultTaskChannels.Chat);
@@ -548,5 +553,3 @@ const maskIdentifiersForDefaultChannels = () => {
   maskIdentifiersByChannel(Flex.DefaultTaskChannels.ChatMessenger);
   maskIdentifiersByChannel(Flex.DefaultTaskChannels.ChatWhatsApp);
 };
-
-if (maskIdentifiers) maskIdentifiersForDefaultChannels();
