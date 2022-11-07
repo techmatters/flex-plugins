@@ -34,7 +34,6 @@ jobs:
 
       - name: Create secret.js
         run: |
-          mkdir ./src/private
           touch ./src/private/secret.js
         working-directory: ./plugin-hrm-form
         shell: bash

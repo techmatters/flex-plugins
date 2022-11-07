@@ -10,15 +10,11 @@
     "households": {
       "previewFields": [
         "firstName",
-        "relationshipToChild",
         "age",
         "perpetratorType"
       ],
       "layout": {
         "firstName": {
-          "includeLabel": false
-        },
-        "relationshipToChild": {
           "includeLabel": false
         },
         "age": {

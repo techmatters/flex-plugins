@@ -1,7 +1,7 @@
 {
   "closeCase": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "reopenCase": [["isSupervisor"]],
-  "caseStatusTransition": [["isSupervisor"], ["isCreator"]],
+  "caseStatusTransition": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "addNote": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "editNote": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "addReferral": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
@@ -17,5 +17,6 @@
   "editCaseSummary": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "editChildIsAtRisk": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "editFollowUpDate": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "editContact": [["isSupervisor"]]
+  "editContact": [["isSupervisor"]],
+  "viewExternalTranscript": [["isSupervisor"]]
 }

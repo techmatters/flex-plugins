@@ -2,7 +2,7 @@ import { getConfig } from '../HrmFormPlugin';
 import type * as t from '../types/types';
 import { fetchRules } from './fetchRules';
 
-export const PermissionActions = {
+export const CaseActions = {
   CLOSE_CASE: 'closeCase',
   REOPEN_CASE: 'reopenCase',
   CASE_STATUS_TRANSITION: 'caseStatusTransition',
@@ -21,8 +21,16 @@ export const PermissionActions = {
   EDIT_PERPETRATOR: 'editPerpetrator',
   EDIT_INCIDENT: 'editIncident',
   EDIT_DOCUMENT: 'editDocument',
+} as const;
+export const ContactActions = {
   EDIT_CONTACT: 'editContact',
-};
+  VIEW_EXTERNAL_TRANSCRIPT: 'viewExternalTranscript',
+} as const;
+
+export const PermissionActions = {
+  ...CaseActions,
+  ...ContactActions,
+} as const;
 
 type PermissionActionsKeys = keyof typeof PermissionActions;
 export type PermissionActionType = typeof PermissionActions[PermissionActionsKeys];

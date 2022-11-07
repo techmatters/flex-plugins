@@ -226,14 +226,11 @@ export const customTransferTask = (setupObject: SetupObject) => async (
     return safeTransfer(() => original(payload), payload.task);
   }
 
-  const memberToKick = mode === transferModes.cold ? TransferHelpers.getMemberToKick(payload.task, identity) : '';
-
   const body = {
     mode,
     taskSid: payload.task.taskSid,
     targetSid: payload.targetSid,
     ignoreAgent: workerSid,
-    memberToKick,
   };
 
   return safeTransfer(() => transferChatStart(body), payload.task);

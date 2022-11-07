@@ -46,7 +46,7 @@ runs:
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
           ssm_parameter: "ROLLBAR_ACCESS_TOKEN"
-          env_variable_name: "ROLLBAR_ACCESS_TOKEN" 
+          env_variable_name: "ROLLBAR_ACCESS_TOKEN"
       - name: Set Fullstory org id
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
@@ -75,7 +75,6 @@ runs:
           filename: ./plugin-hrm-form/public/appConfig.js
       - name: Create secret.js
         run: |
-          mkdir ./src/private
           touch ./src/private/secret.js
         working-directory: ./plugin-hrm-form
         shell: bash
@@ -89,7 +88,7 @@ runs:
           EOT
         working-directory: ./plugin-hrm-form
         shell: bash
-      # Runs a single command using the runners shell  
+      # Runs a single command using the runners shell
       - name: Install dependencies for the flex-plugins
         run: UNBUNDLED_REACT=true npm install
         working-directory: ./plugin-hrm-form
@@ -129,4 +128,3 @@ runs:
           slack-message: "`[FLEX]` Action ${{ github.workflow }} completed with SHA ${{ github.sha }}. Changelog is: ${{ github.event.inputs.changelog }} :rocket:."
         env:
           SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
-      

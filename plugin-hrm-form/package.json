@@ -8,6 +8,10 @@
     "postinstall": "flex-plugin pre-script-check",
     "prestart": "flex-plugin pre-start-check",
     "dev": "cross-env UNBUNDLED_REACT=true NO_MONITORING=true npm start",
+    "dev:local": "REACT_HRM_BASE_URL=http://localhost:8080 npm run dev",
+    "dev:local:docker": "REACT_HRM_BASE_URL=http://localhost:8081 npm run dev",
+    "dev:local:e2e": "npm run ssm:local:appConfig:e2e && REACT_HRM_BASE_URL=http://localhost:8080 npm run dev",
+    "dev:local:e2e:docker": "npm run ssm:local:appConfig:e2e && REACT_HRM_BASE_URL=http://localhost:8081 npm run dev",
     "start": "twilio flex:plugins:start",
     "build": "twilio flex:plugins:build",
     "predeploy": "npm run build",
@@ -17,7 +21,11 @@
     "list": "twilio flex:plugins:list:plugins",
     "lint": "eslint --ext js --ext jsx --ext ts --ext tsx src/",
     "lint:fix": "npm run lint -- --fix",
-    "update-flex-ui-version": "npx ts-node --esm src/scripts/updateFlexUiVersion.ts"
+    "update-flex-ui-version": "npx ts-node --esm src/scripts/updateFlexUiVersion.ts",
+    "ssm:local": "npm run ssm:local:appConfig && npm run ssm:local:secret",
+    "ssm:local:appConfig": "docker run --rm -v ~/.aws:/home/aws/.aws -e AWS_DEFAULT_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY interrobangc/awscli2 ssm get-parameter --name \"/local/flex-plugins/plugin-hrm-form/appConfig.js\" --with-decryption --query \"Parameter.Value\" --output text > ./public/appConfig.js",
+    "ssm:local:appConfig:e2e": "docker run --rm -v ~/.aws:/home/aws/.aws -e AWS_DEFAULT_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY interrobangc/awscli2 ssm get-parameter --name \"/local/flex-plugins/plugin-hrm-form/e2e-test/appConfig.js\" --with-decryption --query \"Parameter.Value\" --output text > ./public/appConfig.js",
+    "ssm:local:secret": "docker run --rm -v ~/.aws:/home/aws/.aws -e AWS_DEFAULT_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY interrobangc/awscli2 ssm get-parameter --name \"/local/flex-plugins/plugin-hrm-form/secret.js\" --with-decryption --query \"Parameter.Value\" --output text > ./src/private/secret.js"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",

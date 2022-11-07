@@ -24,7 +24,9 @@ let sharedStateClient: SyncClient;
 const readConfig = () => {
   const manager = Flex.Manager.getInstance();
 
-  const hrmBaseUrl = `${manager.serviceConfiguration.attributes.hrm_base_url}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`;
+  const hrmBaseUrl = `${process.env.REACT_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}/${
+    manager.serviceConfiguration.attributes.hrm_api_version
+  }/accounts/${manager.workerClient.accountSid}`;
   const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
@@ -130,28 +132,8 @@ const setUpSharedStateClient = () => {
   initSharedStateClient();
 };
 
-const setUpTransferredTaskJanitor = async (setupObject: SetupObject) => {
-  const { workerSid } = setupObject;
-  const query = 'data.attributes.transferStarted == "true"';
-  const reservationQuery = await Flex.Manager.getInstance().insightsClient.liveQuery('tr-reservation', query);
-  reservationQuery.on('itemUpdated', args => {
-    if (TransferHelpers.shouldInvokeCompleteTask(args.value, workerSid)) {
-      Flex.Actions.invokeAction('CompleteTask', { sid: args.value.reservation_sid });
-      return;
-    }
-
-    if (TransferHelpers.shouldTakeControlBack(args.value, workerSid)) {
-      const task = Flex.TaskHelper.getTaskByTaskSid(args.value.attributes.transferMeta.originalReservation);
-      TransferHelpers.takeTaskControl(task).then(async () => {
-        await TransferHelpers.clearTransferMeta(task);
-      });
-    }
-  });
-};
-
 const setUpTransfers = (setupObject: SetupObject) => {
   setUpSharedStateClient();
-  setUpTransferredTaskJanitor(setupObject);
 };
 
 const setUpLocalization = (config: ReturnType<typeof getConfig>) => {
