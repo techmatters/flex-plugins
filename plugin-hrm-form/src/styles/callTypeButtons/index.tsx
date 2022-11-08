@@ -1,5 +1,5 @@
 import React from 'react';
-import '@emotion/core';
+import '@emotion/react';
 import Dialog from '@material-ui/core/Dialog';
 import ClearIcon from '@material-ui/icons/Clear';
 import { IconButton } from '@material-ui/core';
