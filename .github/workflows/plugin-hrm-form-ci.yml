@@ -19,7 +19,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Install the Twilio CLI and plugins
-      run: npm install twilio-cli@3.6.0 -g && twilio plugins:install @twilio-labs/plugin-flex@5.1.2
+      run: npm install twilio-cli@5.2.0 -g && twilio plugins:install @twilio-labs/plugin-flex@6.0.2
     - name: Create Temp Files
       run: |
         touch ./public/appConfig.js
