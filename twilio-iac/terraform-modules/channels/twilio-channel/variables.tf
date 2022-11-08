@@ -50,3 +50,8 @@ variable "channel_name" {
   description = "Channel Name"
   type        = string
 }
+
+variable "janitor_enabled" {
+  description = "Enable or disable Janitor"
+  type        = bool
+}

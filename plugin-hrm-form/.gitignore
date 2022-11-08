@@ -64,9 +64,6 @@ pluginsService.js
 appConfig.js
 build/
 
-# Auth
-private/
-
 .vscode
 
 #test file

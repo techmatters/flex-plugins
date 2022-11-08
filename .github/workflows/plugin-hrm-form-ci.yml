@@ -23,7 +23,6 @@ jobs:
     - name: Create Temp Files
       run: |
         touch ./public/appConfig.js
-        mkdir ./src/private
         touch ./src/private/secret.js
       working-directory: ./plugin-hrm-form
     - name: Install hrm-form-definitions Packages
