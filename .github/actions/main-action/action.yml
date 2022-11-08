@@ -96,12 +96,17 @@ runs:
         working-directory: ./plugin-hrm-form
         shell: bash
       # Install the Twilio CLI and the flex plugin, then deploy the plugin
-      - name: Install twilio cli and run deploy command
+      - name: Install Twilio CLI and run deploy command
+        run: npm install twilio-cli@5.2.0 -g && twilio plugins:install @twilio-labs/plugin-flex@6.0.2"
+        working-directory: ./plugin-hrm-form
+        shell: bash
+      # Release flex plugin
+      - name: Run deploy command
         env:
-         TWILIO_ACCOUNT_SID: ${{ inputs.account-sid }}
-         TWILIO_AUTH_TOKEN: ${{ inputs.auth-token }}
-         UNBUNDLED_REACT: true
-        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex@4.3.4 && twilio flex:plugins:deploy --changelog "${{ github.event.inputs.changelog }} (commit ${{ github.sha }})"
+          TWILIO_ACCOUNT_SID: ${{ inputs.account-sid }}
+          TWILIO_AUTH_TOKEN: ${{ inputs.auth-token }}
+          UNBUNDLED_REACT: 'true'
+        run: twilio flex:plugins:deploy --changelog "${{ github.event.inputs.changelog }} (commit ${{ github.sha }})
         working-directory: ./plugin-hrm-form
         shell: bash
       # Release flex plugin
