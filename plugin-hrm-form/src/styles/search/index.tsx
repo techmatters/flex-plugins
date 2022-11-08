@@ -391,10 +391,13 @@ export const ContactAddedFont = styled(FontOpenSans)`
 `;
 ContactAddedFont.displayName = 'ContactAddedFont';
 
-export const SectionTitleText = styled(FontOpenSans)`
+export const sectionTitleFontStyle = `
   font-size: 12px;
   font-weight: 600;
   line-height: 13px;
+`;
+export const SectionTitleText = styled(FontOpenSans)`
+  ${sectionTitleFontStyle}
   margin-right: auto;
 `;
 SectionTitleText.displayName = 'SectionTitleText';

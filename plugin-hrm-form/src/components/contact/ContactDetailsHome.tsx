@@ -5,6 +5,7 @@ import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
+import { Flex } from '../../styles/HrmStyles';
 import { isS3StoredTranscript, isTwilioStoredMedia } from '../../types/types';
 import {
   DetailsContainer,
@@ -141,13 +142,17 @@ const ContactDetailsHome: React.FC<Props> = function ({
   );
 
   const twilioStoredTranscript =
-    featureFlags.enable_twilio_transcripts && savedContact.details.conversationMedia?.find(isTwilioStoredMedia);
+    featureFlags.enable_twilio_transcripts &&
+    canViewTwilioTranscript &&
+    savedContact.details.conversationMedia?.find(isTwilioStoredMedia);
   const externalStoredTranscript =
-    featureFlags.enable_external_transcripts && savedContact.details.conversationMedia?.find(isS3StoredTranscript);
+    featureFlags.enable_external_transcripts &&
+    can(PermissionActions.VIEW_EXTERNAL_TRANSCRIPT) &&
+    savedContact.details.conversationMedia?.find(isS3StoredTranscript);
   const showTranscriptSection = Boolean(
     isChatChannel(channel) &&
       savedContact.details.conversationMedia?.length &&
-      ((canViewTwilioTranscript && twilioStoredTranscript) || externalStoredTranscript),
+      (twilioStoredTranscript || externalStoredTranscript),
   );
 
   return (
@@ -299,12 +304,14 @@ const ContactDetailsHome: React.FC<Props> = function ({
           buttonDataTestid="ContactDetails-Section-Transcript"
           showEditButton={false}
         >
-          <TranscriptSection
-            contactId={contactId}
-            twilioStoredTranscript={twilioStoredTranscript}
-            externalStoredTranscript={externalStoredTranscript}
-            loadConversationIntoOverlay={loadConversationIntoOverlay}
-          />
+          <Flex justifyContent="center" flexDirection="row" paddingTop="20px">
+            <TranscriptSection
+              contactId={contactId}
+              twilioStoredTranscript={twilioStoredTranscript}
+              externalStoredTranscript={externalStoredTranscript}
+              loadConversationIntoOverlay={loadConversationIntoOverlay}
+            />
+          </Flex>
         </ContactDetailsSection>
       )}
     </DetailsContainer>
