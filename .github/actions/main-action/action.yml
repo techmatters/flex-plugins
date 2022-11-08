@@ -92,7 +92,7 @@ runs:
         shell: bash
       # Install the Twilio CLI and the flex plugin, then deploy the plugin
       - name: Install Twilio CLI
-        run: npm install twilio-cli@5.2.0 -g && twilio plugins:install @twilio-labs/plugin-flex@6.0.2"
+        run: npm install twilio-cli@5.2.0 -g && twilio plugins:install @twilio-labs/plugin-flex@6.0.2
         working-directory: ./plugin-hrm-form
         shell: bash
       # Runs a single command using the runners shell
