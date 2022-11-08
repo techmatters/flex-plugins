@@ -75,6 +75,7 @@ const mapTabsToIndex = (task: CustomITask, contactForm: TaskEntry): TabbedFormSu
 type OwnProps = {
   task: CustomITask;
   csamReportEnabled: boolean;
+  csamClcReportEnabled: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -87,6 +88,7 @@ const TabbedForms: React.FC<Props> = ({
   contactForm,
   currentDefinitionVersion,
   csamReportEnabled,
+  csamClcReportEnabled,
   editContactFormOpen,
   isCallTypeCaller,
 }) => {
@@ -188,7 +190,7 @@ const TabbedForms: React.FC<Props> = ({
     <Box className="hiddenWhenEditingContact" marginTop="10px" marginBottom="10px" paddingLeft="20px">
       <Row>
         <SearchResultsBackButton handleBack={handleBackButton} text={<Template code="TabbedForms-BackButton" />} />
-        {csamReportEnabled && (
+        {csamReportEnabled && csamClcReportEnabled && (
           <Box marginLeft="auto" marginRight="15px">
             <CSAMReportButton
               handleCounselorReport={() =>
