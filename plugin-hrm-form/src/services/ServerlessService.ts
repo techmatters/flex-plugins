@@ -169,7 +169,16 @@ export const getFileDownloadUrl = async (fileNameAtAws: string, fileName: string
  * Gets a file download url from S3, using the object url as constructed by AWS
  */
 export const getFileDownloadUrlFromUrl = async (objectUrl: string, fileName: string = undefined) => {
-  const [bucketName, fileNameAtAws] = objectUrl.replace('https://', '').split('.s3.amazonaws.com/');
+  let bucketName, fileNameAtAws;
+  [bucketName, fileNameAtAws] = objectUrl.replace('https://', '').split('.s3.amazonaws.com/');
+
+  // TODO: this allows localstack which uses path style s3 urls, I don't like it being quite so specific, but it works for now.
+  if (!bucketName || !fileNameAtAws) {
+    let pathArray;
+    [bucketName, ...pathArray] = objectUrl.replace('http://localstack:4566/', '').split('/');
+    fileNameAtAws = pathArray.join('/');
+  }
+
   const body = { bucketName, fileNameAtAws, fileName };
   const response = await fetchProtectedApi('/getFileDownloadUrl', body);
   return response;
