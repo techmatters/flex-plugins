@@ -1,11 +1,11 @@
 import { DefinitionVersionId, loadDefinition } from '../../formDefinition';
 
-describe('loadDefiniton', () => {
+describe('loadDefinition', () => {
   test.each(Object.values(DefinitionVersionId))(
     '%p - successfully loads basic structure',
-    async () => {
-      const definitions = await loadDefinition(DefinitionVersionId.v1);
-      expect(definitions.cannedResponses).toContainEqual(expect.anything());
+    async (definitionVersionId: DefinitionVersionId) => {
+      const definitions = await loadDefinition(definitionVersionId);
+      expect(definitions.cannedResponses).toBeInstanceOf(Array);
       expect(definitions.callTypeButtons).toContainEqual(expect.anything());
 
       expect(definitions.caseForms).toMatchObject({
