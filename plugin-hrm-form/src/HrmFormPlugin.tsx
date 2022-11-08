@@ -190,8 +190,9 @@ const setUpComponents = (setupObject: SetupObject) => {
     const { strings } = getConfig();
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
     Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
-      theirDefaultName: 'XXXXX',
-      theirFriendlyNameOverride: true,
+      theirDefaultName: 'XXXXXX',
+      theirFriendlyNameOverride: false,
+      yourFriendlyNameOverride: true,
     };
   }
 };

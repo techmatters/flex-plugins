@@ -519,11 +519,15 @@ export const setupLineChatChannel = () => {
   Flex.TaskChannels.register(LineChatChannel);
 };
 
-const maskIdentifiers = true;
+const maskIdentifiers = false;
 const maskIdentifiersByChannel = channelType => {
   // Task list and panel when a call comes in
   channelType.templates.TaskListItem.firstLine = 'MaskIdentifiers';
-  channelType.templates.TaskListItem.secondLine = 'MaskIdentifiersS';
+  if (channelType === Flex.DefaultTaskChannels.Chat) {
+    channelType.templates.TaskListItem.secondLine = 'TaskLineWebChatAssignedMasked';
+  } else {
+    channelType.templates.TaskListItem.secondLine = 'TaskLineChatAssignedMasked';
+  }
   channelType.templates.IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
   // Task panel during an active call
   channelType.templates.TaskCanvasHeader.title = 'MaskIdentifiers';
