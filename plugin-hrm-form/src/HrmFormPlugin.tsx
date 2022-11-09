@@ -15,14 +15,11 @@ import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
 import { getPermissionsForMasking, PermissionActions } from './permissions';
 
-
 const PLUGIN_NAME = 'HrmFormPlugin';
 
 export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 let sharedStateClient: SyncClient;
-
-// const maskIdentifiers = false;
 
 const readConfig = () => {
   const manager = Flex.Manager.getInstance();
@@ -192,7 +189,7 @@ const setUpComponents = (setupObject: SetupObject) => {
 
   if (maskIdentifiers) {
     const { strings } = getConfig();
-    Components.maskIdentifiersForDefaultChannels()
+    Components.maskIdentifiersForDefaultChannels();
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
     Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
       theirDefaultName: 'XXXXXX',

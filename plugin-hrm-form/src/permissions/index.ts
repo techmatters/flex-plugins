@@ -33,7 +33,7 @@ const MaskIDActions = {
 export const PermissionActions = {
   ...CaseActions,
   ...ContactActions,
-  ...MaskIDActions
+  ...MaskIDActions,
 } as const;
 
 type PermissionActionsKeys = keyof typeof PermissionActions;

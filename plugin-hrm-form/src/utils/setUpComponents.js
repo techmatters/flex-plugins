@@ -429,7 +429,7 @@ export const setupCannedResponses = () => {
   Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" />);
 };
 
-export const setupTwitterChatChannel = (maskIdentifiers) => {
+export const setupTwitterChatChannel = maskIdentifiers => {
   const icon = <TwitterIcon width="24px" height="24px" color="white" />;
 
   const TwitterChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
@@ -464,7 +464,7 @@ export const setupTwitterChatChannel = (maskIdentifiers) => {
   Flex.TaskChannels.register(TwitterChatChannel);
 };
 
-export const setupInstagramChatChannel = (maskIdentifiers) => {
+export const setupInstagramChatChannel = maskIdentifiers => {
   const icon = <InstagramIcon width="24px" height="24px" color="white" />;
 
   const InstagramChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
@@ -493,7 +493,7 @@ export const setupInstagramChatChannel = (maskIdentifiers) => {
   Flex.TaskChannels.register(InstagramChatChannel);
 };
 
-export const setupLineChatChannel = (maskIdentifiers) => {
+export const setupLineChatChannel = maskIdentifiers => {
   const icon = <LineIcon width="24px" height="24px" color="white" />;
 
   const LineChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel('line', task => task.channelType === 'line');
@@ -519,10 +519,9 @@ export const setupLineChatChannel = (maskIdentifiers) => {
   Flex.TaskChannels.register(LineChatChannel);
 };
 
-// const maskIdentifiers = false;
 const maskIdentifiersByChannel = channelType => {
   // Task list and panel when a call comes in
-  channelType.templates.TaskListItem.firstLine = 'MaskIdentifiers';
+  channelType.templates.TaskListItem.firstLine = 'maskIdentifiers';
   /*
    * if (channelType === Flex.DefaultTaskChannels.Chat) {
    *   channelType.templates.TaskListItem.secondLine = 'TaskLineWebChatAssignedMasked';
@@ -530,15 +529,15 @@ const maskIdentifiersByChannel = channelType => {
    *   channelType.templates.TaskListItem.secondLine = 'TaskLineChatAssignedMasked';
    * }
    */
-  channelType.templates.IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
+  channelType.templates.IncomingTaskCanvas.firstLine = 'maskIdentifiers';
   // Task panel during an active call
-  channelType.templates.TaskCanvasHeader.title = 'MaskIdentifiers';
-  channelType.templates.MessageListItem = 'MaskIdentifiers';
+  channelType.templates.TaskCanvasHeader.title = 'maskIdentifiers';
+  channelType.templates.MessageListItem = 'maskIdentifiers';
   // Task Status in Agents page
-  channelType.templates.TaskCard.firstLine = 'MaskIdentifiers';
+  channelType.templates.TaskCard.firstLine = 'maskIdentifiers';
   // Supervisor
-  channelType.templates.Supervisor.TaskCanvasHeader.title = 'MaskIdentifiers';
-  channelType.templates.Supervisor.TaskOverviewCanvas.title = 'MaskIdentifiers';
+  channelType.templates.Supervisor.TaskCanvasHeader.title = 'maskIdentifiers';
+  channelType.templates.Supervisor.TaskOverviewCanvas.title = 'maskIdentifiers';
 };
 
 export const maskIdentifiersForDefaultChannels = () => {
@@ -549,5 +548,3 @@ export const maskIdentifiersForDefaultChannels = () => {
   maskIdentifiersByChannel(Flex.DefaultTaskChannels.ChatMessenger);
   maskIdentifiersByChannel(Flex.DefaultTaskChannels.ChatWhatsApp);
 };
-
-// if (maskIdentifiers) maskIdentifiersForDefaultChannels();

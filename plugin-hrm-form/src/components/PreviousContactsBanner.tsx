@@ -110,7 +110,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
           &nbsp;
           {maskIdentifiers ? (
             <Bold>
-              <Template code="MaskIdentifiers" />
+              <Template code="maskIdentifiers" />
             </Bold>
           ) : (
             <Bold>{contactIdentifier}</Bold>

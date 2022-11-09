@@ -23,7 +23,7 @@ import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/Co
 import { unNestInformation } from '../../services/ContactService';
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
-import { getPermissionsForContact, PermissionActions } from '../../permissions';
+import { getPermissionsForContact, getPermissionsForMasking, PermissionActions } from '../../permissions';
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
 import { getConfig } from '../../HrmFormPlugin';
 import TranscriptSection from './TranscriptSection';
@@ -155,7 +155,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
       (twilioStoredTranscript || externalStoredTranscript),
   );
 
-  const maskIdentifiers = false;
+  const mask = getPermissionsForMasking();
+  const maskIdentifiers = mask.mask(PermissionActions.MASK_IDENTIFIERS);
 
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
@@ -181,7 +182,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
         {maskIdentifiers ? (
           <SectionEntry
             description={<Template code="ContactDetails-GeneralDetails-PhoneNumber" />}
-            value={strings.MaskIdentifiers}
+            value={strings.maskIdentifiers}
           />
         ) : (
           <SectionEntry

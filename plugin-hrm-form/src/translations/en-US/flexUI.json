@@ -371,7 +371,7 @@
   "BottomBar-Save": "Yes, Save",
 
   "CaseSummary-None": "- No case summary -",
-  "MaskIdentifiers": "XXXXXX",
+  "maskIdentifiers": "XXXXXX",
   "TaskLineWebChatAssignedMasked":  "{{#if helper.chat.isCustomerOnline}} {{{icon name='GreenIndicator'}}} {{else}} {{{icon name='GreyIndicator'}}} {{/if}}  {{helper.durationSinceUpdate}} | {{#if helper.chat.typers.length}} typing ... {{else}} {{#if helper.chat.lastMessage}} {{worker.fullName}}: {{helper.chat.lastMessage.body}} {{else}}No messages{{/if}}{{/if}}"
   ,
   "TaskLineChatAssignedMasked":

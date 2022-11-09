@@ -8,6 +8,7 @@ import { Text, View } from '@react-pdf/renderer';
 import styles from './styles';
 import { getConfig } from '../../../HrmFormPlugin';
 import { mapChannel, mapChannelForInsights, presentValue, formatStringToDateAndTime } from '../../../utils';
+import { getPermissionsForMasking, PermissionActions } from '../../../permissions';
 
 type OwnProps = {
   sectionName: string;
@@ -25,7 +26,8 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
   const formattedChannel =
     channel === 'default' ? mapChannelForInsights(rawJson.contactlessTask?.channel) : mapChannel(channel);
 
-  const maskIdentifiers = false;
+  const { mask } = getPermissionsForMasking();
+  const maskIdentifiers = mask(PermissionActions.MASK_IDENTIFIERS);
   return (
     <View>
       <View style={styles.sectionHeader}>
