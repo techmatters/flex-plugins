@@ -55,7 +55,6 @@ export const caseList = (page: Page) => {
   async function filterCases(filter: Filter, option: string, option2?: string): Promise<void> {
     const openFilterButton = selectors.filterButton(filter);
     await openFilterButton.waitFor({ state: 'visible' });
-    await expect(openFilterButton).toContainText(filter);
     await openFilterButton.click();
 
     if (filter === 'Categories' && option2) {
