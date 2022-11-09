@@ -29,7 +29,7 @@ on:
         type: string
       send-slack-message:
         description: If set to false a slack message will not be sent - useful for E2E test deploys.
-        default: true
+        default: 'true'
         type: string
 
 
