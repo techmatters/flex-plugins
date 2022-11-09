@@ -97,7 +97,7 @@ runs:
         shell: bash
       # Runs a single command using the runners shell
       - name: Install dependencies for the flex-plugins
-        run: UNBUNDLED_REACT=true npm ci
+        run: npm ci
         working-directory: ./plugin-hrm-form
         shell: bash
       # Release flex plugin
@@ -105,7 +105,6 @@ runs:
         env:
           TWILIO_ACCOUNT_SID: ${{ inputs.account-sid }}
           TWILIO_AUTH_TOKEN: ${{ inputs.auth-token }}
-          UNBUNDLED_REACT: 'true'
         run: twilio flex:plugins:deploy --changelog "${{ github.event.inputs.changelog }} (commit ${{ github.sha }})"
         working-directory: ./plugin-hrm-form
         shell: bash

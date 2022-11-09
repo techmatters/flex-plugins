@@ -35,7 +35,7 @@ jobs:
       run: npm run test
       working-directory: ./hrm-form-definitions
     - name: Install Packages
-      run: UNBUNDLED_REACT=true npm ci
+      run: npm ci
       working-directory: ./plugin-hrm-form
     - name: Run Lint
       run: npm run lint --if-present
