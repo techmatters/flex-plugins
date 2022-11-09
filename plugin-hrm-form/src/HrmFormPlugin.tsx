@@ -20,6 +20,8 @@ export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 let sharedStateClient: SyncClient;
 
+const maskIdentifiers = false;
+
 const readConfig = () => {
   const manager = Flex.Manager.getInstance();
 
@@ -183,6 +185,16 @@ const setUpComponents = (setupObject: SetupObject) => {
   Components.setUpStandaloneSearch();
 
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
+
+  if (maskIdentifiers) {
+    const { strings } = getConfig();
+    strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+    Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
+      theirDefaultName: 'XXXXXX',
+      theirFriendlyNameOverride: false,
+      yourFriendlyNameOverride: true,
+    };
+  }
 };
 
 const setUpActions = (setupObject: SetupObject) => {
