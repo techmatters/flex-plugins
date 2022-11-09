@@ -523,11 +523,13 @@ const maskIdentifiers = false;
 const maskIdentifiersByChannel = channelType => {
   // Task list and panel when a call comes in
   channelType.templates.TaskListItem.firstLine = 'MaskIdentifiers';
-  // if (channelType === Flex.DefaultTaskChannels.Chat) {
-  //   channelType.templates.TaskListItem.secondLine = 'TaskLineWebChatAssignedMasked';
-  // } else {
-  //   channelType.templates.TaskListItem.secondLine = 'TaskLineChatAssignedMasked';
-  // }
+  /*
+   * if (channelType === Flex.DefaultTaskChannels.Chat) {
+   *   channelType.templates.TaskListItem.secondLine = 'TaskLineWebChatAssignedMasked';
+   * } else {
+   *   channelType.templates.TaskListItem.secondLine = 'TaskLineChatAssignedMasked';
+   * }
+   */
   channelType.templates.IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
   // Task panel during an active call
   channelType.templates.TaskCanvasHeader.title = 'MaskIdentifiers';
