@@ -8,5 +8,5 @@ test('Plugin loads', async ({ page }) => {
     "div.Twilio-AgentDesktopView-default div[data-testid='Childline-voice']",
   );
   await callsWaitingLabel.waitFor({ state: 'visible' });
-  await expect(callsWaitingLabel).toContainText('Calls');
+  await expect(callsWaitingLabel).toContainText('Calls', { timeout: 2000 });
 });
