@@ -27,6 +27,7 @@ on:
         description: Release Changelog - Add a comment about the changes to be included in this release.
         required: true
         type: string
+        send-slack-message: ${{ inputs.send-slack-message }}
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -57,3 +58,4 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           helpline-id: ${{inputs.helpline_code}}_${{inputs.environment_code}}
+          send-slack-message: ${{ inputs.send-slack-message }}
