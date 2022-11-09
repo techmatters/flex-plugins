@@ -94,7 +94,7 @@ module twilioChannel {
   for_each = local.twilio_channels
   source = "../terraform-modules/channels/twilio-channel"
   custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/opening-hours/with-chatbot.tftpl",
+    "../terraform-modules/channels/flow-templates/operating-hours/with-chatbot.tftpl",
     {
       channel_name = "${each.key}"
       serverless_url=var.serverless_url
@@ -125,7 +125,7 @@ module customChannel {
   for_each = toset(local.custom_channels)
   source = "../terraform-modules/channels/custom-channel"
   custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/opening-hours/no-chatbot.tftpl",
+    "../terraform-modules/channels/flow-templates/operating-hours/no-chatbot.tftpl",
     {
       channel_name = "${each.key}"
       serverless_url=var.serverless_url
