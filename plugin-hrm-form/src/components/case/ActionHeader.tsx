@@ -27,6 +27,8 @@ const ActionHeader: React.FC<Props> = ({
   updatingCounsellor,
 }) => {
   // @ts-ignore
+
+
   return (
     <>
       <Row style={{ width: '100%' }}>
@@ -58,7 +60,7 @@ const ActionHeader: React.FC<Props> = ({
           </CaseActionDetailFont>
         )}
       </Row>
-      {updated && (
+      {updated && updated !== added && (
         <Row style={{ width: '100%' }}>
           <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderUpdated">
             <Template
