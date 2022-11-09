@@ -27,7 +27,10 @@ on:
         description: Release Changelog - Add a comment about the changes to be included in this release.
         required: true
         type: string
-        send-slack-message: ${{ inputs.send-slack-message }}
+      send-slack-message:
+        description: If set to false a slack message will not be sent - useful for E2E test deploys.
+        default: true
+        type: string
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
