@@ -28,7 +28,7 @@ locals {
   multi_office = false
   enable_post_survey = false
   target_task_name = "execute_initial_flow"
-  twilio_numbers = ["messenger:103574689075106","twitter:1540032139563073538","instagram:17841454586132629"]
+  twilio_numbers = ["messenger:103574689075106","twitter:1540032139563073538","instagram:17841454586132629","whatsapp:+12135834846"]
   channel = ""
   custom_channel_attributes = ""
   feature_flags = {
@@ -50,7 +50,8 @@ locals {
   }
   twilio_channels = {
     "facebook" = {"contact_identity" = "messenger:103574689075106" },
-    "web" = {"contact_identity" = "" }
+    "web" = {"contact_identity" = "" },
+    "whatsapp" = {"contact_identity" = "whatsapp:+12135834846" }
   }
   custom_channels=["twitter","instagram"]
   strings= jsondecode(file("${path.module}/../translations/${local.helpline_language}/strings.json"))
@@ -87,7 +88,7 @@ module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
   helpline = local.helpline
-  custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
+  custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}] OR to IN [\"+17752526377\",\"+578005190671\"]"
 }
 
 module twilioChannel {
