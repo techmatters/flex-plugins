@@ -304,6 +304,11 @@ export const StyledPrintButton = styled(IconButton)`
   :focus {
     outline: auto;
   }
+
+  :hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    background-blend-mode: color;
+  }
 `;
 
 StyledPrintButton.displayName = 'StyledPrintButton';
