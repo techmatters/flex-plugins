@@ -9,7 +9,7 @@ import {
   PermissionActions,
   CaseActions,
   ContactActions,
-  ViewIdentifiersAction
+  ViewIdentifiersAction,
 } from '../../permissions';
 
 jest.mock('../../HrmFormPlugin');
@@ -233,8 +233,7 @@ describe('Test different scenarios (all ContactActions)', () => {
 describe('Test different scenarios for ViewIdentifiersAction', () => {
   each(
     Object.values(ViewIdentifiersAction)
-      .flatMap(
-        action => [
+      .flatMap(action => [
         {
           action,
           conditionsSets: [['everyone']],
