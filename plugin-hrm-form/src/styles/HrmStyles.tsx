@@ -373,6 +373,7 @@ export const StyledTabs = withStyles({
     minHeight: 35,
     height: 35,
     flexShrink: 0,
+    padding: '0 7%',
   },
   indicator: {
     backgroundColor: 'transparent',
