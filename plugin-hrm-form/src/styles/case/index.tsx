@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, IconButton, styled } from '@twilio/flex-ui';
-import { Typography, ButtonBase } from '@material-ui/core';
+import { ButtonBase } from '@material-ui/core';
 
 import { FontOpenSans, FormInput, FormSelect, FormSelectWrapper, Row, Column } from '../HrmStyles';
 import HrmTheme from '../HrmTheme';
@@ -260,8 +260,9 @@ export const DetailsHeaderTextContainer = styled('div')`
 
 DetailsHeaderTextContainer.displayName = 'DetailsHeaderTextContainer';
 
-export const DetailsHeaderChildName = styled(Typography)`
-  font-weight: 600 !important;
+export const DetailsHeaderChildName = styled(FontOpenSans)`
+  font-weight: 600;
+  font-size: 20px;
 `;
 
 DetailsHeaderChildName.displayName = 'DetailsHeaderChildName';
@@ -274,23 +275,25 @@ export const DetailsHeaderCaseContainer = styled('div')`
 
 DetailsHeaderCaseContainer.displayName = 'DetailsHeaderCaseContainer';
 
-export const DetailsHeaderCounselor = styled('div')`
+export const DetailsHeaderCounselor = styled(FontOpenSans)`
+  font-size: 12px;
   font-style: italic;
   margin-top: 5px;
 `;
 
 DetailsHeaderCounselor.displayName = 'DetailsHeaderCounselor';
 
-export const DetailsHeaderCaseId = styled(Typography)`
-  font-weight: 600 !important;
+export const DetailsHeaderCaseId = styled(FontOpenSans)`
+  font-weight: 600;
+  font-size: 14px;
 `;
 
 DetailsHeaderCaseId.displayName = 'DetailsHeaderCaseId';
 
-export const DetailsHeaderOfficeName = styled(Typography)`
+export const DetailsHeaderOfficeName = styled(FontOpenSans)`
   padding-left: 10px;
-  font-size: 0.7rem !important;
-  font-weight: 300 !important;
+  font-size: 0.7rem;
+  font-weight: 300;
 `;
 
 DetailsHeaderOfficeName.displayName = 'DetailsHeaderOfficeName';
