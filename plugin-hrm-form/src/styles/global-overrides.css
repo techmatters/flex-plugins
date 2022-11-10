@@ -44,6 +44,10 @@ button.Twilio-TaskCanvasHeader-EndButton {
 }
 button.Twilio-MessageInput-SendButton {
     background: rgba(216, 27, 96, 0.8);
+    color: #f6f6f6;
+}
+button.Twilio-MessageInput-SendButton:hover {
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 a.link-text-decoration-none { text-decoration: none; color: #1874e1; }
