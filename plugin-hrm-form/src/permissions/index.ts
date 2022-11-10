@@ -26,7 +26,7 @@ export const ContactActions = {
   EDIT_CONTACT: 'editContact',
   VIEW_EXTERNAL_TRANSCRIPT: 'viewExternalTranscript',
 } as const;
-const ViewIdentifiersAction = {
+export const ViewIdentifiersAction = {
   VIEW_IDENTIFIERS: 'viewIdentifiers',
 } as const;
 
