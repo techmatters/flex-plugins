@@ -172,11 +172,16 @@ export const INIT_CASE_SUMMARY_WORKING_COPY = 'INIT_CASE_SUMMARY_WORKING_COPY';
 type InitialiseCaseSummaryWorkingCopyAction = {
   type: typeof INIT_CASE_SUMMARY_WORKING_COPY;
   taskId: string;
+  defaults: CaseSummaryWorkingCopy;
 };
 
-export const initialiseCaseSummaryWorkingCopy = (taskId: string): InitialiseCaseSummaryWorkingCopyAction => ({
+export const initialiseCaseSummaryWorkingCopy = (
+  taskId: string,
+  defaults: CaseSummaryWorkingCopy,
+): InitialiseCaseSummaryWorkingCopyAction => ({
   type: INIT_CASE_SUMMARY_WORKING_COPY,
   taskId,
+  defaults,
 });
 
 export const initialiseCaseSummaryWorkingCopyReducer = (
@@ -194,10 +199,10 @@ export const initialiseCaseSummaryWorkingCopyReducer = (
         ...caseState,
         caseWorkingCopy: {
           caseSummary: {
-            status: caseState.connectedCase.status,
-            summary,
-            childIsAtRisk,
-            followUpDate,
+            status: caseState.connectedCase.status ?? action.defaults.status,
+            summary: summary ?? action.defaults.summary,
+            childIsAtRisk: childIsAtRisk ?? action.defaults.childIsAtRisk,
+            followUpDate: followUpDate ?? action.defaults.followUpDate,
           },
           ...caseState.caseWorkingCopy,
         },

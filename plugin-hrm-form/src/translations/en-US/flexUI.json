@@ -290,6 +290,7 @@
   "ContactDetails-LoadTranscript-Button": "Load Transcript",
   "ContactDetails-Transcript": "Transcript",
   "ContactDetails-ActionHeaderAdded": "Added on {{date}} at {{time}} by {{counsellor}}",
+  "ContactDetails-ActionHeaderUpdated": "Updated on {{date}} at {{time}} by {{counsellor}}",
   "SectionName-CallerInformation": "Caller Information",
   "SectionName-ChildInformation": "Child Information",
   "SectionName-Contact": "Contact",

@@ -134,6 +134,8 @@ export type SearchContact = {
     conversationDuration: number;
     createdBy: string;
     taskId: string;
+    updatedBy?: string;
+    updatedAt?: string;
   };
   details: ContactRawJson;
   csamReports: CSAMReportEntry[];

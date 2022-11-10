@@ -5,6 +5,7 @@ import { Close } from '@material-ui/icons';
 
 import { Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
 import { CaseActionTitle, CaseActionDetailFont } from '../../styles/case';
+import { isEqual } from 'date-fns';
 
 type OwnProps = {
   titleTemplate: string;
@@ -27,7 +28,6 @@ const ActionHeader: React.FC<Props> = ({
   updatingCounsellor,
 }) => {
   // @ts-ignore
-
 
   return (
     <>
@@ -60,7 +60,7 @@ const ActionHeader: React.FC<Props> = ({
           </CaseActionDetailFont>
         )}
       </Row>
-      {updated && updated !== added && (
+      {updated && !isEqual(updated, added) && (
         <Row style={{ width: '100%' }}>
           <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderUpdated">
             <Template

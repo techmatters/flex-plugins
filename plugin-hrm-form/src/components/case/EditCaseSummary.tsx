@@ -61,12 +61,6 @@ const EditCaseSummary: React.FC<Props> = ({
   can,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  useEffect(() => {
-    if (!workingCopy) {
-      initialiseWorkingCopy(task.taskSid);
-    }
-  });
-
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const firstElementRef = useFocus();
 
@@ -110,9 +104,9 @@ const EditCaseSummary: React.FC<Props> = ({
     } = connectedCaseState.connectedCase;
     return {
       status,
-      summary,
-      followUpDate,
-      childIsAtRisk,
+      summary: summary ?? '',
+      followUpDate: followUpDate ?? '',
+      childIsAtRisk: childIsAtRisk ?? false,
     };
   }, [connectedCaseState.connectedCase]);
 
@@ -123,6 +117,12 @@ const EditCaseSummary: React.FC<Props> = ({
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { getValues } = methods;
+
+  useEffect(() => {
+    if (!workingCopy) {
+      initialiseWorkingCopy(task.taskSid, getValues() as CaseSummaryWorkingCopy);
+    }
+  });
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [l, r] = React.useMemo(() => {
@@ -164,7 +164,7 @@ const EditCaseSummary: React.FC<Props> = ({
     if (openDialog) setOpenDialog(false);
   });
 
-  const { added, addingCounsellorName, updated } = caseItemHistory(connectedCaseState.connectedCase, counselorsHash);
+  const { added, addingCounsellorName, updated, updatingCounsellorName } = caseItemHistory(connectedCaseState.connectedCase, counselorsHash);
 
   const checkForEdits = () => {
     if (isEqual(workingCopy, savedForm)) {
@@ -182,7 +182,7 @@ const EditCaseSummary: React.FC<Props> = ({
             addingCounsellor={addingCounsellorName}
             added={added}
             updated={updated}
-            updatingCounsellor=""
+            updatingCounsellor={updatingCounsellorName}
           />
           <Container>
             <Box paddingBottom={`${BottomButtonBarHeight}px`}>
