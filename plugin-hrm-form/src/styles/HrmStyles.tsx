@@ -923,7 +923,7 @@ export const FormCheckbox = styled(CheckboxBase)`
   }
   &[type='checkbox']:checked::after {
     font-family: 'Font Awesome 5 Free';
-    content: '\\f00c ';
+    content: '\\f00c';
     color: #ffffff;
     font-weight: 900;
   }
@@ -945,13 +945,13 @@ export const FormMixedCheckbox = styled(CheckboxBase)`
   }
   &[class~='mixed-checkbox'][type='checkbox'][aria-checked='false']::after {
     font-family: 'Font Awesome 5 Free';
-    content: '\\f00d ';
+    content: '\\f00d';
     color: #ffffff;
     font-weight: 900;
   }
   &[class~='mixed-checkbox'][type='checkbox'][aria-checked='true']::after {
     font-family: 'Font Awesome 5 Free';
-    content: '\\f00c ';
+    content: '\\f00c';
     color: #ffffff;
     font-weight: 900;
   }
@@ -1046,7 +1046,7 @@ export const CategoryCheckbox = styled(CheckboxBase)<CategoryCheckboxProps>`
 
   &[type='checkbox']:checked::after {
     font-family: 'Font Awesome 5 Free';
-    content: '\\f00c ';
+    content: '\\f00c';
     font-weight: 900;
     color: ${({ color }) => color};
   }
