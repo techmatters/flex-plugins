@@ -255,10 +255,15 @@ export default class HrmFormPlugin extends FlexPlugin {
     setUpComponents(setupObject);
     setUpActions(setupObject);
 
-    const managerConfiguration = {
+    const managerConfiguration: Flex.Config = {
       // colorTheme: HrmTheme,
       theme: {
         componentThemeOverrides: overrides,
+        tokens: {
+          backgroundColors: {
+            colorBackground: HrmTheme.colors.base2,
+          },
+        },
       },
     };
     manager.updateConfig(managerConfiguration);
