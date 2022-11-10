@@ -88,6 +88,7 @@ export const overrides = {
     },
     Button: {
       background: colors.base2,
+      border: '10px solid #999'
     },
   },
   TaskList: {
