@@ -14,7 +14,7 @@ jest.mock('../../components/CSAMReport/CSAMReportFormDefinition');
 
 jest.mock('../../permissions', () => ({
   getPermissionsForViewingIdentifiers: jest.fn(() => ({
-    mask: () => true,
+    canView: () => true,
   })),
   PermissionActions: {},
 }));
