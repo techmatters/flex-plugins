@@ -24,7 +24,7 @@ import { getConfig } from '../../../HrmFormPlugin';
 import { namespace, configurationBase, searchContactsBase, contactFormsBase } from '../../../states';
 import { localizedSource } from '../../PreviousContactsBanner';
 import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils/task';
-import { getPermissionsForMasking, PermissionActions } from '../../../permissions';
+import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
 
 const getField = value => ({
   value,
@@ -147,8 +147,8 @@ class SearchForm extends Component {
     };
 
     const source = localizedSource[task.channelType];
-    const { mask } = getPermissionsForMasking();
-    const maskIdentifiers = mask(PermissionActions.MASK_IDENTIFIERS);
+    const { canView } = getPermissionsForViewingIdentifiers();
+    const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
     return (
       <>
@@ -242,7 +242,7 @@ class SearchForm extends Component {
                       <Template code="PreviousContacts-OnlyShowRecordsFrom" /> <Template code={source} />{' '}
                       {maskIdentifiers ? (
                         <Bold>
-                          <Template code="maskIdentifiers" />
+                          <Template code="MaskIdentifiers" />
                         </Bold>
                       ) : (
                         <Bold>{checkBoxName}</Bold>

@@ -19,5 +19,5 @@
   "editFollowUpDate": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "editContact": [["isSupervisor"]],
   "viewExternalTranscript": [["isSupervisor"]],
-  "maskIdentifiers": [["everyone"]]
+  "viewIdentifiers": [["everyone"]]
 }

@@ -20,5 +20,6 @@
   "editChildIsAtRisk": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "editFollowUpDate": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "editContact": [["isSupervisor"]],
-  "viewExternalTranscript": [["isSupervisor"]]
+  "viewExternalTranscript": [["isSupervisor"]],
+  "viewIdentifiers": [["everyone"]]
 }

@@ -13,7 +13,7 @@ import { mockPartialConfiguration } from '../mockGetConfig';
 jest.mock('../../components/CSAMReport/CSAMReportFormDefinition');
 
 jest.mock('../../permissions', () => ({
-  getPermissionsForMasking: jest.fn(() => ({
+  getPermissionsForViewingIdentifiers: jest.fn(() => ({
     mask: () => true,
   })),
   PermissionActions: {},

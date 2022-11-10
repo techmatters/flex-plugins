@@ -26,14 +26,14 @@ export const ContactActions = {
   EDIT_CONTACT: 'editContact',
   VIEW_EXTERNAL_TRANSCRIPT: 'viewExternalTranscript',
 } as const;
-const MaskIDActions = {
-  MASK_IDENTIFIERS: 'maskIdentifiers',
+const ViewIdentifiersAction = {
+  VIEW_IDENTIFIERS: 'viewIdentifiers',
 } as const;
 
 export const PermissionActions = {
   ...CaseActions,
   ...ContactActions,
-  ...MaskIDActions,
+  ...ViewIdentifiersAction,
 } as const;
 
 type PermissionActionsKeys = keyof typeof PermissionActions;
@@ -116,10 +116,10 @@ export const getPermissionsForContact = (twilioWorkerId: t.SearchContact['overvi
   };
 };
 
-export const getPermissionsForMasking = () => {
+export const getPermissionsForViewingIdentifiers = () => {
   const { isSupervisor, permissionConfig } = getConfig();
 
-  if (!permissionConfig) return { mask: undefined };
+  if (!permissionConfig) return { canView: undefined };
 
   const conditionsState: Partial<{ [condition in Condition]: boolean }> = {
     isSupervisor,
@@ -135,7 +135,7 @@ export const getPermissionsForMasking = () => {
   const rulesAreValid = Object.values(PermissionActions).every(action => rules[action]);
   if (!rulesAreValid) throw new Error(`Rules file for ${permissionConfig} is incomplete.`);
 
-  const mask = (action: PermissionActionType): boolean => {
+  const canView = (action: PermissionActionType): boolean => {
     if (!rules[action]) {
       console.error(`Cannot find rules for ${action}. Returning false.`);
       return isSupervisor;
@@ -145,6 +145,6 @@ export const getPermissionsForMasking = () => {
   };
 
   return {
-    mask,
+    canView,
   };
 };

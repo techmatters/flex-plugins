@@ -10,7 +10,7 @@ import { ViewButton } from '../../../styles/case';
 import { isNonDataCallType } from '../../../states/ValidationRules';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import { channelTypes, ChannelTypes } from '../../../states/DomainConstants';
-import { getPermissionsForMasking, PermissionActions } from '../../../permissions';
+import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
 
 type OwnProps = {
   channel: ChannelTypes;
@@ -37,8 +37,8 @@ const getNumber = (channel, number) => {
 const ChildNameAndDate: React.FC<Props> = ({ channel, callType, name, number, date, onClickFull }) => {
   const dateString = `${format(new Date(date), 'MMM d, yyyy h:mm aaaaa')}m`;
   const showNumber = isNonDataCallType(callType) && Boolean(number);
-  const { mask } = getPermissionsForMasking();
-  const maskIdentifiers = mask(PermissionActions.MASK_IDENTIFIERS);
+  const { canView } = getPermissionsForViewingIdentifiers();
+  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
   return (
     <Row>
@@ -47,10 +47,10 @@ const ChildNameAndDate: React.FC<Props> = ({ channel, callType, name, number, da
       </Flex>
       {showNumber && maskIdentifiers && (
         <PrevNameText>
-          <Template code="maskIdentifiers" />{' '}
+          <Template code="MaskIdentifiers" />{' '}
         </PrevNameText>
       )}
-      <PrevNameText>{showNumber && maskIdentifiers ? getNumber(channel, number) : name}</PrevNameText>
+      <PrevNameText>{showNumber && !maskIdentifiers ? getNumber(channel, number) : name}</PrevNameText>
 
       <ContactButtonsWrapper>
         <Flex marginRight="20px">

@@ -17,7 +17,7 @@ import { StyledLink } from '../styles/search';
 import { ChannelTypes, channelTypes } from '../states/DomainConstants';
 import { changeRoute as changeRouteAction } from '../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask } from '../utils/task';
-import { getPermissionsForMasking, PermissionActions } from '../permissions';
+import { getPermissionsForViewingIdentifiers, PermissionActions } from '../permissions';
 
 type OwnProps = {
   task: CustomITask;
@@ -47,8 +47,8 @@ const PreviousContactsBanner: React.FC<Props> = ({
   changeRoute,
   editContactFormOpen,
 }) => {
-  const { mask } = getPermissionsForMasking();
-  const maskIdentifiers = mask(PermissionActions.MASK_IDENTIFIERS);
+  const { canView } = getPermissionsForViewingIdentifiers();
+  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
   useEffect(() => {
     if (isTwilioTask(task) && previousContacts === undefined) {
@@ -110,7 +110,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
           &nbsp;
           {maskIdentifiers ? (
             <Bold>
-              <Template code="maskIdentifiers" />
+              <Template code="MaskIdentifiers" />
             </Bold>
           ) : (
             <Bold>{contactIdentifier}</Bold>

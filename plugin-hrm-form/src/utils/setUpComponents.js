@@ -521,7 +521,7 @@ export const setupLineChatChannel = maskIdentifiers => {
 
 const maskIdentifiersByChannel = channelType => {
   // Task list and panel when a call comes in
-  channelType.templates.TaskListItem.firstLine = 'maskIdentifiers';
+  channelType.templates.TaskListItem.firstLine = 'MaskIdentifiers';
   /*
    * if (channelType === Flex.DefaultTaskChannels.Chat) {
    *   channelType.templates.TaskListItem.secondLine = 'TaskLineWebChatAssignedMasked';
@@ -529,15 +529,15 @@ const maskIdentifiersByChannel = channelType => {
    *   channelType.templates.TaskListItem.secondLine = 'TaskLineChatAssignedMasked';
    * }
    */
-  channelType.templates.IncomingTaskCanvas.firstLine = 'maskIdentifiers';
+  channelType.templates.IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
   // Task panel during an active call
-  channelType.templates.TaskCanvasHeader.title = 'maskIdentifiers';
-  channelType.templates.MessageListItem = 'maskIdentifiers';
+  channelType.templates.TaskCanvasHeader.title = 'MaskIdentifiers';
+  channelType.templates.MessageListItem = 'MaskIdentifiers';
   // Task Status in Agents page
-  channelType.templates.TaskCard.firstLine = 'maskIdentifiers';
+  channelType.templates.TaskCard.firstLine = 'MaskIdentifiers';
   // Supervisor
-  channelType.templates.Supervisor.TaskCanvasHeader.title = 'maskIdentifiers';
-  channelType.templates.Supervisor.TaskOverviewCanvas.title = 'maskIdentifiers';
+  channelType.templates.Supervisor.TaskCanvasHeader.title = 'MaskIdentifiers';
+  channelType.templates.Supervisor.TaskOverviewCanvas.title = 'MaskIdentifiers';
 };
 
 export const maskIdentifiersForDefaultChannels = () => {

@@ -13,7 +13,7 @@ import setUpMonitoring from './utils/setUpMonitoring';
 import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
-import { getPermissionsForMasking, PermissionActions } from './permissions';
+import { getPermissionsForViewingIdentifiers, PermissionActions } from './permissions';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -154,8 +154,8 @@ const setUpLocalization = (config: ReturnType<typeof getConfig>) => {
 
 const setUpComponents = (setupObject: SetupObject) => {
   const { helpline, featureFlags } = setupObject;
-  const { mask } = getPermissionsForMasking();
-  const maskIdentifiers = mask(PermissionActions.MASK_IDENTIFIERS);
+  const { canView } = getPermissionsForViewingIdentifiers();
+  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
