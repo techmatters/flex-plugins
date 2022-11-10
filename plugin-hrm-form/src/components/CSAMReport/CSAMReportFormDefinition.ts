@@ -9,19 +9,12 @@ export const keys = {
   firstName: 'firstName',
   lastName: 'lastName',
   email: 'email',
+  childAge: 'childAge',
+  ageVerified: 'ageVerified',
 } as const;
 
 type CSAMFormDefinitionObject = {
   [k in keyof typeof keys]: FormItemDefinition;
-};
-
-export const clcKeys = {
-  childAge: 'childAge',
-  ageVerified: 'ageVerified',
-};
-
-type CSAMCLCFormDefinitionObject = {
-  [k in keyof typeof clcKeys]: FormItemDefinition;
 };
 
 // eslint-disable-next-line prefer-named-capture-group
@@ -74,9 +67,6 @@ export const definitionObject: CSAMFormDefinitionObject = {
     required: { value: true, message: 'RequiredFieldError' },
     maxLength: { value: 100, message: '100 characters max.' },
   },
-};
-
-export const definitionObjectForCLC: CSAMCLCFormDefinitionObject = {
   childAge: {
     name: 'childAge',
     label: '',
@@ -101,9 +91,6 @@ export const initialValues = {
   firstName: getInitialValue(definitionObject.firstName),
   lastName: getInitialValue(definitionObject.lastName),
   email: getInitialValue(definitionObject.email),
-} as const;
-
-export const initialValuesForCLC = {
-  childAge: getInitialValue(definitionObjectForCLC.childAge),
-  ageVerified: getInitialValue(definitionObjectForCLC.ageVerified),
+  childAge: getInitialValue(definitionObject.childAge),
+  ageVerified: getInitialValue(definitionObject.ageVerified),
 } as const;

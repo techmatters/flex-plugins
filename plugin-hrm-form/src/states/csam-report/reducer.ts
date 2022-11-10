@@ -13,6 +13,7 @@ type CSAMReportState = {
   tasks: {
     [taskId: string]: TaskEntry;
   };
+  createLinkForChild: boolean;
 };
 
 export const newTaskEntry: TaskEntry = {
@@ -26,6 +27,7 @@ export const newTaskEntry: TaskEntry = {
 
 export const initialState: CSAMReportState = {
   tasks: {},
+  createLinkForChild: false,
 };
 
 export function reduce(state = initialState, action: t.CSAMReportActionType | GeneralActionType): CSAMReportState {
@@ -86,6 +88,9 @@ export function reduce(state = initialState, action: t.CSAMReportActionType | Ge
           [action.taskId]: newTaskEntry,
         },
       };
+    case t.SET_CSAM_TYPE: {
+      return { ...state, createLinkForChild: action.createLinkForChild };
+    }
     default:
       return state;
   }

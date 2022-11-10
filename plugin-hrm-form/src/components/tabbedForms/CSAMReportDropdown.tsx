@@ -1,26 +1,38 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
+import { connect, ConnectedProps } from 'react-redux';
 
 import { StyledCSAMReportDropdown, StyledCSAMReportDropdownList, StyledCSAMReportHeader } from '../../styles/HrmStyles';
+import { setCSAMType } from '../../states/csam-report/actions';
 
 type OwnProps = {
-  handleCounselorReport: () => void;
-  handleCreateLink: () => void;
+  handleCSAMType: () => void;
   dropdown: boolean;
 };
 
-type Props = OwnProps;
+type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const CSAMReportDropdown: React.FC<Props> = ({ handleCounselorReport, handleCreateLink, dropdown }) => {
+const CSAMReportDropdown: React.FC<Props> = ({ handleCSAMType, dropdown, setCSAMType }) => {
   return (
     <StyledCSAMReportDropdown style={{ display: dropdown ? 'block' : 'none' }}>
       <StyledCSAMReportHeader>
         <Template code="TabbedForms-CSAMReportButton" />
       </StyledCSAMReportHeader>
-      <StyledCSAMReportDropdownList onClick={handleCreateLink}>
+      <StyledCSAMReportDropdownList
+        onClick={() => {
+          setCSAMType(true);
+          handleCSAMType();
+        }}
+      >
         <Template code="TabbedForms-ReportsChildLink" />
       </StyledCSAMReportDropdownList>
-      <StyledCSAMReportDropdownList margin="0 -40px 10px -25px" onClick={handleCounselorReport}>
+      <StyledCSAMReportDropdownList
+        margin="0 -40px 10px -25px"
+        onClick={() => {
+          setCSAMType(false);
+          handleCSAMType();
+        }}
+      >
         <Template code="TabbedForms-ReportsCounselorReport" />
       </StyledCSAMReportDropdownList>
     </StyledCSAMReportDropdown>
@@ -29,4 +41,10 @@ const CSAMReportDropdown: React.FC<Props> = ({ handleCounselorReport, handleCrea
 
 CSAMReportDropdown.displayName = 'CSAMReportDropdown';
 
-export default CSAMReportDropdown;
+const mapDispatchToProps = {
+  setCSAMType,
+};
+
+const connector = connect(null, mapDispatchToProps);
+const connected = connector(CSAMReportDropdown);
+export default connected;

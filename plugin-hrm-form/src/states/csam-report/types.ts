@@ -2,6 +2,7 @@
 export const UPDATE_FORM = 'csam-report/UPDATE_FORM';
 export const UPDATE_STATUS = 'csam-report/UPDATE_STATUS';
 export const CLEAR_CSAM_REPORT = 'csam-report/CLEAR_CSAM_REPORT';
+export const SET_CSAM_TYPE = 'SET_CSAM_TYPE';
 
 export type CSAMReportForm = {
   webAddress: string;
@@ -10,6 +11,8 @@ export type CSAMReportForm = {
   firstName: string;
   lastName: string;
   email: string;
+  childAge: string;
+  ageVerified: boolean;
 };
 
 export type CSAMReportStatus = {
@@ -35,4 +38,6 @@ type ClearCSAMReport = {
   taskId: string;
 };
 
-export type CSAMReportActionType = UpdateFormAction | UpdateStatusAction | ClearCSAMReport;
+type SetCSAMTypeAction = { type: typeof SET_CSAM_TYPE; createLinkForChild: boolean };
+
+export type CSAMReportActionType = UpdateFormAction | UpdateStatusAction | ClearCSAMReport | SetCSAMTypeAction;

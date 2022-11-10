@@ -9,13 +9,12 @@ import { Row, CSAMReportButtonText, StyledCSAMReportButton } from '../../styles/
 import CSAMReportDropdown from './CSAMReportDropdown';
 
 type OwnProps = {
-  handleCounselorReport: () => void;
-  handleCreateLink: () => void;
+  handleCSAMType: () => void;
 };
 
 type Props = OwnProps;
 
-const CSAMReportButton: React.FC<Props> = ({ handleCounselorReport, handleCreateLink }) => {
+const CSAMReportButton: React.FC<Props> = ({ handleCSAMType }) => {
   const [dropdown, setDropdown] = useState(false);
   const buttonRef = useRef(null);
 
@@ -51,11 +50,7 @@ const CSAMReportButton: React.FC<Props> = ({ handleCounselorReport, handleCreate
           <ExpandMoreIcon fontSize="inherit" style={{ marginLeft: 10 }} />
         </StyledCSAMReportButton>
       </Row>
-      <CSAMReportDropdown
-        dropdown={dropdown}
-        handleCounselorReport={handleCounselorReport}
-        handleCreateLink={handleCreateLink}
-      />
+      <CSAMReportDropdown dropdown={dropdown} handleCSAMType={handleCSAMType} />
     </>
   );
 };

@@ -24,13 +24,24 @@ type Props = {
   reportStatus: CSAMReportStatus;
   onClickClose: () => void;
   onSendAnotherReport: () => void;
+  clcReportStatus: string;
+  createLinkForChild: boolean;
 };
 
-const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, onSendAnotherReport }) => {
+const CSAMReportStatusScreen: React.FC<Props> = ({
+  reportStatus,
+  clcReportStatus,
+  onClickClose,
+  onSendAnotherReport,
+  createLinkForChild,
+}) => {
   const [copied, setCopied] = React.useState(false);
 
   const onCopyCode = async () => {
-    await navigator.clipboard.writeText(reportStatus.responseData);
+    // eslint-disable-next-line no-unused-expressions
+    createLinkForChild
+      ? await navigator.clipboard.writeText(clcReportStatus)
+      : await navigator.clipboard.writeText(reportStatus.responseData);
     setCopied(true);
   };
 
@@ -54,18 +65,25 @@ const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, o
                 <SuccessReportIcon />
               </Box>
               <BoldDescriptionText fontSize="16px">
-                <Template code="CSAMReportForm-ReportSent" />
+                <Template code={createLinkForChild ? 'CSAMCLCReportForm-LinkReady' : 'CSAMReportForm-ReportSent'} />
               </BoldDescriptionText>
             </Row>
             <Box marginTop="8%" marginBottom="3%">
               <RegularText>
-                <Template code="CSAMReportForm-CopyCode" />
+                <Template code={createLinkForChild ? 'CSAMCLCReportForm-CopyLink' : 'CSAMReportForm-CopyCode'} />
               </RegularText>
             </Box>
             <Row>
-              <Box marginRight="5%">
-                <ReportCodeText>#{reportStatus.responseData}</ReportCodeText>
-              </Box>
+              {createLinkForChild && (
+                <Box marginRight="10px">
+                  <ReportCodeText>{clcReportStatus}</ReportCodeText>
+                </Box>
+              )}
+              {!createLinkForChild && (
+                <Box marginRight="5%">
+                  <ReportCodeText>#{reportStatus.responseData}</ReportCodeText>
+                </Box>
+              )}
               <CopyCodeButton secondary roundCorners onClick={onCopyCode} data-testid="CSAMReport-CopyCodeButton">
                 <CopyCodeButtonIcon />
                 <div style={{ width: 10 }} />
@@ -81,11 +99,11 @@ const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, o
       <BottomButtonBar>
         <Box marginRight="15px">
           <StyledNextStepButton secondary roundCorners onClick={onSendAnotherReport}>
-            <Template code="BottomBar-SendAnotherReport" />
+            <Template code={createLinkForChild ? 'BottomBar-SendAnotherLink' : 'BottomBar-SendAnotherReport'} />
           </StyledNextStepButton>
         </Box>
         <StyledNextStepButton roundCorners onClick={onClickClose}>
-          <Template code="BottomBar-CloseView" />
+          <Template code={createLinkForChild ? 'CloseButton' : 'BottomBar-CloseView'} />
         </StyledNextStepButton>
       </BottomButtonBar>
     </CSAMReportContainer>

@@ -109,17 +109,10 @@ export type CSAMReportRoute = {
   previousRoute: AppRoutes;
 };
 
-export type CSAMCLCReportRoute = {
-  route: 'csam-clc-report';
-  subroute: 'form' | 'loading' | 'status';
-  previousRoute: AppRoutes;
-};
-
 type OtherRoutes = CSAMReportRoute;
-type OtherCSAMRoutes = CSAMCLCReportRoute;
 
 // The different routes we have in our app
-export type AppRoutes = AppRoutesWithCase | OtherRoutes | OtherCSAMRoutes;
+export type AppRoutes = AppRoutesWithCase | OtherRoutes;
 
 type ChangeRouteAction = {
   type: typeof CHANGE_ROUTE;

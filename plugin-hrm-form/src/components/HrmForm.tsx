@@ -7,7 +7,6 @@ import CallTypeButtons from './callTypeButtons';
 import TabbedForms from './tabbedForms';
 import Case from './case';
 import CSAMReport from './CSAMReport/CSAMReport';
-import CSAMCLCReport from './CSAMReport/CSAMCLCReport';
 import { namespace, RootState, routingBase } from '../states';
 import type { CustomITask } from '../types/types';
 
@@ -25,7 +24,13 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags }) => {
 
   switch (route) {
     case 'tabbed-forms':
-      return <TabbedForms task={task} csamClcReportEnabled={featureFlags.enable_csam_clc_report} csamReportEnabled={featureFlags.enable_csam_report} />;
+      return (
+        <TabbedForms
+          task={task}
+          csamClcReportEnabled={featureFlags.enable_csam_clc_report}
+          csamReportEnabled={featureFlags.enable_csam_report}
+        />
+      );
 
     case 'new-case':
       return (
@@ -36,9 +41,6 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags }) => {
 
     case 'csam-report':
       return <CSAMReport taskSid={task.taskSid} />;
-
-    case 'csam-clc-report':
-      return <CSAMCLCReport taskSid={task.taskSid} />;
 
     case 'select-call-type':
     default:

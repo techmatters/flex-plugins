@@ -190,14 +190,11 @@ const TabbedForms: React.FC<Props> = ({
     <Box className="hiddenWhenEditingContact" marginTop="10px" marginBottom="10px" paddingLeft="20px">
       <Row>
         <SearchResultsBackButton handleBack={handleBackButton} text={<Template code="TabbedForms-BackButton" />} />
-        {csamReportEnabled && csamClcReportEnabled && (
+        {csamReportEnabled && (
           <Box marginLeft="auto" marginRight="15px">
             <CSAMReportButton
-              handleCounselorReport={() =>
+              handleCSAMType={() =>
                 dispatch(changeRoute({ route: 'csam-report', subroute: 'form', previousRoute: routing }, taskId))
-              }
-              handleCreateLink={() =>
-                dispatch(changeRoute({ route: 'csam-clc-report', subroute: 'form', previousRoute: routing }, taskId))
               }
             />
           </Box>

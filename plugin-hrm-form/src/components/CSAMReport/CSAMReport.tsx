@@ -28,6 +28,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   csamReportState: state[namespace][csamReportBase].tasks[ownProps.taskSid],
   routing: state[namespace][routingBase].tasks[ownProps.taskSid],
   counselorsHash: state[namespace][configurationBase].counselors.hash,
+  createLinkForChild: state[namespace][csamReportBase].createLinkForChild,
 });
 
 const mapDispatchToProps = {
@@ -52,6 +53,8 @@ export const CSAMReportScreen: React.FC<Props> = ({
   csamReportState,
   routing,
   counselorsHash,
+  createLinkForChild,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [initialForm] = React.useState(csamReportState.form); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm({ reValidateMode: 'onChange' });
@@ -101,16 +104,22 @@ export const CSAMReportScreen: React.FC<Props> = ({
     case 'form': {
       const onValid = async form => {
         try {
-          changeRoute({ route: 'csam-report', subroute: 'loading', previousRoute }, taskSid);
-          const report = await reportToIWF(form);
-          const storedReport = await createCSAMReport({
-            csamReportId: report['IWFReportService1.0'].responseData,
-            twilioWorkerId: getConfig().workerSid,
-          });
+          if (createLinkForChild) {
+            /* serverLess API will be called here */
+            changeRoute({ route: 'csam-report', subroute: 'loading', previousRoute }, taskSid);
+            changeRoute({ route: 'csam-report', subroute: 'status', previousRoute }, taskSid);
+          } else {
+            changeRoute({ route: 'csam-report', subroute: 'loading', previousRoute }, taskSid);
+            const report = await reportToIWF(form);
+            const storedReport = await createCSAMReport({
+              csamReportId: report['IWFReportService1.0'].responseData,
+              twilioWorkerId: getConfig().workerSid,
+            });
 
-          updateStatusAction(report['IWFReportService1.0'], taskSid);
-          addCSAMReportEntry(storedReport, taskSid);
-          changeRoute({ route: 'csam-report', subroute: 'status', previousRoute }, taskSid);
+            updateStatusAction(report['IWFReportService1.0'], taskSid);
+            addCSAMReportEntry(storedReport, taskSid);
+            changeRoute({ route: 'csam-report', subroute: 'status', previousRoute }, taskSid);
+          }
         } catch (err) {
           console.error(err);
           window.alert(getConfig().strings['Error-Backend']);
@@ -137,6 +146,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
             counselor={currentCounselor}
             onClickClose={onClickClose}
             onSendReport={onSendReport}
+            createLinkForChild={createLinkForChild}
           />
         </FormProvider>
       );
@@ -161,8 +171,10 @@ export const CSAMReportScreen: React.FC<Props> = ({
       return (
         <CSAMReportStatusScreen
           reportStatus={csamReportState.reportStatus}
+          clcReportStatus="https://iwf.org/self-report/id/23ired45wr"
           onClickClose={onClickClose}
           onSendAnotherReport={onSendAnotherReport}
+          createLinkForChild={createLinkForChild}
         />
       );
     }

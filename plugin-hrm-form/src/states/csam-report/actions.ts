@@ -18,3 +18,8 @@ export const clearCSAMReportAction = (taskId: string): t.CSAMReportActionType =>
   type: t.CLEAR_CSAM_REPORT,
   taskId,
 });
+
+export const setCSAMType = (createLinkForChild: boolean): t.CSAMReportActionType => ({
+  type: t.SET_CSAM_TYPE,
+  createLinkForChild,
+});
