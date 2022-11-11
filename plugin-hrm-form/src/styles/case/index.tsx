@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, IconButton, styled } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 
-import { FontOpenSans, FormInput, FormSelect, FormSelectWrapper, Row, Column } from '../HrmStyles';
+import { FontOpenSans, FormInput, Row, Column } from '../HrmStyles';
 import HrmTheme from '../HrmTheme';
 
 export const CaseLayout = styled('div')`
@@ -77,10 +77,12 @@ type ViewButtonProps = {
 export const ViewButton = styled(props => <Button roundCorners={false} {...props} />)`
   color: ${HrmTheme.colors.categoryTextColor};
   background-color: #ecedf1;
+  height: 28px;
   border-radius: 4px;
-  font-weight: normal;
+  font-family: Open Sans;
+  font-weight: 600;
   letter-spacing: normal;
-  font-size: 12px;
+  font-size: 14px;
   box-shadow: none;
   border: none;
 
@@ -137,16 +139,20 @@ export const CaseActionDetailFont = styled(FontOpenSans)`
 `;
 CaseActionDetailFont.displayName = 'CaseActionDetailFont';
 
+const placeHolderTextStyle = `
+  font-family: Open Sans;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+`;
+
 const BaseTextArea = styled('textarea')`
   resize: none;
   background-color: ${HrmTheme.colors.base2};
-  font-family: Open Sans;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 15px;
+  ${placeHolderTextStyle}
   padding: 5px;
   border-style: none;
-  border-radius: 4px;
+  border-radius: 2px;
   :focus {
     outline: none;
   }
@@ -158,7 +164,7 @@ export const TimelineRow = styled('div')`
   background-color: #f6f6f67d;
   height: 40px;
   margin-bottom: 3px;
-  padding: 0 15px;
+  padding: 0 10px;
 `;
 TimelineRow.displayName = 'TimelineRow';
 
@@ -200,6 +206,7 @@ export const InformationBoldText = styled(TimelineDate)`
 InformationBoldText.displayName = 'InformationBoldText';
 
 export const PlaceHolderText = styled(TimelineText)`
+  ${placeHolderTextStyle}
   opacity: 0.5;
 `;
 PlaceHolderText.displayName = 'PlaceHolderText';
