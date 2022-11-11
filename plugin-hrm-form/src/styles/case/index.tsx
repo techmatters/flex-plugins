@@ -153,6 +153,7 @@ const BaseTextArea = styled('textarea')`
   padding: 5px;
   border-style: none;
   border-radius: 2px;
+
   :focus {
     outline: none;
   }
@@ -168,12 +169,15 @@ export const TimelineRow = styled('div')`
 `;
 TimelineRow.displayName = 'TimelineRow';
 
-export const TimelineDate = styled('div')`
+export const TimelineDate = styled(FontOpenSans)`
+  font-size: 12px;
   min-width: 65px;
+  flex-shrink: 0;
 `;
 TimelineDate.displayName = 'TimelineDate';
 
-export const TimelineText = styled('span')`
+export const TimelineText = styled(FontOpenSans)`
+  font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
