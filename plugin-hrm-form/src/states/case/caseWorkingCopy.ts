@@ -49,21 +49,21 @@ export const updateCaseSectionWorkingCopyReducer = (
 };
 
 // Initialise a new section of a case's working copy based on the saved data, or blank if adding a new section
-export const INIT_CASE_SECTION_WORKING_COPY = 'INIT_CASE_SECTION_WORKING_COPY';
+export const INIT_EXISTING_CASE_SECTION_WORKING_COPY = 'INIT_EXISTING_CASE_SECTION_WORKING_COPY';
 
 type InitialiseExistingCaseSectionWorkingCopyAction = {
-  type: typeof INIT_CASE_SECTION_WORKING_COPY;
+  type: typeof INIT_EXISTING_CASE_SECTION_WORKING_COPY;
   taskId: string;
   api: CaseSectionApi<unknown>;
   id: string;
 };
 
-export const initialiseCaseSectionWorkingCopy = (
+export const initialiseExistingCaseSectionWorkingCopy = (
   taskId: string,
   api: CaseSectionApi<unknown>,
   id: string,
 ): InitialiseExistingCaseSectionWorkingCopyAction => ({
-  type: INIT_CASE_SECTION_WORKING_COPY,
+  type: INIT_EXISTING_CASE_SECTION_WORKING_COPY,
   taskId,
   api,
   id,

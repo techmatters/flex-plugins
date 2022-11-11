@@ -71,7 +71,17 @@ export const hrmServiceContactToSearchContact = (contact): SearchContact => {
 };
 
 export const searchContactToHrmServiceContact = (contact: SearchContact) => {
-  const { conversationDuration, createdBy, helpline, channel, counselor, customerNumber, dateTime, updatedAt, updatedBy } = contact.overview;
+  const {
+    conversationDuration,
+    createdBy,
+    helpline,
+    channel,
+    counselor,
+    customerNumber,
+    dateTime,
+    updatedAt,
+    updatedBy,
+  } = contact.overview;
   return {
     id: contact.contactId,
     number: customerNumber,

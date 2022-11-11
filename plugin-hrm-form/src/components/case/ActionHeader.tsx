@@ -2,10 +2,10 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { Close } from '@material-ui/icons';
+import { isEqual } from 'date-fns';
 
 import { Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
 import { CaseActionTitle, CaseActionDetailFont } from '../../styles/case';
-import { isEqual } from 'date-fns';
 
 type OwnProps = {
   titleTemplate: string;

@@ -4,7 +4,7 @@ import { CaseActionType, CaseState, REMOVE_CONNECTED_CASE, SET_CONNECTED_CASE } 
 import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
 import {
   CaseWorkingCopyActionType,
-  INIT_CASE_SECTION_WORKING_COPY,
+  INIT_EXISTING_CASE_SECTION_WORKING_COPY,
   INIT_NEW_CASE_SECTION_WORKING_COPY,
   INIT_CASE_SUMMARY_WORKING_COPY,
   initialiseCaseSectionWorkingCopyReducer,
@@ -62,7 +62,7 @@ export function reduce(
       };
     case UPDATE_CASE_SECTION_WORKING_COPY:
       return updateCaseSectionWorkingCopyReducer(state, action);
-    case INIT_CASE_SECTION_WORKING_COPY:
+    case INIT_EXISTING_CASE_SECTION_WORKING_COPY:
       return initialiseCaseSectionWorkingCopyReducer(state, action);
     case INIT_NEW_CASE_SECTION_WORKING_COPY:
       return initialiseNewCaseSectionWorkingCopyReducer(state, action);

@@ -164,7 +164,10 @@ const EditCaseSummary: React.FC<Props> = ({
     if (openDialog) setOpenDialog(false);
   });
 
-  const { added, addingCounsellorName, updated, updatingCounsellorName } = caseItemHistory(connectedCaseState.connectedCase, counselorsHash);
+  const { added, addingCounsellorName, updated, updatingCounsellorName } = caseItemHistory(
+    connectedCaseState.connectedCase,
+    counselorsHash,
+  );
 
   const checkForEdits = () => {
     if (isEqual(workingCopy, savedForm)) {
