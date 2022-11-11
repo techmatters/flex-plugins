@@ -2,26 +2,23 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Actions, withTheme } from '@twilio/flex-ui';
+import { MessageInputChildrenProps } from '@twilio/flex-ui-core/src/components/channel/MessageInput/MessageInputImpl';
 
 import { getConfig } from '../HrmFormPlugin';
 import { selectCannedResponses } from '../states/selectors/hrmStateSelectors';
 import { CannedResponsesContainer, FormSelect, FormSelectWrapper, FormOption } from '../styles/HrmStyles';
 
-type OwnProps = {
-  channelSid: string;
-};
-
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps;
+type Props = MessageInputChildrenProps;
 
 // eslint-disable-next-line react/display-name
 const CannedResponses: React.FC<Props> = props => {
   const cannedResponses = useSelector(selectCannedResponses);
   const { strings } = getConfig();
-  const { channelSid } = props;
+  const { conversationSid } = props;
   const handleChange = event => {
     Actions.invokeAction('SetInputText', {
-      channelSid,
+      conversationSid,
       body: event.target.value,
     });
   };
