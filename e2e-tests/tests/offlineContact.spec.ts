@@ -3,6 +3,7 @@ import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { caseHome } from '../case';
 import { agentDesktop } from '../agent-desktop';
 import { logPageTelemetry } from '../browser-logs';
+import { notificationBar } from '../notificationBar';
 
 test.describe.serial('Offline Contact (with Case)', () => {
   let pluginPage: Page;
@@ -21,6 +22,7 @@ test.describe.serial('Offline Contact (with Case)', () => {
   });
 
   test.afterAll(async () => {
+    await notificationBar(pluginPage).dismissAllNotifications();
     await pluginPage?.close();
   });
 

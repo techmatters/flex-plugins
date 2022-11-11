@@ -15,6 +15,7 @@ import { tasks } from '../tasks';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { deleteAllTasksInQueue } from '../twilio/tasks';
 import { logPageTelemetry } from '../browser-logs';
+import { notificationBar } from '../notificationBar';
 
 test.describe.serial('Web chat caller', () => {
   let chatPage: WebChatPage, pluginPage: Page;
@@ -30,6 +31,9 @@ test.describe.serial('Web chat caller', () => {
 
   test.afterAll(async () => {
     await statusIndicator(pluginPage)?.setStatus(WorkerStatus.OFFLINE);
+    if (pluginPage) {
+      await notificationBar(pluginPage).dismissAllNotifications();
+    }
     await Promise.all([
       chatPage?.close(),
       pluginPage?.close(),

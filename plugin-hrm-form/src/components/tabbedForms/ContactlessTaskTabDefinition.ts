@@ -5,7 +5,6 @@ import { channelTypes } from '../../states/DomainConstants';
 import { mapChannelForInsights } from '../../utils/mappers';
 import { splitDate } from '../../utils/helpers';
 import type { CounselorsList } from '../../states/configuration/types';
-import { getConfig } from '../../HrmFormPlugin';
 
 const defaultChannelOptions = [{ value: '', label: '' }].concat(
   Object.values(channelTypes).map(s => ({
@@ -23,7 +22,6 @@ export const createContactlessTaskTabDefinition = ({
   helplineInformation: DefinitionVersion['helplineInformation'];
   definition: DefinitionVersion['tabbedForms']['ContactlessTaskTab'];
 }): FormDefinition => {
-  const { workerSid } = getConfig();
   const counsellorOptions = [
     { label: '', value: '' },
     ...counselorsList.map(c => ({ label: c.fullName, value: c.sid })),
@@ -53,7 +51,7 @@ export const createContactlessTaskTabDefinition = ({
       type: 'select',
       label: 'Counsellor',
       options: counsellorOptions,
-      defaultOption: workerSid,
+      // defaultOption: workerSid,
       required: { value: true, message: 'RequiredFieldError' },
     },
     {

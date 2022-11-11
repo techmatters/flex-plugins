@@ -57,21 +57,45 @@ type ListboxMultiselectDefinition = {
 
 export type SelectOption = { value: any; label: string };
 
-type SelectDefinition = {
+type BaseSelectDefinition = {
   type: 'select';
-  options: SelectOption[];
   defaultOption?: SelectOption['value'];
   unknownOption?: SelectOption['value'];
 } & ItemBase;
 
-type DependentOptions = { [dependeeValue: string]: SelectOption[] };
+type SelectDefinition = BaseSelectDefinition & {
+  options: SelectOption[];
+} & ItemBase;
 
-type DependentSelectDefinition = {
+export type SelectDefinitionWithReferenceOptions = BaseSelectDefinition & {
+  optionsReferenceKey: string;
+} & ItemBase;
+
+export const isSelectDefinitionWithReferenceOptions = (
+  item: any,
+): item is SelectDefinitionWithReferenceOptions =>
+  item.type === 'select' && typeof (<any>item).optionsReferenceKey === 'string';
+
+export type DependentOptions = { [dependeeValue: string]: SelectOption[] };
+
+type DependentSelectDefinitionBase = {
   type: 'dependent-select';
   dependsOn: ItemBase['name'];
   defaultOption: SelectOption;
-  options: DependentOptions;
 } & ItemBase;
+
+type DependentSelectDefinition = DependentSelectDefinitionBase & {
+  options: DependentOptions;
+};
+
+type DependentSelectDefinitionWithReferenceOptions = DependentSelectDefinitionBase & {
+  optionsReferenceKey: string;
+};
+
+export const isDependentSelectDefinitionWithReferenceOptions = (
+  item: any,
+): item is DependentSelectDefinitionWithReferenceOptions =>
+  item.type === 'dependent-select' && typeof (<any>item).optionsReferenceKey === 'string';
 
 type CheckboxDefinition = {
   type: 'checkbox';
@@ -137,6 +161,12 @@ export type FormItemDefinition =
   | FileUploadDefinition
   | CallTypeButtonInputDefinition
   | CopyToDefinition;
+
+export type FormItemJsonDefinition =
+  | FormItemDefinition
+  | SelectDefinitionWithReferenceOptions
+  | DependentSelectDefinitionWithReferenceOptions;
+
 export type FormDefinition = FormItemDefinition[];
 
 export type CategoryEntry = { color: string; subcategories: string[] };
@@ -238,4 +268,5 @@ export type DefinitionVersion = {
     [status: string]: StatusInfo;
   };
   prepopulateKeys: { ChildInformationTab: string[]; CallerInformationTab: string[] };
+  referenceData?: Record<string, any>;
 };
