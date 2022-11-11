@@ -429,7 +429,7 @@ export const setupCannedResponses = () => {
   Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" />);
 };
 
-export const setupTwitterChatChannel = () => {
+export const setupTwitterChatChannel = maskIdentifiers => {
   const icon = <TwitterIcon width="24px" height="24px" color="white" />;
 
   const TwitterChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
@@ -464,7 +464,7 @@ export const setupTwitterChatChannel = () => {
   Flex.TaskChannels.register(TwitterChatChannel);
 };
 
-export const setupInstagramChatChannel = () => {
+export const setupInstagramChatChannel = maskIdentifiers => {
   const icon = <InstagramIcon width="24px" height="24px" color="white" />;
 
   const InstagramChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
@@ -493,7 +493,7 @@ export const setupInstagramChatChannel = () => {
   Flex.TaskChannels.register(InstagramChatChannel);
 };
 
-export const setupLineChatChannel = () => {
+export const setupLineChatChannel = maskIdentifiers => {
   const icon = <LineIcon width="24px" height="24px" color="white" />;
 
   const LineChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel('line', task => task.channelType === 'line');
@@ -519,7 +519,6 @@ export const setupLineChatChannel = () => {
   Flex.TaskChannels.register(LineChatChannel);
 };
 
-const maskIdentifiers = false;
 const maskIdentifiersByChannel = channelType => {
   // Task list and panel when a call comes in
   channelType.templates.TaskListItem.firstLine = 'MaskIdentifiers';
@@ -541,7 +540,7 @@ const maskIdentifiersByChannel = channelType => {
   channelType.templates.Supervisor.TaskOverviewCanvas.title = 'MaskIdentifiers';
 };
 
-const maskIdentifiersForDefaultChannels = () => {
+export const maskIdentifiersForDefaultChannels = () => {
   maskIdentifiersByChannel(Flex.DefaultTaskChannels.Call);
   maskIdentifiersByChannel(Flex.DefaultTaskChannels.Chat);
   maskIdentifiersByChannel(Flex.DefaultTaskChannels.ChatSms);
@@ -549,5 +548,3 @@ const maskIdentifiersForDefaultChannels = () => {
   maskIdentifiersByChannel(Flex.DefaultTaskChannels.ChatMessenger);
   maskIdentifiersByChannel(Flex.DefaultTaskChannels.ChatWhatsApp);
 };
-
-if (maskIdentifiers) maskIdentifiersForDefaultChannels();

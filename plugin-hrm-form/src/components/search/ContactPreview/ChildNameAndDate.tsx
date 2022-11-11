@@ -10,6 +10,7 @@ import { ViewButton } from '../../../styles/case';
 import { isNonDataCallType } from '../../../states/ValidationRules';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import { channelTypes, ChannelTypes } from '../../../states/DomainConstants';
+import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
 
 type OwnProps = {
   channel: ChannelTypes;
@@ -36,7 +37,8 @@ const getNumber = (channel, number) => {
 const ChildNameAndDate: React.FC<Props> = ({ channel, callType, name, number, date, onClickFull }) => {
   const dateString = `${format(new Date(date), 'MMM d, yyyy h:mm aaaaa')}m`;
   const showNumber = isNonDataCallType(callType) && Boolean(number);
-  const maskIdentifiers = false;
+  const { canView } = getPermissionsForViewingIdentifiers();
+  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
   return (
     <Row>

@@ -24,6 +24,7 @@ import { getConfig } from '../../../HrmFormPlugin';
 import { namespace, configurationBase, searchContactsBase, contactFormsBase } from '../../../states';
 import { localizedSource } from '../../PreviousContactsBanner';
 import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils/task';
+import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
 
 const getField = value => ({
   value,
@@ -146,7 +147,8 @@ class SearchForm extends Component {
     };
 
     const source = localizedSource[task.channelType];
-    const maskIdentifiers = false;
+    const { canView } = getPermissionsForViewingIdentifiers();
+    const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
     return (
       <>
