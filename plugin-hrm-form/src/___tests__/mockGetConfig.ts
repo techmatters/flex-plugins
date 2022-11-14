@@ -28,6 +28,7 @@ const baseMockConfig = {
     enable_transfers: true,
     enable_save_insights: true,
   },
+  isSupervisor: false,
 };
 
 const mockGetConfig = jest.fn(() => baseMockConfig);
