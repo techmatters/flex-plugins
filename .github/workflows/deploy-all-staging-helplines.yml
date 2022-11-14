@@ -5,9 +5,6 @@ name: Deploy Flex to all Helpline Staging Environments
 on:
   workflow_dispatch:
     inputs:
-      confirm:
-        description: This is dangerous! Are you sure you want to trigger this workflow? Type "deploy helplines workflow" to continue.
-        required: true
       changelog:
         description: Release Changelog - Add a comment about the changes to be included in this release.
         required: true

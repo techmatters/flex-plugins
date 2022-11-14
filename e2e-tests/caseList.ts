@@ -55,26 +55,23 @@ export const caseList = (page: Page) => {
   async function filterCases(filter: Filter, option: string, option2?: string): Promise<void> {
     const openFilterButton = selectors.filterButton(filter);
     await openFilterButton.waitFor({ state: 'visible' });
-    await expect(openFilterButton).toContainText(filter);
     await openFilterButton.click();
 
     if (filter === 'Categories' && option2) {
       //for Categories filter, 2 valid options are required
       const selectOption = selectors.filterCategories(filter, option);
-      selectOption.click();
+      await selectOption.click();
 
       const selectSubCategoryOption = selectors.filterOptionCheckbox(filter, option2);
       console.log({ selectSubCategoryOption });
       await selectSubCategoryOption.click();
     } else {
       const selectOption = selectors.filterOptionCheckbox(filter, option).first();
-      await expect(selectOption).toContainText(option);
       await selectOption.click();
     }
 
     const applyFilterButton = selectors.filterApplyButton;
     await applyFilterButton.waitFor({ state: 'visible' });
-    await expect(applyFilterButton).toContainText('Apply');
     await applyFilterButton.click();
     console.log(`Filtered cases by: ${filter} filter with selection of: ${option}`);
   }

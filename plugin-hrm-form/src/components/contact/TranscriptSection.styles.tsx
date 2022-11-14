@@ -2,6 +2,7 @@ import { styled } from '@twilio/flex-ui';
 
 import { sectionTitleFontStyle } from '../../styles/search';
 import { FontOpenSans, Row } from '../../styles/HrmStyles';
+import HrmTheme from '../../styles/HrmTheme';
 
 export const ItalicFont = styled(FontOpenSans)`
   font-size: 12px;
@@ -13,13 +14,13 @@ ItalicFont.displayName = 'ItalicFont';
 export const LoadTranscriptButton = styled('button')`
   height: 28px;
   width: 30%;
-  background-color: ${props => (props.theme.colors as any).secondaryButtonColor};
+  background-color: ${props => (HrmTheme.colors as any).secondaryButtonColor};
   border-radius: 4px;
   border-style: none;
 `;
 
 export const LoadTranscriptButtonText = styled(FontOpenSans)`
-  ${sectionTitleFontStyle}
+  ${sectionTitleFontStyle};
   text-align: center;
 `;
 LoadTranscriptButtonText.displayName = 'LoadTranscriptButtonText';
@@ -53,7 +54,7 @@ export const MessageBubbleContainer = styled(Row)<MessageBubbleProps>`
   overflow: hidden;
   ${p => (p.isCounselor ? 'margin-left: auto;' : 'margin-right: auto;')}
   align-items: ${p => (p.isCounselor ? 'right' : 'left')};
-  background-color: ${props => (props.isCounselor ? '#057d9e' : props.theme.colors.base2)};
+  background-color: ${props => (props.isCounselor ? '#057d9e' : HrmTheme.colors.base2)};
   padding: 5px 12px 8px 12px;
 `;
 MessageBubbleContainer.displayName = 'MessageBubbleContainer';
@@ -61,7 +62,7 @@ MessageBubbleContainer.displayName = 'MessageBubbleContainer';
 export const MessageBubleInnerContainer = styled('div')`
   display: flex;
   flex-flow: column nowrap;
-  flex:grow: 1;
+  flex-grow: 1;
   flex-shrink: 1;
 `;
 MessageBubleInnerContainer.displayName = 'MessageBubleInnerContainer';
@@ -108,9 +109,9 @@ MessageBubbleBodyText.displayName = 'MessageBubbleBodyText';
 export const AvatarContainer = styled('div')<{ isGroupedWithPrevious: boolean }>`
   margin-right: 12px;
   width: 24px;
-  heigth: 24px;
+  height: 24px;
   border-radius: 18px;
-  background: ${props => (props.isGroupedWithPrevious ? 'transparent' : props.theme.colors.base2)};
+  background: ${props => (props.isGroupedWithPrevious ? 'transparent' : HrmTheme.colors.base2)};
 `;
 AvatarContainer.displayName = 'AvatarContainer';
 

@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable dot-notation */
 import React from 'react';
 import { View, Text, Image } from '@react-pdf/renderer';
 
@@ -20,12 +21,12 @@ const CasePrintHeader: React.FC<Props> = ({ firstName, lastName, id, officeName,
 
   return (
     <View fixed>
-      <View style={styles.headerContainer}>
+      <View style={styles['headerContainer']}>
         <View style={styles.flexColumn}>
-          <Text style={styles.childName}>{`${firstName} ${lastName}`}</Text>
+          <Text style={styles['childName']}>{`${firstName} ${lastName}`}</Text>
           <View style={styles.flexRow}>
-            <Text style={styles.caseId}>{`${strings['Case-CaseNumber']}: ${id}`}</Text>
-            {multipleOfficeSupport && officeName && <Text style={styles.officeName}>({officeName})</Text>}
+            <Text style={styles['caseId']}>{`${strings['Case-CaseNumber']}: ${id}`}</Text>
+            {multipleOfficeSupport && officeName && <Text style={styles['officeName']}>({officeName})</Text>}
           </View>
         </View>
         {logoBlob && <Image src={logoBlob} />}

@@ -1,11 +1,13 @@
 import { Page, test } from '@playwright/test';
 import { logPageTelemetry } from '../browser-logs';
 import { caseList } from '../caseList';
+import { notificationBar } from '../notificationBar';
 
 test.describe.serial('Open and Edit a Case in Case List page', () => {
   let pluginPage: Page;
 
   test.beforeAll(async ({ browser }) => {
+    test.setTimeout(600000);
     pluginPage = await browser.newPage();
     logPageTelemetry(pluginPage);
     console.log('Plugin page browser session launched');
@@ -30,6 +32,9 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     await page.filterCases('Categories', 'Accessibility', 'Education');
 
     await page.openFirstCaseButton();
+
+    // Open notifications cover up the print icon :facepalm
+    await notificationBar(pluginPage).dismissAllNotifications();
 
     await page.viewClosePrintView();
 

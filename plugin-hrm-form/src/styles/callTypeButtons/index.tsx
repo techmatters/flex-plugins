@@ -1,9 +1,12 @@
 import React from 'react';
-import styled from 'react-emotion';
-import Dialog, { DialogProps } from '@material-ui/core/Dialog';
+import '@emotion/react';
+import Dialog from '@material-ui/core/Dialog';
 import ClearIcon from '@material-ui/icons/Clear';
 import { IconButton } from '@material-ui/core';
-import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
+import { Button, styled } from '@twilio/flex-ui';
+import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
+
+import HrmTheme from '../HrmTheme';
 
 export const Container = styled('div')`
   width: 300px;
@@ -34,6 +37,7 @@ export const DataCallTypeButton = styled(Button)`
   color: #1d2e36;
   border-radius: 4px;
   background-color: #d1e3f6;
+  border: none;
 
   &:hover {
     background-color: #7fa3cb;
@@ -65,6 +69,7 @@ export const NonDataCallTypeButton = styled(Button)<NonDataCallTypeButtonProps>`
   color: #1d2e36;
   border-radius: 4px;
   background-color: #ecedf1;
+  border: none;
   ${props => props.marginRight && 'margin-right: 20px;'}
 
   &:hover {
@@ -76,7 +81,7 @@ export const NonDataCallTypeButton = styled(Button)<NonDataCallTypeButtonProps>`
   }
 `;
 
-export const CloseTaskDialog = styled<DialogProps>(props => <Dialog {...props} classes={{ paper: 'paper' }} />)`
+export const CloseTaskDialog = styled(props => <Dialog {...props} classes={{ paper: 'paper' }} />)`
   && .paper {
     width: 360px;
   }
@@ -101,8 +106,8 @@ type ConfirmButtonProps = {
 
 export const ConfirmButton = styled(Button)<ConfirmButtonProps>`
   text-transform: uppercase;
-  color: ${props => props.theme.colors.declineTextColor};
-  ${p => getBackgroundWithHoverCSS(p.theme.colors.declineColor, true, false, p.disabled)};
+  color: ${props => HrmTheme.colors.declineTextColor};
+  ${p => getBackgroundWithHoverCSS(HrmTheme.colors.declineColor, true, false, p.disabled)};
 
   &:focus {
     outline-style: auto;
@@ -130,7 +135,7 @@ export const CloseButton = styled(props => (
   </IconButton>
 ))`
   && .label {
-    color: ${props => props.theme.colors.defaultButtonColor};
+    color: ${HrmTheme.colors.defaultButtonColor};
   }
 
   &:hover {
