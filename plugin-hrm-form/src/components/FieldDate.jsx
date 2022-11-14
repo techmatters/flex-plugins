@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { StyledInput, StyledLabel, ErrorText, TextField } from '../styles/HrmStyles';
+import { StyledInput, StyledLabel, ErrorText, TextField, FormDateInput, FormLabel } from '../styles/HrmStyles';
 import RequiredAsterisk from './RequiredAsterisk';
 import { fieldType } from '../types';
 
@@ -51,12 +51,12 @@ class FieldDate extends Component {
     return (
       <TextField {...rest}>
         {label && (
-          <StyledLabel htmlFor={id}>
+          <FormLabel htmlFor={id}>
             {label}
             <RequiredAsterisk field={field} />
-          </StyledLabel>
+          </FormLabel>
         )}
-        <StyledInput
+        <FormDateInput
           id={id}
           placeholder={placeholder}
           error={field.error !== null}

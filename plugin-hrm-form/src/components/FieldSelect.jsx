@@ -2,7 +2,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { ErrorText, StyledLabel, StyledMenuItem, StyledSelect, TextField } from '../styles/HrmStyles';
+import {
+  ErrorText,
+  FormLabel,
+  FormSelect,
+  StyledLabel,
+  StyledMenuItem,
+  StyledSelect,
+  TextField,
+} from '../styles/HrmStyles';
 import RequiredAsterisk from './RequiredAsterisk';
 import { fieldType, counselorType } from '../types';
 
@@ -55,10 +63,10 @@ const FieldSelect = ({
 
   return (
     <TextField {...rest}>
-      <StyledLabel htmlFor={id}>
+      <FormLabel htmlFor={id}>
         {label}
         <RequiredAsterisk field={field} />
-      </StyledLabel>
+      </FormLabel>
       <StyledSelect
         name={name}
         id={id}

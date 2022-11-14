@@ -8,7 +8,7 @@ export function flexChat(page: Page) {
   const selectors = {
     //Chatting
     chatMessageArea: taskCanvas.locator('div.Twilio-MessagingCanvas'),
-    chatInput: taskCanvas.locator('.Twilio-MessageInputArea-TextArea textarea'),
+    chatInput: taskCanvas.locator("//textarea[@data-test='message-input']"),
     chatSendButton: taskCanvas.locator('button.Twilio-MessageInput-SendButton'),
     messageBubbles: taskCanvas.locator('div.Twilio-MessageListItem div.Twilio-MessageBubble'),
     messageWithText: (text: string) =>

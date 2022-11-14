@@ -14,21 +14,17 @@ on:
         required: true
 
 jobs:
-
-  build-and-deploy:
-    uses: techmatters/flex-plugins/.github/workflows/end_to_end_development.yml@master
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      E2E_DEV_ACCOUNT_SID: ${{ secrets.E2E_DEV_ACCOUNT_SID }}
-      E2E_DEV_AUTH_TOKEN: ${{ secrets.E2E_DEV_AUTH_TOKEN }}
+  deploy:
+    uses: ./.github/workflows/custom_helpline.yml
+    secrets: inherit
     with:
-      changelog: "Deploying for pre-release ${{ inputs.tag-prefix }}: ${{ inputs.tag-prefix }} (commit ${{ github.sha }})"
+      helpline_code: E2E
+      environment_code: DEV
+      changelog: ${{ inputs.changelog }}
       send-slack-message: 'false'
 
   run-e2e-tests:
-    needs: build-and-deploy
+    needs: deploy
 
     runs-on: ubuntu-latest
 

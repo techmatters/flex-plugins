@@ -1,18 +1,20 @@
 import * as Flex from '@twilio/flex-ui';
-import { FlexPlugin, loadCSS } from 'flex-plugin';
+import { FlexPlugin, loadCSS } from '@twilio/flex-plugin';
 import SyncClient from 'twilio-sync';
 
-import './styles/GlobalOverrides';
+import './styles/global-overrides.css';
 import reducers, { namespace, configurationBase, RootState } from './states';
-import HrmTheme from './styles/HrmTheme';
+import HrmTheme, { overrides } from './styles/HrmTheme';
 import { transferModes } from './states/DomainConstants';
 import { initLocalization } from './utils/pluginHelpers';
+import * as Providers from './utils/setUpProviders';
 import * as ActionFunctions from './utils/setUpActions';
 import * as Components from './utils/setUpComponents';
 import setUpMonitoring from './utils/setUpMonitoring';
 import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
+import { getPermissionsForViewingIdentifiers, PermissionActions } from './permissions';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -90,6 +92,8 @@ export type SetupObject = ReturnType<typeof getConfig> & {
   getMessage: (messageKey: string) => (language: string) => Promise<string>;
 };
 
+console.log('This is me checking for header output', Flex.MainHeader);
+
 /**
  * Helper to expose the forms definitions without the need of calling Manager
  */
@@ -154,6 +158,8 @@ const setUpLocalization = (config: ReturnType<typeof getConfig>) => {
 
 const setUpComponents = (setupObject: SetupObject) => {
   const { helpline, featureFlags } = setupObject;
+  const { canView } = getPermissionsForViewingIdentifiers();
+  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
@@ -161,9 +167,9 @@ const setUpComponents = (setupObject: SetupObject) => {
   Components.setUpAddButtons(setupObject);
   Components.setUpNoTasksUI(setupObject);
   Components.setUpCustomCRMContainer();
-  Components.setupTwitterChatChannel();
-  Components.setupInstagramChatChannel();
-  Components.setupLineChatChannel();
+  Components.setupTwitterChatChannel(maskIdentifiers);
+  Components.setupInstagramChatChannel(maskIdentifiers);
+  Components.setupLineChatChannel(maskIdentifiers);
   if (featureFlags.enable_transfers) {
     Components.setUpTransferComponents();
     Components.setUpIncomingTransferMessage();
@@ -184,6 +190,17 @@ const setUpComponents = (setupObject: SetupObject) => {
   Components.setUpStandaloneSearch();
 
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
+
+  if (maskIdentifiers) {
+    const { strings } = getConfig();
+    Components.maskIdentifiersForDefaultChannels();
+    strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+    Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
+      theirDefaultName: 'XXXXXX',
+      theirFriendlyNameOverride: false,
+      yourFriendlyNameOverride: true,
+    };
+  }
 };
 
 const setUpActions = (setupObject: SetupObject) => {
@@ -230,12 +247,14 @@ export default class HrmFormPlugin extends FlexPlugin {
    * Use this to modify any UI components or attach to the actions framework
    */
   init(flex: typeof Flex, manager: Flex.Manager) {
-    loadCSS('https://use.fontawesome.com/releases/v5.15.1/css/solid.css');
+    loadCSS('https://use.fontawesome.com/releases/v5.15.4/css/solid.css');
 
     setUpMonitoring(this, manager.workerClient, manager.serviceConfiguration);
 
     console.log(`Welcome to ${PLUGIN_NAME}`);
     this.registerReducers(manager);
+
+    Providers.setMUIProvider();
 
     const config = getConfig();
 
@@ -251,8 +270,16 @@ export default class HrmFormPlugin extends FlexPlugin {
     setUpComponents(setupObject);
     setUpActions(setupObject);
 
-    const managerConfiguration: any = {
-      colorTheme: HrmTheme,
+    const managerConfiguration: Flex.Config = {
+      // colorTheme: HrmTheme,
+      theme: {
+        componentThemeOverrides: overrides,
+        tokens: {
+          backgroundColors: {
+            colorBackground: HrmTheme.colors.base2,
+          },
+        },
+      },
     };
     manager.updateConfig(managerConfiguration);
 
