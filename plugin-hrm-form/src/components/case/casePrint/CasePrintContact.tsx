@@ -47,9 +47,9 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
           <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-Channel']}</Text>
           <Text style={styles['sectionItemSecondColumn']}>{formattedChannel}</Text>
         </View>
-        <View style={styles.sectionItemRowOdd}>
-          <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-PhoneNumber']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>
+        <View style={styles['sectionItemRowOdd']}>
+          <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-PhoneNumber']}</Text>
+          <Text style={styles['sectionItemSecondColumn']}>
             {maskIdentifiers ? strings.MaskIdentifers : presentValue(number, strings)}
           </Text>
         </View>
