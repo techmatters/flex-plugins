@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "npx playwright install",
-    "test": "npx playwright test",
-    "test:local": "run-s ssm:local test:local:run",
-    "test:local:run": "source .env && cross-env DEBUG=pw:api PLAYWRIGHT_BASEURL=http://localhost:3000 npm run test",
+    "test": "npx playwright test --workers 1",
+    "test:local": "run-s ssm:local  test:local:run",
+    "test:local:run": "cross-env DEBUG=pw:api PLAYWRIGHT_BASEURL=http://localhost:3000 npm run test",
     "lint": "eslint --ext ts .",
     "lint:fix": "npm run lint -- --fix .",
     "ssm:local": "npm run ssm:local:env",

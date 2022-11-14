@@ -10,6 +10,7 @@ Primary reviewer:
 ### Checklist
 - [ ] Corresponding issue has been opened
 - [ ] New tests added
+- [ ] Feature flags added
 - [ ] Strings are localized
 - [ ] Tested for chat contacts
 - [ ] Tested for call contacts
