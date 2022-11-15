@@ -290,11 +290,11 @@ export const TagsWrapper = styled(Flex)`
 
 export const TagText = styled(FontOpenSans)`
   display: inline-block;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
   line-height: 13px;
-  opacity: 0.65;
-  color: #192b33e8;
+  opacity: 1;
+  color: ${HrmTheme.colors.categoryTextColor};
 `;
 
 export const TagMiddleDot = styled('div')<ColorProps>`
