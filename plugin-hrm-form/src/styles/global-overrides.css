@@ -13,6 +13,9 @@ div.Twilio-SideNav-Container {
 div.Twilio-MainHeader {
     margin-bottom: 5px;
 }
+div.Twilio-MainHeader img {
+    margin-left: -12px;
+}
 div.Twilio-MainHeader div.Twilio-Icon {
     color: rgb(18, 28, 45);
 }
