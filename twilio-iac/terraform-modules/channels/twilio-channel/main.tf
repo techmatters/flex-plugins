@@ -27,7 +27,7 @@ locals {
   }
 
   resource "twilio_flex_flex_flows_v1" "channel_flow" {
-    channel_type  = "${var.channel_name}"
+    channel_type  = "${var.channel_type}"
     chat_service_sid = var.flex_chat_service_sid
     friendly_name = "Flex ${title(var.channel_name)} Channel Flow"
     integration_type = "studio"

@@ -5,9 +5,11 @@ import * as fetchRulesModule from '../../permissions/fetchRules';
 import {
   getPermissionsForCase,
   getPermissionsForContact,
+  getPermissionsForViewingIdentifiers,
   PermissionActions,
   CaseActions,
   ContactActions,
+  ViewIdentifiersAction,
 } from '../../permissions';
 
 jest.mock('../../HrmFormPlugin');
@@ -225,6 +227,64 @@ describe('Test different scenarios (all ContactActions)', () => {
       const { can } = getPermissionsForContact('owner');
 
       expect(can(action)).toBe(expectedResult);
+    },
+  );
+});
+describe('Test different scenarios for ViewIdentifiersAction', () => {
+  each(
+    Object.values(ViewIdentifiersAction)
+      .flatMap(action => [
+        {
+          action,
+          conditionsSets: [['everyone']],
+          isSupervisor: false,
+          expectedResult: true,
+          expectedDescription: 'is not a supervisor',
+        },
+        {
+          action,
+          conditionsSets: [],
+          isSupervisor: true,
+          expectedResult: false,
+          expectedDescription: 'user is supervisor',
+        },
+        {
+          action,
+          conditionsSets: [],
+          isSupervisor: false,
+          expectedResult: false,
+          expectedDescription: 'user is not a supervisor',
+        },
+        {
+          action,
+          conditionsSets: [['isSupervisor']],
+          isSupervisor: true,
+          expectedResult: true,
+          expectedDescription: 'user is a supervisor',
+        },
+        {
+          action,
+          conditionsSets: [['isSupervisor']],
+          isSupervisor: false,
+          expectedResult: false,
+          expectedDescription: 'user is not a supervisor',
+        },
+      ])
+      .map(t => ({ ...t, prettyConditionsSets: t.conditionsSets.map(arr => `[${arr.join(',')}]`) })),
+  ).test(
+    `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
+    ({ action, conditionsSets, isSupervisor, expectedResult }) => {
+      const rules = buildRules(conditionsSets);
+      jest.spyOn(fetchRulesModule, 'fetchRules').mockReturnValueOnce(rules);
+
+      getConfig.mockReturnValueOnce({
+        isSupervisor,
+        permissionConfig: 'wareva',
+      });
+
+      const { canView } = getPermissionsForViewingIdentifiers();
+
+      expect(canView(action)).toBe(expectedResult);
     },
   );
 });

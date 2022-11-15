@@ -1,3 +1,8 @@
+body,
+body p,
+body span {
+    font-family: Open Sans;
+}
 div.Twilio-ModalPopupWithEntryControl {
     padding-top: 7px;
     padding-bottom: 7px;
