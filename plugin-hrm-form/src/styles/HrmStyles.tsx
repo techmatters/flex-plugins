@@ -2,7 +2,7 @@
 import React from 'react';
 import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, withStyles, TabProps } from '@material-ui/core';
 import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
-import AssignmentInd from '@material-ui/icons/AssignmentInd';
+import AssignmentInd from '@material-ui/icons/AssignmentIndOutlined';
 import { Button, Icon, styled, CheckboxGroup } from '@twilio/flex-ui';
 import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
 
@@ -601,7 +601,6 @@ export const OfflineContactTaskIconContainer = styled('div')`
   display: flex;
   flex: 0 0 44px;
   height: 44px;
-  background-color: #159af8;
 `;
 OfflineContactTaskIconContainer.displayName = 'OfflineContactTaskIconContainer';
 
@@ -610,7 +609,7 @@ export const OfflineContactTaskIcon = withStyles({
     display: 'flex',
     flex: '0 0 auto',
     margin: 'auto',
-    color: '#ffffff',
+    color: '#159af8',
   },
 })(AssignmentInd);
 OfflineContactTaskIcon.displayName = 'OfflineContactTaskIcon';
