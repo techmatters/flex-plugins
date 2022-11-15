@@ -19,5 +19,6 @@
   "editFollowUpDate": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "editContact": [["isSupervisor"], ["isOwner"]],
   "viewPostSurvey": [["isSupervisor"]],
-  "viewExternalTranscript": [["isSupervisor"]]
+  "viewExternalTranscript": [["isSupervisor"]],
+  "viewIdentifiers": [["everyone"]]
 }
