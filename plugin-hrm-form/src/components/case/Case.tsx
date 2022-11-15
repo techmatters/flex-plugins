@@ -53,6 +53,7 @@ import { noteSectionApi } from '../../states/case/sections/note';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import * as ContactActions from '../../states/contacts/existingContacts';
 import { searchContactToHrmServiceContact, taskFormToSearchContact } from '../../states/contacts/contactDetailsAdapter';
+import { ChannelTypes } from '../../states/DomainConstants';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -130,7 +131,9 @@ const Case: React.FC<Props> = ({
           text: newContact.rawJson.caseInformation.callSummary.toString(),
           twilioWorkerId: workerSid,
           channel:
-            task.channelType === 'default' ? newContact.rawJson.contactlessTask.channel.toString() : task.channelType,
+            task.channelType === 'default'
+              ? newContact.rawJson.contactlessTask.channel
+              : (task.channelType as ChannelTypes),
           callType: newContact.rawJson.callType,
         };
 

@@ -5,6 +5,7 @@ import * as Flex from '@twilio/flex-ui';
 import NoteIcon from '@material-ui/icons/NoteAddOutlined';
 import AssignmentInd from '@material-ui/icons/AssignmentIndOutlined';
 import ReplyIcon from '@material-ui/icons/Reply';
+import { TaskChannelDefinition } from '@twilio/flex-ui';
 
 import { TimelineIconContainer } from '../../styles/case';
 import { channelTypes, ChannelTypes } from '../../states/DomainConstants';
@@ -16,15 +17,14 @@ import FacebookIcon from '../common/icons/FacebookIcon';
 import SmsIcon from '../common/icons/SmsIcon';
 import CallIcon from '../common/icons/CallIcon';
 import { colors } from '../../utils/setUpComponents';
-import { TaskChannelDefinition } from '@twilio/flex-ui';
 
-type IconType = ChannelTypes | 'note' | 'referral'
+type IconType = ChannelTypes | 'note' | 'referral';
 
 // eslint-disable-next-line react/display-name
 const getIcon = (type: IconType) => {
   switch (type) {
     case channelTypes.whatsapp:
-      return <WhatsappIcon width="24px" height="24px"  color={colors.whatsapp}/>;
+      return <WhatsappIcon width="24px" height="24px" color={colors.whatsapp} />;
     case channelTypes.facebook:
       return <FacebookIcon width="24px" height="24px" color={colors.facebook} />;
     case channelTypes.web:
@@ -49,11 +49,13 @@ const getIcon = (type: IconType) => {
   }
 };
 
-const TimelineIcon: React.FC<{ type: IconType }> = ({ type }) => <TimelineIconContainer>{getIcon(type)}</TimelineIconContainer>;
+const TimelineIcon: React.FC<{ type: IconType }> = ({ type }) => (
+  <TimelineIconContainer>{getIcon(type)}</TimelineIconContainer>
+);
 
 TimelineIcon.displayName = 'TimelineIcon';
 
-type DefaultIconProps = { defaultTaskChannel: TaskChannelDefinition, color: string}
+type DefaultIconProps = { defaultTaskChannel: TaskChannelDefinition; color: string };
 
 const DefaultIcon: React.FC<DefaultIconProps> = ({ defaultTaskChannel, color }) => (
   <div
