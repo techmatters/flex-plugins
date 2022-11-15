@@ -29,7 +29,7 @@ const CaseSummary: React.FC<Props> = ({ connectedCaseState }) => {
         <Template code="Case-CaseSummarySection" />
       </CaseSectionFont>
       <CaseSummaryTextArea
-        // rows={5} -> change the height (maybe needed when merging all the changes in Case)
+        rows={summary ? 5 : undefined}
         data-testid="Case-CaseSummary-TextArea"
         aria-labelledby="Case-CaseSummary-label"
         // Add Case summary doesn't show up as default value

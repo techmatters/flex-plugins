@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, IconButton, styled } from '@twilio/flex-ui';
-import { Typography, ButtonBase } from '@material-ui/core';
+import { ButtonBase } from '@material-ui/core';
 
-import { FontOpenSans, FormInput, FormSelect, FormSelectWrapper, Row, Column } from '../HrmStyles';
+import { FontOpenSans, FormInput, Row, Column } from '../HrmStyles';
 import HrmTheme from '../HrmTheme';
 
 export const CaseLayout = styled('div')`
@@ -77,10 +77,12 @@ type ViewButtonProps = {
 export const ViewButton = styled(props => <Button roundCorners={false} {...props} />)`
   color: ${HrmTheme.colors.categoryTextColor};
   background-color: #ecedf1;
+  height: 28px;
   border-radius: 4px;
-  font-weight: normal;
+  font-family: Open Sans;
+  font-weight: 600;
   letter-spacing: normal;
-  font-size: 12px;
+  font-size: 14px;
   box-shadow: none;
   border: none;
 
@@ -137,16 +139,21 @@ export const CaseActionDetailFont = styled(FontOpenSans)`
 `;
 CaseActionDetailFont.displayName = 'CaseActionDetailFont';
 
+const placeHolderTextStyle = `
+  font-family: Open Sans;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+`;
+
 const BaseTextArea = styled('textarea')`
   resize: none;
   background-color: ${HrmTheme.colors.base2};
-  font-family: Open Sans;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 15px;
+  ${placeHolderTextStyle}
   padding: 5px;
   border-style: none;
-  border-radius: 4px;
+  border-radius: 2px;
+
   :focus {
     outline: none;
   }
@@ -158,16 +165,19 @@ export const TimelineRow = styled('div')`
   background-color: #f6f6f67d;
   height: 40px;
   margin-bottom: 3px;
-  padding: 0 15px;
+  padding: 0 10px;
 `;
 TimelineRow.displayName = 'TimelineRow';
 
-export const TimelineDate = styled('div')`
+export const TimelineDate = styled(FontOpenSans)`
+  font-size: 12px;
   min-width: 65px;
+  flex-shrink: 0;
 `;
 TimelineDate.displayName = 'TimelineDate';
 
-export const TimelineText = styled('span')`
+export const TimelineText = styled(FontOpenSans)`
+  font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -200,6 +210,7 @@ export const InformationBoldText = styled(TimelineDate)`
 InformationBoldText.displayName = 'InformationBoldText';
 
 export const PlaceHolderText = styled(TimelineText)`
+  ${placeHolderTextStyle}
   opacity: 0.5;
 `;
 PlaceHolderText.displayName = 'PlaceHolderText';
@@ -260,8 +271,9 @@ export const DetailsHeaderTextContainer = styled('div')`
 
 DetailsHeaderTextContainer.displayName = 'DetailsHeaderTextContainer';
 
-export const DetailsHeaderChildName = styled(Typography)`
-  font-weight: 600 !important;
+export const DetailsHeaderChildName = styled(FontOpenSans)`
+  font-weight: 600;
+  font-size: 20px;
 `;
 
 DetailsHeaderChildName.displayName = 'DetailsHeaderChildName';
@@ -274,23 +286,25 @@ export const DetailsHeaderCaseContainer = styled('div')`
 
 DetailsHeaderCaseContainer.displayName = 'DetailsHeaderCaseContainer';
 
-export const DetailsHeaderCounselor = styled('div')`
+export const DetailsHeaderCounselor = styled(FontOpenSans)`
+  font-size: 12px;
   font-style: italic;
   margin-top: 5px;
 `;
 
 DetailsHeaderCounselor.displayName = 'DetailsHeaderCounselor';
 
-export const DetailsHeaderCaseId = styled(Typography)`
-  font-weight: 600 !important;
+export const DetailsHeaderCaseId = styled(FontOpenSans)`
+  font-weight: 600;
+  font-size: 14px;
 `;
 
 DetailsHeaderCaseId.displayName = 'DetailsHeaderCaseId';
 
-export const DetailsHeaderOfficeName = styled(Typography)`
+export const DetailsHeaderOfficeName = styled(FontOpenSans)`
   padding-left: 10px;
-  font-size: 0.7rem !important;
-  font-weight: 300 !important;
+  font-size: 0.7rem;
+  font-weight: 300;
 `;
 
 DetailsHeaderOfficeName.displayName = 'DetailsHeaderOfficeName';
@@ -300,6 +314,11 @@ export const StyledPrintButton = styled(IconButton)`
 
   :focus {
     outline: auto;
+  }
+
+  :hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    background-blend-mode: color;
   }
 `;
 
@@ -352,7 +371,7 @@ type CaseDetailsBorderProps = {
 };
 
 export const CaseDetailsBorder = styled('div')<CaseDetailsBorderProps>`
-  border-bottom: ${props => (props.sectionTypeId ? 'none' : '2px solid #e5e6e7')};
+  border-bottom: ${props => (props.sectionTypeId ? 'none' : '1px solid #e5e6e7')};
   margin-right: 25px;
   margin-bottom: ${props => (props.marginBottom ? props.marginBottom : '')};
   padding-bottom: ${props => (props.paddingBottom ? props.paddingBottom : '25px')};
