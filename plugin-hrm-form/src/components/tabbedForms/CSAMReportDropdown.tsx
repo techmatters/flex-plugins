@@ -20,7 +20,7 @@ const CSAMReportDropdown: React.FC<Props> = ({ handleCSAMType, dropdown, setCSAM
       </StyledCSAMReportHeader>
       <StyledCSAMReportDropdownList
         onClick={() => {
-          setCSAMType(true);
+          setCSAMType('self-report');
           handleCSAMType();
         }}
       >
@@ -29,7 +29,7 @@ const CSAMReportDropdown: React.FC<Props> = ({ handleCSAMType, dropdown, setCSAM
       <StyledCSAMReportDropdownList
         margin="0 -40px 10px -25px"
         onClick={() => {
-          setCSAMType(false);
+          setCSAMType('counsellor-report');
           handleCSAMType();
         }}
       >

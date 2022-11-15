@@ -4,17 +4,20 @@ import { Template } from '@twilio/flex-ui';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMoreOutlined';
 import AssignmentIcon from '@material-ui/icons/AssignmentOutlined';
 import StorageIcon from '@material-ui/icons/StorageOutlined';
+import OpenInNew from '@material-ui/icons/OpenInNew';
 
 import { Row, CSAMReportButtonText, StyledCSAMReportButton } from '../../styles/HrmStyles';
 import CSAMReportDropdown from './CSAMReportDropdown';
 
 type OwnProps = {
   handleCSAMType: () => void;
+  csamReportEnabled: boolean;
+  csamClcReportEnabled: boolean;
 };
 
 type Props = OwnProps;
 
-const CSAMReportButton: React.FC<Props> = ({ handleCSAMType }) => {
+const CSAMReportButton: React.FC<Props> = ({ handleCSAMType, csamReportEnabled, csamClcReportEnabled }) => {
   const [dropdown, setDropdown] = useState(false);
   const buttonRef = useRef(null);
 
@@ -36,19 +39,23 @@ const CSAMReportButton: React.FC<Props> = ({ handleCSAMType }) => {
   return (
     <>
       <Row>
-        <StyledCSAMReportButton style={{ marginRight: 30 }}>
-          <StorageIcon fontSize="inherit" style={{ marginRight: 5 }} />
-          <CSAMReportButtonText>
-            <Template code="TabbedForms-CSAMResources" />
-          </CSAMReportButtonText>
-        </StyledCSAMReportButton>
-        <StyledCSAMReportButton ref={buttonRef} style={{ marginRight: 10 }} onClick={handleDropdown}>
-          <AssignmentIcon fontSize="inherit" style={{ marginRight: 5 }} />
-          <CSAMReportButtonText>
-            <Template code="TabbedForms-ExternalReports" />
-          </CSAMReportButtonText>
-          <ExpandMoreIcon fontSize="inherit" style={{ marginLeft: 10 }} />
-        </StyledCSAMReportButton>
+        {csamReportEnabled && csamClcReportEnabled && (
+          <StyledCSAMReportButton ref={buttonRef} style={{ marginRight: 10 }} onClick={handleDropdown}>
+            <AssignmentIcon fontSize="inherit" style={{ marginRight: 5 }} />
+            <CSAMReportButtonText>
+              <Template code="TabbedForms-ExternalReports" />
+            </CSAMReportButtonText>
+            <ExpandMoreIcon fontSize="inherit" style={{ marginLeft: 10 }} />
+          </StyledCSAMReportButton>
+        )}
+        {csamReportEnabled && !csamClcReportEnabled && (
+          <StyledCSAMReportButton onClick={handleCSAMType}>
+            <OpenInNew fontSize="inherit" style={{ marginRight: 5 }} />
+            <CSAMReportButtonText>
+              <Template code="TabbedForms-CSAMFileReportButton" />
+            </CSAMReportButtonText>
+          </StyledCSAMReportButton>
+        )}
       </Row>
       <CSAMReportDropdown dropdown={dropdown} handleCSAMType={handleCSAMType} />
     </>

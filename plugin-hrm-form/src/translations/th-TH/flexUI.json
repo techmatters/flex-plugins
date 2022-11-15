@@ -92,6 +92,7 @@
   "Cancel": "ยกเลิก",
   "CancelButton": "ยกเลิก",
   "TabbedForms-CSAMReportButton": "รายงาน CSAM",
+  "TabbedForms-CSAMFileReportButton": "รายงานไฟล์ CSAM",
   "TabbedForms-CSAMResources": "ทรัพยากร",
   "TabbedForms-ExternalReports": "รายงานภายนอก",
   "TabbedForms-AddContactInfoTab": "ข้อมูลติดต่อ",

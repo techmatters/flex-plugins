@@ -25,7 +25,7 @@ type Props = {
   onClickClose: () => void;
   onSendAnotherReport: () => void;
   clcReportStatus: string;
-  createLinkForChild: boolean;
+  csamType: 'self-report' | 'counsellor-report';
 };
 
 const CSAMReportStatusScreen: React.FC<Props> = ({
@@ -33,13 +33,13 @@ const CSAMReportStatusScreen: React.FC<Props> = ({
   clcReportStatus,
   onClickClose,
   onSendAnotherReport,
-  createLinkForChild,
+  csamType,
 }) => {
   const [copied, setCopied] = React.useState(false);
 
   const onCopyCode = async () => {
     // eslint-disable-next-line no-unused-expressions
-    createLinkForChild
+    csamType === 'self-report'
       ? await navigator.clipboard.writeText(clcReportStatus)
       : await navigator.clipboard.writeText(reportStatus.responseData);
     setCopied(true);
@@ -65,21 +65,25 @@ const CSAMReportStatusScreen: React.FC<Props> = ({
                 <SuccessReportIcon />
               </Box>
               <BoldDescriptionText fontSize="16px">
-                <Template code={createLinkForChild ? 'CSAMCLCReportForm-LinkReady' : 'CSAMReportForm-ReportSent'} />
+                <Template
+                  code={csamType === 'self-report' ? 'CSAMCLCReportForm-LinkReady' : 'CSAMReportForm-ReportSent'}
+                />
               </BoldDescriptionText>
             </Row>
             <Box marginTop="8%" marginBottom="3%">
               <RegularText>
-                <Template code={createLinkForChild ? 'CSAMCLCReportForm-CopyLink' : 'CSAMReportForm-CopyCode'} />
+                <Template
+                  code={csamType === 'self-report' ? 'CSAMCLCReportForm-CopyLink' : 'CSAMReportForm-CopyCode'}
+                />
               </RegularText>
             </Box>
             <Row>
-              {createLinkForChild && (
+              {csamType === 'self-report' && (
                 <Box marginRight="10px">
                   <ReportCodeText>{clcReportStatus}</ReportCodeText>
                 </Box>
               )}
-              {!createLinkForChild && (
+              {csamType === 'counsellor-report' && (
                 <Box marginRight="5%">
                   <ReportCodeText>#{reportStatus.responseData}</ReportCodeText>
                 </Box>
@@ -99,11 +103,11 @@ const CSAMReportStatusScreen: React.FC<Props> = ({
       <BottomButtonBar>
         <Box marginRight="15px">
           <StyledNextStepButton secondary roundCorners onClick={onSendAnotherReport}>
-            <Template code={createLinkForChild ? 'BottomBar-SendAnotherLink' : 'BottomBar-SendAnotherReport'} />
+            <Template code={csamType === 'self-report' ? 'BottomBar-SendAnotherLink' : 'BottomBar-SendAnotherReport'} />
           </StyledNextStepButton>
         </Box>
         <StyledNextStepButton roundCorners onClick={onClickClose}>
-          <Template code={createLinkForChild ? 'CloseButton' : 'BottomBar-CloseView'} />
+          <Template code={csamType === 'self-report' ? 'CloseButton' : 'BottomBar-CloseView'} />
         </StyledNextStepButton>
       </BottomButtonBar>
     </CSAMReportContainer>

@@ -123,6 +123,7 @@
   "TabbedForms-AddContactInfoTab": "Contact",
   "TabbedForms-BackButton": "Categorize Contact Type",
   "TabbedForms-CSAMReportButton": "CSAM Report",
+  "TabbedForms-CSAMFileReportButton": "File CSAM Report",
   "TabbedForms-CSAMResources": "Resources",
   "TabbedForms-ExternalReports": "External Reports",
   "TabbedForms-ReportsChildLink": "Create link for child",

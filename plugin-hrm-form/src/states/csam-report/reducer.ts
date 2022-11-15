@@ -2,7 +2,7 @@ import { omit } from 'lodash';
 
 import * as t from './types';
 import { GeneralActionType, INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from '../types';
-import { initialValues } from '../../components/CSAMReport/CSAMReportFormDefinition';
+import { initialValues, childInitialValues } from '../../components/CSAMReport/CSAMReportFormDefinition';
 
 type TaskEntry = {
   form: t.CSAMReportForm;
@@ -13,11 +13,11 @@ type CSAMReportState = {
   tasks: {
     [taskId: string]: TaskEntry;
   };
-  createLinkForChild: boolean;
+  csamType: 'self-report' | 'counsellor-report';
 };
 
 export const newTaskEntry: TaskEntry = {
-  form: { ...initialValues },
+  form: { ...initialValues, ...childInitialValues },
   reportStatus: {
     responseCode: '',
     responseData: '',
@@ -27,7 +27,7 @@ export const newTaskEntry: TaskEntry = {
 
 export const initialState: CSAMReportState = {
   tasks: {},
-  createLinkForChild: false,
+  csamType: 'counsellor-report',
 };
 
 export function reduce(state = initialState, action: t.CSAMReportActionType | GeneralActionType): CSAMReportState {
@@ -89,7 +89,7 @@ export function reduce(state = initialState, action: t.CSAMReportActionType | Ge
         },
       };
     case t.SET_CSAM_TYPE: {
-      return { ...state, createLinkForChild: action.createLinkForChild };
+      return { ...state, csamType: action.csamType };
     }
     default:
       return state;

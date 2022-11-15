@@ -9,18 +9,25 @@ export const keys = {
   firstName: 'firstName',
   lastName: 'lastName',
   email: 'email',
+} as const;
+
+export const clcKeys = {
   childAge: 'childAge',
   ageVerified: 'ageVerified',
 } as const;
 
-type CSAMFormDefinitionObject = {
+type CounselorCSAMFormDefinitionObject = {
   [k in keyof typeof keys]: FormItemDefinition;
+};
+
+type ChildCSAMFormDefinitionObject = {
+  [k in keyof typeof clcKeys]: FormItemDefinition;
 };
 
 // eslint-disable-next-line prefer-named-capture-group
 const urlRegex = /(https?:\/\/)?([\w\-])+\.{1}([a-zA-Z]{2,63})([\/\w-]*)*\/?\??([^#\n\r]*)?#?([^\n\r]*)/g;
 
-export const definitionObject: CSAMFormDefinitionObject = {
+export const definitionObject: CounselorCSAMFormDefinitionObject = {
   webAddress: {
     name: 'webAddress',
     label: 'Web address',
@@ -67,6 +74,10 @@ export const definitionObject: CSAMFormDefinitionObject = {
     required: { value: true, message: 'RequiredFieldError' },
     maxLength: { value: 100, message: '100 characters max.' },
   },
+};
+
+// eslint-disable-next-line import/no-unused-modules
+export const childDefinitionObject: ChildCSAMFormDefinitionObject = {
   childAge: {
     name: 'childAge',
     label: '',
@@ -91,6 +102,9 @@ export const initialValues = {
   firstName: getInitialValue(definitionObject.firstName),
   lastName: getInitialValue(definitionObject.lastName),
   email: getInitialValue(definitionObject.email),
-  childAge: getInitialValue(definitionObject.childAge),
-  ageVerified: getInitialValue(definitionObject.ageVerified),
+} as const;
+
+export const childInitialValues = {
+  childAge: getInitialValue(childDefinitionObject.childAge),
+  ageVerified: getInitialValue(childDefinitionObject.ageVerified),
 } as const;
