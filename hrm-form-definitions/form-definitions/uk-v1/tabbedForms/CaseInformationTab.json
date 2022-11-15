@@ -45,6 +45,33 @@
     ]
   },
   {
+    "name": "signposted",
+    "label": "Signposted To",
+    "type": "multi-select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": " "
+      },
+      {
+        "value": "orgA",
+        "label": "Organisation A"
+      },
+      {
+        "value": "orgB",
+        "label": "Organisation B"
+      },
+      {
+        "value": "orgC",
+        "label": "Organisation C"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
     "name": "supportTyoe",
     "label": "Type of Support",
     "type": "select",
@@ -79,6 +106,16 @@
   {
     "name": "operationMakedom",
     "label": "Operation Makedom",
+    "type": "checkbox"
+  },
+  {
+    "name": "safeguarded",
+    "label": "Safeguarded",
+    "type": "checkbox"
+  },
+  {
+    "name": "intimateContent",
+    "label": "Intimate Content Involved?",
     "type": "checkbox"
   },
   {
