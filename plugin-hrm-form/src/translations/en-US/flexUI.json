@@ -299,7 +299,8 @@
   "SectionName-Referral": "Referral",
   "SectionName-Notes": "Notes",
   "SectionName-CaseSummary": "Case Summary",
-  "TranscriptSection-TranscriptNotAvailableDifficulties": "Transcript is not available due to technical difficulties. Please contact your support team or supervisor.",
+  "TranscriptSection-PermanentError": "Something went wrong on our end. Please contact your support team or supervisor.",
+  "TranscriptSection-TemporaryError": "Something went wrong on our end. Please check again in a few minutes.",
   "TranscriptSection-TranscriptNotAvailableCheckLater": "Transcript is not available. Please check back later.",
 
   "Contact-EditCaller":"Edit Caller Information",
