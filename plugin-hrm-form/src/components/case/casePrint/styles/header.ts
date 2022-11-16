@@ -24,6 +24,7 @@ const headerStyles: ReactPDF.Styles = {
   logo: {
     maxWidth: 275,
     maxHeight: 80,
+    objectFit: 'scale-down',
   },
 };
 

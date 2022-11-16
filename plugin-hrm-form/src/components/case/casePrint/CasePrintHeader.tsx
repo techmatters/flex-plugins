@@ -29,7 +29,7 @@ const CasePrintHeader: React.FC<Props> = ({ firstName, lastName, id, officeName,
             {multipleOfficeSupport && officeName && <Text style={styles['officeName']}>({officeName})</Text>}
           </View>
         </View>
-        {logoBlob && <Image src={logoBlob} />}
+        {logoBlob && <Image style={styles['logo']} src={logoBlob} />}
       </View>
     </View>
   );
