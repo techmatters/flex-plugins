@@ -5,7 +5,7 @@ import SyncClient from 'twilio-sync';
 import './styles/global-overrides.css';
 import reducers, { namespace, configurationBase, RootState } from './states';
 import HrmTheme, { overrides } from './styles/HrmTheme';
-import { transferModes } from './states/DomainConstants';
+import { transferModes, channelTypes } from './states/DomainConstants';
 import { initLocalization } from './utils/pluginHelpers';
 import * as Providers from './utils/setUpProviders';
 import * as ActionFunctions from './utils/setUpActions';
@@ -15,6 +15,7 @@ import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from './permissions';
+import TaskInfoPanelMasked from './components/taskInfoPanel/TaskInfoPanelMasked';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -46,7 +47,7 @@ const readConfig = () => {
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
   const { strings } = (manager as unknown) as { strings: { [key: string]: string } };
-
+  console.log('>>>', manager.strings);
   return {
     hrmBaseUrl,
     serverlessBaseUrl,
@@ -189,14 +190,15 @@ const setUpComponents = (setupObject: SetupObject) => {
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 
   if (maskIdentifiers) {
-    const { strings } = getConfig();
     Components.maskIdentifiersForDefaultChannels();
-    strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
     Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
       theirDefaultName: 'XXXXXX',
       theirFriendlyNameOverride: false,
       yourFriendlyNameOverride: true,
     };
+    Flex.MessageList.Content.remove('0')
+    const { strings } = getConfig();
+    strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
   }
 };
 
