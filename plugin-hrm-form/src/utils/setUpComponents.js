@@ -2,6 +2,7 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
+import { Call, Facebook, Sms, WhatsApp } from '@material-ui/icons';
 
 import { TransferButton, AcceptTransferButton, RejectTransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
@@ -29,8 +30,12 @@ import InstagramIcon from '../components/common/icons/InstagramIcon';
 import LineIcon from '../components/common/icons/LineIcon';
 // eslint-disable-next-line
 import { isInMyBehalfITask } from '../types/types';
+import WhatsappIcon from '../components/common/icons/WhatsappIcon';
+import FacebookIcon from '../components/common/icons/FacebookIcon';
+import CallIcon from '../components/common/icons/CallIcon';
+import SmsIcon from '../components/common/icons/SmsIcon';
 
-const voiceColor = Flex.DefaultTaskChannels.Call.colors.main();
+const voiceColor = Flex.DefaultTaskChannels.Call.colors.main.Accepted;
 const webColor = Flex.DefaultTaskChannels.Chat.colors.main.Accepted;
 const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main.Accepted;
 const smsColor = Flex.DefaultTaskChannels.ChatSms.colors.main.Accepted;
@@ -42,7 +47,7 @@ const lineColor = '#00C300';
 /**
  * @type {import('../states/DomainConstants').ChannelColors}
  */
-const colors = {
+export const colors = {
   voice: voiceColor,
   web: webColor,
   facebook: facebookColor,
@@ -290,12 +295,28 @@ export const setUpDeveloperComponents = setupObject => {
     },
   );
 };
-
+const allIcons = icon => ({
+  active: icon,
+  list: icon,
+  main: icon,
+});
 /**
  *
  * @param {import('@twilio/flex-ui').ITask} task
  */
 const isIncomingTransfer = task => TransferHelpers.hasTransferStarted(task) && task.status === 'pending';
+
+export const customiseDefaultChatChannels = () => {
+  const facebookIcon = <FacebookIcon width="24px" height="24px" color={facebookColor} />;
+  Flex.DefaultTaskChannels.ChatMessenger.icons = allIcons(facebookIcon);
+  const whatsappIcon = <WhatsappIcon width="24px" height="24px" color={whatsappColor} />;
+  Flex.DefaultTaskChannels.ChatWhatsApp.icons = allIcons(whatsappIcon);
+  const smsIcon = <SmsIcon width="24px" height="24px" color={smsColor} />;
+  Flex.DefaultTaskChannels.ChatSms.icons = allIcons(smsIcon);
+  const callIcon = <CallIcon width="24px" height="24px" color={voiceColor} />;
+  Flex.DefaultTaskChannels.Call.icons = allIcons(callIcon);
+  Flex.DefaultTaskChannels.Chat.icons = allIcons(smsIcon);
+};
 
 /**
  * @param {{ channel: string; string: string; }} chatChannel
@@ -430,7 +451,7 @@ export const setupCannedResponses = () => {
 };
 
 export const setupTwitterChatChannel = maskIdentifiers => {
-  const icon = <TwitterIcon width="24px" height="24px" color="white" />;
+  const icon = <TwitterIcon width="24px" height="24px" color={twitterColor} />;
 
   const TwitterChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
     'twitter',
@@ -494,19 +515,12 @@ export const setupInstagramChatChannel = maskIdentifiers => {
 };
 
 export const setupLineChatChannel = maskIdentifiers => {
-  const icon = <LineIcon width="24px" height="24px" color="white" />;
+  const icon = <LineIcon width="24px" height="24px" color={lineColor} />;
 
   const LineChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel('line', task => task.channelType === 'line');
 
-  LineChatChannel.colors.main = {
-    Accepted: lineColor,
-    Assigned: lineColor,
-    Pending: lineColor,
-    Reserved: lineColor,
-    Wrapping: Flex.DefaultTaskChannels.Chat.colors.main.Wrapping,
-    Completed: Flex.DefaultTaskChannels.Chat.colors.main.Completed,
-    Canceled: Flex.DefaultTaskChannels.Chat.colors.main.Canceled,
-  };
+  LineChatChannel.colors = Flex.DefaultTaskChannels.ChatLine.colors;
+  LineChatChannel.templates = Flex.DefaultTaskChannels.ChatLine.templates;
 
   LineChatChannel.icons = {
     active: icon,

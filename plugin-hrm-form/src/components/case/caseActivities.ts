@@ -1,4 +1,4 @@
-import { Activity, ConnectedCaseActivity } from '../../states/case/types';
+import { Activity, ConnectedCaseActivity, NoteActivity } from '../../states/case/types';
 import { Case, NoteEntry, ReferralEntry } from '../../types/types';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
@@ -12,7 +12,7 @@ const ActivityTypes = {
     default: 'default',
   },
   unknown: 'unknown',
-};
+} as const;
 
 /**
  * Returns true if the activity provided is a connected case activity (included in channelsAndDefault const object)
@@ -27,7 +27,7 @@ export const isConnectedCaseActivity = (activity): activity is ConnectedCaseActi
  */
 export const isNoteActivity = (activity): activity is ConnectedCaseActivity => activity.type === 'note';
 
-const noteActivities = (counsellorNotes: NoteEntry[], previewFields: string[]): Activity[] =>
+const noteActivities = (counsellorNotes: NoteEntry[], previewFields: string[]): NoteActivity[] =>
   (counsellorNotes || [])
     .map(n => {
       try {

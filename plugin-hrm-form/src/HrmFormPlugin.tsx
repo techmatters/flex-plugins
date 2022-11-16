@@ -164,6 +164,7 @@ const setUpComponents = (setupObject: SetupObject) => {
   Components.setUpAddButtons(setupObject);
   Components.setUpNoTasksUI(setupObject);
   Components.setUpCustomCRMContainer();
+  Components.customiseDefaultChatChannels();
   Components.setupTwitterChatChannel(maskIdentifiers);
   Components.setupInstagramChatChannel(maskIdentifiers);
   Components.setupLineChatChannel(maskIdentifiers);
