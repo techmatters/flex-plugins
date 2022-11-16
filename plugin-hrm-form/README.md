@@ -10,6 +10,9 @@ Twilio Flex Plugins allow you to customize the appearance and behavior of [Twili
 
 See: [top level readme](../README.md)
 
+[twilio-cli](https://www.twilio.com/docs/twilio-cli/quickstart)
+twilio-cli:plugin-flex `twilio plugins:install @twilio-labs/plugin-flex`
+
 ### NVM (install/use)
 
 Use nvm to ensure we use the same node/npm versions for each product. The first time you setup this repo (or if `nvm use` throws a missing version error), run `nvm install` to install the version of node specified in `.nvmrc`. Then run `nvm use` to switch to that version in the future. Without NVM: YMMV. `nvm-windows` does not support `.nvmrc`. Windows instructions are coming soon!
@@ -62,6 +65,14 @@ npm run dev:local:serverless
 
 ```bash
 npm run dev:local:docker
+```
+
+### Running insights proxy locally
+
+Insights requires a local proxy. To run the proxy, in a separate terminal session run:
+
+```bash
+npm run proxy
 ```
 
 ## Testing

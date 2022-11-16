@@ -9,7 +9,7 @@ import {
   RECREATE_CONTACT_STATE,
   REMOVE_CONTACT_STATE,
 } from '../types';
-import { createStateItem } from '../../components/common/forms/formGenerators';
+import { createStateItem, getInitialValue } from '../../components/common/forms/formGenerators';
 import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
 import {
   createDraftReducer,
@@ -37,6 +37,7 @@ import {
   sectionExpandedStateReducer,
   TOGGLE_DETAIL_EXPANDED_ACTION,
 } from './contactDetails';
+import { ChannelTypes } from '../DomainConstants';
 
 export type TaskEntry = {
   helpline: string;
@@ -44,7 +45,7 @@ export type TaskEntry = {
   childInformation: { [key: string]: string | boolean };
   callerInformation: { [key: string]: string | boolean };
   caseInformation: { [key: string]: string | boolean };
-  contactlessTask: { [key: string]: string | boolean };
+  contactlessTask: { channel: ChannelTypes; [key: string]: string | boolean };
   categories: string[];
   csamReports: CSAMReportEntry[];
   metadata: {
@@ -102,7 +103,10 @@ export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated
     definition: definitions.tabbedForms.ContactlessTaskTab,
     helplineInformation: definitions.helplineInformation,
   });
-  const contactlessTask = initialContactlessTaskTabDefinition.reduce(createStateItem, {});
+  const contactlessTask: TaskEntry['contactlessTask'] = {
+    channel: 'web', // default, should be overwritten
+    ...Object.fromEntries(initialContactlessTaskTabDefinition.map(d => [d.name, getInitialValue(d)])),
+  };
 
   return {
     helpline: '',

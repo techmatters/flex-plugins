@@ -92,8 +92,6 @@ export type SetupObject = ReturnType<typeof getConfig> & {
   getMessage: (messageKey: string) => (language: string) => Promise<string>;
 };
 
-console.log('This is me checking for header output', Flex.MainHeader);
-
 /**
  * Helper to expose the forms definitions without the need of calling Manager
  */
@@ -167,6 +165,7 @@ const setUpComponents = (setupObject: SetupObject) => {
   Components.setUpAddButtons(setupObject);
   Components.setUpNoTasksUI(setupObject);
   Components.setUpCustomCRMContainer();
+  Components.customiseDefaultChatChannels();
   Components.setupTwitterChatChannel(maskIdentifiers);
   Components.setupInstagramChatChannel(maskIdentifiers);
   Components.setupLineChatChannel(maskIdentifiers);

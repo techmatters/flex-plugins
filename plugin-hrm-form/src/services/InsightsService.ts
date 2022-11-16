@@ -135,7 +135,7 @@ export const baseUpdates: InsightsUpdateFunction = (
   const { callType } = contactForm;
   const communication_channel = taskAttributes.isContactlessTask
     ? mapChannelForInsights(
-        typeof contactForm.contactlessTask.channel === 'string'
+        contactForm.contactlessTask.channel
           ? contactForm.contactlessTask.channel
           : contactForm.contactlessTask.channel.toString(),
       )
@@ -188,8 +188,8 @@ export const contactlessTaskUpdates: InsightsUpdateFunction = (
   if (!attributes.isContactlessTask) {
     return {};
   }
-
-  const dateTime = getDateTime(contactForm.contactlessTask);
+  const { date, time } = contactForm.contactlessTask;
+  const dateTime = getDateTime({ date: date as string, time: time as string });
 
   return {
     conversations: {
