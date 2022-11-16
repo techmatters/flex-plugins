@@ -315,7 +315,6 @@ export const customiseDefaultChatChannels = () => {
   Flex.DefaultTaskChannels.ChatSms.icons = allIcons(smsIcon);
   const callIcon = <CallIcon width="24px" height="24px" color={voiceColor} />;
   Flex.DefaultTaskChannels.Call.icons = allIcons(callIcon);
-  Flex.DefaultTaskChannels.Chat.icons = allIcons(smsIcon);
 };
 
 /**
