@@ -5,7 +5,7 @@ import SyncClient from 'twilio-sync';
 import './styles/global-overrides.css';
 import reducers, { namespace, configurationBase, RootState } from './states';
 import HrmTheme, { overrides } from './styles/HrmTheme';
-import { transferModes, channelTypes } from './states/DomainConstants';
+import { transferModes } from './states/DomainConstants';
 import { initLocalization } from './utils/pluginHelpers';
 import * as Providers from './utils/setUpProviders';
 import * as ActionFunctions from './utils/setUpActions';
@@ -45,7 +45,7 @@ const readConfig = () => {
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
   const { strings } = (manager as unknown) as { strings: { [key: string]: string } };
-  console.log('>>>', manager.strings);
+
   return {
     hrmBaseUrl,
     serverlessBaseUrl,
