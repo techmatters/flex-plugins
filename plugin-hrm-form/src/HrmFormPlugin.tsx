@@ -11,11 +11,9 @@ import * as Providers from './utils/setUpProviders';
 import * as ActionFunctions from './utils/setUpActions';
 import * as Components from './utils/setUpComponents';
 import setUpMonitoring from './utils/setUpMonitoring';
-import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from './permissions';
-import TaskInfoPanelMasked from './components/taskInfoPanel/TaskInfoPanelMasked';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -190,13 +188,16 @@ const setUpComponents = (setupObject: SetupObject) => {
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 
   if (maskIdentifiers) {
+    // Mask the identifiers in all default channels
     Components.maskIdentifiersForDefaultChannels();
+    // Mask the username within the messable bubbles in an conversation
     Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
       theirDefaultName: 'XXXXXX',
       theirFriendlyNameOverride: false,
       yourFriendlyNameOverride: true,
     };
-    Flex.MessageList.Content.remove('0')
+    Flex.MessageList.Content.remove('0');
+    // Masks TaskInfoPanelContent - TODO: refactor to use a react component
     const { strings } = getConfig();
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
   }
