@@ -28,7 +28,7 @@ locals {
   multi_office = false
   enable_post_survey = false
   target_task_name = "execute_initial_flow"
-  twilio_numbers = ["messenger:103574689075106","twitter:1540032139563073538","instagram:17841454586132629"]
+  twilio_numbers = ["messenger:103574689075106","twitter:1540032139563073538","instagram:17841454586132629","whatsapp:+12135834846"]
   channel = ""
   custom_channel_attributes = ""
   feature_flags = {
@@ -49,8 +49,9 @@ locals {
     "enable_contact_editing": true
   }
   twilio_channels = {
-    "facebook" = {"contact_identity" = "messenger:103574689075106" },
-    "web" = {"contact_identity" = "" }
+    "facebook" = {"contact_identity" = "messenger:103574689075106", "channel_type" ="facebook" },
+    "webchat" = {"contact_identity" = "", "channel_type" ="web"  },
+    "whatsapp" = {"contact_identity" = "whatsapp:+12135834846", "channel_type" ="whatsapp" }
   }
   custom_channels=["twitter","instagram"]
   strings= jsondecode(file("${path.module}/../translations/${local.helpline_language}/strings.json"))
@@ -87,14 +88,14 @@ module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
   helpline = local.helpline
-  custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
+  custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}] OR to IN [\"+17752526377\",\"+578005190671\"]"
 }
 
 module twilioChannel {
   for_each = local.twilio_channels
   source = "../terraform-modules/channels/twilio-channel"
   custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/opening-hours/with-chatbot.tftpl",
+    "../terraform-modules/channels/flow-templates/operating-hours/with-chatbot.tftpl",
     {
       channel_name = "${each.key}"
       serverless_url=var.serverless_url
@@ -112,6 +113,7 @@ module twilioChannel {
 
     })
   channel_contact_identity = each.value.contact_identity
+  channel_type = each.value.channel_type
   pre_survey_bot_sid = module.custom_chatbots.pre_survey_bot_es_sid
   target_task_name = local.target_task_name
   channel_name = "${each.key}"
@@ -125,7 +127,7 @@ module customChannel {
   for_each = toset(local.custom_channels)
   source = "../terraform-modules/channels/custom-channel"
   custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/opening-hours/no-chatbot.tftpl",
+    "../terraform-modules/channels/flow-templates/operating-hours/no-chatbot.tftpl",
     {
       channel_name = "${each.key}"
       serverless_url=var.serverless_url

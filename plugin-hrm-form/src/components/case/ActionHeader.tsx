@@ -14,7 +14,8 @@ type OwnProps = {
   updated?: Date;
   updatingCounsellor?: string;
   includeTime?: boolean;
-  addedForCSAMCLC?: Date;
+  space?: string;
+  codeTemplate?: string;
 };
 
 type Props = OwnProps;
@@ -26,7 +27,8 @@ const ActionHeader: React.FC<Props> = ({
   addingCounsellor,
   updated,
   updatingCounsellor,
-  addedForCSAMCLC,
+  space,
+  codeTemplate,
 }) => {
   // @ts-ignore
   return (
@@ -47,25 +49,15 @@ const ActionHeader: React.FC<Props> = ({
         {added && (
           <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderAdded">
             <Template
-              code="Case-ActionHeaderAdded"
+              code={codeTemplate ? codeTemplate : 'Case-ActionHeaderAdded'}
               date={added.toLocaleDateString()}
               time={added.toLocaleTimeString(undefined, { minute: '2-digit', hour: '2-digit' })}
               counsellor={addingCounsellor}
+              space={space}
             />
           </CaseActionDetailFont>
         )}
-        {addedForCSAMCLC && (
-          <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="CSAMCLC-ActionHeaderAdded">
-            <Template
-              code="CSAMCLC-ActionHeaderAdded"
-              date={addedForCSAMCLC.toLocaleDateString()}
-              time={addedForCSAMCLC.toLocaleTimeString(undefined, { minute: '2-digit', hour: '2-digit' })}
-              counsellor={addingCounsellor}
-              space={`\xa0\xa0`}
-            />
-          </CaseActionDetailFont>
-        )}
-        {!added && !addedForCSAMCLC && (
+        {!added && (
           <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderCounselor">
             <Template code="Case-ActionHeaderCounselor" /> {addingCounsellor}
           </CaseActionDetailFont>

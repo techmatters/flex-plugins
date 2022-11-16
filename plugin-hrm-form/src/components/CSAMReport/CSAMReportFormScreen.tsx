@@ -31,10 +31,12 @@ const CSAMReportFormScreen: React.FC<Props> = ({
     {csamType === 'self-report' && (
       <CSAMReportLayout>
         <ActionHeader
-          addedForCSAMCLC={new Date()}
+          added={new Date()}
+          codeTemplate="CSAMCLC-ActionHeaderAdded"
           titleTemplate="CSAMCLCReportForm-Header"
           onClickClose={onClickClose}
           addingCounsellor={counselor}
+          space={`\xa0\xa0`}
         />
 
         {/** Website details */}

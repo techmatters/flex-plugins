@@ -18,5 +18,7 @@
 "editChildIsAtRisk":  [["everyone"]],
 "editFollowUpDate":  [["everyone"]],
 "editContact":  [["everyone"]],
-"viewPostSurvey":  [["isSupervisor"]]
+"viewPostSurvey":  [["isSupervisor"]],
+"viewExternalTranscript": [["isSupervisor"]],
+"viewIdentifiers": [["everyone"]]
 }

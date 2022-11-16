@@ -320,7 +320,7 @@ const Case: React.FC<Props> = ({
 
     const renderCaseItemPage = (
       sectionApi: CaseSectionApi<unknown>,
-      editPermission: string,
+      editPermission: typeof PermissionActions[keyof typeof PermissionActions],
       extraAddEditProps: Partial<AddEditCaseItemProps> = {},
     ) => {
       if (isViewCaseSectionRoute(routing)) {

@@ -5,6 +5,7 @@ import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
+import { Flex } from '../../styles/HrmStyles';
 import { isS3StoredTranscript, isTwilioStoredMedia } from '../../types/types';
 import {
   DetailsContainer,
@@ -22,7 +23,7 @@ import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/Co
 import { unNestInformation } from '../../services/ContactService';
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
-import { getPermissionsForContact, PermissionActions } from '../../permissions';
+import { getPermissionsForContact, getPermissionsForViewingIdentifiers, PermissionActions } from '../../permissions';
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
 import { getConfig } from '../../HrmFormPlugin';
 import TranscriptSection from './TranscriptSection';
@@ -58,7 +59,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const definitionVersion = definitionVersions[version];
 
-  const { featureFlags } = getConfig();
+  const { featureFlags, strings } = getConfig();
 
   useEffect(
     () => () => {
@@ -141,14 +142,21 @@ const ContactDetailsHome: React.FC<Props> = function ({
   );
 
   const twilioStoredTranscript =
-    featureFlags.enable_twilio_transcripts && savedContact.details.conversationMedia?.find(isTwilioStoredMedia);
+    featureFlags.enable_twilio_transcripts &&
+    canViewTwilioTranscript &&
+    savedContact.details.conversationMedia?.find(isTwilioStoredMedia);
   const externalStoredTranscript =
-    featureFlags.enable_external_transcripts && savedContact.details.conversationMedia?.find(isS3StoredTranscript);
+    featureFlags.enable_external_transcripts &&
+    can(PermissionActions.VIEW_EXTERNAL_TRANSCRIPT) &&
+    savedContact.details.conversationMedia?.find(isS3StoredTranscript);
   const showTranscriptSection = Boolean(
     isChatChannel(channel) &&
       savedContact.details.conversationMedia?.length &&
-      ((canViewTwilioTranscript && twilioStoredTranscript) || externalStoredTranscript),
+      (twilioStoredTranscript || externalStoredTranscript),
   );
+
+  const { canView } = getPermissionsForViewingIdentifiers();
+  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
@@ -171,10 +179,17 @@ const ContactDetailsHome: React.FC<Props> = function ({
           description={<Template code="ContactDetails-GeneralDetails-Channel" />}
           value={formattedChannel}
         />
-        <SectionEntry
-          description={<Template code="ContactDetails-GeneralDetails-PhoneNumber" />}
-          value={isPhoneContact ? customerNumber : ''}
-        />
+        {maskIdentifiers ? (
+          <SectionEntry
+            description={<Template code="ContactDetails-GeneralDetails-PhoneNumber" />}
+            value={strings.MaskIdentifiers}
+          />
+        ) : (
+          <SectionEntry
+            description={<Template code="ContactDetails-GeneralDetails-PhoneNumber" />}
+            value={isPhoneContact ? customerNumber : ''}
+          />
+        )}
         <SectionEntry
           description={<Template code="ContactDetails-GeneralDetails-ConversationDuration" />}
           value={formattedDuration}
@@ -299,12 +314,14 @@ const ContactDetailsHome: React.FC<Props> = function ({
           buttonDataTestid="ContactDetails-Section-Transcript"
           showEditButton={false}
         >
-          <TranscriptSection
-            contactId={contactId}
-            twilioStoredTranscript={twilioStoredTranscript}
-            externalStoredTranscript={externalStoredTranscript}
-            loadConversationIntoOverlay={loadConversationIntoOverlay}
-          />
+          <Flex justifyContent="center" flexDirection="row" paddingTop="20px">
+            <TranscriptSection
+              contactId={contactId}
+              twilioStoredTranscript={twilioStoredTranscript}
+              externalStoredTranscript={externalStoredTranscript}
+              loadConversationIntoOverlay={loadConversationIntoOverlay}
+            />
+          </Flex>
         </ContactDetailsSection>
       )}
     </DetailsContainer>
