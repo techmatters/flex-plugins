@@ -11,7 +11,7 @@ import '../../mockGetConfig';
 import * as ServerlessService from '../../../services/ServerlessService';
 import * as CSAMReportService from '../../../services/CSAMReportService';
 import { CSAMReportScreen } from '../../../components/CSAMReport/CSAMReport';
-import { initialValues } from '../../../components/CSAMReport/CSAMReportFormDefinition';
+import { initialValues, childInitialValues } from '../../../components/CSAMReport/CSAMReportFormDefinition';
 import HrmTheme from '../../../styles/HrmTheme';
 
 jest.mock('../../../services/ServerlessService');
@@ -26,6 +26,7 @@ const themeConf = {
 
 const taskSid = 'task-sid';
 const workerSid = 'worker-sid';
+const csamType = 'counsellor-report';
 
 const setupProps = (subroute, csamReportState) => ({
   alertSpy: jest.spyOn(window, 'alert'),
@@ -37,12 +38,16 @@ const setupProps = (subroute, csamReportState) => ({
   csamReportState,
   routing: { route: 'csam-report', subroute },
   counselorsHash: { workerSid },
+  csamType,
 });
 
 /**
  * @param {: 'form' | 'loading' | 'status'} subroute
  */
-const renderCSAMReportScreen = (subrouteParam = 'form', csamReportStateParam = { form: initialValues }) => {
+const renderCSAMReportScreen = (
+  subrouteParam = 'form',
+  csamReportStateParam = { form: { ...initialValues, ...childInitialValues } },
+) => {
   const {
     alertSpy,
     updateFormAction,
@@ -53,6 +58,7 @@ const renderCSAMReportScreen = (subrouteParam = 'form', csamReportStateParam = {
     csamReportState,
     routing,
     counselorsHash,
+    csamType,
   } = setupProps(subrouteParam, csamReportStateParam);
 
   render(
@@ -67,6 +73,7 @@ const renderCSAMReportScreen = (subrouteParam = 'form', csamReportStateParam = {
         csamReportState={csamReportState}
         routing={routing}
         counselorsHash={counselorsHash}
+        csamType={csamType}
       />
     </StorelessThemeProvider>,
   );
@@ -81,6 +88,7 @@ const renderCSAMReportScreen = (subrouteParam = 'form', csamReportStateParam = {
     csamReportState,
     routing,
     counselorsHash,
+    csamType,
   };
 };
 
@@ -95,6 +103,7 @@ test("Form renders but can't be submitted empty", async () => {
     csamReportState,
     routing,
     counselorsHash,
+    csamType,
   } = renderCSAMReportScreen();
 
   expect(screen.getByTestId('CSAMReport-FormScreen')).toBeInTheDocument();
@@ -121,6 +130,7 @@ test("Form renders but can't be submitted on invalid url", async () => {
     csamReportState,
     routing,
     counselorsHash,
+    csamType,
   } = renderCSAMReportScreen();
   expect(screen.getByTestId('CSAMReport-FormScreen')).toBeInTheDocument();
   expect(screen.queryByTestId('CSAMReport-Loading')).not.toBeInTheDocument();
@@ -166,6 +176,7 @@ test("Form can't be submitted if anonymous value is undefined", async () => {
     csamReportState,
     routing,
     counselorsHash,
+    csamType,
   } = renderCSAMReportScreen();
 
   expect(screen.getByTestId('CSAMReport-FormScreen')).toBeInTheDocument();
@@ -212,6 +223,7 @@ test('Form can be submitted if valid (anonymous)', async () => {
     csamReportState,
     routing,
     counselorsHash,
+    csamType,
   } = renderCSAMReportScreen();
 
   expect(screen.getByTestId('CSAMReport-FormScreen')).toBeInTheDocument();
@@ -270,6 +282,7 @@ test('Form can be submitted if valid (non-anonymous)', async () => {
     csamReportState,
     routing,
     counselorsHash,
+    csamType,
   } = renderCSAMReportScreen();
 
   expect(screen.getByTestId('CSAMReport-FormScreen')).toBeInTheDocument();
@@ -329,6 +342,7 @@ test('Loading screen renders', async () => {
     csamReportState,
     routing,
     counselorsHash,
+    csamType,
   } = renderCSAMReportScreen('loading');
 
   expect(screen.getByTestId('CSAMReport-Loading')).toBeInTheDocument();
@@ -355,8 +369,9 @@ test('Report Status screen renders + copy button works', async () => {
     csamReportState,
     routing,
     counselorsHash,
+    csamType,
   } = renderCSAMReportScreen('status', {
-    form: initialValues,
+    form: { initialValues, childInitialValues },
     reportStatus: {
       responseCode: 'responseCode',
       responseData: 'responseData',

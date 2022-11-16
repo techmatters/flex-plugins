@@ -51,6 +51,7 @@ describe('test reducer', () => {
       tasks: {
         [task.taskSid]: newTaskEntry,
       },
+      csamType: 'counsellor-report',
     };
 
     const result = reduce(state, GeneralActions.initializeContactState(voidDefinitions)(task.taskSid));
@@ -64,6 +65,7 @@ describe('test reducer', () => {
       tasks: {
         [task.taskSid]: newTaskEntry,
       },
+      csamType: 'counsellor-report',
     };
 
     const result1 = reduce(state, GeneralActions.recreateContactState(voidDefinitions)(task.taskSid));
@@ -81,6 +83,7 @@ describe('test reducer', () => {
       tasks: {
         [task.taskSid]: newTaskEntry,
       },
+      csamType: 'counsellor-report',
     });
 
     const expected = initialState;
@@ -98,6 +101,7 @@ describe('test reducer', () => {
         ...state.tasks,
         [task.taskSid]: { ...newTaskEntry, form: { ...newTaskEntry.form, webAddress: 'some-url' } },
       },
+      csamType: 'counsellor-report',
     };
 
     const result = reduce(
@@ -132,6 +136,7 @@ describe('test reducer', () => {
       tasks: {
         [task.taskSid]: newTaskEntry,
       },
+      csamType: 'counsellor-report',
     });
 
     const expected = {
@@ -140,6 +145,7 @@ describe('test reducer', () => {
         ...state.tasks,
         [task.taskSid]: newTaskEntry,
       },
+      csamType: 'counsellor-report',
     };
 
     const result = reduce(state, actions.clearCSAMReportAction(task.taskSid));
