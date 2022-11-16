@@ -508,9 +508,9 @@ export const StyledCaseResultsHeader = styled('div')`
 StyledCaseResultsHeader.displayName = 'StyledCaseResultsHeader';
 
 export const StyledSwitch = withStyles({
-  thumb:{
-    color: '#009DFF'
-  }
+  thumb: {
+    color: '#000',
+  },
 })(Switch);
 StyledSwitch.displayName = 'StyledSwitch';
 
