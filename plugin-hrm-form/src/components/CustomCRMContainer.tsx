@@ -62,4 +62,4 @@ const mapStateToProps = (state: RootState) => {
 };
 
 const connector = connect(mapStateToProps);
-export default withTaskContext<typeof CustomCRMContainer>(connector(CustomCRMContainer));
+export default withTaskContext(connector(CustomCRMContainer));
