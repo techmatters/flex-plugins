@@ -20,6 +20,16 @@
         "phone": "(+41) 0000000",
         "email": "Kate.Worthington@swgfl.org.uk"
       }
+    },
+    {
+      "label": "Professionals Online Safety Helpline",
+      "value": "POSH",
+      "default": false,
+      "manager": {
+        "name": "Georgia Street",
+        "phone": "(+41) 0000000",
+        "email": "georgia.street@swgfl.org.uk"
+      }
     }
   ]
 }
