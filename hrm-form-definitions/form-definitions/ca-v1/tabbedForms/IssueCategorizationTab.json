@@ -90,7 +90,7 @@
     "Financial Concerns": {
         "color": "#0095C8",
         "subcategories": [
-          "Financial Concerns (e.g., Poverty, Financial Stress. etc.)"
+          "Financial Concerns"
         ]
       },
       "Health": {
@@ -114,13 +114,13 @@
       "Living Situation": {
         "color": "#0095C8",
         "subcategories": [
-          "Living Situation (e.g., Homelessness, Moving out/moving to a new place, Anything related to someone's living situation)"
+          "Living Situation"
         ]
       },
       "Legal Concerns": {
         "color": "#0095C8",
         "subcategories": [
-          "Legal Concerns (e.g., Going to court, Looking for legal advice, how to report things, etc.)"
+          "Legal Concerns"
         ]
       },
       "Mental Health & Wellbeing (Symptoms and Behaviours)": {
@@ -161,7 +161,7 @@
           "Transphobia",
           "Racism",
           "Religious",
-          "Systemic (e.g., unfair treatment from the criminal/justice/health/education systems)",
+          "Systemic",
           "Sexism",
           "Body Shaming",
           "Mental Health Related",
@@ -171,9 +171,9 @@
       "Relationships": {
         "color": "#0095C8",
         "subcategories": [
-          "With family member(s) (e.g., parents/guardians, siblings, etc.)",
+          "With family member(s)",
           "With friend(s)/peer(s)",
-          "With partner(s) (e.g., boyfriend/girlfriend, spouse, romantic partner)",
+          "With partner(s)",
           "Other relationship(s)"
         ]
       },
