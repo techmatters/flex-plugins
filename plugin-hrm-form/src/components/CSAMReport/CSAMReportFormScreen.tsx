@@ -8,10 +8,9 @@ import { CSAMReportContainer, CSAMReportLayout, BoldDescriptionText, RegularText
 import { definitionObject, childDefinitionObject } from './CSAMReportFormDefinition';
 import { RequiredAsterisk } from '../common/forms/formGenerators';
 
-const csamDefinitionObject = { ...definitionObject, ...childDefinitionObject };
-
 type Props = {
-  formElements: { [k in keyof typeof csamDefinitionObject]: JSX.Element };
+  counsellorFormElements?: { [k in keyof typeof definitionObject]: JSX.Element };
+  childFormElements?: { [k in keyof typeof childDefinitionObject]: JSX.Element };
   renderContactDetails?: boolean;
   counselor: string;
   onClickClose: () => void;
@@ -20,7 +19,8 @@ type Props = {
 };
 
 const CSAMReportFormScreen: React.FC<Props> = ({
-  formElements,
+  counsellorFormElements,
+  childFormElements,
   renderContactDetails,
   counselor,
   onClickClose,
@@ -46,7 +46,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
             &nbsp;
             <RequiredAsterisk />
           </BoldDescriptionText>
-          <Box padding="15px 15px 15px 20px">{formElements.childAge}</Box>
+          <Box padding="15px 15px 15px 20px">{childFormElements.childAge}</Box>
         </Box>
 
         {/** Conditional part of the form only shown if contact is not anon */}
@@ -56,7 +56,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
             &nbsp;
             <RequiredAsterisk />
           </BoldDescriptionText>
-          <Box padding="15px 15px 15px 20px">{formElements.ageVerified}</Box>
+          <Box padding="15px 15px 15px 20px">{childFormElements.ageVerified}</Box>
         </Box>
       </CSAMReportLayout>
     )}
@@ -75,8 +75,8 @@ const CSAMReportFormScreen: React.FC<Props> = ({
           <Template code="CSAMReportForm-WebsiteDetailsDescription" />
         </RegularText>
         <Box padding="15px 15px 15px 20px">
-          {formElements.webAddress}
-          {formElements.description}
+          {counsellorFormElements.webAddress}
+          {counsellorFormElements.description}
         </Box>
 
         {/** Contact details */}
@@ -88,7 +88,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
         <RegularText>
           <Template code="CSAMReportForm-ContactDetailsDescription" />
         </RegularText>
-        <Box padding="15px 15px 0 15px">{formElements.anonymous}</Box>
+        <Box padding="15px 15px 0 15px">{counsellorFormElements.anonymous}</Box>
 
         {/** Conditional part of the form only shown if contact is not anon */}
         {renderContactDetails && (
@@ -97,9 +97,9 @@ const CSAMReportFormScreen: React.FC<Props> = ({
               <Template code="CSAMReportForm-ContactDetailsInfo" />
             </RegularText>
             <Box padding="15px 15px 15px 20px">
-              {formElements.firstName}
-              {formElements.lastName}
-              {formElements.email}
+              {counsellorFormElements.firstName}
+              {counsellorFormElements.lastName}
+              {counsellorFormElements.email}
             </Box>
           </Box>
         )}

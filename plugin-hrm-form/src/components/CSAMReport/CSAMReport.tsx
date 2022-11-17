@@ -11,10 +11,10 @@ import { CSAMReportContainer, CSAMReportLayout, CenterContent } from '../../styl
 import { addMargin, getInputType } from '../common/forms/formGenerators';
 import {
   definitionObject,
-  keys,
+  counselorKeys,
   initialValues,
   childInitialValues,
-  clcKeys,
+  childKeys,
   childDefinitionObject,
 } from './CSAMReportFormDefinition';
 import type { CustomITask } from '../../types/types';
@@ -72,24 +72,26 @@ export const CSAMReportScreen: React.FC<Props> = ({
   }, [counselorsHash]);
 
   const formElements = React.useMemo(() => {
+    const csamKeys = () => {
+      return { counselorKeys, childKeys };
+    };
     const onUpdateInput = () => {
-      const csamKeys = { ...keys, ...clcKeys };
-      const values = methods.getValues(Object.values(csamKeys));
-      updateFormAction(values, taskSid);
+      const { counselorKeys, childKeys } = methods.getValues(Object.values(csamKeys));
+      updateFormAction(counselorKeys, taskSid);
+      updateFormAction(childKeys, taskSid);
     };
 
     const generateInput = (e: FormItemDefinition, index: number) => {
       const generatedInput = getInputType([], onUpdateInput)(e);
-      const csamInitialValues = { ...initialValues, ...childInitialValues };
+      const csamInitialValues = { initialValues, childInitialValues };
       const initialValue = initialForm[e.name] === undefined ? csamInitialValues[e.name] : initialForm[e.name];
 
       return index === 0 ? generatedInput(initialValue, firstElementRef) : generatedInput(initialValue);
     };
 
     // Function used to generate the inputs with a reduce
-    const csamDefinitionObject = { ...definitionObject, ...childDefinitionObject };
     const reducerFunc = (
-      accum: { [k in keyof typeof csamDefinitionObject]: JSX.Element },
+      accum: { [k in keyof typeof definitionObject]: JSX.Element },
       [k, e]: [string, FormItemDefinition],
       index: number,
     ) => ({
@@ -97,7 +99,19 @@ export const CSAMReportScreen: React.FC<Props> = ({
       [k]: addMargin(5)(generateInput(e, index)),
     });
 
-    return Object.entries(csamDefinitionObject).reduce(reducerFunc, null);
+    const childReducerFunc = (
+      accum: { [k in keyof typeof childDefinitionObject]: JSX.Element },
+      [k, e]: [string, FormItemDefinition],
+      index: number,
+    ) => ({
+      ...accum,
+      [k]: addMargin(5)(generateInput(e, index)),
+    });
+
+    const childReportDefinition = Object.entries(childDefinitionObject).reduce(childReducerFunc, null);
+    const counsellorReportDefinition = Object.entries(definitionObject).reduce(reducerFunc, null);
+
+    return { childReportDefinition, counsellorReportDefinition };
   }, [firstElementRef, initialForm, methods, taskSid, updateFormAction]);
 
   if (routing.route !== 'csam-report') return null;
@@ -159,7 +173,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
       return (
         <FormProvider {...methods}>
           <CSAMReportFormScreen
-            formElements={formElements}
+            childFormElements={formElements.childReportDefinition}
             counselor={currentCounselor}
             onClickClose={onClickClose}
             onSendReport={onSendReport}
@@ -183,7 +197,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
       return (
         <FormProvider {...methods}>
           <CSAMReportFormScreen
-            formElements={formElements}
+            counsellorFormElements={formElements.counsellorReportDefinition}
             renderContactDetails={renderContactDetails}
             counselor={currentCounselor}
             onClickClose={onClickClose}

@@ -2,7 +2,7 @@ import type { FormItemDefinition } from 'hrm-form-definitions';
 
 import { getInitialValue } from '../common/forms/formGenerators';
 
-export const keys = {
+export const counselorKeys = {
   webAddress: 'webAddress',
   description: 'description',
   anonymous: 'anonymous',
@@ -11,17 +11,17 @@ export const keys = {
   email: 'email',
 } as const;
 
-export const clcKeys = {
+export const childKeys = {
   childAge: 'childAge',
   ageVerified: 'ageVerified',
 } as const;
 
 type CounselorCSAMFormDefinitionObject = {
-  [k in keyof typeof keys]: FormItemDefinition;
+  [k in keyof typeof counselorKeys]: FormItemDefinition;
 };
 
 type ChildCSAMFormDefinitionObject = {
-  [k in keyof typeof clcKeys]: FormItemDefinition;
+  [k in keyof typeof childKeys]: FormItemDefinition;
 };
 
 // eslint-disable-next-line prefer-named-capture-group
