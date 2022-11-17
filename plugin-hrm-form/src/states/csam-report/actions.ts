@@ -18,8 +18,3 @@ export const clearCSAMReportAction = (taskId: string): t.CSAMReportActionType =>
   type: t.CLEAR_CSAM_REPORT,
   taskId,
 });
-
-export const setCSAMType = (csamType: 'self-report' | 'counsellor-report'): t.CSAMReportActionType => ({
-  type: t.SET_CSAM_TYPE,
-  csamType,
-});

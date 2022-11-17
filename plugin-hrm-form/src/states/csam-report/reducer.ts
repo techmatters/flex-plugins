@@ -13,7 +13,6 @@ type CSAMReportState = {
   tasks: {
     [taskId: string]: TaskEntry;
   };
-  csamType: 'self-report' | 'counsellor-report';
 };
 
 export const newTaskEntry: TaskEntry = {
@@ -27,7 +26,6 @@ export const newTaskEntry: TaskEntry = {
 
 export const initialState: CSAMReportState = {
   tasks: {},
-  csamType: 'counsellor-report',
 };
 
 export function reduce(state = initialState, action: t.CSAMReportActionType | GeneralActionType): CSAMReportState {
@@ -88,9 +86,6 @@ export function reduce(state = initialState, action: t.CSAMReportActionType | Ge
           [action.taskId]: newTaskEntry,
         },
       };
-    case t.SET_CSAM_TYPE: {
-      return { ...state, csamType: action.csamType };
-    }
     default:
       return state;
   }

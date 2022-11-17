@@ -10,14 +10,20 @@ import { Row, CSAMReportButtonText, StyledCSAMReportButton } from '../../styles/
 import CSAMReportDropdown from './CSAMReportDropdown';
 
 type OwnProps = {
-  handleCSAMType: () => void;
+  handleChildCSAMType: () => void;
+  handleCounsellorCSAMType: () => void;
   csamReportEnabled: boolean;
   csamClcReportEnabled: boolean;
 };
 
 type Props = OwnProps;
 
-const CSAMReportButton: React.FC<Props> = ({ handleCSAMType, csamReportEnabled, csamClcReportEnabled }) => {
+const CSAMReportButton: React.FC<Props> = ({
+  handleChildCSAMType,
+  handleCounsellorCSAMType,
+  csamReportEnabled,
+  csamClcReportEnabled,
+}) => {
   const [dropdown, setDropdown] = useState(false);
   const buttonRef = useRef(null);
 
@@ -49,7 +55,7 @@ const CSAMReportButton: React.FC<Props> = ({ handleCSAMType, csamReportEnabled, 
           </StyledCSAMReportButton>
         )}
         {csamReportEnabled && !csamClcReportEnabled && (
-          <StyledCSAMReportButton onClick={handleCSAMType}>
+          <StyledCSAMReportButton onClick={handleCounsellorCSAMType}>
             <OpenInNew fontSize="inherit" style={{ marginRight: 5 }} />
             <CSAMReportButtonText>
               <Template code="TabbedForms-CSAMFileReportButton" />
@@ -57,7 +63,11 @@ const CSAMReportButton: React.FC<Props> = ({ handleCSAMType, csamReportEnabled, 
           </StyledCSAMReportButton>
         )}
       </Row>
-      <CSAMReportDropdown dropdown={dropdown} handleCSAMType={handleCSAMType} />
+      <CSAMReportDropdown
+        dropdown={dropdown}
+        handleChildCSAMType={handleChildCSAMType}
+        handleCounsellorCSAMType={handleCounsellorCSAMType}
+      />
     </>
   );
 };

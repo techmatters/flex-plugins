@@ -8,19 +8,19 @@ import { CSAMReportContainer, CSAMReportLayout, BoldDescriptionText, RegularText
 import { definitionObject, childDefinitionObject } from './CSAMReportFormDefinition';
 import { RequiredAsterisk } from '../common/forms/formGenerators';
 
+const csamDefinitionObject = { ...definitionObject, ...childDefinitionObject };
+
 type Props = {
-  counselorCSAMformElements: { [k in keyof typeof definitionObject]: JSX.Element };
-  childCSAMformElements: { [k in keyof typeof childDefinitionObject]: JSX.Element };
-  renderContactDetails: boolean;
+  formElements: { [k in keyof typeof csamDefinitionObject]: JSX.Element };
+  renderContactDetails?: boolean;
   counselor: string;
   onClickClose: () => void;
   onSendReport: () => void;
-  csamType: 'self-report' | 'counsellor-report';
+  csamType: 'child-form' | 'counsellor-form';
 };
 
 const CSAMReportFormScreen: React.FC<Props> = ({
-  counselorCSAMformElements,
-  childCSAMformElements,
+  formElements,
   renderContactDetails,
   counselor,
   onClickClose,
@@ -28,7 +28,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
   csamType,
 }) => (
   <CSAMReportContainer data-testid="CSAMReport-FormScreen">
-    {csamType === 'self-report' && (
+    {csamType === 'child-form' && (
       <CSAMReportLayout>
         <ActionHeader
           added={new Date()}
@@ -46,7 +46,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
             &nbsp;
             <RequiredAsterisk />
           </BoldDescriptionText>
-          <Box padding="15px 15px 15px 20px">{childCSAMformElements.childAge}</Box>
+          <Box padding="15px 15px 15px 20px">{formElements.childAge}</Box>
         </Box>
 
         {/** Conditional part of the form only shown if contact is not anon */}
@@ -56,12 +56,12 @@ const CSAMReportFormScreen: React.FC<Props> = ({
             &nbsp;
             <RequiredAsterisk />
           </BoldDescriptionText>
-          <Box padding="15px 15px 15px 20px">{childCSAMformElements.ageVerified}</Box>
+          <Box padding="15px 15px 15px 20px">{formElements.ageVerified}</Box>
         </Box>
       </CSAMReportLayout>
     )}
 
-    {csamType === 'counsellor-report' && (
+    {csamType === 'counsellor-form' && (
       <CSAMReportLayout>
         <ActionHeader titleTemplate="CSAMReportForm-Header" onClickClose={onClickClose} addingCounsellor={counselor} />
 
@@ -75,8 +75,8 @@ const CSAMReportFormScreen: React.FC<Props> = ({
           <Template code="CSAMReportForm-WebsiteDetailsDescription" />
         </RegularText>
         <Box padding="15px 15px 15px 20px">
-          {counselorCSAMformElements.webAddress}
-          {counselorCSAMformElements.description}
+          {formElements.webAddress}
+          {formElements.description}
         </Box>
 
         {/** Contact details */}
@@ -88,7 +88,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
         <RegularText>
           <Template code="CSAMReportForm-ContactDetailsDescription" />
         </RegularText>
-        <Box padding="15px 15px 0 15px">{counselorCSAMformElements.anonymous}</Box>
+        <Box padding="15px 15px 0 15px">{formElements.anonymous}</Box>
 
         {/** Conditional part of the form only shown if contact is not anon */}
         {renderContactDetails && (
@@ -97,9 +97,9 @@ const CSAMReportFormScreen: React.FC<Props> = ({
               <Template code="CSAMReportForm-ContactDetailsInfo" />
             </RegularText>
             <Box padding="15px 15px 15px 20px">
-              {counselorCSAMformElements.firstName}
-              {counselorCSAMformElements.lastName}
-              {counselorCSAMformElements.email}
+              {formElements.firstName}
+              {formElements.lastName}
+              {formElements.email}
             </Box>
           </Box>
         )}
@@ -115,9 +115,9 @@ const CSAMReportFormScreen: React.FC<Props> = ({
       <StyledNextStepButton
         roundCorners
         onClick={onSendReport}
-        data-testid={csamType === 'self-report' ? 'CSAMCLCReport-SubmitButton' : 'CSAMReport-SubmitButton'}
+        data-testid={csamType === 'child-form' ? 'CSAMCLCReport-SubmitButton' : 'CSAMReport-SubmitButton'}
       >
-        <Template code={csamType === 'self-report' ? 'BottomBar-CreateLink' : 'BottomBar-SendReport'} />
+        <Template code={csamType === 'child-form' ? 'BottomBar-CreateLink' : 'BottomBar-SendReport'} />
       </StyledNextStepButton>
     </BottomButtonBar>
   </CSAMReportContainer>

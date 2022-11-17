@@ -26,7 +26,7 @@ const themeConf = {
 
 const taskSid = 'task-sid';
 const workerSid = 'worker-sid';
-const csamType = 'counsellor-report';
+const csamType = 'counsellor-form';
 
 const setupProps = (subroute, csamReportState) => ({
   alertSpy: jest.spyOn(window, 'alert'),
@@ -42,10 +42,10 @@ const setupProps = (subroute, csamReportState) => ({
 });
 
 /**
- * @param {: 'form' | 'loading' | 'status'} subroute
+ * @param {: 'child-form' | 'counsellor-form' | 'loading' | 'child-status' | 'counsellor-status'} subroute
  */
 const renderCSAMReportScreen = (
-  subrouteParam = 'form',
+  subrouteParam = 'counsellor-form',
   csamReportStateParam = { form: { ...initialValues, ...childInitialValues } },
 ) => {
   const {
@@ -370,7 +370,7 @@ test('Report Status screen renders + copy button works', async () => {
     routing,
     counselorsHash,
     csamType,
-  } = renderCSAMReportScreen('status', {
+  } = renderCSAMReportScreen('counsellor-status', {
     form: { initialValues, childInitialValues },
     reportStatus: {
       responseCode: 'responseCode',
