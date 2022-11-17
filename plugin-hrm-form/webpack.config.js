@@ -9,6 +9,7 @@ module.exports = (config, { isProd, isDev, isTest }) => {
   config.plugins.push(
     new webpack.EnvironmentPlugin([
       'REACT_HRM_BASE_URL',
+      'REACT_SERVERLESS_BASE_URL',
     ]),
   );
 

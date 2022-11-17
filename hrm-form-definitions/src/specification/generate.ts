@@ -12,6 +12,7 @@ export function generateDefaultItem<T>(
   if (specification.default) {
     return specification.default;
   }
+  // eslint-disable-next-line no-console
   console.warn('No default was specified, using fallback');
   return fallback;
 }

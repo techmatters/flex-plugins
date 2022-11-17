@@ -104,9 +104,24 @@ type ConfirmButtonProps = {
   disabled: boolean;
 };
 
-export const ConfirmButton = styled(Button)<ConfirmButtonProps>`
+const CloseDialogButton = styled(Button)`
+  padding: 0px 16px;
+  border: none;
+  outline: none;
+  align-self: center;
+  height: 28px;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  border-radius: 100px;
+  text-transform: uppercase;
+`;
+
+export const ConfirmButton = styled(CloseDialogButton)<ConfirmButtonProps>`
   text-transform: uppercase;
   color: ${props => HrmTheme.colors.declineTextColor};
+  background: linear-gradient(to top, ${HrmTheme.colors.declineColor}, ${HrmTheme.colors.declineColor});
   ${p => getBackgroundWithHoverCSS(HrmTheme.colors.declineColor, true, false, p.disabled)};
 
   &:focus {
@@ -115,12 +130,14 @@ export const ConfirmButton = styled(Button)<ConfirmButtonProps>`
   }
 `;
 
-export const CancelButton = styled(Button)`
+export const CancelButton = styled(CloseDialogButton)`
   text-transform: uppercase;
   margin-left: 30px;
+  color: rgb(0, 0, 0);
+  background: linear-gradient(to top, ${HrmTheme.colors.buttonTextColor}, ${HrmTheme.colors.buttonTextColor});
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: ${HrmTheme.colors.buttonHoverColor};
     background-blend-mode: color;
   }
 

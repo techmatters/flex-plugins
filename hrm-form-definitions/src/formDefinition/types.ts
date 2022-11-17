@@ -112,7 +112,7 @@ type TextareaDefinition = {
   type: 'textarea';
   placeholder?: string;
   rows?: number;
-  width?: number;
+  width?: number | string;
 } & ItemBase;
 
 type TimeRelatedInput = {
