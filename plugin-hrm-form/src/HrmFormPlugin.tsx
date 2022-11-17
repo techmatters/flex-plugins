@@ -10,8 +10,8 @@ import { initLocalization } from './utils/pluginHelpers';
 import * as Providers from './utils/setUpProviders';
 import * as ActionFunctions from './utils/setUpActions';
 import * as Components from './utils/setUpComponents';
+import * as Channels from './channels/setUpChannels';
 import setUpMonitoring from './utils/setUpMonitoring';
-import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from './permissions';
@@ -166,13 +166,13 @@ const setUpComponents = (setupObject: SetupObject) => {
   Components.setUpAddButtons(setupObject);
   Components.setUpNoTasksUI(setupObject);
   Components.setUpCustomCRMContainer();
-  Components.customiseDefaultChatChannels();
-  Components.setupTwitterChatChannel(maskIdentifiers);
-  Components.setupInstagramChatChannel(maskIdentifiers);
-  Components.setupLineChatChannel(maskIdentifiers);
+  Channels.customiseDefaultChatChannels();
+  Channels.setupTwitterChatChannel(maskIdentifiers);
+  Channels.setupInstagramChatChannel(maskIdentifiers);
+  Channels.setupLineChatChannel(maskIdentifiers);
   if (featureFlags.enable_transfers) {
     Components.setUpTransferComponents();
-    Components.setUpIncomingTransferMessage();
+    Channels.setUpIncomingTransferMessage();
   }
 
   if (featureFlags.enable_case_management) Components.setUpCaseList();
@@ -193,7 +193,7 @@ const setUpComponents = (setupObject: SetupObject) => {
 
   if (maskIdentifiers) {
     const { strings } = getConfig();
-    Components.maskIdentifiersForDefaultChannels();
+    Channels.maskIdentifiersForDefaultChannels();
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
     Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
       theirDefaultName: 'XXXXXX',

@@ -25,55 +25,15 @@ import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles/HrmS
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
-import TwitterIcon from '../components/common/icons/TwitterIcon';
-import InstagramIcon from '../components/common/icons/InstagramIcon';
-import LineIcon from '../components/common/icons/LineIcon';
 // eslint-disable-next-line
 import { isInMyBehalfITask } from '../types/types';
-import WhatsappIcon from '../components/common/icons/WhatsappIcon';
-import FacebookIcon from '../components/common/icons/FacebookIcon';
-import CallIcon from '../components/common/icons/CallIcon';
-import SmsIcon from '../components/common/icons/SmsIcon';
-
-const mainChannelColor = (channel: TaskChannelDefinition, status: ReservationStatuses = ReservationStatuses.Accepted, task?: ITask, component?: React.ComponentType): string => {
-  switch (typeof channel.colors.main) {
-    case 'string':
-      return channel.colors.main;
-    case 'function':
-      return channel.colors.main(task, component);
-    default:
-      return channel.colors.main[status];
-  }
-}
-
-const voiceColor = mainChannelColor(Flex.DefaultTaskChannels.Call);
-const webColor =  mainChannelColor(Flex.DefaultTaskChannels.Chat);
-const facebookColor = mainChannelColor(Flex.DefaultTaskChannels.ChatMessenger);
-const smsColor = mainChannelColor(Flex.DefaultTaskChannels.ChatSms);
-const whatsappColor = mainChannelColor(Flex.DefaultTaskChannels.ChatWhatsApp);
-const twitterColor = '#1DA1F2';
-const instagramColor = '#833AB4';
-const lineColor = '#00C300';
-
-/**
- * @type {import('../states/DomainConstants').ChannelColors}
- */
-export const colors = {
-  voice: voiceColor,
-  web: webColor,
-  facebook: facebookColor,
-  sms: smsColor,
-  whatsapp: whatsappColor,
-  twitter: twitterColor,
-  instagram: instagramColor,
-  line: lineColor,
-};
+import { SetupObject } from '../HrmFormPlugin';
+import { colors } from '../channels/colors';
 
 /**
  * Returns the UI for the "Contacts Waiting" section
- * @param {import('../HrmFormPlugin').SetupObject} setupObject
  */
-const queuesStatusUI = setupObject => (
+const queuesStatusUI = (setupObject: SetupObject) => (
   <QueuesStatus
     key="queue-status-task-list"
     colors={colors}
@@ -82,11 +42,7 @@ const queuesStatusUI = setupObject => (
   />
 );
 
-/**
- * Returns the UI for the "Add..." section
- * @param {import('../HrmFormPlugin').SetupObject} setupObject
- */
-const addButtonsUI = setupObject => {
+const addButtonsUI = (setupObject: SetupObject) => {
   const manager = Flex.Manager.getInstance();
   const { featureFlags } = setupObject;
 
@@ -103,11 +59,7 @@ const addButtonsUI = setupObject => {
   );
 };
 
-/**
- * Add an "invisible" component that tracks the state of the queues, updating the pending tasks in each channel
- * @param {import('../HrmFormPlugin').SetupObject} setupObject
- */
-export const setUpQueuesStatusWriter = setupObject => {
+export const setUpQueuesStatusWriter = (setupObject: SetupObject) => {
   const { workerSid } = setupObject;
 
   Flex.MainContainer.Content.add(
@@ -136,9 +88,8 @@ const setUpRerenderOnReservation = () => {
 
 /**
  * Add a widget at the beginnig of the TaskListContainer, which shows the pending tasks in each channel (consumes from QueuesStatusWriter)
- * @param {import('../HrmFormPlugin').SetupObject} setupObject
  */
-export const setUpQueuesStatus = setupObject => {
+export const setUpQueuesStatus = (setupObject: SetupObject) => {
   setUpRerenderOnReservation();
 
   Flex.TaskListContainer.Content.add(queuesStatusUI(setupObject), {
@@ -153,7 +104,8 @@ const setUpManualPulling = () => {
   const [, chatChannel] = Array.from(manager.workerClient.channels).find(c => c[1].taskChannelUniqueName === 'chat');
 
   manager.store.dispatch(chatCapacityUpdated(chatChannel.capacity));
-  (chatChannel as any).on('capacityUpdated', channel => { // Channel doesn't implement 'EventEmitter yet docs say it emits 2 types of event?
+  (chatChannel as any).on('capacityUpdated', channel => {
+    // Channel doesn't implement 'EventEmitter yet docs say it emits 2 types of event?
     if (channel.taskChannelUniqueName === 'chat') manager.store.dispatch(chatCapacityUpdated(channel.capacity));
   });
 
@@ -170,7 +122,11 @@ const isIncomingOfflineContact = task =>
 
 const setUpOfflineContact = () => {
   const manager = Flex.Manager.getInstance();
-  Flex.ViewCollection.Content.add(<Flex.View name="empty-view" key="empty-view"><></></Flex.View>);
+  Flex.ViewCollection.Content.add(
+    <Flex.View name="empty-view" key="empty-view">
+      <></>
+    </Flex.View>,
+  );
 
   Flex.TaskList.Content.add(<OfflineContactTask key="offline-contact-task" />, {
     sortOrder: 100,
@@ -192,9 +148,8 @@ const setUpOfflineContact = () => {
 
 /**
  * Add buttons to pull / create tasks
- * @param {import('../HrmFormPlugin').SetupObject} setupObject
  */
-export const setUpAddButtons = setupObject => {
+export const setUpAddButtons = (setupObject: SetupObject) => {
   const { featureFlags } = setupObject;
 
   // setup for manual pulling
@@ -218,9 +173,8 @@ export const setUpAddButtons = setupObject => {
 
 /**
  * Adds the corresponding UI when there are no active tasks
- * @param {import('../HrmFormPlugin').SetupObject} setupObject
  */
-export const setUpNoTasksUI = setupObject => {
+export const setUpNoTasksUI = (setupObject: SetupObject) => {
   Flex.AgentDesktopView.Content.add(
     <Column key="no-task-agent-desktop-section" style={{ backgroundColor: HrmTheme.colors.base2, minWidth: 300 }}>
       {queuesStatusUI(setupObject)}
@@ -272,7 +226,7 @@ export const setUpTransferComponents = () => {
     if: props => TransferHelpers.shouldShowTransferControls(props.task),
   });
 
-  Flex.TaskCanvasHeader.Content.add(<RejectTransferButton task={undefined}  key="reject-transfer-button" />, {
+  Flex.TaskCanvasHeader.Content.add(<RejectTransferButton task={undefined} key="reject-transfer-button" />, {
     sortOrder: 1,
     if: props => TransferHelpers.shouldShowTransferControls(props.task),
   });
@@ -280,9 +234,8 @@ export const setUpTransferComponents = () => {
 
 /**
  * Add components used only by developers
- * @param {import('../HrmFormPlugin').SetupObject} setupObject
  */
-export const setUpDeveloperComponents = setupObject => {
+export const setUpDeveloperComponents = (setupObject: SetupObject) => {
   const manager = Flex.Manager.getInstance();
 
   const { translateUI } = setupObject;
@@ -306,70 +259,6 @@ export const setUpDeveloperComponents = setupObject => {
       align: 'end',
     },
   );
-};
-const allIcons = icon => ({
-  active: icon,
-  list: icon,
-  main: icon,
-});
-/**
- *
- * @param {import('@twilio/flex-ui').ITask} task
- */
-const isIncomingTransfer = task => TransferHelpers.hasTransferStarted(task) && task.status === 'pending';
-
-export const customiseDefaultChatChannels = () => {
-  const facebookIcon = <FacebookIcon width="24px" height="24px" color={facebookColor} />;
-  Flex.DefaultTaskChannels.ChatMessenger.icons = allIcons(facebookIcon);
-  const whatsappIcon = <WhatsappIcon width="24px" height="24px" color={whatsappColor} />;
-  Flex.DefaultTaskChannels.ChatWhatsApp.icons = allIcons(whatsappIcon);
-  const smsIcon = <SmsIcon width="24px" height="24px" color={smsColor} />;
-  Flex.DefaultTaskChannels.ChatSms.icons = allIcons(smsIcon);
-  const callIcon = <CallIcon width="24px" height="24px" color={voiceColor} />;
-  Flex.DefaultTaskChannels.Call.icons = allIcons(callIcon);
-};
-
-/**
- * @param {{ channel: string; string: string; }} chatChannel
- */
-const setSecondLine = chatChannel => {
-  // here we use manager instead of setupObject, so manager.strings will always have the latest version of strings
-  const manager = Flex.Manager.getInstance();
-
-  const { channel, string } = chatChannel;
-  const defaultStrings = Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine;
-
-  Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine = (task, componentType) => {
-    if (isIncomingTransfer(task)) {
-      const { originalCounselorName } = task.attributes.transferMeta;
-      const mode = TransferHelpers.isWarmTransfer(task)
-        ? manager.strings['Transfer-Warm']
-        : manager.strings['Transfer-Cold'];
-
-      const baseMessage = `${mode} ${manager.strings[string]} ${originalCounselorName}`;
-
-      if (task.attributes.transferTargetType === 'queue') return `${baseMessage} (${task.queueName})`;
-
-      if (task.attributes.transferTargetType === 'worker') return `${baseMessage} (direct)`;
-
-      return baseMessage;
-    }
-
-    return Flex.TaskChannelHelper.getTemplateForStatus(task, defaultStrings, componentType);
-  };
-};
-
-export const setUpIncomingTransferMessage = () => {
-  const chatChannels = [
-    { channel: 'Call', string: 'Transfer-TaskLineCallReserved' },
-    { channel: 'Chat', string: 'Transfer-TaskLineChatReserved' },
-    { channel: 'ChatLine', string: 'Transfer-TaskLineChatLineReserved' },
-    { channel: 'ChatMessenger', string: 'Transfer-TaskLineChatMessengerReserved' },
-    { channel: 'ChatSms', string: 'Transfer-TaskLineChatSmsReserved' },
-    { channel: 'ChatWhatsApp', string: 'Transfer-TaskLineChatWhatsAppReserved' },
-  ];
-
-  chatChannels.forEach(el => setSecondLine(el));
 };
 
 /**
@@ -411,9 +300,8 @@ export const setUpStandaloneSearch = () => {
 
 /**
  * Removes the actions buttons from TaskCanvasHeaders if the task is wrapping or if dual write is on (temporary prevents bug)
- * @param {import('../HrmFormPlugin').SetupObject} setupObject
  */
-export const removeTaskCanvasHeaderActions = setupObject => {
+export const removeTaskCanvasHeaderActions = (setupObject: SetupObject) => {
   const { featureFlags } = setupObject;
   // Must use submit buttons in CRM container to complete task
   Flex.TaskCanvasHeader.Content.remove('actions', {
@@ -459,121 +347,8 @@ export const removeActionsIfTransferring = () => {
 };
 
 /**
- * Canned respònses
+ * Canned responses
  */
 export const setupCannedResponses = () => {
   Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" conversationSid={undefined} />);
-};
-
-export const setupTwitterChatChannel = maskIdentifiers => {
-  const icon = <TwitterIcon width="24px" height="24px" color={twitterColor} />;
-
-  const TwitterChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
-    'twitter',
-    task => task.channelType === 'twitter',
-  );
-
-  TwitterChatChannel.templates.CallCanvas.firstLine = 'TaskHeaderLineTwitter';
-  TwitterChatChannel.templates.TaskListItem.firstLine = 'TaskHeaderLineTwitter';
-  TwitterChatChannel.templates.TaskCard.firstLine = 'TaskHeaderLineTwitter';
-  TwitterChatChannel.templates.Supervisor.TaskCanvasHeader.title = 'TaskHeaderLineTwitter';
-  TwitterChatChannel.templates.Supervisor.TaskOverviewCanvas.firstLine = 'TaskHeaderLineTwitter';
-
-  if (maskIdentifiers) maskIdentifiersByChannel(TwitterChatChannel);
-
-  TwitterChatChannel.colors.main = {
-    Accepted: twitterColor,
-    Assigned: twitterColor,
-    Pending: twitterColor,
-    Reserved: twitterColor,
-    Wrapping: mainChannelColor(Flex.DefaultTaskChannels.Chat, ReservationStatuses.Wrapping),
-    Completed: mainChannelColor(Flex.DefaultTaskChannels.Chat, ReservationStatuses.Completed),
-    Canceled: mainChannelColor(Flex.DefaultTaskChannels.Chat, ReservationStatuses.Canceled),
-  };
-
-  TwitterChatChannel.icons = {
-    active: icon,
-    list: icon,
-    main: icon,
-  };
-
-  Flex.TaskChannels.register(TwitterChatChannel);
-};
-
-export const setupInstagramChatChannel = maskIdentifiers => {
-  const icon = <InstagramIcon width="24px" height="24px" color="white" />;
-
-  const InstagramChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
-    'instagram',
-    task => task.channelType === 'instagram',
-  );
-
-  if (maskIdentifiers) maskIdentifiersByChannel(InstagramChatChannel);
-
-  InstagramChatChannel.colors.main = {
-    Accepted: instagramColor,
-    Assigned: instagramColor,
-    Pending: instagramColor,
-    Reserved: instagramColor,
-    Wrapping: mainChannelColor(Flex.DefaultTaskChannels.Chat, ReservationStatuses.Wrapping),
-    Completed: mainChannelColor(Flex.DefaultTaskChannels.Chat, ReservationStatuses.Completed),
-    Canceled: mainChannelColor(Flex.DefaultTaskChannels.Chat, ReservationStatuses.Canceled),
-  };
-
-  InstagramChatChannel.icons = {
-    active: icon,
-    list: icon,
-    main: icon,
-  };
-
-  Flex.TaskChannels.register(InstagramChatChannel);
-};
-
-export const setupLineChatChannel = maskIdentifiers => {
-  const icon = <LineIcon width="24px" height="24px" color={lineColor} />;
-
-  const LineChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel('line', task => task.channelType === 'line');
-
-  LineChatChannel.colors = Flex.DefaultTaskChannels.ChatLine.colors;
-  LineChatChannel.templates = Flex.DefaultTaskChannels.ChatLine.templates;
-
-  LineChatChannel.icons = {
-    active: icon,
-    list: icon,
-    main: icon,
-  };
-
-  if (maskIdentifiers) maskIdentifiersByChannel(LineChatChannel);
-
-  Flex.TaskChannels.register(LineChatChannel);
-};
-
-const maskIdentifiersByChannel = channelType => {
-  // Task list and panel when a call comes in
-  channelType.templates.TaskListItem.firstLine = 'MaskIdentifiers';
-  /*
-   * if (channelType === Flex.DefaultTaskChannels.Chat) {
-   *   channelType.templates.TaskListItem.secondLine = 'TaskLineWebChatAssignedMasked';
-   * } else {
-   *   channelType.templates.TaskListItem.secondLine = 'TaskLineChatAssignedMasked';
-   * }
-   */
-  channelType.templates.IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
-  // Task panel during an active call
-  channelType.templates.TaskCanvasHeader.title = 'MaskIdentifiers';
-  channelType.templates.MessageListItem = 'MaskIdentifiers';
-  // Task Status in Agents page
-  channelType.templates.TaskCard.firstLine = 'MaskIdentifiers';
-  // Supervisor
-  channelType.templates.Supervisor.TaskCanvasHeader.title = 'MaskIdentifiers';
-  channelType.templates.Supervisor.TaskOverviewCanvas.title = 'MaskIdentifiers';
-};
-
-export const maskIdentifiersForDefaultChannels = () => {
-  maskIdentifiersByChannel(Flex.DefaultTaskChannels.Call);
-  maskIdentifiersByChannel(Flex.DefaultTaskChannels.Chat);
-  maskIdentifiersByChannel(Flex.DefaultTaskChannels.ChatSms);
-  maskIdentifiersByChannel(Flex.DefaultTaskChannels.Default);
-  maskIdentifiersByChannel(Flex.DefaultTaskChannels.ChatMessenger);
-  maskIdentifiersByChannel(Flex.DefaultTaskChannels.ChatWhatsApp);
 };
