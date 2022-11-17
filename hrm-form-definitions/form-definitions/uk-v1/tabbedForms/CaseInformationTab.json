@@ -47,7 +47,7 @@
   {
     "name": "signposted",
     "label": "Signposted To",
-    "type": "multi-select",
+    "type": "listbox-multiselect",
     "options": [
       {
         "value": "Unknown",
