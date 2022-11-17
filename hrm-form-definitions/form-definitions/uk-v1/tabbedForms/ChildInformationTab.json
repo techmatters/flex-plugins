@@ -256,8 +256,8 @@
     }
   },
   {
-    "name": "geolocation",
-    "label": "Location",
+    "name": "uklocation",
+    "label": "UK Location",
     "type": "select",
     "options": [
       {
@@ -294,6 +294,751 @@
     "name": "ifNotUk",
     "label": "If not UK, where?",
     "type": "input"
+  },
+  {
+    "name": "englocation",
+    "label": "English County",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Aberdeenshire",
+        "label": "Aberdeenshire"
+      },
+      {
+        "value": "Angus",
+        "label": "Angus"
+      },
+      {
+        "value": "Antrim",
+        "label": "Antrim"
+      },
+      {
+        "value": "Argyll",
+        "label": "Argyll"
+      },
+      {
+        "value": "Armagh",
+        "label": "Armagh"
+      },
+      {
+        "value": "Ayrshire",
+        "label": "Ayrshire"
+      },
+      {
+        "value": "Banffshire",
+        "label": "Banffshire"
+      },
+      {
+        "value": "Berkshire",
+        "label": "Berkshire"
+      },
+      {
+        "value": "Berwickshire",
+        "label": "Berwickshire"
+      },
+      {
+        "value": "Bristol",
+        "label": "Bristol"
+      },
+      {
+        "value": "Buckinghamshire",
+        "label": "Buckinghamshire"
+      },
+      {
+        "value": "Bute",
+        "label": "Bute"
+      },
+      {
+        "value": "Caithness",
+        "label": "Caithness"
+      },
+      {
+        "value": "Cambridgeshire",
+        "label": "Cambridgeshire"
+      },
+      {
+        "value": "Cheshire",
+        "label": "Cheshire"
+      },
+      {
+        "value": "City of London",
+        "label": "City of London"
+      },
+      {
+        "value": "Clackmannanshire",
+        "label": "Clackmannanshire"
+      },
+      {
+        "value": "Clwyd",
+        "label": "Clwyd"
+      },
+      {
+        "value": "Cornwall",
+        "label": "Cornwall"
+      },
+      {
+        "value": "Cumbria",
+        "label": "Cumbria"
+      },
+      {
+        "value": "Derbyshire",
+        "label": "Derbyshire"
+      },
+      {
+        "value": "Devon",
+        "label": "Devon"
+      },
+      {
+        "value": "Dorset",
+        "label": "Dorset"
+      },
+      {
+        "value": "Down",
+        "label": "Down"
+      },
+      {
+        "value": "Dumfriesshire",
+        "label": "Dumfriesshire"
+      },
+      {
+        "value": "Dunbartonshire",
+        "label": "Dunbartonshire"
+      },
+      {
+        "value": "Durham",
+        "label": "Durham"
+      },
+      {
+        "value": "Dyfed",
+        "label": "Dyfed"
+      },
+      {
+        "value": "East Lothian",
+        "label": "East Lothian"
+      },
+      {
+        "value": "East Riding of Yorkshire",
+        "label": "East Riding of Yorkshire"
+      },
+      {
+        "value": "East Sussex",
+        "label": "East Sussex"
+      },
+      {
+        "value": "Essex",
+        "label": "Essex"
+      },
+      {
+        "value": "Fermanagh",
+        "label": "Fermanagh"
+      },
+      {
+        "value": "Fife",
+        "label": "Fife"
+      },
+      {
+        "value": "Gloucestershire",
+        "label": "Gloucestershire"
+      },
+      {
+        "value": "Greater London",
+        "label": "Greater London"
+      },
+      {
+        "value": "Greater Manchester",
+        "label": "Greater Manchester"
+      },
+      {
+        "value": "Gwent",
+        "label": "Gwent"
+      },
+      {
+        "value": "Gwynedd",
+        "label": "Gwynedd"
+      },
+      {
+        "value": "Hampshire",
+        "label": "Hampshire"
+      },
+      {
+        "value": "Herefordshire",
+        "label": "Herefordshire"
+      },
+      {
+        "value": "Hertfordshire",
+        "label": "Hertfordshire"
+      },
+      {
+        "value": "Inverness-shire",
+        "label": "Inverness-shire"
+      },
+      {
+        "value": "Isle of Wight",
+        "label": "Isle of Wight"
+      },
+      {
+        "value": "Kent",
+        "label": "Kent"
+      },
+      {
+        "value": "Kincardineshire",
+        "label": "Kincardineshire"
+      },
+      {
+        "value": "Kinross-shire",
+        "label": "Kinross-shire"
+      },
+      {
+        "value": "Kirkcudbrightshire",
+        "label": "Kirkcudbrightshire"
+      },
+      {
+        "value": "Lanarkshire",
+        "label": "Lanarkshire"
+      },
+      {
+        "value": "Lancashire",
+        "label": "Lancashire"
+      },
+      {
+        "value": "Leicestershire",
+        "label": "Leicestershire"
+      },
+      {
+        "value": "Lincolnshire",
+        "label": "Lincolnshire"
+      },
+      {
+        "value": "Londonderry",
+        "label": "Londonderry"
+      },
+      {
+        "value": "Merseyside",
+        "label": "Merseyside"
+      },
+      {
+        "value": "Mid Glamorgan",
+        "label": "Mid Glamorgan"
+      },
+      {
+        "value": "Midlothian",
+        "label": "Midlothian"
+      },
+      {
+        "value": "Moray",
+        "label": "Moray"
+      },
+      {
+        "value": "Nairnshire",
+        "label": "Nairnshire"
+      },
+      {
+        "value": "Norfolk",
+        "label": "Norfolk"
+      },
+      {
+        "value": "North Yorkshire",
+        "label": "North Yorkshire"
+      },
+      {
+        "value": "Northamptonshire",
+        "label": "Northamptonshire"
+      },
+      {
+        "value": "Northumberland",
+        "label": "Northumberland"
+      },
+      {
+        "value": "Nottinghamshire",
+        "label": "Nottinghamshire"
+      },
+      {
+        "value": "Orkney",
+        "label": "Orkney"
+      },
+      {
+        "value": "Oxfordshire",
+        "label": "Oxfordshire"
+      },
+      {
+        "value": "Peeblesshire",
+        "label": "Peeblesshire"
+      },
+      {
+        "value": "Perthshire",
+        "label": "Perthshire"
+      },
+      {
+        "value": "Powys",
+        "label": "Powys"
+      },
+      {
+        "value": "Renfrewshire",
+        "label": "Renfrewshire"
+      },
+      {
+        "value": "Ross and Cromarty",
+        "label": "Ross and Cromarty"
+      },
+      {
+        "value": "Roxburghshire",
+        "label": "Roxburghshire"
+      },
+      {
+        "value": "Rutland",
+        "label": "Rutland"
+      },
+      {
+        "value": "Selkirkshire",
+        "label": "Selkirkshire"
+      },
+      {
+        "value": "Shetland",
+        "label": "Shetland"
+      },
+      {
+        "value": "Shropshire",
+        "label": "Shropshire"
+      },
+      {
+        "value": "Somerset",
+        "label": "Somerset"
+      },
+      {
+        "value": "South Glamorgan",
+        "label": "South Glamorgan"
+      },
+      {
+        "value": "South Yorkshire",
+        "label": "South Yorkshire"
+      },
+      {
+        "value": "Staffordshire",
+        "label": "Staffordshire"
+      },
+      {
+        "value": "Stirlingshire",
+        "label": "Stirlingshire"
+      },
+      {
+        "value": "Suffolk",
+        "label": "Suffolk"
+      },
+      {
+        "value": "Surrey",
+        "label": "Surrey"
+      },
+      {
+        "value": "Sutherland",
+        "label": "Sutherland"
+      },
+      {
+        "value": "Tyne and Wear",
+        "label": "Tyne and Wear"
+      },
+      {
+        "value": "Tyrone",
+        "label": "Tyrone"
+      },
+      {
+        "value": "Warwickshire",
+        "label": "Warwickshire"
+      },
+      {
+        "value": "West Glamorgan",
+        "label": "West Glamorgan"
+      },
+      {
+        "value": "West Lothian",
+        "label": "West Lothian"
+      },
+      {
+        "value": "West Midlands",
+        "label": "West Midlands"
+      },
+      {
+        "value": "West Sussex",
+        "label": "West Sussex"
+      },
+      {
+        "value": "West Yorkshire",
+        "label": "West Yorkshire"
+      },
+      {
+        "value": "Wigtownshire",
+        "label": "Wigtownshire"
+      },
+      {
+        "value": "Wiltshire",
+        "label": "Wiltshire"
+      },
+      {
+        "value": "Worcestershire",
+        "label": "Worcestershire"
+      },
+      {
+        "value": "Wiltshire",
+        "label": "Wiltshire"
+      },
+      {
+        "value": "Worcestershire",
+        "label": "Worcestershire"
+      }
+    ]
+  },
+  {
+    "name": "clientCategory",
+    "label": "POSH Client Category",
+    "type": "input"
+  },
+  {
+    "name": "typeOfEstablishment",
+    "label": "POSH Type of Establishment",
+    "type": "input"
+  },
+  {
+    "name": "natureOfImages",
+    "label": "RP Nature of Images",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "",
+        "label": "Unknown/Unspecified"
+      },
+      {
+        "value": "Stills",
+        "label": "Stills"
+      },
+      {
+        "value": "Photoshoppedimages",
+        "label": "Photoshopped images"
+      },
+      {
+        "value": "StillsandVideos",
+        "label": "Stills and Videos"
+      },
+      {
+        "value": "Videos",
+        "label": "Videos"
+      }
+    ]
+  },
+  {
+    "name": "LocationofContent",
+    "label": "RP/RHC Location of Content",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "",
+        "label": "Unknown/Unspecified"
+      },
+      {
+        "value": "other",
+        "label": "Other"
+      },
+      {
+        "value": "Client Didn't Answer",
+        "label": "Client Didn't Answer"
+      },
+      {
+        "value": "Client Doesn't Know",
+        "label": "Client Doesn't Know"
+      },
+      {
+        "value": "Client Wanted No Data Collected",
+        "label": "SClient Wanted No Data Collected"
+      },
+      {
+        "value": "Collector site (forums made specifically for sharing content)",
+        "label": "Collector site (forums made specifically for sharing content)"
+      },
+      {
+        "value": "Bing",
+        "label": "Bing"
+      },
+      {
+        "value": "Blogger",
+        "label": "Blogger"
+      },
+      {
+        "value": "Dating Site",
+        "label": "Dating Site"
+      },
+      {
+        "value": "Discord",
+        "label": "Discord"
+      },
+      {
+        "value": "Email/Text/Dms",
+        "label": "Email/Text/Dms"
+      },
+      {
+        "value": "Facebook",
+        "label": "Facebook"
+      },
+      {
+        "value": "GoogleSearch",
+        "label": "Google Search"
+      },
+      {
+        "value": "General Porn Site",
+        "label": "General Porn Site"
+      },
+      {
+        "value": "Hard copy pictures",
+        "label": "Hard copy pictures"
+      },
+      {
+        "value": "Hinge",
+        "label": "Hinge"
+      },
+      {
+        "value": "Instagram",
+        "label": "Instagram"
+      },
+      {
+        "value": "LinkedIn",
+        "label": "LinkedIn"
+      },
+      {
+        "value": "Match",
+        "label": "Match"
+      },
+      {
+        "value": "Minecraft",
+        "label": "Minecraft"
+      },
+      {
+        "value": "Multiple Locations",
+        "label": "Multiple Locations"
+      },
+      {
+        "value": "Not relevant",
+        "label": "Not relevant"
+      },
+      {
+        "value": "okCupid",
+        "label": "OkCupid"
+      },
+      {
+        "value": "ourtime",
+        "label": "Ourtime"
+      },
+      {
+        "value": "Pinterest",
+        "label": "Pinterest"
+      },
+      {
+        "value": "Pof",
+        "label": "Pof"
+      },
+      {
+        "value": "Question Not Asked",
+        "label": "Question Not Asked"
+      },
+      {
+        "value": "Roblox",
+        "label": "Roblox"
+      },
+      {
+        "value": "RP Website",
+        "label": "RP Website"
+      },
+      {
+        "value": "Snapchat",
+        "label": "Snapchat"
+      },
+      {
+        "value": "Skype",
+        "label": "Skype"
+      },
+      {
+        "value": "Subscription Site (OnlyFans, Fansly etc)",
+        "label": "Subscription Site (OnlyFans, Fansly etc)"
+      },
+      {
+        "value": "Threat to publish",
+        "label": "Threat to publish"
+      },
+      {
+        "value": "TikTok",
+        "label": "TikTok"
+      },
+      {
+        "value": "Tinder",
+        "label": "Tinder"
+      },
+      {
+        "value": "Twitch",
+        "label": "Twitch"
+      },
+      {
+        "value": "Twitter",
+        "label": "Twitter"
+      },
+      {
+        "value": "Web Cam Capture",
+        "label": "Web Cam Capture"
+      },
+      {
+        "value": "Youtube",
+        "label": "Youtube"
+      },
+      {
+        "value": "YoutubeKids",
+        "label": "Youtube Kids"
+      },
+      {
+        "value": "Yubo",
+        "label": "Yubo"
+      },
+      {
+        "value": "XboxLive",
+        "label": "Xbox Live"
+      }
+    ]
+  },
+  {
+    "name": "LocationofImages",
+    "label": "RP Location of Threats",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "",
+        "label": "Unknown/Unspecified"
+      },
+      {
+        "value": "Client Didn't Answer",
+        "label": "Client Didn't Answer"
+      },
+      {
+        "value": "Client Doesn't Know",
+        "label": "Client Doesn't Know"
+      },
+      {
+        "value": "Client Wanted No Data Collected",
+        "label": "SClient Wanted No Data Collected"
+      },
+      {
+        "value": "Dating Site",
+        "label": "Dating Site"
+      },
+      {
+        "value": "Discord",
+        "label": "Discord"
+      },
+      {
+        "value": "Email/Text/Dms",
+        "label": "Email/Text/Dms"
+      },
+      {
+        "value": "Facebook",
+        "label": "Facebook"
+      },
+      {
+        "value": "General Porn Site",
+        "label": "General Porn Site"
+      },
+      {
+        "value": "Hard copy pictures",
+        "label": "Hard copy pictures"
+      },
+      {
+        "value": "Instagram",
+        "label": "Instagram"
+      },
+      {
+        "value": "Multiple Locations",
+        "label": "Multiple Locations"
+      },
+      {
+        "value": "Not relevant",
+        "label": "Not relevant"
+      },
+      {
+        "value": "Question Not Asked",
+        "label": "Question Not Asked"
+      },
+      {
+        "value": "RP Website",
+        "label": "RP Website"
+      },
+      {
+        "value": "Snapchat",
+        "label": "Snapchat"
+      },
+      {
+        "value": "Subscription Site (OnlyFans, Fansly etc)",
+        "label": "Subscription Site (OnlyFans, Fansly etc)"
+      },
+      {
+        "value": "Threat to publish",
+        "label": "Threat to publish"
+      },
+      {
+        "value": "Twitch",
+        "label": "Twitch"
+      },
+      {
+        "value": "Twitter",
+        "label": "Twitter"
+      },
+      {
+        "value": "Web Cam Capture",
+        "label": "Web Cam Capture"
+      },
+      {
+        "value": "Youtube",
+        "label": "Youtube"
+      }
+    ]
+  },
+  {
+    "name": "RHCHarm",
+    "label": "RHC Nature of Harm",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "",
+        "label": "Unknown/Unspecified"
+      },
+      {
+        "value": "Abuse",
+        "label": "Abuse"
+      },
+      {
+        "value": "Bullying / repeated harassment",
+        "label": "Bullying / repeated harassment"
+      },
+      {
+        "value": "Direct threats",
+        "label": "Direct threats"
+      },
+      {
+        "value": "Impersonation",
+        "label": "Impersonation"
+      },
+      {
+        "value": "Pornography",
+        "label": "Pornography"
+      },
+      {
+        "value": "Self harm/ suicide",
+        "label": "Self harm/ suicide"
+      },
+      {
+        "value": "Unwanted sexual advances (non image)",
+        "label": "Unwanted sexual advances (non image)"
+      },
+      {
+        "value": "Violent content",
+        "label": "Violent content"
+      }
+    ]
   },
   {
     "name": "mentalHealthIssueDisclosed",
