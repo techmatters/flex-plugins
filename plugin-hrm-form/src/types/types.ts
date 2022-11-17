@@ -49,7 +49,7 @@ export type Document = { [key: string]: string | boolean };
 
 export type DocumentEntry = { document: Document; id: string | undefined } & EntryInfo;
 
-export type CSAMReportEntry = { csamReportId: string; id: number } & EntryInfo;
+export type CSAMReportEntry = { csamReportId: string; id: number } & Omit<EntryInfo, 'id'>;
 
 export type CaseInfo = {
   definitionVersion?: DefinitionVersionId;
@@ -135,6 +135,8 @@ export type SearchContact = {
     conversationDuration: number;
     createdBy: string;
     taskId: string;
+    updatedBy?: string;
+    updatedAt?: string;
   };
   details: ContactRawJson;
   csamReports: CSAMReportEntry[];
