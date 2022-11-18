@@ -14,6 +14,8 @@ type OwnProps = {
   updated?: Date;
   updatingCounsellor?: string;
   includeTime?: boolean;
+  space?: string;
+  codeTemplate?: string;
 };
 
 type Props = OwnProps;
@@ -25,6 +27,8 @@ const ActionHeader: React.FC<Props> = ({
   addingCounsellor,
   updated,
   updatingCounsellor,
+  space,
+  codeTemplate,
 }) => {
   // @ts-ignore
   return (
@@ -45,10 +49,11 @@ const ActionHeader: React.FC<Props> = ({
         {added && (
           <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderAdded">
             <Template
-              code="Case-ActionHeaderAdded"
+              code={codeTemplate ? codeTemplate : 'Case-ActionHeaderAdded'}
               date={added.toLocaleDateString()}
               time={added.toLocaleTimeString(undefined, { minute: '2-digit', hour: '2-digit' })}
               counsellor={addingCounsellor}
+              space={space}
             />
           </CaseActionDetailFont>
         )}

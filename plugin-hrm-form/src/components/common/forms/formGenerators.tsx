@@ -102,7 +102,7 @@ export const ConnectForm: React.FC<{
   return children({ ...methods });
 };
 
-const RequiredAsterisk = () => (
+export const RequiredAsterisk = () => (
   <span aria-hidden style={{ color: 'red' }}>
     *
   </span>
