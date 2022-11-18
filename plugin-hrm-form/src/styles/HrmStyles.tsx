@@ -2,7 +2,7 @@
 import React from 'react';
 import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, withStyles, TabProps } from '@material-ui/core';
 import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
-import AssignmentInd from '@material-ui/icons/AssignmentInd';
+import AssignmentInd from '@material-ui/icons/AssignmentIndOutlined';
 import { Button, Icon, styled, CheckboxGroup } from '@twilio/flex-ui';
 import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
 
@@ -373,6 +373,7 @@ export const StyledTabs = withStyles({
     minHeight: 35,
     height: 35,
     flexShrink: 0,
+    padding: '0 7%',
   },
   indicator: {
     backgroundColor: 'transparent',
@@ -601,7 +602,6 @@ export const OfflineContactTaskIconContainer = styled('div')`
   display: flex;
   flex: 0 0 44px;
   height: 44px;
-  background-color: #159af8;
 `;
 OfflineContactTaskIconContainer.displayName = 'OfflineContactTaskIconContainer';
 
@@ -610,7 +610,7 @@ export const OfflineContactTaskIcon = withStyles({
     display: 'flex',
     flex: '0 0 auto',
     margin: 'auto',
-    color: '#ffffff',
+    color: '#159af8',
   },
 })(AssignmentInd);
 OfflineContactTaskIcon.displayName = 'OfflineContactTaskIcon';
@@ -749,7 +749,7 @@ export const FormError = styled('span')`
 `;
 FormError.displayName = 'FormError';
 
-type FormInputProps = { error?: boolean; width?: number; fullWidth?: boolean };
+type FormInputProps = { error?: boolean; width?: number | string; fullWidth?: boolean };
 
 export const FormInput = styled('input')<FormInputProps>`
   /* ---------- Input ---------- */
@@ -900,7 +900,8 @@ const CheckboxBase = styled.input<FormInputProps>`
     top: 50%;
     left: 7px;
     transform: translate(-50%, -50%);
-    content: '\f00c';
+    content: '';
+    font-weight: 900;
   }
   &[type='checkbox']::before {
     width: 13px;
@@ -922,8 +923,9 @@ export const FormCheckbox = styled(CheckboxBase)`
   }
   &[type='checkbox']:checked::after {
     font-family: 'Font Awesome 5 Free';
-    content: '\f00c';
+    content: '\\f00c';
     color: #ffffff;
+    font-weight: 900;
   }
 
   &[type='checkbox']:focus:not(:focus-visible) {
@@ -943,13 +945,15 @@ export const FormMixedCheckbox = styled(CheckboxBase)`
   }
   &[class~='mixed-checkbox'][type='checkbox'][aria-checked='false']::after {
     font-family: 'Font Awesome 5 Free';
-    content: '\f00d';
+    content: '\\f00d';
     color: #ffffff;
+    font-weight: 900;
   }
   &[class~='mixed-checkbox'][type='checkbox'][aria-checked='true']::after {
     font-family: 'Font Awesome 5 Free';
-    content: '\f00c';
+    content: '\\f00c';
     color: #ffffff;
+    font-weight: 900;
   }
   /* To disable the outline when focused */
   /* &[class~=mixed-checkbox][type=checkbox]:focus {
@@ -970,8 +974,6 @@ export const FormSelectWrapper = styled('div')<FormSelectProps>`
   height: 36px;
 
   &:after {
-    // font-family: 'Font Awesome 5 Free';
-    // content: '\f0dd';
     content: '';
     width: 0;
     height: 0;
@@ -1044,7 +1046,8 @@ export const CategoryCheckbox = styled(CheckboxBase)<CategoryCheckboxProps>`
 
   &[type='checkbox']:checked::after {
     font-family: 'Font Awesome 5 Free';
-    content: '\f00c';
+    content: '\\f00c';
+    font-weight: 900;
     color: ${({ color }) => color};
   }
 

@@ -302,7 +302,8 @@ export const FiltersCheckbox = styled('input')`
   &[type='checkbox']:checked::after {
     font-family: 'Font Awesome 5 Free';
     font-size: 11px;
-    content: '\f00c';
+    content: '\\f00c';
+    font-weight: 900;
     color: #ffffff;
   }
   &[type='checkbox']:indeterminate::after {

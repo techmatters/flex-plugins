@@ -1,10 +1,12 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react';
-import { format } from 'date-fns';
+import React, { useEffect } from 'react';
+import { format, isEqual } from 'date-fns';
 import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
+import { Flex, Row } from '../../styles/HrmStyles';
+import { isS3StoredTranscript, isTwilioStoredMedia, SearchContact } from '../../types/types';
 import {
   DetailsContainer,
   NameText,
@@ -14,16 +16,17 @@ import {
 } from '../../styles/search';
 import ContactDetailsSection from './ContactDetailsSection';
 import SectionEntry from '../SectionEntry';
-import { channelTypes } from '../../states/DomainConstants';
+import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import { formatCategories, formatDuration, formatName, mapChannelForInsights } from '../../utils';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
 import { unNestInformation } from '../../services/ContactService';
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
-import { getPermissionsForContact, PermissionActions } from '../../permissions';
+import { getPermissionsForContact, getPermissionsForViewingIdentifiers, PermissionActions } from '../../permissions';
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
 import { getConfig } from '../../HrmFormPlugin';
+import TranscriptSection from './TranscriptSection';
 
 // TODO: complete this type
 type OwnProps = {
@@ -39,6 +42,7 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchT
 /* eslint-disable complexity */
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ContactDetailsHome: React.FC<Props> = function ({
+  contactId,
   context,
   detailsExpanded,
   showActionIcons = false,
@@ -49,13 +53,13 @@ const ContactDetailsHome: React.FC<Props> = function ({
   toggleSectionExpandedForContext,
   createContactDraft,
   enableEditing,
-  canViewTranscript,
+  canViewTwilioTranscript,
 }) {
   const version = savedContact?.details.definitionVersion;
 
   const definitionVersion = definitionVersions[version];
 
-  const { featureFlags } = getConfig();
+  const { featureFlags, strings } = getConfig();
 
   useEffect(
     () => () => {
@@ -67,7 +71,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   if (!savedContact || !definitionVersion) return null;
 
   // Object destructuring on contact
-  const { overview, details, csamReports } = savedContact;
+  const { overview, details, csamReports } = savedContact as SearchContact;
   const {
     counselor,
     dateTime,
@@ -78,7 +82,30 @@ const ContactDetailsHome: React.FC<Props> = function ({
     conversationDuration,
     categories,
     createdBy,
+    updatedAt,
+    updatedBy,
   } = overview;
+
+  const auditMessage = (timestampText: string, workerSid: string, templateKey: string) => {
+    if (timestampText && workerSid) {
+      const timestamp = new Date(timestampText);
+      const formattedDateStandard = `${format(timestamp, 'M/dd/yyyy')}`;
+      const formattedTimeStandard = `${format(timestamp, 'h:mm a')}`;
+      const counselorName = counselorsHash[workerSid];
+      return (
+        <ContactAddedFont style={{ marginRight: 20 }} data-testid={templateKey}>
+          <Template
+            code={templateKey}
+            date={formattedDateStandard}
+            time={formattedTimeStandard}
+            counsellor={counselorName}
+          />
+        </ContactAddedFont>
+      );
+    }
+    return null;
+  };
+
   // Permission to edit is based the counselor who created the contact - identified by Twilio worker ID
   const createdByTwilioWorkerId = savedContact?.overview.counselor;
   const { can } = getPermissionsForContact(createdByTwilioWorkerId);
@@ -90,11 +117,10 @@ const ContactDetailsHome: React.FC<Props> = function ({
     channel === 'default'
       ? mapChannelForInsights(details.contactlessTask.channel.toString())
       : mapChannelForInsights(channel);
-  const formattedDateStandard = `${format(new Date(dateTime), 'M/dd/yyyy')}`;
-  const formattedTimeStandard = `${format(new Date(dateTime), 'h:mm a')}`;
+  const addedDate = new Date(dateTime);
 
-  const formattedDate = `${format(new Date(dateTime), 'MMM dd, yyyy')}`;
-  const formattedTime = `${format(new Date(dateTime), 'h:mm aaaaa')}m`;
+  const formattedDate = `${format(addedDate, 'MMM dd, yyyy')}`;
+  const formattedTime = `${format(addedDate, 'h:mm aaaaa')}m`;
 
   const formattedDuration = formatDuration(conversationDuration);
 
@@ -108,16 +134,17 @@ const ContactDetailsHome: React.FC<Props> = function ({
     CHILD_INFORMATION,
     ISSUE_CATEGORIZATION,
     CONTACT_SUMMARY,
+    TRANSCRIPT,
   } = ContactDetailsSections;
   const addedBy = counselorsHash[createdBy];
   const counselorName = counselorsHash[counselor];
-
   const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(context, section);
   const navigate = (route: ContactDetailsRoute) => createContactDraft(savedContact.contactId, route);
 
   const loadConversationIntoOverlay = async () => {
+    const twilioStoredMedia = savedContact.details.conversationMedia.find(isTwilioStoredMedia);
     await Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_PLAY, {
-      taskSid: savedContact.details.conversationMedia[0].reservationSid,
+      taskSid: twilioStoredMedia.reservationSid,
     });
   };
 
@@ -127,25 +154,39 @@ const ContactDetailsHome: React.FC<Props> = function ({
       .map(r => `CSAM on ${format(new Date(r.createdAt), 'yyyy MM dd h:mm aaaaa')}m\n#${r.csamReportId}`)
       .join('\n\n');
 
-  const transcriptOrRecordingAvailable = Boolean(
-    ((featureFlags.enable_voice_recordings && channel === channelTypes.voice) ||
-      (featureFlags.enable_transcripts && channel !== channelTypes.voice)) &&
-      canViewTranscript &&
-      savedContact.details.conversationMedia?.length &&
-      typeof savedContact.overview.conversationDuration === 'number',
+  const recordingAvailable = Boolean(
+    featureFlags.enable_voice_recordings &&
+      isVoiceChannel(channel) &&
+      canViewTwilioTranscript &&
+      savedContact.details.conversationMedia?.length,
+    // && typeof savedContact.overview.conversationDuration === 'number',
   );
+
+  const twilioStoredTranscript =
+    featureFlags.enable_twilio_transcripts &&
+    canViewTwilioTranscript &&
+    savedContact.details.conversationMedia?.find(isTwilioStoredMedia);
+  const externalStoredTranscript =
+    featureFlags.enable_external_transcripts &&
+    can(PermissionActions.VIEW_EXTERNAL_TRANSCRIPT) &&
+    savedContact.details.conversationMedia?.find(isS3StoredTranscript);
+  const showTranscriptSection = Boolean(
+    isChatChannel(channel) &&
+      savedContact.details.conversationMedia?.length &&
+      (twilioStoredTranscript || externalStoredTranscript),
+  );
+
+  const { canView } = getPermissionsForViewingIdentifiers();
+  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
       <NameText>{childOrUnknown}</NameText>
-      <ContactAddedFont style={{ marginRight: 20 }} data-testid="ContactDetails-ActionHeaderAdded">
-        <Template
-          code="ContactDetails-ActionHeaderAdded"
-          date={formattedDateStandard}
-          time={formattedTimeStandard}
-          counsellor={addedBy}
-        />
-      </ContactAddedFont>
+
+      {auditMessage(dateTime, createdBy, 'ContactDetails-ActionHeaderAdded')}
+
+      {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
+
       <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
         expanded={detailsExpanded[GENERAL_DETAILS]}
@@ -156,10 +197,17 @@ const ContactDetailsHome: React.FC<Props> = function ({
           description={<Template code="ContactDetails-GeneralDetails-Channel" />}
           value={formattedChannel}
         />
-        <SectionEntry
-          description={<Template code="ContactDetails-GeneralDetails-PhoneNumber" />}
-          value={isPhoneContact ? customerNumber : ''}
-        />
+        {maskIdentifiers ? (
+          <SectionEntry
+            description={<Template code="ContactDetails-GeneralDetails-PhoneNumber" />}
+            value={strings.MaskIdentifiers}
+          />
+        ) : (
+          <SectionEntry
+            description={<Template code="ContactDetails-GeneralDetails-PhoneNumber" />}
+            value={isPhoneContact ? customerNumber : ''}
+          />
+        )}
         <SectionEntry
           description={<Template code="ContactDetails-GeneralDetails-ConversationDuration" />}
           value={formattedDuration}
@@ -269,16 +317,30 @@ const ContactDetailsHome: React.FC<Props> = function ({
           )}
         </ContactDetailsSection>
       )}
-      {transcriptOrRecordingAvailable && (
+      {recordingAvailable && (
         <SectionTitleContainer style={{ justifyContent: 'right', paddingTop: '10px', paddingBottom: '10px' }}>
           <SectionActionButton type="button" onClick={loadConversationIntoOverlay}>
-            {channel === channelTypes.voice ? (
-              <Template code="ContactDetails-LoadRecording-Button" />
-            ) : (
-              <Template code="ContactDetails-LoadTranscript-Button" />
-            )}
+            <Template code="ContactDetails-LoadRecording-Button" />
           </SectionActionButton>
         </SectionTitleContainer>
+      )}
+      {showTranscriptSection && (
+        <ContactDetailsSection
+          sectionTitle={<Template code="ContactDetails-Transcript" />}
+          expanded={detailsExpanded[TRANSCRIPT]}
+          handleExpandClick={() => toggleSection(TRANSCRIPT)}
+          buttonDataTestid="ContactDetails-Section-Transcript"
+          showEditButton={false}
+        >
+          <Flex justifyContent="center" flexDirection="row" paddingTop="20px">
+            <TranscriptSection
+              contactId={contactId}
+              twilioStoredTranscript={twilioStoredTranscript}
+              externalStoredTranscript={externalStoredTranscript}
+              loadConversationIntoOverlay={loadConversationIntoOverlay}
+            />
+          </Flex>
+        </ContactDetailsSection>
       )}
     </DetailsContainer>
   );
@@ -297,7 +359,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
   draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
   detailsExpanded: state[namespace][contactFormsBase].contactDetails[ownProps.context].detailsExpanded,
-  canViewTranscript: (state.flex.worker.attributes.roles as string[]).some(
+  canViewTwilioTranscript: (state.flex.worker.attributes.roles as string[]).some(
     role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.quality_process_manager',
   ),
 });

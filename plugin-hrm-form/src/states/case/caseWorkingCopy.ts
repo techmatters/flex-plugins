@@ -1,7 +1,7 @@
 import { v4 as uuidV4 } from 'uuid';
 
 import { CaseSectionApi } from './sections/api';
-import { CaseItemEntry } from '../../types/types';
+import { CaseItemEntry, CaseItemFormValues } from '../../types/types';
 import { CaseState, CaseSummaryWorkingCopy } from './types';
 
 // Update a section of a case's working copy
@@ -49,21 +49,21 @@ export const updateCaseSectionWorkingCopyReducer = (
 };
 
 // Initialise a new section of a case's working copy based on the saved data, or blank if adding a new section
-export const INIT_CASE_SECTION_WORKING_COPY = 'INIT_CASE_SECTION_WORKING_COPY';
+export const INIT_EXISTING_CASE_SECTION_WORKING_COPY = 'INIT_EXISTING_CASE_SECTION_WORKING_COPY';
 
-type InitialiseCaseSectionWorkingCopyAction = {
-  type: typeof INIT_CASE_SECTION_WORKING_COPY;
+type InitialiseExistingCaseSectionWorkingCopyAction = {
+  type: typeof INIT_EXISTING_CASE_SECTION_WORKING_COPY;
   taskId: string;
   api: CaseSectionApi<unknown>;
-  id?: string;
+  id: string;
 };
 
-export const initialiseCaseSectionWorkingCopy = (
+export const initialiseExistingCaseSectionWorkingCopy = (
   taskId: string,
   api: CaseSectionApi<unknown>,
-  id?: string,
-): InitialiseCaseSectionWorkingCopyAction => ({
-  type: INIT_CASE_SECTION_WORKING_COPY,
+  id: string,
+): InitialiseExistingCaseSectionWorkingCopyAction => ({
+  type: INIT_EXISTING_CASE_SECTION_WORKING_COPY,
   taskId,
   api,
   id,
@@ -71,11 +71,11 @@ export const initialiseCaseSectionWorkingCopy = (
 
 export const initialiseCaseSectionWorkingCopyReducer = (
   state: CaseState,
-  action: InitialiseCaseSectionWorkingCopyAction,
+  action: InitialiseExistingCaseSectionWorkingCopyAction,
 ): CaseState => {
-  const item: CaseItemEntry = action.id
-    ? action.api.toForm(action.api.getSectionItemById(state.tasks[action.taskId].connectedCase.info, action.id))
-    : { id: uuidV4(), form: {}, createdAt: null, twilioWorkerId: null };
+  const item: CaseItemEntry = action.api.toForm(
+    action.api.getSectionItemById(state.tasks[action.taskId].connectedCase.info, action.id),
+  );
   return {
     ...state,
     tasks: {
@@ -83,6 +83,43 @@ export const initialiseCaseSectionWorkingCopyReducer = (
       [action.taskId]: {
         ...state.tasks[action.taskId],
         caseWorkingCopy: action.api.updateWorkingCopy(state.tasks[action.taskId]?.caseWorkingCopy, item, action.id),
+      },
+    },
+  };
+};
+
+export const INIT_NEW_CASE_SECTION_WORKING_COPY = 'INIT_NEW_CASE_SECTION_WORKING_COPY';
+
+type InitialiseNewCaseSectionWorkingCopyAction = {
+  type: typeof INIT_NEW_CASE_SECTION_WORKING_COPY;
+  taskId: string;
+  api: CaseSectionApi<unknown>;
+  form: CaseItemFormValues;
+};
+
+export const initialiseNewCaseSectionWorkingCopy = (
+  taskId: string,
+  api: CaseSectionApi<unknown>,
+  form: CaseItemFormValues,
+): InitialiseNewCaseSectionWorkingCopyAction => ({
+  type: INIT_NEW_CASE_SECTION_WORKING_COPY,
+  taskId,
+  api,
+  form,
+});
+
+export const initialiseNewCaseSectionWorkingCopyReducer = (
+  state: CaseState,
+  action: InitialiseNewCaseSectionWorkingCopyAction,
+): CaseState => {
+  const item: CaseItemEntry = { id: uuidV4(), form: action.form, createdAt: null, twilioWorkerId: null };
+  return {
+    ...state,
+    tasks: {
+      ...state.tasks,
+      [action.taskId]: {
+        ...state.tasks[action.taskId],
+        caseWorkingCopy: action.api.updateWorkingCopy(state.tasks[action.taskId]?.caseWorkingCopy, item),
       },
     },
   };
@@ -135,11 +172,16 @@ export const INIT_CASE_SUMMARY_WORKING_COPY = 'INIT_CASE_SUMMARY_WORKING_COPY';
 type InitialiseCaseSummaryWorkingCopyAction = {
   type: typeof INIT_CASE_SUMMARY_WORKING_COPY;
   taskId: string;
+  defaults: CaseSummaryWorkingCopy;
 };
 
-export const initialiseCaseSummaryWorkingCopy = (taskId: string): InitialiseCaseSummaryWorkingCopyAction => ({
+export const initialiseCaseSummaryWorkingCopy = (
+  taskId: string,
+  defaults: CaseSummaryWorkingCopy,
+): InitialiseCaseSummaryWorkingCopyAction => ({
   type: INIT_CASE_SUMMARY_WORKING_COPY,
   taskId,
+  defaults,
 });
 
 export const initialiseCaseSummaryWorkingCopyReducer = (
@@ -157,10 +199,10 @@ export const initialiseCaseSummaryWorkingCopyReducer = (
         ...caseState,
         caseWorkingCopy: {
           caseSummary: {
-            status: caseState.connectedCase.status,
-            summary,
-            childIsAtRisk,
-            followUpDate,
+            status: caseState.connectedCase.status ?? action.defaults.status,
+            summary: summary ?? action.defaults.summary,
+            childIsAtRisk: childIsAtRisk ?? action.defaults.childIsAtRisk,
+            followUpDate: followUpDate ?? action.defaults.followUpDate,
           },
           ...caseState.caseWorkingCopy,
         },
@@ -245,7 +287,8 @@ export const removeCaseSummaryWorkingCopyReducer = (
 
 export type CaseWorkingCopyActionType =
   | RemoveCaseSectionWorkingCopyAction
-  | InitialiseCaseSectionWorkingCopyAction
+  | InitialiseExistingCaseSectionWorkingCopyAction
+  | InitialiseNewCaseSectionWorkingCopyAction
   | UpdateCaseSectionWorkingCopyAction
   | InitialiseCaseSummaryWorkingCopyAction
   | UpdateCaseSummaryWorkingCopyAction

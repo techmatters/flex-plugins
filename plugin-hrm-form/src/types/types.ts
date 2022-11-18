@@ -3,6 +3,7 @@ import { ITask } from '@twilio/flex-ui';
 import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions';
 
 import { DateFilterValue } from '../components/caseList/filters/dateFilters';
+import { ChannelTypes } from '../states/DomainConstants';
 
 export type EntryInfo = {
   id: string;
@@ -48,7 +49,7 @@ export type Document = { [key: string]: string | boolean };
 
 export type DocumentEntry = { document: Document; id: string | undefined } & EntryInfo;
 
-export type CSAMReportEntry = { csamReportId: string; id: number } & EntryInfo;
+export type CSAMReportEntry = { csamReportId: string; id: number } & Omit<EntryInfo, 'id'>;
 
 export type CaseInfo = {
   definitionVersion?: DefinitionVersionId;
@@ -83,13 +84,29 @@ export type InformationObject = NestedInformation & {
   [key: string]: string | boolean | NestedInformation[keyof NestedInformation]; // having NestedInformation[keyof NestedInformation] makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
 };
 
-type TwilioStoredMedia = {
-  // In future we will have 'S3' as a possible store also.
+export type TwilioStoredMedia = {
   store: 'twilio';
   reservationSid: string;
 };
 
-export type ConversationMedia = TwilioStoredMedia;
+export enum ContactMediaType {
+  // RECORDING = 'recording',
+  TRANSCRIPT = 'transcript',
+}
+
+export type S3StoredTranscript = {
+  store: 'S3';
+  type: ContactMediaType.TRANSCRIPT;
+  url?: string;
+};
+
+type S3StoredMedia = S3StoredTranscript;
+
+export type ConversationMedia = TwilioStoredMedia | S3StoredMedia;
+
+export const isTwilioStoredMedia = (m: ConversationMedia): m is TwilioStoredMedia => m.store === 'twilio';
+export const isS3StoredTranscript = (m: ConversationMedia): m is S3StoredTranscript =>
+  m.store === 'S3' && m.type === ContactMediaType.TRANSCRIPT;
 
 // Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
 export type ContactRawJson = {
@@ -98,7 +115,7 @@ export type ContactRawJson = {
   childInformation: InformationObject;
   callerInformation: InformationObject;
   caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
-  contactlessTask: { [key: string]: string | boolean };
+  contactlessTask: { channel: ChannelTypes; [key: string]: string | boolean };
   conversationMedia: ConversationMedia[];
 };
 
@@ -118,6 +135,8 @@ export type SearchContact = {
     conversationDuration: number;
     createdBy: string;
     taskId: string;
+    updatedBy?: string;
+    updatedAt?: string;
   };
   details: ContactRawJson;
   csamReports: CSAMReportEntry[];

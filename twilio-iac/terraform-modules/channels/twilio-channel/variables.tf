@@ -50,3 +50,13 @@ variable "channel_name" {
   description = "Channel Name"
   type        = string
 }
+
+variable "channel_type" {
+  description = "Channel Type needed for the creation of the Flex resource channel"
+  type        = string
+}
+
+variable "janitor_enabled" {
+  description = "Enable or disable Janitor"
+  type        = bool
+}

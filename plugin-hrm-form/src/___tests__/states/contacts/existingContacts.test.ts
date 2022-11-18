@@ -13,6 +13,8 @@ import {
   releaseContact,
   releaseContactReducer,
   releaseContacts,
+  loadTranscript,
+  loadTranscriptReducer,
   setCategoriesGridView,
   setCategoriesGridViewReducer,
   toggleCategoryExpanded,
@@ -380,6 +382,35 @@ describe('releaseContactReducer', () => {
     expect(newState[baseContact.contactId].references.size).toStrictEqual(1);
     expect(newState[baseContact.contactId].references.has('ANOTHER_TEST_REFERENCE')).toBeTruthy();
     expect(newState['666']).toBeUndefined();
+  });
+});
+
+describe('loadTranscriptReducer', () => {
+  const transcript = {
+    messages: [{ sid: 'sid', body: 'body', dateCreated: new Date('2022-20-10'), from: 'from', index: 1, type: 'text' }],
+  };
+  test('Contact not loaded - noop', () => {
+    const newState = loadTranscriptReducer({}, loadTranscript(baseContact.contactId, transcript));
+    expect(newState).toStrictEqual({});
+  });
+
+  test('Contact loaded - loads the transcript', async () => {
+    const newState = loadTranscriptReducer(
+      {
+        [baseContact.contactId]: {
+          savedContact: baseContact,
+          references: new Set(['x']),
+          categories: {
+            gridView: false,
+            expanded: {
+              category1: true,
+            },
+          },
+        },
+      },
+      loadTranscript(baseContact.contactId, transcript),
+    );
+    expect(newState[baseContact.contactId].transcript).toMatchObject(transcript);
   });
 });
 

@@ -9,7 +9,7 @@ import {
   RECREATE_CONTACT_STATE,
   REMOVE_CONTACT_STATE,
 } from '../types';
-import { createStateItem } from '../../components/common/forms/formGenerators';
+import { createStateItem, getInitialValue } from '../../components/common/forms/formGenerators';
 import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
 import {
   createDraftReducer,
@@ -17,6 +17,7 @@ import {
   EXISTING_CONTACT_SET_CATEGORIES_GRID_VIEW_ACTION,
   EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION,
   EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
+  EXISTING_CONTACT_LOAD_TRANSCRIPT,
   ExistingContactAction,
   ExistingContactsState,
   LOAD_CONTACT_ACTION,
@@ -26,6 +27,7 @@ import {
   setCategoriesGridViewReducer,
   toggleCategoryExpandedReducer,
   updateDraftReducer,
+  loadTranscriptReducer,
 } from './existingContacts';
 import { CSAMReportEntry } from '../../types/types';
 import {
@@ -35,6 +37,7 @@ import {
   sectionExpandedStateReducer,
   TOGGLE_DETAIL_EXPANDED_ACTION,
 } from './contactDetails';
+import { ChannelTypes } from '../DomainConstants';
 
 export type TaskEntry = {
   helpline: string;
@@ -42,7 +45,7 @@ export type TaskEntry = {
   childInformation: { [key: string]: string | boolean };
   callerInformation: { [key: string]: string | boolean };
   caseInformation: { [key: string]: string | boolean };
-  contactlessTask: { [key: string]: string | boolean };
+  contactlessTask: { channel: ChannelTypes; [key: string]: string | boolean };
   categories: string[];
   csamReports: CSAMReportEntry[];
   metadata: {
@@ -100,7 +103,10 @@ export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated
     definition: definitions.tabbedForms.ContactlessTaskTab,
     helplineInformation: definitions.helplineInformation,
   });
-  const contactlessTask = initialContactlessTaskTabDefinition.reduce(createStateItem, {});
+  const contactlessTask: TaskEntry['contactlessTask'] = {
+    channel: 'web', // default, should be overwritten
+    ...Object.fromEntries(initialContactlessTaskTabDefinition.map(d => [d.name, getInitialValue(d)])),
+  };
 
   return {
     helpline: '',
@@ -295,6 +301,9 @@ export function reduce(
     }
     case RELEASE_CONTACT_ACTION: {
       return { ...state, existingContacts: releaseContactReducer(state.existingContacts, action) };
+    }
+    case EXISTING_CONTACT_LOAD_TRANSCRIPT: {
+      return { ...state, existingContacts: loadTranscriptReducer(state.existingContacts, action) };
     }
     case EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION: {
       return { ...state, existingContacts: toggleCategoryExpandedReducer(state.existingContacts, action) };

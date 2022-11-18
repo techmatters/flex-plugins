@@ -128,7 +128,7 @@ const CaseDetails: React.FC<Props> = ({
               aria-labelledby="CaseDetailsStatusLabel"
               disabled={true}
               defaultValue={childIsAtRisk ? 'Yes' : 'No'}
-              color={childIsAtRisk ? 'red' : '#d8d8d8'}
+              color={childIsAtRisk ? '#d22f2f' : '#d8d8d8'}
             />
           </div>
         </div>

@@ -10,6 +10,7 @@ import { ViewButton } from '../../../styles/case';
 import { isNonDataCallType } from '../../../states/ValidationRules';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import { channelTypes, ChannelTypes } from '../../../states/DomainConstants';
+import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
 
 type OwnProps = {
   channel: ChannelTypes;
@@ -36,13 +37,21 @@ const getNumber = (channel, number) => {
 const ChildNameAndDate: React.FC<Props> = ({ channel, callType, name, number, date, onClickFull }) => {
   const dateString = `${format(new Date(date), 'MMM d, yyyy h:mm aaaaa')}m`;
   const showNumber = isNonDataCallType(callType) && Boolean(number);
+  const { canView } = getPermissionsForViewingIdentifiers();
+  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
   return (
     <Row>
       <Flex marginRight="10px">
         <CallTypeIcon callType={callType} fontSize="18px" />
       </Flex>
-      <PrevNameText>{showNumber ? getNumber(channel, number) : name}</PrevNameText>
+      {showNumber && maskIdentifiers && (
+        <PrevNameText>
+          <Template code="MaskIdentifiers" />{' '}
+        </PrevNameText>
+      )}
+      <PrevNameText>{showNumber && !maskIdentifiers ? getNumber(channel, number) : name}</PrevNameText>
+
       <ContactButtonsWrapper>
         <Flex marginRight="20px">
           <DateText>{dateString}</DateText>

@@ -2,6 +2,7 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
+import { Call, Facebook, Sms, WhatsApp } from '@material-ui/icons';
 
 import { TransferButton, AcceptTransferButton, RejectTransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
@@ -29,8 +30,12 @@ import InstagramIcon from '../components/common/icons/InstagramIcon';
 import LineIcon from '../components/common/icons/LineIcon';
 // eslint-disable-next-line
 import { isInMyBehalfITask } from '../types/types';
+import WhatsappIcon from '../components/common/icons/WhatsappIcon';
+import FacebookIcon from '../components/common/icons/FacebookIcon';
+import CallIcon from '../components/common/icons/CallIcon';
+import SmsIcon from '../components/common/icons/SmsIcon';
 
-const voiceColor = Flex.DefaultTaskChannels.Call.colors.main();
+const voiceColor = Flex.DefaultTaskChannels.Call.colors.main.Accepted;
 const webColor = Flex.DefaultTaskChannels.Chat.colors.main.Accepted;
 const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main.Accepted;
 const smsColor = Flex.DefaultTaskChannels.ChatSms.colors.main.Accepted;
@@ -42,7 +47,7 @@ const lineColor = '#00C300';
 /**
  * @type {import('../states/DomainConstants').ChannelColors}
  */
-const colors = {
+export const colors = {
   voice: voiceColor,
   web: webColor,
   facebook: facebookColor,
@@ -290,12 +295,27 @@ export const setUpDeveloperComponents = setupObject => {
     },
   );
 };
-
+const allIcons = icon => ({
+  active: icon,
+  list: icon,
+  main: icon,
+});
 /**
  *
  * @param {import('@twilio/flex-ui').ITask} task
  */
 const isIncomingTransfer = task => TransferHelpers.hasTransferStarted(task) && task.status === 'pending';
+
+export const customiseDefaultChatChannels = () => {
+  const facebookIcon = <FacebookIcon width="24px" height="24px" color={facebookColor} />;
+  Flex.DefaultTaskChannels.ChatMessenger.icons = allIcons(facebookIcon);
+  const whatsappIcon = <WhatsappIcon width="24px" height="24px" color={whatsappColor} />;
+  Flex.DefaultTaskChannels.ChatWhatsApp.icons = allIcons(whatsappIcon);
+  const smsIcon = <SmsIcon width="24px" height="24px" color={smsColor} />;
+  Flex.DefaultTaskChannels.ChatSms.icons = allIcons(smsIcon);
+  const callIcon = <CallIcon width="24px" height="24px" color={voiceColor} />;
+  Flex.DefaultTaskChannels.Call.icons = allIcons(callIcon);
+};
 
 /**
  * @param {{ channel: string; string: string; }} chatChannel
@@ -429,22 +449,21 @@ export const setupCannedResponses = () => {
   Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" />);
 };
 
-export const setupTwitterChatChannel = () => {
-  const icon = <TwitterIcon width="24px" height="24px" color="white" />;
+export const setupTwitterChatChannel = maskIdentifiers => {
+  const icon = <TwitterIcon width="24px" height="24px" color={twitterColor} />;
 
   const TwitterChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
     'twitter',
     task => task.channelType === 'twitter',
   );
 
-  // modify TwitterChatChannel here
-  TwitterChatChannel.templates.IncomingTaskCanvas.firstLine = 'TaskHeaderLineTwitter';
   TwitterChatChannel.templates.CallCanvas.firstLine = 'TaskHeaderLineTwitter';
   TwitterChatChannel.templates.TaskListItem.firstLine = 'TaskHeaderLineTwitter';
   TwitterChatChannel.templates.TaskCard.firstLine = 'TaskHeaderLineTwitter';
-  TwitterChatChannel.templates.TaskCanvasHeader.title = 'TaskHeaderLineTwitter';
   TwitterChatChannel.templates.Supervisor.TaskCanvasHeader.title = 'TaskHeaderLineTwitter';
   TwitterChatChannel.templates.Supervisor.TaskOverviewCanvas.title = 'TaskHeaderLineTwitter';
+
+  if (maskIdentifiers) maskIdentifiersByChannel(TwitterChatChannel);
 
   TwitterChatChannel.colors.main = {
     Accepted: twitterColor,
@@ -465,13 +484,15 @@ export const setupTwitterChatChannel = () => {
   Flex.TaskChannels.register(TwitterChatChannel);
 };
 
-export const setupInstagramChatChannel = () => {
+export const setupInstagramChatChannel = maskIdentifiers => {
   const icon = <InstagramIcon width="24px" height="24px" color="white" />;
 
   const InstagramChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
     'instagram',
     task => task.channelType === 'instagram',
   );
+
+  if (maskIdentifiers) maskIdentifiersByChannel(InstagramChatChannel);
 
   InstagramChatChannel.colors.main = {
     Accepted: instagramColor,
@@ -492,20 +513,13 @@ export const setupInstagramChatChannel = () => {
   Flex.TaskChannels.register(InstagramChatChannel);
 };
 
-export const setupLineChatChannel = () => {
-  const icon = <LineIcon width="24px" height="24px" color="white" />;
+export const setupLineChatChannel = maskIdentifiers => {
+  const icon = <LineIcon width="24px" height="24px" color={lineColor} />;
 
   const LineChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel('line', task => task.channelType === 'line');
 
-  LineChatChannel.colors.main = {
-    Accepted: lineColor,
-    Assigned: lineColor,
-    Pending: lineColor,
-    Reserved: lineColor,
-    Wrapping: Flex.DefaultTaskChannels.Chat.colors.main.Wrapping,
-    Completed: Flex.DefaultTaskChannels.Chat.colors.main.Completed,
-    Canceled: Flex.DefaultTaskChannels.Chat.colors.main.Canceled,
-  };
+  LineChatChannel.colors = Flex.DefaultTaskChannels.ChatLine.colors;
+  LineChatChannel.templates = Flex.DefaultTaskChannels.ChatLine.templates;
 
   LineChatChannel.icons = {
     active: icon,
@@ -513,5 +527,36 @@ export const setupLineChatChannel = () => {
     main: icon,
   };
 
+  if (maskIdentifiers) maskIdentifiersByChannel(LineChatChannel);
+
   Flex.TaskChannels.register(LineChatChannel);
+};
+
+const maskIdentifiersByChannel = channelType => {
+  // Task list and panel when a call comes in
+  channelType.templates.TaskListItem.firstLine = 'MaskIdentifiers';
+  // Second line in Task Card in 'All Tasks'
+  if (channelType === Flex.DefaultTaskChannels.Chat) {
+    channelType.templates.TaskListItem.secondLine = 'TaskLineWebChatAssignedMasked';
+  } else {
+    channelType.templates.TaskListItem.secondLine = 'TaskLineChatAssignedMasked';
+  }
+  channelType.templates.IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
+  // Task panel during an active call
+  channelType.templates.TaskCanvasHeader.title = 'MaskIdentifiers';
+  channelType.templates.MessageListItem = 'MaskIdentifiers';
+  // Task Status in Agents page
+  channelType.templates.TaskCard.firstLine = 'MaskIdentifiers';
+  // Supervisor
+  channelType.templates.Supervisor.TaskCanvasHeader.title = 'MaskIdentifiers';
+  channelType.templates.Supervisor.TaskOverviewCanvas.title = 'MaskIdentifiers';
+};
+
+export const maskIdentifiersForDefaultChannels = () => {
+  maskIdentifiersByChannel(Flex.DefaultTaskChannels.Call);
+  maskIdentifiersByChannel(Flex.DefaultTaskChannels.Chat);
+  maskIdentifiersByChannel(Flex.DefaultTaskChannels.ChatSms);
+  maskIdentifiersByChannel(Flex.DefaultTaskChannels.Default);
+  maskIdentifiersByChannel(Flex.DefaultTaskChannels.ChatMessenger);
+  maskIdentifiersByChannel(Flex.DefaultTaskChannels.ChatWhatsApp);
 };

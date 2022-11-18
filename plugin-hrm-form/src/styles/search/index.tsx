@@ -290,11 +290,11 @@ export const TagsWrapper = styled(Flex)`
 
 export const TagText = styled(FontOpenSans)`
   display: inline-block;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
   line-height: 13px;
-  opacity: 0.65;
-  color: #192b33e8;
+  opacity: 1;
+  color: ${HrmTheme.colors.categoryTextColor};
 `;
 
 export const TagMiddleDot = styled('div')<ColorProps>`
@@ -394,10 +394,13 @@ export const ContactAddedFont = styled(FontOpenSans)`
 `;
 ContactAddedFont.displayName = 'ContactAddedFont';
 
-export const SectionTitleText = styled(FontOpenSans)`
+export const sectionTitleFontStyle = `
   font-size: 12px;
   font-weight: 600;
   line-height: 13px;
+`;
+export const SectionTitleText = styled(FontOpenSans)`
+  ${sectionTitleFontStyle}
   margin-right: auto;
 `;
 SectionTitleText.displayName = 'SectionTitleText';
@@ -505,26 +508,8 @@ export const StyledCaseResultsHeader = styled('div')`
 StyledCaseResultsHeader.displayName = 'StyledCaseResultsHeader';
 
 export const StyledSwitch = withStyles({
-  icon: {
-    border: 'none',
-    width: '18px',
-    height: '18px',
-  },
-  switchBase: {
-    transform: 'translateX(6px)',
-  },
-  checked: {
-    transform: 'translateX(17px)',
-  },
-  bar: {
-    width: '40px',
-    height: '22px',
-    marginTop: '-11px',
-    borderRadius: '13px',
-    backgroundColor: '#D2DBE7',
-    '$checked$checked + &': {
-      backgroundColor: '#1D2B32',
-    },
+  thumb: {
+    color: '#000',
   },
 })(Switch);
 StyledSwitch.displayName = 'StyledSwitch';

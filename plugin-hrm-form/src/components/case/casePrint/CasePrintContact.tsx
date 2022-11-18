@@ -9,6 +9,7 @@ import { Text, View } from '@react-pdf/renderer';
 import styles from './styles';
 import { getConfig } from '../../../HrmFormPlugin';
 import { mapChannel, mapChannelForInsights, presentValue, formatStringToDateAndTime } from '../../../utils';
+import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
 
 type OwnProps = {
   sectionName: string;
@@ -26,6 +27,8 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
   const formattedChannel =
     channel === 'default' ? mapChannelForInsights(rawJson.contactlessTask?.channel) : mapChannel(channel);
 
+  const { canView } = getPermissionsForViewingIdentifiers();
+  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
   return (
     <View>
       <View style={styles['sectionHeader']}>
@@ -46,7 +49,9 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
         </View>
         <View style={styles['sectionItemRowOdd']}>
           <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-PhoneNumber']}</Text>
-          <Text style={styles['sectionItemSecondColumn']}>{presentValue(number, strings)()}</Text>
+          <Text style={styles['sectionItemSecondColumn']}>
+            {maskIdentifiers ? strings.MaskIdentifers : presentValue(number, strings)}
+          </Text>
         </View>
         <View style={styles['sectionItemRowEven']}>
           <Text style={styles['sectionItemFirstColumn']}>

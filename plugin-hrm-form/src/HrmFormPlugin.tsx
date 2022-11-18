@@ -11,9 +11,9 @@ import * as Providers from './utils/setUpProviders';
 import * as ActionFunctions from './utils/setUpActions';
 import * as Components from './utils/setUpComponents';
 import setUpMonitoring from './utils/setUpMonitoring';
-import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
+import { getPermissionsForViewingIdentifiers, PermissionActions } from './permissions';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -24,8 +24,11 @@ let sharedStateClient: SyncClient;
 const readConfig = () => {
   const manager = Flex.Manager.getInstance();
 
-  const hrmBaseUrl = `${manager.serviceConfiguration.attributes.hrm_base_url}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`;
-  const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
+  const hrmBaseUrl = `${process.env.REACT_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}/${
+    manager.serviceConfiguration.attributes.hrm_api_version
+  }/accounts/${manager.workerClient.accountSid}`;
+  const serverlessBaseUrl =
+    process.env.REACT_SERVERLESS_BASE_URL || manager.serviceConfiguration.attributes.serverless_base_url;
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid;
@@ -88,8 +91,6 @@ export type SetupObject = ReturnType<typeof getConfig> & {
   getMessage: (messageKey: string) => (language: string) => Promise<string>;
 };
 
-console.log('This is me checking for header output', Flex.MainHeader);
-
 /**
  * Helper to expose the forms definitions without the need of calling Manager
  */
@@ -130,28 +131,8 @@ const setUpSharedStateClient = () => {
   initSharedStateClient();
 };
 
-const setUpTransferredTaskJanitor = async (setupObject: SetupObject) => {
-  const { workerSid } = setupObject;
-  const query = 'data.attributes.transferStarted == "true"';
-  const reservationQuery = await Flex.Manager.getInstance().insightsClient.liveQuery('tr-reservation', query);
-  reservationQuery.on('itemUpdated', args => {
-    if (TransferHelpers.shouldInvokeCompleteTask(args.value, workerSid)) {
-      Flex.Actions.invokeAction('CompleteTask', { sid: args.value.reservation_sid });
-      return;
-    }
-
-    if (TransferHelpers.shouldTakeControlBack(args.value, workerSid)) {
-      const task = Flex.TaskHelper.getTaskByTaskSid(args.value.attributes.transferMeta.originalReservation);
-      TransferHelpers.takeTaskControl(task).then(async () => {
-        await TransferHelpers.clearTransferMeta(task);
-      });
-    }
-  });
-};
-
 const setUpTransfers = (setupObject: SetupObject) => {
   setUpSharedStateClient();
-  setUpTransferredTaskJanitor(setupObject);
 };
 
 const setUpLocalization = (config: ReturnType<typeof getConfig>) => {
@@ -174,6 +155,8 @@ const setUpLocalization = (config: ReturnType<typeof getConfig>) => {
 
 const setUpComponents = (setupObject: SetupObject) => {
   const { helpline, featureFlags } = setupObject;
+  const { canView } = getPermissionsForViewingIdentifiers();
+  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
@@ -181,9 +164,10 @@ const setUpComponents = (setupObject: SetupObject) => {
   Components.setUpAddButtons(setupObject);
   Components.setUpNoTasksUI(setupObject);
   Components.setUpCustomCRMContainer();
-  Components.setupTwitterChatChannel();
-  Components.setupInstagramChatChannel();
-  Components.setupLineChatChannel();
+  Components.customiseDefaultChatChannels();
+  Components.setupTwitterChatChannel(maskIdentifiers);
+  Components.setupInstagramChatChannel(maskIdentifiers);
+  Components.setupLineChatChannel(maskIdentifiers);
   if (featureFlags.enable_transfers) {
     Components.setUpTransferComponents();
     Components.setUpIncomingTransferMessage();
@@ -204,6 +188,21 @@ const setUpComponents = (setupObject: SetupObject) => {
   Components.setUpStandaloneSearch();
 
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
+
+  if (maskIdentifiers) {
+    // Mask the identifiers in all default channels
+    Components.maskIdentifiersForDefaultChannels();
+    // Mask the username within the messable bubbles in an conversation
+    Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
+      theirDefaultName: 'XXXXXX',
+      theirFriendlyNameOverride: false,
+      yourFriendlyNameOverride: true,
+    };
+    Flex.MessageList.Content.remove('0');
+    // Masks TaskInfoPanelContent - TODO: refactor to use a react component
+    const { strings } = getConfig();
+    strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+  }
 };
 
 const setUpActions = (setupObject: SetupObject) => {
@@ -250,7 +249,7 @@ export default class HrmFormPlugin extends FlexPlugin {
    * Use this to modify any UI components or attach to the actions framework
    */
   init(flex: typeof Flex, manager: Flex.Manager) {
-    loadCSS('https://use.fontawesome.com/releases/v5.15.1/css/solid.css');
+    loadCSS('https://use.fontawesome.com/releases/v5.15.4/css/solid.css');
 
     setUpMonitoring(this, manager.workerClient, manager.serviceConfiguration);
 
@@ -273,10 +272,15 @@ export default class HrmFormPlugin extends FlexPlugin {
     setUpComponents(setupObject);
     setUpActions(setupObject);
 
-    const managerConfiguration = {
+    const managerConfiguration: Flex.Config = {
       // colorTheme: HrmTheme,
       theme: {
         componentThemeOverrides: overrides,
+        tokens: {
+          backgroundColors: {
+            colorBackground: HrmTheme.colors.base2,
+          },
+        },
       },
     };
     manager.updateConfig(managerConfiguration);

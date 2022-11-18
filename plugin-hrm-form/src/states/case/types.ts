@@ -2,6 +2,7 @@ import { DefinitionVersionId, HelplineEntry, StatusInfo } from 'hrm-form-definit
 
 import type * as t from '../../types/types';
 import { Case, CaseItemEntry } from '../../types/types';
+import { ChannelTypes } from '../DomainConstants';
 
 // Action types
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
@@ -25,7 +26,7 @@ export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
 export type NoteActivity = {
   id: string;
   date: string;
-  type: string;
+  type: 'note';
   text: string;
   note: t.Note;
   twilioWorkerId: string;
@@ -37,7 +38,7 @@ export type ReferralActivity = {
   id: string;
   date: string;
   createdAt: string;
-  type: string;
+  type: 'referral';
   text: string;
   referral: t.Referral;
   twilioWorkerId: string;
@@ -53,7 +54,7 @@ export type ConnectedCaseActivity = {
   type: string;
   text: string;
   twilioWorkerId: string;
-  channel: string;
+  channel: ChannelTypes;
 };
 
 export type CaseDetailsName = {
