@@ -88,9 +88,9 @@ type TabbedFormTabContainerProps = {
   display: boolean;
 };
 
-export const TabbedFormTabContainer = styled(({ display, ...rest }: TabbedFormTabContainerProps) => <Box {...rest} />)<
-  TabbedFormTabContainerProps
->`
+export const TabbedFormTabContainer = styled(({ display, ...rest }: TabbedFormTabContainerProps) => (
+  <Box {...rest} />
+))<TabbedFormTabContainerProps>`
   display: ${({ display }) => (display ? 'block' : 'none')};
   height: ${({ display }) => (display ? '100%' : '0px')};
 `;
@@ -170,11 +170,13 @@ export const StyledInput = styled(Input)`
     border: 1px solid rgba(0, 59, 129, 0.37);
   }
   background-color: ${HrmTheme.colors.base1};
-  color: ${/*
-   * props =>
-   * props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor
-   */
-  HrmTheme.colors.darkTextColor};
+  color: ${
+    /*
+     * props =>
+     * props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor
+     */
+    HrmTheme.colors.darkTextColor
+  };
 
   input[type='date'] {
     padding-right: 7px;
@@ -765,11 +767,13 @@ export const FormInput = styled('input')<FormInputProps>`
     height: 36px;
     border-radius: 4px;
     background-color: ${HrmTheme.colors.inputBackgroundColor};
-    color: ${/*
-     * props =>
-     * props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor
-     */
-    HrmTheme.colors.darkTextColor};
+    color: ${
+      /*
+       * props =>
+       * props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor
+       */
+      HrmTheme.colors.darkTextColor
+    };
     border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
     boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
     padding: 0 7px;
@@ -858,11 +862,13 @@ export const FormTextArea = styled('textarea')<FormInputProps>`
     width: ${props => (props.width ? props.width : '217')}px;
     border-radius: 4px;
     background-color: ${HrmTheme.colors.base2};
-    color: ${/*
-     * props =>
-     * props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor
-     */
-    HrmTheme.colors.darkTextColor};
+    color: ${
+      /*
+       * props =>
+       * props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor
+       */
+      HrmTheme.colors.darkTextColor
+    };
     border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
     boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
     padding: 5px;
@@ -999,11 +1005,13 @@ export const FormSelect = styled('select')<FormInputProps>`
   box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
   ${props => (props.fullWidth ? 'width: 100%' : 'width: 217px')};
   background-color: ${HrmTheme.colors.inputBackgroundColor};
-  color: ${/*
-   * props =>
-   * props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor
-   */
-  HrmTheme.colors.darkTextColor};
+  color: ${
+    /*
+     * props =>
+     * props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor
+     */
+    HrmTheme.colors.darkTextColor
+  };
   height: 36px;
   line-height: 22px;
   border-radius: 4px;
@@ -1167,7 +1175,7 @@ export const StyledCSAMReportDropdown = styled('ul')`
   font-size: 0.875rem;
   z-index: 9999;
   min-width: 10rem;
-  padding: 10px 40px 10px 24px;
+  padding: 10px 100px 10px 24px;
   list-style: none;
   background-color: #fff;
   border-radius: 0 0 5px 5px;
