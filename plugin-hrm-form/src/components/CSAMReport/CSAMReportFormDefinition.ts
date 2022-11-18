@@ -2,7 +2,7 @@ import type { FormItemDefinition } from 'hrm-form-definitions';
 
 import { getInitialValue } from '../common/forms/formGenerators';
 
-export const keys = {
+export const counselorKeys = {
   webAddress: 'webAddress',
   description: 'description',
   anonymous: 'anonymous',
@@ -11,14 +11,23 @@ export const keys = {
   email: 'email',
 } as const;
 
-type CSAMFormDefinitionObject = {
-  [k in keyof typeof keys]: FormItemDefinition;
+export const childKeys = {
+  childAge: 'childAge',
+  ageVerified: 'ageVerified',
+} as const;
+
+type CounselorCSAMFormDefinitionObject = {
+  [k in keyof typeof counselorKeys]: FormItemDefinition;
+};
+
+type ChildCSAMFormDefinitionObject = {
+  [k in keyof typeof childKeys]: FormItemDefinition;
 };
 
 // eslint-disable-next-line prefer-named-capture-group
 const urlRegex = /(https?:\/\/)?([\w\-])+\.{1}([a-zA-Z]{2,63})([\/\w-]*)*\/?\??([^#\n\r]*)?#?([^\n\r]*)/g;
 
-export const definitionObject: CSAMFormDefinitionObject = {
+export const definitionObject: CounselorCSAMFormDefinitionObject = {
   webAddress: {
     name: 'webAddress',
     label: 'Web address',
@@ -68,6 +77,25 @@ export const definitionObject: CSAMFormDefinitionObject = {
   },
 };
 
+// eslint-disable-next-line import/no-unused-modules
+export const childDefinitionObject: ChildCSAMFormDefinitionObject = {
+  childAge: {
+    name: 'childAge',
+    label: '',
+    type: 'radio-input',
+    options: [
+      { value: 'under-13-years', label: 'Under 13 years old' },
+      { value: '13-to-15-years', label: '13 to 15 years old' },
+      { value: '16-to-17-years', label: '16 to 17 years old' },
+    ],
+  },
+  ageVerified: {
+    name: 'ageVerified',
+    label: 'Yes, age of child has been verified',
+    type: 'checkbox',
+  },
+};
+
 export const initialValues = {
   webAddress: getInitialValue(definitionObject.webAddress),
   description: getInitialValue(definitionObject.description),
@@ -75,4 +103,9 @@ export const initialValues = {
   firstName: getInitialValue(definitionObject.firstName),
   lastName: getInitialValue(definitionObject.lastName),
   email: getInitialValue(definitionObject.email),
+} as const;
+
+export const childInitialValues = {
+  childAge: getInitialValue(childDefinitionObject.childAge),
+  ageVerified: getInitialValue(childDefinitionObject.ageVerified),
 } as const;

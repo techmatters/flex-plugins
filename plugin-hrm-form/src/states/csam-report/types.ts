@@ -3,7 +3,7 @@ export const UPDATE_FORM = 'csam-report/UPDATE_FORM';
 export const UPDATE_STATUS = 'csam-report/UPDATE_STATUS';
 export const CLEAR_CSAM_REPORT = 'csam-report/CLEAR_CSAM_REPORT';
 
-export type CSAMReportForm = {
+export type CounselorCSAMReportForm = {
   webAddress: string;
   description: string;
   anonymous: string;
@@ -11,6 +11,13 @@ export type CSAMReportForm = {
   lastName: string;
   email: string;
 };
+
+export type ChildCSAMReportForm = {
+  childAge: string;
+  ageVerified: boolean;
+};
+
+export type CSAMReportForm = ChildCSAMReportForm | CounselorCSAMReportForm;
 
 export type CSAMReportStatus = {
   responseCode: string;
@@ -36,3 +43,7 @@ type ClearCSAMReport = {
 };
 
 export type CSAMReportActionType = UpdateFormAction | UpdateStatusAction | ClearCSAMReport;
+
+export const isCounselorCSAMReportForm = (c: CSAMReportForm): c is CounselorCSAMReportForm => {
+  return (c as CounselorCSAMReportForm) !== null;
+};
