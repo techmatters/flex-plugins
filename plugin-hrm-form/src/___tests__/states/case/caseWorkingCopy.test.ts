@@ -6,12 +6,13 @@ import { CaseState, CaseSummaryWorkingCopy, CaseWorkingCopy } from '../../../sta
 import { householdSectionApi } from '../../../states/case/sections/household';
 import { reduce } from '../../../states/case/reducer';
 import {
-  initialiseCaseSectionWorkingCopy,
+  initialiseExistingCaseSectionWorkingCopy,
   initialiseCaseSummaryWorkingCopy,
   removeCaseSectionWorkingCopy,
   removeCaseSummaryWorkingCopy,
   updateCaseSectionWorkingCopy,
   updateCaseSummaryWorkingCopy,
+  initialiseNewCaseSectionWorkingCopy,
 } from '../../../states/case/caseWorkingCopy';
 import { RootState } from '../../../states';
 
@@ -124,124 +125,166 @@ describe('Working copy reducers', () => {
     });
   });
 
-  describe('INIT_CASE_WORKING_COPY', () => {
-    state.tasks.task1 = {
-      connectedCase: {
-        accountSid: 'ACxxx',
-        id: 1,
-        helpline: '',
-        status: 'open',
-        twilioWorkerId: 'WK123',
-        info: null,
-        createdAt: '2020-07-31T20:39:37.408Z',
-        updatedAt: '2020-07-31T20:39:37.408Z',
-        connectedContacts: null,
-        categories: {},
-        childName: '',
-      },
-      caseWorkingCopy: {
-        sections: {},
-      },
-      availableStatusTransitions: [],
-    };
+  describe('Initialise case section', () => {
+    describe('INIT_EXISTING_CASE_SECTION_WORKING_COPY', () => {
+      state.tasks.task1 = {
+        connectedCase: {
+          accountSid: 'ACxxx',
+          id: 1,
+          helpline: '',
+          status: 'open',
+          twilioWorkerId: 'WK123',
+          info: null,
+          createdAt: '2020-07-31T20:39:37.408Z',
+          updatedAt: '2020-07-31T20:39:37.408Z',
+          connectedContacts: null,
+          categories: {},
+          childName: '',
+        },
+        caseWorkingCopy: {
+          sections: {},
+        },
+        availableStatusTransitions: [],
+      };
 
-    test('Specifies id that exists in case - updates case working copy using APIs updateWorkingCopy function, copying the section from the connected case', () => {
-      const initialState: CaseState = {
-        tasks: {
-          task1: {
-            ...state.tasks.task1,
-            connectedCase: {
-              ...state.tasks.task1.connectedCase,
-              info: {
-                ...state.tasks.task1.connectedCase.info,
-                households: [
-                  {
-                    id: 'existingHousehold',
-                    twilioWorkerId: 'other-worker-sid',
-                    household: { otherProp: 'other-value' },
-                    createdAt: baselineDate.toISOString(),
-                  },
-                ],
+      test('Specifies id that exists in case - updates case working copy using APIs updateWorkingCopy function, copying the section from the connected case', () => {
+        const initialState: CaseState = {
+          tasks: {
+            task1: {
+              ...state.tasks.task1,
+              connectedCase: {
+                ...state.tasks.task1.connectedCase,
+                info: {
+                  ...state.tasks.task1.connectedCase.info,
+                  households: [
+                    {
+                      id: 'existingHousehold',
+                      twilioWorkerId: 'other-worker-sid',
+                      household: { otherProp: 'other-value' },
+                      createdAt: baselineDate.toISOString(),
+                    },
+                  ],
+                },
+              },
+              caseWorkingCopy: {
+                sections: {},
               },
             },
-            caseWorkingCopy: {
-              sections: {},
+          },
+        };
+
+        const expected: CaseState = {
+          tasks: {
+            task1: {
+              ...initialState.tasks.task1,
+              caseWorkingCopy: stubUpdateWorkingCopy,
             },
           },
-        },
-      };
+        };
 
-      const expected: CaseState = {
-        tasks: {
-          task1: {
-            ...initialState.tasks.task1,
-            caseWorkingCopy: stubUpdateWorkingCopy,
-          },
-        },
-      };
-
-      const result = reduce(
-        stubRootState,
-        initialState,
-        initialiseCaseSectionWorkingCopy(task.taskSid, stubApi, 'existingHousehold'),
-      );
-      expect(result).toStrictEqual(expected);
-      expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
-        initialState.tasks.task1.caseWorkingCopy,
-        updatedSection,
-        'existingHousehold',
-      );
-    });
-
-    test('Specifies no id - updates case working copy using APIs updateWorkingCopy function specifying a blank CaseItemEntry with a random ID', () => {
-      const initialState: CaseState = {
-        tasks: {
-          task1: {
-            ...state.tasks.task1,
-            caseWorkingCopy: {
-              sections: {},
-            },
-          },
-        },
-      };
-
-      const expected: CaseState = {
-        tasks: {
-          task1: {
-            ...initialState.tasks.task1,
-            caseWorkingCopy: stubUpdateWorkingCopy,
-          },
-        },
-      };
-
-      const result = reduce(stubRootState, initialState, initialiseCaseSectionWorkingCopy(task.taskSid, stubApi));
-      expect(result).toStrictEqual(expected);
-      expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
-        initialState.tasks.task1.caseWorkingCopy,
-        { id: expect.any(String), form: {}, createdAt: null, twilioWorkerId: null },
-        undefined,
-      );
-    });
-
-    test('Specifies id when section not present in the connected case - throws', () => {
-      const initialState: CaseState = {
-        tasks: {
-          task1: {
-            ...state.tasks.task1,
-            caseWorkingCopy: {
-              sections: {},
-            },
-          },
-        },
-      };
-
-      expect(() =>
-        reduce(
+        const result = reduce(
           stubRootState,
           initialState,
-          initialiseCaseSectionWorkingCopy(task.taskSid, stubApi, 'existingHousehold'),
-        ),
-      ).toThrow();
+          initialiseExistingCaseSectionWorkingCopy(task.taskSid, stubApi, 'existingHousehold'),
+        );
+        expect(result).toStrictEqual(expected);
+        expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
+          initialState.tasks.task1.caseWorkingCopy,
+          updatedSection,
+          'existingHousehold',
+        );
+      });
+
+      test('Section not present in the connected case - throws', () => {
+        const initialState: CaseState = {
+          tasks: {
+            task1: {
+              ...state.tasks.task1,
+              caseWorkingCopy: {
+                sections: {},
+              },
+            },
+          },
+        };
+
+        expect(() =>
+          reduce(
+            stubRootState,
+            initialState,
+            initialiseExistingCaseSectionWorkingCopy(task.taskSid, stubApi, 'existingHousehold'),
+          ),
+        ).toThrow();
+      });
+    });
+    describe('INIT_NEW_CASE_SECTION_WORKING_COPY', () => {
+      test('Specifies empty form - updates case working copy using APIs updateWorkingCopy function specifying a blank CaseItemEntry with a random ID', () => {
+        const initialState: CaseState = {
+          tasks: {
+            task1: {
+              ...state.tasks.task1,
+              caseWorkingCopy: {
+                sections: {},
+              },
+            },
+          },
+        };
+
+        const expected: CaseState = {
+          tasks: {
+            task1: {
+              ...initialState.tasks.task1,
+              caseWorkingCopy: stubUpdateWorkingCopy,
+            },
+          },
+        };
+
+        const result = reduce(
+          stubRootState,
+          initialState,
+          initialiseNewCaseSectionWorkingCopy(task.taskSid, stubApi, {}),
+        );
+        expect(result).toStrictEqual(expected);
+        expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(initialState.tasks.task1.caseWorkingCopy, {
+          id: expect.any(String),
+          form: {},
+          createdAt: null,
+          twilioWorkerId: null,
+        });
+      });
+      test('Specifies populated form - updates case working copy using APIs updateWorkingCopy function specifying provided CaseItemEntry with a random ID', () => {
+        const initialState: CaseState = {
+          tasks: {
+            task1: {
+              ...state.tasks.task1,
+              caseWorkingCopy: {
+                sections: {},
+              },
+            },
+          },
+        };
+
+        const expected: CaseState = {
+          tasks: {
+            task1: {
+              ...initialState.tasks.task1,
+              caseWorkingCopy: stubUpdateWorkingCopy,
+            },
+          },
+        };
+
+        const result = reduce(
+          stubRootState,
+          initialState,
+          initialiseNewCaseSectionWorkingCopy(task.taskSid, stubApi, { a: 'b', b: true, c: 'wakka wakka' }),
+        );
+        expect(result).toStrictEqual(expected);
+        expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(initialState.tasks.task1.caseWorkingCopy, {
+          id: expect.any(String),
+          form: { a: 'b', b: true, c: 'wakka wakka' },
+          createdAt: null,
+          twilioWorkerId: null,
+        });
+      });
     });
   });
 
@@ -312,7 +355,11 @@ describe('Working copy reducers', () => {
       const initialState: CaseState = {
         tasks: {},
       };
-      const resultWithNoId = reduce(stubRootState, initialState, initialiseCaseSummaryWorkingCopy('non existent task'));
+      const resultWithNoId = reduce(
+        stubRootState,
+        initialState,
+        initialiseCaseSummaryWorkingCopy('non existent task', <CaseSummaryWorkingCopy>{}),
+      );
       expect(resultWithNoId).toStrictEqual(initialState);
     });
     test('Task exists with connectedCase- creates a caseSummary in the working copy populated from connectedCase', () => {
@@ -337,7 +384,16 @@ describe('Working copy reducers', () => {
           },
         },
       };
-      const result = reduce(stubRootState, initialState, initialiseCaseSummaryWorkingCopy('task1'));
+      const result = reduce(
+        stubRootState,
+        initialState,
+        initialiseCaseSummaryWorkingCopy('task1', {
+          status: 'peachy',
+          followUpDate: 'In a while',
+          summary: 'Default summary',
+          childIsAtRisk: false,
+        }),
+      );
       expect(result).toStrictEqual({
         ...initialState,
         tasks: {
@@ -348,6 +404,56 @@ describe('Working copy reducers', () => {
               caseSummary: {
                 childIsAtRisk: initialStateInfo.childIsAtRisk,
                 followUpDate: initialStateInfo.followUpDate,
+                summary: initialStateInfo.summary,
+                status: initialState.tasks.task1.connectedCase.status,
+              },
+            },
+          },
+        },
+      });
+    });
+    test('Task exists with connectedCase but uundefined case summary properties- uses provided defaults where case properties are undefined', () => {
+      const initialStateInfo = {
+        ...state.tasks.task1.connectedCase.info,
+        followUpDate: undefined,
+        summary: 'A summary',
+        childIsAtRisk: undefined,
+      };
+      const initialState: CaseState = {
+        tasks: {
+          task1: {
+            connectedCase: {
+              ...state.tasks.task1.connectedCase,
+              status: 'test',
+              info: initialStateInfo,
+            },
+            caseWorkingCopy: {
+              sections: {},
+            },
+            availableStatusTransitions: [],
+          },
+        },
+      };
+      const result = reduce(
+        stubRootState,
+        initialState,
+        initialiseCaseSummaryWorkingCopy('task1', {
+          status: 'peachy',
+          followUpDate: 'In a while',
+          summary: 'Default summary',
+          childIsAtRisk: false,
+        }),
+      );
+      expect(result).toStrictEqual({
+        ...initialState,
+        tasks: {
+          task1: {
+            ...initialState.tasks.task1,
+            caseWorkingCopy: {
+              ...initialState.tasks.task1.caseWorkingCopy,
+              caseSummary: {
+                childIsAtRisk: false,
+                followUpDate: 'In a while',
                 summary: initialStateInfo.summary,
                 status: initialState.tasks.task1.connectedCase.status,
               },

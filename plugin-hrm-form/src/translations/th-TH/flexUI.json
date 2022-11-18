@@ -306,6 +306,7 @@
   "Contact-EditSummary": "แก้ไขสรุป",
   "ContactCopyButton": "สำเนา",
   "ContactDetails-ActionHeaderAdded": "เพิ่มใน {{date}} ที่ {{time}} โดย {{counsellor}}",
+  "ContactDetails-ActionHeaderUpdated": "อัปเดตเมื่อ {{date}} เวลา {{time}} โดย {{counsellor}}",
   "First Name": "ชื่อจริง",
   "Last Name": "นามสกุล",
   "Gender": "เพศ",

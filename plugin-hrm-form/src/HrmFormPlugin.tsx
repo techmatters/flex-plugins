@@ -191,14 +191,18 @@ const setUpComponents = (setupObject: SetupObject) => {
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 
   if (maskIdentifiers) {
-    const { strings } = getConfig();
+    // Mask the identifiers in all default channels
     Channels.maskIdentifiersForDefaultChannels();
-    strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+    // Mask the username within the messable bubbles in an conversation
     Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
       theirDefaultName: 'XXXXXX',
       theirFriendlyNameOverride: false,
       yourFriendlyNameOverride: true,
     };
+    Flex.MessageList.Content.remove('0');
+    // Masks TaskInfoPanelContent - TODO: refactor to use a react component
+    const { strings } = getConfig();
+    strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
   }
 };
 

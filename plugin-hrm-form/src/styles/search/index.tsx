@@ -508,26 +508,8 @@ export const StyledCaseResultsHeader = styled('div')`
 StyledCaseResultsHeader.displayName = 'StyledCaseResultsHeader';
 
 export const StyledSwitch = withStyles({
-  icon: {
-    border: 'none',
-    width: '18px',
-    height: '18px',
-  },
-  switchBase: {
-    transform: 'translateX(6px)',
-  },
-  checked: {
-    transform: 'translateX(17px)',
-  },
-  bar: {
-    width: '40px',
-    height: '22px',
-    marginTop: '-11px',
-    borderRadius: '13px',
-    backgroundColor: '#D2DBE7',
-    '$checked$checked + &': {
-      backgroundColor: '#1D2B32',
-    },
+  thumb: {
+    color: '#000',
   },
 })(Switch);
 StyledSwitch.displayName = 'StyledSwitch';

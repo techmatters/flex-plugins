@@ -306,6 +306,7 @@
   "Contact-EditSummary": "Editar Resumen",
   "ContactCopyButton": "Copiar",
   "ContactDetails-ActionHeaderAdded": "Agregado el {{date}} a las {{time}} por {{counsellor}}",
+  "ContactDetails-ActionHeaderUpdated": "Actualizado el {{date}} a las {{time}} por {{counsellor}}",
   "First Name": "Nombre",
   "Last Name": "Apellidos",
   "Gender": "Género",
