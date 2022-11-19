@@ -11,5 +11,5 @@ type extractGeneric<Type> = Type extends React.FC<infer X> ? X : never;
 type ButtonProps = extractGeneric<typeof TwilioButton>;
 export const Button: React.FC<Omit<ButtonProps, 'css'>> = TwilioButton;
 
-type IconButtonProps = extractGeneric<typeof TwilioButton>;
+type IconButtonProps = extractGeneric<typeof TwilioIconButton>;
 export const IconButton: React.FC<Omit<IconButtonProps, 'css'>> = TwilioIconButton;
