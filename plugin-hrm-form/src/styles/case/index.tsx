@@ -1,7 +1,8 @@
 import React from 'react';
-import { Button, IconButton, styled } from '@twilio/flex-ui';
+import { styled } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 
+import { Button, IconButton } from '../../components/twilioComponentWorkaround';
 import { FontOpenSans, FormInput, Row, Column } from '../HrmStyles';
 import HrmTheme from '../HrmTheme';
 
