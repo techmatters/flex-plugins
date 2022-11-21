@@ -1,9 +1,7 @@
 import React from 'react';
 import { styled } from '@twilio/flex-ui';
 import { withStyles } from '@material-ui/core';
-import AttachFile from '@material-ui/icons/AttachFile';
-import CheckCircle from '@material-ui/icons/CheckCircle';
-import FileCopyOutlined from '@material-ui/icons/FileCopyOutlined';
+import { AttachFile, CheckCircle, FileCopyOutlined, OpenInNew } from '@material-ui/icons';
 
 import { FontOpenSans, StyledNextStepButton } from '../HrmStyles';
 import HrmTheme from '../HrmTheme';
@@ -114,3 +112,13 @@ StyledCheckCircle.displayName = 'StyledCheckCircle';
 
 export const StyledFileCopyOutlined = styleCopyCodeIcon(FileCopyOutlined);
 StyledFileCopyOutlined.displayName = 'StyledFileCopyOutlined';
+
+const StyledSmallIcon = withStyles({
+  root: {
+    width: '17px',
+    height: '17px',
+  },
+});
+
+export const StyledOpenInNew = StyledSmallIcon(OpenInNew);
+StyledOpenInNew.displayName = 'StyledOpenInNew';

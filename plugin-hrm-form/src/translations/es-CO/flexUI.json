@@ -462,7 +462,7 @@
     "CSAMReportForm-Attachment": "El informe CSAM ha sido completado",
     "CSAMReportForm-ContactDetails": "Detalles de contacto",
     "CSAMReportForm-ContactDetailsDescription": "Los informes se pueden presentar de forma anónima o con datos de contacto si la persona que llama desea hacer un seguimiento o estar disponible para proporcionar más detalles a IWF.",
-    "CSAMReportForm-ContactdetailsInfo": "Los datos de contacto se registrarán en la base de datos IWF durante 3 meses, y luego se eliminarán de acuerdo con <a class=\\\"link-text-decoration-none\\\" href=\\\"https://www.legislation.gov.uk/ukpga/2018/12/contents/enacted\\\" target=\\\"_blank\\\" rel=\\\"noopener noreferrer\\\">UK Data Protection Act</a>.   <span class=\\\"ContactDetailsInfo-open-in-new-icon material-icons\\\">open_in_new</span>",
+    "CSAMReportForm-ContactdetailsInfo": "Los datos de contacto se registrarán en la base de datos IWF durante 3 meses, y luego se eliminarán de acuerdo con <a class=\\\"link-text-decoration-none\\\" href=\\\"https://www.legislation.gov.uk/ukpga/2018/12/contents/enacted\\\" target=\\\"_blank\\\" rel=\\\"noopener noreferrer\\\">UK Data Protection Act</a>.",
     "CSAMReportForm-CopyCode": "Copiar código de confirmación para compartir",
     "CSAMReportForm-Header": "Presentar un Informe: material de abuso sexual infantil",
     "CSAMReportForm-LearnMore": "Aprender más",
