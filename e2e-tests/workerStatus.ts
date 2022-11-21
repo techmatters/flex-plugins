@@ -1,6 +1,8 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { expect, Page } from '@playwright/test';
 
+const OPEN_ATTEMPTS = 3;
+
 export enum WorkerStatus {
   UNKNOWN,
   AVAILABLE = 'Available',
@@ -18,11 +20,17 @@ export function statusIndicator(page: Page) {
 
   return {
     setStatus: async function (status: WorkerStatus) {
-      await selectors.userActivityDropdownButton.click();
-      console.log('Worker status dropdown should be open');
       const statusSelector = selectors.userActivityDropdownOption(status);
-      await statusSelector.waitFor({ state: 'visible' });
-      console.log('Worker status option spotted');
+      for (let i = 0; i < OPEN_ATTEMPTS; i++) {
+        try {
+          await selectors.userActivityDropdownButton.click();
+          console.log('Worker status dropdown should be open');
+          await statusSelector.waitFor({ state: 'visible', timeout: 3000 });
+          console.log('Worker status option spotted');
+        } catch (err) {
+          console.log(`Worker status option not spotted, retrying opening menu (attempt ${i+1}).`);
+        }
+      }
       await statusSelector.click();
       console.log('Worker status option clicked');
       await expect(selectors.userActivityDropdownButton).toContainText(status.toLocaleString());
