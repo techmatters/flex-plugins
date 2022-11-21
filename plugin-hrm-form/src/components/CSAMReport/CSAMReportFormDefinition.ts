@@ -83,9 +83,9 @@ export const childDefinitionObject: ChildCSAMFormDefinitionObject = {
     label: '',
     type: 'radio-input',
     options: [
-      { value: 'under-13-years', label: 'Under 13 years old' },
-      { value: '13-to-15-years', label: '13 to 15 years old' },
-      { value: '16-to-17-years', label: '16 to 17 years old' },
+      { value: '<13', label: 'Under 13 years old' },
+      { value: '13-15', label: '13 to 15 years old' },
+      { value: '16-17', label: '16 to 17 years old' },
     ],
   },
   ageVerified: {

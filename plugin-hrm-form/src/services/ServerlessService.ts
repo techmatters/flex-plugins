@@ -5,7 +5,7 @@ import { DefinitionVersionId, loadDefinition, DefinitionVersion } from 'hrm-form
 
 import fetchProtectedApi from './fetchProtectedApi';
 import { getConfig } from '../HrmFormPlugin';
-import type { CounselorCSAMReportForm } from '../states/csam-report/types';
+import type { ChildCSAMReportForm, CounselorCSAMReportForm } from '../states/csam-report/types';
 
 type PopulateCounselorsReturn = { sid: string; fullName: string }[];
 
@@ -205,4 +205,15 @@ export const saveContactToSaferNet = async (payload: any): Promise<string> => {
   const body = { payload: JSON.stringify(payload) };
   const postSurveyUrl = await fetchProtectedApi('/saveContactToSaferNet', body);
   return postSurveyUrl;
+};
+
+export const selfReportToIWF = async (form: ChildCSAMReportForm) => {
+  const body = {
+    user_age_range: form.childAge,
+  };
+
+  console.log(form);
+
+  const response = await fetchProtectedApi('/selfReportToIWF', body);
+  console.log(response);
 };

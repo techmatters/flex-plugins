@@ -27,7 +27,7 @@ const readConfig = () => {
   const hrmBaseUrl = `${process.env.REACT_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}/${
     manager.serviceConfiguration.attributes.hrm_api_version
   }/accounts/${manager.workerClient.accountSid}`;
-  const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
+  const serverlessBaseUrl = 'http://localhost:3030';
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid;
@@ -133,6 +133,8 @@ const setUpSharedStateClient = () => {
 const setUpTransfers = (setupObject: SetupObject) => {
   setUpSharedStateClient();
 };
+
+console.log('serverlessBaseUrl url here: ', getConfig().serverlessBaseUrl);
 
 const setUpLocalization = (config: ReturnType<typeof getConfig>) => {
   const manager = Flex.Manager.getInstance();

@@ -24,7 +24,7 @@ import * as routingActions from '../../states/routing/actions';
 import * as contactsActions from '../../states/contacts/actions';
 import { isCounselorCSAMReportForm } from '../../states/csam-report/types';
 import { RootState, csamReportBase, namespace, routingBase, configurationBase } from '../../states';
-import { reportToIWF } from '../../services/ServerlessService';
+import { reportToIWF, selfReportToIWF } from '../../services/ServerlessService';
 import { createCSAMReport } from '../../services/CSAMReportService';
 import useFocus from '../../utils/useFocus';
 
@@ -128,12 +128,16 @@ export const CSAMReportScreen: React.FC<Props> = ({
       if (routing.subroute === 'child-form') {
         /* serverLess API will be called here */
         changeRoute({ route: 'csam-report', subroute: 'loading', previousRoute }, taskSid);
+
+        const report = await selfReportToIWF(form);
+        console.log(report);
         changeRoute({ route: 'csam-report', subroute: 'child-status', previousRoute }, taskSid);
       }
 
       if (routing.subroute === 'counsellor-form') {
         changeRoute({ route: 'csam-report', subroute: 'loading', previousRoute }, taskSid);
         const report = await reportToIWF(form);
+        console.log(report);
         const storedReport = await createCSAMReport({
           csamReportId: report['IWFReportService1.0'].responseData,
           twilioWorkerId: getConfig().workerSid,
