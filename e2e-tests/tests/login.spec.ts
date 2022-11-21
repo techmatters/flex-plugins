@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 import { logPageTelemetry } from '../browser-logs';
 
 test('Plugin loads', async ({ page }) => {
@@ -8,5 +8,4 @@ test('Plugin loads', async ({ page }) => {
     "div.Twilio-AgentDesktopView-default div[data-testid='Childline-voice']",
   );
   await callsWaitingLabel.waitFor({ state: 'visible' });
-  await expect(callsWaitingLabel).toContainText('Calls');
 });

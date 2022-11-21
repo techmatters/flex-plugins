@@ -1,6 +1,12 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { chromium, expect, FullConfig, request } from '@playwright/test';
 
+function delay(time: number) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, time);
+  });
+}
+
 const formRegex =
   /<input\s*name="SAMLResponse"\s*type="hidden"\s*value="(?<samlResponse>[\w;#&]+)"\s*\/>\s*<input\s*name="RelayState"\s*type="hidden"\s*value="(?<relayState>[\w;#&]+)"\s*\/>/;
 
@@ -60,16 +66,31 @@ export async function oktaSsoLoginViaApi(
   const samlResponseHtml = await redirectResponse.text();
   const { samlResponse, relayState } = samlResponseHtml.match(formRegex)!.groups!;
 
+  const flexTimeoutTime = Date.now() + 120000; // 2 minutes
   // Post the SAML response to twilio - if successful this redirects to the flex landing page, whose contents we drop on the floor, we just want to ensure the cookies get set
-  const flexPageResponse = await apiRequest.post(
-    `https://iam.twilio.com/v1/Accounts/${accountSid}/saml2`,
-    {
-      form: {
-        SAMLResponse: decodeHtmlSymbols(samlResponse),
-        RelayState: decodeHtmlSymbols(relayState),
-      },
-    },
-  );
+  let flexPageResponse = null;
+  while (!flexPageResponse) {
+    try {
+      flexPageResponse = await apiRequest.post(
+        `https://iam.twilio.com/v1/Accounts/${accountSid}/saml2`,
+        {
+          form: {
+            SAMLResponse: decodeHtmlSymbols(samlResponse),
+            RelayState: decodeHtmlSymbols(relayState),
+          },
+          timeout: 600000, // Long timeout in case a local dev server is still starting up
+        },
+      );
+    } catch (err) {
+      const error = <Error>err;
+      if (Date.now() > flexTimeoutTime || error.message.indexOf('ECONNREFUSED') === -1) {
+        throw err;
+      } else {
+        console.warn(`Flex server not listening yet, retrying`);
+        await delay(300);
+      }
+    }
+  }
   expect(flexPageResponse.ok()).toBe(true);
   await flexPageResponse.dispose(); //Not sure if this is strictly necessary
 

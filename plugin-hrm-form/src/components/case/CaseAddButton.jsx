@@ -12,8 +12,8 @@ const CaseAddButton = ({ disabled, templateCode, onClick, withDivider }) => {
     <CaseAddButtonStyled disabled={disabled} onClick={onClick} data-testid={`${templateCode}-AddButton`}>
       {!disabled && (
         <>
-          <Add style={{ marginRight: 10, fontSize: 16, height: 17, color }} />
-          <CaseAddButtonFont style={{ marginRight: 20 }}>
+          <Add style={{ marginLeft: 20, marginRight: 10, fontSize: 16, height: 17, color }} />
+          <CaseAddButtonFont>
             <Template code={templateCode} />
           </CaseAddButtonFont>
         </>

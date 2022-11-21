@@ -59,7 +59,7 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [isLoading, setLoading] = useState(false);
-  const fileUploadRef = useRef<HTMLButtonElement>();
+  const fileUploadRef = useRef<HTMLInputElement>();
   const fileName = initialValue || watch(path);
 
   const error = get(errors, path);
@@ -116,9 +116,9 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
             id="upload-button-styled"
             disabled={isLoading}
             onClick={() => fileUploadRef.current.click()}
-            innerRef={() => {
+            ref={() => {
               if (htmlElRef) {
-                // Couldn't get HTML element from innerRef. As a workaround, we getting the element by its id
+                // Couldn't get HTML element from ref. As a workaround, we getting the element by its id
                 const htmlButton = document.getElementById('upload-button-styled');
                 htmlElRef.current = htmlButton;
               }
@@ -141,7 +141,7 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
             aria-describedby={`${path}-error`}
             onChange={handleChange}
             defaultValue={initialValue}
-            innerRef={fileUploadRef}
+            ref={fileUploadRef}
             style={{ visibility: 'hidden', height: 0 }}
           />
           <input id={path} name={path} type="hidden" ref={register(rules)} />
@@ -163,7 +163,7 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
               <Box marginLeft="20px">Delete</Box>
             </StyledLink>
           )}
-          <FormInput id="file-input" type="hidden" defaultValue={initialValue} innerRef={fileUploadRef} />
+          <FormInput id="file-input" type="hidden" defaultValue={initialValue} ref={fileUploadRef} />
           <input id={path} name={path} type="hidden" ref={register(rules)} value={fileName} />
         </>
       )}

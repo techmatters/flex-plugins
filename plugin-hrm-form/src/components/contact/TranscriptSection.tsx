@@ -9,8 +9,9 @@ import { contactFormsBase, namespace, RootState } from '../../states';
 import { getFileDownloadUrlFromUrl } from '../../services/ServerlessService';
 import { loadTranscript, TranscriptMessage } from '../../states/contacts/existingContacts';
 import {
-  MessageList,
+  ErrorFont,
   ItalicFont,
+  MessageList,
   LoadTranscriptButton,
   LoadTranscriptButtonText,
   DateRulerContainer,
@@ -25,8 +26,23 @@ type OwnProps = {
   externalStoredTranscript?: S3StoredTranscript;
   loadConversationIntoOverlay: () => Promise<void>;
 };
+
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+
+class TranscriptFetchResponseError extends Error {
+  public response: Response;
+
+  constructor(message, options) {
+    super(message);
+
+    // see: https://github.com/microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work
+    Object.setPrototypeOf(this, TranscriptFetchResponseError.prototype);
+
+    this.name = 'TranscriptFetchResponseError';
+    this.response = options.response;
+  }
+}
 
 type TranscriptMessageGrouped = TranscriptMessage & { isGroupedWithPrevious: boolean };
 type TranscriptMessagesGrouped = { [dateKey: string]: TranscriptMessageGrouped[] };
@@ -73,11 +89,81 @@ const TranscriptSection: React.FC<Props> = ({
   loadConversationIntoOverlay,
   transcript,
   loadTranscript,
+
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  // Currently this should only really catch errors when we try to download the file from the signed link.
+  const isErrTemporary = err => {
+    return err.message === 'Failed to fetch';
+  };
+
+  const handleFetchAndLoadException = err => {
+    console.error(
+      `Error loading the transcript for contact ${contactId}, transcript url ${externalStoredTranscript.url}`,
+      err,
+    );
+
+    const errorMessage = isErrTemporary(err) ? 'TranscriptSection-TemporaryError' : 'TranscriptSection-PermanentError';
+
+    setErrorMessage(errorMessage);
+    setLoading(false);
+  };
+
+  /*
+   *The underlying s3Client.getSignedUrl() method returns a signed URL even if there is a problem.
+   *We need to check the response status code to make sure there isn't a permission or pathing issue with the file.
+   */
+  const validateFetchResponse = response => {
+    if (response.status !== 200) {
+      throw new TranscriptFetchResponseError('Error fetching transcript', { response });
+    }
+  };
+
+  const fetchAndLoadTranscript = async () => {
+    try {
+      setLoading(true);
+
+      const transcriptPreSignedUrl = await getFileDownloadUrlFromUrl(externalStoredTranscript.url, '');
+      const transcriptResponse = await fetch(transcriptPreSignedUrl.downloadUrl);
+
+      validateFetchResponse(transcriptResponse);
+
+      const transcriptJson = await transcriptResponse.json();
+
+      loadTranscript(contactId, transcriptJson.transcript);
+
+      setLoading(false);
+    } catch (err) {
+      handleFetchAndLoadException(err);
+    }
+  };
+
+  const loadTwilioStoredTranscript = async () => {
+    try {
+      setLoading(true);
+      await loadConversationIntoOverlay();
+      setLoading(false);
+    } catch (err) {
+      console.error(
+        `Error loading the conversation overlay for contact ${contactId}, Twilio stored transcript details ${twilioStoredTranscript}`,
+        err,
+      );
+    }
+  };
 
   if (loading) {
     return <CircularProgress size={30} />;
+  }
+
+  if (errorMessage) {
+    return (
+      <ErrorFont>
+        <Template code={errorMessage} />
+      </ErrorFont>
+    );
   }
 
   // Preferred case, external transcript is already in local state
@@ -89,22 +175,6 @@ const TranscriptSection: React.FC<Props> = ({
 
   // The external transcript is exported but it hasn't been fetched yet
   if (externalStoredTranscript && externalStoredTranscript.url && !transcript) {
-    const fetchAndLoadTranscript = async () => {
-      try {
-        setLoading(true);
-        const transcriptPreSignedUrl = await getFileDownloadUrlFromUrl(externalStoredTranscript.url, '');
-        const transcriptJson = await fetch(transcriptPreSignedUrl.downloadUrl);
-        const transcriptParsed = await transcriptJson.json();
-        loadTranscript(contactId, transcriptParsed.transcript);
-        setLoading(false);
-      } catch (err) {
-        console.error(
-          `Error loading the transcript for contact ${contactId}, transcript url ${externalStoredTranscript.url}`,
-          err,
-        );
-      }
-    };
-
     return (
       <LoadTranscriptButton type="button" onClick={fetchAndLoadTranscript}>
         <LoadTranscriptButtonText>
@@ -116,19 +186,6 @@ const TranscriptSection: React.FC<Props> = ({
 
   // External transcript is pending/disabled but Twilio transcript is enabled
   if (twilioStoredTranscript) {
-    const loadTwilioStoredTranscript = async () => {
-      try {
-        setLoading(true);
-        await loadConversationIntoOverlay();
-        setLoading(false);
-      } catch (err) {
-        console.error(
-          `Error loading the conversation overlay for contact ${contactId}, Twilio stored transcript details ${twilioStoredTranscript}`,
-          err,
-        );
-      }
-    };
-
     return (
       <LoadTranscriptButton type="button" onClick={loadTwilioStoredTranscript}>
         <LoadTranscriptButtonText>
@@ -150,7 +207,7 @@ const TranscriptSection: React.FC<Props> = ({
   // Something went wrong
   return (
     <ItalicFont>
-      <Template code="TranscriptSection-TranscriptNotAvailableDifficulties" />
+      <Template code="TranscriptSection-TemporaryError" />
     </ItalicFont>
   );
 };

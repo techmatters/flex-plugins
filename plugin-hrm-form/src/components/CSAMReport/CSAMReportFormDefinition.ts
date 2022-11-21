@@ -44,6 +44,7 @@ export const definitionObject: CounselorCSAMFormDefinitionObject = {
     label: 'Description (500 characters)',
     type: 'textarea',
     maxLength: { value: 500, message: '500 characters max.' },
+    width: '70%',
   },
   anonymous: {
     name: 'anonymous',

@@ -50,7 +50,8 @@ import { lookupApi } from '../../states/case/sections/lookupApi';
 import { copyCaseSectionItem } from '../../states/case/sections/update';
 import { changeRoute } from '../../states/routing/actions';
 import {
-  initialiseCaseSectionWorkingCopy,
+  initialiseExistingCaseSectionWorkingCopy,
+  initialiseNewCaseSectionWorkingCopy,
   removeCaseSectionWorkingCopy,
   updateCaseSectionWorkingCopy,
 } from '../../states/case/caseWorkingCopy';
@@ -78,6 +79,7 @@ const AddEditCaseItem: React.FC<Props> = ({
   routing,
   updateCaseSectionWorkingCopy,
   initialiseCaseSectionWorkingCopy,
+  initialiseNewCaseSectionWorkingCopy,
   closeActions,
   setConnectedCase,
   customFormHandlers,
@@ -88,12 +90,6 @@ const AddEditCaseItem: React.FC<Props> = ({
 }) => {
   const firstElementRef = useFocus();
   const { id } = isEditCaseSectionRoute(routing) ? routing : { id: undefined };
-
-  useEffect(() => {
-    if (!workingCopy) {
-      initialiseCaseSectionWorkingCopy(task.taskSid, sectionApi, id);
-    }
-  }, [id, initialiseCaseSectionWorkingCopy, sectionApi, task.taskSid, workingCopy]);
 
   const formDefinition = sectionApi
     .getSectionFormDefinition(definitionVersion)
@@ -115,6 +111,24 @@ const AddEditCaseItem: React.FC<Props> = ({
     }
     return formDefinition.reduce(createStateItem, {});
   }, [connectedCase, formDefinition, id, sectionApi]);
+
+  useEffect(() => {
+    if (!workingCopy) {
+      if (id) {
+        initialiseCaseSectionWorkingCopy(task.taskSid, sectionApi, id);
+      } else {
+        initialiseNewCaseSectionWorkingCopy(task.taskSid, sectionApi, savedForm);
+      }
+    }
+  }, [
+    id,
+    initialiseCaseSectionWorkingCopy,
+    initialiseNewCaseSectionWorkingCopy,
+    sectionApi,
+    task.taskSid,
+    workingCopy,
+    savedForm,
+  ]);
 
   const methods = useForm(reactHookFormOptions);
   const [openDialog, setOpenDialog] = React.useState(false);
@@ -304,7 +318,8 @@ const mapDispatchToProps = (dispatch, props: AddEditCaseItemProps) => {
   return {
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     updateCaseSectionWorkingCopy: bindActionCreators(updateCaseSectionWorkingCopy, dispatch),
-    initialiseCaseSectionWorkingCopy: bindActionCreators(initialiseCaseSectionWorkingCopy, dispatch),
+    initialiseCaseSectionWorkingCopy: bindActionCreators(initialiseExistingCaseSectionWorkingCopy, dispatch),
+    initialiseNewCaseSectionWorkingCopy: bindActionCreators(initialiseNewCaseSectionWorkingCopy, dispatch),
     closeActions: route => {
       dispatch(removeCaseSectionWorkingCopy(task.taskSid, sectionApi, id));
       dispatch(changeRoute(route, task.taskSid));

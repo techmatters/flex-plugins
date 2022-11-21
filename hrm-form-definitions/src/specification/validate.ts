@@ -1,4 +1,9 @@
-import { CategoriesDefinition, FormDefinition, FormItemDefinition } from '../formDefinition';
+import {
+  CategoriesDefinition,
+  FormDefinition,
+  FormItemDefinition,
+  SelectOption,
+} from '../formDefinition';
 import {
   FormItemDefinitionSpecification,
   FormDefinitionSpecification,
@@ -14,11 +19,41 @@ type FormValidationReport = ValidationReport & {
   itemReports: { [item: string]: ValidationReport };
 };
 
+const validateSelectOptions = (options: SelectOption[]): void => {
+  if (options.length < 1) {
+    throw new Error(
+      `Options sets for form items should always be an array with at least 1 item, got ${JSON.stringify(
+        options,
+      )}`,
+    );
+  }
+  options.forEach((option) => {
+    if (option.value === undefined || typeof option.label !== 'string') {
+      throw new Error(
+        `Option malformed, expected a value property and a string label property, got ${JSON.stringify(
+          option,
+        )}`,
+      );
+    }
+  });
+};
+
 function validateFormItemDefinition(
   form: FormDefinition,
   actual: FormItemDefinition,
   specification: FormItemDefinitionSpecification,
 ): void {
+  // Run some basic validations on the JSON structure
+  switch (actual.type) {
+    case 'dependent-select':
+      Object.values(actual.options).forEach(validateSelectOptions);
+      return;
+    case 'select':
+    case 'listbox-multiselect':
+      validateSelectOptions(actual.options);
+      break;
+    default:
+  }
   (specification.validator ?? (() => {}))({ form, item: actual });
 }
 

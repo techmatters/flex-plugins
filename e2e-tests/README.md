@@ -38,8 +38,9 @@ Use nvm to ensure we use the same node/npm versions for each product. The first 
 ## Run local e2e Tests
 
 1. Start local hrm-service by following the instructions in the hrm repo's readme.md file.
-2. Start plugin-hrm-form by following the instructions in the [readme](../plugin-hrm-form/README.md).
-3. Run the e2e tests with `npm run test:local`
+2. Start local serverless using .env vars for the `End to End Testing` twilio account.
+3. Start plugin-hrm-form by following the instructions in the [readme](../plugin-hrm-form/README.md).
+4. Run the e2e tests with `npm run test:local`.
 
 ## TODO
 * Currently the tests rely on a plugin dev server being run separately. There should be a single task that manages starting the dev server, running the tests, then shutting down the dev server

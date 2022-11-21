@@ -21,6 +21,11 @@ const headerStyles: ReactPDF.Styles = {
     fontSize: 10,
     marginLeft: 5,
   },
+  logo: {
+    maxWidth: 275,
+    maxHeight: 80,
+    objectFit: 'scale-down',
+  },
 };
 
 export default headerStyles;

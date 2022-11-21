@@ -311,6 +311,7 @@
     "Contact-EditSummary": "Összegzés szerkesztése",
     "ContactCopyButton": "Másolás",
     "ContactDetails-ActionHeaderAdded": "Hozzáadva a {{date}} telefonszámon a {{time}} címen: {{counsellor}}",
+    "ContactDetails-ActionHeaderUpdated": "Frissítette: {{date}}, {{time}}, {{counsellor}}",
     "SearchContactsAndCases-Title": "Megkeresések és esetek keresése",
     "SearchForm-Name": "Név",
     "SearchForm-First": "Keresztnév",

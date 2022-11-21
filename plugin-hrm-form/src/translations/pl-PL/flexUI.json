@@ -310,6 +310,7 @@
     "Contact-EditSummary": "Edytuj podsumowanie",
     "ContactCopyButton": "Kopiuj",
     "ContactDetails-ActionHeaderAdded": "Dodano na {{date}} w {{time}} przez {{counsellor}}",
+    "ContactDetails-ActionHeaderUpdated": "Zaktualizowano {{date}} o {{time}} przez {{counsellor}}",
     "First Name": "Imię",
     "Last Name": "Nazwisko",
     "Gender": "Płeć",
