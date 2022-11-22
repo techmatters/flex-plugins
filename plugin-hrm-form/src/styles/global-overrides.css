@@ -87,3 +87,15 @@ span.ContactDetailsInfo-open-in-new-icon {
     letter-spacing: inherit;
     font-size: 14px;
 }
+button.Twilio-TaskCanvasHeader-EndButton {
+    padding: 3px 16px;
+    font-weight: normal;
+    min-width: auto;
+}
+button.Twilio-TaskCanvasHeader-EndButton:hover{
+    border: 1px solid rgb(70, 70, 70);
+    background-color: rgb(220, 84, 84);
+}
+button.Twilio-TaskCanvasHeader-EndButton:active {
+    border: 2px solid black;
+}

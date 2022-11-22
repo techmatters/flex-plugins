@@ -481,7 +481,6 @@ export const TransferStyledButton = styled('button')<TransferStyledButtonProps>`
   color: ${props => (props.color ? props.color : '#000')};
   letter-spacing: 0px;
   text-transform: none;
-  font-weight: bold;
   margin-right: 1em;
   padding: 0px 16px;
   height: ${props => (props.taller ? 35 : 28)}px;
@@ -492,6 +491,15 @@ export const TransferStyledButton = styled('button')<TransferStyledButtonProps>`
   align-self: center;
   &:hover {
     cursor: pointer;
+    border: 1px solid gray;
+    padding: 0px 15px;
+  }
+  &:focus {
+    outline: auto;
+    outline-color: #1976d2;
+  }
+  &:active {
+    background: rgb(172, 179, 181);
   }
 `;
 TransferStyledButton.displayName = 'TransferStyledButton';
