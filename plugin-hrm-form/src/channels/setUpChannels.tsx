@@ -11,23 +11,21 @@ import CallIcon from '../components/common/icons/CallIcon';
 import SmsIcon from '../components/common/icons/SmsIcon';
 import * as TransferHelpers from '../utils/transfer';
 import { colors, mainChannelColor } from './colors';
+import { getConfig } from '../HrmFormPlugin';
 
 const isIncomingTransfer = task => TransferHelpers.hasTransferStarted(task) && task.status === 'pending';
 
 const setSecondLine = ({ channel, string }: { channel: string; string: string }) => {
-  // here we use manager instead of setupObject, so manager.strings will always have the latest version of strings
-  const manager = Flex.Manager.getInstance();
+  const { strings } = getConfig();
 
   const defaultStrings = Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine;
 
   Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine = (task, componentType) => {
     if (isIncomingTransfer(task)) {
       const { originalCounselorName } = task.attributes.transferMeta;
-      const mode = TransferHelpers.isWarmTransfer(task)
-        ? manager.strings['Transfer-Warm']
-        : manager.strings['Transfer-Cold'];
+      const mode = TransferHelpers.isWarmTransfer(task) ? strings['Transfer-Warm'] : strings['Transfer-Cold'];
 
-      const baseMessage = `${mode} ${manager.strings[string]} ${originalCounselorName}`;
+      const baseMessage = `${mode} ${strings[string]} ${originalCounselorName}`;
 
       if (task.attributes.transferTargetType === 'queue') return `${baseMessage} (${task.queueName})`;
 
