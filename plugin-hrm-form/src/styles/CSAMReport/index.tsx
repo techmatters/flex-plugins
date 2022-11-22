@@ -120,5 +120,5 @@ const StyledSmallIcon = withStyles({
   },
 });
 
-export const StyledOpenInNew = StyledSmallIcon(OpenInNew);
-StyledOpenInNew.displayName = 'StyledOpenInNew';
+export const OpenInNewIcon = StyledSmallIcon(OpenInNew);
+OpenInNewIcon.displayName = 'OpenInNewIcon';

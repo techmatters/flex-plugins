@@ -9,7 +9,7 @@ import {
   CSAMReportLayout,
   BoldDescriptionText,
   RegularText,
-  StyledOpenInNew,
+  OpenInNewIcon,
 } from '../../styles/CSAMReport';
 import { definitionObject, childDefinitionObject } from './CSAMReportFormDefinition';
 import { RequiredAsterisk } from '../common/forms/formGenerators';
@@ -101,7 +101,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
           <Box marginTop="20px" marginBottom="5px">
             <RegularText>
               <Template code="CSAMReportForm-ContactDetailsInfo" />
-              <StyledOpenInNew fontSize="inherit" />
+              <OpenInNewIcon fontSize="inherit" />
             </RegularText>
             <Box padding="15px 15px 15px 20px">
               {counsellorFormElements.firstName}
