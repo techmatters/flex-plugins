@@ -40,7 +40,7 @@ const TimelineInformationRow: React.FC<OwnProps> = ({ definition, values, layout
         );
       })}
       <RowItem>
-        <Box marginLeft="auto" marginRight="10px">
+        <Box marginLeft="auto">
           <ViewButton onClick={onClickView} data-testid="Case-InformationRow-ViewButton">
             <Template code="Case-ViewButton" />
           </ViewButton>
