@@ -5,7 +5,7 @@ import { DefinitionVersionId, loadDefinition, DefinitionVersion } from 'hrm-form
 
 import fetchProtectedApi from './fetchProtectedApi';
 import { getConfig } from '../HrmFormPlugin';
-import type { CSAMReportForm } from '../states/csam-report/types';
+import type { CounselorCSAMReportForm } from '../states/csam-report/types';
 
 type PopulateCounselorsReturn = { sid: string; fullName: string }[];
 
@@ -195,7 +195,7 @@ export const getFileUploadUrl = async (fileName: string, mimeType: string) => {
 /**
  * Send a CSAM report to IWF
  */
-export const reportToIWF = async (form: CSAMReportForm) => {
+export const reportToIWF = async (form: CounselorCSAMReportForm) => {
   const body = {
     Reported_URL: form.webAddress,
     Reporter_Description: form.description,

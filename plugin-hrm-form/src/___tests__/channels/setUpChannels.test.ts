@@ -3,6 +3,7 @@ import each from 'jest-each';
 
 import { setUpIncomingTransferMessage } from '../../channels/setUpChannels';
 import { transferModes } from '../../states/DomainConstants';
+import { getConfig } from '../../HrmFormPlugin';
 
 jest.mock('@twilio/flex-ui', () => {
   const mockChannels = ['Call', 'Chat', 'ChatLine', 'ChatMessenger', 'ChatSms', 'ChatWhatsApp'];
@@ -19,9 +20,6 @@ jest.mock('@twilio/flex-ui', () => {
   });
 
   return {
-    Manager: {
-      getInstance: jest.fn(),
-    },
     DefaultTaskChannels: Object.fromEntries(mockChannels.map(c => [c, mockGenerateDefaultTaskChannel(c)])),
     TaskChannelHelper: {
       getTemplateForStatus: jest.fn(),
@@ -32,14 +30,16 @@ jest.mock('@twilio/flex-ui', () => {
   };
 });
 
+jest.mock('../../HrmFormPlugin', () => ({
+  getConfig: jest.fn(),
+}));
+
 const channelsAndStrings = ['Call', 'Chat', 'ChatMessenger', 'ChatSms', 'ChatWhatsApp'].map(channel => ({
   channel,
   string: `Transfer-TaskLine${channel}Reserved`,
 }));
 
 describe('setUpIncomingTransferMessage', () => {
-  const mockManager = {};
-
   beforeEach(() => {
     channelsAndStrings.forEach(({ channel }) => {
       Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine = `${channel}-second-line`;
@@ -51,6 +51,15 @@ describe('setUpIncomingTransferMessage', () => {
         throw new Error('Function was not set!');
       },
     };
+    beforeEach(() => {
+      (<jest.Mock>getConfig).mockReturnValue({
+        strings: {
+          'Transfer-Warm': 'TOASTY',
+          'Transfer-Cold': 'CHILLY',
+          ...Object.fromEntries(channelsAndStrings.map(({ string }) => [string, `${string} test value`])),
+        },
+      });
+    });
 
     test("Always sets second line of task list item template as function for chat channel '%p'", () => {
       setUpIncomingTransferMessage();
@@ -58,13 +67,6 @@ describe('setUpIncomingTransferMessage', () => {
     });
     describe('secondLine function', () => {
       beforeEach(() => {
-        (<jest.Mock>Flex.Manager.getInstance).mockReturnValue({
-          strings: {
-            'Transfer-Warm': 'TOASTY',
-            'Transfer-Cold': 'CHILLY',
-            ...Object.fromEntries(channelsAndStrings.map(({ string }) => [string, `${string} test value`])),
-          },
-        });
         setUpIncomingTransferMessage();
         funcs.secondLine = Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine;
       });
