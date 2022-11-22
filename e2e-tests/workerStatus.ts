@@ -1,8 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { expect, Page } from '@playwright/test';
 
-const OPEN_ATTEMPTS = 3;
-
 export enum WorkerStatus {
   UNKNOWN,
   AVAILABLE = 'Available',
