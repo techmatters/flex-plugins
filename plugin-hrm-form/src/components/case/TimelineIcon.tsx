@@ -16,7 +16,7 @@ import WhatsappIcon from '../common/icons/WhatsappIcon';
 import FacebookIcon from '../common/icons/FacebookIcon';
 import SmsIcon from '../common/icons/SmsIcon';
 import CallIcon from '../common/icons/CallIcon';
-import { colors } from '../../utils/setUpComponents';
+import { colors } from '../../channels/colors';
 
 type IconType = ChannelTypes | 'note' | 'referral';
 

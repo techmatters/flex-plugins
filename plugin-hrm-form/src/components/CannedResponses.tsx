@@ -9,7 +9,7 @@ import { selectCannedResponses } from '../states/selectors/hrmStateSelectors';
 import { CannedResponsesContainer, FormSelect, FormSelectWrapper, FormOption } from '../styles/HrmStyles';
 
 // eslint-disable-next-line no-use-before-define
-type Props = MessageInputChildrenProps;
+type Props = Pick<MessageInputChildrenProps, 'conversationSid'>;
 
 // eslint-disable-next-line react/display-name
 const CannedResponses: React.FC<Props> = props => {
