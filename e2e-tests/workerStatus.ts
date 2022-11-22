@@ -18,10 +18,10 @@ export function statusIndicator(page: Page) {
 
   return {
     setStatus: async function (status: WorkerStatus) {
-      const statusSelector = selectors.userActivityDropdownOption(status);
       await selectors.userActivityDropdownButton.click();
       console.log('Worker status dropdown should be open');
-      await statusSelector.waitFor({ state: 'visible', timeout: 3000 });
+      const statusSelector = selectors.userActivityDropdownOption(status);
+      await statusSelector.waitFor({ state: 'visible' });
       console.log('Worker status option spotted');
       await statusSelector.click();
       console.log('Worker status option clicked');
