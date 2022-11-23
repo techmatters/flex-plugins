@@ -52,7 +52,21 @@ export const CLTableRow = withStyles({
 })(TableRow);
 CLTableRow.displayName = 'CLTableRow';
 
-export const CLTableCell = withStyles(theme => ({
+export const CLHeaderTableCell = withStyles(theme => ({
+  root: {
+    borderBottom: 0,
+    textTransform: 'none',
+    overflow: 'hidden',
+    padding: '0 0 0 10px',
+  },
+  body: {
+    verticalAlign: 'top',
+    paddingTop: 8,
+  },
+}))(TableCell);
+CLHeaderTableCell.displayName = 'CLTableCell';
+
+export const CLTableCell = withStyles({
   root: {
     borderBottom: 0,
     textTransform: 'none',
@@ -63,7 +77,7 @@ export const CLTableCell = withStyles(theme => ({
     verticalAlign: 'top',
     paddingTop: 8,
   },
-}))(TableCell);
+})(TableCell);
 CLTableCell.displayName = 'CLTableCell';
 
 export const CLNumberCell = withStyles({
