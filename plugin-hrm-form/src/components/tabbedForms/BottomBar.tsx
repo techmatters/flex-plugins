@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { bindActionCreators, Dispatch } from 'redux';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
@@ -18,25 +18,22 @@ import { hasTaskControl } from '../../utils/transfer';
 import { namespace, contactFormsBase, connectedCaseBase } from '../../states';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
+import { CustomITask } from '../../types/types';
+import { SubmitErrorHandler } from 'react-hook-form';
 
-class BottomBar extends Component {
+type BottomBarProps = {
+  handleSubmitIfValid: (handleSubmit: ()=> void, onError: SubmitErrorHandler<unknown>) => () => void,
+  optionalButtons?: { onClick: () => void, label: string}[],
+  showNextButton: boolean,
+  showSubmitButton: boolean,
+  nextTab: () => void,
+  task: CustomITask,
+
+};
+
+class BottomBar extends Component<BottomBarProps & ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>> {
   static displayName = 'BottomBar';
 
-  static propTypes = {
-    handleSubmitIfValid: PropTypes.func.isRequired,
-    optionalButtons: PropTypes.arrayOf(PropTypes.shape({ onClick: PropTypes.func, label: PropTypes.string })),
-    showNextButton: PropTypes.bool.isRequired,
-    showSubmitButton: PropTypes.bool.isRequired,
-    nextTab: PropTypes.func.isRequired,
-    task: taskType.isRequired,
-    changeRoute: PropTypes.func.isRequired,
-    setConnectedCase: PropTypes.func.isRequired,
-    contactForm: PropTypes.shape({ callType: PropTypes.oneOf(Object.values(callTypes)) }).isRequired,
-  };
-
-  static defaultProps = {
-    optionalButtons: undefined,
-  };
 
   state = {
     isSubmitting: false,
@@ -52,7 +49,7 @@ class BottomBar extends Component {
     try {
       const caseFromDB = await createCase(task, contactForm);
       this.props.changeRoute({ route: 'new-case' }, taskSid);
-      this.props.setConnectedCase(caseFromDB, taskSid, false);
+      this.props.setConnectedCase(caseFromDB, taskSid);
     } catch (error) {
       recordBackendError('Open New Case', error);
       window.alert(strings['Error-Backend']);
@@ -148,17 +145,14 @@ class BottomBar extends Component {
   }
 }
 
-/**
- * @param {import('../../states').RootState} state
- */
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state, ownProps: BottomBarProps) => {
   const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
   const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
   const caseForm = (caseState && caseState.connectedCase) || {};
   return { contactForm, caseForm };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
   setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
 });
