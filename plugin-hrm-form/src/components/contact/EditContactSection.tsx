@@ -162,6 +162,7 @@ const EditContactSection: React.FC<Props> = ({
               data-testid="EditContact-SaveContact-Button"
             >
               <span style={{ visibility: isSubmitting ? 'hidden' : 'inherit' }}>
+                {/* eslint-disable-next-line react/jsx-max-depth */}
                 <Template code="BottomBar-SaveContact" />
               </span>
               {isSubmitting ? <CircularProgress size={12} style={{ position: 'absolute' }} /> : null}
