@@ -135,7 +135,10 @@ class BottomBar extends Component {
                 data-fs-id="Contact-SaveContact-Button"
                 data-testid="BottomBar-SaveContact-Button"
               >
-                {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveCaseContact" />}
+                <span style={{ visibility: isSubmitting ? 'hidden' : 'inherit' }}>
+                  <Template code="BottomBar-SaveCaseContact" />
+                </span>
+                {isSubmitting ? <CircularProgress size={12} style={{ position: 'absolute' }} /> : null}
               </StyledNextStepButton>
             </>
           )}
