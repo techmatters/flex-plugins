@@ -61,8 +61,8 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
             <StyledPrintButton
               onClick={handlePrintCase}
               aria-label="Print"
-              icon={<PrintIcon />}
               data-testid="CasePrint-Button"
+              icon={<PrintIcon />}
             />
           )}
         </Box>

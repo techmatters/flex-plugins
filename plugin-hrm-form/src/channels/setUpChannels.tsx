@@ -48,7 +48,6 @@ export const setUpIncomingTransferMessage = () => {
   const chatChannels = [
     { channel: 'Call', string: 'Transfer-TaskLineCallReserved' },
     { channel: 'Chat', string: 'Transfer-TaskLineChatReserved' },
-    { channel: 'ChatLine', string: 'Transfer-TaskLineChatLineReserved' },
     { channel: 'ChatMessenger', string: 'Transfer-TaskLineChatMessengerReserved' },
     { channel: 'ChatSms', string: 'Transfer-TaskLineChatSmsReserved' },
     { channel: 'ChatWhatsApp', string: 'Transfer-TaskLineChatWhatsAppReserved' },
@@ -136,9 +135,17 @@ export const setupLineChatChannel = maskIdentifiers => {
   const icon = <LineIcon width="24px" height="24px" color={colors.line} />;
 
   const LineChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel('line', task => task.channelType === 'line');
+  if (maskIdentifiers) maskIdentifiersByChannel(LineChatChannel);
 
-  LineChatChannel.colors = Flex.DefaultTaskChannels.ChatLine.colors;
-  LineChatChannel.templates = Flex.DefaultTaskChannels.ChatLine.templates;
+  LineChatChannel.colors.main = {
+    Accepted: colors.line,
+    Assigned: colors.line,
+    Pending: colors.line,
+    Reserved: colors.line,
+    Wrapping: mainChannelColor(Flex.DefaultTaskChannels.Chat, ReservationStatuses.Wrapping),
+    Completed: mainChannelColor(Flex.DefaultTaskChannels.Chat, ReservationStatuses.Completed),
+    Canceled: mainChannelColor(Flex.DefaultTaskChannels.Chat, ReservationStatuses.Canceled),
+  };
 
   LineChatChannel.icons = {
     active: icon,

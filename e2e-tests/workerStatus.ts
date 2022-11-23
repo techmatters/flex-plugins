@@ -12,7 +12,7 @@ export function statusIndicator(page: Page) {
     userActivityDropdownButton: page.locator("//button[@data-test='activity-dropdown-button']"),
     userActivityDropdownOption: (status: WorkerStatus) =>
       page.locator(
-        `//div[@aria-label='Actions']//button[@data-paste-element='MENU_ITEM']//span[text()='${status}']`,
+        `//div[@aria-label='Activity selection']//button[@data-paste-element='MENU_ITEM']//span[text()='${status}']`,
       ),
   };
 

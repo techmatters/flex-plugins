@@ -34,7 +34,7 @@ jest.mock('../../HrmFormPlugin', () => ({
   getConfig: jest.fn(),
 }));
 
-const channelsAndStrings = ['Call', 'Chat', 'ChatLine', 'ChatMessenger', 'ChatSms', 'ChatWhatsApp'].map(channel => ({
+const channelsAndStrings = ['Call', 'Chat', 'ChatMessenger', 'ChatSms', 'ChatWhatsApp'].map(channel => ({
   channel,
   string: `Transfer-TaskLine${channel}Reserved`,
 }));
