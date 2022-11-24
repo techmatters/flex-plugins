@@ -1,23 +1,44 @@
 import fetchHrmApi from './fetchHrmApi';
-// import { CSAMReportEntry } from '../types/types';
+import { CSAMReportEntry } from '../types/types';
 
-type CreateCSAMReportParams = {
+type CreateCounsellorCSAMReportParams = {
   csamReportId: string;
   twilioWorkerId: string;
   contactId?: number;
+  reportType: 'counsellor-generated';
 };
 
-export const createCSAMReport = async ({ csamReportId, twilioWorkerId, contactId }: CreateCSAMReportParams) => {
-  const body = {
-    twilioWorkerId,
-    csamReportId,
-    contactId,
-  };
+type CreateChildCSAMReportParams = {
+  twilioWorkerId: string;
+  contactId?: number;
+  reportType: 'self-generated';
+};
 
+export const createCSAMReport = async (
+  body: CreateCounsellorCSAMReportParams | CreateChildCSAMReportParams,
+): Promise<CSAMReportEntry> => {
   const options = {
     method: 'POST',
     body: JSON.stringify(body),
   };
 
   return fetchHrmApi('/csamReports', options);
+};
+
+export const aknowledgeCSAMReport = async (reportId: CSAMReportEntry['id']): Promise<CSAMReportEntry> => {
+  const options = {
+    method: 'PATCH',
+    body: JSON.stringify({}),
+  };
+
+  return fetchHrmApi(`/csamReports/${reportId}/aknowledge`, options);
+};
+
+export const deleteCSAMReport = async (reportId: CSAMReportEntry['id']): Promise<CSAMReportEntry> => {
+  const options = {
+    method: 'DELETE',
+    body: JSON.stringify({}),
+  };
+
+  return fetchHrmApi(`/csamReports/${reportId}`, options);
 };
