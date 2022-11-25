@@ -11,14 +11,34 @@ import { getConfig } from '../HrmFormPlugin';
 
 type Props = {
   description: React.ReactNode | string;
-  value: string | number | boolean;
+  value: React.ReactNode | string | number | boolean;
   definition?: FormItemDefinition;
   notBold?: boolean;
   layout?: LayoutValue;
 };
 
+const renderSectionEntry = (description: React.ReactNode | string) => (value: React.ReactNode | string) => (
+  <Grid container style={{ marginTop: 8, marginBottom: 8 }}>
+    <Grid item xs={6}>
+      <SectionDescriptionText>{description}</SectionDescriptionText>
+    </Grid>
+    <Grid item xs={6}>
+      <SectionValueText>{value}</SectionValueText>
+    </Grid>
+  </Grid>
+);
+
 const SectionEntry: React.FC<Props> = ({ description, value, definition, layout, notBold }) => {
+  const rederValue = renderSectionEntry(description);
+
+  const renderAsIs = typeof value !== 'string' && typeof value !== 'number' && typeof value !== 'boolean'; // Help TS compiler :)
+
+  if (renderAsIs) {
+    return rederValue(value);
+  }
+
   const { strings } = getConfig();
+
   const formatted = presentValue(formatValue(layout)(value), strings)(definition);
 
   const getValue = () => {
@@ -28,16 +48,7 @@ const SectionEntry: React.FC<Props> = ({ description, value, definition, layout,
     return <SectionValueText notBold={notBold}>{formatted}</SectionValueText>;
   };
 
-  return (
-    <Grid container style={{ marginTop: 8, marginBottom: 8 }}>
-      <Grid item xs={6}>
-        <SectionDescriptionText>{description}</SectionDescriptionText>
-      </Grid>
-      <Grid item xs={6}>
-        {getValue()}
-      </Grid>
-    </Grid>
-  );
+  return rederValue(getValue());
 };
 
 SectionEntry.displayName = 'SectionEntry';
