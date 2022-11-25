@@ -5,8 +5,8 @@ import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
-import { Flex, Row } from '../../styles/HrmStyles';
-import { isS3StoredTranscript, isTwilioStoredMedia, SearchContact } from '../../types/types';
+import { Box, Flex, Row } from '../../styles/HrmStyles';
+import { CSAMReportEntry, isS3StoredTranscript, isTwilioStoredMedia, SearchContact } from '../../types/types';
 import {
   DetailsContainer,
   NameText,
@@ -148,11 +148,28 @@ const ContactDetailsHome: React.FC<Props> = function ({
     });
   };
 
-  const csamReportsAttached =
-    csamReports &&
-    csamReports
-      .map(r => `CSAM on ${format(new Date(r.createdAt), 'yyyy MM dd h:mm aaaaa')}m\n#${r.csamReportId}`)
-      .join('\n\n');
+  const formatCsamReport = (report: CSAMReportEntry) => {
+    const template =
+      report.reportType === 'counsellor-generated' ? (
+        <Template code="CSAMReportForm-Counsellor-Attachment" />
+      ) : (
+        <Template code="CSAMReportForm-Self-Attachment" />
+      );
+
+    const date = `${format(new Date(report.createdAt), 'yyyy MM dd h:mm aaaaa')}m`;
+
+    return (
+      <Box marginBottom="5px">
+        {template}
+        <br />
+        {date}
+        <br />
+        {`#${report.csamReportId}`}
+      </Box>
+    );
+  };
+
+  const csamReportsAttached = csamReports && csamReports.map(formatCsamReport);
 
   const recordingAvailable = Boolean(
     featureFlags.enable_voice_recordings &&
