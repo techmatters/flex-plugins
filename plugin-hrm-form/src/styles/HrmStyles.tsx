@@ -510,12 +510,11 @@ export const HeaderContainer = styled(Row)`
   justify-items: flex-start;
   background-color: ${HrmTheme.colors.base2};
   border-width: 0px;
-  text-transform: uppercase;
+  text-transform: capitalize;
   color: #192b33;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.67px;
-  line-height: 12px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
   padding: 0px;
 `;
 HeaderContainer.displayName = 'HeaderContainer';

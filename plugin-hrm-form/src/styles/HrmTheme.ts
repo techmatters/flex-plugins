@@ -1,3 +1,6 @@
+import { DeepPartial } from 'redux';
+import type { Theme } from '@twilio/flex-ui';
+
 const colors = {
   /*
    * base1: '#ffffff',
@@ -69,8 +72,10 @@ const colors = {
   userUnavailableColor: '#999999',
 };
 
+type ThemeOverrides = DeepPartial<Omit<Theme, 'tokens' | 'isLight'>>;
+
 // eslint-disable-next-line import/no-unused-modules
-export const overrides = {
+export const overrides: ThemeOverrides = {
   MainHeader: {
     Container: {
       background: colors.base2,
