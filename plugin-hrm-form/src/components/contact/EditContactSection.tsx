@@ -161,7 +161,11 @@ const EditContactSection: React.FC<Props> = ({
               data-fs-id="Contact-SaveContact-Button"
               data-testid="EditContact-SaveContact-Button"
             >
-              {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveContact" />}
+              <span style={{ visibility: isSubmitting ? 'hidden' : 'inherit' }}>
+                {/* eslint-disable-next-line react/jsx-max-depth */}
+                <Template code="BottomBar-SaveContact" />
+              </span>
+              {isSubmitting ? <CircularProgress size={12} style={{ position: 'absolute' }} /> : null}
             </StyledNextStepButton>
           </Box>
         </BottomButtonBar>
