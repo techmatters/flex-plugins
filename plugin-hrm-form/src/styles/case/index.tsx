@@ -75,15 +75,13 @@ type ViewButtonProps = {
   onClick: () => void;
 };
 
-export const ViewButton = styled(props => <Button roundCorners={false} {...props} />)`
+export const ViewButton = styled(props => <Button roundCorners={false} {...props} />)<ViewButtonProps>`
   color: ${HrmTheme.colors.categoryTextColor};
   background-color: #ecedf1;
   height: 28px;
   border-radius: 4px;
-  font-family: Open Sans;
-  font-weight: 600;
   letter-spacing: normal;
-  font-size: 14px;
+  font-size: 13px;
   box-shadow: none;
   border: none;
 
