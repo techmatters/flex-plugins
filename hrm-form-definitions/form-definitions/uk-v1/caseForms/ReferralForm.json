@@ -95,8 +95,82 @@
     ]
   },
   {
+    "name": "reportedTo",
+    "label": "Reported to?",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "facebook",
+        "label": "Facebook"
+      },
+      {
+        "value": "instagram",
+        "label": "Instagram"
+      }
+    ]
+  },
+  {
+    "name": "reportingStatus",
+    "label": "Reporting Status",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "reported",
+        "label": "Reported"
+      },
+      {
+        "value": "inProgress",
+        "label": "In Review"
+      },
+      {
+        "value": "resolved",
+        "label": "Resolved/Removed"
+      },
+      {
+        "value": "escalated",
+        "label": "Escalated"
+      },
+      {
+        "value": "rejected",
+        "label": "Rejected"
+      }
+    ]
+  },
+  {
+    "name": "rhcNotActioned",
+    "label": "RHC Not Actioned",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "alreadyRemoved",
+        "label": "Removed before reported"
+      },
+      {
+        "value": "ageverificationfail",
+        "label": "Age Verification Failed"
+      }
+    ]
+  },
+  {
+    "name": "reportingReference",
+    "label": "Report Reference",
+    "type": "input"
+  },
+  {
     "name": "comments",
-    "label": "Comments",
+    "label": "Comments/Platform Response",
     "type": "textarea"
   }
 ]

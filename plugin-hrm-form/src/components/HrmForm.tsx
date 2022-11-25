@@ -24,7 +24,13 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags }) => {
 
   switch (route) {
     case 'tabbed-forms':
-      return <TabbedForms task={task} csamReportEnabled={featureFlags.enable_csam_report} />;
+      return (
+        <TabbedForms
+          task={task}
+          csamClcReportEnabled={featureFlags.enable_csam_clc_report}
+          csamReportEnabled={featureFlags.enable_csam_report}
+        />
+      );
 
     case 'new-case':
       return (

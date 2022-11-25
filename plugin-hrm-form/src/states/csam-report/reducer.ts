@@ -2,7 +2,7 @@ import { omit } from 'lodash';
 
 import * as t from './types';
 import { GeneralActionType, INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from '../types';
-import { initialValues } from '../../components/CSAMReport/CSAMReportFormDefinition';
+import { initialValues, childInitialValues } from '../../components/CSAMReport/CSAMReportFormDefinition';
 
 type TaskEntry = {
   form: t.CSAMReportForm;
@@ -16,7 +16,7 @@ type CSAMReportState = {
 };
 
 export const newTaskEntry: TaskEntry = {
-  form: { ...initialValues },
+  form: { ...initialValues, ...childInitialValues },
   reportStatus: {
     responseCode: '',
     responseData: '',

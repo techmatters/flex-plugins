@@ -28,17 +28,17 @@ export default function CloseCaseDialog({ setDialog, handleDontSaveClose, handle
             <WarningIcon style={{ color: '#f6ca4a' }} /> <br />
             <Template code="BottomBar-SaveOnClose" />
           </CloseDialogText>
-          <Row>
+          <Row style={{ justifyContent: 'space-evenly' }}>
             <StyledNextStepButton
               tabIndex={1}
               secondary
               onClick={handleDontSaveClose}
-              margin="15px auto"
+              margin="15px 0"
               style={{ background: '#fff' }}
             >
               <Template code="BottomBar-DontSave" />
             </StyledNextStepButton>
-            <StyledNextStepButton tabIndex={2} onClick={handleSaveUpdate} margin="15px auto">
+            <StyledNextStepButton tabIndex={2} onClick={handleSaveUpdate} margin="15px 0">
               <Template code="BottomBar-Save" />
             </StyledNextStepButton>
           </Row>

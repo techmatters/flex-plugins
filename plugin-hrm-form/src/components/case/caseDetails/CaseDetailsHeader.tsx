@@ -41,9 +41,9 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
   return (
     <DetailsHeaderContainer>
       <DetailsHeaderTextContainer>
-        <DetailsHeaderChildName variant="h6" data-testid="Case-DetailsHeaderChildName">
-          {childName}
-        </DetailsHeaderChildName>
+        <h6 style={{ padding: '6px 0' }}>
+          <DetailsHeaderChildName data-testid="Case-DetailsHeaderChildName">{childName}</DetailsHeaderChildName>
+        </h6>
         <DetailsHeaderCaseContainer>
           <DetailsHeaderCaseId id="Case-CaseId-label" data-testid="Case-DetailsHeaderCaseId">
             <Template code="Case-CaseNumber" />
@@ -61,8 +61,8 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
             <StyledPrintButton
               onClick={handlePrintCase}
               aria-label="Print"
-              icon={<PrintIcon />}
               data-testid="CasePrint-Button"
+              icon={<PrintIcon />}
             />
           )}
         </Box>

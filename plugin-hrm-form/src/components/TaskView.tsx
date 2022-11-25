@@ -57,7 +57,7 @@ const TaskView: React.FC<Props> = props => {
   React.useEffect(() => {
     const setHelpline = async () => {
       if (task && !isStandaloneITask(task)) {
-        const helplineToSave = await getHelplineToSave(task, contactlessTask || {});
+        const helplineToSave = await getHelplineToSave(task, contactlessTask || { channel: 'web' });
         if (helpline !== helplineToSave) {
           updateHelpline(task.taskSid, helplineToSave);
         }

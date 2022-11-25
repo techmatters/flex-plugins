@@ -2,9 +2,12 @@
   {
     "name": "fileName",
     "type": "file-upload",
-    "label": "Document",
+    "label": "Document/Report URLs Sheet",
     "description": "Accepted file formats: Word, PDFs, or JPGs.\nFile size not to exceed 5MB",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "comments",

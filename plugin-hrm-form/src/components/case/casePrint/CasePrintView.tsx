@@ -2,10 +2,10 @@
 /* eslint-disable react/jsx-max-depth */
 import React, { useState, useEffect } from 'react';
 import { Page, Document, View, PDFViewer } from '@react-pdf/renderer';
-import { Template, Strings } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 import { ButtonBase, CircularProgress } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
-import { DefinitionVersion, FormDefinition, callTypes } from 'hrm-form-definitions';
+import { DefinitionVersion, callTypes } from 'hrm-form-definitions';
 
 import { getConfig } from '../../../HrmFormPlugin';
 import CasePrintSection from './CasePrintSection';

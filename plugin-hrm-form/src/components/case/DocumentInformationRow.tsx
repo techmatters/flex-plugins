@@ -44,7 +44,7 @@ const DocumentInformationRow: React.FC<OwnProps> = ({ documentEntry, onClickView
         <Template code="Case-DocumentComments" />
       </HiddenText>
       <TimelineText>{documentEntry.document.comments}</TimelineText>
-      <Box marginLeft="auto" marginRight="10px">
+      <Box marginLeft="auto">
         <ViewButton onClick={onClickView} data-testid="Case-InformationRow-ViewButton">
           <Template code="Case-ViewButton" />
         </ViewButton>

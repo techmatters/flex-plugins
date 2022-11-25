@@ -1,11 +1,10 @@
 import React from 'react';
-import styled from 'react-emotion';
+import { styled } from '@twilio/flex-ui';
 import { withStyles } from '@material-ui/core';
-import AttachFile from '@material-ui/icons/AttachFile';
-import CheckCircle from '@material-ui/icons/CheckCircle';
-import FileCopyOutlined from '@material-ui/icons/FileCopyOutlined';
+import { AttachFile, CheckCircle, FileCopyOutlined, OpenInNew } from '@material-ui/icons';
 
 import { FontOpenSans, StyledNextStepButton } from '../HrmStyles';
+import HrmTheme from '../HrmTheme';
 
 export const CSAMReportContainer = styled('div')`
   display: flex;
@@ -69,7 +68,7 @@ export const ReportCodeText = styled(FontOpenSans)`
 ReportCodeText.displayName = 'ReportCodeText';
 
 export const ButtonText = styled(FontOpenSans)`
-  color: ${props => props.theme.colors.defaultButtonColor};
+  color: ${HrmTheme.colors.defaultButtonColor};
   font-size: 13px;
   font-weight: 700;
   line-height: 24px;
@@ -78,7 +77,7 @@ export const ButtonText = styled(FontOpenSans)`
 export const CSAMAttachmentText = styled(FontOpenSans)`
   font-style: italic;
   font-size: 13px;
-  color: ${props => props.theme.colors.defaultButtonColor};
+  color: ${HrmTheme.colors.defaultButtonColor};
 `;
 CSAMAttachmentText.displayName = 'CSAMAttachmentText';
 
@@ -113,3 +112,13 @@ StyledCheckCircle.displayName = 'StyledCheckCircle';
 
 export const StyledFileCopyOutlined = styleCopyCodeIcon(FileCopyOutlined);
 StyledFileCopyOutlined.displayName = 'StyledFileCopyOutlined';
+
+const StyledSmallIcon = withStyles({
+  root: {
+    width: '17px',
+    height: '17px',
+  },
+});
+
+export const OpenInNewIcon = StyledSmallIcon(OpenInNew);
+OpenInNewIcon.displayName = 'OpenInNewIcon';

@@ -8,8 +8,8 @@ import { Tooltip } from '@material-ui/core';
  */
 export const getTag = category =>
   category.length > 17 && !category.toUpperCase().includes('UNSPECIFIED/OTHER')
-    ? `${category.substr(0, 15).trim()}...`
-    : category.substr(0, 17).trim();
+    ? `${category.substring(0, 15).trim()}...`
+    : category.substring(0, 17).trim();
 
 /**
  * Takes a render function (to render the children) and the category and returns

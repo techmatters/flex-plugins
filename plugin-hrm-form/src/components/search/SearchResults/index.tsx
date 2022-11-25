@@ -225,7 +225,14 @@ const SearchResults: React.FC<Props> = ({
                   )}
                 </StyledCount>
                 <StyledFormControlLabel
-                  control={<StyledSwitch checked={!onlyDataContacts} onChange={handleToggleNonDataContact} />}
+                  control={
+                    <StyledSwitch
+                      color="default"
+                      size="small"
+                      checked={!onlyDataContacts}
+                      onChange={handleToggleNonDataContact}
+                    />
+                  }
                   label={
                     <SwitchLabel>
                       <Template code="SearchResultsIndex-NonDataContacts" />
@@ -266,7 +273,14 @@ const SearchResults: React.FC<Props> = ({
                   )}{' '}
                 </StyledCount>
                 <StyledFormControlLabel
-                  control={<StyledSwitch checked={closedCases} onChange={handleToggleClosedCases} />}
+                  control={
+                    <StyledSwitch
+                      color="default"
+                      size="small"
+                      checked={closedCases}
+                      onChange={handleToggleClosedCases}
+                    />
+                  }
                   label={
                     <SwitchLabel>
                       <Template code="SearchResultsIndex-ClosedCases" />

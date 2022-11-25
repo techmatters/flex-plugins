@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
-import { format } from 'date-fns';
+import { format, isEqual } from 'date-fns';
 import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
-import { Flex } from '../../styles/HrmStyles';
-import { isS3StoredTranscript, isTwilioStoredMedia } from '../../types/types';
+import { Flex, Row } from '../../styles/HrmStyles';
+import { isS3StoredTranscript, isTwilioStoredMedia, SearchContact } from '../../types/types';
 import {
   DetailsContainer,
   NameText,
@@ -71,7 +71,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   if (!savedContact || !definitionVersion) return null;
 
   // Object destructuring on contact
-  const { overview, details, csamReports } = savedContact;
+  const { overview, details, csamReports } = savedContact as SearchContact;
   const {
     counselor,
     dateTime,
@@ -82,7 +82,30 @@ const ContactDetailsHome: React.FC<Props> = function ({
     conversationDuration,
     categories,
     createdBy,
+    updatedAt,
+    updatedBy,
   } = overview;
+
+  const auditMessage = (timestampText: string, workerSid: string, templateKey: string) => {
+    if (timestampText && workerSid) {
+      const timestamp = new Date(timestampText);
+      const formattedDateStandard = `${format(timestamp, 'M/dd/yyyy')}`;
+      const formattedTimeStandard = `${format(timestamp, 'h:mm a')}`;
+      const counselorName = counselorsHash[workerSid];
+      return (
+        <ContactAddedFont style={{ marginRight: 20 }} data-testid={templateKey}>
+          <Template
+            code={templateKey}
+            date={formattedDateStandard}
+            time={formattedTimeStandard}
+            counsellor={counselorName}
+          />
+        </ContactAddedFont>
+      );
+    }
+    return null;
+  };
+
   // Permission to edit is based the counselor who created the contact - identified by Twilio worker ID
   const createdByTwilioWorkerId = savedContact?.overview.counselor;
   const { can } = getPermissionsForContact(createdByTwilioWorkerId);
@@ -94,11 +117,10 @@ const ContactDetailsHome: React.FC<Props> = function ({
     channel === 'default'
       ? mapChannelForInsights(details.contactlessTask.channel.toString())
       : mapChannelForInsights(channel);
-  const formattedDateStandard = `${format(new Date(dateTime), 'M/dd/yyyy')}`;
-  const formattedTimeStandard = `${format(new Date(dateTime), 'h:mm a')}`;
+  const addedDate = new Date(dateTime);
 
-  const formattedDate = `${format(new Date(dateTime), 'MMM dd, yyyy')}`;
-  const formattedTime = `${format(new Date(dateTime), 'h:mm aaaaa')}m`;
+  const formattedDate = `${format(addedDate, 'MMM dd, yyyy')}`;
+  const formattedTime = `${format(addedDate, 'h:mm aaaaa')}m`;
 
   const formattedDuration = formatDuration(conversationDuration);
 
@@ -116,7 +138,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
   } = ContactDetailsSections;
   const addedBy = counselorsHash[createdBy];
   const counselorName = counselorsHash[counselor];
-
   const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(context, section);
   const navigate = (route: ContactDetailsRoute) => createContactDraft(savedContact.contactId, route);
 
@@ -161,14 +182,11 @@ const ContactDetailsHome: React.FC<Props> = function ({
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
       <NameText>{childOrUnknown}</NameText>
-      <ContactAddedFont style={{ marginRight: 20 }} data-testid="ContactDetails-ActionHeaderAdded">
-        <Template
-          code="ContactDetails-ActionHeaderAdded"
-          date={formattedDateStandard}
-          time={formattedTimeStandard}
-          counsellor={addedBy}
-        />
-      </ContactAddedFont>
+
+      {auditMessage(dateTime, createdBy, 'ContactDetails-ActionHeaderAdded')}
+
+      {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
+
       <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
         expanded={detailsExpanded[GENERAL_DETAILS]}

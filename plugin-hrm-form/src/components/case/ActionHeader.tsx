@@ -2,6 +2,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { Close } from '@material-ui/icons';
+import { isEqual } from 'date-fns';
 
 import { Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
 import { CaseActionTitle, CaseActionDetailFont } from '../../styles/case';
@@ -14,6 +15,8 @@ type OwnProps = {
   updated?: Date;
   updatingCounsellor?: string;
   includeTime?: boolean;
+  space?: string;
+  codeTemplate?: string;
 };
 
 type Props = OwnProps;
@@ -25,8 +28,11 @@ const ActionHeader: React.FC<Props> = ({
   addingCounsellor,
   updated,
   updatingCounsellor,
+  space,
+  codeTemplate,
 }) => {
   // @ts-ignore
+
   return (
     <>
       <Row style={{ width: '100%' }}>
@@ -45,10 +51,11 @@ const ActionHeader: React.FC<Props> = ({
         {added && (
           <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderAdded">
             <Template
-              code="Case-ActionHeaderAdded"
+              code={codeTemplate ? codeTemplate : 'Case-ActionHeaderAdded'}
               date={added.toLocaleDateString()}
               time={added.toLocaleTimeString(undefined, { minute: '2-digit', hour: '2-digit' })}
               counsellor={addingCounsellor}
+              space={space}
             />
           </CaseActionDetailFont>
         )}
@@ -58,7 +65,7 @@ const ActionHeader: React.FC<Props> = ({
           </CaseActionDetailFont>
         )}
       </Row>
-      {updated && (
+      {updated && !isEqual(updated, added) && (
         <Row style={{ width: '100%' }}>
           <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderUpdated">
             <Template

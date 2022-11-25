@@ -17,7 +17,7 @@ import {
   HeaderContainer,
 } from '../../styles/HrmStyles';
 
-type OwnProps = { selectedTaskSid: string };
+type OwnProps = { selectedTaskSid?: string };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
@@ -64,8 +64,6 @@ const mapStateToProps = (state: RootState) => ({
   offlineContactTask: state[namespace][contactFormsBase].tasks[offlineContactTaskSid],
 });
 
-const mapDispatchToProps = {};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(mapStateToProps);
 
 export default connector(OfflineContactTask);

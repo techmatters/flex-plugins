@@ -9,6 +9,7 @@ import { reduce as QueuesStatusReducer } from './queuesStatus/reducer';
 import { reduce as ConfigurationReducer } from './configuration/reducer';
 import { reduce as RoutingReducer } from './routing/reducer';
 import { reduce as CSAMReportReducer } from './csam-report/reducer';
+// import { reduce as CSAMCLCReportReducer } from './csam-clc-report/reducer';
 import { reduce as DualWriteReducer } from './dualWrite/reducer';
 import { CaseState } from './case/types';
 
@@ -23,6 +24,7 @@ export const configurationBase = 'configuration';
 export const routingBase = 'routing';
 export const csamReportBase = 'csam-report';
 export const dualWriteBase = 'dualWrite';
+// export const csamClcReportBase = 'csam-clc-report';
 
 const reducers = {
   [contactFormsBase]: ContactStateReducer,
@@ -33,14 +35,17 @@ const reducers = {
   [routingBase]: RoutingReducer,
   [csamReportBase]: CSAMReportReducer,
   [dualWriteBase]: DualWriteReducer,
-  // [connectedCaseBase] - this is going to be combined manually, rather than using 'combineReducers', so isn't in this map
+  /*
+   * [csamClcReportBase]: CSAMCLCReportReducer,
+   * [connectedCaseBase] - this is going to be combined manually, rather than using 'combineReducers', so isn't in this map
+   */
 };
 type HrmState = {
   [P in keyof typeof reducers]: ReturnType<typeof reducers[P]>;
 } & { [connectedCaseBase]: CaseState };
 
 export type RootState = FlexState & { [namespace]: HrmState };
-const combinedReducers: (state: HrmState, action) => HrmState = combineReducers(reducers);
+const combinedReducers = combineReducers(reducers);
 
 // Combine the reducers
 const reducer = (state: HrmState, action): HrmState => {

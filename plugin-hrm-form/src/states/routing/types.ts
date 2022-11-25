@@ -105,7 +105,7 @@ export function isAppRouteWithCase(appRoute: AppRoutes): appRoute is AppRoutesWi
 
 export type CSAMReportRoute = {
   route: 'csam-report';
-  subroute: 'form' | 'loading' | 'status';
+  subroute: 'child-form' | 'counsellor-form' | 'loading' | 'child-status' | 'counsellor-status';
   previousRoute: AppRoutes;
 };
 

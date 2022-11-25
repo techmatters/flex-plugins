@@ -5,7 +5,7 @@ import { DefinitionVersionId, loadDefinition, DefinitionVersion } from 'hrm-form
 
 import fetchProtectedApi from './fetchProtectedApi';
 import { getConfig } from '../HrmFormPlugin';
-import type { CSAMReportForm } from '../states/csam-report/types';
+import type { CounselorCSAMReportForm } from '../states/csam-report/types';
 
 type PopulateCounselorsReturn = { sid: string; fullName: string }[];
 
@@ -169,7 +169,15 @@ export const getFileDownloadUrl = async (fileNameAtAws: string, fileName: string
  * Gets a file download url from S3, using the object url as constructed by AWS
  */
 export const getFileDownloadUrlFromUrl = async (objectUrl: string, fileName: string = undefined) => {
-  const [bucketName, fileNameAtAws] = objectUrl.replace('https://', '').split('.s3.amazonaws.com/');
+  let [bucketName, fileNameAtAws] = objectUrl.replace('https://', '').split('.s3.amazonaws.com/');
+
+  // TODO: this allows localstack which uses path style s3 urls, I don't like it being quite so specific, but it works for now.
+  if (!bucketName || !fileNameAtAws) {
+    let pathArray;
+    [bucketName, ...pathArray] = objectUrl.replace('http://localstack:4566/', '').split('/');
+    fileNameAtAws = pathArray.join('/');
+  }
+
   const body = { bucketName, fileNameAtAws, fileName };
   const response = await fetchProtectedApi('/getFileDownloadUrl', body);
   return response;
@@ -187,7 +195,7 @@ export const getFileUploadUrl = async (fileName: string, mimeType: string) => {
 /**
  * Send a CSAM report to IWF
  */
-export const reportToIWF = async (form: CSAMReportForm) => {
+export const reportToIWF = async (form: CounselorCSAMReportForm) => {
   const body = {
     Reported_URL: form.webAddress,
     Reporter_Description: form.description,
