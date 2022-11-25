@@ -336,14 +336,18 @@ export const SectionTitleButton = styled(ButtonBase)`
 `;
 SectionTitleButton.displayName = 'SectionTitleButton';
 
-export const SectionActionButton = styled('button')`
+type SectionActionButton = {
+  padding?: string;
+};
+
+export const SectionActionButton = styled('button')<SectionActionButton>`
   display: flex;
   border: none;
   background-color: transparent;
   font-size: 13px;
   font-weight: 600;
   color: #1976d2;
-  padding: '0 6px';
+  padding: ${props => (props.padding ? props.padding : '0 6px')};
   font-family: 'Open Sans';
   cursor: pointer;
   :focus {
@@ -391,6 +395,7 @@ export const ContactAddedFont = styled(FontOpenSans)`
 `;
 ContactAddedFont.displayName = 'ContactAddedFont';
 
+// eslint-disable-next-line import/no-unused-modules
 export const sectionTitleFontStyle = `
   font-size: 12px;
   font-weight: 600;

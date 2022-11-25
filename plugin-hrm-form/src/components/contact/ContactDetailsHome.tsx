@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
@@ -60,6 +60,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const definitionVersion = definitionVersions[version];
 
   const { featureFlags, strings } = getConfig();
+  const [externalReport, setExternalReport] = useState(true);
 
   useEffect(
     () => () => {
@@ -157,6 +158,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
+
+  console.log('Case for Summary here', definitionVersion.tabbedForms.CaseInformationTab);
 
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
@@ -290,6 +293,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
               definition={e}
             />
           ))}
+          {externalReport && <SectionEntry externalReport={externalReport} />}
           {csamReportsAttached && (
             <SectionEntry
               key="CaseInformation-AttachedCSAMReports"
