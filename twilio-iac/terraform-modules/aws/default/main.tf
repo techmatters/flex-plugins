@@ -33,10 +33,12 @@ resource "aws_s3_bucket_public_access_block" "docs" {
   ignore_public_acls = true
   block_public_policy = true
   restrict_public_buckets = true
+  provider = aws.bucket
 }
 
 resource "aws_s3_bucket_cors_configuration" "docs" {
   bucket = aws_s3_bucket.docs.bucket
+  provider = aws.bucket
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "POST", "PUT"]
@@ -47,6 +49,7 @@ resource "aws_s3_bucket_cors_configuration" "docs" {
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "docs" {
   bucket = aws_s3_bucket.docs.bucket
+  provider = aws.bucket
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm     = "AES256"
@@ -65,10 +68,12 @@ resource "aws_s3_bucket_public_access_block" "chat" {
   ignore_public_acls = false
   block_public_policy = false
   restrict_public_buckets = false
+  provider = aws.bucket
 }
 
 resource "aws_s3_bucket_cors_configuration" "chat" {
   bucket = aws_s3_bucket.chat.bucket
+  provider = aws.bucket
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "POST", "PUT"]
@@ -79,6 +84,7 @@ resource "aws_s3_bucket_cors_configuration" "chat" {
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "chat" {
   bucket = aws_s3_bucket.chat.bucket
+  provider = aws.bucket
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm     = "AES256"

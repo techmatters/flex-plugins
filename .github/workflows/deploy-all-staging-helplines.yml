@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        short_helplines: ['CA', 'CL', 'PH', 'ET', 'JM', 'MW', 'IN', 'RO', 'BR', 'ZA', 'CO', 'TH', 'UK', 'UKR', 'ZM', 'ZW', 'PL']
+        short_helplines: ['CA', 'CL', 'PH', 'ET', 'JM', 'MW', 'IN', 'RO', 'BR', 'ZA', 'CO', 'TH', 'UK', 'UKR', 'ZM', 'ZW', 'PL', 'MT']
         environment_code: [STG]
     uses: ./.github/workflows/custom_helpline.yml
     secrets: inherit
