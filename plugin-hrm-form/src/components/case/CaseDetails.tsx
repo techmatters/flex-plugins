@@ -92,7 +92,7 @@ const CaseDetails: React.FC<Props> = ({
           </CaseSectionFont>
         </Box>
         {editButton && (
-          <Box style={{ display: 'inline-block' }} alignSelf="flex-end" marginTop="-20px" marginRight="50px">
+          <Box style={{ display: 'inline-block' }} alignSelf="flex-end" marginTop="-20px" marginRight="35px">
             <ViewButton onClick={editCaseSummary} data-testid="Case-EditButton">
               <Template code="Case-EditButton" />
             </ViewButton>

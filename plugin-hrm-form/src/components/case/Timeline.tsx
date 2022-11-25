@@ -115,8 +115,8 @@ const Timeline: React.FC<Props> = props => {
                   </TimelineCallTypeIcon>
                 )}
                 <TimelineText>{activity?.text}</TimelineText>
-                <Box marginLeft="auto" marginRight="5px">
-                  <Box marginLeft="auto" marginRight="5px">
+                <Box marginLeft="auto">
+                  <Box marginLeft="auto">
                     <ViewButton onClick={() => handleViewClick(activity)}>
                       <Template code="Case-ViewButton" />
                     </ViewButton>
