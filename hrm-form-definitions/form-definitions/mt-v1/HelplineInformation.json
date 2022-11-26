@@ -1,0 +1,15 @@
+{
+    "label": "Helpline",
+    "helplines": [
+      {
+        "label": "Kellimni",
+        "value": "Kellimni",
+        "default": true,
+        "manager": {
+          "name": "Rachel Scicluna",
+          "phone": "+0000000000",
+          "email": "rachel@kellimni.org"
+        }
+      }
+    ]
+  }
