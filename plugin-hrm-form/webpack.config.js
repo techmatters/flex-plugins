@@ -1,4 +1,4 @@
-const webpack = require('webpack')
+const DotEnvWebpack = require('dotenv-webpack');
 
 module.exports = (config, { isProd, isDev, isTest }) => {
   /**
@@ -6,12 +6,15 @@ module.exports = (config, { isProd, isDev, isTest }) => {
    * Consult https://webpack.js.org/configuration for more information
    */
 
-  config.plugins.push(
-    new webpack.EnvironmentPlugin([
-      'REACT_HRM_BASE_URL',
-      'REACT_SERVERLESS_BASE_URL',
-    ]),
-  );
-
+  const envPath = isDev ? '.env.dev' : '.env.prod';
+  if (envPath) {
+    config.plugins.push(
+      new DotEnvWebpack({
+        path: envPath,
+        // Safe to load up system env vars because it only writes those that are explicitly referenced in code anyway, see https://github.com/mrsteele/dotenv-webpack
+        systemvars: true,
+      }),
+    );
+  }
   return config;
 };
