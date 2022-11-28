@@ -62,7 +62,7 @@
     {
       "name": "recentIncident",
       "label": "When did the most recent incident occur",
-      "type": "input"
+      "type": "date-input"
     },
     {
       "name": "typeOfAbuse",
