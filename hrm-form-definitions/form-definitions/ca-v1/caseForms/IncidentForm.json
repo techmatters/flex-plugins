@@ -15,7 +15,7 @@
     },
     {
       "name": "isChildHurt",
-      "label": "Is the person hurt?",
+      "label": "Is the person of concern hurt?",
       "type": "select",
       "options": [
         {
@@ -38,7 +38,7 @@
     },
     {
         "name": "isChildInImmediateDanger",
-        "label": "Is the person in immediate danger?",
+        "label": "Is the person of concern in immediate danger?",
         "type": "select",
         "options": [
           {
@@ -88,6 +88,14 @@
         {
             "value": "Neglect",
             "label": "Neglect"
+        },
+        {
+            "value": "Suicidal Ideation",
+            "label": "Suicidal Ideation"
+        },
+        {
+            "value": "Self-Harm",
+            "label": "Self-Harm"
         },
         {
             "value": "Other",
