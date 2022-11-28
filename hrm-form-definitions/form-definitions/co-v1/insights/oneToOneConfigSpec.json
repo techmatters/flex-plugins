@@ -7,37 +7,9 @@
           "conversations",
           "initiated_by"
         ]
-      },
-      {
-        "name": "gender",
-        "insights": [
-          "conversations",
-          "conversation_attribute_4"
-        ]
-      },
-      {
-        "name": "age",
-        "insights": [
-          "conversations",
-          "conversation_attribute_3"
-        ]
       }
     ],
     "childInformation": [
-      {
-        "name": "gender",
-        "insights": [
-          "customers",
-          "customer_attribute_2"
-        ]
-      },
-      {
-        "name": "age",
-        "insights": [
-          "customers",
-          "customer_attribute_2"
-        ]
-      },
       {
         "name": "ethnicity",
         "insights": [
@@ -104,14 +76,6 @@
           "customer_attribute_3"
         ],
         "type": "mixed-checkbox"
-      },
-      {
-        "name": "LGBTQI+",
-        "insights": [
-          "conversations",
-          "conversation_measure_5"
-        ],
-        "type": "mixed-checkbox"
       }
     ],
     "caseInformation": [
@@ -124,7 +88,7 @@
         "type": "mixed-checkbox"
       },
       {
-        "name": "actionTaken",
+        "name": "interventionLevel",
         "insights": [
           "conversations",
           "initiative"
@@ -138,20 +102,32 @@
         ]
       },
       {
-        "name": "didTheChildFeelWeSolvedTheirProblem",
+        "name": "wouldRepeat",
         "insights": [
           "conversations",
           "productive"
-        ],
-        "type": "mixed-checkbox"
+        ]
       },
       {
-        "name": "wouldTheChildRecommendUsToAFriend",
+        "name": "wouldRecommend",
         "insights": [
           "conversations",
           "conversation_attribute_6"
-        ],
-        "type": "mixed-checkbox"
+        ]
+      },
+      {
+        "name": "didUserFeelSupported",
+        "insights": [
+          "conversations",
+          "followed_by"
+        ]
+      },
+      {
+        "name": "wasHelpful",
+        "insights": [
+          "conversations",
+          "preceded_by"
+        ]
       }
     ]
   },
@@ -171,20 +147,6 @@
         "insights": [
           "customers",
           "organization"
-        ]
-      },
-      {
-        "name": "gender",
-        "insights": [
-          "conversations",
-          "followed_by"
-        ]
-      },
-      {
-        "name": "age",
-        "insights": [
-          "conversations",
-          "preceded_by"
         ]
       }
     ],
