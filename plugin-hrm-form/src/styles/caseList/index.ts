@@ -6,7 +6,7 @@ import HrmTheme from '../HrmTheme';
 
 export const CaseListContainer = styled(Absolute)`
   height: 100%;
-  width: 100%;
+  width: 1280px;
   background-color: #f6f6f6;
 `;
 CaseListContainer.displayName = 'CaseListContainer';
@@ -64,7 +64,7 @@ export const CLHeaderTableCell = withStyles(theme => ({
     paddingTop: 8,
   },
 }))(TableCell);
-CLHeaderTableCell.displayName = 'CLTableCell';
+CLHeaderTableCell.displayName = 'CLHeaderTableCell';
 
 export const CLTableCell = withStyles({
   root: {
