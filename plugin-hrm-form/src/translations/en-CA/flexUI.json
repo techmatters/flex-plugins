@@ -26,8 +26,25 @@
   "Case-EditIncident": "Edit",
   "Case-EditDocument": "Edit",
   "Case-ViewIncident": "Edit",
-  "BottomBar-SaveIncident": "Save".
+  "BottomBar-SaveIncident": "Save",
   "Case-AddHouseholdSection": "Add",
   "Case-AddPerpetratorSection": "Add",
-  "Case-AddIncidentSection": "Add"
+  "Case-AddIncidentSection": "Add",
+  "BottomBar-AddContactToNewCase": "Create Emergency Referral",
+  "SectionName-CaseSummary": "Nature of Crisis and Safety Plan",
+  "BottomBar-CancelNewCaseAndClose": "Cancel",
+  "Case-AddCaseSummaryHere": "Add details here...",
+  "NoCaseSummary": "",
+  "CaseSummary-None": "",
+  "Case-CaseSummarySection": "Nature of Crisis and Safety Plan",
+  "Case-CaseOverviewLabel": "Overview",
+  "Case-CaseNumber": "Emergency Referral #",
+  "Case-EditCaseSummary": "Edit Overview",
+  "Case-CaseDetailsStatusLabel": "Status",
+  "Case-CaseStatus": "Status",
+  "CaseList-Cases": "Emergency Referrals",
+  "CaseList-NoCases": "No cases found.",
+  "CaseList-Filters-CaseCount-Singular": "{{count}} records",
+  "CaseList-Filters-CaseCount-Plural": "{{count}} records",
+  "CaseList-THCase": "Number"
 }
