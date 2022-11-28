@@ -18,14 +18,9 @@
     }
   },
   {
-    "name": "otherAdults",
-    "label": "Other adults in the home",
-    "type": "input"
-  },
-  {
-    "name": "otherChildren",
-    "label": "Other children in the home",
-    "type": "input"
+    "name": "otherMinorAtRisk",
+    "label": "Minor at risk?",
+    "type": "mixed-checkbox"
   },
   {
     "name": "phone",
