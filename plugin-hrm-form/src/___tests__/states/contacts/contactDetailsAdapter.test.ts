@@ -3,7 +3,7 @@ import {
   retrieveCategories,
   searchContactToHrmServiceContact,
 } from '../../../states/contacts/contactDetailsAdapter';
-import { SearchContact } from '../../../types/types';
+import { SearchAPIContact } from '../../../types/types';
 
 describe('retrieveCategories', () => {
   test('falsy input, empty object output', () => expect(retrieveCategories(null)).toStrictEqual({}));
@@ -39,7 +39,7 @@ describe('retrieveCategories', () => {
 });
 
 describe('hrmServiceContactToSearchContact', () => {
-  const emptyOverview: SearchContact['overview'] = {
+  const emptyOverview: SearchAPIContact['overview'] = {
     helpline: undefined,
     dateTime: undefined,
     name: 'undefined undefined',
@@ -253,7 +253,7 @@ describe('hrmServiceContactToSearchContact', () => {
 });
 
 describe('searchContactToHrmServiceContact', () => {
-  const baseSearchContact: SearchContact = {
+  const baseSearchContact: SearchAPIContact = {
     contactId: '1337',
     overview: {
       taskId: 'A task',

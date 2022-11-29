@@ -120,7 +120,7 @@ export type ContactRawJson = {
 };
 
 // Information about a single contact, as expected from search contacts endpoint (we might want to reuse this type in backend) - (is this a correct placement for this?)
-export type SearchContact = {
+export type SearchAPIContact = {
   contactId: string;
   overview: {
     helpline: string;
@@ -142,7 +142,7 @@ export type SearchContact = {
   csamReports: CSAMReportEntry[];
 };
 
-export type SearchUIContact = SearchContact & { counselorName: string };
+export type SearchUIContact = SearchAPIContact & { counselorName: string };
 
 export type SearchContactResult = {
   count: number;

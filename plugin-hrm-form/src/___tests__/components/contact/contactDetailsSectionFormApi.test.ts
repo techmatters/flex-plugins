@@ -7,7 +7,7 @@ import {
   ContactFormValues,
   IssueCategorizationSectionFormApi,
 } from '../../../components/contact/contactDetailsSectionFormApi';
-import { SearchContact } from '../../../types/types';
+import { SearchAPIContact } from '../../../types/types';
 import details from '../../../components/case/casePrint/styles/details';
 
 let definition: DefinitionVersion;
@@ -43,7 +43,7 @@ beforeAll(async () => {
   };
 });
 
-const emptySearchContact: SearchContact = {
+const emptySearchContact: SearchAPIContact = {
   contactId: '0',
   overview: {
     helpline: undefined,

@@ -22,9 +22,9 @@ import {
   updateDraft,
   updateDraftReducer,
 } from '../../../states/contacts/existingContacts';
-import { SearchContact } from '../../../types/types';
+import { SearchAPIContact } from '../../../types/types';
 
-const baseContact: SearchContact = {
+const baseContact: SearchAPIContact = {
   contactId: '1337',
   overview: {
     helpline: undefined,

@@ -9,7 +9,7 @@ import CasePreview from '../CasePreview';
 import {
   SearchContactResult,
   SearchCaseResult,
-  SearchContact,
+  SearchAPIContact,
   Case,
   CustomITask,
   standaloneTaskSid,
@@ -55,7 +55,7 @@ type OwnProps = {
   toggleNonDataContacts: () => void;
   toggleClosedCases: () => void;
   handleBack: () => void;
-  handleViewDetails: (contact: SearchContact) => void;
+  handleViewDetails: (contact: SearchAPIContact) => void;
   changeSearchPage: (SearchPagesType) => void;
   setConnectedCase: (currentCase: Case, taskSid: string) => void;
   currentPage: SearchPagesType;

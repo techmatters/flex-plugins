@@ -4,7 +4,7 @@ import { ITask } from '@twilio/flex-ui';
 
 import * as t from './types';
 import { ConfigurationState } from '../configuration/reducer';
-import { SearchContact } from '../../types/types';
+import { SearchAPIContact } from '../../types/types';
 import { searchContacts as searchContactsApiCall } from '../../services/ContactService';
 import { searchCases as searchCasesApiCall } from '../../services/CaseService';
 import { searchAPIContactToSearchUIContact } from './helpers';
@@ -95,7 +95,7 @@ export const changeSearchPage = (taskId: string) => (page: t.SearchPagesType): t
   taskId,
 });
 
-export const viewContactDetails = (taskId: string) => (contact: SearchContact): t.SearchActionType => ({
+export const viewContactDetails = (taskId: string) => (contact: SearchAPIContact): t.SearchActionType => ({
   type: t.VIEW_CONTACT_DETAILS,
   contact,
   taskId,

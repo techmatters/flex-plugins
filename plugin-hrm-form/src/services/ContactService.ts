@@ -24,7 +24,7 @@ import {
   InformationObject,
   isOfflineContactTask,
   isTwilioTask,
-  SearchContact,
+  SearchAPIContact,
   SearchContactResult,
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
@@ -55,7 +55,7 @@ export async function searchContacts(
   offset,
 ): Promise<{
   count: number;
-  contacts: SearchContact[];
+  contacts: SearchAPIContact[];
 }> {
   const queryParams = getQueryParams({ limit, offset });
 

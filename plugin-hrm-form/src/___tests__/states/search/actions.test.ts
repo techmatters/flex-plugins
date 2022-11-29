@@ -4,7 +4,7 @@ import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import * as t from '../../../states/search/types';
 import * as actions from '../../../states/search/actions';
 import { ContactDetailsSections } from '../../../components/common/ContactDetails';
-import { SearchContact } from '../../../types/types';
+import { SearchAPIContact } from '../../../types/types';
 import { searchContacts } from '../../../services/ContactService';
 import { searchCases } from '../../../services/CaseService';
 import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../../components/search/SearchResults';
@@ -59,7 +59,7 @@ describe('test action creators', () => {
 
   test('viewContactDetails', () => {
     const contact: unknown = { contactId: 'fake contact', overview: {}, details: {}, counselor: '', tags: [] };
-    const typedContact = contact as SearchContact; // type casting to avoid writing an entire SearchContact
+    const typedContact = contact as SearchAPIContact; // type casting to avoid writing an entire SearchContact
 
     expect(actions.viewContactDetails(taskId)(typedContact)).toStrictEqual({
       type: t.VIEW_CONTACT_DETAILS,

@@ -1,4 +1,4 @@
-import { SearchContact, SearchCaseResult } from '../../types/types';
+import { SearchAPIContact, SearchCaseResult } from '../../types/types';
 import { searchAPIContactToSearchUIContact } from './helpers';
 // Action types
 export const HANDLE_SEARCH_FORM_CHANGE = 'HANDLE_SEARCH_FORM_CHANGE';
@@ -81,7 +81,7 @@ type SearchCasesFailureAction = { type: typeof SEARCH_CASES_FAILURE; error: any;
 // maybe we can migrate this to be handled by the routing instead later on?
 type SearchChangePageAction = { type: typeof CHANGE_SEARCH_PAGE; page: SearchPagesType; taskId: string };
 
-type SearchViewContactAction = { type: typeof VIEW_CONTACT_DETAILS; contact: SearchContact; taskId: string };
+type SearchViewContactAction = { type: typeof VIEW_CONTACT_DETAILS; contact: SearchAPIContact; taskId: string };
 
 type ViewPreviousContactsAction = {
   type: typeof VIEW_PREVIOUS_CONTACTS;
