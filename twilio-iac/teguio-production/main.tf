@@ -49,8 +49,8 @@ locals {
     "enable_contact_editing": true
   }
   twilio_channels = {
-    "facebook" = {"contact_identity" = "messenger:103538615719253" },
-    "web" = {"contact_identity" = "" }
+    "facebook" = {"contact_identity" = "messenger:103538615719253", "channel_type" ="facebook" },
+    "webchat" = {"contact_identity" = "", "channel_type" ="web"  }
   }
   custom_channels=["twitter","instagram"]
   strings= jsondecode(file("${path.module}/../translations/${local.helpline_language}/strings.json"))
@@ -112,6 +112,7 @@ module twilioChannel {
 
     })
   channel_contact_identity = each.value.contact_identity
+  channel_type = each.value.channel_type
   pre_survey_bot_sid = module.custom_chatbots.pre_survey_bot_es_sid
   target_task_name = local.target_task_name
   channel_name = "${each.key}"
