@@ -80,7 +80,6 @@ const SearchResults: React.FC<Props> = ({
   changeSearchPage,
   setConnectedCase,
   currentPage,
-  showConnectIcon,
   counselorsHash,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -245,7 +244,6 @@ const SearchResults: React.FC<Props> = ({
                 contacts.length > 0 &&
                 contacts.map(contact => (
                   <ContactPreview
-                    showConnectIcon={showConnectIcon}
                     key={contact.contactId}
                     contact={contact}
                     handleViewDetails={() => handleViewDetails(contact)}
@@ -321,12 +319,10 @@ const mapStateToProps = (state, ownProps) => {
   const searchContactsState = state[namespace][searchContactsBase];
   const taskId = ownProps.task.taskSid;
   const taskSearchState = searchContactsState.tasks[taskId];
-  const isStandaloneSearch = taskId === standaloneTaskSid;
   const { counselors } = state[namespace][configurationBase];
 
   return {
     currentPage: taskSearchState.currentPage,
-    showConnectIcon: !isStandaloneSearch,
     counselorsHash: counselors.hash,
   };
 };

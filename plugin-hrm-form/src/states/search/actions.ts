@@ -4,11 +4,10 @@ import { ITask } from '@twilio/flex-ui';
 
 import * as t from './types';
 import { ConfigurationState } from '../configuration/reducer';
-import { Case, SearchContact } from '../../types/types';
+import { SearchContact } from '../../types/types';
 import { searchContacts as searchContactsApiCall } from '../../services/ContactService';
 import { searchCases as searchCasesApiCall } from '../../services/CaseService';
-import { ContactDetailsSectionsType } from '../../components/common/ContactDetails';
-import { addDetails } from './helpers';
+import { searchAPIContactToSearchUIContact } from './helpers';
 import { updateDefinitionVersion } from '../configuration/actions';
 import { getContactsMissingVersions, getCasesMissingVersions } from '../../utils/definitionVersions';
 import { getNumberFromTask } from '../../utils/task';
@@ -37,7 +36,7 @@ export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => a
     dispatch({ type: t.SEARCH_CONTACTS_REQUEST, taskId });
 
     const searchResultRaw = await searchContactsApiCall(searchParams, limit, offset);
-    const contactsWithCounselorName = addDetails(counselorsHash, searchResultRaw.contacts);
+    const contactsWithCounselorName = searchAPIContactToSearchUIContact(counselorsHash, searchResultRaw.contacts);
     const searchResult = { ...searchResultRaw, contacts: contactsWithCounselorName };
 
     const definitions = await getContactsMissingVersions(searchResultRaw.contacts);

@@ -131,7 +131,7 @@ export type SearchContact = {
     categories: {};
     counselor: string;
     notes: string;
-    channel: string;
+    channel: ChannelTypes | 'default';
     conversationDuration: number;
     createdBy: string;
     taskId: string;
@@ -142,9 +142,11 @@ export type SearchContact = {
   csamReports: CSAMReportEntry[];
 };
 
+export type SearchUIContact = SearchContact & { counselorName: string };
+
 export type SearchContactResult = {
   count: number;
-  contacts: SearchContact[];
+  contacts: SearchUIContact[];
 };
 
 export type SearchCaseResult = {

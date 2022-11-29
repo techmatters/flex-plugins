@@ -49,7 +49,14 @@ export const unNestInformationObject = (
 ): TaskEntry['childInformation'] | TaskEntry['callerInformation'] =>
   def.reduce((acc, e) => ({ ...acc, [e.name]: unNestInformation(e, obj) }), {});
 
-export async function searchContacts(searchParams, limit, offset): Promise<SearchContactResult> {
+export async function searchContacts(
+  searchParams,
+  limit,
+  offset,
+): Promise<{
+  count: number;
+  contacts: SearchContact[];
+}> {
   const queryParams = getQueryParams({ limit, offset });
 
   const options = {
