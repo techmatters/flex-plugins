@@ -25,7 +25,7 @@ import * as contactsActions from '../../states/contacts/actions';
 import { isCounselorCSAMReportForm } from '../../states/csam-report/types';
 import { RootState, csamReportBase, namespace, routingBase, configurationBase } from '../../states';
 import { reportToIWF } from '../../services/ServerlessService';
-import { acknowledgeCSAMReport, createCSAMReport, deleteCSAMReport } from '../../services/CSAMReportService';
+import { acknowledgeCSAMReport, createCSAMReport } from '../../services/CSAMReportService';
 import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
