@@ -53,7 +53,7 @@ export type CSAMReportEntry = {
   csamReportId: string;
   id: number;
   reportType: 'counsellor-generated' | 'self-generated';
-  aknowledged: boolean;
+  acknowledged: boolean;
   contactId?: number;
 } & Omit<EntryInfo, 'id'>;
 

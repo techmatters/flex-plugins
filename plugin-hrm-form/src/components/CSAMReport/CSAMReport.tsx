@@ -25,7 +25,7 @@ import * as contactsActions from '../../states/contacts/actions';
 import { isCounselorCSAMReportForm } from '../../states/csam-report/types';
 import { RootState, csamReportBase, namespace, routingBase, configurationBase } from '../../states';
 import { reportToIWF } from '../../services/ServerlessService';
-import { aknowledgeCSAMReport, createCSAMReport, deleteCSAMReport } from '../../services/CSAMReportService';
+import { acknowledgeCSAMReport, createCSAMReport, deleteCSAMReport } from '../../services/CSAMReportService';
 import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
@@ -124,8 +124,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
   };
 
   const onValid = async form => {
-    let reportToAknowledge: CSAMReportEntry;
-
     try {
       if (routing.subroute === 'child-form') {
         changeRoute({ route: 'csam-report', subroute: 'loading', previousRoute }, taskSid);
@@ -133,14 +131,15 @@ export const CSAMReportScreen: React.FC<Props> = ({
           reportType: 'self-generated',
           twilioWorkerId: getConfig().workerSid,
         });
-        reportToAknowledge = storedReport;
+
+        const reportToAcknowledge: CSAMReportEntry = storedReport;
 
         /* ServerLess API will be called here */
 
-        /* If everything went fine, before moving to the next screen aknowledge the record in DB */
-        const aknowledged = await aknowledgeCSAMReport(reportToAknowledge.id);
+        /* If everything went fine, before moving to the next screen acknowledge the record in DB */
+        const acknowledged = await acknowledgeCSAMReport(reportToAcknowledge.id);
 
-        addCSAMReportEntry(storedReport, taskSid);
+        addCSAMReportEntry(acknowledged, taskSid);
         changeRoute({ route: 'csam-report', subroute: 'child-status', previousRoute }, taskSid);
       }
 
@@ -160,15 +159,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
     } catch (err) {
       console.error(err);
       window.alert(getConfig().strings['Error-Backend']);
-
-      try {
-        if (reportToAknowledge) {
-          // Clean up the DB (Do we even want this? Or just filtering the not-aknowledged is enough?)
-          await deleteCSAMReport(reportToAknowledge.id);
-        }
-      } catch (err) {
-        console.error('Error trying to delete CSAM report with id', reportToAknowledge.id, err);
-      }
 
       changeRoute(
         {

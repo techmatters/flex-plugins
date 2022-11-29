@@ -25,13 +25,13 @@ export const createCSAMReport = async (
   return fetchHrmApi('/csamReports', options);
 };
 
-export const aknowledgeCSAMReport = async (reportId: CSAMReportEntry['id']): Promise<CSAMReportEntry> => {
+export const acknowledgeCSAMReport = async (reportId: CSAMReportEntry['id']): Promise<CSAMReportEntry> => {
   const options = {
     method: 'PATCH',
     body: JSON.stringify({}),
   };
 
-  return fetchHrmApi(`/csamReports/${reportId}/aknowledge`, options);
+  return fetchHrmApi(`/csamReports/${reportId}/acknowledge`, options);
 };
 
 export const deleteCSAMReport = async (reportId: CSAMReportEntry['id']): Promise<CSAMReportEntry> => {
