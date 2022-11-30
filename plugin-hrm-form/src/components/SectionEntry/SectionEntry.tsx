@@ -3,11 +3,11 @@ import React from 'react';
 import { Grid } from '@material-ui/core';
 import type { FormItemDefinition, LayoutValue } from 'hrm-form-definitions';
 
-import { SectionDescriptionText, SectionValueText } from '../styles/search';
-import { formatValue } from './common/forms/helpers';
-import { presentValue } from '../utils/formatters';
-import DownloadFile from './common/forms/DownloadFile';
-import { getConfig } from '../HrmFormPlugin';
+import { SectionDescriptionText, SectionValueText } from '../../styles/search';
+import { formatValue } from '../common/forms/helpers';
+import { presentValue } from '../../utils/formatters';
+import DownloadFile from '../common/forms/DownloadFile';
+import { getConfig } from '../../HrmFormPlugin';
 
 type Props = {
   description: React.ReactNode | string;
