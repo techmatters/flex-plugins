@@ -1,4 +1,4 @@
-const DotEnvWebpack = require('dotenv-webpack');
+const DotenvFlow = require('dotenv-flow-webpack');
 
 module.exports = (config, { isProd, isDev, isTest }) => {
   /**
@@ -6,15 +6,11 @@ module.exports = (config, { isProd, isDev, isTest }) => {
    * Consult https://webpack.js.org/configuration for more information
    */
 
-  const envPath = isDev ? '.env.dev' : '.env.prod';
-  if (envPath) {
-    config.plugins.push(
-      new DotEnvWebpack({
-        path: envPath,
-        // Safe to load up system env vars because it only writes those that are explicitly referenced in code anyway, see https://github.com/mrsteele/dotenv-webpack
-        systemvars: true,
-      }),
-    );
-  }
+  config.plugins.push(
+    new DotenvFlow({
+      // eslint-disable-next-line camelcase
+      system_vars: true,
+    }),
+  );
   return config;
 };
