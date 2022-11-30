@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
-import { format, isEqual } from 'date-fns';
+import { format } from 'date-fns';
 import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
-import { Box, Flex, Row } from '../../styles/HrmStyles';
+import { Box, Flex } from '../../styles/HrmStyles';
 import { CSAMReportEntry, isS3StoredTranscript, isTwilioStoredMedia, SearchContact } from '../../types/types';
 import {
   DetailsContainer,
@@ -15,7 +15,7 @@ import {
   SectionActionButton,
 } from '../../styles/search';
 import ContactDetailsSection from './ContactDetailsSection';
-import SectionEntry from '../SectionEntry';
+import { SectionEntry } from '../SectionEntry';
 import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import { formatCategories, formatDuration, formatName, mapChannelForInsights } from '../../utils';

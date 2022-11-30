@@ -8,7 +8,7 @@ import ListIcon from '@material-ui/icons/List';
 import { Template } from '@twilio/flex-ui';
 import { CategoriesDefinition } from 'hrm-form-definitions';
 
-import Section from '../../Section';
+import Section from './Section';
 import {
   Container,
   CategoryTitle,

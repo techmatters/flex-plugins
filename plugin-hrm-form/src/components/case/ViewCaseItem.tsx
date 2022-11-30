@@ -8,7 +8,7 @@ import { DefinitionVersion, isNonSaveable } from 'hrm-form-definitions';
 import { BottomButtonBar, Box, Container, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseLayout, FullWidthFormTextContainer } from '../../styles/case';
 import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
-import SectionEntry from '../SectionEntry';
+import { SectionEntry } from '../SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { caseItemHistory, CaseState } from '../../states/case/types';
