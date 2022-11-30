@@ -15,6 +15,7 @@ import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../..
 type OwnProps = {
   channel: ChannelTypes | 'default';
   callType: CallTypes;
+  id: string;
   name?: string;
   number?: string;
   date: string;
@@ -34,7 +35,7 @@ const getNumber = (channel, number) => {
   }
 };
 
-const ChildNameAndDate: React.FC<Props> = ({ channel, callType, name, number, date, onClickFull }) => {
+const ChildNameAndDate: React.FC<Props> = ({ channel, callType, id, name, number, date, onClickFull }) => {
   const dateString = `${format(new Date(date), 'MMM d, yyyy h:mm aaaaa')}m`;
   const showNumber = isNonDataCallType(callType) && Boolean(number);
   const { canView } = getPermissionsForViewingIdentifiers();
@@ -45,6 +46,9 @@ const ChildNameAndDate: React.FC<Props> = ({ channel, callType, name, number, da
       <Flex marginRight="10px">
         <CallTypeIcon callType={callType} fontSize="18px" />
       </Flex>
+      <PrevNameText style={{ textDecoration: 'underline' }} onClick={onClickFull}>
+        #{id}
+      </PrevNameText>
       {showNumber && maskIdentifiers && (
         <PrevNameText>
           <Template code="MaskIdentifiers" />{' '}
@@ -56,9 +60,6 @@ const ChildNameAndDate: React.FC<Props> = ({ channel, callType, name, number, da
         <Flex marginRight="20px">
           <DateText>{dateString}</DateText>
         </Flex>
-        <ViewButton onClick={onClickFull}>
-          <Template code="Contact-ViewButton" />
-        </ViewButton>
       </ContactButtonsWrapper>
     </Row>
   );

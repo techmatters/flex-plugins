@@ -1,12 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import ChildNameAndDate from './ChildNameAndDate';
 import CallSummary from './CallSummary';
 import TagsAndCounselor from './TagsAndCounselor';
-import { ContactWrapper } from '../../../styles/search';
+import { ContactWrapper, SummaryText } from '../../../styles/search';
 import { Flex } from '../../../styles/HrmStyles';
 import { SearchUIContact } from '../../../types/types';
+import ExpandableTextBlock from '../ExpandableTextBlock';
 
 type ContactPreviewProps = {
   contact: SearchUIContact,
@@ -21,6 +21,7 @@ const ContactPreview: React.FC<ContactPreviewProps> = ({ contact, handleViewDeta
     <Flex>
       <ContactWrapper key={contact.contactId}>
         <ChildNameAndDate
+          id={contact.contactId}
           channel={contact.overview.channel}
           callType={contact.overview.callType}
           name={contact.overview.name}
@@ -28,7 +29,9 @@ const ContactPreview: React.FC<ContactPreviewProps> = ({ contact, handleViewDeta
           date={contact.overview.dateTime}
           onClickFull={handleViewDetails}
         />
-        <CallSummary callSummary={callSummary} onClickFull={handleViewDetails} />
+        <ExpandableTextBlock expandLinkText={'show more'} collapseLinkText={'show less'}>
+          <SummaryText style={{whiteSpace: 'inherit'}}>{callSummary}</SummaryText>
+        </ExpandableTextBlock>
         <TagsAndCounselor
           counselor={counselorName}
           categories={contact.overview.categories}

@@ -239,7 +239,6 @@ export const SummaryText = styled(FontOpenSans)`
   line-height: 16px;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
-  max-width: 390px;
 `;
 
 export const ShortSummaryText = styled(SummaryText)`
