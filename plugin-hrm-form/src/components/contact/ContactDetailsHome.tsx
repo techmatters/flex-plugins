@@ -13,9 +13,10 @@ import {
   ContactAddedFont,
   SectionTitleContainer,
   SectionActionButton,
+  SectionValueText,
 } from '../../styles/search';
 import ContactDetailsSection from './ContactDetailsSection';
-import { SectionEntry } from '../SectionEntry';
+import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import { formatCategories, formatDuration, formatName, mapChannelForInsights } from '../../utils';
@@ -27,6 +28,29 @@ import { getPermissionsForContact, getPermissionsForViewingIdentifiers, Permissi
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
 import { getConfig } from '../../HrmFormPlugin';
 import TranscriptSection from './TranscriptSection';
+
+const formatCsamReport = (report: CSAMReportEntry) => {
+  const template =
+    report.reportType === 'counsellor-generated' ? (
+      <Template code="CSAMReportForm-Counsellor-Attachment" />
+    ) : (
+      <Template code="CSAMReportForm-Self-Attachment" />
+    );
+
+  const date = `${format(new Date(report.createdAt), 'yyyy MM dd h:mm aaaaa')}m`;
+
+  return (
+    <Box marginBottom="5px">
+      <SectionValueText>
+        {template}
+        <br />
+        {date}
+        <br />
+        {`#${report.csamReportId}`}
+      </SectionValueText>
+    </Box>
+  );
+};
 
 // TODO: complete this type
 type OwnProps = {
@@ -148,29 +172,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
     });
   };
 
-  const formatCsamReport = (report: CSAMReportEntry) => {
-    const template =
-      report.reportType === 'counsellor-generated' ? (
-        <Template code="CSAMReportForm-Counsellor-Attachment" />
-      ) : (
-        <Template code="CSAMReportForm-Self-Attachment" />
-      );
-
-    const date = `${format(new Date(report.createdAt), 'yyyy MM dd h:mm aaaaa')}m`;
-
-    return (
-      <Box marginBottom="5px">
-        {template}
-        <br />
-        {date}
-        <br />
-        {`#${report.csamReportId}`}
-      </Box>
-    );
-  };
-
-  const csamReportsAttached = csamReports && csamReports.map(formatCsamReport);
-
   const recordingAvailable = Boolean(
     featureFlags.enable_voice_recordings &&
       isVoiceChannel(channel) &&
@@ -210,32 +211,31 @@ const ContactDetailsHome: React.FC<Props> = function ({
         handleExpandClick={() => toggleSection(GENERAL_DETAILS)}
         buttonDataTestid={`ContactDetails-Section-${GENERAL_DETAILS}`}
       >
-        <SectionEntry
-          description={<Template code="ContactDetails-GeneralDetails-Channel" />}
-          value={formattedChannel}
-        />
+        <SectionEntry description="ContactDetails-GeneralDetails-Channel">
+          <SectionEntryValue value={formattedChannel} />
+        </SectionEntry>
         {maskIdentifiers ? (
-          <SectionEntry
-            description={<Template code="ContactDetails-GeneralDetails-PhoneNumber" />}
-            value={strings.MaskIdentifiers}
-          />
+          <SectionEntry description="ContactDetails-GeneralDetails-PhoneNumber">
+            <SectionEntryValue value={strings.MaskIdentifiers} />
+          </SectionEntry>
         ) : (
-          <SectionEntry
-            description={<Template code="ContactDetails-GeneralDetails-PhoneNumber" />}
-            value={isPhoneContact ? customerNumber : ''}
-          />
+          <SectionEntry description="ContactDetails-GeneralDetails-PhoneNumber">
+            <SectionEntryValue value={isPhoneContact ? customerNumber : ''} />
+          </SectionEntry>
         )}
-        <SectionEntry
-          description={<Template code="ContactDetails-GeneralDetails-ConversationDuration" />}
-          value={formattedDuration}
-        />
-        <SectionEntry description={<Template code="ContactDetails-GeneralDetails-Counselor" />} value={counselorName} />
-        <SectionEntry
-          description={<Template code="ContactDetails-GeneralDetails-DateTime" />}
-          value={`${formattedDate} / ${formattedTime}`}
-        />
+        <SectionEntry description="ContactDetails-GeneralDetails-ConversationDuration">
+          <SectionEntryValue value={formattedDuration} />
+        </SectionEntry>
+        <SectionEntry description="ContactDetails-GeneralDetails-Counselor">
+          <SectionEntryValue value={counselorName} />
+        </SectionEntry>
+        <SectionEntry description="ContactDetails-GeneralDetails-DateTime">
+          <SectionEntryValue value={`${formattedDate} / ${formattedTime}`} />
+        </SectionEntry>
         {addedBy && addedBy !== counselor && (
-          <SectionEntry description={<Template code="ContactDetails-GeneralDetails-AddedBy" />} value={addedBy} />
+          <SectionEntry description="ContactDetails-GeneralDetails-AddedBy">
+            <SectionEntryValue value={addedBy} />
+          </SectionEntry>
         )}
       </ContactDetailsSection>
       {callType === callTypes.caller && (
@@ -251,12 +251,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
           callType="caller"
         >
           {definitionVersion.tabbedForms.CallerInformationTab.map(e => (
-            <SectionEntry
-              key={`CallerInformation-${e.label}`}
-              description={<Template code={e.label} />}
-              value={unNestInformation(e, savedContact.details.callerInformation)}
-              definition={e}
-            />
+            <SectionEntry key={`CallerInformation-${e.label}`} description={e.label}>
+              <SectionEntryValue value={unNestInformation(e, savedContact.details.callerInformation)} definition={e} />
+            </SectionEntry>
           ))}
         </ContactDetailsSection>
       )}
@@ -273,12 +270,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
           callType="child"
         >
           {definitionVersion.tabbedForms.ChildInformationTab.map(e => (
-            <SectionEntry
-              key={`ChildInformation-${e.label}`}
-              description={<Template code={e.label} />}
-              value={unNestInformation(e, savedContact.details.childInformation)}
-              definition={e}
-            />
+            <SectionEntry key={`ChildInformation-${e.label}`} description={e.label}>
+              <SectionEntryValue value={unNestInformation(e, savedContact.details.childInformation)} definition={e} />
+            </SectionEntry>
           ))}
         </ContactDetailsSection>
       )}
@@ -300,11 +294,14 @@ const ContactDetailsHome: React.FC<Props> = function ({
                     <Template code="Category" /> {index + 1}
                   </span>
                 }
-                value={c}
-              />
+              >
+                <SectionEntryValue value={c} />
+              </SectionEntry>
             ))
           ) : (
-            <SectionEntry description="No category provided" value="" />
+            <SectionEntry description="No category provided">
+              <SectionEntryValue value="" />
+            </SectionEntry>
           )}
         </ContactDetailsSection>
       )}
@@ -318,19 +315,17 @@ const ContactDetailsHome: React.FC<Props> = function ({
           handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CASE_INFORMATION)}
         >
           {definitionVersion.tabbedForms.CaseInformationTab.map(e => (
-            <SectionEntry
-              key={`CaseInformation-${e.label}`}
-              description={<Template code={e.label} />}
-              value={savedContact.details.caseInformation[e.name] as boolean | string}
-              definition={e}
-            />
+            <SectionEntry key={`CaseInformation-${e.label}`} description={e.label}>
+              <SectionEntryValue
+                value={savedContact.details.caseInformation[e.name] as boolean | string}
+                definition={e}
+              />
+            </SectionEntry>
           ))}
-          {csamReportsAttached && (
-            <SectionEntry
-              key="CaseInformation-AttachedCSAMReports"
-              description={<Template code="CSAMReportForm-ReportsSubmitted" />}
-              value={csamReportsAttached}
-            />
+          {csamReports && csamReports.length && (
+            <SectionEntry key="CaseInformation-AttachedCSAMReports" description="CSAMReportForm-ReportsSubmitted">
+              {csamReports.map(formatCsamReport)}
+            </SectionEntry>
           )}
         </ContactDetailsSection>
       )}
