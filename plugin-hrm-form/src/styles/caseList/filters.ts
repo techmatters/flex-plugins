@@ -282,6 +282,7 @@ export const FiltersCheckbox = styled('input')`
     left: 7px;
     transform: translate(-50%, -50%);
     content: '';
+    box-sizing: content-box;
   }
   &[type='checkbox']::before {
     width: 12px;
