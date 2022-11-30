@@ -8,7 +8,7 @@ import { DefinitionVersion, isNonSaveable } from 'hrm-form-definitions';
 import { BottomButtonBar, Box, Container, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseLayout, FullWidthFormTextContainer } from '../../styles/case';
 import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
-import { SectionEntry } from '../SectionEntry';
+import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { caseItemHistory, CaseState } from '../../states/case/types';
@@ -76,12 +76,9 @@ const ViewCaseItem: React.FC<Props> = ({
           <Box paddingTop="10px">
             <>
               {formDefinition.map(e => (
-                <SectionEntry
-                  key={`entry-${e.label}`}
-                  description={<Template code={e.label} />}
-                  value={item.form[e.name]}
-                  definition={e}
-                />
+                <SectionEntry key={`entry-${e.label}`} description={e.label}>
+                  <SectionEntryValue value={item.form[e.name]} definition={e} />
+                </SectionEntry>
               ))}
             </>
           </Box>
