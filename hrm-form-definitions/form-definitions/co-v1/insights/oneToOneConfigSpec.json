@@ -11,27 +11,6 @@
     ],
     "childInformation": [
       {
-        "name": "ethnicity",
-        "insights": [
-          "customers",
-          "customer_attribute_2"
-        ]
-      },
-      {
-        "name": "eps",
-        "insights": [
-          "customers",
-          "acquisition_date"
-        ]
-      },
-      {
-        "name": "epsType",
-        "insights": [
-          "customers",
-          "region"
-        ]
-      },
-      {
         "name": "livingSituation",
         "insights": [
           "customers",
@@ -86,13 +65,6 @@
           "conversation_attribute_7"
         ],
         "type": "mixed-checkbox"
-      },
-      {
-        "name": "interventionLevel",
-        "insights": [
-          "conversations",
-          "initiative"
-        ]
       },
       {
         "name": "howDidYouKnowAboutOurLine",
