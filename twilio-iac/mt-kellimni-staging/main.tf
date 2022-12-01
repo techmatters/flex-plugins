@@ -22,6 +22,7 @@ locals {
   definition_version = "mt-v1"
   permission_config = "mt"
   multi_office = false
+  enable_post_survey = false
   target_task_name = "greeting"
   twilio_numbers = [""]
   channel = ""
@@ -30,7 +31,7 @@ locals {
   feature_flags = {
     "enable_fullstory_monitoring": true,
     "enable_upload_documents": true,
-    "enable_post_survey": false,
+    "enable_post_survey": local.enable_post_survey,
     "enable_case_management": true,
     "enable_offline_contact": true,
     "enable_filter_cases": true,
@@ -46,8 +47,9 @@ locals {
     "enable_transcripts": true
   }
   twilio_channels = {
-    "web" = {"contact_identity" = "" }
-  }
+    "webchat" = {"contact_identity" = "", "channel_type" ="web"  }
+   }
+
   custom_channels=[]
 }
 
@@ -85,13 +87,32 @@ module "taskRouter" {
   custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
 }
 
-module studioFlow {
-  source = "../terraform-modules/studioFlow/default"
+module twilioChannel {
+  for_each = local.twilio_channels
+  source = "../terraform-modules/channels/twilio-channel"
+  channel_contact_identity = each.value.contact_identity
+  channel_type = each.value.channel_type
+  pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
+  target_task_name = local.target_task_name
+  channel_name = "${each.key}"
+  janitor_enabled = !local.enable_post_survey
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-  default_task_channel_sid = module.taskRouter.default_task_channel_sid
-  pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
+  flex_chat_service_sid = module.services.flex_chat_service_sid
 }
+
+module customChannel {
+  for_each = toset(local.custom_channels)
+  source = "../terraform-modules/channels/custom-channel"
+  channel_name = "${each.key}"
+  janitor_enabled = true
+  master_workflow_sid = module.taskRouter.master_workflow_sid
+  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+  flex_chat_service_sid = module.services.flex_chat_service_sid
+  short_helpline = local.short_helpline
+  short_environment = local.short_environment
+}
+
 
 module flex {
   source = "../terraform-modules/flex/service-configuration"

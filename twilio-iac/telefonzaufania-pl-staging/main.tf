@@ -21,6 +21,7 @@ locals {
   short_environment = "STG"
   definition_version = "pl-v1"
   permission_config = "pl"
+  enable_post_survey = false
   multi_office = false
   target_task_name = "greeting"
   twilio_numbers = [""]
@@ -30,7 +31,7 @@ locals {
   feature_flags = {
     "enable_fullstory_monitoring": false,
     "enable_upload_documents": true,
-    "enable_post_survey": false,
+    "enable_post_survey": local.enable_post_survey,
     "enable_case_management": true,
     "enable_offline_contact": true,
     "enable_filter_cases": true,
@@ -45,7 +46,7 @@ locals {
     "enable_contact_editing": true
   }
   twilio_channels = {
-    "web" = {"contact_identity" = "" }
+    "webchat" = {"contact_identity" = "", "channel_type" ="web"  }
   }
   custom_channels=[]
 }
@@ -81,7 +82,7 @@ module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
   helpline = local.helpline
-  custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
+  custom_task_routing_filter_expression = "channelType ==\"web\" OR isContactlessTask == true OR  phone=='+16602359810' OR phone=='+48800012935'"
 }
 
 module flex {
@@ -101,9 +102,11 @@ module twilioChannel {
   for_each = local.twilio_channels
   source = "../terraform-modules/channels/twilio-channel"
   channel_contact_identity = each.value.contact_identity
+  channel_type = each.value.channel_type
   pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
   target_task_name = local.target_task_name
   channel_name = "${each.key}"
+  janitor_enabled = !local.enable_post_survey
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
@@ -159,4 +162,5 @@ module github {
   twilio_auth_token = var.auth_token
   short_environment = local.short_environment
   short_helpline = local.short_helpline
+  serverless_url = var.serverless_url
 }
