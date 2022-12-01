@@ -9,9 +9,9 @@ import { Flex } from '../../../styles/HrmStyles';
 import { SearchUIContact } from '../../../types/types';
 
 type ContactPreviewProps = {
-  contact: SearchUIContact,
-  handleViewDetails: () => void
-}
+  contact: SearchUIContact;
+  handleViewDetails: () => void;
+};
 
 const ContactPreview: React.FC<ContactPreviewProps> = ({ contact, handleViewDetails }) => {
   const { counselorName } = contact;
