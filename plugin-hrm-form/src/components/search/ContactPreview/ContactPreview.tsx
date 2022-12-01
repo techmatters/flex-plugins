@@ -9,9 +9,9 @@ import { SearchUIContact } from '../../../types/types';
 import ExpandableTextBlock from '../ExpandableTextBlock';
 
 type ContactPreviewProps = {
-  contact: SearchUIContact,
-  handleViewDetails: () => void
-}
+  contact: SearchUIContact;
+  handleViewDetails: () => void;
+};
 
 const ContactPreview: React.FC<ContactPreviewProps> = ({ contact, handleViewDetails }) => {
   const { counselorName } = contact;
