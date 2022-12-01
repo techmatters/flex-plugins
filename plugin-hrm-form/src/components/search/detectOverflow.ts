@@ -8,7 +8,7 @@ export const useIsOverflowing = (ref, callback?: (isOverflowing: boolean) => voi
     const { current } = ref;
 
     const trigger = () => {
-      const hasOverflow = current.scrollHeight > current.clientHeight;
+      const hasOverflow = current.scrollHeight > current.clientHeight || current.scrollWidth > current.clientWidth;
 
       setOverflow(hasOverflow);
 

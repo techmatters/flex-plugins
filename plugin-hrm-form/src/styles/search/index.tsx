@@ -124,19 +124,28 @@ type StyledLinkProps = ButtonProps & { underline?: boolean };
 export const StyledLink = styled(({ onClick, ...rest }: StyledLinkProps) => (
   <Button size="small" onClick={onClick} {...rest} />
 ))<StyledLinkProps>`
+  && {
+    padding: 0;
+    line-height: normal;
+    letter-spacing: normal;
+
+    :hover {
+      text-decoration: ${props => (props.underline ? 'underline' : 'none')};
+      text-decoration-color: ${props => (props.underline ? '#1874e1' : 'transparent')};
+      background-color: ${props => (props.underline ? 'transparent' : HrmTheme.colors.hyperlinkHoverBackgroundColor)};
+    }
+
+    :focus {
+      outline: auto;
+    }
+  }
+
   span {
+    padding: 0px;
+    line-height: normal;
+    letter-spacing: normal;
     text-transform: none;
     color: #1874e1;
-  }
-
-  &&:hover {
-    text-decoration: ${props => (props.underline ? 'underline' : 'none')};
-    text-decoration-color: ${props => (props.underline ? '#1874e1' : 'transparent')};
-    background-color: ${props => (props.underline ? 'transparent' : HrmTheme.colors.hyperlinkHoverBackgroundColor)};
-  }
-
-  &&:focus {
-    outline: auto;
   }
 `;
 
@@ -267,9 +276,19 @@ export const CounselorText = styled(SummaryText)`
   opacity: 0.46;
 `;
 
-export const DateText = styled(SummaryText)`
+export const PreviewRow = styled(Row)`
+  padding-bottom: 5px;
+`;
+
+export const SubtitleValue = styled(SummaryText)`
+  padding-inline-end: 10px;
+  font-size: 13px;
+`;
+
+export const SubtitleLabel = styled(SummaryText)`
+  padding-inline-end: 5px;
   opacity: 0.46;
-  font-size: 12px;
+  font-size: 13px;
 `;
 
 export const TagsWrapper = styled(Flex)`

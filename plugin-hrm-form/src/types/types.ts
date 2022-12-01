@@ -127,7 +127,7 @@ export type SearchAPIContact = {
     dateTime: string;
     name: string;
     customerNumber: string;
-    callType: string;
+    callType: CallTypes | '';
     categories: {};
     counselor: string;
     notes: string;
@@ -142,7 +142,7 @@ export type SearchAPIContact = {
   csamReports: CSAMReportEntry[];
 };
 
-export type SearchUIContact = SearchAPIContact & { counselorName: string };
+export type SearchUIContact = SearchAPIContact & { counselorName: string; callerName?: string };
 
 export type SearchContactResult = {
   count: number;

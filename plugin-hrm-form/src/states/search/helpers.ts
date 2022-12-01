@@ -8,5 +8,10 @@ export const searchAPIContactToSearchUIContact = (
 ): SearchUIContact[] =>
   raw.map(contact => {
     const counselor = counselorsHash[contact.overview.counselor] || 'Unknown';
-    return { ...contact, counselorName: counselor };
+    const { firstName, lastName } = contact.details.callerInformation?.name ?? {};
+    const callerName =
+      contact.overview.callType === 'Someone calling about a child' && (firstName || lastName)
+        ? `${firstName} ${lastName}`
+        : undefined;
+    return { ...contact, counselorName: counselor, callerName };
   });

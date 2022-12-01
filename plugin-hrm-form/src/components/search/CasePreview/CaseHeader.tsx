@@ -11,7 +11,7 @@ import {
   CaseHeaderContainer,
   CaseHeaderCaseId,
   CaseHeaderChildName,
-  DateText,
+  SubtitleLabel,
   StyledButtonBase,
 } from '../../../styles/search';
 import { StyledIcon, addHover, HiddenText } from '../../../styles/HrmStyles';
@@ -58,13 +58,13 @@ const CaseHeader: React.FC<Props> = ({
         <CaseHeaderChildName>
           {isOrphanedCase ? strings['CaseHeader-Voided'] : `${firstName} ${lastName}`}
         </CaseHeaderChildName>
-        <DateText>
+        <SubtitleLabel>
           <Template code="CaseHeader-Opened" />: {createdAtFormatted}
-        </DateText>
-        <DateText>
+        </SubtitleLabel>
+        <SubtitleLabel>
           <Template code={status === 'closed' || isOrphanedCase ? 'CaseHeader-Closed' : 'CaseHeader-Updated'} />:{' '}
           {updatedAtFormatted}
-        </DateText>
+        </SubtitleLabel>
         <StyledButtonBase onClick={onClickViewCase}>
           <HiddenText>
             <Template code="CaseHeader-ViewCase" />

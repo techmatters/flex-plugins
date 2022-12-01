@@ -5,8 +5,14 @@ import { Template } from '@twilio/flex-ui';
 import { CallTypes } from 'hrm-form-definitions';
 
 import { Flex, Row } from '../../../styles/HrmStyles';
-import { PrevNameText, ContactButtonsWrapper, DateText, ViewContactButton } from '../../../styles/search';
-import { ViewButton } from '../../../styles/case';
+import {
+  PrevNameText,
+  ContactButtonsWrapper,
+  SubtitleLabel,
+  ViewContactButton,
+  SubtitleValue,
+  StyledLink, PreviewRow,
+} from '../../../styles/search';
 import { isNonDataCallType } from '../../../states/ValidationRules';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import { channelTypes, ChannelTypes } from '../../../states/DomainConstants';
@@ -17,6 +23,7 @@ type OwnProps = {
   callType: CallTypes;
   id: string;
   name?: string;
+  callerName?: string;
   number?: string;
   date: string;
   onClickFull: () => void;
@@ -35,33 +42,51 @@ const getNumber = (channel, number) => {
   }
 };
 
-const ChildNameAndDate: React.FC<Props> = ({ channel, callType, id, name, number, date, onClickFull }) => {
-  const dateString = `${format(new Date(date), 'MMM d, yyyy h:mm aaaaa')}m`;
+const ChildNameAndDate: React.FC<Props> = ({ channel, callType, id, name, callerName, number, date, onClickFull }) => {
+  const dateObj = new Date(date);
+  const dateString = `${format(dateObj, 'MMM d, yyyy')}, ${dateObj.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+  })}`;
   const showNumber = isNonDataCallType(callType) && Boolean(number);
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
   return (
-    <Row>
-      <Flex marginRight="10px">
-        <CallTypeIcon callType={callType} fontSize="18px" />
-      </Flex>
-      <PrevNameText style={{ textDecoration: 'underline' }} onClick={onClickFull}>
-        #{id}
-      </PrevNameText>
-      {showNumber && maskIdentifiers && (
-        <PrevNameText>
-          <Template code="MaskIdentifiers" />{' '}
-        </PrevNameText>
-      )}
-      <PrevNameText>{showNumber && !maskIdentifiers ? getNumber(channel, number) : name}</PrevNameText>
-
-      <ContactButtonsWrapper>
-        <Flex marginRight="20px">
-          <DateText>{dateString}</DateText>
+    <>
+      <PreviewRow>
+        <Flex marginRight="10px">
+          <CallTypeIcon callType={callType} fontSize="18px" />
         </Flex>
-      </ContactButtonsWrapper>
-    </Row>
+        <StyledLink style={{ minWidth: 'inherit', marginInlineEnd: 10 }} onClick={onClickFull}>
+          <PrevNameText style={{ textDecoration: 'underline' }}>#{id}</PrevNameText>
+        </StyledLink>
+        {showNumber && maskIdentifiers && (
+          <PrevNameText>
+            <Template code="MaskIdentifiers" />{' '}
+          </PrevNameText>
+        )}
+        <PrevNameText>{showNumber && !maskIdentifiers ? getNumber(channel, number) : name}</PrevNameText>
+
+        <ContactButtonsWrapper>
+          <Flex marginRight="20px" />
+        </ContactButtonsWrapper>
+      </PreviewRow>
+      <PreviewRow>
+        {callerName && (
+          <>
+            <SubtitleLabel>
+              <Template code="Caller Name" />:
+            </SubtitleLabel>{' '}
+            <SubtitleValue>{callerName}</SubtitleValue>{' '}
+          </>
+        )}
+        <SubtitleLabel>
+          <Template code="Contact Date" />:
+        </SubtitleLabel>{' '}
+        <SubtitleValue>{dateString}</SubtitleValue>{' '}
+      </PreviewRow>
+    </>
   );
 };
 
