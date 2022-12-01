@@ -211,29 +211,29 @@ const ContactDetailsHome: React.FC<Props> = function ({
         handleExpandClick={() => toggleSection(GENERAL_DETAILS)}
         buttonDataTestid={`ContactDetails-Section-${GENERAL_DETAILS}`}
       >
-        <SectionEntry description="ContactDetails-GeneralDetails-Channel">
+        <SectionEntry descriptionKey="ContactDetails-GeneralDetails-Channel">
           <SectionEntryValue value={formattedChannel} />
         </SectionEntry>
         {maskIdentifiers ? (
-          <SectionEntry description="ContactDetails-GeneralDetails-PhoneNumber">
+          <SectionEntry descriptionKey="ContactDetails-GeneralDetails-PhoneNumber">
             <SectionEntryValue value={strings.MaskIdentifiers} />
           </SectionEntry>
         ) : (
-          <SectionEntry description="ContactDetails-GeneralDetails-PhoneNumber">
+          <SectionEntry descriptionKey="ContactDetails-GeneralDetails-PhoneNumber">
             <SectionEntryValue value={isPhoneContact ? customerNumber : ''} />
           </SectionEntry>
         )}
-        <SectionEntry description="ContactDetails-GeneralDetails-ConversationDuration">
+        <SectionEntry descriptionKey="ContactDetails-GeneralDetails-ConversationDuration">
           <SectionEntryValue value={formattedDuration} />
         </SectionEntry>
-        <SectionEntry description="ContactDetails-GeneralDetails-Counselor">
+        <SectionEntry descriptionKey="ContactDetails-GeneralDetails-Counselor">
           <SectionEntryValue value={counselorName} />
         </SectionEntry>
-        <SectionEntry description="ContactDetails-GeneralDetails-DateTime">
+        <SectionEntry descriptionKey="ContactDetails-GeneralDetails-DateTime">
           <SectionEntryValue value={`${formattedDate} / ${formattedTime}`} />
         </SectionEntry>
         {addedBy && addedBy !== counselor && (
-          <SectionEntry description="ContactDetails-GeneralDetails-AddedBy">
+          <SectionEntry descriptionKey="ContactDetails-GeneralDetails-AddedBy">
             <SectionEntryValue value={addedBy} />
           </SectionEntry>
         )}
@@ -251,7 +251,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           callType="caller"
         >
           {definitionVersion.tabbedForms.CallerInformationTab.map(e => (
-            <SectionEntry key={`CallerInformation-${e.label}`} description={e.label}>
+            <SectionEntry key={`CallerInformation-${e.label}`} descriptionKey={e.label}>
               <SectionEntryValue value={unNestInformation(e, savedContact.details.callerInformation)} definition={e} />
             </SectionEntry>
           ))}
@@ -270,7 +270,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           callType="child"
         >
           {definitionVersion.tabbedForms.ChildInformationTab.map(e => (
-            <SectionEntry key={`ChildInformation-${e.label}`} description={e.label}>
+            <SectionEntry key={`ChildInformation-${e.label}`} descriptionKey={e.label}>
               <SectionEntryValue value={unNestInformation(e, savedContact.details.childInformation)} definition={e} />
             </SectionEntry>
           ))}
@@ -289,17 +289,15 @@ const ContactDetailsHome: React.FC<Props> = function ({
             formattedCategories.map((c, index) => (
               <SectionEntry
                 key={`Category ${index + 1}`}
-                description={
-                  <span style={{ display: 'inline-block' }}>
-                    <Template code="Category" /> {index + 1}
-                  </span>
-                }
+                descriptionKey="Category"
+                descriptionStyle={{ display: 'inline-block' }}
+                descrptionDetail={`${index + 1}`}
               >
                 <SectionEntryValue value={c} />
               </SectionEntry>
             ))
           ) : (
-            <SectionEntry description="No category provided">
+            <SectionEntry descriptionKey="ContactDetails-NoCategoryProvided">
               <SectionEntryValue value="" />
             </SectionEntry>
           )}
@@ -315,15 +313,15 @@ const ContactDetailsHome: React.FC<Props> = function ({
           handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CASE_INFORMATION)}
         >
           {definitionVersion.tabbedForms.CaseInformationTab.map(e => (
-            <SectionEntry key={`CaseInformation-${e.label}`} description={e.label}>
+            <SectionEntry key={`CaseInformation-${e.label}`} descriptionKey={e.label}>
               <SectionEntryValue
                 value={savedContact.details.caseInformation[e.name] as boolean | string}
                 definition={e}
               />
             </SectionEntry>
           ))}
-          {csamReports && csamReports.length && (
-            <SectionEntry key="CaseInformation-AttachedCSAMReports" description="CSAMReportForm-ReportsSubmitted">
+          {csamReports && csamReports.length > 0 && (
+            <SectionEntry key="CaseInformation-AttachedCSAMReports" descriptionKey="CSAMReportForm-ReportsSubmitted">
               {csamReports.map(formatCsamReport)}
             </SectionEntry>
           )}

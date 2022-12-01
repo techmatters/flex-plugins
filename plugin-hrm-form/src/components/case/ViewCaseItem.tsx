@@ -76,7 +76,7 @@ const ViewCaseItem: React.FC<Props> = ({
           <Box paddingTop="10px">
             <>
               {formDefinition.map(e => (
-                <SectionEntry key={`entry-${e.label}`} description={e.label}>
+                <SectionEntry key={`entry-${e.label}`} descriptionKey={e.label}>
                   <SectionEntryValue value={item.form[e.name]} definition={e} />
                 </SectionEntry>
               ))}

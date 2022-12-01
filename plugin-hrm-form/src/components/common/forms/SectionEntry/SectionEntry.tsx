@@ -6,15 +6,19 @@ import { Template } from '@twilio/flex-ui';
 import { SectionDescriptionText } from '../../../../styles/search';
 
 type Props = {
-  description: string | React.ReactNode;
+  descriptionKey: string;
+  descriptionStyle?: React.CSSProperties;
+  descrptionDetail?: string;
 };
 
-const SectionEntry: React.FC<Props> = ({ description, children }) => {
+const SectionEntry: React.FC<Props> = ({ descriptionKey, descriptionStyle, descrptionDetail, children }) => {
   return (
     <Grid container style={{ marginTop: 8, marginBottom: 8 }}>
       <Grid item xs={6}>
         <SectionDescriptionText>
-          {typeof description === 'string' ? <Template code={description} /> : description}
+          <span style={descriptionStyle}>
+            <Template code={descriptionKey} /> {descrptionDetail}
+          </span>
         </SectionDescriptionText>
       </Grid>
       <Grid item xs={6}>
