@@ -3,7 +3,6 @@ import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import * as t from '../../../states/search/types';
 import * as actions from '../../../states/search/actions';
-import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import { SearchAPIContact } from '../../../types/types';
 import { searchContacts } from '../../../services/ContactService';
 import { searchCases } from '../../../services/CaseService';
@@ -12,7 +11,7 @@ import { getDefinitionVersions } from '../../../HrmFormPlugin';
 
 jest.mock('../../../services/ContactService', () => ({ searchContacts: jest.fn() }));
 jest.mock('../../../services/CaseService', () => ({ searchCases: jest.fn() }));
-jest.mock('../../../states/search/helpers', () => ({ addDetails: jest.fn((_hash, xs) => xs) }));
+jest.mock('../../../states/search/helpers', () => ({ searchAPIContactToSearchUIContact: jest.fn((_hash, xs) => xs) }));
 
 const task = { taskSid: 'WT123' };
 const taskId = task.taskSid;
@@ -120,8 +119,8 @@ describe('test action creators', () => {
       count: 1,
       cases: [caseObject],
     };
-    // @ts-ignore
-    searchCases.mockReturnValueOnce(Promise.resolve(searchResult));
+
+    (searchCases as jest.Mock).mockReturnValueOnce(Promise.resolve(searchResult));
     const dispatch = jest.fn();
 
     await actions.searchCases(dispatch)(taskId)(null, null, CASES_PER_PAGE, 0);
@@ -132,6 +131,7 @@ describe('test action creators', () => {
   });
 
   test('searchCases bundles dateFrom and dateTo under filters object if provided', async () => {
+    const searchCasesMock = searchCases as jest.Mock;
     const caseObject = {
       createdAt: '2020-11-23T17:38:42.227Z',
       updatedAt: '2020-11-23T17:38:42.227Z',
@@ -148,8 +148,8 @@ describe('test action creators', () => {
     };
     // @ts-ignore
 
-    searchCases.mockClear();
-    searchCases.mockReturnValueOnce(Promise.resolve(searchResult));
+    searchCasesMock.mockClear();
+    searchCasesMock.mockReturnValueOnce(Promise.resolve(searchResult));
     const dispatch = jest.fn();
 
     await actions.searchCases(dispatch)(taskId)(
