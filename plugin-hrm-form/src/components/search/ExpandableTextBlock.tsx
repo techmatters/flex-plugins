@@ -19,8 +19,8 @@ const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledPro
   const ref = React.useRef();
   const isOverflowing = useIsOverflowing(ref);
   const [isExpanded, setExpanded] = React.useState(false);
-  const expandButtonElement = useRef(undefined);
-  const collapseButtonElement = useRef(undefined);
+  const expandButtonElement = useRef<HTMLButtonElement>(undefined);
+  const collapseButtonElement = useRef<HTMLButtonElement>(undefined);
 
   const handleExpand = () => {
     setExpanded(true);
@@ -47,7 +47,7 @@ const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledPro
             whiteSpace: isOverflowing && !isExpanded ? 'nowrap' : 'inherit',
             overflow: isOverflowing && !isExpanded ? 'hidden' : 'inherit',
             height: isExpanded ? 'inherit' : '1.5em',
-            wordBreak: isExpanded ? 'break-all' : 'break-word',
+            wordBreak: isExpanded ? 'break-word' : 'inherit',
           }}
         >
           {children}
@@ -56,13 +56,13 @@ const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledPro
             type="button"
             onClick={handleCollapse}
             ref={collapseButtonElement}
-            style={{ display: isExpanded ? 'inline' : 'none' }}
+            style={{ display: isExpanded ? 'inline' : 'none', marginTop: -3.5 }}
           >
             {collapseLinkText}
           </StyledLink>
         </div>
         <div style={{ whiteSpace: 'nowrap', display: isOverflowing && !isExpanded ? 'inherit' : 'none' }}>
-          <StyledLink underline={true} onClick={handleExpand} ref={expandButtonElement}>
+          <StyledLink underline={true} onClick={handleExpand} ref={expandButtonElement} style={{ marginTop: -3.5 }}>
             <Template code={isExpanded ? collapseLinkText : expandLinkText} />
           </StyledLink>
         </div>

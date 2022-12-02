@@ -121,9 +121,20 @@ export const ContactButtonsWrapper = styled('div')`
 
 type StyledLinkProps = ButtonProps & { underline?: boolean };
 
-export const StyledLink = styled(({ onClick, underline, ...rest }: StyledLinkProps) => (
-  <Button size="small" onClick={onClick} disableFocusRipple={underline} disableRipple={underline} {...rest} />
-))<StyledLinkProps>`
+const UnstyledLinkButton = React.forwardRef<HTMLButtonElement, StyledLinkProps>(
+  ({ onClick, underline, ...rest }, ref) => (
+    <Button
+      size="small"
+      onClick={onClick}
+      disableFocusRipple={underline}
+      disableRipple={underline}
+      ref={ref}
+      {...rest}
+    />
+  ),
+);
+
+export const StyledLink = styled(UnstyledLinkButton)<StyledLinkProps>`
   && {
     padding: 0;
     line-height: normal;
