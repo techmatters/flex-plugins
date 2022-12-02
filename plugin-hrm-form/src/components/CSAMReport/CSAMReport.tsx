@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { CircularProgress } from '@material-ui/core';
 import { connect, ConnectedProps } from 'react-redux';
@@ -27,6 +27,7 @@ import { RootState, csamReportBase, namespace, routingBase, configurationBase } 
 import { reportToIWF } from '../../services/ServerlessService';
 import { createCSAMReport } from '../../services/CSAMReportService';
 import useFocus from '../../utils/useFocus';
+import fileUploadCustomHandlers from '../case/documentUploadHandler';
 
 type OwnProps = {
   taskSid: CustomITask['taskSid'];
@@ -63,6 +64,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [initialForm] = React.useState(csamReportState.form); // grab initial values in first render only. This value should never change or will ruin the memoization below
+  const [isEmpty, setIsEmpty] = React.useState(true);
   const methods = useForm({ reValidateMode: 'onChange' });
   const firstElementRef = useFocus();
 
@@ -82,7 +84,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
     };
 
     const generateInput = (e: FormItemDefinition, index: number) => {
-      const generatedInput = getInputType([], onUpdateInput)(e);
+      const generatedInput = getInputType([], onUpdateInput, fileUploadCustomHandlers, '400px')(e);
       const csamInitialValues = { initialValues, childInitialValues };
       const initialValue = initialForm[e.name] === undefined ? csamInitialValues[e.name] : initialForm[e.name];
 
@@ -121,6 +123,14 @@ export const CSAMReportScreen: React.FC<Props> = ({
   const onClickClose = () => {
     clearCSAMReportAction(taskSid);
     changeRoute({ ...previousRoute }, taskSid);
+  };
+
+  const confirmInput = form => {
+    if (form.childAge !== null && form.ageVerified) {
+      setIsEmpty(false);
+    } else {
+      setIsEmpty(true);
+    }
   };
 
   const onValid = async form => {
@@ -162,22 +172,26 @@ export const CSAMReportScreen: React.FC<Props> = ({
   };
 
   const onSendAnotherReport = (route, subroute) => {
+    setIsEmpty(true);
     clearCSAMReportAction(taskSid);
     changeRoute({ route, subroute, previousRoute }, taskSid);
   };
 
   const onSendReport = methods.handleSubmit(onValid, onInvalid);
+  const onConfirmInput = methods.handleSubmit(confirmInput, onInvalid);
 
   switch (routing.subroute) {
     case 'child-form': {
       return (
         <FormProvider {...methods}>
           <CSAMReportFormScreen
+            isEmpty={isEmpty}
             childFormElements={formElements.childReportDefinition}
             counselor={currentCounselor}
             onClickClose={onClickClose}
             onSendReport={onSendReport}
             csamType="child-form"
+            confirmInput={onConfirmInput}
           />
         </FormProvider>
       );

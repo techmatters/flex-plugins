@@ -2,16 +2,21 @@ import React from 'react';
 import { styled } from '@twilio/flex-ui';
 import { withStyles } from '@material-ui/core';
 import { AttachFile, CheckCircle, FileCopyOutlined, OpenInNew } from '@material-ui/icons';
+import { type } from '@testing-library/user-event/dist/types/setup/directApi';
 
 import { FontOpenSans, StyledNextStepButton } from '../HrmStyles';
 import HrmTheme from '../HrmTheme';
 
-export const CSAMReportContainer = styled('div')`
+type CSAMReportContainerProp = {
+  padding?: string;
+};
+
+export const CSAMReportContainer = styled('div')<CSAMReportContainerProp>`
   display: flex;
   flex-direction: column;
   height: 100%;
   background-color: #192b334d;
-  padding: 5px 10px;
+  padding: ${props => (props.padding ? props.padding : '5px 10px')};
 `;
 CSAMReportContainer.displayName = 'CSAMReportContainer';
 
@@ -42,13 +47,22 @@ export const CenterContent = styled('div')`
 `;
 CenterContent.displayName = 'CenterContent';
 
-export const CopyCodeButton = styled(StyledNextStepButton)`
-  padding: 7px;
+type CopyCodeButtonProp = {
+  padding?: string;
+};
+
+export const CopyCodeButton = styled(StyledNextStepButton)<CopyCodeButtonProp>`
+  padding: ${props => (props.padding ? props.padding : '7px')};
 `;
 CopyCodeButton.displayName = 'CopyCodeButton';
 
-export const BoldDescriptionText = styled(FontOpenSans)<{ fontSize?: string }>`
-  color: #14171a;
+type BoldDescriptionTextProp = {
+  fontSize?: string;
+  color?: string;
+};
+
+export const BoldDescriptionText = styled(FontOpenSans)<BoldDescriptionTextProp>`
+  color: ${props => (props.color ? props.color : '#14171a')};
   font-size: ${({ fontSize }) => (fontSize ? fontSize : '14px')};
   font-weight: 700;
 `;
