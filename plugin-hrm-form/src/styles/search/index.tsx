@@ -228,7 +228,7 @@ StyledResultsText.displayName = 'StyledResultsText';
 
 export const StyledFolderIcon = styled(Folder)`
   font-size: 18px !important;
-  padding: '-1px 10px 0 6px';
+  padding: -1px 10px 0 6px;
   margin-right: 10px;
 `;
 
@@ -282,18 +282,17 @@ export const PreviewRow = styled(Row)`
 
 export const SubtitleValue = styled(SummaryText)`
   padding-inline-end: 10px;
-  font-size: 13px;
 `;
 
 export const SubtitleLabel = styled(SummaryText)`
   padding-inline-end: 5px;
   opacity: 0.46;
-  font-size: 13px;
 `;
 
 export const TagsWrapper = styled(Flex)`
   min-width: 0;
   margin-right: 5px;
+  overflow: hidden;
 
   div:last-child {
     min-width: 0;
@@ -363,7 +362,7 @@ export const SectionActionButton = styled('button')`
   font-size: 13px;
   font-weight: 600;
   color: #1976d2;
-  padding: '0 6px';
+  padding: 0 6px;
   font-family: 'Open Sans';
   cursor: pointer;
   :focus {
@@ -418,8 +417,8 @@ export const sectionTitleFontStyle = `
   line-height: 13px;
 `;
 export const SectionTitleText = styled(FontOpenSans)`
-  ${sectionTitleFontStyle}
   margin-right: auto;
+  ${sectionTitleFontStyle}
 `;
 SectionTitleText.displayName = 'SectionTitleText';
 
