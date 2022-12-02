@@ -4,14 +4,14 @@ import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import { CallTypes } from 'hrm-form-definitions';
 
-import { Flex, Row } from '../../../styles/HrmStyles';
+import { Flex } from '../../../styles/HrmStyles';
 import {
   PrevNameText,
   ContactButtonsWrapper,
   SubtitleLabel,
-  ViewContactButton,
   SubtitleValue,
-  StyledLink, PreviewRow,
+  StyledLink,
+  PreviewRow,
 } from '../../../styles/search';
 import { isNonDataCallType } from '../../../states/ValidationRules';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
@@ -55,9 +55,11 @@ const ChildNameAndDate: React.FC<Props> = ({ channel, callType, id, name, caller
   return (
     <>
       <PreviewRow>
-        <Flex marginRight="10px">
-          <CallTypeIcon callType={callType} fontSize="18px" />
-        </Flex>
+        {!isNonDataCallType(callType) && (
+          <Flex marginRight="10px">
+            <CallTypeIcon callType={callType} fontSize="18px" />
+          </Flex>
+        )}
         <StyledLink underline={true} style={{ minWidth: 'inherit', marginInlineEnd: 10 }} onClick={onClickFull}>
           <PrevNameText style={{ textDecoration: 'underline' }}>#{id}</PrevNameText>
         </StyledLink>
@@ -67,7 +69,6 @@ const ChildNameAndDate: React.FC<Props> = ({ channel, callType, id, name, caller
           </PrevNameText>
         )}
         <PrevNameText>{showNumber && !maskIdentifiers ? getNumber(channel, number) : name}</PrevNameText>
-
         <ContactButtonsWrapper>
           <Flex marginRight="20px" />
         </ContactButtonsWrapper>

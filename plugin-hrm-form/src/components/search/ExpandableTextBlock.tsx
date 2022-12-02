@@ -39,35 +39,33 @@ const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledPro
   }, [isExpanded]);
 
   return (
-    <>
-      <div className={className} style={{ display: 'flex', flexFlow: 'row', justifyContent: 'stretch' }} ref={ref}>
-        <div
-          style={{
-            textOverflow: 'ellipsis',
-            whiteSpace: isOverflowing && !isExpanded ? 'nowrap' : 'inherit',
-            overflow: isOverflowing && !isExpanded ? 'hidden' : 'inherit',
-            height: isExpanded ? 'inherit' : '1.5em',
-            wordBreak: isExpanded ? 'break-word' : 'inherit',
-          }}
+    <div className={className} style={{ display: 'flex', flexFlow: 'row', justifyContent: 'stretch' }} ref={ref}>
+      <div
+        style={{
+          textOverflow: 'ellipsis',
+          whiteSpace: isOverflowing && !isExpanded ? 'nowrap' : 'inherit',
+          overflow: isOverflowing && !isExpanded ? 'hidden' : 'inherit',
+          height: isExpanded ? 'inherit' : '1.5em',
+          wordBreak: isExpanded ? 'break-word' : 'inherit',
+        }}
+      >
+        {children}
+        <StyledLink
+          underline={true}
+          type="button"
+          onClick={handleCollapse}
+          ref={collapseButtonElement}
+          style={{ display: isExpanded ? 'inline' : 'none', marginTop: -3.5 }}
         >
-          {children}
-          <StyledLink
-            underline={true}
-            type="button"
-            onClick={handleCollapse}
-            ref={collapseButtonElement}
-            style={{ display: isExpanded ? 'inline' : 'none', marginTop: -3.5 }}
-          >
-            {collapseLinkText}
-          </StyledLink>
-        </div>
-        <div style={{ whiteSpace: 'nowrap', display: isOverflowing && !isExpanded ? 'inherit' : 'none' }}>
-          <StyledLink underline={true} onClick={handleExpand} ref={expandButtonElement} style={{ marginTop: -3.5 }}>
-            <Template code={isExpanded ? collapseLinkText : expandLinkText} />
-          </StyledLink>
-        </div>
+          {collapseLinkText}
+        </StyledLink>
       </div>
-    </>
+      <div style={{ whiteSpace: 'nowrap', display: isOverflowing && !isExpanded ? 'inherit' : 'none' }}>
+        <StyledLink underline={true} onClick={handleExpand} ref={expandButtonElement} style={{ marginTop: -3.5 }}>
+          <Template code={isExpanded ? collapseLinkText : expandLinkText} />
+        </StyledLink>
+      </div>
+    </div>
   );
 };
 
