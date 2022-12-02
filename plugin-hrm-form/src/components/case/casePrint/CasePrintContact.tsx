@@ -8,8 +8,9 @@ import { Text, View } from '@react-pdf/renderer';
 
 import styles from './styles';
 import { getConfig } from '../../../HrmFormPlugin';
-import { mapChannel, mapChannelForInsights, presentValue, formatStringToDateAndTime } from '../../../utils';
+import { mapChannel, mapChannelForInsights, formatStringToDateAndTime } from '../../../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
+import { presentValueFromStrings } from './presentValuesFromStrings';
 
 type OwnProps = {
   sectionName: string;
@@ -40,7 +41,7 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
             {strings['ContactDetails-GeneralDetails-ContactSummary']}
           </Text>
           <Text style={styles['sectionItemSecondColumn']}>
-            {presentValue(rawJson.caseInformation?.callSummary, strings)()}
+            {presentValueFromStrings(strings)(rawJson.caseInformation?.callSummary)()}
           </Text>
         </View>
         <View style={styles['sectionItemRowEven']}>
@@ -50,18 +51,20 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
         <View style={styles['sectionItemRowOdd']}>
           <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-PhoneNumber']}</Text>
           <Text style={styles['sectionItemSecondColumn']}>
-            {maskIdentifiers ? strings.MaskIdentifers : presentValue(number, strings)}
+            {maskIdentifiers ? strings.MaskIdentifers : presentValueFromStrings(strings)(number)}
           </Text>
         </View>
         <View style={styles['sectionItemRowEven']}>
           <Text style={styles['sectionItemFirstColumn']}>
             {strings['ContactDetails-GeneralDetails-ConversationDuration']}
           </Text>
-          <Text style={styles['sectionItemSecondColumn']}>{presentValue(conversationDuration, strings)()}</Text>
+          <Text style={styles['sectionItemSecondColumn']}>
+            {presentValueFromStrings(strings)(conversationDuration)()}
+          </Text>
         </View>
         <View style={styles['sectionItemRowOdd']}>
           <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-Counselor']}</Text>
-          <Text style={styles['sectionItemSecondColumn']}>{presentValue(counselor, strings)()}</Text>
+          <Text style={styles['sectionItemSecondColumn']}>{presentValueFromStrings(strings)(counselor)()}</Text>
         </View>
         <View style={styles['sectionItemRowEven']}>
           <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-DateTime']}</Text>
@@ -70,13 +73,13 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
         <View style={styles['sectionItemRowOdd']}>
           <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-RepeatCaller']}</Text>
           <Text style={styles['sectionItemSecondColumn']}>
-            {presentValue(rawJson.caseInformation?.repeatCaller, strings)()}{' '}
+            {presentValueFromStrings(strings)(rawJson.caseInformation?.repeatCaller)()}{' '}
           </Text>
         </View>
         <View style={styles['sectionItemRowEven']}>
           <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-ReferredTo']}</Text>
           <Text style={styles['sectionItemSecondColumn']}>
-            {presentValue(rawJson.caseInformation?.referredTo, strings)()}
+            {presentValueFromStrings(strings)(rawJson.caseInformation?.referredTo)()}
           </Text>
         </View>
         <View style={styles['sectionItemRowOdd']}>
@@ -84,7 +87,7 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
             {strings['ContactDetails-GeneralDetails-ChildHearAboutUs']}
           </Text>
           <Text style={styles['sectionItemSecondColumn']}>
-            {presentValue(rawJson.caseInfomation?.howDidTheChildHearAboutUs, strings)()}
+            {presentValueFromStrings(strings)(rawJson.caseInfomation?.howDidTheChildHearAboutUs)()}
           </Text>
         </View>
         <View style={styles['sectionItemRowEven']}>
@@ -93,25 +96,25 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
           </Text>
           <Text style={styles['sectionItemSecondColumn']}>
             {' '}
-            {presentValue(rawJson.caseInfomation?.keepConfidential, strings)()}
+            {presentValueFromStrings(strings)(rawJson.caseInfomation?.keepConfidential)()}
           </Text>
         </View>
         <View style={styles['sectionItemRowOdd']}>
           <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-OKToCall']}</Text>
           <Text style={styles['sectionItemSecondColumn']}>
-            {presentValue(rawJson.caseInfomation?.okForCaseWorkerToCall, strings)()}
+            {presentValueFromStrings(strings)(rawJson.caseInfomation?.okForCaseWorkerToCall)()}
           </Text>
         </View>
         <View style={styles['sectionItemRowEven']}>
           <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-DiscussRights']}</Text>
           <Text style={styles['sectionItemSecondColumn']}>
-            {presentValue(rawJson.caseInfomation?.didYouDiscussRightsWithTheChild, strings)()}
+            {presentValueFromStrings(strings)(rawJson.caseInfomation?.didYouDiscussRightsWithTheChild)()}
           </Text>
         </View>
         <View style={styles['sectionItemRowOdd']}>
           <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-SolvedProblem']}</Text>
           <Text style={styles['sectionItemSecondColumn']}>
-            {presentValue(rawJson.caseInfomation?.didTheChildFeelWeSolvedTheirProblem, strings)()}
+            {presentValueFromStrings(strings)(rawJson.caseInfomation?.didTheChildFeelWeSolvedTheirProblem)()}
           </Text>
         </View>
         <View style={styles['sectionItemRowEven']}>
@@ -119,7 +122,7 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
             {strings['ContactDetails-GeneralDetails-WouldRecommend']}
           </Text>
           <Text style={styles['sectionItemSecondColumn']}>
-            {presentValue(rawJson.caseInfomation?.wouldTheChildRecommendUsToAFriend, strings)()}
+            {presentValueFromStrings(strings)(rawJson.caseInfomation?.wouldTheChildRecommendUsToAFriend)()}
           </Text>
         </View>
       </View>
