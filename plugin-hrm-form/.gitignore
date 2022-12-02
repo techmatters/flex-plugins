@@ -53,8 +53,9 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env
+# dotenv-flow-webpack local environment variables file
+.env.local
+.env.*.local
 
 # next.js build output
 .next

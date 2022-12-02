@@ -2,10 +2,13 @@ import * as Flex from '@twilio/flex-ui';
 import Rollbar from 'rollbar';
 import { datadogRum } from '@datadog/browser-rum';
 import * as FullStory from '@fullstory/browser';
+import { ServiceConfiguration } from '@twilio/flex-ui';
+import type { Worker } from 'twilio-taskrouter';
 
 import { rollbarAccessToken, datadogAccessToken, datadogApplicationID, fullStoryId } from '../private/secret';
+import HrmFormPlugin from '../HrmFormPlugin';
 
-function setUpDatadogRum(workerClient, monitoringEnv) {
+function setUpDatadogRum(workerClient: Worker, monitoringEnv: string) {
   datadogRum.init({
     applicationId: datadogApplicationID,
     clientToken: datadogAccessToken,
@@ -20,11 +23,11 @@ function setUpDatadogRum(workerClient, monitoringEnv) {
     id: workerClient.sid,
     account: workerClient.accountSid,
     workspace: workerClient.workspaceSid,
-    helpline: workerClient.attributes.helpline,
+    helpline: (workerClient.attributes as any).helpline,
   });
 }
 
-function setUpRollbarLogger(plugin, workerClient, monitoringEnv) {
+function setUpRollbarLogger(plugin: HrmFormPlugin, workerClient: Worker, monitoringEnv: string) {
   plugin.Rollbar = new Rollbar({
     reportLevel: 'error',
     accessToken: rollbarAccessToken,
@@ -36,7 +39,7 @@ function setUpRollbarLogger(plugin, workerClient, monitoringEnv) {
         id: workerClient.sid,
         account: workerClient.accountSid,
         workspace: workerClient.workspaceSid,
-        helpline: workerClient.attributes.helpline,
+        helpline: (workerClient.attributes as any).helpline,
       },
     },
     ignoredMessages: ['Warning: Failed prop type'],
@@ -51,7 +54,7 @@ function setUpRollbarLogger(plugin, workerClient, monitoringEnv) {
         type: Flex.Log.PredefinedSpies.ClassProxy,
         target: window.console,
         targetAlias: 'Proxied window.console',
-        methods: ['log', 'debug', 'info', 'warn', 'error'],
+        methods: ['error'],
         onStart: proxy => {
           window.console = proxy;
         },
@@ -84,7 +87,7 @@ function setUpRollbarLogger(plugin, workerClient, monitoringEnv) {
 function setUpFullStory() {
   FullStory.init({
     orgId: fullStoryId,
-    devMode: process.env.NODE_ENV === 'development',
+    devMode: process.env.ENABLE_MONITORING !== 'true',
   });
   console.log('Fullstory monitoring is enabled');
 }
@@ -98,10 +101,14 @@ function helplineIdentifierFullStory(workerClient) {
   FullStory.setUserVars({ accountSid });
 }
 
-export default function setUpMonitoring(plugin, workerClient, serviceConfiguration) {
+export default function setUpMonitoring(
+  plugin: HrmFormPlugin,
+  workerClient: Worker,
+  serviceConfiguration: ServiceConfiguration,
+) {
   const monitoringEnv = serviceConfiguration.attributes.monitoringEnv || 'staging';
 
-  if (process.env.NODE_ENV !== 'development') {
+  if (process.env.ENABLE_MONITORING === 'true') {
     setUpDatadogRum(workerClient, monitoringEnv);
     setUpRollbarLogger(plugin, workerClient, monitoringEnv);
   }

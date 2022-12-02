@@ -6,6 +6,9 @@ export const defaultLanguage = 'en-US';
 const defaultTranslation = require(`../translations/${defaultLanguage}/flexUI.json`);
 const defaultMessages = require(`../translations/${defaultLanguage}/messages.json`);
 
+const enCATranslation = require(`../translations/en-CA/flexUI.json`);
+const enCAMessages = require(`../translations/en-CA/messages.json`);
+
 const enINTranslation = require(`../translations/en-IN/flexUI.json`);
 const enINMessages = require(`../translations/en-IN/messages.json`);
 
@@ -32,6 +35,7 @@ const plPLMessages = require(`../translations/pl-PL/messages.json`);
 
 const bundledTranslations = {
   [defaultLanguage]: defaultTranslation,
+  'en-CA': enCATranslation,
   'en-IN': enINTranslation,
   'es-CL': esCLTranslation,
   'es-CO': esCOTranslation,
@@ -44,6 +48,7 @@ const bundledTranslations = {
 
 const bundledMessages = {
   [defaultLanguage]: defaultMessages,
+  'en-CA': enCAMessages,
   'en-IN': enINMessages,
   'es-CL': esCLMessages,
   'es-CO': esCOMessages,
