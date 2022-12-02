@@ -58,7 +58,7 @@ const ChildNameAndDate: React.FC<Props> = ({ channel, callType, id, name, caller
         <Flex marginRight="10px">
           <CallTypeIcon callType={callType} fontSize="18px" />
         </Flex>
-        <StyledLink style={{ minWidth: 'inherit', marginInlineEnd: 10 }} onClick={onClickFull}>
+        <StyledLink underline={true} style={{ minWidth: 'inherit', marginInlineEnd: 10 }} onClick={onClickFull}>
           <PrevNameText style={{ textDecoration: 'underline' }}>#{id}</PrevNameText>
         </StyledLink>
         {showNumber && maskIdentifiers && (

@@ -121,8 +121,8 @@ export const ContactButtonsWrapper = styled('div')`
 
 type StyledLinkProps = ButtonProps & { underline?: boolean };
 
-export const StyledLink = styled(({ onClick, ...rest }: StyledLinkProps) => (
-  <Button size="small" onClick={onClick} {...rest} />
+export const StyledLink = styled(({ onClick, underline, ...rest }: StyledLinkProps) => (
+  <Button size="small" onClick={onClick} disableFocusRipple={underline} disableRipple={underline} {...rest} />
 ))<StyledLinkProps>`
   && {
     padding: 0;
@@ -137,6 +137,7 @@ export const StyledLink = styled(({ onClick, ...rest }: StyledLinkProps) => (
 
     :focus {
       outline: auto;
+      background-color: ${props => (props.underline ? 'transparent' : HrmTheme.colors.hyperlinkHoverBackgroundColor)};
     }
   }
 

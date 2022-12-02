@@ -2,7 +2,7 @@ import React from 'react';
 
 import ChildNameAndDate from './ChildNameAndDate';
 import TagsAndCounselor from './TagsAndCounselor';
-import { ContactWrapper, SummaryText } from '../../../styles/search';
+import { ContactWrapper } from '../../../styles/search';
 import { Flex } from '../../../styles/HrmStyles';
 import { SearchUIContact } from '../../../types/types';
 import { PreviewDescription } from '../PreviewDescription';
