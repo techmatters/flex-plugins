@@ -3,6 +3,11 @@ body p,
 body span {
     font-family: Open Sans;
 }
+
+div.Twilio-ViewCollection{
+    background-color: #f6f6f6;
+}
+
 div.Twilio-ModalPopupWithEntryControl {
     padding-top: 7px;
     padding-bottom: 7px;
@@ -83,11 +88,11 @@ a.link-text-decoration-none:active { text-decoration: none; color: #1874e1; }
 }
 button.Twilio-TaskCanvasHeader-EndButton {
     padding: 3px 16px;
-    font-weight: normal;
+    font-weight: 600;
     min-width: auto;
 }
 button.Twilio-TaskCanvasHeader-EndButton:hover{
-    border: 1px solid rgb(70, 70, 70);
+    border: 1px solid #BAC0C2;
     background-color: rgb(220, 84, 84);
 }
 button.Twilio-TaskCanvasHeader-EndButton:active {
