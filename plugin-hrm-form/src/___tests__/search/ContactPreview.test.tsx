@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import renderer from 'react-test-renderer';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
@@ -11,13 +11,10 @@ import CallSummary from '../../components/search/ContactPreview/CallSummary';
 import TagsAndCounselor from '../../components/search/ContactPreview/TagsAndCounselor';
 import { mapCallType } from '../../utils';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
+import { SearchUIContact } from '../../types/types';
 
 const NonExisting = () => <>NonExisting</>;
 NonExisting.displayName = 'NonExisting';
-
-const themeConf = {
-  colorTheme: HrmTheme,
-};
 
 test('<ContactPreview> should mount', async () => {
   mockGetDefinitionsResponse(
@@ -25,7 +22,7 @@ test('<ContactPreview> should mount', async () => {
     DefinitionVersionId.v1,
     await loadDefinition(DefinitionVersionId.v1),
   );
-  const contact = {
+  const contact: SearchUIContact = {
     contactId: '123',
     overview: {
       dateTime: '2019-01-01T00:00:00.000Z',
@@ -36,9 +33,13 @@ test('<ContactPreview> should mount', async () => {
       counselor: '',
       notes: '',
       categories: { category1: ['Tag1', 'Tag2'] },
+      helpline: 'test helpline',
+      conversationDuration: 0,
+      createdBy: '',
+      taskId: 'TASK_ID',
     },
     details: {
-      definitionVersion: 'v1',
+      definitionVersion: DefinitionVersionId.v1,
       childInformation: {
         name: {
           firstName: 'Name',
@@ -49,7 +50,6 @@ test('<ContactPreview> should mount', async () => {
         language: '',
         nationality: '',
         ethnicity: '',
-        location: {},
         refugee: false,
       },
       caseInformation: {
@@ -62,16 +62,22 @@ test('<ContactPreview> should mount', async () => {
         didYouDiscussRightsWithTheChild: false,
         didTheChildFeelWeSolvedTheirProblem: false,
         wouldTheChildRecommendUsToAFriend: false,
+        categories: {},
       },
+      callType: 'Someone calling about a child',
+      conversationMedia: [],
+      callerInformation: { name: { firstName: '', lastName: '' } },
+      contactlessTask: { channel: 'voice' },
     },
-    counselor: 'Counselor',
+    counselorName: 'Counselor',
+    csamReports: [],
   };
 
   const handleOpenConnectDialog = jest.fn();
   const handleViewDetails = jest.fn();
 
   const wrapper = renderer.create(
-    <StorelessThemeProvider themeConf={themeConf}>
+    <StorelessThemeProvider themeConf={{}}>
       <ContactPreview
         contact={contact}
         handleOpenConnectDialog={handleOpenConnectDialog}
@@ -98,7 +104,7 @@ test('<ContactPreview> should mount', async () => {
   expect(channel).toEqual(contact.overview.channel);
   expect(number).toEqual(contact.overview.customerNumber);
   expect(callSummary).toEqual(contact.details.caseInformation.callSummary);
-  expect(counselor).toEqual(contact.counselor);
+  expect(counselor).toEqual(contact.counselorName);
   expect(date).toEqual(contact.overview.dateTime);
   expect(categories).toEqual(contact.overview.categories);
 });
