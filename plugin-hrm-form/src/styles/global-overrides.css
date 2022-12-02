@@ -4,10 +4,6 @@ body span {
     font-family: Open Sans;
 }
 
-div.Twilio-ViewCollection{
-    background-color: #f6f6f6;
-}
-
 div.Twilio-ModalPopupWithEntryControl {
     padding-top: 7px;
     padding-bottom: 7px;
@@ -97,4 +93,8 @@ button.Twilio-TaskCanvasHeader-EndButton:hover{
 }
 button.Twilio-TaskCanvasHeader-EndButton:active {
     border: 2px solid black;
+}
+
+div.Twilio-ViewCollection{
+    background-color: #f6f6f6;
 }
