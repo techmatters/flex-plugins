@@ -31,7 +31,7 @@ locals {
   feature_flags = {
     "enable_fullstory_monitoring": true,
     "enable_upload_documents": true,
-    "enable_post_survey": false,
+    "enable_post_survey": local.enable_post_survey,
     "enable_case_management": true,
     "enable_offline_contact": true,
     "enable_filter_cases": true,
@@ -49,7 +49,7 @@ locals {
   twilio_channels = {
     "webchat" = {"contact_identity" = "", "channel_type" ="web"  }
    }
-  
+
   custom_channels=[]
 }
 

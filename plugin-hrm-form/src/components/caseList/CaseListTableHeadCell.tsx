@@ -5,7 +5,7 @@ import { ArrowDownward } from '@material-ui/icons';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { getConfig } from '../../HrmFormPlugin';
-import { CLTableHeaderFont, CLTableCell } from '../../styles/caseList';
+import { CLTableHeaderFont, CLHeaderTableCell } from '../../styles/caseList';
 import { ListCasesQueryParams, ListCasesSortDirection } from '../../types/types';
 import * as CaseListSettingsActions from '../../states/caseList/settings';
 import { caseListBase, namespace, RootState } from '../../states';
@@ -87,7 +87,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
     return 'left';
   };
   return (
-    <CLTableCell
+    <CLHeaderTableCell
       style={{ width: width || '8%', cursor: cursor() }}
       align="right"
       variant="head"
@@ -98,7 +98,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
         <Template code={localizedText} />
         <span aria-hidden="true">{drawSort()}</span>
       </CLTableHeaderFont>
-    </CLTableCell>
+    </CLHeaderTableCell>
   );
 };
 
