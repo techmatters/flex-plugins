@@ -7,13 +7,52 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "tl-terraform-state-twilio-f2-staging"
+    bucket         = "tl-terraform-state-twilio-terraform-poc"
     key            = "twilio/terraform.tfstate"
     dynamodb_table = "terraform-locks"
     encrypt        = true
   }
 }
 
+locals {
+  helpline = "Kellimni"
+  short_helpline = "MT"
+  operating_info_key = "mt"
+  environment = "Production"
+  short_environment = "STG"
+  definition_version = "mt-v1"
+  permission_config = "mt"
+  multi_office = false
+  enable_post_survey = false
+  target_task_name = "greeting"
+  twilio_numbers = [""]
+  channel = ""
+  custom_channel_attributes = ""
+  messaging_flow_contact_identity = "+16602359810"
+  feature_flags = {
+    "enable_fullstory_monitoring": true,
+    "enable_upload_documents": true,
+    "enable_post_survey": local.enable_post_survey,
+    "enable_case_management": true,
+    "enable_offline_contact": true,
+    "enable_filter_cases": true,
+    "enable_sort_cases": true,
+    "enable_transfers": true,
+    "enable_manual_pulling": true,
+    "enable_csam_report": false,
+    "enable_canned_responses": true,
+    "enable_dual_write": false,
+    "enable_save_insights": true,
+    "enable_previous_contacts": true,
+    "enable_contact_editing": true,
+    "enable_transcripts": true
+  }
+  twilio_channels = {
+    "webchat" = {"contact_identity" = "", "channel_type" ="web"  }
+   }
+
+  custom_channels=[]
+}
 
 module "chatbots" {
   source = "../terraform-modules/chatbots/default"
@@ -45,7 +84,7 @@ module "services" {
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
-  helpline = var.helpline
+  helpline = "ChildLine Zambia (ZM)"
 }
 
 module studioFlow {
@@ -61,9 +100,10 @@ module flex {
   account_sid = var.account_sid
   short_environment = var.short_environment
   operating_info_key = var.operating_info_key
-  permission_config = var.permission_config
+  permission_config = "zm"
   definition_version = var.definition_version
   serverless_url = var.serverless_url
+  hrm_url = "https://hrm-development-eu.tl.techmatters.org"
   multi_office_support = var.multi_office
   feature_flags = var.feature_flags
   flex_chat_service_sid = module.services.flex_chat_service_sid
