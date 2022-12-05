@@ -38,7 +38,7 @@ export type ExistingContactsState = {
   [contactId: string]: {
     references: Set<string>;
     savedContact: SearchAPIContact;
-    draftContact?: RecursivePartial<SearchAPIContact>;
+    draftContact?: SearchContactDraftChanges;
     categories: {
       gridView: boolean;
       expanded: { [key: string]: boolean };
@@ -258,7 +258,7 @@ export const EXISTING_CONTACT_UPDATE_DRAFT_ACTION = 'EXISTING_CONTACT_UPDATE_DRA
 type UpdateDraftAction = {
   type: typeof EXISTING_CONTACT_UPDATE_DRAFT_ACTION;
   contactId: string;
-  draft?: RecursivePartial<SearchAPIContact>;
+  draft?: SearchContactDraftChanges;
 };
 
 export const updateDraft = (contactId: string, draft: SearchContactDraftChanges): UpdateDraftAction => ({
