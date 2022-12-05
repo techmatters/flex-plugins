@@ -5,10 +5,8 @@ import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
-
-import { Flex, Row } from '../../styles/HrmStyles';
+import { Flex, Box } from '../../styles/HrmStyles';
 import { CSAMReportEntry, isS3StoredTranscript, isTwilioStoredMedia, SearchAPIContact } from '../../types/types';
-
 import {
   DetailsContainer,
   NameText,
