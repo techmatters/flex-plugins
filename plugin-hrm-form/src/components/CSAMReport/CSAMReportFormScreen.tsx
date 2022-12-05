@@ -21,7 +21,6 @@ type Props = {
   counselor: string;
   onClickClose: () => void;
   onSendReport: () => void;
-  confirmInput?: () => void;
   csamType: 'child-form' | 'counsellor-form';
   isEmpty?: boolean;
 };
@@ -35,7 +34,6 @@ const CSAMReportFormScreen: React.FC<Props> = ({
   onSendReport,
   csamType,
   isEmpty,
-  confirmInput,
 }) => {
   console.log('childFormElements is here', isEmpty, csamType);
 
@@ -59,7 +57,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
               &nbsp;
               <RequiredAsterisk />
             </BoldDescriptionText>
-            <Box padding="15px 15px 15px 20px" onChange={confirmInput}>
+            <Box padding="15px 15px 15px 20px">
               {childFormElements.childAge}
             </Box>
           </Box>
@@ -71,7 +69,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
               &nbsp;
               <RequiredAsterisk />
             </BoldDescriptionText>
-            <Box padding="15px 15px 15px 20px" onChange={confirmInput}>
+            <Box padding="15px 15px 15px 20px">
               {childFormElements.ageVerified}
             </Box>
           </Box>

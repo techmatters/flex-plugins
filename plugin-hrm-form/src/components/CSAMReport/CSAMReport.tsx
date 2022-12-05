@@ -133,6 +133,10 @@ export const CSAMReportScreen: React.FC<Props> = ({
     }
   };
 
+  useEffect(() => {
+    confirmInput(methods.getValues());
+  }, [methods.watch])
+
   const onValid = async form => {
     try {
       if (routing.subroute === 'child-form') {
@@ -191,7 +195,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
             onClickClose={onClickClose}
             onSendReport={onSendReport}
             csamType="child-form"
-            confirmInput={onConfirmInput}
           />
         </FormProvider>
       );
