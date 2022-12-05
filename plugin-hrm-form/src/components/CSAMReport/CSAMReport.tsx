@@ -68,6 +68,10 @@ export const CSAMReportScreen: React.FC<Props> = ({
   const methods = useForm({ reValidateMode: 'onChange' });
   const firstElementRef = useFocus();
 
+  useEffect(() => {
+    confirmInput(methods.getValues());
+  }, [methods, methods.watch]);
+
   const currentCounselor = React.useMemo(() => {
     const { workerSid } = getConfig();
     return counselorsHash[workerSid];
@@ -191,7 +195,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
             onClickClose={onClickClose}
             onSendReport={onSendReport}
             csamType="child-form"
-            confirmInput={onConfirmInput}
           />
         </FormProvider>
       );
