@@ -76,25 +76,28 @@ export const formatStringToDateAndTime = (dateTime: string): string => {
 };
 
 /**
- * Formats a form value into a readable string.
- * @param value Value to format
- * @param strings Translation lookups
+ * Given instrunctions on how to render a single value and an array of values,
+ * formats forms values into a readable string.
  */
-export const presentValue = (value: string | number | boolean | string[], strings: Record<string, string>) => (
+export const presentValue = (
+  renderValue: (code: string) => string | ReturnType<Template['render']>,
+  renderArray: (codes: ReturnType<typeof renderValue>[]) => ReturnType<typeof renderValue>,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+) => (value: string | number | boolean | string[]) => (
   definition: FormItemDefinition = null,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 ) => {
   // eslint-disable-next-line dot-notation
-  if (definition && definition.type === 'mixed-checkbox' && value === null) return strings['Unknown'];
+  if (definition && definition.type === 'mixed-checkbox' && value === null) return renderValue('Unknown');
 
   if (definition && definition.type === 'listbox-multiselect' && Array.isArray(value))
-    return value.map(val => (strings[val] ? strings[val] : val)).join('\n');
+    return renderArray(value.map(renderValue));
 
-  if (typeof value === 'string' && value.trim()) return value;
-  if (typeof value === 'number') return value.toString();
+  if (typeof value === 'string' && value.trim()) return renderValue(value);
+  if (typeof value === 'number') return renderValue(value.toString());
   if (typeof value === 'boolean') {
-    if (value) return strings['SectionEntry-Yes'] ? strings['SectionEntry-Yes'] : value.toString();
-    return strings['SectionEntry-No'] ? strings['SectionEntry-No'] : value.toString();
+    if (value) return renderValue('SectionEntry-Yes');
+    return renderValue('SectionEntry-No');
   }
 
   return '-';
