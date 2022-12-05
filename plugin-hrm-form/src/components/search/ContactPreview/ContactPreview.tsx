@@ -4,12 +4,17 @@ import PropTypes from 'prop-types';
 import ChildNameAndDate from './ChildNameAndDate';
 import CallSummary from './CallSummary';
 import TagsAndCounselor from './TagsAndCounselor';
-import { contactType } from '../../../types';
 import { ContactWrapper } from '../../../styles/search';
 import { Flex } from '../../../styles/HrmStyles';
+import { SearchUIContact } from '../../../types/types';
 
-const ContactPreview = ({ contact, handleViewDetails, showConnectIcon }) => {
-  const { counselor } = contact;
+type ContactPreviewProps = {
+  contact: SearchUIContact;
+  handleViewDetails: () => void;
+};
+
+const ContactPreview: React.FC<ContactPreviewProps> = ({ contact, handleViewDetails }) => {
+  const { counselorName } = contact;
   const { callSummary } = contact.details.caseInformation;
 
   return (
@@ -25,7 +30,7 @@ const ContactPreview = ({ contact, handleViewDetails, showConnectIcon }) => {
         />
         <CallSummary callSummary={callSummary} onClickFull={handleViewDetails} />
         <TagsAndCounselor
-          counselor={counselor}
+          counselor={counselorName}
           categories={contact.overview.categories}
           definitionVersion={contact.details.definitionVersion}
         />
@@ -35,11 +40,5 @@ const ContactPreview = ({ contact, handleViewDetails, showConnectIcon }) => {
 };
 
 ContactPreview.displayName = 'ContactPreview';
-
-ContactPreview.propTypes = {
-  contact: contactType.isRequired,
-  handleViewDetails: PropTypes.func.isRequired,
-  showConnectIcon: PropTypes.bool.isRequired,
-};
 
 export default ContactPreview;

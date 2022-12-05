@@ -5,8 +5,8 @@ import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
-import { Box, Flex } from '../../styles/HrmStyles';
-import { CSAMReportEntry, isS3StoredTranscript, isTwilioStoredMedia, SearchContact } from '../../types/types';
+import { Flex, Box } from '../../styles/HrmStyles';
+import { CSAMReportEntry, isS3StoredTranscript, isTwilioStoredMedia, SearchAPIContact } from '../../types/types';
 import {
   DetailsContainer,
   NameText,
@@ -95,7 +95,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   if (!savedContact || !definitionVersion) return null;
 
   // Object destructuring on contact
-  const { overview, details, csamReports } = savedContact as SearchContact;
+  const { overview, details, csamReports } = savedContact as SearchAPIContact;
   const {
     counselor,
     dateTime,

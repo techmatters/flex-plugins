@@ -12,7 +12,7 @@ import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import ViewContact from '../../../components/case/ViewContact';
 import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
-import { SearchContact } from '../../../types/types';
+import { SearchAPIContact } from '../../../types/types';
 import { connectedCaseBase, contactFormsBase, RootState } from '../../../states';
 import { DetailsContext, TOGGLE_DETAIL_EXPANDED_ACTION } from '../../../states/contacts/contactDetails';
 
@@ -33,7 +33,7 @@ const task = {
   defaultFrom: '+12025550425',
 };
 
-const contact: SearchContact = {
+const contact: SearchAPIContact = {
   contactId: 'TEST ID',
   details: {
     definitionVersion: DefinitionVersionId.v1,
