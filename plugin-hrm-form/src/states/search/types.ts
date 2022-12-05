@@ -40,7 +40,7 @@ export type SearchPagesType = typeof SearchPages[keyof typeof SearchPages];
 
 export type DetailedSearchContactsResult = {
   count: number;
-  contacts: SearchUIContact;
+  contacts: SearchUIContact[];
 };
 
 // Supported action object types
