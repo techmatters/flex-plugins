@@ -60,7 +60,7 @@
         }
     },
     {
-      "name": "recentIncident",
+      "name": "date",
       "label": "When did the most recent incident occur",
       "type": "date-input"
     },
