@@ -1,5 +1,5 @@
-import { SearchAPIContact, SearchCaseResult } from '../../types/types';
-import { searchAPIContactToSearchUIContact } from './helpers';
+import { SearchAPIContact, SearchCaseResult, SearchUIContact } from '../../types/types';
+
 // Action types
 export const HANDLE_SEARCH_FORM_CHANGE = 'HANDLE_SEARCH_FORM_CHANGE';
 export const CHANGE_SEARCH_PAGE = 'CHANGE_SEARCH_PAGE';
@@ -40,7 +40,7 @@ export type SearchPagesType = typeof SearchPages[keyof typeof SearchPages];
 
 export type DetailedSearchContactsResult = {
   count: number;
-  contacts: ReturnType<typeof searchAPIContactToSearchUIContact>;
+  contacts: SearchUIContact;
 };
 
 // Supported action object types
