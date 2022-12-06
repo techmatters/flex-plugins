@@ -513,7 +513,7 @@ export const HeaderContainer = styled(Row)`
   text-transform: capitalize;
   color: #192b33;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   line-height: 20px;
   padding: 0px;
 `;

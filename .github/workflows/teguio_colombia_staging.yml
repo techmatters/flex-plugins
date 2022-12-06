@@ -12,8 +12,6 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-
     uses: ./.github/workflows/custom_helpline.yml
     secrets: inherit
     with:
