@@ -1,11 +1,9 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react';
-import { Template } from '@twilio/flex-ui';
+import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { Case } from '../../../types/types';
 import CaseHeader from './CaseHeader';
-import CaseTags from '../../case/CaseTags';
 import { Flex } from '../../../styles/HrmStyles';
 import { PreviewWrapper, CaseFooter, CaseFooterText, CounselorText, SummaryText } from '../../../styles/search';
 import getUpdatedDate from '../../../states/getUpdatedDate';

@@ -4,7 +4,14 @@ import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 
 import { getConfig } from '../../../HrmFormPlugin';
-import { SubtitleLabel, SubtitleValue, StyledLink, PreviewHeaderText, PreviewRow } from '../../../styles/search';
+import {
+  SubtitleLabel,
+  SubtitleValue,
+  StyledLink,
+  PreviewHeaderText,
+  PreviewRow,
+  SummaryText,
+} from '../../../styles/search';
 import { Flex } from '../../../styles/HrmStyles';
 
 type OwnProps = {
@@ -42,7 +49,7 @@ const CaseHeader: React.FC<Props> = ({
   return (
     <div>
       <PreviewRow>
-        <Flex justifyContent="space-between" width="100%" marginTop="10px">
+        <Flex justifyContent="space-between" width="100%">
           <Flex style={{ minWidth: 'fit-content' }}>
             <StyledLink underline={true} style={{ minWidth: 'inherit', marginInlineEnd: 10 }} onClick={onClickViewCase}>
               <PreviewHeaderText style={{ textDecoration: 'underline' }}>#{caseId}</PreviewHeaderText>
@@ -52,7 +59,7 @@ const CaseHeader: React.FC<Props> = ({
             </PreviewHeaderText>
           </Flex>
           <Flex style={{ minWidth: 'fit-content' }}>
-            <PreviewHeaderText style={{ fontWeight: 400 }}>{statusLabel}</PreviewHeaderText>
+            <SummaryText style={{ fontWeight: 400 }}>{statusLabel}</SummaryText>
           </Flex>
         </Flex>
       </PreviewRow>

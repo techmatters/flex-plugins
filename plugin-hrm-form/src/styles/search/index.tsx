@@ -3,7 +3,6 @@ import { ButtonBase, Paper, Button, FormControlLabel, Switch, Collapse, withStyl
 import { Tabs, TabsProps, styled } from '@twilio/flex-ui';
 import Folder from '@material-ui/icons/Folder';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import Link from '@material-ui/icons/Link';
 import { ButtonProps } from '@material-ui/core/Button';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
 
@@ -26,15 +25,6 @@ export const PreviewWrapper = styled('div')`
 
 PreviewWrapper.displayName = 'PreviewWrapper';
 
-export const CaseSummaryContainer = styled('div')`
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  margin-top: 10px;
-`;
-
-CaseSummaryContainer.displayName = 'CaseSummaryContainer';
-
 export const ConfirmContainer = styled(Paper)`
   display: flex;
   flex-direction: column;
@@ -50,18 +40,6 @@ export const BackIcon = styled(ChevronLeft)`
   width: 50px;
   height: 50px;
 `;
-
-export const ConnectIcon = withStyles({
-  root: {
-    borderRadius: '50%',
-    backgroundColor: '#a0a8bd66',
-    opacity: 0.34,
-    padding: '5px',
-    '&:hover': {
-      opacity: 0.2,
-    },
-  },
-})(Link);
 
 export const ContactButtonsWrapper = styled('div')`
   display: flex;
@@ -156,7 +134,7 @@ export const SilentText = styled('div')`
 `;
 
 export const PreviewHeaderText = styled(FontOpenSans)`
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   line-height: 14px;
   color: #182b33;
@@ -214,11 +192,6 @@ export const SummaryText = styled(FontOpenSans)`
   white-space: pre-wrap;
 `;
 
-export const ShortSummaryText = styled(SummaryText)`
-  white-space: nowrap;
-  overflow: hidden;
-`;
-
 export const CaseFooter = styled('div')`
   display: flex;
   flex-direction: row;
@@ -241,6 +214,7 @@ export const CounselorText = styled(SummaryText)`
 `;
 
 export const PreviewRow = styled(Row)`
+  margin-top: 10px;
   padding-bottom: 5px;
 `;
 
@@ -430,6 +404,7 @@ export const ResultsHeader = styled('div')`
 `;
 
 export const ListContainer = styled(BottomButtonBar)`
+  background-color: #f6f6f6;
   flex-basis: 0;
   flex-grow: 1;
   padding: 10px;
@@ -445,18 +420,6 @@ export const ScrollableList = styled('div')`
   overflow-y: auto;
 `;
 
-export const StyledButtonBase = withStyles({
-  root: {
-    margin: 5,
-    '&:focus': {
-      outline: 'auto',
-    },
-  },
-  disabled: {
-    color: 'rgba(0, 0, 0, 0.26)',
-  },
-})(ButtonBase);
-
 export const StyledFormControlLabel = styled(FormControlLabel)`
   margin-left: 0px !important;
   margin-right: 0px !important;
@@ -468,25 +431,15 @@ export const StyledCount = styled('p')`
 `;
 StyledCount.displayName = 'StyledCount';
 
-export const StyledContactResultsHeader = styled('div')`
+export const StyledResultsHeader = styled('div')`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  width: 550px;
+  width: 565px;
 `;
 
-StyledContactResultsHeader.displayName = 'StyledContactResultsHeader';
-
-export const StyledCaseResultsHeader = styled('div')`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  width: 600px;
-`;
-
-StyledCaseResultsHeader.displayName = 'StyledCaseResultsHeader';
+StyledResultsHeader.displayName = 'StyledCaseResultsHeader';
 
 export const StyledSwitch = withStyles({
   thumb: {
