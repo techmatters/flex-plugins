@@ -46,5 +46,6 @@
   "CaseList-NoCases": "No cases found.",
   "CaseList-Filters-CaseCount-Singular": "{{count}} records",
   "CaseList-Filters-CaseCount-Plural": "{{count}} records",
-  "CaseList-THCase": "Number"
+  "CaseList-THCase": "Number",
+  "MaskIdentifiers": "Service User"
 }
