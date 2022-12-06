@@ -8,15 +8,13 @@ import { getConfig } from '../HrmFormPlugin';
 import { selectCannedResponses } from '../states/selectors/hrmStateSelectors';
 import { CannedResponsesContainer, FormSelect, FormSelectWrapper, FormOption } from '../styles/HrmStyles';
 
-// eslint-disable-next-line no-use-before-define
-type Props = Pick<MessageInputChildrenProps, 'conversationSid'>;
+type Props = Partial<MessageInputChildrenProps>;
 
-// eslint-disable-next-line react/display-name
 const CannedResponses: React.FC<Props> = props => {
   const cannedResponses = useSelector(selectCannedResponses);
   const { strings } = getConfig();
   const { conversationSid } = props;
-  const handleChange = event => {
+  const handleChange: React.ChangeEventHandler<HTMLSelectElement> = event => {
     Actions.invokeAction('SetInputText', {
       conversationSid,
       body: event.target.value,
@@ -44,5 +42,6 @@ const CannedResponses: React.FC<Props> = props => {
     </CannedResponsesContainer>
   );
 };
+CannedResponses.displayName = 'CannedResponses';
 
 export default withTheme(CannedResponses);
