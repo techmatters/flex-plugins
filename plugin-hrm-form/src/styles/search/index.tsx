@@ -11,7 +11,7 @@ import { Flex, Row, FontOpenSans, BottomButtonBar, TabbedFormsContainer } from '
 import HrmTheme from '../HrmTheme';
 
 // CaseViewer Styles
-export const CaseWrapper = styled('div')`
+export const PreviewWrapper = styled('div')`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -24,41 +24,7 @@ export const CaseWrapper = styled('div')`
   border-radius: 4px;
 `;
 
-CaseWrapper.displayName = 'CaseWrapper';
-
-export const CaseHeaderContainer = styled('div')`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 10px;
-`;
-
-CaseHeaderContainer.displayName = 'CaseHeaderContainer';
-
-type CaseIdProps = {
-  closed: boolean;
-};
-
-export const CaseHeaderCaseId = styled('div')<CaseIdProps>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: ${props => (props.closed ? 'none' : 'solid')};
-  color: ${props => (props.closed ? 'lightgray' : 'black')};
-  border-width: thin;
-  width: 50px;
-  font-weight: 600;
-`;
-
-CaseHeaderCaseId.displayName = 'CaseHeaderCaseId';
-
-export const CaseHeaderChildName = styled('p')`
-  font-weight: 700;
-  width: 150px;
-`;
-
-CaseHeaderChildName.displayName = 'CaseHeaderChildName';
+PreviewWrapper.displayName = 'PreviewWrapper';
 
 export const CaseSummaryContainer = styled('div')`
   display: flex;
@@ -83,20 +49,6 @@ export const BackIcon = styled(ChevronLeft)`
   color: #000000;
   width: 50px;
   height: 50px;
-`;
-
-// ContactPreview styles
-export const ContactWrapper = styled('div')`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin-top: 10px;
-  padding: 5px 20px 10px 20px;
-  width: 550px;
-  box-sizing: border-box;
-  background-color: #ffffff;
-  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.06);
-  border-radius: 4px;
 `;
 
 export const ConnectIcon = withStyles({
@@ -203,7 +155,7 @@ export const SilentText = styled('div')`
   border-radius: 2px;
 `;
 
-export const PrevNameText = styled(FontOpenSans)`
+export const PreviewHeaderText = styled(FontOpenSans)`
   font-size: 12px;
   font-weight: 700;
   line-height: 14px;
@@ -562,12 +514,3 @@ export const StandaloneSearchContainer = styled(TabbedFormsContainer)`
   background-color: ${HrmTheme.colors.base2};
 `;
 StandaloneSearchContainer.displayName = 'StandaloneSearchContainer';
-
-export const ViewContactButton = styled('button')`
-  background: #e7e8ee;
-  border: none;
-  padding: 3px 7px;
-  border-radius: 5px;
-  cursor: pointer;
-`;
-ViewContactButton.displayName = 'ViewContactButton';

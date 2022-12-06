@@ -6,7 +6,7 @@ import { CallTypes } from 'hrm-form-definitions';
 
 import { Flex } from '../../../styles/HrmStyles';
 import {
-  PrevNameText,
+  PreviewHeaderText,
   ContactButtonsWrapper,
   SubtitleLabel,
   SubtitleValue,
@@ -61,14 +61,14 @@ const ChildNameAndDate: React.FC<Props> = ({ channel, callType, id, name, caller
           </Flex>
         )}
         <StyledLink underline={true} style={{ minWidth: 'inherit', marginInlineEnd: 10 }} onClick={onClickFull}>
-          <PrevNameText style={{ textDecoration: 'underline' }}>#{id}</PrevNameText>
+          <PreviewHeaderText style={{ textDecoration: 'underline' }}>#{id}</PreviewHeaderText>
         </StyledLink>
         {showNumber && maskIdentifiers && (
-          <PrevNameText>
+          <PreviewHeaderText>
             <Template code="MaskIdentifiers" />{' '}
-          </PrevNameText>
+          </PreviewHeaderText>
         )}
-        <PrevNameText>{showNumber && !maskIdentifiers ? getNumber(channel, number) : name}</PrevNameText>
+        <PreviewHeaderText>{showNumber && !maskIdentifiers ? getNumber(channel, number) : name}</PreviewHeaderText>
         <ContactButtonsWrapper>
           <Flex marginRight="20px" />
         </ContactButtonsWrapper>
@@ -77,15 +77,15 @@ const ChildNameAndDate: React.FC<Props> = ({ channel, callType, id, name, caller
         {callerName && (
           <>
             <SubtitleLabel>
-              <Template code="Caller Name" />:
+              <Template code="SearchResultsIndex-CallerName" />:
             </SubtitleLabel>{' '}
-            <SubtitleValue>{callerName}</SubtitleValue>{' '}
+            <SubtitleValue>{callerName}</SubtitleValue>
           </>
         )}
         <SubtitleLabel>
-          <Template code="Contact Date" />:
+          <Template code="SearchResultsIndex-ContactDate" />:
         </SubtitleLabel>{' '}
-        <SubtitleValue>{dateString}</SubtitleValue>{' '}
+        <SubtitleValue>{dateString}</SubtitleValue>
       </PreviewRow>
     </>
   );

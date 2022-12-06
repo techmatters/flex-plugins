@@ -393,7 +393,7 @@
   "ContactDetails-GeneralDetails-Channel": "ช่อง",
   "ContactDetails-AddedBy": "เพิ่มโดย",
   "Unknown": "ไม่รู้จัก",
-  "CallTypeAndCounselor-Label": "ที่ปรึกษา:",
+  "SearchResultsIndex-Counselor": "ที่ปรึกษา:",
   "ColumnHeaderAgent": "ตัวแทน",
   "ColumnHeaderCalls": "การโทร",
   "ColumnHeaderTasks": "งานอื่น ๆ",

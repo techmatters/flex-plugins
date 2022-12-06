@@ -57,12 +57,12 @@ const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledPro
           ref={collapseButtonElement}
           style={{ display: isExpanded ? 'inline' : 'none', marginTop: -3.5 }}
         >
-          {collapseLinkText}
+          <Template code={collapseLinkText} />
         </StyledLink>
       </div>
       <div style={{ whiteSpace: 'nowrap', display: isOverflowing && !isExpanded ? 'inherit' : 'none' }}>
         <StyledLink underline={true} onClick={handleExpand} ref={expandButtonElement} style={{ marginTop: -3.5 }}>
-          <Template code={isExpanded ? collapseLinkText : expandLinkText} />
+          <Template code={expandLinkText} />
         </StyledLink>
       </div>
     </div>

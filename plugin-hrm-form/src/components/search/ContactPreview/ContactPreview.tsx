@@ -2,7 +2,7 @@ import React from 'react';
 
 import ChildNameAndDate from './ChildNameAndDate';
 import TagsAndCounselor from './TagsAndCounselor';
-import { ContactWrapper } from '../../../styles/search';
+import { PreviewWrapper } from '../../../styles/search';
 import { Flex } from '../../../styles/HrmStyles';
 import { SearchUIContact } from '../../../types/types';
 import { PreviewDescription } from '../PreviewDescription';
@@ -20,7 +20,7 @@ const ContactPreview: React.FC<ContactPreviewProps> = ({ contact, handleViewDeta
 
   return (
     <Flex>
-      <ContactWrapper key={contact.contactId}>
+      <PreviewWrapper key={contact.contactId}>
         <ChildNameAndDate
           id={contact.contactId}
           channel={contact.overview.channel}
@@ -32,7 +32,10 @@ const ContactPreview: React.FC<ContactPreviewProps> = ({ contact, handleViewDeta
           onClickFull={handleViewDetails}
         />
         {callSummary && (
-          <PreviewDescription expandLinkText="show more" collapseLinkText="show less">
+          <PreviewDescription
+            expandLinkText="SearchResultsIndex-ExpandDescription"
+            collapseLinkText="SearchResultsIndex-CollapseDescription"
+          >
             {callSummary}
           </PreviewDescription>
         )}
@@ -49,7 +52,7 @@ const ContactPreview: React.FC<ContactPreviewProps> = ({ contact, handleViewDeta
             definitionVersion={contact.details.definitionVersion}
           />
         )}
-      </ContactWrapper>
+      </PreviewWrapper>
     </Flex>
   );
 };
