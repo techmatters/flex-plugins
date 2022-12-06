@@ -47,5 +47,6 @@
   "CaseList-Filters-CaseCount-Singular": "{{count}} records",
   "CaseList-Filters-CaseCount-Plural": "{{count}} records",
   "CaseList-THCase": "Number",
-  "MaskIdentifiers": "Service User"
+  "MaskIdentifiers": "Service User",
+  "ChatWelcomeText": "Conversation started with Service User"
 }
