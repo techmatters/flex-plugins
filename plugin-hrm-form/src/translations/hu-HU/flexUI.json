@@ -474,7 +474,7 @@
     "Description (500 characters)": "Leírás (500 karakter)",
     "File anonymously": "Névtelenül fájl",
     "Provide contact details": "Adja meg az elérhetőségeket",
-    "MaskIdentifiers": "xxxxx",
+    "MaskIdentifiers": "Névtelen",
     "TaskLineWebChatAssignedMasked":  "{{#if helper.chat.isCustomerOnline}} {{{icon name='GreenIndicator'}}} {{else}} {{{icon name='GreyIndicator'}}} {{/if}}  {{helper.durationSinceUpdate}} | {{#if helper.chat.typers.length}} gépel ... {{else}} {{#if helper.chat.lastMessage}} {{worker.fullName}}: {{helper.chat.lastMessage.body}} {{else}}Nincs üzenet{{/if}}{{/if}}",
     "TaskLineChatAssignedMasked":
     "{{helper.durationSinceUpdate}} | {{#if helper.chat.typers.length}} gépel ... {{else}} {{#if helper.chat.lastMessage}} {{worker.fullName}}: {{helper.chat.lastMessage.body}} {{else}}Nincs üzenet{{/if}}{{/if}}",

@@ -127,7 +127,7 @@
   {
     "name": "incidentDetails",
     "label": "Incident Details",
-    "type": "text-area",
+    "type": "textarea",
     "placeholder": "",
     "rows": 20,
     "width": 250
