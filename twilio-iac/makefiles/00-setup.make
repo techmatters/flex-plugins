@@ -1,7 +1,7 @@
 .PHONY: get init plan apply destroy
 .DEFAULT_GOAL := help
 
-DOCKER_IMAGE := public.ecr.aws/r1d9x6b4/terraform
+DOCKER_IMAGE := public.ecr.aws/techmatters/terraform
 
 ifdef OS
     # We're running Windows, assume powershell
