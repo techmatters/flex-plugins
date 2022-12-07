@@ -3,7 +3,7 @@
  * a better solution later on.
  */
 
-import { SearchContact } from '../../types/types';
+import { SearchAPIContact } from '../../types/types';
 import { getNumberFromTask } from '../../utils';
 import { transformForm } from '../../services/ContactService';
 import { getConversationDuration } from '../../utils/conversationDuration';
@@ -37,7 +37,7 @@ export const retrieveCategories = (categories: Record<string, Record<string, boo
   return Object.entries(categories).reduce(catsReducer, {});
 };
 
-export const hrmServiceContactToSearchContact = (contact): SearchContact => {
+export const hrmServiceContactToSearchContact = (contact): SearchAPIContact => {
   const dateTime = contact.timeOfContact;
 
   const name = `${contact.rawJson.childInformation.name.firstName} ${contact.rawJson.childInformation.name.lastName}`;
@@ -70,7 +70,7 @@ export const hrmServiceContactToSearchContact = (contact): SearchContact => {
   };
 };
 
-export const searchContactToHrmServiceContact = (contact: SearchContact) => {
+export const searchContactToHrmServiceContact = (contact: SearchAPIContact) => {
   const {
     conversationDuration,
     createdBy,
@@ -98,7 +98,7 @@ export const searchContactToHrmServiceContact = (contact: SearchContact) => {
   };
 };
 
-export const taskFormToSearchContact = (task, form, date, counselor, temporaryId): SearchContact => {
+export const taskFormToSearchContact = (task, form, date, counselor, temporaryId): SearchAPIContact => {
   const details = transformForm(form);
   const dateTime = date;
   const name = `${details.childInformation.name.firstName} ${details.childInformation.name.lastName}`;

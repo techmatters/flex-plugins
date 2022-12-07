@@ -17,7 +17,7 @@ import {
   childKeys,
   childDefinitionObject,
 } from './CSAMReportFormDefinition';
-import type { CustomITask } from '../../types/types';
+import type { CSAMReportEntry, CustomITask } from '../../types/types';
 import { getConfig } from '../../HrmFormPlugin';
 import * as actions from '../../states/csam-report/actions';
 import * as routingActions from '../../states/routing/actions';
@@ -25,7 +25,7 @@ import * as contactsActions from '../../states/contacts/actions';
 import { isCounselorCSAMReportForm } from '../../states/csam-report/types';
 import { RootState, csamReportBase, namespace, routingBase, configurationBase } from '../../states';
 import { reportToIWF } from '../../services/ServerlessService';
-import { createCSAMReport } from '../../services/CSAMReportService';
+import { acknowledgeCSAMReport, createCSAMReport } from '../../services/CSAMReportService';
 import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
@@ -126,8 +126,20 @@ export const CSAMReportScreen: React.FC<Props> = ({
   const onValid = async form => {
     try {
       if (routing.subroute === 'child-form') {
-        /* serverLess API will be called here */
         changeRoute({ route: 'csam-report', subroute: 'loading', previousRoute }, taskSid);
+        const storedReport = await createCSAMReport({
+          reportType: 'self-generated',
+          twilioWorkerId: getConfig().workerSid,
+        });
+
+        const reportToAcknowledge: CSAMReportEntry = storedReport;
+
+        /* ServerLess API will be called here */
+
+        /* If everything went fine, before moving to the next screen acknowledge the record in DB */
+        const acknowledged = await acknowledgeCSAMReport(reportToAcknowledge.id);
+
+        addCSAMReportEntry(acknowledged, taskSid);
         changeRoute({ route: 'csam-report', subroute: 'child-status', previousRoute }, taskSid);
       }
 
@@ -135,6 +147,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
         changeRoute({ route: 'csam-report', subroute: 'loading', previousRoute }, taskSid);
         const report = await reportToIWF(form);
         const storedReport = await createCSAMReport({
+          reportType: 'counsellor-generated',
           csamReportId: report['IWFReportService1.0'].responseData,
           twilioWorkerId: getConfig().workerSid,
         });
@@ -146,6 +159,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
     } catch (err) {
       console.error(err);
       window.alert(getConfig().strings['Error-Backend']);
+
       changeRoute(
         {
           route: 'csam-report',

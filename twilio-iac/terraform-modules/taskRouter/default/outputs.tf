@@ -13,6 +13,11 @@ output "chat_task_channel_sid" {
   value = twilio_taskrouter_workspaces_task_channels_v1.chat.sid
 }
 
+output "voice_task_channel_sid" {
+  description = "Twilio SID of the 'voice' task channel"
+  value = twilio_taskrouter_workspaces_task_channels_v1.voice.sid
+}
+
 output "default_task_channel_sid" {
   description = "Twilio SID of the 'chat' task channel"
   value = twilio_taskrouter_workspaces_task_channels_v1.default.sid

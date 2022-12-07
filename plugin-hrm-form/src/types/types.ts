@@ -49,7 +49,13 @@ export type Document = { [key: string]: string | boolean };
 
 export type DocumentEntry = { document: Document; id: string | undefined } & EntryInfo;
 
-export type CSAMReportEntry = { csamReportId: string; id: number } & Omit<EntryInfo, 'id'>;
+export type CSAMReportEntry = {
+  csamReportId: string;
+  id: number;
+  reportType: 'counsellor-generated' | 'self-generated';
+  acknowledged: boolean;
+  contactId?: number;
+} & Omit<EntryInfo, 'id'>;
 
 export type CaseInfo = {
   definitionVersion?: DefinitionVersionId;
@@ -120,7 +126,7 @@ export type ContactRawJson = {
 };
 
 // Information about a single contact, as expected from search contacts endpoint (we might want to reuse this type in backend) - (is this a correct placement for this?)
-export type SearchContact = {
+export type SearchAPIContact = {
   contactId: string;
   overview: {
     helpline: string;
@@ -131,7 +137,7 @@ export type SearchContact = {
     categories: {};
     counselor: string;
     notes: string;
-    channel: string;
+    channel: ChannelTypes | 'default';
     conversationDuration: number;
     createdBy: string;
     taskId: string;
@@ -142,9 +148,11 @@ export type SearchContact = {
   csamReports: CSAMReportEntry[];
 };
 
+export type SearchUIContact = SearchAPIContact & { counselorName: string };
+
 export type SearchContactResult = {
   count: number;
-  contacts: SearchContact[];
+  contacts: SearchUIContact[];
 };
 
 export type SearchCaseResult = {

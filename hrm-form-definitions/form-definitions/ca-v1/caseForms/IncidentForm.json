@@ -60,13 +60,13 @@
         }
     },
     {
-      "name": "recentIncident",
+      "name": "date",
       "label": "When did the most recent incident occur",
       "type": "date-input"
     },
     {
       "name": "typeOfAbuse",
-      "label": "Was the incident witnessed by anyone?",
+      "label": "Type of Abuse?",
       "type": "listbox-multiselect",
       "options": [
         {

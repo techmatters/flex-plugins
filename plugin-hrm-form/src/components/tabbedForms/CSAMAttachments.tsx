@@ -25,9 +25,15 @@ const CSAMAttachments: React.FC<Props> = ({ csamReports }) => {
                 {/* <AttachFile fontSize="13px" opacity="0.6" /> */}
               </Box>
               <CSAMAttachmentText>
-                <Template code="CSAMReportForm-Attachment" />
+                {r.reportType === 'counsellor-generated' ? (
+                  <Template code="CSAMReportForm-Counsellor-Attachment" />
+                ) : (
+                  <Template code="CSAMReportForm-Self-Attachment" />
+                )}
                 <br />
-                {`${formattedCreatedAt} #${r.csamReportId}`}
+                {formattedCreatedAt}
+                <br />
+                {`#${r.csamReportId}`}
               </CSAMAttachmentText>
             </Row>
           );

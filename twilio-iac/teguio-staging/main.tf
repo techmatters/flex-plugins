@@ -18,6 +18,7 @@ locals {
   helpline = "Te Guío"
   helpline_language = "es-CO"
   task_language = "es-CO"
+  voice_ivr_language = "es-MX"
   short_helpline = "CO"
   operating_info_key = "co"
   environment = "Staging"
@@ -149,6 +150,14 @@ module customChannel {
   flex_chat_service_sid = module.services.flex_chat_service_sid
   short_helpline = local.short_helpline
   short_environment = local.short_environment
+}
+
+module voiceChannel {
+  source = "../terraform-modules/channels/voice-channel"
+  master_workflow_sid = module.taskRouter.master_workflow_sid
+  voice_task_channel_sid = module.taskRouter.voice_task_channel_sid
+  voice_ivr_language = local.voice_ivr_language
+  voice_ivr_greeting_message = local.strings.voice_ivr_greeting_message
 }
 
 module flex {

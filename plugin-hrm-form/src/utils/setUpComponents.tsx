@@ -2,7 +2,6 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
-import { ITask, ReservationStatuses, TaskChannelDefinition } from '@twilio/flex-ui';
 
 import { AcceptTransferButton, RejectTransferButton, TransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
@@ -350,5 +349,5 @@ export const removeActionsIfTransferring = () => {
  * Canned responses
  */
 export const setupCannedResponses = () => {
-  Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" conversationSid={undefined} />);
+  Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" />);
 };

@@ -12,7 +12,7 @@ import SearchResults, { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './SearchResult
 import ContactDetails from './ContactDetails';
 import Case from '../case';
 import { SearchPages } from '../../states/search/types';
-import { CustomITask, SearchContact, standaloneTaskSid } from '../../types/types';
+import { CustomITask, SearchAPIContact, standaloneTaskSid } from '../../types/types';
 import SearchResultsBackButton from './SearchResults/SearchResultsBackButton';
 import {
   handleSearchFormChange,
@@ -34,7 +34,7 @@ import { Flex } from '../../styles/HrmStyles';
 type OwnProps = {
   task: CustomITask;
   currentIsCaller?: boolean;
-  handleSelectSearchResult?: (contact: SearchContact) => void;
+  handleSelectSearchResult?: (contact: SearchAPIContact) => void;
 };
 
 // eslint-disable-next-line no-use-before-define

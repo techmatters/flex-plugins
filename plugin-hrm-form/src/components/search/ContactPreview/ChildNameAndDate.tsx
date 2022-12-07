@@ -13,7 +13,7 @@ import { channelTypes, ChannelTypes } from '../../../states/DomainConstants';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
 
 type OwnProps = {
-  channel: ChannelTypes;
+  channel: ChannelTypes | 'default';
   callType: CallTypes;
   name?: string;
   number?: string;
