@@ -5,8 +5,8 @@ import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import ContactPreview from '../../components/search/ContactPreview';
-import ContactHeader from '../../components/search/ContactPreview/ChildNameAndDate';
-import TagsAndCounselor from '../../components/search/ContactPreview/TagsAndCounselor';
+import ContactHeader from '../../components/search/ContactPreview/ContactHeader';
+import TagsAndCounselor from '../../components/search/TagsAndCounselor';
 import { mapCallType } from '../../utils';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
 import { SearchUIContact } from '../../types/types';
