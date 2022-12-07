@@ -1,7 +1,7 @@
 import React from 'react';
 
 import ChildNameAndDate from './ChildNameAndDate';
-import TagsAndCounselor from './TagsAndCounselor';
+import TagsAndCounselor from '../TagsAndCounselor';
 import { PreviewWrapper } from '../../../styles/search';
 import { Flex } from '../../../styles/HrmStyles';
 import { SearchUIContact } from '../../../types/types';

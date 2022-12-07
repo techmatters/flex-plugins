@@ -11,7 +11,7 @@ import { PreviewDescription } from '../PreviewDescription';
 import { getDefinitionVersion } from '../../../services/ServerlessService';
 import { updateDefinitionVersion } from '../../../states/configuration/actions';
 import { configurationBase, namespace, RootState } from '../../../states';
-import TagsAndCounselor from '../ContactPreview/TagsAndCounselor';
+import TagsAndCounselor from '../TagsAndCounselor';
 import { retrieveCategories } from '../../../states/contacts/contactDetailsAdapter';
 
 type OwnProps = {
@@ -28,7 +28,7 @@ const connector = connect(mapStateToProps);
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselorsHash, definitionVersions }) => {
+const Index: React.FC<Props> = ({ currentCase, onClickViewCase, counselorsHash, definitionVersions }) => {
   const { id, createdAt, connectedContacts, status, info, twilioWorkerId } = currentCase;
   const createdAtObj = new Date(createdAt);
   const updatedAtObj = getUpdatedDate(currentCase);
@@ -86,8 +86,8 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
   );
 };
 
-CasePreview.displayName = 'CasePreview';
+Index.displayName = 'CasePreview';
 
-const connected = connector(CasePreview);
+const connected = connector(Index);
 
 export default connected;

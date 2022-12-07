@@ -3,7 +3,7 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
-import { Flex } from '../../../styles/HrmStyles';
+import { Flex } from '../../styles/HrmStyles';
 import {
   ContactTag,
   CounselorText,
@@ -12,9 +12,9 @@ import {
   SummaryText,
   TagsWrapper,
   SilentText,
-} from '../../../styles/search';
-import CategoryWithTooltip from '../../common/CategoryWithTooltip';
-import { getContactTags } from '../../../utils/categories';
+} from '../../styles/search';
+import CategoryWithTooltip from '../common/CategoryWithTooltip';
+import { getContactTags } from '../../utils/categories';
 
 // eslint-disable-next-line react/display-name
 const renderTag = (tag, color) => (
