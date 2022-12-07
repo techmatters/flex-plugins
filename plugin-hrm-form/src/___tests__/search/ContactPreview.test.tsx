@@ -27,7 +27,7 @@ test('<ContactPreview> should mount', async () => {
       channel: 'whatsapp',
       name: 'Name Last',
       customerNumber: '+12025550440',
-      callType: 'CHILD CALLING ABOUT SELF',
+      callType: 'Child calling about self',
       counselor: '',
       notes: '',
       categories: { category1: ['Tag1', 'Tag2'] },
@@ -96,7 +96,7 @@ test('<ContactPreview> should mount', async () => {
 
   expect(previewContact).toEqual(contact);
   expect(name).toEqual(contact.overview.name);
-  expect(callType).toEqual(mapCallType(contact.overview.callType));
+  expect(callType).toEqual(contact.overview.callType);
   expect(channel).toEqual(contact.overview.channel);
   expect(number).toEqual(contact.overview.customerNumber);
   expect(counselor).toEqual(contact.counselorName);
