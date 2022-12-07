@@ -28,7 +28,9 @@ const getUpdatedDate = (input: SearchAPIContact | Case): Date | undefined => {
     updatedBy = input.twilioWorkerId;
     updatedAt = input.updatedAt ? new Date(input.updatedAt) : undefined;
   }
-  return updatedAt && (differenceInMinutes(createdAt, updatedAt) > 10 || createdBy !== updatedBy)
+  return updatedAt &&
+    !isNaN(updatedAt.valueOf()) &&
+    (differenceInMinutes(updatedAt, createdAt) > 10 || createdBy !== updatedBy)
     ? updatedAt
     : undefined;
 };
