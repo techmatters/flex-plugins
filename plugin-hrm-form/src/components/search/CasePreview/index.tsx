@@ -68,10 +68,7 @@ const Index: React.FC<Props> = ({ currentCase, onClickViewCase, counselorsHash, 
           statusLabel={statusLabel}
         />
         {summary && (
-          <PreviewDescription
-            expandLinkText="SearchResultsIndex-ExpandDescription"
-            collapseLinkText="SearchResultsIndex-CollapseDescription"
-          >
+          <PreviewDescription expandLinkText="CaseSummary-ReadMore" collapseLinkText="CaseSummary-ReadLess">
             {summary}
           </PreviewDescription>
         )}

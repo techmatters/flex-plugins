@@ -77,13 +77,13 @@ const ContactHeader: React.FC<Props> = ({ channel, callType, id, name, callerNam
         {callerName && (
           <>
             <SubtitleLabel>
-              <Template code="SearchResultsIndex-CallerName" />:
+              <Template code="CallSummary-CallerName" />:
             </SubtitleLabel>{' '}
             <SubtitleValue>{callerName}</SubtitleValue>
           </>
         )}
         <SubtitleLabel>
-          <Template code="SearchResultsIndex-ContactDate" />:
+          <Template code="CallSummary-ContactDate" />:
         </SubtitleLabel>{' '}
         <SubtitleValue>{dateString}</SubtitleValue>
       </PreviewRow>
