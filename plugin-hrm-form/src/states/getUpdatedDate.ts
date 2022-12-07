@@ -18,10 +18,11 @@ const getUpdatedDate = (input: SearchAPIContact | Case): Date | undefined => {
   let createdBy: string;
   let updatedBy: string;
   if (isSearchContact(input)) {
-    createdBy = input.overview.createdBy;
-    createdAt = new Date(input.overview.dateTime);
-    updatedBy = input.overview.updatedBy;
-    updatedAt = input.overview.updatedAt ? new Date(input.overview.updatedAt) : undefined;
+    const { overview } = input;
+    createdBy = overview.createdBy;
+    createdAt = new Date(overview.dateTime);
+    updatedBy = overview.updatedBy;
+    updatedAt = overview.updatedAt ? new Date(overview.updatedAt) : undefined;
   } else {
     createdBy = input.twilioWorkerId;
     createdAt = new Date(input.createdAt);
