@@ -32,10 +32,7 @@ const ContactPreview: React.FC<ContactPreviewProps> = ({ contact, handleViewDeta
           onClickFull={handleViewDetails}
         />
         {callSummary && (
-          <PreviewDescription
-            expandLinkText="SearchResultsIndex-ExpandDescription"
-            collapseLinkText="SearchResultsIndex-CollapseDescription"
-          >
+          <PreviewDescription expandLinkText="CaseSummary-ReadMore" collapseLinkText="CaseSummary-ReadLess">
             {callSummary}
           </PreviewDescription>
         )}

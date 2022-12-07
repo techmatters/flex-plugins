@@ -68,10 +68,7 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
           statusLabel={statusLabel}
         />
         {summary && (
-          <PreviewDescription
-            expandLinkText="SearchResultsIndex-ExpandDescription"
-            collapseLinkText="SearchResultsIndex-CollapseDescription"
-          >
+          <PreviewDescription expandLinkText="CaseSummary-ReadMore" collapseLinkText="CaseSummary-ReadLess">
             {summary}
           </PreviewDescription>
         )}
