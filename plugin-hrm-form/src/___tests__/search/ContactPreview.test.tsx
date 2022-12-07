@@ -5,7 +5,7 @@ import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import ContactPreview from '../../components/search/ContactPreview';
-import ChildNameAndDate from '../../components/search/ContactPreview/ChildNameAndDate';
+import ContactHeader from '../../components/search/ContactPreview/ChildNameAndDate';
 import TagsAndCounselor from '../../components/search/ContactPreview/TagsAndCounselor';
 import { mapCallType } from '../../utils';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
@@ -86,12 +86,12 @@ test('<ContactPreview> should mount', async () => {
 
   const component = wrapper.findByType(ContactPreview);
 
-  expect(() => component.findByType(ChildNameAndDate)).not.toThrow();
+  expect(() => component.findByType(ContactHeader)).not.toThrow();
   expect(() => component.findByType(TagsAndCounselor)).not.toThrow();
   expect(() => component.findByType(NonExisting)).toThrow();
 
   const previewContact = component.props.contact;
-  const { channel, callType, name, number, date } = component.findByType(ChildNameAndDate).props;
+  const { channel, callType, name, number, date } = component.findByType(ContactHeader).props;
   const { counselor, categories } = component.findByType(TagsAndCounselor).props;
 
   expect(previewContact).toEqual(contact);

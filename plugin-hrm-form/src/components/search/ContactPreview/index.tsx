@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ChildNameAndDate from './ChildNameAndDate';
+import ContactHeader from './ContactHeader';
 import TagsAndCounselor from '../TagsAndCounselor';
 import { PreviewWrapper } from '../../../styles/search';
 import { Flex } from '../../../styles/HrmStyles';
@@ -21,7 +21,7 @@ const ContactPreview: React.FC<ContactPreviewProps> = ({ contact, handleViewDeta
   return (
     <Flex>
       <PreviewWrapper key={contact.contactId}>
-        <ChildNameAndDate
+        <ContactHeader
           id={contact.contactId}
           channel={contact.overview.channel}
           callType={contact.overview.callType}
