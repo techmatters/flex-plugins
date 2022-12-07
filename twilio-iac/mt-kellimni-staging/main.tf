@@ -28,7 +28,6 @@ locals {
   twilio_numbers = [""]
   channel = ""
   custom_channel_attributes = ""
-  messaging_flow_contact_identity = "+16602359810"
   feature_flags = {
     "enable_fullstory_monitoring": true,
     "enable_upload_documents": true,

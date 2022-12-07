@@ -7,7 +7,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "tl-terraform-state-twilio-terraform-poc"
+    bucket         = "tl-terraform-state-twilio-mt-production"
     key            = "twilio/terraform.tfstate"
     dynamodb_table = "terraform-locks"
     encrypt        = true
@@ -19,7 +19,7 @@ locals {
   short_helpline = "MT"
   operating_info_key = "mt"
   environment = "Production"
-  short_environment = "STG"
+  short_environment = "PROD"
   definition_version = "mt-v1"
   permission_config = "mt"
   multi_office = false
@@ -28,7 +28,6 @@ locals {
   twilio_numbers = [""]
   channel = ""
   custom_channel_attributes = ""
-  messaging_flow_contact_identity = "+16602359810"
   feature_flags = {
     "enable_fullstory_monitoring": true,
     "enable_upload_documents": true,
@@ -48,10 +47,17 @@ locals {
     "enable_transcripts": true
   }
   twilio_channels = {
-    "webchat" = {"contact_identity" = "", "channel_type" ="web"  }
+    #TODO: get fb messenger id
+    # "facebook" = {"contact_identity" = "messenger:103538615719253", "channel_type" ="facebook"  },
+    "webchat" = {"contact_identity" = "", "channel_type" = "web"  }
+    #TODO add whatsapp ids
+    # "whatsapp" = {"contact_identity" = "whatsapp:+12135834846", "channel_type" ="whatsapp" }
    }
 
-  custom_channels=[]
+  custom_channels = [
+    #TODO: enable instagram
+    # "instagram"
+  ]
 }
 
 module "chatbots" {
@@ -62,10 +68,10 @@ module "chatbots" {
 module "hrmServiceIntegration" {
   source = "../terraform-modules/hrmServiceIntegration/default"
   local_os = var.local_os
-  helpline = var.helpline
-  short_helpline = var.short_helpline
-  environment = var.environment
-  short_environment = var.short_environment
+  helpline = local.helpline
+  short_helpline = local.short_helpline
+  environment = local.environment
+  short_environment = local.short_environment
 }
 
 module "serverless" {
@@ -75,56 +81,73 @@ module "serverless" {
 module "services" {
   source = "../terraform-modules/services/default"
   local_os = var.local_os
-  helpline = var.helpline
-  short_helpline = var.short_helpline
-  environment = var.environment
-  short_environment = var.short_environment
+  helpline = local.helpline
+  short_helpline = local.short_helpline
+  environment = local.environment
+  short_environment = local.short_environment
 }
 
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
-  helpline = "ChildLine Zambia (ZM)"
+  helpline = local.helpline
+  custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
 }
 
-module studioFlow {
-  source = "../terraform-modules/studioFlow/default"
+module twilioChannel {
+  for_each = local.twilio_channels
+  source = "../terraform-modules/channels/twilio-channel"
+  channel_contact_identity = each.value.contact_identity
+  channel_type = each.value.channel_type
+  pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
+  target_task_name = local.target_task_name
+  channel_name = "${each.key}"
+  janitor_enabled = !local.enable_post_survey
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-  default_task_channel_sid = module.taskRouter.default_task_channel_sid
-  pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
+  flex_chat_service_sid = module.services.flex_chat_service_sid
 }
 
-module flex {
-  source = "../terraform-modules/flex/default"
-  account_sid = var.account_sid
-  short_environment = var.short_environment
-  operating_info_key = var.operating_info_key
-  permission_config = "zm"
-  definition_version = var.definition_version
-  serverless_url = var.serverless_url
-  hrm_url = "https://hrm-development-eu.tl.techmatters.org"
-  multi_office_support = var.multi_office
-  feature_flags = var.feature_flags
+module customChannel {
+  for_each = toset(local.custom_channels)
+  source = "../terraform-modules/channels/custom-channel"
+  channel_name = "${each.key}"
+  janitor_enabled = true
+  master_workflow_sid = module.taskRouter.master_workflow_sid
+  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
-  messaging_studio_flow_sid = module.studioFlow.messaging_studio_flow_sid
-  messaging_flow_contact_identity = var.messaging_flow_contact_identity
+  short_helpline = local.short_helpline
+  short_environment = local.short_environment
+}
+
+
+module flex {
+  source = "../terraform-modules/flex/service-configuration"
+  account_sid = var.account_sid
+  short_environment = local.short_environment
+  operating_info_key = local.operating_info_key
+  permission_config = local.permission_config
+  definition_version = local.definition_version
+  serverless_url = var.serverless_url
+  multi_office_support = local.multi_office
+  feature_flags = local.feature_flags
+  hrm_url = "https://hrm-staging-eu.tl.techmatters.org"
 }
 
 module survey {
   source = "../terraform-modules/survey/default"
-  helpline = var.helpline
+  helpline = local.helpline
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
 }
 
 module aws {
   source = "../terraform-modules/aws/default"
   account_sid = var.account_sid
-  helpline = var.helpline
-  short_helpline = var.short_helpline
-  environment = var.environment
-  short_environment = var.short_environment
-  operating_info_key = var.operating_info_key
+  helpline = local.helpline
+  short_helpline = local.short_helpline
+  environment = local.environment
+  short_environment = local.short_environment
+  operating_info_key = local.operating_info_key
   datadog_app_id = var.datadog_app_id
   datadog_access_token = var.datadog_access_token
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
@@ -134,20 +157,22 @@ module aws {
   flex_proxy_service_sid = module.services.flex_proxy_service_sid
   post_survey_bot_sid = module.chatbots.post_survey_bot_sid
   survey_workflow_sid = module.survey.survey_workflow_sid
+  bucket_region = "eu-west-1"
 }
 
 module aws_monitoring {
   source = "../terraform-modules/aws-monitoring/default"
-  helpline = var.helpline
-  short_helpline = var.short_helpline
-  environment = var.environment
+  helpline = local.helpline
+  short_helpline = local.short_helpline
+  environment = local.environment
+  cloudwatch_region = "us-east-1"
 }
 
 module github {
   source = "../terraform-modules/github/default"
   twilio_account_sid = var.account_sid
   twilio_auth_token = var.auth_token
-  short_environment = var.short_environment
-  short_helpline = var.short_helpline
+  short_environment = local.short_environment
+  short_helpline = local.short_helpline
   serverless_url = var.serverless_url
 }
