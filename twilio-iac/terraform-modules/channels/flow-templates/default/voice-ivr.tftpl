@@ -1,0 +1,84 @@
+${
+  jsonencode(
+    {
+      "description": "IVR for creating a Flex voice task",
+      "states": [
+        {
+          "name": "Trigger",
+          "type": "trigger",
+          "transitions": [
+            {
+              "event": "incomingMessage"
+            },
+            {
+              "next": "Greeting",
+              "event": "incomingCall"
+            },
+            {
+              "event": "incomingConversationMessage"
+            },
+            {
+              "event": "incomingRequest"
+            },
+            {
+              "event": "incomingParent"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": 0,
+              "y": -10
+            }
+          }
+        },
+        {
+          "name": "SendCallToAgent",
+          "type": "send-to-flex",
+          "transitions": [
+            {
+              "event": "callComplete"
+            },
+            {
+              "event": "failedToEnqueue"
+            },
+            {
+              "event": "callFailure"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": 80,
+              "y": 460
+            },
+            "workflow": master_workflow_sid,
+            "channel": voice_task_channel_sid,
+            "attributes": channel_attributes
+          }
+        },
+        {
+          "name": "Greeting",
+          "type": "say-play",
+          "transitions": [
+            {
+              "next": "SendCallToAgent",
+              "event": "audioComplete"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": 80,
+              "y": 210
+            },
+            "loop": 1,
+            "say": voice_ivr_greeting_message,
+            "language": voice_ivr_language
+          }
+        }
+      ],
+      "initial_state": "Trigger",
+      "flags": {
+        "allow_concurrent_calls": true
+      }
+    }
+  )
+}
