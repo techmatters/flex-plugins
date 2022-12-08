@@ -4,7 +4,8 @@ import React, { useEffect, useMemo } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
-import type { DefinitionVersion, FormDefinition, StatusInfo } from 'hrm-form-definitions';
+import type { DefinitionVersion, FormDefinition } from 'hrm-form-definitions';
+import { FormInputType } from 'hrm-form-definitions';
 import { isEqual } from 'lodash';
 import { bindActionCreators } from 'redux';
 
@@ -22,20 +23,20 @@ import ActionHeader from './ActionHeader';
 import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
+import { changeRoute } from '../../states/routing/actions';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
 import { createFormFromDefinition, disperseInputs, splitAt } from '../common/forms/formGenerators';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import useFocus from '../../utils/useFocus';
 import { recordingErrorHandler } from '../../fullStory';
-import { caseItemHistory, CaseState, CaseSummaryWorkingCopy } from '../../states/case/types';
+import { caseItemHistory, CaseSummaryWorkingCopy } from '../../states/case/types';
 import CloseCaseDialog from './CloseCaseDialog';
 import {
   initialiseCaseSummaryWorkingCopy,
   removeCaseSummaryWorkingCopy,
   updateCaseSummaryWorkingCopy,
 } from '../../states/case/caseWorkingCopy';
-import { changeRoute } from '../../states/routing/actions';
 import { AppRoutes } from '../../states/routing/types';
 import { PermissionActions, PermissionActionType } from '../../permissions';
 
@@ -72,23 +73,23 @@ const EditCaseSummary: React.FC<Props> = ({
         {
           name: 'status',
           label: 'Case-CaseStatus',
-          type: 'select',
+          type: FormInputType.Select,
           options: connectedCaseState.availableStatusTransitions,
         },
         {
           name: 'followUpDate',
-          type: 'date-input',
+          type: FormInputType.DateInput,
           label: 'Case-CaseDetailsFollowUpDate',
         },
         {
           name: 'childIsAtRisk',
           label: 'Case-ChildIsAtRisk',
-          type: 'checkbox',
+          type: FormInputType.Checkbox,
         },
         {
           name: 'summary',
           label: 'SectionName-CaseSummary',
-          type: 'textarea',
+          type: FormInputType.Textarea,
         },
       ];
     } catch (e) {

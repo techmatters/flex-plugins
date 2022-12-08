@@ -1,5 +1,5 @@
 import each from 'jest-each';
-import { CategoriesDefinition, FormDefinition } from '../../formDefinition';
+import { CategoriesDefinition, FormDefinition, FormInputType } from '../../formDefinition';
 import { DefinitionSpecification, FormDefinitionSpecification } from '../../specification';
 
 import { validateCategoriesDefinition, validateFormDefinition } from '../../specification/validate';
@@ -35,7 +35,7 @@ describe('validateFormDefinition', () => {
           one: { required: true },
         },
       },
-      definition: [{ name: 'another', label: 'another', type: 'input' }],
+      definition: [{ name: 'another', label: 'another', type: FormInputType.Input }],
       expectedResult: {
         valid: false,
         issues: [],
@@ -52,8 +52,8 @@ describe('validateFormDefinition', () => {
         },
       },
       definition: [
-        { name: 'one', label: 'one', type: 'input' },
-        { name: 'one', label: 'one', type: 'input' },
+        { name: 'one', label: 'one', type: FormInputType.Input },
+        { name: 'one', label: 'one', type: FormInputType.Input },
       ],
       expectedResult: {
         valid: false,
@@ -78,7 +78,7 @@ describe('validateFormDefinition', () => {
           },
         },
       },
-      definition: [{ name: 'one', label: 'one', type: 'input' }],
+      definition: [{ name: 'one', label: 'one', type: FormInputType.Input }],
       expectedResult: {
         valid: false,
         issues: [],
@@ -99,7 +99,7 @@ describe('validateFormDefinition', () => {
           },
         },
       },
-      definition: [{ name: 'one', label: 'one', type: 'input' }],
+      definition: [{ name: 'one', label: 'one', type: FormInputType.Input }],
       expectedResult: {
         valid: true,
         issues: [],

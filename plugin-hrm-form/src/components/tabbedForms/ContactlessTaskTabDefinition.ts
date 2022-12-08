@@ -1,5 +1,5 @@
 import { isFuture } from 'date-fns';
-import type { FormDefinition, DefinitionVersion } from 'hrm-form-definitions';
+import { DefinitionVersion, FormDefinition, FormInputType } from 'hrm-form-definitions';
 
 import { channelTypes } from '../../states/DomainConstants';
 import { mapChannelForInsights } from '../../utils/mappers';
@@ -41,14 +41,14 @@ export const createContactlessTaskTabDefinition = ({
   return [
     {
       name: 'channel',
-      type: 'select',
+      type: FormInputType.Select,
       label: 'Channel',
       options: channelOptions,
       required: { value: true, message: 'RequiredFieldError' },
     },
     {
       name: 'createdOnBehalfOf',
-      type: 'select',
+      type: FormInputType.Select,
       label: 'Counsellor',
       options: counsellorOptions,
       // defaultOption: workerSid,
@@ -56,7 +56,7 @@ export const createContactlessTaskTabDefinition = ({
     },
     {
       name: 'date',
-      type: 'date-input',
+      type: FormInputType.DateInput,
       label: 'Date of Contact',
       initializeWithCurrent: true,
       required: { value: true, message: 'RequiredFieldError' },
@@ -75,7 +75,7 @@ export const createContactlessTaskTabDefinition = ({
     },
     {
       name: 'time',
-      type: 'time-input',
+      type: FormInputType.TimeInput,
       label: 'Time of Contact',
       initializeWithCurrent: true,
       required: { value: true, message: 'RequiredFieldError' },
@@ -83,7 +83,7 @@ export const createContactlessTaskTabDefinition = ({
     {
       name: 'helpline',
       label: helplineLabel,
-      type: 'select',
+      type: FormInputType.Select,
       defaultOption: defaultHelplineOption,
       options: helplineOptions,
       required: { value: true, message: 'RequiredFieldError' },
