@@ -7,7 +7,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "tl-terraform-state-twilio-co-production"
+    bucket         = "tl-terraform-state-twilio-mt-production"
     key            = "twilio/terraform.tfstate"
     dynamodb_table = "terraform-locks"
     encrypt        = true
@@ -15,24 +15,21 @@ terraform {
 }
 
 locals {
-  helpline = "Te Guío"
-  helpline_language = "es-CO"
-  task_language = "es-CO"
-  short_helpline = "CO"
-  operating_info_key = "co"
+  helpline = "Kellimni"
+  short_helpline = "MT"
+  operating_info_key = "mt"
   environment = "Production"
   short_environment = "PROD"
-  operating_hours_function_sid = "ZHb7ef5682d731ce326be6d61c8a2b2fcf"
-  definition_version = "co-v1"
-  permission_config = "co"
+  definition_version = "mt-v1"
+  permission_config = "mt"
   multi_office = false
   enable_post_survey = false
-  target_task_name = "execute_initial_flow"
-  twilio_numbers = ["messenger:103538615719253","twitter:1532353002387931139","instagram:17841453197793547"]
+  target_task_name = "greeting"
+  twilio_numbers = [""]
   channel = ""
   custom_channel_attributes = ""
   feature_flags = {
-    "enable_fullstory_monitoring": false,
+    "enable_fullstory_monitoring": true,
     "enable_upload_documents": true,
     "enable_post_survey": local.enable_post_survey,
     "enable_case_management": true,
@@ -41,23 +38,30 @@ locals {
     "enable_sort_cases": true,
     "enable_transfers": true,
     "enable_manual_pulling": true,
-    "enable_csam_report": true,
+    "enable_csam_report": false,
     "enable_canned_responses": true,
     "enable_dual_write": false,
     "enable_save_insights": true,
     "enable_previous_contacts": true,
-    "enable_contact_editing": true
+    "enable_contact_editing": true,
+    "enable_transcripts": true
   }
   twilio_channels = {
-    "facebook" = {"contact_identity" = "messenger:103538615719253", "channel_type" ="facebook" },
-    "webchat" = {"contact_identity" = "", "channel_type" ="web"  }
-  }
-  custom_channels=["twitter","instagram"]
-  strings= jsondecode(file("${path.module}/../translations/${local.helpline_language}/strings.json"))
+    #TODO: get fb messenger id
+    # "facebook" = {"contact_identity" = "messenger:103538615719253", "channel_type" ="facebook"  },
+    "webchat" = {"contact_identity" = "", "channel_type" = "web"  }
+    #TODO add whatsapp ids
+    # "whatsapp" = {"contact_identity" = "whatsapp:+12135834846", "channel_type" ="whatsapp" }
+   }
+
+  custom_channels = [
+    #TODO: enable instagram
+    # "instagram"
+  ]
 }
 
-module "custom_chatbots" {
-  source = "../terraform-modules/chatbots/te-guio-co"
+module "chatbots" {
+  source = "../terraform-modules/chatbots/default"
   serverless_url = var.serverless_url
 }
 
@@ -93,27 +97,9 @@ module "taskRouter" {
 module twilioChannel {
   for_each = local.twilio_channels
   source = "../terraform-modules/channels/twilio-channel"
-  custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/operating-hours/with-chatbot.tftpl",
-    {
-      channel_name = "${each.key}"
-      serverless_url=var.serverless_url
-      serverless_service_sid = module.serverless.serverless_service_sid
-      serverless_environment_sid = module.serverless.serverless_environment_production_sid
-      operating_hours_function_sid = local.operating_hours_function_sid
-      master_workflow_sid = module.taskRouter.master_workflow_sid
-      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-      channel_attributes = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language})
-      flow_description = "${title(each.key)} Messaging Flow"
-      pre_survey_bot_sid = module.custom_chatbots.pre_survey_bot_es_sid
-      target_task_name = local.target_task_name
-      operating_hours_holiday = local.strings.operating_hours_holiday
-      operating_hours_closed = local.strings.operating_hours_closed
-
-    })
   channel_contact_identity = each.value.contact_identity
   channel_type = each.value.channel_type
-  pre_survey_bot_sid = module.custom_chatbots.pre_survey_bot_es_sid
+  pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
   target_task_name = local.target_task_name
   channel_name = "${each.key}"
   janitor_enabled = !local.enable_post_survey
@@ -125,22 +111,6 @@ module twilioChannel {
 module customChannel {
   for_each = toset(local.custom_channels)
   source = "../terraform-modules/channels/custom-channel"
-  custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/operating-hours/no-chatbot.tftpl",
-    {
-      channel_name = "${each.key}"
-      serverless_url=var.serverless_url
-      serverless_service_sid = module.serverless.serverless_service_sid
-      serverless_environment_sid = module.serverless.serverless_environment_production_sid
-      operating_hours_function_sid = local.operating_hours_function_sid
-      master_workflow_sid = module.taskRouter.master_workflow_sid
-      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-      channel_attributes = templatefile("../terraform-modules/channels/custom-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language})
-      flow_description = "${title(each.key)} Messaging Flow"
-      operating_hours_holiday = local.strings.operating_hours_holiday
-      operating_hours_closed = local.strings.operating_hours_closed
-
-    })
   channel_name = "${each.key}"
   janitor_enabled = true
   master_workflow_sid = module.taskRouter.master_workflow_sid
@@ -149,6 +119,7 @@ module customChannel {
   short_helpline = local.short_helpline
   short_environment = local.short_environment
 }
+
 
 module flex {
   source = "../terraform-modules/flex/service-configuration"
@@ -160,7 +131,7 @@ module flex {
   serverless_url = var.serverless_url
   multi_office_support = local.multi_office
   feature_flags = local.feature_flags
-  helpline_language = local.helpline_language
+  hrm_url = "https://hrm-production-eu.tl.techmatters.org"
 }
 
 module survey {
@@ -184,8 +155,9 @@ module aws {
   shared_state_sync_service_sid = module.services.shared_state_sync_service_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
   flex_proxy_service_sid = module.services.flex_proxy_service_sid
-  post_survey_bot_sid = module.custom_chatbots.post_survey_bot_es_sid
+  post_survey_bot_sid = module.chatbots.post_survey_bot_sid
   survey_workflow_sid = module.survey.survey_workflow_sid
+  bucket_region = "eu-west-1"
 }
 
 module aws_monitoring {
@@ -193,6 +165,7 @@ module aws_monitoring {
   helpline = local.helpline
   short_helpline = local.short_helpline
   environment = local.environment
+  cloudwatch_region = "us-east-1"
 }
 
 module github {
