@@ -57,55 +57,6 @@ const testFormFileSpecification =
     return result;
   };
 
-/**
- * Given a particular DefinitionVersionId, will check that testFormFileSpecification is valid for aseloFormTemplates
- */
-const testFormAgainstAseloTemplates = async (definitionVersionId: DefinitionVersionId) => {
-  const definitionVersion = await loadDefinition(definitionVersionId);
-
-  const formFileSpecificationPaths = [
-    'caseForms.HouseholdForm',
-    'caseForms.IncidentForm',
-    'caseForms.NoteForm',
-    'caseForms.PerpetratorForm',
-    'caseForms.ReferralForm',
-    'caseForms.DocumentForm',
-    'tabbedForms.CallerInformationTab',
-    'tabbedForms.CaseInformationTab',
-    'tabbedForms.ChildInformationTab',
-    'callTypeButtons',
-  ];
-
-  const results = formFileSpecificationPaths.map((path) => {
-    const assertFun = testFormFileSpecification(definitionVersionId, path);
-    const specification = get(aseloFormTemplates, path);
-    const definition = get(definitionVersion, path);
-
-    return assertFun(specification, definition);
-  });
-
-  expect(results).not.toContainEqual({
-    valid: false,
-    issues: expect.anything(),
-    itemReports: expect.anything(),
-  });
-
-  const helplines = definitionVersion.helplineInformation.helplines.map((h) => h.value);
-  const categoriesDefinitions = helplines.map((helpline) => ({
-    helpline,
-    categoriesDefinition: definitionVersion.tabbedForms.IssueCategorizationTab(helpline),
-  }));
-
-  categoriesDefinitions.forEach(({ helpline, categoriesDefinition }) => {
-    const assertFun = testCategoriesDefinition(
-      definitionVersionId,
-      `tabbedForms.IssueCategorizationTab (helpline ${helpline})`,
-    );
-
-    assertFun(aseloFormTemplates.tabbedForms.IssueCategorizationTab, categoriesDefinition);
-  });
-};
-
 describe('Validate form definitions', () => {
   const definitionVersionsIds = Object.values(DefinitionVersionId).map((definitionId) => ({
     definitionId,
