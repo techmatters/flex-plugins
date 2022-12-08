@@ -131,7 +131,7 @@ module flex {
   serverless_url = var.serverless_url
   multi_office_support = local.multi_office
   feature_flags = local.feature_flags
-  hrm_url = "https://hrm-staging-eu.tl.techmatters.org"
+  hrm_url = "https://hrm-production-eu.tl.techmatters.org"
 }
 
 module survey {
