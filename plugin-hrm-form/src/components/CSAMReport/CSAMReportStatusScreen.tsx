@@ -51,7 +51,10 @@ const CSAMReportStatusScreen: React.FC<Props> = ({
 
   return (
     // how should we handle possible IWF API error here? Show a screen, an alert & go back to form?
-    <CSAMReportContainer style={{padding: csamType === 'child-status' && '5px'}} data-testid="CSAMReport-StatusScreen">
+    <CSAMReportContainer
+      style={{ padding: csamType === 'child-status' && '5px' }}
+      data-testid="CSAMReport-StatusScreen"
+    >
       <CSAMReportLayout>
         <HeaderCloseButton onClick={onClickClose} data-testid="Case-CloseCross">
           <HiddenText>
@@ -90,7 +93,7 @@ const CSAMReportStatusScreen: React.FC<Props> = ({
                 </Box>
               )}
               <CopyCodeButton
-              style={{padding: csamType === 'child-status' && '5px 17px 5px 12px'}}
+                style={{ padding: csamType === 'child-status' && '5px 17px 5px 12px' }}
                 secondary
                 roundCorners
                 onClick={onCopyCode}
