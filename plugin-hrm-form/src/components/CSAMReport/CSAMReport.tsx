@@ -182,7 +182,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
   };
 
   const onSendReport = methods.handleSubmit(onValid, onInvalid);
-  const onConfirmInput = methods.handleSubmit(confirmInput, onInvalid);
 
   switch (routing.subroute) {
     case 'child-form': {

@@ -7,16 +7,12 @@ import { type } from '@testing-library/user-event/dist/types/setup/directApi';
 import { FontOpenSans, StyledNextStepButton } from '../HrmStyles';
 import HrmTheme from '../HrmTheme';
 
-type CSAMReportContainerProp = {
-  padding?: string;
-};
-
-export const CSAMReportContainer = styled('div')<CSAMReportContainerProp>`
+export const CSAMReportContainer = styled('div')`
   display: flex;
   flex-direction: column;
   height: 100%;
   background-color: #192b334d;
-  padding: ${props => (props.padding ? props.padding : '5px 10px')};
+  padding: 5px 10px;
 `;
 CSAMReportContainer.displayName = 'CSAMReportContainer';
 
@@ -47,12 +43,8 @@ export const CenterContent = styled('div')`
 `;
 CenterContent.displayName = 'CenterContent';
 
-type CopyCodeButtonProp = {
-  padding?: string;
-};
-
-export const CopyCodeButton = styled(StyledNextStepButton)<CopyCodeButtonProp>`
-  padding: ${props => (props.padding ? props.padding : '7px')};
+export const CopyCodeButton = styled(StyledNextStepButton)`
+  padding: '7px';
 `;
 CopyCodeButton.displayName = 'CopyCodeButton';
 

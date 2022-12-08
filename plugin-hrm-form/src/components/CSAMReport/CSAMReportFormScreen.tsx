@@ -36,7 +36,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
   isEmpty,
 }) => {
   return (
-    <CSAMReportContainer padding={csamType === 'child-form' && '5px'} data-testid="CSAMReport-FormScreen">
+    <CSAMReportContainer style={{padding: csamType === 'child-form' && '5px'}} data-testid="CSAMReport-FormScreen">
       {csamType === 'child-form' && (
         <CSAMReportLayout>
           <ActionHeader
