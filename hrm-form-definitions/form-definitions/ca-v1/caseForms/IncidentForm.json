@@ -138,5 +138,13 @@
       "name": "otherAbuse",
       "label": "If Other, provide details:",
       "type": "input"
+    },
+    {
+      "name": "safetyPlan",
+      "label": "Safety Plan",
+      "type": "textarea",
+      "placeholder": "",
+      "rows": 10,
+      "width": 250
     }
   ]
