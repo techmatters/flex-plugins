@@ -169,6 +169,8 @@ const maskIdentifiersByChannel = channelType => {
    * }
    */
   channelType.templates.IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
+  channelType.templates.CallCanvas.firstLine = 'MaskIdentifiers';
+
   // Task panel during an active call
   channelType.templates.TaskCanvasHeader.title = 'MaskIdentifiers';
   channelType.templates.MessageListItem = 'MaskIdentifiers';
