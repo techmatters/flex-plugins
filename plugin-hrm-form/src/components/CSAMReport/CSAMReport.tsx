@@ -130,18 +130,26 @@ export const CSAMReportScreen: React.FC<Props> = ({
         changeRoute({ route: 'csam-report', subroute: 'loading', previousRoute }, taskSid);
 
         const report = await selfReportToIWF(form);
-        console.log(report);
+
+        const reportStatus = {
+          responseCode: report.status,
+          responseData: report.reportUrl,
+          responseDescription: '',
+        };
+
+        updateStatusAction(reportStatus, taskSid);
         changeRoute({ route: 'csam-report', subroute: 'child-status', previousRoute }, taskSid);
       }
 
       if (routing.subroute === 'counsellor-form') {
         changeRoute({ route: 'csam-report', subroute: 'loading', previousRoute }, taskSid);
         const report = await reportToIWF(form);
-        console.log(report);
         const storedReport = await createCSAMReport({
           csamReportId: report['IWFReportService1.0'].responseData,
           twilioWorkerId: getConfig().workerSid,
         });
+
+        console.log('storedReport is here', storedReport);
 
         updateStatusAction(report['IWFReportService1.0'], taskSid);
         addCSAMReportEntry(storedReport, taskSid);
@@ -226,7 +234,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
     case 'child-status': {
       return (
         <CSAMReportStatusScreen
-          clcReportStatus="https://iwf.org/self-report/id/23ired45wr"
+          clcReportStatus={csamReportState.reportStatus}
           onClickClose={onClickClose}
           onSendAnotherReport={() => onSendAnotherReport('csam-report', 'child-form')}
           csamType="child-status"

@@ -47,6 +47,8 @@ const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
       return <FormTab key="CategoriesTab" label="TabbedForms-CategoriesTab" error={errors.categories} />;
     case 'caseInformation':
       return <FormTab key="CaseInfoTab" label="TabbedForms-AddCaseInfoTab" error={errors.caseInformation} />;
+    case 'externalReport':
+      return <FormTab key="CaseInfoTab" label="TabbedForms-AddCaseInfoTab" error={errors.externalReport} />;
     default:
       return null;
   }
@@ -61,15 +63,23 @@ const mapTabsToIndex = (task: CustomITask, contactForm: TaskEntry): TabbedFormSu
     if (isNonDataCallType(contactForm.callType)) return ['contactlessTask'];
 
     return isCallerType
-      ? ['search', 'contactlessTask', 'callerInformation', 'childInformation', 'categories', 'caseInformation']
-      : ['search', 'contactlessTask', 'childInformation', 'categories', 'caseInformation'];
+      ? [
+          'search',
+          'contactlessTask',
+          'callerInformation',
+          'childInformation',
+          'categories',
+          'caseInformation',
+          'externalReport',
+        ]
+      : ['search', 'contactlessTask', 'childInformation', 'categories', 'caseInformation', 'externalReport'];
   }
 
   if (isEmptyCallType(contactForm.callType)) return ['search'];
 
   return isCallerType
-    ? ['search', 'callerInformation', 'childInformation', 'categories', 'caseInformation']
-    : ['search', 'childInformation', 'categories', 'caseInformation'];
+    ? ['search', 'callerInformation', 'childInformation', 'categories', 'caseInformation', 'externalReport']
+    : ['search', 'childInformation', 'categories', 'caseInformation', 'externalReport'];
 };
 
 type OwnProps = {

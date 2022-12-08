@@ -1,3 +1,4 @@
+import { type } from '@testing-library/user-event/dist/types/utility';
 import type { FormItemDefinition } from 'hrm-form-definitions';
 
 import { getInitialValue } from '../common/forms/formGenerators';

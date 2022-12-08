@@ -8,6 +8,7 @@ import {
   FormDefinition,
   FormItemDefinition,
   isNonSaveable,
+  LayoutDefinition,
 } from 'hrm-form-definitions';
 
 import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
@@ -96,6 +97,38 @@ export const searchResultToContactForm = (def: FormDefinition, obj: InformationO
   return deTransformed;
 };
 
+// eslint-disable-next-line import/no-unused-modules
+export type ExternalReportFormProps = {
+  reportType: FormDefinition;
+};
+
+// eslint-disable-next-line import/no-unused-modules
+export type ExternalReportLayoutProps = {
+  layout: {
+    [name: string]: number;
+  };
+};
+
+// eslint-disable-next-line import/no-unused-modules
+export const externalReportDefinition: ExternalReportFormProps = {
+  reportType: [
+    {
+      name: 'reportType',
+      label: 'Select CSAM report type',
+      type: 'radio-input',
+      options: [
+        { value: 'childReport', label: 'Create link for child' },
+        { value: 'counselorReport', label: 'Report as counselor' },
+      ],
+    },
+  ],
+};
+
+// eslint-disable-next-line import/no-unused-modules
+export const externalReportLayoutDefinition: ExternalReportLayoutProps = {
+  layout: { splitFormAt: 2 },
+};
+
 export function transformCategories(
   helpline,
   categories: TaskEntry['categories'],
@@ -136,6 +169,7 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
     callerInformation: transformValues(CallerInformationTab)(form.callerInformation),
     caseInformation: transformValues(CaseInformationTab)(form.caseInformation),
     childInformation: transformValues(ChildInformationTab)(form.childInformation),
+    externalReport: transformValues(externalReportDefinition.reportType)(form.externalReport),
   };
 
   // @ts-ignore
@@ -157,6 +191,7 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
     },
     contactlessTask,
     conversationMedia,
+    externalReport: { ...transformedValues.externalReport },
   };
 }
 

@@ -27,6 +27,7 @@ import { getPermissionsForContact, getPermissionsForViewingIdentifiers, Permissi
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
 import { getConfig } from '../../HrmFormPlugin';
 import TranscriptSection from './TranscriptSection';
+import { setExternalReport } from '../../states/contacts/actions';
 
 // TODO: complete this type
 type OwnProps = {
@@ -54,13 +55,14 @@ const ContactDetailsHome: React.FC<Props> = function ({
   createContactDraft,
   enableEditing,
   canViewTwilioTranscript,
+  setExternalReport,
+  externalReport,
 }) {
   const version = savedContact?.details.definitionVersion;
 
   const definitionVersion = definitionVersions[version];
 
   const { featureFlags, strings } = getConfig();
-  const [externalReport, setExternalReport] = useState(true);
 
   useEffect(
     () => () => {
@@ -155,11 +157,12 @@ const ContactDetailsHome: React.FC<Props> = function ({
       savedContact.details.conversationMedia?.length &&
       (twilioStoredTranscript || externalStoredTranscript),
   );
+  const csamReportEnabled = featureFlags.enable_csam_report && featureFlags.enable_csam_clc_report;
+
+  const handleSetExternalReport = () => setExternalReport('externalReport');
 
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
-
-  console.log('Case for Summary here', definitionVersion.tabbedForms.CaseInformationTab);
 
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
@@ -283,7 +286,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
           handleExpandClick={() => toggleSection(CONTACT_SUMMARY)}
           buttonDataTestid={`ContactDetails-Section-${CONTACT_SUMMARY}`}
           showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
-          handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CASE_INFORMATION)}
+          handleEditClick={() => {
+            navigate(ContactDetailsRoute.EDIT_CASE_INFORMATION);
+          }}
         >
           {definitionVersion.tabbedForms.CaseInformationTab.map(e => (
             <SectionEntry
@@ -293,7 +298,13 @@ const ContactDetailsHome: React.FC<Props> = function ({
               definition={e}
             />
           ))}
-          {externalReport && <SectionEntry externalReport={externalReport} />}
+          {csamReportEnabled && (
+            <SectionEntry
+              description={<Template code="ContactDetails-GeneralDetails-ExternalReportsFiled" />}
+              handleEditClick={() => handleSetExternalReport()}
+              csamReportEnabled={csamReportEnabled}
+            />
+          )}
           {csamReportsAttached && (
             <SectionEntry
               key="CaseInformation-AttachedCSAMReports"
@@ -348,11 +359,13 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   canViewTwilioTranscript: (state.flex.worker.attributes.roles as string[]).some(
     role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.quality_process_manager',
   ),
+  externalReport: state[namespace][contactFormsBase].externalReport,
 });
 
 const mapDispatchToProps = {
   toggleSectionExpandedForContext: toggleDetailSectionExpanded,
   createContactDraft: createDraft,
+  setExternalReport,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);

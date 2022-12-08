@@ -15,6 +15,7 @@ export const UPDATE_HELPLINE = 'UPDATE_HELPLINE';
 export const ADD_CSAM_REPORT_ENTRY = 'contacts/ADD_CSAM_REPORT_ENTRY';
 export const SET_EDITING_CONTACT = 'SET_EDITING_CONTACT';
 export const SET_CALL_TYPE = 'SET_CALL_TYPE';
+export const ADD_EXTERNAL_REPORT = 'ADD_EXTERNAL_REPORT';
 
 type UpdateFormAction = {
   type: typeof UPDATE_FORM;
@@ -72,6 +73,8 @@ type SetEditingContact = {
 
 type CheckButtonDataAction = { type: typeof SET_CALL_TYPE; isCallTypeCaller: boolean };
 
+type externalReportAction = { type: typeof ADD_EXTERNAL_REPORT; externalReport: string };
+
 export type ContactsActionType =
   | UpdateFormAction
   | SaveEndMillisAction
@@ -82,4 +85,5 @@ export type ContactsActionType =
   | UpdateHelpline
   | AddCSAMReportEntry
   | SetEditingContact
-  | CheckButtonDataAction;
+  | CheckButtonDataAction
+  | externalReportAction;

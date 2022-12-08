@@ -24,7 +24,7 @@ type Props = {
   reportStatus?: CSAMReportStatus;
   onClickClose: () => void;
   onSendAnotherReport: () => void;
-  clcReportStatus?: string;
+  clcReportStatus?: CSAMReportStatus;
   csamType: 'child-status' | 'counsellor-status';
 };
 
@@ -40,7 +40,7 @@ const CSAMReportStatusScreen: React.FC<Props> = ({
   const onCopyCode = async () => {
     // eslint-disable-next-line no-unused-expressions
     csamType === 'child-status'
-      ? await navigator.clipboard.writeText(clcReportStatus)
+      ? await navigator.clipboard.writeText(clcReportStatus.responseData)
       : await navigator.clipboard.writeText(reportStatus.responseData);
     setCopied(true);
   };
@@ -80,7 +80,7 @@ const CSAMReportStatusScreen: React.FC<Props> = ({
             <Row>
               {csamType === 'child-status' && (
                 <Box marginRight="10px">
-                  <ReportCodeText>{clcReportStatus}</ReportCodeText>
+                  <ReportCodeText>{clcReportStatus.responseData}</ReportCodeText>
                 </Box>
               )}
               {csamType === 'counsellor-status' && (

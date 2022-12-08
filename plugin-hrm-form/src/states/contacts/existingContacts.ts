@@ -8,6 +8,7 @@ export enum ContactDetailsRoute {
   EDIT_CHILD_INFORMATION = 'editChildInformation',
   EDIT_CATEGORIES = 'editIssueCategories',
   EDIT_CASE_INFORMATION = 'editCaseInformation',
+  ADD_EXTERNAL_REPORT = 'externalReport',
 }
 
 // From https://stackoverflow.com/questions/47914536/use-partial-in-nested-property-with-typescript
@@ -332,6 +333,13 @@ export const createDraftReducer = (state: ExistingContactsState, action: CreateD
       newDraft = {
         details: {
           caseInformation: savedContact.details.caseInformation,
+        },
+      };
+      break;
+    case ContactDetailsRoute.ADD_EXTERNAL_REPORT:
+      newDraft = {
+        details: {
+          externalReport: savedContact.details.externalReport,
         },
       };
       break;

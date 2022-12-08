@@ -7,13 +7,15 @@ import { Box, Row, StyledNextStepButton, HiddenText } from '../../styles/HrmStyl
 import { CloseButton, CloseTaskDialog } from '../../styles/callTypeButtons';
 import { CloseDialogText } from '../../styles/case';
 
-type Props = {
-  openDialog: boolean;
-  setDialog: () => void;
-  handleDontSaveClose: () => void;
-  handleSaveUpdate: () => void;
+type OwnProps = {
+  openDialog?: boolean;
+  setDialog?: () => void;
+  handleDontSaveClose?: () => void;
+  handleSaveUpdate?: () => void;
 };
-export default function CloseCaseDialog({ setDialog, handleDontSaveClose, handleSaveUpdate, openDialog }: Props) {
+type Props = OwnProps;
+
+const CloseCaseDialog: React.FC<Props> = ({ setDialog, handleDontSaveClose, handleSaveUpdate, openDialog }) => {
   return (
     <>
       <CloseTaskDialog open={openDialog} onClose={setDialog}>
@@ -47,6 +49,9 @@ export default function CloseCaseDialog({ setDialog, handleDontSaveClose, handle
       </CloseTaskDialog>
     </>
   );
-}
+};
 
 CloseCaseDialog.displayName = 'CloseCaseDialog';
+
+// eslint-disable-next-line import/no-unused-modules
+export default CloseCaseDialog;

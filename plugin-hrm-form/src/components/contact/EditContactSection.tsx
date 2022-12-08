@@ -18,11 +18,13 @@ import { clearDraft, refreshRawContact } from '../../states/contacts/existingCon
 import CloseCaseDialog from '../case/CloseCaseDialog';
 import * as t from '../../states/contacts/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
+// eslint-disable-next-line import/no-useless-path-segments
+import ActionHeader from '../../components/case/ActionHeader';
 
 type OwnProps = {
   context: DetailsContext;
-  contactId: string;
-  contactDetailsSectionForm: ContactDetailsSectionFormApi | IssueCategorizationSectionFormApi;
+  contactId?: string;
+  contactDetailsSectionForm?: ContactDetailsSectionFormApi | IssueCategorizationSectionFormApi;
   children?: React.ReactNode;
   tabPath?: keyof TaskEntry;
 };
@@ -41,6 +43,8 @@ const EditContactSection: React.FC<Props> = ({
   tabPath,
   children,
   clearContactDraft,
+  counselorsHash,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -55,6 +59,11 @@ const EditContactSection: React.FC<Props> = ({
   const [isSubmitting, setSubmitting] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [initialFormValues, setInitialFormValues] = useState({});
+
+  const currentCounselor = React.useMemo(() => {
+    const { workerSid } = getConfig();
+    return counselorsHash[workerSid];
+  }, [counselorsHash]);
 
   useEffect(() => {
     /*
@@ -93,9 +102,12 @@ const EditContactSection: React.FC<Props> = ({
     window.alert(strings['Error-Form']);
   });
 
+  console.log('contactId is here', contactId);
+
   const checkForEdits = () => {
     if (_.isEqual(methods.getValues(), initialFormValues)) {
       clearContactDraft(contactId);
+      t.setExternalReport('');
     } else {
       setOpenDialog(true);
     }
@@ -111,27 +123,42 @@ const EditContactSection: React.FC<Props> = ({
       return strings['Contact-EditCategories'];
     } else if (tabPath === 'caseInformation') {
       return strings['Contact-EditSummary'];
+    } else if (tabPath === 'externalReport') {
+      return strings['Contact-ExternalReport'];
     }
     return '';
   };
-
   return (
     <EditContactContainer>
       <FormProvider {...methods}>
         <Row style={{ margin: '30px' }}>
-          <CaseActionTitle>
-            <Template code={editContactSectionTitle(tabPath)} />
-          </CaseActionTitle>
-          <HeaderCloseButton
-            onClick={checkForEdits}
-            data-testid="Case-CloseCross"
-            style={{ marginRight: '15px', opacity: '.75' }}
-          >
-            <HiddenText>
-              <Template code="Case-CloseButton" />
-            </HiddenText>
-            <Close />
-          </HeaderCloseButton>
+          {tabPath === 'externalReport' && (
+            <ActionHeader
+              added={new Date()}
+              codeTemplate="CSAMCLC-ActionHeaderAdded"
+              titleTemplate={editContactSectionTitle(tabPath)}
+              onClickClose={checkForEdits}
+              addingCounsellor={currentCounselor}
+              space={`\xa0\xa0`}
+            />
+          )}
+          {tabPath !== 'externalReport' && (
+            <>
+              <CaseActionTitle>
+                <Template code={editContactSectionTitle(tabPath)} />
+              </CaseActionTitle>
+              <HeaderCloseButton
+                onClick={checkForEdits}
+                data-testid="Case-CloseCross"
+                style={{ marginRight: '15px', opacity: '.75' }}
+              >
+                <HiddenText>
+                  <Template code="Case-CloseButton" />
+                </HiddenText>
+                <Close />
+              </HeaderCloseButton>
+            </>
+          )}
         </Row>
         {children}
         <BottomButtonBar>
@@ -149,7 +176,10 @@ const EditContactSection: React.FC<Props> = ({
               data-testid="CloseCaseDialog"
               openDialog={openDialog}
               setDialog={() => setOpenDialog(false)}
-              handleDontSaveClose={() => clearContactDraft(contactId)}
+              handleDontSaveClose={() => {
+                clearContactDraft(contactId);
+                t.setExternalReport('');
+              }}
               handleSaveUpdate={methods.handleSubmit(onSubmitValidForm, onError)}
             />
           </Box>
@@ -168,6 +198,7 @@ const EditContactSection: React.FC<Props> = ({
       </FormProvider>
     </EditContactContainer>
   );
+  // );
 };
 
 const mapDispatchToProps = {

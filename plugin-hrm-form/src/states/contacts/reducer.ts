@@ -37,6 +37,7 @@ import {
   sectionExpandedStateReducer,
   TOGGLE_DETAIL_EXPANDED_ACTION,
 } from './contactDetails';
+import { externalReportDefinition } from '../../services/ContactService';
 
 export type TaskEntry = {
   helpline: string;
@@ -57,6 +58,7 @@ export type TaskEntry = {
     };
   };
   isCallTypeCaller: boolean;
+  externalReport: { [key: string]: string | boolean };
 };
 
 type ContactsState = {
@@ -67,6 +69,7 @@ type ContactsState = {
   contactDetails: ContactDetailsState;
   editingContact: boolean;
   isCallTypeCaller: boolean;
+  externalReport: string;
 };
 
 export const emptyCategories = [];
@@ -76,6 +79,7 @@ export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated
   const initialChildInformation = definitions.tabbedForms.ChildInformationTab.reduce(createStateItem, {});
   const initialCallerInformation = definitions.tabbedForms.CallerInformationTab.reduce(createStateItem, {});
   const initialCaseInformation = definitions.tabbedForms.CaseInformationTab.reduce(createStateItem, {});
+  const initialExternalReport = externalReportDefinition.reportType.reduce(createStateItem, {});
 
   const { helplines } = definitions.helplineInformation;
   const defaultHelpline = helplines.find(helpline => helpline.default).value || helplines[0].value;
@@ -104,6 +108,14 @@ export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated
   });
   const contactlessTask = initialContactlessTaskTabDefinition.reduce(createStateItem, {});
 
+  console.log(
+    'initialExternalReport here',
+    initialExternalReport,
+    initialChildInformation,
+    initialCallerInformation,
+    initialCaseInformation,
+  );
+
   return {
     helpline: '',
     callType: '',
@@ -115,6 +127,7 @@ export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated
     csamReports: [],
     metadata,
     isCallTypeCaller: false,
+    externalReport: initialExternalReport,
   };
 };
 
@@ -127,6 +140,7 @@ const initialState: ContactsState = {
   },
   editingContact: false,
   isCallTypeCaller: false,
+  externalReport: '',
 };
 
 // eslint-disable-next-line import/no-unused-modules,complexity
@@ -288,6 +302,9 @@ export function reduce(
     }
     case t.SET_CALL_TYPE: {
       return { ...state, isCallTypeCaller: action.isCallTypeCaller };
+    }
+    case t.ADD_EXTERNAL_REPORT: {
+      return { ...state, externalReport: action.externalReport };
     }
     case t.SET_EDITING_CONTACT: {
       return { ...state, editingContact: action.editing };

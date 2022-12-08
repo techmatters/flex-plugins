@@ -215,5 +215,5 @@ export const selfReportToIWF = async (form: ChildCSAMReportForm) => {
   console.log(form);
 
   const response = await fetchProtectedApi('/selfReportToIWF', body);
-  console.log(response);
+  return response;
 };

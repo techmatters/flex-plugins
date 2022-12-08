@@ -1,5 +1,5 @@
 // TODO: complete this type
-import React from 'react';
+import React, { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 
@@ -10,13 +10,22 @@ import EditContactSection from './EditContactSection';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { DetailsContainer } from '../../styles/search';
 import * as ConfigActions from '../../states/configuration/actions';
-import { ContactDetailsSectionFormApi, contactDetailsSectionFormApi } from './contactDetailsSectionFormApi';
+import {
+  ContactDetailsSectionFormApi,
+  contactDetailsSectionFormApi,
+  ExternalReportSectionFormApi,
+} from './contactDetailsSectionFormApi';
 import ContactDetailsSectionForm from './ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
 import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateDraft } from '../../states/contacts/existingContacts';
-import { transformContactFormValues } from '../../services/ContactService';
+import { setExternalReport } from '../../states/contacts/actions';
+import {
+  transformContactFormValues,
+  externalReportDefinition,
+  externalReportLayoutDefinition,
+} from '../../services/ContactService';
 
 type OwnProps = {
   contactId: string;
@@ -37,8 +46,11 @@ const ContactDetails: React.FC<Props> = ({
   updateDefinitionVersion,
   savedContact,
   draftContact,
+  addExternalReport,
+  setExternalReport,
   enableEditing = true,
   updateContactDraft,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const version = savedContact?.details.definitionVersion;
 
@@ -90,6 +102,27 @@ const ContactDetails: React.FC<Props> = ({
     </EditContactSection>
   );
 
+  const addExternalReportSectionElement = (section: ExternalReportSectionFormApi, formPath: 'externalReport') => (
+    <EditContactSection context={context} contactId={contactId} tabPath="externalReport">
+      <ContactDetailsSectionForm
+        tabPath="externalReport"
+        definition={externalReportDefinition.reportType}
+        layoutDefinition={externalReportLayoutDefinition.layout}
+        initialValues={externalReportDefinition.reportType}
+        display={true}
+        autoFocus={true}
+        updateFormActionDispatcher={dispatch => values =>
+          dispatch(
+            updateContactDraft(contactId, {
+              details: {
+                [formPath]: transformContactFormValues(values.externalReport, externalReportDefinition.reportType),
+              },
+            }),
+          )}
+      />
+    </EditContactSection>
+  );
+
   if (draftContact) {
     if (draftContact.overview?.categories) {
       const issueSection = contactDetailsSectionFormApi.ISSUE_CATEGORIZATION;
@@ -110,7 +143,9 @@ const ContactDetails: React.FC<Props> = ({
         </EditContactSection>
       );
     }
-    const { callerInformation, caseInformation, childInformation } = draftContact.details;
+
+    const { callerInformation, caseInformation, childInformation, externalReport } = draftContact.details;
+
     if (childInformation)
       return editContactSectionElement(contactDetailsSectionFormApi.CHILD_INFORMATION, 'childInformation');
     if (callerInformation)
@@ -118,6 +153,16 @@ const ContactDetails: React.FC<Props> = ({
     if (caseInformation)
       return editContactSectionElement(contactDetailsSectionFormApi.CASE_INFORMATION, 'caseInformation');
   }
+
+  if (addExternalReport.includes('externalReport')) {
+    console.log('externalReport is here', addExternalReport);
+    return addExternalReportSectionElement(contactDetailsSectionFormApi.EXTERNAL_REPORT, 'externalReport');
+  }
+
+  console.log('addExternalReport here', contactId);
+
+  // eslint-disable-next-line multiline-comment-style
+
   return (
     <ContactDetailsHome
       context={context}
@@ -132,12 +177,14 @@ const ContactDetails: React.FC<Props> = ({
 const mapDispatchToProps = {
   updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
   updateContactDraft: updateDraft,
+  setExternalReport,
 };
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   definitionVersions: state[namespace][configurationBase].definitionVersions,
   savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
   draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
+  addExternalReport: state[namespace][contactFormsBase].externalReport,
 });
 
 ContactDetails.displayName = 'ContactDetails';

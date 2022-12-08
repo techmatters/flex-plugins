@@ -10,6 +10,7 @@ import { format, startOfDay } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import { FormItemDefinition, FormDefinition, InputOption, SelectOption, MixedOrBool } from 'hrm-form-definitions';
 
+import { BoldDescriptionText } from '../../../styles/CSAMReport';
 import {
   Box,
   ColumnarBlock,
@@ -151,7 +152,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
 ) => {
   const rules = getRules(def);
   const path = [...parents, def.name].join('.');
-
+  console.log('path path is here', path);
   const labelTextComponent = <Template code={`${def.label}`} className=".fullstory-unmask" />;
 
   switch (def.type) {
@@ -308,14 +309,28 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
               >
                 {def.label && (
                   <Row>
-                    <Box marginBottom="8px">
-                      {labelTextComponent}
-                      {rules.required && <RequiredAsterisk />}
-                    </Box>
+                    {path.includes('externalReport') ? (
+                      <Box marginBottom="25px">
+                        <BoldDescriptionText>
+                          {labelTextComponent}
+                          &nbsp;
+                          <RequiredAsterisk />
+                        </BoldDescriptionText>
+                      </Box>
+                    ) : (
+                      <Box marginBottom="8px">
+                        {labelTextComponent}
+                        {rules.required && <RequiredAsterisk />}
+                      </Box>
+                    )}
                   </Row>
                 )}
                 {def.options.map(({ value, label }, index) => (
-                  <Box key={`${path}-${value}`} marginBottom="15px">
+                  <Box
+                    key={`${path}-${value}`}
+                    marginLeft={path.includes('externalReport') && '40px'}
+                    marginBottom="15px"
+                  >
                     <FormLabel htmlFor={`${path}-${value}`}>
                       <Row>
                         <FormRadioInput

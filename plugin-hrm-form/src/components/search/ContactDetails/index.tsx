@@ -13,6 +13,7 @@ import BackToSearchResultsButton from '../SearchResults/SearchResultsBackButton'
 import { SearchContact } from '../../../types/types';
 import { loadContact, releaseContact } from '../../../states/contacts/existingContacts';
 import { DetailsContext } from '../../../states/contacts/contactDetails';
+import { setExternalReport } from '../../../states/contacts/actions';
 
 type OwnProps = {
   task: any;
@@ -31,6 +32,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 const mapDispatchToProps = {
   loadContactIntoState: loadContact,
   releaseContactFromState: releaseContact,
+  setExternalReport,
 };
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
@@ -46,6 +48,7 @@ const ContactDetails: React.FC<Props> = ({
   releaseContactFromState,
   editContactFormOpen,
   isCallTypeCaller,
+  setExternalReport,
 }: Props) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -56,6 +59,7 @@ const ContactDetails: React.FC<Props> = ({
   const handleBackToResults = () => {
     releaseContactFromState(contact.contactId, task.taskSid);
     handleBack();
+    setExternalReport('');
   };
 
   const handleCloseDialog = () => {

@@ -1,16 +1,23 @@
+/* eslint-disable import/named */
 import { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
 import { ContactRawJson, InformationObject, SearchContact } from '../../types/types';
 import {
+  ExternalReportFormProps,
+  ExternalReportLayoutProps,
   transformCategories,
   transformContactFormValues,
   transformValues,
   unNestInformationObject,
+  // eslint-disable-next-line import/namespace
 } from '../../services/ContactService';
 import { SearchContactDraftChanges } from '../../states/contacts/existingContacts';
 
 export type ContactFormValues = {
-  [key in 'childInformation' | 'callerInformation' | 'caseInformation']?: Record<string, string | boolean>;
+  [key in 'childInformation' | 'callerInformation' | 'caseInformation' | 'externalReport']?: Record<
+    string,
+    string | boolean
+  >;
 };
 
 export type ContactDetailsSectionFormApi = {
@@ -22,9 +29,22 @@ export type ContactDetailsSectionFormApi = {
     form: ContactFormValues,
   ) => {
     rawJson: Partial<
-      | Pick<ContactRawJson, 'callerInformation' | 'childInformation'>
+      | Pick<ContactRawJson, 'callerInformation' | 'childInformation' | 'externalReport'>
       | { caseInformation: Omit<ContactRawJson['caseInformation'], 'categories'> }
     >;
+  };
+};
+
+// eslint-disable-next-line import/no-unused-modules
+export type ExternalReportSectionFormApi = {
+  getFormDefinition: (def: ExternalReportFormProps) => FormDefinition;
+  getLayoutDefinition: (def: ExternalReportLayoutProps) => LayoutDefinition;
+  getFormValues: (def: ExternalReportFormProps, contact: SearchContactDraftChanges) => ContactFormValues;
+  formToPayload: (
+    def: ExternalReportFormProps,
+    form: ContactFormValues,
+  ) => {
+    rawJson: Partial<Pick<ContactRawJson, 'externalReport'>>;
   };
 };
 
@@ -45,6 +65,7 @@ export const contactDetailsSectionFormApi: {
   CALLER_INFORMATION: ContactDetailsSectionFormApi;
   ISSUE_CATEGORIZATION: IssueCategorizationSectionFormApi;
   CASE_INFORMATION: ContactDetailsSectionFormApi;
+  EXTERNAL_REPORT: ExternalReportSectionFormApi;
 } = {
   CHILD_INFORMATION: {
     getFormValues: (def, contact) => ({
@@ -99,6 +120,19 @@ export const contactDetailsSectionFormApi: {
     formToPayload: (def, form) => ({
       rawJson: {
         caseInformation: transformValues(def.tabbedForms.CaseInformationTab)(form.caseInformation),
+      },
+    }),
+  },
+  EXTERNAL_REPORT: {
+    getFormValues: (def, contact) => {
+      const { ...externalReport } = contact.details.externalReport;
+      return { externalReport } as ContactFormValues;
+    },
+    getFormDefinition: def => def.reportType,
+    getLayoutDefinition: def => def.layout,
+    formToPayload: (def, form) => ({
+      rawJson: {
+        externalReport: transformValues(def.reportType)(form.externalReport),
       },
     }),
   },
