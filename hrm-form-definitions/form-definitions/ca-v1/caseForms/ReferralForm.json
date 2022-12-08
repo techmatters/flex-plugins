@@ -1,5 +1,11 @@
 [
     {
+      "name": "date",
+      "type": "date-input",
+      "label": "Date",
+      "required": { "value": true, "message": "RequiredFieldError" }
+    },
+    {
       "name": "agencyName",
       "label": "Name of Agency",
       "type": "input",
