@@ -6,6 +6,7 @@ import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
 import { prepopulateForm as prepopulateFormAction } from '../states/contacts/actions';
 import { getDefinitionVersions } from '../HrmFormPlugin';
+import { CustomITask } from 'types/types';
 
 const getUnknownOption = (key: string, definition: FormDefinition) => {
   const inputDef = definition.find(e => e.name === key);
@@ -100,10 +101,43 @@ const getValuesFromAnswers = (
     ...customizableValues,
   };
 };
+const getValuesFromPreEngagemanetData = (
+  task: ITask,
+  preEngagemanetData: any,
+  tabFormDefinition: FormDefinition,
+  prepopulateKeys: string[],
+) => {
+  // Get values from task attributes
+  const customizableValues = prepopulateKeys.reduce((accum, key) => {
+    const value = getAnswerOrUnknown(preEngagemanetData, key, tabFormDefinition);
+    return value ? { ...accum, [key]: value } : accum;
+  }, {});
 
-export const prepopulateForm = (task: ITask) => {
+  return customizableValues
+};
+
+export const prepopulateForm = (task:ITask) => {
+
+  const { memory, preEngagemanetData } = task.attributes;
+  const { currentDefinitionVersion } = getDefinitionVersions();
+  const { tabbedForms, prepopulateKeys } = currentDefinitionVersion;
+
+  if (preEngagemanetData) {
+    
+    const tabFormDefinition = tabbedForms.ChildInformationTab 
+    const prepopulateSurveyKeys =  prepopulateKeys.survey.ChildInformationTab
+
+    const values = getValuesFromPreEngagemanetData(task, preEngagemanetData, tabFormDefinition, prepopulateSurveyKeys);
+
+    Manager.getInstance().store.dispatch(prepopulateFormAction(callTypes.child, values, task.taskSid));
+
+    Manager.getInstance().store.dispatch(
+      RoutingActions.changeRoute({ route: 'tabbed-forms', subroute: 'childInformation', autoFocus: true }, task.taskSid),
+    );
+  }
+  
   // If this task came from the pre-survey
-  if (task.attributes.memory) {
+  if (memory) {
     const { answers } = task.attributes.memory.twilio.collected_data.collect_survey;
 
     // If can't know if call is child or caller, do nothing here
@@ -115,8 +149,8 @@ export const prepopulateForm = (task: ITask) => {
     const callType = isAboutSelf ? callTypes.child : callTypes.caller;
     const tabFormDefinition = isAboutSelf ? ChildInformationTab : CallerInformationTab;
     const prepopulateKeys = isAboutSelf
-      ? currentDefinitionVersion.prepopulateKeys.ChildInformationTab
-      : currentDefinitionVersion.prepopulateKeys.CallerInformationTab;
+      ? currentDefinitionVersion.prepopulateKeys.survey.ChildInformationTab
+      : currentDefinitionVersion.prepopulateKeys.survey.CallerInformationTab;
 
     const values = getValuesFromAnswers(task, answers, tabFormDefinition, prepopulateKeys);
 

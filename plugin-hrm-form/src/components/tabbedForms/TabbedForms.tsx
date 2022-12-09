@@ -31,6 +31,7 @@ import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackBu
 import CSAMReportButton from './CSAMReportButton';
 import CSAMAttachments from './CSAMAttachments';
 import { forTask } from '../../states/contacts/issueCategorizationStateApi';
+import { prepopulateForm } from 'utils/prepopulateForm';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -209,6 +210,25 @@ const TabbedForms: React.FC<Props> = ({
       </Row>
     </Box>
   );
+  const preEngagement = task.attributes.preEngagementData;
+  console.log('>>> preEngagementData', preEngagement)
+  if (preEngagement) {
+    contactForm.childInformation = {
+      gender: preEngagement.gender,
+      ethnicity: preEngagement.ethnicity,
+      province: preEngagement.province,
+      livingSituation: preEngagement.livingSituation,
+      region: preEngagement.region,
+      Newcomer: preEngagement.Newcomer === 'yes',
+      // age - todo  have a condition for less than 5
+      age: preEngagement.age > 5 && preEngagement.age < 30 ? preEngagement.age : 'Unknown',
+      school: preEngagement.school,
+      upsetLevel: preEngagement.upset,
+      sexualOrientation: preEngagement.sexualOrientation,
+    };
+  }
+  console.log('>>> currentDefinitionVersion.tabbedForms.ChildInformationTab', currentDefinitionVersion.tabbedForms.ChildInformationTab)
+  console.log('>>> currentDefinitionVersion.tabbedForms.ChildInformationTab', currentDefinitionVersion.prepopulateKeys.preEngagement)
 
   return (
     <FormProvider {...methods}>
