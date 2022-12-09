@@ -22,7 +22,6 @@ type Props = {
   onClickClose: () => void;
   onSendReport: () => void;
   csamType: 'child-form' | 'counsellor-form';
-  isEmpty?: boolean;
 };
 
 const CSAMReportFormScreen: React.FC<Props> = ({
@@ -33,7 +32,6 @@ const CSAMReportFormScreen: React.FC<Props> = ({
   onClickClose,
   onSendReport,
   csamType,
-  isEmpty,
 }) => {
   return (
     <CSAMReportContainer style={{ padding: csamType === 'child-form' && '5px' }} data-testid="CSAMReport-FormScreen">
@@ -127,7 +125,6 @@ const CSAMReportFormScreen: React.FC<Props> = ({
           </StyledNextStepButton>
         </Box>
         <StyledNextStepButton
-          disabled={csamType === 'child-form' ? isEmpty : false}
           roundCorners
           onClick={onSendReport}
           data-testid={csamType === 'child-form' ? 'CSAMCLCReport-SubmitButton' : 'CSAMReport-SubmitButton'}

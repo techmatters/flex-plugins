@@ -64,13 +64,8 @@ export const CSAMReportScreen: React.FC<Props> = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [initialForm] = React.useState(csamReportState.form); // grab initial values in first render only. This value should never change or will ruin the memoization below
-  const [isEmpty, setIsEmpty] = React.useState(true);
   const methods = useForm({ reValidateMode: 'onChange' });
   const firstElementRef = useFocus();
-
-  useEffect(() => {
-    confirmInput(methods.getValues());
-  }, [methods, methods.watch]);
 
   const currentCounselor = React.useMemo(() => {
     const { workerSid } = getConfig();
@@ -129,14 +124,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
     changeRoute({ ...previousRoute }, taskSid);
   };
 
-  const confirmInput = form => {
-    if (form.childAge !== null && form.ageVerified) {
-      setIsEmpty(false);
-    } else {
-      setIsEmpty(true);
-    }
-  };
-
   const onValid = async form => {
     try {
       if (routing.subroute === 'child-form') {
@@ -176,7 +163,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
   };
 
   const onSendAnotherReport = (route, subroute) => {
-    setIsEmpty(true);
     clearCSAMReportAction(taskSid);
     changeRoute({ route, subroute, previousRoute }, taskSid);
   };
@@ -188,7 +174,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
       return (
         <FormProvider {...methods}>
           <CSAMReportFormScreen
-            isEmpty={isEmpty}
             childFormElements={formElements.childReportDefinition}
             counselor={currentCounselor}
             onClickClose={onClickClose}
