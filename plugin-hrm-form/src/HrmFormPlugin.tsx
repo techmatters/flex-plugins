@@ -204,6 +204,7 @@ const setUpComponents = (setupObject: SetupObject) => {
     // Masks TaskInfoPanelContent - TODO: refactor to use a react component
     const { strings } = getConfig();
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+    strings.CallParticipantCustomerName = strings.MaskIdentifiers;
   }
 };
 
