@@ -121,9 +121,9 @@ export const prepopulateForm = (task: ITask) => {
   const { tabbedForms, prepopulateKeys } = currentDefinitionVersion;
   if (preEngagementData) {
     const tabFormDefinition = tabbedForms.ChildInformationTab;
-    const prepopulateSurveyKeys = prepopulateKeys.preEngagement.ChildInformationTab;
+    const prepopulatePreengagementKeys = prepopulateKeys.preEngagement.ChildInformationTab;
 
-    const values = getValuesFromPreEngagementData(preEngagementData, tabFormDefinition, prepopulateSurveyKeys);
+    const values = getValuesFromPreEngagementData(preEngagementData, tabFormDefinition, prepopulatePreengagementKeys);
 
     Manager.getInstance().store.dispatch(prepopulateFormAction(callTypes.child, values, task.taskSid));
 
@@ -142,16 +142,15 @@ export const prepopulateForm = (task: ITask) => {
     // If can't know if call is child or caller, do nothing here
     if (!answers.about_self || !['Yes', 'No'].includes(answers.about_self.answer)) return;
 
-    const { currentDefinitionVersion } = getDefinitionVersions();
-    const { CallerInformationTab, ChildInformationTab } = currentDefinitionVersion.tabbedForms;
+    const { CallerInformationTab, ChildInformationTab } = tabbedForms;
     const isAboutSelf = answers.about_self.answer === 'Yes';
     const callType = isAboutSelf ? callTypes.child : callTypes.caller;
     const tabFormDefinition = isAboutSelf ? ChildInformationTab : CallerInformationTab;
-    const prepopulateKeys = isAboutSelf
-      ? currentDefinitionVersion.prepopulateKeys.survey.ChildInformationTab
-      : currentDefinitionVersion.prepopulateKeys.survey.CallerInformationTab;
+    const prepopulateSurveyKeys = isAboutSelf
+      ? prepopulateKeys.survey.ChildInformationTab
+      : prepopulateKeys.survey.CallerInformationTab;
 
-    const values = getValuesFromAnswers(task, answers, tabFormDefinition, prepopulateKeys);
+    const values = getValuesFromAnswers(task, answers, tabFormDefinition, prepopulateSurveyKeys);
 
     Manager.getInstance().store.dispatch(prepopulateFormAction(callType, values, task.taskSid));
 
