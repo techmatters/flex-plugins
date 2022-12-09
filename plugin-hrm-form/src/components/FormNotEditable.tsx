@@ -5,7 +5,7 @@ import { InfoTwoTone } from '@material-ui/icons';
 
 import { Row } from '../styles/HrmStyles';
 
-const FormNotEditable = () => (
+const FormNotEditable: React.FC = () => (
   <AppBar style={{ zIndex: 'inherit' }} position="relative">
     <Toolbar style={{ backgroundColor: '#2196f3' }}>
       <Row>
