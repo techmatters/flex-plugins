@@ -17,6 +17,7 @@ import PreviousContactsBanner from './PreviousContactsBanner';
 import { Flex } from '../styles/HrmStyles';
 import { isStandaloneITask } from './case/Case';
 import { getHelplineToSave } from '../services/HelplineService';
+import { YellowBannerHeight } from '../styles/previousContactsBanner';
 
 type OwnProps = {
   task: CustomITask;
@@ -84,12 +85,22 @@ const TaskView: React.FC<Props> = props => {
 
   const { featureFlags } = getConfig();
   const isFormLocked = !hasTaskControl(task);
+  const { enable_previous_contacts: enablePreviousContacts } = featureFlags;
 
   return (
-    <Flex flexDirection="column" height="100%" style={{ pointerEvents: isFormLocked ? 'none' : 'auto' }}>
-      {featureFlags.enable_previous_contacts && <PreviousContactsBanner task={task} />}
+    <Flex flexDirection="column" style={{ pointerEvents: isFormLocked ? 'none' : 'auto', height: '100%' }}>
+      {enablePreviousContacts && <PreviousContactsBanner task={task} />}
       {isFormLocked && <FormNotEditable />}
-      <HrmForm task={task} featureFlags={featureFlags} />
+      <Flex
+        flexDirection="column"
+        style={{
+          // This fixes a UI bug where the PreviousContactsBanner pushes the container down
+          height: enablePreviousContacts ? `calc(100% - ${YellowBannerHeight}` : '100%',
+          width: '100%',
+        }}
+      >
+        <HrmForm task={task} featureFlags={featureFlags} />
+      </Flex>
     </Flex>
   );
 };
