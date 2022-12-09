@@ -4,8 +4,7 @@ import React, { useEffect, useMemo } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
-import type { DefinitionVersion, FormDefinition } from 'hrm-form-definitions';
-import { FormInputType } from 'hrm-form-definitions';
+import { DefinitionVersion, FormDefinition, FormInputType } from 'hrm-form-definitions';
 import { isEqual } from 'lodash';
 import { bindActionCreators } from 'redux';
 

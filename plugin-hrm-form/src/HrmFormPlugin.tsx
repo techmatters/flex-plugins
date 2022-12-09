@@ -215,7 +215,7 @@ const setUpActions = (setupObject: SetupObject) => {
 
   ActionFunctions.setUpPostSurvey(setupObject);
 
-  // bind setupObject to the functions that requires some initializaton
+  // bind setupObject to the functions that requires some initialization
   const transferOverride = ActionFunctions.customTransferTask(setupObject);
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject);
   const beforeCompleteAction = ActionFunctions.beforeCompleteTask(setupObject);
