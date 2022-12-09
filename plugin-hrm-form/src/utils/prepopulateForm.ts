@@ -1,12 +1,11 @@
 import { ITask, Manager } from '@twilio/flex-ui';
 import { capitalize } from 'lodash';
-import { callTypes, FormDefinition, DefinitionVersion } from 'hrm-form-definitions';
+import { callTypes, FormDefinition } from 'hrm-form-definitions';
 
 import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
 import { prepopulateForm as prepopulateFormAction } from '../states/contacts/actions';
 import { getDefinitionVersions } from '../HrmFormPlugin';
-import { CustomITask } from 'types/types';
 
 const getUnknownOption = (key: string, definition: FormDefinition) => {
   const inputDef = definition.find(e => e.name === key);
@@ -101,41 +100,41 @@ const getValuesFromAnswers = (
     ...customizableValues,
   };
 };
-const getValuesFromPreEngagemanetData = (
-  task: ITask,
-  preEngagemanetData: any,
+export const getValuesFromPreEngagementData = (
+  preEngagementData: Record<string, string>,
   tabFormDefinition: FormDefinition,
   prepopulateKeys: string[],
 ) => {
   // Get values from task attributes
-  const customizableValues = prepopulateKeys.reduce((accum, key) => {
-    const value = getAnswerOrUnknown(preEngagemanetData, key, tabFormDefinition);
-    return value ? { ...accum, [key]: value } : accum;
-  }, {});
-
-  return customizableValues
+  const values = {};
+  tabFormDefinition.forEach((field: any) => {
+    if (prepopulateKeys.indexOf(field.name) > -1) {
+      values[field.name] = preEngagementData[field.name] || '';
+    }
+  });
+  return values;
 };
 
-export const prepopulateForm = (task:ITask) => {
-
-  const { memory, preEngagemanetData } = task.attributes;
+export const prepopulateForm = (task: ITask) => {
+  const { memory, preEngagementData } = task.attributes;
   const { currentDefinitionVersion } = getDefinitionVersions();
   const { tabbedForms, prepopulateKeys } = currentDefinitionVersion;
+  if (preEngagementData) {
+    const tabFormDefinition = tabbedForms.ChildInformationTab;
+    const prepopulateSurveyKeys = prepopulateKeys.preEngagement.ChildInformationTab;
 
-  if (preEngagemanetData) {
-    
-    const tabFormDefinition = tabbedForms.ChildInformationTab 
-    const prepopulateSurveyKeys =  prepopulateKeys.survey.ChildInformationTab
-
-    const values = getValuesFromPreEngagemanetData(task, preEngagemanetData, tabFormDefinition, prepopulateSurveyKeys);
+    const values = getValuesFromPreEngagementData(preEngagementData, tabFormDefinition, prepopulateSurveyKeys);
 
     Manager.getInstance().store.dispatch(prepopulateFormAction(callTypes.child, values, task.taskSid));
 
     Manager.getInstance().store.dispatch(
-      RoutingActions.changeRoute({ route: 'tabbed-forms', subroute: 'childInformation', autoFocus: true }, task.taskSid),
+      RoutingActions.changeRoute(
+        { route: 'tabbed-forms', subroute: 'childInformation', autoFocus: true },
+        task.taskSid,
+      ),
     );
   }
-  
+
   // If this task came from the pre-survey
   if (memory) {
     const { answers } = task.attributes.memory.twilio.collected_data.collect_survey;
