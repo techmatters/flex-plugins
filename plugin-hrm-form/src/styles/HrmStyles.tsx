@@ -3,10 +3,9 @@ import React from 'react';
 import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, withStyles, TabProps } from '@material-ui/core';
 import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
 import AssignmentInd from '@material-ui/icons/AssignmentIndOutlined';
-import { Icon, styled } from '@twilio/flex-ui';
+import { Icon, styled, Button } from '@twilio/flex-ui';
 import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
 
-import { Button } from '../components/twilioComponentWorkaround';
 import HrmTheme from './HrmTheme';
 
 export const BottomButtonBarHeight = 55;
