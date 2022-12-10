@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * The intention of this file is to test that the form definition files are correct and complying with the specification provided.
  */
@@ -9,6 +10,7 @@ import {
   aseloFormTemplates,
   CategoriesDefinition,
   DefinitionSpecification,
+  DefinitionVersion,
   DefinitionVersionId,
   FormDefinition,
   FormFileSpecification,
@@ -47,68 +49,74 @@ const testFormFileSpecification =
         {},
       );
 
-      // eslint-disable-next-line no-console
       console.error(
         `Error: invalid definition on ${specificationPath} for definition ${definitionVersionId}`,
         JSON.stringify(failingItemReports, null, 2),
       );
     }
-
-    expect(result.valid).toBe(true);
+    return result;
   };
-
-/**
- * Given a particular DefinitionVersionId, will check that testFormFileSpecification is valid for aseloFormTemplates
- */
-const testFormAgainstAseloTemplates = async (definitionVersionId: DefinitionVersionId) => {
-  const definitionVersion = await loadDefinition(definitionVersionId);
-
-  const formFileSpecificationPaths = [
-    'caseForms.HouseholdForm',
-    'caseForms.IncidentForm',
-    'caseForms.NoteForm',
-    'caseForms.PerpetratorForm',
-    'caseForms.ReferralForm',
-    'caseForms.DocumentForm',
-    'tabbedForms.CallerInformationTab',
-    'tabbedForms.CaseInformationTab',
-    'tabbedForms.ChildInformationTab',
-    'callTypeButtons',
-  ];
-
-  formFileSpecificationPaths.forEach((path) => {
-    const assertFun = testFormFileSpecification(definitionVersionId, path);
-    const specification = get(aseloFormTemplates, path);
-    const definition = get(definitionVersion, path);
-
-    assertFun(specification, definition);
-  });
-
-  const helplines = definitionVersion.helplineInformation.helplines.map((h) => h.value);
-  const categoriesDefinitions = helplines.map((helpline) => ({
-    helpline,
-    categoriesDefinition: definitionVersion.tabbedForms.IssueCategorizationTab(helpline),
-  }));
-
-  categoriesDefinitions.forEach(({ helpline, categoriesDefinition }) => {
-    const assertFun = testCategoriesDefinition(
-      definitionVersionId,
-      `tabbedForms.IssueCategorizationTab (helpline ${helpline})`,
-    );
-
-    assertFun(aseloFormTemplates.tabbedForms.IssueCategorizationTab, categoriesDefinition);
-  });
-};
 
 describe('Validate form definitions', () => {
   const definitionVersionsIds = Object.values(DefinitionVersionId).map((definitionId) => ({
     definitionId,
   }));
 
-  each(definitionVersionsIds).test(
+  each(definitionVersionsIds).describe(
     'Testing definition for $definitionId',
-    async ({ definitionId }) => {
-      await testFormAgainstAseloTemplates(definitionId);
+    ({ definitionId }) => {
+      let definitionVersion: DefinitionVersion;
+      let categoriesDefinitions: { helpline: string; categoriesDefinition: CategoriesDefinition }[];
+
+      beforeAll(async () => {
+        definitionVersion = await loadDefinition(definitionId);
+        const helplines = definitionVersion.helplineInformation.helplines.map((h) => h.value);
+        categoriesDefinitions = helplines.map((helpline) => ({
+          helpline,
+          categoriesDefinition: definitionVersion.tabbedForms.IssueCategorizationTab(helpline),
+        }));
+      });
+
+      const formFileSpecificationPaths = [
+        'caseForms.HouseholdForm',
+        'caseForms.IncidentForm',
+        'caseForms.NoteForm',
+        'caseForms.PerpetratorForm',
+        'caseForms.ReferralForm',
+        'caseForms.DocumentForm',
+        'tabbedForms.CallerInformationTab',
+        'tabbedForms.CaseInformationTab',
+        'tabbedForms.ChildInformationTab',
+        'callTypeButtons',
+      ];
+
+      each(formFileSpecificationPaths.map((path) => ({ path }))).test(
+        'Validating form definition $path',
+        ({ path }) => {
+          const assertFun = testFormFileSpecification(definitionId, path);
+          const specification = get(aseloFormTemplates, path);
+          const definition = get(definitionVersion, path);
+
+          const result = assertFun(specification, definition);
+          expect(result).toEqual({
+            valid: true,
+            issues: [],
+            itemReports: expect.anything(),
+          });
+        },
+      );
+      // Would like to 'each' per helpline, but jest doesn't support loading an array for pass to the 'each' function asynchronously
+      // See https://github.com/facebook/jest/issues/9709
+      test('Validating categories for all helplines', () => {
+        categoriesDefinitions.forEach(({ helpline, categoriesDefinition }) => {
+          const assertFun = testCategoriesDefinition(
+            definitionId,
+            `tabbedForms.IssueCategorizationTab (helpline ${helpline})`,
+          );
+
+          assertFun(aseloFormTemplates.tabbedForms.IssueCategorizationTab, categoriesDefinition);
+        });
+      });
     },
   );
 });

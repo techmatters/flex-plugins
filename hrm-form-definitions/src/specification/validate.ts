@@ -1,13 +1,14 @@
 import {
   CategoriesDefinition,
   FormDefinition,
+  FormInputType,
   FormItemDefinition,
   SelectOption,
 } from '../formDefinition';
 import {
-  FormItemDefinitionSpecification,
-  FormDefinitionSpecification,
   DefinitionSpecification,
+  FormDefinitionSpecification,
+  FormItemDefinitionSpecification,
 } from './index';
 
 type ValidationReport = {
@@ -38,22 +39,32 @@ const validateSelectOptions = (options: SelectOption[]): void => {
   });
 };
 
-function validateFormItemDefinition(
-  form: FormDefinition,
-  actual: FormItemDefinition,
-  specification: FormItemDefinitionSpecification,
-): void {
+function validateFormItemDefinition(form: FormDefinition, actual: FormItemDefinition): void {
+  // Check the type exists
+  const formInputTypes = Object.values(FormInputType);
+  if (!formInputTypes.includes(actual.type)) {
+    throw new Error(
+      `Unsupported input type: ${actual.type}, currently supported types: ${formInputTypes}`,
+    );
+  }
   // Run some basic validations on the JSON structure
   switch (actual.type) {
-    case 'dependent-select':
+    case FormInputType.DependentSelect:
       Object.values(actual.options).forEach(validateSelectOptions);
       return;
-    case 'select':
-    case 'listbox-multiselect':
+    case FormInputType.Select:
+    case FormInputType.ListboxMultiselect:
       validateSelectOptions(actual.options);
       break;
     default:
   }
+}
+
+function validateFormItemDefinitionAgainstSpecification(
+  form: FormDefinition,
+  actual: FormItemDefinition,
+  specification: FormItemDefinitionSpecification,
+): void {
   (specification.validator ?? (() => {}))({ form, item: actual });
 }
 
@@ -61,6 +72,25 @@ export function validateFormDefinition(
   specification: FormDefinitionSpecification,
   form: FormDefinition,
 ): FormValidationReport {
+  const basicItemValidationReportList = form.map((item) => {
+    try {
+      validateFormItemDefinition(form, item);
+      return [item.name, { valid: true, issues: [] }];
+    } catch (error) {
+      return [
+        item.name,
+        {
+          valid: false,
+          issues: [`Item ${item.name} failed validation: ${(<Error>error).message}`],
+        },
+      ];
+    }
+  });
+
+  const basicItemValidationReports: { [item: string]: ValidationReport } = Object.fromEntries(
+    basicItemValidationReportList,
+  );
+
   const itemReports: { [item: string]: ValidationReport } = Object.entries(
     specification.items,
   ).reduce((accum, [name, templateItem]) => {
@@ -79,7 +109,7 @@ export function validateFormDefinition(
     const itemValidationIssues: string[] = <string[]>items
       .map((item) => {
         try {
-          validateFormItemDefinition(form, item, templateItem);
+          validateFormItemDefinitionAgainstSpecification(form, item, templateItem);
           return null;
         } catch (error) {
           valid = false;
@@ -88,8 +118,13 @@ export function validateFormDefinition(
       })
       .filter((issue) => issue);
     issues.push(...itemValidationIssues);
-    return { ...accum, [name]: { valid, issues } };
-  }, {});
+    // Merge into the basic validation report
+    const existing = accum[name] ?? { valid: true, issues: [] };
+    return {
+      ...accum,
+      [name]: { valid: existing.valid && valid, issues: [...existing.issues, ...issues] },
+    };
+  }, basicItemValidationReports);
   let formValidationError: Error | null = null;
 
   try {
