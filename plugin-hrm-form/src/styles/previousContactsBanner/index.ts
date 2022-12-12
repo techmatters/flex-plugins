@@ -1,6 +1,6 @@
 import { styled } from '@twilio/flex-ui';
 
-export const YellowBannerHeight = '36px';
+const YellowBannerHeight = '36px';
 
 export const YellowBanner = styled('div')`
   display: flex;
