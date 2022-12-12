@@ -26,10 +26,19 @@ export const isWarmTransfer = task =>
 export const isColdTransfer = task =>
   Boolean(task.attributes.transferMeta && task.attributes.transferMeta.mode === transferModes.cold);
 
-export const isTransferring = task =>
-  Boolean(
-    task.attributes.transferMeta && task.attributes.transferMeta.transferStatus === transferStatuses.transferring,
+export const isTransferring = task => {
+  const { transferMeta } = task.attributes;
+  /*
+   * Cold transfers are always in an 'accepted' state so we cannot use this to establish if it's still in progress
+   * Checking if a cold transfer is not under our control suffices for current use cases, but it's tech debt
+   * We should use the tranferStatus in both warm & cold transfers to simplify our state logic
+   */
+  return Boolean(
+    transferMeta &&
+      (transferMeta.transferStatus === transferStatuses.transferring ||
+        (isColdTransfer(task) && !hasTaskControl(task))),
   );
+};
 
 /**
  * @param {ITask} task
