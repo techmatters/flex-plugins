@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 import * as Flex from '@twilio/flex-ui';
 import { omit } from 'lodash';
-
 import '../mockGetConfig';
 import each from 'jest-each';
 
