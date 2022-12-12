@@ -2,31 +2,20 @@
 import { Actions, ITask, TaskHelper, StateHelper } from '@twilio/flex-ui';
 
 import { transferStatuses, transferModes } from '../states/DomainConstants';
+import { CustomITask, isOfflineContactTask, isTwilioTask } from '../types/types';
 
-/**
- * @param {ITask} task
- */
-export const hasTransferStarted = task => Boolean(task.attributes && task.attributes.transferMeta);
+export const hasTransferStarted = (task: ITask) => Boolean(task.attributes && task.attributes.transferMeta);
 
-/**
- * @param {ITask} task
- */
-export const isOriginalReservation = task =>
+export const isOriginalReservation = (task: ITask) =>
   Boolean(task.attributes.transferMeta && task.attributes.transferMeta.originalReservation === task.sid);
 
-/**
- * @param {ITask} task
- */
-export const isWarmTransfer = task =>
+export const isWarmTransfer = (task: ITask) =>
   Boolean(task.attributes.transferMeta && task.attributes.transferMeta.mode === transferModes.warm);
 
-/**
- * @param {ITask} task
- */
-export const isColdTransfer = task =>
+export const isColdTransfer = (task: ITask) =>
   Boolean(task.attributes.transferMeta && task.attributes.transferMeta.mode === transferModes.cold);
 
-export const isTransferring = task => {
+export const isTransferring = (task: ITask) => {
   const { transferMeta } = task.attributes;
   /*
    * Cold transfers are always in an 'accepted' state so we cannot use this to establish if it's still in progress
@@ -40,19 +29,13 @@ export const isTransferring = task => {
   );
 };
 
-/**
- * @param {ITask} task
- */
-export const shouldShowTransferButton = task =>
+export const shouldShowTransferButton = (task: ITask) =>
   TaskHelper.isTaskAccepted(task) &&
   task.taskStatus === 'assigned' &&
   task.status === 'accepted' &&
   (!isTransferring(task) || hasTaskControl(task));
 
-/**
- * @param {ITask} task
- */
-export const shouldShowTransferControls = task =>
+export const shouldShowTransferControls = (task: ITask) =>
   !isOriginalReservation(task) && isTransferring(task) && hasTaskControl(task) && TaskHelper.isTaskAccepted(task);
 
 /**
@@ -63,14 +46,10 @@ export const shouldShowTransferControls = task =>
  * - this is not the original reservation and a transfer was initiated and then accepted
  * @param {import('../types/types').CustomITask} task
  */
-export const hasTaskControl = task =>
-  !hasTransferStarted(task) || task.attributes.transferMeta.sidWithTaskControl === task.sid;
+export const hasTaskControl = (task: CustomITask) =>
+  isTwilioTask(task) && (!hasTransferStarted(task) || task.attributes.transferMeta.sidWithTaskControl === task.sid);
 
-/**
- * @param {ITask} task
- * @param {string} sidWithTaskControl
- */
-const setTaskControl = async (task, sidWithTaskControl) => {
+const setTaskControl = async (task: ITask, sidWithTaskControl: string) => {
   const updatedAttributes = {
     ...task.attributes,
     transferMeta: {
@@ -84,17 +63,15 @@ const setTaskControl = async (task, sidWithTaskControl) => {
 
 /**
  * Takes control of the given task
- * @param {ITask} task
  */
-export const takeTaskControl = async task => {
+export const takeTaskControl = async (task: ITask) => {
   await setTaskControl(task, task.sid);
 };
 
 /**
  * Returns control of the given task to original counselor (only for call tasks for now)
- * @param {ITask} task
  */
-export const returnTaskControl = async task => {
+export const returnTaskControl = async (task: ITask) => {
   if (TaskHelper.isCallTask(task)) {
     await setTaskControl(task, task.attributes.transferMeta.originalReservation);
   }
@@ -105,7 +82,7 @@ export const returnTaskControl = async task => {
  * @param {string} newStatus
  * @returns {(task: ITask) => Promise<void>}
  */
-export const updateTransferStatus = newStatus => async task => {
+export const updateTransferStatus = (newStatus: keyof typeof transferStatuses) => async (task: ITask) => {
   const updatedAttributes = {
     ...task.attributes,
     transferStarted: true,
@@ -127,7 +104,11 @@ export const setTransferRejected = updateTransferStatus(transferStatuses.rejecte
  * @param {string} documentName name to retrieve the form or null if there were no form to save
  * @param {string} counselorName
  */
-export const setTransferMeta = async (payload, documentName, counselorName) => {
+export const setTransferMeta = async (
+  payload: { task: ITask; options: { mode: string }; targetSid: string },
+  documentName: string,
+  counselorName: string,
+) => {
   const { task, options, targetSid } = payload;
   const { mode } = options;
   const targetType = targetSid.startsWith('WK') ? 'worker' : 'queue';
@@ -155,7 +136,7 @@ export const setTransferMeta = async (payload, documentName, counselorName) => {
 /**
  * @param {ITask} task
  */
-export const clearTransferMeta = async task => {
+export const clearTransferMeta = async (task: ITask) => {
   const { transferMeta, transferStarted, ...attributes } = task.attributes;
 
   await task.setAttributes(attributes);
@@ -163,10 +144,8 @@ export const clearTransferMeta = async task => {
 
 /**
  * Kicks the other participant in call and then closes the original task
- * @param {ITask} task
- * @returns {Promise<void>}
  */
-export const closeCallOriginal = async task => {
+export const closeCallOriginal = async (task: ITask) => {
   await setTransferAccepted(task);
   await takeTaskControl(task);
   await Actions.invokeAction('KickParticipant', {
@@ -176,11 +155,11 @@ export const closeCallOriginal = async task => {
 };
 
 /**
- * Hangs the current call and closes the task being transfered to the new counselor (i.e. this task)
+ * Hangs the current call and closes the task being transferred to the new counselor (i.e. this task)
  * @param {ITask} task
  * @returns {Promise<void>}
  */
-export const closeCallSelf = async task => {
+export const closeCallSelf = async (task: ITask) => {
   await setTransferRejected(task);
   await returnTaskControl(task);
   await Actions.invokeAction('CompleteTask', { sid: task.sid });
