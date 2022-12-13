@@ -41,13 +41,14 @@ export const shouldShowTransferControls = (task: ITask) =>
 /**
  * Indicates if the current counselor has sole control over the task. Used to know if counselor should send form to hrm backend and prevent the form from being edited
  * A counselor controls a task if
+ * - It isn't a Twilio task
+ *  OR
  * - transfer was not initiated
  * - this is the original reservation and a transfer was initiated and then rejected
  * - this is not the original reservation and a transfer was initiated and then accepted
- * @param {import('../types/types').CustomITask} task
  */
 export const hasTaskControl = (task: CustomITask) =>
-  isTwilioTask(task) && (!hasTransferStarted(task) || task.attributes.transferMeta.sidWithTaskControl === task.sid);
+  !isTwilioTask(task) || !hasTransferStarted(task) || task.attributes.transferMeta.sidWithTaskControl === task.sid;
 
 const setTaskControl = async (task: ITask, sidWithTaskControl: string) => {
   const updatedAttributes = {
