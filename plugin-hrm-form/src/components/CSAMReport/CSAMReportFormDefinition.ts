@@ -1,4 +1,4 @@
-import type { FormItemDefinition } from 'hrm-form-definitions';
+import { FormItemDefinition, FormInputType } from 'hrm-form-definitions';
 
 import { getInitialValue } from '../common/forms/formGenerators';
 
@@ -31,7 +31,7 @@ export const definitionObject: CounselorCSAMFormDefinitionObject = {
   webAddress: {
     name: 'webAddress',
     label: 'Web address',
-    type: 'input',
+    type: FormInputType.Input,
     required: { value: true, message: 'RequiredFieldError' },
     maxLength: { value: 1000, message: '1000 characters max.' },
     validate: data => {
@@ -42,14 +42,14 @@ export const definitionObject: CounselorCSAMFormDefinitionObject = {
   description: {
     name: 'description',
     label: 'Description (500 characters)',
-    type: 'textarea',
+    type: FormInputType.Textarea,
     maxLength: { value: 500, message: '500 characters max.' },
     width: '70%',
   },
   anonymous: {
     name: 'anonymous',
     label: '',
-    type: 'radio-input',
+    type: FormInputType.RadioInput,
     options: [
       { value: 'anonymous', label: 'File anonymously' },
       { value: 'non-anonymous', label: 'Provide contact details' },
@@ -59,19 +59,19 @@ export const definitionObject: CounselorCSAMFormDefinitionObject = {
   firstName: {
     name: 'firstName',
     label: "Reporter's First Name",
-    type: 'input',
+    type: FormInputType.Input,
     maxLength: { value: 50, message: '50 characters max.' },
   },
   lastName: {
     name: 'lastName',
     label: "Reporter's Last Name",
-    type: 'input',
+    type: FormInputType.Input,
     maxLength: { value: 50, message: '50 characters max.' },
   },
   email: {
     name: 'email',
     label: 'Email Address',
-    type: 'email',
+    type: FormInputType.Email,
     required: { value: true, message: 'RequiredFieldError' },
     maxLength: { value: 100, message: '100 characters max.' },
   },
@@ -82,7 +82,7 @@ export const childDefinitionObject: ChildCSAMFormDefinitionObject = {
   childAge: {
     name: 'childAge',
     label: '',
-    type: 'radio-input',
+    type: FormInputType.RadioInput,
     options: [
       { value: 'under-13-years', label: 'Under 13 years old' },
       { value: '13-to-15-years', label: '13 to 15 years old' },
@@ -92,7 +92,7 @@ export const childDefinitionObject: ChildCSAMFormDefinitionObject = {
   ageVerified: {
     name: 'ageVerified',
     label: 'Yes, age of child has been verified',
-    type: 'checkbox',
+    type: FormInputType.Checkbox,
   },
 };
 

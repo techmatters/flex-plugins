@@ -261,7 +261,8 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
   border: none;
   border-radius: 4px;
   margin: ${props => (props.margin ? props.margin : '0')};
-  padding: 4px 23px;
+  padding: 4px 10px;
+  min-width: auto;
   background-color: ${props =>
     props.disabled
       ? HrmTheme.colors.disabledColor
@@ -490,6 +491,7 @@ export const TransferStyledButton = styled('button')<TransferStyledButtonProps>`
   border-radius: 4px;
   border: none;
   align-self: center;
+  font-weight: 600;
   &:hover {
     cursor: pointer;
     border: 1px solid gray;

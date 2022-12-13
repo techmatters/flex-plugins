@@ -9,7 +9,7 @@ terraform {
   backend "s3" {
     bucket         = "tl-terraform-state-twilio-co-staging"
     key            = "twilio/terraform.tfstate"
-    dynamodb_table = "twilio-terraform-co-staging-locks"
+    dynamodb_table = "terraform-locks"
     encrypt        = true
   }
 }
@@ -18,6 +18,7 @@ locals {
   helpline = "Te Guío"
   helpline_language = "es-CO"
   task_language = "es-CO"
+  voice_ivr_language = "es-MX"
   short_helpline = "CO"
   operating_info_key = "co"
   environment = "Staging"
@@ -151,6 +152,14 @@ module customChannel {
   short_environment = local.short_environment
 }
 
+module voiceChannel {
+  source = "../terraform-modules/channels/voice-channel"
+  master_workflow_sid = module.taskRouter.master_workflow_sid
+  voice_task_channel_sid = module.taskRouter.voice_task_channel_sid
+  voice_ivr_language = local.voice_ivr_language
+  voice_ivr_greeting_message = local.strings.voice_ivr_greeting_message
+}
+
 module flex {
   source = "../terraform-modules/flex/service-configuration"
   account_sid = var.account_sid
@@ -194,7 +203,6 @@ module aws_monitoring {
   helpline = local.helpline
   short_helpline = local.short_helpline
   environment = local.environment
-  aws_account_id = var.aws_account_id
 }
 
 # module github {

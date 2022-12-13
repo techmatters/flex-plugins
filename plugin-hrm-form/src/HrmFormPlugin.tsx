@@ -204,6 +204,7 @@ const setUpComponents = (setupObject: SetupObject) => {
     // Masks TaskInfoPanelContent - TODO: refactor to use a react component
     const { strings } = getConfig();
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+    strings.CallParticipantCustomerName = strings.MaskIdentifiers;
   }
 };
 
@@ -215,7 +216,7 @@ const setUpActions = (setupObject: SetupObject) => {
 
   ActionFunctions.setUpPostSurvey(setupObject);
 
-  // bind setupObject to the functions that requires some initializaton
+  // bind setupObject to the functions that requires some initialization
   const transferOverride = ActionFunctions.customTransferTask(setupObject);
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject);
   const beforeCompleteAction = ActionFunctions.beforeCompleteTask(setupObject);

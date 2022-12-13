@@ -4,7 +4,12 @@ import {
   FormDefinitionSpecification,
   FormItemDefinitionSpecification,
 } from './specification';
-import { OneToManyConfigSpecs, OneToOneConfigSpec, SelectOption } from './formDefinition';
+import {
+  FormInputType,
+  OneToManyConfigSpecs,
+  OneToOneConfigSpec,
+  SelectOption,
+} from './formDefinition';
 
 export type FormFileSpecification = FormDefinitionSpecification & DefinitionFileSpecification;
 export type JsonFileSpecification<T = any> = DefinitionSpecification<T> &
@@ -67,7 +72,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'firstName',
             label: 'First Name',
-            type: 'input',
+            type: FormInputType.Input,
             required: { value: true, message: 'RequiredFieldError' },
           },
         },
@@ -76,7 +81,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'lastName',
             label: 'Last Name',
-            type: 'input',
+            type: FormInputType.Input,
             required: { value: true, message: 'RequiredFieldError' },
           },
         },
@@ -85,7 +90,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'relationshipToChild',
             label: 'Relationship to child',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: '', label: '' },
               { value: 'Caregiver', label: 'Caregiver' },
@@ -111,7 +116,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'streetAddress',
             label: 'Street Address',
-            type: 'input',
+            type: FormInputType.Input,
           },
         },
         province: {
@@ -119,7 +124,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'province',
             label: 'Province',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: '', label: '' },
               { value: 'Central', label: 'Central' },
@@ -133,7 +138,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'district',
             label: 'District',
-            type: 'dependent-select',
+            type: FormInputType.DependentSelect,
             dependsOn: 'province',
             defaultOption: { value: '', label: '' },
             options: {
@@ -154,7 +159,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'phone1',
             label: 'Phone #1',
-            type: 'input',
+            type: FormInputType.Input,
           },
         },
         gender: {
@@ -162,7 +167,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'gender',
             label: 'Gender',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: '', label: '' },
               { value: 'Boy', label: 'Boy' },
@@ -178,7 +183,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'age',
             label: 'Age',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: 'Unknown', label: '' },
               ...generateAgeRangeOptions(0, 60),
@@ -194,7 +199,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'language',
             label: 'Language',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: 'Unknown', label: '' },
               { value: 'language1', label: 'language1' },
@@ -206,7 +211,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'ethnicity',
             label: 'Ethnicity',
-            type: 'input',
+            type: FormInputType.Input,
           },
         },
       },
@@ -219,7 +224,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'date',
             label: 'Date',
-            type: 'date-input',
+            type: FormInputType.DateInput,
             required: { value: true, message: 'RequiredFieldError' },
           },
         },
@@ -228,7 +233,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'duration',
             label: 'Duration',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: '', label: '' },
               { value: 'Ongoing', label: 'Ongoing' },
@@ -243,7 +248,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'location',
             label: 'Location',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: '', label: '' },
               { value: 'Unknown', label: 'Unknown' },
@@ -262,7 +267,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'isCaregiverAware',
             label: 'Is caregiver aware?',
-            type: 'mixed-checkbox',
+            type: FormInputType.MixedCheckbox,
           },
         },
         incidentWitnessed: {
@@ -270,7 +275,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'incidentWitnessed',
             label: 'Was the incident witnessed by anyone?',
-            type: 'mixed-checkbox',
+            type: FormInputType.MixedCheckbox,
           },
         },
         abuseReportedElsewhere: {
@@ -278,7 +283,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'abuseReportedElsewhere',
             label: 'Has abuse been reported elsewhere?',
-            type: 'mixed-checkbox',
+            type: FormInputType.MixedCheckbox,
           },
         },
         whereElseBeenReported: {
@@ -286,7 +291,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'whereElseBeenReported',
             label: 'Where else the incident has been reported?',
-            type: 'mixed-checkbox',
+            type: FormInputType.MixedCheckbox,
           },
         },
       },
@@ -299,7 +304,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'note',
             label: 'Note',
-            type: 'textarea',
+            type: FormInputType.Textarea,
             placeholder: 'Type here to add note...',
             rows: 20,
             width: 500,
@@ -315,7 +320,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'firstName',
             label: 'First Name',
-            type: 'input',
+            type: FormInputType.Input,
             required: { value: true, message: 'RequiredFieldError' },
           },
         },
@@ -324,7 +329,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'lastName',
             label: 'Last Name',
-            type: 'input',
+            type: FormInputType.Input,
             required: { value: true, message: 'RequiredFieldError' },
           },
         },
@@ -333,7 +338,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'relationshipToChild',
             label: 'Relationship to child',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: '', label: '' },
               { value: 'Caregiver', label: 'Caregiver' },
@@ -359,7 +364,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'streetAddress',
             label: 'Street Address',
-            type: 'input',
+            type: FormInputType.Input,
           },
         },
         province: {
@@ -367,7 +372,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'province',
             label: 'Province',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: '', label: '' },
               { value: 'Central', label: 'Central' },
@@ -381,7 +386,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'district',
             label: 'District',
-            type: 'dependent-select',
+            type: FormInputType.DependentSelect,
             dependsOn: 'province',
             defaultOption: { value: '', label: '' },
             options: {
@@ -402,7 +407,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'phone1',
             label: 'Phone #1',
-            type: 'input',
+            type: FormInputType.Input,
           },
         },
         gender: {
@@ -410,7 +415,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'gender',
             label: 'Gender',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: '', label: '' },
               { value: 'Boy', label: 'Boy' },
@@ -426,7 +431,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'age',
             label: 'Age',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: 'Unknown', label: '' },
               ...generateAgeRangeOptions(0, 60),
@@ -442,7 +447,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'language',
             label: 'Language',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: 'Unknown', label: '' },
               { value: 'language1', label: 'language1' },
@@ -454,7 +459,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'ethnicity',
             label: 'Ethnicity',
-            type: 'input',
+            type: FormInputType.Input,
           },
         },
       },
@@ -467,7 +472,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'date',
             label: 'Date',
-            type: 'date-input',
+            type: FormInputType.DateInput,
             required: { value: true, message: 'RequiredFieldError' },
           },
         },
@@ -476,7 +481,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'referredTo',
             label: 'Referred To',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: '', label: '' },
               { value: 'Clinic', label: 'Clinic' },
@@ -494,7 +499,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'comments',
             label: 'Comments',
-            type: 'textarea',
+            type: FormInputType.Textarea,
           },
         },
       },
@@ -517,7 +522,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'firstName',
             label: 'First Name',
-            type: 'input',
+            type: FormInputType.Input,
             required: { value: true, message: 'RequiredFieldError' },
           },
         },
@@ -526,7 +531,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'lastName',
             label: 'Last Name',
-            type: 'input',
+            type: FormInputType.Input,
             required: { value: true, message: 'RequiredFieldError' },
           },
         },
@@ -535,7 +540,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'relationshipToChild',
             label: 'Relationship to child',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: 'Unknown', label: '' },
               { value: 'Caregiver', label: 'Caregiver' },
@@ -559,7 +564,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'streetAddress',
             label: 'Street Address',
-            type: 'input',
+            type: FormInputType.Input,
           },
         },
         province: {
@@ -567,7 +572,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'province',
             label: 'Province',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: '', label: '' },
               { value: 'Central', label: 'Central' },
@@ -581,7 +586,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'district',
             label: 'District',
-            type: 'dependent-select',
+            type: FormInputType.DependentSelect,
             dependsOn: 'province',
             defaultOption: { value: '', label: '' },
             options: {
@@ -602,7 +607,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'phone1',
             label: 'Phone #1',
-            type: 'input',
+            type: FormInputType.Input,
             required: { value: true, message: 'RequiredFieldError' },
           },
         },
@@ -611,7 +616,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'gender',
             label: 'Gender',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: 'Unknown', label: '' },
               { value: 'Boy', label: 'Boy' },
@@ -625,7 +630,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'age',
             label: 'Age',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: 'Unknown', label: '' },
               ...generateAgeRangeOptions(0, 25),
@@ -640,7 +645,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'language',
             label: 'Language',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: 'Unknown', label: '' },
               { value: 'language1', label: 'language1' },
@@ -652,7 +657,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'ethnicity',
             label: 'Ethnicity',
-            type: 'input',
+            type: FormInputType.Input,
           },
         },
       },
@@ -665,7 +670,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'callSummary',
             label: 'Contact Summary',
-            type: 'textarea',
+            type: FormInputType.Textarea,
             required: { value: true, message: 'RequiredFieldError' },
           },
         },
@@ -674,7 +679,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'repeatCaller',
             label: 'Repeat Caller?',
-            type: 'mixed-checkbox',
+            type: FormInputType.MixedCheckbox,
           },
         },
         actionTaken: {
@@ -682,7 +687,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'actionTaken',
             label: 'Action Taken',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: 'Unknown', label: ' ' },
               { value: 'Action taken', label: 'Action taken' },
@@ -695,7 +700,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'okForCaseWorkerToCall',
             label: 'Ok for case worker to call?',
-            type: 'mixed-checkbox',
+            type: FormInputType.MixedCheckbox,
           },
         },
         didYouDiscussRightsWithTheChild: {
@@ -703,7 +708,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'didYouDiscussRightsWithTheChild',
             label: 'Did you discuss rights with the child?',
-            type: 'mixed-checkbox',
+            type: FormInputType.MixedCheckbox,
           },
         },
       },
@@ -716,7 +721,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'firstName',
             label: 'First Name',
-            type: 'input',
+            type: FormInputType.Input,
             required: { value: true, message: 'RequiredFieldError' },
           },
         },
@@ -725,7 +730,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'lastName',
             label: 'Last Name',
-            type: 'input',
+            type: FormInputType.Input,
             required: { value: true, message: 'RequiredFieldError' },
           },
         },
@@ -734,7 +739,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'age',
             label: 'Age',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: '', label: '' },
               { value: 'Unborn', label: 'Unborn' },
@@ -751,7 +756,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'gender',
             label: 'Gender',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: '', label: '' },
               { value: 'Boy', label: 'Boy' },
@@ -767,7 +772,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'streetAddress',
             label: 'Street Address',
-            type: 'input',
+            type: FormInputType.Input,
           },
         },
         province: {
@@ -775,7 +780,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'province',
             label: 'Province',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: '', label: '' },
               { value: 'Central', label: 'Central' },
@@ -789,7 +794,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'district',
             label: 'District',
-            type: 'dependent-select',
+            type: FormInputType.DependentSelect,
             dependsOn: 'province',
             defaultOption: { value: '', label: '' },
             options: {
@@ -810,7 +815,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'phone1',
             label: 'Phone #1',
-            type: 'input',
+            type: FormInputType.Input,
             required: { value: true, message: 'RequiredFieldError' },
           },
         },
@@ -819,7 +824,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'language',
             label: 'Language',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: 'Unknown', label: '' },
               { value: 'language1', label: 'language1' },
@@ -831,7 +836,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'ethnicity',
             label: 'Ethnicity',
-            type: 'input',
+            type: FormInputType.Input,
           },
         },
         schoolName: {
@@ -839,7 +844,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'schoolName',
             label: 'School Name',
-            type: 'input',
+            type: FormInputType.Input,
           },
         },
         gradeLevel: {
@@ -847,7 +852,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'gradeLevel',
             label: 'Grade Level',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: 'Unknown', label: '' },
               { value: 'Grade 1 to 4', label: 'Grade 1 to 4' },
@@ -863,7 +868,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'livingSituation',
             label: 'Living Situation',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: 'Unknown', label: '' },
               { value: 'Alternative care', label: 'Alternative care' },
@@ -888,7 +893,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'hivPositive',
             label: 'Child HIV Positive?',
-            type: 'mixed-checkbox',
+            type: FormInputType.MixedCheckbox,
           },
         },
         livingInConflictZone: {
@@ -896,7 +901,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'livingInConflictZone',
             label: 'Child living in conflict zone',
-            type: 'mixed-checkbox',
+            type: FormInputType.MixedCheckbox,
           },
         },
         inConflictWithTheLaw: {
@@ -904,7 +909,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'inConflictWithTheLaw',
             label: 'Child in conflict with the law',
-            type: 'mixed-checkbox',
+            type: FormInputType.MixedCheckbox,
           },
         },
         livingInPoverty: {
@@ -912,7 +917,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'livingInPoverty',
             label: 'Child living in poverty',
-            type: 'mixed-checkbox',
+            type: FormInputType.MixedCheckbox,
           },
         },
         memberOfAnEthnic: {
@@ -920,7 +925,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'memberOfAnEthnic',
             label: 'Child member of an ethnic, racial or religious minority',
-            type: 'mixed-checkbox',
+            type: FormInputType.MixedCheckbox,
           },
         },
         childWithDisability: {
@@ -928,7 +933,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'childWithDisability',
             label: 'Child with disability',
-            type: 'mixed-checkbox',
+            type: FormInputType.MixedCheckbox,
           },
         },
         LGBTQI: {
@@ -936,7 +941,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'LGBTQI+',
             label: 'LGBTQI+ / SOGIESC child',
-            type: 'mixed-checkbox',
+            type: FormInputType.MixedCheckbox,
           },
         },
         childOnTheMove: {
@@ -944,7 +949,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'childOnTheMove',
             label: 'Child on the move',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: 'Unknown', label: '' },
               { value: 'Involuntary', label: 'Involuntary' },
@@ -957,7 +962,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           default: {
             name: 'region',
             label: 'Region',
-            type: 'select',
+            type: FormInputType.Select,
             options: [
               { value: 'Unknown', label: '' },
               { value: 'Cities', label: 'Cities' },
@@ -1118,7 +1123,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
         default: {
           name: 'child',
           label: 'Child calling about self',
-          type: 'button',
+          type: FormInputType.Button,
           category: 'data',
         },
       },
@@ -1127,7 +1132,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
         default: {
           name: 'caller',
           label: 'Someone calling about a child',
-          type: 'button',
+          type: FormInputType.Button,
           category: 'data',
         },
       },
@@ -1136,7 +1141,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
         default: {
           name: 'silent',
           label: 'Silent',
-          type: 'button',
+          type: FormInputType.Button,
           category: 'non-data',
         },
       },
@@ -1145,7 +1150,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
         default: {
           name: 'blank',
           label: 'Blank',
-          type: 'button',
+          type: FormInputType.Button,
           category: 'non-data',
         },
       },
@@ -1154,7 +1159,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
         default: {
           name: 'joke',
           label: 'Joke',
-          type: 'button',
+          type: FormInputType.Button,
           category: 'non-data',
         },
       },
@@ -1163,7 +1168,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
         default: {
           name: 'hangup',
           label: 'Hang up',
-          type: 'button',
+          type: FormInputType.Button,
           category: 'non-data',
         },
       },
@@ -1172,7 +1177,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
         default: {
           name: 'wrongnumber',
           label: 'Wrong Number',
-          type: 'button',
+          type: FormInputType.Button,
           category: 'non-data',
         },
       },
@@ -1181,7 +1186,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
         default: {
           name: 'abusive',
           label: 'Abusive',
-          type: 'button',
+          type: FormInputType.Button,
           category: 'non-data',
         },
       },
