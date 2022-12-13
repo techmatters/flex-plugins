@@ -1,11 +1,12 @@
 /* eslint-disable camelcase */
 import * as Flex from '@twilio/flex-ui';
 import { omit } from 'lodash';
-
 import '../mockGetConfig';
+import each from 'jest-each';
+
 import * as TransferHelpers from '../../utils/transfer';
 import { transferModes, transferStatuses } from '../../states/DomainConstants';
-import { createTask } from '../helpers';
+import { acceptTask, createTask } from '../helpers';
 
 const members = new Map();
 members.set('some_40identity', { source: { sid: 'member1' } });
@@ -66,21 +67,61 @@ describe('Transfer mode, status and conditionals helpers', () => {
     expect(TransferHelpers.isColdTransfer(task3)).toBe(false); // not transferred
   });
 
-  test('isTransferring', async () => {
-    const task1 = createTask({ transferMeta: { transferStatus: transferStatuses.transferring } });
-    const task2 = createTask({ transferMeta: { transferStatus: transferStatuses.accepted } });
-    const task3 = createTask({ transferMeta: { transferStatus: transferStatuses.rejected } });
-    const task4 = createTask();
-
-    expect(TransferHelpers.isTransferring(task1)).toBe(true); // transferring
-    expect(TransferHelpers.isTransferring(task2)).toBe(false); // accepted
-    expect(TransferHelpers.isTransferring(task3)).toBe(false); // rejected
-    expect(TransferHelpers.isTransferring(task4)).toBe(false); // not transferred
+  // TODO: refactor with nice syntax once Twilio lets us update jest
+  each(
+    [
+      {
+        task: createTask({ transferMeta: { transferStatus: transferStatuses.transferring } }),
+        expectedResult: true,
+        description: 'transferring state',
+      },
+      {
+        task: createTask({ transferMeta: { transferStatus: transferStatuses.accepted } }),
+        expectedResult: false,
+        description: 'accepted state',
+      },
+      {
+        task: createTask({ transferMeta: { transferStatus: transferStatuses.rejected } }),
+        expectedResult: false,
+        description: 'rejected state',
+      },
+      { task: createTask(), expectedResult: false, description: 'no attributes' },
+      {
+        task: createTask(
+          {
+            transferMeta: {
+              transferStatus: transferStatuses.accepted,
+              transferModes: transferModes.cold,
+              sidWithTaskControl: 'AN SID',
+            },
+          },
+          { sid: 'AN SID' },
+        ),
+        expectedResult: false,
+        description: 'cold transfer with control',
+      },
+      {
+        task: createTask(
+          {
+            transferMeta: {
+              transferStatus: transferStatuses.accepted,
+              transferModes: transferModes.cold,
+              sidWithTaskControl: 'AN SID',
+            },
+          },
+          { sid: 'ANOTHER SID' },
+        ),
+        expectedResult: false,
+        description: 'cold transfer without control',
+      },
+    ].map(tc => ({ ...tc, toString: () => `${tc.description} should return ${tc.expectedResult}` })),
+  ).test('isTransferring with %s', async ({ task, expectedResult }) => {
+    expect(TransferHelpers.isTransferring(task)).toBe(expectedResult);
   });
 
   test('shouldShowTransferButton', async () => {
     const task1 = createTask({ transferMeta: { transferStatus: transferStatuses.transferring } });
-    const [task2c, task2r] = await Promise.all([task1.accept(), task1.accept()]);
+    const [task2c, task2r] = await Promise.all([acceptTask(task1), acceptTask(task1)]);
     await TransferHelpers.setTransferAccepted(task2c);
     await TransferHelpers.setTransferRejected(task2r);
     const [task3c, task3r] = await Promise.all([task2c.wrapUp(), task2c.wrapUp()]);
@@ -101,7 +142,7 @@ describe('Transfer mode, status and conditionals helpers', () => {
       { transferMeta: { originalReservation: 'task1', transferStatus: transferStatuses.transferring } },
       { sid: 'task2' },
     );
-    const task2Accepted = await task2.accept();
+    const task2Accepted = await acceptTask(task2);
     const task3 = {
       ...task2Accepted,
       sid: 'task3',
@@ -199,6 +240,7 @@ describe('Transfer mode, status and conditionals helpers', () => {
 });
 
 describe('Kick, close and helpers', () => {
+  const mockFlexActionsInvoke = Flex.Actions.invokeAction as jest.Mock;
   const task = createTask(
     {
       ignoreAgent: 'some@identity',
@@ -213,7 +255,7 @@ describe('Kick, close and helpers', () => {
 
   test('closeCallOriginal', async () => {
     const expected1 = { sid: 'reservation2', targetSid: 'some@identity' };
-    Flex.Actions.invokeAction.mockClear();
+    mockFlexActionsInvoke.mockClear();
     expect(Flex.Actions.invokeAction).not.toHaveBeenCalled();
 
     await TransferHelpers.closeCallOriginal(task);
@@ -224,7 +266,7 @@ describe('Kick, close and helpers', () => {
 
   test('closeCallSelf', async () => {
     const expected1 = { sid: 'reservation2' };
-    Flex.Actions.invokeAction.mockClear();
+    mockFlexActionsInvoke.mockClear();
     expect(Flex.Actions.invokeAction).not.toHaveBeenCalled();
 
     await TransferHelpers.closeCallSelf(task);
