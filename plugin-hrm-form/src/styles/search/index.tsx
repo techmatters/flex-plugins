@@ -142,7 +142,8 @@ export const PreviewHeaderText = styled(FontOpenSans)`
 
 export const StyledTabs = styled((props: Partial<TabsProps> & { children?: any }) => <Tabs {...props} />)`
   .Twilio-TabHeader-StateIndicator-Active {
-    background-color: black;
+    background-color: #0064e1;
+    height: 1px;
   }
 `;
 StyledTabs.displayName = 'StyledTabs';
@@ -150,7 +151,7 @@ StyledTabs.displayName = 'StyledTabs';
 export const StyledResultsContainer = styled('div')`
   display: flex;
   align-items: center;
-  width: 565px;
+  width: 600px;
   margin-top: 10px;
 `;
 StyledResultsContainer.displayName = 'StyledResultsContainer';
@@ -176,13 +177,13 @@ export const StyledFolderIcon = styled(Folder)`
 
 StyledFolderIcon.displayName = 'StyledFolderIcon';
 
-export const BoldText = styled('div')`
-  font-weight: bold;
+export const EmphasisedText = styled('div')`
+  font-weight: 600;
   color: #000000;
   font-family: Open Sans;
   text-align: left;
 `;
-BoldText.displayName = 'BoldText';
+EmphasisedText.displayName = 'EmphasisedText';
 
 export const SummaryText = styled(FontOpenSans)`
   font-size: 13px;
@@ -408,7 +409,7 @@ export const ListContainer = styled(BottomButtonBar)`
   flex-basis: 0;
   flex-grow: 1;
   padding: 10px;
-  margin-top: 2px;
+  margin: 2px 5px 0 5px;
 `;
 
 export const ScrollableList = styled('div')`
@@ -436,7 +437,7 @@ export const StyledResultsHeader = styled('div')`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  width: 565px;
+  width: 600px;
 `;
 
 StyledResultsHeader.displayName = 'StyledCaseResultsHeader';
