@@ -114,7 +114,8 @@ const handleTransferredTask = async (task: ITask) => {
   await restoreFormIfTransfer(task);
 };
 
-export const getTaskLanguage = ({ helplineLanguage }) => ({ task }) => task.attributes.language || helplineLanguage;
+export const getTaskLanguage = ({ helplineLanguage }: SetupObject) => ({ task }) =>
+  task.attributes.language || helplineLanguage;
 
 const sendMessageOfKey = (messageKey: string) => (
   setupObject: SetupObject,
@@ -346,7 +347,9 @@ export const afterWrapupTask = (setupObject: SetupObject) => async (payload: Act
       conversationState.source?.eventNames().forEach(safelyRemoveListeners);
     }
 
-    // TODO: make this occur in taskrouter callback
-    await triggerPostSurvey(setupObject, payload);
+    // TODO: Remove this once all accounts are handled by taskrouter
+    if (!featureFlags.post_survey_serverless_handled) {
+      await triggerPostSurvey(setupObject, payload);
+    }
   }
 };
