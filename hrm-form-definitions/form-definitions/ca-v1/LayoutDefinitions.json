@@ -15,7 +15,7 @@
       "splitFormAt": 7
     },
     "perpetrators": {
-      "splitFormAt": 7
+      "splitFormAt": 9
     },
     "incidents": {
       "previewFields": [

@@ -1,4 +1,5 @@
 import { generateDefaultForm, generateDefaultItem } from '../../specification';
+import { FormInputType } from '../../formDefinition';
 
 describe('generateDefaultItem', () => {
   test('Definition specification specifies a default - returns default', () => {
@@ -17,7 +18,7 @@ describe('generateDefaultForm', () => {
     expect(generated).toHaveLength(0);
   });
   test('Item with default specified in items map - returns default in the array', () => {
-    const itemDefault = { type: 'input', name: 'myItemName', label: 'My Item' };
+    const itemDefault = { type: FormInputType.Input, name: 'myItemName', label: 'My Item' };
     const generated = generateDefaultForm({
       items: { myItem: { required: false, default: itemDefault } },
     });
@@ -29,7 +30,7 @@ describe('generateDefaultForm', () => {
     });
     expect(generated).toHaveLength(1);
     expect(generated).toContainEqual({
-      type: 'input',
+      type: FormInputType.Input,
       name: 'myItem',
       label: 'myItem',
     });
@@ -41,10 +42,10 @@ describe('generateDefaultForm', () => {
     expect(generated).toHaveLength(0);
   });
   describe('Ordering', () => {
-    const itemDefault1 = { type: 'input', name: 'myItemName1', label: 'My Item 1' };
-    const itemDefault2 = { type: 'input', name: 'myItemName2', label: 'My Item 2' };
-    const itemDefault3 = { type: 'input', name: 'myItemName3', label: 'My Item 3' };
-    const itemDefault4 = { type: 'input', name: 'myItemName3', label: 'My Item 4' };
+    const itemDefault1 = { type: FormInputType.Input, name: 'myItemName1', label: 'My Item 1' };
+    const itemDefault2 = { type: FormInputType.Input, name: 'myItemName2', label: 'My Item 2' };
+    const itemDefault3 = { type: FormInputType.Input, name: 'myItemName3', label: 'My Item 3' };
+    const itemDefault4 = { type: FormInputType.Input, name: 'myItemName3', label: 'My Item 4' };
 
     test('Multiple items without explicit ordering - adds them to array in declaration order', () => {
       const generated = generateDefaultForm({
@@ -61,7 +62,7 @@ describe('generateDefaultForm', () => {
         itemDefault3,
         itemDefault1,
         {
-          type: 'input',
+          type: FormInputType.Input,
           name: 'myItem5',
           label: 'myItem5',
         },
@@ -87,7 +88,7 @@ describe('generateDefaultForm', () => {
         itemDefault3,
         itemDefault4,
         {
-          type: 'input',
+          type: FormInputType.Input,
           name: 'myItem5',
           label: 'myItem5',
         },
@@ -109,7 +110,7 @@ describe('generateDefaultForm', () => {
         itemDefault1,
         itemDefault4,
         {
-          type: 'input',
+          type: FormInputType.Input,
           name: 'myItem5',
           label: 'myItem5',
         },

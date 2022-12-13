@@ -275,7 +275,7 @@ export const setUpCaseList = () => {
       key="CaseListSideLink"
       onClick={() => Flex.Actions.invokeAction('NavigateToView', { viewName: 'case-list' })}
       reserveSpace={false}
-      showLabel={false}
+      showLabel={true}
     />,
   );
 };
@@ -292,7 +292,7 @@ export const setUpStandaloneSearch = () => {
       key="StandaloneSearchSideLink"
       onClick={() => Flex.Actions.invokeAction('NavigateToView', { viewName: 'search' })}
       reserveSpace={false}
-      showLabel={false}
+      showLabel={true}
     />,
   );
 };
@@ -350,4 +350,5 @@ export const removeActionsIfTransferring = () => {
  */
 export const setupCannedResponses = () => {
   Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" />);
+  Flex.MessageInputV2.Content.add(<CannedResponses key="canned-responses" />);
 };
