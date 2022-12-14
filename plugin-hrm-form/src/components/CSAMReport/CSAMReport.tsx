@@ -22,7 +22,7 @@ import { getConfig } from '../../HrmFormPlugin';
 import * as actions from '../../states/csam-report/actions';
 import * as routingActions from '../../states/routing/actions';
 import * as contactsActions from '../../states/contacts/actions';
-import { isCounselorCSAMReportForm } from '../../states/csam-report/types';
+import { CSAMReportForm, isCounselorCSAMReportForm } from '../../states/csam-report/types';
 import { RootState, csamReportBase, namespace, routingBase, configurationBase } from '../../states';
 import { reportToIWF } from '../../services/ServerlessService';
 import { createCSAMReport } from '../../services/CSAMReportService';
@@ -64,13 +64,8 @@ export const CSAMReportScreen: React.FC<Props> = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [initialForm] = React.useState(csamReportState.form); // grab initial values in first render only. This value should never change or will ruin the memoization below
-  const [isEmpty, setIsEmpty] = React.useState(true);
   const methods = useForm({ reValidateMode: 'onChange' });
   const firstElementRef = useFocus();
-
-  useEffect(() => {
-    confirmInput(methods.getValues());
-  }, [methods, methods.watch]);
 
   const currentCounselor = React.useMemo(() => {
     const { workerSid } = getConfig();
@@ -88,7 +83,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
     };
 
     const generateInput = (e: FormItemDefinition, index: number) => {
-      const generatedInput = getInputType([], onUpdateInput, fileUploadCustomHandlers, '400px')(e);
+      const generatedInput = getInputType([], onUpdateInput)(e);
       const csamInitialValues = { initialValues, childInitialValues };
       const initialValue = initialForm[e.name] === undefined ? csamInitialValues[e.name] : initialForm[e.name];
 
@@ -127,14 +122,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
   const onClickClose = () => {
     clearCSAMReportAction(taskSid);
     changeRoute({ ...previousRoute }, taskSid);
-  };
-
-  const confirmInput = form => {
-    if (form.childAge !== null && form.ageVerified) {
-      setIsEmpty(false);
-    } else {
-      setIsEmpty(true);
-    }
   };
 
   const onValid = async form => {
@@ -176,7 +163,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
   };
 
   const onSendAnotherReport = (route, subroute) => {
-    setIsEmpty(true);
     clearCSAMReportAction(taskSid);
     changeRoute({ route, subroute, previousRoute }, taskSid);
   };
@@ -188,7 +174,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
       return (
         <FormProvider {...methods}>
           <CSAMReportFormScreen
-            isEmpty={isEmpty}
             childFormElements={formElements.childReportDefinition}
             counselor={currentCounselor}
             onClickClose={onClickClose}

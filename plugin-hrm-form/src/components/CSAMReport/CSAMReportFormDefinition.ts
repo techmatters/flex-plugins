@@ -88,11 +88,14 @@ export const childDefinitionObject: ChildCSAMFormDefinitionObject = {
       { value: '13-15', label: '13 to 15 years old' },
       { value: '16-17', label: '16 to 17 years old' },
     ],
+    required: { value: true, message: 'RequiredFieldError' },
   },
   ageVerified: {
     name: 'ageVerified',
     label: 'Yes, age of child has been verified',
     type: 'checkbox',
+    required: { value: true, message: 'RequiredFieldError' },
+    validate: Boolean,
   },
 };
 
