@@ -23,10 +23,12 @@ jobs:
       environment_code: ${{ matrix.environment_code }}
       changelog: ${{ inputs.changelog }}
 
-  deploy-uk_staging_III: 
-    uses: ./.github/workflows/uk_staging_III.yml
+  deploy-uk_staging_III:
+    uses: ./.github/workflows/custom_helpline.yml
     secrets: inherit
     with:
+      helpline_code: 'UK'
+      environment_code: 'STG_III'
       changelog: ${{ inputs.changelog }}
 
   # Send Slack notifying success
