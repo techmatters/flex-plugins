@@ -1,5 +1,10 @@
 [
   {
+    "name": "identifier",
+    "label": "Identifier",
+    "type": "input"
+  },
+  {
     "name": "firstName",
     "label": "First Name",
     "type": "input",
@@ -11,63 +16,56 @@
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "type": "input"
   },
   {
     "name": "age",
     "label": "Age",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
         "label": ""
       },
       {
-        "value": "Unborn",
-        "label": "Unborn"
-      },
-      {
-        "value": "0",
+        "value": "00",
         "label": "0"
       },
       {
-        "value": "1",
+        "value": "01",
         "label": "1"
       },
       {
-        "value": "2",
+        "value": "02",
         "label": "2"
       },
       {
-        "value": "3",
+        "value": "03",
         "label": "3"
       },
       {
-        "value": "4",
+        "value": "04",
         "label": "4"
       },
       {
-        "value": "5",
+        "value": "05",
         "label": "5"
       },
       {
-        "value": "6",
+        "value": "06",
         "label": "6"
       },
       {
-        "value": "7",
+        "value": "07",
         "label": "7"
       },
       {
-        "value": "8",
+        "value": "08",
         "label": "8"
       },
       {
-        "value": "9",
+        "value": "09",
         "label": "9"
       },
       {
@@ -135,16 +133,188 @@
         "label": "25"
       },
       {
-        "value": ">25",
-        "label": ">25"
+        "value": "26",
+        "label": "26"
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
+        "value": "27",
+        "label": "27"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "28",
+        "label": "28"
+      },
+      {
+        "value": "29",
+        "label": "29"
+      },
+      {
+        "value": "30",
+        "label": "30"
+      },
+      {
+        "value": "31",
+        "label": "31"
+      },
+      {
+        "value": "32",
+        "label": "32"
+      },
+      {
+        "value": "33",
+        "label": "33"
+      },
+      {
+        "value": "34",
+        "label": "34"
+      },
+      {
+        "value": "35",
+        "label": "35"
+      },
+      {
+        "value": "36",
+        "label": "36"
+      },
+      {
+        "value": "37",
+        "label": "37"
+      },
+      {
+        "value": "38",
+        "label": "38"
+      },
+      {
+        "value": "39",
+        "label": "39"
+      },
+      {
+        "value": "40",
+        "label": "40"
+      },
+      {
+        "value": "41",
+        "label": "41"
+      },
+      {
+        "value": "42",
+        "label": "42"
+      },
+      {
+        "value": "43",
+        "label": "43"
+      },
+      {
+        "value": "44",
+        "label": "44"
+      },
+      {
+        "value": "45",
+        "label": "45"
+      },
+      {
+        "value": "46",
+        "label": "46"
+      },
+      {
+        "value": "47",
+        "label": "47"
+      },
+      {
+        "value": "48",
+        "label": "48"
+      },
+      {
+        "value": "49",
+        "label": "49"
+      },
+      {
+        "value": "50",
+        "label": "50"
+      },
+      {
+        "value": "51",
+        "label": "51"
+      },
+      {
+        "value": "52",
+        "label": "52"
+      },
+      {
+        "value": "53",
+        "label": "53"
+      },
+      {
+        "value": "54",
+        "label": "54"
+      },
+      {
+        "value": "55",
+        "label": "55"
+      },
+      {
+        "value": "56",
+        "label": "56"
+      },
+      {
+        "value": "57",
+        "label": "57"
+      },
+      {
+        "value": "58",
+        "label": "58"
+      },
+      {
+        "value": "59",
+        "label": "59"
+      },
+      {
+        "value": "60",
+        "label": "60"
+      },
+      {
+        "value": "61",
+        "label": "61"
+      },
+      {
+        "value": "62",
+        "label": "62"
+      },
+      {
+        "value": "63",
+        "label": "63"
+      },
+      {
+        "value": "64",
+        "label": "64"
+      },
+      {
+        "value": "65",
+        "label": "65"
+      },
+      {
+        "value": "66",
+        "label": "66"
+      },
+      {
+        "value": "67",
+        "label": "67"
+      },
+      {
+        "value": "68",
+        "label": "68"
+      },
+      {
+        "value": "69",
+        "label": "69"
+      },
+      {
+        "value": "70",
+        "label": "70"
+      },
+      {
+        "value": "70+",
+        "label": "70+"
       }
     ],
     "required": {
@@ -156,22 +326,27 @@
     "name": "gender",
     "label": "Gender",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
         "label": ""
       },
       {
-        "value": "Boy",
-        "label": "Boy"
+        "value": "Male",
+        "label": "Male"
       },
       {
-        "value": "Girl",
-        "label": "Girl"
+        "value": "Female",
+        "label": "Female"
       },
       {
         "value": "Non-Binary",
         "label": "Non-Binary"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
       },
       {
         "value": "Unknown",
@@ -189,90 +364,368 @@
     "type": "input"
   },
   {
-    "name": "province",
-    "label": "Province",
+    "name": "city",
+    "label": "City",
+    "type": "input"
+  },
+  {
+    "name": "region",
+    "label": "Region",
     "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
     "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Central",
-        "label": "Central"
-      },
       {
         "value": "Unknown",
         "label": "Unknown"
+      },
+      {
+        "value": "Malta",
+        "label": "Malta"
+      },
+      {
+        "value": "Gozo",
+        "label": "Gozo"
       }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    ]
   },
   {
-    "name": "district",
-    "label": "District",
+    "name": "locality",
+    "label": "Locality",
     "type": "dependent-select",
-    "dependsOn": "province",
+    "dependsOn": "region",
     "defaultOption": {
       "value": "",
       "label": ""
     },
     "options": {
-      "District1": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
+      "Malta": [
         {
           "value": "Unknown",
           "label": "Unknown"
+        },
+        {
+          "value": "H'Attard",
+          "label": "H'Attard"
+        },
+        {
+          "value": "Balzan",
+          "label": "Balzan"
+        },
+        {
+          "value": "Bidnija",
+          "label": "Bidnija"
+        },
+        {
+          "value": "Birgu",
+          "label": "Birgu"
+        },
+        {
+          "value": "Birkirkara",
+          "label": "Birkirkara"
+        },
+        {
+          "value": "Birzebbuga",
+          "label": "Birzebbuga"
+        },
+        {
+          "value": "Bormla",
+          "label": "Bormla"
+        },
+        {
+          "value": "Dingli",
+          "label": "Dingli"
+        },
+        {
+          "value": "Fgura",
+          "label": "Fgura"
+        },
+        {
+          "value": "Furjana",
+          "label": "Furjana"
+        },
+        {
+          "value": "Gharghur",
+          "label": "Gharghur"
+        },
+        {
+          "value": "Ghaxaq",
+          "label": "Ghaxaq"
+        },
+        {
+          "value": "Gudja",
+          "label": "Gudja"
+        },
+        {
+          "value": "Gzira",
+          "label": "Gzira"
+        },
+        {
+          "value": "Hamrun",
+          "label": "Hamrun"
+        },
+        {
+          "value": "Iklin",
+          "label": "Iklin"
+        },
+        {
+          "value": "Kalkara",
+          "label": "Kalkara"
+        },
+        {
+          "value": "Kirkop",
+          "label": "Kirkop"
+        },
+        {
+          "value": "Lija",
+          "label": "Lija"
+        },
+        {
+          "value": "Luqa",
+          "label": "Luqa"
+        },
+        {
+          "value": "Marsa",
+          "label": "Marsa"
+        },
+        {
+          "value": "Marsaskala",
+          "label": "Marsaskala"
+        },
+        {
+          "value": "Marsaxlokk",
+          "label": "Marsaxlokk"
+        },
+        {
+          "value": "Imdina",
+          "label": "Imdina"
+        },
+        {
+          "value": "Mellieha",
+          "label": "Mellieha"
+        },
+        {
+          "value": "Imgarr",
+          "label": "Imgarr"
+        },
+        {
+          "value": "Mosta",
+          "label": "Mosta"
+        },
+        {
+          "value": "Imqabba",
+          "label": "Imqabba"
+        },
+        {
+          "value": "Imsida",
+          "label": "Imsida"
+        },
+        {
+          "value": "Imtarfa",
+          "label": "Imtarfa"
+        },
+        {
+          "value": "Naxxar",
+          "label": "Naxxar"
+        },
+        {
+          "value": "Rahal Gdid",
+          "label": "Rahal Gdid"
+        },
+        {
+          "value": "Pembroke",
+          "label": "Pembroke"
+        },
+        {
+          "value": "Pietà",
+          "label": "Pietà"
+        },
+        {
+          "value": "Qormi",
+          "label": "Qormi"
+        },
+        {
+          "value": "Qrendi",
+          "label": "Qrendi"
+        },
+        {
+          "value": "Rabat",
+          "label": "Rabat"
+        },
+        {
+          "value": "Safi",
+          "label": "Safi"
+        },
+        {
+          "value": "San Gwann",
+          "label": "San Gwann"
+        },
+        {
+          "value": "Santa Lucija",
+          "label": "Santa Lucija"
+        },
+        {
+          "value": "Santa Venera",
+          "label": "Santa Venera"
+        },
+        {
+          "value": "Isla",
+          "label": "Isla"
+        },
+        {
+          "value": "Siggiewi",
+          "label": "Siggiewi"
+        },
+        {
+          "value": "Sliema",
+          "label": "Sliema"
+        },
+        {
+          "value": "San Giljan",
+          "label": "San Giljan"
+        },
+        {
+          "value": "San Pawl Bahar",
+          "label": "San Pawl Bahar"
+        },
+        {
+          "value": "Swieqi",
+          "label": "Swieqi"
+        },
+        {
+          "value": "Tarxien",
+          "label": "Tarxien"
+        },
+        {
+          "value": "Ta' Xbiex",
+          "label": "Ta' Xbiex"
+        },
+        {
+          "value": "Valletta",
+          "label": "Valletta"
+        },
+        {
+          "value": "Xghajra",
+          "label": "Xghajra"
+        },
+        {
+          "value": "Zabbar",
+          "label": "Zabbar"
+        },
+        {
+          "value": "Zebbug",
+          "label": "Zebbug"
+        },
+        {
+          "value": "Zejtun",
+          "label": "Zejtun"
+        },
+        {
+          "value": "Zurrieq",
+          "label": "Zurrieq"
         }
       ],
-      "District2": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
+      "Gozo": [
         {
           "value": "Unknown",
           "label": "Unknown"
+        },
+        {
+          "value": "Fontana",
+          "label": "Fontana"
+        },
+        {
+          "value": "Ghajnsielem",
+          "label": "Ghajnsielem"
+        },
+        {
+          "value": "Gharb",
+          "label": "Gharb"
+        },
+        {
+          "value": "Ghasri",
+          "label": "Ghasri"
+        },
+        {
+          "value": "Kercem",
+          "label": "Kercem"
+        },
+        {
+          "value": "Munxar",
+          "label": "Munxar"
+        },
+        {
+          "value": "Nadur",
+          "label": "Nadur"
+        },
+        {
+          "value": "Qala",
+          "label": "Qala"
+        },
+        {
+          "value": "Rabat",
+          "label": "Rabat"
+        },
+        {
+          "value": "San Lawrenz",
+          "label": "San Lawrenz"
+        },
+        {
+          "value": "Sannat",
+          "label": "Sannat"
+        },
+        {
+          "value": "Xaghra",
+          "label": "Xaghra"
+        },
+        {
+          "value": "Xewkija",
+          "label": "Xewkija"
+        },
+        {
+          "value": "Zebbug",
+          "label": "Zebbug"
+        },
+        {
+          "value": "Marsalforn",
+          "label": "Marsalforn"
         }
       ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     }
   },
   {
     "name": "phone1",
     "label": "Phone #1",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "type": "input"
   },
   {
     "name": "language",
     "label": "Language",
     "type": "select",
+    "unknownOption": "Unknown",
     "options": [
       {
         "value": "Unknown",
         "label": ""
       },
       {
-        "value": "language1",
-        "label": "language1"
+        "value": "English",
+        "label": "English"
+      },
+      {
+        "value": "Maltese",
+        "label": "Maltese"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
       }
     ]
   },
   {
-    "name": "ethnicity",
+    "name": "ethnicity-input",
     "label": "Ethnicity",
     "type": "input"
   },
@@ -282,40 +735,10 @@
     "type": "input"
   },
   {
-    "name": "gradeLevel",
-    "label": "Grade Level",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Grade 1 to 4",
-        "label": "Grade 1 to 4"
-      },
-      {
-        "value": "Grade 5 to 7",
-        "label": "Grade 5 to 7"
-      },
-      {
-        "value": "Grade 8 to 9",
-        "label": "Grade 8 to 9"
-      },
-      {
-        "value": "Grade 10 to 12",
-        "label": "Grade 10 to 12"
-      },
-      {
-        "value": "Out of school",
-        "label": "Out of school"
-      }
-    ]
-  },
-  {
     "name": "livingSituation",
     "label": "Living Situation",
     "type": "select",
+    "unknownOption": "Unknown",
     "options": [
       {
         "value": "Unknown",
@@ -348,87 +771,6 @@
       {
         "value": "With relatives",
         "label": "With relatives"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      }
-    ]
-  },
-  {
-    "name": "hivPositive",
-    "label": "Child HIV Positive?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "livingInConflictZone",
-    "label": "Child living in conflict zone",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "inConflictWithTheLaw",
-    "label": "Child in conflict with the law",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "livingInPoverty",
-    "label": "Child living in poverty",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "memberOfAnEthnic",
-    "label": "Child member of an ethnic, racial or religious minority",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "childWithDisability",
-    "label": "Child with disability",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "LGBTQI+",
-    "label": "LGBTQI+ / SOGIESC child",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "childOnTheMove",
-    "label": "Child on the move",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Involuntary",
-        "label": "Involuntary"
-      },
-      {
-        "value": "Voluntary",
-        "label": "Voluntary"
-      }
-    ]
-  },
-  {
-    "name": "region",
-    "label": "Region",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Cities",
-        "label": "Cities"
-      },
-      {
-        "value": "Rural areas",
-        "label": "Rural areas"
-      },
-      {
-        "value": "Town & semi-dense areas",
-        "label": "Town & semi-dense areas"
       }
     ]
   }
