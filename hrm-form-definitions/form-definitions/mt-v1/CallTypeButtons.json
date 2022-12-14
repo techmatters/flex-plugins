@@ -1,25 +1,25 @@
 [
   {
     "name": "child",
-    "label": "Child calling about self",
+    "label": "Client calling about self",
     "type": "button",
     "category": "data"
   },
   {
     "name": "caller",
-    "label": "Someone calling about a child",
+    "label": "Someone calling about a client",
     "type": "button",
     "category": "data"
   },
   {
-    "name": "silent",
-    "label": "Silent",
+    "name": "chatDisconnected",
+    "label": "Chat Disconnected",
     "type": "button",
     "category": "non-data"
   },
   {
-    "name": "blank",
-    "label": "Blank",
+    "name": "chatDidNotStart",
+    "label": "Chat Did Not Start",
     "type": "button",
     "category": "non-data"
   },
@@ -30,20 +30,14 @@
     "category": "non-data"
   },
   {
-    "name": "hangup",
-    "label": "Hang up",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "wrongnumber",
-    "label": "Wrong Number",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
     "name": "abusive",
     "label": "Abusive",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "test",
+    "label": "Test",
     "type": "button",
     "category": "non-data"
   }
