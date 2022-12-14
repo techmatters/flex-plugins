@@ -151,18 +151,17 @@ const calculateOptionsTabIndexes = (currentValue: any[], options: InputOption[])
  * @param customHandlers Set of additional handlers specific to file uploads.
  * @param {FormItemDefinition} def Definition for a single input.
  */
-export const getInputType = (
-  parents: string[],
-  updateCallback: () => void,
-  customHandlers?: CustomHandlers,
-  width?: string,
-) => (def: FormItemDefinition) => (
+export const getInputType = (parents: string[], updateCallback: () => void, customHandlers?: CustomHandlers) => (
+  def: FormItemDefinition,
+) => (
   initialValue: any, // TODO: restrict this type
   htmlElRef?: HTMLElementRef,
   isEnabled: boolean = true,
 ) => {
   const rules = getRules(def);
   const path = [...parents, def.name].join('.');
+
+  console.log('path is here', path);
 
   const labelTextComponent = <Template code={`${def.label}`} className=".fullstory-unmask" />;
 
@@ -613,7 +612,7 @@ export const getInputType = (
             const error = get(errors, path);
             return (
               <FormLabel htmlFor={path}>
-                <FormCheckBoxWrapper width={width} error={Boolean(error)}>
+                <FormCheckBoxWrapper width={path === 'ageVerified' && '400px'} error={Boolean(error)}>
                   <Box marginRight="5px">
                     <FormCheckbox
                       id={path}
@@ -635,7 +634,7 @@ export const getInputType = (
                     />
                   </Box>
                   {labelTextComponent}
-                  {rules.required && <RequiredAsterisk />}
+                  {rules.required && path !== 'ageVerified' && <RequiredAsterisk />}
                 </FormCheckBoxWrapper>
                 {error && (
                   <FormError>
