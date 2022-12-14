@@ -93,7 +93,7 @@ export const childDefinitionObject: ChildCSAMFormDefinitionObject = {
   ageVerified: {
     name: 'ageVerified',
     label: 'Yes, age of child has been verified',
-    type: 'checkbox',
+    type: FormInputType.Checkbox,
     required: { value: true, message: 'RequiredFieldError' },
     validate: Boolean,
   },
