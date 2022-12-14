@@ -12,9 +12,9 @@ const handleAcceptTransfer = async (task: ITask) => {
   await closeCallOriginal(task);
 };
 
-type Props = ThemeProps & { task: ITask };
+type Props = ThemeProps & { task?: ITask };
 
-const AcceptTransferButton: React.FC<Props> = ({ theme, task }) => {
+const AcceptTransferButton: React.FC<Props> = ({ task }) => {
   return (
     <TransferStyledButton
       color={HrmTheme.colors.base11}

@@ -157,12 +157,24 @@ describe('Transfer mode, status and conditionals helpers', () => {
     const [task4c, task4r] = [{ ...task3 }, { ...task3 }];
     await TransferHelpers.setTransferAccepted(task4c);
     await TransferHelpers.setTransferRejected(task4r);
+    const task5 = {
+      ...task2Accepted,
+      sid: 'task3',
+      attributes: {
+        ...task2Accepted.attributes,
+        transferMeta: {
+          ...task2Accepted.attributes.transferMeta,
+          sidWithTaskControl: 'not_task3',
+        },
+      },
+    };
 
     expect(TransferHelpers.shouldShowTransferControls(task1)).toBe(false); // is original
     expect(TransferHelpers.shouldShowTransferControls(task2)).toBe(false); // pending
-    expect(TransferHelpers.shouldShowTransferControls(task3)).toBe(true); // ok
+    expect(TransferHelpers.shouldShowTransferControls(task3)).toBe(false); // controlled
     expect(TransferHelpers.shouldShowTransferControls(task4c)).toBe(false); // accepted
     expect(TransferHelpers.shouldShowTransferControls(task4r)).toBe(false); // rejected
+    expect(TransferHelpers.shouldShowTransferControls(task5)).toBe(true); // ok
   });
 
   test('hasTaskControl', async () => {

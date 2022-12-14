@@ -36,7 +36,7 @@ export const shouldShowTransferButton = (task: ITask) =>
   (!isTransferring(task) || hasTaskControl(task));
 
 export const shouldShowTransferControls = (task: ITask) =>
-  !isOriginalReservation(task) && isTransferring(task) && hasTaskControl(task) && TaskHelper.isTaskAccepted(task);
+  !isOriginalReservation(task) && isTransferring(task) && !hasTaskControl(task) && TaskHelper.isTaskAccepted(task);
 
 /**
  * Indicates if the current counselor has sole control over the task. Used to know if counselor should send form to hrm backend and prevent the form from being edited
