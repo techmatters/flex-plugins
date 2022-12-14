@@ -10,7 +10,6 @@ const removeConversationListeners = (task: ITask) => {
       try {
         if (conversationState.source?.listenerCount(eventName)) {
           conversationState.source?.removeAllListeners(eventName);
-          console.log('>>>>>>>>>>>>>>', 'safely removed listeners for event ', eventName);
         }
       } catch (err) {
         console.error(`Failed to safelyRemoveListeners with event ${eventName}`, err);

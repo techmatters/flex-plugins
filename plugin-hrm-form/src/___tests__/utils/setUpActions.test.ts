@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { ITask, StateHelper, TaskHelper, ChatOrchestrator } from '@twilio/flex-ui';
+import { ITask, TaskHelper, ChatOrchestrator } from '@twilio/flex-ui';
 import each from 'jest-each';
 
 import { afterCompleteTask, afterWrapupTask, setUpPostSurvey } from '../../utils/setUpActions';
@@ -101,36 +101,6 @@ describe('afterWrapupTask', () => {
       expect(postSurveyInitSpy).not.toHaveBeenCalled();
     }
   });
-
-  /*
-   * const task = ({
-   *   attributes: { channelSid: 'CHxxxxxx' },
-   *   taskSid: 'THIS IS THE TASK SID!',
-   *   channelType: 'web',
-   *   taskChannelUniqueName: 'chat',
-   * } as unknown) as ITask;
-   * jest.spyOn(TaskHelper, 'isChatBasedTask').mockImplementation(() => true);
-   * jest.spyOn(TaskHelper, 'getTaskConversationSid').mockImplementationOnce(() => task.attributes.channelSid);
-   * const removeAllListenersMock = jest.fn();
-   * const getConversationStateForTaskSpy = jest
-   *   .spyOn(StateHelper, 'getConversationStateForTask')
-   *   .mockImplementationOnce(
-   *     () =>
-   *       ({
-   *         source: {
-   *           listenerCount: jest.fn(() => true),
-   *           eventNames: jest.fn(() => ['event1', 'event2']),
-   *           removeAllListeners: removeAllListenersMock,
-   *         },
-   *       } as any),
-   *   );
-   * const postSurveyInitSpy = jest.spyOn(ServerlessService, 'postSurveyInit').mockImplementation(async () => ({}));
-   * afterWrapupTask(<HrmFormPlugin.SetupObject>{ featureFlags: { enable_post_survey: true } })({ task });
-   * expect(removeAllListenersMock).toHaveBeenCalledWith('event1');
-   * expect(removeAllListenersMock).toHaveBeenCalledWith('event2');
-   * expect(getConversationStateForTaskSpy).toHaveBeenCalled();
-   * expect(postSurveyInitSpy).toHaveBeenCalled();
-   */
 });
 
 describe('setUpPostSurvey', () => {
