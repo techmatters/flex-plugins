@@ -80,7 +80,7 @@ describe('afterWrapupTask', () => {
           description,
         };
       }),
-  ).test("$description", async ({ channelType, featureFlags, isChatChannel, shouldCallPostSurveyInit }) => {
+  ).test('$description', async ({ channelType, featureFlags, isChatChannel, shouldCallPostSurveyInit }) => {
     const postSurveyInitSpy = jest.spyOn(ServerlessService, 'postSurveyInit').mockImplementationOnce(async () => ({}));
 
     const task = ({
