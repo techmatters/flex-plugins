@@ -1,4 +1,4 @@
-const webpack = require('webpack')
+const DotenvFlow = require('dotenv-flow-webpack');
 
 module.exports = (config, { isProd, isDev, isTest }) => {
   /**
@@ -7,11 +7,10 @@ module.exports = (config, { isProd, isDev, isTest }) => {
    */
 
   config.plugins.push(
-    new webpack.EnvironmentPlugin([
-      'REACT_HRM_BASE_URL',
-      'REACT_SERVERLESS_BASE_URL',
-    ]),
+    new DotenvFlow({
+      // eslint-disable-next-line camelcase
+      system_vars: true,
+    }),
   );
-
   return config;
 };

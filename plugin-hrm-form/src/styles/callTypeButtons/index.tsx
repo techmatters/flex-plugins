@@ -3,10 +3,9 @@ import '@emotion/react';
 import Dialog from '@material-ui/core/Dialog';
 import ClearIcon from '@material-ui/icons/Clear';
 import { IconButton } from '@material-ui/core';
-import { styled } from '@twilio/flex-ui';
+import { styled, Button } from '@twilio/flex-ui';
 import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
 
-import { Button } from '../../components/twilioComponentWorkaround';
 import HrmTheme from '../HrmTheme';
 
 export const Container = styled('div')`

@@ -9,7 +9,7 @@ import CasePreview from '../CasePreview';
 import {
   SearchContactResult,
   SearchCaseResult,
-  SearchContact,
+  SearchAPIContact,
   Case,
   CustomITask,
   standaloneTaskSid,
@@ -28,8 +28,7 @@ import {
   StyledResultsText,
   StyledTabLabel,
   StyledFolderIcon,
-  StyledContactResultsHeader,
-  StyledCaseResultsHeader,
+  StyledResultsHeader,
   BoldText,
   StyledCount,
 } from '../../../styles/search';
@@ -55,7 +54,7 @@ type OwnProps = {
   toggleNonDataContacts: () => void;
   toggleClosedCases: () => void;
   handleBack: () => void;
-  handleViewDetails: (contact: SearchContact) => void;
+  handleViewDetails: (contact: SearchAPIContact) => void;
   changeSearchPage: (SearchPagesType) => void;
   setConnectedCase: (currentCase: Case, taskSid: string) => void;
   currentPage: SearchPagesType;
@@ -80,7 +79,6 @@ const SearchResults: React.FC<Props> = ({
   changeSearchPage,
   setConnectedCase,
   currentPage,
-  showConnectIcon,
   counselorsHash,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -215,7 +213,7 @@ const SearchResults: React.FC<Props> = ({
           </StyledResultsContainer>
           {currentPage === SearchPages.resultsContacts && (
             <>
-              <StyledContactResultsHeader>
+              <StyledResultsHeader>
                 <StyledCount data-testid="ContactsCount">
                   {contactsCount}&nbsp;
                   {contactsCount === 1 ? (
@@ -240,12 +238,11 @@ const SearchResults: React.FC<Props> = ({
                   }
                   labelPlacement="start"
                 />
-              </StyledContactResultsHeader>
+              </StyledResultsHeader>
               {contacts &&
                 contacts.length > 0 &&
                 contacts.map(contact => (
                   <ContactPreview
-                    showConnectIcon={showConnectIcon}
                     key={contact.contactId}
                     contact={contact}
                     handleViewDetails={() => handleViewDetails(contact)}
@@ -263,7 +260,7 @@ const SearchResults: React.FC<Props> = ({
           )}
           {currentPage === SearchPages.resultsCases && (
             <>
-              <StyledCaseResultsHeader>
+              <StyledResultsHeader>
                 <StyledCount data-testid="CasesCount">
                   {casesCount}{' '}
                   {casesCount === 1 ? (
@@ -288,7 +285,7 @@ const SearchResults: React.FC<Props> = ({
                   }
                   labelPlacement="start"
                 />
-              </StyledCaseResultsHeader>
+              </StyledResultsHeader>
 
               {cases &&
                 cases.length > 0 &&
@@ -321,12 +318,10 @@ const mapStateToProps = (state, ownProps) => {
   const searchContactsState = state[namespace][searchContactsBase];
   const taskId = ownProps.task.taskSid;
   const taskSearchState = searchContactsState.tasks[taskId];
-  const isStandaloneSearch = taskId === standaloneTaskSid;
   const { counselors } = state[namespace][configurationBase];
 
   return {
     currentPage: taskSearchState.currentPage,
-    showConnectIcon: !isStandaloneSearch,
     counselorsHash: counselors.hash,
   };
 };

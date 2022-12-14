@@ -15,26 +15,12 @@
       "splitFormAt": 7
     },
     "perpetrators": {
-      "splitFormAt": 7
+      "splitFormAt": 9
     },
     "incidents": {
       "previewFields": [
-        "date",
-        "duration",
-        "location"
+        "date"
       ],
-      "layout": {
-        "date": {
-          "includeLabel": false,
-          "format": "date"
-        },
-        "duration": {
-          "includeLabel": true
-        },
-        "location": {
-          "includeLabel": true
-        }
-      },
       "splitFormAt": 3
     },
     "referrals": {

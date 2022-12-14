@@ -6,7 +6,7 @@ import HrmTheme from '../HrmTheme';
 
 export const CaseListContainer = styled(Absolute)`
   height: 100%;
-  max-width: 1280px;
+  width: 1280px;
   background-color: #f6f6f6;
 `;
 CaseListContainer.displayName = 'CaseListContainer';
@@ -52,7 +52,21 @@ export const CLTableRow = withStyles({
 })(TableRow);
 CLTableRow.displayName = 'CLTableRow';
 
-export const CLTableCell = withStyles(theme => ({
+export const CLHeaderTableCell = withStyles(theme => ({
+  root: {
+    borderBottom: 0,
+    textTransform: 'none',
+    overflow: 'hidden',
+    padding: '0 0 0 10px',
+  },
+  body: {
+    verticalAlign: 'top',
+    paddingTop: 8,
+  },
+}))(TableCell);
+CLHeaderTableCell.displayName = 'CLHeaderTableCell';
+
+export const CLTableCell = withStyles({
   root: {
     borderBottom: 0,
     textTransform: 'none',
@@ -63,7 +77,7 @@ export const CLTableCell = withStyles(theme => ({
     verticalAlign: 'top',
     paddingTop: 8,
   },
-}))(TableCell);
+})(TableCell);
 CLTableCell.displayName = 'CLTableCell';
 
 export const CLNumberCell = withStyles({

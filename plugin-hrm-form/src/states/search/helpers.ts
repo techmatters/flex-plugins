@@ -1,13 +1,17 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 import { ConfigurationState } from '../configuration/reducer';
-import { SearchContact } from '../../types/types';
+import { SearchAPIContact, SearchUIContact } from '../../types/types';
 
-export const addDetails = (counselorsHash: ConfigurationState['counselors']['hash'], raw: SearchContact[]) => {
-  const detailed = raw.map(contact => {
+export const searchAPIContactToSearchUIContact = (
+  counselorsHash: ConfigurationState['counselors']['hash'],
+  raw: SearchAPIContact[],
+): SearchUIContact[] =>
+  raw.map(contact => {
     const counselor = counselorsHash[contact.overview.counselor] || 'Unknown';
-    const det = { ...contact, counselor };
-    return det;
+    const { firstName, lastName } = contact.details.callerInformation?.name ?? {};
+    const callerName =
+      contact.overview.callType === 'Someone calling about a child' && (firstName || lastName)
+        ? `${firstName} ${lastName}`
+        : undefined;
+    return { ...contact, counselorName: counselor, callerName };
   });
-
-  return detailed;
-};

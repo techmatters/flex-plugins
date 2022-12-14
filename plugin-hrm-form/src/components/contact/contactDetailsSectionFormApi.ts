@@ -1,6 +1,6 @@
 import { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
-import { ContactRawJson, InformationObject, SearchContact } from '../../types/types';
+import { ContactRawJson, InformationObject, SearchAPIContact } from '../../types/types';
 import {
   transformCategories,
   transformContactFormValues,

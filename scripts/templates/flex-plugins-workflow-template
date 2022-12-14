@@ -15,8 +15,6 @@ jobs:
     uses: ./.github/workflows/custom_helpline.yml
     secrets: inherit
     with:
-      helpline_code: <HELPLINE_CODE>
-      environment_code: <ENVIRONMENT_CODE>
+      helpline_code: <SHORT_HELPLINE>
+      environment_code: <SHORT_ENVIRONMENT>
       changelog: ${{ inputs.changelog }}
-
-      

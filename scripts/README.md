@@ -72,7 +72,7 @@ Each command has --help docs for specific information about how to use each para
 
 Takes a hardcoded set of resources that normally get created by default when a new Twilio account is created, checks to see if they exist on the target account, and imports them if they are.
 
-It is a required step prior to running `terraform apply` on a brand new account, because otherwise terraform will encounter a resources from its configuration that is not in the `tfstate` but does exist on the account (because we reuse these default resources in our Aselo configuration), which upsets Terraform. 
+It is a required step prior to running `terraform apply` on a brand new account, because otherwise terraform will encounter a resources from its configuration that is not in the `tfstate` but does exist on the account (because we reuse these default resources in our Aselo configuration), which upsets Terraform.
 This script will line up the tfstate of a fresh account with the reality, allowing the first terraform apply to run correctly.
 
 Using this script as part of setting up a new account is described in /twilio-iac/README.md
@@ -81,11 +81,11 @@ Using this script as part of setting up a new account is described in /twilio-ia
 
 Takes a single *.tf Terraform configuration file and scans the resources defined in there. It will then search for those resources in the Twilio account you provide credentials for and if it finds them, imports them into the `tfstate` for this configuration.
 
-Its use cases are those which involve trying to import large amounts of resources that are defined in configuration, already exist on the account, but aren't in the `tfstate`. 
+Its use cases are those which involve trying to import large amounts of resources that are defined in configuration, already exist on the account, but aren't in the `tfstate`.
 Importing existing, non-terraform managed accounts into Terraform is one use case, but also importing significant additions made to staging accounts outside Terraform would be another (I used it to import the SafeSpot 'which district?' autopilot question, which would have been time-consuming otherwise).
 In both of these use cases, the Terraform resources would need to have been configured in the `*.tf` files prior to using this command to update the state, naturally.
 
-*Note:* You STILL need to pass any SIDs that come from variables in using an `--sid` parameter, even if they are defined in the `tfvars` file you pass in with `-v`or as a `TF_VARS_*` environment variable. 
+*Note:* You STILL need to pass any SIDs that come from variables in using an `--sid` parameter, even if they are defined in the `tfvars` file you pass in with `-v`or as a `TF_VARS_*` environment variable.
 The script doesn't scan provided terraform variables automatically for its own use, it just passes the `*.tfvars` file you specify down to the `terraform import` command. It could be enhanced to do this if needed, but doesn't right now.
 
 #### Example
@@ -99,7 +99,7 @@ It was not, however, imported into the Terraform state for this account. The abo
 
 The following environment variables needed to be present before running the script:
 
-`AWS_ACCESS_KEY_ID` 
+`AWS_ACCESS_KEY_ID`
 `AWS_SECRET_ACCESS_KEY`
 `TWILIO_ACCOUNT_SID`
 `TWILIO_AUTH_TOKEN`
@@ -129,11 +129,11 @@ Given an already existing chatbot assistant, living in a Twilio account, will ge
 It will create the file locally, so you need to grab it and drop it where it makes sense.
 
 You need to have `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` environment variables set (either passed in the command itself or in a `.env` file).
-You also must provide the following parameters to the script: 
+You also must provide the following parameters to the script:
   - `assistantSid`: Target chatbot's assistant sid to generate the .tf from.
   - `referenceName`: The reference name that will be used as the top level resource (the name of the assistant resource in the .tf file).
   - `serverlessUrl`: \[optional\] The serverless url of the account. If present, will replace it for the dynamic form in the .tf file.
-Example: 
+Example:
 ```
 ➜ npm run twilioResources -- generate-chatbot-tf --assistantSid=UAxxxxxxxxxxxx --referenceName=my_custom_bot --serverlessUrl=https://serverless-xxxx-production.twil.io
 ```

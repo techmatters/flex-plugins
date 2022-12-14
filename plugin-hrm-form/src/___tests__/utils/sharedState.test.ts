@@ -13,8 +13,8 @@ const mockSharedState = {
   document: async documentName => {
     if (!mockSharedState.documents[documentName]) {
       mockSharedState.documents[documentName] = {
-        set: async value => {
-          mockSharedState.documents[documentName] = { value };
+        set: async data => {
+          mockSharedState.documents[documentName] = { data };
         },
       };
     }
@@ -132,11 +132,11 @@ describe('Test with connected sharedState', () => {
   test('saveFormSharedState', async () => {
     const { saveFormSharedState } = require('../../utils/sharedState');
 
-    const expected = { ...form, metadata: { ...form.metadata, tab: 1 } };
+    const expected = { ...form };
 
     const documentName = await saveFormSharedState(form, task);
     expect(documentName).toBe('pending-form-taskSid');
-    expect(mockSharedState.documents[documentName].value).toStrictEqual(expected);
+    expect(mockSharedState.documents[documentName].data).toStrictEqual(expected);
     await task.setAttributes({
       transferMeta: { transferStatus: transferStatuses.accepted, formDocument: documentName },
     });
@@ -145,7 +145,7 @@ describe('Test with connected sharedState', () => {
   test('loadFormSharedState', async () => {
     const { loadFormSharedState } = require('../../utils/sharedState');
 
-    const expected = { ...form, metadata: { ...form.metadata, tab: 1 } };
+    const expected = { ...form };
 
     const loadedForm = await loadFormSharedState(task);
     expect(loadedForm).toStrictEqual(expected);

@@ -6,8 +6,8 @@ import { FormDefinition } from 'hrm-form-definitions';
 
 import styles from './styles';
 import { unNestInformation } from '../../../services/ContactService';
-import { presentValue } from '../../../utils';
 import { getConfig } from '../../../HrmFormPlugin';
+import { presentValueFromStrings } from './presentValuesFromStrings';
 
 type OwnProps = {
   sectionName: string;
@@ -20,6 +20,7 @@ type Props = OwnProps;
 
 const CasePrintSection: React.FC<Props> = ({ sectionName, values, definitions, unNestInfo }) => {
   const { strings } = getConfig();
+
   return (
     <View>
       <View style={styles['sectionHeader']}>
@@ -34,7 +35,9 @@ const CasePrintSection: React.FC<Props> = ({ sectionName, values, definitions, u
               </View>
               <View style={styles['sectionItemSecondColumn']}>
                 <Text>
-                  {presentValue(unNestInfo ? unNestInformation(def, values) : values[def.name], strings)(def)}
+                  {presentValueFromStrings(strings)(unNestInfo ? unNestInformation(def, values) : values[def.name])(
+                    def,
+                  )}
                 </Text>
               </View>
             </View>

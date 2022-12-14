@@ -9,10 +9,11 @@ terraform {
   backend "s3" {
     bucket         = "tl-terraform-state-twilio-mt-staging"
     key            = "twilio/terraform.tfstate"
-    dynamodb_table = "twilio-terraform-mt-staging-locks"
+    dynamodb_table = "terraform-locks"
     encrypt        = true
   }
 }
+
 locals {
   helpline = "Kellimni"
   short_helpline = "MT"
@@ -27,11 +28,10 @@ locals {
   twilio_numbers = [""]
   channel = ""
   custom_channel_attributes = ""
-  messaging_flow_contact_identity = "+16602359810"
   feature_flags = {
     "enable_fullstory_monitoring": true,
     "enable_upload_documents": true,
-    "enable_post_survey": false,
+    "enable_post_survey": local.enable_post_survey,
     "enable_case_management": true,
     "enable_offline_contact": true,
     "enable_filter_cases": true,
@@ -49,7 +49,7 @@ locals {
   twilio_channels = {
     "webchat" = {"contact_identity" = "", "channel_type" ="web"  }
    }
-  
+
   custom_channels=[]
 }
 
@@ -158,7 +158,6 @@ module aws_monitoring {
   helpline = local.helpline
   short_helpline = local.short_helpline
   environment = local.environment
-  aws_account_id = var.aws_account_id
   cloudwatch_region = "us-east-1"
 }
 

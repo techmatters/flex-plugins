@@ -1,6 +1,7 @@
 import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin, loadCSS } from '@twilio/flex-plugin';
 import SyncClient from 'twilio-sync';
+import type Rollbar from 'rollbar';
 
 import './styles/global-overrides.css';
 import reducers, { namespace, configurationBase, RootState } from './states';
@@ -203,6 +204,7 @@ const setUpComponents = (setupObject: SetupObject) => {
     // Masks TaskInfoPanelContent - TODO: refactor to use a react component
     const { strings } = getConfig();
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+    strings.CallParticipantCustomerName = strings.MaskIdentifiers;
   }
 };
 
@@ -214,7 +216,7 @@ const setUpActions = (setupObject: SetupObject) => {
 
   ActionFunctions.setUpPostSurvey(setupObject);
 
-  // bind setupObject to the functions that requires some initializaton
+  // bind setupObject to the functions that requires some initialization
   const transferOverride = ActionFunctions.customTransferTask(setupObject);
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject);
   const beforeCompleteAction = ActionFunctions.beforeCompleteTask(setupObject);
@@ -244,6 +246,8 @@ export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
     super(PLUGIN_NAME);
   }
+
+  public Rollbar?: Rollbar;
 
   /**
    * This code is run when your plugin is being started

@@ -13,12 +13,31 @@ export enum CaseSectionApiName {
   Documents = 'documents',
 }
 
+export enum FormInputType {
+  Input = 'input',
+  NumericInput = 'numeric-input',
+  Email = 'email',
+  RadioInput = 'radio-input',
+  ListboxMultiselect = 'listbox-multiselect',
+  Select = 'select',
+  DependentSelect = 'dependent-select',
+  Checkbox = 'checkbox',
+  MixedCheckbox = 'mixed-checkbox',
+  Textarea = 'textarea',
+  DateInput = 'date-input',
+  TimeInput = 'time-input',
+  FileUpload = 'file-upload',
+  Button = 'button',
+  CopyTo = 'copy-to',
+}
+
 /**
  * Types used for customizable forms
  */
 type ItemBase = {
   name: string;
   label: string;
+  type: FormInputType;
 } & RegisterOptions;
 
 type NonSaveable = {
@@ -29,27 +48,27 @@ export const isNonSaveable = (item: any): item is NonSaveable =>
   typeof item.saveable === 'boolean' && !item.saveable;
 
 type InputDefinition = {
-  type: 'input';
+  type: FormInputType.Input;
 } & ItemBase;
 
 type NumericInputDefinition = {
-  type: 'numeric-input';
+  type: FormInputType.NumericInput;
 } & ItemBase;
 
 type EmailInputDefinition = {
-  type: 'email';
+  type: FormInputType.Email;
 } & ItemBase;
 
 export type InputOption = { value: any; label: string };
 
 type RadioInputDefinition = {
-  type: 'radio-input';
+  type: FormInputType.RadioInput;
   options: InputOption[];
   defaultOption?: InputOption['value'];
 } & ItemBase;
 
 type ListboxMultiselectDefinition = {
-  type: 'listbox-multiselect';
+  type: FormInputType.ListboxMultiselect;
   options: InputOption[];
   height?: number;
   width?: number;
@@ -58,7 +77,7 @@ type ListboxMultiselectDefinition = {
 export type SelectOption = { value: any; label: string };
 
 type BaseSelectDefinition = {
-  type: 'select';
+  type: FormInputType.Select;
   defaultOption?: SelectOption['value'];
   unknownOption?: SelectOption['value'];
 } & ItemBase;
@@ -79,7 +98,7 @@ export const isSelectDefinitionWithReferenceOptions = (
 export type DependentOptions = { [dependeeValue: string]: SelectOption[] };
 
 type DependentSelectDefinitionBase = {
-  type: 'dependent-select';
+  type: FormInputType.DependentSelect;
   dependsOn: ItemBase['name'];
   defaultOption: SelectOption;
 } & ItemBase;
@@ -98,18 +117,18 @@ export const isDependentSelectDefinitionWithReferenceOptions = (
   item.type === 'dependent-select' && typeof (<any>item).optionsReferenceKey === 'string';
 
 type CheckboxDefinition = {
-  type: 'checkbox';
+  type: FormInputType.Checkbox;
   initialChecked?: boolean;
 } & ItemBase;
 
 export type MixedOrBool = boolean | 'mixed';
 type MixedCheckboxDefinition = {
-  type: 'mixed-checkbox';
+  type: FormInputType.MixedCheckbox;
   initialChecked?: MixedOrBool;
 } & ItemBase;
 
 type TextareaDefinition = {
-  type: 'textarea';
+  type: FormInputType.Textarea;
   placeholder?: string;
   rows?: number;
   width?: number | string;
@@ -120,27 +139,27 @@ type TimeRelatedInput = {
 } & ItemBase;
 
 type DateInputDefinition = {
-  type: 'date-input';
+  type: FormInputType.DateInput;
 } & TimeRelatedInput;
 
 type TimeInputDefinition = {
-  type: 'time-input';
+  type: FormInputType.TimeInput;
 } & TimeRelatedInput;
 
 type FileUploadDefinition = {
-  type: 'file-upload';
+  type: FormInputType.FileUpload;
   description: string;
   onChange: () => void;
 } & ItemBase;
 
 type CallTypeButtonInputDefinition = {
-  type: 'button';
+  type: FormInputType.Button;
   category: 'data' | 'non-data';
 } & ItemBase;
 
 type CopyToDefinition = ItemBase &
   NonSaveable & {
-    type: 'copy-to';
+    type: FormInputType.CopyTo;
     initialChecked: false;
     target: CaseSectionApiName;
   };

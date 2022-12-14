@@ -3,10 +3,9 @@ import React from 'react';
 import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, withStyles, TabProps } from '@material-ui/core';
 import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
 import AssignmentInd from '@material-ui/icons/AssignmentIndOutlined';
-import { Icon, styled } from '@twilio/flex-ui';
+import { Icon, styled, Button } from '@twilio/flex-ui';
 import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
 
-import { Button } from '../components/twilioComponentWorkaround';
 import HrmTheme from './HrmTheme';
 
 export const BottomButtonBarHeight = 55;
@@ -261,7 +260,8 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
   border: none;
   border-radius: 4px;
   margin: ${props => (props.margin ? props.margin : '0')};
-  padding: 4px 23px;
+  padding: 4px 10px;
+  min-width: auto;
   background-color: ${props =>
     props.disabled
       ? HrmTheme.colors.disabledColor
@@ -490,6 +490,7 @@ export const TransferStyledButton = styled('button')<TransferStyledButtonProps>`
   border-radius: 4px;
   border: none;
   align-self: center;
+  font-weight: 600;
   &:hover {
     cursor: pointer;
     border: 1px solid gray;
@@ -510,30 +511,14 @@ export const HeaderContainer = styled(Row)`
   justify-items: flex-start;
   background-color: ${HrmTheme.colors.base2};
   border-width: 0px;
-  text-transform: uppercase;
+  text-transform: capitalize;
   color: #192b33;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.67px;
-  line-height: 12px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
   padding: 0px;
 `;
 HeaderContainer.displayName = 'HeaderContainer';
-
-export const StyledIcon = icon => styled(icon)`
-  opacity: 0.34;
-`;
-StyledIcon.displayName = 'StyledIcon';
-
-export const addHover = Component =>
-  withStyles({
-    root: {
-      '&:hover': {
-        borderRadius: '50%',
-        backgroundColor: '#a0a8bd66',
-      },
-    },
-  })(Component);
 
 type PaginationRowProps = {
   transparent?: boolean;

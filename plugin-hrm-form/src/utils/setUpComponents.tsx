@@ -2,7 +2,6 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
-import { ITask, ReservationStatuses, TaskChannelDefinition } from '@twilio/flex-ui';
 
 import { AcceptTransferButton, RejectTransferButton, TransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
@@ -178,7 +177,7 @@ export const setUpNoTasksUI = (setupObject: SetupObject) => {
   Flex.AgentDesktopView.Content.add(
     <Column key="no-task-agent-desktop-section" style={{ backgroundColor: HrmTheme.colors.base2, minWidth: 300 }}>
       {queuesStatusUI(setupObject)}
-      <OfflineContactTask selectedTaskSid={undefined} key="offline-contact-task" />
+      <OfflineContactTask key="offline-contact-task" />
       {addButtonsUI(setupObject)}
     </Column>,
     {
@@ -221,12 +220,12 @@ export const setUpTransferComponents = () => {
     if: props => TransferHelpers.isTransferring(props.task),
   });
 
-  Flex.TaskCanvasHeader.Content.add(<AcceptTransferButton task={undefined} key="complete-transfer-button" />, {
+  Flex.TaskCanvasHeader.Content.add(<AcceptTransferButton key="complete-transfer-button" />, {
     sortOrder: 1,
     if: props => TransferHelpers.shouldShowTransferControls(props.task),
   });
 
-  Flex.TaskCanvasHeader.Content.add(<RejectTransferButton task={undefined} key="reject-transfer-button" />, {
+  Flex.TaskCanvasHeader.Content.add(<RejectTransferButton key="reject-transfer-button" />, {
     sortOrder: 1,
     if: props => TransferHelpers.shouldShowTransferControls(props.task),
   });
@@ -276,7 +275,7 @@ export const setUpCaseList = () => {
       key="CaseListSideLink"
       onClick={() => Flex.Actions.invokeAction('NavigateToView', { viewName: 'case-list' })}
       reserveSpace={false}
-      showLabel={false}
+      showLabel={true}
     />,
   );
 };
@@ -293,7 +292,7 @@ export const setUpStandaloneSearch = () => {
       key="StandaloneSearchSideLink"
       onClick={() => Flex.Actions.invokeAction('NavigateToView', { viewName: 'search' })}
       reserveSpace={false}
-      showLabel={false}
+      showLabel={true}
     />,
   );
 };
@@ -350,5 +349,6 @@ export const removeActionsIfTransferring = () => {
  * Canned responses
  */
 export const setupCannedResponses = () => {
-  Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" conversationSid={undefined} />);
+  Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" />);
+  Flex.MessageInputV2.Content.add(<CannedResponses key="canned-responses" />);
 };
