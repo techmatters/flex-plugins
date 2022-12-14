@@ -42,6 +42,7 @@ import {
   FormListboxMultiselectOptionsContainer,
   FormListboxMultiselectOption,
   FormListboxMultiselectOptionLabel,
+  ColumnarContent,
 } from '../../../styles/HrmStyles';
 import type { HTMLElementRef } from './types';
 import UploadIcon from '../icons/UploadIcon';
@@ -159,8 +160,6 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
 ) => {
   const rules = getRules(def);
   const path = [...parents, def.name].join('.');
-
-  console.log('path is here', path);
 
   const labelTextComponent = <Template code={`${def.label}`} className=".fullstory-unmask" />;
 
@@ -611,7 +610,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
             const error = get(errors, path);
             return (
               <FormLabel htmlFor={path}>
-                <FormCheckBoxWrapper width={path === 'ageVerified' && '400px'} error={Boolean(error)}>
+                <FormCheckBoxWrapper error={Boolean(error)}>
                   <Box marginRight="5px">
                     <FormCheckbox
                       id={path}
@@ -911,8 +910,12 @@ export const buildTwoColumnFormLayout = (formItems: JSX.Element[]) => {
 
   return (
     <TwoColumnLayout>
-      <ColumnarBlock>{l}</ColumnarBlock>
-      <ColumnarBlock>{r}</ColumnarBlock>
+      <ColumnarBlock>
+        <ColumnarContent>{l}</ColumnarContent>
+      </ColumnarBlock>
+      <ColumnarBlock>
+        <ColumnarContent>{r}</ColumnarContent>
+      </ColumnarBlock>
     </TwoColumnLayout>
   );
 };
