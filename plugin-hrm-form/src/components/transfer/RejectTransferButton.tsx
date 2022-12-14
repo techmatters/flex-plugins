@@ -12,7 +12,7 @@ const handleRejectTransfer = async (task: ITask) => {
   await closeCallSelf(task);
 };
 
-type Props = ThemeProps & { task: ITask };
+type Props = ThemeProps & { task?: ITask };
 
 const RejectTransferButton: React.FC<Props> = ({ theme, task }) => {
   return (
