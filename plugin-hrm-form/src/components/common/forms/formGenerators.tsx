@@ -150,9 +150,12 @@ const calculateOptionsTabIndexes = (currentValue: any[], options: InputOption[])
  * @param customHandlers Set of additional handlers specific to file uploads.
  * @param {FormItemDefinition} def Definition for a single input.
  */
-export const getInputType = (parents: string[], updateCallback: () => void, customHandlers?: CustomHandlers) => (
-  def: FormItemDefinition,
-) => (
+export const getInputType = (
+  parents: string[],
+  updateCallback: () => void,
+  customHandlers?: CustomHandlers,
+  width?: string,
+) => (def: FormItemDefinition) => (
   initialValue: any, // TODO: restrict this type
   htmlElRef?: HTMLElementRef,
   isEnabled: boolean = true,
@@ -609,7 +612,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
             const error = get(errors, path);
             return (
               <FormLabel htmlFor={path}>
-                <FormCheckBoxWrapper error={Boolean(error)}>
+                <FormCheckBoxWrapper width={width} error={Boolean(error)}>
                   <Box marginRight="5px">
                     <FormCheckbox
                       id={path}

@@ -374,7 +374,7 @@
   "CSAMReportForm-ReportsSubmitted": "Reports Submitted",
   "CSAMCLCReportForm-Header": "File External Report: CSAM - Create Link for Child",
   "CSAMCLCReportForm-ChildAge": "What is child's age?",
-  "CSAMCLCReportForm-AgeVerified": "Has age of chlid been verified?",
+  "CSAMCLCReportForm-AgeVerified": "Has age of child been verified?",
   "CSAMCLCReportForm-CopyLink": "Copy link to share with child. Link expires in 24 hours.",
   "CSAMCLCReportForm-LinkReady": "CSAM self-report link is ready",
   "SpecifyIfAnonymousOrNot": "Specify if this report is either anonymous or not",
@@ -384,6 +384,7 @@
   "BottomBar-SendAnotherReport": "Send Another Report",
   "BottomBar-CloseView": "Close View",
   "CopyCode": "Copy Code",
+  "CopyLink": "Copy Link",
   "Copied": "Copied!",
 
   "BottomBar-SaveOnClose": "Save Changes?",
