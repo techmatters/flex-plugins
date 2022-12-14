@@ -150,11 +150,9 @@ const calculateOptionsTabIndexes = (currentValue: any[], options: InputOption[])
  * @param customHandlers Set of additional handlers specific to file uploads.
  * @param {FormItemDefinition} def Definition for a single input.
  */
-export const getInputType = (
-  parents: string[],
-  updateCallback: () => void,
-  customHandlers?: CustomHandlers
-) => (def: FormItemDefinition) => (
+export const getInputType = (parents: string[], updateCallback: () => void, customHandlers?: CustomHandlers) => (
+  def: FormItemDefinition,
+) => (
   initialValue: any, // TODO: restrict this type
   htmlElRef?: HTMLElementRef,
   isEnabled: boolean = true,
