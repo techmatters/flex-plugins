@@ -315,6 +315,11 @@ export const ColumnarBlock = styled('div')`
 `;
 ColumnarBlock.displayName = 'ColumnarBlock';
 
+export const ColumnarContent = styled('div')`
+  width: 217px;
+`;
+ColumnarContent.displayName = 'ColumnarContent';
+
 export const TwoColumnLayout = styled('div')`
   display: flex;
   flex-direction: row;
@@ -873,7 +878,6 @@ export const FormTextArea = styled('textarea')<FormInputProps>`
 export const FormCheckBoxWrapper = styled(Row)<FormInputProps>`
   align-items: flex-start;
   box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
-  width: ${props => (props.width ? props.width : ' 217px')};
   height: 36px;
   border-radius: 4px;
   border: ${props => (props.error ? '1px solid #CB3232' : 'none')};

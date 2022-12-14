@@ -42,6 +42,7 @@ import {
   FormListboxMultiselectOptionsContainer,
   FormListboxMultiselectOption,
   FormListboxMultiselectOptionLabel,
+  ColumnarContent,
 } from '../../../styles/HrmStyles';
 import type { HTMLElementRef } from './types';
 import UploadIcon from '../icons/UploadIcon';
@@ -912,8 +913,12 @@ export const buildTwoColumnFormLayout = (formItems: JSX.Element[]) => {
 
   return (
     <TwoColumnLayout>
-      <ColumnarBlock>{l}</ColumnarBlock>
-      <ColumnarBlock>{r}</ColumnarBlock>
+      <ColumnarBlock>
+        <ColumnarContent>{l}</ColumnarContent>
+      </ColumnarBlock>
+      <ColumnarBlock>
+        <ColumnarContent>{r}</ColumnarContent>
+      </ColumnarBlock>
     </TwoColumnLayout>
   );
 };

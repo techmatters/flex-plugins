@@ -5,7 +5,14 @@ import { connect, ConnectedProps } from 'react-redux';
 import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
 import * as actions from '../../states/contacts/actions';
-import { ColumnarBlock, Container, TwoColumnLayout, Box, BottomButtonBarHeight } from '../../styles/HrmStyles';
+import {
+  ColumnarBlock,
+  Container,
+  TwoColumnLayout,
+  Box,
+  BottomButtonBarHeight,
+  ColumnarContent,
+} from '../../styles/HrmStyles';
 import { createFormFromDefinition, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import useFocus from '../../utils/useFocus';
@@ -59,10 +66,14 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
     <Container>
       <Box paddingBottom={`${BottomButtonBarHeight}px`}>
         <TwoColumnLayout>
-          <ColumnarBlock>{l}</ColumnarBlock>
           <ColumnarBlock>
-            {r}
-            {extraChildrenRight}
+            <ColumnarContent>{l}</ColumnarContent>
+          </ColumnarBlock>
+          <ColumnarBlock>
+            <ColumnarContent>
+              {r}
+              {extraChildrenRight}
+            </ColumnarContent>
           </ColumnarBlock>
         </TwoColumnLayout>
       </Box>
