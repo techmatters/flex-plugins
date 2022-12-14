@@ -520,21 +520,6 @@ export const HeaderContainer = styled(Row)`
 `;
 HeaderContainer.displayName = 'HeaderContainer';
 
-export const StyledIcon = icon => styled(icon)`
-  opacity: 0.34;
-`;
-StyledIcon.displayName = 'StyledIcon';
-
-export const addHover = Component =>
-  withStyles({
-    root: {
-      '&:hover': {
-        borderRadius: '50%',
-        backgroundColor: '#a0a8bd66',
-      },
-    },
-  })(Component);
-
 type PaginationRowProps = {
   transparent?: boolean;
 };
