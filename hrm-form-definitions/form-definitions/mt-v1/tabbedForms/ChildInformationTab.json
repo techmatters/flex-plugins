@@ -364,11 +364,6 @@
     "type": "input"
   },
   {
-    "name": "city",
-    "label": "City",
-    "type": "input"
-  },
-  {
     "name": "region",
     "label": "Region",
     "type": "select",
