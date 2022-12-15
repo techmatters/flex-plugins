@@ -5,6 +5,11 @@
     "type": "input"
   },
   {
+    "name": "nickname",
+    "label": "Nickname",
+    "type": "input"
+  },
+  {
     "name": "firstName",
     "label": "First Name",
     "type": "input",
