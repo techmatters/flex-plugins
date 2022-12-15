@@ -368,13 +368,13 @@
     "label": "Region",
     "type": "select",
     "defaultOption": {
-      "value": "",
+      "value": "Unknown",
       "label": ""
     },
     "options": [
       {
         "value": "Unknown",
-        "label": "Unknown"
+        "label": ""
       },
       {
         "value": "Malta",

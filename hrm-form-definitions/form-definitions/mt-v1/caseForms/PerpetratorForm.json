@@ -444,12 +444,12 @@
     "label": "Region",
     "type": "select",
     "defaultOption": {
-      "value": "",
+      "value": "Unknown",
       "label": ""
     },
     "options": [
       {
-        "value": "",
+        "value": "Unknown",
         "label": ""
       },
       {
