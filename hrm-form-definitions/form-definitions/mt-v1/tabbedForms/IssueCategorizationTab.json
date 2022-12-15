@@ -1,133 +1,385 @@
 {
   "Kellimni": {
-    "Missing children": {
-      "color": "#BBE3FF",
+    "Abuse and Technology": {
+      "color": "#ffbbbb",
       "subcategories": [
-        "Child abduction",
-        "Lost, unaccounted for or otherwise missing child",
-        "Runaway",
-        "Unspecified/Other"
+        "Exposure to adult pornography online",
+        "Exposure to online child pornography",
+        "Online extortion or blackmail",
+        "Online grooming for sexual purposes",
+        "Unspecified / Other",
+        "Unwanted sexting",
+        "Victim of online child pornography",
+        "Victim of online sexual exploitation"
       ]
     },
-    "Violence": {
-      "color": "#F5A623",
+    "Abuse Violence": {
+      "color": "#ff8238",
       "subcategories": [
-        "Bullying",
-        "Child/Early/Forced marriage",
-        "Child labour",
-        "Commercial sexual exploitation (offline)",
-        "Female Genital Mutilation (FGM)",
-        "Gender-based harmful traditional practices (other than FGM)",
-        "Harmful traditional practices other than child marriage and FGM",
-        "Mental/Emotional violence",
-        "Neglect (or negligent treatment)",
-        "Online sexual abuse",
-        "Online sexual exploitation",
-        "Physical violence",
-        "Sexual violence",
-        "Unspecified/Other"
+        "Corporal punishment",
+        "Domestic violence",
+        "Emotional abuse",
+        "Gang violence",
+        "Neglect",
+        "Physical abuse",
+        "Economic abuse",
+        "Psychological abuse",
+        "Sexual abuse",
+        "Witness to violence",
+        "Unspecified / Other"
       ]
     },
-    "Mental Health": {
-      "color": "#F8E900",
+    "Addiction": {
+      "color": "#ffeabb",
       "subcategories": [
-        "Addictive behaviours and substance use",
-        "Behavioural problems",
-        "Concerns about the self",
-        "Emotional distress – anger problems",
-        "Emotional distress – fear and anxiety problems",
-        "Emotional distress – mood problems",
-        "Neurodevelopmental concerns",
-        "Problems with eating behaviour",
-        "Self-harming behaviour",
-        "Suicidal thoughts and suicide attempts",
-        "Traumatic distress",
-        "Unspecified/Other"
+        "Addicted to social media or the Internet",
+        "Addicted to pornography",
+        "Advice and information about addiction",
+        "Experimenting with or addicted to alcohol",
+        "Experimenting with or addicted to drugs",
+        "Food addiction",
+        "Gambling addiction",
+        "Gaming addiction",
+        "Smoking addiction",
+        "Spiritual obsession",
+        "Unspecified / Other"
       ]
     },
-    "Physical Health": {
-      "color": "#E86B6B",
+    "Adult Related Issues": {
+      "color": "#fdffbb",
       "subcategories": [
-        "COVID-19",
-        "General medical or lifestyle concerns",
-        "Medical or lifestyle information about HIV/AIDS",
-        "Male circumcision",
-        "Pregnancy and maternal care",
-        "Sexual and reproductive health",
-        "Nutrition",
-        "Unspecified/Other"
+        "Coping with life transitions",
+        "Financial difficulties",
+        "Marital problems",
+        "Separation / Divorce",
+        "Work-relateded stress"
       ]
     },
-    "Accessibility": {
-      "color": "#8055BA",
+    "Basic Needs": {
+      "color": "#dfffbb",
       "subcategories": [
-        "Education",
-        "Essential needs",
-        "General healthcare services",
-        "Legal services and advice",
-        "Mental health services",
-        "Sexual health services",
-        "Socio-economical services",
-        "Unspecified/Other"
+        "Access to clean drinking water",
+        "Access to sanitation",
+        "Access to social/child care institutions",
+        "Children calling for food",
+        "Employment Opportunities",
+        "Poor Living Conditions",
+        "Resources and financial aid",
+        "Unspecified / Other"
       ]
     },
-    "Discrimination and Exclusion": {
-      "color": "#B971AF",
+    "Bullying": {
+      "color": "#bbffce",
       "subcategories": [
-        "Ethnicity/nationality",
-        "Financial situation",
-        "Gender",
-        "Gender identity or expression and sexual orientation",
-        "Health",
-        "Philosophical or religious beliefs",
-        "Unspecified/Other"
+        "Employment opportunities",
+        "Poor living conditions",
+        "Resources and financial aid",
+        "Unspecified / Other"
+      ]
+    },
+    "Child Migration / Children on the Move": {
+      "color": "#bbfff5",
+      "subcategories": [
+        "Child trafficking",
+        "Child without status / Undocumented",
+        "Internally displaced child (domestic)",
+        "Problems with adjusting to a new environment",
+        "Refugee child (cross-border)",
+        "Seeking job opportunities",
+        "Unspecified / Other",
+        "Voluntary child migration"
+      ]
+    },
+    "Commercial Exploitation": {
+      "color": "#bbe2ff",
+      "subcategories": [
+        "Bonded child labour",
+        "Child kidnapping",
+        "Child marriage",
+        "Child sexual exploitation/prostitution",
+        "Child trafficking",
+        "Children used for begging",
+        "Children used for criminal activity",
+        "Domestic child labour",
+        "Organ harvesting",
+        "Other child labour",
+        "Sexual exploitation in the context of travel/tourism",
+        "Unspecified / Other"
+      ]
+    },
+    "Cyberbullying": {
+      "color": "#bbcbff",
+      "subcategories": [
+        "Abuse of child's personal information/photo/video",
+        "Being excluded from an online group/forum",
+        "Gossiping / Rumouring / Outing",
+        "Harassment",
+        "Inappropriate content",
+        "Online flaming/fighting",
+        "Revenge porn",
+        "Sexual extortion",
+        "Unspecified / Other",
+        "Unwanted 'sexting'",
+        "Victim of cyberstalking",
+        "Victim of impersonation",
+        "Victim of discrimination/hate speech"
+      ]
+    },
+    "Disability": {
+      "color": "#e2bbff",
+      "subcategories": [
+        "ADHD",
+        "Autism",
+        "Intellectual disability",
+        "Other disability",
+        "Physical disability"
+      ]
+    },
+    "Discrimination": {
+      "color": "#ffbbe3",
+      "subcategories": [
+        "Access to education",
+        "Age-related",
+        "Criminal record / Ex-prisoner related",
+        "Denial of opportunities/services",
+        "Employment related",
+        "Gender/Sex related",
+        "HIV/AIDS-related",
+        "Immigration related",
+        "Marginalised or vulnerable groups",
+        "Mental and physical health / Disability",
+        "Racism related",
+        "Sexual orientation related",
+        "Unspecified / Other"
       ]
     },
     "Family Relationships": {
-      "color": "#239613",
+      "color": "#ffbbbb",
       "subcategories": [
-        "Adoption, fostering, and extended family placement",
-        "Relationship to caregiver",
-        "Family health and wellbeing",
-        "Relationship with sibling(s)",
-        "Unspecified/Other"
+        "Adoption / Fostering issues",
+        "Bereavement",
+        "Child custody and access",
+        "Divorced / Separated parents / Parents in conflict",
+        "Maintenance and child support",
+        "New family / Blended family",
+        "Parent/Child relationships",
+        "Parental pressure",
+        "Parents with addiction and/or mental health problems",
+        "Sibling relationship",
+        "Unspecified / Other"
+      ]
+    },
+    "Gender, Sexuality, Sexual Awareness": {
+      "color": "#f20000",
+      "subcategories": [
+        "Abortion",
+        "Contraception",
+        "Gender identity",
+        "Information about sexuality and facts of life",
+        "Masturbation",
+        "Pregnancy",
+        "STIs / STDs",
+        "Sexual fantasy",
+        "Sexual identity",
+        "Social Exclusion / Ostracism based on sexual Orientation",
+        "Unspecified / Other"
+      ]
+    },
+    "General/Other": {
+      "color": "#ff9714",
+      "subcategories": [
+        "Administration",
+        "Positive feedback from service users",
+        "Pranks"
+      ]
+    },
+    "Harmful Traditional Practices": {
+      "color": "#b8e800",
+      "subcategories": [
+        "Acid attacks",
+        "Amputations",
+        "Breast ironing",
+        "Burning and branding",
+        "Child marriage",
+        "Cutting",
+        "Dowry related issues",
+        "Female genital mutilation (FMG)",
+        "Force abortion/sterilisation",
+        "Harmful adulthood initiations",
+        "Honour killing",
+        "Sex-Selective infanticide",
+        "Virginity tests",
+        "Unspecified / Other"
+      ]
+    },
+    "HIV/AIDS infected/affected children": {
+      "color": "#14ffd6",
+      "subcategories": [
+        "Access to medication",
+        "Bereavement",
+        "Children living with HIV/AIDS",
+        "Children orphaned due to HIV/AIDS",
+        "HIV/AIDS prevention",
+        "Information about AIDS",
+        "Lifestyle choices after infection",
+        "Parents (or family) with HIV/AIDS",
+        "Pregnancy and HIV",
+        "Sexual abuse / Rape in relation to HIV",
+        "Unspecified / Other"
+      ]
+    },
+    "Homelessness": {
+      "color": "#0093f9",
+      "subcategories": [
+        "Abandoned",
+        "Death of child on street",
+        "Homeless children calling for food",
+        "Missing children",
+        "Orphaned",
+        "Repatriation",
+        "Seeking shelter",
+        "Unspecified / Other"
+      ]
+    },
+    "Information Requested": {
+      "color": "#1a14ff",
+      "subcategories": [
+        "Information on other services",
+        "Information on our therapy sessions",
+        "Questions about the helpline",
+        "Thank you for assistance",
+        "Volunteering / Work"
+      ]
+    },
+    "Legal Matters and Juvenile Justice": {
+      "color": "#ae1cfc",
+      "subcategories": [
+        "Birth registration",
+        "Child incarcerated in an adult prison",
+        "Child incarcerated / Imprisoned",
+        "Child rights violations in juvenile institutions",
+        "Child witness",
+        "Children in conflict with law",
+        "Children in need of legal representation",
+        "Law in conflict with children’s rights",
+        "Unspecified / Other"
+      ]
+    },
+    "Parenting and Child Rearing": {
+      "color": "#ff1770",
+      "subcategories": [
+        "Child discipline and positive parenting",
+        "Concerns about child's academic results",
+        "Concerns about child being abused / Bullied",
+        "Concerns about child's development",
+        "Concerns about child's eating or sleeping problems",
+        "Concerns about child's physical health",
+        "Concerns about child's psychosocial well-being",
+        "Coping with single parenthood",
+        "Coping with a child's disability",
+        "Information about service access for child with disability",
+        "Parenting",
+        "Pre-natal care",
+        "Unmanageable children",
+        "Unspecified / Other"
       ]
     },
     "Peer Relationships": {
-      "color": "#9AD703",
+      "color": "#9f9f9f",
       "subcategories": [
-        "Friends and friendships",
+        "Bereavement",
+        "Bystander / Third-party concern",
+        "Making friends",
+        "Missing friends",
         "Partner relationships",
-        "Classmates/colleagues relationships",
-        "Unspecified/Other"
+        "Peer exclusion",
+        "Peer pressure",
+        "Problems with friends",
+        "Relationship difficulties",
+        "Sexual pressure from partner",
+        "Unspecified / Other"
       ]
     },
-    "Education and Occupation": {
-      "color": "#55AFAF",
+    "Physical Abuse": {
+      "color": "#55d17a",
       "subcategories": [
-        "Academic issues",
-        "Teacher and school problems",
-        "Problems at work",
-        "Unspecified/Other"
+        "Forced abortion",
+        "Forced pregnancy",
+        "Forced sterilisation",
+        "Physical assault",
+        "Slavery",
+        "Trafficking"
       ]
     },
-    "Sexuality": {
-      "color": "#506BA5",
+    "Physical Health and Healthcare": {
+      "color": "#3389c5",
       "subcategories": [
-        "Sexual orientation and gender identity",
-        "Sexual behaviours",
-        "Unspecified/Other"
+        "Abortion and post-abortion care",
+        "Access to health care",
+        "Affected or infected by an epidemic",
+        "Covid-19",
+        "Concerns about illnesses",
+        "General medical or lifestyle concerns",
+        "Hospitalisation",
+        "Nutrition",
+        "In need of medical assistance",
+        "Unspecified / Other"
       ]
     },
-    "Non-Counselling contacts": {
-      "color": "#767777",
+    "Psycho-social, Mental Health": {
+      "color": "#d8c732",
       "subcategories": [
-        "Complaints about the child helpline",
-        "Questions by parents",
-        "Questions about the child helpline",
-        "Questions about other services",
-        "\"Thank you for your assistance\"",
-        "Unspecified/Other"
+        "Depression",
+        "Eating disorders",
+        "Fear and anxiety",
+        "Feelings of Sadness",
+        "Identity and purpose of life",
+        "Lack of motivation",
+        "Lack of confidence",
+        "Loneliness",
+        "Multiple psychiatric / Psychological issues",
+        "Other psychiatric / Psychological issues",
+        "Panic attacks",
+        "Phobias and obsessions",
+        "Post-natal depression",
+        "Trauma / PTSD",
+        "Self harm",
+        "Stress",
+        "Suicide",
+        "Unspecified / Other"
+      ]
+    },
+    "School-Related and Education": {
+      "color": "#e0ab4f",
+      "subcategories": [
+        "Academic problems",
+        "Access to education",
+        "Homework",
+        "Learning disorders",
+        "Performance anxiety",
+        "Problems with teachers and school authorities",
+        "School drop-outs",
+        "Teacher problems",
+        "Unspecified / Other"
+      ]
+    },
+    "Sexual Abuse": {
+      "color": "#47d379",
+      "subcategories": [
+        "Attempted rape or attempted forced sodomy/anal rape",
+        "Child sexual abuse",
+        "Defilement",
+        "Forced prostitution",
+        "Forced sodomy/anal rape",
+        "Incest",
+        "Marital rape",
+        "Rape",
+        "Revenge porn",
+        "Sexual abuse",
+        "Sexual exploitation",
+        "Sexual harassment",
+        "Sexual violence",
+        "Unspecified / Other"
       ]
     }
   }
