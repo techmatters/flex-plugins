@@ -224,6 +224,7 @@ export type FeatureFlags = {
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
   enable_external_transcripts: boolean; // Enables Viewing Transcripts Stored Outside of Twilio
+  post_survey_serverless_handled: boolean; // Post Survey handled in serverless instead of in Flex
 };
 /* eslint-enable camelcase */
 
