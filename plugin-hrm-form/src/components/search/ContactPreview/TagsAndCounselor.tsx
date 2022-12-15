@@ -75,7 +75,7 @@ const TagsAndCounselor: React.FC<Props> = props => {
       {leftTags()}
       <Flex style={{ minWidth: 'fit-content' }}>
         <CounselorText style={{ marginRight: 5 }}>
-          <Template code="SearchResultsIndex-Counselor" />
+          <Template code="CallSummary-Counselor" />
         </CounselorText>
         <SummaryText>{counselor}</SummaryText>
       </Flex>

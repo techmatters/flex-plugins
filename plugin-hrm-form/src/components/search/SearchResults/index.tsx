@@ -29,7 +29,7 @@ import {
   StyledTabLabel,
   StyledFolderIcon,
   StyledResultsHeader,
-  BoldText,
+  EmphasisedText,
   StyledCount,
 } from '../../../styles/search';
 import Pagination from '../../Pagination';
@@ -159,43 +159,29 @@ const SearchResults: React.FC<Props> = ({
       <ListContainer>
         <ScrollableList>
           <StyledResultsContainer>
-            <StyledResultsText>
-              <BoldText data-testid="SearchResultsCount">
+            <StyledResultsText data-testid="SearchResultsCount">
+              <>
                 {/* Intentionally we must show the option different at the one currently selected */}
                 {currentPage === SearchPages.resultsContacts ? (
                   <>
-                    {casesCount === 1 ? (
-                      <>
-                        <Template code="PreviousContacts-ThereIs" />
-                        &nbsp;
-                        {casesCount} <Template code="PreviousContacts-Case" />
-                      </>
-                    ) : (
-                      <>
-                        <Template code="PreviousContacts-ThereAre" />
-                        &nbsp;
-                        {casesCount} <Template code="PreviousContacts-Cases" />
-                      </>
-                    )}
+                    <Template code={casesCount === 1 ? 'PreviousContacts-ThereIs' : 'PreviousContacts-ThereAre'} />
+                    &nbsp;
+                    <EmphasisedText>
+                      {casesCount}{' '}
+                      <Template code={casesCount === 1 ? 'PreviousContacts-Case' : 'PreviousContacts-Cases'} />
+                    </EmphasisedText>
                   </>
                 ) : (
                   <>
-                    {contactsCount === 1 ? (
-                      <>
-                        <Template code="PreviousContacts-ThereIs" />
-                        &nbsp;
-                        {contactsCount} <Template code="PreviousContacts-Contact" />
-                      </>
-                    ) : (
-                      <>
-                        <Template code="PreviousContacts-ThereAre" />
-                        &nbsp;
-                        {contactsCount} <Template code="PreviousContacts-Contacts" />
-                      </>
-                    )}
+                    <Template code={contactsCount === 1 ? 'PreviousContacts-ThereIs' : 'PreviousContacts-ThereAre'} />
+                    &nbsp;
+                    <EmphasisedText>
+                      {contactsCount}{' '}
+                      <Template code={contactsCount === 1 ? 'PreviousContacts-Contact' : 'PreviousContacts-Contacts'} />
+                    </EmphasisedText>
                   </>
                 )}
-              </BoldText>
+              </>
               &nbsp;
               <Template code="PreviousContacts-Returned" />
               &nbsp;
