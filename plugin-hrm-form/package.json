@@ -3,6 +3,9 @@
   "version": "0.0.16",
   "private": true,
   "type": "commonjs",
+  "engines": {
+    "node": "14.20.1"
+  },
   "scripts": {
     "preinstall": "cd ../hrm-form-definitions && npm ci && npm run build",
     "postinstall": "flex-plugin pre-script-check",
