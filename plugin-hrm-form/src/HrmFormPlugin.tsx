@@ -16,6 +16,7 @@ import setUpMonitoring from './utils/setUpMonitoring';
 import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from './permissions';
+import type { FeatureFlags } from './types/types';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -45,7 +46,7 @@ const readConfig = () => {
     multipleOfficeSupport,
     permissionConfig,
   } = manager.serviceConfiguration.attributes;
-  const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
+  const featureFlags: FeatureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
   const { strings } = (manager as unknown) as { strings: { [key: string]: string } };
 

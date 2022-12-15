@@ -204,6 +204,29 @@ export type CounselorHash = {
   [sid: string]: string;
 };
 
+/* eslint-disable camelcase */
+export type FeatureFlags = {
+  enable_fullstory_monitoring: boolean; // Enables Full Story
+  enable_upload_documents: boolean; // Enables Case Documents
+  enable_post_survey: boolean; // Enables Post-Survey
+  enable_contact_editing: boolean; // Enables Editing Contacts
+  enable_case_management: boolean; // Enables Creating Cases and Viewing the Case List
+  enable_offline_contact: boolean; // Enables Creating Offline Contacts
+  enable_filter_cases: boolean; // Enables Filters at Case List
+  enable_sort_cases: boolean; // Enables Sorting at Case List
+  enable_transfers: boolean; // Enables Transfering Contacts
+  enable_manual_pulling: boolean; // Enables Adding Another Task
+  enable_csam_report: boolean; // Enables CSAM Reports
+  enable_canned_responses: boolean; // Enables Canned Responses
+  enable_dual_write: boolean; // Enables Saving Contacts on External Backends
+  enable_save_insights: boolean; // Enables Saving Aditional Data on Insights
+  enable_previous_contacts: boolean; // Enables Previous Contacts Yellow Banner
+  enable_voice_recordings: boolean; // Enables Loading Voice Recordings
+  enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
+  enable_external_transcripts: boolean; // Enables Viewing Transcripts Stored Outside of Twilio
+};
+/* eslint-enable camelcase */
+
 /**
  * Custom tasks
  */
