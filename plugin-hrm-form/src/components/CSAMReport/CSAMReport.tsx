@@ -124,9 +124,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
     changeRoute({ ...previousRoute }, taskSid);
   };
 
-  const formValue = methods.watch(['childAge', 'ageVerified']);
-  const isEmpty = (formValue.childAge === undefined && formValue.ageVerified === undefined) || !formValue.ageVerified;
-
   const onValid = async form => {
     try {
       if (routing.subroute === 'child-form') {
@@ -196,7 +193,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
             onClickClose={onClickClose}
             onSendReport={onSendReport}
             csamType="child-form"
-            isEmpty={isEmpty}
           />
         </FormProvider>
       );

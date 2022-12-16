@@ -50,11 +50,10 @@ CopyCodeButton.displayName = 'CopyCodeButton';
 
 type BoldDescriptionTextProp = {
   fontSize?: string;
-  color?: string;
 };
 
 export const BoldDescriptionText = styled(FontOpenSans)<BoldDescriptionTextProp>`
-  color: ${props => (props.color ? props.color : '#14171a')};
+  color: #14171a;
   font-size: ${({ fontSize }) => (fontSize ? fontSize : '14px')};
   font-weight: 700;
 `;

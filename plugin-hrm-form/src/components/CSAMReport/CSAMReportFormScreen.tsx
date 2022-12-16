@@ -50,7 +50,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
 
           {/** Website details */}
           <Box marginTop="20px" marginBottom="5px">
-            <BoldDescriptionText color="#192b33">
+            <BoldDescriptionText style={{ color: '#192b33' }}>
               <Template code="CSAMCLCReportForm-ChildAge" />
               &nbsp;
               <RequiredAsterisk />
@@ -60,7 +60,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
 
           {/** Conditional part of the form only shown if contact is not anon */}
           <Box marginTop="20px" marginBottom="5px">
-            <BoldDescriptionText color="#192b33">
+            <BoldDescriptionText style={{ color: '#192b33' }}>
               <Template code="CSAMCLCReportForm-AgeVerified" />
               &nbsp;
               <RequiredAsterisk />
