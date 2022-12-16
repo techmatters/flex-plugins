@@ -135,9 +135,9 @@ export const SilentText = styled('div')`
 
 export const PreviewHeaderText = styled(FontOpenSans)`
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 14px;
-  color: #182b33;
+  color: #192b33;
 `;
 
 export const StyledTabs = styled((props: Partial<TabsProps> & { children?: any }) => <Tabs {...props} />)`
@@ -193,27 +193,6 @@ export const SummaryText = styled(FontOpenSans)`
   white-space: pre-wrap;
 `;
 
-export const CaseFooter = styled('div')`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-CaseFooter.displayName = 'CaseFooter';
-
-export const CaseFooterText = styled('div')`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
-
-CaseFooterText.displayName = 'CaseFooterText';
-
-export const CounselorText = styled(SummaryText)`
-  opacity: 0.46;
-`;
-
 export const PreviewRow = styled(Row)`
   margin-top: 10px;
   padding-bottom: 5px;
@@ -225,7 +204,7 @@ export const SubtitleValue = styled(SummaryText)`
 
 export const SubtitleLabel = styled(SummaryText)`
   padding-inline-end: 5px;
-  opacity: 0.46;
+  color: #606b85;
 `;
 
 export const TagsWrapper = styled(Flex)`
@@ -248,9 +227,9 @@ export const TagText = styled(FontOpenSans)`
   display: inline-block;
   font-size: 12px;
   font-weight: 400;
-  line-height: 13px;
+  line-height: 14px;
   opacity: 1;
-  color: ${HrmTheme.colors.categoryTextColor};
+  color: #2f3e44;
 `;
 
 export const TagMiddleDot = styled('div')<ColorProps>`
