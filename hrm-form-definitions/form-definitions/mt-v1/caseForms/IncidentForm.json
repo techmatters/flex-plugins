@@ -85,13 +85,23 @@
     }
   },
   {
-    "name": "abuseSuicideIdeation",
-    "label": "Abuse/Suicide ideation",
+    "name": "otherSpecify",
+    "label": "If Other, please specify",
+    "type": "input"
+  },
+  {
+    "name": "SuicideIdeation",
+    "label": "Suicide ideation",
     "type": "mixed-checkbox"
   },
   {
     "name": "isCaregiverAware",
     "label": "Is caregiver aware?",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "abuseIncident",
+    "label": "Abuse",
     "type": "mixed-checkbox"
   },
   {

@@ -84,12 +84,12 @@
         "label": "Female"
       },
       {
-        "value": "Non-Binary",
-        "label": "Non-Binary"
-      },
-      {
         "value": "Other",
         "label": "Other"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ],
     "required": {
@@ -105,6 +105,10 @@
       {
         "value": "",
         "label": ""
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
         "value": "00",
@@ -419,6 +423,10 @@
         "label": "Maltese"
       },
       {
+        "value": "Ukrainian",
+        "label": "Ukrainian"
+      },
+      {
         "value": "Other",
         "label": "Other"
       }
@@ -431,7 +439,7 @@
   },
   {
     "name": "phone1",
-    "label": "Phone #1",
+    "label": "Phone Number",
     "type": "input"
   },
   {

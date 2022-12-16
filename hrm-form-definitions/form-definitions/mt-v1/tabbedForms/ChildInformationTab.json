@@ -7,16 +7,16 @@
   {
     "name": "nickname",
     "label": "Nickname",
-    "type": "input"
-  },
-  {
-    "name": "firstName",
-    "label": "First Name",
     "type": "input",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
     }
+  },
+  {
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input"
   },
   {
     "name": "lastName",
@@ -32,6 +32,10 @@
       {
         "value": "",
         "label": ""
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
         "value": "00",
@@ -344,10 +348,6 @@
       {
         "value": "Female",
         "label": "Female"
-      },
-      {
-        "value": "Non-Binary",
-        "label": "Non-Binary"
       },
       {
         "value": "Other",
@@ -697,7 +697,7 @@
   },
   {
     "name": "phone1",
-    "label": "Phone #1",
+    "label": "Phone Number",
     "type": "input"
   },
   {
@@ -717,6 +717,10 @@
       {
         "value": "Maltese",
         "label": "Maltese"
+      },
+      {
+        "value": "Ukrainian",
+        "label": "Ukrainian"
       },
       {
         "value": "Other",
