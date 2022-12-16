@@ -21,6 +21,7 @@ locals {
   environment = "Staging"
   short_environment = "STG"
   definition_version = "mt-v1"
+  helpline_language = "en-MT"
   permission_config = "mt"
   multi_office = false
   enable_post_survey = false
@@ -51,6 +52,8 @@ locals {
    }
 
   custom_channels=[]
+  strings_en= jsondecode(file("${path.module}/../translations/${local.helpline_language}/strings_en.json"))
+
 }
 
 module "chatbots" {
