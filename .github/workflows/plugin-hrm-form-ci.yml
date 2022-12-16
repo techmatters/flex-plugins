@@ -19,7 +19,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Install the Twilio CLI and plugins
-      run: npm install twilio-cli@3.6.0 -g && twilio plugins:install @twilio-labs/plugin-flex@5.1.2
+      run: npm install twilio-cli@5.2.2 -g && twilio plugins:install @twilio-labs/plugin-flex@6.0.3
     - name: Create Temp Files
       run: |
         touch ./public/appConfig.js
@@ -35,13 +35,13 @@ jobs:
       run: npm run test
       working-directory: ./hrm-form-definitions
     - name: Install Packages
-      run: UNBUNDLED_REACT=true npm ci
+      run: npm ci
       working-directory: ./plugin-hrm-form
     - name: Run Lint
       run: npm run lint --if-present
       working-directory: ./plugin-hrm-form
     - name: Run Tests
-      run: TWILIO_ACCOUNT_SID=${{secrets.AS_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.AS_DEV_AUTH_TOKEN}} npm run test:jest
+      run: TWILIO_ACCOUNT_SID=${{secrets.AS_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.AS_DEV_AUTH_TOKEN}} npm run test
       working-directory: ./plugin-hrm-form
       env:
         CI: true

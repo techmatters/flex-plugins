@@ -152,7 +152,7 @@ class SearchForm extends Component {
 
     return (
       <>
-        <Container>
+        <Container data-testid="SearchForm">
           <SearchTitle data-testid="Search-Title">
             <Template code="SearchContactsAndCases-Title" />
           </SearchTitle>

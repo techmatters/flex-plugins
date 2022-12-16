@@ -1,6 +1,6 @@
 import { omit } from 'lodash';
 
-import { SearchContact } from '../../types/types';
+import { SearchAPIContact } from '../../types/types';
 import { hrmServiceContactToSearchContact } from './contactDetailsAdapter';
 
 export enum ContactDetailsRoute {
@@ -9,6 +9,7 @@ export enum ContactDetailsRoute {
   EDIT_CATEGORIES = 'editIssueCategories',
   EDIT_CASE_INFORMATION = 'editCaseInformation',
   ADD_EXTERNAL_REPORT = 'externalReport',
+  CSAM_REPORT = 'csamReport',
 }
 
 // From https://stackoverflow.com/questions/47914536/use-partial-in-nested-property-with-typescript
@@ -16,7 +17,7 @@ type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
 };
 
-export type SearchContactDraftChanges = RecursivePartial<SearchContact>;
+export type SearchContactDraftChanges = RecursivePartial<SearchAPIContact>;
 
 // TODO: Update this type when the Lambda worker is "done"
 export type TranscriptMessage = {
@@ -38,8 +39,8 @@ type TranscriptResult = {
 export type ExistingContactsState = {
   [contactId: string]: {
     references: Set<string>;
-    savedContact: SearchContact;
-    draftContact?: RecursivePartial<SearchContact>;
+    savedContact: SearchAPIContact;
+    draftContact?: SearchContactDraftChanges;
     categories: {
       gridView: boolean;
       expanded: { [key: string]: boolean };
@@ -52,12 +53,12 @@ export const LOAD_CONTACT_ACTION = 'LOAD_CONTACT_ACTION';
 
 type LoadContactAction = {
   type: typeof LOAD_CONTACT_ACTION;
-  contacts: SearchContact[];
+  contacts: SearchAPIContact[];
   reference?: string;
   replaceExisting: boolean;
 };
 
-export const loadContact = (contact: SearchContact, reference, replaceExisting = false): LoadContactAction => ({
+export const loadContact = (contact: SearchAPIContact, reference, replaceExisting = false): LoadContactAction => ({
   type: LOAD_CONTACT_ACTION,
   contacts: [contact],
   reference,
@@ -259,7 +260,7 @@ export const EXISTING_CONTACT_UPDATE_DRAFT_ACTION = 'EXISTING_CONTACT_UPDATE_DRA
 type UpdateDraftAction = {
   type: typeof EXISTING_CONTACT_UPDATE_DRAFT_ACTION;
   contactId: string;
-  draft?: RecursivePartial<SearchContact>;
+  draft?: SearchContactDraftChanges;
 };
 
 export const updateDraft = (contactId: string, draft: SearchContactDraftChanges): UpdateDraftAction => ({
@@ -339,7 +340,15 @@ export const createDraftReducer = (state: ExistingContactsState, action: CreateD
     case ContactDetailsRoute.ADD_EXTERNAL_REPORT:
       newDraft = {
         details: {
-          externalReport: savedContact.details.externalReport,
+          externalReport: { reportType: null },
+        },
+      };
+      break;
+    case ContactDetailsRoute.CSAM_REPORT:
+      newDraft = {
+        details: {
+          // eslint-disable-next-line no-bitwise
+          csamReport: {},
         },
       };
       break;

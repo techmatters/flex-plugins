@@ -22,10 +22,10 @@ import type { CSAMReportStatus } from '../../states/csam-report/types';
 
 type Props = {
   reportStatus?: CSAMReportStatus;
-  onClickClose: () => void;
-  onSendAnotherReport: () => void;
+  onClickClose?: () => void;
+  onSendAnotherReport?: () => void;
   clcReportStatus?: CSAMReportStatus;
-  csamType: 'child-status' | 'counsellor-status';
+  csamType?: 'child-status' | 'counsellor-status';
 };
 
 const CSAMReportStatusScreen: React.FC<Props> = ({

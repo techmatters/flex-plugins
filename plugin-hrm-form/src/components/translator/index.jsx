@@ -40,6 +40,8 @@ class Translator extends React.PureComponent {
       <FormControl variant="filled">
         <InputLabel id={`${TranslateButtonAriaLabel}-label`}>{TranslateButtonAriaLabel}</InputLabel>
         <Select
+          style={{ padding: '0 20px' }}
+          disableUnderline
           labelId={`${TranslateButtonAriaLabel}-label`}
           id={TranslateButtonAriaLabel}
           value={this.props.language}

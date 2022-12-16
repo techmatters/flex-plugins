@@ -45,7 +45,7 @@ type HrmState = {
 } & { [connectedCaseBase]: CaseState };
 
 export type RootState = FlexState & { [namespace]: HrmState };
-const combinedReducers: (state: HrmState, action) => HrmState = combineReducers(reducers);
+const combinedReducers = combineReducers(reducers);
 
 // Combine the reducers
 const reducer = (state: HrmState, action): HrmState => {

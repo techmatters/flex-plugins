@@ -17,25 +17,27 @@ import {
   childKeys,
   childDefinitionObject,
 } from './CSAMReportFormDefinition';
-import type { CustomITask } from '../../types/types';
+import type { CSAMReportEntry, CustomITask } from '../../types/types';
 import { getConfig } from '../../HrmFormPlugin';
 import * as actions from '../../states/csam-report/actions';
 import * as routingActions from '../../states/routing/actions';
 import * as contactsActions from '../../states/contacts/actions';
 import { isCounselorCSAMReportForm } from '../../states/csam-report/types';
-import { RootState, csamReportBase, namespace, routingBase, configurationBase } from '../../states';
+import { RootState, csamReportBase, namespace, contactFormsBase, routingBase, configurationBase } from '../../states';
 import { reportToIWF, selfReportToIWF } from '../../services/ServerlessService';
-import { createCSAMReport } from '../../services/CSAMReportService';
+import { acknowledgeCSAMReport, createCSAMReport } from '../../services/CSAMReportService';
 import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
   taskSid: CustomITask['taskSid'];
+  externalReport?: string;
 };
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   csamReportState: state[namespace][csamReportBase].tasks[ownProps.taskSid],
   routing: state[namespace][routingBase].tasks[ownProps.taskSid],
   counselorsHash: state[namespace][configurationBase].counselors.hash,
+  csamReports: state[namespace][contactFormsBase].tasks[ownProps.taskSid].csamReports,
 });
 
 const mapDispatchToProps = {
@@ -60,6 +62,8 @@ export const CSAMReportScreen: React.FC<Props> = ({
   csamReportState,
   routing,
   counselorsHash,
+  externalReport,
+  csamReports,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [initialForm] = React.useState(csamReportState.form); // grab initial values in first render only. This value should never change or will ruin the memoization below
@@ -118,6 +122,8 @@ export const CSAMReportScreen: React.FC<Props> = ({
 
   const { previousRoute } = routing;
 
+  const childForm = externalReport === 'child-form' || (routing.subroute === 'child-form' && 'child-form');
+
   const onClickClose = () => {
     clearCSAMReportAction(taskSid);
     changeRoute({ ...previousRoute }, taskSid);
@@ -126,10 +132,16 @@ export const CSAMReportScreen: React.FC<Props> = ({
   const onValid = async form => {
     try {
       if (routing.subroute === 'child-form') {
-        /* serverLess API will be called here */
         changeRoute({ route: 'csam-report', subroute: 'loading', previousRoute }, taskSid);
 
-        const report = await selfReportToIWF(form);
+        /* ServerLess API will be called here */
+        const storedReport = await createCSAMReport({
+          reportType: 'self-generated',
+          twilioWorkerId: getConfig().workerSid,
+        });
+
+        const caseNumber = storedReport.csamReportId;
+        const report = await selfReportToIWF(form, caseNumber);
 
         const reportStatus = {
           responseCode: report.status,
@@ -138,6 +150,15 @@ export const CSAMReportScreen: React.FC<Props> = ({
         };
 
         updateStatusAction(reportStatus, taskSid);
+        const reportToAcknowledge: CSAMReportEntry = storedReport;
+
+        /* If everything went fine, before moving to the next screen acknowledge the record in DB */
+        const acknowledged = await acknowledgeCSAMReport(reportToAcknowledge.id);
+
+        console.log('acknowledged is here', acknowledged);
+
+        addCSAMReportEntry(acknowledged, taskSid);
+        console.log('csamReports is here now', csamReports);
         changeRoute({ route: 'csam-report', subroute: 'child-status', previousRoute }, taskSid);
       }
 
@@ -145,11 +166,10 @@ export const CSAMReportScreen: React.FC<Props> = ({
         changeRoute({ route: 'csam-report', subroute: 'loading', previousRoute }, taskSid);
         const report = await reportToIWF(form);
         const storedReport = await createCSAMReport({
+          reportType: 'counsellor-generated',
           csamReportId: report['IWFReportService1.0'].responseData,
           twilioWorkerId: getConfig().workerSid,
         });
-
-        console.log('storedReport is here', storedReport);
 
         updateStatusAction(report['IWFReportService1.0'], taskSid);
         addCSAMReportEntry(storedReport, taskSid);
@@ -158,6 +178,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
     } catch (err) {
       console.error(err);
       window.alert(getConfig().strings['Error-Backend']);
+
       changeRoute(
         {
           route: 'csam-report',
@@ -180,8 +201,10 @@ export const CSAMReportScreen: React.FC<Props> = ({
 
   const onSendReport = methods.handleSubmit(onValid, onInvalid);
 
+  console.log('childForm is here', childForm, externalReport);
+
   switch (routing.subroute) {
-    case 'child-form': {
+    case childForm: {
       return (
         <FormProvider {...methods}>
           <CSAMReportFormScreen

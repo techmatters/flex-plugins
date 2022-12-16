@@ -1,5 +1,6 @@
+# HRM Forms Flex Plugin
+
 [![Actions Status](https://github.com/tech-matters/flex-plugins/workflows/Run%20plugin-hrm-form%20CI/badge.svg)](https://github.com/tech-matters/flex-plugins/actions)
-# Your custom Twilio Flex Plugin
 
 Twilio Flex Plugins allow you to customize the appearance and behavior of [Twilio Flex](https://www.twilio.com/flex). If you want to learn more about the capabilities and how to use the API, check out our [Flex documentation](https://www.twilio.com/docs/flex).
 
@@ -8,6 +9,9 @@ Twilio Flex Plugins allow you to customize the appearance and behavior of [Twili
 ### Requirements
 
 See: [top level readme](../README.md)
+
+[twilio-cli](https://www.twilio.com/docs/twilio-cli/quickstart)
+twilio-cli:plugin-flex `twilio plugins:install @twilio-labs/plugin-flex`
 
 ### NVM (install/use)
 
@@ -51,12 +55,25 @@ PORT=3001 npm dev:local
 
 When you make changes to your code, the browser window will be automatically refreshed.
 
+### Run against the local serverless functions running on port 3030
+
+```bash
+npm run dev:local:serverless
+```
+
 ### Run against the local docker hrm-services
 
 ```bash
 npm run dev:local:docker
 ```
 
+### Running insights proxy locally
+
+Insights requires a local proxy. To run the proxy, in a separate terminal session run:
+
+```bash
+npm run proxy
+```
 
 ## Testing
 
@@ -65,6 +82,7 @@ In order to test locally, you will need to run:
 ```bash
 npm run test:jest
 ```
+
 You don't need to worry about the path unless there's another test file with the exact same name. To run a specific test spec, you need to run:
 
 ```bash

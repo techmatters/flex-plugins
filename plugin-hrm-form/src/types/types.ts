@@ -3,6 +3,7 @@ import { ITask } from '@twilio/flex-ui';
 import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions';
 
 import { DateFilterValue } from '../components/caseList/filters/dateFilters';
+import { ChannelTypes } from '../states/DomainConstants';
 
 export type EntryInfo = {
   id: string;
@@ -48,7 +49,13 @@ export type Document = { [key: string]: string | boolean };
 
 export type DocumentEntry = { document: Document; id: string | undefined } & EntryInfo;
 
-export type CSAMReportEntry = { csamReportId: string; id: number } & EntryInfo;
+export type CSAMReportEntry = {
+  csamReportId: string;
+  id: number;
+  reportType: 'counsellor-generated' | 'self-generated';
+  acknowledged: boolean;
+  contactId?: number;
+} & Omit<EntryInfo, 'id'>;
 
 export type CaseInfo = {
   definitionVersion?: DefinitionVersionId;
@@ -114,13 +121,14 @@ export type ContactRawJson = {
   childInformation: InformationObject;
   callerInformation: InformationObject;
   caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
-  contactlessTask: { [key: string]: string | boolean };
+  contactlessTask: { channel: ChannelTypes; [key: string]: string | boolean };
   conversationMedia: ConversationMedia[];
   externalReport: { [key: string]: string | boolean | {} };
+  csamReport: { [key: string]: string | boolean | {} };
 };
 
 // Information about a single contact, as expected from search contacts endpoint (we might want to reuse this type in backend) - (is this a correct placement for this?)
-export type SearchContact = {
+export type SearchAPIContact = {
   contactId: string;
   overview: {
     helpline: string;
@@ -131,18 +139,22 @@ export type SearchContact = {
     categories: {};
     counselor: string;
     notes: string;
-    channel: string;
+    channel: ChannelTypes | 'default';
     conversationDuration: number;
     createdBy: string;
     taskId: string;
+    updatedBy?: string;
+    updatedAt?: string;
   };
   details: ContactRawJson;
   csamReports: CSAMReportEntry[];
 };
 
+export type SearchUIContact = SearchAPIContact & { counselorName: string };
+
 export type SearchContactResult = {
   count: number;
-  contacts: SearchContact[];
+  contacts: SearchUIContact[];
 };
 
 export type SearchCaseResult = {

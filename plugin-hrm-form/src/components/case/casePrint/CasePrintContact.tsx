@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable dot-notation */
 /*
  * This component was in the original mockup designs, we're removing it per ZA request, but could be useful for other helplines.
  */
@@ -7,8 +8,9 @@ import { Text, View } from '@react-pdf/renderer';
 
 import styles from './styles';
 import { getConfig } from '../../../HrmFormPlugin';
-import { mapChannel, mapChannelForInsights, presentValue, formatStringToDateAndTime } from '../../../utils';
+import { mapChannel, mapChannelForInsights, formatStringToDateAndTime } from '../../../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
+import { presentValueFromStrings } from './presentValuesFromStrings';
 
 type OwnProps = {
   sectionName: string;
@@ -30,87 +32,97 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
   return (
     <View>
-      <View style={styles.sectionHeader}>
-        <Text style={styles.whiteText}>{sectionName}</Text>
+      <View style={styles['sectionHeader']}>
+        <Text style={styles['whiteText']}>{sectionName}</Text>
       </View>
-      <View style={styles.sectionBody}>
-        <View style={styles.sectionItemRowOdd}>
-          <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-ContactSummary']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>
-            {presentValue(rawJson.caseInformation?.callSummary, strings)}
+      <View style={styles['sectionBody']}>
+        <View style={styles['sectionItemRowOdd']}>
+          <Text style={styles['sectionItemFirstColumn']}>
+            {strings['ContactDetails-GeneralDetails-ContactSummary']}
+          </Text>
+          <Text style={styles['sectionItemSecondColumn']}>
+            {presentValueFromStrings(strings)(rawJson.caseInformation?.callSummary)()}
           </Text>
         </View>
-        <View style={styles.sectionItemRowEven}>
-          <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-Channel']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>{formattedChannel}</Text>
+        <View style={styles['sectionItemRowEven']}>
+          <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-Channel']}</Text>
+          <Text style={styles['sectionItemSecondColumn']}>{formattedChannel}</Text>
         </View>
-        <View style={styles.sectionItemRowOdd}>
-          <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-PhoneNumber']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>
-            {maskIdentifiers ? strings.MaskIdentifers : presentValue(number, strings)}
+        <View style={styles['sectionItemRowOdd']}>
+          <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-PhoneNumber']}</Text>
+          <Text style={styles['sectionItemSecondColumn']}>
+            {maskIdentifiers ? strings.MaskIdentifers : presentValueFromStrings(strings)(number)}
           </Text>
         </View>
-        <View style={styles.sectionItemRowEven}>
-          <Text style={styles.sectionItemFirstColumn}>
+        <View style={styles['sectionItemRowEven']}>
+          <Text style={styles['sectionItemFirstColumn']}>
             {strings['ContactDetails-GeneralDetails-ConversationDuration']}
           </Text>
-          <Text style={styles.sectionItemSecondColumn}>{presentValue(conversationDuration, strings)}</Text>
-        </View>
-        <View style={styles.sectionItemRowOdd}>
-          <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-Counselor']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>{presentValue(counselor, strings)}</Text>
-        </View>
-        <View style={styles.sectionItemRowEven}>
-          <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-DateTime']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>{formatStringToDateAndTime(timeOfContact)}</Text>
-        </View>
-        <View style={styles.sectionItemRowOdd}>
-          <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-RepeatCaller']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>
-            {presentValue(rawJson.caseInformation?.repeatCaller, strings)}{' '}
+          <Text style={styles['sectionItemSecondColumn']}>
+            {presentValueFromStrings(strings)(conversationDuration)()}
           </Text>
         </View>
-        <View style={styles.sectionItemRowEven}>
-          <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-ReferredTo']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>
-            {presentValue(rawJson.caseInformation?.referredTo, strings)}
+        <View style={styles['sectionItemRowOdd']}>
+          <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-Counselor']}</Text>
+          <Text style={styles['sectionItemSecondColumn']}>{presentValueFromStrings(strings)(counselor)()}</Text>
+        </View>
+        <View style={styles['sectionItemRowEven']}>
+          <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-DateTime']}</Text>
+          <Text style={styles['sectionItemSecondColumn']}>{formatStringToDateAndTime(timeOfContact)}</Text>
+        </View>
+        <View style={styles['sectionItemRowOdd']}>
+          <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-RepeatCaller']}</Text>
+          <Text style={styles['sectionItemSecondColumn']}>
+            {presentValueFromStrings(strings)(rawJson.caseInformation?.repeatCaller)()}{' '}
           </Text>
         </View>
-        <View style={styles.sectionItemRowOdd}>
-          <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-ChildHearAboutUs']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>
-            {presentValue(rawJson.caseInfomation?.howDidTheChildHearAboutUs, strings)}
+        <View style={styles['sectionItemRowEven']}>
+          <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-ReferredTo']}</Text>
+          <Text style={styles['sectionItemSecondColumn']}>
+            {presentValueFromStrings(strings)(rawJson.caseInformation?.referredTo)()}
           </Text>
         </View>
-        <View style={styles.sectionItemRowEven}>
-          <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-KeepConfidential']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>
+        <View style={styles['sectionItemRowOdd']}>
+          <Text style={styles['sectionItemFirstColumn']}>
+            {strings['ContactDetails-GeneralDetails-ChildHearAboutUs']}
+          </Text>
+          <Text style={styles['sectionItemSecondColumn']}>
+            {presentValueFromStrings(strings)(rawJson.caseInfomation?.howDidTheChildHearAboutUs)()}
+          </Text>
+        </View>
+        <View style={styles['sectionItemRowEven']}>
+          <Text style={styles['sectionItemFirstColumn']}>
+            {strings['ContactDetails-GeneralDetails-KeepConfidential']}
+          </Text>
+          <Text style={styles['sectionItemSecondColumn']}>
             {' '}
-            {presentValue(rawJson.caseInfomation?.keepConfidential, strings)}
+            {presentValueFromStrings(strings)(rawJson.caseInfomation?.keepConfidential)()}
           </Text>
         </View>
-        <View style={styles.sectionItemRowOdd}>
-          <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-OKToCall']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>
-            {presentValue(rawJson.caseInfomation?.okForCaseWorkerToCall, strings)}
+        <View style={styles['sectionItemRowOdd']}>
+          <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-OKToCall']}</Text>
+          <Text style={styles['sectionItemSecondColumn']}>
+            {presentValueFromStrings(strings)(rawJson.caseInfomation?.okForCaseWorkerToCall)()}
           </Text>
         </View>
-        <View style={styles.sectionItemRowEven}>
-          <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-DiscussRights']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>
-            {presentValue(rawJson.caseInfomation?.didYouDiscussRightsWithTheChild, strings)}
+        <View style={styles['sectionItemRowEven']}>
+          <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-DiscussRights']}</Text>
+          <Text style={styles['sectionItemSecondColumn']}>
+            {presentValueFromStrings(strings)(rawJson.caseInfomation?.didYouDiscussRightsWithTheChild)()}
           </Text>
         </View>
-        <View style={styles.sectionItemRowOdd}>
-          <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-SolvedProblem']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>
-            {presentValue(rawJson.caseInfomation?.didTheChildFeelWeSolvedTheirProblem, strings)}
+        <View style={styles['sectionItemRowOdd']}>
+          <Text style={styles['sectionItemFirstColumn']}>{strings['ContactDetails-GeneralDetails-SolvedProblem']}</Text>
+          <Text style={styles['sectionItemSecondColumn']}>
+            {presentValueFromStrings(strings)(rawJson.caseInfomation?.didTheChildFeelWeSolvedTheirProblem)()}
           </Text>
         </View>
-        <View style={styles.sectionItemRowEven}>
-          <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-WouldRecommend']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>
-            {presentValue(rawJson.caseInfomation?.wouldTheChildRecommendUsToAFriend, strings)}
+        <View style={styles['sectionItemRowEven']}>
+          <Text style={styles['sectionItemFirstColumn']}>
+            {strings['ContactDetails-GeneralDetails-WouldRecommend']}
+          </Text>
+          <Text style={styles['sectionItemSecondColumn']}>
+            {presentValueFromStrings(strings)(rawJson.caseInfomation?.wouldTheChildRecommendUsToAFriend)()}
           </Text>
         </View>
       </View>

@@ -5,17 +5,18 @@ import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
-import { Flex } from '../../styles/HrmStyles';
-import { isS3StoredTranscript, isTwilioStoredMedia } from '../../types/types';
+import { Flex, Box } from '../../styles/HrmStyles';
+import { CSAMReportEntry, isS3StoredTranscript, isTwilioStoredMedia, SearchAPIContact } from '../../types/types';
 import {
   DetailsContainer,
   NameText,
   ContactAddedFont,
   SectionTitleContainer,
   SectionActionButton,
+  SectionValueText,
 } from '../../styles/search';
 import ContactDetailsSection from './ContactDetailsSection';
-import SectionEntry from '../SectionEntry';
+import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import { formatCategories, formatDuration, formatName, mapChannelForInsights } from '../../utils';
@@ -27,7 +28,29 @@ import { getPermissionsForContact, getPermissionsForViewingIdentifiers, Permissi
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
 import { getConfig } from '../../HrmFormPlugin';
 import TranscriptSection from './TranscriptSection';
-import { setExternalReport } from '../../states/contacts/actions';
+
+const formatCsamReport = (report: CSAMReportEntry) => {
+  const template =
+    report.reportType === 'counsellor-generated' ? (
+      <Template code="CSAMReportForm-Counsellor-Attachment" />
+    ) : (
+      <Template code="CSAMReportForm-Self-Attachment" />
+    );
+
+  const date = `${format(new Date(report.createdAt), 'yyyy MM dd h:mm aaaaa')}m`;
+
+  return (
+    <Box marginBottom="5px">
+      <SectionValueText>
+        {template}
+        <br />
+        {date}
+        <br />
+        {`#${report.csamReportId}`}
+      </SectionValueText>
+    </Box>
+  );
+};
 
 // TODO: complete this type
 type OwnProps = {
@@ -55,8 +78,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
   createContactDraft,
   enableEditing,
   canViewTwilioTranscript,
-  setExternalReport,
-  externalReport,
 }) {
   const version = savedContact?.details.definitionVersion;
 
@@ -74,7 +95,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   if (!savedContact || !definitionVersion) return null;
 
   // Object destructuring on contact
-  const { overview, details, csamReports } = savedContact;
+  const { overview, details, csamReports } = savedContact as SearchAPIContact;
   const {
     counselor,
     dateTime,
@@ -85,7 +106,30 @@ const ContactDetailsHome: React.FC<Props> = function ({
     conversationDuration,
     categories,
     createdBy,
+    updatedAt,
+    updatedBy,
   } = overview;
+
+  const auditMessage = (timestampText: string, workerSid: string, templateKey: string) => {
+    if (timestampText && workerSid) {
+      const timestamp = new Date(timestampText);
+      const formattedDateStandard = `${format(timestamp, 'M/dd/yyyy')}`;
+      const formattedTimeStandard = `${format(timestamp, 'h:mm a')}`;
+      const counselorName = counselorsHash[workerSid];
+      return (
+        <ContactAddedFont style={{ marginRight: 20 }} data-testid={templateKey}>
+          <Template
+            code={templateKey}
+            date={formattedDateStandard}
+            time={formattedTimeStandard}
+            counsellor={counselorName}
+          />
+        </ContactAddedFont>
+      );
+    }
+    return null;
+  };
+
   // Permission to edit is based the counselor who created the contact - identified by Twilio worker ID
   const createdByTwilioWorkerId = savedContact?.overview.counselor;
   const { can } = getPermissionsForContact(createdByTwilioWorkerId);
@@ -97,11 +141,10 @@ const ContactDetailsHome: React.FC<Props> = function ({
     channel === 'default'
       ? mapChannelForInsights(details.contactlessTask.channel.toString())
       : mapChannelForInsights(channel);
-  const formattedDateStandard = `${format(new Date(dateTime), 'M/dd/yyyy')}`;
-  const formattedTimeStandard = `${format(new Date(dateTime), 'h:mm a')}`;
+  const addedDate = new Date(dateTime);
 
-  const formattedDate = `${format(new Date(dateTime), 'MMM dd, yyyy')}`;
-  const formattedTime = `${format(new Date(dateTime), 'h:mm aaaaa')}m`;
+  const formattedDate = `${format(addedDate, 'MMM dd, yyyy')}`;
+  const formattedTime = `${format(addedDate, 'h:mm aaaaa')}m`;
 
   const formattedDuration = formatDuration(conversationDuration);
 
@@ -119,7 +162,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
   } = ContactDetailsSections;
   const addedBy = counselorsHash[createdBy];
   const counselorName = counselorsHash[counselor];
-
   const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(context, section);
   const navigate = (route: ContactDetailsRoute) => createContactDraft(savedContact.contactId, route);
 
@@ -129,12 +171,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
       taskSid: twilioStoredMedia.reservationSid,
     });
   };
-
-  const csamReportsAttached =
-    csamReports &&
-    csamReports
-      .map(r => `CSAM on ${format(new Date(r.createdAt), 'yyyy MM dd h:mm aaaaa')}m\n#${r.csamReportId}`)
-      .join('\n\n');
 
   const recordingAvailable = Boolean(
     featureFlags.enable_voice_recordings &&
@@ -159,54 +195,48 @@ const ContactDetailsHome: React.FC<Props> = function ({
   );
   const csamReportEnabled = featureFlags.enable_csam_report && featureFlags.enable_csam_clc_report;
 
-  const handleSetExternalReport = () => setExternalReport('externalReport');
-
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
       <NameText>{childOrUnknown}</NameText>
-      <ContactAddedFont style={{ marginRight: 20 }} data-testid="ContactDetails-ActionHeaderAdded">
-        <Template
-          code="ContactDetails-ActionHeaderAdded"
-          date={formattedDateStandard}
-          time={formattedTimeStandard}
-          counsellor={addedBy}
-        />
-      </ContactAddedFont>
+
+      {auditMessage(dateTime, createdBy, 'ContactDetails-ActionHeaderAdded')}
+
+      {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
+
       <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
         expanded={detailsExpanded[GENERAL_DETAILS]}
         handleExpandClick={() => toggleSection(GENERAL_DETAILS)}
         buttonDataTestid={`ContactDetails-Section-${GENERAL_DETAILS}`}
       >
-        <SectionEntry
-          description={<Template code="ContactDetails-GeneralDetails-Channel" />}
-          value={formattedChannel}
-        />
+        <SectionEntry descriptionKey="ContactDetails-GeneralDetails-Channel">
+          <SectionEntryValue value={formattedChannel} />
+        </SectionEntry>
         {maskIdentifiers ? (
-          <SectionEntry
-            description={<Template code="ContactDetails-GeneralDetails-PhoneNumber" />}
-            value={strings.MaskIdentifiers}
-          />
+          <SectionEntry descriptionKey="ContactDetails-GeneralDetails-PhoneNumber">
+            <SectionEntryValue value={strings.MaskIdentifiers} />
+          </SectionEntry>
         ) : (
-          <SectionEntry
-            description={<Template code="ContactDetails-GeneralDetails-PhoneNumber" />}
-            value={isPhoneContact ? customerNumber : ''}
-          />
+          <SectionEntry descriptionKey="ContactDetails-GeneralDetails-PhoneNumber">
+            <SectionEntryValue value={isPhoneContact ? customerNumber : ''} />
+          </SectionEntry>
         )}
-        <SectionEntry
-          description={<Template code="ContactDetails-GeneralDetails-ConversationDuration" />}
-          value={formattedDuration}
-        />
-        <SectionEntry description={<Template code="ContactDetails-GeneralDetails-Counselor" />} value={counselorName} />
-        <SectionEntry
-          description={<Template code="ContactDetails-GeneralDetails-DateTime" />}
-          value={`${formattedDate} / ${formattedTime}`}
-        />
+        <SectionEntry descriptionKey="ContactDetails-GeneralDetails-ConversationDuration">
+          <SectionEntryValue value={formattedDuration} />
+        </SectionEntry>
+        <SectionEntry descriptionKey="ContactDetails-GeneralDetails-Counselor">
+          <SectionEntryValue value={counselorName} />
+        </SectionEntry>
+        <SectionEntry descriptionKey="ContactDetails-GeneralDetails-DateTime">
+          <SectionEntryValue value={`${formattedDate} / ${formattedTime}`} />
+        </SectionEntry>
         {addedBy && addedBy !== counselor && (
-          <SectionEntry description={<Template code="ContactDetails-GeneralDetails-AddedBy" />} value={addedBy} />
+          <SectionEntry descriptionKey="ContactDetails-GeneralDetails-AddedBy">
+            <SectionEntryValue value={addedBy} />
+          </SectionEntry>
         )}
       </ContactDetailsSection>
       {callType === callTypes.caller && (
@@ -222,12 +252,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
           callType="caller"
         >
           {definitionVersion.tabbedForms.CallerInformationTab.map(e => (
-            <SectionEntry
-              key={`CallerInformation-${e.label}`}
-              description={<Template code={e.label} />}
-              value={unNestInformation(e, savedContact.details.callerInformation)}
-              definition={e}
-            />
+            <SectionEntry key={`CallerInformation-${e.label}`} descriptionKey={e.label}>
+              <SectionEntryValue value={unNestInformation(e, savedContact.details.callerInformation)} definition={e} />
+            </SectionEntry>
           ))}
         </ContactDetailsSection>
       )}
@@ -244,12 +271,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
           callType="child"
         >
           {definitionVersion.tabbedForms.ChildInformationTab.map(e => (
-            <SectionEntry
-              key={`ChildInformation-${e.label}`}
-              description={<Template code={e.label} />}
-              value={unNestInformation(e, savedContact.details.childInformation)}
-              definition={e}
-            />
+            <SectionEntry key={`ChildInformation-${e.label}`} descriptionKey={e.label}>
+              <SectionEntryValue value={unNestInformation(e, savedContact.details.childInformation)} definition={e} />
+            </SectionEntry>
           ))}
         </ContactDetailsSection>
       )}
@@ -266,16 +290,17 @@ const ContactDetailsHome: React.FC<Props> = function ({
             formattedCategories.map((c, index) => (
               <SectionEntry
                 key={`Category ${index + 1}`}
-                description={
-                  <span style={{ display: 'inline-block' }}>
-                    <Template code="Category" /> {index + 1}
-                  </span>
-                }
-                value={c}
-              />
+                descriptionKey="Category"
+                descriptionStyle={{ display: 'inline-block' }}
+                descrptionDetail={`${index + 1}`}
+              >
+                <SectionEntryValue value={c} />
+              </SectionEntry>
             ))
           ) : (
-            <SectionEntry description="No category provided" value="" />
+            <SectionEntry descriptionKey="ContactDetails-NoCategoryProvided">
+              <SectionEntryValue value="" />
+            </SectionEntry>
           )}
         </ContactDetailsSection>
       )}
@@ -291,26 +316,25 @@ const ContactDetailsHome: React.FC<Props> = function ({
           }}
         >
           {definitionVersion.tabbedForms.CaseInformationTab.map(e => (
-            <SectionEntry
-              key={`CaseInformation-${e.label}`}
-              description={<Template code={e.label} />}
-              value={savedContact.details.caseInformation[e.name] as boolean | string}
-              definition={e}
-            />
+            <SectionEntry key={`CaseInformation-${e.label}`} descriptionKey={e.label}>
+              <SectionEntryValue
+                value={savedContact.details.caseInformation[e.name] as boolean | string}
+                definition={e}
+              />
+            </SectionEntry>
           ))}
           {csamReportEnabled && (
-            <SectionEntry
-              description={<Template code="ContactDetails-GeneralDetails-ExternalReportsFiled" />}
-              handleEditClick={() => handleSetExternalReport()}
-              csamReportEnabled={csamReportEnabled}
-            />
+            <SectionEntry descriptionKey="ContactDetails-GeneralDetails-ExternalReportsFiled">
+              <SectionEntryValue
+                handleEditClick={() => navigate(ContactDetailsRoute.ADD_EXTERNAL_REPORT)}
+                csamReportEnabled={csamReportEnabled}
+              />
+            </SectionEntry>
           )}
-          {csamReportsAttached && (
-            <SectionEntry
-              key="CaseInformation-AttachedCSAMReports"
-              description={<Template code="CSAMReportForm-ReportsSubmitted" />}
-              value={csamReportsAttached}
-            />
+          {csamReports && csamReports.length > 0 && (
+            <SectionEntry key="CaseInformation-AttachedCSAMReports" descriptionKey="CSAMReportForm-ReportsSubmitted">
+              {csamReports.map(formatCsamReport)}
+            </SectionEntry>
           )}
         </ContactDetailsSection>
       )}
@@ -365,7 +389,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
 const mapDispatchToProps = {
   toggleSectionExpandedForContext: toggleDetailSectionExpanded,
   createContactDraft: createDraft,
-  setExternalReport,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);

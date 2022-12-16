@@ -20,7 +20,7 @@ const CSAMReportDropdown: React.FC<Props> = ({ handleChildCSAMType, handleCounse
       <StyledCSAMReportDropdownList onClick={handleChildCSAMType}>
         <Template code="TabbedForms-ReportsChildLink" />
       </StyledCSAMReportDropdownList>
-      <StyledCSAMReportDropdownList margin="0 -40px 10px -25px" onClick={handleCounsellorCSAMType}>
+      <StyledCSAMReportDropdownList margin="0 -100px 10px -25px" onClick={handleCounsellorCSAMType}>
         <Template code="TabbedForms-ReportsCounselorReport" />
       </StyledCSAMReportDropdownList>
     </StyledCSAMReportDropdown>

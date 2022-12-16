@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
+import { TextField as TextFields } from '@material-ui/core';
 
-import { StyledInput, StyledLabel, ErrorText, TextField } from '../styles/HrmStyles';
+import { StyledInput, StyledLabel, ErrorText, TextField, FormInput, FormLabel } from '../styles/HrmStyles';
 import RequiredAsterisk from './RequiredAsterisk';
 import { FormFieldType } from './common/forms/types';
 
@@ -29,17 +30,19 @@ const FieldText: React.FC<OwnProps> = ({
   ...rest
 }) => (
   <TextField {...rest}>
-    <StyledLabel htmlFor={id}>
+    <FormLabel htmlFor={id}>
       {label}
       <RequiredAsterisk field={field} />
-    </StyledLabel>
-    <StyledInput
+    </FormLabel>
+    <FormInput
       id={id}
       placeholder={placeholder}
       error={field.error !== null}
       value={field.value}
-      multiline={Boolean(rows)}
-      rows={rows}
+      /*
+       * multiline={Boolean(rows)}
+       * rows={rows}
+       */
       onBlur={handleBlur}
       onChange={handleChange}
       onFocus={handleFocus}

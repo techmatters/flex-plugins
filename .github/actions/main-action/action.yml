@@ -16,11 +16,13 @@ inputs:
   aws-region:
     description: 'AWS region where Aselo documents bucket is hosted'
     required: true
+  helpline-id:
+    description: 'Identifies the helpline / environment for slack message'
+    default: '??'
   send-slack-message:
     description: 'Specifies if should send a Slack message at the end of successful run. Defaults to true'
     required: false
     default: 'true'
-    type: string
 runs:
   using: "composite"
   steps:
@@ -88,18 +90,22 @@ runs:
           EOT
         working-directory: ./plugin-hrm-form
         shell: bash
-      # Runs a single command using the runners shell
-      - name: Install dependencies for the flex-plugins
-        run: UNBUNDLED_REACT=true npm install
+      # Install the Twilio CLI and the flex plugin, then deploy the plugin
+      - name: Install Twilio CLI
+        run: npm install twilio-cli@5.2.2 -g && twilio plugins:install @twilio-labs/plugin-flex@6.0.3
         working-directory: ./plugin-hrm-form
         shell: bash
-      # Install the Twilio CLI and the flex plugin, then deploy the plugin
-      - name: Install twilio cli and run deploy command
+      # Runs a single command using the runners shell
+      - name: Install dependencies for the flex-plugins
+        run: npm ci
+        working-directory: ./plugin-hrm-form
+        shell: bash
+      # Release flex plugin
+      - name: Run deploy command
         env:
-         TWILIO_ACCOUNT_SID: ${{ inputs.account-sid }}
-         TWILIO_AUTH_TOKEN: ${{ inputs.auth-token }}
-         UNBUNDLED_REACT: true
-        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex@4.3.4 && twilio flex:plugins:deploy --changelog "${{ github.event.inputs.changelog }} (commit ${{ github.sha }})"
+          TWILIO_ACCOUNT_SID: ${{ inputs.account-sid }}
+          TWILIO_AUTH_TOKEN: ${{ inputs.auth-token }}
+        run: twilio flex:plugins:deploy --changelog "${{ github.event.inputs.changelog }} (commit ${{ github.sha }})"
         working-directory: ./plugin-hrm-form
         shell: bash
       # Release flex plugin
@@ -125,6 +131,6 @@ runs:
         if: ${{ inputs.send-slack-message != 'false' }}
         with:
           channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-          slack-message: "`[FLEX]` Action ${{ github.workflow }} completed with SHA ${{ github.sha }}. Changelog is: ${{ github.event.inputs.changelog }} :rocket:."
+          slack-message: "`[FLEX]` Deployment to ${{ inputs.helpline-id }} of ref ${{ github.ref_name }} completed using workflow '${{ github.workflow }}' with SHA ${{ github.sha }} :rocket:."
         env:
           SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}

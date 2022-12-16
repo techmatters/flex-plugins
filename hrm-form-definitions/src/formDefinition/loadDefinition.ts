@@ -5,8 +5,12 @@ import {
   CannedResponsesDefinitions,
   DefinitionVersion,
   FormDefinition,
+  FormItemDefinition,
+  FormItemJsonDefinition,
   HelplineDefinitions,
   HelplineEntry,
+  isDependentSelectDefinitionWithReferenceOptions,
+  isSelectDefinitionWithReferenceOptions,
   LayoutVersion,
 } from './types';
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
@@ -30,7 +34,30 @@ export enum DefinitionVersionId {
   zwV1 = 'zw-v1', // Childline Zimbabwe v1
   plV1 = 'pl-v1', // Telefon Zaufania (PL) v1
   roV1 = 'ro-v1', // Telefonul Copilului Romania v1
+  mtV1 = 'mt-v1', // Kellimni Malta v1
 }
+
+const expandFormDefinition = (
+  itemJsonDefs: FormItemJsonDefinition[],
+  referenceData: Record<string, any>,
+): FormDefinition =>
+  itemJsonDefs.map((json: FormItemJsonDefinition): FormItemDefinition => {
+    if (
+      isDependentSelectDefinitionWithReferenceOptions(json) ||
+      isSelectDefinitionWithReferenceOptions(json)
+    ) {
+      const { optionsReferenceKey, ...restOfJson } = json;
+      const options = referenceData[optionsReferenceKey];
+      if (!options) {
+        throw new Error(
+          `Reference key '${optionsReferenceKey}' for form item '${json.name}' not found.`,
+        );
+      }
+
+      return { ...restOfJson, options };
+    }
+    return json;
+  });
 
 // Using a variable for the root of the dynamic import confuses webpack :-(
 // const DEFINITION_JSON_ROOT = '../../form-definitions/';
@@ -112,23 +139,59 @@ export async function loadDefinition(version: DefinitionVersionId): Promise<Defi
     prepopulateKeys = { ChildInformationTab: [], CallerInformationTab: [] };
   }
 
+  let referenceData;
+  try {
+    referenceData = await import(
+      /* webpackMode: "eager" */ `../../form-definitions/${version}/ReferenceData.json`
+    );
+  } catch (err) {
+    referenceData = {};
+  }
+
   const { helplines } = helplineInformationModule.default;
   const defaultHelpline =
     helplineInformationModule.default.helplines.find((helpline: HelplineEntry) => helpline.default)
       .value || helplines[0].value;
   return {
     caseForms: {
-      HouseholdForm: householdFormModule.default as FormDefinition,
-      IncidentForm: incidentFormModule.default as FormDefinition,
-      NoteForm: noteFormModule.default as FormDefinition,
-      PerpetratorForm: perpetratorFormModule.default as FormDefinition,
-      ReferralForm: referralFormModule.default as FormDefinition,
-      DocumentForm: documentFormModule.default as FormDefinition,
+      HouseholdForm: expandFormDefinition(
+        householdFormModule.default as FormItemJsonDefinition[],
+        referenceData,
+      ),
+      IncidentForm: expandFormDefinition(
+        incidentFormModule.default as FormItemJsonDefinition[],
+        referenceData,
+      ),
+      NoteForm: expandFormDefinition(
+        noteFormModule.default as FormItemJsonDefinition[],
+        referenceData,
+      ),
+      PerpetratorForm: expandFormDefinition(
+        perpetratorFormModule.default as FormItemJsonDefinition[],
+        referenceData,
+      ),
+      ReferralForm: expandFormDefinition(
+        referralFormModule.default as FormItemJsonDefinition[],
+        referenceData,
+      ),
+      DocumentForm: expandFormDefinition(
+        documentFormModule.default as FormItemJsonDefinition[],
+        referenceData,
+      ),
     },
     tabbedForms: {
-      CallerInformationTab: callerInformationTabModule.default as FormDefinition,
-      CaseInformationTab: caseInformationTabModule.default as FormDefinition,
-      ChildInformationTab: childInformationTabModule.default as FormDefinition,
+      CallerInformationTab: expandFormDefinition(
+        callerInformationTabModule.default as FormItemJsonDefinition[],
+        referenceData,
+      ),
+      CaseInformationTab: expandFormDefinition(
+        caseInformationTabModule.default as FormItemJsonDefinition[],
+        referenceData,
+      ),
+      ChildInformationTab: expandFormDefinition(
+        childInformationTabModule.default as FormItemJsonDefinition[],
+        referenceData,
+      ),
       IssueCategorizationTab: (helpline: string) =>
         issueCategorizationTabModule.default[helpline] ||
         issueCategorizationTabModule.default[defaultHelpline],
@@ -144,5 +207,6 @@ export async function loadDefinition(version: DefinitionVersionId): Promise<Defi
     },
     caseStatus: caseStatusModule.default as DefinitionVersion['caseStatus'],
     prepopulateKeys,
+    referenceData,
   };
 }

@@ -10,29 +10,28 @@ import { Container } from '../../../styles/HrmStyles';
 import GeneralContactDetails from '../../contact/ContactDetails';
 import ConnectDialog from '../ConnectDialog';
 import BackToSearchResultsButton from '../SearchResults/SearchResultsBackButton';
-import { SearchContact } from '../../../types/types';
+import { SearchAPIContact } from '../../../types/types';
 import { loadContact, releaseContact } from '../../../states/contacts/existingContacts';
 import { DetailsContext } from '../../../states/contacts/contactDetails';
-import { setExternalReport } from '../../../states/contacts/actions';
 
 type OwnProps = {
   task: any;
   currentIsCaller: boolean;
-  contact: SearchContact;
+  contact: SearchAPIContact;
   showActionIcons: boolean;
   handleBack: () => void;
-  handleSelectSearchResult: (contact: SearchContact) => void;
+  handleSelectSearchResult: (contact: SearchAPIContact) => void;
 };
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
+  const { externalReport } = state[namespace][contactFormsBase];
   const { isCallTypeCaller } = state[namespace][contactFormsBase];
 
-  return { editContactFormOpen, isCallTypeCaller };
+  return { editContactFormOpen, isCallTypeCaller, externalReport };
 };
 const mapDispatchToProps = {
   loadContactIntoState: loadContact,
   releaseContactFromState: releaseContact,
-  setExternalReport,
 };
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
@@ -48,7 +47,7 @@ const ContactDetails: React.FC<Props> = ({
   releaseContactFromState,
   editContactFormOpen,
   isCallTypeCaller,
-  setExternalReport,
+  externalReport,
 }: Props) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -59,7 +58,6 @@ const ContactDetails: React.FC<Props> = ({
   const handleBackToResults = () => {
     releaseContactFromState(contact.contactId, task.taskSid);
     handleBack();
-    setExternalReport('');
   };
 
   const handleCloseDialog = () => {
@@ -78,7 +76,7 @@ const ContactDetails: React.FC<Props> = ({
   };
 
   return (
-    <Container removePadding={editContactFormOpen}>
+    <Container removePadding={editContactFormOpen} data-testid="ContactDetails">
       <ConnectDialog
         task={task}
         anchorEl={anchorEl}
@@ -89,7 +87,9 @@ const ContactDetails: React.FC<Props> = ({
         isCallTypeCaller={isCallTypeCaller}
       />
 
-      <div className={`${editContactFormOpen ? 'editingContact' : ''} hiddenWhenEditingContact`}>
+      <div
+        className={`${editContactFormOpen || externalReport !== null ? 'editingContact' : ''} hiddenWhenEditingContact`}
+      >
         <BackToSearchResultsButton
           text={<Template code="SearchResultsIndex-BackToResults" />}
           handleBack={handleBackToResults}
@@ -101,6 +101,7 @@ const ContactDetails: React.FC<Props> = ({
         showActionIcons={showActionIcons}
         contactId={contact.contactId}
         handleOpenConnectDialog={handleOpenConnectDialog}
+        taskSid={task.taskSid}
       />
     </Container>
   );

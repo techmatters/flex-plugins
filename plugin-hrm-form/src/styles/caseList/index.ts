@@ -1,11 +1,12 @@
-import styled from 'react-emotion';
+import { styled } from '@twilio/flex-ui';
 import { Table, TableCell, TableRow, withStyles } from '@material-ui/core';
 
 import { Absolute, FontOpenSans, Flex } from '../HrmStyles';
+import HrmTheme from '../HrmTheme';
 
 export const CaseListContainer = styled(Absolute)`
   height: 100%;
-  max-width: 1280px;
+  width: 1280px;
   background-color: #f6f6f6;
 `;
 CaseListContainer.displayName = 'CaseListContainer';
@@ -18,8 +19,8 @@ export const CenteredContainer = styled(CaseListContainer)`
 CenteredContainer.displayName = 'CenteredContainer';
 
 export const TableContainer = styled(Flex)`
-  border-left: 15px solid ${props => props.theme.colors.base2};
-  border-right: 10px solid ${props => props.theme.colors.base2};
+  border-left: 15px solid ${HrmTheme.colors.base2};
+  border-right: 10px solid ${HrmTheme.colors.base2};
 `;
 TableContainer.displayName = 'TableContainer';
 
@@ -51,7 +52,21 @@ export const CLTableRow = withStyles({
 })(TableRow);
 CLTableRow.displayName = 'CLTableRow';
 
-export const CLTableCell = withStyles(theme => ({
+export const CLHeaderTableCell = withStyles(theme => ({
+  root: {
+    borderBottom: 0,
+    textTransform: 'none',
+    overflow: 'hidden',
+    padding: '0 0 0 10px',
+  },
+  body: {
+    verticalAlign: 'top',
+    paddingTop: 8,
+  },
+}))(TableCell);
+CLHeaderTableCell.displayName = 'CLHeaderTableCell';
+
+export const CLTableCell = withStyles({
   root: {
     borderBottom: 0,
     textTransform: 'none',
@@ -62,7 +77,7 @@ export const CLTableCell = withStyles(theme => ({
     verticalAlign: 'top',
     paddingTop: 8,
   },
-}))(TableCell);
+})(TableCell);
 CLTableCell.displayName = 'CLTableCell';
 
 export const CLNumberCell = withStyles({
@@ -173,7 +188,7 @@ export const ButtonText = styled(FontOpenSans)<ButtonTextProps>`
 ButtonText.displayName = 'ButtonText';
 
 export const SomethingWentWrongText = styled(FontOpenSans)`
-  color: ${props => props.theme.colors.errorColor};
+  color: ${HrmTheme.colors.errorColor};
   font-size: 20px;
 `;
 SomethingWentWrongText.displayName = 'SomethingWentWrongText';

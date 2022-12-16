@@ -1,11 +1,12 @@
 // TODO: complete this type
 import React, { useState } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { connect, ConnectedProps, useDispatch } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 
+import { CustomITask } from '../../types/types';
 import ContactDetailsHome from './ContactDetailsHome';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
+import { configurationBase, contactFormsBase, namespace, RootState, routingBase } from '../../states';
 import EditContactSection from './EditContactSection';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { DetailsContainer } from '../../styles/search';
@@ -25,7 +26,14 @@ import {
   transformContactFormValues,
   externalReportDefinition,
   externalReportLayoutDefinition,
+  transformExternalReportValues,
 } from '../../services/ContactService';
+import * as routingActions from '../../states/routing/actions';
+import ExternalReport from './ExternalReport';
+
+export type SubRouteProps = {
+  [key: string]: string | boolean | {};
+};
 
 type OwnProps = {
   contactId: string;
@@ -33,6 +41,7 @@ type OwnProps = {
   handleOpenConnectDialog?: (event: any) => void;
   enableEditing?: boolean;
   showActionIcons?: boolean;
+  taskSid?: CustomITask['taskSid'];
 };
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
@@ -50,6 +59,7 @@ const ContactDetails: React.FC<Props> = ({
   setExternalReport,
   enableEditing = true,
   updateContactDraft,
+  taskSid,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const version = savedContact?.details.definitionVersion;
@@ -103,7 +113,13 @@ const ContactDetails: React.FC<Props> = ({
   );
 
   const addExternalReportSectionElement = (section: ExternalReportSectionFormApi, formPath: 'externalReport') => (
-    <EditContactSection context={context} contactId={contactId} tabPath="externalReport">
+    <EditContactSection
+      context={context}
+      contactId={contactId}
+      externalReportSectionForm={section}
+      tabPath="externalReport"
+      externalReport={addExternalReport}
+    >
       <ContactDetailsSectionForm
         tabPath="externalReport"
         definition={externalReportDefinition.reportType}
@@ -115,7 +131,7 @@ const ContactDetails: React.FC<Props> = ({
           dispatch(
             updateContactDraft(contactId, {
               details: {
-                [formPath]: transformContactFormValues(values.externalReport, externalReportDefinition.reportType),
+                [formPath]: transformExternalReportValues(values.externalReport, externalReportDefinition.reportType),
               },
             }),
           )}
@@ -144,7 +160,7 @@ const ContactDetails: React.FC<Props> = ({
       );
     }
 
-    const { callerInformation, caseInformation, childInformation, externalReport } = draftContact.details;
+    const { callerInformation, caseInformation, childInformation, externalReport, csamReport } = draftContact.details;
 
     if (childInformation)
       return editContactSectionElement(contactDetailsSectionFormApi.CHILD_INFORMATION, 'childInformation');
@@ -152,16 +168,17 @@ const ContactDetails: React.FC<Props> = ({
       return editContactSectionElement(contactDetailsSectionFormApi.CALLER_INFORMATION, 'callerInformation');
     if (caseInformation)
       return editContactSectionElement(contactDetailsSectionFormApi.CASE_INFORMATION, 'caseInformation');
-  }
 
-  if (addExternalReport.includes('externalReport')) {
-    console.log('externalReport is here', addExternalReport);
+    if (externalReport) {
+      setExternalReport(externalReport.reportType as string, taskSid);
+      return addExternalReportSectionElement(contactDetailsSectionFormApi.EXTERNAL_REPORT, 'externalReport');
+    }
+
+    if (csamReport && addExternalReport !== null) {
+      return <ExternalReport taskSid={taskSid} externalReport={addExternalReport} />;
+    }
     return addExternalReportSectionElement(contactDetailsSectionFormApi.EXTERNAL_REPORT, 'externalReport');
   }
-
-  console.log('addExternalReport here', contactId);
-
-  // eslint-disable-next-line multiline-comment-style
 
   return (
     <ContactDetailsHome

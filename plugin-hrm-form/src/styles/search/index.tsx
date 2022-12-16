@@ -1,7 +1,6 @@
 import React from 'react';
-import styled from 'react-emotion';
 import { ButtonBase, Paper, Button, FormControlLabel, Switch, Collapse, withStyles } from '@material-ui/core';
-import { Tabs, TabsProps } from '@twilio/flex-ui';
+import { Tabs, TabsProps, styled } from '@twilio/flex-ui';
 import Folder from '@material-ui/icons/Folder';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import Link from '@material-ui/icons/Link';
@@ -9,6 +8,7 @@ import { ButtonProps } from '@material-ui/core/Button';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
 
 import { Flex, Row, FontOpenSans, BottomButtonBar, TabbedFormsContainer } from '../HrmStyles';
+import HrmTheme from '../HrmTheme';
 
 // CaseViewer Styles
 export const CaseWrapper = styled('div')`
@@ -132,7 +132,7 @@ export const StyledLink = styled(({ onClick, ...rest }: StyledLinkProps) => (
   &&:hover {
     text-decoration: ${props => (props.underline ? 'underline' : 'none')};
     text-decoration-color: ${props => (props.underline ? '#1874e1' : 'transparent')};
-    background-color: ${props => (props.underline ? 'transparent' : props.theme.colors.hyperlinkHoverBackgroundColor)};
+    background-color: ${props => (props.underline ? 'transparent' : HrmTheme.colors.hyperlinkHoverBackgroundColor)};
   }
 
   &&:focus {
@@ -189,7 +189,7 @@ export const PrevNameText = styled(FontOpenSans)`
   color: #182b33;
 `;
 
-export const StyledTabs = styled((props: TabsProps) => <Tabs {...props} />)`
+export const StyledTabs = styled((props: Partial<TabsProps> & { children?: any }) => <Tabs {...props} />)`
   .Twilio-TabHeader-StateIndicator-Active {
     background-color: black;
   }
@@ -213,12 +213,14 @@ StyledTabLabel.displayName = 'StyledTabLabel';
 
 export const StyledResultsText = styled('div')`
   display: flex;
+  padding-right: 5px;
 `;
 StyledResultsText.displayName = 'StyledResultsText';
 
 export const StyledFolderIcon = styled(Folder)`
-  font-size: medium !important;
-  padding-right: 10px;
+  font-size: 18px !important;
+  padding: '-1px 10px 0 6px';
+  margin-right: 10px;
 `;
 
 StyledFolderIcon.displayName = 'StyledFolderIcon';
@@ -288,11 +290,11 @@ export const TagsWrapper = styled(Flex)`
 
 export const TagText = styled(FontOpenSans)`
   display: inline-block;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
   line-height: 13px;
-  opacity: 0.65;
-  color: #192b33e8;
+  opacity: 1;
+  color: ${HrmTheme.colors.categoryTextColor};
 `;
 
 export const TagMiddleDot = styled('div')<ColorProps>`
@@ -355,13 +357,14 @@ export const SectionActionButton = styled('button')<SectionActionButton>`
     outline-color: black;
   }
 `;
+SectionActionButton.displayName = 'SectionActionButton';
 
 type CollapseProps = {
   expanded: boolean;
 };
 
 export const SectionCollapse = styled(
-  ({ expanded, ...rest }: CollapseProps & { timeout?: TransitionProps['timeout'] | 'auto' }) => (
+  ({ expanded, ...rest }: CollapseProps & { timeout?: TransitionProps['timeout'] | 'auto'; children?: any }) => (
     <Collapse in={expanded} {...rest} />
   ),
 )<CollapseProps>`
@@ -436,7 +439,7 @@ const containerLeftRightMargin = '5px';
 
 export const ResultsHeader = styled('div')`
   display: flex;
-  padding: 32px 20px 0px 20px;
+  padding: 32px 20px 60px 20px;
   flex-direction: column;
   flex-wrap: nowrap;
   background-color: #ffffff;
@@ -453,7 +456,8 @@ export const ResultsHeader = styled('div')`
 export const ListContainer = styled(BottomButtonBar)`
   flex-basis: 0;
   flex-grow: 1;
-  padding: 0;
+  padding: 10px;
+  margin-top: 2px;
 `;
 
 export const ScrollableList = styled('div')`
@@ -509,26 +513,8 @@ export const StyledCaseResultsHeader = styled('div')`
 StyledCaseResultsHeader.displayName = 'StyledCaseResultsHeader';
 
 export const StyledSwitch = withStyles({
-  icon: {
-    border: 'none',
-    width: '18px',
-    height: '18px',
-  },
-  switchBase: {
-    transform: 'translateX(6px)',
-  },
-  checked: {
-    transform: 'translateX(17px)',
-  },
-  bar: {
-    width: '40px',
-    height: '22px',
-    marginTop: '-11px',
-    borderRadius: '13px',
-    backgroundColor: '#D2DBE7',
-    '$checked$checked + &': {
-      backgroundColor: '#1D2B32',
-    },
+  thumb: {
+    color: '#000',
   },
 })(Switch);
 StyledSwitch.displayName = 'StyledSwitch';
@@ -549,7 +535,7 @@ SearchTitle.displayName = 'SearchTitle';
 export const StandaloneSearchContainer = styled(TabbedFormsContainer)`
   max-width: 800px;
   width: 100%;
-  background-color: ${props => props.theme.colors.base2};
+  background-color: ${HrmTheme.colors.base2};
 `;
 StandaloneSearchContainer.displayName = 'StandaloneSearchContainer';
 

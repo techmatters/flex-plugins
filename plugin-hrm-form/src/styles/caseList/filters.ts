@@ -1,6 +1,7 @@
-import styled from 'react-emotion';
+import { styled } from '@twilio/flex-ui';
 
 import { Flex } from '../HrmStyles';
+import HrmTheme from '../HrmTheme';
 
 export const FiltersContainer = styled(Flex)`
   align-items: center;
@@ -206,14 +207,14 @@ export const MultiSelectSearchInput = styled('input')`
   box-sizing: border-box;
   width: 100%;
   height: 40px;
-  background-color: ${props => props.theme.colors.inputBackgroundColor};
+  background-color: ${HrmTheme.colors.inputBackgroundColor};
   color: #192b33;
   border: none;
   box-shadow: none;
   padding: 0 34px;
 
   &:focus {
-    background-color: ${props => props.theme.colors.inputBackgroundColor};
+    background-color: ${HrmTheme.colors.inputBackgroundColor};
     box-shadow: none;
     border: 1px solid rgba(0, 59, 129, 0.37);
   }
@@ -243,7 +244,7 @@ export const FiltersApplyButton = styled('button')`
   }
 
   &:disabled {
-    background-color: ${props => props.theme.colors.disabledColor};
+    background-color: ${HrmTheme.colors.disabledColor};
     &:hover {
       cursor: not-allowed;
     }
@@ -261,7 +262,7 @@ export const FiltersClearButton = styled(FiltersApplyButton)`
 
   &:disabled {
     background-color: transparent;
-    color: ${props => props.theme.colors.disabledColor};
+    color: ${HrmTheme.colors.disabledColor};
   }
 `;
 FiltersClearButton.displayName = 'FiltersClearButton';
@@ -281,6 +282,7 @@ export const FiltersCheckbox = styled('input')`
     left: 7px;
     transform: translate(-50%, -50%);
     content: '';
+    box-sizing: content-box;
   }
   &[type='checkbox']::before {
     width: 12px;
@@ -301,7 +303,8 @@ export const FiltersCheckbox = styled('input')`
   &[type='checkbox']:checked::after {
     font-family: 'Font Awesome 5 Free';
     font-size: 11px;
-    content: '\f00c';
+    content: '\\f00c';
+    font-weight: 900;
     color: #ffffff;
   }
   &[type='checkbox']:indeterminate::after {

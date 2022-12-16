@@ -25,7 +25,7 @@ import {
   InformationObject,
   isOfflineContactTask,
   isTwilioTask,
-  SearchContact,
+  SearchAPIContact,
   SearchContactResult,
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
@@ -50,7 +50,14 @@ export const unNestInformationObject = (
 ): TaskEntry['childInformation'] | TaskEntry['callerInformation'] =>
   def.reduce((acc, e) => ({ ...acc, [e.name]: unNestInformation(e, obj) }), {});
 
-export async function searchContacts(searchParams, limit, offset): Promise<SearchContactResult> {
+export async function searchContacts(
+  searchParams,
+  limit,
+  offset,
+): Promise<{
+  count: number;
+  contacts: SearchAPIContact[];
+}> {
   const queryParams = getQueryParams({ limit, offset });
 
   const options = {
@@ -109,7 +116,6 @@ export type ExternalReportLayoutProps = {
   };
 };
 
-// eslint-disable-next-line import/no-unused-modules
 export const externalReportDefinition: ExternalReportFormProps = {
   reportType: [
     {
@@ -117,14 +123,13 @@ export const externalReportDefinition: ExternalReportFormProps = {
       label: 'Select CSAM report type',
       type: 'radio-input',
       options: [
-        { value: 'childReport', label: 'Create link for child' },
-        { value: 'counselorReport', label: 'Report as counselor' },
+        { value: 'child-form', label: 'Create link for child' },
+        { value: 'counsellor-form', label: 'Report as counselor' },
       ],
     },
   ],
 };
 
-// eslint-disable-next-line import/no-unused-modules
 export const externalReportLayoutDefinition: ExternalReportLayoutProps = {
   layout: { splitFormAt: 2 },
 };
@@ -153,6 +158,15 @@ export const transformContactFormValues = (
   return nestName(<{ firstName: string; lastName: string }>transformedValue);
 };
 
+export const transformExternalReportValues = (
+  formValues: Record<string, string | boolean>,
+  formDefinition: FormDefinition,
+) => {
+  // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
+  const transformedValue = transformValues(formDefinition)(formValues);
+  return transformedValue;
+};
+
 /**
  * Transforms the form to be saved as the backend expects it
  * VisibleForTesting
@@ -170,6 +184,7 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
     caseInformation: transformValues(CaseInformationTab)(form.caseInformation),
     childInformation: transformValues(ChildInformationTab)(form.childInformation),
     externalReport: transformValues(externalReportDefinition.reportType)(form.externalReport),
+    csamReport: {},
   };
 
   // @ts-ignore
@@ -192,6 +207,7 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
     contactlessTask,
     conversationMedia,
     externalReport: { ...transformedValues.externalReport },
+    csamReport: {},
   };
 }
 

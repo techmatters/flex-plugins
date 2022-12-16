@@ -31,17 +31,6 @@ const CSAMReportButton: React.FC<Props> = ({
     setDropdown(previous => !previous);
   };
 
-  /* This useEffect handles closing the dropdown when a user clicks outside the dropdown */
-  useEffect(() => {
-    const closeDropdown = e => {
-      if (e.path[0] !== buttonRef.current) {
-        setDropdown(false);
-      }
-    };
-    document.body.addEventListener('click', closeDropdown);
-    return () => document.body.removeEventListener('click', closeDropdown);
-  }, []);
-
   return (
     <>
       <Row>

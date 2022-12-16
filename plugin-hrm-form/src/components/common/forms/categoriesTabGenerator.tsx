@@ -8,7 +8,7 @@ import ListIcon from '@material-ui/icons/List';
 import { Template } from '@twilio/flex-ui';
 import { CategoriesDefinition } from 'hrm-form-definitions';
 
-import Section from '../../Section';
+import Section from './Section';
 import {
   Container,
   CategoryTitle,
@@ -50,7 +50,7 @@ export const createSubcategoryCheckbox = (
                 name="categories"
                 value={path}
                 onChange={updateCallback}
-                innerRef={register({ required: true, minLength: 1, maxLength: 3 })}
+                ref={register({ required: true, minLength: 1, maxLength: 3 })}
                 disabled={disabled}
                 color={lighterColor}
               />

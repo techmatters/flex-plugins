@@ -120,9 +120,9 @@ const CategorySection: React.FC<Props> = ({
             checked={categoryChecked}
             onClick={handleClickCategory}
             onChange={() => null}
-            innerRef={innerRef => {
-              if (innerRef) {
-                innerRef.indeterminate = categoryIndeterminate;
+            ref={ref => {
+              if (ref) {
+                ref.indeterminate = categoryIndeterminate;
               }
             }}
           />
@@ -151,7 +151,7 @@ const CategorySection: React.FC<Props> = ({
                   name={name}
                   type="checkbox"
                   defaultChecked={subcategory.checked}
-                  innerRef={register}
+                  ref={register}
                 />
                 <MultiSelectCheckboxLabel>{highlightLabel(subcategory.label)}</MultiSelectCheckboxLabel>
               </FormLabel>

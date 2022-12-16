@@ -73,7 +73,11 @@ type SetEditingContact = {
 
 type CheckButtonDataAction = { type: typeof SET_CALL_TYPE; isCallTypeCaller: boolean };
 
-type externalReportAction = { type: typeof ADD_EXTERNAL_REPORT; externalReport: string };
+type externalReportAction = {
+  type: typeof ADD_EXTERNAL_REPORT;
+  externalReport: string;
+  taskId: string;
+};
 
 export type ContactsActionType =
   | UpdateFormAction

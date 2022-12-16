@@ -1,9 +1,13 @@
 import React from 'react';
-import styled from 'react-emotion';
-import Dialog, { DialogProps } from '@material-ui/core/Dialog';
+import '@emotion/react';
+import Dialog from '@material-ui/core/Dialog';
 import ClearIcon from '@material-ui/icons/Clear';
 import { IconButton } from '@material-ui/core';
-import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
+import { styled } from '@twilio/flex-ui';
+import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
+
+import { Button } from '../../components/twilioComponentWorkaround';
+import HrmTheme from '../HrmTheme';
 
 export const Container = styled('div')`
   width: 300px;
@@ -34,6 +38,7 @@ export const DataCallTypeButton = styled(Button)`
   color: #1d2e36;
   border-radius: 4px;
   background-color: #d1e3f6;
+  border: none;
 
   &:hover {
     background-color: #7fa3cb;
@@ -65,6 +70,7 @@ export const NonDataCallTypeButton = styled(Button)<NonDataCallTypeButtonProps>`
   color: #1d2e36;
   border-radius: 4px;
   background-color: #ecedf1;
+  border: none;
   ${props => props.marginRight && 'margin-right: 20px;'}
 
   &:hover {
@@ -76,7 +82,7 @@ export const NonDataCallTypeButton = styled(Button)<NonDataCallTypeButtonProps>`
   }
 `;
 
-export const CloseTaskDialog = styled<DialogProps>(props => <Dialog {...props} classes={{ paper: 'paper' }} />)`
+export const CloseTaskDialog = styled(props => <Dialog {...props} classes={{ paper: 'paper' }} />)`
   && .paper {
     width: 360px;
   }
@@ -99,10 +105,25 @@ type ConfirmButtonProps = {
   disabled: boolean;
 };
 
-export const ConfirmButton = styled(Button)<ConfirmButtonProps>`
+const CloseDialogButton = styled(Button)`
+  padding: 0px 16px;
+  border: none;
+  outline: none;
+  align-self: center;
+  height: 28px;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  border-radius: 100px;
   text-transform: uppercase;
-  color: ${props => props.theme.colors.declineTextColor};
-  ${p => getBackgroundWithHoverCSS(p.theme.colors.declineColor, true, false, p.disabled)};
+`;
+
+export const ConfirmButton = styled(CloseDialogButton)<ConfirmButtonProps>`
+  text-transform: uppercase;
+  color: ${props => HrmTheme.colors.declineTextColor};
+  background: linear-gradient(to top, ${HrmTheme.colors.declineColor}, ${HrmTheme.colors.declineColor});
+  ${p => getBackgroundWithHoverCSS(HrmTheme.colors.declineColor, true, false, p.disabled)};
 
   &:focus {
     outline-style: auto;
@@ -110,12 +131,14 @@ export const ConfirmButton = styled(Button)<ConfirmButtonProps>`
   }
 `;
 
-export const CancelButton = styled(Button)`
+export const CancelButton = styled(CloseDialogButton)`
   text-transform: uppercase;
   margin-left: 30px;
+  color: rgb(0, 0, 0);
+  background: linear-gradient(to top, ${HrmTheme.colors.buttonTextColor}, ${HrmTheme.colors.buttonTextColor});
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: ${HrmTheme.colors.buttonHoverColor};
     background-blend-mode: color;
   }
 
@@ -130,7 +153,7 @@ export const CloseButton = styled(props => (
   </IconButton>
 ))`
   && .label {
-    color: ${props => props.theme.colors.defaultButtonColor};
+    color: ${HrmTheme.colors.defaultButtonColor};
   }
 
   &:hover {

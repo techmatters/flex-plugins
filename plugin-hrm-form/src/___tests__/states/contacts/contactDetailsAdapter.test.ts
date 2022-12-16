@@ -3,7 +3,7 @@ import {
   retrieveCategories,
   searchContactToHrmServiceContact,
 } from '../../../states/contacts/contactDetailsAdapter';
-import { SearchContact } from '../../../types/types';
+import { SearchAPIContact } from '../../../types/types';
 
 describe('retrieveCategories', () => {
   test('falsy input, empty object output', () => expect(retrieveCategories(null)).toStrictEqual({}));
@@ -39,7 +39,7 @@ describe('retrieveCategories', () => {
 });
 
 describe('hrmServiceContactToSearchContact', () => {
-  const emptyOverview = {
+  const emptyOverview: SearchAPIContact['overview'] = {
     helpline: undefined,
     dateTime: undefined,
     name: 'undefined undefined',
@@ -52,6 +52,8 @@ describe('hrmServiceContactToSearchContact', () => {
     conversationDuration: undefined,
     createdBy: undefined,
     taskId: undefined,
+    updatedBy: undefined,
+    updatedAt: undefined,
   };
 
   test('input rawJson.caseInformation.categories are converted using retrieveCategories and added to overview', () => {
@@ -251,9 +253,10 @@ describe('hrmServiceContactToSearchContact', () => {
 });
 
 describe('searchContactToHrmServiceContact', () => {
-  const baseSearchContact: SearchContact = {
+  const baseSearchContact: SearchAPIContact = {
     contactId: '1337',
     overview: {
+      taskId: 'A task',
       helpline: 'A helpline',
       conversationDuration: 14,
       createdBy: 'bob',
@@ -265,6 +268,8 @@ describe('searchContactToHrmServiceContact', () => {
       name: 'Lo Ballantyne',
       categories: {},
       notes: 'Hello',
+      updatedAt: 'Yesterday',
+      updatedBy: 'WK_bob',
     },
     csamReports: [
       {
@@ -280,6 +285,7 @@ describe('searchContactToHrmServiceContact', () => {
       callerInformation: { name: { firstName: 'Lo', lastName: 'Ballantyne' } },
       caseInformation: { categories: {} },
       contactlessTask: {},
+      conversationMedia: [],
     },
   };
 
@@ -293,6 +299,8 @@ describe('searchContactToHrmServiceContact', () => {
       twilioWorkerId: 'WK_roberta',
       number: '1234 4321',
       timeOfContact: 'Last Tuesday',
+      updatedAt: 'Yesterday',
+      updatedBy: 'WK_bob',
     });
   });
 

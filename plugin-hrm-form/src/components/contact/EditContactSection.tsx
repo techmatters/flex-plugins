@@ -1,4 +1,4 @@
-import { connect, ConnectedProps } from 'react-redux';
+import { connect, ConnectedProps, useDispatch } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Template } from '@twilio/flex-ui';
@@ -6,27 +6,45 @@ import { CircularProgress } from '@material-ui/core';
 import _ from 'lodash';
 import { Close } from '@material-ui/icons';
 
-import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
-import { updateContactInHrm } from '../../services/ContactService';
+import { configurationBase, contactFormsBase, namespace, RootState, routingBase } from '../../states';
+import { externalReportDefinition, updateContactInHrm } from '../../services/ContactService';
 import { Box, StyledNextStepButton, BottomButtonBar, Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
 import { CaseActionTitle, EditContactContainer } from '../../styles/case';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { getConfig } from '../../HrmFormPlugin';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-import { ContactDetailsSectionFormApi, IssueCategorizationSectionFormApi } from './contactDetailsSectionFormApi';
-import { clearDraft, refreshRawContact } from '../../states/contacts/existingContacts';
+import {
+  ContactDetailsSectionFormApi,
+  IssueCategorizationSectionFormApi,
+  ExternalReportSectionFormApi,
+  ContactFormValues,
+} from './contactDetailsSectionFormApi';
+import {
+  clearDraft,
+  refreshRawContact,
+  ContactDetailsRoute,
+  createDraft,
+} from '../../states/contacts/existingContacts';
 import CloseCaseDialog from '../case/CloseCaseDialog';
 import * as t from '../../states/contacts/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
 // eslint-disable-next-line import/no-useless-path-segments
 import ActionHeader from '../../components/case/ActionHeader';
+import { SubRouteProps } from './ContactDetails';
+import * as routingActions from '../../states/routing/actions';
+import { CustomITask } from '../../types/types';
+import * as actions from '../../states/csam-report/actions';
+import { counselorKeys } from '../CSAMReport/CSAMReportFormDefinition';
 
 type OwnProps = {
   context: DetailsContext;
   contactId?: string;
   contactDetailsSectionForm?: ContactDetailsSectionFormApi | IssueCategorizationSectionFormApi;
+  externalReportSectionForm?: ExternalReportSectionFormApi;
   children?: React.ReactNode;
   tabPath?: keyof TaskEntry;
+  externalReport?: string;
+  taskSid?: CustomITask['taskSid'];
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -38,12 +56,19 @@ const EditContactSection: React.FC<Props> = ({
   definitionVersions,
   refreshContact,
   contactDetailsSectionForm,
+  externalReportSectionForm,
   setEditContactPageOpen,
   setEditContactPageClosed,
   tabPath,
+  externalReport,
   children,
   clearContactDraft,
   counselorsHash,
+  changeRoute,
+  taskSid,
+  routing,
+  createContactDraft,
+  updateFormAction,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const methods = useForm({
@@ -56,9 +81,12 @@ const EditContactSection: React.FC<Props> = ({
 
   const definitionVersion = definitionVersions[version];
 
+  const navigate = (route: ContactDetailsRoute) => createContactDraft(savedContact.contactId, route);
+
   const [isSubmitting, setSubmitting] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [initialFormValues, setInitialFormValues] = useState({});
+  const dispatch = useDispatch();
 
   const currentCounselor = React.useMemo(() => {
     const { workerSid } = getConfig();
@@ -77,6 +105,8 @@ const EditContactSection: React.FC<Props> = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const isTouched = externalReport === null;
 
   if (!savedContact || !definitionVersion) return null;
 
@@ -97,17 +127,19 @@ const EditContactSection: React.FC<Props> = ({
     }
   };
 
+  const onGetExternalReportType = () => {
+    updateFormAction(counselorKeys, taskSid);
+    navigate(ContactDetailsRoute.CSAM_REPORT);
+  };
+
   const onError = recordingErrorHandler('Edit Contact Form', () => {
     const { strings } = getConfig();
     window.alert(strings['Error-Form']);
   });
 
-  console.log('contactId is here', contactId);
-
   const checkForEdits = () => {
     if (_.isEqual(methods.getValues(), initialFormValues)) {
       clearContactDraft(contactId);
-      t.setExternalReport('');
     } else {
       setOpenDialog(true);
     }
@@ -123,16 +155,17 @@ const EditContactSection: React.FC<Props> = ({
       return strings['Contact-EditCategories'];
     } else if (tabPath === 'caseInformation') {
       return strings['Contact-EditSummary'];
-    } else if (tabPath === 'externalReport') {
-      return strings['Contact-ExternalReport'];
     }
     return '';
   };
+
+  const onSubmitForm = methods.handleSubmit(onSubmitValidForm, onError);
+
   return (
     <EditContactContainer>
       <FormProvider {...methods}>
-        <Row style={{ margin: '30px' }}>
-          {tabPath === 'externalReport' && (
+        {tabPath === 'externalReport' && (
+          <Box style={{ margin: '20px 20px -60px 26px' }}>
             <ActionHeader
               added={new Date()}
               codeTemplate="CSAMCLC-ActionHeaderAdded"
@@ -141,7 +174,9 @@ const EditContactSection: React.FC<Props> = ({
               addingCounsellor={currentCounselor}
               space={`\xa0\xa0`}
             />
-          )}
+          </Box>
+        )}
+        <Row style={{ margin: '30px' }}>
           {tabPath !== 'externalReport' && (
             <>
               <CaseActionTitle>
@@ -178,7 +213,6 @@ const EditContactSection: React.FC<Props> = ({
               setDialog={() => setOpenDialog(false)}
               handleDontSaveClose={() => {
                 clearContactDraft(contactId);
-                t.setExternalReport('');
               }}
               handleSaveUpdate={methods.handleSubmit(onSubmitValidForm, onError)}
             />
@@ -186,12 +220,16 @@ const EditContactSection: React.FC<Props> = ({
           <Box marginRight="15px">
             <StyledNextStepButton
               roundCorners={true}
-              onClick={methods.handleSubmit(onSubmitValidForm, onError)}
-              disabled={isSubmitting}
+              onClick={tabPath === 'externalReport' ? onGetExternalReportType : onSubmitForm}
+              disabled={tabPath === 'externalReport' ? isTouched : isSubmitting}
               data-fs-id="Contact-SaveContact-Button"
               data-testid="EditContact-SaveContact-Button"
             >
-              {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveContact" />}
+              <span style={{ visibility: isSubmitting ? 'hidden' : 'inherit' }}>
+                {/* eslint-disable-next-line react/jsx-max-depth */}
+                <Template code={tabPath === 'externalReport' ? 'BottomBar-Next' : 'BottomBar-SaveContact'} />
+              </span>
+              {isSubmitting ? <CircularProgress size={12} style={{ position: 'absolute' }} /> : null}
             </StyledNextStepButton>
           </Box>
         </BottomButtonBar>
@@ -206,6 +244,9 @@ const mapDispatchToProps = {
   setEditContactPageOpen: t.setEditContactPageOpen,
   setEditContactPageClosed: t.setEditContactPageClosed,
   clearContactDraft: clearDraft,
+  changeRoute: routingActions.changeRoute,
+  createContactDraft: createDraft,
+  updateFormAction: actions.updateFormAction,
 };
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
@@ -213,6 +254,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   counselorsHash: state[namespace][configurationBase].counselors.hash,
   savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
   draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
+  routing: state[namespace][routingBase].tasks[ownProps.taskSid],
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

@@ -1,0 +1,19 @@
+# This is a basic workflow to publish a Twilio Flex-plugins with Github Actions
+
+name: Flex 2 Staging release
+
+# Controls when the action will run.
+on:
+  workflow_dispatch:
+    inputs:
+      changelog:
+        description: Release Changelog - Add a comment about the changes to be included in this release.
+        required: true
+jobs:
+  deploy:
+    uses: ./.github/workflows/custom_helpline.yml
+    secrets: inherit
+    with:
+      helpline_code: F2
+      environment_code: STG
+      changelog: ${{ inputs.changelog }}

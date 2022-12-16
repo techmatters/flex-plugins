@@ -90,7 +90,7 @@ export const getInitialValue = (def: FormItemDefinition) => {
  * @param obj the object to which add a property related to the provided form item definition
  * @param def the provided form item definition
  */
-export const createStateItem = <T extends {}>(obj: T, def: FormItemDefinition) => ({
+export const createStateItem = <T extends {}>(obj: T, def: FormItemDefinition): T => ({
   ...obj,
   [def.name]: getInitialValue(def),
 });
@@ -152,7 +152,6 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
 ) => {
   const rules = getRules(def);
   const path = [...parents, def.name].join('.');
-  console.log('path path is here', path);
   const labelTextComponent = <Template code={`${def.label}`} className=".fullstory-unmask" />;
 
   switch (def.type) {
@@ -177,12 +176,12 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  innerRef={innerRef => {
+                  ref={ref => {
                     if (htmlElRef) {
-                      htmlElRef.current = innerRef;
+                      htmlElRef.current = ref;
                     }
 
-                    register(rules)(innerRef);
+                    register(rules)(ref);
                   }}
                   defaultValue={initialValue}
                   disabled={!isEnabled}
@@ -218,15 +217,15 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  innerRef={innerRef => {
+                  ref={ref => {
                     if (htmlElRef) {
-                      htmlElRef.current = innerRef;
+                      htmlElRef.current = ref;
                     }
 
                     register({
                       ...rules,
                       pattern: { value: /^[0-9]+$/g, message: 'This field only accepts numeric input.' },
-                    })(innerRef);
+                    })(ref);
                   }}
                   defaultValue={initialValue}
                   disabled={!isEnabled}
@@ -262,15 +261,15 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  innerRef={innerRef => {
+                  ref={ref => {
                     if (htmlElRef) {
-                      htmlElRef.current = innerRef;
+                      htmlElRef.current = ref;
                     }
 
                     register({
                       ...rules,
                       pattern: { value: /\S+@\S+\.\S+/, message: 'Entered value does not match email format' },
-                    })(innerRef);
+                    })(ref);
                   }}
                   defaultValue={initialValue}
                   disabled={!isEnabled}
@@ -310,7 +309,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                 {def.label && (
                   <Row>
                     {path.includes('externalReport') ? (
-                      <Box marginBottom="25px">
+                      <Box style={{ margin: '0 0 22px -5px' }}>
                         <BoldDescriptionText>
                           {labelTextComponent}
                           &nbsp;
@@ -328,7 +327,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                 {def.options.map(({ value, label }, index) => (
                   <Box
                     key={`${path}-${value}`}
-                    marginLeft={path.includes('externalReport') && '40px'}
+                    marginLeft={path.includes('externalReport') && '35px'}
                     marginBottom="15px"
                   >
                     <FormLabel htmlFor={`${path}-${value}`}>
@@ -340,13 +339,13 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                           type="radio"
                           value={value}
                           onChange={updateCallback}
-                          innerRef={innerRef => {
+                          ref={ref => {
                             // If autofocus is pertinent, focus first radio input
                             if (index === 0 && htmlElRef) {
-                              htmlElRef.current = innerRef;
+                              htmlElRef.current = ref;
                             }
 
-                            register(rules)(innerRef);
+                            register(rules)(ref);
                           }}
                           checked={currentValue === value}
                         />
@@ -454,16 +453,16 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                               value={value}
                               onChange={updateCallback}
                               tabIndex={optionsTabIndexes[index]}
-                              innerRef={innerRef => {
+                              ref={ref => {
                                 // If autofocus is pertinent, focus first checkbox
                                 if (index === 0 && htmlElRef) {
-                                  htmlElRef.current = innerRef;
+                                  htmlElRef.current = ref;
                                 }
 
                                 // Add ref to optionsRefs array
-                                optionsRefs.current[index] = innerRef;
+                                optionsRefs.current[index] = ref;
 
-                                register(rules)(innerRef);
+                                register(rules)(ref);
                               }}
                               defaultChecked={initialValue.includes(value)}
                               disabled={!isEnabled}
@@ -509,12 +508,12 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     aria-invalid={Boolean(error)}
                     aria-describedby={`${path}-error`}
                     onBlur={updateCallback}
-                    innerRef={innerRef => {
+                    ref={ref => {
                       if (htmlElRef) {
-                        htmlElRef.current = innerRef;
+                        htmlElRef.current = ref;
                       }
 
-                      register(rules)(innerRef);
+                      register(rules)(ref);
                     }}
                     defaultValue={initialValue}
                     disabled={!isEnabled}
@@ -585,12 +584,12 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     aria-invalid={Boolean(error)}
                     aria-describedby={`${path}-error`}
                     onBlur={updateCallback}
-                    innerRef={innerRef => {
+                    ref={ref => {
                       if (htmlElRef) {
-                        htmlElRef.current = innerRef;
+                        htmlElRef.current = ref;
                       }
 
-                      register({ validate })(innerRef);
+                      register({ validate })(ref);
                     }}
                     disabled={!isEnabled || disabled}
                     defaultValue={initialValue}
@@ -626,12 +625,12 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                       aria-invalid={Boolean(error)}
                       aria-describedby={`${path}-error`}
                       onChange={updateCallback}
-                      innerRef={innerRef => {
+                      ref={ref => {
                         if (htmlElRef) {
-                          htmlElRef.current = innerRef;
+                          htmlElRef.current = ref;
                         }
 
-                        register(rules)(innerRef);
+                        register(rules)(ref);
                       }}
                       defaultChecked={initialValue}
                       disabled={!isEnabled}
@@ -686,9 +685,9 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                         if (checked === true) setChecked(false);
                         if (checked === false) setChecked('mixed');
                       }}
-                      innerRef={innerRef => {
+                      ref={ref => {
                         if (htmlElRef) {
-                          htmlElRef.current = innerRef;
+                          htmlElRef.current = ref;
                         }
                       }}
                       disabled={!isEnabled}
@@ -728,12 +727,12 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  innerRef={innerRef => {
+                  ref={ref => {
                     if (htmlElRef) {
-                      htmlElRef.current = innerRef;
+                      htmlElRef.current = ref;
                     }
 
-                    register(rules)(innerRef);
+                    register(rules)(ref);
                   }}
                   rows={def.rows ? def.rows : 10}
                   width={def.width}
@@ -772,12 +771,12 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  innerRef={innerRef => {
+                  ref={ref => {
                     if (htmlElRef) {
-                      htmlElRef.current = innerRef;
+                      htmlElRef.current = ref;
                     }
 
-                    register(rules)(innerRef);
+                    register(rules)(ref);
                   }}
                   defaultValue={initialValue}
                   disabled={!isEnabled}
@@ -814,12 +813,12 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  innerRef={innerRef => {
+                  ref={ref => {
                     if (htmlElRef) {
-                      htmlElRef.current = innerRef;
+                      htmlElRef.current = ref;
                     }
 
-                    register(rules)(innerRef);
+                    register(rules)(ref);
                   }}
                   defaultValue={initialValue}
                   disabled={!isEnabled}

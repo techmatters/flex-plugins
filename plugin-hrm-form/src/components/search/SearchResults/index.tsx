@@ -9,7 +9,7 @@ import CasePreview from '../CasePreview';
 import {
   SearchContactResult,
   SearchCaseResult,
-  SearchContact,
+  SearchAPIContact,
   Case,
   CustomITask,
   standaloneTaskSid,
@@ -55,7 +55,7 @@ type OwnProps = {
   toggleNonDataContacts: () => void;
   toggleClosedCases: () => void;
   handleBack: () => void;
-  handleViewDetails: (contact: SearchContact) => void;
+  handleViewDetails: (contact: SearchAPIContact) => void;
   changeSearchPage: (SearchPagesType) => void;
   setConnectedCase: (currentCase: Case, taskSid: string) => void;
   currentPage: SearchPagesType;
@@ -80,7 +80,6 @@ const SearchResults: React.FC<Props> = ({
   changeSearchPage,
   setConnectedCase,
   currentPage,
-  showConnectIcon,
   counselorsHash,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -134,7 +133,12 @@ const SearchResults: React.FC<Props> = ({
         <SearchResultsBackButton text={<Template code="SearchResultsIndex-Back" />} handleBack={handleBack} />
         <Row style={{ justifyContent: 'center' }}>
           <div style={{ width: '300px' }}>
-            <StyledTabs selectedTabName={currentPage} onTabSelected={tabSelected}>
+            <StyledTabs
+              selectedTabName={currentPage}
+              onTabSelected={tabSelected}
+              alignment="left"
+              keepTabsMounted={false}
+            >
               <TwilioTab
                 key="SearchResultsIndex-Contacts"
                 label={<Template code="SearchResultsIndex-Contacts" />}
@@ -225,7 +229,14 @@ const SearchResults: React.FC<Props> = ({
                   )}
                 </StyledCount>
                 <StyledFormControlLabel
-                  control={<StyledSwitch checked={!onlyDataContacts} onChange={handleToggleNonDataContact} />}
+                  control={
+                    <StyledSwitch
+                      color="default"
+                      size="small"
+                      checked={!onlyDataContacts}
+                      onChange={handleToggleNonDataContact}
+                    />
+                  }
                   label={
                     <SwitchLabel>
                       <Template code="SearchResultsIndex-NonDataContacts" />
@@ -238,7 +249,6 @@ const SearchResults: React.FC<Props> = ({
                 contacts.length > 0 &&
                 contacts.map(contact => (
                   <ContactPreview
-                    showConnectIcon={showConnectIcon}
                     key={contact.contactId}
                     contact={contact}
                     handleViewDetails={() => handleViewDetails(contact)}
@@ -266,7 +276,14 @@ const SearchResults: React.FC<Props> = ({
                   )}{' '}
                 </StyledCount>
                 <StyledFormControlLabel
-                  control={<StyledSwitch checked={closedCases} onChange={handleToggleClosedCases} />}
+                  control={
+                    <StyledSwitch
+                      color="default"
+                      size="small"
+                      checked={closedCases}
+                      onChange={handleToggleClosedCases}
+                    />
+                  }
                   label={
                     <SwitchLabel>
                       <Template code="SearchResultsIndex-ClosedCases" />
@@ -307,12 +324,10 @@ const mapStateToProps = (state, ownProps) => {
   const searchContactsState = state[namespace][searchContactsBase];
   const taskId = ownProps.task.taskSid;
   const taskSearchState = searchContactsState.tasks[taskId];
-  const isStandaloneSearch = taskId === standaloneTaskSid;
   const { counselors } = state[namespace][configurationBase];
 
   return {
     currentPage: taskSearchState.currentPage,
-    showConnectIcon: !isStandaloneSearch,
     counselorsHash: counselors.hash,
   };
 };

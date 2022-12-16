@@ -17,7 +17,7 @@ import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute } from '../../states/routing/actions';
 import { TaskEntry, emptyCategories } from '../../states/contacts/reducer';
 import { TabbedFormSubroutes, NewCaseSubroutes } from '../../states/routing/types';
-import { CustomITask, isOfflineContactTask, SearchContact } from '../../types/types';
+import { CustomITask, isOfflineContactTask, SearchAPIContact } from '../../types/types';
 import { TabbedFormsContainer, TabbedFormTabContainer, Box, StyledTabs, Row } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import Search from '../search';
@@ -47,8 +47,6 @@ const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
       return <FormTab key="CategoriesTab" label="TabbedForms-CategoriesTab" error={errors.categories} />;
     case 'caseInformation':
       return <FormTab key="CaseInfoTab" label="TabbedForms-AddCaseInfoTab" error={errors.caseInformation} />;
-    case 'externalReport':
-      return <FormTab key="CaseInfoTab" label="TabbedForms-AddCaseInfoTab" error={errors.externalReport} />;
     default:
       return null;
   }
@@ -63,23 +61,15 @@ const mapTabsToIndex = (task: CustomITask, contactForm: TaskEntry): TabbedFormSu
     if (isNonDataCallType(contactForm.callType)) return ['contactlessTask'];
 
     return isCallerType
-      ? [
-          'search',
-          'contactlessTask',
-          'callerInformation',
-          'childInformation',
-          'categories',
-          'caseInformation',
-          'externalReport',
-        ]
-      : ['search', 'contactlessTask', 'childInformation', 'categories', 'caseInformation', 'externalReport'];
+      ? ['search', 'contactlessTask', 'callerInformation', 'childInformation', 'categories', 'caseInformation']
+      : ['search', 'contactlessTask', 'childInformation', 'categories', 'caseInformation'];
   }
 
   if (isEmptyCallType(contactForm.callType)) return ['search'];
 
   return isCallerType
-    ? ['search', 'callerInformation', 'childInformation', 'categories', 'caseInformation', 'externalReport']
-    : ['search', 'childInformation', 'categories', 'caseInformation', 'externalReport'];
+    ? ['search', 'callerInformation', 'childInformation', 'categories', 'caseInformation']
+    : ['search', 'childInformation', 'categories', 'caseInformation'];
 };
 
 type OwnProps = {
@@ -131,7 +121,7 @@ const TabbedForms: React.FC<Props> = ({
   const taskId = task.taskSid;
   const isCallerType = contactForm.callType === callTypes.caller;
 
-  const onSelectSearchResult = (searchResult: SearchContact) => {
+  const onSelectSearchResult = (searchResult: SearchAPIContact) => {
     const selectedIsCaller = searchResult.details.callType === callTypes.caller;
     if (isCallerType && selectedIsCaller && isCallTypeCaller) {
       const deTransformed = searchResultToContactForm(

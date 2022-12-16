@@ -2,6 +2,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { Close } from '@material-ui/icons';
+import { isEqual } from 'date-fns';
 
 import { Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
 import { CaseActionTitle, CaseActionDetailFont } from '../../styles/case';
@@ -31,6 +32,7 @@ const ActionHeader: React.FC<Props> = ({
   codeTemplate,
 }) => {
   // @ts-ignore
+
   return (
     <>
       <Row style={{ width: '100%' }}>
@@ -63,7 +65,7 @@ const ActionHeader: React.FC<Props> = ({
           </CaseActionDetailFont>
         )}
       </Row>
-      {updated && (
+      {updated && !isEqual(updated, added) && (
         <Row style={{ width: '100%' }}>
           <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderUpdated">
             <Template
