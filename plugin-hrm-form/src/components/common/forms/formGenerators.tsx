@@ -42,6 +42,7 @@ import {
   FormListboxMultiselectOptionsContainer,
   FormListboxMultiselectOption,
   FormListboxMultiselectOptionLabel,
+  ColumnarContent,
 } from '../../../styles/HrmStyles';
 import type { HTMLElementRef } from './types';
 import UploadIcon from '../icons/UploadIcon';
@@ -631,7 +632,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     />
                   </Box>
                   {labelTextComponent}
-                  {rules.required && <RequiredAsterisk />}
+                  {rules.required && path !== 'ageVerified' && <RequiredAsterisk />}
                 </FormCheckBoxWrapper>
                 {error && (
                   <FormError>
@@ -909,8 +910,12 @@ export const buildTwoColumnFormLayout = (formItems: JSX.Element[]) => {
 
   return (
     <TwoColumnLayout>
-      <ColumnarBlock>{l}</ColumnarBlock>
-      <ColumnarBlock>{r}</ColumnarBlock>
+      <ColumnarBlock>
+        <ColumnarContent>{l}</ColumnarContent>
+      </ColumnarBlock>
+      <ColumnarBlock>
+        <ColumnarContent>{r}</ColumnarContent>
+      </ColumnarBlock>
     </TwoColumnLayout>
   );
 };
