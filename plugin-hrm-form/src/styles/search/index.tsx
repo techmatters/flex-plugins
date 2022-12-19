@@ -135,7 +135,7 @@ export const SilentText = styled('div')`
 
 export const PreviewHeaderText = styled(FontOpenSans)`
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 14px;
   color: #192b33;
 `;
