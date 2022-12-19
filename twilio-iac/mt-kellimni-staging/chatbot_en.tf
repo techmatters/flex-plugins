@@ -306,7 +306,7 @@ assistant_sid = twilio_autopilot_assistants_v1.chatbot_en.sid
 actions = jsonencode({
   "actions": [
     {
-      "say": "${local.strings_en["Thank you! Please reach out again if you need anything. Goodbye."]}"
+      "say": "${local.strings_en["Thank you! Goodbye."]}"
     }
   ]
 })
