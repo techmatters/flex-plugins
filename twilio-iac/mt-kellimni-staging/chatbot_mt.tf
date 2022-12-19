@@ -306,7 +306,7 @@ assistant_sid = twilio_autopilot_assistants_v1.chatbot_mt.sid
 actions = jsonencode({
   "actions": [
     {
-      "say": "${local.strings_mt["Thank you! Please reach out again if you need anything. Goodbye."]}"
+      "say": "${local.strings_mt["Thank you! Goodbye."]}"
     }
   ]
 })
@@ -331,7 +331,7 @@ actions = jsonencode({
 			}
 		},
 		{
-			"say": "${local.strings_en["Welcome"]}"
+			"say": "${local.strings_mt["Welcome"]}"
 		},
 		{
 			"redirect": "task://survey_start"
