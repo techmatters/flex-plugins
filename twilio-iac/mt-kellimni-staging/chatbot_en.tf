@@ -331,7 +331,7 @@ actions = jsonencode({
 			}
 		},
 		{
-			"say": "Welcome to our helpline. To help us better serve you, please answer a few questions and then you will be transferred to a Support Mentor."
+			"say": "${local.strings_en["Welcome"]}"
 		},
 		{
 			"redirect": "task://survey_start"

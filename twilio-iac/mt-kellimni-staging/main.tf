@@ -53,6 +53,7 @@ locals {
 
   custom_channels=[]
   strings_en= jsondecode(file("${path.module}/../translations/${local.helpline_language}/strings_en.json"))
+  strings_mt= jsondecode(file("${path.module}/../translations/${local.helpline_language}/strings_mt.json"))
 
 }
 
