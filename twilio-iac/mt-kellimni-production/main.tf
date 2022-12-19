@@ -47,16 +47,13 @@ locals {
     "enable_transcripts": true
   }
   twilio_channels = {
-    #TODO: get fb messenger id
-    # "facebook" = {"contact_identity" = "messenger:103538615719253", "channel_type" ="facebook"  },
+    "facebook" = {"contact_identity" = "messenger:325981127456443", "channel_type" ="facebook"  },
     "webchat" = {"contact_identity" = "", "channel_type" = "web"  }
-    #TODO add whatsapp ids
-    # "whatsapp" = {"contact_identity" = "whatsapp:+12135834846", "channel_type" ="whatsapp" }
+    "whatsapp" = {"contact_identity" = "whatsapp:+15077097722", "channel_type" ="whatsapp" }
    }
 
   custom_channels = [
-    #TODO: enable instagram
-    # "instagram"
+    "instagram"
   ]
 }
 
