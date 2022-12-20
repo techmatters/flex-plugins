@@ -393,10 +393,9 @@ field_type_sid = twilio_autopilot_assistants_field_types_v1.chatbot_mt_Gender.si
 value = each.key
 language = "en-US"
 }
-
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "chatbot_mt_synonymsOf_Rather_not_say_Gender_group" {
 depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.chatbot_mt_values_Gender_group]
-for_each = toset(["x"])
+for_each = toset(["x","4"])
 assistant_sid = twilio_autopilot_assistants_v1.chatbot_mt.sid
 field_type_sid = twilio_autopilot_assistants_field_types_v1.chatbot_mt_Gender.sid
 synonym_of = "${local.strings_mt["Rather not say"]}"
@@ -408,7 +407,7 @@ language = "en-US"
 
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "chatbot_mt_synonymsOf_Female_Gender_group" {
 depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.chatbot_mt_values_Gender_group]
-for_each = toset(["${local.strings_mt["girl"]}"])
+for_each = toset(["${local.strings_mt["girl"]}","1"])
 assistant_sid = twilio_autopilot_assistants_v1.chatbot_mt.sid
 field_type_sid = twilio_autopilot_assistants_field_types_v1.chatbot_mt_Gender.sid
 synonym_of = "${local.strings_mt["Female"]}"
@@ -418,10 +417,20 @@ language = "en-US"
 
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "chatbot_mt_synonymsOf_Male_Gender_group" {
 depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.chatbot_mt_values_Gender_group]
-for_each = toset(["${local.strings_mt["boy"]}"])
+for_each = toset(["${local.strings_mt["boy"]}","2"])
 assistant_sid = twilio_autopilot_assistants_v1.chatbot_mt.sid
 field_type_sid = twilio_autopilot_assistants_field_types_v1.chatbot_mt_Gender.sid
 synonym_of = "${local.strings_mt["Male"]}"
+value = each.key
+language = "en-US"
+}
+
+resource "twilio_autopilot_assistants_field_types_field_values_v1" "chatbot_mt_synonymsOf_Others_Gender_group" {
+depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.chatbot_mt_values_Gender_group]
+for_each = toset(["3"])
+assistant_sid = twilio_autopilot_assistants_v1.chatbot_mt.sid
+field_type_sid = twilio_autopilot_assistants_field_types_v1.chatbot_mt_Gender.sid
+synonym_of = "${local.strings_mt["Others"]}"
 value = each.key
 language = "en-US"
 }

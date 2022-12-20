@@ -396,7 +396,7 @@ language = "en-US"
 
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "chatbot_en_synonymsOf_Rather_not_say_Gender_group" {
 depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.chatbot_en_values_Gender_group]
-for_each = toset(["x"])
+for_each = toset(["x","4"])
 assistant_sid = twilio_autopilot_assistants_v1.chatbot_en.sid
 field_type_sid = twilio_autopilot_assistants_field_types_v1.chatbot_en_Gender.sid
 synonym_of = "${local.strings_en["Rather not say"]}"
@@ -408,7 +408,7 @@ language = "en-US"
 
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "chatbot_en_synonymsOf_Female_Gender_group" {
 depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.chatbot_en_values_Gender_group]
-for_each = toset(["${local.strings_en["girl"]}"])
+for_each = toset(["${local.strings_en["girl"]}","1"])
 assistant_sid = twilio_autopilot_assistants_v1.chatbot_en.sid
 field_type_sid = twilio_autopilot_assistants_field_types_v1.chatbot_en_Gender.sid
 synonym_of = "${local.strings_en["Female"]}"
@@ -418,13 +418,24 @@ language = "en-US"
 
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "chatbot_en_synonymsOf_Male_Gender_group" {
 depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.chatbot_en_values_Gender_group]
-for_each = toset(["${local.strings_en["boy"]}"])
+for_each = toset(["${local.strings_en["boy"]}","2"])
 assistant_sid = twilio_autopilot_assistants_v1.chatbot_en.sid
 field_type_sid = twilio_autopilot_assistants_field_types_v1.chatbot_en_Gender.sid
 synonym_of = "${local.strings_en["Male"]}"
 value = each.key
 language = "en-US"
 }
+
+resource "twilio_autopilot_assistants_field_types_field_values_v1" "chatbot_en_synonymsOf_Others_Gender_group" {
+depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.chatbot_en_values_Gender_group]
+for_each = toset(["3"])
+assistant_sid = twilio_autopilot_assistants_v1.chatbot_en.sid
+field_type_sid = twilio_autopilot_assistants_field_types_v1.chatbot_en_Gender.sid
+synonym_of = "${local.strings_en["Others"]}"
+value = each.key
+language = "en-US"
+}
+
 
 resource "twilio_autopilot_assistants_field_types_v1" "chatbot_en_Age" {
 unique_name = "Age"

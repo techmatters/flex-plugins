@@ -1,4 +1,5 @@
 {
+  "Welcome": "Welcome to our helpline. To help us better serve you, please answer a few questions and then you will be transferred to a Support Mentor.",
   "Let's try one last time. Say it again please.": "Let's try one last time. Say it again please.",
   "I didn't get that. What did you say?" : "I didn't get that. What did you say?",
   "I still didn't catch that. Please repeat." : "I still didn't catch that. Please repeat.",
@@ -8,13 +9,13 @@
   "Sorry, I still didn't get that." : "Sorry, I still didn't get that.",
   "How old are you?":"How old are you?",
   "Sorry, I didn't understand that. Please respond with a number.": "Sorry, I didn't understand that. Please respond with a number.",
-  "What is your gender?":"What is your gender?",
+  "What is your gender?":"What is your gender? \n 1. Female \n 2. Male \n 3. Others \n 4. Rather not say ",
   "Sorry, I didn't understand that. Please try again.":"Sorry, I didn't understand that. Please try again.",
   "How are you feeling?":"How are you feeling? You can write the number or word of your choice. \n 1. Happy \n 2. Confused \n 3. Angry \n 4. Shocked \n 5. Scared \n 6. Uncertain ",
   "Do you accept our Terms and Conditions?" : "Do you accept our Terms and Conditions? \nhttps://tinyurl.com/2s3stmfy \n Please answer Yes or No",
   "Are you calling about yourself?":"Are you calling about yourself? Please answer Yes or No.",
   "We'll transfer you now, please hold for a support mentor.": "We'll transfer you now, please hold for a support mentor.",
-  "Thank you! Please reach out again if you need anything. Goodbye." : "Thank you! Please reach out again if you need anything. Goodbye.",
+  "Thank you! Goodbye." : "Thank you for contacting us. Feel free to come again, we are 24/7",
   "goodbye":"goodbye",
   "stop":"stop",
   "hello":"hello",
@@ -36,6 +37,4 @@
   "Shocked":"Shocked",
   "Scared":"Scared",
   "Uncertain": "Uncertain"
-
-
 }
