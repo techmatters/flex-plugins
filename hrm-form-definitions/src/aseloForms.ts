@@ -717,7 +717,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
       definitionFilePath: './tabbedForms/ChildInformationTab.json',
       items: {
         firstName: {
-          required: true,
+          required: false,
           default: {
             name: 'firstName',
             label: 'First Name',
@@ -726,7 +726,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         lastName: {
-          required: true,
+          required: false,
           default: {
             name: 'lastName',
             label: 'Last Name',

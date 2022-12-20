@@ -1,15 +1,5 @@
 [
   {
-    "name": "firstName",
-    "label": "ID",
-    "type": "input"
-  },
-  {
-    "name": "lastName",
-    "label": "ID (Placeholder)",
-    "type": "input"
-  },
-  {
     "name": "age",
     "label": "Age",
     "type": "select",
