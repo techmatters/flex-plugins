@@ -345,8 +345,8 @@
         "label": "70"
       },
       {
-        "value": ">70",
-        "label": ">70"
+        "value": "70+",
+        "label": "70+"
       }
     ],
     "required": {
