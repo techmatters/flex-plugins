@@ -332,7 +332,7 @@ assistant_sid = twilio_autopilot_assistants_v1.chatbot_mt.sid
 }
 
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "chatbot_mt_values_YesNo_group" {
-for_each = toset(["${local.strings_mt["No"]}","${local.strings_mt["Yes"]}"])
+for_each = toset(["${local.strings_en["No"]}","${local.strings_en["Yes"]}"])
 assistant_sid = twilio_autopilot_assistants_v1.chatbot_mt.sid
 field_type_sid = twilio_autopilot_assistants_field_types_v1.chatbot_mt_YesNo.sid
 value = each.key
@@ -341,20 +341,20 @@ language = "en-US"
 
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "chatbot_mt_synonymsOf_No_YesNo_group" {
 depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.chatbot_mt_values_YesNo_group]
-for_each = toset(["${local.strings_mt["Nope"]}"])
+for_each = toset(["${local.strings_mt["No"]}"])
 assistant_sid = twilio_autopilot_assistants_v1.chatbot_mt.sid
 field_type_sid = twilio_autopilot_assistants_field_types_v1.chatbot_mt_YesNo.sid
-synonym_of = "${local.strings_mt["No"]}"
+synonym_of = "${local.strings_en["No"]}"
 value = each.key
 language = "en-US"
 }
 
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "chatbot_mt_synonymsOf_Yes_YesNo_group" {
 depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.chatbot_mt_values_YesNo_group]
-for_each = toset(["${local.strings_mt["Yeah"]}"])
+for_each = toset(["${local.strings_mt["Yes"]}"])
 assistant_sid = twilio_autopilot_assistants_v1.chatbot_mt.sid
 field_type_sid = twilio_autopilot_assistants_field_types_v1.chatbot_mt_YesNo.sid
-synonym_of = "${local.strings_mt["Yes"]}"
+synonym_of = "${local.strings_en["Yes"]}"
 value = each.key
 language = "en-US"
 }
@@ -365,18 +365,18 @@ assistant_sid = twilio_autopilot_assistants_v1.chatbot_mt.sid
 }
 
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "chatbot_mt_values_Gender_group" {
-for_each = toset(["${local.strings_mt["Rather not say"]}","${local.strings_mt["Others"]}","${local.strings_mt["Female"]}","${local.strings_mt["Male"]}"])
+for_each = toset(["${local.strings_en["Unknown"]}","${local.strings_en["Other"]}","${local.strings_en["Female"]}","${local.strings_en["Male"]}"])
 assistant_sid = twilio_autopilot_assistants_v1.chatbot_mt.sid
 field_type_sid = twilio_autopilot_assistants_field_types_v1.chatbot_mt_Gender.sid
 value = each.key
 language = "en-US"
 }
-resource "twilio_autopilot_assistants_field_types_field_values_v1" "chatbot_mt_synonymsOf_Rather_not_say_Gender_group" {
+resource "twilio_autopilot_assistants_field_types_field_values_v1" "chatbot_mt_synonymsOf_Unknown_Gender_group" {
 depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.chatbot_mt_values_Gender_group]
-for_each = toset(["x","4"])
+for_each = toset(["x","4","${local.strings_mt["Rather not say"]}"])
 assistant_sid = twilio_autopilot_assistants_v1.chatbot_mt.sid
 field_type_sid = twilio_autopilot_assistants_field_types_v1.chatbot_mt_Gender.sid
-synonym_of = "${local.strings_mt["Rather not say"]}"
+synonym_of = "${local.strings_en["Unknown"]}"
 value = each.key
 language = "en-US"
 }
@@ -385,30 +385,30 @@ language = "en-US"
 
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "chatbot_mt_synonymsOf_Female_Gender_group" {
 depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.chatbot_mt_values_Gender_group]
-for_each = toset(["${local.strings_mt["girl"]}","1"])
+for_each = toset(["${local.strings_mt["girl"]}","1","${local.strings_mt["Female"]}"])
 assistant_sid = twilio_autopilot_assistants_v1.chatbot_mt.sid
 field_type_sid = twilio_autopilot_assistants_field_types_v1.chatbot_mt_Gender.sid
-synonym_of = "${local.strings_mt["Female"]}"
+synonym_of = "${local.strings_en["Female"]}"
 value = each.key
 language = "en-US"
 }
 
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "chatbot_mt_synonymsOf_Male_Gender_group" {
 depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.chatbot_mt_values_Gender_group]
-for_each = toset(["${local.strings_mt["boy"]}","2"])
+for_each = toset(["${local.strings_mt["boy"]}","2","${local.strings_mt["Male"]}"])
 assistant_sid = twilio_autopilot_assistants_v1.chatbot_mt.sid
 field_type_sid = twilio_autopilot_assistants_field_types_v1.chatbot_mt_Gender.sid
-synonym_of = "${local.strings_mt["Male"]}"
+synonym_of = "${local.strings_en["Male"]}"
 value = each.key
 language = "en-US"
 }
 
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "chatbot_mt_synonymsOf_Others_Gender_group" {
 depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.chatbot_mt_values_Gender_group]
-for_each = toset(["3"])
+for_each = toset(["3","${local.strings_mt["Other"]}"])
 assistant_sid = twilio_autopilot_assistants_v1.chatbot_mt.sid
 field_type_sid = twilio_autopilot_assistants_field_types_v1.chatbot_mt_Gender.sid
-synonym_of = "${local.strings_mt["Others"]}"
+synonym_of = "${local.strings_en["Other"]}"
 value = each.key
 language = "en-US"
 }

@@ -6,5 +6,5 @@
   "ignoreAgent": "",
   "language":"${task_language}",
   "transferTargetType": "",
-  "memory": {{flow.variables. chatbot_memory | to_json}}
+  "memory": {{ widgets.${chatbot_language}.memory  | to_json}}
 }

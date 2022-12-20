@@ -58,6 +58,7 @@ locals {
   strings_en= jsondecode(file("${path.module}/../translations/en-MT/strings.json"))
   strings_mt= jsondecode(file("${path.module}/../translations/mt-MT/strings.json"))
   strings_ukr= jsondecode(file("${path.module}/../translations/ukr-MT/strings.json"))
+
 }
 
 module "chatbots" {
@@ -112,7 +113,9 @@ module twilioChannel {
       chatbot_mt_sid = twilio_autopilot_assistants_v1.chatbot_mt.sid
       chatbot_ukr_sid = twilio_autopilot_assistants_v1.chatbot_ukr.sid
       chatbot_language_selector_sid = twilio_autopilot_assistants_v1.chatbot_language_selector.sid
-      channel_attributes = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes-with-variable/${each.key}-attributes.tftpl",{task_language=local.task_language})
+      channel_attributes_EN = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes-no-memory/${each.key}-attributes.tftpl",{task_language=local.task_language,chatbot_language ="chatbot_EN"})
+      channel_attributes_MT = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes-no-memory/${each.key}-attributes.tftpl",{task_language=local.task_language,chatbot_language ="chatbot_MT"})
+      channel_attributes_UKR = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes-no-memory/${each.key}-attributes.tftpl",{task_language=local.task_language,chatbot_language ="chatbot_UKR"})
       flow_description = "${title(each.key)} Messaging Flow"
     })
   target_task_name = local.target_task_name
