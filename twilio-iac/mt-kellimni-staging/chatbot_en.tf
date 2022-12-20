@@ -70,28 +70,6 @@ actions = jsonencode(
 				"name": "collect_survey",
 				"questions": [
 					{
-						"question": "${local.strings_en["Provide a Nickname"]}",
-						"name": "nickname",
-						"type": "Twilio.FIRST_NAME",
-						"validate": {
-							"on_failure": {
-								"messages": [
-									{
-										"say": "${local.strings_en["Sorry, I didn't understand that. Please respond with a name."]}"
-									},
-									{
-										"say": "${local.strings_en["Sorry, I still didn't get that."]}"
-									}
-								],
-								"repeat_question": true
-							},
-							"max_attempts": {
-								"redirect": "task://redirect_function",
-								"num_attempts": 2
-							}
-						}
-					},
-					{
 						"question": "${local.strings_en["How old are you?"]}",
 						"name": "age",
 						"type": "Age",
