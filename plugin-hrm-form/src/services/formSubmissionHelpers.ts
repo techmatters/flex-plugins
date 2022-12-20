@@ -7,8 +7,7 @@ import { Case, CustomITask, isOfflineContactTask, offlineContactTaskSid } from '
 import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
 import { saveContact } from './ContactService';
-import { assignOfflineContact } from './ServerlessService';
-import { getHelplineToSave } from './HelplineService';
+import { assignOfflineContact, assignOfflineContactComplete } from './ServerlessService';
 import { removeContactState } from '../states/actions';
 
 /**
@@ -37,19 +36,22 @@ export const completeContactlessTask = async (task: CustomITask) => {
 };
 
 export const completeTask = (task: CustomITask) =>
-  isOfflineContactTask(task) ? removeOfflineContact() : completeContactTask(task);
+  isOfflineContactTask(task) ? completeContactlessTask(task) : completeContactTask(task);
 
 export const submitContactForm = async (task: CustomITask, contactForm: Contact, caseForm: Case) => {
   const { workerSid } = getConfig();
 
   if (isOfflineContactTask(task)) {
     const targetWorkerSid = contactForm.contactlessTask.createdOnBehalfOf as string;
-    const finalAttributes = buildInsightsData(task, contactForm, caseForm);
-    const inBehalfTask = await assignOfflineContact(targetWorkerSid, finalAttributes);
-    return saveContact(task, contactForm, workerSid, inBehalfTask.sid);
+    const inBehalfTask = await assignOfflineContact(targetWorkerSid, task.attributes);
+    const savedContact = await saveContact(task, contactForm, workerSid, inBehalfTask.sid);
+    const finalAttributes = buildInsightsData(inBehalfTask, contactForm, caseForm, savedContact);
+    const completedTask = await assignOfflineContactComplete(inBehalfTask.sid, targetWorkerSid, finalAttributes);
+    return savedContact;
   }
 
-  const finalAttributes = buildInsightsData(task, contactForm, caseForm);
+  const savedContact = await saveContact(task, contactForm, workerSid, task.taskSid);
+  const finalAttributes = buildInsightsData(task, contactForm, caseForm, savedContact);
   await task.setAttributes(finalAttributes);
-  return saveContact(task, contactForm, workerSid, task.taskSid);
+  return savedContact;
 };
