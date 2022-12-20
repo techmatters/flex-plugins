@@ -135,14 +135,15 @@ export const SilentText = styled('div')`
 
 export const PreviewHeaderText = styled(FontOpenSans)`
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 14px;
-  color: #182b33;
+  color: #192b33;
 `;
 
 export const StyledTabs = styled((props: Partial<TabsProps> & { children?: any }) => <Tabs {...props} />)`
   .Twilio-TabHeader-StateIndicator-Active {
-    background-color: black;
+    background-color: #0064e1;
+    height: 1px;
   }
 `;
 StyledTabs.displayName = 'StyledTabs';
@@ -150,7 +151,7 @@ StyledTabs.displayName = 'StyledTabs';
 export const StyledResultsContainer = styled('div')`
   display: flex;
   align-items: center;
-  width: 565px;
+  width: 600px;
   margin-top: 10px;
 `;
 StyledResultsContainer.displayName = 'StyledResultsContainer';
@@ -176,13 +177,13 @@ export const StyledFolderIcon = styled(Folder)`
 
 StyledFolderIcon.displayName = 'StyledFolderIcon';
 
-export const BoldText = styled('div')`
-  font-weight: bold;
+export const EmphasisedText = styled('div')`
+  font-weight: 600;
   color: #000000;
   font-family: Open Sans;
   text-align: left;
 `;
-BoldText.displayName = 'BoldText';
+EmphasisedText.displayName = 'EmphasisedText';
 
 export const SummaryText = styled(FontOpenSans)`
   font-size: 13px;
@@ -190,27 +191,6 @@ export const SummaryText = styled(FontOpenSans)`
   line-height: 16px;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
-`;
-
-export const CaseFooter = styled('div')`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-CaseFooter.displayName = 'CaseFooter';
-
-export const CaseFooterText = styled('div')`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
-
-CaseFooterText.displayName = 'CaseFooterText';
-
-export const CounselorText = styled(SummaryText)`
-  opacity: 0.46;
 `;
 
 export const PreviewRow = styled(Row)`
@@ -224,7 +204,7 @@ export const SubtitleValue = styled(SummaryText)`
 
 export const SubtitleLabel = styled(SummaryText)`
   padding-inline-end: 5px;
-  opacity: 0.46;
+  color: #606b85;
 `;
 
 export const TagsWrapper = styled(Flex)`
@@ -247,9 +227,9 @@ export const TagText = styled(FontOpenSans)`
   display: inline-block;
   font-size: 12px;
   font-weight: 400;
-  line-height: 13px;
+  line-height: 14px;
   opacity: 1;
-  color: ${HrmTheme.colors.categoryTextColor};
+  color: #2f3e44;
 `;
 
 export const TagMiddleDot = styled('div')<ColorProps>`
@@ -408,7 +388,7 @@ export const ListContainer = styled(BottomButtonBar)`
   flex-basis: 0;
   flex-grow: 1;
   padding: 10px;
-  margin-top: 2px;
+  margin: 2px 5px 0 5px;
 `;
 
 export const ScrollableList = styled('div')`
@@ -436,7 +416,7 @@ export const StyledResultsHeader = styled('div')`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  width: 565px;
+  width: 600px;
 `;
 
 StyledResultsHeader.displayName = 'StyledCaseResultsHeader';

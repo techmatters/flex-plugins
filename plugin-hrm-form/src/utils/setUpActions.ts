@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-// eslint-disable-next-line no-unused-vars
 import {
   Manager,
   TaskHelper,
@@ -114,7 +112,9 @@ const handleTransferredTask = async (task: ITask) => {
   await restoreFormIfTransfer(task);
 };
 
-export const getTaskLanguage = ({ helplineLanguage }) => ({ task }) => task.attributes.language || helplineLanguage;
+export const getTaskLanguage = ({ helplineLanguage }: Pick<SetupObject, 'helplineLanguage'>) => ({
+  task,
+}: ActionPayload) => task.attributes.language || helplineLanguage;
 
 const sendMessageOfKey = (messageKey: string) => (
   setupObject: SetupObject,
@@ -144,42 +144,47 @@ const sendSystemCustomGoodbyeMessage = (customGoodbyeMessage: string) => () => a
 };
 
 const sendWelcomeMessage = sendMessageOfKey('WelcomeMsg');
-const sendGoodbyeMessage = taskSid => {
-  const { enable_dual_write } = getConfig().featureFlags;
+const sendGoodbyeMessage = (taskSid: string) => {
+  const { enable_dual_write: enableDualWrite } = getConfig().featureFlags;
 
   const customGoodbyeMessage =
-    enable_dual_write &&
+    enableDualWrite &&
     Manager.getInstance().store.getState()[namespace][dualWriteBase].tasks[taskSid]?.customGoodbyeMessage;
   return customGoodbyeMessage
     ? sendSystemCustomGoodbyeMessage(customGoodbyeMessage)
     : sendSystemMessageOfKey('GoodbyeMsg');
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-export const afterAcceptTask = (setupObject: SetupObject) => async (payload: ActionPayload) => {
+const sendWelcomeMessageOnConversationJoined = (setupObject: SetupObject, payload: ActionPayload) => {
   const manager = Manager.getInstance();
+  const { task } = payload;
+  const trySendWelcomeMessage = (convo: Conversation, ms: number, retries: number) => {
+    setTimeout(() => {
+      const convoState = StateHelper.getConversationStateForTask(task);
+      // if channel is not ready, wait 200ms and retry
+      if (convoState.isLoadingConversation) {
+        if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
+        else console.error('Failed to send welcome message: max retries reached.');
+      } else {
+        sendWelcomeMessage(setupObject, convo)(payload);
+      }
+    }, ms);
+  };
+
+  // Ignore event payload as we already have everything we want in afterAcceptTask arguments. Start at 0ms as many users are able to send the message right away
+  manager.conversationsClient.once('conversationJoined', (c: Conversation) => trySendWelcomeMessage(c, 0, 0));
+};
+
+export const afterAcceptTask = (setupObject: SetupObject) => async (payload: ActionPayload) => {
   const { featureFlags } = setupObject;
   const { task } = payload;
 
   if (featureFlags.enable_transfers && TransferHelpers.hasTransferStarted(task)) handleTransferredTask(task);
   else prepopulateForm(task);
 
+  // If this is the first counsellor that gets the task, say hi
   if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
-    const trySendWelcomeMessage = (convo: Conversation, ms, retries) => {
-      setTimeout(() => {
-        const convoState = StateHelper.getConversationStateForTask(task);
-        // if channel is not ready, wait 200ms and retry
-        if (convoState.isLoadingConversation) {
-          if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
-          else console.error('Failed to send welcome message: max retries reached.');
-        } else {
-          sendWelcomeMessage(setupObject, convo)(payload);
-        }
-      }, ms);
-    };
-
-    // Ignore event payload as we already have everything we want in afterAcceptTask arguments. Start at 0ms as many users are able to send the message right away
-    manager.conversationsClient.once('conversationJoined', (c: Conversation) => trySendWelcomeMessage(c, 0, 0));
+    sendWelcomeMessageOnConversationJoined(setupObject, payload);
   }
 };
 
@@ -325,28 +330,8 @@ export const afterCompleteTask = (payload: ActionPayload): void => {
 export const afterWrapupTask = (setupObject: SetupObject) => async (payload: ActionPayload): Promise<void> => {
   const { featureFlags } = setupObject;
 
-  if (featureFlags.enable_post_survey) {
-    /*
-     * If it's a chat based task, remove all listeners from the underlyingconversation.
-     * This is done to hide any further activity between the contact and the post survey chatbot.
-     */
-    if (TaskHelper.isChatBasedTask(payload.task)) {
-      const conversationState = StateHelper.getConversationStateForTask(payload.task);
-
-      const safelyRemoveListeners = (eventName: string) => {
-        try {
-          if (conversationState.source?.listenerCount(eventName)) {
-            conversationState.source?.removeAllListeners(eventName);
-          }
-        } catch (err) {
-          console.error(`Failed to safelyRemoveListeners with event ${eventName}`, err);
-        }
-      };
-
-      conversationState.source?.eventNames().forEach(safelyRemoveListeners);
-    }
-
-    // TODO: make this occur in taskrouter callback
+  // TODO: Remove this once all accounts are handled by taskrouter
+  if (featureFlags.enable_post_survey && !featureFlags.post_survey_serverless_handled) {
     await triggerPostSurvey(setupObject, payload);
   }
 };

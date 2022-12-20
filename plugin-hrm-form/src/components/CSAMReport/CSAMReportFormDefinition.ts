@@ -1,3 +1,4 @@
+import { type } from '@testing-library/user-event/dist/types/utility';
 import { FormItemDefinition, FormInputType } from 'hrm-form-definitions';
 
 import { getInitialValue } from '../common/forms/formGenerators';
@@ -44,7 +45,6 @@ export const definitionObject: CounselorCSAMFormDefinitionObject = {
     label: 'Description (500 characters)',
     type: FormInputType.Textarea,
     maxLength: { value: 500, message: '500 characters max.' },
-    width: '70%',
   },
   anonymous: {
     name: 'anonymous',
@@ -84,15 +84,18 @@ export const childDefinitionObject: ChildCSAMFormDefinitionObject = {
     label: '',
     type: FormInputType.RadioInput,
     options: [
-      { value: 'under-13-years', label: 'Under 13 years old' },
-      { value: '13-to-15-years', label: '13 to 15 years old' },
-      { value: '16-to-17-years', label: '16 to 17 years old' },
+      { value: '<13', label: 'Under 13 years old' },
+      { value: '13-15', label: '13 to 15 years old' },
+      { value: '16-17', label: '16 to 17 years old' },
     ],
+    required: { value: true, message: 'RequiredFieldError' },
   },
   ageVerified: {
     name: 'ageVerified',
     label: 'Yes, age of child has been verified',
     type: FormInputType.Checkbox,
+    required: { value: true, message: 'RequiredFieldError' },
+    validate: Boolean,
   },
 };
 

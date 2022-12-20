@@ -6,12 +6,12 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 import { Flex } from '../../styles/HrmStyles';
 import {
   ContactTag,
-  CounselorText,
   TagText,
   TagMiddleDot,
   SummaryText,
   TagsWrapper,
   SilentText,
+  SubtitleLabel,
 } from '../../styles/search';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { getContactTags } from '../../utils/categories';
@@ -74,9 +74,9 @@ const TagsAndCounselor: React.FC<Props> = props => {
     <Flex justifyContent="space-between" height="23px" marginTop="10px">
       {leftTags()}
       <Flex style={{ minWidth: 'fit-content' }}>
-        <CounselorText style={{ marginRight: 5 }}>
+        <SubtitleLabel>
           <Template code="CallSummary-Counselor" />
-        </CounselorText>
+        </SubtitleLabel>
         <SummaryText>{counselor}</SummaryText>
       </Flex>
     </Flex>

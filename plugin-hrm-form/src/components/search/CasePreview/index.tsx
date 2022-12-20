@@ -5,7 +5,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Case } from '../../../types/types';
 import CaseHeader from './CaseHeader';
 import { Flex } from '../../../styles/HrmStyles';
-import { PreviewWrapper, CaseFooter, CaseFooterText, CounselorText, SummaryText } from '../../../styles/search';
+import { PreviewWrapper } from '../../../styles/search';
 import getUpdatedDate from '../../../states/getUpdatedDate';
 import { PreviewDescription } from '../PreviewDescription';
 import { getDefinitionVersion } from '../../../services/ServerlessService';
