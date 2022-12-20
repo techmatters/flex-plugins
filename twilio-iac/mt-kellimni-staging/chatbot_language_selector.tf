@@ -83,7 +83,7 @@ actions = jsonencode({
 				"name": "collect_survey",
 				"questions": [
 					{
-						"question": "What language do you speak? Please select from the below supported languages: \n 1. English \n 2. Maltese \n 3. Ukranian}",
+						"question": "What language do you speak? Please select from the below supported languages: \n 1. English \n 2. Maltese \n 3. Ukranian",
 						"name": "language",
 						"type": "Language",
 						"validate": {
