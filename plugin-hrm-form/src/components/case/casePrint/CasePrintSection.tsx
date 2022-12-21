@@ -13,12 +13,11 @@ type OwnProps = {
   sectionName: string;
   values: any;
   definitions: FormDefinition;
-  unNestInfo?: boolean;
 };
 
 type Props = OwnProps;
 
-const CasePrintSection: React.FC<Props> = ({ sectionName, values, definitions, unNestInfo }) => {
+const CasePrintSection: React.FC<Props> = ({ sectionName, values, definitions }) => {
   const { strings } = getConfig();
 
   return (
@@ -34,11 +33,7 @@ const CasePrintSection: React.FC<Props> = ({ sectionName, values, definitions, u
                 <Text style={{ marginRight: '10px' }}>{def.label}</Text>
               </View>
               <View style={styles['sectionItemSecondColumn']}>
-                <Text>
-                  {presentValueFromStrings(strings)(unNestInfo ? unNestInformation(def, values) : values[def.name])(
-                    def,
-                  )}
-                </Text>
+                <Text>{presentValueFromStrings(strings)(values[def.name])(def)}</Text>
               </View>
             </View>
           );

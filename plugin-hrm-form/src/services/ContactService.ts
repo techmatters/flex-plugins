@@ -21,11 +21,12 @@ import {
   ContactMediaType,
   ContactRawJson,
   ConversationMedia,
+  HrmServiceContact,
   InformationObject,
   isOfflineContactTask,
   isTwilioTask,
+  NewHrmServiceContact,
   SearchAPIContact,
-  SearchContactResult,
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
@@ -38,16 +39,30 @@ import { getNumberFromTask } from '../utils';
 export const unNestInformation = (e: FormItemDefinition, obj: InformationObject) =>
   ['firstName', 'lastName'].includes(e.name) ? obj.name[e.name] : obj[e.name];
 
-const nestName = (information: { firstName: string; lastName: string }): InformationObject => {
-  const { firstName, lastName, ...rest } = information;
-  return { ...rest, name: { firstName, lastName } };
+type LegacyContactRawJson = Omit<ContactRawJson, 'callerInformation' | 'childInformation'> & {
+  childInformation: InformationObject;
+  callerInformation: InformationObject;
 };
 
-export const unNestInformationObject = (
-  def: FormDefinition,
-  obj: InformationObject,
-): TaskEntry['childInformation'] | TaskEntry['callerInformation'] =>
-  def.reduce((acc, e) => ({ ...acc, [e.name]: unNestInformation(e, obj) }), {});
+const unNestLegacyInformationObject = (legacy: InformationObject): Record<string, string | boolean> => {
+  const { name, ...rest } = legacy;
+  return typeof name === 'object' ? { ...rest, ...name } : (legacy as Record<string, string | boolean>);
+};
+
+const unNestLegacyRawJson = (legacy: LegacyContactRawJson): ContactRawJson => {
+  type PartiallyTransformed = Omit<ContactRawJson, 'callerInformation'> & {
+    callerInformation: InformationObject;
+  };
+  const withFixedChildInformation: PartiallyTransformed = legacy.childInformation
+    ? { ...legacy, childInformation: unNestLegacyInformationObject(legacy.childInformation) }
+    : (legacy as PartiallyTransformed);
+  return withFixedChildInformation.callerInformation
+    ? {
+        ...withFixedChildInformation,
+        callerInformation: unNestLegacyInformationObject(withFixedChildInformation.callerInformation),
+      }
+    : (withFixedChildInformation as ContactRawJson);
+};
 
 export async function searchContacts(
   searchParams,
@@ -64,7 +79,11 @@ export async function searchContacts(
     body: JSON.stringify(searchParams),
   };
 
-  return fetchHrmApi(`/contacts/search${queryParams}`, options);
+  const rawResult = await fetchHrmApi(`/contacts/search${queryParams}`, options);
+  return {
+    ...rawResult,
+    contacts: rawResult.contacts.map(c => ({ ...c, details: unNestLegacyRawJson(c.details) })),
+  };
 }
 
 /**
@@ -95,12 +114,8 @@ const deTransformValue = (e: FormItemDefinition) => (value: string | boolean | n
   return value;
 };
 
-export const searchResultToContactForm = (def: FormDefinition, obj: InformationObject) => {
-  const information = unNestInformationObject(def, obj);
-
-  const deTransformed = def.reduce((acc, e) => ({ ...acc, [e.name]: deTransformValue(e)(information[e.name]) }), {});
-
-  return deTransformed;
+export const searchResultToContactForm = (def: FormDefinition, information: Record<string, string | boolean>) => {
+  return def.reduce((acc, e) => ({ ...acc, [e.name]: deTransformValue(e)(information[e.name]) }), {});
 };
 
 export function transformCategories(
@@ -117,15 +132,6 @@ export function transformCategories(
 
   return transformedCategories.categories;
 }
-
-export const transformContactFormValues = (
-  formValues: Record<string, string | boolean>,
-  formDefinition: FormDefinition,
-): InformationObject => {
-  // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
-  const transformedValue = transformValues(formDefinition)(formValues);
-  return nestName(<{ firstName: string; lastName: string }>transformedValue);
-};
 
 /**
  * Transforms the form to be saved as the backend expects it
@@ -146,9 +152,9 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
   };
 
   // @ts-ignore
-  const callerInformation = nestName(transformedValues.callerInformation);
+  const { callerInformation } = transformedValues;
   // @ts-ignore
-  const childInformation = nestName(transformedValues.childInformation);
+  const { childInformation } = transformedValues;
 
   const categories = transformCategories(form.helpline, form.categories);
   const { definitionVersion } = getConfig();
@@ -201,7 +207,7 @@ const saveContactToHrm = async (
   const twilioWorkerId = isOfflineContactTask(task) ? form.contactlessTask.createdOnBehalfOf : workerSid;
 
   // This might change if isNonDataCallType, that's why we use rawForm
-  const timeOfContact = getDateTime(rawForm.contactlessTask);
+  const timeOfContact = new Date(getDateTime(rawForm.contactlessTask)).toISOString();
 
   const { helpline, csamReports } = form;
 
@@ -237,8 +243,8 @@ const saveContactToHrm = async (
    */
   const formToSend = transformForm(rawForm, conversationMedia);
 
-  const body = {
-    form: formToSend,
+  const body: NewHrmServiceContact = {
+    rawJson: formToSend,
     twilioWorkerId,
     queueName: task.queueName,
     channel: task.channelType,

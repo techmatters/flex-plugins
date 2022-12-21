@@ -1,15 +1,5 @@
 [
   {
-    "name": "firstName",
-    "label": "First Name",
-    "type": "input"
-  },
-  {
-    "name": "lastName",
-    "label": "Last Name",
-    "type": "input"
-  },
-  {
     "name": "relationshipToChild",
     "label": "Relationship to Child",
     "type": "select",

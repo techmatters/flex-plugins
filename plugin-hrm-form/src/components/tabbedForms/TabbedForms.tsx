@@ -129,7 +129,7 @@ const TabbedForms: React.FC<Props> = ({
         searchResult.details.callerInformation,
       );
 
-      dispatch(updateForm(task.taskSid, 'callerInformation', deTransformed));
+      dispatch(updateForm(task.taskSid, 'callerInformation', searchResult.details.callerInformation));
       dispatch(changeRoute({ route: 'tabbed-forms', subroute: 'callerInformation' }, taskId));
     } else {
       const deTransformed = searchResultToContactForm(

@@ -3,7 +3,7 @@
  * a better solution later on.
  */
 
-import { SearchAPIContact } from '../../types/types';
+import { HrmServiceContact, SearchAPIContact } from '../../types/types';
 import { getNumberFromTask } from '../../utils';
 import { transformForm } from '../../services/ContactService';
 import { getConversationDuration } from '../../utils/conversationDuration';
@@ -37,14 +37,14 @@ export const retrieveCategories = (categories: Record<string, Record<string, boo
   return Object.entries(categories).reduce(catsReducer, {});
 };
 
-export const hrmServiceContactToSearchContact = (contact): SearchAPIContact => {
+export const hrmServiceContactToSearchContact = (contact: HrmServiceContact): SearchAPIContact => {
   const dateTime = contact.timeOfContact;
 
-  const name = `${contact.rawJson.childInformation.name.firstName} ${contact.rawJson.childInformation.name.lastName}`;
+  const name = `${contact.rawJson.childInformation.firstName ?? ''} ${contact.rawJson.childInformation.lastName ?? ''}`;
   const customerNumber = contact.number;
   const { callType, caseInformation } = contact.rawJson;
   const categories = retrieveCategories(caseInformation.categories);
-  const notes = caseInformation.callSummary;
+  const notes = caseInformation.callSummary as string;
   const { conversationDuration, csamReports, createdBy, helpline, taskId, channel, updatedBy, updatedAt } = contact;
 
   return {
@@ -101,7 +101,7 @@ export const searchContactToHrmServiceContact = (contact: SearchAPIContact) => {
 export const taskFormToSearchContact = (task, form, date, counselor, temporaryId): SearchAPIContact => {
   const details = transformForm(form);
   const dateTime = date;
-  const name = `${details.childInformation.name.firstName} ${details.childInformation.name.lastName}`;
+  const name = `${details.childInformation.firstName ?? ''} ${details.childInformation.lastName ?? ''}`;
   const customerNumber = getNumberFromTask(task);
   const { callType, caseInformation } = details;
   const categories = retrieveCategories(caseInformation.categories);

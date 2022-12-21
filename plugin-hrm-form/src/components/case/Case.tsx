@@ -69,8 +69,8 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const getFirstNameAndLastNameFromContact = (contact): CaseDetailsName => {
-  if (contact?.rawJson?.childInformation?.name) {
-    const { firstName, lastName } = contact.rawJson.childInformation?.name ?? contact.rawJson.childInformation;
+  if (contact?.rawJson?.childInformation) {
+    const { firstName, lastName } = contact.rawJson.childInformation;
     return {
       firstName,
       lastName,
