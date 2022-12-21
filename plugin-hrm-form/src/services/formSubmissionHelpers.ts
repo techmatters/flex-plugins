@@ -7,7 +7,7 @@ import { Case, CustomITask, isOfflineContactTask, offlineContactTaskSid } from '
 import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
 import { saveContact } from './ContactService';
-import { assignOfflineContact, assignOfflineContactComplete } from './ServerlessService';
+import { assignOfflineContact, assignOfflineContactResolve } from './ServerlessService';
 import { removeContactState } from '../states/actions';
 
 /**
@@ -44,10 +44,24 @@ export const submitContactForm = async (task: CustomITask, contactForm: Contact,
   if (isOfflineContactTask(task)) {
     const targetWorkerSid = contactForm.contactlessTask.createdOnBehalfOf as string;
     const inBehalfTask = await assignOfflineContact(targetWorkerSid, task.attributes);
-    const savedContact = await saveContact(task, contactForm, workerSid, inBehalfTask.sid);
-    const finalAttributes = buildInsightsData(inBehalfTask, contactForm, caseForm, savedContact);
-    const completedTask = await assignOfflineContactComplete(inBehalfTask.sid, targetWorkerSid, finalAttributes);
-    return savedContact;
+    try {
+      const savedContact = await saveContact(task, contactForm, workerSid, inBehalfTask.sid);
+      const finalAttributes = buildInsightsData(inBehalfTask, contactForm, caseForm, savedContact);
+      await assignOfflineContactResolve({
+        action: 'complete',
+        taskSid: inBehalfTask.sid,
+        targetSid: targetWorkerSid,
+        finalTaskAttributes: finalAttributes,
+      });
+      return savedContact;
+    } catch (err) {
+      // If something went wrong remove the task for this offline contact
+      await assignOfflineContactResolve({ action: 'remove', taskSid: inBehalfTask.sid });
+      // TODO: should we do this? Should we care about removing the savedContact if it succeded? This step could break our "idempotence on contacts"
+
+      // Raise error to caller
+      throw err;
+    }
   }
 
   const savedContact = await saveContact(task, contactForm, workerSid, task.taskSid);

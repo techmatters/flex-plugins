@@ -128,21 +128,31 @@ export const assignOfflineContact = async (targetSid: string, taskAttributes: IT
   return response;
 };
 
-/**
- * Completes the task (offline contact) in behalf of targetSid worker updating with finalTaskAttributes.
- */
-export const assignOfflineContactComplete = async (
-  taskSid: string,
-  targetSid: string,
-  finalTaskAttributes: ITask['attributes'],
-) => {
-  const body = {
-    taskSid,
-    targetSid,
-    finalTaskAttributes: JSON.stringify(finalTaskAttributes),
-  };
+type OfflineContactComplete = {
+  action: 'complete';
+  taskSid: string;
+  targetSid: string;
+  finalTaskAttributes: ITask['attributes'];
+};
 
-  return fetchProtectedApi('/assignOfflineContactComplete', body);
+type OfflineContactRemove = {
+  action: 'remove';
+  taskSid: string;
+};
+
+/**
+ * Completes or removes the task (offline contact) in behalf of targetSid worker updating with finalTaskAttributes.
+ */
+export const assignOfflineContactResolve = async (payload: OfflineContactComplete | OfflineContactRemove) => {
+  const body =
+    payload.action === 'complete'
+      ? {
+          ...payload,
+          finalTaskAttributes: JSON.stringify(payload.finalTaskAttributes),
+        }
+      : payload;
+
+  return fetchProtectedApi('/assignOfflineContactResolve', body);
 };
 
 /**

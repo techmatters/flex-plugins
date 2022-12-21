@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { get, cloneDeep, merge } from 'lodash';
+import { get, cloneDeep } from 'lodash';
 import {
   DefinitionVersion,
   callTypes,
@@ -392,7 +392,7 @@ export const buildInsightsData = (task: CustomITask, contactForm: TaskEntry, cas
   // eslint-disable-next-line sonarjs/prefer-immediate-return
   const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(currentDefinitionVersion.insights)
     .map(f => f(previousAttributes, contactForm, caseForm, savedContact))
-    .reduce((acc: TaskAttributes, curr: InsightsAttributes) => merge(acc, curr), previousAttributes);
+    .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
 
   return finalAttributes;
 };
