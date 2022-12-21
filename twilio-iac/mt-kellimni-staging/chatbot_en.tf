@@ -138,7 +138,7 @@ actions = jsonencode(
 					{
 						"question": "${local.strings_en["Do you accept our Terms and Conditions?"]}",
 						"name": "terms_conditions",
-						"type": "YesNo",
+						"type": "Twilio.YES_NO",
 						"validate": {
 							"on_failure": {
 								"messages": [
@@ -200,7 +200,7 @@ actions = jsonencode({
 					{
 						"question": "${local.strings_en["Are you calling about yourself?"]}",
 						"name": "about_self",
-						"type": "YesNo",
+						"type": "Twilio.YES_NO",
 						"validate": {
 							"on_failure": {
 								"messages": [
