@@ -1,16 +1,20 @@
+import type { ITask } from '@twilio/flex-ui';
+
 import { getConfig } from '../HrmFormPlugin';
-import { saveContactToExternalBackend } from '../dualWrite';
 import { recordBackendError } from '../fullStory';
+import { TaskEntry } from '../states/contacts/reducer';
 
 const isSharedStateClientConnected = sharedStateClient =>
   sharedStateClient && sharedStateClient.connectionState === 'connected';
 
+const DOCUMENT_TTL_SECONDS = 24 * 60 * 60; // 24 hours
+
 /**
  * Saves the actual form into the Sync Client
  * @param {*} form form for current contact (or undefined)
- * @param {import("@twilio/flex-ui").ITask} task
+ * @param task
  */
-export const saveFormSharedState = async (form, task) => {
+export const saveFormSharedState = async (form: TaskEntry, task: ITask): Promise<string | null> => {
   const { featureFlags, sharedStateClient, strings } = getConfig();
 
   if (!featureFlags.enable_transfers) return null;
@@ -26,10 +30,10 @@ export const saveFormSharedState = async (form, task) => {
     const documentName = form ? `pending-form-${task.taskSid}` : null;
 
     if (documentName) {
-      const newForm = { ...form, metadata: { ...form.metadata, tab: 1 } };
+      const newForm: TaskEntry = { ...form };
 
       const document = await sharedStateClient.document(documentName);
-      await document.set(newForm, { ttl: 86400 }); // set time to live to 24 hours
+      await document.set(newForm, { ttl: DOCUMENT_TTL_SECONDS }); // set time to live to 24 hours
       return documentName;
     }
 
@@ -45,7 +49,7 @@ export const saveFormSharedState = async (form, task) => {
  * @param {import("@twilio/flex-ui").ITask} task
  * @returns {Promise<import("../states/contacts/reducer").TaskEntry | null>}
  */
-export const loadFormSharedState = async task => {
+export const loadFormSharedState = async (task: ITask): Promise<TaskEntry> => {
   const { featureFlags, sharedStateClient, strings } = getConfig();
   if (!featureFlags.enable_transfers) return null;
 
@@ -65,7 +69,7 @@ export const loadFormSharedState = async task => {
     const documentName = task.attributes.transferMeta.formDocument;
     if (documentName) {
       const document = await sharedStateClient.document(documentName);
-      return document.value;
+      return document.data as TaskEntry;
     }
 
     return null;
@@ -84,8 +88,8 @@ export const loadFormSharedState = async task => {
  * @param {*} task Twilio Task
  * @returns Parseable copy of the Twilio Task
  */
-const copyTask = task => {
-  const taskToReturn = {};
+const copyTask = (task: { _task: Record<string, any> }) => {
+  const taskToReturn: Record<string, string | number | {}> = {};
   Object.keys(task._task).forEach(key => {
     const value = task[key];
     if (['object', 'string', 'number'].includes(typeof value)) {

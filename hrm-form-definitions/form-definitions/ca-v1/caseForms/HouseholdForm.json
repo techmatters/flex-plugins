@@ -1,7 +1,16 @@
 [
   {
     "name": "firstName",
-    "label": "Name",
+    "label": "First Name",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "lastName",
+    "label": "Last Name",
     "type": "input",
     "required": {
       "value": true,
@@ -11,11 +20,21 @@
   {
     "name": "relationshipToChild",
     "label": "Relationship to child",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "type": "select",
+    "options": [
+      { "value": "Unknown", "label": "" },
+      { "value": "Caregiver", "label": "Caregiver" },
+      { "value": "Friend", "label": "Friend" },
+      { "value": "Grandparent", "label": "Grandparent" },
+      { "value": "Neighbour", "label": "Neighbour" },
+      { "value": "Parent", "label": "Parent" },
+      { "value": "Partner", "label": "Partner" },
+      { "value": "Person in a position of responsibility", "label": "Person in a position of responsibility" },
+      { "value": "Sibling", "label": "Sibling" },
+      { "value": "Stranger", "label": "Stranger" },
+      { "value": "Other", "label": "Other" }
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "otherMinorAtRisk",
@@ -25,6 +44,10 @@
   {
     "name": "phone",
     "label": "Phone",
-    "type": "input"
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   }
 ]

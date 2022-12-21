@@ -1,12 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import ChildNameAndDate from './ChildNameAndDate';
-import CallSummary from './CallSummary';
 import TagsAndCounselor from './TagsAndCounselor';
-import { ContactWrapper } from '../../../styles/search';
+import { PreviewWrapper } from '../../../styles/search';
 import { Flex } from '../../../styles/HrmStyles';
 import { SearchUIContact } from '../../../types/types';
+import { PreviewDescription } from '../PreviewDescription';
+import { isNonDataCallType } from '../../../states/ValidationRules';
 
 type ContactPreviewProps = {
   contact: SearchUIContact;
@@ -14,27 +14,42 @@ type ContactPreviewProps = {
 };
 
 const ContactPreview: React.FC<ContactPreviewProps> = ({ contact, handleViewDetails }) => {
-  const { counselorName } = contact;
+  const { counselorName, callerName } = contact;
+  const { callType } = contact.overview;
   const { callSummary } = contact.details.caseInformation;
 
   return (
     <Flex>
-      <ContactWrapper key={contact.contactId}>
+      <PreviewWrapper key={contact.contactId}>
         <ChildNameAndDate
+          id={contact.contactId}
           channel={contact.overview.channel}
           callType={contact.overview.callType}
           name={contact.overview.name}
+          callerName={callerName}
           number={contact.overview.customerNumber}
           date={contact.overview.dateTime}
           onClickFull={handleViewDetails}
         />
-        <CallSummary callSummary={callSummary} onClickFull={handleViewDetails} />
-        <TagsAndCounselor
-          counselor={counselorName}
-          categories={contact.overview.categories}
-          definitionVersion={contact.details.definitionVersion}
-        />
-      </ContactWrapper>
+        {callSummary && (
+          <PreviewDescription expandLinkText="CaseSummary-ReadMore" collapseLinkText="CaseSummary-ReadLess">
+            {callSummary}
+          </PreviewDescription>
+        )}
+        {isNonDataCallType(callType) ? (
+          <TagsAndCounselor
+            counselor={counselorName}
+            nonDataCallType={callType}
+            definitionVersion={contact.details.definitionVersion}
+          />
+        ) : (
+          <TagsAndCounselor
+            counselor={counselorName}
+            categories={contact.overview.categories}
+            definitionVersion={contact.details.definitionVersion}
+          />
+        )}
+      </PreviewWrapper>
     </Flex>
   );
 };

@@ -86,10 +86,20 @@ const TaskView: React.FC<Props> = props => {
   const isFormLocked = !hasTaskControl(task);
 
   return (
-    <Flex flexDirection="column" height="100%" style={{ pointerEvents: isFormLocked ? 'none' : 'auto' }}>
+    <Flex flexDirection="column" style={{ pointerEvents: isFormLocked ? 'none' : 'auto', height: '100%' }}>
       {featureFlags.enable_previous_contacts && <PreviousContactsBanner task={task} />}
       {isFormLocked && <FormNotEditable />}
-      <HrmForm task={task} featureFlags={featureFlags} />
+      <Flex
+        flexDirection="column"
+        style={{
+          // This fixes a UI bug where the PreviousContactsBanner pushes the container down
+          height: '100%',
+          width: '100%',
+          overflow: 'auto',
+        }}
+      >
+        <HrmForm task={task} featureFlags={featureFlags} />
+      </Flex>
     </Flex>
   );
 };

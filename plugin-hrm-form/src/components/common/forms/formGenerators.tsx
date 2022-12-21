@@ -8,7 +8,14 @@ import { useFormContext, RegisterOptions } from 'react-hook-form';
 import { get, pick } from 'lodash';
 import { format, startOfDay } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
-import { FormItemDefinition, FormDefinition, InputOption, SelectOption, MixedOrBool } from 'hrm-form-definitions';
+import {
+  FormItemDefinition,
+  FormDefinition,
+  InputOption,
+  SelectOption,
+  MixedOrBool,
+  FormInputType,
+} from 'hrm-form-definitions';
 
 import { BoldDescriptionText } from '../../../styles/CSAMReport';
 import {
@@ -36,6 +43,7 @@ import {
   FormListboxMultiselectOptionsContainer,
   FormListboxMultiselectOption,
   FormListboxMultiselectOptionLabel,
+  ColumnarContent,
 } from '../../../styles/HrmStyles';
 import type { HTMLElementRef } from './types';
 import UploadIcon from '../icons/UploadIcon';
@@ -47,36 +55,36 @@ import UploadFileInput from './UploadFileInput';
  */
 export const getInitialValue = (def: FormItemDefinition) => {
   switch (def.type) {
-    case 'input':
-    case 'numeric-input':
-    case 'email':
-    case 'textarea':
-    case 'file-upload':
+    case FormInputType.Input:
+    case FormInputType.NumericInput:
+    case FormInputType.Email:
+    case FormInputType.Textarea:
+    case FormInputType.FileUpload:
       return '';
-    case 'date-input': {
+    case FormInputType.DateInput: {
       if (def.initializeWithCurrent) {
         return format(startOfDay(new Date()), 'yyyy-MM-dd');
       }
 
       return '';
     }
-    case 'time-input': {
+    case FormInputType.TimeInput: {
       if (def.initializeWithCurrent) {
         return format(new Date(), 'HH:mm');
       }
 
       return '';
     }
-    case 'radio-input':
+    case FormInputType.RadioInput:
       return def.defaultOption ?? '';
-    case 'listbox-multiselect':
+    case FormInputType.ListboxMultiselect:
       return [];
-    case 'select':
+    case FormInputType.Select:
       return def.defaultOption ? def.defaultOption : def.options[0].value;
-    case 'dependent-select':
+    case FormInputType.DependentSelect:
       return def.defaultOption.value;
-    case 'copy-to':
-    case 'checkbox':
+    case FormInputType.CopyTo:
+    case FormInputType.Checkbox:
       return Boolean(def.initialChecked);
     case 'mixed-checkbox':
       return def.initialChecked === undefined ? 'mixed' : def.initialChecked;
@@ -119,7 +127,7 @@ const bindCreateSelectOptions = (path: string) => (o: SelectOption) => (
 );
 
 /**
- * Helper function used to calclulate the element that should be focused for 'listbox-multiselect' type inputs
+ * Helper function used to calclulate the element that should be focused for FormInputType.ListboxMultiselect type inputs
  */
 const calculateNextFocusable = (currentValue: any[], options: InputOption[]) => {
   // If there's at least one selected option, return the index of the first one on the definition
@@ -132,7 +140,7 @@ const calculateNextFocusable = (currentValue: any[], options: InputOption[]) => 
 };
 
 /**
- * Helper function used to calclulate the tabIndex for each option of 'listbox-multiselect' type inputs
+ * Helper function used to calclulate the tabIndex for each option of FormInputType.ListboxMultiSelect type inputs
  */
 const calculateOptionsTabIndexes = (currentValue: any[], options: InputOption[]) =>
   options.map((option, index) => (index === calculateNextFocusable(currentValue, options) ? undefined : -1));
@@ -141,6 +149,7 @@ const calculateOptionsTabIndexes = (currentValue: any[], options: InputOption[])
  * Creates a Form with each input connected to RHF's wrapping Context, based on the definition.
  * @param {string[]} parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
  * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type.
+ * @param customHandlers Set of additional handlers specific to file uploads.
  * @param {FormItemDefinition} def Definition for a single input.
  */
 export const getInputType = (parents: string[], updateCallback: () => void, customHandlers?: CustomHandlers) => (
@@ -155,7 +164,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
   const labelTextComponent = <Template code={`${def.label}`} className=".fullstory-unmask" />;
 
   switch (def.type) {
-    case 'input':
+    case FormInputType.Input:
       return (
         <ConnectForm key={path}>
           {({ errors, register }) => {
@@ -196,7 +205,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
           }}
         </ConnectForm>
       );
-    case 'numeric-input':
+    case FormInputType.NumericInput:
       return (
         <ConnectForm key={path}>
           {({ errors, register }) => {
@@ -240,7 +249,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
           }}
         </ConnectForm>
       );
-    case 'email':
+    case FormInputType.Email:
       return (
         <ConnectForm key={path}>
           {({ errors, register }) => {
@@ -285,7 +294,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
           }}
         </ConnectForm>
       );
-    case 'radio-input':
+    case FormInputType.RadioInput:
       return (
         <ConnectForm key={path}>
           {({ errors, register, setValue, watch }) => {
@@ -364,7 +373,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
           }}
         </ConnectForm>
       );
-    case 'listbox-multiselect':
+    case FormInputType.ListboxMultiselect:
       return (
         <ConnectForm key={path}>
           {({ errors, register, getValues }) => {
@@ -484,7 +493,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
           }}
         </ConnectForm>
       );
-    case 'select':
+    case FormInputType.Select:
       return (
         <ConnectForm key={path}>
           {({ errors, register }) => {
@@ -531,7 +540,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
           }}
         </ConnectForm>
       );
-    case 'dependent-select':
+    case FormInputType.DependentSelect:
       return (
         <ConnectForm key={path}>
           {({ errors, register, watch, setValue }) => {
@@ -607,8 +616,8 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
           }}
         </ConnectForm>
       );
-    case 'copy-to':
-    case 'checkbox':
+    case FormInputType.CopyTo:
+    case FormInputType.Checkbox:
       return (
         <ConnectForm key={path}>
           {({ errors, register }) => {
@@ -637,7 +646,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     />
                   </Box>
                   {labelTextComponent}
-                  {rules.required && <RequiredAsterisk />}
+                  {rules.required && path !== 'ageVerified' && <RequiredAsterisk />}
                 </FormCheckBoxWrapper>
                 {error && (
                   <FormError>
@@ -706,7 +715,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
           }}
         </ConnectForm>
       );
-    case 'textarea':
+    case FormInputType.Textarea:
       return (
         <ConnectForm key={path}>
           {({ errors, register }) => {
@@ -749,7 +758,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
           }}
         </ConnectForm>
       );
-    case 'time-input':
+    case FormInputType.TimeInput:
       return (
         <ConnectForm key={path}>
           {({ errors, register }) => {
@@ -791,7 +800,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
           }}
         </ConnectForm>
       );
-    case 'date-input':
+    case FormInputType.DateInput:
       return (
         <ConnectForm key={path}>
           {({ errors, register }) => {
@@ -833,7 +842,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
           }}
         </ConnectForm>
       );
-    case 'file-upload':
+    case FormInputType.FileUpload:
       return (
         <ConnectForm key={path}>
           {({ errors, clearErrors, register, setValue, watch }) => (
@@ -858,7 +867,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
         </ConnectForm>
       );
     default:
-      return null;
+      return <div>INVALID FORM INPUT: {path}</div>;
   }
 };
 
@@ -915,8 +924,12 @@ export const buildTwoColumnFormLayout = (formItems: JSX.Element[]) => {
 
   return (
     <TwoColumnLayout>
-      <ColumnarBlock>{l}</ColumnarBlock>
-      <ColumnarBlock>{r}</ColumnarBlock>
+      <ColumnarBlock>
+        <ColumnarContent>{l}</ColumnarContent>
+      </ColumnarBlock>
+      <ColumnarBlock>
+        <ColumnarContent>{r}</ColumnarContent>
+      </ColumnarBlock>
     </TwoColumnLayout>
   );
 };

@@ -78,6 +78,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   createContactDraft,
   enableEditing,
   canViewTwilioTranscript,
+  externalCsamReports,
 }) {
   const version = savedContact?.details.definitionVersion;
 
@@ -198,9 +199,13 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
+  const showCsamReports = csamReports && csamReports.length > 0 ? csamReports : externalCsamReports;
+
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
-      <NameText>{childOrUnknown}</NameText>
+      <NameText>
+        #{savedContact.contactId} {childOrUnknown}
+      </NameText>
 
       {auditMessage(dateTime, createdBy, 'ContactDetails-ActionHeaderAdded')}
 
@@ -331,9 +336,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
               />
             </SectionEntry>
           )}
-          {csamReports && csamReports.length > 0 && (
+          {showCsamReports && showCsamReports.length > 0 && (
             <SectionEntry key="CaseInformation-AttachedCSAMReports" descriptionKey="CSAMReportForm-ReportsSubmitted">
-              {csamReports.map(formatCsamReport)}
+              {showCsamReports.map(formatCsamReport)}
             </SectionEntry>
           )}
         </ContactDetailsSection>
@@ -384,6 +389,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
     role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.quality_process_manager',
   ),
   externalReport: state[namespace][contactFormsBase].externalReport,
+  externalCsamReports: state[namespace][contactFormsBase].csamReports,
 });
 
 const mapDispatchToProps = {

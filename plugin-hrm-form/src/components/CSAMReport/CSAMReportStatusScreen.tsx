@@ -26,6 +26,7 @@ type Props = {
   onSendAnotherReport?: () => void;
   clcReportStatus?: CSAMReportStatus;
   csamType?: 'child-status' | 'counsellor-status';
+  route?: string;
 };
 
 const CSAMReportStatusScreen: React.FC<Props> = ({
@@ -34,6 +35,7 @@ const CSAMReportStatusScreen: React.FC<Props> = ({
   onClickClose,
   onSendAnotherReport,
   csamType,
+  route,
 }) => {
   const [copied, setCopied] = React.useState(false);
 
@@ -46,11 +48,15 @@ const CSAMReportStatusScreen: React.FC<Props> = ({
   };
 
   const CopyCodeButtonIcon = copied ? StyledCheckCircle : StyledFileCopyOutlined;
-  const CopyCodeButtonText = copied ? 'Copied' : 'CopyCode';
+  const copy = csamType === 'child-status' ? 'CopyLink' : 'CopyCode';
+  const CopyCodeButtonText = copied ? 'Copied' : copy;
 
   return (
     // how should we handle possible IWF API error here? Show a screen, an alert & go back to form?
-    <CSAMReportContainer data-testid="CSAMReport-StatusScreen">
+    <CSAMReportContainer
+      style={{ padding: csamType === 'child-status' && '5px' }}
+      data-testid="CSAMReport-StatusScreen"
+    >
       <CSAMReportLayout>
         <HeaderCloseButton onClick={onClickClose} data-testid="Case-CloseCross">
           <HiddenText>
@@ -80,7 +86,13 @@ const CSAMReportStatusScreen: React.FC<Props> = ({
             <Row>
               {csamType === 'child-status' && (
                 <Box marginRight="10px">
-                  <ReportCodeText>{clcReportStatus.responseData}</ReportCodeText>
+                  <ReportCodeText
+                    style={{
+                      paddingLeft: route === 'tabbed-forms' || route === 'csam-report' ? '50px' : '',
+                    }}
+                  >
+                    {clcReportStatus.responseData}
+                  </ReportCodeText>
                 </Box>
               )}
               {csamType === 'counsellor-status' && (
@@ -88,9 +100,15 @@ const CSAMReportStatusScreen: React.FC<Props> = ({
                   <ReportCodeText>#{reportStatus.responseData}</ReportCodeText>
                 </Box>
               )}
-              <CopyCodeButton secondary roundCorners onClick={onCopyCode} data-testid="CSAMReport-CopyCodeButton">
+              <CopyCodeButton
+                style={{ padding: csamType === 'child-status' && '5px 17px 5px 12px' }}
+                secondary
+                roundCorners
+                onClick={onCopyCode}
+                data-testid="CSAMReport-CopyCodeButton"
+              >
                 <CopyCodeButtonIcon />
-                <div style={{ width: 10 }} />
+                <div style={{ width: route === 'tabbed-forms' || route === 'csam-report' ? 50 : 10 }} />
                 <ButtonText>
                   <Template code={CopyCodeButtonText} />
                 </ButtonText>

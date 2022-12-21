@@ -1,6 +1,6 @@
 /* eslint-disable import/no-unused-modules */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { CircularProgress } from '@material-ui/core';
 import { connect, ConnectedProps } from 'react-redux';
@@ -23,7 +23,7 @@ import { getConfig } from '../../HrmFormPlugin';
 import * as actions from '../../states/csam-report/actions';
 import * as contactsActions from '../../states/contacts/actions';
 import { isCounselorCSAMReportForm } from '../../states/csam-report/types';
-import { RootState, csamReportBase, contactFormsBase, namespace, configurationBase } from '../../states';
+import { RootState, csamReportBase, contactFormsBase, routingBase, namespace, configurationBase } from '../../states';
 import { reportToIWF, selfReportToIWF } from '../../services/ServerlessService';
 import { acknowledgeCSAMReport, createCSAMReport } from '../../services/CSAMReportService';
 import useFocus from '../../utils/useFocus';
@@ -31,20 +31,24 @@ import useFocus from '../../utils/useFocus';
 type OwnProps = {
   taskSid: CustomITask['taskSid'];
   externalReport?: string;
+  contactId?: string;
 };
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   csamReportState: state[namespace][csamReportBase].tasks[ownProps.taskSid],
   counselorsHash: state[namespace][configurationBase].counselors.hash,
-  //   csamReports: state[namespace][contactFormsBase].tasks[ownProps.taskSid].csamReports,
+  csamReports: state[namespace][contactFormsBase],
+  routing: state[namespace][routingBase].tasks[ownProps.taskSid],
 });
 
 const mapDispatchToProps = {
   updateFormAction: actions.updateFormAction,
   updateStatusAction: actions.updateStatusAction,
   clearCSAMReportAction: actions.clearCSAMReportAction,
-  addCSAMReportEntry: contactsActions.addCSAMReportEntry,
+  addCSAMReportEntry: contactsActions.addExternalReportEntry,
   setExternalReport: contactsActions.setExternalReport,
+  setEditContactPageOpen: contactsActions.setEditContactPageOpen,
+  setEditContactPageClosed: contactsActions.setEditContactPageClosed,
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -61,7 +65,10 @@ export const ExternalReportScreen: React.FC<Props> = ({
   counselorsHash,
   externalReport,
   setExternalReport,
-  //   csamReports,
+  contactId,
+  setEditContactPageOpen,
+  setEditContactPageClosed,
+  routing,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const formKeys = {
@@ -74,8 +81,6 @@ export const ExternalReportScreen: React.FC<Props> = ({
   };
   const [initialForm] = React.useState(formKeys);
 
-  //   const [initialForm] = React.useState(csamReportState.form);  // grab initial values in first render only. This value should never change or will ruin the memoization below
-
   const methods = useForm({ reValidateMode: 'onChange' });
   const firstElementRef = useFocus();
 
@@ -83,6 +88,18 @@ export const ExternalReportScreen: React.FC<Props> = ({
     const { workerSid } = getConfig();
     return counselorsHash[workerSid];
   }, [counselorsHash]);
+
+  useEffect(() => {
+    /*
+     * we need this to run only once, hence no need
+     * of adding any dependency inside the array
+     */
+    setEditContactPageOpen();
+    return () => {
+      setEditContactPageClosed();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const formElements = React.useMemo(() => {
     const csamKeys = () => {
@@ -132,7 +149,7 @@ export const ExternalReportScreen: React.FC<Props> = ({
     setExternalReport(null, taskSid);
   };
 
-  console.log('externalReport 1', externalReport, csamReportState);
+  const { route } = routing;
 
   const onValid = async form => {
     try {
@@ -148,8 +165,6 @@ export const ExternalReportScreen: React.FC<Props> = ({
         const caseNumber = storedReport.csamReportId;
         const report = await selfReportToIWF(form, caseNumber);
 
-        console.log('externalReport 2', externalReport, csamReportState);
-
         const reportStatus = {
           responseCode: report.status,
           responseData: report.reportUrl,
@@ -161,19 +176,15 @@ export const ExternalReportScreen: React.FC<Props> = ({
 
         // If everything went fine, before moving to the next screen acknowledge the record in DB */
         const acknowledged = await acknowledgeCSAMReport(reportToAcknowledge.id);
-        // addCSAMReportEntry(acknowledged, taskSid);
 
-        console.log('acknowledged is here', acknowledged);
-
+        addCSAMReportEntry(acknowledged, contactId);
         setExternalReport('child-status', taskSid);
       }
 
-      console.log('externalReport 3', externalReport, csamReportState);
-
       if (externalReport === 'counsellor-form') {
         setExternalReport('loading', taskSid);
-        console.log('form', form);
         const report = await reportToIWF(form);
+
         const storedReport = await createCSAMReport({
           reportType: 'counsellor-generated',
           csamReportId: report['IWFReportService1.0'].responseData,
@@ -181,7 +192,7 @@ export const ExternalReportScreen: React.FC<Props> = ({
         });
 
         updateStatusAction(report['IWFReportService1.0'], taskSid);
-        // addCSAMReportEntry(storedReport, taskSid);
+        addCSAMReportEntry(storedReport, contactId);
         setExternalReport('counsellor-status', taskSid);
       }
     } catch (err) {
@@ -262,6 +273,7 @@ export const ExternalReportScreen: React.FC<Props> = ({
           onClickClose={onClickClose}
           onSendAnotherReport={() => onSendAnotherReport()}
           csamType="child-status"
+          route={route}
         />
       );
     }

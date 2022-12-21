@@ -221,9 +221,6 @@ export const selfReportToIWF = async (form: ChildCSAMReportForm, caseNumber: str
     case_number: caseNumber,
   };
 
-  console.log('body is here', body);
-
   const response = await fetchProtectedApi('/selfReportToIWF', body);
-  console.log('response is here', response);
   return response;
 };

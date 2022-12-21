@@ -15,16 +15,13 @@
       "splitFormAt": 7
     },
     "perpetrators": {
-      "splitFormAt": 7
+      "splitFormAt": 8
     },
     "incidents": {
-      "previewFields": [
-        "date"
-      ],
-      "splitFormAt": 3
+      "splitFormAt": 5
     },
     "referrals": {
-      "splitFormAt": 2
+      "splitFormAt": 5
     },
     "documents": {
       "splitFormAt": 1

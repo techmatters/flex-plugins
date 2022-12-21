@@ -2,6 +2,7 @@ import React from 'react';
 import { styled } from '@twilio/flex-ui';
 import { withStyles } from '@material-ui/core';
 import { AttachFile, CheckCircle, FileCopyOutlined, OpenInNew } from '@material-ui/icons';
+import { type } from '@testing-library/user-event/dist/types/setup/directApi';
 
 import { FontOpenSans, StyledNextStepButton } from '../HrmStyles';
 import HrmTheme from '../HrmTheme';
@@ -43,11 +44,15 @@ export const CenterContent = styled('div')`
 CenterContent.displayName = 'CenterContent';
 
 export const CopyCodeButton = styled(StyledNextStepButton)`
-  padding: 7px;
+  padding: '7px';
 `;
 CopyCodeButton.displayName = 'CopyCodeButton';
 
-export const BoldDescriptionText = styled(FontOpenSans)<{ fontSize?: string }>`
+type BoldDescriptionTextProp = {
+  fontSize?: string;
+};
+
+export const BoldDescriptionText = styled(FontOpenSans)<BoldDescriptionTextProp>`
   color: #14171a;
   font-size: ${({ fontSize }) => (fontSize ? fontSize : '14px')};
   font-weight: 700;
@@ -120,5 +125,6 @@ const StyledSmallIcon = withStyles({
   },
 });
 
+// eslint-disable-next-line import/no-unused-modules
 export const OpenInNewIcon = StyledSmallIcon(OpenInNew);
 OpenInNewIcon.displayName = 'OpenInNewIcon';

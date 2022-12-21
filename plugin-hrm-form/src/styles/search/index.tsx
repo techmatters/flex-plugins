@@ -3,7 +3,6 @@ import { ButtonBase, Paper, Button, FormControlLabel, Switch, Collapse, withStyl
 import { Tabs, TabsProps, styled } from '@twilio/flex-ui';
 import Folder from '@material-ui/icons/Folder';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import Link from '@material-ui/icons/Link';
 import { ButtonProps } from '@material-ui/core/Button';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
 
@@ -11,7 +10,7 @@ import { Flex, Row, FontOpenSans, BottomButtonBar, TabbedFormsContainer } from '
 import HrmTheme from '../HrmTheme';
 
 // CaseViewer Styles
-export const CaseWrapper = styled('div')`
+export const PreviewWrapper = styled('div')`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -24,50 +23,7 @@ export const CaseWrapper = styled('div')`
   border-radius: 4px;
 `;
 
-CaseWrapper.displayName = 'CaseWrapper';
-
-export const CaseHeaderContainer = styled('div')`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 10px;
-`;
-
-CaseHeaderContainer.displayName = 'CaseHeaderContainer';
-
-type CaseIdProps = {
-  closed: boolean;
-};
-
-export const CaseHeaderCaseId = styled('div')<CaseIdProps>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: ${props => (props.closed ? 'none' : 'solid')};
-  color: ${props => (props.closed ? 'lightgray' : 'black')};
-  border-width: thin;
-  width: 50px;
-  font-weight: 600;
-`;
-
-CaseHeaderCaseId.displayName = 'CaseHeaderCaseId';
-
-export const CaseHeaderChildName = styled('p')`
-  font-weight: 700;
-  width: 150px;
-`;
-
-CaseHeaderChildName.displayName = 'CaseHeaderChildName';
-
-export const CaseSummaryContainer = styled('div')`
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  margin-top: 10px;
-`;
-
-CaseSummaryContainer.displayName = 'CaseSummaryContainer';
+PreviewWrapper.displayName = 'PreviewWrapper';
 
 export const ConfirmContainer = styled(Paper)`
   display: flex;
@@ -85,32 +41,6 @@ export const BackIcon = styled(ChevronLeft)`
   height: 50px;
 `;
 
-// ContactPreview styles
-export const ContactWrapper = styled('div')`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin-top: 10px;
-  padding: 5px 20px 10px 20px;
-  width: 550px;
-  box-sizing: border-box;
-  background-color: #ffffff;
-  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.06);
-  border-radius: 4px;
-`;
-
-export const ConnectIcon = withStyles({
-  root: {
-    borderRadius: '50%',
-    backgroundColor: '#a0a8bd66',
-    opacity: 0.34,
-    padding: '5px',
-    '&:hover': {
-      opacity: 0.2,
-    },
-  },
-})(Link);
-
 export const ContactButtonsWrapper = styled('div')`
   display: flex;
   flex-direction: row;
@@ -121,22 +51,43 @@ export const ContactButtonsWrapper = styled('div')`
 
 type StyledLinkProps = ButtonProps & { underline?: boolean };
 
-export const StyledLink = styled(({ onClick, ...rest }: StyledLinkProps) => (
-  <Button size="small" onClick={onClick} {...rest} />
-))<StyledLinkProps>`
+const UnstyledLinkButton = React.forwardRef<HTMLButtonElement, StyledLinkProps>(
+  ({ onClick, underline, ...rest }, ref) => (
+    <Button
+      size="small"
+      onClick={onClick}
+      disableFocusRipple={underline}
+      disableRipple={underline}
+      ref={ref}
+      {...rest}
+    />
+  ),
+);
+
+export const StyledLink = styled(UnstyledLinkButton)<StyledLinkProps>`
+  && {
+    padding: 0;
+    line-height: normal;
+    letter-spacing: normal;
+
+    :hover {
+      text-decoration: ${props => (props.underline ? 'underline' : 'none')};
+      text-decoration-color: ${props => (props.underline ? '#1874e1' : 'transparent')};
+      background-color: ${props => (props.underline ? 'transparent' : HrmTheme.colors.hyperlinkHoverBackgroundColor)};
+    }
+
+    :focus {
+      outline: auto;
+      background-color: ${props => (props.underline ? 'transparent' : HrmTheme.colors.hyperlinkHoverBackgroundColor)};
+    }
+  }
+
   span {
+    padding: 0px;
+    line-height: normal;
+    letter-spacing: normal;
     text-transform: none;
     color: #1874e1;
-  }
-
-  &&:hover {
-    text-decoration: ${props => (props.underline ? 'underline' : 'none')};
-    text-decoration-color: ${props => (props.underline ? '#1874e1' : 'transparent')};
-    background-color: ${props => (props.underline ? 'transparent' : HrmTheme.colors.hyperlinkHoverBackgroundColor)};
-  }
-
-  &&:focus {
-    outline: auto;
   }
 `;
 
@@ -182,16 +133,17 @@ export const SilentText = styled('div')`
   border-radius: 2px;
 `;
 
-export const PrevNameText = styled(FontOpenSans)`
-  font-size: 12px;
-  font-weight: 700;
+export const PreviewHeaderText = styled(FontOpenSans)`
+  font-size: 14px;
+  font-weight: 600;
   line-height: 14px;
-  color: #182b33;
+  color: #192b33;
 `;
 
 export const StyledTabs = styled((props: Partial<TabsProps> & { children?: any }) => <Tabs {...props} />)`
   .Twilio-TabHeader-StateIndicator-Active {
-    background-color: black;
+    background-color: #0064e1;
+    height: 1px;
   }
 `;
 StyledTabs.displayName = 'StyledTabs';
@@ -199,7 +151,7 @@ StyledTabs.displayName = 'StyledTabs';
 export const StyledResultsContainer = styled('div')`
   display: flex;
   align-items: center;
-  width: 565px;
+  width: 600px;
   margin-top: 10px;
 `;
 StyledResultsContainer.displayName = 'StyledResultsContainer';
@@ -219,19 +171,19 @@ StyledResultsText.displayName = 'StyledResultsText';
 
 export const StyledFolderIcon = styled(Folder)`
   font-size: 18px !important;
-  padding: '-1px 10px 0 6px';
+  padding: -1px 10px 0 6px;
   margin-right: 10px;
 `;
 
 StyledFolderIcon.displayName = 'StyledFolderIcon';
 
-export const BoldText = styled('div')`
-  font-weight: bold;
+export const EmphasisedText = styled('div')`
+  font-weight: 600;
   color: #000000;
   font-family: Open Sans;
   text-align: left;
 `;
-BoldText.displayName = 'BoldText';
+EmphasisedText.displayName = 'EmphasisedText';
 
 export const SummaryText = styled(FontOpenSans)`
   font-size: 13px;
@@ -239,43 +191,26 @@ export const SummaryText = styled(FontOpenSans)`
   line-height: 16px;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
-  max-width: 390px;
 `;
 
-export const ShortSummaryText = styled(SummaryText)`
-  white-space: nowrap;
-  overflow: hidden;
+export const PreviewRow = styled(Row)`
+  margin-top: 10px;
+  padding-bottom: 5px;
 `;
 
-export const CaseFooter = styled('div')`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+export const SubtitleValue = styled(SummaryText)`
+  padding-inline-end: 10px;
 `;
 
-CaseFooter.displayName = 'CaseFooter';
-
-export const CaseFooterText = styled('div')`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
-
-CaseFooterText.displayName = 'CaseFooterText';
-
-export const CounselorText = styled(SummaryText)`
-  opacity: 0.46;
-`;
-
-export const DateText = styled(SummaryText)`
-  opacity: 0.46;
-  font-size: 12px;
+export const SubtitleLabel = styled(SummaryText)`
+  padding-inline-end: 5px;
+  color: #606b85;
 `;
 
 export const TagsWrapper = styled(Flex)`
   min-width: 0;
   margin-right: 5px;
+  overflow: hidden;
 
   div:last-child {
     min-width: 0;
@@ -292,9 +227,9 @@ export const TagText = styled(FontOpenSans)`
   display: inline-block;
   font-size: 12px;
   font-weight: 400;
-  line-height: 13px;
+  line-height: 14px;
   opacity: 1;
-  color: ${HrmTheme.colors.categoryTextColor};
+  color: #2f3e44;
 `;
 
 export const TagMiddleDot = styled('div')<ColorProps>`
@@ -405,8 +340,8 @@ export const sectionTitleFontStyle = `
   line-height: 13px;
 `;
 export const SectionTitleText = styled(FontOpenSans)`
-  ${sectionTitleFontStyle}
   margin-right: auto;
+  ${sectionTitleFontStyle}
 `;
 SectionTitleText.displayName = 'SectionTitleText';
 
@@ -454,10 +389,11 @@ export const ResultsHeader = styled('div')`
 `;
 
 export const ListContainer = styled(BottomButtonBar)`
+  background-color: #f6f6f6;
   flex-basis: 0;
   flex-grow: 1;
   padding: 10px;
-  margin-top: 2px;
+  margin: 2px 5px 0 5px;
 `;
 
 export const ScrollableList = styled('div')`
@@ -468,18 +404,6 @@ export const ScrollableList = styled('div')`
   height: 100%;
   overflow-y: auto;
 `;
-
-export const StyledButtonBase = withStyles({
-  root: {
-    margin: 5,
-    '&:focus': {
-      outline: 'auto',
-    },
-  },
-  disabled: {
-    color: 'rgba(0, 0, 0, 0.26)',
-  },
-})(ButtonBase);
 
 export const StyledFormControlLabel = styled(FormControlLabel)`
   margin-left: 0px !important;
@@ -492,17 +416,7 @@ export const StyledCount = styled('p')`
 `;
 StyledCount.displayName = 'StyledCount';
 
-export const StyledContactResultsHeader = styled('div')`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  width: 550px;
-`;
-
-StyledContactResultsHeader.displayName = 'StyledContactResultsHeader';
-
-export const StyledCaseResultsHeader = styled('div')`
+export const StyledResultsHeader = styled('div')`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -510,7 +424,7 @@ export const StyledCaseResultsHeader = styled('div')`
   width: 600px;
 `;
 
-StyledCaseResultsHeader.displayName = 'StyledCaseResultsHeader';
+StyledResultsHeader.displayName = 'StyledCaseResultsHeader';
 
 export const StyledSwitch = withStyles({
   thumb: {
@@ -538,12 +452,3 @@ export const StandaloneSearchContainer = styled(TabbedFormsContainer)`
   background-color: ${HrmTheme.colors.base2};
 `;
 StandaloneSearchContainer.displayName = 'StandaloneSearchContainer';
-
-export const ViewContactButton = styled('button')`
-  background: #e7e8ee;
-  border: none;
-  padding: 3px 7px;
-  border-radius: 5px;
-  cursor: pointer;
-`;
-ViewContactButton.displayName = 'ViewContactButton';

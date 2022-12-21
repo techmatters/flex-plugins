@@ -1,6 +1,12 @@
 [
     {
-      "name": "agencyName",
+      "name": "date",
+      "type": "date-input",
+      "label": "Date",
+      "required": { "value": true, "message": "RequiredFieldError" }
+    },
+    {
+      "name": "referredTo",
       "label": "Name of Agency",
       "type": "input",
       "required": {
@@ -29,11 +35,19 @@
     {
         "name": "badgeNumber",
         "label": "Badge Number",
-        "type": "input"
+        "type": "input",
+        "required": {
+            "value": true,
+            "message": "RequiredFieldError"
+      }
     },
     {
         "name": "phone",
         "label": "Phone",
-        "type": "input"
+        "type": "input",
+        "required": {
+            "value": true,
+            "message": "RequiredFieldError"
+      }
     }
   ]

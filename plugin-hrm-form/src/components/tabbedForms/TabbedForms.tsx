@@ -91,15 +91,16 @@ const TabbedForms: React.FC<Props> = ({
   csamClcReportEnabled,
   editContactFormOpen,
   isCallTypeCaller,
+  csamReports,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
     mode: 'onChange',
   });
 
-  const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={contactForm.csamReports} />, [
-    contactForm.csamReports,
-  ]);
+  const showCsamReports = csamReports && csamReports.length > 0 ? csamReports : contactForm.csamReports;
+
+  const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={showCsamReports} />, [showCsamReports]);
 
   const isMounted = React.useRef(false); // mutable value to avoid reseting the state in the first render.
 
@@ -324,8 +325,18 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
   const { currentDefinitionVersion } = state[namespace][configurationBase];
-  const { isCallTypeCaller } = state[namespace][contactFormsBase];
-  return { routing, contactForm, currentDefinitionVersion, editContactFormOpen, isCallTypeCaller };
+  const draftContact = state[namespace][contactFormsBase].existingContacts[ownProps.task.taskSid]?.draftContact;
+  const { isCallTypeCaller, externalReport, csamReports } = state[namespace][contactFormsBase];
+  return {
+    routing,
+    contactForm,
+    currentDefinitionVersion,
+    editContactFormOpen,
+    isCallTypeCaller,
+    externalReport,
+    csamReports,
+    draftContact,
+  };
 };
 
 const connector = connect(mapStateToProps);

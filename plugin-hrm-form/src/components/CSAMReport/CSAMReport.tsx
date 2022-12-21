@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { CircularProgress } from '@material-ui/core';
 import { connect, ConnectedProps } from 'react-redux';
@@ -27,6 +27,7 @@ import { RootState, csamReportBase, namespace, contactFormsBase, routingBase, co
 import { reportToIWF, selfReportToIWF } from '../../services/ServerlessService';
 import { acknowledgeCSAMReport, createCSAMReport } from '../../services/CSAMReportService';
 import useFocus from '../../utils/useFocus';
+import fileUploadCustomHandlers from '../case/documentUploadHandler';
 
 type OwnProps = {
   taskSid: CustomITask['taskSid'];
@@ -37,7 +38,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   csamReportState: state[namespace][csamReportBase].tasks[ownProps.taskSid],
   routing: state[namespace][routingBase].tasks[ownProps.taskSid],
   counselorsHash: state[namespace][configurationBase].counselors.hash,
-  csamReports: state[namespace][contactFormsBase].tasks[ownProps.taskSid].csamReports,
+  csamReports: state[namespace][contactFormsBase].tasks[ownProps.taskSid],
 });
 
 const mapDispatchToProps = {
@@ -62,8 +63,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
   csamReportState,
   routing,
   counselorsHash,
-  externalReport,
-  csamReports,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [initialForm] = React.useState(csamReportState.form); // grab initial values in first render only. This value should never change or will ruin the memoization below
@@ -120,9 +119,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
 
   if (routing.route !== 'csam-report') return null;
 
-  const { previousRoute } = routing;
-
-  const childForm = externalReport === 'child-form' || (routing.subroute === 'child-form' && 'child-form');
+  const { previousRoute, route } = routing;
 
   const onClickClose = () => {
     clearCSAMReportAction(taskSid);
@@ -155,10 +152,8 @@ export const CSAMReportScreen: React.FC<Props> = ({
         /* If everything went fine, before moving to the next screen acknowledge the record in DB */
         const acknowledged = await acknowledgeCSAMReport(reportToAcknowledge.id);
 
-        console.log('acknowledged is here', acknowledged);
-
         addCSAMReportEntry(acknowledged, taskSid);
-        console.log('csamReports is here now', csamReports);
+
         changeRoute({ route: 'csam-report', subroute: 'child-status', previousRoute }, taskSid);
       }
 
@@ -201,10 +196,8 @@ export const CSAMReportScreen: React.FC<Props> = ({
 
   const onSendReport = methods.handleSubmit(onValid, onInvalid);
 
-  console.log('childForm is here', childForm, externalReport);
-
   switch (routing.subroute) {
-    case childForm: {
+    case 'child-form': {
       return (
         <FormProvider {...methods}>
           <CSAMReportFormScreen
@@ -261,6 +254,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
           onClickClose={onClickClose}
           onSendAnotherReport={() => onSendAnotherReport('csam-report', 'child-form')}
           csamType="child-status"
+          route={route}
         />
       );
     }

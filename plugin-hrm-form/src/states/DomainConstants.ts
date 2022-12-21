@@ -45,4 +45,4 @@ export const transferStatuses = {
   transferring: 'transferring',
   accepted: 'accepted',
   rejected: 'rejected',
-};
+} as const;

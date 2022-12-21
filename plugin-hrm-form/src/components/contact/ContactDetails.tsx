@@ -11,15 +11,12 @@ import EditContactSection from './EditContactSection';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { DetailsContainer } from '../../styles/search';
 import * as ConfigActions from '../../states/configuration/actions';
-import {
-  ContactDetailsSectionFormApi,
-  contactDetailsSectionFormApi,
-  ExternalReportSectionFormApi,
-} from './contactDetailsSectionFormApi';
+import { ContactDetailsSectionFormApi, contactDetailsSectionFormApi } from './contactDetailsSectionFormApi';
 import ContactDetailsSectionForm from './ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
 import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
 import { getConfig } from '../../HrmFormPlugin';
+// eslint-disable-next-line import/namespace
 import { updateDraft } from '../../states/contacts/existingContacts';
 import { setExternalReport } from '../../states/contacts/actions';
 import {
@@ -30,10 +27,6 @@ import {
 } from '../../services/ContactService';
 import * as routingActions from '../../states/routing/actions';
 import ExternalReport from './ExternalReport';
-
-export type SubRouteProps = {
-  [key: string]: string | boolean | {};
-};
 
 type OwnProps = {
   contactId: string;
@@ -112,26 +105,25 @@ const ContactDetails: React.FC<Props> = ({
     </EditContactSection>
   );
 
-  const addExternalReportSectionElement = (section: ExternalReportSectionFormApi, formPath: 'externalReport') => (
+  const addExternalReportSectionElement = (formPath: 'externalReport') => (
     <EditContactSection
       context={context}
       contactId={contactId}
-      externalReportSectionForm={section}
       tabPath="externalReport"
       externalReport={addExternalReport}
     >
       <ContactDetailsSectionForm
         tabPath="externalReport"
-        definition={externalReportDefinition.reportType}
+        definition={externalReportDefinition}
         layoutDefinition={externalReportLayoutDefinition.layout}
-        initialValues={externalReportDefinition.reportType}
+        initialValues={externalReportDefinition}
         display={true}
         autoFocus={true}
         updateFormActionDispatcher={dispatch => values =>
           dispatch(
             updateContactDraft(contactId, {
               details: {
-                [formPath]: transformExternalReportValues(values.externalReport, externalReportDefinition.reportType),
+                [formPath]: transformExternalReportValues(values.externalReport, externalReportDefinition),
               },
             }),
           )}
@@ -171,14 +163,16 @@ const ContactDetails: React.FC<Props> = ({
 
     if (externalReport) {
       setExternalReport(externalReport.reportType as string, taskSid);
-      return addExternalReportSectionElement(contactDetailsSectionFormApi.EXTERNAL_REPORT, 'externalReport');
+      return addExternalReportSectionElement('externalReport');
     }
 
     if (csamReport && addExternalReport !== null) {
-      return <ExternalReport taskSid={taskSid} externalReport={addExternalReport} />;
+      return <ExternalReport contactId={contactId} taskSid={taskSid} externalReport={addExternalReport} />;
     }
-    return addExternalReportSectionElement(contactDetailsSectionFormApi.EXTERNAL_REPORT, 'externalReport');
+    return addExternalReportSectionElement('externalReport');
   }
+
+  console.log('contactId is here', addExternalReport);
 
   return (
     <ContactDetailsHome

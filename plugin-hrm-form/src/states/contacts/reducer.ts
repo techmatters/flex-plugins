@@ -37,7 +37,6 @@ import {
   sectionExpandedStateReducer,
   TOGGLE_DETAIL_EXPANDED_ACTION,
 } from './contactDetails';
-import { externalReportDefinition } from '../../services/ContactService';
 import { ChannelTypes } from '../DomainConstants';
 
 export type TaskEntry = {
@@ -71,6 +70,7 @@ type ContactsState = {
   editingContact: boolean;
   isCallTypeCaller: boolean;
   externalReport: string;
+  csamReports: CSAMReportEntry[];
 };
 
 export const emptyCategories = [];
@@ -136,6 +136,7 @@ const initialState: ContactsState = {
   editingContact: false,
   isCallTypeCaller: false,
   externalReport: null,
+  csamReports: [],
 };
 
 // eslint-disable-next-line import/no-unused-modules,complexity
@@ -293,6 +294,12 @@ export function reduce(
             csamReports: [...state.tasks[action.taskId].csamReports, action.csamReportEntry],
           },
         },
+      };
+    }
+    case t.ADD_EXTERNAL_REPORT_ENTRY: {
+      return {
+        ...state,
+        csamReports: [action.csamReportEntry],
       };
     }
     case t.SET_CALL_TYPE: {

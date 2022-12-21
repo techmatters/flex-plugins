@@ -24,8 +24,7 @@ type OwnProps = {
 };
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
-  const { externalReport } = state[namespace][contactFormsBase];
-  const { isCallTypeCaller } = state[namespace][contactFormsBase];
+  const { isCallTypeCaller, externalReport } = state[namespace][contactFormsBase];
 
   return { editContactFormOpen, isCallTypeCaller, externalReport };
 };
@@ -87,9 +86,7 @@ const ContactDetails: React.FC<Props> = ({
         isCallTypeCaller={isCallTypeCaller}
       />
 
-      <div
-        className={`${editContactFormOpen || externalReport !== null ? 'editingContact' : ''} hiddenWhenEditingContact`}
-      >
+      <div className={`${editContactFormOpen ? 'editingContact' : ''} hiddenWhenEditingContact`}>
         <BackToSearchResultsButton
           text={<Template code="SearchResultsIndex-BackToResults" />}
           handleBack={handleBackToResults}
