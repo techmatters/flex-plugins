@@ -114,16 +114,16 @@ const ContactDetails: React.FC<Props> = ({
     >
       <ContactDetailsSectionForm
         tabPath="externalReport"
-        definition={externalReportDefinition.reportType}
+        definition={externalReportDefinition}
         layoutDefinition={externalReportLayoutDefinition.layout}
-        initialValues={externalReportDefinition.reportType}
+        initialValues={externalReportDefinition}
         display={true}
         autoFocus={true}
         updateFormActionDispatcher={dispatch => values =>
           dispatch(
             updateContactDraft(contactId, {
               details: {
-                [formPath]: transformExternalReportValues(values.externalReport, externalReportDefinition.reportType),
+                [formPath]: transformExternalReportValues(values.externalReport, externalReportDefinition),
               },
             }),
           )}

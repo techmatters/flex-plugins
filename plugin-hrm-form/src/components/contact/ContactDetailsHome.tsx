@@ -203,7 +203,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
-      <NameText>{childOrUnknown}</NameText>
+      <NameText>
+        #{savedContact.contactId} {childOrUnknown}
+      </NameText>
 
       {auditMessage(dateTime, createdBy, 'ContactDetails-ActionHeaderAdded')}
 

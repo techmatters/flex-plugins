@@ -8,7 +8,7 @@ import {
   FormDefinition,
   FormItemDefinition,
   isNonSaveable,
-  LayoutDefinition,
+  FormInputType,
 } from 'hrm-form-definitions';
 
 import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
@@ -116,19 +116,17 @@ export type ExternalReportLayoutProps = {
   };
 };
 
-export const externalReportDefinition: ExternalReportFormProps = {
-  reportType: [
-    {
-      name: 'reportType',
-      label: 'Select CSAM report type',
-      type: 'radio-input',
-      options: [
-        { value: 'child-form', label: 'Create link for child' },
-        { value: 'counsellor-form', label: 'Report as counselor' },
-      ],
-    },
-  ],
-};
+export const externalReportDefinition: FormDefinition = [
+  {
+    name: 'reportType',
+    label: 'Select CSAM report type',
+    type: FormInputType.RadioInput,
+    options: [
+      { value: 'child-form', label: 'Create link for child' },
+      { value: 'counsellor-form', label: 'Report as counselor' },
+    ],
+  },
+];
 
 export const externalReportLayoutDefinition: ExternalReportLayoutProps = {
   layout: { splitFormAt: 2 },
@@ -183,7 +181,7 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
     callerInformation: transformValues(CallerInformationTab)(form.callerInformation),
     caseInformation: transformValues(CaseInformationTab)(form.caseInformation),
     childInformation: transformValues(ChildInformationTab)(form.childInformation),
-    externalReport: transformValues(externalReportDefinition.reportType)(form.externalReport),
+    externalReport: transformValues(externalReportDefinition)(form.externalReport),
     csamReport: {},
   };
 

@@ -15,7 +15,6 @@ You will require the following installed locally:
   - `TF_VAR_account_sid` & `TF_VAR_auth_token` to the same as `TWILIO_ACCOUNT_SID` & `TWILIO_AUTH_TOKEN` respectively (we need the account sid & token as a variable as well as a cred.).
   - `TF_VAR_datadog_app_id` & `TF_VAR_datadog_access_token` set for the RUM app that should already be created for the account.
   - `TF_VAR_serverless_url` - once set, the production serverless environment's domain, once set, use a placeholder until then.
-  - `TF_VAR_aws_account_id` - The account ID of the AWS account you are using to create resources.
 
   All the variables that start with `TF_VAR_` can, instead than be placed in the env vars, be placed in a `.private.tfvars` file (better described below).
 
@@ -45,20 +44,18 @@ Important notes:
   backend "s3" {
     bucket         = "tl-terraform-state-twilio-in-production"
     key            = "twilio/terraform.tfstate"
-    dynamodb_table = "twilio-terraform-in-production-locks"
+    dynamodb_table = "terraform-locks"
     encrypt        = true
   }
 ```
 4. Create an S3 bucket named after the one specified in the 'bucket' attribute you just set. You can copy the S3 settings from the `tl-terraform-state-twilio-terraform-poc`
-5. Create a dynamo db table named after the 'dynamodb_table' attribute you just set. It needs a String partition key called `LockID` but otherwise the default settings are fine
-6. Open the `variables.tf` file and update the defaults to ones appropriate to this helpline & environment
-7. Run `terraform init` from your new folder (you might need to run `terraform init -reconfigure` if it complains.)
-8. _Optional:_ You can create a private `.tfvars` for the sensitive variables you can't check in values for - if you name it something ending in `.private.tfvars` it will be ignored by git - or you can use `TF_VAR_*` environment variables for these as instructed above.
+5. Open the `variables.tf` file and update the defaults to ones appropriate to this helpline & environment
+6. Run `terraform init` from your new folder (you might need to run `terraform init -reconfigure` if it complains.)
+7. _Optional:_ You can create a private `.tfvars` for the sensitive variables you can't check in values for - if you name it something ending in `.private.tfvars` it will be ignored by git - or you can use `TF_VAR_*` environment variables for these as instructed above.
 If you go with the `.private.tfvars`, this is how it should look like:
 ```
 account_sid = "ACxxx"
 auth_token  = "xxx"
-aws_account_id = "xxx"
 datadog_app_id = "xxx"
 datadog_access_token = "pubXXX"
 serverless_url = "https://serverless-XXX-production.twil.io"

@@ -3,8 +3,6 @@ import { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-de
 
 import { ContactRawJson, InformationObject, SearchAPIContact } from '../../types/types';
 import {
-  ExternalReportFormProps,
-  ExternalReportLayoutProps,
   transformCategories,
   transformContactFormValues,
   transformValues,

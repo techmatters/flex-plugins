@@ -1,8 +1,8 @@
 [
   {
     "name": "date",
-    "label": "Date",
     "type": "date-input",
+    "label": "Date",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -12,6 +12,7 @@
     "name": "referredTo",
     "label": "Referred To",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -32,10 +33,6 @@
       {
         "value": "Police",
         "label": "Police"
-      },
-      {
-        "value": "Religious leader",
-        "label": "Religious leader"
       },
       {
         "value": "Other",

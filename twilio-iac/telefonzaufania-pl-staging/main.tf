@@ -9,7 +9,7 @@ terraform {
   backend "s3" {
     bucket         = "tl-terraform-state-twilio-pl-staging"
     key            = "twilio/terraform.tfstate"
-    dynamodb_table = "twilio-terraform-pl-staging-locks"
+    dynamodb_table = "terraform-locks"
     encrypt        = true
   }
 }
@@ -153,7 +153,6 @@ module aws_monitoring {
   helpline = local.helpline
   short_helpline = local.short_helpline
   environment = local.environment
-  aws_account_id = var.aws_account_id
 }
 
 module github {

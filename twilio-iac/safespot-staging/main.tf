@@ -9,7 +9,7 @@ terraform {
   backend "s3" {
     bucket         = "tl-terraform-state-twilio-jm-staging"
     key            = "twilio/terraform.tfstate"
-    dynamodb_table = "twilio-terraform-jm-staging-locks"
+    dynamodb_table = "terraform-locks"
     encrypt        = true
   }
 }
