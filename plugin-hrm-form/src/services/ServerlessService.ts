@@ -131,7 +131,6 @@ export const assignOfflineContact = async (targetSid: string, taskAttributes: IT
 type OfflineContactComplete = {
   action: 'complete';
   taskSid: string;
-  targetSid: string;
   finalTaskAttributes: ITask['attributes'];
 };
 

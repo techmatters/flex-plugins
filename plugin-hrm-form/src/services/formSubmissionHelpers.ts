@@ -50,7 +50,6 @@ export const submitContactForm = async (task: CustomITask, contactForm: Contact,
       await assignOfflineContactResolve({
         action: 'complete',
         taskSid: inBehalfTask.sid,
-        targetSid: targetWorkerSid,
         finalTaskAttributes: finalAttributes,
       });
       return savedContact;
