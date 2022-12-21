@@ -54,6 +54,7 @@ import { CaseSectionApi } from '../../states/case/sections/api';
 import * as ContactActions from '../../states/contacts/existingContacts';
 import { searchContactToHrmServiceContact, taskFormToSearchContact } from '../../states/contacts/contactDetailsAdapter';
 import { ChannelTypes } from '../../states/DomainConstants';
+import { caseContactIdentifier } from '../../states/case/contactIdentifier';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -67,20 +68,6 @@ type OwnProps = {
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const getFirstNameAndLastNameFromContact = (contact): CaseDetailsName => {
-  if (contact?.rawJson?.childInformation) {
-    const { firstName, lastName } = contact.rawJson.childInformation;
-    return {
-      firstName,
-      lastName,
-    };
-  }
-  return {
-    firstName: 'Unknown',
-    lastName: 'Unknown',
-  };
-};
 
 const newContactTemporaryId = (connectedCase: CaseType) => `__unsavedFromCase:${connectedCase?.id}`;
 
@@ -220,7 +207,6 @@ const Case: React.FC<Props> = ({
   const { can } = getPermissionsForCase(connectedCase.twilioWorkerId, connectedCase.status);
 
   const firstConnectedContact = (savedContacts && savedContacts[0]) ?? newContact;
-  const name = getFirstNameAndLastNameFromContact(firstConnectedContact);
 
   const categories = getCategories(firstConnectedContact);
   const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase || {};
@@ -288,7 +274,7 @@ const Case: React.FC<Props> = ({
 
   const caseDetails: CaseDetails = {
     id: connectedCase.id,
-    name,
+    contactIdentifier: caseContactIdentifier(definitionVersion, firstConnectedContact),
     categories,
     status,
     caseCounselor,

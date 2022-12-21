@@ -98,8 +98,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
             <Page size="A4" style={styles.page}>
               <CasePrintHeader
                 id={caseDetails.id}
-                firstName={caseDetails.name.firstName}
-                lastName={caseDetails.name.lastName}
+                contactIdentifier={caseDetails.contactIdentifier}
                 officeName={caseDetails.office?.label}
                 logoBlob={logoBlob}
               />

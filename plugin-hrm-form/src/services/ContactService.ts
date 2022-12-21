@@ -21,8 +21,6 @@ import {
   ContactMediaType,
   ContactRawJson,
   ConversationMedia,
-  HrmServiceContact,
-  InformationObject,
   isOfflineContactTask,
   isTwilioTask,
   NewHrmServiceContact,
@@ -31,27 +29,24 @@ import {
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
 
-/**
- * Un-nests the information (caller/child) as it comes from DB, to match the form structure
- * @param e the current form definition item
- * @param obj the object where we want to lookup for above item
- */
-export const unNestInformation = (e: FormItemDefinition, obj: InformationObject) =>
-  ['firstName', 'lastName'].includes(e.name) ? obj.name[e.name] : obj[e.name];
-
-type LegacyContactRawJson = Omit<ContactRawJson, 'callerInformation' | 'childInformation'> & {
-  childInformation: InformationObject;
-  callerInformation: InformationObject;
+type NestedInformation = { name?: { firstName: string; lastName: string } };
+type LegacyInformationObject = NestedInformation & {
+  [key: string]: string | boolean | NestedInformation[keyof NestedInformation]; // having NestedInformation[keyof NestedInformation] makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
 };
 
-const unNestLegacyInformationObject = (legacy: InformationObject): Record<string, string | boolean> => {
+type LegacyContactRawJson = Omit<ContactRawJson, 'callerInformation' | 'childInformation'> & {
+  childInformation: LegacyInformationObject;
+  callerInformation: LegacyInformationObject;
+};
+
+const unNestLegacyInformationObject = (legacy: LegacyInformationObject): Record<string, string | boolean> => {
   const { name, ...rest } = legacy;
   return typeof name === 'object' ? { ...rest, ...name } : (legacy as Record<string, string | boolean>);
 };
 
-const unNestLegacyRawJson = (legacy: LegacyContactRawJson): ContactRawJson => {
+export const unNestLegacyRawJson = (legacy: LegacyContactRawJson): ContactRawJson => {
   type PartiallyTransformed = Omit<ContactRawJson, 'callerInformation'> & {
-    callerInformation: InformationObject;
+    callerInformation: LegacyInformationObject;
   };
   const withFixedChildInformation: PartiallyTransformed = legacy.childInformation
     ? { ...legacy, childInformation: unNestLegacyInformationObject(legacy.childInformation) }

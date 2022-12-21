@@ -5,7 +5,6 @@ import { Text, View } from '@react-pdf/renderer';
 import { FormDefinition } from 'hrm-form-definitions';
 
 import styles from './styles';
-import { unNestInformation } from '../../../services/ContactService';
 import { getConfig } from '../../../HrmFormPlugin';
 import { presentValueFromStrings } from './presentValuesFromStrings';
 

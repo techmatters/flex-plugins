@@ -19,7 +19,7 @@ import {
 } from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
 import { connectedCaseBase, contactFormsBase, namespace, RootState, routingBase } from '../../states';
-import { Activity, CaseDetails, CaseDetailsName, CaseState } from '../../states/case/types';
+import { Activity, CaseDetails, CaseState } from '../../states/case/types';
 import { CustomITask, EntryInfo, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
 import { getConfig } from '../../HrmFormPlugin';
@@ -28,13 +28,7 @@ import TimelineInformationRow from './TimelineInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
 import { householdSectionApi } from '../../states/case/sections/household';
 import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
-
-const splitFullName = (name: CaseDetailsName) => {
-  if (name.firstName === 'Unknown' && name.lastName === 'Unknown') {
-    return 'Unknown';
-  }
-  return `${name.firstName} ${name.lastName}`;
-};
+import { caseContactIdentifier } from '../../states/case/contactIdentifier';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -70,7 +64,7 @@ const CaseHome: React.FC<Props> = ({
 }) => {
   if (!connectedCaseState || !routing || !isAppRouteWithCase(routing)) return null; // narrow type before deconstructing
 
-  const { featureFlags } = getConfig();
+  const { featureFlags, strings } = getConfig();
   const { route } = routing;
 
   const onViewCaseItemClick = (targetSubroute: CaseSectionSubroute) => (id: string) => {
@@ -97,7 +91,7 @@ const CaseHome: React.FC<Props> = ({
     documents,
     office,
     id,
-    name,
+    contactIdentifier,
     categories,
     contact,
     createdAt,
@@ -108,7 +102,6 @@ const CaseHome: React.FC<Props> = ({
     followUpDate,
     version,
   } = caseDetails;
-  const fullName = splitFullName(name);
   const statusLabel = definitionVersion.caseStatus[status]?.label ?? status;
 
   const itemRowRenderer = (itemTypeName: string, viewSubroute: CaseSectionSubroute, items: EntryInfo[]) => {
@@ -192,7 +185,7 @@ const CaseHome: React.FC<Props> = ({
         <Box marginLeft="25px" marginTop="13px">
           <CaseDetailsComponent
             caseId={id.toString()}
-            name={fullName}
+            contactIdentifier={contactIdentifier}
             statusLabel={statusLabel}
             can={can}
             counselor={caseCounselor}

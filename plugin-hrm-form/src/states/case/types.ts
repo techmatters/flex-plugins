@@ -1,7 +1,7 @@
 import { DefinitionVersionId, HelplineEntry, StatusInfo } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
-import { Case, CaseItemEntry } from '../../types/types';
+import { Case, CaseItemEntry, HrmServiceContact } from '../../types/types';
 import { ChannelTypes } from '../DomainConstants';
 
 // Action types
@@ -64,7 +64,7 @@ export type CaseDetailsName = {
 
 export type CaseDetails = {
   id: number;
-  name: CaseDetailsName;
+  contactIdentifier: string;
   categories?: {
     [category: string]: {
       [subcategory: string]: boolean;
@@ -87,7 +87,7 @@ export type CaseDetails = {
   childIsAtRisk: boolean;
   office?: HelplineEntry;
   version?: DefinitionVersionId;
-  contact: any; // ToDo: change this
+  contact: HrmServiceContact; // ToDo: change this
   contacts: any[];
 };
 

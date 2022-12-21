@@ -70,7 +70,7 @@ export const hrmServiceContactToSearchContact = (contact: HrmServiceContact): Se
   };
 };
 
-export const searchContactToHrmServiceContact = (contact: SearchAPIContact) => {
+export const searchContactToHrmServiceContact = (contact: SearchAPIContact): HrmServiceContact => {
   const {
     conversationDuration,
     createdBy,
@@ -81,6 +81,7 @@ export const searchContactToHrmServiceContact = (contact: SearchAPIContact) => {
     dateTime,
     updatedAt,
     updatedBy,
+    taskId,
   } = contact.overview;
   return {
     id: contact.contactId,
@@ -95,6 +96,10 @@ export const searchContactToHrmServiceContact = (contact: SearchAPIContact) => {
     channel,
     updatedAt,
     updatedBy,
+    taskId,
+    channelSid: undefined,
+    serviceSid: undefined,
+    queueName: undefined,
   };
 };
 

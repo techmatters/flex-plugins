@@ -4,6 +4,20 @@ import { getQueryParams } from './PaginationParams';
 import { getConfig } from '../HrmFormPlugin';
 import { Case, SearchCaseResult, isOfflineContactTask, CustomITask } from '../types/types';
 import type { TaskEntry as ContactForm } from '../states/contacts/reducer';
+import { unNestLegacyRawJson } from './ContactService';
+
+const computeChildName = (apiCase: Case): Case => {
+  const connectedContacts = (apiCase.connectedContacts ?? []).map(cc => ({
+    ...cc,
+    rawJson: unNestLegacyRawJson(cc.rawJson),
+  }));
+  const { firstName, lastName } = connectedContacts[0]?.rawJson?.childInformation;
+  return {
+    ...apiCase,
+    connectedContacts,
+    childName: firstName || lastName ? `${firstName ?? ''} ${lastName ?? ''}` : '',
+  };
+};
 
 export async function createCase(task: CustomITask, contactForm: ContactForm) {
   const { workerSid, definitionVersion } = getConfig();
@@ -30,7 +44,7 @@ export async function createCase(task: CustomITask, contactForm: ContactForm) {
 
   const responseJson = await fetchHrmApi('/cases', options);
 
-  return responseJson;
+  return computeChildName(responseJson);
 }
 
 export async function cancelCase(caseId: Case['id']) {
@@ -49,20 +63,11 @@ export async function updateCase(caseId: Case['id'], body: Partial<Case>) {
 
   const responseJson = await fetchHrmApi(`/cases/${caseId}`, options);
 
-  return responseJson;
+  return computeChildName(responseJson);
 }
 
 export async function searchCases(searchParams, limit, offset): Promise<SearchCaseResult> {
-  const queryParams = getQueryParams({ limit, offset });
-
-  const options = {
-    method: 'POST',
-    body: JSON.stringify(searchParams),
-  };
-
-  const responseJson = await fetchHrmApi(`/cases/search${queryParams}`, options);
-
-  return responseJson;
+  return listCases({ limit, offset }, searchParams);
 }
 
 export async function listCases(queryParams, listCasesPayload): Promise<SearchCaseResult> {
@@ -75,5 +80,8 @@ export async function listCases(queryParams, listCasesPayload): Promise<SearchCa
 
   const responseJson = await fetchHrmApi(`/cases/search${queryParamsString}`, options);
 
-  return responseJson;
+  return {
+    ...responseJson,
+    cases: responseJson.cases.map(computeChildName),
+  };
 }

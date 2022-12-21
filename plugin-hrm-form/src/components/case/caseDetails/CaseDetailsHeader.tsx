@@ -21,7 +21,7 @@ import { PermissionActionType } from '../../../permissions';
 
 type OwnProps = {
   caseId: string;
-  childName: string;
+  contactIdentifier: string;
   office: string;
   counselor: string;
   handlePrintCase: () => void;
@@ -30,7 +30,7 @@ type OwnProps = {
 
 const CaseDetailsHeader: React.FC<OwnProps> = ({
   caseId,
-  childName,
+  contactIdentifier,
   office,
   counselor,
   handlePrintCase,
@@ -42,7 +42,7 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
     <DetailsHeaderContainer>
       <DetailsHeaderTextContainer>
         <h6 style={{ padding: '6px 0' }}>
-          <DetailsHeaderChildName data-testid="Case-DetailsHeaderChildName">{childName}</DetailsHeaderChildName>
+          <DetailsHeaderChildName data-testid="Case-DetailsHeaderChildName">{contactIdentifier}</DetailsHeaderChildName>
         </h6>
         <DetailsHeaderCaseContainer>
           <DetailsHeaderCaseId id="Case-CaseId-label" data-testid="Case-DetailsHeaderCaseId">

@@ -85,11 +85,6 @@ export type Case = {
   connectedContacts: HrmServiceContact[]; // TODO: create contact type
 };
 
-type NestedInformation = { name?: { firstName: string; lastName: string } };
-export type InformationObject = NestedInformation & {
-  [key: string]: string | boolean | NestedInformation[keyof NestedInformation]; // having NestedInformation[keyof NestedInformation] makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
-};
-
 export type TwilioStoredMedia = {
   store: 'twilio';
   reservationSid: string;
@@ -134,7 +129,7 @@ export type HrmServiceContact = {
   createdBy: string;
   helpline: string;
   taskId: string;
-  channel: ChannelTypes;
+  channel: ChannelTypes | 'default';
   updatedBy: string;
   updatedAt: string;
   rawJson: ContactRawJson;
