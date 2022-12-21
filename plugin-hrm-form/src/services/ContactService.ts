@@ -82,7 +82,11 @@ export async function searchContacts(
   const rawResult = await fetchHrmApi(`/contacts/search${queryParams}`, options);
   return {
     ...rawResult,
-    contacts: rawResult.contacts.map(c => ({ ...c, details: unNestLegacyRawJson(c.details) })),
+    contacts: rawResult.contacts.map(c => {
+      const details = unNestLegacyRawJson(c.details);
+      const { firstName, lastName } = details.childInformation ?? {};
+      return { ...c, details, overview: { ...c.overview, name: `${firstName ?? ''} ${lastName ?? ''}` } };
+    }),
   };
 }
 
