@@ -24,8 +24,14 @@ type Props = {
 /**
  * Presentational component used to nicely consume the form values in SectionEntry
  */
-const SectionEntryValue: React.FC<Props> = ({ value, definition, layout, notBold, csamReportEnabled,
-  handleEditClick, }) => {
+const SectionEntryValue: React.FC<Props> = ({
+  value,
+  definition,
+  layout,
+  notBold,
+  csamReportEnabled,
+  handleEditClick,
+}) => {
   if (definition && definition.type === 'file-upload' && typeof value === 'string' && value !== null) {
     return <DownloadFile fileNameAtAws={value} />;
   }
@@ -33,7 +39,7 @@ const SectionEntryValue: React.FC<Props> = ({ value, definition, layout, notBold
   if (csamReportEnabled) {
     return (
       <SectionActionButton padding="0" type="button" onClick={handleEditClick}>
-        <EditIcon style={{ fontSize: '14px', padding: '-1px 6px 0 6px', marginRight: '6px' }}/>
+        <EditIcon style={{ fontSize: '14px', padding: '-1px 6px 0 6px', marginRight: '6px' }} />
         <Grid item xs={12}>
           <Template code="ContactDetails-GeneralDetails-externalReport" />
         </Grid>

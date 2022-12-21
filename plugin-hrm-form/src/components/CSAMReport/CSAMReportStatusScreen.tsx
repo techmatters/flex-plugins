@@ -26,6 +26,7 @@ type Props = {
   onSendAnotherReport?: () => void;
   clcReportStatus?: CSAMReportStatus;
   csamType?: 'child-status' | 'counsellor-status';
+  route?: string;
 };
 
 const CSAMReportStatusScreen: React.FC<Props> = ({
@@ -34,6 +35,7 @@ const CSAMReportStatusScreen: React.FC<Props> = ({
   onClickClose,
   onSendAnotherReport,
   csamType,
+  route,
 }) => {
   const [copied, setCopied] = React.useState(false);
 
@@ -80,7 +82,13 @@ const CSAMReportStatusScreen: React.FC<Props> = ({
             <Row>
               {csamType === 'child-status' && (
                 <Box marginRight="10px">
-                  <ReportCodeText>{clcReportStatus.responseData}</ReportCodeText>
+                  <ReportCodeText
+                    style={{
+                      paddingLeft: route === 'tabbed-forms' || route === 'csam-report' ? '50px' : '',
+                    }}
+                  >
+                    {clcReportStatus.responseData}
+                  </ReportCodeText>
                 </Box>
               )}
               {csamType === 'counsellor-status' && (
@@ -90,7 +98,7 @@ const CSAMReportStatusScreen: React.FC<Props> = ({
               )}
               <CopyCodeButton secondary roundCorners onClick={onCopyCode} data-testid="CSAMReport-CopyCodeButton">
                 <CopyCodeButtonIcon />
-                <div style={{ width: 10 }} />
+                <div style={{ width: route === 'tabbed-forms' || route === 'csam-report' ? 50 : 10 }} />
                 <ButtonText>
                   <Template code={CopyCodeButtonText} />
                 </ButtonText>

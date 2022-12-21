@@ -7,18 +7,13 @@ import _ from 'lodash';
 import { Close } from '@material-ui/icons';
 
 import { configurationBase, contactFormsBase, namespace, RootState, routingBase } from '../../states';
-import { externalReportDefinition, updateContactInHrm } from '../../services/ContactService';
+import { updateContactInHrm } from '../../services/ContactService';
 import { Box, StyledNextStepButton, BottomButtonBar, Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
 import { CaseActionTitle, EditContactContainer } from '../../styles/case';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { getConfig } from '../../HrmFormPlugin';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-import {
-  ContactDetailsSectionFormApi,
-  IssueCategorizationSectionFormApi,
-  ExternalReportSectionFormApi,
-  ContactFormValues,
-} from './contactDetailsSectionFormApi';
+import { ContactDetailsSectionFormApi, IssueCategorizationSectionFormApi } from './contactDetailsSectionFormApi';
 import {
   clearDraft,
   refreshRawContact,
@@ -30,17 +25,13 @@ import * as t from '../../states/contacts/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
 // eslint-disable-next-line import/no-useless-path-segments
 import ActionHeader from '../../components/case/ActionHeader';
-import { SubRouteProps } from './ContactDetails';
 import * as routingActions from '../../states/routing/actions';
 import { CustomITask } from '../../types/types';
-import * as actions from '../../states/csam-report/actions';
-import { counselorKeys } from '../CSAMReport/CSAMReportFormDefinition';
 
 type OwnProps = {
   context: DetailsContext;
   contactId?: string;
   contactDetailsSectionForm?: ContactDetailsSectionFormApi | IssueCategorizationSectionFormApi;
-  externalReportSectionForm?: ExternalReportSectionFormApi;
   children?: React.ReactNode;
   tabPath?: keyof TaskEntry;
   externalReport?: string;
@@ -56,7 +47,6 @@ const EditContactSection: React.FC<Props> = ({
   definitionVersions,
   refreshContact,
   contactDetailsSectionForm,
-  externalReportSectionForm,
   setEditContactPageOpen,
   setEditContactPageClosed,
   tabPath,
@@ -64,11 +54,7 @@ const EditContactSection: React.FC<Props> = ({
   children,
   clearContactDraft,
   counselorsHash,
-  changeRoute,
-  taskSid,
-  routing,
   createContactDraft,
-  updateFormAction,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const methods = useForm({
@@ -86,7 +72,6 @@ const EditContactSection: React.FC<Props> = ({
   const [isSubmitting, setSubmitting] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [initialFormValues, setInitialFormValues] = useState({});
-  const dispatch = useDispatch();
 
   const currentCounselor = React.useMemo(() => {
     const { workerSid } = getConfig();
@@ -128,7 +113,6 @@ const EditContactSection: React.FC<Props> = ({
   };
 
   const onGetExternalReportType = () => {
-    updateFormAction(counselorKeys, taskSid);
     navigate(ContactDetailsRoute.CSAM_REPORT);
   };
 
@@ -236,7 +220,6 @@ const EditContactSection: React.FC<Props> = ({
       </FormProvider>
     </EditContactContainer>
   );
-  // );
 };
 
 const mapDispatchToProps = {
@@ -246,7 +229,6 @@ const mapDispatchToProps = {
   clearContactDraft: clearDraft,
   changeRoute: routingActions.changeRoute,
   createContactDraft: createDraft,
-  updateFormAction: actions.updateFormAction,
 };
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
@@ -254,7 +236,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   counselorsHash: state[namespace][configurationBase].counselors.hash,
   savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
   draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
-  routing: state[namespace][routingBase].tasks[ownProps.taskSid],
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

@@ -35,19 +35,6 @@ export type ContactDetailsSectionFormApi = {
   };
 };
 
-// eslint-disable-next-line import/no-unused-modules
-export type ExternalReportSectionFormApi = {
-  getFormDefinition: (def: ExternalReportFormProps) => FormDefinition;
-  getLayoutDefinition: (def: ExternalReportLayoutProps) => LayoutDefinition;
-  getFormValues: (def: ExternalReportFormProps, contact: SearchContactDraftChanges) => ContactFormValues;
-  formToPayload: (
-    def: ExternalReportFormProps,
-    form: ContactFormValues,
-  ) => {
-    rawJson: Partial<Pick<ContactRawJson, 'externalReport'>>;
-  };
-};
-
 export type IssueCategorizationSectionFormApi = {
   getFormDefinition: (def: DefinitionVersion) => FormDefinition;
   getLayoutDefinition: (def: DefinitionVersion) => LayoutDefinition;
@@ -65,7 +52,6 @@ export const contactDetailsSectionFormApi: {
   CALLER_INFORMATION: ContactDetailsSectionFormApi;
   ISSUE_CATEGORIZATION: IssueCategorizationSectionFormApi;
   CASE_INFORMATION: ContactDetailsSectionFormApi;
-  EXTERNAL_REPORT: ExternalReportSectionFormApi;
 } = {
   CHILD_INFORMATION: {
     getFormValues: (def, contact) => ({
@@ -120,19 +106,6 @@ export const contactDetailsSectionFormApi: {
     formToPayload: (def, form) => ({
       rawJson: {
         caseInformation: transformValues(def.tabbedForms.CaseInformationTab)(form.caseInformation),
-      },
-    }),
-  },
-  EXTERNAL_REPORT: {
-    getFormValues: (def, contact) => {
-      const { ...externalReport } = contact.details.externalReport;
-      return { externalReport } as ContactFormValues;
-    },
-    getFormDefinition: def => def.reportType,
-    getLayoutDefinition: def => def.layout,
-    formToPayload: (def, form) => ({
-      rawJson: {
-        externalReport: transformValues(def.reportType)(form.externalReport),
       },
     }),
   },

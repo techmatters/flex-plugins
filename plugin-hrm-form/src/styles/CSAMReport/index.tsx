@@ -119,6 +119,3 @@ const StyledSmallIcon = withStyles({
     height: '17px',
   },
 });
-
-export const OpenInNewIcon = StyledSmallIcon(OpenInNew);
-OpenInNewIcon.displayName = 'OpenInNewIcon';
