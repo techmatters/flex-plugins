@@ -429,6 +429,7 @@
     "ContactDetails-GeneralDetails-DateTime": "Dátum/Idő",
     "ContactDetails-GeneralDetails-KeepConfidential": "Anonim szeretne maradni?",
     "ContactDetails-GeneralDetails-OKToCall": "Visszahívható telefonon?",
+    "ContactDetails-UnsavedContact": "Nem mentett névjegy",
     "SectionName-CallerInformation": "Hívó adatai",
     "SectionName-ChildInformation": "Gyerek adatai",
     "SectionName-HouseholdMember": "Hozzátartozó/családtag",

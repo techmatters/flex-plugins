@@ -282,6 +282,7 @@
   "ContactDetails-GeneralDetails-DiscussRights": "คุณหารือเกี่ยวกับสิทธิกับเด็กหรือไม่?",
   "ContactDetails-GeneralDetails-SolvedProblem": "เด็กรู้สึกว่าเราแก้ปัญหาของพวกเขาได้หรือไม่?",
   "ContactDetails-GeneralDetails-WouldRecommend": "เด็กจะแนะนำเรากับเพื่อนหรือไม่?",
+  "ContactDetails-UnsavedContact": "ผู้ติดต่อที่ไม่ได้บันทึก",
   "SectionName-Contact": "ติดต่อ",
   "SectionName-CaseSummary": "สรุปกรณี",
   "OfflineContactFirstLine": "ติดต่อออฟไลน์",

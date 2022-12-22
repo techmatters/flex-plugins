@@ -274,7 +274,10 @@ const Case: React.FC<Props> = ({
 
   const caseDetails: CaseDetails = {
     id: connectedCase.id,
-    contactIdentifier: contactLabel(definitionVersion, strings, firstConnectedContact, ''),
+    contactIdentifier: contactLabel(definitionVersion, firstConnectedContact, {
+      placeholder: '',
+      substituteForId: false,
+    }),
     categories,
     status,
     caseCounselor,

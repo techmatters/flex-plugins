@@ -64,7 +64,7 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
       <PreviewWrapper>
         <CaseHeader
           caseId={id}
-          contactLabel={contactLabel(definitionVersion, strings, firstContact)}
+          contactLabel={contactLabel(definitionVersion, firstContact, { substituteForId: false, placeholder: '' })}
           createdAt={createdAtObj}
           updatedAt={updatedAtObj}
           followUpDate={followUpDateObj}

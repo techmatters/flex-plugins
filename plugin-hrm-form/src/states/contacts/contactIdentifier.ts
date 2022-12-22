@@ -18,12 +18,11 @@ const definitionUsesChildName = (definition: DefinitionVersion) =>
 
 export const contactLabel = (
   definition: DefinitionVersion,
-  strings: Record<string, string>,
   contact: HrmServiceContact,
-  placeholder: string = 'Unknown',
+  { placeholder = 'Unknown', substituteForId = true }: { placeholder?: string; substituteForId?: boolean } = {},
 ) => {
   if (definitionUsesChildName(definition)) {
     return splitFullName(contact, placeholder);
   }
-  return contact && contact.id ? `${strings['Case-Contact']} #${contact?.id}` : placeholder;
+  return contact && contact.id && substituteForId ? `#${contact?.id}` : placeholder;
 };

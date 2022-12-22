@@ -102,7 +102,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
           </CLCaseNumberContainer>
         </CLNumberCell>
         <CLNamesCell>
-          <CLTableBodyFont>{contactLabel(definitionVersion, config.strings, contact)}</CLTableBodyFont>
+          <CLTableBodyFont>{contactLabel(definitionVersion, contact)}</CLTableBodyFont>
         </CLNamesCell>
         <CLTableCell>
           <CLTableBodyFont>{counselor}</CLTableBodyFont>
