@@ -13,7 +13,7 @@ import { updateDefinitionVersion } from '../../../states/configuration/actions';
 import { configurationBase, namespace, RootState } from '../../../states';
 import TagsAndCounselor from '../ContactPreview/TagsAndCounselor';
 import { retrieveCategories } from '../../../states/contacts/contactDetailsAdapter';
-import { caseContactLabel } from '../../../states/contacts/contactIdentifier';
+import { contactLabel } from '../../../states/contacts/contactIdentifier';
 import { getConfig } from '../../../HrmFormPlugin';
 
 type OwnProps = {
@@ -56,7 +56,7 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
   }, [updateDefinitionVersion, versionId, definitionVersions]);
 
   const statusLabel = definitionVersions[versionId]?.caseStatus[status]?.label ?? status;
-  const contactLabel = caseContactLabel(definitionVersions[versionId], strings, firstContact);
+  const contactLabel = contactLabel(definitionVersions[versionId], strings, firstContact);
 
   return (
     <Flex>

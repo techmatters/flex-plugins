@@ -4,10 +4,10 @@ import { HrmServiceContact } from '../../types/types';
 
 const splitFullName = (contact: HrmServiceContact) => {
   const { firstName, lastName } = contact?.rawJson?.childInformation ?? {};
-  if ((firstName === 'Unknown' && lastName === 'Unknown') || (!firstName && lastName)) {
+  if ((firstName === 'Unknown' && lastName === 'Unknown') || (!firstName && !lastName)) {
     return 'Unknown';
   }
-  return `${firstName} ${lastName}`;
+  return `${firstName ?? ''} ${lastName ?? ''}`;
 };
 
 const definitionUsesChildName = (definition: DefinitionVersion) =>
@@ -16,7 +16,7 @@ const definitionUsesChildName = (definition: DefinitionVersion) =>
       definition.tabbedForms.ChildInformationTab.find(input => input.name === 'firstName' || input.name === 'lastName'),
   );
 
-export const caseContactLabel = (
+export const contactLabel = (
   definition: DefinitionVersion,
   strings: Record<string, string>,
   contact: HrmServiceContact,
@@ -24,5 +24,5 @@ export const caseContactLabel = (
   if (definitionUsesChildName(definition)) {
     return splitFullName(contact);
   }
-  return contact ? `${strings['Case-Contact']} #${contact?.id}` : '';
+  return contact && contact.id ? `${strings['Case-Contact']} #${contact?.id}` : '';
 };

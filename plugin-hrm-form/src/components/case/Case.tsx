@@ -54,7 +54,7 @@ import { CaseSectionApi } from '../../states/case/sections/api';
 import * as ContactActions from '../../states/contacts/existingContacts';
 import { searchContactToHrmServiceContact, taskFormToSearchContact } from '../../states/contacts/contactDetailsAdapter';
 import { ChannelTypes } from '../../states/DomainConstants';
-import { caseContactLabel } from '../../states/contacts/contactIdentifier';
+import { contactLabel } from '../../states/contacts/contactIdentifier';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -274,7 +274,7 @@ const Case: React.FC<Props> = ({
 
   const caseDetails: CaseDetails = {
     id: connectedCase.id,
-    contactIdentifier: caseContactLabel(definitionVersion, strings, firstConnectedContact),
+    contactIdentifier: contactLabel(definitionVersion, strings, firstConnectedContact),
     categories,
     status,
     caseCounselor,
