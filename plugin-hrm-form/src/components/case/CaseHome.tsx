@@ -63,7 +63,7 @@ const CaseHome: React.FC<Props> = ({
 }) => {
   if (!connectedCaseState || !routing || !isAppRouteWithCase(routing)) return null; // narrow type before deconstructing
 
-  const { featureFlags, strings } = getConfig();
+  const { featureFlags } = getConfig();
   const { route } = routing;
 
   const onViewCaseItemClick = (targetSubroute: CaseSectionSubroute) => (id: string) => {

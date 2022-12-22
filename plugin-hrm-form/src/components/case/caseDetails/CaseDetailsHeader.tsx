@@ -41,9 +41,13 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
   return (
     <DetailsHeaderContainer>
       <DetailsHeaderTextContainer>
-        <h6 style={{ padding: '6px 0' }}>
-          <DetailsHeaderChildName data-testid="Case-DetailsHeaderChildName">{contactIdentifier}</DetailsHeaderChildName>
-        </h6>
+        {contactIdentifier && (
+          <h6 style={{ padding: '6px 0' }}>
+            <DetailsHeaderChildName data-testid="Case-DetailsHeaderChildName">
+              {contactIdentifier}
+            </DetailsHeaderChildName>
+          </h6>
+        )}
         <DetailsHeaderCaseContainer>
           <DetailsHeaderCaseId id="Case-CaseId-label" data-testid="Case-DetailsHeaderCaseId">
             <Template code="Case-CaseNumber" />

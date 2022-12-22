@@ -21,14 +21,15 @@ import {
   fetchCaseListSuccess,
 } from '../../../states/caseList/listContent';
 import { caseListSettingsInitialState } from '../../../states/caseList/settings';
-import { Case } from '../../../types/types';
+import { Case, ContactRawJson, HrmServiceContact } from '../../../types/types';
 
 // console.log = () => null;
 console.error = () => null;
 
-const mockedCaseList: (Case & { categories: any; childName: string })[] = [
+const mockedCaseList: (Case & { categories: any })[] = [
   {
     id: 1,
+    accountSid: '',
     twilioWorkerId: 'worker 1',
     createdAt: '2020-07-07T17:38:42.227Z',
     updatedAt: '2020-07-07T19:20:33.339Z',
@@ -37,12 +38,22 @@ const mockedCaseList: (Case & { categories: any; childName: string })[] = [
       definitionVersion: DefinitionVersionId.v1,
     },
     helpline: '',
-    connectedContacts: [],
+    connectedContacts: [
+      {
+        rawJson: {
+          childInformation: {
+            firstName: 'Michael',
+            lastName: 'Smith',
+          },
+        } as Partial<ContactRawJson>,
+      } as HrmServiceContact,
+    ],
     categories: {},
     childName: 'Michael Smith',
   },
   {
     id: 2,
+    accountSid: '',
     twilioWorkerId: 'worker 2',
     createdAt: '2020-07-07T17:38:42.227Z',
     updatedAt: '2020-07-07T19:20:33.339Z',
@@ -51,9 +62,18 @@ const mockedCaseList: (Case & { categories: any; childName: string })[] = [
       definitionVersion: DefinitionVersionId.v1,
     },
     helpline: '',
-    connectedContacts: [],
+    connectedContacts: [
+      {
+        rawJson: {
+          childInformation: {
+            firstName: 'Sonya',
+            lastName: 'Michels',
+          },
+        } as Partial<ContactRawJson>,
+      } as HrmServiceContact,
+    ],
     categories: {},
-    childName: 'Sonya Michels',
+    childName: 'ignored',
   },
 ];
 

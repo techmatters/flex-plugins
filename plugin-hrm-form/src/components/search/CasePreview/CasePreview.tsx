@@ -55,15 +55,16 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
     }
   }, [updateDefinitionVersion, versionId, definitionVersions]);
 
-  const statusLabel = definitionVersions[versionId]?.caseStatus[status]?.label ?? status;
-  const contactLabel = contactLabel(definitionVersions[versionId], strings, firstContact);
+  const definitionVersion = definitionVersions[versionId];
+
+  const statusLabel = definitionVersion?.caseStatus[status]?.label ?? status;
 
   return (
     <Flex>
       <PreviewWrapper>
         <CaseHeader
           caseId={id}
-          contactLabel={contactLabel}
+          contactLabel={contactLabel(definitionVersion, strings, firstContact)}
           createdAt={createdAtObj}
           updatedAt={updatedAtObj}
           followUpDate={followUpDateObj}
