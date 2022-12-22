@@ -1,10 +1,9 @@
 {
   "ip": "{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}",
-  "firstName": "{{trigger.message.ChannelAttributes.from}}",
   "channelType": "{{trigger.message.ChannelAttributes.channel_type}}",
   "channelSid": "{{trigger.message.ChannelSid}}",
   "helpline": "{{trigger.message.ChannelAttributes.pre_engagement_data.helpline}}",
-  "language":"${task_language}",
+  "language":"{{trigger.message.ChannelAttributes.pre_engagement_data.language}}",
   "ignoreAgent": "",
   "transferTargetType": "",
   "memory": {{ widgets.${chatbot_language}.memory  | to_json}}
