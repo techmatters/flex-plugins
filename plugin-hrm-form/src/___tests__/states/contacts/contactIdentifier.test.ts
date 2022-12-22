@@ -61,7 +61,7 @@ describe('contactLabel', () => {
       );
       expect(result).toEqual('FIRST_NAME LAST_NAME');
     });
-    test('First name and last name both set to Unknown - returns Unknown', () => {
+    test('First name and last name both set to Unknown - returns placeholder', () => {
       const result = contactLabel(
         definitionUsingNames as DefinitionVersion,
         translation,
@@ -73,13 +73,22 @@ describe('contactLabel', () => {
       const result = contactLabel(definitionUsingNames as DefinitionVersion, translation, contactWithChildName('', ''));
       expect(result).toEqual('Unknown');
     });
-    test('First name and last name both undefined - returns Unknown', () => {
+    test('First name and last name both undefined - returns placeholder', () => {
       const result = contactLabel(
         definitionUsingNames as DefinitionVersion,
         translation,
         baselineContact as HrmServiceContact,
       );
       expect(result).toEqual('Unknown');
+    });
+    test('Cusom placeholder specified - uses custom placeholder', () => {
+      const result = contactLabel(
+        definitionUsingNames as DefinitionVersion,
+        translation,
+        baselineContact as HrmServiceContact,
+        'CUSTOM_PLACEHOLDER',
+      );
+      expect(result).toEqual('CUSTOM_PLACEHOLDER');
     });
     test('First name set and last name undefined - returns first name with trailing space', () => {
       const result = contactLabel(
@@ -113,9 +122,14 @@ describe('contactLabel', () => {
       );
       expect(result).toEqual('Unknown LAST_NAME');
     });
-    test('Contact undefined - returns Unknown', () => {
-      const result = contactLabel(definitionUsingNames as DefinitionVersion, translation, undefined);
-      expect(result).toEqual('Unknown');
+    test('Contact undefined - returns placeholder', () => {
+      const result = contactLabel(
+        definitionUsingNames as DefinitionVersion,
+        translation,
+        undefined,
+        'CUSTOM_PLACEHOLDER',
+      );
+      expect(result).toEqual('CUSTOM_PLACEHOLDER');
     });
   });
   describe('ChildInformation definition has no firstName or lastName inputs', () => {
@@ -147,18 +161,28 @@ describe('contactLabel', () => {
       );
       expect(result).toEqual('CONTACT_LABEL #1234');
     });
-    test('ID undefined - returns empty string', () => {
+    test('ID undefined - returns placeholder', () => {
       const { id, ...contactWithoutId } = baselineContact;
       const result = contactLabel(
         baselineDefinition as DefinitionVersion,
         translation,
         contactWithoutId as HrmServiceContact,
       );
-      expect(result).toEqual('');
+      expect(result).toEqual('Unknown');
     });
-    test('Contact undefined - returns empty string', () => {
+    test('ID undefined & custom placeholder specified - returns placeholder', () => {
+      const { id, ...contactWithoutId } = baselineContact;
+      const result = contactLabel(
+        baselineDefinition as DefinitionVersion,
+        translation,
+        contactWithoutId as HrmServiceContact,
+        'CUSTOM_PLACEHOLDER',
+      );
+      expect(result).toEqual('CUSTOM_PLACEHOLDER');
+    });
+    test('Contact undefined - returns placeholder', () => {
       const result = contactLabel(baselineDefinition as DefinitionVersion, translation, undefined);
-      expect(result).toEqual('');
+      expect(result).toEqual('Unknown');
     });
   });
   test('Definition undefined - returns labelled contact ID', () => {

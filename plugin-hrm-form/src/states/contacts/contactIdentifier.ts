@@ -2,10 +2,10 @@ import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { HrmServiceContact } from '../../types/types';
 
-const splitFullName = (contact: HrmServiceContact) => {
+const splitFullName = (contact: HrmServiceContact, placeholder: string) => {
   const { firstName, lastName } = contact?.rawJson?.childInformation ?? {};
   if ((firstName === 'Unknown' && lastName === 'Unknown') || (!firstName && !lastName)) {
-    return 'Unknown';
+    return placeholder;
   }
   return `${firstName ?? ''} ${lastName ?? ''}`;
 };
@@ -20,9 +20,10 @@ export const contactLabel = (
   definition: DefinitionVersion,
   strings: Record<string, string>,
   contact: HrmServiceContact,
+  placeholder: string = 'Unknown',
 ) => {
   if (definitionUsesChildName(definition)) {
-    return splitFullName(contact);
+    return splitFullName(contact, placeholder);
   }
-  return contact && contact.id ? `${strings['Case-Contact']} #${contact?.id}` : '';
+  return contact && contact.id ? `${strings['Case-Contact']} #${contact?.id}` : placeholder;
 };
