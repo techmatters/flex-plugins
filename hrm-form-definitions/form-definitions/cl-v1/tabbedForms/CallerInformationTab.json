@@ -16,7 +16,7 @@
     "unknownOption": "Desconocido",
     "options": [
       {
-        "value": "",
+        "value": "Desconocido",
         "label": ""
       },
       {
@@ -45,10 +45,10 @@
     "name": "age",
     "label": "Edad",
     "type": "select",
-    "unknownOption": "Unknown",
+    "unknownOption": "Desconocido",
     "options": [
       {
-        "value": "",
+        "value": "Desconocido",
         "label": ""
       },
       {
@@ -56,23 +56,23 @@
         "label": "<5"
       },
       {
-        "value": "5",
+        "value": "05",
         "label": "5"
       },
       {
-        "value": "6",
+        "value": "06",
         "label": "6"
       },
       {
-        "value": "7",
+        "value": "07",
         "label": "7"
       },
       {
-        "value": "8",
+        "value": "08",
         "label": "8"
       },
       {
-        "value": "9",
+        "value": "09",
         "label": "9"
       },
       {
@@ -133,6 +133,7 @@
     "name": "relationshipToChild",
     "label": "Relación con el Niño",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
