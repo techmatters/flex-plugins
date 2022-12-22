@@ -55,7 +55,7 @@ export const submitContactForm = async (task: CustomITask, contactForm: Contact,
       return savedContact;
     } catch (err) {
       // If something went wrong remove the task for this offline contact
-      await assignOfflineContactResolve({ action: 'remove', taskSid: inBehalfTask.sid });
+      assignOfflineContactResolve({ action: 'remove', taskSid: inBehalfTask.sid });
       // TODO: should we do this? Should we care about removing the savedContact if it succeded? This step could break our "idempotence on contacts"
 
       // Raise error to caller
