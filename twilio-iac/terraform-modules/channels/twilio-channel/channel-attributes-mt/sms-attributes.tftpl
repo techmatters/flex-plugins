@@ -4,7 +4,7 @@
   "channelSid": "{{trigger.message.ChannelSid}}",
   "twilioNumber": "{{trigger.message.ChannelAttributes.twilioNumber}}",
   "ignoreAgent": "",
-  "language":"${task_language}",
+  "language":"{{widgets.chatbot_language.memory.twilio.collected_data.collect_survey.answers.language.answer}}",
   "transferTargetType": "",
   "memory": {{ widgets.${chatbot_language}.memory  | to_json}}
 }
