@@ -54,7 +54,7 @@ import { CaseSectionApi } from '../../states/case/sections/api';
 import * as ContactActions from '../../states/contacts/existingContacts';
 import { searchContactToHrmServiceContact, taskFormToSearchContact } from '../../states/contacts/contactDetailsAdapter';
 import { ChannelTypes } from '../../states/DomainConstants';
-import { caseContactIdentifier } from '../../states/case/contactIdentifier';
+import { caseContactLabel } from '../../states/contacts/contactIdentifier';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -210,7 +210,7 @@ const Case: React.FC<Props> = ({
 
   const categories = getCategories(firstConnectedContact);
   const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase || {};
-  const { workerSid } = getConfig();
+  const { workerSid, strings } = getConfig();
   const caseCounselor = counselorsHash[twilioWorkerId];
   const currentCounselor = counselorsHash[workerSid];
   // -- Date cannot be converted here since the date dropdown uses the yyyy-MM-dd format.
@@ -274,7 +274,7 @@ const Case: React.FC<Props> = ({
 
   const caseDetails: CaseDetails = {
     id: connectedCase.id,
-    contactIdentifier: caseContactIdentifier(definitionVersion, firstConnectedContact),
+    contactIdentifier: caseContactLabel(definitionVersion, strings, firstConnectedContact),
     categories,
     status,
     caseCounselor,

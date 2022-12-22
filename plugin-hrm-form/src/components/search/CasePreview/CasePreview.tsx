@@ -13,6 +13,8 @@ import { updateDefinitionVersion } from '../../../states/configuration/actions';
 import { configurationBase, namespace, RootState } from '../../../states';
 import TagsAndCounselor from '../ContactPreview/TagsAndCounselor';
 import { retrieveCategories } from '../../../states/contacts/contactDetailsAdapter';
+import { caseContactLabel } from '../../../states/contacts/contactIdentifier';
+import { getConfig } from '../../../HrmFormPlugin';
 
 type OwnProps = {
   currentCase: Case;
@@ -36,13 +38,12 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
   const { definitionVersion: versionId } = info;
   const orphanedCase = !connectedContacts || connectedContacts.length === 0;
   const firstContact = !orphanedCase && connectedContacts[0];
-  const { firstName, lastName } = ((firstContact || {}).rawJson || {}).childInformation || {};
-  const name = { firstName: firstName as string, lastName: lastName as string };
   const { categories, callSummary } = ((firstContact || {}).rawJson || {}).caseInformation || {
     callSummary: undefined,
   };
   const summary = info?.summary || callSummary;
   const counselor = counselorsHash[twilioWorkerId];
+  const { strings } = getConfig();
 
   useEffect(() => {
     const fetchDefinitionVersions = async (v: string) => {
@@ -55,13 +56,14 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
   }, [updateDefinitionVersion, versionId, definitionVersions]);
 
   const statusLabel = definitionVersions[versionId]?.caseStatus[status]?.label ?? status;
+  const contactLabel = caseContactLabel(definitionVersions[versionId], strings, firstContact);
 
   return (
     <Flex>
       <PreviewWrapper>
         <CaseHeader
           caseId={id}
-          childName={name}
+          contactLabel={contactLabel}
           createdAt={createdAtObj}
           updatedAt={updatedAtObj}
           followUpDate={followUpDateObj}

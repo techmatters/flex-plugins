@@ -1,6 +1,5 @@
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { CaseDetailsName } from './types';
 import { HrmServiceContact } from '../../types/types';
 
 const splitFullName = (contact: HrmServiceContact) => {
@@ -13,12 +12,17 @@ const splitFullName = (contact: HrmServiceContact) => {
 
 const definitionUsesChildName = (definition: DefinitionVersion) =>
   Boolean(
-    definition.tabbedForms.ChildInformationTab.find(input => input.name === 'firstName' || input.name === 'lastName'),
+    definition &&
+      definition.tabbedForms.ChildInformationTab.find(input => input.name === 'firstName' || input.name === 'lastName'),
   );
 
-export const caseContactIdentifier = (definition: DefinitionVersion, contact: HrmServiceContact) => {
+export const caseContactLabel = (
+  definition: DefinitionVersion,
+  strings: Record<string, string>,
+  contact: HrmServiceContact,
+) => {
   if (definitionUsesChildName(definition)) {
     return splitFullName(contact);
   }
-  return contact ? `#${contact?.id}` : '';
+  return contact ? `${strings['Case-Contact']} #${contact?.id}` : '';
 };

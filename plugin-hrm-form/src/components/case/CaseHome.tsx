@@ -28,7 +28,6 @@ import TimelineInformationRow from './TimelineInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
 import { householdSectionApi } from '../../states/case/sections/household';
 import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
-import { caseContactIdentifier } from '../../states/case/contactIdentifier';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;

@@ -196,7 +196,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
-  const displayContactId = savedContact.contactId?.startsWith('__unsaved')
+  const displayContactId = savedContact.contactId?.toString().startsWith('__unsaved')
     ? 'ContactDetails-UnsavedContact'
     : `#${savedContact.contactId}`;
 
