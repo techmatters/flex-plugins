@@ -118,13 +118,13 @@ export const getDefinitionVersionsList = async (missingDefinitionVersions: Defin
 /**
  * Creates a new task (offline contact) in behalf of targetSid worker with attributes. Other attributes for routing are added to the task in the implementation of assignOfflineContact serverless function
  */
-export const assignOfflineContact = async (targetSid: string, taskAttributes: ITask['attributes']) => {
+export const assignOfflineContactInit = async (targetSid: string, taskAttributes: ITask['attributes']) => {
   const body = {
     targetSid,
     taskAttributes: JSON.stringify(taskAttributes),
   };
 
-  const response = await fetchProtectedApi('/assignOfflineContact', body);
+  const response = await fetchProtectedApi('/assignOfflineContactInit', body);
   return response;
 };
 
