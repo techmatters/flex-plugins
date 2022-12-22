@@ -2,7 +2,6 @@ import { callTypes, DefinitionVersionId } from 'hrm-form-definitions';
 
 import { cancelCase, createCase } from '../../services/CaseService';
 import fetchHrmApi from '../../services/fetchHrmApi';
-import { OfflineContactTask } from '../../types/types';
 import { TaskEntry } from '../../states/contacts/reducer';
 
 jest.mock('../../services/fetchHrmApi');
@@ -49,12 +48,26 @@ describe('cancelCase()', () => {
 });
 
 describe('createCase()', () => {
+  const baselineResponse = {
+    id: 1,
+    createdAt: '2022-12-22T07:20:17.042Z',
+    updatedAt: '2022-12-22T07:20:17.042Z',
+    status: 'open',
+    helpline: 'a helpline',
+    info: { definitionVersion: 'demo-v1' },
+    twilioWorkerId: 'creating worker',
+    accountSid: 'an account',
+    createdBy: 'creating worker',
+    updatedBy: null,
+    childName: '',
+    categories: {},
+  };
+
   const baselineContactForm: TaskEntry = {
     helpline: 'a helpline',
     callType: callTypes.child,
     contactlessTask: {
       channel: 'voice',
-      createdOnBehalfOf: 'owning worker',
     },
     childInformation: {},
     callerInformation: {},
@@ -65,58 +78,75 @@ describe('createCase()', () => {
     metadata: { startMillis: 0, endMillis: 0, categories: { gridView: false, expanded: {} }, recreated: false },
   };
 
-  describe('Offline contact', () => {
-    const offlineContact: OfflineContactTask = {
-      channelType: 'default',
-      taskSid: 'offline-contact-task-sid',
-      attributes: {
-        isContactlessTask: true,
-        channelType: 'default',
+  test('No createdOnBehalfOf set - assumes a twilio contact, calls "POST /cases with twilioWorkerId set to owning worker', async () => {
+    const contactForm: TaskEntry = {
+      helpline: 'a helpline',
+      callType: callTypes.child,
+      contactlessTask: {
+        channel: 'voice',
+      },
+      childInformation: {},
+      callerInformation: {},
+      caseInformation: {},
+      categories: [],
+      csamReports: [],
+      isCallTypeCaller: false,
+      metadata: { startMillis: 0, endMillis: 0, categories: { gridView: false, expanded: {} }, recreated: false },
+    };
+
+    mockFetchHrmAPi.mockResolvedValue(baselineResponse);
+
+    const response = await createCase(contactForm, 'creating worker', DefinitionVersionId.demoV1);
+
+    const expectedUrl = `/cases`;
+    const expectedOptions = {
+      method: 'POST',
+      body: expect.jsonStringToParseAs({
+        twilioWorkerId: 'creating worker',
+        status: 'open',
+        helpline: 'a helpline',
+        info: {
+          definitionVersion: DefinitionVersionId.demoV1,
+        },
+      }),
+    };
+    expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl, expectedOptions);
+    expect(response).toStrictEqual(baselineResponse);
+  });
+
+  test('contactlessTask.createdOnBehalfOf set - assumes offline contact, calls "POST /cases with offlineContactCreator set to creating worker and twilioWorkerId set to owning worker', async () => {
+    const mockedResponse = {
+      ...baselineResponse,
+      info: { definitionVersion: 'demo-v1', offlineContactCreator: 'creating worker' },
+      twilioWorkerId: 'owning worker',
+    };
+
+    const contactForm: TaskEntry = {
+      ...baselineContactForm,
+      contactlessTask: {
+        channel: 'voice',
+        createdOnBehalfOf: 'owning worker',
       },
     };
 
-    const baselineResponse = {
-      id: 1,
-      createdAt: '2022-12-22T07:20:17.042Z',
-      updatedAt: '2022-12-22T07:20:17.042Z',
-      status: 'open',
-      helpline: 'a helpline',
-      info: { definitionVersion: 'demo-v1', offlineContactCreator: 'creating worker' },
-      twilioWorkerId: 'owning worker',
-      accountSid: 'an account',
-      createdBy: 'creating worker',
-      updatedBy: null,
-      childName: '',
-      categories: {},
+    mockFetchHrmAPi.mockResolvedValue(mockedResponse);
+
+    const response = await createCase(contactForm, 'creating worker', DefinitionVersionId.demoV1);
+
+    const expectedUrl = `/cases`;
+    const expectedOptions = {
+      method: 'POST',
+      body: expect.jsonStringToParseAs({
+        twilioWorkerId: 'owning worker',
+        status: 'open',
+        helpline: 'a helpline',
+        info: {
+          definitionVersion: DefinitionVersionId.demoV1,
+          offlineContactCreator: 'creating worker',
+        },
+      }),
     };
-
-    test('createCase calls "POST /cases with offlineContactCreator set to creating worker and twilioWorkerId set to owning worker', async () => {
-      const caseId = 1;
-
-      mockFetchHrmAPi.mockResolvedValue(baselineResponse);
-
-      const response = await createCase(
-        offlineContact,
-        baselineContactForm,
-        'creating worker',
-        DefinitionVersionId.demoV1,
-      );
-
-      const expectedUrl = `/cases`;
-      const expectedOptions = {
-        method: 'POST',
-        body: expect.jsonStringToParseAs({
-          twilioWorkerId: 'owning worker',
-          status: 'open',
-          helpline: 'a helpline',
-          info: {
-            definitionVersion: DefinitionVersionId.demoV1,
-            offlineContactCreator: 'creating worker',
-          },
-        }),
-      };
-      expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl, expectedOptions);
-      expect(response).toStrictEqual(baselineResponse);
-    });
+    expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl, expectedOptions);
+    expect(response).toStrictEqual(mockedResponse);
   });
 });

@@ -16,7 +16,7 @@ import { hasTaskControl } from '../../utils/transfer';
 import { namespace, contactFormsBase, connectedCaseBase } from '../../states';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
-import { CustomITask } from '../../types/types';
+import { CustomITask, isOfflineContactTask } from '../../types/types';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;
@@ -50,7 +50,7 @@ const BottomBar: React.FC<
     if (!hasTaskControl(task)) return;
 
     try {
-      const caseFromDB = await createCase(task, contactForm, workerSid, definitionVersion);
+      const caseFromDB = await createCase(contactForm, workerSid, definitionVersion);
       changeRoute({ route: 'new-case' }, taskSid);
       setConnectedCase(caseFromDB, taskSid);
     } catch (error) {

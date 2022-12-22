@@ -25,14 +25,13 @@ const computeChildName = (apiCase: Case): Case => {
 };
 
 export async function createCase(
-  task: CustomITask,
   contactForm: ContactForm,
   creatingWorkerSid: string,
   definitionVersion: DefinitionVersionId,
 ) {
   const { helpline } = contactForm;
 
-  const caseRecord = isOfflineContactTask(task)
+  const caseRecord = contactForm.contactlessTask?.createdOnBehalfOf
     ? {
         helpline,
         status: 'open',
