@@ -1,16 +1,21 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
+import { DefinitionVersionId } from 'hrm-form-definitions';
+
 import fetchHrmApi from './fetchHrmApi';
 import { getQueryParams } from './PaginationParams';
-import { getConfig } from '../HrmFormPlugin';
 import { Case, SearchCaseResult, isOfflineContactTask, CustomITask } from '../types/types';
 import type { TaskEntry as ContactForm } from '../states/contacts/reducer';
 import { unNestLegacyRawJson } from './ContactService';
 
 const computeChildName = (apiCase: Case): Case => {
+  if (!apiCase.connectedContacts || apiCase.connectedContacts.length === 0) {
+    return apiCase;
+  }
   const connectedContacts = (apiCase.connectedContacts ?? []).map(cc => ({
     ...cc,
     rawJson: unNestLegacyRawJson(cc.rawJson),
   }));
+
   const { firstName, lastName } = connectedContacts[0]?.rawJson?.childInformation;
   return {
     ...apiCase,
@@ -19,8 +24,12 @@ const computeChildName = (apiCase: Case): Case => {
   };
 };
 
-export async function createCase(task: CustomITask, contactForm: ContactForm) {
-  const { workerSid, definitionVersion } = getConfig();
+export async function createCase(
+  task: CustomITask,
+  contactForm: ContactForm,
+  creatingWorkerSid: string,
+  definitionVersion: DefinitionVersionId,
+) {
   const { helpline } = contactForm;
 
   const caseRecord = isOfflineContactTask(task)
@@ -28,12 +37,12 @@ export async function createCase(task: CustomITask, contactForm: ContactForm) {
         helpline,
         status: 'open',
         twilioWorkerId: contactForm.contactlessTask.createdOnBehalfOf,
-        info: { definitionVersion, offlineContactCreator: workerSid },
+        info: { definitionVersion, offlineContactCreator: creatingWorkerSid },
       }
     : {
         helpline,
         status: 'open',
-        twilioWorkerId: workerSid,
+        twilioWorkerId: creatingWorkerSid,
         info: { definitionVersion },
       };
 

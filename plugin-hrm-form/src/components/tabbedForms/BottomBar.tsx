@@ -45,12 +45,12 @@ const BottomBar: React.FC<
 
   const handleOpenNewCase = async () => {
     const { taskSid } = task;
-    const { strings } = getConfig();
+    const { strings, workerSid, definitionVersion } = getConfig();
 
     if (!hasTaskControl(task)) return;
 
     try {
-      const caseFromDB = await createCase(task, contactForm);
+      const caseFromDB = await createCase(task, contactForm, workerSid, definitionVersion);
       changeRoute({ route: 'new-case' }, taskSid);
       setConnectedCase(caseFromDB, taskSid);
     } catch (error) {
