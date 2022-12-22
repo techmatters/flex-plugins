@@ -22,8 +22,8 @@ import { SearchTitle } from '../../../styles/search';
 import { searchFormType, taskType } from '../../../types';
 import { getConfig } from '../../../HrmFormPlugin';
 import { namespace, configurationBase, searchContactsBase, contactFormsBase } from '../../../states';
-import { localizedSource } from '../../PreviousContactsBanner';
-import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils/task';
+import { channelTypes } from '../../../states/DomainConstants';
+import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils/task';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
 
 const getField = value => ({
@@ -146,7 +146,18 @@ class SearchForm extends Component {
       this.props.handleSearchFormChange('contactNumber', value);
     };
 
-    const source = localizedSource[task.channelType];
+    const localizedSourceFromTask = {
+      [channelTypes.web]: `${getContactValueTemplate(task)}`,
+      [channelTypes.voice]: 'PreviousContacts-PhoneNumber',
+      [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
+      [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
+      [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
+      [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
+      [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
+      [channelTypes.line]: 'PreviousContacts-LineUser',
+    };
+    const source = localizedSourceFromTask[task.channelType];
+
     const { canView } = getPermissionsForViewingIdentifiers();
     const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
