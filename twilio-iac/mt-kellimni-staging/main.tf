@@ -26,11 +26,12 @@ locals {
   environment = "Staging"
   short_environment = "STG"
   definition_version = "mt-v1"
+  helpline_language = "en-MT"
   permission_config = "mt"
   multi_office = false
   enable_post_survey = false
   target_task_name = "greeting"
-  twilio_numbers = [""]
+  twilio_numbers = ["messenger:111279668497853"]
   channel = ""
   custom_channel_attributes = ""
   feature_flags = {
@@ -52,10 +53,16 @@ locals {
     "enable_transcripts": true
   }
   twilio_channels = {
-    "webchat" = {"contact_identity" = "", "channel_type" ="web"  }
+    "webchat" = {"contact_identity" = "", "channel_type" ="web"  },
+    "facebook" = {"contact_identity" = "messenger:111279668497853", "channel_type" ="facebook"  }
+
    }
 
   custom_channels=[]
+  strings_en= jsondecode(file("${path.module}/../translations/en-MT/strings.json"))
+  strings_mt= jsondecode(file("${path.module}/../translations/mt-MT/strings.json"))
+  strings_ukr= jsondecode(file("${path.module}/../translations/ukr-MT/strings.json"))
+
 }
 
 provider "twilio" {
@@ -104,7 +111,24 @@ module twilioChannel {
   source = "../terraform-modules/channels/twilio-channel"
   channel_contact_identity = each.value.contact_identity
   channel_type = each.value.channel_type
-  pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
+  custom_flow_definition = templatefile(
+    "../terraform-modules/channels/flow-templates/language-mt/with-chatbot.tftpl",
+    {
+      channel_name = "${each.key}"
+      serverless_url=var.serverless_url
+      serverless_service_sid = module.serverless.serverless_service_sid
+      serverless_environment_sid = module.serverless.serverless_environment_production_sid
+      master_workflow_sid = module.taskRouter.master_workflow_sid
+      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+      chatbot_en_sid = twilio_autopilot_assistants_v1.chatbot_en.sid
+      chatbot_mt_sid = twilio_autopilot_assistants_v1.chatbot_mt.sid
+      chatbot_ukr_sid = twilio_autopilot_assistants_v1.chatbot_ukr.sid
+      chatbot_language_selector_sid = twilio_autopilot_assistants_v1.chatbot_language_selector.sid
+      channel_attributes_EN = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes-mt/${each.key}-attributes.tftpl",{chatbot_language ="chatbot_EN"})
+      channel_attributes_MT = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes-mt/${each.key}-attributes.tftpl",{chatbot_language ="chatbot_MT"})
+      channel_attributes_UKR = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes-mt/${each.key}-attributes.tftpl",{chatbot_language ="chatbot_UKR"})
+      flow_description = "${title(each.key)} Messaging Flow"
+    })
   target_task_name = local.target_task_name
   channel_name = "${each.key}"
   janitor_enabled = !local.enable_post_survey
