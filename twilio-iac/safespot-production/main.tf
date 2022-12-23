@@ -306,7 +306,7 @@ locals {
 }
 
 provider "twilio" {
-  username = local.secrets.twillio_account_sid
+  username = local.secrets.twilio_account_sid
   password = local.secrets.twilio_auth_token
 }
 
@@ -358,7 +358,7 @@ module studioFlow {
 
 module flex {
   source = "../terraform-modules/flex/default"
-  account_sid = local.secrets.twillio_account_sid
+  account_sid = local.secrets.twilio_account_sid
   short_environment = var.short_environment
   operating_info_key = var.operating_info_key
   definition_version = var.definition_version
@@ -377,7 +377,7 @@ module survey {
 
 module aws {
   source = "../terraform-modules/aws/default"
-  account_sid = local.secrets.twillio_account_sid
+  account_sid = local.secrets.twilio_account_sid
   helpline = var.helpline
   short_helpline = var.short_helpline
   environment = var.environment

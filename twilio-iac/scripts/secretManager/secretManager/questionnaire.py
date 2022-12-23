@@ -64,13 +64,16 @@ class Questionnaire():
             question['value'] = self.ask_question(question)
 
     def ask_question(self, question):
-        currentValue = self._secrets.get(question['tfvar'], None)
+        currentValue = None
+
+        if self._secrets:
+            currentValue = self._secrets.get(question['tfvar'], None)
 
         questionText = question['question']
         if currentValue:
             questionText += ' [' + self.obfuscate_secret(question['tfvar'], currentValue) + ']'
 
-        value = input(questionText + ']: ') or currentValue
+        value = input(questionText + ': ') or currentValue
 
         if not re.match(question['regex'], value):
             print('Invalid value')

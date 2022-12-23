@@ -58,7 +58,7 @@ locals {
 }
 
 provider "twilio" {
-  username = local.secrets.twillio_account_sid
+  username = local.secrets.twilio_account_sid
   password = local.secrets.twilio_auth_token
 }
 
@@ -98,7 +98,7 @@ module "taskRouter" {
 
 module flex {
   source = "../terraform-modules/flex/service-configuration"
-  account_sid = local.secrets.twillio_account_sid
+  account_sid = local.secrets.twilio_account_sid
   short_environment = local.short_environment
   operating_info_key = local.operating_info_key
   permission_config = local.permission_config
@@ -142,7 +142,7 @@ module survey {
 
 module aws {
   source = "../terraform-modules/aws/default"
-  account_sid = local.secrets.twillio_account_sid
+  account_sid = local.secrets.twilio_account_sid
   helpline = local.helpline
   short_helpline = local.short_helpline
   environment = local.environment
@@ -168,7 +168,7 @@ module aws_monitoring {
 
 module github {
   source = "../terraform-modules/github/default"
-  twilio_account_sid = local.secrets.twillio_account_sid
+  twilio_account_sid = local.secrets.twilio_account_sid
   twilio_auth_token = local.secrets.twilio_auth_token
   short_environment = local.short_environment
   short_helpline = local.short_helpline

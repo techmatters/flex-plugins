@@ -1,5 +1,0 @@
-account_sid = "${TWILIO_ACCOUNT_SID}"
-auth_token  = "${TWILIO_AUTH_TOKEN}"
-datadog_app_id = ${DATADOG_APP_ID}"
-datadog_access_token = "${DATADOG_ACCESS_TOKEN}"
-serverless_url = "${FLEX_SERVERLESS_URL}"

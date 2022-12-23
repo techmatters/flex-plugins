@@ -1,6 +1,6 @@
 questions = [
     {
-        'tfvar': 'twillio_account_sid',
+        'tfvar': 'twilio_account_sid',
         'question': 'Twilio Account SID',
         'value': None,
         'regex': r'^AC[a-z0-9]{32}$',
