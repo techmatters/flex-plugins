@@ -6,7 +6,11 @@ apply-main:
 get:
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) terraform get --update $(tf_args)
 
-init:
+init: init-pre init-main
+
+init-pre: init-ssm-secrets
+
+init-main:
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) terraform init $(tf_args)
 
 plan:
