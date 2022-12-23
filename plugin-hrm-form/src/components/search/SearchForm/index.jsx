@@ -249,7 +249,8 @@ class SearchForm extends Component {
                       />
                     </Box>
                     <span>
-                      <Template code="PreviousContacts-OnlyShowRecordsFrom" /> <Template code={localizedSource[task.channelType]} />{' '}
+                      <Template code="PreviousContacts-OnlyShowRecordsFrom" />{' '}
+                      <Template code={localizedSource[task.channelType]} />{' '}
                       {maskIdentifiers ? (
                         <Bold>
                           <Template code="MaskIdentifiers" />

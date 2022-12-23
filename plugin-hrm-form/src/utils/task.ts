@@ -2,13 +2,13 @@ import { ITask } from '@twilio/flex-ui';
 
 import { channelTypes } from '../states/DomainConstants';
 
-function getContactValueFromWebchat(task) {
+const getContactValueFromWebchat = task => {
   const { preEngagementData } = task.attributes;
-  if (!preEngagementData) return {};
+  if (!preEngagementData) return '';
   return task.attributes.preEngagementData[preEngagementData.contactType];
-}
+};
 
-export function getNumberFromTask(task: ITask) {
+export const getNumberFromTask = (task: ITask) => {
   if (task.channelType === channelTypes.facebook) {
     return task.defaultFrom.replace('messenger:', '');
   } else if (task.channelType === channelTypes.whatsapp) {
@@ -17,7 +17,7 @@ export function getNumberFromTask(task: ITask) {
     return getContactValueFromWebchat(task);
   }
   return task.defaultFrom;
-}
+};
 
 /**
  *
@@ -29,7 +29,7 @@ export const getFormattedNumberFromTask = (task: ITask) => {
 };
 
 // eslint-disable-next-line consistent-return
-export function getContactValueTemplate(task) {
+export const getContactValueTemplate = task => {
   const { preEngagementData } = task.attributes;
   if (!preEngagementData) return '';
   if (preEngagementData.contactType === 'ip') {
@@ -37,4 +37,4 @@ export function getContactValueTemplate(task) {
   } else if (preEngagementData.contactType === 'email') {
     return 'PreviousContacts-EmailAddress';
   }
-}
+};
