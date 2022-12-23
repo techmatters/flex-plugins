@@ -4,6 +4,8 @@ import { format } from 'date-fns';
 import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
+import { Edit } from '@material-ui/icons';
+import { Grid } from '@material-ui/core';
 
 import { Flex, Box } from '../../styles/HrmStyles';
 import { CSAMReportEntry, isS3StoredTranscript, isTwilioStoredMedia, SearchAPIContact } from '../../types/types';
@@ -14,6 +16,7 @@ import {
   SectionTitleContainer,
   SectionActionButton,
   SectionValueText,
+  ContactDetailsIcon,
 } from '../../styles/search';
 import ContactDetailsSection from './ContactDetailsSection';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
@@ -165,6 +168,17 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const counselorName = counselorsHash[counselor];
   const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(context, section);
   const navigate = (route: ContactDetailsRoute) => createContactDraft(savedContact.contactId, route);
+
+  const EditIcon = ContactDetailsIcon(Edit);
+
+  const externalReportButton = () => (
+    <SectionActionButton padding="0" type="button" onClick={() => navigate(ContactDetailsRoute.ADD_EXTERNAL_REPORT)}>
+      <EditIcon style={{ fontSize: '14px', padding: '-1px 6px 0 6px', marginRight: '6px' }} />
+      <Grid item xs={12}>
+        <Template code="ContactDetails-GeneralDetails-externalReport" />
+      </Grid>
+    </SectionActionButton>
+  );
 
   const loadConversationIntoOverlay = async () => {
     const twilioStoredMedia = savedContact.details.conversationMedia.find(isTwilioStoredMedia);
@@ -330,10 +344,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           ))}
           {csamReportEnabled && (
             <SectionEntry descriptionKey="ContactDetails-GeneralDetails-ExternalReportsFiled">
-              <SectionEntryValue
-                handleEditClick={() => navigate(ContactDetailsRoute.ADD_EXTERNAL_REPORT)}
-                csamReportEnabled={csamReportEnabled}
-              />
+              {externalReportButton()}
             </SectionEntry>
           )}
           {showCsamReports && showCsamReports.length > 0 && (

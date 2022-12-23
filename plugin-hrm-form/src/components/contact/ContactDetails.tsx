@@ -172,8 +172,6 @@ const ContactDetails: React.FC<Props> = ({
     return addExternalReportSectionElement('externalReport');
   }
 
-  console.log('contactId is here', addExternalReport);
-
   return (
     <ContactDetailsHome
       context={context}
