@@ -2,21 +2,11 @@ import { ITask } from '@twilio/flex-ui';
 
 import { channelTypes } from '../states/DomainConstants';
 
-export type ContactType = 'ip' | 'email';
-
-export const getContactValueFromWebchat = (task: ITask) => {
-  const taskContactType: ContactType = task.attributes.preEngagementData.contactType;
-  return task.attributes.preEngagementData[taskContactType];
-};
-export const getContactValueTemplate = (task: ITask): string => {
-  const { contactType } = task.attributes.preEngagementData;
-
-  if (contactType === 'ip') {
-    return 'PreviousContacts-IPAddress';
-  } else if (contactType === 'email') {
-    return 'PreviousContacts-EmailAddress';
-  }
-};
+function getContactValueFromWebchat(task) {
+  const { preEngagementData } = task.attributes;
+  if (!preEngagementData) return {};
+  return task.attributes.preEngagementData[preEngagementData.contactType];
+}
 
 export function getNumberFromTask(task: ITask) {
   if (task.channelType === channelTypes.facebook) {
@@ -26,15 +16,25 @@ export function getNumberFromTask(task: ITask) {
   } else if (task.channelType === channelTypes.web) {
     return getContactValueFromWebchat(task);
   }
-
   return task.defaultFrom;
 }
+
 /**
  *
  * @param {ITask | CustomITask} task
  * @param contactNumberFromTask
  */
-
 export const getFormattedNumberFromTask = (task: ITask) => {
   return task.channelType === channelTypes.twitter ? `@${task.attributes.twitterUserHandle}` : getNumberFromTask(task);
 };
+
+// eslint-disable-next-line consistent-return
+export function getContactValueTemplate(task) {
+  const { preEngagementData } = task.attributes;
+  if (!preEngagementData) return '';
+  if (preEngagementData.contactType === 'ip') {
+    return 'PreviousContacts-IPAddress';
+  } else if (preEngagementData.contactType === 'email') {
+    return 'PreviousContacts-EmailAddress';
+  }
+}

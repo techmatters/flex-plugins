@@ -22,10 +22,9 @@ import { SearchTitle } from '../../../styles/search';
 import { searchFormType, taskType } from '../../../types';
 import { getConfig } from '../../../HrmFormPlugin';
 import { namespace, configurationBase, searchContactsBase, contactFormsBase } from '../../../states';
-// import { channelTypes } from '../../../states/DomainConstants';
-import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils/task';
+import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils/task';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
-// import { isTwilioTask } from '../../../types/types';
+import { channelTypes } from '../../../states/DomainConstants';
 
 const getField = value => ({
   value,
@@ -98,7 +97,6 @@ class SearchForm extends Component {
       dateTo,
       contactNumber,
     } = this.props.values;
-    const localizedSource = this.props.source;
 
     const counselorsOptions = this.props.counselors.map(e => ({
       label: e.fullName,
@@ -147,25 +145,17 @@ class SearchForm extends Component {
       const value = contactNumber === '' ? contactNumberFromTask : '';
       this.props.handleSearchFormChange('contactNumber', value);
     };
-    /*
-     * let localizedSourceFromTask;
-     * if(isTwilioTask(task)){
-     */
-
-    /*
-     *   localizedSourceFromTask = {
-     *    [channelTypes.web]: `${getContactValueTemplate(task)}`,
-     *    [channelTypes.voice]: 'PreviousContacts-PhoneNumber',
-     *    [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
-     *    [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
-     *    [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
-     *    [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
-     *    [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
-     *    [channelTypes.line]: 'PreviousContacts-LineUser',
-     *  };
-     * }
-     * const source = localizedSourceFromTask[task.channelType];
-     */
+    const webChatTemplate = getContactValueTemplate(task);
+    const localizedSource = {
+      [channelTypes.web]: webChatTemplate,
+      [channelTypes.voice]: 'PreviousContacts-PhoneNumber',
+      [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
+      [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
+      [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
+      [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
+      [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
+      [channelTypes.line]: 'PreviousContacts-LineUser',
+    };
 
     const { canView } = getPermissionsForViewingIdentifiers();
     const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
@@ -259,7 +249,7 @@ class SearchForm extends Component {
                       />
                     </Box>
                     <span>
-                      <Template code="PreviousContacts-OnlyShowRecordsFrom" /> <Template code={localizedSource} />{' '}
+                      <Template code="PreviousContacts-OnlyShowRecordsFrom" /> <Template code={localizedSource[task.channelType]} />{' '}
                       {maskIdentifiers ? (
                         <Bold>
                           <Template code="MaskIdentifiers" />

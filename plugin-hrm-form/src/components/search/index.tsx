@@ -124,26 +124,12 @@ const Search: React.FC<Props> = props => {
   };
   renderMockDialog.displayName = 'MockDialog';
 
-  let localizedSourceFromTask: { [channelType in ChannelTypes]: string };
-  if (isTwilioTask(props.task)) {
-    localizedSourceFromTask = {
-      [channelTypes.web]: `${getContactValueTemplate(props.task)}`,
-      [channelTypes.voice]: 'PreviousContacts-PhoneNumber',
-      [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
-      [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
-      [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
-      [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
-      [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
-      [channelTypes.line]: 'PreviousContacts-LineUser',
-    };
-  }
   const renderSearchPages = (currentPage, currentContact, searchContactsResults, searchCasesResults, form, routing) => {
     switch (currentPage) {
       case SearchPages.form:
         return (
           <SearchForm
             task={props.task}
-            source={localizedSourceFromTask}
             values={form}
             handleSearchFormChange={props.handleSearchFormChange}
             handleSearch={setSearchParamsAndHandleSearch}
