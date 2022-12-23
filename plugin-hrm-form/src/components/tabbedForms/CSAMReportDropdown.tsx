@@ -6,21 +6,33 @@ import { StyledCSAMReportDropdown, StyledCSAMReportDropdownList, StyledCSAMRepor
 type OwnProps = {
   handleChildCSAMType: () => void;
   handleCounsellorCSAMType: () => void;
-  dropdown: boolean;
+  dropdownState: [boolean, (state: boolean) => void];
 };
 
 type Props = OwnProps;
 
-const CSAMReportDropdown: React.FC<Props> = ({ handleChildCSAMType, handleCounsellorCSAMType, dropdown }) => {
+const CSAMReportDropdown: React.FC<Props> = ({
+  handleChildCSAMType,
+  handleCounsellorCSAMType,
+  dropdownState: [dropdown],
+}) => {
   return (
     <StyledCSAMReportDropdown style={{ display: dropdown ? 'block' : 'none' }}>
       <StyledCSAMReportHeader>
         <Template code="TabbedForms-CSAMReportButton" />
       </StyledCSAMReportHeader>
-      <StyledCSAMReportDropdownList onClick={handleChildCSAMType}>
+      <StyledCSAMReportDropdownList
+        onMouseDown={event => event.preventDefault}
+        onClick={handleChildCSAMType}
+        tabIndex={0}
+      >
         <Template code="TabbedForms-ReportsChildLink" />
       </StyledCSAMReportDropdownList>
-      <StyledCSAMReportDropdownList margin="0 -100px 10px -25px" onClick={handleCounsellorCSAMType}>
+      <StyledCSAMReportDropdownList
+        onMouseDown={event => event.preventDefault}
+        onClick={handleCounsellorCSAMType}
+        tabIndex={0}
+      >
         <Template code="TabbedForms-ReportsCounselorReport" />
       </StyledCSAMReportDropdownList>
     </StyledCSAMReportDropdown>
