@@ -12,7 +12,7 @@ import SearchResults, { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './SearchResult
 import ContactDetails from './ContactDetails';
 import Case from '../case';
 import { SearchPages } from '../../states/search/types';
-import { CustomITask, SearchAPIContact, standaloneTaskSid } from '../../types/types';
+import { CustomITask, isTwilioTask, SearchAPIContact, standaloneTaskSid } from '../../types/types';
 import SearchResultsBackButton from './SearchResults/SearchResultsBackButton';
 import {
   handleSearchFormChange,
@@ -30,6 +30,8 @@ import {
   contactFormsBase,
 } from '../../states';
 import { Flex } from '../../styles/HrmStyles';
+import { ChannelTypes, channelTypes } from '../../states/DomainConstants';
+import { getContactValueTemplate } from '../../utils';
 
 type OwnProps = {
   task: CustomITask;
@@ -122,12 +124,26 @@ const Search: React.FC<Props> = props => {
   };
   renderMockDialog.displayName = 'MockDialog';
 
+  let localizedSourceFromTask: { [channelType in ChannelTypes]: string };
+  if (isTwilioTask(props.task)) {
+    localizedSourceFromTask = {
+      [channelTypes.web]: `${getContactValueTemplate(props.task)}`,
+      [channelTypes.voice]: 'PreviousContacts-PhoneNumber',
+      [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
+      [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
+      [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
+      [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
+      [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
+      [channelTypes.line]: 'PreviousContacts-LineUser',
+    };
+  }
   const renderSearchPages = (currentPage, currentContact, searchContactsResults, searchCasesResults, form, routing) => {
     switch (currentPage) {
       case SearchPages.form:
         return (
           <SearchForm
             task={props.task}
+            source={localizedSourceFromTask}
             values={form}
             handleSearchFormChange={props.handleSearchFormChange}
             handleSearch={setSearchParamsAndHandleSearch}

@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Template, ITask } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 
 import {
   viewPreviousContacts as viewPreviousContactsAction,
@@ -17,9 +17,10 @@ import { ChannelTypes, channelTypes } from '../states/DomainConstants';
 import { changeRoute as changeRouteAction } from '../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../utils/task';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../permissions';
+import { CustomITask, isTwilioTask } from '../types/types';
 
 type OwnProps = {
-  task: ITask;
+  task: CustomITask;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -35,22 +36,11 @@ const PreviousContactsBanner: React.FC<Props> = ({
   changeRoute,
   editContactFormOpen,
 }) => {
-  const localizedSourceFromTask: { [channelType in ChannelTypes]: string } = {
-    [channelTypes.web]: `${getContactValueTemplate(task)}`,
-    [channelTypes.voice]: 'PreviousContacts-PhoneNumber',
-    [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
-    [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
-    [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
-    [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
-    [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
-    [channelTypes.line]: 'PreviousContacts-LineUser',
-  };
-
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
   useEffect(() => {
-    if (previousContacts === undefined) {
+    if (isTwilioTask(task) && previousContacts === undefined) {
       const contactNumber = getNumberFromTask(task);
       const isTraceableNumber = ![null, undefined, '', 'Anonymous'].includes(contactNumber);
 
@@ -73,7 +63,23 @@ const PreviousContactsBanner: React.FC<Props> = ({
     changeRoute({ route: 'tabbed-forms', subroute: 'search' });
   };
 
-  const contactIdentifier = getFormattedNumberFromTask(task);
+  let contactIdentifier: string;
+  let localizedSourceFromTask: { [channelType in ChannelTypes]: string };
+  if (isTwilioTask(task)) {
+    localizedSourceFromTask = {
+      [channelTypes.web]: `${getContactValueTemplate(task)}`,
+      [channelTypes.voice]: 'PreviousContacts-PhoneNumber',
+      [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
+      [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
+      [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
+      [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
+      [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
+      [channelTypes.line]: 'PreviousContacts-LineUser',
+    };
+    contactIdentifier = getFormattedNumberFromTask(task);
+
+    console.log('>>> task', task.attributes);
+  }
 
   return (
     <div className={editContactFormOpen ? 'editingContact' : ''}>
