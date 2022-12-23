@@ -18,6 +18,7 @@ variable "custom_channel_attributes" {
 
 variable "pre_survey_bot_sid" {
   description = "Internal Twilio resource SID provided by another module"
+  default = ""
   type        = string
 }
 

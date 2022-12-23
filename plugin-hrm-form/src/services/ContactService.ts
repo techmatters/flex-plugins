@@ -18,6 +18,7 @@ import fetchHrmApi from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getConfig, getDefinitionVersions } from '../HrmFormPlugin';
 import {
+  Contact,
   ContactMediaType,
   ContactRawJson,
   ConversationMedia,
@@ -257,7 +258,7 @@ const saveContactToHrm = async (
     body: JSON.stringify(body),
   };
 
-  const responseJson = await fetchHrmApi(`/contacts`, options);
+  const responseJson: Contact = await fetchHrmApi(`/contacts`, options);
 
   return { responseJson, requestPayload: body };
 };

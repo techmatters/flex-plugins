@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "attributeName": "customer_attribute_3",
+    "insightsObject": "conversations",
+    "paths": [
+      "savedContact.id"
+    ]
+  }
+]
