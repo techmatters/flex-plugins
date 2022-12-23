@@ -30,10 +30,10 @@ import { CustomITask } from '../../types/types';
 
 type OwnProps = {
   context: DetailsContext;
-  contactId?: string;
+  contactId: string;
   contactDetailsSectionForm?: ContactDetailsSectionFormApi | IssueCategorizationSectionFormApi;
-  children?: React.ReactNode;
-  tabPath?: keyof TaskEntry;
+  children: React.ReactNode;
+  tabPath: keyof TaskEntry;
   externalReport?: string;
   taskSid?: CustomITask['taskSid'];
 };
