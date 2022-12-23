@@ -24,3 +24,12 @@ resource "twilio_serverless_services_environments_v1" "production" {
   unique_name = "production"
   domain_suffix = "production"
 }
+
+data "external" "serverless_url" {
+  program = ["python3", "${path.module}/getServerlessUrl.py", var.twilio_account_sid, var.twilio_auth_token]
+
+  depends_on = [
+    resource.twilio_serverless_services_environments_v1.dev,
+    resource.twilio_serverless_services_environments_v1.production
+  ]
+}

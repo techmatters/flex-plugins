@@ -30,7 +30,7 @@ provider "twilio" {
 
 module "chatbots" {
   source = "../terraform-modules/chatbots/default"
-  serverless_url = local.secrets.serverless_url
+  serverless_url = module.serverless.serverless_environment_production_url
 }
 
 module "hrmServiceIntegration" {
@@ -44,6 +44,8 @@ module "hrmServiceIntegration" {
 
 module "serverless" {
   source = "../terraform-modules/serverless/default"
+  twilio_account_sid = local.secrets.twilio_account_sid
+  twilio_auth_token = local.secrets.twilio_auth_token
 }
 
 module "services" {
@@ -57,7 +59,7 @@ module "services" {
 
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
-  serverless_url = local.secrets.serverless_url
+  serverless_url = module.serverless.serverless_environment_production_url
   helpline = "Telefonul Copilului Romania"
   custom_target_workers = "1==1"
 }
@@ -72,12 +74,12 @@ module studioFlow {
 
 module flex {
   source = "../terraform-modules/flex/default"
-  account_sid = local.secrets.twilio_account_sid
+  twilio_account_sid = local.secrets.twilio_account_sid
   short_environment = var.short_environment
   operating_info_key = var.operating_info_key
   permission_config = "demo"
   definition_version = var.definition_version
-  serverless_url = local.secrets.serverless_url
+  serverless_url = module.serverless.serverless_environment_production_url
   hrm_url = "https://hrm-staging-eu.tl.techmatters.org"
   multi_office_support = var.multi_office
   feature_flags = var.feature_flags
@@ -94,7 +96,7 @@ module survey {
 
 module aws {
   source = "../terraform-modules/aws/default"
-  account_sid = local.secrets.twilio_account_sid
+  twilio_account_sid = local.secrets.twilio_account_sid
   helpline = var.helpline
   short_helpline = var.short_helpline
   environment = var.environment
@@ -127,5 +129,5 @@ module github {
   twilio_auth_token = local.secrets.twilio_auth_token
   short_environment = var.short_environment
   short_helpline = var.short_helpline
-  serverless_url = local.secrets.serverless_url
+  serverless_url = module.serverless.serverless_environment_production_url
 }

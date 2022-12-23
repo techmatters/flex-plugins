@@ -27,11 +27,4 @@ questions = [
         'regex': r'pub[a-z0-9]{32}$',
         'obfuscate': True
     },
-    {
-        'tfvar': 'serverless_url',
-        'question': 'Serverless URL',
-        'value': None,
-        'regex': r'^https:\/\/serverless-[0-9]+-(production|staging)\.twil\.io$',
-        'obfuscate': False
-    },
 ]

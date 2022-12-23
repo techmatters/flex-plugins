@@ -93,8 +93,6 @@ Important notes:
 > *Datadog App ID* - this is the Datadog App ID for the Datadog account you are working on. You can find this in the Datadog console, under the "API" section.
 >
 > *Datadog Access Token* - this is the Datadog Access Token for the Datadog account you are working on. You can find this in the Datadog console, under the "API" section.
->
-> *Serverless URL* - on the first run this will be a placeholder like `https://serverless-0000-production.twil.io`. During setup, you will modify the ssm parameter to add the correct value.
 
 
 Unfortunately, a feature gap in the twilio terraform provider means the domain URL cannot be extracted from the resource. The easiest workaround is to put it in a variable after it has been generated initially
