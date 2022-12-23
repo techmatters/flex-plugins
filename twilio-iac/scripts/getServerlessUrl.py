@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 
+"""
+This script is used to get the serverless urls for a given helpline.
+Eventually, it could be used as a data source in terraform so that we
+don't have to do the serverless url switch-a-roo during initial setup.
+"""
+
 import boto3
 import json
 from sys import argv
