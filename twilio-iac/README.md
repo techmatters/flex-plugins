@@ -15,11 +15,8 @@ You will need the following software installed:
 
 You will require the following environment variables set in your local terminal:
 
-* Terraform - https://www.terraform.io/downloads
-* _You previously had to build & install the twilio-terraform-provider yourself, but they are being pushed up to the Terraform registry now: https://registry.terraform.io/providers/twilio/twilio_
 * You need the following environment variables:
   - `AWS_ACCESS_KEY_ID` & `AWS_SECRET_ACCESS_KEY` set for the script user (currently script user is missconfigured, used your personal ones).
-  - `TWILIO_ACCOUNT_SID` & `TWILIO_AUTH_TOKEN` set to the account you want to manage.
   - `GITHUB_TOKEN` - a personal access token with write access to the tech matters serverless & flex plugins repo.
 
 ## Preparation
@@ -35,7 +32,7 @@ There are currently some gotchas which mean that, unfortunately, it's not a simp
 
 The process for a first run is as follows:
 
-1. Create a new directory in `/twilio-iac` named using the <helpline>-<environment> convention
+1. Create a new directory in `/twilio-iac` named using the {helpline}-{environment} convention
 
 2. Copy any `.tf` extension files from the `terraform-poc-account` folder into the new folder (or if it is a production account, copy from the helpline's staging account, this will save a lot of time aligning them later).
 Important notes:
@@ -44,7 +41,7 @@ Important notes:
     - Check under `flex` module, `permission_config` should be set to `var.permission_config` if you are describing it in the `variables.tf` file, or specify the correct one if not.
     - Review the `main.tf` to make sure there are no stuff being harcoded unless you are sure that's what you want. A few minutes on this step might save you much more time debugging a missconfigured account.
 
-3. In the 'backend "s3""' section modify the 'key' to replace 'poc' with the account identifier convention we use for s3, i.e. <short_lowercase_helpline_code> . For example, Aarambh Production would look like this:
+3. In the 'backend "s3""' section modify the 'key' to replace 'poc' with the account identifier convention we use for s3, i.e. {short_lowercase_helpline_code} . For example, Aarambh Production would look like this:
 ```hcl
   backend "s3" {
     bucket         = "tl-terraform-state-production"
@@ -54,7 +51,7 @@ Important notes:
   }
 ```
 
-4. In the 'data "aws_ssm_parameter" "secrets"' section modify the 'name' to replace 'terraform-poc-account' with the directory name that you are running from, i.e. <short_lowercase_helpline_code>-<environment></environment> . For example, Aarambh Production would look like this:
+4. In the 'data "aws_ssm_parameter" "secrets"' section modify the 'name' to replace 'terraform-poc-account' with the directory name that you are running from, i.e. {short_lowercase_helpline_code}-{environment}. For example, Aarambh Production would look like this *this must match the directory name exactly*:
 ```hcl
   data "aws_ssm_parameter" "secrets" {
     name = "/terraform/twilio-iac/aarambh-production/secrets.json"
@@ -85,13 +82,19 @@ Important notes:
 >
 > From now on, the above env vars are exported to this console session ~only~ (bash/powershell/whatever). Be sure you continue to use this session, or in case of opening a different one, you repeat the step to export the required variables.
 
-6. Run `make setup-new-environment` from your new folder (you might need to run `make init tf_args=-reconfigure` if it complains after you set up the ssm secrets.) The first time you run this, you will need to enter the following secrets:
+6. Run `make setup-new-environment` from your new folder (you might need to run `make init tf_args=-reconfigure` if it complains after you set up the ssm secrets.)
 
-*Twilio Account SID* - this is the account SID for the Twilio account you are working on. You can find this in the Twilio console, under the "Project Info" section.
-*Twilio Auth Token* - this is the auth token for the Twilio account you are working on. You can find this in the Twilio console, under the "Project Info" section.
-*Datadog App ID* - this is the Datadog App ID for the Datadog account you are working on. You can find this in the Datadog console, under the "API" section.
-*Datadog Access Token* - this is the Datadog Access Token for the Datadog account you are working on. You can find this in the Datadog console, under the "API" section.
-*Serverless URL* - on the first run this will be a placeholder like `https://serverless-0000-production.twil.io`
+> The first time you run this, you will need to enter the following secrets:
+>
+> *Twilio Account SID* - this is the account SID for the Twilio account you are working on. You can find this in the Twilio console, under the "Project Info" section.
+>
+> *Twilio Auth Token* - this is the auth token for the Twilio account you are working on. You can find this in the Twilio console, under the "Project Info" section.
+>
+> *Datadog App ID* - this is the Datadog App ID for the Datadog account you are working on. You can find this in the Datadog console, under the "API" section.
+>
+> *Datadog Access Token* - this is the Datadog Access Token for the Datadog account you are working on. You can find this in the Datadog console, under the "API" section.
+>
+> *Serverless URL* - on the first run this will be a placeholder like `https://serverless-0000-production.twil.io`. During setup, you will modify the ssm parameter to add the correct value.
 
 
 Unfortunately, a feature gap in the twilio terraform provider means the domain URL cannot be extracted from the resource. The easiest workaround is to put it in a variable after it has been generated initially
