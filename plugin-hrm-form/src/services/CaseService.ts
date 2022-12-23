@@ -3,11 +3,11 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import fetchHrmApi from './fetchHrmApi';
 import { getQueryParams } from './PaginationParams';
-import { Case, SearchCaseResult, isOfflineContactTask, CustomITask } from '../types/types';
+import { Case, SearchCaseResult } from '../types/types';
 import type { TaskEntry as ContactForm } from '../states/contacts/reducer';
 import { unNestLegacyRawJson } from './ContactService';
 
-const computeChildName = (apiCase: Case): Case => {
+const convertLegacyContacts = (apiCase: Case): Case => {
   if (!apiCase.connectedContacts || apiCase.connectedContacts.length === 0) {
     return apiCase;
   }
@@ -16,11 +16,9 @@ const computeChildName = (apiCase: Case): Case => {
     rawJson: unNestLegacyRawJson(cc.rawJson),
   }));
 
-  const { firstName, lastName } = connectedContacts[0]?.rawJson?.childInformation;
   return {
     ...apiCase,
     connectedContacts,
-    childName: firstName || lastName ? `${firstName ?? ''} ${lastName ?? ''}` : '',
   };
 };
 
@@ -52,7 +50,7 @@ export async function createCase(
 
   const responseJson = await fetchHrmApi('/cases', options);
 
-  return computeChildName(responseJson);
+  return convertLegacyContacts(responseJson);
 }
 
 export async function cancelCase(caseId: Case['id']) {
@@ -71,7 +69,7 @@ export async function updateCase(caseId: Case['id'], body: Partial<Case>) {
 
   const responseJson = await fetchHrmApi(`/cases/${caseId}`, options);
 
-  return computeChildName(responseJson);
+  return convertLegacyContacts(responseJson);
 }
 
 export async function searchCases(searchParams, limit, offset): Promise<SearchCaseResult> {
@@ -90,6 +88,6 @@ export async function listCases(queryParams, listCasesPayload): Promise<SearchCa
 
   return {
     ...responseJson,
-    cases: responseJson.cases.map(computeChildName),
+    cases: responseJson.cases.map(convertLegacyContacts),
   };
 }

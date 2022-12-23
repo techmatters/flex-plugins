@@ -78,11 +78,10 @@ export type Case = {
   helpline: string;
   twilioWorkerId: string;
   info?: CaseInfo;
-  childName: string;
   categories: {};
   createdAt: string;
   updatedAt: string;
-  connectedContacts: HrmServiceContact[]; // TODO: create contact type
+  connectedContacts: HrmServiceContact[];
 };
 
 export type TwilioStoredMedia = {

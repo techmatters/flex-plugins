@@ -49,7 +49,6 @@ const mockedCaseList: (Case & { categories: any })[] = [
       } as HrmServiceContact,
     ],
     categories: {},
-    childName: 'Michael Smith',
   },
   {
     id: 2,
@@ -73,7 +72,6 @@ const mockedCaseList: (Case & { categories: any })[] = [
       } as HrmServiceContact,
     ],
     categories: {},
-    childName: 'ignored',
   },
 ];
 
