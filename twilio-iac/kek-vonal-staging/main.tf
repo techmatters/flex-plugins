@@ -15,8 +15,12 @@ terraform {
   }
 }
 
-locals {
+data "aws_ssm_parameter" "secrets" {
+  name     = "/terraform/twilio-iac/kek-vonal-staging/secrets.json"
+}
 
+locals {
+  secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   helpline  = "Kék Vonal"
   short_helpline = "HU"
   operating_info_key = "hu"
@@ -45,6 +49,11 @@ locals {
 
 }
 
+provider "twilio" {
+  username = local.secrets.twillio_account_sid
+  password = local.secrets.twilio_auth_token
+}
+
 module "hrmServiceIntegration" {
   source = "../terraform-modules/hrmServiceIntegration/default"
   local_os = var.local_os
@@ -70,7 +79,7 @@ module "services" {
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   custom_task_routing_filter_expression = "phone=='+3680984590' OR phone=='+3612344587' OR channelType=='web' OR isContactlessTask==true"
-  serverless_url = var.serverless_url
+  serverless_url = local.secrets.serverless_url
   include_default_filter = true
   helpline = "Kék Vonal"
 }
@@ -95,12 +104,12 @@ module studioFlow {
 
 module flex {
   source = "../terraform-modules/flex/default"
-  account_sid = var.account_sid
+  account_sid = local.secrets.twillio_account_sid
   short_environment = local.short_environment
   operating_info_key = local.operating_info_key
   permission_config = "demo"
   definition_version = local.definition_version
-  serverless_url = var.serverless_url
+  serverless_url = local.secrets.serverless_url
   hrm_url = "https://hrm-staging-eu.tl.techmatters.org"
   multi_office_support = local.multi_office
   feature_flags = local.feature_flags
@@ -117,14 +126,14 @@ module survey {
 
 module aws {
   source = "../terraform-modules/aws/default"
-  account_sid = var.account_sid
+  account_sid = local.secrets.twillio_account_sid
   helpline = local.helpline
   short_helpline = local.short_helpline
   environment = local.environment
   short_environment = local.short_environment
   operating_info_key = local.operating_info_key
-  datadog_app_id = var.datadog_app_id
-  datadog_access_token = var.datadog_access_token
+  datadog_app_id = local.secrets.datadog_app_id
+  datadog_access_token = local.secrets.datadog_access_token
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
   master_workflow_sid = module.taskRouter.master_workflow_sid
   shared_state_sync_service_sid = module.services.shared_state_sync_service_sid
@@ -145,9 +154,9 @@ module aws_monitoring {
 
 module github {
   source = "../terraform-modules/github/default"
-  twilio_account_sid = var.account_sid
-  twilio_auth_token = var.auth_token
+  twilio_account_sid = local.secrets.twillio_account_sid
+  twilio_auth_token = local.secrets.twilio_auth_token
   short_environment = local.short_environment
   short_helpline = local.short_helpline
-  serverless_url = var.serverless_url
+  serverless_url = local.secrets.serverless_url
 }
