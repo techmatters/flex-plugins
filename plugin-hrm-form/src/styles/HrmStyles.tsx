@@ -1174,7 +1174,6 @@ export const StyledCSAMReportDropdown = styled('ul')`
 
 StyledCSAMReportDropdown.displayName = 'StyledCSAMReportDropdown';
 
-
 export const StyledCSAMReportDropdownList = styled('button')`
   position: relative;
   font-size: 14px;
@@ -1182,7 +1181,7 @@ export const StyledCSAMReportDropdownList = styled('button')`
   color: inherit;
   min-width: 10rem;
   width: 215px;
-  padding: 7px 0 7px 0px;
+  padding: 7px 0 7px 0;
   margin: 0 -100px 0 -25px;
   text-decoration: none;
   &:hover {

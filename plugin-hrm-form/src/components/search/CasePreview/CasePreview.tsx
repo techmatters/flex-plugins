@@ -37,7 +37,9 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
   const orphanedCase = !connectedContacts || connectedContacts.length === 0;
   const firstContact = !orphanedCase && connectedContacts[0];
   const { name } = ((firstContact || {}).rawJson || {}).childInformation || {};
-  const { categories, callSummary } = ((firstContact || {}).rawJson || {}).caseInformation || {};
+  const { categories, callSummary } = ((firstContact || {}).rawJson || {}).caseInformation || {
+    callSummary: undefined,
+  };
   const summary = info?.summary || callSummary;
   const counselor = counselorsHash[twilioWorkerId];
 
@@ -49,7 +51,7 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
     if (versionId && definitionVersions[versionId]) {
       fetchDefinitionVersions(versionId);
     }
-  }, [updateDefinitionVersion, versionId, definitionVersions]);
+  }, [versionId, definitionVersions]);
 
   const statusLabel = definitionVersions[versionId]?.caseStatus[status]?.label ?? status;
 
