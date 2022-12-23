@@ -115,7 +115,7 @@ module twilioChannel {
     "../terraform-modules/channels/flow-templates/language-mt/with-chatbot.tftpl",
     {
       channel_name = "${each.key}"
-      serverless_url=var.serverless_url
+      serverless_url=module.serverless.serverless_environment_production_url
       serverless_service_sid = module.serverless.serverless_service_sid
       serverless_environment_sid = module.serverless.serverless_environment_production_sid
       master_workflow_sid = module.taskRouter.master_workflow_sid
