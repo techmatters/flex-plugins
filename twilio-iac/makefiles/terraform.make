@@ -8,7 +8,7 @@ get:
 
 init: init-pre init-main
 
-init-pre: init-ssm-secrets
+init-pre: manage-ssm-secrets
 
 init-main:
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) terraform init $(tf_args)
