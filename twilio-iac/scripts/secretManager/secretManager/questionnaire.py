@@ -50,7 +50,7 @@ class Questionnaire():
 
     def validate_existing_secrets(self):
         print('These secrets currently exist in SSM:\n\n')
-        print(json.dumps(self._secrets, indent=2))
+        self.print_secrets()
         print('\n')
 
         confirm = input('Are the values correct for the ssm key: ' + self.ssm_key + '? (y/n): ')
@@ -64,11 +64,11 @@ class Questionnaire():
             question['value'] = self.ask_question(question)
 
     def ask_question(self, question):
-        currentValue = self._secrets.get(question['tf_var'], None)
+        currentValue = self._secrets.get(question['tfvar'], None)
 
         questionText = question['question']
         if currentValue:
-            questionText += ' [' + currentValue + ']'
+            questionText += ' [' + self.obfuscate_secret(question['tfvar'], currentValue) + ']'
 
         value = input(questionText + ']: ') or currentValue
 
@@ -82,13 +82,13 @@ class Questionnaire():
         secrets = {}
 
         for question in questions:
-            secrets[question['tf_var']] = question['value']
+            secrets[question['tfvar']] = question['value']
 
         self._secrets = secrets
 
     def validate_new_secrets(self):
         print('You entered the following values:\n\n')
-        print(json.dumps(self._secrets, indent=2))
+        self.print_secrets()
         print('\n')
 
         confirm = input('Are these values correct for the ssm key: ' + self.ssm_key + '? (y/n): ')
@@ -97,6 +97,20 @@ class Questionnaire():
             print('Please re-run the script to try again')
             print('Exiting...')
             exit(1)
+
+    def print_secrets(self):
+        for key, value in self._secrets.items():
+            print(key + ': ' + self.obfuscate_secret(key, value))
+
+    def obfuscate_secret(self, tfvar, value):
+        if self.should_obfuscate_secret_by_tfvar(tfvar):
+            for i in range(3, len(value) - 3):
+                value = value[:i] + '*' + value[i+1:]
+
+        return value
+
+    def should_obfuscate_secret_by_tfvar(self, tfvar):
+        return any(x for x in questions if x.get('tfvar') == tfvar and x.get('obfuscate'))
 
     def send_secrets_to_ssm(self):
         print('Sending secrets to SSM')
