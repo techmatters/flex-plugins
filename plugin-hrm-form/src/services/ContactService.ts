@@ -18,10 +18,10 @@ import fetchHrmApi from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getConfig, getDefinitionVersions } from '../HrmFormPlugin';
 import {
-  Contact,
   ContactMediaType,
   ContactRawJson,
   ConversationMedia,
+  HrmServiceContact,
   isOfflineContactTask,
   isTwilioTask,
   NewHrmServiceContact,
@@ -183,7 +183,7 @@ const saveContactToHrm = async (
   workerSid: string,
   uniqueIdentifier: string,
   shouldFillEndMillis = true,
-) => {
+): Promise<{ response: HrmServiceContact; request: NewHrmServiceContact }> => {
   // if we got this far, we assume the form is valid and ready to submit
   const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
   const conversationDuration = getConversationDuration(task, metadata);
@@ -263,9 +263,9 @@ const saveContactToHrm = async (
     body: JSON.stringify(body),
   };
 
-  const responseJson: Contact = await fetchHrmApi(`/contacts`, options);
+  const responseJson: HrmServiceContact = await fetchHrmApi(`/contacts`, options);
 
-  return { responseJson, requestPayload: body };
+  return { response: responseJson, request: body };
 };
 
 export const updateContactInHrm = async (
@@ -289,18 +289,18 @@ export const saveContact = async (
   uniqueIdentifier: string,
   shouldFillEndMillis = true,
 ) => {
-  const response = await saveContactToHrm(task, form, workerSid, uniqueIdentifier, shouldFillEndMillis);
+  const payloads = await saveContactToHrm(task, form, workerSid, uniqueIdentifier, shouldFillEndMillis);
 
   // TODO: add catch clause to handle saving to Sync Doc
   try {
-    await saveContactToExternalBackend(task, response.requestPayload);
+    await saveContactToExternalBackend(task, payloads.request);
   } catch (err) {
     console.error(
       `Saving task with sid ${task.taskSid} failed, presumably the attempt to add it to the pending store also failed so this data is likely lost`,
       err,
     );
   }
-  return response.responseJson;
+  return payloads.response;
 };
 
 export async function connectToCase(contactId, caseId) {
@@ -311,7 +311,5 @@ export async function connectToCase(contactId, caseId) {
     body: JSON.stringify(body),
   };
 
-  const responseJson = await fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
-
-  return responseJson;
+  return fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
 }
