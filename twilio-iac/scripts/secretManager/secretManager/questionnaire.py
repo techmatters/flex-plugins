@@ -53,9 +53,9 @@ class Questionnaire():
         self.print_secrets()
         print('\n')
 
-        confirm = input('Are the values correct for the ssm key: ' + self.ssm_key + '? (y/n): ')
+        confirm = input('Are the values correct for the ssm key: ' + self.ssm_key + '? (Y/n): ')
 
-        if confirm == 'y':
+        if confirm == 'y' or confirm == '':
             print('Continuing...')
             exit()
 
@@ -94,7 +94,7 @@ class Questionnaire():
         self.print_secrets()
         print('\n')
 
-        confirm = input('Are these values correct for the ssm key: ' + self.ssm_key + '? (y/n): ')
+        confirm = input('Are these values correct for the ssm key: ' + self.ssm_key + '? (y/N): ')
 
         if confirm != 'y':
             print('Please re-run the script to try again')

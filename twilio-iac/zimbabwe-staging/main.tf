@@ -14,6 +14,13 @@ terraform {
   }
 }
 
+provider "aws" {
+  assume_role {
+    role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-staging"
+    session_name = "tf-${basename(abspath(path.module))}"
+  }
+}
+
 data "aws_ssm_parameter" "secrets" {
   name     = "/terraform/twilio-iac/zimbabwe-staging/secrets.json"
 }
