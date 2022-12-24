@@ -12,5 +12,5 @@ output "serverless_environment_production_sid" {
 
 output "serverless_environment_production_url" {
   description = "Twilio URL of the 'production' environment under above service"
-  value = data.external.serverless_url.result.url
+  value = "https://${data.external.service_environment_production.result.domain_name}"
 }

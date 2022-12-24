@@ -25,11 +25,17 @@ resource "twilio_serverless_services_environments_v1" "production" {
   domain_suffix = "production"
 }
 
-data "external" "serverless_url" {
-  program = ["python3", "${path.module}/getServerlessUrl.py", var.twilio_account_sid, var.twilio_auth_token]
+data "external" "service_environment_production" {
+  program = ["python3", "${path.module}/getServerlessServiceEnvironmentData.py"]
+
+  query = {
+    twilio_account_sid = var.twilio_account_sid
+    twilio_auth_token  = var.twilio_auth_token
+    service_sid        = twilio_serverless_services_v1.serverless.sid
+    environment_sid    = twilio_serverless_services_environments_v1.production.sid
+  }
 
   depends_on = [
-    resource.twilio_serverless_services_environments_v1.dev,
     resource.twilio_serverless_services_environments_v1.production
   ]
 }
