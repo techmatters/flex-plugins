@@ -15,9 +15,8 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-east-1"
   assume_role {
-    role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-production"
+    role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-${lower(local.environment)}"
     session_name = "tf-${basename(abspath(path.module))}"
   }
 }
