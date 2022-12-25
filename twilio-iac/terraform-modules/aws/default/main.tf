@@ -14,6 +14,10 @@ terraform {
 provider "aws" {
   alias = "bucket"
   region = var.bucket_region
+  assume_role {
+    role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-production"
+    session_name = "tf-${basename(abspath(path.module))}"
+  }
 }
 
 
