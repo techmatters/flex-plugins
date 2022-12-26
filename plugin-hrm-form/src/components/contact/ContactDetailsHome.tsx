@@ -150,6 +150,12 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const isPhoneContact =
     channel === channelTypes.voice || channel === channelTypes.sms || channel === channelTypes.whatsapp;
+
+  const validEmailPattern = (email): Boolean => {
+    return email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/);
+  };
+  const isEmailContact = channel === channelTypes.web && validEmailPattern(customerNumber);
+
   const formattedCategories = formatCategories(categories);
 
   const {
@@ -216,13 +222,14 @@ const ContactDetailsHome: React.FC<Props> = function ({
         <SectionEntry descriptionKey="ContactDetails-GeneralDetails-Channel">
           <SectionEntryValue value={formattedChannel} />
         </SectionEntry>
-        {maskIdentifiers ? (
+        {isPhoneContact && (
           <SectionEntry descriptionKey="ContactDetails-GeneralDetails-PhoneNumber">
-            <SectionEntryValue value={strings.MaskIdentifiers} />
+            <SectionEntryValue value={maskIdentifiers ? strings.MaskIdentifiers : customerNumber} />
           </SectionEntry>
-        ) : (
-          <SectionEntry descriptionKey="ContactDetails-GeneralDetails-PhoneNumber">
-            <SectionEntryValue value={isPhoneContact ? customerNumber : ''} />
+        )}
+        {isEmailContact && (
+          <SectionEntry descriptionKey="ContactDetails-GeneralDetails-Email">
+            <SectionEntryValue value={maskIdentifiers ? strings.MaskIdentifiers : customerNumber} />
           </SectionEntry>
         )}
         <SectionEntry descriptionKey="ContactDetails-GeneralDetails-ConversationDuration">

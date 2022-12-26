@@ -63,8 +63,8 @@ const PreviousContactsBanner: React.FC<Props> = ({
     changeRoute({ route: 'tabbed-forms', subroute: 'search' });
   };
 
-  let contactIdentifier: string;
   let localizedSourceFromTask: { [channelType in ChannelTypes]: string };
+  let contactIdentifier: string;
   if (isTwilioTask(task)) {
     localizedSourceFromTask = {
       [channelTypes.web]: `${getContactValueTemplate(task)}`,
@@ -77,8 +77,6 @@ const PreviousContactsBanner: React.FC<Props> = ({
       [channelTypes.line]: 'PreviousContacts-LineUser',
     };
     contactIdentifier = getFormattedNumberFromTask(task);
-
-    console.log('>>> task', task.attributes);
   }
 
   return (

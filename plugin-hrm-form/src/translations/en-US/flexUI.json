@@ -282,6 +282,7 @@
   "ContactDetails-GeneralDetails": "General Details",
   "ContactDetails-GeneralDetails-Channel": "Channel",
   "ContactDetails-GeneralDetails-PhoneNumber": "Phone Number",
+  "ContactDetails-GeneralDetails-Email": "Email",
   "ContactDetails-GeneralDetails-ConversationDuration": "Conversation Duration",
   "ContactDetails-GeneralDetails-Counselor": "Counsellor",
   "ContactDetails-GeneralDetails-DateTime": "Date/Time",
