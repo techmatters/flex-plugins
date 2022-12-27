@@ -27,16 +27,13 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
         id: create_prod_release
 
-      - name: GitHub Tag Name example
-        run: |
-          echo "Create production release finished with: ${{ steps.create_prod_release.outputs.generated-release-tag }}"
       # Send Slack notifying success
-      # - name: Slack aselo-deploys channel
-      #   uses: ./.github/actions/notify-deploys
-      #   with:
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
-      #     slack-message: "`[Flex]` Release from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}. Release tag is ${{ steps.create_prod_release.outputs.generated-release-tag }} :rocket:."
-      #   env:
-      #     SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+      - name: Slack aselo-deploys channel
+        uses: ./.github/actions/notify-deploys
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          slack-message: "`[Flex]` Release from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}. Release tag is ${{ steps.create_prod_release.outputs.generated-release-tag }} :rocket:."
+        env:
+          SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
