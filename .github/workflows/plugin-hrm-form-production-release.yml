@@ -6,9 +6,6 @@ name: Create a production release
 on:
   workflow_dispatch:
     inputs:
-      # tag-prefix:
-      #   description: Release tag prefix (generally the version, e.g. v1.2.3).
-      #   required: true
       title:
         description: Release title - The title that will be given to this pre-release.
         required: true
@@ -21,20 +18,18 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      - name: Create production release
+        uses: ./.github/actions/generate-production-release
+        with:
+          title: ${{ inputs.title }}
+          ref_name: ${{  github.ref_name }}
+          repository: ${{ github.repository }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+        id: create_prod_release
+
       - name: GitHub Tag Name example
         run: |
-          echo "Tag name from github.ref_name: ${{  github.ref_name }}"
-
-      # - name: Create pre release
-      #   uses: ./.github/actions/generate-production-release
-      #   with:
-      #     tag-prefix: ${{ inputs.tag-prefix }}
-      #     tag-suffix: 'qa'
-      #     title: ${{ inputs.title }}
-      #     repository: ${{ github.repository }}
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #   id: create_pre_release
-
+          echo "Create production release finished with: ${{ steps.create_prod_release.outputs.generated-release-tag }}"
       # Send Slack notifying success
       # - name: Slack aselo-deploys channel
       #   uses: ./.github/actions/notify-deploys
@@ -42,6 +37,6 @@ jobs:
       #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       #     aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
-      #     slack-message: "`[Flex]` Release from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}. Release tag is ${{ steps.create_pre_release.outputs.generated-pre-release-tag }} :rocket:."
+      #     slack-message: "`[Flex]` Release from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}. Release tag is ${{ steps.create_prod_release.outputs.generated-release-tag }} :rocket:."
       #   env:
       #     SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}

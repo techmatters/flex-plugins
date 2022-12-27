@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "types": [
+      // ... your other types
+      "node"
+    ],
+    "lib": ["ES2019"]
+  },
+}
