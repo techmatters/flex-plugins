@@ -16,7 +16,7 @@ inputs:
 outputs:
   generated-release-tag:
     description: "The generated release tag"
-    value: ${{ steps.create_release.outputs.automatic_releases_tag }}
+    value: ${{ steps.create_release.outputs.id }}
 
 runs:
   using: "composite"
@@ -38,15 +38,20 @@ runs:
     - run: echo ${{ steps.get_release_tag.outputs.generated-tag }}
       shell: bash
 
+    - name: "Check release notes file exists"
+      uses: andstor/file-existence-action@v2.0.0
+      with:
+        files: "release-notes/${{ steps.get_release_tag.outputs.generated-tag }}.md"
+        fail: true
+
     # Create a release
     - name: Create a release
-      uses: "marvinpinto/action-automatic-releases@v1.2.1"
+      uses: ncipollo/release-action@v1.12.0
       with:
-        repo_token: ${{ inputs.repo_token }}
-        automatic_release_tag: ${{ steps.generate_next_tag.outputs.generated-tag }}
+        commit: ${{ github.sha }}
+        tag: ${{ steps.get_release_tag.outputs.generated-tag }}
+        name: ${{ inputs.title }}
+        bodyFile: "release-notes/${{ steps.get_release_tag.outputs.generated-tag }}.md"
         prerelease: false
-        title: ${{ inputs.title }}
-        # files: |
-        #   LICENSE.txt
-        #   *.jar
+        # allowUpdates: true ## do we want to allow "updates" to a release?
       id: create_release
