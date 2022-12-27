@@ -22,9 +22,6 @@ jobs:
         uses: ./.github/actions/generate-production-release
         with:
           title: ${{ inputs.title }}
-          ref_name: ${{  github.ref_name }}
-          repository: ${{ github.repository }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
         id: create_prod_release
 
       # Send Slack notifying success
