@@ -15,8 +15,6 @@ on:
 
 jobs:
   generate-release:
-    needs: run-e2e-tests
-
     runs-on: ubuntu-latest
 
     steps:
