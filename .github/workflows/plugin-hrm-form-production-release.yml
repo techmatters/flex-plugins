@@ -1,14 +1,14 @@
 # Workflow to create a new production release from a given qa tag
 
-name: Create a QA candidate release
+name: Create a production release
 
 # Controls when the action will run.
 on:
   workflow_dispatch:
     inputs:
-      tag-prefix:
-        description: Release tag prefix (generally the version, e.g. v1.2.3).
-        required: true
+      # tag-prefix:
+      #   description: Release tag prefix (generally the version, e.g. v1.2.3).
+      #   required: true
       title:
         description: Release title - The title that will be given to this pre-release.
         required: true
@@ -24,8 +24,8 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: GitHub Tag Name example
-       run: |
-         echo "Tag name from github.ref_name: ${{  github.ref_name }}"
+        run: |
+          echo "Tag name from github.ref_name: ${{  github.ref_name }}"
 
       # - name: Create pre release
       #   uses: ./.github/actions/generate-production-release
