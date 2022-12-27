@@ -12,6 +12,7 @@ terraform {
     dynamodb_table = "terraform-locks"
     region = "us-east-1"
     encrypt        = true
+    role_arn       = "arn:aws:iam::712893914485:role/tf-twilio-iac-staging"
   }
 }
 

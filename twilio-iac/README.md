@@ -23,7 +23,7 @@ You will require the following environment variables set in your local terminal:
 
 In order to set up the Aselo Terraform project:
 
-* In the directory named for the account you are working on, run `make init`
+* In the directory named for the account you are working on, run `make init` (you might need to run `make init tf_args=-reconfigure` if it complains)
 * Run `make validate` - this should give the all clear.
 
 ## Running on a new environment
