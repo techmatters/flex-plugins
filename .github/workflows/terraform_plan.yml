@@ -17,7 +17,7 @@ env:
 
 jobs:
   deploy:
-    name: clean dynamic envs
+    name: Terraform Plan
     runs-on: ubuntu-latest
 
     container:
@@ -30,5 +30,16 @@ jobs:
       - name: Terraform Plan
         working-directory: ./twilio-iac/${{ inputs.helpline }}
         run: |
-          terraform init
-          terraform plan
+          echo "Running terraform init for ${{ inputs.helpline }}"
+          terraform init > /dev/null
+          echo "Running terraform refresh for ${{ inputs.helpline }}"
+          terraform refresh -input=false > /dev/null
+          echo "Running terraform plan for ${{ inputs.helpline }}"
+          terraform plan -input=false -refresh=false -out=/tmp/tfplan > /dev/null
+          echo "Running terraform show for ${{ inputs.helpline }}"
+          terraform show -no-color /tmp/tfplan > /tmp/plan.log
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: plan.log
+          path: /tmp/plan.log
