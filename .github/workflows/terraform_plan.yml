@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Terraform Plan
+        working-directory: ${{ github.action_path }}/twilio-iac/${{ inputs.helpline }}
         run: |
-          cd twilio-iac/${{ inputs.helpline }}
           terraform init
           terraform plan
