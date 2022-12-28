@@ -122,3 +122,32 @@ resource "aws_ssm_parameter" "main_group" {
   value = jsondecode(each.value)[1]
   description = jsondecode(each.value)[2]
 }
+
+resource "aws_ssm_parameter" "main_group_v2" {
+  for_each = {
+    app_id = jsonencode(["datadog", var.datadog_app_id, "Datadog - Application ID"])
+    access_token = jsonencode(["datadog", var.datadog_access_token, "Datadog - Access Token"])
+    docs_bucket_name = jsonencode(["s3", local.docs_s3_location, "Twilio account - Post Survey bot chat url"])
+    base_url = jsonencode(["serverless", var.serverless_url, "Twilio serverless base url"])
+    auth_token = jsonencode(["twilio", var.twilio_auth_token, "Twilio account - Auth Token"])
+    workspace_sid = jsonencode(["twilio", var.flex_task_assignment_workspace_sid, "Twilio account - Workspace SID"])
+    chat_workflow_sid = jsonencode(["twilio", var.master_workflow_sid, "Twilio account - Chat transfer workflow SID"])
+    sync_sid = jsonencode(["twilio", var.shared_state_sync_service_sid, "Twilio account - Sync service "])
+    // API Key secrets are not accessible from the twilio terraform provider
+    // SECRET = jsonencode(["TWILIO", "NOT_SET", "Twilio account - Sync API secret"])
+    chat_service_sid = jsonencode(["twilio", var.flex_chat_service_sid, "Twilio account - Chat service SID"])
+    flex_proxy_service_sid = jsonencode(["twilio", var.flex_proxy_service_sid, "Twilio account - Flex Proxy service SID"])
+    survey_workflow_sid =  jsonencode(["twilio", var.survey_workflow_sid, "Twilio account - Survey Workflow SID"])
+    // API Key secrets are not accessible from the twilio terraform provider
+    // HRM_STATIC_KEY = jsonencode(["TWILIO", "NOT_SET", "Twilio account - HRM static secret to perform backend calls"])
+    post_survey_bot_chat_url = jsonencode(["twilio", "https://channels.autopilot.twilio.com/v1/${var.twilio_account_sid}/${var.post_survey_bot_sid}/twilio-chat", "Twilio account - Post Survey bot chat url"])
+    operating_info_key = jsonencode(["twilio", var.operating_info_key, "Twilio account - Operating Key info"])
+
+  }
+
+  # Deserialise the JSON used for the keys - this way we can have multiple values per key
+  name  = "/${var.environment}/${jsondecode(each.value)[0]}/${twilio_account_sid}/${each.key}"
+  type  = "SecureString"
+  value = jsondecode(each.value)[1]
+  description = jsondecode(each.value)[2]
+}
