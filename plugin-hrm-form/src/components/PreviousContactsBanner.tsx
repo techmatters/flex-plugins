@@ -36,7 +36,6 @@ const PreviousContactsBanner: React.FC<Props> = ({
   changeRoute,
   editContactFormOpen,
 }) => {
-
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
