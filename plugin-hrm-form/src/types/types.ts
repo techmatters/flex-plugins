@@ -258,6 +258,7 @@ export type OfflineContactTask = {
     isContactlessTask: true;
     channelType: 'default';
     helplineToSave?: string;
+    // preEngagementData?: any;
   };
   channelType: 'default';
 };
@@ -268,6 +269,7 @@ export type StandaloneITask = {
   taskSid: typeof standaloneTaskSid;
   attributes: {
     isContactlessTask: boolean;
+    // preEngagementData?: any;
   };
 };
 
