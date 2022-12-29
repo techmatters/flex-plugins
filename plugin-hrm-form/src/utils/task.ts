@@ -5,7 +5,7 @@ import { channelTypes } from '../states/DomainConstants';
 const getContactValueFromWebchat = task => {
   const { preEngagementData } = task.attributes;
   if (!preEngagementData) return '';
-  return task.attributes.preEngagementData[preEngagementData.contactType];
+  return preEngagementData.contactIdentifier;
 };
 
 export const getNumberFromTask = (task: ITask) => {

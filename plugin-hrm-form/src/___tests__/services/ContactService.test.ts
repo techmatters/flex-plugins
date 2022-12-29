@@ -135,7 +135,7 @@ describe('saveContact()', () => {
     queueName: 'queueName',
     channelType: channelTypes.web,
     defaultFrom: 'Anonymous',
-    attributes: { isContactlessTask: false, preEngagementData: { contactType: 'ip' } },
+    attributes: { isContactlessTask: false, preEngagementData: { contactType: 'ip', contactIdentifier: 'ip-address' } },
   };
   const workerSid = 'worker-sid';
   const uniqueIdentifier = 'uniqueIdentifier';
@@ -224,7 +224,7 @@ describe('saveContact() (isContactlessTask)', () => {
       attributes: {
         isContactlessTask: false,
         ip,
-        preEngagementData: { contactType: 'ip', ip },
+        preEngagementData: { contactType: 'ip', contactIdentifier: ip },
       },
     };
     const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
@@ -248,7 +248,7 @@ describe('saveContact() (isContactlessTask)', () => {
       attributes: {
         isContactlessTask: false,
         ip: '',
-        preEngagementData: { contactType: 'email', email },
+        preEngagementData: { contactType: 'email', contactIdentifier: email },
       },
     };
     const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
