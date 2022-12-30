@@ -100,6 +100,8 @@ module survey {
 module aws {
   source = "../terraform-modules/aws/default"
   twilio_account_sid = local.secrets.twilio_account_sid
+  twilio_auth_token = local.secrets.twilio_auth_token
+  serverless_url = module.serverless.serverless_environment_production_url
   helpline = var.helpline
   short_helpline = var.short_helpline
   environment = var.environment

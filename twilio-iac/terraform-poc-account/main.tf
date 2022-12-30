@@ -81,6 +81,8 @@ module studioFlow {
 module flex {
   source = "../terraform-modules/flex/default"
   twilio_account_sid = local.secrets.twilio_account_sid
+  twilio_auth_token = local.secrets.twilio_auth_token
+  serverless_url = module.serverless.serverless_environment_production_url
   short_environment = var.short_environment
   operating_info_key = var.operating_info_key
   permission_config = "zm"

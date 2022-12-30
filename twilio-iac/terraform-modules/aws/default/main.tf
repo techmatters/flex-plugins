@@ -20,10 +20,89 @@ provider "aws" {
   }
 }
 
-
 locals {
   docs_s3_location = "tl-aselo-docs-${lower(var.short_helpline)}-${lower(var.environment)}"
   chat_s3_location = "tl-public-chat-${lower(var.short_helpline)}-${lower(var.short_environment)}"
+  ssm_parameters = [
+    {
+      service = "datadog"
+      key_name = "app_id"
+      value = nonsensitive(var.datadog_app_id)
+      description = "Datadog - Application ID"
+    },
+    {
+      service = "datadog"
+      key_name = "access_token"
+      value =  nonsensitive(var.datadog_access_token)
+      description = "Datadog - Access Token"
+    },
+    {
+      service = "s3"
+      key_name = "docs_bucket_name"
+      value = local.docs_s3_location
+      description = "Twilio account - Post Survey bot chat url"
+    },
+    {
+      service = "serverless"
+      key_name = "base_url"
+      value = var.serverless_url
+      description = "Twilio serverless base url"
+    },
+    {
+      service = "twilio"
+      key_name = "auth_token"
+      value =  nonsensitive(var.twilio_auth_token)
+      description = "Twilio account - Auth Token"
+    },
+    {
+      service = "twilio"
+      key_name = "workspace_sid"
+      value = var.flex_task_assignment_workspace_sid
+      description = "Twilio account - Workspace SID"
+    },
+    {
+      service = "twilio"
+      key_name = "chat_workflow_sid"
+      value = var.master_workflow_sid
+      description = "Twilio account - Chat transfer workflow SID"
+    },
+    {
+      service = "twilio"
+      key_name = "sync_sid"
+      value = var.shared_state_sync_service_sid
+      description = "Twilio account - Sync service SID"
+    },
+    {
+      service = "twilio"
+      key_name = "chat_service_sid"
+      value = var.flex_chat_service_sid
+      description = "Twilio account - Chat service SID"
+    },
+    {
+      service = "twilio"
+      key_name = "flex_proxy_service_sid"
+      value = var.flex_proxy_service_sid
+      description = "Twilio account - Flex Proxy service SID"
+    },
+    {
+      service = "twilio"
+      key_name = "survey_workflow_sid"
+      value = var.survey_workflow_sid
+      description = "Twilio account - Survey Workflow SID"
+    },
+    {
+      service = "twilio"
+      key_name = "post_survey_bot_chat_url"
+      value = "https://channels.autopilot.twilio.com/v1/${nonsensitive(var.twilio_account_sid)}/${var.post_survey_bot_sid}/twilio-chat"
+      description = "Twilio account - Post Survey bot chat url"
+    },
+    {
+      service = "twilio"
+      key_name = "operating_info_key"
+      value = var.operating_info_key
+      description = "Twilio account - Operating Key info"
+    }
+  ]
 }
 
 resource "aws_s3_bucket" "docs" {
@@ -123,31 +202,17 @@ resource "aws_ssm_parameter" "main_group" {
   description = jsondecode(each.value)[2]
 }
 
-resource "aws_ssm_parameter" "main_group_v2" {
-  for_each = {
-    app_id = jsonencode(["datadog", var.datadog_app_id, "Datadog - Application ID"])
-    access_token = jsonencode(["datadog", var.datadog_access_token, "Datadog - Access Token"])
-    docs_bucket_name = jsonencode(["s3", local.docs_s3_location, "Twilio account - Post Survey bot chat url"])
-    base_url = jsonencode(["serverless", var.serverless_url, "Twilio serverless base url"])
-    auth_token = jsonencode(["twilio", var.twilio_auth_token, "Twilio account - Auth Token"])
-    workspace_sid = jsonencode(["twilio", var.flex_task_assignment_workspace_sid, "Twilio account - Workspace SID"])
-    chat_workflow_sid = jsonencode(["twilio", var.master_workflow_sid, "Twilio account - Chat transfer workflow SID"])
-    sync_sid = jsonencode(["twilio", var.shared_state_sync_service_sid, "Twilio account - Sync service "])
-    // API Key secrets are not accessible from the twilio terraform provider
-    // SECRET = jsonencode(["TWILIO", "NOT_SET", "Twilio account - Sync API secret"])
-    chat_service_sid = jsonencode(["twilio", var.flex_chat_service_sid, "Twilio account - Chat service SID"])
-    flex_proxy_service_sid = jsonencode(["twilio", var.flex_proxy_service_sid, "Twilio account - Flex Proxy service SID"])
-    survey_workflow_sid =  jsonencode(["twilio", var.survey_workflow_sid, "Twilio account - Survey Workflow SID"])
-    // API Key secrets are not accessible from the twilio terraform provider
-    // HRM_STATIC_KEY = jsonencode(["TWILIO", "NOT_SET", "Twilio account - HRM static secret to perform backend calls"])
-    post_survey_bot_chat_url = jsonencode(["twilio", "https://channels.autopilot.twilio.com/v1/${var.twilio_account_sid}/${var.post_survey_bot_sid}/twilio-chat", "Twilio account - Post Survey bot chat url"])
-    operating_info_key = jsonencode(["twilio", var.operating_info_key, "Twilio account - Operating Key info"])
+resource "aws_ssm_parameter" "this" {
+  for_each = { for param in local.ssm_parameters : "${param.service}_${param.key_name}" => param }
 
-  }
-
-  # Deserialise the JSON used for the keys - this way we can have multiple values per key
-  name  = "/${var.environment}/${jsondecode(each.value)[0]}/${twilio_account_sid}/${each.key}"
+  name  = "/${lower(var.environment)}/${each.value.service}/${nonsensitive(var.twilio_account_sid)}/${each.value.key_name}"
   type  = "SecureString"
-  value = jsondecode(each.value)[1]
-  description = jsondecode(each.value)[2]
+  value = each.value.value
+  description = each.value.description
+
+  tags = {
+    Environment = var.environment
+    Name = "/${lower(var.environment)}/${each.value.service}/${nonsensitive(var.twilio_account_sid)}/${each.value.key_name}"
+    Terraform = true
+  }
 }
