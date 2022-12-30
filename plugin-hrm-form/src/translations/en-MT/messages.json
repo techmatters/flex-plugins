@@ -1,4 +1,5 @@
 {
   "WelcomeMsg": "Hi, this is the support mentor. How can I help you?",
-  "GoodbyeMsg": "Thank you for contacting us. Feel free to come again, we are available 24/7."
+  "GoodbyeMsg": "Thank you for contacting us. Feel free to come again, we are available 24/7.",
+  "EndChatMsg": "User left the conversation."
 }
