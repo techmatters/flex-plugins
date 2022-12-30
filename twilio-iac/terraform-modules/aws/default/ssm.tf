@@ -1,3 +1,9 @@
+/*
+ * We avoid using a for_each loop here because it makes
+ * it impossible to target a single param for update without applying
+ * all of the related modules that the for_each data structure depends on.
+ */
+
 resource "aws_ssm_parameter" "datadog_app_id" {
   name  = "/${lower(var.environment)}/datadog/${nonsensitive(var.twilio_account_sid)}/app_id"
   type  = "SecureString"
