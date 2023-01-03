@@ -1,6 +1,6 @@
 import { ITask, Manager } from '@twilio/flex-ui';
 import { capitalize } from 'lodash';
-import { callTypes, FormDefinition } from 'hrm-form-definitions';
+import { callTypes, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
 
 import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
@@ -100,14 +100,15 @@ const getValuesFromAnswers = (
     ...customizableValues,
   };
 };
-export const getValuesFromPreEngagementData = (
+
+const getValuesFromPreEngagementData = (
   preEngagementData: Record<string, string>,
   tabFormDefinition: FormDefinition,
   prepopulateKeys: string[],
 ) => {
   // Get values from task attributes
   const values = {};
-  tabFormDefinition.forEach((field: any) => {
+  tabFormDefinition.forEach((field: FormItemDefinition) => {
     if (prepopulateKeys.indexOf(field.name) > -1) {
       values[field.name] = preEngagementData[field.name] || '';
     }
@@ -121,9 +122,9 @@ export const prepopulateForm = (task: ITask) => {
   const { tabbedForms, prepopulateKeys } = currentDefinitionVersion;
   if (preEngagementData) {
     const tabFormDefinition = tabbedForms.ChildInformationTab;
-    const prepopulatePreengagementKeys = prepopulateKeys.preEngagement.ChildInformationTab;
+    const prepopulatePEKeys = prepopulateKeys.preEngagement.ChildInformationTab;
 
-    const values = getValuesFromPreEngagementData(preEngagementData, tabFormDefinition, prepopulatePreengagementKeys);
+    const values = getValuesFromPreEngagementData(preEngagementData, tabFormDefinition, prepopulatePEKeys);
 
     Manager.getInstance().store.dispatch(prepopulateFormAction(callTypes.child, values, task.taskSid));
 

@@ -269,7 +269,6 @@ export type StandaloneITask = {
   taskSid: typeof standaloneTaskSid;
   attributes: {
     isContactlessTask: boolean;
-    // preEngagementData?: any;
   };
 };
 
