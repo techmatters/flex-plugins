@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { CircularProgress } from '@material-ui/core';
 import { connect, ConnectedProps } from 'react-redux';
@@ -22,11 +22,12 @@ import { getConfig } from '../../HrmFormPlugin';
 import * as actions from '../../states/csam-report/actions';
 import * as routingActions from '../../states/routing/actions';
 import * as contactsActions from '../../states/contacts/actions';
-import { isCounselorCSAMReportForm } from '../../states/csam-report/types';
+import { CSAMReportForm, isCounselorCSAMReportForm } from '../../states/csam-report/types';
 import { RootState, csamReportBase, namespace, routingBase, configurationBase } from '../../states';
 import { reportToIWF } from '../../services/ServerlessService';
 import { acknowledgeCSAMReport, createCSAMReport } from '../../services/CSAMReportService';
 import useFocus from '../../utils/useFocus';
+import fileUploadCustomHandlers from '../case/documentUploadHandler';
 
 type OwnProps = {
   taskSid: CustomITask['taskSid'];

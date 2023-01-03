@@ -1,4 +1,4 @@
-import { ITask, TaskReservationStatus, TaskTaskStatus } from '@twilio/flex-ui';
+import { ITask } from '@twilio/flex-ui';
 
 const defaultsNNS = {
   sid: 'sid',
@@ -56,7 +56,7 @@ const defaultsNNS = {
  *  wrapUp: () => Promise<ReturnType<createTask>>
  * }}
  */
-export function createTask(attributes = {}, namesNsids = {}) {
+export function createTask(attributes = {}, namesNsids = {}): ITask {
   const {
     sid,
     taskSid,
@@ -72,7 +72,8 @@ export function createTask(attributes = {}, namesNsids = {}) {
 
   return {
     attributes,
-    source: '',
+    formattedAttributes: null,
+    source: null,
     sourceObject: null,
     addOns: null,
     age: 0,
@@ -98,9 +99,6 @@ export function createTask(attributes = {}, namesNsids = {}) {
     workflowSid,
     workerSid,
     channelType,
-    accept() {
-      return Promise.resolve({ ...this, dateUpdated: new Date(), status: 'accepted', taskStatus: 'assigned' });
-    },
     complete() {
       return Promise.resolve({ ...this, dateUpdated: new Date(), status: 'completed', taskStatus: 'completed' });
     },
@@ -125,6 +123,36 @@ export function createTask(attributes = {}, namesNsids = {}) {
     kick() {
       return Promise.resolve(this);
     },
+    endConference() {
+      return Promise.resolve(this);
+    },
+    async addVoiceParticipant() {
+      return this;
+    },
+    async updateWorkerParticipant() {
+      return this;
+    },
+    async updateCustomerParticipant() {
+      return this;
+    },
+    async issueCallToWorker() {
+      return this;
+    },
+    async setEndConferenceOnExit() {
+      return this;
+    },
+    async dequeue() {
+      return this;
+    },
+    async getParticipants() {
+      return null;
+    },
+    async redirectCall() {
+      return null;
+    },
+    async getChannels() {
+      return null;
+    },
     setAttributes(newAttributes) {
       this.attributes = newAttributes;
       return Promise.resolve(this);
@@ -133,4 +161,8 @@ export function createTask(attributes = {}, namesNsids = {}) {
       return Promise.resolve({ ...this, dateUpdated: new Date(), status: 'wrapping', taskStatus: 'wrapping' });
     },
   };
+}
+
+export async function acceptTask(task: ITask): Promise<ITask> {
+  return { ...task, dateUpdated: new Date(), status: 'accepted', taskStatus: 'assigned' };
 }

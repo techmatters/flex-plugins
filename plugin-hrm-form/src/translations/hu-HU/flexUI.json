@@ -203,12 +203,16 @@
     "CaseHeader-Copy": "Igen, másolja",
     "CaseHeader-Cancel": "Mégsem",
     "CaseHeader-Voided": "Érvénytelenített",
+    "CaseHeader-FollowUpDate": "Követés",
     "CaseSummary-ReadMore": "Mutasson többet",
     "CaseSummary-ReadLess": "Mutasson kevesebbet",
     "CaseSummary-NoSummaryProvided": "Nem áll rendelkezésre összefoglaló",
     "CallSummary-None": "Nem áll rendelkezésre összefoglaló a hívásról",
     "CallSummary-ViewFull": "A teljes rekord mutatása",
     "CallSummary-MoreNotes": "További jegyzetek",
+    "CallSummary-ContactDate": "Kapcsolatfelvétel dátuma",
+    "CallSummary-CallerName": "Hívó neve",
+    "CallSummary-Counselor": "Ügyelő: ",
     "TranslateButtonAriaLabel": "Nyelv váltása",
     "CannedResponses": "Konzerv válaszok",
     "TaskInfoPanelContent": "<h1>TASK CONTEXT</h1><h2>Task type</h2><p>{{task.channelType}}</p><h2>Task created on</h2><p>{{task.dateCreated}}</p><h2>Task priority</h2><p>{{task.priority}}</p><h2>Task queue</h2><p>{{task.queueName}}</p><h2>Task Sid</h2><p>{{task.taskSid}}</p><h2>Reservation Sid</h2><p>{{task.sid}}</p><hr /><h1>CUSTOMER CONTEXT</h1><h2>Customer name / phone number</h2><p>{{task.defaultFrom}}</p><h2>Country</h2><p>{{task.attributes.caller_country}}</p><hr /><h1>ADDONS</h1><p>No add-ons enabled. To expand your experience, visit</p><a href=\"https://www.twilio.com/marketplaceadd-ons\" target=\"blank\">Twilio Marketplace</a>",
@@ -340,7 +344,7 @@
     "ContactDetails-GeneralDetails-Channel": "Csatorna",
     "ContactDetails-AddedBy": "Hozzáadta",
     "Unknown": "Ismeretlen",
-    "CallTypeAndCounselor-Label": "Ügyelő",
+    "SearchResultsIndex-Counselor": "Ügyelő",
     "ColumnHeaderAgent": "Ügyelő",
     "ColumnHeaderCalls": "Hívás",
     "ColumnHeaderTasks": "Egyéb feladatok",
@@ -478,5 +482,10 @@
     "TaskLineWebChatAssignedMasked":  "{{#if helper.chat.isCustomerOnline}} {{{icon name='GreenIndicator'}}} {{else}} {{{icon name='GreyIndicator'}}} {{/if}}  {{helper.durationSinceUpdate}} | {{#if helper.chat.typers.length}} gépel ... {{else}} {{#if helper.chat.lastMessage}} {{worker.fullName}}: {{helper.chat.lastMessage.body}} {{else}}Nincs üzenet{{/if}}{{/if}}",
     "TaskLineChatAssignedMasked":
     "{{helper.durationSinceUpdate}} | {{#if helper.chat.typers.length}} gépel ... {{else}} {{#if helper.chat.lastMessage}} {{worker.fullName}}: {{helper.chat.lastMessage.body}} {{else}}Nincs üzenet{{/if}}{{/if}}",
-    "TaskInfoPanelContentMasked": "<h1>TASK CONTEXT</h1><h2>Task type</h2><p>{{task.channelType}}</p><h2>Task created on</h2><p>{{task.dateCreated}}</p><h2>Task priority</h2><p>{{task.priority}}</p><h2>Task queue</h2><p>{{task.queueName}}</p><h2>Task Sid</h2><p>{{task.taskSid}}</p><h2>Reservation Sid</h2><p>{{task.sid}}</p><hr /><h1>CUSTOMER CONTEXT</h1><h2>Customer name / phone number</h2><p>Névtelen</p><h2>Country</h2><p>{{task.attributes.caller_country}}</p><hr /><h1>ADDONS</h1><p>No add-ons enabled. To expand your experience, visit</p><a href=\"https://www.twilio.com/marketplaceadd-ons\" target=\"blank\">Twilio Marketplace</a>"
+    "TaskInfoPanelContentMasked": "<h1>TASK CONTEXT</h1><h2>Task type</h2><p>{{task.channelType}}</p><h2>Task created on</h2><p>{{task.dateCreated}}</p><h2>Task priority</h2><p>{{task.priority}}</p><h2>Task queue</h2><p>{{task.queueName}}</p><h2>Task Sid</h2><p>{{task.taskSid}}</p><h2>Reservation Sid</h2><p>{{task.sid}}</p><hr /><h1>CUSTOMER CONTEXT</h1><h2>Customer name / phone number</h2><p>Névtelen</p><h2>Country</h2><p>{{task.attributes.caller_country}}</p><hr /><h1>ADDONS</h1><p>No add-ons enabled. To expand your experience, visit</p><a href=\"https://www.twilio.com/marketplaceadd-ons\" target=\"blank\">Twilio Marketplace</a>",
+    "ContactDetails-LoadTranscript-Button": "Beszélgetés átiratának betöltése",
+    "ContactDetails-Transcript": "Beszélgetés átirata",
+    "TranscriptSection-PermanentError": "Nem elérhető. Kérjük, nézzen vissza később.",
+    "TranscriptSection-TemporaryError": "Nem elérhető. Kérjük, nézzen vissza később.",
+    "TranscriptSection-TranscriptNotAvailableCheckLater": "Nem elérhető. Kérjük, nézzen vissza később."
 }

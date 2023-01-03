@@ -2,25 +2,18 @@
   {
     "name": "firstName",
     "label": "First Name",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "type": "input"
   },
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "type": "input"
   },
   {
     "name": "relationshipToChild",
-    "label": "Relationship to child",
+    "label": "Relationship to Client",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -65,106 +58,34 @@
       {
         "value": "Other",
         "label": "Other"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
       }
     ],
     "required": {
       "value": true,
       "message": "RequiredFieldError"
     }
-  },
-  {
-    "name": "streetAddress",
-    "label": "Street Address",
-    "type": "input"
-  },
-  {
-    "name": "province",
-    "label": "Province",
-    "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Central",
-        "label": "Central"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "district",
-    "label": "District",
-    "type": "dependent-select",
-    "dependsOn": "province",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "District1": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ],
-      "District2": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "phone1",
-    "label": "Phone #1",
-    "type": "input"
   },
   {
     "name": "gender",
     "label": "Gender",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
         "label": ""
       },
       {
-        "value": "Boy",
-        "label": "Boy"
+        "value": "Male",
+        "label": "Male"
       },
       {
-        "value": "Girl",
-        "label": "Girl"
+        "value": "Female",
+        "label": "Female"
       },
       {
-        "value": "Non-Binary",
-        "label": "Non-Binary"
+        "value": "Other",
+        "label": "Other"
       },
       {
         "value": "Unknown",
@@ -182,47 +103,51 @@
     "type": "select",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
-        "value": "0",
+        "value": "Unknown",
+        "label": "Unknown"
+      },
+      {
+        "value": "00",
         "label": "0"
       },
       {
-        "value": "1",
+        "value": "01",
         "label": "1"
       },
       {
-        "value": "2",
+        "value": "02",
         "label": "2"
       },
       {
-        "value": "3",
+        "value": "03",
         "label": "3"
       },
       {
-        "value": "4",
+        "value": "04",
         "label": "4"
       },
       {
-        "value": "5",
+        "value": "05",
         "label": "5"
       },
       {
-        "value": "6",
+        "value": "06",
         "label": "6"
       },
       {
-        "value": "7",
+        "value": "07",
         "label": "7"
       },
       {
-        "value": "8",
+        "value": "08",
         "label": "8"
       },
       {
-        "value": "9",
+        "value": "09",
         "label": "9"
       },
       {
@@ -430,16 +355,48 @@
         "label": "60"
       },
       {
-        "value": ">60",
-        "label": ">60"
+        "value": "61",
+        "label": "61"
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
+        "value": "62",
+        "label": "62"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "63",
+        "label": "63"
+      },
+      {
+        "value": "64",
+        "label": "64"
+      },
+      {
+        "value": "65",
+        "label": "65"
+      },
+      {
+        "value": "66",
+        "label": "66"
+      },
+      {
+        "value": "67",
+        "label": "67"
+      },
+      {
+        "value": "68",
+        "label": "68"
+      },
+      {
+        "value": "69",
+        "label": "69"
+      },
+      {
+        "value": "70",
+        "label": "70"
+      },
+      {
+        "value": ">70",
+        "label": ">70"
       }
     ],
     "required": {
@@ -451,20 +408,370 @@
     "name": "language",
     "label": "Language",
     "type": "select",
+    "unknownOption": "Unknown",
     "options": [
       {
         "value": "Unknown",
         "label": ""
       },
       {
-        "value": "language1",
-        "label": "language1"
+        "value": "English",
+        "label": "English"
+      },
+      {
+        "value": "Maltese",
+        "label": "Maltese"
+      },
+      {
+        "value": "Ukrainian",
+        "label": "Ukrainian"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
       }
     ]
   },
   {
-    "name": "ethnicity",
-    "label": "Ethnicity",
+    "name": "ethnicity-input",
+    "label": "Ethinicity",
     "type": "input"
+  },
+  {
+    "name": "phone1",
+    "label": "Phone Number",
+    "type": "input"
+  },
+  {
+    "name": "streetAddress",
+    "label": "Street Address",
+    "type": "input"
+  },
+  {
+    "name": "region",
+    "label": "Region",
+    "type": "select",
+    "defaultOption": {
+      "value": "Unknown",
+      "label": ""
+    },
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Malta",
+        "label": "Malta"
+      },
+      {
+        "value": "Gozo",
+        "label": "Gozo"
+      }
+    ]
+  },
+  {
+    "name": "locality",
+    "label": "Locality",
+    "type": "dependent-select",
+    "dependsOn": "region",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Malta": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "H'Attard",
+          "label": "H'Attard"
+        },
+        {
+          "value": "Balzan",
+          "label": "Balzan"
+        },
+        {
+          "value": "Bidnija",
+          "label": "Bidnija"
+        },
+        {
+          "value": "Birgu",
+          "label": "Birgu"
+        },
+        {
+          "value": "Birkirkara",
+          "label": "Birkirkara"
+        },
+        {
+          "value": "Birzebbuga",
+          "label": "Birzebbuga"
+        },
+        {
+          "value": "Bormla",
+          "label": "Bormla"
+        },
+        {
+          "value": "Dingli",
+          "label": "Dingli"
+        },
+        {
+          "value": "Fgura",
+          "label": "Fgura"
+        },
+        {
+          "value": "Furjana",
+          "label": "Furjana"
+        },
+        {
+          "value": "Gharghur",
+          "label": "Gharghur"
+        },
+        {
+          "value": "Ghaxaq",
+          "label": "Ghaxaq"
+        },
+        {
+          "value": "Gudja",
+          "label": "Gudja"
+        },
+        {
+          "value": "Gzira",
+          "label": "Gzira"
+        },
+        {
+          "value": "Hamrun",
+          "label": "Hamrun"
+        },
+        {
+          "value": "Iklin",
+          "label": "Iklin"
+        },
+        {
+          "value": "Kalkara",
+          "label": "Kalkara"
+        },
+        {
+          "value": "Kirkop",
+          "label": "Kirkop"
+        },
+        {
+          "value": "Lija",
+          "label": "Lija"
+        },
+        {
+          "value": "Luqa",
+          "label": "Luqa"
+        },
+        {
+          "value": "Marsa",
+          "label": "Marsa"
+        },
+        {
+          "value": "Marsaskala",
+          "label": "Marsaskala"
+        },
+        {
+          "value": "Marsaxlokk",
+          "label": "Marsaxlokk"
+        },
+        {
+          "value": "Imdina",
+          "label": "Imdina"
+        },
+        {
+          "value": "Mellieha",
+          "label": "Mellieha"
+        },
+        {
+          "value": "Imgarr",
+          "label": "Imgarr"
+        },
+        {
+          "value": "Mosta",
+          "label": "Mosta"
+        },
+        {
+          "value": "Imqabba",
+          "label": "Imqabba"
+        },
+        {
+          "value": "Imsida",
+          "label": "Imsida"
+        },
+        {
+          "value": "Imtarfa",
+          "label": "Imtarfa"
+        },
+        {
+          "value": "Naxxar",
+          "label": "Naxxar"
+        },
+        {
+          "value": "Rahal Gdid",
+          "label": "Rahal Gdid"
+        },
+        {
+          "value": "Pembroke",
+          "label": "Pembroke"
+        },
+        {
+          "value": "Pietà",
+          "label": "Pietà"
+        },
+        {
+          "value": "Qormi",
+          "label": "Qormi"
+        },
+        {
+          "value": "Qrendi",
+          "label": "Qrendi"
+        },
+        {
+          "value": "Rabat",
+          "label": "Rabat"
+        },
+        {
+          "value": "Safi",
+          "label": "Safi"
+        },
+        {
+          "value": "San Gwann",
+          "label": "San Gwann"
+        },
+        {
+          "value": "Santa Lucija",
+          "label": "Santa Lucija"
+        },
+        {
+          "value": "Santa Venera",
+          "label": "Santa Venera"
+        },
+        {
+          "value": "Isla",
+          "label": "Isla"
+        },
+        {
+          "value": "Siggiewi",
+          "label": "Siggiewi"
+        },
+        {
+          "value": "Sliema",
+          "label": "Sliema"
+        },
+        {
+          "value": "San Giljan",
+          "label": "San Giljan"
+        },
+        {
+          "value": "San Pawl Bahar",
+          "label": "San Pawl Bahar"
+        },
+        {
+          "value": "Swieqi",
+          "label": "Swieqi"
+        },
+        {
+          "value": "Tarxien",
+          "label": "Tarxien"
+        },
+        {
+          "value": "Ta' Xbiex",
+          "label": "Ta' Xbiex"
+        },
+        {
+          "value": "Valletta",
+          "label": "Valletta"
+        },
+        {
+          "value": "Xghajra",
+          "label": "Xghajra"
+        },
+        {
+          "value": "Zabbar",
+          "label": "Zabbar"
+        },
+        {
+          "value": "Zebbug",
+          "label": "Zebbug"
+        },
+        {
+          "value": "Zejtun",
+          "label": "Zejtun"
+        },
+        {
+          "value": "Zurrieq",
+          "label": "Zurrieq"
+        }
+      ],
+      "Gozo": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Fontana",
+          "label": "Fontana"
+        },
+        {
+          "value": "Ghajnsielem",
+          "label": "Ghajnsielem"
+        },
+        {
+          "value": "Gharb",
+          "label": "Gharb"
+        },
+        {
+          "value": "Ghasri",
+          "label": "Ghasri"
+        },
+        {
+          "value": "Kercem",
+          "label": "Kercem"
+        },
+        {
+          "value": "Munxar",
+          "label": "Munxar"
+        },
+        {
+          "value": "Nadur",
+          "label": "Nadur"
+        },
+        {
+          "value": "Qala",
+          "label": "Qala"
+        },
+        {
+          "value": "Rabat",
+          "label": "Rabat"
+        },
+        {
+          "value": "San Lawrenz",
+          "label": "San Lawrenz"
+        },
+        {
+          "value": "Sannat",
+          "label": "Sannat"
+        },
+        {
+          "value": "Xaghra",
+          "label": "Xaghra"
+        },
+        {
+          "value": "Xewkija",
+          "label": "Xewkija"
+        },
+        {
+          "value": "Zebbug",
+          "label": "Zebbug"
+        },
+        {
+          "value": "Marsalforn",
+          "label": "Marsalforn"
+        }
+      ]
+    }
   }
 ]

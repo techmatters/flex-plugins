@@ -6,7 +6,7 @@
       "required": { "value": true, "message": "RequiredFieldError" }
     },
     {
-      "name": "agencyName",
+      "name": "referredTo",
       "label": "Name of Agency",
       "type": "input",
       "required": {

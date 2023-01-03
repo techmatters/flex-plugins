@@ -15,5 +15,5 @@ jobs:
     secrets: inherit
     with:
       helpline_code: HU
-      environment_code: STG
+      environment_code: PROD
       changelog: ${{ inputs.changelog }}

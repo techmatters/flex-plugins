@@ -16,7 +16,7 @@ import { isNonDataCallType } from '../states/ValidationRules';
 import { mapChannelForInsights } from '../utils/mappers';
 import { getDateTime } from '../utils/helpers';
 import { TaskEntry } from '../states/contacts/reducer';
-import { Case, CustomITask } from '../types/types';
+import { Case, CustomITask, Contact } from '../types/types';
 import { formatCategories } from '../utils/formatters';
 import { getDefinitionVersions } from '../HrmFormPlugin';
 import { shouldSendInsightsData } from '../utils/setUpActions';
@@ -68,6 +68,7 @@ type InsightsUpdateFunction = (
   attributes: TaskAttributes,
   contactForm: TaskEntry,
   caseForm: Case,
+  savedContact: Contact,
 ) => InsightsAttributes;
 
 const sanitizeInsightsValue = (value: string | boolean) => {
@@ -318,10 +319,11 @@ export const processHelplineConfig = (
 };
 
 const applyCustomUpdate = (customUpdate: OneToManyConfigSpec): InsightsUpdateFunction => {
-  return (taskAttributes, contactForm, caseForm) => {
-    if (isNonDataCallType(contactForm.callType)) return {};
+  return (taskAttributes, contactForm, caseForm, savedContact) => {
+    // If it's non data, and specs don't explicitly say to save it, ommit the update
+    if (isNonDataCallType(contactForm.callType) && !customUpdate.saveForNonDataContacts) return {};
 
-    const dataSource = { taskAttributes, contactForm, caseForm };
+    const dataSource = { taskAttributes, contactForm, caseForm, savedContact };
     // concatenate the values, taken from dataSource using paths (e.g. 'contactForm.childInformation.province')
     const value = customUpdate.paths.map(path => sanitizeInsightsValue(get(dataSource, path, ''))).join(delimiter);
 
@@ -353,6 +355,7 @@ export const mergeAttributes = (
 ): TaskAttributes => {
   return {
     ...previousAttributes,
+    ...newAttributes,
     conversations: {
       ...previousAttributes.conversations,
       ...newAttributes.conversations,
@@ -380,16 +383,16 @@ const getInsightsUpdateFunctionsForConfig = (
  * Note: config parameter tells where to go to get helpline-specific tests.  It should
  * eventually match up with getConfig().  Also useful for testing.
  */
-export const buildInsightsData = (task: CustomITask, contactForm: TaskEntry, caseForm: Case) => {
-  const previousAttributes = task.attributes;
+export const buildInsightsData = (task: CustomITask, contactForm: TaskEntry, caseForm: Case, savedContact: Contact) => {
+  const previousAttributes = typeof task.attributes === 'string' ? JSON.parse(task.attributes) : task.attributes;
 
-  if (!shouldSendInsightsData(task as ITask)) return previousAttributes;
+  if (!shouldSendInsightsData({ ...task, attributes: previousAttributes } as ITask)) return previousAttributes;
 
   const { currentDefinitionVersion } = getDefinitionVersions();
 
   // eslint-disable-next-line sonarjs/prefer-immediate-return
   const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(currentDefinitionVersion.insights)
-    .map(f => f(previousAttributes, contactForm, caseForm))
+    .map(f => f(previousAttributes, contactForm, caseForm, savedContact))
     .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
 
   return finalAttributes;

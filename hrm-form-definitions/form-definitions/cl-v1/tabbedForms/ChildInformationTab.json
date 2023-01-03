@@ -13,7 +13,7 @@
     "name": "gender",
     "label": "Género",
     "type": "select",
-    "unknownOption": "Desconocido",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -49,6 +49,7 @@
     "name": "age",
     "label": "Edad",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -59,23 +60,23 @@
         "label": "<5"
       },
       {
-        "value": "5",
+        "value": "05",
         "label": "5"
       },
       {
-        "value": "6",
+        "value": "06",
         "label": "6"
       },
       {
-        "value": "7",
+        "value": "07",
         "label": "7"
       },
       {
-        "value": "8",
+        "value": "08",
         "label": "8"
       },
       {
-        "value": "9",
+        "value": "09",
         "label": "9"
       },
       {
@@ -1674,23 +1675,23 @@
         "label": ""
       },
       {
-        "value": "1",
+        "value": "01",
         "label": "1"
       },
       {
-        "value": "2",
+        "value": "02",
         "label": "2"
       },
       {
-        "value": "3",
+        "value": "03",
         "label": "3"
       },
       {
-        "value": "4",
+        "value": "04",
         "label": "4"
       },
       {
-        "value": "5",
+        "value": "05",
         "label": "5"
       }
     ]
@@ -1702,7 +1703,7 @@
     "unknownOption": "Desconocido",
     "options": [
       {
-        "value": "",
+        "value": "Desconocido",
         "label": ""
       },
       {
@@ -1758,7 +1759,7 @@
     "unknownOption": "Desconocido",
     "options": [
       {
-        "value": "",
+        "value": "Desconocido",
         "label": ""
       },
       {

@@ -28,9 +28,8 @@ import {
   StyledResultsText,
   StyledTabLabel,
   StyledFolderIcon,
-  StyledContactResultsHeader,
-  StyledCaseResultsHeader,
-  BoldText,
+  StyledResultsHeader,
+  EmphasisedText,
   StyledCount,
 } from '../../../styles/search';
 import Pagination from '../../Pagination';
@@ -160,43 +159,29 @@ const SearchResults: React.FC<Props> = ({
       <ListContainer>
         <ScrollableList>
           <StyledResultsContainer>
-            <StyledResultsText>
-              <BoldText data-testid="SearchResultsCount">
+            <StyledResultsText data-testid="SearchResultsCount">
+              <>
                 {/* Intentionally we must show the option different at the one currently selected */}
                 {currentPage === SearchPages.resultsContacts ? (
                   <>
-                    {casesCount === 1 ? (
-                      <>
-                        <Template code="PreviousContacts-ThereIs" />
-                        &nbsp;
-                        {casesCount} <Template code="PreviousContacts-Case" />
-                      </>
-                    ) : (
-                      <>
-                        <Template code="PreviousContacts-ThereAre" />
-                        &nbsp;
-                        {casesCount} <Template code="PreviousContacts-Cases" />
-                      </>
-                    )}
+                    <Template code={casesCount === 1 ? 'PreviousContacts-ThereIs' : 'PreviousContacts-ThereAre'} />
+                    &nbsp;
+                    <EmphasisedText>
+                      {casesCount}{' '}
+                      <Template code={casesCount === 1 ? 'PreviousContacts-Case' : 'PreviousContacts-Cases'} />
+                    </EmphasisedText>
                   </>
                 ) : (
                   <>
-                    {contactsCount === 1 ? (
-                      <>
-                        <Template code="PreviousContacts-ThereIs" />
-                        &nbsp;
-                        {contactsCount} <Template code="PreviousContacts-Contact" />
-                      </>
-                    ) : (
-                      <>
-                        <Template code="PreviousContacts-ThereAre" />
-                        &nbsp;
-                        {contactsCount} <Template code="PreviousContacts-Contacts" />
-                      </>
-                    )}
+                    <Template code={contactsCount === 1 ? 'PreviousContacts-ThereIs' : 'PreviousContacts-ThereAre'} />
+                    &nbsp;
+                    <EmphasisedText>
+                      {contactsCount}{' '}
+                      <Template code={contactsCount === 1 ? 'PreviousContacts-Contact' : 'PreviousContacts-Contacts'} />
+                    </EmphasisedText>
                   </>
                 )}
-              </BoldText>
+              </>
               &nbsp;
               <Template code="PreviousContacts-Returned" />
               &nbsp;
@@ -214,7 +199,7 @@ const SearchResults: React.FC<Props> = ({
           </StyledResultsContainer>
           {currentPage === SearchPages.resultsContacts && (
             <>
-              <StyledContactResultsHeader>
+              <StyledResultsHeader>
                 <StyledCount data-testid="ContactsCount">
                   {contactsCount}&nbsp;
                   {contactsCount === 1 ? (
@@ -239,7 +224,7 @@ const SearchResults: React.FC<Props> = ({
                   }
                   labelPlacement="start"
                 />
-              </StyledContactResultsHeader>
+              </StyledResultsHeader>
               {contacts &&
                 contacts.length > 0 &&
                 contacts.map(contact => (
@@ -261,7 +246,7 @@ const SearchResults: React.FC<Props> = ({
           )}
           {currentPage === SearchPages.resultsCases && (
             <>
-              <StyledCaseResultsHeader>
+              <StyledResultsHeader>
                 <StyledCount data-testid="CasesCount">
                   {casesCount}{' '}
                   {casesCount === 1 ? (
@@ -286,7 +271,7 @@ const SearchResults: React.FC<Props> = ({
                   }
                   labelPlacement="start"
                 />
-              </StyledCaseResultsHeader>
+              </StyledResultsHeader>
 
               {cases &&
                 cases.length > 0 &&

@@ -14,6 +14,7 @@ import {
   BottomButtonBarHeight,
   Box,
   ColumnarBlock,
+  ColumnarContent,
   Container,
   StyledNextStepButton,
   TwoColumnLayout,
@@ -255,8 +256,12 @@ const AddEditCaseItem: React.FC<Props> = ({
           <Container>
             <Box paddingBottom={`${BottomButtonBarHeight}px`}>
               <TwoColumnLayout>
-                <ColumnarBlock>{l}</ColumnarBlock>
-                <ColumnarBlock>{r}</ColumnarBlock>
+                <ColumnarBlock>
+                  <ColumnarContent>{l}</ColumnarContent>
+                </ColumnarBlock>
+                <ColumnarBlock>
+                  <ColumnarContent>{r}</ColumnarContent>
+                </ColumnarBlock>
               </TwoColumnLayout>
             </Box>
           </Container>{' '}

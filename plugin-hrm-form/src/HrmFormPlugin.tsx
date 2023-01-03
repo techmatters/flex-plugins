@@ -10,12 +10,14 @@ import { transferModes } from './states/DomainConstants';
 import { initLocalization } from './utils/pluginHelpers';
 import * as Providers from './utils/setUpProviders';
 import * as ActionFunctions from './utils/setUpActions';
+import * as TaskRouterListeners from './utils/setUpTaskRouterListeners';
 import * as Components from './utils/setUpComponents';
 import * as Channels from './channels/setUpChannels';
 import setUpMonitoring from './utils/setUpMonitoring';
 import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from './permissions';
+import type { FeatureFlags } from './types/types';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -45,7 +47,7 @@ const readConfig = () => {
     multipleOfficeSupport,
     permissionConfig,
   } = manager.serviceConfiguration.attributes;
-  const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
+  const featureFlags: FeatureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
   const { strings } = (manager as unknown) as { strings: { [key: string]: string } };
 
@@ -204,6 +206,7 @@ const setUpComponents = (setupObject: SetupObject) => {
     // Masks TaskInfoPanelContent - TODO: refactor to use a react component
     const { strings } = getConfig();
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+    strings.CallParticipantCustomerName = strings.MaskIdentifiers;
   }
 };
 
@@ -215,7 +218,7 @@ const setUpActions = (setupObject: SetupObject) => {
 
   ActionFunctions.setUpPostSurvey(setupObject);
 
-  // bind setupObject to the functions that requires some initializaton
+  // bind setupObject to the functions that requires some initialization
   const transferOverride = ActionFunctions.customTransferTask(setupObject);
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject);
   const beforeCompleteAction = ActionFunctions.beforeCompleteTask(setupObject);
@@ -239,6 +242,10 @@ const setUpActions = (setupObject: SetupObject) => {
   Flex.Actions.addListener('afterWrapupTask', afterWrapupAction);
 
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
+};
+
+const setUpTaskRouterListeners = (setupObject: SetupObject) => {
+  TaskRouterListeners.setTaskWrapupEventListeners(setupObject);
 };
 
 export default class HrmFormPlugin extends FlexPlugin {
@@ -275,6 +282,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     if (config.featureFlags.enable_transfers) setUpTransfers(setupObject);
     setUpComponents(setupObject);
     setUpActions(setupObject);
+    setUpTaskRouterListeners(setupObject);
 
     const managerConfiguration: Flex.Config = {
       // colorTheme: HrmTheme,
