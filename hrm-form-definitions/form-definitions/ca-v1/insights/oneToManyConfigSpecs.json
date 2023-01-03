@@ -4,6 +4,7 @@
     "insightsObject": "customers",
     "paths": [
       "savedContact.id"
-    ]
+    ],
+    "saveForNonDataContacts": true
   }
 ]
