@@ -16,7 +16,7 @@ env:
   AWS_DEFAULT_REGION: us-east-1
 
 jobs:
-  deploy:
+  terraform_plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
 
