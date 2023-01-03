@@ -72,7 +72,7 @@ resource "aws_ssm_parameter" "twilio_auth_token" {
 resource "aws_ssm_parameter" "twilio_workspace_sid" {
   name  = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/workspace_sid"
   type  = "SecureString"
-  value = var.master_workflow_sid
+  value = var.flex_task_assignment_workspace_sid
   description = "Twilio account - Workspace SID"
 
   tags = {
