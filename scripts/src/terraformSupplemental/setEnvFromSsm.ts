@@ -5,7 +5,7 @@ export const setEnvFromSsm = async (accountDirectory: String): Promise<void> => 
 
     const timestamp = (new Date()).getTime();
     const params = {
-      RoleArn: 'arn:aws:iam::712893914485:role/tf-twilio-iac-ssm-ro',
+      RoleArn: 'arn:aws:iam::712893914485:role/tf-twilio-iac-ssm-read-only',
       RoleSessionName: `tf-supplemental-${timestamp}`
     };
 
