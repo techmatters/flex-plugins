@@ -4,8 +4,8 @@
     "CallerInformationTab":[]
   },
   "preEngagement":{
-    "ChildInformationTab":[],
+    "ChildInformationTab":["gender","sexualOrientation", "Newcomer", "province","ethnicity","school","livingSituation", "region", "livingSituation" ],
     "CallerInformationTab":[],
-    "CaseInformationTab":[]
+    "CaseInformationTab":["repeatCaller"]
   }
 }
