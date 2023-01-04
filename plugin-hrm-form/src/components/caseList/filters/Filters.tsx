@@ -227,8 +227,8 @@ const Filters: React.FC<Props> = ({
         </CasesCount>
       </FiltersContainer>
       <h1> Hello</h1>
-          <h1>สวัสดีค่ะ มูลนิธิสายเด็ก1387 ยินดีให้บริการค่ะ กรุณาบอกอายุและจังหวัดที่น้องอยู่ค่ะ</h1>
-          <h1>привіт</h1>
+      <h1>สวัสดีค่ะ มูลนิธิสายเด็ก1387 ยินดีให้บริการค่ะ กรุณาบอกอายุและจังหวัดที่น้องอยู่ค่ะ</h1>
+      <h1>привіт</h1>
       {featureFlags.enable_filter_cases && (
         <FiltersContainer>
           <FilterList fontSize="small" />
