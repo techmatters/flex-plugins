@@ -1,11 +1,11 @@
 {
   "survey":{
-    "ChildInformationTab":["age"],
+    "ChildInformationTab":[],
     "CallerInformationTab":[]
   },
   "preEngagement":{
-    "ChildInformationTab":["gender","sexualOrientation", "Newcomer", "province","ethnicity","school","livingSituation", "region", "livingSituation" ],
+    "ChildInformationTab":[],
     "CallerInformationTab":[],
-    "CaseInformationTab":["repeatCaller"]
+    "CaseInformationTab":[]
   }
 }
