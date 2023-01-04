@@ -241,13 +241,6 @@ export function reduce(
       const { callType, values, isCaseInfo } = action;
       let formName = callType === callTypes.child ? 'childInformation' : 'callerInformation';
       if (isCaseInfo) formName = 'caseInformation';
-      console.log('>>> t.PREPOPULATE_FORM reducer', isCaseInfo, formName, values);
-      console.log(
-        '>>>currentTask',
-        currentTask.childInformation,
-        currentTask.callerInformation,
-        currentTask.caseInformation,
-      );
 
       return {
         ...state,
