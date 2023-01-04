@@ -23,6 +23,9 @@ const CasePrintHeader: React.FC<Props> = ({ firstName, lastName, id, officeName,
     <View fixed>
       <View style={styles['headerContainer']}>
         <View style={styles.flexColumn}>
+          <Text> Hello</Text>
+          <Text>สวัสดีค่ะ มูลนิธิสายเด็ก1387 ยินดีให้บริการค่ะ กรุณาบอกอายุและจังหวัดที่น้องอยู่ค่ะ</Text>
+          <Text>привіт</Text>
           <Text style={styles['childName']}>{`${firstName} ${lastName}`}</Text>
           <View style={styles.flexRow}>
             <Text style={styles['caseId']}>{`${strings['Case-CaseNumber']}: ${id}`}</Text>
