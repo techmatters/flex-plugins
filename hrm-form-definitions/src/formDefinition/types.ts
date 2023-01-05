@@ -286,6 +286,16 @@ export type DefinitionVersion = {
   caseStatus: {
     [status: string]: StatusInfo;
   };
-  prepopulateKeys: { ChildInformationTab: string[]; CallerInformationTab: string[] };
+  prepopulateKeys?: {
+    survey: {
+      ChildInformationTab: string[];
+      CallerInformationTab: string[];
+    };
+    preEngagement: {
+      ChildInformationTab: string[];
+      CallerInformationTab: string[];
+      CaseInformationTab: string[];
+    };
+  };
   referenceData?: Record<string, any>;
 };
