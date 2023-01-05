@@ -1,10 +1,4 @@
 import { StyleSheet, Font } from '@react-pdf/renderer';
-// import { getConfig } from '../../../../HrmFormPlugin';
-
-/*
- *   const config = getConfig();
- *   console.log('>>> CasePrint Index',config)
- */
 
 import headerStyles from './header';
 import footerStyles from './footer';
@@ -14,11 +8,8 @@ import notesStyles from './notes';
 import summaryStyles from './summary';
 import categoriesStyles from './categories';
 
-/*
- * Unfortunately we have to import each font that we want to use (even with the style and weight variations)
- * More info: https://react-pdf.org/fonts
- * .TTF links extracted with: https://nikoskip.me/gfonts.php
- */
+
+
 Font.register({
   family: 'Open Sans',
   fonts: [
@@ -78,14 +69,23 @@ Font.registerEmojiSource({
   url: 'https://twemoji.maxcdn.com/2/72x72/',
 });
 
-let fontFamilyByLanguage = 'OpenSans';
+let fontFamilyByLanguage = 'Open Sans'
 
-// let version;
-// if (version = 'uk-v1'){
-//   fontFamilyByLanguage = 'Roboto'
-// } else if (version = 'th-v1'){
-//   fontFamilyByLanguage = 'NotoSansThaiLooped'
-// } 
+export const registerFonts = definitionVersion => {
+  /*
+ * Unfortunately we have to import each font that we want to use (even with the style and weight variations)
+ * More info: https://react-pdf.org/fonts
+ * .TTF links extracted with: https://nikoskip.me/gfonts.php
+ */
+  if ((definitionVersion = 'uk-v1')) {
+    fontFamilyByLanguage = 'Roboto';
+  } else if ((definitionVersion = 'th-v1')) {
+    fontFamilyByLanguage = 'NotoSansThaiLooped';
+  }
+  return fontFamilyByLanguage;
+};
+
+
 const styles = StyleSheet.create({
   ...headerStyles,
   ...footerStyles,

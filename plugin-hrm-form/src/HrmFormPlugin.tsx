@@ -18,6 +18,7 @@ import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from './permissions';
 import type { FeatureFlags } from './types/types';
+import { registerFonts } from 'components/case/casePrint/styles/index';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -88,6 +89,8 @@ try {
 }
 
 export const getConfig = () => cachedConfig;
+
+registerFonts(cachedConfig.definitionVersion)
 
 // eslint-disable-next-line import/no-unused-modules
 export type SetupObject = ReturnType<typeof getConfig> & {
