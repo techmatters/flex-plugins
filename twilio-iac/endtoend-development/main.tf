@@ -7,8 +7,8 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "tl-terraform-state-twilio-e2e-development"
-    key            = "twilio/terraform.tfstate"
+    bucket         = "tl-terraform-state-development"
+    key            = "twilio/e2e/terraform.tfstate"
     dynamodb_table = "terraform-locks"
     encrypt        = true
     role_arn       = "arn:aws:iam::712893914485:role/tf-twilio-iac-development"

@@ -1,9 +1,10 @@
 [
   {
     "attributeName": "customer_attribute_3",
-    "insightsObject": "conversations",
+    "insightsObject": "customers",
     "paths": [
       "savedContact.id"
-    ]
+    ],
+    "saveForNonDataContacts": true
   }
 ]
