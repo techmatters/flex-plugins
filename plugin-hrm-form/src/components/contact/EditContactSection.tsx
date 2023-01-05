@@ -1,12 +1,12 @@
 import { connect, ConnectedProps, useDispatch } from 'react-redux';
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 import _ from 'lodash';
 import { Close } from '@material-ui/icons';
 
-import { configurationBase, contactFormsBase, namespace, RootState, routingBase } from '../../states';
+import { configurationBase, contactFormsBase, csamReportBase, namespace, RootState, routingBase } from '../../states';
 import { updateContactInHrm } from '../../services/ContactService';
 import { Box, StyledNextStepButton, BottomButtonBar, Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
 import { CaseActionTitle, EditContactContainer } from '../../styles/case';
@@ -27,6 +27,14 @@ import type { TaskEntry } from '../../states/contacts/reducer';
 import ActionHeader from '../../components/case/ActionHeader';
 import * as routingActions from '../../states/routing/actions';
 import { CustomITask } from '../../types/types';
+import { CSAMReportType } from '../../states/csam-report/types';
+import {
+  clearCSAMReportActionForContact,
+  updateChildFormActionForContact,
+  updateCounsellorFormActionForContact,
+} from '../../states/csam-report/actions';
+import { childInitialValues, initialValues } from '../CSAMReport/CSAMReportFormDefinition';
+import { isChildTaskEntry, isCounsellorTaskEntry } from '../../states/csam-report/reducer';
 
 type OwnProps = {
   context: DetailsContext;
@@ -54,7 +62,8 @@ const EditContactSection: React.FC<Props> = ({
   children,
   clearContactDraft,
   counselorsHash,
-  createContactDraft,
+  createBlankCSAMForm,
+  draftCsamReport,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const methods = useForm({
@@ -66,8 +75,6 @@ const EditContactSection: React.FC<Props> = ({
   const version = savedContact?.details.definitionVersion;
 
   const definitionVersion = definitionVersions[version];
-
-  const navigate = (route: ContactDetailsRoute) => createContactDraft(savedContact.contactId, route);
 
   const [isSubmitting, setSubmitting] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -91,8 +98,6 @@ const EditContactSection: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const isTouched = externalReport === null;
-
   if (!savedContact || !definitionVersion) return null;
 
   const onSubmitValidForm = async () => {
@@ -113,7 +118,12 @@ const EditContactSection: React.FC<Props> = ({
   };
 
   const onGetExternalReportType = () => {
-    navigate(ContactDetailsRoute.CSAM_REPORT);
+    const {
+      externalReport: { reportType },
+    } = methods.getValues();
+    if (reportType) {
+      createBlankCSAMForm(reportType);
+    }
   };
 
   const onError = recordingErrorHandler('Edit Contact Form', () => {
@@ -123,7 +133,7 @@ const EditContactSection: React.FC<Props> = ({
 
   const checkForEdits = () => {
     if (_.isEqual(methods.getValues(), initialFormValues)) {
-      clearContactDraft(contactId);
+      clearContactDraft();
     } else {
       setOpenDialog(true);
     }
@@ -196,7 +206,7 @@ const EditContactSection: React.FC<Props> = ({
               openDialog={openDialog}
               setDialog={() => setOpenDialog(false)}
               handleDontSaveClose={() => {
-                clearContactDraft(contactId);
+                clearContactDraft();
               }}
               handleSaveUpdate={methods.handleSubmit(onSubmitValidForm, onError)}
             />
@@ -205,7 +215,11 @@ const EditContactSection: React.FC<Props> = ({
             <StyledNextStepButton
               roundCorners={true}
               onClick={tabPath === 'externalReport' ? onGetExternalReportType : onSubmitForm}
-              disabled={tabPath === 'externalReport' ? isTouched : isSubmitting}
+              disabled={
+                tabPath === 'externalReport'
+                  ? !isChildTaskEntry(draftCsamReport) && !isCounsellorTaskEntry(draftCsamReport)
+                  : isSubmitting
+              }
               data-fs-id="Contact-SaveContact-Button"
               data-testid="EditContact-SaveContact-Button"
             >
@@ -222,20 +236,28 @@ const EditContactSection: React.FC<Props> = ({
   );
 };
 
-const mapDispatchToProps = {
-  refreshContact: refreshRawContact,
-  setEditContactPageOpen: t.setEditContactPageOpen,
-  setEditContactPageClosed: t.setEditContactPageClosed,
-  clearContactDraft: clearDraft,
-  changeRoute: routingActions.changeRoute,
-  createContactDraft: createDraft,
-};
+const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string, any>>, { contactId }: OwnProps) => ({
+  refreshContact: contact => dispatch(refreshRawContact(contact)),
+  setEditContactPageOpen: () => dispatch(t.setEditContactPageOpen()),
+  setEditContactPageClosed: () => dispatch(t.setEditContactPageClosed()),
+  clearContactDraft: () => {
+    dispatch(clearDraft(contactId));
+    dispatch(clearCSAMReportActionForContact(contactId));
+  },
+  createBlankCSAMForm: (reportType: CSAMReportType) => {
+    if (reportType === CSAMReportType.CHILD) {
+      dispatch(updateChildFormActionForContact(childInitialValues, contactId));
+    } else {
+      dispatch(updateCounsellorFormActionForContact(initialValues, contactId));
+    }
+  },
+});
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
+const mapStateToProps = (state: RootState, { contactId }: OwnProps) => ({
   definitionVersions: state[namespace][configurationBase].definitionVersions,
   counselorsHash: state[namespace][configurationBase].counselors.hash,
-  savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
-  draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
+  savedContact: state[namespace][contactFormsBase].existingContacts[contactId]?.savedContact,
+  draftCsamReport: state[namespace][csamReportBase].contacts[contactId],
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

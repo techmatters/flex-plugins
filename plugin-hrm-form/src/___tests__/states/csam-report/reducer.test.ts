@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { reduce, initialState, newTaskEntry } from '../../../states/csam-report/reducer';
+import { reduce, initialState, newCounsellorTaskEntry } from '../../../states/csam-report/reducer';
 import * as actions from '../../../states/csam-report/actions';
 import * as GeneralActions from '../../../states/actions';
 import { GeneralActionType } from '../../../states/types';
@@ -49,7 +49,7 @@ describe('test reducer', () => {
 
     const expected = {
       tasks: {
-        [task.taskSid]: newTaskEntry,
+        [task.taskSid]: newCounsellorTaskEntry,
       },
     };
 
@@ -62,7 +62,7 @@ describe('test reducer', () => {
 
     const expected = {
       tasks: {
-        [task.taskSid]: newTaskEntry,
+        [task.taskSid]: newCounsellorTaskEntry,
       },
     };
 
@@ -79,7 +79,7 @@ describe('test reducer', () => {
 
     expect(state).toStrictEqual({
       tasks: {
-        [task.taskSid]: newTaskEntry,
+        [task.taskSid]: newCounsellorTaskEntry,
       },
     });
 
@@ -96,13 +96,13 @@ describe('test reducer', () => {
       ...state,
       tasks: {
         ...state.tasks,
-        [task.taskSid]: { ...newTaskEntry, form: { ...newTaskEntry.form, webAddress: 'some-url' } },
+        [task.taskSid]: { ...newCounsellorTaskEntry, form: { ...newCounsellorTaskEntry.form, webAddress: 'some-url' } },
       },
     };
 
     const result = reduce(
       state,
-      actions.updateFormAction({ ...newTaskEntry.form, webAddress: 'some-url' }, task.taskSid),
+      actions.updateCounsellorFormAction({ ...newCounsellorTaskEntry.form, webAddress: 'some-url' }, task.taskSid),
     );
 
     expect(result).toStrictEqual(expected);
@@ -116,7 +116,7 @@ describe('test reducer', () => {
       ...state,
       tasks: {
         ...state.tasks,
-        [task.taskSid]: { ...newTaskEntry, reportStatus },
+        [task.taskSid]: { ...newCounsellorTaskEntry, reportStatus },
       },
     };
 
@@ -130,7 +130,7 @@ describe('test reducer', () => {
 
     expect(state).toStrictEqual({
       tasks: {
-        [task.taskSid]: newTaskEntry,
+        [task.taskSid]: newCounsellorTaskEntry,
       },
     });
 
@@ -138,7 +138,7 @@ describe('test reducer', () => {
       ...state,
       tasks: {
         ...state.tasks,
-        [task.taskSid]: newTaskEntry,
+        [task.taskSid]: newCounsellorTaskEntry,
       },
     };
 

@@ -1,22 +1,41 @@
 import { omit } from 'lodash';
 
 import * as t from './types';
+import { CSAMReportType, isCSAMActionForContact } from './types';
 import { GeneralActionType, INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from '../types';
-import { initialValues, childInitialValues } from '../../components/CSAMReport/CSAMReportFormDefinition';
+import { childInitialValues, initialValues } from '../../components/CSAMReport/CSAMReportFormDefinition';
 
-type TaskEntry = {
-  form: t.CSAMReportForm;
+type CounsellorTaskEntry = {
+  form: t.CounselorCSAMReportForm;
+  reportType: CSAMReportType.COUNSELLOR;
   reportStatus: t.CSAMReportStatus;
 };
+
+type ChildTaskEntry = {
+  form: t.ChildCSAMReportForm;
+  reportType: CSAMReportType.CHILD;
+  reportStatus: t.CSAMReportStatus;
+};
+
+export type TaskEntry = CounsellorTaskEntry | ChildTaskEntry | {};
+
+export const isCounsellorTaskEntry = (t: TaskEntry): t is CounsellorTaskEntry =>
+  (t as CounsellorTaskEntry).reportType === CSAMReportType.COUNSELLOR;
+export const isChildTaskEntry = (t: TaskEntry): t is ChildTaskEntry =>
+  (t as ChildTaskEntry).reportType === CSAMReportType.CHILD;
 
 type CSAMReportState = {
   tasks: {
     [taskId: string]: TaskEntry;
   };
+  contacts: {
+    [taskId: string]: TaskEntry;
+  };
 };
 
-export const newTaskEntry: TaskEntry = {
-  form: { ...initialValues, ...childInitialValues },
+export const newCounsellorTaskEntry: CounsellorTaskEntry = {
+  form: { ...initialValues },
+  reportType: CSAMReportType.COUNSELLOR,
   reportStatus: {
     responseCode: '',
     responseData: '',
@@ -26,6 +45,7 @@ export const newTaskEntry: TaskEntry = {
 
 export const initialState: CSAMReportState = {
   tasks: {},
+  contacts: {},
 };
 
 export function reduce(state = initialState, action: t.CSAMReportActionType | GeneralActionType): CSAMReportState {
@@ -35,7 +55,7 @@ export function reduce(state = initialState, action: t.CSAMReportActionType | Ge
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: newTaskEntry,
+          [action.taskId]: newCounsellorTaskEntry,
         },
       };
     }
@@ -46,7 +66,7 @@ export function reduce(state = initialState, action: t.CSAMReportActionType | Ge
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: newTaskEntry,
+          [action.taskId]: newCounsellorTaskEntry,
         },
       };
     }
@@ -56,34 +76,76 @@ export function reduce(state = initialState, action: t.CSAMReportActionType | Ge
         tasks: omit(state.tasks, action.taskId),
       };
     case t.UPDATE_FORM:
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...state.tasks[action.taskId],
-            form: action.form,
-          },
-        },
-      };
+      /*
+       * TS type inference not so smart here, can't work out that the value of 'reportType' constrains the type of 'form'
+       * There are verbose workarounds that don't resort to 'as any' but this seems the best compromise
+       */
+      return isCSAMActionForContact(action)
+        ? {
+            ...state,
+            contacts: {
+              ...state.contacts,
+              [action.contactId]: {
+                ...state.contacts[action.contactId],
+                form: action.form as any,
+              },
+            },
+          }
+        : {
+            ...state,
+            tasks: {
+              ...state.tasks,
+              [action.taskId]: {
+                ...state.tasks[action.taskId],
+                form: action.form as any,
+              },
+            },
+          };
     case t.UPDATE_STATUS:
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...state.tasks[action.taskId],
-            reportStatus: action.reportStatus,
-          },
-        },
-      };
+      return isCSAMActionForContact(action)
+        ? {
+            ...state,
+            contacts: {
+              ...state.contacts,
+              [action.contactId]: {
+                ...state.contacts[action.contactId],
+                reportStatus: action.reportStatus,
+              },
+            },
+          }
+        : {
+            ...state,
+            tasks: {
+              ...state.tasks,
+              [action.taskId]: {
+                ...state.tasks[action.taskId],
+                reportStatus: action.reportStatus,
+              },
+            },
+          };
     // eslint-disable-next-line sonarjs/no-duplicated-branches
     case t.CLEAR_CSAM_REPORT:
+      return isCSAMActionForContact(action)
+        ? {
+            ...state,
+            contacts: omit(state.contacts, action.contactId),
+          }
+        : {
+            ...state,
+            tasks: {
+              ...state.tasks,
+              [action.taskId]: newCounsellorTaskEntry,
+            },
+          };
+    case t.NEW_DRAFT_CSAM_REPORT:
       return {
         ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: newTaskEntry,
+        contacts: {
+          ...state.contacts,
+          [action.contactId]: {
+            reportType: action.reportType,
+            form: (state.contacts[action.contactId] as any)?.form,
+          },
         },
       };
     default:

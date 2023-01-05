@@ -122,8 +122,8 @@ export const externalReportDefinition: FormDefinition = [
     label: 'Select CSAM report type',
     type: FormInputType.RadioInput,
     options: [
-      { value: 'child-form', label: 'Create link for child' },
-      { value: 'counsellor-form', label: 'Report as counselor' },
+      { value: 'child', label: 'Create link for child' },
+      { value: 'counsellor', label: 'Report as counselor' },
     ],
   },
 ];
@@ -154,15 +154,6 @@ export const transformContactFormValues = (
   // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
   const transformedValue = transformValues(formDefinition)(formValues);
   return nestName(<{ firstName: string; lastName: string }>transformedValue);
-};
-
-export const transformExternalReportValues = (
-  formValues: Record<string, string | boolean>,
-  formDefinition: FormDefinition,
-) => {
-  // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
-  const transformedValue = transformValues(formDefinition)(formValues);
-  return transformedValue;
 };
 
 /**

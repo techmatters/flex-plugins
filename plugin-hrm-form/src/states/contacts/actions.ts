@@ -87,9 +87,3 @@ export const setExternalReport = (externalReport: string, taskId: string): t.Con
   externalReport,
   taskId,
 });
-
-export const addExternalReportEntry = (csamReportEntry: CSAMReportEntry, contactId: string): t.ContactsActionType => ({
-  type: t.ADD_EXTERNAL_REPORT_ENTRY,
-  csamReportEntry,
-  contactId,
-});

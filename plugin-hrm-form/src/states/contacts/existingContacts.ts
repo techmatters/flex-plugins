@@ -2,6 +2,7 @@ import { omit } from 'lodash';
 
 import { SearchAPIContact } from '../../types/types';
 import { hrmServiceContactToSearchContact } from './contactDetailsAdapter';
+import { AddExternalReportEntryAction } from '../csam-report/existingContactExternalReport';
 
 export enum ContactDetailsRoute {
   EDIT_CALLER_INFORMATION = 'editCallerInformation',
@@ -379,4 +380,5 @@ export type ExistingContactAction =
   | ToggleCategoryExpandedAction
   | SetCategoriesGridViewAction
   | UpdateDraftAction
-  | CreateDraftAction;
+  | CreateDraftAction
+  | AddExternalReportEntryAction;

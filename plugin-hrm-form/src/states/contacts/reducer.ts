@@ -14,20 +14,20 @@ import { createContactlessTaskTabDefinition } from '../../components/tabbedForms
 import {
   createDraftReducer,
   EXISTING_CONTACT_CREATE_DRAFT_ACTION,
+  EXISTING_CONTACT_LOAD_TRANSCRIPT,
   EXISTING_CONTACT_SET_CATEGORIES_GRID_VIEW_ACTION,
   EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION,
   EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
-  EXISTING_CONTACT_LOAD_TRANSCRIPT,
   ExistingContactAction,
   ExistingContactsState,
   LOAD_CONTACT_ACTION,
   loadContactReducer,
+  loadTranscriptReducer,
   RELEASE_CONTACT_ACTION,
   releaseContactReducer,
   setCategoriesGridViewReducer,
   toggleCategoryExpandedReducer,
   updateDraftReducer,
-  loadTranscriptReducer,
 } from './existingContacts';
 import { CSAMReportEntry } from '../../types/types';
 import {
@@ -38,6 +38,7 @@ import {
   TOGGLE_DETAIL_EXPANDED_ACTION,
 } from './contactDetails';
 import { ChannelTypes } from '../DomainConstants';
+import { ADD_EXTERNAL_REPORT_ENTRY, addExternalReportEntryReducer } from '../csam-report/existingContactExternalReport';
 
 export type TaskEntry = {
   helpline: string;
@@ -296,12 +297,6 @@ export function reduce(
         },
       };
     }
-    case t.ADD_EXTERNAL_REPORT_ENTRY: {
-      return {
-        ...state,
-        csamReports: [action.csamReportEntry],
-      };
-    }
     case t.SET_CALL_TYPE: {
       return { ...state, isCallTypeCaller: action.isCallTypeCaller };
     }
@@ -334,6 +329,9 @@ export function reduce(
     }
     case EXISTING_CONTACT_CREATE_DRAFT_ACTION: {
       return { ...state, existingContacts: createDraftReducer(state.existingContacts, action) };
+    }
+    case ADD_EXTERNAL_REPORT_ENTRY: {
+      return { ...state, existingContacts: addExternalReportEntryReducer(state.existingContacts, action) };
     }
     default:
       return state;

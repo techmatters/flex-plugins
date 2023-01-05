@@ -5,14 +5,15 @@ import { Template } from '@twilio/flex-ui';
 import ActionHeader from '../case/ActionHeader';
 import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyles';
 import {
+  BoldDescriptionText,
   CSAMReportContainer,
   CSAMReportLayout,
-  BoldDescriptionText,
-  RegularText,
   OpenInNewIcon,
+  RegularText,
 } from '../../styles/CSAMReport';
-import { definitionObject, childDefinitionObject } from './CSAMReportFormDefinition';
+import { childDefinitionObject, definitionObject } from './CSAMReportFormDefinition';
 import { RequiredAsterisk } from '../common/forms/formGenerators';
+import { CSAMReportType } from '../../states/csam-report/types';
 
 type Props = {
   counsellorFormElements?: { [k in keyof typeof definitionObject]: JSX.Element };
@@ -21,7 +22,7 @@ type Props = {
   counselor: string;
   onClickClose: () => void;
   onSendReport: () => void;
-  csamType: 'child-form' | 'counsellor-form';
+  csamType: CSAMReportType;
   isEmpty?: boolean;
 };
 
@@ -36,8 +37,11 @@ const CSAMReportFormScreen: React.FC<Props> = ({
   isEmpty,
 }) => {
   return (
-    <CSAMReportContainer style={{ padding: csamType === 'child-form' && '5px' }} data-testid="CSAMReport-FormScreen">
-      {csamType === 'child-form' && (
+    <CSAMReportContainer
+      style={{ padding: csamType === CSAMReportType.CHILD && '5px' }}
+      data-testid="CSAMReport-FormScreen"
+    >
+      {csamType === CSAMReportType.CHILD && (
         <CSAMReportLayout>
           <ActionHeader
             added={new Date()}
@@ -70,7 +74,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
         </CSAMReportLayout>
       )}
 
-      {csamType === 'counsellor-form' && (
+      {csamType === CSAMReportType.COUNSELLOR && (
         <CSAMReportLayout>
           <ActionHeader
             titleTemplate="CSAMReportForm-Header"
@@ -127,12 +131,12 @@ const CSAMReportFormScreen: React.FC<Props> = ({
           </StyledNextStepButton>
         </Box>
         <StyledNextStepButton
-          disabled={csamType === 'child-form' ? isEmpty : false}
+          disabled={csamType === CSAMReportType.CHILD ? isEmpty : false}
           roundCorners
           onClick={onSendReport}
-          data-testid={csamType === 'child-form' ? 'CSAMCLCReport-SubmitButton' : 'CSAMReport-SubmitButton'}
+          data-testid={csamType === CSAMReportType.CHILD ? 'CSAMCLCReport-SubmitButton' : 'CSAMReport-SubmitButton'}
         >
-          <Template code={csamType === 'child-form' ? 'BottomBar-CreateLink' : 'BottomBar-SendReport'} />
+          <Template code={csamType === CSAMReportType.CHILD ? 'BottomBar-CreateLink' : 'BottomBar-SendReport'} />
         </StyledNextStepButton>
       </BottomButtonBar>
     </CSAMReportContainer>

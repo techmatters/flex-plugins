@@ -31,6 +31,7 @@ import { getPermissionsForContact, getPermissionsForViewingIdentifiers, Permissi
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
 import { getConfig } from '../../HrmFormPlugin';
 import TranscriptSection from './TranscriptSection';
+import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 
 const formatCsamReport = (report: CSAMReportEntry) => {
   const template =
@@ -64,13 +65,12 @@ type OwnProps = {
   enableEditing: boolean;
 };
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 /* eslint-disable complexity */
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ContactDetailsHome: React.FC<Props> = function ({
   contactId,
-  context,
   detailsExpanded,
   showActionIcons = false,
   handleOpenConnectDialog,
@@ -82,6 +82,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   enableEditing,
   canViewTwilioTranscript,
   externalCsamReports,
+  createDraftCsamReport,
 }) {
   const version = savedContact?.details.definitionVersion;
 
@@ -166,13 +167,13 @@ const ContactDetailsHome: React.FC<Props> = function ({
   } = ContactDetailsSections;
   const addedBy = counselorsHash[createdBy];
   const counselorName = counselorsHash[counselor];
-  const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(context, section);
-  const navigate = (route: ContactDetailsRoute) => createContactDraft(savedContact.contactId, route);
+  const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(section);
+  const navigate = (route: ContactDetailsRoute) => createContactDraft(route);
 
   const EditIcon = ContactDetailsIcon(Edit);
 
   const externalReportButton = () => (
-    <SectionActionButton padding="0" type="button" onClick={() => navigate(ContactDetailsRoute.ADD_EXTERNAL_REPORT)}>
+    <SectionActionButton padding="0" type="button" onClick={() => createDraftCsamReport()}>
       <EditIcon style={{ fontSize: '14px', padding: '-1px 6px 0 6px', marginRight: '6px' }} />
       <Grid item xs={12}>
         <Template code="ContactDetails-GeneralDetails-externalReport" />
@@ -403,9 +404,11 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   externalCsamReports: state[namespace][contactFormsBase].csamReports,
 });
 
-const mapDispatchToProps = {
-  toggleSectionExpandedForContext: toggleDetailSectionExpanded,
-  createContactDraft: createDraft,
-};
+const mapDispatchToProps = (dispatch, { contactId, context }: OwnProps) => ({
+  toggleSectionExpandedForContext: (section: ContactDetailsSectionsType) =>
+    dispatch(toggleDetailSectionExpanded(context, section)),
+  createContactDraft: (draftRoute: ContactDetailsRoute) => dispatch(createDraft(contactId, draftRoute)),
+  createDraftCsamReport: () => dispatch(newCSAMReportActionForContact(contactId)),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);

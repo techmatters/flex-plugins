@@ -1,12 +1,13 @@
 // TODO: complete this type
-import React, { useState } from 'react';
-import { connect, ConnectedProps, useDispatch } from 'react-redux';
+import React, { Dispatch } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CustomITask } from '../../types/types';
 import ContactDetailsHome from './ContactDetailsHome';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-import { configurationBase, contactFormsBase, namespace, RootState, routingBase } from '../../states';
+import { configurationBase, contactFormsBase, csamReportBase, namespace, RootState } from '../../states';
 import EditContactSection from './EditContactSection';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { DetailsContainer } from '../../styles/search';
@@ -16,17 +17,22 @@ import ContactDetailsSectionForm from './ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
 import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
 import { getConfig } from '../../HrmFormPlugin';
-// eslint-disable-next-line import/namespace
-import { updateDraft } from '../../states/contacts/existingContacts';
-import { setExternalReport } from '../../states/contacts/actions';
+import { SearchContactDraftChanges, updateDraft } from '../../states/contacts/existingContacts';
 import {
-  transformContactFormValues,
   externalReportDefinition,
   externalReportLayoutDefinition,
-  transformExternalReportValues,
+  transformContactFormValues,
 } from '../../services/ContactService';
-import * as routingActions from '../../states/routing/actions';
-import ExternalReport from './ExternalReport';
+import { isChildTaskEntry, isCounsellorTaskEntry } from '../../states/csam-report/reducer';
+import CSAMReport from '../CSAMReport/CSAMReport';
+import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
+import {
+  newCSAMReportActionForContact,
+  updateChildFormActionForContact,
+  updateCounsellorFormActionForContact,
+} from '../../states/csam-report/actions';
+import { CSAMReportType } from '../../states/csam-report/types';
+import { childInitialValues, initialValues } from '../CSAMReport/CSAMReportFormDefinition';
 
 type OwnProps = {
   contactId: string;
@@ -49,10 +55,8 @@ const ContactDetails: React.FC<Props> = ({
   savedContact,
   draftContact,
   addExternalReport,
-  setExternalReport,
   enableEditing = true,
-  updateContactDraft,
-  taskSid,
+  draftCsamReport,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const version = savedContact?.details.definitionVersion;
@@ -95,7 +99,7 @@ const ContactDetails: React.FC<Props> = ({
         autoFocus={true}
         updateFormActionDispatcher={dispatch => values =>
           dispatch(
-            updateContactDraft(contactId, {
+            updateDraft(contactId, {
               details: {
                 [formPath]: transformContactFormValues(values[formPath], section.getFormDefinition(definitionVersion)),
               },
@@ -116,17 +120,23 @@ const ContactDetails: React.FC<Props> = ({
         tabPath="externalReport"
         definition={externalReportDefinition}
         layoutDefinition={externalReportLayoutDefinition.layout}
-        initialValues={externalReportDefinition}
+        initialValues={
+          isChildTaskEntry(draftCsamReport) || isCounsellorTaskEntry(draftCsamReport)
+            ? { reportType: draftCsamReport.reportType }
+            : {}
+        }
         display={true}
         autoFocus={true}
-        updateFormActionDispatcher={dispatch => values =>
-          dispatch(
-            updateContactDraft(contactId, {
-              details: {
-                [formPath]: transformExternalReportValues(values.externalReport, externalReportDefinition),
-              },
-            }),
-          )}
+        updateFormActionDispatcher={dispatch => ({ externalReport: { reportType } }) => {
+          if (reportType) {
+            dispatch(
+              newCSAMReportActionForContact(
+                contactId,
+                reportType === 'child' ? CSAMReportType.CHILD : CSAMReportType.COUNSELLOR,
+              ),
+            );
+          }
+        }}
       />
     </EditContactSection>
   );
@@ -152,7 +162,7 @@ const ContactDetails: React.FC<Props> = ({
       );
     }
 
-    const { callerInformation, caseInformation, childInformation, externalReport, csamReport } = draftContact.details;
+    const { callerInformation, caseInformation, childInformation } = draftContact.details;
 
     if (childInformation)
       return editContactSectionElement(contactDetailsSectionFormApi.CHILD_INFORMATION, 'childInformation');
@@ -160,14 +170,10 @@ const ContactDetails: React.FC<Props> = ({
       return editContactSectionElement(contactDetailsSectionFormApi.CALLER_INFORMATION, 'callerInformation');
     if (caseInformation)
       return editContactSectionElement(contactDetailsSectionFormApi.CASE_INFORMATION, 'caseInformation');
-
-    if (externalReport) {
-      setExternalReport(externalReport.reportType as string, taskSid);
-      return addExternalReportSectionElement('externalReport');
-    }
-
-    if (csamReport && addExternalReport !== null) {
-      return <ExternalReport contactId={contactId} taskSid={taskSid} externalReport={addExternalReport} />;
+  }
+  if (draftCsamReport) {
+    if ((isChildTaskEntry(draftCsamReport) || isCounsellorTaskEntry(draftCsamReport)) && draftCsamReport.form) {
+      return <CSAMReport api={existingContactCSAMApi(contactId)} />;
     }
     return addExternalReportSectionElement('externalReport');
   }
@@ -183,17 +189,17 @@ const ContactDetails: React.FC<Props> = ({
   );
 };
 
-const mapDispatchToProps = {
-  updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
-  updateContactDraft: updateDraft,
-  setExternalReport,
-};
+const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string, any>>, { contactId }: OwnProps) => ({
+  updateDefinitionVersion: (version: string, definitionVersion: DefinitionVersion) =>
+    dispatch(ConfigActions.updateDefinitionVersion(version, definitionVersion)),
+});
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
+const mapStateToProps = (state: RootState, { contactId }: OwnProps) => ({
   definitionVersions: state[namespace][configurationBase].definitionVersions,
-  savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
-  draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
+  savedContact: state[namespace][contactFormsBase].existingContacts[contactId]?.savedContact,
+  draftContact: state[namespace][contactFormsBase].existingContacts[contactId]?.draftContact,
   addExternalReport: state[namespace][contactFormsBase].externalReport,
+  draftCsamReport: state[namespace][csamReportBase].contacts[contactId],
 });
 
 ContactDetails.displayName = 'ContactDetails';

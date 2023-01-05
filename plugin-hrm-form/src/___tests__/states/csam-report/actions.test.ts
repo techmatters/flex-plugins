@@ -14,7 +14,7 @@ describe('test action creators', () => {
       email: '',
     };
 
-    expect(actions.updateFormAction(form, task.taskSid)).toEqual({
+    expect(actions.updateCounsellorFormAction(form, task.taskSid)).toEqual({
       type: t.UPDATE_FORM,
       form,
       taskId: task.taskSid,

@@ -16,7 +16,6 @@ export const ADD_CSAM_REPORT_ENTRY = 'contacts/ADD_CSAM_REPORT_ENTRY';
 export const SET_EDITING_CONTACT = 'SET_EDITING_CONTACT';
 export const SET_CALL_TYPE = 'SET_CALL_TYPE';
 export const ADD_EXTERNAL_REPORT = 'ADD_EXTERNAL_REPORT';
-export const ADD_EXTERNAL_REPORT_ENTRY = 'contacts/ADD_EXTERNAL_REPORT_ENTRY';
 
 type UpdateFormAction = {
   type: typeof UPDATE_FORM;
@@ -67,12 +66,6 @@ type AddCSAMReportEntry = {
   taskId: string;
 };
 
-export type AddExternalReportEntry = {
-  type: typeof ADD_EXTERNAL_REPORT_ENTRY;
-  csamReportEntry: CSAMReportEntry;
-  contactId: string;
-};
-
 type SetEditingContact = {
   type: typeof SET_EDITING_CONTACT;
   editing: boolean;
@@ -97,5 +90,4 @@ export type ContactsActionType =
   | AddCSAMReportEntry
   | SetEditingContact
   | CheckButtonDataAction
-  | externalReportAction
-  | AddExternalReportEntry;
+  | externalReportAction;
