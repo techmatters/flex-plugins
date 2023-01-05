@@ -8,9 +8,9 @@ import { Close } from '@material-ui/icons';
 import { DefinitionVersion, callTypes } from 'hrm-form-definitions';
 
 import { getConfig } from '../../../HrmFormPlugin';
+import styles, { registerFonts } from './styles';
 import CasePrintSection from './CasePrintSection';
 import CasePrintSummary from './CasePrintSummary';
-import styles from './styles';
 import { CasePrintViewContainer, CasePrintViewSpinner, HiddenText } from '../../../styles/HrmStyles';
 import CasePrintDetails from './CasePrintDetails';
 import type { CaseDetails } from '../../../states/case/types';
@@ -31,12 +31,13 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionVersion, counselorsHash }) => {
-  const { pdfImagesSource, strings } = getConfig();
+  const config = getConfig();
 
-  const logoSource = `${pdfImagesSource}/helpline-logo.png`;
-  const chkOnSource = `${pdfImagesSource}/chk_1.png`;
-  const chkOffSource = `${pdfImagesSource}/chk_0.png`;
+  const logoSource = `${config.pdfImagesSource}/helpline-logo.png`;
+  const chkOnSource = `${config.pdfImagesSource}/chk_1.png`;
+  const chkOffSource = `${config.pdfImagesSource}/chk_0.png`;
 
+  registerFonts(config.definitionVersion);
   const [loading, setLoading] = useState<boolean>(true);
   const [logoBlob, setLogoBlob] = useState<string>(null);
   const [chkOnBlob, setChkOnBlob] = useState<string>(null);
@@ -121,7 +122,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                 {caseDetails.contact?.rawJson?.callType === callTypes.caller ? (
                   <View>
                     <CasePrintSection
-                      sectionName={strings['SectionName-CallerInformation']}
+                      sectionName={config.strings['SectionName-CallerInformation']}
                       definitions={[
                         ...definitionVersion.tabbedForms.CaseInformationTab.filter(definition => {
                           // eslint-disable-next-line
@@ -136,7 +137,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                       unNestInfo={true}
                     />
                     <CasePrintSection
-                      sectionName={strings['SectionName-ChildInformation']}
+                      sectionName={config.strings['SectionName-ChildInformation']}
                       definitions={definitionVersion.tabbedForms.ChildInformationTab}
                       values={caseDetails.contact?.rawJson?.childInformation}
                       unNestInfo={true}
@@ -144,7 +145,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                   </View>
                 ) : (
                   <CasePrintSection
-                    sectionName={strings['SectionName-ChildInformation']}
+                    sectionName={config.strings['SectionName-ChildInformation']}
                     definitions={[
                       ...definitionVersion.tabbedForms.CaseInformationTab.filter(definition => {
                         // eslint-disable-next-line
@@ -161,30 +162,30 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                 )}
                 {/* // Removed by ZA request, could be useful for other helplines.
                 <CasePrintContact
-                  sectionName={strings['SectionName-Contact']}
+                  sectionName={config.strings['SectionName-Contact']}
                   contact={caseDetails.contact}
                   counselor={caseDetails.caseCounselor}
                 /> */}
                 <CasePrintMultiSection
-                  sectionName={strings['SectionName-HouseholdMember']}
+                  sectionName={config.strings['SectionName-HouseholdMember']}
                   sectionKey="household"
                   definitions={definitionVersion.caseForms.HouseholdForm}
                   values={caseDetails.households}
                 />
                 <CasePrintMultiSection
-                  sectionName={strings['SectionName-Perpetrator']}
+                  sectionName={config.strings['SectionName-Perpetrator']}
                   sectionKey="perpetrator"
                   definitions={definitionVersion.caseForms.PerpetratorForm}
                   values={caseDetails.perpetrators}
                 />
                 <CasePrintMultiSection
-                  sectionName={strings['SectionName-Incident']}
+                  sectionName={config.strings['SectionName-Incident']}
                   definitions={definitionVersion.caseForms.IncidentForm}
                   sectionKey="incident"
                   values={caseDetails.incidents}
                 />
                 <CasePrintMultiSection
-                  sectionName={strings['SectionName-Referral']}
+                  sectionName={config.strings['SectionName-Referral']}
                   definitions={definitionVersion.caseForms.ReferralForm}
                   sectionKey="referral"
                   values={caseDetails.referrals}

@@ -4,6 +4,9 @@ import SyncClient from 'twilio-sync';
 import type Rollbar from 'rollbar';
 
 import './styles/global-overrides.css';
+// import { registerFonts } from './components/case/casePrint/styles';
+import { DefinitionVersionId } from 'hrm-form-definitions';
+
 import reducers, { namespace, configurationBase, RootState } from './states';
 import HrmTheme, { overrides } from './styles/HrmTheme';
 import { transferModes } from './states/DomainConstants';
@@ -18,7 +21,6 @@ import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from './permissions';
 import type { FeatureFlags } from './types/types';
-import { registerFonts } from 'components/case/casePrint/styles/index';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -51,7 +53,6 @@ const readConfig = () => {
   const featureFlags: FeatureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
   const { strings } = (manager as unknown) as { strings: { [key: string]: string } };
-
   return {
     hrmBaseUrl,
     serverlessBaseUrl,
@@ -69,7 +70,7 @@ const readConfig = () => {
     featureFlags,
     sharedStateClient,
     strings,
-    definitionVersion,
+    definitionVersion: DefinitionVersionId.huV1,
     pdfImagesSource,
     multipleOfficeSupport,
     permissionConfig,
@@ -89,8 +90,6 @@ try {
 }
 
 export const getConfig = () => cachedConfig;
-
-registerFonts(cachedConfig.definitionVersion)
 
 // eslint-disable-next-line import/no-unused-modules
 export type SetupObject = ReturnType<typeof getConfig> & {

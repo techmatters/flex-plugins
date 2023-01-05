@@ -1,4 +1,5 @@
 import { StyleSheet, Font } from '@react-pdf/renderer';
+import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import headerStyles from './header';
 import footerStyles from './footer';
@@ -8,16 +9,11 @@ import notesStyles from './notes';
 import summaryStyles from './summary';
 import categoriesStyles from './categories';
 
-
-
-Font.register({
-  family: 'Open Sans',
-  fonts: [
-    { src: 'https://fonts.gstatic.com/s/opensans/v18/mem8YaGs126MiZpBA-UFVZ0ef8pkAg.ttf' }, // font-style: normal, font-weight: normal
-    { src: 'https://fonts.gstatic.com/s/opensans/v18/mem6YaGs126MiZpBA-UFUK0ZdchGAK6b.ttf', fontStyle: 'italic' },
-    { src: 'https://fonts.gstatic.com/s/opensans/v18/mem5YaGs126MiZpBA-UNirkOUuhsKKSTjw.ttf', fontWeight: 600 },
-  ],
-});
+/*
+ * Unfortunately we have to import each font that we want to use (even with the style and weight variations)
+ * More info: https://react-pdf.org/fonts
+ * .TTF links extracted with: https://nikoskip.me/gfonts.php
+ */
 
 Font.register({
   family: 'Roboto',
@@ -69,22 +65,13 @@ Font.registerEmojiSource({
   url: 'https://twemoji.maxcdn.com/2/72x72/',
 });
 
-let fontFamilyByLanguage = 'Open Sans'
-
-export const registerFonts = definitionVersion => {
-  /*
- * Unfortunately we have to import each font that we want to use (even with the style and weight variations)
- * More info: https://react-pdf.org/fonts
- * .TTF links extracted with: https://nikoskip.me/gfonts.php
- */
-  if ((definitionVersion = 'uk-v1')) {
-    fontFamilyByLanguage = 'Roboto';
-  } else if ((definitionVersion = 'th-v1')) {
-    fontFamilyByLanguage = 'NotoSansThaiLooped';
+export const registerFonts = (definitionVersion: DefinitionVersionId) => {
+  if (definitionVersion === DefinitionVersionId.thV1) {
+    return (styles.page.fontFamily = 'NotoSansThaiLooped');
   }
-  return fontFamilyByLanguage;
+  console.log('>>>', styles.page.fontFamily);
+  return styles.page.fontFamily;
 };
-
 
 const styles = StyleSheet.create({
   ...headerStyles,
@@ -97,7 +84,7 @@ const styles = StyleSheet.create({
   page: {
     display: 'flex',
     flexDirection: 'column',
-    fontFamily: fontFamilyByLanguage,
+    fontFamily: 'Roboto',
     paddingTop: 20,
     paddingBottom: 50,
     paddingLeft: 20,
