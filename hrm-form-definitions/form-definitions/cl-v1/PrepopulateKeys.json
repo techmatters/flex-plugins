@@ -4,7 +4,7 @@
     "CallerInformationTab":[]
   },
   "preEngagement":{
-    "ChildInformationTab":["age", "gender", "email"],
+    "ChildInformationTab":["age", "gender", "contactIdentifier"],
     "CallerInformationTab":["age", "gender"],
     "CaseInformationTab":[]
   }
