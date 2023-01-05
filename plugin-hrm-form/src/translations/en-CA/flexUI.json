@@ -52,5 +52,12 @@
   "SearchContactsAndCases-Title": "Search for Contacts and Emergency Referrals",
   "SearchResultsIndex-Cases": "Emergency Referrals",
   "SearchResultsIndex-ClosedCases": "Closed",
-  "SearchResultsIndex-ViewCases": "View Emergency Referrals"
+  "SearchResultsIndex-ViewCases": "View Emergency Referrals",
+  "TabbedForms-CategoriesTab": "Issue Tags",
+  "Contact-EditCategories": "Edit Issue Tags",
+  "CaseList-THCategory": "Issue Tag",    
+  "CaseList-Filters-Categories": "Issue Tags",
+  "CaseList-Filters-SearchByCategory": "Search by Issue Tag",
+  "Category": "Issue Tag",
+  "Error-CategoryRequired": "Required 1 issue tag minimum, 3 issue tags maximum."
 }
