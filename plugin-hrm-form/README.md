@@ -27,13 +27,13 @@ npm install
 
 ### Secrets/Configuration download
 
-When you first setup your local environment, you will need to download the files required to run locally by running (this requires docker and valid AWS IAM tokens). Once you have the files, you can skip this step unless directed to re-run it by another member of the team.
-
-```bash:
+When you first setup your local environment, you will need to download the files required to run locally by running (this requires docker and valid AWS IAM tokens):
 
 ```bash
 npm run ssm:local
 ```
+
+Once you have the files, you can skip this step unless directed to re-run it by another member of the team or if you run the e2e version.
 
 If you are going to run e2e tests, use:
 
