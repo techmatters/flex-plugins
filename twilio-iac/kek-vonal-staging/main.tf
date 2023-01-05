@@ -7,10 +7,10 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "tl-terraform-state-twilio-ukr-staging"
-    key            = "twilio/terraform.tfstate"
+    bucket         = "tl-terraform-state-staging"
+    key            = "twilio/ukr/terraform.tfstate"
     dynamodb_table = "terraform-locks"
-    region = "us-east-1"
+    region         = "us-east-1"
     encrypt        = true
   }
 }
