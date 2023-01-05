@@ -150,6 +150,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const isPhoneContact =
     channel === channelTypes.voice || channel === channelTypes.sms || channel === channelTypes.whatsapp;
+
   const formattedCategories = formatCategories(categories);
 
   const {
@@ -216,13 +217,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
         <SectionEntry descriptionKey="ContactDetails-GeneralDetails-Channel">
           <SectionEntryValue value={formattedChannel} />
         </SectionEntry>
-        {maskIdentifiers ? (
+        {isPhoneContact && (
           <SectionEntry descriptionKey="ContactDetails-GeneralDetails-PhoneNumber">
-            <SectionEntryValue value={strings.MaskIdentifiers} />
-          </SectionEntry>
-        ) : (
-          <SectionEntry descriptionKey="ContactDetails-GeneralDetails-PhoneNumber">
-            <SectionEntryValue value={isPhoneContact ? customerNumber : ''} />
+            <SectionEntryValue value={maskIdentifiers ? strings.MaskIdentifiers : customerNumber} />
           </SectionEntry>
         )}
         <SectionEntry descriptionKey="ContactDetails-GeneralDetails-ConversationDuration">

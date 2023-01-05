@@ -42,11 +42,13 @@ export const prepopulateForm = (
   callType: DataCallTypes,
   values: { [property: string]: string },
   taskId: string,
+  isCaseInfo?: Boolean,
 ): t.ContactsActionType => ({
   type: t.PREPOPULATE_FORM,
   callType,
   values,
   taskId,
+  isCaseInfo,
 });
 
 export const restoreEntireForm = (form: TaskEntry, taskId: string): t.ContactsActionType => ({

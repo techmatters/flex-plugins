@@ -45,6 +45,7 @@ type PrePopulateFormAction = {
   callType: DataCallTypes;
   values: { [property: string]: string };
   taskId: string;
+  isCaseInfo: Boolean;
 };
 
 type RestoreEntireFormAction = {

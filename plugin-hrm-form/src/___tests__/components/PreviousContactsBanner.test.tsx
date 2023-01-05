@@ -29,6 +29,7 @@ const webChatTask: any = {
   attributes: {
     isContactlessTask: false,
     ip,
+    preEngagementData: { contactType: 'ip', contactIdentifier: ip },
   },
 };
 
