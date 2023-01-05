@@ -1,6 +1,6 @@
 [
   {
-    "name": "nickname",
+    "name": "friendlyName",
     "label": "Nickname",
     "type": "input"
   },
