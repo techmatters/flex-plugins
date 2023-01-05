@@ -1,12 +1,7 @@
 [
   {
-    "name": "firstName",
-    "label": "ID",
-    "type": "input"
-  },
-  {
-    "name": "lastName",
-    "label": "ID (Placeholder)",
+    "name": "friendlyName",
+    "label": "Nickname",
     "type": "input"
   },
   {
