@@ -16,8 +16,8 @@ env:
   AWS_DEFAULT_REGION: us-east-1
 
 jobs:
-  deploy:
-    name: clean dynamic envs
+  terraform_plan:
+    name: Terraform Plan
     runs-on: ubuntu-latest
 
     container:
@@ -28,7 +28,18 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Terraform Plan
+        working-directory: ./twilio-iac/${{ inputs.helpline }}
         run: |
-          cd twilio-iac/${{ inputs.helpline }}
-          terraform init
-          terraform plan
+          echo "Running terraform init for ${{ inputs.helpline }}"
+          terraform init > /dev/null
+          echo "Running terraform refresh for ${{ inputs.helpline }}"
+          terraform refresh -input=false > /dev/null
+          echo "Running terraform plan for ${{ inputs.helpline }}"
+          terraform plan -input=false -refresh=false -out=/tmp/tfplan > /dev/null
+          echo "Running terraform show for ${{ inputs.helpline }}"
+          terraform show -no-color /tmp/tfplan > /tmp/plan.log
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: plan.log
+          path: /tmp/plan.log

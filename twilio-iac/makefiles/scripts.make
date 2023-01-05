@@ -5,6 +5,3 @@ manage-ssm-secrets:
 
 twilio-resources-import-account-defaults:
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) ../scripts/twilioResourceImportAccountDefaults.sh $(MY_ENV)
-
-noop-serverless-url:
-	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) ../scripts/noop/getServerlessUrl.sh $(MY_ENV)

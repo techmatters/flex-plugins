@@ -1,6 +1,6 @@
 import { ITask, Manager } from '@twilio/flex-ui';
 import { capitalize } from 'lodash';
-import { callTypes, FormDefinition, DefinitionVersion } from 'hrm-form-definitions';
+import { callTypes, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
 
 import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
@@ -100,28 +100,64 @@ const getValuesFromAnswers = (
     ...customizableValues,
   };
 };
+export const getValuesFromPreEngagementData = (
+  preEngagementData: Record<string, string>,
+  tabFormDefinition: FormDefinition,
+  prepopulateKeys: string[],
+) => {
+  // Get values from task attributes
+  const values = {};
+  tabFormDefinition.forEach((field: FormItemDefinition) => {
+    if (prepopulateKeys.indexOf(field.name) > -1) {
+      values[field.name] = preEngagementData[field.name] || '';
+    }
+  });
+  return values;
+};
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const prepopulateForm = (task: ITask) => {
+  const { memory, preEngagementData } = task.attributes;
+  const { currentDefinitionVersion } = getDefinitionVersions();
+  const { tabbedForms, prepopulateKeys } = currentDefinitionVersion;
+
   // If this task came from the pre-survey
-  if (task.attributes.memory) {
+  if (memory || preEngagementData) {
     const { answers } = task.attributes.memory.twilio.collected_data.collect_survey;
 
     // If can't know if call is child or caller, do nothing here
     if (!answers.about_self || !['Yes', 'No'].includes(answers.about_self.answer)) return;
 
-    const { currentDefinitionVersion } = getDefinitionVersions();
-    const { CallerInformationTab, ChildInformationTab } = currentDefinitionVersion.tabbedForms;
+    const { CallerInformationTab, ChildInformationTab, CaseInformationTab } = tabbedForms;
     const isAboutSelf = answers.about_self.answer === 'Yes';
     const callType = isAboutSelf ? callTypes.child : callTypes.caller;
     const tabFormDefinition = isAboutSelf ? ChildInformationTab : CallerInformationTab;
-    const prepopulateKeys = isAboutSelf
-      ? currentDefinitionVersion.prepopulateKeys.ChildInformationTab
-      : currentDefinitionVersion.prepopulateKeys.CallerInformationTab;
+    const prepopulateSurveyKeys = isAboutSelf
+      ? prepopulateKeys.survey.ChildInformationTab
+      : prepopulateKeys.survey.CallerInformationTab;
 
-    const values = getValuesFromAnswers(task, answers, tabFormDefinition, prepopulateKeys);
+    const surveyValues = getValuesFromAnswers(task, answers, tabFormDefinition, prepopulateSurveyKeys);
 
+    const prepopulatePreengagementKeys = isAboutSelf
+      ? prepopulateKeys.preEngagement.ChildInformationTab
+      : prepopulateKeys.preEngagement.CallerInformationTab;
+    const preEngagementValues = getValuesFromPreEngagementData(
+      preEngagementData,
+      tabFormDefinition,
+      prepopulatePreengagementKeys,
+    );
+    const values = { ...surveyValues, ...preEngagementValues };
     Manager.getInstance().store.dispatch(prepopulateFormAction(callType, values, task.taskSid));
 
+    if (prepopulateKeys.preEngagement.CaseInformationTab.length > 0) {
+      const caseInfoValues = getValuesFromPreEngagementData(
+        preEngagementData,
+        CaseInformationTab,
+        prepopulateKeys.preEngagement.CaseInformationTab,
+      );
+
+      Manager.getInstance().store.dispatch(prepopulateFormAction(callType, caseInfoValues, task.taskSid, true));
+    }
     // Open tabbed form to first tab
     const subroute = isAboutSelf ? 'childInformation' : 'callerInformation';
     Manager.getInstance().store.dispatch(
