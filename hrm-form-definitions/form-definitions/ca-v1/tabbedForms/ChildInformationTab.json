@@ -579,7 +579,7 @@
     "type": "input"
   },
   {
-    "name": "upsetLevel",
+    "name": "upset",
     "label": "On a scale of 1 to 7, how upset is the child?",
     "type": "select",
     "options": [
