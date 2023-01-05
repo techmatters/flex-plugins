@@ -15,7 +15,7 @@ import categoriesStyles from './categories';
  * .TTF links extracted with: https://nikoskip.me/gfonts.php
  */
 
-const robotoSrc = 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto';
+const robotoSrc = 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto';
 
 Font.register({
   family: 'Roboto',
@@ -34,6 +34,7 @@ Font.register({
   fonts: [
     { src: `${notosansSrc}-Light.ttf`, fontWeight: 300 },
     { src: `${notosansSrc}-Regular.ttf`, fontWeight: 400 },
+    { src: `${notosansSrc}-Medium.ttf`, fontWeight: 500 },
     { src: `${notosansSrc}-Bold.ttf`, fontWeight: 600 },
   ],
 });
@@ -65,9 +66,7 @@ export const changeRegisteredFonts = (definitionVersion: DefinitionVersionId) =>
       sectionItemRowOdd,
       caseSummaryText,
     ].forEach(el => (el.fontFamily = 'NotoSansThaiLooped'));
-    return;
   }
-  return;
 };
 
 const styles = StyleSheet.create({

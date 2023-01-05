@@ -123,7 +123,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                 {caseDetails.contact?.rawJson?.callType === callTypes.caller ? (
                   <View>
                     <CasePrintSection
-                      sectionName={strings['SectionName-CallerInformation']}
+                      sectionName={config.strings['SectionName-CallerInformation']}
                       definitions={[
                         ...definitionVersion.tabbedForms.CaseInformationTab.filter(definition => {
                           // eslint-disable-next-line
