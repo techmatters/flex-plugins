@@ -9,11 +9,6 @@
     }
   },
   {
-    "name": "repeatCaller",
-    "label": "Repeat Caller?",
-    "type": "checkbox"
-  },
-  {
     "name": "actionTaken",
     "label": "Action Taken",
     "type": "listbox-multiselect",
@@ -67,24 +62,28 @@
     "unknownOption": "",
     "options": [
       {
-        "value": "Word of mouth",
-        "label": "Word of mouth"
+        "value": "การบอกต่อ",
+        "label": "การบอกต่อ"
       },
       {
-        "value": "Media",
-        "label": "Media"
+        "value": "สื่อสังคมออนไลน์",
+        "label": "สื่อสังคมออนไลน์"
       },
       {
-        "value": "Friend",
-        "label": "Friend"
+        "value": "เพื่อน",
+        "label": "เพื่อน"
       },
       {
-        "value": "School",
-        "label": "School"
+        "value": "โรงเรียน",
+        "label": "โรงเรียน"
       },
       {
-        "value": "Others",
-        "label": "Others"
+        "value": "การค้นพบจากอินเตอร์เน็ต",
+        "label": "การค้นพบจากอินเตอร์เน็ต"
+      },
+      {
+        "value": "อื่นๆ",
+        "label": "อื่นๆ"
       }
     ]
   },
