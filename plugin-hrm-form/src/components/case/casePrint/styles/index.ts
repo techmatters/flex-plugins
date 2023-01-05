@@ -22,7 +22,7 @@ Font.register({
   fonts: [
     { src: `${robotoSrc}-regular-webfont.ttf`, fontWeight: 400 },
     { src: `${robotoSrc}-medium-webfont.ttf`, fontWeight: 500 },
-    { src: `${robotoSrc}-bold-webfont.ttf`, fontWeight: 600 },
+    { src: `${robotoSrc}-bold-webfont.ttf`, fontWeight: 700 },
   ],
 });
 
@@ -32,10 +32,9 @@ const notosansSrc =
 Font.register({
   family: 'NotoSansThaiLooped',
   fonts: [
-    { src: `${notosansSrc}-Light.ttf`, fontWeight: 300 },
     { src: `${notosansSrc}-Regular.ttf`, fontWeight: 400 },
     { src: `${notosansSrc}-Medium.ttf`, fontWeight: 500 },
-    { src: `${notosansSrc}-Bold.ttf`, fontWeight: 600 },
+    { src: `${notosansSrc}-Bold.ttf`, fontWeight: 700 },
   ],
 });
 
@@ -52,6 +51,14 @@ const { childName, caseId, officeName } = headerStyles;
 const { sectionHeader, whiteText, sectionItemRowEven, sectionItemRowOdd } = sectionStyles;
 const { caseSummaryText } = summaryStyles;
 
+/**
+ * Roboto font works for all languages/fonts supported thus far.
+ * However, Thai characters are not readable, hence substituting to NotoSansThaiLooped is required.
+ * https://fonts.google.com/noto/specimen/Noto+Sans
+ * In the future, when more languages are added, adding a compatible fontFamily might be necessary
+ *
+ * @param definitionVersion: DefinitionVersionId
+ */
 export const changeRegisteredFonts = (definitionVersion: DefinitionVersionId) => {
   if (definitionVersion === DefinitionVersionId.thV1) {
     [
