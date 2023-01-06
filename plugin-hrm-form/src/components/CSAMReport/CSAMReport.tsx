@@ -22,6 +22,7 @@ import { configurationBase, namespace, RootState } from '../../states';
 import useFocus from '../../utils/useFocus';
 import { CSAMPage, CSAMReportApi } from './csamReportApi';
 import { isChildTaskEntry, isCounsellorTaskEntry } from '../../states/csam-report/reducer';
+import * as t from '../../states/contacts/actions';
 
 type OwnProps = {
   api: CSAMReportApi;
@@ -41,6 +42,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { api }: OwnProps) => {
     navigate: api.navigationActionDispatcher(dispatch),
     exit: api.exitActionDispatcher(dispatch),
     addCSAMReportEntry: api.addReportDispatcher(dispatch),
+    setEditPageOpen: () => dispatch(t.setEditContactPageOpen()),
+    setEditPageClosed: () => dispatch(t.setEditContactPageClosed()),
   };
 };
 
@@ -59,6 +62,8 @@ export const CSAMReportScreen: React.FC<Props> = ({
   currentPage,
   counselorsHash,
   api,
+  setEditPageClosed,
+  setEditPageOpen,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const methods = useForm({ reValidateMode: 'onChange' });
@@ -109,6 +114,13 @@ export const CSAMReportScreen: React.FC<Props> = ({
 
     return { childReportDefinition, counsellorReportDefinition };
   }, [csamReportState, firstElementRef, methods, updateChildFormAction, updateCounsellorFormAction]);
+
+  React.useEffect(() => {
+    setEditPageOpen();
+    return () => {
+      setEditPageClosed();
+    };
+  });
 
   if (!isChildTaskEntry(csamReportState) && !isCounsellorTaskEntry(csamReportState)) return null;
   if (!currentPage) return null;

@@ -343,7 +343,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
               />
             </SectionEntry>
           ))}
-          {csamReportEnabled && (
+          {csamReportEnabled && can(PermissionActions.EDIT_CONTACT) && (
             <SectionEntry descriptionKey="ContactDetails-GeneralDetails-ExternalReportsFiled">
               {externalReportButton()}
             </SectionEntry>
