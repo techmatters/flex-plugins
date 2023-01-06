@@ -138,16 +138,27 @@ export function reduce(state = initialState, action: t.CSAMReportActionType | Ge
             },
           };
     case t.NEW_DRAFT_CSAM_REPORT:
-      return {
-        ...state,
-        contacts: {
-          ...state.contacts,
-          [action.contactId]: {
-            reportType: action.reportType,
-            form: (state.contacts[action.contactId] as any)?.form,
-          },
-        },
-      };
+      return isCSAMActionForContact(action)
+        ? {
+            ...state,
+            contacts: {
+              ...state.contacts,
+              [action.contactId]: {
+                reportType: action.reportType,
+                form: (state.contacts[action.contactId] as any)?.form,
+              },
+            },
+          }
+        : {
+            ...state,
+            tasks: {
+              ...state.tasks,
+              [action.taskId]: {
+                reportType: action.reportType,
+                form: (state.contacts[action.taskId] as any)?.form,
+              },
+            },
+          };
     default:
       return state;
   }
