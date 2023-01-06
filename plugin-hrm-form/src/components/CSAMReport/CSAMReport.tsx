@@ -38,7 +38,6 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { api }: OwnProps) => {
     updateCounsellorFormAction: api.updateCounsellorReportDispatcher(dispatch),
     updateChildFormAction: api.updateChildReportDispatcher(dispatch),
     updateStatusAction: api.updateStatusDispatcher(dispatch),
-    clearCSAMReportAction: api.clearReportDispatcher(dispatch),
     navigate: api.navigationActionDispatcher(dispatch),
     exit: api.exitActionDispatcher(dispatch),
     addCSAMReportEntry: api.addReportDispatcher(dispatch),
@@ -53,7 +52,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
   updateChildFormAction,
   updateCounsellorFormAction,
   updateStatusAction,
-  clearCSAMReportAction,
   navigate,
   exit,
   addCSAMReportEntry,
@@ -115,11 +113,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
   if (!isChildTaskEntry(csamReportState) && !isCounsellorTaskEntry(csamReportState)) return null;
   if (!currentPage) return null;
 
-  const onClickClose = () => {
-    clearCSAMReportAction();
-    exit();
-  };
-
   const onValid = async () => {
     try {
       navigate(CSAMPage.Loading);
@@ -145,7 +138,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
   };
 
   const onSendAnotherReport = () => {
-    clearCSAMReportAction();
     navigate(currentPage === CSAMPage.ChildStatus ? CSAMPage.ChildForm : CSAMPage.CounsellorForm);
   };
 
@@ -163,7 +155,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
             childFormElements={formElements.childReportDefinition}
             renderContactDetails={renderContactDetails}
             counselor={currentCounselor}
-            onClickClose={onClickClose}
+            onClickClose={exit}
             onSendReport={onSendReport}
             csamType={csamReportState.reportType}
           />
@@ -187,7 +179,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
       return (
         <CSAMReportStatusScreen
           reportStatus={csamReportState.reportStatus}
-          onClickClose={onClickClose}
+          onClickClose={exit}
           onSendAnotherReport={() => onSendAnotherReport()}
           csamType={csamReportState.reportType}
         />
@@ -198,7 +190,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
 
       const { strings } = getConfig();
       window.alert(strings['Error-Unexpected']);
-      onClickClose();
+      exit();
       return null;
     }
   }

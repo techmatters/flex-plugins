@@ -22,6 +22,7 @@ import {
 import { acknowledgeCSAMReport, createCSAMReport } from '../../services/CSAMReportService';
 import { getConfig } from '../../HrmFormPlugin';
 import { reportToIWF, selfReportToIWF } from '../../services/ServerlessService';
+import { clearCSAMReportAction } from '../../states/csam-report/actions';
 
 export enum CSAMPage {
   CounsellorForm = 'counsellor-form',
@@ -39,7 +40,6 @@ export type CSAMReportApi = {
   navigationActionDispatcher: (dispatch: Dispatch<unknown>) => (page: CSAMPage) => void;
   exitActionDispatcher: (dispatch: Dispatch<unknown>) => () => void;
   addReportDispatcher: (dispatch: Dispatch<unknown>) => (csamReportEntry: CSAMReportEntry) => void;
-  clearReportDispatcher: (dispatch: Dispatch<unknown>) => () => void;
   updateCounsellorReportDispatcher: (dispatch: Dispatch<unknown>) => (csamReportForm: CounselorCSAMReportForm) => void;
   updateChildReportDispatcher: (dispatch: Dispatch<unknown>) => (csamReportForm: ChildCSAMReportForm) => void;
   updateStatusDispatcher: (dispatch: Dispatch<unknown>) => (csamStatus: CSAMReportStatus) => void;
@@ -102,17 +102,24 @@ export const newContactCSAMApi = (taskSid: string, previousRoute: AppRoutes): CS
   },
   reportState: (state: RootState) => state[namespace][csamReportBase].tasks[taskSid],
   navigationActionDispatcher: dispatch => page => {
+    switch (page) {
+      case CSAMPage.ChildForm:
+        dispatch(CSAMAction.newCSAMReportAction(taskSid, CSAMReportType.CHILD));
+        break;
+      case CSAMPage.CounsellorForm:
+        dispatch(CSAMAction.newCSAMReportAction(taskSid, CSAMReportType.COUNSELLOR));
+        break;
+      default:
+    }
     const subroute: CSAMReportRoute['subroute'] = page;
     dispatch(changeRoute({ route: 'csam-report', subroute, previousRoute }, taskSid));
   },
   exitActionDispatcher: dispatch => () => {
+    dispatch(clearCSAMReportAction(taskSid));
     dispatch(changeRoute(previousRoute, taskSid));
   },
   addReportDispatcher: dispatch => csamReportEntry => {
     dispatch(ContactAction.addCSAMReportEntry(csamReportEntry, taskSid));
-  },
-  clearReportDispatcher: dispatch => () => {
-    dispatch(CSAMAction.clearCSAMReportAction(taskSid));
   },
   updateCounsellorReportDispatcher: dispatch => form => {
     dispatch(CSAMAction.updateCounsellorFormAction(form, taskSid));
@@ -161,12 +168,10 @@ export const existingContactCSAMApi = (contactId: string): CSAMReportApi => ({
   saveReport: state => saveReport(state, contactId),
   exitActionDispatcher: dispatch => () => {
     // Redundant, navigation is implicit based on draft CSAM report state
+    dispatch(CSAMAction.clearCSAMReportActionForContact(contactId));
   },
   addReportDispatcher: dispatch => csamReportEntry => {
     dispatch(addExternalReportEntry(csamReportEntry, contactId));
-  },
-  clearReportDispatcher: dispatch => () => {
-    dispatch(CSAMAction.clearCSAMReportActionForContact(contactId));
   },
   updateCounsellorReportDispatcher: dispatch => form => {
     dispatch(CSAMAction.updateCounsellorFormActionForContact(form, contactId));
