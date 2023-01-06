@@ -1,13 +1,14 @@
 import * as t from '../../../states/csam-report/types';
 import * as actions from '../../../states/csam-report/actions';
+import { CSAMReportTypes } from '../../../states/csam-report/types';
 
 const task = { taskSid: 'task-sid' };
 
 describe('test action creators', () => {
-  test('updateFormAction', async () => {
+  test('updateCounsellorFormAction', async () => {
     const form: t.CSAMReportForm = {
       webAddress: 'some-url',
-      anonymous: true,
+      anonymous: 'anonymous',
       description: '',
       firstName: '',
       lastName: '',
@@ -18,6 +19,7 @@ describe('test action creators', () => {
       type: t.UPDATE_FORM,
       form,
       taskId: task.taskSid,
+      reportType: CSAMReportTypes.COUNSELLOR,
     });
   });
 

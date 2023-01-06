@@ -13,7 +13,7 @@ import ViewContact from '../../../components/case/ViewContact';
 import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 import { SearchAPIContact } from '../../../types/types';
-import { connectedCaseBase, contactFormsBase, RootState } from '../../../states';
+import { connectedCaseBase, contactFormsBase, csamReportBase, RootState } from '../../../states';
 import { DetailsContext, TOGGLE_DETAIL_EXPANDED_ACTION } from '../../../states/contacts/contactDetails';
 
 jest.mock('@twilio/flex-ui', () => ({
@@ -154,6 +154,10 @@ describe('View Contact', () => {
             [DetailsContext.CASE_DETAILS]: { detailsExpanded: {} },
             [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {} },
           },
+        },
+        [csamReportBase]: {
+          tasks: {},
+          contacts: {},
         },
       },
     };

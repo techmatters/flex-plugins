@@ -32,7 +32,7 @@ import CSAMReportButton from './CSAMReportButton';
 import CSAMAttachments from './CSAMAttachments';
 import { forTask } from '../../states/contacts/issueCategorizationStateApi';
 import { newCSAMReportAction } from '../../states/csam-report/actions';
-import { CSAMReportType } from '../../states/csam-report/types';
+import { CSAMReportType, CSAMReportTypes } from '../../states/csam-report/types';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -199,11 +199,11 @@ const TabbedForms: React.FC<Props> = ({
               csamClcReportEnabled={csamClcReportEnabled}
               csamReportEnabled={csamReportEnabled}
               handleChildCSAMType={() => {
-                dispatch(newCSAMReportAction(taskId, CSAMReportType.CHILD));
+                dispatch(newCSAMReportAction(taskId, CSAMReportTypes.CHILD));
                 dispatch(changeRoute({ route: 'csam-report', subroute: 'child-form', previousRoute: routing }, taskId));
               }}
               handleCounsellorCSAMType={() => {
-                dispatch(newCSAMReportAction(taskId, CSAMReportType.COUNSELLOR));
+                dispatch(newCSAMReportAction(taskId, CSAMReportTypes.COUNSELLOR));
                 dispatch(
                   changeRoute({ route: 'csam-report', subroute: 'counsellor-form', previousRoute: routing }, taskId),
                 );

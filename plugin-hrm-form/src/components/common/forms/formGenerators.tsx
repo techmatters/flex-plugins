@@ -306,7 +306,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
             }, [isMounted, setValue]);
 
             const error = get(errors, path);
-            const currentValue = watch(path);
+            const currentValue = watch(path) ?? initialValue;
 
             return (
               <FormFieldset

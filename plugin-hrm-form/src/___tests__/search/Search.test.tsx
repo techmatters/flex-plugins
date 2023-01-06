@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { Provider } from 'react-redux';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
@@ -12,6 +12,7 @@ import { SearchPages } from '../../states/search/types';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
 import { DetailsContext } from '../../states/contacts/contactDetails';
+import { csamReportBase } from '../../states';
 
 const mockStore = configureMockStore([]);
 let mockV1;
@@ -78,6 +79,10 @@ function createState(
           },
         },
       },
+      [csamReportBase]: {
+        tasks: {},
+        contacts: {},
+      },
     },
   };
 }
@@ -107,7 +112,14 @@ test('<Search> should display <SearchForm />', async () => {
   };
   const task = { taskSid: 'WT123' };
 
-  const initialState = createState(task.taskSid, { currentPage, searchFormValues, detailsExpanded });
+  const initialState = createState(task.taskSid, {
+    currentPage,
+    searchFormValues,
+    detailsExpanded,
+    previousContacts: undefined,
+    currentContact: undefined,
+    searchResult: undefined,
+  });
   const store = mockStore(initialState);
 
   render(
@@ -149,7 +161,14 @@ test('<Search> should display <SearchForm /> with previous contacts checkbox', a
     casesCount: { count: 1, cases: [] },
   };
 
-  const initialState = createState(task.taskSid, { currentPage, searchFormValues, detailsExpanded, previousContacts });
+  const initialState = createState(task.taskSid, {
+    currentPage,
+    searchFormValues,
+    detailsExpanded,
+    previousContacts,
+    currentContact: undefined,
+    searchResult: undefined,
+  });
   const store = mockStore(initialState);
 
   render(
@@ -246,7 +265,14 @@ test('<Search> should display <ContactDetails />', async () => {
   };
   const task = { taskSid: 'WT123' };
 
-  const initialState = createState(task.taskSid, { currentPage, currentContact, detailsExpanded });
+  const initialState = createState(task.taskSid, {
+    currentPage,
+    currentContact,
+    detailsExpanded,
+    searchFormValues: undefined,
+    previousContacts: undefined,
+    searchResult: undefined,
+  });
   const store = mockStore(initialState);
 
   render(

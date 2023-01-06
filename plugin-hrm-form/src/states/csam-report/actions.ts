@@ -1,5 +1,5 @@
 import * as t from './types';
-import { CSAMReportType } from './types';
+import { CSAMReportType, CSAMReportTypes } from './types';
 
 // Action creators
 
@@ -9,13 +9,13 @@ export const updateCounsellorFormAction = (
 ): t.CSAMReportActionType => ({
   type: t.UPDATE_FORM,
   form,
-  reportType: CSAMReportType.COUNSELLOR,
+  reportType: CSAMReportTypes.COUNSELLOR,
   taskId,
 });
 export const updateChildFormAction = (form: t.ChildCSAMReportForm, taskId: string): t.CSAMReportActionType => ({
   type: t.UPDATE_FORM,
   form,
-  reportType: CSAMReportType.CHILD,
+  reportType: CSAMReportTypes.CHILD,
   taskId,
 });
 
@@ -36,7 +36,7 @@ export const updateCounsellorFormActionForContact = (
 ): t.CSAMReportActionType => ({
   type: t.UPDATE_FORM,
   form,
-  reportType: CSAMReportType.COUNSELLOR,
+  reportType: CSAMReportTypes.COUNSELLOR,
   contactId,
 });
 
@@ -46,7 +46,7 @@ export const updateChildFormActionForContact = (
 ): t.CSAMReportActionType => ({
   type: t.UPDATE_FORM,
   form,
-  reportType: CSAMReportType.CHILD,
+  reportType: CSAMReportTypes.CHILD,
   contactId,
 });
 

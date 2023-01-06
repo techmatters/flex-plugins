@@ -21,8 +21,8 @@ import { getConfig } from '../../HrmFormPlugin';
 import { configurationBase, namespace, RootState } from '../../states';
 import useFocus from '../../utils/useFocus';
 import { CSAMPage, CSAMReportApi } from './csamReportApi';
-import { isChildTaskEntry, isCounsellorTaskEntry } from '../../states/csam-report/reducer';
 import * as t from '../../states/contacts/actions';
+import { isChildTaskEntry, isCounsellorTaskEntry } from '../../states/csam-report/types';
 
 type OwnProps = {
   api: CSAMReportApi;
@@ -48,7 +48,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { api }: OwnProps) => {
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
+export type Props = OwnProps & ConnectedProps<typeof connector>;
 
 // exported for test purposes
 export const CSAMReportScreen: React.FC<Props> = ({

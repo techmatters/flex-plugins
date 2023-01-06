@@ -65,15 +65,6 @@ describe('transformForm', () => {
         date: '',
         time: '',
       },
-      externalReport: {
-        name: 'reportType',
-        label: 'Select CSAM report type',
-        options: [
-          { value: 'child-form', label: 'Create link for child' },
-          { value: 'counsellor-form', label: 'Report as counselor' },
-        ],
-      },
-
       csamReports: [],
       metadata: <any>{},
     };
@@ -100,14 +91,6 @@ describe('transformForm', () => {
         date: '',
         time: '',
       },
-      externalReport: {
-        name: 'reportType',
-        label: 'Select CSAM report type',
-        options: [
-          { value: 'child-form', label: 'Create link for child' },
-          { value: 'counsellor-form', label: 'Report as counselor' },
-        ],
-      },
       metadata: {},
     };
 
@@ -126,7 +109,6 @@ describe('transformForm', () => {
       date: '',
       time: '',
     });
-    expect(transformed.externalReport.reportType).toBe(undefined);
   });
 });
 

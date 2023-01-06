@@ -10,15 +10,12 @@ import {
   ChildCSAMReportForm,
   CounselorCSAMReportForm,
   CSAMReportStatus,
-  CSAMReportType,
-} from '../../states/csam-report/types';
-import { addExternalReportEntry } from '../../states/csam-report/existingContactExternalReport';
-import {
+  CSAMReportTypes,
   isChildTaskEntry,
   isCounsellorTaskEntry,
-  newCounsellorTaskEntry,
-  TaskEntry,
-} from '../../states/csam-report/reducer';
+  CSAMReportStateEntry,
+} from '../../states/csam-report/types';
+import { addExternalReportEntry } from '../../states/csam-report/existingContactExternalReport';
 import { acknowledgeCSAMReport, createCSAMReport } from '../../services/CSAMReportService';
 import { getConfig } from '../../HrmFormPlugin';
 import { reportToIWF, selfReportToIWF } from '../../services/ServerlessService';
@@ -36,14 +33,14 @@ type SaveReportResponse = { hrmReport: CSAMReportEntry; iwfReport: CSAMReportSta
 
 export type CSAMReportApi = {
   currentPage: (state: RootState) => CSAMPage | undefined;
-  reportState: (state: RootState) => TaskEntry;
+  reportState: (state: RootState) => CSAMReportStateEntry;
   navigationActionDispatcher: (dispatch: Dispatch<unknown>) => (page: CSAMPage) => void;
   exitActionDispatcher: (dispatch: Dispatch<unknown>) => () => void;
   addReportDispatcher: (dispatch: Dispatch<unknown>) => (csamReportEntry: CSAMReportEntry) => void;
   updateCounsellorReportDispatcher: (dispatch: Dispatch<unknown>) => (csamReportForm: CounselorCSAMReportForm) => void;
   updateChildReportDispatcher: (dispatch: Dispatch<unknown>) => (csamReportForm: ChildCSAMReportForm) => void;
   updateStatusDispatcher: (dispatch: Dispatch<unknown>) => (csamStatus: CSAMReportStatus) => void;
-  saveReport: (state: TaskEntry) => Promise<SaveReportResponse>;
+  saveReport: (state: CSAMReportStateEntry) => Promise<SaveReportResponse>;
 };
 
 const saveCounsellorReport = async (form: CounselorCSAMReportForm, contactId?: number): Promise<SaveReportResponse> => {
@@ -81,7 +78,7 @@ const saveChildReport = async (form: ChildCSAMReportForm, contactId?: number): P
   return { hrmReport: acknowledged, iwfReport };
 };
 
-const saveReport = async (state: TaskEntry, contactId?: string): Promise<SaveReportResponse> => {
+const saveReport = async (state: CSAMReportStateEntry, contactId?: string): Promise<SaveReportResponse> => {
   const numberContactId = contactId ? Number.parseInt(contactId, 10) : undefined;
   if (isCounsellorTaskEntry(state)) {
     return saveCounsellorReport(state.form, numberContactId);
@@ -104,10 +101,10 @@ export const newContactCSAMApi = (taskSid: string, previousRoute: AppRoutes): CS
   navigationActionDispatcher: dispatch => page => {
     switch (page) {
       case CSAMPage.ChildForm:
-        dispatch(CSAMAction.newCSAMReportAction(taskSid, CSAMReportType.CHILD));
+        dispatch(CSAMAction.newCSAMReportAction(taskSid, CSAMReportTypes.CHILD));
         break;
       case CSAMPage.CounsellorForm:
-        dispatch(CSAMAction.newCSAMReportAction(taskSid, CSAMReportType.COUNSELLOR));
+        dispatch(CSAMAction.newCSAMReportAction(taskSid, CSAMReportTypes.COUNSELLOR));
         break;
       default:
     }
@@ -154,13 +151,18 @@ export const existingContactCSAMApi = (contactId: string): CSAMReportApi => ({
   navigationActionDispatcher: dispatch => page => {
     switch (page) {
       case CSAMPage.ChildForm:
-        dispatch(CSAMAction.newCSAMReportActionForContact(contactId, CSAMReportType.CHILD));
+        dispatch(CSAMAction.newCSAMReportActionForContact(contactId, CSAMReportTypes.CHILD));
         break;
       case CSAMPage.CounsellorForm:
-        dispatch(CSAMAction.newCSAMReportActionForContact(contactId, CSAMReportType.COUNSELLOR));
+        dispatch(CSAMAction.newCSAMReportActionForContact(contactId, CSAMReportTypes.COUNSELLOR));
         break;
       case CSAMPage.Loading:
-        dispatch(CSAMAction.updateStatusActionForContact(newCounsellorTaskEntry.reportStatus, contactId));
+        dispatch(
+          CSAMAction.updateStatusActionForContact(
+            { responseCode: undefined, responseData: undefined, responseDescription: undefined },
+            contactId,
+          ),
+        );
         break;
       default:
     }

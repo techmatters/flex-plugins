@@ -23,7 +23,6 @@ import {
   externalReportLayoutDefinition,
   transformContactFormValues,
 } from '../../services/ContactService';
-import { isChildTaskEntry, isCounsellorTaskEntry } from '../../states/csam-report/reducer';
 import CSAMReport from '../CSAMReport/CSAMReport';
 import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
 import {
@@ -31,7 +30,12 @@ import {
   updateChildFormActionForContact,
   updateCounsellorFormActionForContact,
 } from '../../states/csam-report/actions';
-import { CSAMReportType } from '../../states/csam-report/types';
+import {
+  CSAMReportType,
+  CSAMReportTypes,
+  isChildTaskEntry,
+  isCounsellorTaskEntry,
+} from '../../states/csam-report/types';
 import { childInitialValues, initialValues } from '../CSAMReport/CSAMReportFormDefinition';
 
 type OwnProps = {
@@ -132,7 +136,7 @@ const ContactDetails: React.FC<Props> = ({
             dispatch(
               newCSAMReportActionForContact(
                 contactId,
-                reportType === 'child' ? CSAMReportType.CHILD : CSAMReportType.COUNSELLOR,
+                reportType === 'child' ? CSAMReportTypes.CHILD : CSAMReportTypes.COUNSELLOR,
               ),
             );
           }

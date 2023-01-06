@@ -12,10 +12,7 @@ import {
 import { SearchContactDraftChanges } from '../../states/contacts/existingContacts';
 
 export type ContactFormValues = {
-  [key in 'childInformation' | 'callerInformation' | 'caseInformation' | 'externalReport']?: Record<
-    string,
-    string | boolean
-  >;
+  [key in 'childInformation' | 'callerInformation' | 'caseInformation']?: Record<string, string | boolean>;
 };
 
 export type ContactDetailsSectionFormApi = {
@@ -27,7 +24,7 @@ export type ContactDetailsSectionFormApi = {
     form: ContactFormValues,
   ) => {
     rawJson: Partial<
-      | Pick<ContactRawJson, 'callerInformation' | 'childInformation' | 'externalReport'>
+      | Pick<ContactRawJson, 'callerInformation' | 'childInformation'>
       | { caseInformation: Omit<ContactRawJson['caseInformation'], 'categories'> }
     >;
   };

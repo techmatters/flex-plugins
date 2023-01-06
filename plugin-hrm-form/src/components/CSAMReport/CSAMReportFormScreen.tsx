@@ -13,7 +13,7 @@ import {
 } from '../../styles/CSAMReport';
 import { childDefinitionObject, definitionObject } from './CSAMReportFormDefinition';
 import { RequiredAsterisk } from '../common/forms/formGenerators';
-import { CSAMReportType } from '../../states/csam-report/types';
+import { CSAMReportType, CSAMReportTypes } from '../../states/csam-report/types';
 
 type Props = {
   counsellorFormElements?: { [k in keyof typeof definitionObject]: JSX.Element };
@@ -38,10 +38,10 @@ const CSAMReportFormScreen: React.FC<Props> = ({
 }) => {
   return (
     <CSAMReportContainer
-      style={{ padding: csamType === CSAMReportType.CHILD && '5px' }}
+      style={{ padding: csamType === CSAMReportTypes.CHILD && '5px' }}
       data-testid="CSAMReport-FormScreen"
     >
-      {csamType === CSAMReportType.CHILD && (
+      {csamType === CSAMReportTypes.CHILD && (
         <CSAMReportLayout>
           <ActionHeader
             added={new Date()}
@@ -74,7 +74,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
         </CSAMReportLayout>
       )}
 
-      {csamType === CSAMReportType.COUNSELLOR && (
+      {csamType === CSAMReportTypes.COUNSELLOR && (
         <CSAMReportLayout>
           <ActionHeader
             titleTemplate="CSAMReportForm-Header"
@@ -131,12 +131,12 @@ const CSAMReportFormScreen: React.FC<Props> = ({
           </StyledNextStepButton>
         </Box>
         <StyledNextStepButton
-          disabled={csamType === CSAMReportType.CHILD ? isEmpty : false}
+          disabled={csamType === CSAMReportTypes.CHILD ? isEmpty : false}
           roundCorners
           onClick={onSendReport}
-          data-testid={csamType === CSAMReportType.CHILD ? 'CSAMCLCReport-SubmitButton' : 'CSAMReport-SubmitButton'}
+          data-testid={csamType === CSAMReportTypes.CHILD ? 'CSAMCLCReport-SubmitButton' : 'CSAMReport-SubmitButton'}
         >
-          <Template code={csamType === CSAMReportType.CHILD ? 'BottomBar-CreateLink' : 'BottomBar-SendReport'} />
+          <Template code={csamType === CSAMReportTypes.CHILD ? 'BottomBar-CreateLink' : 'BottomBar-SendReport'} />
         </StyledNextStepButton>
       </BottomButtonBar>
     </CSAMReportContainer>

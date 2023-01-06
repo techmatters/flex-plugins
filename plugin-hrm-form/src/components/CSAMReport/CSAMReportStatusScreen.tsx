@@ -18,7 +18,7 @@ import {
   StyledFileCopyOutlined,
   SuccessReportIcon,
 } from '../../styles/CSAMReport';
-import { CSAMReportStatus, CSAMReportType } from '../../states/csam-report/types';
+import { CSAMReportStatus, CSAMReportType, CSAMReportTypes } from '../../states/csam-report/types';
 
 type Props = {
   reportStatus: CSAMReportStatus;
@@ -37,13 +37,13 @@ const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, o
   };
 
   const CopyCodeButtonIcon = copied ? StyledCheckCircle : StyledFileCopyOutlined;
-  const copy = csamType === CSAMReportType.CHILD ? 'CopyLink' : 'CopyCode';
+  const copy = csamType === CSAMReportTypes.CHILD ? 'CopyLink' : 'CopyCode';
   const CopyCodeButtonText = copied ? 'Copied' : copy;
 
   return (
     // how should we handle possible IWF API error here? Show a screen, an alert & go back to form?
     <CSAMReportContainer
-      style={{ padding: csamType === CSAMReportType.CHILD && '5px' }}
+      style={{ padding: csamType === CSAMReportTypes.CHILD && '5px' }}
       data-testid="CSAMReport-StatusScreen"
     >
       <CSAMReportLayout>
@@ -61,19 +61,21 @@ const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, o
               </Box>
               <BoldDescriptionText fontSize="16px">
                 <Template
-                  code={csamType === CSAMReportType.CHILD ? 'CSAMCLCReportForm-LinkReady' : 'CSAMReportForm-ReportSent'}
+                  code={
+                    csamType === CSAMReportTypes.CHILD ? 'CSAMCLCReportForm-LinkReady' : 'CSAMReportForm-ReportSent'
+                  }
                 />
               </BoldDescriptionText>
             </Row>
             <Box marginTop="8%" marginBottom="3%">
               <RegularText>
                 <Template
-                  code={csamType === CSAMReportType.CHILD ? 'CSAMCLCReportForm-CopyLink' : 'CSAMReportForm-CopyCode'}
+                  code={csamType === CSAMReportTypes.CHILD ? 'CSAMCLCReportForm-CopyLink' : 'CSAMReportForm-CopyCode'}
                 />
               </RegularText>
             </Box>
             <Row>
-              {csamType === CSAMReportType.CHILD && (
+              {csamType === CSAMReportTypes.CHILD && (
                 <Box marginRight="10px">
                   <ReportCodeText
                     style={{
@@ -84,13 +86,13 @@ const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, o
                   </ReportCodeText>
                 </Box>
               )}
-              {csamType === CSAMReportType.COUNSELLOR && (
+              {csamType === CSAMReportTypes.COUNSELLOR && (
                 <Box marginRight="5%">
                   <ReportCodeText>#{reportStatus.responseData}</ReportCodeText>
                 </Box>
               )}
               <CopyCodeButton
-                style={{ padding: csamType === CSAMReportType.CHILD && '5px 17px 5px 12px' }}
+                style={{ padding: csamType === CSAMReportTypes.CHILD && '5px 17px 5px 12px' }}
                 secondary
                 roundCorners
                 onClick={onCopyCode}
@@ -111,12 +113,12 @@ const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, o
         <Box marginRight="15px">
           <StyledNextStepButton secondary roundCorners onClick={onSendAnotherReport}>
             <Template
-              code={csamType === CSAMReportType.CHILD ? 'BottomBar-SendAnotherLink' : 'BottomBar-SendAnotherReport'}
+              code={csamType === CSAMReportTypes.CHILD ? 'BottomBar-SendAnotherLink' : 'BottomBar-SendAnotherReport'}
             />
           </StyledNextStepButton>
         </Box>
         <StyledNextStepButton roundCorners onClick={onClickClose}>
-          <Template code={csamType === CSAMReportType.CHILD ? 'CloseButton' : 'BottomBar-CloseView'} />
+          <Template code={csamType === CSAMReportTypes.CHILD ? 'CloseButton' : 'BottomBar-CloseView'} />
         </StyledNextStepButton>
       </BottomButtonBar>
     </CSAMReportContainer>

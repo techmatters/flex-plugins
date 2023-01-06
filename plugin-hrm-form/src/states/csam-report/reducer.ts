@@ -1,46 +1,16 @@
 import { omit } from 'lodash';
 
 import * as t from './types';
-import { CSAMReportType, isCSAMActionForContact } from './types';
-import { GeneralActionType, INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from '../types';
-import { childInitialValues, initialValues } from '../../components/CSAMReport/CSAMReportFormDefinition';
-
-type CounsellorTaskEntry = {
-  form: t.CounselorCSAMReportForm;
-  reportType: CSAMReportType.COUNSELLOR;
-  reportStatus: t.CSAMReportStatus;
-};
-
-type ChildTaskEntry = {
-  form: t.ChildCSAMReportForm;
-  reportType: CSAMReportType.CHILD;
-  reportStatus: t.CSAMReportStatus;
-};
-
-export type TaskEntry = CounsellorTaskEntry | ChildTaskEntry | {};
-
-export const isCounsellorTaskEntry = (t: TaskEntry): t is CounsellorTaskEntry =>
-  (t as CounsellorTaskEntry).reportType === CSAMReportType.COUNSELLOR;
-export const isChildTaskEntry = (t: TaskEntry): t is ChildTaskEntry =>
-  (t as ChildTaskEntry).reportType === CSAMReportType.CHILD;
+import { isCSAMActionForContact, CSAMReportStateEntry } from './types';
+import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
 
 type CSAMReportState = {
   tasks: {
-    [taskId: string]: TaskEntry;
+    [taskId: string]: CSAMReportStateEntry;
   };
   contacts: {
-    [taskId: string]: TaskEntry;
+    [taskId: string]: CSAMReportStateEntry;
   };
-};
-
-export const newCounsellorTaskEntry: CounsellorTaskEntry = {
-  form: { ...initialValues },
-  reportType: CSAMReportType.COUNSELLOR,
-  reportStatus: {
-    responseCode: '',
-    responseData: '',
-    responseDescription: '',
-  },
 };
 
 export const initialState: CSAMReportState = {
@@ -50,26 +20,6 @@ export const initialState: CSAMReportState = {
 
 export function reduce(state = initialState, action: t.CSAMReportActionType | GeneralActionType): CSAMReportState {
   switch (action.type) {
-    case INITIALIZE_CONTACT_STATE: {
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: newCounsellorTaskEntry,
-        },
-      };
-    }
-    case RECREATE_CONTACT_STATE: {
-      if (state.tasks[action.taskId]) return state;
-
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: newCounsellorTaskEntry,
-        },
-      };
-    }
     case REMOVE_CONTACT_STATE:
       return {
         ...state,

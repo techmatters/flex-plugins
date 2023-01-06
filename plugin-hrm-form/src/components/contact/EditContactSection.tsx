@@ -27,14 +27,18 @@ import type { TaskEntry } from '../../states/contacts/reducer';
 import ActionHeader from '../../components/case/ActionHeader';
 import * as routingActions from '../../states/routing/actions';
 import { CustomITask } from '../../types/types';
-import { CSAMReportType } from '../../states/csam-report/types';
+import {
+  CSAMReportType,
+  CSAMReportTypes,
+  isChildTaskEntry,
+  isCounsellorTaskEntry,
+} from '../../states/csam-report/types';
 import {
   clearCSAMReportActionForContact,
   updateChildFormActionForContact,
   updateCounsellorFormActionForContact,
 } from '../../states/csam-report/actions';
 import { childInitialValues, initialValues } from '../CSAMReport/CSAMReportFormDefinition';
-import { isChildTaskEntry, isCounsellorTaskEntry } from '../../states/csam-report/reducer';
 
 type OwnProps = {
   context: DetailsContext;
@@ -245,7 +249,7 @@ const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string,
     dispatch(clearCSAMReportActionForContact(contactId));
   },
   createBlankCSAMForm: (reportType: CSAMReportType) => {
-    if (reportType === CSAMReportType.CHILD) {
+    if (reportType === CSAMReportTypes.CHILD) {
       dispatch(updateChildFormActionForContact(childInitialValues, contactId));
     } else {
       dispatch(updateCounsellorFormActionForContact(initialValues, contactId));

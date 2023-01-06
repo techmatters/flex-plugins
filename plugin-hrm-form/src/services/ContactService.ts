@@ -172,8 +172,6 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
     callerInformation: transformValues(CallerInformationTab)(form.callerInformation),
     caseInformation: transformValues(CaseInformationTab)(form.caseInformation),
     childInformation: transformValues(ChildInformationTab)(form.childInformation),
-    externalReport: transformValues(externalReportDefinition)(form.externalReport),
-    csamReport: {},
   };
 
   // @ts-ignore
@@ -195,8 +193,6 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
     },
     contactlessTask,
     conversationMedia,
-    externalReport: { ...transformedValues.externalReport },
-    csamReport: {},
   };
 }
 

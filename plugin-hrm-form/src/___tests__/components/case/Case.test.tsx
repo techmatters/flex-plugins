@@ -67,7 +67,6 @@ describe('useState mocked', () => {
               callSummary: 'contact call summary',
             },
             callerInformation: {},
-            externalReport: {},
             categories: [],
             taskSid: 'task1',
           },
