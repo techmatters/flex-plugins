@@ -131,7 +131,7 @@ export function reduce(state = initialState, action: t.CSAMReportActionType | Ge
           }
         : {
             ...state,
-            tasks: omit(state.contacts, action.taskId),
+            tasks: omit(state.tasks, action.taskId),
           };
     case t.NEW_DRAFT_CSAM_REPORT:
       return isCSAMActionForContact(action)
