@@ -73,7 +73,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
 
   const formElements = React.useMemo(() => {
     const formValues =
-      isCounsellorTaskEntry(csamReportState) || isChildTaskEntry(csamReportState) ? csamReportState.form : {};
+      (isCounsellorTaskEntry(csamReportState) || isChildTaskEntry(csamReportState) ? csamReportState.form : {}) ?? {};
     const onUpdateInput = () => {
       if (isChildTaskEntry(csamReportState)) {
         updateChildFormAction(methods.getValues(Object.values(childKeys)));
@@ -154,13 +154,8 @@ export const CSAMReportScreen: React.FC<Props> = ({
   switch (currentPage) {
     case CSAMPage.ChildForm:
     case CSAMPage.CounsellorForm: {
-      let renderContactDetails = false;
-      if (isCounsellorTaskEntry(csamReportState)) {
-        const anonymousWatch = methods.watch('anonymous');
-        renderContactDetails =
-          anonymousWatch === 'non-anonymous' ||
-          (anonymousWatch === undefined && csamReportState.form.anonymous === 'non-anonymous');
-      }
+      const renderContactDetails =
+        isCounsellorTaskEntry(csamReportState) && csamReportState.form?.anonymous === 'non-anonymous';
       return (
         <FormProvider {...methods}>
           <CSAMReportFormScreen

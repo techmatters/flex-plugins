@@ -59,12 +59,13 @@ type UpdateStatusAction = {
 
 type ClearCSAMReport = {
   type: typeof CLEAR_CSAM_REPORT;
+  reportType?: CSAMReportType;
 } & (CSAMActionForContact | CSAMActionForTask);
 
 type NewDraftCSAMReport = {
   type: typeof NEW_DRAFT_CSAM_REPORT;
   reportType?: CSAMReportType;
-} & CSAMActionForContact;
+} & (CSAMActionForContact | CSAMActionForTask);
 
 export type CSAMReportActionType =
   | UpdateChildFormAction

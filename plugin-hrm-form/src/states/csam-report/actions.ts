@@ -50,6 +50,12 @@ export const updateChildFormActionForContact = (
   contactId,
 });
 
+export const newCSAMReportAction = (taskId: string, reportType?: CSAMReportType): t.CSAMReportActionType => ({
+  type: t.NEW_DRAFT_CSAM_REPORT,
+  taskId,
+  reportType,
+});
+
 export const newCSAMReportActionForContact = (
   contactId: string,
   reportType?: CSAMReportType,
