@@ -1,6 +1,6 @@
 [
   {
-    "name": "nickname",
+    "name": "friendlyName",
     "label": "Nickname",
     "type": "input"
   },
@@ -345,8 +345,8 @@
         "label": "70"
       },
       {
-        "value": "70+",
-        "label": "70+"
+        "value": ">70",
+        "label": ">70"
       }
     ],
     "required": {

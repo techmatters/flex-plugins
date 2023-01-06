@@ -42,7 +42,17 @@ const voidDefinitions: DefinitionVersion = {
     case: { households: {}, referrals: {}, documents: {}, perpetrators: {}, incidents: {} },
   },
   helplineInformation: { label: '', helplines: [] },
-  prepopulateKeys: { ChildInformationTab: [], CallerInformationTab: [] },
+  prepopulateKeys: {
+    survey: {
+      ChildInformationTab: [],
+      CallerInformationTab: [],
+    },
+    preEngagement: {
+      ChildInformationTab: [],
+      CallerInformationTab: [],
+      CaseInformationTab: [],
+    },
+  },
   insights: { oneToOneConfigSpec: {}, oneToManyConfigSpecs: [] },
 };
 

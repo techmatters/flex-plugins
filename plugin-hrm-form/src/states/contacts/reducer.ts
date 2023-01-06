@@ -245,8 +245,9 @@ export function reduce(
     }
     case t.PREPOPULATE_FORM: {
       const currentTask = state.tasks[action.taskId];
-      const { callType, values } = action;
-      const formName = callType === callTypes.child ? 'childInformation' : 'callerInformation';
+      const { callType, values, isCaseInfo } = action;
+      let formName = callType === callTypes.child ? 'childInformation' : 'callerInformation';
+      if (isCaseInfo) formName = 'caseInformation';
 
       return {
         ...state,

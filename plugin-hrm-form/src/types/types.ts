@@ -125,6 +125,26 @@ export type ContactRawJson = {
   conversationMedia: ConversationMedia[];
 };
 
+export type Contact = {
+  id: number;
+  accountSid: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  rawJson: ContactRawJson;
+  queueName: string;
+  twilioWorkerId?: string;
+  createdBy?: string;
+  helpline?: string;
+  number?: string;
+  channel?: string;
+  conversationDuration: number;
+  timeOfContact?: Date;
+  taskId?: string;
+  channelSid?: string;
+  serviceSid?: string;
+  csamReports: any[];
+};
+
 // Information about a single contact, as expected from search contacts endpoint (we might want to reuse this type in backend) - (is this a correct placement for this?)
 export type SearchAPIContact = {
   contactId: string;
@@ -239,6 +259,7 @@ export type OfflineContactTask = {
     isContactlessTask: true;
     channelType: 'default';
     helplineToSave?: string;
+    preEngagementData?: Record<string, string>;
   };
   channelType: 'default';
 };
