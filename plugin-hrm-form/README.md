@@ -27,11 +27,13 @@ npm install
 
 ### Secrets/Configuration download
 
-Download the files required to run locally by running (this requires docker and valid AWS IAM tokens):
+When you first setup your local environment, you will need to download the files required to run locally by running (this requires docker and valid AWS IAM tokens):
 
 ```bash
 npm run ssm:local
 ```
+
+Once you have the files, you can skip this step unless directed to re-run it by another member of the team or if you run the e2e version.
 
 If you are going to run e2e tests, use:
 
@@ -41,16 +43,22 @@ npm run ssm:local:e2e
 
 ## Development
 
-In order to develop locally, you can use the Webpack Dev Server by running:
+If you just want to run the flex plugin locally, you can use the Webpack Dev Server by running:
 
 ```bash
-npm dev:local
+npm run dev
+```
+
+In order to develop locally against locally running hrm-services, you can run:
+
+```bash
+npm run dev:local
 ```
 
 This will automatically start up the Webpack Dev Server and open the browser for you. Your app will run on `http://localhost:3000`. If you want to change that you can do this by setting the `PORT` environment variable:
 
 ```bash
-PORT=3001 npm dev:local
+PORT=3001 npm run dev:local
 ```
 
 When you make changes to your code, the browser window will be automatically refreshed.

@@ -4,8 +4,8 @@
     "CallerInformationTab":[]
   },
   "preEngagement":{
-    "ChildInformationTab":[],
-    "CallerInformationTab":[],
+    "ChildInformationTab":["friendlyName", "language"],
+    "CallerInformationTab":["friendlyName", "language"],
     "CaseInformationTab":[]
   }
 }

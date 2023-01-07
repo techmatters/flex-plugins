@@ -1,1 +1,12 @@
-{ "ChildInformationTab": ["parish"], "CallerInformationTab": ["parish"], "CaseInformationTab": ["howDidYouKnowAboutOurLine"]}
+{
+  "survey":{
+    "ChildInformationTab": ["parish"],
+    "CallerInformationTab": ["parish"],
+    "CaseInformationTab": ["howDidYouKnowAboutOurLine"]
+  },
+  "preEngagement":{
+    "ChildInformationTab":[],
+    "CallerInformationTab":[],
+    "CaseInformationTab":[]
+  }
+}

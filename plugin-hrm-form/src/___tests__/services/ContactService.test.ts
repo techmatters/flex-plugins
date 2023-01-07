@@ -135,7 +135,7 @@ describe('saveContact()', () => {
     queueName: 'queueName',
     channelType: channelTypes.web,
     defaultFrom: 'Anonymous',
-    attributes: { isContactlessTask: false },
+    attributes: { isContactlessTask: false, preEngagementData: { contactType: 'ip', contactIdentifier: 'ip-address' } },
   };
   const workerSid = 'worker-sid';
   const uniqueIdentifier = 'uniqueIdentifier';
@@ -224,6 +224,7 @@ describe('saveContact() (isContactlessTask)', () => {
       attributes: {
         isContactlessTask: false,
         ip,
+        preEngagementData: { contactType: 'ip', contactIdentifier: ip },
       },
     };
     const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
@@ -234,6 +235,30 @@ describe('saveContact() (isContactlessTask)', () => {
 
     const numberFromPOST = getNumberFromPOST(mockedFetch);
     expect(numberFromPOST).toEqual(ip);
+
+    mockedFetch.mockClear();
+  });
+
+  test('save email from web calltype', async () => {
+    const email = 'abc@email.com';
+    const webTaskWithIP = {
+      queueName: 'queueName',
+      channelType: channelTypes.web,
+      defaultFrom: 'Anonymous',
+      attributes: {
+        isContactlessTask: false,
+        ip: '',
+        preEngagementData: { contactType: 'email', contactIdentifier: email },
+      },
+    };
+    const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
+
+    const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
+
+    await saveContact(webTaskWithIP, form, workerSid, uniqueIdentifier);
+
+    const numberFromPOST = getNumberFromPOST(mockedFetch);
+    expect(numberFromPOST).toEqual(email);
 
     mockedFetch.mockClear();
   });

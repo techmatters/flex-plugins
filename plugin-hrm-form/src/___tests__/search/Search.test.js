@@ -105,7 +105,7 @@ test('<Search> should display <SearchForm />', async () => {
     dateFrom: '2020-03-10',
     dateTo: '2020-03-15',
   };
-  const task = { taskSid: 'WT123' };
+  const task = { taskSid: 'WT123', attributes: { preEngagementData: {} } };
 
   const initialState = createState(task.taskSid, { currentPage, searchFormValues, detailsExpanded });
   const store = mockStore(initialState);
@@ -141,6 +141,7 @@ test('<Search> should display <SearchForm /> with previous contacts checkbox', a
     attributes: {
       isContactlessTask: false,
       ip: 'user-ip',
+      preEngagementData: { contactType: 'ip' },
     },
   };
 

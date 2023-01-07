@@ -12,6 +12,7 @@
     "insightsObject": "conversations",
     "paths": [
       "savedContact.id"
-    ]
+    ],
+    "saveForNonDataContacts": true
   }
 ]
