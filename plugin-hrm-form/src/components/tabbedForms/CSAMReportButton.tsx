@@ -23,8 +23,7 @@ const CSAMReportButton: React.FC<Props> = ({
   csamReportEnabled,
   csamClcReportEnabled,
 }) => {
-  const dropdownState = useState(false);
-  const [, setDropdown] = dropdownState;
+  const [dropdown, setDropdown] = useState(false);
   const buttonRef = useRef(null);
 
   const handleDropdown = () => {
@@ -35,7 +34,6 @@ const CSAMReportButton: React.FC<Props> = ({
     <>
       <div
         onBlurCapture={event => {
-          console.log('CSAM Dropdown Blur');
           if (!event.currentTarget.contains(event.relatedTarget)) {
             setDropdown(false);
           }
@@ -61,7 +59,7 @@ const CSAMReportButton: React.FC<Props> = ({
           )}
         </Row>
         <CSAMReportDropdown
-          dropdownState={dropdownState}
+          dropdown={dropdown}
           handleChildCSAMType={handleChildCSAMType}
           handleCounsellorCSAMType={handleCounsellorCSAMType}
         />

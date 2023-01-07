@@ -6,16 +6,12 @@ import { StyledCSAMReportDropdown, StyledCSAMReportDropdownList, StyledCSAMRepor
 type OwnProps = {
   handleChildCSAMType: () => void;
   handleCounsellorCSAMType: () => void;
-  dropdownState: [boolean, (state: boolean) => void];
+  dropdown: boolean;
 };
 
 type Props = OwnProps;
 
-const CSAMReportDropdown: React.FC<Props> = ({
-  handleChildCSAMType,
-  handleCounsellorCSAMType,
-  dropdownState: [dropdown],
-}) => {
+const CSAMReportDropdown: React.FC<Props> = ({ handleChildCSAMType, handleCounsellorCSAMType, dropdown }) => {
   return (
     <StyledCSAMReportDropdown style={{ display: dropdown ? 'block' : 'none' }}>
       <StyledCSAMReportHeader>
