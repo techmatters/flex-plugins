@@ -12,7 +12,7 @@ import SearchResults, { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './SearchResult
 import ContactDetails from './ContactDetails';
 import Case from '../case';
 import { SearchPages } from '../../states/search/types';
-import { CustomITask, SearchAPIContact, standaloneTaskSid } from '../../types/types';
+import { CustomITask, isTwilioTask, SearchAPIContact, standaloneTaskSid } from '../../types/types';
 import SearchResultsBackButton from './SearchResults/SearchResultsBackButton';
 import {
   handleSearchFormChange,
@@ -30,6 +30,8 @@ import {
   contactFormsBase,
 } from '../../states';
 import { Flex } from '../../styles/HrmStyles';
+import { ChannelTypes, channelTypes } from '../../states/DomainConstants';
+import { getContactValueTemplate } from '../../utils';
 
 type OwnProps = {
   task: CustomITask;

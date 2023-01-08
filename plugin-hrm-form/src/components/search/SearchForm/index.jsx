@@ -22,9 +22,9 @@ import { SearchTitle } from '../../../styles/search';
 import { searchFormType, taskType } from '../../../types';
 import { getConfig } from '../../../HrmFormPlugin';
 import { namespace, configurationBase, searchContactsBase, contactFormsBase } from '../../../states';
-import { localizedSource } from '../../PreviousContactsBanner';
-import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils/task';
+import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils/task';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
+import { channelTypes } from '../../../states/DomainConstants';
 
 const getField = value => ({
   value,
@@ -145,8 +145,18 @@ class SearchForm extends Component {
       const value = contactNumber === '' ? contactNumberFromTask : '';
       this.props.handleSearchFormChange('contactNumber', value);
     };
+    const webChatTemplate = getContactValueTemplate(task);
+    const localizedSource = {
+      [channelTypes.web]: webChatTemplate,
+      [channelTypes.voice]: 'PreviousContacts-PhoneNumber',
+      [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
+      [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
+      [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
+      [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
+      [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
+      [channelTypes.line]: 'PreviousContacts-LineUser',
+    };
 
-    const source = localizedSource[task.channelType];
     const { canView } = getPermissionsForViewingIdentifiers();
     const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
@@ -239,7 +249,8 @@ class SearchForm extends Component {
                       />
                     </Box>
                     <span>
-                      <Template code="PreviousContacts-OnlyShowRecordsFrom" /> <Template code={source} />{' '}
+                      <Template code="PreviousContacts-OnlyShowRecordsFrom" />{' '}
+                      <Template code={localizedSource[task.channelType]} />{' '}
                       {maskIdentifiers ? (
                         <Bold>
                           <Template code="MaskIdentifiers" />

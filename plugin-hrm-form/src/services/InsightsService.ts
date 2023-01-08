@@ -320,7 +320,8 @@ export const processHelplineConfig = (
 
 const applyCustomUpdate = (customUpdate: OneToManyConfigSpec): InsightsUpdateFunction => {
   return (taskAttributes, contactForm, caseForm, savedContact) => {
-    if (isNonDataCallType(contactForm.callType)) return {};
+    // If it's non data, and specs don't explicitly say to save it, ommit the update
+    if (isNonDataCallType(contactForm.callType) && !customUpdate.saveForNonDataContacts) return {};
 
     const dataSource = { taskAttributes, contactForm, caseForm, savedContact };
     // concatenate the values, taken from dataSource using paths (e.g. 'contactForm.childInformation.province')

@@ -251,6 +251,7 @@ export type OfflineContactTask = {
     isContactlessTask: true;
     channelType: 'default';
     helplineToSave?: string;
+    preEngagementData?: Record<string, string>;
   };
   channelType: 'default';
 };

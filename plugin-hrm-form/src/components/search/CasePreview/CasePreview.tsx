@@ -52,7 +52,7 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
     if (versionId && definitionVersions[versionId]) {
       fetchDefinitionVersions(versionId);
     }
-  }, [updateDefinitionVersion, versionId, definitionVersions]);
+  }, [versionId, definitionVersions]);
 
   const definitionVersion = definitionVersions[versionId];
 
