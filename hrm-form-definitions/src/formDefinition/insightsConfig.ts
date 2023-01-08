@@ -23,5 +23,6 @@ export type OneToManyConfigSpec = {
   insightsObject: InsightsObject; // In which attributes object this goes
   attributeName: string; // Which name the property receives in above object
   paths: string[]; // Array of paths to grab and concatenate to drop in above property
+  saveForNonDataContacts?: boolean; // Allows the custom mapping to be saved for non-data contacts
 };
 export type OneToManyConfigSpecs = OneToManyConfigSpec[];
