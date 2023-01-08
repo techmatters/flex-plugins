@@ -24,7 +24,6 @@ import {
   HrmServiceContact,
   isOfflineContactTask,
   isTwilioTask,
-  NewHrmServiceContact,
   SearchAPIContact,
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
@@ -173,6 +172,7 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
   };
 }
 
+type NewHrmServiceContact = Omit<HrmServiceContact, 'id' | 'updatedAt' | 'updatedBy' | 'createdBy'>;
 /**
  * Function that saves the form to Contacts table.
  * If you don't intend to complete the twilio task, set shouldFillEndMillis=false

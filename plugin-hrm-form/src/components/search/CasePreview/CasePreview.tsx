@@ -43,7 +43,6 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
   };
   const summary = info?.summary || callSummary;
   const counselor = counselorsHash[twilioWorkerId];
-  const { strings } = getConfig();
 
   useEffect(() => {
     const fetchDefinitionVersions = async (v: string) => {

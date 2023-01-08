@@ -138,8 +138,6 @@ export type HrmServiceContact = {
   serviceSid: string;
 };
 
-export type NewHrmServiceContact = Omit<HrmServiceContact, 'id' | 'updatedAt' | 'updatedBy' | 'createdBy'>;
-
 // Information about a single contact, as expected from search contacts endpoint (we might want to reuse this type in backend) - (is this a correct placement for this?)
 export type SearchAPIContact = {
   contactId: string;

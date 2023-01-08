@@ -94,6 +94,7 @@ const Case: React.FC<Props> = ({
   const { connectedCase } = props?.connectedCaseState ?? {};
   // This is to provide a stable dep for the useEffect that generates the timeline
   const savedContactsJson = JSON.stringify(savedContacts);
+  const { workerSid } = getConfig();
 
   const timeline: Activity[] = useMemo(
     () => {
@@ -109,7 +110,6 @@ const Case: React.FC<Props> = ({
       ];
 
       if (newContact && !isStandaloneITask(task)) {
-        const { workerSid } = getConfig();
         const connectCaseActivity: ConnectedCaseActivity = {
           contactId: newContact.id,
           date: newContact.timeOfContact,
@@ -140,7 +140,6 @@ const Case: React.FC<Props> = ({
       loadRawContacts(connectedContacts, task.taskSid);
       setLoadedContactIds(connectedContacts.map(cc => cc.id));
     } else if (!isStandaloneITask(task)) {
-      const { workerSid } = getConfig();
       setLoadedContactIds([newContactTemporaryId(connectedCase)]);
       loadContact(
         taskFormToSearchContact(
@@ -153,7 +152,7 @@ const Case: React.FC<Props> = ({
         task.taskSid,
       );
     }
-  }, [connectedCase, form, loadContact, loadRawContacts, releaseContacts, task]);
+  }, [connectedCase, form, loadContact, loadRawContacts, releaseContacts, task, workerSid]);
 
   const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;
@@ -210,7 +209,6 @@ const Case: React.FC<Props> = ({
 
   const categories = getCategories(firstConnectedContact);
   const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase || {};
-  const { workerSid, strings } = getConfig();
   const caseCounselor = counselorsHash[twilioWorkerId];
   const currentCounselor = counselorsHash[workerSid];
   // -- Date cannot be converted here since the date dropdown uses the yyyy-MM-dd format.

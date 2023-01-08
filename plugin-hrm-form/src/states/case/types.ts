@@ -87,7 +87,7 @@ export type CaseDetails = {
   childIsAtRisk: boolean;
   office?: HelplineEntry;
   version?: DefinitionVersionId;
-  contact: HrmServiceContact; // ToDo: change this
+  contact: HrmServiceContact;
   contacts: any[];
 };
 
