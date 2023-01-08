@@ -11,7 +11,7 @@ import { PreviewDescription } from '../PreviewDescription';
 import { getDefinitionVersion } from '../../../services/ServerlessService';
 import { updateDefinitionVersion } from '../../../states/configuration/actions';
 import { configurationBase, namespace, RootState } from '../../../states';
-import TagsAndCounselor from '../ContactPreview/TagsAndCounselor';
+import TagsAndCounselor from '../TagsAndCounselor';
 import { retrieveCategories } from '../../../states/contacts/contactDetailsAdapter';
 import { contactLabel } from '../../../states/contacts/contactIdentifier';
 import { getConfig } from '../../../HrmFormPlugin';
