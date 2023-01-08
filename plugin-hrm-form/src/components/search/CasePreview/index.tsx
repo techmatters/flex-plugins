@@ -28,7 +28,7 @@ const connector = connect(mapStateToProps);
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const Index: React.FC<Props> = ({ currentCase, onClickViewCase, counselorsHash, definitionVersions }) => {
+const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselorsHash, definitionVersions }) => {
   const { id, createdAt, connectedContacts, status, info, twilioWorkerId } = currentCase;
   const createdAtObj = new Date(createdAt);
   const updatedAtObj = getUpdatedDate(currentCase);
@@ -83,8 +83,8 @@ const Index: React.FC<Props> = ({ currentCase, onClickViewCase, counselorsHash, 
   );
 };
 
-Index.displayName = 'CasePreview';
+CasePreview.displayName = 'CasePreview';
 
-const connected = connector(Index);
+const connected = connector(CasePreview);
 
 export default connected;
