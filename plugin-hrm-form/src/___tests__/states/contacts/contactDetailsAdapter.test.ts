@@ -74,7 +74,6 @@ describe('hrmServiceContactToSearchContact', () => {
   const emptyOverview: SearchAPIContact['overview'] = {
     helpline: undefined,
     dateTime: undefined,
-    name: ' ',
     customerNumber: undefined,
     callType: callTypes.child,
     categories: {},
@@ -187,48 +186,6 @@ describe('hrmServiceContactToSearchContact', () => {
     });
   });
 
-  test("firstName and lastName from rawJson.childInformation.name are concatenated and added to overview as 'name'", () => {
-    const input = {
-      ...emptyHrmContact,
-      rawJson: {
-        ...emptyHrmContact.rawJson,
-        childInformation: { firstName: 'Lorna', lastName: 'Ballantyne' },
-      },
-    };
-    expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
-      contactId: undefined,
-      overview: { ...emptyOverview, name: 'Lorna Ballantyne' },
-      csamReports: [],
-      details: input.rawJson,
-    });
-    const missingLastNameInput = {
-      ...emptyHrmContact,
-      rawJson: {
-        ...emptyHrmContact.rawJson,
-        childInformation: { firstName: 'Lorna' },
-      },
-    };
-    expect(hrmServiceContactToSearchContact(missingLastNameInput)).toStrictEqual({
-      contactId: undefined,
-      overview: { ...emptyOverview, name: 'Lorna ' },
-      csamReports: [],
-      details: missingLastNameInput.rawJson,
-    });
-    const missingFirstNameInput = {
-      ...emptyHrmContact,
-      rawJson: {
-        ...emptyHrmContact.rawJson,
-        childInformation: { lastName: 'Ballantyne' },
-      },
-    };
-    expect(hrmServiceContactToSearchContact(missingFirstNameInput)).toStrictEqual({
-      contactId: undefined,
-      overview: { ...emptyOverview, name: ' Ballantyne' },
-      csamReports: [],
-      details: missingFirstNameInput.rawJson,
-    });
-  });
-
   test('input rawJson.caseInformation.callSummary mapped to output overView.notes', () => {
     const input: HrmServiceContact = {
       ...emptyHrmContact,
@@ -274,9 +231,8 @@ describe('hrmServiceContactToSearchContact', () => {
     });
   });
 
-  test('missing rawJson, rawJson.childInformation or rawJson.caseInformation objects on input throw', () => {
+  test('missing rawJson or rawJson.caseInformation objects on input throw', () => {
     expect(() => hrmServiceContactToSearchContact({} as HrmServiceContact)).toThrow();
-    expect(() => hrmServiceContactToSearchContact({ rawJson: { caseInformation: {} } } as HrmServiceContact)).toThrow();
     expect(() =>
       hrmServiceContactToSearchContact({ rawJson: { childInformation: {} } } as HrmServiceContact),
     ).toThrow();
@@ -296,7 +252,6 @@ describe('searchContactToHrmServiceContact', () => {
       customerNumber: '1234 4321',
       dateTime: 'Last Tuesday',
       callType: 'child',
-      name: 'Lo Ballantyne',
       categories: {},
       notes: 'Hello',
       updatedAt: 'Yesterday',

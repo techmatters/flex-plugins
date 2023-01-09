@@ -25,7 +25,7 @@ import { formatName, getShortSummary } from '../../utils';
 import { getContactTags, renderTag } from '../../utils/categories';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { getConfig } from '../../HrmFormPlugin';
-import { contactLabel } from '../../states/contacts/contactIdentifier';
+import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 
 const CHAR_LIMIT = 200;
 
@@ -102,7 +102,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
           </CLCaseNumberContainer>
         </CLNumberCell>
         <CLNamesCell>
-          <CLTableBodyFont>{contactLabel(definitionVersion, contact)}</CLTableBodyFont>
+          <CLTableBodyFont>{contactLabelFromHrmContact(definitionVersion, contact)}</CLTableBodyFont>
         </CLNamesCell>
         <CLTableCell>
           <CLTableBodyFont>{counselor}</CLTableBodyFont>

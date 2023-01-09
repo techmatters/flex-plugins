@@ -19,7 +19,7 @@ import ContactDetailsSection from './ContactDetailsSection';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/ValidationRules';
-import { formatCategories, formatDuration, formatName, mapChannelForInsights } from '../../utils';
+import { formatCategories, formatDuration, mapChannelForInsights } from '../../utils';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
@@ -27,6 +27,7 @@ import { getPermissionsForContact, getPermissionsForViewingIdentifiers, Permissi
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
 import { getConfig } from '../../HrmFormPlugin';
 import TranscriptSection from './TranscriptSection';
+import { contactLabelFromSearchContact } from '../../states/contacts/contactIdentifier';
 
 const formatCsamReport = (report: CSAMReportEntry) => {
   const template =
@@ -98,7 +99,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const {
     counselor,
     dateTime,
-    name: childName,
     customerNumber,
     callType,
     channel,
@@ -135,7 +135,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   // Format the obtained information
   const isDataCall = !isNonDataCallType(callType);
-  const childOrUnknown = formatName(childName);
+  const childOrUnknown = contactLabelFromSearchContact(definitionVersion, savedContact, {
+    substituteForId: false,
+  });
   const formattedChannel =
     channel === 'default'
       ? mapChannelForInsights(details.contactlessTask.channel.toString())

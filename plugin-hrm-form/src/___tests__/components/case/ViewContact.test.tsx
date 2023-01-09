@@ -40,10 +40,8 @@ const contact: SearchAPIContact = {
     contactlessTask: { channel: 'voice' },
     callType: '',
     childInformation: {
-      name: {
-        firstName: 'Jill',
-        lastName: 'Smith',
-      },
+      firstName: 'Jill',
+      lastName: 'Smith',
       gender: 'Other',
       age: '18-25',
       language: 'Language 1',
@@ -71,10 +69,8 @@ const contact: SearchAPIContact = {
       categories: {},
     },
     callerInformation: {
-      name: {
-        firstName: '',
-        lastName: '',
-      },
+      firstName: '',
+      lastName: '',
       relationshipToChild: '',
       gender: '',
       age: '',
@@ -91,7 +87,6 @@ const contact: SearchAPIContact = {
   },
   overview: {
     dateTime: '2020-03-10',
-    name: 'Jill Smith',
     customerNumber: 'Anonymous',
     callType: 'Child calling about self',
     categories: { category1: ['Tag1', 'Tag2'] },

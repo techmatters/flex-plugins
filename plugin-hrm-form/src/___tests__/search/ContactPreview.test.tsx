@@ -1,31 +1,42 @@
 import * as React from 'react';
 import renderer from 'react-test-renderer';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { callTypes, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { Provider } from 'react-redux';
+import configureMockStore from 'redux-mock-store';
+import { DeepPartial } from 'redux';
 
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import ContactPreview from '../../components/search/ContactPreview';
 import ContactHeader from '../../components/search/ContactPreview/ContactHeader';
 import TagsAndCounselor from '../../components/search/TagsAndCounselor';
-import { mapCallType } from '../../utils';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
 import { SearchUIContact } from '../../types/types';
+import { configurationBase, namespace, RootState } from '../../states';
+
+const mockStore = configureMockStore([]);
 
 const NonExisting = () => <>NonExisting</>;
 NonExisting.displayName = 'NonExisting';
 
 test('<ContactPreview> should mount', async () => {
-  mockGetDefinitionsResponse(
-    getDefinitionVersions,
-    DefinitionVersionId.v1,
-    await loadDefinition(DefinitionVersionId.v1),
-  );
+  const defaultDef = await loadDefinition(DefinitionVersionId.v1);
+  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, defaultDef);
+
+  const initialState: DeepPartial<RootState> = {
+    [namespace]: {
+      [configurationBase]: {
+        definitionVersions: {
+          [DefinitionVersionId.v1]: defaultDef,
+        },
+      },
+    },
+  };
   const contact: SearchUIContact = {
     contactId: '123',
     overview: {
       dateTime: '2019-01-01T00:00:00.000Z',
       channel: 'whatsapp',
-      name: 'Name Last',
       customerNumber: '+12025550440',
       callType: 'Child calling about self',
       counselor: '',
@@ -39,10 +50,8 @@ test('<ContactPreview> should mount', async () => {
     details: {
       definitionVersion: DefinitionVersionId.v1,
       childInformation: {
-        name: {
-          firstName: 'Name',
-          lastName: 'Last',
-        },
+        firstName: 'Name',
+        lastName: 'Last',
         gender: '',
         age: '',
         language: '',
@@ -64,7 +73,7 @@ test('<ContactPreview> should mount', async () => {
       },
       callType: 'Someone calling about a child',
       conversationMedia: [],
-      callerInformation: { name: { firstName: '', lastName: '' } },
+      callerInformation: {},
       contactlessTask: { channel: 'voice' },
     },
     counselorName: 'Counselor',
@@ -73,29 +82,28 @@ test('<ContactPreview> should mount', async () => {
 
   const handleOpenConnectDialog = jest.fn();
   const handleViewDetails = jest.fn();
+  const store = mockStore(initialState);
 
   const wrapper = renderer.create(
     <StorelessThemeProvider themeConf={{}}>
-      <ContactPreview
-        contact={contact}
-        handleOpenConnectDialog={handleOpenConnectDialog}
-        handleViewDetails={handleViewDetails}
-      />
+      <Provider store={store}>
+        <ContactPreview
+          contact={contact}
+          handleOpenConnectDialog={handleOpenConnectDialog}
+          handleViewDetails={handleViewDetails}
+        />
+      </Provider>
     </StorelessThemeProvider>,
   ).root;
 
-  const component = wrapper.findByType(ContactPreview);
+  expect(() => wrapper.findByType(ContactHeader)).not.toThrow();
+  expect(() => wrapper.findByType(TagsAndCounselor)).not.toThrow();
+  expect(() => wrapper.findByType(NonExisting)).toThrow();
 
-  expect(() => component.findByType(ContactHeader)).not.toThrow();
-  expect(() => component.findByType(TagsAndCounselor)).not.toThrow();
-  expect(() => component.findByType(NonExisting)).toThrow();
+  const { channel, callType, name, number, date } = wrapper.findByType(ContactHeader).props;
+  const { counselor, categories } = wrapper.findByType(TagsAndCounselor).props;
 
-  const previewContact = component.props.contact;
-  const { channel, callType, name, number, date } = component.findByType(ContactHeader).props;
-  const { counselor, categories } = component.findByType(TagsAndCounselor).props;
-
-  expect(previewContact).toEqual(contact);
-  expect(name).toEqual(contact.overview.name);
+  expect(name).toEqual('Name Last');
   expect(callType).toEqual(contact.overview.callType);
   expect(channel).toEqual(contact.overview.channel);
   expect(number).toEqual(contact.overview.customerNumber);

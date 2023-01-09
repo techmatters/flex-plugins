@@ -40,7 +40,6 @@ export const retrieveCategories = (categories: Record<string, Record<string, boo
 export const hrmServiceContactToSearchContact = (contact: HrmServiceContact): SearchAPIContact => {
   const dateTime = contact.timeOfContact;
 
-  const name = `${contact.rawJson.childInformation.firstName ?? ''} ${contact.rawJson.childInformation.lastName ?? ''}`;
   const customerNumber = contact.number;
   const { callType, caseInformation } = contact.rawJson;
   const categories = retrieveCategories(caseInformation.categories);
@@ -52,7 +51,6 @@ export const hrmServiceContactToSearchContact = (contact: HrmServiceContact): Se
     overview: {
       helpline,
       dateTime,
-      name,
       customerNumber,
       callType,
       categories,
@@ -106,7 +104,6 @@ export const searchContactToHrmServiceContact = (contact: SearchAPIContact): Hrm
 export const taskFormToSearchContact = (task, form, date, counselor, temporaryId): SearchAPIContact => {
   const details = transformForm(form);
   const dateTime = date;
-  const name = `${details.childInformation.firstName ?? ''} ${details.childInformation.lastName ?? ''}`;
   const customerNumber = getNumberFromTask(task);
   const { callType, caseInformation } = details;
   const categories = retrieveCategories(caseInformation.categories);
@@ -121,7 +118,6 @@ export const taskFormToSearchContact = (task, form, date, counselor, temporaryId
       helpline,
       createdBy: counselor,
       dateTime,
-      name,
       customerNumber,
       callType,
       categories,

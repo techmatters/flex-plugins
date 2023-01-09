@@ -13,8 +13,7 @@ import { updateDefinitionVersion } from '../../../states/configuration/actions';
 import { configurationBase, namespace, RootState } from '../../../states';
 import TagsAndCounselor from '../TagsAndCounselor';
 import { retrieveCategories } from '../../../states/contacts/contactDetailsAdapter';
-import { contactLabel } from '../../../states/contacts/contactIdentifier';
-import { getConfig } from '../../../HrmFormPlugin';
+import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
 
 type OwnProps = {
   currentCase: Case;
@@ -45,25 +44,25 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
   const counselor = counselorsHash[twilioWorkerId];
 
   useEffect(() => {
-    const fetchDefinitionVersions = async (v: string) => {
-      const definitionVersion = await getDefinitionVersion(versionId);
-      updateDefinitionVersion(versionId, definitionVersion);
-    };
-    if (versionId && definitionVersions[versionId]) {
-      fetchDefinitionVersions(versionId);
+    if (versionId && !definitionVersions[versionId]) {
+      getDefinitionVersion(versionId).then(definitionVersion => updateDefinitionVersion(versionId, definitionVersion));
     }
   }, [versionId, definitionVersions]);
 
   const definitionVersion = definitionVersions[versionId];
 
   const statusLabel = definitionVersion?.caseStatus[status]?.label ?? status;
+  const contactLabel = contactLabelFromHrmContact(definitionVersion, firstContact, {
+    substituteForId: false,
+    placeholder: '',
+  });
 
   return (
     <Flex>
       <PreviewWrapper>
         <CaseHeader
           caseId={id}
-          contactLabel={contactLabel(definitionVersion, firstContact, { substituteForId: false, placeholder: '' })}
+          contactLabel={contactLabel}
           createdAt={createdAtObj}
           updatedAt={updatedAtObj}
           followUpDate={followUpDateObj}

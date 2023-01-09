@@ -75,7 +75,6 @@ const contactOfType = (type): SearchAPIContact => ({
   },
   overview: {
     dateTime: '2020-03-10',
-    name: 'Jill Smith',
     customerNumber: 'Anonymous',
     callType: type,
     categories: { category1: ['Tag1', 'Tag2'] },
