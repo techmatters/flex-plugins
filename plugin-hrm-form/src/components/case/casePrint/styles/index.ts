@@ -57,21 +57,20 @@ const { caseSummaryText } = summaryStyles;
  * https://fonts.google.com/noto/specimen/Noto+Sans
  * In the future, when more languages are added, adding a compatible fontFamily might be necessary
  *
- * @param definitionVersion: DefinitionVersionId
  */
-export const changeThaiFontFamily = () => {
-    [
-      styles.page,
-      footer,
-      childName,
-      caseId,
-      officeName,
-      sectionHeader,
-      whiteText,
-      sectionItemRowEven,
-      sectionItemRowOdd,
-      caseSummaryText,
-    ].forEach(el => (el.fontFamily = 'NotoSansThaiLooped'));
+export const setThaiFontFamily = () => {
+  [
+    styles.page,
+    footer,
+    childName,
+    caseId,
+    officeName,
+    sectionHeader,
+    whiteText,
+    sectionItemRowEven,
+    sectionItemRowOdd,
+    caseSummaryText,
+  ].forEach(el => (el.fontFamily = 'NotoSansThaiLooped'));
 };
 
 const styles = StyleSheet.create({

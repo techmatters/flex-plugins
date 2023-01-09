@@ -10,7 +10,7 @@ import { DefinitionVersion, callTypes } from 'hrm-form-definitions';
 import { getConfig } from '../../../HrmFormPlugin';
 import CasePrintSection from './CasePrintSection';
 import CasePrintSummary from './CasePrintSummary';
-import styles, { changeThaiFontFamily } from './styles';
+import styles, { setThaiFontFamily } from './styles';
 import { CasePrintViewContainer, CasePrintViewSpinner, HiddenText } from '../../../styles/HrmStyles';
 import CasePrintDetails from './CasePrintDetails';
 import type { CaseDetails } from '../../../states/case/types';
@@ -80,8 +80,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
     loadImagesInMemory(imageSources);
   }, [logoSource, chkOnSource, chkOffSource]);
 
-
-  if (definitionVersion.layoutVersion.thaiCharacterPdfSupport) changeThaiFontFamily();
+  if (definitionVersion.layoutVersion.thaiCharacterPdfSupport) setThaiFontFamily();
 
   return (
     <CasePrintViewContainer>
