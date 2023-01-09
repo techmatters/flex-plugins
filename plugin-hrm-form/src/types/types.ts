@@ -78,16 +78,10 @@ export type Case = {
   helpline: string;
   twilioWorkerId: string;
   info?: CaseInfo;
-  childName: string;
   categories: {};
   createdAt: string;
   updatedAt: string;
-  connectedContacts: any[]; // TODO: create contact type
-};
-
-type NestedInformation = { name: { firstName: string; lastName: string } };
-export type InformationObject = NestedInformation & {
-  [key: string]: string | boolean | NestedInformation[keyof NestedInformation]; // having NestedInformation[keyof NestedInformation] makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
+  connectedContacts: HrmServiceContact[];
 };
 
 export type TwilioStoredMedia = {
@@ -118,31 +112,30 @@ export const isS3StoredTranscript = (m: ConversationMedia): m is S3StoredTranscr
 export type ContactRawJson = {
   definitionVersion?: DefinitionVersionId;
   callType: CallTypes | '';
-  childInformation: InformationObject;
-  callerInformation: InformationObject;
+  childInformation: Record<string, boolean | string>;
+  callerInformation: Record<string, boolean | string>;
   caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
   contactlessTask: { channel: ChannelTypes; [key: string]: string | boolean };
   conversationMedia: ConversationMedia[];
 };
 
-export type Contact = {
-  id: number;
-  accountSid: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-  rawJson: ContactRawJson;
-  queueName: string;
-  twilioWorkerId?: string;
-  createdBy?: string;
-  helpline?: string;
-  number?: string;
-  channel?: string;
+export type HrmServiceContact = {
+  id: string;
+  twilioWorkerId: string;
+  number: string;
   conversationDuration: number;
-  timeOfContact?: Date;
-  taskId?: string;
-  channelSid?: string;
-  serviceSid?: string;
-  csamReports: any[];
+  csamReports: CSAMReportEntry[];
+  createdBy: string;
+  helpline: string;
+  taskId: string;
+  channel: ChannelTypes | 'default';
+  updatedBy: string;
+  updatedAt: string;
+  rawJson: ContactRawJson;
+  timeOfContact: string;
+  queueName: string;
+  channelSid: string;
+  serviceSid: string;
 };
 
 // Information about a single contact, as expected from search contacts endpoint (we might want to reuse this type in backend) - (is this a correct placement for this?)

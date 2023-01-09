@@ -25,6 +25,7 @@ import { formatName, getShortSummary } from '../../utils';
 import { getContactTags, renderTag } from '../../utils/categories';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { getConfig } from '../../HrmFormPlugin';
+import { contactLabel } from '../../states/contacts/contactIdentifier';
 
 const CHAR_LIMIT = 200;
 
@@ -64,7 +65,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
   try {
     const { status } = caseItem;
     const statusString = status.charAt(0).toUpperCase() + status.slice(1);
-    const name = formatName(caseItem.childName);
+    const contact = (caseItem.connectedContacts ?? [])[0];
     const summary = caseItem.info && caseItem.info.summary;
     const shortSummary = getShortSummary(summary, CHAR_LIMIT, 'case');
     const counselor = formatName(counselorsHash[caseItem.twilioWorkerId]);
@@ -101,7 +102,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
           </CLCaseNumberContainer>
         </CLNumberCell>
         <CLNamesCell>
-          <CLTableBodyFont>{name}</CLTableBodyFont>
+          <CLTableBodyFont>{contactLabel(definitionVersion, contact)}</CLTableBodyFont>
         </CLNamesCell>
         <CLTableCell>
           <CLTableBodyFont>{counselor}</CLTableBodyFont>

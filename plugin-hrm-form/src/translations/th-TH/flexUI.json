@@ -269,6 +269,7 @@
   "ContactDetails-GeneralDetails-WouldRecommend": "เด็กจะแนะนำเรากับเพื่อนหรือไม่?",
   "ContactDetails-NoCategoryProvided": "ไม่มีหมวดหมู่",
   "ContactDetails-Transcript": "การถอดเสียง",
+  "ContactDetails-UnsavedContact": "ผู้ติดต่อที่ไม่ได้บันทึก",
   "Counsellor": "ชื่อเจ้าหน้าที่",
   "Date of Contact": "วันที่ติดต่อ",
   "DateCantBeGreaterThanToday": "วันที่ไม่เกินวันนี้",

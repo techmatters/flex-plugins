@@ -54,6 +54,7 @@ import { CaseSectionApi } from '../../states/case/sections/api';
 import * as ContactActions from '../../states/contacts/existingContacts';
 import { searchContactToHrmServiceContact, taskFormToSearchContact } from '../../states/contacts/contactDetailsAdapter';
 import { ChannelTypes } from '../../states/DomainConstants';
+import { contactLabel } from '../../states/contacts/contactIdentifier';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -67,20 +68,6 @@ type OwnProps = {
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const getFirstNameAndLastNameFromContact = (contact): CaseDetailsName => {
-  if (contact?.rawJson?.childInformation?.name) {
-    const { firstName, lastName } = contact.rawJson.childInformation.name;
-    return {
-      firstName,
-      lastName,
-    };
-  }
-  return {
-    firstName: 'Unknown',
-    lastName: 'Unknown',
-  };
-};
 
 const newContactTemporaryId = (connectedCase: CaseType) => `__unsavedFromCase:${connectedCase?.id}`;
 
@@ -107,6 +94,7 @@ const Case: React.FC<Props> = ({
   const { connectedCase } = props?.connectedCaseState ?? {};
   // This is to provide a stable dep for the useEffect that generates the timeline
   const savedContactsJson = JSON.stringify(savedContacts);
+  const { workerSid } = getConfig();
 
   const timeline: Activity[] = useMemo(
     () => {
@@ -122,7 +110,6 @@ const Case: React.FC<Props> = ({
       ];
 
       if (newContact && !isStandaloneITask(task)) {
-        const { workerSid } = getConfig();
         const connectCaseActivity: ConnectedCaseActivity = {
           contactId: newContact.id,
           date: newContact.timeOfContact,
@@ -153,7 +140,6 @@ const Case: React.FC<Props> = ({
       loadRawContacts(connectedContacts, task.taskSid);
       setLoadedContactIds(connectedContacts.map(cc => cc.id));
     } else if (!isStandaloneITask(task)) {
-      const { workerSid } = getConfig();
       setLoadedContactIds([newContactTemporaryId(connectedCase)]);
       loadContact(
         taskFormToSearchContact(
@@ -166,7 +152,7 @@ const Case: React.FC<Props> = ({
         task.taskSid,
       );
     }
-  }, [connectedCase, form, loadContact, loadRawContacts, releaseContacts, task]);
+  }, [connectedCase, form, loadContact, loadRawContacts, releaseContacts, task, workerSid]);
 
   const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;
@@ -220,11 +206,9 @@ const Case: React.FC<Props> = ({
   const { can } = getPermissionsForCase(connectedCase.twilioWorkerId, connectedCase.status);
 
   const firstConnectedContact = (savedContacts && savedContacts[0]) ?? newContact;
-  const name = getFirstNameAndLastNameFromContact(firstConnectedContact);
 
   const categories = getCategories(firstConnectedContact);
   const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase || {};
-  const { workerSid } = getConfig();
   const caseCounselor = counselorsHash[twilioWorkerId];
   const currentCounselor = counselorsHash[workerSid];
   // -- Date cannot be converted here since the date dropdown uses the yyyy-MM-dd format.
@@ -288,7 +272,10 @@ const Case: React.FC<Props> = ({
 
   const caseDetails: CaseDetails = {
     id: connectedCase.id,
-    name,
+    contactIdentifier: contactLabel(definitionVersion, firstConnectedContact, {
+      placeholder: '',
+      substituteForId: false,
+    }),
     categories,
     status,
     caseCounselor,

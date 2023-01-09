@@ -1,14 +1,14 @@
 import { set } from 'lodash/fp';
-import { callTypes, DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { callTypes, DefinitionVersion, DefinitionVersionId, FormInputType, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import {
-  transformForm,
-  saveContact,
   createCategoriesObject,
-  transformContactFormValues,
-  updateContactInHrm,
+  saveContact,
   transformCategories,
+  transformForm,
+  transformValues,
+  updateContactInHrm,
 } from '../../services/ContactService';
 import { createNewTaskEntry, TaskEntry } from '../../states/contacts/reducer';
 import { channelTypes } from '../../states/DomainConstants';
@@ -45,6 +45,7 @@ describe('transformForm', () => {
   test('removes control information and presents values only', () => {
     const oldForm: TaskEntry = {
       helpline,
+      isCallTypeCaller: true,
       callType: callTypes.caller,
       callerInformation: {
         firstName: 'myFirstName',
@@ -61,7 +62,7 @@ describe('transformForm', () => {
         callSummary: 'My summary',
       },
       contactlessTask: {
-        channel: '',
+        channel: channelTypes.web,
         date: '',
         time: '',
       },
@@ -99,13 +100,15 @@ describe('transformForm', () => {
 
     expect(transformed.definitionVersion).toBe('v1');
     expect(transformed.callType).toBe(callTypes.caller);
-    expect(transformed.callerInformation.name).toStrictEqual({ firstName: 'myFirstName', lastName: '' });
+    expect(transformed.callerInformation.firstName).toBe('myFirstName');
+    expect(transformed.callerInformation.lastName).toBe('');
     expect(transformed.childInformation.gender).toBe('Male');
-    expect(transformed.childInformation.name).toStrictEqual({ firstName: 'child', lastName: '' });
+    expect(transformed.childInformation.firstName).toBe('child');
+    expect(transformed.childInformation.lastName).toBe('');
     expect(transformed.caseInformation.categories).toStrictEqual(expected.caseInformation.categories);
     expect(transformed.caseInformation.callSummary).toBe('My summary');
     expect(transformed.contactlessTask).toStrictEqual({
-      channel: '',
+      channel: 'web',
       date: '',
       time: '',
     });
@@ -127,7 +130,7 @@ const createForm = ({ callType, childFirstName }, contactlessTaskInfo = undefine
   };
 };
 
-const getFormFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).form;
+const getFormFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).rawJson;
 const getTimeOfContactFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).timeOfContact;
 const getNumberFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).number;
 
@@ -151,7 +154,7 @@ describe('saveContact()', () => {
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.child);
-    expect(formFromPOST.childInformation.name.firstName).toEqual('Jill');
+    expect(formFromPOST.childInformation.firstName).toEqual('Jill');
 
     mockedFetch.mockClear();
   });
@@ -164,7 +167,7 @@ describe('saveContact()', () => {
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual('hang up');
-    expect(formFromPOST.childInformation.name.firstName).toEqual('');
+    expect(formFromPOST.childInformation.firstName).toEqual('');
 
     mockedFetch.mockClear();
   });
@@ -180,40 +183,41 @@ describe('saveContact() (isContactlessTask)', () => {
   const workerSid = 'worker-sid';
   const uniqueIdentifier = 'uniqueIdentifier';
   const fetchSuccess = Promise.resolve(<any>{ ok: true });
+  let mockedFetch;
+
+  beforeEach(() => {
+    mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
+  });
+
+  afterEach(() => {
+    mockedFetch.mockClear();
+  });
 
   test('data calltype saves form data', async () => {
     const form = createForm(
       { callType: callTypes.child, childFirstName: 'Jill' },
       { channel: '', date: '2020-11-24', time: '12:00' },
     );
-    const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
-
     await saveContact(task, form, workerSid, uniqueIdentifier);
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.child);
-    expect(formFromPOST.childInformation.name.firstName).toEqual('Jill');
-    expect(getTimeOfContactFromPOST(mockedFetch)).toEqual(new Date(2020, 10, 24, 12, 0).getTime());
-
-    mockedFetch.mockClear();
+    expect(formFromPOST.childInformation.firstName).toEqual('Jill');
+    expect(getTimeOfContactFromPOST(mockedFetch)).toEqual(new Date(2020, 10, 24, 12, 0).toISOString());
   });
 
   test('non-data calltype do not save form data (but captures contactlessTask info)', async () => {
     const contactlessTask = { channel: 'web', date: '2020-11-24', time: '12:00', createdOnBehalfOf: 'someone else' };
     const form = createForm({ callType: 'hang up', childFirstName: 'Jill' }, contactlessTask);
-    const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
-
     await saveContact({ ...task, taskSid: offlineContactTaskSid }, form, workerSid, uniqueIdentifier);
 
     const expected = { ...contactlessTask };
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual('hang up');
-    expect(formFromPOST.childInformation.name.firstName).toEqual('');
+    expect(formFromPOST.childInformation.firstName).toEqual('');
     expect(formFromPOST.contactlessTask).toStrictEqual(expected);
-    expect(getTimeOfContactFromPOST(mockedFetch)).toEqual(new Date(2020, 10, 24, 12, 0).getTime());
-
-    mockedFetch.mockClear();
+    expect(getTimeOfContactFromPOST(mockedFetch)).toEqual(new Date(2020, 10, 24, 12, 0).toISOString());
   });
 
   test('save IP from web calltype', async () => {
@@ -230,14 +234,10 @@ describe('saveContact() (isContactlessTask)', () => {
     };
     const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
 
-    const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
-
     await saveContact(webTaskWithIP, form, workerSid, uniqueIdentifier);
 
     const numberFromPOST = getNumberFromPOST(mockedFetch);
     expect(numberFromPOST).toEqual(ip);
-
-    mockedFetch.mockClear();
   });
 
   test('save email from web calltype', async () => {
@@ -277,85 +277,48 @@ describe('saveContact() (isContactlessTask)', () => {
     };
     const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
 
-    const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
-
     await saveContact(webTaskWithoutIP, form, workerSid, uniqueIdentifier);
 
     const numberFromPOST = getNumberFromPOST(mockedFetch);
     expect(numberFromPOST).toEqual('');
-
-    mockedFetch.mockClear();
   });
 });
 
-describe('transformContactFormValues', () => {
-  test('Strips entries in formValues that are not defined in provided form definition and adds undefiend entries for form items without values', () => {
-    const result = transformContactFormValues(
-      {
-        input1: 'something',
-        input2: 'something else',
-        input3: 'another thing',
-        notInDef: 'delete me',
-      },
-      [
-        { name: 'input1', type: 'input', label: '' },
-        { name: 'input2', type: 'input', label: '' },
-        { name: 'input3', type: 'input', label: '' },
-        { name: 'input4', type: 'input', label: '' },
-      ],
-    );
+describe('transformValues', () => {
+  test('Strips entries in formValues that are not defined in provided form definition and adds undefined entries for form items without values', () => {
+    const result = transformValues([
+      { name: 'input1', type: FormInputType.Input, label: '' },
+      { name: 'input2', type: FormInputType.Input, label: '' },
+      { name: 'input3', type: FormInputType.Input, label: '' },
+      { name: 'input4', type: FormInputType.Input, label: '' },
+    ])({
+      input1: 'something',
+      input2: 'something else',
+      input3: 'another thing',
+      notInDef: 'delete me',
+    });
 
     expect(result).toStrictEqual({
-      name: {
-        firstName: undefined,
-        lastName: undefined,
-      },
       input1: 'something',
       input2: 'something else',
       input3: 'another thing',
       input4: undefined,
     });
   });
-  test("Creates a 'name' subobject and populates 'firstName' and 'lastName' properties from top level of input object", () => {
-    const result = transformContactFormValues(
-      {
-        firstName: 'Lorna',
-        lastName: 'Ballantyne',
-      },
-      [
-        { name: 'firstName', type: 'input', label: '' },
-        { name: 'lastName', type: 'input', label: '' },
-      ],
-    );
-
-    expect(result).toStrictEqual({
-      name: {
-        firstName: 'Lorna',
-        lastName: 'Ballantyne',
-      },
-    });
-  });
   test("Converts 'mixed' values to nulls for mixed-checkbox types", () => {
-    const result = transformContactFormValues(
-      {
-        mixed1: 'mixed',
-        mixed2: true,
-        mixed3: false,
-        notMixed: 'mixed',
-      },
-      [
-        { name: 'mixed1', type: 'mixed-checkbox', label: '' },
-        { name: 'mixed2', type: 'mixed-checkbox', label: '' },
-        { name: 'mixed3', type: 'mixed-checkbox', label: '' },
-        { name: 'notMixed', type: 'input', label: '' },
-      ],
-    );
+    const result = transformValues([
+      { name: 'mixed1', type: FormInputType.MixedCheckbox, label: '' },
+      { name: 'mixed2', type: FormInputType.MixedCheckbox, label: '' },
+      { name: 'mixed3', type: FormInputType.MixedCheckbox, label: '' },
+      { name: 'notMixed', type: FormInputType.Input, label: '' },
+    ])({
+      mixed1: 'mixed',
+      mixed2: true,
+      mixed3: false,
+      notMixed: 'mixed',
+    });
 
     expect(result).toStrictEqual({
-      name: {
-        firstName: undefined,
-        lastName: undefined,
-      },
       mixed1: null,
       mixed2: true,
       mixed3: false,

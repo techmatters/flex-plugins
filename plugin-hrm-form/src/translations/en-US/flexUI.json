@@ -304,6 +304,7 @@
   "ContactDetails-ActionHeaderAdded": "Added on {{date}} at {{time}} by {{counsellor}}",
   "ContactDetails-ActionHeaderUpdated": "Updated on {{date}} at {{time}} by {{counsellor}}",
   "ContactDetails-NoCategoryProvided": "No category provided",
+  "ContactDetails-UnsavedContact": "Unsaved Contact",
   "SectionName-CallerInformation": "Caller Information",
   "SectionName-ChildInformation": "Child Information",
   "SectionName-Contact": "Contact",

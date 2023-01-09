@@ -19,37 +19,46 @@ import fetchHrmApi from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getConfig, getDefinitionVersions } from '../HrmFormPlugin';
 import {
-  Contact,
   ContactMediaType,
   ContactRawJson,
   ConversationMedia,
-  InformationObject,
+  HrmServiceContact,
   isOfflineContactTask,
   isTwilioTask,
   SearchAPIContact,
-  SearchContactResult,
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
 
-/**
- * Un-nests the information (caller/child) as it comes from DB, to match the form structure
- * @param e the current form definition item
- * @param obj the object where we want to lookup for above item
- */
-export const unNestInformation = (e: FormItemDefinition, obj: InformationObject) =>
-  ['firstName', 'lastName'].includes(e.name) ? obj.name[e.name] : obj[e.name];
-
-const nestName = (information: { firstName: string; lastName: string }): InformationObject => {
-  const { firstName, lastName, ...rest } = information;
-  return { ...rest, name: { firstName, lastName } };
+type NestedInformation = { name?: { firstName: string; lastName: string } };
+type LegacyInformationObject = NestedInformation & {
+  [key: string]: string | boolean | NestedInformation[keyof NestedInformation]; // having NestedInformation[keyof NestedInformation] makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
 };
 
-export const unNestInformationObject = (
-  def: FormDefinition,
-  obj: InformationObject,
-): TaskEntry['childInformation'] | TaskEntry['callerInformation'] =>
-  def.reduce((acc, e) => ({ ...acc, [e.name]: unNestInformation(e, obj) }), {});
+type LegacyContactRawJson = Omit<ContactRawJson, 'callerInformation' | 'childInformation'> & {
+  childInformation: LegacyInformationObject;
+  callerInformation: LegacyInformationObject;
+};
+
+const unNestLegacyInformationObject = (legacy: LegacyInformationObject): Record<string, string | boolean> => {
+  const { name, ...rest } = legacy;
+  return typeof name === 'object' ? { ...rest, ...name } : (legacy as Record<string, string | boolean>);
+};
+
+export const unNestLegacyRawJson = (legacy: LegacyContactRawJson): ContactRawJson => {
+  type PartiallyTransformed = Omit<ContactRawJson, 'callerInformation'> & {
+    callerInformation: LegacyInformationObject;
+  };
+  const withFixedChildInformation: PartiallyTransformed = legacy.childInformation
+    ? { ...legacy, childInformation: unNestLegacyInformationObject(legacy.childInformation) }
+    : (legacy as PartiallyTransformed);
+  return withFixedChildInformation.callerInformation
+    ? {
+        ...withFixedChildInformation,
+        callerInformation: unNestLegacyInformationObject(withFixedChildInformation.callerInformation),
+      }
+    : (withFixedChildInformation as ContactRawJson);
+};
 
 export async function searchContacts(
   searchParams,
@@ -66,7 +75,15 @@ export async function searchContacts(
     body: JSON.stringify(searchParams),
   };
 
-  return fetchHrmApi(`/contacts/search${queryParams}`, options);
+  const rawResult = await fetchHrmApi(`/contacts/search${queryParams}`, options);
+  return {
+    ...rawResult,
+    contacts: rawResult.contacts.map(c => {
+      const details = unNestLegacyRawJson(c.details);
+      const { firstName, lastName } = details.childInformation ?? {};
+      return { ...c, details, overview: { ...c.overview, name: `${firstName ?? ''} ${lastName ?? ''}` } };
+    }),
+  };
 }
 
 /**
@@ -97,12 +114,8 @@ const deTransformValue = (e: FormItemDefinition) => (value: string | boolean | n
   return value;
 };
 
-export const searchResultToContactForm = (def: FormDefinition, obj: InformationObject) => {
-  const information = unNestInformationObject(def, obj);
-
-  const deTransformed = def.reduce((acc, e) => ({ ...acc, [e.name]: deTransformValue(e)(information[e.name]) }), {});
-
-  return deTransformed;
+export const searchResultToContactForm = (def: FormDefinition, information: Record<string, string | boolean>) => {
+  return def.reduce((acc, e) => ({ ...acc, [e.name]: deTransformValue(e)(information[e.name]) }), {});
 };
 
 // eslint-disable-next-line import/no-unused-modules
@@ -148,15 +161,6 @@ export function transformCategories(
   return transformedCategories.categories;
 }
 
-export const transformContactFormValues = (
-  formValues: Record<string, string | boolean>,
-  formDefinition: FormDefinition,
-): InformationObject => {
-  // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
-  const transformedValue = transformValues(formDefinition)(formValues);
-  return nestName(<{ firstName: string; lastName: string }>transformedValue);
-};
-
 /**
  * Transforms the form to be saved as the backend expects it
  * VisibleForTesting
@@ -176,9 +180,9 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
   };
 
   // @ts-ignore
-  const callerInformation = nestName(transformedValues.callerInformation);
+  const { callerInformation } = transformedValues;
   // @ts-ignore
-  const childInformation = nestName(transformedValues.childInformation);
+  const { childInformation } = transformedValues;
 
   const categories = transformCategories(form.helpline, form.categories);
   const { definitionVersion } = getConfig();
@@ -197,6 +201,7 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
   };
 }
 
+type NewHrmServiceContact = Omit<HrmServiceContact, 'id' | 'updatedAt' | 'updatedBy' | 'createdBy'>;
 /**
  * Function that saves the form to Contacts table.
  * If you don't intend to complete the twilio task, set shouldFillEndMillis=false
@@ -207,7 +212,7 @@ const saveContactToHrm = async (
   workerSid: string,
   uniqueIdentifier: string,
   shouldFillEndMillis = true,
-) => {
+): Promise<{ response: HrmServiceContact; request: NewHrmServiceContact }> => {
   // if we got this far, we assume the form is valid and ready to submit
   const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
   const conversationDuration = getConversationDuration(task, metadata);
@@ -231,7 +236,7 @@ const saveContactToHrm = async (
   const twilioWorkerId = isOfflineContactTask(task) ? form.contactlessTask.createdOnBehalfOf : workerSid;
 
   // This might change if isNonDataCallType, that's why we use rawForm
-  const timeOfContact = getDateTime(rawForm.contactlessTask);
+  const timeOfContact = new Date(getDateTime(rawForm.contactlessTask)).toISOString();
 
   const { helpline, csamReports } = form;
 
@@ -267,8 +272,8 @@ const saveContactToHrm = async (
    */
   const formToSend = transformForm(rawForm, conversationMedia);
 
-  const body = {
-    form: formToSend,
+  const body: NewHrmServiceContact = {
+    rawJson: formToSend,
     twilioWorkerId,
     queueName: task.queueName,
     channel: task.channelType,
@@ -287,9 +292,9 @@ const saveContactToHrm = async (
     body: JSON.stringify(body),
   };
 
-  const responseJson: Contact = await fetchHrmApi(`/contacts`, options);
+  const responseJson: HrmServiceContact = await fetchHrmApi(`/contacts`, options);
 
-  return { responseJson, requestPayload: body };
+  return { response: responseJson, request: body };
 };
 
 export const updateContactInHrm = async (
@@ -313,18 +318,18 @@ export const saveContact = async (
   uniqueIdentifier: string,
   shouldFillEndMillis = true,
 ) => {
-  const response = await saveContactToHrm(task, form, workerSid, uniqueIdentifier, shouldFillEndMillis);
+  const payloads = await saveContactToHrm(task, form, workerSid, uniqueIdentifier, shouldFillEndMillis);
 
   // TODO: add catch clause to handle saving to Sync Doc
   try {
-    await saveContactToExternalBackend(task, response.requestPayload);
+    await saveContactToExternalBackend(task, payloads.request);
   } catch (err) {
     console.error(
       `Saving task with sid ${task.taskSid} failed, presumably the attempt to add it to the pending store also failed so this data is likely lost`,
       err,
     );
   }
-  return response.responseJson;
+  return payloads.response;
 };
 
 export async function connectToCase(contactId, caseId) {
@@ -335,7 +340,5 @@ export async function connectToCase(contactId, caseId) {
     body: JSON.stringify(body),
   };
 
-  const responseJson = await fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
-
-  return responseJson;
+  return fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
 }

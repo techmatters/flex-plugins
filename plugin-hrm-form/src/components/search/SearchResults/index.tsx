@@ -6,14 +6,7 @@ import { Template, Tab as TwilioTab } from '@twilio/flex-ui';
 
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
-import {
-  SearchContactResult,
-  SearchCaseResult,
-  SearchAPIContact,
-  Case,
-  CustomITask,
-  standaloneTaskSid,
-} from '../../../types/types';
+import { SearchContactResult, SearchCaseResult, SearchAPIContact, Case, CustomITask } from '../../../types/types';
 import { Row } from '../../../styles/HrmStyles';
 import {
   ResultsHeader,

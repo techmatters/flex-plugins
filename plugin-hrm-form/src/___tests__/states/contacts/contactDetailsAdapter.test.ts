@@ -1,9 +1,11 @@
+import { callTypes } from 'hrm-form-definitions';
+
 import {
   hrmServiceContactToSearchContact,
   retrieveCategories,
   searchContactToHrmServiceContact,
 } from '../../../states/contacts/contactDetailsAdapter';
-import { SearchAPIContact } from '../../../types/types';
+import { HrmServiceContact, SearchAPIContact } from '../../../types/types';
 
 describe('retrieveCategories', () => {
   test('falsy input, empty object output', () => expect(retrieveCategories(null)).toStrictEqual({}));
@@ -39,17 +41,47 @@ describe('retrieveCategories', () => {
 });
 
 describe('hrmServiceContactToSearchContact', () => {
+  const emptyHrmContact: HrmServiceContact = {
+    rawJson: {
+      caseInformation: {
+        categories: {},
+      },
+      callerInformation: {},
+      callType: callTypes.child,
+      childInformation: {},
+      contactlessTask: {
+        channel: 'voice',
+      },
+      conversationMedia: [],
+    },
+    conversationDuration: 0,
+    csamReports: [],
+    id: undefined,
+    twilioWorkerId: undefined,
+    serviceSid: undefined,
+    queueName: undefined,
+    channelSid: undefined,
+    number: undefined,
+    taskId: undefined,
+    helpline: undefined,
+    updatedBy: undefined,
+    updatedAt: undefined,
+    timeOfContact: undefined,
+    createdBy: undefined,
+    channel: undefined,
+  };
+
   const emptyOverview: SearchAPIContact['overview'] = {
     helpline: undefined,
     dateTime: undefined,
-    name: 'undefined undefined',
+    name: ' ',
     customerNumber: undefined,
-    callType: undefined,
+    callType: callTypes.child,
     categories: {},
     counselor: undefined,
     notes: undefined,
     channel: undefined,
-    conversationDuration: undefined,
+    conversationDuration: 0,
     createdBy: undefined,
     taskId: undefined,
     updatedBy: undefined,
@@ -57,41 +89,39 @@ describe('hrmServiceContactToSearchContact', () => {
   };
 
   test('input rawJson.caseInformation.categories are converted using retrieveCategories and added to overview', () => {
-    const input = {
+    const input: HrmServiceContact = {
+      ...emptyHrmContact,
       rawJson: {
+        ...emptyHrmContact.rawJson,
         caseInformation: {
           categories: {
             category1: { sub1: true, sub2: false, sub3: true },
             category2: { sub1: true, sub2: true, sub3: false },
           },
         },
-        childInformation: { name: {} },
       },
     };
-    expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
+    expect(hrmServiceContactToSearchContact(input as HrmServiceContact)).toStrictEqual({
       contactId: undefined,
       overview: {
         ...emptyOverview,
         categories: { category1: ['sub1', 'sub3'], category2: ['sub1', 'sub2'] },
       },
       details: input.rawJson,
-      csamReports: undefined,
+      csamReports: [],
     });
   });
 
   test('input conversationDuration, channel, createdBy & helpline are added to overview as is', () => {
-    const input = {
-      rawJson: {
-        caseInformation: {},
-        childInformation: { name: {} },
-      },
+    const input: Partial<HrmServiceContact> = {
+      ...emptyHrmContact,
       conversationDuration: 1234,
       helpline: 'my-helpline',
       createdBy: 'bob',
-      channel: 'a channel',
+      channel: 'whatsapp',
       taskId: 'TASK_SID',
     };
-    expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
+    expect(hrmServiceContactToSearchContact(input as HrmServiceContact)).toStrictEqual({
       contactId: undefined,
       overview: {
         ...emptyOverview,
@@ -102,17 +132,23 @@ describe('hrmServiceContactToSearchContact', () => {
         taskId: input.taskId,
       },
       details: input.rawJson,
-      csamReports: undefined,
+      csamReports: [],
     });
   });
 
   test('input csamReports are added to top level as is', () => {
-    const input = {
-      rawJson: {
-        caseInformation: {},
-        childInformation: { name: {} },
-      },
-      csamReports: [{ with: 'something' }],
+    const input: HrmServiceContact = {
+      ...emptyHrmContact,
+      csamReports: [
+        {
+          csamReportId: '',
+          id: 0,
+          reportType: 'counsellor-generated',
+          acknowledged: true,
+          twilioWorkerId: 'worker',
+          createdAt: 'yesterday',
+        },
+      ],
     };
     expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
       contactId: undefined,
@@ -124,131 +160,126 @@ describe('hrmServiceContactToSearchContact', () => {
 
   test('input rawJson.callType is added to overview as is', () => {
     const input = {
+      ...emptyHrmContact,
       rawJson: {
-        callType: 'a call type',
-        caseInformation: {},
-        childInformation: { name: {} },
+        ...emptyHrmContact.rawJson,
+        callType: callTypes.caller,
       },
     };
     expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
       contactId: undefined,
       overview: { ...emptyOverview, callType: input.rawJson.callType },
-      csamReports: undefined,
+      csamReports: [],
       details: input.rawJson,
     });
   });
 
   test('input id is added to top level as contactId', () => {
     const input = {
+      ...emptyHrmContact,
       id: 'an id',
-      rawJson: {
-        caseInformation: {},
-        childInformation: { name: {} },
-      },
     };
     expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
       contactId: input.id,
       overview: emptyOverview,
-      csamReports: undefined,
+      csamReports: [],
       details: input.rawJson,
     });
   });
 
   test("firstName and lastName from rawJson.childInformation.name are concatenated and added to overview as 'name'", () => {
     const input = {
+      ...emptyHrmContact,
       rawJson: {
-        caseInformation: {},
-        childInformation: { name: { firstName: 'Lorna', lastName: 'Ballantyne' } },
+        ...emptyHrmContact.rawJson,
+        childInformation: { firstName: 'Lorna', lastName: 'Ballantyne' },
       },
     };
     expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
       contactId: undefined,
       overview: { ...emptyOverview, name: 'Lorna Ballantyne' },
-      csamReports: undefined,
+      csamReports: [],
       details: input.rawJson,
     });
     const missingLastNameInput = {
+      ...emptyHrmContact,
       rawJson: {
-        caseInformation: {},
-        childInformation: { name: { firstName: 'Lorna' } },
+        ...emptyHrmContact.rawJson,
+        childInformation: { firstName: 'Lorna' },
       },
     };
     expect(hrmServiceContactToSearchContact(missingLastNameInput)).toStrictEqual({
       contactId: undefined,
-      overview: { ...emptyOverview, name: 'Lorna undefined' },
-      csamReports: undefined,
+      overview: { ...emptyOverview, name: 'Lorna ' },
+      csamReports: [],
       details: missingLastNameInput.rawJson,
     });
     const missingFirstNameInput = {
+      ...emptyHrmContact,
       rawJson: {
-        caseInformation: {},
-        childInformation: { name: { lastName: 'Ballantyne' } },
+        ...emptyHrmContact.rawJson,
+        childInformation: { lastName: 'Ballantyne' },
       },
     };
     expect(hrmServiceContactToSearchContact(missingFirstNameInput)).toStrictEqual({
       contactId: undefined,
-      overview: { ...emptyOverview, name: 'undefined Ballantyne' },
-      csamReports: undefined,
+      overview: { ...emptyOverview, name: ' Ballantyne' },
+      csamReports: [],
       details: missingFirstNameInput.rawJson,
     });
   });
 
   test('input rawJson.caseInformation.callSummary mapped to output overView.notes', () => {
-    const input = {
+    const input: HrmServiceContact = {
+      ...emptyHrmContact,
       rawJson: {
+        ...emptyHrmContact.rawJson,
         caseInformation: {
           callSummary: 'a summary',
+          categories: {},
         },
-        childInformation: { name: {} },
       },
     };
     expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
       contactId: undefined,
       overview: { ...emptyOverview, notes: input.rawJson.caseInformation.callSummary },
-      csamReports: undefined,
+      csamReports: [],
       details: input.rawJson,
     });
   });
 
   test('input twilioWorkerId mapped to output overView.counselor', () => {
     const input = {
+      ...emptyHrmContact,
       twilioWorkerId: 'a worker',
-      rawJson: {
-        caseInformation: {},
-        childInformation: { name: {} },
-      },
     };
     expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
       contactId: undefined,
       overview: { ...emptyOverview, counselor: input.twilioWorkerId },
-      csamReports: undefined,
+      csamReports: [],
       details: input.rawJson,
     });
   });
 
   test('input timeOfContact mapped to output overView.dateTime', () => {
     const input = {
+      ...emptyHrmContact,
       timeOfContact: 'a string, not a JS Date',
-      rawJson: {
-        caseInformation: {},
-        childInformation: { name: {} },
-      },
     };
     expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
       contactId: undefined,
       overview: { ...emptyOverview, dateTime: input.timeOfContact },
-      csamReports: undefined,
+      csamReports: [],
       details: input.rawJson,
     });
   });
 
-  test('missing rawJson, rawJson.childInformation, rawJson.childIformation.name or rawJson.caseInformation objects on input throw', () => {
-    expect(() => hrmServiceContactToSearchContact({})).toThrow();
-    expect(() => hrmServiceContactToSearchContact({ rawJson: { caseInformation: {} } })).toThrow();
+  test('missing rawJson, rawJson.childInformation or rawJson.caseInformation objects on input throw', () => {
+    expect(() => hrmServiceContactToSearchContact({} as HrmServiceContact)).toThrow();
+    expect(() => hrmServiceContactToSearchContact({ rawJson: { caseInformation: {} } } as HrmServiceContact)).toThrow();
     expect(() =>
-      hrmServiceContactToSearchContact({ rawJson: { caseInformation: {}, childInformation: {} } }),
+      hrmServiceContactToSearchContact({ rawJson: { childInformation: {} } } as HrmServiceContact),
     ).toThrow();
-    expect(() => hrmServiceContactToSearchContact({ rawJson: { childInformation: { name: {} } } })).toThrow();
   });
 });
 
@@ -260,7 +291,7 @@ describe('searchContactToHrmServiceContact', () => {
       helpline: 'A helpline',
       conversationDuration: 14,
       createdBy: 'bob',
-      channel: 'gopher',
+      channel: 'whatsapp',
       counselor: 'WK_roberta',
       customerNumber: '1234 4321',
       dateTime: 'Last Tuesday',
@@ -277,14 +308,16 @@ describe('searchContactToHrmServiceContact', () => {
         csamReportId: '1',
         twilioWorkerId: 'WK_roberta',
         createdAt: 'Last Thursday',
+        reportType: 'counsellor-generated',
+        acknowledged: true,
       },
     ],
     details: {
       callType: 'child',
-      childInformation: { name: { firstName: 'Lo', lastName: 'Ballantyne' } },
-      callerInformation: { name: { firstName: 'Lo', lastName: 'Ballantyne' } },
+      childInformation: { firstName: 'Lo', lastName: 'Ballantyne' },
+      callerInformation: { firstName: 'Lo', lastName: 'Ballantyne' },
       caseInformation: { categories: {} },
-      contactlessTask: {},
+      contactlessTask: { channel: 'voice' },
       conversationMedia: [],
     },
   };
@@ -295,7 +328,7 @@ describe('searchContactToHrmServiceContact', () => {
       helpline: 'A helpline',
       conversationDuration: 14,
       createdBy: 'bob',
-      channel: 'gopher',
+      channel: 'whatsapp',
       twilioWorkerId: 'WK_roberta',
       number: '1234 4321',
       timeOfContact: 'Last Tuesday',

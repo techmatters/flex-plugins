@@ -21,7 +21,7 @@ import { SearchContactDraftChanges, updateDraft } from '../../states/contacts/ex
 import {
   externalReportDefinition,
   externalReportLayoutDefinition,
-  transformContactFormValues,
+  transformValues,
 } from '../../services/ContactService';
 import CSAMReport from '../CSAMReport/CSAMReport';
 import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
@@ -105,7 +105,7 @@ const ContactDetails: React.FC<Props> = ({
           dispatch(
             updateDraft(contactId, {
               details: {
-                [formPath]: transformContactFormValues(values[formPath], section.getFormDefinition(definitionVersion)),
+                [formPath]: transformValues(section.getFormDefinition(definitionVersion))(values[formPath]),
               },
             }),
           )}

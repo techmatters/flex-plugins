@@ -1,14 +1,8 @@
 /* eslint-disable import/named */
 import { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
-import { ContactRawJson, InformationObject, SearchAPIContact } from '../../types/types';
-import {
-  transformCategories,
-  transformContactFormValues,
-  transformValues,
-  unNestInformationObject,
-  // eslint-disable-next-line import/namespace
-} from '../../services/ContactService';
+import { ContactRawJson } from '../../types/types';
+import { transformCategories, transformValues } from '../../services/ContactService';
 import { SearchContactDraftChanges } from '../../states/contacts/existingContacts';
 
 export type ContactFormValues = {
@@ -42,6 +36,14 @@ export type IssueCategorizationSectionFormApi = {
   ) => { rawJson: { caseInformation: Pick<ContactRawJson['caseInformation'], 'categories'> } };
 };
 
+const mapFormToDefinition = (
+  def: FormDefinition,
+  contact: SearchContactDraftChanges,
+): Record<string, string | boolean> => {
+  const entries = Object.entries(def).map(([, { name }]) => [name, contact[name]]);
+  return Object.fromEntries(entries);
+};
+
 export const contactDetailsSectionFormApi: {
   CHILD_INFORMATION: ContactDetailsSectionFormApi;
   CALLER_INFORMATION: ContactDetailsSectionFormApi;
@@ -50,31 +52,25 @@ export const contactDetailsSectionFormApi: {
 } = {
   CHILD_INFORMATION: {
     getFormValues: (def, contact) => ({
-      childInformation: unNestInformationObject(
-        def.tabbedForms.ChildInformationTab,
-        <InformationObject>contact.details.childInformation,
-      ),
+      childInformation: mapFormToDefinition(def.tabbedForms.ChildInformationTab, contact.details.childInformation),
     }),
     getFormDefinition: def => def.tabbedForms.ChildInformationTab,
     getLayoutDefinition: def => def.layoutVersion.contact.childInformation,
     formToPayload: (def, form) => ({
       rawJson: {
-        childInformation: transformContactFormValues(form.childInformation, def.tabbedForms.ChildInformationTab),
+        childInformation: transformValues(def.tabbedForms.ChildInformationTab)(form.childInformation),
       },
     }),
   },
   CALLER_INFORMATION: {
     getFormValues: (def, contact) => ({
-      callerInformation: unNestInformationObject(
-        def.tabbedForms.CallerInformationTab,
-        <InformationObject>contact.details.callerInformation,
-      ),
+      callerInformation: mapFormToDefinition(def.tabbedForms.CallerInformationTab, contact.details.callerInformation),
     }),
     getFormDefinition: def => def.tabbedForms.CallerInformationTab,
     getLayoutDefinition: def => def.layoutVersion.contact.callerInformation,
     formToPayload: (def, form) => ({
       rawJson: {
-        callerInformation: transformContactFormValues(form.callerInformation, def.tabbedForms.CallerInformationTab),
+        callerInformation: transformValues(def.tabbedForms.CallerInformationTab)(form.callerInformation),
       },
     }),
   },
