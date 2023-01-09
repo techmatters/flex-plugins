@@ -33,40 +33,45 @@ locals {
   short_helpline = "TH"
   operating_info_key = "th"
   environment = "Staging"
-  short_environment = "STG"
+  short_environment = "PROD"
   definition_version = "th-v1"
   permission_config = "demo"
   multi_office = false
-  enable_post_survey = false
+  enable_post_survey = true
   target_task_name = "greeting"
-  twilio_numbers = ["messenger:103538615719253","twitter:1532353002387931139","instagram:17841453197793547"]
+  twilio_numbers = []
   channel = ""
   custom_channel_attributes = ""
   feature_flags = {
-    "enable_fullstory_monitoring": true,
+    "enable_fullstory_monitoring": false,
     "enable_upload_documents": true,
     "enable_post_survey": local.enable_post_survey,
     "enable_contact_editing": true,
     "enable_case_management": true,
-    "enable_twilio_transcripts": true,
     "enable_offline_contact": true,
     "enable_filter_cases": true,
     "enable_sort_cases": true,
     "enable_transfers": true,
     "enable_manual_pulling": true,
+    "enable_csam_report": false,
     "enable_canned_responses": true,
     "enable_dual_write": false,
-    "enable_csam_report": true,
-    "enable_save_insights": true,
-    "enable_previous_contacts": true
+    "enable_save_insights": false,
+    "enable_previous_contacts": true,
+    "enable_voice_recordings": false,
+    "enable_twilio_transcripts": true,
+    "enable_external_transcripts": false,
+    "post_survey_serverless_handled": true,
+    "enable_csam_clc_report": false
   }
+
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
-  twilio_channels = {
-    "facebook" = {"contact_identity" = "messenger:108893035300837", "channel_type" ="facebook"},
-    "webchat" = {"contact_identity" = "", "channel_type" ="web"},
-    "sms" = {"contact_identity" = "+17152201076", "channel_type" ="sms" }
-  }
-  custom_channels=["twitter","instagram","line"]
+  //"facebook" = {"contact_identity" = "messenger:108893035300837", "channel_type" ="facebook"},
+  //"webchat" = {"contact_identity" = "", "channel_type" ="web"},
+  //"sms" = {"contact_identity" = "+17152201076", "channel_type" ="sms" }
+  twilio_channels = {}
+  //["twitter","instagram","line"]
+  custom_channels=[]
 }
 
 provider "twilio" {
