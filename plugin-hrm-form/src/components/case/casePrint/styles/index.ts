@@ -52,15 +52,14 @@ const { sectionHeader, whiteText, sectionItemRowEven, sectionItemRowOdd } = sect
 const { caseSummaryText } = summaryStyles;
 
 /**
- * Roboto font works for all languages/fonts supported thus far.
- * However, Thai characters are not readable, hence substituting to NotoSansThaiLooped is required.
+ * 'Roboto' font family works for all languages/fonts supported thus far.
+ * However, Thai characters are not readable with Roboto, hence substituting to NotoSansThaiLooped is required.
  * https://fonts.google.com/noto/specimen/Noto+Sans
  * In the future, when more languages are added, adding a compatible fontFamily might be necessary
  *
  * @param definitionVersion: DefinitionVersionId
  */
-export const changeRegisteredFonts = (definitionVersion: DefinitionVersionId) => {
-  if (definitionVersion === DefinitionVersionId.thV1) {
+export const changeThaiFontFamily = () => {
     [
       styles.page,
       footer,
@@ -73,7 +72,6 @@ export const changeRegisteredFonts = (definitionVersion: DefinitionVersionId) =>
       sectionItemRowOdd,
       caseSummaryText,
     ].forEach(el => (el.fontFamily = 'NotoSansThaiLooped'));
-  }
 };
 
 const styles = StyleSheet.create({
