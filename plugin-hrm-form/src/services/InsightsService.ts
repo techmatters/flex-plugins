@@ -16,7 +16,7 @@ import { isNonDataCallType } from '../states/ValidationRules';
 import { mapChannelForInsights } from '../utils/mappers';
 import { getDateTime } from '../utils/helpers';
 import { TaskEntry } from '../states/contacts/reducer';
-import { Case, CustomITask, Contact } from '../types/types';
+import { Case, CustomITask, HrmServiceContact } from '../types/types';
 import { formatCategories } from '../utils/formatters';
 import { getDefinitionVersions } from '../HrmFormPlugin';
 import { shouldSendInsightsData } from '../utils/setUpActions';
@@ -68,7 +68,7 @@ type InsightsUpdateFunction = (
   attributes: TaskAttributes,
   contactForm: TaskEntry,
   caseForm: Case,
-  savedContact: Contact,
+  savedContact: HrmServiceContact,
 ) => InsightsAttributes;
 
 const sanitizeInsightsValue = (value: string | boolean) => {
@@ -383,7 +383,12 @@ const getInsightsUpdateFunctionsForConfig = (
  * Note: config parameter tells where to go to get helpline-specific tests.  It should
  * eventually match up with getConfig().  Also useful for testing.
  */
-export const buildInsightsData = (task: CustomITask, contactForm: TaskEntry, caseForm: Case, savedContact: Contact) => {
+export const buildInsightsData = (
+  task: CustomITask,
+  contactForm: TaskEntry,
+  caseForm: Case,
+  savedContact: HrmServiceContact,
+) => {
   const previousAttributes = typeof task.attributes === 'string' ? JSON.parse(task.attributes) : task.attributes;
 
   if (!shouldSendInsightsData({ ...task, attributes: previousAttributes } as ITask)) return previousAttributes;

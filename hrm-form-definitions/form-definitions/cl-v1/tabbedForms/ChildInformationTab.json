@@ -1646,7 +1646,7 @@
     }
   },
   {
-    "name": "email",
+    "name": "contactIdentifier",
     "label": "Correo Electrónico",
     "type": "input",
     "required": {

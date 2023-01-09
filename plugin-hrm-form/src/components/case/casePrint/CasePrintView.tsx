@@ -98,8 +98,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
             <Page size="A4" style={styles.page}>
               <CasePrintHeader
                 id={caseDetails.id}
-                firstName={caseDetails.name.firstName}
-                lastName={caseDetails.name.lastName}
+                contactIdentifier={caseDetails.contactIdentifier}
                 officeName={caseDetails.office?.label}
                 logoBlob={logoBlob}
               />
@@ -133,13 +132,11 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                         ...caseDetails.contact?.rawJson?.caseInformation,
                         ...caseDetails.contact?.rawJson?.callerInformation,
                       }}
-                      unNestInfo={true}
                     />
                     <CasePrintSection
                       sectionName={strings['SectionName-ChildInformation']}
                       definitions={definitionVersion.tabbedForms.ChildInformationTab}
                       values={caseDetails.contact?.rawJson?.childInformation}
-                      unNestInfo={true}
                     />
                   </View>
                 ) : (
@@ -156,7 +153,6 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                       ...caseDetails.contact?.rawJson?.caseInformation,
                       ...caseDetails.contact?.rawJson?.childInformation,
                     }}
-                    unNestInfo={true}
                   />
                 )}
                 {/* // Removed by ZA request, could be useful for other helplines.
