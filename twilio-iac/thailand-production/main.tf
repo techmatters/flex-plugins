@@ -7,11 +7,11 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "tl-terraform-state-staging"
+    bucket         = "tl-terraform-state-production"
     key            = "twilio/th/terraform.tfstate"
     dynamodb_table = "terraform-locks"
     encrypt        = true
-    role_arn       = "arn:aws:iam::712893914485:role/tf-twilio-iac-staging"
+    role_arn       = "arn:aws:iam::712893914485:role/tf-twilio-iac-production"
   }
 }
 
