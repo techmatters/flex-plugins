@@ -58,7 +58,7 @@ const { caseSummaryText } = summaryStyles;
  * In the future, when more languages are added, adding a compatible fontFamily might be necessary
  *
  */
-export const setThaiFontFamily = () => {
+export const useThaiFontFamily = () => {
   [
     styles.page,
     footer,
