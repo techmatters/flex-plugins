@@ -16,7 +16,7 @@ import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
 import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateDraft } from '../../states/contacts/existingContacts';
-import { transformContactFormValues } from '../../services/ContactService';
+import { transformValues } from '../../services/ContactService';
 
 type OwnProps = {
   contactId: string;
@@ -82,7 +82,7 @@ const ContactDetails: React.FC<Props> = ({
           dispatch(
             updateContactDraft(contactId, {
               details: {
-                [formPath]: transformContactFormValues(values[formPath], section.getFormDefinition(definitionVersion)),
+                [formPath]: transformValues(section.getFormDefinition(definitionVersion))(values[formPath]),
               },
             }),
           )}

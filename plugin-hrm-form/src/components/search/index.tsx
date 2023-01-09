@@ -47,7 +47,6 @@ const Search: React.FC<Props> = props => {
   const [searchParams, setSearchParams] = useState<any>({});
 
   const closeDialog = () => setMockedMessage('');
-  const handleMockedMessage = () => setMockedMessage('Not implemented yet!');
 
   const handleSearchContacts = (newSearchParams, newOffset) => {
     props.searchContacts(newSearchParams, props.counselorsHash, CONTACTS_PER_PAGE, newOffset);
