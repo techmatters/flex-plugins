@@ -80,6 +80,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
     loadImagesInMemory(imageSources);
   }, [logoSource, chkOnSource, chkOffSource]);
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   if (definitionVersion.layoutVersion.thaiCharacterPdfSupport) useThaiFontFamily();
 
   return (
