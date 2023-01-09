@@ -5,16 +5,6 @@
     "type": "input"
   },
   {
-    "name": "firstName",
-    "label": "Placeholder",
-    "type": "input"
-  },
-    {
-    "name": "lastName",
-    "label": "Placeholder",
-    "type": "input"
-  },
-  {
     "name": "age",
     "label": "Age",
     "type": "select",
