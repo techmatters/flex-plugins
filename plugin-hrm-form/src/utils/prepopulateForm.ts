@@ -100,6 +100,7 @@ const getValuesFromAnswers = (
     ...customizableValues,
   };
 };
+
 export const getValuesFromPreEngagementData = (
   preEngagementData: Record<string, string>,
   tabFormDefinition: FormDefinition,
@@ -109,6 +110,14 @@ export const getValuesFromPreEngagementData = (
   const values = {};
   tabFormDefinition.forEach((field: FormItemDefinition) => {
     if (prepopulateKeys.indexOf(field.name) > -1) {
+      if (field.type === 'mixed-checkbox') {
+        if (preEngagementData[field.name] === 'yes' || preEngagementData[field.name] === 'Yes') {
+          values[field.name] = true;
+        } else if (preEngagementData[field.name] === 'no' || preEngagementData[field.name] === 'No') {
+          values[field.name] = false;
+        }
+        return;
+      }
       values[field.name] = preEngagementData[field.name] || '';
     }
   });
