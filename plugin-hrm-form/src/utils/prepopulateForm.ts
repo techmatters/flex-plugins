@@ -128,6 +128,7 @@ export const getValuesFromPreEngagementData = (
 export const prepopulateForm = (task: ITask) => {
   const { memory, preEngagementData } = task.attributes;
   if (memory === null && preEngagementData === null) return;
+
   const { currentDefinitionVersion } = getDefinitionVersions();
   const { tabbedForms, prepopulateKeys } = currentDefinitionVersion;
   const { ChildInformationTab, CallerInformationTab, CaseInformationTab } = tabbedForms;
@@ -154,7 +155,7 @@ export const prepopulateForm = (task: ITask) => {
     return;
   }
 
-  const { answers } = task.attributes.memory.twilio.collected_data.collect_survey;
+  const { answers } = memory.twilio.collected_data.collect_survey;
 
   const isAboutSelf = answers.about_self.answer === 'Yes';
   const callType = isAboutSelf || !answers.about_self ? callTypes.child : callTypes.caller;
