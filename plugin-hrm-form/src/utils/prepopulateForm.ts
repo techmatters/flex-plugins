@@ -111,9 +111,9 @@ export const getValuesFromPreEngagementData = (
   tabFormDefinition.forEach((field: FormItemDefinition) => {
     if (prepopulateKeys.indexOf(field.name) > -1) {
       if (field.type === 'mixed-checkbox') {
-        if (preEngagementData[field.name] === 'yes' || preEngagementData[field.name] === 'Yes') {
+        if (preEngagementData[field.name]?.toLowerCase() === 'yes') {
           values[field.name] = true;
-        } else if (preEngagementData[field.name] === 'no' || preEngagementData[field.name] === 'No') {
+        } else if (preEngagementData[field.name]?.toLowerCase() === 'no') {
           values[field.name] = false;
         }
         return;
@@ -127,7 +127,7 @@ export const getValuesFromPreEngagementData = (
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const prepopulateForm = (task: ITask) => {
   const { memory, preEngagementData } = task.attributes;
-
+  if (memory === null && preEngagementData === null) return;
   const { currentDefinitionVersion } = getDefinitionVersions();
   const { tabbedForms, prepopulateKeys } = currentDefinitionVersion;
   const { ChildInformationTab, CallerInformationTab, CaseInformationTab } = tabbedForms;
@@ -156,11 +156,8 @@ export const prepopulateForm = (task: ITask) => {
 
   const { answers } = task.attributes.memory.twilio.collected_data.collect_survey;
 
-  // If can't know if call is child or caller, do nothing here
-  if (!answers.about_self || !['Yes', 'No'].includes(answers.about_self.answer)) return;
-
   const isAboutSelf = answers.about_self.answer === 'Yes';
-  const callType = isAboutSelf ? callTypes.child : callTypes.caller;
+  const callType = isAboutSelf || !answers.about_self ? callTypes.child : callTypes.caller;
   const tabFormDefinition = isAboutSelf ? ChildInformationTab : CallerInformationTab;
   const prepopulateSurveyKeys = isAboutSelf ? survey.ChildInformationTab : survey.CallerInformationTab;
   const subroute = isAboutSelf ? 'childInformation' : 'callerInformation';
