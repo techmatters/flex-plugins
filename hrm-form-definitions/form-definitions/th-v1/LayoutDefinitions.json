@@ -39,5 +39,6 @@
     "documents": {
       "splitFormAt": 1
     }
-  }
+  },
+  "thaiCharacterPdfSupport": true
 }
