@@ -3,7 +3,7 @@ import { DeepPartial } from 'redux';
 import { csamReportBase, namespace, RootState, routingBase } from '../../../states';
 import { AppRoutes } from '../../../states/routing/types';
 import { CSAMPage, newContactCSAMApi } from '../../../components/CSAMReport/csamReportApi';
-import { CSAMReportEntry } from '../../../types/types';
+import { CSAMReportStateEntry } from '../../../states/csam-report/types';
 
 const stateWithRoute = (taskSid: string, route: AppRoutes): RootState => {
   const partialState: DeepPartial<RootState> = {
@@ -15,10 +15,10 @@ const stateWithRoute = (taskSid: string, route: AppRoutes): RootState => {
       },
     },
   };
-  return partialState as RootState;
+  return (partialState as unknown) as RootState;
 };
 
-const stateWithTaskCsamReport = (taskSid: string, entry: CSAMReportEntry): RootState => {
+const stateWithTaskCsamReport = (taskSid: string, entry: CSAMReportStateEntry): RootState => {
   const partialState: DeepPartial<RootState> = {
     [namespace]: {
       [csamReportBase]: {
@@ -28,11 +28,11 @@ const stateWithTaskCsamReport = (taskSid: string, entry: CSAMReportEntry): RootS
       },
     },
   };
-  return partialState as RootState;
+  return (partialState as unknown) as RootState;
 };
 
 describe('newContactCSAMApi', () => {
-  const previousRoute: AppRoutes = { route: 'new-case', subroute: 'caseSummary', previousRoute: undefined };
+  const previousRoute: AppRoutes = { route: 'new-case', subroute: 'case-print-view' };
   const TEST_TASK_ID = 'a task';
   const api = newContactCSAMApi(TEST_TASK_ID, previousRoute);
   describe('currentPage', () => {
@@ -64,11 +64,11 @@ describe('newContactCSAMApi', () => {
 
   describe('state', () => {
     test('CSAM entry exists for task - returns entry', () => {
-      const entry: CSAMReportEntry = {};
+      const entry: CSAMReportStateEntry = {};
       expect(api.reportState(stateWithTaskCsamReport(TEST_TASK_ID, entry))).toBe(entry);
     });
     test("CSAM entry doesn't exist for task - returns entry", () => {
-      const entry: CSAMReportEntry = {};
+      const entry: CSAMReportStateEntry = {};
       expect(api.reportState(stateWithTaskCsamReport('not a task', entry))).not.toBeDefined();
     });
   });
