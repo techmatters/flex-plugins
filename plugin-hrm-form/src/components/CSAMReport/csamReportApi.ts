@@ -20,7 +20,7 @@ import { acknowledgeCSAMReport, createCSAMReport } from '../../services/CSAMRepo
 import { getConfig } from '../../HrmFormPlugin';
 import { reportToIWF, selfReportToIWF } from '../../services/ServerlessService';
 import {
-  clearCSAMReportAction,
+  removeCSAMReportAction,
   newCSAMReportAction,
   newCSAMReportActionForContact,
 } from '../../states/csam-report/actions';
@@ -120,7 +120,7 @@ export const newContactCSAMApi = (taskSid: string, previousRoute: AppRoutes): CS
     );
   },
   exitActionDispatcher: dispatch => () => {
-    dispatch(clearCSAMReportAction(taskSid));
+    dispatch(removeCSAMReportAction(taskSid));
     dispatch(changeRoute(previousRoute, taskSid));
   },
   addReportDispatcher: dispatch => csamReportEntry => {
@@ -136,7 +136,7 @@ export const newContactCSAMApi = (taskSid: string, previousRoute: AppRoutes): CS
   updateStatusDispatcher: dispatch => csamStatus => {
     dispatch(CSAMAction.updateStatusAction(csamStatus, taskSid));
   },
-  saveReport: state => saveReport(state),
+  saveReport,
 });
 
 export const existingContactCSAMApi = (contactId: string): CSAMReportApi => ({
@@ -154,8 +154,8 @@ export const existingContactCSAMApi = (contactId: string): CSAMReportApi => ({
 
   navigationActionDispatcher: dispatch => (page, reportType) => {
     switch (page) {
-      case CSAMPage.ReportTypePicker:
-        dispatch(CSAMAction.newCSAMReportActionForContact(contactId, reportType, true));
+      case CSAMPage.ReportTypePicker: // Not used in the new contact scenario
+        dispatch(CSAMAction.newCSAMReportActionForContact(contactId, reportType, false));
         break;
       case CSAMPage.Form:
         dispatch(CSAMAction.newCSAMReportActionForContact(contactId, reportType, true));

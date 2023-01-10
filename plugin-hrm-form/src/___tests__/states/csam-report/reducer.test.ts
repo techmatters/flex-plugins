@@ -115,7 +115,7 @@ describe('test reducer', () => {
       },
     });
 
-    const result = reduce(state, actions.clearCSAMReportAction(task.taskSid));
+    const result = reduce(state, actions.removeCSAMReportAction(task.taskSid));
 
     expect(result).toStrictEqual(initialState);
   });
