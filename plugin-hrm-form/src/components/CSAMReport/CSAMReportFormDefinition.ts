@@ -4,26 +4,18 @@ import { useForm } from 'react-hook-form';
 import { getInitialValue, getInputType } from '../common/forms/formGenerators';
 import { HTMLElementRef } from '../common/forms/types';
 
-export const counselorKeys = {
-  webAddress: 'webAddress',
-  description: 'description',
-  anonymous: 'anonymous',
-  firstName: 'firstName',
-  lastName: 'lastName',
-  email: 'email',
-} as const;
-
-export const childKeys = {
-  childAge: 'childAge',
-  ageVerified: 'ageVerified',
-} as const;
-
 type CounselorCSAMFormDefinitionObject = {
-  [k in keyof typeof counselorKeys]: FormItemDefinition;
+  webAddress: FormItemDefinition;
+  description: FormItemDefinition;
+  anonymous: FormItemDefinition;
+  firstName: FormItemDefinition;
+  lastName: FormItemDefinition;
+  email: FormItemDefinition;
 };
 
 type ChildCSAMFormDefinitionObject = {
-  [k in keyof typeof childKeys]: FormItemDefinition;
+  childAge: FormItemDefinition;
+  ageVerified: FormItemDefinition;
 };
 
 // eslint-disable-next-line prefer-named-capture-group

@@ -34,6 +34,7 @@ const setupProps = (
     navigate: dispatcherMocks.navigationActionDispatcher,
     addCSAMReportEntry: dispatcherMocks.addReportDispatcher,
     exit: dispatcherMocks.exitActionDispatcher,
+    pickReportType: dispatcherMocks.pickReportTypeDispatcher,
     csamReportState,
     currentPage,
     setEditPageOpen: jest.fn(),
@@ -49,9 +50,9 @@ const renderCSAMReportScreen = (
 ) => {
   const {
     alertSpy,
-    updateChildFormAction,
-    updateCounsellorFormAction,
-    updateStatusAction,
+    updateChildForm,
+    updateCounsellorForm,
+    updateStatus,
     addCSAMReportEntry,
     csamReportState,
     currentPage,
@@ -67,9 +68,9 @@ const renderCSAMReportScreen = (
     <StorelessThemeProvider themeConf={{}}>
       <CSAMReportScreen
         taskSid={taskSid}
-        updateChildFormAction={updateChildFormAction}
-        updateCounsellorFormAction={updateCounsellorFormAction}
-        updateStatusAction={updateStatusAction}
+        updateChildForm={updateChildForm}
+        updateCounsellorForm={updateCounsellorForm}
+        updateStatus={updateStatus}
         addCSAMReportEntry={addCSAMReportEntry}
         csamReportState={csamReportState}
         counselorsHash={counselorsHash}
@@ -85,7 +86,7 @@ const renderCSAMReportScreen = (
 
   return {
     alertSpy,
-    updateStatusAction: updateStatus,
+    updateStatus,
     addCSAMReportEntry,
     csamReportState,
     counselorsHash,
@@ -111,6 +112,7 @@ beforeEach(() => {
     updateChildReportDispatcher: () => dispatcherMocks.updateChildReportDispatcher,
     updateCounsellorReportDispatcher: () => dispatcherMocks.updateCounsellorReportDispatcher,
     updateStatusDispatcher: () => dispatcherMocks.updateCounsellorReportDispatcher,
+    pickReportTypeDispatcher: () => dispatcherMocks.pickReportTypeDispatcher,
     saveReport: jest.fn(),
     currentPage: jest.fn(),
     reportState: jest.fn(),
@@ -197,7 +199,7 @@ test('Form can be submitted if valid (anonymous)', async () => {
     },
   });
 
-  const { updateStatusAction, navigate, addCSAMReportEntry } = renderCSAMReportScreen();
+  const { updateStatus, navigate, addCSAMReportEntry } = renderCSAMReportScreen();
 
   expect(screen.getByTestId('CSAMReport-FormScreen')).toBeInTheDocument();
   expect(screen.queryByTestId('CSAMReport-Loading')).not.toBeInTheDocument();
@@ -228,7 +230,7 @@ test('Form can be submitted if valid (anonymous)', async () => {
 
   expect(navigate).toHaveBeenCalled();
   expect(mockCSAMReportApi.saveReport).toHaveBeenCalled();
-  expect(updateStatusAction).toHaveBeenCalled();
+  expect(updateStatus).toHaveBeenCalled();
   expect(addCSAMReportEntry).toHaveBeenCalled();
 });
 
@@ -247,7 +249,7 @@ test('Form can be submitted if valid (non-anonymous)', async () => {
     },
   });
 
-  const { updateStatusAction, navigate, addCSAMReportEntry } = renderCSAMReportScreen(CSAMPage.Form, {
+  const { updateStatus, navigate, addCSAMReportEntry } = renderCSAMReportScreen(CSAMPage.Form, {
     form: {
       ...initialValues,
       anonymous: 'non-anonymous',
@@ -292,7 +294,7 @@ test('Form can be submitted if valid (non-anonymous)', async () => {
 
   expect(navigate).toHaveBeenCalled();
   expect(mockCSAMReportApi.saveReport).toHaveBeenCalled();
-  expect(updateStatusAction).toHaveBeenCalled();
+  expect(updateStatus).toHaveBeenCalled();
   expect(addCSAMReportEntry).toHaveBeenCalled();
 });
 
