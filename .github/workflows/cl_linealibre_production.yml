@@ -1,0 +1,18 @@
+# This is a basic workflow to publish a Twilio Flex-plugins with Github Actions
+name: Línea Libre Helpline (CL) Production release
+
+on:
+  workflow_dispatch:
+    inputs:
+      changelog:
+        description: Release Changelog - Add a comment about the changes to be included in this release.
+        required: true
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/custom_helpline.yml
+    secrets: inherit
+    with:
+      helpline_code: CL
+      environment_code: PROD
+      changelog: ${{ inputs.changelog }}
