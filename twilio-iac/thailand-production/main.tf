@@ -23,7 +23,7 @@ provider "aws" {
 }
 
 data "aws_ssm_parameter" "secrets" {
-  name     = "/terraform/twilio-iac/thailand-staging/secrets.json"
+  name     = "/terraform/twilio-iac/thailand-production/secrets.json"
 }
 
 locals {
@@ -32,7 +32,7 @@ locals {
   task_language = "th-TH"
   short_helpline = "TH"
   operating_info_key = "th"
-  environment = "Staging"
+  environment = "Production"
   short_environment = "PROD"
   definition_version = "th-v1"
   permission_config = "demo"
