@@ -103,7 +103,6 @@ module flex {
   serverless_url = var.serverless_url
   multi_office_support = local.multi_office
   feature_flags = local.feature_flags
-  hrm_url = "https://hrm-staging.tl.techmatters.org"
 }
 
 module twilioChannel {
