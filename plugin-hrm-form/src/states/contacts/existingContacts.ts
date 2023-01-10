@@ -1,6 +1,6 @@
 import { omit } from 'lodash';
 
-import { SearchAPIContact } from '../../types/types';
+import { HrmServiceContact, SearchAPIContact } from '../../types/types';
 import { hrmServiceContactToSearchContact } from './contactDetailsAdapter';
 
 export enum ContactDetailsRoute {
@@ -63,14 +63,22 @@ export const loadContact = (contact: SearchAPIContact, reference, replaceExistin
   replaceExisting,
 });
 
-export const loadRawContact = (contact: any, reference: string, replaceExisting = false): LoadContactAction => ({
+export const loadRawContact = (
+  contact: HrmServiceContact,
+  reference: string,
+  replaceExisting = false,
+): LoadContactAction => ({
   type: LOAD_CONTACT_ACTION,
   contacts: [hrmServiceContactToSearchContact(contact)],
   reference,
   replaceExisting,
 });
 
-export const loadRawContacts = (contacts: any[], reference: string, replaceExisting = false): LoadContactAction => ({
+export const loadRawContacts = (
+  contacts: HrmServiceContact[],
+  reference: string,
+  replaceExisting = false,
+): LoadContactAction => ({
   type: LOAD_CONTACT_ACTION,
   contacts: contacts.map(c => hrmServiceContactToSearchContact(c)),
   reference,

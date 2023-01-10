@@ -42,7 +42,7 @@ const getNumber = (channel, number) => {
   }
 };
 
-const ChildNameAndDate: React.FC<Props> = ({ channel, callType, id, name, callerName, number, date, onClickFull }) => {
+const ContactHeader: React.FC<Props> = ({ channel, callType, id, name, callerName, number, date, onClickFull }) => {
   const dateObj = new Date(date);
   const dateString = `${format(dateObj, 'MMM d, yyyy')}, ${dateObj.toLocaleTimeString([], {
     hour: '2-digit',
@@ -91,6 +91,6 @@ const ChildNameAndDate: React.FC<Props> = ({ channel, callType, id, name, caller
   );
 };
 
-ChildNameAndDate.displayName = 'ChildNameAndDate';
+ContactHeader.displayName = 'ContactHeader';
 
-export default ChildNameAndDate;
+export default ContactHeader;

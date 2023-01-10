@@ -54,7 +54,6 @@ describe('test reducer', () => {
       updatedAt: '2020-07-31T20:39:37.408Z',
       connectedContacts: null,
       categories: {},
-      childName: '',
     };
 
     const expected: RootState[typeof namespace][typeof connectedCaseBase] = {
@@ -82,7 +81,6 @@ describe('test reducer', () => {
       updatedAt: '2020-07-31T20:39:37.408Z',
       connectedContacts: null,
       categories: {},
-      childName: '',
     };
 
     const expected: RootState[typeof namespace][typeof connectedCaseBase] = {

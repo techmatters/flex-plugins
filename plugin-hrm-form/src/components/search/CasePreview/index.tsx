@@ -11,8 +11,10 @@ import { PreviewDescription } from '../PreviewDescription';
 import { getDefinitionVersion } from '../../../services/ServerlessService';
 import { updateDefinitionVersion } from '../../../states/configuration/actions';
 import { configurationBase, namespace, RootState } from '../../../states';
-import TagsAndCounselor from '../ContactPreview/TagsAndCounselor';
+import TagsAndCounselor from '../TagsAndCounselor';
 import { retrieveCategories } from '../../../states/contacts/contactDetailsAdapter';
+import { contactLabel } from '../../../states/contacts/contactIdentifier';
+import { getConfig } from '../../../HrmFormPlugin';
 
 type OwnProps = {
   currentCase: Case;
@@ -36,8 +38,9 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
   const { definitionVersion: versionId } = info;
   const orphanedCase = !connectedContacts || connectedContacts.length === 0;
   const firstContact = !orphanedCase && connectedContacts[0];
-  const { name } = ((firstContact || {}).rawJson || {}).childInformation || {};
-  const { categories, callSummary } = ((firstContact || {}).rawJson || {}).caseInformation || {};
+  const { categories, callSummary } = ((firstContact || {}).rawJson || {}).caseInformation || {
+    callSummary: undefined,
+  };
   const summary = info?.summary || callSummary;
   const counselor = counselorsHash[twilioWorkerId];
 
@@ -49,17 +52,18 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
     if (versionId && definitionVersions[versionId]) {
       fetchDefinitionVersions(versionId);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateDefinitionVersion, versionId, definitionVersions]);
+  }, [versionId, definitionVersions]);
 
-  const statusLabel = definitionVersions[versionId]?.caseStatus[status]?.label ?? status;
+  const definitionVersion = definitionVersions[versionId];
+
+  const statusLabel = definitionVersion?.caseStatus[status]?.label ?? status;
 
   return (
     <Flex>
       <PreviewWrapper>
         <CaseHeader
           caseId={id}
-          childName={name}
+          contactLabel={contactLabel(definitionVersion, firstContact, { substituteForId: false, placeholder: '' })}
           createdAt={createdAtObj}
           updatedAt={updatedAtObj}
           followUpDate={followUpDateObj}

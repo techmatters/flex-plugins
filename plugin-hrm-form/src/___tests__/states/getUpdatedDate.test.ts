@@ -10,7 +10,6 @@ describe('getUpdatedDate', () => {
       accountSid: '',
       id: 0,
       status: '',
-      childName: '',
       createdAt: new Date(baselineDate).toISOString(),
       helpline: undefined,
       twilioWorkerId: 'PEGGY',
@@ -81,18 +80,8 @@ describe('getUpdatedDate', () => {
       },
       details: {
         callType: '',
-        callerInformation: {
-          name: {
-            firstName: undefined,
-            lastName: undefined,
-          },
-        },
-        childInformation: {
-          name: {
-            firstName: undefined,
-            lastName: undefined,
-          },
-        },
+        callerInformation: {},
+        childInformation: {},
         caseInformation: {
           categories: {},
         },
