@@ -1,0 +1,38 @@
+name: 'Generate production release'
+description: 'Given a QA pre release tag, will generate production ready release for the tagged version'
+inputs:
+  tag-name:
+    description: Tag name - The name for the tag that will be given to this release.
+    required: true
+  title:
+    description: Release title - The title that will be given to this release.
+    required: true
+outputs:
+  generated-release-tag:
+    description: "The generated release tag"
+    value: ${{ inputs.tag-name }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Validate ref type
+      shell: bash
+      env:
+        REF_TYPE: ${{ github.ref_type }}
+      run: |
+        if [ $REF_TYPE != 'tag' ] 
+        then  
+          echo "::error::ERROR - The ref provided is not a tag."
+          exit 1
+        fi
+
+    # Create a release
+    - name: Create a release
+      uses: ncipollo/release-action@v1.12.0
+      with:
+        commit: ${{ github.sha }}
+        tag: ${{ inputs.tag-name }}
+        name: ${{ inputs.title }}
+        body: "TO-DO"
+        prerelease: false
+      id: create_release
