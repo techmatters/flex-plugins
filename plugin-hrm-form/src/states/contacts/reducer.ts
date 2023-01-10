@@ -59,7 +59,6 @@ export type TaskEntry = {
     };
   };
   isCallTypeCaller: boolean;
-  externalReport: { [key: string]: string | boolean };
 };
 
 type ContactsState = {
@@ -70,8 +69,6 @@ type ContactsState = {
   contactDetails: ContactDetailsState;
   editingContact: boolean;
   isCallTypeCaller: boolean;
-  externalReport: string;
-  csamReports: CSAMReportEntry[];
 };
 
 export const emptyCategories = [];
@@ -123,7 +120,6 @@ export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated
     csamReports: [],
     metadata,
     isCallTypeCaller: false,
-    externalReport: {},
   };
 };
 
@@ -136,8 +132,6 @@ const initialState: ContactsState = {
   },
   editingContact: false,
   isCallTypeCaller: false,
-  externalReport: null,
-  csamReports: [],
 };
 
 // eslint-disable-next-line import/no-unused-modules,complexity
@@ -300,9 +294,6 @@ export function reduce(
     }
     case t.SET_CALL_TYPE: {
       return { ...state, isCallTypeCaller: action.isCallTypeCaller };
-    }
-    case t.ADD_EXTERNAL_REPORT: {
-      return { ...state, externalReport: action.externalReport };
     }
     case t.SET_EDITING_CONTACT: {
       return { ...state, editingContact: action.editing };

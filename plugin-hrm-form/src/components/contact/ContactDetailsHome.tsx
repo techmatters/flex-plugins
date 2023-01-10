@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { format } from 'date-fns';
 import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
@@ -80,7 +80,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
   createContactDraft,
   enableEditing,
   canViewTwilioTranscript,
-  externalCsamReports,
   createDraftCsamReport,
 }) {
   const version = savedContact?.details.definitionVersion;
@@ -218,8 +217,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
     ? 'ContactDetails-UnsavedContact'
     : `#${savedContact.contactId}`;
 
-  const showCsamReports = csamReports && csamReports.length > 0 ? csamReports : externalCsamReports;
-
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
       <NameText>
@@ -348,9 +345,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
               {externalReportButton()}
             </SectionEntry>
           )}
-          {showCsamReports && showCsamReports.length > 0 && (
+          {csamReports && csamReports.length > 0 && (
             <SectionEntry key="CaseInformation-AttachedCSAMReports" descriptionKey="CSAMReportForm-ReportsSubmitted">
-              {showCsamReports.map(formatCsamReport)}
+              {csamReports.map(formatCsamReport)}
             </SectionEntry>
           )}
         </ContactDetailsSection>
@@ -400,8 +397,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   canViewTwilioTranscript: (state.flex.worker.attributes.roles as string[]).some(
     role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.quality_process_manager',
   ),
-  externalReport: state[namespace][contactFormsBase].externalReport,
-  externalCsamReports: state[namespace][contactFormsBase].csamReports,
 });
 
 const mapDispatchToProps = (dispatch, { contactId, context }: OwnProps) => ({
