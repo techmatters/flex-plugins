@@ -1,5 +1,5 @@
 import each from 'jest-each';
-import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, FormInputType, loadDefinition } from 'hrm-form-definitions';
 
 import {
   ContactDetailsSectionFormApi,
@@ -19,18 +19,18 @@ beforeAll(async () => {
     tabbedForms: {
       ...v1Def.tabbedForms,
       ChildInformationTab: [
-        { name: 'firstName', type: 'input', label: '' },
-        { name: 'lastName', type: 'input', label: '' },
-        { name: 'otherProp', type: 'input', label: '' },
+        { name: 'firstName', type: FormInputType.Input, label: '' },
+        { name: 'lastName', type: FormInputType.Input, label: '' },
+        { name: 'otherProp', type: FormInputType.Input, label: '' },
       ],
       CallerInformationTab: [
-        { name: 'firstName', type: 'input', label: '' },
-        { name: 'lastName', type: 'input', label: '' },
-        { name: 'prop', type: 'input', label: '' },
+        { name: 'firstName', type: FormInputType.Input, label: '' },
+        { name: 'lastName', type: FormInputType.Input, label: '' },
+        { name: 'prop', type: FormInputType.Input, label: '' },
       ],
       CaseInformationTab: [
-        { name: 'prop1', type: 'input', label: '' },
-        { name: 'prop2', type: 'input', label: '' },
+        { name: 'prop1', type: FormInputType.Input, label: '' },
+        { name: 'prop2', type: FormInputType.Input, label: '' },
       ],
       IssueCategorizationTab: helpline => {
         if (helpline !== 'test helpline') throw Error();
@@ -55,22 +55,20 @@ const emptySearchContact: SearchAPIContact = {
     counselor: undefined,
     notes: undefined,
     channel: undefined,
-    conversationDuration: undefined,
+    conversationDuration: 0,
     createdBy: undefined,
+    taskId: undefined,
   },
   csamReports: [],
   details: {
-    childInformation: {
-      name: { firstName: undefined, lastName: undefined },
-    },
-    callerInformation: {
-      name: { firstName: undefined, lastName: undefined },
-    },
+    childInformation: {},
+    callerInformation: {},
     caseInformation: {
       categories: {},
     },
     callType: undefined,
-    contactlessTask: {},
+    contactlessTask: { channel: 'voice' },
+    conversationMedia: [],
   },
 };
 
@@ -82,10 +80,8 @@ describe('getFormValues', () => {
         details: {
           ...emptySearchContact.details,
           childInformation: {
-            name: {
-              firstName: 'Lorna',
-              lastName: 'Ballantyne',
-            },
+            firstName: 'Lorna',
+            lastName: 'Ballantyne',
           },
         },
       }),
@@ -104,10 +100,8 @@ describe('getFormValues', () => {
         details: {
           ...emptySearchContact.details,
           callerInformation: {
-            name: {
-              firstName: 'Lorna',
-              lastName: 'Ballantyne',
-            },
+            firstName: 'Lorna',
+            lastName: 'Ballantyne',
           },
         },
       }),
@@ -172,10 +166,8 @@ describe('formToPayload', () => {
     ).toStrictEqual({
       rawJson: {
         childInformation: {
-          name: {
-            firstName: 'Lorna',
-            lastName: undefined,
-          },
+          firstName: 'Lorna',
+          lastName: undefined,
           otherProp: 'something',
         },
       },
@@ -193,10 +185,8 @@ describe('formToPayload', () => {
     ).toStrictEqual({
       rawJson: {
         callerInformation: {
-          name: {
-            firstName: 'Lorna',
-            lastName: undefined,
-          },
+          firstName: 'Lorna',
+          lastName: undefined,
           prop: 'something',
         },
       },

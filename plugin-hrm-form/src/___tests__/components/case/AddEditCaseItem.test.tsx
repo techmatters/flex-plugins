@@ -65,7 +65,6 @@ const addingNewHouseholdCaseState: RootState[typeof namespace][typeof connectedC
       connectedCase: {
         helpline: '',
         accountSid: 'ACxxx',
-        childName: '',
         connectedContacts: [],
         id: 1,
         createdAt: new Date(1593469560208).toISOString(),
@@ -75,6 +74,7 @@ const addingNewHouseholdCaseState: RootState[typeof namespace][typeof connectedC
         info: null,
         categories: {},
       },
+      availableStatusTransitions: [],
     },
   },
 };
@@ -108,7 +108,9 @@ const hrmState: Partial<RootState[typeof namespace]> = {
         caseInformation: {},
         metadata: { startMillis: 0, endMillis: 0, categories: { gridView: false, expanded: {} }, recreated: false },
         isCallTypeCaller: false,
-        contactlessTask: {},
+        contactlessTask: {
+          channel: 'voice',
+        },
         csamReports: [],
       },
     },

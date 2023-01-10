@@ -8,16 +8,16 @@ const headerStyles: ReactPDF.Styles = {
     paddingBottom: 20,
   },
   childName: {
-    fontFamily: 'Open Sans',
+    fontFamily: 'Roboto',
     fontSize: 24,
     fontWeight: 600,
   },
   caseId: {
-    fontFamily: 'Open Sans',
+    fontFamily: 'Roboto',
     fontSize: 18,
   },
   officeName: {
-    fontFamily: 'Open Sans',
+    fontFamily: 'Roboto',
     fontSize: 10,
     marginLeft: 5,
   },

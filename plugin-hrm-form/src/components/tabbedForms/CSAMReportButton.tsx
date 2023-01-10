@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Template } from '@twilio/flex-ui';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMoreOutlined';
 import AssignmentIcon from '@material-ui/icons/AssignmentOutlined';
-import StorageIcon from '@material-ui/icons/StorageOutlined';
 import OpenInNew from '@material-ui/icons/OpenInNew';
 
 import { Row, CSAMReportButtonText, StyledCSAMReportButton } from '../../styles/HrmStyles';
@@ -33,30 +32,38 @@ const CSAMReportButton: React.FC<Props> = ({
 
   return (
     <>
-      <Row>
-        {csamReportEnabled && csamClcReportEnabled && (
-          <StyledCSAMReportButton ref={buttonRef} style={{ marginRight: 10 }} onClick={handleDropdown}>
-            <AssignmentIcon fontSize="inherit" style={{ marginRight: 5 }} />
-            <CSAMReportButtonText>
-              <Template code="TabbedForms-ExternalReports" />
-            </CSAMReportButtonText>
-            <ExpandMoreIcon fontSize="inherit" style={{ marginLeft: 10 }} />
-          </StyledCSAMReportButton>
-        )}
-        {csamReportEnabled && !csamClcReportEnabled && (
-          <StyledCSAMReportButton onClick={handleCounsellorCSAMType}>
-            <OpenInNew fontSize="inherit" style={{ marginRight: 5 }} />
-            <CSAMReportButtonText>
-              <Template code="TabbedForms-CSAMFileReportButton" />
-            </CSAMReportButtonText>
-          </StyledCSAMReportButton>
-        )}
-      </Row>
-      <CSAMReportDropdown
-        dropdown={dropdown}
-        handleChildCSAMType={handleChildCSAMType}
-        handleCounsellorCSAMType={handleCounsellorCSAMType}
-      />
+      <div
+        onBlurCapture={event => {
+          if (!event.currentTarget.contains(event.relatedTarget)) {
+            setDropdown(false);
+          }
+        }}
+      >
+        <Row>
+          {csamReportEnabled && csamClcReportEnabled && (
+            <StyledCSAMReportButton ref={buttonRef} style={{ marginRight: 10 }} onClick={handleDropdown}>
+              <AssignmentIcon fontSize="inherit" style={{ marginRight: 5 }} />
+              <CSAMReportButtonText>
+                <Template code="TabbedForms-ExternalReports" />
+              </CSAMReportButtonText>
+              <ExpandMoreIcon fontSize="inherit" style={{ marginLeft: 10 }} />
+            </StyledCSAMReportButton>
+          )}
+          {csamReportEnabled && !csamClcReportEnabled && (
+            <StyledCSAMReportButton onClick={handleCounsellorCSAMType}>
+              <OpenInNew fontSize="inherit" style={{ marginRight: 5 }} />
+              <CSAMReportButtonText>
+                <Template code="TabbedForms-CSAMFileReportButton" />
+              </CSAMReportButtonText>
+            </StyledCSAMReportButton>
+          )}
+        </Row>
+        <CSAMReportDropdown
+          dropdown={dropdown}
+          handleChildCSAMType={handleChildCSAMType}
+          handleCounsellorCSAMType={handleCounsellorCSAMType}
+        />
+      </div>
     </>
   );
 };

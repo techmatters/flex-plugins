@@ -15,7 +15,6 @@ const createFakeCase = (info: CaseInfo, connectedContacts: any[] = []): Case => 
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
   categories: {},
-  childName: '',
   accountSid: 'x',
 });
 

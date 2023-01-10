@@ -21,7 +21,6 @@ import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/Domain
 import { isNonDataCallType } from '../../states/ValidationRules';
 import { formatCategories, formatDuration, formatName, mapChannelForInsights } from '../../utils';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
-import { unNestInformation } from '../../services/ContactService';
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getPermissionsForContact, getPermissionsForViewingIdentifiers, PermissionActions } from '../../permissions';
@@ -198,10 +197,14 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
+  const displayContactId = savedContact.contactId?.toString().startsWith('__unsaved')
+    ? 'ContactDetails-UnsavedContact'
+    : `#${savedContact.contactId}`;
+
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
       <NameText>
-        #{savedContact.contactId} {childOrUnknown}
+        <Template code={displayContactId} /> {childOrUnknown}
       </NameText>
 
       {auditMessage(dateTime, createdBy, 'ContactDetails-ActionHeaderAdded')}
@@ -251,7 +254,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
         >
           {definitionVersion.tabbedForms.CallerInformationTab.map(e => (
             <SectionEntry key={`CallerInformation-${e.label}`} descriptionKey={e.label}>
-              <SectionEntryValue value={unNestInformation(e, savedContact.details.callerInformation)} definition={e} />
+              <SectionEntryValue value={savedContact.details.callerInformation[e.name]} definition={e} />
             </SectionEntry>
           ))}
         </ContactDetailsSection>
@@ -270,7 +273,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
         >
           {definitionVersion.tabbedForms.ChildInformationTab.map(e => (
             <SectionEntry key={`ChildInformation-${e.label}`} descriptionKey={e.label}>
-              <SectionEntryValue value={unNestInformation(e, savedContact.details.childInformation)} definition={e} />
+              <SectionEntryValue value={savedContact.details.childInformation[e.name]} definition={e} />
             </SectionEntry>
           ))}
         </ContactDetailsSection>
