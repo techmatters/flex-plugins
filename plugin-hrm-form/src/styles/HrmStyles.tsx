@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, withStyles, TabProps } from '@material-ui/core';
 import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
 import AssignmentInd from '@material-ui/icons/AssignmentIndOutlined';
@@ -1174,22 +1174,22 @@ export const StyledCSAMReportDropdown = styled('ul')`
 
 StyledCSAMReportDropdown.displayName = 'StyledCSAMReportDropdown';
 
-type StyledCSAMReportDropdownProps = {
-  margin?: string;
-};
-
-export const StyledCSAMReportDropdownList = styled('li')<StyledCSAMReportDropdownProps>`
+export const StyledCSAMReportDropdownList = styled('button')`
   position: relative;
   font-size: 14px;
   display: block;
   color: inherit;
-  padding: 7px 0 7px 35px;
-  margin: ${props => (props.margin ? props.margin : '0 -100px 0 -25px')};
+  min-width: 10rem;
+  width: 215px;
+  padding: 7px 0 7px 0;
+  margin: 0 -100px 0 -25px;
   text-decoration: none;
   &:hover {
     background-color: #f2f2f2;
     cursor: pointer;
   }
+  background: none;
+  border: none;
 `;
 StyledCSAMReportDropdownList.displayName = 'StyledCSAMReportDropdownList';
 

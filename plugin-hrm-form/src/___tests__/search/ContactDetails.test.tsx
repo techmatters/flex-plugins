@@ -11,38 +11,33 @@ import ContactDetails from '../../components/search/ContactDetails';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
 import { DetailsContext } from '../../states/contacts/contactDetails';
+import { SearchAPIContact } from '../../types/types';
 
 const mockStore = configureMockStore([]);
 
-const contactOfType = type => ({
+const contactOfType = (type): SearchAPIContact => ({
   contactId: 'TEST CONTACT ID',
   details: {
-    definitionVersion: 'v1',
+    definitionVersion: DefinitionVersionId.v1,
     childInformation: {
-      name: {
-        firstName: 'Jill',
-        lastName: 'Smith',
-      },
+      firstName: 'Jill',
+      lastName: 'Smith',
       gender: 'Other',
       age: '18-25',
       language: 'Language 1',
       nationality: 'Nationality 1',
       ethnicity: 'Ethnicity 1',
-      location: {
-        streetAddress: '',
-        city: '',
-        stateOrCounty: '',
-        postalCode: '',
-        phone1: '',
-        phone2: '',
-      },
+      streetAddress: '',
+      city: '',
+      stateOrCounty: '',
+      postalCode: '',
+      phone1: '',
+      phone2: '',
       refugee: false,
       disabledOrSpecialNeeds: false,
       hiv: false,
-      school: {
-        name: 'school',
-        gradeLevel: 'some',
-      },
+      name: 'school',
+      gradeLevel: 'some',
     },
     caseInformation: {
       callSummary: type,
@@ -54,27 +49,29 @@ const contactOfType = type => ({
       didYouDiscussRightsWithTheChild: false,
       didTheChildFeelWeSolvedTheirProblem: false,
       wouldTheChildRecommendUsToAFriend: false,
+      categories: {},
     },
     callerInformation: {
-      name: {
-        firstName: '',
-        lastName: '',
-      },
+      firstName: '',
+      lastName: '',
       relationshipToChild: '',
       gender: '',
       age: '',
       language: '',
       nationality: '',
       ethnicity: '',
-      location: {
-        city: '',
-        phone1: '',
-        phone2: '',
-        postalCode: '',
-        stateOrCounty: '',
-        streetAddress: '',
-      },
+      city: '',
+      phone1: '',
+      phone2: '',
+      postalCode: '',
+      stateOrCounty: '',
+      streetAddress: '',
     },
+    callType: callTypes.child,
+    contactlessTask: {
+      channel: 'voice',
+    },
+    conversationMedia: [],
   },
   overview: {
     dateTime: '2020-03-10',
@@ -86,10 +83,11 @@ const contactOfType = type => ({
     notes: 'Jill Smith Notes',
     channel: channelTypes.web,
     conversationDuration: 10,
+    helpline: '',
+    taskId: '',
+    createdBy: 'HASH1',
   },
-  counselor: 'Counselor',
-  createdBy: 'HASH1',
-  tags: ['Tag1', 'Tag2'],
+  csamReports: [],
 });
 
 const handleBack = jest.fn();
@@ -151,9 +149,8 @@ test(`<ContactDetails> with contact of type ${callTypes.child}`, async () => {
           contact={contact}
           currentIsCaller={false}
           handleBack={handleBack}
-          handleMockedMessage={handleMockedMessage}
           handleSelectSearchResult={handleSelectSearchResult}
-          detailsExpanded={detailsExpanded}
+          showActionIcons={false}
           task={{ taskSid: 'TEST_TASK_ID' }}
         />
       </Provider>
@@ -177,10 +174,9 @@ test(`<ContactDetails> with contact of type ${callTypes.caller}`, async () => {
           contact={contact}
           currentIsCaller={true}
           handleBack={handleBack}
-          handleMockedMessage={handleMockedMessage}
           handleSelectSearchResult={handleSelectSearchResult}
-          detailsExpanded={detailsExpanded}
           task={{ taskSid: 'TEST_TASK_ID' }}
+          showActionIcons={false}
         />
       </Provider>
     </StorelessThemeProvider>,
@@ -202,9 +198,8 @@ test(`<ContactDetails> with a non data (standalone) contact`, async () => {
           contact={contact}
           currentIsCaller={false}
           handleBack={handleBack}
-          handleMockedMessage={handleMockedMessage}
           handleSelectSearchResult={handleSelectSearchResult}
-          detailsExpanded={detailsExpanded}
+          showActionIcons={false}
           task={{ taskSid: 'TEST_TASK_ID' }}
         />
       </Provider>
