@@ -29,9 +29,9 @@ data "aws_ssm_parameter" "secrets" {
 locals {
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   twilio_channels = {
-    "facebook" = {"contact_identity" = "messenger:108893035300837" },
-    "web" = {"contact_identity" = ""},
-    "sms" = {"contact_identity" = "+17152201076" }
+    "facebook" = {"contact_identity" = "messenger:108893035300837", "channel_type" ="facebook"},
+    "webchat" = {"contact_identity" = "", "channel_type" ="web"},
+    "sms" = {"contact_identity" = "+17152201076", "channel_type" ="sms" }
   }
   custom_channels=["twitter","instagram","line"]
 }
@@ -91,6 +91,7 @@ module flex {
 
 module twilioChannel {
   for_each = local.twilio_channels
+  channel_type = each.value.channel_type
   source = "../terraform-modules/channels/twilio-channel"
   channel_contact_identity = each.value.contact_identity
   pre_survey_bot_sid = module.custom_chatbots.pre_survey_bot_sid
