@@ -17,7 +17,6 @@ import {
   FormInputType,
 } from 'hrm-form-definitions';
 
-import { BoldDescriptionText } from '../../../styles/CSAMReport';
 import {
   Box,
   ColumnarBlock,
@@ -46,7 +45,6 @@ import {
   ColumnarContent,
 } from '../../../styles/HrmStyles';
 import type { HTMLElementRef } from './types';
-import UploadIcon from '../icons/UploadIcon';
 import UploadFileInput from './UploadFileInput';
 
 /**
@@ -147,10 +145,10 @@ const calculateOptionsTabIndexes = (currentValue: any[], options: InputOption[])
 
 /**
  * Creates a Form with each input connected to RHF's wrapping Context, based on the definition.
- * @param {string[]} parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
- * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type.
+ * @param parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
+ * @param updateCallback Callback called to update form state. When is the callback called is specified in the input type.
  * @param customHandlers Set of additional handlers specific to file uploads.
- * @param {FormItemDefinition} def Definition for a single input.
+ * @param def Definition for a single input.
  */
 export const getInputType = (parents: string[], updateCallback: () => void, customHandlers?: CustomHandlers) => (
   def: FormItemDefinition,
@@ -317,28 +315,14 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
               >
                 {def.label && (
                   <Row>
-                    {path.includes('externalReport') ? (
-                      <Box style={{ margin: '0 0 22px -5px' }}>
-                        <BoldDescriptionText>
-                          {labelTextComponent}
-                          &nbsp;
-                          <RequiredAsterisk />
-                        </BoldDescriptionText>
-                      </Box>
-                    ) : (
-                      <Box marginBottom="8px">
-                        {labelTextComponent}
-                        {rules.required && <RequiredAsterisk />}
-                      </Box>
-                    )}
+                    <Box marginBottom="8px">
+                      {labelTextComponent}
+                      {rules.required && <RequiredAsterisk />}
+                    </Box>
                   </Row>
                 )}
                 {def.options.map(({ value, label }, index) => (
-                  <Box
-                    key={`${path}-${value}`}
-                    marginLeft={path.includes('externalReport') && '35px'}
-                    marginBottom="15px"
-                  >
+                  <Box key={`${path}-${value}`} marginBottom="15px">
                     <FormLabel htmlFor={`${path}-${value}`}>
                       <Row>
                         <FormRadioInput
@@ -880,9 +864,6 @@ export type CustomHandlers = FileUploadCustomHandlers;
 
 /**
  * Creates a Form with each input connected to RHF's wrapping Context, based on the definition.
- * @param {FormDefinition} definition Form definition (schema).
- * @param {string[]} parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
- * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type (getInputType).
  */
 export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (
   initialValues: any,

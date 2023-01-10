@@ -8,7 +8,6 @@ import {
   FormDefinition,
   FormItemDefinition,
   isNonSaveable,
-  FormInputType,
 } from 'hrm-form-definitions';
 
 import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
@@ -128,22 +127,6 @@ export type ExternalReportLayoutProps = {
   layout: {
     [name: string]: number;
   };
-};
-
-export const externalReportDefinition: FormDefinition = [
-  {
-    name: 'reportType',
-    label: 'Select CSAM report type',
-    type: FormInputType.RadioInput,
-    options: [
-      { value: 'child', label: 'Create link for child' },
-      { value: 'counsellor', label: 'Report as counselor' },
-    ],
-  },
-];
-
-export const externalReportLayoutDefinition: ExternalReportLayoutProps = {
-  layout: { splitFormAt: 2 },
 };
 
 export function transformCategories(
