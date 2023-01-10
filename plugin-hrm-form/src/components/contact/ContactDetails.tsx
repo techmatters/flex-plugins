@@ -17,26 +17,10 @@ import ContactDetailsSectionForm from './ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
 import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
 import { getConfig } from '../../HrmFormPlugin';
-import { SearchContactDraftChanges, updateDraft } from '../../states/contacts/existingContacts';
-import {
-  externalReportDefinition,
-  externalReportLayoutDefinition,
-  transformValues,
-} from '../../services/ContactService';
+import { updateDraft } from '../../states/contacts/existingContacts';
+import { transformValues } from '../../services/ContactService';
 import CSAMReport from '../CSAMReport/CSAMReport';
 import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
-import {
-  newCSAMReportActionForContact,
-  updateChildFormActionForContact,
-  updateCounsellorFormActionForContact,
-} from '../../states/csam-report/actions';
-import {
-  CSAMReportType,
-  CSAMReportTypes,
-  isChildTaskEntry,
-  isCounsellorTaskEntry,
-} from '../../states/csam-report/types';
-import { childInitialValues, initialValues } from '../CSAMReport/CSAMReportFormDefinition';
 
 type OwnProps = {
   contactId: string;
@@ -58,7 +42,6 @@ const ContactDetails: React.FC<Props> = ({
   updateDefinitionVersion,
   savedContact,
   draftContact,
-  addExternalReport,
   enableEditing = true,
   draftCsamReport,
   // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -70,13 +53,13 @@ const ContactDetails: React.FC<Props> = ({
    * Check if the definitionVersion for this case exists in redux, and look for it if not.
    */
   React.useEffect(() => {
-    const fetchDefinitionVersions = async (v: string) => {
+    const fetchDefinitionVersions = async () => {
       const definitionVersion = await getDefinitionVersion(version);
       updateDefinitionVersion(version, definitionVersion);
     };
 
     if (version && !definitionVersions[version]) {
-      fetchDefinitionVersions(version);
+      fetchDefinitionVersions();
     }
   }, [definitionVersions, updateDefinitionVersion, version, savedContact]);
 
@@ -113,38 +96,6 @@ const ContactDetails: React.FC<Props> = ({
     </EditContactSection>
   );
 
-  const addExternalReportSectionElement = (formPath: 'externalReport') => (
-    <EditContactSection
-      context={context}
-      contactId={contactId}
-      tabPath="externalReport"
-      externalReport={addExternalReport}
-    >
-      <ContactDetailsSectionForm
-        tabPath="externalReport"
-        definition={externalReportDefinition}
-        layoutDefinition={externalReportLayoutDefinition.layout}
-        initialValues={
-          isChildTaskEntry(draftCsamReport) || isCounsellorTaskEntry(draftCsamReport)
-            ? { reportType: draftCsamReport.reportType }
-            : {}
-        }
-        display={true}
-        autoFocus={true}
-        updateFormActionDispatcher={dispatch => ({ externalReport: { reportType } }) => {
-          if (reportType) {
-            dispatch(
-              newCSAMReportActionForContact(
-                contactId,
-                reportType === 'child' ? CSAMReportTypes.CHILD : CSAMReportTypes.COUNSELLOR,
-              ),
-            );
-          }
-        }}
-      />
-    </EditContactSection>
-  );
-
   if (draftContact) {
     if (draftContact.overview?.categories) {
       const issueSection = contactDetailsSectionFormApi.ISSUE_CATEGORIZATION;
@@ -176,10 +127,7 @@ const ContactDetails: React.FC<Props> = ({
       return editContactSectionElement(contactDetailsSectionFormApi.CASE_INFORMATION, 'caseInformation');
   }
   if (draftCsamReport) {
-    if ((isChildTaskEntry(draftCsamReport) || isCounsellorTaskEntry(draftCsamReport)) && draftCsamReport.form) {
-      return <CSAMReport api={existingContactCSAMApi(contactId)} />;
-    }
-    return addExternalReportSectionElement('externalReport');
+    return <CSAMReport api={existingContactCSAMApi(contactId)} />;
   }
 
   return (
@@ -193,7 +141,7 @@ const ContactDetails: React.FC<Props> = ({
   );
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string, any>>, { contactId }: OwnProps) => ({
+const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string, any>>) => ({
   updateDefinitionVersion: (version: string, definitionVersion: DefinitionVersion) =>
     dispatch(ConfigActions.updateDefinitionVersion(version, definitionVersion)),
 });

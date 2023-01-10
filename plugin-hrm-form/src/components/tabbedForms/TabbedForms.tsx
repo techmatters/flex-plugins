@@ -32,7 +32,7 @@ import CSAMReportButton from './CSAMReportButton';
 import CSAMAttachments from './CSAMAttachments';
 import { forTask } from '../../states/contacts/issueCategorizationStateApi';
 import { newCSAMReportAction } from '../../states/csam-report/actions';
-import { CSAMReportType, CSAMReportTypes } from '../../states/csam-report/types';
+import { CSAMReportTypes } from '../../states/csam-report/types';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -93,16 +93,15 @@ const TabbedForms: React.FC<Props> = ({
   csamClcReportEnabled,
   editContactFormOpen,
   isCallTypeCaller,
-  csamReports,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
     mode: 'onChange',
   });
 
-  const showCsamReports = csamReports && csamReports.length > 0 ? csamReports : contactForm.csamReports;
-
-  const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={showCsamReports} />, [showCsamReports]);
+  const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={contactForm.csamReports} />, [
+    contactForm.csamReports,
+  ]);
 
   const isMounted = React.useRef(false); // mutable value to avoid reseting the state in the first render.
 
@@ -199,14 +198,12 @@ const TabbedForms: React.FC<Props> = ({
               csamClcReportEnabled={csamClcReportEnabled}
               csamReportEnabled={csamReportEnabled}
               handleChildCSAMType={() => {
-                dispatch(newCSAMReportAction(taskId, CSAMReportTypes.CHILD));
-                dispatch(changeRoute({ route: 'csam-report', subroute: 'child-form', previousRoute: routing }, taskId));
+                dispatch(newCSAMReportAction(taskId, CSAMReportTypes.CHILD, true));
+                dispatch(changeRoute({ route: 'csam-report', subroute: 'form', previousRoute: routing }, taskId));
               }}
               handleCounsellorCSAMType={() => {
-                dispatch(newCSAMReportAction(taskId, CSAMReportTypes.COUNSELLOR));
-                dispatch(
-                  changeRoute({ route: 'csam-report', subroute: 'counsellor-form', previousRoute: routing }, taskId),
-                );
+                dispatch(newCSAMReportAction(taskId, CSAMReportTypes.COUNSELLOR, true));
+                dispatch(changeRoute({ route: 'csam-report', subroute: 'form', previousRoute: routing }, taskId));
               }}
             />
           </Box>
@@ -330,15 +327,13 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
   const { currentDefinitionVersion } = state[namespace][configurationBase];
   const draftContact = state[namespace][contactFormsBase].existingContacts[ownProps.task.taskSid]?.draftContact;
-  const { isCallTypeCaller, externalReport, csamReports } = state[namespace][contactFormsBase];
+  const { isCallTypeCaller } = state[namespace][contactFormsBase];
   return {
     routing,
     contactForm,
     currentDefinitionVersion,
     editContactFormOpen,
     isCallTypeCaller,
-    externalReport,
-    csamReports,
     draftContact,
   };
 };

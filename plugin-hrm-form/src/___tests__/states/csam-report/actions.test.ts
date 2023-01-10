@@ -39,7 +39,7 @@ describe('test action creators', () => {
 
   test('clearCSAMReportAction', async () => {
     expect(actions.clearCSAMReportAction(task.taskSid)).toEqual({
-      type: t.CLEAR_CSAM_REPORT,
+      type: t.REMOVE_DRAFT_CSAM_REPORT,
       taskId: task.taskSid,
     });
   });

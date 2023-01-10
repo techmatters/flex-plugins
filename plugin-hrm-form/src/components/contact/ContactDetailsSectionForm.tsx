@@ -1,10 +1,9 @@
 /* eslint-disable react/prop-types */
-import React, { Dispatch, useMemo } from 'react';
+import React, { Dispatch } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
 import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
-import * as actions from '../../states/contacts/actions';
 import {
   ColumnarBlock,
   Container,
@@ -74,9 +73,10 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
             <ColumnarContent>{l}</ColumnarContent>
           </ColumnarBlock>
           <ColumnarBlock>
-            <ColumnarContent>{r}</ColumnarContent>
-
-            {extraChildrenRight}
+            <ColumnarContent>
+              {r}
+              {extraChildrenRight}
+            </ColumnarContent>
           </ColumnarBlock>
         </TwoColumnLayout>
       </Box>

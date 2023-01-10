@@ -2,7 +2,6 @@ import * as t from './types';
 import { CSAMReportType, CSAMReportTypes } from './types';
 
 // Action creators
-
 export const updateCounsellorFormAction = (
   form: t.CounselorCSAMReportForm,
   taskId: string,
@@ -12,6 +11,7 @@ export const updateCounsellorFormAction = (
   reportType: CSAMReportTypes.COUNSELLOR,
   taskId,
 });
+
 export const updateChildFormAction = (form: t.ChildCSAMReportForm, taskId: string): t.CSAMReportActionType => ({
   type: t.UPDATE_FORM,
   form,
@@ -26,7 +26,7 @@ export const updateStatusAction = (reportStatus: t.CSAMReportStatus, taskId: str
 });
 
 export const clearCSAMReportAction = (taskId: string): t.CSAMReportActionType => ({
-  type: t.CLEAR_CSAM_REPORT,
+  type: t.REMOVE_DRAFT_CSAM_REPORT,
   taskId,
 });
 
@@ -50,19 +50,26 @@ export const updateChildFormActionForContact = (
   contactId,
 });
 
-export const newCSAMReportAction = (taskId: string, reportType?: CSAMReportType): t.CSAMReportActionType => ({
+export const newCSAMReportAction = (
+  taskId: string,
+  reportType?: CSAMReportType,
+  createForm: boolean = false,
+): t.CSAMReportActionType => ({
   type: t.NEW_DRAFT_CSAM_REPORT,
   taskId,
   reportType,
+  createForm,
 });
 
 export const newCSAMReportActionForContact = (
   contactId: string,
   reportType?: CSAMReportType,
+  createForm: boolean = false,
 ): t.CSAMReportActionType => ({
   type: t.NEW_DRAFT_CSAM_REPORT,
   contactId,
   reportType,
+  createForm,
 });
 
 export const updateStatusActionForContact = (
@@ -75,6 +82,6 @@ export const updateStatusActionForContact = (
 });
 
 export const clearCSAMReportActionForContact = (contactId: string): t.CSAMReportActionType => ({
-  type: t.CLEAR_CSAM_REPORT,
+  type: t.REMOVE_DRAFT_CSAM_REPORT,
   contactId,
 });

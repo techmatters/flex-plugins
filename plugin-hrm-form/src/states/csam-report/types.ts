@@ -1,7 +1,7 @@
 // Action types
 export const UPDATE_FORM = 'csam-report/UPDATE_FORM';
 export const UPDATE_STATUS = 'csam-report/UPDATE_STATUS';
-export const CLEAR_CSAM_REPORT = 'csam-report/CLEAR_CSAM_REPORT';
+export const REMOVE_DRAFT_CSAM_REPORT = 'csam-report/CLEAR_CSAM_REPORT';
 export const NEW_DRAFT_CSAM_REPORT = 'csam-report/NEW_DRAFT_CSAM_REPORT';
 
 export const CSAMReportTypes = {
@@ -62,21 +62,22 @@ type UpdateStatusAction = {
   reportStatus: CSAMReportStatus;
 } & (CSAMActionForContact | CSAMActionForTask);
 
-type ClearCSAMReport = {
-  type: typeof CLEAR_CSAM_REPORT;
+type RemoveDraftCSAMReportAction = {
+  type: typeof REMOVE_DRAFT_CSAM_REPORT;
   reportType?: CSAMReportType;
 } & (CSAMActionForContact | CSAMActionForTask);
 
 type NewDraftCSAMReport = {
   type: typeof NEW_DRAFT_CSAM_REPORT;
   reportType?: CSAMReportType;
+  createForm?: boolean;
 } & (CSAMActionForContact | CSAMActionForTask);
 
 export type CSAMReportActionType =
   | UpdateChildFormAction
   | UpdateCounselorFormAction
   | UpdateStatusAction
-  | ClearCSAMReport
+  | RemoveDraftCSAMReportAction
   | NewDraftCSAMReport;
 
 export const isCSAMActionForContact = (
@@ -100,9 +101,12 @@ type CSAMReportStateEntryForChildReport = {
   reportStatus: CSAMReportStatus;
 };
 
-export type CSAMReportStateEntry = CSAMReportStateEntryForCounsellorReport | CSAMReportStateEntryForChildReport | {};
+export type CSAMReportStateEntry =
+  | CSAMReportStateEntryForCounsellorReport
+  | CSAMReportStateEntryForChildReport
+  | { reportType?: CSAMReportType };
 
 export const isCounsellorTaskEntry = (t: CSAMReportStateEntry): t is CSAMReportStateEntryForCounsellorReport =>
-  (t as CSAMReportStateEntryForCounsellorReport).reportType === CSAMReportTypes.COUNSELLOR;
+  (t as CSAMReportStateEntryForCounsellorReport).form && t.reportType === CSAMReportTypes.COUNSELLOR;
 export const isChildTaskEntry = (t: CSAMReportStateEntry): t is CSAMReportStateEntryForChildReport =>
-  (t as CSAMReportStateEntryForChildReport).reportType === CSAMReportTypes.CHILD;
+  (t as CSAMReportStateEntryForChildReport).form && t.reportType === CSAMReportTypes.CHILD;

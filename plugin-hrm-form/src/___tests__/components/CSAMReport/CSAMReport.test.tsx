@@ -28,9 +28,9 @@ const setupProps = (
   (mockCSAMReportApi.reportState as jest.Mock).mockReturnValue(csamReportState);
   return {
     alertSpy: jest.spyOn(window, 'alert'),
-    updateChildFormAction: dispatcherMocks.updateChildReportDispatcher,
-    updateCounsellorFormAction: dispatcherMocks.updateCounsellorReportDispatcher,
-    updateStatusAction: dispatcherMocks.updateStatusDispatcher,
+    updateChildForm: dispatcherMocks.updateChildReportDispatcher,
+    updateCounsellorForm: dispatcherMocks.updateCounsellorReportDispatcher,
+    updateStatus: dispatcherMocks.updateStatusDispatcher,
     navigate: dispatcherMocks.navigationActionDispatcher,
     addCSAMReportEntry: dispatcherMocks.addReportDispatcher,
     exit: dispatcherMocks.exitActionDispatcher,
@@ -44,7 +44,7 @@ const setupProps = (
 };
 
 const renderCSAMReportScreen = (
-  subrouteParam = CSAMPage.CounsellorForm,
+  subrouteParam = CSAMPage.Form,
   csamReportStateParam: CSAMReportStateEntry = { form: initialValues, reportType: CSAMReportTypes.COUNSELLOR },
 ) => {
   const {
@@ -85,7 +85,7 @@ const renderCSAMReportScreen = (
 
   return {
     alertSpy,
-    updateStatusAction,
+    updateStatusAction: updateStatus,
     addCSAMReportEntry,
     csamReportState,
     counselorsHash,
@@ -247,7 +247,7 @@ test('Form can be submitted if valid (non-anonymous)', async () => {
     },
   });
 
-  const { updateStatusAction, navigate, addCSAMReportEntry } = renderCSAMReportScreen(CSAMPage.CounsellorForm, {
+  const { updateStatusAction, navigate, addCSAMReportEntry } = renderCSAMReportScreen(CSAMPage.Form, {
     form: {
       ...initialValues,
       anonymous: 'non-anonymous',
@@ -313,7 +313,7 @@ test('Report Status screen renders + copy button works', async () => {
 
   const copySpy = jest.spyOn(navigator.clipboard, 'writeText');
 
-  const { csamReportState } = renderCSAMReportScreen(CSAMPage.CounsellorStatus, {
+  const { csamReportState } = renderCSAMReportScreen(CSAMPage.Status, {
     reportType: CSAMReportTypes.COUNSELLOR,
     form: { initialValues, childInitialValues },
     reportStatus: {

@@ -4,28 +4,31 @@ import * as CSAMAction from '../../states/csam-report/actions';
 import * as ContactAction from '../../states/contacts/actions';
 import { csamReportBase, namespace, RootState, routingBase } from '../../states';
 import { changeRoute } from '../../states/routing/actions';
-import { AppRoutes, CSAMReportRoute } from '../../states/routing/types';
+import { AppRoutes } from '../../states/routing/types';
 import { CSAMReportEntry } from '../../types/types';
 import {
   ChildCSAMReportForm,
   CounselorCSAMReportForm,
   CSAMReportStatus,
-  CSAMReportTypes,
   isChildTaskEntry,
   isCounsellorTaskEntry,
   CSAMReportStateEntry,
+  CSAMReportType,
 } from '../../states/csam-report/types';
 import { addExternalReportEntry } from '../../states/csam-report/existingContactExternalReport';
 import { acknowledgeCSAMReport, createCSAMReport } from '../../services/CSAMReportService';
 import { getConfig } from '../../HrmFormPlugin';
 import { reportToIWF, selfReportToIWF } from '../../services/ServerlessService';
-import { clearCSAMReportAction } from '../../states/csam-report/actions';
+import {
+  clearCSAMReportAction,
+  newCSAMReportAction,
+  newCSAMReportActionForContact,
+} from '../../states/csam-report/actions';
 
 export enum CSAMPage {
-  CounsellorForm = 'counsellor-form',
-  CounsellorStatus = 'counsellor-status',
-  ChildForm = 'child-form',
-  ChildStatus = 'child-status',
+  ReportTypePicker = 'report-type-picker',
+  Form = 'form',
+  Status = 'status',
   Loading = 'loading',
 }
 
@@ -34,9 +37,10 @@ type SaveReportResponse = { hrmReport: CSAMReportEntry; iwfReport: CSAMReportSta
 export type CSAMReportApi = {
   currentPage: (state: RootState) => CSAMPage | undefined;
   reportState: (state: RootState) => CSAMReportStateEntry;
-  navigationActionDispatcher: (dispatch: Dispatch<unknown>) => (page: CSAMPage) => void;
+  navigationActionDispatcher: (dispatch: Dispatch<unknown>) => (page: CSAMPage, reportType: CSAMReportType) => void;
   exitActionDispatcher: (dispatch: Dispatch<unknown>) => () => void;
   addReportDispatcher: (dispatch: Dispatch<unknown>) => (csamReportEntry: CSAMReportEntry) => void;
+  pickReportTypeDispatcher: (dispatch: Dispatch<unknown>) => (reportType: CSAMReportType) => void;
   updateCounsellorReportDispatcher: (dispatch: Dispatch<unknown>) => (csamReportForm: CounselorCSAMReportForm) => void;
   updateChildReportDispatcher: (dispatch: Dispatch<unknown>) => (csamReportForm: ChildCSAMReportForm) => void;
   updateStatusDispatcher: (dispatch: Dispatch<unknown>) => (csamStatus: CSAMReportStatus) => void;
@@ -92,24 +96,28 @@ export const newContactCSAMApi = (taskSid: string, previousRoute: AppRoutes): CS
   currentPage: (state: RootState) => {
     const { subroute, route } = state[namespace][routingBase].tasks[taskSid];
     if (route === 'csam-report') {
-      const [key] = Object.entries(CSAMPage).find(([k, v]) => v === subroute) ?? [];
+      const [key] = Object.entries(CSAMPage).find(([, v]) => v === subroute) ?? [];
       return CSAMPage[key];
     }
     return undefined;
   },
   reportState: (state: RootState) => state[namespace][csamReportBase].tasks[taskSid],
-  navigationActionDispatcher: dispatch => page => {
-    switch (page) {
-      case CSAMPage.ChildForm:
-        dispatch(CSAMAction.newCSAMReportAction(taskSid, CSAMReportTypes.CHILD));
-        break;
-      case CSAMPage.CounsellorForm:
-        dispatch(CSAMAction.newCSAMReportAction(taskSid, CSAMReportTypes.COUNSELLOR));
-        break;
-      default:
+  navigationActionDispatcher: dispatch => (page, reportType) => {
+    if (page === CSAMPage.ReportTypePicker) {
+      dispatch(CSAMAction.newCSAMReportAction(taskSid, reportType, false));
+    } else if (page === CSAMPage.Form) {
+      dispatch(CSAMAction.newCSAMReportAction(taskSid, reportType, true));
     }
-    const subroute: CSAMReportRoute['subroute'] = page;
-    dispatch(changeRoute({ route: 'csam-report', subroute, previousRoute }, taskSid));
+    dispatch(
+      changeRoute(
+        {
+          route: 'csam-report',
+          subroute: page,
+          previousRoute,
+        },
+        taskSid,
+      ),
+    );
   },
   exitActionDispatcher: dispatch => () => {
     dispatch(clearCSAMReportAction(taskSid));
@@ -118,6 +126,7 @@ export const newContactCSAMApi = (taskSid: string, previousRoute: AppRoutes): CS
   addReportDispatcher: dispatch => csamReportEntry => {
     dispatch(ContactAction.addCSAMReportEntry(csamReportEntry, taskSid));
   },
+  pickReportTypeDispatcher: dispatch => reportType => dispatch(newCSAMReportAction(taskSid, reportType, false)),
   updateCounsellorReportDispatcher: dispatch => form => {
     dispatch(CSAMAction.updateCounsellorFormAction(form, taskSid));
   },
@@ -133,28 +142,23 @@ export const newContactCSAMApi = (taskSid: string, previousRoute: AppRoutes): CS
 export const existingContactCSAMApi = (contactId: string): CSAMReportApi => ({
   currentPage: (state: RootState) => {
     const report = state[namespace][csamReportBase].contacts[contactId];
-    if (isCounsellorTaskEntry(report)) {
+    if (isCounsellorTaskEntry(report) || isChildTaskEntry(report)) {
       if (report.reportStatus) {
-        return report.reportStatus.responseCode ? CSAMPage.CounsellorStatus : CSAMPage.Loading;
+        return report.reportStatus.responseCode ? CSAMPage.Status : CSAMPage.Loading;
       }
-      return CSAMPage.CounsellorForm;
-    } else if (isChildTaskEntry(report)) {
-      if (report.reportStatus) {
-        return report.reportStatus.responseCode ? CSAMPage.ChildStatus : CSAMPage.Loading;
-      }
-      return CSAMPage.ChildForm;
+      return CSAMPage.Form;
     }
-    return undefined;
+    return CSAMPage.ReportTypePicker;
   },
   reportState: (state: RootState) => state[namespace][csamReportBase].contacts[contactId],
 
-  navigationActionDispatcher: dispatch => page => {
+  navigationActionDispatcher: dispatch => (page, reportType) => {
     switch (page) {
-      case CSAMPage.ChildForm:
-        dispatch(CSAMAction.newCSAMReportActionForContact(contactId, CSAMReportTypes.CHILD));
+      case CSAMPage.ReportTypePicker:
+        dispatch(CSAMAction.newCSAMReportActionForContact(contactId, reportType, true));
         break;
-      case CSAMPage.CounsellorForm:
-        dispatch(CSAMAction.newCSAMReportActionForContact(contactId, CSAMReportTypes.COUNSELLOR));
+      case CSAMPage.Form:
+        dispatch(CSAMAction.newCSAMReportActionForContact(contactId, reportType, true));
         break;
       case CSAMPage.Loading:
         dispatch(
@@ -175,6 +179,8 @@ export const existingContactCSAMApi = (contactId: string): CSAMReportApi => ({
   addReportDispatcher: dispatch => csamReportEntry => {
     dispatch(addExternalReportEntry(csamReportEntry, contactId));
   },
+  pickReportTypeDispatcher: dispatch => reportType =>
+    dispatch(newCSAMReportActionForContact(contactId, reportType, false)),
   updateCounsellorReportDispatcher: dispatch => form => {
     dispatch(CSAMAction.updateCounsellorFormActionForContact(form, contactId));
   },

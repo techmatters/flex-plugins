@@ -18,6 +18,7 @@ export const initialState: CSAMReportState = {
   contacts: {},
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export function reduce(state = initialState, action: t.CSAMReportActionType | GeneralActionType): CSAMReportState {
   switch (action.type) {
     case REMOVE_CONTACT_STATE:
@@ -73,7 +74,7 @@ export function reduce(state = initialState, action: t.CSAMReportActionType | Ge
               },
             },
           };
-    case t.CLEAR_CSAM_REPORT:
+    case t.REMOVE_DRAFT_CSAM_REPORT:
       return isCSAMActionForContact(action)
         ? {
             ...state,
@@ -90,8 +91,8 @@ export function reduce(state = initialState, action: t.CSAMReportActionType | Ge
             contacts: {
               ...state.contacts,
               [action.contactId]: {
-                reportType: action.reportType,
-                form: (state.contacts[action.contactId] as any)?.form,
+                reportType: action.reportType ?? state.contacts[action.contactId]?.reportType,
+                form: (state.contacts[action.contactId] as any)?.form ?? (action.createForm ? {} : undefined),
               },
             },
           }
@@ -100,8 +101,8 @@ export function reduce(state = initialState, action: t.CSAMReportActionType | Ge
             tasks: {
               ...state.tasks,
               [action.taskId]: {
-                reportType: action.reportType,
-                form: (state.contacts[action.taskId] as any)?.form,
+                reportType: action.reportType ?? state.contacts[action.taskId]?.reportType,
+                form: (state.contacts[action.taskId] as any)?.form ?? (action.createForm ? {} : undefined),
               },
             },
           };

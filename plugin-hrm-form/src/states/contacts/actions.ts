@@ -83,9 +83,3 @@ export const setCallType = (isCallTypeCaller: boolean): t.ContactsActionType => 
   type: t.SET_CALL_TYPE,
   isCallTypeCaller,
 });
-
-export const setExternalReport = (externalReport: string, taskId: string): t.ContactsActionType => ({
-  type: t.ADD_EXTERNAL_REPORT,
-  externalReport,
-  taskId,
-});
