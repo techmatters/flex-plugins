@@ -8,22 +8,21 @@ import styles from './styles';
 
 type OwnProps = {
   id: number;
-  firstName: string;
-  lastName: string;
+  contactIdentifier: string;
   officeName?: string;
   logoBlob?: string;
 };
 
 type Props = OwnProps;
 
-const CasePrintHeader: React.FC<Props> = ({ firstName, lastName, id, officeName, logoBlob }) => {
+const CasePrintHeader: React.FC<Props> = ({ contactIdentifier, id, officeName, logoBlob }) => {
   const { strings, multipleOfficeSupport } = getConfig();
 
   return (
     <View fixed>
       <View style={styles['headerContainer']}>
         <View style={styles.flexColumn}>
-          <Text style={styles['childName']}>{`${firstName} ${lastName}`}</Text>
+          <Text style={styles['childName']}>{contactIdentifier}</Text>
           <View style={styles.flexRow}>
             <Text style={styles['caseId']}>{`${strings['Case-CaseNumber']}: ${id}`}</Text>
             {multipleOfficeSupport && officeName && <Text style={styles['officeName']}>({officeName})</Text>}

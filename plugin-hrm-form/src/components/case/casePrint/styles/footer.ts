@@ -3,7 +3,7 @@ import ReactPDF from '@react-pdf/renderer';
 const footerStyles: ReactPDF.Styles = {
   footer: {
     position: 'absolute',
-    fontFamily: 'Open Sans',
+    fontFamily: 'Roboto',
     fontSize: 12,
     fontWeight: 600,
     marginTop: 10,

@@ -10,7 +10,7 @@ import { DefinitionVersion, callTypes } from 'hrm-form-definitions';
 import { getConfig } from '../../../HrmFormPlugin';
 import CasePrintSection from './CasePrintSection';
 import CasePrintSummary from './CasePrintSummary';
-import styles from './styles';
+import styles, { useThaiFontFamily } from './styles';
 import { CasePrintViewContainer, CasePrintViewSpinner, HiddenText } from '../../../styles/HrmStyles';
 import CasePrintDetails from './CasePrintDetails';
 import type { CaseDetails } from '../../../states/case/types';
@@ -80,6 +80,9 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
     loadImagesInMemory(imageSources);
   }, [logoSource, chkOnSource, chkOffSource]);
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  if (definitionVersion.layoutVersion.thaiCharacterPdfSupport) useThaiFontFamily();
+
   return (
     <CasePrintViewContainer>
       <ButtonBase onClick={onClickClose} style={{ marginLeft: 'auto' }} data-testid="CasePrint-CloseCross">
@@ -98,8 +101,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
             <Page size="A4" style={styles.page}>
               <CasePrintHeader
                 id={caseDetails.id}
-                firstName={caseDetails.name.firstName}
-                lastName={caseDetails.name.lastName}
+                contactIdentifier={caseDetails.contactIdentifier}
                 officeName={caseDetails.office?.label}
                 logoBlob={logoBlob}
               />
@@ -133,13 +135,11 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                         ...caseDetails.contact?.rawJson?.caseInformation,
                         ...caseDetails.contact?.rawJson?.callerInformation,
                       }}
-                      unNestInfo={true}
                     />
                     <CasePrintSection
                       sectionName={strings['SectionName-ChildInformation']}
                       definitions={definitionVersion.tabbedForms.ChildInformationTab}
                       values={caseDetails.contact?.rawJson?.childInformation}
-                      unNestInfo={true}
                     />
                   </View>
                 ) : (
@@ -156,7 +156,6 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                       ...caseDetails.contact?.rawJson?.caseInformation,
                       ...caseDetails.contact?.rawJson?.childInformation,
                     }}
-                    unNestInfo={true}
                   />
                 )}
                 {/* // Removed by ZA request, could be useful for other helplines.

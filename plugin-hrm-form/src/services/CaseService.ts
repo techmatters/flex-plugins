@@ -1,25 +1,45 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
+import { DefinitionVersionId } from 'hrm-form-definitions';
+
 import fetchHrmApi from './fetchHrmApi';
 import { getQueryParams } from './PaginationParams';
-import { getConfig } from '../HrmFormPlugin';
-import { Case, SearchCaseResult, isOfflineContactTask, CustomITask } from '../types/types';
+import { Case, SearchCaseResult } from '../types/types';
 import type { TaskEntry as ContactForm } from '../states/contacts/reducer';
+import { unNestLegacyRawJson } from './ContactService';
 
-export async function createCase(task: CustomITask, contactForm: ContactForm) {
-  const { workerSid, definitionVersion } = getConfig();
+const convertLegacyContacts = (apiCase: Case): Case => {
+  if (!apiCase.connectedContacts || apiCase.connectedContacts.length === 0) {
+    return apiCase;
+  }
+  const connectedContacts = (apiCase.connectedContacts ?? []).map(cc => ({
+    ...cc,
+    rawJson: unNestLegacyRawJson(cc.rawJson),
+  }));
+
+  return {
+    ...apiCase,
+    connectedContacts,
+  };
+};
+
+export async function createCase(
+  contactForm: ContactForm,
+  creatingWorkerSid: string,
+  definitionVersion: DefinitionVersionId,
+) {
   const { helpline } = contactForm;
 
-  const caseRecord = isOfflineContactTask(task)
+  const caseRecord = contactForm.contactlessTask?.createdOnBehalfOf
     ? {
         helpline,
         status: 'open',
         twilioWorkerId: contactForm.contactlessTask.createdOnBehalfOf,
-        info: { definitionVersion, offlineContactCreator: workerSid },
+        info: { definitionVersion, offlineContactCreator: creatingWorkerSid },
       }
     : {
         helpline,
         status: 'open',
-        twilioWorkerId: workerSid,
+        twilioWorkerId: creatingWorkerSid,
         info: { definitionVersion },
       };
 
@@ -30,7 +50,7 @@ export async function createCase(task: CustomITask, contactForm: ContactForm) {
 
   const responseJson = await fetchHrmApi('/cases', options);
 
-  return responseJson;
+  return convertLegacyContacts(responseJson);
 }
 
 export async function cancelCase(caseId: Case['id']) {
@@ -49,20 +69,11 @@ export async function updateCase(caseId: Case['id'], body: Partial<Case>) {
 
   const responseJson = await fetchHrmApi(`/cases/${caseId}`, options);
 
-  return responseJson;
+  return convertLegacyContacts(responseJson);
 }
 
 export async function searchCases(searchParams, limit, offset): Promise<SearchCaseResult> {
-  const queryParams = getQueryParams({ limit, offset });
-
-  const options = {
-    method: 'POST',
-    body: JSON.stringify(searchParams),
-  };
-
-  const responseJson = await fetchHrmApi(`/cases/search${queryParams}`, options);
-
-  return responseJson;
+  return listCases({ limit, offset }, searchParams);
 }
 
 export async function listCases(queryParams, listCasesPayload): Promise<SearchCaseResult> {
@@ -75,5 +86,8 @@ export async function listCases(queryParams, listCasesPayload): Promise<SearchCa
 
   const responseJson = await fetchHrmApi(`/cases/search${queryParamsString}`, options);
 
-  return responseJson;
+  return {
+    ...responseJson,
+    cases: responseJson.cases.map(convertLegacyContacts),
+  };
 }
