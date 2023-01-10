@@ -21,7 +21,7 @@ locals {
   environment = "Staging"
   short_environment = "STG"
   definition_version = "cl-v1"
-  permission_config = "pl"
+  permission_config = "cl"
   helpline_language = "es-CL"
   enable_post_survey = false
   multi_office = false
