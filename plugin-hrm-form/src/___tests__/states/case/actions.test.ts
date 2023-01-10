@@ -21,7 +21,6 @@ describe('test action creators', () => {
       updatedAt: '2020-07-31T20:39:37.408Z',
       connectedContacts: null,
       categories: {},
-      childName: '',
     };
 
     const expectedAction: CaseActionType = {

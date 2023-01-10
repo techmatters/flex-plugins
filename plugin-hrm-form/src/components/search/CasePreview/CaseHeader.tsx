@@ -16,10 +16,7 @@ import { Flex } from '../../../styles/HrmStyles';
 
 type OwnProps = {
   caseId: number;
-  childName?: {
-    firstName: string;
-    lastName: string;
-  };
+  contactLabel?: string;
   createdAt: Date;
   updatedAt?: Date;
   followUpDate?: Date;
@@ -33,7 +30,7 @@ type Props = OwnProps;
 
 const CaseHeader: React.FC<Props> = ({
   caseId,
-  childName,
+  contactLabel,
   createdAt,
   updatedAt,
   followUpDate,
@@ -44,8 +41,6 @@ const CaseHeader: React.FC<Props> = ({
 }) => {
   const { strings } = getConfig();
 
-  const { firstName, lastName } = childName || {};
-
   return (
     <div>
       <PreviewRow>
@@ -54,9 +49,7 @@ const CaseHeader: React.FC<Props> = ({
             <StyledLink underline={true} style={{ minWidth: 'inherit', marginInlineEnd: 10 }} onClick={onClickViewCase}>
               <PreviewHeaderText style={{ textDecoration: 'underline' }}>#{caseId}</PreviewHeaderText>
             </StyledLink>
-            <PreviewHeaderText>
-              {isOrphanedCase ? strings['CaseHeader-Voided'] : `${firstName} ${lastName}`}
-            </PreviewHeaderText>
+            <PreviewHeaderText>{isOrphanedCase ? strings['CaseHeader-Voided'] : `${contactLabel}`}</PreviewHeaderText>
           </Flex>
           <Flex style={{ minWidth: 'fit-content' }}>
             <SummaryText style={{ fontWeight: 400 }}>{statusLabel}</SummaryText>

@@ -1,15 +1,5 @@
 [
   {
-    "name": "firstName",
-    "label": "Placeholder",
-    "type": "input"
-  },
-  {
-    "name": "lastName",
-    "label": "Placeholder",
-    "type": "input"
-  },
-  {
     "name": "relationshipToChild",
     "label": "Relationship to child",
     "type": "select",

@@ -60,7 +60,7 @@ variable "feature_flags" {
     "enable_dual_write": false,
     "enable_save_insights": true,
     "enable_contact_editing": true,
-    "enable_transcripts": false,
+    "enable_twilio_transcripts": false,
     "enable_voice_recordings": false,
     "enable_previous_contacts": true
   }

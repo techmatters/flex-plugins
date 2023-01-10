@@ -50,7 +50,7 @@ locals {
     "enable_save_insights": true,
     "enable_previous_contacts": true,
     "enable_contact_editing": true,
-    "enable_transcripts": true
+    "enable_twilio_transcripts": true
   }
   twilio_channels = {
     "facebook" = {"contact_identity" = "messenger:325981127456443", "channel_type" ="facebook"  },
