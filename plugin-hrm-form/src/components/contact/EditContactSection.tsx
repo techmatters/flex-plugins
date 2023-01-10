@@ -18,16 +18,13 @@ import { clearDraft, refreshRawContact } from '../../states/contacts/existingCon
 import CloseCaseDialog from '../case/CloseCaseDialog';
 import * as t from '../../states/contacts/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
-import { CustomITask } from '../../types/types';
 
 type OwnProps = {
   context: DetailsContext;
   contactId: string;
-  contactDetailsSectionForm?: ContactDetailsSectionFormApi | IssueCategorizationSectionFormApi;
+  contactDetailsSectionForm: ContactDetailsSectionFormApi | IssueCategorizationSectionFormApi;
   children: React.ReactNode;
   tabPath: keyof TaskEntry;
-  externalReport?: string;
-  taskSid?: CustomITask['taskSid'];
 };
 
 // eslint-disable-next-line no-use-before-define

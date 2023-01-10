@@ -41,7 +41,7 @@ type OwnProps = {
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const ViewContact: React.FC<Props> = ({ onClickClose, editContactFormOpen, contactId, enableEditing, task }) => {
+const ViewContact: React.FC<Props> = ({ onClickClose, editContactFormOpen, contactId, enableEditing }) => {
   const handleClose = () => {
     onClickClose();
   };
@@ -49,12 +49,7 @@ const ViewContact: React.FC<Props> = ({ onClickClose, editContactFormOpen, conta
   return (
     <CaseLayout className={editContactFormOpen ? 'editingContact' : ''}>
       <Container removePadding={editContactFormOpen}>
-        <ContactDetails
-          taskSid={task.taskSid}
-          contactId={contactId}
-          enableEditing={enableEditing}
-          context={DetailsContext.CASE_DETAILS}
-        />
+        <ContactDetails contactId={contactId} enableEditing={enableEditing} context={DetailsContext.CASE_DETAILS} />
         <BottomButtonBar className="hiddenWhenEditingContact" style={{ marginBlockStart: 'auto' }}>
           <StyledNextStepButton roundCorners onClick={handleClose} data-testid="Case-ViewContactScreen-CloseButton">
             <Template code="CloseButton" />

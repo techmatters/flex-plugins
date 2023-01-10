@@ -4,7 +4,6 @@ import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { CustomITask } from '../../types/types';
 import ContactDetailsHome from './ContactDetailsHome';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { configurationBase, contactFormsBase, csamReportBase, namespace, RootState } from '../../states';
@@ -28,7 +27,6 @@ type OwnProps = {
   handleOpenConnectDialog?: (event: any) => void;
   enableEditing?: boolean;
   showActionIcons?: boolean;
-  taskSid?: CustomITask['taskSid'];
 };
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
@@ -150,7 +148,6 @@ const mapStateToProps = (state: RootState, { contactId }: OwnProps) => ({
   definitionVersions: state[namespace][configurationBase].definitionVersions,
   savedContact: state[namespace][contactFormsBase].existingContacts[contactId]?.savedContact,
   draftContact: state[namespace][contactFormsBase].existingContacts[contactId]?.draftContact,
-  addExternalReport: state[namespace][contactFormsBase].externalReport,
   draftCsamReport: state[namespace][csamReportBase].contacts[contactId],
 });
 

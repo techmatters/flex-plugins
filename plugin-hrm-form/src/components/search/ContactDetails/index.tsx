@@ -22,11 +22,11 @@ type OwnProps = {
   handleBack: () => void;
   handleSelectSearchResult: (contact: SearchAPIContact) => void;
 };
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+const mapStateToProps = (state: RootState) => {
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
-  const { isCallTypeCaller, externalReport } = state[namespace][contactFormsBase];
+  const { isCallTypeCaller } = state[namespace][contactFormsBase];
 
-  return { editContactFormOpen, isCallTypeCaller, externalReport };
+  return { editContactFormOpen, isCallTypeCaller };
 };
 const mapDispatchToProps = {
   loadContactIntoState: loadContact,
@@ -46,7 +46,6 @@ const ContactDetails: React.FC<Props> = ({
   releaseContactFromState,
   editContactFormOpen,
   isCallTypeCaller,
-  externalReport,
 }: Props) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -98,7 +97,6 @@ const ContactDetails: React.FC<Props> = ({
         showActionIcons={showActionIcons}
         contactId={contact.contactId}
         handleOpenConnectDialog={handleOpenConnectDialog}
-        taskSid={task.taskSid}
       />
     </Container>
   );

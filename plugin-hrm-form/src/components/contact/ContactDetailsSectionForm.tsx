@@ -17,15 +17,11 @@ import type { TaskEntry } from '../../states/contacts/reducer';
 import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
-  display?: boolean;
-  definition?: FormDefinition;
+  display: boolean;
+  definition: FormDefinition;
   layoutDefinition?: LayoutDefinition;
-  tabPath?: keyof TaskEntry;
-  initialValues?:
-    | TaskEntry['callerInformation']
-    | TaskEntry['childInformation']
-    | TaskEntry['caseInformation']
-    | FormDefinition;
+  tabPath: keyof TaskEntry;
+  initialValues: TaskEntry['callerInformation'] | TaskEntry['childInformation'] | TaskEntry['caseInformation'];
   autoFocus?: boolean;
   extraChildrenRight?: React.ReactNode;
   updateFormActionDispatcher?: (dispatch: Dispatch<any>) => (values: any) => void;
