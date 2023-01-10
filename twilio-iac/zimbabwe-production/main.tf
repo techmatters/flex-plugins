@@ -7,7 +7,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "tl-terraform-state-staging"
+    bucket         = "tl-terraform-state-Production"
     key            = "twilio/zw/terraform.tfstate"
     dynamodb_table = "terraform-locks"
     encrypt        = true
@@ -21,14 +21,14 @@ locals {
   voice_ivr_language = "en-US"
   short_helpline = "ZW"
   operating_info_key = "zw"
-  environment = "Staging"
-  short_environment = "STG"
+  environment = "Production"
+  short_environment = "PROD"
   definition_version = "zw-v1"
-  permission_config = "demo"
+  permission_config = "zw"
   multi_office = false
   enable_post_survey = false
   target_task_name = "greeting"
-  twilio_numbers = ["messenger:103260519220529"]
+  twilio_numbers = []
   channel = ""
   custom_channel_attributes = ""
   feature_flags = {
@@ -53,10 +53,9 @@ locals {
     "post_survey_serverless_handled": true,
     "enable_csam_clc_report": false
   }
+  //Channels [Voice | Facebook | Webchat | WhatsApp]
   twilio_channels = {
-    "facebook" = {"contact_identity" = "messenger:103260519220529", "channel_type" ="facebook"},
-    "webchat" = {"contact_identity" = "", "channel_type" ="web" },
-    "sms" = {"contact_identity" = "+14322743110", "channel_type" ="sms"  }
+   }
   }
 }
 
