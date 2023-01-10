@@ -317,7 +317,7 @@ test('Report Status screen renders + copy button works', async () => {
 
   const { csamReportState } = renderCSAMReportScreen(CSAMPage.Status, {
     reportType: CSAMReportTypes.COUNSELLOR,
-    form: { initialValues, childInitialValues },
+    form: initialValues,
     reportStatus: {
       responseCode: 'responseCode',
       responseData: 'responseData',
