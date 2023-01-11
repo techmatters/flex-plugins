@@ -473,7 +473,7 @@
   "TabbedForms-ReportsCounselorReport": "Jelentés tanácsadóként",
   "Case-CaseOverviewLabel": "Eset áttekintése",
   "Case-EditCaseSummary": "Az esetinformációk szerkesztése",
-  "CSAMCLC-ActionHeaderAdded": "Hozzáadva {{date}} {{time}} {{space}} Tanácsadó: {{counsellor}}",
+  "CSAMCLC-ActionHeaderAdded": "Hozzáadva {{date}} {{time}} &nbsp;&nbsp; Tanácsadó: {{counsellor}}",
   "ContactDetails-GeneralDetails-Email": "Email",
   "ContactDetails-LoadRecording-Button": "Nyitott felvétel",
   "ContactDetails-LoadTranscript-Button": "Beszélgetés átiratának betöltése",

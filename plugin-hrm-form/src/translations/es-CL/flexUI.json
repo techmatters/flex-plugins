@@ -486,7 +486,7 @@
   "TabbedForms-ExternalReports": "Reportes Externos",
   "TabbedForms-ReportsChildLink": "Crear link para adolescente",
   "TabbedForms-ReportsCounselorReport": "Reportar como agente",
-  "CSAMCLC-ActionHeaderAdded": "Agregado el {{date}} a las {{time}} {{space}} Agente: {{counsellor}}",
+  "CSAMCLC-ActionHeaderAdded": "Agregado el {{date}} a las {{time}}  Agente: {{counsellor}}",
   "ContactDetails-GeneralDetails-Email": "Correo Electrónico",
   "ContactDetails-ActionHeaderUpdated": "Actualziado el {{date}} a las {{time}} por Agente: {{counsellor}}",
   "ContactDetails-NoCategoryProvided": "Categoría no entregada",

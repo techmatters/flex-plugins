@@ -181,7 +181,7 @@
     "Case-CaseNumber": "Cazul #",
     "Case-ActionHeaderAdded": "Adăugat pe {{data}} la {{time}} de {{consilier}}",
     "Case-ActionHeaderUpdated": "Actualizat pe {{data}} la {{time}} de {{consilier}}",
-    "CSAMCLC-ActionHeaderAdded": "Adăugat pe {{date}} la {{time}} {{space}} Consilier: {{counsellor}}",
+    "CSAMCLC-ActionHeaderAdded": "Adăugat pe {{date}} la {{time}} &nbsp;&nbsp; Consilier: {{counsellor}}",
     "Case-ActionHeaderCounselor": "Trebuie să completați câmpurile necesare",
     "SessionExpired": "Sesiunea dumneavoastră a expirat. Faceți clic aici pentru a vă conecta din nou",
     "TaskTabAgentInfoLabel": "Informații",

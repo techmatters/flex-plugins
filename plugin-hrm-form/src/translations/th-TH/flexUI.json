@@ -409,7 +409,7 @@
   "Copied": "คัดลอก",
   "Copycode": "รหัสคัดลอก",
   "CopyLink": "คัดลอกลิงค์",
-  "CSAMCLC-ActionHeaderAdded": "เพิ่ม {{date}} at {{time}} {{space}} Counsellor: {{counsellor}}",
+  "CSAMCLC-ActionHeaderAdded": "เพิ่ม {{date}} at {{time}} &nbsp;&nbsp; Counsellor: {{counsellor}}",
   "CSAMCLCReportForm-AgeVerified": "อายุของเด็กได้รับการตรวจสอบแล้วหรือยัง?",
   "CSAMCLCReportForm-ChildAge": "อายุของเด็กคืออะไร?",
   "CSAMCLCReportForm-CopyLink": "คัดลอกลิงค์เพื่อแบ่งปันกับเด็ก ลิงก์หมดอายุใน 24 ชั่วโมง",

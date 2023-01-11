@@ -173,7 +173,7 @@
   "Case-AddNoteTypeHere": "Type here to add note...",
   "Case-AddCaseSummaryHere": "Add case summary here...",
   "Case-ActionHeaderAdded": "Added on {{date}} at {{time}} by {{counsellor}}",
-  "CSAMCLC-ActionHeaderAdded": "Added {{date}} at {{time}} {{space}} Counsellor: {{counsellor}}",
+  "CSAMCLC-ActionHeaderAdded": "Added {{date}} at {{time}} &nbsp;&nbsp; Counsellor: {{counsellor}}",
   "Case-ActionHeaderUpdated": "Updated on {{date}} at {{time}} by {{counsellor}}",
   "Case-ActionHeaderCounselor": "Counsellor:",
   "Case-CloseButton": "Close",

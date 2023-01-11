@@ -180,7 +180,7 @@
   "Case-Counsellor": "Consejero",
   "Case-CaseNumber": "Caso #",
   "Case-ActionHeaderAdded": "Agregado el {{date}} a las {{time}} por {{counsellor}}",
-  "CSAMCLC-ActionHeaderAdded": "Agregado el {{date}} a las {{time}} {{space}} Consejero: {{counsellor}}",
+  "CSAMCLC-ActionHeaderAdded": "Agregado el {{date}} a las {{time}} &nbsp;&nbsp; Consejero: {{counsellor}}",
   "Case-ActionHeaderUpdated": "Agregado el {{date}} a las {{time}} por {{counsellor}}",
   "Case-ActionHeaderCounselor": "Debe completar los campos requeridos",
   "SessionExpired": "Su sesión ha caducado. haga clic aquí para iniciar sesión nuevamente",
