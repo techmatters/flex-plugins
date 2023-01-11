@@ -29,9 +29,9 @@ data "aws_ssm_parameter" "secrets" {
 locals {
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   twilio_channels = {
-    "facebook" = {"contact_identity" = "messenger:103260519220529" },
-    "web" = {"contact_identity" = ""},
-    "sms" = {"contact_identity" = "+14322743110" }
+    "facebook" = {"contact_identity" = "messenger:103260519220529", "channel_type" = "facebook" },
+    "webchat" = {"contact_identity" = "", "channel_type" = "web" },
+    "sms" = {"contact_identity" = "+14322743110", "channel_type" = "sms" }
   }
 }
 
@@ -95,6 +95,7 @@ module twilioChannel {
   pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
   target_task_name = var.target_task_name
   channel_name = "${each.key}"
+  channel_type = each.value.channel_type
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
@@ -109,6 +110,8 @@ module survey {
 module aws {
   source = "../terraform-modules/aws/default"
   twilio_account_sid = local.secrets.twilio_account_sid
+  twilio_auth_token = local.secrets.twilio_auth_token
+  serverless_url = module.serverless.serverless_environment_production_url
   helpline = var.helpline
   short_helpline = var.short_helpline
   environment = var.environment
