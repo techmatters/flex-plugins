@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import ActionHeader from '../case/ActionHeader';
 import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyles';
 import { BoldDescriptionText, CSAMReportContainer, CSAMReportLayout } from '../../styles/CSAMReport';
-import { getInputType } from '../common/forms/formGenerators';
+import { addMargin, getInputType } from '../common/forms/formGenerators';
 import { CSAMReportType } from '../../states/csam-report/types';
 import { externalReportDefinition } from './CSAMReportFormDefinition';
 
@@ -31,8 +31,10 @@ const CSAMReportTypePicker: React.FC<Props> = ({
 }) => {
   const { getValues } = methods;
   const formElement = React.useMemo(() => {
-    return getInputType([], () => pickReportType(getValues(['reportType']).reportType))(externalReportDefinition[0])(
-      reportType,
+    return addMargin(5)(
+      getInputType([], () => pickReportType(getValues(['reportType']).reportType))(externalReportDefinition[0])(
+        reportType,
+      ),
     );
   }, [getValues, pickReportType, reportType]);
 
