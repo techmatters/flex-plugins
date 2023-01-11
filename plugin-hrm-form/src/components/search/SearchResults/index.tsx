@@ -125,7 +125,12 @@ const SearchResults: React.FC<Props> = ({
         <SearchResultsBackButton text={<Template code="SearchResultsIndex-Back" />} handleBack={handleBack} />
         <Row style={{ justifyContent: 'center' }}>
           <div style={{ width: '300px' }}>
-            <StyledTabs selectedTabName={currentPage} onTabSelected={tabSelected}>
+            <StyledTabs
+              selectedTabName={currentPage}
+              onTabSelected={tabSelected}
+              alignment="left"
+              keepTabsMounted={false}
+            >
               <TwilioTab
                 key="SearchResultsIndex-Contacts"
                 label={<Template code="SearchResultsIndex-Contacts" />}

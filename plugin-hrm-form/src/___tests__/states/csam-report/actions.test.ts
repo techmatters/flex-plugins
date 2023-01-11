@@ -1,23 +1,25 @@
 import * as t from '../../../states/csam-report/types';
 import * as actions from '../../../states/csam-report/actions';
+import { CSAMReportTypes } from '../../../states/csam-report/types';
 
 const task = { taskSid: 'task-sid' };
 
 describe('test action creators', () => {
-  test('updateFormAction', async () => {
+  test('updateCounsellorFormAction', async () => {
     const form: t.CSAMReportForm = {
       webAddress: 'some-url',
-      anonymous: true,
+      anonymous: 'anonymous',
       description: '',
       firstName: '',
       lastName: '',
       email: '',
     };
 
-    expect(actions.updateFormAction(form, task.taskSid)).toEqual({
+    expect(actions.updateCounsellorFormAction(form, task.taskSid)).toEqual({
       type: t.UPDATE_FORM,
       form,
       taskId: task.taskSid,
+      reportType: CSAMReportTypes.COUNSELLOR,
     });
   });
 
@@ -35,9 +37,9 @@ describe('test action creators', () => {
     });
   });
 
-  test('clearCSAMReportAction', async () => {
-    expect(actions.clearCSAMReportAction(task.taskSid)).toEqual({
-      type: t.CLEAR_CSAM_REPORT,
+  test('removeCSAMReportAction', async () => {
+    expect(actions.removeCSAMReportAction(task.taskSid)).toEqual({
+      type: t.REMOVE_DRAFT_CSAM_REPORT,
       taskId: task.taskSid,
     });
   });
