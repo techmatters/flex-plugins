@@ -171,7 +171,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
         <CSAMReportStatusScreen
           reportStatus={csamReportState.reportStatus}
           onClickClose={exit}
-          onSendAnotherReport={() => onSendAnotherReport()}
+          onSendAnotherReport={onSendAnotherReport}
           csamType={csamReportState.reportType}
         />
       );
