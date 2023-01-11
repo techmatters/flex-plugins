@@ -8,7 +8,6 @@ import CSAMReportCounsellorForm from './CSAMReportCounsellorForm';
 import { CenterContent, CSAMReportContainer, CSAMReportLayout } from '../../styles/CSAMReport';
 import { getConfig } from '../../HrmFormPlugin';
 import { configurationBase, namespace, RootState } from '../../states';
-import useFocus from '../../utils/useFocus';
 import { CSAMPage, CSAMReportApi } from './csamReportApi';
 import * as t from '../../states/contacts/actions';
 import { isChildTaskEntry, isCounsellorTaskEntry } from '../../states/csam-report/types';
@@ -59,7 +58,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
   pickReportType,
 }) => {
   const methods = useForm({ reValidateMode: 'onChange' });
-  const firstElementRef = useFocus();
 
   const currentCounselor = React.useMemo(() => {
     const { workerSid } = getConfig();
@@ -138,7 +136,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
               onSendReport={onSendReport}
               update={updateChildForm}
               methods={methods}
-              focusElementRef={firstElementRef}
             />
           ) : (
             <CSAMReportCounsellorForm
@@ -148,7 +145,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
               onSendReport={onSendReport}
               update={updateCounsellorForm}
               methods={methods}
-              focusElementRef={firstElementRef}
             />
           )}
         </FormProvider>
