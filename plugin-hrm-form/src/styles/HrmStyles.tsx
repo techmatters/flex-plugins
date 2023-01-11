@@ -1192,14 +1192,3 @@ export const StyledCSAMReportDropdownList = styled('button')`
   border: none;
 `;
 StyledCSAMReportDropdownList.displayName = 'StyledCSAMReportDropdownList';
-
-export const StyledCSAMReportHeader = styled('li')`
-  position: relative;
-  font-size: 12px;
-  display: block;
-  color: inherit;
-  padding: 7px 0 7px 0;
-  text-decoration: none;
-  font-weight: 900;
-`;
-StyledCSAMReportHeader.displayName = 'StyledCSAMReportHeader';
