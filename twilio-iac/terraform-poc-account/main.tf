@@ -23,7 +23,7 @@ provider "aws" {
 }
 
 data "aws_ssm_parameter" "secrets" {
-  name     = "/terraform/twilio-iac/terraform-poc-account/secrets.json"
+  name     = "/terraform/twilio-iac/${basename(abspath(path.module))}/secrets.json"
 }
 
 locals {
