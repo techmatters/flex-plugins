@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-max-depth */
-/* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import Close from '@material-ui/icons/Close';
@@ -118,7 +117,7 @@ const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, o
           </StyledNextStepButton>
         </Box>
         <StyledNextStepButton roundCorners onClick={onClickClose}>
-          <Template code={csamType === CSAMReportTypes.CHILD ? 'CloseButton' : 'BottomBar-CloseView'} />
+          <Template code="CloseButton" />
         </StyledNextStepButton>
       </BottomButtonBar>
     </CSAMReportContainer>

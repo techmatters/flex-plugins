@@ -117,18 +117,6 @@ export const searchResultToContactForm = (def: FormDefinition, information: Reco
   return def.reduce((acc, e) => ({ ...acc, [e.name]: deTransformValue(e)(information[e.name]) }), {});
 };
 
-// eslint-disable-next-line import/no-unused-modules
-export type ExternalReportFormProps = {
-  reportType: FormDefinition;
-};
-
-// eslint-disable-next-line import/no-unused-modules
-export type ExternalReportLayoutProps = {
-  layout: {
-    [name: string]: number;
-  };
-};
-
 export function transformCategories(
   helpline,
   categories: TaskEntry['categories'],
@@ -162,9 +150,7 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
     childInformation: transformValues(ChildInformationTab)(form.childInformation),
   };
 
-  // @ts-ignore
   const { callerInformation } = transformedValues;
-  // @ts-ignore
   const { childInformation } = transformedValues;
 
   const categories = transformCategories(form.helpline, form.categories);

@@ -59,7 +59,6 @@ describe('createCase()', () => {
     accountSid: 'an account',
     createdBy: 'creating worker',
     updatedBy: null,
-    childName: '',
     categories: {},
   };
 
