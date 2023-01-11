@@ -29,11 +29,12 @@ const CSAMReportTypePicker: React.FC<Props> = ({
   reportType,
   pickReportType,
 }) => {
+  const { getValues } = methods;
   const formElement = React.useMemo(() => {
-    return getInputType([], () => pickReportType(methods.getValues(['reportType']).reportType))(
-      externalReportDefinition[0],
-    )(reportType);
-  }, [methods, pickReportType, reportType]);
+    return getInputType([], () => pickReportType(getValues(['reportType']).reportType))(externalReportDefinition[0])(
+      reportType,
+    );
+  }, [getValues, pickReportType, reportType]);
 
   return (
     <CSAMReportContainer data-testid="CSAMReport-TypePicker">
