@@ -3,22 +3,22 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import SearchIcon from '@material-ui/icons/Search';
-import { useForm, FormProvider } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
 
 import { CaseLayout } from '../../styles/case';
 import Case from '../case';
-import { namespace, contactFormsBase, routingBase, RootState, configurationBase } from '../../states';
+import { configurationBase, contactFormsBase, namespace, RootState, routingBase } from '../../states';
 import { updateCallType, updateForm } from '../../states/contacts/actions';
 import { searchResultToContactForm } from '../../services/ContactService';
 import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute } from '../../states/routing/actions';
-import { TaskEntry, emptyCategories } from '../../states/contacts/reducer';
-import { TabbedFormSubroutes, NewCaseSubroutes } from '../../states/routing/types';
+import { emptyCategories, TaskEntry } from '../../states/contacts/reducer';
+import { NewCaseSubroutes, TabbedFormSubroutes } from '../../states/routing/types';
 import { CustomITask, isOfflineContactTask, SearchAPIContact } from '../../types/types';
-import { TabbedFormsContainer, TabbedFormTabContainer, Box, StyledTabs, Row } from '../../styles/HrmStyles';
+import { Box, Row, StyledTabs, TabbedFormsContainer, TabbedFormTabContainer } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import Search from '../search';
 import IssueCategorizationSectionForm from '../contact/IssueCategorizationSectionForm';
@@ -31,6 +31,8 @@ import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackBu
 import CSAMReportButton from './CSAMReportButton';
 import CSAMAttachments from './CSAMAttachments';
 import { forTask } from '../../states/contacts/issueCategorizationStateApi';
+import { newCSAMReportAction } from '../../states/csam-report/actions';
+import { CSAMReportTypes } from '../../states/csam-report/types';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -195,14 +197,14 @@ const TabbedForms: React.FC<Props> = ({
             <CSAMReportButton
               csamClcReportEnabled={csamClcReportEnabled}
               csamReportEnabled={csamReportEnabled}
-              handleChildCSAMType={() =>
-                dispatch(changeRoute({ route: 'csam-report', subroute: 'child-form', previousRoute: routing }, taskId))
-              }
-              handleCounsellorCSAMType={() =>
-                dispatch(
-                  changeRoute({ route: 'csam-report', subroute: 'counsellor-form', previousRoute: routing }, taskId),
-                )
-              }
+              handleChildCSAMType={() => {
+                dispatch(newCSAMReportAction(taskId, CSAMReportTypes.CHILD, true));
+                dispatch(changeRoute({ route: 'csam-report', subroute: 'form', previousRoute: routing }, taskId));
+              }}
+              handleCounsellorCSAMType={() => {
+                dispatch(newCSAMReportAction(taskId, CSAMReportTypes.COUNSELLOR, true));
+                dispatch(changeRoute({ route: 'csam-report', subroute: 'form', previousRoute: routing }, taskId));
+              }}
             />
           </Box>
         )}
@@ -324,8 +326,16 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
   const { currentDefinitionVersion } = state[namespace][configurationBase];
+  const draftContact = state[namespace][contactFormsBase].existingContacts[ownProps.task.taskSid]?.draftContact;
   const { isCallTypeCaller } = state[namespace][contactFormsBase];
-  return { routing, contactForm, currentDefinitionVersion, editContactFormOpen, isCallTypeCaller };
+  return {
+    routing,
+    contactForm,
+    currentDefinitionVersion,
+    editContactFormOpen,
+    isCallTypeCaller,
+    draftContact,
+  };
 };
 
 const connector = connect(mapStateToProps);

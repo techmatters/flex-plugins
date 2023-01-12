@@ -541,6 +541,7 @@
     "CSAMReportForm-ReportsSubmitted": "Zgłoszone raporty",
     "CSAMReportForm-WebsiteDetails": "Szczegóły strony internetowej",
     "CSAMReportForm-WebsiteDetailsDescription": "Podaj szczegóły, w których odkryto materiał. <br> Zgłaszanie więcej niż jednej strony internetowej wykonać osobny raport.",
+    "CSAMReportForm-SelectReportType": "Wybierz typ raportu CSAM",
     "CSAMCLCReportForm-Header": "Zewnętrzny raport pliku: CSAM — Utwórz łącze dla dziecka",
     "CSAMCLCReportForm-ChildAge": "Jaki jest wiek dziecka?",
     "CSAMCLCReportForm-AgeVerified": "Czy zweryfikowano wiek dziecka?",

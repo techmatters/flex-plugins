@@ -22,9 +22,9 @@ type OwnProps = {
   layoutDefinition?: LayoutDefinition;
   tabPath: keyof TaskEntry;
   initialValues: TaskEntry['callerInformation'] | TaskEntry['childInformation'] | TaskEntry['caseInformation'];
-  autoFocus: boolean;
+  autoFocus?: boolean;
   extraChildrenRight?: React.ReactNode;
-  updateFormActionDispatcher: (dispatch: Dispatch<any>) => (values: any) => void;
+  updateFormActionDispatcher?: (dispatch: Dispatch<any>) => (values: any) => void;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -69,9 +69,10 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
             <ColumnarContent>{l}</ColumnarContent>
           </ColumnarBlock>
           <ColumnarBlock>
-            <ColumnarContent>{r}</ColumnarContent>
-
-            {extraChildrenRight}
+            <ColumnarContent>
+              {r}
+              {extraChildrenRight}
+            </ColumnarContent>
           </ColumnarBlock>
         </TwoColumnLayout>
       </Box>
