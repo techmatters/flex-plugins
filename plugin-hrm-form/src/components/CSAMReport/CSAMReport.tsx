@@ -60,9 +60,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
   const methods = useForm({ reValidateMode: 'onChange' });
 
   const { workerSid, strings } = getConfig();
-  const currentCounselor = React.useMemo(() => {
-    return counselorsHash[workerSid];
-  }, [counselorsHash, workerSid]);
+  const currentCounselor = counselorsHash[workerSid];
 
   React.useEffect(() => {
     setEditPageOpen();
