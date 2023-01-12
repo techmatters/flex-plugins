@@ -23,7 +23,7 @@ You will require the following environment variables set in your local terminal:
 
 In order to set up the Aselo Terraform project:
 
-* In the directory named for the account you are working on, run `make init`
+* In the directory named for the account you are working on, run `make init` (you might need to run `make init tf_args=-reconfigure` if it complains)
 * Run `make validate` - this should give the all clear.
 
 ## Running on a new environment
@@ -51,14 +51,7 @@ Important notes:
   }
 ```
 
-4. In the 'data "aws_ssm_parameter" "secrets"' section modify the 'name' to replace 'terraform-poc-account' with the directory name that you are running from, i.e. {short_lowercase_helpline_code}-{environment}. For example, Aarambh Production would look like this *this must match the directory name exactly*:
-```hcl
-  data "aws_ssm_parameter" "secrets" {
-    name = "/terraform/twilio-iac/aarambh-production/secrets.json"
-  }
-```
-
-5. Open the `variables.tf` file and update the defaults to ones appropriate to this helpline & environment or modify locals within `main.tf`
+4. Open the `variables.tf` file and update the defaults to ones appropriate to this helpline & environment or modify locals within `main.tf`
 
 > For the following steps, make sure to have the following env vars loaded in your terminal session:
 > ```
@@ -82,7 +75,7 @@ Important notes:
 >
 > From now on, the above env vars are exported to this console session ~only~ (bash/powershell/whatever). Be sure you continue to use this session, or in case of opening a different one, you repeat the step to export the required variables.
 
-6. Run `make setup-new-environment` from your new folder (you might need to run `make init tf_args=-reconfigure` if it complains after you set up the ssm secrets.)
+5. Run `make setup-new-environment` from your new folder (you might need to run `make init tf_args=-reconfigure` if it complains after you set up the ssm secrets.)
 
 > The first time you run this, you will need to enter the following secrets:
 >
@@ -97,10 +90,10 @@ Important notes:
 
 Unfortunately, a feature gap in the twilio terraform provider means the domain URL cannot be extracted from the resource. The easiest workaround is to put it in a variable after it has been generated initially
 
-7. Go into Twilio Console -> Autopilot -> demo_chatbot and check if the 'redirect_function' task has the correct serverless url set. If it is not correct, update it manually in Twilio Console.
+6. Go into Twilio Console -> Autopilot -> demo_chatbot and check if the 'redirect_function' task has the correct serverless url set. If it is not correct, update it manually in Twilio Console.
     Unfortunately due to this issue with the provider, it may not be updated as part of the second `terraform apply`: https://github.com/twilio/terraform-provider-twilio/issues/92
 
-8. Don't forget to raise a PR to merge the new configuration you created
+7. Don't forget to raise a PR to merge the new configuration you created
 
 
 ## Importing a pre-existing environment

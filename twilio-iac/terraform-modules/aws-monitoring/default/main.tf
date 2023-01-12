@@ -11,8 +11,11 @@ locals {
 provider "aws" {
   alias = "cloudwatch"
   region = var.cloudwatch_region
+  assume_role {
+    role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-${lower(var.environment)}"
+    session_name = "tf-${basename(abspath(path.module))}"
+  }
 }
-
 
 # Pager Duty Alarm
 resource "aws_cloudwatch_metric_alarm" "alarm_twilio_pager_duty" {

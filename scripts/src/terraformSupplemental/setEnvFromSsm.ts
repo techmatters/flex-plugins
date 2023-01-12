@@ -1,9 +1,28 @@
-import { SSM } from 'aws-sdk';
+import { SSM, STS } from 'aws-sdk';
 
 export const setEnvFromSsm = async (accountDirectory: String): Promise<void> => {
-    const ssm = new SSM();
+    const sts = new STS();
+
+    const timestamp = (new Date()).getTime();
+    const params = {
+      RoleArn: 'arn:aws:iam::712893914485:role/tf-twilio-iac-ssm-read-only',
+      RoleSessionName: `tf-supplemental-${timestamp}`
+    };
 
     try {
+        const stsResponse = await sts.assumeRole(params).promise();
+
+        if (!stsResponse.Credentials) {
+            console.error('No credentials found');
+            return;
+        }
+
+        const ssm = new SSM({
+            accessKeyId: stsResponse.Credentials.AccessKeyId,
+            secretAccessKey: stsResponse.Credentials.SecretAccessKey,
+            sessionToken: stsResponse.Credentials.SessionToken,
+          });
+
         const result = await ssm.getParameter({
             Name: `/terraform/twilio-iac/${accountDirectory}/secrets.json`,
             WithDecryption: true,

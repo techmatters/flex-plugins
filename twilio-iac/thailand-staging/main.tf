@@ -11,19 +11,27 @@ terraform {
     key            = "twilio/th/terraform.tfstate"
     dynamodb_table = "terraform-locks"
     encrypt        = true
+    role_arn       = "arn:aws:iam::712893914485:role/tf-twilio-iac-staging"
+  }
+}
+
+provider "aws" {
+  assume_role {
+    role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-${lower(var.environment)}"
+    session_name = "tf-${basename(abspath(path.module))}"
   }
 }
 
 data "aws_ssm_parameter" "secrets" {
-  name     = "/terraform/twilio-iac/thailand-staging/secrets.json"
+  name     = "/terraform/twilio-iac/${basename(abspath(path.module))}/secrets.json"
 }
 
 locals {
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   twilio_channels = {
-    "facebook" = {"contact_identity" = "messenger:108893035300837" },
-    "web" = {"contact_identity" = ""},
-    "sms" = {"contact_identity" = "+17152201076" }
+    "facebook" = {"contact_identity" = "messenger:108893035300837", "channel_type" ="facebook"},
+    "webchat" = {"contact_identity" = "", "channel_type" ="web"},
+    "sms" = {"contact_identity" = "+17152201076", "channel_type" ="sms" }
   }
   custom_channels=["twitter","instagram","line"]
 }
@@ -83,6 +91,7 @@ module flex {
 
 module twilioChannel {
   for_each = local.twilio_channels
+  channel_type = each.value.channel_type
   source = "../terraform-modules/channels/twilio-channel"
   channel_contact_identity = each.value.contact_identity
   pre_survey_bot_sid = module.custom_chatbots.pre_survey_bot_sid
@@ -113,6 +122,8 @@ module survey {
 module aws {
   source = "../terraform-modules/aws/default"
   twilio_account_sid = local.secrets.twilio_account_sid
+  twilio_auth_token = local.secrets.twilio_auth_token
+  serverless_url = module.serverless.serverless_environment_production_url
   helpline = var.helpline
   short_helpline = var.short_helpline
   environment = var.environment

@@ -3,6 +3,11 @@ variable "twilio_account_sid" {
   type        = string
 }
 
+variable "twilio_auth_token" {
+  description = "Twilio Auth Token"
+  type = string
+}
+
 variable "helpline" {
   description = "Full capitalised helpline name"
   type        = string
@@ -77,4 +82,9 @@ variable "bucket_region" {
   description = "The region where the document & chat s3 buckets should be created"
   type = string
   default = "us-east-1"
+}
+
+variable "serverless_url" {
+  description = "URL used to access Aselo Twilio serverless functions"
+  type        = string
 }
