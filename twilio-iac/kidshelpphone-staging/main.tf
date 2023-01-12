@@ -17,7 +17,7 @@ terraform {
 
 provider "aws" {
   assume_role {
-    role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-${lower(local.environment)}"
+    role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-${lower(var.environment)}"
     session_name = "tf-${basename(abspath(path.module))}"
   }
 }
