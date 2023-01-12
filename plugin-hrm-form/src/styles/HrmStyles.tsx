@@ -801,7 +801,6 @@ export const FormRadioInput = styled('input')<FormInputProps>`
     border-radius: 50%;
     content: '';
     position: relative;
-    background: #080808;
     background-color: #080808;
   }
 `;

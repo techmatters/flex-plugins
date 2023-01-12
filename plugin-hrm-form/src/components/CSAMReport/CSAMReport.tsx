@@ -59,10 +59,10 @@ export const CSAMReportScreen: React.FC<Props> = ({
 }) => {
   const methods = useForm({ reValidateMode: 'onChange' });
 
+  const { workerSid, strings } = getConfig();
   const currentCounselor = React.useMemo(() => {
-    const { workerSid } = getConfig();
     return counselorsHash[workerSid];
-  }, [counselorsHash]);
+  }, [counselorsHash, workerSid]);
 
   React.useEffect(() => {
     setEditPageOpen();
@@ -77,7 +77,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
   const onValid = async () => {
     try {
       navigate(CSAMPage.Loading, csamReportState.reportType);
-      const { hrmReport, iwfReport } = await api.saveReport(csamReportState);
+      const { hrmReport, iwfReport } = await api.saveReport(csamReportState, workerSid);
 
       updateStatus(iwfReport);
       addCSAMReportEntry(hrmReport);
@@ -174,8 +174,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
     }
     default: {
       console.error('Error: unexpected page reached on CSAM Report: ', currentPage);
-
-      const { strings } = getConfig();
       window.alert(strings['Error-Unexpected']);
       exit();
       return null;
