@@ -11,19 +11,27 @@ terraform {
     key            = "twilio/zw/terraform.tfstate"
     dynamodb_table = "terraform-locks"
     encrypt        = true
+    role_arn       = "arn:aws:iam::712893914485:role/tf-twilio-iac-staging"
+  }
+}
+
+provider "aws" {
+  assume_role {
+    role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-${lower(var.environment)}"
+    session_name = "tf-${basename(abspath(path.module))}"
   }
 }
 
 data "aws_ssm_parameter" "secrets" {
-  name     = "/terraform/twilio-iac/zimbabwe-staging/secrets.json"
+  name     = "/terraform/twilio-iac/${basename(abspath(path.module))}/secrets.json"
 }
 
 locals {
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   twilio_channels = {
-    "facebook" = {"contact_identity" = "messenger:103260519220529" },
-    "web" = {"contact_identity" = ""},
-    "sms" = {"contact_identity" = "+14322743110" }
+    "facebook" = {"contact_identity" = "messenger:103260519220529", "channel_type" = "facebook" },
+    "webchat" = {"contact_identity" = "", "channel_type" = "web" },
+    "sms" = {"contact_identity" = "+14322743110", "channel_type" = "sms" }
   }
 }
 
@@ -34,7 +42,7 @@ provider "twilio" {
 
 module "chatbots" {
   source = "../terraform-modules/chatbots/default"
-  serverless_url = local.secrets.serverless_url
+  serverless_url = module.serverless.serverless_environment_production_url
 }
 
 module "hrmServiceIntegration" {
@@ -48,6 +56,8 @@ module "hrmServiceIntegration" {
 
 module "serverless" {
   source = "../terraform-modules/serverless/default"
+  twilio_account_sid = local.secrets.twilio_account_sid
+  twilio_auth_token = local.secrets.twilio_auth_token
 }
 
 module "services" {
@@ -61,19 +71,19 @@ module "services" {
 
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
-  serverless_url = local.secrets.serverless_url
+  serverless_url = module.serverless.serverless_environment_production_url
   helpline = var.helpline
   custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", var.twilio_numbers))}]"
 }
 
 module flex {
   source = "../terraform-modules/flex/service-configuration"
-  account_sid = local.secrets.twilio_account_sid
+  twilio_account_sid = local.secrets.twilio_account_sid
   short_environment = var.short_environment
   operating_info_key = var.operating_info_key
   permission_config = var.permission_config
   definition_version = var.definition_version
-  serverless_url = local.secrets.serverless_url
+  serverless_url = module.serverless.serverless_environment_production_url
   multi_office_support = var.multi_office
   feature_flags = var.feature_flags
 }
@@ -85,6 +95,7 @@ module twilioChannel {
   pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
   target_task_name = var.target_task_name
   channel_name = "${each.key}"
+  channel_type = each.value.channel_type
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
@@ -98,7 +109,9 @@ module survey {
 
 module aws {
   source = "../terraform-modules/aws/default"
-  account_sid = local.secrets.twilio_account_sid
+  twilio_account_sid = local.secrets.twilio_account_sid
+  twilio_auth_token = local.secrets.twilio_auth_token
+  serverless_url = module.serverless.serverless_environment_production_url
   helpline = var.helpline
   short_helpline = var.short_helpline
   environment = var.environment
@@ -128,5 +141,5 @@ module github {
   twilio_auth_token = local.secrets.twilio_auth_token
   short_environment = var.short_environment
   short_helpline = var.short_helpline
-  serverless_url = local.secrets.serverless_url
+  serverless_url = module.serverless.serverless_environment_production_url
 }

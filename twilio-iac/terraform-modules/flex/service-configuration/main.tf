@@ -53,7 +53,7 @@ locals {
     },
     "version_message": ""
   },
-  "account_sid": var.account_sid,
+  "account_sid": var.twilio_account_sid,
   "attributes": {
     "feature_flags": var.feature_flags,
     "seenOnboarding": true,

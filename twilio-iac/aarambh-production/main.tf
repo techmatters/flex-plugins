@@ -11,11 +11,19 @@ terraform {
     key            = "twilio/in/terraform.tfstate"
     dynamodb_table = "terraform-locks"
     encrypt        = true
+    role_arn       = "arn:aws:iam::712893914485:role/tf-twilio-iac-production"
+  }
+}
+
+provider "aws" {
+  assume_role {
+    role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-${lower(var.environment)}"
+    session_name = "tf-${basename(abspath(path.module))}"
   }
 }
 
 data "aws_ssm_parameter" "secrets" {
-  name     = "/terraform/twilio-iac/aarambh-production/secrets.json"
+  name     = "/terraform/twilio-iac/${basename(abspath(path.module))}/secrets.json"
 }
 
 locals {
@@ -29,7 +37,7 @@ provider "twilio" {
 
 module "chatbots" {
   source = "../terraform-modules/chatbots/default"
-  serverless_url = local.secrets.serverless_url
+  serverless_url = module.serverless.serverless_environment_production_url
 }
 
 module "hrmServiceIntegration" {
@@ -43,6 +51,8 @@ module "hrmServiceIntegration" {
 
 module "serverless" {
   source = "../terraform-modules/serverless/default"
+  twilio_account_sid = local.secrets.twilio_account_sid
+  twilio_auth_token = local.secrets.twilio_auth_token
 }
 
 module "services" {
@@ -57,7 +67,7 @@ module "services" {
 
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
-  serverless_url = local.secrets.serverless_url
+  serverless_url = module.serverless.serverless_environment_production_url
   helpline = var.helpline
   custom_target_workers = "1==1"
   custom_task_routing_filter_expression = "isContactlessTask==true"
@@ -73,11 +83,11 @@ module studioFlow {
 
 module flex {
   source = "../terraform-modules/flex/default"
-  account_sid = local.secrets.twilio_account_sid
+  twilio_account_sid = local.secrets.twilio_account_sid
   short_environment = var.short_environment
   operating_info_key = var.operating_info_key
   definition_version = var.definition_version
-  serverless_url = local.secrets.serverless_url
+  serverless_url = module.serverless.serverless_environment_production_url
   multi_office_support = var.multi_office
   feature_flags = var.feature_flags
   flex_chat_service_sid = module.services.flex_chat_service_sid
@@ -94,7 +104,9 @@ module survey {
 
 module aws {
   source = "../terraform-modules/aws/default"
-  account_sid = local.secrets.twilio_account_sid
+  twilio_account_sid = local.secrets.twilio_account_sid
+  twilio_auth_token = local.secrets.twilio_auth_token
+  serverless_url = module.serverless.serverless_environment_production_url
   helpline = var.helpline
   short_helpline = var.short_helpline
   environment = var.environment
