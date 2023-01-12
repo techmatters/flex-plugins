@@ -5,14 +5,14 @@ import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
 
 import { FormInputProps } from './components/types';
 import { FormInput } from './components';
-import { getInputType } from '../formGenerators';
+import { getInputType, CustomHandlers } from '../formGenerators';
 
 type FileUploadCustomHandlers = {
   onFileChange: (event: any) => Promise<string>;
   onDeleteFile: (fileName: string) => Promise<void>;
 };
 
-export type CustomHandlers = FileUploadCustomHandlers;
+// export type CustomHandlers = FileUploadCustomHandlers;
 
 const getregisterOptions = (formItemDefinition: FormItemDefinition): RegisterOptions =>
   pick(formItemDefinition, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
@@ -40,10 +40,12 @@ export const createInput = ({
   console.log(`%c >>>>>>>>>>>>>>> createInput being called for ${inputId}`, 'background: #4c00b0; color: #fff');
 
   const registerOptions = getregisterOptions(formItemDefinition);
+  // eslint-disable-next-line sonarjs/no-small-switch
   switch (formItemDefinition.type) {
     case FormInputType.Input: {
       return (
         <FormInput
+          key={inputId}
           inputId={inputId}
           initialValue={initialValue}
           updateCallback={updateCallback}

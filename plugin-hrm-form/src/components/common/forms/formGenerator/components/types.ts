@@ -1,6 +1,6 @@
 import type { RegisterOptions } from 'react-hook-form';
 
-export type HTMLElementRef = {
+type HTMLElementRef = {
   current: HTMLElement | null;
 };
 

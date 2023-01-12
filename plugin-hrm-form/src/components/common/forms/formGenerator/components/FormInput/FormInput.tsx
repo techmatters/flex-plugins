@@ -45,50 +45,34 @@ const FormInput: React.FC<Props> = ({
   const defaultValue = typeof initialValue === 'boolean' ? initialValue.toString() : initialValue;
   const disabled = !isItemEnabled();
 
-  console.log(`%c >>>>>>>>>>>>>>> Outer rerender FormInput ${inputId}`, 'background: #4c00b0; color: #fff');
-  return React.useMemo(() => {
-    console.log(`%c >>>>>>>>>>>>>>> Recomputing FormInput ${inputId}`, 'background: #4c00b0; color: #fff');
-
-    return (
-      /*
-       * In this component is less evident cause it's simple, but ideally the "inner component" will be a stateless UI with all what's needed provided as props,
-       * and the outer one will be a wrapper that "binds" the inner one with our custom logic (rhf, Twilio Template and all of the dependecies should be injected into it).
-       * This way, moving the actual UI components to a component library will be feacible (if we ever want to)
-       */
-      <FormLabel htmlFor={inputId}>
-        <Row>
-          <Box marginBottom="8px">
-            {labelTextComponent}
-            {registerOptions.required && <RequiredAsterisk />}
-          </Box>
-        </Row>
-        <FormInputInner
-          id={inputId}
-          data-testid={inputId}
-          name={inputId}
-          error={Boolean(error)}
-          aria-invalid={Boolean(error)}
-          aria-describedby={errorComponentId}
-          onBlur={updateCallback}
-          ref={refFunction}
-          defaultValue={defaultValue}
-          disabled={disabled}
-        />
-        {error && <FormError>{errorTextComponent}</FormError>}
-      </FormLabel>
-    );
-  }, [
-    defaultValue,
-    disabled,
-    error,
-    errorComponentId,
-    errorTextComponent,
-    inputId,
-    labelTextComponent,
-    refFunction,
-    registerOptions.required,
-    updateCallback,
-  ]);
+  /*
+   * In this component is less evident cause it's simple, but ideally the "inner component" will be a stateless UI with all what's needed provided as props,
+   * and the outer one will be a wrapper that "binds" the inner one with our custom logic (rhf, Twilio Template and all of the dependecies should be injected into it).
+   * This way, moving the actual UI components to a component library will be feacible (if we ever want to)
+   */
+  return (
+    <FormLabel htmlFor={inputId}>
+      <Row>
+        <Box marginBottom="8px">
+          {labelTextComponent}
+          {registerOptions.required && <RequiredAsterisk />}
+        </Box>
+      </Row>
+      <FormInputInner
+        id={inputId}
+        data-testid={inputId}
+        name={inputId}
+        error={Boolean(error)}
+        aria-invalid={Boolean(error)}
+        aria-describedby={errorComponentId}
+        onBlur={updateCallback}
+        ref={refFunction}
+        defaultValue={defaultValue}
+        disabled={disabled}
+      />
+      {error && <FormError>{errorTextComponent}</FormError>}
+    </FormLabel>
+  );
 };
 
 export default FormInput;
