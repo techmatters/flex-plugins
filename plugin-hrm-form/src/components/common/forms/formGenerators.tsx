@@ -160,6 +160,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
 ) => {
   const rules = getRules(def);
   const path = [...parents, def.name].join('.');
+  console.log(`%c >>>>>>>>>>>>>>> getInputType called for ${path}`, 'background: #000; color: #fff');
 
   const labelTextComponent = <Template code={`${def.label}`} className=".fullstory-unmask" />;
 
