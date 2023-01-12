@@ -45,7 +45,7 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
   const form = useCreateFormFromDefinition({
     definition,
     initialValues,
-    parentsPath: [tabPath],
+    parentsPath: tabPath,
     updateCallback: () => {
       updateForm(getValues());
     },

@@ -134,7 +134,7 @@ const AddEditCaseItem: React.FC<Props> = ({
   const form = useCreateFormFromDefinition({
     definition: formDefinition,
     initialValues: workingCopy?.form,
-    parentsPath: [],
+    parentsPath: '',
     updateCallback: () => {
       const form = getValues();
       console.log('Updated case form', form);

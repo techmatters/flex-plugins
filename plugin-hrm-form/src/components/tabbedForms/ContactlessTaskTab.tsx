@@ -55,7 +55,7 @@ const ContactlessTaskTab: React.FC<Props> = ({
       ...initialValues,
       createdOnBehalfOf: initialValues.createdOnBehalfOf || workerSid, // If no createdOnBehalfOf comming from state, we want the current counselor to be the default
     },
-    parentsPath: [],
+    parentsPath: 'contactlessTask',
     updateCallback: () => {
       const { isFutureAux, ...rest } = getValues().contactlessTask;
       dispatch(updateForm(task.taskSid, 'contactlessTask', rest));

@@ -118,7 +118,7 @@ const EditCaseSummary: React.FC<Props> = ({
   const form = useCreateFormFromDefinition({
     definition: formDefinition,
     initialValues: workingCopy,
-    parentsPath: [],
+    parentsPath: '',
     updateCallback: () => updateWorkingCopy(task.taskSid, getValues() as CaseSummaryWorkingCopy),
     isItemEnabled: item => {
       switch (item.name) {
