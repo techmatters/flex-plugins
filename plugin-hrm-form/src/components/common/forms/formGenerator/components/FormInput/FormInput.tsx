@@ -23,12 +23,9 @@ const FormInput: React.FC<Props> = ({
   const methods = useFormContext();
   const { errors } = methods;
   const error = get(errors, inputId);
-  const labelTextComponent = React.useMemo(() => <Template code={`${label}`} className=".fullstory-unmask" />, [label]);
+  const labelTextComponent = <Template code={`${label}`} className=".fullstory-unmask" />;
   const errorComponentId = `${inputId}-error`;
-  const errorTextComponent = React.useMemo(
-    () => (error ? <Template id={errorComponentId} code={error.message} /> : null),
-    [error, errorComponentId],
-  );
+  const errorTextComponent = error ? <Template id={errorComponentId} code={error.message} /> : null;
   const { register } = methods;
   const refFunction = React.useCallback(
     ref => {
@@ -45,12 +42,13 @@ const FormInput: React.FC<Props> = ({
   const defaultValue = typeof initialValue === 'boolean' ? initialValue.toString() : initialValue;
   const disabled = !isItemEnabled();
 
-  /*
-   * In this component is less evident cause it's simple, but ideally the "inner component" will be a stateless UI with all what's needed provided as props,
-   * and the outer one will be a wrapper that "binds" the inner one with our custom logic (rhf, Twilio Template and all of the dependecies should be injected into it).
-   * This way, moving the actual UI components to a component library will be feacible (if we ever want to)
-   */
+  // This component can be wrapped in a React.useMemo to save re-painting every label+input unless it's really necessary (e.g. there's an error and the UI should be different)
   return (
+    /*
+     * In this component is less evident cause it's simple, but ideally the "inner component" will be a stateless UI with all what's needed provided as props,
+     * and the outer one will be a wrapper that "binds" the inner one with our custom logic (rhf, Twilio Template and all of the dependecies should be injected into it).
+     * This way, moving the actual UI components to a component library will be feacible (if we ever want to)
+     */
     <FormLabel htmlFor={inputId}>
       <Row>
         <Box marginBottom="8px">
