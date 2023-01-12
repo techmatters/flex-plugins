@@ -6,4 +6,4 @@ cd ../../scripts/
 
 # npm i
 
-npm run twilioResources -- import-account-defaults $helplineDir -d
+npm run twilioResources -- import-account-defaults $helplineDir
