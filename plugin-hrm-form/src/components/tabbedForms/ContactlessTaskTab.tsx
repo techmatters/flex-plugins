@@ -7,22 +7,16 @@ import { get } from 'lodash';
 import { useFlexSelector } from '@twilio/flex-ui';
 import type { DefinitionVersion } from 'hrm-form-definitions';
 
-import { createFormFromDefinition, disperseInputs } from '../common/forms/formGenerators';
+import { disperseInputs } from '../common/forms/formGenerators';
+import { useCreateFormFromDefinition } from '../common/forms/formGenerator';
 import { updateForm } from '../../states/contacts/actions';
-import {
-  Container,
-  ColumnarBlock,
-  TwoColumnLayout,
-  TabbedFormTabContainer,
-  ColumnarContent,
-} from '../../styles/HrmStyles';
+import { Container, ColumnarBlock, TwoColumnLayout, ColumnarContent } from '../../styles/HrmStyles';
 import { configurationBase, namespace, RootState } from '../../states';
 import { selectWorkerSid } from '../../states/selectors/flexSelectors';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import { createContactlessTaskTabDefinition } from './ContactlessTaskTabDefinition';
 import { splitDate, splitTime } from '../../utils/helpers';
 import type { OfflineContactTask } from '../../types/types';
-import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
   task: OfflineContactTask;
@@ -46,41 +40,30 @@ const ContactlessTaskTab: React.FC<Props> = ({
   counselorsList,
   autoFocus,
 }) => {
-  const shouldFocusFirstElement = display && autoFocus;
-  const firstElementRef = useFocus(shouldFocusFirstElement);
-
-  const [initialForm] = React.useState(initialValues); // grab initial values in first render only. This value should never change or will ruin the memoization below
-
   const { getValues, register, setError, setValue, watch, errors } = useFormContext();
 
   const workerSid = useFlexSelector(selectWorkerSid);
 
-  const contactlessTaskForm = React.useMemo(() => {
-    const updateCallBack = () => {
+  const formDefinition = React.useMemo(
+    () => createContactlessTaskTabDefinition({ counselorsList, helplineInformation, definition }),
+    [counselorsList, definition, helplineInformation],
+  );
+
+  const form = useCreateFormFromDefinition({
+    definition: formDefinition,
+    initialValues: {
+      ...initialValues,
+      createdOnBehalfOf: initialValues.createdOnBehalfOf || workerSid, // If no createdOnBehalfOf comming from state, we want the current counselor to be the default
+    },
+    parentsPath: [],
+    updateCallback: () => {
       const { isFutureAux, ...rest } = getValues().contactlessTask;
       dispatch(updateForm(task.taskSid, 'contactlessTask', rest));
-    };
+    },
+    shouldFocusFirstElement: display && autoFocus,
+  });
 
-    const formDefinition = createContactlessTaskTabDefinition({ counselorsList, helplineInformation, definition });
-
-    // If no createdOnBehalfOf comming from state, we want the current counselor to be the default
-    const createdOnBehalfOf = initialForm.createdOnBehalfOf || workerSid;
-    const init = { ...initialForm, createdOnBehalfOf };
-
-    const tab = createFormFromDefinition(formDefinition)(['contactlessTask'])(init, firstElementRef)(updateCallBack);
-
-    return disperseInputs(5)(tab);
-  }, [
-    workerSid,
-    counselorsList,
-    helplineInformation,
-    definition,
-    initialForm,
-    firstElementRef,
-    getValues,
-    dispatch,
-    task.taskSid,
-  ]);
+  const contactlessTaskForm = disperseInputs(5)(form);
 
   // Add invisible field that errors if date + time are future (triggered by validaiton)
   React.useEffect(() => {
