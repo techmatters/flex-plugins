@@ -9,6 +9,7 @@ import Case from './case';
 import CSAMReport from './CSAMReport/CSAMReport';
 import { namespace, RootState, routingBase } from '../states';
 import type { CustomITask } from '../types/types';
+import { newContactCSAMApi } from './CSAMReport/csamReportApi';
 
 type OwnProps = {
   task: CustomITask;
@@ -40,7 +41,7 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags }) => {
       );
 
     case 'csam-report':
-      return <CSAMReport taskSid={task.taskSid} />;
+      return <CSAMReport api={newContactCSAMApi(task.taskSid, routing.previousRoute)} />;
 
     case 'select-call-type':
     default:

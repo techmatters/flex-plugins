@@ -1,110 +1,126 @@
 /* eslint-disable sonarjs/no-identical-functions */
-import React from 'react';
-import { configureAxe, toHaveNoViolations } from 'jest-axe';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
-import { mount } from 'enzyme';
+import * as React from 'react';
+import { toHaveNoViolations } from 'jest-axe';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import '@testing-library/jest-dom/extend-expect';
 
+import { CSAMReportTypes, isCounsellorTaskEntry, CSAMReportStateEntry } from '../../../states/csam-report/types';
 import '../../mockGetConfig';
-
-import * as ServerlessService from '../../../services/ServerlessService';
-import * as CSAMReportService from '../../../services/CSAMReportService';
-import { CSAMReportScreen } from '../../../components/CSAMReport/CSAMReport';
-import { initialValues, childInitialValues } from '../../../components/CSAMReport/CSAMReportFormDefinition';
-import HrmTheme from '../../../styles/HrmTheme';
-
-jest.mock('../../../services/ServerlessService');
-jest.mock('../../../services/CSAMReportService');
+import { CSAMReportScreen, Props } from '../../../components/CSAMReport/CSAMReport';
+import { childInitialValues, initialValues } from '../../../components/CSAMReport/CSAMReportFormDefinition';
+import { CSAMPage, CSAMReportApi } from '../../../components/CSAMReport/csamReportApi';
 
 console.error = () => undefined;
 expect.extend(toHaveNoViolations);
 
-const themeConf = {
-  colorTheme: HrmTheme,
-};
-
 const taskSid = 'task-sid';
 const workerSid = 'worker-sid';
-const csamType = 'counsellor-form';
 
-const setupProps = (subroute, csamReportState) => ({
-  alertSpy: jest.spyOn(window, 'alert'),
-  updateFormAction: jest.fn(),
-  updateStatusAction: jest.fn(),
-  clearCSAMReportAction: jest.fn(),
-  changeRoute: jest.fn(),
-  addCSAMReportEntry: jest.fn(),
-  csamReportState,
-  routing: { route: 'csam-report', subroute },
-  counselorsHash: { workerSid },
-  csamType,
-});
+let mockCSAMReportApi: CSAMReportApi;
+let dispatcherMocks;
 
-/**
- * @param {: 'child-form' | 'counsellor-form' | 'loading' | 'child-status' | 'counsellor-status'} subroute
- */
+const setupProps = (
+  currentPage: CSAMPage,
+  csamReportState: CSAMReportStateEntry,
+): Props & { alertSpy: jest.SpyInstance } => {
+  (mockCSAMReportApi.currentPage as jest.Mock).mockReturnValue(currentPage);
+  (mockCSAMReportApi.reportState as jest.Mock).mockReturnValue(csamReportState);
+  return {
+    alertSpy: jest.spyOn(window, 'alert'),
+    updateChildForm: dispatcherMocks.updateChildReportDispatcher,
+    updateCounsellorForm: dispatcherMocks.updateCounsellorReportDispatcher,
+    updateStatus: dispatcherMocks.updateStatusDispatcher,
+    navigate: dispatcherMocks.navigationActionDispatcher,
+    addCSAMReportEntry: dispatcherMocks.addReportDispatcher,
+    exit: dispatcherMocks.exitActionDispatcher,
+    pickReportType: dispatcherMocks.pickReportTypeDispatcher,
+    csamReportState,
+    currentPage,
+    setEditPageOpen: jest.fn(),
+    setEditPageClosed: jest.fn(),
+    counselorsHash: { workerSid },
+    api: mockCSAMReportApi,
+  };
+};
+
 const renderCSAMReportScreen = (
-  subrouteParam = 'counsellor-form',
-  csamReportStateParam = { form: { ...initialValues, ...childInitialValues } },
+  subrouteParam = CSAMPage.Form,
+  csamReportStateParam: CSAMReportStateEntry = { form: initialValues, reportType: CSAMReportTypes.COUNSELLOR },
 ) => {
   const {
     alertSpy,
-    updateFormAction,
-    updateStatusAction,
-    clearCSAMReportAction,
-    changeRoute,
+    updateChildForm,
+    updateCounsellorForm,
+    updateStatus,
     addCSAMReportEntry,
     csamReportState,
-    routing,
+    currentPage,
     counselorsHash,
-    csamType,
+    setEditPageClosed,
+    setEditPageOpen,
+    navigate,
+    exit,
+    api,
   } = setupProps(subrouteParam, csamReportStateParam);
 
   render(
-    <StorelessThemeProvider themeConf={themeConf}>
+    <StorelessThemeProvider themeConf={{}}>
       <CSAMReportScreen
         taskSid={taskSid}
-        updateFormAction={updateFormAction}
-        updateStatusAction={updateStatusAction}
-        clearCSAMReportAction={clearCSAMReportAction}
-        changeRoute={changeRoute}
+        updateChildForm={updateChildForm}
+        updateCounsellorForm={updateCounsellorForm}
+        updateStatus={updateStatus}
         addCSAMReportEntry={addCSAMReportEntry}
         csamReportState={csamReportState}
-        routing={routing}
         counselorsHash={counselorsHash}
-        csamType={csamType}
+        navigate={navigate}
+        exit={exit}
+        api={api}
+        setEditPageOpen={setEditPageOpen}
+        setEditPageClosed={setEditPageClosed}
+        currentPage={currentPage}
       />
     </StorelessThemeProvider>,
   );
 
   return {
     alertSpy,
-    updateFormAction,
-    updateStatusAction,
-    clearCSAMReportAction,
-    changeRoute,
+    updateStatus,
     addCSAMReportEntry,
     csamReportState,
-    routing,
     counselorsHash,
-    csamType,
+    navigate,
+    api,
   };
 };
 
+beforeEach(() => {
+  dispatcherMocks = {
+    addReportDispatcher: jest.fn(),
+    exitActionDispatcher: jest.fn(),
+    navigationActionDispatcher: jest.fn(),
+    updateChildReportDispatcher: jest.fn(),
+    updateCounsellorReportDispatcher: jest.fn(),
+    updateStatusDispatcher: jest.fn(),
+  };
+
+  mockCSAMReportApi = {
+    addReportDispatcher: () => dispatcherMocks.addReportDispatcher,
+    exitActionDispatcher: () => dispatcherMocks.exitActionDispatcher,
+    navigationActionDispatcher: () => dispatcherMocks.navigationActionDispatcher,
+    updateChildReportDispatcher: () => dispatcherMocks.updateChildReportDispatcher,
+    updateCounsellorReportDispatcher: () => dispatcherMocks.updateCounsellorReportDispatcher,
+    updateStatusDispatcher: () => dispatcherMocks.updateCounsellorReportDispatcher,
+    pickReportTypeDispatcher: () => dispatcherMocks.pickReportTypeDispatcher,
+    saveReport: jest.fn(),
+    currentPage: jest.fn(),
+    reportState: jest.fn(),
+  };
+});
+
 test("Form renders but can't be submitted empty", async () => {
-  const {
-    alertSpy,
-    updateFormAction,
-    updateStatusAction,
-    clearCSAMReportAction,
-    changeRoute,
-    addCSAMReportEntry,
-    csamReportState,
-    routing,
-    counselorsHash,
-    csamType,
-  } = renderCSAMReportScreen();
+  const { alertSpy } = renderCSAMReportScreen();
 
   expect(screen.getByTestId('CSAMReport-FormScreen')).toBeInTheDocument();
   expect(screen.queryByTestId('CSAMReport-Loading')).not.toBeInTheDocument();
@@ -120,18 +136,7 @@ test("Form renders but can't be submitted empty", async () => {
 });
 
 test("Form renders but can't be submitted on invalid url", async () => {
-  const {
-    alertSpy,
-    updateFormAction,
-    updateStatusAction,
-    clearCSAMReportAction,
-    changeRoute,
-    addCSAMReportEntry,
-    csamReportState,
-    routing,
-    counselorsHash,
-    csamType,
-  } = renderCSAMReportScreen();
+  const { alertSpy } = renderCSAMReportScreen();
   expect(screen.getByTestId('CSAMReport-FormScreen')).toBeInTheDocument();
   expect(screen.queryByTestId('CSAMReport-Loading')).not.toBeInTheDocument();
   expect(screen.queryByTestId('CSAMReport-StatusScreen')).not.toBeInTheDocument();
@@ -155,29 +160,7 @@ test("Form renders but can't be submitted on invalid url", async () => {
 });
 
 test("Form can't be submitted if anonymous value is undefined", async () => {
-  const reportToIWFSpy = jest.spyOn(ServerlessService, 'reportToIWF').mockImplementationOnce(() =>
-    Promise.resolve({
-      'IWFReportService1.0': { responseData: {} },
-    }),
-  );
-  const createCSAMReportSpy = jest.spyOn(CSAMReportService, 'createCSAMReport').mockImplementationOnce(() =>
-    Promise.resolve({
-      csamReportId: 'report-sid',
-    }),
-  );
-
-  const {
-    alertSpy,
-    updateFormAction,
-    updateStatusAction,
-    clearCSAMReportAction,
-    changeRoute,
-    addCSAMReportEntry,
-    csamReportState,
-    routing,
-    counselorsHash,
-    csamType,
-  } = renderCSAMReportScreen();
+  const { alertSpy } = renderCSAMReportScreen();
 
   expect(screen.getByTestId('CSAMReport-FormScreen')).toBeInTheDocument();
   expect(screen.queryByTestId('CSAMReport-Loading')).not.toBeInTheDocument();
@@ -202,29 +185,21 @@ test("Form can't be submitted if anonymous value is undefined", async () => {
 });
 
 test('Form can be submitted if valid (anonymous)', async () => {
-  const reportToIWFSpy = jest.spyOn(ServerlessService, 'reportToIWF').mockImplementationOnce(() =>
-    Promise.resolve({
-      'IWFReportService1.0': { responseData: {} },
-    }),
-  );
-  const createCSAMReportSpy = jest.spyOn(CSAMReportService, 'createCSAMReport').mockImplementationOnce(() =>
-    Promise.resolve({
+  (mockCSAMReportApi.saveReport as jest.Mock).mockResolvedValue({
+    hrmReport: {
       csamReportId: 'report-sid',
-    }),
-  );
+      reportType: 'counsellor-generated',
+      id: 0,
+      acknowledged: true,
+      twilioWorkerId: 'WORKER_SID',
+      createdAt: 'JUST NOW',
+    },
+    iwfReport: {
+      'IWFReportService1.0': { responseData: {} },
+    },
+  });
 
-  const {
-    alertSpy,
-    updateFormAction,
-    updateStatusAction,
-    clearCSAMReportAction,
-    changeRoute,
-    addCSAMReportEntry,
-    csamReportState,
-    routing,
-    counselorsHash,
-    csamType,
-  } = renderCSAMReportScreen();
+  const { updateStatus, navigate, addCSAMReportEntry } = renderCSAMReportScreen();
 
   expect(screen.getByTestId('CSAMReport-FormScreen')).toBeInTheDocument();
   expect(screen.queryByTestId('CSAMReport-Loading')).not.toBeInTheDocument();
@@ -253,37 +228,34 @@ test('Form can be submitted if valid (anonymous)', async () => {
 
   await waitFor(() => expect(screen.queryAllByText('RequiredFieldError')).toHaveLength(0));
 
-  expect(changeRoute).toHaveBeenCalled();
-  expect(reportToIWFSpy).toHaveBeenCalled();
-  expect(createCSAMReportSpy).toHaveBeenCalled();
-  expect(updateStatusAction).toHaveBeenCalled();
+  expect(navigate).toHaveBeenCalled();
+  expect(mockCSAMReportApi.saveReport).toHaveBeenCalled();
+  expect(updateStatus).toHaveBeenCalled();
   expect(addCSAMReportEntry).toHaveBeenCalled();
 });
 
 test('Form can be submitted if valid (non-anonymous)', async () => {
-  const reportToIWFSpy = jest.spyOn(ServerlessService, 'reportToIWF').mockImplementationOnce(() =>
-    Promise.resolve({
-      'IWFReportService1.0': { responseData: {} },
-    }),
-  );
-  const createCSAMReportSpy = jest.spyOn(CSAMReportService, 'createCSAMReport').mockImplementationOnce(() =>
-    Promise.resolve({
+  (mockCSAMReportApi.saveReport as jest.Mock).mockResolvedValue({
+    hrmReport: {
       csamReportId: 'report-sid',
-    }),
-  );
+      reportType: 'counsellor-generated',
+      id: 0,
+      acknowledged: true,
+      twilioWorkerId: 'WORKER_SID',
+      createdAt: 'JUST NOW',
+    },
+    iwfReport: {
+      'IWFReportService1.0': { responseData: {} },
+    },
+  });
 
-  const {
-    alertSpy,
-    updateFormAction,
-    updateStatusAction,
-    clearCSAMReportAction,
-    changeRoute,
-    addCSAMReportEntry,
-    csamReportState,
-    routing,
-    counselorsHash,
-    csamType,
-  } = renderCSAMReportScreen();
+  const { updateStatus, navigate, addCSAMReportEntry } = renderCSAMReportScreen(CSAMPage.Form, {
+    form: {
+      ...initialValues,
+      anonymous: 'non-anonymous',
+    },
+    reportType: CSAMReportTypes.COUNSELLOR,
+  });
 
   expect(screen.getByTestId('CSAMReport-FormScreen')).toBeInTheDocument();
   expect(screen.queryByTestId('CSAMReport-Loading')).not.toBeInTheDocument();
@@ -300,14 +272,10 @@ test('Form can be submitted if valid (non-anonymous)', async () => {
       value: 'validurl.com',
     },
   });
-
   const anonymousInput = screen.getByTestId('anonymous-anonymous');
   expect(anonymousInput).toBeInTheDocument();
   const nonanonymousInput = screen.getByTestId('anonymous-non-anonymous');
   expect(nonanonymousInput).toBeInTheDocument();
-
-  fireEvent.change(nonanonymousInput, { target: { checked: true } });
-
   const firstNameInput = screen.getByTestId('firstName');
   expect(firstNameInput).toBeInTheDocument();
   const lastNameInput = screen.getByTestId('lastName');
@@ -324,26 +292,14 @@ test('Form can be submitted if valid (non-anonymous)', async () => {
   fireEvent.click(submitButton);
   await waitFor(() => expect(screen.queryAllByText('RequiredFieldError')).toHaveLength(0));
 
-  expect(changeRoute).toHaveBeenCalled();
-  expect(reportToIWFSpy).toHaveBeenCalled();
-  expect(createCSAMReportSpy).toHaveBeenCalled();
-  expect(updateStatusAction).toHaveBeenCalled();
+  expect(navigate).toHaveBeenCalled();
+  expect(mockCSAMReportApi.saveReport).toHaveBeenCalled();
+  expect(updateStatus).toHaveBeenCalled();
   expect(addCSAMReportEntry).toHaveBeenCalled();
 });
 
 test('Loading screen renders', async () => {
-  const {
-    alertSpy,
-    updateFormAction,
-    updateStatusAction,
-    clearCSAMReportAction,
-    changeRoute,
-    addCSAMReportEntry,
-    csamReportState,
-    routing,
-    counselorsHash,
-    csamType,
-  } = renderCSAMReportScreen('loading');
+  renderCSAMReportScreen(CSAMPage.Loading);
 
   expect(screen.getByTestId('CSAMReport-Loading')).toBeInTheDocument();
   expect(screen.queryByTestId('CSAMReport-FormScreen')).not.toBeInTheDocument();
@@ -359,19 +315,9 @@ test('Report Status screen renders + copy button works', async () => {
 
   const copySpy = jest.spyOn(navigator.clipboard, 'writeText');
 
-  const {
-    alertSpy,
-    updateFormAction,
-    updateStatusAction,
-    clearCSAMReportAction,
-    changeRoute,
-    addCSAMReportEntry,
-    csamReportState,
-    routing,
-    counselorsHash,
-    csamType,
-  } = renderCSAMReportScreen('counsellor-status', {
-    form: { initialValues, childInitialValues },
+  const { csamReportState } = renderCSAMReportScreen(CSAMPage.Status, {
+    reportType: CSAMReportTypes.COUNSELLOR,
+    form: initialValues,
     reportStatus: {
       responseCode: 'responseCode',
       responseData: 'responseData',
@@ -389,6 +335,9 @@ test('Report Status screen renders + copy button works', async () => {
   await act(async () => {
     fireEvent.click(copyCodeButton);
   });
-
+  // TS will not narrow the type for the last check if we use jest assertions :-(
+  if (!isCounsellorTaskEntry(csamReportState)) {
+    throw new Error('CSAM state should be for a counsellor report');
+  }
   expect(copySpy).toHaveBeenCalledWith(csamReportState.reportStatus.responseData);
 });

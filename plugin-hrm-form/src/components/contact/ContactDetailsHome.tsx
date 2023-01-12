@@ -4,6 +4,8 @@ import { format } from 'date-fns';
 import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
+import { Edit } from '@material-ui/icons';
+import { Grid } from '@material-ui/core';
 
 import { Flex, Box } from '../../styles/HrmStyles';
 import { CSAMReportEntry, isS3StoredTranscript, isTwilioStoredMedia, SearchAPIContact } from '../../types/types';
@@ -14,6 +16,7 @@ import {
   SectionTitleContainer,
   SectionActionButton,
   SectionValueText,
+  ContactDetailsIcon,
 } from '../../styles/search';
 import ContactDetailsSection from './ContactDetailsSection';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
@@ -27,6 +30,7 @@ import { getPermissionsForContact, getPermissionsForViewingIdentifiers, Permissi
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
 import { getConfig } from '../../HrmFormPlugin';
 import TranscriptSection from './TranscriptSection';
+import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import { contactLabelFromSearchContact } from '../../states/contacts/contactIdentifier';
 
 const formatCsamReport = (report: CSAMReportEntry) => {
@@ -61,13 +65,12 @@ type OwnProps = {
   enableEditing: boolean;
 };
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 /* eslint-disable complexity */
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ContactDetailsHome: React.FC<Props> = function ({
   contactId,
-  context,
   detailsExpanded,
   showActionIcons = false,
   handleOpenConnectDialog,
@@ -78,6 +81,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   createContactDraft,
   enableEditing,
   canViewTwilioTranscript,
+  createDraftCsamReport,
 }) {
   const version = savedContact?.details.definitionVersion;
 
@@ -164,8 +168,19 @@ const ContactDetailsHome: React.FC<Props> = function ({
   } = ContactDetailsSections;
   const addedBy = counselorsHash[createdBy];
   const counselorName = counselorsHash[counselor];
-  const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(context, section);
-  const navigate = (route: ContactDetailsRoute) => createContactDraft(savedContact.contactId, route);
+  const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(section);
+  const navigate = (route: ContactDetailsRoute) => createContactDraft(route);
+
+  const EditIcon = ContactDetailsIcon(Edit);
+
+  const externalReportButton = () => (
+    <SectionActionButton padding="0" type="button" onClick={() => createDraftCsamReport()}>
+      <EditIcon style={{ fontSize: '14px', padding: '-1px 6px 0 6px', marginRight: '6px' }} />
+      <Grid item xs={12}>
+        <Template code="ContactDetails-GeneralDetails-externalReport" />
+      </Grid>
+    </SectionActionButton>
+  );
 
   const loadConversationIntoOverlay = async () => {
     const twilioStoredMedia = savedContact.details.conversationMedia.find(isTwilioStoredMedia);
@@ -195,6 +210,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
       savedContact.details.conversationMedia?.length &&
       (twilioStoredTranscript || externalStoredTranscript),
   );
+  const csamReportEnabled = featureFlags.enable_csam_report && featureFlags.enable_csam_clc_report;
 
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
@@ -314,7 +330,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
           handleExpandClick={() => toggleSection(CONTACT_SUMMARY)}
           buttonDataTestid={`ContactDetails-Section-${CONTACT_SUMMARY}`}
           showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
-          handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CASE_INFORMATION)}
+          handleEditClick={() => {
+            navigate(ContactDetailsRoute.EDIT_CASE_INFORMATION);
+          }}
         >
           {definitionVersion.tabbedForms.CaseInformationTab.map(e => (
             <SectionEntry key={`CaseInformation-${e.label}`} descriptionKey={e.label}>
@@ -324,6 +342,11 @@ const ContactDetailsHome: React.FC<Props> = function ({
               />
             </SectionEntry>
           ))}
+          {csamReportEnabled && can(PermissionActions.EDIT_CONTACT) && (
+            <SectionEntry descriptionKey="ContactDetails-GeneralDetails-ExternalReportsFiled">
+              {externalReportButton()}
+            </SectionEntry>
+          )}
           {csamReports && csamReports.length > 0 && (
             <SectionEntry key="CaseInformation-AttachedCSAMReports" descriptionKey="CSAMReportForm-ReportsSubmitted">
               {csamReports.map(formatCsamReport)}
@@ -378,9 +401,11 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   ),
 });
 
-const mapDispatchToProps = {
-  toggleSectionExpandedForContext: toggleDetailSectionExpanded,
-  createContactDraft: createDraft,
-};
+const mapDispatchToProps = (dispatch, { contactId, context }: OwnProps) => ({
+  toggleSectionExpandedForContext: (section: ContactDetailsSectionsType) =>
+    dispatch(toggleDetailSectionExpanded(context, section)),
+  createContactDraft: (draftRoute: ContactDetailsRoute) => dispatch(createDraft(contactId, draftRoute)),
+  createDraftCsamReport: () => dispatch(newCSAMReportActionForContact(contactId)),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);

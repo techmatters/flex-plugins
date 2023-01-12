@@ -13,7 +13,7 @@ import ViewContact from '../../../components/case/ViewContact';
 import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 import { SearchAPIContact } from '../../../types/types';
-import { connectedCaseBase, contactFormsBase, RootState } from '../../../states';
+import { connectedCaseBase, contactFormsBase, csamReportBase, RootState } from '../../../states';
 import { DetailsContext, TOGGLE_DETAIL_EXPANDED_ACTION } from '../../../states/contacts/contactDetails';
 
 jest.mock('@twilio/flex-ui', () => ({
@@ -69,8 +69,6 @@ const contact: SearchAPIContact = {
       categories: {},
     },
     callerInformation: {
-      firstName: '',
-      lastName: '',
       relationshipToChild: '',
       gender: '',
       age: '',
@@ -91,7 +89,7 @@ const contact: SearchAPIContact = {
     callType: 'Child calling about self',
     categories: { category1: ['Tag1', 'Tag2'] },
     counselor: 'counselor-id',
-    notes: 'Jill Smith Notes',
+    notes: 'J Smith Notes',
     channel: 'web',
     conversationDuration: 10,
     createdBy: 'an SID',
@@ -149,6 +147,10 @@ describe('View Contact', () => {
             [DetailsContext.CASE_DETAILS]: { detailsExpanded: {} },
             [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {} },
           },
+        },
+        [csamReportBase]: {
+          tasks: {},
+          contacts: {},
         },
       },
     };

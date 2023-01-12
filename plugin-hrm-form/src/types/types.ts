@@ -237,6 +237,7 @@ export type FeatureFlags = {
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
   enable_external_transcripts: boolean; // Enables Viewing Transcripts Stored Outside of Twilio
   post_survey_serverless_handled: boolean; // Post Survey handled in serverless instead of in Flex
+  enable_csam_clc_report: boolean; // Enables CSAM child Reports
 };
 /* eslint-enable camelcase */
 

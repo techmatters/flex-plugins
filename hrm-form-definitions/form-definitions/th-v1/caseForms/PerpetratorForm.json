@@ -13,44 +13,15 @@
     "name": "relationshipToChild",
     "label": "Relationship to Child",
     "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Peer",
-        "label": "Peer"
-      },
-      {
-        "value": "Caregiver(relative)",
-        "label": "Caregiver(relative)"
-      },
-      {
-        "value": "Partner",
-        "label": "Partner"
-      },
-      {
-        "value": "Other adult known to the child",
-        "label": "Other adult known to the child"
-      },
-      {
-        "value": "Sibling(s)",
-        "label": "Sibling(s)"
-      },
-      {
-        "value": "Stranger",
-        "label": "Stranger"
-      },
-      {
-        "value": "Person in a position of responsibility",
-        "label": "Person in a position of responsibility"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      }
-    ]
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "relationshipToChildOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "streetAddress",
@@ -63,9 +34,25 @@
     "type": "input"
   },
   {
-    "name": "State/County",
-    "label": "State/County",
-    "type": "input"
+    "name": "area",
+    "label": "Area",
+    "type": "select",
+    "defaultOption": {
+      "value": "unknown",
+      "label": ""
+    },
+    "optionsReferenceKey": "areaOptions"
+  },
+  {
+    "name": "province",
+    "label": "Province",
+    "type": "dependent-select",
+    "dependsOn": "area",
+    "defaultOption": {
+      "value": "unknown",
+      "label": ""
+    },
+    "optionsReferenceKey": "provinceOptions"
   },
   {
     "name": "postalCode",
@@ -86,33 +73,11 @@
     "name": "gender",
     "label": "Gender",
     "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Boy",
-        "label": "Boy"
-      },
-      {
-        "value": "Girl",
-        "label": "Girl"
-      },
-      {
-        "value": "Non Binary",
-        "label": "Non Binary"
-      },
-      {
-        "value": "LGBTQIA+",
-        "label": "LGBTQIA+"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ],
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "genderOptions",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -122,52 +87,11 @@
     "name": "age",
     "label": "Age",
     "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Unborn",
-        "label": "Unborn"
-      },
-      {
-        "value": "0 - 03",
-        "label": "0 - 03"
-      },
-      {
-        "value": "04 - 06",
-        "label": "04 - 06"
-      },
-      {
-        "value": "07 - 09",
-        "label": "07 - 09"
-      },
-      {
-        "value": "10 - 12",
-        "label": "10 - 12"
-      },
-      {
-        "value": "13 - 15",
-        "label": "13 - 15"
-      },
-      {
-        "value": "16 - 18",
-        "label": "16 - 18"
-      },
-      {
-        "value": "19 - 25",
-        "label": "19 - 25"
-      },
-      {
-        "value": ">25",
-        "label": ">25"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ],
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "ageOptions",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -176,7 +100,12 @@
   {
     "name": "language",
     "label": "Language",
-    "type": "input"
+    "type": "select",
+    "defaultOption": {
+      "value": "unknown",
+      "label": ""
+    },
+    "optionsReferenceKey": "languageOptions"
   },
   {
     "name": "nationality",

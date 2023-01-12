@@ -487,6 +487,7 @@
   "PreviousContacts-LineUser": "Line felhasználó",
   "CSAMReportForm-Counsellor-Attachment": "A CSAM jelentés kitöltött",
   "CSAMReportForm-Self-Attachment": "A CSAM önjelentési kapcsolata generált",
+  "CSAMReportForm-SelectReportType": "Válassza ki a CSAM-jelentés típusát",
   "CSAMCLCReportForm-Header": "Külső jelentés fájl: CSAM – Hivatkozás létrehozása gyermek számára",
   "CSAMCLCReportForm-ChildAge": "Mennyi a gyermek életkora?",
   "CSAMCLCReportForm-AgeVerified": "A gyermek életkorát ellenőrizték?",

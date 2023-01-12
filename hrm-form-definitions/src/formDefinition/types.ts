@@ -246,6 +246,7 @@ export type LayoutVersion = {
     documents: LayoutDefinition;
     notes?: LayoutDefinition;
   };
+  thaiCharacterPdfSupport?: boolean;
 };
 
 export type StatusInfo = {
