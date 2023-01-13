@@ -156,8 +156,8 @@ module aws {
   environment = local.environment
   short_environment = local.short_environment
   operating_info_key = local.operating_info_key
-  datadog_app_id = local.datadog_app_id
-  datadog_access_token = local.datadog_access_token
+  datadog_app_id = local.secrets.datadog_app_id
+  datadog_access_token = local.secrets.datadog_access_token
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
   master_workflow_sid = module.taskRouter.master_workflow_sid
   shared_state_sync_service_sid = module.services.shared_state_sync_service_sid
