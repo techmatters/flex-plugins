@@ -1,1 +1,1 @@
-export { FormInputBase as FormInputInner } from '../styles';
+export { FormInputBase as StyledFormInput } from '../styles';

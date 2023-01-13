@@ -61,7 +61,7 @@ export const createInput = ({
       return getInputType(parentsPath.split('.'), updateCallback, customHandlers)(formItemDefinition)(
         initialValue,
         htmlElRef,
-        !isItemEnabled(),
+        isItemEnabled(),
       );
   }
 };
