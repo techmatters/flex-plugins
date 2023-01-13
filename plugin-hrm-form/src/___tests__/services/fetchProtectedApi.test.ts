@@ -48,6 +48,91 @@ describe('fetchProtectedApi', () => {
       expect(body.toString()).toBe(new URLSearchParams({ ...requestBody, Token: 'of my appreciation' }).toString());
       expect(headers).toStrictEqual({ 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' });
     });
+    each([
+      { baseUrl: 'https://all.your.base', endpoint: '/areBelongToUs', expected: 'https://all.your.base/areBelongToUs' },
+      { baseUrl: 'https://all.your.base', endpoint: 'areBelongToUs', expected: 'https://all.your.base/areBelongToUs' },
+      { baseUrl: 'https://all.your.base/', endpoint: 'areBelongToUs', expected: 'https://all.your.base/areBelongToUs' },
+      {
+        baseUrl: 'https://all.your.base/',
+        endpoint: '/areBelongToUs',
+        expected: 'https://all.your.base/areBelongToUs',
+      },
+      {
+        baseUrl: 'https://all.your.base/',
+        endpoint: 'areBelongToUs/',
+        expected: 'https://all.your.base/areBelongToUs/',
+      },
+      {
+        baseUrl: 'https://all.your.base/',
+        endpoint: '/areBelongToUs/',
+        expected: 'https://all.your.base/areBelongToUs/',
+      },
+      { baseUrl: 'https://all.your/base', endpoint: 'areBelongToUs', expected: 'https://all.your/base/areBelongToUs' },
+      { baseUrl: 'https://all.your/base/', endpoint: 'areBelongToUs', expected: 'https://all.your/base/areBelongToUs' },
+      {
+        baseUrl: 'https://all.your/base/',
+        endpoint: '/areBelongToUs',
+        expected: 'https://all.your/base/areBelongToUs',
+      },
+      {
+        baseUrl: 'https://all.your/base/',
+        endpoint: 'areBelongToUs/',
+        expected: 'https://all.your/base/areBelongToUs/',
+      },
+      {
+        baseUrl: 'https://all.your/base/',
+        endpoint: '/areBelongToUs/',
+        expected: 'https://all.your/base/areBelongToUs/',
+      },
+    ]).test(
+      "When base URL is '$baseUrl' and endpoint is '$endpoint', the URL called should be '$expected'",
+      async ({ baseUrl, endpoint, expected }) => {
+        mockGetConfig.mockReturnValue({ token: 'of my appreciation', serverlessBaseUrl: baseUrl });
+        await fetchProtectedApi(endpoint, requestBody);
+        expect(fetch).toHaveBeenCalledWith(
+          expected,
+          expect.objectContaining({
+            method: 'POST',
+          }),
+        );
+      },
+    );
+    test("Endpoint doesn't have leading slash - concatenates a valid URL", async () => {
+      mockGetConfig.mockReturnValue({ token: 'of my appreciation', serverlessBaseUrl: 'https://all.your.base' });
+      await fetchProtectedApi('areBelongToUs', requestBody);
+      expect(fetch).toHaveBeenCalledWith(
+        'https://all.your.base/areBelongToUs',
+        expect.objectContaining({
+          method: 'POST',
+        }),
+      );
+      mockGetConfig.mockReturnValue({ token: 'of my appreciation', serverlessBaseUrl: 'https://all.your/base' });
+      await fetchProtectedApi('areBelongToUs', requestBody);
+      expect(fetch).toHaveBeenCalledWith(
+        'https://all.your.base/areBelongToUs',
+        expect.objectContaining({
+          method: 'POST',
+        }),
+      );
+    });
+    test('Base URL has trailing slash - concatenates a valid URL', async () => {
+      mockGetConfig.mockReturnValue({ token: 'of my appreciation', serverlessBaseUrl: 'https://all.your.base/' });
+      await fetchProtectedApi('/areBelongToUs', requestBody);
+      expect(fetch).toHaveBeenCalledWith(
+        'https://all.your.base/areBelongToUs',
+        expect.objectContaining({
+          method: 'POST',
+        }),
+      );
+      mockGetConfig.mockReturnValue({ token: 'of my appreciation', serverlessBaseUrl: 'https://all.your/base/' });
+      await fetchProtectedApi('/areBelongToUs', requestBody);
+      expect(fetch).toHaveBeenCalledWith(
+        'https://all.your/base/areBelongToUs',
+        expect.objectContaining({
+          method: 'POST',
+        }),
+      );
+    });
   });
   test('403 error response - throws ProtectedApiError with specific error message', async () => {
     const requestBody = { error: 'message' };

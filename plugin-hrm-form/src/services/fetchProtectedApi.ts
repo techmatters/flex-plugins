@@ -6,7 +6,10 @@ export class ProtectedApiError extends ApiError {
     super(message, options, cause);
 
     this.name = 'ProtectedApiError';
+    this.serverStack = this.body?.stack;
   }
+
+  serverStack: any;
 }
 
 /**

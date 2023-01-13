@@ -1,3 +1,5 @@
+import * as path from 'path';
+
 export class ApiError extends Error {
   constructor(message: string, options: { response?: Response; body?: any }, cause?: Error) {
     super(message, { cause });
@@ -24,7 +26,7 @@ export class ApiError extends Error {
  * @param options
  */
 export const fetchApi = async (baseUrl: URL, endpointPath: string, options: RequestInit): Promise<any> => {
-  const url = new URL(`${baseUrl.pathname}${endpointPath}`, baseUrl);
+  const url = new URL(path.join(baseUrl.pathname, endpointPath), baseUrl);
 
   const defaultOptions = {
     method: 'GET',
