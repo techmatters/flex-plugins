@@ -60,4 +60,5 @@ variable "channel_type" {
 variable "janitor_enabled" {
   description = "Enable or disable Janitor"
   type        = bool
+  default     = true
 }

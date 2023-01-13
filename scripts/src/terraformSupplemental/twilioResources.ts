@@ -7,6 +7,7 @@ import {
   createTwilioApiKeyAndSsmSecret,
   CreateTwilioApiKeyAndSsmSecretOptions,
 } from './createTwilioApiKeyAndSsmSecret';
+import { setEnvFromSsm } from './setEnvFromSsm';
 import {
   updateFlexServiceConfiguration,
   patchFeatureFlags,
@@ -76,6 +77,8 @@ async function main() {
         });
       },
       async (argv) => {
+        await setEnvFromSsm(argv.accountDirectory as string);
+
         const sidKvps = argv.sid as string[];
         const sids = sidKvps.map((kvp) => {
           const [name, ...valueBits] = kvp.split('=');
@@ -122,6 +125,8 @@ async function main() {
         });
       },
       async (argv) => {
+        await setEnvFromSsm(argv.accountDirectory as string);
+
         await importDefaultResources(
           argv.accountDirectory as string,
           argv.varFile as string,
