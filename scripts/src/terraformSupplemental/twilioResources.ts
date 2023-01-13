@@ -34,7 +34,7 @@ async function main() {
     })
     .command(
       'import-tf <accountDirectory>  <tfFilePath>',
-      "Import the current state of all the resources specified in the provided .tf file from a Twilio Account into the provided terraform configuration's state. Requires Twilio account environment variable to be set, and AWS account variables to be set for anything other than a dry run.",
+      "Import the current state of all the resources specified in the provided .tf file from a Twilio Account into the provided terraform configuration's state. Requires Twilio account environment variable to be set or the accountDirectory for SSM params, and AWS account variables to be set for anything other than a dry run.",
       (argv) => {
         argv.positional('accountDirectory', {
           describe:
@@ -135,8 +135,8 @@ async function main() {
       },
     )
     .command(
-      'new-key-with-ssm-secret <twilioFriendlyName> <ssmSecretName> <helpline> <environment>',
-      'Create a twilio API key and a AWS SSM parameter to hold the secret. Requires Twilio creds and AWS creds & region to be set up with standard account variables.',
+      'new-key-with-ssm-secret <twilioFriendlyName> <ssmSecretName> <helpline> <environment> <accountDirectory>',
+      'Create a twilio API key and a AWS SSM parameter to hold the secret. Requires Twilio creds and AWS creds & region to be set up with standard account variables. Or the accountDirectory for SSM param based twilio creds',
       (argv) => {
         argv.positional('twilioFriendlyName', {
           describe: "The 'friendly name' for the API Key used in twilio",
@@ -153,6 +153,11 @@ async function main() {
         argv.positional('environment', {
           describe:
             "Name of the environment the api key is for (i.e. 'Production' or 'Staging'), used as a tag in the SSM parameters",
+          type: 'string',
+        });
+        argv.positional('accountDirectory', {
+          describe:
+            'The directory of the main.tf file for the target account, relative to the twilio-iac directory',
           type: 'string',
         });
         argv.option('sd', {
@@ -175,6 +180,8 @@ async function main() {
         });
       },
       async (argv) => {
+        await setEnvFromSsm(argv.accountDirectory as string);
+
         await createTwilioApiKeyAndSsmSecret(
           argv.twilioFriendlyName as string,
           argv.ssmSecretName as string,
@@ -189,9 +196,14 @@ async function main() {
       },
     )
     .command(
-      'update-flex-configuration',
-      'Make a POST call to the flex service configuration to update it. Rewquires Twilio creds to be set up on standard env vars, payload can be passed either as an argument or using the TWILIO_FLEX_SERVICE_CONFIGURATION_PAYLOAD environment variable',
+      'update-flex-configuration <accountDirectory>',
+      'Make a POST call to the flex service configuration to update it. Requires Twilio creds to be set up on standard env vars or the accountDirectory for SSM params, payload can be passed either as an argument or using the TWILIO_FLEX_SERVICE_CONFIGURATION_PAYLOAD environment variable',
       (argv) => {
+        argv.positional('accountDirectory', {
+          describe:
+            'The directory of the main.tf file for the target account, relative to the twilio-iac directory',
+          type: 'string',
+        });
         argv.option('p', {
           alias: 'payload',
           describe:
@@ -200,6 +212,8 @@ async function main() {
         });
       },
       async (argv) => {
+        await setEnvFromSsm(argv.accountDirectory as string);
+
         const jsonPayload = argv.payload ?? process.env.TWILIO_FLEX_SERVICE_CONFIGURATION_PAYLOAD;
         if (typeof jsonPayload !== 'string') {
           throw new Error(
