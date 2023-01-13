@@ -2,7 +2,6 @@ import React from 'react';
 import { styled } from '@twilio/flex-ui';
 import { withStyles } from '@material-ui/core';
 import { AttachFile, CheckCircle, FileCopyOutlined, OpenInNew } from '@material-ui/icons';
-import { type } from '@testing-library/user-event/dist/types/setup/directApi';
 
 import { FontOpenSans, StyledNextStepButton } from '../HrmStyles';
 import HrmTheme from '../HrmTheme';
@@ -44,7 +43,7 @@ export const CenterContent = styled('div')`
 CenterContent.displayName = 'CenterContent';
 
 export const CopyCodeButton = styled(StyledNextStepButton)`
-  padding: '7px';
+  padding: 7px;
 `;
 CopyCodeButton.displayName = 'CopyCodeButton';
 

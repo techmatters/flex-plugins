@@ -1,0 +1,40 @@
+# Workflow to create a new production release from a given qa tag
+
+name: Create a production release
+
+# Controls when the action will run.
+on:
+  workflow_dispatch:
+    inputs:
+      tag-name:
+        description: Tag name - The name for the tag that will be given to this release.
+        required: true
+      title:
+        description: Release title - The title that will be given to this pre-release.
+        required: true
+
+jobs:
+  generate-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Create production release
+        uses: ./.github/actions/generate-production-release
+        with:
+          tag-name: ${{ inputs.tag-name }}
+          title: ${{ inputs.title }}
+        id: create_prod_release
+
+      # Send Slack notifying success
+      - name: Slack aselo-deploys channel
+        uses: ./.github/actions/notify-deploys
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          slack-message: "`[Flex]` Production Release from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}. Release tag is `${{ steps.create_prod_release.outputs.generated-release-tag }}` :rocket:."
+        env:
+          SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}

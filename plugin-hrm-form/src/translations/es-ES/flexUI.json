@@ -545,6 +545,7 @@
   "CSAMReportForm-ReportsSubmitted": "Informes Presentados",
   "CSAMReportForm-WebsiteDetails": "Detalles del sitio web",
   "CSAMReportForm-WebsiteDetailsDescription": "Proporcione detalles dónde se descubrió el material. <br> Para informar más de un sitio web realice un informe separado.",
+  "CSAMReportForm-SelectReportType": "Seleccione el tipo de informe de CSAM",
   "CSAMCLCReportForm-Header": "Informe externo del archivo: CSAM - Crear enlace para el niño",
   "CSAMCLCReportForm-ChildAge": "¿Cuál es la edad del niño?",
   "CSAMCLCReportForm-AgeVerified": "¿Se ha verificado la edad del niño?",

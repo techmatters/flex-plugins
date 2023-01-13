@@ -2,7 +2,7 @@ import ReactPDF from '@react-pdf/renderer';
 
 const summaryStyles: ReactPDF.Styles = {
   caseSummaryText: {
-    fontFamily: 'Open Sans',
+    fontFamily: 'Roboto',
     fontSize: 12,
   },
 };

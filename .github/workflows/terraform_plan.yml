@@ -1,0 +1,45 @@
+# This is a basic workflow to run terraform plan for a twilio IAC account with Github Actions
+
+name: Terraform Plan
+
+# Controls when the action will run.
+on:
+  workflow_dispatch:
+    inputs:
+      helpline:
+        description: Directory name of helpline to run plan against
+        required: true
+        type: string
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: us-east-1
+
+jobs:
+  terraform_plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+
+    container:
+      image: public.ecr.aws/techmatters/terraform:1.3.0
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Terraform Plan
+        working-directory: ./twilio-iac/${{ inputs.helpline }}
+        run: |
+          echo "Running terraform init for ${{ inputs.helpline }}"
+          terraform init > /dev/null
+          echo "Running terraform refresh for ${{ inputs.helpline }}"
+          terraform refresh -input=false > /dev/null
+          echo "Running terraform plan for ${{ inputs.helpline }}"
+          terraform plan -input=false -refresh=false -out=/tmp/tfplan > /dev/null
+          echo "Running terraform show for ${{ inputs.helpline }}"
+          terraform show -no-color /tmp/tfplan > /tmp/plan.log
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: plan.log
+          path: /tmp/plan.log

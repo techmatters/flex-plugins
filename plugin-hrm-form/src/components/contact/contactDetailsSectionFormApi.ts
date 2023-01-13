@@ -1,3 +1,4 @@
+/* eslint-disable import/named */
 import { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
 import { ContactRawJson } from '../../types/types';

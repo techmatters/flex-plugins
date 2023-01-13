@@ -250,7 +250,7 @@ resource "twilio_autopilot_assistants_tasks_v1" "chatbot_ukr_HU_redirect_functio
       {
         "redirect" : {
           "method" : "POST",
-          "uri" : "${var.serverless_url}/autopilotRedirect"
+          "uri" : "${module.serverless.serverless_environment_production_url}/autopilotRedirect"
         }
       }
     ]
