@@ -17,7 +17,7 @@ terraform {
 
 provider "aws" {
   assume_role {
-    role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-${lower(var.environment)}"
+    role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-${lower(local.environment)}"
     session_name = "tf-${basename(abspath(path.module))}"
   }
 }
@@ -134,6 +134,7 @@ module twilioChannel {
   target_task_name = local.target_task_name
   channel_name = "${each.key}"
   channel_type = each.value.channel_type
+  janitor_enabled = !local.enable_post_survey
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
