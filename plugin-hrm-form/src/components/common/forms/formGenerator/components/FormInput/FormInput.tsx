@@ -19,14 +19,17 @@ const FormInput: React.FC<Props> = ({
   htmlElRef,
   isItemEnabled,
 }) => {
-  // TODO this all could be factored out into a custom hook to make easier sharing this chunk of code
-  const methods = useFormContext();
-  const { errors } = methods;
+  /*
+   * TODO this all could be factored out into a custom hook to make easier sharing this chunk of code
+   * As described in https://react-hook-form.com/api/useform/watch#:~:text=This%20API%20will%20trigger%20re%2Drender%20at%20the%20root%20of%20your%20app%20or%20form%2C%20consider%20using%20a%20callback%20or%20the%20useWatch%20api%20if%20you%20are%20experiencing%20performance%20issues.
+   * the root object triggers a re-render because of formState and watch properties.
+   * We can instead only receibe the other properties from the useFormContext, and for those components that need watch use https://react-hook-form.com/api/usewatch instead
+   */
+  const { errors, register } = useFormContext();
   const error = get(errors, inputId);
   const labelTextComponent = <Template code={`${label}`} className=".fullstory-unmask" />;
   const errorComponentId = `${inputId}-error`;
   const errorTextComponent = error ? <Template id={errorComponentId} code={error.message} /> : null;
-  const { register } = methods;
   const refFunction = React.useCallback(
     ref => {
       if (htmlElRef && ref) {
