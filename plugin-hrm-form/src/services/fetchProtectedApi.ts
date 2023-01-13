@@ -1,9 +1,9 @@
 import { getConfig } from '../HrmFormPlugin';
 import { ApiError, fetchApi } from './fetchApi';
 
-class ProtectedApiError extends ApiError {
-  constructor(message, options: Pick<ApiError, 'body' | 'response'>, errorOptions?: ErrorOptions) {
-    super(message, options, errorOptions);
+export class ProtectedApiError extends ApiError {
+  constructor(message, options: Pick<ApiError, 'body' | 'response'>, cause?: Error) {
+    super(message, options, cause);
 
     this.name = 'ProtectedApiError';
   }
@@ -26,7 +26,7 @@ const fetchProtectedApi = async (endPoint, body: Record<string, string> = {}) =>
     },
   };
   try {
-    return fetchApi(new URL(serverlessBaseUrl), endPoint, options);
+    return await fetchApi(new URL(serverlessBaseUrl), endPoint, options);
   } catch (error) {
     if (error instanceof ApiError) {
       const message = error.response?.status === 403 ? 'Server responded with 403 status (Forbidden)' : error.message;

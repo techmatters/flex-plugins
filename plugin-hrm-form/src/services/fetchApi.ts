@@ -1,6 +1,6 @@
 export class ApiError extends Error {
-  constructor(message: string, options: { response: Response; body: any }, errorOptions?: ErrorOptions) {
-    super(message, errorOptions);
+  constructor(message: string, options: { response?: Response; body?: any }, cause?: Error) {
+    super(message, { cause });
 
     // see: https://github.com/microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work
     Object.setPrototypeOf(this, ApiError.prototype);
@@ -41,8 +41,12 @@ export const fetchApi = async (baseUrl: URL, endpointPath: string, options: Requ
       ...options.headers,
     },
   };
-
-  const response = await fetch(url.toString(), finalOptions);
+  let response: Response;
+  try {
+    response = await fetch(url.toString(), finalOptions);
+  } catch (err) {
+    throw new ApiError(err.message, {}, err);
+  }
 
   if (!response.ok) {
     let body;
