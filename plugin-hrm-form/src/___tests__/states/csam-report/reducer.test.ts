@@ -1,11 +1,23 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { reduce, initialState, newTaskEntry } from '../../../states/csam-report/reducer';
+import { reduce, initialState } from '../../../states/csam-report/reducer';
 import * as actions from '../../../states/csam-report/actions';
 import * as GeneralActions from '../../../states/actions';
 import { GeneralActionType } from '../../../states/types';
+import { CSAMReportTypes } from '../../../states/csam-report/types';
+import { initialValues } from '../../../components/CSAMReport/CSAMReportFormDefinition';
+import { newCSAMReportAction } from '../../../states/csam-report/actions';
 
+const newCounsellorTaskEntry = {
+  form: { ...initialValues },
+  reportType: CSAMReportTypes.COUNSELLOR,
+  reportStatus: {
+    responseCode: '',
+    responseData: '',
+    responseDescription: '',
+  },
+} as const;
 const task = { taskSid: 'task-sid' };
 const voidDefinitions: DefinitionVersion = {
   tabbedForms: {
@@ -54,79 +66,37 @@ describe('test reducer', () => {
     expect(result).toStrictEqual(expected);
   });
 
-  test('should handle INITIALIZE_CONTACT_STATE', async () => {
-    const state = initialState;
-
-    const expected = {
-      tasks: {
-        [task.taskSid]: newTaskEntry,
-      },
-    };
-
-    const result = reduce(state, GeneralActions.initializeContactState(voidDefinitions)(task.taskSid));
-    expect(result).toStrictEqual(expected);
-  });
-
-  test('should handle RECREATE_CONTACT_STATE', async () => {
-    const state = initialState;
-
-    const expected = {
-      tasks: {
-        [task.taskSid]: newTaskEntry,
-      },
-    };
-
-    const result1 = reduce(state, GeneralActions.recreateContactState(voidDefinitions)(task.taskSid));
-    expect(result1).toStrictEqual(expected);
-
-    // Test idempotence
-    const result2 = reduce(state, GeneralActions.recreateContactState(voidDefinitions)(task.taskSid));
-    expect(result2).toStrictEqual(result1);
-  });
-
-  test('should handle REMOVE_CONTACT_STATE', async () => {
-    const state = reduce(initialState, GeneralActions.initializeContactState(voidDefinitions)(task.taskSid));
-
-    expect(state).toStrictEqual({
-      tasks: {
-        [task.taskSid]: newTaskEntry,
-      },
-    });
-
-    const expected = initialState;
-
-    const result = reduce(state, GeneralActions.removeContactState(task.taskSid));
-    expect(result).toStrictEqual(expected);
-  });
-
   test('should handle UPDATE_FORM', async () => {
-    const state = reduce(initialState, GeneralActions.initializeContactState(voidDefinitions)(task.taskSid));
+    const state = reduce(initialState, newCSAMReportAction(task.taskSid, CSAMReportTypes.COUNSELLOR));
 
     const expected = {
       ...state,
       tasks: {
         ...state.tasks,
-        [task.taskSid]: { ...newTaskEntry, form: { ...newTaskEntry.form, webAddress: 'some-url' } },
+        [task.taskSid]: {
+          reportType: CSAMReportTypes.COUNSELLOR,
+          form: { ...newCounsellorTaskEntry.form, webAddress: 'some-url' },
+        },
       },
     };
 
     const result = reduce(
       state,
-      actions.updateFormAction({ ...newTaskEntry.form, webAddress: 'some-url' }, task.taskSid),
+      actions.updateCounsellorFormAction({ ...newCounsellorTaskEntry.form, webAddress: 'some-url' }, task.taskSid),
     );
 
     expect(result).toStrictEqual(expected);
   });
 
   test('should handle UPDATE_STATUS', async () => {
-    const state = reduce(initialState, GeneralActions.initializeContactState(voidDefinitions)(task.taskSid));
+    const state = reduce(initialState, newCSAMReportAction(task.taskSid, CSAMReportTypes.COUNSELLOR));
 
     const reportStatus = { responseData: 'some-code', responseCode: '200', responseDescription: '' };
     const expected = {
       ...state,
       tasks: {
         ...state.tasks,
-        [task.taskSid]: { ...newTaskEntry, reportStatus },
+        [task.taskSid]: { reportType: CSAMReportTypes.COUNSELLOR, reportStatus, form: undefined },
       },
     };
 
@@ -136,24 +106,17 @@ describe('test reducer', () => {
   });
 
   test('should handle CLEAR_CSAM_REPORT', async () => {
-    const state = reduce(initialState, GeneralActions.initializeContactState(voidDefinitions)(task.taskSid));
+    const state = reduce(initialState, newCSAMReportAction(task.taskSid, CSAMReportTypes.COUNSELLOR));
 
     expect(state).toStrictEqual({
+      ...state,
       tasks: {
-        [task.taskSid]: newTaskEntry,
+        [task.taskSid]: { reportType: CSAMReportTypes.COUNSELLOR, form: undefined },
       },
     });
 
-    const expected = {
-      ...state,
-      tasks: {
-        ...state.tasks,
-        [task.taskSid]: newTaskEntry,
-      },
-    };
+    const result = reduce(state, actions.removeCSAMReportAction(task.taskSid));
 
-    const result = reduce(state, actions.clearCSAMReportAction(task.taskSid));
-
-    expect(result).toStrictEqual(expected);
+    expect(result).toStrictEqual(initialState);
   });
 });

@@ -148,6 +148,6 @@ You also must provide the following parameters to the script:
 - `-f / --flag`: Use this to specify a flag and what you wish to set it to. The value must take the form {flag_name}:{flag_set}, e.g. -f my_flag:true. Can be specified multiple times
   Example:
 ```
-➜ npm run twilioResources patch-feature-flags -- -f enable_voice_recordings:false -f enable_transcripts:true
+➜ npm run twilioResources patch-feature-flags -- -f enable_voice_recordings:false -f enable_twilio_transcripts:true
 ```
 will set the `enable_voice_recordings` to false, and the `enable_transcripts` flag to true, creating them if they didn't previously exist, or overwriting their previous setting if they did.

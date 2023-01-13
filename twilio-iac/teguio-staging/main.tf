@@ -11,10 +11,23 @@ terraform {
     key            = "twilio/co/terraform.tfstate"
     dynamodb_table = "terraform-locks"
     encrypt        = true
+    role_arn       = "arn:aws:iam::712893914485:role/tf-twilio-iac-staging"
   }
 }
 
+provider "aws" {
+  assume_role {
+    role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-${lower(local.environment)}"
+    session_name = "tf-${basename(abspath(path.module))}"
+  }
+}
+
+data "aws_ssm_parameter" "secrets" {
+  name     = "/terraform/twilio-iac/${basename(abspath(path.module))}/secrets.json"
+}
+
 locals {
+  secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   helpline = "Te Guío"
   helpline_language = "es-CO"
   task_language = "es-CO"
@@ -58,9 +71,14 @@ locals {
   strings= jsondecode(file("${path.module}/../translations/${local.helpline_language}/strings.json"))
 }
 
+provider "twilio" {
+  username = local.secrets.twilio_account_sid
+  password = local.secrets.twilio_auth_token
+}
+
 module "custom_chatbots" {
   source = "../terraform-modules/chatbots/te-guio-co"
-  serverless_url = var.serverless_url
+  serverless_url = module.serverless.serverless_environment_production_url
 }
 
 module "hrmServiceIntegration" {
@@ -74,6 +92,8 @@ module "hrmServiceIntegration" {
 
 module "serverless" {
   source = "../terraform-modules/serverless/default"
+  twilio_account_sid = local.secrets.twilio_account_sid
+  twilio_auth_token = local.secrets.twilio_auth_token
 }
 
 module "services" {
@@ -87,7 +107,7 @@ module "services" {
 
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
-  serverless_url = var.serverless_url
+  serverless_url = module.serverless.serverless_environment_production_url
   helpline = local.helpline
   custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}] OR to IN [\"+17752526377\",\"+578005190671\"]"
 }
@@ -99,7 +119,7 @@ module twilioChannel {
     "../terraform-modules/channels/flow-templates/operating-hours/with-chatbot.tftpl",
     {
       channel_name = "${each.key}"
-      serverless_url=var.serverless_url
+      serverless_url=module.serverless.serverless_environment_production_url
       serverless_service_sid = module.serverless.serverless_service_sid
       serverless_environment_sid = module.serverless.serverless_environment_production_sid
       operating_hours_function_sid = local.operating_hours_function_sid
@@ -131,7 +151,7 @@ module customChannel {
     "../terraform-modules/channels/flow-templates/operating-hours/no-chatbot.tftpl",
     {
       channel_name = "${each.key}"
-      serverless_url=var.serverless_url
+      serverless_url=module.serverless.serverless_environment_production_url
       serverless_service_sid = module.serverless.serverless_service_sid
       serverless_environment_sid = module.serverless.serverless_environment_production_sid
       operating_hours_function_sid = local.operating_hours_function_sid
@@ -162,12 +182,12 @@ module voiceChannel {
 
 module flex {
   source = "../terraform-modules/flex/service-configuration"
-  account_sid = var.account_sid
+  twilio_account_sid = local.secrets.twilio_account_sid
   short_environment = local.short_environment
   operating_info_key = local.operating_info_key
   permission_config = local.permission_config
   definition_version = local.definition_version
-  serverless_url = var.serverless_url
+  serverless_url = module.serverless.serverless_environment_production_url
   multi_office_support = local.multi_office
   feature_flags = local.feature_flags
   helpline_language = local.helpline_language
@@ -181,14 +201,16 @@ module survey {
 
 module aws {
   source = "../terraform-modules/aws/default"
-  account_sid = var.account_sid
+  twilio_account_sid = local.secrets.twilio_account_sid
+  twilio_auth_token = local.secrets.twilio_auth_token
+  serverless_url = module.serverless.serverless_environment_production_url
   helpline = local.helpline
   short_helpline = local.short_helpline
   environment = local.environment
   short_environment = local.short_environment
   operating_info_key = local.operating_info_key
-  datadog_app_id = var.datadog_app_id
-  datadog_access_token = var.datadog_access_token
+  datadog_app_id = local.secrets.datadog_app_id
+  datadog_access_token = local.secrets.datadog_access_token
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
   master_workflow_sid = module.taskRouter.master_workflow_sid
   shared_state_sync_service_sid = module.services.shared_state_sync_service_sid
@@ -208,8 +230,8 @@ module aws_monitoring {
 # module github {
 
 #   source = "../terraform-modules/github/default"
-#   twilio_account_sid = var.account_sid
-#   twilio_auth_token = var.auth_token
+#   twilio_account_sid = local.secrets.twilio_account_sid
+#   twilio_auth_token = local.secrets.twilio_auth_token
 #   short_environment = local.short_environment
 #   short_helpline = local.short_helpline
 # }

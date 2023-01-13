@@ -1,4 +1,4 @@
-variable "account_sid" {
+variable "twilio_account_sid" {
   description = "Twilio Account SID"
   type        = string
 }

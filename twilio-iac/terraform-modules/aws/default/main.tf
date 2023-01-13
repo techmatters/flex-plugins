@@ -14,8 +14,11 @@ terraform {
 provider "aws" {
   alias = "bucket"
   region = var.bucket_region
+  assume_role {
+    role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-${lower(var.environment)}"
+    session_name = "tf-${basename(abspath(path.module))}"
+  }
 }
-
 
 locals {
   docs_s3_location = "tl-aselo-docs-${lower(var.short_helpline)}-${lower(var.environment)}"
@@ -92,7 +95,14 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "chat" {
   }
 }
 
-// Still put SSM parameters in default region, they don't store any helpline data & it keeps the workflow logic simpler
+
+/****************************************************************
+ * WARNING:
+ * All new ssm params should be in the new format matching the resources
+ * in ./ssm.tf. This for_each block will be removed once all apps are
+ * migrated to use the new format.
+ ****************************************************************/
+// params are going into the region specified by var.bucket_region
 resource "aws_ssm_parameter" "main_group" {
   for_each = {
     WORKSPACE_SID = jsonencode(["TWILIO", var.flex_task_assignment_workspace_sid, "Twilio account - Workspace SID"])
@@ -106,13 +116,15 @@ resource "aws_ssm_parameter" "main_group" {
     // API Key secrets are not accessible from the twilio terraform provider
     // HRM_STATIC_KEY = jsonencode(["TWILIO", "NOT_SET", "Twilio account - HRM static secret to perform backend calls"])
     S3_BUCKET_DOCS = jsonencode(["TWILIO", local.docs_s3_location, "Twilio account - Post Survey bot chat url"])
-    POST_SURVEY_BOT_CHAT_URL = jsonencode(["TWILIO", "https://channels.autopilot.twilio.com/v1/${var.account_sid}/${var.post_survey_bot_sid}/twilio-chat", "Twilio account - Post Survey bot chat url"])
+    POST_SURVEY_BOT_CHAT_URL = jsonencode(["TWILIO", "https://channels.autopilot.twilio.com/v1/${var.twilio_account_sid}/${var.post_survey_bot_sid}/twilio-chat", "Twilio account - Post Survey bot chat url"])
     OPERATING_INFO_KEY = jsonencode(["TWILIO", var.operating_info_key, "Twilio account - Operating Key info"])
     APP_ID = jsonencode(["DATADOG", var.datadog_app_id, "Datadog - Application ID"])
     ACCESS_TOKEN = jsonencode(["DATADOG", var.datadog_access_token, "Datadog - Access Token"])
-
   }
+
   # Deserialise the JSON used for the keys - this way we can have multiple values per key
+  # note: this can also be accomplished in a more "tf native" way by using an array of objects and a `for` loop.
+  # see: https://github.com/techmatters/flex-plugins/blob/1edf877bba4760370af16f41045fa14956d5620f/twilio-iac/terraform-modules/aws/default/main.tf#L206
   name  = "${var.short_environment}_${jsondecode(each.value)[0]}_${var.short_helpline}_${each.key}"
   type  = "SecureString"
   value = jsondecode(each.value)[1]
