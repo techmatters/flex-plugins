@@ -45,18 +45,21 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
 
   const [initialForm] = React.useState(initialValues); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const { getValues } = useFormContext();
-  const updateCallback = () => {
-    updateForm(getValues());
-  };
 
-  const generatedForm = createFormFromDefinition(definition)([tabPath])(initialForm, firstElementRef)(updateCallback);
+  const [l, r] = React.useMemo(() => {
+    const updateCallback = () => {
+      updateForm(getValues());
+    };
 
-  const margin = 12;
+    const generatedForm = createFormFromDefinition(definition)([tabPath])(initialForm, firstElementRef)(updateCallback);
 
-  const [l, r] =
-    layoutDefinition && layoutDefinition.splitFormAt
-      ? splitAt(layoutDefinition.splitFormAt)(disperseInputs(7)(generatedForm))
-      : splitInHalf(disperseInputs(margin)(generatedForm));
+    const margin = 12;
+
+    if (layoutDefinition && layoutDefinition.splitFormAt)
+      return splitAt(layoutDefinition.splitFormAt)(disperseInputs(7)(generatedForm));
+
+    return splitInHalf(disperseInputs(margin)(generatedForm));
+  }, [definition, getValues, initialForm, firstElementRef, layoutDefinition, tabPath, updateForm]);
 
   return (
     <Container>
