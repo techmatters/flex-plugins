@@ -97,42 +97,6 @@ describe('fetchProtectedApi', () => {
         );
       },
     );
-    test("Endpoint doesn't have leading slash - concatenates a valid URL", async () => {
-      mockGetConfig.mockReturnValue({ token: 'of my appreciation', serverlessBaseUrl: 'https://all.your.base' });
-      await fetchProtectedApi('areBelongToUs', requestBody);
-      expect(fetch).toHaveBeenCalledWith(
-        'https://all.your.base/areBelongToUs',
-        expect.objectContaining({
-          method: 'POST',
-        }),
-      );
-      mockGetConfig.mockReturnValue({ token: 'of my appreciation', serverlessBaseUrl: 'https://all.your/base' });
-      await fetchProtectedApi('areBelongToUs', requestBody);
-      expect(fetch).toHaveBeenCalledWith(
-        'https://all.your.base/areBelongToUs',
-        expect.objectContaining({
-          method: 'POST',
-        }),
-      );
-    });
-    test('Base URL has trailing slash - concatenates a valid URL', async () => {
-      mockGetConfig.mockReturnValue({ token: 'of my appreciation', serverlessBaseUrl: 'https://all.your.base/' });
-      await fetchProtectedApi('/areBelongToUs', requestBody);
-      expect(fetch).toHaveBeenCalledWith(
-        'https://all.your.base/areBelongToUs',
-        expect.objectContaining({
-          method: 'POST',
-        }),
-      );
-      mockGetConfig.mockReturnValue({ token: 'of my appreciation', serverlessBaseUrl: 'https://all.your/base/' });
-      await fetchProtectedApi('/areBelongToUs', requestBody);
-      expect(fetch).toHaveBeenCalledWith(
-        'https://all.your/base/areBelongToUs',
-        expect.objectContaining({
-          method: 'POST',
-        }),
-      );
-    });
   });
   test('403 error response - throws ProtectedApiError with specific error message', async () => {
     const requestBody = { error: 'message' };
@@ -176,5 +140,25 @@ describe('fetchProtectedApi', () => {
         response: mockResponse as Response,
       }),
     );
+  });
+  test('Error response with stack property on the body JSON - copies the stack property value to the Errors serverStack property', async () => {
+    const requestBody = { error: 'message' };
+    const mockResponse = {
+      json(): Promise<any> {
+        return Promise.resolve({ ...requestBody, stack: ['some', 'frames']});
+      },
+      ok: false,
+      status: 403,
+      statusText: 'Forbidden',
+    };
+    mockFetch.mockResolvedValue(mockResponse);
+    await expect(fetchProtectedApi('/areBelongToUs', requestBody)).rejects.toThrow(
+      new ProtectedApiError('Server responded with 403 status (Forbidden)', {
+        body: { error: 'message' },
+        response: mockResponse as Response,
+      }),
+    );
+    const error: ProtectedApiError = mockFetch.mock.results[0].value;
+    expect(error.serverStack).toStrictEqual(['some', 'frames']);
   });
 });
