@@ -4,7 +4,7 @@ import SyncClient from 'twilio-sync';
 import { recordBackendError } from '../fullStory';
 import { TaskEntry } from '../states/contacts/reducer';
 import { issueSyncToken } from '../services/ServerlessService';
-import { getHrmConfig } from '../hrmConfig';
+import { getAseloFeatureFlags, getResourceStrings } from '../hrmConfig';
 
 let sharedStateClient: SyncClient;
 
@@ -43,15 +43,13 @@ const DOCUMENT_TTL_SECONDS = 24 * 60 * 60; // 24 hours
  * @param task
  */
 export const saveFormSharedState = async (form: TaskEntry, task: ITask): Promise<string | null> => {
-  const { featureFlags, strings } = getHrmConfig();
-
-  if (!featureFlags.enable_transfers) return null;
+  if (!getAseloFeatureFlags().enable_transfers) return null;
 
   try {
     if (!isSharedStateClientConnected(sharedStateClient)) {
       console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
       recordBackendError('Save Form Shared State', new Error('Sync Client Disconnected'));
-      window.alert(strings.SharedStateSaveFormError);
+      window.alert(getResourceStrings().SharedStateSaveFormError);
       return null;
     }
 
@@ -76,14 +74,13 @@ export const saveFormSharedState = async (form: TaskEntry, task: ITask): Promise
  * Restores the contact form from Sync Client (if there is any)
  */
 export const loadFormSharedState = async (task: ITask): Promise<TaskEntry> => {
-  const { featureFlags, strings } = getHrmConfig();
-  if (!featureFlags.enable_transfers) return null;
+  if (!getAseloFeatureFlags().enable_transfers) return null;
 
   try {
     if (!isSharedStateClientConnected(sharedStateClient)) {
       console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
       recordBackendError('Load Form Shared State', new Error('Sync Client Disconnected'));
-      window.alert(strings.SharedStateLoadFormError);
+      window.alert(getResourceStrings().SharedStateLoadFormError);
       return null;
     }
 
@@ -145,15 +142,13 @@ const copyError = error => ({
  * @param error error returned when trying to save contact to external backend
  */
 export const savePendingContactToSharedState = async (task, payload, error) => {
-  const { featureFlags, strings } = getHrmConfig();
-
-  if (!featureFlags.enable_dual_write) return null;
+  if (!getAseloFeatureFlags().enable_dual_write) return null;
   if (!task || !payload) return null;
 
   try {
     if (!isSharedStateClientConnected(sharedStateClient)) {
       console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
-      console.error(strings.SharedStateSaveContactError);
+      console.error(getResourceStrings().SharedStateSaveContactError);
       return null;
     }
 

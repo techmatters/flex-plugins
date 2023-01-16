@@ -1,5 +1,5 @@
 import fetchResourceApi from './fetchResourceApi';
-import { getConfig } from '../HrmFormPlugin';
+import { getReferrableResourceConfig } from '../hrmConfig';
 
 // eslint-disable-next-line import/no-unused-modules
 export type ReferrableResource = {
@@ -8,17 +8,12 @@ export type ReferrableResource = {
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export const resourceService = () => {
-  const referableResourcesEnabled = () => Boolean(getConfig().resourceBaseUrl);
-  const getResource = async (resourceID: string): Promise<ReferrableResource> => {
-    // return fetchResourceApi(`resources/`);
-    return {
-      id: '1234',
-      name: 'Example Client Side Stubbed Resuource',
-    };
-  };
-
+export const referrableResourcesEnabled = () => Boolean(getReferrableResourceConfig().resourceBaseUrl);
+// eslint-disable-next-line import/no-unused-modules
+export const getResource = async (resourceID: string): Promise<ReferrableResource> => {
+  // return fetchResourceApi(`resources/`);
   return {
-    getResource,
+    id: resourceID,
+    name: 'Example Client Side Stubbed Resuource',
   };
 };

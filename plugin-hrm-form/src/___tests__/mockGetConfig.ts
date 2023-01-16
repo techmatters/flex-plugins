@@ -32,6 +32,7 @@ const baseMockConfig = {
 };
 
 const mockGetConfig = jest.fn(() => baseMockConfig);
+const mockGetAseloFeatureFlags = jest.fn(() => baseMockConfig.featureFlags);
 
 jest.mock('../HrmFormPlugin', () => ({
   getConfig: mockGetConfig,
@@ -40,6 +41,7 @@ jest.mock('../HrmFormPlugin', () => ({
 
 jest.mock('../hrmConfig', () => ({
   getHrmConfig: mockGetConfig,
+  getAseloFeatureFlags: mockGetAseloFeatureFlags,
 }));
 
 export const mockPartialConfiguration = partialConfig =>

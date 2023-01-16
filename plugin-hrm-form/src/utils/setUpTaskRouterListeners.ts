@@ -1,6 +1,6 @@
 import { Manager, TaskHelper, StateHelper, ITask } from '@twilio/flex-ui';
 
-import type { SetupObject } from '../HrmFormPlugin';
+import { FeatureFlags } from '../types/types';
 
 const removeConversationListeners = (task: ITask) => {
   if (TaskHelper.isChatBasedTask(task)) {
@@ -20,7 +20,7 @@ const removeConversationListeners = (task: ITask) => {
   }
 };
 
-export const setTaskWrapupEventListeners = ({ featureFlags }: SetupObject) => {
+export const setTaskWrapupEventListeners = (featureFlags: FeatureFlags) => {
   /*
    * If post surveys are on, remove all listeners from the underlying conversation on task wrapup.
    * This is done to hide any further activity between the contact and the post survey chatbot.

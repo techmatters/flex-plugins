@@ -15,21 +15,19 @@ import * as Channels from './channels/setUpChannels';
 import setUpMonitoring from './utils/setUpMonitoring';
 import { changeLanguage } from './states/configuration/actions';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from './permissions';
-import { subscribeToConfigUpdates, getHrmConfig } from './hrmConfig';
+import { subscribeToConfigUpdates, getHrmConfig, getResourceStrings, getAseloFeatureFlags } from './hrmConfig';
 import { setUpSharedStateClient } from './utils/sharedState';
+import { FeatureFlags } from './types/types';
 
 // Re-exported for backwards compatibility, we should move to getHrmConfig & remove this
-export { getHrmConfig as getConfig } from './hrmConfig';
+export { getConfig } from './hrmConfig';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
 export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 // eslint-disable-next-line import/no-unused-modules
-export type SetupObject = ReturnType<typeof getHrmConfig> & {
-  translateUI: (language: string) => Promise<void>;
-  getMessage: (messageKey: string) => (language: string) => Promise<string>;
-};
+export type SetupObject = ReturnType<typeof getHrmConfig>;
 
 /**
  * Helper to expose the forms definitions without the need of calling Manager
@@ -57,7 +55,7 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   const { counselorLanguage, helplineLanguage } = config;
 
   const twilioStrings = { ...manager.strings }; // save the originals
-  const setNewStrings = (newStrings: typeof config['strings']) =>
+  const setNewStrings = (newStrings: typeof getResourceStrings) =>
     (manager.strings = { ...manager.strings, ...newStrings });
   const afterNewStrings = (language: string) => {
     manager.store.dispatch(changeLanguage(language));
@@ -69,16 +67,19 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   return initLocalization(localizationConfig, initialLanguage);
 };
 
-const setUpComponents = (setupObject: SetupObject) => {
-  const { helpline, featureFlags } = setupObject;
+const setUpComponents = (
+  featureFlags: FeatureFlags,
+  setupObject: ReturnType<typeof getHrmConfig>,
+  translateUI: (language: string) => Promise<void>,
+) => {
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus(setupObject);
-  Components.setUpAddButtons(setupObject);
-  Components.setUpNoTasksUI(setupObject);
+  Components.setUpAddButtons(featureFlags);
+  Components.setUpNoTasksUI(featureFlags, setupObject);
   Components.setUpCustomCRMContainer();
   Channels.customiseDefaultChatChannels();
   Channels.setupTwitterChatChannel(maskIdentifiers);
@@ -91,10 +92,10 @@ const setUpComponents = (setupObject: SetupObject) => {
 
   if (featureFlags.enable_case_management) Components.setUpCaseList();
 
-  if (!Boolean(helpline)) Components.setUpDeveloperComponents(setupObject); // utilities for developers only
+  if (!Boolean(setupObject.helpline)) Components.setUpDeveloperComponents(translateUI); // utilities for developers only
 
   // remove dynamic components
-  Components.removeTaskCanvasHeaderActions(setupObject);
+  Components.removeTaskCanvasHeaderActions(featureFlags);
   Components.setLogo(setupObject.logoUrl);
   if (featureFlags.enable_transfers) {
     Components.removeDirectoryButton();
@@ -116,29 +117,31 @@ const setUpComponents = (setupObject: SetupObject) => {
     };
     Flex.MessageList.Content.remove('0');
     // Masks TaskInfoPanelContent - TODO: refactor to use a react component
-    const { strings } = getHrmConfig();
+    const strings = getResourceStrings();
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
     strings.CallParticipantCustomerName = strings.MaskIdentifiers;
   }
 };
 
-const setUpActions = (setupObject: SetupObject) => {
-  const { featureFlags } = setupObject;
-
+const setUpActions = (
+  featureFlags: FeatureFlags,
+  setupObject: ReturnType<typeof getHrmConfig>,
+  getMessage: (key: string) => (language: string) => Promise<string>,
+) => {
   // Is this the correct place for this call?
   ActionFunctions.loadCurrentDefinitionVersion();
 
-  ActionFunctions.setUpPostSurvey(setupObject);
+  ActionFunctions.setUpPostSurvey(featureFlags);
 
   // bind setupObject to the functions that requires some initialization
   const transferOverride = ActionFunctions.customTransferTask(setupObject);
-  const wrapupOverride = ActionFunctions.wrapupTask(setupObject);
-  const beforeCompleteAction = ActionFunctions.beforeCompleteTask(setupObject);
-  const afterWrapupAction = ActionFunctions.afterWrapupTask(setupObject);
+  const wrapupOverride = ActionFunctions.wrapupTask(setupObject, getMessage);
+  const beforeCompleteAction = ActionFunctions.beforeCompleteTask(featureFlags);
+  const afterWrapupAction = ActionFunctions.afterWrapupTask(featureFlags, setupObject);
 
   Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
 
-  Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(setupObject));
+  Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(featureFlags, setupObject, getMessage));
 
   if (featureFlags.enable_transfers) Flex.Actions.replaceAction('TransferTask', transferOverride);
 
@@ -154,10 +157,6 @@ const setUpActions = (setupObject: SetupObject) => {
   Flex.Actions.addListener('afterWrapupTask', afterWrapupAction);
 
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
-};
-
-const setUpTaskRouterListeners = (setupObject: SetupObject) => {
-  TaskRouterListeners.setTaskWrapupEventListeners(setupObject);
 };
 
 export default class HrmFormPlugin extends FlexPlugin {
@@ -182,6 +181,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     Providers.setMUIProvider();
 
     const config = getHrmConfig();
+    const featureFlags = getAseloFeatureFlags();
 
     /*
      * localization setup (translates the UI if necessary)
@@ -189,12 +189,10 @@ export default class HrmFormPlugin extends FlexPlugin {
      */
     const { translateUI, getMessage } = setUpLocalization(config);
 
-    const setupObject = { ...config, translateUI, getMessage };
-
-    if (config.featureFlags.enable_transfers) setUpTransfers();
-    setUpComponents(setupObject);
-    setUpActions(setupObject);
-    setUpTaskRouterListeners(setupObject);
+    if (featureFlags.enable_transfers) setUpTransfers();
+    setUpComponents(featureFlags, config, translateUI);
+    setUpActions(featureFlags, config, getMessage);
+    TaskRouterListeners.setTaskWrapupEventListeners(featureFlags);
 
     const managerConfiguration: Flex.Config = {
       // colorTheme: HrmTheme,

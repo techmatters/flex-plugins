@@ -5,7 +5,7 @@ import SyncClient from 'twilio-sync';
 
 import { transferStatuses } from '../../states/DomainConstants';
 import { createTask } from '../helpers';
-import { getHrmConfig } from '../../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig } from '../../hrmConfig';
 import { loadFormSharedState, saveFormSharedState, setUpSharedStateClient } from '../../utils/sharedState';
 import { TaskEntry } from '../../states/contacts/reducer';
 
@@ -16,7 +16,11 @@ jest.mock('../../fullStory', () => ({
   recordBackendError: jest.fn(),
 }));
 jest.mock('../../hrmConfig', () => ({
-  getHrmConfig: jest.fn(),
+  getAseloFeatureFlags: jest.fn(),
+  getResourceStrings: () => ({
+    SharedStateSaveFormError: 'Error saving',
+    SharedStateLoadFormError: 'Error loading',
+  }),
 }));
 
 jest.mock('twilio-sync', () => jest.fn());
@@ -38,25 +42,13 @@ const mockSharedState = {
   },
 };
 
-const mockFeatureDisabledConfig = {
-  featureFlags: {},
-};
-
-const mockValidConfig = {
-  featureFlags: { enable_transfers: true },
-  strings: {
-    SharedStateSaveFormError: 'Error saving',
-    SharedStateLoadFormError: 'Error loading',
-  },
-};
-
-const mockGetHrmConfig: jest.Mock = getHrmConfig as jest.Mock;
+const mockGetAseloFeatureFlags: jest.Mock = getAseloFeatureFlags as jest.Mock;
 const mockSyncClient: jest.Mock = (SyncClient as unknown) as jest.Mock;
 window.alert = jest.fn();
 
 describe('Test with no feature flag', () => {
   test('saveFormSharedState', async () => {
-    mockGetHrmConfig.mockReturnValue(mockFeatureDisabledConfig);
+    mockGetAseloFeatureFlags.mockReturnValue({});
     const { saveFormSharedState } = require('../../utils/sharedState');
 
     const documentName = await saveFormSharedState(form, task);
@@ -64,7 +56,7 @@ describe('Test with no feature flag', () => {
   });
 
   test('loadFormSharedState', async () => {
-    mockGetHrmConfig.mockReturnValue(mockFeatureDisabledConfig);
+    mockGetAseloFeatureFlags.mockReturnValue({});
     const { loadFormSharedState } = require('../../utils/sharedState');
 
     const loadedForm = await loadFormSharedState(task);
@@ -74,14 +66,14 @@ describe('Test with no feature flag', () => {
 
 describe('Test with undefined sharedState', () => {
   test('saveFormSharedState', async () => {
-    mockGetHrmConfig.mockReturnValue(mockValidConfig);
+    mockGetAseloFeatureFlags.mockReturnValue({ enable_transfers: true });
     const documentName = await saveFormSharedState(form, task);
     expect(documentName).toBeNull();
     expect(window.alert).toBeCalledWith('Error saving');
   });
 
   test('loadFormSharedState', async () => {
-    mockGetHrmConfig.mockReturnValue(mockValidConfig);
+    mockGetAseloFeatureFlags.mockReturnValue({ enable_transfers: true });
 
     const loadedForm = await loadFormSharedState(task);
     expect(loadedForm).toBeNull();
@@ -91,7 +83,7 @@ describe('Test with undefined sharedState', () => {
 
 describe('Test with not connected sharedState', () => {
   beforeEach(() => {
-    mockGetHrmConfig.mockReturnValue(mockValidConfig);
+    mockGetAseloFeatureFlags.mockReturnValue({ enable_transfers: true });
     mockSyncClient.mockImplementation(() => ({
       on: jest.fn(),
       connectionState: 'not connected',
@@ -114,7 +106,7 @@ describe('Test with not connected sharedState', () => {
 
 describe('Test with connected sharedState', () => {
   beforeEach(() => {
-    mockGetHrmConfig.mockReturnValue(mockValidConfig);
+    mockGetAseloFeatureFlags.mockReturnValue({ enable_transfers: true });
     mockSyncClient.mockImplementation(() => mockSharedState);
     setUpSharedStateClient();
   });
@@ -141,7 +133,7 @@ describe('Test throwing errors', () => {
   console.error = error;
 
   beforeEach(() => {
-    mockGetHrmConfig.mockReturnValue(mockValidConfig);
+    mockGetAseloFeatureFlags.mockReturnValue({ enable_transfers: true });
     mockSyncClient.mockImplementation(() => ({
       document: () => {
         throw new Error();

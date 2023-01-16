@@ -34,27 +34,31 @@ const readConfig = () => {
   const { strings } = (manager as unknown) as { strings: { [key: string]: string } };
 
   return {
-    hrmBaseUrl,
-    serverlessBaseUrl,
-    resourceBaseUrl,
-    logoUrl,
-    chatServiceSid,
-    workerSid,
-    helpline,
-    currentWorkspace,
-    counselorLanguage,
-    helplineLanguage,
-    identity,
-    token,
-    counselorName,
-    isSupervisor,
     featureFlags,
     strings,
-    definitionVersion,
-    pdfImagesSource,
-    multipleOfficeSupport,
-    permissionConfig,
-    contactsWaitingChannels,
+    hrm: {
+      hrmBaseUrl,
+      serverlessBaseUrl,
+      logoUrl,
+      chatServiceSid,
+      workerSid,
+      helpline,
+      currentWorkspace,
+      counselorLanguage,
+      helplineLanguage,
+      identity,
+      token,
+      counselorName,
+      isSupervisor,
+      definitionVersion,
+      pdfImagesSource,
+      multipleOfficeSupport,
+      permissionConfig,
+      contactsWaitingChannels,
+    },
+    referrableResources: {
+      resourceBaseUrl,
+    },
   };
 };
 
@@ -79,4 +83,18 @@ export const subscribeToConfigUpdates = (manager: Flex.Manager) => {
   });
 };
 
-export const getHrmConfig = () => cachedConfig;
+export const getHrmConfig = () => cachedConfig.hrm;
+export const getReferrableResourceConfig = () => cachedConfig.referrableResources;
+export const getResourceStrings = () => cachedConfig.strings;
+export const getAseloFeatureFlags = () => cachedConfig.featureFlags;
+
+/*
+ * Legacy function, only used for backward compatibility,
+ * New code should use one of the above functions instead
+ */
+export const getConfig = () => ({
+  ...cachedConfig.hrm,
+  ...cachedConfig.referrableResources,
+  strings: cachedConfig.strings,
+  featureFlags: cachedConfig.featureFlags,
+});
