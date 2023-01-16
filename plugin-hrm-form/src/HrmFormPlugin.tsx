@@ -1,6 +1,5 @@
 import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin, loadCSS } from '@twilio/flex-plugin';
-import SyncClient from 'twilio-sync';
 import type Rollbar from 'rollbar';
 
 import './styles/global-overrides.css';
@@ -15,82 +14,19 @@ import * as Components from './utils/setUpComponents';
 import * as Channels from './channels/setUpChannels';
 import setUpMonitoring from './utils/setUpMonitoring';
 import { changeLanguage } from './states/configuration/actions';
-import { issueSyncToken } from './services/ServerlessService';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from './permissions';
-import type { FeatureFlags } from './types/types';
+import { subscribeToConfigUpdates, getHrmConfig } from './hrmConfig';
+import { setUpSharedStateClient } from './utils/sharedState';
+
+// Re-exported for backwards compatibility, we should move to getHrmConfig & remove this
+export { getHrmConfig as getConfig } from './hrmConfig';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
 export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
-let sharedStateClient: SyncClient;
-
-const readConfig = () => {
-  const manager = Flex.Manager.getInstance();
-
-  const hrmBaseUrl = `${process.env.REACT_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}/${
-    manager.serviceConfiguration.attributes.hrm_api_version
-  }/accounts/${manager.workerClient.accountSid}`;
-  const serverlessBaseUrl =
-    process.env.REACT_SERVERLESS_BASE_URL || manager.serviceConfiguration.attributes.serverless_base_url;
-  const logoUrl = manager.serviceConfiguration.attributes.logo_url;
-  const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
-  const workerSid = manager.workerClient.sid;
-  const { helpline, counselorLanguage, full_name: counselorName, roles } = manager.workerClient.attributes as any;
-  const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
-  const { identity, token } = manager.user;
-  const isSupervisor = roles.includes('supervisor');
-  const {
-    helplineLanguage,
-    definitionVersion,
-    pdfImagesSource,
-    multipleOfficeSupport,
-    permissionConfig,
-  } = manager.serviceConfiguration.attributes;
-  const featureFlags: FeatureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
-  const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
-  const { strings } = (manager as unknown) as { strings: { [key: string]: string } };
-
-  return {
-    hrmBaseUrl,
-    serverlessBaseUrl,
-    logoUrl,
-    chatServiceSid,
-    workerSid,
-    helpline,
-    currentWorkspace,
-    counselorLanguage,
-    helplineLanguage,
-    identity,
-    token,
-    counselorName,
-    isSupervisor,
-    featureFlags,
-    sharedStateClient,
-    strings,
-    definitionVersion,
-    pdfImagesSource,
-    multipleOfficeSupport,
-    permissionConfig,
-    contactsWaitingChannels,
-  };
-};
-
-let cachedConfig: ReturnType<typeof readConfig>;
-
-try {
-  cachedConfig = readConfig();
-} catch (err) {
-  console.log(
-    'Failed to read config on page load, leaving undefined for now (it will be populated when the flex reducer runs)',
-    err,
-  );
-}
-
-export const getConfig = () => cachedConfig;
-
 // eslint-disable-next-line import/no-unused-modules
-export type SetupObject = ReturnType<typeof getConfig> & {
+export type SetupObject = ReturnType<typeof getHrmConfig> & {
   translateUI: (language: string) => Promise<void>;
   getMessage: (messageKey: string) => (language: string) => Promise<string>;
 };
@@ -111,35 +47,11 @@ export const reRenderAgentDesktop = async () => {
   await Flex.Actions.invokeAction('NavigateToView', { viewName: 'agent-desktop' });
 };
 
-const setUpSharedStateClient = () => {
-  const updateSharedStateToken = async () => {
-    try {
-      const syncToken = await issueSyncToken();
-      await sharedStateClient.updateToken(syncToken);
-    } catch (err) {
-      console.error('SYNC TOKEN ERROR', err);
-    }
-  };
-
-  // initializes sync client for shared state
-  const initSharedStateClient = async () => {
-    try {
-      const syncToken = await issueSyncToken();
-      sharedStateClient = new SyncClient(syncToken);
-      sharedStateClient.on('tokenAboutToExpire', () => updateSharedStateToken());
-    } catch (err) {
-      console.error('SYNC CLIENT INIT ERROR', err);
-    }
-  };
-
-  initSharedStateClient();
-};
-
-const setUpTransfers = (setupObject: SetupObject) => {
+const setUpTransfers = () => {
   setUpSharedStateClient();
 };
 
-const setUpLocalization = (config: ReturnType<typeof getConfig>) => {
+const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   const manager = Flex.Manager.getInstance();
 
   const { counselorLanguage, helplineLanguage } = config;
@@ -204,7 +116,7 @@ const setUpComponents = (setupObject: SetupObject) => {
     };
     Flex.MessageList.Content.remove('0');
     // Masks TaskInfoPanelContent - TODO: refactor to use a react component
-    const { strings } = getConfig();
+    const { strings } = getHrmConfig();
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
     strings.CallParticipantCustomerName = strings.MaskIdentifiers;
   }
@@ -269,7 +181,7 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     Providers.setMUIProvider();
 
-    const config = getConfig();
+    const config = getHrmConfig();
 
     /*
      * localization setup (translates the UI if necessary)
@@ -279,7 +191,7 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     const setupObject = { ...config, translateUI, getMessage };
 
-    if (config.featureFlags.enable_transfers) setUpTransfers(setupObject);
+    if (config.featureFlags.enable_transfers) setUpTransfers();
     setUpComponents(setupObject);
     setUpActions(setupObject);
     setUpTaskRouterListeners(setupObject);
@@ -320,12 +232,6 @@ export default class HrmFormPlugin extends FlexPlugin {
      * Direct use of 'subscribe' is generally discouraged.
      * This is a workaround until we deprecate 'getConfig' in it's current form after we migrate to Flex 2.0
      */
-    manager.store.subscribe(() => {
-      try {
-        cachedConfig = readConfig();
-      } catch (err) {
-        console.warn('Failed to read configuration - leaving cached version the same', err);
-      }
-    });
+    subscribeToConfigUpdates(manager);
   }
 }

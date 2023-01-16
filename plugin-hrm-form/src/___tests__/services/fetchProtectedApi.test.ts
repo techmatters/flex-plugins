@@ -141,24 +141,36 @@ describe('fetchProtectedApi', () => {
       }),
     );
   });
-  test('Error response with stack property on the body JSON - copies the stack property value to the Errors serverStack property', async () => {
-    const requestBody = { error: 'message' };
-    const mockResponse = {
-      json(): Promise<any> {
-        return Promise.resolve({ ...requestBody, stack: ['some', 'frames']});
-      },
-      ok: false,
-      status: 403,
-      statusText: 'Forbidden',
-    };
-    mockFetch.mockResolvedValue(mockResponse);
-    await expect(fetchProtectedApi('/areBelongToUs', requestBody)).rejects.toThrow(
-      new ProtectedApiError('Server responded with 403 status (Forbidden)', {
-        body: { error: 'message' },
-        response: mockResponse as Response,
-      }),
-    );
-    const error: ProtectedApiError = mockFetch.mock.results[0].value;
+});
+describe('ProtectedApiError', () => {
+  test('provided response with stack property on the body JSON - copies the stack property value to the Errors serverStack property', () => {
+    const body = { error: 'message', stack: ['some', 'frames'] };
+    const error = new ProtectedApiError('Server responded with 403 status (Forbidden)', {
+      body,
+      response: {
+        json(): Promise<any> {
+          return Promise.resolve(body);
+        },
+        ok: false,
+        status: 403,
+        statusText: 'Forbidden',
+      } as Response,
+    });
     expect(error.serverStack).toStrictEqual(['some', 'frames']);
+  });
+  test('provided response without stack property on the body JSON - serverStack property is undefined', () => {
+    const body = { error: 'message' };
+    const error = new ProtectedApiError('Server responded with 403 status (Forbidden)', {
+      body,
+      response: {
+        json(): Promise<any> {
+          return Promise.resolve(body);
+        },
+        ok: false,
+        status: 403,
+        statusText: 'Forbidden',
+      } as Response,
+    });
+    expect(error.serverStack).not.toBeDefined();
   });
 });

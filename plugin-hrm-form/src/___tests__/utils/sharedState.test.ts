@@ -1,10 +1,26 @@
 /* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable global-require */
 /* eslint-disable camelcase */
+import SyncClient from 'twilio-sync';
+
 import { transferStatuses } from '../../states/DomainConstants';
 import { createTask } from '../helpers';
+import { getHrmConfig } from '../../hrmConfig';
+import { loadFormSharedState, saveFormSharedState, setUpSharedStateClient } from '../../utils/sharedState';
+import { TaskEntry } from '../../states/contacts/reducer';
 
-const form = { value1: 'value1', value2: 'value2' };
+jest.mock('../../services/ServerlessService', () => ({
+  issueSyncToken: jest.fn(),
+}));
+jest.mock('../../fullStory', () => ({
+  recordBackendError: jest.fn(),
+}));
+jest.mock('../../hrmConfig', () => ({
+  getHrmConfig: jest.fn(),
+}));
+
+jest.mock('twilio-sync', () => jest.fn());
+const form = { helpline: 'a helpline' } as TaskEntry;
 const task = createTask();
 
 const mockSharedState = {
@@ -22,11 +38,11 @@ const mockSharedState = {
   },
 };
 
-const mockConfig1 = {
+const mockFeatureDisabledConfig = {
   featureFlags: {},
 };
 
-const mockConfig2 = {
+const mockValidConfig = {
   featureFlags: { enable_transfers: true },
   strings: {
     SharedStateSaveFormError: 'Error saving',
@@ -34,48 +50,13 @@ const mockConfig2 = {
   },
 };
 
-const mockConfig3 = {
-  featureFlags: { enable_transfers: true },
-  strings: {
-    SharedStateSaveFormError: 'Error saving',
-    SharedStateLoadFormError: 'Error loading',
-  },
-  sharedStateClient: {
-    connectionState: 'not connected',
-  },
-};
-
-const mockConfig4 = {
-  featureFlags: { enable_transfers: true },
-  sharedStateClient: mockSharedState,
-};
-
-const mockConfig5 = {
-  featureFlags: { enable_transfers: true },
-  sharedStateClient: {
-    document: () => {
-      throw new Error();
-    },
-  },
-};
-
-jest.mock('../../HrmFormPlugin', () => ({
-  getConfig: jest
-    .fn()
-    .mockReturnValueOnce(mockConfig1)
-    .mockReturnValueOnce(mockConfig1)
-    .mockReturnValueOnce(mockConfig2)
-    .mockReturnValueOnce(mockConfig2)
-    .mockReturnValueOnce(mockConfig3)
-    .mockReturnValueOnce(mockConfig3)
-    .mockReturnValueOnce(mockConfig4)
-    .mockReturnValueOnce(mockConfig4)
-    .mockReturnValueOnce(mockConfig5)
-    .mockReturnValueOnce(mockConfig5),
-}));
+const mockGetHrmConfig: jest.Mock = getHrmConfig as jest.Mock;
+const mockSyncClient: jest.Mock = (SyncClient as unknown) as jest.Mock;
+window.alert = jest.fn();
 
 describe('Test with no feature flag', () => {
   test('saveFormSharedState', async () => {
+    mockGetHrmConfig.mockReturnValue(mockFeatureDisabledConfig);
     const { saveFormSharedState } = require('../../utils/sharedState');
 
     const documentName = await saveFormSharedState(form, task);
@@ -83,6 +64,7 @@ describe('Test with no feature flag', () => {
   });
 
   test('loadFormSharedState', async () => {
+    mockGetHrmConfig.mockReturnValue(mockFeatureDisabledConfig);
     const { loadFormSharedState } = require('../../utils/sharedState');
 
     const loadedForm = await loadFormSharedState(task);
@@ -90,19 +72,16 @@ describe('Test with no feature flag', () => {
   });
 });
 
-window.alert = jest.fn();
-
 describe('Test with undefined sharedState', () => {
   test('saveFormSharedState', async () => {
-    const { saveFormSharedState } = require('../../utils/sharedState');
-
+    mockGetHrmConfig.mockReturnValue(mockValidConfig);
     const documentName = await saveFormSharedState(form, task);
     expect(documentName).toBeNull();
     expect(window.alert).toBeCalledWith('Error saving');
   });
 
   test('loadFormSharedState', async () => {
-    const { loadFormSharedState } = require('../../utils/sharedState');
+    mockGetHrmConfig.mockReturnValue(mockValidConfig);
 
     const loadedForm = await loadFormSharedState(task);
     expect(loadedForm).toBeNull();
@@ -111,17 +90,22 @@ describe('Test with undefined sharedState', () => {
 });
 
 describe('Test with not connected sharedState', () => {
-  test('saveFormSharedState', async () => {
-    const { saveFormSharedState } = require('../../utils/sharedState');
+  beforeEach(() => {
+    mockGetHrmConfig.mockReturnValue(mockValidConfig);
+    mockSyncClient.mockImplementation(() => ({
+      on: jest.fn(),
+      connectionState: 'not connected',
+    }));
+    setUpSharedStateClient();
+  });
 
+  test('saveFormSharedState', async () => {
     const documentName = await saveFormSharedState(form, task);
     expect(documentName).toBeNull();
     expect(window.alert).toBeCalledWith('Error saving');
   });
 
   test('loadFormSharedState', async () => {
-    const { loadFormSharedState } = require('../../utils/sharedState');
-
     const loadedForm = await loadFormSharedState(task);
     expect(loadedForm).toBeNull();
     expect(window.alert).toBeCalledWith('Error loading');
@@ -129,11 +113,14 @@ describe('Test with not connected sharedState', () => {
 });
 
 describe('Test with connected sharedState', () => {
+  beforeEach(() => {
+    mockGetHrmConfig.mockReturnValue(mockValidConfig);
+    mockSyncClient.mockImplementation(() => mockSharedState);
+    setUpSharedStateClient();
+  });
+
   test('saveFormSharedState', async () => {
-    const { saveFormSharedState } = require('../../utils/sharedState');
-
     const expected = { ...form };
-
     const documentName = await saveFormSharedState(form, task);
     expect(documentName).toBe('pending-form-taskSid');
     expect(mockSharedState.documents[documentName].data).toStrictEqual(expected);
@@ -143,10 +130,7 @@ describe('Test with connected sharedState', () => {
   });
 
   test('loadFormSharedState', async () => {
-    const { loadFormSharedState } = require('../../utils/sharedState');
-
     const expected = { ...form };
-
     const loadedForm = await loadFormSharedState(task);
     expect(loadedForm).toStrictEqual(expected);
   });
@@ -155,13 +139,20 @@ describe('Test with connected sharedState', () => {
 describe('Test throwing errors', () => {
   const error = jest.fn();
   console.error = error;
+
   beforeEach(() => {
+    mockGetHrmConfig.mockReturnValue(mockValidConfig);
+    mockSyncClient.mockImplementation(() => ({
+      document: () => {
+        throw new Error();
+      },
+      on: jest.fn(),
+    }));
+    setUpSharedStateClient();
     error.mockReset();
   });
 
   test('saveFormSharedState', async () => {
-    const { saveFormSharedState } = require('../../utils/sharedState');
-
     expect(error).not.toBeCalled();
     const documentName = await saveFormSharedState(form, task);
     expect(documentName).toBeNull();
@@ -169,8 +160,6 @@ describe('Test throwing errors', () => {
   });
 
   test('loadFormSharedState', async () => {
-    const { loadFormSharedState } = require('../../utils/sharedState');
-
     expect(error).not.toBeCalled();
     const loadedForm = await loadFormSharedState(task);
     expect(loadedForm).toBeNull();

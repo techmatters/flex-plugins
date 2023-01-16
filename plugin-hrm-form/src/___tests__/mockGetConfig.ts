@@ -3,8 +3,8 @@
 import { DefinitionVersion, DefinitionVersionId } from 'hrm-form-definitions/src';
 
 const baseMockConfig = {
-  hrmBaseUrl: '',
-  serverlessBaseUrl: '',
+  hrmBaseUrl: 'http://fake.hrm.com',
+  serverlessBaseUrl: 'http://fake.protected.com',
   serviceSid: '',
   workerSid: '',
   helpline: '',
@@ -36,6 +36,10 @@ const mockGetConfig = jest.fn(() => baseMockConfig);
 jest.mock('../HrmFormPlugin', () => ({
   getConfig: mockGetConfig,
   getDefinitionVersions: jest.fn(),
+}));
+
+jest.mock('../hrmConfig', () => ({
+  getHrmConfig: mockGetConfig,
 }));
 
 export const mockPartialConfiguration = partialConfig =>
