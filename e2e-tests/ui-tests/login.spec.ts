@@ -22,7 +22,9 @@ test('Plugin loads', async ({ page }) => {
   await configServices.mockFlexServiceConfigurationPublicEndpoint(accountSid);
   await configServices.mockFlexServiceConfigurationEndpoint(accountSid);
   await configServices.mockSessionEndpoint();
-  await authenticationServices(page).mockTwilioIamValidate(accountSid);
+  const authServices = authenticationServices(page);
+  await authServices.mockTwilioIamRefresh(accountSid);
+  await authServices.mockTwilioIamValidate(accountSid);
   await page.goto('/agent-desktop', { waitUntil: 'networkidle' });
   const callsWaitingLabel = page.locator(
     "div.Twilio-AgentDesktopView-default div[data-testid='Childline-voice']",

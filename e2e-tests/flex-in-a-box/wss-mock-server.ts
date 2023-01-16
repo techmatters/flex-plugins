@@ -23,7 +23,7 @@ export const secureWebsocketServer = (
   const connectedSockets: Record<string, WebSocket> = {};
 
   wss.on('connection', (ws) => {
-    console.log(`Websocket connection to mock server:`, JSON.stringify(ws));
+    console.log(`Websocket connection to mock server:`, JSON.stringify(ws.url));
     connectedSockets[ws.url] = ws;
 
     ws.on('message', (data) => {

@@ -1,7 +1,13 @@
 import { MockSecureWebsocketServer } from './wss-mock-server';
 import { RawData } from 'ws';
 
-const acceptResponse = (id: string) => ({
+type TwilsockHeader = {
+  id: string;
+  payload_size: number;
+  method: 'init' | 'message' | 'reply';
+} & Record<string, any>;
+
+const acceptResponse = (id: string): TwilsockHeader => ({
   method: 'reply',
   id,
   payload_size: 0,
@@ -30,20 +36,31 @@ export const twilsockServer = (
 ) => {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
-  const frameJsonMessage = (payload: any) =>
-    encoder.encode(`TWILSOCK V${version}
-  ${JSON.stringify(payload)}`);
+  const serializeOutgoing = (payload: any) =>
+    encoder.encode(`TWILSOCK V${version}\r\n${JSON.stringify(payload)}`);
 
-  const unframeMessage = (message: ArrayBuffer): any => {
+  const deserializeIncoming = (
+    message: ArrayBuffer,
+  ): { version: string; header: TwilsockHeader; body?: any } => {
     const messageString = decoder.decode(message);
-    return JSON.parse(messageString.substring(messageString.indexOf('\n')));
+    const [messageVersion, headerString, bodyString] = messageString.split('\r\n');
+    const withoutBody = {
+      version: messageVersion,
+      header: JSON.parse(headerString),
+    };
+    return bodyString
+      ? {
+          ...withoutBody,
+          body: JSON.parse(bodyString),
+        }
+      : withoutBody;
   };
 
   websocketServer.onConnection((ws) => {
     ws.on('message', (data: RawData) => {
-      const parsed = unframeMessage(data as ArrayBuffer);
-      if (parsed.method === 'init') {
-        ws.send(frameJsonMessage(acceptResponse(parsed.id)));
+      const { header } = deserializeIncoming(data as ArrayBuffer);
+      if (header.method === 'init') {
+        ws.send(serializeOutgoing(acceptResponse(header.id)));
       }
     });
   });
