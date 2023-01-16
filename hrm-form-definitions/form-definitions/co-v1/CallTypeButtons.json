@@ -46,5 +46,11 @@
     "label": "Quejas",
     "type": "button",
     "category": "non-data"
+  },
+  {
+    "name": "test",
+    "label": "Prueba",
+    "type": "button",
+    "category": "non-data"
   }
 ]
