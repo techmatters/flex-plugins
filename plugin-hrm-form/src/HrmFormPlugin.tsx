@@ -18,6 +18,7 @@ import { getPermissionsForViewingIdentifiers, PermissionActions } from './permis
 import { subscribeToConfigUpdates, getHrmConfig, getResourceStrings, getAseloFeatureFlags } from './hrmConfig';
 import { setUpSharedStateClient } from './utils/sharedState';
 import { FeatureFlags } from './types/types';
+import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
 
 // Re-exported for backwards compatibility, we should move to getHrmConfig & remove this
 export { getConfig } from './hrmConfig';
@@ -103,6 +104,7 @@ const setUpComponents = (
   }
 
   Components.setUpStandaloneSearch();
+  setUpReferrableResources();
 
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 

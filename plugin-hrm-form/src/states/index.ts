@@ -9,8 +9,8 @@ import { reduce as QueuesStatusReducer } from './queuesStatus/reducer';
 import { reduce as ConfigurationReducer } from './configuration/reducer';
 import { reduce as RoutingReducer } from './routing/reducer';
 import { reduce as CSAMReportReducer } from './csam-report/reducer';
-// import { reduce as CSAMCLCReportReducer } from './csam-clc-report/reducer';
 import { reduce as DualWriteReducer } from './dualWrite/reducer';
+import { reduce as ReferrableResourcesReducer } from './resources';
 import { CaseState } from './case/types';
 
 // Register your redux store under a unique namespace
@@ -24,6 +24,8 @@ export const configurationBase = 'configuration';
 export const routingBase = 'routing';
 export const csamReportBase = 'csam-report';
 export const dualWriteBase = 'dualWrite';
+// eslint-disable-next-line import/no-unused-modules
+export const referrableResourcesBase = 'referrableResources';
 // export const csamClcReportBase = 'csam-clc-report';
 
 const reducers = {
@@ -35,6 +37,7 @@ const reducers = {
   [routingBase]: RoutingReducer,
   [csamReportBase]: CSAMReportReducer,
   [dualWriteBase]: DualWriteReducer,
+  [referrableResourcesBase]: ReferrableResourcesReducer,
   /*
    * [csamClcReportBase]: CSAMCLCReportReducer,
    * [connectedCaseBase] - this is going to be combined manually, rather than using 'combineReducers', so isn't in this map
