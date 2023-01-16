@@ -66,9 +66,8 @@ locals {
   }
 
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
+  //Channels [Facebook | Line | Instagram | Twitter]
   //"facebook" = {"contact_identity" = "messenger:108893035300837", "channel_type" ="facebook"},
-  //"webchat" = {"contact_identity" = "", "channel_type" ="web"},
-  //"sms" = {"contact_identity" = "+17152201076", "channel_type" ="sms" }
   twilio_channels = {}
   //["twitter","instagram","line"]
   custom_channels=[]
@@ -77,11 +76,6 @@ locals {
 provider "twilio" {
   username = local.secrets.twilio_account_sid
   password = local.secrets.twilio_auth_token
-}
-
-module "custom_chatbots" {
-  source = "../terraform-modules/chatbots/childline-th"
-  serverless_url = module.serverless.serverless_environment_production_url
 }
 
 module "hrmServiceIntegration" {
