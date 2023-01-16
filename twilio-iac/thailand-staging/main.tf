@@ -38,7 +38,6 @@ locals {
   permission_config = "demo"
   multi_office = false
   enable_post_survey = false
-  target_task_name = "greeting"
   twilio_numbers = ["messenger:103538615719253","twitter:1532353002387931139","instagram:17841453197793547"]
   channel = ""
   custom_channel_attributes = ""
@@ -72,11 +71,6 @@ locals {
 provider "twilio" {
   username = local.secrets.twilio_account_sid
   password = local.secrets.twilio_auth_token
-}
-
-module "custom_chatbots" {
-  source = "../terraform-modules/chatbots/childline-th"
-  serverless_url = module.serverless.serverless_environment_production_url
 }
 
 module "hrmServiceIntegration" {
@@ -128,8 +122,14 @@ module twilioChannel {
   channel_type = each.value.channel_type
   source = "../terraform-modules/channels/twilio-channel"
   channel_contact_identity = each.value.contact_identity
-  pre_survey_bot_sid = module.custom_chatbots.pre_survey_bot_sid
-  target_task_name = local.target_task_name
+  custom_flow_definition = templatefile(
+    "../terraform-modules/channels/flow-templates/default/no-chatbot.tftpl",
+    {
+      master_workflow_sid = module.taskRouter.master_workflow_sid
+      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+      channel_attributes =  templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language})
+      flow_description = "${title(each.key)} Messaging Flow"
+    })
   channel_name = "${each.key}"
   janitor_enabled = !local.enable_post_survey
   master_workflow_sid = module.taskRouter.master_workflow_sid
@@ -171,7 +171,7 @@ module aws {
   shared_state_sync_service_sid = module.services.shared_state_sync_service_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
   flex_proxy_service_sid = module.services.flex_proxy_service_sid
-  post_survey_bot_sid = module.custom_chatbots.post_survey_bot_sid
+  post_survey_bot_sid = ""
   survey_workflow_sid = module.survey.survey_workflow_sid
 }
 
