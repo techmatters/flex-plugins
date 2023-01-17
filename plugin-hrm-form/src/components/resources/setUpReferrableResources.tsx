@@ -2,14 +2,14 @@ import * as Flex from '@twilio/flex-ui';
 import React from 'react';
 
 import ReferrableResourceSideLink from './ReferrableResourceSideLink';
-import ViewResource from './ViewResource';
 import { referrableResourcesEnabled } from '../../services/ResourceService';
+import ReferrableResources from './ReferrableResources';
 
 export const setUpReferrableResources = () => {
   if (referrableResourcesEnabled()) {
     Flex.ViewCollection.Content.add(
       <Flex.View name="referrable-resources" key="referrable-resources-view">
-        <ViewResource resourceId="TEST_RESOURCE_ID" />
+        <ReferrableResources />
       </Flex.View>,
     );
 

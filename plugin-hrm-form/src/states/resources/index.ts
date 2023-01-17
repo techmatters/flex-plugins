@@ -41,12 +41,10 @@ export type ReferrableResourcesState = {
   // eslint-disable-next-line prettier/prettier
   route?: ResourceRoute
   resources: Record<string, { loaded: Date; resource: ReferrableResource }>;
-  enabled: boolean;
 };
 
 const initialState: ReferrableResourcesState = {
   resources: {},
-  enabled: false,
 };
 
 export function reduce(
@@ -61,7 +59,6 @@ export function reduce(
         isBefore(now, addSeconds(loaded, RESOURCE_EXPIRY_SECONDS)),
       ),
     ),
-    enabled: referrableResourcesEnabled(),
   };
 
   switch (action.type) {
@@ -70,7 +67,7 @@ export function reduce(
         ...state,
         resources: {
           ...state.resources,
-          [action.resource.id]: { resource: action.resource, loaded: new Date() },
+          [action.resource.id]: { resource: action.resource, loaded: now },
         },
       };
     }
