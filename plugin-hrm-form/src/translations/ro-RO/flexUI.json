@@ -541,6 +541,7 @@
     "CSAMReportForm-ReportsSubmitted": "Rapoarte depuse",
     "CSAMReportForm-WebsiteDetails": "Detalii site -ul web",
     "CSAMReportForm-WebsiteDetailsDescription": "Vă rugăm să furnizați detalii în cazul în care materialul a fost descoperit. <br> pentru a raporta mai multe site -uri web să facă un raport separat.",
+    "CSAMReportForm-SelectReportType": "Selectați tipul de raport CSAM",
     "CSAMCLCReportForm-Header": "Fișier raport extern: CSAM - Creare link pentru copil",
     "CSAMCLCReportForm-ChildAge": "Care este vârsta copilului?",
     "CSAMCLCReportForm-AgeVerified": "A fost verificată vârsta copilului?",

@@ -428,6 +428,7 @@
   "CSAMReportForm-Self-Attachment": "ลิงก์รายงานตนเอง CSAM ถูกสร้างขึ้น",
   "CSAMReportForm-WebsiteDetails": "รายละเอียดเว็บไซต์",
   "CSAMReportForm-WebsiteDetailsDescription": "โปรดระบุรายละเอียดที่พบเนื้อหา <br> เพื่อรายงานมากกว่าหนึ่งเว็บไซต์ทำรายงานแยกต่างหาก",
+  "CSAMReportForm-SelectReportType": "เลือกประเภทรายงาน CSAM",
   "Description (500 characters)": "คำอธิบาย (500 อักขระ)",
   "File anonymously": "ยื่นแบบไม่ระบุชื่อ",
   "Provide contact details": "ให้รายละเอียดการติดต่อ",
