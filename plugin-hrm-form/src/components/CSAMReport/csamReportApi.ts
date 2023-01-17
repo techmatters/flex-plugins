@@ -190,7 +190,7 @@ export const existingContactCSAMApi = (contactId: string): CSAMReportApi => ({
   saveReport: (state, twilioWorkerId) => saveReport(state, twilioWorkerId, contactId),
   exitActionDispatcher: dispatch => () => {
     // Redundant, navigation is implicit based on draft CSAM report state
-    dispatch(CSAMAction.clearCSAMReportActionForContact(contactId));
+    dispatch(CSAMAction.removeCSAMReportActionForContact(contactId));
   },
   addReportDispatcher: dispatch => csamReportEntry => {
     dispatch(addExternalReportEntry(csamReportEntry, contactId));

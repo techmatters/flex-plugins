@@ -18,7 +18,7 @@ import {
   updateChildFormAction,
   updateStatusAction,
   updateStatusActionForContact,
-  clearCSAMReportActionForContact,
+  removeCSAMReportActionForContact,
   newCSAMReportActionForContact,
   updateCounsellorFormActionForContact,
   updateChildFormActionForContact,
@@ -502,7 +502,7 @@ describe('existingContactCSAMApi', () => {
   });
   test('exitActionDispatcher - dispatches clearCSAMReportActionForContact action', () => {
     api.exitActionDispatcher(dispatch)();
-    expect(dispatch).toHaveBeenCalledWith(clearCSAMReportActionForContact(TEST_CONTACT_ID));
+    expect(dispatch).toHaveBeenCalledWith(removeCSAMReportActionForContact(TEST_CONTACT_ID));
   });
   test('addReportDispatcher - dispatches addExternalReportEntry action', () => {
     const entry: CSAMReportEntry = {
