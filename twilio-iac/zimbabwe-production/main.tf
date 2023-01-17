@@ -132,6 +132,7 @@ module twilioChannel {
   pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
   target_task_name = local.target_task_name
   channel_name = "${each.key}"
+  channel_type = each.value.channel_type
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
