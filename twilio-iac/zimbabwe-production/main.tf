@@ -36,7 +36,7 @@ locals {
   environment = "Production"
   short_environment = "PROD"
   definition_version = "zw-v1"
-  permission_config = "zw"
+  permission_config = "demo"
   multi_office = false
   enable_post_survey = false
   target_task_name = "greeting"
@@ -44,7 +44,7 @@ locals {
   channel = ""
   custom_channel_attributes = ""
   feature_flags = {
-    "enable_fullstory_monitoring": true,
+    "enable_fullstory_monitoring": false,
     "enable_upload_documents": true,
     "enable_post_survey": local.enable_post_survey,
     "enable_contact_editing": true,
@@ -66,9 +66,14 @@ locals {
     "enable_csam_clc_report": false
   }
   //Channels [Voice | Facebook | Webchat | WhatsApp]
-  twilio_channels = {
+  twilio_channels = { webchat" = {"contact_identity" = "", "channel_type" ="web"  }
    }
   }
+}
+
+provider "twilio" {
+  username = local.secrets.twilio_account_sid
+  password = local.secrets.twilio_auth_token
 }
 
 module "chatbots" {
@@ -87,6 +92,8 @@ module "hrmServiceIntegration" {
 
 module "serverless" {
   source = "../terraform-modules/serverless/default"
+  twilio_account_sid = local.secrets.twilio_account_sid
+  twilio_auth_token = local.secrets.twilio_auth_token
 }
 
 module "services" {
@@ -107,7 +114,7 @@ module "taskRouter" {
 
 module flex {
   source = "../terraform-modules/flex/service-configuration"
-  account_sid = local.account_sid
+  twilio_account_sid = local.secrets.twilio_account_sid
   short_environment = local.short_environment
   operating_info_key = local.operating_info_key
   permission_config = local.permission_config
@@ -137,7 +144,7 @@ module survey {
 
 module aws {
   source = "../terraform-modules/aws/default"
-  account_sid = local.account_sid
+  twilio_account_sid = local.secrets.twilio_account_sid
   helpline = local.helpline
   short_helpline = local.short_helpline
   environment = local.environment
@@ -163,7 +170,7 @@ module aws_monitoring {
 
 module github {
   source = "../terraform-modules/github/default"
-  twilio_account_sid = local.account_sid
+  twilio_account_sid = local.secrets.twilio_account_sid
   twilio_auth_token = local.auth_token
   short_environment = local.short_environment
   short_helpline = local.short_helpline
