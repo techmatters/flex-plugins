@@ -3,7 +3,7 @@
   "helplines": [
     {
       "label": "คอนแท็กต์ เซ็นเตอร์",
-      "value": "คอนแท็กต์ เซ็นเตอร์",
+      "value": "Childline Thailand",
       "default": true,
       "manager": {
         "name": "Helpline Manager",
