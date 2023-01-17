@@ -78,11 +78,6 @@ provider "twilio" {
   password = local.secrets.twilio_auth_token
 }
 
-module "chatbots" {
-  source = "../terraform-modules/chatbots/default"
-  serverless_url = module.serverless.serverless_environment_production_url
-}
-
 module "hrmServiceIntegration" {
   source = "../terraform-modules/hrmServiceIntegration/default"
   local_os = var.local_os
@@ -169,7 +164,7 @@ module aws {
   shared_state_sync_service_sid = module.services.shared_state_sync_service_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
   flex_proxy_service_sid = module.services.flex_proxy_service_sid
-  post_survey_bot_sid = module.chatbots.post_survey_bot_sid
+  post_survey_bot_sid = ""
   survey_workflow_sid = module.survey.survey_workflow_sid
 }
 
