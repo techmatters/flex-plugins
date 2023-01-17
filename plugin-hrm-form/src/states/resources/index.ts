@@ -1,6 +1,6 @@
 import { addSeconds, isBefore } from 'date-fns';
 
-import { ReferrableResource, referrableResourcesEnabled } from '../../services/ResourceService';
+import { ReferrableResource } from '../../services/ResourceService';
 
 export const enum ResourcePage {
   ViewResource = 'view-resource',
@@ -18,7 +18,7 @@ type LoadResourceAction = {
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export const addResource = (resource: ReferrableResource): LoadResourceAction => ({
+export const addResourceAction = (resource: ReferrableResource): LoadResourceAction => ({
   type: ADD_RESOURCE,
   resource,
 });
@@ -31,7 +31,7 @@ type ViewResourceAction = {
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export const viewResource = (id: string): ViewResourceAction => ({
+export const viewResourceAction = (id: string): ViewResourceAction => ({
   type: VIEW_RESOURCE,
   id,
 });

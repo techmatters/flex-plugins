@@ -1,6 +1,12 @@
 import { addDays, isAfter, subDays } from 'date-fns';
 
-import { addResource, reduce, ReferrableResourcesState, ResourcePage, viewResource } from '../../../states/resources';
+import {
+  addResourceAction,
+  reduce,
+  ReferrableResourcesState,
+  ResourcePage,
+  viewResourceAction,
+} from '../../../states/resources';
 
 const resource = (
   id: string,
@@ -38,7 +44,7 @@ describe('reduce', () => {
             existingResource: resource('existingResource', now),
           },
         },
-        addResource({ id: 'newResource', name: 'New Resource' }),
+        addResourceAction({ id: 'newResource', name: 'New Resource' }),
       );
       expect(state.resources.existingResource).toStrictEqual(resource('existingResource', now));
       expect(state.resources.newResource.resource).toStrictEqual({ id: 'newResource', name: 'New Resource' });
@@ -51,7 +57,7 @@ describe('reduce', () => {
             existingResource: resource('existingResource', now),
           },
         },
-        addResource({ id: 'existingResource', name: 'Updated Resource' }),
+        addResourceAction({ id: 'existingResource', name: 'Updated Resource' }),
       );
       expect(state.resources.existingResource.resource).toStrictEqual({
         id: 'existingResource',
@@ -68,7 +74,7 @@ describe('reduce', () => {
       },
     };
     test('Resource with ID exists - set route to viewing resource with that ID', () => {
-      const state = reduce(initialState, viewResource('existingResource'));
+      const state = reduce(initialState, viewResourceAction('existingResource'));
       expect(state).toStrictEqual({
         ...initialState,
         route: {
@@ -78,7 +84,7 @@ describe('reduce', () => {
       });
     });
     test("Resource with ID doesn't exists - set route to viewing resource with that ID anyway", () => {
-      const state = reduce(initialState, viewResource('notExistingResource'));
+      const state = reduce(initialState, viewResourceAction('notExistingResource'));
       expect(state).toStrictEqual({
         ...initialState,
         route: {
@@ -96,7 +102,7 @@ describe('reduce', () => {
             id: 'otherResource',
           },
         },
-        viewResource('thisResource'),
+        viewResourceAction('thisResource'),
       );
       expect(state).toStrictEqual({
         ...initialState,
