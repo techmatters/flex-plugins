@@ -53,7 +53,7 @@ locals {
     },
     "version_message": ""
   },
-  "account_sid": var.account_sid,
+  "account_sid": var.twilio_account_sid,
   "attributes": {
     "feature_flags": var.feature_flags,
     "seenOnboarding": true,
@@ -97,6 +97,6 @@ resource "null_resource" "service_configuration" {
       TWILIO_FLEX_SERVICE_CONFIGURATION_PAYLOAD = local.service_configuration_payload
     }
     working_dir = "${path.module}/../../../../scripts"
-    command = "npm run twilioResources -- update-flex-configuration"
+    command = "npm run twilioResources -- update-flex-configuration ${basename(abspath(path.root))}"
   }
 }

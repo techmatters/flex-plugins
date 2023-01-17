@@ -378,6 +378,7 @@
   "CSAMReportForm-Counsellor-Attachment": "CSAM report was filled",
   "CSAMReportForm-Self-Attachment": "CSAM self-report link was generated",
   "CSAMReportForm-ReportsSubmitted": "Reports Submitted",
+  "CSAMReportForm-SelectReportType": "Select CSAM report type",
   "CSAMCLCReportForm-Header": "File External Report: CSAM - Create Link for Child",
   "CSAMCLCReportForm-ChildAge": "What is child's age?",
   "CSAMCLCReportForm-AgeVerified": "Has age of child been verified?",

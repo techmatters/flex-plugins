@@ -495,6 +495,7 @@
   "PreviousContacts-EmailAddress": "Correo Electrónico",
   "CSAMReportForm-Counsellor-Attachment": "Reporte CSAM enviado",
   "CSAMReportForm-Self-Attachment": "Link de autoreporte generado",
+  "CSAMReportForm-SelectReportType": "Seleccione el tipo de informe de CSAM",
   "CSAMCLCReportForm-Header": "Hacer un Reporte Externo: CSAM - Crear Link para el niño",
   "CSAMCLCReportForm-ChildAge": "Cuál es la edad del niño?",
   "CSAMCLCReportForm-AgeVerified": "Ha sido la edad verificada?",

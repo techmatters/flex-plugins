@@ -52,7 +52,7 @@ const CSAMReportTypePicker: React.FC<Props> = ({
 
         <Box marginTop="20px" marginBottom="5px">
           <BoldDescriptionText style={{ color: '#192b33' }}>
-            <Template code="Select CSAM report type" />
+            <Template code="CSAMReportForm-SelectReportType" />
           </BoldDescriptionText>
           <Box padding="15px 15px 15px 20px">{formElement}</Box>
         </Box>
