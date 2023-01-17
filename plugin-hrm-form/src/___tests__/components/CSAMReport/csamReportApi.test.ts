@@ -3,7 +3,7 @@ import { Dispatch } from 'react';
 
 import { csamReportBase, namespace, RootState, routingBase } from '../../../states';
 import { AppRoutes } from '../../../states/routing/types';
-import { CSAMPage, newContactCSAMApi } from '../../../components/CSAMReport/csamReportApi';
+import { CSAMPage, existingContactCSAMApi, newContactCSAMApi } from '../../../components/CSAMReport/csamReportApi';
 import {
   ChildCSAMReportForm,
   CounselorCSAMReportForm,
@@ -53,6 +53,18 @@ const stateWithTaskCsamReport = (taskSid: string, entry: CSAMReportStateEntry): 
       [csamReportBase]: {
         tasks: {
           [taskSid]: entry,
+        },
+      },
+    },
+  };
+  return (partialState as unknown) as RootState;
+};
+const stateWithContactCsamReport = (contactId: string, entry: CSAMReportStateEntry): RootState => {
+  const partialState: DeepPartial<RootState> = {
+    [namespace]: {
+      [csamReportBase]: {
+        contacts: {
+          [contactId]: entry,
         },
       },
     },
@@ -369,6 +381,86 @@ describe('newContactCSAMApi', () => {
         ),
       ).rejects.toThrow();
       await expect(api.saveReport({}, TEST_WORKER_SID)).rejects.toThrow();
+    });
+  });
+});
+
+describe('existingContactCSAMApi', () => {
+  const TEST_CONTACT_ID = 'a contact';
+  const api = existingContactCSAMApi(TEST_CONTACT_ID);
+  const mockDispatch: jest.Mock = jest.fn();
+  const dispatch: Dispatch<unknown> = mockDispatch as Dispatch<unknown>;
+
+  const EMPTY_STATUS: CSAMReportStatus = { responseCode: '', responseData: '', responseDescription: '' };
+
+  beforeEach(() => {
+    mockDispatch.mockClear();
+  });
+
+  describe('currentPage', () => {
+    test('No report defined for contact - throws', () => {
+      expect(() => api.currentPage(stateWithContactCsamReport('not this contact', {}))).toThrowError();
+    });
+    test('Report with no report type at contact ID - ReportTypePicker', () => {
+      expect(api.currentPage(stateWithContactCsamReport(TEST_CONTACT_ID, {}))).toBe(CSAMPage.ReportTypePicker);
+    });
+    test('Report with report type but no form at contact ID - ReportTypePicker', () => {
+      expect(api.currentPage(stateWithContactCsamReport(TEST_CONTACT_ID, { reportType: CSAMReportTypes.CHILD }))).toBe(
+        CSAMPage.ReportTypePicker,
+      );
+    });
+    test('Report with report type and form but no status at contact ID - Form', () => {
+      expect(
+        api.currentPage(
+          stateWithContactCsamReport(TEST_CONTACT_ID, {
+            reportType: CSAMReportTypes.CHILD,
+            form: { childAge: '', ageVerified: false },
+          }),
+        ),
+      ).toBe(CSAMPage.Form);
+    });
+    test('Report with report type, form and empty status at contact ID - Loading', () => {
+      expect(
+        api.currentPage(
+          stateWithContactCsamReport(TEST_CONTACT_ID, {
+            reportType: CSAMReportTypes.CHILD,
+            form: { childAge: '', ageVerified: false },
+            reportStatus: EMPTY_STATUS,
+          }),
+        ),
+      ).toBe(CSAMPage.Loading);
+    });
+    test('Report with report type, form and status with code populated - Status', () => {
+      expect(
+        api.currentPage(
+          stateWithContactCsamReport(TEST_CONTACT_ID, {
+            reportType: CSAMReportTypes.CHILD,
+            form: { childAge: '', ageVerified: false },
+            reportStatus: { ...EMPTY_STATUS, responseCode: '1' },
+          }),
+        ),
+      ).toBe(CSAMPage.Status);
+    });
+    test('Report with report type and status with code populated but no form - ReportTypePricker', () => {
+      expect(
+        api.currentPage(
+          stateWithContactCsamReport(TEST_CONTACT_ID, {
+            reportType: CSAMReportTypes.CHILD,
+            reportStatus: { ...EMPTY_STATUS, responseCode: '1' },
+          }),
+        ),
+      ).toBe(CSAMPage.ReportTypePicker);
+    });
+  });
+
+  describe('reportState', () => {
+    test('CSAM entry exists for contact - returns entry', () => {
+      const entry: CSAMReportStateEntry = {};
+      expect(api.reportState(stateWithContactCsamReport(TEST_CONTACT_ID, entry))).toBe(entry);
+    });
+    test("CSAM entry doesn't exist for task - returns nothing", () => {
+      const entry: CSAMReportStateEntry = {};
+      expect(api.reportState(stateWithContactCsamReport('not a task', entry))).not.toBeDefined();
     });
   });
 });
