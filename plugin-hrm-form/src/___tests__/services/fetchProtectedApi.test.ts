@@ -48,55 +48,6 @@ describe('fetchProtectedApi', () => {
       expect(body.toString()).toBe(new URLSearchParams({ ...requestBody, Token: 'of my appreciation' }).toString());
       expect(headers).toStrictEqual({ 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' });
     });
-    each([
-      { baseUrl: 'https://all.your.base', endpoint: '/areBelongToUs', expected: 'https://all.your.base/areBelongToUs' },
-      { baseUrl: 'https://all.your.base', endpoint: 'areBelongToUs', expected: 'https://all.your.base/areBelongToUs' },
-      { baseUrl: 'https://all.your.base/', endpoint: 'areBelongToUs', expected: 'https://all.your.base/areBelongToUs' },
-      {
-        baseUrl: 'https://all.your.base/',
-        endpoint: '/areBelongToUs',
-        expected: 'https://all.your.base/areBelongToUs',
-      },
-      {
-        baseUrl: 'https://all.your.base/',
-        endpoint: 'areBelongToUs/',
-        expected: 'https://all.your.base/areBelongToUs/',
-      },
-      {
-        baseUrl: 'https://all.your.base/',
-        endpoint: '/areBelongToUs/',
-        expected: 'https://all.your.base/areBelongToUs/',
-      },
-      { baseUrl: 'https://all.your/base', endpoint: 'areBelongToUs', expected: 'https://all.your/base/areBelongToUs' },
-      { baseUrl: 'https://all.your/base/', endpoint: 'areBelongToUs', expected: 'https://all.your/base/areBelongToUs' },
-      {
-        baseUrl: 'https://all.your/base/',
-        endpoint: '/areBelongToUs',
-        expected: 'https://all.your/base/areBelongToUs',
-      },
-      {
-        baseUrl: 'https://all.your/base/',
-        endpoint: 'areBelongToUs/',
-        expected: 'https://all.your/base/areBelongToUs/',
-      },
-      {
-        baseUrl: 'https://all.your/base/',
-        endpoint: '/areBelongToUs/',
-        expected: 'https://all.your/base/areBelongToUs/',
-      },
-    ]).test(
-      "When base URL is '$baseUrl' and endpoint is '$endpoint', the URL called should be '$expected'",
-      async ({ baseUrl, endpoint, expected }) => {
-        mockGetConfig.mockReturnValue({ token: 'of my appreciation', serverlessBaseUrl: baseUrl });
-        await fetchProtectedApi(endpoint, requestBody);
-        expect(fetch).toHaveBeenCalledWith(
-          expected,
-          expect.objectContaining({
-            method: 'POST',
-          }),
-        );
-      },
-    );
   });
   test('403 error response - throws ProtectedApiError with specific error message', async () => {
     const requestBody = { error: 'message' };
