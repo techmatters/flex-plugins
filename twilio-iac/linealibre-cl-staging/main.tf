@@ -17,7 +17,7 @@ terraform {
 
 provider "aws" {
   assume_role {
-    role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-${lower(var.environment)}"
+    role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-${lower(local.environment)}"
     session_name = "tf-${basename(abspath(path.module))}"
   }
 }
@@ -86,10 +86,10 @@ module "chatbots" {
 module "hrmServiceIntegration" {
   source = "../terraform-modules/hrmServiceIntegration/default"
   local_os = var.local_os
-  helpline = var.helpline
-  short_helpline = var.short_helpline
-  environment = var.environment
-  short_environment = var.short_environment
+  helpline = local.helpline
+  short_helpline = local.short_helpline
+  environment = local.environment
+  short_environment = local.short_environment
 }
 
 module "serverless" {
@@ -101,10 +101,10 @@ module "serverless" {
 module "services" {
   source = "../terraform-modules/services/default"
   local_os = var.local_os
-  helpline = var.helpline
-  short_helpline = var.short_helpline
-  environment = var.environment
-  short_environment = var.short_environment
+  helpline = local.helpline
+  short_helpline = local.short_helpline
+  environment = local.environment
+  short_environment = local.short_environment
 }
 
 
@@ -157,11 +157,11 @@ module aws {
   twilio_account_sid = local.secrets.twilio_account_sid
   twilio_auth_token = local.secrets.twilio_auth_token
   serverless_url = module.serverless.serverless_environment_production_url
-  helpline = var.helpline
-  short_helpline = var.short_helpline
-  environment = var.environment
-  short_environment = var.short_environment
-  operating_info_key = var.operating_info_key
+  helpline = local.helpline
+  short_helpline = local.short_helpline
+  environment = local.environment
+  short_environment = local.short_environment
+  operating_info_key = local.operating_info_key
   datadog_app_id = local.secrets.datadog_app_id
   datadog_access_token = local.secrets.datadog_access_token
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
@@ -175,16 +175,16 @@ module aws {
 
 module aws_monitoring {
   source = "../terraform-modules/aws-monitoring/default"
-  helpline = var.helpline
-  short_helpline = var.short_helpline
-  environment = var.environment
+  helpline = local.helpline
+  short_helpline = local.short_helpline
+  environment = local.environment
 }
 
 module github {
   source = "../terraform-modules/github/default"
   twilio_account_sid = local.secrets.twilio_account_sid
   twilio_auth_token = local.secrets.twilio_auth_token
-  short_environment = var.short_environment
-  short_helpline = var.short_helpline
+  short_environment = local.short_environment
+  short_helpline = local.short_helpline
   serverless_url = module.serverless.serverless_environment_production_url
 }
