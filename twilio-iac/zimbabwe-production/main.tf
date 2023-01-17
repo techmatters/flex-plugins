@@ -65,6 +65,7 @@ locals {
     "post_survey_serverless_handled": true,
     "enable_csam_clc_report": false
   }
+  secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   //Channels [Voice | Facebook | Webchat | WhatsApp]
   twilio_channels = {
     webchat = {"contact_identity" = "", "channel_type" ="web"  }
