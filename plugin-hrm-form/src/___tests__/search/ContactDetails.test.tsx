@@ -11,6 +11,7 @@ import ContactDetails from '../../components/search/ContactDetails';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
 import { DetailsContext } from '../../states/contacts/contactDetails';
+import { csamReportBase } from '../../states';
 import { SearchAPIContact } from '../../types/types';
 
 const mockStore = configureMockStore([]);
@@ -122,6 +123,10 @@ beforeAll(async () => {
             detailsExpanded: {},
           },
         },
+      },
+      [csamReportBase]: {
+        tasks: {},
+        contacts: {},
       },
     },
     flex: {

@@ -150,9 +150,7 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
     childInformation: transformValues(ChildInformationTab)(form.childInformation),
   };
 
-  // @ts-ignore
   const { callerInformation } = transformedValues;
-  // @ts-ignore
   const { childInformation } = transformedValues;
 
   const categories = transformCategories(form.helpline, form.categories);

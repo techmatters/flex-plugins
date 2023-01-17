@@ -1,5 +1,5 @@
 import { connect, ConnectedProps } from 'react-redux';
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
@@ -23,8 +23,8 @@ type OwnProps = {
   context: DetailsContext;
   contactId: string;
   contactDetailsSectionForm: ContactDetailsSectionFormApi | IssueCategorizationSectionFormApi;
-  children?: React.ReactNode;
-  tabPath?: keyof TaskEntry;
+  children: React.ReactNode;
+  tabPath: keyof TaskEntry;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -95,7 +95,7 @@ const EditContactSection: React.FC<Props> = ({
 
   const checkForEdits = () => {
     if (_.isEqual(methods.getValues(), initialFormValues)) {
-      clearContactDraft(contactId);
+      clearContactDraft();
     } else {
       setOpenDialog(true);
     }
@@ -114,6 +114,8 @@ const EditContactSection: React.FC<Props> = ({
     }
     return '';
   };
+
+  const onSubmitForm = methods.handleSubmit(onSubmitValidForm, onError);
 
   return (
     <EditContactContainer>
@@ -149,14 +151,16 @@ const EditContactSection: React.FC<Props> = ({
               data-testid="CloseCaseDialog"
               openDialog={openDialog}
               setDialog={() => setOpenDialog(false)}
-              handleDontSaveClose={() => clearContactDraft(contactId)}
+              handleDontSaveClose={() => {
+                clearContactDraft();
+              }}
               handleSaveUpdate={methods.handleSubmit(onSubmitValidForm, onError)}
             />
           </Box>
           <Box marginRight="15px">
             <StyledNextStepButton
               roundCorners={true}
-              onClick={methods.handleSubmit(onSubmitValidForm, onError)}
+              onClick={onSubmitForm}
               disabled={isSubmitting}
               data-fs-id="Contact-SaveContact-Button"
               data-testid="EditContact-SaveContact-Button"
@@ -174,18 +178,19 @@ const EditContactSection: React.FC<Props> = ({
   );
 };
 
-const mapDispatchToProps = {
-  refreshContact: refreshRawContact,
-  setEditContactPageOpen: t.setEditContactPageOpen,
-  setEditContactPageClosed: t.setEditContactPageClosed,
-  clearContactDraft: clearDraft,
-};
+const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string, any>>, { contactId }: OwnProps) => ({
+  refreshContact: contact => dispatch(refreshRawContact(contact)),
+  setEditContactPageOpen: () => dispatch(t.setEditContactPageOpen()),
+  setEditContactPageClosed: () => dispatch(t.setEditContactPageClosed()),
+  clearContactDraft: () => {
+    dispatch(clearDraft(contactId));
+  },
+});
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
+const mapStateToProps = (state: RootState, { contactId }: OwnProps) => ({
   definitionVersions: state[namespace][configurationBase].definitionVersions,
   counselorsHash: state[namespace][configurationBase].counselors.hash,
-  savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
-  draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
+  savedContact: state[namespace][contactFormsBase].existingContacts[contactId]?.savedContact,
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

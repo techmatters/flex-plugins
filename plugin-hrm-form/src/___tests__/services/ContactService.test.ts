@@ -97,6 +97,7 @@ describe('transformForm', () => {
 
     const transformed = transformForm(oldForm);
     // expect().toStrictEqual(expected);
+
     expect(transformed.definitionVersion).toBe('v1');
     expect(transformed.callType).toBe(callTypes.caller);
     expect(transformed.callerInformation.firstName).toBe('myFirstName');
