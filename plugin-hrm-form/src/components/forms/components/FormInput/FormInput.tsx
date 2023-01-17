@@ -39,7 +39,6 @@ const FormInputUI = React.memo<FormInputUIProps>(
     errorComponentId,
     errorTextComponent,
   }) => {
-    console.log('<<<<<<<<<<<<< Rerendered inner', inputId);
     return (
       <FormLabel htmlFor={inputId}>
         <Row>
@@ -50,7 +49,7 @@ const FormInputUI = React.memo<FormInputUIProps>(
         </Row>
         <StyledFormInput
           id={inputId}
-          data-testid={inputId}
+          data-testid={`FormInput-${inputId}`}
           name={inputId}
           error={isErrorState}
           aria-invalid={isErrorState}
@@ -75,11 +74,9 @@ const FormInput: React.FC<Props> = ({
   registerOptions,
   updateCallback,
   htmlElRef,
-  isItemEnabled,
+  isEnabled,
 }) => {
-  console.log('<<<<<<<<<<<<< Rerendered outer', inputId);
-
-  // TODO this all could be factored out into a custom hook to make easier sharing this chunk of code
+  // TODO factor out into a custom hook to make easier sharing this chunk of code
   const { errors, register } = useFormContext();
   const error = get(errors, inputId);
   const labelTextComponent = React.useMemo(() => <Template code={`${label}`} className=".fullstory-unmask" />, [label]);
@@ -101,7 +98,7 @@ const FormInput: React.FC<Props> = ({
   // ====== //
 
   const defaultValue = typeof initialValue === 'boolean' ? initialValue.toString() : initialValue;
-  const disabled = !isItemEnabled();
+  const disabled = !isEnabled;
 
   return (
     <FormInputUI
