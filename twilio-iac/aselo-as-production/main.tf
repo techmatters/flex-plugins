@@ -39,8 +39,7 @@ locals {
   target_task_name = "greeting"
   twilio_numbers = []
   channel = ""
-  custom_channel_attributes = ""
-  feature_flags ={
+  feature_flags = {
     "enable_fullstory_monitoring": false,
     "enable_upload_documents": true,
     "enable_post_survey": local.enable_post_survey,
@@ -62,6 +61,7 @@ locals {
     "post_survey_serverless_handled": true,
     "enable_csam_clc_report": false
   }
+  secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   twilio_channels = {
     "webchat" = {"contact_identity" = "", "channel_type" ="web"  }
   }
