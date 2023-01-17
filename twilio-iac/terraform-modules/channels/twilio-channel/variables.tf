@@ -24,6 +24,7 @@ variable "pre_survey_bot_sid" {
 
 variable "target_task_name" {
   description = "Internal Twilio resource SID provided by another module"
+  default = ""
   type        = string
 }
 
