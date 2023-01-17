@@ -164,7 +164,7 @@
   "Case-CaseNumber": "Caso #",
   "Case-ActionHeaderAdded": "Adicionado em {{date}} às {{time}} por {{counsellor}}",
   "Case-ActionHeaderUpdated": "Atualizado em {{date}} às {{time}} por {{counsellor}}",
-  "CSAMCLC-ActionHeaderAdded": "Adicionado em {{date}} às {{time}} {{space}} Conselheiro: {{counsellor}}",
+  "CSAMCLC-ActionHeaderAdded": "Adicionado em {{date}} às {{time}} &nbsp;&nbsp; Conselheiro: {{counsellor}}",
   "CSAMReportForm-SelectReportType": "Selecione o tipo de relatório CSAM",
   "Case-ActionHeaderCounselor": "Atendente:",
   "SessionExpired": "Sua sessão expirou. Clique aqui para fazer login novamente",
