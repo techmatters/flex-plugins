@@ -17,12 +17,18 @@ import {
   updateCounsellorFormAction,
   updateChildFormAction,
   updateStatusAction,
+  updateStatusActionForContact,
+  clearCSAMReportActionForContact,
+  newCSAMReportActionForContact,
+  updateCounsellorFormActionForContact,
+  updateChildFormActionForContact,
 } from '../../../states/csam-report/actions';
 import { changeRoute } from '../../../states/routing/actions';
 import { addCSAMReportEntry } from '../../../states/contacts/actions';
 import { CSAMReportEntry } from '../../../types/types';
 import { reportToIWF, selfReportToIWF } from '../../../services/ServerlessService';
 import { acknowledgeCSAMReport, createCSAMReport } from '../../../services/CSAMReportService';
+import { addExternalReportEntry } from '../../../states/csam-report/existingContactExternalReport';
 
 jest.mock('../../../services/ServerlessService', () => ({
   reportToIWF: jest.fn(),
@@ -386,7 +392,7 @@ describe('newContactCSAMApi', () => {
 });
 
 describe('existingContactCSAMApi', () => {
-  const TEST_CONTACT_ID = 'a contact';
+  const TEST_CONTACT_ID = '1337';
   const api = existingContactCSAMApi(TEST_CONTACT_ID);
   const mockDispatch: jest.Mock = jest.fn();
   const dispatch: Dispatch<unknown> = mockDispatch as Dispatch<unknown>;
@@ -461,6 +467,204 @@ describe('existingContactCSAMApi', () => {
     test("CSAM entry doesn't exist for task - returns nothing", () => {
       const entry: CSAMReportStateEntry = {};
       expect(api.reportState(stateWithContactCsamReport('not a task', entry))).not.toBeDefined();
+    });
+  });
+
+  describe('navigationActionDispatcher', () => {
+    const navigate = api.navigationActionDispatcher(dispatch);
+    test('ReportTypePicker - dispatches newCSAMReportAction without creating a form', () => {
+      navigate(CSAMPage.ReportTypePicker, CSAMReportTypes.CHILD);
+      expect(dispatch).toHaveBeenCalledWith(
+        newCSAMReportActionForContact(TEST_CONTACT_ID, CSAMReportTypes.CHILD, false),
+      );
+    });
+    test('Form - dispatches newCSAMReportAction creating a form', () => {
+      navigate(CSAMPage.Form, CSAMReportTypes.COUNSELLOR);
+      expect(dispatch).toHaveBeenCalledWith(
+        newCSAMReportActionForContact(TEST_CONTACT_ID, CSAMReportTypes.COUNSELLOR, true),
+      );
+    });
+    test('Loading - dispatches an updateStatus action with an empty status', () => {
+      navigate(CSAMPage.Loading, CSAMReportTypes.COUNSELLOR);
+      expect(dispatch).toHaveBeenCalledWith(
+        updateStatusActionForContact(
+          { responseCode: undefined, responseData: undefined, responseDescription: undefined },
+          TEST_CONTACT_ID,
+        ),
+      );
+    });
+    test('Status - noop', () => {
+      navigate(CSAMPage.Status, CSAMReportTypes.CHILD);
+      expect(dispatch).not.toHaveBeenCalled();
+      navigate(CSAMPage.Status, CSAMReportTypes.COUNSELLOR);
+      expect(dispatch).not.toHaveBeenCalled();
+    });
+  });
+  test('exitActionDispatcher - dispatches clearCSAMReportActionForContact action', () => {
+    api.exitActionDispatcher(dispatch)();
+    expect(dispatch).toHaveBeenCalledWith(clearCSAMReportActionForContact(TEST_CONTACT_ID));
+  });
+  test('addReportDispatcher - dispatches addExternalReportEntry action', () => {
+    const entry: CSAMReportEntry = {
+      acknowledged: false,
+      createdAt: '',
+      csamReportId: '',
+      id: 0,
+      reportType: undefined,
+      twilioWorkerId: '',
+    };
+    api.addReportDispatcher(dispatch)(entry);
+    expect(dispatch).toHaveBeenCalledWith(addExternalReportEntry(entry, TEST_CONTACT_ID));
+  });
+  test('pickReportTypeDispatcher - dispatches newCSAMReportAction action without a new form', () => {
+    api.pickReportTypeDispatcher(dispatch)(CSAMReportTypes.CHILD);
+    expect(dispatch).toHaveBeenCalledWith(newCSAMReportActionForContact(TEST_CONTACT_ID, CSAMReportTypes.CHILD, false));
+  });
+  test('updateCounsellorReportDispatcher - dispatches updateCounsellorFormAction action without a new form', () => {
+    const form: CounselorCSAMReportForm = {
+      webAddress: '',
+      description: '',
+      anonymous: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+    };
+    api.updateCounsellorReportDispatcher(dispatch)(form);
+    expect(dispatch).toHaveBeenCalledWith(updateCounsellorFormActionForContact(form, TEST_CONTACT_ID));
+  });
+  test('updateChildReportDispatcher - dispatches updateChildFormAction action without a new form', () => {
+    const form: ChildCSAMReportForm = { ageVerified: false, childAge: '' };
+    api.updateChildReportDispatcher(dispatch)(form);
+    expect(dispatch).toHaveBeenCalledWith(updateChildFormActionForContact(form, TEST_CONTACT_ID));
+  });
+  test('updateStatusDispatcher - dispatches newCSAMReportAction action without a new form', () => {
+    const status: CSAMReportStatus = { responseCode: '', responseData: '', responseDescription: '' };
+    api.updateStatusDispatcher(dispatch)(status);
+    expect(dispatch).toHaveBeenCalledWith(updateStatusActionForContact(status, TEST_CONTACT_ID));
+  });
+
+  describe('saveReport', () => {
+    const TEST_WORKER_SID = 'a worker sid';
+    const DEFAULT_IWF_REPORT_RESPONSE = {
+      'IWFReportService1.0': {
+        responseData: 'IWF REPORT ID',
+      },
+    };
+    const UNACKNOWLEDGED_HRM_CSAM_ENTRY: CSAMReportEntry = {
+      acknowledged: false,
+      createdAt: '',
+      csamReportId: 'A CSAM ID',
+      id: 1234,
+      reportType: undefined,
+      twilioWorkerId: '',
+    };
+    const mockCreateCSAMReport = createCSAMReport as jest.Mock<Promise<CSAMReportEntry>>;
+
+    beforeEach(() => {
+      mockCreateCSAMReport.mockClear();
+    });
+
+    describe('Child Report', () => {
+      const mockSelfReportToIWF = selfReportToIWF as jest.Mock;
+      const EMPTY_CHILD_FORM: ChildCSAMReportForm = { ageVerified: false, childAge: '' };
+      const mockAcknowledgeCSAMReport = acknowledgeCSAMReport as jest.Mock<Promise<CSAMReportEntry>>;
+      const ACKNOWLEDGED_HRM_CSAM_ENTRY: CSAMReportEntry = { ...UNACKNOWLEDGED_HRM_CSAM_ENTRY, acknowledged: true };
+      beforeEach(() => {
+        mockSelfReportToIWF.mockClear();
+        mockAcknowledgeCSAMReport.mockClear();
+      });
+      test('Creates report in HRM, reports to IWF, then acknowledge report in HRM, with a contactID', async () => {
+        mockCreateCSAMReport.mockResolvedValue(UNACKNOWLEDGED_HRM_CSAM_ENTRY);
+        mockSelfReportToIWF.mockResolvedValue({ status: 'grand', reportUrl: 'a url' });
+        mockAcknowledgeCSAMReport.mockResolvedValue(ACKNOWLEDGED_HRM_CSAM_ENTRY);
+        const returned = await api.saveReport(
+          {
+            reportType: CSAMReportTypes.CHILD,
+            form: EMPTY_CHILD_FORM,
+          },
+          TEST_WORKER_SID,
+        );
+        expect(createCSAMReport).toHaveBeenCalledWith({
+          reportType: 'self-generated',
+          twilioWorkerId: TEST_WORKER_SID,
+          contactId: Number.parseInt(TEST_CONTACT_ID, 10),
+        });
+        expect(selfReportToIWF).toHaveBeenCalledWith(EMPTY_CHILD_FORM, UNACKNOWLEDGED_HRM_CSAM_ENTRY.csamReportId);
+        expect(acknowledgeCSAMReport).toHaveBeenCalledWith(UNACKNOWLEDGED_HRM_CSAM_ENTRY.id);
+        expect(returned.hrmReport).toStrictEqual(ACKNOWLEDGED_HRM_CSAM_ENTRY);
+        expect(returned.iwfReport).toStrictEqual({
+          responseCode: 'grand',
+          responseData: 'a url',
+          responseDescription: '',
+        });
+      });
+      test('Non numeric contactId - throws', async () => {
+        const apiWithNonNumericContactId = existingContactCSAMApi('non numeric contactId');
+        await expect(
+          apiWithNonNumericContactId.saveReport(
+            {
+              reportType: CSAMReportTypes.CHILD,
+              form: EMPTY_CHILD_FORM,
+            },
+            TEST_WORKER_SID,
+          ),
+        ).rejects.toThrow();
+        expect(createCSAMReport).not.toHaveBeenCalledWith();
+        expect(selfReportToIWF).not.toHaveBeenCalledWith(EMPTY_CHILD_FORM, UNACKNOWLEDGED_HRM_CSAM_ENTRY.csamReportId);
+        expect(acknowledgeCSAMReport).not.toHaveBeenCalledWith(UNACKNOWLEDGED_HRM_CSAM_ENTRY.id);
+      });
+    });
+    describe('Counsellor Report', () => {
+      const mockReportToIWF = reportToIWF as jest.Mock;
+      const EMPTY_COUNSELLOR_FORM: CounselorCSAMReportForm = {
+        anonymous: '',
+        description: '',
+        email: '',
+        firstName: '',
+        lastName: '',
+        webAddress: '',
+      };
+
+      beforeEach(() => {
+        mockReportToIWF.mockClear();
+        mockCreateCSAMReport.mockClear();
+      });
+
+      test('Reports to IWF, then creates report in HRM, with a contactID', async () => {
+        mockReportToIWF.mockResolvedValue(DEFAULT_IWF_REPORT_RESPONSE);
+        mockCreateCSAMReport.mockResolvedValue(UNACKNOWLEDGED_HRM_CSAM_ENTRY);
+        const returned = await api.saveReport(
+          {
+            reportType: CSAMReportTypes.COUNSELLOR,
+            form: EMPTY_COUNSELLOR_FORM,
+          },
+          TEST_WORKER_SID,
+        );
+        expect(reportToIWF).toHaveBeenCalledWith(EMPTY_COUNSELLOR_FORM);
+        expect(createCSAMReport).toHaveBeenCalledWith({
+          reportType: 'counsellor-generated',
+          csamReportId: DEFAULT_IWF_REPORT_RESPONSE['IWFReportService1.0'].responseData,
+          twilioWorkerId: TEST_WORKER_SID,
+          contactId: Number.parseInt(TEST_CONTACT_ID, 10),
+        });
+        expect(returned.hrmReport).toStrictEqual(UNACKNOWLEDGED_HRM_CSAM_ENTRY);
+        expect(returned.iwfReport).toBe(DEFAULT_IWF_REPORT_RESPONSE['IWFReportService1.0']);
+      });
+
+      test('Non numeric contactId - throws', async () => {
+        const apiWithNonNumericContactId = existingContactCSAMApi('non numeric contactId');
+        await expect(
+          apiWithNonNumericContactId.saveReport(
+            {
+              reportType: CSAMReportTypes.COUNSELLOR,
+              form: EMPTY_COUNSELLOR_FORM,
+            },
+            TEST_WORKER_SID,
+          ),
+        ).rejects.toThrow();
+        expect(reportToIWF).not.toHaveBeenCalled();
+        expect(createCSAMReport).not.toHaveBeenCalled();
+      });
     });
   });
 });

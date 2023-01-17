@@ -95,6 +95,11 @@ const saveReport = async (
   contactId?: string,
 ): Promise<SaveReportResponse> => {
   const numberContactId = contactId ? Number.parseInt(contactId, 10) : undefined;
+  if (Number.isNaN(numberContactId)) {
+    throw new Error(
+      `Only integer contact IDs are currently supported. '${contactId}' could not be parsed as an integer`,
+    );
+  }
   if (isCounsellorTaskEntry(state)) {
     return saveCounsellorReport(state.form, twilioWorkerId, numberContactId);
   } else if (isChildTaskEntry(state)) {
