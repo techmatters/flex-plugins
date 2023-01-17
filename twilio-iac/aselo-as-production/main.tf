@@ -40,7 +40,7 @@ locals {
   twilio_numbers = []
   channel = ""
   custom_channel_attributes = ""
-  feature_flags =
+  feature_flags ={
     "enable_fullstory_monitoring": false,
     "enable_upload_documents": true,
     "enable_post_survey": local.enable_post_survey,
