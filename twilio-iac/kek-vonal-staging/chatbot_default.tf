@@ -130,7 +130,7 @@ actions = jsonencode({
     {
       "redirect": {
         "method": "POST",
-        "uri": "${var.serverless_url}/autopilotRedirect"
+        "uri": "${module.serverless.serverless_environment_production_url}/autopilotRedirect"
       }
     }
   ]

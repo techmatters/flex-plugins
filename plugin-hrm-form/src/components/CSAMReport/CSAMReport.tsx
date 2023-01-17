@@ -1,174 +1,90 @@
-/* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import React, { Dispatch } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { CircularProgress } from '@material-ui/core';
 import { connect, ConnectedProps } from 'react-redux';
-import { FormItemDefinition } from 'hrm-form-definitions';
 
 import CSAMReportStatusScreen from './CSAMReportStatusScreen';
-import CSAMReportFormScreen from './CSAMReportFormScreen';
-import { CSAMReportContainer, CSAMReportLayout, CenterContent } from '../../styles/CSAMReport';
-import { addMargin, getInputType } from '../common/forms/formGenerators';
-import {
-  definitionObject,
-  counselorKeys,
-  initialValues,
-  childInitialValues,
-  childKeys,
-  childDefinitionObject,
-} from './CSAMReportFormDefinition';
-import type { CSAMReportEntry, CustomITask } from '../../types/types';
+import CSAMReportCounsellorForm from './CSAMReportCounsellorForm';
+import { CenterContent, CSAMReportContainer, CSAMReportLayout } from '../../styles/CSAMReport';
 import { getConfig } from '../../HrmFormPlugin';
-import * as actions from '../../states/csam-report/actions';
-import * as routingActions from '../../states/routing/actions';
-import * as contactsActions from '../../states/contacts/actions';
-import { CSAMReportForm, isCounselorCSAMReportForm } from '../../states/csam-report/types';
-import { RootState, csamReportBase, namespace, routingBase, configurationBase } from '../../states';
-import { reportToIWF } from '../../services/ServerlessService';
-import { acknowledgeCSAMReport, createCSAMReport } from '../../services/CSAMReportService';
-import useFocus from '../../utils/useFocus';
-import fileUploadCustomHandlers from '../case/documentUploadHandler';
+import { configurationBase, namespace, RootState } from '../../states';
+import { CSAMPage, CSAMReportApi } from './csamReportApi';
+import * as t from '../../states/contacts/actions';
+import { isChildTaskEntry, isCounsellorTaskEntry } from '../../states/csam-report/types';
+import CSAMReportTypePickerForm from './CSAMReportTypePicker';
+import CSAMReportChildForm from './CSAMReportChildForm';
 
 type OwnProps = {
-  taskSid: CustomITask['taskSid'];
+  api: CSAMReportApi;
 };
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
-  csamReportState: state[namespace][csamReportBase].tasks[ownProps.taskSid],
-  routing: state[namespace][routingBase].tasks[ownProps.taskSid],
+const mapStateToProps = (state: RootState, { api }: OwnProps) => ({
+  csamReportState: api.reportState(state),
+  currentPage: api.currentPage(state),
   counselorsHash: state[namespace][configurationBase].counselors.hash,
 });
 
-const mapDispatchToProps = {
-  updateFormAction: actions.updateFormAction,
-  updateStatusAction: actions.updateStatusAction,
-  clearCSAMReportAction: actions.clearCSAMReportAction,
-  changeRoute: routingActions.changeRoute,
-  addCSAMReportEntry: contactsActions.addCSAMReportEntry,
+const mapDispatchToProps = (dispatch: Dispatch<any>, { api }: OwnProps) => {
+  return {
+    updateCounsellorForm: api.updateCounsellorReportDispatcher(dispatch),
+    updateChildForm: api.updateChildReportDispatcher(dispatch),
+    updateStatus: api.updateStatusDispatcher(dispatch),
+    navigate: api.navigationActionDispatcher(dispatch),
+    exit: api.exitActionDispatcher(dispatch),
+    addCSAMReportEntry: api.addReportDispatcher(dispatch),
+    pickReportType: api.pickReportTypeDispatcher(dispatch),
+    setEditPageOpen: () => dispatch(t.setEditContactPageOpen()),
+    setEditPageClosed: () => dispatch(t.setEditContactPageClosed()),
+  };
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
+export type Props = OwnProps & ConnectedProps<typeof connector>;
 
 // exported for test purposes
 export const CSAMReportScreen: React.FC<Props> = ({
-  updateFormAction,
-  updateStatusAction,
-  clearCSAMReportAction,
-  changeRoute,
+  updateChildForm,
+  updateCounsellorForm,
+  updateStatus,
+  navigate,
+  exit,
   addCSAMReportEntry,
-  taskSid,
   csamReportState,
-  routing,
+  currentPage,
   counselorsHash,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
+  api,
+  setEditPageClosed,
+  setEditPageOpen,
+  pickReportType,
 }) => {
-  const [initialForm] = React.useState(csamReportState.form); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm({ reValidateMode: 'onChange' });
-  const firstElementRef = useFocus();
 
-  const currentCounselor = React.useMemo(() => {
-    const { workerSid } = getConfig();
-    return counselorsHash[workerSid];
-  }, [counselorsHash]);
+  const { workerSid, strings } = getConfig();
+  const currentCounselor = counselorsHash[workerSid];
 
-  const formElements = React.useMemo(() => {
-    const csamKeys = () => {
-      return { counselorKeys, childKeys };
+  React.useEffect(() => {
+    setEditPageOpen();
+    return () => {
+      setEditPageClosed();
     };
-    const onUpdateInput = () => {
-      const { counselorKeys, childKeys } = methods.getValues(Object.values(csamKeys));
-      updateFormAction(counselorKeys, taskSid);
-      updateFormAction(childKeys, taskSid);
-    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    const generateInput = (e: FormItemDefinition, index: number) => {
-      const generatedInput = getInputType([], onUpdateInput)(e);
-      const csamInitialValues = { initialValues, childInitialValues };
-      const initialValue = initialForm[e.name] === undefined ? csamInitialValues[e.name] : initialForm[e.name];
+  if (!currentPage) return null;
 
-      return index === 0 ? generatedInput(initialValue, firstElementRef) : generatedInput(initialValue);
-    };
-
-    // Function used to generate the inputs with a reduce
-    const reducerFunc = (
-      accum: { [k in keyof typeof definitionObject]: JSX.Element },
-      [k, e]: [string, FormItemDefinition],
-      index: number,
-    ) => ({
-      ...accum,
-      [k]: addMargin(5)(generateInput(e, index)),
-    });
-
-    const childReducerFunc = (
-      accum: { [k in keyof typeof childDefinitionObject]: JSX.Element },
-      [k, e]: [string, FormItemDefinition],
-      index: number,
-    ) => ({
-      ...accum,
-      [k]: addMargin(5)(generateInput(e, index)),
-    });
-
-    const childReportDefinition = Object.entries(childDefinitionObject).reduce(childReducerFunc, null);
-    const counsellorReportDefinition = Object.entries(definitionObject).reduce(reducerFunc, null);
-
-    return { childReportDefinition, counsellorReportDefinition };
-  }, [firstElementRef, initialForm, methods, taskSid, updateFormAction]);
-
-  if (routing.route !== 'csam-report') return null;
-
-  const { previousRoute } = routing;
-
-  const onClickClose = () => {
-    clearCSAMReportAction(taskSid);
-    changeRoute({ ...previousRoute }, taskSid);
-  };
-
-  const onValid = async form => {
+  const onValid = async () => {
     try {
-      if (routing.subroute === 'child-form') {
-        changeRoute({ route: 'csam-report', subroute: 'loading', previousRoute }, taskSid);
-        const storedReport = await createCSAMReport({
-          reportType: 'self-generated',
-          twilioWorkerId: getConfig().workerSid,
-        });
+      navigate(CSAMPage.Loading, csamReportState.reportType);
+      const { hrmReport, iwfReport } = await api.saveReport(csamReportState, workerSid);
 
-        const reportToAcknowledge: CSAMReportEntry = storedReport;
+      updateStatus(iwfReport);
+      addCSAMReportEntry(hrmReport);
 
-        /* ServerLess API will be called here */
-
-        /* If everything went fine, before moving to the next screen acknowledge the record in DB */
-        const acknowledged = await acknowledgeCSAMReport(reportToAcknowledge.id);
-
-        addCSAMReportEntry(acknowledged, taskSid);
-        changeRoute({ route: 'csam-report', subroute: 'child-status', previousRoute }, taskSid);
-      }
-
-      if (routing.subroute === 'counsellor-form') {
-        changeRoute({ route: 'csam-report', subroute: 'loading', previousRoute }, taskSid);
-        const report = await reportToIWF(form);
-        const storedReport = await createCSAMReport({
-          reportType: 'counsellor-generated',
-          csamReportId: report['IWFReportService1.0'].responseData,
-          twilioWorkerId: getConfig().workerSid,
-        });
-
-        updateStatusAction(report['IWFReportService1.0'], taskSid);
-        addCSAMReportEntry(storedReport, taskSid);
-        changeRoute({ route: 'csam-report', subroute: 'counsellor-status', previousRoute }, taskSid);
-      }
+      navigate(CSAMPage.Status, csamReportState.reportType);
     } catch (err) {
       console.error(err);
       window.alert(getConfig().strings['Error-Backend']);
-
-      changeRoute(
-        {
-          route: 'csam-report',
-          subroute: routing.subroute === 'counsellor-form' ? 'counsellor-form' : 'child-form',
-          previousRoute,
-        },
-        taskSid,
-      );
+      navigate(CSAMPage.Form, csamReportState.reportType);
     }
   };
 
@@ -176,54 +92,64 @@ export const CSAMReportScreen: React.FC<Props> = ({
     window.alert(getConfig().strings['Error-Form']);
   };
 
-  const onSendAnotherReport = (route, subroute) => {
-    clearCSAMReportAction(taskSid);
-    changeRoute({ route, subroute, previousRoute }, taskSid);
+  const onSendAnotherReport = () => {
+    navigate(CSAMPage.Form, csamReportState.reportType);
   };
+
+  const onConfirmReportTypeSelection = methods.handleSubmit(
+    () => navigate(CSAMPage.Form, csamReportState.reportType),
+    onInvalid,
+  );
 
   const onSendReport = methods.handleSubmit(onValid, onInvalid);
 
-  switch (routing.subroute) {
-    case 'child-form': {
+  if (
+    currentPage === CSAMPage.ReportTypePicker ||
+    (!isChildTaskEntry(csamReportState) && !isCounsellorTaskEntry(csamReportState))
+  ) {
+    return (
+      <FormProvider {...methods}>
+        <CSAMReportTypePickerForm
+          methods={methods}
+          renderContactDetails={false}
+          counselor={currentCounselor}
+          onClickClose={exit}
+          onSubmit={onConfirmReportTypeSelection}
+          pickReportType={pickReportType}
+          reportType={csamReportState.reportType}
+        />
+      </FormProvider>
+    );
+  }
+
+  switch (currentPage) {
+    case CSAMPage.Form: {
       return (
         <FormProvider {...methods}>
-          <CSAMReportFormScreen
-            childFormElements={formElements.childReportDefinition}
-            counselor={currentCounselor}
-            onClickClose={onClickClose}
-            onSendReport={onSendReport}
-            csamType="child-form"
-          />
+          {isChildTaskEntry(csamReportState) ? (
+            <CSAMReportChildForm
+              formValues={csamReportState.form}
+              counselor={currentCounselor}
+              onClickClose={exit}
+              onSendReport={onSendReport}
+              update={updateChildForm}
+              methods={methods}
+            />
+          ) : (
+            <CSAMReportCounsellorForm
+              formValues={csamReportState.form}
+              counselor={currentCounselor}
+              onClickClose={exit}
+              onSendReport={onSendReport}
+              update={updateCounsellorForm}
+              methods={methods}
+            />
+          )}
         </FormProvider>
       );
     }
 
-    // eslint-disable-next-line sonarjs/no-duplicated-branches
-    case 'counsellor-form': {
-      let renderContactDetails: boolean;
-
-      if (isCounselorCSAMReportForm(initialForm)) {
-        const anonymousWatch = methods.watch('anonymous');
-        renderContactDetails =
-          anonymousWatch === 'non-anonymous' ||
-          (anonymousWatch === undefined && initialForm.anonymous === 'non-anonymous');
-      }
-
-      return (
-        <FormProvider {...methods}>
-          <CSAMReportFormScreen
-            counsellorFormElements={formElements.counsellorReportDefinition}
-            renderContactDetails={renderContactDetails}
-            counselor={currentCounselor}
-            onClickClose={onClickClose}
-            onSendReport={onSendReport}
-            csamType="counsellor-form"
-          />
-        </FormProvider>
-      );
-    }
-
-    case 'loading': {
+    case CSAMPage.Loading: {
       return (
         <CSAMReportContainer data-testid="CSAMReport-Loading">
           <CSAMReportLayout>
@@ -234,32 +160,20 @@ export const CSAMReportScreen: React.FC<Props> = ({
         </CSAMReportContainer>
       );
     }
-    case 'child-status': {
-      return (
-        <CSAMReportStatusScreen
-          clcReportStatus="https://iwf.org/self-report/id/23ired45wr"
-          onClickClose={onClickClose}
-          onSendAnotherReport={() => onSendAnotherReport('csam-report', 'child-form')}
-          csamType="child-status"
-        />
-      );
-    }
-    case 'counsellor-status': {
+    case CSAMPage.Status: {
       return (
         <CSAMReportStatusScreen
           reportStatus={csamReportState.reportStatus}
-          onClickClose={onClickClose}
-          onSendAnotherReport={() => onSendAnotherReport('csam-report', 'counsellor-form')}
-          csamType="counsellor-status"
+          onClickClose={exit}
+          onSendAnotherReport={onSendAnotherReport}
+          csamType={csamReportState.reportType}
         />
       );
     }
     default: {
-      console.error('Error: unexpected route reached on CSAM Report: ', routing);
-
-      const { strings } = getConfig();
+      console.error('Error: unexpected page reached on CSAM Report: ', currentPage);
       window.alert(strings['Error-Unexpected']);
-      onClickClose();
+      exit();
       return null;
     }
   }

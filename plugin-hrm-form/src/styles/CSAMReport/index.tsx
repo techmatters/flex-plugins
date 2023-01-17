@@ -2,7 +2,6 @@ import React from 'react';
 import { styled } from '@twilio/flex-ui';
 import { withStyles } from '@material-ui/core';
 import { AttachFile, CheckCircle, FileCopyOutlined, OpenInNew } from '@material-ui/icons';
-import { type } from '@testing-library/user-event/dist/types/setup/directApi';
 
 import { FontOpenSans, StyledNextStepButton } from '../HrmStyles';
 import HrmTheme from '../HrmTheme';
@@ -12,7 +11,7 @@ export const CSAMReportContainer = styled('div')`
   flex-direction: column;
   height: 100%;
   background-color: #192b334d;
-  padding: 5px 10px;
+  padding: 5px 5px;
 `;
 CSAMReportContainer.displayName = 'CSAMReportContainer';
 
@@ -21,16 +20,10 @@ export const CSAMReportLayout = styled('div')`
   flex-direction: column;
   height: 100%;
   align-items: stretch;
-  overflow-y: scroll;
+  overflow-y: auto;
   background-color: #ffffff;
   border-radius: 4px 4px 0 0;
   padding: 3% 4%;
-
-  /* Remove scrollbar */
-  ::-webkit-scrollbar {
-    width: 0;
-    background: transparent;
-  }
 `;
 CSAMReportLayout.displayName = 'CSAMReportLayout';
 
@@ -44,7 +37,7 @@ export const CenterContent = styled('div')`
 CenterContent.displayName = 'CenterContent';
 
 export const CopyCodeButton = styled(StyledNextStepButton)`
-  padding: '7px';
+  padding: 7px;
 `;
 CopyCodeButton.displayName = 'CopyCodeButton';
 

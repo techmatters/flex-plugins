@@ -20,6 +20,7 @@ const robotoSrc = 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Robot
 Font.register({
   family: 'Roboto',
   fonts: [
+    { src: `${robotoSrc}-light-webfont.ttf`, fontWeight: 300, fontStyle: 'italic' },
     { src: `${robotoSrc}-regular-webfont.ttf`, fontWeight: 400 },
     { src: `${robotoSrc}-medium-webfont.ttf`, fontWeight: 500 },
     { src: `${robotoSrc}-bold-webfont.ttf`, fontWeight: 700 },
@@ -32,6 +33,7 @@ const notosansSrc =
 Font.register({
   family: 'NotoSansThaiLooped',
   fonts: [
+    { src: `${notosansSrc}-Light.ttf`, fontWeight: 300, fontStyle: 'italic' },
     { src: `${notosansSrc}-Regular.ttf`, fontWeight: 400 },
     { src: `${notosansSrc}-Medium.ttf`, fontWeight: 500 },
     { src: `${notosansSrc}-Bold.ttf`, fontWeight: 700 },

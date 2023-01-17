@@ -22,7 +22,7 @@ type OwnProps = {
   handleBack: () => void;
   handleSelectSearchResult: (contact: SearchAPIContact) => void;
 };
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+const mapStateToProps = (state: RootState) => {
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
   const { isCallTypeCaller } = state[namespace][contactFormsBase];
 

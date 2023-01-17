@@ -1,28 +1,20 @@
-import { type } from '@testing-library/user-event/dist/types/utility';
-import { FormItemDefinition, FormInputType } from 'hrm-form-definitions';
+import { FormItemDefinition, FormInputType, FormDefinition } from 'hrm-form-definitions';
+import { useForm } from 'react-hook-form';
 
-import { getInitialValue } from '../common/forms/formGenerators';
-
-export const counselorKeys = {
-  webAddress: 'webAddress',
-  description: 'description',
-  anonymous: 'anonymous',
-  firstName: 'firstName',
-  lastName: 'lastName',
-  email: 'email',
-} as const;
-
-export const childKeys = {
-  childAge: 'childAge',
-  ageVerified: 'ageVerified',
-} as const;
+import { addMargin, getInitialValue, getInputType } from '../common/forms/formGenerators';
 
 type CounselorCSAMFormDefinitionObject = {
-  [k in keyof typeof counselorKeys]: FormItemDefinition;
+  webAddress: FormItemDefinition;
+  description: FormItemDefinition;
+  anonymous: FormItemDefinition;
+  firstName: FormItemDefinition;
+  lastName: FormItemDefinition;
+  email: FormItemDefinition;
 };
 
 type ChildCSAMFormDefinitionObject = {
-  [k in keyof typeof childKeys]: FormItemDefinition;
+  childAge: FormItemDefinition;
+  ageVerified: FormItemDefinition;
 };
 
 // eslint-disable-next-line prefer-named-capture-group
@@ -112,3 +104,32 @@ export const childInitialValues = {
   childAge: getInitialValue(childDefinitionObject.childAge),
   ageVerified: getInitialValue(childDefinitionObject.ageVerified),
 } as const;
+
+export const externalReportDefinition: FormDefinition = [
+  {
+    name: 'reportType',
+    label: '',
+    type: FormInputType.RadioInput,
+    required: true,
+    options: [
+      { value: 'child', label: 'Create link for child' },
+      { value: 'counsellor', label: 'Report as counselor' },
+    ],
+  },
+];
+
+export const generateCSAMFormElement = <T>(
+  initialValues: T,
+  formValues: T,
+  update: (values: Record<string, any>) => void,
+  methods: ReturnType<typeof useForm>,
+) => (formItem: FormItemDefinition): JSX.Element => {
+  const onUpdateInput = () => {
+    update(methods.getValues());
+  };
+  const generatedInput = getInputType([], onUpdateInput)(formItem);
+  const initialValue =
+    formValues[formItem.name] === undefined ? initialValues[formItem.name] : formValues[formItem.name];
+
+  return addMargin(5)(generatedInput(initialValue));
+};
