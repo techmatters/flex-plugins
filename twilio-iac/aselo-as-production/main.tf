@@ -182,7 +182,7 @@ module aws_monitoring {
 
 module github {
   source = "../terraform-modules/github/default"
-  twilio_twilio_account_sid = local.secrets.twilio_account_sid
+  twilio_account_sid = local.secrets.twilio_account_sid
   twilio_auth_token = local.secrets.twilio_auth_token
   short_environment = local.short_environment
   short_helpline = local.short_helpline
