@@ -131,6 +131,7 @@ module twilioChannel {
   source = "../terraform-modules/channels/twilio-channel"
   channel_contact_identity = each.value.contact_identity
   pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
+  janitor_enabled = !local.enable_post_survey
   target_task_name = local.target_task_name
   channel_name = "${each.key}"
   channel_type = each.value.channel_type
@@ -176,7 +177,7 @@ module aws_monitoring {
 module github {
   source = "../terraform-modules/github/default"
   twilio_account_sid = local.secrets.twilio_account_sid
-  twilio_auth_token = local.auth_token
+  twilio_auth_token = local.secrets.twilio_auth_token
   short_environment = local.short_environment
   short_helpline = local.short_helpline
   serverless_url = module.serverless.serverless_environment_production_url
