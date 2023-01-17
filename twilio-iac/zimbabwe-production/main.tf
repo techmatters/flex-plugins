@@ -66,10 +66,11 @@ locals {
     "enable_csam_clc_report": false
   }
   //Channels [Voice | Facebook | Webchat | WhatsApp]
-  twilio_channels = { webchat" = {"contact_identity" = "", "channel_type" ="web"  }
+  twilio_channels = {
+    webchat = {"contact_identity" = "", "channel_type" ="web"  }
    }
   }
-}
+
 
 provider "twilio" {
   username = local.secrets.twilio_account_sid
