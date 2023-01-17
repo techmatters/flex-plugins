@@ -45,6 +45,10 @@ export type ReferrableResourcesState = {
 
 const initialState: ReferrableResourcesState = {
   resources: {},
+  route: {
+    page: ResourcePage.ViewResource,
+    id: 'EXAMPLE_RESID',
+  },
 };
 
 export function reduce(
