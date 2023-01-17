@@ -174,3 +174,16 @@ resource "aws_ssm_parameter" "twilio_operating_info_key" {
     Terraform = true
   }
 }
+
+resource "aws_ssm_parameter" "twilio_short_helpline_to_account_sid" {
+  name  = "/${lower(var.environment)}/twilio/${var.short_helpline}/account_sid"
+  type  = "SecureString"
+  value = var.twilio_account_sid
+  description = "Twilio account - account SID by short helpline"
+
+  tags = {
+    Environment = lower(var.environment)
+    Name = "/${lower(var.environment)}/twilio/${var.short_helpline}/account_sid"
+    Terraform = true
+  }
+}
