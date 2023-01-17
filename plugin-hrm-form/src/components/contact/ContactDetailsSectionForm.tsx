@@ -14,7 +14,7 @@ import {
 } from '../../styles/HrmStyles';
 import { disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import type { TaskEntry } from '../../states/contacts/reducer';
-import { useCreateFormFromDefinition } from '../common/forms/formGenerator';
+import { useCreateFormFromDefinition } from '../forms';
 
 type OwnProps = {
   display: boolean;

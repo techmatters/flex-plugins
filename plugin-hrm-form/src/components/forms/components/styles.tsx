@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 
-import HrmTheme from '../../../../../styles/HrmTheme';
+import HrmTheme from '../../../styles/HrmTheme';
 
 export const FormLabel = styled('label')`
   display: flex;

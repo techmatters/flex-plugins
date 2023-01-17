@@ -3,16 +3,9 @@ import { RegisterOptions } from 'react-hook-form';
 import { pick } from 'lodash';
 import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
 
-import { FormInputProps } from './components/types';
+import { FormInputBaseProps } from './components/types';
 import { FormInput } from './components';
-import { getInputType, CustomHandlers } from '../formGenerators';
-
-type FileUploadCustomHandlers = {
-  onFileChange: (event: any) => Promise<string>;
-  onDeleteFile: (fileName: string) => Promise<void>;
-};
-
-// export type CustomHandlers = FileUploadCustomHandlers;
+import { getInputType, CustomHandlers } from '../common/forms/formGenerators';
 
 const getregisterOptions = (formItemDefinition: FormItemDefinition): RegisterOptions =>
   pick(formItemDefinition, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
@@ -20,10 +13,10 @@ const getregisterOptions = (formItemDefinition: FormItemDefinition): RegisterOpt
 export type CreateInputParams = {
   formItemDefinition: FormItemDefinition;
   parentsPath: string;
-  updateCallback: FormInputProps['updateCallback'];
-  isItemEnabled: FormInputProps['isItemEnabled'];
-  initialValue: FormInputProps['initialValue'];
-  htmlElRef: FormInputProps['htmlElRef'];
+  updateCallback: FormInputBaseProps['updateCallback'];
+  isItemEnabled?: (item: FormItemDefinition) => boolean;
+  initialValue: FormInputBaseProps['initialValue'];
+  htmlElRef: FormInputBaseProps['htmlElRef'];
   customHandlers?: CustomHandlers;
 };
 
@@ -36,10 +29,10 @@ export const createInput = ({
   customHandlers,
   htmlElRef,
 }: CreateInputParams): JSX.Element => {
+  const isEnabled = isItemEnabled(formItemDefinition);
   const inputId = [parentsPath, formItemDefinition.name].filter(Boolean).join('.');
-  console.log(`%c >>>>>>>>>>>>>>> createInput being called for ${inputId}`, 'background: #4c00b0; color: #fff');
-
   const registerOptions = getregisterOptions(formItemDefinition);
+
   // eslint-disable-next-line sonarjs/no-small-switch
   switch (formItemDefinition.type) {
     case FormInputType.Input: {
@@ -51,17 +44,18 @@ export const createInput = ({
           updateCallback={updateCallback}
           label={formItemDefinition.label}
           registerOptions={registerOptions}
-          isItemEnabled={isItemEnabled}
+          isEnabled={isEnabled}
           htmlElRef={htmlElRef}
         />
       );
     }
+    // Until all the "FormInputType"s are migrated, default to using the old getInputType
     default:
       // return <div>INVALID FORM INPUT: {inputId}</div>;
       return getInputType(parentsPath.split('.'), updateCallback, customHandlers)(formItemDefinition)(
         initialValue,
         htmlElRef,
-        isItemEnabled(),
+        isEnabled,
       );
   }
 };

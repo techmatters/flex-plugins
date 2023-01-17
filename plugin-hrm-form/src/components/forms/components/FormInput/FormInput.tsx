@@ -3,9 +3,9 @@ import { Template } from '@twilio/flex-ui';
 import { get } from 'lodash';
 import { useFormContext } from 'react-hook-form';
 
-import { Box, Row } from '../../../../../../styles/HrmStyles';
+import { Box, Row } from '../../../../styles/HrmStyles';
 import { FormError, FormLabel, RequiredAsterisk } from '../styles';
-import { FormInputProps } from '../types';
+import { FormInputBaseProps } from '../types';
 import { StyledFormInput } from './styles';
 
 type FormInputUIProps = {
@@ -66,7 +66,7 @@ const FormInputUI = React.memo<FormInputUIProps>(
   },
 );
 
-type Props = FormInputProps;
+type Props = FormInputBaseProps;
 
 const FormInput: React.FC<Props> = ({
   inputId,

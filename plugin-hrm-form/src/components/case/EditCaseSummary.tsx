@@ -37,7 +37,7 @@ import {
 import { AppRoutes } from '../../states/routing/types';
 import { PermissionActions, PermissionActionType } from '../../permissions';
 import { disperseInputs, splitAt } from '../common/forms/formGenerators';
-import { useCreateFormFromDefinition } from '../common/forms/formGenerator';
+import { useCreateFormFromDefinition } from '../forms';
 
 export type EditCaseSummaryProps = {
   task: CustomITask | StandaloneITask;

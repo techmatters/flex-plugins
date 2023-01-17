@@ -8,7 +8,7 @@ import { useFlexSelector } from '@twilio/flex-ui';
 import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import { disperseInputs } from '../common/forms/formGenerators';
-import { useCreateFormFromDefinition } from '../common/forms/formGenerator';
+import { useCreateFormFromDefinition } from '../forms';
 import { updateForm } from '../../states/contacts/actions';
 import { Container, ColumnarBlock, TwoColumnLayout, ColumnarContent } from '../../styles/HrmStyles';
 import { configurationBase, namespace, RootState } from '../../states';

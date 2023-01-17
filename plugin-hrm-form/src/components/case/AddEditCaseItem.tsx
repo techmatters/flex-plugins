@@ -27,7 +27,7 @@ import { transformValues } from '../../services/ContactService';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
 import { createStateItem, CustomHandlers, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
-import { useCreateFormFromDefinition } from '../common/forms/formGenerator';
+import { useCreateFormFromDefinition } from '../forms';
 import type { CaseInfo, CaseItemEntry, CustomITask, StandaloneITask } from '../../types/types';
 import {
   AddCaseSectionRoute,
