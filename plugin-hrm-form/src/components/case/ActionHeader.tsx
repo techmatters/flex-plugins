@@ -6,6 +6,7 @@ import { isEqual } from 'date-fns';
 
 import { Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
 import { CaseActionTitle, CaseActionDetailFont } from '../../styles/case';
+import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
   titleTemplate: string;
@@ -15,8 +16,8 @@ type OwnProps = {
   updated?: Date;
   updatingCounsellor?: string;
   includeTime?: boolean;
-  space?: string;
   codeTemplate?: string;
+  focusCloseButton?: boolean;
 };
 
 type Props = OwnProps;
@@ -28,10 +29,10 @@ const ActionHeader: React.FC<Props> = ({
   addingCounsellor,
   updated,
   updatingCounsellor,
-  space,
   codeTemplate,
+  focusCloseButton,
 }) => {
-  // @ts-ignore
+  const focusElementRef = useFocus();
 
   return (
     <>
@@ -39,7 +40,15 @@ const ActionHeader: React.FC<Props> = ({
         <CaseActionTitle style={{ marginTop: 'auto' }}>
           <Template code={titleTemplate} />
         </CaseActionTitle>
-        <HeaderCloseButton onClick={onClickClose} data-testid="Case-CloseCross">
+        <HeaderCloseButton
+          onClick={onClickClose}
+          data-testid="Case-CloseCross"
+          ref={ref => {
+            if (focusCloseButton) {
+              focusElementRef.current = ref;
+            }
+          }}
+        >
           <HiddenText>
             <Template code="Case-CloseButton" />
           </HiddenText>
@@ -55,7 +64,6 @@ const ActionHeader: React.FC<Props> = ({
               date={added.toLocaleDateString()}
               time={added.toLocaleTimeString(undefined, { minute: '2-digit', hour: '2-digit' })}
               counsellor={addingCounsellor}
-              space={space}
             />
           </CaseActionDetailFont>
         )}

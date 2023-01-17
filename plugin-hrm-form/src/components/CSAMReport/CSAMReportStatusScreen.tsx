@@ -18,6 +18,7 @@ import {
   SuccessReportIcon,
 } from '../../styles/CSAMReport';
 import { CSAMReportStatus, CSAMReportType, CSAMReportTypes } from '../../states/csam-report/types';
+import useFocus from '../../utils/useFocus';
 
 type Props = {
   reportStatus: CSAMReportStatus;
@@ -28,9 +29,9 @@ type Props = {
 
 const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, onSendAnotherReport, csamType }) => {
   const [copied, setCopied] = React.useState(false);
+  const focusElementRef = useFocus();
 
   const onCopyCode = async () => {
-    // eslint-disable-next-line no-unused-expressions
     await navigator.clipboard.writeText(reportStatus.responseData);
     setCopied(true);
   };
@@ -46,7 +47,13 @@ const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, o
       data-testid="CSAMReport-StatusScreen"
     >
       <CSAMReportLayout>
-        <HeaderCloseButton onClick={onClickClose} data-testid="Case-CloseCross">
+        <HeaderCloseButton
+          onClick={onClickClose}
+          data-testid="Case-CloseCross"
+          ref={ref => {
+            focusElementRef.current = ref;
+          }}
+        >
           <HiddenText>
             <Template code="Case-CloseButton" />
           </HiddenText>
@@ -74,31 +81,21 @@ const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, o
               </RegularText>
             </Box>
             <Row>
-              {csamType === CSAMReportTypes.CHILD && (
-                <Box marginRight="10px">
-                  <ReportCodeText
-                    style={{
-                      paddingLeft: '50px',
-                    }}
-                  >
-                    {reportStatus.responseData}
-                  </ReportCodeText>
-                </Box>
-              )}
-              {csamType === CSAMReportTypes.COUNSELLOR && (
-                <Box marginRight="5%">
-                  <ReportCodeText>#{reportStatus.responseData}</ReportCodeText>
-                </Box>
-              )}
+              <Box marginRight="10px">
+                <ReportCodeText>
+                  {csamType === CSAMReportTypes.COUNSELLOR && '#'}
+                  {reportStatus.responseData}
+                </ReportCodeText>
+              </Box>
               <CopyCodeButton
-                style={{ padding: csamType === CSAMReportTypes.CHILD && '5px 17px 5px 12px' }}
+                style={{ padding: '5px 17px 5px 12px' }}
                 secondary
                 roundCorners
                 onClick={onCopyCode}
                 data-testid="CSAMReport-CopyCodeButton"
               >
                 <CopyCodeButtonIcon />
-                <div style={{ width: 50 }} />
+                <div style={{ width: 10 }} />
                 <ButtonText>
                   <Template code={CopyCodeButtonText} />
                 </ButtonText>
