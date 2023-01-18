@@ -1,32 +1,15 @@
-import * as React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import each from 'jest-each';
 import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
-import { FormProvider, UseFormMethods } from 'react-hook-form';
 
-import * as FormComponents from '../../../components/forms/components';
-import { createInput } from '../../../components/forms/inputGenerator';
+import * as FormComponents from './components';
+import { createInput } from './inputGenerator';
+import { createFormMethods, wrapperFormProvider } from './test-utils.test';
 
 afterEach(() => {
   jest.clearAllMocks();
   jest.resetAllMocks();
-});
-
-const createFormMethods = (): UseFormMethods => ({
-  clearErrors: jest.fn(),
-  control: {} as any,
-  errors: {},
-  formState: {} as any,
-  getValues: jest.fn(),
-  handleSubmit: jest.fn(),
-  register: () => jest.fn(),
-  reset: jest.fn(),
-  setError: jest.fn(),
-  setValue: jest.fn(),
-  trigger: jest.fn(),
-  unregister: jest.fn(),
-  watch: jest.fn(),
 });
 
 describe('createInput', () => {
@@ -62,7 +45,10 @@ describe('createInput', () => {
 
       const methods = createFormMethods();
 
-      render(<FormProvider {...methods}>{createdInput}</FormProvider>);
+      render(createdInput, {
+        // Override register to be a plain function as it will fail, don't seem to like jest.fn
+        wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }),
+      });
 
       /*
        * This kinda inspects the internal implementation of the components
