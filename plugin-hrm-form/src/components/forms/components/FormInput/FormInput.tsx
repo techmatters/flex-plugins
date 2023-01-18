@@ -17,7 +17,7 @@ type FormInputUIProps = {
   required: boolean;
   disabled: boolean;
   isErrorState: boolean;
-  errorComponentId: string;
+  errorId: string;
   errorTextComponent: JSX.Element;
 };
 
@@ -26,44 +26,42 @@ type FormInputUIProps = {
  * and the outer one will be a wrapper that "binds" the inner one with our custom logic (rhf, Twilio Template and all of the dependecies should be injected into it).
  * This way, moving the actual UI components to a component library will be feacible (if we ever want to)
  */
-const FormInputUI = React.memo<FormInputUIProps>(
-  ({
-    inputId,
-    updateCallback,
-    refFunction,
-    defaultValue,
-    labelTextComponent,
-    required,
-    disabled,
-    isErrorState,
-    errorComponentId,
-    errorTextComponent,
-  }) => {
-    return (
-      <FormLabel htmlFor={inputId}>
-        <Row>
-          <Box marginBottom="8px">
-            {labelTextComponent}
-            {required && <RequiredAsterisk />}
-          </Box>
-        </Row>
-        <StyledFormInput
-          id={inputId}
-          data-testid={`FormInput-${inputId}`}
-          name={inputId}
-          error={isErrorState}
-          aria-invalid={isErrorState}
-          aria-describedby={errorComponentId}
-          onBlur={updateCallback}
-          ref={refFunction}
-          defaultValue={defaultValue}
-          disabled={disabled}
-        />
-        {isErrorState && <FormError>{errorTextComponent}</FormError>}
-      </FormLabel>
-    );
-  },
-);
+const FormInputUI: React.FC<FormInputUIProps> = ({
+  inputId,
+  updateCallback,
+  refFunction,
+  defaultValue,
+  labelTextComponent,
+  required,
+  disabled,
+  isErrorState,
+  errorId,
+  errorTextComponent,
+}) => {
+  return (
+    <FormLabel htmlFor={inputId} data-testid={`FormInput-${inputId}`}>
+      <Row>
+        <Box marginBottom="8px">
+          {labelTextComponent}
+          {required && <RequiredAsterisk />}
+        </Box>
+      </Row>
+      <StyledFormInput
+        id={inputId}
+        name={inputId}
+        error={isErrorState}
+        aria-invalid={isErrorState}
+        aria-required={required}
+        aria-errormessage={isErrorState ? errorId : undefined}
+        onBlur={updateCallback}
+        ref={refFunction}
+        defaultValue={defaultValue}
+        disabled={disabled}
+      />
+      {isErrorState && <FormError>{errorTextComponent}</FormError>}
+    </FormLabel>
+  );
+};
 
 type Props = FormInputBaseProps;
 
@@ -80,11 +78,11 @@ const FormInput: React.FC<Props> = ({
   const { errors, register } = useFormContext();
   const error = get(errors, inputId);
   const labelTextComponent = React.useMemo(() => <Template code={`${label}`} className=".fullstory-unmask" />, [label]);
-  const errorComponentId = `${inputId}-error`;
-  const errorTextComponent = React.useMemo(
-    () => (error ? <Template id={errorComponentId} code={error.message} /> : null),
-    [error, errorComponentId],
-  );
+  const errorId = `${inputId}-error`;
+  const errorTextComponent = React.useMemo(() => (error ? <Template id={errorId} code={error.message} /> : null), [
+    error,
+    errorId,
+  ]);
   const refFunction = React.useCallback(
     ref => {
       if (htmlElRef && ref) {
@@ -103,14 +101,14 @@ const FormInput: React.FC<Props> = ({
   return (
     <FormInputUI
       inputId={inputId}
-      labelTextComponent={labelTextComponent}
-      required={Boolean(registerOptions.required)}
-      isErrorState={Boolean(error)}
-      errorComponentId={errorComponentId}
       updateCallback={updateCallback}
       refFunction={refFunction}
       defaultValue={defaultValue}
+      labelTextComponent={labelTextComponent}
+      required={Boolean(registerOptions.required)}
       disabled={disabled}
+      isErrorState={Boolean(error)}
+      errorId={errorId}
       errorTextComponent={errorTextComponent}
     />
   );
