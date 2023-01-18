@@ -38,7 +38,7 @@ locals {
   permission_config = "demo"
   multi_office = false
   enable_post_survey = false
-  twilio_numbers = ["messenger:108893035300837","twitter:1532353002387931139","instagram:17841453197793547"]
+  twilio_numbers = ["messenger:108893035300837","twitter:1570374172798238722","instagram:17841455607284645","line:Uac858d9182b0e0fe1fa1b5850ab662bd"]
   channel = ""
   custom_channel_attributes = ""
   feature_flags = {
@@ -66,6 +66,9 @@ locals {
     "sms" = {"contact_identity" = "+17152201076", "channel_type" ="sms" }
   }
   custom_channels=["twitter","instagram","line"]
+  target_task_name = "execute_initial_flow"
+  strings_en= jsondecode(file("${path.module}/../translations/en-TH/strings.json"))
+  strings_th= jsondecode(file("${path.module}/../translations/th-TH/strings.json"))
 }
 
 provider "twilio" {
@@ -119,23 +122,18 @@ module flex {
 
 module twilioChannel {
   for_each = local.twilio_channels
-  channel_type = each.value.channel_type
   source = "../terraform-modules/channels/twilio-channel"
   channel_contact_identity = each.value.contact_identity
-  custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/default/no-chatbot.tftpl",
-    {
-      master_workflow_sid = module.taskRouter.master_workflow_sid
-      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-      channel_attributes =  templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language})
-      flow_description = "${title(each.key)} Messaging Flow"
-    })
+  channel_type = each.value.channel_type
+  pre_survey_bot_sid = twilio_autopilot_assistants_v1.pre_survey_bot_TH.sid
+  target_task_name = local.target_task_name
   channel_name = "${each.key}"
   janitor_enabled = !local.enable_post_survey
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
 }
+
 
 module customChannel {
   for_each = toset(local.custom_channels)
