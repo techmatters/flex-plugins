@@ -14,7 +14,6 @@ import {
 } from '../../styles/CSAMReport';
 import { definitionObject, generateCSAMFormElement, initialValues } from './CSAMReportFormDefinition';
 import { CounselorCSAMReportForm } from '../../states/csam-report/types';
-import { HTMLElementRef } from '../common/forms/types';
 
 type Props = {
   counselor: string;
@@ -23,7 +22,6 @@ type Props = {
   update: (formValues: CounselorCSAMReportForm) => void;
   formValues: CounselorCSAMReportForm;
   methods: ReturnType<typeof useForm>;
-  focusElementRef?: HTMLElementRef;
 };
 
 const CSAMReportCounsellorForm: React.FC<Props> = ({
@@ -33,13 +31,17 @@ const CSAMReportCounsellorForm: React.FC<Props> = ({
   update,
   formValues,
   methods,
-  focusElementRef,
 }) => {
   const generateCounselorFormElement = generateCSAMFormElement(initialValues, formValues, update, methods);
   return (
     <CSAMReportContainer data-testid="CSAMReport-FormScreen">
       <CSAMReportLayout>
-        <ActionHeader titleTemplate="CSAMReportForm-Header" onClickClose={onClickClose} addingCounsellor={counselor} />
+        <ActionHeader
+          titleTemplate="CSAMReportForm-Header"
+          onClickClose={onClickClose}
+          addingCounsellor={counselor}
+          focusCloseButton={true}
+        />
 
         {/** Website details */}
         <Box marginTop="20px" marginBottom="5px">
@@ -51,7 +53,7 @@ const CSAMReportCounsellorForm: React.FC<Props> = ({
           <Template code="CSAMReportForm-WebsiteDetailsDescription" />
         </RegularText>
         <Box padding="15px 15px 15px 20px">
-          {generateCounselorFormElement(definitionObject.webAddress, focusElementRef)}
+          {generateCounselorFormElement(definitionObject.webAddress)}
           {generateCounselorFormElement(definitionObject.description)}
         </Box>
 

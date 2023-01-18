@@ -9,7 +9,6 @@ import { BoldDescriptionText, CSAMReportContainer, CSAMReportLayout } from '../.
 import { childDefinitionObject, childInitialValues, generateCSAMFormElement } from './CSAMReportFormDefinition';
 import { RequiredAsterisk } from '../common/forms/formGenerators';
 import { ChildCSAMReportForm } from '../../states/csam-report/types';
-import { HTMLElementRef } from '../common/forms/types';
 
 type Props = {
   counselor: string;
@@ -18,7 +17,6 @@ type Props = {
   update: (formValues: ChildCSAMReportForm) => void;
   formValues: ChildCSAMReportForm;
   methods: ReturnType<typeof useForm>;
-  focusElementRef?: HTMLElementRef;
 };
 
 const CSAMReportChildForm: React.FC<Props> = ({
@@ -28,7 +26,6 @@ const CSAMReportChildForm: React.FC<Props> = ({
   update,
   formValues,
   methods,
-  focusElementRef,
 }) => {
   const generateChildFormElement = generateCSAMFormElement(childInitialValues, formValues, update, methods);
   return (
@@ -40,7 +37,7 @@ const CSAMReportChildForm: React.FC<Props> = ({
           titleTemplate="CSAMCLCReportForm-Header"
           onClickClose={onClickClose}
           addingCounsellor={counselor}
-          space={`\xa0\xa0`}
+          focusCloseButton={true}
         />
 
         <Box marginTop="20px" marginBottom="5px">
@@ -49,9 +46,7 @@ const CSAMReportChildForm: React.FC<Props> = ({
             &nbsp;
             <RequiredAsterisk />
           </BoldDescriptionText>
-          <Box padding="15px 15px 15px 20px">
-            {generateChildFormElement(childDefinitionObject.childAge, focusElementRef)}
-          </Box>
+          <Box padding="15px 15px 15px 20px">{generateChildFormElement(childDefinitionObject.childAge)}</Box>
         </Box>
 
         <Box marginTop="20px" marginBottom="5px">
