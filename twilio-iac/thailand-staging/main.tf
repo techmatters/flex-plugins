@@ -38,7 +38,11 @@ locals {
   permission_config = "demo"
   multi_office = false
   enable_post_survey = false
+<<<<<<< HEAD
   twilio_numbers = ["messenger:108893035300837","twitter:1570374172798238722","instagram:17841455607284645","line:Uac858d9182b0e0fe1fa1b5850ab662bd"]
+=======
+  twilio_numbers = ["messenger:108893035300837","twitter:1570374172798238722","instagram:17841455607284645"]
+>>>>>>> 0b9d016154e7e5aadbefa82c2a2d4da5667ce472
   channel = ""
   custom_channel_attributes = ""
   feature_flags = {
