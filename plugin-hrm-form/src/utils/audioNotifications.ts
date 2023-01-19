@@ -3,8 +3,8 @@ import * as Flex from '@twilio/flex-ui';
 /**
  * An audio alert when a task is reserved to the counsellor. Stops when accepted or other event that changes the worker or task status
  */
-let media;
 export const notifyReservedTask = reservation => {
+  let media;
   const manager = Flex.Manager.getInstance();
   const assetsBucketUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
 
