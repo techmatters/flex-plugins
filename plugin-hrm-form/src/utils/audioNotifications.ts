@@ -4,8 +4,8 @@ const manager = Flex.Manager.getInstance();
 const assetsUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
 
 /**
- * An audio alert when a task is reserved to the counsellor. Stops when accepted or other 
-*/
+ * An audio alert when a task is reserved to the counsellor. Stops when accepted or other
+ */
 let media;
 export const notifyReservedTask = reservation => {
   const notificationTone = 'ringtone';
