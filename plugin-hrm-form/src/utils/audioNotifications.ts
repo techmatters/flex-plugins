@@ -1,15 +1,16 @@
 import * as Flex from '@twilio/flex-ui';
 
-const manager = Flex.Manager.getInstance();
-const assetsUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
-
 /**
- * An audio alert when a task is reserved to the counsellor. Stops when accepted or other
+ * An audio alert when a task is reserved to the counsellor. Stops when accepted or other event that changes the worker or task status
  */
 let media;
 export const notifyReservedTask = reservation => {
+  const manager = Flex.Manager.getInstance();
+  const assetsBucketUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
+
   const notificationTone = 'ringtone';
-  const notificationUrl = `${assetsUrl}/notifications/${notificationTone}.mp3`;
+  const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
+
   if (document.visibilityState === 'visible') {
     media = Flex.AudioPlayerManager.play({
       url: notificationUrl,
@@ -27,17 +28,17 @@ export const notifyReservedTask = reservation => {
 /**
  * An audio alert when a counsellor receives a  new message
  */
-export const notifyNewMessage = () => {
-  const notificationTone = 'bell';
-  const notificationUrl = `${assetsUrl}/notifications/${notificationTone}.mp3`;
+export const notifyNewMessage = messageInstance => {
+  const manager = Flex.Manager.getInstance();
+  const assetsBucketUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
 
-  manager.conversationsClient.on('messageAdded', messageInstance => {
-    if (!messageInstance || messageInstance === undefined) return;
-    if (messageInstance && document.visibilityState === 'visible') {
-      Flex.AudioPlayerManager.play({
-        url: notificationUrl,
-        repeatable: false,
-      });
-    }
-  });
+  const notificationTone = 'bell';
+  const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
+
+  if (messageInstance && document.visibilityState === 'visible') {
+    Flex.AudioPlayerManager.play({
+      url: notificationUrl,
+      repeatable: false,
+    });
+  }
 };

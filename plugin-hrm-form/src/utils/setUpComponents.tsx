@@ -356,5 +356,12 @@ export const setupCannedResponses = () => {
   Flex.MessageInputV2.Content.add(<CannedResponses key="canned-responses" />);
 };
 
-// An audio alert when a counsellor receives a  new message
-notifyNewMessage();
+/**
+ * An audio alert when a counsellor receives a new message
+ */
+export const setupNotifications = () => {
+  const manager = Flex.Manager.getInstance();
+  manager.conversationsClient.on('messageAdded', messageInstance => {
+    notifyNewMessage(messageInstance);
+  });
+};

@@ -5,6 +5,7 @@ import { DefinitionVersion, DefinitionVersionId } from 'hrm-form-definitions/src
 const baseMockConfig = {
   hrmBaseUrl: '',
   serverlessBaseUrl: '',
+  assetsBucketUrl: '',
   serviceSid: '',
   workerSid: '',
   helpline: '',

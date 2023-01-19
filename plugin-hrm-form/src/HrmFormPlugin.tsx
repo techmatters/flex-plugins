@@ -34,6 +34,8 @@ const readConfig = () => {
   const serverlessBaseUrl =
     process.env.REACT_SERVERLESS_BASE_URL || manager.serviceConfiguration.attributes.serverless_base_url;
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
+  const assetsBucketUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
+
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid;
   const { helpline, counselorLanguage, full_name: counselorName, roles } = manager.workerClient.attributes as any;
@@ -55,6 +57,7 @@ const readConfig = () => {
     hrmBaseUrl,
     serverlessBaseUrl,
     logoUrl,
+    assetsBucketUrl,
     chatServiceSid,
     workerSid,
     helpline,
@@ -190,6 +193,7 @@ const setUpComponents = (setupObject: SetupObject) => {
   }
 
   Components.setUpStandaloneSearch();
+  Components.setupNotifications();
 
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 
