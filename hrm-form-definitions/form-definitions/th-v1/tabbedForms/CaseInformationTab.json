@@ -1,5 +1,93 @@
 [
   {
+    "name": "caseNumber",
+    "label": "Case Number",
+    "type": "input"
+  },
+  {
+    "name": "hubServicesProvided",
+    "label": "Hub Services Provided",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "ให ้ค ําปรึกษํา (ออนไลน์)",
+        "label": "ให ้ค ําปรึกษํา (ออนไลน์)"
+      },
+      {
+        "value": "ให ้ค ําปรึกษํา (ตัวต่อตัว)",
+        "label": "ให ้ค ําปรึกษํา (ตัวต่อตัว)"
+      },
+      {
+        "value": "บริกํารเอกสํารประจําตัว",
+        "label": "บริกํารเอกสํารประจําตัว"
+      },
+      {
+        "value": "บริกํารพื้นฐํานปัจจัย 4",
+        "label": "บริกํารพื้นฐํานปัจจัย 4"
+      },
+      {
+        "value": "บริกํารด ้ํานสุขภําพ (ตรวจสุขภําพ ให ้ค ําปรึกษําฯลฯ)",
+        "label": "บริกํารด ้ํานสุขภําพ (ตรวจสุขภําพ ให ้ค ําปรึกษําฯลฯ)"
+      },
+      {
+        "value": "ส่งต่อและประสํานงํานเคส",
+        "label": "ส่งต่อและประสํานงํานเคส"
+      },
+      {
+        "value": "บริกํารด ้ํานกํารศึกษํา",
+        "label": "บริกํารด ้ํานกํารศึกษํา"
+      },
+      {
+        "value": "พัฒนําทักษะกํารใช ้ชีวิตประจําวัน",
+        "label": "พัฒนําทักษะกํารใช ้ชีวิตประจําวัน"
+      },
+      {
+        "value": "พัฒนําทักษะอําชีพ /ทดลองงําน",
+        "label": "พัฒนําทักษะอําชีพ /ทดลองงําน"
+      },
+      {
+        "value": "ให ้ค ําปรึกษํากํารตั้งครรภ์เมื่อไม่พร ้อม",
+        "label": "ให ้ค ําปรึกษํากํารตั้งครรภ์เมื่อไม่พร ้อม"
+      },
+      {
+        "value": "ให ้คําปรึกษําและบริกํารสําหรับเด็กแรกเกิด - 3 ปี",
+        "label": "ให ้คําปรึกษําและบริกํารสําหรับเด็กแรกเกิด - 3 ปี"
+      },
+      {
+        "value": "ค่ํายเพื่อพัฒนําศักยภําพเด็ก",
+        "label": "ค่ํายเพื่อพัฒนําศักยภําพเด็ก"
+      },
+      {
+        "value": "กิจกรรมสันทนํากําร",
+        "label": "กิจกรรมสันทนํากําร"
+      },
+      {
+        "value": "ติดตํามผลเคส",
+        "label": "ติดตํามผลเคส"
+      },
+      {
+        "value": "โครงกํารไน ้ท์ฮับ",
+        "label": "โครงกํารไน ้ท์ฮับ"
+      }
+    ]
+  },
+  {
+    "name": "serviceSubcategories",
+    "label": "Service Subcategories",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "pending1",
+        "label": "pending1"
+      },
+      {
+        "value": "pending2",
+        "label": "pending2"
+      }
+    ]
+  },
+  {
     "name": "callSummary",
     "label": "Contact Summary",
     "type": "textarea",
@@ -59,23 +147,11 @@
     "name": "howDidYouKnowAboutOurLine",
     "label": "How did you know about our line/number?",
     "type": "select",
-    "unknownOption": "",
+    "unknownOption": "Unknown",
     "options": [
       {
         "value": "การบอกต่อ",
         "label": "การบอกต่อ"
-      },
-      {
-        "value": "สื่อสังคมออนไลน์",
-        "label": "สื่อสังคมออนไลน์"
-      },
-      {
-        "value": "เพื่อน",
-        "label": "เพื่อน"
-      },
-      {
-        "value": "โรงเรียน",
-        "label": "โรงเรียน"
       },
       {
         "value": "การค้นพบจากอินเตอร์เน็ต",
@@ -88,34 +164,38 @@
     ]
   },
   {
+    "name": "repeatCaller",
+    "label": "Repeat caller?",
+    "type": "checkbox"
+  },
+  {
     "name": "keepConfidential",
     "label": "Keep confidential?",
-    "type": "mixed-checkbox",
-    "initialChecked": true
+    "type": "checkbox"
   },
   {
     "name": "mustCallBack",
     "label": "Is it necessary for a case worker to call back?",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "okForCaseWorkerToCall",
     "label": "Is it okay for case worker to call?",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "didYouDiscussRightsWithTheChild",
     "label": "Did you discuss rights with the child?",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "didTheChildFeelWeSolvedTheirProblem",
     "label": "Did the child feel we solved their problem?",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "wouldTheChildRecommendUsToAFriend",
     "label": "Would the child recommend us to a friend?",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   }
 ]
