@@ -38,7 +38,7 @@ locals {
   permission_config = "demo"
   multi_office = false
   enable_post_survey = false
-  twilio_numbers = []
+  twilio_numbers = ["messenger:59591583805"]
   channel = ""
   custom_channel_attributes = ""
   feature_flags = {
@@ -66,10 +66,12 @@ locals {
 
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   //Channels [Facebook | Line | Instagram | Twitter]
-  //"facebook" = {"contact_identity" = "messenger:108893035300837", "channel_type" ="facebook"},
-  twilio_channels = {}
+  twilio_channels = {"facebook" = {"contact_identity" = "messenger:59591583805", "channel_type" ="facebook"}}
   //["twitter","instagram","line"]
   custom_channels=[]
+  target_task_name = "execute_initial_flow"
+  strings_en= jsondecode(file("${path.module}/../translations/en-TH/strings.json"))
+  strings_th= jsondecode(file("${path.module}/../translations/th-TH/strings.json"))
 }
 
 provider "twilio" {
@@ -124,17 +126,11 @@ module flex {
 
 module twilioChannel {
   for_each = local.twilio_channels
-  channel_type = each.value.channel_type
   source = "../terraform-modules/channels/twilio-channel"
   channel_contact_identity = each.value.contact_identity
-  custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/default/no-chatbot.tftpl",
-    {
-      master_workflow_sid = module.taskRouter.master_workflow_sid
-      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-      channel_attributes =  templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language})
-      flow_description = "${title(each.key)} Messaging Flow"
-    })
+  channel_type = each.value.channel_type
+  pre_survey_bot_sid = twilio_autopilot_assistants_v1.pre_survey_bot_TH.sid
+  target_task_name = local.target_task_name
   channel_name = "${each.key}"
   janitor_enabled = !local.enable_post_survey
   master_workflow_sid = module.taskRouter.master_workflow_sid
