@@ -28,6 +28,7 @@ import { Container } from '../styles/queuesStatus';
 import { isInMyBehalfITask } from '../types/types';
 import { SetupObject } from '../HrmFormPlugin';
 import { colors } from '../channels/colors';
+import { notifyReservedTask, notifyNewMessae } from './audioNotifications';
 
 /**
  * Returns the UI for the "Contacts Waiting" section
@@ -79,25 +80,9 @@ const setUpRerenderOnReservation = () => {
   const manager = Flex.Manager.getInstance();
 
   manager.workerClient.on('reservationCreated', reservation => {
-    console.log('>>> reservationCreated', reservation);
-    const mediaId = Flex.AudioPlayerManager.play({
-      url: 'https://api.twilio.com/cowbell.mp3',
-      repeatable: true,
-    });
+    notifyReservedTask(reservation);
 
-    /*
-     * ['accepted','canceled','completed','rejected','timeout','wrapup'].forEach(stage => {
-     *   reservation.on(stage, () => Flex.AudioPlayerManager.stop(mediaId))
-     * });
-     */
-    reservation.on('accepted', () => Flex.AudioPlayerManager.stop(mediaId));
-    reservation.on('canceled', () => Flex.AudioPlayerManager.stop(mediaId));
-    reservation.on('completed', () => Flex.AudioPlayerManager.stop(mediaId));
-    reservation.on('rejected', () => Flex.AudioPlayerManager.stop(mediaId));
-    reservation.on('timeout', () => Flex.AudioPlayerManager.stop(mediaId));
-    reservation.on('wrapup', () => Flex.AudioPlayerManager.stop(mediaId));
     const { tasks } = manager.store.getState().flex.worker;
-    console.log('>>> reservationCreated', tasks);
 
     if (tasks.size === 1 && !isInMyBehalfITask(reservation.task))
       Flex.Actions.invokeAction('SelectTask', { sid: reservation.sid });
@@ -371,3 +356,5 @@ export const setupCannedResponses = () => {
   Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" />);
   Flex.MessageInputV2.Content.add(<CannedResponses key="canned-responses" />);
 };
+
+notifyNewMessae();

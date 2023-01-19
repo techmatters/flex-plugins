@@ -33,7 +33,6 @@ const subscribedToQueue = (queue: string, queues: QueuesStatus) => Boolean(queue
  * If counselor is not subscribed to a queue, acc[queue] will be undefined
  */
 export const addPendingTasks = (acc: QueuesStatus, task: any): QueuesStatus => {
-  // console.log('>>> addPendingTasks', {acc}, {task})
   if (!isWaiting(task.status) || !subscribedToQueue(task.queue_name, acc) || task.channel_type === 'default')
     return acc;
   const created = task.date_created;
@@ -42,7 +41,6 @@ export const addPendingTasks = (acc: QueuesStatus, task: any): QueuesStatus => {
   const queue = task.queue_name;
   const currentOldest = acc[queue].longestWaitingDate;
   const longestWaitingDate = currentOldest !== null && currentOldest < created ? currentOldest : created;
-  console.log('>>> isAnyChatPending', isPending(task.status),isReserved(task.status),isAssigned(task.status),isCanceled(task.status),isWaiting)
   return {
     ...acc,
     [queue]: {
