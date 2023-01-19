@@ -5,7 +5,7 @@ import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
 
 import * as FormComponents from './components';
 import { createInput } from './inputGenerator';
-import { createFormMethods, wrapperFormProvider } from './test-utils.test';
+import { createFormMethods, wrapperFormProvider } from './test-utils';
 
 afterEach(() => {
   jest.clearAllMocks();

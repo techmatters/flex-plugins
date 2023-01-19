@@ -3,7 +3,7 @@ import { render, screen, fireEvent, getByRole } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 import FormInput from './FormInput';
-import { createFormMethods, wrapperFormProvider } from '../../test-utils.test';
+import { createFormMethods, wrapperFormProvider } from '../../test-utils';
 
 describe('FormInput', () => {
   test('errors if not wrapped in FormProvider', async () => {
