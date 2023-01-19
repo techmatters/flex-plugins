@@ -52,7 +52,7 @@ export const createInput = ({
     // Until all the "FormInputType"s are migrated, default to using the old getInputType
     default:
       // return <div>INVALID FORM INPUT: {inputId}</div>;
-      return getInputType(parentsPath.split('.'), updateCallback, customHandlers)(formItemDefinition)(
+      return getInputType(parentsPath.split('.').filter(Boolean), updateCallback, customHandlers)(formItemDefinition)(
         initialValue,
         htmlElRef,
         isEnabled,
