@@ -119,6 +119,7 @@ module flex {
   serverless_url = module.serverless.serverless_environment_production_url
   multi_office_support = local.multi_office
   feature_flags = local.feature_flags
+  helpline_language = local.helpline_language
 }
 
 module twilioChannel {
