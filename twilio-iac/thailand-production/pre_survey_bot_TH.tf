@@ -225,13 +225,13 @@ resource "twilio_autopilot_assistants_tasks_v1" "pre_survey_bot_TH_execute_initi
                 "1" : "counselor_handoff",
                 "2" : {
                   "get_age" : {
-                    ">=18" : {
+                    ">=19" : {
                       "get_is_emergency" : {
                         "1" : "counselor_handoff",
                         "2" : "goodbye_msg"
                       }
                     },
-                    "<18" : "counselor_handoff"
+                    "<19" : "counselor_handoff"
                   }
                 }
               }
@@ -372,7 +372,7 @@ resource "twilio_autopilot_assistants_field_types_v1" "pre_survey_bot_TH_Age" {
 }
 
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "pre_survey_bot_TH_values_Age_group" {
-  for_each       = toset([">=18", "<18"])
+  for_each       = toset([">=19", "<19"])
   assistant_sid  = twilio_autopilot_assistants_v1.pre_survey_bot_TH.sid
   field_type_sid = twilio_autopilot_assistants_field_types_v1.pre_survey_bot_TH_Age.sid
   value          = each.key
@@ -381,20 +381,20 @@ resource "twilio_autopilot_assistants_field_types_field_values_v1" "pre_survey_b
 
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "pre_survey_bot_TH_synonymsOf_over18_Age_group" {
   depends_on     = [twilio_autopilot_assistants_field_types_field_values_v1.pre_survey_bot_TH_values_Age_group]
-  for_each       = toset(["100", "99", "98", "97", "96", "95", "94", "93", "92", "91", "90", "89", "88", "87", "86", "85", "84", "83", "82", "81", "80", "79", "78", "77", "76", "75", "74", "73", "72", "71", "70", "69", "68", "67", "66", "65", "64", "63", "62", "61", "60", "59", "58", "57", "56", "55", "54", "53", "52", "51", "50", "49", "48", "47", "46", "45", "44", "43", "42", "41", "40", "39", "38", "37", "36", "35", "34", "33", "32", "31", "30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19", "18"])
+  for_each       = toset(["100", "99", "98", "97", "96", "95", "94", "93", "92", "91", "90", "89", "88", "87", "86", "85", "84", "83", "82", "81", "80", "79", "78", "77", "76", "75", "74", "73", "72", "71", "70", "69", "68", "67", "66", "65", "64", "63", "62", "61", "60", "59", "58", "57", "56", "55", "54", "53", "52", "51", "50", "49", "48", "47", "46", "45", "44", "43", "42", "41", "40", "39", "38", "37", "36", "35", "34", "33", "32", "31", "30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19"])
   assistant_sid  = twilio_autopilot_assistants_v1.pre_survey_bot_TH.sid
   field_type_sid = twilio_autopilot_assistants_field_types_v1.pre_survey_bot_TH_Age.sid
-  synonym_of     = ">=18"
+  synonym_of     = ">=19"
   value          = each.key
   language       = "en-US"
 }
 
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "pre_survey_bot_TH_synonymsOf_under18_Age_group" {
   depends_on     = [twilio_autopilot_assistants_field_types_field_values_v1.pre_survey_bot_TH_values_Age_group]
-  for_each       = toset(["17", "16", "15", "14", "13", "12", "11", "10", "9", "8", "7", "6", "5", "4", "3", "0", "2", "1"])
+  for_each       = toset(["18","17", "16", "15", "14", "13", "12", "11", "10", "9", "8", "7", "6", "5", "4", "3", "0", "2", "1"])
   assistant_sid  = twilio_autopilot_assistants_v1.pre_survey_bot_TH.sid
   field_type_sid = twilio_autopilot_assistants_field_types_v1.pre_survey_bot_TH_Age.sid
-  synonym_of     = "<18"
+  synonym_of     = "<19"
   value          = each.key
   language       = "en-US"
 }
