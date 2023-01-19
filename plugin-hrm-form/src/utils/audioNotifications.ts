@@ -28,7 +28,7 @@ export const notifyNewMessae = () => {
   const notificationUrl = `${assetsUrl}/notifications/${notificationTone}.mp3`;
 
   manager.conversationsClient.on('messageAdded', messageInstance => {
-  if (!messageInstance || messageInstance === undefined) return;
+    if (!messageInstance || messageInstance === undefined) return;
     if (messageInstance && document.visibilityState === 'visible') {
       Flex.AudioPlayerManager.play({
         url: notificationUrl,
