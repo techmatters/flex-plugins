@@ -4,15 +4,7 @@ const manager = Flex.Manager.getInstance();
 const assetsUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
 
 let media;
-const reservationStatuses = ['accepted', 'canceled', 'rejected', 'rescinded', 'timeout'];
 
-const stopTone = media => {
-  if (!media || media === undefined) return;
-  if (document.visibilityState === 'visible') {
-    Flex.AudioPlayerManager.stop(media);
-    media = undefined;
-  }
-};
 export const notifyReservedTask = reservation => {
   const notificationTone = 'ringtone';
   const notificationUrl = `${assetsUrl}/notifications/${notificationTone}.mp3`;
@@ -22,10 +14,10 @@ export const notifyReservedTask = reservation => {
       repeatable: true,
     });
   }
-
+  const reservationStatuses = ['accepted', 'canceled', 'rejected', 'rescinded', 'timeout'];
   reservationStatuses.forEach(status => {
     reservation.once(status, () => {
-      stopTone(media);
+      Flex.AudioPlayerManager.stop(media);
     });
   });
 };
@@ -36,8 +28,7 @@ export const notifyNewMessae = () => {
   const notificationUrl = `${assetsUrl}/notifications/${notificationTone}.mp3`;
 
   manager.conversationsClient.on('messageAdded', messageInstance => {
-  if (!media || media === undefined) return;
-
+  if (!messageInstance || messageInstance === undefined) return;
     if (messageInstance && document.visibilityState === 'visible') {
       Flex.AudioPlayerManager.play({
         url: notificationUrl,
