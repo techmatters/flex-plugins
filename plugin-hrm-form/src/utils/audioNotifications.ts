@@ -3,8 +3,10 @@ import * as Flex from '@twilio/flex-ui';
 const manager = Flex.Manager.getInstance();
 const assetsUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
 
+/**
+ * An audio alert when a task is reserved to the counsellor. Stops when accepted or other 
+*/
 let media;
-
 export const notifyReservedTask = reservation => {
   const notificationTone = 'ringtone';
   const notificationUrl = `${assetsUrl}/notifications/${notificationTone}.mp3`;
@@ -14,16 +16,18 @@ export const notifyReservedTask = reservation => {
       repeatable: true,
     });
   }
-  const reservationStatuses = ['accepted', 'canceled', 'rejected', 'rescinded', 'timeout'];
-  reservationStatuses.forEach(status => {
+  const taskStatuses = ['accepted', 'canceled', 'rejected', 'rescinded', 'timeout'];
+  taskStatuses.forEach(status => {
     reservation.once(status, () => {
       Flex.AudioPlayerManager.stop(media);
     });
   });
 };
 
-// Notifies when new task is
-export const notifyNewMessae = () => {
+/**
+ * An audio alert when a counsellor receives a  new message
+ */
+export const notifyNewMessage = () => {
   const notificationTone = 'bell';
   const notificationUrl = `${assetsUrl}/notifications/${notificationTone}.mp3`;
 

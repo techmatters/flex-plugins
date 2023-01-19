@@ -35,12 +35,14 @@ const subscribedToQueue = (queue: string, queues: QueuesStatus) => Boolean(queue
 export const addPendingTasks = (acc: QueuesStatus, task: any): QueuesStatus => {
   if (!isWaiting(task.status) || !subscribedToQueue(task.queue_name, acc) || task.channel_type === 'default')
     return acc;
+    
   const created = task.date_created;
   const isChatBasedTask = task.channel_type !== 'voice';
   const channel = isChatBasedTask ? task.attributes.channelType : 'voice';
   const queue = task.queue_name;
   const currentOldest = acc[queue].longestWaitingDate;
   const longestWaitingDate = currentOldest !== null && currentOldest < created ? currentOldest : created;
+
   return {
     ...acc,
     [queue]: {

@@ -28,7 +28,7 @@ import { Container } from '../styles/queuesStatus';
 import { isInMyBehalfITask } from '../types/types';
 import { SetupObject } from '../HrmFormPlugin';
 import { colors } from '../channels/colors';
-import { notifyReservedTask, notifyNewMessae } from './audioNotifications';
+import { notifyReservedTask, notifyNewMessage } from './audioNotifications';
 
 /**
  * Returns the UI for the "Contacts Waiting" section
@@ -83,7 +83,6 @@ const setUpRerenderOnReservation = () => {
     notifyReservedTask(reservation);
 
     const { tasks } = manager.store.getState().flex.worker;
-
     if (tasks.size === 1 && !isInMyBehalfITask(reservation.task))
       Flex.Actions.invokeAction('SelectTask', { sid: reservation.sid });
   });
@@ -357,4 +356,5 @@ export const setupCannedResponses = () => {
   Flex.MessageInputV2.Content.add(<CannedResponses key="canned-responses" />);
 };
 
-notifyNewMessae();
+// An audio alert when a counsellor receives a  new message
+notifyNewMessage();
