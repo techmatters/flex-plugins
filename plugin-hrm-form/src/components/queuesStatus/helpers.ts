@@ -42,7 +42,10 @@ export const addPendingTasks = (acc: QueuesStatus, task: any): QueuesStatus => {
   const queue = task.queue_name;
   const currentOldest = acc[queue].longestWaitingDate;
   const longestWaitingDate = currentOldest !== null && currentOldest < created ? currentOldest : created;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7164489e (Refactored audioNotifications to a file and added notifyNewMessage function with conversaionsClient listener)
   return {
     ...acc,
     [queue]: {
