@@ -6,6 +6,8 @@ import { afterCompleteTask, afterWrapupTask, setUpPostSurvey } from '../../utils
 import { REMOVE_CONTACT_STATE } from '../../states/types';
 import * as HrmFormPlugin from '../../HrmFormPlugin';
 import * as ServerlessService from '../../services/ServerlessService';
+import { FeatureFlags } from '../../types/types';
+import { SetupObject } from '../../HrmFormPlugin';
 
 const mockFlexManager = {
   store: {
@@ -93,7 +95,7 @@ describe('afterWrapupTask', () => {
     jest.spyOn(TaskHelper, 'isChatBasedTask').mockImplementation(() => isChatChannel);
     jest.spyOn(TaskHelper, 'getTaskConversationSid').mockImplementationOnce(() => task.attributes.channelSid);
 
-    afterWrapupTask(<HrmFormPlugin.SetupObject>{ featureFlags })({ task });
+    await afterWrapupTask(featureFlags, <SetupObject>{})({ task });
 
     if (shouldCallPostSurveyInit) {
       expect(postSurveyInitSpy).toHaveBeenCalled();
@@ -106,7 +108,7 @@ describe('afterWrapupTask', () => {
 describe('setUpPostSurvey', () => {
   test('featureFlags.enable_post_survey === false should not change ChatOrchestrator', async () => {
     const setOrchestrationsSpy = jest.spyOn(ChatOrchestrator, 'setOrchestrations');
-    setUpPostSurvey(<HrmFormPlugin.SetupObject>{ featureFlags: { enable_post_survey: false } });
+    setUpPostSurvey(<FeatureFlags>{ enable_post_survey: false });
 
     expect(setOrchestrationsSpy).not.toHaveBeenCalled();
   });
@@ -114,7 +116,7 @@ describe('setUpPostSurvey', () => {
   test('featureFlags.enable_post_survey === true should change ChatOrchestrator', async () => {
     const setOrchestrationsSpy = jest.spyOn(ChatOrchestrator, 'setOrchestrations').mockImplementation();
 
-    setUpPostSurvey(<HrmFormPlugin.SetupObject>{ featureFlags: { enable_post_survey: true } });
+    setUpPostSurvey(<FeatureFlags>{ enable_post_survey: true });
 
     expect(setOrchestrationsSpy).toHaveBeenCalledTimes(2);
     expect(setOrchestrationsSpy).toHaveBeenCalledWith('wrapup', expect.any(Function));
