@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Template } from '@twilio/flex-ui';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMoreOutlined';
 import AssignmentIcon from '@material-ui/icons/AssignmentOutlined';
@@ -44,7 +44,7 @@ const CSAMReportButton: React.FC<Props> = ({
             <StyledCSAMReportButton ref={buttonRef} style={{ marginRight: 10 }} onClick={handleDropdown}>
               <AssignmentIcon fontSize="inherit" style={{ marginRight: 5 }} />
               <CSAMReportButtonText>
-                <Template code="TabbedForms-ExternalReports" />
+                <Template code="TabbedForms-CSAMReportButton" />
               </CSAMReportButtonText>
               <ExpandMoreIcon fontSize="inherit" style={{ marginLeft: 10 }} />
             </StyledCSAMReportButton>

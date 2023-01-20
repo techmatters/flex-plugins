@@ -47,7 +47,7 @@ const CSAMReportTypePicker: React.FC<Props> = ({
           titleTemplate="Contact-ExternalReport"
           onClickClose={onClickClose}
           addingCounsellor={counselor}
-          space={`\xa0\xa0`}
+          focusCloseButton={true}
         />
 
         <Box marginTop="20px" marginBottom="5px">

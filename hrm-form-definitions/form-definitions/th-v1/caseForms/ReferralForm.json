@@ -22,34 +22,35 @@
     "name": "referredTo",
     "label": "Referred To",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
         "label": ""
       },
       {
-        "value": "Clinic",
-        "label": "Clinic"
+        "value": "คลีนิก",
+        "label": "คลีนิก"
       },
       {
-        "value": "Hospital",
-        "label": "Hospital"
+        "value": "โรงพยาบาล",
+        "label": "โรงพยาบาล"
       },
       {
-        "value": "Social Welfare",
-        "label": "Social Welfare"
+        "value": "สวัสดิการสังคม",
+        "label": "สวัสดิการสังคม"
       },
       {
-        "value": "Police",
-        "label": "Police"
+        "value": "ตำรวจ",
+        "label": "ตำรวจ"
       },
       {
-        "value": "Religious leader",
-        "label": "Religious leader"
+        "value": "ผู้นำศาสนา",
+        "label": "ผู้นำศาสนา"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "อื่นๆ",
+        "label": "อื่นๆ"
       }
     ],
     "required": {

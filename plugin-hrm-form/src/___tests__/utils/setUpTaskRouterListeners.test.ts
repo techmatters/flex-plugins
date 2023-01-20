@@ -3,7 +3,6 @@ import { ITask, TaskHelper, StateHelper } from '@twilio/flex-ui';
 import each from 'jest-each';
 
 import { setTaskWrapupEventListeners } from '../../utils/setUpTaskRouterListeners';
-import * as HrmFormPlugin from '../../HrmFormPlugin';
 
 const mockEventEmitter = {
   events: {},
@@ -92,7 +91,7 @@ describe('setTaskWrapupEventListeners', () => {
           } as any),
       );
 
-    setTaskWrapupEventListeners(<HrmFormPlugin.SetupObject>{ featureFlags });
+    setTaskWrapupEventListeners(featureFlags);
 
     expect(removeAllListenersMock).not.toHaveBeenCalled();
     expect(getConversationStateForTaskSpy).not.toHaveBeenCalled();

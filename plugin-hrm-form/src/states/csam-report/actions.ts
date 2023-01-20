@@ -81,7 +81,7 @@ export const updateStatusActionForContact = (
   contactId,
 });
 
-export const clearCSAMReportActionForContact = (contactId: string): t.CSAMReportActionType => ({
+export const removeCSAMReportActionForContact = (contactId: string): t.CSAMReportActionType => ({
   type: t.REMOVE_DRAFT_CSAM_REPORT,
   contactId,
 });

@@ -25,7 +25,7 @@ import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
 // eslint-disable-next-line
-import { isInMyBehalfITask } from '../types/types';
+import { FeatureFlags, isInMyBehalfITask } from '../types/types';
 import { SetupObject } from '../HrmFormPlugin';
 import { colors } from '../channels/colors';
 import { notifyReservedTask, notifyNewMessage } from './audioNotifications';
@@ -42,9 +42,8 @@ const queuesStatusUI = (setupObject: SetupObject) => (
   />
 );
 
-const addButtonsUI = (setupObject: SetupObject) => {
+const addButtonsUI = (featureFlags: FeatureFlags) => {
   const manager = Flex.Manager.getInstance();
-  const { featureFlags } = setupObject;
 
   return (
     <Container key="add-buttons-section" backgroundColor={HrmTheme.colors.base2}>
@@ -151,9 +150,7 @@ const setUpOfflineContact = () => {
 /**
  * Add buttons to pull / create tasks
  */
-export const setUpAddButtons = (setupObject: SetupObject) => {
-  const { featureFlags } = setupObject;
-
+export const setUpAddButtons = (featureFlags: FeatureFlags) => {
   // setup for manual pulling
   if (featureFlags.enable_manual_pulling) setUpManualPulling();
   // setup for offline contact tasks
@@ -161,7 +158,7 @@ export const setUpAddButtons = (setupObject: SetupObject) => {
 
   // add UI
   if (featureFlags.enable_manual_pulling || featureFlags.enable_offline_contact)
-    Flex.TaskList.Content.add(addButtonsUI(setupObject), {
+    Flex.TaskList.Content.add(addButtonsUI(featureFlags), {
       sortOrder: Infinity,
       align: 'start',
     });
@@ -176,12 +173,12 @@ export const setUpAddButtons = (setupObject: SetupObject) => {
 /**
  * Adds the corresponding UI when there are no active tasks
  */
-export const setUpNoTasksUI = (setupObject: SetupObject) => {
+export const setUpNoTasksUI = (featureFlags: FeatureFlags, setupObject: SetupObject) => {
   Flex.AgentDesktopView.Content.add(
     <Column key="no-task-agent-desktop-section" style={{ backgroundColor: HrmTheme.colors.base2, minWidth: 300 }}>
       {queuesStatusUI(setupObject)}
       <OfflineContactTask key="offline-contact-task" />
-      {addButtonsUI(setupObject)}
+      {addButtonsUI(featureFlags)}
     </Column>,
     {
       sortOrder: -1,
@@ -237,10 +234,8 @@ export const setUpTransferComponents = () => {
 /**
  * Add components used only by developers
  */
-export const setUpDeveloperComponents = (setupObject: SetupObject) => {
+export const setUpDeveloperComponents = (translateUI: (language: string) => Promise<void>) => {
   const manager = Flex.Manager.getInstance();
-
-  const { translateUI } = setupObject;
 
   Flex.ViewCollection.Content.add(
     <Flex.View name="settings" key="settings-view">
@@ -303,8 +298,7 @@ export const setUpStandaloneSearch = () => {
 /**
  * Removes the actions buttons from TaskCanvasHeaders if the task is wrapping or if dual write is on (temporary prevents bug)
  */
-export const removeTaskCanvasHeaderActions = (setupObject: SetupObject) => {
-  const { featureFlags } = setupObject;
+export const removeTaskCanvasHeaderActions = (featureFlags: FeatureFlags) => {
   // Must use submit buttons in CRM container to complete task
   Flex.TaskCanvasHeader.Content.remove('actions', {
     if: props => (props.task && props.task.status === 'wrapping') || featureFlags.enable_dual_write,

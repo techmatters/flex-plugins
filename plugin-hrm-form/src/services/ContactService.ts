@@ -16,7 +16,7 @@ import { getQueryParams } from './PaginationParams';
 import { fillEndMillis, getConversationDuration } from '../utils/conversationDuration';
 import fetchHrmApi from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
-import { getConfig, getDefinitionVersions } from '../HrmFormPlugin';
+import { getDefinitionVersions } from '../HrmFormPlugin';
 import {
   ContactMediaType,
   ContactRawJson,
@@ -28,6 +28,7 @@ import {
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
+import { getHrmConfig } from '../hrmConfig';
 
 type NestedInformation = { name?: { firstName: string; lastName: string } };
 type LegacyInformationObject = NestedInformation & {
@@ -154,7 +155,7 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
   const { childInformation } = transformedValues;
 
   const categories = transformCategories(form.helpline, form.categories);
-  const { definitionVersion } = getConfig();
+  const { definitionVersion } = getHrmConfig();
 
   return {
     definitionVersion,
@@ -216,7 +217,7 @@ const saveContactToHrm = async (
   if (isTwilioTask(task)) {
     if (TaskHelper.isChatBasedTask(task)) {
       ({ channelSid } = task.attributes);
-      serviceSid = getConfig().chatServiceSid;
+      serviceSid = getHrmConfig().chatServiceSid;
 
       // Store a pending transcript
       conversationMedia.push({

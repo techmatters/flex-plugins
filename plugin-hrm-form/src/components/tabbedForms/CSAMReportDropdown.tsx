@@ -1,7 +1,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import { StyledCSAMReportDropdown, StyledCSAMReportDropdownList, StyledCSAMReportHeader } from '../../styles/HrmStyles';
+import { StyledCSAMReportDropdown, StyledCSAMReportDropdownList } from '../../styles/HrmStyles';
 
 type OwnProps = {
   handleChildCSAMType: () => void;
@@ -14,9 +14,6 @@ type Props = OwnProps;
 const CSAMReportDropdown: React.FC<Props> = ({ handleChildCSAMType, handleCounsellorCSAMType, dropdown }) => {
   return (
     <StyledCSAMReportDropdown style={{ display: dropdown ? 'block' : 'none' }}>
-      <StyledCSAMReportHeader>
-        <Template code="TabbedForms-CSAMReportButton" />
-      </StyledCSAMReportHeader>
       <StyledCSAMReportDropdownList
         onMouseDown={event => event.preventDefault}
         onClick={handleChildCSAMType}
