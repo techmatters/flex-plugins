@@ -10,7 +10,6 @@ export const notifyReservedTask = reservation => {
 
   const notificationTone = 'ringtone';
   const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
-  let media;
 
   if (document.visibilityState === 'visible') {
     media = Flex.AudioPlayerManager.play({
