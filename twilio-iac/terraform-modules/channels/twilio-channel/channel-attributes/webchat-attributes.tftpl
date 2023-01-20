@@ -7,5 +7,6 @@
   "language":"${task_language}",
   "ignoreAgent": "",
   "transferTargetType": "",
-  "memory": {{widgets.ChatBot.memory | to_json}}
+  "memory": {{widgets.ChatBot.memory | to_json}},
+  "preEngagementData": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}}
 }
