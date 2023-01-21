@@ -3,21 +3,21 @@ import { Page } from '@playwright/test';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { addHours } from 'date-fns';
 
-const DEFAULT_VALIDATE_RESPONSE = {
+const validateResponse = () => ({
   code: 0,
   worker_sid: 'WKxxx',
   roles: ['admin'],
   realm_user_id: 'steveh@techmatters.org',
   valid: true,
-  expiration: '2023-01-15T08:49:59Z',
+  expiration: addHours(new Date(), 3).toISOString(),
   message: null,
   identity: 'steveh_40techmatters_2Eorg',
-};
+});
 
 const refreshResponse = (token: string) => ({
   token,
   roles: [],
-  expiration: addHours(new Date(), 1).toISOString(),
+  expiration: addHours(new Date(), 3).toISOString(),
   identity: 'steveh_40techmatters_2Eorg',
 });
 
@@ -29,7 +29,7 @@ export const authenticationServices = (page: Page) => {
         route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify(DEFAULT_VALIDATE_RESPONSE),
+          body: JSON.stringify(validateResponse()),
         });
       },
     );

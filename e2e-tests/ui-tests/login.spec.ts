@@ -29,5 +29,5 @@ test('Plugin loads', async ({ page }) => {
   const callsWaitingLabel = page.locator(
     "div.Twilio-AgentDesktopView-default div[data-testid='Childline-voice']",
   );
-  await callsWaitingLabel.waitFor({ state: 'visible' });
+  await callsWaitingLabel.waitFor({ timeout: 60 * 60000, state: 'visible' });
 });

@@ -3,6 +3,7 @@
 import https from 'https';
 import { Server, WebSocket } from 'ws';
 import { promisify } from 'util';
+import { IncomingMessage } from 'http';
 
 export const secureWebsocketServer = (
   { key, cert }: { key: string; cert: string },
@@ -20,19 +21,6 @@ export const secureWebsocketServer = (
     res.writeHead(200);
     res.end('hello HTTPS world\n');
   });
-  const connectedSockets: Record<string, WebSocket> = {};
-
-  wss.on('connection', (ws) => {
-    console.log(`Websocket connection to mock server:`, JSON.stringify(ws.url));
-    connectedSockets[ws.url] = ws;
-
-    ws.on('message', (data) => {
-      console.log(`message received: ${data}`);
-    });
-    ws.on('close', () => {
-      console.log('socket closed');
-    });
-  });
 
   return {
     listen: () => {
@@ -44,10 +32,7 @@ export const secureWebsocketServer = (
         }
       });
     },
-    onConnection: (handler: (ws: WebSocket) => void) => {
-      wss.on('connection', handler);
-    },
-    onMessage: (handler: (ws: WebSocket) => void) => {
+    onConnection: (handler: (ws: WebSocket, message: IncomingMessage) => void) => {
       wss.on('connection', handler);
     },
     close: (): Promise<void> => {

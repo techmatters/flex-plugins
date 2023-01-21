@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Mockttp, getLocal, generateCACertificate, MockedEndpoint } from 'mockttp';
 import { secureWebsocketServer, MockSecureWebsocketServer } from './wss-mock-server';
-import { twilsockServer } from './twilsock-server';
+import { twilioWssMockServer } from './twilio-wss-mock-server';
 
 export const MOCKTTP_SERVER_PORT = process.env.PROXY_SERVER_PORT
   ? Number.parseInt(process.env.PROXY_SERVER_PORT)
@@ -34,8 +34,8 @@ async function mockttpServer() {
 export async function start(): Promise<any> {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
   const server = await mockttpServer();
+  twilioWssMockServer(mockWebsocketServer);
   await mockWebsocketServer.listen();
-  twilsockServer(mockWebsocketServer);
   console.log('WEBSOCKET SERVER LISTENING FOR CONNECTIONS');
 
   await server.start(MOCKTTP_SERVER_PORT);
