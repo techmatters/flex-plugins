@@ -57,7 +57,6 @@ const eventsResponse = (id: string, eventsToAcknowledge: number): TwilsockMessag
 
 export const twilsockSocket = (
   websocket: WebSocket,
-  initialMessage: RawData,
   defaultVersion: TwilsockVersion = 'V3.0 2213',
 ) => {
   const encoder = new TextEncoder();
@@ -104,5 +103,5 @@ export const twilsockSocket = (
     }
   };
   websocket.on('message', processIncomingMessage);
-  processIncomingMessage(initialMessage);
+  return {};
 };

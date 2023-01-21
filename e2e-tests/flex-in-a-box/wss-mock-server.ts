@@ -2,7 +2,6 @@
 
 import https from 'https';
 import { Server, WebSocket } from 'ws';
-import { promisify } from 'util';
 import { IncomingMessage } from 'http';
 
 export const secureWebsocketServer = (
@@ -16,8 +15,12 @@ export const secureWebsocketServer = (
   const wss = new Server({
     server: httpsServer,
   });
+  httpsServer.on('connect', (inc) =>
+    console.log('INCOMING CONNECT EVENT TO WSS HTTPS SERVER:', inc.url),
+  );
 
   httpsServer.on('request', (req, res) => {
+    console.log('INCOMING CONNECT EVENT TO WSS HTTPS SERVER:', req.url);
     res.writeHead(200);
     res.end('hello HTTPS world\n');
   });
@@ -32,11 +35,23 @@ export const secureWebsocketServer = (
         }
       });
     },
-    onConnection: (handler: (ws: WebSocket, message: IncomingMessage) => void) => {
-      wss.on('connection', handler);
+    onConnection: (handler: (ws: WebSocket, message: IncomingMessage, path?: string) => void) => {
+      wss.on('headers', (ev, headerMessage) => {
+        console.log('WSS HEADERS EVENT', JSON.stringify(ev), headerMessage.url ?? '(NO URL)');
+        // Veeery hacky, just trying it
+        wss.once('connection', (ws, message) => handler(ws, message, headerMessage.url));
+      });
+      wss.on('open', (ev) => {
+        console.log('WSS OPEN EVENT', JSON.stringify(ev));
+      });
+      wss.on('close', () => {
+        console.log('WSS CLOSE EVENT');
+      });
     },
     close: (): Promise<void> => {
-      return promisify(wss.close)();
+      return new Promise<void>((resolve, reject) => {
+        wss.close((err) => (err ? reject(err) : resolve()));
+      });
     },
   };
 };

@@ -1,34 +1,41 @@
 import { MockSecureWebsocketServer } from './wss-mock-server';
 import { identifySocketType, TwilioWebsocketType } from './twilio-wss-socket-type';
 import { twilsockSocket } from './twilsock-socket';
-import { chunderwSocket } from './chunderwSocket';
+import { twilioChunderwSocket } from './twilio-chunderw-socket';
+import { twilioChannelSocket } from './twilio-channel-socket';
 
 export const twilioWssMockServer = (wss: MockSecureWebsocketServer) => {
   const twilsockSockets: { connected: Date; socket: ReturnType<typeof twilsockSocket> }[] = [];
-  const chunderwSockets: { connected: Date; socket: ReturnType<typeof chunderwSocket> }[] = [];
+  const chunderwSockets: { connected: Date; socket: ReturnType<typeof twilioChunderwSocket> }[] =
+    [];
+  const channelsSockets: { connected: Date; socket: ReturnType<typeof twilioChannelSocket> }[] = [];
 
-  wss.onConnection((ws, connectMsg) => {
+  wss.onConnection((ws, connectMsg, path) => {
     console.log(`New connection to mock twilio wss server`);
-    ws.once('message', (initialMessage) => {
-      const tsType = identifySocketType(ws, connectMsg, initialMessage);
-      switch (tsType) {
-        case TwilioWebsocketType.Twilsock: {
-          console.log(`Identified as Twilsock connection:`);
-          const socket = twilsockSocket(ws, initialMessage);
-          twilsockSockets.push({ connected: new Date(), socket });
-          return;
-        }
-        case TwilioWebsocketType.ChunderW: {
-          console.log(`Identified as ChunderW connection:`);
-          const socket = chunderwSocket(ws, initialMessage);
-          chunderwSockets.push({ connected: new Date(), socket });
-          return;
-        }
-        default: {
-          console.log(`Unidentified twilio wss connection:`);
-        }
+    const tsType = identifySocketType(path);
+    switch (tsType) {
+      case TwilioWebsocketType.Twilsock: {
+        console.log(`Identified as Twilsock connection:`);
+        const socket = twilsockSocket(ws);
+        twilsockSockets.push({ connected: new Date(), socket });
+        return;
       }
-    });
+      case TwilioWebsocketType.ChunderW: {
+        console.log(`Identified as ChunderW connection:`);
+        const socket = twilioChunderwSocket(ws);
+        chunderwSockets.push({ connected: new Date(), socket });
+        return;
+      }
+      case TwilioWebsocketType.Channels: {
+        console.log(`Identified as channels connection:`);
+        const socket = twilioChannelSocket(ws);
+        channelsSockets.push({ connected: new Date(), socket });
+        return;
+      }
+      default: {
+        console.log(`Unidentified twilio wss connection:`);
+      }
+    }
 
     ws.on('message', (data) => {
       console.log(`message received: ${data}`);
@@ -37,4 +44,6 @@ export const twilioWssMockServer = (wss: MockSecureWebsocketServer) => {
       console.log('socket closed');
     });
   });
+
+  return {};
 };

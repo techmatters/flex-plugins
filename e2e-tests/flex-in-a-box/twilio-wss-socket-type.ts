@@ -1,27 +1,13 @@
-import { RawData, WebSocket } from 'ws';
-import { IncomingMessage } from 'http';
-
-const decoder = new TextDecoder();
-
 export const enum TwilioWebsocketType {
   Twilsock = 'twilsock',
   ChunderW = 'chunderw',
+  Channels = 'channels',
   Other = 'other',
 }
 
-export const identifySocketType = (
-  ws: WebSocket,
-  upgradeMessage: IncomingMessage,
-  initialMessage: RawData,
-): TwilioWebsocketType => {
-  const textMessage = decoder.decode(initialMessage as ArrayBuffer);
-  if (textMessage.startsWith('TWILSOCK')) return TwilioWebsocketType.Twilsock;
-  if (
-    ['"type"', '"listen"', '"browserinfo"', '"plugin"'].every((expectedFragment) =>
-      textMessage.includes(expectedFragment),
-    )
-  ) {
-    return TwilioWebsocketType.ChunderW;
-  }
+export const identifySocketType = (path: string = ''): TwilioWebsocketType => {
+  if (path.startsWith('/signal')) return TwilioWebsocketType.ChunderW;
+  if (path.startsWith('/v3/wsconnect')) return TwilioWebsocketType.Twilsock;
+  if (path.startsWith('/v1/wschannels')) return TwilioWebsocketType.Channels;
   return TwilioWebsocketType.Other;
 };
