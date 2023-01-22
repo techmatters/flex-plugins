@@ -10,6 +10,7 @@ import { serviceConfigurationAttributes } from '../aselo-service-mocks/service-c
 import { mockListWorkerQueues } from '../aselo-service-mocks/serverless/listWorkerQueues';
 import { mockPopulateCounselors } from '../aselo-service-mocks/serverless/populateCounselors';
 import { mockIssueSyncToken } from '../aselo-service-mocks/serverless/issueSyncToken';
+import { setLoggedInWorkerLiveQuery } from '../flex-in-a-box/twilio-worker';
 
 test.beforeAll(async () => {
   await mockServer.start();
@@ -33,6 +34,7 @@ test('Plugin loads', async ({ page }) => {
   await authServices.mockTwilioIamValidate(context.ACCOUNT_SID);
   const chnlServices = channelService(page);
   await chnlServices.mockWsChannelsEndpoint();
+  setLoggedInWorkerLiveQuery();
   await mockListWorkerQueues(page);
   await mockPopulateCounselors(page);
   await mockIssueSyncToken(page);

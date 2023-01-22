@@ -9,10 +9,6 @@ export const mockListWorkerQueues = async (page: Page) => {
     { sid: 'WQ_EVERYONE', friendlyName: 'Everyone' },
     { sid: 'WQ_FAKE_QUEUE', friendlyName: 'Fake Queue' },
   ];
-  console.log(
-    'Calling /listWorkerQueues:',
-    new URL('/listWorkerQueues', context.SERVERLESS_BASE_URL).toString(),
-  );
   await page.route(
     new URL('/listWorkerQueues', context.SERVERLESS_BASE_URL).toString(),
     (route) => {

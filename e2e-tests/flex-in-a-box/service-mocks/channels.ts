@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Page } from '@playwright/test';
 import context from '../global-context';
+import { loggedInWorker } from '../twilio-worker';
 
 type WsChannelsRequest = {
   url: string;
@@ -11,25 +13,25 @@ type WsChannelsRequest = {
 
 const hourAgo = Date.now() - 60000;
 
-const workerResponse = () => ({
-  event_type: null,
-  payload: {
-    account_sid: context.ACCOUNT_SID,
-    workspace_sid: context.WORKSPACE_SID,
-    sid: context.LOGGED_IN_WORKER_SID,
-    date_created: hourAgo,
-    date_updated: hourAgo,
-    attributes:
-      '{"helpline":"","full_name":"Steve Hand","image_url":"","roles":["admin","wfo.full_access"],"contact_uri":"client:steveh_40techmatters_2Eorg","waitingOfflineContact":false,"maxMessageCapacity":"3","email":"steveh@techmatters.org","counselorLanguage":"","routing":{"skills":["chat"],"levels":{}},"twilio_contact_identity":"steveh_40techmatters_2Eorg"}',
-    friendly_name: 'steveh@techmatters.org',
-    available: false,
-    activity_sid: 'WA_OFFLINE',
-    activity_name: 'Offline',
-    date_status_changed: hourAgo,
-    version: 1038,
-    operating_unit_sid: 'OUxxx',
-  },
-});
+const workerResponse = () => {
+  const { worker_sid, attributes, worker_activity_sid, date_activity_changed, ...worker } =
+    loggedInWorker();
+  return {
+    event_type: null,
+    payload: {
+      ...worker,
+      account_sid: context.ACCOUNT_SID,
+      sid: worker_sid,
+      date_created: hourAgo,
+      attributes: JSON.stringify(attributes),
+      available: false,
+      activity_sid: worker_activity_sid,
+      date_status_changed: date_activity_changed,
+      version: 1038,
+      operating_unit_sid: 'OUxxx',
+    },
+  };
+};
 
 const workerChannelsResponse = () => ({
   event_type: null,
