@@ -2,7 +2,6 @@ import { FormItemDefinition, FormInputType, FormDefinition } from 'hrm-form-defi
 import { useForm } from 'react-hook-form';
 
 import { addMargin, getInitialValue, getInputType } from '../common/forms/formGenerators';
-import { HTMLElementRef } from '../common/forms/types';
 
 type CounselorCSAMFormDefinitionObject = {
   webAddress: FormItemDefinition;
@@ -124,7 +123,7 @@ export const generateCSAMFormElement = <T>(
   formValues: T,
   update: (values: Record<string, any>) => void,
   methods: ReturnType<typeof useForm>,
-) => (formItem: FormItemDefinition, elementRef?: HTMLElementRef): JSX.Element => {
+) => (formItem: FormItemDefinition): JSX.Element => {
   const onUpdateInput = () => {
     update(methods.getValues());
   };
@@ -132,5 +131,5 @@ export const generateCSAMFormElement = <T>(
   const initialValue =
     formValues[formItem.name] === undefined ? initialValues[formItem.name] : formValues[formItem.name];
 
-  return addMargin(5)(generatedInput(initialValue, elementRef));
+  return addMargin(5)(generatedInput(initialValue));
 };

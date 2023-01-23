@@ -17,7 +17,6 @@ import {
 } from '../../states/csam-report/types';
 import { addExternalReportEntry } from '../../states/csam-report/existingContactExternalReport';
 import { acknowledgeCSAMReport, createCSAMReport } from '../../services/CSAMReportService';
-import { getConfig } from '../../HrmFormPlugin';
 import { reportToIWF, selfReportToIWF } from '../../services/ServerlessService';
 import {
   removeCSAMReportAction,
@@ -44,25 +43,33 @@ export type CSAMReportApi = {
   updateCounsellorReportDispatcher: (dispatch: Dispatch<unknown>) => (csamReportForm: CounselorCSAMReportForm) => void;
   updateChildReportDispatcher: (dispatch: Dispatch<unknown>) => (csamReportForm: ChildCSAMReportForm) => void;
   updateStatusDispatcher: (dispatch: Dispatch<unknown>) => (csamStatus: CSAMReportStatus) => void;
-  saveReport: (state: CSAMReportStateEntry) => Promise<SaveReportResponse>;
+  saveReport: (state: CSAMReportStateEntry, twilioWorkerId: string) => Promise<SaveReportResponse>;
 };
 
-const saveCounsellorReport = async (form: CounselorCSAMReportForm, contactId?: number): Promise<SaveReportResponse> => {
+const saveCounsellorReport = async (
+  form: CounselorCSAMReportForm,
+  twilioWorkerId: string,
+  contactId?: number,
+): Promise<SaveReportResponse> => {
   const iwfResponse = await reportToIWF(form);
   const hrmReport = await createCSAMReport({
     reportType: 'counsellor-generated',
     csamReportId: iwfResponse['IWFReportService1.0'].responseData,
-    twilioWorkerId: getConfig().workerSid,
+    twilioWorkerId,
     contactId,
   });
   return { hrmReport, iwfReport: iwfResponse['IWFReportService1.0'] };
 };
 
-const saveChildReport = async (form: ChildCSAMReportForm, contactId?: number): Promise<SaveReportResponse> => {
+const saveChildReport = async (
+  form: ChildCSAMReportForm,
+  twilioWorkerId: string,
+  contactId?: number,
+): Promise<SaveReportResponse> => {
   /* ServerLess API will be called here */
   const storedReport = await createCSAMReport({
     reportType: 'self-generated',
-    twilioWorkerId: getConfig().workerSid,
+    twilioWorkerId,
     contactId,
   });
 
@@ -82,12 +89,21 @@ const saveChildReport = async (form: ChildCSAMReportForm, contactId?: number): P
   return { hrmReport: acknowledged, iwfReport };
 };
 
-const saveReport = async (state: CSAMReportStateEntry, contactId?: string): Promise<SaveReportResponse> => {
+const saveReport = async (
+  state: CSAMReportStateEntry,
+  twilioWorkerId: string,
+  contactId?: string,
+): Promise<SaveReportResponse> => {
   const numberContactId = contactId ? Number.parseInt(contactId, 10) : undefined;
+  if (Number.isNaN(numberContactId)) {
+    throw new Error(
+      `Only integer contact IDs are currently supported. '${contactId}' could not be parsed as an integer`,
+    );
+  }
   if (isCounsellorTaskEntry(state)) {
-    return saveCounsellorReport(state.form, numberContactId);
+    return saveCounsellorReport(state.form, twilioWorkerId, numberContactId);
   } else if (isChildTaskEntry(state)) {
-    return saveChildReport(state.form, numberContactId);
+    return saveChildReport(state.form, twilioWorkerId, numberContactId);
   }
   throw new Error('Invalid CSAM state, cannot be saved');
 };
@@ -171,10 +187,10 @@ export const existingContactCSAMApi = (contactId: string): CSAMReportApi => ({
       default:
     }
   },
-  saveReport: state => saveReport(state, contactId),
+  saveReport: (state, twilioWorkerId) => saveReport(state, twilioWorkerId, contactId),
   exitActionDispatcher: dispatch => () => {
     // Redundant, navigation is implicit based on draft CSAM report state
-    dispatch(CSAMAction.clearCSAMReportActionForContact(contactId));
+    dispatch(CSAMAction.removeCSAMReportActionForContact(contactId));
   },
   addReportDispatcher: dispatch => csamReportEntry => {
     dispatch(addExternalReportEntry(csamReportEntry, contactId));

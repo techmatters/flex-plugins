@@ -11,7 +11,7 @@
   },
   {
     "name": "relationshipToChild",
-    "label": "Relationship to child",
+    "label": "Relationship to Child",
     "type": "select",
     "defaultOption": {
       "value": "",
@@ -93,16 +93,6 @@
       "label": ""
     },
     "optionsReferenceKey": "ageOptions"
-  },
-  {
-    "name": "language",
-    "label": "Language",
-    "type": "select",
-    "defaultOption": {
-      "value": "unknown",
-      "label": ""
-    },
-    "optionsReferenceKey": "languageOptions"
   },
   {
     "name": "nationality",

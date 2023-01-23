@@ -107,8 +107,8 @@
     "label": "Language",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
-      "label": ""
+      "value": "ภาษาไทย",
+      "label": "ภาษาไทย"
     },
     "optionsReferenceKey": "languageOptions"
   },

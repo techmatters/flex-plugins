@@ -38,6 +38,7 @@ export function reduce(state = initialState, action: t.CSAMReportActionType | Ge
               ...state.contacts,
               [action.contactId]: {
                 ...state.contacts[action.contactId],
+                reportType: action.reportType,
                 form: action.form as any,
               },
             },
@@ -48,6 +49,7 @@ export function reduce(state = initialState, action: t.CSAMReportActionType | Ge
               ...state.tasks,
               [action.taskId]: {
                 ...state.tasks[action.taskId],
+                reportType: action.reportType,
                 form: action.form as any,
               },
             },
@@ -92,7 +94,7 @@ export function reduce(state = initialState, action: t.CSAMReportActionType | Ge
               ...state.contacts,
               [action.contactId]: {
                 reportType: action.reportType ?? state.contacts[action.contactId]?.reportType,
-                form: (state.contacts[action.contactId] as any)?.form ?? (action.createForm ? {} : undefined),
+                form: action.createForm ? {} : (state.contacts[action.contactId] as any)?.form,
               },
             },
           }
@@ -101,8 +103,8 @@ export function reduce(state = initialState, action: t.CSAMReportActionType | Ge
             tasks: {
               ...state.tasks,
               [action.taskId]: {
-                reportType: action.reportType ?? state.contacts[action.taskId]?.reportType,
-                form: (state.contacts[action.taskId] as any)?.form ?? (action.createForm ? {} : undefined),
+                reportType: action.reportType ?? state.tasks[action.taskId]?.reportType,
+                form: action.createForm ? {} : (state.tasks[action.taskId] as any)?.form,
               },
             },
           };
