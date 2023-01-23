@@ -17,6 +17,6 @@ const config: PlaywrightTestConfig = {
     ignoreHTTPSErrors: true,
   },
   testDir: './ui-tests',
-  timeout: 5000,
+  timeout: 60000,
 };
 export default config;

@@ -40,7 +40,7 @@ test('Plugin loads', async ({ page }) => {
   await mockIssueSyncToken(page);
   await page.goto('/agent-desktop', { waitUntil: 'networkidle' });
   const callsWaitingLabel = page.locator(
-    "div.Twilio-AgentDesktopView-default div[data-testid='Childline-voice']",
+    "div.Twilio-AgentDesktopView-default div[data-testid='Fake Queue-voice']",
   );
   await callsWaitingLabel.waitFor({ timeout: 60 * 60000, state: 'visible' });
 });
