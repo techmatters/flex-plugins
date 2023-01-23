@@ -88,25 +88,26 @@ const liveQueryResponse = (
     last_event_id: 1,
   };
   const bodySize = JSON.stringify(body).length;
-  return {
-    header: {
-      method: 'reply',
-      id,
-      payload_size: bodySize,
-      payload_type: 'application/json',
-      status: { code: 200, status: 'OK' },
-      http_headers: {
-        server: 'envoy',
-        date: new Date().toUTCString(),
-        'content-type': 'application/json',
-        'content-length': bodySize.toString(),
-        'twilio-request-id': twilioRequestId,
-        'x-shenanigans': 'none',
-        'strict-transport-security': 'max-age=31536000',
-        'x-envoy-upstream-service-time': '13',
-      },
-      http_status: { code: 200, status: 'OK' },
+  const header = {
+    method: 'reply',
+    id,
+    payload_size: bodySize,
+    payload_type: 'application/json',
+    status: { code: 200, status: 'OK' },
+    http_headers: {
+      server: 'envoy',
+      date: new Date().toUTCString(),
+      'content-type': 'application/json',
+      'content-length': bodySize.toString(),
+      'twilio-request-id': twilioRequestId,
+      'x-shenanigans': 'none',
+      'strict-transport-security': 'max-age=31536000',
+      'x-envoy-upstream-service-time': '13',
     },
+    http_status: { code: 200, status: 'OK' },
+  } as const;
+  return {
+    header,
     body,
     version: 'V3.0 488',
   };
@@ -160,13 +161,21 @@ export const twilsockSocket = (
         );
       }
       if (header.method === 'message' && body) {
+        console.log('TWILSOCK MESSAGE RECEIVED', header, body);
         const { events, type } = body;
         if (type === 'live_query') {
+          const twilioRequestId = (header.http_request?.headers ?? {})['Twilio-Request-Id'];
+          console.log(
+            'TWILSOCK LIVE QUERY RECEIVED',
+            header.http_request?.path,
+            body.query_string || 'EMPTY_QS',
+            twilioRequestId,
+          );
           websocket.send(
             serializeOutgoing(
               liveQueryResponse(
                 header.id,
-                header['Twilio-Request-id'],
+                twilioRequestId,
                 header.http_request?.path,
                 body.query_string,
               ),
@@ -174,6 +183,7 @@ export const twilsockSocket = (
           );
         }
         if (Array.isArray(events)) {
+          console.log('TWILSOCK EVENTS RECEIVED');
           websocket.send(serializeOutgoing(eventsResponse(header.id, events.length)));
         }
       }

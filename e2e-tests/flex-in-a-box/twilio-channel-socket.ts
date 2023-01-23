@@ -13,6 +13,9 @@ const serverInitMessage = () => ({
 
 export const twilioChannelSocket = (websocket: WebSocket) => {
   websocket.send(JSON.stringify(serverInitMessage()));
+  const keepAliveInterval = setInterval(() => websocket.send('\n'), 15 * 1000);
+  websocket.send('\n');
+  websocket.on('close', () => clearInterval(keepAliveInterval));
 
   return {};
 };

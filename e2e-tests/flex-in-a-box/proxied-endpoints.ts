@@ -56,5 +56,5 @@ export async function stop(): Promise<void> {
   await server.stop();
   await mockWebsocketServer?.close();
   const websocketRequests = (await websocketEndpoint?.getSeenRequests()) ?? [];
-  websocketRequests.forEach((r) => console.log('WEBSOCKET REQUEST PROXIED:', JSON.stringify(r)));
+  websocketRequests.forEach((r) => console.log('WEBSOCKET REQUEST PROXIED:', r.url));
 }
