@@ -9,7 +9,7 @@ const readConfig = () => {
     manager.serviceConfiguration.attributes.hrm_api_version
   }/accounts/${manager.workerClient.accountSid}`;
   const resourceConfiguredBaseUrl =
-    process.env.REACT_RESOURCES_BASE_URL || manager.serviceConfiguration.attributes.resource_base_url;
+    process.env.REACT_RESOURCE_BASE_URL || manager.serviceConfiguration.attributes.resource_base_url;
   const resourceBaseUrl = resourceConfiguredBaseUrl
     ? `${resourceConfiguredBaseUrl}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`
     : undefined;
