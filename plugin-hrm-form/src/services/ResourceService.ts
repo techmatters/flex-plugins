@@ -8,7 +8,7 @@ export type ReferrableResource = {
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export const referrableResourcesEnabled = () => Boolean(getReferrableResourceConfig().resourceBaseUrl);
+export const referrableResourcesEnabled = () => Boolean(getReferrableResourceConfig().resourcesBaseUrl);
 // eslint-disable-next-line import/no-unused-modules
 export const getResource = async (resourceId: string): Promise<ReferrableResource> => {
   return fetchResourceApi(`resource/${resourceId}`);

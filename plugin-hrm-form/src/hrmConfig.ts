@@ -8,10 +8,10 @@ const readConfig = () => {
   const hrmBaseUrl = `${process.env.REACT_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}/${
     manager.serviceConfiguration.attributes.hrm_api_version
   }/accounts/${manager.workerClient.accountSid}`;
-  const resourceConfiguredBaseUrl =
-    process.env.REACT_RESOURCE_BASE_URL || manager.serviceConfiguration.attributes.resource_base_url;
-  const resourceBaseUrl = resourceConfiguredBaseUrl
-    ? `${resourceConfiguredBaseUrl}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`
+  const resourcesConfiguredBaseUrl =
+    process.env.REACT_RESOURCES_BASE_URL || manager.serviceConfiguration.attributes.resources_base_url;
+  const resourcesBaseUrl = resourcesConfiguredBaseUrl
+    ? `${resourcesConfiguredBaseUrl}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`
     : undefined;
   const serverlessBaseUrl =
     process.env.REACT_SERVERLESS_BASE_URL || manager.serviceConfiguration.attributes.serverless_base_url;
@@ -57,7 +57,7 @@ const readConfig = () => {
       contactsWaitingChannels,
     },
     referrableResources: {
-      resourceBaseUrl,
+      resourcesBaseUrl,
     },
   };
 };
