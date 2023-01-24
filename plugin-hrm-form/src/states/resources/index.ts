@@ -51,19 +51,21 @@ const initialState: ReferrableResourcesState = {
   },
 };
 
+const expireOldResources = (inputState: ReferrableResourcesState, now: Date): ReferrableResourcesState => ({
+  ...inputState,
+  resources: Object.fromEntries(
+    Object.entries(inputState.resources).filter(([, { loaded }]) =>
+      isBefore(now, addSeconds(loaded, RESOURCE_EXPIRY_SECONDS)),
+    ),
+  ),
+})
+
 export function reduce(
   inputState = initialState,
   action: LoadResourceAction | ViewResourceAction,
 ): ReferrableResourcesState {
   const now = new Date();
-  const state = {
-    ...inputState,
-    resources: Object.fromEntries(
-      Object.entries(inputState.resources).filter(([, { loaded }]) =>
-        isBefore(now, addSeconds(loaded, RESOURCE_EXPIRY_SECONDS)),
-      ),
-    ),
-  };
+  const state = expireOldResources(inputState, now);
 
   switch (action.type) {
     case ADD_RESOURCE: {

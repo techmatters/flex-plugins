@@ -24,9 +24,7 @@ export const configurationBase = 'configuration';
 export const routingBase = 'routing';
 export const csamReportBase = 'csam-report';
 export const dualWriteBase = 'dualWrite';
-// eslint-disable-next-line import/no-unused-modules
 export const referrableResourcesBase = 'referrableResources';
-// export const csamClcReportBase = 'csam-clc-report';
 
 const reducers = {
   [contactFormsBase]: ContactStateReducer,
