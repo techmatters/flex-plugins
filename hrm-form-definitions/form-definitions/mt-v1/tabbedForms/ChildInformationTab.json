@@ -5,7 +5,7 @@
     "type": "input"
   },
   {
-    "name": "friendlyName",
+    "name": "nickname",
     "label": "Nickname",
     "type": "input",
     "required": {
