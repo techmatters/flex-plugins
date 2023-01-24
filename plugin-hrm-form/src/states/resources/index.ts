@@ -58,7 +58,7 @@ const expireOldResources = (inputState: ReferrableResourcesState, now: Date): Re
       isBefore(now, addSeconds(loaded, RESOURCE_EXPIRY_SECONDS)),
     ),
   ),
-})
+});
 
 export function reduce(
   inputState = initialState,
