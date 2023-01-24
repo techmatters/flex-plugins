@@ -136,7 +136,14 @@ export async function loadDefinition(version: DefinitionVersionId): Promise<Defi
       /* webpackMode: "eager" */ `../../form-definitions/${version}/PrepopulateKeys.json`
     );
   } catch (err) {
-    prepopulateKeys = { ChildInformationTab: [], CallerInformationTab: [] };
+    prepopulateKeys = {
+      survey: { ChildInformationTab: [], CallerInformationTab: [] },
+      preEngagement: {
+        ChildInformationTab: [],
+        CallerInformationTab: [],
+        CaseInformationTab: [],
+      },
+    };
   }
 
   let referenceData;
