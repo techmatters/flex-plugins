@@ -28,7 +28,6 @@ import { Container } from '../styles/queuesStatus';
 import { FeatureFlags, isInMyBehalfITask } from '../types/types';
 import { SetupObject } from '../HrmFormPlugin';
 import { colors } from '../channels/colors';
-import { notifyReservedTask } from './audioNotifications';
 
 /**
  * Returns the UI for the "Contacts Waiting" section
