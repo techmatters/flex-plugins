@@ -1,12 +1,14 @@
-apply: apply-main
+apply: apply-tf
 
-apply-main:
+apply-tf:
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) terraform apply $(tf_args)
 
 get:
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) terraform get --update $(tf_args)
 
-init:
+init: init-tf init-scripts
+
+init-tf:
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) terraform init $(tf_args)
 
 plan:
