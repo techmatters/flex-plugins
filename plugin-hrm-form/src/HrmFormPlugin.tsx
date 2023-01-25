@@ -104,7 +104,6 @@ const setUpComponents = (
   }
 
   Components.setUpStandaloneSearch();
-  Components.setupNotifications();
 
   setUpReferrableResources();
 
@@ -161,6 +160,8 @@ const setUpActions = (
   Flex.Actions.addListener('afterWrapupTask', afterWrapupAction);
 
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
+
+  Flex.Actions.addListener('afterAcceptTask', ActionFunctions.setupNotification)
 };
 
 export default class HrmFormPlugin extends FlexPlugin {
