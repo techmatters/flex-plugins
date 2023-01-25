@@ -16,6 +16,8 @@ const readConfig = () => {
   const serverlessBaseUrl =
     process.env.REACT_SERVERLESS_BASE_URL || manager.serviceConfiguration.attributes.serverless_base_url;
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
+  const assetsBucketUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
+
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid;
   const { helpline, counselorLanguage, full_name: counselorName, roles } = manager.workerClient.attributes as any;
@@ -29,8 +31,8 @@ const readConfig = () => {
     multipleOfficeSupport,
     permissionConfig,
   } = manager.serviceConfiguration.attributes;
-  const featureFlags: FeatureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
+  const featureFlags: FeatureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const { strings } = (manager as unknown) as { strings: { [key: string]: string } };
 
   return {
@@ -40,6 +42,7 @@ const readConfig = () => {
       hrmBaseUrl,
       serverlessBaseUrl,
       logoUrl,
+      assetsBucketUrl,
       chatServiceSid,
       workerSid,
       helpline,

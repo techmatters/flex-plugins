@@ -1,16 +1,16 @@
 import * as Flex from '@twilio/flex-ui';
+import { getConfig } from '../HrmFormPlugin';
 
 /**
  * An audio alert when a task is reserved to the counsellor. Stops when accepted or other event that changes the worker or task status
  */
 export const notifyReservedTask = reservation => {
-  let media;
-  const manager = Flex.Manager.getInstance();
-  const assetsBucketUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
-
+  const {assetsBucketUrl} = getConfig()
+  
   const notificationTone = 'ringtone';
   const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
-
+  
+  let media;
   if (document.visibilityState === 'visible') {
     media = Flex.AudioPlayerManager.play({
       url: notificationUrl,
@@ -30,12 +30,15 @@ export const notifyReservedTask = reservation => {
  */
 export const notifyNewMessage = messageInstance => {
   const manager = Flex.Manager.getInstance();
-  const assetsBucketUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
+  const {assetsBucketUrl} = getConfig()
 
   const notificationTone = 'bell';
   const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
+// console.log('>>> messageInstance', messageInstance.author)
+// console.log('>>> manager.workerClient', manager.workerClient)
+// console.log('>>> manager.conversationsClient', manager.conversationsClient)
 
-  if (messageInstance && document.visibilityState === 'visible') {
+  if (manager.user.identity !== messageInstance.author && document.visibilityState === 'visible') {
     Flex.AudioPlayerManager.play({
       url: notificationUrl,
       repeatable: false,
