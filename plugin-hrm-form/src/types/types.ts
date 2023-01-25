@@ -239,6 +239,7 @@ export type FeatureFlags = {
   enable_external_transcripts: boolean; // Enables Viewing Transcripts Stored Outside of Twilio
   post_survey_serverless_handled: boolean; // Post Survey handled in serverless instead of in Flex
   enable_csam_clc_report: boolean; // Enables CSAM child Reports
+  enable_counselor_toolkits: boolean; // Enables Counselor Toolkits
 };
 /* eslint-enable camelcase */
 

@@ -48,10 +48,10 @@ export const createSubcategoryCheckbox = (
   anchorEl: Element,
   handleCloseDialog: () => void,
   getHelplineName: () => void,
+  counselorToolkitsEnabled: boolean,
 ) => {
   const { label, toolkiturl } = subcategory;
   const path = [...parents, label].join('.');
-
   return (
     <CategoryCheckboxWrapper>
       <ConnectForm key={path}>
@@ -80,7 +80,7 @@ export const createSubcategoryCheckbox = (
           );
         }}
       </ConnectForm>
-      {toolkiturl && (
+      {counselorToolkitsEnabled && toolkiturl && (
         <TooltipKit
           label={label}
           toolkiturl={toolkiturl}
@@ -208,6 +208,7 @@ export const createSubCategoriesInputs = (
   anchorEl: Element,
   handleCloseDialog: () => void,
   getHelplineName: () => void,
+  counselorToolkitsEnabled: boolean,
 ) =>
   Object.entries(definition).reduce<SubcategoriesMap>(
     (acc, [category, { subcategories, color }]) => ({
@@ -222,6 +223,7 @@ export const createSubCategoriesInputs = (
           anchorEl,
           handleCloseDialog,
           getHelplineName,
+          counselorToolkitsEnabled,
         );
       }),
     }),

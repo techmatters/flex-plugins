@@ -17,6 +17,7 @@ type OwnProps = {
   autoFocus: boolean;
   stateApi: IssueCategorizationStateApi;
   helplineInformation: HelplineDefinitions;
+  counselorToolkitsEnabled: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -32,6 +33,7 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
   toggleCategoryExpanded,
   setCategoriesGridView,
   helplineInformation,
+  counselorToolkitsEnabled,
 }) => {
   const shouldFocusFirstElement = display && autoFocus;
   const firstElementRef = useFocus(shouldFocusFirstElement);
@@ -84,8 +86,16 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
       anchorEl,
       handleCloseDialog,
       getHelplineName,
+      counselorToolkitsEnabled,
     );
-  }, [IssueCategorizationTabDefinition, anchorEl, getValues, helplineInformation.helplines, updateForm]);
+  }, [
+    IssueCategorizationTabDefinition,
+    anchorEl,
+    counselorToolkitsEnabled,
+    getValues,
+    helplineInformation.helplines,
+    updateForm,
+  ]);
 
   return (
     <CategoriesFromDefinition

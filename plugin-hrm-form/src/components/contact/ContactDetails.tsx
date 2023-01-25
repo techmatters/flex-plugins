@@ -114,6 +114,7 @@ const ContactDetails: React.FC<Props> = ({
             display={true}
             autoFocus={true}
             helplineInformation={definitionVersion.helplineInformation}
+            counselorToolkitsEnabled={featureFlags.enable_counselor_toolkits}
           />
         </EditContactSection>
       );

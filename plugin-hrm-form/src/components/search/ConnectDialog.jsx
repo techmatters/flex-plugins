@@ -30,8 +30,6 @@ const ConnectDialog = ({ anchorEl, currentIsCaller, contact, handleConfirm, hand
     }
   };
 
-  console.log('anchorEl here', anchorEl);
-
   return (
     <Popover
       id={id}
