@@ -1,6 +1,6 @@
 import { getResource, ReferrableResource } from '../../../services/ResourceService';
 import { loadResource } from '../../../states/resources/loadResource';
-import { addResourceAction } from '../../../states/resources';
+import { addResourceAction, loadResourceErrorAction } from '../../../states/resources';
 import { ApiError } from '../../../services/fetchApi';
 
 jest.mock('../../../services/ResourceService', () => ({
@@ -25,10 +25,12 @@ test('Gets resource from service and dispatches an action to add it to redux', a
   expect(dispatch).toHaveBeenCalledWith(addResourceAction(mockResource));
 });
 
-test('Resource service throws - does not dispatch action & throws', async () => {
+test('Resource service throws - dispatches error action', async () => {
   const dispatch = jest.fn();
+  const err = new ApiError('Boom', {});
   mockGetResource.mockRejectedValue(new ApiError('Boom', {}));
-  await expect(loadResource(dispatch, 'TEST_ID')).rejects.toThrowError(ApiError);
+  await loadResource(dispatch, 'TEST_ID');
   expect(mockGetResource).toHaveBeenCalledWith('TEST_ID');
-  expect(dispatch).not.toBeCalled();
+  expect(dispatch).not.toHaveBeenCalledWith(addResourceAction(expect.anything()));
+  expect(dispatch).toHaveBeenCalledWith(loadResourceErrorAction('TEST_ID', err));
 });
