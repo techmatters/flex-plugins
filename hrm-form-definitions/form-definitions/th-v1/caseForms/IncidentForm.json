@@ -12,22 +12,23 @@
     "name": "duration",
     "label": "Duration",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
         "label": ""
       },
       {
-        "value": "Ongoing",
-        "label": "Ongoing"
+        "value": "อยู่ในระหว่างดำเนินการ",
+        "label": "อยู่ในระหว่างดำเนินการ"
       },
       {
-        "value": "Once Off",
-        "label": "Once Off"
+        "value": "เป็นครั้งเดียว",
+        "label": "เป็นครั้งเดียว"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "อื่น ๆ",
+        "label": "อื่น ๆ"
       }
     ],
     "required": {
@@ -39,42 +40,43 @@
     "name": "location",
     "label": "Location",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
         "label": ""
       },
       {
-        "value": "Home(Own)",
-        "label": "Home(Own)"
+        "value": "บ้าน (ของตนเอง)",
+        "label": "บ้าน (ของตนเอง)"
       },
       {
-        "value": "Home(Other)",
-        "label": "Home(Other)"
+        "value": "บ้าน (ของคนอื่น)",
+        "label": "บ้าน (ของคนอื่น)"
       },
       {
-        "value": "Educational Establishment",
-        "label": "Educational Establishment"
+        "value": "สถานศึกษา",
+        "label": "สถานศึกษา"
       },
       {
-        "value": "Institution",
-        "label": "Institution"
+        "value": "สถานประกอบการ",
+        "label": "สถานประกอบการ"
       },
       {
-        "value": "Public place",
-        "label": "Public place"
+        "value": "สถานที่สาธารณะ",
+        "label": "สถานที่สาธารณะ"
       },
       {
-        "value": "Online",
-        "label": "Online"
+        "value": "ออนไลน์",
+        "label": "ออนไลน์"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "อื่น ๆ",
+        "label": "อื่น ๆ"
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
+        "value": "ไม่ทราบ",
+        "label": "ไม่ทราบ"
       }
     ],
     "required": {
@@ -85,17 +87,17 @@
   {
     "name": "isCaregiverAware",
     "label": "Is caregiver aware?",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "incidentWitnessed",
     "label": "Was the incident witnessed by anyone?",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "abuseReportedElsewhere",
     "label": "Has abuse been reported elsewhere?",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "whereElseBeenReported",
