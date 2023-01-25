@@ -29,24 +29,16 @@
         "label": ""
       },
       {
-        "value": "คลีนิก",
-        "label": "คลีนิก"
+        "value": "ReferralsToDutyBearer",
+        "label": "การส่งต่อไปยังหน่วยงานรับผิดชอบ"
       },
       {
-        "value": "โรงพยาบาล",
-        "label": "โรงพยาบาล"
+        "value": "ReferralsToCivilSociety",
+        "label": "การส่งต่อไปยังหน่วยงานประชาสังคม"
       },
       {
-        "value": "สวัสดิการสังคม",
-        "label": "สวัสดิการสังคม"
-      },
-      {
-        "value": "ตำรวจ",
-        "label": "ตำรวจ"
-      },
-      {
-        "value": "ผู้นำศาสนา",
-        "label": "ผู้นำศาสนา"
+        "value": "ReportsToCSAMAutority",
+        "label": "รายงาน CSAM"
       },
       {
         "value": "อื่นๆ",
