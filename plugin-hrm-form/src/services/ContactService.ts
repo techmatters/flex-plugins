@@ -88,7 +88,7 @@ export async function searchContacts(
 /**
  * Adds a category with the corresponding subcategories set to false to the provided object (obj)
  */
-const createCategory = <T extends {}>(obj: T, [category, { subcategories }]: [string, CategoryEntry]) => ({
+const createCategory = <T extends {}>(obj: T, [category, { subcategories }]: [any, any]) => ({
   ...obj,
   [category]: subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory]: false }), {}),
 });

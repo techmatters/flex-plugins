@@ -108,7 +108,7 @@ const CategorySection: React.FC<Props> = ({
   const drawCount = () => (selectedCount === 0 ? '' : ` (${selectedCount})`);
 
   const noMatch = !subcategories.find(subcategory =>
-    subcategory.label.toLowerCase().includes(searchTerm.toLowerCase()),
+    subcategory.label.label.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
@@ -140,7 +140,7 @@ const CategorySection: React.FC<Props> = ({
 
       <SubcategoryList expanded={expanded} searchTerm={searchTerm}>
         {subcategories.map((subcategory, j) => {
-          const hidden = !subcategory.label.toLowerCase().includes(searchTerm.toLowerCase());
+          const hidden = !subcategory.label.label.toLowerCase().includes(searchTerm.toLowerCase());
           const name = `${categoryName}.${subcategory.value}`;
 
           return (
@@ -153,7 +153,7 @@ const CategorySection: React.FC<Props> = ({
                   defaultChecked={subcategory.checked}
                   ref={register}
                 />
-                <MultiSelectCheckboxLabel>{highlightLabel(subcategory.label)}</MultiSelectCheckboxLabel>
+                <MultiSelectCheckboxLabel>{highlightLabel(subcategory.label.label)}</MultiSelectCheckboxLabel>
               </FormLabel>
             </MultiSelectListItem>
           );

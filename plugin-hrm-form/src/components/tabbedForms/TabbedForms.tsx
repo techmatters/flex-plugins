@@ -211,7 +211,6 @@ const TabbedForms: React.FC<Props> = ({
       </Row>
     </Box>
   );
-
   return (
     <FormProvider {...methods}>
       <div role="form" style={{ height: '100%' }} className={editContactFormOpen ? 'editingContact' : ''}>
@@ -279,6 +278,7 @@ const TabbedForms: React.FC<Props> = ({
                       initialValue={contactForm.categories}
                       definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab(helpline)}
                       autoFocus={autoFocus}
+                      helplineInformation={currentDefinitionVersion.helplineInformation}
                     />
                   </TabbedFormTabContainer>
                   <TabbedFormTabContainer display={subroute === 'caseInformation'}>

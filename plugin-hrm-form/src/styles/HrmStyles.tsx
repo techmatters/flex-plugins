@@ -5,6 +5,8 @@ import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
 import AssignmentInd from '@material-ui/icons/AssignmentIndOutlined';
 import { Icon, styled, Button } from '@twilio/flex-ui';
 import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import HrmTheme from './HrmTheme';
 
@@ -349,6 +351,27 @@ export const ToggleViewButton = styled('button')<ToggleViewButtonProps>`
   }
 `;
 ToggleViewButton.displayName = 'ToggleViewButton';
+
+export const InformationIconButton = withStyles({
+  root: {
+    width: '16px',
+    height: '16px',
+    color: '#b4babd',
+    margin: '13px 20px 0 5px',
+    cursor: 'pointer',
+  },
+})(InfoOutlinedIcon);
+
+export const HtmlTooltip = withStyles(theme => ({
+  tooltip: {
+    backgroundColor: '#717171',
+    color: '#fff',
+    maxWidth: 400,
+    fontSize: '10pt',
+    fontStyle: 'open sans semibold',
+    border: '1px solid #dadde9',
+  },
+}))(Tooltip);
 
 export const CategoriesWrapper = styled('div')`
   display: flex;
@@ -1037,6 +1060,12 @@ type CategoryCheckboxProps = { color: string; disabled: boolean };
 export const CategoryCheckbox = styled(CheckboxBase)<CategoryCheckboxProps>`
   padding: 8px;
 
+  &[type='checkbox'] {
+    color: white;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
   &[type='checkbox']:checked {
     color: white;
   }
@@ -1066,6 +1095,12 @@ export const CategoryCheckboxLabel = styled('label')<CategoryCheckboxLabelProps>
   cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
 `;
 CategoryCheckboxLabel.displayName = 'CategoryCheckboxLabel';
+
+export const CategoryCheckboxWrapper = styled('div')`
+  display: flex;
+`;
+
+CategoryCheckboxWrapper.displayName = 'CategoryCheckboxWrapper';
 
 type BaseCheckboxProps = {
   color: string;

@@ -35,8 +35,8 @@ import { Flex } from '../../../styles/HrmStyles';
  */
 const getStatusInitialValue = (definitionVersion: DefinitionVersion) =>
   Object.values(definitionVersion.caseStatus).map(caseStatus => ({
-    value: caseStatus.value,
-    label: caseStatus.label,
+    value: { label: caseStatus.value },
+    label: { label: caseStatus.label },
     checked: false,
   }));
 
@@ -47,7 +47,11 @@ const getStatusInitialValue = (definitionVersion: DefinitionVersion) =>
  * @returns Item[]
  */
 const getCounselorsInitialValue = (counselorsHash: CounselorHash) =>
-  Object.keys(counselorsHash).map(key => ({ value: key, label: counselorsHash[key], checked: false }));
+  Object.keys(counselorsHash).map(key => ({
+    value: { label: key },
+    label: { label: counselorsHash[key] },
+    checked: false,
+  }));
 
 const getInitialDateFilters = (): DateFilter[] => [
   {
@@ -91,7 +95,8 @@ const getCategoriesInitialValue = (definitionVersion: DefinitionVersion, helplin
  * @param items Item[]
  * @returns string[]
  */
-const filterCheckedItems = (items: Item[]): string[] => items.filter(item => item.checked).map(item => item.value);
+const filterCheckedItems = (items: Item[]): string[] =>
+  items.filter(item => item.checked).map(item => item.value.label);
 
 /**
  * Convert an array of categories (type Category[]) into an array of CategoryFilter.
@@ -105,7 +110,7 @@ const filterCheckedCategories = (categories: Category[]): CategoryFilter[] =>
       .filter(subcategory => subcategory.checked)
       .map(subcategory => ({
         category: category.categoryName,
-        subcategory: subcategory.label,
+        subcategory: subcategory.label.label,
       })),
   );
 
@@ -125,7 +130,7 @@ const getUpdatedCategoriesValues = (categories: CategoryFilter[], categoriesValu
     ...categoryValue,
     subcategories: categoryValue.subcategories.map(subcategory => ({
       ...subcategory,
-      checked: isChecked(categoryValue.categoryName, subcategory.label),
+      checked: isChecked(categoryValue.categoryName, subcategory.label.label),
     })),
   }));
 };
@@ -168,9 +173,9 @@ const Filters: React.FC<Props> = ({
     const { counsellors, statuses, categories, includeOrphans, ...currentDateFilters } = currentFilter;
     const newCounselorValues = getCounselorsInitialValue(counselorsHash).map(cv => ({
       ...cv,
-      checked: counsellors.includes(cv.value),
+      checked: counsellors.includes(cv.value.label),
     }));
-    const newStatusValues = statusValues.map(sv => ({ ...sv, checked: statuses.includes(sv.value) }));
+    const newStatusValues = statusValues.map(sv => ({ ...sv, checked: statuses.includes(sv.value.label) }));
     const newCategoriesValues = getUpdatedCategoriesValues(categories, categoriesValues);
     setCounselorValues(newCounselorValues);
     setStatusValues(newStatusValues);
