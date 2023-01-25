@@ -16,7 +16,7 @@ You will need the following software installed:
 You will require the following environment variables set in your local terminal:
 
 * You need the following environment variables:
-  - `AWS_ACCESS_KEY_ID` & `AWS_SECRET_ACCESS_KEY` set for the script user (currently script user is missconfigured, used your personal ones).
+  - `AWS_ACCESS_KEY_ID` & `AWS_SECRET_ACCESS_KEY` set for your personal one user.
   - `GITHUB_TOKEN` - a personal access token with write access to the tech matters serverless & flex plugins repo.
 
 ## Preparation
