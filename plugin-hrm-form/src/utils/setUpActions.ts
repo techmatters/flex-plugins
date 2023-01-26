@@ -194,11 +194,13 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   }
 };
 
-// export const audioNewMessage = (payload:ActionPayload)=> {
-//   const {task} = payload
-//   console.log('>>> TaskHelper.isChatBasedTask(task)', TaskHelper.isChatBasedTask(task)) 
-//   console.log('>>> StateHelper.getConversationStateForTask(task)', StateHelper.getConversationStateForTask(task))
-// }
+/*
+ * export const audioNewMessage = (payload:ActionPayload)=> {
+ *   const {task} = payload
+ *   console.log('>>> TaskHelper.isChatBasedTask(task)', TaskHelper.isChatBasedTask(task))
+ *   console.log('>>> StateHelper.getConversationStateForTask(task)', StateHelper.getConversationStateForTask(task))
+ * }
+ */
 
 const safeTransfer = async (transferFunction: () => Promise<any>, task: ITask): Promise<void> => {
   try {
@@ -350,27 +352,28 @@ export const afterWrapupTask = (featureFlags: FeatureFlags, setupObject: SetupOb
  * An audio alert when a counsellor receives a new message
  */
 export const setUpAudioNotifications = () => {
-
   const manager = Manager.getInstance();
 
-  manager.workerClient.on('reservationCreated', reservation => notifyReservedTask(reservation))
+  manager.workerClient.on('reservationCreated', reservation => notifyReservedTask(reservation));
 
-  // manager.conversationsClient.on('messageAdded', messageInstance => {
-  //   notifyNewMessage(messageInstance);
-  // });
-  //  TaskHelper.isChatBasedTask(task)
-  //  const convoState = StateHelper.getConversationStateForTask(task)
-  //  console.log('>>> setupNotification',   TaskHelper.isChatBasedTask(task))
-  //  console.log('>>> setupNotification', convoState)
-  
+  /*
+   * manager.conversationsClient.on('messageAdded', messageInstance => {
+   *   notifyNewMessage(messageInstance);
+   * });
+   *  TaskHelper.isChatBasedTask(task)
+   *  const convoState = StateHelper.getConversationStateForTask(task)
+   *  console.log('>>> setupNotification',   TaskHelper.isChatBasedTask(task))
+   *  console.log('>>> setupNotification', convoState)
+   */
 };
 
-// export const another = (task:ITask) =>{
-//   const manager = Manager.getInstance();
+/*
+ * export const another = (task:ITask) =>{
+ *   const manager = Manager.getInstance();
+ */
 
-//   console.log('>>>TaskHelper.isChatBasedTask(task)', TaskHelper.isChatBasedTask(task)) 
+//   console.log('>>>TaskHelper.isChatBasedTask(task)', TaskHelper.isChatBasedTask(task))
 
-//   console.log('>>> StateHelper.getConversationStateForTask(task)', StateHelper.getConversationStateForTask(task)) 
-  
+//   console.log('>>> StateHelper.getConversationStateForTask(task)', StateHelper.getConversationStateForTask(task))
+
 // }
-
