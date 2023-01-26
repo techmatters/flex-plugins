@@ -10,7 +10,7 @@
     "allowJs": true,
     "checkJs": true,
     "resolveJsonModule": true,
-    "outDir": ".",
+    "outDir": "./dist",
     "rootDir": "."
   },
   "include": ["**/*.ts"],

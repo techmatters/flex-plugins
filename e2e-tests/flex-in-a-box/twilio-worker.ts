@@ -1,6 +1,6 @@
 import context from './global-context';
 import { subHours } from 'date-fns';
-import { setLiveQueryData } from './twilsock-live-query';
+import { initialiseLiveQueryData } from './twilsock-live-query';
 
 const hourAgo = subHours(new Date(), 1);
 
@@ -30,8 +30,8 @@ export const loggedInWorker = () => {
 };
 
 export const setLoggedInWorkerLiveQuery = () =>
-  setLiveQueryData(
+  initialiseLiveQueryData(
     '/v3/Insights/tr-worker/Items',
     `data.worker_sid == "${context.LOGGED_IN_WORKER_SID}"`,
-    [{ key: context.LOGGED_IN_WORKER_SID, data: loggedInWorker() }],
+    { [context.LOGGED_IN_WORKER_SID]: loggedInWorker() },
   );

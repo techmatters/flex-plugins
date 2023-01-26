@@ -56,7 +56,7 @@ const WaitTimeText = styled(FontOpenSans)`
 `;
 
 export const WaitTimeLabel = styled(WaitTimeText)`
-  opacity: 0.46;
+  opacity: 0.8;
   margin-right: 1em;
 `;
 

@@ -131,7 +131,7 @@ const QueuesCard: React.FC<Props> = props => {
         <HiddenText id={`name-${qName}`}>
           <Template code="QueueCard-Name" />
         </HiddenText>
-        <HiddenText aria-labelledby={`name-${qName}`} />
+        <HiddenText role="region" aria-labelledby={`name-${qName}`} />
         <QueueName>{qName}</QueueName>
         <Box marginTop="7px" marginBottom="14px">
           <Row>
