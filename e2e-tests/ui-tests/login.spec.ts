@@ -5,6 +5,7 @@ import * as mockServer from '../flex-in-a-box/proxied-endpoints';
 import context from '../flex-in-a-box/global-context';
 import { mockStartup } from '../aselo-service-mocks/startup-mocks';
 import AxeBuilder from '@axe-core/playwright';
+import { addTaskToWorker } from '../flex-in-a-box/task';
 
 test.describe.serial('Agent Desktop', () => {
   let page: Page;
@@ -36,5 +37,14 @@ test.describe.serial('Agent Desktop', () => {
       .analyze();
 
     expect(accessibilityScanResults.violations).toEqual([]);
+  });
+
+  test('A new chat task in the workers queue shows ', async () => {
+    addTaskToWorker();
+    const chatWaitingLabel = page.locator(
+      "div.Twilio-AgentDesktopView-default div[data-testid='Fake Queue-chat']",
+    );
+    await chatWaitingLabel.waitFor({ timeout: 60 * 60000, state: 'visible' });
+    await expect(chatWaitingLabel).toContainText('1');
   });
 });

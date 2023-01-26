@@ -7,7 +7,6 @@ import {
   QuerySid,
   subscribeToLiveQueryUpdates,
 } from './twilsock-live-query';
-type TwilsockVersion = `V3.0 ${number}`;
 type TwilioMessageSid = `TM${string}`;
 type TwilsockHeader = {
   id: TwilioMessageSid;
@@ -15,7 +14,7 @@ type TwilsockHeader = {
   method: 'init' | 'message' | 'reply' | 'ping' | 'notification';
 } & Record<string, any>;
 
-type TwilsockMessage = { header: TwilsockHeader; body?: any; version?: TwilsockVersion };
+type TwilsockMessage = { header: TwilsockHeader; body?: any };
 
 type Registration = {
   product: 'flex_insights';
@@ -24,8 +23,8 @@ type Registration = {
   notification_protocol_version: number;
 };
 
-let lastEventIdCounter = 0;
-
+let lastEventId = 0;
+let queryCounter = 0;
 const acceptResponse = (id: TwilioMessageSid, registrations: Registration[]): TwilsockHeader => {
   return {
     method: 'reply',
@@ -77,7 +76,6 @@ const eventsResponse = (id: TwilioMessageSid, eventsToAcknowledge: number): Twil
       http_status: { code: 200, status: 'OK' },
     },
     body,
-    version: 'V3.0 359',
   };
 };
 
@@ -89,12 +87,13 @@ const liveQueryResponse = (
   querySid: QuerySid,
 ): TwilsockMessage => {
   const items = getLiveQueryData(path, queryString);
+  lastEventId = Date.now();
   const body = {
     items,
     items_count: items.length,
     meta: { next_token: null, previous_token: null, encode_token: false, direct_token: true },
     query_id: querySid,
-    last_event_id: ++lastEventIdCounter,
+    last_event_id: lastEventId,
   };
   const bodySize = JSON.stringify(body).length;
   const header = {
@@ -118,7 +117,6 @@ const liveQueryResponse = (
   return {
     header,
     body,
-    version: 'V3.0 488',
   };
 };
 
@@ -126,19 +124,20 @@ const liveQueryAcceptSubscriptions = (
   id: `TM${string}`,
   twilioRequestId: `RQ${string}`,
 ): TwilsockMessage => {
+  const body = { estimated_delivery_in_ms: 10000, max_batch_size: 1000, ttl_in_s: 86400 };
+  const bodySize = JSON.stringify(body).length;
   return {
-    version: 'V3.0 520',
     header: {
       method: 'reply',
       id,
-      payload_size: 73,
+      payload_size: bodySize,
       payload_type: 'application/json;charset=utf-8',
       status: { code: 200, status: 'OK' },
       http_headers: {
         server: 'envoy',
-        date: 'Wed, 25 Jan 2023 22:24:42 GMT',
+        date: new Date().toUTCString(),
         'content-type': 'application/json;charset=utf-8',
-        'content-length': '73',
+        'content-length': bodySize.toString(),
         'twilio-request-id': twilioRequestId,
         'x-shenanigans': 'none',
         'strict-transport-security': 'max-age=31536000',
@@ -163,6 +162,7 @@ const liveQueryUpdate = (
   },
   items: LiveQueryItem[],
 ): TwilsockMessage => {
+  lastEventId = Date.now();
   const body = {
     event_type: 'live_query_updated',
     correlation_id: correlationId,
@@ -172,13 +172,12 @@ const liveQueryUpdate = (
       items_count: items.length,
       meta: { next_token: null, previous_token: null, encode_token: false, direct_token: true },
       query_id: querySid,
-      last_event_id: ++lastEventIdCounter,
+      last_event_id: lastEventId,
     },
     strictly_ordered: true,
   };
   const bodySize = JSON.stringify(body).length;
   return {
-    version: 'V3.0 181',
     header: {
       method: 'notification',
       id: `TM_LIVE_QUERY_UPDATE_${++liveQueryUpdateCounter}`,
@@ -195,12 +194,7 @@ let liveQueryEstablishSubscriptionCounter = 0;
 const liveQueryEstablishSubscription = (
   twilioRequestId: `RQ${string}`,
   correlationId: number,
-  {
-    querySid,
-  }: {
-    index: string;
-    querySid: `QR${string}`;
-  },
+  querySid: QuerySid,
 ): TwilsockMessage => {
   const body = {
     event_type: 'subscription_established',
@@ -210,12 +204,11 @@ const liveQueryEstablishSubscription = (
       object_sid: querySid,
       object_type: 'live_query',
       replay_status: 'completed',
-      last_event_id: lastEventIdCounter,
+      last_event_id: lastEventId,
     },
   };
   const bodySize = JSON.stringify(body).length;
   return {
-    version: 'V3.0 180',
     header: {
       method: 'notification',
       id: `TM_LIVE_QUERY_SUBSCRIPTION_ESTABLISHED_${++liveQueryEstablishSubscriptionCounter}`,
@@ -248,13 +241,10 @@ export const twilsockSocket = (websocket: WebSocket) => {
     return encoder.encode(textPayload);
   };
 
-  const deserializeIncoming = (
-    message: ArrayBuffer,
-  ): { version: TwilsockVersion; header: TwilsockHeader; body?: any } => {
+  const deserializeIncoming = (message: ArrayBuffer): { header: TwilsockHeader; body?: any } => {
     const messageString = decoder.decode(message);
-    const [messageVersion, headerString, bodyString] = messageString.split('\r\n');
+    const [, headerString, bodyString] = messageString.split('\r\n');
     const withoutBody = {
-      version: messageVersion as TwilsockVersion,
       header: JSON.parse(headerString),
     };
     return bodyString
@@ -286,7 +276,7 @@ export const twilsockSocket = (websocket: WebSocket) => {
           );
           const queryString = body.query_string;
           const { path } = header.http_request ?? {};
-          const querySid: QuerySid = `QR${encodeURIComponent(`_${path}_${queryString}`)}`;
+          const querySid: QuerySid = `QR_${++queryCounter}`;
           createLiveQuery(path, queryString, querySid);
           websocket.send(
             serializeOutgoing(
@@ -301,7 +291,7 @@ export const twilsockSocket = (websocket: WebSocket) => {
           );
           requests.forEach((req) => {
             if (req.last_event_id) {
-              lastEventIdCounter = Math.max(req.last_event_id, lastEventIdCounter);
+              lastEventId = Math.max(req.last_event_id, lastEventId);
             }
             subscribeToLiveQueryUpdates(req.object_sid, (update) => {
               websocket.send(
@@ -312,7 +302,11 @@ export const twilsockSocket = (websocket: WebSocket) => {
             });
             websocket.send(
               serializeOutgoing(
-                liveQueryEstablishSubscription(twilioRequestId, body.correlation_id, req),
+                liveQueryEstablishSubscription(
+                  twilioRequestId,
+                  body.correlation_id,
+                  req.object_sid,
+                ),
               ),
             );
           });
@@ -330,7 +324,7 @@ export const twilsockSocket = (websocket: WebSocket) => {
 
   //Keepalive
   const pingInterval = setInterval(
-    () => websocket.send(serializeOutgoing({ header: pingHeader(), version: 'V3.0 76' })),
+    () => websocket.send(serializeOutgoing({ header: pingHeader() })),
     30 * 1000,
   );
   websocket.on('close', () => clearInterval(pingInterval));

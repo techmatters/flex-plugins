@@ -12,7 +12,7 @@ const config: PlaywrightTestConfig = {
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     // Browser proxy option is required for Chromium on Windows.
-    proxy: { server: `http://localhost:${MOCKTTP_SERVER_PORT}` },
+    proxy: { server: `http://localhost:${MOCKTTP_SERVER_PORT}`, bypass: 'localhost:3100' },
     launchOptions: { proxy: { server: `http://localhost:${MOCKTTP_SERVER_PORT}` } },
     ignoreHTTPSErrors: true,
   },
