@@ -33,7 +33,7 @@ import { prepopulateForm } from './prepopulateForm';
 import { recordEvent } from '../fullStory';
 import { CustomITask, FeatureFlags } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
-import { notifyNewMessage } from './audioNotifications';
+import { notifyReservedTask, notifyNewMessage } from './audioNotifications';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -188,22 +188,17 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   if (featureFlags.enable_transfers && TransferHelpers.hasTransferStarted(task)) handleTransferredTask(task);
   else prepopulateForm(task);
 
-// setupNotification(task);
-
-  // if (TaskHelper.isChatBasedTask(task)) {
-  //   const convoState = StateHelper.getConversationStateForTask(task);
-
-  //   const manager = Manager.getInstance();
-  //   manager.conversationsClient.on('messageAdded', messageInstance => {
-  //     notifyNewMessage(messageInstance);
-  //   });
-  // }
-
   // If this is the first counsellor that gets the task, say hi
   if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
     sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
   }
 };
+
+// export const audioNewMessage = (payload:ActionPayload)=> {
+//   const {task} = payload
+//   console.log('>>> TaskHelper.isChatBasedTask(task)', TaskHelper.isChatBasedTask(task)) 
+//   console.log('>>> StateHelper.getConversationStateForTask(task)', StateHelper.getConversationStateForTask(task))
+// }
 
 const safeTransfer = async (transferFunction: () => Promise<any>, task: ITask): Promise<void> => {
   try {
@@ -354,15 +349,28 @@ export const afterWrapupTask = (featureFlags: FeatureFlags, setupObject: SetupOb
 /**
  * An audio alert when a counsellor receives a new message
  */
-export const setupNotification = (task) => {
-  TaskHelper.isChatBasedTask(task)
-  const convoState = StateHelper.getConversationStateForTask(task)
-  console.log('>>> setupNotification',   TaskHelper.isChatBasedTask(task)
-  )
-  console.log('>>> setupNotification', convoState)
+export const setUpAudioNotifications = () => {
+
   const manager = Manager.getInstance();
-  manager.conversationsClient.on('messageAdded', messageInstance => {
-    notifyNewMessage(messageInstance);
-  });
+
+  manager.workerClient.on('reservationCreated', reservation => notifyReservedTask(reservation))
+
+  // manager.conversationsClient.on('messageAdded', messageInstance => {
+  //   notifyNewMessage(messageInstance);
+  // });
+  //  TaskHelper.isChatBasedTask(task)
+  //  const convoState = StateHelper.getConversationStateForTask(task)
+  //  console.log('>>> setupNotification',   TaskHelper.isChatBasedTask(task))
+  //  console.log('>>> setupNotification', convoState)
+  
 };
+
+// export const another = (task:ITask) =>{
+//   const manager = Manager.getInstance();
+
+//   console.log('>>>TaskHelper.isChatBasedTask(task)', TaskHelper.isChatBasedTask(task)) 
+
+//   console.log('>>> StateHelper.getConversationStateForTask(task)', StateHelper.getConversationStateForTask(task)) 
+  
+// }
 

@@ -124,6 +124,8 @@ const setUpComponents = (
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
     strings.CallParticipantCustomerName = strings.MaskIdentifiers;
   }
+
+  ActionFunctions.setUpAudioNotifications();
 };
 
 const setUpActions = (
@@ -160,8 +162,6 @@ const setUpActions = (
   Flex.Actions.addListener('afterWrapupTask', afterWrapupAction);
 
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
-
-  Flex.Actions.addListener('afterAcceptTask', ActionFunctions.setupNotification)
 };
 
 export default class HrmFormPlugin extends FlexPlugin {
