@@ -1,14 +1,14 @@
 {
-  "label": "Helpline",
+  "label": "แผนก",
   "helplines": [
     {
-      "label": "Childline Thailand",
-      "value": "Childline Thailand",
+      "label": "มูลนิธิสายเด็ก 1387",
+      "value": "คอนแท็กต์ เซ็นเตอร์",
       "default": true,
       "manager": {
-        "name": "Helpline Manager",
-        "phone": "+123 45 678",
-        "email": "supervisor@helpline.org"
+        "name": "Jinda Chaipon",
+        "phone": "+66 93 614 1654",
+        "email": "jinda@childlinethailand.org "
       }
     }
   ]

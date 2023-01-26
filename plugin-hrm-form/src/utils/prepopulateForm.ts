@@ -1,6 +1,6 @@
 import { ITask, Manager } from '@twilio/flex-ui';
 import { capitalize } from 'lodash';
-import { callTypes, FormDefinition, DefinitionVersion } from 'hrm-form-definitions';
+import { callTypes, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
 
 import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
@@ -101,29 +101,103 @@ const getValuesFromAnswers = (
   };
 };
 
+export const getValuesFromPreEngagementData = (
+  preEngagementData: Record<string, string>,
+  tabFormDefinition: FormDefinition,
+  prepopulateKeys: string[],
+) => {
+  // Get values from task attributes
+  const values = {};
+  tabFormDefinition.forEach((field: FormItemDefinition) => {
+    if (prepopulateKeys.indexOf(field.name) > -1) {
+      if (field.type === 'mixed-checkbox') {
+        if (preEngagementData[field.name]?.toLowerCase() === 'yes') {
+          values[field.name] = true;
+        } else if (preEngagementData[field.name]?.toLowerCase() === 'no') {
+          values[field.name] = false;
+        }
+        return;
+      }
+      values[field.name] = preEngagementData[field.name] || '';
+    }
+  });
+  return values;
+};
+
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const prepopulateForm = (task: ITask) => {
-  // If this task came from the pre-survey
-  if (task.attributes.memory) {
-    const { answers } = task.attributes.memory.twilio.collected_data.collect_survey;
+  const { memory, preEngagementData } = task.attributes;
+  if (!memory && !preEngagementData) return;
 
-    // If can't know if call is child or caller, do nothing here
-    if (!answers.about_self || !['Yes', 'No'].includes(answers.about_self.answer)) return;
+  const { currentDefinitionVersion } = getDefinitionVersions();
+  const { tabbedForms, prepopulateKeys } = currentDefinitionVersion;
+  const { ChildInformationTab, CallerInformationTab, CaseInformationTab } = tabbedForms;
+  const { preEngagement, survey } = prepopulateKeys;
 
-    const { currentDefinitionVersion } = getDefinitionVersions();
-    const { CallerInformationTab, ChildInformationTab } = currentDefinitionVersion.tabbedForms;
-    const isAboutSelf = answers.about_self.answer === 'Yes';
-    const callType = isAboutSelf ? callTypes.child : callTypes.caller;
-    const tabFormDefinition = isAboutSelf ? ChildInformationTab : CallerInformationTab;
-    const prepopulateKeys = isAboutSelf
-      ? currentDefinitionVersion.prepopulateKeys.ChildInformationTab
-      : currentDefinitionVersion.prepopulateKeys.CallerInformationTab;
-
-    const values = getValuesFromAnswers(task, answers, tabFormDefinition, prepopulateKeys);
-
-    Manager.getInstance().store.dispatch(prepopulateFormAction(callType, values, task.taskSid));
+  // When a helpline has preEnagagement form and no survey
+  if (preEngagementData && !memory) {
+    // PreEngagementData Values
+    const childInfoValues = getValuesFromPreEngagementData(
+      preEngagementData,
+      ChildInformationTab,
+      preEngagement.ChildInformationTab,
+    );
+    Manager.getInstance().store.dispatch(prepopulateFormAction(callTypes.child, childInfoValues, task.taskSid));
 
     // Open tabbed form to first tab
-    const subroute = isAboutSelf ? 'childInformation' : 'callerInformation';
+    Manager.getInstance().store.dispatch(
+      RoutingActions.changeRoute(
+        { route: 'tabbed-forms', subroute: 'childInformation', autoFocus: true },
+        task.taskSid,
+      ),
+    );
+    return;
+  }
+
+  const { answers } = memory.twilio.collected_data.collect_survey;
+
+  const isAboutSelf = answers.about_self.answer === 'Yes';
+  const callType = isAboutSelf || !answers.about_self ? callTypes.child : callTypes.caller;
+  const tabFormDefinition = isAboutSelf ? ChildInformationTab : CallerInformationTab;
+  const prepopulateSurveyKeys = isAboutSelf ? survey.ChildInformationTab : survey.CallerInformationTab;
+  const subroute = isAboutSelf ? 'childInformation' : 'callerInformation';
+
+  const surveyValues = getValuesFromAnswers(task, answers, tabFormDefinition, prepopulateSurveyKeys);
+
+  // When a helpline has survey and no preEnagagement form
+  if (memory && !preEngagementData) {
+    Manager.getInstance().store.dispatch(prepopulateFormAction(callType, surveyValues, task.taskSid));
+
+    // Open tabbed form to first tab
+    Manager.getInstance().store.dispatch(
+      RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
+    );
+    return;
+  }
+
+  // When a helpline has survey and preEnagagement form to populate
+  if (memory && preEngagementData) {
+    const prepopulatePreengagementKeys = isAboutSelf
+      ? preEngagement.ChildInformationTab
+      : preEngagement.CallerInformationTab;
+    const preEngagementValues = getValuesFromPreEngagementData(
+      preEngagementData,
+      tabFormDefinition,
+      prepopulatePreengagementKeys,
+    );
+    const values = { ...surveyValues, ...preEngagementValues };
+    Manager.getInstance().store.dispatch(prepopulateFormAction(callType, values, task.taskSid));
+
+    if (preEngagement.CaseInformationTab.length > 0) {
+      const caseInfoValues = getValuesFromPreEngagementData(
+        preEngagementData,
+        CaseInformationTab,
+        preEngagement.CaseInformationTab,
+      );
+
+      Manager.getInstance().store.dispatch(prepopulateFormAction(callType, caseInfoValues, task.taskSid, true));
+    }
+    // Open tabbed form to first tab
     Manager.getInstance().store.dispatch(
       RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
     );

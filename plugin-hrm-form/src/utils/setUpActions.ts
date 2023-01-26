@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-// eslint-disable-next-line no-unused-vars
 import {
   Manager,
   TaskHelper,
@@ -14,7 +12,7 @@ import { Conversation } from '@twilio/conversations';
 import { callTypes } from 'hrm-form-definitions';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
-import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
+import { DEFAULT_TRANSFER_MODE } from '../HrmFormPlugin';
 import {
   transferChatStart,
   adjustChatCapacity,
@@ -33,17 +31,16 @@ import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';
 import { recordEvent } from '../fullStory';
-import { CustomITask } from '../types/types';
+import { CustomITask, FeatureFlags } from '../types/types';
+import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 
-type SetupObject = ReturnType<typeof getConfig> & {
-  translateUI: (language: string) => Promise<void>;
-  getMessage: (messageKey: string) => (language: string) => Promise<string>;
-};
+type SetupObject = ReturnType<typeof getHrmConfig>;
+type GetMessage = (key: string) => (key: string) => Promise<string>;
 type ActionPayload = { task: ITask };
 type ActionPayloadWithOptions = ActionPayload & { options: { mode: string }; targetSid: string };
 
 export const loadCurrentDefinitionVersion = async () => {
-  const { definitionVersion } = getConfig();
+  const { definitionVersion } = getHrmConfig();
   const definitions = await getDefinitionVersion(definitionVersion);
   // populate current version
   Manager.getInstance().store.dispatch(populateCurrentDefinitionVersion(definitions));
@@ -59,10 +56,10 @@ const getStateContactForms = (taskSid: string) => {
 };
 
 /**
- * @param {import('../types/types').CustomITask} task
+ * @param task
  */
 export const shouldSendInsightsData = (task: ITask) => {
-  const { featureFlags } = getConfig();
+  const featureFlags = getAseloFeatureFlags();
   const hasTaskControl = !featureFlags.enable_transfers || TransferHelpers.hasTaskControl(task);
 
   return hasTaskControl && featureFlags.enable_save_insights && !task.attributes?.skipInsights;
@@ -114,13 +111,15 @@ const handleTransferredTask = async (task: ITask) => {
   await restoreFormIfTransfer(task);
 };
 
-export const getTaskLanguage = ({ helplineLanguage }) => ({ task }) => task.attributes.language || helplineLanguage;
+export const getTaskLanguage = ({ helplineLanguage }: Pick<SetupObject, 'helplineLanguage'>) => ({
+  task,
+}: ActionPayload) => task.attributes.language || helplineLanguage;
 
 const sendMessageOfKey = (messageKey: string) => (
   setupObject: SetupObject,
   conversation: Conversation,
+  getMessage: (key: string) => (key: string) => Promise<string>,
 ): ActionFunction => async (payload: ActionPayload) => {
-  const { getMessage } = setupObject;
   const taskLanguage = getTaskLanguage(setupObject)(payload);
   const message = await getMessage(messageKey)(taskLanguage);
   await conversation.sendMessage(message);
@@ -130,8 +129,10 @@ const sendMessageOfKey = (messageKey: string) => (
  * @param {string} messageKey
  * @returns {(setupObject: ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }) => import('@twilio/flex-ui').ActionFunction}
  */
-const sendSystemMessageOfKey = (messageKey: string) => (setupObject: SetupObject) => async (payload: ActionPayload) => {
-  const { getMessage } = setupObject;
+const sendSystemMessageOfKey = (messageKey: string) => (
+  setupObject: SetupObject,
+  getMessage: (key: string) => (key: string) => Promise<string>,
+) => async (payload: ActionPayload) => {
   const taskLanguage = getTaskLanguage(setupObject)(payload);
   const message = await getMessage(messageKey)(taskLanguage);
   await sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
@@ -144,42 +145,52 @@ const sendSystemCustomGoodbyeMessage = (customGoodbyeMessage: string) => () => a
 };
 
 const sendWelcomeMessage = sendMessageOfKey('WelcomeMsg');
-const sendGoodbyeMessage = taskSid => {
-  const { enable_dual_write } = getConfig().featureFlags;
+const sendGoodbyeMessage = (taskSid: string) => {
+  const { enable_dual_write: enableDualWrite } = getAseloFeatureFlags();
 
   const customGoodbyeMessage =
-    enable_dual_write &&
+    enableDualWrite &&
     Manager.getInstance().store.getState()[namespace][dualWriteBase].tasks[taskSid]?.customGoodbyeMessage;
   return customGoodbyeMessage
     ? sendSystemCustomGoodbyeMessage(customGoodbyeMessage)
     : sendSystemMessageOfKey('GoodbyeMsg');
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-export const afterAcceptTask = (setupObject: SetupObject) => async (payload: ActionPayload) => {
+const sendWelcomeMessageOnConversationJoined = (
+  setupObject: SetupObject,
+  getMessage: GetMessage,
+  payload: ActionPayload,
+) => {
   const manager = Manager.getInstance();
-  const { featureFlags } = setupObject;
+  const { task } = payload;
+  const trySendWelcomeMessage = (convo: Conversation, ms: number, retries: number) => {
+    setTimeout(() => {
+      const convoState = StateHelper.getConversationStateForTask(task);
+      // if channel is not ready, wait 200ms and retry
+      if (convoState.isLoadingConversation) {
+        if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
+        else console.error('Failed to send welcome message: max retries reached.');
+      } else {
+        sendWelcomeMessage(setupObject, convo, getMessage)(payload);
+      }
+    }, ms);
+  };
+
+  // Ignore event payload as we already have everything we want in afterAcceptTask arguments. Start at 0ms as many users are able to send the message right away
+  manager.conversationsClient.once('conversationJoined', (c: Conversation) => trySendWelcomeMessage(c, 0, 0));
+};
+
+export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupObject, getMessage: GetMessage) => async (
+  payload: ActionPayload,
+) => {
   const { task } = payload;
 
   if (featureFlags.enable_transfers && TransferHelpers.hasTransferStarted(task)) handleTransferredTask(task);
   else prepopulateForm(task);
 
+  // If this is the first counsellor that gets the task, say hi
   if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
-    const trySendWelcomeMessage = (convo: Conversation, ms, retries) => {
-      setTimeout(() => {
-        const convoState = StateHelper.getConversationStateForTask(task);
-        // if channel is not ready, wait 200ms and retry
-        if (convoState.isLoadingConversation) {
-          if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
-          else console.error('Failed to send welcome message: max retries reached.');
-        } else {
-          sendWelcomeMessage(setupObject, convo)(payload);
-        }
-      }, ms);
-    };
-
-    // Ignore event payload as we already have everything we want in afterAcceptTask arguments. Start at 0ms as many users are able to send the message right away
-    manager.conversationsClient.once('conversationJoined', (c: Conversation) => trySendWelcomeMessage(c, 0, 0));
+    sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
   }
 };
 
@@ -210,7 +221,7 @@ export const customTransferTask = (setupObject: SetupObject): ReplacedActionFunc
     return () => undefined; // Not calling original(payload) prevents the additional "Task cannot be transferred" notification
   }
 
-  const { identity, workerSid, counselorName } = setupObject;
+  const { workerSid, counselorName } = setupObject;
 
   // save current form state as sync document (if there is a form)
   const form = getStateContactForms(payload.task.taskSid);
@@ -242,24 +253,23 @@ export const hangupCall = fromActionFunction(saveEndMillis);
 /**
  * Override for WrapupTask action. Sends a message before leaving (if it should) and saves the end time of the conversation
  */
-export const wrapupTask = (setupObject: SetupObject) =>
+export const wrapupTask = (setupObject: SetupObject, getMessage: GetMessage) =>
   fromActionFunction(async payload => {
     if (TaskHelper.isChatBasedTask(payload.task)) {
-      await sendGoodbyeMessage(payload.task.taskSid)(setupObject)(payload);
+      await sendGoodbyeMessage(payload.task.taskSid)(setupObject, getMessage)(payload);
     }
     await saveEndMillis(payload);
   });
 
-const decreaseChatCapacity = (setupObject: SetupObject): ActionFunction => async (
+const decreaseChatCapacity = (featureFlags: FeatureFlags): ActionFunction => async (
   payload: ActionPayload,
 ): Promise<void> => {
-  const { featureFlags } = setupObject;
   const { task } = payload;
   if (featureFlags.enable_manual_pulling && task.taskChannelUniqueName === 'chat') await adjustChatCapacity('decrease');
 };
 
-export const beforeCompleteTask = (setupObject: SetupObject) => async (payload: ActionPayload): Promise<void> => {
-  await decreaseChatCapacity(setupObject)(payload);
+export const beforeCompleteTask = (featureFlags: FeatureFlags) => async (payload: ActionPayload): Promise<void> => {
+  await decreaseChatCapacity(featureFlags)(payload);
 };
 
 const isAseloCustomChannelTask = (task: CustomITask) =>
@@ -292,8 +302,7 @@ const setChatOrchestrationsForPostSurvey = () => {
   setExcludedDeactivateConversation('completed');
 };
 
-export const setUpPostSurvey = (setupObject: SetupObject) => {
-  const { featureFlags } = setupObject;
+export const setUpPostSurvey = (featureFlags: FeatureFlags) => {
   if (featureFlags.enable_post_survey) {
     setChatOrchestrationsForPostSurvey();
   }
@@ -322,31 +331,11 @@ export const afterCompleteTask = (payload: ActionPayload): void => {
   manager.store.dispatch(GeneralActions.removeContactState(payload.task.taskSid));
 };
 
-export const afterWrapupTask = (setupObject: SetupObject) => async (payload: ActionPayload): Promise<void> => {
-  const { featureFlags } = setupObject;
-
-  if (featureFlags.enable_post_survey) {
-    /*
-     * If it's a chat based task, remove all listeners from the underlyingconversation.
-     * This is done to hide any further activity between the contact and the post survey chatbot.
-     */
-    if (TaskHelper.isChatBasedTask(payload.task)) {
-      const conversationState = StateHelper.getConversationStateForTask(payload.task);
-
-      const safelyRemoveListeners = (eventName: string) => {
-        try {
-          if (conversationState.source?.listenerCount(eventName)) {
-            conversationState.source?.removeAllListeners(eventName);
-          }
-        } catch (err) {
-          console.error(`Failed to safelyRemoveListeners with event ${eventName}`, err);
-        }
-      };
-
-      conversationState.source?.eventNames().forEach(safelyRemoveListeners);
-    }
-
-    // TODO: make this occur in taskrouter callback
+export const afterWrapupTask = (featureFlags: FeatureFlags, setupObject: SetupObject) => async (
+  payload: ActionPayload,
+): Promise<void> => {
+  // TODO: Remove this once all accounts are handled by taskrouter
+  if (featureFlags.enable_post_survey && !featureFlags.post_survey_serverless_handled) {
     await triggerPostSurvey(setupObject, payload);
   }
 };

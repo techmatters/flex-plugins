@@ -9,7 +9,13 @@ import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import { createFormFromDefinition, disperseInputs } from '../common/forms/formGenerators';
 import { updateForm } from '../../states/contacts/actions';
-import { Container, ColumnarBlock, TwoColumnLayout, TabbedFormTabContainer } from '../../styles/HrmStyles';
+import {
+  Container,
+  ColumnarBlock,
+  TwoColumnLayout,
+  TabbedFormTabContainer,
+  ColumnarContent,
+} from '../../styles/HrmStyles';
 import { configurationBase, namespace, RootState } from '../../states';
 import { selectWorkerSid } from '../../states/selectors/flexSelectors';
 import type { TaskEntry } from '../../states/contacts/reducer';
@@ -110,7 +116,9 @@ const ContactlessTaskTab: React.FC<Props> = ({
   return (
     <Container>
       <TwoColumnLayout>
-        <ColumnarBlock>{contactlessTaskForm}</ColumnarBlock>
+        <ColumnarBlock>
+          <ColumnarContent>{contactlessTaskForm}</ColumnarContent>
+        </ColumnarBlock>
         <ColumnarBlock />
       </TwoColumnLayout>
     </Container>

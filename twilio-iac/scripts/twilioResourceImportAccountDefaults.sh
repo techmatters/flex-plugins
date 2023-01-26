@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+helplineDir=$1
+
+cd ../../scripts/
+
+npm run twilioResources -- import-account-defaults $helplineDir

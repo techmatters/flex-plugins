@@ -1,0 +1,11 @@
+{
+  "survey":{
+    "ChildInformationTab":[],
+    "CallerInformationTab":[]
+  },
+  "preEngagement":{
+    "ChildInformationTab":["nickname", "language"],
+    "CallerInformationTab":["nickname", "language"],
+    "CaseInformationTab":[]
+  }
+}

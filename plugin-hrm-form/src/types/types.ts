@@ -78,16 +78,10 @@ export type Case = {
   helpline: string;
   twilioWorkerId: string;
   info?: CaseInfo;
-  childName: string;
   categories: {};
   createdAt: string;
   updatedAt: string;
-  connectedContacts: any[]; // TODO: create contact type
-};
-
-type NestedInformation = { name: { firstName: string; lastName: string } };
-export type InformationObject = NestedInformation & {
-  [key: string]: string | boolean | NestedInformation[keyof NestedInformation]; // having NestedInformation[keyof NestedInformation] makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
+  connectedContacts: HrmServiceContact[];
 };
 
 export type TwilioStoredMedia = {
@@ -118,11 +112,30 @@ export const isS3StoredTranscript = (m: ConversationMedia): m is S3StoredTranscr
 export type ContactRawJson = {
   definitionVersion?: DefinitionVersionId;
   callType: CallTypes | '';
-  childInformation: InformationObject;
-  callerInformation: InformationObject;
+  childInformation: Record<string, boolean | string>;
+  callerInformation: Record<string, boolean | string>;
   caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
   contactlessTask: { channel: ChannelTypes; [key: string]: string | boolean };
   conversationMedia: ConversationMedia[];
+};
+
+export type HrmServiceContact = {
+  id: string;
+  twilioWorkerId: string;
+  number: string;
+  conversationDuration: number;
+  csamReports: CSAMReportEntry[];
+  createdBy: string;
+  helpline: string;
+  taskId: string;
+  channel: ChannelTypes | 'default';
+  updatedBy: string;
+  updatedAt: string;
+  rawJson: ContactRawJson;
+  timeOfContact: string;
+  queueName: string;
+  channelSid: string;
+  serviceSid: string;
 };
 
 // Information about a single contact, as expected from search contacts endpoint (we might want to reuse this type in backend) - (is this a correct placement for this?)
@@ -133,7 +146,7 @@ export type SearchAPIContact = {
     dateTime: string;
     name: string;
     customerNumber: string;
-    callType: string;
+    callType: CallTypes | '';
     categories: {};
     counselor: string;
     notes: string;
@@ -148,7 +161,7 @@ export type SearchAPIContact = {
   csamReports: CSAMReportEntry[];
 };
 
-export type SearchUIContact = SearchAPIContact & { counselorName: string };
+export type SearchUIContact = SearchAPIContact & { counselorName: string; callerName?: string };
 
 export type SearchContactResult = {
   count: number;
@@ -204,6 +217,31 @@ export type CounselorHash = {
   [sid: string]: string;
 };
 
+/* eslint-disable camelcase */
+export type FeatureFlags = {
+  enable_fullstory_monitoring: boolean; // Enables Full Story
+  enable_upload_documents: boolean; // Enables Case Documents
+  enable_post_survey: boolean; // Enables Post-Survey
+  enable_contact_editing: boolean; // Enables Editing Contacts
+  enable_case_management: boolean; // Enables Creating Cases and Viewing the Case List
+  enable_offline_contact: boolean; // Enables Creating Offline Contacts
+  enable_filter_cases: boolean; // Enables Filters at Case List
+  enable_sort_cases: boolean; // Enables Sorting at Case List
+  enable_transfers: boolean; // Enables Transfering Contacts
+  enable_manual_pulling: boolean; // Enables Adding Another Task
+  enable_csam_report: boolean; // Enables CSAM Reports
+  enable_canned_responses: boolean; // Enables Canned Responses
+  enable_dual_write: boolean; // Enables Saving Contacts on External Backends
+  enable_save_insights: boolean; // Enables Saving Aditional Data on Insights
+  enable_previous_contacts: boolean; // Enables Previous Contacts Yellow Banner
+  enable_voice_recordings: boolean; // Enables Loading Voice Recordings
+  enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
+  enable_external_transcripts: boolean; // Enables Viewing Transcripts Stored Outside of Twilio
+  post_survey_serverless_handled: boolean; // Post Survey handled in serverless instead of in Flex
+  enable_csam_clc_report: boolean; // Enables CSAM child Reports
+};
+/* eslint-enable camelcase */
+
 /**
  * Custom tasks
  */
@@ -214,6 +252,7 @@ export type OfflineContactTask = {
     isContactlessTask: true;
     channelType: 'default';
     helplineToSave?: string;
+    preEngagementData?: Record<string, string>;
   };
   channelType: 'default';
 };

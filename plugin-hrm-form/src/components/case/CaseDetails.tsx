@@ -25,7 +25,7 @@ import { getLocaleDateTime } from '../../utils/helpers';
 
 type Props = {
   caseId: string;
-  name: string;
+  contactIdentifier: string;
   categories: { [category: string]: { [subcategory: string]: boolean } };
   counselor: string;
   createdAt: string;
@@ -44,7 +44,7 @@ type Props = {
 
 const CaseDetails: React.FC<Props> = ({
   caseId,
-  name,
+  contactIdentifier,
   categories,
   counselor,
   createdAt,
@@ -75,7 +75,7 @@ const CaseDetails: React.FC<Props> = ({
       <CaseDetailsBorder>
         <CaseDetailsHeader
           caseId={caseId}
-          childName={name}
+          contactIdentifier={contactIdentifier}
           counselor={counselor}
           office={office}
           handlePrintCase={handlePrintCase}

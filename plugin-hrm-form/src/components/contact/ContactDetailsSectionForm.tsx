@@ -4,8 +4,14 @@ import { useFormContext } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
 import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
-import * as actions from '../../states/contacts/actions';
-import { ColumnarBlock, Container, TwoColumnLayout, Box, BottomButtonBarHeight } from '../../styles/HrmStyles';
+import {
+  ColumnarBlock,
+  Container,
+  TwoColumnLayout,
+  Box,
+  BottomButtonBarHeight,
+  ColumnarContent,
+} from '../../styles/HrmStyles';
 import { createFormFromDefinition, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import useFocus from '../../utils/useFocus';
@@ -16,9 +22,9 @@ type OwnProps = {
   layoutDefinition?: LayoutDefinition;
   tabPath: keyof TaskEntry;
   initialValues: TaskEntry['callerInformation'] | TaskEntry['childInformation'] | TaskEntry['caseInformation'];
-  autoFocus: boolean;
+  autoFocus?: boolean;
   extraChildrenRight?: React.ReactNode;
-  updateFormActionDispatcher: (dispatch: Dispatch<any>) => (values: any) => void;
+  updateFormActionDispatcher?: (dispatch: Dispatch<any>) => (values: any) => void;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -59,10 +65,14 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
     <Container>
       <Box paddingBottom={`${BottomButtonBarHeight}px`}>
         <TwoColumnLayout>
-          <ColumnarBlock>{l}</ColumnarBlock>
           <ColumnarBlock>
-            {r}
-            {extraChildrenRight}
+            <ColumnarContent>{l}</ColumnarContent>
+          </ColumnarBlock>
+          <ColumnarBlock>
+            <ColumnarContent>
+              {r}
+              {extraChildrenRight}
+            </ColumnarContent>
           </ColumnarBlock>
         </TwoColumnLayout>
       </Box>

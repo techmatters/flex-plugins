@@ -1,4 +1,5 @@
 import { StyleSheet, Font } from '@react-pdf/renderer';
+import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import headerStyles from './header';
 import footerStyles from './footer';
@@ -13,12 +14,29 @@ import categoriesStyles from './categories';
  * More info: https://react-pdf.org/fonts
  * .TTF links extracted with: https://nikoskip.me/gfonts.php
  */
+
+const robotoSrc = 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto';
+
 Font.register({
-  family: 'Open Sans',
+  family: 'Roboto',
   fonts: [
-    { src: 'https://fonts.gstatic.com/s/opensans/v18/mem8YaGs126MiZpBA-UFVZ0ef8pkAg.ttf' }, // font-style: normal, font-weight: normal
-    { src: 'https://fonts.gstatic.com/s/opensans/v18/mem6YaGs126MiZpBA-UFUK0ZdchGAK6b.ttf', fontStyle: 'italic' },
-    { src: 'https://fonts.gstatic.com/s/opensans/v18/mem5YaGs126MiZpBA-UNirkOUuhsKKSTjw.ttf', fontWeight: 600 },
+    { src: `${robotoSrc}-light-webfont.ttf`, fontWeight: 300, fontStyle: 'italic' },
+    { src: `${robotoSrc}-regular-webfont.ttf`, fontWeight: 400 },
+    { src: `${robotoSrc}-medium-webfont.ttf`, fontWeight: 500 },
+    { src: `${robotoSrc}-bold-webfont.ttf`, fontWeight: 700 },
+  ],
+});
+
+const notosansSrc =
+  'https://cdn.jsdelivr.net/gh/notofonts/notofonts.github.io/fonts/NotoSansThaiLooped/hinted/ttf/NotoSansThaiLooped';
+
+Font.register({
+  family: 'NotoSansThaiLooped',
+  fonts: [
+    { src: `${notosansSrc}-Light.ttf`, fontWeight: 300, fontStyle: 'italic' },
+    { src: `${notosansSrc}-Regular.ttf`, fontWeight: 400 },
+    { src: `${notosansSrc}-Medium.ttf`, fontWeight: 500 },
+    { src: `${notosansSrc}-Bold.ttf`, fontWeight: 700 },
   ],
 });
 
@@ -29,6 +47,33 @@ Font.registerEmojiSource({
   format: 'png',
   url: 'https://twemoji.maxcdn.com/2/72x72/',
 });
+
+const { footer } = footerStyles;
+const { childName, caseId, officeName } = headerStyles;
+const { sectionHeader, whiteText, sectionItemRowEven, sectionItemRowOdd } = sectionStyles;
+const { caseSummaryText } = summaryStyles;
+
+/**
+ * 'Roboto' font family works for all languages/fonts supported thus far.
+ * However, Thai characters are not readable with Roboto, hence substituting to NotoSansThaiLooped is required.
+ * https://fonts.google.com/noto/specimen/Noto+Sans
+ * In the future, when more languages are added, adding a compatible fontFamily might be necessary
+ *
+ */
+export const useThaiFontFamily = () => {
+  [
+    styles.page,
+    footer,
+    childName,
+    caseId,
+    officeName,
+    sectionHeader,
+    whiteText,
+    sectionItemRowEven,
+    sectionItemRowOdd,
+    caseSummaryText,
+  ].forEach(el => (el.fontFamily = 'NotoSansThaiLooped'));
+};
 
 const styles = StyleSheet.create({
   ...headerStyles,
@@ -41,7 +86,7 @@ const styles = StyleSheet.create({
   page: {
     display: 'flex',
     flexDirection: 'column',
-    fontFamily: 'Open Sans',
+    fontFamily: 'Roboto',
     paddingTop: 20,
     paddingBottom: 50,
     paddingLeft: 20,

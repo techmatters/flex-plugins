@@ -4,34 +4,36 @@ These are scripts for provisioning some of the Aselo Twilio infrastructure.
 
 ## Prerequisites
 
-You will require the following installed locally:
+### Requirements
 
-* Terraform - https://www.terraform.io/downloads
-* _You previously had to build & install the twilio-terraform-provider yourself, but they are being pushed up to the Terraform registry now: https://registry.terraform.io/providers/twilio/twilio_
+You will need the following software installed:
+
+- [Docker](https://docs.docker.com/get-docker/) 19.03.0+
+- [Make on *nix](https://www.gnu.org/software/make/) or [MakeWin32 on Windows](http://gnuwin32.sourceforge.net/packages/make.htm) 3.81
+
+### Environment Variables
+
+You will require the following environment variables set in your local terminal:
+
 * You need the following environment variables:
-  - `AWS_ACCESS_KEY_ID` & `AWS_SECRET_ACCESS_KEY` set for the script user (currently script user is missconfigured, used your personal ones).
-  - `TWILIO_ACCOUNT_SID` & `TWILIO_AUTH_TOKEN` set to the account you want to manage.
+  - `AWS_ACCESS_KEY_ID` & `AWS_SECRET_ACCESS_KEY` set for your personal one user.
   - `GITHUB_TOKEN` - a personal access token with write access to the tech matters serverless & flex plugins repo.
-  - `TF_VAR_account_sid` & `TF_VAR_auth_token` to the same as `TWILIO_ACCOUNT_SID` & `TWILIO_AUTH_TOKEN` respectively (we need the account sid & token as a variable as well as a cred.).
-  - `TF_VAR_datadog_app_id` & `TF_VAR_datadog_access_token` set for the RUM app that should already be created for the account.
-  - `TF_VAR_serverless_url` - once set, the production serverless environment's domain, once set, use a placeholder until then.
-
-  All the variables that start with `TF_VAR_` can, instead than be placed in the env vars, be placed in a `.private.tfvars` file (better described below).
 
 ## Preparation
 
 In order to set up the Aselo Terraform project:
 
-* In the directory named for the account you are working on, run `terraform init`
-* Run `terraform validate` - this should give the all clear.
+* In the directory named for the account you are working on, run `make init` (you might need to run `make init tf_args=-reconfigure` if it complains)
+* Run `make validate` - this should give the all clear.
 
 ## Running on a new environment
 
-There are currently some gotchas which mean that, unfortunately, it's not a simple as running `terraform apply` when provisioning an environment for the first time (but hopefully should be good after that).
+There are currently some gotchas which mean that, unfortunately, it's not a simple as running `make apply` when provisioning an environment for the first time (but hopefully should be good after that).
 
 The process for a first run is as follows:
 
-1. Create a new directory in `/twilio-iac` named using the <helpline>-<environment> convention
+1. Create a new directory in `/twilio-iac` named using the {helpline}-{environment} convention
+
 2. Copy any `.tf` extension files from the `terraform-poc-account` folder into the new folder (or if it is a production account, copy from the helpline's staging account, this will save a lot of time aligning them later).
 Important notes:
     - If you are copying over from `terraform-poc-account`, beware that in `main.tf`, under the `services` module, the flag `uses_conversation_service` is set to `false`. Remove this if you are working with a new Twilio account, as that is intended for compatibility with older setups of Flex.
@@ -39,37 +41,23 @@ Important notes:
     - Check under `flex` module, `permission_config` should be set to `var.permission_config` if you are describing it in the `variables.tf` file, or specify the correct one if not.
     - Review the `main.tf` to make sure there are no stuff being harcoded unless you are sure that's what you want. A few minutes on this step might save you much more time debugging a missconfigured account.
 
-3. In the 'backend "s3""' section modify the 'bucket' and 'dynamodb_table' to replace 'terraform-poc' with the account identifier convention we use for s3, i.e. <short_lowercase_helpline_code>.<full+_lowercase_environment_name> . For example, Aarambh Production would look like this:
+3. In the 'backend "s3""' section modify the 'key' to replace 'poc' with the account identifier convention we use for s3, i.e. {short_lowercase_helpline_code} . For example, Aarambh Production would look like this:
 ```hcl
   backend "s3" {
-    bucket         = "tl-terraform-state-twilio-in-production"
-    key            = "twilio/terraform.tfstate"
+    bucket         = "tl-terraform-state-production"
+    key            = "twilio/in/terraform.tfstate"
     dynamodb_table = "terraform-locks"
     encrypt        = true
   }
 ```
-4. Create an S3 bucket named after the one specified in the 'bucket' attribute you just set. You can copy the S3 settings from the `tl-terraform-state-twilio-terraform-poc`
-5. Open the `variables.tf` file and update the defaults to ones appropriate to this helpline & environment
-6. Run `terraform init` from your new folder (you might need to run `terraform init -reconfigure` if it complains.)
-7. _Optional:_ You can create a private `.tfvars` for the sensitive variables you can't check in values for - if you name it something ending in `.private.tfvars` it will be ignored by git - or you can use `TF_VAR_*` environment variables for these as instructed above.
-If you go with the `.private.tfvars`, this is how it should look like:
-```
-account_sid = "ACxxx"
-auth_token  = "xxx"
-datadog_app_id = "xxx"
-datadog_access_token = "pubXXX"
-serverless_url = "https://serverless-XXX-production.twil.io"
 
-local_os = "Windows" (optional flag for Windows users)
-```
+4. Open the `variables.tf` file and update the defaults to ones appropriate to this helpline & environment or modify locals within `main.tf`
 
-> For the following steps (9-13), make sure to have the following env vars loaded in your terminal session:
+> For the following steps, make sure to have the following env vars loaded in your terminal session:
 > ```
 > AWS_ACCESS_KEY_ID=xxx
 > AWS_SECRET_ACCESS_KEY=xxx
 > AWS_REGION=us-east-1
-> TWILIO_ACCOUNT_SID=xxx
-> TWILIO_AUTH_TOKEN=xxx
 > GITHUB_TOKEN=xxx
 > ```
 > On MacOS/Unix you can export them or prepend those vars when running a command.
@@ -79,39 +67,33 @@ local_os = "Windows" (optional flag for Windows users)
 > AWS_ACCESS_KEY_ID=xxx
 > AWS_SECRET_ACCESS_KEY=xxx
 > AWS_REGION=us-east-1
-> TWILIO_ACCOUNT_SID=xxx
-> TWILIO_AUTH_TOKEN=xxx
 > GITHUB_TOKEN=xxx
 > ```
 > and load the content of the file in the terminal session like `➜ export $(grep -v '^#' .env | xargs)`.
-> Be aware that if you are not using a `.private.tfvars`, you need to bundle all it's equivalents in `TF_VAR_*` format here.
 >
 > NOTE (!!)
 >
 > From now on, the above env vars are exported to this console session ~only~ (bash/powershell/whatever). Be sure you continue to use this session, or in case of opening a different one, you repeat the step to export the required variables.
 
-9. Run the script below from `flex-plugins/scripts/` folder. Twilio creates a bunch of default resources on a new account and Aselo uses some of them. We need to import them into terraform first, otherwise terraform assumes they don't exist and will try to create them, resulting in errors.
-```shell
-npm run twilioResources -- import-account-defaults <helpline>-<environment> [-v path-from-tf-root-to-my-private.tfvars]
-```
-10. From the folder you created for the account (`twilio-iac/<helpline>-<environment>/`), run and review the output of:
-```shell
-terraform plan [--var-file my-private.tfvars]
-```
-11. Run:
-```shell
-terraform apply [--var-file my-private.tfvars]
-```
-12. Go to the console for your environment, go into Functions > Services > serverless > environments and copy the domain for production (e.g. http://serverless-1234-production.twil.io) and set it as your `serverless_url` (or `TF_VAR_serverless_url` environment variable).
-13. Rerun
-```shell
-terraform apply [-var-file my-private.tfvars]
-```
+5. Run `make setup-new-environment` from your new folder (you might need to run `make init tf_args=-reconfigure` if it complains after you set up the ssm secrets.)
+
+> The first time you run this, you will need to enter the following secrets:
+>
+> *Twilio Account SID* - this is the account SID for the Twilio account you are working on. You can find this in the Twilio console, under the "Project Info" section.
+>
+> *Twilio Auth Token* - this is the auth token for the Twilio account you are working on. You can find this in the Twilio console, under the "Project Info" section.
+>
+> *Datadog App ID* - this is the Datadog App ID for the Datadog account you are working on. You can find this in the Datadog console, under the "API" section.
+>
+> *Datadog Access Token* - this is the Datadog Access Token for the Datadog account you are working on. You can find this in the Datadog console, under the "API" section.
+
+
 Unfortunately, a feature gap in the twilio terraform provider means the domain URL cannot be extracted from the resource. The easiest workaround is to put it in a variable after it has been generated initially
 
-14. Go into Twilio Console -> Autopilot -> demo_chatbot and check if the 'redirect_function' task has the correct serverless url set. If it is not correct, update it manually in Twilio Console.
+6. Go into Twilio Console -> Autopilot -> demo_chatbot and check if the 'redirect_function' task has the correct serverless url set. If it is not correct, update it manually in Twilio Console.
     Unfortunately due to this issue with the provider, it may not be updated as part of the second `terraform apply`: https://github.com/twilio/terraform-provider-twilio/issues/92
-15. Don't forget to raise a PR to merge the new configuration you created
+
+7. Don't forget to raise a PR to merge the new configuration you created
 
 
 ## Importing a pre-existing environment

@@ -22,34 +22,27 @@
     "name": "referredTo",
     "label": "Referred To",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
         "label": ""
       },
       {
-        "value": "Clinic",
-        "label": "Clinic"
+        "value": "ReferralsToDutyBearer",
+        "label": "การส่งต่อไปยังหน่วยงานรับผิดชอบ"
       },
       {
-        "value": "Hospital",
-        "label": "Hospital"
+        "value": "ReferralsToCivilSociety",
+        "label": "การส่งต่อไปยังหน่วยงานประชาสังคม"
       },
       {
-        "value": "Social Welfare",
-        "label": "Social Welfare"
+        "value": "ReportsToCSAMAutority",
+        "label": "รายงาน CSAM"
       },
       {
-        "value": "Police",
-        "label": "Police"
-      },
-      {
-        "value": "Religious leader",
-        "label": "Religious leader"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
+        "value": "อื่นๆ",
+        "label": "อื่นๆ"
       }
     ],
     "required": {

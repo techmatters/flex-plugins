@@ -1,37 +1,43 @@
 [
   {
     "name": "child",
-    "label": "Child calling about self",
+    "label": "เด็ก",
     "type": "button",
     "category": "data"
   },
   {
     "name": "caller",
-    "label": "Someone calling about a child",
+    "label": "ผู้ติดต่ออื่น",
     "type": "button",
     "category": "data"
   },
   {
     "name": "silent",
-    "label": "Silent",
+    "label": "สายเงียบ",
     "type": "button",
     "category": "non-data"
   },
   {
     "name": "wrongNumber",
-    "label": "Wrong Number",
+    "label": "โทรผิด",
     "type": "button",
     "category": "non-data"
   },
   {
     "name": "joke",
-    "label": "Prank",
+    "label": "ก่อกวน",
     "type": "button",
     "category": "non-data"
   },
   {
     "name": "abusive",
-    "label": "Harassment",
+    "label": "คุกคาม",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "hangup",
+    "label": "สายหลุด",
     "type": "button",
     "category": "non-data"
   }

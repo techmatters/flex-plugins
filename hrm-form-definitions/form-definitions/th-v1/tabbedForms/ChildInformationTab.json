@@ -1,5 +1,10 @@
 [
   {
+    "name": "nickname",
+    "label": "Nickname",
+    "type": "input"
+  },
+  {
     "name": "firstName",
     "label": "First Name",
     "type": "input"
@@ -13,33 +18,11 @@
     "name": "gender",
     "label": "Gender",
     "type": "select",
-    "unknownOption": "Desconocido",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Boy",
-        "label": "Boy"
-      },
-      {
-        "value": "Girl",
-        "label": "Girl"
-      },
-      {
-        "value": "Non Binary",
-        "label": "Non Binary"
-      },
-      {
-        "value": "LGBTQIA+",
-        "label": "LGBTQIA+"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ],
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "genderOptions",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -49,52 +32,11 @@
     "name": "age",
     "label": "Age",
     "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Unborn",
-        "label": "Unborn"
-      },
-      {
-        "value": "0 - 03",
-        "label": "0 - 03"
-      },
-      {
-        "value": "04 - 06",
-        "label": "04 - 06"
-      },
-      {
-        "value": "07 - 09",
-        "label": "07 - 09"
-      },
-      {
-        "value": "10 - 12",
-        "label": "10 - 12"
-      },
-      {
-        "value": "13 - 15",
-        "label": "13 - 15"
-      },
-      {
-        "value": "16 - 18",
-        "label": "16 - 18"
-      },
-      {
-        "value": "19 - 25",
-        "label": "19 - 25"
-      },
-      {
-        "value": ">25",
-        "label": ">25"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ],
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "ageOptions",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -111,319 +53,25 @@
     "type": "input"
   },
   {
+    "name": "area",
+    "label": "Area",
+    "type": "select",
+    "defaultOption": {
+      "value": "unknown",
+      "label": ""
+    },
+    "optionsReferenceKey": "areaOptions"
+  },
+  {
     "name": "province",
     "label": "Province",
-    "type": "select",
-    "options": [
-      {
-        "value": "กรุงเทพมหานคร",
-        "label": "กรุงเทพมหานคร"
-      },
-      {
-        "value": "สมุทรปราการ",
-        "label": "สมุทรปราการ"
-      },
-      {
-        "value": "นนทบุร",
-        "label": "นนทบุร"
-      },
-      {
-        "value": "ปทุมธานี",
-        "label": "ปทุมธานี"
-      },
-      {
-        "value": "พระนครศรีอยุธยา",
-        "label": "พระนครศรีอยุธยา"
-      },
-      {
-        "value": "อ่างทอง",
-        "label": "อ่างทอง"
-      },
-      {
-        "value": "ลพบุร",
-        "label": "ลพบุร"
-      },
-      {
-        "value": "สิงห์บุร",
-        "label": "สิงห์บุร"
-      },
-      {
-        "value": "ชัยนาท",
-        "label": "ชัยนาท"
-      },
-      {
-        "value": "สระบุรี",
-        "label": "สระบุรี"
-      },
-      {
-        "value": "ชลบุรี",
-        "label": "ชลบุรี"
-      },
-      {
-        "value": "ระยอง",
-        "label": "ระยอง"
-      },
-      {
-        "value": "จันทบุรี",
-        "label": "จันทบุรี"
-      },
-      {
-        "value": "ตราด",
-        "label": "ตราด"
-      },
-      {
-        "value": "ฉะเชิงเทรา",
-        "label": "ฉะเชิงเทรา"
-      },
-      {
-        "value": "ปราจีนบุรี",
-        "label": "ปราจีนบุรี"
-      },
-      {
-        "value": "นครนายก",
-        "label": "นครนายก"
-      },
-      {
-        "value": "สระแก้ว",
-        "label": "สระแก้ว"
-      },
-      {
-        "value": "นครราชสีมา",
-        "label": "นครราชสีมา"
-      },
-      {
-        "value": "บุรีรัมย์",
-        "label": "บุรีรัมย์"
-      },
-      {
-        "value": "สุรินทร์",
-        "label": "สุรินทร์"
-      },
-      {
-        "value": "ศรีสะเกษ",
-        "label": "ศรีสะเกษ"
-      },
-      {
-        "value": "อุบลราชธานี",
-        "label": "อุบลราชธานี"
-      },
-      {
-        "value": "ยโสธร",
-        "label": "ยโสธร"
-      },
-      {
-        "value": "ชัยภูมิ",
-        "label": "ชัยภูมิ"
-      },
-      {
-        "value": "อำนาจเจริญ",
-        "label": "อำนาจเจริญ"
-      },
-      {
-        "value": "หนองบัวลำภู",
-        "label": "หนองบัวลำภู"
-      },
-      {
-        "value": "ขอนแก่น",
-        "label": "ขอนแก่น"
-      },
-      {
-        "value": "อุดรธานี",
-        "label": "อุดรธานี"
-      },
-      {
-        "value": "เลย",
-        "label": "เลย"
-      },
-      {
-        "value": "หนองคาย_",
-        "label": "หนองคาย_"
-      },
-      {
-        "value": "มหาสารคาม",
-        "label": "มหาสารคาม"
-      },
-      {
-        "value": "ร้อยเอ็ด",
-        "label": "ร้อยเอ็ด"
-      },
-      {
-        "value": "กาฬสินธุ์",
-        "label": "กาฬสินธุ์"
-      },
-      {
-        "value": "สกลนคร",
-        "label": "สกลนคร"
-      },
-      {
-        "value": "นครพนม",
-        "label": "นครพนม"
-      },
-      {
-        "value": "มุกดาหาร",
-        "label": "มุกดาหาร"
-      },
-      {
-        "value": "เชียงใหม่",
-        "label": "เชียงใหม่"
-      },
-      {
-        "value": "ลำพูน",
-        "label": "ลำพูน"
-      },
-      {
-        "value": "ลำปาง",
-        "label": "ลำปาง"
-      },
-      {
-        "value": "อุตรดิตถ์",
-        "label": "อุตรดิตถ์"
-      },
-      {
-        "value": "แพร่",
-        "label": "แพร่"
-      },
-      {
-        "value": "น่าน",
-        "label": "น่าน"
-      },
-      {
-        "value": "พะเยา",
-        "label": "พะเยา"
-      },
-      {
-        "value": "เชียงราย",
-        "label": "เชียงราย"
-      },
-      {
-        "value": "แม่ฮ่องสอน",
-        "label": "แม่ฮ่องสอน"
-      },
-      {
-        "value": "นครสวรรค์",
-        "label": "นครสวรรค์"
-      },
-      {
-        "value": "อุทัยธานี",
-        "label": "อุทัยธานี"
-      },
-      {
-        "value": "กำแพงเพชร",
-        "label": "กำแพงเพชร"
-      },
-      {
-        "value": "ตาก",
-        "label": "ตาก"
-      },
-      {
-        "value": "สุโขทัย",
-        "label": "สุโขทัย"
-      },
-      {
-        "value": "พิษณุโลก",
-        "label": "พิษณุโลก"
-      },
-      {
-        "value": "พิจิตร",
-        "label": "พิจิตร"
-      },
-      {
-        "value": "เพชรบูรณ์",
-        "label": "เพชรบูรณ์"
-      },
-      {
-        "value": "ราชบุรี",
-        "label": "ราชบุรี"
-      },
-      {
-        "value": "กาญจนบุรี",
-        "label": "กาญจนบุรี"
-      },
-      {
-        "value": "สุพรรณบุรี",
-        "label": "สุพรรณบุรี"
-      },
-      {
-        "value": "นครปฐม",
-        "label": "นครปฐม"
-      },
-      {
-        "value": "สมุทรสาคร",
-        "label": "สมุทรสาคร"
-      },
-      {
-        "value": "สมุทรสงคราม",
-        "label": "สมุทรสงคราม"
-      },
-      {
-        "value": "เพชรบุรี",
-        "label": "เพชรบุรี"
-      },
-      {
-        "value": "ประจวบคีรีขันธ์",
-        "label": "ประจวบคีรีขันธ์"
-      },
-      {
-        "value": "นครศรีธรรมราช",
-        "label": "นครศรีธรรมราช"
-      },
-      {
-        "value": "กระบี่",
-        "label": "กระบี่"
-      },
-      {
-        "value": "พังงา",
-        "label": "พังงา"
-      },
-      {
-        "value": "ภูเก็ต",
-        "label": "ภูเก็ต"
-      },
-      {
-        "value": "สุราษฎร์ธานี",
-        "label": "สุราษฎร์ธานี"
-      },
-      {
-        "value": "ระนอง",
-        "label": "ระนอง"
-      },
-      {
-        "value": "ชุมพร",
-        "label": "ชุมพร"
-      },
-      {
-        "value": "สงขลา",
-        "label": "สงขลา"
-      },
-      {
-        "value": "สตูล",
-        "label": "สตูล"
-      },
-      {
-        "value": "ตรัง",
-        "label": "ตรัง"
-      },
-      {
-        "value": "พัทลุง",
-        "label": "พัทลุง"
-      },
-      {
-        "value": "ปัตตานี",
-        "label": "ปัตตานี"
-      },
-      {
-        "value": "ยะลา",
-        "label": "ยะลา"
-      },
-      {
-        "value": "นราธิวาส",
-        "label": "นราธิวาส"
-      },
-      {
-        "value": "บึงกาฬ",
-        "label": "บึงกาฬ"
-      }
-    ]
+    "type": "dependent-select",
+    "dependsOn": "area",
+    "defaultOption": {
+      "value": "unknown",
+      "label": ""
+    },
+    "optionsReferenceKey": "provinceOptions"
   },
   {
     "name": "postalCode",
@@ -445,9 +93,66 @@
     "type": "input"
   },
   {
+    "name": "contactChannel",
+    "label": "Preferred method of contact",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "โทรศัพท์",
+        "label": "โทรศัพท์"
+      },
+      {
+        "value": "Facebook",
+        "label": "Facebook"
+      },
+      {
+        "value": "Twitter",
+        "label": "Twitter"
+      },
+      {
+        "value": "Instagram",
+        "label": "Instagram"
+      },
+      {
+        "value": "Line",
+        "label": "Line"
+      },
+      {
+        "value": "Email",
+        "label": "Email"
+      },
+      {
+        "value": "ติดต่อศูนย์",
+        "label": "ติดต่อศูนย์"
+      },
+      {
+        "value": "ลงพื้นที่",
+        "label": "ลงพื้นที่"
+      },
+      {
+        "value": "จดหมาย",
+        "label": "จดหมาย"
+      },
+      {
+        "value": "TikTok",
+        "label": "TikTok"
+      }
+    ]
+  },
+  {
     "name": "language",
     "label": "Language",
-    "type": "input"
+    "type": "select",
+    "defaultOption": {
+      "value": "ภาษาไทย",
+      "label": "ภาษาไทย"
+    },
+    "optionsReferenceKey": "languageOptions"
   },
   {
     "name": "nationality",
@@ -460,11 +165,6 @@
     "type": "input"
   },
   {
-    "name": "emergencyContact",
-    "label": "Emergency Contact",
-    "type": "input"
-  },
-  {
     "name": "schoolName",
     "label": "School Name",
     "type": "input"
@@ -473,38 +173,54 @@
     "name": "gradeLevel",
     "label": "Grade Level",
     "type": "select",
-    "unknownOption": "",
+    "unknownOption": "Unknown",
     "options": [
       {
-        "value": "",
+        "value": "Unknown",
         "label": ""
       },
       {
-        "value": "1",
-        "label": "1"
+        "value": "อนุบาล",
+        "label": "อนุบาล"
       },
       {
-        "value": "2",
-        "label": "2"
+        "value": "ประถมศึกษา",
+        "label": "ประถมศึกษา"
       },
       {
-        "value": "3",
-        "label": "3"
+        "value": "มัธยมศึกษาตอนต้น",
+        "label": "มัธยมศึกษาตอนต้น"
       },
       {
-        "value": "4",
-        "label": "4"
+        "value": "มัธยมศึกษาตอนปลาย",
+        "label": "มัธยมศึกษาตอนปลาย"
       },
       {
-        "value": "5",
-        "label": "5"
+        "value": "ปริญญาวิชาชีพ (ปวช.)",
+        "label": "ปริญญาวิชาชีพ (ปวช.)"
+      },
+      {
+        "value": "ปริญญาวิชาชีพชั้นสูง (ปวส.)",
+        "label": "ปริญญาวิชาชีพชั้นสูง (ปวส.)"
+      },
+      {
+        "value": "มหาวิทยาลัย",
+        "label": "มหาวิทยาลัย"
+      },
+      {
+        "value": "การศึกษานอกโรงเรียน (กศน.)",
+        "label": "การศึกษานอกโรงเรียน (กศน.)"
+      },
+      {
+        "value": "ไม่ได้อยู่ในระบบการศึกษา",
+        "label": "ไม่ได้อยู่ในระบบการศึกษา"
       }
     ]
   },
   {
-    "name": "HIV Positive?",
-    "label": "HIV Positive?",
-    "type": "mixed-checkbox"
+    "name": "birthdate",
+    "type": "date-input",
+    "label": "Birthdate"
   },
   {
     "name": "livingSituation",
@@ -513,95 +229,86 @@
     "unknownOption": "Unknown",
     "options": [
       {
-        "value": "",
+        "value": "Unknown",
         "label": ""
       },
       {
-        "value": "Alternative care",
-        "label": "Alternative care"
+        "value": "อาศัยอยู่กับพ่อแม่",
+        "label": "อาศัยอยู่กับพ่อแม่"
       },
       {
-        "value": "Group residential facility",
-        "label": "Group residential facility"
+        "value": "อาศัยอยู่กับเครือญาติ",
+        "label": "อาศัยอยู่กับเครือญาติ"
       },
       {
-        "value": "Living Independently",
-        "label": "Living Independently"
+        "value": "อยู่อิสระ",
+        "label": "อยู่อิสระ"
       },
       {
-        "value": "With relatives",
-        "label": "With relatives"
+        "value": "ไร้ที่พักถาวร",
+        "label": "ไร้ที่พักถาวร"
       },
       {
-        "value": "With parent(s)",
-        "label": "With parent(s)"
+        "value": "การดูแลทดแทนครอบครัว",
+        "label": "การดูแลทดแทนครอบครัว"
       },
       {
-        "value": "Homeless or marginally housed",
-        "label": "Homeless or marginally housed"
+        "value": "การดูแลรูปแบบสถาบัน",
+        "label": "การดูแลรูปแบบสถาบัน"
       },
       {
-        "value": "In detention",
-        "label": "In detention"
+        "value": "อยู่ในสถานกักกัน",
+        "label": "อยู่ในสถานกักกัน"
       },
       {
-        "value": "Other",
-        "label": "Other"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
+        "value": "ไม่ทราบ",
+        "label": "ไม่ทราบ"
       }
     ]
+  },
+  {
+    "name": "hivPositive",
+    "label": "HIV Positive?",
+    "type": "checkbox"
   },
   {
     "name": "inConflictWithTheLaw",
     "label": "Child in conflict with the law",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "livingInConflictZone",
     "label": "Child living in conflict zone",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "livingInPoverty",
     "label": "Child living in poverty",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "memberOfAnEthnic",
     "label": "Child member of an ethnic, racial or religious minority",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
-    "name": "LGBTQI+",
+    "name": "LGBTQI",
     "label": "LGBTQI+ / SOGIESC child",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
-    "name": "childOnTheMove",
-    "label": "Child on the move",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Voluntarily",
-        "label": "Voluntarily"
-      },
-      {
-        "value": "Involuntarily",
-        "label": "Involuntarily"
-      }
-    ]
+    "name": "childOnTheMoveVoluntarily",
+    "label": "เด็กเคลื่อนย้าย-โดยสมัครใจ",
+    "type": "checkbox"
+  },
+  {
+    "name": "childOnTheMoveInvoluntarily",
+    "label": "เด็กเคลื่อนย้าย-ถูกบังคับ",
+    "type": "checkbox"
   },
   {
     "name": "childWithDisability",
     "label": "Child with disability",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   }
 ]

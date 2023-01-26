@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { CustomITask, isTwilioTask } from '../types/types';
 import {
   viewPreviousContacts as viewPreviousContactsAction,
   searchContacts as searchContactsAction,
@@ -16,8 +15,9 @@ import { Bold } from '../styles/HrmStyles';
 import { StyledLink } from '../styles/search';
 import { ChannelTypes, channelTypes } from '../states/DomainConstants';
 import { changeRoute as changeRouteAction } from '../states/routing/actions';
-import { getFormattedNumberFromTask, getNumberFromTask } from '../utils/task';
+import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../utils/task';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../permissions';
+import { CustomITask, isTwilioTask } from '../types/types';
 
 type OwnProps = {
   task: CustomITask;
@@ -25,17 +25,6 @@ type OwnProps = {
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
-export const localizedSource: { [channelType in ChannelTypes]: string } = {
-  [channelTypes.web]: 'PreviousContacts-IPAddress',
-  [channelTypes.voice]: 'PreviousContacts-PhoneNumber',
-  [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
-  [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
-  [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
-  [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
-  [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
-  [channelTypes.line]: 'PreviousContacts-LineUser',
-};
 
 const PreviousContactsBanner: React.FC<Props> = ({
   task,
@@ -74,7 +63,22 @@ const PreviousContactsBanner: React.FC<Props> = ({
     changeRoute({ route: 'tabbed-forms', subroute: 'search' });
   };
 
-  const contactIdentifier = getFormattedNumberFromTask(task);
+  let localizedSourceFromTask: { [channelType in ChannelTypes]: string };
+  let contactIdentifier: string;
+  if (isTwilioTask(task)) {
+    localizedSourceFromTask = {
+      [channelTypes.web]: `${getContactValueTemplate(task)}`,
+      [channelTypes.voice]: 'PreviousContacts-PhoneNumber',
+      [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
+      [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
+      [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
+      [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
+      [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
+      [channelTypes.line]: 'PreviousContacts-LineUser',
+    };
+    contactIdentifier = getFormattedNumberFromTask(task);
+  }
+
   return (
     <div className={editContactFormOpen ? 'editingContact' : ''}>
       <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenEditingContact">
@@ -106,7 +110,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
           &nbsp;
           <Template code="PreviousContacts-From" />
           &nbsp;
-          <Template code={localizedSource[task.channelType]} />
+          <Template code={localizedSourceFromTask[task.channelType]} />
           &nbsp;
           {maskIdentifiers ? (
             <Bold>
@@ -115,6 +119,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
           ) : (
             <Bold>{contactIdentifier}</Bold>
           )}
+          .&nbsp;
         </pre>
         <StyledLink underline data-testid="PreviousContacts-ViewRecords" onClick={handleClickViewRecords}>
           <Template code="PreviousContacts-ViewRecords" />

@@ -32,6 +32,7 @@ const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedT
   const selected = !selectedTaskSid && isAddingOfflineContact;
   const name =
     offlineContactTask &&
+    (offlineContactTask.childInformation.firstName || offlineContactTask.childInformation.lastName) &&
     `${offlineContactTask.childInformation.firstName} ${offlineContactTask.childInformation.lastName}`;
   const formattedName = name && name.trim() !== '' ? name : <Template code="Anonymous" />;
 

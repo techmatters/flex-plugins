@@ -13,44 +13,66 @@
     "name": "relationshipToChild",
     "label": "Relationship to Child",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
         "label": ""
       },
       {
-        "value": "Peer",
-        "label": "Peer"
+        "value": "ไม่ทราบ",
+        "label": "ไม่ทราบ"
       },
       {
-        "value": "Caregiver(relative)",
-        "label": "Caregiver(relative)"
+        "value": "มารดา",
+        "label": "มารดา"
       },
       {
-        "value": "Partner",
-        "label": "Partner"
+        "value": "บิดา",
+        "label": "บิดา"
       },
       {
-        "value": "Other adult known to the child",
-        "label": "Other adult known to the child"
+        "value": "พี่น้อง",
+        "label": "พี่น้อง"
       },
       {
-        "value": "Sibling(s)",
-        "label": "Sibling(s)"
+        "value": "ญาติ",
+        "label": "ญาติ"
       },
       {
-        "value": "Stranger",
-        "label": "Stranger"
+        "value": "เพื่อน",
+        "label": "เพื่อน"
       },
       {
-        "value": "Person in a position of responsibility",
-        "label": "Person in a position of responsibility"
+        "value": "แฟน",
+        "label": "แฟน"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "คนรู้จัก",
+        "label": "คนรู้จัก"
+      },
+      {
+        "value": "ผู้ที่รับผิดชอบดูแลเด็ก",
+        "label": "ผู้ที่รับผิดชอบดูแลเด็ก"
+      },
+      {
+        "value": "คนแปลกหน้า",
+        "label": "คนแปลกหน้า"
+      },
+      {
+        "value": "อื่นๆ",
+        "label": "อื่นๆ"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "otherRelationshipToChild",
+    "label": "Other Relationship to Child",
+    "type": "input"
   },
   {
     "name": "streetAddress",
@@ -63,9 +85,25 @@
     "type": "input"
   },
   {
-    "name": "State/County",
-    "label": "State/County",
-    "type": "input"
+    "name": "area",
+    "label": "Area",
+    "type": "select",
+    "defaultOption": {
+      "value": "unknown",
+      "label": ""
+    },
+    "optionsReferenceKey": "areaOptions"
+  },
+  {
+    "name": "province",
+    "label": "Province",
+    "type": "dependent-select",
+    "dependsOn": "area",
+    "defaultOption": {
+      "value": "unknown",
+      "label": ""
+    },
+    "optionsReferenceKey": "provinceOptions"
   },
   {
     "name": "postalCode",
@@ -86,33 +124,11 @@
     "name": "gender",
     "label": "Gender",
     "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Boy",
-        "label": "Boy"
-      },
-      {
-        "value": "Girl",
-        "label": "Girl"
-      },
-      {
-        "value": "Non Binary",
-        "label": "Non Binary"
-      },
-      {
-        "value": "LGBTQIA+",
-        "label": "LGBTQIA+"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ],
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "genderOptions",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -122,52 +138,11 @@
     "name": "age",
     "label": "Age",
     "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Unborn",
-        "label": "Unborn"
-      },
-      {
-        "value": "0 - 03",
-        "label": "0 - 03"
-      },
-      {
-        "value": "04 - 06",
-        "label": "04 - 06"
-      },
-      {
-        "value": "07 - 09",
-        "label": "07 - 09"
-      },
-      {
-        "value": "10 - 12",
-        "label": "10 - 12"
-      },
-      {
-        "value": "13 - 15",
-        "label": "13 - 15"
-      },
-      {
-        "value": "16 - 18",
-        "label": "16 - 18"
-      },
-      {
-        "value": "19 - 25",
-        "label": "19 - 25"
-      },
-      {
-        "value": ">25",
-        "label": ">25"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ],
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "ageOptions",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -176,7 +151,12 @@
   {
     "name": "language",
     "label": "Language",
-    "type": "input"
+    "type": "select",
+    "defaultOption": {
+      "value": "ภาษาไทย",
+      "label": "ภาษาไทย"
+    },
+    "optionsReferenceKey": "languageOptions"
   },
   {
     "name": "nationality",

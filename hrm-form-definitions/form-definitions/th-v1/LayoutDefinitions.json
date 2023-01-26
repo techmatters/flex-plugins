@@ -1,7 +1,9 @@
 {
   "contact": {
     "callerInformation": {},
-    "childInformation": {},
+    "childInformation": {
+      "splitFormAt": 12
+    },
     "caseInformation": {
       "splitFormAt": 4
     }
@@ -39,5 +41,6 @@
     "documents": {
       "splitFormAt": 1
     }
-  }
+  },
+  "thaiCharacterPdfSupport": true
 }

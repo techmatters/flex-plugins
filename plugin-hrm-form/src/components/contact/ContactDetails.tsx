@@ -1,11 +1,12 @@
 // TODO: complete this type
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 import ContactDetailsHome from './ContactDetailsHome';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
+import { configurationBase, contactFormsBase, csamReportBase, namespace, RootState } from '../../states';
 import EditContactSection from './EditContactSection';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { DetailsContainer } from '../../styles/search';
@@ -16,7 +17,9 @@ import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
 import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateDraft } from '../../states/contacts/existingContacts';
-import { transformContactFormValues } from '../../services/ContactService';
+import { transformValues } from '../../services/ContactService';
+import CSAMReport from '../CSAMReport/CSAMReport';
+import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
 
 type OwnProps = {
   contactId: string;
@@ -38,7 +41,8 @@ const ContactDetails: React.FC<Props> = ({
   savedContact,
   draftContact,
   enableEditing = true,
-  updateContactDraft,
+  draftCsamReport,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const version = savedContact?.details.definitionVersion;
 
@@ -47,13 +51,13 @@ const ContactDetails: React.FC<Props> = ({
    * Check if the definitionVersion for this case exists in redux, and look for it if not.
    */
   React.useEffect(() => {
-    const fetchDefinitionVersions = async (v: string) => {
+    const fetchDefinitionVersions = async () => {
       const definitionVersion = await getDefinitionVersion(version);
       updateDefinitionVersion(version, definitionVersion);
     };
 
     if (version && !definitionVersions[version]) {
-      fetchDefinitionVersions(version);
+      fetchDefinitionVersions();
     }
   }, [definitionVersions, updateDefinitionVersion, version, savedContact]);
 
@@ -80,9 +84,9 @@ const ContactDetails: React.FC<Props> = ({
         autoFocus={true}
         updateFormActionDispatcher={dispatch => values =>
           dispatch(
-            updateContactDraft(contactId, {
+            updateDraft(contactId, {
               details: {
-                [formPath]: transformContactFormValues(values[formPath], section.getFormDefinition(definitionVersion)),
+                [formPath]: transformValues(section.getFormDefinition(definitionVersion))(values[formPath]),
               },
             }),
           )}
@@ -110,7 +114,9 @@ const ContactDetails: React.FC<Props> = ({
         </EditContactSection>
       );
     }
+
     const { callerInformation, caseInformation, childInformation } = draftContact.details;
+
     if (childInformation)
       return editContactSectionElement(contactDetailsSectionFormApi.CHILD_INFORMATION, 'childInformation');
     if (callerInformation)
@@ -118,6 +124,10 @@ const ContactDetails: React.FC<Props> = ({
     if (caseInformation)
       return editContactSectionElement(contactDetailsSectionFormApi.CASE_INFORMATION, 'caseInformation');
   }
+  if (draftCsamReport) {
+    return <CSAMReport api={existingContactCSAMApi(contactId)} />;
+  }
+
   return (
     <ContactDetailsHome
       context={context}
@@ -129,15 +139,16 @@ const ContactDetails: React.FC<Props> = ({
   );
 };
 
-const mapDispatchToProps = {
-  updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
-  updateContactDraft: updateDraft,
-};
+const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string, any>>) => ({
+  updateDefinitionVersion: (version: string, definitionVersion: DefinitionVersion) =>
+    dispatch(ConfigActions.updateDefinitionVersion(version, definitionVersion)),
+});
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
+const mapStateToProps = (state: RootState, { contactId }: OwnProps) => ({
   definitionVersions: state[namespace][configurationBase].definitionVersions,
-  savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
-  draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
+  savedContact: state[namespace][contactFormsBase].existingContacts[contactId]?.savedContact,
+  draftContact: state[namespace][contactFormsBase].existingContacts[contactId]?.draftContact,
+  draftCsamReport: state[namespace][csamReportBase].contacts[contactId],
 });
 
 ContactDetails.displayName = 'ContactDetails';

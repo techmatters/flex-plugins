@@ -1,133 +1,131 @@
 {
-  "Childline Thailand": {
-    "Missing children": {
+  "คอนแท็กต์ เซ็นเตอร์": {
+    "เด็กหาย": {
       "color": "#BBE3FF",
       "subcategories": [
-        "Child abduction",
-        "Lost, unaccounted for or otherwise missing child",
-        "Runaway",
-        "Unspecified/Other"
+        "ขโมยลักพาตัว",
+        "หายตัว",
+        "หนีออกจากบ้าน",
+        "อื่นๆ"
       ]
     },
-    "Violence": {
+    "ความรุนแรง": {
       "color": "#F5A623",
       "subcategories": [
-        "Bullying",
-        "Child/Early/Forced marriage",
-        "Child labour",
-        "Commercial sexual exploitation (offline)",
-        "Female Genital Mutilation (FGM)",
-        "Gender-based harmful traditional practices (other than FGM)",
-        "Harmful traditional practices other than child marriage and FGM",
-        "Mental/Emotional violence",
-        "Neglect (or negligent treatment)",
-        "Online sexual abuse",
-        "Online sexual exploitation",
-        "Physical violence",
-        "Sexual violence",
-        "Unspecified/Other"
+        "การบูลลี่",
+        "บังคับ/แต่งงานเด็ก",
+        "แรงงานเด็ก",
+        "การแสวงหาประโยชน์ทางเพศจากเด็ก (Offline)",
+        "การตัดอวัยวะเพศหญิง",
+        "ประเพณีที่เป็นอันตรายต่อเพศ",
+        "ประเพณีที่เป็นอันตรายต่อเด็ก",
+        "ความรุนแรงทางใจ/อารมณ์",
+        "ละเลย",
+        "ละเมิดทางเพศ",
+        "การแสวงหาประโยชน์ทางเพศจากเด็ก (Online)",
+        "ความรุนแรงทางกาย",
+        "ความรุนแรงทางเพศ",
+        "อื่นๆ"
       ]
     },
-    "Mental Health": {
+    "สุขภาพจิต": {
       "color": "#F8E900",
       "subcategories": [
-        "Addictive behaviours and substance use",
-        "Behavioural problems",
-        "Concerns about the self",
-        "Emotional distress – anger problems",
-        "Emotional distress – fear and anxiety problems",
-        "Emotional distress – mood problems",
-        "Neurodevelopmental concerns",
-        "Problems with eating behaviour",
-        "Self-harming behaviour",
-        "Suicidal thoughts and suicide attempts",
-        "Traumatic distress",
-        "Unspecified/Other"
+        "พฤติกรรมใช้สารเสพติด",
+        "ปัญหาพฤติกรรม",
+        "กังวลเกี่ยวกับตนเอง",
+        "อารมณ์โกรธ",
+        "อารมณ์กลัว/วิตกกังวล",
+        "ปัญหาทางอารมณ์",
+        "กังวลเกี่ยวกับการพัฒนาของระบบประสาท",
+        "ปัญหาพฤติกรรมการกิน",
+        "พฤติกรรมทำร้ายตัวเอง",
+        "ความคิดฆ่าตัวตาย/พยายามฆ่าตัวตาย",
+        "บาดแผลทางใจ",
+        "อื่นๆ"
       ]
     },
-    "Physical Health": {
+    "สุขภาพกาย": {
       "color": "#E86B6B",
       "subcategories": [
-        "COVID-19",
-        "General medical or lifestyle concerns",
-        "Medical or lifestyle information about HIV/AIDS",
-        "Male circumcision",
-        "Pregnancy and maternal care",
-        "Sexual and reproductive health",
-        "Nutrition",
-        "Unspecified/Other"
+        "กังวลเกี่ยวกับทางกายภาพทั่วไป",
+        "ข้อมูลและยาเกี่ยวกับ HIV/AIDS",
+        "การดูแลมารดาและการตั้งครรภ์",
+        "โภชนาการ",
+        "สุขภาพทางเพศและการเจริญพันธ์",
+        "อื่นๆ"
       ]
     },
-    "Accessibility": {
+    "การเข้าถึงบริการ": {
       "color": "#8055BA",
       "subcategories": [
-        "Education",
-        "Essential needs",
-        "General healthcare services",
-        "Legal services and advice",
-        "Mental health services",
-        "Sexual health services",
-        "Socio-economical services",
-        "Unspecified/Other"
+        "การศึกษา",
+        "ความต้องการที่จำเป็น",
+        "บริการสุขภาพกายทั่วไป",
+        "บริการด้านกฎหมาย/แนะนำ",
+        "บริการสุขภาพจิต",
+        "บริการสุขภาพทางเพศ",
+        "บริการทางเศรษฐกิจ/สังคม",
+        "อื่นๆ"
       ]
     },
-    "Discrimination and Exclusion": {
+    "การเลือกปฏิบัติและการกีดกัน": {
       "color": "#B971AF",
       "subcategories": [
-        "Ethnicity/nationality",
-        "Financial situation",
-        "Gender",
-        "Gender identity or expression and sexual orientation",
-        "Health",
-        "Philosophical or religious beliefs",
-        "Unspecified/Other"
+        "เชื้อชาติ/สัญชาติ",
+        "สถานะทางเศรษฐกิจ",
+        "เพศ",
+        "อัตลักษณ์ทางเพศ/การแสดงออก/รสนิยมทางเพศ",
+        "สุขภาพกาย",
+        "ความเชื่อทางศาสนาและปรัชญา",
+        "อื่นๆ"
       ]
     },
-    "Family Relationships": {
+    "ความสัมพันธ์ในครอบครัว": {
       "color": "#239613",
       "subcategories": [
-        "Adoption, fostering, and extended family placement",
-        "Relationship to caregiver",
-        "Family health and wellbeing",
-        "Relationship with sibling(s)",
-        "Unspecified/Other"
+        "การรับบุตรบุญธรรม/อุปถัมภ์/เลี้ยงดูโดยญาติ",
+        "ความสัมพันธ์กับผู้ดูแล",
+        "สภาพความเป็นอยู่ของครอบครัว",
+        "ความสัมพันธ์กับพี่/น้อง",
+        "อื่นๆ"
       ]
     },
-    "Peer Relationships": {
+    "ความสัมพันธ์ระหว่างเพื่อน": {
       "color": "#9AD703",
       "subcategories": [
-        "Friends and friendships",
-        "Partner relationships",
-        "Classmates/colleagues relationships",
-        "Unspecified/Other"
+        "เพื่อน-เพื่อน",
+        "คู่ครอง-คู่ชีวิต",
+        "เพื่อนร่วมชั้น-เพื่อนร่วมงาน",
+        "อื่นๆ"
       ]
     },
-    "Education and Occupation": {
+    "การศึกษาและอาชีพ": {
       "color": "#55AFAF",
       "subcategories": [
-        "Academic issues",
-        "Teacher and school problems",
-        "Problems at work",
-        "Unspecified/Other"
+        "ปัญหาทางวิชาการ",
+        "ปัญหาครู/โรงเรียน",
+        "ปัญหาที่ทำงาน",
+        "อื่นๆ"
       ]
     },
-    "Sexuality": {
+    "เรื่องเพศ": {
       "color": "#506BA5",
       "subcategories": [
-        "Sexual orientation and gender identity",
-        "Sexual behaviours",
-        "Unspecified/Other"
+        "รสนิยม/อัตลักษณ์ทางเพศ",
+        "พฤติกรรมทางเพศ",
+        "อื่นๆ"
       ]
     },
-    "Non-Counselling contacts": {
+    "ไม่ได้ให้คำปรึกษา": {
       "color": "#767777",
       "subcategories": [
-        "Complaints about the child helpline",
-        "Questions by parents",
-        "Questions about the child helpline",
-        "Questions about other services",
-        "\"Thank you for your assistance\"",
-        "Unspecified/Other"
+        "ก่อกวน/ทดสอบ",
+        "ร้องเรียนมูลนิธิสายเด็กฯ",
+        "สอบถามเกี่ยวกับมูลนิธิสายเด็กฯ",
+        "สอบถามเกี่ยวกับองค์กรอื่น",
+        "ขอบคุณสำหรับการช่วยเหลือ",
+        "อื่นๆ"
       ]
     }
   }

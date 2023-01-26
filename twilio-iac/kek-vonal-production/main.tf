@@ -7,16 +7,28 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "tl-terraform-state-twilio-hu-production"
-    key            = "twilio/terraform.tfstate"
+    bucket         = "tl-terraform-state-production"
+    key            = "twilio/hu/terraform.tfstate"
     dynamodb_table = "terraform-locks"
-    region = "us-east-1"
+    region         = "us-east-1"
     encrypt        = true
+    role_arn       = "arn:aws:iam::712893914485:role/tf-twilio-iac-production"
   }
 }
 
-locals {
+provider "aws" {
+  assume_role {
+    role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-${lower(local.environment)}"
+    session_name = "tf-${basename(abspath(path.module))}"
+  }
+}
 
+data "aws_ssm_parameter" "secrets" {
+  name     = "/terraform/twilio-iac/${basename(abspath(path.module))}/secrets.json"
+}
+
+locals {
+  secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   helpline  = "Kék Vonal"
   short_helpline = "HU"
   operating_info_key = "hu"
@@ -43,405 +55,11 @@ locals {
     "enable_previous_contacts": true
   }
 
-  ukr_chatbot_state = "Chatbot-ukr-HU"
-  ru_chatbot_state = "Chatbot-ru-HU"
+}
 
-  custom_messaging_flow_definition = jsonencode({
-    description = "Bot flow for creating a Flex messaging task",
-    states = [
-      {
-        name = "Trigger",
-        type = "trigger",
-        transitions = [
-          {
-            next = "split_language",
-            event = "incomingMessage"
-          },
-          {
-            event = "incomingCall"
-          },
-          {
-            event = "incomingConversationMessage"
-          },
-          {
-            event = "incomingRequest"
-          },
-          {
-            event = "incomingParent"
-          }
-        ],
-        properties = {
-          offset = {
-            x = 0,
-            y = -70
-          }
-        }
-      },
-      {
-        name = "smsAttributes",
-        type = "send-to-flex",
-        transitions = [
-          {
-            event = "callComplete"
-          },
-          {
-            event = "failedToEnqueue"
-          },
-          {
-            event = "callFailure"
-          }
-        ],
-        properties = {
-          offset = {
-            x = -330,
-            y = 1260
-          },
-          workflow = module.taskRouter.master_workflow_sid,
-          channel = module.taskRouter.chat_task_channel_sid,
-          attributes = "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
-        }
-      },
-      {
-        name = "ChatBot",
-        type = "send-to-auto-pilot",
-        transitions = [
-          {
-            next = "check_counselor_handoff",
-            event = "sessionEnded"
-          },
-          {
-            event = "failure"
-          }
-        ],
-        properties = {
-          chat_channel = "{{trigger.message.ChannelSid}}",
-          offset = {
-            x = -490,
-            y = 390
-          },
-          autopilot_assistant_sid = twilio_autopilot_assistants_v1.chatbot_default.sid,
-          from = "Bot",
-          chat_service = "{{trigger.message.InstanceSid}}",
-          body = "{{trigger.message.Body}}",
-          target_task = "greeting",
-          timeout = 14400
-        }
-      },
-      {
-        name = "check_counselor_handoff",
-        type = "split-based-on",
-        transitions = [
-          {
-            event = "noMatch"
-          },
-          {
-            next = "AdjustAttributes",
-            event = "match",
-            conditions = [
-              {
-                friendly_name = "If value equal_to counselor_handoff",
-                arguments = [
-                  "{{widgets.ChatBot.CurrentTask}}"
-                ],
-                type = "equal_to",
-                value = "counselor_handoff"
-              }
-            ]
-          }
-        ],
-        properties = {
-          input = "{{widgets.ChatBot.CurrentTask}}",
-          offset = {
-            x = 110,
-            y = 770
-          }
-        }
-      },
-      {
-        name = "defaultAttributes",
-        type = "send-to-flex",
-        transitions = [
-          {
-            event = "callComplete"
-          },
-          {
-            event = "failedToEnqueue"
-          },
-          {
-            event = "callFailure"
-          }
-        ],
-        properties = {
-          offset = {
-            x = -1420,
-            y = 1260
-          },
-          workflow = module.taskRouter.master_workflow_sid,
-          channel = module.taskRouter.default_task_channel_sid,
-          attributes = "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
-        }
-      },
-      {
-        name = "whatsappAttributes",
-        type = "send-to-flex",
-        transitions = [
-          {
-            event = "callComplete"
-          },
-          {
-            event = "failedToEnqueue"
-          },
-          {
-            event = "callFailure"
-          }
-        ],
-        properties = {
-          offset = {
-            x = -1060,
-            y = 1260
-          },
-          workflow = module.taskRouter.master_workflow_sid,
-          channel = module.taskRouter.chat_task_channel_sid,
-          attributes = "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
-        }
-      },
-      {
-        name = "facebookAttributes",
-        type = "send-to-flex",
-        transitions = [
-          {
-            event = "callComplete"
-          },
-          {
-            event = "failedToEnqueue"
-          },
-          {
-            event = "callFailure"
-          }
-        ],
-        properties = {
-          offset = {
-            x = -700,
-            y = 1260
-          },
-          workflow = module.taskRouter.master_workflow_sid,
-          channel = module.taskRouter.chat_task_channel_sid,
-          attributes = "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
-        }
-      },
-      {
-        name = "webAttributes",
-        type = "send-to-flex",
-        transitions = [
-          {
-            event = "callComplete"
-          },
-          {
-            event = "failedToEnqueue"
-          },
-          {
-            event = "callFailure"
-          }
-        ],
-        properties = {
-          offset = {
-            x = 40,
-            y = 1260
-          },
-          workflow = module.taskRouter.master_workflow_sid,
-          channel = module.taskRouter.chat_task_channel_sid,
-          attributes = "{\"language\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.language}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"${local.helpline}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
-        }
-      },
-      {
-        name = "AdjustAttributes",
-        type = "split-based-on",
-        transitions = [
-          {
-            next = "defaultAttributes",
-            event = "noMatch"
-          },
-          {
-            next = "whatsappAttributes",
-            event = "match",
-            conditions = [
-              {
-                friendly_name = "If value equal_to whatsapp",
-                arguments = [
-                  "{{trigger.message.ChannelAttributes.channel_type}}"
-                ],
-                type = "equal_to",
-                value = "whatsapp"
-              }
-            ]
-          },
-          {
-            next = "facebookAttributes",
-            event = "match",
-            conditions = [
-              {
-                friendly_name = "If value equal_to facebook",
-                arguments = [
-                  "{{trigger.message.ChannelAttributes.channel_type}}"
-                ],
-                type = "equal_to",
-                value = "facebook"
-              }
-            ]
-          },
-          {
-            next = "smsAttributes",
-            event = "match",
-            conditions = [
-              {
-                friendly_name = "If value equal_to sms",
-                arguments = [
-                  "{{trigger.message.ChannelAttributes.channel_type}}"
-                ],
-                type = "equal_to",
-                value = "sms"
-              }
-            ]
-          },
-          {
-            next = "webAttributes",
-            event = "match",
-            conditions = [
-              {
-                friendly_name = "If value equal_to web",
-                arguments = [
-                  "{{trigger.message.ChannelAttributes.channel_type}}"
-                ],
-                type = "equal_to",
-                value = "web"
-              }
-            ]
-          }
-        ],
-        properties = {
-          input = "{{trigger.message.ChannelAttributes.channel_type}}",
-          offset = {
-            x = -60,
-            y = 1020
-          }
-        }
-      },
-      {
-        name = "split_language",
-        type = "split-based-on",
-        transitions = [
-          {
-            event = "noMatch"
-          },
-          {
-            next = "ChatBot",
-            event = "match",
-            conditions = [
-              {
-                friendly_name = "If value equal_to hu-HU",
-                arguments = [
-                  "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
-                ],
-                type = "equal_to",
-                value = "hu-HU"
-              }
-            ]
-          },
-          {
-            next = local.ru_chatbot_state,
-            event = "match",
-            conditions = [
-              {
-                friendly_name = "If value equal_to ukr-HU",
-                arguments = [
-                  "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
-                ],
-                type = "equal_to",
-                value = "ru-HU"
-              }
-            ]
-          },
-          {
-            next = local.ukr_chatbot_state,
-            event = "match",
-            conditions = [
-              {
-                friendly_name = "If value equal_to ukr-HU",
-                arguments = [
-                  "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
-                ],
-                type = "equal_to",
-                value = "ukr-HU"
-              }
-            ]
-          }
-        ],
-        properties = {
-          input = "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}",
-          offset = {
-            x = -50,
-            y = 130
-          }
-        }
-      },
-      {
-        name = local.ru_chatbot_state,
-        type = "send-to-auto-pilot",
-        transitions = [
-          {
-            next = "check_counselor_handoff",
-            event = "sessionEnded"
-          },
-          {
-            event = "failure"
-          }
-        ],
-        properties = {
-          chat_channel = "{{trigger.message.ChannelSid}}",
-          offset = {
-            x = 150,
-            y = 410
-          },
-          autopilot_assistant_sid = twilio_autopilot_assistants_v1.chatbot_ru_HU.sid,
-          from = "Bot",
-          chat_service = "{{trigger.message.InstanceSid}}",
-          body = "{{trigger.message.Body}}",
-          target_task = "greeting",
-          timeout = 14400
-        }
-      },
-      {
-        name = local.ukr_chatbot_state
-        type = "send-to-auto-pilot",
-        transitions = [
-          {
-            next = "check_counselor_handoff",
-            event = "sessionEnded"
-          },
-          {
-            event = "failure"
-          }
-        ],
-        properties = {
-          chat_channel = "{{trigger.message.ChannelSid}}",
-          offset = {
-            x = 700,
-            y = 420
-          },
-          autopilot_assistant_sid = twilio_autopilot_assistants_v1.chatbot_ukr_HU.sid,
-          from = "Bot",
-          chat_service = "{{trigger.message.InstanceSid}}",
-          body = "{{trigger.message.Body}}",
-          target_task = "greeting",
-          timeout = 14400
-        }
-      }
-    ],
-    initial_state = "Trigger",
-    flags         = {
-      allow_concurrent_calls = true
-    }
-  })
+provider "twilio" {
+  username = local.secrets.twilio_account_sid
+  password = local.secrets.twilio_auth_token
 }
 
 module "hrmServiceIntegration" {
@@ -455,6 +73,8 @@ module "hrmServiceIntegration" {
 
 module "serverless" {
   source = "../terraform-modules/serverless/default"
+  twilio_account_sid = local.secrets.twilio_account_sid
+  twilio_auth_token = local.secrets.twilio_auth_token
 }
 
 module "services" {
@@ -469,7 +89,7 @@ module "services" {
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   custom_task_routing_filter_expression = "phone=='+3680984590' OR phone=='+3612344587' OR channelType=='web'"
-  serverless_url = var.serverless_url
+  serverless_url = module.serverless.serverless_environment_production_url
   skip_timeout_expression = "1==1"
   include_default_filter = true
   helpline = "Kék Vonal"
@@ -481,17 +101,26 @@ module studioFlow {
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   default_task_channel_sid = module.taskRouter.default_task_channel_sid
   pre_survey_bot_sid = twilio_autopilot_assistants_v1.chatbot_default.sid
-  custom_flow_definition = local.custom_messaging_flow_definition
+  custom_flow_definition = templatefile(
+    "./flow.tftpl",
+    {
+      master_workflow_sid = module.taskRouter.master_workflow_sid
+      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+      default_task_channel_sid = module.taskRouter.default_task_channel_sid
+      chatbot_default_sid = twilio_autopilot_assistants_v1.chatbot_default.sid
+      chatbot_ru_HU_sid = twilio_autopilot_assistants_v1.chatbot_ru_HU.sid
+      chatbot_ukr_HU_sid = twilio_autopilot_assistants_v1.chatbot_ukr_HU.sid
+    })
 }
 
 module flex {
   source = "../terraform-modules/flex/default"
-  account_sid = var.account_sid
+  twilio_account_sid = local.secrets.twilio_account_sid
   short_environment = local.short_environment
   operating_info_key = local.operating_info_key
   permission_config = "demo"
   definition_version = local.definition_version
-  serverless_url = var.serverless_url
+  serverless_url = module.serverless.serverless_environment_production_url
   hrm_url = "https://hrm-production-eu.tl.techmatters.org"
   multi_office_support = local.multi_office
   feature_flags = local.feature_flags
@@ -508,14 +137,16 @@ module survey {
 
 module aws {
   source = "../terraform-modules/aws/default"
-  account_sid = var.account_sid
+  twilio_account_sid = local.secrets.twilio_account_sid
+  twilio_auth_token = local.secrets.twilio_auth_token
+  serverless_url = module.serverless.serverless_environment_production_url
   helpline = local.helpline
   short_helpline = local.short_helpline
   environment = local.environment
   short_environment = local.short_environment
   operating_info_key = local.operating_info_key
-  datadog_app_id = var.datadog_app_id
-  datadog_access_token = var.datadog_access_token
+  datadog_app_id = local.secrets.datadog_app_id
+  datadog_access_token = local.secrets.datadog_access_token
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
   master_workflow_sid = module.taskRouter.master_workflow_sid
   shared_state_sync_service_sid = module.services.shared_state_sync_service_sid
@@ -536,9 +167,9 @@ module aws_monitoring {
 
 module github {
   source = "../terraform-modules/github/default"
-  twilio_account_sid = var.account_sid
-  twilio_auth_token = var.auth_token
+  twilio_account_sid = local.secrets.twilio_account_sid
+  twilio_auth_token = local.secrets.twilio_auth_token
   short_environment = local.short_environment
   short_helpline = local.short_helpline
-  serverless_url = var.serverless_url
+  serverless_url = module.serverless.serverless_environment_production_url
 }

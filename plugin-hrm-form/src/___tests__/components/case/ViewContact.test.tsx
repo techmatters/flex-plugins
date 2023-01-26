@@ -13,7 +13,7 @@ import ViewContact from '../../../components/case/ViewContact';
 import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 import { SearchAPIContact } from '../../../types/types';
-import { connectedCaseBase, contactFormsBase, RootState } from '../../../states';
+import { connectedCaseBase, contactFormsBase, csamReportBase, RootState } from '../../../states';
 import { DetailsContext, TOGGLE_DETAIL_EXPANDED_ACTION } from '../../../states/contacts/contactDetails';
 
 jest.mock('@twilio/flex-ui', () => ({
@@ -34,16 +34,14 @@ const task = {
 };
 
 const contact: SearchAPIContact = {
-  contactId: 'TEST ID',
+  contactId: 'TEST_ID',
   details: {
     definitionVersion: DefinitionVersionId.v1,
-    contactlessTask: {},
+    contactlessTask: { channel: 'voice' },
     callType: '',
     childInformation: {
-      name: {
-        firstName: 'Jill',
-        lastName: 'Smith',
-      },
+      firstName: 'Jill',
+      lastName: 'Smith',
       gender: 'Other',
       age: '18-25',
       language: 'Language 1',
@@ -71,10 +69,6 @@ const contact: SearchAPIContact = {
       categories: {},
     },
     callerInformation: {
-      name: {
-        firstName: '',
-        lastName: '',
-      },
       relationshipToChild: '',
       gender: '',
       age: '',
@@ -87,6 +81,7 @@ const contact: SearchAPIContact = {
       stateOrCounty: '',
       streetAddress: '',
     },
+    conversationMedia: [],
   },
   overview: {
     dateTime: '2020-03-10',
@@ -95,10 +90,12 @@ const contact: SearchAPIContact = {
     callType: 'Child calling about self',
     categories: { category1: ['Tag1', 'Tag2'] },
     counselor: 'counselor-id',
-    notes: 'Jill Smith Notes',
+    notes: 'J Smith Notes',
     channel: 'web',
     conversationDuration: 10,
     createdBy: 'an SID',
+    helpline: '',
+    taskId: '',
   },
   csamReports: [],
 };
@@ -141,7 +138,7 @@ describe('View Contact', () => {
         [contactFormsBase]: {
           tasks: {},
           existingContacts: {
-            'TEST ID': {
+            TEST_ID: {
               savedContact: contact,
               references: new Set(['task-id']),
               categories: { gridView: false, expanded: {} },
@@ -151,6 +148,10 @@ describe('View Contact', () => {
             [DetailsContext.CASE_DETAILS]: { detailsExpanded: {} },
             [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {} },
           },
+        },
+        [csamReportBase]: {
+          tasks: {},
+          contacts: {},
         },
       },
     };
@@ -162,13 +163,14 @@ describe('View Contact', () => {
     render(
       <Provider store={store}>
         <StorelessThemeProvider themeConf={themeConf}>
-          <ViewContact contactId="TEST ID" task={task as any} onClickClose={jest.fn()} />
+          <ViewContact contactId="TEST_ID" task={task as any} onClickClose={jest.fn()} />
         </StorelessThemeProvider>
       </Provider>,
     );
 
     // TODO: Verify interpolated translations contain the expected data
     await waitFor(() => expect(screen.getByTestId('ContactDetails-Container')).toBeInTheDocument());
+    expect(screen.getByText('#TEST_ID')).toBeInTheDocument();
     expect(screen.getByText('Jill Smith')).toBeInTheDocument();
   });
 
@@ -179,7 +181,7 @@ describe('View Contact', () => {
     render(
       <Provider store={store}>
         <StorelessThemeProvider themeConf={themeConf}>
-          <ViewContact contactId="TEST ID" task={task as any} onClickClose={onClickClose} />
+          <ViewContact contactId="TEST_ID" task={task as any} onClickClose={onClickClose} />
         </StorelessThemeProvider>
       </Provider>,
     );
@@ -197,7 +199,7 @@ describe('View Contact', () => {
     render(
       <Provider store={store}>
         <StorelessThemeProvider themeConf={themeConf}>
-          <ViewContact contactId="TEST ID" task={task as any} onClickClose={jest.fn()} />
+          <ViewContact contactId="TEST_ID" task={task as any} onClickClose={jest.fn()} />
         </StorelessThemeProvider>
       </Provider>,
     );
@@ -218,7 +220,7 @@ describe('View Contact', () => {
     const wrapper = mount(
       <Provider store={store}>
         <StorelessThemeProvider themeConf={themeConf}>
-          <ViewContact contactId="TEST ID" task={task as any} onClickClose={jest.fn()} />
+          <ViewContact contactId="TEST_ID" task={task as any} onClickClose={jest.fn()} />
         </StorelessThemeProvider>
       </Provider>,
     );

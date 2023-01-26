@@ -1,12 +1,7 @@
 [
   {
-    "name": "firstName",
-    "label": "ID",
-    "type": "input"
-  },
-  {
-    "name": "lastName",
-    "label": "ID (Placeholder)",
+    "name": "nickname",
+    "label": "Nickname",
     "type": "input"
   },
   {
@@ -23,19 +18,19 @@
         "label": "5 or younger"
       },
       {
-        "value": "06",
+        "value": "6",
         "label": "6"
       },
       {
-        "value": "07",
+        "value": "7",
         "label": "7"
       },
       {
-        "value": "08",
+        "value": "8",
         "label": "8"
       },
       {
-        "value": "09",
+        "value": "9",
         "label": "9"
       },
       {
@@ -584,7 +579,7 @@
     "type": "input"
   },
   {
-    "name": "upsetLevel",
+    "name": "upset",
     "label": "On a scale of 1 to 7, how upset is the child?",
     "type": "select",
     "options": [

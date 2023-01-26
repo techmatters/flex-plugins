@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, withStyles, TabProps } from '@material-ui/core';
 import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
 import AssignmentInd from '@material-ui/icons/AssignmentIndOutlined';
@@ -520,21 +520,6 @@ export const HeaderContainer = styled(Row)`
 `;
 HeaderContainer.displayName = 'HeaderContainer';
 
-export const StyledIcon = icon => styled(icon)`
-  opacity: 0.34;
-`;
-StyledIcon.displayName = 'StyledIcon';
-
-export const addHover = Component =>
-  withStyles({
-    root: {
-      '&:hover': {
-        borderRadius: '50%',
-        backgroundColor: '#a0a8bd66',
-      },
-    },
-  })(Component);
-
 type PaginationRowProps = {
   transparent?: boolean;
 };
@@ -816,7 +801,6 @@ export const FormRadioInput = styled('input')<FormInputProps>`
     border-radius: 50%;
     content: '';
     position: relative;
-    background: #080808;
     background-color: #080808;
   }
 `;
@@ -884,10 +868,14 @@ export const FormTextArea = styled('textarea')<FormInputProps>`
   }
 `;
 
+export const ColumnarContent = styled('div')`
+  width: 217px;
+`;
+ColumnarContent.displayName = 'ColumnarContent';
+
 export const FormCheckBoxWrapper = styled(Row)<FormInputProps>`
   align-items: flex-start;
   box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
-  width: 217px;
   height: 36px;
   border-radius: 4px;
   border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
@@ -1185,32 +1173,21 @@ export const StyledCSAMReportDropdown = styled('ul')`
 
 StyledCSAMReportDropdown.displayName = 'StyledCSAMReportDropdown';
 
-type StyledCSAMReportDropdownProps = {
-  margin?: string;
-};
-
-export const StyledCSAMReportDropdownList = styled('li')<StyledCSAMReportDropdownProps>`
+export const StyledCSAMReportDropdownList = styled('button')`
   position: relative;
   font-size: 14px;
   display: block;
   color: inherit;
-  padding: 7px 0 7px 35px;
-  margin: ${props => (props.margin ? props.margin : '0 -100px 0 -25px')};
+  min-width: 10rem;
+  width: 215px;
+  padding: 7px 0 7px 0;
+  margin: 0 -100px 0 -25px;
   text-decoration: none;
   &:hover {
     background-color: #f2f2f2;
     cursor: pointer;
   }
+  background: none;
+  border: none;
 `;
 StyledCSAMReportDropdownList.displayName = 'StyledCSAMReportDropdownList';
-
-export const StyledCSAMReportHeader = styled('li')`
-  position: relative;
-  font-size: 12px;
-  display: block;
-  color: inherit;
-  padding: 7px 0 7px 0;
-  text-decoration: none;
-  font-weight: 900;
-`;
-StyledCSAMReportHeader.displayName = 'StyledCSAMReportHeader';
