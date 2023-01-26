@@ -127,22 +127,21 @@ export const getValuesFromPreEngagementData = (
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const prepopulateForm = (task: ITask) => {
   const { memory, preEngagementData } = task.attributes;
-  if (memory === null && preEngagementData === null) return;
+  if (!memory && !preEngagementData) return;
 
   const { currentDefinitionVersion } = getDefinitionVersions();
   const { tabbedForms, prepopulateKeys } = currentDefinitionVersion;
   const { ChildInformationTab, CallerInformationTab, CaseInformationTab } = tabbedForms;
   const { preEngagement, survey } = prepopulateKeys;
 
-  // PreEngagementData Values
-  const childInfoValues = getValuesFromPreEngagementData(
-    preEngagementData,
-    ChildInformationTab,
-    preEngagement.ChildInformationTab,
-  );
-
   // When a helpline has preEnagagement form and no survey
-  if (preEngagementData && memory === null) {
+  if (preEngagementData && !memory) {
+    // PreEngagementData Values
+    const childInfoValues = getValuesFromPreEngagementData(
+      preEngagementData,
+      ChildInformationTab,
+      preEngagement.ChildInformationTab,
+    );
     Manager.getInstance().store.dispatch(prepopulateFormAction(callTypes.child, childInfoValues, task.taskSid));
 
     // Open tabbed form to first tab

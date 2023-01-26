@@ -7,7 +7,7 @@
   },
   {
     "name": "caller",
-    "label": "ผู้ใหญ่",
+    "label": "ผู้ติดต่ออื่น",
     "type": "button",
     "category": "data"
   },
