@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { DocumentationIcon } from '@twilio-paste/icons/esm/DocumentationIcon';
+import { DocumentationIcon } from '@twilio-paste/icons/cjs/DocumentationIcon';
 import React from 'react';
 import { Template, SideLink, SideNavChildrenProps } from '@twilio/flex-ui';
 
