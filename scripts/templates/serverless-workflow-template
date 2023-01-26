@@ -6,12 +6,9 @@ on:
   workflow_dispatch
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      uses: ./.github/workflows/custom_helpline.yml
-      secrets: inherit
-      with:
-        helpline_code: "<SHORT_HELPLINE>"
-        environment_code: "<SHORT_ENVIRONMENT>"
-        changelog: "Deploying individual account"
+    uses: ./.github/workflows/custom_helpline.yml
+    secrets: inherit
+    with:
+      helpline_code: "<SHORT_HELPLINE>"
+      environment_code: "<SHORT_ENVIRONMENT>"
+      changelog: "Deploying individual account"
