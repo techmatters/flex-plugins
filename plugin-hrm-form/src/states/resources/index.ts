@@ -12,15 +12,29 @@ const RESOURCE_EXPIRY_SECONDS = 60 * 10; // 10 minutes
 
 const ADD_RESOURCE = 'resource-action/add-resource';
 
-type LoadResourceAction = {
+type AddResourceAction = {
   type: typeof ADD_RESOURCE;
   resource: ReferrableResource;
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export const addResourceAction = (resource: ReferrableResource): LoadResourceAction => ({
+export const addResourceAction = (resource: ReferrableResource): AddResourceAction => ({
   type: ADD_RESOURCE,
   resource,
+});
+
+const LOAD_RESOURCE_ERROR = 'resource-action/load-resource-error';
+
+type LoadResourceErrorAction = {
+  type: typeof LOAD_RESOURCE_ERROR;
+  id: string;
+  error: Error;
+};
+
+export const loadResourceErrorAction = (id: string, error: Error): LoadResourceErrorAction => ({
+  type: LOAD_RESOURCE_ERROR,
+  id,
+  error,
 });
 
 const VIEW_RESOURCE = 'resource-action/view-resource';
@@ -30,7 +44,6 @@ type ViewResourceAction = {
   id: string;
 };
 
-// eslint-disable-next-line import/no-unused-modules
 export const viewResourceAction = (id: string): ViewResourceAction => ({
   type: VIEW_RESOURCE,
   id,
@@ -40,7 +53,13 @@ export const viewResourceAction = (id: string): ViewResourceAction => ({
 export type ReferrableResourcesState = {
   // eslint-disable-next-line prettier/prettier
   route?: ResourceRoute
-  resources: Record<string, { loaded: Date; resource: ReferrableResource }>;
+  resources: Record<
+    string,
+    { loaded: Date } & (
+      | { resource: ReferrableResource; error?: Error }
+      | { error: Error; resource?: ReferrableResource }
+    )
+  >;
 };
 
 const initialState: ReferrableResourcesState = {
@@ -62,7 +81,7 @@ const expireOldResources = (inputState: ReferrableResourcesState, now: Date): Re
 
 export function reduce(
   inputState = initialState,
-  action: LoadResourceAction | ViewResourceAction,
+  action: AddResourceAction | LoadResourceErrorAction | ViewResourceAction,
 ): ReferrableResourcesState {
   const now = new Date();
   const state = expireOldResources(inputState, now);
@@ -74,6 +93,15 @@ export function reduce(
         resources: {
           ...state.resources,
           [action.resource.id]: { resource: action.resource, loaded: now },
+        },
+      };
+    }
+    case LOAD_RESOURCE_ERROR: {
+      return {
+        ...state,
+        resources: {
+          ...state.resources,
+          [action.id]: { error: action.error, loaded: now },
         },
       };
     }
