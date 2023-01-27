@@ -3,10 +3,11 @@ import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
+import PhoneIcon from '@material-ui/icons/Phone';
 
 import { namespace, referrableResourcesBase, RootState } from '../../states';
 import { loadResource } from '../../states/resources/loadResource';
-import { Box, Column, Flex, Row } from '../../styles/HrmStyles';
+import { Box, Column, Row } from '../../styles/HrmStyles';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import {
   ResourceAttributesColumn,
@@ -62,7 +63,14 @@ const ViewResource: React.FC<Props> = ({ resource, loadViewedResource }) => {
           <ResourceAttributesColumn>
             <ResourceAttribute
               description="Contact Info"
-              content={[attributes.Phone, attributes.Address].join(' | ')}
+              content={
+                <>
+                  <PhoneIcon fontSize="inherit" style={{ color: '#616C864D', marginRight: 5, marginBottom: -2 }} />
+                  {attributes.Phone}
+                  {' | '}
+                  {attributes.Address}
+                </>
+              }
             />
             <ResourceAttribute description="Service Categories" content={attributes['Service Categories']} />
             <ResourceAttribute description="Hours" content={attributes.Hours} />

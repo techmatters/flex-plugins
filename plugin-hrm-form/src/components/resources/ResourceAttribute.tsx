@@ -12,7 +12,7 @@ import ExpandableAttributeContent from './ExpandableAttributeContent';
 
 type Props = {
   description: string;
-  content: ReffarebleResourceAttributeValue;
+  content: ReffarebleResourceAttributeValue | JSX.Element;
 };
 
 const isString = (s: any): s is string => typeof s === 'string';
@@ -47,7 +47,7 @@ const ResourceAttribute: React.FC<Props> = ({ description, content }) => {
       }
     }
 
-    return null;
+    return content;
   };
 
   return (
