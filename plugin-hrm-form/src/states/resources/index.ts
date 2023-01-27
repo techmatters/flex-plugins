@@ -31,7 +31,6 @@ type LoadResourceErrorAction = {
   error: Error;
 };
 
-// eslint-disable-next-line import/no-unused-modules
 export const loadResourceErrorAction = (id: string, error: Error): LoadResourceErrorAction => ({
   type: LOAD_RESOURCE_ERROR,
   id,
@@ -45,7 +44,6 @@ type ViewResourceAction = {
   id: string;
 };
 
-// eslint-disable-next-line import/no-unused-modules
 export const viewResourceAction = (id: string): ViewResourceAction => ({
   type: VIEW_RESOURCE,
   id,
