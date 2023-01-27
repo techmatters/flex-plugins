@@ -1,3 +1,5 @@
+import { FormDefinition, FormInputType } from 'hrm-form-definitions';
+
 import { getValuesFromPreEngagementData } from '../../utils/prepopulateForm';
 
 test('Test getValuesFromPreengagementData function - Retrieve values saved in redux used by contactForm from preEngagementData', () => {
@@ -7,16 +9,16 @@ test('Test getValuesFromPreengagementData function - Retrieve values saved in re
     friendlyName: 'Anonymous',
     age: '11',
   };
-  const tabFormDefinition1 = [
+  const tabFormDefinition1: FormDefinition = [
     {
       name: 'firstName',
       label: 'ID',
-      type: 'input',
+      type: FormInputType.Input,
     },
     {
       name: 'age',
       label: 'Age',
-      type: 'select',
+      type: FormInputType.Select,
       options: [
         {
           value: '',
@@ -139,7 +141,7 @@ test('Test getValuesFromPreengagementData function - Retrieve values saved in re
     {
       name: 'gender',
       label: 'Gender',
-      type: 'listbox-multiselect',
+      type: FormInputType.ListboxMultiselect,
       options: [
         {
           value: 'Agender',
@@ -186,7 +188,7 @@ test('Test getValuesFromPreengagementData function - Retrieve values saved in re
     {
       name: 'otherGender',
       label: 'If Other for Gender, please specify: ',
-      type: 'input',
+      type: FormInputType.Input,
     },
   ];
   const prepopulateKeys1 = ['age', 'gender'];

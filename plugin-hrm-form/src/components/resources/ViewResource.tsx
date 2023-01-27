@@ -15,6 +15,7 @@ type OwnProps = {
 
 const mapStateToProps = (state: RootState, { resourceId }: OwnProps) => ({
   resource: state[namespace][referrableResourcesBase].resources[resourceId]?.resource,
+  error: state[namespace][referrableResourcesBase].resources[resourceId]?.error,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>, { resourceId }: OwnProps) => ({
@@ -25,8 +26,8 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ViewResource: React.FC<Props> = ({ resource, loadViewedResource }) => {
-  if (!resource) {
+const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource }) => {
+  if (!resource && !error) {
     loadViewedResource();
     return <div>Loading...</div>;
   }
@@ -37,7 +38,15 @@ const ViewResource: React.FC<Props> = ({ resource, loadViewedResource }) => {
         <SearchResultsBackButton text={<Template code="SearchResultsIndex-BackToResults" />} handleBack={() => {}} />
       </Flex>
       <ViewResourceArea>
-        <ResourceTitle>{resource.name}</ResourceTitle>
+        {error && ( // TODO: translation / friendlyisation layer
+          <>
+            <ResourceTitle>
+              <Template code="Resources-LoadResourceError" />
+            </ResourceTitle>
+            <p>{error.message}</p>
+          </>
+        )}
+        {resource && <ResourceTitle>{resource.name}</ResourceTitle>}
       </ViewResourceArea>
     </div>
   );

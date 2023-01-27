@@ -2,6 +2,7 @@ import { addDays, isAfter, subDays } from 'date-fns';
 
 import {
   addResourceAction,
+  loadResourceErrorAction,
   reduce,
   ReferrableResourcesState,
   ResourcePage,
@@ -50,7 +51,7 @@ describe('reduce', () => {
       expect(state.resources.newResource.resource).toStrictEqual({ id: 'newResource', name: 'New Resource' });
       expect(isAfter(state.resources.newResource.loaded, now)).toBe(true);
     });
-    test('Resource not in state already - adds resource to state with current date', () => {
+    test('Resource in state already - updates resource & sets current date', () => {
       const state = reduce(
         {
           resources: {
@@ -63,6 +64,37 @@ describe('reduce', () => {
         id: 'existingResource',
         name: 'Updated Resource',
       });
+      expect(isAfter(state.resources.existingResource.loaded, now)).toBe(true);
+      expect(Object.keys(state.resources)).toHaveLength(1);
+    });
+  });
+  describe('LOAD_RESOURCE_ERROR action', () => {
+    const err = new Error('Boom');
+    test('Resource not in state already - adds error to state with current date', () => {
+      const state = reduce(
+        {
+          resources: {
+            existingResource: resource('existingResource', now),
+          },
+        },
+        loadResourceErrorAction('newResource', err),
+      );
+      expect(state.resources.existingResource).toStrictEqual(resource('existingResource', now));
+      expect(state.resources.newResource.resource).not.toBeDefined();
+      expect(state.resources.newResource.error).toBe(err);
+      expect(isAfter(state.resources.newResource.loaded, now)).toBe(true);
+    });
+    test('Resource in state already - removes resource, adds error & sets current date', () => {
+      const state = reduce(
+        {
+          resources: {
+            existingResource: resource('existingResource', now),
+          },
+        },
+        loadResourceErrorAction('existingResource', err),
+      );
+      expect(state.resources.existingResource.resource).not.toBeDefined();
+      expect(state.resources.existingResource.error).toBe(err);
       expect(isAfter(state.resources.existingResource.loaded, now)).toBe(true);
       expect(Object.keys(state.resources)).toHaveLength(1);
     });
