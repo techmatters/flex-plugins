@@ -199,14 +199,6 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   }
 };
 
-/*
- * export const audioNewMessage = (payload:ActionPayload)=> {
- *   const {task} = payload
- *   console.log('>>> TaskHelper.isChatBasedTask(task)', TaskHelper.isChatBasedTask(task))
- *   console.log('>>> StateHelper.getConversationStateForTask(task)', StateHelper.getConversationStateForTask(task))
- * }
- */
-
 const safeTransfer = async (transferFunction: () => Promise<any>, task: ITask): Promise<void> => {
   try {
     await transferFunction();

@@ -38,7 +38,7 @@ const notifyNewMessage = messageInstance => {
   const notificationTone = 'bell';
   const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
 
-  // normalizeEmail changes messageInstance.author which is an encoded property of messageInstance to email with @ and .
+  // normalizeEmail transforms an encoded characters with @ and . 
   const normalizeEmail = (identity: string) => identity.replace('_2E', '.').replace('_40', '@');
 
   const isCounsellor = normalizeEmail(manager.user.identity) === normalizeEmail(messageInstance.author);
@@ -50,9 +50,6 @@ const notifyNewMessage = messageInstance => {
   }
 };
 
-/**
- * An audio alert when a task is reserved to the counsellor. Stops when accepted or other event that changes the worker or task status
- */
 const notifyReservedTask = reservation => {
   const { assetsBucketUrl } = getHrmConfig();
 

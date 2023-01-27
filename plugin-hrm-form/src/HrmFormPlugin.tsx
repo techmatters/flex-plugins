@@ -105,7 +105,6 @@ const setUpComponents = (
   }
 
   Components.setUpStandaloneSearch();
-
   setUpReferrableResources();
 
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
