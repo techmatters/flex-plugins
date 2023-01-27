@@ -4,25 +4,9 @@ import { Template } from '@twilio/flex-ui';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { Flex } from '../../styles/HrmStyles';
-import {
-  ContactTag,
-  TagText,
-  TagMiddleDot,
-  SummaryText,
-  TagsWrapper,
-  SilentText,
-  SubtitleLabel,
-} from '../../styles/search';
+import { TagText, SummaryText, TagsWrapper, SilentText, SubtitleLabel } from '../../styles/search';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { getContactTags } from '../../utils/categories';
-
-// eslint-disable-next-line react/display-name
-const renderTag = (tag, color) => (
-  <ContactTag color={color}>
-    <TagMiddleDot color={color} />
-    <TagText color={color}>{tag}</TagText>
-  </ContactTag>
-);
 
 type DataCallProps = {
   counselor: string;
@@ -48,15 +32,9 @@ const TagsAndCounselor: React.FC<Props> = props => {
       const [category1, category2, category3] = getContactTags(definitionVersion, props.categories);
       return (
         <TagsWrapper>
-          {category1 && (
-            <CategoryWithTooltip renderTag={renderTag} category={category1.label} color={category1.color} />
-          )}
-          {category2 && (
-            <CategoryWithTooltip renderTag={renderTag} category={category2.label} color={category2.color} />
-          )}
-          {category3 && (
-            <CategoryWithTooltip renderTag={renderTag} category={category3.label} color={category3.color} />
-          )}
+          {category1 && <CategoryWithTooltip category={category1.label} color={category1.color} />}
+          {category2 && <CategoryWithTooltip category={category2.label} color={category2.color} />}
+          {category3 && <CategoryWithTooltip category={category3.label} color={category3.color} />}
         </TagsWrapper>
       );
     }
