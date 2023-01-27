@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Page, Route } from '@playwright/test';
+import context from '../global-context';
 
 const DEFAULT_SESSION_RESPONSE = {
   insightsActive: true,
@@ -39,12 +40,12 @@ const defaultConfig = (accountSid: string) => ({
   crm_enabled: null,
   status: 'ok',
   taskrouter_worker_attributes: null,
-  chat_service_instance_sid: 'IS_chat',
+  chat_service_instance_sid: 'IS_CHAT_SERVICE',
   taskrouter_worker_channels: null,
   ui_dependencies: { react: '17.0.2', 'react-dom': '17.0.2' },
   taskrouter_offline_activity_sid: 'WA_offline',
   notifications: { enabled: true, mode: 'whenNotInFocus' },
-  taskrouter_workspace_sid: 'WSxxx',
+  taskrouter_workspace_sid: context.WORKSPACE_SID,
   channel_configs: [
     {
       cbm_attachments: {
@@ -151,7 +152,7 @@ const defaultConfig = (accountSid: string) => ({
       location: 'US',
     },
   },
-  taskrouter_target_taskqueue_sid: 'WQxxx',
+  taskrouter_target_taskqueue_sid: 'WQ_FAKE_QUEUE',
   account_sid: accountSid,
   runtime_domain: 'runtime.flex.domain',
   flex_url: '',

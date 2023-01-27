@@ -154,12 +154,7 @@ let liveQueryUpdateCounter = 0;
 const liveQueryUpdate = (
   twilioRequestId: `RQ${string}`,
   correlationId: number,
-  {
-    querySid,
-  }: {
-    index: string;
-    querySid: `QR${string}`;
-  },
+  querySid: QuerySid,
   items: LiveQueryItem[],
 ): TwilsockMessage => {
   lastEventId = Date.now();
@@ -296,7 +291,7 @@ export const twilsockSocket = (websocket: WebSocket) => {
             subscribeToLiveQueryUpdates(req.object_sid, (update) => {
               websocket.send(
                 serializeOutgoing(
-                  liveQueryUpdate(twilioRequestId, body.correlation_id, req, update),
+                  liveQueryUpdate(twilioRequestId, body.correlation_id, req.object_sid, update),
                 ),
               );
             });

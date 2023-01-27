@@ -1,6 +1,6 @@
 import { subHours } from 'date-fns';
-import context from './global-context';
-import { updateLiveQueryData } from './twilsock-live-query';
+import context from '../flex-in-a-box/global-context';
+import { updateLiveQueryData } from '../flex-in-a-box/twilsock-live-query';
 
 // type TaskSid = `WT${string}`;
 // type ChannelSid = `CH${string}`;
@@ -34,7 +34,7 @@ const taskForLoggedInWorker = (channelType: ChannelType) => {
             ChannelSid: `CH_${channelType.toUpperCase()}`,
             AssistantName: '',
             Attributes: {},
-            ServiceSid: 'IS_SERVICE',
+            ServiceSid: 'IS_CHAT_SERVICE',
             To: 'Bot',
             From: 'FROM',
             MessageSid: 'IM_MESSAGE',
