@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-max-depth */
 import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { AnyAction } from 'redux';
@@ -5,9 +6,15 @@ import { Template } from '@twilio/flex-ui';
 
 import { namespace, referrableResourcesBase, RootState } from '../../states';
 import { loadResource } from '../../states/resources/loadResource';
-import { Flex } from '../../styles/HrmStyles';
+import { Box, Column, Flex, Row } from '../../styles/HrmStyles';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
-import { ResourceTitle, ViewResourceArea } from '../../styles/ReferrableResources';
+import {
+  ResourceAttributesColumn,
+  ResourceAttributesContainer,
+  ResourceTitle,
+  ViewResourceArea,
+} from '../../styles/ReferrableResources';
+import ResourceAttribute from './ResourceAttribute';
 
 type OwnProps = {
   resourceId: string;
@@ -30,16 +37,40 @@ const ViewResource: React.FC<Props> = ({ resource, loadViewedResource }) => {
     loadViewedResource();
     return <div>Loading...</div>;
   }
+
+  const { id, name, attributes } = resource;
+
   return (
-    <div>
-      <Flex marginTop="15px" marginBottom="15px">
-        {/* eslint-disable-next-line no-empty-function */}
-        <SearchResultsBackButton text={<Template code="SearchResultsIndex-BackToResults" />} handleBack={() => {}} />
-      </Flex>
+    <Column>
+      <Box marginTop="10px" marginBottom="10px">
+        <SearchResultsBackButton
+          text={<Template code="SearchResultsIndex-BackToResults" />}
+          // eslint-disable-next-line no-empty-function
+          handleBack={() => {}}
+        />
+      </Box>
       <ViewResourceArea>
-        <ResourceTitle>{resource.name}</ResourceTitle>
+        <ResourceTitle>{name}</ResourceTitle>
+        <ResourceAttributesContainer>
+          <ResourceAttributesColumn>
+            <ResourceAttribute description="Details" content={attributes.Details} />
+            <ResourceAttribute description="Fee" content={attributes.Fee} />
+            <ResourceAttribute description="Application Process" content={attributes['Application Process']} />
+            <ResourceAttribute description="Accessibility" content={attributes.Accessibility} />
+            <ResourceAttribute description="Special Needs" content={attributes['Special Needs']} />
+          </ResourceAttributesColumn>
+          <ResourceAttributesColumn>
+            <ResourceAttribute
+              description="Contact Info"
+              content={[attributes.Phone, attributes.Address].join(' | ')}
+            />
+            <ResourceAttribute description="Service Categories" content={attributes['Service Categories']} />
+            <ResourceAttribute description="Hours" content={attributes.Hours} />
+            <ResourceAttribute description="Ages Served" content={attributes['Ages Served']} />
+          </ResourceAttributesColumn>
+        </ResourceAttributesContainer>
       </ViewResourceArea>
-    </div>
+    </Column>
   );
 };
 
