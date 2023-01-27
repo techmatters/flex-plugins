@@ -32,6 +32,7 @@ const readConfig = () => {
     permissionConfig,
   } = manager.serviceConfiguration.attributes;
   const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
+
   const featureFlags: FeatureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const { strings } = (manager as unknown) as { strings: { [key: string]: string } };
 

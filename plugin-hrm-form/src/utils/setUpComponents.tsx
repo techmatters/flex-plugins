@@ -3,7 +3,6 @@
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 
-import { notifyNewMessage } from './audioNotifications';
 import { AcceptTransferButton, RejectTransferButton, TransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
 import CannedResponses from '../components/CannedResponses';
@@ -346,11 +345,4 @@ export const removeActionsIfTransferring = () => {
 export const setupCannedResponses = () => {
   Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" />);
   Flex.MessageInputV2.Content.add(<CannedResponses key="canned-responses" />);
-};
-export const setupNotifyNewMessage = task => {
-  const manager = Flex.Manager.getInstance();
-  console.log('>>> manager setupNotifyNewMessage', manager);
-  manager.conversationsClient.on('messageAdded', messageInstance => {
-    notifyNewMessage(messageInstance, task);
-  });
 };

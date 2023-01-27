@@ -19,6 +19,7 @@ import { subscribeToConfigUpdates, getHrmConfig, getResourceStrings, getAseloFea
 import { setUpSharedStateClient } from './utils/sharedState';
 import { FeatureFlags } from './types/types';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
+import { subscribeNewMessageAlertOnPluginInit, subscribeReservedTaskAlert } from './utils/audioNotifications';
 
 // Re-exported for backwards compatibility, we should move to getHrmConfig & remove this
 export { getConfig } from './hrmConfig';
@@ -124,8 +125,6 @@ const setUpComponents = (
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
     strings.CallParticipantCustomerName = strings.MaskIdentifiers;
   }
-
-  ActionFunctions.setUpAudioNotifications();
 };
 
 const setUpActions = (
@@ -198,6 +197,9 @@ export default class HrmFormPlugin extends FlexPlugin {
     setUpComponents(featureFlags, config, translateUI);
     setUpActions(featureFlags, config, getMessage);
     TaskRouterListeners.setTaskWrapupEventListeners(featureFlags);
+
+    subscribeReservedTaskAlert();
+    subscribeNewMessageAlertOnPluginInit();
 
     const managerConfiguration: Flex.Config = {
       // colorTheme: HrmTheme,

@@ -33,7 +33,7 @@ import { prepopulateForm } from './prepopulateForm';
 import { recordEvent } from '../fullStory';
 import { CustomITask, FeatureFlags } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
-import { notifyReservedTask, notifyNewMessage } from './audioNotifications';
+import { subscribeAlertOnConversationJoined } from './audioNotifications';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -185,6 +185,11 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   payload: ActionPayload,
 ) => {
   const { task } = payload;
+
+  if (TaskHelper.isChatBasedTask(task)) {
+    subscribeAlertOnConversationJoined(task);
+  }
+
   if (featureFlags.enable_transfers && TransferHelpers.hasTransferStarted(task)) handleTransferredTask(task);
   else prepopulateForm(task);
 
@@ -347,33 +352,3 @@ export const afterWrapupTask = (featureFlags: FeatureFlags, setupObject: SetupOb
     await triggerPostSurvey(setupObject, payload);
   }
 };
-
-/**
- * An audio alert when a counsellor receives a new message
- */
-export const setUpAudioNotifications = () => {
-  const manager = Manager.getInstance();
-
-  manager.workerClient.on('reservationCreated', reservation => notifyReservedTask(reservation));
-
-  /*
-   * manager.conversationsClient.on('messageAdded', messageInstance => {
-   *   notifyNewMessage(messageInstance);
-   * });
-   *  TaskHelper.isChatBasedTask(task)
-   *  const convoState = StateHelper.getConversationStateForTask(task)
-   *  console.log('>>> setupNotification',   TaskHelper.isChatBasedTask(task))
-   *  console.log('>>> setupNotification', convoState)
-   */
-};
-
-/*
- * export const another = (task:ITask) =>{
- *   const manager = Manager.getInstance();
- */
-
-//   console.log('>>>TaskHelper.isChatBasedTask(task)', TaskHelper.isChatBasedTask(task))
-
-//   console.log('>>> StateHelper.getConversationStateForTask(task)', StateHelper.getConversationStateForTask(task))
-
-// }
