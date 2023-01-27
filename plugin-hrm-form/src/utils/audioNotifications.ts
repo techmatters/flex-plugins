@@ -38,7 +38,7 @@ const notifyNewMessage = messageInstance => {
   const notificationTone = 'bell';
   const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
 
-  // normalizeEmail transforms an encoded characters with @ and . 
+  // normalizeEmail transforms an encoded characters with @ and .
   const normalizeEmail = (identity: string) => identity.replace('_2E', '.').replace('_40', '@');
 
   const isCounsellor = normalizeEmail(manager.user.identity) === normalizeEmail(messageInstance.author);
