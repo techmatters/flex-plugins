@@ -7,7 +7,7 @@ import PhoneIcon from '@material-ui/icons/Phone';
 
 import { namespace, referrableResourcesBase, RootState } from '../../states';
 import { loadResource } from '../../states/resources/loadResource';
-import { Box, Column, Row } from '../../styles/HrmStyles';
+import { Box, Column } from '../../styles/HrmStyles';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import {
   ResourceAttributesColumn,
@@ -23,6 +23,7 @@ type OwnProps = {
 
 const mapStateToProps = (state: RootState, { resourceId }: OwnProps) => ({
   resource: state[namespace][referrableResourcesBase].resources[resourceId]?.resource,
+  error: state[namespace][referrableResourcesBase].resources[resourceId]?.error,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>, { resourceId }: OwnProps) => ({
@@ -33,13 +34,11 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ViewResource: React.FC<Props> = ({ resource, loadViewedResource }) => {
-  if (!resource) {
+const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource }) => {
+  if (!resource && !error) {
     loadViewedResource();
     return <div>Loading...</div>;
   }
-
-  const { id, name, attributes } = resource;
 
   return (
     <Column>
@@ -51,32 +50,50 @@ const ViewResource: React.FC<Props> = ({ resource, loadViewedResource }) => {
         />
       </Box>
       <ViewResourceArea>
-        <ResourceTitle>{name}</ResourceTitle>
-        <ResourceAttributesContainer>
-          <ResourceAttributesColumn>
-            <ResourceAttribute description="Details" content={attributes.Details} />
-            <ResourceAttribute description="Fee" content={attributes.Fee} />
-            <ResourceAttribute description="Application Process" content={attributes['Application Process']} />
-            <ResourceAttribute description="Accessibility" content={attributes.Accessibility} />
-            <ResourceAttribute description="Special Needs" content={attributes['Special Needs']} />
-          </ResourceAttributesColumn>
-          <ResourceAttributesColumn>
-            <ResourceAttribute
-              description="Contact Info"
-              content={
-                <>
-                  <PhoneIcon fontSize="inherit" style={{ color: '#616C864D', marginRight: 5, marginBottom: -2 }} />
-                  {attributes.Phone}
-                  {' | '}
-                  {attributes.Address}
-                </>
-              }
-            />
-            <ResourceAttribute description="Service Categories" content={attributes['Service Categories']} />
-            <ResourceAttribute description="Hours" content={attributes.Hours} />
-            <ResourceAttribute description="Ages Served" content={attributes['Ages Served']} />
-          </ResourceAttributesColumn>
-        </ResourceAttributesContainer>
+        {error && ( // TODO: translation / friendlyisation layer
+          <>
+            <ResourceTitle>
+              <Template code="Resources-LoadResourceError" />
+            </ResourceTitle>
+            <p>{error.message}</p>
+          </>
+        )}
+        {resource && (
+          <>
+            <ResourceTitle>{resource.name}</ResourceTitle>
+            <ResourceAttributesContainer>
+              <ResourceAttributesColumn>
+                <ResourceAttribute description="Details" content={resource.attributes.Details} />
+                <ResourceAttribute description="Fee" content={resource.attributes.Fee} />
+                <ResourceAttribute
+                  description="Application Process"
+                  content={resource.attributes['Application Process']}
+                />
+                <ResourceAttribute description="Accessibility" content={resource.attributes.Accessibility} />
+                <ResourceAttribute description="Special Needs" content={resource.attributes['Special Needs']} />
+              </ResourceAttributesColumn>
+              <ResourceAttributesColumn>
+                <ResourceAttribute
+                  description="Contact Info"
+                  content={
+                    <>
+                      <PhoneIcon fontSize="inherit" style={{ color: '#616C864D', marginRight: 5, marginBottom: -2 }} />
+                      {resource.attributes.Phone}
+                      {' | '}
+                      {resource.attributes.Address}
+                    </>
+                  }
+                />
+                <ResourceAttribute
+                  description="Service Categories"
+                  content={resource.attributes['Service Categories']}
+                />
+                <ResourceAttribute description="Hours" content={resource.attributes.Hours} />
+                <ResourceAttribute description="Ages Served" content={resource.attributes['Ages Served']} />
+              </ResourceAttributesColumn>
+            </ResourceAttributesContainer>
+          </>
+        )}
       </ViewResourceArea>
     </Column>
   );

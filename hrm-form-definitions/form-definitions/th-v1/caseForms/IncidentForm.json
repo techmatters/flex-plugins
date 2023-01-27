@@ -101,7 +101,30 @@
   },
   {
     "name": "whereElseBeenReported",
-    "label": "Where else the incident has been reported?",
-    "type": "input"
+    "label": "รายงานต่อ...",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "สาธารณสุข",
+        "label": "สาธารณสุข"
+      },
+      {
+        "value": "สถานีตำรวจ",
+        "label": "สถานีตำรวจ"
+      },
+      {
+        "value": "กระทรวงพัฒนาสังคม",
+        "label": "กระทรวงพัฒนาสังคม"
+      },
+      {
+        "value": "กรมการปกครองส่วนท้องถิ่น",
+        "label": "กรมการปกครองส่วนท้องถิ่น"
+      }
+    ]
   }
 ]

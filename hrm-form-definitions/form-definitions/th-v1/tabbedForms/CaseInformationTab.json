@@ -1,7 +1,27 @@
 [
   {
+    "name": "center",
+    "label": "เซ็นเตอร์",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": " สายเด็ก1387",
+        "label": " สายเด็ก1387"
+      },
+      {
+        "value": "เดอะฮับสายเด็ก",
+        "label": "เดอะฮับสายเด็ก"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
     "name": "caseNumber",
-    "label": "Case Number",
+    "label": "เลขที่เคส",
     "type": "input"
   },
   {
@@ -10,51 +30,51 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "ให ้ค ําปรึกษํา (ออนไลน์)",
-        "label": "ให ้ค ําปรึกษํา (ออนไลน์)"
+        "value": "ให้คำปรึกษา (ออนไลน์)",
+        "label": "ให้คำปรึกษา (ออนไลน์)"
       },
       {
-        "value": "ให ้ค ําปรึกษํา (ตัวต่อตัว)",
-        "label": "ให ้ค ําปรึกษํา (ตัวต่อตัว)"
+        "value": "ให้คำปรึกษา (ตัวต่อตัว)",
+        "label": "ให้คำปรึกษา (ตัวต่อตัว)"
       },
       {
-        "value": "บริกํารเอกสํารประจําตัว",
-        "label": "บริกํารเอกสํารประจําตัว"
+        "value": "บริการเอกสารประจำตัว",
+        "label": "บริการเอกสารประจำตัว"
       },
       {
-        "value": "บริกํารพื้นฐํานปัจจัย 4",
+        "value": "บริการพื้นฐานปัจจัย 4",
         "label": "บริกํารพื้นฐํานปัจจัย 4"
       },
       {
-        "value": "บริกํารด ้ํานสุขภําพ (ตรวจสุขภําพ ให ้ค ําปรึกษําฯลฯ)",
-        "label": "บริกํารด ้ํานสุขภําพ (ตรวจสุขภําพ ให ้ค ําปรึกษําฯลฯ)"
+        "value": "บริการด้านสุขภาพ (ตรวจสุขภาพ ให้คำปรึกษาฯลฯ)",
+        "label": "บริการด้านสุขภาพ (ตรวจสุขภาพ ให้คำปรึกษาฯลฯ)"
       },
       {
         "value": "ส่งต่อและประสํานงํานเคส",
         "label": "ส่งต่อและประสํานงํานเคส"
       },
       {
-        "value": "บริกํารด ้ํานกํารศึกษํา",
-        "label": "บริกํารด ้ํานกํารศึกษํา"
+        "value": "บริการด้านการศึกษา",
+        "label": "บริการด้านการศึกษาา"
       },
       {
-        "value": "พัฒนําทักษะกํารใช ้ชีวิตประจําวัน",
-        "label": "พัฒนําทักษะกํารใช ้ชีวิตประจําวัน"
+        "value": "พัฒนาทักษะการใช้ชีวิตประจำวัน",
+        "label": "พัฒนาทักษะการใช้ชีวิตประจำวัน"
       },
       {
-        "value": "พัฒนําทักษะอําชีพ /ทดลองงําน",
-        "label": "พัฒนําทักษะอําชีพ /ทดลองงําน"
+        "value": "พัฒนาทักษะอาชีพ / ทดลองงาน",
+        "label": "พัฒนาทักษะอาชีพ / ทดลองงาน"
       },
       {
-        "value": "ให ้ค ําปรึกษํากํารตั้งครรภ์เมื่อไม่พร ้อม",
-        "label": "ให ้ค ําปรึกษํากํารตั้งครรภ์เมื่อไม่พร ้อม"
+        "value": "ให้คำปรึกษาการตั้งครรภ์เมื่อไม่พร้อม",
+        "label": "ให้คำปรึกษาการตั้งครรภ์เมื่อไม่พร้อม"
       },
       {
-        "value": "ให ้คําปรึกษําและบริกํารสําหรับเด็กแรกเกิด - 3 ปี",
-        "label": "ให ้คําปรึกษําและบริกํารสําหรับเด็กแรกเกิด - 3 ปี"
+        "value": "ให้คำปรึกษาและบริการสำหรับเด็กแรกเกิด - 3 ปี",
+        "label": "ให้คำปรึกษาและบริการสำหรับเด็กแรกเกิด - 3 ปี"
       },
       {
-        "value": "ค่ํายเพื่อพัฒนําศักยภําพเด็ก",
+        "value": "ค่ายเพื่อพัฒนาศักยภาพเด็ก",
         "label": "ค่ํายเพื่อพัฒนําศักยภําพเด็ก"
       },
       {
@@ -66,24 +86,8 @@
         "label": "ติดตํามผลเคส"
       },
       {
-        "value": "โครงกํารไน ้ท์ฮับ",
-        "label": "โครงกํารไน ้ท์ฮับ"
-      }
-    ]
-  },
-  {
-    "name": "serviceSubcategories",
-    "label": "Service Subcategories",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "pending1",
-        "label": "pending1"
-      },
-      {
-        "value": "pending2",
-        "label": "pending2"
+        "value": "โครงการไน้ท์ฮับ",
+        "label": "โครงการไน้ท์ฮับ"
       }
     ]
   },
@@ -103,39 +107,23 @@
     "options": [
       {
         "value": "Direct interventions by the child helpline",
-        "label": "Direct interventions by the child helpline"
+        "label": "การช่วยเหลือโดยตรง"
       },
       {
         "value": "Recommendations of resources",
-        "label": "Recommendations of resources"
+        "label": "การแนะนำการเข้าถึงบริการ"
       },
       {
-        "value": "Referrals to child protection agencies",
-        "label": "Referrals to child protection agencies"
+        "value": "Referrals to duty bearer",
+        "label": "การส่งต่อไปยังหน่วยงานรับผิดชอบ"
       },
       {
-        "value": "Referrals to general healthcare services",
-        "label": "Referrals to general healthcare services"
-      },
-      {
-        "value": "Referrals to law enforcement agencies",
-        "label": "Referrals to law enforcement agencies"
-      },
-      {
-        "value": "Referrals to mental health services",
-        "label": "Referrals to mental health services"
-      },
-      {
-        "value": "Referrals to other organisations",
-        "label": "Referrals to other organisations"
-      },
-      {
-        "value": "Referrals to school counsellors",
-        "label": "Referrals to school counsellors"
+        "value": "Referrals to civil society",
+        "label": "การส่งต่อไปยังหน่วยงานประชาสังคม"
       },
       {
         "value": "Reports to Child Sexual Abuse Material",
-        "label": "Reports to Child Sexual Abuse Material"
+        "label": "รายงาน CSAM"
       },
       {
         "value": "Other",
@@ -145,7 +133,7 @@
   },
   {
     "name": "howDidYouKnowAboutOurLine",
-    "label": "How did you know about our line/number?",
+    "label": "ผู้ติดต่อรู้จักมูลนิธิจากช่องทางใด",
     "type": "select",
     "unknownOption": "Unknown",
     "options": [
@@ -158,6 +146,38 @@
         "label": "การค้นพบจากอินเตอร์เน็ต"
       },
       {
+        "value": "Facebook",
+        "label": "Facebook"
+      },
+      {
+        "value": "Twitter",
+        "label": "Twitter"
+      },
+      {
+        "value": "Instagram",
+        "label": "Instagram"
+      },
+      {
+        "value": "Line",
+        "label": "Line"
+      },
+      {
+        "value": "Email",
+        "label": "Email"
+      },
+      {
+        "value": "ลงพื้นที่",
+        "label": "ลงพื้นที่"
+      },
+      {
+        "value": "จดหมาย",
+        "label": "จดหมาย"
+      },
+      {
+        "value": "TikTok",
+        "label": "TikTok"
+      },
+      {
         "value": "อื่นๆ",
         "label": "อื่นๆ"
       }
@@ -165,7 +185,7 @@
   },
   {
     "name": "repeatCaller",
-    "label": "Repeat caller?",
+    "label": "ผู้ติดต่อซ้ำ?",
     "type": "checkbox"
   },
   {

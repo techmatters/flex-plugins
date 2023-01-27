@@ -2,7 +2,7 @@ import { AnyAction } from 'redux';
 import { Dispatch } from 'react';
 
 import { getResource } from '../../services/ResourceService';
-import { addResourceAction } from '.';
+import { addResourceAction, loadResourceErrorAction } from '.';
 
 /**
  * Utility function that gets a resource from the service and loads it into redux
@@ -10,6 +10,10 @@ import { addResourceAction } from '.';
  * @param id
  */
 export const loadResource = async (dispatch: Dispatch<AnyAction>, id: string): Promise<void> => {
-  const resource = await getResource(id);
-  return dispatch(addResourceAction(resource));
+  try {
+    const resource = await getResource(id);
+    dispatch(addResourceAction(resource));
+  } catch (err) {
+    dispatch(loadResourceErrorAction(id, err));
+  }
 };

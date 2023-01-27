@@ -103,8 +103,8 @@
         "label": ""
       },
       {
-        "value": "Call",
-        "label": "Call"
+        "value": "โทรศัพท์",
+        "label": "โทรศัพท์"
       },
       {
         "value": "Facebook",
@@ -127,8 +127,8 @@
         "label": "Email"
       },
       {
-        "value": "Walk-in",
-        "label": "Walk-in"
+        "value": "ติดต่อศูนย์",
+        "label": "ติดต่อศูนย์"
       },
       {
         "value": "ลงพื้นที่",
@@ -233,28 +233,28 @@
         "label": ""
       },
       {
-        "value": "การดูแลทดแทนครอบครัว",
-        "label": "การดูแลทดแทนครอบครัว"
-      },
-      {
-        "value": "การดูแลรูปแบบสถาบัน",
-        "label": "การดูแลรูปแบบสถาบัน"
-      },
-      {
-        "value": "อยู่อิสระ",
-        "label": "อยู่อิสระ"
+        "value": "อาศัยอยู่กับพ่อแม่",
+        "label": "อาศัยอยู่กับพ่อแม่"
       },
       {
         "value": "อาศัยอยู่กับเครือญาติ",
         "label": "อาศัยอยู่กับเครือญาติ"
       },
       {
-        "value": "อาศัยอยู่กับพ่อแม่",
-        "label": "อาศัยอยู่กับพ่อแม่"
+        "value": "อยู่อิสระ",
+        "label": "อยู่อิสระ"
       },
       {
         "value": "ไร้ที่พักถาวร",
         "label": "ไร้ที่พักถาวร"
+      },
+      {
+        "value": "การดูแลทดแทนครอบครัว",
+        "label": "การดูแลทดแทนครอบครัว"
+      },
+      {
+        "value": "การดูแลรูปแบบสถาบัน",
+        "label": "การดูแลรูปแบบสถาบัน"
       },
       {
         "value": "อยู่ในสถานกักกัน",
@@ -293,17 +293,17 @@
   },
   {
     "name": "LGBTQI",
-    "label": "LGBTQI+ / SOGIESC child",
+    "label": "LGBTQI+ / SOGIESC",
     "type": "checkbox"
   },
   {
     "name": "childOnTheMoveVoluntarily",
-    "label": "Child on the move - voluntarily",
+    "label": "เด็กเคลื่อนย้าย-โดยสมัครใจ",
     "type": "checkbox"
   },
   {
     "name": "childOnTheMoveInvoluntarily",
-    "label": "Child on the move - involuntarily",
+    "label": "เด็กเคลื่อนย้าย-ถูกบังคับ",
     "type": "checkbox"
   },
   {

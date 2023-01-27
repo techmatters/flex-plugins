@@ -13,10 +13,9 @@ export type ReferrableResource = {
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export const referrableResourcesEnabled = () => Boolean(getReferrableResourceConfig().resourceBaseUrl);
+export const referrableResourcesEnabled = () => Boolean(getReferrableResourceConfig().resourcesBaseUrl);
 // eslint-disable-next-line import/no-unused-modules
 export const getResource = async (resourceId: string): Promise<ReferrableResource> => {
-  // return fetchResourceApi(`resources/`);
   return {
     id: resourceId,
     name: 'Canadian Human Trafficking Hotline',
@@ -38,4 +37,5 @@ export const getResource = async (resourceId: string): Promise<ReferrableResourc
       Hours: ['Monday - Fridays 9:00am - 11:00pm', 'Saturdays 10:00am - 12:00am', 'Sundays 12:00pm - 8:00pm'],
     },
   };
+  // return fetchResourceApi(`resource/${resourceId}`);
 };

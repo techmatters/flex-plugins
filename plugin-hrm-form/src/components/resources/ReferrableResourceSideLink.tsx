@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
+import { DocumentationIcon } from '@twilio-paste/icons/cjs/DocumentationIcon';
 import React from 'react';
 import { Template, SideLink, SideNavChildrenProps } from '@twilio/flex-ui';
-import SearchIcon from '@material-ui/icons/Description';
 
 type Props = SideNavChildrenProps & { showLabel: boolean; onClick: () => void };
 
@@ -9,8 +9,8 @@ const ReferrableResourceSideLink: React.FC<Props> = ({ showLabel, activeView, on
   return (
     <SideLink
       showLabel={showLabel}
-      icon={<SearchIcon />}
-      iconActive={<SearchIcon />}
+      icon={<DocumentationIcon decorative={false} title="Resources" />}
+      iconActive={<DocumentationIcon decorative={false} title="Resources" />}
       isActive={activeView === 'referrable-resources'}
       onClick={onClick}
     >
