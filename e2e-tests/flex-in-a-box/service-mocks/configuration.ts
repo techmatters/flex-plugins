@@ -3,7 +3,7 @@ import { Page, Route } from '@playwright/test';
 import context from '../global-context';
 
 const DEFAULT_SESSION_RESPONSE = {
-  insightsActive: true,
+  insightsActive: false,
   features: [
     {
       doc_url: 'https://www.twilio.com/docs',
@@ -217,6 +217,7 @@ export const configurationServices = (page: Page) => {
     };
     await page.route(`https://flex-api.twilio.com/v1/Configuration?UiVersion=undefined`, handler);
     await page.route(`https://flex-api.twilio.com/v1/Configuration?UiVersion=2.0.0`, handler);
+    await page.route(`https://flex-api.twilio.com/v1/Configuration?UiVersion=2.0.2`, handler);
   }
 
   async function mockSessionEndpoint(config: Record<string, any> | undefined = {}): Promise<void> {

@@ -10,22 +10,24 @@ import AxeBuilder from '@axe-core/playwright';
 import { addTaskToWorker } from '../aselo-service-mocks/task';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useUnminifiedFlex } from '../flex-in-a-box/local-resources';
+import { preload, useUnminifiedFlex } from '../flex-in-a-box/local-resources';
 
 test.describe.serial('Agent Desktop', () => {
   let page: Page;
   test.beforeAll(async ({ browser }) => {
+    await preload();
     await mockServer.start();
     const newContext = await browser.newContext();
     page = await newContext.newPage();
 
-    // await useUnminifiedFlex(page);
+    await useUnminifiedFlex(page);
     logPageTelemetry(page);
     await fakeAuthenticatedBrowser(page, context.ACCOUNT_SID);
     await mockStartup(page);
   });
 
   test.afterAll(async () => {
+    // await page.waitForTimeout(60 * 60 * 1000);
     await mockServer.stop();
   });
 
@@ -50,7 +52,6 @@ test.describe.serial('Agent Desktop', () => {
     const chatWaitingLabel = page.locator(
       "div.Twilio-AgentDesktopView-default div[data-testid='Fake Queue-web'] div[data-testid='channel-box-inner-value']",
     );
-    await page.waitForTimeout(60 * 60 * 1000);
     await expect(chatWaitingLabel).toContainText('1');
   });
 });
