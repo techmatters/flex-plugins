@@ -2,33 +2,13 @@
   "label": "แผนก",
   "helplines": [
     {
-      "label": "คอนแท็กต์ เซ็นเตอร์",
+      "label": "มูลนิธิสายเด็ก 1387",
       "value": "คอนแท็กต์ เซ็นเตอร์",
       "default": true,
       "manager": {
-        "name": "Helpline Manager",
-        "phone": "+123 45 678",
-        "email": "supervisor@helpline.org"
-      }
-    },
-    {
-      "label": "The Hub",
-      "value": "The Hub",
-      "default": true,
-      "manager": {
-        "name": "Helpline Manager",
-        "phone": "+123 45 678",
-        "email": "supervisor@helpline.org"
-      }
-    },
-    {
-      "label": "Communication",
-      "value": "Communication",
-      "default": true,
-      "manager": {
-        "name": "Helpline Manager",
-        "phone": "+123 45 678",
-        "email": "supervisor@helpline.org"
+        "name": "Jinda Chaipon",
+        "phone": "+66 93 614 1654",
+        "email": "jinda@childlinethailand.org "
       }
     }
   ]

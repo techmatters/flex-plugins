@@ -143,7 +143,7 @@ describe('saveContact()', () => {
   };
   const workerSid = 'worker-sid';
   const uniqueIdentifier = 'uniqueIdentifier';
-  const fetchSuccess = Promise.resolve(<any>{ ok: true });
+  const fetchSuccess = Promise.resolve(<any>{ ok: true, json: jest.fn() });
 
   test('data calltype saves form data', async () => {
     const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
@@ -182,7 +182,7 @@ describe('saveContact() (isContactlessTask)', () => {
   };
   const workerSid = 'worker-sid';
   const uniqueIdentifier = 'uniqueIdentifier';
-  const fetchSuccess = Promise.resolve(<any>{ ok: true });
+  const fetchSuccess = Promise.resolve(<any>{ ok: true, json: jest.fn() });
   let mockedFetch;
 
   beforeEach(() => {
@@ -337,7 +337,7 @@ test('updateContactInHrm - calls a PATCH HRM endpoint using the supplied contact
     const ret = await updateContactInHrm('1234', inputPatch);
     expect(ret).toStrictEqual(responseBody);
     expect(mockedFetch).toHaveBeenCalledWith(
-      '/contacts/1234',
+      expect.stringContaining('/contacts/1234'),
       expect.objectContaining({
         method: 'PATCH',
         body: JSON.stringify(inputPatch),

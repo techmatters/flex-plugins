@@ -1,7 +1,7 @@
 {
   "open": {
     "value": "open",
-    "label": "Open",
+    "label": "เปิด",
     "color": "green",
     "transitions": [
       "closed"
@@ -9,7 +9,7 @@
   },
   "closed": {
     "value": "closed",
-    "label": "Closed",
+    "label": "ปิด",
     "color": "red",
     "transitions": [
       "open"
