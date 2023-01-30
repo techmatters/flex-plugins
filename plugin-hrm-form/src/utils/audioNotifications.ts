@@ -66,7 +66,7 @@ const notifyReservedTask = reservation => {
   }
   const taskStatuses = ['accepted', 'canceled', 'rejected', 'rescinded', 'timeout'];
   taskStatuses.forEach(status => {
-    reservation.once(status, () => {
+    reservation.on(status, () => {
       AudioPlayerManager.stop(media);
     });
   });
