@@ -25,9 +25,7 @@ export const ViewResourceArea = styled('div')`
   overflow-y: auto;
 `;
 ViewResourceArea.displayName = 'ViewResourceArea';
-// height: 100%;
 
-// flex-wrap: nowrap;
 export const ResourceAttributesContainer = styled(Row)`
   align-items: start;
 `;
@@ -48,7 +46,6 @@ ResourceAttributeDescription.displayName = 'ResourceAttributeDescription';
 export const ResourceAttributeContent = styled(FontOpenSans)`
   color: #192b33;
   font-size: 14px;
-  line-height: 16px;
 `;
 ResourceAttributeContent.displayName = 'ResourceAttributeContent';
 
