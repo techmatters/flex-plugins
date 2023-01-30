@@ -7,12 +7,12 @@ import {
   ResourceCategoriesContainer,
 } from '../../styles/ReferrableResources';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
-import type { ReffarebleResourceAttributeValue } from '../../services/ResourceService';
+import type { ReferrableResourceAttributeValue } from '../../services/ResourceService';
 import ExpandableAttributeContent from './ExpandableAttributeContent';
 
 type Props = {
   description: string;
-  content: ReffarebleResourceAttributeValue | JSX.Element;
+  content: ReferrableResourceAttributeValue | JSX.Element;
 };
 
 const isString = (s: any): s is string => typeof s === 'string';
