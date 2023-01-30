@@ -1,11 +1,11 @@
-import * as Flex from '@twilio/flex-ui';
+import { StateHelper, Manager, AudioPlayerManager } from '@twilio/flex-ui';
 import { Conversation } from '@twilio/conversations';
 
 import { getHrmConfig } from '../hrmConfig';
 
 const trySubscribeAudioAlerts = (task, ms: number, retries: number) => {
   setTimeout(() => {
-    const convoState = Flex.StateHelper.getConversationStateForTask(task);
+    const convoState = StateHelper.getConversationStateForTask(task);
 
     // if channel is not ready, wait 200ms and retry
     if (convoState.isLoadingConversation) {
@@ -18,12 +18,12 @@ const trySubscribeAudioAlerts = (task, ms: number, retries: number) => {
 };
 
 export const subscribeAlertOnConversationJoined = task => {
-  const manager = Flex.Manager.getInstance();
+  const manager = Manager.getInstance();
   manager.conversationsClient.once('conversationJoined', (c: Conversation) => trySubscribeAudioAlerts(task, 0, 0));
 };
 
 export const subscribeNewMessageAlertOnPluginInit = () => {
-  const { tasks } = Flex.Manager.getInstance().store.getState().flex.worker;
+  const { tasks } = Manager.getInstance().store.getState().flex.worker;
   tasks.forEach(task => trySubscribeAudioAlerts(task, 0, 0));
 };
 
@@ -32,7 +32,7 @@ const subscribeAlertOnNewMessage = (conversation: Conversation) => {
 };
 
 const notifyNewMessage = messageInstance => {
-  const manager = Flex.Manager.getInstance();
+  const manager = Manager.getInstance();
   const { assetsBucketUrl } = getHrmConfig();
 
   const notificationTone = 'bell';
@@ -43,7 +43,7 @@ const notifyNewMessage = messageInstance => {
 
   const isCounsellor = normalizeEmail(manager.user.identity) === normalizeEmail(messageInstance.author);
   if (!isCounsellor && document.visibilityState === 'visible') {
-    Flex.AudioPlayerManager.play({
+    AudioPlayerManager.play({
       url: notificationUrl,
       repeatable: false,
     });
@@ -59,7 +59,7 @@ const notifyReservedTask = reservation => {
   let media;
 
   if (document.visibilityState === 'visible') {
-    media = Flex.AudioPlayerManager.play({
+    media = AudioPlayerManager.play({
       url: notificationUrl,
       repeatable: true,
     });
@@ -67,12 +67,15 @@ const notifyReservedTask = reservation => {
   const taskStatuses = ['accepted', 'canceled', 'rejected', 'rescinded', 'timeout'];
   taskStatuses.forEach(status => {
     reservation.once(status, () => {
-      Flex.AudioPlayerManager.stop(media);
+      AudioPlayerManager.stop(media);
     });
   });
+  setTimeout(() => {
+    AudioPlayerManager.stop(media);
+  }, 15000);
 };
 
 export const subscribeReservedTaskAlert = () => {
-  const manager = Flex.Manager.getInstance();
+  const manager = Manager.getInstance();
   manager.workerClient.on('reservationCreated', notifyReservedTask);
 };
