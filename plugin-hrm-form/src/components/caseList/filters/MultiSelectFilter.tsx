@@ -22,8 +22,8 @@ import {
 } from '../../../styles/caseList/filters';
 
 export type Item = {
-  value: { label: string; toolkiturl?: string };
-  label: { label: string; toolkiturl?: string };
+  value: string;
+  label: string;
   checked: boolean;
 };
 
@@ -58,10 +58,10 @@ const MultiSelectFilter: React.FC<Props> = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const transformToItems = (values: ReactHookFormValues): Item[] =>
-    defaultValues.map(item => ({ ...item, checked: values[item.value.label] }));
+    defaultValues.map(item => ({ ...item, checked: values[item.value] }));
 
   const transformToValues = (items: Item[]) =>
-    items.reduce((acc, item) => ({ ...acc, [item.value.label]: item.checked }), {});
+    items.reduce((acc, item) => ({ ...acc, [item.value]: item.checked }), {});
 
   const { register, handleSubmit, reset, getValues } = useForm({
     defaultValues: transformToValues(defaultValues),
@@ -217,7 +217,7 @@ const MultiSelectFilter: React.FC<Props> = ({
           <form onSubmit={handleSubmit(onSubmit)}>
             <MultiSelectUnorderedList scrollable={searchable}>
               {defaultValues.map((item, i) => {
-                const hidden = !item.label.label.toLowerCase().includes(searchTerm.toLowerCase());
+                const hidden = !item.label.toLowerCase().includes(searchTerm.toLowerCase());
                 const isFirstFocusableElement = i === 0 && !searchable;
                 return (
                   <MultiSelectListItem
@@ -225,10 +225,10 @@ const MultiSelectFilter: React.FC<Props> = ({
                     hidden={hidden}
                     data-testid={`${openedFilter.charAt(0).toUpperCase() + openedFilter.slice(1)}-${item.label}`}
                   >
-                    <FormLabel htmlFor={item.value.label} style={{ flexDirection: 'row' }}>
+                    <FormLabel htmlFor={item.value} style={{ flexDirection: 'row' }}>
                       <FiltersCheckbox
-                        id={item.value.label}
-                        name={item.value.label}
+                        id={item.value}
+                        name={item.value}
                         type="checkbox"
                         defaultChecked={item.checked}
                         ref={ref => {
@@ -239,7 +239,7 @@ const MultiSelectFilter: React.FC<Props> = ({
                         }}
                         onKeyDown={isFirstFocusableElement ? handleShiftTabForFirstElement : null}
                       />
-                      <MultiSelectCheckboxLabel>{highlightLabel(item.label.label)}</MultiSelectCheckboxLabel>
+                      <MultiSelectCheckboxLabel>{highlightLabel(item.label)}</MultiSelectCheckboxLabel>
                     </FormLabel>
                   </MultiSelectListItem>
                 );

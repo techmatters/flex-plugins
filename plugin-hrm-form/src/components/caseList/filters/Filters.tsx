@@ -26,7 +26,6 @@ import {
 import CategoriesFilter, { Category } from './CategoriesFilter';
 import { caseListBase, configurationBase, namespace, RootState } from '../../../states';
 import * as CaseListSettingsActions from '../../../states/caseList/settings';
-import { Flex } from '../../../styles/HrmStyles';
 /**
  * Reads the definition version and returns and array of items (type Item[])
  * to be used as the options for the status filter
@@ -35,8 +34,8 @@ import { Flex } from '../../../styles/HrmStyles';
  */
 const getStatusInitialValue = (definitionVersion: DefinitionVersion) =>
   Object.values(definitionVersion.caseStatus).map(caseStatus => ({
-    value: { label: caseStatus.value },
-    label: { label: caseStatus.label },
+    value: caseStatus.value,
+    label: caseStatus.label,
     checked: false,
   }));
 
@@ -48,8 +47,8 @@ const getStatusInitialValue = (definitionVersion: DefinitionVersion) =>
  */
 const getCounselorsInitialValue = (counselorsHash: CounselorHash) =>
   Object.keys(counselorsHash).map(key => ({
-    value: { label: key },
-    label: { label: counselorsHash[key] },
+    value: key,
+    label: counselorsHash[key],
     checked: false,
   }));
 
@@ -95,8 +94,7 @@ const getCategoriesInitialValue = (definitionVersion: DefinitionVersion, helplin
  * @param items Item[]
  * @returns string[]
  */
-const filterCheckedItems = (items: Item[]): string[] =>
-  items.filter(item => item.checked).map(item => item.value.label);
+const filterCheckedItems = (items: Item[]): string[] => items.filter(item => item.checked).map(item => item.value);
 
 /**
  * Convert an array of categories (type Category[]) into an array of CategoryFilter.
@@ -173,9 +171,9 @@ const Filters: React.FC<Props> = ({
     const { counsellors, statuses, categories, includeOrphans, ...currentDateFilters } = currentFilter;
     const newCounselorValues = getCounselorsInitialValue(counselorsHash).map(cv => ({
       ...cv,
-      checked: counsellors.includes(cv.value.label),
+      checked: counsellors.includes(cv.value),
     }));
-    const newStatusValues = statusValues.map(sv => ({ ...sv, checked: statuses.includes(sv.value.label) }));
+    const newStatusValues = statusValues.map(sv => ({ ...sv, checked: statuses.includes(sv.value) }));
     const newCategoriesValues = getUpdatedCategoriesValues(categories, categoriesValues);
     setCounselorValues(newCounselorValues);
     setStatusValues(newStatusValues);

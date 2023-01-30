@@ -20,7 +20,6 @@ import { updateDraft } from '../../states/contacts/existingContacts';
 import { transformValues } from '../../services/ContactService';
 import CSAMReport from '../CSAMReport/CSAMReport';
 import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
-import { CustomITask } from '../../types/types';
 
 type OwnProps = {
   contactId: string;
@@ -28,7 +27,6 @@ type OwnProps = {
   handleOpenConnectDialog?: (event: any) => void;
   enableEditing?: boolean;
   showActionIcons?: boolean;
-  task?: CustomITask;
 };
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
@@ -44,7 +42,6 @@ const ContactDetails: React.FC<Props> = ({
   draftContact,
   enableEditing = true,
   draftCsamReport,
-  task,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const version = savedContact?.details.definitionVersion;
@@ -114,7 +111,6 @@ const ContactDetails: React.FC<Props> = ({
             display={true}
             autoFocus={true}
             helplineInformation={definitionVersion.helplineInformation}
-            counselorToolkitsEnabled={featureFlags.enable_counselor_toolkits}
           />
         </EditContactSection>
       );

@@ -2,13 +2,14 @@
 import React, { useCallback, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
-import type { CategoriesDefinition, HelplineDefinitions } from 'hrm-form-definitions';
+import type { CategoriesDefinition, HelplineDefinitions, HelplineEntry } from 'hrm-form-definitions';
 
 import { RootState } from '../../states';
 import { CategoriesFromDefinition, createSubCategoriesInputs } from '../common/forms/categoriesTabGenerator';
 import useFocus from '../../utils/useFocus';
 import { IssueCategorizationStateApi } from '../../states/contacts/issueCategorizationStateApi';
 import { CustomITask } from '../../types/types';
+import { getConfig } from '../../HrmFormPlugin';
 
 type OwnProps = {
   display: boolean;
@@ -17,7 +18,6 @@ type OwnProps = {
   autoFocus: boolean;
   stateApi: IssueCategorizationStateApi;
   helplineInformation: HelplineDefinitions;
-  counselorToolkitsEnabled: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -33,10 +33,10 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
   toggleCategoryExpanded,
   setCategoriesGridView,
   helplineInformation,
-  counselorToolkitsEnabled,
 }) => {
   const shouldFocusFirstElement = display && autoFocus;
   const firstElementRef = useFocus(shouldFocusFirstElement);
+  const { featureFlags } = getConfig();
 
   const { getValues, setValue } = useFormContext();
   const IssueCategorizationTabDefinition = definition;
@@ -66,18 +66,11 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
       setCategories(categories);
     };
 
-    const getHelplineName = () => {
-      let helplineName: string;
-      // eslint-disable-next-line array-callback-return
-      helplineInformation.helplines.map(data => {
-        if (data.default) {
-          helplineName = data.label;
-        }
-      });
-      return helplineName;
-    };
+    const getHelplineName = helplineInformation.helplines.find((data: HelplineEntry) => data.default);
 
     if (IssueCategorizationTabDefinition === null || IssueCategorizationTabDefinition === undefined) return {};
+    const helplineName = getHelplineName.label;
+    const counselorToolkitsEnabled = featureFlags.enable_counselor_toolkits;
     return createSubCategoriesInputs(
       IssueCategorizationTabDefinition,
       ['categories'],
@@ -85,13 +78,13 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
       handleOpenConnectDialog,
       anchorEl,
       handleCloseDialog,
-      getHelplineName,
+      helplineName,
       counselorToolkitsEnabled,
     );
   }, [
     IssueCategorizationTabDefinition,
     anchorEl,
-    counselorToolkitsEnabled,
+    featureFlags.enable_counselor_toolkits,
     getValues,
     helplineInformation.helplines,
     updateForm,

@@ -36,7 +36,7 @@ import TabPressWrapper from '../../TabPressWrapper';
 
 type Subcategory = {
   label: string;
-  toolkiturl?: string;
+  toolkitUrl?: string;
 };
 
 export const createSubcategoryCheckbox = (
@@ -47,11 +47,12 @@ export const createSubcategoryCheckbox = (
   handleOpenConnectDialog: (event: any) => void,
   anchorEl: Element,
   handleCloseDialog: () => void,
-  getHelplineName: () => void,
+  helplineName: string,
   counselorToolkitsEnabled: boolean,
 ) => {
-  const { label, toolkiturl } = subcategory;
+  const { label, toolkitUrl } = subcategory;
   const path = [...parents, label].join('.');
+
   return (
     <CategoryCheckboxWrapper>
       <ConnectForm key={path}>
@@ -80,47 +81,47 @@ export const createSubcategoryCheckbox = (
           );
         }}
       </ConnectForm>
-      {counselorToolkitsEnabled && toolkiturl && (
-        <TooltipKit
+      {counselorToolkitsEnabled && toolkitUrl && (
+        <ToolkitLink
           label={label}
-          toolkiturl={toolkiturl}
+          toolkitUrl={toolkitUrl}
           handleOpenConnectDialog={handleOpenConnectDialog}
           anchorEl={anchorEl}
           handleCloseDialog={handleCloseDialog}
-          getHelplineName={getHelplineName}
+          helplineName={helplineName}
         />
       )}
     </CategoryCheckboxWrapper>
   );
 };
 
-type TooltipKitProps = {
+type ToolkitLinkProps = {
   label: string;
-  toolkiturl: string;
+  toolkitUrl: string;
   handleOpenConnectDialog: (event: any) => void;
   anchorEl: Element;
   handleCloseDialog: () => void;
-  getHelplineName: () => void;
+  helplineName: string;
 };
 
-const TooltipKit: React.FC<TooltipKitProps> = ({
+const ToolkitLink: React.FC<ToolkitLinkProps> = ({
   label,
-  toolkiturl,
+  toolkitUrl,
   handleOpenConnectDialog,
   anchorEl,
   handleCloseDialog,
-  getHelplineName,
+  helplineName,
 }) => {
-  const [toolkitUrl, setToolkitUrl] = useState(null);
+  const [dialogToolkitUrl, setDialogToolkitUrl] = useState(null);
 
   const getToolkitUrlAndDialog = e => {
     handleOpenConnectDialog(e);
-    setToolkitUrl(toolkiturl);
+    setDialogToolkitUrl(toolkitUrl);
   };
 
   const clearToolkitUrlAndDialog = () => {
     handleCloseDialog();
-    setToolkitUrl(null);
+    setDialogToolkitUrl(null);
   };
 
   return (
@@ -129,12 +130,12 @@ const TooltipKit: React.FC<TooltipKitProps> = ({
         <InformationIconButton onClick={getToolkitUrlAndDialog} />
       </HtmlTooltip>
 
-      {toolkitUrl && (
+      {dialogToolkitUrl && (
         <ToolTipDialog
           anchorEl={anchorEl}
           handleCloseDialog={clearToolkitUrlAndDialog}
-          toolkiturl={toolkitUrl}
-          getHelplineName={getHelplineName}
+          toolkitUrl={dialogToolkitUrl}
+          helplineName={helplineName}
         />
       )}
     </>
@@ -142,13 +143,13 @@ const TooltipKit: React.FC<TooltipKitProps> = ({
 };
 
 type ToolTipDialogProps = {
-  toolkiturl: string;
+  toolkitUrl: string;
   anchorEl: Element;
   handleCloseDialog: () => void;
-  getHelplineName: () => void;
+  helplineName: string;
 };
 
-const ToolTipDialog: React.FC<ToolTipDialogProps> = ({ anchorEl, handleCloseDialog, toolkiturl, getHelplineName }) => {
+const ToolTipDialog: React.FC<ToolTipDialogProps> = ({ anchorEl, handleCloseDialog, toolkitUrl, helplineName }) => {
   const isOpen = Boolean(anchorEl);
   const id = isOpen ? 'simple-popover' : undefined;
 
@@ -170,7 +171,7 @@ const ToolTipDialog: React.FC<ToolTipDialogProps> = ({ anchorEl, handleCloseDial
       <TabPressWrapper>
         <ConfirmContainer>
           <ConfirmText>
-            <Template code="Toolkit-ConfirmTextOne" helpline={getHelplineName()} />
+            <Template code="Toolkit-ConfirmTextOne" helpline={helplineName} />
           </ConfirmText>
           <ConfirmText>
             <Template code="Toolkit-ConfirmTextTwo" />
@@ -180,7 +181,7 @@ const ToolTipDialog: React.FC<ToolTipDialogProps> = ({ anchorEl, handleCloseDial
               <Template code="SectionEntry-No" />
             </CancelButton>
             <Button
-              href={toolkiturl}
+              href={toolkitUrl}
               onClick={handleCloseDialog}
               target="_blank"
               rel="noreferrer"
@@ -207,7 +208,7 @@ export const createSubCategoriesInputs = (
   handleOpenConnectDialog: (event: any) => void,
   anchorEl: Element,
   handleCloseDialog: () => void,
-  getHelplineName: () => void,
+  helplineName: string,
   counselorToolkitsEnabled: boolean,
 ) =>
   Object.entries(definition).reduce<SubcategoriesMap>(
@@ -222,7 +223,7 @@ export const createSubCategoriesInputs = (
           handleOpenConnectDialog,
           anchorEl,
           handleCloseDialog,
-          getHelplineName,
+          helplineName,
           counselorToolkitsEnabled,
         );
       }),

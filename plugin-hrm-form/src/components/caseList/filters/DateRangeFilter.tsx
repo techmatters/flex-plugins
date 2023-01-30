@@ -73,14 +73,15 @@ const formToDateFilter = (
   selectedOptionField: string,
   filterOptions: DateFilterOption[],
   values: ReactHookFormValues,
-): DateFilterValue | undefined => {
-  const [, selected] = filterOptions.find(([opt]) => opt === values[selectedOptionField]);
-  if (!selected) {
+): DateFilterValue => {
+  const { ...selected } = Object(filterOptions.find(([opt]) => opt === values[selectedOptionField]));
+
+  if (!selected[1]) {
     return undefined;
   }
-  if (isExistsDateFilter(selected)) {
-    return { option: values[selectedOptionField], exists: selected.exists };
-  } else if (isFixedDateRange(selected)) {
+  if (isExistsDateFilter(selected[1])) {
+    return { option: values[selectedOptionField], exists: selected[1].exists };
+  } else if (isFixedDateRange(selected[1])) {
     return {
       option: values[selectedOptionField],
       from: values.customDateRangeFrom ? parse(values.customDateRangeFrom, 'yyyy-MM-dd', new Date()) : undefined,
@@ -89,8 +90,8 @@ const formToDateFilter = (
   }
   return {
     option: values[selectedOptionField],
-    from: selected.from(new Date()),
-    to: selected.to(new Date()),
+    from: selected[1].from(new Date()),
+    to: selected[1].to(new Date()),
   };
 };
 

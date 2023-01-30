@@ -190,7 +190,7 @@ export type FormDefinition = FormItemDefinition[];
 
 export type CategoryEntry = {
   color: string;
-  subcategories: { label: string; toolkiturl?: string }[];
+  subcategories: { label: string; toolkitUrl?: string }[];
 };
 export type CategoriesDefinition = { [category: string]: CategoryEntry };
 
