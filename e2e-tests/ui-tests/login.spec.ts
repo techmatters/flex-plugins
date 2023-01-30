@@ -27,7 +27,7 @@ test.describe.serial('Agent Desktop', () => {
   });
 
   test.afterAll(async () => {
-    // await page.waitForTimeout(60 * 60 * 1000);
+    await page.waitForTimeout(60 * 60 * 1000);
     await mockServer.stop();
   });
 

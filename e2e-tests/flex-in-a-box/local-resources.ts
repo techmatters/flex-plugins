@@ -13,6 +13,12 @@ export const preload = async () => {
 };
 
 export const useUnminifiedFlex = async (page: Page) => {
+  await page.route('https://**', (route) => {
+    route.fulfill({ status: 404 });
+  });
+  await page.route('https://**/*.js', (route) => {
+    route.continue();
+  });
   await page.route(
     'https://assets.flex.twilio.com/releases/flex-ui/2.0.0/twilio-flex.unbundled-react.min.js',
     (route) => {
@@ -22,7 +28,7 @@ export const useUnminifiedFlex = async (page: Page) => {
   await page.route('http://localhost:3000/plugins/plugin-hrm-form.js', (route) => {
     route.fulfill({ body: pluginJsContent, contentType: 'application/javascript' });
   });
-  await page.route('https://media.twiliocdn.com/*', (route) => {
+  /*await page.route('https://media.twiliocdn.com/**', (route) => {
     route.fulfill({ status: 404 });
-  });
+  });*/
 };
