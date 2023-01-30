@@ -12,7 +12,7 @@ const appConfig = {
   pluginService: {
     enabled: true,
     url: pluginServiceUrl,
-    // If thisis not set flex waits for 10 seconfs between running plugin init() and rendering components :-/
+    // If this is not set flex waits for 10 seconds between running plugin init() and rendering components :-/
     initializationTimeout: 1,
   },
   sso: {
