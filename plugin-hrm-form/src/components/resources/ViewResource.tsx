@@ -61,37 +61,42 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource }) 
         {resource && (
           <>
             <ResourceTitle>{resource.name}</ResourceTitle>
-            <ResourceAttributesContainer>
-              <ResourceAttributesColumn>
-                <ResourceAttribute description="Details" content={resource.attributes.Details} />
-                <ResourceAttribute description="Fee" content={resource.attributes.Fee} />
-                <ResourceAttribute
-                  description="Application Process"
-                  content={resource.attributes['Application Process']}
-                />
-                <ResourceAttribute description="Accessibility" content={resource.attributes.Accessibility} />
-                <ResourceAttribute description="Special Needs" content={resource.attributes['Special Needs']} />
-              </ResourceAttributesColumn>
-              <ResourceAttributesColumn>
-                <ResourceAttribute
-                  description="Contact Info"
-                  content={
-                    <>
-                      <PhoneIcon fontSize="inherit" style={{ color: '#616C864D', marginRight: 5, marginBottom: -2 }} />
-                      {resource.attributes.Phone}
-                      {' | '}
-                      {resource.attributes.Address}
-                    </>
-                  }
-                />
-                <ResourceAttribute
-                  description="Service Categories"
-                  content={resource.attributes['Service Categories']}
-                />
-                <ResourceAttribute description="Hours" content={resource.attributes.Hours} />
-                <ResourceAttribute description="Ages Served" content={resource.attributes['Ages Served']} />
-              </ResourceAttributesColumn>
-            </ResourceAttributesContainer>
+            {resource.attributes && (
+              <ResourceAttributesContainer>
+                <ResourceAttributesColumn>
+                  <ResourceAttribute description="Details" content={resource.attributes.Details} />
+                  <ResourceAttribute description="Fee" content={resource.attributes.Fee} />
+                  <ResourceAttribute
+                    description="Application Process"
+                    content={resource.attributes['Application Process']}
+                  />
+                  <ResourceAttribute description="Accessibility" content={resource.attributes.Accessibility} />
+                  <ResourceAttribute description="Special Needs" content={resource.attributes['Special Needs']} />
+                </ResourceAttributesColumn>
+                <ResourceAttributesColumn>
+                  <ResourceAttribute
+                    description="Contact Info"
+                    content={
+                      <>
+                        <PhoneIcon
+                          fontSize="inherit"
+                          style={{ color: '#616C864D', marginRight: 5, marginBottom: -2 }}
+                        />
+                        {resource.attributes.Phone}
+                        {' | '}
+                        {resource.attributes.Address}
+                      </>
+                    }
+                  />
+                  <ResourceAttribute
+                    description="Service Categories"
+                    content={resource.attributes['Service Categories']}
+                  />
+                  <ResourceAttribute description="Hours" content={resource.attributes.Hours} />
+                  <ResourceAttribute description="Ages Served" content={resource.attributes['Ages Served']} />
+                </ResourceAttributesColumn>
+              </ResourceAttributesContainer>
+            )}
           </>
         )}
       </ViewResourceArea>
