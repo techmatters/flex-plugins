@@ -19,9 +19,9 @@ export const useExpandableOnOverflow = ({ callback }: { callback?: (isOverflowin
 
   React.useEffect(() => {
     if (isExpanded) {
-      expandButtonElementRef.current?.focus();
-    } else {
       collapseButtonElementRef.current?.focus();
+    } else {
+      expandButtonElementRef.current?.focus();
     }
   }, [isExpanded]);
 
