@@ -12,6 +12,7 @@ const appConfig = {
   pluginService: {
     enabled: true,
     url: pluginServiceUrl,
+    initializationTimeout: 1,
   },
   sso: {
     accountSid,
