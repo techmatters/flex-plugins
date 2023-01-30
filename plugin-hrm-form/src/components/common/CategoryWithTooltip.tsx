@@ -1,6 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Tooltip } from '@material-ui/core';
+
+import { ContactTag, TagMiddleDot, TagText } from '../../styles/search';
 
 /**
  * Given a category, truncates it (if necessary) to make it fit (aprox) in the space of 'UNSPECIFIED/OTHER' string
@@ -11,23 +12,28 @@ export const getTag = category =>
     ? `${category.substring(0, 15).trim()}...`
     : category.substring(0, 17).trim();
 
-/**
- * Takes a render function (to render the children) and the category and returns
- * the same element wrapped in a Tooltip, with the category truncated to fit "UNSPECIFIED/OTHER" string
- * @param {{ renderTag: (tag: string, color: string) => JSX.Element; category: string }} props
- */
-const CategoryWithTooltip = ({ renderTag, category, color }) => {
-  const tag = getTag(category);
+// eslint-disable-next-line react/display-name
+const renderTag = (tag: string, color: string) => (
+  <ContactTag color={color}>
+    <TagMiddleDot color={color} />
+    <TagText color={color}>{tag}</TagText>
+  </ContactTag>
+);
+
+type Props = {
+  category: string;
+  color?: string;
+  fitTag?: boolean;
+};
+
+const CategoryWithTooltip: React.FC<Props> = ({ category, color, fitTag = true }) => {
+  const tag = fitTag ? getTag(category) : category;
 
   return <Tooltip title={category}>{renderTag(tag, color)}</Tooltip>;
 };
 
 CategoryWithTooltip.displayName = 'CategoryWithTooltip';
-CategoryWithTooltip.propTypes = {
-  renderTag: PropTypes.func.isRequired,
-  category: PropTypes.string.isRequired,
-  color: PropTypes.string,
-};
+
 CategoryWithTooltip.defaultProps = {
   color: '#000000',
 };

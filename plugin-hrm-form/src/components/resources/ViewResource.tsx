@@ -1,13 +1,21 @@
+/* eslint-disable react/jsx-max-depth */
 import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
+import PhoneIcon from '@material-ui/icons/Phone';
 
 import { namespace, referrableResourcesBase, RootState } from '../../states';
 import { loadResource } from '../../states/resources/loadResource';
-import { Flex } from '../../styles/HrmStyles';
+import { Box, Column } from '../../styles/HrmStyles';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
-import { ResourceTitle, ViewResourceArea } from '../../styles/ReferrableResources';
+import {
+  ResourceAttributesColumn,
+  ResourceAttributesContainer,
+  ResourceTitle,
+  ViewResourceArea,
+} from '../../styles/ReferrableResources';
+import ResourceAttribute from './ResourceAttribute';
 
 type OwnProps = {
   resourceId: string;
@@ -31,12 +39,16 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource }) 
     loadViewedResource();
     return <div>Loading...</div>;
   }
+
   return (
-    <div>
-      <Flex marginTop="15px" marginBottom="15px">
-        {/* eslint-disable-next-line no-empty-function */}
-        <SearchResultsBackButton text={<Template code="SearchResultsIndex-BackToResults" />} handleBack={() => {}} />
-      </Flex>
+    <Column>
+      <Box marginTop="10px" marginBottom="10px">
+        <SearchResultsBackButton
+          text={<Template code="SearchResultsIndex-BackToResults" />}
+          // eslint-disable-next-line no-empty-function
+          handleBack={() => {}}
+        />
+      </Box>
       <ViewResourceArea>
         {error && ( // TODO: translation / friendlyisation layer
           <>
@@ -46,9 +58,49 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource }) 
             <p>{error.message}</p>
           </>
         )}
-        {resource && <ResourceTitle>{resource.name}</ResourceTitle>}
+        {resource && (
+          <>
+            <ResourceTitle>{resource.name}</ResourceTitle>
+            {resource.attributes && (
+              <ResourceAttributesContainer>
+                <ResourceAttributesColumn>
+                  <ResourceAttribute description="Details" content={resource.attributes.Details} />
+                  <ResourceAttribute description="Fee" content={resource.attributes.Fee} />
+                  <ResourceAttribute
+                    description="Application Process"
+                    content={resource.attributes['Application Process']}
+                  />
+                  <ResourceAttribute description="Accessibility" content={resource.attributes.Accessibility} />
+                  <ResourceAttribute description="Special Needs" content={resource.attributes['Special Needs']} />
+                </ResourceAttributesColumn>
+                <ResourceAttributesColumn>
+                  <ResourceAttribute
+                    description="Contact Info"
+                    content={
+                      <>
+                        <PhoneIcon
+                          fontSize="inherit"
+                          style={{ color: '#616C864D', marginRight: 5, marginBottom: -2 }}
+                        />
+                        {resource.attributes.Phone}
+                        {' | '}
+                        {resource.attributes.Address}
+                      </>
+                    }
+                  />
+                  <ResourceAttribute
+                    description="Service Categories"
+                    content={resource.attributes['Service Categories']}
+                  />
+                  <ResourceAttribute description="Hours" content={resource.attributes.Hours} />
+                  <ResourceAttribute description="Ages Served" content={resource.attributes['Ages Served']} />
+                </ResourceAttributesColumn>
+              </ResourceAttributesContainer>
+            )}
+          </>
+        )}
       </ViewResourceArea>
-    </div>
+    </Column>
   );
 };
 

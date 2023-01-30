@@ -1,7 +1,4 @@
-import React from 'react';
-
 import HrmTheme from '../styles/HrmTheme';
-import { ContactTag, TagText, TagMiddleDot } from '../styles/search';
 import { getConfig, getDefinitionVersions } from '../HrmFormPlugin';
 import { ContactRawJson } from '../types/types';
 
@@ -31,11 +28,3 @@ export const getContactTags = (
       color: getCategoryColor(definitionVersion, category),
     })),
   );
-
-// eslint-disable-next-line react/display-name
-export const renderTag = (tag: string, color: string) => (
-  <ContactTag color={color}>
-    <TagMiddleDot color={color} />
-    <TagText color={color}>{tag}</TagText>
-  </ContactTag>
-);

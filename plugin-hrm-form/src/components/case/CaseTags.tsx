@@ -8,7 +8,7 @@ import { Flex } from '../../styles/HrmStyles';
 import { TagsWrapper } from '../../styles/search';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { retrieveCategories } from '../../states/contacts/contactDetailsAdapter';
-import { getContactTags, renderTag } from '../../utils/categories';
+import { getContactTags } from '../../utils/categories';
 import styles from './casePrint/styles';
 
 type OwnProps = {
@@ -52,9 +52,9 @@ const CaseTags: React.FC<Props> = ({ categories, definitionVersion, printPDF }) 
   return (
     <Flex justifyContent="space-between" height="23px" marginTop="10px">
       <TagsWrapper>
-        {category1 && <CategoryWithTooltip renderTag={renderTag} category={category1.label} color={category1.color} />}
-        {category2 && <CategoryWithTooltip renderTag={renderTag} category={category2.label} color={category2.color} />}
-        {category3 && <CategoryWithTooltip renderTag={renderTag} category={category3.label} color={category3.color} />}
+        {category1 && <CategoryWithTooltip category={category1.label} color={category1.color} />}
+        {category2 && <CategoryWithTooltip category={category2.label} color={category2.color} />}
+        {category3 && <CategoryWithTooltip category={category3.label} color={category3.color} />}
       </TagsWrapper>
     </Flex>
   );

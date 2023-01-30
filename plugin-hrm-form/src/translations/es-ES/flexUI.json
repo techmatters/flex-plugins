@@ -203,8 +203,8 @@
   "CaseHeader-Cancel": "Cancelar",
   "CaseHeader-Voided": "Anulado",
   "CaseHeader-FollowUpDate": "Seguimiento por",
-  "CaseSummary-ReadMore": "Ver más",
-  "CaseSummary-ReadLess": "Ver menos",
+  "ReadMore": "Ver más",
+  "ReadLess": "Ver menos",
   "CaseSummary-NoSummaryProvided": "Resumen no proporcionado",
 
   "CallSummary-None": "- Sin resumen de llamadas -",

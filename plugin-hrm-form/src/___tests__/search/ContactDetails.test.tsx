@@ -92,7 +92,6 @@ const contactOfType = (type): SearchAPIContact => ({
 });
 
 const handleBack = jest.fn();
-const handleMockedMessage = jest.fn();
 const handleSelectSearchResult = jest.fn();
 const detailsExpanded = {
   'General details': true,

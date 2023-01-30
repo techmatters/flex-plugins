@@ -22,7 +22,7 @@ import {
 } from '../../styles/caseList';
 import { Box, HiddenText } from '../../styles/HrmStyles';
 import { formatName, getShortSummary } from '../../utils';
-import { getContactTags, renderTag } from '../../utils/categories';
+import { getContactTags } from '../../utils/categories';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { getConfig } from '../../HrmFormPlugin';
 import { contactLabel } from '../../states/contacts/contactIdentifier';
@@ -115,7 +115,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
             {categories &&
               categories.map(category => (
                 <Box key={`category-tag-${category.label}`} marginBottom="5px">
-                  <CategoryWithTooltip renderTag={renderTag} category={category.label} color={category.color} />
+                  <CategoryWithTooltip category={category.label} color={category.color} />
                 </Box>
               ))}
           </div>
