@@ -81,8 +81,8 @@ const getCategoriesInitialValue = (definitionVersion: DefinitionVersion, helplin
     ([categoryName, { subcategories }]) => ({
       categoryName,
       subcategories: subcategories.map(subcategory => ({
-        value: subcategory,
-        label: subcategory,
+        value: subcategory.label,
+        label: subcategory.label,
         checked: false,
       })),
     }),
@@ -108,7 +108,7 @@ const filterCheckedCategories = (categories: Category[]): CategoryFilter[] =>
       .filter(subcategory => subcategory.checked)
       .map(subcategory => ({
         category: category.categoryName,
-        subcategory: subcategory.label.label,
+        subcategory: subcategory.label,
       })),
   );
 
@@ -128,7 +128,7 @@ const getUpdatedCategoriesValues = (categories: CategoryFilter[], categoriesValu
     ...categoryValue,
     subcategories: categoryValue.subcategories.map(subcategory => ({
       ...subcategory,
-      checked: isChecked(categoryValue.categoryName, subcategory.label.label),
+      checked: isChecked(categoryValue.categoryName, subcategory.label),
     })),
   }));
 };
@@ -213,6 +213,8 @@ const Filters: React.FC<Props> = ({
     filterCheckedItems(counselorValues).length > 0 ||
     Boolean(Object.values(dateFilterValues).filter(dfv => dfv).length) ||
     filterCheckedCategories(categoriesValues).length > 0;
+
+  console.log('statusValues here', statusValues);
 
   return (
     <>

@@ -40,7 +40,7 @@ const addPlaceholdersToDefaultValues = (categories: Category[]): Category[] => {
     categoryName,
     subcategories: subcategories.map(subcategory => ({
       ...subcategory,
-      value: addPlaceholders(subcategory.value.label),
+      value: addPlaceholders(subcategory.value),
     })),
   }));
 };
@@ -66,16 +66,13 @@ const transformToCategories = (values: ReactHookFormValues): Category[] => {
 
 const transformToValues = (categories: Category[]) => {
   const getSubcategories = (category: Category) =>
-    category.subcategories.reduce(
-      (acc, subcategory) => ({ ...acc, [subcategory.label.label]: subcategory.checked }),
-      {},
-    );
+    category.subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory.label]: subcategory.checked }), {});
   return categories.reduce((acc, category) => ({ ...acc, [category.categoryName]: getSubcategories(category) }), {});
 };
 
 type Subcategory = {
-  value: { label: string };
-  label: { label: string };
+  value: string;
+  label: string;
   checked: boolean;
 };
 export type Category = {
