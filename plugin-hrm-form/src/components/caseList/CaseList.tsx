@@ -8,16 +8,14 @@ import Case from '../case';
 import { StandaloneITask, ListCasesQueryParams, ListCasesFilters, ListCasesSort } from '../../types/types';
 import CaseListTable from './CaseListTable';
 import { CaseListContainer, CenteredContainer, SomethingWentWrongText } from '../../styles/caseList';
-import { listCases } from '../../services/CaseService';
 import { CaseLayout } from '../../styles/case';
 import * as CaseActions from '../../states/case/actions';
-import * as ConfigActions from '../../states/configuration/actions';
 import { StandaloneSearchContainer } from '../../styles/search';
-import { getCasesMissingVersions } from '../../utils/definitionVersions';
 import { caseListBase, namespace, RootState } from '../../states';
 import { undoCaseListSettingsUpdate } from '../../states/caseList/reducer';
 import { dateFilterPayloadFromFilters } from './filters/dateFilters';
 import * as ListContent from '../../states/caseList/listContent';
+import { useLoadDefinitionVersions } from '../../hooks/useLoadDefinitionVersions';
 
 export const CASES_PER_PAGE = 10;
 
@@ -33,7 +31,6 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const CaseList: React.FC<Props> = ({
   setConnectedCase,
-  updateDefinitionVersion,
   currentSettings,
   fetchCaseList,
   openCaseDetails,
@@ -45,6 +42,8 @@ const CaseList: React.FC<Props> = ({
   listLoading,
 }) => {
   const { helpline } = getConfig();
+
+  const { isLoadingDefinitionVersions } = useLoadDefinitionVersions(caseList, c => c.info.definitionVersion);
 
   const dispatchFetchCaseList = async (page: number, sort: ListCasesSort, filters: ListCasesFilters) => {
     const queryParams: ListCasesQueryParams = {
@@ -77,19 +76,6 @@ const CaseList: React.FC<Props> = ({
       undoCaseListSettingsUpdate();
     }
   }, [fetchError]);
-
-  // TODO: This chunk can be factored out into custom hooks, since is used in several places, for contacts and cases (single and lists).
-  const [isLoadingDefinitionVersions, setIsLoadingDefinitionVersion] = React.useState(false);
-  useEffect(() => {
-    const fetchMissingDefinitionVersions = async () => {
-      setIsLoadingDefinitionVersion(true);
-      const definitions = await getCasesMissingVersions(caseList);
-      definitions.forEach(d => updateDefinitionVersion(d.version, d.definition));
-      setIsLoadingDefinitionVersion(false);
-    };
-
-    fetchMissingDefinitionVersions();
-  }, [caseList, updateDefinitionVersion]);
 
   const handleClickViewCase = currentCase => () => {
     setConnectedCase(currentCase, standaloneTask.taskSid);
@@ -141,12 +127,10 @@ CaseList.displayName = 'CaseList';
 
 CaseList.propTypes = {
   setConnectedCase: PropTypes.func.isRequired,
-  updateDefinitionVersion: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = {
   setConnectedCase: CaseActions.setConnectedCase,
-  updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
   undoSettingsUpdate: undoCaseListSettingsUpdate,
   fetchCaseList: ListContent.fetchCaseList,
   openCaseDetails: ListContent.openCaseDetails,
