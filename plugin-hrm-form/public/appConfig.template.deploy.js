@@ -1,18 +1,22 @@
 // your account sid
-var accountSid = '__TWILIO_ACCOUNT_SID__';
+const accountSid = '__TWILIO_ACCOUNT_SID__';
 
-// set to /plugins.json for local dev
-// set to /plugins.local.build.json for testing your build
-// set to "" for the default live plugin loader
-var pluginServiceUrl = '/plugins.json';
+/*
+ * set to /plugins.json for local dev
+ * set to /plugins.local.build.json for testing your build
+ * set to "" for the default live plugin loader
+ */
+const pluginServiceUrl = '/plugins.json';
 
-var appConfig = {
+const appConfig = {
   pluginService: {
     enabled: true,
     url: pluginServiceUrl,
+    // If this is not set flex waits for 10 seconds between running plugin init() and rendering components :-/
+    initializationTimeout: 1,
   },
   sso: {
-    accountSid: accountSid
+    accountSid,
   },
   ytica: false,
   logLevel: 'debug',
