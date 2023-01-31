@@ -359,11 +359,17 @@ describe('transformCategories', () => {
         IssueCategorizationTab: jest.fn(() => ({
           category1: {
             color: '',
-            subcategories: ['subCategory1', 'subCategory2'],
+            subcategories: [
+              { label: 'subCategory1', toolkitUrl: '' },
+              { label: 'subCategory2', toolkitUrl: '' },
+            ],
           },
           category2: {
             color: '',
-            subcategories: ['subCategory1', 'subCategory2'],
+            subcategories: [
+              { label: 'subCategory1', toolkitUrl: '' },
+              { label: 'subCategory2', toolkitUrl: '' },
+            ],
           },
         })),
       },

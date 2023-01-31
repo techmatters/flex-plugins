@@ -8,7 +8,6 @@ import { RootState } from '../../states';
 import { CategoriesFromDefinition, createSubCategoriesInputs } from '../common/forms/categoriesTabGenerator';
 import useFocus from '../../utils/useFocus';
 import { IssueCategorizationStateApi } from '../../states/contacts/issueCategorizationStateApi';
-import { CustomITask } from '../../types/types';
 import { getConfig } from '../../HrmFormPlugin';
 
 type OwnProps = {
