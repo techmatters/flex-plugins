@@ -36,7 +36,6 @@ export const FETCH_CASE_LIST_STARTED = `${FETCH_CASE_LIST}_PENDING` as const;
 
 type FetchCaseListStartAction = { type: typeof FETCH_CASE_LIST_STARTED };
 
-
 export const fetchCaseListStartReducer = (
   state: CaseListContentState,
   action: FetchCaseListStartAction,
