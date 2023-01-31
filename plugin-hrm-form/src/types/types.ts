@@ -144,7 +144,6 @@ export type SearchAPIContact = {
   overview: {
     helpline: string;
     dateTime: string;
-    name: string;
     customerNumber: string;
     callType: CallTypes | '';
     categories: {};

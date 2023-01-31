@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 
-import { DefinitionVersion, DefinitionVersionId } from 'hrm-form-definitions/src';
+import { DefinitionVersion, DefinitionVersionId } from 'hrm-form-definitions';
 
 const baseMockConfig = {
   hrmBaseUrl: 'http://fake.hrm.com',

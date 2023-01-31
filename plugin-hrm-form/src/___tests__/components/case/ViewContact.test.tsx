@@ -85,7 +85,6 @@ const contact: SearchAPIContact = {
   },
   overview: {
     dateTime: '2020-03-10',
-    name: 'Jill Smith',
     customerNumber: 'Anonymous',
     callType: 'Child calling about self',
     categories: { category1: ['Tag1', 'Tag2'] },
