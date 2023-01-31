@@ -53,8 +53,8 @@ const transformToCategories = (values: ReactHookFormValues): Category[] => {
 
   const getSubcategories = category =>
     Object.keys(category).map(subcategoryName => ({
-      value: { label: removePlaceholders(subcategoryName) },
-      label: { label: removePlaceholders(subcategoryName) },
+      value: removePlaceholders(subcategoryName),
+      label: removePlaceholders(subcategoryName),
       checked: category[subcategoryName],
     }));
 

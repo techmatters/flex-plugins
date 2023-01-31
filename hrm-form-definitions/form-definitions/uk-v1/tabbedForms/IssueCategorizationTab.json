@@ -84,7 +84,7 @@
       ]
     },
     "Other Enquiries": {
-      "color": "8055BA"},
+      "color": "8055BA",
       "subcategories": [
         {"label": "Other nature of enquiry"},
         {"label": "General enquiry"},
@@ -100,3 +100,4 @@
       ]
     }
   }
+}

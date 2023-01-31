@@ -67,7 +67,7 @@
         {"label": "General healthcare services"},
         {"label": "Legal services and advice"},
         {"label": "Mental health services"},
-       {"label": "Sexual health services"},
+        {"label": "Sexual health services"},
         {"label": "Socio-economical services"},
         {"label": "Unspecified/Other"}
       ]
