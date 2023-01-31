@@ -33,6 +33,7 @@ import { prepopulateForm } from './prepopulateForm';
 import { recordEvent } from '../fullStory';
 import { CustomITask, FeatureFlags } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
+import { subscribeAlertOnConversationJoined } from './audioNotifications';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -184,6 +185,10 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   payload: ActionPayload,
 ) => {
   const { task } = payload;
+
+  if (TaskHelper.isChatBasedTask(task)) {
+    subscribeAlertOnConversationJoined(task);
+  }
 
   if (featureFlags.enable_transfers && TransferHelpers.hasTransferStarted(task)) handleTransferredTask(task);
   else prepopulateForm(task);
