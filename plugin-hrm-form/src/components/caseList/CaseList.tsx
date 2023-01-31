@@ -35,9 +35,7 @@ const CaseList: React.FC<Props> = ({
   setConnectedCase,
   updateDefinitionVersion,
   currentSettings,
-  fetchCaseListStarted,
-  fetchCaseListSuccess,
-  fetchCaseListError,
+  fetchCaseList,
   openCaseDetails,
   closeCaseDetails,
   caseList,
@@ -48,41 +46,50 @@ const CaseList: React.FC<Props> = ({
 }) => {
   const { helpline } = getConfig();
 
-  const fetchCaseList = async (page: number, sort: ListCasesSort, filters: ListCasesFilters) => {
-    try {
-      fetchCaseListStarted();
-      const queryParams: ListCasesQueryParams = {
-        ...sort,
-        offset: page * CASES_PER_PAGE,
-        limit: CASES_PER_PAGE,
-      };
-      const listCasesPayload = {
-        filters: {
-          ...filters,
-          ...dateFilterPayloadFromFilters({
-            createdAt: filters?.createdAt,
-            updatedAt: filters?.updatedAt,
-            followUpDate: filters?.followUpDate,
-          }),
-        },
-        helpline,
-      };
-      const { cases, count } = await listCases(queryParams, listCasesPayload);
-
-      const definitions = await getCasesMissingVersions(cases);
-      definitions.forEach(d => updateDefinitionVersion(d.version, d.definition));
-      fetchCaseListSuccess(cases, count);
-    } catch (error) {
-      console.error(error);
-      undoCaseListSettingsUpdate();
-      fetchCaseListError(error);
-    }
+  const dispatchFetchCaseList = async (page: number, sort: ListCasesSort, filters: ListCasesFilters) => {
+    const queryParams: ListCasesQueryParams = {
+      ...sort,
+      offset: page * CASES_PER_PAGE,
+      limit: CASES_PER_PAGE,
+    };
+    const listCasesPayload = {
+      filters: {
+        ...filters,
+        ...dateFilterPayloadFromFilters({
+          createdAt: filters?.createdAt,
+          updatedAt: filters?.updatedAt,
+          followUpDate: filters?.followUpDate,
+        }),
+      },
+      helpline,
+    };
+    fetchCaseList(queryParams, listCasesPayload);
   };
 
   useEffect(() => {
-    fetchCaseList(currentSettings.page, currentSettings.sort, currentSettings.filter);
+    dispatchFetchCaseList(currentSettings.page, currentSettings.sort, currentSettings.filter);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSettings]);
+
+  useEffect(() => {
+    if (fetchError) {
+      console.error(fetchError);
+      undoCaseListSettingsUpdate();
+    }
+  }, [fetchError]);
+
+  // TODO: This chunk can be factored out into custom hooks, since is used in several places, for contacts and cases (single and lists).
+  const [isLoadingDefinitionVersions, setIsLoadingDefinitionVersion] = React.useState(false);
+  useEffect(() => {
+    const fetchMissingDefinitionVersions = async () => {
+      setIsLoadingDefinitionVersion(true);
+      const definitions = await getCasesMissingVersions(caseList);
+      definitions.forEach(d => updateDefinitionVersion(d.version, d.definition));
+      setIsLoadingDefinitionVersion(false);
+    };
+
+    fetchMissingDefinitionVersions();
+  }, [caseList, updateDefinitionVersion]);
 
   const handleClickViewCase = currentCase => () => {
     setConnectedCase(currentCase, standaloneTask.taskSid);
@@ -91,9 +98,11 @@ const CaseList: React.FC<Props> = ({
 
   const closeCaseView = async () => {
     // Reload the current page of the list to reflect any updates to the case just being viewed
-    await fetchCaseList(currentSettings.page, currentSettings.sort, currentSettings.filter);
+    await dispatchFetchCaseList(currentSettings.page, currentSettings.sort, currentSettings.filter);
     closeCaseDetails();
   };
+
+  const isLoading = listLoading || isLoadingDefinitionVersions;
 
   if (fetchError)
     return (
@@ -118,7 +127,7 @@ const CaseList: React.FC<Props> = ({
     <>
       <CaseListContainer>
         <CaseListTable
-          loading={listLoading}
+          loading={isLoading}
           caseList={caseList}
           caseCount={caseCount}
           handleClickViewCase={handleClickViewCase}
@@ -139,9 +148,7 @@ const mapDispatchToProps = {
   setConnectedCase: CaseActions.setConnectedCase,
   updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
   undoSettingsUpdate: undoCaseListSettingsUpdate,
-  fetchCaseListStarted: ListContent.fetchCaseListStarted,
-  fetchCaseListSuccess: ListContent.fetchCaseListSuccess,
-  fetchCaseListError: ListContent.fetchCaseListError,
+  fetchCaseList: ListContent.fetchCaseList,
   openCaseDetails: ListContent.openCaseDetails,
   closeCaseDetails: ListContent.closeCaseDetails,
 };
