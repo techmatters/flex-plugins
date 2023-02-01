@@ -1,4 +1,5 @@
 import { styled } from '@twilio/flex-ui';
+import { ButtonBase } from '@material-ui/core';
 
 import { Column, Flex, FontOpenSans, Row } from './HrmStyles';
 
@@ -53,3 +54,6 @@ export const ResourceCategoriesContainer = styled(Row)`
   flex-wrap: wrap;
 `;
 ResourceCategoriesContainer.displayName = 'ResourceCategoriesContainer';
+
+export const ResourcesSearchSubmitButton = styled(ButtonBase)``;
+ResourcesSearchSubmitButton.displayName = 'ResourcesSearchSubmitButton';

@@ -38,3 +38,19 @@ export const getResource = async (resourceId: string): Promise<ReferrableResourc
     },
   };
 };
+
+export type SearchParameters = {
+  nameSubstring: string;
+  ids: string[];
+};
+
+export const searchResources = async (
+  parameters: SearchParameters,
+  start: number,
+  limit: number,
+): Promise<{ totalCount: number; results: ReferrableResource[] }> => {
+  return fetchResourceApi(`search?start=${start}&limit=${limit}`, {
+    method: 'POST',
+    body: JSON.stringify(parameters),
+  });
+};
