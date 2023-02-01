@@ -1,3 +1,4 @@
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const DotenvFlow = require('dotenv-flow-webpack');
 
 module.exports = (config, { isProd, isDev, isTest }) => {
@@ -12,5 +13,12 @@ module.exports = (config, { isProd, isDev, isTest }) => {
       system_vars: true,
     }),
   );
+
+  if (process.env.BUNDLE_ANALYZER === 'true') {
+    config.plugins.push(
+      new BundleAnalyzerPlugin(),
+    );
+  }
+
   return config;
 };
