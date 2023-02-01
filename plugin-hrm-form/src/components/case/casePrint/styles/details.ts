@@ -1,4 +1,5 @@
-import ReactPDF from '@react-pdf/renderer';
+import type ReactPDF from '@react-pdf/renderer';
+
 
 const detailsStyles: ReactPDF.Styles = {
   caseDetailsContainer: {

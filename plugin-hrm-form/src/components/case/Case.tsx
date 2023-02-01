@@ -25,7 +25,9 @@ import * as ConfigActions from '../../states/configuration/actions';
 import ViewContact from './ViewContact';
 import { Activity, CaseDetails, CaseDetailsName, ConnectedCaseActivity, NoteActivity } from '../../states/case/types';
 import { Case as CaseType, CustomITask, StandaloneITask } from '../../types/types';
-import CasePrintView from './casePrint/CasePrintView';
+
+const CasePrintView = React.lazy(() => import('./casePrint/CasePrintView'));
+
 import {
   AppRoutes,
   AppRoutesWithCase,

@@ -4,5 +4,11 @@ module.exports = (config, { isProd, isDev, isTest }) => {
    * Consult https://webpack.js.org/configuration/dev-server for more information.
    */
 
+  console.dir(config);
+
+  config.publicPath = '/';
+  config.contentBase = '/';
+  console.dir(config);
+
   return config;
 };

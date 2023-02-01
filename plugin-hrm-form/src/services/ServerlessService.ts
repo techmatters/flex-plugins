@@ -1,11 +1,17 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 /* eslint-disable camelcase */
 import { ITask, Notifications } from '@twilio/flex-ui';
-import { DefinitionVersionId, loadDefinition, DefinitionVersion } from 'hrm-form-definitions';
+import type { DefinitionVersionId, DefinitionVersion } from 'hrm-form-definitions';
 
 import fetchProtectedApi from './fetchProtectedApi';
 import { getConfig } from '../HrmFormPlugin';
 import type { ChildCSAMReportForm, CounselorCSAMReportForm } from '../states/csam-report/types';
+
+let loadDefinition;
+
+import('hrm-form-definitions').then((hrmFormDefinitions) => {
+  loadDefinition = hrmFormDefinitions.loadDefinition;
+})
 
 type PopulateCounselorsReturn = { sid: string; fullName: string }[];
 

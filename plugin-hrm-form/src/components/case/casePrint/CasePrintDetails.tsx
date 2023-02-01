@@ -2,7 +2,13 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable dot-notation */
 import React from 'react';
-import { Text, View, Image } from '@react-pdf/renderer';
+let Text, View, Image;
+
+import('@react-pdf/renderer').then((pdf) => {
+  View = pdf.View;
+  Text = pdf.Text;
+  Image = pdf.Image;
+});
 import { DefinitionVersionId, DefinitionVersion } from 'hrm-form-definitions';
 
 import { getConfig } from '../../../HrmFormPlugin';

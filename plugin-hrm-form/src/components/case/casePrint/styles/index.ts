@@ -1,5 +1,11 @@
-import { StyleSheet, Font } from '@react-pdf/renderer';
-import { DefinitionVersionId } from 'hrm-form-definitions';
+// import { StyleSheet, Font } from '@react-pdf/renderer';
+
+let StyleSheet, Font;
+
+import('@react-pdf/renderer').then((pdf) => {
+  StyleSheet = pdf.StyleSheet;
+  Font = pdf.Font;
+});
 
 import headerStyles from './header';
 import footerStyles from './footer';

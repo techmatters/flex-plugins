@@ -1,7 +1,12 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable dot-notation */
 import React from 'react';
-import { View, Text } from '@react-pdf/renderer';
+let View, Text;
+
+import('@react-pdf/renderer').then((pdf) => {
+  View = pdf.View;
+  Text = pdf.Text;
+});
 
 import styles from './styles';
 

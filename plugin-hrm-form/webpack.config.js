@@ -20,5 +20,12 @@ module.exports = (config, { isProd, isDev, isTest }) => {
     );
   }
 
+  config.optimization = {
+    ...config.optimization,
+    runtimeChunk: true,
+  }
+
+  console.dir(config);
+
   return config;
 };

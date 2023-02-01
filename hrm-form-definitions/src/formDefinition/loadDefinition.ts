@@ -69,71 +69,71 @@ export async function loadDefinition(version: DefinitionVersionId): Promise<Defi
    * Not sure if this is a Twilio Flex specific issue or just misconfiguration - but loading the modules eagerly gets around it.
    */
   const layoutDefinitionsModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/LayoutDefinitions.json`
+     `../../form-definitions/${version}/LayoutDefinitions.json`
   );
   const householdFormModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/HouseholdForm.json`
+     `../../form-definitions/${version}/caseForms/HouseholdForm.json`
   );
   const incidentFormModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/IncidentForm.json`
+     `../../form-definitions/${version}/caseForms/IncidentForm.json`
   );
   const noteFormModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/NoteForm.json`
+     `../../form-definitions/${version}/caseForms/NoteForm.json`
   );
   const perpetratorFormModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/PerpetratorForm.json`
+     `../../form-definitions/${version}/caseForms/PerpetratorForm.json`
   );
   const referralFormModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/ReferralForm.json`
+     `../../form-definitions/${version}/caseForms/ReferralForm.json`
   );
   const documentFormModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/DocumentForm.json`
+     `../../form-definitions/${version}/caseForms/DocumentForm.json`
   );
   const callerInformationTabModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/tabbedForms/CallerInformationTab.json`
+     `../../form-definitions/${version}/tabbedForms/CallerInformationTab.json`
   );
   const caseInformationTabModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/tabbedForms/CaseInformationTab.json`
+     `../../form-definitions/${version}/tabbedForms/CaseInformationTab.json`
   );
   const childInformationTabModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/tabbedForms/ChildInformationTab.json`
+     `../../form-definitions/${version}/tabbedForms/ChildInformationTab.json`
   );
   const issueCategorizationTabModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/tabbedForms/IssueCategorizationTab.json`
+     `../../form-definitions/${version}/tabbedForms/IssueCategorizationTab.json`
   );
 
   let contactlessTaskTabModule;
   try {
     contactlessTaskTabModule = await import(
-      /* webpackMode: "eager" */ `../../form-definitions/${version}/tabbedForms/ContactlessTaskTab.json`
+       `../../form-definitions/${version}/tabbedForms/ContactlessTaskTab.json`
     );
   } catch (err) {
     contactlessTaskTabModule = {};
   }
 
   const callTypeButtonsModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/CallTypeButtons.json`
+     `../../form-definitions/${version}/CallTypeButtons.json`
   );
   const helplineInformationModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/HelplineInformation.json`
+     `../../form-definitions/${version}/HelplineInformation.json`
   );
   const cannedResponsesModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/CannedResponses.json`
+     `../../form-definitions/${version}/CannedResponses.json`
   );
   const oneToOneConfigSpecModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/insights/oneToOneConfigSpec.json`
+     `../../form-definitions/${version}/insights/oneToOneConfigSpec.json`
   );
   const oneToManyConfigSpecsModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/insights/oneToManyConfigSpecs.json`
+     `../../form-definitions/${version}/insights/oneToManyConfigSpecs.json`
   );
   const caseStatusModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/CaseStatus.json`
+     `../../form-definitions/${version}/CaseStatus.json`
   );
 
   let prepopulateKeys;
   try {
     prepopulateKeys = await import(
-      /* webpackMode: "eager" */ `../../form-definitions/${version}/PrepopulateKeys.json`
+       `../../form-definitions/${version}/PrepopulateKeys.json`
     );
   } catch (err) {
     prepopulateKeys = {
@@ -149,7 +149,7 @@ export async function loadDefinition(version: DefinitionVersionId): Promise<Defi
   let referenceData;
   try {
     referenceData = await import(
-      /* webpackMode: "eager" */ `../../form-definitions/${version}/ReferenceData.json`
+       `../../form-definitions/${version}/ReferenceData.json`
     );
   } catch (err) {
     referenceData = {};

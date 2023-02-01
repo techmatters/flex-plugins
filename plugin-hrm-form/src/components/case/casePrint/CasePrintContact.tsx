@@ -4,7 +4,12 @@
  * This component was in the original mockup designs, we're removing it per ZA request, but could be useful for other helplines.
  */
 import React from 'react';
-import { Text, View } from '@react-pdf/renderer';
+let View, Text;
+
+import('@react-pdf/renderer').then((pdf) => {
+  View = pdf.View;
+  Text = pdf.Text;
+});
 
 import styles from './styles';
 import { getConfig } from '../../../HrmFormPlugin';

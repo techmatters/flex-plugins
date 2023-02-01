@@ -1,7 +1,16 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-max-depth */
 import React, { useState, useEffect } from 'react';
-import { Page, Document, View, PDFViewer } from '@react-pdf/renderer';
+
+let Page, Document, View, PDFViewer;
+
+import('@react-pdf/renderer').then((pdf) => {
+  Page = pdf.Page;
+  Document = pdf.Document;
+  View = pdf.View;
+  PDFViewer = pdf.PDFViewer;
+});
+
 import { Template } from '@twilio/flex-ui';
 import { ButtonBase, CircularProgress } from '@material-ui/core';
 import { Close } from '@material-ui/icons';

@@ -1,6 +1,10 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { View } from '@react-pdf/renderer';
+
+let View;
+import('@react-pdf/renderer').then((pdf) => {
+  View = pdf.View;
+});
 import { FormDefinition } from 'hrm-form-definitions';
 
 import CasePrintSection from './CasePrintSection';

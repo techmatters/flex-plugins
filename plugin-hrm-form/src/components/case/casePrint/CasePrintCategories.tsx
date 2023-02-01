@@ -1,6 +1,12 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Text, View } from '@react-pdf/renderer';
+let View, Text;
+
+import('@react-pdf/renderer').then((pdf) => {
+  View = pdf.View;
+  Text = pdf.Text;
+});
+
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { getConfig } from '../../../HrmFormPlugin';
