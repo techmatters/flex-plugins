@@ -20,6 +20,7 @@ import { setUpSharedStateClient } from './utils/sharedState';
 import { FeatureFlags } from './types/types';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
 import { subscribeNewMessageAlertOnPluginInit, subscribeReservedTaskAlert } from './utils/audioNotifications';
+import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
 
 // Re-exported for backwards compatibility, we should move to getHrmConfig & remove this
 export { getConfig } from './hrmConfig';
@@ -106,6 +107,7 @@ const setUpComponents = (
 
   Components.setUpStandaloneSearch();
   setUpReferrableResources();
+  setUpCounselorToolkits();
 
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 

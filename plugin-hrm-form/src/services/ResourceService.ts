@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unused-modules */
 import fetchResourceApi from './fetchResourceApi';
 import { getReferrableResourceConfig } from '../hrmConfig';
 
