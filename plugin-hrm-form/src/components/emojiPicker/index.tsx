@@ -20,6 +20,7 @@ import { EmojiIcon } from '@twilio-paste/icons/cjs/EmojiIcon';
 import Picker from '@emoji-mart/react';
 
 import { Relative, Popup, SelectEmojiButton } from './styles';
+import { getDefinitionVersions } from '../../HrmFormPlugin';
 
 type onEmojiSelectPayload = {
   native: string;
@@ -40,6 +41,7 @@ const EmojiPicker: React.FC<TaskContextProps> = ({ task }) => {
   const [inputText, setInputText] = useState('');
   const [isOpen, setIsOpen] = useState(false);
 
+  const { blockedEmojis } = getDefinitionVersions().currentDefinitionVersion;
   const conversationSid = getConversationSid(task);
 
   /**
@@ -75,7 +77,7 @@ const EmojiPicker: React.FC<TaskContextProps> = ({ task }) => {
   return (
     <Relative>
       <Popup isOpen={isOpen}>
-        <Picker onEmojiSelect={handleSelectEmoji} onClickOutside={handleClickOutside} />
+        <Picker onEmojiSelect={handleSelectEmoji} onClickOutside={handleClickOutside} exceptEmojis={blockedEmojis} />
       </Popup>
       <SelectEmojiButton type="button" onClick={togglePicker}>
         <EmojiIcon decorative={false} title="Select emoji" />

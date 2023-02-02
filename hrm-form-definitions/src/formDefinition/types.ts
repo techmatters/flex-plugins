@@ -315,4 +315,5 @@ export type DefinitionVersion = {
     };
   };
   referenceData?: Record<string, any>;
+  blockedEmojis: string[];
 };
