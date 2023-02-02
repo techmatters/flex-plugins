@@ -24,6 +24,7 @@ import {
   ResourcePage,
   viewResourceAction,
 } from '../../../states/resources';
+import { initialState as searchInitialState } from '../../../states/resources/search';
 
 const resource = (
   id: string,
@@ -32,6 +33,7 @@ const resource = (
   resource: {
     name: `Resource with id#${id}`,
     id,
+    attributes: {},
   },
   loaded,
 });
@@ -45,6 +47,7 @@ describe('reduce', () => {
           oldResource: resource('oldResource', subDays(now, 1)),
           futureResource: resource('futureResource', addDays(now, 1)),
         },
+        search: searchInitialState,
       },
       { type: 'NOT_FOR_THE_LIKES_OF_YOU' } as any,
     );
@@ -60,11 +63,16 @@ describe('reduce', () => {
           resources: {
             existingResource: resource('existingResource', now),
           },
+          search: searchInitialState,
         },
-        addResourceAction({ id: 'newResource', name: 'New Resource' }),
+        addResourceAction({ id: 'newResource', name: 'New Resource', attributes: {} }),
       );
       expect(state.resources.existingResource).toStrictEqual(resource('existingResource', now));
-      expect(state.resources.newResource.resource).toStrictEqual({ id: 'newResource', name: 'New Resource' });
+      expect(state.resources.newResource.resource).toStrictEqual({
+        id: 'newResource',
+        name: 'New Resource',
+        attributes: {},
+      });
       expect(isAfter(state.resources.newResource.loaded, now)).toBe(true);
     });
     test('Resource in state already - updates resource & sets current date', () => {
@@ -73,12 +81,14 @@ describe('reduce', () => {
           resources: {
             existingResource: resource('existingResource', now),
           },
+          search: searchInitialState,
         },
-        addResourceAction({ id: 'existingResource', name: 'Updated Resource' }),
+        addResourceAction({ id: 'existingResource', name: 'Updated Resource', attributes: {} }),
       );
       expect(state.resources.existingResource.resource).toStrictEqual({
         id: 'existingResource',
         name: 'Updated Resource',
+        attributes: {},
       });
       expect(isAfter(state.resources.existingResource.loaded, now)).toBe(true);
       expect(Object.keys(state.resources)).toHaveLength(1);
@@ -92,6 +102,7 @@ describe('reduce', () => {
           resources: {
             existingResource: resource('existingResource', now),
           },
+          search: searchInitialState,
         },
         loadResourceErrorAction('newResource', err),
       );
@@ -106,6 +117,7 @@ describe('reduce', () => {
           resources: {
             existingResource: resource('existingResource', now),
           },
+          search: searchInitialState,
         },
         loadResourceErrorAction('existingResource', err),
       );
@@ -120,6 +132,7 @@ describe('reduce', () => {
       resources: {
         existingResource: resource('existingResource', now),
       },
+      search: searchInitialState,
     };
     test('Resource with ID exists - set route to viewing resource with that ID', () => {
       const state = reduce(initialState, viewResourceAction('existingResource'));
