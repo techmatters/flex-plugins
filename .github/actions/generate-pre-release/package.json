@@ -8,7 +8,7 @@
     "generate-next-tag": "npm install && npx ts-node --esm ./generate-next-tag.ts"
   },
   "author": "",
-  "license": "ISC",
+  "license": "AGPL",
   "dependencies": {
     "@actions/core": "^1.9.1"
   },
