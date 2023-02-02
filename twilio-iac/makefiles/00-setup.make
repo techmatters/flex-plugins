@@ -1,25 +1,21 @@
-.PHONY: get init plan apply destroy
-.DEFAULT_GOAL := help
+DOCKER_IMAGE ?= public.ecr.aws/techmatters/terraform
+TF_VER ?= 1.3.7
 
-DOCKER_IMAGE := public.ecr.aws/techmatters/terraform
+MY_PWD ?= $(shell git rev-parse --show-toplevel)
 
 ifdef OS
     # We're running Windows, assume powershell
-    #TODO: Test this on a windows system where docker actually works
-    SECRETS = -e AWS_DEFAULT_REGION -e AWS_SECRET_ACCESS_KEY -e AWS_ACCESS_KEY_ID -e TWILIO_ACCOUNT_SID -e TWILIO_AUTH_TOKEN -v ~/.aws:/root/.aws -e GITHUB_OWNER -e GITHUB_TOKEN
-    #TODO: fix this to navigate up two dirs instead of one
-    MY_PWD := $(shell powershell Split-Path -Path (Get-Location) -Parent)
     MY_ENV := $(shell powershell Split-Path -Path (Get-Location) -Leaf)
     DIND_ARG = -v "//var/run/docker.sock:/var/run/docker.sock"
 else
     # We're NOT running windows, assume bash is available
-    SECRETS = -e AWS_DEFAULT_REGION -e AWS_SECRET_ACCESS_KEY -e AWS_ACCESS_KEY_ID -e TWILIO_ACCOUNT_SID -e TWILIO_AUTH_TOKEN -v ~/.aws:/root/.aws -e GITHUB_OWNER -e GITHUB_TOKEN
-    MY_PWD := $(shell cd ../../; pwd)
     MY_ENV := $(shell basename $(CURDIR))
+    MY_RELATIVE_PATH := $(shell echo $(CURDIR) | sed -e "s|$(MY_PWD)||")
     DIND_ARG = -v /var/run/docker.sock:/var/run/docker.sock
 endif
 
-PWD_ARG = -v $(MY_PWD):/app -w /app/twilio-iac/$(MY_ENV)
-ENV_ARG = -e MY_ENV=$(MY_ENV) -e SSM_DB_SECRET_NAME=$(SSM_DB_SECRET_NAME) -e GITHUB_TOKEN_REQUIRED=true -e TF_LOG
+PWD_ARG = -v $(MY_PWD):/app -w /app$(MY_RELATIVE_PATH)
+ENV_ARG = -e MY_ENV=$(MY_ENV) -e HL=$(HL) -e HL_ENV=$(HL_ENV) -e GITHUB_TOKEN_REQUIRED=true -e TF_LOG
+SECRETS = -e AWS_DEFAULT_REGION -e AWS_SECRET_ACCESS_KEY -e AWS_ACCESS_KEY_ID -v ~/.aws:/root/.aws -e GITHUB_OWNER -e GITHUB_TOKEN
 
 DEFAULT_ARGS = $(SECRETS) $(PWD_ARG) $(ENV_ARG) $(DIND_ARG)

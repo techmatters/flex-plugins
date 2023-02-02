@@ -255,13 +255,13 @@ resource "twilio_autopilot_assistants_tasks_v1" "goodbye" {
 }
 module "default_pre_survey_task" {
   count = var.gender_field_type == "default" ? 1 : 0
-  source = "../terraform-modules/pre-survey-task/default"
+  source = "../modules/pre-survey-task/default"
   bot_sid = twilio_autopilot_assistants_v1.pre_survey.sid
 }
 
 module "safespot_pre_survey_task" {
   count = var.gender_field_type == "safespot" ? 1 : 0
-  source = "../terraform-modules/pre-survey-task/safespot"
+  source = "../modules/pre-survey-task/safespot"
   bot_sid = twilio_autopilot_assistants_v1.pre_survey.sid
 }
 
@@ -275,7 +275,7 @@ resource "twilio_autopilot_assistants_tasks_samples_v1" "goodbye_group" {
 
 module "default_age_field" {
   count = 1
-  source = "../terraform-modules/age-field/default"
+  source = "../modules/age-field/default"
   bot_sid = twilio_autopilot_assistants_v1.pre_survey.sid
   unknown_value = var.unknown_value
   unknown_synonyms = var.unknown_synonyms
@@ -298,20 +298,20 @@ moved {
 
 module "default_gender_field" {
   count = var.gender_field_type == "default" ? 1 : 0
-  source = "../terraform-modules/gender-field/default"
+  source = "../modules/gender-field/default"
   bot_sid = twilio_autopilot_assistants_v1.pre_survey.sid
 }
 
 module "safespot_gender_field" {
   count = var.gender_field_type == "safespot" ? 1 : 0
-  source = "../terraform-modules/gender-field/safespot"
+  source = "../modules/gender-field/safespot"
   bot_sid = twilio_autopilot_assistants_v1.pre_survey.sid
 }
 
 
 module "kekvonal_gender_field" {
   count = var.gender_field_type == "kek-vonal" ? 1 : 0
-  source = "../terraform-modules/gender-field/kek-vonal"
+  source = "../modules/gender-field/kek-vonal"
   bot_sid = twilio_autopilot_assistants_v1.pre_survey.sid
 }
 

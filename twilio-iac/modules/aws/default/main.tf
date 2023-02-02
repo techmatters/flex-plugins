@@ -124,7 +124,7 @@ resource "aws_ssm_parameter" "main_group" {
 
   # Deserialise the JSON used for the keys - this way we can have multiple values per key
   # note: this can also be accomplished in a more "tf native" way by using an array of objects and a `for` loop.
-  # see: https://github.com/techmatters/flex-plugins/blob/1edf877bba4760370af16f41045fa14956d5620f/twilio-iac/terraform-modules/aws/default/main.tf#L206
+  # see: https://github.com/techmatters/flex-plugins/blob/1edf877bba4760370af16f41045fa14956d5620f/twilio-iac/modules/aws/default/main.tf#L206
   name  = "${var.short_environment}_${jsondecode(each.value)[0]}_${var.short_helpline}_${each.key}"
   type  = "SecureString"
   value = jsondecode(each.value)[1]
