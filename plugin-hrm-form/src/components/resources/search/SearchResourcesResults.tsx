@@ -19,10 +19,16 @@ import { connect, ConnectedProps } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 
-import { namespace, referrableResourcesBase, RootState } from '../../states';
-import { Box, Column } from '../../styles/HrmStyles';
-import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
-import { ResourceTitle } from '../../styles/ReferrableResources';
+import { namespace, referrableResourcesBase, RootState } from '../../../states';
+import { Box, Column } from '../../../styles/HrmStyles';
+import SearchResultsBackButton from '../../search/SearchResults/SearchResultsBackButton';
+import {
+  ResourcesSearchArea,
+  ResourcesSearchResultsDescription,
+  ResourcesSearchResultsHeader,
+  ResourcesSearchTitle,
+  ResourceTitle,
+} from '../../../styles/ReferrableResources';
 import {
   changeResultPageAction,
   getCurrentPageResults,
@@ -30,11 +36,11 @@ import {
   returnToSearchFormAction,
   searchResourceAsyncAction,
   SearchSettings,
-} from '../../states/resources/search';
-import { SearchTitle, StyledLink } from '../../styles/search';
-import { viewResourceAction } from '../../states/resources';
-import Pagination from '../Pagination';
-import asyncDispatch from '../../states/asyncDispatch';
+} from '../../../states/resources/search';
+import { viewResourceAction } from '../../../states/resources';
+import Pagination from '../../Pagination';
+import asyncDispatch from '../../../states/asyncDispatch';
+import ResourcePreview from './ResourcePreview';
 
 type OwnProps = {};
 
@@ -49,6 +55,7 @@ const mapStateToProps = (state: RootState) => {
     error,
     status,
     resultPageCount: getPageCount(searchState),
+    resultCount: searchState.results.length,
   };
 };
 
@@ -72,6 +79,7 @@ const SearchResourcesForm: React.FC<Props> = ({
   currentPageResults,
   error,
   resultPageCount,
+  resultCount,
   currentPage,
   changePage,
   retrievePageResults,
@@ -85,44 +93,51 @@ const SearchResourcesForm: React.FC<Props> = ({
   }
 
   return (
-    <Column>
-      <Box marginTop="10px" marginBottom="10px">
-        <SearchResultsBackButton
-          text={<Template code="Back to search criteria" />}
-          // eslint-disable-next-line no-empty-function
-          handleBack={returnToForm}
-        />
-      </Box>
-      <Box marginTop="10px" marginBottom="10px">
-        <SearchTitle data-testid="SearchResources-Title">
-          <Template code="SearchResources-Title" />
-        </SearchTitle>
-      </Box>
-      {error && ( // TODO: translation / friendlyisation layer
-        <>
-          <ResourceTitle>
-            <Template code="Resources-ResourceSearchError" />
-          </ResourceTitle>
-          <p>{error.message}</p>
-        </>
-      )}
-      {currentPageResults.map(result => (
-        <div key={result.id}>
-          <StyledLink onClick={() => viewResource(result.id)}>{result.name}</StyledLink>
-        </div>
-      ))}
-
-      {resultPageCount > 1 ? (
-        <div style={{ minHeight: '100px' }}>
-          <Pagination
-            transparent
-            page={currentPage}
-            pagesCount={resultPageCount}
-            handleChangePage={pageNumber => changePage(pageNumber)}
+    <ResourcesSearchArea>
+      <Column>
+        <Box style={{ paddingBottom: '10px' }}>
+          <SearchResultsBackButton
+            text={<Template code="Return to Search Criteria" />}
+            // eslint-disable-next-line no-empty-function
+            handleBack={returnToForm}
           />
-        </div>
-      ) : null}
-    </Column>
+        </Box>
+        <ResourcesSearchResultsHeader>
+          <ResourcesSearchTitle data-testid="SearchResources-Title">
+            <Template code="Resources-Search-ResultsTitle" />
+          </ResourcesSearchTitle>
+          <ResourcesSearchResultsDescription>
+            <Template code="Resources-Search-ResultsDescription" count={resultCount} {...parameters} />
+          </ResourcesSearchResultsDescription>
+        </ResourcesSearchResultsHeader>
+        {error && ( // TODO: translation / friendlyisation layer
+          <>
+            <ResourceTitle>
+              <Template code="Resources-ResourceSearchError" />
+            </ResourceTitle>
+            <p>{error.message}</p>
+          </>
+        )}
+        {currentPageResults.map(result => (
+          <ResourcePreview
+            key={result.id}
+            resourceResult={result}
+            onClickViewResource={() => viewResource(result.id)}
+          />
+        ))}
+
+        {resultPageCount > 0 ? (
+          <div style={{ minHeight: '100px' }}>
+            <Pagination
+              transparent
+              page={currentPage}
+              pagesCount={resultPageCount}
+              handleChangePage={pageNumber => changePage(pageNumber)}
+            />
+          </div>
+        ) : null}
+      </Column>
+    </ResourcesSearchArea>
   );
 };
 

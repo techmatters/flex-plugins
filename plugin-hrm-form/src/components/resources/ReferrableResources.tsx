@@ -21,7 +21,7 @@ import ViewResource from './ViewResource';
 import { namespace, referrableResourcesBase, RootState } from '../../states';
 import { ResourcePage } from '../../states/resources';
 import { ReferrableResourcesContainer } from '../../styles/ReferrableResources';
-import SearchResources from './SearchResources';
+import SearchResources from './search/SearchResources';
 
 const mapStateToProps = (state: RootState) => ({
   route: state[namespace][referrableResourcesBase].route,
@@ -34,11 +34,7 @@ type Props = ReturnType<typeof mapStateToProps>;
 const ReferrableResources: React.FC<Props> = ({ route }) => {
   switch (route.page) {
     case ResourcePage.Search: {
-      return (
-        <ReferrableResourcesContainer>
-          <SearchResources />
-        </ReferrableResourcesContainer>
-      );
+      return <SearchResources />;
     }
     case ResourcePage.ViewResource: {
       return (

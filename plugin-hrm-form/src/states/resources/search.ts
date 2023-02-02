@@ -20,7 +20,7 @@ import { ReferrableResource, searchResources } from '../../services/ResourceServ
 
 export type SearchSettings = Partial<ReferrableResourceSearchState['parameters']>;
 
-type ReferrableResourceResult = ReferrableResource;
+export type ReferrableResourceResult = ReferrableResource;
 
 export enum ResourceSearchStatus {
   NotSearched,

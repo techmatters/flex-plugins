@@ -17,10 +17,10 @@
 import { styled } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 
-import { Column, Flex, FontOpenSans, Row } from './HrmStyles';
+import { Box, Column, Flex, FontOpenSans, Row } from './HrmStyles';
 
 export const ReferrableResourcesContainer = styled(Flex)`
-  margin: 5px;
+  margin: 20px;
   max-width: 800px;
   width: 100%;
 `;
@@ -36,6 +36,7 @@ export const ResourceTitle = styled('p')`
 ResourceTitle.displayName = 'ResourceTitle';
 
 export const ViewResourceArea = styled('div')`
+  width: 100%;
   background-color: white;
   padding: 20px;
   border-radius: 4px;
@@ -71,5 +72,51 @@ export const ResourceCategoriesContainer = styled(Row)`
 `;
 ResourceCategoriesContainer.displayName = 'ResourceCategoriesContainer';
 
+export const ResourcesSearchArea = styled('div')`
+  margin: 10px;
+  max-width: 800px;
+  width: 100%;
+  padding: 10px;
+  overflow-y: auto;
+`;
+ViewResourceArea.displayName = 'ViewResourceArea';
+
+export const ResourcesSearchFormArea = styled('div')`
+  width: 100%;
+  background-color: white;
+  padding: 20px;
+`;
+
+export const ResourcesSearchFormContainer = styled(Column)`
+  width: 100%;
+  background-color: white;
+  justify-content: space-between;
+  max-width: 800px;
+`;
+
 export const ResourcesSearchSubmitButton = styled(ButtonBase)``;
 ResourcesSearchSubmitButton.displayName = 'ResourcesSearchSubmitButton';
+
+export const ResourcesSearchTitle = styled(FontOpenSans)`
+  font-family: Inter-Bold, serif;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 800;
+  display: inline-block;
+  color: #192b33;
+`;
+ResourcesSearchTitle.displayName = 'ResourcesSearchTitle';
+
+export const ResourcesSearchResultsHeader = styled(Box)`
+  box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.1);
+  padding-top: 10px;
+  padding-bottom: 10px;
+`;
+ResourcesSearchResultsHeader.displayName = 'ResourcesSearchResultsHeader';
+
+export const ResourcesSearchResultsDescription = styled(FontOpenSans)`
+  font-size: 13px;
+  line-height: 21px;
+  color: #192b33;
+`;
+ResourcesSearchResultsDescription.displayName = 'ResourcesSearchResultsDescription';

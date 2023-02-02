@@ -17,8 +17,8 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { namespace, referrableResourcesBase, RootState } from '../../states';
-import { ResourceSearchStatus } from '../../states/resources/search';
+import { namespace, referrableResourcesBase, RootState } from '../../../states';
+import { ResourceSearchStatus } from '../../../states/resources/search';
 import SearchResourcesForm from './SearchResourcesForm';
 import SearchResourcesResults from './SearchResourcesResults';
 
