@@ -9,7 +9,7 @@
     "lint": "eslint --max-warnings 5 --ext ts ./src"
   },
   "author": "",
-  "license": "ISC",
+  "license": "AGPL",
   "devDependencies": {
     "@babel/preset-env": "^7.16.5",
     "@babel/preset-typescript": "^7.16.5",
