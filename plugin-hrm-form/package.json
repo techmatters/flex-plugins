@@ -34,6 +34,7 @@
   "dependencies": {
     "@babel/runtime": "^7.16.3",
     "@datadog/browser-rum": "^1.20.0",
+    "@emoji-mart/react": "^1.1.1",
     "@emotion/css": "^11.9.3",
     "@emotion/react": "^11.9.3",
     "@fullstory/browser": "^1.4.9",
@@ -41,6 +42,7 @@
     "@material-ui/icons": "^4.11.2",
     "@react-pdf/renderer": "^2.3.0",
     "date-fns": "^2.11.1",
+    "emoji-mart": "^5.5.2",
     "hrm-form-definitions": "file:../hrm-form-definitions",
     "lodash": "^4.17.19",
     "prop-types": "^15.7.2",

@@ -5,6 +5,7 @@ import * as Flex from '@twilio/flex-ui';
 
 import { AcceptTransferButton, RejectTransferButton, TransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
+import EmojiPicker from '../components/emojiPicker';
 import CannedResponses from '../components/CannedResponses';
 import QueuesStatusWriter from '../components/queuesStatus/QueuesStatusWriter';
 import QueuesStatus from '../components/queuesStatus';
@@ -345,4 +346,11 @@ export const removeActionsIfTransferring = () => {
 export const setupCannedResponses = () => {
   Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" />);
   Flex.MessageInputV2.Content.add(<CannedResponses key="canned-responses" />);
+};
+
+/**
+ * Emoji Picker
+ */
+export const setupEmojiPicker = () => {
+  Flex.MessageInputActions.Content.add(<EmojiPicker key="Emoji Picker" />);
 };

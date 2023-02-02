@@ -106,6 +106,7 @@ const setUpComponents = (
   Components.setUpStandaloneSearch();
   setUpReferrableResources();
 
+  if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 
   if (maskIdentifiers) {
