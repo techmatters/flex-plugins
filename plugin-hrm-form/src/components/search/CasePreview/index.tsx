@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
@@ -13,8 +29,7 @@ import { updateDefinitionVersion } from '../../../states/configuration/actions';
 import { configurationBase, namespace, RootState } from '../../../states';
 import TagsAndCounselor from '../TagsAndCounselor';
 import { retrieveCategories } from '../../../states/contacts/contactDetailsAdapter';
-import { contactLabel } from '../../../states/contacts/contactIdentifier';
-import { getConfig } from '../../../HrmFormPlugin';
+import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
 
 type OwnProps = {
   currentCase: Case;
@@ -45,25 +60,25 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
   const counselor = counselorsHash[twilioWorkerId];
 
   useEffect(() => {
-    const fetchDefinitionVersions = async (v: string) => {
-      const definitionVersion = await getDefinitionVersion(versionId);
-      updateDefinitionVersion(versionId, definitionVersion);
-    };
-    if (versionId && definitionVersions[versionId]) {
-      fetchDefinitionVersions(versionId);
+    if (versionId && !definitionVersions[versionId]) {
+      getDefinitionVersion(versionId).then(definitionVersion => updateDefinitionVersion(versionId, definitionVersion));
     }
   }, [versionId, definitionVersions]);
 
   const definitionVersion = definitionVersions[versionId];
 
   const statusLabel = definitionVersion?.caseStatus[status]?.label ?? status;
+  const contactLabel = contactLabelFromHrmContact(definitionVersion, firstContact, {
+    substituteForId: false,
+    placeholder: '',
+  });
 
   return (
     <Flex>
       <PreviewWrapper>
         <CaseHeader
           caseId={id}
-          contactLabel={contactLabel(definitionVersion, firstContact, { substituteForId: false, placeholder: '' })}
+          contactLabel={contactLabel}
           createdAt={createdAtObj}
           updatedAt={updatedAtObj}
           followUpDate={followUpDateObj}
@@ -73,7 +88,7 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
           statusLabel={statusLabel}
         />
         {summary && (
-          <PreviewDescription expandLinkText="CaseSummary-ReadMore" collapseLinkText="CaseSummary-ReadLess">
+          <PreviewDescription expandLinkText="ReadMore" collapseLinkText="ReadLess">
             {summary}
           </PreviewDescription>
         )}
