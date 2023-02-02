@@ -15,7 +15,6 @@
  */
 
 import { styled } from '@twilio/flex-ui';
-import { ButtonBase } from '@material-ui/core';
 
 import { Box, Column, Flex, FontOpenSans, Row } from './HrmStyles';
 
@@ -93,9 +92,6 @@ export const ResourcesSearchFormContainer = styled(Column)`
   justify-content: space-between;
   max-width: 800px;
 `;
-
-export const ResourcesSearchSubmitButton = styled(ButtonBase)``;
-ResourcesSearchSubmitButton.displayName = 'ResourcesSearchSubmitButton';
 
 export const ResourcesSearchTitle = styled(FontOpenSans)`
   font-family: Inter-Bold, serif;
