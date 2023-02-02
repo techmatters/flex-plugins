@@ -26,7 +26,11 @@ import {
   ResourcesSearchFormContainer,
   ResourcesSearchTitle,
 } from '../../../styles/ReferrableResources';
-import { searchResourceAsyncAction, updateSearchFormAction } from '../../../states/resources/search';
+import {
+  resetSearchFormAction,
+  searchResourceAsyncAction,
+  updateSearchFormAction,
+} from '../../../states/resources/search';
 import SearchInput from '../../caseList/filters/SearchInput';
 import { getResourceStrings } from '../../../hrmConfig';
 import asyncDispatch from '../../../states/asyncDispatch';
@@ -47,6 +51,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
     updateOmiSearchTerm: (omniSearchTerm: string) => dispatch(updateSearchFormAction({ omniSearchTerm })),
     submitSearch: (omniSearchTerm: string, limit: number) =>
       searchAsyncDispatch(searchResourceAsyncAction({ omniSearchTerm, limit }, 0)),
+    resetSearch: () => dispatch(resetSearchFormAction()),
   };
 };
 
@@ -54,7 +59,13 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const SearchResourcesForm: React.FC<Props> = ({ omniSearchTerm, limit, updateOmiSearchTerm, submitSearch }) => {
+const SearchResourcesForm: React.FC<Props> = ({
+  omniSearchTerm,
+  limit,
+  updateOmiSearchTerm,
+  submitSearch,
+  resetSearch,
+}) => {
   const firstElement = useRef(null);
   const strings = getResourceStrings();
   return (
@@ -85,7 +96,7 @@ const SearchResourcesForm: React.FC<Props> = ({ omniSearchTerm, limit, updateOmi
           type="button"
           secondary={true}
           roundCorners={true}
-          onClick={submitSearch}
+          onClick={resetSearch}
           style={{ marginRight: '15px ' }}
         >
           <Template code="Resources-Search-ClearFormButton" />

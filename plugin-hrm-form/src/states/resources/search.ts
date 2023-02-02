@@ -68,6 +68,10 @@ export const updateSearchFormAction = createAction(
   (parameters: SearchSettings) => parameters,
 );
 
+const RESET_SEARCH_FORM_ACTION = 'resource-action/reset-search-form';
+
+export const resetSearchFormAction = createAction(RESET_SEARCH_FORM_ACTION);
+
 const RETURN_TO_SEARCH_FORM_ACTION = 'resource-action/return-to-search-form';
 
 export const returnToSearchFormAction = createAction(RETURN_TO_SEARCH_FORM_ACTION);
@@ -120,6 +124,12 @@ export const resourceSearchReducer = createReducer(initialState, handleAction =>
     return {
       ...state,
       parameters: { ...state.parameters, ...payload },
+    };
+  }),
+  handleAction(resetSearchFormAction, state => {
+    return {
+      ...state,
+      parameters: initialState.parameters,
     };
   }),
   handleAction(changeResultPageAction, (state, { payload: { page } }) => {
