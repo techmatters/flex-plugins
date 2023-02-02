@@ -4,7 +4,7 @@ import { ReferrableResource, searchResources } from '../../services/ResourceServ
 
 export type SearchSettings = Partial<ReferrableResourceSearchState['parameters']>;
 
-export type ReferrableResourceResult = ReferrableResource;
+type ReferrableResourceResult = ReferrableResource;
 
 export enum ResourceSearchStatus {
   NotSearched,
@@ -39,24 +39,24 @@ export const initialState: ReferrableResourceSearchState = {
   results: [],
 };
 
-export const CHANGE_SEARCH_RESULT_PAGE_ACTION = 'resource-action/change-search-result-page';
+const CHANGE_SEARCH_RESULT_PAGE_ACTION = 'resource-action/change-search-result-page';
 
 export const changeResultPageAction = createAction(CHANGE_SEARCH_RESULT_PAGE_ACTION, (page: number) => ({
   page,
 }));
 
-export const UPDATE_SEARCH_FORM_ACTION = 'resource-action/update-search-form';
+const UPDATE_SEARCH_FORM_ACTION = 'resource-action/update-search-form';
 
 export const updateSearchFormAction = createAction(
   UPDATE_SEARCH_FORM_ACTION,
   (parameters: SearchSettings) => parameters,
 );
 
-export const RETURN_TO_SEARCH_FORM_ACTION = 'resource-action/return-to-search-form';
+const RETURN_TO_SEARCH_FORM_ACTION = 'resource-action/return-to-search-form';
 
 export const returnToSearchFormAction = createAction(RETURN_TO_SEARCH_FORM_ACTION);
 
-export const SEARCH_ACTION = 'resource-action/search';
+const SEARCH_ACTION = 'resource-action/search';
 
 export const searchResourceAsyncAction = createAsyncAction(
   SEARCH_ACTION,
@@ -71,6 +71,10 @@ export const searchResourceAsyncAction = createAsyncAction(
 );
 
 export const resourceSearchReducer = createReducer(initialState, handleAction => [
+  /*
+   * Cast is a workaround for https://github.com/omichelsen/redux-promise-middleware-actions/issues/13
+   * TODO: create a generalised type to put meta property back into all 3 actions for any async action set
+   */
   handleAction(searchResourceAsyncAction.pending as typeof searchResourceAsyncAction, (state, action) => {
     return {
       ...state,

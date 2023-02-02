@@ -39,7 +39,7 @@ export const getResource = async (resourceId: string): Promise<ReferrableResourc
   };
 };
 
-export type SearchParameters = {
+type SearchParameters = {
   nameSubstring: string;
   ids: string[];
 };
