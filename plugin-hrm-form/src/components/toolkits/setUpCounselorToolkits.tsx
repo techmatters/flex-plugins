@@ -18,7 +18,7 @@ import * as Flex from '@twilio/flex-ui';
 import React from 'react';
 
 import CounselorToolkitSideLink from './CounselorToolkitSideLink';
-import { getConfig } from '../../HrmFormPlugin';
+import { getConfig } from '../../hrmConfig';
 
 // eslint-disable-next-line import/no-unused-modules
 export const setUpCounselorToolkits = () => {

@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useState } from 'react';
 import { InformationIcon } from '@twilio-paste/icons/cjs/InformationIcon';
@@ -44,21 +43,23 @@ const CounselorToolkitSideLink: React.FC<Props> = ({ showLabel }) => {
   const { helplineInformation } = currentDefinitionVersion;
   const helpline = helplineInformation.helplines.find((data: HelplineEntry) => data.default);
   const helplineName = helpline.label;
-  const toolkitUrl = helpline.kmsUrl;
+  const toolkitUrl = helpline?.kmsUrl;
 
   return (
     <>
-      <div
-        onClick={e => {
-          handleOpenConnectDialog(e);
-        }}
-      >
-        <SideLink
-          showLabel={showLabel}
-          icon={<InformationIcon decorative={false} title="Counselor Toolkit" />}
-          iconActive={<InformationIcon decorative={false} title="Counselor Toolkit" />}
-        />
-      </div>
+      {toolkitUrl && (
+        <div
+          onClick={e => {
+            handleOpenConnectDialog(e);
+          }}
+        >
+          <SideLink
+            showLabel={showLabel}
+            icon={<InformationIcon decorative={false} title="Counselor Toolkit" />}
+            iconActive={<InformationIcon decorative={false} title="Counselor Toolkit" />}
+          />
+        </div>
+      )}
       <CounselorToolkitDialog
         anchorEl={anchorEl}
         handleCloseDialog={handleCloseDialog}
