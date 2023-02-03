@@ -1,4 +1,20 @@
 /**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+/**
  * TODO(murilo): This file replicates some code from the hrm repo. We should implement
  * a better solution later on.
  */
@@ -40,7 +56,6 @@ export const retrieveCategories = (categories: Record<string, Record<string, boo
 export const hrmServiceContactToSearchContact = (contact: HrmServiceContact): SearchAPIContact => {
   const dateTime = contact.timeOfContact;
 
-  const name = `${contact.rawJson.childInformation.firstName ?? ''} ${contact.rawJson.childInformation.lastName ?? ''}`;
   const customerNumber = contact.number;
   const { callType, caseInformation } = contact.rawJson;
   const categories = retrieveCategories(caseInformation.categories);
@@ -52,7 +67,6 @@ export const hrmServiceContactToSearchContact = (contact: HrmServiceContact): Se
     overview: {
       helpline,
       dateTime,
-      name,
       customerNumber,
       callType,
       categories,
@@ -106,7 +120,6 @@ export const searchContactToHrmServiceContact = (contact: SearchAPIContact): Hrm
 export const taskFormToSearchContact = (task, form, date, counselor, temporaryId): SearchAPIContact => {
   const details = transformForm(form);
   const dateTime = date;
-  const name = `${details.childInformation.firstName ?? ''} ${details.childInformation.lastName ?? ''}`;
   const customerNumber = getNumberFromTask(task);
   const { callType, caseInformation } = details;
   const categories = retrieveCategories(caseInformation.categories);
@@ -121,7 +134,6 @@ export const taskFormToSearchContact = (task, form, date, counselor, temporaryId
       helpline,
       createdBy: counselor,
       dateTime,
-      name,
       customerNumber,
       callType,
       categories,

@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import * as Flex from '@twilio/flex-ui';
 
 import { FeatureFlags } from './types/types';
@@ -8,14 +24,16 @@ const readConfig = () => {
   const hrmBaseUrl = `${process.env.REACT_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}/${
     manager.serviceConfiguration.attributes.hrm_api_version
   }/accounts/${manager.workerClient.accountSid}`;
-  const resourceConfiguredBaseUrl =
-    process.env.REACT_RESOURCE_BASE_URL || manager.serviceConfiguration.attributes.resource_base_url;
-  const resourceBaseUrl = resourceConfiguredBaseUrl
-    ? `${resourceConfiguredBaseUrl}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`
+  const resourcesConfiguredBaseUrl =
+    process.env.REACT_RESOURCES_BASE_URL || manager.serviceConfiguration.attributes.resources_base_url;
+  const resourcesBaseUrl = resourcesConfiguredBaseUrl
+    ? `${resourcesConfiguredBaseUrl}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`
     : undefined;
   const serverlessBaseUrl =
     process.env.REACT_SERVERLESS_BASE_URL || manager.serviceConfiguration.attributes.serverless_base_url;
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
+  const assetsBucketUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
+
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid;
   const { helpline, counselorLanguage, full_name: counselorName, roles } = manager.workerClient.attributes as any;
@@ -29,8 +47,9 @@ const readConfig = () => {
     multipleOfficeSupport,
     permissionConfig,
   } = manager.serviceConfiguration.attributes;
-  const featureFlags: FeatureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
+
+  const featureFlags: FeatureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const { strings } = (manager as unknown) as { strings: { [key: string]: string } };
 
   return {
@@ -40,6 +59,7 @@ const readConfig = () => {
       hrmBaseUrl,
       serverlessBaseUrl,
       logoUrl,
+      assetsBucketUrl,
       chatServiceSid,
       workerSid,
       helpline,
@@ -57,7 +77,7 @@ const readConfig = () => {
       contactsWaitingChannels,
     },
     referrableResources: {
-      resourceBaseUrl,
+      resourcesBaseUrl,
     },
   };
 };

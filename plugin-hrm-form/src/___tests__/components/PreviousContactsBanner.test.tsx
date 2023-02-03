@@ -1,14 +1,28 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
+import { StorelessThemeProvider, ThemeConfigProps } from '@twilio/flex-ui';
 
-import '../mockStyled';
 import { UnconnectedPreviousContactsBanner } from '../../components/PreviousContactsBanner';
 import { channelTypes } from '../../states/DomainConstants';
-import { SearchPages } from '../../states/search/types';
-import { mockPartialConfiguration } from '../mockGetConfig';
 
 jest.mock('../../components/CSAMReport/CSAMReportFormDefinition');
 
@@ -43,15 +57,17 @@ test('PreviousContacts initial search', () => {
   const searchCases = jest.fn();
 
   render(
-    <UnconnectedPreviousContactsBanner
-      task={webChatTask}
-      counselorsHash={counselorsHash}
-      previousContacts={undefined}
-      searchContacts={searchContacts}
-      searchCases={searchCases}
-      changeRoute={jest.fn()}
-      viewPreviousContacts={jest.fn()}
-    />,
+    <StorelessThemeProvider themeConf={{}}>
+      <UnconnectedPreviousContactsBanner
+        task={webChatTask}
+        counselorsHash={counselorsHash}
+        previousContacts={undefined}
+        searchContacts={searchContacts}
+        searchCases={searchCases}
+        changeRoute={jest.fn()}
+        viewPreviousContacts={jest.fn()}
+      />
+    </StorelessThemeProvider>,
   );
 
   expect(searchContacts).toHaveBeenCalled();
@@ -68,15 +84,17 @@ test('Dont repeat initial search calls on PreviousContacts', () => {
   };
 
   render(
-    <UnconnectedPreviousContactsBanner
-      task={webChatTask}
-      counselorsHash={counselorsHash}
-      previousContacts={previousContacts}
-      searchContacts={searchContacts}
-      searchCases={searchCases}
-      changeRoute={jest.fn()}
-      viewPreviousContacts={jest.fn()}
-    />,
+    <StorelessThemeProvider themeConf={{}}>
+      <UnconnectedPreviousContactsBanner
+        task={webChatTask}
+        counselorsHash={counselorsHash}
+        previousContacts={previousContacts}
+        searchContacts={searchContacts}
+        searchCases={searchCases}
+        changeRoute={jest.fn()}
+        viewPreviousContacts={jest.fn()}
+      />
+    </StorelessThemeProvider>,
   );
 
   expect(searchContacts).not.toHaveBeenCalled();
@@ -90,15 +108,17 @@ test('Dont render PreviousContacts when there are no previous contacts', () => {
   };
 
   render(
-    <UnconnectedPreviousContactsBanner
-      task={webChatTask}
-      counselorsHash={counselorsHash}
-      previousContacts={previousContacts}
-      searchContacts={jest.fn()}
-      searchCases={jest.fn()}
-      changeRoute={jest.fn()}
-      viewPreviousContacts={jest.fn()}
-    />,
+    <StorelessThemeProvider themeConf={{}}>
+      <UnconnectedPreviousContactsBanner
+        task={webChatTask}
+        counselorsHash={counselorsHash}
+        previousContacts={previousContacts}
+        searchContacts={jest.fn()}
+        searchCases={jest.fn()}
+        changeRoute={jest.fn()}
+        viewPreviousContacts={jest.fn()}
+      />
+    </StorelessThemeProvider>,
   );
 
   expect(() => screen.getByTestId('PreviousContacts-Container')).toThrow();
@@ -111,15 +131,17 @@ test('Render PreviousContacts when there are previous contacts', () => {
   };
 
   render(
-    <UnconnectedPreviousContactsBanner
-      task={webChatTask}
-      counselorsHash={counselorsHash}
-      previousContacts={previousContacts}
-      searchContacts={jest.fn()}
-      searchCases={jest.fn()}
-      changeRoute={jest.fn()}
-      viewPreviousContacts={jest.fn()}
-    />,
+    <StorelessThemeProvider themeConf={{}}>
+      <UnconnectedPreviousContactsBanner
+        task={webChatTask}
+        counselorsHash={counselorsHash}
+        previousContacts={previousContacts}
+        searchContacts={jest.fn()}
+        searchCases={jest.fn()}
+        changeRoute={jest.fn()}
+        viewPreviousContacts={jest.fn()}
+      />
+    </StorelessThemeProvider>,
   );
 
   expect(screen.getByTestId('PreviousContacts-Container')).toBeInTheDocument();
@@ -137,15 +159,17 @@ test('Click View Records should redirect user to search results', () => {
   const viewPreviousContacts = jest.fn();
 
   render(
-    <UnconnectedPreviousContactsBanner
-      task={webChatTask}
-      counselorsHash={counselorsHash}
-      previousContacts={previousContacts}
-      searchContacts={searchContacts}
-      searchCases={searchCases}
-      changeRoute={changeRoute}
-      viewPreviousContacts={viewPreviousContacts}
-    />,
+    <StorelessThemeProvider themeConf={{}}>
+      <UnconnectedPreviousContactsBanner
+        task={webChatTask}
+        counselorsHash={counselorsHash}
+        previousContacts={previousContacts}
+        searchContacts={searchContacts}
+        searchCases={searchCases}
+        changeRoute={changeRoute}
+        viewPreviousContacts={viewPreviousContacts}
+      />
+    </StorelessThemeProvider>,
   );
 
   screen.getByTestId('PreviousContacts-ViewRecords').click();
@@ -163,15 +187,17 @@ test('a11y', async () => {
   };
 
   const wrapper = mount(
-    <UnconnectedPreviousContactsBanner
-      task={webChatTask}
-      counselorsHash={counselorsHash}
-      previousContacts={previousContacts}
-      searchContacts={jest.fn()}
-      searchCases={jest.fn()}
-      changeRoute={jest.fn()}
-      viewPreviousContacts={jest.fn()}
-    />,
+    <StorelessThemeProvider themeConf={{}}>
+      <UnconnectedPreviousContactsBanner
+        task={webChatTask}
+        counselorsHash={counselorsHash}
+        previousContacts={previousContacts}
+        searchContacts={jest.fn()}
+        searchCases={jest.fn()}
+        changeRoute={jest.fn()}
+        viewPreviousContacts={jest.fn()}
+      />
+    </StorelessThemeProvider>,
   );
 
   const rules = {

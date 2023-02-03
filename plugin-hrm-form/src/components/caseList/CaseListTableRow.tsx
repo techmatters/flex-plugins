@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { format, parseISO } from 'date-fns';
@@ -22,10 +38,10 @@ import {
 } from '../../styles/caseList';
 import { Box, HiddenText } from '../../styles/HrmStyles';
 import { formatName, getShortSummary } from '../../utils';
-import { getContactTags, renderTag } from '../../utils/categories';
+import { getContactTags } from '../../utils/categories';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { getConfig } from '../../HrmFormPlugin';
-import { contactLabel } from '../../states/contacts/contactIdentifier';
+import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 
 const CHAR_LIMIT = 200;
 
@@ -102,7 +118,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
           </CLCaseNumberContainer>
         </CLNumberCell>
         <CLNamesCell>
-          <CLTableBodyFont>{contactLabel(definitionVersion, contact)}</CLTableBodyFont>
+          <CLTableBodyFont>{contactLabelFromHrmContact(definitionVersion, contact)}</CLTableBodyFont>
         </CLNamesCell>
         <CLTableCell>
           <CLTableBodyFont>{counselor}</CLTableBodyFont>
@@ -115,7 +131,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
             {categories &&
               categories.map(category => (
                 <Box key={`category-tag-${category.label}`} marginBottom="5px">
-                  <CategoryWithTooltip renderTag={renderTag} category={category.label} color={category.color} />
+                  <CategoryWithTooltip category={category.label} color={category.color} />
                 </Box>
               ))}
           </div>

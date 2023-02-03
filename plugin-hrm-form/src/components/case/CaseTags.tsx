@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 /* eslint-disable react/prop-types */
 /* eslint-disable dot-notation */
 import React from 'react';
@@ -8,7 +24,7 @@ import { Flex } from '../../styles/HrmStyles';
 import { TagsWrapper } from '../../styles/search';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { retrieveCategories } from '../../states/contacts/contactDetailsAdapter';
-import { getContactTags, renderTag } from '../../utils/categories';
+import { getContactTags } from '../../utils/categories';
 import styles from './casePrint/styles';
 
 type OwnProps = {
@@ -52,9 +68,9 @@ const CaseTags: React.FC<Props> = ({ categories, definitionVersion, printPDF }) 
   return (
     <Flex justifyContent="space-between" height="23px" marginTop="10px">
       <TagsWrapper>
-        {category1 && <CategoryWithTooltip renderTag={renderTag} category={category1.label} color={category1.color} />}
-        {category2 && <CategoryWithTooltip renderTag={renderTag} category={category2.label} color={category2.color} />}
-        {category3 && <CategoryWithTooltip renderTag={renderTag} category={category3.label} color={category3.color} />}
+        {category1 && <CategoryWithTooltip category={category1.label} color={category1.color} />}
+        {category2 && <CategoryWithTooltip category={category2.label} color={category2.color} />}
+        {category3 && <CategoryWithTooltip category={category3.label} color={category3.color} />}
       </TagsWrapper>
     </Flex>
   );

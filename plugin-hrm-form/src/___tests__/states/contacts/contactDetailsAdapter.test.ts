@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import { callTypes } from 'hrm-form-definitions';
 
 import {
@@ -74,7 +90,6 @@ describe('hrmServiceContactToSearchContact', () => {
   const emptyOverview: SearchAPIContact['overview'] = {
     helpline: undefined,
     dateTime: undefined,
-    name: ' ',
     customerNumber: undefined,
     callType: callTypes.child,
     categories: {},
@@ -187,48 +202,6 @@ describe('hrmServiceContactToSearchContact', () => {
     });
   });
 
-  test("firstName and lastName from rawJson.childInformation.name are concatenated and added to overview as 'name'", () => {
-    const input = {
-      ...emptyHrmContact,
-      rawJson: {
-        ...emptyHrmContact.rawJson,
-        childInformation: { firstName: 'Lorna', lastName: 'Ballantyne' },
-      },
-    };
-    expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
-      contactId: undefined,
-      overview: { ...emptyOverview, name: 'Lorna Ballantyne' },
-      csamReports: [],
-      details: input.rawJson,
-    });
-    const missingLastNameInput = {
-      ...emptyHrmContact,
-      rawJson: {
-        ...emptyHrmContact.rawJson,
-        childInformation: { firstName: 'Lorna' },
-      },
-    };
-    expect(hrmServiceContactToSearchContact(missingLastNameInput)).toStrictEqual({
-      contactId: undefined,
-      overview: { ...emptyOverview, name: 'Lorna ' },
-      csamReports: [],
-      details: missingLastNameInput.rawJson,
-    });
-    const missingFirstNameInput = {
-      ...emptyHrmContact,
-      rawJson: {
-        ...emptyHrmContact.rawJson,
-        childInformation: { lastName: 'Ballantyne' },
-      },
-    };
-    expect(hrmServiceContactToSearchContact(missingFirstNameInput)).toStrictEqual({
-      contactId: undefined,
-      overview: { ...emptyOverview, name: ' Ballantyne' },
-      csamReports: [],
-      details: missingFirstNameInput.rawJson,
-    });
-  });
-
   test('input rawJson.caseInformation.callSummary mapped to output overView.notes', () => {
     const input: HrmServiceContact = {
       ...emptyHrmContact,
@@ -274,9 +247,8 @@ describe('hrmServiceContactToSearchContact', () => {
     });
   });
 
-  test('missing rawJson, rawJson.childInformation or rawJson.caseInformation objects on input throw', () => {
+  test('missing rawJson or rawJson.caseInformation objects on input throw', () => {
     expect(() => hrmServiceContactToSearchContact({} as HrmServiceContact)).toThrow();
-    expect(() => hrmServiceContactToSearchContact({ rawJson: { caseInformation: {} } } as HrmServiceContact)).toThrow();
     expect(() =>
       hrmServiceContactToSearchContact({ rawJson: { childInformation: {} } } as HrmServiceContact),
     ).toThrow();
@@ -296,7 +268,6 @@ describe('searchContactToHrmServiceContact', () => {
       customerNumber: '1234 4321',
       dateTime: 'Last Tuesday',
       callType: 'child',
-      name: 'Lo Ballantyne',
       categories: {},
       notes: 'Hello',
       updatedAt: 'Yesterday',

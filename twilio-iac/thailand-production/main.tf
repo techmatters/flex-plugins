@@ -38,7 +38,7 @@ locals {
   permission_config = "demo"
   multi_office = false
   enable_post_survey = false
-  twilio_numbers = ["messenger:59591583805"]
+  twilio_numbers = ["messenger:59591583805","twitter:1154628838472597505","instagram:59591583805","line:U65333e6b8ca9e96e41252ecb27c44cf9"]
   channel = ""
   custom_channel_attributes = ""
   feature_flags = {
@@ -67,8 +67,8 @@ locals {
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   //Channels [Facebook | Line | Instagram | Twitter]
   twilio_channels = {"facebook" = {"contact_identity" = "messenger:59591583805", "channel_type" ="facebook"}}
-  //["twitter","instagram","line"]
-  custom_channels=[]
+  //
+  custom_channels=["twitter","instagram","line"]
   target_task_name = "execute_initial_flow"
   strings_en= jsondecode(file("${path.module}/../translations/en-TH/strings.json"))
   strings_th= jsondecode(file("${path.module}/../translations/th-TH/strings.json"))

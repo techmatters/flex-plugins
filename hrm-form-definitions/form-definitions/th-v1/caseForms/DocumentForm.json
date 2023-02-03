@@ -3,7 +3,7 @@
     "name": "fileName",
     "type": "file-upload",
     "label": "Document",
-    "description": "Accepted file formats: Word, PDFs, or JPGs.\nFile size not to exceed 5MB",
+    "description": "สามารถโหลดไฟล์ Word, PDF หรือ JPG.\n โดยขนาดไฟล์ไม่เกิน 5 MB",
     "required": {
       "value": true,
       "message": "RequiredFieldError"

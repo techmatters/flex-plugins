@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { format } from 'date-fns';
@@ -22,7 +38,7 @@ import ContactDetailsSection from './ContactDetailsSection';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/ValidationRules';
-import { formatCategories, formatDuration, formatName, mapChannelForInsights } from '../../utils';
+import { formatCategories, formatDuration, mapChannelForInsights } from '../../utils';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
@@ -31,6 +47,7 @@ import { createDraft, ContactDetailsRoute } from '../../states/contacts/existing
 import { getConfig } from '../../HrmFormPlugin';
 import TranscriptSection from './TranscriptSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
+import { contactLabelFromSearchContact } from '../../states/contacts/contactIdentifier';
 
 const formatCsamReport = (report: CSAMReportEntry) => {
   const template =
@@ -102,7 +119,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const {
     counselor,
     dateTime,
-    name: childName,
     customerNumber,
     callType,
     channel,
@@ -139,7 +155,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   // Format the obtained information
   const isDataCall = !isNonDataCallType(callType);
-  const childOrUnknown = formatName(childName);
+  const childOrUnknown = contactLabelFromSearchContact(definitionVersion, savedContact, {
+    substituteForId: false,
+  });
   const formattedChannel =
     channel === 'default'
       ? mapChannelForInsights(details.contactlessTask.channel.toString())
