@@ -14,24 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { StateHelper, Manager, AudioPlayerManager } from '@twilio/flex-ui';
+import { StateHelper, Manager, AudioPlayerManager, AudioPlayerError } from '@twilio/flex-ui';
 import { Conversation } from '@twilio/conversations';
 
 import { getHrmConfig } from '../hrmConfig';
-
-const trySubscribeAudioAlerts = (task, ms: number, retries: number) => {
-  setTimeout(() => {
-    const convoState = StateHelper.getConversationStateForTask(task);
-
-    // if channel is not ready, wait 200ms and retry
-    if (convoState.isLoadingConversation) {
-      if (retries < 10) trySubscribeAudioAlerts(task, 200, retries + 1);
-      else console.error('Failed to subscribe audio alerts: max retries reached.');
-    } else {
-      subscribeAlertOnNewMessage(convoState.source);
-    }
-  }, ms);
-};
 
 export const subscribeAlertOnConversationJoined = task => {
   const manager = Manager.getInstance();
@@ -39,7 +25,8 @@ export const subscribeAlertOnConversationJoined = task => {
 };
 
 export const subscribeNewMessageAlertOnPluginInit = () => {
-  const { tasks } = Manager.getInstance().store.getState().flex.worker;
+  const manager = Manager.getInstance();
+  const { tasks } = manager.store.getState().flex.worker;
   tasks.forEach(task => trySubscribeAudioAlerts(task, 0, 0));
 };
 
@@ -47,48 +34,80 @@ const subscribeAlertOnNewMessage = (conversation: Conversation) => {
   conversation.on('messageAdded', notifyNewMessage);
 };
 
-const notifyNewMessage = messageInstance => {
-  const manager = Manager.getInstance();
-  const { assetsBucketUrl } = getHrmConfig();
+const trySubscribeAudioAlerts = (task, ms: number, retries: number) => {
+  setTimeout(() => {
+    const convoState = StateHelper.getConversationStateForTask(task);
 
-  const notificationTone = 'bell';
-  const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
+    // if channel is not ready, wait 200ms and retry
+    if (convoState?.isLoadingConversation) {
+      if (retries < 10) trySubscribeAudioAlerts(task, 200, retries + 1);
+      else console.error('Failed to subscribe audio alerts: max retries reached.');
+    } else {
+      subscribeAlertOnNewMessage(convoState?.source);
+    }
+  }, ms);
+};
 
-  // normalizeEmail transforms an encoded characters with @ and .
-  const normalizeEmail = (identity: string) => identity.replace('_2E', '.').replace('_40', '@');
+export const notifyNewMessage = messageInstance => {
+  try {
+    const manager = Manager.getInstance();
+    const { assetsBucketUrl } = getHrmConfig();
 
-  const isCounsellor = normalizeEmail(manager.user.identity) === normalizeEmail(messageInstance.author);
-  if (!isCounsellor && document.visibilityState === 'visible') {
-    AudioPlayerManager.play({
-      url: notificationUrl,
-      repeatable: false,
-    });
+    const notificationTone = 'bell';
+    const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
+
+    // normalizeEmail transforms an encoded characters with @ and .
+    const normalizeEmail = (identity: string) => identity.replace('_2E', '.').replace('_40', '@');
+
+    const isCounsellor = normalizeEmail(manager.user.identity) === normalizeEmail(messageInstance.author);
+    if (!isCounsellor && document.visibilityState === 'visible') {
+      AudioPlayerManager.play(
+        {
+          url: notificationUrl,
+          repeatable: false,
+        },
+        (error: AudioPlayerError) => {
+          console.log('AudioPlayerError:', error);
+        },
+      );
+    }
+  } catch (error) {
+    console.error('Error in notifyNewMessage:', error);
   }
 };
 
-const notifyReservedTask = reservation => {
-  const { assetsBucketUrl } = getHrmConfig();
+export const notifyReservedTask = reservation => {
+  try {
+    const { assetsBucketUrl } = getHrmConfig();
 
-  const notificationTone = 'ringtone';
-  const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
+    const notificationTone = 'ringtone';
+    const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
 
-  let media;
+    let media;
 
-  if (document.visibilityState === 'visible') {
-    media = AudioPlayerManager.play({
-      url: notificationUrl,
-      repeatable: true,
+    if (document.visibilityState === 'visible') {
+      media = AudioPlayerManager.play(
+        {
+          url: notificationUrl,
+          repeatable: true,
+        },
+        (error: AudioPlayerError) => {
+          console.log('AudioPlayerError:', error);
+        },
+      );
+    }
+    const taskStatuses = ['accepted', 'canceled', 'rejected', 'rescinded', 'timeout'];
+    taskStatuses.forEach(status => {
+      reservation.on(status, () => {
+        AudioPlayerManager.stop(media);
+      });
     });
-  }
-  const taskStatuses = ['accepted', 'canceled', 'rejected', 'rescinded', 'timeout'];
-  taskStatuses.forEach(status => {
-    reservation.on(status, () => {
+    setTimeout(() => {
       AudioPlayerManager.stop(media);
-    });
-  });
-  setTimeout(() => {
-    AudioPlayerManager.stop(media);
-  }, 15000);
+    }, 15000);
+  } catch (error) {
+    console.error('Error in notifyReservedTask:', error);
+  }
 };
 
 export const subscribeReservedTaskAlert = () => {
