@@ -28,10 +28,10 @@ import HrmTheme from '../../../styles/HrmTheme';
 import { namespace, contactFormsBase } from '../../../states';
 import { setCategoriesGridView } from '../../../states/contacts/actions';
 import { forTask } from '../../../states/contacts/issueCategorizationStateApi';
-import { getConfig } from '../../../HrmFormPlugin';
+import { getAseloFeatureFlags } from '../../../hrmConfig';
 
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
-jest.mock('../../../HrmFormPlugin');
+jest.mock('../../../hrmConfig');
 
 let mockV1;
 const helpline = 'ChildLine Zambia (ZM)';
@@ -60,7 +60,7 @@ const helplineEntry = [
   },
 ];
 
-getConfig.mockReturnValue({
+getAseloFeatureFlags.mockReturnValue({
   // eslint-disable-next-line camelcase
   featureFlags: { enable_counselor_toolkits: true },
 });
