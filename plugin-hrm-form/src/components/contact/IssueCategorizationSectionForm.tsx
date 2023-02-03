@@ -8,7 +8,7 @@ import { RootState } from '../../states';
 import { CategoriesFromDefinition, createSubCategoriesInputs } from '../common/forms/categoriesTabGenerator';
 import useFocus from '../../utils/useFocus';
 import { IssueCategorizationStateApi } from '../../states/contacts/issueCategorizationStateApi';
-import { getConfig } from '../../HrmFormPlugin';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 type OwnProps = {
   display: boolean;
@@ -35,7 +35,7 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
 }) => {
   const shouldFocusFirstElement = display && autoFocus;
   const firstElementRef = useFocus(shouldFocusFirstElement);
-  const { featureFlags } = getConfig();
+  const featureFlags = getAseloFeatureFlags();
 
   const { getValues, setValue } = useFormContext();
   const IssueCategorizationTabDefinition = definition;

@@ -214,8 +214,6 @@ const Filters: React.FC<Props> = ({
     Boolean(Object.values(dateFilterValues).filter(dfv => dfv).length) ||
     filterCheckedCategories(categoriesValues).length > 0;
 
-  console.log('statusValues here', statusValues);
-
   return (
     <>
       <FiltersContainer id="CaseList-Cases-label">

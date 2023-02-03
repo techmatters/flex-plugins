@@ -111,8 +111,6 @@ const CategorySection: React.FC<Props> = ({
     subcategory.label.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  console.log('categoryName', categoryName);
-
   return (
     <CategoryContainer searchTerm={searchTerm} noMatch={noMatch}>
       <CategoryHeader onClick={handleExpandCategory} data-testid={`Categories-${categoryName}`}>

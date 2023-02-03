@@ -219,11 +219,6 @@ const MultiSelectFilter: React.FC<Props> = ({
               {defaultValues.map((item, i) => {
                 const hidden = !item.label.toLowerCase().includes(searchTerm.toLowerCase());
                 const isFirstFocusableElement = i === 0 && !searchable;
-                console.log(
-                  'openedFilter',
-                  openedFilter,
-                  `${openedFilter.charAt(0).toUpperCase() + openedFilter.slice(1)}-${item.label}`,
-                );
                 return (
                   <MultiSelectListItem
                     key={i}
