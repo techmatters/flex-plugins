@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import fetchResourceApi from './fetchResourceApi';
+import fetchResourceApi from './fetchResourcesApi';
 import { getReferrableResourceConfig } from '../hrmConfig';
 
 export type ReferrableResourceAttributeValue = string | string[] | { id: string; value: string; color?: string }[];
