@@ -90,6 +90,13 @@ export const searchResourceAsyncAction = createAsyncAction(
   // { promiseTypeDelimiter: '/' }, // Doesn't work :-(
 );
 
+/*
+ * To prevent insane arrays being allocated if totalCount is huge.
+ * We can always do something fancier if we every actually care about the beyond the 10000th search result
+ * (most users don't care about much beyond the 10th search result)
+ */
+const HARD_SEARCH_RESULT_LIMIT = 10000;
+
 export const resourceSearchReducer = createReducer(initialState, handleAction => [
   /*
    * Cast is a workaround for https://github.com/omichelsen/redux-promise-middleware-actions/issues/13
@@ -104,8 +111,9 @@ export const resourceSearchReducer = createReducer(initialState, handleAction =>
   }),
   handleAction(searchResourceAsyncAction.fulfilled, (state, { payload }) => {
     // If total number of results changes for any reason, assume result set is stale & clear it out
+    const boundedResultCount = Math.min(payload.totalCount, HARD_SEARCH_RESULT_LIMIT);
     const fullResults =
-      payload.totalCount === state.results.length ? state.results : new Array(payload.totalCount).fill(null);
+      boundedResultCount === state.results.length ? state.results : new Array(boundedResultCount).fill(null);
     fullResults.splice(payload.start, payload.results.length, ...payload.results);
     return {
       ...state,
