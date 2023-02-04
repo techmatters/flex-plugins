@@ -17,7 +17,7 @@
 import { Activity, ConnectedCaseActivity, NoteActivity } from '../../states/case/types';
 import { Case, NoteEntry, ReferralEntry } from '../../types/types';
 import { channelTypes } from '../../states/DomainConstants';
-import { getDefinitionVersions } from '../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../hrmConfig';
 
 const ActivityTypes = {
   createCase: 'create',

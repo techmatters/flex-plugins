@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { ITask, ReservationStatuses, TaskChannelDefinition } from '@twilio/flex-ui';
+import { ReservationStatuses } from '@twilio/flex-ui';
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 
@@ -27,12 +27,12 @@ import CallIcon from '../components/common/icons/CallIcon';
 import SmsIcon from '../components/common/icons/SmsIcon';
 import * as TransferHelpers from '../utils/transfer';
 import { colors, mainChannelColor } from './colors';
-import { getConfig } from '../HrmFormPlugin';
+import { getResourceStrings } from '../hrmConfig';
 
 const isIncomingTransfer = task => TransferHelpers.hasTransferStarted(task) && task.status === 'pending';
 
 const setSecondLine = ({ channel, string }: { channel: string; string: string }) => {
-  const { strings } = getConfig();
+  const strings = getResourceStrings();
 
   const defaultStrings = Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine;
 

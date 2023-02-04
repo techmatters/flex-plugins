@@ -19,7 +19,7 @@ import ErrorIcon from '@material-ui/icons/Error';
 import { Template } from '@twilio/flex-ui';
 
 import { StyledTab } from '../styles/HrmStyles';
-import { formIsValid } from '../states/ValidationRules';
+import { formIsValid } from '../states/validationRules';
 
 const decorateTab = (label, formRoot) => {
   if (formIsValid(formRoot)) {

@@ -28,13 +28,13 @@ import {
 } from 'hrm-form-definitions';
 import { ITask } from '@twilio/flex-ui';
 
-import { isNonDataCallType } from '../states/ValidationRules';
+import { isNonDataCallType } from '../states/validationRules';
 import { mapChannelForInsights } from '../utils/mappers';
 import { getDateTime } from '../utils/helpers';
 import { TaskEntry } from '../states/contacts/reducer';
 import { Case, CustomITask, HrmServiceContact } from '../types/types';
 import { formatCategories } from '../utils/formatters';
-import { getDefinitionVersions } from '../HrmFormPlugin';
+import { getDefinitionVersions } from '../hrmConfig';
 import { shouldSendInsightsData } from '../utils/setUpActions';
 
 /*

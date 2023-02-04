@@ -14,9 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getConfig } from '../HrmFormPlugin';
 import { CustomITask, isOfflineContactTask, ContactRawJson } from '../types/types';
 import { getWorkerAttributes } from './ServerlessService';
+import { getHrmConfig } from '../hrmConfig';
 
 /**
  * Helper used to be the source of truth for the helpline value being passed to HRM and Insights
@@ -31,6 +31,6 @@ export const getHelplineToSave = async (task: CustomITask, contactlessTask: Cont
     return targetWorkerAttributes.helpline;
   }
 
-  const { helpline: thisWorkerHelpline } = getConfig();
+  const { helpline: thisWorkerHelpline } = getHrmConfig();
   return task.attributes.helpline || thisWorkerHelpline || '';
 };

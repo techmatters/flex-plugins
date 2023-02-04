@@ -23,10 +23,10 @@ import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
 
 import styles from './styles';
-import { getConfig } from '../../../HrmFormPlugin';
 import { mapChannel, mapChannelForInsights, formatStringToDateAndTime } from '../../../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
 import { presentValueFromStrings } from './presentValuesFromStrings';
+import { getResourceStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   sectionName: string;
@@ -37,7 +37,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) => {
-  const { strings } = getConfig();
+  const strings = getResourceStrings();
 
   const { rawJson, channel, number, conversationDuration, timeOfContact } = contact;
 

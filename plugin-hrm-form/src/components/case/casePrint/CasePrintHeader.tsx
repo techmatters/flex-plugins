@@ -19,8 +19,8 @@
 import React from 'react';
 import { View, Text, Image } from '@react-pdf/renderer';
 
-import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
+import { getHrmConfig, getResourceStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   id: number;
@@ -32,7 +32,8 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintHeader: React.FC<Props> = ({ contactIdentifier, id, officeName, logoBlob }) => {
-  const { strings, multipleOfficeSupport } = getConfig();
+  const strings = getResourceStrings();
+  const { multipleOfficeSupport } = getHrmConfig();
 
   return (
     <View fixed>

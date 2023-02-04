@@ -42,7 +42,7 @@ import ContactDetailsSectionForm from '../contact/ContactDetailsSectionForm';
 import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
-import { isNonDataCallType } from '../../states/ValidationRules';
+import { isNonDataCallType } from '../../states/validationRules';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import CSAMReportButton from './CSAMReportButton';
 import CSAMAttachments from './CSAMAttachments';

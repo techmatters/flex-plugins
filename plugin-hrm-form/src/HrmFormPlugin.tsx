@@ -19,9 +19,8 @@ import { FlexPlugin, loadCSS } from '@twilio/flex-plugin';
 import type Rollbar from 'rollbar';
 
 import './styles/global-overrides.css';
-import reducers, { namespace, configurationBase, RootState } from './states';
+import reducers, { namespace } from './states';
 import HrmTheme, { overrides } from './styles/HrmTheme';
-import { transferModes } from './states/DomainConstants';
 import { initLocalization } from './utils/pluginHelpers';
 import * as Providers from './utils/setUpProviders';
 import * as ActionFunctions from './utils/setUpActions';
@@ -31,37 +30,22 @@ import * as Channels from './channels/setUpChannels';
 import setUpMonitoring from './utils/setUpMonitoring';
 import { changeLanguage } from './states/configuration/actions';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from './permissions';
-import { subscribeToConfigUpdates, getHrmConfig, getResourceStrings, getAseloFeatureFlags } from './hrmConfig';
+import {
+  getAseloFeatureFlags,
+  getHrmConfig,
+  getResourceStrings,
+  initializeConfig,
+  subscribeToConfigUpdates,
+} from './hrmConfig';
 import { setUpSharedStateClient } from './utils/sharedState';
 import { FeatureFlags } from './types/types';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
 import { subscribeNewMessageAlertOnPluginInit, subscribeReservedTaskAlert } from './utils/audioNotifications';
 
-// Re-exported for backwards compatibility, we should move to getHrmConfig & remove this
-export { getConfig } from './hrmConfig';
-
 const PLUGIN_NAME = 'HrmFormPlugin';
-
-export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 // eslint-disable-next-line import/no-unused-modules
 export type SetupObject = ReturnType<typeof getHrmConfig>;
-
-/**
- * Helper to expose the forms definitions without the need of calling Manager
- */
-export const getDefinitionVersions = () => {
-  const { currentDefinitionVersion, definitionVersions } = (Flex.Manager.getInstance().store.getState() as RootState)[
-    namespace
-  ][configurationBase];
-
-  return { currentDefinitionVersion, definitionVersions };
-};
-
-export const reRenderAgentDesktop = async () => {
-  await Flex.Actions.invokeAction('NavigateToView', { viewName: 'empty-view' });
-  await Flex.Actions.invokeAction('NavigateToView', { viewName: 'agent-desktop' });
-};
 
 const setUpTransfers = () => {
   setUpSharedStateClient();
@@ -255,3 +239,5 @@ export default class HrmFormPlugin extends FlexPlugin {
     subscribeToConfigUpdates(manager);
   }
 }
+
+initializeConfig();

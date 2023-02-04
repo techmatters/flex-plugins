@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import * as React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import configureMockStore from 'redux-mock-store';
 import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
@@ -22,9 +22,7 @@ import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 import { mockGetDefinitionsResponse } from './mockGetConfig';
 import { initialState as searchInitialState } from '../states/search/reducer';
 import { standaloneTaskSid } from '../types/types';
-import { getDefinitionVersions } from '../HrmFormPlugin';
-
-const mockStore = configureMockStore([]);
+import { getDefinitionVersions } from '../hrmConfig';
 
 jest.mock('../services/ServerlessService', () => ({
   populateCounselors: async () => [],

@@ -37,17 +37,17 @@ import {
 import ContactDetailsSection from './ContactDetailsSection';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';
-import { isNonDataCallType } from '../../states/ValidationRules';
+import { isNonDataCallType } from '../../states/validationRules';
 import { formatCategories, formatDuration, mapChannelForInsights } from '../../utils';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getPermissionsForContact, getPermissionsForViewingIdentifiers, PermissionActions } from '../../permissions';
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
-import { getConfig } from '../../HrmFormPlugin';
 import TranscriptSection from './TranscriptSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import { contactLabelFromSearchContact } from '../../states/contacts/contactIdentifier';
+import { getAseloFeatureFlags, getResourceStrings } from '../../hrmConfig';
 
 const formatCsamReport = (report: CSAMReportEntry) => {
   const template =
@@ -103,7 +103,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const definitionVersion = definitionVersions[version];
 
-  const { featureFlags, strings } = getConfig();
+  const featureFlags = getAseloFeatureFlags();
+  const strings = getResourceStrings();
 
   useEffect(
     () => () => {

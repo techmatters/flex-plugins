@@ -20,15 +20,15 @@ import { useSelector } from 'react-redux';
 import { Actions, withTheme } from '@twilio/flex-ui';
 import { MessageInputChildrenProps } from '@twilio/flex-ui-core/src/components/channel/MessageInput/MessageInputImpl';
 
-import { getConfig } from '../HrmFormPlugin';
 import { selectCannedResponses } from '../states/selectors/hrmStateSelectors';
 import { CannedResponsesContainer, FormSelect, FormSelectWrapper, FormOption } from '../styles/HrmStyles';
+import { getResourceStrings } from '../hrmConfig';
 
 type Props = Partial<MessageInputChildrenProps>;
 
 const CannedResponses: React.FC<Props> = props => {
   const cannedResponses = useSelector(selectCannedResponses);
-  const { strings } = getConfig();
+  const strings = getResourceStrings();
   const { conversationSid } = props;
   const handleChange: React.ChangeEventHandler<HTMLSelectElement> = event => {
     Actions.invokeAction('SetInputText', {

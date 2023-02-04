@@ -25,7 +25,7 @@ import {
   mergeAttributes,
   buildInsightsData,
 } from '../../services/InsightsService';
-import { getDefinitionVersions } from '../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../hrmConfig';
 
 let v1;
 /*

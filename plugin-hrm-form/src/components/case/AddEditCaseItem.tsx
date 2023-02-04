@@ -40,7 +40,6 @@ import ActionHeader from './ActionHeader';
 import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import { transformValues } from '../../services/ContactService';
-import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
 import {
   createFormFromDefinition,
@@ -72,6 +71,7 @@ import {
   removeCaseSectionWorkingCopy,
   updateCaseSectionWorkingCopy,
 } from '../../states/case/caseWorkingCopy';
+import { getHrmConfig, getResourceStrings } from '../../hrmConfig';
 
 export type AddEditCaseItemProps = {
   task: CustomITask | StandaloneITask;
@@ -189,7 +189,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     const rawForm = workingCopy.form;
     const form = transformValues(formDefinition)(rawForm);
     const now = new Date().toISOString();
-    const { workerSid } = getConfig();
+    const { workerSid } = getHrmConfig();
     let newInfo: CaseInfo;
     if (id) {
       newInfo = sectionApi.upsertCaseSectionItemFromForm(info, {
@@ -237,7 +237,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     closeActions(exitRoute);
   }
 
-  const { strings } = getConfig();
+  const strings = getResourceStrings();
   const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler(
     routing.action === CaseItemAction.Edit ? `Case: Edit ${sectionApi.label}` : `Case: Add ${sectionApi.label}`,
     () => {

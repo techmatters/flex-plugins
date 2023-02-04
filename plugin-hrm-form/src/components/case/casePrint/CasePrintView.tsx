@@ -23,7 +23,6 @@ import { ButtonBase, CircularProgress } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { DefinitionVersion, callTypes } from 'hrm-form-definitions';
 
-import { getConfig } from '../../../HrmFormPlugin';
 import CasePrintSection from './CasePrintSection';
 import CasePrintSummary from './CasePrintSummary';
 import styles, { useThaiFontFamily } from './styles';
@@ -37,6 +36,7 @@ import CasePrintFooter from './CasePrintFooter';
 // import CasePrintContact from './CasePrintContact'; // Removed by ZA request, could be useful for other helplines.
 import { getImageAsString, ImageSource } from './helpers';
 import { getLocaleDateTime } from '../../../utils/helpers';
+import { getHrmConfig, getResourceStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   onClickClose: () => void;
@@ -47,7 +47,8 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionVersion, counselorsHash }) => {
-  const { pdfImagesSource, strings } = getConfig();
+  const strings = getResourceStrings();
+  const { pdfImagesSource } = getHrmConfig();
 
   const logoSource = `${pdfImagesSource}/helpline-logo.png`;
   const chkOnSource = `${pdfImagesSource}/chk_1.png`;

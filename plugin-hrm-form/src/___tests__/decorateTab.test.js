@@ -16,7 +16,7 @@
 
 import renderer from 'react-test-renderer';
 
-import { formIsValid } from '../states/ValidationRules';
+import { formIsValid } from '../states/validationRules';
 import decorateTab from '../components/decorateTab';
 
 jest.mock('../styles/HrmStyles', () => ({ StyledTab: 'StyledTab' }));

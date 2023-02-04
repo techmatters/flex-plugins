@@ -27,13 +27,13 @@ import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 import HrmTheme from '../../../styles/HrmTheme';
 import { AddOfflineContactButton } from '../../../components/OfflineContact';
 import { namespace, routingBase, configurationBase } from '../../../states';
-import { reRenderAgentDesktop } from '../../../HrmFormPlugin';
+import { rerenderAgentDesktop } from '../../../rerenderView';
 
 let v1;
 
 jest.mock('../../../services/ServerlessService');
-jest.mock('../../../HrmFormPlugin', () => ({
-  reRenderAgentDesktop: jest.fn(),
+jest.mock('../../../rerenderView', () => ({
+  rerenderAgentDesktop: jest.fn(),
 }));
 jest.mock('@twilio/flex-ui', () => ({
   ...jest.requireActual('@twilio/flex-ui'),
@@ -46,7 +46,7 @@ beforeAll(async () => (v1 = await loadDefinition(DefinitionVersionId.v1)));
 
 beforeEach(async () => {
   Actions.invokeAction.mockClear();
-  reRenderAgentDesktop.mockClear();
+  rerenderAgentDesktop.mockClear();
 });
 
 const themeConf = {
@@ -86,7 +86,7 @@ test('click on button', async () => {
   await Promise.resolve();
 
   expect(Actions.invokeAction).toHaveBeenCalledTimes(1);
-  expect(reRenderAgentDesktop).toHaveBeenCalledTimes(1);
+  expect(rerenderAgentDesktop).toHaveBeenCalledTimes(1);
   /*
    * This is failing and couldn't fix it yet
    * expect(recreateContactState).toHaveBeenCalled();
@@ -121,7 +121,7 @@ test('button should be disabled (default task exists)', () => {
   screen.getByText('OfflineContactButtonText').click();
 
   expect(Actions.invokeAction).not.toHaveBeenCalled();
-  expect(reRenderAgentDesktop).not.toHaveBeenCalled();
+  expect(rerenderAgentDesktop).not.toHaveBeenCalled();
   expect(recreateContactState).not.toHaveBeenCalled();
 });
 

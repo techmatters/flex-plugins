@@ -17,15 +17,13 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 
 import { CaseDetailsBorder, CaseSectionFont, CaseSummaryTextArea } from '../../styles/case';
 import { namespace, connectedCaseBase } from '../../states';
-import * as CaseActions from '../../states/case/actions';
-import { getConfig } from '../../HrmFormPlugin';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { CaseState } from '../../states/case/types';
+import { getResourceStrings } from '../../hrmConfig';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -35,7 +33,7 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
 const CaseSummary: React.FC<Props> = ({ connectedCaseState }) => {
-  const { strings } = getConfig();
+  const strings = getResourceStrings();
   const { connectedCase } = connectedCaseState;
   const summary = connectedCase.info?.summary || '';
 

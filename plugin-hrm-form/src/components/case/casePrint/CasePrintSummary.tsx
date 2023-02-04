@@ -20,8 +20,8 @@
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
 
-import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
+import { getResourceStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   summary?: string;
@@ -30,7 +30,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintSummary: React.FC<Props> = ({ summary }) => {
-  const { strings } = getConfig();
+  const strings = getResourceStrings();
 
   return (
     <View>

@@ -21,8 +21,8 @@ import { Text, View } from '@react-pdf/renderer';
 import { FormDefinition } from 'hrm-form-definitions';
 
 import styles from './styles';
-import { getConfig } from '../../../HrmFormPlugin';
 import { presentValueFromStrings } from './presentValuesFromStrings';
+import { getResourceStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   sectionName: string;
@@ -33,7 +33,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintSection: React.FC<Props> = ({ sectionName, values, definitions }) => {
-  const { strings } = getConfig();
+  const strings = getResourceStrings();
 
   return (
     <View>

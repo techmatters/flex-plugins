@@ -19,9 +19,9 @@ import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
-import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
 import CaseTags from '../CaseTags';
+import { getResourceStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   categories?: {
@@ -35,7 +35,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintCategories: React.FC<Props> = ({ categories, version }) => {
-  const { strings } = getConfig();
+  const strings = getResourceStrings();
 
   return (
     <View style={styles.flexColumn}>

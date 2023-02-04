@@ -20,8 +20,8 @@ import { ITask, Notifications } from '@twilio/flex-ui';
 import { DefinitionVersionId, loadDefinition, DefinitionVersion } from 'hrm-form-definitions';
 
 import fetchProtectedApi from './fetchProtectedApi';
-import { getConfig } from '../HrmFormPlugin';
 import type { ChildCSAMReportForm, CounselorCSAMReportForm } from '../states/csam-report/types';
+import { getHrmConfig } from '../hrmConfig';
 
 type PopulateCounselorsReturn = { sid: string; fullName: string }[];
 
@@ -29,7 +29,7 @@ type PopulateCounselorsReturn = { sid: string; fullName: string }[];
  * [Protected] Fetches the workers within a workspace and helpline.
  */
 export const populateCounselors = async (): Promise<PopulateCounselorsReturn> => {
-  const { helpline, currentWorkspace } = getConfig();
+  const { helpline, currentWorkspace } = getHrmConfig();
   const body = {
     workspaceSID: currentWorkspace,
     helpline: helpline || '',
@@ -84,7 +84,7 @@ export const issueSyncToken = async (): Promise<string> => {
 };
 
 export const adjustChatCapacity = async (adjustment: 'increase' | 'decrease'): Promise<void> => {
-  const { workerSid } = getConfig();
+  const { workerSid } = getHrmConfig();
 
   const body = {
     workerSid,

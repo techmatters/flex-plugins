@@ -15,11 +15,11 @@
  */
 
 import HrmTheme from '../styles/HrmTheme';
-import { getConfig, getDefinitionVersions } from '../HrmFormPlugin';
 import { ContactRawJson } from '../types/types';
+import { getHrmConfig, getDefinitionVersions } from '../hrmConfig';
 
 const getCategoryColor = (definitionVersion: ContactRawJson['definitionVersion'], category: string) => {
-  const { helpline } = getConfig();
+  const { helpline } = getHrmConfig();
 
   const categories =
     getDefinitionVersions().definitionVersions[definitionVersion]?.tabbedForms.IssueCategorizationTab(helpline) ?? {};
