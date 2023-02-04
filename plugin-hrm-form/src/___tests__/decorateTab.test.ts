@@ -20,18 +20,20 @@ import { formIsValid } from '../states/validationRules';
 import decorateTab from '../components/decorateTab';
 
 jest.mock('../styles/HrmStyles', () => ({ StyledTab: 'StyledTab' }));
-jest.mock('../states/ValidationRules', () => ({ formIsValid: jest.fn() }));
+jest.mock('../states/validationRules', () => ({ formIsValid: jest.fn() }));
 jest.mock('@material-ui/icons/Error', () => 'ErrorIcon');
 
+const mockFormIsValid = formIsValid as jest.Mock<ReturnType<typeof formIsValid>>;
+
 test('decorateTab when valid', () => {
-  formIsValid.mockReturnValueOnce(true);
+  mockFormIsValid.mockReturnValueOnce(true);
   const component = renderer.create(decorateTab('My Label', {}));
   const tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 });
 
 test('decorateTab when invalid', () => {
-  formIsValid.mockReturnValueOnce(false);
+  mockFormIsValid.mockReturnValueOnce(false);
   const component = renderer.create(decorateTab('My Label', {}));
   const tree = component.toJSON();
   expect(tree).toMatchSnapshot();
