@@ -26,7 +26,7 @@ module "chatbots" {
 module "hrmServiceIntegration" {
   source = "../hrmServiceIntegration/default"
   helpline = var.helpline
-  short_code = var.short_code
+  short_helpline = var.short_helpline
   environment = var.environment
   short_environment = local.short_environment
 }
@@ -40,7 +40,7 @@ module "serverless" {
 module "services" {
   source = "../services/default"
   helpline = var.helpline
-  short_code = var.short_code
+  short_helpline = var.short_helpline
   environment = var.environment
   short_environment = local.short_environment
 }
@@ -91,7 +91,7 @@ module customChannel {
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
-  short_code = var.short_code
+  short_helpline = var.short_helpline
   short_environment = local.short_environment
 }
 
@@ -101,7 +101,7 @@ module flex {
   twilio_account_sid = local.secrets.twilio_account_sid
   short_environment = local.short_environment
   operating_info_key = var.operating_info_key
-  permission_config = var.short_code
+  permission_config = var.short_helpline
   definition_version = var.definition_version
   serverless_url = module.serverless.serverless_environment_production_url
   multi_office_support = var.multi_office
@@ -121,7 +121,7 @@ module aws {
   twilio_auth_token = local.secrets.twilio_auth_token
   serverless_url = module.serverless.serverless_environment_production_url
   helpline = var.helpline
-  short_code = var.short_code
+  short_helpline = var.short_helpline
   environment = var.environment
   short_environment = local.short_environment
   operating_info_key = var.operating_info_key
@@ -140,7 +140,7 @@ module aws {
 module aws_monitoring {
   source = "../aws-monitoring/default"
   helpline = var.helpline
-  short_code = var.short_code
+  short_helpline = var.short_helpline
   environment = var.environment
   cloudwatch_region = "us-east-1"
 }
@@ -150,6 +150,6 @@ module github {
   twilio_account_sid = local.secrets.twilio_account_sid
   twilio_auth_token = local.secrets.twilio_auth_token
   short_environment = local.short_environment
-  short_code = var.short_code
+  short_helpline = var.short_helpline
   serverless_url = module.serverless.serverless_environment_production_url
 }

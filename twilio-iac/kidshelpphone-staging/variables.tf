@@ -8,7 +8,7 @@ variable "helpline" {
   default = "Kids Help Phone"
 }
 
-variable "short_code" {
+variable "short_helpline" {
   default = "CA"
 }
 

@@ -1,4 +1,4 @@
-variable "short_code" {
+variable "short_helpline" {
   description = "Short (usually 2 letter) upper case code for helpline"
   type        = string
 }

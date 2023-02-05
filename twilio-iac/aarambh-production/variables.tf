@@ -7,7 +7,7 @@ variable "local_os" {
 variable "helpline" {
   default = "MERI Trustline"
 }
-variable "short_code" {
+variable "short_helpline" {
   default = "IN"
 }
 variable "operating_info_key" {

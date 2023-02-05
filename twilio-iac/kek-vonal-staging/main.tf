@@ -30,7 +30,7 @@ data "aws_ssm_parameter" "secrets" {
 locals {
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   helpline  = "Kék Vonal"
-  short_code = "HU"
+  short_helpline = "HU"
   operating_info_key = "hu"
   environment = "Staging"
   short_environment = "STG"
@@ -66,7 +66,7 @@ module "hrmServiceIntegration" {
   source = "../modules/hrmServiceIntegration/default"
   local_os = var.local_os
   helpline = local.helpline
-  short_code = local.short_code
+  short_helpline = local.short_helpline
   environment = local.environment
   short_environment = local.short_environment
 }
@@ -81,7 +81,7 @@ module "services" {
   source = "../modules/services/default"
   local_os = var.local_os
   helpline = local.helpline
-  short_code = local.short_code
+  short_helpline = local.short_helpline
   environment = local.environment
   short_environment = local.short_environment
 }
@@ -140,7 +140,7 @@ module aws {
   twilio_auth_token = local.secrets.twilio_auth_token
   serverless_url = module.serverless.serverless_environment_production_url
   helpline = local.helpline
-  short_code = local.short_code
+  short_helpline = local.short_helpline
   environment = local.environment
   short_environment = local.short_environment
   operating_info_key = local.operating_info_key
@@ -159,7 +159,7 @@ module aws {
 module aws_monitoring {
   source = "../modules/aws-monitoring/default"
   helpline = local.helpline
-  short_code = local.short_code
+  short_helpline = local.short_helpline
   environment = local.environment
   cloudwatch_region = "us-east-1"
 }
@@ -169,6 +169,6 @@ module github {
   twilio_account_sid = local.secrets.twilio_account_sid
   twilio_auth_token = local.secrets.twilio_auth_token
   short_environment = local.short_environment
-  short_code = local.short_code
+  short_helpline = local.short_helpline
   serverless_url = module.serverless.serverless_environment_production_url
 }

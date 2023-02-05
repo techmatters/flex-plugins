@@ -8,7 +8,7 @@ variable "helpline" {
   default = "Telefonul Copilului"
 }
 
-variable "short_code" {
+variable "short_helpline" {
   default = "RO"
 }
 

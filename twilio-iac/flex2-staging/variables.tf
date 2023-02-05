@@ -8,7 +8,7 @@ variable "helpline" {
   default = "Flex 2.0"
 }
 
-variable "short_code" {
+variable "short_helpline" {
   default = "F2"
 }
 

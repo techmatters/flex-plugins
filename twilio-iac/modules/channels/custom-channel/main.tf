@@ -36,7 +36,7 @@ locals {
   }
 
   resource "aws_ssm_parameter" "channel_flex_flow_sid_parameter" {
-    name  = "${var.short_environment}_TWILIO_${var.short_code}_${upper(var.channel_name)}_FLEX_FLOW_SID"
+    name  = "${var.short_environment}_TWILIO_${var.short_helpline}_${upper(var.channel_name)}_FLEX_FLOW_SID"
     type  = "SecureString"
     value = twilio_flex_flex_flows_v1.channel_flow.sid
     description = "${title(var.channel_name)} Flex Flow SID"

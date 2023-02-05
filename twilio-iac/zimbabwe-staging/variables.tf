@@ -8,7 +8,7 @@ variable "helpline" {
   default = "Childline Zimbabwe"
 }
 
-variable "short_code" {
+variable "short_helpline" {
   default = "ZW"
 }
 

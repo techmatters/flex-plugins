@@ -44,7 +44,7 @@ module "hrmServiceIntegration" {
   source = "../modules/hrmServiceIntegration/default"
   local_os = var.local_os
   helpline = var.helpline
-  short_code = var.short_code
+  short_helpline = var.short_helpline
   environment = var.environment
   short_environment = var.short_environment
 }
@@ -59,7 +59,7 @@ module "services" {
   source = "../modules/services/default"
   local_os = var.local_os
   helpline = var.helpline
-  short_code = var.short_code
+  short_helpline = var.short_helpline
   environment = var.environment
   short_environment = var.short_environment
 }
@@ -106,7 +106,7 @@ module aws {
   source = "../modules/aws/default"
   twilio_account_sid = local.secrets.twilio_account_sid
   helpline = var.helpline
-  short_code = var.short_code
+  short_helpline = var.short_helpline
   environment = var.environment
   short_environment = var.short_environment
   operating_info_key = var.operating_info_key
@@ -124,7 +124,7 @@ module aws {
 module aws_monitoring {
   source = "../modules/aws-monitoring/default"
   helpline = var.helpline
-  short_code = var.short_code
+  short_helpline = var.short_helpline
   environment = var.environment
 }
 
@@ -133,6 +133,6 @@ module github {
   twilio_account_sid = local.secrets.twilio_account_sid
   twilio_auth_token = local.secrets.twilio_auth_token
   short_environment = var.short_environment
-  short_code = var.short_code
+  short_helpline = var.short_helpline
   serverless_url = module.serverless.serverless_environment_production_url
 }

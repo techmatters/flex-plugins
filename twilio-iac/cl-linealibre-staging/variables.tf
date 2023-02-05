@@ -8,7 +8,7 @@ variable "helpline" {
   default = "Línea Libre Helpline"
 }
 
-variable "short_code" {
+variable "short_helpline" {
   default = "CL"
 }
 

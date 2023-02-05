@@ -21,8 +21,8 @@ provider "aws" {
 }
 
 locals {
-  docs_s3_location = "tl-aselo-docs-${lower(var.short_code)}-${lower(var.environment)}"
-  chat_s3_location = "tl-public-chat-${lower(var.short_code)}-${lower(var.short_environment)}"
+  docs_s3_location = "tl-aselo-docs-${lower(var.short_helpline)}-${lower(var.environment)}"
+  chat_s3_location = "tl-public-chat-${lower(var.short_helpline)}-${lower(var.short_environment)}"
 }
 
 resource "aws_s3_bucket" "docs" {
@@ -125,7 +125,7 @@ resource "aws_ssm_parameter" "main_group" {
   # Deserialise the JSON used for the keys - this way we can have multiple values per key
   # note: this can also be accomplished in a more "tf native" way by using an array of objects and a `for` loop.
   # see: https://github.com/techmatters/flex-plugins/blob/1edf877bba4760370af16f41045fa14956d5620f/twilio-iac/modules/aws/default/main.tf#L206
-  name  = "${var.short_environment}_${jsondecode(each.value)[0]}_${var.short_code}_${each.key}"
+  name  = "${var.short_environment}_${jsondecode(each.value)[0]}_${var.short_helpline}_${each.key}"
   type  = "SecureString"
   value = jsondecode(each.value)[1]
   description = jsondecode(each.value)[2]

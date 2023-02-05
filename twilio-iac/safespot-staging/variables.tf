@@ -7,7 +7,7 @@ variable "local_os" {
 variable "helpline" {
   default = "SafeSpot"
 }
-variable "short_code" {
+variable "short_helpline" {
   default = "JM"
 }
 variable "operating_info_key" {

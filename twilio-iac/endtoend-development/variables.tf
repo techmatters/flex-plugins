@@ -8,7 +8,7 @@ variable "helpline" {
   default = "End To End Testing"
 }
 
-variable "short_code" {
+variable "short_helpline" {
   default = "E2E"
 }
 
