@@ -8,7 +8,7 @@ variable "helpline" {
   default = "TerraformPOC"
 }
 
-variable "short_helpline" {
+variable "short_code" {
   default = "POC"
 }
 

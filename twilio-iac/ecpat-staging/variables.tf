@@ -8,7 +8,7 @@ variable "helpline" {
   default = "ECPAT"
 }
 
-variable "short_helpline" {
+variable "short_code" {
   default = "PH"
 }
 

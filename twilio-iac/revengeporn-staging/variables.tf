@@ -8,7 +8,7 @@ variable "helpline" {
   default = "RevengePorn"
 }
 
-variable "short_helpline" {
+variable "short_code" {
   default = "UK"
 }
 

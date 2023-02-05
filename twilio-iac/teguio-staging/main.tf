@@ -32,7 +32,7 @@ locals {
   helpline_language = "es-CO"
   task_language = "es-CO"
   voice_ivr_language = "es-MX"
-  short_helpline = "CO"
+  short_code = "CO"
   operating_info_key = "co"
   environment = "Staging"
   short_environment = "STG"
@@ -84,7 +84,7 @@ module "hrmServiceIntegration" {
   source = "../modules/hrmServiceIntegration/default"
   local_os = var.local_os
   helpline = local.helpline
-  short_helpline = local.short_helpline
+  short_code = local.short_code
   environment = local.environment
   short_environment = local.short_environment
 }
@@ -99,7 +99,7 @@ module "services" {
   source = "../modules/services/default"
   local_os = var.local_os
   helpline = local.helpline
-  short_helpline = local.short_helpline
+  short_code = local.short_code
   environment = local.environment
   short_environment = local.short_environment
 }
@@ -167,7 +167,7 @@ module customChannel {
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
-  short_helpline = local.short_helpline
+  short_code = local.short_code
   short_environment = local.short_environment
 }
 
@@ -204,7 +204,7 @@ module aws {
   twilio_auth_token = local.secrets.twilio_auth_token
   serverless_url = module.serverless.serverless_environment_production_url
   helpline = local.helpline
-  short_helpline = local.short_helpline
+  short_code = local.short_code
   environment = local.environment
   short_environment = local.short_environment
   operating_info_key = local.operating_info_key
@@ -222,7 +222,7 @@ module aws {
 module aws_monitoring {
   source = "../modules/aws-monitoring/default"
   helpline = local.helpline
-  short_helpline = local.short_helpline
+  short_code = local.short_code
   environment = local.environment
 }
 
@@ -232,5 +232,5 @@ module aws_monitoring {
 #   twilio_account_sid = local.secrets.twilio_account_sid
 #   twilio_auth_token = local.secrets.twilio_auth_token
 #   short_environment = local.short_environment
-#   short_helpline = local.short_helpline
+#   short_code = local.short_code
 # }
