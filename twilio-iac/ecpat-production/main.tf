@@ -36,17 +36,17 @@ provider "twilio" {
 }
 
 module "chatbots" {
-  source = "../modules/chatbots/default"
+  source = "../terraform-modules/chatbots/default"
   serverless_url = module.serverless.serverless_environment_production_url
 }
 
 module "custom_chatbots" {
-  source = "../modules/chatbots/ecpat"
+  source = "../terraform-modules/chatbots/ecpat"
   serverless_url = module.serverless.serverless_environment_production_url
 }
 
 module "hrmServiceIntegration" {
-  source = "../modules/hrmServiceIntegration/default"
+  source = "../terraform-modules/hrmServiceIntegration/default"
   local_os = var.local_os
   helpline = var.helpline
   short_helpline = var.short_helpline
@@ -55,13 +55,13 @@ module "hrmServiceIntegration" {
 }
 
 module "serverless" {
-  source = "../modules/serverless/default"
+  source = "../terraform-modules/serverless/default"
   twilio_account_sid = local.secrets.twilio_account_sid
   twilio_auth_token = local.secrets.twilio_auth_token
 }
 
 module "services" {
-  source = "../modules/services/default"
+  source = "../terraform-modules/services/default"
   local_os = var.local_os
   helpline = var.helpline
   short_helpline = var.short_helpline
@@ -71,14 +71,14 @@ module "services" {
 }
 
 module "taskRouter" {
-  source = "../modules/taskRouter/default"
+  source = "../terraform-modules/taskRouter/default"
   serverless_url = module.serverless.serverless_environment_production_url
   helpline = var.helpline
   custom_task_routing_filter_expression = "isContactlessTask==true"
 }
 
 module studioFlow {
-  source = "../modules/studioFlow/default"
+  source = "../terraform-modules/studioFlow/default"
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   default_task_channel_sid = module.taskRouter.default_task_channel_sid
@@ -86,7 +86,7 @@ module studioFlow {
 }
 
 module flex {
-  source = "../modules/flex/default"
+  source = "../terraform-modules/flex/default"
   twilio_account_sid = local.secrets.twilio_account_sid
   short_environment = var.short_environment
   operating_info_key = var.operating_info_key
@@ -99,13 +99,13 @@ module flex {
 }
 
 module survey {
-  source = "../modules/survey/default"
+  source = "../terraform-modules/survey/default"
   helpline = var.helpline
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
 }
 
 module aws {
-  source = "../modules/aws/default"
+  source = "../terraform-modules/aws/default"
   twilio_account_sid = local.secrets.twilio_account_sid
   twilio_auth_token = local.secrets.twilio_auth_token
   serverless_url = module.serverless.serverless_environment_production_url

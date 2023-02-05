@@ -74,12 +74,12 @@ provider "twilio" {
 }
 
 module "custom_chatbots" {
-  source = "../modules/chatbots/te-guio-co"
+  source = "../terraform-modules/chatbots/te-guio-co"
   serverless_url = module.serverless.serverless_environment_production_url
 }
 
 module "hrmServiceIntegration" {
-  source = "../modules/hrmServiceIntegration/default"
+  source = "../terraform-modules/hrmServiceIntegration/default"
   local_os = var.local_os
   helpline = local.helpline
   short_helpline = local.short_helpline
@@ -88,13 +88,13 @@ module "hrmServiceIntegration" {
 }
 
 module "serverless" {
-  source = "../modules/serverless/default"
+  source = "../terraform-modules/serverless/default"
   twilio_account_sid = local.secrets.twilio_account_sid
   twilio_auth_token = local.secrets.twilio_auth_token
 }
 
 module "services" {
-  source = "../modules/services/default"
+  source = "../terraform-modules/services/default"
   local_os = var.local_os
   helpline = local.helpline
   short_helpline = local.short_helpline
@@ -103,7 +103,7 @@ module "services" {
 }
 
 module "taskRouter" {
-  source = "../modules/taskRouter/default"
+  source = "../terraform-modules/taskRouter/default"
   serverless_url = module.serverless.serverless_environment_production_url
   helpline = local.helpline
   custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
@@ -111,9 +111,9 @@ module "taskRouter" {
 
 module twilioChannel {
   for_each = local.twilio_channels
-  source = "../modules/channels/twilio-channel"
+  source = "../terraform-modules/channels/twilio-channel"
   custom_flow_definition = templatefile(
-    "../modules/channels/flow-templates/operating-hours/with-chatbot.tftpl",
+    "../terraform-modules/channels/flow-templates/operating-hours/with-chatbot.tftpl",
     {
       channel_name = "${each.key}"
       serverless_url=module.serverless.serverless_environment_production_url
@@ -122,7 +122,7 @@ module twilioChannel {
       operating_hours_function_sid = local.operating_hours_function_sid
       master_workflow_sid = module.taskRouter.master_workflow_sid
       chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-      channel_attributes = templatefile("../modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language})
+      channel_attributes = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language})
       flow_description = "${title(each.key)} Messaging Flow"
       pre_survey_bot_sid = module.custom_chatbots.pre_survey_bot_es_sid
       target_task_name = local.target_task_name
@@ -143,9 +143,9 @@ module twilioChannel {
 
 module customChannel {
   for_each = toset(local.custom_channels)
-  source = "../modules/channels/custom-channel"
+  source = "../terraform-modules/channels/custom-channel"
   custom_flow_definition = templatefile(
-    "../modules/channels/flow-templates/operating-hours/no-chatbot.tftpl",
+    "../terraform-modules/channels/flow-templates/operating-hours/no-chatbot.tftpl",
     {
       channel_name = "${each.key}"
       serverless_url=module.serverless.serverless_environment_production_url
@@ -154,7 +154,7 @@ module customChannel {
       operating_hours_function_sid = local.operating_hours_function_sid
       master_workflow_sid = module.taskRouter.master_workflow_sid
       chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-      channel_attributes = templatefile("../modules/channels/custom-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language})
+      channel_attributes = templatefile("../terraform-modules/channels/custom-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language})
       flow_description = "${title(each.key)} Messaging Flow"
       operating_hours_holiday = local.strings.operating_hours_holiday
       operating_hours_closed = local.strings.operating_hours_closed
@@ -170,7 +170,7 @@ module customChannel {
 }
 
 module flex {
-  source = "../modules/flex/service-configuration"
+  source = "../terraform-modules/flex/service-configuration"
   twilio_account_sid = local.secrets.twilio_account_sid
   short_environment = local.short_environment
   operating_info_key = local.operating_info_key
@@ -183,13 +183,13 @@ module flex {
 }
 
 module survey {
-  source = "../modules/survey/default"
+  source = "../terraform-modules/survey/default"
   helpline = local.helpline
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
 }
 
 module aws {
-  source = "../modules/aws/default"
+  source = "../terraform-modules/aws/default"
   twilio_account_sid = local.secrets.twilio_account_sid
   twilio_auth_token = local.secrets.twilio_auth_token
   serverless_url = module.serverless.serverless_environment_production_url
@@ -210,14 +210,14 @@ module aws {
 }
 
 module aws_monitoring {
-  source = "../modules/aws-monitoring/default"
+  source = "../terraform-modules/aws-monitoring/default"
   helpline = local.helpline
   short_helpline = local.short_helpline
   environment = local.environment
 }
 
 module github {
-  source = "../modules/github/default"
+  source = "../terraform-modules/github/default"
   twilio_account_sid = local.secrets.twilio_account_sid
   twilio_auth_token = local.secrets.twilio_auth_token
   short_environment = local.short_environment

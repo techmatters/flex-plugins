@@ -71,5 +71,5 @@ EOF
 inputs = local.config
 
 terraform {
-  source = "../../modules//${local.stage}"
+  source = "../../terraform-modules//${local.stage}"
 }
