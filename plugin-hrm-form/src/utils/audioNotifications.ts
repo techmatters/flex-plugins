@@ -76,6 +76,12 @@ const notifyNewMessage = messageInstance => {
   }
 };
 
+/** notifyReservedTask plays ringtone when an agent has a reserved task in pending state.
+ *  The notification stops when the reservation is not longer in pending. 
+ *  There is a check, checkForPendingReservation, in case, notification does not stop as expected.
+ * 
+ * @param reservation 
+ */
 const notifyReservedTask = reservation => {
   try {
     const { assetsBucketUrl } = getHrmConfig();
@@ -97,24 +103,16 @@ const notifyReservedTask = reservation => {
       );
     }
 
-    const stopAudio = () => AudioPlayerManager.stop(media);
+    const stopAudio = () => media && AudioPlayerManager.stop(media);
 
     const taskStatuses = ['accepted', 'canceled', 'rejected', 'rescinded', 'timeout'];
     taskStatuses.forEach(status => {
       reservation.on(status, stopAudio);
     });
 
-    setTimeout(stopAudio, 120000);
-
-    const checkForReservedTask = () => {
-      if (reservation.task.status === 'reserved') {
-        setTimeout(checkForReservedTask, 5000);
-      } else {
-        stopAudio();
-      }
-    };
-
-    checkForReservedTask();
+    const checkForPendingReservation = () =>
+      reservation.status === 'pending' ? setTimeout(checkForPendingReservation, 5000) : stopAudio;
+    checkForPendingReservation();
   } catch (error) {
     console.error('Error in notifyReservedTask:', error);
   }
