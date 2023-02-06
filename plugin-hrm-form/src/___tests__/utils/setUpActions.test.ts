@@ -37,7 +37,6 @@ jest.mock('@twilio/flex-ui', () => ({
   },
 }));
 
-jest.mock('../../HrmFormPlugin.tsx', () => ({}));
 jest.mock('../../states', () => ({}));
 
 afterEach(() => {
