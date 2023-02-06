@@ -5,6 +5,7 @@ import { Template } from '@twilio/flex-ui';
 import { endOfDay, format, parse } from 'date-fns';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
+import _ from 'lodash';
 
 import { Box, Flex, FormDateInput, FormLabel, FormRadioInput } from '../../../styles/HrmStyles';
 import {
@@ -74,14 +75,14 @@ const formToDateFilter = (
   filterOptions: DateFilterOption[],
   values: ReactHookFormValues,
 ): DateFilterValue | undefined => {
-  const { ...selected } = Object(filterOptions.find(([opt]) => opt === values[selectedOptionField]));
+  const { ...selected } = Object(filterOptions.find(([opt]) => opt === values[selectedOptionField]))[1];
 
-  if (!selected[1]) {
+  if (!selected) {
     return undefined;
   }
-  if (isExistsDateFilter(selected[1])) {
-    return { option: values[selectedOptionField], exists: selected[1].exists };
-  } else if (isFixedDateRange(selected[1])) {
+  if (isExistsDateFilter(selected)) {
+    return { option: values[selectedOptionField], exists: selected.exists };
+  } else if (isFixedDateRange(selected)) {
     return {
       option: values[selectedOptionField],
       from: values.customDateRangeFrom ? parse(values.customDateRangeFrom, 'yyyy-MM-dd', new Date()) : undefined,
@@ -90,8 +91,8 @@ const formToDateFilter = (
   }
   return {
     option: values[selectedOptionField],
-    from: selected[1].from(new Date()),
-    to: selected[1].to(new Date()),
+    from: selected.from(new Date()),
+    to: selected.to(new Date()),
   };
 };
 
@@ -202,8 +203,13 @@ const DateRangeFilter: React.FC<Props> = ({
   };
 
   const handleClear = () => {
+    // eslint-disable-next-line sonarjs/no-extra-arguments
     updateWorkingCopy(undefined);
     resetDateValidation();
+  };
+
+  const handleOnClick = () => {
+    updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()));
   };
 
   const dividerStyle = { border: 'none', height: '1px', backgroundColor: 'rgb(216, 216, 216)' };
@@ -270,11 +276,11 @@ const DateRangeFilter: React.FC<Props> = ({
                       <FormLabel htmlFor={option} style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <FormRadioInput
                           onKeyDown={i === 0 ? handleShiftTabForFirstElement : null}
-                          onChange={() =>
-                            updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))
-                          }
-                          // This is a work around to issue CHI-1200: Custom Date Filters
-                          onClick={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
+                          /*
+                           * This is a work around to issue CHI-1661: CaseList Date Filter Error.
+                           * We can only use onClick to perform event actions rather than onChange
+                           */
+                          onClick={handleOnClick}
                           id={option}
                           value={option}
                           name={name}
