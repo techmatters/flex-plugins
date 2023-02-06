@@ -104,9 +104,7 @@ const notifyReservedTask = reservation => {
       reservation.on(status, stopAudio);
     });
 
-    setTimeout(() => {
-      stopAudio();
-    }, 120000);
+    setTimeout(stopAudio, 120000);
 
     const checkForReservedTask = () => {
       if (reservation.task.status === 'reserved') {
