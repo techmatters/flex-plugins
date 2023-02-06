@@ -15,15 +15,16 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
-import type { CategoriesDefinition } from 'hrm-form-definitions';
+import type { CategoriesDefinition, HelplineDefinitions, HelplineEntry } from 'hrm-form-definitions';
 
 import { RootState } from '../../states';
 import { CategoriesFromDefinition, createSubCategoriesInputs } from '../common/forms/categoriesTabGenerator';
 import useFocus from '../../utils/useFocus';
 import { IssueCategorizationStateApi } from '../../states/contacts/issueCategorizationStateApi';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 type OwnProps = {
   display: boolean;
@@ -31,6 +32,7 @@ type OwnProps = {
   definition: CategoriesDefinition;
   autoFocus: boolean;
   stateApi: IssueCategorizationStateApi;
+  helplineInformation: HelplineDefinitions;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -45,14 +47,26 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
   updateForm,
   toggleCategoryExpanded,
   setCategoriesGridView,
+  helplineInformation,
 }) => {
   const shouldFocusFirstElement = display && autoFocus;
   const firstElementRef = useFocus(shouldFocusFirstElement);
+  const featureFlags = getAseloFeatureFlags();
 
   const { getValues, setValue } = useFormContext();
   const IssueCategorizationTabDefinition = definition;
 
   const [, setCategories] = useState(initialValue);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleCloseDialog = () => {
+    setAnchorEl(null);
+  };
+
+  const handleOpenConnectDialog = e => {
+    e.stopPropagation();
+    setAnchorEl(e.currentTarget);
+  };
 
   // Couldn't find a way to provide initial values to an field array, as a workaround, intentionally run this only on first render
   React.useEffect(() => {
@@ -67,9 +81,29 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
       setCategories(categories);
     };
 
+    const getHelplineName = helplineInformation.helplines.find((data: HelplineEntry) => data.default);
+
     if (IssueCategorizationTabDefinition === null || IssueCategorizationTabDefinition === undefined) return {};
-    return createSubCategoriesInputs(IssueCategorizationTabDefinition, ['categories'], updateCallback);
-  }, [IssueCategorizationTabDefinition, getValues, updateForm]);
+    const helplineName = getHelplineName.label;
+    const counselorToolkitsEnabled = featureFlags.enable_counselor_toolkits;
+    return createSubCategoriesInputs(
+      IssueCategorizationTabDefinition,
+      ['categories'],
+      updateCallback,
+      handleOpenConnectDialog,
+      anchorEl,
+      handleCloseDialog,
+      helplineName,
+      counselorToolkitsEnabled,
+    );
+  }, [
+    IssueCategorizationTabDefinition,
+    anchorEl,
+    featureFlags.enable_counselor_toolkits,
+    getValues,
+    helplineInformation.helplines,
+    updateForm,
+  ]);
 
   return (
     <CategoriesFromDefinition

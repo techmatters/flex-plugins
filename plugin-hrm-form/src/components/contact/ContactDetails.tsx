@@ -126,6 +126,7 @@ const ContactDetails: React.FC<Props> = ({
             stateApi={forExistingContact(contactId)}
             display={true}
             autoFocus={true}
+            helplineInformation={definitionVersion.helplineInformation}
           />
         </EditContactSection>
       );

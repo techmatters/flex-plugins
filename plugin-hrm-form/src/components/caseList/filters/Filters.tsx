@@ -42,7 +42,6 @@ import {
 import CategoriesFilter, { Category } from './CategoriesFilter';
 import { caseListBase, configurationBase, namespace, RootState } from '../../../states';
 import * as CaseListSettingsActions from '../../../states/caseList/settings';
-import { Flex } from '../../../styles/HrmStyles';
 /**
  * Reads the definition version and returns and array of items (type Item[])
  * to be used as the options for the status filter
@@ -63,7 +62,11 @@ const getStatusInitialValue = (definitionVersion: DefinitionVersion) =>
  * @returns Item[]
  */
 const getCounselorsInitialValue = (counselorsHash: CounselorHash) =>
-  Object.keys(counselorsHash).map(key => ({ value: key, label: counselorsHash[key], checked: false }));
+  Object.keys(counselorsHash).map(key => ({
+    value: key,
+    label: counselorsHash[key],
+    checked: false,
+  }));
 
 const getInitialDateFilters = (): DateFilter[] => [
   {
@@ -94,8 +97,8 @@ const getCategoriesInitialValue = (definitionVersion: DefinitionVersion, helplin
     ([categoryName, { subcategories }]) => ({
       categoryName,
       subcategories: subcategories.map(subcategory => ({
-        value: subcategory,
-        label: subcategory,
+        value: subcategory.label,
+        label: subcategory.label,
         checked: false,
       })),
     }),
