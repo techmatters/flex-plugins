@@ -24,7 +24,19 @@ import {
   ResourcePage,
   viewResourceAction,
 } from '../../../states/resources';
-import { initialState as searchInitialState } from '../../../states/resources/search';
+import { initialState as searchInitialState, resourceSearchReducer } from '../../../states/resources/search';
+
+jest.mock('../../../states/resources/search', () => ({
+  initialState: jest.requireActual('../../../states/resources/search').initialState,
+  resourceSearchReducer: jest.fn(),
+}));
+
+const mockResourceSearchReducer = resourceSearchReducer as jest.Mock<ReturnType<typeof resourceSearchReducer>>;
+
+beforeEach(() => {
+  mockResourceSearchReducer.mockClear();
+  mockResourceSearchReducer.mockImplementation(state => state);
+});
 
 const resource = (
   id: string,
@@ -39,6 +51,10 @@ const resource = (
 });
 const now = new Date();
 describe('reduce', () => {
+  test('Always delegates to search reducer', () => {
+    reduce({ resources: {}, search: searchInitialState }, { type: 'NOT_FOR_THE_LIKES_OF_YOU' } as any);
+    expect(mockResourceSearchReducer).toHaveBeenCalledWith(searchInitialState, { type: 'NOT_FOR_THE_LIKES_OF_YOU' });
+  });
   test('Always removes any resources in state with a data significantly older than now', () => {
     const state = reduce(
       {
