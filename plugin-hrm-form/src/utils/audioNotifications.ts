@@ -48,7 +48,7 @@ const trySubscribeAudioAlerts = (task, ms: number, retries: number) => {
   }, ms);
 };
 
-export const notifyNewMessage = messageInstance => {
+const notifyNewMessage = messageInstance => {
   try {
     const manager = Manager.getInstance();
     const { assetsBucketUrl } = getHrmConfig();
@@ -56,7 +56,7 @@ export const notifyNewMessage = messageInstance => {
     const notificationTone = 'bell';
     const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
 
-    // normalizeEmail transforms an encoded characters with @ and .
+    // normalizeEmail transforms encoded characters with @ and .
     const normalizeEmail = (identity: string) => identity.replace('_2E', '.').replace('_40', '@');
 
     const isCounsellor = normalizeEmail(manager.user.identity) === normalizeEmail(messageInstance.author);
@@ -76,7 +76,14 @@ export const notifyNewMessage = messageInstance => {
   }
 };
 
-export const notifyReservedTask = reservation => {
+/**
+ * notifyReservedTask plays ringtone when an agent has a reserved task in pending state.
+ *  The notification stops when the reservation is not longer in pending.
+ *  There is a check, checkForPendingReservation, in case, notification does not stop as expected.
+ *
+ * @param reservation
+ */
+const notifyReservedTask = reservation => {
   try {
     const { assetsBucketUrl } = getHrmConfig();
 
@@ -96,15 +103,15 @@ export const notifyReservedTask = reservation => {
         },
       );
     }
-    const taskStatuses = ['accepted', 'canceled', 'rejected', 'rescinded', 'timeout'];
-    taskStatuses.forEach(status => {
-      reservation.on(status, () => {
-        AudioPlayerManager.stop(media);
-      });
-    });
-    setTimeout(() => {
-      AudioPlayerManager.stop(media);
-    }, 15000);
+
+    const stopAudio = () => media && AudioPlayerManager.stop(media);
+
+    const reservationStatuses = ['accepted', 'canceled', 'rejected', 'rescinded', 'timeout'];
+    reservationStatuses.forEach(status => reservation.on(status, stopAudio));
+
+    const checkForPendingReservation = () =>
+      reservation.status === 'pending' ? setTimeout(checkForPendingReservation, 5000) : stopAudio();
+    checkForPendingReservation();
   } catch (error) {
     console.error('Error in notifyReservedTask:', error);
   }

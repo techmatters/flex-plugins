@@ -51,8 +51,24 @@ beforeAll(async () => {
       IssueCategorizationTab: helpline => {
         if (helpline !== 'test helpline') throw Error();
         return {
-          category1: { color: '', subcategories: ['sub1', 'sub2', 'sub3', 'sub4'] },
-          category2: { color: '', subcategories: ['sub1', 'sub2', 'sub3', 'sub4'] },
+          category1: {
+            color: '',
+            subcategories: [
+              { label: 'sub1', toolkitUrl: '' },
+              { label: 'sub2', toolkitUrl: '' },
+              { label: 'sub3', toolkitUrl: '' },
+              { label: 'sub4', toolkitUrl: '' },
+            ],
+          },
+          category2: {
+            color: '',
+            subcategories: [
+              { label: 'sub1', toolkitUrl: '' },
+              { label: 'sub2', toolkitUrl: '' },
+              { label: 'sub3', toolkitUrl: '' },
+              { label: 'sub4', toolkitUrl: '' },
+            ],
+          },
         };
       },
     },

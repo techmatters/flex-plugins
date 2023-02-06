@@ -3,62 +3,62 @@
     "Intimate Content Shared without Consent": {
       "color": "#BBE3FF",
       "subcategories": [
-        "Partial Nudity",
-        "Erotic Posing",
-        "Solo Sexual Activity",
-        "Content featuring Non-penetrative sexual activity ",
-        "Content featuring Penetrative sexual activity",
-        "Violent Sexual Content",
-        "Intimate Content Without Nudity",
-        "Adult Pornographic Content",
-        "Sextortion & Blackmail",
-        "Unspecified/Other"
+        {"label": "Partial Nudity"},
+        {"label": "Erotic Posing"},
+        {"label": "Solo Sexual Activity"},
+        {"label": "Content featuring Non-penetrative sexual activity "},
+        {"label": "Content featuring Penetrative sexual activity"},
+        {"label": "Violent Sexual Content"},
+        {"label": "Intimate Content Without Nudity"},
+        {"label": "Adult Pornographic Content"},
+        {"label": "Sextortion & Blackmail"},
+        {"label": "Unspecified/Other"}
       ]
     },
     "Sexual Offences": {
       "color": "#F5A623",
       "subcategories": [
-        "Penetrative Sexual Assualt",
-        "Aggravated Penetrative Sexual Assualt", 
-        "Sexual Assualt",
-        "Aggravated Sexual Assault", 
-        "Sexual Harrasmment",
-        "Unspecified/Other"
+        {"label": "Penetrative Sexual Assualt"},
+        {"label": "Aggravated Penetrative Sexual Assualt"}, 
+        {"label": "Sexual Assualt"},
+        {"label": "Aggravated Sexual Assault"}, 
+        {"label": "Sexual Harrasmment"},
+        {"label": "Unspecified/Other"}
       ]
     },
     "Cyberbullying": {
       "color": "#F8E900",
       "subcategories": [
-        "Account Hacked",
-        "Threats of Onground Consequences/Violence",
-        "Threats of Online Consequences/Violence",
-        "Denigration/Damaging Reputation",
-        "Doxing or Outing",
-        "Exclusion",
-        "Sexually Explicit Remarks",
-        "Impersonation",
-        "Grooming for Sexual Purposes",
-        "Harrasment through Sexually Explicit Content",
-        "Harrasment through Non-sexual Content",
-        "Repeated Harrasment/Cyberstalking",
-        "Unspecified/Other"
+        {"label": "Account Hacked"},
+        {"label": "Threats of Onground Consequences/Violence"},
+        {"label": "Threats of Online Consequences/Violence"},
+        {"label": "Denigration/Damaging Reputation"},
+        {"label": "Doxing or Outing"},
+        {"label": "Exclusion"},
+        {"label": "Sexually Explicit Remarks"},
+        {"label": "Impersonation"},
+        {"label": "Grooming for Sexual Purposes"},
+        {"label": "Harrasment through Sexually Explicit Content"},
+        {"label": "Harrasment through Non-sexual Content"},
+        {"label": "Repeated Harrasment/Cyberstalking"},
+        {"label": "Unspecified/Other"}
       ]
     },
     "Mental Health Status": {
       "color": "#E86B6B",
       "subcategories": [
-        "Addictive behaviours and substance use",
-        "Behavioural problems",
-        "Concerns about the self",
-        "Emotional distress – anger problems",
-        "Emotional distress – fear and anxiety problems",
-        "Emotional distress – mood problems",
-        "Neurodevelopmental concerns",
-        "Problems with eating behaviour",
-        "Self-harming behaviour",
-        "Suicidal thoughts and suicide attempts",
-        "Traumatic distress",
-        "Unspecified/Other"
+        {"label": "Addictive behaviours and substance use"},
+        {"label": "Behavioural problems"},
+        {"label": "Concerns about the self"},
+        {"label": "Emotional distress – anger problems"},
+        {"label": "Emotional distress – fear and anxiety problems"},
+        {"label": "Emotional distress – mood problems"},
+        {"label": "Neurodevelopmental concerns"},
+        {"label": "Problems with eating behaviour"},
+        {"label": "Self-harming behaviour"},
+        {"label": "Suicidal thoughts and suicide attempts"},
+        {"label": "Traumatic distress"},
+        {"label": "Unspecified/Other"}
       ]
     }
   }
