@@ -110,9 +110,8 @@ const notifyReservedTask = reservation => {
     reservationStatuses.forEach(status => reservation.on(status, stopAudio));
 
     const checkForPendingReservation = () =>
-      reservation.status === 'pending' ? setTimeout(checkForPendingReservation, 5000) : stopAudio;
+      reservation.status === 'pending' ? setTimeout(checkForPendingReservation, 5000) : stopAudio();
     checkForPendingReservation();
-
   } catch (error) {
     console.error('Error in notifyReservedTask:', error);
   }
