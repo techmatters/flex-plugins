@@ -107,7 +107,7 @@ export async function searchContacts(
  */
 const createCategory = <T extends {}>(obj: T, [category, { subcategories }]: [string, CategoryEntry]) => ({
   ...obj,
-  [category]: subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory]: false }), {}),
+  [category]: subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory.label]: false }), {}),
 });
 
 export const createCategoriesObject = (categoriesFormDefinition: CategoriesDefinition) =>

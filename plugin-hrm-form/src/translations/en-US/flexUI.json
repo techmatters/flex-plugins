@@ -399,7 +399,7 @@
   "BottomBar-Save": "Yes, Save",
   "Toolkit-ConfirmTextOne": "You will be redirected to {{helpline}}'s knowledge management system.",
   "Toolkit-ConfirmTextTwo": "Are you sure you want to continue?",
-  
+
   "CaseSummary-None": "- No case summary -",
   "MaskIdentifiers": "XXXXXX",
   "TaskLineWebChatAssignedMasked": "{{#if helper.isCustomerOnline}} {{{icon name='GreenIndicator'}}} {{else}} {{{icon name='GreyIndicator'}}} {{/if}}{{helper.durationSinceUpdate}} | {{#if helper.chat.typers.length}} typing …{{else}} {{#if helper.chat.lastMessage}} {{#if helper.chat.lastMessage.source.body}}{{helper.chat.lastMessage.source.body}}{{else}}{{#if helper.chat.lastMessage.error}}<span class='error'>Sending failed</span>{{else}}File sent{{/if}}{{/if}}{{else}}No messages{{/if}}{{/if}}",

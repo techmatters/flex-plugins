@@ -28,8 +28,10 @@ import HrmTheme from '../../../styles/HrmTheme';
 import { namespace, contactFormsBase } from '../../../states';
 import { setCategoriesGridView } from '../../../states/contacts/actions';
 import { forTask } from '../../../states/contacts/issueCategorizationStateApi';
+import { getAseloFeatureFlags } from '../../../hrmConfig';
 
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
+jest.mock('../../../hrmConfig');
 
 let mockV1;
 const helpline = 'ChildLine Zambia (ZM)';
@@ -45,6 +47,24 @@ const themeConf = {
   colorTheme: HrmTheme,
 };
 
+const helplineEntry = [
+  {
+    label: 'label1',
+    value: 'label1',
+    default: true,
+    manager: {
+      name: 'test',
+      phone: '0954380213',
+      email: 'test@mail.ta',
+    },
+  },
+];
+
+getAseloFeatureFlags.mockReturnValue({
+  // eslint-disable-next-line camelcase
+  featureFlags: { enable_counselor_toolkits: true },
+});
+
 const getGridIcon = wrapper => wrapper.find(ToggleViewButton).at(0);
 const getListIcon = wrapper => wrapper.find(ToggleViewButton).at(1);
 
@@ -52,6 +72,7 @@ beforeAll(async () => {
   mockV1 = await loadDefinition(DefinitionVersionId.v1);
   definition = mockV1.tabbedForms.IssueCategorizationTab(helpline);
   expanded = Object.keys(definition).reduce((acc, category) => ({ ...acc, [category]: false }), {});
+  // eslint-disable-next-line camelcase
 });
 
 test('Click on view subcategories as grid icon', () => {
@@ -86,6 +107,7 @@ test('Click on view subcategories as grid icon', () => {
             definition={definition}
             display={true}
             stateApi={forTask({ taskSid: taskId })}
+            helplineInformation={{ label: 'label1', helplines: helplineEntry }}
           />
         </FormProvider>
       </Provider>
@@ -132,6 +154,7 @@ test('Click on view subcategories as list icon', () => {
             definition={definition}
             display={true}
             stateApi={forTask({ taskSid: taskId })}
+            helplineInformation={{ label: 'label1', helplines: helplineEntry }}
           />
         </FormProvider>
       </Provider>
