@@ -34,7 +34,7 @@ export type ReferrableResourceSearchState = {
   parameters: {
     omniSearchTerm: string;
     filters: Record<string, any>;
-    limit: number;
+    pageSize: number;
   };
   currentPage: number;
   suggesters: Record<string, string[]>;
@@ -47,7 +47,7 @@ export const initialState: ReferrableResourceSearchState = {
   parameters: {
     filters: {},
     omniSearchTerm: '',
-    limit: 5,
+    pageSize: 5,
   },
   currentPage: 0,
   suggesters: {},
@@ -81,12 +81,12 @@ const SEARCH_ACTION = 'resource-action/search';
 export const searchResourceAsyncAction = createAsyncAction(
   SEARCH_ACTION,
   async (parameters: SearchSettings, page: number) => {
-    const { limit, omniSearchTerm } = parameters;
+    const { pageSize, omniSearchTerm } = parameters;
     const [nameSubstring, ...ids] = omniSearchTerm.split(';');
-    const start = page * limit;
-    return { ...(await searchResources({ nameSubstring, ids }, start, limit)), start };
+    const start = page * pageSize;
+    return { ...(await searchResources({ nameSubstring, ids }, start, pageSize)), start };
   },
-  ({ limit }: SearchSettings, page: number, newSearch: boolean = true) => ({ newSearch, start: page * limit }),
+  ({ pageSize }: SearchSettings, page: number, newSearch: boolean = true) => ({ newSearch, start: page * pageSize }),
   // { promiseTypeDelimiter: '/' }, // Doesn't work :-(
 );
 
@@ -155,8 +155,11 @@ export const resourceSearchReducer = createReducer(initialState, handleAction =>
   }),
 ]);
 
-export const getCurrentPageResults = ({ results, currentPage, parameters: { limit } }: ReferrableResourceSearchState) =>
-  results.slice(currentPage * limit, (currentPage + 1) * limit);
+export const getCurrentPageResults = ({
+  results,
+  currentPage,
+  parameters: { pageSize },
+}: ReferrableResourceSearchState) => results.slice(currentPage * pageSize, (currentPage + 1) * pageSize);
 
-export const getPageCount = ({ results, parameters: { limit } }: ReferrableResourceSearchState) =>
-  Math.ceil(results.length / limit);
+export const getPageCount = ({ results, parameters: { pageSize } }: ReferrableResourceSearchState) =>
+  Math.ceil(results.length / pageSize);

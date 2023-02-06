@@ -57,7 +57,7 @@ const nonInitialState: ReferrableResourceSearchState = {
   parameters: {
     omniSearchTerm: 'something else',
     filters: { some: 'other filter' },
-    limit: 2,
+    pageSize: 2,
   },
   results: [
     { name: '1', id: '1', attributes: {} },
@@ -77,12 +77,12 @@ describe('actions', () => {
     });
 
     test('Calls the searchResources service, calculating the start index from the provided page & limit', () => {
-      searchResourceAsyncAction({ omniSearchTerm: 'hello', limit: 42 }, 1337, true);
+      searchResourceAsyncAction({ omniSearchTerm: 'hello', pageSize: 42 }, 1337, true);
       expect(searchResources).toHaveBeenCalledWith({ nameSubstring: 'hello', ids: [] }, 1337 * 42, 42);
     });
 
     test('Semicolons in omniSearch term - splits on semicolon, first term is name, subsequent are IDs', () => {
-      searchResourceAsyncAction({ omniSearchTerm: 'hello;how;are;you;today', limit: 42 }, 1337, true);
+      searchResourceAsyncAction({ omniSearchTerm: 'hello;how;are;you;today', pageSize: 42 }, 1337, true);
       expect(searchResources).toHaveBeenCalledWith(
         { nameSubstring: 'hello', ids: ['how', 'are', 'you', 'today'] },
         1337 * 42,
@@ -91,7 +91,7 @@ describe('actions', () => {
     });
 
     test('Starts with semicolon in omniSearch term - splits on semicolon, all terms are IDs', () => {
-      searchResourceAsyncAction({ omniSearchTerm: ';hello;how;are;you;today', limit: 42 }, 1337, true);
+      searchResourceAsyncAction({ omniSearchTerm: ';hello;how;are;you;today', pageSize: 42 }, 1337, true);
       expect(searchResources).toHaveBeenCalledWith(
         { nameSubstring: '', ids: ['hello', 'how', 'are', 'you', 'today'] },
         1337 * 42,
@@ -103,7 +103,7 @@ describe('actions', () => {
       const { dispatch, getState, subscribe } = testStore({ results: [null, null, null] });
       subscribe(() => console.log(getState()));
       const startingState = getState();
-      dispatch(searchResourceAsyncAction({ omniSearchTerm: 'hello', limit: 42 }, 1337, true));
+      dispatch(searchResourceAsyncAction({ omniSearchTerm: 'hello', pageSize: 42 }, 1337, true));
       const state = getState();
       expect(state).toStrictEqual({ ...startingState, status: ResourceSearchStatus.ResultPending, results: [] });
     });
@@ -111,7 +111,7 @@ describe('actions', () => {
     test("'newSearch' flag not set - dispatches pending action that sets status to ResultPending but leaves results array as is", async () => {
       const { dispatch, getState } = testStore({ results: [null, null, null] });
       const startingState = getState();
-      dispatch(searchResourceAsyncAction({ omniSearchTerm: 'hello', limit: 42 }, 1337, false));
+      dispatch(searchResourceAsyncAction({ omniSearchTerm: 'hello', pageSize: 42 }, 1337, false));
       const state = getState();
       expect(state).toStrictEqual({ ...startingState, status: ResourceSearchStatus.ResultPending });
     });
@@ -127,7 +127,7 @@ describe('actions', () => {
         const { dispatch, getState } = testStore({ results: [null, null, null] });
         const startingState = getState();
         const dispatchPromise = (dispatch(
-          searchResourceAsyncAction({ omniSearchTerm: 'hello', limit: 2 }, 0),
+          searchResourceAsyncAction({ omniSearchTerm: 'hello', pageSize: 2 }, 0),
         ) as unknown) as PromiseLike<unknown>;
         const pendingState = getState();
         expect(pendingState).toStrictEqual({
@@ -249,7 +249,7 @@ describe('actions', () => {
         });
         const startingState = getState();
         await ((dispatch(
-          searchResourceAsyncAction({ omniSearchTerm: 'hello', limit: 2 }, 1, newSearch),
+          searchResourceAsyncAction({ omniSearchTerm: 'hello', pageSize: 2 }, 1, newSearch),
         ) as unknown) as PromiseLike<unknown>);
         const fulfilledState = getState();
         expect(fulfilledState).toStrictEqual({
@@ -269,7 +269,7 @@ describe('actions', () => {
         });
         const { dispatch, getState } = testStore({ results: [] });
         await ((dispatch(
-          searchResourceAsyncAction({ omniSearchTerm: 'hello', limit: 2 }, 0),
+          searchResourceAsyncAction({ omniSearchTerm: 'hello', pageSize: 2 }, 0),
         ) as unknown) as PromiseLike<unknown>);
         const fulfilledState = getState();
         expect(fulfilledState.results.length).toBeLessThan(50000);
@@ -290,7 +290,7 @@ describe('actions', () => {
         const startingState = getState();
         try {
           await ((dispatch(
-            searchResourceAsyncAction({ omniSearchTerm: 'hello', limit: 2 }, 0),
+            searchResourceAsyncAction({ omniSearchTerm: 'hello', pageSize: 2 }, 0),
           ) as unknown) as PromiseLike<unknown>);
         } catch {
           // Error still bubbles up so need to swallow it
@@ -317,7 +317,7 @@ describe('actions', () => {
         const startingState = getState();
         try {
           await ((dispatch(
-            searchResourceAsyncAction({ omniSearchTerm: 'hello', limit: 2 }, 0, false),
+            searchResourceAsyncAction({ omniSearchTerm: 'hello', pageSize: 2 }, 0, false),
           ) as unknown) as PromiseLike<unknown>);
         } catch {
           // Error still bubbles up so need to swallow it
@@ -337,7 +337,7 @@ describe('actions', () => {
       const updatedParameters: SearchSettings = {
         omniSearchTerm: 'something else',
         filters: { some: 'other filter' },
-        limit: 10,
+        pageSize: 10,
       };
       const { dispatch, getState } = testStore(nonInitialState);
       dispatch(updateSearchFormAction(updatedParameters));
@@ -348,17 +348,17 @@ describe('actions', () => {
     });
     test('Leaves parameters not specified in the action payload as they were', () => {
       const updatedParameters: SearchSettings = {
-        limit: 10,
+        pageSize: 10,
       };
 
       const { dispatch, getState } = testStore({
         ...nonInitialState,
-        parameters: { omniSearchTerm: 'something', filters: { some: 'filter' }, limit: 5 },
+        parameters: { omniSearchTerm: 'something', filters: { some: 'filter' }, pageSize: 5 },
       });
       dispatch(updateSearchFormAction(updatedParameters));
       expect(getState()).toStrictEqual({
         ...nonInitialState,
-        parameters: { omniSearchTerm: 'something', filters: { some: 'filter' }, limit: 10 },
+        parameters: { omniSearchTerm: 'something', filters: { some: 'filter' }, pageSize: 10 },
       });
     });
     test('Fully replaces filters, removes all existing ones', () => {
@@ -366,12 +366,12 @@ describe('actions', () => {
         filters: { other: 'setting' },
       };
       const newState = resourceSearchReducer(
-        { ...nonInitialState, parameters: { omniSearchTerm: 'something', filters: { some: 'filter' }, limit: 5 } },
+        { ...nonInitialState, parameters: { omniSearchTerm: 'something', filters: { some: 'filter' }, pageSize: 5 } },
         updateSearchFormAction(updatedParameters),
       );
       expect(newState).toStrictEqual({
         ...nonInitialState,
-        parameters: { omniSearchTerm: 'something', filters: { other: 'setting' }, limit: 5 },
+        parameters: { omniSearchTerm: 'something', filters: { other: 'setting' }, pageSize: 5 },
       });
     });
   });
@@ -424,7 +424,7 @@ describe('getPageCount', () => {
     expect(getPageCount(nonInitialState)).toBe(3);
   });
   test('Rounds up', () => {
-    expect(getPageCount({ ...nonInitialState, parameters: { ...nonInitialState.parameters, limit: 5 } })).toBe(2);
+    expect(getPageCount({ ...nonInitialState, parameters: { ...nonInitialState.parameters, pageSize: 5 } })).toBe(2);
   });
   test('Counts nulls', () => {
     expect(getPageCount({ ...nonInitialState, results: [null, null, null, null, null, null, null] })).toBe(4);

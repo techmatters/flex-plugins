@@ -38,10 +38,10 @@ import asyncDispatch from '../../../states/asyncDispatch';
 type OwnProps = {};
 
 const mapStateToProps = (state: RootState) => {
-  const { omniSearchTerm, limit } = state[namespace][referrableResourcesBase].search.parameters;
+  const { omniSearchTerm, pageSize } = state[namespace][referrableResourcesBase].search.parameters;
   return {
     omniSearchTerm,
-    limit,
+    pageSize: pageSize,
   };
 };
 
@@ -49,8 +49,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
   const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
     updateOmiSearchTerm: (omniSearchTerm: string) => dispatch(updateSearchFormAction({ omniSearchTerm })),
-    submitSearch: (omniSearchTerm: string, limit: number) =>
-      searchAsyncDispatch(searchResourceAsyncAction({ omniSearchTerm, limit }, 0)),
+    submitSearch: (omniSearchTerm: string, pageSize: number) =>
+      searchAsyncDispatch(searchResourceAsyncAction({ omniSearchTerm, pageSize }, 0)),
     resetSearch: () => dispatch(resetSearchFormAction()),
   };
 };
@@ -61,7 +61,7 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const SearchResourcesForm: React.FC<Props> = ({
   omniSearchTerm,
-  limit,
+  pageSize,
   updateOmiSearchTerm,
   submitSearch,
   resetSearch,
@@ -101,7 +101,7 @@ const SearchResourcesForm: React.FC<Props> = ({
         >
           <Template code="Resources-Search-ClearFormButton" />
         </StyledNextStepButton>
-        <StyledNextStepButton type="button" roundCorners={true} onClick={() => submitSearch(omniSearchTerm, limit)}>
+        <StyledNextStepButton type="button" roundCorners={true} onClick={() => submitSearch(omniSearchTerm, pageSize)}>
           <Template code="SearchForm-Button" />
         </StyledNextStepButton>
       </BottomButtonBar>
