@@ -120,13 +120,7 @@ describe('notifyReservedTask', () => {
     expect(mockFlexManager.workerClient.on).toHaveBeenCalledWith('reservationCreated', notifyReservedTask);
 
     notifyReservedTask(reservation);
-    expect(AudioPlayerManager.play).not.toHaveBeenCalledWith(
-      {
-        url: 'http://assets.fake.com/notifications/ringtone.mp3',
-        repeatable: true,
-      },
-      expect.any(Function),
-    );
+    expect(AudioPlayerManager.play).not.toHaveBeenCalled();
   });
 
   test('audio notification should stop when the reservation changes its state to one of the specified statuses', () => {
