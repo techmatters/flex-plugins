@@ -76,11 +76,12 @@ const notifyNewMessage = messageInstance => {
   }
 };
 
-/** notifyReservedTask plays ringtone when an agent has a reserved task in pending state.
- *  The notification stops when the reservation is not longer in pending. 
+/**
+ * notifyReservedTask plays ringtone when an agent has a reserved task in pending state.
+ *  The notification stops when the reservation is not longer in pending.
  *  There is a check, checkForPendingReservation, in case, notification does not stop as expected.
- * 
- * @param reservation 
+ *
+ * @param reservation
  */
 const notifyReservedTask = reservation => {
   try {
