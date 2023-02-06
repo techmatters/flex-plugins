@@ -41,7 +41,7 @@ const mapStateToProps = (state: RootState) => {
   const { omniSearchTerm, pageSize } = state[namespace][referrableResourcesBase].search.parameters;
   return {
     omniSearchTerm,
-    pageSize: pageSize,
+    pageSize,
   };
 };
 
