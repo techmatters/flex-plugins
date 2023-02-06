@@ -106,14 +106,13 @@ const notifyReservedTask = reservation => {
 
     const stopAudio = () => media && AudioPlayerManager.stop(media);
 
-    const taskStatuses = ['accepted', 'canceled', 'rejected', 'rescinded', 'timeout'];
-    taskStatuses.forEach(status => {
-      reservation.on(status, stopAudio);
-    });
+    const reservationStatuses = ['accepted', 'canceled', 'rejected', 'rescinded', 'timeout'];
+    reservationStatuses.forEach(status => reservation.on(status, stopAudio));
 
     const checkForPendingReservation = () =>
       reservation.status === 'pending' ? setTimeout(checkForPendingReservation, 5000) : stopAudio;
     checkForPendingReservation();
+
   } catch (error) {
     console.error('Error in notifyReservedTask:', error);
   }
