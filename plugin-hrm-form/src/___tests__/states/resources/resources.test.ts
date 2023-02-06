@@ -19,6 +19,7 @@ import { addDays, isAfter, subDays } from 'date-fns';
 import {
   addResourceAction,
   loadResourceErrorAction,
+  navigateToSearchAction,
   reduce,
   ReferrableResourcesState,
   ResourcePage,
@@ -186,6 +187,44 @@ describe('reduce', () => {
         route: {
           page: ResourcePage.ViewResource,
           id: 'thisResource',
+        },
+      });
+    });
+  });
+  describe('NAVIGATE_TO_SEARCH action', () => {
+    const initialState = {
+      resources: {
+        existingResource: resource('existingResource', now),
+      },
+      route: {
+        page: ResourcePage.ViewResource,
+        id: 'existingResource',
+      },
+      search: searchInitialState,
+    };
+    test('Sets route to search', () => {
+      const state = reduce(initialState, navigateToSearchAction());
+      expect(state).toStrictEqual({
+        ...initialState,
+        route: {
+          page: ResourcePage.Search,
+        },
+      });
+    });
+    test('Route already set to search - noop', () => {
+      const state = reduce(
+        {
+          ...initialState,
+          route: {
+            page: ResourcePage.Search,
+          },
+        },
+        navigateToSearchAction(),
+      );
+      expect(state).toStrictEqual({
+        ...initialState,
+        route: {
+          page: ResourcePage.Search,
         },
       });
     });

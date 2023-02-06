@@ -32,7 +32,7 @@ import {
   ViewResourceArea,
 } from '../../styles/ReferrableResources';
 import ResourceAttribute from './ResourceAttribute';
-import { openSearchAction } from '../../states/resources';
+import { navigateToSearchAction } from '../../states/resources';
 
 type OwnProps = {
   resourceId: string;
@@ -45,14 +45,14 @@ const mapStateToProps = (state: RootState, { resourceId }: OwnProps) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>, { resourceId }: OwnProps) => ({
   loadViewedResource: () => loadResource(dispatch, resourceId),
-  openSearch: () => dispatch(openSearchAction()),
+  navigateToSearch: () => dispatch(navigateToSearchAction()),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, openSearch }) => {
+const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, navigateToSearch }) => {
   if (!resource && !error) {
     loadViewedResource();
     return <div>Loading...</div>;
@@ -64,7 +64,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, op
         <SearchResultsBackButton
           text={<Template code="SearchResultsIndex-BackToResults" />}
           // eslint-disable-next-line no-empty-function
-          handleBack={() => openSearch()}
+          handleBack={() => navigateToSearch()}
         />
       </Box>
       <ViewResourceArea>

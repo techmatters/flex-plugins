@@ -67,14 +67,14 @@ export const viewResourceAction = (id: string): ViewResourceAction => ({
   id,
 });
 
-const OPEN_SEARCH = 'resource-action/open-search';
+const NAVIGATE_TO_SEARCH = 'resource-action/navigate-to-search';
 
-type OpenSearchAction = {
-  type: typeof OPEN_SEARCH;
+type NavigateToSearchAction = {
+  type: typeof NAVIGATE_TO_SEARCH;
 };
 
-export const openSearchAction = (): OpenSearchAction => ({
-  type: OPEN_SEARCH,
+export const navigateToSearchAction = (): NavigateToSearchAction => ({
+  type: NAVIGATE_TO_SEARCH,
 });
 
 // eslint-disable-next-line import/no-unused-modules
@@ -140,7 +140,7 @@ export function reduce(inputState = initialState, action: AnyAction): Referrable
         route: { page: ResourcePage.ViewResource, id: action.id },
       };
     }
-    case OPEN_SEARCH: {
+    case NAVIGATE_TO_SEARCH: {
       return {
         ...state,
         route: { page: ResourcePage.Search },
