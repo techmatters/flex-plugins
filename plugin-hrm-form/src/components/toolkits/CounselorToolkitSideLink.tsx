@@ -45,21 +45,21 @@ const CounselorToolkitSideLink: React.FC<Props> = ({ showLabel }) => {
   const helplineName = helpline.label;
   const toolkitUrl = helpline?.kmsUrl;
 
-  if(!toolkitUrl) return null;
+  if (!toolkitUrl) return null;
 
   return (
     <>
-        <div
-          onClick={e => {
-            handleOpenConnectDialog(e);
-          }}
-        >
-          <SideLink
-            showLabel={showLabel}
-            icon={<InformationIcon decorative={false} title="Counselor Toolkit" />}
-            iconActive={<InformationIcon decorative={false} title="Counselor Toolkit" />}
-          />
-        </div>  
+      <div
+        onClick={e => {
+          handleOpenConnectDialog(e);
+        }}
+      >
+        <SideLink
+          showLabel={showLabel}
+          icon={<InformationIcon decorative={false} title="Counselor Toolkit" />}
+          iconActive={<InformationIcon decorative={false} title="Counselor Toolkit" />}
+        />
+      </div>
       <CounselorToolkitDialog
         anchorEl={anchorEl}
         handleCloseDialog={handleCloseDialog}
