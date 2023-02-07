@@ -121,12 +121,8 @@ const SearchResourcesForm: React.FC<Props> = ({
         )}
         <ResourcesSearchResultsList>
           {currentPageResults.map(result => (
-            <li>
-              <ResourcePreview
-                key={result.id}
-                resourceResult={result}
-                onClickViewResource={() => viewResource(result.id)}
-              />
+            <li key={result.id}>
+              <ResourcePreview resourceResult={result} onClickViewResource={() => viewResource(result.id)} />
             </li>
           ))}
         </ResourcesSearchResultsList>
