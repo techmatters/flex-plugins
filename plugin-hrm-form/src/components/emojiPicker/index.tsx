@@ -86,4 +86,5 @@ const EmojiPicker: React.FC<TaskContextProps> = ({ task }) => {
   );
 };
 
+EmojiPicker.displayName = 'EmojiPicker';
 export default withTaskContext(EmojiPicker);

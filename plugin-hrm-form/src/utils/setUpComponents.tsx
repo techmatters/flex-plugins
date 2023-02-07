@@ -368,5 +368,5 @@ export const setupCannedResponses = () => {
  * Emoji Picker
  */
 export const setupEmojiPicker = () => {
-  Flex.MessageInputActions.Content.add(<EmojiPicker key="Emoji Picker" />);
+  Flex.MessageInputActions.Content.add(<EmojiPicker key="emoji-picker" />);
 };
