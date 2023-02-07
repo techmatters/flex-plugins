@@ -171,6 +171,16 @@ export async function loadDefinition(version: DefinitionVersionId): Promise<Defi
     referenceData = {};
   }
 
+  let blockedEmojis: string[];
+  try {
+    const blockedEmojisModule = await import(
+      /* webpackMode: "eager" */ `../../form-definitions/${version}/BlockedEmojis.json`
+    );
+    blockedEmojis = blockedEmojisModule.default as string[];
+  } catch (err) {
+    blockedEmojis = [];
+  }
+
   const { helplines } = helplineInformationModule.default;
   const defaultHelpline =
     helplineInformationModule.default.helplines.find((helpline: HelplineEntry) => helpline.default)
@@ -231,5 +241,6 @@ export async function loadDefinition(version: DefinitionVersionId): Promise<Defi
     caseStatus: caseStatusModule.default as DefinitionVersion['caseStatus'],
     prepopulateKeys,
     referenceData,
+    blockedEmojis,
   };
 }

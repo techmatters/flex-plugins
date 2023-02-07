@@ -255,6 +255,7 @@ export type FeatureFlags = {
   post_survey_serverless_handled: boolean; // Post Survey handled in serverless instead of in Flex
   enable_csam_clc_report: boolean; // Enables CSAM child Reports
   enable_counselor_toolkits: boolean; // Enables Counselor Toolkits
+  enable_emoji_picker: boolean; // Enables Emoji Picker
 };
 /* eslint-enable camelcase */
 

@@ -125,6 +125,7 @@ const setUpComponents = (
   setUpReferrableResources();
   setUpCounselorToolkits();
 
+  if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 
   if (maskIdentifiers) {
