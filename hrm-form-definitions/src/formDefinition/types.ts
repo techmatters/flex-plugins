@@ -223,6 +223,7 @@ export type HelplineEntry = {
   label: string;
   value: string;
   default?: boolean;
+  kmsUrl?: string;
   manager?: {
     name: string;
     phone: string;
