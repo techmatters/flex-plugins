@@ -59,7 +59,7 @@ const CounselorToolkitSideLink: React.FC<Props> = ({ showLabel }) => {
             icon={<InformationIcon decorative={false} title="Counselor Toolkit" />}
             iconActive={<InformationIcon decorative={false} title="Counselor Toolkit" />}
           />
-        </div> 
+        </div>  
       <CounselorToolkitDialog
         anchorEl={anchorEl}
         handleCloseDialog={handleCloseDialog}
