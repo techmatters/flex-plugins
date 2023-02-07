@@ -1,3 +1,5 @@
+/* eslint-disable import/no-unused-modules */
+
 /**
  * Copyright (C) 2021-2023 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -13,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
 import fetchResourceApi from './fetchResourcesApi';
 import { getReferrableResourceConfig } from '../hrmConfig';
 
