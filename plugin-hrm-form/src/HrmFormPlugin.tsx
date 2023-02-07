@@ -35,7 +35,7 @@ import { subscribeToConfigUpdates, getHrmConfig, getResourceStrings, getAseloFea
 import { setUpSharedStateClient } from './utils/sharedState';
 import { FeatureFlags } from './types/types';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
-import { subscribeNewMessageAlertOnPluginInit, subscribeReservedTaskAlert } from './utils/audioNotifications';
+import { subscribeNewMessageAlertOnPluginInit, subscribeReservedTaskAlert } from './notifications/audioNotifications';
 
 // Re-exported for backwards compatibility, we should move to getHrmConfig & remove this
 export { getConfig } from './hrmConfig';

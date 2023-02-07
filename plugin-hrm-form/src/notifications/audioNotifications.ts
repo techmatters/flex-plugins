@@ -19,11 +19,19 @@ import { Conversation } from '@twilio/conversations';
 
 import { getHrmConfig } from '../hrmConfig';
 
+/** This module supports two types of audio notifications. 
+ *  1. A repeating alert for a task with pending reservation status. Stops when reservation changes.
+ *  2. A non repeating alert for a new message comes from a user in chat channel.
+ */
+
 export const subscribeAlertOnConversationJoined = task => {
   const manager = Manager.getInstance();
   manager.conversationsClient.once('conversationJoined', (c: Conversation) => trySubscribeAudioAlerts(task, 0, 0));
 };
 
+/**
+ * 
+ */
 export const subscribeNewMessageAlertOnPluginInit = () => {
   const manager = Manager.getInstance();
   const { tasks } = manager.store.getState().flex.worker;

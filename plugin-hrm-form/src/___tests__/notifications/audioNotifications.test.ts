@@ -19,7 +19,7 @@
 import { AudioPlayerManager } from '@twilio/flex-ui';
 
 import '../mockGetConfig';
-import { notifyNewMessage, subscribeReservedTaskAlert, notifyReservedTask } from '../../utils/audioNotifications';
+import { subscribeReservedTaskAlert, subscribeAlertOnConversationJoined, subscribeNewMessageAlertOnPluginInit } from '../../notifications/audioNotifications';
 
 const mockFlexManager = {
   user: {
@@ -37,12 +37,11 @@ jest.mock('@twilio/flex-ui', () => ({
   ...(jest.requireActual('@twilio/flex-ui') as any),
   Manager: {
     getInstance: () => mockFlexManager,
-  },
-  AudioPlayerManager: {
-    play: jest.fn(),
-    stop: jest.fn(),
-  },
+  }
 }));
+
+jest.spyOn(AudioPlayerManager, 'play').mockReturnValue('mockedMedia');
+jest.spyOn(AudioPlayerManager, 'stop');
 
 describe('notifyNewMessage', () => {
   afterEach(() => {
@@ -86,7 +85,6 @@ describe('notifyReservedTask', () => {
   let reservation;
 
   beforeEach(() => {
-    jest.clearAllMocks();
     jest.clearAllTimers();
     reservation = {
       on: jest.fn(),
@@ -95,6 +93,16 @@ describe('notifyReservedTask', () => {
       value: 'visible',
     });
   });
+
+  afterEach(()=>{
+    jest.clearAllMocks();
+  })
+
+  test('subscribeReservedTaskAlert should listen to reservationCreated event when task is in queue'), ()=> {
+    subscribeReservedTaskAlert();
+    const manager = Manager.getInstance();
+    expect(manager.workerClient.on).toHaveBeenCalledWith('reservationCreated', expect.any(Function));
+  }
 
   test('audio notification should play when a reservation is created with an online agent', () => {
     subscribeReservedTaskAlert();
