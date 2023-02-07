@@ -47,19 +47,6 @@ const themeConf = {
   colorTheme: HrmTheme,
 };
 
-const helplineEntry = [
-  {
-    label: 'label1',
-    value: 'label1',
-    default: true,
-    manager: {
-      name: 'test',
-      phone: '0954380213',
-      email: 'test@mail.ta',
-    },
-  },
-];
-
 getAseloFeatureFlags.mockReturnValue({
   // eslint-disable-next-line camelcase
   featureFlags: { enable_counselor_toolkits: true },
@@ -107,7 +94,6 @@ test('Click on view subcategories as grid icon', () => {
             definition={definition}
             display={true}
             stateApi={forTask({ taskSid: taskId })}
-            helplineInformation={{ label: 'label1', helplines: helplineEntry }}
           />
         </FormProvider>
       </Provider>
@@ -154,7 +140,6 @@ test('Click on view subcategories as list icon', () => {
             definition={definition}
             display={true}
             stateApi={forTask({ taskSid: taskId })}
-            helplineInformation={{ label: 'label1', helplines: helplineEntry }}
           />
         </FormProvider>
       </Provider>
