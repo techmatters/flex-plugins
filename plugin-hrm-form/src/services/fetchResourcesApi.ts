@@ -14,6 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import * as path from 'path';
+
 import { getReferrableResourceConfig } from '../hrmConfig';
 import { fetchApi } from './fetchApi';
 
@@ -27,7 +29,7 @@ import { fetchApi } from './fetchApi';
 const fetchResourcesApi = (endPoint: string, options: Partial<RequestInit> = {}): Promise<any> => {
   const { resourcesBaseUrl, token } = getReferrableResourceConfig();
 
-  return fetchApi(new URL(resourcesBaseUrl), endPoint, {
+  return fetchApi(new URL(resourcesBaseUrl), path.join('resources', endPoint), {
     ...options,
     headers: {
       Authorization: `Bearer ${token}`,

@@ -110,6 +110,13 @@ export const ResourcesSearchResultsHeader = styled(Box)`
 `;
 ResourcesSearchResultsHeader.displayName = 'ResourcesSearchResultsHeader';
 
+export const ResourcesSearchResultsList = styled(`ul`)`
+  margin: 0;
+  padding: 0;
+  list-style: none;
+`;
+ResourcesSearchResultsHeader.displayName = 'ResourcesSearchResultsList';
+
 export const ResourcesSearchResultsDescription = styled(FontOpenSans)`
   font-size: 13px;
   line-height: 21px;

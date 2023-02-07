@@ -26,6 +26,7 @@ import {
   ResourcesSearchArea,
   ResourcesSearchResultsDescription,
   ResourcesSearchResultsHeader,
+  ResourcesSearchResultsList,
   ResourcesSearchTitle,
   ResourceTitle,
 } from '../../../styles/ReferrableResources';
@@ -118,14 +119,17 @@ const SearchResourcesForm: React.FC<Props> = ({
             <p>{error.message}</p>
           </>
         )}
-        {currentPageResults.map(result => (
-          <ResourcePreview
-            key={result.id}
-            resourceResult={result}
-            onClickViewResource={() => viewResource(result.id)}
-          />
-        ))}
-
+        <ResourcesSearchResultsList>
+          {currentPageResults.map(result => (
+            <li>
+              <ResourcePreview
+                key={result.id}
+                resourceResult={result}
+                onClickViewResource={() => viewResource(result.id)}
+              />
+            </li>
+          ))}
+        </ResourcesSearchResultsList>
         {resultPageCount > 0 ? (
           <div style={{ minHeight: '100px' }}>
             <Pagination

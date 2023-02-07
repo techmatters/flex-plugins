@@ -57,7 +57,7 @@ describe('fetchHrmApi', () => {
       const response = await fetchResourcesApi('/areBelongToUs');
       expect(response).toStrictEqual(responseBody);
       expect(fetch).toHaveBeenCalledWith(
-        'https://all.your/base/areBelongToUs',
+        'https://all.your/base/resources/areBelongToUs',
         expect.objectContaining({
           method: 'GET',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer of my appreciation` },
