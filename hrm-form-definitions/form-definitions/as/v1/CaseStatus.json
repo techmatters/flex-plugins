@@ -1,20 +1,26 @@
 {
-  "open": { 
-    "value": "open", 
-    "label": "Open", 
-    "color": "green", 
-    "transitions": ["inProgress", "closed"] 
+  "open": {
+    "value": "open",
+    "label": "Open",
+    "color": "green",
+    "transitions": ["inProgress", "closed"]
   },
-  "closed": { 
-    "value": "closed", 
-    "label": "Closed", 
-    "color": "red", 
-    "transitions": ["inProgress"] 
+  "closed": {
+    "value": "closed",
+    "label": "Closed",
+    "color": "red",
+    "transitions": ["inProgress"]
   },
-  "inProgress": { 
-    "value": "inProgress", 
-    "label": "In Progress", 
-    "color": "blue", 
-    "transitions": ["closed"] 
+  "inProgress": {
+    "value": "inProgress",
+    "label": "In Progress",
+    "color": "blue",
+    "transitions": ["closed"]
+  },
+  "boTest": {
+    "value": "boTest",
+    "label": "BO Test",
+    "color": "yellow",
+    "transitions": ["closed"]
   }
 }
