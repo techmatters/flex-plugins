@@ -580,7 +580,7 @@
   },
   {
     "name": "upset",
-    "label": "On a scale of 1 to 7, how upset is the child?",
+    "label": "On a scale of 1 to 7, how upset is the person?",
     "type": "select",
     "options": [
         {
@@ -628,6 +628,6 @@
   {
     "name": "Newcomer",
     "label": "Newcomer (e.g., Arrived in Canada within 5 years or less)/Recent Immigrant/Refugee",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   }
 ]
