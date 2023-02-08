@@ -41,6 +41,7 @@ import { setUpSharedStateClient } from './utils/sharedState';
 import { FeatureFlags } from './types/types';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
 import { subscribeNewMessageAlertOnPluginInit, subscribeReservedTaskAlert } from './utils/audioNotifications';
+import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -106,7 +107,9 @@ const setUpComponents = (
 
   Components.setUpStandaloneSearch();
   setUpReferrableResources();
+  setUpCounselorToolkits();
 
+  if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 
   if (maskIdentifiers) {

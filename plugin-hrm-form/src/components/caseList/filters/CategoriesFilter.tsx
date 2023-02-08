@@ -86,7 +86,11 @@ const transformToValues = (categories: Category[]) => {
   return categories.reduce((acc, category) => ({ ...acc, [category.categoryName]: getSubcategories(category) }), {});
 };
 
-type Subcategory = Item;
+type Subcategory = {
+  value: string;
+  label: string;
+  checked: boolean;
+};
 export type Category = {
   categoryName: string;
   subcategories: Subcategory[];

@@ -44,6 +44,7 @@ const baseMockConfig = {
   featureFlags: {
     enable_transfers: true,
     enable_save_insights: true,
+    enable_counselor_toolkits: true,
   },
   isSupervisor: false,
 };
