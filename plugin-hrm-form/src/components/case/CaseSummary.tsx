@@ -23,7 +23,7 @@ import { CaseDetailsBorder, CaseSectionFont, CaseSummaryTextArea } from '../../s
 import { namespace, connectedCaseBase } from '../../states';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { CaseState } from '../../states/case/types';
-import { getResourceStrings } from '../../hrmConfig';
+import { getTemplateStrings } from '../../hrmConfig';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -33,7 +33,7 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
 const CaseSummary: React.FC<Props> = ({ connectedCaseState }) => {
-  const strings = getResourceStrings();
+  const strings = getTemplateStrings();
   const { connectedCase } = connectedCaseState;
   const summary = connectedCase.info?.summary || '';
 

@@ -27,12 +27,12 @@ import CallIcon from '../components/common/icons/CallIcon';
 import SmsIcon from '../components/common/icons/SmsIcon';
 import * as TransferHelpers from '../utils/transfer';
 import { colors, mainChannelColor } from './colors';
-import { getResourceStrings } from '../hrmConfig';
+import { getTemplateStrings } from '../hrmConfig';
 
 const isIncomingTransfer = task => TransferHelpers.hasTransferStarted(task) && task.status === 'pending';
 
 const setSecondLine = ({ channel, string }: { channel: string; string: string }) => {
-  const strings = getResourceStrings();
+  const strings = getTemplateStrings();
 
   const defaultStrings = Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine;
 

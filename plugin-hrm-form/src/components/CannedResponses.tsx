@@ -22,13 +22,13 @@ import { MessageInputChildrenProps } from '@twilio/flex-ui-core/src/components/c
 
 import { selectCannedResponses } from '../states/selectors/hrmStateSelectors';
 import { CannedResponsesContainer, FormSelect, FormSelectWrapper, FormOption } from '../styles/HrmStyles';
-import { getResourceStrings } from '../hrmConfig';
+import { getTemplateStrings } from '../hrmConfig';
 
 type Props = Partial<MessageInputChildrenProps>;
 
 const CannedResponses: React.FC<Props> = props => {
   const cannedResponses = useSelector(selectCannedResponses);
-  const strings = getResourceStrings();
+  const strings = getTemplateStrings();
   const { conversationSid } = props;
   const handleChange: React.ChangeEventHandler<HTMLSelectElement> = event => {
     Actions.invokeAction('SetInputText', {

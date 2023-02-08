@@ -19,7 +19,7 @@ import each from 'jest-each';
 
 import { setUpIncomingTransferMessage } from '../../channels/setUpChannels';
 import { transferModes } from '../../states/DomainConstants';
-import { getResourceStrings } from '../../hrmConfig';
+import { getTemplateStrings } from '../../hrmConfig';
 
 jest.mock('@twilio/flex-ui', () => {
   const mockChannels = ['Call', 'Chat', 'ChatLine', 'ChatMessenger', 'ChatSms', 'ChatWhatsApp'];
@@ -47,7 +47,7 @@ jest.mock('@twilio/flex-ui', () => {
 });
 
 jest.mock('../../hrmConfig', () => ({
-  getResourceStrings: jest.fn(),
+  getTemplateStrings: jest.fn(),
 }));
 
 const channelsAndStrings = ['Call', 'Chat', 'ChatMessenger', 'ChatSms', 'ChatWhatsApp'].map(channel => ({
@@ -68,7 +68,7 @@ describe('setUpIncomingTransferMessage', () => {
       },
     };
     beforeEach(() => {
-      (<jest.Mock>getResourceStrings).mockReturnValue({
+      (<jest.Mock>getTemplateStrings).mockReturnValue({
         'Transfer-Warm': 'TOASTY',
         'Transfer-Cold': 'CHILLY',
         ...Object.fromEntries(channelsAndStrings.map(({ string }) => [string, `${string} test value`])),

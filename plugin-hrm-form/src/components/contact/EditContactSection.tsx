@@ -33,7 +33,7 @@ import { clearDraft, refreshRawContact } from '../../states/contacts/existingCon
 import CloseCaseDialog from '../case/CloseCaseDialog';
 import * as t from '../../states/contacts/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
-import { getResourceStrings } from '../../hrmConfig';
+import { getTemplateStrings } from '../../hrmConfig';
 
 type OwnProps = {
   context: DetailsContext;
@@ -62,7 +62,7 @@ const EditContactSection: React.FC<Props> = ({
     shouldFocusError: false,
     mode: 'onSubmit',
   });
-  const strings = getResourceStrings();
+  const strings = getTemplateStrings();
 
   const version = savedContact?.details.definitionVersion;
 

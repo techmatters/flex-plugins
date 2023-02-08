@@ -32,7 +32,7 @@ import { namespace, contactFormsBase, connectedCaseBase } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { CustomITask } from '../../types/types';
-import { getAseloFeatureFlags, getHrmConfig, getResourceStrings } from '../../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;
@@ -58,7 +58,7 @@ const BottomBar: React.FC<
   caseForm,
 }) => {
   const [isSubmitting, setSubmitting] = useState(false);
-  const strings = getResourceStrings();
+  const strings = getTemplateStrings();
 
   const handleOpenNewCase = async () => {
     const { taskSid } = task;

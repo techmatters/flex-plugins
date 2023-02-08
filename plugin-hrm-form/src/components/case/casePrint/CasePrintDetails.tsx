@@ -23,7 +23,7 @@ import { DefinitionVersionId, DefinitionVersion } from 'hrm-form-definitions';
 
 import styles from './styles';
 import CasePrintCategories from './CasePrintCategories';
-import { getResourceStrings } from '../../../hrmConfig';
+import { getTemplateStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   status: string;
@@ -64,7 +64,7 @@ const CasePrintDetails: React.FC<Props> = ({
   chkOffBlob,
   definitionVersion,
 }) => {
-  const strings = getResourceStrings();
+  const strings = getTemplateStrings();
 
   const { hideCounselorDetails } = definitionVersion.layoutVersion.case;
 

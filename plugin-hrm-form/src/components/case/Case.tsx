@@ -70,7 +70,7 @@ import * as ContactActions from '../../states/contacts/existingContacts';
 import { searchContactToHrmServiceContact, taskFormToSearchContact } from '../../states/contacts/contactDetailsAdapter';
 import { ChannelTypes } from '../../states/DomainConstants';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
-import { getHrmConfig, getResourceStrings } from '../../hrmConfig';
+import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -111,7 +111,7 @@ const Case: React.FC<Props> = ({
   // This is to provide a stable dep for the useEffect that generates the timeline
   const savedContactsJson = JSON.stringify(savedContacts);
   const { workerSid } = getHrmConfig();
-  const strings = getResourceStrings();
+  const strings = getTemplateStrings();
 
   const timeline: Activity[] = useMemo(
     () => {

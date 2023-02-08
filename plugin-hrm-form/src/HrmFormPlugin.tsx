@@ -33,7 +33,7 @@ import { getPermissionsForViewingIdentifiers, PermissionActions } from './permis
 import {
   getAseloFeatureFlags,
   getHrmConfig,
-  getResourceStrings,
+  getTemplateStrings,
   initializeConfig,
   subscribeToConfigUpdates,
 } from './hrmConfig';
@@ -58,7 +58,7 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   const { counselorLanguage, helplineLanguage } = config;
 
   const twilioStrings = { ...manager.strings }; // save the originals
-  const setNewStrings = (newStrings: typeof getResourceStrings) =>
+  const setNewStrings = (newStrings: typeof getTemplateStrings) =>
     (manager.strings = { ...manager.strings, ...newStrings });
   const afterNewStrings = (language: string) => {
     manager.store.dispatch(changeLanguage(language));
@@ -123,7 +123,7 @@ const setUpComponents = (
     };
     Flex.MessageList.Content.remove('0');
     // Masks TaskInfoPanelContent - TODO: refactor to use a react component
-    const strings = getResourceStrings();
+    const strings = getTemplateStrings();
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
     strings.CallParticipantCustomerName = strings.MaskIdentifiers;
   }

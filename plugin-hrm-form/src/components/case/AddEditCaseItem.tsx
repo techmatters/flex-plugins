@@ -71,7 +71,7 @@ import {
   removeCaseSectionWorkingCopy,
   updateCaseSectionWorkingCopy,
 } from '../../states/case/caseWorkingCopy';
-import { getHrmConfig, getResourceStrings } from '../../hrmConfig';
+import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 
 export type AddEditCaseItemProps = {
   task: CustomITask | StandaloneITask;
@@ -237,7 +237,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     closeActions(exitRoute);
   }
 
-  const strings = getResourceStrings();
+  const strings = getTemplateStrings();
   const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler(
     routing.action === CaseItemAction.Edit ? `Case: Edit ${sectionApi.label}` : `Case: Add ${sectionApi.label}`,
     () => {

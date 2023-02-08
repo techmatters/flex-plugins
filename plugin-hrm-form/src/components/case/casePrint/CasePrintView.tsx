@@ -36,7 +36,7 @@ import CasePrintFooter from './CasePrintFooter';
 // import CasePrintContact from './CasePrintContact'; // Removed by ZA request, could be useful for other helplines.
 import { getImageAsString, ImageSource } from './helpers';
 import { getLocaleDateTime } from '../../../utils/helpers';
-import { getHrmConfig, getResourceStrings } from '../../../hrmConfig';
+import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   onClickClose: () => void;
@@ -47,7 +47,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionVersion, counselorsHash }) => {
-  const strings = getResourceStrings();
+  const strings = getTemplateStrings();
   const { pdfImagesSource } = getHrmConfig();
 
   const logoSource = `${pdfImagesSource}/helpline-logo.png`;
