@@ -120,8 +120,10 @@ export const listWorkerQueues = async (body: {
  * Function that mimics the fetching of a version definition for all the forms used within the app.
  * Later on this will be fetched in async way.
  */
-export const getDefinitionVersion = async (version: DefinitionVersionId): Promise<DefinitionVersion> =>
-  loadDefinition(version);
+export const getDefinitionVersion = async (version: DefinitionVersionId): Promise<DefinitionVersion> => {
+  const { getFormDefinitionsBaseUrl } = getConfig();
+  return loadDefinition(getFormDefinitionsBaseUrl(version));
+};
 
 export const getDefinitionVersionsList = async (missingDefinitionVersions: DefinitionVersionId[]) =>
   Promise.all(
