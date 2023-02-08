@@ -7,11 +7,11 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "tl-terraform-state-staging"
+    bucket         = "tl-terraform-state-production"
     key            = "twilio/zw/terraform.tfstate"
     dynamodb_table = "terraform-locks"
     encrypt        = true
-    role_arn       = "arn:aws:iam::712893914485:role/tf-twilio-iac-staging"
+    role_arn       = "arn:aws:iam::712893914485:role/tf-twilio-iac-production"
   }
 }
 
@@ -33,18 +33,18 @@ locals {
   voice_ivr_language = "en-US"
   short_helpline = "ZW"
   operating_info_key = "zw"
-  environment = "Staging"
-  short_environment = "STG"
+  environment = "Production"
+  short_environment = "PROD"
   definition_version = "zw-v1"
   permission_config = "demo"
   multi_office = false
   enable_post_survey = false
   target_task_name = "greeting"
-  twilio_numbers = ["messenger:103260519220529"]
+  twilio_numbers = []
   channel = ""
   custom_channel_attributes = ""
   feature_flags = {
-    "enable_fullstory_monitoring": true,
+    "enable_fullstory_monitoring": false,
     "enable_upload_documents": true,
     "enable_post_survey": local.enable_post_survey,
     "enable_contact_editing": true,
@@ -66,12 +66,12 @@ locals {
     "enable_csam_clc_report": false
   }
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
+  //Channels [Voice | Facebook | Webchat | WhatsApp]
   twilio_channels = {
-    "facebook" = {"contact_identity" = "messenger:103260519220529", "channel_type" ="facebook"},
-    "webchat" = {"contact_identity" = "", "channel_type" ="web" },
-    "sms" = {"contact_identity" = "+14322743110", "channel_type" ="sms"  }
+    webchat = {"contact_identity" = "", "channel_type" ="web"  }
+   }
   }
-}
+
 
 provider "twilio" {
   username = local.secrets.twilio_account_sid
@@ -131,10 +131,10 @@ module twilioChannel {
   source = "../terraform-modules/channels/twilio-channel"
   channel_contact_identity = each.value.contact_identity
   pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
+  janitor_enabled = !local.enable_post_survey
   target_task_name = local.target_task_name
   channel_name = "${each.key}"
   channel_type = each.value.channel_type
-  janitor_enabled = !local.enable_post_survey
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
