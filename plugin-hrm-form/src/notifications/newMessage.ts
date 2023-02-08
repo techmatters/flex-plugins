@@ -19,19 +19,11 @@ import { Conversation } from '@twilio/conversations';
 
 import { getHrmConfig } from '../hrmConfig';
 
-/** This module supports two types of audio notifications. 
- *  1. A repeating alert for a task with pending reservation status. Stops when reservation changes.
- *  2. A non repeating alert for a new message comes from a user in chat channel.
- */
-
 export const subscribeAlertOnConversationJoined = task => {
   const manager = Manager.getInstance();
   manager.conversationsClient.once('conversationJoined', (c: Conversation) => trySubscribeAudioAlerts(task, 0, 0));
 };
 
-/**
- * 
- */
 export const subscribeNewMessageAlertOnPluginInit = () => {
   const manager = Manager.getInstance();
   const { tasks } = manager.store.getState().flex.worker;
@@ -82,50 +74,4 @@ const notifyNewMessage = messageInstance => {
   } catch (error) {
     console.error('Error in notifyNewMessage:', error);
   }
-};
-
-/**
- * notifyReservedTask plays ringtone when an agent has a reserved task in pending state.
- *  The notification stops when the reservation is not longer in pending.
- *  There is a check, checkForPendingReservation, in case, notification does not stop as expected.
- *
- * @param reservation
- */
-const notifyReservedTask = reservation => {
-  try {
-    const { assetsBucketUrl } = getHrmConfig();
-
-    const notificationTone = 'ringtone';
-    const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
-
-    let media;
-
-    if (document.visibilityState === 'visible') {
-      media = AudioPlayerManager.play(
-        {
-          url: notificationUrl,
-          repeatable: true,
-        },
-        (error: AudioPlayerError) => {
-          console.log('AudioPlayerError:', error);
-        },
-      );
-    }
-
-    const stopAudio = () => media && AudioPlayerManager.stop(media);
-
-    const reservationStatuses = ['accepted', 'canceled', 'rejected', 'rescinded', 'timeout'];
-    reservationStatuses.forEach(status => reservation.on(status, stopAudio));
-
-    const checkForPendingReservation = () =>
-      reservation.status === 'pending' ? setTimeout(checkForPendingReservation, 5000) : stopAudio();
-    checkForPendingReservation();
-  } catch (error) {
-    console.error('Error in notifyReservedTask:', error);
-  }
-};
-
-export const subscribeReservedTaskAlert = () => {
-  const manager = Manager.getInstance();
-  manager.workerClient.on('reservationCreated', notifyReservedTask);
 };
