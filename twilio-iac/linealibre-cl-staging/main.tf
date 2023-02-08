@@ -35,6 +35,7 @@ locals {
  definition_version = "cl-v1"
  permission_config = "cl"
  helpline_language = "es-CL"
+ task_language = "es-CL"
  enable_post_survey = false
  multi_office = false
  target_task_name = "greeting"
@@ -60,9 +61,11 @@ locals {
    "enable_previous_contacts": true,
    "enable_voice_recordings": false,
    "enable_twilio_transcripts": true,
-   "enable_external_transcripts": false,
+   "enable_external_transcripts": true,
    "post_survey_serverless_handled": true,
-   "enable_csam_clc_report": false
+   "enable_csam_clc_report": false,
+   "enable_counselor_toolkits": false,
+   "enable_resources": false
 
  }
  secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
