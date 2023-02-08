@@ -82,5 +82,5 @@ jobs:
     needs: build
     secrets: inherit
     with:
-      helpline_code: ${{inputs.helpline_code}}
-      environment: ${{inputs.environment_code}}
+      helpline_code: ${{ inputs.helpline_code }}
+      environment: ${{ inputs.environment_code }}
