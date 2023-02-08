@@ -16,11 +16,5 @@
     "label": "In Progress",
     "color": "blue",
     "transitions": ["closed"]
-  },
-  "boTest": {
-    "value": "boTest",
-    "label": "BO Test",
-    "color": "yellow",
-    "transitions": ["closed"]
   }
 }
