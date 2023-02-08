@@ -37,6 +37,7 @@ import { FeatureFlags } from './types/types';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
 import { subscribeNewMessageAlertOnPluginInit } from './notifications/newMessage';
 import { subscribeReservedTaskAlert } from './notifications/reservedTask';
+import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
 
 // Re-exported for backwards compatibility, we should move to getHrmConfig & remove this
 export { getConfig } from './hrmConfig';
@@ -123,7 +124,9 @@ const setUpComponents = (
 
   Components.setUpStandaloneSearch();
   setUpReferrableResources();
+  setUpCounselorToolkits();
 
+  if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 
   if (maskIdentifiers) {

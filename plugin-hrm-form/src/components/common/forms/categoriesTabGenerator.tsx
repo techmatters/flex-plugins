@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable react/jsx-max-depth */
 /**
  * Copyright (C) 2021-2023 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -15,6 +13,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable import/no-unused-modules */
 /* eslint-disable react/display-name */
@@ -42,12 +42,9 @@ import {
   InformationIconButton,
   HtmlTooltip,
   CategoryCheckboxWrapper,
-  Row,
 } from '../../../styles/HrmStyles';
 import type { HTMLElementRef } from './types';
 import { ConnectForm } from './formGenerators';
-import { ConfirmContainer, ConfirmText, CancelButton } from '../../../styles/search';
-import TabPressWrapper from '../../TabPressWrapper';
 
 type Subcategory = {
   label: string;
@@ -59,10 +56,6 @@ export const createSubcategoryCheckbox = (
   parents: string[],
   color: string,
   updateCallback: () => void,
-  handleOpenConnectDialog: (event: any) => void,
-  anchorEl: Element,
-  handleCloseDialog: () => void,
-  helplineName: string,
   counselorToolkitsEnabled: boolean,
 ) => {
   const { label, toolkitUrl } = subcategory;
@@ -97,120 +90,13 @@ export const createSubcategoryCheckbox = (
         }}
       </ConnectForm>
       {counselorToolkitsEnabled && toolkitUrl && (
-        <ToolkitLink
-          label={label}
-          toolkitUrl={toolkitUrl}
-          handleOpenConnectDialog={handleOpenConnectDialog}
-          anchorEl={anchorEl}
-          handleCloseDialog={handleCloseDialog}
-          helplineName={helplineName}
-        />
+        <HtmlTooltip title={label} placement="bottom">
+          <a href={toolkitUrl} target="_blank" rel="noreferrer">
+            <InformationIconButton />
+          </a>
+        </HtmlTooltip>
       )}
     </CategoryCheckboxWrapper>
-  );
-};
-
-type ToolkitLinkProps = {
-  label: string;
-  toolkitUrl: string;
-  handleOpenConnectDialog: (event: any) => void;
-  anchorEl: Element;
-  handleCloseDialog: () => void;
-  helplineName: string;
-};
-
-const ToolkitLink: React.FC<ToolkitLinkProps> = ({
-  label,
-  toolkitUrl,
-  handleOpenConnectDialog,
-  anchorEl,
-  handleCloseDialog,
-  helplineName,
-}) => {
-  const [dialogToolkitUrl, setDialogToolkitUrl] = useState(null);
-
-  const getToolkitUrlAndDialog = e => {
-    handleOpenConnectDialog(e);
-    setDialogToolkitUrl(toolkitUrl);
-  };
-
-  const clearToolkitUrlAndDialog = () => {
-    handleCloseDialog();
-    setDialogToolkitUrl(null);
-  };
-
-  return (
-    <>
-      <HtmlTooltip title={label} placement="bottom">
-        <InformationIconButton onClick={getToolkitUrlAndDialog} />
-      </HtmlTooltip>
-
-      {dialogToolkitUrl && (
-        <ToolTipDialog
-          anchorEl={anchorEl}
-          handleCloseDialog={clearToolkitUrlAndDialog}
-          toolkitUrl={dialogToolkitUrl}
-          helplineName={helplineName}
-        />
-      )}
-    </>
-  );
-};
-
-type ToolTipDialogProps = {
-  toolkitUrl: string;
-  anchorEl: Element;
-  handleCloseDialog: () => void;
-  helplineName: string;
-};
-
-const ToolTipDialog: React.FC<ToolTipDialogProps> = ({ anchorEl, handleCloseDialog, toolkitUrl, helplineName }) => {
-  const isOpen = Boolean(anchorEl);
-  const id = isOpen ? 'simple-popover' : undefined;
-
-  return (
-    <Popover
-      id={id}
-      open={isOpen}
-      anchorReference="anchorPosition"
-      anchorPosition={{ top: 200, left: 400 }}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'left',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'left',
-      }}
-    >
-      <TabPressWrapper>
-        <ConfirmContainer>
-          <ConfirmText>
-            <Template code="Toolkit-ConfirmTextOne" helpline={helplineName} />
-          </ConfirmText>
-          <ConfirmText>
-            <Template code="Toolkit-ConfirmTextTwo" />
-          </ConfirmText>
-          <Row>
-            <CancelButton tabIndex={2} variant="text" size="medium" onClick={handleCloseDialog}>
-              <Template code="SectionEntry-No" />
-            </CancelButton>
-            <Button
-              href={toolkitUrl}
-              onClick={handleCloseDialog}
-              target="_blank"
-              rel="noreferrer"
-              tabIndex={1}
-              variant="contained"
-              size="medium"
-              style={{ backgroundColor: '#000', color: '#fff', marginLeft: 20 }}
-            >
-              <Template code="SectionEntry-Yes" />
-            </Button>
-          </Row>
-        </ConfirmContainer>
-      </TabPressWrapper>
-    </Popover>
   );
 };
 
@@ -220,10 +106,6 @@ export const createSubCategoriesInputs = (
   definition: CategoriesDefinition,
   parents: string[],
   updateCallback: () => void,
-  handleOpenConnectDialog: (event: any) => void,
-  anchorEl: Element,
-  handleCloseDialog: () => void,
-  helplineName: string,
   counselorToolkitsEnabled: boolean,
 ) =>
   Object.entries(definition).reduce<SubcategoriesMap>(
@@ -235,10 +117,6 @@ export const createSubCategoriesInputs = (
           [...parents, category],
           color,
           updateCallback,
-          handleOpenConnectDialog,
-          anchorEl,
-          handleCloseDialog,
-          helplineName,
           counselorToolkitsEnabled,
         );
       }),

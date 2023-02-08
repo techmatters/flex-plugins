@@ -78,6 +78,7 @@ const readConfig = () => {
     },
     referrableResources: {
       resourcesBaseUrl,
+      token,
     },
   };
 };

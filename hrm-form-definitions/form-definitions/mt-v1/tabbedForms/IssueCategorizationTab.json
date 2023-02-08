@@ -71,10 +71,13 @@
     "Bullying": {
       "color": "#bbffce",
       "subcategories": [
-        {"label": "Employment opportunities"},
-        {"label": "Poor living conditions"},
-        {"label": "Resources and financial aid"},
-        {"label": "Unspecified / Other"}
+        {"label": "Emotional"},
+        {"label": "Exposure"},
+        {"label": "Physical"},
+        {"label": "Sexual"},
+        {"label": "Theft"},
+        {"label": "Stalking"},
+        {"label": "Unspecified"}
       ]
     },
     "Child Migration / Children on the Move": {

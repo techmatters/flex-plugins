@@ -32,7 +32,6 @@ type OwnProps = {
   definition: CategoriesDefinition;
   autoFocus: boolean;
   stateApi: IssueCategorizationStateApi;
-  helplineInformation: HelplineDefinitions;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -47,7 +46,6 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
   updateForm,
   toggleCategoryExpanded,
   setCategoriesGridView,
-  helplineInformation,
 }) => {
   const shouldFocusFirstElement = display && autoFocus;
   const firstElementRef = useFocus(shouldFocusFirstElement);
@@ -57,16 +55,6 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
   const IssueCategorizationTabDefinition = definition;
 
   const [, setCategories] = useState(initialValue);
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const handleCloseDialog = () => {
-    setAnchorEl(null);
-  };
-
-  const handleOpenConnectDialog = e => {
-    e.stopPropagation();
-    setAnchorEl(e.currentTarget);
-  };
 
   // Couldn't find a way to provide initial values to an field array, as a workaround, intentionally run this only on first render
   React.useEffect(() => {
@@ -81,29 +69,15 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
       setCategories(categories);
     };
 
-    const getHelplineName = helplineInformation.helplines.find((data: HelplineEntry) => data.default);
-
     if (IssueCategorizationTabDefinition === null || IssueCategorizationTabDefinition === undefined) return {};
-    const helplineName = getHelplineName.label;
     const counselorToolkitsEnabled = featureFlags.enable_counselor_toolkits;
     return createSubCategoriesInputs(
       IssueCategorizationTabDefinition,
       ['categories'],
       updateCallback,
-      handleOpenConnectDialog,
-      anchorEl,
-      handleCloseDialog,
-      helplineName,
       counselorToolkitsEnabled,
     );
-  }, [
-    IssueCategorizationTabDefinition,
-    anchorEl,
-    featureFlags.enable_counselor_toolkits,
-    getValues,
-    helplineInformation.helplines,
-    updateForm,
-  ]);
+  }, [IssueCategorizationTabDefinition, featureFlags.enable_counselor_toolkits, getValues, updateForm]);
 
   return (
     <CategoriesFromDefinition

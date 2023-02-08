@@ -296,7 +296,6 @@ const TabbedForms: React.FC<Props> = ({
                       initialValue={contactForm.categories}
                       definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab(helpline)}
                       autoFocus={autoFocus}
-                      helplineInformation={currentDefinitionVersion.helplineInformation}
                     />
                   </TabbedFormTabContainer>
                   <TabbedFormTabContainer display={subroute === 'caseInformation'}>
