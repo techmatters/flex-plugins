@@ -71,7 +71,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Validate and normalize input variables
-        run: bash .github/scripts/updateKamailioConfig ${{ inputs.environment }} ${{ inputs.helpline_code }}
+        run: bash .github/scripts/setupDeployFormDefinitionsEnv.sh ${{ inputs.environment }} ${{ inputs.helpline_code }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
