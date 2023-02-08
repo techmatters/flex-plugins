@@ -25,7 +25,7 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import ContactDetails from '../../components/search/ContactDetails';
 import { channelTypes } from '../../states/DomainConstants';
-import { getDefinitionVersions } from '../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../hrmConfig';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { csamReportBase } from '../../states';
 import { SearchAPIContact } from '../../types/types';
@@ -108,9 +108,6 @@ const contactOfType = (type): SearchAPIContact => ({
 
 const handleBack = jest.fn();
 const handleSelectSearchResult = jest.fn();
-const detailsExpanded = {
-  'General details': true,
-};
 
 let mockV1;
 let initialState;

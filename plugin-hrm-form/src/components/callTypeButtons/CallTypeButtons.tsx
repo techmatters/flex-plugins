@@ -27,13 +27,13 @@ import { changeRoute } from '../../states/routing/actions';
 import { withLocalization } from '../../contexts/LocalizationContext';
 import { Box, Flex } from '../../styles/HrmStyles';
 import { Container, Label, DataCallTypeButton, NonDataCallTypeButton } from '../../styles/callTypeButtons';
-import { isNonDataCallType } from '../../states/ValidationRules';
+import { isNonDataCallType } from '../../states/validationRules';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';
-import { getConfig } from '../../HrmFormPlugin';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
 import { CustomITask, isOfflineContactTask } from '../../types/types';
+import { getTemplateStrings } from '../../hrmConfig';
 
 const isDialogOpen = contactForm =>
   Boolean(contactForm && contactForm.callType && contactForm.callType && isNonDataCallType(contactForm.callType));
@@ -97,7 +97,7 @@ const CallTypeButtons: React.FC<Props> = props => {
       await submitContactForm(task, contactForm, caseForm);
       await completeTask(task);
     } catch (error) {
-      const { strings } = getConfig();
+      const strings = getTemplateStrings();
       if (!window.confirm(strings['Error-ContinueWithoutRecording'])) {
         await completeTask(task);
       }

@@ -33,7 +33,7 @@ jest.mock('../../fullStory', () => ({
 }));
 jest.mock('../../hrmConfig', () => ({
   getAseloFeatureFlags: jest.fn(),
-  getResourceStrings: () => ({
+  getTemplateStrings: () => ({
     SharedStateSaveFormError: 'Error saving',
     SharedStateLoadFormError: 'Error loading',
   }),

@@ -19,7 +19,6 @@ import React from 'react';
 import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 
-import { getConfig } from '../../../HrmFormPlugin';
 import {
   SubtitleLabel,
   SubtitleValue,
@@ -29,6 +28,7 @@ import {
   SummaryText,
 } from '../../../styles/search';
 import { Flex } from '../../../styles/HrmStyles';
+import { getTemplateStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   caseId: number;
@@ -55,7 +55,7 @@ const CaseHeader: React.FC<Props> = ({
   statusLabel,
   onClickViewCase,
 }) => {
-  const { strings } = getConfig();
+  const strings = getTemplateStrings();
 
   return (
     <div>

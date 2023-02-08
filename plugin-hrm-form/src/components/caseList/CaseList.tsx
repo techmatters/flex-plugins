@@ -19,7 +19,6 @@ import PropTypes from 'prop-types';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { getConfig } from '../../HrmFormPlugin';
 import Case from '../case';
 import { StandaloneITask, ListCasesQueryParams, ListCasesFilters, ListCasesSort } from '../../types/types';
 import CaseListTable from './CaseListTable';
@@ -34,6 +33,7 @@ import { caseListBase, namespace, RootState } from '../../states';
 import { undoCaseListSettingsUpdate } from '../../states/caseList/reducer';
 import { dateFilterPayloadFromFilters } from './filters/dateFilters';
 import * as ListContent from '../../states/caseList/listContent';
+import { getHrmConfig } from '../../hrmConfig';
 
 export const CASES_PER_PAGE = 10;
 
@@ -62,7 +62,7 @@ const CaseList: React.FC<Props> = ({
   fetchError,
   listLoading,
 }) => {
-  const { helpline } = getConfig();
+  const { helpline } = getHrmConfig();
 
   const fetchCaseList = async (page: number, sort: ListCasesSort, filters: ListCasesFilters) => {
     try {

@@ -28,8 +28,8 @@ import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
 import ViewCaseItem, { ViewCaseItemProps } from '../../../components/case/ViewCaseItem';
-import { getDefinitionVersions } from '../../../HrmFormPlugin';
-import { CaseItemEntry, StandaloneITask } from '../../../types/types';
+import { getDefinitionVersions } from '../../../hrmConfig';
+import { StandaloneITask } from '../../../types/types';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
 import { householdSectionApi } from '../../../states/case/sections/household';
 

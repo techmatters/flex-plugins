@@ -20,7 +20,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import { callTypes } from 'hrm-form-definitions';
 
 import { FieldType, ValidationType, isNotCategory, isNotSubcategory } from './ContactFormStateFactory';
-import { getConfig } from '../HrmFormPlugin';
+import { getTemplateStrings } from '../hrmConfig';
 
 /*
  * Questionable whether we should export this
@@ -44,7 +44,7 @@ function countSelectedCategories(categoryFormSection) {
 
 // NOTE: MODIFIES INPUT
 function handleCallerOrChildInformationKeys(formToModify, ignoreTouched) {
-  const { strings } = getConfig();
+  const strings = getTemplateStrings();
 
   Object.keys(formToModify)
     .filter(key => key !== 'type' && key !== 'validation' && key !== 'error')

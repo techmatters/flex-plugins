@@ -14,8 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getConfig } from '../HrmFormPlugin';
 import { ApiError, fetchApi } from './fetchApi';
+import { getHrmConfig } from '../hrmConfig';
 
 export class ProtectedApiError extends ApiError {
   constructor(message, options: Pick<ApiError, 'body' | 'response'>, cause?: Error) {
@@ -36,7 +36,7 @@ export class ProtectedApiError extends ApiError {
  * @returns {Promise<any>} the api response (if not error)
  */
 const fetchProtectedApi = async (endPoint, body: Record<string, string> = {}) => {
-  const { serverlessBaseUrl, token } = getConfig();
+  const { serverlessBaseUrl, token } = getHrmConfig();
   const options: RequestInit = {
     method: 'POST',
     body: new URLSearchParams({ ...body, Token: token }),

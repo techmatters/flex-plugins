@@ -29,7 +29,7 @@ import {
   StyledLink,
   PreviewRow,
 } from '../../../styles/search';
-import { isNonDataCallType } from '../../../states/ValidationRules';
+import { isNonDataCallType } from '../../../states/validationRules';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import { channelTypes, ChannelTypes } from '../../../states/DomainConstants';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';

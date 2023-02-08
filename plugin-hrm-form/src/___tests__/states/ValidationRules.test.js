@@ -17,7 +17,7 @@
 import '../mockGetConfig';
 import { callTypes } from 'hrm-form-definitions';
 
-import { formIsValid, validateOnBlur, validateBeforeSubmit } from '../../states/ValidationRules';
+import { formIsValid, validateOnBlur, validateBeforeSubmit } from '../../states/validationRules';
 import { FieldType, ValidationType } from '../../states/ContactFormStateFactory';
 
 describe('validateOnBlur', () => {

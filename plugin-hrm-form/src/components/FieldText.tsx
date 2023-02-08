@@ -15,10 +15,10 @@
  */
 
 /* eslint-disable react/prop-types */
-import React from 'react';
-import { TextField as TextFields } from '@material-ui/core';
+import React, { CSSProperties } from 'react';
+import KeyboardEventHandler from 'react-keyboard-event-handler';
 
-import { StyledInput, StyledLabel, ErrorText, TextField, FormInput, FormLabel } from '../styles/HrmStyles';
+import { ErrorText, TextField, FormInput, FormLabel } from '../styles/HrmStyles';
 import RequiredAsterisk from './RequiredAsterisk';
 import { FormFieldType } from './common/forms/types';
 
@@ -32,6 +32,8 @@ type OwnProps = {
   handleBlur: React.FocusEventHandler<HTMLDivElement | HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>;
   handleChange: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>;
   handleFocus: React.FocusEventHandler<HTMLDivElement | HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>;
+  style?: CSSProperties;
+  onKeyPress: KeyboardEventHandler<HTMLInputElement>;
 };
 
 const FieldText: React.FC<OwnProps> = ({

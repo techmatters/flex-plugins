@@ -20,7 +20,7 @@ import { EmojiIcon } from '@twilio-paste/icons/cjs/EmojiIcon';
 import Picker from '@emoji-mart/react';
 
 import { Relative, Popup, SelectEmojiButton } from './styles';
-import { getDefinitionVersions } from '../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../hrmConfig';
 
 type onEmojiSelectPayload = {
   native: string;

@@ -17,22 +17,22 @@
 import each from 'jest-each';
 
 import fetchHrmApi from '../../services/fetchHrmApi';
-import { getConfig } from '../../HrmFormPlugin';
 import { ApiError } from '../../services/fetchApi';
+import { getHrmConfig } from '../../hrmConfig';
 
 global.fetch = jest.fn();
 
-jest.mock('../../HrmFormPlugin');
+jest.mock('../../hrmConfig');
 
 describe('fetchHrmApi', () => {
   const mockFetch = fetch as jest.Mock<Promise<Partial<Response>>>;
-  const mockGetConfig = getConfig as jest.Mock<Partial<ReturnType<typeof getConfig>>>;
+  const mockGetHrmConfig = getHrmConfig as jest.Mock<Partial<ReturnType<typeof getHrmConfig>>>;
   const requestBody = { an: 'input', another: '1' };
 
   beforeEach(() => {
     mockFetch.mockClear();
-    mockGetConfig.mockClear();
-    mockGetConfig.mockReturnValue({ token: 'of my appreciation', hrmBaseUrl: 'https://all.your/base' });
+    mockGetHrmConfig.mockClear();
+    mockGetHrmConfig.mockReturnValue({ token: 'of my appreciation', hrmBaseUrl: 'https://all.your/base' });
   });
 
   describe('OK response', () => {

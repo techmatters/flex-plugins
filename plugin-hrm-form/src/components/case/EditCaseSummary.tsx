@@ -39,7 +39,6 @@ import { configurationBase, connectedCaseBase, namespace, RootState } from '../.
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { changeRoute } from '../../states/routing/actions';
-import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
 import { createFormFromDefinition, disperseInputs, splitAt } from '../common/forms/formGenerators';
 import type { CustomITask, StandaloneITask } from '../../types/types';
@@ -54,6 +53,7 @@ import {
 } from '../../states/case/caseWorkingCopy';
 import { AppRoutes } from '../../states/routing/types';
 import { PermissionActions, PermissionActionType } from '../../permissions';
+import { getTemplateStrings } from '../../hrmConfig';
 
 export type EditCaseSummaryProps = {
   task: CustomITask | StandaloneITask;
@@ -174,7 +174,7 @@ const EditCaseSummary: React.FC<Props> = ({
     closeActions(exitRoute);
   };
 
-  const { strings } = getConfig();
+  const strings = getTemplateStrings();
   const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler(`Case: EditCaseSummary`, () => {
     window.alert(strings['Error-Form']);
     if (openDialog) setOpenDialog(false);

@@ -17,7 +17,7 @@
 import * as React from 'react';
 import renderer from 'react-test-renderer';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { callTypes, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { DeepPartial } from 'redux';
@@ -26,7 +26,7 @@ import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import ContactPreview from '../../components/search/ContactPreview';
 import ContactHeader from '../../components/search/ContactPreview/ContactHeader';
 import TagsAndCounselor from '../../components/search/TagsAndCounselor';
-import { getDefinitionVersions } from '../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../hrmConfig';
 import { SearchUIContact } from '../../types/types';
 import { configurationBase, namespace, RootState } from '../../states';
 

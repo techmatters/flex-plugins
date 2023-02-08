@@ -32,7 +32,7 @@ import {
   updateSearchFormAction,
 } from '../../../states/resources/search';
 import SearchInput from '../../caseList/filters/SearchInput';
-import { getResourceStrings } from '../../../hrmConfig';
+import { getTemplateStrings } from '../../../hrmConfig';
 import asyncDispatch from '../../../states/asyncDispatch';
 
 type OwnProps = {};
@@ -67,7 +67,7 @@ const SearchResourcesForm: React.FC<Props> = ({
   resetSearch,
 }) => {
   const firstElement = useRef(null);
-  const strings = getResourceStrings();
+  const strings = getTemplateStrings();
   return (
     <ResourcesSearchFormContainer>
       <ResourcesSearchFormArea>

@@ -14,8 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getConfig } from '../HrmFormPlugin';
 import { fetchApi } from './fetchApi';
+import { getHrmConfig } from '../hrmConfig';
 
 /**
  * Factored out function that handles api calls hosted in HRM backend.
@@ -25,7 +25,7 @@ import { fetchApi } from './fetchApi';
  * @returns {Promise<any>} the api response (if not error)
  */
 const fetchHrmApi = (endPoint: string, options: Partial<RequestInit> = {}): Promise<any> => {
-  const { hrmBaseUrl, token } = getConfig();
+  const { hrmBaseUrl, token } = getHrmConfig();
 
   return fetchApi(new URL(hrmBaseUrl), endPoint, {
     ...options,
