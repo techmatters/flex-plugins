@@ -28,8 +28,14 @@ const getEnvironmentFromHrmBaseUrl = (manager: Flex.Manager) => {
   const hrmBaseUrl = `${process.env.REACT_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}`;
   const prefix = 'https://hrm-';
   const suffix = '.tl.techmatters.org';
+  const environment = hrmBaseUrl.substring(prefix.length, hrmBaseUrl.indexOf(suffix));
 
-  return hrmBaseUrl.substring(prefix.length, hrmBaseUrl.indexOf(suffix));
+  // Filter out E2E
+  if (environment === 'test') {
+    return 'development';
+  }
+
+  return environment;
 };
 
 const getHelplineCodeFromDefinitionVersionId = (definitionVersionId: string) => {
