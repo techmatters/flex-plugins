@@ -73,11 +73,6 @@ export type ConnectedCaseActivity = {
   channel: ChannelTypes;
 };
 
-export type CaseDetailsName = {
-  firstName: string;
-  lastName: string;
-};
-
 export type CaseDetails = {
   id: number;
   contactIdentifier: string;

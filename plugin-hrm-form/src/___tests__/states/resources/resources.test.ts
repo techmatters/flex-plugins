@@ -19,11 +19,25 @@ import { addDays, isAfter, subDays } from 'date-fns';
 import {
   addResourceAction,
   loadResourceErrorAction,
+  navigateToSearchAction,
   reduce,
   ReferrableResourcesState,
   ResourcePage,
   viewResourceAction,
 } from '../../../states/resources';
+import { initialState as searchInitialState, resourceSearchReducer } from '../../../states/resources/search';
+
+jest.mock('../../../states/resources/search', () => ({
+  initialState: jest.requireActual('../../../states/resources/search').initialState,
+  resourceSearchReducer: jest.fn(),
+}));
+
+const mockResourceSearchReducer = resourceSearchReducer as jest.Mock<ReturnType<typeof resourceSearchReducer>>;
+
+beforeEach(() => {
+  mockResourceSearchReducer.mockClear();
+  mockResourceSearchReducer.mockImplementation(state => state);
+});
 
 const resource = (
   id: string,
@@ -32,11 +46,16 @@ const resource = (
   resource: {
     name: `Resource with id#${id}`,
     id,
+    attributes: {},
   },
   loaded,
 });
 const now = new Date();
 describe('reduce', () => {
+  test('Always delegates to search reducer', () => {
+    reduce({ resources: {}, search: searchInitialState }, { type: 'NOT_FOR_THE_LIKES_OF_YOU' } as any);
+    expect(mockResourceSearchReducer).toHaveBeenCalledWith(searchInitialState, { type: 'NOT_FOR_THE_LIKES_OF_YOU' });
+  });
   test('Always removes any resources in state with a data significantly older than now', () => {
     const state = reduce(
       {
@@ -45,6 +64,7 @@ describe('reduce', () => {
           oldResource: resource('oldResource', subDays(now, 1)),
           futureResource: resource('futureResource', addDays(now, 1)),
         },
+        search: searchInitialState,
       },
       { type: 'NOT_FOR_THE_LIKES_OF_YOU' } as any,
     );
@@ -60,11 +80,16 @@ describe('reduce', () => {
           resources: {
             existingResource: resource('existingResource', now),
           },
+          search: searchInitialState,
         },
-        addResourceAction({ id: 'newResource', name: 'New Resource' }),
+        addResourceAction({ id: 'newResource', name: 'New Resource', attributes: {} }),
       );
       expect(state.resources.existingResource).toStrictEqual(resource('existingResource', now));
-      expect(state.resources.newResource.resource).toStrictEqual({ id: 'newResource', name: 'New Resource' });
+      expect(state.resources.newResource.resource).toStrictEqual({
+        id: 'newResource',
+        name: 'New Resource',
+        attributes: {},
+      });
       expect(isAfter(state.resources.newResource.loaded, now)).toBe(true);
     });
     test('Resource in state already - updates resource & sets current date', () => {
@@ -73,12 +98,14 @@ describe('reduce', () => {
           resources: {
             existingResource: resource('existingResource', now),
           },
+          search: searchInitialState,
         },
-        addResourceAction({ id: 'existingResource', name: 'Updated Resource' }),
+        addResourceAction({ id: 'existingResource', name: 'Updated Resource', attributes: {} }),
       );
       expect(state.resources.existingResource.resource).toStrictEqual({
         id: 'existingResource',
         name: 'Updated Resource',
+        attributes: {},
       });
       expect(isAfter(state.resources.existingResource.loaded, now)).toBe(true);
       expect(Object.keys(state.resources)).toHaveLength(1);
@@ -92,6 +119,7 @@ describe('reduce', () => {
           resources: {
             existingResource: resource('existingResource', now),
           },
+          search: searchInitialState,
         },
         loadResourceErrorAction('newResource', err),
       );
@@ -106,6 +134,7 @@ describe('reduce', () => {
           resources: {
             existingResource: resource('existingResource', now),
           },
+          search: searchInitialState,
         },
         loadResourceErrorAction('existingResource', err),
       );
@@ -120,6 +149,7 @@ describe('reduce', () => {
       resources: {
         existingResource: resource('existingResource', now),
       },
+      search: searchInitialState,
     };
     test('Resource with ID exists - set route to viewing resource with that ID', () => {
       const state = reduce(initialState, viewResourceAction('existingResource'));
@@ -157,6 +187,44 @@ describe('reduce', () => {
         route: {
           page: ResourcePage.ViewResource,
           id: 'thisResource',
+        },
+      });
+    });
+  });
+  describe('NAVIGATE_TO_SEARCH action', () => {
+    const initialState = {
+      resources: {
+        existingResource: resource('existingResource', now),
+      },
+      route: {
+        page: ResourcePage.ViewResource,
+        id: 'existingResource',
+      },
+      search: searchInitialState,
+    };
+    test('Sets route to search', () => {
+      const state = reduce(initialState, navigateToSearchAction());
+      expect(state).toStrictEqual({
+        ...initialState,
+        route: {
+          page: ResourcePage.Search,
+        },
+      });
+    });
+    test('Route already set to search - noop', () => {
+      const state = reduce(
+        {
+          ...initialState,
+          route: {
+            page: ResourcePage.Search,
+          },
+        },
+        navigateToSearchAction(),
+      );
+      expect(state).toStrictEqual({
+        ...initialState,
+        route: {
+          page: ResourcePage.Search,
         },
       });
     });

@@ -15,31 +15,24 @@
  */
 
 import React from 'react';
-import ErrorIcon from '@material-ui/icons/Error';
-import { Template } from '@twilio/flex-ui';
+import { FormProvider, UseFormMethods } from 'react-hook-form';
 
-import { StyledTab } from '../styles/HrmStyles';
-import { formIsValid } from '../states/ValidationRules';
+export const createFormMethods = (): UseFormMethods => ({
+  clearErrors: jest.fn(),
+  control: {} as any,
+  errors: {},
+  formState: {} as any,
+  getValues: jest.fn(),
+  handleSubmit: jest.fn(),
+  register: jest.fn(() => jest.fn()),
+  reset: jest.fn(),
+  setError: jest.fn(),
+  setValue: jest.fn(),
+  trigger: jest.fn(),
+  unregister: jest.fn(),
+  watch: jest.fn(),
+});
 
-const decorateTab = (label, formRoot) => {
-  if (formIsValid(formRoot)) {
-    return <StyledTab key={label} label={<Template code={label} />} />;
-  }
-  return (
-    <StyledTab
-      key={label}
-      label={
-        <>
-          <div style={{ verticalAlign: 'middle' }}>
-            <ErrorIcon fontSize="inherit" style={{ color: 'red' }} />
-          </div>{' '}
-          <Template code={label} />
-        </>
-      }
-    />
-  );
-};
-
-decorateTab.displayName = 'decorateTab';
-
-export default decorateTab;
+export const wrapperFormProvider = (methods: UseFormMethods) => ({ children }: { children?: React.ReactNode }) => (
+  <FormProvider {...methods}>{children}</FormProvider>
+);

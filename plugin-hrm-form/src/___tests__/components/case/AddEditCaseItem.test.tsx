@@ -22,21 +22,31 @@ import { mount } from 'enzyme';
 import { StorelessThemeProvider, ThemeConfigProps } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace, RootState } from '../../../states';
 import AddEditCaseItem, { AddEditCaseItemProps } from '../../../components/case/AddEditCaseItem';
-import { getDefinitionVersions } from '../../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../../hrmConfig';
 import { CustomITask } from '../../../types/types';
 import { AppRoutes, CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
 import { householdSectionApi } from '../../../states/case/sections/household';
 import { changeRoute } from '../../../states/routing/actions';
 
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+
 let mockV1;
 
+beforeEach(() => {
+  mockReset();
+});
+
 beforeAll(async () => {
-  mockV1 = await loadDefinition(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  await mockFetchImplementation(formDefinitionsBaseUrl);
+
+  mockV1 = await loadDefinition(formDefinitionsBaseUrl);
   mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
 });
 

@@ -23,7 +23,7 @@ import { PreviewWrapper } from '../../../styles/search';
 import { Flex } from '../../../styles/HrmStyles';
 import { SearchUIContact } from '../../../types/types';
 import { PreviewDescription } from '../PreviewDescription';
-import { isNonDataCallType } from '../../../states/ValidationRules';
+import { isNonDataCallType } from '../../../states/validationRules';
 import { getDefinitionVersion } from '../../../services/ServerlessService';
 import { updateDefinitionVersion } from '../../../states/configuration/actions';
 import { configurationBase, namespace, RootState } from '../../../states';

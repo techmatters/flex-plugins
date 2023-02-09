@@ -22,7 +22,6 @@ import FilterList from '@material-ui/icons/FilterList';
 import DateRange from '@material-ui/icons/DateRange';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { getConfig } from '../../../HrmFormPlugin';
 import {
   FiltersContainer,
   FiltersResetAll,
@@ -42,6 +41,7 @@ import {
 import CategoriesFilter, { Category } from './CategoriesFilter';
 import { caseListBase, configurationBase, namespace, RootState } from '../../../states';
 import * as CaseListSettingsActions from '../../../states/caseList/settings';
+import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 /**
  * Reads the definition version and returns and array of items (type Item[])
  * to be used as the options for the status filter
@@ -167,7 +167,9 @@ const Filters: React.FC<Props> = ({
   updateCaseListFilter,
   clearCaseListFilter,
 }) => {
-  const { strings, featureFlags, helpline } = getConfig();
+  const strings = getTemplateStrings();
+  const featureFlags = getAseloFeatureFlags();
+  const { helpline } = getHrmConfig();
 
   const statusInitialValues = getStatusInitialValue(currentDefinitionVersion);
   const categoriesInitialValues = getCategoriesInitialValue(currentDefinitionVersion, helpline);

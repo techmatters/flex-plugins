@@ -27,12 +27,12 @@ import {
 } from 'hrm-form-definitions';
 
 import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
-import { isNonDataCallType } from '../states/ValidationRules';
+import { isNonDataCallType } from '../states/validationRules';
 import { getQueryParams } from './PaginationParams';
 import { fillEndMillis, getConversationDuration } from '../utils/conversationDuration';
 import fetchHrmApi from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
-import { getDefinitionVersions } from '../HrmFormPlugin';
+import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import {
   ContactMediaType,
   ContactRawJson,
@@ -44,7 +44,6 @@ import {
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
-import { getHrmConfig } from '../hrmConfig';
 
 type NestedInformation = { name?: { firstName: string; lastName: string } };
 type LegacyInformationObject = NestedInformation & {

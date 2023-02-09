@@ -27,13 +27,13 @@ import { updateContactInHrm } from '../../services/ContactService';
 import { Box, StyledNextStepButton, BottomButtonBar, Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
 import { CaseActionTitle, EditContactContainer } from '../../styles/case';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
-import { getConfig } from '../../HrmFormPlugin';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { ContactDetailsSectionFormApi, IssueCategorizationSectionFormApi } from './contactDetailsSectionFormApi';
 import { clearDraft, refreshRawContact } from '../../states/contacts/existingContacts';
 import CloseCaseDialog from '../case/CloseCaseDialog';
 import * as t from '../../states/contacts/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
+import { getTemplateStrings } from '../../hrmConfig';
 
 type OwnProps = {
   context: DetailsContext;
@@ -62,7 +62,7 @@ const EditContactSection: React.FC<Props> = ({
     shouldFocusError: false,
     mode: 'onSubmit',
   });
-  const { strings } = getConfig();
+  const strings = getTemplateStrings();
 
   const version = savedContact?.details.definitionVersion;
 
@@ -105,7 +105,6 @@ const EditContactSection: React.FC<Props> = ({
   };
 
   const onError = recordingErrorHandler('Edit Contact Form', () => {
-    const { strings } = getConfig();
     window.alert(strings['Error-Form']);
   });
 

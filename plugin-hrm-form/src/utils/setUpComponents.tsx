@@ -41,11 +41,11 @@ import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles/HrmS
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
-// eslint-disable-next-line
 import { FeatureFlags, isInMyBehalfITask } from '../types/types';
-import { SetupObject } from '../HrmFormPlugin';
 import { colors } from '../channels/colors';
+import { getHrmConfig } from '../hrmConfig';
 
+type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
  * Returns the UI for the "Contacts Waiting" section
  */

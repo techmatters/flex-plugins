@@ -17,7 +17,7 @@
 import * as React from 'react';
 import renderer from 'react-test-renderer';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { callTypes, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { DeepPartial } from 'redux';
@@ -26,17 +26,27 @@ import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import ContactPreview from '../../components/search/ContactPreview';
 import ContactHeader from '../../components/search/ContactPreview/ContactHeader';
 import TagsAndCounselor from '../../components/search/TagsAndCounselor';
-import { getDefinitionVersions } from '../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../hrmConfig';
 import { SearchUIContact } from '../../types/types';
 import { configurationBase, namespace, RootState } from '../../states';
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
 const mockStore = configureMockStore([]);
 
 const NonExisting = () => <>NonExisting</>;
 NonExisting.displayName = 'NonExisting';
 
+beforeEach(() => {
+  mockReset();
+});
+
 test('<ContactPreview> should mount', async () => {
-  const defaultDef = await loadDefinition(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  await mockFetchImplementation(formDefinitionsBaseUrl);
+
+  const defaultDef = await loadDefinition(formDefinitionsBaseUrl);
   mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, defaultDef);
 
   const initialState: DeepPartial<RootState> = {

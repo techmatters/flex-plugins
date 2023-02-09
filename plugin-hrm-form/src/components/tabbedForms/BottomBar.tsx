@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { Component, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { Template } from '@twilio/flex-ui';
@@ -25,14 +25,14 @@ import { SubmitErrorHandler } from 'react-hook-form';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
-import { getConfig } from '../../HrmFormPlugin';
 import { createCase } from '../../services/CaseService';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import { hasTaskControl } from '../../utils/transfer';
 import { namespace, contactFormsBase, connectedCaseBase } from '../../states';
-import { isNonDataCallType } from '../../states/ValidationRules';
+import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
-import { CustomITask, isOfflineContactTask } from '../../types/types';
+import { CustomITask } from '../../types/types';
+import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;
@@ -58,10 +58,11 @@ const BottomBar: React.FC<
   caseForm,
 }) => {
   const [isSubmitting, setSubmitting] = useState(false);
+  const strings = getTemplateStrings();
 
   const handleOpenNewCase = async () => {
     const { taskSid } = task;
-    const { strings, workerSid, definitionVersion } = getConfig();
+    const { workerSid, definitionVersion } = getHrmConfig();
 
     if (!hasTaskControl(task)) return;
 
@@ -84,7 +85,6 @@ const BottomBar: React.FC<
       await submitContactForm(task, contactForm, caseForm);
       await completeTask(task);
     } catch (error) {
-      const { strings } = getConfig();
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
         await completeTask(task);
       }
@@ -94,12 +94,11 @@ const BottomBar: React.FC<
   };
 
   const onError = recordingErrorHandler('Tabbed HRM Form', () => {
-    const { strings } = getConfig();
     window.alert(strings['Error-Form']);
   });
 
   const showBottomBar = showNextButton || showSubmitButton;
-  const { featureFlags } = getConfig();
+  const featureFlags = getAseloFeatureFlags();
 
   if (!showBottomBar) return null;
 

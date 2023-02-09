@@ -21,7 +21,7 @@ import { callTypes, FormDefinition, FormItemDefinition } from 'hrm-form-definiti
 import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
 import { prepopulateForm as prepopulateFormAction } from '../states/contacts/actions';
-import { getDefinitionVersions } from '../HrmFormPlugin';
+import { getDefinitionVersions } from '../hrmConfig';
 
 const getUnknownOption = (key: string, definition: FormDefinition) => {
   const inputDef = definition.find(e => e.name === key);
