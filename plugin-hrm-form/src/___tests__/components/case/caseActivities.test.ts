@@ -18,7 +18,7 @@ import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-fo
 
 import { Case, CaseInfo } from '../../../types/types';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
-import { getDefinitionVersions } from '../../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../../hrmConfig';
 import { getActivitiesFromCase, getActivitiesFromContacts } from '../../../components/case/caseActivities';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -337,7 +337,6 @@ describe('getActivitiesFromCase', () => {
 
 describe('getActivitiesFromContacts', () => {
   const createdAt = '2020-07-30 18:55:20';
-  const updatedAt = '2020-08-30 18:55:20';
   beforeEach(async () => {
     mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, formDefinition);
   });

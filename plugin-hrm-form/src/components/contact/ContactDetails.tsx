@@ -31,11 +31,11 @@ import { ContactDetailsSectionFormApi, contactDetailsSectionFormApi } from './co
 import ContactDetailsSectionForm from './ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
 import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
-import { getConfig } from '../../HrmFormPlugin';
 import { updateDraft } from '../../states/contacts/existingContacts';
 import { transformValues } from '../../services/ContactService';
 import CSAMReport from '../CSAMReport/CSAMReport';
 import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 type OwnProps = {
   contactId: string;
@@ -62,7 +62,7 @@ const ContactDetails: React.FC<Props> = ({
 }) => {
   const version = savedContact?.details.definitionVersion;
 
-  const { featureFlags } = getConfig();
+  const featureFlags = getAseloFeatureFlags();
   /**
    * Check if the definitionVersion for this case exists in redux, and look for it if not.
    */
@@ -126,7 +126,6 @@ const ContactDetails: React.FC<Props> = ({
             stateApi={forExistingContact(contactId)}
             display={true}
             autoFocus={true}
-            helplineInformation={definitionVersion.helplineInformation}
           />
         </EditContactSection>
       );

@@ -14,9 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getConfig } from '../HrmFormPlugin';
 import type * as t from '../types/types';
 import { fetchRules } from './fetchRules';
+import { getHrmConfig } from '../hrmConfig';
 
 export const CaseActions = {
   CLOSE_CASE: 'closeCase',
@@ -59,7 +59,7 @@ type ConditionSet = Condition[];
 type ConditionSets = ConditionSet[];
 
 export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], status: t.Case['status']) => {
-  const { workerSid, isSupervisor, permissionConfig } = getConfig();
+  const { workerSid, isSupervisor, permissionConfig } = getHrmConfig();
 
   if (!permissionConfig || !twilioWorkerId || !status) return { can: undefined };
 
@@ -97,7 +97,7 @@ export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], 
 };
 
 export const getPermissionsForContact = (twilioWorkerId: t.SearchAPIContact['overview']['counselor']) => {
-  const { workerSid, isSupervisor, permissionConfig } = getConfig();
+  const { workerSid, isSupervisor, permissionConfig } = getHrmConfig();
 
   if (!permissionConfig || !twilioWorkerId) return { can: undefined };
 
@@ -133,7 +133,7 @@ export const getPermissionsForContact = (twilioWorkerId: t.SearchAPIContact['ove
 };
 
 export const getPermissionsForViewingIdentifiers = () => {
-  const { isSupervisor, permissionConfig } = getConfig();
+  const { isSupervisor, permissionConfig } = getHrmConfig();
 
   if (!permissionConfig) return { canView: undefined };
 

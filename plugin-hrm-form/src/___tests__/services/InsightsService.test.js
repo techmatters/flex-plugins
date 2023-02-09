@@ -25,7 +25,7 @@ import {
   mergeAttributes,
   buildInsightsData,
 } from '../../services/InsightsService';
-import { getDefinitionVersions } from '../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../hrmConfig';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();

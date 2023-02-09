@@ -15,10 +15,10 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { Dispatch } from 'react';
-import { useFormContext } from 'react-hook-form';
+import React, { Dispatch, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
+import { useFormContext } from 'react-hook-form';
 
 import {
   ColumnarBlock,
@@ -28,9 +28,9 @@ import {
   BottomButtonBarHeight,
   ColumnarContent,
 } from '../../styles/HrmStyles';
-import { createFormFromDefinition, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
+import { disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import type { TaskEntry } from '../../states/contacts/reducer';
-import useFocus from '../../utils/useFocus';
+import { useCreateFormFromDefinition } from '../forms';
 
 type OwnProps = {
   display: boolean;
@@ -56,26 +56,26 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
   updateForm,
   extraChildrenRight,
 }) => {
-  const shouldFocusFirstElement = display && autoFocus;
-  const firstElementRef = useFocus(shouldFocusFirstElement);
-
-  const [initialForm] = React.useState(initialValues); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const { getValues } = useFormContext();
 
-  const [l, r] = React.useMemo(() => {
-    const updateCallback = () => {
+  const form = useCreateFormFromDefinition({
+    definition,
+    initialValues,
+    parentsPath: tabPath,
+    updateCallback: () => {
       updateForm(getValues());
-    };
+    },
+    shouldFocusFirstElement: display && autoFocus,
+  });
 
-    const generatedForm = createFormFromDefinition(definition)([tabPath])(initialForm, firstElementRef)(updateCallback);
-
+  const [l, r] = React.useMemo(() => {
     const margin = 12;
 
     if (layoutDefinition && layoutDefinition.splitFormAt)
-      return splitAt(layoutDefinition.splitFormAt)(disperseInputs(7)(generatedForm));
+      return splitAt(layoutDefinition.splitFormAt)(disperseInputs(7)(form));
 
-    return splitInHalf(disperseInputs(margin)(generatedForm));
-  }, [definition, getValues, initialForm, firstElementRef, layoutDefinition, tabPath, updateForm]);
+    return splitInHalf(disperseInputs(margin)(form));
+  }, [layoutDefinition, form]);
 
   return (
     <Container>

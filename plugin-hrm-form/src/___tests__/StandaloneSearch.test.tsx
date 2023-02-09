@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import * as React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import configureMockStore from 'redux-mock-store';
 import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
@@ -22,7 +22,7 @@ import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-fo
 import { mockGetDefinitionsResponse } from './mockGetConfig';
 import { initialState as searchInitialState } from '../states/search/reducer';
 import { standaloneTaskSid } from '../types/types';
-import { getDefinitionVersions } from '../HrmFormPlugin';
+import { getDefinitionVersions } from '../hrmConfig';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();

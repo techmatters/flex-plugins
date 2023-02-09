@@ -16,7 +16,6 @@
 
 import each from 'jest-each';
 
-import { getConfig } from '../../HrmFormPlugin';
 import * as fetchRulesModule from '../../permissions/fetchRules';
 import {
   getPermissionsForCase,
@@ -27,9 +26,10 @@ import {
   ContactActions,
   ViewIdentifiersAction,
 } from '../../permissions';
+import { getHrmConfig } from '../../hrmConfig';
 
-jest.mock('../../HrmFormPlugin');
-
+jest.mock('../../hrmConfig');
+const mockGetHrmConfig = getHrmConfig as jest.Mock<Partial<ReturnType<typeof getHrmConfig>>>;
 const buildRules = conditionsSets =>
   Object.values(PermissionActions).reduce((accum, action) => ({ ...accum, [action]: conditionsSets }), {});
 
@@ -41,7 +41,7 @@ describe('Test that all actions work fine (everyone)', () => {
   const rules = buildRules([['everyone']]);
   jest.spyOn(fetchRulesModule, 'fetchRules').mockReturnValue(rules);
 
-  getConfig.mockReturnValue({
+  mockGetHrmConfig.mockReturnValue({
     workerSid: 'not creator',
     isSupervisor: false,
     permissionConfig: 'wareva',
@@ -145,7 +145,7 @@ describe('Test different scenarios (all CasesActions)', () => {
       const rules = buildRules(conditionsSets);
       jest.spyOn(fetchRulesModule, 'fetchRules').mockReturnValueOnce(rules);
 
-      getConfig.mockReturnValueOnce({
+      mockGetHrmConfig.mockReturnValueOnce({
         workerSid,
         isSupervisor,
         permissionConfig: 'wareva',
@@ -234,7 +234,7 @@ describe('Test different scenarios (all ContactActions)', () => {
       const rules = buildRules(conditionsSets);
       jest.spyOn(fetchRulesModule, 'fetchRules').mockReturnValueOnce(rules);
 
-      getConfig.mockReturnValueOnce({
+      mockGetHrmConfig.mockReturnValueOnce({
         workerSid,
         isSupervisor,
         permissionConfig: 'wareva',
@@ -293,7 +293,7 @@ describe('Test different scenarios for ViewIdentifiersAction', () => {
       const rules = buildRules(conditionsSets);
       jest.spyOn(fetchRulesModule, 'fetchRules').mockReturnValueOnce(rules);
 
-      getConfig.mockReturnValueOnce({
+      mockGetHrmConfig.mockReturnValueOnce({
         isSupervisor,
         permissionConfig: 'wareva',
       });

@@ -36,7 +36,7 @@ import {
 import { createNewTaskEntry, TaskEntry } from '../../states/contacts/reducer';
 import { channelTypes } from '../../states/DomainConstants';
 import { offlineContactTaskSid } from '../../types/types';
-import { getDefinitionVersions } from '../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../hrmConfig';
 
 const helpline = 'ChildLine Zambia (ZM)';
 

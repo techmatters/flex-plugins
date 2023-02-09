@@ -27,7 +27,7 @@ import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-fo
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace, RootState } from '../../../states';
 import AddEditCaseItem, { AddEditCaseItemProps } from '../../../components/case/AddEditCaseItem';
-import { getDefinitionVersions } from '../../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../../hrmConfig';
 import { CustomITask } from '../../../types/types';
 import { AppRoutes, CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
 import { householdSectionApi } from '../../../states/case/sections/household';

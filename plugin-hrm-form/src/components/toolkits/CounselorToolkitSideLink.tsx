@@ -20,7 +20,7 @@ import { SideLink, SideNavChildrenProps } from '@twilio/flex-ui';
 import { HelplineEntry } from 'hrm-form-definitions';
 
 import CounselorToolkitDialog from './CounselorToolkitDialog';
-import { getDefinitionVersions } from '../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../hrmConfig';
 
 type Props = SideNavChildrenProps & {
   showLabel: boolean;

@@ -17,7 +17,7 @@
 // @ts-ignore
 import React from 'react';
 import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
-import { fireEvent, Queries, render, RenderResult, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
@@ -27,7 +27,7 @@ import CaseHome, { CaseHomeProps } from '../../../components/case/CaseHome';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace, routingBase } from '../../../states';
 import { HouseholdEntry, PerpetratorEntry, StandaloneITask } from '../../../types/types';
 import { CaseDetails } from '../../../states/case/types';
-import { getDefinitionVersions } from '../../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../../hrmConfig';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks

@@ -18,6 +18,9 @@ import * as Flex from '@twilio/flex-ui';
 
 import { buildFormDefinitionsBaseUrlGetter } from './definitionVersions';
 import { FeatureFlags } from './types/types';
+import { configurationBase, namespace, RootState } from './states';
+
+const featureFlagEnvVarPrefix = 'REACT_FF_';
 
 const readConfig = () => {
   const manager = Flex.Manager.getInstance();
@@ -50,8 +53,15 @@ const readConfig = () => {
     permissionConfig,
   } = manager.serviceConfiguration.attributes;
   const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
-
-  const featureFlags: FeatureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
+  const featureFlagsFromEnvEntries = Object.entries(process.env)
+    .filter(([varName]) => varName.startsWith(featureFlagEnvVarPrefix))
+    .map(([name, value]) => [
+      name.substring(featureFlagEnvVarPrefix.length),
+      (value ?? 'false').toLowerCase() === 'true',
+    ]);
+  const featureFlagsFromEnv = Object.fromEntries(featureFlagsFromEnvEntries);
+  const featureFlagsFromServiceConfig: FeatureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
+  const featureFlags = { ...featureFlagsFromServiceConfig, ...featureFlagsFromEnv };
   const { strings } = (manager as unknown) as { strings: { [key: string]: string } };
 
   return {
@@ -81,20 +91,23 @@ const readConfig = () => {
     },
     referrableResources: {
       resourcesBaseUrl,
+      token,
     },
   };
 };
 
 let cachedConfig: ReturnType<typeof readConfig>;
 
-try {
-  cachedConfig = readConfig();
-} catch (err) {
-  console.log(
-    'Failed to read config on page load, leaving undefined for now (it will be populated when the flex reducer runs)',
-    err,
-  );
-}
+export const initializeConfig = () => {
+  try {
+    cachedConfig = readConfig();
+  } catch (err) {
+    console.log(
+      'Failed to read config on page load, leaving undefined for now (it will be populated when the flex reducer runs)',
+      err,
+    );
+  }
+};
 
 export const subscribeToConfigUpdates = (manager: Flex.Manager) => {
   manager.store.subscribe(() => {
@@ -108,16 +121,16 @@ export const subscribeToConfigUpdates = (manager: Flex.Manager) => {
 
 export const getHrmConfig = () => cachedConfig.hrm;
 export const getReferrableResourceConfig = () => cachedConfig.referrableResources;
-export const getResourceStrings = () => cachedConfig.strings;
-export const getAseloFeatureFlags = () => cachedConfig.featureFlags;
+export const getTemplateStrings = () => cachedConfig.strings;
+export const getAseloFeatureFlags = (): FeatureFlags => cachedConfig.featureFlags;
 
-/*
- * Legacy function, only used for backward compatibility,
- * New code should use one of the above functions instead
+/**
+ * Helper to expose the forms definitions without the need of calling Manager
  */
-export const getConfig = () => ({
-  ...cachedConfig.hrm,
-  ...cachedConfig.referrableResources,
-  strings: cachedConfig.strings,
-  featureFlags: cachedConfig.featureFlags,
-});
+export const getDefinitionVersions = () => {
+  const { currentDefinitionVersion, definitionVersions } = (Flex.Manager.getInstance().store.getState() as RootState)[
+    namespace
+  ][configurationBase];
+
+  return { currentDefinitionVersion, definitionVersions };
+};

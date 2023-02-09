@@ -27,7 +27,7 @@ import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import { SearchPages } from '../../states/search/types';
 import SearchResults from '../../components/search/SearchResults';
 import { configurationBase, searchContactsBase, connectedCaseBase, contactFormsBase, namespace } from '../../states';
-import { getDefinitionVersions } from '../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../hrmConfig';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();

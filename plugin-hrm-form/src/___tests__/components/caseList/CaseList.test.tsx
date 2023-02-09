@@ -28,7 +28,7 @@ import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import CaseList from '../../../components/caseList';
 import { caseListBase, configurationBase, namespace } from '../../../states';
 import { listCases } from '../../../services/CaseService';
-import { getDefinitionVersions } from '../../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../../hrmConfig';
 import { CaseListState } from '../../../states/caseList/reducer';
 import {
   caseListContentInitialState,

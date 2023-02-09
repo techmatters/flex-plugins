@@ -24,7 +24,7 @@ import type { DefinitionVersion } from '../../states/types';
 import * as GeneralActions from '../../states/actions';
 import { offlineContactTaskSid } from '../../types/types';
 import AddTaskButton from '../common/AddTaskButton';
-import { reRenderAgentDesktop } from '../../HrmFormPlugin';
+import { rerenderAgentDesktop } from '../../rerenderView';
 
 type OwnProps = {};
 
@@ -39,7 +39,7 @@ const AddOfflineContactButton: React.FC<Props> = ({
   const onClick = async () => {
     recreateContactState(currentDefinitionVersion)(offlineContactTaskSid);
     await Actions.invokeAction('SelectTask', { task: undefined });
-    await reRenderAgentDesktop();
+    await rerenderAgentDesktop();
   };
 
   return (

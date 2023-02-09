@@ -26,7 +26,7 @@ import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import Search from '../../components/search';
 import { SearchPages } from '../../states/search/types';
 import { channelTypes } from '../../states/DomainConstants';
-import { getDefinitionVersions } from '../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../hrmConfig';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { csamReportBase } from '../../states';
 
