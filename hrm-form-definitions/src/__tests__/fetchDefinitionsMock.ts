@@ -16,6 +16,12 @@
 
 import type { DefinitionVersionId } from '../formDefinition';
 
+type MockResponse = {
+  ok: boolean;
+  status: number;
+  json: () => Promise<any>;
+};
+
 const FORM_DEFINITIONS_PATH = '../../form-definitions';
 const BASE_URL_MOCK = 'BASE_URL_MOCK';
 
@@ -61,7 +67,7 @@ const mockFetchImplementationGivenSpy = async (
   fetchSpy: jest.SpyInstance,
 ) => {
   const definitionVersionId = getDefinitionVersionId(formDefinitionsBaseUrl);
-  const map = {};
+  const map: { [remotePath: string]: MockResponse } = {};
   for (let i = 0; i < files.length; i += 1) {
     const file = files[i];
     const remotePath = `${formDefinitionsBaseUrl}/${file}`;
@@ -71,7 +77,7 @@ const mockFetchImplementationGivenSpy = async (
     const jsonFile = await loadJSON(localPath);
 
     const fileExists = !!jsonFile;
-    const mockResponse = {
+    const mockResponse: MockResponse = {
       ok: fileExists,
       status: fileExists ? 200 : 404,
       json: () => Promise.resolve(jsonFile),
