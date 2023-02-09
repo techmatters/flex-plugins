@@ -14,12 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import { Case, CaseInfo } from '../../../types/types';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { getActivitiesFromCase, getActivitiesFromContacts } from '../../../components/case/caseActivities';
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
 const createFakeCase = (info: CaseInfo, connectedContacts: any[] = []): Case => ({
   id: 0,
@@ -36,8 +39,15 @@ const createFakeCase = (info: CaseInfo, connectedContacts: any[] = []): Case => 
 
 let formDefinition;
 
+beforeEach(() => {
+  mockReset();
+});
+
 beforeAll(async () => {
-  formDefinition = await loadDefinition(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  await mockFetchImplementation(formDefinitionsBaseUrl);
+
+  formDefinition = await loadDefinition(formDefinitionsBaseUrl);
 });
 
 describe('getActivitiesFromCase', () => {
