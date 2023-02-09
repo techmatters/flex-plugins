@@ -58,14 +58,6 @@ type ExportTranscripParticipantUser = {
 };
 
 type ExportTranscripParticipantRole = {
-  sid: string;
-  accountSid: string;
-  serviceSid: string;
-  friendlyName: string;
-  type: string;
-  permissions: string[];
-  dateCreated: Date;
-  url: string;
   isCounselor: boolean;
 };
 
