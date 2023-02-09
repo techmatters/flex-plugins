@@ -23,7 +23,7 @@ import format from 'date-fns/format';
 import type { TwilioStoredMedia, S3StoredTranscript } from '../../../types/types';
 import { contactFormsBase, namespace, RootState } from '../../../states';
 import { getFileDownloadUrlFromUrl } from '../../../services/ServerlessService';
-import { loadTranscript, TranscriptMessage } from '../../../states/contacts/existingContacts';
+import { loadTranscript, TranscriptMessage, TranscriptResult } from '../../../states/contacts/existingContacts';
 import {
   ErrorFont,
   ItalicFont,
@@ -34,7 +34,7 @@ import {
   DateRulerHr,
   DateRulerDateText,
 } from './styles';
-import MessageItem from './MessageItem';
+import MessageItem, { GroupedMessage } from './MessageItem';
 
 type OwnProps = {
   contactId: string;
@@ -42,9 +42,6 @@ type OwnProps = {
   externalStoredTranscript?: S3StoredTranscript;
   loadConversationIntoOverlay: () => Promise<void>;
 };
-
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 class TranscriptFetchResponseError extends Error {
   public response: Response;
@@ -60,9 +57,21 @@ class TranscriptFetchResponseError extends Error {
   }
 }
 
-type TranscriptMessageGrouped = TranscriptMessage & { isGroupedWithPrevious: boolean };
-type TranscriptMessagesGrouped = { [dateKey: string]: TranscriptMessageGrouped[] };
-const groupMessagesByDate = (accum: TranscriptMessagesGrouped, m: TranscriptMessage, index: number) => {
+type MessageWithSenderInfo = TranscriptMessage & {
+  friendlyName: string;
+  isCounselor: boolean;
+};
+const addSenderInfoToMessage = (participants: TranscriptResult['transcript']['participants']) => (
+  message: TranscriptMessage,
+): MessageWithSenderInfo => {
+  const friendlyName = participants[message.from]?.user?.friendlyName;
+  const isCounselor = participants[message.from]?.role?.isCounselor;
+
+  return { ...message, friendlyName, isCounselor };
+};
+
+type GroupedMessages = { [dateKey: string]: GroupedMessage[] };
+const groupMessagesByDate = (accum: GroupedMessages, m: MessageWithSenderInfo, index: number): GroupedMessages => {
   const dateKey = format(new Date(m.dateCreated), 'yyyy/MM/dd');
 
   if (!accum[dateKey]) {
@@ -75,7 +84,10 @@ const groupMessagesByDate = (accum: TranscriptMessagesGrouped, m: TranscriptMess
   return { ...accum, [dateKey]: [...accum[dateKey], { ...m, isGroupedWithPrevious }] };
 };
 
-const renderGroupedMessages = (groupedMessages: TranscriptMessagesGrouped) =>
+const groupMessagesAndAddSenderInfo = (transcript: TranscriptResult['transcript']): GroupedMessages =>
+  transcript.messages.map(addSenderInfoToMessage(transcript.participants)).reduce(groupMessagesByDate, {});
+
+const renderGroupedMessages = (groupedMessages: GroupedMessages) =>
   Object.entries(groupedMessages).flatMap(([dateKey, ms]) => {
     const dateRuler = (
       <DateRulerContainer>
@@ -85,18 +97,11 @@ const renderGroupedMessages = (groupedMessages: TranscriptMessagesGrouped) =>
       </DateRulerContainer>
     );
 
-    return [
-      dateRuler,
-      ms.map(m => (
-        <MessageItem
-          key={m.sid}
-          message={m}
-          isCounselor={m.isCounselor}
-          isGroupedWithPrevious={m.isGroupedWithPrevious}
-        />
-      )),
-    ];
+    return [dateRuler, ms.map(m => <MessageItem key={m.sid} message={m} />)];
   });
+
+// eslint-disable-next-line no-use-before-define
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 const TranscriptSection: React.FC<Props> = ({
   contactId,
@@ -147,7 +152,7 @@ const TranscriptSection: React.FC<Props> = ({
 
       validateFetchResponse(transcriptResponse);
 
-      const transcriptJson = await transcriptResponse.json();
+      const transcriptJson: TranscriptResult = await transcriptResponse.json();
 
       loadTranscript(contactId, transcriptJson.transcript);
 
@@ -184,7 +189,7 @@ const TranscriptSection: React.FC<Props> = ({
 
   // Preferred case, external transcript is already in local state
   if (transcript) {
-    const groupedMessages = transcript.messages.reduce(groupMessagesByDate, {});
+    const groupedMessages = groupMessagesAndAddSenderInfo(transcript);
 
     return <MessageList>{renderGroupedMessages(groupedMessages)}</MessageList>;
   }
