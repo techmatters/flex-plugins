@@ -179,6 +179,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     fetchDefinition<IssueCategorizationTabModuleType>('tabbedForms/IssueCategorizationTab.json'),
     fetchDefinition<DefinitionVersion['tabbedForms']['ContactlessTaskTab']>(
       'tabbedForms/ContactlessTaskTab.json',
+      {},
     ),
     fetchDefinition<CallTypeButtonsDefinitions>('CallTypeButtons.json'),
     fetchDefinition<HelplineDefinitions>('HelplineInformation.json'),
