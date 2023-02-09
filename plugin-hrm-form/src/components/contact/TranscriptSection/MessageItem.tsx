@@ -28,8 +28,8 @@ import {
   MessageBubbleNameText,
   MessageBubbleDateText,
   MessageBubbleBodyText,
-} from './TranscriptSection.styles';
-import { TranscriptMessage } from '../../states/contacts/existingContacts';
+} from './styles';
+import { TranscriptMessage } from '../../../states/contacts/existingContacts';
 
 type Props = {
   isCounselor: boolean;

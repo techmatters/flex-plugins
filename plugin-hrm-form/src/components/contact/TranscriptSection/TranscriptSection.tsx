@@ -20,10 +20,10 @@ import { connect } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import format from 'date-fns/format';
 
-import type { TwilioStoredMedia, S3StoredTranscript } from '../../types/types';
-import { contactFormsBase, namespace, RootState } from '../../states';
-import { getFileDownloadUrlFromUrl } from '../../services/ServerlessService';
-import { loadTranscript, TranscriptMessage } from '../../states/contacts/existingContacts';
+import type { TwilioStoredMedia, S3StoredTranscript } from '../../../types/types';
+import { contactFormsBase, namespace, RootState } from '../../../states';
+import { getFileDownloadUrlFromUrl } from '../../../services/ServerlessService';
+import { loadTranscript, TranscriptMessage } from '../../../states/contacts/existingContacts';
 import {
   ErrorFont,
   ItalicFont,
@@ -33,7 +33,7 @@ import {
   DateRulerContainer,
   DateRulerHr,
   DateRulerDateText,
-} from './TranscriptSection.styles';
+} from './styles';
 import MessageItem from './MessageItem';
 
 type OwnProps = {
