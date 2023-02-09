@@ -1,13 +1,13 @@
 [
   {
     "name": "child",
-    "label": "Child calling about self",
+    "label": "Person calling about self",
     "type": "button",
     "category": "data"
   },
   {
     "name": "caller",
-    "label": "Someone calling about a child",
+    "label": "Someone calling about another person",
     "type": "button",
     "category": "data"
   },
@@ -18,8 +18,8 @@
     "category": "non-data"
   },
   {
-    "name": "joke",
-    "label": "Prank",
+    "name": "testing",
+    "label": "Testing",
     "type": "button",
     "category": "non-data"
   },
