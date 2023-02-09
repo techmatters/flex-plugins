@@ -84,3 +84,4 @@ jobs:
     with:
       helpline_code: ${{ inputs.helpline_code }}
       environment: ${{ inputs.environment_code }}
+      send-slack-message: 'false'
