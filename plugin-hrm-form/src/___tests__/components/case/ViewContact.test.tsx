@@ -22,7 +22,7 @@ import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import ViewContact from '../../../components/case/ViewContact';
@@ -36,6 +36,9 @@ jest.mock('@twilio/flex-ui', () => ({
   ...jest.requireActual('@twilio/flex-ui'),
   Actions: { invokeAction: jest.fn() },
 }));
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
 expect.extend(toHaveNoViolations);
 
@@ -119,12 +122,19 @@ const counselorsHash = {
   'john-doe-hash': 'John Doe',
 };
 
+beforeEach(() => {
+  mockReset();
+});
+
 describe('View Contact', () => {
   let mockV1;
   let initialState: RootState;
 
   beforeAll(async () => {
-    mockV1 = await loadDefinition(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    await mockFetchImplementation(formDefinitionsBaseUrl);
+
+    mockV1 = await loadDefinition(formDefinitionsBaseUrl);
     mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
     initialState = {
       flex: {

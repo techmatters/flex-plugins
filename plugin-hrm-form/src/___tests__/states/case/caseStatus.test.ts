@@ -14,7 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersion, DefinitionVersionId, loadDefinition, StatusInfo } from 'hrm-form-definitions';
+import {
+  DefinitionVersion,
+  DefinitionVersionId,
+  loadDefinition,
+  StatusInfo,
+  useFetchDefinitions,
+} from 'hrm-form-definitions';
 
 import { getPermissionsForCase, PermissionActions } from '../../../permissions';
 import { Case } from '../../../types/types';
@@ -29,6 +35,10 @@ jest.mock('../../../permissions', () => ({
   },
   getPermissionsForCase: jest.fn(),
 }));
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+
 let mockV1: DefinitionVersion;
 const baselineDate = new Date(2010, 1, 1);
 
@@ -64,7 +74,11 @@ function createDefinition(statuses: StatusInfo[]): DefinitionVersion {
 
 describe('getAvailableCaseStatusTransitions', () => {
   beforeEach(async () => {
-    mockV1 = await loadDefinition(DefinitionVersionId.demoV1);
+    mockReset();
+    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    await mockFetchImplementation(formDefinitionsBaseUrl);
+
+    mockV1 = await loadDefinition(formDefinitionsBaseUrl);
   });
   describe('Given open permissions', () => {
     beforeEach(() => {
