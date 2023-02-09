@@ -61,6 +61,30 @@ const loadJSON = async (jsonPath: string) => {
   }
 };
 
+// TODO: This should be temporary
+const splitDefinitionVersion = (definitionVersionId: string) => {
+  if (definitionVersionId === 'v1') {
+    return {
+      helplineCode: 'zm',
+      version: 'v1',
+    };
+  }
+
+  if (definitionVersionId === 'demo-v1') {
+    return {
+      helplineCode: 'as',
+      version: 'v1',
+    };
+  }
+
+  // Assumes definitionVersioId is always in the format <helplineCode>-<version>
+  const [helplineCode, version] = definitionVersionId.split('-');
+  return {
+    helplineCode,
+    version,
+  };
+};
+
 // TODO: Refactor to make this more elegant
 const mockFetchImplementationGivenSpy = async (
   formDefinitionsBaseUrl: string,
@@ -71,7 +95,8 @@ const mockFetchImplementationGivenSpy = async (
   for (let i = 0; i < files.length; i += 1) {
     const file = files[i];
     const remotePath = `${formDefinitionsBaseUrl}/${file}`;
-    const localPath = `${FORM_DEFINITIONS_PATH}/${definitionVersionId}/${file}`;
+    const { helplineCode, version } = splitDefinitionVersion(definitionVersionId);
+    const localPath = `${FORM_DEFINITIONS_PATH}/${helplineCode}/${version}/${file}`;
 
     // eslint-disable-next-line no-await-in-loop
     const jsonFile = await loadJSON(localPath);
