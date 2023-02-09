@@ -39,16 +39,59 @@ export type TranscriptMessage = {
   sid: string;
   dateCreated: Date;
   from: string;
-  friendlyName?: string;
-  isCounselor: boolean;
   body: string;
   index: number;
   type: string;
-  media?: string;
+  media: any;
 };
-// TODO: Update this type when the Lambda worker is "done"
-type TranscriptResult = {
+
+type ExportTranscripParticipantUser = {
+  sid: string;
+  accountSid: string;
+  serviceSid: string;
+  friendlyName: string;
+  type: string;
+  permissions: string[];
+  dateCreated: Date;
+  url: string;
+  isCounselor: boolean;
+};
+
+type ExportTranscripParticipantRole = {
+  sid: string;
+  accountSid: string;
+  serviceSid: string;
+  friendlyName: string;
+  type: string;
+  permissions: string[];
+  dateCreated: Date;
+  url: string;
+  isCounselor: boolean;
+};
+
+type ExportTranscripParticipants = {
+  [key: string]: {
+    user: ExportTranscripParticipantUser | null;
+    role: ExportTranscripParticipantRole | null;
+  };
+};
+
+type Transcript = {
+  accountSid: string;
+  serviceSid: string;
+  channelSid: string;
   messages: TranscriptMessage[];
+  participants: ExportTranscripParticipants;
+};
+
+export type TranscriptResult = {
+  transcript: Transcript;
+  accountSid: string;
+  contactId: string;
+  taskId: string;
+  twilioWorkerId: string;
+  serviceSid: string;
+  channelSid: string;
 };
 
 export type ExistingContactsState = {
@@ -60,7 +103,7 @@ export type ExistingContactsState = {
       gridView: boolean;
       expanded: { [key: string]: boolean };
     };
-    transcript?: TranscriptResult;
+    transcript?: Transcript;
   };
 };
 
@@ -180,10 +223,10 @@ export const EXISTING_CONTACT_LOAD_TRANSCRIPT = 'EXISTING_CONTACT_LOAD_TRANSCRIP
 type LoadTranscriptAction = {
   type: typeof EXISTING_CONTACT_LOAD_TRANSCRIPT;
   contactId: string;
-  transcript: TranscriptResult;
+  transcript: Transcript;
 };
 
-export const loadTranscript = (contactId: string, transcript: TranscriptResult): LoadTranscriptAction => ({
+export const loadTranscript = (contactId: string, transcript: Transcript): LoadTranscriptAction => ({
   type: EXISTING_CONTACT_LOAD_TRANSCRIPT,
   contactId,
   transcript,
