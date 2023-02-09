@@ -1,7 +1,7 @@
 [
   {
-    "name": "relationshipToChild",
-    "label": "Relationship to child",
+    "name": "relationshipToPerson",
+    "label": "Relationship to other person",
     "type": "select",
     "options": [
       {
