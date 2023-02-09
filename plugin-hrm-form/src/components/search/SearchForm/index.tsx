@@ -39,7 +39,7 @@ import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate 
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
 import { channelTypes } from '../../../states/DomainConstants';
 import { SearchFormValues } from '../../../states/search/types';
-import { getHrmConfig, getResourceStrings } from '../../../hrmConfig';
+import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 
 const getField = value => ({
   value,
@@ -103,7 +103,7 @@ const SearchForm: React.FC<Props> = ({
           value: h.value,
         }))
       : [];
-  const strings = getResourceStrings();
+  const strings = getTemplateStrings();
   const { helpline: userHelpline, multipleOfficeSupport } = getHrmConfig();
   const searchParams = {
     ...values,

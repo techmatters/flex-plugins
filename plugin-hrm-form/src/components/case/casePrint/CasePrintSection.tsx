@@ -22,7 +22,7 @@ import { FormDefinition } from 'hrm-form-definitions';
 
 import styles from './styles';
 import { presentValueFromStrings } from './presentValuesFromStrings';
-import { getResourceStrings } from '../../../hrmConfig';
+import { getTemplateStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   sectionName: string;
@@ -33,7 +33,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintSection: React.FC<Props> = ({ sectionName, values, definitions }) => {
-  const strings = getResourceStrings();
+  const strings = getTemplateStrings();
 
   return (
     <View>

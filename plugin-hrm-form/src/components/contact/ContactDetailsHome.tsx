@@ -47,7 +47,7 @@ import { createDraft, ContactDetailsRoute } from '../../states/contacts/existing
 import TranscriptSection from './TranscriptSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import { contactLabelFromSearchContact } from '../../states/contacts/contactIdentifier';
-import { getAseloFeatureFlags, getResourceStrings } from '../../hrmConfig';
+import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 
 const formatCsamReport = (report: CSAMReportEntry) => {
   const template =
@@ -104,7 +104,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const definitionVersion = definitionVersions[version];
 
   const featureFlags = getAseloFeatureFlags();
-  const strings = getResourceStrings();
+  const strings = getTemplateStrings();
 
   useEffect(
     () => () => {

@@ -118,7 +118,7 @@ export const subscribeToConfigUpdates = (manager: Flex.Manager) => {
 
 export const getHrmConfig = () => cachedConfig.hrm;
 export const getReferrableResourceConfig = () => cachedConfig.referrableResources;
-export const getResourceStrings = () => cachedConfig.strings;
+export const getTemplateStrings = () => cachedConfig.strings;
 export const getAseloFeatureFlags = (): FeatureFlags => cachedConfig.featureFlags;
 
 /**

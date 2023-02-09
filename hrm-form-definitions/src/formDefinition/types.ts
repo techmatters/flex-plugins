@@ -204,7 +204,10 @@ export type FormItemJsonDefinition =
 
 export type FormDefinition = FormItemDefinition[];
 
-export type CategoryEntry = { color: string; subcategories: string[] };
+export type CategoryEntry = {
+  color: string;
+  subcategories: { label: string; toolkitUrl?: string }[];
+};
 export type CategoriesDefinition = { [category: string]: CategoryEntry };
 
 export type CallTypeButtonsEntry = {
@@ -220,6 +223,7 @@ export type HelplineEntry = {
   label: string;
   value: string;
   default?: boolean;
+  kmsUrl?: string;
   manager?: {
     name: string;
     phone: string;
@@ -315,4 +319,5 @@ export type DefinitionVersion = {
     };
   };
   referenceData?: Record<string, any>;
+  blockedEmojis: string[];
 };

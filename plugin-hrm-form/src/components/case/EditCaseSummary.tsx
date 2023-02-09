@@ -53,7 +53,7 @@ import {
 } from '../../states/case/caseWorkingCopy';
 import { AppRoutes } from '../../states/routing/types';
 import { PermissionActions, PermissionActionType } from '../../permissions';
-import { getResourceStrings } from '../../hrmConfig';
+import { getTemplateStrings } from '../../hrmConfig';
 
 export type EditCaseSummaryProps = {
   task: CustomITask | StandaloneITask;
@@ -174,7 +174,7 @@ const EditCaseSummary: React.FC<Props> = ({
     closeActions(exitRoute);
   };
 
-  const strings = getResourceStrings();
+  const strings = getTemplateStrings();
   const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler(`Case: EditCaseSummary`, () => {
     window.alert(strings['Error-Form']);
     if (openDialog) setOpenDialog(false);

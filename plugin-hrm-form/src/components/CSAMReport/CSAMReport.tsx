@@ -28,7 +28,7 @@ import * as t from '../../states/contacts/actions';
 import { isChildTaskEntry, isCounsellorTaskEntry } from '../../states/csam-report/types';
 import CSAMReportTypePickerForm from './CSAMReportTypePicker';
 import CSAMReportChildForm from './CSAMReportChildForm';
-import { getHrmConfig, getResourceStrings } from '../../hrmConfig';
+import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 
 type OwnProps = {
   api: CSAMReportApi;
@@ -76,7 +76,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
   const methods = useForm({ reValidateMode: 'onChange' });
 
   const { workerSid } = getHrmConfig();
-  const strings = getResourceStrings();
+  const strings = getTemplateStrings();
   const currentCounselor = counselorsHash[workerSid];
 
   React.useEffect(() => {

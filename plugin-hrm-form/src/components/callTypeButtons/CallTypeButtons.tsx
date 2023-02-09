@@ -33,7 +33,7 @@ import { hasTaskControl } from '../../utils/transfer';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
 import { CustomITask, isOfflineContactTask } from '../../types/types';
-import { getResourceStrings } from '../../hrmConfig';
+import { getTemplateStrings } from '../../hrmConfig';
 
 const isDialogOpen = contactForm =>
   Boolean(contactForm && contactForm.callType && contactForm.callType && isNonDataCallType(contactForm.callType));
@@ -97,7 +97,7 @@ const CallTypeButtons: React.FC<Props> = props => {
       await submitContactForm(task, contactForm, caseForm);
       await completeTask(task);
     } catch (error) {
-      const strings = getResourceStrings();
+      const strings = getTemplateStrings();
       if (!window.confirm(strings['Error-ContinueWithoutRecording'])) {
         await completeTask(task);
       }

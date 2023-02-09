@@ -20,7 +20,7 @@ import SyncClient from 'twilio-sync';
 import { recordBackendError } from '../fullStory';
 import { TaskEntry } from '../states/contacts/reducer';
 import { issueSyncToken } from '../services/ServerlessService';
-import { getAseloFeatureFlags, getResourceStrings } from '../hrmConfig';
+import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
 
 let sharedStateClient: SyncClient;
 
@@ -65,7 +65,7 @@ export const saveFormSharedState = async (form: TaskEntry, task: ITask): Promise
     if (!isSharedStateClientConnected(sharedStateClient)) {
       console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
       recordBackendError('Save Form Shared State', new Error('Sync Client Disconnected'));
-      window.alert(getResourceStrings().SharedStateSaveFormError);
+      window.alert(getTemplateStrings().SharedStateSaveFormError);
       return null;
     }
 
@@ -96,7 +96,7 @@ export const loadFormSharedState = async (task: ITask): Promise<TaskEntry> => {
     if (!isSharedStateClientConnected(sharedStateClient)) {
       console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
       recordBackendError('Load Form Shared State', new Error('Sync Client Disconnected'));
-      window.alert(getResourceStrings().SharedStateLoadFormError);
+      window.alert(getTemplateStrings().SharedStateLoadFormError);
       return null;
     }
 
@@ -164,7 +164,7 @@ export const savePendingContactToSharedState = async (task, payload, error) => {
   try {
     if (!isSharedStateClientConnected(sharedStateClient)) {
       console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
-      console.error(getResourceStrings().SharedStateSaveContactError);
+      console.error(getTemplateStrings().SharedStateSaveContactError);
       return null;
     }
 

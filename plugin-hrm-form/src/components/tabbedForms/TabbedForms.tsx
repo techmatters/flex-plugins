@@ -94,6 +94,7 @@ type OwnProps = {
   task: CustomITask;
   csamReportEnabled: boolean;
   csamClcReportEnabled: boolean;
+  counselorToolkitsEnabled: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -109,6 +110,7 @@ const TabbedForms: React.FC<Props> = ({
   csamClcReportEnabled,
   editContactFormOpen,
   isCallTypeCaller,
+  counselorToolkitsEnabled,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -227,7 +229,6 @@ const TabbedForms: React.FC<Props> = ({
       </Row>
     </Box>
   );
-
   return (
     <FormProvider {...methods}>
       <div role="form" style={{ height: '100%' }} className={editContactFormOpen ? 'editingContact' : ''}>

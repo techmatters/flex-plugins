@@ -26,7 +26,7 @@ import styles from './styles';
 import { mapChannel, mapChannelForInsights, formatStringToDateAndTime } from '../../../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
 import { presentValueFromStrings } from './presentValuesFromStrings';
-import { getResourceStrings } from '../../../hrmConfig';
+import { getTemplateStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   sectionName: string;
@@ -37,7 +37,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) => {
-  const strings = getResourceStrings();
+  const strings = getTemplateStrings();
 
   const { rawJson, channel, number, conversationDuration, timeOfContact } = contact;
 

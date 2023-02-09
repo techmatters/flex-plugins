@@ -28,7 +28,7 @@ import {
   SummaryText,
 } from '../../../styles/search';
 import { Flex } from '../../../styles/HrmStyles';
-import { getResourceStrings } from '../../../hrmConfig';
+import { getTemplateStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   caseId: number;
@@ -55,7 +55,7 @@ const CaseHeader: React.FC<Props> = ({
   statusLabel,
   onClickViewCase,
 }) => {
-  const strings = getResourceStrings();
+  const strings = getTemplateStrings();
 
   return (
     <div>

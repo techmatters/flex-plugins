@@ -20,7 +20,7 @@ import React from 'react';
 import { View, Text, Image } from '@react-pdf/renderer';
 
 import styles from './styles';
-import { getHrmConfig, getResourceStrings } from '../../../hrmConfig';
+import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   id: number;
@@ -32,7 +32,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintHeader: React.FC<Props> = ({ contactIdentifier, id, officeName, logoBlob }) => {
-  const strings = getResourceStrings();
+  const strings = getTemplateStrings();
   const { multipleOfficeSupport } = getHrmConfig();
 
   return (

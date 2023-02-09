@@ -15,8 +15,10 @@
  */
 
 import { addSeconds, isBefore } from 'date-fns';
+import { AnyAction } from 'redux';
 
 import { ReferrableResource } from '../../services/ResourceService';
+import { ReferrableResourceSearchState, initialState as initialSearchState, resourceSearchReducer } from './search';
 
 export const enum ResourcePage {
   ViewResource = 'view-resource',
@@ -65,6 +67,16 @@ export const viewResourceAction = (id: string): ViewResourceAction => ({
   id,
 });
 
+const NAVIGATE_TO_SEARCH = 'resource-action/navigate-to-search';
+
+type NavigateToSearchAction = {
+  type: typeof NAVIGATE_TO_SEARCH;
+};
+
+export const navigateToSearchAction = (): NavigateToSearchAction => ({
+  type: NAVIGATE_TO_SEARCH,
+});
+
 // eslint-disable-next-line import/no-unused-modules
 export type ReferrableResourcesState = {
   // eslint-disable-next-line prettier/prettier
@@ -76,14 +88,15 @@ export type ReferrableResourcesState = {
       | { error: Error; resource?: ReferrableResource }
     )
   >;
+  search: ReferrableResourceSearchState;
 };
 
 const initialState: ReferrableResourcesState = {
   resources: {},
   route: {
-    page: ResourcePage.ViewResource,
-    id: 'EXAMPLE_RESID',
+    page: ResourcePage.Search,
   },
+  search: initialSearchState,
 };
 
 const expireOldResources = (inputState: ReferrableResourcesState, now: Date): ReferrableResourcesState => ({
@@ -95,12 +108,12 @@ const expireOldResources = (inputState: ReferrableResourcesState, now: Date): Re
   ),
 });
 
-export function reduce(
-  inputState = initialState,
-  action: AddResourceAction | LoadResourceErrorAction | ViewResourceAction,
-): ReferrableResourcesState {
+export function reduce(inputState = initialState, action: AnyAction): ReferrableResourcesState {
   const now = new Date();
-  const state = expireOldResources(inputState, now);
+  const state: ReferrableResourcesState = {
+    ...expireOldResources(inputState, now),
+    search: resourceSearchReducer(inputState.search, action),
+  };
 
   switch (action.type) {
     case ADD_RESOURCE: {
@@ -125,6 +138,12 @@ export function reduce(
       return {
         ...state,
         route: { page: ResourcePage.ViewResource, id: action.id },
+      };
+    }
+    case NAVIGATE_TO_SEARCH: {
+      return {
+        ...state,
+        route: { page: ResourcePage.Search },
       };
     }
 

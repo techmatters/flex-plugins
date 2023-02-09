@@ -21,7 +21,7 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import styles from './styles';
 import CaseTags from '../CaseTags';
-import { getResourceStrings } from '../../../hrmConfig';
+import { getTemplateStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   categories?: {
@@ -35,7 +35,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintCategories: React.FC<Props> = ({ categories, version }) => {
-  const strings = getResourceStrings();
+  const strings = getTemplateStrings();
 
   return (
     <View style={styles.flexColumn}>

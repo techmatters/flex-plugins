@@ -44,6 +44,7 @@ const baseMockConfig = {
   featureFlags: {
     enable_transfers: true,
     enable_save_insights: true,
+    enable_counselor_toolkits: true,
   },
   isSupervisor: false,
 };
@@ -55,7 +56,7 @@ const mockGetResourceStrings = jest.fn(() => baseMockConfig.strings);
 jest.mock('../hrmConfig', () => ({
   getHrmConfig: mockGetConfig,
   getAseloFeatureFlags: mockGetAseloFeatureFlags,
-  getResourceStrings: mockGetResourceStrings,
+  getTemplateStrings: mockGetResourceStrings,
   initializeConfig: jest.fn(),
   getDefinitionVersions: jest.fn(),
 }));
