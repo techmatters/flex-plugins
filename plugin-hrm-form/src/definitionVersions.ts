@@ -24,7 +24,7 @@ import * as Flex from '@twilio/flex-ui';
  * Returns then environment from the following URL:
  * "https://hrm-{environment}.tl.techmatters.org"
  */
-const getEnvironmentFromHrmBasUrl = (manager: Flex.Manager) => {
+const getEnvironmentFromHrmBaseUrl = (manager: Flex.Manager) => {
   const hrmBaseUrl = `${process.env.REACT_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}`;
   const prefix = 'https://hrm-';
   const suffix = '.tl.techmatters.org';
@@ -46,7 +46,7 @@ const getVersionFromDefinitionVersionId = (definitionVersionId: string) => {
 };
 
 export const buildFormDefinitionsBaseUrlGetter = (manager: Flex.Manager) => (definitionVersionId: string) => {
-  const environment = getEnvironmentFromHrmBasUrl(manager);
+  const environment = getEnvironmentFromHrmBaseUrl(manager);
   const helplineCode = getHelplineCodeFromDefinitionVersionId(definitionVersionId);
   const version = getVersionFromDefinitionVersionId(definitionVersionId);
 
