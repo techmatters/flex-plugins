@@ -121,7 +121,7 @@ export const listWorkerQueues = async (body: {
  * Later on this will be fetched in async way.
  */
 export const getDefinitionVersion = async (version: DefinitionVersionId): Promise<DefinitionVersion> => {
-  const { getFormDefinitionsBaseUrl } = getConfig();
+  const { getFormDefinitionsBaseUrl } = getHrmConfig();
   return loadDefinition(getFormDefinitionsBaseUrl(version));
 };
 
