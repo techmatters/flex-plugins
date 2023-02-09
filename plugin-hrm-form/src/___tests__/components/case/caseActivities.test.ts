@@ -1,8 +1,24 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { Case, CaseInfo } from '../../../types/types';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
-import { getDefinitionVersions } from '../../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../../hrmConfig';
 import { getActivitiesFromCase, getActivitiesFromContacts } from '../../../components/case/caseActivities';
 
 const createFakeCase = (info: CaseInfo, connectedContacts: any[] = []): Case => ({
@@ -311,7 +327,6 @@ describe('getActivitiesFromCase', () => {
 
 describe('getActivitiesFromContacts', () => {
   const createdAt = '2020-07-30 18:55:20';
-  const updatedAt = '2020-08-30 18:55:20';
   beforeEach(async () => {
     mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, formDefinition);
   });

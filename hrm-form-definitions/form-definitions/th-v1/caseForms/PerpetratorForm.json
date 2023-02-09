@@ -13,15 +13,66 @@
     "name": "relationshipToChild",
     "label": "Relationship to Child",
     "type": "select",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "optionsReferenceKey": "relationshipToChildOptions",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "ไม่ทราบ",
+        "label": "ไม่ทราบ"
+      },
+      {
+        "value": "มารดา",
+        "label": "มารดา"
+      },
+      {
+        "value": "บิดา",
+        "label": "บิดา"
+      },
+      {
+        "value": "พี่น้อง",
+        "label": "พี่น้อง"
+      },
+      {
+        "value": "ญาติ",
+        "label": "ญาติ"
+      },
+      {
+        "value": "เพื่อน",
+        "label": "เพื่อน"
+      },
+      {
+        "value": "แฟน",
+        "label": "แฟน"
+      },
+      {
+        "value": "คนรู้จัก",
+        "label": "คนรู้จัก"
+      },
+      {
+        "value": "ผู้ที่รับผิดชอบดูแลเด็ก",
+        "label": "ผู้ที่รับผิดชอบดูแลเด็ก"
+      },
+      {
+        "value": "คนแปลกหน้า",
+        "label": "คนแปลกหน้า"
+      },
+      {
+        "value": "อื่นๆ",
+        "label": "อื่นๆ"
+      }
+    ],
     "required": {
       "value": true,
       "message": "RequiredFieldError"
     }
+  },
+  {
+    "name": "otherRelationshipToChild",
+    "label": "Other Relationship to Child",
+    "type": "input"
   },
   {
     "name": "streetAddress",
@@ -102,8 +153,8 @@
     "label": "Language",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
-      "label": ""
+      "value": "ภาษาไทย",
+      "label": "ภาษาไทย"
     },
     "optionsReferenceKey": "languageOptions"
   },

@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
@@ -12,11 +28,12 @@ import { updateHelpline as updateHelplineAction } from '../states/contacts/actio
 import { hasTaskControl } from '../utils/transfer';
 import type { DefinitionVersion } from '../states/types';
 import { CustomITask, isOfflineContactTask, isInMyBehalfITask } from '../types/types';
-import { reRenderAgentDesktop, getConfig } from '../HrmFormPlugin';
 import PreviousContactsBanner from './PreviousContactsBanner';
 import { Flex } from '../styles/HrmStyles';
 import { isStandaloneITask } from './case/Case';
 import { getHelplineToSave } from '../services/HelplineService';
+import { getAseloFeatureFlags } from '../hrmConfig';
+import { rerenderAgentDesktop } from '../rerenderView';
 
 type OwnProps = {
   task: CustomITask;
@@ -45,7 +62,7 @@ const TaskView: React.FC<Props> = props => {
   // Force a re-render on unmount (temporary fix NoTaskView issue with Offline Contacts)
   React.useEffect(() => {
     return () => {
-      if (isOfflineContactTask(task)) reRenderAgentDesktop();
+      if (isOfflineContactTask(task)) rerenderAgentDesktop();
     };
   }, [task]);
 
@@ -82,7 +99,7 @@ const TaskView: React.FC<Props> = props => {
 
   if (!show) return null;
 
-  const { featureFlags } = getConfig();
+  const featureFlags = getAseloFeatureFlags();
   const isFormLocked = !hasTaskControl(task);
 
   return (

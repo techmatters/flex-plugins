@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import { Dispatch } from 'react';
 
 import * as CSAMAction from '../../states/csam-report/actions';
@@ -95,6 +111,11 @@ const saveReport = async (
   contactId?: string,
 ): Promise<SaveReportResponse> => {
   const numberContactId = contactId ? Number.parseInt(contactId, 10) : undefined;
+  if (Number.isNaN(numberContactId)) {
+    throw new Error(
+      `Only integer contact IDs are currently supported. '${contactId}' could not be parsed as an integer`,
+    );
+  }
   if (isCounsellorTaskEntry(state)) {
     return saveCounsellorReport(state.form, twilioWorkerId, numberContactId);
   } else if (isChildTaskEntry(state)) {
@@ -185,7 +206,7 @@ export const existingContactCSAMApi = (contactId: string): CSAMReportApi => ({
   saveReport: (state, twilioWorkerId) => saveReport(state, twilioWorkerId, contactId),
   exitActionDispatcher: dispatch => () => {
     // Redundant, navigation is implicit based on draft CSAM report state
-    dispatch(CSAMAction.clearCSAMReportActionForContact(contactId));
+    dispatch(CSAMAction.removeCSAMReportActionForContact(contactId));
   },
   addReportDispatcher: dispatch => csamReportEntry => {
     dispatch(addExternalReportEntry(csamReportEntry, contactId));

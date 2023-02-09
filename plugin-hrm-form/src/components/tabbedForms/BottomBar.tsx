@@ -1,4 +1,20 @@
-import React, { Component, useMemo, useState } from 'react';
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { Template } from '@twilio/flex-ui';
@@ -9,14 +25,14 @@ import { SubmitErrorHandler } from 'react-hook-form';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
-import { getConfig } from '../../HrmFormPlugin';
 import { createCase } from '../../services/CaseService';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import { hasTaskControl } from '../../utils/transfer';
 import { namespace, contactFormsBase, connectedCaseBase } from '../../states';
-import { isNonDataCallType } from '../../states/ValidationRules';
+import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
-import { CustomITask, isOfflineContactTask } from '../../types/types';
+import { CustomITask } from '../../types/types';
+import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;
@@ -42,10 +58,11 @@ const BottomBar: React.FC<
   caseForm,
 }) => {
   const [isSubmitting, setSubmitting] = useState(false);
+  const strings = getTemplateStrings();
 
   const handleOpenNewCase = async () => {
     const { taskSid } = task;
-    const { strings, workerSid, definitionVersion } = getConfig();
+    const { workerSid, definitionVersion } = getHrmConfig();
 
     if (!hasTaskControl(task)) return;
 
@@ -68,7 +85,6 @@ const BottomBar: React.FC<
       await submitContactForm(task, contactForm, caseForm);
       await completeTask(task);
     } catch (error) {
-      const { strings } = getConfig();
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
         await completeTask(task);
       }
@@ -78,12 +94,11 @@ const BottomBar: React.FC<
   };
 
   const onError = recordingErrorHandler('Tabbed HRM Form', () => {
-    const { strings } = getConfig();
     window.alert(strings['Error-Form']);
   });
 
   const showBottomBar = showNextButton || showSubmitButton;
-  const { featureFlags } = getConfig();
+  const featureFlags = getAseloFeatureFlags();
 
   if (!showBottomBar) return null;
 

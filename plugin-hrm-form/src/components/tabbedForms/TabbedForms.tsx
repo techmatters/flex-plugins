@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/prop-types */
@@ -26,7 +42,7 @@ import ContactDetailsSectionForm from '../contact/ContactDetailsSectionForm';
 import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
-import { isNonDataCallType } from '../../states/ValidationRules';
+import { isNonDataCallType } from '../../states/validationRules';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import CSAMReportButton from './CSAMReportButton';
 import CSAMAttachments from './CSAMAttachments';
@@ -78,6 +94,7 @@ type OwnProps = {
   task: CustomITask;
   csamReportEnabled: boolean;
   csamClcReportEnabled: boolean;
+  counselorToolkitsEnabled: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -93,6 +110,7 @@ const TabbedForms: React.FC<Props> = ({
   csamClcReportEnabled,
   editContactFormOpen,
   isCallTypeCaller,
+  counselorToolkitsEnabled,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -211,7 +229,6 @@ const TabbedForms: React.FC<Props> = ({
       </Row>
     </Box>
   );
-
   return (
     <FormProvider {...methods}>
       <div role="form" style={{ height: '100%' }} className={editContactFormOpen ? 'editingContact' : ''}>

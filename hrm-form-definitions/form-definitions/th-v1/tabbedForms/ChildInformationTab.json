@@ -1,5 +1,10 @@
 [
   {
+    "name": "nickname",
+    "label": "Nickname",
+    "type": "input"
+  },
+  {
     "name": "firstName",
     "label": "First Name",
     "type": "input"
@@ -7,11 +12,6 @@
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input"
-  },
-  {
-    "name": "nickname",
-    "label": "Nickname",
     "type": "input"
   },
   {
@@ -94,7 +94,7 @@
   },
   {
     "name": "contactChannel",
-    "label": "Contact Channel",
+    "label": "Preferred method of contact",
     "type": "select",
     "unknownOption": "Unknown",
     "options": [
@@ -103,12 +103,12 @@
         "label": ""
       },
       {
-        "value": "Facebook",
-        "label": "Facebook"
+        "value": "โทรศัพท์",
+        "label": "โทรศัพท์"
       },
       {
-        "value": "Line",
-        "label": "Line"
+        "value": "Facebook",
+        "label": "Facebook"
       },
       {
         "value": "Twitter",
@@ -119,12 +119,28 @@
         "label": "Instagram"
       },
       {
-        "value": "Whatsapp",
-        "label": "Whatsapp"
+        "value": "Line",
+        "label": "Line"
       },
       {
-        "value": "อื่นๆ",
-        "label": "อื่นๆ"
+        "value": "Email",
+        "label": "Email"
+      },
+      {
+        "value": "ติดต่อศูนย์",
+        "label": "ติดต่อศูนย์"
+      },
+      {
+        "value": "ลงพื้นที่",
+        "label": "ลงพื้นที่"
+      },
+      {
+        "value": "จดหมาย",
+        "label": "จดหมาย"
+      },
+      {
+        "value": "TikTok",
+        "label": "TikTok"
       }
     ]
   },
@@ -133,8 +149,8 @@
     "label": "Language",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
-      "label": ""
+      "value": "ภาษาไทย",
+      "label": "ภาษาไทย"
     },
     "optionsReferenceKey": "languageOptions"
   },
@@ -207,11 +223,6 @@
     "label": "Birthdate"
   },
   {
-    "name": "hivPositive",
-    "label": "HIV Positive?",
-    "type": "mixed-checkbox"
-  },
-  {
     "name": "livingSituation",
     "label": "Living Situation",
     "type": "select",
@@ -222,6 +233,22 @@
         "label": ""
       },
       {
+        "value": "อาศัยอยู่กับพ่อแม่",
+        "label": "อาศัยอยู่กับพ่อแม่"
+      },
+      {
+        "value": "อาศัยอยู่กับเครือญาติ",
+        "label": "อาศัยอยู่กับเครือญาติ"
+      },
+      {
+        "value": "อยู่อิสระ",
+        "label": "อยู่อิสระ"
+      },
+      {
+        "value": "ไร้ที่พักถาวร",
+        "label": "ไร้ที่พักถาวร"
+      },
+      {
         "value": "การดูแลทดแทนครอบครัว",
         "label": "การดูแลทดแทนครอบครัว"
       },
@@ -230,28 +257,8 @@
         "label": "การดูแลรูปแบบสถาบัน"
       },
       {
-        "value": "อยู่อิสระ",
-        "label": "อยู่อิสระ"
-      },
-      {
-        "value": "อาศัยอยู่กับเครือญาติ",
-        "label": "อาศัยอยู่กับเครือญาติ"
-      },
-      {
-        "value": "อาศัยอยู่กับพ่อแม่",
-        "label": "อาศัยอยู่กับพ่อแม่"
-      },
-      {
-        "value": "ไร้ที่พักถาวร",
-        "label": "ไร้ที่พักถาวร"
-      },
-      {
         "value": "อยู่ในสถานกักกัน",
         "label": "อยู่ในสถานกักกัน"
-      },
-      {
-        "value": "อื่นๆ",
-        "label": "อื่นๆ"
       },
       {
         "value": "ไม่ทราบ",
@@ -260,53 +267,48 @@
     ]
   },
   {
+    "name": "hivPositive",
+    "label": "HIV Positive?",
+    "type": "checkbox"
+  },
+  {
     "name": "inConflictWithTheLaw",
     "label": "Child in conflict with the law",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "livingInConflictZone",
     "label": "Child living in conflict zone",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "livingInPoverty",
     "label": "Child living in poverty",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "memberOfAnEthnic",
     "label": "Child member of an ethnic, racial or religious minority",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
-    "name": "LGBTQI+",
-    "label": "LGBTQI+ / SOGIESC child",
-    "type": "mixed-checkbox"
+    "name": "LGBTQI",
+    "label": "LGBTQI+ / SOGIESC",
+    "type": "checkbox"
   },
   {
-    "name": "childOnTheMove",
-    "label": "Child on the move",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "สมัครใจ",
-        "label": "สมัครใจ"
-      },
-      {
-        "value": "ถูกบังคับ",
-        "label": "ถูกบังคับ"
-      }
-    ]
+    "name": "childOnTheMoveVoluntarily",
+    "label": "เด็กเคลื่อนย้าย-โดยสมัครใจ",
+    "type": "checkbox"
+  },
+  {
+    "name": "childOnTheMoveInvoluntarily",
+    "label": "เด็กเคลื่อนย้าย-ถูกบังคับ",
+    "type": "checkbox"
   },
   {
     "name": "childWithDisability",
     "label": "Child with disability",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   }
 ]

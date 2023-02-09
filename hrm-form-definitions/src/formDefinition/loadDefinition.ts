@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 /* eslint-disable global-require */
 /* eslint-disable import/no-dynamic-require */
 import {
@@ -136,7 +152,14 @@ export async function loadDefinition(version: DefinitionVersionId): Promise<Defi
       /* webpackMode: "eager" */ `../../form-definitions/${version}/PrepopulateKeys.json`
     );
   } catch (err) {
-    prepopulateKeys = { ChildInformationTab: [], CallerInformationTab: [] };
+    prepopulateKeys = {
+      survey: { ChildInformationTab: [], CallerInformationTab: [] },
+      preEngagement: {
+        ChildInformationTab: [],
+        CallerInformationTab: [],
+        CaseInformationTab: [],
+      },
+    };
   }
 
   let referenceData;
@@ -146,6 +169,16 @@ export async function loadDefinition(version: DefinitionVersionId): Promise<Defi
     );
   } catch (err) {
     referenceData = {};
+  }
+
+  let blockedEmojis: string[];
+  try {
+    const blockedEmojisModule = await import(
+      /* webpackMode: "eager" */ `../../form-definitions/${version}/BlockedEmojis.json`
+    );
+    blockedEmojis = blockedEmojisModule.default as string[];
+  } catch (err) {
+    blockedEmojis = [];
   }
 
   const { helplines } = helplineInformationModule.default;
@@ -208,5 +241,6 @@ export async function loadDefinition(version: DefinitionVersionId): Promise<Defi
     caseStatus: caseStatusModule.default as DefinitionVersion['caseStatus'],
     prepopulateKeys,
     referenceData,
+    blockedEmojis,
   };
 }

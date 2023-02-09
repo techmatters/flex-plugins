@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import {
   Manager,
   TaskHelper,
@@ -12,7 +28,6 @@ import { Conversation } from '@twilio/conversations';
 import { callTypes } from 'hrm-form-definitions';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
-import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
 import {
   transferChatStart,
   adjustChatCapacity,
@@ -31,17 +46,18 @@ import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';
 import { recordEvent } from '../fullStory';
-import { CustomITask } from '../types/types';
+import { CustomITask, FeatureFlags } from '../types/types';
+import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
+import { subscribeAlertOnConversationJoined } from './audioNotifications';
 
-type SetupObject = ReturnType<typeof getConfig> & {
-  translateUI: (language: string) => Promise<void>;
-  getMessage: (messageKey: string) => (language: string) => Promise<string>;
-};
+type SetupObject = ReturnType<typeof getHrmConfig>;
+type GetMessage = (key: string) => (key: string) => Promise<string>;
 type ActionPayload = { task: ITask };
 type ActionPayloadWithOptions = ActionPayload & { options: { mode: string }; targetSid: string };
+const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 export const loadCurrentDefinitionVersion = async () => {
-  const { definitionVersion } = getConfig();
+  const { definitionVersion } = getHrmConfig();
   const definitions = await getDefinitionVersion(definitionVersion);
   // populate current version
   Manager.getInstance().store.dispatch(populateCurrentDefinitionVersion(definitions));
@@ -57,10 +73,10 @@ const getStateContactForms = (taskSid: string) => {
 };
 
 /**
- * @param {import('../types/types').CustomITask} task
+ * @param task
  */
 export const shouldSendInsightsData = (task: ITask) => {
-  const { featureFlags } = getConfig();
+  const featureFlags = getAseloFeatureFlags();
   const hasTaskControl = !featureFlags.enable_transfers || TransferHelpers.hasTaskControl(task);
 
   return hasTaskControl && featureFlags.enable_save_insights && !task.attributes?.skipInsights;
@@ -119,19 +135,17 @@ export const getTaskLanguage = ({ helplineLanguage }: Pick<SetupObject, 'helplin
 const sendMessageOfKey = (messageKey: string) => (
   setupObject: SetupObject,
   conversation: Conversation,
+  getMessage: (key: string) => (key: string) => Promise<string>,
 ): ActionFunction => async (payload: ActionPayload) => {
-  const { getMessage } = setupObject;
   const taskLanguage = getTaskLanguage(setupObject)(payload);
   const message = await getMessage(messageKey)(taskLanguage);
   await conversation.sendMessage(message);
 };
 
-/**
- * @param {string} messageKey
- * @returns {(setupObject: ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }) => import('@twilio/flex-ui').ActionFunction}
- */
-const sendSystemMessageOfKey = (messageKey: string) => (setupObject: SetupObject) => async (payload: ActionPayload) => {
-  const { getMessage } = setupObject;
+const sendSystemMessageOfKey = (messageKey: string) => (
+  setupObject: SetupObject,
+  getMessage: (key: string) => (key: string) => Promise<string>,
+) => async (payload: ActionPayload) => {
   const taskLanguage = getTaskLanguage(setupObject)(payload);
   const message = await getMessage(messageKey)(taskLanguage);
   await sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
@@ -145,7 +159,7 @@ const sendSystemCustomGoodbyeMessage = (customGoodbyeMessage: string) => () => a
 
 const sendWelcomeMessage = sendMessageOfKey('WelcomeMsg');
 const sendGoodbyeMessage = (taskSid: string) => {
-  const { enable_dual_write: enableDualWrite } = getConfig().featureFlags;
+  const { enable_dual_write: enableDualWrite } = getAseloFeatureFlags();
 
   const customGoodbyeMessage =
     enableDualWrite &&
@@ -155,7 +169,11 @@ const sendGoodbyeMessage = (taskSid: string) => {
     : sendSystemMessageOfKey('GoodbyeMsg');
 };
 
-const sendWelcomeMessageOnConversationJoined = (setupObject: SetupObject, payload: ActionPayload) => {
+const sendWelcomeMessageOnConversationJoined = (
+  setupObject: SetupObject,
+  getMessage: GetMessage,
+  payload: ActionPayload,
+) => {
   const manager = Manager.getInstance();
   const { task } = payload;
   const trySendWelcomeMessage = (convo: Conversation, ms: number, retries: number) => {
@@ -166,7 +184,7 @@ const sendWelcomeMessageOnConversationJoined = (setupObject: SetupObject, payloa
         if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
         else console.error('Failed to send welcome message: max retries reached.');
       } else {
-        sendWelcomeMessage(setupObject, convo)(payload);
+        sendWelcomeMessage(setupObject, convo, getMessage)(payload);
       }
     }, ms);
   };
@@ -175,16 +193,21 @@ const sendWelcomeMessageOnConversationJoined = (setupObject: SetupObject, payloa
   manager.conversationsClient.once('conversationJoined', (c: Conversation) => trySendWelcomeMessage(c, 0, 0));
 };
 
-export const afterAcceptTask = (setupObject: SetupObject) => async (payload: ActionPayload) => {
-  const { featureFlags } = setupObject;
+export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupObject, getMessage: GetMessage) => async (
+  payload: ActionPayload,
+) => {
   const { task } = payload;
+
+  if (TaskHelper.isChatBasedTask(task)) {
+    subscribeAlertOnConversationJoined(task);
+  }
 
   if (featureFlags.enable_transfers && TransferHelpers.hasTransferStarted(task)) handleTransferredTask(task);
   else prepopulateForm(task);
 
   // If this is the first counsellor that gets the task, say hi
   if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
-    sendWelcomeMessageOnConversationJoined(setupObject, payload);
+    sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
   }
 };
 
@@ -215,7 +238,7 @@ export const customTransferTask = (setupObject: SetupObject): ReplacedActionFunc
     return () => undefined; // Not calling original(payload) prevents the additional "Task cannot be transferred" notification
   }
 
-  const { identity, workerSid, counselorName } = setupObject;
+  const { workerSid, counselorName } = setupObject;
 
   // save current form state as sync document (if there is a form)
   const form = getStateContactForms(payload.task.taskSid);
@@ -247,24 +270,23 @@ export const hangupCall = fromActionFunction(saveEndMillis);
 /**
  * Override for WrapupTask action. Sends a message before leaving (if it should) and saves the end time of the conversation
  */
-export const wrapupTask = (setupObject: SetupObject) =>
+export const wrapupTask = (setupObject: SetupObject, getMessage: GetMessage) =>
   fromActionFunction(async payload => {
     if (TaskHelper.isChatBasedTask(payload.task)) {
-      await sendGoodbyeMessage(payload.task.taskSid)(setupObject)(payload);
+      await sendGoodbyeMessage(payload.task.taskSid)(setupObject, getMessage)(payload);
     }
     await saveEndMillis(payload);
   });
 
-const decreaseChatCapacity = (setupObject: SetupObject): ActionFunction => async (
+const decreaseChatCapacity = (featureFlags: FeatureFlags): ActionFunction => async (
   payload: ActionPayload,
 ): Promise<void> => {
-  const { featureFlags } = setupObject;
   const { task } = payload;
   if (featureFlags.enable_manual_pulling && task.taskChannelUniqueName === 'chat') await adjustChatCapacity('decrease');
 };
 
-export const beforeCompleteTask = (setupObject: SetupObject) => async (payload: ActionPayload): Promise<void> => {
-  await decreaseChatCapacity(setupObject)(payload);
+export const beforeCompleteTask = (featureFlags: FeatureFlags) => async (payload: ActionPayload): Promise<void> => {
+  await decreaseChatCapacity(featureFlags)(payload);
 };
 
 const isAseloCustomChannelTask = (task: CustomITask) =>
@@ -297,8 +319,7 @@ const setChatOrchestrationsForPostSurvey = () => {
   setExcludedDeactivateConversation('completed');
 };
 
-export const setUpPostSurvey = (setupObject: SetupObject) => {
-  const { featureFlags } = setupObject;
+export const setUpPostSurvey = (featureFlags: FeatureFlags) => {
   if (featureFlags.enable_post_survey) {
     setChatOrchestrationsForPostSurvey();
   }
@@ -327,9 +348,9 @@ export const afterCompleteTask = (payload: ActionPayload): void => {
   manager.store.dispatch(GeneralActions.removeContactState(payload.task.taskSid));
 };
 
-export const afterWrapupTask = (setupObject: SetupObject) => async (payload: ActionPayload): Promise<void> => {
-  const { featureFlags } = setupObject;
-
+export const afterWrapupTask = (featureFlags: FeatureFlags, setupObject: SetupObject) => async (
+  payload: ActionPayload,
+): Promise<void> => {
   // TODO: Remove this once all accounts are handled by taskrouter
   if (featureFlags.enable_post_survey && !featureFlags.post_survey_serverless_handled) {
     await triggerPostSurvey(setupObject, payload);

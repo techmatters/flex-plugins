@@ -43,7 +43,6 @@ locals {
   target_task_name = "execute_initial_flow"
   twilio_numbers = ["messenger:103538615719253","twitter:1532353002387931139","instagram:17841453197793547"]
   channel = ""
-  custom_channel_attributes = ""
   feature_flags = {
     "enable_fullstory_monitoring": false,
     "enable_upload_documents": true,

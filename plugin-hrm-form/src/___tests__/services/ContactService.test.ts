@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import { set } from 'lodash/fp';
 import { callTypes, DefinitionVersion, DefinitionVersionId, FormInputType, loadDefinition } from 'hrm-form-definitions';
 
@@ -13,7 +29,7 @@ import {
 import { createNewTaskEntry, TaskEntry } from '../../states/contacts/reducer';
 import { channelTypes } from '../../states/DomainConstants';
 import { offlineContactTaskSid } from '../../types/types';
-import { getDefinitionVersions } from '../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../hrmConfig';
 
 const helpline = 'ChildLine Zambia (ZM)';
 
@@ -143,7 +159,7 @@ describe('saveContact()', () => {
   };
   const workerSid = 'worker-sid';
   const uniqueIdentifier = 'uniqueIdentifier';
-  const fetchSuccess = Promise.resolve(<any>{ ok: true });
+  const fetchSuccess = Promise.resolve(<any>{ ok: true, json: jest.fn() });
 
   test('data calltype saves form data', async () => {
     const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
@@ -182,7 +198,7 @@ describe('saveContact() (isContactlessTask)', () => {
   };
   const workerSid = 'worker-sid';
   const uniqueIdentifier = 'uniqueIdentifier';
-  const fetchSuccess = Promise.resolve(<any>{ ok: true });
+  const fetchSuccess = Promise.resolve(<any>{ ok: true, json: jest.fn() });
   let mockedFetch;
 
   beforeEach(() => {
@@ -337,7 +353,7 @@ test('updateContactInHrm - calls a PATCH HRM endpoint using the supplied contact
     const ret = await updateContactInHrm('1234', inputPatch);
     expect(ret).toStrictEqual(responseBody);
     expect(mockedFetch).toHaveBeenCalledWith(
-      '/contacts/1234',
+      expect.stringContaining('/contacts/1234'),
       expect.objectContaining({
         method: 'PATCH',
         body: JSON.stringify(inputPatch),
@@ -359,11 +375,17 @@ describe('transformCategories', () => {
         IssueCategorizationTab: jest.fn(() => ({
           category1: {
             color: '',
-            subcategories: ['subCategory1', 'subCategory2'],
+            subcategories: [
+              { label: 'subCategory1', toolkitUrl: '' },
+              { label: 'subCategory2', toolkitUrl: '' },
+            ],
           },
           category2: {
             color: '',
-            subcategories: ['subCategory1', 'subCategory2'],
+            subcategories: [
+              { label: 'subCategory1', toolkitUrl: '' },
+              { label: 'subCategory2', toolkitUrl: '' },
+            ],
           },
         })),
       },

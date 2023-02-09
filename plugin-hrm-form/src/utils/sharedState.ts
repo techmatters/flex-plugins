@@ -1,8 +1,52 @@
-import type { ITask } from '@twilio/flex-ui';
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
 
-import { getConfig } from '../HrmFormPlugin';
+import type { ITask } from '@twilio/flex-ui';
+import SyncClient from 'twilio-sync';
+
 import { recordBackendError } from '../fullStory';
 import { TaskEntry } from '../states/contacts/reducer';
+import { issueSyncToken } from '../services/ServerlessService';
+import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
+
+let sharedStateClient: SyncClient;
+
+export const setUpSharedStateClient = () => {
+  const updateSharedStateToken = async () => {
+    try {
+      const syncToken = await issueSyncToken();
+      await sharedStateClient.updateToken(syncToken);
+    } catch (err) {
+      console.error('SYNC TOKEN ERROR', err);
+    }
+  };
+
+  // initializes sync client for shared state
+  const initSharedStateClient = async () => {
+    try {
+      const syncToken = await issueSyncToken();
+      sharedStateClient = new SyncClient(syncToken);
+      sharedStateClient.on('tokenAboutToExpire', () => updateSharedStateToken());
+    } catch (err) {
+      console.error('SYNC CLIENT INIT ERROR', err);
+    }
+  };
+
+  initSharedStateClient();
+};
 
 const isSharedStateClientConnected = sharedStateClient =>
   sharedStateClient && sharedStateClient.connectionState === 'connected';
@@ -15,15 +59,13 @@ const DOCUMENT_TTL_SECONDS = 24 * 60 * 60; // 24 hours
  * @param task
  */
 export const saveFormSharedState = async (form: TaskEntry, task: ITask): Promise<string | null> => {
-  const { featureFlags, sharedStateClient, strings } = getConfig();
-
-  if (!featureFlags.enable_transfers) return null;
+  if (!getAseloFeatureFlags().enable_transfers) return null;
 
   try {
     if (!isSharedStateClientConnected(sharedStateClient)) {
       console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
       recordBackendError('Save Form Shared State', new Error('Sync Client Disconnected'));
-      window.alert(strings.SharedStateSaveFormError);
+      window.alert(getTemplateStrings().SharedStateSaveFormError);
       return null;
     }
 
@@ -46,18 +88,15 @@ export const saveFormSharedState = async (form: TaskEntry, task: ITask): Promise
 
 /**
  * Restores the contact form from Sync Client (if there is any)
- * @param {import("@twilio/flex-ui").ITask} task
- * @returns {Promise<import("../states/contacts/reducer").TaskEntry | null>}
  */
 export const loadFormSharedState = async (task: ITask): Promise<TaskEntry> => {
-  const { featureFlags, sharedStateClient, strings } = getConfig();
-  if (!featureFlags.enable_transfers) return null;
+  if (!getAseloFeatureFlags().enable_transfers) return null;
 
   try {
     if (!isSharedStateClientConnected(sharedStateClient)) {
       console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
       recordBackendError('Load Form Shared State', new Error('Sync Client Disconnected'));
-      window.alert(strings.SharedStateLoadFormError);
+      window.alert(getTemplateStrings().SharedStateLoadFormError);
       return null;
     }
 
@@ -114,20 +153,18 @@ const copyError = error => ({
 
 /**
  * Saves a pending contact into the Sync Client
- * @param {import("@twilio/flex-ui").ITask} task task used to save the contact
- * @param {*} payload payload used to save the contact
- * @param {*} error error returned when trying to save contact to external backend
+ * @param task task used to save the contact
+ * @param payload payload used to save the contact
+ * @param error error returned when trying to save contact to external backend
  */
 export const savePendingContactToSharedState = async (task, payload, error) => {
-  const { featureFlags, sharedStateClient, strings } = getConfig();
-
-  if (!featureFlags.enable_dual_write) return null;
+  if (!getAseloFeatureFlags().enable_dual_write) return null;
   if (!task || !payload) return null;
 
   try {
     if (!isSharedStateClientConnected(sharedStateClient)) {
       console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
-      console.error(strings.SharedStateSaveContactError);
+      console.error(getTemplateStrings().SharedStateSaveContactError);
       return null;
     }
 
@@ -143,7 +180,6 @@ export const savePendingContactToSharedState = async (task, payload, error) => {
     console.log(document);
   } catch (err) {
     console.error('Error while saving pending contact to shared state', err);
-  } finally {
-    return null;
   }
+  return null;
 };

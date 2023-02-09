@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
 import { v4 as uuidV4 } from 'uuid';
@@ -24,7 +40,6 @@ import ActionHeader from './ActionHeader';
 import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import { transformValues } from '../../services/ContactService';
-import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
 import { createStateItem, CustomHandlers, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
@@ -49,6 +64,7 @@ import {
   removeCaseSectionWorkingCopy,
   updateCaseSectionWorkingCopy,
 } from '../../states/case/caseWorkingCopy';
+import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 
 export type AddEditCaseItemProps = {
   task: CustomITask | StandaloneITask;
@@ -156,7 +172,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     const rawForm = workingCopy.form;
     const form = transformValues(formDefinition)(rawForm);
     const now = new Date().toISOString();
-    const { workerSid } = getConfig();
+    const { workerSid } = getHrmConfig();
     let newInfo: CaseInfo;
     if (id) {
       newInfo = sectionApi.upsertCaseSectionItemFromForm(info, {
@@ -204,7 +220,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     closeActions(exitRoute);
   }
 
-  const { strings } = getConfig();
+  const strings = getTemplateStrings();
   const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler(
     routing.action === CaseItemAction.Edit ? `Case: Edit ${sectionApi.label}` : `Case: Add ${sectionApi.label}`,
     () => {

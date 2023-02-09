@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 /* eslint-disable react/display-name */
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
@@ -5,6 +21,7 @@ import * as Flex from '@twilio/flex-ui';
 
 import { AcceptTransferButton, RejectTransferButton, TransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
+import EmojiPicker from '../components/emojiPicker';
 import CannedResponses from '../components/CannedResponses';
 import QueuesStatusWriter from '../components/queuesStatus/QueuesStatusWriter';
 import QueuesStatus from '../components/queuesStatus';
@@ -24,11 +41,11 @@ import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles/HrmS
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
-// eslint-disable-next-line
-import { isInMyBehalfITask } from '../types/types';
-import { SetupObject } from '../HrmFormPlugin';
+import { FeatureFlags, isInMyBehalfITask } from '../types/types';
 import { colors } from '../channels/colors';
+import { getHrmConfig } from '../hrmConfig';
 
+type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
  * Returns the UI for the "Contacts Waiting" section
  */
@@ -41,9 +58,8 @@ const queuesStatusUI = (setupObject: SetupObject) => (
   />
 );
 
-const addButtonsUI = (setupObject: SetupObject) => {
+const addButtonsUI = (featureFlags: FeatureFlags) => {
   const manager = Flex.Manager.getInstance();
-  const { featureFlags } = setupObject;
 
   return (
     <Container key="add-buttons-section" backgroundColor={HrmTheme.colors.base2}>
@@ -148,9 +164,7 @@ const setUpOfflineContact = () => {
 /**
  * Add buttons to pull / create tasks
  */
-export const setUpAddButtons = (setupObject: SetupObject) => {
-  const { featureFlags } = setupObject;
-
+export const setUpAddButtons = (featureFlags: FeatureFlags) => {
   // setup for manual pulling
   if (featureFlags.enable_manual_pulling) setUpManualPulling();
   // setup for offline contact tasks
@@ -158,7 +172,7 @@ export const setUpAddButtons = (setupObject: SetupObject) => {
 
   // add UI
   if (featureFlags.enable_manual_pulling || featureFlags.enable_offline_contact)
-    Flex.TaskList.Content.add(addButtonsUI(setupObject), {
+    Flex.TaskList.Content.add(addButtonsUI(featureFlags), {
       sortOrder: Infinity,
       align: 'start',
     });
@@ -173,12 +187,12 @@ export const setUpAddButtons = (setupObject: SetupObject) => {
 /**
  * Adds the corresponding UI when there are no active tasks
  */
-export const setUpNoTasksUI = (setupObject: SetupObject) => {
+export const setUpNoTasksUI = (featureFlags: FeatureFlags, setupObject: SetupObject) => {
   Flex.AgentDesktopView.Content.add(
     <Column key="no-task-agent-desktop-section" style={{ backgroundColor: HrmTheme.colors.base2, minWidth: 300 }}>
       {queuesStatusUI(setupObject)}
       <OfflineContactTask key="offline-contact-task" />
-      {addButtonsUI(setupObject)}
+      {addButtonsUI(featureFlags)}
     </Column>,
     {
       sortOrder: -1,
@@ -234,10 +248,8 @@ export const setUpTransferComponents = () => {
 /**
  * Add components used only by developers
  */
-export const setUpDeveloperComponents = (setupObject: SetupObject) => {
+export const setUpDeveloperComponents = (translateUI: (language: string) => Promise<void>) => {
   const manager = Flex.Manager.getInstance();
-
-  const { translateUI } = setupObject;
 
   Flex.ViewCollection.Content.add(
     <Flex.View name="settings" key="settings-view">
@@ -300,8 +312,7 @@ export const setUpStandaloneSearch = () => {
 /**
  * Removes the actions buttons from TaskCanvasHeaders if the task is wrapping or if dual write is on (temporary prevents bug)
  */
-export const removeTaskCanvasHeaderActions = (setupObject: SetupObject) => {
-  const { featureFlags } = setupObject;
+export const removeTaskCanvasHeaderActions = (featureFlags: FeatureFlags) => {
   // Must use submit buttons in CRM container to complete task
   Flex.TaskCanvasHeader.Content.remove('actions', {
     if: props => (props.task && props.task.status === 'wrapping') || featureFlags.enable_dual_write,
@@ -351,4 +362,11 @@ export const removeActionsIfTransferring = () => {
 export const setupCannedResponses = () => {
   Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" />);
   Flex.MessageInputV2.Content.add(<CannedResponses key="canned-responses" />);
+};
+
+/**
+ * Emoji Picker
+ */
+export const setupEmojiPicker = () => {
+  Flex.MessageInputActions.Content.add(<EmojiPicker key="emoji-picker" />);
 };

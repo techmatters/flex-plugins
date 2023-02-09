@@ -1,3 +1,21 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+import { FormDefinition, FormInputType } from 'hrm-form-definitions';
+
 import { getValuesFromPreEngagementData } from '../../utils/prepopulateForm';
 
 test('Test getValuesFromPreengagementData function - Retrieve values saved in redux used by contactForm from preEngagementData', () => {
@@ -7,16 +25,16 @@ test('Test getValuesFromPreengagementData function - Retrieve values saved in re
     friendlyName: 'Anonymous',
     age: '11',
   };
-  const tabFormDefinition1 = [
+  const tabFormDefinition1: FormDefinition = [
     {
       name: 'firstName',
       label: 'ID',
-      type: 'input',
+      type: FormInputType.Input,
     },
     {
       name: 'age',
       label: 'Age',
-      type: 'select',
+      type: FormInputType.Select,
       options: [
         {
           value: '',
@@ -139,7 +157,7 @@ test('Test getValuesFromPreengagementData function - Retrieve values saved in re
     {
       name: 'gender',
       label: 'Gender',
-      type: 'listbox-multiselect',
+      type: FormInputType.ListboxMultiselect,
       options: [
         {
           value: 'Agender',
@@ -186,7 +204,7 @@ test('Test getValuesFromPreengagementData function - Retrieve values saved in re
     {
       name: 'otherGender',
       label: 'If Other for Gender, please specify: ',
-      type: 'input',
+      type: FormInputType.Input,
     },
   ];
   const prepopulateKeys1 = ['age', 'gender'];

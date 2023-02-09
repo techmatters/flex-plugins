@@ -1,6 +1,22 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import { Manager, TaskHelper, StateHelper, ITask } from '@twilio/flex-ui';
 
-import type { SetupObject } from '../HrmFormPlugin';
+import { FeatureFlags } from '../types/types';
 
 const removeConversationListeners = (task: ITask) => {
   if (TaskHelper.isChatBasedTask(task)) {
@@ -20,7 +36,7 @@ const removeConversationListeners = (task: ITask) => {
   }
 };
 
-export const setTaskWrapupEventListeners = ({ featureFlags }: SetupObject) => {
+export const setTaskWrapupEventListeners = (featureFlags: FeatureFlags) => {
   /*
    * If post surveys are on, remove all listeners from the underlying conversation on task wrapup.
    * This is done to hide any further activity between the contact and the post survey chatbot.

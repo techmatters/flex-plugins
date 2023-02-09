@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import { ITask, Manager } from '@twilio/flex-ui';
 import { capitalize } from 'lodash';
 import { callTypes, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
@@ -5,7 +21,7 @@ import { callTypes, FormDefinition, FormItemDefinition } from 'hrm-form-definiti
 import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
 import { prepopulateForm as prepopulateFormAction } from '../states/contacts/actions';
-import { getDefinitionVersions } from '../HrmFormPlugin';
+import { getDefinitionVersions } from '../hrmConfig';
 
 const getUnknownOption = (key: string, definition: FormDefinition) => {
   const inputDef = definition.find(e => e.name === key);
@@ -127,22 +143,21 @@ export const getValuesFromPreEngagementData = (
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const prepopulateForm = (task: ITask) => {
   const { memory, preEngagementData } = task.attributes;
-  if (memory === null && preEngagementData === null) return;
+  if (!memory && !preEngagementData) return;
 
   const { currentDefinitionVersion } = getDefinitionVersions();
   const { tabbedForms, prepopulateKeys } = currentDefinitionVersion;
   const { ChildInformationTab, CallerInformationTab, CaseInformationTab } = tabbedForms;
   const { preEngagement, survey } = prepopulateKeys;
 
-  // PreEngagementData Values
-  const childInfoValues = getValuesFromPreEngagementData(
-    preEngagementData,
-    ChildInformationTab,
-    preEngagement.ChildInformationTab,
-  );
-
   // When a helpline has preEnagagement form and no survey
-  if (preEngagementData && memory === null) {
+  if (preEngagementData && !memory) {
+    // PreEngagementData Values
+    const childInfoValues = getValuesFromPreEngagementData(
+      preEngagementData,
+      ChildInformationTab,
+      preEngagement.ChildInformationTab,
+    );
     Manager.getInstance().store.dispatch(prepopulateFormAction(callTypes.child, childInfoValues, task.taskSid));
 
     // Open tabbed form to first tab
