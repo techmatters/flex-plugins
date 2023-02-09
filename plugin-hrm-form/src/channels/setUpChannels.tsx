@@ -1,4 +1,20 @@
-import { ITask, ReservationStatuses, TaskChannelDefinition } from '@twilio/flex-ui';
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+import { ReservationStatuses } from '@twilio/flex-ui';
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 
@@ -11,12 +27,12 @@ import CallIcon from '../components/common/icons/CallIcon';
 import SmsIcon from '../components/common/icons/SmsIcon';
 import * as TransferHelpers from '../utils/transfer';
 import { colors, mainChannelColor } from './colors';
-import { getConfig } from '../HrmFormPlugin';
+import { getTemplateStrings } from '../hrmConfig';
 
 const isIncomingTransfer = task => TransferHelpers.hasTransferStarted(task) && task.status === 'pending';
 
 const setSecondLine = ({ channel, string }: { channel: string; string: string }) => {
-  const { strings } = getConfig();
+  const strings = getTemplateStrings();
 
   const defaultStrings = Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine;
 

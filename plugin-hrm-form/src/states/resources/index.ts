@@ -1,6 +1,24 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import { addSeconds, isBefore } from 'date-fns';
+import { AnyAction } from 'redux';
 
 import { ReferrableResource } from '../../services/ResourceService';
+import { ReferrableResourceSearchState, initialState as initialSearchState, resourceSearchReducer } from './search';
 
 export const enum ResourcePage {
   ViewResource = 'view-resource',
@@ -49,6 +67,16 @@ export const viewResourceAction = (id: string): ViewResourceAction => ({
   id,
 });
 
+const NAVIGATE_TO_SEARCH = 'resource-action/navigate-to-search';
+
+type NavigateToSearchAction = {
+  type: typeof NAVIGATE_TO_SEARCH;
+};
+
+export const navigateToSearchAction = (): NavigateToSearchAction => ({
+  type: NAVIGATE_TO_SEARCH,
+});
+
 // eslint-disable-next-line import/no-unused-modules
 export type ReferrableResourcesState = {
   // eslint-disable-next-line prettier/prettier
@@ -60,14 +88,15 @@ export type ReferrableResourcesState = {
       | { error: Error; resource?: ReferrableResource }
     )
   >;
+  search: ReferrableResourceSearchState;
 };
 
 const initialState: ReferrableResourcesState = {
   resources: {},
   route: {
-    page: ResourcePage.ViewResource,
-    id: 'EXAMPLE_RESID',
+    page: ResourcePage.Search,
   },
+  search: initialSearchState,
 };
 
 const expireOldResources = (inputState: ReferrableResourcesState, now: Date): ReferrableResourcesState => ({
@@ -79,12 +108,12 @@ const expireOldResources = (inputState: ReferrableResourcesState, now: Date): Re
   ),
 });
 
-export function reduce(
-  inputState = initialState,
-  action: AddResourceAction | LoadResourceErrorAction | ViewResourceAction,
-): ReferrableResourcesState {
+export function reduce(inputState = initialState, action: AnyAction): ReferrableResourcesState {
   const now = new Date();
-  const state = expireOldResources(inputState, now);
+  const state: ReferrableResourcesState = {
+    ...expireOldResources(inputState, now),
+    search: resourceSearchReducer(inputState.search, action),
+  };
 
   switch (action.type) {
     case ADD_RESOURCE: {
@@ -109,6 +138,12 @@ export function reduce(
       return {
         ...state,
         route: { page: ResourcePage.ViewResource, id: action.id },
+      };
+    }
+    case NAVIGATE_TO_SEARCH: {
+      return {
+        ...state,
+        route: { page: ResourcePage.Search },
       };
     }
 

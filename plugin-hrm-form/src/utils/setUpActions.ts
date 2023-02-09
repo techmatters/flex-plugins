@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import {
   Manager,
   TaskHelper,
@@ -12,7 +28,6 @@ import { Conversation } from '@twilio/conversations';
 import { callTypes } from 'hrm-form-definitions';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
-import { DEFAULT_TRANSFER_MODE } from '../HrmFormPlugin';
 import {
   transferChatStart,
   adjustChatCapacity,
@@ -33,11 +48,13 @@ import { prepopulateForm } from './prepopulateForm';
 import { recordEvent } from '../fullStory';
 import { CustomITask, FeatureFlags } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
+import { subscribeAlertOnConversationJoined } from './audioNotifications';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
 type ActionPayload = { task: ITask };
 type ActionPayloadWithOptions = ActionPayload & { options: { mode: string }; targetSid: string };
+const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 export const loadCurrentDefinitionVersion = async () => {
   const { definitionVersion } = getHrmConfig();
@@ -125,10 +142,6 @@ const sendMessageOfKey = (messageKey: string) => (
   await conversation.sendMessage(message);
 };
 
-/**
- * @param {string} messageKey
- * @returns {(setupObject: ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }) => import('@twilio/flex-ui').ActionFunction}
- */
 const sendSystemMessageOfKey = (messageKey: string) => (
   setupObject: SetupObject,
   getMessage: (key: string) => (key: string) => Promise<string>,
@@ -184,6 +197,10 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   payload: ActionPayload,
 ) => {
   const { task } = payload;
+
+  if (TaskHelper.isChatBasedTask(task)) {
+    subscribeAlertOnConversationJoined(task);
+  }
 
   if (featureFlags.enable_transfers && TransferHelpers.hasTransferStarted(task)) handleTransferredTask(task);
   else prepopulateForm(task);

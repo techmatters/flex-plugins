@@ -1,14 +1,30 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { ArrowDownward } from '@material-ui/icons';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { getConfig } from '../../HrmFormPlugin';
 import { CLTableHeaderFont, CLHeaderTableCell } from '../../styles/caseList';
 import { ListCasesQueryParams, ListCasesSortDirection } from '../../types/types';
 import * as CaseListSettingsActions from '../../states/caseList/settings';
 import { caseListBase, namespace, RootState } from '../../states';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 type SortDirection = ListCasesQueryParams['sortDirection'];
 type SortBy = ListCasesQueryParams['sortBy'];
@@ -38,7 +54,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
   updateCaseListSort,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const { featureFlags, strings } = getConfig();
+  const featureFlags = getAseloFeatureFlags();
 
   const drawSort = () => {
     if (!featureFlags.enable_sort_cases) return null;

@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/prop-types */
 import React from 'react';
@@ -11,13 +27,13 @@ import { changeRoute } from '../../states/routing/actions';
 import { withLocalization } from '../../contexts/LocalizationContext';
 import { Box, Flex } from '../../styles/HrmStyles';
 import { Container, Label, DataCallTypeButton, NonDataCallTypeButton } from '../../styles/callTypeButtons';
-import { isNonDataCallType } from '../../states/ValidationRules';
+import { isNonDataCallType } from '../../states/validationRules';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';
-import { getConfig } from '../../HrmFormPlugin';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
 import { CustomITask, isOfflineContactTask } from '../../types/types';
+import { getTemplateStrings } from '../../hrmConfig';
 
 const isDialogOpen = contactForm =>
   Boolean(contactForm && contactForm.callType && contactForm.callType && isNonDataCallType(contactForm.callType));
@@ -81,7 +97,7 @@ const CallTypeButtons: React.FC<Props> = props => {
       await submitContactForm(task, contactForm, caseForm);
       await completeTask(task);
     } catch (error) {
-      const { strings } = getConfig();
+      const strings = getTemplateStrings();
       if (!window.confirm(strings['Error-ContinueWithoutRecording'])) {
         await completeTask(task);
       }

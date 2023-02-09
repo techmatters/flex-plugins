@@ -18,7 +18,7 @@
     "url": "git+https://github.com/techmatters/flex-plugin.git"
   },
   "author": "Tech Matters",
-  "license": "ISC",
+  "license": "AGPL",
   "bugs": {
     "url": "https://github.com/techmatters/flex-plugin/issues"
   },

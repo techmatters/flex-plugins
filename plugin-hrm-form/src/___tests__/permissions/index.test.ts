@@ -1,6 +1,21 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import each from 'jest-each';
 
-import { getConfig } from '../../HrmFormPlugin';
 import * as fetchRulesModule from '../../permissions/fetchRules';
 import {
   getPermissionsForCase,
@@ -11,9 +26,10 @@ import {
   ContactActions,
   ViewIdentifiersAction,
 } from '../../permissions';
+import { getHrmConfig } from '../../hrmConfig';
 
-jest.mock('../../HrmFormPlugin');
-
+jest.mock('../../hrmConfig');
+const mockGetHrmConfig = getHrmConfig as jest.Mock<Partial<ReturnType<typeof getHrmConfig>>>;
 const buildRules = conditionsSets =>
   Object.values(PermissionActions).reduce((accum, action) => ({ ...accum, [action]: conditionsSets }), {});
 
@@ -25,7 +41,7 @@ describe('Test that all actions work fine (everyone)', () => {
   const rules = buildRules([['everyone']]);
   jest.spyOn(fetchRulesModule, 'fetchRules').mockReturnValue(rules);
 
-  getConfig.mockReturnValue({
+  mockGetHrmConfig.mockReturnValue({
     workerSid: 'not creator',
     isSupervisor: false,
     permissionConfig: 'wareva',
@@ -129,7 +145,7 @@ describe('Test different scenarios (all CasesActions)', () => {
       const rules = buildRules(conditionsSets);
       jest.spyOn(fetchRulesModule, 'fetchRules').mockReturnValueOnce(rules);
 
-      getConfig.mockReturnValueOnce({
+      mockGetHrmConfig.mockReturnValueOnce({
         workerSid,
         isSupervisor,
         permissionConfig: 'wareva',
@@ -218,7 +234,7 @@ describe('Test different scenarios (all ContactActions)', () => {
       const rules = buildRules(conditionsSets);
       jest.spyOn(fetchRulesModule, 'fetchRules').mockReturnValueOnce(rules);
 
-      getConfig.mockReturnValueOnce({
+      mockGetHrmConfig.mockReturnValueOnce({
         workerSid,
         isSupervisor,
         permissionConfig: 'wareva',
@@ -277,7 +293,7 @@ describe('Test different scenarios for ViewIdentifiersAction', () => {
       const rules = buildRules(conditionsSets);
       jest.spyOn(fetchRulesModule, 'fetchRules').mockReturnValueOnce(rules);
 
-      getConfig.mockReturnValueOnce({
+      mockGetHrmConfig.mockReturnValueOnce({
         isSupervisor,
         permissionConfig: 'wareva',
       });

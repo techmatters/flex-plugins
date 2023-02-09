@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import React, { Dispatch } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { CircularProgress } from '@material-ui/core';
@@ -6,13 +22,13 @@ import { connect, ConnectedProps } from 'react-redux';
 import CSAMReportStatusScreen from './CSAMReportStatusScreen';
 import CSAMReportCounsellorForm from './CSAMReportCounsellorForm';
 import { CenterContent, CSAMReportContainer, CSAMReportLayout } from '../../styles/CSAMReport';
-import { getConfig } from '../../HrmFormPlugin';
 import { configurationBase, namespace, RootState } from '../../states';
 import { CSAMPage, CSAMReportApi } from './csamReportApi';
 import * as t from '../../states/contacts/actions';
 import { isChildTaskEntry, isCounsellorTaskEntry } from '../../states/csam-report/types';
 import CSAMReportTypePickerForm from './CSAMReportTypePicker';
 import CSAMReportChildForm from './CSAMReportChildForm';
+import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 
 type OwnProps = {
   api: CSAMReportApi;
@@ -59,7 +75,8 @@ export const CSAMReportScreen: React.FC<Props> = ({
 }) => {
   const methods = useForm({ reValidateMode: 'onChange' });
 
-  const { workerSid, strings } = getConfig();
+  const { workerSid } = getHrmConfig();
+  const strings = getTemplateStrings();
   const currentCounselor = counselorsHash[workerSid];
 
   React.useEffect(() => {
@@ -83,13 +100,13 @@ export const CSAMReportScreen: React.FC<Props> = ({
       navigate(CSAMPage.Status, csamReportState.reportType);
     } catch (err) {
       console.error(err);
-      window.alert(getConfig().strings['Error-Backend']);
+      window.alert(strings['Error-Backend']);
       navigate(CSAMPage.Form, csamReportState.reportType);
     }
   };
 
   const onInvalid = () => {
-    window.alert(getConfig().strings['Error-Form']);
+    window.alert(strings['Error-Form']);
   };
 
   const onSendAnotherReport = () => {

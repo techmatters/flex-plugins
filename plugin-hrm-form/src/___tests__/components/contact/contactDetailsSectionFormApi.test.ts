@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import each from 'jest-each';
 import { DefinitionVersion, DefinitionVersionId, FormInputType, loadDefinition } from 'hrm-form-definitions';
 
@@ -35,8 +51,24 @@ beforeAll(async () => {
       IssueCategorizationTab: helpline => {
         if (helpline !== 'test helpline') throw Error();
         return {
-          category1: { color: '', subcategories: ['sub1', 'sub2', 'sub3', 'sub4'] },
-          category2: { color: '', subcategories: ['sub1', 'sub2', 'sub3', 'sub4'] },
+          category1: {
+            color: '',
+            subcategories: [
+              { label: 'sub1', toolkitUrl: '' },
+              { label: 'sub2', toolkitUrl: '' },
+              { label: 'sub3', toolkitUrl: '' },
+              { label: 'sub4', toolkitUrl: '' },
+            ],
+          },
+          category2: {
+            color: '',
+            subcategories: [
+              { label: 'sub1', toolkitUrl: '' },
+              { label: 'sub2', toolkitUrl: '' },
+              { label: 'sub3', toolkitUrl: '' },
+              { label: 'sub4', toolkitUrl: '' },
+            ],
+          },
         };
       },
     },

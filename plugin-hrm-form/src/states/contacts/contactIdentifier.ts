@@ -1,9 +1,25 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { HrmServiceContact } from '../../types/types';
+import { ContactRawJson, HrmServiceContact, SearchAPIContact } from '../../types/types';
 
-const extractName = (contact: HrmServiceContact, placeholder: string) => {
-  const { firstName, lastName } = contact?.rawJson?.childInformation ?? {};
+const extractName = (contact: ContactRawJson, placeholder: string) => {
+  const { firstName, lastName } = contact?.childInformation ?? {};
   if ((firstName === 'Unknown' && lastName === 'Unknown') || (!firstName && !lastName)) {
     return placeholder;
   }
@@ -16,13 +32,28 @@ const definitionUsesChildName = (definition: DefinitionVersion) =>
       definition.tabbedForms.ChildInformationTab.find(input => input.name === 'firstName' || input.name === 'lastName'),
   );
 
-export const contactLabel = (
+type ContactLabelOptions = { placeholder?: string; substituteForId?: boolean };
+
+const contactLabel = (
   definition: DefinitionVersion,
-  contact: HrmServiceContact,
-  { placeholder = 'Unknown', substituteForId = true }: { placeholder?: string; substituteForId?: boolean } = {},
+  { placeholder = 'Unknown', substituteForId = true }: ContactLabelOptions = {},
+  contactDetails?: ContactRawJson,
+  id?: string,
 ) => {
   if (definitionUsesChildName(definition)) {
-    return extractName(contact, placeholder);
+    return extractName(contactDetails, placeholder);
   }
-  return contact && contact.id && substituteForId ? `#${contact?.id}` : placeholder;
+  return id && substituteForId ? `#${id}` : placeholder;
 };
+
+export const contactLabelFromHrmContact = (
+  definition: DefinitionVersion,
+  contact: HrmServiceContact,
+  options: ContactLabelOptions = {},
+) => contactLabel(definition, options, contact?.rawJson, contact?.id);
+
+export const contactLabelFromSearchContact = (
+  definition: DefinitionVersion,
+  contact: SearchAPIContact,
+  options: ContactLabelOptions = {},
+) => contactLabel(definition, options, contact?.details, contact?.contactId);

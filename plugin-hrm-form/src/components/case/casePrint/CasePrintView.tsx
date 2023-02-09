@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-max-depth */
 import React, { useState, useEffect } from 'react';
@@ -7,7 +23,6 @@ import { ButtonBase, CircularProgress } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { DefinitionVersion, callTypes } from 'hrm-form-definitions';
 
-import { getConfig } from '../../../HrmFormPlugin';
 import CasePrintSection from './CasePrintSection';
 import CasePrintSummary from './CasePrintSummary';
 import styles, { useThaiFontFamily } from './styles';
@@ -21,6 +36,7 @@ import CasePrintFooter from './CasePrintFooter';
 // import CasePrintContact from './CasePrintContact'; // Removed by ZA request, could be useful for other helplines.
 import { getImageAsString, ImageSource } from './helpers';
 import { getLocaleDateTime } from '../../../utils/helpers';
+import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   onClickClose: () => void;
@@ -31,7 +47,8 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionVersion, counselorsHash }) => {
-  const { pdfImagesSource, strings } = getConfig();
+  const strings = getTemplateStrings();
+  const { pdfImagesSource } = getHrmConfig();
 
   const logoSource = `${pdfImagesSource}/helpline-logo.png`;
   const chkOnSource = `${pdfImagesSource}/chk_1.png`;

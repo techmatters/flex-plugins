@@ -1,21 +1,37 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import each from 'jest-each';
 
-import { getConfig } from '../../HrmFormPlugin';
+import { getHrmConfig } from '../../hrmConfig';
 import fetchProtectedApi, { ProtectedApiError } from '../../services/fetchProtectedApi';
 
 global.fetch = jest.fn();
 
-jest.mock('../../HrmFormPlugin');
+jest.mock('../../hrmConfig');
 
 describe('fetchProtectedApi', () => {
   const mockFetch = fetch as jest.Mock<Promise<Partial<Response>>>;
-  const mockGetConfig = getConfig as jest.Mock<Partial<ReturnType<typeof getConfig>>>;
+  const mockHrmGetConfig = getHrmConfig as jest.Mock<Partial<ReturnType<typeof getHrmConfig>>>;
   const requestBody = { an: 'input', another: '1' };
 
   beforeEach(() => {
     mockFetch.mockClear();
-    mockGetConfig.mockClear();
-    mockGetConfig.mockReturnValue({ token: 'of my appreciation', serverlessBaseUrl: 'https://all.your/base' });
+    mockHrmGetConfig.mockClear();
+    mockHrmGetConfig.mockReturnValue({ token: 'of my appreciation', serverlessBaseUrl: 'https://all.your/base' });
   });
 
   describe('OK response', () => {

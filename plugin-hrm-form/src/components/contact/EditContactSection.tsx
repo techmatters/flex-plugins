@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import { connect, ConnectedProps } from 'react-redux';
 import React, { Dispatch, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -11,13 +27,13 @@ import { updateContactInHrm } from '../../services/ContactService';
 import { Box, StyledNextStepButton, BottomButtonBar, Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
 import { CaseActionTitle, EditContactContainer } from '../../styles/case';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
-import { getConfig } from '../../HrmFormPlugin';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { ContactDetailsSectionFormApi, IssueCategorizationSectionFormApi } from './contactDetailsSectionFormApi';
 import { clearDraft, refreshRawContact } from '../../states/contacts/existingContacts';
 import CloseCaseDialog from '../case/CloseCaseDialog';
 import * as t from '../../states/contacts/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
+import { getTemplateStrings } from '../../hrmConfig';
 
 type OwnProps = {
   context: DetailsContext;
@@ -46,7 +62,7 @@ const EditContactSection: React.FC<Props> = ({
     shouldFocusError: false,
     mode: 'onSubmit',
   });
-  const { strings } = getConfig();
+  const strings = getTemplateStrings();
 
   const version = savedContact?.details.definitionVersion;
 
@@ -89,7 +105,6 @@ const EditContactSection: React.FC<Props> = ({
   };
 
   const onError = recordingErrorHandler('Edit Contact Form', () => {
-    const { strings } = getConfig();
     window.alert(strings['Error-Form']);
   });
 

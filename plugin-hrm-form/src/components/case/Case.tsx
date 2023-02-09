@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 /* eslint-disable react/prop-types,complexity,sonarjs/cognitive-complexity */
 import React, { useEffect, useMemo, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
@@ -12,7 +28,6 @@ import {
   RootState,
   routingBase,
 } from '../../states';
-import { getConfig } from '../../HrmFormPlugin';
 import { connectToCase, transformCategories } from '../../services/ContactService';
 import { cancelCase, updateCase } from '../../services/CaseService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
@@ -23,7 +38,7 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import ViewContact from './ViewContact';
-import { Activity, CaseDetails, CaseDetailsName, ConnectedCaseActivity, NoteActivity } from '../../states/case/types';
+import { Activity, CaseDetails, ConnectedCaseActivity, NoteActivity } from '../../states/case/types';
 import { Case as CaseType, CustomITask, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import {
@@ -54,7 +69,8 @@ import { CaseSectionApi } from '../../states/case/sections/api';
 import * as ContactActions from '../../states/contacts/existingContacts';
 import { searchContactToHrmServiceContact, taskFormToSearchContact } from '../../states/contacts/contactDetailsAdapter';
 import { ChannelTypes } from '../../states/DomainConstants';
-import { contactLabel } from '../../states/contacts/contactIdentifier';
+import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
+import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -94,7 +110,8 @@ const Case: React.FC<Props> = ({
   const { connectedCase } = props?.connectedCaseState ?? {};
   // This is to provide a stable dep for the useEffect that generates the timeline
   const savedContactsJson = JSON.stringify(savedContacts);
-  const { workerSid } = getConfig();
+  const { workerSid } = getHrmConfig();
+  const strings = getTemplateStrings();
 
   const timeline: Activity[] = useMemo(
     () => {
@@ -235,7 +252,6 @@ const Case: React.FC<Props> = ({
     } catch (error) {
       console.error(error);
       recordBackendError('Update Case', error);
-      const { strings } = getConfig();
       window.alert(strings['Error-Backend']);
     } finally {
       setLoading(false);
@@ -249,8 +265,6 @@ const Case: React.FC<Props> = ({
 
   const handleSaveAndEnd = async () => {
     setLoading(true);
-
-    const { strings } = getConfig();
 
     // Validating that task isn't a StandaloneITask.
     if (isStandaloneITask(task)) return;
@@ -272,7 +286,7 @@ const Case: React.FC<Props> = ({
 
   const caseDetails: CaseDetails = {
     id: connectedCase.id,
-    contactIdentifier: contactLabel(definitionVersion, firstConnectedContact, {
+    contactIdentifier: contactLabelFromHrmContact(definitionVersion, firstConnectedContact, {
       placeholder: '',
       substituteForId: false,
     }),

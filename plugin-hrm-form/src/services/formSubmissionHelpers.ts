@@ -1,7 +1,22 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 /* eslint-disable import/no-unused-modules */
 import { Actions, ITask, Manager } from '@twilio/flex-ui';
 
-import { getConfig } from '../HrmFormPlugin';
 import { TaskEntry as Contact } from '../states/contacts/reducer';
 import { Case, CustomITask, isOfflineContactTask, offlineContactTaskSid } from '../types/types';
 import { channelTypes } from '../states/DomainConstants';
@@ -9,6 +24,7 @@ import { buildInsightsData } from './InsightsService';
 import { saveContact } from './ContactService';
 import { assignOfflineContactInit, assignOfflineContactResolve } from './ServerlessService';
 import { removeContactState } from '../states/actions';
+import { getHrmConfig } from '../hrmConfig';
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
@@ -39,7 +55,7 @@ export const completeTask = (task: CustomITask) =>
   isOfflineContactTask(task) ? completeContactlessTask(task) : completeContactTask(task);
 
 export const submitContactForm = async (task: CustomITask, contactForm: Contact, caseForm: Case) => {
-  const { workerSid } = getConfig();
+  const { workerSid } = getHrmConfig();
 
   if (isOfflineContactTask(task)) {
     const targetWorkerSid = contactForm.contactlessTask.createdOnBehalfOf as string;

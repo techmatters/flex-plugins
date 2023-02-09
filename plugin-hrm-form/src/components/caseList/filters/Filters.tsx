@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
 import { Template } from '@twilio/flex-ui';
@@ -6,7 +22,6 @@ import FilterList from '@material-ui/icons/FilterList';
 import DateRange from '@material-ui/icons/DateRange';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { getConfig } from '../../../HrmFormPlugin';
 import {
   FiltersContainer,
   FiltersResetAll,
@@ -26,7 +41,7 @@ import {
 import CategoriesFilter, { Category } from './CategoriesFilter';
 import { caseListBase, configurationBase, namespace, RootState } from '../../../states';
 import * as CaseListSettingsActions from '../../../states/caseList/settings';
-import { Flex } from '../../../styles/HrmStyles';
+import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 /**
  * Reads the definition version and returns and array of items (type Item[])
  * to be used as the options for the status filter
@@ -47,7 +62,11 @@ const getStatusInitialValue = (definitionVersion: DefinitionVersion) =>
  * @returns Item[]
  */
 const getCounselorsInitialValue = (counselorsHash: CounselorHash) =>
-  Object.keys(counselorsHash).map(key => ({ value: key, label: counselorsHash[key], checked: false }));
+  Object.keys(counselorsHash).map(key => ({
+    value: key,
+    label: counselorsHash[key],
+    checked: false,
+  }));
 
 const getInitialDateFilters = (): DateFilter[] => [
   {
@@ -78,8 +97,8 @@ const getCategoriesInitialValue = (definitionVersion: DefinitionVersion, helplin
     ([categoryName, { subcategories }]) => ({
       categoryName,
       subcategories: subcategories.map(subcategory => ({
-        value: subcategory,
-        label: subcategory,
+        value: subcategory.label,
+        label: subcategory.label,
         checked: false,
       })),
     }),
@@ -148,7 +167,9 @@ const Filters: React.FC<Props> = ({
   updateCaseListFilter,
   clearCaseListFilter,
 }) => {
-  const { strings, featureFlags, helpline } = getConfig();
+  const strings = getTemplateStrings();
+  const featureFlags = getAseloFeatureFlags();
+  const { helpline } = getHrmConfig();
 
   const statusInitialValues = getStatusInitialValue(currentDefinitionVersion);
   const categoriesInitialValues = getCategoriesInitialValue(currentDefinitionVersion, helpline);

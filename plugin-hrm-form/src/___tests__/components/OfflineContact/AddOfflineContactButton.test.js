@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import React from 'react';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { render, screen } from '@testing-library/react';
@@ -11,13 +27,13 @@ import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 import HrmTheme from '../../../styles/HrmTheme';
 import { AddOfflineContactButton } from '../../../components/OfflineContact';
 import { namespace, routingBase, configurationBase } from '../../../states';
-import { reRenderAgentDesktop } from '../../../HrmFormPlugin';
+import { rerenderAgentDesktop } from '../../../rerenderView';
 
 let v1;
 
 jest.mock('../../../services/ServerlessService');
-jest.mock('../../../HrmFormPlugin', () => ({
-  reRenderAgentDesktop: jest.fn(),
+jest.mock('../../../rerenderView', () => ({
+  rerenderAgentDesktop: jest.fn(),
 }));
 jest.mock('@twilio/flex-ui', () => ({
   ...jest.requireActual('@twilio/flex-ui'),
@@ -30,7 +46,7 @@ beforeAll(async () => (v1 = await loadDefinition(DefinitionVersionId.v1)));
 
 beforeEach(async () => {
   Actions.invokeAction.mockClear();
-  reRenderAgentDesktop.mockClear();
+  rerenderAgentDesktop.mockClear();
 });
 
 const themeConf = {
@@ -70,7 +86,7 @@ test('click on button', async () => {
   await Promise.resolve();
 
   expect(Actions.invokeAction).toHaveBeenCalledTimes(1);
-  expect(reRenderAgentDesktop).toHaveBeenCalledTimes(1);
+  expect(rerenderAgentDesktop).toHaveBeenCalledTimes(1);
   /*
    * This is failing and couldn't fix it yet
    * expect(recreateContactState).toHaveBeenCalled();
@@ -105,7 +121,7 @@ test('button should be disabled (default task exists)', () => {
   screen.getByText('OfflineContactButtonText').click();
 
   expect(Actions.invokeAction).not.toHaveBeenCalled();
-  expect(reRenderAgentDesktop).not.toHaveBeenCalled();
+  expect(rerenderAgentDesktop).not.toHaveBeenCalled();
   expect(recreateContactState).not.toHaveBeenCalled();
 });
 

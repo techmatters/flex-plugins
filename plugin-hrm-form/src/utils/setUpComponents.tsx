@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 /* eslint-disable react/display-name */
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
@@ -5,6 +21,7 @@ import * as Flex from '@twilio/flex-ui';
 
 import { AcceptTransferButton, RejectTransferButton, TransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
+import EmojiPicker from '../components/emojiPicker';
 import CannedResponses from '../components/CannedResponses';
 import QueuesStatusWriter from '../components/queuesStatus/QueuesStatusWriter';
 import QueuesStatus from '../components/queuesStatus';
@@ -24,11 +41,11 @@ import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles/HrmS
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
-// eslint-disable-next-line
 import { FeatureFlags, isInMyBehalfITask } from '../types/types';
-import { SetupObject } from '../HrmFormPlugin';
 import { colors } from '../channels/colors';
+import { getHrmConfig } from '../hrmConfig';
 
+type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
  * Returns the UI for the "Contacts Waiting" section
  */
@@ -345,4 +362,11 @@ export const removeActionsIfTransferring = () => {
 export const setupCannedResponses = () => {
   Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" />);
   Flex.MessageInputV2.Content.add(<CannedResponses key="canned-responses" />);
+};
+
+/**
+ * Emoji Picker
+ */
+export const setupEmojiPicker = () => {
+  Flex.MessageInputActions.Content.add(<EmojiPicker key="emoji-picker" />);
 };

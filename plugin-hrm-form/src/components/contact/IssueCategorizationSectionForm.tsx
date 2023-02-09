@@ -1,13 +1,30 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
-import type { CategoriesDefinition } from 'hrm-form-definitions';
+import type { CategoriesDefinition, HelplineDefinitions, HelplineEntry } from 'hrm-form-definitions';
 
 import { RootState } from '../../states';
 import { CategoriesFromDefinition, createSubCategoriesInputs } from '../common/forms/categoriesTabGenerator';
 import useFocus from '../../utils/useFocus';
 import { IssueCategorizationStateApi } from '../../states/contacts/issueCategorizationStateApi';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 type OwnProps = {
   display: boolean;
@@ -32,6 +49,7 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
 }) => {
   const shouldFocusFirstElement = display && autoFocus;
   const firstElementRef = useFocus(shouldFocusFirstElement);
+  const featureFlags = getAseloFeatureFlags();
 
   const { getValues, setValue } = useFormContext();
   const IssueCategorizationTabDefinition = definition;
@@ -52,8 +70,14 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
     };
 
     if (IssueCategorizationTabDefinition === null || IssueCategorizationTabDefinition === undefined) return {};
-    return createSubCategoriesInputs(IssueCategorizationTabDefinition, ['categories'], updateCallback);
-  }, [IssueCategorizationTabDefinition, getValues, updateForm]);
+    const counselorToolkitsEnabled = featureFlags.enable_counselor_toolkits;
+    return createSubCategoriesInputs(
+      IssueCategorizationTabDefinition,
+      ['categories'],
+      updateCallback,
+      counselorToolkitsEnabled,
+    );
+  }, [IssueCategorizationTabDefinition, featureFlags.enable_counselor_toolkits, getValues, updateForm]);
 
   return (
     <CategoriesFromDefinition

@@ -1,11 +1,26 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin, loadCSS } from '@twilio/flex-plugin';
 import type Rollbar from 'rollbar';
 
 import './styles/global-overrides.css';
-import reducers, { namespace, configurationBase, RootState } from './states';
+import reducers, { namespace } from './states';
 import HrmTheme, { overrides } from './styles/HrmTheme';
-import { transferModes } from './states/DomainConstants';
 import { initLocalization } from './utils/pluginHelpers';
 import * as Providers from './utils/setUpProviders';
 import * as ActionFunctions from './utils/setUpActions';
@@ -15,36 +30,23 @@ import * as Channels from './channels/setUpChannels';
 import setUpMonitoring from './utils/setUpMonitoring';
 import { changeLanguage } from './states/configuration/actions';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from './permissions';
-import { subscribeToConfigUpdates, getHrmConfig, getResourceStrings, getAseloFeatureFlags } from './hrmConfig';
+import {
+  getAseloFeatureFlags,
+  getHrmConfig,
+  getTemplateStrings,
+  initializeConfig,
+  subscribeToConfigUpdates,
+} from './hrmConfig';
 import { setUpSharedStateClient } from './utils/sharedState';
 import { FeatureFlags } from './types/types';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
-
-// Re-exported for backwards compatibility, we should move to getHrmConfig & remove this
-export { getConfig } from './hrmConfig';
+import { subscribeNewMessageAlertOnPluginInit, subscribeReservedTaskAlert } from './utils/audioNotifications';
+import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
-export const DEFAULT_TRANSFER_MODE = transferModes.cold;
-
 // eslint-disable-next-line import/no-unused-modules
 export type SetupObject = ReturnType<typeof getHrmConfig>;
-
-/**
- * Helper to expose the forms definitions without the need of calling Manager
- */
-export const getDefinitionVersions = () => {
-  const { currentDefinitionVersion, definitionVersions } = (Flex.Manager.getInstance().store.getState() as RootState)[
-    namespace
-  ][configurationBase];
-
-  return { currentDefinitionVersion, definitionVersions };
-};
-
-export const reRenderAgentDesktop = async () => {
-  await Flex.Actions.invokeAction('NavigateToView', { viewName: 'empty-view' });
-  await Flex.Actions.invokeAction('NavigateToView', { viewName: 'agent-desktop' });
-};
 
 const setUpTransfers = () => {
   setUpSharedStateClient();
@@ -56,7 +58,7 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   const { counselorLanguage, helplineLanguage } = config;
 
   const twilioStrings = { ...manager.strings }; // save the originals
-  const setNewStrings = (newStrings: typeof getResourceStrings) =>
+  const setNewStrings = (newStrings: typeof getTemplateStrings) =>
     (manager.strings = { ...manager.strings, ...newStrings });
   const afterNewStrings = (language: string) => {
     manager.store.dispatch(changeLanguage(language));
@@ -105,7 +107,9 @@ const setUpComponents = (
 
   Components.setUpStandaloneSearch();
   setUpReferrableResources();
+  setUpCounselorToolkits();
 
+  if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 
   if (maskIdentifiers) {
@@ -119,7 +123,7 @@ const setUpComponents = (
     };
     Flex.MessageList.Content.remove('0');
     // Masks TaskInfoPanelContent - TODO: refactor to use a react component
-    const strings = getResourceStrings();
+    const strings = getTemplateStrings();
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
     strings.CallParticipantCustomerName = strings.MaskIdentifiers;
   }
@@ -196,6 +200,9 @@ export default class HrmFormPlugin extends FlexPlugin {
     setUpActions(featureFlags, config, getMessage);
     TaskRouterListeners.setTaskWrapupEventListeners(featureFlags);
 
+    subscribeReservedTaskAlert();
+    subscribeNewMessageAlertOnPluginInit();
+
     const managerConfiguration: Flex.Config = {
       // colorTheme: HrmTheme,
       theme: {
@@ -235,3 +242,5 @@ export default class HrmFormPlugin extends FlexPlugin {
     subscribeToConfigUpdates(manager);
   }
 }
+
+initializeConfig();
