@@ -88,7 +88,7 @@ const formToDateFilter = (
   filterOptions: DateFilterOption[],
   values: ReactHookFormValues,
 ): DateFilterValue | undefined => {
-  const { ...selected } = Object(filterOptions.find(([opt]) => opt === values[selectedOptionField]))[1];
+  const [, selected] = filterOptions?.find(([opt]) => opt === values[selectedOptionField]) ?? [];
   if (!selected) {
     return undefined;
   }
