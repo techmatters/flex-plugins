@@ -36,7 +36,7 @@ if [[ ! " ${environments[@]} " =~ " ${environment} " ]]; then
 fi
 
 # Convert helpline to lowercase
-helpine="${helpline,,}"
+helpline="${helpline,,}"
 
 path="form-definitions/${helpline}"
 helpline_dir="./hrm-form-definitions/${path}"
