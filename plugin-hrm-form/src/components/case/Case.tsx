@@ -214,7 +214,7 @@ const Case: React.FC<Props> = ({
 
   const handleCloseSection = () => changeRoute(closeSubSectionRoute(), task.taskSid);
 
-  const definitionVersion = props.definitionVersions[version] ?? props.currentDefinitionVersion;
+  const definitionVersion = props.definitionVersions[version];
 
   if (!props.connectedCaseState || !definitionVersion) return null;
 
