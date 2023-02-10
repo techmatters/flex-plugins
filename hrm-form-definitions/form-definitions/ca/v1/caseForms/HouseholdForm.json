@@ -39,7 +39,7 @@
   {
     "name": "otherMinorAtRisk",
     "label": "Minor at risk?",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "phone",
