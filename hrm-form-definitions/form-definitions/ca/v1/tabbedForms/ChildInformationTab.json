@@ -616,6 +616,6 @@
   {
     "name": "Newcomer",
     "label": "Newcomer (e.g., Arrived in Canada within 5 years or less)/Recent Immigrant/Refugee",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   }
 ]
