@@ -60,5 +60,7 @@
   "CaseList-Filters-SearchByCategory": "Search by Issue Tag",
   "Category": "Issue Tag",
   "TabbedForms-AddChildInfoTab": "Person",
+  "Toolkit-ConfirmTextOne": "Clicking on this icon will open up Kids Help Phone's KMS in a new tab in your browser",
+  "Toolkit-ConfirmTextTwo": "Press Yes to continue.",
   "Error-CategoryRequired": "Required 1 issue tag minimum, 3 issue tags maximum. Click on the icon next to an issue tag to open up the relevant tipsheet in a new tab."
 }
