@@ -49,11 +49,13 @@ import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../..
  * @returns Item[]
  */
 const getStatusInitialValue = (definitionVersion: DefinitionVersion) =>
-  Object.values(definitionVersion.caseStatus).map(caseStatus => ({
-    value: caseStatus.value,
-    label: caseStatus.label,
-    checked: false,
-  }));
+  definitionVersion
+    ? Object.values(definitionVersion.caseStatus).map(caseStatus => ({
+        value: caseStatus.value,
+        label: caseStatus.label,
+        checked: false,
+      }))
+    : [];
 
 /**
  * Reads the counselors hash and returns and array of items (type Item[])
@@ -89,20 +91,20 @@ const getInitialDateFilters = (): DateFilter[] => [
 /**
  * Reads the definition version and returns and array of categories (type Category[])
  * to be used as the options for the categories filter
- * @param definitionVersion DefinitionVersion
- * @returns Item[]
  */
 const getCategoriesInitialValue = (definitionVersion: DefinitionVersion, helpline: string) =>
-  Object.entries(definitionVersion.tabbedForms.IssueCategorizationTab(helpline)).map(
-    ([categoryName, { subcategories }]) => ({
-      categoryName,
-      subcategories: subcategories.map(subcategory => ({
-        value: subcategory.label,
-        label: subcategory.label,
-        checked: false,
-      })),
-    }),
-  );
+  definitionVersion
+    ? Object.entries(definitionVersion.tabbedForms.IssueCategorizationTab(helpline)).map(
+        ([categoryName, { subcategories }]) => ({
+          categoryName,
+          subcategories: subcategories.map(subcategory => ({
+            value: subcategory.label,
+            label: subcategory.label,
+            checked: false,
+          })),
+        }),
+      )
+    : [];
 
 /**
  * Convert an array of items (type Item[]) into an array of strings.
@@ -150,7 +152,7 @@ const getUpdatedCategoriesValues = (categories: CategoryFilter[], categoriesValu
 };
 
 type OwnProps = {
-  currentDefinitionVersion: DefinitionVersion;
+  currentDefinitionVersion?: DefinitionVersion;
   caseCount: number;
 };
 
@@ -171,18 +173,22 @@ const Filters: React.FC<Props> = ({
   const featureFlags = getAseloFeatureFlags();
   const { helpline } = getHrmConfig();
 
-  const statusInitialValues = getStatusInitialValue(currentDefinitionVersion);
-  const categoriesInitialValues = getCategoriesInitialValue(currentDefinitionVersion, helpline);
-
   const [openedFilter, setOpenedFilter] = useState<string>();
-  const [statusValues, setStatusValues] = useState<Item[]>(statusInitialValues);
+  const [statusValues, setStatusValues] = useState<Item[]>(getStatusInitialValue(currentDefinitionVersion));
   const [counselorValues, setCounselorValues] = useState<Item[]>(getCounselorsInitialValue(counselorsHash));
   const [dateFilterValues, setDateFilterValues] = useState<{
     createdAt?: DateFilterValue;
     updatedAt?: DateFilterValue;
     followUpDate?: DateFilterValue;
   }>({});
-  const [categoriesValues, setCategoriesValues] = useState<Category[]>(categoriesInitialValues);
+  const [categoriesValues, setCategoriesValues] = useState<Category[]>(
+    getCategoriesInitialValue(currentDefinitionVersion, helpline),
+  );
+
+  useEffect(() => {
+    setStatusValues(getStatusInitialValue(currentDefinitionVersion));
+    setCategoriesValues(getCategoriesInitialValue(currentDefinitionVersion, helpline));
+  }, [currentDefinitionVersion, helpline]);
 
   // Updates UI state from current filters
   useEffect(() => {
@@ -199,6 +205,8 @@ const Filters: React.FC<Props> = ({
     setCategoriesValues(newCategoriesValues);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentFilterCompare, counselorsHashCompare]);
+
+  if (!currentDefinitionVersion) return null;
 
   const handleApplyStatusFilter = (values: Item[]) => {
     updateCaseListFilter({ statuses: filterCheckedItems(values) });

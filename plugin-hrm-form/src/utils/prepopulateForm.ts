@@ -146,6 +146,10 @@ export const prepopulateForm = (task: ITask) => {
   if (!memory && !preEngagementData) return;
 
   const { currentDefinitionVersion } = getDefinitionVersions();
+  if (!currentDefinitionVersion) {
+    console.warn('Attempting to prepopulate a form but no definition has been loaded, abandoning attempt.');
+    return;
+  }
   const { tabbedForms, prepopulateKeys } = currentDefinitionVersion;
   const { ChildInformationTab, CallerInformationTab, CaseInformationTab } = tabbedForms;
   const { preEngagement, survey } = prepopulateKeys;

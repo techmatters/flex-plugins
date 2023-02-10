@@ -115,7 +115,6 @@ const CaseHome: React.FC<Props> = ({
     caseCounselor,
     status,
     followUpDate,
-    version,
   } = caseDetails;
   const statusLabel = definitionVersion.caseStatus[status]?.label ?? status;
 
@@ -212,7 +211,7 @@ const CaseHome: React.FC<Props> = ({
             availableStatusTransitions={connectedCaseState.availableStatusTransitions}
             office={office?.label}
             handlePrintCase={onPrintCase}
-            definitionVersionName={version}
+            definitionVersion={definitionVersion}
             isOrphanedCase={!contact}
             editCaseSummary={onEditCaseSummaryClick}
           />

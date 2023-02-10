@@ -125,12 +125,10 @@ export const getTemplateStrings = () => cachedConfig.strings;
 export const getAseloFeatureFlags = (): FeatureFlags => cachedConfig.featureFlags;
 
 /**
- * Helper to expose the forms definitions without the need of calling Manager
+ * DO NOT USE IN REACT COMPONENTS! Using this in react components can lead to race conditions on loading where the component loads before the definition is ready
+ * Map the configuration redux state to the React component properties instead. This way if the component loads before the definitions are ready, it will reload once they are
+ * Ideally this should only be used in code that is invoked independently of React components, like Flex action event handlers
  */
 export const getDefinitionVersions = () => {
-  const { currentDefinitionVersion, definitionVersions } = (Flex.Manager.getInstance().store.getState() as RootState)[
-    namespace
-  ][configurationBase];
-
-  return { currentDefinitionVersion, definitionVersions };
+  return (Flex.Manager.getInstance().store.getState() as RootState)[namespace][configurationBase];
 };

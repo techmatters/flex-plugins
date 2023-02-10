@@ -15,21 +15,31 @@
  */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useState } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 import { InformationIcon } from '@twilio-paste/icons/cjs/InformationIcon';
 import { SideLink, SideNavChildrenProps } from '@twilio/flex-ui';
 import { HelplineEntry } from 'hrm-form-definitions';
 
 import CounselorToolkitDialog from './CounselorToolkitDialog';
-import { getDefinitionVersions } from '../../hrmConfig';
+import { configurationBase, namespace, RootState } from '../../states';
 
-type Props = SideNavChildrenProps & {
-  showLabel: boolean;
-};
+const mapStateToProps = (state: RootState) => ({
+  definitionVersion: state[namespace][configurationBase].currentDefinitionVersion,
+});
 
-const CounselorToolkitSideLink: React.FC<Props> = ({ showLabel }) => {
+const connector = connect(mapStateToProps);
+
+type Props = SideNavChildrenProps &
+  ConnectedProps<typeof connector> & {
+    showLabel: boolean;
+  };
+
+const CounselorToolkitSideLink: React.FC<Props> = ({ showLabel, definitionVersion }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const { currentDefinitionVersion } = getDefinitionVersions();
+  if (!definitionVersion) {
+    return null;
+  }
 
   const handleCloseDialog = () => {
     setAnchorEl(null);
@@ -40,7 +50,7 @@ const CounselorToolkitSideLink: React.FC<Props> = ({ showLabel }) => {
     setAnchorEl(e.currentTarget);
   };
 
-  const { helplineInformation } = currentDefinitionVersion;
+  const { helplineInformation } = definitionVersion;
   const helpline = helplineInformation.helplines.find((data: HelplineEntry) => data.default);
   const helplineName = helpline.label;
   const toolkitUrl = helpline?.kmsUrl;
@@ -72,4 +82,4 @@ const CounselorToolkitSideLink: React.FC<Props> = ({ showLabel }) => {
 
 CounselorToolkitSideLink.displayName = 'CounselorToolkitSideLink';
 
-export default CounselorToolkitSideLink;
+export default connector(CounselorToolkitSideLink);
