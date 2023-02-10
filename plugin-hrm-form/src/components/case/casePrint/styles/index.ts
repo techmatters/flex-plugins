@@ -15,7 +15,6 @@
  */
 
 import { StyleSheet, Font } from '@react-pdf/renderer';
-import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import headerStyles from './header';
 import footerStyles from './footer';
@@ -44,15 +43,15 @@ Font.register({
 });
 
 const notosansSrc =
-  'https://cdn.jsdelivr.net/gh/notofonts/notofonts.github.io/fonts/NotoSansThaiLooped/hinted/ttf/NotoSansThaiLooped';
+  'https://cdn.jsdelivr.net/gh/notofonts/notofonts.github.io/fonts/NotoSansThai/unhinted/otf/NotoSansThai';
 
 Font.register({
-  family: 'NotoSansThaiLooped',
+  family: 'NotoSansThai',
   fonts: [
-    { src: `${notosansSrc}-Light.ttf`, fontWeight: 300, fontStyle: 'italic' },
-    { src: `${notosansSrc}-Regular.ttf`, fontWeight: 400 },
-    { src: `${notosansSrc}-Medium.ttf`, fontWeight: 500 },
-    { src: `${notosansSrc}-Bold.ttf`, fontWeight: 700 },
+    { src: `${notosansSrc}-Light.otf`, fontWeight: 300, fontStyle: 'italic' },
+    { src: `${notosansSrc}-Regular.otf`, fontWeight: 400 },
+    { src: `${notosansSrc}-Medium.otf`, fontWeight: 500 },
+    { src: `${notosansSrc}-Bold.otf`, fontWeight: 700 },
   ],
 });
 
@@ -77,6 +76,7 @@ const { caseSummaryText } = summaryStyles;
  *
  */
 export const useThaiFontFamily = () => {
+  whiteText.letterSpacing = 0;
   [
     styles.page,
     footer,
@@ -88,7 +88,7 @@ export const useThaiFontFamily = () => {
     sectionItemRowEven,
     sectionItemRowOdd,
     caseSummaryText,
-  ].forEach(el => (el.fontFamily = 'NotoSansThaiLooped'));
+  ].forEach(el => (el.fontFamily = 'NotoSansThai'));
 };
 
 const styles = StyleSheet.create({
