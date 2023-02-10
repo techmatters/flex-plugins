@@ -28,7 +28,6 @@ import { Conversation } from '@twilio/conversations';
 import { callTypes } from 'hrm-form-definitions';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
-import { DEFAULT_TRANSFER_MODE } from '../HrmFormPlugin';
 import {
   transferChatStart,
   adjustChatCapacity,
@@ -55,6 +54,7 @@ type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
 type ActionPayload = { task: ITask };
 type ActionPayloadWithOptions = ActionPayload & { options: { mode: string }; targetSid: string };
+const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 export const loadCurrentDefinitionVersion = async () => {
   const { definitionVersion } = getHrmConfig();
@@ -142,10 +142,6 @@ const sendMessageOfKey = (messageKey: string) => (
   await conversation.sendMessage(message);
 };
 
-/**
- * @param {string} messageKey
- * @returns {(setupObject: ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }) => import('@twilio/flex-ui').ActionFunction}
- */
 const sendSystemMessageOfKey = (messageKey: string) => (
   setupObject: SetupObject,
   getMessage: (key: string) => (key: string) => Promise<string>,

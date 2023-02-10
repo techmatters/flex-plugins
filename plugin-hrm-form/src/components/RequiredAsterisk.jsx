@@ -16,8 +16,11 @@
 
 import React from 'react';
 
-import { ValidationType } from '../states/ContactFormStateFactory';
 import { fieldType } from '../types';
+
+export const ValidationType = {
+  REQUIRED: 'REQUIRED', // Will not be applied if in the callerInformation tab and callType is not caller.  Will not be applied when callType is standalone.
+};
 
 const RequiredAsterisk = ({ field }) => {
   const isRequired = field.validation && field.validation.includes(ValidationType.REQUIRED);

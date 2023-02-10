@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable react/prop-types */
@@ -21,7 +20,6 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { Print as PrintIcon } from '@material-ui/icons';
 
-import { getConfig } from '../../../HrmFormPlugin';
 import {
   DetailsHeaderChildName,
   DetailsHeaderCaseContainer,
@@ -33,7 +31,7 @@ import {
   StyledPrintButton,
 } from '../../../styles/case';
 import { Flex, Box } from '../../../styles/HrmStyles';
-import { PermissionActionType } from '../../../permissions';
+import { getHrmConfig } from '../../../hrmConfig';
 
 type OwnProps = {
   caseId: string;
@@ -52,7 +50,7 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
   handlePrintCase,
   isOrphanedCase,
 }) => {
-  const { multipleOfficeSupport } = getConfig();
+  const { multipleOfficeSupport } = getHrmConfig();
 
   return (
     <DetailsHeaderContainer>

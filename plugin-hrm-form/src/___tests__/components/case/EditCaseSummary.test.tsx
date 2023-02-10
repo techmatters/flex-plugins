@@ -22,32 +22,23 @@ import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
 import EditCaseSummary, { EditCaseSummaryProps } from '../../../components/case/EditCaseSummary';
-import { getDefinitionVersions } from '../../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../../hrmConfig';
 import { StandaloneITask } from '../../../types/types';
 import { AppRoutes } from '../../../states/routing/types';
 import { changeRoute } from '../../../states/routing/actions';
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
 let mockV1: DefinitionVersion;
 
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
-
-const info = {
-  createdAt: '22-08-2022',
-  updatedAt: '22-08-2022',
-  updatedBy: 'worker1',
-  form: {
-    caseStatus: 'open',
-    date: '22-08-2022',
-    inImminentPhysicalDanger: false,
-    caseSummary: 'This is a summary',
-  },
-};
 
 const state = {
   [namespace]: {
@@ -104,11 +95,15 @@ describe('Test EditCaseSummary', () => {
   const exitRoute: AppRoutes = { route: 'new-case' };
 
   beforeAll(async () => {
-    mockV1 = await loadDefinition(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    await mockFetchImplementation(formDefinitionsBaseUrl);
+
+    mockV1 = await loadDefinition(formDefinitionsBaseUrl);
     mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
   });
 
   beforeEach(() => {
+    mockReset();
     ownProps = {
       task: task as StandaloneITask,
       exitRoute,

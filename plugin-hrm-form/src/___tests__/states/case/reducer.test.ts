@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import { reduce } from '../../../states/case/reducer';
 import * as actions from '../../../states/case/actions';
@@ -33,12 +33,22 @@ jest.mock('../../../states/case/caseStatus', () => ({
   getAvailableCaseStatusTransitions: jest.fn(),
 }));
 
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+
+beforeEach(() => {
+  mockReset();
+});
+
 describe('test reducer', () => {
   let state: CaseState = undefined;
   let mockV1: DefinitionVersion;
 
   beforeAll(async () => {
-    mockV1 = await loadDefinition(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    await mockFetchImplementation(formDefinitionsBaseUrl);
+
+    mockV1 = await loadDefinition(formDefinitionsBaseUrl);
   });
 
   test('should return initial state', async () => {

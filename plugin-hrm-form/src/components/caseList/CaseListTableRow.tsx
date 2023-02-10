@@ -40,8 +40,8 @@ import { Box, HiddenText } from '../../styles/HrmStyles';
 import { formatName, getShortSummary } from '../../utils';
 import { getContactTags } from '../../utils/categories';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
-import { getConfig } from '../../HrmFormPlugin';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
+import { getHrmConfig } from '../../hrmConfig';
 
 const CHAR_LIMIT = 200;
 
@@ -56,7 +56,7 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleClickViewCase, ...props }) => {
   const { updateDefinitionVersion, definitionVersions } = props;
-  const config = getConfig();
+  const { definitionVersion } = getHrmConfig();
   let version = caseItem.info.definitionVersion;
   if (!Object.values(DefinitionVersionId).includes(version)) {
     console.warn(
@@ -64,18 +64,18 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
         typeof version === 'string' ? `'${version}'` : version
       } does not exist in defined set: ${Object.values(
         DefinitionVersionId,
-      )}. Falling back to to current configured version '${config.definitionVersion}' for case with id ${caseItem.id}`,
+      )}. Falling back to to current configured version '${definitionVersion}' for case with id ${caseItem.id}`,
     );
-    version = config.definitionVersion;
+    version = definitionVersion;
   }
 
   useEffect(() => {
-    const fetchDefinitionVersions = async (v: string) => {
+    const fetchDefinitionVersions = async () => {
       const definitionVersion = await getDefinitionVersion(version);
       updateDefinitionVersion(version, definitionVersion);
     };
     if (version && !definitionVersions[version]) {
-      fetchDefinitionVersions(version);
+      fetchDefinitionVersions();
     }
   }, [definitionVersions, updateDefinitionVersion, version]);
   try {

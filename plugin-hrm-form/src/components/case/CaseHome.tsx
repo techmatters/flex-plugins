@@ -38,12 +38,12 @@ import { connectedCaseBase, contactFormsBase, namespace, RootState, routingBase 
 import { Activity, CaseDetails, CaseState } from '../../states/case/types';
 import { CustomITask, EntryInfo, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
-import { getConfig } from '../../HrmFormPlugin';
 import InformationRow from './InformationRow';
 import TimelineInformationRow from './TimelineInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
 import { householdSectionApi } from '../../states/case/sections/household';
 import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -79,7 +79,7 @@ const CaseHome: React.FC<Props> = ({
 }) => {
   if (!connectedCaseState || !routing || !isAppRouteWithCase(routing)) return null; // narrow type before deconstructing
 
-  const { featureFlags } = getConfig();
+  const featureFlags = getAseloFeatureFlags();
   const { route } = routing;
 
   const onViewCaseItemClick = (targetSubroute: CaseSectionSubroute) => (id: string) => {

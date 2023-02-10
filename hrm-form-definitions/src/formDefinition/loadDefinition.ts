@@ -28,6 +28,7 @@ import {
   isDependentSelectDefinitionWithReferenceOptions,
   isSelectDefinitionWithReferenceOptions,
   LayoutVersion,
+  CategoriesDefinition,
 } from './types';
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 
@@ -75,170 +76,155 @@ const expandFormDefinition = (
     return json;
   });
 
-// Using a variable for the root of the dynamic import confuses webpack :-(
-// const DEFINITION_JSON_ROOT = '../../form-definitions/';
+/**
+ * Fetches a definition file.
+ *
+ * If it fails to fetch it:
+ * - Returns a given placeholder value, or
+ * - Throws an error
+ */
+const fetchDefinitionGivenConfig = async <T>(
+  baseUrl: string,
+  jsonPath: string,
+  placeholder?: T,
+) => {
+  const url = `${baseUrl}/${jsonPath}`;
 
-export async function loadDefinition(version: DefinitionVersionId): Promise<DefinitionVersion> {
-  /*
-   * Unfortuntately I could not get lazy loading to work, which would have been nice because only the form definitions used by that helpline would be loeded.
-   * It appears to be an issue with the module loader, when the bundle was split across multiple files for lazy loading, the additional bundle JS files were not loaded at runtime.
-   * Not sure if this is a Twilio Flex specific issue or just misconfiguration - but loading the modules eagerly gets around it.
+  try {
+    const response = await fetch(url);
+
+    if (response.ok) {
+      const json = await response.json();
+      return json as T;
+    }
+
+    throw new Error();
+  } catch (err) {
+    if (placeholder) {
+      console.log(`Could not find definition for: ${url}. Using placeholder instead.`);
+      return placeholder;
+    }
+
+    throw new Error(`Could not find definition for: ${url}. No placeholder was given.`);
+  }
+};
+
+/**
+ * Returns an object that exposes the function:
+ * - fetchDefinition<T>(jsonPath: string, placeholder?: T)
+ */
+const buildFetchDefinition = (baseUrl: string) => ({
+  fetchDefinition: <T>(jsonPath: string, placeholder?: T) =>
+    fetchDefinitionGivenConfig(baseUrl, jsonPath, placeholder),
+});
+
+type IssueCategorizationTabModuleType = {
+  [helpline: string]: CategoriesDefinition;
+};
+
+export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion> {
+  const { fetchDefinition } = buildFetchDefinition(baseUrl);
+
+  // Placeholder for prepopulateKeys
+  const prepopulateKeysEmpty: DefinitionVersion['prepopulateKeys'] = {
+    survey: { ChildInformationTab: [], CallerInformationTab: [] },
+    preEngagement: {
+      ChildInformationTab: [],
+      CallerInformationTab: [],
+      CaseInformationTab: [],
+    },
+  };
+
+  /**
+   * Currently the following constants are order sensitive.
+   * It's very easy to make a human mistake and place one at the wrong order.
+   *
+   * TODO:
+   * We should come up with a function that resolves all promises concurrently and
+   * returns an object instead of an array.
    */
-  const layoutDefinitionsModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/LayoutDefinitions.json`
-  );
-  const householdFormModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/HouseholdForm.json`
-  );
-  const incidentFormModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/IncidentForm.json`
-  );
-  const noteFormModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/NoteForm.json`
-  );
-  const perpetratorFormModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/PerpetratorForm.json`
-  );
-  const referralFormModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/ReferralForm.json`
-  );
-  const documentFormModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/DocumentForm.json`
-  );
-  const callerInformationTabModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/tabbedForms/CallerInformationTab.json`
-  );
-  const caseInformationTabModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/tabbedForms/CaseInformationTab.json`
-  );
-  const childInformationTabModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/tabbedForms/ChildInformationTab.json`
-  );
-  const issueCategorizationTabModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/tabbedForms/IssueCategorizationTab.json`
-  );
+  const [
+    layoutVersion,
+    householdForm,
+    incidentForm,
+    noteForm,
+    perpetratorForm,
+    referralForm,
+    documentForm,
+    callerInformationTab,
+    caseInformationTab,
+    childInformationTab,
+    issueCategorizationTab,
+    contactlessTaskTab,
+    callTypeButtons,
+    helplineInformation,
+    cannedResponses,
+    oneToOneConfigSpec,
+    oneToManyConfigSpecs,
+    caseStatus,
+    prepopulateKeys,
+    referenceData,
+    blockedEmojis,
+  ] = await Promise.all([
+    fetchDefinition<LayoutVersion>('LayoutDefinitions.json'),
+    fetchDefinition<FormItemJsonDefinition[]>('caseForms/HouseholdForm.json'),
+    fetchDefinition<FormItemJsonDefinition[]>('caseForms/IncidentForm.json'),
+    fetchDefinition<FormItemJsonDefinition[]>('caseForms/NoteForm.json'),
+    fetchDefinition<FormItemJsonDefinition[]>('caseForms/PerpetratorForm.json'),
+    fetchDefinition<FormItemJsonDefinition[]>('caseForms/ReferralForm.json'),
+    fetchDefinition<FormItemJsonDefinition[]>('caseForms/DocumentForm.json'),
+    fetchDefinition<FormItemJsonDefinition[]>('tabbedForms/CallerInformationTab.json'),
+    fetchDefinition<FormItemJsonDefinition[]>('tabbedForms/CaseInformationTab.json'),
+    fetchDefinition<FormItemJsonDefinition[]>('tabbedForms/ChildInformationTab.json'),
+    fetchDefinition<IssueCategorizationTabModuleType>('tabbedForms/IssueCategorizationTab.json'),
+    fetchDefinition<DefinitionVersion['tabbedForms']['ContactlessTaskTab']>(
+      'tabbedForms/ContactlessTaskTab.json',
+      {},
+    ),
+    fetchDefinition<CallTypeButtonsDefinitions>('CallTypeButtons.json'),
+    fetchDefinition<HelplineDefinitions>('HelplineInformation.json'),
+    fetchDefinition<CannedResponsesDefinitions>('CannedResponses.json', []),
+    fetchDefinition<OneToOneConfigSpec>('insights/oneToOneConfigSpec.json'),
+    fetchDefinition<OneToManyConfigSpecs>('insights/oneToManyConfigSpecs.json'),
+    fetchDefinition<DefinitionVersion['caseStatus']>('CaseStatus.json'),
+    fetchDefinition<DefinitionVersion['prepopulateKeys']>(
+      'PrepopulateKeys.json',
+      prepopulateKeysEmpty,
+    ),
+    fetchDefinition<Record<string, any>>('ReferenceData.json', {}),
+    fetchDefinition<string[]>('BlockedEmojis.json', []),
+  ]);
 
-  let contactlessTaskTabModule;
-  try {
-    contactlessTaskTabModule = await import(
-      /* webpackMode: "eager" */ `../../form-definitions/${version}/tabbedForms/ContactlessTaskTab.json`
-    );
-  } catch (err) {
-    contactlessTaskTabModule = {};
-  }
-
-  const callTypeButtonsModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/CallTypeButtons.json`
-  );
-  const helplineInformationModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/HelplineInformation.json`
-  );
-  const cannedResponsesModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/CannedResponses.json`
-  );
-  const oneToOneConfigSpecModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/insights/oneToOneConfigSpec.json`
-  );
-  const oneToManyConfigSpecsModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/insights/oneToManyConfigSpecs.json`
-  );
-  const caseStatusModule = await import(
-    /* webpackMode: "eager" */ `../../form-definitions/${version}/CaseStatus.json`
-  );
-
-  let prepopulateKeys;
-  try {
-    prepopulateKeys = await import(
-      /* webpackMode: "eager" */ `../../form-definitions/${version}/PrepopulateKeys.json`
-    );
-  } catch (err) {
-    prepopulateKeys = {
-      survey: { ChildInformationTab: [], CallerInformationTab: [] },
-      preEngagement: {
-        ChildInformationTab: [],
-        CallerInformationTab: [],
-        CaseInformationTab: [],
-      },
-    };
-  }
-
-  let referenceData;
-  try {
-    referenceData = await import(
-      /* webpackMode: "eager" */ `../../form-definitions/${version}/ReferenceData.json`
-    );
-  } catch (err) {
-    referenceData = {};
-  }
-
-  let blockedEmojis: string[];
-  try {
-    const blockedEmojisModule = await import(
-      /* webpackMode: "eager" */ `../../form-definitions/${version}/BlockedEmojis.json`
-    );
-    blockedEmojis = blockedEmojisModule.default as string[];
-  } catch (err) {
-    blockedEmojis = [];
-  }
-
-  const { helplines } = helplineInformationModule.default;
+  const { helplines } = helplineInformation;
   const defaultHelpline =
-    helplineInformationModule.default.helplines.find((helpline: HelplineEntry) => helpline.default)
-      .value || helplines[0].value;
+    helplineInformation.helplines.find((helpline: HelplineEntry) => helpline.default)?.value ||
+    helplines[0].value;
   return {
     caseForms: {
-      HouseholdForm: expandFormDefinition(
-        householdFormModule.default as FormItemJsonDefinition[],
-        referenceData,
-      ),
-      IncidentForm: expandFormDefinition(
-        incidentFormModule.default as FormItemJsonDefinition[],
-        referenceData,
-      ),
-      NoteForm: expandFormDefinition(
-        noteFormModule.default as FormItemJsonDefinition[],
-        referenceData,
-      ),
-      PerpetratorForm: expandFormDefinition(
-        perpetratorFormModule.default as FormItemJsonDefinition[],
-        referenceData,
-      ),
-      ReferralForm: expandFormDefinition(
-        referralFormModule.default as FormItemJsonDefinition[],
-        referenceData,
-      ),
-      DocumentForm: expandFormDefinition(
-        documentFormModule.default as FormItemJsonDefinition[],
-        referenceData,
-      ),
+      HouseholdForm: expandFormDefinition(householdForm, referenceData),
+      IncidentForm: expandFormDefinition(incidentForm, referenceData),
+      NoteForm: expandFormDefinition(noteForm, referenceData),
+      PerpetratorForm: expandFormDefinition(perpetratorForm, referenceData),
+      ReferralForm: expandFormDefinition(referralForm, referenceData),
+      DocumentForm: expandFormDefinition(documentForm, referenceData),
     },
     tabbedForms: {
-      CallerInformationTab: expandFormDefinition(
-        callerInformationTabModule.default as FormItemJsonDefinition[],
-        referenceData,
-      ),
-      CaseInformationTab: expandFormDefinition(
-        caseInformationTabModule.default as FormItemJsonDefinition[],
-        referenceData,
-      ),
-      ChildInformationTab: expandFormDefinition(
-        childInformationTabModule.default as FormItemJsonDefinition[],
-        referenceData,
-      ),
+      CallerInformationTab: expandFormDefinition(callerInformationTab, referenceData),
+      CaseInformationTab: expandFormDefinition(caseInformationTab, referenceData),
+      ChildInformationTab: expandFormDefinition(childInformationTab, referenceData),
       IssueCategorizationTab: (helpline: string) =>
-        issueCategorizationTabModule.default[helpline] ||
-        issueCategorizationTabModule.default[defaultHelpline],
-      ContactlessTaskTab: contactlessTaskTabModule,
+        issueCategorizationTab[helpline] || issueCategorizationTab[defaultHelpline],
+      ContactlessTaskTab: contactlessTaskTab,
     },
-    callTypeButtons: callTypeButtonsModule.default as CallTypeButtonsDefinitions,
-    layoutVersion: layoutDefinitionsModule.default as LayoutVersion,
-    helplineInformation: helplineInformationModule.default as HelplineDefinitions,
-    cannedResponses: cannedResponsesModule.default as CannedResponsesDefinitions,
+    callTypeButtons,
+    layoutVersion,
+    helplineInformation,
+    cannedResponses,
     insights: {
-      oneToOneConfigSpec: oneToOneConfigSpecModule.default as unknown as OneToOneConfigSpec,
-      oneToManyConfigSpecs: oneToManyConfigSpecsModule.default as OneToManyConfigSpecs,
+      oneToOneConfigSpec,
+      oneToManyConfigSpecs,
     },
-    caseStatus: caseStatusModule.default as DefinitionVersion['caseStatus'],
+    caseStatus,
     prepopulateKeys,
     referenceData,
     blockedEmojis,

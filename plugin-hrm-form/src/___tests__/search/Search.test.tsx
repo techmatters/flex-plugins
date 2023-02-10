@@ -19,16 +19,19 @@ import { Provider } from 'react-redux';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import configureMockStore from 'redux-mock-store';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import Search from '../../components/search';
 import { SearchPages } from '../../states/search/types';
 import { channelTypes } from '../../states/DomainConstants';
-import { getDefinitionVersions } from '../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../hrmConfig';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { csamReportBase } from '../../states';
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
 const mockStore = configureMockStore([]);
 let mockV1;
@@ -107,8 +110,15 @@ const detailsExpanded = {
   'General details': true,
 };
 
+beforeEach(() => {
+  mockReset();
+});
+
 beforeAll(async () => {
-  mockV1 = await loadDefinition(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  await mockFetchImplementation(formDefinitionsBaseUrl);
+
+  mockV1 = await loadDefinition(formDefinitionsBaseUrl);
   mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
 });
 

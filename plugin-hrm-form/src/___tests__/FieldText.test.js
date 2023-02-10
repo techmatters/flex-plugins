@@ -20,7 +20,7 @@ import renderer from 'react-test-renderer';
 import './mockStyled';
 
 import FieldText from '../components/FieldText';
-import { ValidationType } from '../states/ContactFormStateFactory';
+import { ValidationType } from '../components/RequiredAsterisk';
 
 // TODO: Improve assertion for all tests below
 test('render basic FieldText', () => {

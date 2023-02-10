@@ -19,10 +19,10 @@
 import React from 'react';
 import { View, Text } from '@react-pdf/renderer';
 
-import { getConfig } from '../../../HrmFormPlugin';
 import { NoteActivity } from '../../../states/case/types';
 import { formatName, formatStringToDateAndTime } from '../../../utils';
 import styles from './styles';
+import { getTemplateStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   notes: NoteActivity[];
@@ -32,7 +32,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintNotes: React.FC<Props> = ({ notes, counselorsHash }) => {
-  const { strings } = getConfig();
+  const strings = getTemplateStrings();
 
   if (!notes || notes.length === 0) return null;
 

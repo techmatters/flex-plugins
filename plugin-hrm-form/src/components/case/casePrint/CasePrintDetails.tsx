@@ -21,9 +21,9 @@ import React from 'react';
 import { Text, View, Image } from '@react-pdf/renderer';
 import { DefinitionVersionId, DefinitionVersion } from 'hrm-form-definitions';
 
-import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
 import CasePrintCategories from './CasePrintCategories';
+import { getTemplateStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   status: string;
@@ -64,7 +64,7 @@ const CasePrintDetails: React.FC<Props> = ({
   chkOffBlob,
   definitionVersion,
 }) => {
-  const { strings } = getConfig();
+  const strings = getTemplateStrings();
 
   const { hideCounselorDetails } = definitionVersion.layoutVersion.case;
 
