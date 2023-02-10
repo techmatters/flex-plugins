@@ -173,18 +173,22 @@ const Filters: React.FC<Props> = ({
   const featureFlags = getAseloFeatureFlags();
   const { helpline } = getHrmConfig();
 
-  const statusInitialValues = getStatusInitialValue(currentDefinitionVersion);
-  const categoriesInitialValues = getCategoriesInitialValue(currentDefinitionVersion, helpline);
-
   const [openedFilter, setOpenedFilter] = useState<string>();
-  const [statusValues, setStatusValues] = useState<Item[]>(statusInitialValues);
+  const [statusValues, setStatusValues] = useState<Item[]>(getStatusInitialValue(currentDefinitionVersion));
   const [counselorValues, setCounselorValues] = useState<Item[]>(getCounselorsInitialValue(counselorsHash));
   const [dateFilterValues, setDateFilterValues] = useState<{
     createdAt?: DateFilterValue;
     updatedAt?: DateFilterValue;
     followUpDate?: DateFilterValue;
   }>({});
-  const [categoriesValues, setCategoriesValues] = useState<Category[]>(categoriesInitialValues);
+  const [categoriesValues, setCategoriesValues] = useState<Category[]>(
+    getCategoriesInitialValue(currentDefinitionVersion, helpline),
+  );
+
+  useEffect(() => {
+    setStatusValues(getStatusInitialValue(currentDefinitionVersion));
+    setCategoriesValues(getCategoriesInitialValue(currentDefinitionVersion, helpline));
+  }, [currentDefinitionVersion, helpline]);
 
   // Updates UI state from current filters
   useEffect(() => {
