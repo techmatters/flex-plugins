@@ -28,7 +28,7 @@ export type ConfigurationState = {
   };
   workerInfo: { chatChannelCapacity: number };
   definitionVersions: { [version: string]: DefinitionVersion | undefined };
-  currentDefinitionVersion: DefinitionVersion | undefined;
+  currentDefinitionVersion?: DefinitionVersion;
 };
 
 const initialState: ConfigurationState = {
@@ -39,7 +39,6 @@ const initialState: ConfigurationState = {
   },
   workerInfo: { chatChannelCapacity: 0 },
   definitionVersions: {},
-  currentDefinitionVersion: undefined,
 };
 
 // eslint-disable-next-line import/no-unused-modules

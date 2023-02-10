@@ -14,10 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { DefinitionVersion } from 'hrm-form-definitions';
+
 import { Activity, ConnectedCaseActivity, NoteActivity } from '../../states/case/types';
 import { Case, NoteEntry, ReferralEntry } from '../../types/types';
 import { channelTypes } from '../../states/DomainConstants';
-import { getDefinitionVersions } from '../../hrmConfig';
 
 const ActivityTypes = {
   createCase: 'create',
@@ -117,9 +118,7 @@ const connectedContactActivities = (caseContacts): ConnectedCaseActivity[] =>
     })
     .filter(cca => cca);
 
-export const getActivitiesFromCase = (sourceCase: Case): Activity[] => {
-  const { definitionVersions } = getDefinitionVersions();
-  const formDefs = definitionVersions[sourceCase.info.definitionVersion];
+export const getActivitiesFromCase = (sourceCase: Case, formDefs: DefinitionVersion): Activity[] => {
   let { previewFields } = formDefs.layoutVersion.case.notes ?? {};
   if (!previewFields || !previewFields.length) {
     previewFields = formDefs.caseForms.NoteForm.length ? [formDefs.caseForms.NoteForm[0].name] : [];

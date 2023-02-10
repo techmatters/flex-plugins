@@ -22,7 +22,7 @@ import configureMockStore from 'redux-mock-store';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import CaseList from '../../../components/caseList';
@@ -38,6 +38,9 @@ import {
 } from '../../../states/caseList/listContent';
 import { caseListSettingsInitialState } from '../../../states/caseList/settings';
 import { Case, ContactRawJson, HrmServiceContact } from '../../../types/types';
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
 // console.log = () => null;
 console.error = () => null;
@@ -111,8 +114,15 @@ const blankCaseListState: CaseListState = {
 
 let mockV1;
 
+beforeEach(() => {
+  mockReset();
+});
+
 beforeAll(async () => {
-  mockV1 = await loadDefinition(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  await mockFetchImplementation(formDefinitionsBaseUrl);
+
+  mockV1 = await loadDefinition(formDefinitionsBaseUrl);
   mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
 });
 

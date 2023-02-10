@@ -47,7 +47,8 @@ const ContactPreview: React.FC<Props> = ({ contact, handleViewDetails, definitio
   const { callType } = contact.overview;
   const { definitionVersion: versionId, caseInformation } = contact.details;
   const { callSummary } = caseInformation;
-  const contactLabel = contactLabelFromSearchContact(definitionVersions[versionId], contact, {
+  const definition = definitionVersions[versionId];
+  const contactLabel = contactLabelFromSearchContact(definition, contact, {
     substituteForId: false,
     placeholder: '',
   });
@@ -77,16 +78,12 @@ const ContactPreview: React.FC<Props> = ({ contact, handleViewDetails, definitio
           </PreviewDescription>
         )}
         {isNonDataCallType(callType) ? (
-          <TagsAndCounselor
-            counselor={counselorName}
-            nonDataCallType={callType}
-            definitionVersion={contact.details.definitionVersion}
-          />
+          <TagsAndCounselor counselor={counselorName} nonDataCallType={callType} definitionVersion={definition} />
         ) : (
           <TagsAndCounselor
             counselor={counselorName}
             categories={contact.overview.categories}
-            definitionVersion={contact.details.definitionVersion}
+            definitionVersion={definition}
           />
         )}
       </PreviewWrapper>

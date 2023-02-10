@@ -115,14 +115,20 @@ const Case: React.FC<Props> = ({
 
   const timeline: Activity[] = useMemo(
     () => {
+      const { connectedCaseId, definitionVersions, connectedCaseState } = props;
       /**
        * Gets the activities timeline from current caseId
        * If the case is just being created, adds the case's description as a new activity
        */
-      if (!props.connectedCaseId) return [];
+      if (!connectedCaseId) return [];
+
+      const { connectedCase } = connectedCaseState;
 
       const timelineActivities = [
-        ...getActivitiesFromCase(props.connectedCaseState.connectedCase),
+        ...getActivitiesFromCase(
+          connectedCase,
+          definitionVersions[connectedCase.info.definitionVersion] ?? props.currentDefinitionVersion,
+        ),
         ...getActivitiesFromContacts(savedContacts ?? []),
       ];
 
@@ -208,14 +214,16 @@ const Case: React.FC<Props> = ({
 
   const handleCloseSection = () => changeRoute(closeSubSectionRoute(), task.taskSid);
 
-  if (!props.connectedCaseState) return null;
+  const definitionVersion = props.definitionVersions[version];
+
+  if (!props.connectedCaseState || !definitionVersion) return null;
 
   const getCategories = firstConnectedContact => {
     if (firstConnectedContact?.rawJson?.caseInformation) {
       return firstConnectedContact.rawJson.caseInformation.categories;
     }
     if (form?.categories && form?.helpline) {
-      return transformCategories(form.helpline, form.categories);
+      return transformCategories(form.helpline, form.categories, definitionVersion);
     }
     return null;
   };
@@ -240,7 +248,6 @@ const Case: React.FC<Props> = ({
   const referrals = info?.referrals;
   const notes: NoteActivity[] = timeline.filter(x => isNoteActivity(x)) as NoteActivity[];
   const summary = info?.summary;
-  const definitionVersion = props.definitionVersions[version];
   const office = getHelplineData(connectedCase.helpline, definitionVersion.helplineInformation);
 
   const handleUpdate = async () => {
@@ -307,7 +314,6 @@ const Case: React.FC<Props> = ({
     summary,
     childIsAtRisk,
     office,
-    version,
     contact: firstConnectedContact,
     contacts: savedContacts ?? [],
   };
@@ -430,13 +436,15 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const connectedContactIds = new Set((connectedCase?.connectedContacts ?? []).map(cc => cc.id as string));
   const newSearchContact =
     state[namespace][contactFormsBase].existingContacts[newContactTemporaryId(connectedCase)]?.savedContact;
+  const { definitionVersions, currentDefinitionVersion } = state[namespace][configurationBase];
   return {
     form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
     connectedCaseState: caseState,
     connectedCaseId: connectedCase?.id,
     counselorsHash: state[namespace][configurationBase].counselors.hash,
     routing: state[namespace][routingBase].tasks[ownProps.task.taskSid],
-    definitionVersions: state[namespace][configurationBase].definitionVersions,
+    definitionVersions,
+    currentDefinitionVersion,
     savedContacts: Object.values(state[namespace][contactFormsBase].existingContacts)
       .filter(contact => connectedContactIds.has(contact.savedContact.contactId))
       .map(ecs => searchContactToHrmServiceContact(ecs.savedContact)),
