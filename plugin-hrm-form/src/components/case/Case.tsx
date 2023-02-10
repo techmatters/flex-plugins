@@ -115,14 +115,17 @@ const Case: React.FC<Props> = ({
 
   const timeline: Activity[] = useMemo(
     () => {
+      const { connectedCaseId, definitionVersions, connectedCaseState } = props;
       /**
        * Gets the activities timeline from current caseId
        * If the case is just being created, adds the case's description as a new activity
        */
-      if (!props.connectedCaseId) return [];
+      if (!connectedCaseId) return [];
+
+      const { connectedCase } = connectedCaseState;
 
       const timelineActivities = [
-        ...getActivitiesFromCase(props.connectedCaseState.connectedCase),
+        ...getActivitiesFromCase(connectedCase, definitionVersions[connectedCase.info.definitionVersion]),
         ...getActivitiesFromContacts(savedContacts ?? []),
       ];
 
@@ -215,7 +218,7 @@ const Case: React.FC<Props> = ({
       return firstConnectedContact.rawJson.caseInformation.categories;
     }
     if (form?.categories && form?.helpline) {
-      return transformCategories(form.helpline, form.categories);
+      return transformCategories(form.helpline, form.categories, definitionVersion);
     }
     return null;
   };
@@ -307,7 +310,6 @@ const Case: React.FC<Props> = ({
     summary,
     childIsAtRisk,
     office,
-    version,
     contact: firstConnectedContact,
     contacts: savedContacts ?? [],
   };

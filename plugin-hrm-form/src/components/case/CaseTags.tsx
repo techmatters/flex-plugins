@@ -18,7 +18,7 @@
 /* eslint-disable dot-notation */
 import React from 'react';
 import { View, Text } from '@react-pdf/renderer';
-import { DefinitionVersionId } from 'hrm-form-definitions';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { Flex } from '../../styles/HrmStyles';
 import { TagsWrapper } from '../../styles/search';
@@ -33,7 +33,7 @@ type OwnProps = {
       [subcategory: string]: boolean;
     };
   };
-  definitionVersion: DefinitionVersionId;
+  definitionVersion: DefinitionVersion;
   printPDF?: boolean;
 };
 

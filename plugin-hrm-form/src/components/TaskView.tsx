@@ -90,6 +90,10 @@ const TaskView: React.FC<Props> = props => {
     }
   }, [contactlessTask, contactInitialized, helpline, task, updateHelpline]);
 
+  if (!currentDefinitionVersion) {
+    return null;
+  }
+
   // If this task is not the active task, or if the task is not accepted yet, hide it
   const show =
     task &&
@@ -125,14 +129,15 @@ TaskView.displayName = 'TaskView';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const { task } = ownProps;
+  const { currentDefinitionVersion } = state[namespace][configurationBase];
   // Check if the entry for this task exists in each reducer
   const contactForm = task && state[namespace][contactFormsBase]?.tasks[task.taskSid];
   const contactFormStateExists = Boolean(contactForm);
   const routingStateExists = Boolean(task && state[namespace][routingBase].tasks[task.taskSid]);
   const searchStateExists = Boolean(task && state[namespace][searchContactsBase].tasks[task.taskSid]);
 
-  const shouldRecreateState = !contactFormStateExists || !routingStateExists || !searchStateExists;
-  const { currentDefinitionVersion } = state[namespace][configurationBase];
+  const shouldRecreateState =
+    currentDefinitionVersion && (!contactFormStateExists || !routingStateExists || !searchStateExists);
 
   return {
     contactForm,

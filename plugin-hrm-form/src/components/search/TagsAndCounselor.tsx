@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import { DefinitionVersionId } from 'hrm-form-definitions';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { Flex } from '../../styles/HrmStyles';
 import { TagText, SummaryText, TagsWrapper, SilentText, SubtitleLabel } from '../../styles/search';
@@ -27,13 +27,13 @@ import { getContactTags } from '../../utils/categories';
 type DataCallProps = {
   counselor: string;
   categories: { [category: string]: string[] };
-  definitionVersion: DefinitionVersionId;
+  definitionVersion: DefinitionVersion;
 };
 
 type NonDataCallProps = {
   counselor: string;
   nonDataCallType: string;
-  definitionVersion: DefinitionVersionId;
+  definitionVersion: DefinitionVersion;
 };
 
 type Props = DataCallProps | NonDataCallProps;

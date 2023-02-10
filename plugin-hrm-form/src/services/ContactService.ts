@@ -154,11 +154,8 @@ export function transformCategories(
  */
 export function transformForm(form: TaskEntry, conversationMedia: ConversationMedia[] = []): ContactRawJson {
   const { callType, contactlessTask } = form;
-  const {
-    CallerInformationTab,
-    CaseInformationTab,
-    ChildInformationTab,
-  } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
+  const { currentDefinitionVersion } = getDefinitionVersions();
+  const { CallerInformationTab, CaseInformationTab, ChildInformationTab } = currentDefinitionVersion.tabbedForms;
   // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
   const transformedValues = {
     callerInformation: transformValues(CallerInformationTab)(form.callerInformation),
@@ -169,7 +166,7 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
   const { callerInformation } = transformedValues;
   const { childInformation } = transformedValues;
 
-  const categories = transformCategories(form.helpline, form.categories);
+  const categories = transformCategories(form.helpline, form.categories, currentDefinitionVersion);
   const { definitionVersion } = getHrmConfig();
 
   return {
@@ -207,6 +204,10 @@ const saveContactToHrm = async (
   let rawForm = form;
   rawForm.reservationSid = task.sid;
   const { currentDefinitionVersion } = getDefinitionVersions();
+
+  if (!currentDefinitionVersion) {
+    throw new Error('Cannot save the form if the current form definitions are not loaded');
+  }
 
   if (isNonDataCallType(callType)) {
     rawForm = {

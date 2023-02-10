@@ -97,7 +97,6 @@ export type CaseDetails = {
   summary: string;
   childIsAtRisk: boolean;
   office?: HelplineEntry;
-  version?: DefinitionVersionId;
   contact: HrmServiceContact;
   contacts: any[];
 };

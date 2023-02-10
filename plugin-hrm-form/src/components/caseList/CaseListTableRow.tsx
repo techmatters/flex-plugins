@@ -92,13 +92,15 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
       caseItem.info && caseItem.info.followUpDate
         ? `${format(parseISO(caseItem.info.followUpDate), 'MMM d, yyyy')}`
         : '—';
-    const categories = getContactTags(version, caseItem.categories);
 
     const definitionVersion = definitionVersions[version];
 
+    const categories = getContactTags(definitionVersion, caseItem.categories);
     // Get the status for a case from the value of CaseStatus.json of the current form definitions
     const getCaseStatusLabel = (caseStatus: string) => {
-      return Object.values(definitionVersion.caseStatus).filter(status => status.value === caseStatus)[0].label;
+      return definitionVersion
+        ? Object.values(definitionVersion.caseStatus).filter(status => status.value === caseStatus)[0].label
+        : caseStatus;
     };
 
     return (

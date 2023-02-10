@@ -14,15 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import HrmTheme from '../styles/HrmTheme';
-import { ContactRawJson } from '../types/types';
-import { getHrmConfig, getDefinitionVersions } from '../hrmConfig';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
-const getCategoryColor = (definitionVersion: ContactRawJson['definitionVersion'], category: string) => {
+import HrmTheme from '../styles/HrmTheme';
+import { getHrmConfig } from '../hrmConfig';
+
+const getCategoryColor = (definitionVersion: DefinitionVersion, category: string) => {
   const { helpline } = getHrmConfig();
 
-  const categories =
-    getDefinitionVersions().definitionVersions[definitionVersion]?.tabbedForms.IssueCategorizationTab(helpline) ?? {};
+  const categories = definitionVersion.tabbedForms.IssueCategorizationTab(helpline) ?? {};
 
   return categories[category] ? categories[category].color : HrmTheme.colors.defaultCategoryColor;
 };
@@ -34,10 +34,7 @@ type ContactCategories = {
 const getCategoryLabel = (category, subcategory) =>
   subcategory === 'Unspecified/Other' ? `${subcategory} - ${category}` : subcategory;
 
-export const getContactTags = (
-  definitionVersion: ContactRawJson['definitionVersion'],
-  contactCategories: ContactCategories,
-) =>
+export const getContactTags = (definitionVersion: DefinitionVersion, contactCategories: ContactCategories) =>
   Object.entries(contactCategories).flatMap(([category, subcategories]) =>
     subcategories.map(subcategory => ({
       label: getCategoryLabel(category, subcategory),

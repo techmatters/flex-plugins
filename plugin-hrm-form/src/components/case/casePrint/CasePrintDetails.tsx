@@ -19,7 +19,7 @@
 /* eslint-disable dot-notation */
 import React from 'react';
 import { Text, View, Image } from '@react-pdf/renderer';
-import { DefinitionVersionId, DefinitionVersion } from 'hrm-form-definitions';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 import styles from './styles';
 import CasePrintCategories from './CasePrintCategories';
@@ -42,7 +42,6 @@ type OwnProps = {
       [subcategory: string]: boolean;
     };
   };
-  version: DefinitionVersionId;
   chkOnBlob?: string;
   chkOffBlob?: string;
   definitionVersion: DefinitionVersion;
@@ -59,7 +58,6 @@ const CasePrintDetails: React.FC<Props> = ({
   counselor,
   caseManager,
   categories,
-  version,
   chkOnBlob,
   chkOffBlob,
   definitionVersion,
@@ -111,7 +109,7 @@ const CasePrintDetails: React.FC<Props> = ({
             </View>
           </View>
           <View>
-            <CasePrintCategories categories={categories} version={version} />
+            <CasePrintCategories categories={categories} definitionVersion={definitionVersion} />
           </View>
         </View>
       )}
