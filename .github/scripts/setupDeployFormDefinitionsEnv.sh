@@ -28,7 +28,7 @@ short_env_map[prod]=production
 environment="${environment,,}"
 
 # If the environment is a short name, convert it to the full name
-[ "${short_env_map[${environment}]+yes}" ] && env=${short_env_map[$environment]}
+[ "${short_env_map[${environment}]+yes}" ] && environment=${short_env_map[$environment]}
 
 if [[ ! " ${environments[@]} " =~ " ${environment} " ]]; then
     echo "${environment} is not a valid environment. It must be one of: ${environments[@]}"
