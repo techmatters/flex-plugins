@@ -16,7 +16,16 @@ export const useUnminifiedFlex = async (page: Page) => {
   await page.route('https://**', (route) => {
     route.fulfill({ status: 404 });
   });
-  await page.route('https://**/*.js', (route) => {
+  await page.route('https://**/*.css**', (route) => {
+    route.continue();
+  });
+  await page.route('https://**/*.js**', (route) => {
+    route.continue();
+  });
+  await page.route('https://**/*.woff**', (route) => {
+    route.continue();
+  });
+  await page.route('https://fonts.googleapis.com/css**', (route) => {
     route.continue();
   });
   await page.route(

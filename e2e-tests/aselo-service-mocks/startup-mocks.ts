@@ -10,20 +10,26 @@ import { mockPopulateCounselors } from './serverless/populateCounselors';
 import { mockIssueSyncToken } from './serverless/issueSyncToken';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Page } from '@playwright/test';
+import { mockFormDefinitions } from './form-definitions';
 
 export const mockStartup = async (page: Page) => {
-  await fakeAuthenticatedBrowser(page, context.ACCOUNT_SID);
   const configServices = configurationServices(page);
-  await configServices.mockFlexServiceConfigurationPublicEndpoint(context.ACCOUNT_SID);
-  await configServices.mockFlexServiceConfigurationEndpoint(context.ACCOUNT_SID, {
-    attributes: serviceConfigurationAttributes(),
-  });
-  await configServices.mockSessionEndpoint();
   const authServices = authenticationServices(page);
-  await authServices.mockTwilioIamRefresh(context.ACCOUNT_SID);
-  await authServices.mockTwilioIamValidate(context.ACCOUNT_SID);
   const chnlServices = channelService(page);
-  await chnlServices.mockWsChannelsEndpoint();
+
+  await Promise.all([
+    fakeAuthenticatedBrowser(page, context.ACCOUNT_SID),
+    configServices.mockFlexServiceConfigurationPublicEndpoint(context.ACCOUNT_SID),
+    configServices.mockFlexServiceConfigurationEndpoint(context.ACCOUNT_SID, {
+      attributes: serviceConfigurationAttributes(),
+    }),
+    mockFormDefinitions(page),
+    configServices.mockSessionEndpoint(),
+    authServices.mockTwilioIamRefresh(context.ACCOUNT_SID),
+    authServices.mockTwilioIamValidate(context.ACCOUNT_SID),
+    chnlServices.mockWsChannelsEndpoint(),
+  ]);
+
   setLoggedInWorkerLiveQuery();
   await mockListWorkerQueues(page);
   await mockPopulateCounselors(page);

@@ -5,6 +5,7 @@ import environmentVariables from './environmentVariables';
 import { MOCKTTP_SERVER_PORT } from './flex-in-a-box/proxied-endpoints';
 
 const config: PlaywrightTestConfig = {
+  globalSetup: require.resolve('./ui-global-setup'),
   use: {
     storageState: 'temp/state.json',
     baseURL: environmentVariables.PLAYWRIGHT_BASEURL ?? 'http://localhost:3000',

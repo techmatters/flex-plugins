@@ -37,7 +37,9 @@ const readConfig = () => {
     process.env.REACT_SERVERLESS_BASE_URL || manager.serviceConfiguration.attributes.serverless_base_url;
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
   const assetsBucketUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
-  const getFormDefinitionsBaseUrl = buildFormDefinitionsBaseUrlGetter(manager);
+  const getFormDefinitionsBaseUrl = manager.serviceConfiguration.attributes.form_definitions_base_url
+    ? () => manager.serviceConfiguration.attributes.form_definitions_base_url
+    : buildFormDefinitionsBaseUrlGetter(manager);
 
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid;

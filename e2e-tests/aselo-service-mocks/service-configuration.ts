@@ -38,4 +38,8 @@ export const serviceConfigurationAttributes = () => ({
     0,
     context.SERVERLESS_BASE_URL.toString().length - 1,
   ),
+  form_definitions_base_url: context.FORM_DEFINITIONS_BASE_URL.toString().substring(
+    0,
+    context.FORM_DEFINITIONS_BASE_URL.toString().length - 1,
+  ),
 });

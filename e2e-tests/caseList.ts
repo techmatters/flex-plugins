@@ -28,6 +28,9 @@ export const caseList = (page: Page) => {
   const caseListPage = page.locator('div.Twilio-ViewCollection');
 
   const selectors = {
+    caseListRowIdButton: caseListPage.locator(
+      `tr[data-testid='CaseList-TableRow'] button[data-testid='CaseList-CaseID-Button']`,
+    ),
     // Case List view
     filterButton: (filter: Filter) =>
       caseListPage.locator(`//button[@data-testid='FilterBy-${filter}-Button']`),
@@ -183,6 +186,13 @@ export const caseList = (page: Page) => {
     await expect(summaryText).toContainText(`E2E Case Summary Test Edited on ${currentTime}`);
   }
 
+  async function verifyCaseIdsAreInListInOrder(ids: string[]) {
+    await selectors.caseListRowIdButton.first().waitFor({ state: 'visible' });
+    const caseListIdButtons = await selectors.caseListRowIdButton.all();
+    expect(caseListIdButtons.length).toBe(ids.length);
+    await Promise.all(caseListIdButtons.map((l, idx) => expect(l).toContainText(ids[idx])));
+  }
+
   //Close Case
   async function closeCase() {
     const closeCaseButton = selectors.caseCloseButton;
@@ -202,5 +212,6 @@ export const caseList = (page: Page) => {
     closeEditCase,
     verifyCaseSummaryUpdated,
     closeCase,
+    verifyCaseIdsAreInListInOrder,
   };
 };
