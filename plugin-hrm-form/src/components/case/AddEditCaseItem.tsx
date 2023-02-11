@@ -41,14 +41,8 @@ import { configurationBase, connectedCaseBase, namespace, RootState } from '../.
 import * as CaseActions from '../../states/case/actions';
 import { transformValues } from '../../services/ContactService';
 import { updateCase } from '../../services/CaseService';
-import {
-  createFormFromDefinition,
-  createStateItem,
-  CustomHandlers,
-  disperseInputs,
-  splitAt,
-  splitInHalf,
-} from '../common/forms/formGenerators';
+import { createStateItem, CustomHandlers, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
+import { useCreateFormFromDefinition } from '../forms';
 import type { CaseInfo, CaseItemEntry, CustomITask, StandaloneITask } from '../../types/types';
 import {
   AddCaseSectionRoute,
@@ -57,7 +51,6 @@ import {
   EditCaseSectionRoute,
   isEditCaseSectionRoute,
 } from '../../states/routing/types';
-import useFocus from '../../utils/useFocus';
 import { recordingErrorHandler } from '../../fullStory';
 import { caseItemHistory, CaseState } from '../../states/case/types';
 import CloseCaseDialog from './CloseCaseDialog';
@@ -103,15 +96,17 @@ const AddEditCaseItem: React.FC<Props> = ({
   reactHookFormOptions,
   sectionApi,
   workingCopy,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const firstElementRef = useFocus();
   const { id } = isEditCaseSectionRoute(routing) ? routing : { id: undefined };
 
-  const formDefinition = sectionApi
-    .getSectionFormDefinition(definitionVersion)
-    // If more 'when adding only' form item types are implemented, we should create a specific property, but there is only one so just check the type for now
-    .filter(fd => !id || fd.type !== 'copy-to');
+  const formDefinition = React.useMemo(
+    () =>
+      sectionApi
+        .getSectionFormDefinition(definitionVersion)
+        // If more 'when adding only' form item types are implemented, we should create a specific property, but there is only one so just check the type for now
+        .filter(fd => !id || fd.type !== 'copy-to'),
+    [definitionVersion, id, sectionApi],
+  );
   const layout = sectionApi.getSectionLayoutDefinition(definitionVersion);
 
   // Grab initial values in first render only. If getTemporaryFormContent(temporaryCaseInfo), cherrypick the values using formDefinition, if not build the object with getInitialValue
@@ -152,33 +147,21 @@ const AddEditCaseItem: React.FC<Props> = ({
 
   const { getValues } = methods;
 
-  const [l, r] = React.useMemo(() => {
-    const updateCallBack = () => {
+  const form = useCreateFormFromDefinition({
+    definition: formDefinition,
+    initialValues: workingCopy?.form,
+    parentsPath: '',
+    updateCallback: () => {
       const form = getValues();
       console.log('Updated case form', form);
       updateCaseSectionWorkingCopy(task.taskSid, sectionApi, { ...workingCopy, form }, id);
-    };
+    },
+    customHandlers: customFormHandlers,
+  });
 
-    const generatedForm = createFormFromDefinition(formDefinition)([])(workingCopy?.form, firstElementRef)(
-      updateCallBack,
-      customFormHandlers,
-    );
-
-    if (layout.splitFormAt) return splitAt(layout.splitFormAt)(disperseInputs(7)(generatedForm));
-
-    return splitInHalf(disperseInputs(7)(generatedForm));
-  }, [
-    formDefinition,
-    firstElementRef,
-    customFormHandlers,
-    layout.splitFormAt,
-    getValues,
-    updateCaseSectionWorkingCopy,
-    task.taskSid,
-    sectionApi,
-    workingCopy,
-    id,
-  ]);
+  const [l, r] = layout.splitFormAt
+    ? splitAt(layout.splitFormAt)(disperseInputs(7)(form))
+    : splitInHalf(disperseInputs(7)(form));
 
   if (!workingCopy) {
     return null;

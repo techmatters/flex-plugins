@@ -36,6 +36,10 @@ const AddOfflineContactButton: React.FC<Props> = ({
   currentDefinitionVersion,
   recreateContactState,
 }) => {
+  if (!currentDefinitionVersion) {
+    return null;
+  }
+
   const onClick = async () => {
     recreateContactState(currentDefinitionVersion)(offlineContactTaskSid);
     await Actions.invokeAction('SelectTask', { task: undefined });
@@ -54,7 +58,7 @@ const AddOfflineContactButton: React.FC<Props> = ({
 
 AddOfflineContactButton.displayName = 'AddOfflineContactButton';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+const mapStateToProps = (state: RootState) => {
   const { currentDefinitionVersion } = state[namespace][configurationBase];
   const { isAddingOfflineContact } = state[namespace][routingBase];
 

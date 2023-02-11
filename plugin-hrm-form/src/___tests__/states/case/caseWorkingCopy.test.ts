@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import { CaseItemEntry } from '../../../types/types';
 import { CaseSectionApi } from '../../../states/case/sections/api';
@@ -32,7 +32,14 @@ import {
 } from '../../../states/case/caseWorkingCopy';
 import { RootState } from '../../../states';
 
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+
 const stubRootState = {} as RootState['plugin-hrm-form'];
+
+beforeEach(() => {
+  mockReset();
+});
 
 describe('Working copy reducers', () => {
   const task = { taskSid: 'task1' };
@@ -40,7 +47,10 @@ describe('Working copy reducers', () => {
   let mockV1;
 
   beforeAll(async () => {
-    mockV1 = await loadDefinition(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    await mockFetchImplementation(formDefinitionsBaseUrl);
+
+    mockV1 = await loadDefinition(formDefinitionsBaseUrl);
   });
 
   const baselineDate = new Date(2022, 1, 28);

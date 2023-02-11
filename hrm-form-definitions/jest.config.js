@@ -22,6 +22,7 @@ module.exports = (config) => {
     config || {
       ...defaults,
       rootDir: './src',
+      modulePathIgnorePatterns: ['<rootDir>/__tests__/fetchDefinitionsMock.ts'],
     }
   );
 };

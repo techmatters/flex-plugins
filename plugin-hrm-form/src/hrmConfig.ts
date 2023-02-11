@@ -16,6 +16,7 @@
 
 import * as Flex from '@twilio/flex-ui';
 
+import { buildFormDefinitionsBaseUrlGetter } from './definitionVersions';
 import { FeatureFlags } from './types/types';
 import { configurationBase, namespace, RootState } from './states';
 
@@ -36,6 +37,7 @@ const readConfig = () => {
     process.env.REACT_SERVERLESS_BASE_URL || manager.serviceConfiguration.attributes.serverless_base_url;
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
   const assetsBucketUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
+  const getFormDefinitionsBaseUrl = buildFormDefinitionsBaseUrlGetter(manager);
 
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid;
@@ -70,6 +72,7 @@ const readConfig = () => {
       serverlessBaseUrl,
       logoUrl,
       assetsBucketUrl,
+      getFormDefinitionsBaseUrl,
       chatServiceSid,
       workerSid,
       helpline,
@@ -122,12 +125,10 @@ export const getTemplateStrings = () => cachedConfig.strings;
 export const getAseloFeatureFlags = (): FeatureFlags => cachedConfig.featureFlags;
 
 /**
- * Helper to expose the forms definitions without the need of calling Manager
+ * DO NOT USE IN REACT COMPONENTS! Using this in react components can lead to race conditions on loading where the component loads before the definition is ready
+ * Map the configuration redux state to the React component properties instead. This way if the component loads before the definitions are ready, it will reload once they are
+ * Ideally this should only be used in code that is invoked independently of React components, like Flex action event handlers
  */
 export const getDefinitionVersions = () => {
-  const { currentDefinitionVersion, definitionVersions } = (Flex.Manager.getInstance().store.getState() as RootState)[
-    namespace
-  ][configurationBase];
-
-  return { currentDefinitionVersion, definitionVersions };
+  return (Flex.Manager.getInstance().store.getState() as RootState)[namespace][configurationBase];
 };

@@ -15,7 +15,13 @@
  */
 
 import each from 'jest-each';
-import { DefinitionVersion, DefinitionVersionId, FormDefinition, loadDefinition } from 'hrm-form-definitions';
+import {
+  DefinitionVersion,
+  DefinitionVersionId,
+  FormDefinition,
+  loadDefinition,
+  useFetchDefinitions,
+} from 'hrm-form-definitions';
 import { addSeconds } from 'date-fns';
 
 import {
@@ -35,6 +41,9 @@ import { CaseSectionApi } from '../../../../states/case/sections/api';
 import { householdSectionApi } from '../../../../states/case/sections/household';
 import { perpetratorSectionApi } from '../../../../states/case/sections/perpetrator';
 
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+
 const testCaseItemEntry = (payload: any, id: string = 'TEST_CASE_INFO_SECTION'): CaseItemEntry => ({
   form: payload,
   id,
@@ -46,6 +55,10 @@ const expectedUpdatedCaseItem = (item: CaseItemEntry, property: string, id: stri
   const { form, ...entry } = item;
   return { [property]: form, ...entry, id: id ?? entry.id };
 };
+
+beforeEach(() => {
+  mockReset();
+});
 
 describe('upsertCaseSectionItemUsingSectionName', () => {
   const testCase = () => ({
@@ -224,7 +237,10 @@ describe('copyCaseSection', () => {
 
   let demoV1: DefinitionVersion;
   beforeAll(async () => {
-    demoV1 = await loadDefinition(DefinitionVersionId.demoV1);
+    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.demoV1);
+    await mockFetchImplementation(formDefinitionsBaseUrl);
+
+    demoV1 = await loadDefinition(formDefinitionsBaseUrl);
   });
 
   type Params = {

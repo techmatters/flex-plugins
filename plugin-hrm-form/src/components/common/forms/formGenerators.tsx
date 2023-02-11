@@ -16,8 +16,6 @@
 
 /* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable sonarjs/cognitive-complexity */
-/* eslint-disable react/no-multi-comp */
-/* eslint-disable import/no-unused-modules */
 /* eslint-disable react/display-name */
 import React from 'react';
 import { useFormContext, RegisterOptions } from 'react-hook-form';
@@ -878,24 +876,6 @@ type FileUploadCustomHandlers = {
 
 export type CustomHandlers = FileUploadCustomHandlers;
 
-/**
- * Creates a Form with each input connected to RHF's wrapping Context, based on the definition.
- */
-export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (
-  initialValues: any,
-  firstElementRef: HTMLElementRef,
-  isEnabled: (item: FormItemDefinition) => boolean = () => true,
-) => (updateCallback: () => void, customHandlers?: CustomHandlers): JSX.Element[] => {
-  const bindGetInputType = getInputType(parents, updateCallback, customHandlers);
-
-  return definition.map((e: FormItemDefinition, index: number) => {
-    const elementRef = index === 0 ? firstElementRef : null;
-    const maybeValue = get(initialValues, e.name);
-    const initialValue = maybeValue === undefined ? getInitialValue(e) : maybeValue;
-    return bindGetInputType(e)(initialValue, elementRef, isEnabled(e));
-  });
-};
-
 export const addMargin = (margin: number) => (i: JSX.Element) => (
   <Box key={`${i.key}-wrapping-box`} marginTop={`${margin.toString()}px`} marginBottom={`${margin.toString()}px`}>
     {i}
@@ -913,20 +893,3 @@ export const splitInHalf = (formItems: JSX.Element[]) => {
 };
 
 export const splitAt = (n: number) => (formItems: JSX.Element[]) => [formItems.slice(0, n), formItems.slice(n)];
-
-export const buildTwoColumnFormLayout = (formItems: JSX.Element[]) => {
-  const items = disperseInputs(5)(formItems);
-
-  const [l, r] = splitInHalf(items);
-
-  return (
-    <TwoColumnLayout>
-      <ColumnarBlock>
-        <ColumnarContent>{l}</ColumnarContent>
-      </ColumnarBlock>
-      <ColumnarBlock>
-        <ColumnarContent>{r}</ColumnarContent>
-      </ColumnarBlock>
-    </TwoColumnLayout>
-  );
-};

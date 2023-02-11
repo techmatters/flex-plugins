@@ -15,7 +15,13 @@
  */
 
 import each from 'jest-each';
-import { DefinitionVersion, DefinitionVersionId, FormInputType, loadDefinition } from 'hrm-form-definitions';
+import {
+  DefinitionVersion,
+  DefinitionVersionId,
+  FormInputType,
+  loadDefinition,
+  useFetchDefinitions,
+} from 'hrm-form-definitions';
 
 import {
   ContactDetailsSectionFormApi,
@@ -26,10 +32,20 @@ import {
 import { SearchAPIContact } from '../../../types/types';
 import details from '../../../components/case/casePrint/styles/details';
 
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+
 let definition: DefinitionVersion;
 
+beforeEach(() => {
+  mockReset();
+});
+
 beforeAll(async () => {
-  const v1Def = await loadDefinition(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  await mockFetchImplementation(formDefinitionsBaseUrl);
+
+  const v1Def = await loadDefinition(formDefinitionsBaseUrl);
   definition = {
     ...v1Def,
     tabbedForms: {

@@ -40,9 +40,7 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { changeRoute } from '../../states/routing/actions';
 import { updateCase } from '../../services/CaseService';
-import { createFormFromDefinition, disperseInputs, splitAt } from '../common/forms/formGenerators';
 import type { CustomITask, StandaloneITask } from '../../types/types';
-import useFocus from '../../utils/useFocus';
 import { recordingErrorHandler } from '../../fullStory';
 import { caseItemHistory, CaseSummaryWorkingCopy } from '../../states/case/types';
 import CloseCaseDialog from './CloseCaseDialog';
@@ -53,6 +51,8 @@ import {
 } from '../../states/case/caseWorkingCopy';
 import { AppRoutes } from '../../states/routing/types';
 import { PermissionActions, PermissionActionType } from '../../permissions';
+import { disperseInputs, splitAt } from '../common/forms/formGenerators';
+import { useCreateFormFromDefinition } from '../forms';
 import { getTemplateStrings } from '../../hrmConfig';
 
 export type EditCaseSummaryProps = {
@@ -75,14 +75,8 @@ const EditCaseSummary: React.FC<Props> = ({
   updateWorkingCopy,
   closeActions,
   can,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const firstElementRef = useFocus();
-
   const formDefinition: FormDefinition = useMemo(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-
     try {
       return [
         {
@@ -126,12 +120,9 @@ const EditCaseSummary: React.FC<Props> = ({
     };
   }, [connectedCaseState.connectedCase]);
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const methods = useForm();
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [openDialog, setOpenDialog] = React.useState(false);
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { getValues } = methods;
 
   useEffect(() => {
@@ -140,13 +131,12 @@ const EditCaseSummary: React.FC<Props> = ({
     }
   });
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [l, r] = React.useMemo(() => {
-    const updateCallBack = () => {
-      const formValues = getValues();
-      updateWorkingCopy(task.taskSid, formValues as CaseSummaryWorkingCopy);
-    };
-    const generatedForm = createFormFromDefinition(formDefinition)([])(workingCopy, firstElementRef, item => {
+  const form = useCreateFormFromDefinition({
+    definition: formDefinition,
+    initialValues: workingCopy,
+    parentsPath: '',
+    updateCallback: () => updateWorkingCopy(task.taskSid, getValues() as CaseSummaryWorkingCopy),
+    isItemEnabled: item => {
       switch (item.name) {
         case 'childIsAtRisk':
           return can(PermissionActions.EDIT_CHILD_IS_AT_RISK);
@@ -157,9 +147,12 @@ const EditCaseSummary: React.FC<Props> = ({
         default:
           return true;
       }
-    })(updateCallBack);
-    return splitAt(3)(disperseInputs(7)(generatedForm));
-  }, [formDefinition, workingCopy, firstElementRef, getValues, updateWorkingCopy, task.taskSid, can]);
+    },
+  });
+
+  const [l, r] = React.useMemo(() => {
+    return splitAt(3)(disperseInputs(7)(form));
+  }, [form]);
 
   const save = async () => {
     const { info, id } = connectedCaseState.connectedCase;

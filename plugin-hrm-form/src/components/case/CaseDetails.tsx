@@ -21,9 +21,8 @@
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
-import { DefinitionVersionId, StatusInfo } from 'hrm-form-definitions';
+import { DefinitionVersion, StatusInfo } from 'hrm-form-definitions';
 
 import CaseTags from './CaseTags';
 import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
@@ -48,7 +47,7 @@ type Props = {
   updatedAt: string | undefined;
   followUpDate: string | undefined;
   statusLabel: string;
-  definitionVersionName: DefinitionVersionId;
+  definitionVersion: DefinitionVersion;
   office: string | undefined;
   childIsAtRisk: boolean;
   isOrphanedCase: boolean | undefined;
@@ -72,7 +71,7 @@ const CaseDetails: React.FC<Props> = ({
   childIsAtRisk,
   availableStatusTransitions,
   handlePrintCase,
-  definitionVersionName,
+  definitionVersion,
   isOrphanedCase = false,
   editCaseSummary,
   // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -98,7 +97,7 @@ const CaseDetails: React.FC<Props> = ({
           isOrphanedCase={isOrphanedCase}
         />
         <div style={{ paddingTop: '15px' }}>
-          <CaseTags definitionVersion={definitionVersionName} categories={categories} />
+          <CaseTags definitionVersion={definitionVersion} categories={categories} />
         </div>
       </CaseDetailsBorder>
       <DetailsContainer aria-labelledby="Case-CaseId-label">

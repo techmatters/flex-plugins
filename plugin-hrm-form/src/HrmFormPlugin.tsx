@@ -134,9 +134,6 @@ const setUpActions = (
   setupObject: ReturnType<typeof getHrmConfig>,
   getMessage: (key: string) => (language: string) => Promise<string>,
 ) => {
-  // Is this the correct place for this call?
-  ActionFunctions.loadCurrentDefinitionVersion();
-
   ActionFunctions.setUpPostSurvey(featureFlags);
 
   // bind setupObject to the functions that requires some initialization
@@ -194,6 +191,7 @@ export default class HrmFormPlugin extends FlexPlugin {
      * WARNING: the way this is done right now is "hacky". More info in initLocalization declaration
      */
     const { translateUI, getMessage } = setUpLocalization(config);
+    ActionFunctions.loadCurrentDefinitionVersion();
 
     if (featureFlags.enable_transfers) setUpTransfers();
     setUpComponents(featureFlags, config, translateUI);
