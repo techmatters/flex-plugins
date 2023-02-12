@@ -6,9 +6,6 @@ import { twilioWssMockServer } from './twilio-wss-mock-server';
 export const MOCKTTP_SERVER_PORT = process.env.PROXY_SERVER_PORT
   ? Number.parseInt(process.env.PROXY_SERVER_PORT)
   : 4000;
-const WEBSOCKET_SERVER_PORT = process.env.WEBSOCKET_SERVER_PORT
-  ? Number.parseInt(process.env.WEBSOCKET_SERVER_PORT)
-  : 4001;
 
 let mockServer: Mockttp;
 let mockWebsocketServer: MockSecureWebsocketServer;
@@ -26,7 +23,7 @@ async function mockttpServer() {
     // Just wave through them self signed certs... :-/
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
     mockServer = getLocal({ https });
-    mockWebsocketServer = secureWebsocketServer(wss, WEBSOCKET_SERVER_PORT);
+    mockWebsocketServer = secureWebsocketServer(wss);
   }
   return mockServer;
 }
@@ -38,15 +35,17 @@ export async function start(): Promise<any> {
   await mockWebsocketServer.listen();
   console.log('WEBSOCKET SERVER LISTENING FOR CONNECTIONS');
 
-  await server.start(MOCKTTP_SERVER_PORT);
-  console.log('STARTED MOCK / PROXY SERVER');
+  await server.start();
+  console.log(`STARTED MOCK / PROXY SERVER ON PORT ${server.port}`);
   await server.forAnyRequest().thenPassThrough();
   websocketEndpoint = await server
     .forAnyWebSocket()
-    .thenForwardTo(`localhost:${WEBSOCKET_SERVER_PORT}`, {
-      ignoreHostHttpsErrors: ['localhost', `localhost:${WEBSOCKET_SERVER_PORT}`],
+    .thenForwardTo(`localhost:${mockWebsocketServer.port()}`, {
+      ignoreHostHttpsErrors: ['localhost', `localhost:${mockWebsocketServer.port()}`],
     });
-  console.log('WEBSOCKETS NOW BEING PROXIED TO MOCK WSS SERVER');
+  console.log(
+    `WEBSOCKETS NOW BEING PROXIED TO MOCK WSS SERVER ON PORT ${mockWebsocketServer.port()}`,
+  );
 
   return {};
 }
@@ -57,4 +56,8 @@ export async function stop(): Promise<void> {
   await mockWebsocketServer?.close();
   const websocketRequests = (await websocketEndpoint?.getSeenRequests()) ?? [];
   websocketRequests.forEach((r) => console.log('WEBSOCKET REQUEST PROXIED:', r.url));
+}
+
+export function port(): number {
+  return mockServer?.port;
 }

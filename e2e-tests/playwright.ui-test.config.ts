@@ -2,7 +2,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { PlaywrightTestConfig } from '@playwright/test';
 import environmentVariables from './environmentVariables';
-import { MOCKTTP_SERVER_PORT } from './flex-in-a-box/proxied-endpoints';
 
 const config: PlaywrightTestConfig = {
   globalSetup: require.resolve('./ui-global-setup'),
@@ -12,9 +11,8 @@ const config: PlaywrightTestConfig = {
     permissions: ['microphone'],
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    // Browser proxy option is required for Chromium on Windows.
-    proxy: { server: `http://localhost:${MOCKTTP_SERVER_PORT}`, bypass: 'localhost:3100' },
-    launchOptions: { proxy: { server: `http://localhost:${MOCKTTP_SERVER_PORT}` } },
+    // Browser proxy option is required for Chromium on Windows
+    launchOptions: { proxy: { server: `https://per-context` } },
     ignoreHTTPSErrors: true,
   },
   testDir: './ui-tests',
