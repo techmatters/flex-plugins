@@ -98,7 +98,8 @@ const fetchDefinitionGivenConfig = async <T>(
 
   if (response.status === 404) {
     if (placeholder) {
-      console.log(`Error retrieving definition for: ${url}. Using placeholder instead.`);
+      // eslint-disable-next-line no-console
+      console.log(`Could not find definition for: ${url}. Using placeholder instead.`);
       return placeholder;
     }
   }
