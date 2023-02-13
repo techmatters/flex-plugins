@@ -43,10 +43,10 @@ Font.register({
 });
 
 const notosansSrc =
-  'https://cdn.jsdelivr.net/gh/notofonts/notofonts.github.io/fonts/NotoSansThaiLooped/unhinted/otf/NotoSansThaiLooped';
+  'https://cdn.jsdelivr.net/gh/notofonts/notofonts.github.io/fonts/NotoSerifThai/hinted/ttf/NotoSerifThai';
 
 Font.register({
-  family: 'NotoSansThaiLooped',
+  family: 'NotoSerifThai',
   fonts: [
     { src: `${notosansSrc}-Light.ttf`, fontWeight: 300, fontStyle: 'italic' },
     { src: `${notosansSrc}-Regular.ttf`, fontWeight: 400 },
@@ -71,7 +71,7 @@ const { caseDetailsLabel } = detailsStyles;
 
 /**
  * 'Roboto' font family works for all languages/fonts supported thus far.
- * However, Thai characters are not readable with Roboto, hence substituting to NotoSansThaiLooped is required.
+ * However, Thai characters are not readable with Roboto, hence substituting to NotoSerifThai is required.
  * https://fonts.google.com/noto/specimen/Noto+Sans
  * In the future, when more languages are added, adding a compatible fontFamily might be necessary
  *
@@ -91,7 +91,7 @@ export const useThaiFontFamily = () => {
     sectionItemRowOdd,
     caseSummaryText,
     caseDetailsLabel,
-  ].forEach(el => (el.fontFamily = 'NotoSansThaiLooped'));
+  ].forEach(el => (el.fontFamily = 'NotoSerifThai'));
 };
 
 const styles = StyleSheet.create({
