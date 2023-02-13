@@ -56,8 +56,12 @@ const loadJSON = async (jsonPath: string) => {
   try {
     // eslint-disable-next-line import/no-dynamic-require, global-require
     return require(jsonPath);
-  } catch {
-    return undefined;
+  } catch (e) {
+    const error = e as any;
+    if (error.code === 'MODULE_NOT_FOUND') {
+      return undefined;
+    }
+    throw error;
   }
 };
 
@@ -102,13 +106,11 @@ const mockFetchImplementationGivenSpy = async (
     const jsonFile = await loadJSON(localPath);
 
     const fileExists = !!jsonFile;
-    const mockResponse: MockResponse = {
+    map[remotePath] = {
       ok: fileExists,
       status: fileExists ? 200 : 404,
       json: () => Promise.resolve(jsonFile),
     };
-
-    map[remotePath] = mockResponse;
   }
 
   fetchSpy.mockImplementation((url) => Promise.resolve(map[url.toString()]));

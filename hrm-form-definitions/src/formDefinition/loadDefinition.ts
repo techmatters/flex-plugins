@@ -89,26 +89,23 @@ const fetchDefinitionGivenConfig = async <T>(
   placeholder?: T,
 ) => {
   const url = `${baseUrl}/${jsonPath}`;
+  const response = await fetch(url);
 
-  try {
-    const response = await fetch(url);
+  if (response.ok) {
+    const json = await response.json();
+    return json as T;
+  }
 
-    if (response.ok) {
-      const json = await response.json();
-      return json as T;
-    }
-
-    throw new Error();
-  } catch (err) {
+  if (response.status === 404) {
     if (placeholder) {
-      console.log(`Could not find definition for: ${url}. Using placeholder instead.`);
+      console.log(`Error retrieving definition for: ${url}. Using placeholder instead.`);
       return placeholder;
     }
-
-    throw new Error(`Could not find definition for: ${url}. No placeholder was given.`);
   }
+  throw new Error(
+    `Error response from form definitions service [${url}]: ${response.statusText} (${response.status}).`,
+  );
 };
-
 /**
  * Returns an object that exposes the function:
  * - fetchDefinition<T>(jsonPath: string, placeholder?: T)
