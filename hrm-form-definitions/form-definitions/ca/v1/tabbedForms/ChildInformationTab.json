@@ -18,19 +18,19 @@
         "label": "5 or younger"
       },
       {
-        "value": "6",
+        "value": "06",
         "label": "6"
       },
       {
-        "value": "7",
+        "value": "07",
         "label": "7"
       },
       {
-        "value": "8",
+        "value": "08",
         "label": "8"
       },
       {
-        "value": "9",
+        "value": "09",
         "label": "9"
       },
       {
@@ -496,20 +496,8 @@
         "label": "Homeless (living in a shelter, on the streets or staying with people temporarily)"
       },
       {
-        "value": "Youth in care",
-        "label": "Youth in care"
-      },
-      {
-        "value": "Foster home",
-        "label": "Foster home"
-      },
-      {
-        "value": "Group home",
-        "label": "Group home"
-      },
-      {
-        "value": "In custody or on conditional release",
-        "label": "In custody or on conditional release"
+        "value": "In care",
+        "label": "In care"
       },
       {
         "value": "Other",
@@ -541,19 +529,19 @@
       },
       {
         "value": "Rural area",
-        "label": "Rural area (less than 1,000 people)"
+        "label": "Rural area (approximately 1,000 people)"
       },
       {
         "value": "Small city/town",
-        "label": "Small city/town (1,000 to 29,999 people)"
+        "label": "Small city/town (approximately 1,000 to 29,999 people)"
       },
       {
         "value": "Medium city",
-        "label": "Medium city (30,000 to 99,999 people)"
+        "label": "Medium city (approximately 30,000 to 99,999 people)"
       },
       {
         "value": "Large city/urban centre",
-        "label": "Large city/urban centre (100,000 people or more)"
+        "label": "Large city/urban centre (approximately 100,000 people or more)"
       },
       {
         "value": "First Nations reserve",
@@ -580,7 +568,7 @@
   },
   {
     "name": "upset",
-    "label": "On a scale of 1 to 7, how upset is the child?",
+    "label": "On a scale of 1 to 7, how upset is the person?",
     "type": "select",
     "options": [
         {
@@ -628,6 +616,6 @@
   {
     "name": "Newcomer",
     "label": "Newcomer (e.g., Arrived in Canada within 5 years or less)/Recent Immigrant/Refugee",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   }
 ]

@@ -28,7 +28,7 @@ short_env_map[prod]=production
 environment="${environment,,}"
 
 # If the environment is a short name, convert it to the full name
-[ "${short_env_map[${environment}]+yes}" ] && env=${short_env_map[$environment]}
+[ "${short_env_map[${environment}]+yes}" ] && environment=${short_env_map[$environment]}
 
 if [[ ! " ${environments[@]} " =~ " ${environment} " ]]; then
     echo "${environment} is not a valid environment. It must be one of: ${environments[@]}"
@@ -36,7 +36,7 @@ if [[ ! " ${environments[@]} " =~ " ${environment} " ]]; then
 fi
 
 # Convert helpline to lowercase
-helpine="${helpline,,}"
+helpline="${helpline,,}"
 
 path="form-definitions/${helpline}"
 helpline_dir="./hrm-form-definitions/${path}"

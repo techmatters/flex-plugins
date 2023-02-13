@@ -1,0 +1,20 @@
+{
+  "open": {
+    "value": "open",
+    "label": "Open",
+    "color": "green",
+    "transitions": ["inProgress", "closed"]
+  },
+  "closed": {
+    "value": "closed",
+    "label": "Closed",
+    "color": "red",
+    "transitions": ["inProgress"]
+  },
+  "inProgress": {
+    "value": "inProgress",
+    "label": "In Progress",
+    "color": "blue",
+    "transitions": ["closed"]
+  }
+}
