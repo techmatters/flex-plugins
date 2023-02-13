@@ -21,6 +21,7 @@ import * as Flex from '@twilio/flex-ui';
 
 import { AcceptTransferButton, RejectTransferButton, TransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
+import EmojiPicker from '../components/emojiPicker';
 import CannedResponses from '../components/CannedResponses';
 import QueuesStatusWriter from '../components/queuesStatus/QueuesStatusWriter';
 import QueuesStatus from '../components/queuesStatus';
@@ -40,11 +41,11 @@ import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles/HrmS
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
-// eslint-disable-next-line
 import { FeatureFlags, isInMyBehalfITask } from '../types/types';
-import { SetupObject } from '../HrmFormPlugin';
 import { colors } from '../channels/colors';
+import { getHrmConfig } from '../hrmConfig';
 
+type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
  * Returns the UI for the "Contacts Waiting" section
  */
@@ -361,4 +362,11 @@ export const removeActionsIfTransferring = () => {
 export const setupCannedResponses = () => {
   Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" />);
   Flex.MessageInputV2.Content.add(<CannedResponses key="canned-responses" />);
+};
+
+/**
+ * Emoji Picker
+ */
+export const setupEmojiPicker = () => {
+  Flex.MessageInputActions.Content.add(<EmojiPicker key="emoji-picker" />);
 };

@@ -43,6 +43,10 @@ div.Twilio-MainHeader button.MuiButton-root {
     background-color: rgb(18, 28, 45);
     border: none;
 }
+div.Twilio-SideNav-default > div:hover {
+    background-color: #e4e6e7;
+}
+
 div.Twilio-MainHeader button.MuiButton-root span {
     color: rgb(248, 250, 252);
     background-color: rgb(18, 28, 45);

@@ -28,11 +28,12 @@ import { updateHelpline as updateHelplineAction } from '../states/contacts/actio
 import { hasTaskControl } from '../utils/transfer';
 import type { DefinitionVersion } from '../states/types';
 import { CustomITask, isOfflineContactTask, isInMyBehalfITask } from '../types/types';
-import { reRenderAgentDesktop, getConfig } from '../HrmFormPlugin';
 import PreviousContactsBanner from './PreviousContactsBanner';
 import { Flex } from '../styles/HrmStyles';
 import { isStandaloneITask } from './case/Case';
 import { getHelplineToSave } from '../services/HelplineService';
+import { getAseloFeatureFlags } from '../hrmConfig';
+import { rerenderAgentDesktop } from '../rerenderView';
 
 type OwnProps = {
   task: CustomITask;
@@ -61,7 +62,7 @@ const TaskView: React.FC<Props> = props => {
   // Force a re-render on unmount (temporary fix NoTaskView issue with Offline Contacts)
   React.useEffect(() => {
     return () => {
-      if (isOfflineContactTask(task)) reRenderAgentDesktop();
+      if (isOfflineContactTask(task)) rerenderAgentDesktop();
     };
   }, [task]);
 
@@ -89,6 +90,10 @@ const TaskView: React.FC<Props> = props => {
     }
   }, [contactlessTask, contactInitialized, helpline, task, updateHelpline]);
 
+  if (!currentDefinitionVersion) {
+    return null;
+  }
+
   // If this task is not the active task, or if the task is not accepted yet, hide it
   const show =
     task &&
@@ -98,7 +103,7 @@ const TaskView: React.FC<Props> = props => {
 
   if (!show) return null;
 
-  const { featureFlags } = getConfig();
+  const featureFlags = getAseloFeatureFlags();
   const isFormLocked = !hasTaskControl(task);
 
   return (
@@ -124,14 +129,15 @@ TaskView.displayName = 'TaskView';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const { task } = ownProps;
+  const { currentDefinitionVersion } = state[namespace][configurationBase];
   // Check if the entry for this task exists in each reducer
   const contactForm = task && state[namespace][contactFormsBase]?.tasks[task.taskSid];
   const contactFormStateExists = Boolean(contactForm);
   const routingStateExists = Boolean(task && state[namespace][routingBase].tasks[task.taskSid]);
   const searchStateExists = Boolean(task && state[namespace][searchContactsBase].tasks[task.taskSid]);
 
-  const shouldRecreateState = !contactFormStateExists || !routingStateExists || !searchStateExists;
-  const { currentDefinitionVersion } = state[namespace][configurationBase];
+  const shouldRecreateState =
+    currentDefinitionVersion && (!contactFormStateExists || !routingStateExists || !searchStateExists);
 
   return {
     contactForm,

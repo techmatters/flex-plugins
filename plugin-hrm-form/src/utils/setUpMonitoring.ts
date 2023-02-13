@@ -22,7 +22,6 @@ import { ServiceConfiguration } from '@twilio/flex-ui';
 import type { Worker } from 'twilio-taskrouter';
 
 import { rollbarAccessToken, datadogAccessToken, datadogApplicationID, fullStoryId } from '../private/secret';
-import HrmFormPlugin from '../HrmFormPlugin';
 
 function setUpDatadogRum(workerClient: Worker, monitoringEnv: string) {
   datadogRum.init({
@@ -43,7 +42,7 @@ function setUpDatadogRum(workerClient: Worker, monitoringEnv: string) {
   });
 }
 
-function setUpRollbarLogger(plugin: HrmFormPlugin, workerClient: Worker, monitoringEnv: string) {
+function setUpRollbarLogger(plugin: { Rollbar?: Rollbar }, workerClient: Worker, monitoringEnv: string) {
   plugin.Rollbar = new Rollbar({
     reportLevel: 'error',
     accessToken: rollbarAccessToken,
@@ -118,7 +117,7 @@ function helplineIdentifierFullStory(workerClient) {
 }
 
 export default function setUpMonitoring(
-  plugin: HrmFormPlugin,
+  plugin: { Rollbar?: Rollbar },
   workerClient: Worker,
   serviceConfiguration: ServiceConfiguration,
 ) {

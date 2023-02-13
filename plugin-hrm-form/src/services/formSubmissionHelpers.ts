@@ -17,7 +17,6 @@
 /* eslint-disable import/no-unused-modules */
 import { Actions, ITask, Manager } from '@twilio/flex-ui';
 
-import { getConfig } from '../HrmFormPlugin';
 import { TaskEntry as Contact } from '../states/contacts/reducer';
 import { Case, CustomITask, isOfflineContactTask, offlineContactTaskSid } from '../types/types';
 import { channelTypes } from '../states/DomainConstants';
@@ -25,6 +24,7 @@ import { buildInsightsData } from './InsightsService';
 import { saveContact } from './ContactService';
 import { assignOfflineContactInit, assignOfflineContactResolve } from './ServerlessService';
 import { removeContactState } from '../states/actions';
+import { getHrmConfig } from '../hrmConfig';
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
@@ -55,7 +55,7 @@ export const completeTask = (task: CustomITask) =>
   isOfflineContactTask(task) ? completeContactlessTask(task) : completeContactTask(task);
 
 export const submitContactForm = async (task: CustomITask, contactForm: Contact, caseForm: Case) => {
-  const { workerSid } = getConfig();
+  const { workerSid } = getHrmConfig();
 
   if (isOfflineContactTask(task)) {
     const targetWorkerSid = contactForm.contactlessTask.createdOnBehalfOf as string;

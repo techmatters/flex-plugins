@@ -96,7 +96,7 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
         <TagsAndCounselor
           counselor={counselor}
           categories={retrieveCategories(categories)}
-          definitionVersion={versionId}
+          definitionVersion={definitionVersion}
         />
       </PreviewWrapper>
     </Flex>

@@ -6,5 +6,6 @@
   "language":"{{trigger.message.ChannelAttributes.pre_engagement_data.language}}",
   "ignoreAgent": "",
   "transferTargetType": "",
+  "preEngagementData": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}},
   "memory": {{ widgets.${chatbot_language}.memory  | to_json}}
 }

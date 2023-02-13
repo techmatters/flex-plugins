@@ -67,6 +67,7 @@ const { footer } = footerStyles;
 const { childName, caseId, officeName } = headerStyles;
 const { sectionHeader, whiteText, sectionItemRowEven, sectionItemRowOdd } = sectionStyles;
 const { caseSummaryText } = summaryStyles;
+const { caseDetailsLabel } = detailsStyles;
 
 /**
  * 'Roboto' font family works for all languages/fonts supported thus far.
@@ -77,6 +78,7 @@ const { caseSummaryText } = summaryStyles;
  */
 export const useThaiFontFamily = () => {
   whiteText.letterSpacing = 0;
+  caseDetailsLabel.letterSpacing = 0;
   [
     styles.page,
     footer,
@@ -88,6 +90,7 @@ export const useThaiFontFamily = () => {
     sectionItemRowEven,
     sectionItemRowOdd,
     caseSummaryText,
+    caseDetailsLabel,
   ].forEach(el => (el.fontFamily = 'NotoSansThai'));
 };
 
