@@ -73,6 +73,7 @@ type NavigateToSearchAction = {
   type: typeof NAVIGATE_TO_SEARCH;
 };
 
+// eslint-disable-next-line import/no-unused-modules
 export const navigateToSearchAction = (): NavigateToSearchAction => ({
   type: NAVIGATE_TO_SEARCH,
 });
