@@ -27,6 +27,11 @@ const config: PlaywrightTestConfig = {
     permissions: ['microphone'],
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    contextOptions: {
+      recordVideo: {
+        dir: './test-results',
+      },
+    },
   },
   timeout: 60000,
 };
