@@ -16,7 +16,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { Actions, ActionPayload, withTaskContext, TaskContextProps, ITask } from '@twilio/flex-ui';
+import { Actions, ActionPayload, withTaskContext, TaskContextProps, ITask, Manager } from '@twilio/flex-ui';
 import { EmojiIcon } from '@twilio-paste/icons/cjs/EmojiIcon';
 import Picker from '@emoji-mart/react';
 
@@ -26,6 +26,10 @@ import { configurationBase, namespace, RootState } from '../../states';
 type onEmojiSelectPayload = {
   native: string;
 };
+
+const EMOJIS_PER_LINE_DEFAULT = 9;
+const MESSAGING_CANVAS_WIDTH_DEFAULT = 420;
+const EMOJI_WIDTH = 36;
 
 const getConversationSid = (task: ITask) =>
   task && task.attributes && (task.attributes.conversationSid || task.attributes.channelSid);
@@ -47,6 +51,7 @@ const connector = connect(mapStateToProps);
 const EmojiPicker: React.FC<TaskContextProps & ConnectedProps<typeof connector>> = ({ task, definitionVersion }) => {
   const [inputText, setInputText] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+  const [emojisPerLine, setEmojisPerLine] = useState(EMOJIS_PER_LINE_DEFAULT);
 
   const { blockedEmojis } = definitionVersion ?? { blockedEmojis: [] };
   const conversationSid = getConversationSid(task);
@@ -60,6 +65,31 @@ const EmojiPicker: React.FC<TaskContextProps & ConnectedProps<typeof connector>>
 
     return () => {
       Actions.removeListener('afterSetInputText', inputTextListener);
+    };
+  }, []);
+
+  /**
+   * Adds listener to change the number of emojis per line,
+   * based on the canvas width
+   */
+  useEffect(() => {
+    const messagingCanvasResizeListener = () => {
+      const canvas = document.querySelector<HTMLDivElement>('.Twilio-MessagingCanvas');
+      const width = canvas.clientWidth;
+
+      if (width < MESSAGING_CANVAS_WIDTH_DEFAULT) {
+        const emojisPerLine =
+          EMOJIS_PER_LINE_DEFAULT - Math.ceil((MESSAGING_CANVAS_WIDTH_DEFAULT - width) / EMOJI_WIDTH);
+        setEmojisPerLine(emojisPerLine);
+      } else {
+        setEmojisPerLine(EMOJIS_PER_LINE_DEFAULT);
+      }
+    };
+    const manager = Manager.getInstance();
+    manager.events.addListener('flexSplitterResize', messagingCanvasResizeListener);
+
+    return () => {
+      manager.events.removeListener('flexSplitterResize', messagingCanvasResizeListener);
     };
   }, []);
 
@@ -84,7 +114,12 @@ const EmojiPicker: React.FC<TaskContextProps & ConnectedProps<typeof connector>>
   return (
     <Relative>
       <Popup isOpen={isOpen}>
-        <Picker onEmojiSelect={handleSelectEmoji} onClickOutside={handleClickOutside} exceptEmojis={blockedEmojis} />
+        <Picker
+          onEmojiSelect={handleSelectEmoji}
+          onClickOutside={handleClickOutside}
+          exceptEmojis={blockedEmojis}
+          perLine={emojisPerLine}
+        />
       </Popup>
       <SelectEmojiButton type="button" onClick={togglePicker}>
         <EmojiIcon decorative={false} title="Select emoji" />
