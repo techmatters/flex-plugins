@@ -32,7 +32,7 @@ const getEnvironmentFromHrmBaseUrl = (manager: Flex.Manager) => {
 
   /*
    * hrm-test is an alias of hrm-staging that we should deprecate & remove, but some accounts are still configured to point at it
-   * Thois ensures any accounts still pointing at hrm-test go to the right bucket for their assets
+   * This ensures any accounts still pointing at hrm-test go to the right bucket for their assets
    */
   if (environment === 'test') {
     return 'staging';
