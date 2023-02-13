@@ -32,7 +32,7 @@ const getEnvironmentFromHrmBaseUrl = (manager: Flex.Manager) => {
 
   // Filter out E2E
   if (environment === 'test') {
-    return 'development';
+    return 'staging';
   }
 
   return environment;

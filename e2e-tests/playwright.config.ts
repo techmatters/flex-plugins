@@ -26,7 +26,7 @@ const config: PlaywrightTestConfig = {
     baseURL: environmentVariables.PLAYWRIGHT_BASEURL ?? 'http://localhost:3000',
     permissions: ['microphone'],
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    video: 'off',
     contextOptions: {
       recordVideo: {
         dir: './test-results',
