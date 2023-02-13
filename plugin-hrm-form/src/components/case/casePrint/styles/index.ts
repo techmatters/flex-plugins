@@ -43,15 +43,15 @@ Font.register({
 });
 
 const notosansSrc =
-  'https://cdn.jsdelivr.net/gh/notofonts/notofonts.github.io/fonts/NotoSansThai/unhinted/otf/NotoSansThai';
+  'https://cdn.jsdelivr.net/gh/notofonts/notofonts.github.io/fonts/NotoSansThaiLooped/unhinted/otf/NotoSansThaiLooped';
 
 Font.register({
-  family: 'NotoSansThai',
+  family: 'NotoSansThaiLooped',
   fonts: [
-    { src: `${notosansSrc}-Light.otf`, fontWeight: 300, fontStyle: 'italic' },
-    { src: `${notosansSrc}-Regular.otf`, fontWeight: 400 },
-    { src: `${notosansSrc}-Medium.otf`, fontWeight: 500 },
-    { src: `${notosansSrc}-Bold.otf`, fontWeight: 700 },
+    { src: `${notosansSrc}-Light.ttf`, fontWeight: 300, fontStyle: 'italic' },
+    { src: `${notosansSrc}-Regular.ttf`, fontWeight: 400 },
+    { src: `${notosansSrc}-Medium.ttf`, fontWeight: 500 },
+    { src: `${notosansSrc}-Bold.ttf`, fontWeight: 700 },
   ],
 });
 
@@ -91,7 +91,7 @@ export const useThaiFontFamily = () => {
     sectionItemRowOdd,
     caseSummaryText,
     caseDetailsLabel,
-  ].forEach(el => (el.fontFamily = 'NotoSansThai'));
+  ].forEach(el => (el.fontFamily = 'NotoSansThaiLooped'));
 };
 
 const styles = StyleSheet.create({
