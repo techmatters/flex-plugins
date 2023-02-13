@@ -46,3 +46,8 @@ export const setTaskWrapupEventListeners = (featureFlags: FeatureFlags) => {
     manager.events.addListener('taskWrapup', removeConversationListeners);
   }
 };
+
+export const setTaskCompletedEventListener = () => {
+    const manager = Manager.getInstance();
+    manager.events.addListener('taskCompleted', removeConversationListeners);
+};

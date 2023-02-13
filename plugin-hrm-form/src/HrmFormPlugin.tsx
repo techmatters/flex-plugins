@@ -197,6 +197,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     setUpComponents(featureFlags, config, translateUI);
     setUpActions(featureFlags, config, getMessage);
     TaskRouterListeners.setTaskWrapupEventListeners(featureFlags);
+    TaskRouterListeners.setTaskCompletedEventListener();
 
     subscribeReservedTaskAlert();
     subscribeNewMessageAlertOnPluginInit();
