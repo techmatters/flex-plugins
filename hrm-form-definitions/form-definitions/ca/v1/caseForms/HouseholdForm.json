@@ -19,7 +19,7 @@
   },
   {
     "name": "relationshipToChild",
-    "label": "Relationship to child",
+    "label": "Relationship to young person",
     "type": "select",
     "options": [
       { "value": "Unknown", "label": "" },
@@ -39,7 +39,7 @@
   {
     "name": "otherMinorAtRisk",
     "label": "Minor at risk?",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "phone",
