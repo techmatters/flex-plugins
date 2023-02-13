@@ -40,6 +40,7 @@ const getEnvironmentFromHrmBaseUrl = (manager: Flex.Manager) => {
 
 const getHelplineCodeFromDefinitionVersionId = (definitionVersionId: string) => {
   if (definitionVersionId === 'demo-v1') return 'as';
+  if (definitionVersionId === 'e2e-v1') return 'e2e';
   if (definitionVersionId === 'v1') return 'zm';
 
   return definitionVersionId.substring(0, 2);

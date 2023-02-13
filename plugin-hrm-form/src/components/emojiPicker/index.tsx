@@ -15,12 +15,13 @@
  */
 
 import React, { useEffect, useState, useCallback } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 import { Actions, ActionPayload, withTaskContext, TaskContextProps, ITask } from '@twilio/flex-ui';
 import { EmojiIcon } from '@twilio-paste/icons/cjs/EmojiIcon';
 import Picker from '@emoji-mart/react';
 
 import { Relative, Popup, SelectEmojiButton } from './styles';
-import { getDefinitionVersions } from '../../hrmConfig';
+import { configurationBase, namespace, RootState } from '../../states';
 
 type onEmojiSelectPayload = {
   native: string;
@@ -37,11 +38,17 @@ const concatEmoji = (inputText: string, emoji: string) => {
   return `${inputText} ${emoji}`;
 };
 
-const EmojiPicker: React.FC<TaskContextProps> = ({ task }) => {
+const mapStateToProps = (state: RootState) => ({
+  definitionVersion: state[namespace][configurationBase].currentDefinitionVersion,
+});
+
+const connector = connect(mapStateToProps);
+
+const EmojiPicker: React.FC<TaskContextProps & ConnectedProps<typeof connector>> = ({ task, definitionVersion }) => {
   const [inputText, setInputText] = useState('');
   const [isOpen, setIsOpen] = useState(false);
 
-  const { blockedEmojis } = getDefinitionVersions().currentDefinitionVersion;
+  const { blockedEmojis } = definitionVersion ?? { blockedEmojis: [] };
   const conversationSid = getConversationSid(task);
 
   /**
@@ -87,4 +94,4 @@ const EmojiPicker: React.FC<TaskContextProps> = ({ task }) => {
 };
 
 EmojiPicker.displayName = 'EmojiPicker';
-export default withTaskContext(EmojiPicker);
+export default withTaskContext(connector(EmojiPicker));
