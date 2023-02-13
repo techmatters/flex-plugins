@@ -44,7 +44,7 @@ import { configurationBase, contactFormsBase, namespace, RootState } from '../..
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getPermissionsForContact, getPermissionsForViewingIdentifiers, PermissionActions } from '../../permissions';
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
-import TranscriptSection from './TranscriptSection';
+import { TranscriptSection } from './TranscriptSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import { contactLabelFromSearchContact } from '../../states/contacts/contactIdentifier';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';

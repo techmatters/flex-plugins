@@ -28,16 +28,21 @@ import {
   MessageBubbleNameText,
   MessageBubbleDateText,
   MessageBubbleBodyText,
-} from './TranscriptSection.styles';
-import { TranscriptMessage } from '../../states/contacts/existingContacts';
+} from './styles';
+import { TranscriptMessage } from '../../../states/contacts/existingContacts';
 
-type Props = {
+export type GroupedMessage = TranscriptMessage & {
+  friendlyName: string;
   isCounselor: boolean;
   isGroupedWithPrevious: boolean;
-  message: TranscriptMessage;
 };
 
-const MessageItem: React.FC<Props> = ({ isCounselor, isGroupedWithPrevious, message }) => {
+type Props = {
+  message: GroupedMessage;
+};
+
+const MessageItem: React.FC<Props> = ({ message }) => {
+  const { body, dateCreated, friendlyName, from, isCounselor, isGroupedWithPrevious } = message;
   return (
     <MessageItemContainer isCounselor={isCounselor} isGroupedWithPrevious={isGroupedWithPrevious}>
       {!isCounselor && (
@@ -48,15 +53,13 @@ const MessageItem: React.FC<Props> = ({ isCounselor, isGroupedWithPrevious, mess
       <MessageBubbleContainer isCounselor={isCounselor}>
         <MessageBubleInnerContainer>
           <MessageBubbleHeader>
-            <MessageBubbleNameText isCounselor={isCounselor}>
-              {message.friendlyName || message.from}
-            </MessageBubbleNameText>
+            <MessageBubbleNameText isCounselor={isCounselor}>{friendlyName || from}</MessageBubbleNameText>
             <MessageBubbleDateText isCounselor={isCounselor}>
-              {format(new Date(message.dateCreated), 'hh:mm a')}
+              {format(new Date(dateCreated), 'hh:mm a')}
             </MessageBubbleDateText>
           </MessageBubbleHeader>
           <MessageBubbleBody>
-            <MessageBubbleBodyText isCounselor={isCounselor}>{message.body}</MessageBubbleBodyText>
+            <MessageBubbleBodyText isCounselor={isCounselor}>{body}</MessageBubbleBodyText>
           </MessageBubbleBody>
         </MessageBubleInnerContainer>
       </MessageBubbleContainer>
