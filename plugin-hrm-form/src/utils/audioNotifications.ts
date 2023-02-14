@@ -56,11 +56,8 @@ const notifyNewMessage = messageInstance => {
     const notificationTone = 'bell';
     const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
 
-    // normalizeEmail transforms encoded characters with @ and .
-    const normalizeEmail = (identity: string) => identity.replace('_2E', '.').replace('_40', '@');
-
-    const isCounsellor = normalizeEmail(manager.user.identity) === normalizeEmail(messageInstance.author);
-    if (!isCounsellor && document.visibilityState === 'visible') {
+    const isCounsellor = manager.conversationsClient.user.identity === messageInstance.author;
+    if (!isCounsellor && document.visibilityState === 'hidden') {
       AudioPlayerManager.play(
         {
           url: notificationUrl,
@@ -76,12 +73,34 @@ const notifyNewMessage = messageInstance => {
   }
 };
 
+const reservedTaskMedias: { [reservationSid: string]: string } = {};
+
+const playWhilePending = (reservation: { sid: string; status: string }, notificationUrl: string) => {
+  const playNotificationIfPending = () => {
+    if (reservation.status === 'pending') {
+      const mediaId = AudioPlayerManager.play(
+        {
+          url: notificationUrl,
+          repeatable: false,
+        },
+        (error: AudioPlayerError) => {
+          console.log('AudioPlayerError:', error);
+        },
+      );
+
+      reservedTaskMedias[reservation.sid] = mediaId;
+      setTimeout(playNotificationIfPending, 500);
+    }
+  };
+
+  playNotificationIfPending();
+};
+
 /**
  * notifyReservedTask plays ringtone when an agent has a reserved task in pending state.
- *  The notification stops when the reservation is not longer in pending.
- *  There is a check, checkForPendingReservation, in case, notification does not stop as expected.
- *
- * @param reservation
+ * The notification takes place once ever 500ms, if still pending, the sound is played again.
+ * If multiple tasks are reserved, AudioPlayerManager will stil play one of them
+ * The notification stops when the reservation is not longer in pending.
  */
 const notifyReservedTask = reservation => {
   try {
@@ -90,28 +109,9 @@ const notifyReservedTask = reservation => {
     const notificationTone = 'ringtone';
     const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
 
-    let media;
-
-    if (document.visibilityState === 'visible') {
-      media = AudioPlayerManager.play(
-        {
-          url: notificationUrl,
-          repeatable: true,
-        },
-        (error: AudioPlayerError) => {
-          console.log('AudioPlayerError:', error);
-        },
-      );
+    if (document.visibilityState === 'hidden') {
+      playWhilePending(reservation, notificationUrl);
     }
-
-    const stopAudio = () => media && AudioPlayerManager.stop(media);
-
-    const reservationStatuses = ['accepted', 'canceled', 'rejected', 'rescinded', 'timeout'];
-    reservationStatuses.forEach(status => reservation.on(status, stopAudio));
-
-    const checkForPendingReservation = () =>
-      reservation.status === 'pending' ? setTimeout(checkForPendingReservation, 5000) : stopAudio();
-    checkForPendingReservation();
   } catch (error) {
     console.error('Error in notifyReservedTask:', error);
   }
