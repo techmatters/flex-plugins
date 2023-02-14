@@ -57,7 +57,7 @@ const notifyNewMessage = messageInstance => {
     const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
 
     const isCounsellor = manager.conversationsClient.user.identity === messageInstance.author;
-    if (!isCounsellor && document.visibilityState !== 'visible') {
+    if (!isCounsellor && document.visibilityState === 'hidden') {
       AudioPlayerManager.play(
         {
           url: notificationUrl,
@@ -109,7 +109,7 @@ const notifyReservedTask = reservation => {
     const notificationTone = 'ringtone';
     const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
 
-    if (document.visibilityState !== 'visible') {
+    if (document.visibilityState === 'hidden') {
       playWhilePending(reservation, notificationUrl);
     }
   } catch (error) {
