@@ -79,7 +79,7 @@ const notifyNewMessage = messageInstance => {
 const reservedTaskMedias: { [reservationSid: string]: string } = {};
 
 const playWhilePending = (reservation: { sid: string; status: string }, notificationUrl: string) => {
-  const checkForPendingReservation = () => {
+  const playNotificationIfPending = () => {
     if (reservation.status === 'pending') {
       const mediaId = AudioPlayerManager.play(
         {
@@ -92,11 +92,11 @@ const playWhilePending = (reservation: { sid: string; status: string }, notifica
       );
 
       reservedTaskMedias[reservation.sid] = mediaId;
-      setTimeout(checkForPendingReservation, 500);
+      setTimeout(playNotificationIfPending, 500);
     }
   };
 
-  checkForPendingReservation();
+  playNotificationIfPending();
 };
 
 /**
