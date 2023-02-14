@@ -58,9 +58,8 @@ const notifyNewMessage = messageInstance => {
 
     // normalizeEmail transforms encoded characters with @ and .
     const normalizeEmail = (identity: string) => identity.replace(/_2E/g, '.').replace(/_40/g, '@');
-
     const isCounsellor = normalizeEmail(manager.user.identity) === normalizeEmail(messageInstance.author);
-    if (!isCounsellor && document.visibilityState !== 'visible') {
+    if (!isCounsellor && document.visibilityState === 'hidden') {
       AudioPlayerManager.play(
         {
           url: notificationUrl,
@@ -112,7 +111,7 @@ const notifyReservedTask = reservation => {
     const notificationTone = 'ringtone';
     const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
 
-    if (document.visibilityState !== 'visible') {
+    if (document.visibilityState === 'hidden') {
       playWhilePending(reservation, notificationUrl);
     }
   } catch (error) {
