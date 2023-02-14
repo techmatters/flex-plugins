@@ -139,6 +139,7 @@ export const setTransferMeta = async (
       originalReservation: task.sid,
       originalCounselor: task.workerSid,
       originalCounselorName: counselorName,
+      originalConversationSid: task.attributes.channelSid, // save the original conversation sid, so we can cleanup the listeners if transferred succesfully
       sidWithTaskControl: mode === transferModes.warm ? '' : 'WR00000000000000000000000000000000', // if cold, set control to dummy value so Task Janitor completes this one
       transferStatus: mode === transferModes.warm ? transferStatuses.transferring : transferStatuses.accepted,
       formDocument: documentName,
