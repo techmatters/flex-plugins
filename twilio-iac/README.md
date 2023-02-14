@@ -2,6 +2,10 @@
 
 These are scripts for provisioning some of the Aselo Twilio infrastructure.
 
+
+## Note
+Try to keep track of the changes on the different accounts in [this spreadsheet](https://app.box.com/file/1109527438079) 🙏
+
 ## Prerequisites
 
 ### Requirements

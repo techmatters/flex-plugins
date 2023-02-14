@@ -23,15 +23,18 @@ import '@testing-library/jest-dom/extend-expect';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
 import ViewCaseItem, { ViewCaseItemProps } from '../../../components/case/ViewCaseItem';
-import { getDefinitionVersions } from '../../../HrmFormPlugin';
-import { CaseItemEntry, StandaloneITask } from '../../../types/types';
+import { getDefinitionVersions } from '../../../hrmConfig';
+import { StandaloneITask } from '../../../types/types';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
 import { householdSectionApi } from '../../../states/case/sections/household';
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
@@ -117,7 +120,11 @@ describe('Test ViewHousehold', () => {
   let ownProps: ViewCaseItemProps;
 
   beforeAll(async () => {
-    mockV1 = await loadDefinition(DefinitionVersionId.v1);
+    mockReset();
+    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    await mockFetchImplementation(formDefinitionsBaseUrl);
+
+    mockV1 = await loadDefinition(formDefinitionsBaseUrl);
     mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
   });
 

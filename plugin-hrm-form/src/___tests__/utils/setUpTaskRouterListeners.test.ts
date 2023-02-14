@@ -50,8 +50,6 @@ jest.mock('@twilio/flex-ui', () => ({
   },
 }));
 
-jest.mock('../../HrmFormPlugin.tsx', () => ({}));
-
 afterEach(() => {
   jest.clearAllMocks();
   mockEventEmitter.clearEvents();

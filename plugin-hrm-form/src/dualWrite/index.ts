@@ -16,9 +16,9 @@
 
 import { ITask } from '@twilio/flex-ui';
 
-import { getConfig } from '../HrmFormPlugin';
 import { savePendingContactToSharedState } from '../utils/sharedState';
 import saveContactToSaferNet from './br';
+import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 
 type DualWriteFn = (task: ITask, payload: any) => Promise<void>;
 
@@ -31,7 +31,8 @@ const saveContactByDefinitionVersion: SaveContactByDefinitionVersion = {
 };
 
 export const saveContactToExternalBackend = async (task: ITask, payload: any) => {
-  const { featureFlags, definitionVersion } = getConfig();
+  const featureFlags = getAseloFeatureFlags();
+  const { definitionVersion } = getHrmConfig();
   if (!featureFlags.enable_dual_write) return;
 
   const saveContact = saveContactByDefinitionVersion[definitionVersion];

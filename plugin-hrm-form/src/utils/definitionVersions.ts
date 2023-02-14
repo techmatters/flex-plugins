@@ -18,7 +18,7 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { Case, SearchAPIContact } from '../types/types';
 import { getDefinitionVersionsList } from '../services/ServerlessService';
-import { getDefinitionVersions } from '../HrmFormPlugin';
+import { getDefinitionVersions } from '../hrmConfig';
 
 // eslint-disable-next-line import/no-unused-modules
 const getMissingDefinitionVersions = async (versions: DefinitionVersionId[]) => {

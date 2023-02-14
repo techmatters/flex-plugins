@@ -16,7 +16,11 @@
 
 import * as Flex from '@twilio/flex-ui';
 
+import { buildFormDefinitionsBaseUrlGetter } from './definitionVersions';
 import { FeatureFlags } from './types/types';
+import { configurationBase, namespace, RootState } from './states';
+
+const featureFlagEnvVarPrefix = 'REACT_FF_';
 
 const readConfig = () => {
   const manager = Flex.Manager.getInstance();
@@ -33,6 +37,7 @@ const readConfig = () => {
     process.env.REACT_SERVERLESS_BASE_URL || manager.serviceConfiguration.attributes.serverless_base_url;
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
   const assetsBucketUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
+  const getFormDefinitionsBaseUrl = buildFormDefinitionsBaseUrlGetter(manager);
 
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid;
@@ -48,8 +53,15 @@ const readConfig = () => {
     permissionConfig,
   } = manager.serviceConfiguration.attributes;
   const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
-
-  const featureFlags: FeatureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
+  const featureFlagsFromEnvEntries = Object.entries(process.env)
+    .filter(([varName]) => varName.startsWith(featureFlagEnvVarPrefix))
+    .map(([name, value]) => [
+      name.substring(featureFlagEnvVarPrefix.length),
+      (value ?? 'false').toLowerCase() === 'true',
+    ]);
+  const featureFlagsFromEnv = Object.fromEntries(featureFlagsFromEnvEntries);
+  const featureFlagsFromServiceConfig: FeatureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
+  const featureFlags = { ...featureFlagsFromServiceConfig, ...featureFlagsFromEnv };
   const { strings } = (manager as unknown) as { strings: { [key: string]: string } };
 
   return {
@@ -60,6 +72,7 @@ const readConfig = () => {
       serverlessBaseUrl,
       logoUrl,
       assetsBucketUrl,
+      getFormDefinitionsBaseUrl,
       chatServiceSid,
       workerSid,
       helpline,
@@ -78,20 +91,23 @@ const readConfig = () => {
     },
     referrableResources: {
       resourcesBaseUrl,
+      token,
     },
   };
 };
 
 let cachedConfig: ReturnType<typeof readConfig>;
 
-try {
-  cachedConfig = readConfig();
-} catch (err) {
-  console.log(
-    'Failed to read config on page load, leaving undefined for now (it will be populated when the flex reducer runs)',
-    err,
-  );
-}
+export const initializeConfig = () => {
+  try {
+    cachedConfig = readConfig();
+  } catch (err) {
+    console.log(
+      'Failed to read config on page load, leaving undefined for now (it will be populated when the flex reducer runs)',
+      err,
+    );
+  }
+};
 
 export const subscribeToConfigUpdates = (manager: Flex.Manager) => {
   manager.store.subscribe(() => {
@@ -105,16 +121,14 @@ export const subscribeToConfigUpdates = (manager: Flex.Manager) => {
 
 export const getHrmConfig = () => cachedConfig.hrm;
 export const getReferrableResourceConfig = () => cachedConfig.referrableResources;
-export const getResourceStrings = () => cachedConfig.strings;
-export const getAseloFeatureFlags = () => cachedConfig.featureFlags;
+export const getTemplateStrings = () => cachedConfig.strings;
+export const getAseloFeatureFlags = (): FeatureFlags => cachedConfig.featureFlags;
 
-/*
- * Legacy function, only used for backward compatibility,
- * New code should use one of the above functions instead
+/**
+ * DO NOT USE IN REACT COMPONENTS! Using this in react components can lead to race conditions on loading where the component loads before the definition is ready
+ * Map the configuration redux state to the React component properties instead. This way if the component loads before the definitions are ready, it will reload once they are
+ * Ideally this should only be used in code that is invoked independently of React components, like Flex action event handlers
  */
-export const getConfig = () => ({
-  ...cachedConfig.hrm,
-  ...cachedConfig.referrableResources,
-  strings: cachedConfig.strings,
-  featureFlags: cachedConfig.featureFlags,
-});
+export const getDefinitionVersions = () => {
+  return (Flex.Manager.getInstance().store.getState() as RootState)[namespace][configurationBase];
+};

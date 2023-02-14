@@ -27,12 +27,12 @@ import {
 } from 'hrm-form-definitions';
 
 import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
-import { isNonDataCallType } from '../states/ValidationRules';
+import { isNonDataCallType } from '../states/validationRules';
 import { getQueryParams } from './PaginationParams';
 import { fillEndMillis, getConversationDuration } from '../utils/conversationDuration';
 import fetchHrmApi from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
-import { getDefinitionVersions } from '../HrmFormPlugin';
+import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import {
   ContactMediaType,
   ContactRawJson,
@@ -44,7 +44,6 @@ import {
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
-import { getHrmConfig } from '../hrmConfig';
 
 type NestedInformation = { name?: { firstName: string; lastName: string } };
 type LegacyInformationObject = NestedInformation & {
@@ -107,7 +106,7 @@ export async function searchContacts(
  */
 const createCategory = <T extends {}>(obj: T, [category, { subcategories }]: [string, CategoryEntry]) => ({
   ...obj,
-  [category]: subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory]: false }), {}),
+  [category]: subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory.label]: false }), {}),
 });
 
 export const createCategoriesObject = (categoriesFormDefinition: CategoriesDefinition) =>
@@ -137,10 +136,9 @@ export const searchResultToContactForm = (def: FormDefinition, information: Reco
 export function transformCategories(
   helpline,
   categories: TaskEntry['categories'],
-  definition: DefinitionVersion | undefined = undefined,
+  definition: DefinitionVersion,
 ): Record<string, Record<string, boolean>> {
-  const def: DefinitionVersion = definition ?? getDefinitionVersions().currentDefinitionVersion;
-  const { IssueCategorizationTab } = def.tabbedForms;
+  const { IssueCategorizationTab } = definition.tabbedForms;
   const cleanCategories = createCategoriesObject(IssueCategorizationTab(helpline));
   const transformedCategories = categories.reduce((acc, path) => set(path, true, acc), {
     categories: cleanCategories, // use an object with categories property so we can reuse the entire path (they look like categories.Category.Subcategory)
@@ -155,11 +153,8 @@ export function transformCategories(
  */
 export function transformForm(form: TaskEntry, conversationMedia: ConversationMedia[] = []): ContactRawJson {
   const { callType, contactlessTask } = form;
-  const {
-    CallerInformationTab,
-    CaseInformationTab,
-    ChildInformationTab,
-  } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
+  const { currentDefinitionVersion } = getDefinitionVersions();
+  const { CallerInformationTab, CaseInformationTab, ChildInformationTab } = currentDefinitionVersion.tabbedForms;
   // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
   const transformedValues = {
     callerInformation: transformValues(CallerInformationTab)(form.callerInformation),
@@ -170,7 +165,7 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
   const { callerInformation } = transformedValues;
   const { childInformation } = transformedValues;
 
-  const categories = transformCategories(form.helpline, form.categories);
+  const categories = transformCategories(form.helpline, form.categories, currentDefinitionVersion);
   const { definitionVersion } = getHrmConfig();
 
   return {
@@ -208,6 +203,10 @@ const saveContactToHrm = async (
   let rawForm = form;
   rawForm.reservationSid = task.sid;
   const { currentDefinitionVersion } = getDefinitionVersions();
+
+  if (!currentDefinitionVersion) {
+    throw new Error('Cannot save the form if the current form definitions are not loaded');
+  }
 
   if (isNonDataCallType(callType)) {
     rawForm = {

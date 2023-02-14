@@ -21,7 +21,7 @@ import { callTypes, FormDefinition, FormItemDefinition } from 'hrm-form-definiti
 import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
 import { prepopulateForm as prepopulateFormAction } from '../states/contacts/actions';
-import { getDefinitionVersions } from '../HrmFormPlugin';
+import { getDefinitionVersions } from '../hrmConfig';
 
 const getUnknownOption = (key: string, definition: FormDefinition) => {
   const inputDef = definition.find(e => e.name === key);
@@ -146,6 +146,10 @@ export const prepopulateForm = (task: ITask) => {
   if (!memory && !preEngagementData) return;
 
   const { currentDefinitionVersion } = getDefinitionVersions();
+  if (!currentDefinitionVersion) {
+    console.warn('Attempting to prepopulate a form but no definition has been loaded, abandoning attempt.');
+    return;
+  }
   const { tabbedForms, prepopulateKeys } = currentDefinitionVersion;
   const { ChildInformationTab, CallerInformationTab, CaseInformationTab } = tabbedForms;
   const { preEngagement, survey } = prepopulateKeys;

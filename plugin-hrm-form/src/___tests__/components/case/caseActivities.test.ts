@@ -14,12 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import { Case, CaseInfo } from '../../../types/types';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
-import { getDefinitionVersions } from '../../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../../hrmConfig';
 import { getActivitiesFromCase, getActivitiesFromContacts } from '../../../components/case/caseActivities';
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
 const createFakeCase = (info: CaseInfo, connectedContacts: any[] = []): Case => ({
   id: 0,
@@ -36,21 +39,25 @@ const createFakeCase = (info: CaseInfo, connectedContacts: any[] = []): Case => 
 
 let formDefinition;
 
+beforeEach(() => {
+  mockReset();
+});
+
 beforeAll(async () => {
-  formDefinition = await loadDefinition(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  await mockFetchImplementation(formDefinitionsBaseUrl);
+
+  formDefinition = await loadDefinition(formDefinitionsBaseUrl);
 });
 
 describe('getActivitiesFromCase', () => {
   const createdAt = '2020-07-30 18:55:20';
   const updatedAt = '2020-08-30 18:55:20';
-  beforeEach(async () => {
-    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, formDefinition);
-  });
 
   test('nothing added - empty array', async () => {
     const fakeCase = createFakeCase({});
 
-    const activities = getActivitiesFromCase(fakeCase);
+    const activities = getActivitiesFromCase(fakeCase, formDefinition);
     expect(activities).toStrictEqual([]);
   });
 
@@ -66,7 +73,7 @@ describe('getActivitiesFromCase', () => {
       ],
     });
 
-    const activities = getActivitiesFromCase(fakeCase);
+    const activities = getActivitiesFromCase(fakeCase, formDefinition);
     const expectedActivity = {
       id: 'NOTE_ID',
       date: createdAt,
@@ -84,14 +91,6 @@ describe('getActivitiesFromCase', () => {
   });
 
   test('custom note added without preview fields specified in layout - uses first field for text property', async () => {
-    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, {
-      ...formDefinition,
-      caseForms: {
-        ...formDefinition.caseForms,
-        NoteForm: [{ name: 'customProperty1' }, { name: 'customProperty2' }],
-      },
-    });
-
     const fakeCase = createFakeCase({
       counsellorNotes: [
         {
@@ -104,7 +103,13 @@ describe('getActivitiesFromCase', () => {
       ],
     });
 
-    const activities = getActivitiesFromCase(fakeCase);
+    const activities = getActivitiesFromCase(fakeCase, {
+      ...formDefinition,
+      caseForms: {
+        ...formDefinition.caseForms,
+        NoteForm: [{ name: 'customProperty1' }, { name: 'customProperty2' }],
+      },
+    });
     const expectedActivity = {
       id: 'NOTE_ID',
       date: createdAt,
@@ -123,20 +128,6 @@ describe('getActivitiesFromCase', () => {
   });
 
   test('custom note added with preview fields in layout - uses preview fields specified in layout for text property', async () => {
-    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, {
-      ...formDefinition,
-      caseForms: {
-        ...formDefinition.caseForms,
-        NoteForm: [{ name: 'customProperty1' }, { name: 'customProperty2' }, { name: 'customProperty3' }],
-      },
-      layoutVersion: {
-        ...formDefinition.layoutVersion,
-        case: {
-          ...formDefinition.layoutVersion.case,
-          notes: { previewFields: ['customProperty1', 'customProperty3'] },
-        },
-      },
-    });
     const fakeCase = createFakeCase({
       counsellorNotes: [
         {
@@ -150,7 +141,20 @@ describe('getActivitiesFromCase', () => {
       ],
     });
 
-    const activities = getActivitiesFromCase(fakeCase);
+    const activities = getActivitiesFromCase(fakeCase, {
+      ...formDefinition,
+      caseForms: {
+        ...formDefinition.caseForms,
+        NoteForm: [{ name: 'customProperty1' }, { name: 'customProperty2' }, { name: 'customProperty3' }],
+      },
+      layoutVersion: {
+        ...formDefinition.layoutVersion,
+        case: {
+          ...formDefinition.layoutVersion.case,
+          notes: { previewFields: ['customProperty1', 'customProperty3'] },
+        },
+      },
+    });
     const expectedActivity = {
       id: 'NOTE_ID',
       date: createdAt,
@@ -189,7 +193,7 @@ describe('getActivitiesFromCase', () => {
       ],
     });
 
-    const activities = getActivitiesFromCase(fakeCase);
+    const activities = getActivitiesFromCase(fakeCase, formDefinition);
     const expectedActivities = [
       {
         id: 'NOTE_ID_1',
@@ -233,7 +237,7 @@ describe('getActivitiesFromCase', () => {
       referrals: [referral],
     });
     const { createdAt: referralCreatedAt, twilioWorkerId, id, ...restOfReferral } = referral;
-    const activities = getActivitiesFromCase(fakeCase);
+    const activities = getActivitiesFromCase(fakeCase, formDefinition);
     const expectedActivity = {
       id,
       date: referral.date,
@@ -292,7 +296,7 @@ describe('getActivitiesFromCase', () => {
       ],
     );
 
-    const activities = getActivitiesFromCase(fakeCase);
+    const activities = getActivitiesFromCase(fakeCase, formDefinition);
     const { createdAt: _createdAt, twilioWorkerId, id, ...restOfReferral } = referral;
 
     const expectedActivities = [
@@ -327,7 +331,6 @@ describe('getActivitiesFromCase', () => {
 
 describe('getActivitiesFromContacts', () => {
   const createdAt = '2020-07-30 18:55:20';
-  const updatedAt = '2020-08-30 18:55:20';
   beforeEach(async () => {
     mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, formDefinition);
   });

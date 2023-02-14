@@ -15,7 +15,14 @@
  */
 
 import { set } from 'lodash/fp';
-import { callTypes, DefinitionVersion, DefinitionVersionId, FormInputType, loadDefinition } from 'hrm-form-definitions';
+import {
+  callTypes,
+  DefinitionVersion,
+  DefinitionVersionId,
+  FormInputType,
+  loadDefinition,
+  useFetchDefinitions,
+} from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import {
@@ -29,7 +36,7 @@ import {
 import { createNewTaskEntry, TaskEntry } from '../../states/contacts/reducer';
 import { channelTypes } from '../../states/DomainConstants';
 import { offlineContactTaskSid } from '../../types/types';
-import { getDefinitionVersions } from '../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../hrmConfig';
 
 const helpline = 'ChildLine Zambia (ZM)';
 
@@ -50,10 +57,20 @@ jest.mock('@twilio/flex-ui', () => ({
   },
 }));
 
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+
 let mockV1;
 
+beforeEach(() => {
+  mockReset();
+});
+
 beforeAll(async () => {
-  mockV1 = await loadDefinition(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  await mockFetchImplementation(formDefinitionsBaseUrl);
+
+  mockV1 = await loadDefinition(formDefinitionsBaseUrl);
   mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
 });
 
@@ -163,7 +180,6 @@ describe('saveContact()', () => {
 
   test('data calltype saves form data', async () => {
     const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
-
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
     await saveContact(task, form, workerSid, uniqueIdentifier);
@@ -367,7 +383,10 @@ test('updateContactInHrm - calls a PATCH HRM endpoint using the supplied contact
 describe('transformCategories', () => {
   let mockDef: DefinitionVersion;
   beforeAll(async () => {
-    const v1Defs = await loadDefinition(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    await mockFetchImplementation(formDefinitionsBaseUrl);
+
+    const v1Defs = await loadDefinition(formDefinitionsBaseUrl);
     mockDef = {
       ...v1Defs,
       tabbedForms: {
@@ -375,11 +394,17 @@ describe('transformCategories', () => {
         IssueCategorizationTab: jest.fn(() => ({
           category1: {
             color: '',
-            subcategories: ['subCategory1', 'subCategory2'],
+            subcategories: [
+              { label: 'subCategory1', toolkitUrl: '' },
+              { label: 'subCategory2', toolkitUrl: '' },
+            ],
           },
           category2: {
             color: '',
-            subcategories: ['subCategory1', 'subCategory2'],
+            subcategories: [
+              { label: 'subCategory1', toolkitUrl: '' },
+              { label: 'subCategory2', toolkitUrl: '' },
+            ],
           },
         })),
       },

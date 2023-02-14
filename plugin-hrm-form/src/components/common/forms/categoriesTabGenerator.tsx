@@ -13,16 +13,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable import/no-unused-modules */
 /* eslint-disable react/display-name */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState } from 'react';
 import GridIcon from '@material-ui/icons/GridOn';
 import ListIcon from '@material-ui/icons/List';
 import { Template } from '@twilio/flex-ui';
 import { CategoriesDefinition } from 'hrm-form-definitions';
+import { Button, Popover } from '@material-ui/core';
 
 import Section from './Section';
 import {
@@ -37,45 +39,64 @@ import {
   CategoryCheckboxField,
   CategoryCheckbox,
   CategoryCheckboxLabel,
+  InformationIconButton,
+  HtmlTooltip,
+  CategoryCheckboxWrapper,
 } from '../../../styles/HrmStyles';
 import type { HTMLElementRef } from './types';
 import { ConnectForm } from './formGenerators';
 
+type Subcategory = {
+  label: string;
+  toolkitUrl?: string;
+};
+
 export const createSubcategoryCheckbox = (
-  subcategory: string,
+  subcategory: Subcategory,
   parents: string[],
   color: string,
   updateCallback: () => void,
+  counselorToolkitsEnabled: boolean,
 ) => {
-  const path = [...parents, subcategory].join('.');
+  const { label, toolkitUrl } = subcategory;
+  const path = [...parents, label].join('.');
 
   return (
-    <ConnectForm key={path}>
-      {({ register, getValues }) => {
-        const { categories } = getValues();
-        const checked = categories && categories.includes(path);
-        const disabled = categories && categories.length >= 3 && !checked;
-        const lighterColor = `${color}99`; // Hex with alpha 0.6
+    <CategoryCheckboxWrapper>
+      <ConnectForm key={path}>
+        {({ register, getValues }) => {
+          const { categories } = getValues();
+          const checked = categories && categories.includes(path);
+          const disabled = categories && categories.length >= 3 && !checked;
+          const lighterColor = `${color}99`; // Hex with alpha 0.6
 
-        return (
-          <CategoryCheckboxLabel>
-            <CategoryCheckboxField color={lighterColor} selected={checked} disabled={disabled}>
-              <CategoryCheckbox
-                key={`${path}-checkbox`}
-                type="checkbox"
-                name="categories"
-                value={path}
-                onChange={updateCallback}
-                ref={register({ required: true, minLength: 1, maxLength: 3 })}
-                disabled={disabled}
-                color={lighterColor}
-              />
-              {subcategory}
-            </CategoryCheckboxField>
-          </CategoryCheckboxLabel>
-        );
-      }}
-    </ConnectForm>
+          return (
+            <CategoryCheckboxLabel>
+              <CategoryCheckboxField color={lighterColor} selected={checked} disabled={disabled}>
+                <CategoryCheckbox
+                  key={`${path}-checkbox`}
+                  type="checkbox"
+                  name="categories"
+                  value={path}
+                  onChange={updateCallback}
+                  ref={register({ required: true, minLength: 1, maxLength: 3 })}
+                  disabled={disabled}
+                  color={lighterColor}
+                />
+                {label}
+              </CategoryCheckboxField>
+            </CategoryCheckboxLabel>
+          );
+        }}
+      </ConnectForm>
+      {counselorToolkitsEnabled && toolkitUrl && (
+        <HtmlTooltip title={`${label} - Tipsheet`} placement="bottom">
+          <a href={toolkitUrl} target="_blank" rel="noreferrer">
+            <InformationIconButton />
+          </a>
+        </HtmlTooltip>
+      )}
+    </CategoryCheckboxWrapper>
   );
 };
 
@@ -85,12 +106,19 @@ export const createSubCategoriesInputs = (
   definition: CategoriesDefinition,
   parents: string[],
   updateCallback: () => void,
+  counselorToolkitsEnabled: boolean,
 ) =>
   Object.entries(definition).reduce<SubcategoriesMap>(
     (acc, [category, { subcategories, color }]) => ({
       ...acc,
       [category]: subcategories.map(subcategory => {
-        return createSubcategoryCheckbox(subcategory, [...parents, category], color, updateCallback);
+        return createSubcategoryCheckbox(
+          subcategory,
+          [...parents, category],
+          color,
+          updateCallback,
+          counselorToolkitsEnabled,
+        );
       }),
     }),
     {},
@@ -114,7 +142,6 @@ export const CategoriesFromDefinition: React.FC<Props> = ({
   firstElementRef,
 }) => {
   const { gridView, expanded } = categoriesMeta;
-
   return (
     <Container>
       <CategoryTitle>

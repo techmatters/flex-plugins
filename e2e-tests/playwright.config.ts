@@ -26,8 +26,9 @@ const config: PlaywrightTestConfig = {
     baseURL: environmentVariables.PLAYWRIGHT_BASEURL ?? 'http://localhost:3000',
     permissions: ['microphone'],
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    video: 'retry-with-video',
   },
+  retries: 1,
   timeout: 60000,
 };
 export default config;

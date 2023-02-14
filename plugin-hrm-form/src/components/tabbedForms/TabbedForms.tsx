@@ -42,7 +42,7 @@ import ContactDetailsSectionForm from '../contact/ContactDetailsSectionForm';
 import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
-import { isNonDataCallType } from '../../states/ValidationRules';
+import { isNonDataCallType } from '../../states/validationRules';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import CSAMReportButton from './CSAMReportButton';
 import CSAMAttachments from './CSAMAttachments';
@@ -94,6 +94,7 @@ type OwnProps = {
   task: CustomITask;
   csamReportEnabled: boolean;
   csamClcReportEnabled: boolean;
+  counselorToolkitsEnabled: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -109,6 +110,7 @@ const TabbedForms: React.FC<Props> = ({
   csamClcReportEnabled,
   editContactFormOpen,
   isCallTypeCaller,
+  counselorToolkitsEnabled,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -227,7 +229,6 @@ const TabbedForms: React.FC<Props> = ({
       </Row>
     </Box>
   );
-
   return (
     <FormProvider {...methods}>
       <div role="form" style={{ height: '100%' }} className={editContactFormOpen ? 'editingContact' : ''}>

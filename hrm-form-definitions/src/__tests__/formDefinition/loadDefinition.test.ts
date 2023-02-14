@@ -16,11 +16,22 @@
 
 import { DefinitionVersionId, loadDefinition } from '../../formDefinition';
 
+import { useFetchDefinitions } from '../fetchDefinitionsMock';
+
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+
+beforeEach(() => {
+  mockReset();
+});
+
 describe('loadDefinition', () => {
   test.each(Object.values(DefinitionVersionId))(
     '%p - successfully loads basic structure',
     async (definitionVersionId: DefinitionVersionId) => {
-      const definitions = await loadDefinition(definitionVersionId);
+      const formDefinitionsBaseUrl = buildBaseURL(definitionVersionId);
+      await mockFetchImplementation(formDefinitionsBaseUrl);
+
+      const definitions = await loadDefinition(formDefinitionsBaseUrl);
       expect(definitions.cannedResponses).toBeInstanceOf(Array);
       expect(definitions.callTypeButtons).toContainEqual(expect.anything());
 

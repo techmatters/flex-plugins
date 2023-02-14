@@ -76,3 +76,12 @@ jobs:
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           helpline-id: ${{inputs.helpline_code}}_${{inputs.environment_code}}
           send-slack-message: ${{ inputs.send-slack-message }}
+
+  deploy_form_definitions:
+    uses: ./.github/workflows/deploy_form_definitions.yml
+    needs: build
+    secrets: inherit
+    with:
+      helpline_code: ${{ inputs.helpline_code }}
+      environment: ${{ inputs.environment_code }}
+      send-slack-message: 'false'

@@ -16,8 +16,8 @@
 
 // @ts-ignore
 import React from 'react';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
-import { fireEvent, Queries, render, RenderResult, screen } from '@testing-library/react';
+import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { render, screen } from '@testing-library/react';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
@@ -27,8 +27,11 @@ import CaseHome, { CaseHomeProps } from '../../../components/case/CaseHome';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace, routingBase } from '../../../states';
 import { HouseholdEntry, PerpetratorEntry, StandaloneITask } from '../../../types/types';
 import { CaseDetails } from '../../../states/case/types';
-import { getDefinitionVersions } from '../../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../../hrmConfig';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
 const mockStore = configureMockStore([]);
 
@@ -76,11 +79,15 @@ let caseDetails: CaseDetails;
 
 describe('useState mocked', () => {
   beforeAll(async () => {
-    mockV1 = await loadDefinition(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    await mockFetchImplementation(formDefinitionsBaseUrl);
+
+    mockV1 = await loadDefinition(formDefinitionsBaseUrl);
     mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
   });
 
   beforeEach(() => {
+    mockReset();
     initialState = createState({
       [configurationBase]: {
         counselors: {

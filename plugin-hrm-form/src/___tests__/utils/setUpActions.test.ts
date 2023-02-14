@@ -20,10 +20,9 @@ import each from 'jest-each';
 
 import { afterCompleteTask, afterWrapupTask, setUpPostSurvey } from '../../utils/setUpActions';
 import { REMOVE_CONTACT_STATE } from '../../states/types';
-import * as HrmFormPlugin from '../../HrmFormPlugin';
 import * as ServerlessService from '../../services/ServerlessService';
 import { FeatureFlags } from '../../types/types';
-import { SetupObject } from '../../HrmFormPlugin';
+import { getHrmConfig } from '../../hrmConfig';
 
 const mockFlexManager = {
   store: {
@@ -38,7 +37,6 @@ jest.mock('@twilio/flex-ui', () => ({
   },
 }));
 
-jest.mock('../../HrmFormPlugin.tsx', () => ({}));
 jest.mock('../../states', () => ({}));
 
 afterEach(() => {
@@ -111,7 +109,7 @@ describe('afterWrapupTask', () => {
     jest.spyOn(TaskHelper, 'isChatBasedTask').mockImplementation(() => isChatChannel);
     jest.spyOn(TaskHelper, 'getTaskConversationSid').mockImplementationOnce(() => task.attributes.channelSid);
 
-    await afterWrapupTask(featureFlags, <SetupObject>{})({ task });
+    await afterWrapupTask(featureFlags, <ReturnType<typeof getHrmConfig>>{})({ task });
 
     if (shouldCallPostSurveyInit) {
       expect(postSurveyInitSpy).toHaveBeenCalled();

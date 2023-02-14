@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import * as t from '../../../states/search/types';
@@ -23,21 +23,31 @@ import { SearchAPIContact } from '../../../types/types';
 import { searchContacts } from '../../../services/ContactService';
 import { searchCases } from '../../../services/CaseService';
 import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../../components/search/SearchResults';
-import { getDefinitionVersions } from '../../../HrmFormPlugin';
+import { getDefinitionVersions } from '../../../hrmConfig';
 
 jest.mock('../../../services/ContactService', () => ({ searchContacts: jest.fn() }));
 jest.mock('../../../services/CaseService', () => ({ searchCases: jest.fn() }));
 jest.mock('../../../states/search/helpers', () => ({ searchAPIContactToSearchUIContact: jest.fn((_hash, xs) => xs) }));
 
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+
 const task = { taskSid: 'WT123' };
 const taskId = task.taskSid;
 
+beforeEach(() => {
+  mockReset();
+});
+
 describe('test action creators', () => {
   beforeAll(async () => {
+    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    await mockFetchImplementation(formDefinitionsBaseUrl);
+
     mockGetDefinitionsResponse(
       getDefinitionVersions,
       DefinitionVersionId.v1,
-      await loadDefinition(DefinitionVersionId.v1),
+      await loadDefinition(formDefinitionsBaseUrl),
     );
   });
   test('changeSearchPage', () => {

@@ -32,6 +32,9 @@ import {
   FormFileSpecification,
   loadDefinition,
 } from '../..';
+import { useFetchDefinitions } from '../fetchDefinitionsMock';
+
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
 /**
  * Given a DefinitionSpecification and a CategoriesDefinition, will expect that the CategoriesDefinition is valid under the DefinitionSpecification.
@@ -84,8 +87,13 @@ describe('Validate form definitions', () => {
       let definitionVersion: DefinitionVersion;
       let categoriesDefinitions: { helpline: string; categoriesDefinition: CategoriesDefinition }[];
 
-      beforeAll(async () => {
-        definitionVersion = await loadDefinition(definitionId);
+      beforeEach(async () => {
+        mockReset();
+
+        const formDefinitionsBaseUrl = buildBaseURL(definitionId);
+        await mockFetchImplementation(formDefinitionsBaseUrl);
+
+        definitionVersion = await loadDefinition(formDefinitionsBaseUrl);
         const helplines = definitionVersion.helplineInformation.helplines.map((h) => h.value);
         categoriesDefinitions = helplines.map((helpline) => ({
           helpline,

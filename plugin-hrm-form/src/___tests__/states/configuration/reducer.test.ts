@@ -20,6 +20,7 @@ import { reduce } from '../../../states/configuration/reducer';
 import * as types from '../../../states/configuration/types';
 import * as actions from '../../../states/configuration/actions';
 import { defaultLanguage } from '../../../utils/pluginHelpers';
+import { ConfigurationActionType } from '../../../states/configuration/types';
 
 describe('test reducer', () => {
   let state = undefined;
@@ -36,11 +37,10 @@ describe('test reducer', () => {
       workerInfo: {
         chatChannelCapacity: 0,
       },
-      currentDefinitionVersion: undefined,
       definitionVersions: {},
     };
 
-    const result = reduce(state, {});
+    const result = reduce(state, {} as ConfigurationActionType);
     expect(result).toStrictEqual(expected);
 
     state = result;

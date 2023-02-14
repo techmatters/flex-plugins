@@ -357,6 +357,7 @@ export const sectionTitleFontStyle = `
 `;
 export const SectionTitleText = styled(FontOpenSans)`
   margin-right: auto;
+  color: #192b33;
   ${sectionTitleFontStyle}
 `;
 SectionTitleText.displayName = 'SectionTitleText';

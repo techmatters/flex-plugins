@@ -15,15 +15,16 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
-import type { CategoriesDefinition } from 'hrm-form-definitions';
+import type { CategoriesDefinition, HelplineDefinitions, HelplineEntry } from 'hrm-form-definitions';
 
 import { RootState } from '../../states';
 import { CategoriesFromDefinition, createSubCategoriesInputs } from '../common/forms/categoriesTabGenerator';
 import useFocus from '../../utils/useFocus';
 import { IssueCategorizationStateApi } from '../../states/contacts/issueCategorizationStateApi';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 type OwnProps = {
   display: boolean;
@@ -48,6 +49,7 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
 }) => {
   const shouldFocusFirstElement = display && autoFocus;
   const firstElementRef = useFocus(shouldFocusFirstElement);
+  const featureFlags = getAseloFeatureFlags();
 
   const { getValues, setValue } = useFormContext();
   const IssueCategorizationTabDefinition = definition;
@@ -68,8 +70,14 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
     };
 
     if (IssueCategorizationTabDefinition === null || IssueCategorizationTabDefinition === undefined) return {};
-    return createSubCategoriesInputs(IssueCategorizationTabDefinition, ['categories'], updateCallback);
-  }, [IssueCategorizationTabDefinition, getValues, updateForm]);
+    const counselorToolkitsEnabled = featureFlags.enable_counselor_toolkits;
+    return createSubCategoriesInputs(
+      IssueCategorizationTabDefinition,
+      ['categories'],
+      updateCallback,
+      counselorToolkitsEnabled,
+    );
+  }, [IssueCategorizationTabDefinition, featureFlags.enable_counselor_toolkits, getValues, updateForm]);
 
   return (
     <CategoriesFromDefinition

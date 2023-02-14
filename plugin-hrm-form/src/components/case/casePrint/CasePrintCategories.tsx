@@ -17,11 +17,11 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
-import { DefinitionVersionId } from 'hrm-form-definitions';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
 import CaseTags from '../CaseTags';
+import { getTemplateStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   categories?: {
@@ -29,18 +29,18 @@ type OwnProps = {
       [subcategory: string]: boolean;
     };
   };
-  version: DefinitionVersionId;
+  definitionVersion: DefinitionVersion;
 };
 
 type Props = OwnProps;
 
-const CasePrintCategories: React.FC<Props> = ({ categories, version }) => {
-  const { strings } = getConfig();
+const CasePrintCategories: React.FC<Props> = ({ categories, definitionVersion }) => {
+  const strings = getTemplateStrings();
 
   return (
     <View style={styles.flexColumn}>
       <Text style={{ marginBottom: '10px' }}>{strings['TabbedForms-CategoriesTab']}</Text>
-      <CaseTags printPDF={true} categories={categories} definitionVersion={version} />
+      <CaseTags printPDF={true} categories={categories} definitionVersion={definitionVersion} />
     </View>
   );
 };
