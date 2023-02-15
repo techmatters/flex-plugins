@@ -7,7 +7,7 @@
         {"label": "Exposure to online child pornography"},
         {"label": "Online extortion or blackmail"},
         {"label": "Online grooming for sexual purposes"},
-        {"label": "Unspecified / Other"},
+        {"label": "(A&T) Unspecified / Other"},
         {"label": "Unwanted sexting"},
         {"label": "Victim of online child pornography"},
         {"label": "Victim of online sexual exploitation"}
@@ -24,9 +24,9 @@
         {"label": "Physical abuse"},
         {"label": "Economic abuse"},
         {"label": "Psychological abuse"},
-        {"label": "Sexual abuse"},
+        {"label": "(AV) Sexual abuse"},
         {"label": "Witness to violence"},
-        {"label": "Unspecified / Other"}
+        {"label": "(AV) Unspecified / Other"}
       ]
     },
     "Addiction": {
@@ -42,7 +42,7 @@
         {"label": "Gaming addiction"},
         {"label": "Smoking addiction"},
         {"label": "Spiritual obsession"},
-        {"label": "Unspecified / Other"}
+        {"label": "(A) Unspecified / Other"}
       ]
     },
     "Adult Related Issues": {
@@ -65,7 +65,7 @@
         {"label": "Employment Opportunities"},
         {"label": "Poor Living Conditions"},
         {"label": "Resources and financial aid"},
-        {"label": "Unspecified / Other"}
+        {"label": "(BN) Unspecified / Other"}
       ]
     },
     "Bullying": {
@@ -77,19 +77,19 @@
         {"label": "Sexual"},
         {"label": "Theft"},
         {"label": "Stalking"},
-        {"label": "Unspecified"}
+        {"label": "(B) Unspecified"}
       ]
     },
     "Child Migration / Children on the Move": {
       "color": "#bbfff5",
       "subcategories": [
-        {"label": "Child trafficking"},
+        {"label": "(CM) Child trafficking"},
         {"label": "Child without status / Undocumented"},
         {"label": "Internally displaced child (domestic)"},
         {"label": "Problems with adjusting to a new environment"},
         {"label": "Refugee child (cross-border)"},
         {"label": "Seeking job opportunities"},
-        {"label": "Unspecified / Other"},
+        {"label": "(CM) Unspecified / Other"},
         {"label": "Voluntary child migration"}
       ]
     },
@@ -98,16 +98,16 @@
       "subcategories": [
         {"label": "Bonded child labour"},
         {"label": "Child kidnapping"},
-        {"label": "Child marriage"},
+        {"label": "(CE) Child marriage"},
         {"label": "Child sexual exploitation/prostitution"},
-        {"label": "Child trafficking"},
+        {"label": "(CE) Child trafficking"},
         {"label": "Children used for begging"},
         {"label": "Children used for criminal activity"},
         {"label": "Domestic child labour"},
         {"label": "Organ harvesting"},
         {"label": "Other child labour"},
         {"label": "Sexual exploitation in the context of travel/tourism"},
-        {"label": "Unspecified / Other"}
+        {"label": "(CE) Unspecified / Other"}
       ]
     },
     "Cyberbullying": {
@@ -119,9 +119,9 @@
         {"label": "Harassment"},
         {"label": "Inappropriate content"},
         {"label": "Online flaming/fighting"},
-        {"label": "Revenge porn"},
+        {"label": "(CB) Revenge porn"},
         {"label": "Sexual extortion"},
-        {"label": "Unspecified / Other"},
+        {"label": "(CB) Unspecified / Other"},
         {"label": "Unwanted 'sexting'"},
         {"label": "Victim of cyberstalking"},
         {"label": "Victim of impersonation"},
@@ -141,7 +141,7 @@
     "Discrimination": {
       "color": "#ffbbe3",
       "subcategories": [
-        {"label": "Access to education"},
+        {"label": "(D) Access to education"},
         {"label": "Age-related"},
         {"label": "Criminal record / Ex-prisoner related"},
         {"label": "Denial of opportunities/services"},
@@ -153,14 +153,14 @@
         {"label": "Mental and physical health / Disability"},
         {"label": "Racism related"},
         {"label": "Sexual orientation related"},
-        {"label": "Unspecified / Other"}
+        {"label": "(D) Unspecified / Other"}
       ]
     },
     "Family Relationships": {
       "color": "#ffbbbb",
       "subcategories": [
         {"label": "Adoption / Fostering issues"},
-        {"label": "Bereavement"},
+        {"label": "(FR) Bereavement"},
         {"label": "Child custody and access"},
         {"label": "Divorced / Separated parents / Parents in conflict"},
         {"label": "Maintenance and child support"},
@@ -169,7 +169,7 @@
         {"label": "Parental pressure"},
         {"label": "Parents with addiction and/or mental health problems"},
         {"label": "Sibling relationship"},
-        {"label": "Unspecified / Other"}
+        {"label": "(FR) Unspecified / Other"}
       ]
     },
     "Gender, Sexuality, Sexual Awareness": {
@@ -185,7 +185,7 @@
         {"label": "Sexual fantasy"},
         {"label": "Sexual identity"},
         {"label": "Social Exclusion / Ostracism based on sexual Orientation"},
-        {"label": "Unspecified / Other"}
+        {"label": "(GSSA) Unspecified / Other"}
       ]
     },
     "General/Other": {
@@ -203,7 +203,7 @@
         {"label": "Amputations"},
         {"label": "Breast ironing"},
         {"label": "Burning and branding"},
-        {"label": "Child marriage"},
+        {"label": "(HTP) Child marriage"},
         {"label": "Cutting"},
         {"label": "Dowry related issues"},
         {"label": "Female genital mutilation (FMG)"},
@@ -212,14 +212,14 @@
         {"label": "Honour killing"},
         {"label": "Sex-Selective infanticide"},
         {"label": "Virginity tests"},
-        {"label": "Unspecified / Other"}
+        {"label": "(HTP) Unspecified / Other"}
       ]
     },
     "HIV/AIDS infected/affected children": {
       "color": "#14ffd6",
       "subcategories": [
         {"label": "Access to medication"},
-        {"label": "Bereavement"},
+        {"label": "(HIV) Bereavement"},
         {"label": "Children living with HIV/AIDS"},
         {"label": "Children orphaned due to HIV/AIDS"},
         {"label": "HIV/AIDS prevention"},
@@ -228,7 +228,7 @@
         {"label": "Parents (or family) with HIV/AIDS"},
         {"label": "Pregnancy and HIV"},
         {"label": "Sexual abuse / Rape in relation to HIV"},
-        {"label": "Unspecified / Other"}
+        {"label": "(HIV) Unspecified / Other"}
       ]
     },
     "Homelessness": {
@@ -241,7 +241,7 @@
         {"label": "Orphaned"},
         {"label": "Repatriation"},
         {"label": "Seeking shelter"},
-        {"label": "Unspecified / Other"}
+        {"label": "(H) Unspecified / Other"}
       ]
     },
     "Information Requested": {
@@ -265,7 +265,7 @@
         {"label": "Children in conflict with law"},
         {"label": "Children in need of legal representation"},
         {"label": "Law in conflict with children’s rights"},
-        {"label": "Unspecified / Other"}
+        {"label": "(LM&JJ) Unspecified / Other"}
       ]
     },
     "Parenting and Child Rearing": {
@@ -284,13 +284,13 @@
         {"label": "Parenting"},
         {"label": "Pre-natal care"},
         {"label": "Unmanageable children"},
-        {"label": "Unspecified / Other"}
+        {"label": "(P&CR) Unspecified / Other"}
       ]
     },
     "Peer Relationships": {
       "color": "#9f9f9f",
       "subcategories": [
-        {"label": "Bereavement"},
+        {"label": "(PR) Bereavement"},
         {"label": "Bystander / Third-party concern"},
         {"label": "Making friends"},
         {"label": "Missing friends"},
@@ -300,7 +300,7 @@
         {"label": "Problems with friends"},
         {"label": "Relationship difficulties"},
         {"label": "Sexual pressure from partner"},
-        {"label": "Unspecified / Other"}
+        {"label": "(PR) Unspecified / Other"}
       ]
     },
     "Physical Abuse": {
@@ -326,7 +326,7 @@
         {"label": "Hospitalisation"},
         {"label": "Nutrition"},
         {"label": "In need of medical assistance"},
-        {"label": "Unspecified / Other"}
+        {"label": "(PH&H) Unspecified / Other"}
       ]
     },
     "Psycho-social, Mental Health": {
@@ -349,21 +349,21 @@
         {"label": "Self harm"},
         {"label": "Stress"},
         {"label": "Suicide"},
-        {"label": "Unspecified / Other"}
+        {"label": "(PS&MH) Unspecified / Other"}
       ]
     },
     "School-Related and Education": {
       "color": "#e0ab4f",
       "subcategories": [
         {"label": "Academic problems"},
-        {"label": "Access to education"},
+        {"label": "(SR&E) Access to education"},
         {"label": "Homework"},
         {"label": "Learning disorders"},
         {"label": "Performance anxiety"},
         {"label": "Problems with teachers and school authorities"},
         {"label": "School drop-outs"},
         {"label": "Teacher problems"},
-        {"label": "Unspecified / Other"}
+        {"label": "(SR&E) Unspecified / Other"}
       ]
     },
     "Sexual Abuse": {
@@ -377,12 +377,12 @@
         {"label": "Incest"},
         {"label": "Marital rape"},
         {"label": "Rape"},
-        {"label": "Revenge porn"},
-        {"label": "Sexual abuse"},
+        {"label": "(SA) Revenge porn"},
+        {"label": "(SA) Sexual abuse"},
         {"label": "Sexual exploitation"},
         {"label": "Sexual harassment"},
         {"label": "Sexual violence"},
-        {"label": "Unspecified / Other"}
+        {"label": "(SA) Unspecified / Other"}
       ]
     }
   }
