@@ -41,12 +41,10 @@ describe('Notification for a reserved task ', () => {
   beforeEach(() => {
     subscribeReservedTaskAlert();
     notifyReservedTaskMock = mockFlexManager.workerClient.on.mock.calls[0][1];
-    jest.useFakeTimers();
   });
 
   afterEach(() => {
     jest.clearAllMocks();
-    jest.useRealTimers();
   });
 
   test('subscribeReservedTaskAlert subscribes to the "reservationCreated" event on the worker client', () => {
@@ -63,8 +61,6 @@ describe('Notification for a reserved task ', () => {
     // Trigger audio notification
     notifyReservedTaskMock(mockReservation);
 
-    jest.advanceTimersByTime(1000);
-
     const notificationUrl = 'http://assets.fake.com/notifications/ringtone.mp3';
     const playWhilePendingMock = jest.fn();
     playWhilePendingMock(mockReservation, notificationUrl);
@@ -74,6 +70,9 @@ describe('Notification for a reserved task ', () => {
       repeatable: true,
     };
 
+    const spy = jest.mock(AudioPlayerManager, "play") 
+    expect(spy).toHaveBeenCalled()
+    
     AudioPlayerManager.play(mediaData, jest.fn());
 
     expect(AudioPlayerManager.play).toHaveBeenCalledWith(

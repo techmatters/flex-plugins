@@ -21,35 +21,25 @@ import { getHrmConfig } from '../hrmConfig';
 const reservedTaskMedias: { [reservationSid: string]: string } = {};
 
 export const subscribeReservedTaskAlert = () => {
-  console.log('>>> subscribeReservedTaskAlert');
   const manager = Manager.getInstance();
   manager.workerClient.on('reservationCreated', notifyReservedTask);
 };
 
 const notifyReservedTask = reservation => {
-  console.log('>>> notifyReservedTask');
-
   try {
     const { assetsBucketUrl } = getHrmConfig();
 
     const notificationTone = 'ringtone';
     const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
-    console.log('>>> document.visibilityState', document.visibilityState);
-    if (document.visibilityState === 'hidden') {
-      console.log('>>> playWhilePending(reservation, notificationUrl);');
-      playWhilePending(reservation, notificationUrl);
-    }
+
+    playWhilePending(reservation, notificationUrl);
   } catch (error) {
     console.error('Error in notifyReservedTask:', error);
   }
 };
 
 const playWhilePending = (reservation: { sid: string; status: string }, notificationUrl: string) => {
-  console.log('>>> playWhilePending', reservation, notificationUrl);
-
   const playNotificationIfPending = () => {
-    console.log('>>> playNotificationIfPending');
-
     if (reservation.status === 'pending') {
       const mediaId = AudioPlayerManager.play(
         {
@@ -62,7 +52,6 @@ const playWhilePending = (reservation: { sid: string; status: string }, notifica
       );
 
       reservedTaskMedias[reservation.sid] = mediaId;
-      console.log('>>> reservedTaskMedias', reservedTaskMedias);
       setTimeout(playNotificationIfPending, 500);
     }
   };

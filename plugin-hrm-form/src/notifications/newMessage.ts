@@ -15,7 +15,6 @@
  */
 
 import { Manager, StateHelper, AudioPlayerManager, AudioPlayerError } from '@twilio/flex-ui';
-import { Conversation } from '@twilio/conversations';
 
 import { getHrmConfig } from '../hrmConfig';
 
@@ -30,20 +29,18 @@ export const subscribeNewMessageAlertOnPluginInit = () => {
   tasks.forEach(task => trySubscribeAudioAlerts(task, 0, 0));
 };
 
-const subscribeAlertOnNewMessage = (conversation: Conversation) => {
-  conversation.on('messageAdded', notifyNewMessage);
-};
-
 const trySubscribeAudioAlerts = (task, ms: number, retries: number) => {
   setTimeout(() => {
     const convoState = StateHelper.getConversationStateForTask(task);
+    console.log('>>>trySubscribeAudioAlerts', convoState);
+    console.log('>>>trySubscribeAudioAlerts', convoState.source);
 
     // if channel is not ready, wait 200ms and retry
     if (convoState?.isLoadingConversation) {
       if (retries < 10) trySubscribeAudioAlerts(task, 200, retries + 1);
       else console.error('Failed to subscribe audio alerts: max retries reached.');
     } else {
-      subscribeAlertOnNewMessage(convoState?.source);
+      convoState?.source.on('messageAdded', notifyNewMessage)
     }
   }, ms);
 };
