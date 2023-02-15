@@ -85,7 +85,6 @@ const SearchForm: React.FC<Props> = ({
   const showPreviousContactsCheckbox = () => {
     const contactsCount = previousContacts?.contacts?.count || 0;
     const casesCount = previousContacts?.cases?.count || 0;
-
     return contactsCount > 0 || casesCount > 0;
   };
 
@@ -226,7 +225,7 @@ const SearchForm: React.FC<Props> = ({
             />
           )}
         </Row>
-        {showPreviousContactsCheckbox && (
+        {showPreviousContactsCheckbox() && (
           <Row>
             <Box marginTop="20px">
               <FormLabel htmlFor="Search_PreviousContacts">
