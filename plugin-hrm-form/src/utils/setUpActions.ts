@@ -48,7 +48,7 @@ import { prepopulateForm } from './prepopulateForm';
 import { recordEvent } from '../fullStory';
 import { CustomITask, FeatureFlags } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
-import { subscribeAlertOnConversationJoined } from './audioNotifications';
+import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
