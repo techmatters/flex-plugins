@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable no-empty-function */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { ITask, Template } from '@twilio/flex-ui';
 
@@ -82,15 +82,11 @@ const SearchForm: React.FC<Props> = ({
     handleFocus: () => {},
   });
 
-  const [showPreviousContactsCheckbox, setShowPreviousContactsCheckbox] = useState(false);
-  useEffect(() => {
+  const showPreviousContactsCheckbox = () => {
     const contactsCount = previousContacts?.contacts?.count || 0;
     const casesCount = previousContacts?.cases?.count || 0;
-    if (contactsCount > 0 || casesCount > 0) {
-      setShowPreviousContactsCheckbox(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showPreviousContactsCheckbox]);
+    return contactsCount > 0 || casesCount > 0;
+  };
 
   const { firstName, lastName, counselor, helpline, phoneNumber, dateFrom, dateTo, contactNumber } = values;
 
@@ -229,7 +225,7 @@ const SearchForm: React.FC<Props> = ({
             />
           )}
         </Row>
-        {showPreviousContactsCheckbox && (
+        {showPreviousContactsCheckbox() && (
           <Row>
             <Box marginTop="20px">
               <FormLabel htmlFor="Search_PreviousContacts">
