@@ -24,7 +24,7 @@
         {"label": "Physical abuse"},
         {"label": "Economic abuse"},
         {"label": "Psychological abuse"},
-        {"label": "Sexual abuse"},
+        {"label": "(AV) Sexual abuse"},
         {"label": "Witness to violence"},
         {"label": "(AV) Unspecified / Other"}
       ]
@@ -83,7 +83,7 @@
     "Child Migration / Children on the Move": {
       "color": "#bbfff5",
       "subcategories": [
-        {"label": "Child trafficking"},
+        {"label": "(CM) Child trafficking"},
         {"label": "Child without status / Undocumented"},
         {"label": "Internally displaced child (domestic)"},
         {"label": "Problems with adjusting to a new environment"},
@@ -98,9 +98,9 @@
       "subcategories": [
         {"label": "Bonded child labour"},
         {"label": "Child kidnapping"},
-        {"label": "Child marriage"},
+        {"label": "(CE) Child marriage"},
         {"label": "Child sexual exploitation/prostitution"},
-        {"label": "Child trafficking"},
+        {"label": "(CE) Child trafficking"},
         {"label": "Children used for begging"},
         {"label": "Children used for criminal activity"},
         {"label": "Domestic child labour"},
@@ -119,7 +119,7 @@
         {"label": "Harassment"},
         {"label": "Inappropriate content"},
         {"label": "Online flaming/fighting"},
-        {"label": "Revenge porn"},
+        {"label": "(CB) Revenge porn"},
         {"label": "Sexual extortion"},
         {"label": "(CB) Unspecified / Other"},
         {"label": "Unwanted 'sexting'"},
@@ -141,7 +141,7 @@
     "Discrimination": {
       "color": "#ffbbe3",
       "subcategories": [
-        {"label": "Access to education"},
+        {"label": "(D) Access to education"},
         {"label": "Age-related"},
         {"label": "Criminal record / Ex-prisoner related"},
         {"label": "Denial of opportunities/services"},
@@ -160,7 +160,7 @@
       "color": "#ffbbbb",
       "subcategories": [
         {"label": "Adoption / Fostering issues"},
-        {"label": "Bereavement"},
+        {"label": "(FR) Bereavement"},
         {"label": "Child custody and access"},
         {"label": "Divorced / Separated parents / Parents in conflict"},
         {"label": "Maintenance and child support"},
@@ -203,7 +203,7 @@
         {"label": "Amputations"},
         {"label": "Breast ironing"},
         {"label": "Burning and branding"},
-        {"label": "Child marriage"},
+        {"label": "(HTP) Child marriage"},
         {"label": "Cutting"},
         {"label": "Dowry related issues"},
         {"label": "Female genital mutilation (FMG)"},
@@ -219,7 +219,7 @@
       "color": "#14ffd6",
       "subcategories": [
         {"label": "Access to medication"},
-        {"label": "Bereavement"},
+        {"label": "(HIV) Bereavement"},
         {"label": "Children living with HIV/AIDS"},
         {"label": "Children orphaned due to HIV/AIDS"},
         {"label": "HIV/AIDS prevention"},
@@ -290,7 +290,7 @@
     "Peer Relationships": {
       "color": "#9f9f9f",
       "subcategories": [
-        {"label": "Bereavement"},
+        {"label": "(PR) Bereavement"},
         {"label": "Bystander / Third-party concern"},
         {"label": "Making friends"},
         {"label": "Missing friends"},
@@ -356,7 +356,7 @@
       "color": "#e0ab4f",
       "subcategories": [
         {"label": "Academic problems"},
-        {"label": "Access to education"},
+        {"label": "(SR&E) Access to education"},
         {"label": "Homework"},
         {"label": "Learning disorders"},
         {"label": "Performance anxiety"},
@@ -377,8 +377,8 @@
         {"label": "Incest"},
         {"label": "Marital rape"},
         {"label": "Rape"},
-        {"label": "Revenge porn"},
-        {"label": "Sexual abuse"},
+        {"label": "(SA) Revenge porn"},
+        {"label": "(SA) Sexual abuse"},
         {"label": "Sexual exploitation"},
         {"label": "Sexual harassment"},
         {"label": "Sexual violence"},
