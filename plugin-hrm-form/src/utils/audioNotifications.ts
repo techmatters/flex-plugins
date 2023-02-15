@@ -109,9 +109,7 @@ const notifyReservedTask = reservation => {
     const notificationTone = 'ringtone';
     const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
 
-    if (document.visibilityState === 'hidden') {
-      playWhilePending(reservation, notificationUrl);
-    }
+    playWhilePending(reservation, notificationUrl);
   } catch (error) {
     console.error('Error in notifyReservedTask:', error);
   }
