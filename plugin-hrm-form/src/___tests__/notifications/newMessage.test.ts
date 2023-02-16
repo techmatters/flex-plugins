@@ -130,5 +130,4 @@ describe('Notification for a new message ', () => {
       expect(AudioPlayerManager.play).not.toHaveBeenCalled();
     });
   });
-
 });
