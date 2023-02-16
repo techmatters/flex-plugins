@@ -141,6 +141,10 @@
       {
         "value": "TikTok",
         "label": "TikTok"
+      },
+      {
+        "value": "Media Monitoring",
+        "label": "Media Monitoring"
       }
     ]
   },
