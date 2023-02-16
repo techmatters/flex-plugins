@@ -49,6 +49,7 @@ import CSAMAttachments from './CSAMAttachments';
 import { forTask } from '../../states/contacts/issueCategorizationStateApi';
 import { newCSAMReportAction } from '../../states/csam-report/actions';
 import { CSAMReportTypes } from '../../states/csam-report/types';
+// Ensure ww import any custom components that might be used in a form
 import '../contact/ReferralList';
 
 // eslint-disable-next-line react/display-name
