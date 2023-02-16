@@ -25,6 +25,7 @@
     "label": "What type of contact is this?",
     "type": "select",
     "options": [
+      { "value": "Unknown", "label": "" },
       { "value": "Complaint", "label": "Complaint" },
       { "value": "Counselling", "label": "Counselling" },
       { "value": "Crisis Intervention", "label": "Crisis Intervention" },
