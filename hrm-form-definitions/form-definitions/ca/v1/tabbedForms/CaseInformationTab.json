@@ -21,12 +21,6 @@
     "type": "checkbox"
   },
   {
-    "name": "keepConfidential",
-    "label": "Keep confidential?",
-    "type": "checkbox",
-    "initialChecked": true
-  },
-  {
     "name": "contactType",
     "label": "What type of contact is this?",
     "type": "select",
