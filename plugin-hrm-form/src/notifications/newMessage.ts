@@ -67,4 +67,3 @@ const notifyNewMessage = messageInstance => {
     console.error('Error in notifyNewMessage:', error);
   }
 };
-

@@ -23,7 +23,7 @@ import {
 } from '../../notifications/newMessage';
 
 const mockConversationState = {
-  isLoadingConversation: false, // TODO try testing true with mock timers, it should call StateHelper N times
+  isLoadingConversation: false,
   source: { on: jest.fn() },
 };
 
@@ -50,14 +50,12 @@ const mockFlexManager = {
 jest.mock('@twilio/flex-ui', () => ({
   ...(jest.requireActual('@twilio/flex-ui') as any),
   Manager: {
-    // getInstance: jest.fn().mockReturnValue(mockFlexManager),
     getInstance: () => mockFlexManager,
   },
   AudioPlayerManager: {
     play: jest.fn().mockReturnValue({}),
   },
   StateHelper: {
-    // getConversationStateForTask: jest.fn().mockReturnValue(mockConversationState),
     getConversationStateForTask: jest.fn(() => {
       return mockConversationState;
     }),

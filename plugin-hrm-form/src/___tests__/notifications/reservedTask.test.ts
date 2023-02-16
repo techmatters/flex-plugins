@@ -71,11 +71,10 @@ describe('Notification for a reserved task ', () => {
       sid: 'reservation-sid',
       status: 'accepted',
     };
-
-    // Trigger audio notification
     notifyReservedTask(mockReservation);
 
     const notificationUrl = 'http://assets.fake.com/notifications/ringtone.mp3';
+
     const playWhilePendingMock = jest.fn();
     playWhilePendingMock(mockReservation, notificationUrl);
 
