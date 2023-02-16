@@ -45,6 +45,7 @@ export enum FormInputType {
   FileUpload = 'file-upload',
   Button = 'button',
   CopyTo = 'copy-to',
+  CustomContactComponent = 'custom-contact-component',
 }
 
 /**
@@ -180,6 +181,13 @@ type CopyToDefinition = ItemBase &
     target: CaseSectionApiName;
   };
 
+type CustomContactComponentDefinition = ItemBase &
+  NonSaveable & {
+    type: FormInputType.CustomContactComponent;
+    component: string;
+    props: Record<string, boolean | number | string>;
+  };
+
 export type FormItemDefinition =
   | InputDefinition
   | NumericInputDefinition
@@ -195,7 +203,8 @@ export type FormItemDefinition =
   | TimeInputDefinition
   | FileUploadDefinition
   | CallTypeButtonInputDefinition
-  | CopyToDefinition;
+  | CopyToDefinition
+  | CustomContactComponentDefinition;
 
 export type FormItemJsonDefinition =
   | FormItemDefinition
