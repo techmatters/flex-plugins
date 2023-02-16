@@ -80,7 +80,7 @@
       "type": "input"
     },
     {
-      "name": "incidentType",
+      "name": "duration",
       "label": "Type of Incident?",
       "type": "listbox-multiselect",
       "options": [
