@@ -27,20 +27,18 @@ const mockConversationState = {
   source: { on: jest.fn() },
 };
 
-const mockMessageInstance = { author: 'imacounsellor@test.org' };
-
 const mockFlexManager = {
   conversationsClient: {
     once: jest.fn(),
     user: {
-      identity: 'imacounsellor@tes.org',
+      identity: 'imacounsellor@testing.org',
     },
   },
   store: {
     getState: jest.fn(() => ({
       flex: {
         worker: {
-          tasks: [{ sid: 'WTtask1' }, { sid: 'WTtask2' }],
+          tasks: [{}],
         },
       },
     })),
@@ -56,9 +54,7 @@ jest.mock('@twilio/flex-ui', () => ({
     play: jest.fn().mockReturnValue({}),
   },
   StateHelper: {
-    getConversationStateForTask: jest.fn(() => {
-      return mockConversationState;
-    }),
+    getConversationStateForTask: jest.fn(() => mockConversationState),
   },
 }));
 
@@ -102,6 +98,8 @@ describe('Notification for a new message ', () => {
       expect(mockConversationState.source.on).toHaveBeenCalledWith('messageAdded', expect.any(Function));
 
       const notifyNewMessage = mockConversationState.source.on.mock.calls[0][1];
+      const mockMessageInstance = { author: 'imaclient@test.org' };
+
       notifyNewMessage(mockMessageInstance);
 
       expect(AudioPlayerManager.play).toHaveBeenCalledWith(
@@ -123,9 +121,50 @@ describe('Notification for a new message ', () => {
       expect(mockConversationState.source.on).toHaveBeenCalledWith('messageAdded', expect.any(Function));
 
       const notifyNewMessage = mockConversationState.source.on.mock.calls[0][1];
+      const mockMessageInstance = { author: 'imaclient@test.org' };
+
       notifyNewMessage(mockMessageInstance);
 
       expect(AudioPlayerManager.play).not.toHaveBeenCalled();
+    });
+
+    test('should not subscribe to messageAdded event when task is still loading', () => {
+      mockConversationState.isLoadingConversation = true;
+
+      jest.runAllTimers();
+
+      expect(mockConversationState.source.on).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('subscribeNewMessageAlertOnPluginInit', () => {
+    beforeEach(() => {
+      mockConversationState.isLoadingConversation = false;
+      jest.useFakeTimers();
+      const tasks = [{ sid: 'WTtask1' }, { sid: 'WTtask2' }];
+      mockFlexManager.store.getState.mockReturnValueOnce({
+        flex: {
+          worker: {
+            tasks,
+          },
+        },
+      });
+      subscribeNewMessageAlertOnPluginInit();
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    test('should subscribe to messageAdded event for all task when plugin is initialized', () => {
+      const tasks = [{ sid: 'WTtask1' }, { sid: 'WTtask2' }];
+
+      jest.runAllTimers();
+
+      expect(StateHelper.getConversationStateForTask).toHaveBeenCalledTimes(2);
+      tasks.forEach(task => expect(StateHelper.getConversationStateForTask).toHaveBeenCalledWith(task));
+
+      expect(mockConversationState.source.on).toHaveBeenCalledWith('messageAdded', expect.any(Function));
     });
   });
 });
