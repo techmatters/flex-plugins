@@ -49,6 +49,7 @@ import CSAMAttachments from './CSAMAttachments';
 import { forTask } from '../../states/contacts/issueCategorizationStateApi';
 import { newCSAMReportAction } from '../../states/csam-report/actions';
 import { CSAMReportTypes } from '../../states/csam-report/types';
+import '../contact/ReferralList';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -94,7 +95,6 @@ type OwnProps = {
   task: CustomITask;
   csamReportEnabled: boolean;
   csamClcReportEnabled: boolean;
-  counselorToolkitsEnabled: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -110,7 +110,6 @@ const TabbedForms: React.FC<Props> = ({
   csamClcReportEnabled,
   editContactFormOpen,
   isCallTypeCaller,
-  counselorToolkitsEnabled,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -272,6 +271,7 @@ const TabbedForms: React.FC<Props> = ({
                     autoFocus={autoFocus}
                     updateFormActionDispatcher={dispatch => values =>
                       dispatch(updateForm(task.taskSid, 'callerInformation', values.callerInformation))}
+                    taskSid={taskId}
                   />
                 </TabbedFormTabContainer>
               )}
@@ -287,6 +287,7 @@ const TabbedForms: React.FC<Props> = ({
                       autoFocus={autoFocus}
                       updateFormActionDispatcher={dispatch => values =>
                         dispatch(updateForm(task.taskSid, 'childInformation', values.childInformation))}
+                      taskSid={taskId}
                     />
                   </TabbedFormTabContainer>
                   <TabbedFormTabContainer display={subroute === 'categories'}>
@@ -309,6 +310,7 @@ const TabbedForms: React.FC<Props> = ({
                       extraChildrenRight={csamAttachments}
                       updateFormActionDispatcher={dispatch => values =>
                         dispatch(updateForm(task.taskSid, 'caseInformation', values.caseInformation))}
+                      taskSid={taskId}
                     />
                   </TabbedFormTabContainer>
                 </>

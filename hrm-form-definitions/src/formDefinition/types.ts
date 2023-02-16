@@ -185,7 +185,7 @@ type CustomContactComponentDefinition = ItemBase &
   NonSaveable & {
     type: FormInputType.CustomContactComponent;
     component: string;
-    props: Record<string, boolean | number | string>;
+    props?: Record<string, boolean | number | string>;
   };
 
 export type FormItemDefinition =

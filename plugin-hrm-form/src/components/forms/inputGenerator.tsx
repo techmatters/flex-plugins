@@ -82,26 +82,38 @@ export const createInput = ({
           );
         }
         if (taskSid) {
-          return componentGenerator({
-            taskSid,
-            props: formItemDefinition.props,
-          });
+          return (
+            <div key={inputId}>
+              {componentGenerator({
+                taskSid,
+                props: formItemDefinition.props,
+                name: formItemDefinition.name,
+                label: formItemDefinition.label,
+              })}
+            </div>
+          );
         } else if (contactId) {
-          return componentGenerator({
-            contactId,
-            props: formItemDefinition.props,
-          });
+          return (
+            <div key={inputId}>
+              {componentGenerator({
+                contactId,
+                props: formItemDefinition.props,
+                name: formItemDefinition.name,
+                label: formItemDefinition.label,
+              })}
+            </div>
+          );
         }
         return (
           <div>
-            Error rendering custom contact form component &lsqou;{formItemDefinition.component}&rsqou;: either a taskSid
+            Error rendering custom contact form component &lsquo;{formItemDefinition.component}&rsquo;: either a taskSid
             or a contactId must be provided in the context
           </div>
         );
       } catch (err) {
         return (
           <div>
-            Error rendering custom contact form component &lsqou;{formItemDefinition.component}&rsqou;: {err.message}
+            Error rendering custom contact form component &lsquo;{formItemDefinition.component}&rsquo;: {err.message}
           </div>
         );
       }

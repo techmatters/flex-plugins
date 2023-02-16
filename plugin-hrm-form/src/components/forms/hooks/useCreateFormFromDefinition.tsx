@@ -29,9 +29,13 @@ type UseFormFromDefinition = {
   shouldFocusFirstElement?: boolean;
   customHandlers?: CreateInputParams['customHandlers'];
   isItemEnabled?: (item: FormItemDefinition) => boolean;
+  context?: {
+    taskSid?: string;
+    contactId?: string;
+  };
 };
 
-const allwaysEnabled = () => true;
+const alwaysEnabled = () => true;
 
 const useCreateFormFromDefinition = ({
   definition,
@@ -40,7 +44,8 @@ const useCreateFormFromDefinition = ({
   initialValues,
   shouldFocusFirstElement,
   customHandlers,
-  isItemEnabled = allwaysEnabled,
+  isItemEnabled = alwaysEnabled,
+  context = {},
 }: UseFormFromDefinition) => {
   const firstElementRef = useFocus(shouldFocusFirstElement);
   return definition.map((e: FormItemDefinition, index: number) => {
@@ -56,6 +61,7 @@ const useCreateFormFromDefinition = ({
       updateCallback,
       htmlElRef: elementRef,
       customHandlers,
+      context,
     });
   });
 };
