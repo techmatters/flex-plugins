@@ -36,11 +36,11 @@ jest.mock('@twilio/flex-ui', () => ({
 }));
 
 describe('Notification for a reserved task ', () => {
-  let notifyReservedTaskMock;
+  let notifyReservedTask;
 
   beforeEach(() => {
     subscribeReservedTaskAlert();
-    notifyReservedTaskMock = mockFlexManager.workerClient.on.mock.calls[0][1];
+    notifyReservedTask = mockFlexManager.workerClient.on.mock.calls[0][1];
   });
 
   afterEach(() => {
@@ -48,8 +48,7 @@ describe('Notification for a reserved task ', () => {
   });
 
   test('subscribeReservedTaskAlert subscribes to the "reservationCreated" event on the worker client', () => {
-    subscribeReservedTaskAlert();
-    expect(mockFlexManager.workerClient.on).toHaveBeenCalledWith('reservationCreated', notifyReservedTaskMock);
+    expect(mockFlexManager.workerClient.on).toHaveBeenCalledWith('reservationCreated', notifyReservedTask);
   });
 
   test('audio notification should play when a reservation is pending state', () => {
@@ -57,28 +56,11 @@ describe('Notification for a reserved task ', () => {
       sid: 'reservation-sid',
       status: 'pending',
     };
-
-    // Trigger audio notification
-    notifyReservedTaskMock(mockReservation);
-
-    const notificationUrl = 'http://assets.fake.com/notifications/ringtone.mp3';
-    const playWhilePendingMock = jest.fn();
-    playWhilePendingMock(mockReservation, notificationUrl);
-
-    const mediaData = {
-      url: notificationUrl,
-      repeatable: true,
-    };
-
-    const spy = jest.mock(AudioPlayerManager, "play") 
-    expect(spy).toHaveBeenCalled()
-    
-    AudioPlayerManager.play(mediaData, jest.fn());
-
+    notifyReservedTask(mockReservation);
     expect(AudioPlayerManager.play).toHaveBeenCalledWith(
       {
         url: 'http://assets.fake.com/notifications/ringtone.mp3',
-        repeatable: true,
+        repeatable: false,
       },
       expect.any(Function),
     );
@@ -91,7 +73,7 @@ describe('Notification for a reserved task ', () => {
     };
 
     // Trigger audio notification
-    notifyReservedTaskMock(mockReservation);
+    notifyReservedTask(mockReservation);
 
     const notificationUrl = 'http://assets.fake.com/notifications/ringtone.mp3';
     const playWhilePendingMock = jest.fn();

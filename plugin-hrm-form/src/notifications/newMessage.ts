@@ -32,15 +32,12 @@ export const subscribeNewMessageAlertOnPluginInit = () => {
 const trySubscribeAudioAlerts = (task, ms: number, retries: number) => {
   setTimeout(() => {
     const convoState = StateHelper.getConversationStateForTask(task);
-    console.log('>>>trySubscribeAudioAlerts', convoState);
-    console.log('>>>trySubscribeAudioAlerts', convoState.source);
-
     // if channel is not ready, wait 200ms and retry
     if (convoState?.isLoadingConversation) {
       if (retries < 10) trySubscribeAudioAlerts(task, 200, retries + 1);
       else console.error('Failed to subscribe audio alerts: max retries reached.');
     } else {
-      convoState?.source.on('messageAdded', notifyNewMessage)
+      convoState?.source.on('messageAdded', notifyNewMessage);
     }
   }, ms);
 };
@@ -54,6 +51,7 @@ const notifyNewMessage = messageInstance => {
     const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
 
     const isCounsellor = manager.conversationsClient.user.identity === messageInstance.author;
+
     if (!isCounsellor && document.visibilityState === 'hidden') {
       AudioPlayerManager.play(
         {
