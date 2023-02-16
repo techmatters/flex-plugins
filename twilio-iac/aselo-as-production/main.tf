@@ -42,7 +42,7 @@ locals {
   feature_flags = {
     "enable_fullstory_monitoring": false,
     "enable_upload_documents": true,
-    "enable_post_survey": local.enable_post_survey,
+    "enable_post_survey": false,
     "enable_contact_editing": true,
     "enable_case_management": true,
     "enable_offline_contact": true,

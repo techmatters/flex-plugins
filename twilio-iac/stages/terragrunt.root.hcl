@@ -5,16 +5,19 @@ locals {
   stage_hcl = read_terragrunt_config(find_in_parent_folders("stage.hcl"))
   stage     = local.stage_hcl.locals.stage
 
-  base_config_hcl = read_terragrunt_config("../../helplines/base.hcl")
-  base_config = local.base_config_hcl.locals
+  defaults_config_hcl = read_terragrunt_config("../../helplines/defaults.hcl")
+  defaults_config = local.defaults_config_hcl.locals
 
-  helpline_base_config_hcl = read_terragrunt_config("../../helplines/${local.short_helpline}/helpline-base.hcl")
-  helpline_base_config = local.helpline_base_config_hcl.locals
+  common_config_hcl = read_terragrunt_config("../../helplines/${local.short_helpline}/common.hcl")
+  common_config = local.common_config_hcl.locals
+
+  stage_config_hcl = read_terragrunt_config("../../helplines/${local.short_helpline}/${local.stage}.hcl")
+  stage_config = local.stage_config_hcl.locals
 
   env_config_hcl = read_terragrunt_config("../../helplines/${local.short_helpline}/${local.environment}/${local.stage}.hcl")
   env_config = local.env_config_hcl.locals
 
-  pre_computed_config =  merge(local.base_config, local.helpline_base_config, local.env_config)
+  pre_computed_config =  merge(local.defaults_config, local.common_config, local.stage_config, local.env_config)
 
   computed_config = {
     environment = title(local.environment)
