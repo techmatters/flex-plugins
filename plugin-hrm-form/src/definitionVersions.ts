@@ -28,11 +28,14 @@ const getEnvironmentFromHrmBaseUrl = (manager: Flex.Manager) => {
   const hrmBaseUrl = `${process.env.REACT_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}`;
   const prefix = 'https://hrm-';
   const suffix = '.tl.techmatters.org';
-  const environment = hrmBaseUrl.substring(prefix.length, hrmBaseUrl.indexOf(suffix));
+  const environment = hrmBaseUrl.substring(prefix.length, hrmBaseUrl.indexOf(suffix)).replace('-eu', '');
 
-  // Filter out E2E
+  /*
+   * hrm-test is an alias of hrm-staging that we should deprecate & remove, but some accounts are still configured to point at it
+   * This ensures any accounts still pointing at hrm-test go to the right bucket for their assets
+   */
   if (environment === 'test') {
-    return 'development';
+    return 'staging';
   }
 
   return environment;

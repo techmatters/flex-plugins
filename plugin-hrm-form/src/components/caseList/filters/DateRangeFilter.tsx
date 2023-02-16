@@ -13,8 +13,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
-/* eslint-disable react/prop-types */
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Template } from '@twilio/flex-ui';
@@ -90,7 +88,7 @@ const formToDateFilter = (
   filterOptions: DateFilterOption[],
   values: ReactHookFormValues,
 ): DateFilterValue | undefined => {
-  const [, selected] = filterOptions.find(([opt]) => opt === values[selectedOptionField]);
+  const [, selected] = filterOptions?.find(([opt]) => opt === values[selectedOptionField]) ?? [];
   if (!selected) {
     return undefined;
   }
@@ -229,6 +227,10 @@ const DateRangeFilter: React.FC<Props> = ({
     setDateValidations(prev => ({ ...prev, to: { invalid: false, error: '' }, from: { invalid: false, error: '' } }));
   };
 
+  const handleOnClick = () => {
+    updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()));
+  };
+
   const handleDateValidation = () => {
     const today = new Date();
 
@@ -285,11 +287,11 @@ const DateRangeFilter: React.FC<Props> = ({
                       <FormLabel htmlFor={option} style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <FormRadioInput
                           onKeyDown={i === 0 ? handleShiftTabForFirstElement : null}
-                          onChange={() =>
-                            updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))
-                          }
-                          // This is a work around to issue CHI-1200: Custom Date Filters
-                          onClick={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
+                          /*
+                           * This is a work around to issue CHI-1661: CaseList Date Filter Error.
+                           * We can only use onClick to perform event actions rather than onChange
+                           */
+                          onClick={handleOnClick}
                           id={option}
                           value={option}
                           name={name}

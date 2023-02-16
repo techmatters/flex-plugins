@@ -90,7 +90,7 @@ export const createSubcategoryCheckbox = (
         }}
       </ConnectForm>
       {counselorToolkitsEnabled && toolkitUrl && (
-        <HtmlTooltip title={label} placement="bottom">
+        <HtmlTooltip title={`${label} - Tipsheet`} placement="bottom">
           <a href={toolkitUrl} target="_blank" rel="noreferrer">
             <InformationIconButton />
           </a>

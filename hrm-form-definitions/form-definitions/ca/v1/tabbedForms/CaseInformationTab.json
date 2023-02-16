@@ -1,5 +1,11 @@
 [
   {
+    "name": "callSummary",
+    "label": "Call Summary",
+    "type": "textarea",
+    "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
     "name": "safetyPlan",
     "label": "Safety plan created with the service user",
     "type": "checkbox"
@@ -15,22 +21,17 @@
     "type": "checkbox"
   },
   {
-    "name": "keepConfidential",
-    "label": "Keep confidential?",
-    "type": "checkbox",
-    "initialChecked": true
-  },
-  {
     "name": "contactType",
     "label": "What type of contact is this?",
     "type": "select",
     "options": [
+      { "value": "Unknown", "label": "" },
       { "value": "Complaint", "label": "Complaint" },
       { "value": "Counselling", "label": "Counselling" },
       { "value": "Crisis Intervention", "label": "Crisis Intervention" },
       { "value": "Information about Good2Talk", "label": "Information about Good2Talk" },
       { "value": "Referral only", "label": "Referral only" },
-      { "value": "Thank you", "label": "Thank you" },
+      { "value": "Thank you", "label": "Thank you" }
     ],
     "required": {
         "value": true,

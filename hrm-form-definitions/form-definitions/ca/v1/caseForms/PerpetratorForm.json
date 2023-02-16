@@ -10,7 +10,7 @@
   },
   {
     "name": "lastName",
-    "label": "Last NameName",
+    "label": "Last Name",
     "type": "input",
     "required": {
       "value": true,
