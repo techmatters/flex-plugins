@@ -18,7 +18,11 @@
       "splitFormAt": 8
     },
     "incidents": {
-      "splitFormAt": 5
+      "previewFields": [
+        "date",
+        "location"
+      ],
+      "splitFormAt": 6
     },
     "referrals": {
       "splitFormAt": 5
