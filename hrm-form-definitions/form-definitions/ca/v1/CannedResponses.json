@@ -1,82 +1,318 @@
 [
-    {
-        "label": "Absence of Response: Hi, anybody there?",
-        "text": "Hi, anybody there?"
-    },
-    {
-        "label": "Absence of Response: Hmm, are you still there? I am ready to chat when you are.",
-        "text": "Hmm, are you still there? I am ready to chat when you are."
-    },
-    {
-        "label": "Absence of Response: Hmm, I'm not sure if it is the technology...",
-        "text": "Hmm, I'm not sure if it is the technology or not but no messages are coming through"
-    },
-    {
-        "label": "Absence of Response: It seems like maybe you are no longer there...",
-        "text": "It seems like maybe you are no longer there, I will wait a couple more minutes to be sure"
-    },
-    {
-        "label": "Absence of Response: It's not always easy to open up...",
-        "text": "It's not always easy to open up, if you are there but don't know where to start then maybe just give me a little thumbs up?"
-    },
-    {
-        "label": "Absence of Response: Okay, I will have to disengage now...",
-        "text": "Okay, I will have to disengage now but if you would still like to talk please come back to chat or call us any time"
-    },
-    {
-        "label": "Absence of Response: Sadly, it seems like we have a connection issue...",
-        "text": "Sadly, it seems like we have a connection issue :( I will have to sign off, but please clal or try chat again"
-    },
-    {
-        "label": "Absence of Response: Still there? I'd like to hear more about what's on your mind",
-        "text": "Still there? I'd like to hear more about what's on your mind"
-    },
-    {
-        "label": "Addressing Emotion - Early in Chat: Can you tell me a bit about what was happening...",
-        "text": "Can you tell me a bit about what was happening right before you came on chat...what were you thinking and feeling?"
-    },
-    {
-        "label": "Addressing Emotion - Early in Chat: Feelings can be hard to describe...",
-        "text": "Feelings can be hard to describe for sure - do you think you could pick a color, image or even a musical lyric that would help me undersatnd how you're feeling?"
-    },
-    {
-        "label": "Addressing Emotion - Early in Chat: One of the challenges of chatting with you...",
-        "text": "One of the challenges of chatting with you is that I cannot see or hear how you're doing. How would you describe how you are feeling right now?"
-    },
-    {
-        "label": "Addressing Emotion - Early in Chat: What can you tell me about how things are for you in this moment?",
-        "text": "What can you tell me about how things are for you in this moment?"
-    },
-    {
-        "label": "Addressing Emotion - Early in Chat: You've mentioned that feeling a few times now...",
-        "text": "You've mentioned that feeling a few times now..can you tell me more about it?"
-    },
-    {
-        "label": "Addressing Emotion - Later in Chat: How has it been to talk this out?",
-        "text": "How has it been to talk this out?"
-    },
-    {
-        "label": "Addressing Emotion - Later in Chat: We've been talking about this for some time now...",
-        "text": "We've been talking about this for some time now - I just wanted to check in..how are you doing now compared to the beginning of our chat?"
-    },
-    {
-        "label": "Assessing for Suicide: I can tell that this situation is a struggle for you...",
-        "text": "I can tell that this situation is a struggle for you. Sometimes when people are dealing with similar struggles, they also have thoughts of suicide. Is that something you've thought about?"
-    },
-    {
-        "label": "Assessing for Suicide: Sometimes when people are dealing with [issue here] they may also have thoughts of hurting themselves...",
-        "text": "Sometimes when people are dealing with [issue here] they may also have thoughts of hurting themselves. I just want to check in, have you had any of these thoughts?"
-    },
-    {
-        "label": "Assessing for Suicide: With all of the [issue here] you are experiencing, I wanted to check in around your safety...",
-        "text": "With all of the [issue here] you are experiencing, I wanted to check in around your safety. Have you had any thoughts about suicide?"
-    },
-    {
-        "label": "Disconnection Problems",
-        "text": "We want to be sure that you know a counsellor would not disconnect without telling you first. But for sure, disconnection happens. If you are in crisis or if this is an emergency and you get disconnected, please call us or call 911"
-    },
-    {
-        "label": "Duty to Report",
-        "text": "Before we get any further, I want to pause for a second and make sure that you're aware that this is a confidential and anonymous service. However, if you give any identifying info AND you report you are in any emotional and/or physical danger, I would "
-    }
+  {
+    "label": "Absence of Response: Hi, anybody there?",
+    "text": "Hi, anybody there?"
+  },
+  {
+    "label": "Absence of Response: Hmm, are you still there? I am ready to chat when you are.",
+    "text": "Hmm, are you still there? I am ready to chat when you are."
+  },
+  {
+    "label": "Absence of Response: Hmm, I'm not sure if it is the technology or not...",
+    "text": "Hmm, I'm not sure if it is the technology or not but no messages are coming through"
+  },
+  {
+    "label": "Absence of Response: It seems like maybe you are no longer there...",
+    "text": "It seems like maybe you are no longer there, I will wait a couple more minutes to be sure"
+  },
+  {
+    "label": "Absence of Response: It's not always easy to open up, if you are there...",
+    "text": "It's not always easy to open up, if you are there but don't know where to start then maybe just give me a little thumbs up?"
+  },
+  {
+    "label": "Absence of Response: Okay, I will have to disengage now...",
+    "text": "Okay, I will have to disengage now but if you would still like to talk please come back to chat or call us any time"
+  },
+  {
+    "label": "Absence of Response: Sadly, it seems like we have a connection issue...",
+    "text": "Sadly, it seems like we have a connection issue :( I will have to sign off, but please clal or try chat again"
+  },
+  {
+    "label": "Absence of Response: Still there? I'd like to hear more about what's on your mind",
+    "text": "Still there? I'd like to hear more about what's on your mind"
+  },
+  {
+    "label": "Addressing Emotion - Early in Chat: Can you tell me a bit about...",
+    "text": "Can you tell me a bit about what was happening right before you came on chat...what were you thinking and feeling?"
+  },
+  {
+    "label": "Addressing Emotion - Early in Chat: Feelings can be hard to describe for sure...",
+    "text": "Feelings can be hard to describe for sure - do you think you could pick a color, image or even a musical lyric that would help me undersatnd how you're feeling?"
+  },
+  {
+    "label": "Addressing Emotion - Early in Chat: One of the challenges of chatting with you...",
+    "text": "One of the challenges of chatting with you is that I cannot see or hear how you're doing. How would you describe how you are feeling right now?"
+  },
+  {
+    "label": "Addressing Emotion - Early in Chat: What can you tell me about how things are for you in this moment?",
+    "text": "What can you tell me about how things are for you in this moment?"
+  },
+  {
+    "label": "Addressing Emotion - Early in Chat: You've mentioned that feeling a few times now...",
+    "text": "You've mentioned that feeling a few times now..can you tell me more about it?"
+  },
+  {
+    "label": "Addressing Emotion - Early in Chat: It might be a good idea to try and measure your state of mind...",
+    "text": "It might be a good idea to try and measure your state of mind/how you are feeling right now. Where would you put yourself on a scale of 1 to 10 with 1 being the worst and 10 been really great?"
+  },
+  {
+    "label": "Addressing Emotion - Later in Chat: How has it been to talk this out?",
+    "text": "How has it been to talk this out?"
+  },
+  {
+    "label": "Addressing Emotion - Later in Chat: We've been talking about this for some time now...",
+    "text": "We've been talking about this for some time now - I just wanted to check in..how are you doing now compared to the beginning of our chat?"
+  },
+  {
+    "label": "Addressing Emotion - Later in Chat: I’m curious… Where would you put yourself on the scale that we made at the beginning of the chat?",
+    "text": "I’m curious… Where would you put yourself on the scale that we made at the beginning of the chat?"
+  },
+  {
+    "label": "Assessing for Suicide: I can tell that this situation is a struggle for you...",
+    "text": "I can tell that this situation is a struggle for you. Sometimes when people are dealing with similar struggles, they also have thoughts of suicide. Is that something you've thought about?"
+  },
+  {
+    "label": "Assessing for Suicide: Sometimes when people are dealing with [issue here] they may also have thoughts...",
+    "text": "Sometimes when people are dealing with [issue here] they may also have thoughts of hurting themselves. I just want to check in, have you had any of these thoughts?"
+  },
+  {
+    "label": "Assessing for Suicide: With all of the [issue here] you are experiencing, I wanted to check in...",
+    "text": "With all of the [issue here] you are experiencing, I wanted to check in around your safety. Have you had any thoughts about suicide?"
+  },
+  {
+    "label": "Assessing for Suicide: I am so glad that you decided to reach out and talk about this today...",
+    "text": "I am so glad that you decided to reach out and talk about this today. Before we move on I just want to do a quick check-in around your safety – you’ve not given me any reason to think you are having thoughts of suicide but since I can’t see you or hear you it’s hard for me to know for sure. Can I ask if you are having any of these kinds of thoughts today?"
+  },
+  {
+    "label": "Disconnection problems: We want to be sure that you know a counsellor would not disconnect...",
+    "text": "We want to be sure that you know a counsellor would not disconnect without telling you first. But for sure, disconnection happens. If you are in crisis or if this is an emergency and you get disconnected, please call us or call 911"
+  },
+  {
+    "label": "Duty to Report: Before we get any further, I want to pause for a second...",
+    "text": "Before we get any further, I want to pause for a second and make sure that you're aware that this is a confidential and anonymous service. However, if you give any identifying info AND you report you are in any emotional and/or physical danger, I would "
+  },
+  {
+    "label": "Duty to Report: I just want to let you know about our duty to report...",
+    "text": "I just want to let you know about our duty to report as counsellors at Kids Help Phone. If you were to share any identifying information with me (your name and address for example) and then tell me about a situation where you are in danger then I might have to make a report to the police or Child Protection Services."
+  },
+  {
+    "label": "Duty to Report: Kids Help Phone is an anonymous service...",
+    "text": "Kids Help Phone is an anonymous service so you can talk about anything that is on your mind. If you do talk about something that puts you at risk (like an abusive situation or you feeling suicidal) and then share with me identifying information (like your name, town or school) I may have a legal obligation to make a report to the police or Child Protection Services. If that is not what you want then you can remain anonymous by not sharing anything identifying with me. Does this make sense to you?"
+  },
+  {
+    "label": "Elaboration: What else would you like me to know?",
+    "text": "What else would you like me to know?"
+  },
+  {
+    "label": "Elaboration: What more can you tell me about this?",
+    "text": "What more can you tell me about this?"
+  },
+  {
+    "label": "Elaboration: You seem to have a lot going on right now...",
+    "text": "You seem to have a lot going on right now… I am all ears! Please keep going!"
+  },
+  {
+    "label": "Elaboration: Please continue (you’re doing great!)",
+    "text": "Please continue (you’re doing great!)"
+  },
+  {
+    "label": "Elaboration: Please tell me more",
+    "text": "Please tell me more"
+  },
+  {
+    "label": "Elaboration: What would be an example of that?",
+    "text": "What would be an example of that?"
+  },
+  {
+    "label": "Elaboration: What else?",
+    "text": "What else?"
+  },
+  {
+    "label": "Empathic Responses: I can imagine that was a painful experience for you.",
+    "text": "I can imagine that was a painful experience for you."
+  },
+  {
+    "label": "Empathic Responses: I can see how dealing with this would be hard on you.",
+    "text": "I can see how dealing with this would be hard on you."
+  },
+  {
+    "label": "Empathic Responses: It sounds like you felt hurt when…",
+    "text": "It sounds like you felt hurt when…"
+  },
+  {
+    "label": "Empathic Responses: I get the sense that this experience was confusing for you.",
+    "text": "I get the sense that this experience was confusing for you."
+  },
+  {
+    "label": "Empathic Responses: I can hear how upsetting this is for you.",
+    "text": "I can hear how upsetting this is for you."
+  },
+  {
+    "label": "Empathic Responses: I can appreciate how challenging this is right now... Thank you for sharing with me.",
+    "text": "I can appreciate how challenging this is right now... Thank you for sharing with me."
+  },
+  {
+    "label": "Encouraging a call to KHP or a visit to the website: Considering what you are going through I wonder...",
+    "text": "Considering what you are going through I wonder what you think about talking on the phone? If you were to call us at 1-800-668-6868 it is also confidential and anonymous."
+  },
+  {
+    "label": "Encouraging a call to KHP or a visit to the website: I wonder if you have thought about calling us...",
+    "text": "I wonder if you have thought about calling us? Would that be an option tonight?"
+  },
+  {
+    "label": "Encouraging a call to KHP or a visit to the website: When you came into chat did you have a chance...",
+    "text": "When you came into chat did you have a chance to look around on our website? Maybe I can point you to a few of the features that you might find helpful…"
+  },
+  {
+    "label": "Ending the conversation: So our conversation will be coming to end in a little while...",
+    "text": "So our conversation will be coming to end in a little while. How would you like to use our remaining time together?"
+  },
+  {
+    "label": "Ending the conversation: We have about 10 minutes left in our session...",
+    "text": "We have about 10 minutes left in our session. Would it be okay to check in about how you’re feeling now and summarize our discussion?"
+  },
+  {
+    "label": "Ending the conversation: We’re getting close to the end of our session for tonight...",
+    "text": "We’re getting close to the end of our session for tonight. I’m wondering if you can try to recap what we’ve talked about and then we can solidify your next steps?"
+  },
+  {
+    "label": "Ending the conversation: Wow! You’re really managed to get a lot of your feelings out tonight...",
+    "text": "Wow! You’re really managed to get a lot of your feelings out tonight. [hoping you feel relieved] Let’s review your next step so that you know what do next when we end the chat in a few minutes."
+  },
+  {
+    "label": "Ending the conversation: I’m really proud of you for talking to me about this difficult situation...",
+    "text": "I’m really proud of you for talking to me about this difficult situation. We have about 5 or 10 minutes left, I’m wondering what would be most helpful for you right now as we wrap up?"
+  },
+  {
+    "label": "Ending the conversation: We’ve been chatting for about an hour now...",
+    "text": "We’ve been chatting for about an hour now and it will be time to end our session soon. Maybe let’s check-in about how you’re feeling and what you might do once we wrap-up?"
+  },
+  {
+    "label": "Focus: I’m curious, what were you most hoping to chat about tonight?",
+    "text": "I’m curious, what were you most hoping to chat about tonight?"
+  },
+  {
+    "label": "Focus: I wonder, what do you think could be the most helpful focus for you during our conversation tonight?",
+    "text": "I wonder, what do you think could be the most helpful focus for you during our conversation tonight?"
+  },
+  {
+    "label": "Focus: We have been chatting for a little while now...",
+    "text": "We have been chatting for a little while now and I just want to be sure we are on the same page. How would you feel about agreeing on a goal or focus for our time tonight?"
+  },
+  {
+    "label": "Focus: Thank you for being so open and for sharing so much of what’s been going on for you...",
+    "text": "Thank you for being so open and for sharing so much of what’s been going on for you. It might be helpful for us to narrow in a little bit now. What is the most important part of this for us to shine a spotlight on for the rest of our time together?"
+  },
+  {
+    "label": "Focus: I can hear how much you have going on right now...",
+    "text": "I can hear how much you have going on right now. Of all of the things you have mentioned, what would you like to focus on right now?"
+  },
+  {
+    "label": "Greeting: Welcome to Kids Help Phone chat",
+    "text": "Welcome to Kids Help Phone chat"
+  },
+  {
+    "label": "Greeting: Thanks (name of chatter if appropriate) for waiting, what’s on your mind?",
+    "text": "Thanks (name of chatter if appropriate) for waiting, what’s on your mind?"
+  },
+  {
+    "label": "Greeting: Hi there, you have reached a counsellor, what would you like to talk about?",
+    "text": "Hi there, you have reached a counsellor, what would you like to talk about?"
+  },
+  {
+    "label": "Introducing a risk assessment: Sometimes people who have those experiences...",
+    "text": "Sometimes people who have those experiences are also having thoughts of suicide. So I just wanted to check in: are you experiencing any thoughts of suicide?"
+  },
+  {
+    "label": "Introducing a risk assessment: We’ve been chatting about some very painful things...",
+    "text": "We’ve been chatting about some very painful things, is it okay if I check in with you around safety?"
+  },
+  {
+    "label": "Introducing a risk assessment: I am worried about you, do you feel safe tonight?",
+    "text": "I am worried about you, do you feel safe tonight?"
+  },
+  {
+    "label": "Introducing a risk assessment: I really want to help and we can for sure talk more about this...",
+    "text": "I really want to help and we can for sure talk more about this but first I wonder if it would be okay of I asked you a few questions around your safety?"
+  },
+  {
+    "label": "Introducing a risk assessment: You mentioned some things that have me a little worried...",
+    "text": "You mentioned some things that have me a little worried, I am wondering about your safety right now."
+  },
+  {
+    "label": "KHP Info: Kids Help Phone is open 24 hours a day, 7 days a week. It is a confidential and anonymous...",
+    "text": "Kids Help Phone is open 24 hours a day, 7 days a week. It is a confidential and anonymous support service with counsellors who speak both English and French. You can reach us on live chat or you can talk to a counsellor on the phone."
+  },
+  {
+    "label": "KHP Info: Counselling at Kids Help Phone is when you speak with a professional...",
+    "text": "Counselling at Kids Help Phone is when you speak with a professional about whatever’s on your mind. This professional is a counsellor — someone who’s trained to talk to you about any problem, big or small. During counselling, we may ask you questions to help you learn more about your situation. We will work with you to solutions or next steps together. We are always here to listen to you."
+  },
+  {
+    "label": "Refocus: I wonder if (and tell me if I am wrong) but have we veered away from what we were first talking about?",
+    "text": "I wonder if (and tell me if I am wrong) but have we veered away from what we were first talking about?"
+  },
+  {
+    "label": "Refocus: What do you think about the idea that we have gotten a little sidetracked?",
+    "text": "What do you think about the idea that we have gotten a little sidetracked?"
+  },
+  {
+    "label": "Refocus: Hmm, seems like we might be getting sidetracked. I understand...",
+    "text": "Hmm, seems like we might be getting sidetracked. I understand with everything that you have going on but I want to make the best use of the time we have to chat."
+  },
+  {
+    "label": "Refocus: I appreciate how much you want me to understand about this situation...",
+    "text": "I appreciate how much you want me to understand about this situation but let’s maybe check in again around our original focus for the chat…"
+  },
+  {
+    "label": "Safety Issues: I’m concerned about your safety. Could you call us and talk to someone in person...",
+    "text": "I’m concerned about your safety. Could you call us and talk to someone in person? 1-800-668-6868. If you don’t want to call us what about calling 9-1-1?"
+  },
+  {
+    "label": "Safety Issues: If you feel in danger or unsafe calling 9-1-1 will get you immediate help…",
+    "text": "If you feel in danger or unsafe calling 9-1-1 will get you immediate help…"
+  },
+  {
+    "label": "Safety Issues: It sounds like you are ready to call 9-1-1, if you want I can remain on chat with you until someone arrives.",
+    "text": "It sounds like you are ready to call 9-1-1, if you want I can remain on chat with you until someone arrives."
+  },
+  {
+    "label": "Strengths based questions: What gives you strength during a difficult time?",
+    "text": "What gives you strength during a difficult time?"
+  },
+  {
+    "label": "Strengths based questions: Can you tell me about a time you responded to a challenge in a way that made you feel good?",
+    "text": "Can you tell me about a time you responded to a challenge in a way that made you feel good?"
+  },
+  {
+    "label": "Strengths based questions: Can you tell me about how you have made a difficult decision in the past?",
+    "text": "Can you tell me about how you have made a difficult decision in the past?"
+  },
+  {
+    "label": "Strengths based questions: When things are going well in your life, can you tell me what is happening?",
+    "text": "When things are going well in your life, can you tell me what is happening?"
+  },
+  {
+    "label": "Strengths based questions: Can you tell me about a time you managed to get free of this problem for even a few moments?",
+    "text": "Can you tell me about a time you managed to get free of this problem for even a few moments?"
+  },
+  {
+    "label": "Strengths based questions: How have you managed to cope with this situation?",
+    "text": "How have you managed to cope with this situation?"
+  },
+  {
+    "label": "Strengths based questions: What are some of your greatest strengths?",
+    "text": "What are some of your greatest strengths?"
+  },
+  {
+    "label": "Strengths based questions: What have you tried so far that has been helpful?",
+    "text": "What have you tried so far that has been helpful?"
+  },
+  {
+    "label": "Strengths based questions: What would your friends say is your best quality? How would you describe a successful day?",
+    "text": "What would your friends say is your best quality? How would you describe a successful day?"
+  },
+  {
+    "label": "Strengths based questions: Can you tell me about something you are proud of? How did you manage to do that?",
+    "text": "Can you tell me about something you are proud of? How did you manage to do that?"
+  }
 ]
