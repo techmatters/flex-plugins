@@ -86,6 +86,7 @@ describe('Validate form definitions', () => {
     ({ definitionId }) => {
       let definitionVersion: DefinitionVersion;
       let categoriesDefinitions: { helpline: string; categoriesDefinition: CategoriesDefinition }[];
+      let layoutDefinition: DefinitionVersion['layoutVersion'];
 
       beforeEach(async () => {
         mockReset();
@@ -99,6 +100,7 @@ describe('Validate form definitions', () => {
           helpline,
           categoriesDefinition: definitionVersion.tabbedForms.IssueCategorizationTab(helpline),
         }));
+        layoutDefinition = definitionVersion.layoutVersion;
       });
 
       const formFileSpecificationPaths = [
@@ -140,6 +142,23 @@ describe('Validate form definitions', () => {
 
           assertFun(aseloFormTemplates.tabbedForms.IssueCategorizationTab, categoriesDefinition);
         });
+      });
+
+      test('Validating layoutDefinition', () => {
+        const {
+          case: {
+            incidents: { previewFields, layout },
+          },
+        } = layoutDefinition;
+        expect(Array.isArray(previewFields)).toBe(true);
+        previewFields.forEach((pf) => expect(typeof pf).toBe('string'));
+        expect(Array.isArray(previewFields)).toBe(true);
+        if (previewFields.length) {
+          expect(layout).toBeDefined();
+          previewFields.forEach((pf) => {
+            expect(typeof layout[pf]).toBe('object');
+          });
+        }
       });
     },
   );
