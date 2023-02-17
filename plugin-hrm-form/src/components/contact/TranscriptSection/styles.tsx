@@ -16,9 +16,9 @@
 
 import { styled } from '@twilio/flex-ui';
 
-import { sectionTitleFontStyle } from '../../styles/search';
-import { FontOpenSans, Row } from '../../styles/HrmStyles';
-import HrmTheme from '../../styles/HrmTheme';
+import { sectionTitleFontStyle } from '../../../styles/search';
+import { FontOpenSans, Row } from '../../../styles/HrmStyles';
+import HrmTheme from '../../../styles/HrmTheme';
 
 export const ErrorFont = styled(FontOpenSans)`
   font-size: 12px;

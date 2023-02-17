@@ -10,7 +10,7 @@
   },
   {
     "name": "lastName",
-    "label": "Last NameName",
+    "label": "Last Name",
     "type": "input",
     "required": {
       "value": true,
@@ -73,7 +73,7 @@
   },
   {
     "name": "callerName",
-    "label": "Source of Referral Name",
+    "label": "Name of Referral Source",
     "type": "input",
     "required": {
       "value": true,
@@ -100,7 +100,7 @@
   },
   {
     "name": "callerAddress",
-    "label": "Source of Referral Address/Location",
+    "label": "Referral Source Address/Location",
     "type": "input",
     "required": {
       "value": true,
@@ -109,7 +109,7 @@
   },
   {
     "name": "callerProvince",
-    "label": "Source of Referral Province/Territory",
+    "label": "Referral Source Province/Territory",
     "type": "select",
     "options": [
       {
@@ -196,7 +196,7 @@
   },
   {
     "name": "callerPhone",
-    "label": "Source of Referral Phone",
+    "label": "Referral Source Phone",
     "type": "input",
     "required": {
       "value": true,
