@@ -55,10 +55,12 @@ const getVersionFromDefinitionVersionId = (definitionVersionId: string) => {
   return definitionVersionId.substring(definitionVersionId.length - 2);
 };
 
-export const buildFormDefinitionsBaseUrlGetter = (manager: Flex.Manager) => (definitionVersionId: string) => {
-  const environment = getEnvironmentFromHrmBaseUrl(manager);
+export const inferConfiguredFormDefinitionsBaseUrl = (manager: Flex.Manager) =>
+  `https://assets-${getEnvironmentFromHrmBaseUrl(manager)}.tl.techmatters.org/form-definitions/`;
+
+export const buildFormDefinitionsBaseUrlGetter = (baseUrl: URL = undefined) => (definitionVersionId: string) => {
   const helplineCode = getHelplineCodeFromDefinitionVersionId(definitionVersionId);
   const version = getVersionFromDefinitionVersionId(definitionVersionId);
 
-  return `https://assets-${environment}.tl.techmatters.org/form-definitions/${helplineCode}/${version}`;
+  return `${baseUrl}${helplineCode}/${version}`;
 };
