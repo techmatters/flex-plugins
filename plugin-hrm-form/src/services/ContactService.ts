@@ -26,7 +26,7 @@ import {
   isNonSaveable,
 } from 'hrm-form-definitions';
 
-import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
+import { createNewTaskEntry } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/validationRules';
 import { getQueryParams } from './PaginationParams';
 import { fillEndMillis, getConversationDuration } from '../utils/conversationDuration';
@@ -44,6 +44,7 @@ import {
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
+import { TaskEntry } from '../states/contacts/types';
 
 type NestedInformation = { name?: { firstName: string; lastName: string } };
 type LegacyInformationObject = NestedInformation & {

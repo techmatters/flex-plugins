@@ -33,10 +33,11 @@ import {
   transformValues,
   updateContactInHrm,
 } from '../../services/ContactService';
-import { createNewTaskEntry, TaskEntry } from '../../states/contacts/reducer';
+import { createNewTaskEntry } from '../../states/contacts/reducer';
 import { channelTypes } from '../../states/DomainConstants';
 import { offlineContactTaskSid } from '../../types/types';
 import { getDefinitionVersions } from '../../hrmConfig';
+import { TaskEntry } from '../../states/contacts/types';
 
 const helpline = 'ChildLine Zambia (ZM)';
 
@@ -101,6 +102,7 @@ describe('transformForm', () => {
       },
       csamReports: [],
       metadata: <any>{},
+      draft: <any>{},
     };
 
     const expectedCategories = oldForm.categories.reduce((acc, path) => set(path, true, acc), {
