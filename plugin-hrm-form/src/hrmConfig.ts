@@ -16,7 +16,7 @@
 
 import * as Flex from '@twilio/flex-ui';
 
-import { buildFormDefinitionsBaseUrlGetter } from './definitionVersions';
+import { buildFormDefinitionsBaseUrlGetter, inferConfiguredFormDefinitionsBaseUrl } from './definitionVersions';
 import { FeatureFlags } from './types/types';
 import { configurationBase, namespace, RootState } from './states';
 
@@ -35,11 +35,13 @@ const readConfig = () => {
     : undefined;
   const serverlessBaseUrl =
     process.env.REACT_SERVERLESS_BASE_URL || manager.serviceConfiguration.attributes.serverless_base_url;
+  const configuredFormDefinitionsBaseUrl =
+    process.env.REACT_FORM_DEFINITIONS_BASE_URL ||
+    manager.serviceConfiguration.attributes.form_definitions_base_url ||
+    inferConfiguredFormDefinitionsBaseUrl(manager);
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
   const assetsBucketUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
-  const getFormDefinitionsBaseUrl = manager.serviceConfiguration.attributes.form_definitions_base_url
-    ? () => manager.serviceConfiguration.attributes.form_definitions_base_url
-    : buildFormDefinitionsBaseUrlGetter(manager);
+  const getFormDefinitionsBaseUrl = buildFormDefinitionsBaseUrlGetter(new URL(configuredFormDefinitionsBaseUrl));
 
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid;
