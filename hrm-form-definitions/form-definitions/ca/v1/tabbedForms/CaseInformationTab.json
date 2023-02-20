@@ -1,9 +1,34 @@
-[
+[  
+  {
+    "name": "contactType",
+    "label": "What type of contact is this?",
+    "type": "listbox-multiselect",
+    "options": [
+      { "value": "Abusive", "label": "Abusive" },
+      { "value": "Complaint", "label": "Complaint" },
+      { "value": "Counselling", "label": "Counselling" },
+      { "value": "Crisis Intervention", "label": "Crisis Intervention" },
+      { "value": "Information about Good2Talk", "label": "Information about Good2Talk" },
+      { "value": "Information about KHP", "label": "Information about KHP" },
+      { "value": "Referral only", "label": "Referral only" },
+      { "value": "Thank you", "label": "Thank you" },
+      { "value": "Testing", "label": "Testing" },
+      { "value": "Wrong Number", "label": "Wrong Number" }
+    ],
+    "required": {
+        "value": true,
+        "message": "RequiredFieldError"
+      }
+    },
   {
     "name": "callSummary",
-    "label": "Call Summary",
-    "type": "textarea",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "label": "If Thank You, Provide Details",
+    "type": "input"
+  },
+  {
+    "name": "complaintDetails",
+    "label": "If Complaint, Provide Details",
+    "type": "input"
   },
   {
     "name": "safetyPlan",
@@ -20,24 +45,6 @@
     "label": "Emergency referral provided (Child Protective Services)",
     "type": "checkbox"
   },
-  {
-    "name": "contactType",
-    "label": "What type of contact is this?",
-    "type": "select",
-    "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Complaint", "label": "Complaint" },
-      { "value": "Counselling", "label": "Counselling" },
-      { "value": "Crisis Intervention", "label": "Crisis Intervention" },
-      { "value": "Information about Good2Talk", "label": "Information about Good2Talk" },
-      { "value": "Referral only", "label": "Referral only" },
-      { "value": "Thank you", "label": "Thank you" }
-    ],
-    "required": {
-        "value": true,
-        "message": "RequiredFieldError"
-      }
-    },
     {
         "name": "languageService",
         "label": "If applicable, which Language Interpretation service was used",
