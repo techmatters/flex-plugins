@@ -36,33 +36,6 @@ type ResourceRoute = { page: ResourcePage.ViewResource; id: string } | { page: R
 
 const RESOURCE_EXPIRY_SECONDS = 60 * 10; // 10 minutes
 
-const ADD_RESOURCE = 'resource-action/add-resource';
-
-type AddResourceAction = {
-  type: typeof ADD_RESOURCE;
-  resource: ReferrableResource;
-};
-
-// eslint-disable-next-line import/no-unused-modules
-export const addResourceAction = (resource: ReferrableResource): AddResourceAction => ({
-  type: ADD_RESOURCE,
-  resource,
-});
-
-const LOAD_RESOURCE_ERROR = 'resource-action/load-resource-error';
-
-type LoadResourceErrorAction = {
-  type: typeof LOAD_RESOURCE_ERROR;
-  id: string;
-  error: Error;
-};
-
-export const loadResourceErrorAction = (id: string, error: Error): LoadResourceErrorAction => ({
-  type: LOAD_RESOURCE_ERROR,
-  id,
-  error,
-});
-
 const LOAD_ACTION = 'resource-action/load-resource';
 
 export const loadResourceAsyncAction = createAsyncAction(

@@ -14,14 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { addDays, isAfter, subDays } from 'date-fns';
+import { addDays, subDays } from 'date-fns';
 
 import {
-  addResourceAction,
-  loadResourceErrorAction,
   navigateToSearchAction,
   reduce,
   ReferrableResourcesState,
+  ResourceLoadStatus,
   ResourcePage,
   viewResourceAction,
 } from '../../../states/resources';
@@ -39,16 +38,17 @@ beforeEach(() => {
   mockResourceSearchReducer.mockImplementation(state => state);
 });
 
-const resource = (
+const loadedResource = (
   id: string,
-  loaded: Date,
+  updated: Date,
 ): ReferrableResourcesState['resources'][keyof ReferrableResourcesState['resources']] => ({
   resource: {
     name: `Resource with id#${id}`,
     id,
     attributes: {},
   },
-  loaded,
+  updated,
+  status: ResourceLoadStatus.Loaded,
 });
 const now = new Date();
 describe('reduce', () => {
@@ -60,94 +60,23 @@ describe('reduce', () => {
     const state = reduce(
       {
         resources: {
-          newResource: resource('newResource', now),
-          oldResource: resource('oldResource', subDays(now, 1)),
-          futureResource: resource('futureResource', addDays(now, 1)),
+          newResource: loadedResource('newResource', now),
+          oldResource: loadedResource('oldResource', subDays(now, 1)),
+          futureResource: loadedResource('futureResource', addDays(now, 1)),
         },
         search: searchInitialState,
       },
       { type: 'NOT_FOR_THE_LIKES_OF_YOU' } as any,
     );
     expect(state.resources).toStrictEqual({
-      newResource: resource('newResource', now),
-      futureResource: resource('futureResource', addDays(now, 1)),
-    });
-  });
-  describe('ADD_RESOURCE action', () => {
-    test('Resource not in state already - adds resource to state with current date', () => {
-      const state = reduce(
-        {
-          resources: {
-            existingResource: resource('existingResource', now),
-          },
-          search: searchInitialState,
-        },
-        addResourceAction({ id: 'newResource', name: 'New Resource', attributes: {} }),
-      );
-      expect(state.resources.existingResource).toStrictEqual(resource('existingResource', now));
-      expect(state.resources.newResource.resource).toStrictEqual({
-        id: 'newResource',
-        name: 'New Resource',
-        attributes: {},
-      });
-      expect(isAfter(state.resources.newResource.loaded, now)).toBe(true);
-    });
-    test('Resource in state already - updates resource & sets current date', () => {
-      const state = reduce(
-        {
-          resources: {
-            existingResource: resource('existingResource', now),
-          },
-          search: searchInitialState,
-        },
-        addResourceAction({ id: 'existingResource', name: 'Updated Resource', attributes: {} }),
-      );
-      expect(state.resources.existingResource.resource).toStrictEqual({
-        id: 'existingResource',
-        name: 'Updated Resource',
-        attributes: {},
-      });
-      expect(isAfter(state.resources.existingResource.loaded, now)).toBe(true);
-      expect(Object.keys(state.resources)).toHaveLength(1);
-    });
-  });
-  describe('LOAD_RESOURCE_ERROR action', () => {
-    const err = new Error('Boom');
-    test('Resource not in state already - adds error to state with current date', () => {
-      const state = reduce(
-        {
-          resources: {
-            existingResource: resource('existingResource', now),
-          },
-          search: searchInitialState,
-        },
-        loadResourceErrorAction('newResource', err),
-      );
-      expect(state.resources.existingResource).toStrictEqual(resource('existingResource', now));
-      expect(state.resources.newResource.resource).not.toBeDefined();
-      expect(state.resources.newResource.error).toBe(err);
-      expect(isAfter(state.resources.newResource.loaded, now)).toBe(true);
-    });
-    test('Resource in state already - removes resource, adds error & sets current date', () => {
-      const state = reduce(
-        {
-          resources: {
-            existingResource: resource('existingResource', now),
-          },
-          search: searchInitialState,
-        },
-        loadResourceErrorAction('existingResource', err),
-      );
-      expect(state.resources.existingResource.resource).not.toBeDefined();
-      expect(state.resources.existingResource.error).toBe(err);
-      expect(isAfter(state.resources.existingResource.loaded, now)).toBe(true);
-      expect(Object.keys(state.resources)).toHaveLength(1);
+      newResource: loadedResource('newResource', now),
+      futureResource: loadedResource('futureResource', addDays(now, 1)),
     });
   });
   describe('VIEW_RESOURCE action', () => {
     const initialState = {
       resources: {
-        existingResource: resource('existingResource', now),
+        existingResource: loadedResource('existingResource', now),
       },
       search: searchInitialState,
     };
@@ -194,7 +123,7 @@ describe('reduce', () => {
   describe('NAVIGATE_TO_SEARCH action', () => {
     const initialState = {
       resources: {
-        existingResource: resource('existingResource', now),
+        existingResource: loadedResource('existingResource', now),
       },
       route: {
         page: ResourcePage.ViewResource,

@@ -84,6 +84,13 @@ const ResourceReferralList: React.FC<Props> = ({
     updateResourceReferralLookupStatus(ReferralLookupStatus.PENDING);
   };
 
+  const resourceReferralToAddInputChanged = (value: string) => {
+    setResourceReferralToAddText(value);
+    if (lookupStatus !== ReferralLookupStatus.NOT_STARTED) {
+      updateResourceReferralLookupStatus(ReferralLookupStatus.NOT_STARTED);
+    }
+  };
+
   // To retain state if we change the task
   useEffect(() => {
     return () => {
@@ -120,7 +127,7 @@ const ResourceReferralList: React.FC<Props> = ({
       </p>
       <input
         type="text"
-        onChange={e => setResourceReferralToAddText(e.target.value)}
+        onChange={e => resourceReferralToAddInputChanged(e.target.value)}
         value={resourceReferralToAddText}
         disabled={lookupStatus === ReferralLookupStatus.PENDING}
       />
