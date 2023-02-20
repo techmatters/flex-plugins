@@ -33,6 +33,7 @@ import {
 import ResourceAttribute from './ResourceAttribute';
 import { loadResourceAsyncAction, navigateToSearchAction, ResourceLoadStatus } from '../../states/resources';
 import asyncDispatch from '../../states/asyncDispatch';
+import ResourceIdCopyButton from './ResourceIdCopyButton';
 
 type OwnProps = {
   resourceId: string;
@@ -85,6 +86,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
         {resource && (
           <>
             <ResourceTitle>{resource.name}</ResourceTitle>
+            <ResourceIdCopyButton resourceId={resource.id} />
             {resource.attributes && (
               <ResourceAttributesContainer>
                 <ResourceAttributesColumn>

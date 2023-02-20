@@ -76,11 +76,16 @@ export const resourceReferralReducer = (initialState: ContactsState) =>
   createReducer(initialState, handleAction => [
     handleAction(
       updateResourceReferralIdToAddForUnsavedContactAction,
-      (state, { payload: { taskId, resourceReferralIdToAdd } }) =>
-        patchUnsavedContactReferralResourceState(state, taskId, {
+      (state, { payload: { taskId, resourceReferralIdToAdd } }) => {
+        if (state.tasks[taskId].draft.resourceReferralList.resourceReferralIdToAdd === resourceReferralIdToAdd) {
+          // Don't clobber the lookup status if the text hasn't actually changed
+          return state;
+        }
+        return patchUnsavedContactReferralResourceState(state, taskId, {
           resourceReferralIdToAdd,
           lookupStatus: ReferralLookupStatus.NOT_STARTED,
-        }),
+        });
+      },
     ),
     handleAction(updateResourceReferralLookupStatusForUnsavedContactAction, (state, { payload: { taskId, status } }) =>
       patchUnsavedContactReferralResourceState(state, taskId, { lookupStatus: status }),
@@ -96,7 +101,7 @@ export const resourceReferralReducer = (initialState: ContactsState) =>
           [taskId]: {
             ...state.tasks[taskId],
             referrals: [
-              ...state.tasks[taskId].referrals,
+              ...(state.tasks[taskId].referrals ?? []),
               { resourceId: resource.id, referredAt: new Date().toISOString(), resourceName: resource.name },
             ],
             draft: {

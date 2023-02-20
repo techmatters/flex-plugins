@@ -190,7 +190,7 @@ type NewHrmServiceContact = Omit<HrmServiceContact, 'id' | 'updatedAt' | 'update
  */
 const saveContactToHrm = async (
   task,
-  form,
+  form: TaskEntry,
   workerSid: string,
   uniqueIdentifier: string,
   shouldFillEndMillis = true,
@@ -224,7 +224,7 @@ const saveContactToHrm = async (
   // This might change if isNonDataCallType, that's why we use rawForm
   const timeOfContact = new Date(getDateTime(rawForm.contactlessTask)).toISOString();
 
-  const { helpline, csamReports } = form;
+  const { helpline, csamReports, referrals } = form;
 
   let channelSid;
   let serviceSid;
@@ -271,6 +271,7 @@ const saveContactToHrm = async (
     channelSid,
     serviceSid,
     csamReports,
+    referrals,
   };
 
   const options = {
@@ -299,7 +300,7 @@ export const updateContactInHrm = async (
 
 export const saveContact = async (
   task,
-  form,
+  form: TaskEntry,
   workerSid: string,
   uniqueIdentifier: string,
   shouldFillEndMillis = true,

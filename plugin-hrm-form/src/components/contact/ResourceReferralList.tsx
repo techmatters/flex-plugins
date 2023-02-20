@@ -17,6 +17,7 @@
 import * as React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
+import { useEffect, useState } from 'react';
 
 import customContactComponentRegistry, { isParametersWithContactId } from '../forms/customContactComponentRegistry';
 import { contactFormsBase, namespace, referrableResourcesBase, RootState } from '../../states';
@@ -57,7 +58,7 @@ const mapDispatchToProps = (dispatch, { taskSid }: OwnProps) => ({
     dispatch(updateResourceReferralLookupStatusForUnsavedContactAction(taskSid, value)),
   loadResource: (resourceId: string) => asyncDispatch(dispatch)(loadResourceAsyncAction(resourceId)),
   addResourceReferral: (resource: ReferrableResource) => {
-    addResourceReferralForUnsavedContactAction(taskSid, resource);
+    dispatch(addResourceReferralForUnsavedContactAction(taskSid, resource));
   },
 });
 
@@ -75,21 +76,42 @@ const ResourceReferralList: React.FC<Props> = ({
   lookupStatus,
   addResourceReferral,
 }) => {
+  // component state 'buffer' to keep the input responsive
+  const [resourceReferralToAddText, setResourceReferralToAddText] = useState(resourceReferralIdToAdd);
+
   const checkResourceAndAddReferral = () => {
+    updateResourceReferralIdToAdd(resourceReferralToAddText);
     updateResourceReferralLookupStatus(ReferralLookupStatus.PENDING);
-    if (!lookedUpResource) {
-      loadResource(resourceReferralIdToAdd);
-    }
   };
 
-  if (lookupStatus === ReferralLookupStatus.PENDING && lookedUpResource) {
-    if (lookedUpResource.status === ResourceLoadStatus.Error) {
-      updateResourceReferralLookupStatus(ReferralLookupStatus.NOT_FOUND);
-    } else if (lookedUpResource.status === ResourceLoadStatus.Loaded) {
-      updateResourceReferralLookupStatus(ReferralLookupStatus.FOUND);
-      addResourceReferral(lookedUpResource.resource);
+  // To retain state if we change the task
+  useEffect(() => {
+    return () => {
+      updateResourceReferralIdToAdd(resourceReferralToAddText);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!lookedUpResource) {
+      loadResource(resourceReferralIdToAdd);
+    } else if (lookupStatus === ReferralLookupStatus.PENDING) {
+      if (lookedUpResource.status === ResourceLoadStatus.Error) {
+        updateResourceReferralLookupStatus(ReferralLookupStatus.NOT_FOUND);
+      } else if (lookedUpResource.status === ResourceLoadStatus.Loaded) {
+        updateResourceReferralLookupStatus(ReferralLookupStatus.FOUND);
+        addResourceReferral(lookedUpResource.resource);
+        setResourceReferralToAddText('');
+      }
     }
-  }
+  }, [
+    addResourceReferral,
+    loadResource,
+    lookedUpResource,
+    lookupStatus,
+    resourceReferralIdToAdd,
+    updateResourceReferralLookupStatus,
+  ]);
 
   return (
     <div>
@@ -98,8 +120,8 @@ const ResourceReferralList: React.FC<Props> = ({
       </p>
       <input
         type="text"
-        onChange={e => updateResourceReferralIdToAdd(e.target.value)}
-        value={resourceReferralIdToAdd}
+        onChange={e => setResourceReferralToAddText(e.target.value)}
+        value={resourceReferralToAddText}
         disabled={lookupStatus === ReferralLookupStatus.PENDING}
       />
       <button
@@ -109,6 +131,9 @@ const ResourceReferralList: React.FC<Props> = ({
       >
         <Template code="Add" />
       </button>
+      {lookupStatus === ReferralLookupStatus.NOT_FOUND && (
+        <p style={{ color: 'red' }}>No match found for &lsquo;{resourceReferralIdToAdd}&rsquo;, try again</p>
+      )}
       <ul>
         {referrals.map(({ resourceName, resourceId }) => (
           <li key={resourceId}>

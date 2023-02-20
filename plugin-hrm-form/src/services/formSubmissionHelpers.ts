@@ -24,7 +24,7 @@ import { saveContact } from './ContactService';
 import { assignOfflineContactInit, assignOfflineContactResolve } from './ServerlessService';
 import { removeContactState } from '../states/actions';
 import { getHrmConfig } from '../hrmConfig';
-import { TaskEntry as Contact } from '../states/contacts/types';
+import { TaskEntry as ContactForm } from '../states/contacts/types';
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
@@ -54,7 +54,7 @@ export const completeContactlessTask = async () => {
 export const completeTask = (task: CustomITask) =>
   isOfflineContactTask(task) ? completeContactlessTask() : completeContactTask(task);
 
-export const submitContactForm = async (task: CustomITask, contactForm: Contact, caseForm: Case) => {
+export const submitContactForm = async (task: CustomITask, contactForm: ContactForm, caseForm: Case) => {
   const { workerSid } = getHrmConfig();
 
   if (isOfflineContactTask(task)) {

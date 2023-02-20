@@ -41,7 +41,13 @@ export type TaskEntry = {
   childInformation: { [key: string]: string | boolean };
   callerInformation: { [key: string]: string | boolean };
   caseInformation: { [key: string]: string | boolean };
-  contactlessTask: { channel: ChannelTypes; [key: string]: string | boolean };
+  contactlessTask: {
+    channel: ChannelTypes;
+    date?: string;
+    time?: string;
+    createdOnBehalfOf?: string;
+    [key: string]: string | boolean;
+  };
   categories: string[];
   referrals?: ResourceReferral[];
   csamReports: CSAMReportEntry[];
@@ -55,6 +61,7 @@ export type TaskEntry = {
     };
   };
   isCallTypeCaller: boolean;
+  reservationSid?: string;
   draft: {
     resourceReferralList: DraftResourceReferralState;
   };
