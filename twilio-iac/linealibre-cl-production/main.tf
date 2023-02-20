@@ -104,7 +104,7 @@ module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = module.serverless.serverless_environment_production_url
   helpline = local.helpline
-  custom_task_routing_filter_expression = "channelType ==\"web\" OR isContactlessTask == true OR  phone=='+16602359810' OR phone=='+48800012935'"
+  custom_task_routing_filter_expression = "channelType ==\"web\" OR isContactlessTask == true"
 }
 
 module flex {
