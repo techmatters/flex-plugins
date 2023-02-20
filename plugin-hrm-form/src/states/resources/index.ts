@@ -109,7 +109,7 @@ const resourceReducer = createReducer(initialState, handleAction => [
       ...state,
       resources: {
         ...state.resources,
-        [(action as any).meta.id]: { status: ResourceLoadStatus.Error, updated: new Date(), resource: action.payload },
+        [(action as any).meta.id]: { status: ResourceLoadStatus.Error, updated: new Date(), error: action.payload },
       },
     };
   }),

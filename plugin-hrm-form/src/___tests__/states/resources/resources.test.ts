@@ -14,9 +14,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { addDays, subDays } from 'date-fns';
+import { addDays, subDays, subHours } from 'date-fns';
+import { configureStore } from '@reduxjs/toolkit';
+import promiseMiddleware from 'redux-promise-middleware';
 
 import {
+  loadResourceAsyncAction,
   navigateToSearchAction,
   reduce,
   ReferrableResourcesState,
@@ -24,12 +27,30 @@ import {
   ResourcePage,
   viewResourceAction,
 } from '../../../states/resources';
-import { initialState as searchInitialState, resourceSearchReducer } from '../../../states/resources/search';
+import {
+  initialState,
+  initialState as searchInitialState,
+  resourceSearchReducer,
+} from '../../../states/resources/search';
+import { getResource, ReferrableResource } from '../../../services/ResourceService';
 
 jest.mock('../../../states/resources/search', () => ({
   initialState: jest.requireActual('../../../states/resources/search').initialState,
   resourceSearchReducer: jest.fn(),
 }));
+jest.mock('../../../services/ResourceService');
+
+const mockGetResource = getResource as jest.Mock<Promise<ReferrableResource>>;
+
+const testStore = (stateChanges: Partial<ReferrableResourcesState> = {}) =>
+  configureStore({
+    preloadedState: { ...initialState, ...stateChanges },
+    reducer: reduce,
+    middleware: getDefaultMiddleware => [
+      ...getDefaultMiddleware({ serializableCheck: false, immutableCheck: false }),
+      promiseMiddleware(),
+    ],
+  });
 
 const mockResourceSearchReducer = resourceSearchReducer as jest.Mock<ReturnType<typeof resourceSearchReducer>>;
 
@@ -38,15 +59,19 @@ beforeEach(() => {
   mockResourceSearchReducer.mockImplementation(state => state);
 });
 
-const loadedResource = (
+const resource = (id: string): ReferrableResource => ({
+  name: `Resource with id#${id}`,
+  id,
+  attributes: {},
+});
+
+const loadedResourceState = (
   id: string,
   updated: Date,
-): ReferrableResourcesState['resources'][keyof ReferrableResourcesState['resources']] => ({
-  resource: {
-    name: `Resource with id#${id}`,
-    id,
-    attributes: {},
-  },
+): ReferrableResourcesState['resources'][keyof ReferrableResourcesState['resources']] & {
+  status: ResourceLoadStatus.Loaded;
+} => ({
+  resource: resource(id),
   updated,
   status: ResourceLoadStatus.Loaded,
 });
@@ -60,23 +85,88 @@ describe('reduce', () => {
     const state = reduce(
       {
         resources: {
-          newResource: loadedResource('newResource', now),
-          oldResource: loadedResource('oldResource', subDays(now, 1)),
-          futureResource: loadedResource('futureResource', addDays(now, 1)),
+          newResource: loadedResourceState('newResource', now),
+          oldResource: loadedResourceState('oldResource', subDays(now, 1)),
+          futureResource: loadedResourceState('futureResource', addDays(now, 1)),
         },
         search: searchInitialState,
       },
       { type: 'NOT_FOR_THE_LIKES_OF_YOU' } as any,
     );
     expect(state.resources).toStrictEqual({
-      newResource: loadedResource('newResource', now),
-      futureResource: loadedResource('futureResource', addDays(now, 1)),
+      newResource: loadedResourceState('newResource', now),
+      futureResource: loadedResourceState('futureResource', addDays(now, 1)),
+    });
+  });
+  describe('loadResource async action', () => {
+    beforeEach(() => {
+      mockGetResource.mockReset();
+    });
+    test('Always calls getResource with ID from action', async () => {
+      mockGetResource.mockResolvedValueOnce(loadedResourceState('someId', now).resource);
+      loadResourceAsyncAction('someId');
+      expect(mockGetResource).toHaveBeenCalledWith('someId');
+    });
+    test('Sets status of resource to loading', async () => {
+      const { dispatch, getState } = testStore({ resources: {} });
+      const startingState = getState();
+      mockGetResource.mockResolvedValueOnce(loadedResourceState('someId', now).resource);
+      dispatch(loadResourceAsyncAction('someId'));
+      expect(getState()).toStrictEqual({
+        ...startingState,
+        resources: { someId: { status: ResourceLoadStatus.Loading, updated: expect.anything() } },
+      });
+    });
+    test('Overwrites existing resource with pending state', async () => {
+      const { dispatch, getState } = testStore({
+        resources: { someId: loadedResourceState('someId', subHours(new Date(), 2)) },
+      });
+      const startingState = getState();
+      mockGetResource.mockResolvedValueOnce(loadedResourceState('someId', now).resource);
+      dispatch(loadResourceAsyncAction('someId'));
+      expect(getState()).toStrictEqual({
+        ...startingState,
+        resources: { someId: { status: ResourceLoadStatus.Loading, updated: expect.anything() } },
+      });
+    });
+    test("getResource returns a resource - dispatches fulfilled action that updates the pending resource's status to loaded and sets the resource to the one in the response", async () => {
+      const resourceToLoad = resource('someId');
+      mockGetResource.mockResolvedValueOnce(resourceToLoad);
+      const { dispatch, getState } = testStore({ resources: {} });
+      const startingState = getState();
+      const dispatchPromise = (dispatch(loadResourceAsyncAction('someId')) as unknown) as PromiseLike<unknown>;
+      await dispatchPromise;
+      const fulfilledState = getState();
+      expect(fulfilledState).toStrictEqual({
+        ...startingState,
+        resources: {
+          someId: { status: ResourceLoadStatus.Loaded, updated: expect.anything(), resource: resourceToLoad },
+        },
+      });
+    });
+    test("getResource returns an error - dispatches rejected action that updates the pending resource's status to error and attaches the error object to the state", async () => {
+      const errorThrown = new Error('BOOM');
+      mockGetResource.mockRejectedValue(errorThrown);
+      const { dispatch, getState } = testStore({ resources: {} });
+      const startingState = getState();
+      try {
+        await ((dispatch(loadResourceAsyncAction('someId')) as unknown) as PromiseLike<unknown>);
+      } catch (error) {
+        // Error still bubbles up
+      }
+      const rejectedState = getState();
+      expect(rejectedState).toStrictEqual({
+        ...startingState,
+        resources: {
+          someId: { status: ResourceLoadStatus.Error, updated: expect.anything(), error: errorThrown },
+        },
+      });
     });
   });
   describe('VIEW_RESOURCE action', () => {
     const initialState = {
       resources: {
-        existingResource: loadedResource('existingResource', now),
+        existingResource: loadedResourceState('existingResource', now),
       },
       search: searchInitialState,
     };
@@ -123,7 +213,7 @@ describe('reduce', () => {
   describe('NAVIGATE_TO_SEARCH action', () => {
     const initialState = {
       resources: {
-        existingResource: loadedResource('existingResource', now),
+        existingResource: loadedResourceState('existingResource', now),
       },
       route: {
         page: ResourcePage.ViewResource,
