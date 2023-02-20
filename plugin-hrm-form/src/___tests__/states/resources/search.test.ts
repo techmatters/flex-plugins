@@ -100,8 +100,7 @@ describe('actions', () => {
     });
 
     test("'newSearch' flag set - dispatches pending action that resets the result array and sets status to ResultPending", async () => {
-      const { dispatch, getState, subscribe } = testStore({ results: [null, null, null] });
-      subscribe(() => console.log(getState()));
+      const { dispatch, getState } = testStore({ results: [null, null, null] });
       const startingState = getState();
       dispatch(searchResourceAsyncAction({ omniSearchTerm: 'hello', pageSize: 42 }, 1337, true));
       const state = getState();

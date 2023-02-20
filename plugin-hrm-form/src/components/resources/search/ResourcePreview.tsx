@@ -28,6 +28,7 @@ import {
   ResourceCategoriesContainer,
 } from '../../../styles/ReferrableResources';
 import CategoryWithTooltip from '../../common/CategoryWithTooltip';
+import ResourceIdCopyButton from '../ResourceIdCopyButton';
 
 type OwnProps = {
   resourceResult: ReferrableResourceResult;
@@ -38,6 +39,7 @@ type Props = OwnProps;
 
 const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource }) => {
   const {
+    id,
     name,
     attributes: { Phone, Address, 'Ages Served': Ages, Hours, 'Service Categories': ServiceCategories },
   } = resourceResult;
@@ -58,6 +60,9 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
                     {name}
                   </PreviewHeaderText>
                 </StyledLink>
+              </Flex>
+              <Flex>
+                <ResourceIdCopyButton resourceId={id} />
               </Flex>
             </Flex>
           </PreviewRow>
