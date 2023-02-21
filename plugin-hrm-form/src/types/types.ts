@@ -176,6 +176,7 @@ export type SearchAPIContact = {
   };
   details: ContactRawJson;
   csamReports: CSAMReportEntry[];
+  referrals?: ResourceReferral[];
 };
 
 export type SearchUIContact = SearchAPIContact & { counselorName: string; callerName?: string };
