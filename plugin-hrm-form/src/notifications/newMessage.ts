@@ -16,6 +16,7 @@
 
 import { Manager, StateHelper, AudioPlayerManager, AudioPlayerError } from '@twilio/flex-ui';
 
+import { isTwilioTask } from '../types/types';
 import { getHrmConfig } from '../hrmConfig';
 
 export const subscribeAlertOnConversationJoined = task => {
@@ -66,4 +67,53 @@ const notifyNewMessage = messageInstance => {
   } catch (error) {
     console.error('Error in notifyNewMessage:', error);
   }
+};
+
+const reservedTaskMedias: { [reservationSid: string]: string } = {};
+
+const playWhilePending = (reservation: { sid: string; status: string }, notificationUrl: string) => {
+  const playNotificationIfPending = () => {
+    if (reservation.status === 'pending') {
+      const mediaId = AudioPlayerManager.play(
+        {
+          url: notificationUrl,
+          repeatable: false,
+        },
+        (error: AudioPlayerError) => {
+          console.log('AudioPlayerError:', error);
+        },
+      );
+
+      reservedTaskMedias[reservation.sid] = mediaId;
+      setTimeout(playNotificationIfPending, 500);
+    }
+  };
+
+  playNotificationIfPending();
+};
+
+/**
+ * notifyReservedTask plays ringtone when an agent has a reserved task in pending state.
+ * The notification takes place once ever 500ms, if still pending, the sound is played again.
+ * If multiple tasks are reserved, AudioPlayerManager will stil play one of them
+ * The notification stops when the reservation is not longer in pending.
+ */
+const notifyReservedTask = reservation => {
+  try {
+    if (isTwilioTask(reservation.task)) {
+      const { assetsBucketUrl } = getHrmConfig();
+
+      const notificationTone = 'ringtone';
+      const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
+
+      playWhilePending(reservation, notificationUrl);
+    }
+  } catch (error) {
+    console.error('Error in notifyReservedTask:', error);
+  }
+};
+
+export const subscribeReservedTaskAlert = () => {
+  const manager = Manager.getInstance();
+  manager.workerClient.on('reservationCreated', notifyReservedTask);
 };

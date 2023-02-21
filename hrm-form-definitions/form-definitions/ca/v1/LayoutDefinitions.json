@@ -18,7 +18,20 @@
       "splitFormAt": 8
     },
     "incidents": {
-      "splitFormAt": 5
+      "previewFields": [
+        "date",
+        "location"
+      ],
+      "layout": {
+        "date":  {
+          "includeLabel": false,
+          "format": "date"
+        },
+        "location":  {
+          "includeLabel": true
+        }
+      },
+      "splitFormAt": 6
     },
     "referrals": {
       "splitFormAt": 5
