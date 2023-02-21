@@ -298,6 +298,7 @@
   "ContactDetails-GeneralDetails-WouldRecommend": "Would the child recommend us to a friend?",
   "ContactDetails-GeneralDetails-externalReport": "Add CSAM Report",
   "ContactDetails-GeneralDetails-ExternalReportsFiled": "External Report(s) Filed",
+  "ContactDetails-GeneralDetails-ResourcesReferrals": "Resource(s) Shared",
   "ContactDetails-LoadRecording-Button": "Open Recording",
   "ContactDetails-LoadTranscript-Button": "Load Transcript",
   "ContactDetails-Transcript": "Transcript",
