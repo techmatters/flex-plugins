@@ -126,7 +126,6 @@ describe('Notification for a new message ', () => {
       notifyNewMessage(mockMessageInstance);
 
       expect(AudioPlayerManager.play).not.toHaveBeenCalled();
-
     });
 
     test('should not play the audio alert when the document is visible', () => {
