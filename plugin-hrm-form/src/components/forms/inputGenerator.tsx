@@ -22,7 +22,7 @@ import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
 import { FormInputBaseProps } from './components/types';
 import { FormInput } from './components';
 import { CustomHandlers, getInputType } from '../common/forms/formGenerators';
-import customContactComponentRegistry from './customContactComponentRegistry';
+import { generateCustomContactFormItem } from './components/customContactComponent';
 
 const getregisterOptions = (formItemDefinition: FormItemDefinition): RegisterOptions =>
   pick(formItemDefinition, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
@@ -49,7 +49,7 @@ export const createInput = ({
   initialValue,
   customHandlers,
   htmlElRef,
-  context: { taskSid, contactId } = {},
+  context = {},
 }: CreateInputParams): JSX.Element => {
   const isEnabled = isItemEnabled(formItemDefinition);
   const inputId = [parentsPath, formItemDefinition.name].filter(Boolean).join('.');
@@ -72,51 +72,7 @@ export const createInput = ({
       );
     }
     case FormInputType.CustomContactComponent: {
-      try {
-        const componentGenerator = customContactComponentRegistry.lookup(formItemDefinition.component);
-        if (!componentGenerator) {
-          return (
-            <div>
-              Custom component &lsqou;{formItemDefinition.component}&rsqou; not defined, did you forget to register it?
-            </div>
-          );
-        }
-        if (taskSid) {
-          return (
-            <div key={inputId}>
-              {componentGenerator({
-                taskSid,
-                props: formItemDefinition.props,
-                name: formItemDefinition.name,
-                label: formItemDefinition.label,
-              })}
-            </div>
-          );
-        } else if (contactId) {
-          return (
-            <div key={inputId}>
-              {componentGenerator({
-                contactId,
-                props: formItemDefinition.props,
-                name: formItemDefinition.name,
-                label: formItemDefinition.label,
-              })}
-            </div>
-          );
-        }
-        return (
-          <div>
-            Error rendering custom contact form component &lsquo;{formItemDefinition.component}&rsquo;: either a taskSid
-            or a contactId must be provided in the context
-          </div>
-        );
-      } catch (err) {
-        return (
-          <div>
-            Error rendering custom contact form component &lsquo;{formItemDefinition.component}&rsquo;: {err.message}
-          </div>
-        );
-      }
+      return generateCustomContactFormItem(formItemDefinition, inputId, context);
     }
     // Until all the "FormInputType"s are migrated, default to using the old getInputType
     default:
