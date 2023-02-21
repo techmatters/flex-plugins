@@ -74,6 +74,7 @@
     "name": "referrals",
     "label": "referrals",
     "type": "custom-contact-component",
-    "component": "resource-referral-list"
+    "component": "resource-referral-list",
+    "saveable": false
   }
 ]
