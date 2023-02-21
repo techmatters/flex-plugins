@@ -17,7 +17,6 @@
 /* eslint-disable import/no-unused-modules */
 import { Actions, ITask, Manager } from '@twilio/flex-ui';
 
-import { TaskEntry as Contact } from '../states/contacts/reducer';
 import { Case, CustomITask, isOfflineContactTask, offlineContactTaskSid } from '../types/types';
 import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
@@ -25,6 +24,7 @@ import { saveContact } from './ContactService';
 import { assignOfflineContactInit, assignOfflineContactResolve } from './ServerlessService';
 import { removeContactState } from '../states/actions';
 import { getHrmConfig } from '../hrmConfig';
+import { TaskEntry as ContactForm } from '../states/contacts/types';
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
@@ -47,14 +47,14 @@ export const removeOfflineContact = () => {
   Manager.getInstance().store.dispatch(removeContactState(offlineContactTaskSid));
 };
 
-export const completeContactlessTask = async (task: CustomITask) => {
+export const completeContactlessTask = async () => {
   removeOfflineContact();
 };
 
 export const completeTask = (task: CustomITask) =>
-  isOfflineContactTask(task) ? completeContactlessTask(task) : completeContactTask(task);
+  isOfflineContactTask(task) ? completeContactlessTask() : completeContactTask(task);
 
-export const submitContactForm = async (task: CustomITask, contactForm: Contact, caseForm: Case) => {
+export const submitContactForm = async (task: CustomITask, contactForm: ContactForm, caseForm: Case) => {
   const { workerSid } = getHrmConfig();
 
   if (isOfflineContactTask(task)) {

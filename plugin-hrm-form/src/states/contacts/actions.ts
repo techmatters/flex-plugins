@@ -18,8 +18,8 @@
 import { CallTypes, DataCallTypes } from 'hrm-form-definitions';
 
 import * as t from './types';
-import { TaskEntry } from './reducer';
 import { CSAMReportEntry } from '../../types/types';
+import { TaskEntry } from './types';
 
 // Action creators
 export const updateForm = (

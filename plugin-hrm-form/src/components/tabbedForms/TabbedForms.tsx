@@ -31,7 +31,7 @@ import { updateCallType, updateForm } from '../../states/contacts/actions';
 import { searchResultToContactForm } from '../../services/ContactService';
 import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute } from '../../states/routing/actions';
-import { emptyCategories, TaskEntry } from '../../states/contacts/reducer';
+import { emptyCategories } from '../../states/contacts/reducer';
 import { NewCaseSubroutes, TabbedFormSubroutes } from '../../states/routing/types';
 import { CustomITask, isOfflineContactTask, SearchAPIContact } from '../../types/types';
 import { Box, Row, StyledTabs, TabbedFormsContainer, TabbedFormTabContainer } from '../../styles/HrmStyles';
@@ -50,7 +50,8 @@ import { forTask } from '../../states/contacts/issueCategorizationStateApi';
 import { newCSAMReportAction } from '../../states/csam-report/actions';
 import { CSAMReportTypes } from '../../states/csam-report/types';
 // Ensure ww import any custom components that might be used in a form
-import '../contact/ReferralList';
+import '../contact/ResourceReferralList';
+import { TaskEntry } from '../../states/contacts/types';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -346,7 +347,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
   const { currentDefinitionVersion } = state[namespace][configurationBase];
-  const draftContact = state[namespace][contactFormsBase].existingContacts[ownProps.task.taskSid]?.draftContact;
   const { isCallTypeCaller } = state[namespace][contactFormsBase];
   return {
     routing,
@@ -354,7 +354,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     currentDefinitionVersion,
     editContactFormOpen,
     isCallTypeCaller,
-    draftContact,
   };
 };
 

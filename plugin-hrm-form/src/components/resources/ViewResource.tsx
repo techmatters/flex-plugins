@@ -22,7 +22,6 @@ import { Template } from '@twilio/flex-ui';
 import PhoneIcon from '@material-ui/icons/Phone';
 
 import { namespace, referrableResourcesBase, RootState } from '../../states';
-import { loadResource } from '../../states/resources/loadResource';
 import { Box, Column } from '../../styles/HrmStyles';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import {
@@ -32,19 +31,27 @@ import {
   ViewResourceArea,
 } from '../../styles/ReferrableResources';
 import ResourceAttribute from './ResourceAttribute';
-import { navigateToSearchAction } from '../../states/resources';
+import { loadResourceAsyncAction, navigateToSearchAction, ResourceLoadStatus } from '../../states/resources';
+import asyncDispatch from '../../states/asyncDispatch';
+import ResourceIdCopyButton from './ResourceIdCopyButton';
 
 type OwnProps = {
   resourceId: string;
 };
 
-const mapStateToProps = (state: RootState, { resourceId }: OwnProps) => ({
-  resource: state[namespace][referrableResourcesBase].resources[resourceId]?.resource,
-  error: state[namespace][referrableResourcesBase].resources[resourceId]?.error,
-});
+const mapStateToProps = (state: RootState, { resourceId }: OwnProps) => {
+  const resourceState = state[namespace][referrableResourcesBase].resources[resourceId];
+  if (!resourceState || resourceState.status === ResourceLoadStatus.Loading) {
+    return {};
+  }
+  return {
+    resource: resourceState.resource,
+    error: resourceState.error,
+  };
+};
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>, { resourceId }: OwnProps) => ({
-  loadViewedResource: () => loadResource(dispatch, resourceId),
+  loadViewedResource: () => asyncDispatch(dispatch)(loadResourceAsyncAction(resourceId)),
   navigateToSearch: () => dispatch(navigateToSearchAction()),
 });
 
@@ -79,6 +86,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
         {resource && (
           <>
             <ResourceTitle>{resource.name}</ResourceTitle>
+            <ResourceIdCopyButton resourceId={resource.id} />
             {resource.attributes && (
               <ResourceAttributesContainer>
                 <ResourceAttributesColumn>

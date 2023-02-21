@@ -29,8 +29,8 @@ import {
   ColumnarContent,
 } from '../../styles/HrmStyles';
 import { disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
-import type { TaskEntry } from '../../states/contacts/reducer';
 import { useCreateFormFromDefinition } from '../forms';
+import { TaskEntry } from '../../states/contacts/types';
 
 type OwnProps = {
   display: boolean;
