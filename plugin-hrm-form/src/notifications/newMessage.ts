@@ -112,8 +112,3 @@ const notifyReservedTask = reservation => {
     console.error('Error in notifyReservedTask:', error);
   }
 };
-
-export const subscribeReservedTaskAlert = () => {
-  const manager = Manager.getInstance();
-  manager.workerClient.on('reservationCreated', notifyReservedTask);
-};
