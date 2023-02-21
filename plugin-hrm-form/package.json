@@ -11,7 +11,7 @@
     "preinstall": "cd ../hrm-form-definitions && npm ci && npm run build",
     "postinstall": "flex-plugin pre-script-check",
     "prestart": "flex-plugin pre-start-check",
-    "dev:local-form-definition-server": "npx http-server ../hrm-form-definitions/form-definitions -p 8090 --cors",
+    "dev:local-form-definition-server": "npx http-server ../hrm-form-definitions/form-definitions -p 8090 --cors -c-1",
     "dev": "cross-env UNBUNDLED_REACT=true NO_MONITORING=true REACT_FORM_DEFINITIONS_BASE_URL=http://localhost:8090 run-p dev:local-form-definition-server start",
     "dev:s3-forms": "cross-env UNBUNDLED_REACT=true NO_MONITORING=true npm start",
     "dev:local": "cross-env REACT_HRM_BASE_URL=http://localhost:8080 npm run dev",

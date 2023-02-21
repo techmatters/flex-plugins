@@ -21,7 +21,8 @@ import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
 
 import { FormInputBaseProps } from './components/types';
 import { FormInput } from './components';
-import { getInputType, CustomHandlers } from '../common/forms/formGenerators';
+import { CustomHandlers, getInputType } from '../common/forms/formGenerators';
+import { generateCustomContactFormItem } from './components/customContactComponent';
 
 const getregisterOptions = (formItemDefinition: FormItemDefinition): RegisterOptions =>
   pick(formItemDefinition, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
@@ -34,6 +35,10 @@ export type CreateInputParams = {
   initialValue: FormInputBaseProps['initialValue'];
   htmlElRef: FormInputBaseProps['htmlElRef'];
   customHandlers?: CustomHandlers;
+  context?: {
+    taskSid?: string;
+    contactId?: string;
+  };
 };
 
 export const createInput = ({
@@ -44,6 +49,7 @@ export const createInput = ({
   initialValue,
   customHandlers,
   htmlElRef,
+  context = {},
 }: CreateInputParams): JSX.Element => {
   const isEnabled = isItemEnabled(formItemDefinition);
   const inputId = [parentsPath, formItemDefinition.name].filter(Boolean).join('.');
@@ -64,6 +70,9 @@ export const createInput = ({
           htmlElRef={htmlElRef}
         />
       );
+    }
+    case FormInputType.CustomContactComponent: {
+      return generateCustomContactFormItem(formItemDefinition, inputId, context);
     }
     // Until all the "FormInputType"s are migrated, default to using the old getInputType
     default:

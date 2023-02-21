@@ -69,5 +69,11 @@
     "name": "wouldTheChildRecommendUsToAFriend",
     "label": "Would the child recommend us to a friend?",
     "type": "mixed-checkbox"
+  },
+  {
+    "name": "referrals",
+    "label": "referrals",
+    "type": "custom-contact-component",
+    "component": "referralList"
   }
 ]

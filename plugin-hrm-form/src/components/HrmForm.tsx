@@ -46,7 +46,6 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags }) => {
           task={task}
           csamClcReportEnabled={featureFlags.enable_csam_clc_report}
           csamReportEnabled={featureFlags.enable_csam_report}
-          counselorToolkitsEnabled={featureFlags.enable_counselor_toolkits}
         />
       );
 
