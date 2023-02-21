@@ -71,29 +71,35 @@ const patchUnsavedContactReferralResourceState = (
   state: ContactsState,
   taskId: string,
   patch: Partial<DraftResourceReferralState>,
-) => ({
-  ...state,
-  tasks: {
-    ...state.tasks,
-    [taskId]: {
-      ...state.tasks[taskId],
-      draft: {
-        ...state.tasks[taskId].draft,
-        resourceReferralList: {
-          ...state.tasks[taskId].draft.resourceReferralList,
-          ...patch,
+) =>
+  state.tasks[taskId]
+    ? {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [taskId]: {
+            ...state.tasks[taskId],
+            draft: {
+              ...state.tasks[taskId].draft,
+              resourceReferralList: {
+                ...state.tasks[taskId].draft.resourceReferralList,
+                ...patch,
+              },
+            },
+          },
         },
-      },
-    },
-  },
-});
+      }
+    : state;
 
 export const resourceReferralReducer = (initialState: ContactsState) =>
   createReducer(initialState, handleAction => [
     handleAction(
       updateResourceReferralIdToAddForUnsavedContactAction,
       (state, { payload: { taskId, resourceReferralIdToAdd } }) => {
-        if (state.tasks[taskId].draft.resourceReferralList.resourceReferralIdToAdd === resourceReferralIdToAdd) {
+        if (
+          !state.tasks[taskId] ||
+          state.tasks[taskId].draft.resourceReferralList.resourceReferralIdToAdd === resourceReferralIdToAdd
+        ) {
           // Don't clobber the lookup status if the text hasn't actually changed
           return state;
         }
@@ -107,7 +113,7 @@ export const resourceReferralReducer = (initialState: ContactsState) =>
       patchUnsavedContactReferralResourceState(state, taskId, { lookupStatus: status }),
     ),
     handleAction(addResourceReferralForUnsavedContactAction, (state, { payload: { taskId, resource } }) => {
-      if (state.tasks[taskId].referrals?.find(r => r.resourceId === resource.id)) {
+      if (!state.tasks[taskId] || state.tasks[taskId].referrals?.find(r => r.resourceId === resource.id)) {
         return state;
       }
       return {

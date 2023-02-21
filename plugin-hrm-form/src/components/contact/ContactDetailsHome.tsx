@@ -19,7 +19,7 @@ import React, { useEffect } from 'react';
 import { format } from 'date-fns';
 import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
@@ -287,7 +287,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           showActionIcons={showActionIcons}
           callType="caller"
         >
-          {definitionVersion.tabbedForms.CallerInformationTab.map(e => (
+          {definitionVersion.tabbedForms.CallerInformationTab.filter(e => !isNonSaveable(e)).map(e => (
             <SectionEntry key={`CallerInformation-${e.label}`} descriptionKey={e.label}>
               <SectionEntryValue value={savedContact.details.callerInformation[e.name]} definition={e} />
             </SectionEntry>
@@ -306,7 +306,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           showActionIcons={showActionIcons}
           callType="child"
         >
-          {definitionVersion.tabbedForms.ChildInformationTab.map(e => (
+          {definitionVersion.tabbedForms.ChildInformationTab.filter(e => !isNonSaveable(e)).map(e => (
             <SectionEntry key={`ChildInformation-${e.label}`} descriptionKey={e.label}>
               <SectionEntryValue value={savedContact.details.childInformation[e.name]} definition={e} />
             </SectionEntry>
@@ -351,7 +351,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
             navigate(ContactDetailsRoute.EDIT_CASE_INFORMATION);
           }}
         >
-          {definitionVersion.tabbedForms.CaseInformationTab.map(e => (
+          {definitionVersion.tabbedForms.CaseInformationTab.filter(e => !isNonSaveable(e)).map(e => (
             <SectionEntry key={`CaseInformation-${e.label}`} descriptionKey={e.label}>
               <SectionEntryValue
                 value={savedContact.details.caseInformation[e.name] as boolean | string}
