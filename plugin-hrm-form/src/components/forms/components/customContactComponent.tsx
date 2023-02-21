@@ -12,10 +12,11 @@ export const generateCustomContactFormItem = (
   formItemDefinition: FormItemDefinition & { type: FormInputType.CustomContactComponent },
   inputId: string,
   context: ContactComponentContext = {},
-) => <div key={inputId}>{customContactFormItemContent(formItemDefinition, context)}</div>;
+) => <div key={inputId}>{customContactFormItemContent(formItemDefinition, inputId, context)}</div>;
 
 const customContactFormItemContent = (
   formItemDefinition: FormItemDefinition & { type: FormInputType.CustomContactComponent },
+  inputId: string,
   {
     taskSid,
     contactId,
@@ -28,7 +29,9 @@ const customContactFormItemContent = (
     const componentGenerator = customContactComponentRegistry.lookup(formItemDefinition.component);
     if (!componentGenerator) {
       return (
-        <>Custom component &lsqou;{formItemDefinition.component}&rsqou; not defined, did you forget to register it?</>
+        <div data-testid={`unregistered-error-${inputId}`}>
+          Custom component &lsqou;{formItemDefinition.component}&rsqou; not defined, did you forget to register it?
+        </div>
       );
     }
     if (taskSid) {
@@ -47,16 +50,16 @@ const customContactFormItemContent = (
       });
     }
     return (
-      <>
+      <div data-testid={`context-error-${inputId}`}>
         Error rendering custom contact form component &lsquo;{formItemDefinition.component}&rsquo;: either a taskSid or
         a contactId must be provided in the context
-      </>
+      </div>
     );
   } catch (err) {
     return (
-      <>
+      <div data-testid={`unhandled-error-${inputId}`}>
         Error rendering custom contact form component &lsquo;{formItemDefinition.component}&rsquo;: {err.message}
-      </>
+      </div>
     );
   }
 };
