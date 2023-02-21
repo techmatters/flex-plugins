@@ -65,11 +65,24 @@ describe('Notification for a reserved task ', () => {
       expect.any(Function),
     );
   });
-
   test('audio notification should not play when reservation status changes to accepted', () => {
     const mockReservation = {
       sid: 'reservation-sid',
       status: 'accepted',
+    };
+    notifyReservedTask(mockReservation);
+
+    const notificationUrl = 'http://assets.fake.com/notifications/ringtone.mp3';
+
+    const playWhilePendingMock = jest.fn();
+    playWhilePendingMock(mockReservation, notificationUrl);
+
+    expect(AudioPlayerManager.play).not.toHaveBeenCalled();
+  });
+  test('audio notification should not play when the reservation is rejected', () => {
+    const mockReservation = {
+      sid: 'reservation-sid',
+      status: 'rejected',
     };
     notifyReservedTask(mockReservation);
 

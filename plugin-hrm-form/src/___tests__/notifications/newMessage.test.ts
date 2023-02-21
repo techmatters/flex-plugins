@@ -111,6 +111,24 @@ describe('Notification for a new message ', () => {
       );
     });
 
+    test('should not play the audio alert when the document is hidden and the author of the message is the counsellor', () => {
+      Object.defineProperty(document, 'visibilityState', { value: 'hidden', writable: true });
+
+      trySubscribeAudioAlerts(task, 0, 0);
+      jest.advanceTimersByTime(10);
+
+      expect(StateHelper.getConversationStateForTask).toHaveBeenCalledWith(task);
+      expect(mockConversationState.source.on).toHaveBeenCalledWith('messageAdded', expect.any(Function));
+
+      const notifyNewMessage = mockConversationState.source.on.mock.calls[0][1];
+      const mockMessageInstance = { author: 'imacounsellor@testing.org' };
+
+      notifyNewMessage(mockMessageInstance);
+
+      expect(AudioPlayerManager.play).not.toHaveBeenCalled();
+
+    });
+
     test('should not play the audio alert when the document is visible', () => {
       Object.defineProperty(document, 'visibilityState', { value: 'visible', writable: true });
 
