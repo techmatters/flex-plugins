@@ -13,15 +13,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
+import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import each from 'jest-each';
 import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
 
-import * as FormComponents from './components';
-import { createInput } from './inputGenerator';
-import { createFormMethods, wrapperFormProvider } from './test-utils';
+import * as FormComponents from '../../../components/forms/components';
+import { createInput } from '../../../components/forms/inputGenerator';
+import { createFormMethods, wrapperFormProvider } from '../../../components/forms/test-utils';
+import customContactComponentRegistry from '../../../components/forms/customContactComponentRegistry';
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -29,10 +30,16 @@ afterEach(() => {
 });
 
 describe('createInput', () => {
+  beforeAll(() => {
+    customContactComponentRegistry.register('fake-component', ({ name }) => (
+      <div data-testid={`fake-component-${name}`}>fake component</div>
+    ));
+  });
+
   const testCases: {
     formItemDefinition: FormItemDefinition;
     initialValue: string;
-    expectedFormComponent: keyof typeof FormComponents;
+    expectedFormComponent: keyof typeof FormComponents | 'fake-component';
   }[] = [
     {
       formItemDefinition: {
@@ -42,6 +49,17 @@ describe('createInput', () => {
       },
       initialValue: '',
       expectedFormComponent: 'FormInput',
+    },
+    {
+      formItemDefinition: {
+        type: FormInputType.CustomContactComponent,
+        name: 'custom',
+        label: 'Fake Custom Component',
+        component: 'fake-component',
+        saveable: false,
+      },
+      initialValue: '',
+      expectedFormComponent: 'fake-component',
     },
   ];
 
@@ -57,6 +75,7 @@ describe('createInput', () => {
         updateCallback,
         htmlElRef: null,
         isItemEnabled: () => true,
+        context: { contactId: 'contact-id' },
       });
 
       const methods = createFormMethods();

@@ -106,6 +106,7 @@ const ContactDetails: React.FC<Props> = ({
               },
             }),
           )}
+        contactId={contactId}
       />
     </EditContactSection>
   );

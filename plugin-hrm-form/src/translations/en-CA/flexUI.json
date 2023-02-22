@@ -3,7 +3,7 @@
   "Case-Note": "Follow-Up Details",
   "Case-Perpetrator": "Person of Concern",
   "Case-NoPerpetrators": "No Person(s) of Concern Listed",
-  "Case-AddNote": "Add",
+  "Case-AddNote": "Add Follow-Up",
   "BottomBar-SaveNote": "Save",
   "Case-AddPerpetrator": "Add Person of Concern",
   "Case-ViewPerpetrator": "View Person of Concern",
@@ -65,6 +65,8 @@
   "CaseList-Filters-SearchByCategory": "Search by Issue Tag",
   "Category": "Issue Tag",
   "TabbedForms-AddChildInfoTab": "Person",
+  "PreviousContacts-Case": "emergency referral",
+  "PreviousContacts-Cases": "emergency referrals",
   "Toolkit-ConfirmTextOne": "Clicking on this icon will open up Kids Help Phone's KMS in a new tab in your browser",
   "Toolkit-ConfirmTextTwo": "Click Yes to continue.",
   "Error-CategoryRequired": "Required 1 issue tag minimum, 3 issue tags maximum. Click on the icon next to an issue tag to open up the relevant tipsheet in a new tab."

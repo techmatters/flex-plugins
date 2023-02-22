@@ -14,23 +14,43 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { addDays, isAfter, subDays } from 'date-fns';
+import { addDays, subDays, subHours } from 'date-fns';
+import { configureStore } from '@reduxjs/toolkit';
+import promiseMiddleware from 'redux-promise-middleware';
 
 import {
-  addResourceAction,
-  loadResourceErrorAction,
+  loadResourceAsyncAction,
   navigateToSearchAction,
   reduce,
   ReferrableResourcesState,
+  ResourceLoadStatus,
   ResourcePage,
   viewResourceAction,
 } from '../../../states/resources';
-import { initialState as searchInitialState, resourceSearchReducer } from '../../../states/resources/search';
+import {
+  initialState,
+  initialState as searchInitialState,
+  resourceSearchReducer,
+} from '../../../states/resources/search';
+import { getResource, ReferrableResource } from '../../../services/ResourceService';
 
 jest.mock('../../../states/resources/search', () => ({
   initialState: jest.requireActual('../../../states/resources/search').initialState,
   resourceSearchReducer: jest.fn(),
 }));
+jest.mock('../../../services/ResourceService');
+
+const mockGetResource = getResource as jest.Mock<Promise<ReferrableResource>>;
+
+const testStore = (stateChanges: Partial<ReferrableResourcesState> = {}) =>
+  configureStore({
+    preloadedState: { ...initialState, ...stateChanges },
+    reducer: reduce,
+    middleware: getDefaultMiddleware => [
+      ...getDefaultMiddleware({ serializableCheck: false, immutableCheck: false }),
+      promiseMiddleware(),
+    ],
+  });
 
 const mockResourceSearchReducer = resourceSearchReducer as jest.Mock<ReturnType<typeof resourceSearchReducer>>;
 
@@ -39,16 +59,21 @@ beforeEach(() => {
   mockResourceSearchReducer.mockImplementation(state => state);
 });
 
-const resource = (
+const resource = (id: string): ReferrableResource => ({
+  name: `Resource with id#${id}`,
+  id,
+  attributes: {},
+});
+
+const loadedResourceState = (
   id: string,
-  loaded: Date,
-): ReferrableResourcesState['resources'][keyof ReferrableResourcesState['resources']] => ({
-  resource: {
-    name: `Resource with id#${id}`,
-    id,
-    attributes: {},
-  },
-  loaded,
+  updated: Date,
+): ReferrableResourcesState['resources'][keyof ReferrableResourcesState['resources']] & {
+  status: ResourceLoadStatus.Loaded;
+} => ({
+  resource: resource(id),
+  updated,
+  status: ResourceLoadStatus.Loaded,
 });
 const now = new Date();
 describe('reduce', () => {
@@ -60,94 +85,88 @@ describe('reduce', () => {
     const state = reduce(
       {
         resources: {
-          newResource: resource('newResource', now),
-          oldResource: resource('oldResource', subDays(now, 1)),
-          futureResource: resource('futureResource', addDays(now, 1)),
+          newResource: loadedResourceState('newResource', now),
+          oldResource: loadedResourceState('oldResource', subDays(now, 1)),
+          futureResource: loadedResourceState('futureResource', addDays(now, 1)),
         },
         search: searchInitialState,
       },
       { type: 'NOT_FOR_THE_LIKES_OF_YOU' } as any,
     );
     expect(state.resources).toStrictEqual({
-      newResource: resource('newResource', now),
-      futureResource: resource('futureResource', addDays(now, 1)),
+      newResource: loadedResourceState('newResource', now),
+      futureResource: loadedResourceState('futureResource', addDays(now, 1)),
     });
   });
-  describe('ADD_RESOURCE action', () => {
-    test('Resource not in state already - adds resource to state with current date', () => {
-      const state = reduce(
-        {
-          resources: {
-            existingResource: resource('existingResource', now),
-          },
-          search: searchInitialState,
-        },
-        addResourceAction({ id: 'newResource', name: 'New Resource', attributes: {} }),
-      );
-      expect(state.resources.existingResource).toStrictEqual(resource('existingResource', now));
-      expect(state.resources.newResource.resource).toStrictEqual({
-        id: 'newResource',
-        name: 'New Resource',
-        attributes: {},
+  describe('loadResource async action', () => {
+    beforeEach(() => {
+      mockGetResource.mockReset();
+    });
+    test('Always calls getResource with ID from action', async () => {
+      mockGetResource.mockResolvedValueOnce(loadedResourceState('someId', now).resource);
+      loadResourceAsyncAction('someId');
+      expect(mockGetResource).toHaveBeenCalledWith('someId');
+    });
+    test('Sets status of resource to loading', async () => {
+      const { dispatch, getState } = testStore({ resources: {} });
+      const startingState = getState();
+      mockGetResource.mockResolvedValueOnce(loadedResourceState('someId', now).resource);
+      dispatch(loadResourceAsyncAction('someId'));
+      expect(getState()).toStrictEqual({
+        ...startingState,
+        resources: { someId: { status: ResourceLoadStatus.Loading, updated: expect.anything() } },
       });
-      expect(isAfter(state.resources.newResource.loaded, now)).toBe(true);
     });
-    test('Resource in state already - updates resource & sets current date', () => {
-      const state = reduce(
-        {
-          resources: {
-            existingResource: resource('existingResource', now),
-          },
-          search: searchInitialState,
-        },
-        addResourceAction({ id: 'existingResource', name: 'Updated Resource', attributes: {} }),
-      );
-      expect(state.resources.existingResource.resource).toStrictEqual({
-        id: 'existingResource',
-        name: 'Updated Resource',
-        attributes: {},
+    test('Overwrites existing resource with pending state', async () => {
+      const { dispatch, getState } = testStore({
+        resources: { someId: loadedResourceState('someId', subHours(new Date(), 2)) },
       });
-      expect(isAfter(state.resources.existingResource.loaded, now)).toBe(true);
-      expect(Object.keys(state.resources)).toHaveLength(1);
+      const startingState = getState();
+      mockGetResource.mockResolvedValueOnce(loadedResourceState('someId', now).resource);
+      dispatch(loadResourceAsyncAction('someId'));
+      expect(getState()).toStrictEqual({
+        ...startingState,
+        resources: { someId: { status: ResourceLoadStatus.Loading, updated: expect.anything() } },
+      });
     });
-  });
-  describe('LOAD_RESOURCE_ERROR action', () => {
-    const err = new Error('Boom');
-    test('Resource not in state already - adds error to state with current date', () => {
-      const state = reduce(
-        {
-          resources: {
-            existingResource: resource('existingResource', now),
-          },
-          search: searchInitialState,
+    test("getResource returns a resource - dispatches fulfilled action that updates the pending resource's status to loaded and sets the resource to the one in the response", async () => {
+      const resourceToLoad = resource('someId');
+      mockGetResource.mockResolvedValueOnce(resourceToLoad);
+      const { dispatch, getState } = testStore({ resources: {} });
+      const startingState = getState();
+      const dispatchPromise = (dispatch(loadResourceAsyncAction('someId')) as unknown) as PromiseLike<unknown>;
+      await dispatchPromise;
+      const fulfilledState = getState();
+      expect(fulfilledState).toStrictEqual({
+        ...startingState,
+        resources: {
+          someId: { status: ResourceLoadStatus.Loaded, updated: expect.anything(), resource: resourceToLoad },
         },
-        loadResourceErrorAction('newResource', err),
-      );
-      expect(state.resources.existingResource).toStrictEqual(resource('existingResource', now));
-      expect(state.resources.newResource.resource).not.toBeDefined();
-      expect(state.resources.newResource.error).toBe(err);
-      expect(isAfter(state.resources.newResource.loaded, now)).toBe(true);
+      });
     });
-    test('Resource in state already - removes resource, adds error & sets current date', () => {
-      const state = reduce(
-        {
-          resources: {
-            existingResource: resource('existingResource', now),
-          },
-          search: searchInitialState,
+    test("getResource returns an error - dispatches rejected action that updates the pending resource's status to error and attaches the error object to the state", async () => {
+      const errorThrown = new Error('BOOM');
+      mockGetResource.mockRejectedValue(errorThrown);
+      const { dispatch, getState } = testStore({ resources: {} });
+      const startingState = getState();
+      try {
+        await ((dispatch(loadResourceAsyncAction('someId')) as unknown) as PromiseLike<unknown>);
+      } catch (error) {
+        // Error still bubbles up
+      }
+      const rejectedState = getState();
+      expect(rejectedState).toStrictEqual({
+        ...startingState,
+        resources: {
+          someId: { status: ResourceLoadStatus.Error, updated: expect.anything(), error: errorThrown },
         },
-        loadResourceErrorAction('existingResource', err),
-      );
-      expect(state.resources.existingResource.resource).not.toBeDefined();
-      expect(state.resources.existingResource.error).toBe(err);
-      expect(isAfter(state.resources.existingResource.loaded, now)).toBe(true);
-      expect(Object.keys(state.resources)).toHaveLength(1);
+      });
     });
   });
   describe('VIEW_RESOURCE action', () => {
     const initialState = {
       resources: {
-        existingResource: resource('existingResource', now),
+        existingResource: loadedResourceState('existingResource', now),
       },
       search: searchInitialState,
     };
@@ -194,7 +213,7 @@ describe('reduce', () => {
   describe('NAVIGATE_TO_SEARCH action', () => {
     const initialState = {
       resources: {
-        existingResource: resource('existingResource', now),
+        existingResource: loadedResourceState('existingResource', now),
       },
       route: {
         page: ResourcePage.ViewResource,

@@ -28,7 +28,7 @@ const getEnvironmentFromHrmBaseUrl = (manager: Flex.Manager) => {
   const hrmBaseUrl = `${process.env.REACT_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}`;
   const prefix = 'https://hrm-';
   const suffix = '.tl.techmatters.org';
-  const environment = hrmBaseUrl.substring(prefix.length, hrmBaseUrl.indexOf(suffix));
+  const environment = hrmBaseUrl.substring(prefix.length, hrmBaseUrl.indexOf(suffix)).replace('-eu', '');
 
   /*
    * hrm-test is an alias of hrm-staging that we should deprecate & remove, but some accounts are still configured to point at it
@@ -55,10 +55,12 @@ const getVersionFromDefinitionVersionId = (definitionVersionId: string) => {
   return definitionVersionId.substring(definitionVersionId.length - 2);
 };
 
-export const buildFormDefinitionsBaseUrlGetter = (manager: Flex.Manager) => (definitionVersionId: string) => {
-  const environment = getEnvironmentFromHrmBaseUrl(manager);
+export const inferConfiguredFormDefinitionsBaseUrl = (manager: Flex.Manager) =>
+  `https://assets-${getEnvironmentFromHrmBaseUrl(manager)}.tl.techmatters.org/form-definitions/`;
+
+export const buildFormDefinitionsBaseUrlGetter = (baseUrl: URL = undefined) => (definitionVersionId: string) => {
   const helplineCode = getHelplineCodeFromDefinitionVersionId(definitionVersionId);
   const version = getVersionFromDefinitionVersionId(definitionVersionId);
 
-  return `https://assets-${environment}.tl.techmatters.org/form-definitions/${helplineCode}/${version}`;
+  return `${baseUrl}${helplineCode}/${version}`;
 };

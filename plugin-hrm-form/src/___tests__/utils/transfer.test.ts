@@ -333,7 +333,7 @@ describe('Kick, close and helpers', () => {
 
   test('setTransferMeta', async () => {
     const coldTask = createTask(
-      {},
+      { channelSid: 'channel1' },
       { sid: 'reservation1', taskSid: 'task1', taskChannelSid: 'channel1', workerSid: 'worker1' },
     );
 
@@ -350,6 +350,7 @@ describe('Kick, close and helpers', () => {
       originalReservation: 'reservation1',
       originalCounselor: 'worker1',
       originalCounselorName: counselorName,
+      originalConversationSid: 'channel1',
       transferStatus: transferStatuses.accepted,
       formDocument: 'some string',
       mode: transferModes.cold,
@@ -370,6 +371,7 @@ describe('Kick, close and helpers', () => {
       originalReservation: 'reservation1',
       originalCounselor: 'WKworker1',
       originalCounselorName: counselorName,
+      originalConversationSid: undefined,
       transferStatus: transferStatuses.transferring,
       formDocument: 'some string',
       mode: transferModes.warm,
