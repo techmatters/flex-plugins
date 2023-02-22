@@ -31,43 +31,43 @@
         "label": "Unborn"
       },
       {
-        "value": "0",
+        "value": "00",
         "label": "0"
       },
       {
-        "value": "1",
+        "value": "01",
         "label": "1"
       },
       {
-        "value": "2",
+        "value": "02",
         "label": "2"
       },
       {
-        "value": "3",
+        "value": "03",
         "label": "3"
       },
       {
-        "value": "4",
+        "value": "04",
         "label": "4"
       },
       {
-        "value": "5",
+        "value": "05",
         "label": "5"
       },
       {
-        "value": "6",
+        "value": "06",
         "label": "6"
       },
       {
-        "value": "7",
+        "value": "07",
         "label": "7"
       },
       {
-        "value": "8",
+        "value": "08",
         "label": "8"
       },
       {
-        "value": "9",
+        "value": "09",
         "label": "9"
       },
       {
@@ -131,21 +131,21 @@
         "label": "24"
       },
       {
-        "value": "25",
-        "label": "25"
+          "value": "25",
+          "label": "25"
       },
       {
         "value": ">25",
         "label": ">25"
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
-      },
-      {
         "value": "Other",
         "label": "Other"
-      }
+      },
+    {
+      "value": "Unknown",
+      "label": "Unknown"
+    }
     ],
     "required": {
       "value": true,
@@ -153,9 +153,14 @@
     }
   },
   {
-    "name": "DOB",
-    "label": "Date of Birth",
-    "type": "date-input"
+    "name": "Date of Birth",
+    "type": "date-input",
+    "label": "Date of Birth"
+  },
+  {
+    "name": "idNumber",
+    "label": "ID Number",
+    "type": "input"
   },
   {
     "name": "gender",
@@ -194,6 +199,11 @@
     "type": "input"
   },
   {
+    "name": "addressDescription",
+    "label": "Describe the Address",
+    "type": "input"
+  },
+  {
     "name": "province",
     "label": "Province",
     "type": "select",
@@ -203,12 +213,44 @@
         "label": ""
       },
       {
-        "value": "Central",
-        "label": "Central"
+        "value": "HRE",
+        "label": "HRE"
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
+        "value": "BYO",
+        "label": "BYO"
+      },
+      {
+        "value": "MSC",
+        "label": "MSC"
+      },
+      {
+        "value": "MSW",
+        "label": "MSW"
+      },
+      {
+        "value": "MTN",
+        "label": "MTN"
+      },
+      {
+        "value": "MTS",
+        "label": "MTS"
+      },
+      {
+        "value": "MSE",
+        "label": "MSE"
+      },
+      {
+        "value": "MAN",
+        "label": "MAN"
+      },
+      {
+        "value": "MID",
+        "label": "MID"
+      },
+      {
+        "value": "MAS",
+        "label": "MAS"
       }
     ],
     "required": {
@@ -226,31 +268,291 @@
       "label": ""
     },
     "options": {
-      "District1": [
+      "HRE": [
         {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
+          "value": "Harere",
+          "label": "Harere"
         }
       ],
-      "District2": [
+      "BYO": [
         {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
+          "value": "Bulawayo",
+          "label": "Bulawayo"
+        }
+      ],
+      "MSC": [
+        {
+          "value": "Bindura",
+          "label": "Bindura"
         },
         {
-          "value": "Unknown",
-          "label": "Unknown"
+          "value": "Guruve",
+          "label": "Guruve"
+        },
+        {
+          "value": "Mazowe",
+          "label": "Mazowe"
+        },
+        {
+          "value": "Mbire",
+          "label": "Mbire"
+        },
+        {
+          "value": "Mukumbura",
+          "label": "Mukumbura"
+        },
+        {
+          "value": "Muzarabani",
+          "label": "Muzarabani"
+        },
+        {
+          "value": "Rushinga",
+          "label": "Rushinga"
+        },
+        {
+          "value": "Shamva",
+          "label": "Shamva"
+        },
+        {
+          "value": "Centenary",
+          "label": "Centenary"
+        }
+      ],
+      "MSW": [
+        {
+          "value": "Chegutu",
+          "label": "Chegutu"
+        },
+        {
+          "value": "Hurungwe",
+          "label": "Hurungwe"
+        },
+        {
+          "value": "Kadoma",
+          "label": "Kadoma"
+        },
+        {
+          "value": "Kariba",
+          "label": "Kariba"
+        },
+        {
+          "value": "Makonde",
+          "label": "Makonde"
+        },
+        {
+          "value": "Zvimba",
+          "label": "Zvimba"
+        },
+        {
+          "value": "Norton",
+          "label": "Norton"
+        }
+      ],
+      "MTN": [
+        {
+          "value": "Binga",
+          "label": "Binga"
+        },
+        {
+          "value": "Bubi",
+          "label": "Bubi"
+        },
+        {
+          "value": "Hwange",
+          "label": "Hwange"
+        },
+        {
+          "value": "Lupane",
+          "label": "Lupane"
+        },
+        {
+          "value": "Nkayi",
+          "label": "Nkayi"
+        },
+        {
+          "value": "Tsholotsho",
+          "label": "Tsholotsho"
+        },
+        {
+          "value": "Umguza",
+          "label": "Umguza"
+        }
+      ],
+      "MTS": [
+        {
+          "value": "Gwanda",
+          "label": "Gwanda"
+        },
+        {
+          "value": "Insiza",
+          "label": "Insiza"
+        },
+        {
+          "value": "Matobo",
+          "label": "Matobo"
+        },
+        {
+          "value": "Umzingwane",
+          "label": "Umzingwane"
+        },
+        {
+          "value": "Beitbrigde",
+          "label": "Beitbrigde"
+        }
+      ],
+      "MSE": [
+        {
+          "value": "Chikomba",
+          "label": "Chikomba"
+        },
+        {
+          "value": "Goromonzi",
+          "label": "Goromonzi"
+        },
+        {
+          "value": "Hwedza",
+          "label": "Hwedza"
+        },
+        {
+          "value": "Marondera",
+          "label": "Marondera"
+        },
+        {
+          "value": "Mudzi",
+          "label": "Mudzi"
+        },
+        {
+          "value": "Mutoko",
+          "label": "Mutoko"
+        },
+        {
+          "value": "Murehwa",
+          "label": "Murehwa"
+        },
+        {
+          "value": "UZumba-Maramba-Pfungwe",
+          "label": "UZumba-Maramba-Pfungwe"
+        }
+      ],
+      "MAN": [
+        {
+          "value": "Chimanimani",
+          "label": "Chimanimani"
+        },
+        {
+          "value": "Chipinge",
+          "label": "Chipinge"
+        },
+        {
+          "value": "Makoni",
+          "label": "Makoni"
+        },
+        {
+          "value": "Mutare",
+          "label": "Mutare"
+        },
+        {
+          "value": "Buhera",
+          "label": "Buhera"
+        },
+        {
+          "value": "Mutasa",
+          "label": "Mutasa"
+        },
+        {
+          "value": "Nyanga",
+          "label": "Nyanga"
+        }
+      ],
+      "MID": [
+        {
+          "value": "Chirumhanzu",
+          "label": "Chirumhanzu"
+        },
+        {
+          "value": "Gokwe North",
+          "label": "Gokwe North"
+        },
+        {
+          "value": "Gokwe South",
+          "label": "Gokwe South"
+        },
+        {
+          "value": "Gweru",
+          "label": "Gweru"
+        },
+        {
+          "value": "Kwekwe",
+          "label": "Kwekwe"
+        },
+        {
+          "value": "Mberengwa",
+          "label": "Mberengwa"
+        },
+        {
+          "value": "Shurugwi",
+          "label": "Shurugwi"
+        },
+        {
+          "value": "Zvishavane",
+          "label": "Zvishavane"
+        }
+      ],
+      "MAS": [
+        {
+          "value": "Bikita",
+          "label": "Bikita"
+        },
+        {
+          "value": "Chiredzi",
+          "label": "Chiredzi"
+        },
+        {
+          "value": "Gutu",
+          "label": "Gutu"
+        },
+        {
+          "value": "Masvingo",
+          "label": "Masvingo"
+        },
+        {
+          "value": "Chivi",
+          "label": "Chivi"
+        },
+        {
+          "value": "Mwenzi",
+          "label": "Mwenzi"
+        },
+        {
+          "value": "Zaka",
+          "label": "Zaka"
         }
       ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     }
+  },
+  {
+    "name": "region",
+    "label": "Region",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Cities",
+        "label": "Cities"
+      },
+      {
+        "value": "Rural areas",
+        "label": "Rural areas"
+      },
+      {
+        "value": "Town & semi-dense areas",
+        "label": "Town & semi-dense areas"
+      }
+    ]
   },
   {
     "name": "phone1",
@@ -273,6 +575,10 @@
       {
         "value": "language1",
         "label": "language1"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ]
   },
@@ -284,7 +590,34 @@
   {
     "name": "race",
     "label": "Race",
-    "type": "input"
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Asian",
+        "label": "Asian"
+      },
+      {
+        "value": "Black",
+        "label": "Black"
+      },
+      {
+        "value": "Coloured",
+        "label": "Coloured"
+      },
+      {
+        "value": "White",
+        "label": "White"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ]
   },
   {
     "name": "schoolName",
@@ -307,7 +640,7 @@
     "type": "select",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
@@ -327,8 +660,8 @@
         "label": "Grade 10 to 12"
       },
       {
-        "value": "Out of school",
-        "label": "Out of school"
+        "value": "Out of School",
+        "label": "Out of School"
       }
     ]
   },
@@ -419,41 +752,19 @@
     "name": "childOnTheMove",
     "label": "Child on the move",
     "type": "select",
+    "unknownOption": "Unknown",
     "options": [
       {
         "value": "Unknown",
         "label": ""
-      },
-      {
-        "value": "Involuntary",
-        "label": "Involuntary"
       },
       {
         "value": "Voluntary",
         "label": "Voluntary"
-      }
-    ]
-  },
-  {
-    "name": "region",
-    "label": "Region",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
       },
       {
-        "value": "Cities",
-        "label": "Cities"
-      },
-      {
-        "value": "Rural areas",
-        "label": "Rural areas"
-      },
-      {
-        "value": "Town & semi-dense areas",
-        "label": "Town & semi-dense areas"
+        "value": "Involuntary",
+        "label": "Involuntary"
       }
     ]
   },
@@ -461,29 +772,309 @@
     "name": "childStatus",
     "label": "Child Status",
     "type": "select",
+    "unknownOption": "Unknown",
     "options": [
       {
         "value": "Unknown",
         "label": ""
       },
       {
-        "value": "Maternal Orphan",
-        "label": "Maternal Orphan"
+        "value": "Single Maternal Orphan",
+        "label": "Single Maternal Orphan"
       },
       {
-        "value": "Paternal Orphan",
-        "label": "Paternal Orphan"
+        "value": "Single Paternal Orphan",
+        "label": "Single Paternal Orphan"
+      },
+      {
+        "value": "Double Orphan",
+        "label": "Double Orphan"
+      },
+      {
+        "value": "Non Orphan",
+        "label": "Non Orphan"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ]
   },
   {
-    "name": "idNumber",
-    "label": "ID Number",
-    "type": "input"
+    "name": "department",
+    "label": "Department",
+    "type": "select",
+    "defaultOption": {
+      "value": "unknown",
+      "label": ""
+    },
+    "options": [
+      {
+        "value": "unknown",
+        "label": ""
+      },
+      {
+        "value": "Helpline",
+        "label": "Helpline"
+      },
+      {
+        "value": "Dropin",
+        "label": "Dropin"
+      },
+      {
+        "value": "Outreach",
+        "label": "Outreach"
+      }
+    ]
   },
   {
-    "name": "AddressDescription",
-    "label": "Describe the Address",
-    "type": "input"
+    "name": "location",
+    "label": "Location",
+    "type": "dependent-select",
+    "dependsOn": "department",
+    "defaultOption": {
+      "value": "unknown",
+      "label": ""
+    },
+    "options": {
+      "Helpline": [
+        {
+          "value": "unknown",
+          "label": ""
+        },
+        {
+          "value": "Harare",
+          "label": "Harare"
+        },
+        {
+          "value": "Bulawayo",
+          "label": "Bulawayo"
+        },
+        {
+          "value": "Masvingo",
+          "label": "Masvingo"
+        }
+      ],
+      "Dropin": [
+        {
+          "value": "unknown",
+          "label": ""
+        },
+        {
+          "value": "Eastlea",
+          "label": "Eastlea"
+        },
+        {
+          "value": "Chitungwiza",
+          "label": "Chitungwiza"
+        },
+        {
+          "value": "Harare Magistrate Court",
+          "label": "Harare Magistrate Court"
+        },
+        {
+          "value": "House of Smiles",
+          "label": "House of Smiles"
+        },
+        {
+          "value": "Mbire",
+          "label": "Mbire"
+        },
+        {
+          "value": "Mabvuku",
+          "label": "Mabvuku"
+        },
+        {
+          "value": "Epworth",
+          "label": "Epworth"
+        },
+        {
+          "value": "Sekuru Sande",
+          "label": "Sekuru Sande"
+        },
+        {
+          "value": "Chinhoyi",
+          "label": "Chinhoyi"
+        },
+        {
+          "value": "Mazowe",
+          "label": "Mazowe"
+        },
+        {
+          "value": "Mutoko",
+          "label": "Mutoko"
+        },
+        {
+          "value": "Dzivarasekwa",
+          "label": "Dzivarasekwa"
+        },
+        {
+          "value": "Bulawayo City Centre",
+          "label": "Bulawayo City Centre"
+        },
+        {
+          "value": "Pumula",
+          "label": "Pumula"
+        },
+        {
+          "value": "United Bulawayo Hospitals",
+          "label": "United Bulawayo Hospitals"
+        },
+        {
+          "value": "Luveve",
+          "label": "Luveve"
+        },
+        {
+          "value": "Tsholotsho",
+          "label": "Tsholotsho"
+        },
+        {
+          "value": "Bulawayo Courts",
+          "label": "Bulawayo Courts"
+        },
+        {
+          "value": "Makokoba",
+          "label": "Makokoba"
+        },
+        {
+          "value": "Beitbridge",
+          "label": "Beitbridge"
+        },
+        {
+          "value": "Chipinige",
+          "label": "Chipinige"
+        },
+        {
+          "value": "Tongogara",
+          "label": "Tongogara"
+        },
+        {
+          "value": "Mutare",
+          "label": "Mutare"
+        },
+        {
+          "value": "Makoni",
+          "label": "Makoni"
+        },
+        {
+          "value": "Vhengere",
+          "label": "Vhengere"
+        },
+        {
+          "value": "Kwekwe",
+          "label": "Kwekwe"
+        },
+        {
+          "value": "Gweru",
+          "label": "Gweru"
+        },
+        {
+          "value": "Chiredzi",
+          "label": "Chiredzi"
+        },
+        {
+          "value": "Gutu",
+          "label": "Gutu"
+        },
+        {
+          "value": "Hopley",
+          "label": "Hopley"
+        },
+        {
+          "value": "Stoneridge",
+          "label": "Stoneridge"
+        },
+        {
+          "value": "Masvingo",
+          "label": "Masvingo"
+        },
+        {
+          "value": "Mutasa",
+          "label": "Mutasa"
+        },
+        {
+          "value": "Rusape",
+          "label": "Rusape"
+        }
+      ],
+      "Outreach": [
+        {
+          "value": "unknown",
+          "label": ""
+        },
+        {
+          "value": "",
+          "label": ""
+        }
+      ]
+    }
+  },
+  {
+    "name": "contactPlatform",
+    "label": "Contact Platform",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Aerogram",
+        "label": "Aerogram"
+      },
+      {
+        "value": "Childline Mobile App",
+        "label": "Childline Mobile App"
+      },
+      {
+        "value": "Drop-In",
+        "label": "Drop-In"
+      },
+      {
+        "value": "Facebook",
+        "label": "Facebook"
+      },
+      {
+        "value": "HSCT",
+        "label": "HSCT"
+      },
+      {
+        "value": "Mobile Drop-In",
+        "label": "Mobile Drop-In"
+      },
+      {
+        "value": "SMS",
+        "label": "SMS"
+      },
+      {
+        "value": "Telephone",
+        "label": "Telephone"
+      },
+      {
+        "value": "Twitter",
+        "label": "Twitter"
+      },
+      {
+        "value": "U-Report",
+        "label": "U-Report"
+      },
+      {
+        "value": "Virtual Peer to Peer",
+        "label": "Virtual Peer to Peer"
+      },
+      {
+        "value": "Website",
+        "label": "Website"
+      },
+      {
+        "value": "Whatsapp",
+        "label": "Whatsapp"
+      },
+      {
+        "value": "YCFIC",
+        "label": "YCFIC"
+      }
+    ]
   }
 ]
