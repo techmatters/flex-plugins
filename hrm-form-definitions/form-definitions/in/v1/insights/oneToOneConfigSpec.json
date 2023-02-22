@@ -12,21 +12,12 @@
         "insights": ["customers", "city"]
       },
       {
-        "name": "postalCode",
+        "name": "district",
         "insights": ["customers", "zip"]
-      },
-      {
-        "name": "gradeLevel",
-        "insights": ["customers", "acquisition_date"]
       },
       {
         "name": "livingSituation",
         "insights": ["customers", "customer_attribute_1"]
-      },
-      {
-        "name": "inConflictWithTheLaw",
-        "insights": ["conversations", "conversation_measure_1"],
-        "type": "mixed-checkbox"
       },
       {
         "name": "imminentDanger",
@@ -34,18 +25,8 @@
         "type": "mixed-checkbox"
       },
       {
-        "name": "memberOfAnEthnic",
-        "insights": ["conversations", "conversation_measure_4"],
-        "type": "mixed-checkbox"
-      },
-      {
         "name": "childWithDisability",
         "insights": ["customers", "customer_attribute_3"],
-        "type": "mixed-checkbox"
-      },
-      {
-        "name": "LGBTQI+",
-        "insights": ["conversations", "conversation_measure_5"],
         "type": "mixed-checkbox"
       },
       {
@@ -60,7 +41,19 @@
         "type": "mixed-checkbox"
       },
       {
-        "name": "howDidYouKnowAboutOurLine",
+        "name": "nrAccountsReportedToPlatform",
+        "insights": ["conversations", "conversation_measure_1"]
+      },
+      {
+        "name": "accountsTakenDown",
+        "insights": ["conversations", "conversation_measure_4"]
+      },
+      {
+        "name": "accountsRecoveredByTrustline",
+        "insights": ["conversations", "conversation_measure_5"]
+      },
+      {
+        "name": "cybercrimeReportsFiled",
         "insights": ["conversations", "conversation_attribute_5"]
       },
       {
@@ -83,6 +76,10 @@
       {
         "name": "id",
         "insights": ["conversations", "case"]
+      },
+      {
+        "name": "status",
+        "insights": ["customers", "acquisition_date"]
       }
     ],
     "perpetrator": [
