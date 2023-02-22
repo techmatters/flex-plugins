@@ -19,17 +19,19 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { useEffect, useState } from 'react';
 
-import customContactComponentRegistry, { isParametersWithContactId } from '../forms/customContactComponentRegistry';
-import { contactFormsBase, namespace, referrableResourcesBase, RootState } from '../../states';
+import customContactComponentRegistry, { isParametersWithContactId } from '../../forms/customContactComponentRegistry';
+import { contactFormsBase, namespace, referrableResourcesBase, RootState } from '../../../states';
 import {
   ReferralLookupStatus,
   updateResourceReferralIdToAddForUnsavedContactAction,
   updateResourceReferralLookupStatusForUnsavedContactAction,
   addResourceReferralForUnsavedContactAction,
-} from '../../states/contacts/resourceReferral';
-import asyncDispatch from '../../states/asyncDispatch';
-import { loadResourceAsyncAction, ResourceLoadStatus } from '../../states/resources';
-import { ReferrableResource } from '../../services/ResourceService';
+} from '../../../states/contacts/resourceReferral';
+import asyncDispatch from '../../../states/asyncDispatch';
+import { loadResourceAsyncAction, ResourceLoadStatus } from '../../../states/resources';
+import { ReferrableResource } from '../../../services/ResourceService';
+import { Box } from '../../../styles/HrmStyles';
+import { InputWrapper, InputText, AddButton } from './styles';
 
 type OwnProps = {
   taskSid: string;
@@ -121,23 +123,25 @@ const ResourceReferralList: React.FC<Props> = ({
   ]);
 
   return (
-    <div>
+    <Box marginTop="25px">
       <p>
         <Template code="Resources Shared:" />
       </p>
-      <input
-        type="text"
-        onChange={e => resourceReferralToAddInputChanged(e.target.value)}
-        value={resourceReferralToAddText}
-        disabled={lookupStatus === ReferralLookupStatus.PENDING}
-      />
-      <button
-        type="submit"
-        onClick={checkResourceAndAddReferral}
-        disabled={lookupStatus === ReferralLookupStatus.PENDING}
-      >
-        <Template code="Add" />
-      </button>
+      <InputWrapper>
+        <InputText
+          type="text"
+          onChange={e => resourceReferralToAddInputChanged(e.target.value)}
+          value={resourceReferralToAddText}
+          disabled={lookupStatus === ReferralLookupStatus.PENDING}
+        />
+        <AddButton
+          type="submit"
+          onClick={checkResourceAndAddReferral}
+          disabled={lookupStatus === ReferralLookupStatus.PENDING}
+        >
+          <Template code="Add" />
+        </AddButton>
+      </InputWrapper>
       {lookupStatus === ReferralLookupStatus.NOT_FOUND && (
         <p style={{ color: 'red' }}>No match found for &lsquo;{resourceReferralIdToAdd}&rsquo;, try again</p>
       )}
@@ -149,7 +153,7 @@ const ResourceReferralList: React.FC<Props> = ({
           </li>
         ))}
       </ul>
-    </div>
+    </Box>
   );
 };
 
