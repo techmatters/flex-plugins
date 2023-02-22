@@ -1,5 +1,11 @@
 import styled from '@emotion/styled';
 
+export const Container = styled('div')`
+  width: 250px;
+  margin-top: 25px;
+  color: #000000;
+`;
+
 export const InputWrapper = styled('div')`
   display: flex;
   align-items: center;
@@ -9,7 +15,7 @@ export const InputWrapper = styled('div')`
   height: 39px;
   padding: 0 6px;
   margin-top: 10px;
-  margin-bottom: 8px;
+  margin-bottom: 15px;
 
   &:focus-within {
     outline: 1px solid rgb(0, 95, 204);
@@ -27,7 +33,11 @@ export const InputText = styled('input')`
   }
 `;
 
-export const AddButton = styled('button')`
+type AddButtonProps = {
+  disabled: boolean;
+};
+
+export const AddButton = styled('button')<AddButtonProps>`
   border: none;
   border-radius: 4px;
   height: 28px;
@@ -36,9 +46,32 @@ export const AddButton = styled('button')`
   color: rgba(18, 28, 45, 0.7);
   font-weight: 600;
   font-size: 13px;
-  cursor: pointer;
+  cursor: ${props => (props.disabled ? 'default' : 'pointer')};
 
   &:hover {
-    background-color: #d8d8d8;
+    ${props => !props.disabled && 'background-color: #d8d8d8'};
   }
+`;
+
+export const Error = styled('p')`
+  display: flex;
+  color: red;
+  margin-left: 12px;
+  margin-bottom: 12px;
+`;
+
+export const ReferralList = styled('ul')`
+  margin-left: 12px;
+  color: rgba(0, 0, 0, 0.7);
+`;
+
+export const ReferralItem = styled('li')`
+  display: flex;
+  margin-bottom: 12px;
+`;
+
+export const ReferralItemInfo = styled('div')`
+  display: flex;
+  flex-direction: column;
+  font-style: italic;
 `;

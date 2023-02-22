@@ -18,6 +18,8 @@ import * as React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { useEffect, useState } from 'react';
+import ReplyIcon from '@material-ui/icons/Reply';
+import ErrorIcon from '@material-ui/icons/Error';
 
 import customContactComponentRegistry, { isParametersWithContactId } from '../../forms/customContactComponentRegistry';
 import { contactFormsBase, namespace, referrableResourcesBase, RootState } from '../../../states';
@@ -30,8 +32,16 @@ import {
 import asyncDispatch from '../../../states/asyncDispatch';
 import { loadResourceAsyncAction, ResourceLoadStatus } from '../../../states/resources';
 import { ReferrableResource } from '../../../services/ResourceService';
-import { Box } from '../../../styles/HrmStyles';
-import { InputWrapper, InputText, AddButton } from './styles';
+import {
+  Container,
+  InputWrapper,
+  InputText,
+  AddButton,
+  ReferralList,
+  ReferralItem,
+  ReferralItemInfo,
+  Error,
+} from './styles';
 
 type OwnProps = {
   taskSid: string;
@@ -123,7 +133,7 @@ const ResourceReferralList: React.FC<Props> = ({
   ]);
 
   return (
-    <Box marginTop="25px">
+    <Container>
       <p>
         <Template code="Resources Shared:" />
       </p>
@@ -137,23 +147,36 @@ const ResourceReferralList: React.FC<Props> = ({
         <AddButton
           type="submit"
           onClick={checkResourceAndAddReferral}
-          disabled={lookupStatus === ReferralLookupStatus.PENDING}
+          disabled={lookupStatus === ReferralLookupStatus.PENDING || !resourceReferralToAddText}
         >
           <Template code="Add" />
         </AddButton>
       </InputWrapper>
       {lookupStatus === ReferralLookupStatus.NOT_FOUND && (
-        <p style={{ color: 'red' }}>No match found for &lsquo;{resourceReferralIdToAdd}&rsquo;, try again</p>
+        <Error>
+          <ErrorIcon style={{ fontSize: '18px', marginRight: '4px' }} />
+          No match found for &lsquo;{resourceReferralIdToAdd}&rsquo;, try again
+        </Error>
       )}
-      <ul>
+      <ReferralList>
         {referrals.map(({ resourceName, resourceId }) => (
-          <li key={resourceId}>
-            {resourceName}
-            <br />#{resourceId}
-          </li>
+          <ReferralItem key={resourceId}>
+            <ReplyIcon
+              style={{
+                transform: 'rotateY(180deg)',
+                fontSize: '18px',
+                color: '#192B33',
+                marginRight: '5px',
+              }}
+            />
+            <ReferralItemInfo>
+              <span>{resourceName}</span>
+              <span>ID #{resourceId}</span>
+            </ReferralItemInfo>
+          </ReferralItem>
         ))}
-      </ul>
-    </Box>
+      </ReferralList>
+    </Container>
   );
 };
 
