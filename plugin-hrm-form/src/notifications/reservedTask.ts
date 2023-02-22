@@ -16,6 +16,7 @@
 
 import { Manager, AudioPlayerManager, AudioPlayerError } from '@twilio/flex-ui';
 
+import { isTwilioTask } from '../types/types';
 import { getHrmConfig } from '../hrmConfig';
 
 const reservedTaskMedias: { [reservationSid: string]: string } = {};
@@ -27,12 +28,14 @@ export const subscribeReservedTaskAlert = () => {
 
 const notifyReservedTask = reservation => {
   try {
-    const { assetsBucketUrl } = getHrmConfig();
+    if (isTwilioTask) {
+      const { assetsBucketUrl } = getHrmConfig();
 
-    const notificationTone = 'ringtone';
-    const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
+      const notificationTone = 'ringtone';
+      const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
 
-    playWhilePending(reservation, notificationUrl);
+      playWhilePending(reservation, notificationUrl);
+    }
   } catch (error) {
     console.error('Error in notifyReservedTask:', error);
   }
