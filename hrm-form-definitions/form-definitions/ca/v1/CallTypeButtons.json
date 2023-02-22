@@ -22,5 +22,11 @@
     "label": "Hang up",
     "type": "button",
     "category": "non-data"
+  },  
+  {
+    "name": "emergency",
+    "label": "CM Only - Emergency",
+    "type": "button",
+    "category": "non-data"
   }
 ]
