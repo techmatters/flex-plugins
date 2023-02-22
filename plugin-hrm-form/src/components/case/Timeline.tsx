@@ -39,10 +39,10 @@ import CaseAddButton from './CaseAddButton';
 import * as RoutingActions from '../../states/routing/actions';
 import { CustomITask } from '../../types/types';
 import { isConnectedCaseActivity } from './caseActivities';
-import { TaskEntry } from '../../states/contacts/reducer';
 import { Activity, ConnectedCaseActivity, NoteActivity, ReferralActivity } from '../../states/case/types';
 import { PermissionActions, PermissionActionType } from '../../permissions';
 import { NewCaseSubroutes, AppRoutesWithCase, CaseItemAction } from '../../states/routing/types';
+import { TaskEntry } from '../../states/contacts/types';
 
 type OwnProps = {
   timelineActivities: Activity[];

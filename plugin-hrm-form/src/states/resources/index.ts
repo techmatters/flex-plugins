@@ -16,77 +16,53 @@
 
 import { addSeconds, isBefore } from 'date-fns';
 import { AnyAction } from 'redux';
+import { createAction, createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
-import { ReferrableResource } from '../../services/ResourceService';
+import { ReferrableResource, getResource } from '../../services/ResourceService';
 import { ReferrableResourceSearchState, initialState as initialSearchState, resourceSearchReducer } from './search';
 
 export const enum ResourcePage {
   ViewResource = 'view-resource',
   Search = 'search',
 }
+
+export enum ResourceLoadStatus {
+  Loading = 'loading',
+  Loaded = 'loaded',
+  Error = 'error',
+}
+
 type ResourceRoute = { page: ResourcePage.ViewResource; id: string } | { page: ResourcePage.Search };
 
 const RESOURCE_EXPIRY_SECONDS = 60 * 10; // 10 minutes
 
-const ADD_RESOURCE = 'resource-action/add-resource';
+const LOAD_ACTION = 'resource-action/load-resource';
 
-type AddResourceAction = {
-  type: typeof ADD_RESOURCE;
-  resource: ReferrableResource;
-};
-
-// eslint-disable-next-line import/no-unused-modules
-export const addResourceAction = (resource: ReferrableResource): AddResourceAction => ({
-  type: ADD_RESOURCE,
-  resource,
-});
-
-const LOAD_RESOURCE_ERROR = 'resource-action/load-resource-error';
-
-type LoadResourceErrorAction = {
-  type: typeof LOAD_RESOURCE_ERROR;
-  id: string;
-  error: Error;
-};
-
-export const loadResourceErrorAction = (id: string, error: Error): LoadResourceErrorAction => ({
-  type: LOAD_RESOURCE_ERROR,
-  id,
-  error,
-});
+export const loadResourceAsyncAction = createAsyncAction(
+  LOAD_ACTION,
+  async (id: string): Promise<ReferrableResource> => {
+    return getResource(id);
+  },
+  (id: string) => ({ id }),
+);
 
 const VIEW_RESOURCE = 'resource-action/view-resource';
 
-type ViewResourceAction = {
-  type: typeof VIEW_RESOURCE;
-  id: string;
-};
-
-export const viewResourceAction = (id: string): ViewResourceAction => ({
-  type: VIEW_RESOURCE,
-  id,
-});
+export const viewResourceAction = createAction(VIEW_RESOURCE, id => ({ id }));
 
 const NAVIGATE_TO_SEARCH = 'resource-action/navigate-to-search';
 
-type NavigateToSearchAction = {
-  type: typeof NAVIGATE_TO_SEARCH;
-};
+export const navigateToSearchAction = createAction(NAVIGATE_TO_SEARCH);
 
-// eslint-disable-next-line import/no-unused-modules
-export const navigateToSearchAction = (): NavigateToSearchAction => ({
-  type: NAVIGATE_TO_SEARCH,
-});
-
-// eslint-disable-next-line import/no-unused-modules
 export type ReferrableResourcesState = {
   // eslint-disable-next-line prettier/prettier
   route?: ResourceRoute
   resources: Record<
     string,
-    { loaded: Date } & (
-      | { resource: ReferrableResource; error?: Error }
-      | { error: Error; resource?: ReferrableResource }
+    { updated: Date } & (
+      | { status: ResourceLoadStatus.Loading }
+      | { status: ResourceLoadStatus.Loaded; resource: ReferrableResource; error?: Error }
+      | { status: ResourceLoadStatus.Error; error: Error; resource?: ReferrableResource }
     )
   >;
   search: ReferrableResourceSearchState;
@@ -103,11 +79,53 @@ const initialState: ReferrableResourcesState = {
 const expireOldResources = (inputState: ReferrableResourcesState, now: Date): ReferrableResourcesState => ({
   ...inputState,
   resources: Object.fromEntries(
-    Object.entries(inputState.resources).filter(([, { loaded }]) =>
-      isBefore(now, addSeconds(loaded, RESOURCE_EXPIRY_SECONDS)),
+    Object.entries(inputState.resources).filter(([, { updated }]) =>
+      isBefore(now, addSeconds(updated, RESOURCE_EXPIRY_SECONDS)),
     ),
   ),
 });
+
+const resourceReducer = createReducer(initialState, handleAction => [
+  handleAction(loadResourceAsyncAction.pending as typeof loadResourceAsyncAction, (state, action) => {
+    return {
+      ...state,
+      resources: {
+        ...state.resources,
+        [action.meta.id]: { status: ResourceLoadStatus.Loading, updated: new Date() },
+      },
+    };
+  }),
+  handleAction(loadResourceAsyncAction.fulfilled, (state, action) => {
+    return {
+      ...state,
+      resources: {
+        ...state.resources,
+        [action.payload.id]: { status: ResourceLoadStatus.Loaded, updated: new Date(), resource: action.payload },
+      },
+    };
+  }),
+  handleAction(loadResourceAsyncAction.rejected, (state, action) => {
+    return {
+      ...state,
+      resources: {
+        ...state.resources,
+        [(action as any).meta.id]: { status: ResourceLoadStatus.Error, updated: new Date(), error: action.payload },
+      },
+    };
+  }),
+  handleAction(viewResourceAction, (state, { payload }) => {
+    return {
+      ...state,
+      route: { page: ResourcePage.ViewResource, id: payload.id },
+    };
+  }),
+  handleAction(navigateToSearchAction, state => {
+    return {
+      ...state,
+      route: { page: ResourcePage.Search },
+    };
+  }),
+]);
 
 export function reduce(inputState = initialState, action: AnyAction): ReferrableResourcesState {
   const now = new Date();
@@ -115,40 +133,5 @@ export function reduce(inputState = initialState, action: AnyAction): Referrable
     ...expireOldResources(inputState, now),
     search: resourceSearchReducer(inputState.search, action),
   };
-
-  switch (action.type) {
-    case ADD_RESOURCE: {
-      return {
-        ...state,
-        resources: {
-          ...state.resources,
-          [action.resource.id]: { resource: action.resource, loaded: now },
-        },
-      };
-    }
-    case LOAD_RESOURCE_ERROR: {
-      return {
-        ...state,
-        resources: {
-          ...state.resources,
-          [action.id]: { error: action.error, loaded: now },
-        },
-      };
-    }
-    case VIEW_RESOURCE: {
-      return {
-        ...state,
-        route: { page: ResourcePage.ViewResource, id: action.id },
-      };
-    }
-    case NAVIGATE_TO_SEARCH: {
-      return {
-        ...state,
-        route: { page: ResourcePage.Search },
-      };
-    }
-
-    default:
-      return state;
-  }
+  return resourceReducer(state, action as any);
 }

@@ -26,7 +26,7 @@ import {
   isNonSaveable,
 } from 'hrm-form-definitions';
 
-import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
+import { createNewTaskEntry } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/validationRules';
 import { getQueryParams } from './PaginationParams';
 import { fillEndMillis, getConversationDuration } from '../utils/conversationDuration';
@@ -44,6 +44,7 @@ import {
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
+import { TaskEntry } from '../states/contacts/types';
 
 type NestedInformation = { name?: { firstName: string; lastName: string } };
 type LegacyInformationObject = NestedInformation & {
@@ -189,7 +190,7 @@ type NewHrmServiceContact = Omit<HrmServiceContact, 'id' | 'updatedAt' | 'update
  */
 const saveContactToHrm = async (
   task,
-  form,
+  form: TaskEntry,
   workerSid: string,
   uniqueIdentifier: string,
   shouldFillEndMillis = true,
@@ -223,7 +224,7 @@ const saveContactToHrm = async (
   // This might change if isNonDataCallType, that's why we use rawForm
   const timeOfContact = new Date(getDateTime(rawForm.contactlessTask)).toISOString();
 
-  const { helpline, csamReports } = form;
+  const { helpline, csamReports, referrals } = form;
 
   let channelSid;
   let serviceSid;
@@ -270,6 +271,7 @@ const saveContactToHrm = async (
     channelSid,
     serviceSid,
     csamReports,
+    referrals,
   };
 
   const options = {
@@ -298,7 +300,7 @@ export const updateContactInHrm = async (
 
 export const saveContact = async (
   task,
-  form,
+  form: TaskEntry,
   workerSid: string,
   uniqueIdentifier: string,
   shouldFillEndMillis = true,
