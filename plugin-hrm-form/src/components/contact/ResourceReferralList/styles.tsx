@@ -31,6 +31,10 @@ export const InputText = styled('input')`
   &:focus {
     outline: none;
   }
+
+  &:disabled {
+    background-color: white;
+  }
 `;
 
 type AddButtonProps = {

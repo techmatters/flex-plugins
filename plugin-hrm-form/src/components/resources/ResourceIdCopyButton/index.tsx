@@ -15,10 +15,11 @@
  */
 
 import * as React from 'react';
-import { Button } from '@twilio/flex-ui';
 import CopyIcon from '@material-ui/icons/FileCopyOutlined';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import { useState } from 'react';
+
+import { Button } from './styles';
 
 type OwnProps = {
   resourceId: string;
@@ -35,11 +36,11 @@ const ResourceIdCopyButton: React.FC<OwnProps> = ({ resourceId }) => {
 
   return justCopied ? (
     <Button type="button">
-      <CheckIcon /> Copied!
+      <CheckIcon style={{ marginRight: '8px' }} /> Copied!
     </Button>
   ) : (
     <Button type="button" onClick={copyClicked}>
-      <CopyIcon /> Copy ID #{resourceId}
+      <CopyIcon style={{ marginRight: '8px' }} /> Copy ID #{resourceId}
     </Button>
   );
 };
