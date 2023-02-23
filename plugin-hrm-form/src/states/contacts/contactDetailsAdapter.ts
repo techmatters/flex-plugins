@@ -60,7 +60,17 @@ export const hrmServiceContactToSearchContact = (contact: HrmServiceContact): Se
   const { callType, caseInformation } = contact.rawJson;
   const categories = retrieveCategories(caseInformation.categories);
   const notes = caseInformation.callSummary as string;
-  const { conversationDuration, csamReports, createdBy, helpline, taskId, channel, updatedBy, updatedAt } = contact;
+  const {
+    conversationDuration,
+    csamReports,
+    referrals,
+    createdBy,
+    helpline,
+    taskId,
+    channel,
+    updatedBy,
+    updatedAt,
+  } = contact;
 
   return {
     contactId: contact.id,
@@ -81,6 +91,7 @@ export const hrmServiceContactToSearchContact = (contact: HrmServiceContact): Se
     },
     details: contact.rawJson,
     csamReports,
+    referrals,
   };
 };
 
@@ -102,6 +113,7 @@ export const searchContactToHrmServiceContact = (contact: SearchAPIContact): Hrm
     number: customerNumber,
     rawJson: contact.details,
     csamReports: contact.csamReports,
+    referrals: contact.referrals,
     timeOfContact: dateTime,
     twilioWorkerId: counselor,
     conversationDuration,
@@ -126,7 +138,7 @@ export const taskFormToSearchContact = (task, form, date, counselor, temporaryId
   const notes = caseInformation.callSummary as string;
   const { channelType, taskSid } = task;
   const conversationDuration = getConversationDuration(task, form.metadata);
-  const { csamReports, helpline } = form;
+  const { csamReports, helpline, referrals } = form;
 
   return {
     contactId: temporaryId,
@@ -145,5 +157,6 @@ export const taskFormToSearchContact = (task, form, date, counselor, temporaryId
     },
     details,
     csamReports,
+    referrals,
   };
 };
