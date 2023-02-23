@@ -18,8 +18,8 @@
     }
   },
   {
-    "name": "relationshipToChild",
-    "label": "Relationship to child",
+    "name": "relationshipCallerChild",
+    "label": "Relationship between Caller & Child",
     "type": "select",
     "options": [
       {
@@ -27,44 +27,124 @@
         "label": ""
       },
       {
-        "value": "Caregiver",
-        "label": "Caregiver"
+        "value": "Mother",
+        "label": "Mother"
       },
       {
-        "value": "Friend",
-        "label": "Friend"
+        "value": "Father",
+        "label": "Father"
       },
       {
-        "value": "Grandparent",
-        "label": "Grandparent"
+        "value": "Step Parent",
+        "label": "Step Parent"
+      },
+      {
+        "value": "Care Giver",
+        "label": "Care Giver"
+      },
+      {
+        "value": "Guardian",
+        "label": "Guardian"
+      },
+      {
+        "value": "Brother",
+        "label": "Brother"
+      },
+      {
+        "value": "Sister",
+        "label": "Sister"
+      },
+      {
+        "value": "Cousin",
+        "label": "Cousin"
+      },
+      {
+        "value": "Uncle",
+        "label": "Uncle"
+      },
+      {
+        "value": "Aunt",
+        "label": "Aunt"
+      },
+      {
+        "value": "Nephew",
+        "label": "Nephew"
+      },
+      {
+        "value": "Niece",
+        "label": "Niece"
       },
       {
         "value": "Neighbour",
         "label": "Neighbour"
       },
       {
-        "value": "Parent",
-        "label": "Parent"
-      },
-      {
-        "value": "Partner",
-        "label": "Partner"
-      },
-      {
-        "value": "Person in a position of responsibility",
-        "label": "Person in a position of responsibility"
-      },
-      {
-        "value": "Sibling",
-        "label": "Sibling"
+        "value": "Friend",
+        "label": "Friend"
       },
       {
         "value": "Stranger",
         "label": "Stranger"
       },
       {
+        "value": "Anonymous",
+        "label": "Anonymous"
+      },
+      {
+        "value": "Doctor",
+        "label": "Doctor"
+      },
+      {
+        "value": "Teacher",
+        "label": "Teacher"
+      },
+      {
+        "value": "Social Worker",
+        "label": "Social Worker"
+      },
+      {
+        "value": "Police",
+        "label": "Police"
+      },
+      {
+        "value": "Self",
+        "label": "Self"
+      },
+      {
         "value": "Other",
         "label": "Other"
+      },
+      {
+        "value": "Community Member",
+        "label": "Community Member"
+      },
+      {
+        "value": "Health Worker",
+        "label": "Health Worker"
+      },
+      {
+        "value": "Grandparents",
+        "label": "Grandparents"
+      },
+      {
+        "value": "Pupil/Scholar",
+        "label": "Pupil/Scholar"
+      },
+      {
+        "value": "Psychologist",
+        "label": "Psychologist"
+      },
+      {
+        "value": "Employer/Colleague",
+        "label": "Employer/Colleague"
+      },
+      {
+        "value": "Spouse/Partner",
+        "label": "Spouse/Partner"
+      },
+      {
+        "value": "Community Child Care Worker",
+        "label": "Community Child Care Worker"
       }
     ]
   },
