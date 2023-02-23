@@ -24,6 +24,9 @@ const mockFlexManager = {
     on: jest.fn(),
   },
 };
+jest.mock('../../types/types', () => ({
+  isTwilioTask: jest.fn().mockReturnValue(true),
+}));
 
 jest.mock('@twilio/flex-ui', () => ({
   ...(jest.requireActual('@twilio/flex-ui') as any),
@@ -51,12 +54,25 @@ describe('Notification for a reserved task ', () => {
     expect(mockFlexManager.workerClient.on).toHaveBeenCalledWith('reservationCreated', notifyReservedTask);
   });
 
-  test('audio notification should play when a reservation is pending state', () => {
+  test('audio notification should play when a reservation is pending state for an online task reservation', () => {
     const mockReservation = {
       sid: 'reservation-sid',
       status: 'pending',
+      task: {
+        taskSid: 'twilio-task-sid',
+        attributes: {
+          isContactlessTask: false,
+        },
+      },
     };
+    const isTwilioTask = jest.fn().mockReturnValue(true);
+    isTwilioTask(mockReservation.task);
     notifyReservedTask(mockReservation);
+    const notificationUrl = 'http://assets.fake.com/notifications/ringtone.mp3';
+
+    const playWhilePendingMock = jest.fn();
+    playWhilePendingMock(mockReservation, notificationUrl);
+
     expect(AudioPlayerManager.play).toHaveBeenCalledWith(
       {
         url: 'http://assets.fake.com/notifications/ringtone.mp3',
@@ -71,7 +87,6 @@ describe('Notification for a reserved task ', () => {
       status: 'accepted',
     };
     notifyReservedTask(mockReservation);
-
     const notificationUrl = 'http://assets.fake.com/notifications/ringtone.mp3';
 
     const playWhilePendingMock = jest.fn();
