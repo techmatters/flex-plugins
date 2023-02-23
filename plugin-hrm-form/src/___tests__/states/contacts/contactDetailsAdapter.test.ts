@@ -124,6 +124,7 @@ describe('hrmServiceContactToSearchContact', () => {
       },
       details: input.rawJson,
       csamReports: [],
+      referrals: undefined,
     });
   });
 
@@ -148,6 +149,7 @@ describe('hrmServiceContactToSearchContact', () => {
       },
       details: input.rawJson,
       csamReports: [],
+      referrals: undefined,
     });
   });
 
@@ -164,11 +166,13 @@ describe('hrmServiceContactToSearchContact', () => {
           createdAt: 'yesterday',
         },
       ],
+      referrals: undefined,
     };
     expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
       contactId: undefined,
       overview: emptyOverview,
       csamReports: input.csamReports,
+      referrals: undefined,
       details: input.rawJson,
     });
   });
@@ -185,6 +189,7 @@ describe('hrmServiceContactToSearchContact', () => {
       contactId: undefined,
       overview: { ...emptyOverview, callType: input.rawJson.callType },
       csamReports: [],
+      referrals: undefined,
       details: input.rawJson,
     });
   });
@@ -198,6 +203,7 @@ describe('hrmServiceContactToSearchContact', () => {
       contactId: input.id,
       overview: emptyOverview,
       csamReports: [],
+      referrals: undefined,
       details: input.rawJson,
     });
   });
@@ -217,6 +223,7 @@ describe('hrmServiceContactToSearchContact', () => {
       contactId: undefined,
       overview: { ...emptyOverview, notes: input.rawJson.caseInformation.callSummary },
       csamReports: [],
+      referrals: undefined,
       details: input.rawJson,
     });
   });
@@ -230,6 +237,7 @@ describe('hrmServiceContactToSearchContact', () => {
       contactId: undefined,
       overview: { ...emptyOverview, counselor: input.twilioWorkerId },
       csamReports: [],
+      referrals: undefined,
       details: input.rawJson,
     });
   });
@@ -243,6 +251,7 @@ describe('hrmServiceContactToSearchContact', () => {
       contactId: undefined,
       overview: { ...emptyOverview, dateTime: input.timeOfContact },
       csamReports: [],
+      referrals: undefined,
       details: input.rawJson,
     });
   });
@@ -291,6 +300,7 @@ describe('searchContactToHrmServiceContact', () => {
       contactlessTask: { channel: 'voice' },
       conversationMedia: [],
     },
+    referrals: undefined,
   };
 
   test('maps SearchContact overview to top level properties', () => {
@@ -314,6 +324,7 @@ describe('searchContactToHrmServiceContact', () => {
       id: baseSearchContact.contactId,
       rawJson: baseSearchContact.details,
       csamReports: baseSearchContact.csamReports,
+      referrals: baseSearchContact.referrals,
     });
   });
 });
