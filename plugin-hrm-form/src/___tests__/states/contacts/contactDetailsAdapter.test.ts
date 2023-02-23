@@ -177,6 +177,26 @@ describe('hrmServiceContactToSearchContact', () => {
     });
   });
 
+  test('input referrals are added to top level as is', () => {
+    const input: HrmServiceContact = {
+      ...emptyHrmContact,
+      referrals: [
+        {
+          resourceId: 'TEST_RESOURCE',
+          referredAt: new Date().toISOString(),
+          resourceName: 'A test referred resource',
+        },
+      ],
+    };
+    expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
+      contactId: undefined,
+      overview: emptyOverview,
+      csamReports: [],
+      referrals: input.referrals,
+      details: input.rawJson,
+    });
+  });
+
   test('input rawJson.callType is added to overview as is', () => {
     const input = {
       ...emptyHrmContact,
@@ -292,6 +312,13 @@ describe('searchContactToHrmServiceContact', () => {
         acknowledged: true,
       },
     ],
+    referrals: [
+      {
+        resourceId: 'TEST_RESOURCE',
+        referredAt: new Date().toISOString(),
+        resourceName: 'A test referred resource',
+      },
+    ],
     details: {
       callType: 'child',
       childInformation: { firstName: 'Lo', lastName: 'Ballantyne' },
@@ -300,7 +327,6 @@ describe('searchContactToHrmServiceContact', () => {
       contactlessTask: { channel: 'voice' },
       conversationMedia: [],
     },
-    referrals: undefined,
   };
 
   test('maps SearchContact overview to top level properties', () => {
@@ -318,7 +344,7 @@ describe('searchContactToHrmServiceContact', () => {
     });
   });
 
-  test('copies details, csamReports and contactId to top level', () => {
+  test('copies details, csamReports, referrals and contactId to top level', () => {
     const hrmContact = searchContactToHrmServiceContact(baseSearchContact);
     expect(hrmContact).toMatchObject({
       id: baseSearchContact.contactId,
