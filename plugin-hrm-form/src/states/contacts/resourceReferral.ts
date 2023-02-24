@@ -113,8 +113,14 @@ export const resourceReferralReducer = (initialState: ContactsState) =>
       patchUnsavedContactReferralResourceState(state, taskId, { lookupStatus: status }),
     ),
     handleAction(addResourceReferralForUnsavedContactAction, (state, { payload: { taskId, resource } }) => {
-      if (!state.tasks[taskId] || state.tasks[taskId].referrals?.find(r => r.resourceId === resource.id)) {
+      if (!state.tasks[taskId]) {
         return state;
+      }
+      if (state.tasks[taskId].referrals?.find(r => r.resourceId === resource.id)) {
+        // Don't add a referral if it already exists
+        return patchUnsavedContactReferralResourceState(state, taskId, {
+          lookupStatus: ReferralLookupStatus.NOT_STARTED,
+        });
       }
       return {
         ...state,

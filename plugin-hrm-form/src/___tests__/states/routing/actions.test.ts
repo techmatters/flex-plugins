@@ -16,6 +16,7 @@
 
 import * as types from '../../../states/routing/types';
 import * as actions from '../../../states/routing/actions';
+import { AppRoutesWithCase } from '../../../states/routing/types';
 
 const task = { taskSid: 'task1' };
 
@@ -27,9 +28,11 @@ describe('test action creators', () => {
       taskId: task.taskSid,
     });
 
-    expect(actions.changeRoute({ route: 'new-case', subroute: 'add-note' }, task.taskSid)).toStrictEqual({
+    expect(
+      actions.changeRoute({ route: 'new-case', subroute: 'note' } as AppRoutesWithCase, task.taskSid),
+    ).toStrictEqual({
       type: types.CHANGE_ROUTE,
-      routing: { route: 'new-case', subroute: 'add-note' },
+      routing: { route: 'new-case', subroute: 'note' },
       taskId: task.taskSid,
     });
   });
@@ -51,9 +54,14 @@ describe('test action creators', () => {
   });
 
   test('changeRoute (csam-report route)', async () => {
-    expect(actions.changeRoute({ route: 'csam-report', subroute: 'form' }, task.taskSid)).toStrictEqual({
+    expect(
+      actions.changeRoute(
+        { route: 'csam-report', subroute: 'form', previousRoute: { route: 'new-case' } },
+        task.taskSid,
+      ),
+    ).toStrictEqual({
       type: types.CHANGE_ROUTE,
-      routing: { route: 'csam-report', subroute: 'form' },
+      routing: { route: 'csam-report', subroute: 'form', previousRoute: { route: 'new-case' } },
       taskId: task.taskSid,
     });
   });

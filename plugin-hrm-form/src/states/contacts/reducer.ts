@@ -112,7 +112,8 @@ export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated
   };
 };
 
-const initialState: ContactsState = {
+// exposed for testing
+export const initialState: ContactsState = {
   tasks: {},
   existingContacts: {},
   contactDetails: {
