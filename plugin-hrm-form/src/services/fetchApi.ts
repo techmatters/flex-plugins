@@ -75,6 +75,10 @@ export const fetchApi = async (baseUrl: URL, endpointPath: string, options: Requ
     }
     throw new ApiError(`Error response: ${response.status} (${response.statusText})`, { response, body });
   }
-
-  return response.json() as Promise<any>;
+  let result;
+  try {
+    result = (await response.json()) as Promise<any>;
+  } finally {
+    return result;
+  }
 };
