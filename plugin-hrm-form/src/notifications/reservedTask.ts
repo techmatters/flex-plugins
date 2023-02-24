@@ -28,7 +28,7 @@ export const subscribeReservedTaskAlert = () => {
 
 const notifyReservedTask = reservation => {
   try {
-    if (isTwilioTask) {
+    if (isTwilioTask(reservation.task)) {
       const { assetsBucketUrl } = getHrmConfig();
 
       const notificationTone = 'ringtone';

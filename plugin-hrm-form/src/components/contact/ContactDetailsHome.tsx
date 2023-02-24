@@ -23,7 +23,7 @@ import { callTypes, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
-import { Flex, Box } from '../../styles/HrmStyles';
+import { Flex, Box, Row } from '../../styles/HrmStyles';
 import { CSAMReportEntry, isS3StoredTranscript, isTwilioStoredMedia, SearchAPIContact } from '../../types/types';
 import {
   DetailsContainer,
@@ -47,7 +47,20 @@ import { createDraft, ContactDetailsRoute } from '../../states/contacts/existing
 import { TranscriptSection } from './TranscriptSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import { contactLabelFromSearchContact } from '../../states/contacts/contactIdentifier';
+import type { ResourceReferral } from '../../states/contacts/resourceReferral';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
+
+const formatResourceReferral = (referral: ResourceReferral) => {
+  return (
+    <Box marginBottom="5px">
+      <SectionValueText>
+        {referral.resourceName}
+        <br />
+        <Row>ID #{referral.resourceId}</Row>
+      </SectionValueText>
+    </Box>
+  );
+};
 
 const formatCsamReport = (report: CSAMReportEntry) => {
   const template =
@@ -116,7 +129,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   if (!savedContact || !definitionVersion) return null;
 
   // Object destructuring on contact
-  const { overview, details, csamReports } = savedContact as SearchAPIContact;
+  const { overview, details, csamReports, referrals } = savedContact as SearchAPIContact;
   const {
     counselor,
     dateTime,
@@ -359,6 +372,11 @@ const ContactDetailsHome: React.FC<Props> = function ({
               />
             </SectionEntry>
           ))}
+          {referrals && referrals.length && (
+            <SectionEntry descriptionKey="ContactDetails-GeneralDetails-ResourcesReferrals">
+              {referrals.map(formatResourceReferral)}
+            </SectionEntry>
+          )}
           {csamReportEnabled && can(PermissionActions.EDIT_CONTACT) && (
             <SectionEntry descriptionKey="ContactDetails-GeneralDetails-ExternalReportsFiled">
               {externalReportButton()}
