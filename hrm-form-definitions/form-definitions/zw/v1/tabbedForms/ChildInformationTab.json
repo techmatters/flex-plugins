@@ -503,6 +503,8 @@
   {
     "name": "AddressDescription",
     "label": "Describe the Address",
-    "type": "input"
+    "type": "textarea",
+    "rows": 20,
+    "width": 250
   }
 ]
