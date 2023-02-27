@@ -23,7 +23,7 @@
     "type": "select",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
@@ -145,8 +145,16 @@
       {
         "value": "Community Child Care Worker",
         "label": "Community Child Care Worker"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "streetAddress",
@@ -157,20 +165,11 @@
     "name": "province",
     "label": "Province",
     "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Central",
-        "label": "Central"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ],
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "provinceOptions",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -185,32 +184,7 @@
       "value": "",
       "label": ""
     },
-    "options": {
-      "District1": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ],
-      "District2": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "optionsReferenceKey": "districtOptions"
   },
   {
     "name": "phone1",

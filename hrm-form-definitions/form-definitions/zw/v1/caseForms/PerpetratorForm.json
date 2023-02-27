@@ -90,20 +90,11 @@
     "name": "province",
     "label": "Province",
     "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Central",
-        "label": "Central"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ],
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "provinceOptions",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -118,32 +109,7 @@
       "value": "",
       "label": ""
     },
-    "options": {
-      "District1": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ],
-      "District2": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "optionsReferenceKey": "districtOptions"
   },
   {
     "name": "phone1",
@@ -486,5 +452,12 @@
     "name": "idNumber",
     "label": "ID Number",
     "type": "input"
+  },
+  {
+    "name": "copyToHousehold",
+    "label": "This perpetrator is also a household member",
+    "type": "copy-to",
+    "target": "households",
+    "saveable": false
   }
 ]
