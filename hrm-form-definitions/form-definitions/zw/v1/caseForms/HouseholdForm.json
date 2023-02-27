@@ -446,7 +446,33 @@
   {
     "name": "race",
     "label": "Race",
-    "type": "input"
+    "type": "select",
+     "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Asian",
+        "label": "Asian"
+      },
+      {
+        "value": "Black",
+        "label": "Black"
+      },
+      {
+        "value": "Coloured",
+        "label": "Coloured"
+      },
+      {
+        "value": "White",
+        "label": "White"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ]
   },
   {
     "name": "AddressDescription",
