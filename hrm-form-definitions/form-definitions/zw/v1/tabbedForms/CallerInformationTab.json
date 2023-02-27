@@ -181,7 +181,7 @@
     "type": "dependent-select",
     "dependsOn": "province",
     "defaultOption": {
-      "value": "",
+      "value": "Unknown",
       "label": ""
     },
     "optionsReferenceKey": "districtOptions"
@@ -352,21 +352,6 @@
       {
         "value": "Other",
         "label": "Other"
-      }
-    ]
-  },
-  {
-    "name": "language",
-    "label": "Language",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "language1",
-        "label": "language1"
       }
     ]
   },
