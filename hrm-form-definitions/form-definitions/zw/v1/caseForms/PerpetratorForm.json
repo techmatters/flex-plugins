@@ -17,9 +17,9 @@
       "message": "RequiredFieldError"
     }
   },
-  {
+    {
     "name": "relationshipToChild",
-    "label": "Relationship to child",
+    "label": "Relationship to Child",
     "type": "select",
     "options": [
       {
@@ -27,44 +27,120 @@
         "label": ""
       },
       {
-        "value": "Caregiver",
-        "label": "Caregiver"
+        "value": "Mother",
+        "label": "Mother"
       },
       {
-        "value": "Friend",
-        "label": "Friend"
+        "value": "Father",
+        "label": "Father"
       },
       {
-        "value": "Grandparent",
-        "label": "Grandparent"
+        "value": "Step Parent",
+        "label": "Step Parent"
+      },
+      {
+        "value": "Care Giver",
+        "label": "Care Giver"
+      },
+      {
+        "value": "Guardian",
+        "label": "Guardian"
+      },
+      {
+        "value": "Brother",
+        "label": "Brother"
+      },
+      {
+        "value": "Sister",
+        "label": "Sister"
+      },
+      {
+        "value": "Cousin",
+        "label": "Cousin"
+      },
+      {
+        "value": "Uncle",
+        "label": "Uncle"
+      },
+      {
+        "value": "Aunt",
+        "label": "Aunt"
+      },
+      {
+        "value": "Nephew",
+        "label": "Nephew"
+      },
+      {
+        "value": "Niece",
+        "label": "Niece"
       },
       {
         "value": "Neighbour",
         "label": "Neighbour"
       },
       {
-        "value": "Parent",
-        "label": "Parent"
-      },
-      {
-        "value": "Partner",
-        "label": "Partner"
-      },
-      {
-        "value": "Person in a position of responsibility",
-        "label": "Person in a position of responsibility"
-      },
-      {
-        "value": "Sibling",
-        "label": "Sibling"
+        "value": "Friend",
+        "label": "Friend"
       },
       {
         "value": "Stranger",
         "label": "Stranger"
       },
       {
+        "value": "Anonymous",
+        "label": "Anonymous"
+      },
+      {
+        "value": "Doctor",
+        "label": "Doctor"
+      },
+      {
+        "value": "Teacher",
+        "label": "Teacher"
+      },
+      {
+        "value": "Social Worker",
+        "label": "Social Worker"
+      },
+      {
+        "value": "Police",
+        "label": "Police"
+      },
+      {
         "value": "Other",
         "label": "Other"
+      },
+      {
+        "value": "Community Member",
+        "label": "Community Member"
+      },
+      {
+        "value": "Health Worker",
+        "label": "Health Worker"
+      },
+      {
+        "value": "Grandparents",
+        "label": "Grandparents"
+      },
+      {
+        "value": "Pupil/Scholar",
+        "label": "Pupil/Scholar"
+      },
+      {
+        "value": "Psychologist",
+        "label": "Psychologist"
+      },
+      {
+        "value": "Employer/Colleague",
+        "label": "Employer/Colleague"
+      },
+      {
+        "value": "Spouse/Partner",
+        "label": "Spouse/Partner"
+      },
+      {
+        "value": "Community Child Care Worker",
+        "label": "Community Child Care Worker"
       },
       {
         "value": "Unknown",
@@ -106,7 +182,7 @@
     "type": "dependent-select",
     "dependsOn": "province",
     "defaultOption": {
-      "value": "",
+      "value": "Unknown",
       "label": ""
     },
     "optionsReferenceKey": "districtOptions"
@@ -148,7 +224,7 @@
     }
   },
   {
-    "name": "DOB",
+    "name": "dateOfBirth",
     "label": "Date of Birth",
     "type": "date-input"
   },
@@ -166,39 +242,39 @@
         "label": "0"
       },
       {
-        "value": "1",
+        "value": "01",
         "label": "1"
       },
       {
-        "value": "2",
+        "value": "02",
         "label": "2"
       },
       {
-        "value": "3",
+        "value": "03",
         "label": "3"
       },
       {
-        "value": "4",
+        "value": "04",
         "label": "4"
       },
       {
-        "value": "5",
+        "value": "05",
         "label": "5"
       },
       {
-        "value": "6",
+        "value": "06",
         "label": "6"
       },
       {
-        "value": "7",
+        "value": "07",
         "label": "7"
       },
       {
-        "value": "8",
+        "value": "08",
         "label": "8"
       },
       {
-        "value": "9",
+        "value": "09",
         "label": "9"
       },
       {
@@ -424,21 +500,6 @@
     }
   },
   {
-    "name": "language",
-    "label": "Language",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "language1",
-        "label": "language1"
-      }
-    ]
-  },
-  {
     "name": "ethnicity",
     "label": "Ethnicity",
     "type": "input"
@@ -467,10 +528,6 @@
       {
         "value": "White",
         "label": "White"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
       }
     ]
   },
