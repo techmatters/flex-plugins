@@ -67,7 +67,11 @@
         "value": "Outreach",
         "label": "Outreach"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "location",
@@ -75,13 +79,13 @@
     "type": "dependent-select",
     "dependsOn": "department",
     "defaultOption": {
-      "value": "unknown",
+      "value": "Unknown",
       "label": ""
     },
     "options": {
       "Helpline": [
         {
-          "value": "unknown",
+          "value": "Unknown",
           "label": ""
         },
         {
@@ -241,14 +245,14 @@
       ],
       "Outreach": [
         {
-          "value": "unknown",
-          "label": ""
-        },
-        {
-          "value": "",
-          "label": ""
+          "value": "Not Applicable",
+          "label": "Not Applicable"
         }
       ]
+    },
+     "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     }
   },
   {
