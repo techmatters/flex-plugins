@@ -153,7 +153,7 @@
     }
   },
   {
-    "name": "Date of Birth",
+    "name": "dateOfBirth",
     "type": "date-input",
     "label": "Date of Birth"
   },
@@ -564,25 +564,6 @@
     }
   },
   {
-    "name": "language",
-    "label": "Language",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "language1",
-        "label": "language1"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ]
-  },
-  {
     "name": "ethnicity",
     "label": "Ethnicity",
     "type": "input"
@@ -652,12 +633,28 @@
         "label": "Grade 5 to 7"
       },
       {
-        "value": "Grade 8 to 9",
-        "label": "Grade 8 to 9"
+        "value": "Form 1",
+        "label": "Form 1"
       },
       {
-        "value": "Grade 10 to 12",
-        "label": "Grade 10 to 12"
+        "value": "Form 2",
+        "label": "Form 2"
+      },
+      {
+        "value": "Form 3",
+        "label": "Form 3"
+      },
+      {
+        "value": "Form 4",
+        "label": "Form 4"
+      },
+      {
+        "value": "Form 5",
+        "label": "Form 5"
+      },
+      {
+        "value": "Form 6",
+        "label": "Form 6"
       },
       {
         "value": "Out of School",

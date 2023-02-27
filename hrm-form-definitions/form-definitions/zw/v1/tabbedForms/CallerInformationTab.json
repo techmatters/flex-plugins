@@ -18,8 +18,8 @@
     }
   },
   {
-    "name": "relationshipCallerChild",
-    "label": "Relationship between Caller & Child",
+    "name": "relationshipToChild",
+    "label": "Relationship to Child",
     "type": "select",
     "options": [
       {
