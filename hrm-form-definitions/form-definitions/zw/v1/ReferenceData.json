@@ -2,7 +2,7 @@
 
     "provinceOptions": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
@@ -44,6 +44,10 @@
       {
         "value": "MAS",
         "label": "MAS"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ],
     "districtOptions": {
