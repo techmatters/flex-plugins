@@ -1,397 +1,1765 @@
 {
   "Helpline Centre": {
-    "Missing children": {
+    "Abuse": {
       "color": "#BBE3FF",
       "subcategories": [
-        {"label": "Child abduction"},
-        {"label": "Lost, unaccounted for or otherwise missing child"},
-        {"label": "Runaway"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Abduction"
+        },
+        {
+          "label": "Emotional Abuse"
+        },
+        {
+          "label": "Exposure to criminal violence"
+        },
+        {
+          "label": "Exposure to domestic violence"
+        },
+        {
+          "label": "Physical Abuse"
+        },
+        {
+          "label": "Sexual abuse"
+        },
+        {
+          "label": "Trafficking"
+        },
+        {
+          "label": "Child marriage"
+        },
+        {
+          "label": "Theft"
+        }
       ]
     },
-    "Violence": {
+    "Alternative care": {
       "color": "#F5A623",
       "subcategories": [
-        {"label": "Bullying"},
-        {"label": "Child/Early/Forced marriage"},
-        {"label": "Child labour"},
-        {"label": "Commercial sexual exploitation (offline)"},
-        {"label": "Female Genital Mutilation (FGM)"},
-        {"label": "Gender-based harmful traditional practices (other than FGM)"},
-        {"label": "Harmful traditional practices other than child marriage and FGM"},
-        {"label": "Mental/Emotional violence"},
-        {"label": "Neglect (or negligent treatment)"},
-        {"label": "Online sexual abuse"},
-        {"label": "Online sexual exploitation"},
-        {"label": "Physical violence"},
-        {"label": "Sexual violence"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Adoption"
+        },
+        {
+          "label": "Foster Care"
+        },
+        {
+          "label": "Informal Boarding"
+        },
+        {
+          "label": "Institution Care"
+        }
       ]
     },
-    "Mental Health": {
+    "Commercial exploitation": {
       "color": "#F8E900",
       "subcategories": [
-        {"label": "Addictive behaviours and substance use"},
-        {"label": "Behavioural problems"},
-        {"label": "Concerns about the self"},
-        {"label": "Emotional distress – anger problems"},
-        {"label": "Emotional distress – fear and anxiety problems"},
-        {"label": "Emotional distress – mood problems"},
-        {"label": "Neurodevelopmental concerns"},
-        {"label": "Problems with eating behaviour"},
-        {"label": "Self-harming behaviour"},
-        {"label": "Suicidal thoughts and suicide attempts"},
-        {"label": "Traumatic distress"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Child begging"
+        },
+        {
+          "label": "Child prostitution/ Commercial Sexual Exploitation"
+        },
+        {
+          "label": "Child used for criminal activity"
+        },
+        {
+          "label": "Child vendors"
+        },
+        {
+          "label": "Children used by adults to commit crime"
+        },
+        {
+          "label": "Domestic child labour"
+        },
+        {
+          "label": "Farm child labour"
+        },
+        {
+          "label": "General child labour"
+        },
+        {
+          "label": "Child involved in pornography"
+        }
       ]
     },
-    "Physical Health": {
+    "Disability": {
       "color": "#E86B6B",
       "subcategories": [
-        {"label": "COVID-19"},
-        {"label": "General medical or lifestyle concerns"},
-        {"label": "Medical or lifestyle information about HIV/AIDS"},
-        {"label": "Male circumcision"},
-        {"label": "Pregnancy and maternal care"},
-        {"label": "Sexual and reproductive health"},
-        {"label": "Nutrition"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Child mentally disabled"
+        },
+        {
+          "label": "Child physically disabled"
+        },
+        {
+          "label": "Disability of family member"
+        },
+        {
+          "label": "Blindness"
+        }
       ]
     },
-    "Accessibility": {
+    "Discrimination": {
       "color": "#8055BA",
       "subcategories": [
-        {"label": "Education"},
-        {"label": "Essential needs"},
-        {"label": "General healthcare services"},
-        {"label": "Legal services and advice"},
-        {"label": "Mental health services"},
-        {"label": "Sexual health services"},
-        {"label": "Socio-economical services"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Access to school"
+        },
+        {
+          "label": "Gender"
+        },
+        {
+          "label": "Racial"
+        },
+        {
+          "label": "Language"
+        },
+        {
+          "label": "Religion"
+        },
+        {
+          "label": "Sexual orientation/identity"
+        }
       ]
     },
-    "Discrimination and Exclusion": {
+    "Family relationships": {
       "color": "#B971AF",
       "subcategories": [
-        {"label": "Ethnicity/nationality"},
-        {"label": "Financial situation"},
-        {"label": "Gender"},
-        {"label": "Gender identity or expression and sexual orientation"},
-        {"label": "Health"},
-        {"label": "Philosophical or religious beliefs"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Child missing/lost"
+        },
+        {
+          "label": "Child in family care"
+        },
+        {
+          "label": "Conflict between parent and child"
+        },
+        {
+          "label": "Conflict between parents/caretakers"
+        },
+        {
+          "label": "Death and Bereavement"
+        },
+        {
+          "label": "Divorce"
+        },
+        {
+          "label": "Mental ilness - parent"
+        },
+        {
+          "label": "Parents working away from home"
+        },
+        {
+          "label": "Problem with siblings"
+        },
+        {
+          "label": "Seperation"
+        },
+        {
+          "label": "Single Parent"
+        },
+        {
+          "label": "Step family relationship"
+        }
       ]
     },
-    "Family Relationships": {
+    "HIV/AIDS": {
       "color": "#239613",
       "subcategories": [
-        {"label": "Adoption, fostering, and extended family placement"},
-        {"label": "Relationship to caregiver"},
-        {"label": "Family health and wellbeing"},
-        {"label": "Relationship with sibling(s)"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Bereavement"
+        },
+        {
+          "label": "Both parents deceased"
+        },
+        {
+          "label": "Child headed household"
+        },
+        {
+          "label": "Child infected"
+        },
+        {
+          "label": "Child receiving treatment for HIV/AIDS"
+        },
+        {
+          "label": "Father deceased"
+        },
+        {
+          "label": "Mother deceased"
+        },
+        {
+          "label": "Father ill"
+        },
+        {
+          "label": "Mother ill"
+        },
+        {
+          "label": "Other family member ill"
+        },
+        {
+          "label": "Pre/Post test counselling"
+        },
+        {
+          "label": "Vulnerable because of HIV"
+        }
       ]
     },
-    "Peer Relationships": {
+    "Homelessness": {
       "color": "#9AD703",
       "subcategories": [
-        {"label": "Friends and friendships"},
-        {"label": "Partner relationships"},
-        {"label": "Classmates/colleagues relationships"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Family without shelter"
+        },
+        {
+          "label": "Street child"
+        }
       ]
     },
-    "Education and Occupation": {
+    "Legal issues": {
       "color": "#55AFAF",
       "subcategories": [
-        {"label": "Academic issues"},
-        {"label": "Teacher and school problems"},
-        {"label": "Problems at work"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Access/Contact"
+        },
+        {
+          "label": "Adoption"
+        },
+        {
+          "label": "Child in police cells"
+        },
+        {
+          "label": "Child offender"
+        },
+        {
+          "label": "Child witness"
+        },
+        {
+          "label": "Custody/Care"
+        },
+        {
+          "label": "Lack of birth document"
+        },
+        {
+          "label": "Maintenance"
+        }
+      ]
+    },
+    "Neglect": {
+      "color": "#506BA5",
+      "subcategories": [
+        {
+          "label": "Child abandonment"
+        },
+        {
+          "label": "Circumstantial - Child uncared for emotionally"
+        },
+        {
+          "label": "Circumstantial - Child uncared for pysically"
+        },
+        {
+          "label": "Deliberate - Child uncared for emotionally"
+        },
+        {
+          "label": "Deliberate - Child uncared for pysically"
+        }
+      ]
+    },
+    "Out of school peer relationships": {
+      "color": "#767777",
+      "subcategories": [
+        {
+          "label": "Bullying"
+        },
+        {
+          "label": "Relationship problems"
+        }
+      ]
+    },
+    "Poverty": {
+      "color": "#50a5a2",
+      "subcategories": [
+        {
+          "label": "Children starving"
+        },
+        {
+          "label": "Insufficient/No Income"
+        },
+        {
+          "label": "Lack of clothing"
+        },
+        {
+          "label": "Problems with grants and pensions"
+        }
+      ]
+    },
+    "Physical": {
+      "color": "#9AD703",
+      "subcategories": [
+        {
+          "label": "Body image"
+        },
+        {
+          "label": "Health information"
+        },
+        {
+          "label": "Health problems"
+        },
+        {
+          "label": "In need of medical care"
+        }
+      ]
+    },
+    "Psychological health": {
+      "color": "#a55089",
+      "subcategories": [
+        {
+          "label": "Anorexia"
+        },
+        {
+          "label": "Anxiety"
+        },
+        {
+          "label": "Bereavement - peer"
+        },
+        {
+          "label": "Child has difficulty in communicating"
+        },
+        {
+          "label": "Depression"
+        },
+        {
+          "label": "Lack of Confidence"
+        },
+        {
+          "label": "Lacks life purpose"
+        },
+        {
+          "label": "Loneliness"
+        },
+        {
+          "label": "Mental illness of parents/caregiver/child"
+        },
+        {
+          "label": "Self harming"
+        },
+        {
+          "label": "Sleep disorders"
+        },
+        {
+          "label": "Suicidal feelings"
+        },
+        {
+          "label": "Suicide attempts"
+        },
+        {
+          "label": "Suicide of family member"
+        },
+        {
+          "label": "Suicide of friend"
+        },
+        {
+          "label": "Unmanageable anger and frustration"
+        }
+      ]
+    },
+    "Refugee child": {
+      "color": "#F8E900",
+      "subcategories": [
+        {
+          "label": "Fear of repatriation"
+        },
+        {
+          "label": "Lack of documents"
+        },
+        {
+          "label": "Wanting to return home"
+        },
+        {
+          "label": "Xenophobia"
+        }
+      ]
+    },
+    "School problems": {
+      "color": "#F5A623",
+      "subcategories": [
+        {
+          "label": "Bullying"
+        },
+        {
+          "label": "Child not attending school"
+        },
+        {
+          "label": "Child truanting from school"
+        },
+        {
+          "label": "Corporal punishment"
+        },
+        {
+          "label": " Homework"
+        },
+        {
+          "label": "Lack of money for fees"
+        },
+        {
+          "label": "Learning problems"
+        },
+        {
+          "label": "Parents refusing for child to go to school"
+        },
+        {
+          "label": "Perfomance anxiety"
+        },
+        {
+          "label": "Problems with educator"
+        },
+        {
+          "label": "Problems with learners"
+        },
+        {
+          "label": "Study tips"
+        }
       ]
     },
     "Sexuality": {
-      "color": "#506BA5",
+      "color": "#ed0c22",
       "subcategories": [
-        {"label": "Sexual orientation and gender identity"},
-        {"label": "Sexual behaviours"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Abortion/Termination of pregnancy"
+        },
+        {
+          "label": "Contraception"
+        },
+        {
+          "label": "Information about sex"
+        },
+        {
+          "label": "Pregnancy"
+        },
+        {
+          "label": "Saying no to sex"
+        },
+        {
+          "label": "Sexual identity"
+        },
+        {
+          "label": "Sexual problem"
+        },
+        {
+          "label": "Sexulized behaviour"
+        },
+        {
+          "label": "Sexually Transmitted Infections"
+        }
       ]
     },
-    "Non-Counselling contacts": {
+    "Sexual": {
+      "color": "#0cede2",
+      "subcategories": [
+        {
+          "label": "Exposure to pornography"
+        },
+        {
+          "label": "Harassment"
+        },
+        {
+          "label": "Inappropriate sex talk"
+        },
+        {
+          "label": "Rape"
+        },
+        {
+          "label": "Sexual assault"
+        },
+        {
+          "label": "Teenage parent"
+        }
+      ]
+    },
+    "Substance Abuse": {
+      "color": "#d4f569",
+      "subcategories": [
+        {
+          "label": "Child - Alcohol abuse"
+        },
+        {
+          "label": "Child - Other drug abuse"
+        },
+        {
+          "label": "Drug dealing"
+        },
+        {
+          "label": "Information on alcohol/drugs"
+        },
+        {
+          "label": "Parent/caretaker - alcohol abuse"
+        },
+        {
+          "label": "Parent/caretaker - drug abuse"
+        }
+      ]
+    },
+    "Services": {
       "color": "#767777",
       "subcategories": [
-        {"label": "Complaints about the child helpline"},
-        {"label": "Questions by parents"},
-        {"label": "Questions about the child helpline"},
-        {"label": "Questions about other services"},
-        {"label": "\"Thank you for your assistance\""},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Abuse to counsellor"
+        },
+        {
+          "label": "Complaints about Childline services"
+        },
+        {
+          "label": "Request for information"
+        },
+        {
+          "label": "Thanks to Childline service"
+        }
+      ]
+    },
+    "Cholera": {
+      "color": "#edb61f",
+      "subcategories": [
+        {
+          "label": "Infected with Cholera"
+        },
+        {
+          "label": "Affected by Cholera"
+        },
+        {
+          "label": "Request for Cholera information"
+        }
+      ]
+    },
+    "Online Sexual Exploitation and Abuse": {
+      "color": "#284cd1",
+      "subcategories": [
+        {
+          "label": "Online child sexual abuse"
+        },
+        {
+          "label": "Online child sexual exploitation"
+        },
+        {
+          "label": "Online grooming for sexual purposes"
+        },
+        {
+          "label": "Online sexual exploitation"
+        },
+        {
+          "label": "Unwanted sexting"
+        },
+        {
+          "label": "Revenge pornography"
+        },
+        {
+          "label": "Unspecified/Other"
+        }
+      ]
+    },
+    "Cyber-Bullying": {
+      "color": "#E86B6B",
+      "subcategories": [
+        {
+          "label": "Sharing/Posting if private messages/images/videos"
+        },
+        {
+          "label": "Victims of rumors online"
+        },
+        {
+          "label": "Sexual Harassment"
+        },
+        {
+          "label": "Harassment"
+        },
+        {
+          "label": "Victim impersonation"
+        },
+        {
+          "label": "Victim of discrimination/Hate speech online"
+        },
+        {
+          "label": "Child seeking information on online safety"
+        },
+        {
+          "label": "Maintenance"
+        },
+        {
+          "label": "Unspecified/Other"
+        }
       ]
     }
   },
   "Drop In": {
-    "Missing children": {
+     "Abuse": {
       "color": "#BBE3FF",
       "subcategories": [
-        {"label": "Child abduction"},
-        {"label": "Lost, unaccounted for or otherwise missing child"},
-        {"label": "Runaway"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Abduction"
+        },
+        {
+          "label": "Emotional Abuse"
+        },
+        {
+          "label": "Exposure to criminal violence"
+        },
+        {
+          "label": "Exposure to domestic violence"
+        },
+        {
+          "label": "Physical Abuse"
+        },
+        {
+          "label": "Sexual abuse"
+        },
+        {
+          "label": "Trafficking"
+        },
+        {
+          "label": "Child marriage"
+        },
+        {
+          "label": "Theft"
+        }
       ]
     },
-    "Violence": {
+    "Alternative care": {
       "color": "#F5A623",
       "subcategories": [
-        {"label": "Bullying"},
-        {"label": "Child/Early/Forced marriage"},
-        {"label": "Child labour"},
-        {"label": "Commercial sexual exploitation (offline)"},
-        {"label": "Female Genital Mutilation (FGM)"},
-        {"label": "Gender-based harmful traditional practices (other than FGM)"},
-        {"label": "Harmful traditional practices other than child marriage and FGM"},
-        {"label": "Mental/Emotional violence"},
-        {"label": "Neglect (or negligent treatment)"},
-        {"label": "Online sexual abuse"},
-        {"label": "Online sexual exploitation"},
-        {"label": "Physical violence"},
-        {"label": "Sexual violence"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Adoption"
+        },
+        {
+          "label": "Foster Care"
+        },
+        {
+          "label": "Informal Boarding"
+        },
+        {
+          "label": "Institution Care"
+        }
       ]
     },
-    "Mental Health": {
+    "Commercial exploitation": {
       "color": "#F8E900",
       "subcategories": [
-        {"label": "Addictive behaviours and substance use"},
-        {"label": "Behavioural problems"},
-        {"label": "Concerns about the self"},
-        {"label": "Emotional distress – anger problems"},
-        {"label": "Emotional distress – fear and anxiety problems"},
-        {"label": "Emotional distress – mood problems"},
-        {"label": "Neurodevelopmental concerns"},
-        {"label": "Problems with eating behaviour"},
-        {"label": "Self-harming behaviour"},
-        {"label": "Suicidal thoughts and suicide attempts"},
-        {"label": "Traumatic distress"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Child begging"
+        },
+        {
+          "label": "Child prostitution/ Commercial Sexual Exploitation"
+        },
+        {
+          "label": "Child used for criminal activity"
+        },
+        {
+          "label": "Child vendors"
+        },
+        {
+          "label": "Children used by adults to commit crime"
+        },
+        {
+          "label": "Domestic child labour"
+        },
+        {
+          "label": "Farm child labour"
+        },
+        {
+          "label": "General child labour"
+        },
+        {
+          "label": "Child involved in pornography"
+        }
       ]
     },
-    "Physical Health": {
+    "Disability": {
       "color": "#E86B6B",
       "subcategories": [
-        {"label": "COVID-19"},
-        {"label": "General medical or lifestyle concerns"},
-        {"label": "Medical or lifestyle information about HIV/AIDS"},
-        {"label": "Male circumcision"},
-        {"label": "Pregnancy and maternal care"},
-        {"label": "Sexual and reproductive health"},
-        {"label": "Nutrition"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Child mentally disabled"
+        },
+        {
+          "label": "Child physically disabled"
+        },
+        {
+          "label": "Disability of family member"
+        },
+        {
+          "label": "Blindness"
+        }
       ]
     },
-    "Accessibility": {
+    "Discrimination": {
       "color": "#8055BA",
       "subcategories": [
-        {"label": "Education"},
-        {"label": "Essential needs"},
-        {"label": "General healthcare services"},
-        {"label": "Legal services and advice"},
-        {"label": "Mental health services"},
-        {"label": "Sexual health services"},
-        {"label": "Socio-economical services"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Access to school"
+        },
+        {
+          "label": "Gender"
+        },
+        {
+          "label": "Racial"
+        },
+        {
+          "label": "Language"
+        },
+        {
+          "label": "Religion"
+        },
+        {
+          "label": "Sexual orientation/identity"
+        }
       ]
     },
-    "Discrimination and Exclusion": {
+    "Family relationships": {
       "color": "#B971AF",
       "subcategories": [
-        {"label": "Ethnicity/nationality"},
-        {"label": "Financial situation"},
-        {"label": "Gender"},
-        {"label": "Gender identity or expression and sexual orientation"},
-        {"label": "Health"},
-        {"label": "Philosophical or religious beliefs"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Child missing/lost"
+        },
+        {
+          "label": "Child in family care"
+        },
+        {
+          "label": "Conflict between parent and child"
+        },
+        {
+          "label": "Conflict between parents/caretakers"
+        },
+        {
+          "label": "Death and Bereavement"
+        },
+        {
+          "label": "Divorce"
+        },
+        {
+          "label": "Mental ilness - parent"
+        },
+        {
+          "label": "Parents working away from home"
+        },
+        {
+          "label": "Problem with siblings"
+        },
+        {
+          "label": "Seperation"
+        },
+        {
+          "label": "Single Parent"
+        },
+        {
+          "label": "Step family relationship"
+        }
       ]
     },
-    "Family Relationships": {
+    "HIV/AIDS": {
       "color": "#239613",
       "subcategories": [
-        {"label": "Adoption, fostering, and extended family placement"},
-        {"label": "Relationship to caregiver"},
-        {"label": "Family health and wellbeing"},
-        {"label": "Relationship with sibling(s)"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Bereavement"
+        },
+        {
+          "label": "Both parents deceased"
+        },
+        {
+          "label": "Child headed household"
+        },
+        {
+          "label": "Child infected"
+        },
+        {
+          "label": "Child receiving treatment for HIV/AIDS"
+        },
+        {
+          "label": "Father deceased"
+        },
+        {
+          "label": "Mother deceased"
+        },
+        {
+          "label": "Father ill"
+        },
+        {
+          "label": "Mother ill"
+        },
+        {
+          "label": "Other family member ill"
+        },
+        {
+          "label": "Pre/Post test counselling"
+        },
+        {
+          "label": "Vulnerable because of HIV"
+        }
       ]
     },
-    "Peer Relationships": {
+    "Homelessness": {
       "color": "#9AD703",
       "subcategories": [
-        {"label": "Friends and friendships"},
-        {"label": "Partner relationships"},
-        {"label": "Classmates/colleagues relationships"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Family without shelter"
+        },
+        {
+          "label": "Street child"
+        }
       ]
     },
-    "Education and Occupation": {
+    "Legal issues": {
       "color": "#55AFAF",
       "subcategories": [
-        {"label": "Academic issues"},
-        {"label": "Teacher and school problems"},
-        {"label": "Problems at work"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Access/Contact"
+        },
+        {
+          "label": "Adoption"
+        },
+        {
+          "label": "Child in police cells"
+        },
+        {
+          "label": "Child offender"
+        },
+        {
+          "label": "Child witness"
+        },
+        {
+          "label": "Custody/Care"
+        },
+        {
+          "label": "Lack of birth document"
+        },
+        {
+          "label": "Maintenance"
+        }
+      ]
+    },
+    "Neglect": {
+      "color": "#506BA5",
+      "subcategories": [
+        {
+          "label": "Child abandonment"
+        },
+        {
+          "label": "Circumstantial - Child uncared for emotionally"
+        },
+        {
+          "label": "Circumstantial - Child uncared for pysically"
+        },
+        {
+          "label": "Deliberate - Child uncared for emotionally"
+        },
+        {
+          "label": "Deliberate - Child uncared for pysically"
+        }
+      ]
+    },
+    "Out of school peer relationships": {
+      "color": "#767777",
+      "subcategories": [
+        {
+          "label": "Bullying"
+        },
+        {
+          "label": "Relationship problems"
+        }
+      ]
+    },
+    "Poverty": {
+      "color": "#50a5a2",
+      "subcategories": [
+        {
+          "label": "Children starving"
+        },
+        {
+          "label": "Insufficient/No Income"
+        },
+        {
+          "label": "Lack of clothing"
+        },
+        {
+          "label": "Problems with grants and pensions"
+        }
+      ]
+    },
+    "Physical": {
+      "color": "#9AD703",
+      "subcategories": [
+        {
+          "label": "Body image"
+        },
+        {
+          "label": "Health information"
+        },
+        {
+          "label": "Health problems"
+        },
+        {
+          "label": "In need of medical care"
+        }
+      ]
+    },
+    "Psychological health": {
+      "color": "#a55089",
+      "subcategories": [
+        {
+          "label": "Anorexia"
+        },
+        {
+          "label": "Anxiety"
+        },
+        {
+          "label": "Bereavement - peer"
+        },
+        {
+          "label": "Child has difficulty in communicating"
+        },
+        {
+          "label": "Depression"
+        },
+        {
+          "label": "Lack of Confidence"
+        },
+        {
+          "label": "Lacks life purpose"
+        },
+        {
+          "label": "Loneliness"
+        },
+        {
+          "label": "Mental illness of parents/caregiver/child"
+        },
+        {
+          "label": "Self harming"
+        },
+        {
+          "label": "Sleep disorders"
+        },
+        {
+          "label": "Suicidal feelings"
+        },
+        {
+          "label": "Suicide attempts"
+        },
+        {
+          "label": "Suicide of family member"
+        },
+        {
+          "label": "Suicide of friend"
+        },
+        {
+          "label": "Unmanageable anger and frustration"
+        }
+      ]
+    },
+    "Refugee child": {
+      "color": "#F8E900",
+      "subcategories": [
+        {
+          "label": "Fear of repatriation"
+        },
+        {
+          "label": "Lack of documents"
+        },
+        {
+          "label": "Wanting to return home"
+        },
+        {
+          "label": "Xenophobia"
+        }
+      ]
+    },
+    "School problems": {
+      "color": "#F5A623",
+      "subcategories": [
+        {
+          "label": "Bullying"
+        },
+        {
+          "label": "Child not attending school"
+        },
+        {
+          "label": "Child truanting from school"
+        },
+        {
+          "label": "Corporal punishment"
+        },
+        {
+          "label": " Homework"
+        },
+        {
+          "label": "Lack of money for fees"
+        },
+        {
+          "label": "Learning problems"
+        },
+        {
+          "label": "Parents refusing for child to go to school"
+        },
+        {
+          "label": "Perfomance anxiety"
+        },
+        {
+          "label": "Problems with educator"
+        },
+        {
+          "label": "Problems with learners"
+        },
+        {
+          "label": "Study tips"
+        }
       ]
     },
     "Sexuality": {
-      "color": "#506BA5",
+      "color": "#ed0c22",
       "subcategories": [
-        {"label": "Sexual orientation and gender identity"},
-        {"label": "Sexual behaviours"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Abortion/Termination of pregnancy"
+        },
+        {
+          "label": "Contraception"
+        },
+        {
+          "label": "Information about sex"
+        },
+        {
+          "label": "Pregnancy"
+        },
+        {
+          "label": "Saying no to sex"
+        },
+        {
+          "label": "Sexual identity"
+        },
+        {
+          "label": "Sexual problem"
+        },
+        {
+          "label": "Sexulized behaviour"
+        },
+        {
+          "label": "Sexually Transmitted Infections"
+        }
       ]
     },
-    "Non-Counselling contacts": {
+    "Sexual": {
+      "color": "#0cede2",
+      "subcategories": [
+        {
+          "label": "Exposure to pornography"
+        },
+        {
+          "label": "Harassment"
+        },
+        {
+          "label": "Inappropriate sex talk"
+        },
+        {
+          "label": "Rape"
+        },
+        {
+          "label": "Sexual assault"
+        },
+        {
+          "label": "Teenage parent"
+        }
+      ]
+    },
+    "Substance Abuse": {
+      "color": "#d4f569",
+      "subcategories": [
+        {
+          "label": "Child - Alcohol abuse"
+        },
+        {
+          "label": "Child - Other drug abuse"
+        },
+        {
+          "label": "Drug dealing"
+        },
+        {
+          "label": "Information on alcohol/drugs"
+        },
+        {
+          "label": "Parent/caretaker - alcohol abuse"
+        },
+        {
+          "label": "Parent/caretaker - drug abuse"
+        }
+      ]
+    },
+    "Services": {
       "color": "#767777",
       "subcategories": [
-        {"label": "Complaints about the child helpline"},
-        {"label": "Questions by parents"},
-        {"label": "Questions about the child helpline"},
-        {"label": "Questions about other services"},
-        {"label": "\"Thank you for your assistance\""},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Abuse to counsellor"
+        },
+        {
+          "label": "Complaints about Childline services"
+        },
+        {
+          "label": "Request for information"
+        },
+        {
+          "label": "Thanks to Childline service"
+        }
+      ]
+    },
+    "Cholera": {
+      "color": "#edb61f",
+      "subcategories": [
+        {
+          "label": "Infected with Cholera"
+        },
+        {
+          "label": "Affected by Cholera"
+        },
+        {
+          "label": "Request for Cholera information"
+        }
+      ]
+    },
+    "Online Sexual Exploitation and Abuse": {
+      "color": "#284cd1",
+      "subcategories": [
+        {
+          "label": "Online child sexual abuse"
+        },
+        {
+          "label": "Online child sexual exploitation"
+        },
+        {
+          "label": "Online grooming for sexual purposes"
+        },
+        {
+          "label": "Online sexual exploitation"
+        },
+        {
+          "label": "Unwanted sexting"
+        },
+        {
+          "label": "Revenge pornography"
+        },
+        {
+          "label": "Unspecified/Other"
+        }
+      ]
+    },
+    "Cyber-Bullying": {
+      "color": "#E86B6B",
+      "subcategories": [
+        {
+          "label": "Sharing/Posting if private messages/images/videos"
+        },
+        {
+          "label": "Victims of rumors online"
+        },
+        {
+          "label": "Sexual Harassment"
+        },
+        {
+          "label": "Harassment"
+        },
+        {
+          "label": "Victim impersonation"
+        },
+        {
+          "label": "Victim of discrimination/Hate speech online"
+        },
+        {
+          "label": "Child seeking information on online safety"
+        },
+        {
+          "label": "Maintenance"
+        },
+        {
+          "label": "Unspecified/Other"
+        }
       ]
     }
   },
   "Outreach": {
-    "Missing children": {
+    "Abuse": {
       "color": "#BBE3FF",
       "subcategories": [
-        {"label": "Child abduction"},
-        {"label": "Lost, unaccounted for or otherwise missing child"},
-        {"label": "Runaway"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Abduction"
+        },
+        {
+          "label": "Emotional Abuse"
+        },
+        {
+          "label": "Exposure to criminal violence"
+        },
+        {
+          "label": "Exposure to domestic violence"
+        },
+        {
+          "label": "Physical Abuse"
+        },
+        {
+          "label": "Sexual abuse"
+        },
+        {
+          "label": "Trafficking"
+        },
+        {
+          "label": "Child marriage"
+        },
+        {
+          "label": "Theft"
+        }
       ]
     },
-    "Violence": {
+    "Alternative care": {
       "color": "#F5A623",
       "subcategories": [
-        {"label": "Bullying"},
-        {"label": "Child/Early/Forced marriage"},
-        {"label": "Child labour"},
-        {"label": "Commercial sexual exploitation (offline)"},
-        {"label": "Female Genital Mutilation (FGM)"},
-        {"label": "Gender-based harmful traditional practices (other than FGM)"},
-        {"label": "Harmful traditional practices other than child marriage and FGM"},
-        {"label": "Mental/Emotional violence"},
-        {"label": "Neglect (or negligent treatment)"},
-        {"label": "Online sexual abuse"},
-        {"label": "Online sexual exploitation"},
-        {"label": "Physical violence"},
-        {"label": "Sexual violence"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Adoption"
+        },
+        {
+          "label": "Foster Care"
+        },
+        {
+          "label": "Informal Boarding"
+        },
+        {
+          "label": "Institution Care"
+        }
       ]
     },
-    "Mental Health": {
+    "Commercial exploitation": {
       "color": "#F8E900",
       "subcategories": [
-        {"label": "Addictive behaviours and substance use"},
-        {"label": "Behavioural problems"},
-        {"label": "Concerns about the self"},
-        {"label": "Emotional distress – anger problems"},
-        {"label": "Emotional distress – fear and anxiety problems"},
-        {"label": "Emotional distress – mood problems"},
-        {"label": "Neurodevelopmental concerns"},
-        {"label": "Problems with eating behaviour"},
-        {"label": "Self-harming behaviour"},
-        {"label": "Suicidal thoughts and suicide attempts"},
-        {"label": "Traumatic distress"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Child begging"
+        },
+        {
+          "label": "Child prostitution/ Commercial Sexual Exploitation"
+        },
+        {
+          "label": "Child used for criminal activity"
+        },
+        {
+          "label": "Child vendors"
+        },
+        {
+          "label": "Children used by adults to commit crime"
+        },
+        {
+          "label": "Domestic child labour"
+        },
+        {
+          "label": "Farm child labour"
+        },
+        {
+          "label": "General child labour"
+        },
+        {
+          "label": "Child involved in pornography"
+        }
       ]
     },
-    "Physical Health": {
+    "Disability": {
       "color": "#E86B6B",
       "subcategories": [
-        {"label": "COVID-19"},
-        {"label": "General medical or lifestyle concerns"},
-        {"label": "Medical or lifestyle information about HIV/AIDS"},
-        {"label": "Male circumcision"},
-        {"label": "Pregnancy and maternal care"},
-        {"label": "Sexual and reproductive health"},
-        {"label": "Nutrition"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Child mentally disabled"
+        },
+        {
+          "label": "Child physically disabled"
+        },
+        {
+          "label": "Disability of family member"
+        },
+        {
+          "label": "Blindness"
+        }
       ]
     },
-    "Accessibility": {
+    "Discrimination": {
       "color": "#8055BA",
       "subcategories": [
-        {"label": "Education"},
-        {"label": "Essential needs"},
-        {"label": "General healthcare services"},
-        {"label": "Legal services and advice"},
-        {"label": "Mental health services"},
-        {"label": "Sexual health services"},
-        {"label": "Socio-economical services"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Access to school"
+        },
+        {
+          "label": "Gender"
+        },
+        {
+          "label": "Racial"
+        },
+        {
+          "label": "Language"
+        },
+        {
+          "label": "Religion"
+        },
+        {
+          "label": "Sexual orientation/identity"
+        }
       ]
     },
-    "Discrimination and Exclusion": {
+    "Family relationships": {
       "color": "#B971AF",
       "subcategories": [
-        {"label": "Ethnicity/nationality"},
-        {"label": "Financial situation"},
-        {"label": "Gender"},
-        {"label": "Gender identity or expression and sexual orientation"},
-        {"label": "Health"},
-        {"label": "Philosophical or religious beliefs"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Child missing/lost"
+        },
+        {
+          "label": "Child in family care"
+        },
+        {
+          "label": "Conflict between parent and child"
+        },
+        {
+          "label": "Conflict between parents/caretakers"
+        },
+        {
+          "label": "Death and Bereavement"
+        },
+        {
+          "label": "Divorce"
+        },
+        {
+          "label": "Mental ilness - parent"
+        },
+        {
+          "label": "Parents working away from home"
+        },
+        {
+          "label": "Problem with siblings"
+        },
+        {
+          "label": "Seperation"
+        },
+        {
+          "label": "Single Parent"
+        },
+        {
+          "label": "Step family relationship"
+        }
       ]
     },
-    "Family Relationships": {
+    "HIV/AIDS": {
       "color": "#239613",
       "subcategories": [
-        {"label": "Adoption, fostering, and extended family placement"},
-        {"label": "Relationship to caregiver"},
-        {"label": "Family health and wellbeing"},
-        {"label": "Relationship with sibling(s)"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Bereavement"
+        },
+        {
+          "label": "Both parents deceased"
+        },
+        {
+          "label": "Child headed household"
+        },
+        {
+          "label": "Child infected"
+        },
+        {
+          "label": "Child receiving treatment for HIV/AIDS"
+        },
+        {
+          "label": "Father deceased"
+        },
+        {
+          "label": "Mother deceased"
+        },
+        {
+          "label": "Father ill"
+        },
+        {
+          "label": "Mother ill"
+        },
+        {
+          "label": "Other family member ill"
+        },
+        {
+          "label": "Pre/Post test counselling"
+        },
+        {
+          "label": "Vulnerable because of HIV"
+        }
       ]
     },
-    "Peer Relationships": {
+    "Homelessness": {
       "color": "#9AD703",
       "subcategories": [
-        {"label": "Friends and friendships"},
-        {"label": "Partner relationships"},
-        {"label": "Classmates/colleagues relationships"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Family without shelter"
+        },
+        {
+          "label": "Street child"
+        }
       ]
     },
-    "Education and Occupation": {
+    "Legal issues": {
       "color": "#55AFAF",
       "subcategories": [
-        {"label": "Academic issues"},
-        {"label": "Teacher and school problems"},
-        {"label": "Problems at work"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Access/Contact"
+        },
+        {
+          "label": "Adoption"
+        },
+        {
+          "label": "Child in police cells"
+        },
+        {
+          "label": "Child offender"
+        },
+        {
+          "label": "Child witness"
+        },
+        {
+          "label": "Custody/Care"
+        },
+        {
+          "label": "Lack of birth document"
+        },
+        {
+          "label": "Maintenance"
+        }
+      ]
+    },
+    "Neglect": {
+      "color": "#506BA5",
+      "subcategories": [
+        {
+          "label": "Child abandonment"
+        },
+        {
+          "label": "Circumstantial - Child uncared for emotionally"
+        },
+        {
+          "label": "Circumstantial - Child uncared for pysically"
+        },
+        {
+          "label": "Deliberate - Child uncared for emotionally"
+        },
+        {
+          "label": "Deliberate - Child uncared for pysically"
+        }
+      ]
+    },
+    "Out of school peer relationships": {
+      "color": "#767777",
+      "subcategories": [
+        {
+          "label": "Bullying"
+        },
+        {
+          "label": "Relationship problems"
+        }
+      ]
+    },
+    "Poverty": {
+      "color": "#50a5a2",
+      "subcategories": [
+        {
+          "label": "Children starving"
+        },
+        {
+          "label": "Insufficient/No Income"
+        },
+        {
+          "label": "Lack of clothing"
+        },
+        {
+          "label": "Problems with grants and pensions"
+        }
+      ]
+    },
+    "Physical": {
+      "color": "#9AD703",
+      "subcategories": [
+        {
+          "label": "Body image"
+        },
+        {
+          "label": "Health information"
+        },
+        {
+          "label": "Health problems"
+        },
+        {
+          "label": "In need of medical care"
+        }
+      ]
+    },
+    "Psychological health": {
+      "color": "#a55089",
+      "subcategories": [
+        {
+          "label": "Anorexia"
+        },
+        {
+          "label": "Anxiety"
+        },
+        {
+          "label": "Bereavement - peer"
+        },
+        {
+          "label": "Child has difficulty in communicating"
+        },
+        {
+          "label": "Depression"
+        },
+        {
+          "label": "Lack of Confidence"
+        },
+        {
+          "label": "Lacks life purpose"
+        },
+        {
+          "label": "Loneliness"
+        },
+        {
+          "label": "Mental illness of parents/caregiver/child"
+        },
+        {
+          "label": "Self harming"
+        },
+        {
+          "label": "Sleep disorders"
+        },
+        {
+          "label": "Suicidal feelings"
+        },
+        {
+          "label": "Suicide attempts"
+        },
+        {
+          "label": "Suicide of family member"
+        },
+        {
+          "label": "Suicide of friend"
+        },
+        {
+          "label": "Unmanageable anger and frustration"
+        }
+      ]
+    },
+    "Refugee child": {
+      "color": "#F8E900",
+      "subcategories": [
+        {
+          "label": "Fear of repatriation"
+        },
+        {
+          "label": "Lack of documents"
+        },
+        {
+          "label": "Wanting to return home"
+        },
+        {
+          "label": "Xenophobia"
+        }
+      ]
+    },
+    "School problems": {
+      "color": "#F5A623",
+      "subcategories": [
+        {
+          "label": "Bullying"
+        },
+        {
+          "label": "Child not attending school"
+        },
+        {
+          "label": "Child truanting from school"
+        },
+        {
+          "label": "Corporal punishment"
+        },
+        {
+          "label": " Homework"
+        },
+        {
+          "label": "Lack of money for fees"
+        },
+        {
+          "label": "Learning problems"
+        },
+        {
+          "label": "Parents refusing for child to go to school"
+        },
+        {
+          "label": "Perfomance anxiety"
+        },
+        {
+          "label": "Problems with educator"
+        },
+        {
+          "label": "Problems with learners"
+        },
+        {
+          "label": "Study tips"
+        }
       ]
     },
     "Sexuality": {
-      "color": "#506BA5",
+      "color": "#ed0c22",
       "subcategories": [
-        {"label": "Sexual orientation and gender identity"},
-        {"label": "Sexual behaviours"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Abortion/Termination of pregnancy"
+        },
+        {
+          "label": "Contraception"
+        },
+        {
+          "label": "Information about sex"
+        },
+        {
+          "label": "Pregnancy"
+        },
+        {
+          "label": "Saying no to sex"
+        },
+        {
+          "label": "Sexual identity"
+        },
+        {
+          "label": "Sexual problem"
+        },
+        {
+          "label": "Sexulized behaviour"
+        },
+        {
+          "label": "Sexually Transmitted Infections"
+        }
       ]
     },
-    "Non-Counselling contacts": {
+    "Sexual": {
+      "color": "#0cede2",
+      "subcategories": [
+        {
+          "label": "Exposure to pornography"
+        },
+        {
+          "label": "Harassment"
+        },
+        {
+          "label": "Inappropriate sex talk"
+        },
+        {
+          "label": "Rape"
+        },
+        {
+          "label": "Sexual assault"
+        },
+        {
+          "label": "Teenage parent"
+        }
+      ]
+    },
+    "Substance Abuse": {
+      "color": "#d4f569",
+      "subcategories": [
+        {
+          "label": "Child - Alcohol abuse"
+        },
+        {
+          "label": "Child - Other drug abuse"
+        },
+        {
+          "label": "Drug dealing"
+        },
+        {
+          "label": "Information on alcohol/drugs"
+        },
+        {
+          "label": "Parent/caretaker - alcohol abuse"
+        },
+        {
+          "label": "Parent/caretaker - drug abuse"
+        }
+      ]
+    },
+    "Services": {
       "color": "#767777",
       "subcategories": [
-        {"label": "Complaints about the child helpline"},
-        {"label": "Questions by parents"},
-        {"label": "Questions about the child helpline"},
-        {"label": "Questions about other services"},
-        {"label": "\"Thank you for your assistance\""},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Abuse to counsellor"
+        },
+        {
+          "label": "Complaints about Childline services"
+        },
+        {
+          "label": "Request for information"
+        },
+        {
+          "label": "Thanks to Childline service"
+        }
+      ]
+    },
+    "Cholera": {
+      "color": "#edb61f",
+      "subcategories": [
+        {
+          "label": "Infected with Cholera"
+        },
+        {
+          "label": "Affected by Cholera"
+        },
+        {
+          "label": "Request for Cholera information"
+        }
+      ]
+    },
+    "Online Sexual Exploitation and Abuse": {
+      "color": "#284cd1",
+      "subcategories": [
+        {
+          "label": "Online child sexual abuse"
+        },
+        {
+          "label": "Online child sexual exploitation"
+        },
+        {
+          "label": "Online grooming for sexual purposes"
+        },
+        {
+          "label": "Online sexual exploitation"
+        },
+        {
+          "label": "Unwanted sexting"
+        },
+        {
+          "label": "Revenge pornography"
+        },
+        {
+          "label": "Unspecified/Other"
+        }
+      ]
+    },
+    "Cyber-Bullying": {
+      "color": "#E86B6B",
+      "subcategories": [
+        {
+          "label": "Sharing/Posting if private messages/images/videos"
+        },
+        {
+          "label": "Victims of rumors online"
+        },
+        {
+          "label": "Sexual Harassment"
+        },
+        {
+          "label": "Harassment"
+        },
+        {
+          "label": "Victim impersonation"
+        },
+        {
+          "label": "Victim of discrimination/Hate speech online"
+        },
+        {
+          "label": "Child seeking information on online safety"
+        },
+        {
+          "label": "Maintenance"
+        },
+        {
+          "label": "Unspecified/Other"
+        }
       ]
     }
   }

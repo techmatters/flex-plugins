@@ -1,0 +1,311 @@
+{
+
+    "provinceOptions": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "HRE",
+        "label": "HRE"
+      },
+      {
+        "value": "BYO",
+        "label": "BYO"
+      },
+      {
+        "value": "MSC",
+        "label": "MSC"
+      },
+      {
+        "value": "MSW",
+        "label": "MSW"
+      },
+      {
+        "value": "MTN",
+        "label": "MTN"
+      },
+      {
+        "value": "MTS",
+        "label": "MTS"
+      },
+      {
+        "value": "MSE",
+        "label": "MSE"
+      },
+      {
+        "value": "MAN",
+        "label": "MAN"
+      },
+      {
+        "value": "MID",
+        "label": "MID"
+      },
+      {
+        "value": "MAS",
+        "label": "MAS"
+      }
+    ],
+    "districtOptions": {
+      "HRE": [
+        {
+          "value": "Harare",
+          "label": "Harare"
+        }
+      ],
+      "BYO": [
+        {
+          "value": "Bulawayo",
+          "label": "Bulawayo"
+        }
+      ],
+      "MSC": [
+        {
+          "value": "Bindura",
+          "label": "Bindura"
+        },
+        {
+          "value": "Guruve",
+          "label": "Guruve"
+        },
+        {
+          "value": "Mazowe",
+          "label": "Mazowe"
+        },
+        {
+          "value": "Mbire",
+          "label": "Mbire"
+        },
+        {
+          "value": "Mukumbura",
+          "label": "Mukumbura"
+        },
+        {
+          "value": "Muzarabani",
+          "label": "Muzarabani"
+        },
+        {
+          "value": "Rushinga",
+          "label": "Rushinga"
+        },
+        {
+          "value": "Shamva",
+          "label": "Shamva"
+        },
+        {
+          "value": "Centenary",
+          "label": "Centenary"
+        }
+      ],
+      "MSW": [
+        {
+          "value": "Chegutu",
+          "label": "Chegutu"
+        },
+        {
+          "value": "Hurungwe",
+          "label": "Hurungwe"
+        },
+        {
+          "value": "Kadoma",
+          "label": "Kadoma"
+        },
+        {
+          "value": "Kariba",
+          "label": "Kariba"
+        },
+        {
+          "value": "Makonde",
+          "label": "Makonde"
+        },
+        {
+          "value": "Zvimba",
+          "label": "Zvimba"
+        },
+        {
+          "value": "Norton",
+          "label": "Norton"
+        }
+      ],
+      "MTN": [
+        {
+          "value": "Binga",
+          "label": "Binga"
+        },
+        {
+          "value": "Bubi",
+          "label": "Bubi"
+        },
+        {
+          "value": "Hwange",
+          "label": "Hwange"
+        },
+        {
+          "value": "Lupane",
+          "label": "Lupane"
+        },
+        {
+          "value": "Nkayi",
+          "label": "Nkayi"
+        },
+        {
+          "value": "Tsholotsho",
+          "label": "Tsholotsho"
+        },
+        {
+          "value": "Umguza",
+          "label": "Umguza"
+        }
+      ],
+      "MTS": [
+        {
+          "value": "Gwanda",
+          "label": "Gwanda"
+        },
+        {
+          "value": "Insiza",
+          "label": "Insiza"
+        },
+        {
+          "value": "Matobo",
+          "label": "Matobo"
+        },
+        {
+          "value": "Umzingwane",
+          "label": "Umzingwane"
+        },
+        {
+          "value": "Beitbrigde",
+          "label": "Beitbrigde"
+        }
+      ],
+      "MSE": [
+        {
+          "value": "Chikomba",
+          "label": "Chikomba"
+        },
+        {
+          "value": "Goromonzi",
+          "label": "Goromonzi"
+        },
+        {
+          "value": "Hwedza",
+          "label": "Hwedza"
+        },
+        {
+          "value": "Marondera",
+          "label": "Marondera"
+        },
+        {
+          "value": "Mudzi",
+          "label": "Mudzi"
+        },
+        {
+          "value": "Mutoko",
+          "label": "Mutoko"
+        },
+        {
+          "value": "Murehwa",
+          "label": "Murehwa"
+        },
+        {
+          "value": "UZumba-Maramba-Pfungwe",
+          "label": "UZumba-Maramba-Pfungwe"
+        }
+      ],
+      "MAN": [
+        {
+          "value": "Chimanimani",
+          "label": "Chimanimani"
+        },
+        {
+          "value": "Chipinge",
+          "label": "Chipinge"
+        },
+        {
+          "value": "Makoni",
+          "label": "Makoni"
+        },
+        {
+          "value": "Mutare",
+          "label": "Mutare"
+        },
+        {
+          "value": "Buhera",
+          "label": "Buhera"
+        },
+        {
+          "value": "Mutasa",
+          "label": "Mutasa"
+        },
+        {
+          "value": "Nyanga",
+          "label": "Nyanga"
+        }
+      ],
+      "MID": [
+        {
+          "value": "Chirumhanzu",
+          "label": "Chirumhanzu"
+        },
+        {
+          "value": "Gokwe North",
+          "label": "Gokwe North"
+        },
+        {
+          "value": "Gokwe South",
+          "label": "Gokwe South"
+        },
+        {
+          "value": "Gweru",
+          "label": "Gweru"
+        },
+        {
+          "value": "Kwekwe",
+          "label": "Kwekwe"
+        },
+        {
+          "value": "Mberengwa",
+          "label": "Mberengwa"
+        },
+        {
+          "value": "Shurugwi",
+          "label": "Shurugwi"
+        },
+        {
+          "value": "Zvishavane",
+          "label": "Zvishavane"
+        }
+      ],
+      "MAS": [
+        {
+          "value": "Bikita",
+          "label": "Bikita"
+        },
+        {
+          "value": "Chiredzi",
+          "label": "Chiredzi"
+        },
+        {
+          "value": "Gutu",
+          "label": "Gutu"
+        },
+        {
+          "value": "Masvingo",
+          "label": "Masvingo"
+        },
+        {
+          "value": "Chivi",
+          "label": "Chivi"
+        },
+        {
+          "value": "Mwenzi",
+          "label": "Mwenzi"
+        },
+        {
+          "value": "Zaka",
+          "label": "Zaka"
+        }
+      ]
+    }
+  }

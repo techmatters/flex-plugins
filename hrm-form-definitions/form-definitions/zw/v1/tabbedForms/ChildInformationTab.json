@@ -31,43 +31,43 @@
         "label": "Unborn"
       },
       {
-        "value": "0",
+        "value": "00",
         "label": "0"
       },
       {
-        "value": "1",
+        "value": "01",
         "label": "1"
       },
       {
-        "value": "2",
+        "value": "02",
         "label": "2"
       },
       {
-        "value": "3",
+        "value": "03",
         "label": "3"
       },
       {
-        "value": "4",
+        "value": "04",
         "label": "4"
       },
       {
-        "value": "5",
+        "value": "05",
         "label": "5"
       },
       {
-        "value": "6",
+        "value": "06",
         "label": "6"
       },
       {
-        "value": "7",
+        "value": "07",
         "label": "7"
       },
       {
-        "value": "8",
+        "value": "08",
         "label": "8"
       },
       {
-        "value": "9",
+        "value": "09",
         "label": "9"
       },
       {
@@ -131,21 +131,21 @@
         "label": "24"
       },
       {
-        "value": "25",
-        "label": "25"
+          "value": "25",
+          "label": "25"
       },
       {
         "value": ">25",
         "label": ">25"
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
-      },
-      {
         "value": "Other",
         "label": "Other"
-      }
+      },
+    {
+      "value": "Unknown",
+      "label": "Unknown"
+    }
     ],
     "required": {
       "value": true,
@@ -153,9 +153,14 @@
     }
   },
   {
-    "name": "DOB",
-    "label": "Date of Birth",
-    "type": "date-input"
+    "name": "dateOfBirth",
+    "type": "date-input",
+    "label": "Date of Birth"
+  },
+  {
+    "name": "idNumber",
+    "label": "ID Number",
+    "type": "input"
   },
   {
     "name": "gender",
@@ -194,23 +199,19 @@
     "type": "input"
   },
   {
+    "name": "addressDescription",
+    "label": "Describe the Address",
+    "type": "input"
+  },
+  {
     "name": "province",
     "label": "Province",
     "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Central",
-        "label": "Central"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ],
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "provinceOptions",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -225,32 +226,31 @@
       "value": "",
       "label": ""
     },
-    "options": {
-      "District1": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ],
-      "District2": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "optionsReferenceKey": "districtOptions"
+  },
+  {
+    "name": "region",
+    "label": "Region",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Cities",
+        "label": "Cities"
+      },
+      {
+        "value": "Rural areas",
+        "label": "Rural areas"
+      },
+      {
+        "value": "Town & semi-dense areas",
+        "label": "Town & semi-dense areas"
+      }
+    ]
   },
   {
     "name": "phone1",
@@ -262,21 +262,6 @@
     }
   },
   {
-    "name": "language",
-    "label": "Language",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "language1",
-        "label": "language1"
-      }
-    ]
-  },
-  {
     "name": "ethnicity",
     "label": "Ethnicity",
     "type": "input"
@@ -284,7 +269,34 @@
   {
     "name": "race",
     "label": "Race",
-    "type": "input"
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Asian",
+        "label": "Asian"
+      },
+      {
+        "value": "Black",
+        "label": "Black"
+      },
+      {
+        "value": "Coloured",
+        "label": "Coloured"
+      },
+      {
+        "value": "White",
+        "label": "White"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ]
   },
   {
     "name": "schoolName",
@@ -307,7 +319,7 @@
     "type": "select",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
@@ -319,16 +331,32 @@
         "label": "Grade 5 to 7"
       },
       {
-        "value": "Grade 8 to 9",
-        "label": "Grade 8 to 9"
+        "value": "Form 1",
+        "label": "Form 1"
       },
       {
-        "value": "Grade 10 to 12",
-        "label": "Grade 10 to 12"
+        "value": "Form 2",
+        "label": "Form 2"
       },
       {
-        "value": "Out of school",
-        "label": "Out of school"
+        "value": "Form 3",
+        "label": "Form 3"
+      },
+      {
+        "value": "Form 4",
+        "label": "Form 4"
+      },
+      {
+        "value": "Form 5",
+        "label": "Form 5"
+      },
+      {
+        "value": "Form 6",
+        "label": "Form 6"
+      },
+      {
+        "value": "Out of School",
+        "label": "Out of School"
       }
     ]
   },
@@ -419,41 +447,19 @@
     "name": "childOnTheMove",
     "label": "Child on the move",
     "type": "select",
+    "unknownOption": "Unknown",
     "options": [
       {
         "value": "Unknown",
         "label": ""
-      },
-      {
-        "value": "Involuntary",
-        "label": "Involuntary"
       },
       {
         "value": "Voluntary",
         "label": "Voluntary"
-      }
-    ]
-  },
-  {
-    "name": "region",
-    "label": "Region",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
       },
       {
-        "value": "Cities",
-        "label": "Cities"
-      },
-      {
-        "value": "Rural areas",
-        "label": "Rural areas"
-      },
-      {
-        "value": "Town & semi-dense areas",
-        "label": "Town & semi-dense areas"
+        "value": "Involuntary",
+        "label": "Involuntary"
       }
     ]
   },
@@ -461,18 +467,31 @@
     "name": "childStatus",
     "label": "Child Status",
     "type": "select",
+    "unknownOption": "Unknown",
     "options": [
       {
         "value": "Unknown",
         "label": ""
       },
       {
-        "value": "Maternal Orphan",
-        "label": "Maternal Orphan"
+        "value": "Single Maternal Orphan",
+        "label": "Single Maternal Orphan"
       },
       {
-        "value": "Paternal Orphan",
-        "label": "Paternal Orphan"
+        "value": "Single Paternal Orphan",
+        "label": "Single Paternal Orphan"
+      },
+      {
+        "value": "Double Orphan",
+        "label": "Double Orphan"
+      },
+      {
+        "value": "Non Orphan",
+        "label": "Non Orphan"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ]
   },
@@ -484,6 +503,8 @@
   {
     "name": "AddressDescription",
     "label": "Describe the Address",
-    "type": "input"
+    "type": "textarea",
+    "rows": 20,
+    "width": 250
   }
 ]

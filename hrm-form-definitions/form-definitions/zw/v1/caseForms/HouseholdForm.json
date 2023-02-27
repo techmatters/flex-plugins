@@ -85,20 +85,11 @@
     "name": "province",
     "label": "Province",
     "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Central",
-        "label": "Central"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ],
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "provinceOptions",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -113,32 +104,7 @@
       "value": "",
       "label": ""
     },
-    "options": {
-      "District1": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ],
-      "District2": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "optionsReferenceKey": "districtOptions"
   },
   {
     "name": "phone1",
@@ -480,11 +446,44 @@
   {
     "name": "race",
     "label": "Race",
-    "type": "input"
+    "type": "select",
+     "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Asian",
+        "label": "Asian"
+      },
+      {
+        "value": "Black",
+        "label": "Black"
+      },
+      {
+        "value": "Coloured",
+        "label": "Coloured"
+      },
+      {
+        "value": "White",
+        "label": "White"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ]
   },
   {
     "name": "AddressDescription",
     "label": "Describe the Address",
     "type": "input"
+  },
+  {
+    "name": "copyToPerpetrator",
+    "label": "This household member is also a perpetrator",
+    "type": "copy-to",
+    "target": "perpetrators",
+    "saveable": false
   }
 ]
