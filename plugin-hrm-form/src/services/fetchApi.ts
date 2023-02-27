@@ -76,6 +76,8 @@ export const fetchApi = async (baseUrl: URL, endpointPath: string, options: Requ
     throw new ApiError(`Error response: ${response.status} (${response.statusText})`, { response, body });
   }
 
-  const contentType = response.headers?.get('Content-Type');
-  return contentType && contentType.includes('json') ? response.json() : response.text();
+  if ((response.headers?.get('Content-Type') ?? '').toLowerCase().includes('json')) {
+    return response.json();
+  }
+  return response.text();
 };
