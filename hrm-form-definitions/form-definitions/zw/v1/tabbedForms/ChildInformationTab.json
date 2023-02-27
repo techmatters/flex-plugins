@@ -494,5 +494,15 @@
         "label": "Unknown"
       }
     ]
+  },
+  {
+    "name": "idNumber",
+    "label": "ID Number",
+    "type": "input"
+  },
+  {
+    "name": "AddressDescription",
+    "label": "Describe the Address",
+    "type": "input"
   }
 ]
