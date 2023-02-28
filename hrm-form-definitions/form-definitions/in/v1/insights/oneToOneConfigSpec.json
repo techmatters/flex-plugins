@@ -12,6 +12,10 @@
         "insights": ["customers", "city"]
       },
       {
+        "name": "state",
+        "insights": ["customers", "area"]
+      },
+      {
         "name": "district",
         "insights": ["customers", "zip"]
       },
@@ -54,7 +58,7 @@
       },
       {
         "name": "cybercrimeReportsFiled",
-        "insights": ["conversations", "conversation_attribute_5"]
+        "insights": ["customers", "region"]
       },
       {
         "name": "service",
@@ -65,9 +69,12 @@
         "insights": ["conversations", "initiative"]
       },
       {
-        "name": "didTheChildFeelWeSolvedTheirProblem",
-        "insights": ["conversations", "productive"],
-        "type": "mixed-checkbox"
+        "name": "counsellingProvided",
+        "insights": ["conversations", "productive"]
+      },
+      {
+        "name": "callSummary",
+        "insights": ["conversations", "conversation_attribute_5"]
       }
     ]
   },
