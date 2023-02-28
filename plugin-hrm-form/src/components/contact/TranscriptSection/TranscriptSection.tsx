@@ -22,7 +22,7 @@ import format from 'date-fns/format';
 
 import type { TwilioStoredMedia, S3StoredTranscript } from '../../../types/types';
 import { contactFormsBase, namespace, RootState } from '../../../states';
-import { getFileDownloadUrlFromUrl } from '../../../services/ServerlessService';
+import { getFileDownloadUrl } from '../../../services/ServerlessService';
 import { loadTranscript, TranscriptMessage, TranscriptResult } from '../../../states/contacts/existingContacts';
 import {
   ErrorFont,
@@ -147,7 +147,7 @@ const TranscriptSection: React.FC<Props> = ({
     try {
       setLoading(true);
 
-      const transcriptPreSignedUrl = await getFileDownloadUrlFromUrl(externalStoredTranscript.url, '');
+      const transcriptPreSignedUrl = await getFileDownloadUrl(externalStoredTranscript.url, '');
       const transcriptResponse = await fetch(transcriptPreSignedUrl.downloadUrl);
 
       validateFetchResponse(transcriptResponse);
