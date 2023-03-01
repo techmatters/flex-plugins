@@ -3,7 +3,7 @@
     "callerInformation": {},
     "childInformation": {},
     "caseInformation": {
-      "splitFormAt": 4
+      "splitFormAt": 5
     }
   },
   "case": {
@@ -31,7 +31,7 @@
           "includeLabel": true
         }
       },
-      "splitFormAt": 3
+      "splitFormAt": 7
     },
     "referrals": {
       "splitFormAt": 2
