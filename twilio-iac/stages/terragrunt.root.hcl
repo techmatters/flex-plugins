@@ -11,13 +11,10 @@ locals {
   common_config_hcl = read_terragrunt_config("../../helplines/${local.short_helpline}/common.hcl")
   common_config = local.common_config_hcl.locals
 
-  stage_config_hcl = read_terragrunt_config("../../helplines/${local.short_helpline}/${local.stage}.hcl")
-  stage_config = local.stage_config_hcl.locals
-
-  env_config_hcl = read_terragrunt_config("../../helplines/${local.short_helpline}/${local.environment}/${local.stage}.hcl")
+  env_config_hcl = read_terragrunt_config("../../helplines/${local.short_helpline}/${local.environment}.hcl")
   env_config = local.env_config_hcl.locals
 
-  pre_computed_config =  merge(local.defaults_config, local.common_config, local.stage_config, local.env_config)
+  file_config =  merge(local.defaults_config, local.common_config, local.env_config)
 
   computed_config = {
     environment = title(local.environment)
@@ -27,7 +24,7 @@ locals {
     operating_info_key = local.short_helpline
   }
 
-  config = merge(local.pre_computed_config, local.computed_config)
+  config = merge(local.file_config, local.computed_config)
 }
 
 generate "backend" {
