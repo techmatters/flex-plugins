@@ -1,5 +1,5 @@
 data "aws_ssm_parameter" "secrets" {
-  name     = "/terraform/twilio-iac/${var.old_dir_name}/secrets.json"
+  name     = "/terraform/twilio-iac/${var.environment}/${var.short_helpline}/secrets.json"
 }
 
 locals {
@@ -95,19 +95,19 @@ module customChannel {
   short_environment = local.short_environment
 }
 
-
-module flex {
-  source = "../flex/service-configuration"
-  twilio_account_sid = local.secrets.twilio_account_sid
-  short_environment = local.short_environment
-  operating_info_key = var.operating_info_key
-  permission_config = var.short_helpline
-  definition_version = var.definition_version
-  serverless_url = module.serverless.serverless_environment_production_url
-  multi_office_support = var.multi_office
-  feature_flags = var.feature_flags
-  hrm_url = "https://hrm-staging-eu.tl.techmatters.org"
-}
+# TODO: remove this module when we remove the old flex plugin. Just here for reference
+# module flex {
+#   source = "../flex/service-configuration"
+#   twilio_account_sid = local.secrets.twilio_account_sid
+#   short_environment = local.short_environment
+#   operating_info_key = var.operating_info_key
+#   permission_config = var.short_helpline
+#   definition_version = var.definition_version
+#   serverless_url = module.serverless.serverless_environment_production_url
+#   multi_office_support = var.multi_office
+#   feature_flags = var.feature_flags
+#   hrm_url = "https://hrm-staging-eu.tl.techmatters.org"
+# }
 
 module survey {
   source = "../survey/default"

@@ -2,8 +2,7 @@ locals {
   environment = get_env("HL_ENV")
   short_helpline  = get_env("HL")
 
-  stage_hcl = read_terragrunt_config(find_in_parent_folders("stage.hcl"))
-  stage     = local.stage_hcl.locals.stage
+  stage     = basename(get_original_terragrunt_dir())
 
   defaults_config_hcl = read_terragrunt_config("../../helplines/defaults.hcl")
   defaults_config = local.defaults_config_hcl.locals
@@ -19,12 +18,19 @@ locals {
   computed_config = {
     environment = title(local.environment)
     short_helpline  = local.short_helpline
-    old_dir_name = "${local.pre_computed_config.old_dir_prefix}-${local.environment}"
+    old_dir_name = "${local.file_config.old_dir_prefix}-${local.environment}"
 
     operating_info_key = local.short_helpline
   }
 
   config = merge(local.file_config, local.computed_config)
+
+  // TODO: remove this once we've migrated all the secrets
+  null_migrate_tf_secrets = run_cmd("../../scripts/migrateTFSecrets.sh", local.config.old_dir_name, local.environment, local.short_helpline)
+
+  null_debug = run_cmd("echo", "stage: ${local.stage}")
+
+  // null_exit = run_cmd("exit", "1")
 }
 
 generate "backend" {
