@@ -32,10 +32,6 @@
         "name": "childWithDisability",
         "insights": ["customers", "customer_attribute_3"],
         "type": "mixed-checkbox"
-      },
-      {
-        "name": "region",
-        "insights": ["customers", "region"]
       }
     ],
     "caseInformation": [
