@@ -35,7 +35,6 @@ import {
   DateRulerDateText,
 } from './styles';
 import MessageItem, { GroupedMessage } from './MessageItem';
-import { formatFileNameAtAws } from '../../../utils';
 
 type OwnProps = {
   contactId: string;
