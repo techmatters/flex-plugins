@@ -138,6 +138,10 @@
     "type": "select",
     "options": [
       {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
         "value": "Department of Social Welfare",
         "label": "Department of Social Welfare"
       },

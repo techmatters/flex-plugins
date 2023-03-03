@@ -19,63 +19,7 @@
   },
   {
     "name": "relationshipToChild",
-    "label": "Relationship to child",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Caregiver",
-        "label": "Caregiver"
-      },
-      {
-        "value": "Friend",
-        "label": "Friend"
-      },
-      {
-        "value": "Grandparent",
-        "label": "Grandparent"
-      },
-      {
-        "value": "Neighbour",
-        "label": "Neighbour"
-      },
-      {
-        "value": "Parent",
-        "label": "Parent"
-      },
-      {
-        "value": "Partner",
-        "label": "Partner"
-      },
-      {
-        "value": "Person in a position of responsibility",
-        "label": "Person in a position of responsibility"
-      },
-      {
-        "value": "Sibling",
-        "label": "Sibling"
-      },
-      {
-        "value": "Stranger",
-        "label": "Stranger"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      }
-    ]
-  },
-  {
-    "name": "streetAddress",
-    "label": "Street Address",
-    "type": "input"
-  },
-  {
-    "name": "province",
-    "label": "Province",
+    "label": "Relationship to Child",
     "type": "select",
     "options": [
       {
@@ -83,8 +27,124 @@
         "label": ""
       },
       {
-        "value": "Central",
-        "label": "Central"
+        "value": "Mother",
+        "label": "Mother"
+      },
+      {
+        "value": "Father",
+        "label": "Father"
+      },
+      {
+        "value": "Step Parent",
+        "label": "Step Parent"
+      },
+      {
+        "value": "Care Giver",
+        "label": "Care Giver"
+      },
+      {
+        "value": "Guardian",
+        "label": "Guardian"
+      },
+      {
+        "value": "Brother",
+        "label": "Brother"
+      },
+      {
+        "value": "Sister",
+        "label": "Sister"
+      },
+      {
+        "value": "Cousin",
+        "label": "Cousin"
+      },
+      {
+        "value": "Uncle",
+        "label": "Uncle"
+      },
+      {
+        "value": "Aunt",
+        "label": "Aunt"
+      },
+      {
+        "value": "Nephew",
+        "label": "Nephew"
+      },
+      {
+        "value": "Niece",
+        "label": "Niece"
+      },
+      {
+        "value": "Neighbour",
+        "label": "Neighbour"
+      },
+      {
+        "value": "Friend",
+        "label": "Friend"
+      },
+      {
+        "value": "Stranger",
+        "label": "Stranger"
+      },
+      {
+        "value": "Anonymous",
+        "label": "Anonymous"
+      },
+      {
+        "value": "Doctor",
+        "label": "Doctor"
+      },
+      {
+        "value": "Teacher",
+        "label": "Teacher"
+      },
+      {
+        "value": "Social Worker",
+        "label": "Social Worker"
+      },
+      {
+        "value": "Police",
+        "label": "Police"
+      },
+      {
+        "value": "Self",
+        "label": "Self"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Community Member",
+        "label": "Community Member"
+      },
+      {
+        "value": "Health Worker",
+        "label": "Health Worker"
+      },
+      {
+        "value": "Grandparents",
+        "label": "Grandparents"
+      },
+      {
+        "value": "Pupil/Scholar",
+        "label": "Pupil/Scholar"
+      },
+      {
+        "value": "Psychologist",
+        "label": "Psychologist"
+      },
+      {
+        "value": "Employer/Colleague",
+        "label": "Employer/Colleague"
+      },
+      {
+        "value": "Spouse/Partner",
+        "label": "Spouse/Partner"
+      },
+      {
+        "value": "Community Child Care Worker",
+        "label": "Community Child Care Worker"
       },
       {
         "value": "Unknown",
@@ -97,40 +157,34 @@
     }
   },
   {
+    "name": "streetAddress",
+    "label": "Street Address",
+    "type": "input"
+  },
+  {
+    "name": "province",
+    "label": "Province",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "provinceOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
     "name": "district",
     "label": "District",
     "type": "dependent-select",
     "dependsOn": "province",
     "defaultOption": {
-      "value": "",
+      "value": "Unknown",
       "label": ""
     },
-    "options": {
-      "District1": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ],
-      "District2": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "optionsReferenceKey": "districtOptions"
   },
   {
     "name": "phone1",
@@ -298,21 +352,6 @@
       {
         "value": "Other",
         "label": "Other"
-      }
-    ]
-  },
-  {
-    "name": "language",
-    "label": "Language",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "language1",
-        "label": "language1"
       }
     ]
   },
