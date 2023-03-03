@@ -40,7 +40,7 @@ const DownloadFile: React.FC<Props> = ({ fileNameAtAws }) => {
   const fileName = formatFileNameAtAws(fileNameAtAws);
 
   const handleClick = async () => {
-    const response = await getFileDownloadUrl(fileNameAtAws, fileName);
+    const response = await getFileDownloadUrl(fileNameAtAws);
     setPreSignedUrl(response.downloadUrl);
   };
   return (

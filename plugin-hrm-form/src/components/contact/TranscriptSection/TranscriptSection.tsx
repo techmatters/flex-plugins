@@ -147,8 +147,7 @@ const TranscriptSection: React.FC<Props> = ({
   const fetchAndLoadTranscript = async () => {
     try {
       setLoading(true);
-      const fileName = await formatFileNameAtAws(externalStoredTranscript.location.key);
-      const transcriptPreSignedUrl = await getFileDownloadUrl(externalStoredTranscript.location.key, fileName);
+      const transcriptPreSignedUrl = await getFileDownloadUrl(externalStoredTranscript.location.key);
       const transcriptResponse = await fetch(transcriptPreSignedUrl.downloadUrl);
 
       validateFetchResponse(transcriptResponse);

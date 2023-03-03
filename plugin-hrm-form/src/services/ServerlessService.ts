@@ -22,6 +22,7 @@ import { DefinitionVersionId, loadDefinition, DefinitionVersion } from 'hrm-form
 import fetchProtectedApi from './fetchProtectedApi';
 import type { ChildCSAMReportForm, CounselorCSAMReportForm } from '../states/csam-report/types';
 import { getHrmConfig } from '../hrmConfig';
+import { formatFileNameAtAws } from '../utils';
 
 type PopulateCounselorsReturn = { sid: string; fullName: string }[];
 
@@ -199,7 +200,8 @@ export const deleteFile = async (fileName: string) => {
 /**
  * Gets a file download url from the corresponding S3 bucket
  */
-export const getFileDownloadUrl = async (fileNameAtAws: string, fileName: string) => {
+export const getFileDownloadUrl = async (fileNameAtAws: string) => {
+  const fileName = await formatFileNameAtAws(fileNameAtAws);
   const body = { fileNameAtAws, fileName };
   const response = await fetchProtectedApi('/getFileDownloadUrl', body);
   console.log('response', response);
