@@ -1,25 +1,24 @@
 locals {
-  environment = get_env("HL_ENV")
+  environment     = get_env("HL_ENV")
   short_helpline  = get_env("HL")
 
-  stage     = basename(get_original_terragrunt_dir())
+  stage = basename(get_original_terragrunt_dir())
 
   defaults_config_hcl = read_terragrunt_config("../../helplines/defaults.hcl")
-  defaults_config = local.defaults_config_hcl.locals
+  defaults_config     = local.defaults_config_hcl.locals
 
   common_config_hcl = read_terragrunt_config("../../helplines/${local.short_helpline}/common.hcl")
-  common_config = local.common_config_hcl.locals
+  common_config     = local.common_config_hcl.locals
 
   env_config_hcl = read_terragrunt_config("../../helplines/${local.short_helpline}/${local.environment}.hcl")
-  env_config = local.env_config_hcl.locals
+  env_config     = local.env_config_hcl.locals
 
   file_config =  merge(local.defaults_config, local.common_config, local.env_config)
 
   computed_config = {
-    environment = title(local.environment)
-    short_helpline  = local.short_helpline
-    old_dir_name = "${local.file_config.old_dir_prefix}-${local.environment}"
-
+    environment        = title(local.environment)
+    short_helpline     = local.short_helpline
+    old_dir_name       = "${local.file_config.old_dir_prefix}-${local.environment}"
     operating_info_key = local.short_helpline
   }
 
@@ -27,8 +26,7 @@ locals {
 
   // TODO: remove this once we've migrated all the secrets
   null_migrate_tf_secrets = run_cmd("../../scripts/migrateTFSecrets.sh", local.config.old_dir_name, local.environment, local.short_helpline)
-
-  null_manage_tf_secrets = run_cmd("../../scripts/secretManager/manageSecrets.py", "${local.environment}/${local.short_helpline}")
+  null_manage_tf_secrets  = run_cmd("../../scripts/secretManager/manageSecrets.py", "${local.environment}/${local.short_helpline}")
 }
 
 generate "backend" {
@@ -55,9 +53,9 @@ EOF
 }
 
 generate "aws-provider" {
-  path = "aws-provider.tf"
+  path      = "aws-provider.tf"
   if_exists = "overwrite_terragrunt"
-  contents = <<EOF
+  contents  = <<EOF
 provider "aws" {
   assume_role {
     role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-${local.environment}"
