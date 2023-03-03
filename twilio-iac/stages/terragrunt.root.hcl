@@ -28,9 +28,7 @@ locals {
   // TODO: remove this once we've migrated all the secrets
   null_migrate_tf_secrets = run_cmd("../../scripts/migrateTFSecrets.sh", local.config.old_dir_name, local.environment, local.short_helpline)
 
-  null_debug = run_cmd("echo", "stage: ${local.stage}")
-
-  // null_exit = run_cmd("exit", "1")
+  null_manage_tf_secrets = run_cmd("../../scripts/secretManager/manageSecrets.py", "${local.environment}/${local.short_helpline}")
 }
 
 generate "backend" {
