@@ -14,7 +14,8 @@ else
     DIND_ARG = -v /var/run/docker.sock:/var/run/docker.sock
 endif
 
-PWD_ARG = -v $(MY_PWD):/app -w /app$(MY_RELATIVE_PATH)
+MY_CONTAINER_PATH = /app$(MY_RELATIVE_PATH)
+PWD_ARG = -v $(MY_PWD):/app -w ${MY_CONTAINER_PATH}
 ENV_ARG = -e MY_ENV=$(MY_ENV) -e HL=$(HL) -e HL_ENV=$(HL_ENV) -e GITHUB_TOKEN_REQUIRED=true -e TF_LOG
 SECRETS = -e AWS_DEFAULT_REGION -e AWS_SECRET_ACCESS_KEY -e AWS_ACCESS_KEY_ID -v ~/.aws:/root/.aws -e GITHUB_OWNER -e GITHUB_TOKEN
 

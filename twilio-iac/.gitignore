@@ -5,3 +5,4 @@
 
 .terraform/
 .terragrunt-cache/
+terragrunt-debug.tfvars.json

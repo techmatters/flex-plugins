@@ -23,10 +23,6 @@ locals {
   }
 
   config = merge(local.file_config, local.computed_config)
-
-  // TODO: remove this once we've migrated all the secrets
-  null_migrate_tf_secrets = run_cmd("../../scripts/migrateTFSecrets.sh", local.config.old_dir_name, local.environment, local.short_helpline)
-  null_manage_tf_secrets  = run_cmd("../../scripts/secretManager/manageSecrets.py", "${local.environment}/${local.short_helpline}")
 }
 
 generate "backend" {
@@ -73,5 +69,17 @@ EOF
 inputs = local.config
 
 terraform {
+
+  // TODO: remove this once we've migrated all the secrets
+  before_hook "migrate_tf_secrets" {
+    commands = ["init"]
+    execute  = ["/app/twilio-iac/scripts/migrateTFSecrets.sh", local.config.old_dir_name, local.environment, local.short_helpline]
+  }
+
+  before_hook "manage_tf_secrets" {
+    commands = ["init"]
+    execute  = ["/app/twilio-iac/scripts/secretManager/manageSecrets.py", "${local.environment}/${local.short_helpline}"]
+  }
+
   source = "../../terraform-modules//${local.stage}"
 }

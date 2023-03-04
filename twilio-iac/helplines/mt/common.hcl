@@ -11,7 +11,7 @@ locals {
   feature_flags = {
     "enable_fullstory_monitoring": true,
     "enable_upload_documents": true,
-    "enable_post_survey": local.enable_post_survey,
+    "enable_post_survey": false,
     "enable_case_management": true,
     "enable_offline_contact": true,
     "enable_filter_cases": true,
