@@ -201,7 +201,7 @@ export const deleteFile = async (fileName: string) => {
  * Gets a file download url from the corresponding S3 bucket
  */
 export const getFileDownloadUrl = async (fileNameAtAws: string, fileName?: string) => {
-  const getFileName = await formatFileNameAtAws(fileNameAtAws);
+  const getFileName = formatFileNameAtAws(fileNameAtAws);
   const body = { fileNameAtAws, fileName: fileName ? fileName : getFileName };
   const response = await fetchProtectedApi('/getFileDownloadUrl', body);
   return response;
