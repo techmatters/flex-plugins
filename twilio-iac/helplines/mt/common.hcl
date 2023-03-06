@@ -2,8 +2,7 @@ locals {
   helpline = "Kellimni"
   old_dir_prefix = "mt-kellimni"
 
-  bucket_region = "eu-west-1"
-  cloudwatch_region = "eu-west-1"
+  helpline_region = "eu-west-1"
 
   definition_version = "mt-v1"
   helpline_language = "en-MT"

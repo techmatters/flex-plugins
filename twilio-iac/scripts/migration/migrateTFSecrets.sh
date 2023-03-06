@@ -9,15 +9,11 @@ new_key="/terraform/twilio-iac/${environment}/${short_helpline}/secrets.json"
 
 ssm_role_arn="arn:aws:iam::712893914485:role/tf-twilio-iac-ssm-admin"
 
+script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
 printf "\n\n"
 
-printf "Assuming role ${ssm_role_arn}..."
-ts=$(date +%s)
-OUT=$(aws sts assume-role --role-arn ${ssm_role_arn} --role-session-name migrateTFSecrets-${ts})
-export AWS_ACCESS_KEY_ID=$(echo $OUT | jq -r '.Credentials''.AccessKeyId')
-export AWS_SECRET_ACCESS_KEY=$(echo $OUT | jq -r '.Credentials''.SecretAccessKey')
-export AWS_SESSION_TOKEN=$(echo $OUT | jq -r '.Credentials''.SessionToken')
-printf "Done!\n\n"
+. ${script_dir}/../assumeStsRole.sh ${ssm_role_arn} migrateTFSecrets
 
 printf "Checking SSM parameters for ${old_key} and ${new_key}..."
 aws ssm get-parameter --name $old_key >> /dev/null 2>&1

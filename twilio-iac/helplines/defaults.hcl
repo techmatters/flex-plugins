@@ -1,7 +1,6 @@
 locals {
   region = "us-east-1"
-  bucket_region = "us-east-1"
-  cloudwatch_region = "us-east-1"
+  helpline_region = "us-east-1"
 
   multi_office = false
   enable_post_survey = false

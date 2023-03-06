@@ -73,10 +73,11 @@ variable "survey_workflow_sid" {
   type        = string
 }
 
-variable "post_survey_bot_sid" {
-  description = "Internal Twilio resource SID provided by another module"
-  type        = string
-}
+#TODO: remove this after removing from state
+# variable "post_survey_bot_sid" {
+#   description = "Internal Twilio resource SID provided by another module"
+#   type        = string
+# }
 
 variable "bucket_region" {
   description = "The region where the document & chat s3 buckets should be created"

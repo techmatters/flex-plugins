@@ -1,4 +1,3 @@
-
 variable "environment" {
   type = string
   description = "The environment for the helpline."
@@ -12,11 +11,6 @@ variable "short_helpline" {
 variable "helpline" {
   type = string
   description = "The human readable helpline name."
-}
-
-variable "old_dir_name" {
-  type        = string
-  description = "The old directory name of the helpline config."
 }
 
 variable "operating_info_key" {
@@ -65,4 +59,9 @@ variable "twilio_channels" {
 variable "definition_version" {
   type = string
   description = "The definition version for the helpline."
+}
+
+variable "helpline_region" {
+  type = string
+  description = "The region for the helpline."
 }

@@ -39,7 +39,7 @@ terraform {
 
   backend "s3" {
     bucket         = "tl-terraform-state-${local.environment}"
-    key            = "twilio/${local.short_helpline}/terraform.tfstate"
+    key            = "twilio/${local.short_helpline}/${local.stage}/terraform.tfstate"
     dynamodb_table = "terraform-locks"
     encrypt        = true
     role_arn       = "arn:aws:iam::712893914485:role/tf-twilio-iac-${local.environment}"
@@ -73,12 +73,17 @@ terraform {
   // TODO: remove this once we've migrated all the secrets
   before_hook "migrate_tf_secrets" {
     commands = ["init"]
-    execute  = ["/app/twilio-iac/scripts/migrateTFSecrets.sh", local.config.old_dir_name, local.environment, local.short_helpline]
+    execute  = ["/app/twilio-iac/scripts/migration/migrateTFSecrets.sh", local.config.old_dir_name, local.environment, local.short_helpline]
   }
 
   before_hook "manage_tf_secrets" {
     commands = ["init"]
     execute  = ["/app/twilio-iac/scripts/secretManager/manageSecrets.py", "${local.environment}/${local.short_helpline}"]
+  }
+
+  before_hook "migrate_tf_state" {
+    commands = ["init"]
+    execute  = ["/app/twilio-iac/scripts/migration/migrateTFState.sh", local.environment, local.short_helpline, local.stage]
   }
 
   source = "../../terraform-modules//${local.stage}"
