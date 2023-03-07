@@ -29,11 +29,18 @@ resource "twilio_taskrouter_workspaces_task_queues_v1" "helpline_queue" {
   target_workers = var.custom_target_workers
 }
 
-// EYCA TaskQueue
-resource "twilio_taskrouter_workspaces_task_queues_v1" "eyca_task_queue" {
-  friendly_name  = "EYCA"
+// Outside Operating Hours TaskQueue
+resource "twilio_taskrouter_workspaces_task_queues_v1" "outside_operating_hours_task_queue" {
+  friendly_name  = "Outside Operating Hours"
   workspace_sid  = twilio_taskrouter_workspaces_v1.flex_task_assignment.id
   target_workers = var.custom_target_workers
+}
+
+// Non Counselling TaskQueue
+resource "twilio_taskrouter_workspaces_task_queues_v1" "non_counselling_hours_task_queue" {
+  friendly_name  = "Non Counselling"
+  workspace_sid  = twilio_taskrouter_workspaces_v1.flex_task_assignment.id
+  target_workers = ""
 }
 
 // Workflow
@@ -89,4 +96,3 @@ resource "twilio_taskrouter_workspaces_task_channels_v1" "email" {
   friendly_name = "Email"
   unique_name = "email"
 }
-
