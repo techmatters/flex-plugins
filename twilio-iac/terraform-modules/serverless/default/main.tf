@@ -11,6 +11,7 @@ resource "twilio_serverless_services_v1" "serverless" {
   unique_name = "serverless"
   friendly_name = "serverless"
   include_credentials = true
+  ui_editable = var.ui_editable
 }
 
 resource "twilio_serverless_services_environments_v1" "dev" {
