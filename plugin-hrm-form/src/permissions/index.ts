@@ -19,6 +19,7 @@ import { fetchRules } from './fetchRules';
 import { getHrmConfig } from '../hrmConfig';
 
 export const CaseActions = {
+  VIEW_CASE: 'viewCase',
   CLOSE_CASE: 'closeCase',
   REOPEN_CASE: 'reopenCase',
   CASE_STATUS_TRANSITION: 'caseStatusTransition',
@@ -39,6 +40,7 @@ export const CaseActions = {
   EDIT_DOCUMENT: 'editDocument',
 } as const;
 export const ContactActions = {
+  VIEW_CONTACT: 'viewContact',
   EDIT_CONTACT: 'editContact',
   VIEW_EXTERNAL_TRANSCRIPT: 'viewExternalTranscript',
 } as const;
