@@ -70,20 +70,22 @@ inputs = local.config
 
 terraform {
 
-  // TODO: remove this once we've migrated all the secrets
+  // TODO: remove this when we are ready to apply
+  before_hook "abort_apply" {
+    commands = ["apply"]
+    execute = ["exit", "1"]
+  }
+
+  // TODO: remove this once we've migrated all secrets
   before_hook "migrate_tf_secrets" {
     commands = ["init"]
     execute  = ["/app/twilio-iac/scripts/migration/migrateTFSecrets.sh", local.config.old_dir_name, local.environment, local.short_helpline]
   }
 
+  // TODO: make this only happen on provision stage.
   before_hook "manage_tf_secrets" {
     commands = ["init"]
     execute  = ["/app/twilio-iac/scripts/secretManager/manageSecrets.py", "${local.environment}/${local.short_helpline}"]
-  }
-
-  before_hook "migrate_tf_state" {
-    commands = ["init"]
-    execute  = ["/app/twilio-iac/scripts/migration/migrateTFState.sh", local.environment, local.short_helpline, local.stage]
   }
 
   source = "../../terraform-modules//${local.stage}"

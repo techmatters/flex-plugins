@@ -4,6 +4,8 @@ environment=$1
 short_helpline=$2
 stage=$3
 
+echo "Migrating Terraform state for ${short_helpline} in ${environment} to ${stage}"
+
 old_key="twilio/${short_helpline}/terraform.tfstate"
 new_key_base="twilio/${short_helpline}/${stage}"
 new_key="${new_key_base}/terraform.tfstate"
@@ -38,12 +40,13 @@ if [ $old_key_exists -eq 0 ] && [ $new_key_exists -ne 0 ]; then
 fi
 
 if [ $new_key_lock_exists -ne 0 ]; then
+  echo "running . ${script_dir}/migrateTFState-${stage}.sh"
   . ${script_dir}/migrateTFState-${stage}.sh
 
   printf "Creating lock file in ${s3_bucket} at ${new_key_lock}..."
-  aws s3 cp \
+  echo "aws s3 cp \
     ${script_dir}/migration.lock.json \
-    s3://${s3_bucket}/${new_key_lock}
+    s3://${s3_bucket}/${new_key_lock}"
   printf "Done!\n\n"
 fi
 

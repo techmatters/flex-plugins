@@ -30,7 +30,7 @@ provider "twilio" {
   password = local.secrets.twilio_auth_token
 }
 
-TODO: remove this module when we remove the old flex plugin. Just here for reference
+// TODO: remove this module when we remove the old flex plugin. Just here for reference
 module flex {
   source = "../flex/service-configuration"
   twilio_account_sid = local.secrets.twilio_account_sid

@@ -56,11 +56,6 @@ variable "twilio_channels" {
   description = "The twilio channels for the helpline."
 }
 
-variable "definition_version" {
-  type = string
-  description = "The definition version for the helpline."
-}
-
 variable "helpline_region" {
   type = string
   description = "The region for the helpline."
