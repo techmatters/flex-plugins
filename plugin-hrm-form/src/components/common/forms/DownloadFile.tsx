@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import DownloadIcon from '@material-ui/icons/GetApp';
 import { Template } from '@twilio/flex-ui';
 
@@ -28,34 +28,35 @@ type Props = {
 };
 
 const DownloadFile: React.FC<Props> = ({ fileNameAtAws }) => {
-  const [preSignedUrl, setPreSignedUrl] = useState('');
-  const downloadLink = useRef<HTMLAnchorElement>();
-
-  useEffect(() => {
-    if (preSignedUrl) {
-      downloadLink.current.click();
-    }
-  }, [preSignedUrl, downloadLink]);
-
   const fileName = formatFileNameAtAws(fileNameAtAws);
 
-  const handleClick = async () => {
-    const response = await getFileDownloadUrl(fileNameAtAws, fileName);
-    setPreSignedUrl(response.downloadUrl);
+  const downloadFile = async (filename: string) => {
+    const encodedFilename = encodeURIComponent(filename);
+    const fileUrl = await getFileDownloadUrl(fileNameAtAws, encodedFilename);
+    const response = await fetch(fileUrl.downloadUrl);
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+
+    a.style.display = 'none';
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
+
   return (
     <Flex flexDirection="column" alignItems="flex-start">
       <Box marginBottom="5px">
-        <StyledNextStepButton secondary onClick={handleClick}>
+        <StyledNextStepButton secondary onClick={() => downloadFile(fileName)}>
           <DownloadIcon style={{ fontSize: '20px', marginRight: 5 }} />
           <Template code="DownloadFile-ButtonText" />
         </StyledNextStepButton>
       </Box>
       {fileName}
-      <HiddenText>
-        {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
-        <a aria-hidden="true" href={preSignedUrl} ref={downloadLink} download={fileName} />
-      </HiddenText>
     </Flex>
   );
 };
