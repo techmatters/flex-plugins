@@ -11,3 +11,6 @@ tflint:
 
 tfsec:
 	docker run -it --rm -v $(MY_PWD)/twilio-iac:/src aquasec/tfsec /src
+
+checkov:
+	docker run -it --rm -v $(MY_PWD)/twilio-iac:/data bridgecrew/checkov -d /data
