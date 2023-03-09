@@ -114,7 +114,7 @@ export enum ContactMediaType {
 export type S3StoredTranscript = {
   store: 'S3';
   type: ContactMediaType.TRANSCRIPT;
-  url?: string;
+  location?: { bucket?: string; key?: string };
 };
 
 type S3StoredMedia = S3StoredTranscript;
