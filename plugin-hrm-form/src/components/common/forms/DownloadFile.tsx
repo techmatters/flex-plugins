@@ -34,6 +34,7 @@ const DownloadFile: React.FC<Props> = ({ fileNameAtAws }) => {
   useEffect(() => {
     if (preSignedUrl) {
       downloadLink.current.click();
+      URL.revokeObjectURL(preSignedUrl);
     }
   }, [preSignedUrl, downloadLink]);
 
