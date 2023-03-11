@@ -22,7 +22,7 @@ import format from 'date-fns/format';
 
 import type { TwilioStoredMedia, S3StoredTranscript } from '../../../types/types';
 import { contactFormsBase, namespace, RootState } from '../../../states';
-import { getFileDownloadUrlFromUrl } from '../../../services/ServerlessService';
+import { getFileDownloadUrl } from '../../../services/ServerlessService';
 import { loadTranscript, TranscriptMessage, TranscriptResult } from '../../../states/contacts/existingContacts';
 import {
   ErrorFont,
@@ -123,7 +123,7 @@ const TranscriptSection: React.FC<Props> = ({
 
   const handleFetchAndLoadException = err => {
     console.error(
-      `Error loading the transcript for contact ${contactId}, transcript url ${externalStoredTranscript.url}`,
+      `Error loading the transcript for contact ${contactId}, transcript url ${externalStoredTranscript.location.key}`,
       err,
     );
 
@@ -146,8 +146,7 @@ const TranscriptSection: React.FC<Props> = ({
   const fetchAndLoadTranscript = async () => {
     try {
       setLoading(true);
-
-      const transcriptPreSignedUrl = await getFileDownloadUrlFromUrl(externalStoredTranscript.url, '');
+      const transcriptPreSignedUrl = await getFileDownloadUrl(externalStoredTranscript.location.key);
       const transcriptResponse = await fetch(transcriptPreSignedUrl.downloadUrl);
 
       validateFetchResponse(transcriptResponse);
@@ -195,7 +194,7 @@ const TranscriptSection: React.FC<Props> = ({
   }
 
   // The external transcript is exported but it hasn't been fetched yet
-  if (externalStoredTranscript && externalStoredTranscript.url && !transcript) {
+  if (externalStoredTranscript && externalStoredTranscript.location && !transcript) {
     return (
       <LoadTranscriptButton type="button" onClick={fetchAndLoadTranscript}>
         <LoadTranscriptButtonText>
@@ -217,7 +216,7 @@ const TranscriptSection: React.FC<Props> = ({
   }
 
   // External is still pending and Twilio transcript is disabled
-  if (externalStoredTranscript && !externalStoredTranscript.url) {
+  if (externalStoredTranscript && !externalStoredTranscript.location) {
     return (
       <ItalicFont>
         <Template code="TranscriptSection-TranscriptNotAvailableCheckLater" />

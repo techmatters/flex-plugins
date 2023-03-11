@@ -133,6 +133,7 @@ export const getAseloFeatureFlags = (): FeatureFlags => cachedConfig.featureFlag
  * Map the configuration redux state to the React component properties instead. This way if the component loads before the definitions are ready, it will reload once they are
  * Ideally this should only be used in code that is invoked independently of React components, like Flex action event handlers
  */
+// eslint-disable-next-line import/no-unused-modules
 export const getDefinitionVersions = () => {
   return (Flex.Manager.getInstance().store.getState() as RootState)[namespace][configurationBase];
 };

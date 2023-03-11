@@ -239,7 +239,7 @@ const saveContactToHrm = async (
       conversationMedia.push({
         store: 'S3',
         type: ContactMediaType.TRANSCRIPT,
-        url: undefined,
+        location: undefined,
       });
     }
 
