@@ -11,9 +11,7 @@ def get_ssm_client():
         return client
 
     ts = time.time()
-
     stsClient = boto3.client("sts")
-
     response = stsClient.assume_role(
         RoleArn="arn:aws:iam::712893914485:role/tf-twilio-iac-ssm-admin",
         RoleSessionName="secret-manager" + str(ts),
@@ -24,6 +22,6 @@ def get_ssm_client():
         aws_secret_access_key=response['Credentials']['SecretAccessKey'],
         aws_session_token=response['Credentials']['SessionToken'],
     )
-
     client = session.client("ssm")
+
     return client
