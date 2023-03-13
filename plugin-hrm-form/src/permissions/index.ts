@@ -18,6 +18,8 @@ import type * as t from '../types/types';
 import { fetchRules } from './fetchRules';
 import { getHrmConfig } from '../hrmConfig';
 
+export { canOnlyViewOwnCases, canOnlyViewOwnContacts } from './search-permissions';
+
 export const CaseActions = {
   VIEW_CASE: 'viewCase',
   CLOSE_CASE: 'closeCase',
@@ -57,7 +59,7 @@ export const PermissionActions = {
 type PermissionActionsKeys = keyof typeof PermissionActions;
 export type PermissionActionType = typeof PermissionActions[PermissionActionsKeys];
 type Condition = 'isSupervisor' | 'isCreator' | 'isCaseOpen' | 'isOwner' | 'everyone';
-type ConditionSet = Condition[];
+export type ConditionSet = Condition[];
 type ConditionSets = ConditionSet[];
 
 export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], status: t.Case['status']) => {
