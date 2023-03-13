@@ -5,5 +5,4 @@ from secretManager import Questionnaire
 
 helpline = argv[1]
 
-questionnaire = Questionnaire(helpline=helpline)
-questionnaire.start()
+Questionnaire(helpline=helpline, blah="blah").start()

@@ -1,7 +1,8 @@
 import boto3
+from mypy_boto3_ssm import SSMClient
 import time
 
-client = None
+client: SSMClient = None
 
 
 def get_ssm_client():
