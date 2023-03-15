@@ -215,12 +215,12 @@
         "label": ""
       },
       {
-        "value": "Boy",
-        "label": "Boy"
+        "value": "Male",
+        "label": "Male"
       },
       {
-        "value": "Girl",
-        "label": "Girl"
+        "value": "Female",
+        "label": "Female"
       },
       {
         "value": "Non-Binary",
@@ -354,10 +354,5 @@
         "label": "Other"
       }
     ]
-  },
-  {
-    "name": "ethnicity",
-    "label": "Ethnicity",
-    "type": "input"
   }
 ]
