@@ -202,12 +202,12 @@
         "label": ""
       },
       {
-        "value": "Boy",
-        "label": "Boy"
+        "value": "Male",
+        "label": "Male"
       },
       {
-        "value": "Girl",
-        "label": "Girl"
+        "value": "Female",
+        "label": "Female"
       },
       {
         "value": "Non-Binary",
@@ -500,11 +500,6 @@
     }
   },
   {
-    "name": "ethnicity",
-    "label": "Ethnicity",
-    "type": "input"
-  },
-  {
     "name": "race",
     "label": "Race",
     "type": "select",
@@ -530,11 +525,6 @@
         "label": "White"
       }
     ]
-  },
-  {
-    "name": "idNumber",
-    "label": "ID Number",
-    "type": "input"
   },
   {
     "name": "copyToHousehold",

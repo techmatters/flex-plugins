@@ -2,11 +2,7 @@
   {
     "name": "callSummary",
     "label": "Contact Summary",
-    "type": "textarea",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "type": "textarea"
   },
   {
     "name": "repeatCaller",
@@ -46,13 +42,9 @@
     "name": "department",
     "label": "Department",
     "type": "select",
-    "defaultOption": {
-      "value": "unknown",
-      "label": ""
-    },
     "options": [
       {
-        "value": "unknown",
+        "value": "",
         "label": ""
       },
       {
