@@ -1,468 +1,824 @@
 ${
   jsonencode(
   {
-    "description": flow_description,
-    "states": [
-      {
-        "name": "Trigger",
-        "type": "trigger",
-        "transitions": [
-          {
-            "next": "split_web",
-            "event": "incomingMessage"
-          },
-          {
-            "event": "incomingCall"
-          },
-          {
-            "event": "incomingConversationMessage"
-          },
-          {
-            "event": "incomingRequest"
-          },
-          {
-            "event": "incomingParent"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": -90,
-            "y": -90
-          }
+  "description": flow_description,
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "next": "split_web",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
         }
-      },
-      {
-        "name": "attributes_EN",
-        "type": "send-to-flex",
-        "transitions": [
-          {
-            "event": "callComplete"
-          },
-          {
-            "event": "failedToEnqueue"
-          },
-          {
-            "event": "callFailure"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": -330,
-            "y": 1740
-          },
-          "workflow": master_workflow_sid,
-          "channel": chat_task_channel_sid,
-          "attributes": channel_attributes_EN
-        }
-      },
-      {
-        "name": "language_split",
-        "type": "split-based-on",
-        "transitions": [
-          {
-            "next": "chatbot_EN",
-            "event": "noMatch"
-          },
-          {
-            "next": "chatbot_EN",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to en-MT",
-                "arguments": [
-                  "{{widgets.chatbot_language.memory.twilio.collected_data.collect_survey.answers.language.answer}}"
-                ],
-                "type": "equal_to",
-                "value": "en-MT"
-              }
-            ]
-          },
-          {
-            "next": "chatbot_MT",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to mt-MT",
-                "arguments": [
-                  "{{widgets.chatbot_language.memory.twilio.collected_data.collect_survey.answers.language.answer}}"
-                ],
-                "type": "equal_to",
-                "value": "mt-MT"
-              }
-            ]
-          },
-          {
-            "next": "chatbot_UKR",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to ukr-MT",
-                "arguments": [
-                  "{{widgets.chatbot_language.memory.twilio.collected_data.collect_survey.answers.language.answer}}"
-                ],
-                "type": "equal_to",
-                "value": "ukr-MT"
-              }
-            ]
-          }
-        ],
-        "properties": {
-          "input": "{{widgets.chatbot_language.memory.twilio.collected_data.collect_survey.answers.language.answer}}",
-          "offset": {
-            "x": -160,
-            "y": 690
-          }
-        }
-      },
-      {
-        "name": "chatbot_EN",
-        "type": "send-to-auto-pilot",
-        "transitions": [
-          {
-            "next": "check_counselor_handoff_EN",
-            "event": "sessionEnded"
-          },
-          {
-            "event": "failure"
-          },
-          {
-            "event": "timeout"
-          }
-        ],
-        "properties": {
-          "chat_channel": "{{trigger.message.ChannelSid}}",
-          "offset": {
-            "x": -520,
-            "y": 1030
-          },
-          "autopilot_assistant_sid": chatbot_en_sid,
-          "from": "Bot",
-          "chat_service": "{{trigger.message.InstanceSid}}",
-          "body": "{{trigger.message.Body}}",
-          "target_task": "greeting",
-          "timeout": 14400
-        }
-      },
-      {
-        "name": "chatbot_MT",
-        "type": "send-to-auto-pilot",
-        "transitions": [
-          {
-            "next": "counselor_handoff_MT",
-            "event": "sessionEnded"
-          },
-          {
-            "event": "failure"
-          },
-          {
-            "event": "timeout"
-          }
-        ],
-        "properties": {
-          "chat_channel": "{{trigger.message.ChannelSid}}",
-          "offset": {
-            "x": -70,
-            "y": 1030
-          },
-          "autopilot_assistant_sid": chatbot_mt_sid,
-          "from": "Bot",
-          "chat_service": "{{trigger.message.InstanceSid}}",
-          "body": "{{trigger.message.Body}}",
-          "target_task": "greeting",
-          "timeout": 14400
-        }
-      },
-      {
-        "name": "chatbot_UKR",
-        "type": "send-to-auto-pilot",
-        "transitions": [
-          {
-            "next": "check_counselor_handoff_UKR",
-            "event": "sessionEnded"
-          },
-          {
-            "event": "failure"
-          },
-          {
-            "event": "timeout"
-          }
-        ],
-        "properties": {
-          "chat_channel": "{{trigger.message.ChannelSid}}",
-          "offset": {
-            "x": 360,
-            "y": 1020
-          },
-          "autopilot_assistant_sid": chatbot_ukr_sid,
-          "from": "Bot",
-          "chat_service": "{{trigger.message.InstanceSid}}",
-          "body": "{{trigger.message.Body}}",
-          "target_task": "greeting",
-          "timeout": 14400
-        }
-      },
-      {
-        "name": "check_counselor_handoff_EN",
-        "type": "split-based-on",
-        "transitions": [
-          {
-            "event": "noMatch"
-          },
-          {
-            "next": "attributes_EN",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to counselor_handoff",
-                "arguments": [
-                  "{{widgets.chatbot_EN.CurrentTask}}"
-                ],
-                "type": "equal_to",
-                "value": "counselor_handoff"
-              }
-            ]
-          }
-        ],
-        "properties": {
-          "input": "{{widgets.chatbot_EN.CurrentTask}}",
-          "offset": {
-            "x": -530,
-            "y": 1370
-          }
-        }
-      },
-      {
-        "name": "chatbot_language",
-        "type": "send-to-auto-pilot",
-        "transitions": [
-          {
-            "next": "language_split",
-            "event": "sessionEnded"
-          },
-          {
-            "event": "failure"
-          },
-          {
-            "event": "timeout"
-          }
-        ],
-        "properties": {
-          "chat_channel": "{{trigger.message.ChannelSid}}",
-          "offset": {
-            "x": -210,
-            "y": 440
-          },
-          "autopilot_assistant_sid": chatbot_language_selector_sid,
-          "from": "Bot",
-          "chat_service": "{{trigger.message.InstanceSid}}",
-          "body": "{{trigger.message.Body}}",
-          "target_task": "greeting",
-          "timeout": 14400
-        }
-      },
-      {
-        "name": "split_web",
-        "type": "split-based-on",
-        "transitions": [
-          {
-            "next": "chatbot_language",
-            "event": "noMatch"
-          },
-          {
-            "next": "web_language_split",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to web",
-                "arguments": [
-                  "{{trigger.message.ChannelAttributes.channel_type}}"
-                ],
-                "type": "equal_to",
-                "value": "web"
-              }
-            ]
-          }
-        ],
-        "properties": {
-          "input": "{{trigger.message.ChannelAttributes.channel_type}}",
-          "offset": {
-            "x": 230,
-            "y": 140
-          }
-        }
-      },
-      {
-        "name": "web_language_split",
-        "type": "split-based-on",
-        "transitions": [
-          {
-            "next": "chatbot_EN",
-            "event": "noMatch"
-          },
-          {
-            "next": "chatbot_EN",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to en-MT",
-                "arguments": [
-                  "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
-                ],
-                "type": "equal_to",
-                "value": "en-MT"
-              }
-            ]
-          },
-          {
-            "next": "chatbot_MT",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to mt-MT",
-                "arguments": [
-                  "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
-                ],
-                "type": "equal_to",
-                "value": "mt-MT"
-              }
-            ]
-          },
-          {
-            "next": "chatbot_UKR",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to ukr-MT",
-                "arguments": [
-                  "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
-                ],
-                "type": "equal_to",
-                "value": "ukr-MT"
-              }
-            ]
-          }
-        ],
-        "properties": {
-          "input": "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}",
-          "offset": {
-            "x": 470,
-            "y": 670
-          }
-        }
-      },
-      {
-        "name": "counselor_handoff_MT",
-        "type": "split-based-on",
-        "transitions": [
-          {
-            "event": "noMatch"
-          },
-          {
-            "next": "attributes_MT",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to counselor_handoff",
-                "arguments": [
-                  "{{widgets.chatbot_MT.CurrentTask}}"
-                ],
-                "type": "equal_to",
-                "value": "counselor_handoff"
-              }
-            ]
-          }
-        ],
-        "properties": {
-          "input": "{{widgets.chatbot_MT.CurrentTask}}",
-          "offset": {
-            "x": -60,
-            "y": 1370
-          }
-        }
-      },
-      {
-        "name": "attributes_MT",
-        "type": "send-to-flex",
-        "transitions": [
-          {
-            "event": "callComplete"
-          },
-          {
-            "event": "failedToEnqueue"
-          },
-          {
-            "event": "callFailure"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 140,
-            "y": 1730
-          },
-          "workflow": master_workflow_sid,
-          "channel": chat_task_channel_sid,
-          "attributes": channel_attributes_MT
-        }
-      },
-      {
-        "name": "check_counselor_handoff_UKR",
-        "type": "split-based-on",
-        "transitions": [
-          {
-            "event": "noMatch"
-          },
-          {
-            "next": "attributes_UKR",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to counselor_handoff",
-                "arguments": [
-                  "{{widgets.chatbot_UKR.CurrentTask}}"
-                ],
-                "type": "equal_to",
-                "value": "counselor_handoff"
-              }
-            ]
-          }
-        ],
-        "properties": {
-          "input": "{{widgets.chatbot_UKR.CurrentTask}}",
-          "offset": {
-            "x": 440,
-            "y": 1340
-          }
-        }
-      },
-      {
-        "name": "attributes_UKR",
-        "type": "send-to-flex",
-        "transitions": [
-          {
-            "event": "callComplete"
-          },
-          {
-            "event": "failedToEnqueue"
-          },
-          {
-            "event": "callFailure"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 640,
-            "y": 1720
-          },
-          "workflow": master_workflow_sid,
-          "channel": chat_task_channel_sid,
-          "attributes": channel_attributes_UKR
+      ],
+      "properties": {
+        "offset": {
+          "x": -90,
+          "y": -90
         }
       }
-    ],
-    "initial_state": "Trigger",
-    "flags": {
-      "allow_concurrent_calls": true
+    },
+    {
+      "name": "attributes_EN",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -790,
+          "y": 2340
+        },
+        "workflow": master_workflow_sid,
+        "channel": chat_task_channel_sid,
+        "attributes": "{\n  \"name\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"language\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.language}}\",\n  \"transferTargetType\": \"\",\n  \"memory\": {{ widgets.chatbot_EN.memory  | to_json}}\n}"
+      }
+    },
+    {
+      "name": "language_split",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "accept_terms_EN",
+          "event": "noMatch"
+        },
+        {
+          "next": "accept_terms_EN",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to en-MT",
+              "arguments": [
+                "{{widgets.chatbot_language.memory.twilio.collected_data.collect_survey.answers.language.answer}}"
+              ],
+              "type": "equal_to",
+              "value": "en-MT"
+            }
+          ]
+        },
+        {
+          "next": "accept_terms_MT",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to mt-MT",
+              "arguments": [
+                "{{widgets.chatbot_language.memory.twilio.collected_data.collect_survey.answers.language.answer}}"
+              ],
+              "type": "equal_to",
+              "value": "mt-MT"
+            }
+          ]
+        },
+        {
+          "next": "accept_terms_UKR",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to ukr-MT",
+              "arguments": [
+                "{{widgets.chatbot_language.memory.twilio.collected_data.collect_survey.answers.language.answer}}"
+              ],
+              "type": "equal_to",
+              "value": "ukr-MT"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.chatbot_language.memory.twilio.collected_data.collect_survey.answers.language.answer}}",
+        "offset": {
+          "x": -230,
+          "y": 670
+        }
+      }
+    },
+    {
+      "name": "chatbot_EN",
+      "type": "send-to-auto-pilot",
+      "transitions": [
+        {
+          "next": "check_counselor_handoff_EN",
+          "event": "sessionEnded"
+        },
+        {
+          "event": "failure"
+        },
+        {
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "chat_channel": "{{trigger.message.ChannelSid}}",
+        "offset": {
+          "x": -760,
+          "y": 1800
+        },
+        "autopilot_assistant_sid": chatbot_en_sid,
+        "from": "Bot",
+        "chat_service": "{{trigger.message.InstanceSid}}",
+        "body": "{{trigger.message.Body}}",
+        "target_task": "greeting",
+        "timeout": 14400
+      }
+    },
+    {
+      "name": "chatbot_MT",
+      "type": "send-to-auto-pilot",
+      "transitions": [
+        {
+          "next": "counselor_handoff_MT",
+          "event": "sessionEnded"
+        },
+        {
+          "event": "failure"
+        },
+        {
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "chat_channel": "{{trigger.message.ChannelSid}}",
+        "offset": {
+          "x": 260,
+          "y": 1820
+        },
+        "autopilot_assistant_sid": chatbot_mt_sid,
+        "from": "Bot",
+        "chat_service": "{{trigger.message.InstanceSid}}",
+        "body": "{{trigger.message.Body}}",
+        "target_task": "greeting",
+        "timeout": 14400
+      }
+    },
+    {
+      "name": "chatbot_UKR",
+      "type": "send-to-auto-pilot",
+      "transitions": [
+        {
+          "next": "check_counselor_handoff_UKR",
+          "event": "sessionEnded"
+        },
+        {
+          "event": "failure"
+        },
+        {
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "chat_channel": "{{trigger.message.ChannelSid}}",
+        "offset": {
+          "x": 1360,
+          "y": 1800
+        },
+        "autopilot_assistant_sid": chatbot_ukr_sid,
+        "from": "Bot",
+        "chat_service": "{{trigger.message.InstanceSid}}",
+        "body": "{{trigger.message.Body}}",
+        "target_task": "greeting",
+        "timeout": 14400
+      }
+    },
+    {
+      "name": "check_counselor_handoff_EN",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "attributes_EN",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to counselor_handoff",
+              "arguments": [
+                "{{widgets.chatbot_EN.CurrentTask}}"
+              ],
+              "type": "equal_to",
+              "value": "counselor_handoff"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.chatbot_EN.CurrentTask}}",
+        "offset": {
+          "x": -790,
+          "y": 2020
+        }
+      }
+    },
+    {
+      "name": "chatbot_language",
+      "type": "send-to-auto-pilot",
+      "transitions": [
+        {
+          "next": "language_split",
+          "event": "sessionEnded"
+        },
+        {
+          "event": "failure"
+        },
+        {
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "chat_channel": "{{trigger.message.ChannelSid}}",
+        "offset": {
+          "x": -210,
+          "y": 440
+        },
+        "autopilot_assistant_sid": chatbot_language_selector_sid,
+        "from": "Bot",
+        "chat_service": "{{trigger.message.InstanceSid}}",
+        "body": "{{trigger.message.Body}}",
+        "target_task": "greeting",
+        "timeout": 14400
+      }
+    },
+    {
+      "name": "split_web",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "chatbot_language",
+          "event": "noMatch"
+        },
+        {
+          "next": "web_language_split",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to web",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.channel_type}}"
+              ],
+              "type": "equal_to",
+              "value": "web"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.channel_type}}",
+        "offset": {
+          "x": 230,
+          "y": 140
+        }
+      }
+    },
+    {
+      "name": "web_language_split",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "accept_terms_EN",
+          "event": "noMatch"
+        },
+        {
+          "next": "accept_terms_EN",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to en-MT",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+              ],
+              "type": "equal_to",
+              "value": "en-MT"
+            }
+          ]
+        },
+        {
+          "next": "accept_terms_MT",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to mt-MT",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+              ],
+              "type": "equal_to",
+              "value": "mt-MT"
+            }
+          ]
+        },
+        {
+          "next": "accept_terms_UKR",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to ukr-MT",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+              ],
+              "type": "equal_to",
+              "value": "ukr-MT"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}",
+        "offset": {
+          "x": 470,
+          "y": 670
+        }
+      }
+    },
+    {
+      "name": "counselor_handoff_MT",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "attributes_MT",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to counselor_handoff",
+              "arguments": [
+                "{{widgets.chatbot_MT.CurrentTask}}"
+              ],
+              "type": "equal_to",
+              "value": "counselor_handoff"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.chatbot_MT.CurrentTask}}",
+        "offset": {
+          "x": 220,
+          "y": 2040
+        }
+      }
+    },
+    {
+      "name": "attributes_MT",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 350,
+          "y": 2320
+        },
+        "workflow": master_workflow_sid,
+        "channel": chat_task_channel_sid,
+        "attributes": "{\n  \"name\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"language\":\"{{widgets.chatbot_language.memory.twilio.collected_data.collect_survey.answers.language.answer}}\",\n  \"transferTargetType\": \"\",\n  \"memory\": {{ widgets.chatbot_MT.memory  | to_json}}\n}\n"
+      }
+    },
+    {
+      "name": "check_counselor_handoff_UKR",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "attributes_UKR",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to counselor_handoff",
+              "arguments": [
+                "{{widgets.chatbot_UKR.CurrentTask}}"
+              ],
+              "type": "equal_to",
+              "value": "counselor_handoff"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.chatbot_UKR.CurrentTask}}",
+        "offset": {
+          "x": 1350,
+          "y": 2010
+        }
+      }
+    },
+    {
+      "name": "attributes_UKR",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1490,
+          "y": 2340
+        },
+        "workflow": master_workflow_sid,
+        "channel": chat_task_channel_sid,
+        "attributes": "{\n  \"name\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"language\":\"{{widgets.chatbot_language.memory.twilio.collected_data.collect_survey.answers.language.answer}}\",\n  \"transferTargetType\": \"\",\n  \"memory\": {{ widgets.chatbot_UKR.memory  | to_json}}\n}\n"
+      }
+    },
+    {
+      "name": "accept_terms_EN",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "terms_acceptance_EN",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -560,
+          "y": 1180
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "body": "Do you accept our Terms and Conditions?  https://kellimni.com/about/terms-conditions/ \nPlease answer with a number:\n1. Yes, I accept the terms and conditions.\n2. No, I don't accept the terms and conditions.",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "terms_acceptance_EN",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "no_number_reply_EN",
+          "event": "noMatch"
+        },
+        {
+          "next": "chatbot_EN",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.accept_terms_EN.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "no_acceptance_EN",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.accept_terms_EN.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.accept_terms_EN.inbound.Body}}",
+        "offset": {
+          "x": -660,
+          "y": 1470
+        }
+      }
+    },
+    {
+      "name": "no_acceptance_EN",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -320,
+          "y": 1820
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "I'm sorry, if you don't accept our terms and conditions we can't provide counselling to you."
+      }
+    },
+    {
+      "name": "no_number_reply_EN",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "accept_terms_EN",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -1130,
+          "y": 1350
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "I'm sorry, I didn't understand your reponse. Be sure to only reply with a number."
+      }
+    },
+    {
+      "name": "accept_terms_MT",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "terms_acceptance_MT",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 410,
+          "y": 1170
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "body": "Inti taċċetta t-Termini u l-Kundizzjonijiet tagħna? https://kellimni.com/about/terms-conditions/ \nJekk jogħġbok wieġeb billi tagħżel numru:\n1. Iva, naċċetta t-Termini u l-Kundizzjonijiet. \n2. Le, ma naċċettax t-Termini u l-Kundizzjonijiet.",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "terms_acceptance_MT",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "no_number_reply_MT",
+          "event": "noMatch"
+        },
+        {
+          "next": "chatbot_MT",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.accept_terms_MT.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "no_acceptance_MT",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.accept_terms_MT.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.accept_terms_MT.inbound.Body}}",
+        "offset": {
+          "x": 360,
+          "y": 1440
+        }
+      }
+    },
+    {
+      "name": "no_number_reply_MT",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "accept_terms_MT",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -130,
+          "y": 1310
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "Jiddispjaċini, jekk ma taċċettax t-Termini u l-Kundizzjonijiet tagħna, ma nistgħux nipprovdulek servizz."
+      }
+    },
+    {
+      "name": "no_acceptance_MT",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 700,
+          "y": 1790
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "Jiddispjaċini, ma fhimtx eżatt. Jekk jogħġbok wieġeb b&#39;numru wieħed biss."
+      }
+    },
+    {
+      "name": "accept_terms_UKR",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "terms_acceptance_UKR",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1460,
+          "y": 1140
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "body": "Ви приймаєте наші умови? https://kellimni.com/about/terms-conditions/ \n Будь ласка, дайте відповідь цифрою:\n1. Так, я приймаю умови. \n2. Ні, я не приймаю умови.",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "terms_acceptance_UKR",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "no_number_reply_UKR",
+          "event": "noMatch"
+        },
+        {
+          "next": "chatbot_UKR",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.accept_terms_UKR.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "no_acceptance_UKR",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.accept_terms_UKR.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.accept_terms_UKR.inbound.Body}}",
+        "offset": {
+          "x": 1410,
+          "y": 1430
+        }
+      }
+    },
+    {
+      "name": "no_acceptance_UKR",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1760,
+          "y": 1780
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "На жаль, якщо ви не приймете наші умови, ми не зможемо надати вам підтримку."
+      }
+    },
+    {
+      "name": "no_number_reply_UKR",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "accept_terms_UKR",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1050,
+          "y": 1240
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "Вибачте, я не зрозумів вашу відповідь. У відповіді обов’язково вказуйте лише номер."
+      }
     }
-    }
-  )
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
   }
+}
+}
