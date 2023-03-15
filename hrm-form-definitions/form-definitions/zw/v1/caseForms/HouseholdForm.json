@@ -201,12 +201,12 @@
         "label": ""
       },
       {
-        "value": "Boy",
-        "label": "Boy"
+        "value": "Male",
+        "label": "Male"
       },
       {
-        "value": "Girl",
-        "label": "Girl"
+        "value": "Female",
+        "label": "Female"
       },
       {
         "value": "Non-Binary",
@@ -492,16 +492,6 @@
       "value": true,
       "message": "RequiredFieldError"
     }
-  },
-  {
-    "name": "ethnicity",
-    "label": "Ethnicity",
-    "type": "input"
-  },
-  {
-    "name": "idNumber",
-    "label": "ID Number",
-    "type": "input"
   },
   {
     "name": "dateOfBirth",
