@@ -67,9 +67,9 @@ const ResourceAttribute: React.FC<Props> = ({ description, content }) => {
   };
 
   return (
-    <Box marginTop="8px" marginBottom="8px">
+    <Box marginTop="8px" marginBottom="10px">
       <Column>
-        <Box marginBottom="6px">
+        <Box marginBottom="4px">
           <ResourceAttributeDescription>{description}</ResourceAttributeDescription>
         </Box>
         <ResourceAttributeContent>{renderContent()}</ResourceAttributeContent>

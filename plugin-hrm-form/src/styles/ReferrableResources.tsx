@@ -37,7 +37,7 @@ ResourceTitle.displayName = 'ResourceTitle';
 export const ViewResourceArea = styled('div')`
   width: 100%;
   background-color: white;
-  padding: 20px;
+  padding: 15px;
   border-radius: 4px;
   overflow-y: auto;
 `;
@@ -54,15 +54,16 @@ export const ResourceAttributesColumn = styled(Column)`
 `;
 
 export const ResourceAttributeDescription = styled(FontOpenSans)`
-  color: #8b8b8b;
-  font-size: 14px;
+  color: #192b33;
+  font-size: 12px;
   line-height: 20px;
+  font-weight: bold;
 `;
 ResourceAttributeDescription.displayName = 'ResourceAttributeDescription';
 
 export const ResourceAttributeContent = styled(FontOpenSans)`
   color: #192b33;
-  font-size: 14px;
+  font-size: 12px;
 `;
 ResourceAttributeContent.displayName = 'ResourceAttributeContent';
 

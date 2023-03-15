@@ -53,9 +53,9 @@ const withFakeAttributes = (withoutAttributes: ReferrableResource) => ({
 });
 
 export const getResource = async (resourceId: string): Promise<ReferrableResource> => {
-  const resource = await fetchResourceApi(`resource/${resourceId}`);
-
-  return withFakeAttributes(resource);
+  // return withFakeAttributes(resource);
+  // eslint-disable-next-line no-return-await
+  return await fetchResourceApi(`resource/${resourceId}`);
 };
 
 type SearchParameters = {
