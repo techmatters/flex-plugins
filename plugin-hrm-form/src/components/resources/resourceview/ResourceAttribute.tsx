@@ -16,15 +16,15 @@
 
 import React from 'react';
 
-import { Box, Column } from '../../styles/HrmStyles';
+import { Box, Column } from '../../../styles/HrmStyles';
 import {
   ResourceAttributeContent,
   ResourceAttributeDescription,
   ResourceCategoriesContainer,
-} from '../../styles/ReferrableResources';
-import CategoryWithTooltip from '../common/CategoryWithTooltip';
-import type { ReferrableResourceAttributeValue } from '../../services/ResourceService';
-import ExpandableAttributeContent from './ExpandableAttributeContent';
+} from '../../../styles/ReferrableResources';
+import CategoryWithTooltip from '../../common/CategoryWithTooltip';
+import type { ReferrableResourceAttributeValue } from '../../../services/ResourceService';
+import ExpandableAttributeContent from '../ExpandableAttributeContent';
 
 type Props = {
   description: string;

@@ -21,13 +21,13 @@ import {
   PrivateResourceAttribute,
   ResourceAttributeContent,
   ResourceAttributeDescription,
-} from '../../styles/ReferrableResources';
+} from '../../../styles/ReferrableResources';
 import ResourceAttribute from './ResourceAttribute';
 
 type Props = {
   isPrivate: boolean;
   description: string;
-  content: string;
+  content: string | JSX.Element;
 };
 
 const ResourceAttributeWithPrivacy: React.FC<Props> = ({ isPrivate, description, content }) => {
@@ -36,8 +36,8 @@ const ResourceAttributeWithPrivacy: React.FC<Props> = ({ isPrivate, description,
       <ResourceAttributeDescription>{description}</ResourceAttributeDescription>
       <PrivateResourceAttribute>
         <span style={{ fontWeight: 'bold', fontSize: '10px' }}>
-          <WarningIcon style={{ color: '#f6ca4a', paddingRight: '4px', paddingTop: '6px' }} /> This location is private.
-          Do not share with child.
+          <WarningIcon style={{ color: '#f6ca4a', paddingRight: '4px', paddingTop: '6px' }} />
+          This location is private. Do not share with child.
         </span>
         <ResourceAttributeContent>{content}</ResourceAttributeContent>
       </PrivateResourceAttribute>
