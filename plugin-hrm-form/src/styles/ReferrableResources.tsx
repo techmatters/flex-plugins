@@ -64,6 +64,7 @@ ResourceAttributeDescription.displayName = 'ResourceAttributeDescription';
 export const ResourceAttributeContent = styled(FontOpenSans)`
   color: #192b33;
   font-size: 12px;
+  white-space: break-spaces;
 `;
 ResourceAttributeContent.displayName = 'ResourceAttributeContent';
 
@@ -124,3 +125,12 @@ export const ResourcesSearchResultsDescription = styled(FontOpenSans)`
   color: #192b33;
 `;
 ResourcesSearchResultsDescription.displayName = 'ResourcesSearchResultsDescription';
+
+// eslint-disable-next-line import/no-unused-modules
+export const PrivateResourceAttribute = styled('div')`
+  background-color: #fefad3;
+  border: 2px solid #ecb622;
+  color: #a8813c;
+  padding: 10px;
+`;
+PrivateResourceAttribute.displayName = 'PrivateResourceAttribute';

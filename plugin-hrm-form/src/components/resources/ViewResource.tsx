@@ -20,6 +20,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 import PhoneIcon from '@material-ui/icons/Phone';
+import WarningIcon from '@material-ui/icons/Warning';
 
 import { namespace, referrableResourcesBase, RootState } from '../../states';
 import { Box, Column } from '../../styles/HrmStyles';
@@ -29,11 +30,15 @@ import {
   ResourceAttributesContainer,
   ResourceTitle,
   ViewResourceArea,
+  PrivateResourceAttribute,
+  ResourceAttributeContent,
+  ResourceAttributeDescription,
 } from '../../styles/ReferrableResources';
 import ResourceAttribute from './ResourceAttribute';
 import { loadResourceAsyncAction, navigateToSearchAction, ResourceLoadStatus } from '../../states/resources';
 import asyncDispatch from '../../states/asyncDispatch';
 import ResourceIdCopyButton from './ResourceIdCopyButton';
+import ResourceAttributeWithPrivacy from './ResourceAttributeWithPrivacy';
 
 type OwnProps = {
   resourceId: string;
@@ -65,25 +70,14 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
     return <div>Loading...</div>;
   }
 
-  //
   const getSingleStringVal = (attributes: Object, keyName: string) => {
-    // Check if the specified property name exists in the object
     if (keyName in attributes) {
       const propVal = attributes[keyName];
-      // Check if the property value has a "value" property and is a string
       if (propVal[0].hasOwnProperty('value') && typeof propVal[0].value === 'string') {
-        if (propVal[0].value === 'true') {
+        if (propVal[0].value === 'true' && keyName !== 'primaryLocationIsPrivate') {
           return 'Yes';
-        } else if (propVal[0].value === 'false') {
+        } else if (propVal[0].value === 'false' && keyName !== 'primaryLocationIsPrivate') {
           return 'No';
-        } else if (keyName === 'targetPopulation') {
-          // Check if keyName is targetPopulation and format the value accordingly
-          const targetPopulation = propVal[0].value;
-          if (targetPopulation && targetPopulation[0]?.value) {
-            const { value } = targetPopulation[0];
-            console.log('>>targetPopulation', keyName, value);
-            return `${value}`;
-          }
         }
         return propVal[0].value;
       }
@@ -92,7 +86,23 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
     return null;
   };
 
-  const getAgeRange = (attributes: Object) => {
+  /*
+   * const handleTargetPopulation = (propVal) => {
+   * Check if keyName is targetPopulation and format the value accordingly
+   * const targetPopulation = propVal[0].value;
+   * if (targetPopulation && targetPopulation[0]?.value) {
+   *   const { value } = targetPopulation[0];
+   *   console.log('>>targetPopulation', keyName, value);
+   *   return `${value}`;
+   *   const targetPopulation = propVal[0].value;
+   *   if (targetPopulation && targetPopulation[0]?.value) {
+   *     const { value } = targetPopulation[0];
+   *     return `${value}`;
+   *   }
+   * };
+   */
+
+  const handleAgeRange = (attributes: Object) => {
     const eligibilityMinAge = getSingleStringVal(attributes, 'eligibilityMinAge');
     const eligibilityMaxAge = getSingleStringVal(attributes, 'eligibilityMaxAge');
     if (eligibilityMinAge && eligibilityMaxAge) {
@@ -101,18 +111,17 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
     return 'N/A';
   };
 
-  const colTwoAttributesToRender = [
-    {
-      subtitle: 'Interpretation/Translation Services Available?',
-      attributeName: 'interpretationTranslationServicesAvailable',
-    },
-    { subtitle: 'Fee Structure', attributeName: 'feeStructureSource' },
-    { subtitle: 'How to Access Support', attributeName: 'howToAccessSupport' },
-    { subtitle: 'Application process', attributeName: 'applicationProcess' },
-    { subtitle: 'How is Service Offered', attributeName: 'howIsServiceOffered' },
-    { subtitle: 'Accessibility', attributeName: 'accessibility' },
-    { subtitle: 'Documents Required', attributeName: 'documentsRequired' },
-  ];
+  const handlePrimaryLocation = (attributes: Object) => {
+    const county = getSingleStringVal(attributes, 'primaryLocationCounty');
+    const city = getSingleStringVal(attributes, 'primaryLocationCity');
+    const province = getSingleStringVal(attributes, 'primaryLocationProvince');
+    const postalCode = getSingleStringVal(attributes, 'primaryLocationPostalCode');
+    const phone = getSingleStringVal(attributes, 'primaryLocationPhone');
+    // eslint-disable-next-line prefer-named-capture-group
+    const formattedPhone = phone.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+
+    return `${county}, ${city}\r\n${province}, ${postalCode}\r\n${formattedPhone}`;
+  };
 
   return (
     <Column>
@@ -145,13 +154,6 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                     content={getSingleStringVal(resource.attributes, 'taxonomyCode')}
                   />
                   <ResourceAttribute description="Details" content="Details" />
-                  {/* <ResourceAttribute description="Fee" content={resource.attributes.Fee} />
-                  <ResourceAttribute
-                    description="Application Process"
-                    content={resource.attributes['Application Process']}
-                  />
-                  <ResourceAttribute description="Accessibility" content={resource.attributes.Accessibility} />
-                  <ResourceAttribute description="Special Needs" content={resource.attributes['Special Needs']} /> */}
                 </ResourceAttributesColumn>
                 <ResourceAttributesColumn>
                   <ResourceAttribute description="Main contact is private" content="IsPrivate" />
@@ -168,7 +170,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                     description="Is Open 24/7?"
                     content={getSingleStringVal(resource.attributes, 'available247')}
                   />
-                  <ResourceAttribute description="Ages served" content={getAgeRange(resource.attributes)} />
+                  <ResourceAttribute description="Ages served" content={handleAgeRange(resource.attributes)} />
                   {/* <ResourceAttribute
                     description="Target Population"
                     content={getTargetPopulation(resource.attributes.targetPopulation)}
@@ -178,7 +180,18 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                     description="Target Population"
                     content={getSingleStringVal(resource.attributes, 'targetPopulation')}
                   />
-                  {colTwoAttributesToRender.map(({ subtitle, attributeName }) => (
+                  {[
+                    {
+                      subtitle: 'Interpretation/Translation Services Available?',
+                      attributeName: 'interpretationTranslationServicesAvailable',
+                    },
+                    { subtitle: 'Fee Structure', attributeName: 'feeStructureSource' },
+                    { subtitle: 'How to Access Support', attributeName: 'howToAccessSupport' },
+                    { subtitle: 'Application process', attributeName: 'applicationProcess' },
+                    { subtitle: 'How is Service Offered', attributeName: 'howIsServiceOffered' },
+                    { subtitle: 'Accessibility', attributeName: 'accessibility' },
+                    { subtitle: 'Documents Required', attributeName: 'documentsRequired' },
+                  ].map(({ subtitle, attributeName }) => (
                     <ResourceAttribute
                       key={attributeName}
                       description={subtitle}
@@ -208,12 +221,14 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                   <ResourceAttribute description="Ages Served" content={resource.attributes['Ages Served']} /> */}
                 </ResourceAttributesColumn>
                 <ResourceAttributesColumn>
-                  <ResourceAttribute description="is Primary Address Private" content="primaryLocationIsPrivate" />
-                  <ResourceAttribute
+                  <ResourceAttributeWithPrivacy
+                    isPrivate={getSingleStringVal(resource.attributes, 'primaryLocationIsPrivate') === 'false'}
                     description="Primary Address"
-                    content="primaryLocationCity primaryLocationProvince primaryLocationPostalCode primaryLocationPhone"
+                    content={handlePrimaryLocation(resource.attributes)}
                   />
+
                   <ResourceAttribute description="Sites" content="Sites" />
+
                   <ResourceAttribute description="Operations" content="operations days of the week" />
                 </ResourceAttributesColumn>
               </ResourceAttributesContainer>

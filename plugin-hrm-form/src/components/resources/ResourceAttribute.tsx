@@ -38,15 +38,19 @@ const isCategory = (c: any): c is Category =>
   c && isString(c.id) && isString(c.value) && (isString(c.color) || !c.color);
 
 const ResourceAttribute: React.FC<Props> = ({ description, content }) => {
+  console.log('>>>before ', content);
   const renderContent = () => {
-    if (typeof content === 'string') {
+    if (typeof content === 'string' && description === 'Details') {
       return <ExpandableAttributeContent expandLinkText="ReadMore" collapseLinkText="ReadLess" content={content} />;
     }
 
     if (Array.isArray(content)) {
       // typecasting content as any because of https://github.com/microsoft/TypeScript/issues/36390 =)
+      console.log('>>>Array.isArray(content)');
 
       if ((content as any[]).every(isString)) {
+        console.log('>>>(content as any[]).every(isString)');
+
         return (content as string[]).join('\n');
       }
 
@@ -62,6 +66,7 @@ const ResourceAttribute: React.FC<Props> = ({ description, content }) => {
         );
       }
     }
+    console.log('>>>after ', content);
 
     return content;
   };
