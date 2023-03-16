@@ -1,1 +1,41 @@
-{}
+{
+  "contactForm": {
+    "childInformation": [
+      {
+        "name": "district",
+        "insights": [
+          "customers",
+          "area"
+        ]
+      },
+      {
+        "name": "province",
+        "insights": [
+          "customers",
+          "region"
+        ]
+      }
+    ],
+    "caseInformation": [
+      {
+        "name": "repeatCaller",
+        "insights": [
+          "conversations",
+          "conversation_attribute_7"
+        ],
+        "type": "mixed-checkbox"
+      }
+    ]
+  },
+  "caseForm": {
+    "topLevel": [
+      {
+        "name": "id",
+        "insights": [
+          "conversations",
+          "case"
+        ]
+      }
+    ]
+  }
+}
