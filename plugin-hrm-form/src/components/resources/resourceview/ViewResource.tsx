@@ -36,7 +36,9 @@ import { loadResourceAsyncAction, navigateToSearchAction, ResourceLoadStatus } f
 import asyncDispatch from '../../../states/asyncDispatch';
 import ResourceIdCopyButton from '../ResourceIdCopyButton';
 import ResourceAttributeWithPrivacy from './ResourceAttributeWithPrivacy';
+import ViewResourceMainContactDetails from './ViewResourceMainContactDetails';
 import ViewResourceSiteDetails from './ViewResourceSiteDetails';
+import ExpandableSection from './ExpandableSection';
 
 type OwnProps = {
   resourceId: string;
@@ -72,9 +74,12 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
     if (keyName in attributes) {
       const propVal = attributes[keyName];
       if (propVal[0].hasOwnProperty('value') && typeof propVal[0].value === 'string') {
-        if (propVal[0].value === 'true' && keyName !== 'primaryLocationIsPrivate') {
+        const keysToKeep = ['primaryLocationIsPrivate', 'isLocationPrivate', 'isPrivate'];
+        if (propVal[0].value === 'true' && !keysToKeep.includes(keyName)) {
+          // if (propVal[0].value === 'true' && keysToKeep.filter(key => keyName !== key)) {
+
           return 'Yes';
-        } else if (propVal[0].value === 'false' && keyName !== 'primaryLocationIsPrivate') {
+        } else if (propVal[0].value === 'false' && !keysToKeep.includes(keyName)) {
           return 'No';
         }
         return propVal[0].value;
@@ -160,22 +165,12 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
 
                   {/* SECOND COLUMN */}
                   <ResourceAttributesColumn>
-                    <ResourceAttribute
+                    <ResourceAttributeWithPrivacy
+                      isPrivate={getSingleStringVal(resource.attributes.mainContact, 'isPrivate') === 'false'}
                       description="Contact Info"
-                      content={
-                        <>
-                          <PhoneIcon
-                            fontSize="inherit"
-                            style={{ color: '#616C864D', marginRight: 5, marginBottom: -2 }}
-                          />
-                          {resource.attributes.Phone}
-                          {' | '}
-                          {resource.attributes.Address}
-                        </>
-                      }
+                      content={<ViewResourceMainContactDetails attributes={resource.attributes} />}
                     />
-                    <ResourceAttribute description="Main contact is private" content="IsPrivate" />
-                    <ResourceAttribute description="Main Contact" content="name email title phoneNumber isPrivate" />
+
                     <ResourceAttribute
                       description="Website"
                       content={getSingleStringVal(resource.attributes, 'website')}

@@ -61,10 +61,16 @@ export const ResourceAttributeDescription = styled(FontOpenSans)`
 `;
 ResourceAttributeDescription.displayName = 'ResourceAttributeDescription';
 
+export const ResourceAttributeSubDescription = styled(ResourceAttributeDescription)`
+  color: #212f35;
+`;
+ResourceAttributeSubDescription.displayName = 'ResourceAttributeSubDescription';
+
 export const ResourceAttributeContent = styled(FontOpenSans)`
   color: #192b33;
   font-size: 12px;
   white-space: break-spaces;
+  padding-bottom: 3px;
 `;
 ResourceAttributeContent.displayName = 'ResourceAttributeContent';
 
@@ -132,5 +138,6 @@ export const PrivateResourceAttribute = styled('div')`
   border: 2px solid #ecb622;
   color: #a8813c;
   padding: 10px;
+  margin: 2px 5px 2px 1px;
 `;
 PrivateResourceAttribute.displayName = 'PrivateResourceAttribute';

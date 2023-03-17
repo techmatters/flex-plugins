@@ -16,11 +16,7 @@
 
 import React from 'react';
 
-import {
-  PrivateResourceAttribute,
-  ResourceAttributeContent,
-  ResourceAttributeDescription,
-} from '../../../styles/ReferrableResources';
+import { ResourceAttributeContent } from '../../../styles/ReferrableResources';
 
 type Props = {
   attributes: any;

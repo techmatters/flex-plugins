@@ -26,8 +26,8 @@ import ResourceAttribute from './ResourceAttribute';
 
 type Props = {
   isPrivate: boolean;
-  description: string;
-  content: string | JSX.Element;
+  description?: string;
+  content?: string | JSX.Element;
 };
 
 const ResourceAttributeWithPrivacy: React.FC<Props> = ({ isPrivate, description, content }) => {

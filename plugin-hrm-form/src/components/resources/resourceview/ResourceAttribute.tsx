@@ -38,7 +38,6 @@ const isCategory = (c: any): c is Category =>
   c && isString(c.id) && isString(c.value) && (isString(c.color) || !c.color);
 
 const ResourceAttribute: React.FC<Props> = ({ description, content }) => {
-  console.log('>>>before ', content);
   const renderContent = () => {
     if (typeof content === 'string' && description === 'Details') {
       return <ExpandableAttributeContent expandLinkText="ReadMore" collapseLinkText="ReadLess" content={content} />;
@@ -66,7 +65,6 @@ const ResourceAttribute: React.FC<Props> = ({ description, content }) => {
         );
       }
     }
-    console.log('>>>after ', content);
 
     return content;
   };
