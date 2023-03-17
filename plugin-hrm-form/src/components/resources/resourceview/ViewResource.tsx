@@ -125,6 +125,11 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
     return `${county}, ${city}\r\n${province}, ${postalCode}\r\n${formattedPhone}`;
   };
 
+  const getDescriptionInfo = (descriptionObj, language: string) => {
+    const languageIndex = descriptionObj.findIndex(obj => obj.language === language);
+    return descriptionObj[languageIndex].info.text;
+  };
+
   return (
     <ResourceViewContainer>
       <Column>
@@ -160,7 +165,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                       description="Taxonomy Code"
                       content={getSingleStringVal(resource.attributes, 'taxonomyCode')}
                     />
-                    <ResourceAttribute description="Details" content="Details" />
+                    <ResourceAttribute description="Details" content={getDescriptionInfo('Details', 'en')} />
                   </ResourceAttributesColumn>
 
                   {/* SECOND COLUMN */}
