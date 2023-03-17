@@ -52,7 +52,7 @@ locals {
     "enable_filter_cases": true,
     "enable_sort_cases": true,
     "enable_transfers": true,
-    "enable_manual_pulling": true,
+    "enable_manual_pulling": false,
     "enable_csam_report": false,
     "enable_canned_responses": true,
     "enable_dual_write": false,
@@ -117,6 +117,7 @@ module flex {
   serverless_url = module.serverless.serverless_environment_production_url
   multi_office_support = local.multi_office
   feature_flags = local.feature_flags
+  helpline_language = local.helpline_language
 }
 
 module twilioChannel {
