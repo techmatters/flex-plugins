@@ -87,7 +87,15 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
     }
     return null;
   };
-
+  /*
+   * const getDescriptionInfo = (descriptionObj, language: string) => {
+   *   const languageIndex = descriptionObj.findIndex(obj => obj.language === language);
+   *   if (descriptionObj[languageIndex].info.description) {
+   *     return descriptionObj[languageIndex].info.description;
+   *   }
+   *   return null;
+   * };
+   */
   /*
    * const handleTargetPopulation = (propVal) => {
    * Check if keyName is targetPopulation and format the value accordingly
@@ -125,11 +133,15 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
     return `${county}, ${city}\r\n${province}, ${postalCode}\r\n${formattedPhone}`;
   };
 
-  const getDescriptionInfo = (descriptionObj, language: string) => {
-    const languageIndex = descriptionObj.findIndex(obj => obj.language === language);
-    return descriptionObj[languageIndex].info.text;
-  };
+  const getDescriptionInfo = (language: string) => {
+    const foundDescription = resource.attributes.description.find(desc => desc.language === language);
 
+    if (foundDescription && foundDescription.info) {
+      return foundDescription.info.text;
+    }
+
+    return null;
+  };
   return (
     <ResourceViewContainer>
       <Column>
@@ -165,7 +177,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                       description="Taxonomy Code"
                       content={getSingleStringVal(resource.attributes, 'taxonomyCode')}
                     />
-                    <ResourceAttribute description="Details" content={getDescriptionInfo('Details', 'en')} />
+                    <ResourceAttribute description="Details" content={getDescriptionInfo('en')} />
                   </ResourceAttributesColumn>
 
                   {/* SECOND COLUMN */}

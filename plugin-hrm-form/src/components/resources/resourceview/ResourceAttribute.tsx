@@ -45,11 +45,8 @@ const ResourceAttribute: React.FC<Props> = ({ description, content }) => {
 
     if (Array.isArray(content)) {
       // typecasting content as any because of https://github.com/microsoft/TypeScript/issues/36390 =)
-      console.log('>>>Array.isArray(content)');
 
       if ((content as any[]).every(isString)) {
-        console.log('>>>(content as any[]).every(isString)');
-
         return (content as string[]).join('\n');
       }
 

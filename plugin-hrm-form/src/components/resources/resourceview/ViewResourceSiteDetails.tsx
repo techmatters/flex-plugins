@@ -24,9 +24,8 @@ type Props = {
 
 const ViewResourceSiteDetails: React.FC<Props> = ({ attributes }) => {
   const siteId = Object.keys(attributes.site)[0];
-  const { name, details, isActive, location, email, phone, operations } = attributes.site[siteId];
+  const { name, location, email, phone, operations } = attributes.site[siteId];
 
-  console.log('>>> siteObj', name, details, isActive, location, email, phone, operations);
   const phoneTypes = [
     { type: 'tollFree', label: 'Toll Free' },
     { type: 'hotline', label: 'Hotline' },
