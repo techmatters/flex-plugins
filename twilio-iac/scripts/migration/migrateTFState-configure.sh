@@ -18,18 +18,4 @@ identifiers=(
   "^module.github"
 )
 
-# Generate a list of full identifiers matching the regex patterns
-resource_list=$(terragrunt state list)
-for identifier in "${identifiers[@]}"
-do
-  resource_list=$(echo "$resource_list" | grep -E "$identifier")
-done
-
-# Remove the resources from Terraform state using Terragrunt
-if [[ -n "$resource_list" ]]; then
-  echo "Removing resources matching the following patterns from Terraform state:"
-  echo "$resource_list"
-  echo "terragrunt state rm $resource_list"
-else
-  echo "No resources matching the specified patterns found in Terraform state"
-fi
+. ${script_dir}/migrateTFState-stage-common.sh

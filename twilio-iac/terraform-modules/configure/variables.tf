@@ -1,19 +1,28 @@
 variable "environment" {
-  type = string
   description = "The environment for the helpline."
+  type = string
 }
 
 variable "short_helpline" {
-  type = string
   description = "The short code for the helpline."
+  type = string
 }
 
 variable "helpline" {
-  type = string
   description = "The human readable helpline name."
+  type = string
 }
 
 variable "definition_version" {
-  type = string
   description = "The definition version for the helpline."
+  type = string
+}
+
+variable "task_router_config" {
+  description = "The task router config for the helpline."
+  type = object({
+    event_filters = {
+      type = list(string)
+    }
+  })
 }

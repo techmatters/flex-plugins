@@ -37,6 +37,9 @@ if [ $old_key_exists -eq 0 ] && [ $new_key_exists -ne 0 ]; then
   aws s3 cp \
     s3://${s3_bucket}/${old_key} \
     s3://${s3_bucket}/${new_key}
+  printf "Done!\n\n"
+else
+  echo "${new_key} already exists in ${s3_bucket}"
 fi
 
 if [ $new_key_lock_exists -ne 0 ]; then
@@ -44,9 +47,9 @@ if [ $new_key_lock_exists -ne 0 ]; then
   . ${script_dir}/migrateTFState-${stage}.sh
 
   printf "Creating lock file in ${s3_bucket} at ${new_key_lock}..."
-  echo "aws s3 cp \
-    ${script_dir}/migration.lock.json \
-    s3://${s3_bucket}/${new_key_lock}"
+  # aws s3 cp \
+  #   ${script_dir}/migration.lock.json \
+  #   s3://${s3_bucket}/${new_key_lock}
   printf "Done!\n\n"
 fi
 
