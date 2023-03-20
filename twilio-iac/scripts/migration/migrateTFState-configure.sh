@@ -6,9 +6,6 @@ export TERRAGRUNT_AUTO_INIT=false
 
 # List of partial identifiers to remove from Terraform state
 identifiers=(
-  "^module.chatbots"
-  "^module.custom_chatbots"
-  "^twilio_autopilot"
   "^module.hrmServiceIntegration"
   "^module.serverless"
   "^module.services"

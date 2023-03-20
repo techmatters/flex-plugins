@@ -21,8 +21,13 @@ variable "definition_version" {
 variable "task_router_config" {
   description = "The task router config for the helpline."
   type = object({
-    event_filters = {
-      type = list(string)
-    }
+    event_filters = list(string)
+    additional_queues = list(object({}))
+    channels = list(
+      object({
+        friendly_name = string
+        unique_name = string
+      })
+    )
   })
 }

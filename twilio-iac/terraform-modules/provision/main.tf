@@ -21,7 +21,7 @@ provider "twilio" {
 module "hrmServiceIntegration" {
   source = "../hrmServiceIntegration/default"
   helpline = var.helpline
-  short_helpline = var.short_helpline
+  short_helpline = upper(var.short_helpline)
   environment = var.environment
   short_environment = local.short_environment
 }
@@ -35,7 +35,7 @@ module "serverless" {
 module "services" {
   source = "../services/default"
   helpline = var.helpline
-  short_helpline = var.short_helpline
+  short_helpline = upper(var.short_helpline)
   environment = var.environment
   short_environment = local.short_environment
 }
@@ -59,7 +59,7 @@ module aws {
   twilio_auth_token = local.secrets.twilio_auth_token
   serverless_url = module.serverless.serverless_environment_production_url
   helpline = var.helpline
-  short_helpline = var.short_helpline
+  short_helpline = upper(var.short_helpline)
   environment = var.environment
   short_environment = local.short_environment
   operating_info_key = var.operating_info_key
@@ -70,6 +70,7 @@ module aws {
   shared_state_sync_service_sid = module.services.shared_state_sync_service_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
   flex_proxy_service_sid = module.services.flex_proxy_service_sid
+  # TODO: manually delete this resource from SSM after migration
   # post_survey_bot_sid = module.chatbots.post_survey_bot_sid
   survey_workflow_sid = module.survey.survey_workflow_sid
   bucket_region = var.helpline_region
@@ -78,16 +79,28 @@ module aws {
 module aws_monitoring {
   source = "../aws-monitoring/default"
   helpline = var.helpline
-  short_helpline = var.short_helpline
+  short_helpline = upper(var.short_helpline)
   environment = var.environment
   cloudwatch_region = var.helpline_region
 }
 
+provider "github" {
+  owner = "techmatters"
+}
+
 module github {
   source = "../github/default"
+
+  count = var.manage_github_secrets ? 1 : 0
+
   twilio_account_sid = local.secrets.twilio_account_sid
   twilio_auth_token = local.secrets.twilio_auth_token
   short_environment = local.short_environment
-  short_helpline = var.short_helpline
+  short_helpline = upper(var.short_helpline)
   serverless_url = module.serverless.serverless_environment_production_url
+}
+
+moved {
+  from = module.github
+  to = module.github[0]
 }

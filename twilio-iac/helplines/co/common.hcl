@@ -8,5 +8,7 @@ locals {
     old_dir_prefix = "teguio"
 
     definition_version = "co-v1"
+
+    manage_github_secrets = false
   }
 }

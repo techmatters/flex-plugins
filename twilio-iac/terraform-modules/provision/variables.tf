@@ -60,3 +60,8 @@ variable "helpline_region" {
   type = string
   description = "The region for the helpline."
 }
+
+variable "manage_github_secrets" {
+  type = bool
+  description = "Whether to manage the github secrets for the helpline."
+}

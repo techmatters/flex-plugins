@@ -31,6 +31,8 @@ locals {
     "enable_twilio_transcripts": true,
   }
 
+  manage_github_secrets = true
+
   task_router_config = {
     event_filters = [
       "task.created",
