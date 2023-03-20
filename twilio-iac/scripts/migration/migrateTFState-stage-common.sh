@@ -31,7 +31,7 @@ if [ -n "$resource_list" ]; then
 
     # echo $resource_list | sed -e 's/"/\\\\\\"/g' -e "s/'/\\\\\\\\\\\'/g" -e 's/!/\\\\!/g' | xargs -I {} terragrunt state rm --terragrunt-log-level debug --terragrunt-debug {}
     for resource in  $resource_list; do
-      escaped_resource=$(echo $resource | sed -e "s/'/\\\'/g")
+      escaped_resource=$resource # $(echo $resource | sed -e "s/'/\\\'/g")
       terragrunt state rm $escaped_resource
     done
     # echo $resource_list | xargs -I {} terragrunt state rm --terragrunt-log-level debug --terragrunt-debug {}
