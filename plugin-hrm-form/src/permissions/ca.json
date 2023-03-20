@@ -1,4 +1,6 @@
 {
+  "viewContact": [["isSupervisor"], ["isOwner"]],
+  "viewCase": [["isSupervisor"], ["isCreator"]],
   "closeCase": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "reopenCase": [["isSupervisor"]],
   "caseStatusTransition": [],

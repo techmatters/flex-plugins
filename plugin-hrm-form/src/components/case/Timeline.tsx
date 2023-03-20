@@ -40,7 +40,7 @@ import * as RoutingActions from '../../states/routing/actions';
 import { CustomITask } from '../../types/types';
 import { isConnectedCaseActivity } from './caseActivities';
 import { Activity, ConnectedCaseActivity, NoteActivity, ReferralActivity } from '../../states/case/types';
-import { PermissionActions, PermissionActionType } from '../../permissions';
+import { getPermissionsForContact, PermissionActions, PermissionActionType } from '../../permissions';
 import { NewCaseSubroutes, AppRoutesWithCase, CaseItemAction } from '../../states/routing/types';
 import { TaskEntry } from '../../states/contacts/types';
 
@@ -121,6 +121,12 @@ const Timeline: React.FC<Props> = props => {
           timelineActivities.length > 0 &&
           timelineActivities.map((activity, index) => {
             const date = parseISO(activity.date).toLocaleDateString(navigator.language);
+            let canViewActivity = true;
+            if (isConnectedCaseActivity(activity)) {
+              const { can } = getPermissionsForContact(activity.twilioWorkerId);
+              canViewActivity = can(PermissionActions.VIEW_CONTACT);
+            }
+
             return (
               <TimelineRow key={index}>
                 <TimelineDate>{date}</TimelineDate>
@@ -131,13 +137,15 @@ const Timeline: React.FC<Props> = props => {
                   </TimelineCallTypeIcon>
                 )}
                 <TimelineText>{activity?.text}</TimelineText>
-                <Box marginLeft="auto">
+                {canViewActivity && (
                   <Box marginLeft="auto">
-                    <ViewButton onClick={() => handleViewClick(activity)}>
-                      <Template code="Case-ViewButton" />
-                    </ViewButton>
+                    <Box marginLeft="auto">
+                      <ViewButton onClick={() => handleViewClick(activity)}>
+                        <Template code="Case-ViewButton" />
+                      </ViewButton>
+                    </Box>
                   </Box>
-                </Box>
+                )}
               </TimelineRow>
             );
           })}

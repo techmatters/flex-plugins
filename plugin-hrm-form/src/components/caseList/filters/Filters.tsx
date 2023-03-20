@@ -42,6 +42,7 @@ import CategoriesFilter, { Category } from './CategoriesFilter';
 import { caseListBase, configurationBase, namespace, RootState } from '../../../states';
 import * as CaseListSettingsActions from '../../../states/caseList/settings';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
+import { canOnlyViewOwnCases } from '../../../permissions';
 /**
  * Reads the definition version and returns and array of items (type Item[])
  * to be used as the options for the status filter
@@ -240,6 +241,8 @@ const Filters: React.FC<Props> = ({
     Boolean(Object.values(dateFilterValues).filter(dfv => dfv).length) ||
     filterCheckedCategories(categoriesValues).length > 0;
 
+  const canViewCounselorFilter = !canOnlyViewOwnCases();
+
   return (
     <>
       <FiltersContainer id="CaseList-Cases-label">
@@ -269,16 +272,18 @@ const Filters: React.FC<Props> = ({
             applyFilter={handleApplyStatusFilter}
             setOpenedFilter={setOpenedFilter}
           />
-          <MultiSelectFilter
-            name="counselor"
-            searchDescription={strings['CaseList-Filters-SearchForCounselor']}
-            text={strings['CaseList-Filters-Counselor']}
-            defaultValues={counselorValues}
-            openedFilter={openedFilter}
-            applyFilter={handleApplyCounselorFilter}
-            setOpenedFilter={setOpenedFilter}
-            searchable
-          />
+          {canViewCounselorFilter && (
+            <MultiSelectFilter
+              name="counselor"
+              searchDescription={strings['CaseList-Filters-SearchForCounselor']}
+              text={strings['CaseList-Filters-Counselor']}
+              defaultValues={counselorValues}
+              openedFilter={openedFilter}
+              applyFilter={handleApplyCounselorFilter}
+              setOpenedFilter={setOpenedFilter}
+              searchable
+            />
+          )}
           <CategoriesFilter
             name="categories"
             searchDescription={strings['CaseList-Filters-SearchByCategory']}
