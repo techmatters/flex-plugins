@@ -4,7 +4,7 @@ locals {
   config              = merge(local.defaults_config, local.local_config)
 
   local_config = {
-    helpline = ""
+    helpline       = ""
     old_dir_prefix = ""
 
     definition_version = "demo-v1"

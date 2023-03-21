@@ -1,11 +1,13 @@
 locals {
-  environment     = get_env("HL_ENV")
-  short_helpline  = get_env("HL")
+  environment    = get_env("HL_ENV")
+  short_helpline = get_env("HL")
 
   stage = basename(get_original_terragrunt_dir())
 
   env_config_hcl = read_terragrunt_config("../../helplines/${local.short_helpline}/${local.environment}.hcl")
   env_config     = local.env_config_hcl.locals.config
+
+  additional_file = "../helplines/${local.short_helpline}/files/additional.${local.stage}.tf"
 
   computed_config = {
     environment        = title(local.environment)
@@ -58,27 +60,8 @@ provider "aws" {
 EOF
 }
 
-inputs = local.config
-
-terraform {
-
-  // TODO: remove this when we are ready to apply
-  before_hook "abort_apply" {
-    commands = ["apply"]
-    execute = ["exit", "1"]
-  }
-
-  // TODO: remove this once we've migrated all secrets
-  before_hook "migrate_tf_secrets" {
-    commands = ["init"]
-    execute  = ["/app/twilio-iac/scripts/migration/migrateTFSecrets.sh", local.config.old_dir_name, local.environment, local.short_helpline]
-  }
-
-  // TODO: make this only happen on provision stage.
-  before_hook "manage_tf_secrets" {
-    commands = ["init"]
-    execute  = ["/app/twilio-iac/scripts/secretManager/manageSecrets.py", "${local.environment}/${local.short_helpline}"]
-  }
-
-  source = "../../terraform-modules//${local.stage}"
+generate "additional-tf" {
+  path      = "additional.tf"
+  if_exists = "overwrite_terragrunt"
+  contents  = fileexists(local.additional_file) ? file(local.additional_file) : ""
 }

@@ -4,7 +4,7 @@ locals {
   config              = merge(local.defaults_config, local.local_config)
 
   local_config = {
-    helpline = "ECPAT"
+    helpline       = "ECPAT"
     old_dir_prefix = "ecpat"
 
     definition_version = "ph-v1"

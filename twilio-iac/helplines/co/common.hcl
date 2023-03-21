@@ -4,7 +4,7 @@ locals {
   config              = merge(local.defaults_config, local.local_config)
 
   local_config = {
-    helpline = "Te Guío"
+    helpline       = "Te Guío"
     old_dir_prefix = "teguio"
 
     definition_version = "co-v1"

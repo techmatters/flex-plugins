@@ -3,11 +3,14 @@
 set -e
 
 export TERRAGRUNT_AUTO_INIT=false
+# export TF_LOG=TRACE
 
-# List of partial identifiers to remove from Terraform state
 identifiers=(
-  "^module.chatbots"
-  "^module.custom_chatbots"
+  "^module.twilioChannel"
+  "^module.voiceChannel"
+  "^twilio_autopilot"
+  "^module.flex"
+  "^module.customChannel"
   "^module.hrmServiceIntegration"
   "^module.serverless"
   "^module.services"

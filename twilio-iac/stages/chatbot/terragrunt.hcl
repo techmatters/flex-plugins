@@ -23,10 +23,14 @@ locals {
   config = merge(include.root.locals.config, local.local_config)
 }
 
-inputs = local.config
+inputs = merge(
+  local.config,
+  {
+    serverless_url = dependency.provision.outputs.serverless_url
+  }
+)
 
 terraform {
-
   // TODO: remove this when we are ready to apply
   before_hook "abort_apply" {
     commands = ["apply"]

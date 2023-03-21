@@ -6,11 +6,11 @@ locals {
   local_config = {
     task_router_config = {
       event_filters = [
-        "task.created"
-        "task.canceled"
-        "task.completed"
-        "task.deleted"
-        "task.system-deleted"
+        "task.created",
+        "task.canceled",
+        "task.completed",
+        "task.deleted",
+        "task.system-deleted",
       ]
 
       additional_queues = [
