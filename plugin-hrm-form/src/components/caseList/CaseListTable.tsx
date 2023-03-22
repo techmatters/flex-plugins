@@ -29,6 +29,7 @@ import Pagination from '../Pagination';
 import { CASES_PER_PAGE } from './CaseList';
 import type { Case } from '../../types/types';
 import * as CaseListSettingsActions from '../../states/caseList/settings';
+import { getPermissionsForCase, PermissionActions } from '../../permissions';
 
 const ROW_HEIGHT = 89;
 
@@ -82,14 +83,19 @@ const CaseListTable: React.FC<Props> = ({
           {!loading && (
             <TableBody>
               {caseList.length > 0 ? (
-                caseList.map(caseItem => (
-                  <CaseListTableRow
-                    caseItem={caseItem}
-                    key={`CaseListItem-${caseItem.id}`}
-                    handleClickViewCase={handleClickViewCase}
-                    counselorsHash={counselorsHash}
-                  />
-                ))
+                caseList.map(caseItem => {
+                  const { can } = getPermissionsForCase(caseItem.twilioWorkerId, caseItem.status);
+                  return (
+                    <CaseListTableRow
+                      caseItem={caseItem}
+                      key={`CaseListItem-${caseItem.id}`}
+                      handleClickViewCase={currentCase =>
+                        can(PermissionActions.VIEW_CASE) && handleClickViewCase(currentCase)
+                      }
+                      counselorsHash={counselorsHash}
+                    />
+                  );
+                })
               ) : (
                 <CLTableRow>
                   <CLTableCell colSpan={8}>

@@ -18,3 +18,6 @@ validate-tf:
 
 lint:
 	docker run -it --rm -v $(MY_PWD):/data -e TFLINT_LOG=warn --entrypoint '' -w /data/$(MY_ENV) wata727/tflint tflint --module .
+
+fmt:
+	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) terraform fmt $(tf_args)
