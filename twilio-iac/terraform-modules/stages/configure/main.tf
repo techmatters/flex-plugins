@@ -13,6 +13,8 @@ locals {
   task_router_voice_task_channel_sid    = local.provision_config.task_router_voice_task_channel_sid
   services_flex_chat_service_sid        = local.provision_config.services_flex_chat_service_sid
 
+  permission_config = var.permission_config == "" ? var.short_helpline : var.permission_config
+
   chatbot_config = data.terraform_remote_state.chatbot.outputs
   chatbot_sids  = local.chatbot_config.chatbot_sids
 
@@ -55,7 +57,7 @@ module "flex" {
   twilio_account_sid   = local.secrets.twilio_account_sid
   short_environment    = local.short_environment
   operating_info_key   = var.operating_info_key
-  permission_config    = var.short_helpline
+  permission_config    = local.permission_config
   definition_version   = var.definition_version
   serverless_url       = local.serverless_url
   multi_office_support = var.multi_office
@@ -67,7 +69,6 @@ module "twilioChannel" {
   for_each = var.twilio_channels
   source   = "../../channels/twilio-channel"
   custom_flow_definition = templatefile(
-    # "../../channels/flow-templates/operating-hours/with-chatbot.tftpl",
     var.twilio_channel_custom_flow_template,
     {
       channel_name                 = "${each.key}"
@@ -77,7 +78,7 @@ module "twilioChannel" {
       operating_hours_function_sid = var.operating_hours_function_sid
       master_workflow_sid          = local.task_router_master_workflow_sid
       chat_task_channel_sid        = local.task_router_chat_task_channel_sid
-      channel_attributes           = var.channel_attributes
+      channel_attributes           = var.channel_attributes[each.key]
       flow_description             = "${title(each.key)} Messaging Flow"
       pre_survey_bot_sid           = local.chatbot_sids.pre_survey
       target_task_name             = var.target_task_name
@@ -100,7 +101,6 @@ module "customChannel" {
   for_each = toset(var.custom_channels)
   source   = "../../channels/custom-channel"
   custom_flow_definition = templatefile(
-    # "../../channels/flow-templates/operating-hours/no-chatbot.tftpl",
     var.custom_channel_custom_flow_template,
     {
       channel_name                 = "${each.key}"
@@ -110,7 +110,7 @@ module "customChannel" {
       operating_hours_function_sid = var.operating_hours_function_sid
       master_workflow_sid          = local.task_router_master_workflow_sid
       chat_task_channel_sid        = local.task_router_chat_task_channel_sid
-      channel_attributes           = var.custom_channel_attributes
+      channel_attributes           = var.custom_channel_attributes[each.key]
       flow_description             = "${title(each.key)} Messaging Flow"
       operating_hours_holiday      = var.strings["operating_hours_holiday"]
       operating_hours_closed       = var.strings["operating_hours_closed"]
@@ -121,7 +121,7 @@ module "customChannel" {
   master_workflow_sid   = local.task_router_master_workflow_sid
   chat_task_channel_sid = local.task_router_chat_task_channel_sid
   flex_chat_service_sid = local.services_flex_chat_service_sid
-  short_helpline        = var.short_helpline
+  short_helpline        = upper(var.short_helpline)
   short_environment     = local.short_environment
 }
 

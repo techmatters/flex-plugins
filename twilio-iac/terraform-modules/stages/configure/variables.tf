@@ -43,7 +43,6 @@ variable "enable_post_survey" {
   description = "Whether to enable the post survey for the helpline."
 }
 
-
 variable "custom_channels" {
   type        = list(string)
   description = "The custom channels for the helpline."
@@ -73,10 +72,12 @@ variable "enable_voice_channel" {
 }
 
 variable "channel_attributes" {
+  type        = map(string)
   description = "The channel attributes for the helpline."
 }
 
 variable "custom_channel_attributes" {
+  type        = map(string)
   description = "The custom channel attributes for the helpline."
 }
 
@@ -116,4 +117,10 @@ variable "janitor_enabled" {
   type        = bool
   description = "Whether to enable the janitor for the helpline."
   default     = true
+}
+
+variable "permission_config" {
+  description = "The permission config for the helpline."
+  type = string
+  default = ""
 }

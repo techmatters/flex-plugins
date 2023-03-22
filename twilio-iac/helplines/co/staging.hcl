@@ -11,6 +11,8 @@ locals {
 
     custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}] OR to IN [\"+17752526377\",\"+578005190671\"]"
 
+    operating_hours_function_sid = "ZH5fcc5dee5089c176acd0bd24e7fa873e"
+
     enable_voice_channel = true
 
     twilio_channels = {
