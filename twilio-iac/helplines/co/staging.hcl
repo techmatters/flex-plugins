@@ -1,3 +1,7 @@
+/**
+ * This file overrides the config output by `common.hcl` that are specific to the staging environment.
+ **/
+
 locals {
   common_config_hcl = read_terragrunt_config("common.hcl")
   common_config     = local.common_config_hcl.locals.config

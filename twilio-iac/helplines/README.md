@@ -13,3 +13,11 @@ The configuration files are loaded in the following order:
 3. `./<short_helpline>/<environment>.hcl` - environment specific configuration values for a specific helpline.
 
 This hierarchy could be extended to allow for more specific configuration values, but for now this should be sufficient.
+
+## Configuration relationship to Stages
+
+The generated configuration is passed in its entirety to every stage. The stages are responsible for determining which configuration values are relevant to them. This minimizes the dependencies between the stages.
+
+## Advanced Configuration
+
+[files](files/README.md) - Copy hardcoded terraform file into a stage's base terraform directory.

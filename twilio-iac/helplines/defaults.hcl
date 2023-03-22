@@ -1,3 +1,7 @@
+/**
+ * default locals do not need to be nested in a local_config object because they
+ * are the top level so never need to be merged together with other locals
+ **/
 locals {
   region          = "us-east-1"
   helpline_region = "us-east-1"
