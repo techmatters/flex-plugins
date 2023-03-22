@@ -28,7 +28,7 @@ locals {
 
     // keys for ustom_channel_attributes  must match the custom_channels list
     custom_channel_attributes = {
-      twitter = templatefile("../../terraform-modules/channels/custom-channel/channel-attributes/twitter-attributes.tftpl", { task_language = local.task_language })
+      twitter   = templatefile("../../terraform-modules/channels/custom-channel/channel-attributes/twitter-attributes.tftpl", { task_language = local.task_language })
       instagram = templatefile("../../terraform-modules/channels/custom-channel/channel-attributes/instagram-attributes.tftpl", { task_language = local.task_language })
     }
   }

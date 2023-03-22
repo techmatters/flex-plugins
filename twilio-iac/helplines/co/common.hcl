@@ -32,13 +32,13 @@ locals {
 
     // keys for ustom_channel_attributes  must match the custom_channels list
     custom_channel_attributes = {
-      twitter = templatefile("../../terraform-modules/channels/custom-channel/channel-attributes/twitter-attributes.tftpl", { task_language = local.task_language })
+      twitter   = templatefile("../../terraform-modules/channels/custom-channel/channel-attributes/twitter-attributes.tftpl", { task_language = local.task_language })
       instagram = templatefile("../../terraform-modules/channels/custom-channel/channel-attributes/instagram-attributes.tftpl", { task_language = local.task_language })
     }
 
     channel_attributes = {
       facebook = templatefile("../../terraform-modules/channels/twilio-channel/channel-attributes/facebook-attributes.tftpl", { task_language = local.task_language })
-      webchat = templatefile("../../terraform-modules/channels/twilio-channel/channel-attributes/webchat-attributes.tftpl", { task_language = local.task_language })
+      webchat  = templatefile("../../terraform-modules/channels/twilio-channel/channel-attributes/webchat-attributes.tftpl", { task_language = local.task_language })
       whatsapp = templatefile("../../terraform-modules/channels/twilio-channel/channel-attributes/whatsapp-attributes.tftpl", { task_language = local.task_language })
     }
 

@@ -50,3 +50,6 @@ plan-all: plan-all-tg
 destroy: destroy-tg
 
 destroy-all: destroy-all-tg
+
+hclfmt:
+	docker run -it --rm -v $(MY_PWD):$(MOUNT_PATH) -w $(TF_ROOT_PATH) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt hclfmt $(tg_args)

@@ -8,7 +8,7 @@ locals {
   env_config     = local.env_config_hcl.locals.config
 
   additional_default_file = "../helplines/files/additional.${local.stage}.tf"
-  additional_file = "../helplines/${local.short_helpline}/files/additional.${local.stage}.tf"
+  additional_file         = "../helplines/${local.short_helpline}/files/additional.${local.stage}.tf"
 
   computed_config = {
     environment        = title(local.environment)

@@ -29,7 +29,7 @@ dependency "provision" {
   # Configure mock outputs for the `validate` command that are returned when there are no outputs available (e.g the
   # module hasn't been applied yet.
   mock_outputs_allowed_terraform_commands = ["validate", "init", "state"]
-  mock_outputs = local.config.mock_outputs.provision
+  mock_outputs                            = local.config.mock_outputs.provision
 }
 
 /**

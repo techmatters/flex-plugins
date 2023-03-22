@@ -30,14 +30,14 @@ dependency "provision" {
   config_path = "../provision"
 
   mock_outputs_allowed_terraform_commands = ["validate", "init", "state"]
-  mock_outputs = local.config.mock_outputs.provision
+  mock_outputs                            = local.config.mock_outputs.provision
 }
 
 dependency "chatbot" {
   config_path = "../chatbot"
 
   mock_outputs_allowed_terraform_commands = ["validate", "init", "state"]
-  mock_outputs = local.config.mock_outputs.chatbot
+  mock_outputs                            = local.config.mock_outputs.chatbot
 }
 
 /**
