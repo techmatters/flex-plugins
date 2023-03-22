@@ -4764,6 +4764,10 @@
       {
         "value": "Pasay City",
         "label": "Pasay City"
+      },
+      {
+        "value": "Taguig City",
+        "label": "Taguig City"
       }
     ],
     "National Capital Region - Manila": [
@@ -105350,6 +105354,120 @@
       {
         "value": "Barangay 9",
         "label": "Barangay 9"
+      }
+    ],
+    "Taguig City": [
+      {
+        "value": "Bagumbayan",
+        "label": "Bagumbayan"
+      },
+      {
+        "value": "Bambang",
+        "label": "Bambang"
+      },
+      {
+        "value": "Calzada",
+        "label": "Calzada"
+      },
+      {
+        "value": "Central Bicutan",
+        "label": "Central Bicutan"
+      },
+      {
+        "value": "Central Signal Village (Signal Village)",
+        "label": "Central Signal Village (Signal Village)"
+      },
+      {
+        "value": "Fort Bonifacio",
+        "label": "Fort Bonifacio"
+      },
+      {
+        "value": "Hagonoy",
+        "label": "Hagonoy"
+      },
+      {
+        "value": "Ibayo-Tipas",
+        "label": "Ibayo-Tipas"
+      },
+      {
+        "value": "Katuparan",
+        "label": "Katuparan"
+      },
+      {
+        "value": "Ligid-Tipas",
+        "label": "Ligid-Tipas"
+      },
+      {
+        "value": "Lower Bicutan",
+        "label": "Lower Bicutan"
+      },
+      {
+        "value": "Maharlika Village",
+        "label": "Maharlika Village"
+      },
+      {
+        "value": "Napindan",
+        "label": "Napindan"
+      },
+      {
+        "value": "New Lower Bicutan",
+        "label": "New Lower Bicutan"
+      },
+      {
+        "value": "North Daang Hari",
+        "label": "North Daang Hari"
+      },
+      {
+        "value": "North Signal Village",
+        "label": "North Signal Village"
+      },
+      {
+        "value": "Palingon",
+        "label": "Palingon"
+      },
+      {
+        "value": "Pinagsama",
+        "label": "Pinagsama"
+      },
+      {
+        "value": "San Miguel",
+        "label": "San Miguel"
+      },
+      {
+        "value": "Santa Ana",
+        "label": "Santa Ana"
+      },
+      {
+        "value": "South Daang Hari",
+        "label": "South Daang Hari"
+      },
+      {
+        "value": "South Signal Village",
+        "label": "South Signal Village"
+      },
+      {
+        "value": "Tanyag (Bagong Tanyag)",
+        "label": "Tanyag (Bagong Tanyag)"
+      },
+      {
+        "value": "Tuktukan",
+        "label": "Tuktukan"
+      },
+      {
+        "value": "Upper Bicutan",
+        "label": "Upper Bicutan"
+      },
+      {
+        "value": "Ususan",
+        "label": "Ususan"
+      },
+      {
+        "value": "Wawa",
+        "label": "Wawa"
+      },
+      {
+        "value": "Western Bicutan",
+        "label": "Western Bicutan"
       }
     ],
     "Binondo": [
