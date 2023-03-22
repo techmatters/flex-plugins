@@ -5,7 +5,10 @@ include "root" {
 }
 
 dependencies {
-  paths = ["../provision", ]
+  paths = [
+    "../provision",
+    "../chatbot",
+  ]
 }
 
 dependency "provision" {
@@ -13,8 +16,17 @@ dependency "provision" {
 
   # Configure mock outputs for the `validate` command that are returned when there are no outputs available (e.g the
   # module hasn't been applied yet.
-  mock_outputs_allowed_terraform_commands = ["validate"]
+  mock_outputs_allowed_terraform_commands = ["validate", "init", "state"]
   mock_outputs = local.config.mock_outputs.provision
+}
+
+dependency "chatbot" {
+  config_path = "../chatbot"
+
+  # Configure mock outputs for the `validate` command that are returned when there are no outputs available (e.g the
+  # module hasn't been applied yet.
+  mock_outputs_allowed_terraform_commands = ["validate", "init", "state"]
+  mock_outputs = local.config.mock_outputs.chatbot
 }
 
 locals {

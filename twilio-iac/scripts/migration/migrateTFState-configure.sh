@@ -8,6 +8,7 @@ export TERRAGRUNT_AUTO_INIT=false
 identifiers=(
   "^module.chatbots"
   "^module.custom_chatbots"
+  "^twilio_autopilot"
   "^module.hrmServiceIntegration"
   "^module.serverless"
   "^module.services"
@@ -16,8 +17,6 @@ identifiers=(
   "^module.aws"
   "^module.aws_monitoring"
   "^module.github"
-  "POST_SURVEY_BOT_CHAT_URL"
-  "twilio_post_survey_bot_chat_url"
 )
 
 . ${script_dir}/migrateTFState-stage-common.sh

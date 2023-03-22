@@ -7,6 +7,7 @@ locals {
   env_config_hcl = read_terragrunt_config("../../helplines/${local.short_helpline}/${local.environment}.hcl")
   env_config     = local.env_config_hcl.locals.config
 
+  additional_default_file = "../helplines/files/additional.${local.stage}.tf"
   additional_file = "../helplines/${local.short_helpline}/files/additional.${local.stage}.tf"
 
   computed_config = {
@@ -63,5 +64,5 @@ EOF
 generate "additional-tf" {
   path      = "additional.tf"
   if_exists = "overwrite_terragrunt"
-  contents  = fileexists(local.additional_file) ? file(local.additional_file) : ""
+  contents  = fileexists(local.additional_file) ? file(local.additional_file) : file(local.additional_default_file)
 }

@@ -8,9 +8,9 @@ export TERRAGRUNT_AUTO_INIT=false
 identifiers=(
   "^module.chatbots"
   "^module.custom_chatbots"
+  "^twilio_autopilot"
   "^module.twilioChannel"
   "^module.voiceChannel"
-  "^twilio_autopilot"
   "^module.flex"
   "^module.customChannel"
   "POST_SURVEY_BOT_CHAT_URL"

@@ -1,6 +1,6 @@
 module "custom_chatbots" {
   source         = "../../chatbots/te-guio-co"
-  serverless_url = var.serverless_url
+  serverless_url = local.serverless_url
 }
 
 output "custom_chatbot_sids" {

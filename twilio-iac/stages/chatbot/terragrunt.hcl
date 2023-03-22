@@ -13,7 +13,7 @@ dependency "provision" {
 
   # Configure mock outputs for the `validate` command that are returned when there are no outputs available (e.g the
   # module hasn't been applied yet.
-  mock_outputs_allowed_terraform_commands = ["validate"]
+  mock_outputs_allowed_terraform_commands = ["validate", "init", "state"]
   mock_outputs = local.config.mock_outputs.provision
 }
 
@@ -23,19 +23,14 @@ locals {
   config = merge(include.root.locals.config, local.local_config)
 }
 
-inputs = merge(
-  local.config,
-  {
-    serverless_url = dependency.provision.outputs.serverless_url
-  }
-)
+inputs = local.config
 
 terraform {
   // TODO: remove this when we are ready to apply
-  before_hook "abort_apply" {
-    commands = ["apply"]
-    execute  = ["exit", "1"]
-  }
+  // before_hook "abort_apply" {
+  //   commands = ["apply"]
+  //   execute  = ["exit", "1"]
+  // }
 
   source = "../../terraform-modules//stages/${include.root.locals.stage}"
 }

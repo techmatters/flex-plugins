@@ -12,8 +12,3 @@ variable "helpline" {
   description = "The human readable helpline name."
   type        = string
 }
-
-variable "serverless_url" {
-  description = "The serverless url for the helpline."
-  type        = string
-}

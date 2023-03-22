@@ -83,22 +83,6 @@ locals {
     ]
   }
 
-  // /**
-  //   * These flags cause terragrunt to copy a file from {short_name}/files/addtional.{stage}.tf
-  //   * to the root of the workspace. This file is then included in the terraform plan.
-  //   *
-  //   * The additional_tf setup is a temporary workaround to allow us to add additional terraform
-  //   * resources to the workspace. This is a temporary workaround until we migrate from autopilot
-  //   * to a new chatbot provider. The new chatbot provider will likely be configured in its own
-  //   * stage so that we can use terragrunt dependencies and templatefiles to feed configuration
-  //   * only json and vars to the channels.
-  //  **/
-  // enable_additional_tf = {
-  //   provision = false
-  //   chatbot   = false
-  //   configure = false
-  // }
-
   mock_outputs = {
     chatbot = {
       chatbot_languages_selector_sid = "chatbot_languages_selector_sid"
