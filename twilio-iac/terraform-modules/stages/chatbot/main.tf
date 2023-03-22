@@ -18,6 +18,8 @@ locals {
     "Production"  = "PROD"
   }
   short_environment = local.short_env_map[var.environment]
+
+  chatbot_sids = {}
 }
 
 data "terraform_remote_state" "provision" {

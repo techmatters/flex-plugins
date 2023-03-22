@@ -43,14 +43,10 @@ variable "enable_post_survey" {
   description = "Whether to enable the post survey for the helpline."
 }
 
+
 variable "custom_channels" {
   type        = list(string)
   description = "The custom channels for the helpline."
-}
-
-variable "chatbot_pre_survey_bot_es_sid" {
-  type        = string
-  description = "The pre survey bot es sid for the helpline."
 }
 
 variable "twilio_channels" {
@@ -76,6 +72,14 @@ variable "enable_voice_channel" {
   description = "Whether to enable the voice channel for the helpline."
 }
 
+variable "channel_attributes" {
+  description = "The channel attributes for the helpline."
+}
+
+variable "custom_channel_attributes" {
+  description = "The custom channel attributes for the helpline."
+}
+
 variable "task_router_config" {
   description = "The task router config for the helpline."
   type = object({
@@ -88,4 +92,28 @@ variable "task_router_config" {
       })
     )
   })
+}
+
+variable "operating_hours_function_sid" {
+  type        = string
+  description = "The operating hours function sid for the helpline."
+  default     = ""
+}
+
+variable "strings" {
+  type        = map(string)
+  description = "The strings for the helpline."
+  default     = {}
+}
+
+variable "voice_ivr_language" {
+  type        = string
+  description = "The voice ivr language for the helpline."
+  default     = "en-US"
+}
+
+variable "janitor_enabled" {
+  type        = bool
+  description = "Whether to enable the janitor for the helpline."
+  default     = true
 }

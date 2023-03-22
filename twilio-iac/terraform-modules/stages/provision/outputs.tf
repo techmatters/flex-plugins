@@ -18,6 +18,10 @@ output "task_router_chat_task_channel_sid" {
   value = module.taskRouter.chat_task_channel_sid
 }
 
+output "task_router_voice_task_channel_sid" {
+  value = module.taskRouter.voice_task_channel_sid
+}
+
 output "services_flex_chat_service_sid" {
   value = module.services.flex_chat_service_sid
 }

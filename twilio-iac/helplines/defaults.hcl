@@ -10,7 +10,11 @@ locals {
 
   enable_voice_channel = false
 
+  twilio_channels = []
+  channel_attributes = ""
+
   custom_channels = []
+  custom_channel_attributes = ""
 
   custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
 
@@ -97,8 +101,9 @@ locals {
       serverless_environment_production_sid = "serverless_environment_production_sid"
       serverless_service_sid                = "serverless_service_sid"
       task_router_master_workflow_sid       = "task_router_master_workflow_sid"
-      task_router_chat_task_channel_sid     = "task_router_chat_task_channel_sid",
-      services_flex_chat_service_sid        = "services_flex_chat_service_sid",
+      task_router_chat_task_channel_sid     = "task_router_chat_task_channel_sid"
+      task_router_voice_task_channel_sid    = "task_router_voice_task_channel_sid"
+      services_flex_chat_service_sid        = "services_flex_chat_service_sid"
     }
   }
 }

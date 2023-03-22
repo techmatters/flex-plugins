@@ -14,8 +14,6 @@ dependencies {
 dependency "provision" {
   config_path = "../provision"
 
-  # Configure mock outputs for the `validate` command that are returned when there are no outputs available (e.g the
-  # module hasn't been applied yet.
   mock_outputs_allowed_terraform_commands = ["validate", "init", "state"]
   mock_outputs = local.config.mock_outputs.provision
 }
@@ -23,8 +21,6 @@ dependency "provision" {
 dependency "chatbot" {
   config_path = "../chatbot"
 
-  # Configure mock outputs for the `validate` command that are returned when there are no outputs available (e.g the
-  # module hasn't been applied yet.
   mock_outputs_allowed_terraform_commands = ["validate", "init", "state"]
   mock_outputs = local.config.mock_outputs.chatbot
 }
@@ -46,4 +42,7 @@ terraform {
   }
 
   source = "../../terraform-modules//stages/${include.root.locals.stage}"
+
+  // The state migration script is called via `make migrate-state` becuase it makes terragrunt calls which do weird things when nested
+  // and so that we can avoid assume role chaining.
 }

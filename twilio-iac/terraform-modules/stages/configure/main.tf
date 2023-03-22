@@ -10,6 +10,7 @@ locals {
   serverless_environment_production_sid = local.provision_config.serverless_environment_production_sid
   task_router_master_workflow_sid       = local.provision_config.task_router_master_workflow_sid
   task_router_chat_task_channel_sid     = local.provision_config.task_router_chat_task_channel_sid
+  task_router_voice_task_channel_sid    = local.provision_config.task_router_voice_task_channel_sid
   services_flex_chat_service_sid        = local.provision_config.services_flex_chat_service_sid
 
   chatbot_config = data.terraform_remote_state.chatbot.outputs
@@ -63,76 +64,76 @@ module "flex" {
 }
 
 module "twilioChannel" {
-  for_each = local.twilio_channels
+  for_each = var.twilio_channels
   source   = "../../channels/twilio-channel"
   custom_flow_definition = templatefile(
     # "../../channels/flow-templates/operating-hours/with-chatbot.tftpl",
     var.twilio_channel_custom_flow_template,
     {
       channel_name                 = "${each.key}"
-      serverless_url               = local.serverless_environment_production_url
+      serverless_url               = local.serverless_url
       serverless_service_sid       = local.serverless_service_sid
       serverless_environment_sid   = local.serverless_environment_production_sid
-      operating_hours_function_sid = local.operating_hours_function_sid
+      operating_hours_function_sid = var.operating_hours_function_sid
       master_workflow_sid          = local.task_router_master_workflow_sid
       chat_task_channel_sid        = local.task_router_chat_task_channel_sid
-      channel_attributes           = templatefile("../../channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl", { task_language = local.task_language })
+      channel_attributes           = var.channel_attributes
       flow_description             = "${title(each.key)} Messaging Flow"
-      pre_survey_bot_sid           = module.custom_chatbots.pre_survey_bot_es_sid
-      target_task_name             = local.target_task_name
-      operating_hours_holiday      = local.strings.operating_hours_holiday
-      operating_hours_closed       = local.strings.operating_hours_closed
+      pre_survey_bot_sid           = local.chatbot_sids.pre_survey
+      target_task_name             = var.target_task_name
+      operating_hours_holiday      = var.strings["operating_hours_holiday"]
+      operating_hours_closed       = var.strings["operating_hours_closed"]
 
   })
   channel_contact_identity = each.value.contact_identity
   channel_type             = each.value.channel_type
-  pre_survey_bot_sid       = var.chatbot_pre_survey_bot_es_sid
-  target_task_name         = local.target_task_name
+  pre_survey_bot_sid       = local.chatbot_sids.pre_survey
+  target_task_name         = var.target_task_name
   channel_name             = each.key
-  janitor_enabled          = !local.enable_post_survey
+  janitor_enabled          = var.janitor_enabled
   master_workflow_sid      = local.task_router_master_workflow_sid
   chat_task_channel_sid    = local.task_router_chat_task_channel_sid
-  flex_chat_service_sid    = module.services.flex_chat_service_sid
+  flex_chat_service_sid    = local.services_flex_chat_service_sid
 }
 
 module "customChannel" {
-  for_each = toset(local.custom_channels)
+  for_each = toset(var.custom_channels)
   source   = "../../channels/custom-channel"
   custom_flow_definition = templatefile(
     # "../../channels/flow-templates/operating-hours/no-chatbot.tftpl",
     var.custom_channel_custom_flow_template,
     {
       channel_name                 = "${each.key}"
-      serverless_url               = local.serverless_environment_production_url
+      serverless_url               = local.serverless_url
       serverless_service_sid       = local.serverless_service_sid
       serverless_environment_sid   = local.serverless_environment_production_sid
-      operating_hours_function_sid = local.operating_hours_function_sid
+      operating_hours_function_sid = var.operating_hours_function_sid
       master_workflow_sid          = local.task_router_master_workflow_sid
       chat_task_channel_sid        = local.task_router_chat_task_channel_sid
-      channel_attributes           = templatefile("../../channels/custom-channel/channel-attributes/${each.key}-attributes.tftpl", { task_language = local.task_language })
+      channel_attributes           = var.custom_channel_attributes
       flow_description             = "${title(each.key)} Messaging Flow"
-      operating_hours_holiday      = local.strings.operating_hours_holiday
-      operating_hours_closed       = local.strings.operating_hours_closed
+      operating_hours_holiday      = var.strings["operating_hours_holiday"]
+      operating_hours_closed       = var.strings["operating_hours_closed"]
 
   })
   channel_name          = each.key
-  janitor_enabled       = true
+  janitor_enabled       = var.janitor_enabled
   master_workflow_sid   = local.task_router_master_workflow_sid
   chat_task_channel_sid = local.task_router_chat_task_channel_sid
-  flex_chat_service_sid = module.services.flex_chat_service_sid
-  short_helpline        = local.short_helpline
+  flex_chat_service_sid = local.services_flex_chat_service_sid
+  short_helpline        = var.short_helpline
   short_environment     = local.short_environment
 }
 
 module "voiceChannel" {
   source = "../../channels/voice-channel"
 
-  count = local.enable_voice_channel ? 1 : 0
+  count = var.enable_voice_channel ? 1 : 0
 
   master_workflow_sid        = local.task_router_master_workflow_sid
-  voice_task_channel_sid     = module.taskRouter.voice_task_channel_sid
-  voice_ivr_language         = local.voice_ivr_language
-  voice_ivr_greeting_message = local.strings.voice_ivr_greeting_message
+  voice_task_channel_sid     = local.task_router_voice_task_channel_sid
+  voice_ivr_language         = var.voice_ivr_language
+  voice_ivr_greeting_message = var.strings["voice_ivr_greeting_message"]
 }
 
 moved {

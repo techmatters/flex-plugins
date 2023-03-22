@@ -4,7 +4,7 @@
 
 This is a dirty hack and should only be used as a stopgap until modules can be rewritten to be more properly managed by configuration only.
 
-This system is a temporary band-aid to allow us to add additional terraform resources to the workspace. This is a temporary workaround until we migrate from autopilot to a new chatbot provider. Whenever possible the additional tf should be avoided in favor of configuration driven modules.
+This system is a temporary band-aid to allow us to add additional terraform resources to the workspace. This is a temporary workaround until we migrate from autopilot to a new chatbot provider. Whenever possible the additional TF should be avoided in favor of configuration driven modules.
 
 The basics of the system are this:
 

@@ -1,5 +1,5 @@
-output "custom_chatbot_sids" {
-  value = {
+locals {
+  custom_chatbot_sids = {
     "en"  = twilio_autopilot_assistants_v1.chatbot_en.sid
     "mt"  = twilio_autopilot_assistants_v1.chatbot_mt.sid
     "ukr" = twilio_autopilot_assistants_v1.chatbot_ukr.sid
