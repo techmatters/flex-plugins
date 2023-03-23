@@ -5,8 +5,8 @@
 Review the [terragrunt quick start](https://terragrunt.gruntwork.io/docs/getting-started/quick-start/) to get a basic understanding of how terragrunt works in very basic setups.
 
 ## Working Directory, Cache, and Generate Blocks
-
-Terragrunt doesn't do anything fancy in Go to run terraform commands in the module defined in the terraform block. It manages files in a cache on the local filesystem to impact where terraform runs and what terraform runs.
+w
+Terragrunt doesn't do anything fancy in Go to run terraform commands in the module defined in the terraform block. It manages files in a cache on the local filesystem and then runs terraform commands in a working directory within that cache. It uses the `generate` block to generate files in the working directory before running terraform commands.
 
 ### Working Directory and Cache
 
