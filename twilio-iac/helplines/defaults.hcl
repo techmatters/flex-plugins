@@ -3,8 +3,9 @@
  * are the top level so never need to be merged together with other locals
  **/
 locals {
-  region          = "us-east-1"
-  helpline_region = "us-east-1"
+  region                = "us-east-1"
+  helpline_region       = "us-east-1"
+  aws_monitoring_region = "us-east-1"
 
   multi_office       = false
   enable_post_survey = false

@@ -18,7 +18,6 @@ variable "helpline" {
   description = "The human readable helpline name."
 }
 
-
 variable "operating_info_key" {
   type        = string
   description = "The operating info key for the helpline."
@@ -32,6 +31,11 @@ variable "custom_task_routing_filter_expression" {
 variable "helpline_region" {
   type        = string
   description = "The region for the helpline."
+}
+
+variable "aws_monitoring_region" {
+  type        = string
+  description = "The region for the AWS monitoring."
 }
 
 variable "manage_github_secrets" {

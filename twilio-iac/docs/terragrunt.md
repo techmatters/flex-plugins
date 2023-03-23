@@ -6,13 +6,13 @@ Review the [terragrunt quick start](https://terragrunt.gruntwork.io/docs/getting
 
 ## Working Directory, Cache, and Generate Blocks
 
- Terragrunt doesn't do anything fancy in Go to run terraform commands in the module defined in the terraform block. It manages local filesystem to do similar things to our Makefile system, but in a cache directory.
+Terragrunt doesn't do anything fancy in Go to run terraform commands in the module defined in the terraform block. It manages files in a cache on the local filesystem to impact where terraform runs and what terraform runs.
 
 ### Working Directory and Cache
 
- It copies the dir structure before the `//` in the `source` argument into a local cache. It then uses the directory within that new cache that is defined after the `//` in the source block as a working dir.
+Terraform copies files around to build the cache. The cache can come from git or, as in our use case, from the local filesystem. When using local terraform modules as the terraform source, terragrunt copies the dir structure before the `//` in the `source` argument into a local cache. It then uses the directory within that new cache that is defined after the `//` as a working dir for running terraform commands and generating blocks.
 
-For example, If you have a terraform block like this:
+For example, If you have a terraform block in your `terragrunt.hcl` like this:
 
 ```hcl
 terraform {
@@ -20,7 +20,7 @@ terraform {
 }
 ```
 
-The entire directory structure at `../../terraform-modules` will be copied into the local cache. Then the directory relative path `stages/provision` within that cache will be used as the working directory for terragrunt and the root directory it uses to run terraform commands.
+The entire directory structure at `../../terraform-modules` will be copied into the local cache. Then the directory relative path `stages/provision` within that cache will be used as the working directory for terragrunt. Terragrunt will run terraform commands from within that directory.
 
 So in this simple example, if we weren't doing some magic to make helpline/environment argument driven, the `.terragrunt-cache` in the provision stage would look something like this:
 
@@ -44,7 +44,7 @@ The working directory would be in the `stages/provision` directory.
 
 Terragrunt uses the `generate` block to generate files in the working directory. It uses the `path` argument to determine where to put the generated file. It uses the `template` argument to determine what to put in the generated file. It uses the `if_exists` argument to determine what to do if the file already exists.
 
-So in this simple example, if we had a generate block like this:
+So, continuing the simple example above, if we had a generate block in our `terragrunt.hcl` like this:
 
 ```hcl
 generate "backend" {

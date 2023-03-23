@@ -74,7 +74,7 @@ module "aws_monitoring" {
   helpline          = var.helpline
   short_helpline    = upper(var.short_helpline)
   environment       = title(var.environment)
-  cloudwatch_region = var.helpline_region
+  cloudwatch_region = var.aws_monitoring_region
 }
 
 provider "github" {

@@ -10,19 +10,25 @@ This is a living document to attempt to capture the steps required to migrate fr
 
 Helpline configurations live in the [helplines](../helplines/README.md) directory.
 
-The fist step is to copy the `twilio-iac/helplines/example` directory to a new directory named after the helpline's short code. This directory will contain the configuration for the helpline.
+The fist step is to copy the `twilio-iac/helplines/example` directory to a new directory named after the helpline's short code. Example: `twilio-iac/helplines/as`. This directory will contain the configuration for the helpline.
 
-Next, the `common.hcl`, `staging.hcl`, and `production.hcl` files need to be updated to reflect the new helpline's configuration based on the old Terragrunt configuration. You may not get all of the values correct on the first pass, but just make an effort to get the important ones.
+Next, the `common.hcl`, `staging.hcl`, and `production.hcl` files need to be updated to reflect the new helpline's configuration based on the old Terraform configuration. Those values may be in a `variables.tf` file or set as `locals` with `main.tf` depending on the helpline. You may not get all of the values correct on the first pass. Just make an effort to get the important ones and you'll refine them later.
 
 ### Run automated migration for each stage
 
 Run `make HL=<short_code> HL_ENV=<environment> migrate-state` for each stage in order. (provision, chatbot, and then configure)
 
-This will migrate secrets from the old format to the new format. It will also init the local environment for each stage. Then it will migrate the old terraform state to the new layout.
+This will migrate secrets from the old format to the new format. It will also init the local environment for each stage. Then it will migrate the old terraform state to remove unnecessary resources for each state.
 
-Start with the `provision` stage since it handles TF secrets migration which is required by all other stages. You don't have to wait for it to finish the state migration before moving on to the next stage. Just make sure it has started state migration before moving on to the next stage. You will be asked questions about the secret migrations.
+Start with the `provision` stage since it handles TF secrets migration which is required by all other stages. You don't have to wait for it to finish the state migration before moving on to the next stage. Just make sure it has started state migration before moving on to the next stage (you'll see "Successfully removed 1 resource instance(s)." messages). You will be asked several questions. The correct answer always the default value (press enter without typing anything) unless you are trying to fix something that went very wrong.
 
-State migration will take a *very* long time. Several hours. It *may* fail along the way and can be safely restarted with `make HL=<short_code> HL_ENV=<environment> migrate-state`.
+Answer "yes" to the final question that asks:
+
+"Do you want to overwrite the state in the new backend with the previous state?
+  Enter "yes" to copy and "no" to start with the existing state in the newly
+  configured "s3" backend."
+
+State migration will take a *very* long time. Like, a couple of hours. There are retry systems in place, but It *may* fail along the way. It can be safely restarted by running `make HL=<short_code> HL_ENV=<environment> migrate-state` again. It will pick up where it left off.
 
 The `migrate-state` commands for each stage can be safely run in parallel. They will not conflict with each other. They are non-destructive to the running environment.
 
@@ -46,7 +52,11 @@ The goal is to have an empty plan that only updates the outputs in the state. Yo
 
 #### Autopilot Configuration
 
-Autopilot is deprecated and will be replaced in the near future. The chatbot stage supports adding "custom" terraform files to the workspace using a the [files](../helplines/files/README.md) configuration. This is a temporary workaround until we migrate from autopilot to a new chatbot provider. Add files as needed there to get the chatbot plan to be empty.
+Autopilot is deprecated and will be replaced in the near future. The `default_autopilot_chatbot_enabled` config variable is set by default and will cause the default chatbot configuration to be applied optionally.
+
+The chatbot stage also supports adding "custom" terraform files to the workspace using a the [files](../helplines/files/README.md) configuration. This is a temporary workaround until we migrate from autopilot to a new chatbot provider. Add files as needed there to get the chatbot plan to be empty.
+
+Once the chatbot plan is empty, you can apply the changes with `make HL=<short_code> HL_ENV=<environment> apply` to update the outputs in the state for use by the next stages.
 
 #### New Chatbot Configuration
 
