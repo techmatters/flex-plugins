@@ -45,5 +45,7 @@ locals {
     strings = jsondecode(file("../../translations/${local.helpline_language}/strings.json"))
 
     manage_github_secrets = false
+
+    default_autopilot_chatbot_enabled = false
   }
 }

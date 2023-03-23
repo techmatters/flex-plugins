@@ -17,3 +17,9 @@ variable "helpline" {
   description = "The human readable helpline name."
   type        = string
 }
+
+variable "default_autopilot_chatbot_enabled" {
+  description = "Whether to enable the default autopilot chatbot."
+  type        = bool
+  default     = true
+}

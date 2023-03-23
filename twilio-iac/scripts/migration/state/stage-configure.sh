@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
-set -e
+# export TF_LOG=TRACE
+
+# List of full identifiers to move split by comma
+move_identifiers=()
 
 # List of partial identifiers to remove from Terraform state
-identifiers=(
+delete_identifiers=(
   "^module.chatbots"
   "^module.custom_chatbots"
   "^twilio_autopilot"

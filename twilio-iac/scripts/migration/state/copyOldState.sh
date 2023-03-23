@@ -35,8 +35,8 @@ new_key_lock_exists=$?
 printf "Done!\n\n"
 
 if [ $new_key_exists -eq 0 ]; then
-  read -p "new state: ${new_key} already exists in the s3 bucket: ${s3_bucket}. This could mean that state has already been micrated. Continuing will start over and overwrite it. Are you sure you want to do this? (y/N)" -n 1 -r
-  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+  read -p "new state: ${new_key} already exists in the s3 bucket: ${s3_bucket}. This could mean that state has already been migrated. Continuing will start over and overwrite it. Are you sure you want to do this? (Y/n)" -n 1 -r
+  if [[ $REPLY =~ ^[Nn]$ ]]; then
     exit 1
   else
     printf "\nok. Continuing...\n\n"

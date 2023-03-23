@@ -12,7 +12,7 @@ terraform {
 }
 
 provider "aws" {
-  alias = "bucket"
+  alias  = "bucket"
   region = var.bucket_region
   assume_role {
     role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-${lower(var.environment)}"
@@ -26,75 +26,110 @@ locals {
 }
 
 resource "aws_s3_bucket" "docs" {
-  bucket = local.docs_s3_location
+  bucket   = local.docs_s3_location
   provider = aws.bucket
 }
 
 resource "aws_s3_bucket_public_access_block" "docs" {
-  bucket = aws_s3_bucket.docs.id
-  block_public_acls = true
-  ignore_public_acls = true
-  block_public_policy = true
+  bucket                  = aws_s3_bucket.docs.id
+  block_public_acls       = true
+  ignore_public_acls      = true
+  block_public_policy     = true
   restrict_public_buckets = true
-  provider = aws.bucket
+  provider                = aws.bucket
 }
 
 resource "aws_s3_bucket_cors_configuration" "docs" {
-  bucket = aws_s3_bucket.docs.bucket
+  bucket   = aws_s3_bucket.docs.bucket
   provider = aws.bucket
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "POST", "PUT"]
     allowed_origins = ["https://flex.twilio.com"]
-    expose_headers = []
+    expose_headers  = []
   }
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "docs" {
-  bucket = aws_s3_bucket.docs.bucket
+  bucket   = aws_s3_bucket.docs.bucket
   provider = aws.bucket
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = "AES256"
+      sse_algorithm = "AES256"
     }
   }
 }
 
 resource "aws_s3_bucket" "chat" {
-  bucket = local.chat_s3_location
+  bucket   = local.chat_s3_location
   provider = aws.bucket
 }
 
 resource "aws_s3_bucket_public_access_block" "chat" {
-  bucket = aws_s3_bucket.chat.id
-  block_public_acls = false
-  ignore_public_acls = false
-  block_public_policy = false
+  bucket                  = aws_s3_bucket.chat.id
+  block_public_acls       = false
+  ignore_public_acls      = false
+  block_public_policy     = false
   restrict_public_buckets = false
-  provider = aws.bucket
+  provider                = aws.bucket
 }
 
 resource "aws_s3_bucket_cors_configuration" "chat" {
-  bucket = aws_s3_bucket.chat.bucket
+  bucket   = aws_s3_bucket.chat.bucket
   provider = aws.bucket
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "POST", "PUT"]
     allowed_origins = ["https://flex.twilio.com"]
-    expose_headers = []
+    expose_headers  = []
   }
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "chat" {
-  bucket = aws_s3_bucket.chat.bucket
+  bucket   = aws_s3_bucket.chat.bucket
   provider = aws.bucket
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = "AES256"
+      sse_algorithm = "AES256"
     }
   }
 }
 
+// This is a hack to get around the fact that the provision step doesn't have access to the "POST_SURVEY_BOT_CHAT_URL" variable and it is added in the chatbot stage
+locals {
+  aws_ssm_parameters = var.post_survey_bot_sid == "" ? {
+    WORKSPACE_SID     = jsonencode(["TWILIO", var.flex_task_assignment_workspace_sid, "Twilio account - Workspace SID"])
+    CHAT_WORKFLOW_SID = jsonencode(["TWILIO", var.master_workflow_sid, "Twilio account - Chat transfer workflow SID"])
+    SYNC_SID          = jsonencode(["TWILIO", var.shared_state_sync_service_sid, "Twilio account - Sync service "])
+    // API Key secrets are not accessible from the twilio terraform provider
+    // SECRET = jsonencode(["TWILIO", "NOT_SET", "Twilio account - Sync API secret"])
+    CHAT_SERVICE_SID       = jsonencode(["TWILIO", var.flex_chat_service_sid, "Twilio account - Chat service SID"])
+    FLEX_PROXY_SERVICE_SID = jsonencode(["TWILIO", var.flex_proxy_service_sid, "Twilio account - Flex Proxy service SID"])
+    SURVEY_WORKFLOW_SID    = jsonencode(["TWILIO", var.survey_workflow_sid, "Twilio account - Survey Workflow SID"])
+    // API Key secrets are not accessible from the twilio terraform provider
+    // HRM_STATIC_KEY = jsonencode(["TWILIO", "NOT_SET", "Twilio account - HRM static secret to perform backend calls"])
+    S3_BUCKET_DOCS     = jsonencode(["TWILIO", local.docs_s3_location, "Twilio account - Post Survey bot chat url"])
+    OPERATING_INFO_KEY = jsonencode(["TWILIO", var.operating_info_key, "Twilio account - Operating Key info"])
+    APP_ID             = jsonencode(["DATADOG", var.datadog_app_id, "Datadog - Application ID"])
+    ACCESS_TOKEN       = jsonencode(["DATADOG", var.datadog_access_token, "Datadog - Access Token"])
+    } : {
+    WORKSPACE_SID     = jsonencode(["TWILIO", var.flex_task_assignment_workspace_sid, "Twilio account - Workspace SID"])
+    CHAT_WORKFLOW_SID = jsonencode(["TWILIO", var.master_workflow_sid, "Twilio account - Chat transfer workflow SID"])
+    SYNC_SID          = jsonencode(["TWILIO", var.shared_state_sync_service_sid, "Twilio account - Sync service "])
+    // API Key secrets are not accessible from the twilio terraform provider
+    // SECRET = jsonencode(["TWILIO", "NOT_SET", "Twilio account - Sync API secret"])
+    CHAT_SERVICE_SID       = jsonencode(["TWILIO", var.flex_chat_service_sid, "Twilio account - Chat service SID"])
+    FLEX_PROXY_SERVICE_SID = jsonencode(["TWILIO", var.flex_proxy_service_sid, "Twilio account - Flex Proxy service SID"])
+    SURVEY_WORKFLOW_SID    = jsonencode(["TWILIO", var.survey_workflow_sid, "Twilio account - Survey Workflow SID"])
+    // API Key secrets are not accessible from the twilio terraform provider
+    // HRM_STATIC_KEY = jsonencode(["TWILIO", "NOT_SET", "Twilio account - HRM static secret to perform backend calls"])
+    S3_BUCKET_DOCS           = jsonencode(["TWILIO", local.docs_s3_location, "Twilio account - Post Survey bot chat url"])
+    POST_SURVEY_BOT_CHAT_URL = jsonencode(["TWILIO", "https://channels.autopilot.twilio.com/v1/${var.twilio_account_sid}/${var.post_survey_bot_sid}/twilio-chat", "Twilio account - Post Survey bot chat url"])
+    OPERATING_INFO_KEY       = jsonencode(["TWILIO", var.operating_info_key, "Twilio account - Operating Key info"])
+    APP_ID                   = jsonencode(["DATADOG", var.datadog_app_id, "Datadog - Application ID"])
+    ACCESS_TOKEN             = jsonencode(["DATADOG", var.datadog_access_token, "Datadog - Access Token"])
+  }
+}
 
 /****************************************************************
  * WARNING:
@@ -104,29 +139,13 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "chat" {
  ****************************************************************/
 // params are going into the region specified by var.bucket_region
 resource "aws_ssm_parameter" "main_group" {
-  for_each = {
-    WORKSPACE_SID = jsonencode(["TWILIO", var.flex_task_assignment_workspace_sid, "Twilio account - Workspace SID"])
-    CHAT_WORKFLOW_SID = jsonencode(["TWILIO", var.master_workflow_sid, "Twilio account - Chat transfer workflow SID"])
-    SYNC_SID = jsonencode(["TWILIO", var.shared_state_sync_service_sid, "Twilio account - Sync service "])
-    // API Key secrets are not accessible from the twilio terraform provider
-    // SECRET = jsonencode(["TWILIO", "NOT_SET", "Twilio account - Sync API secret"])
-    CHAT_SERVICE_SID = jsonencode(["TWILIO", var.flex_chat_service_sid, "Twilio account - Chat service SID"])
-    FLEX_PROXY_SERVICE_SID = jsonencode(["TWILIO", var.flex_proxy_service_sid, "Twilio account - Flex Proxy service SID"])
-    SURVEY_WORKFLOW_SID =  jsonencode(["TWILIO", var.survey_workflow_sid, "Twilio account - Survey Workflow SID"])
-    // API Key secrets are not accessible from the twilio terraform provider
-    // HRM_STATIC_KEY = jsonencode(["TWILIO", "NOT_SET", "Twilio account - HRM static secret to perform backend calls"])
-    S3_BUCKET_DOCS = jsonencode(["TWILIO", local.docs_s3_location, "Twilio account - Post Survey bot chat url"])
-    # POST_SURVEY_BOT_CHAT_URL = jsonencode(["TWILIO", "https://channels.autopilot.twilio.com/v1/${var.twilio_account_sid}/${var.post_survey_bot_sid}/twilio-chat", "Twilio account - Post Survey bot chat url"])
-    OPERATING_INFO_KEY = jsonencode(["TWILIO", var.operating_info_key, "Twilio account - Operating Key info"])
-    APP_ID = jsonencode(["DATADOG", var.datadog_app_id, "Datadog - Application ID"])
-    ACCESS_TOKEN = jsonencode(["DATADOG", var.datadog_access_token, "Datadog - Access Token"])
-  }
+  for_each = local.aws_ssm_parameters
 
   # Deserialise the JSON used for the keys - this way we can have multiple values per key
   # note: this can also be accomplished in a more "tf native" way by using an array of objects and a `for` loop.
   # see: https://github.com/techmatters/flex-plugins/blob/1edf877bba4760370af16f41045fa14956d5620f/twilio-iac/terraform-modules/aws/default/main.tf#L206
-  name  = "${var.short_environment}_${jsondecode(each.value)[0]}_${var.short_helpline}_${each.key}"
-  type  = "SecureString"
-  value = jsondecode(each.value)[1]
+  name        = "${var.short_environment}_${jsondecode(each.value)[0]}_${var.short_helpline}_${each.key}"
+  type        = "SecureString"
+  value       = jsondecode(each.value)[1]
   description = jsondecode(each.value)[2]
 }
