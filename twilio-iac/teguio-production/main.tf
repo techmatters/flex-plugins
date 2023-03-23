@@ -216,6 +216,10 @@ module "aws_monitoring" {
   environment    = local.environment
 }
 
+provider "github" {
+  owner = "techmatters"
+}
+
 module "github" {
   source             = "../terraform-modules/github/default"
   twilio_account_sid = local.secrets.twilio_account_sid
