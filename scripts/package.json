@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "preinstall": "cd ../hrm-form-definitions && npm i && npm run build",
+    "preinstall": "cd ../hrm-form-definitions && npm ci && npm run build",
     "lint": "eslint --ext js .",
     "lint:fix": "npm run lint -- --fix",
     "copyFlowLegacy": "node copyFlow.js",

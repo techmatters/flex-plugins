@@ -25,6 +25,8 @@ locals {
   twilio_channel_custom_flow_template = "../../channels/flow-templates/operating-hours/with-chatbot.tftpl"
   custom_channel_custom_flow_template = "../../channels/flow-templates/operating-hours/no-chatbot.tftpl"
 
+  // TODO: these will probably move out of terraform and may not be correct.
+  // Don't run apply for the configure stage until these are updated.
   feature_flags = {
     "enable_fullstory_monitoring" : true,
     "enable_upload_documents" : true,

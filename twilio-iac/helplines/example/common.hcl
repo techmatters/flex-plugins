@@ -8,8 +8,8 @@ locals {
   config              = merge(local.defaults_config, local.local_config)
 
   /**
-   * This is kindof hacky, but locals that are refrenced by other items within the local_config
-   * must be defined at the base level becauase a local object cannot refrence properties of itself
+   * This is kindof hacky, but locals that are referenced by other items within the local_config
+   * must be defined at the base level becauase a local object cannot reference properties of itself
    **/
   helpline_language = ""
   task_language     = ""

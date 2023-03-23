@@ -35,7 +35,7 @@ new_key_lock_exists=$?
 printf "Done!\n\n"
 
 if [ $new_key_exists -eq 0 ]; then
-  read -p "${new_key} already exists in ${s3_bucket}. Continuing may overwrite it. Are you sure you want to do this? (y/N)" -n 1 -r
+  read -p "new state: ${new_key} already exists in the s3 bucket: ${s3_bucket}. This could mean that state has already been micrated. Continuing will start over and overwrite it. Are you sure you want to do this? (y/N)" -n 1 -r
   if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 1
   else
@@ -53,7 +53,7 @@ function copyOldStateToLocal {
 
 if [ $old_key_exists -eq 0 ]; then
   if [ -f "$local_state_file" ]; then
-    read -p "${local_state_file} already exists. Do you want to overwrite it?(y/N)" -n 1 -r
+    read -p "local state file ${local_state_file} already exists. Do you want to overwrite it to start over?(y/N)" -n 1 -r
     if [[ $REPLY =~ ^[Yy]$ ]]; then
       copyOldStateToLocal
     fi
