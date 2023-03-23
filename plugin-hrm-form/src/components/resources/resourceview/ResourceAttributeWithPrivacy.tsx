@@ -30,7 +30,7 @@ type Props = {
   content?: string | JSX.Element;
 };
 
-const ResourceAttributeWithPrivacy: React.FC<Props> = ({ isPrivate, description, content }) => {
+const ResourceAttributeWithPrivacy: React.FC<Props> = ({ isPrivate, description, children }) => {
   const renderPrivateResourceAttribute = () => (
     <>
       <ResourceAttributeDescription>{description}</ResourceAttributeDescription>
@@ -39,12 +39,14 @@ const ResourceAttributeWithPrivacy: React.FC<Props> = ({ isPrivate, description,
           <WarningIcon style={{ color: '#f6ca4a', paddingRight: '4px', paddingTop: '6px' }} />
           This location is private. Do not share with child.
         </span>
-        <ResourceAttributeContent>{content}</ResourceAttributeContent>
+        <ResourceAttributeContent>{children}</ResourceAttributeContent>
       </PrivateResourceAttribute>
     </>
   );
 
-  const renderPublicResourceAttribute = () => <ResourceAttribute description={description} content={content} />;
+  const renderPublicResourceAttribute = () => (
+    <ResourceAttribute description={description}>{children}</ResourceAttribute>
+  );
 
   return isPrivate ? renderPrivateResourceAttribute() : renderPublicResourceAttribute();
 };

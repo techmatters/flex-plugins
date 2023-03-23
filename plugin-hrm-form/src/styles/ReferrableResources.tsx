@@ -15,8 +15,9 @@
  */
 
 import { styled } from '@twilio/flex-ui';
+import { ButtonBase } from '@material-ui/core';
 
-import { Box, Column, Flex, FontOpenSans, Row } from './HrmStyles';
+import { Box, Column, Flex, Absolute, Row, FontOpenSans } from './HrmStyles';
 
 export const ReferrableResourcesContainer = styled(Flex)`
   margin: 20px;
@@ -48,9 +49,14 @@ export const ResourceAttributesContainer = styled(Row)`
 `;
 ResourceAttributesContainer.displayName = 'ResourceAttributesContainer';
 
-export const ResourceAttributesColumn = styled(Column)`
+type ResourceAttributesColumnProps = {
+  verticalLine?: boolean;
+};
+export const ResourceAttributesColumn = styled(Column)<ResourceAttributesColumnProps>`
   flex: 1;
   margin: 5px;
+  border-left: ${props => (props.verticalLine ? '2px solid rgba(39, 48, 51, 0.3)' : 'none')};
+  padding-left: ${props => (props.verticalLine ? '10px' : 'none')};
 `;
 
 export const ResourceAttributeDescription = styled(FontOpenSans)`
@@ -141,3 +147,48 @@ export const PrivateResourceAttribute = styled('div')`
   margin: 2px 5px 2px 1px;
 `;
 PrivateResourceAttribute.displayName = 'PrivateResourceAttribute';
+
+// ViewResource Page
+export const ResourceViewContainer = styled(Absolute)`
+  height: 100%;
+  width: 1280px;
+  background-color: #f6f6f6;
+`;
+ResourceViewContainer.displayName = 'ResourceViewContainer';
+
+type ColorProps = {
+  color?: string;
+};
+export const SectionTitleContainer = styled(Row)<ColorProps>`
+  background-color: #ecedf1;
+  padding: 8px 5px 8px;
+  margin: 2px 0;
+  border-left: ${({ color }) => (color ? `6px solid ${color}` : 'none')};
+`;
+SectionTitleContainer.displayName = 'SectionTitleContainer';
+
+export const SectionTitleButton = styled(ButtonBase)`
+  width: 100%;
+  padding: 0;
+  &:focus {
+    outline: auto;
+  }
+`;
+SectionTitleButton.displayName = 'SectionTitleButton';
+
+export const SectionTitleText = styled(FontOpenSans)`
+  margin-right: auto;
+  color: #192b33;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 13px;
+`;
+SectionTitleText.displayName = 'SectionTitleText';
+
+export const ResourceSubtitle = styled(FontOpenSans)`
+  color: #9b9b9b;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 16px;
+`;
+ResourceSubtitle.displayName = 'ResourceSubtitle';

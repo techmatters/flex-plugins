@@ -17,7 +17,8 @@ import React, { useState } from 'react';
 import ArrowRightTwoTone from '@material-ui/icons/ArrowRightTwoTone';
 import ArrowDropDownTwoTone from '@material-ui/icons/ArrowDropDownTwoTone';
 
-import { SectionTitleContainer, SectionTitleButton, SectionTitleText, SectionCollapse } from '../../../styles/search';
+import { SectionCollapse } from '../../../styles/search';
+import { SectionTitleContainer, SectionTitleButton, SectionTitleText } from '../../../styles/ReferrableResources';
 
 type ExpandableSectionProps = {
   title: string | JSX.Element;
@@ -41,7 +42,7 @@ const ExpandableSection: React.FC<ExpandableSectionProps> = ({ title, children, 
         </SectionTitleButton>
       </SectionTitleContainer>
       <SectionCollapse expanded={expanded} timeout="auto">
-        {children}
+        <div style={{ padding: '10px' }}>{children}</div>
       </SectionCollapse>
     </>
   );

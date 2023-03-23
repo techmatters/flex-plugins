@@ -22,7 +22,7 @@ type Props = {
   attributes: any;
 };
 
-const ViewResourceMainContactDetails: React.FC<Props> = ({ attributes }) => {
+const MainContactDetails: React.FC<Props> = ({ attributes }) => {
   const getValue = (keyName: string) => {
     if (keyName in attributes.mainContact) {
       const propVal = attributes.mainContact[keyName];
@@ -47,6 +47,6 @@ const ViewResourceMainContactDetails: React.FC<Props> = ({ attributes }) => {
   );
 };
 
-ViewResourceMainContactDetails.displayName = 'ViewResourceMainContactDetails';
+MainContactDetails.displayName = 'MainContactDetails';
 
-export default ViewResourceMainContactDetails;
+export default MainContactDetails;

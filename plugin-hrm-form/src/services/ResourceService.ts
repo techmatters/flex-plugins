@@ -18,7 +18,12 @@
 import fetchResourceApi from './fetchResourcesApi';
 import { getReferrableResourceConfig } from '../hrmConfig';
 
-export type ReferrableResourceAttributeValue = string | string[] | { id: string; value: string; color?: string }[];
+export type ReferrableResourceAttributeValue =
+  | string
+  | string[]
+  | { id: string; value: string; color?: string }[]
+  | { info: string | any; value: string; language: string }
+  | any;
 
 export type ReferrableResource = {
   id: string;
@@ -69,11 +74,14 @@ export const searchResources = async (
   limit: number,
 ): Promise<{ totalCount: number; results: ReferrableResource[] }> => {
   const fromApi = await fetchResourceApi(`search?start=${start}&limit=${limit}`, {
+    // const fromApi = await fetchResourceApi(`newSearch?start=${start}&limit=${limit}`, {
     method: 'POST',
-    body: JSON.stringify(parameters),
+    body: JSON.stringify({ ...parameters, generalSearchTerm: parameters.nameSubstring }),
   });
+
   return {
     ...fromApi,
     results: fromApi.results.map(r => withFakeAttributes(r)),
+    // results: fromApi.results,
   };
 };

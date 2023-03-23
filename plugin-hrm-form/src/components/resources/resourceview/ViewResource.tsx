@@ -15,13 +15,13 @@
  */
 
 /* eslint-disable react/jsx-max-depth */
-import React, { Dispatch } from 'react';
+import React, { Dispatch, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 import PhoneIcon from '@material-ui/icons/Phone';
 
-import { ResourceViewContainer } from '../../../styles/resources';
+import FieldSelect from '../../FieldSelect';
 import { namespace, referrableResourcesBase, RootState } from '../../../states';
 import { Box, Column } from '../../../styles/HrmStyles';
 import SearchResultsBackButton from '../../search/SearchResults/SearchResultsBackButton';
@@ -30,15 +30,16 @@ import {
   ResourceAttributesContainer,
   ResourceTitle,
   ViewResourceArea,
+  ResourceViewContainer,
 } from '../../../styles/ReferrableResources';
 import ResourceAttribute from './ResourceAttribute';
 import { loadResourceAsyncAction, navigateToSearchAction, ResourceLoadStatus } from '../../../states/resources';
 import asyncDispatch from '../../../states/asyncDispatch';
 import ResourceIdCopyButton from '../ResourceIdCopyButton';
 import ResourceAttributeWithPrivacy from './ResourceAttributeWithPrivacy';
-import ViewResourceMainContactDetails from './ViewResourceMainContactDetails';
-import ViewResourceSiteDetails from './ViewResourceSiteDetails';
-import ExpandableSection from './ExpandableSection';
+import ViewResourceMainContactDetails from './MainContactDetails';
+import ViewResourceSiteDetails from './SiteDetails';
+import OperatingHours from './OperatingHours';
 
 type OwnProps = {
   resourceId: string;
@@ -70,14 +71,25 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
     return <div>Loading...</div>;
   }
 
+  const languageOptions = [
+    { label: 'English', value: 'english' },
+    { label: 'French', value: 'french' },
+  ];
+  const defaultOption = languageOptions[0];
+  const getField = value => ({
+    value,
+    error: null,
+    validation: null,
+    touched: false,
+  });
+  // const [language, setLanguage] = useState(defaultOption);
+
   const getSingleStringVal = (attributes: Object, keyName: string) => {
     if (keyName in attributes) {
       const propVal = attributes[keyName];
       if (propVal[0].hasOwnProperty('value') && typeof propVal[0].value === 'string') {
         const keysToKeep = ['primaryLocationIsPrivate', 'isLocationPrivate', 'isPrivate'];
         if (propVal[0].value === 'true' && !keysToKeep.includes(keyName)) {
-          // if (propVal[0].value === 'true' && keysToKeep.filter(key => keyName !== key)) {
-
           return 'Yes';
         } else if (propVal[0].value === 'false' && !keysToKeep.includes(keyName)) {
           return 'No';
@@ -158,23 +170,21 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
           {resource && (
             <>
               <ResourceTitle>{resource.name}</ResourceTitle>
-              <ResourceIdCopyButton resourceId={resource.id} />
               {resource.attributes && (
                 <ResourceAttributesContainer>
                   {/* FIRST COLUMN */}
                   <ResourceAttributesColumn>
-                    <ResourceAttribute
-                      description="Status"
-                      content={getSingleStringVal(resource.attributes, 'status')}
-                    />
-                    <ResourceAttribute
-                      description="Taxonomy Code"
-                      content={getSingleStringVal(resource.attributes, 'taxonomyCode')}
-                    />
-                    <ResourceAttribute
-                      description="Details"
-                      content={handleDescriptionInfo(resource.attributes.description)}
-                    />
+                    <ResourceAttribute description="Status">
+                      {getSingleStringVal(resource.attributes, 'status')}
+                    </ResourceAttribute>
+
+                    <ResourceAttribute description="Taxonomy Code">
+                      {getSingleStringVal(resource.attributes, 'taxonomyCode')}
+                    </ResourceAttribute>
+
+                    <ResourceAttribute description="Details" isExpandable={true}>
+                      {handleDescriptionInfo(resource.attributes.description)}
+                    </ResourceAttribute>
                   </ResourceAttributesColumn>
 
                   {/* SECOND COLUMN */}
@@ -182,54 +192,35 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                     <ResourceAttributeWithPrivacy
                       isPrivate={getSingleStringVal(resource.attributes.mainContact, 'isPrivate') === 'false'}
                       description="Contact Info"
-                      content={<ViewResourceMainContactDetails attributes={resource.attributes} />}
-                    />
+                    >
+                      <ViewResourceMainContactDetails attributes={resource.attributes} />
+                    </ResourceAttributeWithPrivacy>
 
-                    <ResourceAttribute
-                      description="Website"
-                      content={getSingleStringVal(resource.attributes, 'website')}
-                    />
-                    <ResourceAttribute
-                      description="Hours of Operations"
-                      content={
-                        <>
-                          {Object.keys(resource.attributes.operations).map(key => {
-                            const dayData = resource.attributes.operations[key][0];
-                            const { day, hoursOfOperation, descriptionOfHours } = dayData.info;
-                            if (hoursOfOperation) {
-                              return (
-                                <li key={key}>
-                                  {day}: {hoursOfOperation}; {descriptionOfHours}
-                                </li>
-                              );
-                            }
-                            return null;
-                          })}
-                        </>
-                      }
-                    />
+                    <ResourceAttribute description="Website">
+                      {getSingleStringVal(resource.attributes, 'website')}
+                    </ResourceAttribute>
 
-                    <ResourceAttribute
-                      description="Keywords"
-                      content={getSingleStringVal(resource.attributes, 'keywords')}
-                    />
-                    <ResourceAttribute
-                      description="Is Open 24/7?"
-                      content={getSingleStringVal(resource.attributes, 'available247')}
-                    />
-                    <ResourceAttribute description="Ages served" content={handleAgeRange(resource.attributes)} />
-                    {/* <ResourceAttribute
-                    description="Target Population"
-                    content={getTargetPopulation(resource.attributes.targetPopulation)}
-                  /> */}
+                    <ResourceAttribute description="Hours of Operation">
+                      <OperatingHours operations={resource.attributes.operations} />
+                    </ResourceAttribute>
 
-                    <ResourceAttribute
-                      description="Target Population"
-                      content={getSingleStringVal(resource.attributes, 'targetPopulation')}
-                    />
+                    <ResourceAttribute description="Keywords">
+                      {getSingleStringVal(resource.attributes, 'keywords')}
+                    </ResourceAttribute>
+                    <ResourceAttribute description="Is Open 24/7?">
+                      {getSingleStringVal(resource.attributes, 'available247')}
+                    </ResourceAttribute>
+
+                    <ResourceAttribute description="Ages served">
+                      {handleAgeRange(resource.attributes)}
+                    </ResourceAttribute>
+
+                    <ResourceAttribute description="Target Population">
+                      {getSingleStringVal(resource.attributes, 'targetPopulation')}
+                    </ResourceAttribute>
                     {[
                       {
-                        subtitle: 'Interpretation/Translation Services Available?',
+                        subtitle: 'Interpretation/ Translation Services Available?',
                         attributeName: 'interpretationTranslationServicesAvailable',
                       },
                       { subtitle: 'Fee Structure', attributeName: 'feeStructureSource' },
@@ -239,34 +230,43 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                       { subtitle: 'Accessibility', attributeName: 'accessibility' },
                       { subtitle: 'Documents Required', attributeName: 'documentsRequired' },
                     ].map(({ subtitle, attributeName }) => (
-                      <ResourceAttribute
-                        key={attributeName}
-                        description={subtitle}
-                        content={getSingleStringVal(resource.attributes, attributeName)}
-                      />
+                      <ResourceAttribute key={attributeName} description={subtitle}>
+                        {getSingleStringVal(resource.attributes, attributeName)}
+                      </ResourceAttribute>
                     ))}
 
                     {/* 
                   <ResourceAttribute
                     description="Service Categories"
-                    content={resource.attributes['Service Categories']}
+                    children={resource.attributes['Service Categories']}
                   />
                    */}
                   </ResourceAttributesColumn>
 
                   {/* THIRD COLUMN */}
-                  <ResourceAttributesColumn>
-                    <ResourceAttributeWithPrivacy
-                      isPrivate={getSingleStringVal(resource.attributes, 'primaryLocationIsPrivate') === 'false'}
-                      description="Primary Address"
-                      content={handlePrimaryLocation(resource.attributes)}
+                  <ResourceAttributesColumn verticalLine={true}>
+                    <ResourceIdCopyButton resourceId={resource.id} />
+                    <FieldSelect
+                      id="select_language"
+                      label="Language"
+                      name="language"
+                      field={getField(defaultOption)}
+                      options={languageOptions}
+                      handleChange={e => e.target?.value}
+                      handleBlur={() => {}}
+                      handleFocus={() => {}}
                     />
 
                     <ResourceAttributeWithPrivacy
-                      isPrivate={getSingleStringVal(resource.attributes.agency, 'isLocationPrivate') === 'false'}
-                      description="Sites"
-                      content={<ViewResourceSiteDetails attributes={resource.attributes} />}
-                    />
+                      isPrivate={getSingleStringVal(resource.attributes, 'primaryLocationIsPrivate') === 'false'}
+                      description="Primary Address"
+                    >
+                      {handlePrimaryLocation(resource.attributes)}
+                    </ResourceAttributeWithPrivacy>
+
+                    <ResourceAttribute description="Sites">
+                      <ViewResourceSiteDetails attributes={resource.attributes} />
+                    </ResourceAttribute>
                   </ResourceAttributesColumn>
                 </ResourceAttributesContainer>
               )}
