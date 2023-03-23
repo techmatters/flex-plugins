@@ -16,7 +16,7 @@ locals {
   permission_config = var.permission_config == "" ? var.short_helpline : var.permission_config
 
   chatbot_config = data.terraform_remote_state.chatbot.outputs
-  chatbot_sids  = local.chatbot_config.chatbot_sids
+  chatbot_sids   = local.chatbot_config.chatbot_sids
 }
 
 data "terraform_remote_state" "provision" {
@@ -44,7 +44,7 @@ provider "twilio" {
   password = local.secrets.twilio_auth_token
 }
 
-// TODO: remove this module when we remove the old flex plugin. Just here for reference
+// TODO: this module should be moved into its own after_hook that can be called individually.
 module "flex" {
   source               = "../../flex/service-configuration"
   twilio_account_sid   = local.secrets.twilio_account_sid
@@ -61,6 +61,15 @@ module "flex" {
 module "twilioChannel" {
   for_each = var.twilio_channels
   source   = "../../channels/twilio-channel"
+  /**
+   * The big change to make this module configuration driven is that the template file name is passed in as an argument.
+   * We then pass in every possible variable that the template file could use. It isn't pretty, but it will work.
+   * The underlying template files will need to be refactored to use maps with keys for things like chatbot_sids and `strings` instead
+   * of using the variable names directly which will take some work, but should be achievable.
+   *
+   * We can, eventually, do some more work to the underlying modules to make them a bit more "natively configuration driven",
+   * but for the initial pass, this should be sufficient.
+   **/
   custom_flow_definition = templatefile(
     var.twilio_channel_custom_flow_template,
     {
@@ -77,7 +86,6 @@ module "twilioChannel" {
       target_task_name             = var.target_task_name
       operating_hours_holiday      = var.strings["operating_hours_holiday"]
       operating_hours_closed       = var.strings["operating_hours_closed"]
-
   })
   channel_contact_identity = each.value.contact_identity
   channel_type             = each.value.channel_type
