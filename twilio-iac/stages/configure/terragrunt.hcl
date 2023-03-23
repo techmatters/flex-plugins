@@ -59,14 +59,11 @@ inputs = local.config
   */
 terraform {
 
-  // TODO: remove this when we are ready to apply
+  // TODO: remove or comment this out when we are ready to apply
   before_hook "abort_apply" {
     commands = ["apply"]
     execute  = ["exit", "1"]
   }
 
   source = "../../terraform-modules//stages/${include.root.locals.stage}"
-
-  // The state migration script is called via `make migrate-state` becuase it makes terragrunt calls which do weird things when nested
-  // and so that we can avoid assume role chaining.
 }

@@ -53,7 +53,4 @@ inputs = local.config
   */
 terraform {
   source = "../../terraform-modules//stages/${include.root.locals.stage}"
-
-  // The state migration script is called via `make migrate-state` becuase it makes terragrunt calls which do weird things when nested
-  // and so that we can avoid assume role chaining.
 }
