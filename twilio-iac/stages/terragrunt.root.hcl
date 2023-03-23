@@ -1,21 +1,29 @@
+/**
+ * This is the common code used by all of the stages.
+ * It handles configuration loading and common generate blocks.
+ **/
 locals {
   environment    = get_env("HL_ENV")
   short_helpline = get_env("HL")
 
   stage = basename(get_original_terragrunt_dir())
 
+  // This loads the config for the environment we are provisioning. The depenedency tree is all managed by the configuration hcl files
   env_config_hcl = read_terragrunt_config("../../helplines/${local.short_helpline}/${local.environment}.hcl")
   env_config     = local.env_config_hcl.locals.config
 
+  // Setting related to the temporary additional file system.
   additional_default_file = "../helplines/files/additional.${local.stage}.tf"
   additional_file         = "../helplines/${local.short_helpline}/files/additional.${local.stage}.tf"
 
+  // Map used to convert the environment name to a short version so we don't have to hardcode that everywhere.
   short_env_map = {
     "development" = "DEV"
     "staging"     = "STG"
     "production"  = "PROD"
   }
 
+  // These are values that will be added to the generated master config that are derived from other locals.
   computed_config = {
     stage              = local.stage
     environment        = local.environment

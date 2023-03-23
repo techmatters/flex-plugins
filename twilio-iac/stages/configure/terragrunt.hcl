@@ -22,7 +22,7 @@ include "root" {
 // }
 
 // /**
-//   * Dependncy blocks allow us to mock outputs from previous stages so that we can
+//   * Dependency blocks allow us to mock outputs from previous stages so that we can
 //   * validate, init, and manage state in dependant modules without having to apply
 //   * the previous stages.
 //   */

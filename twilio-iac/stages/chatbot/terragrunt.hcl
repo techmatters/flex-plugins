@@ -8,7 +8,7 @@ include "root" {
   expose = true
 }
 
-// Dependncy must be disabled for migrate-state to work. These should be uncommented once helplines are all migrated
+// Dependency must be disabled for migrate-state to work. These should be uncommented once helplines are all migrated
 // so that we can use plan-all commands.
 // /**
 //   * We define the dependencies for this stage. These are the modules that this stage depends on.
@@ -21,7 +21,7 @@ include "root" {
 // }
 
 // /**
-//   * Dependncy blocks allow us to mock outputs from previous stages so that we can
+//   * Dependency blocks allow us to mock outputs from previous stages so that we can
 //   * validate, init, and manage state in dependant modules without having to apply
 //   * the previous stages.
 //   */
