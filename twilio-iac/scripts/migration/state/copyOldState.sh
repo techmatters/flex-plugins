@@ -20,9 +20,7 @@ script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 printf "\n\n"
 
-# Migration can take hours, so we need to assume a role with a longer session duration
-# if we are role chaning, this will break, but we shouldn't be role chaining for state migration
-. ${script_dir}/../../assumeStsRole.sh ${ssm_role_arn} migrateTFState 43200
+. ${script_dir}/../../assumeStsRole.sh ${ssm_role_arn} migrateTFState
 
 printf "Checking S3 bucket (${s3_bucket}) for ${old_key}, ${new_key}, and ${new_key_lock}..."
 aws s3api head-object --bucket $s3_bucket --key $old_key >> /dev/null 2>&1
