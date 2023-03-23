@@ -2,7 +2,6 @@
 
 set -e
 
-export TERRAGRUNT_AUTO_INIT=false
 # export TF_LOG=TRACE
 
 identifiers=(
@@ -17,4 +16,4 @@ identifiers=(
   "twilio_post_survey_bot_chat_url"
 )
 
-. ${script_dir}/migrateTFState-stage-common.sh
+. ${script_dir}/stage-common.sh

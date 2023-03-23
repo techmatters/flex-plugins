@@ -1,5 +1,7 @@
 **/*private.tfvars
 **/*private.json
+**/*.tfstate
+**/*.tfstate.lock.info
 
 .env
 

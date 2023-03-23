@@ -38,8 +38,7 @@ apply: apply-tg
 
 apply-all: plan-all-tg apply-all-tg
 
-#TODO: remove migrate-state once we've migrated/applied all state. It can't be in an after_hook because it runs terragrunt commands
-init: init-tg migrate-state
+init: init-tg
 
 init-all: init-all-tg
 

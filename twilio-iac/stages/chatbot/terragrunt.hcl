@@ -8,29 +8,31 @@ include "root" {
   expose = true
 }
 
-/**
-  * We define the dependencies for this stage. These are the modules that this stage depends on.
-  * this enables us to use the outputs of these modules in the configuration of this stage. It
-  * also enables us to use plann-all, init-all, and apply-all to run TG commands in all of the
-  *  stages in the correct order.
-  */
-dependencies {
-  paths = ["../provision", ]
-}
+// Dependncy must be disabled for migrate-state to work. These should be uncommented once helplines are all migrated
+// so that we can use plan-all commands.
+// /**
+//   * We define the dependencies for this stage. These are the modules that this stage depends on.
+//   * this enables us to use the outputs of these modules in the configuration of this stage. It
+//   * also enables us to use plann-all, init-all, and apply-all to run TG commands in all of the
+//   *  stages in the correct order.
+//   */
+// dependencies {
+//   paths = ["../provision", ]
+// }
 
-/**
-  * Dependncy blocks allow us to mock outputs from previous stages so that we can
-  * validate, init, and manage state in dependant modules without having to apply
-  * the previous stages.
-  */
-dependency "provision" {
-  config_path = "../provision"
+// /**
+//   * Dependncy blocks allow us to mock outputs from previous stages so that we can
+//   * validate, init, and manage state in dependant modules without having to apply
+//   * the previous stages.
+//   */
+// dependency "provision" {
+//   config_path = "../provision"
 
-  # Configure mock outputs for the `validate` command that are returned when there are no outputs available (e.g the
-  # module hasn't been applied yet.
-  mock_outputs_allowed_terraform_commands = ["validate", "init", "state"]
-  mock_outputs                            = local.config.mock_outputs.provision
-}
+//   # Configure mock outputs for the `validate` command that are returned when there are no outputs available (e.g the
+//   # module hasn't been applied yet.
+//   mock_outputs_allowed_terraform_commands = ["validate", "init", "state"]
+//   mock_outputs                            = local.config.mock_outputs.provision
+// }
 
 /**
   * We can override the root config with local configuration options if we need to.

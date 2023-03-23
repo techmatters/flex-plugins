@@ -2,14 +2,11 @@
 
 set -e
 
-export TERRAGRUNT_AUTO_INIT=false
-# export TF_LOG=TRACE
-
+# List of partial identifiers to remove from Terraform state
 identifiers=(
-  "^module.twilioChannel"
-  "^module.voiceChannel"
-  "^module.flex"
-  "^module.customChannel"
+  "^module.chatbots"
+  "^module.custom_chatbots"
+  "^twilio_autopilot"
   "^module.hrmServiceIntegration"
   "^module.serverless"
   "^module.services"
@@ -20,4 +17,4 @@ identifiers=(
   "^module.github"
 )
 
-. ${script_dir}/migrateTFState-stage-common.sh
+. ${script_dir}/stage-common.sh

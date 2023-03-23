@@ -2,6 +2,11 @@
 
 set -e
 
+export USE_LOCAL_STATE=true
+
+echo "Runing terragrunt init -reconfigure to use local state..."
+terragrunt init -reconfigure
+
 export TERRAGRUNT_AUTO_INIT=false
 
 printf "Getting list of all resources in Terraform state..."

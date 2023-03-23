@@ -14,9 +14,9 @@ The fist step is to copy the `twilio-iac/helplines/example` directory to a new d
 
 Next, the `common.hcl`, `staging.hcl`, and `production.hcl` files need to be updated to reflect the new helpline's configuration based on the old Terragrunt configuration. You may not get all of the values correct on the first pass, but just make an effort to get the important ones.
 
-### Run automated init/migration for each stage
+### Run automated migration for each stage
 
-Run `make HL=<short_code> HL_ENV=<environment> init` for each stage.
+Run `make HL=<short_code> HL_ENV=<environment> migrate-state` for each stage in order. (provision, chatbot, and then configure)
 
 This will migrate secrets from the old format to the new format. It will also init the local environment for each stage. Then it will migrate the old terraform state to the new layout.
 
