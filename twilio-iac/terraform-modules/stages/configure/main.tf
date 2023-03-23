@@ -1,5 +1,5 @@
 data "aws_ssm_parameter" "secrets" {
-  name = "/terraform/twilio-iac/${lower(var.environment)}/${var.short_helpline}/secrets.json"
+  name = "/terraform/twilio-iac/${var.environment}/${var.short_helpline}/secrets.json"
 }
 
 locals {
@@ -17,20 +17,13 @@ locals {
 
   chatbot_config = data.terraform_remote_state.chatbot.outputs
   chatbot_sids  = local.chatbot_config.chatbot_sids
-
-  short_env_map = {
-    "Development" = "DEV"
-    "Staging"     = "STG"
-    "Production"  = "PROD"
-  }
-  short_environment = local.short_env_map[var.environment]
 }
 
 data "terraform_remote_state" "provision" {
   backend = "s3"
 
   config = {
-    bucket = "tl-terraform-state-${lower(var.environment)}"
+    bucket = "tl-terraform-state-${var.environment}"
     key    = "twilio/${var.short_helpline}/provision/terraform.tfstate"
     region = "us-east-1"
   }
@@ -40,7 +33,7 @@ data "terraform_remote_state" "chatbot" {
   backend = "s3"
 
   config = {
-    bucket = "tl-terraform-state-${lower(var.environment)}"
+    bucket = "tl-terraform-state-${var.environment}"
     key    = "twilio/${var.short_helpline}/chatbot/terraform.tfstate"
     region = "us-east-1"
   }
@@ -55,7 +48,7 @@ provider "twilio" {
 module "flex" {
   source               = "../../flex/service-configuration"
   twilio_account_sid   = local.secrets.twilio_account_sid
-  short_environment    = local.short_environment
+  short_environment    = var.short_environment
   operating_info_key   = var.operating_info_key
   permission_config    = local.permission_config
   definition_version   = var.definition_version
@@ -122,7 +115,7 @@ module "customChannel" {
   chat_task_channel_sid = local.task_router_chat_task_channel_sid
   flex_chat_service_sid = local.services_flex_chat_service_sid
   short_helpline        = upper(var.short_helpline)
-  short_environment     = local.short_environment
+  short_environment     = var.short_environment
 }
 
 module "voiceChannel" {

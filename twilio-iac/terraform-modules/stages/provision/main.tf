@@ -1,16 +1,9 @@
 data "aws_ssm_parameter" "secrets" {
-  name = "/terraform/twilio-iac/${lower(var.environment)}/${var.short_helpline}/secrets.json"
+  name = "/terraform/twilio-iac/${var.environment}/${var.short_helpline}/secrets.json"
 }
 
 locals {
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
-
-  short_env_map = {
-    "Development" = "DEV"
-    "Staging"     = "STG"
-    "Production"  = "PROD"
-  }
-  short_environment = local.short_env_map[var.environment]
 }
 
 provider "twilio" {
@@ -22,8 +15,8 @@ module "hrmServiceIntegration" {
   source            = "../../hrmServiceIntegration/default"
   helpline          = var.helpline
   short_helpline    = upper(var.short_helpline)
-  environment       = var.environment
-  short_environment = local.short_environment
+  environment       = title(var.environment)
+  short_environment = var.short_environment
 }
 
 module "serverless" {
@@ -36,8 +29,8 @@ module "services" {
   source            = "../../services/default"
   helpline          = var.helpline
   short_helpline    = upper(var.short_helpline)
-  environment       = var.environment
-  short_environment = local.short_environment
+  environment       = title(var.environment)
+  short_environment = var.short_environment
 }
 
 module "taskRouter" {
@@ -60,8 +53,8 @@ module "aws" {
   serverless_url                     = module.serverless.serverless_environment_production_url
   helpline                           = var.helpline
   short_helpline                     = upper(var.short_helpline)
-  environment                        = var.environment
-  short_environment                  = local.short_environment
+  environment                        = title(var.environment)
+  short_environment                  = var.short_environment
   operating_info_key                 = var.operating_info_key
   datadog_app_id                     = local.secrets.datadog_app_id
   datadog_access_token               = local.secrets.datadog_access_token
@@ -80,7 +73,7 @@ module "aws_monitoring" {
   source            = "../../aws-monitoring/default"
   helpline          = var.helpline
   short_helpline    = upper(var.short_helpline)
-  environment       = var.environment
+  environment       = title(var.environment)
   cloudwatch_region = var.helpline_region
 }
 
@@ -95,7 +88,7 @@ module "github" {
 
   twilio_account_sid = local.secrets.twilio_account_sid
   twilio_auth_token  = local.secrets.twilio_auth_token
-  short_environment  = local.short_environment
+  short_environment  = var.short_environment
   short_helpline     = upper(var.short_helpline)
   serverless_url     = module.serverless.serverless_environment_production_url
 }

@@ -3,6 +3,11 @@ variable "environment" {
   type        = string
 }
 
+variable "short_environment" {
+  description = "The short code for the environment."
+  type        = string
+}
+
 variable "short_helpline" {
   description = "The short code for the helpline."
   type        = string

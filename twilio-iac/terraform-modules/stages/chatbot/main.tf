@@ -12,13 +12,6 @@ locals {
   task_router_chat_task_channel_sid     = local.provision_config.task_router_chat_task_channel_sid
   services_flex_chat_service_sid        = local.provision_config.services_flex_chat_service_sid
 
-  short_env_map = {
-    "Development" = "DEV"
-    "Staging"     = "STG"
-    "Production"  = "PROD"
-  }
-  short_environment = local.short_env_map[var.environment]
-
   chatbot_sids = {}
 }
 
@@ -26,7 +19,7 @@ data "terraform_remote_state" "provision" {
   backend = "s3"
 
   config = {
-    bucket = "tl-terraform-state-${lower(var.environment)}"
+    bucket = "tl-terraform-state-${var.environment}"
     key    = "twilio/${var.short_helpline}/provision/terraform.tfstate"
     region = "us-east-1"
   }
