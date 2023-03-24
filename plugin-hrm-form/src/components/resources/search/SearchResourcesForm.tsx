@@ -38,9 +38,9 @@ import asyncDispatch from '../../../states/asyncDispatch';
 type OwnProps = {};
 
 const mapStateToProps = (state: RootState) => {
-  const { omniSearchTerm, pageSize } = state[namespace][referrableResourcesBase].search.parameters;
+  const { generalSearchTerm, pageSize } = state[namespace][referrableResourcesBase].search.parameters;
   return {
-    omniSearchTerm,
+    generalSearchTerm,
     pageSize,
   };
 };
@@ -48,9 +48,10 @@ const mapStateToProps = (state: RootState) => {
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
   const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
-    updateOmiSearchTerm: (omniSearchTerm: string) => dispatch(updateSearchFormAction({ omniSearchTerm })),
+    updateOmiSearchTerm: (omniSearchTerm: string) =>
+      dispatch(updateSearchFormAction({ generalSearchTerm: omniSearchTerm })),
     submitSearch: (omniSearchTerm: string, pageSize: number) =>
-      searchAsyncDispatch(searchResourceAsyncAction({ omniSearchTerm, pageSize }, 0)),
+      searchAsyncDispatch(searchResourceAsyncAction({ generalSearchTerm: omniSearchTerm, pageSize }, 0)),
     resetSearch: () => dispatch(resetSearchFormAction()),
   };
 };
