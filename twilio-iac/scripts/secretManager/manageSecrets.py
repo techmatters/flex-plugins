@@ -3,6 +3,6 @@
 from sys import argv
 from secretManager import Questionnaire
 
-helpline = argv[1]
+helpline = str(argv[1])
 
-Questionnaire(helpline=helpline, blah="blah").start()
+Questionnaire(helpline=helpline).start()

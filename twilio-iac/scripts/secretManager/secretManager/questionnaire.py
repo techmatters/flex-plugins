@@ -3,6 +3,7 @@ import json
 import re
 from mypy_boto3_ssm import SSMClient
 from typing import TypedDict
+from typing_extensions import Unpack
 
 from .config import questions, Question, Secrets
 from .ssm_client import get_ssm_client
@@ -21,7 +22,7 @@ class Questionnaire():
     ssm_key: str = None
     ssm_client: SSMClient = None
 
-    def __init__(self, **kwargs: InitArgsDict):
+    def __init__(self, **kwargs: Unpack[InitArgsDict]):
         self._helpline = kwargs['helpline']
         self.ssm_key = f'/terraform/twilio-iac/{self._helpline}/secrets.json'
         self.ssm_client = get_ssm_client()
