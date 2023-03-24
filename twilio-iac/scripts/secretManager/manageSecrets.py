@@ -5,20 +5,4 @@ from secretManager import Questionnaire
 
 helpline = argv[1]
 
-questionnaire = Questionnaire(helpline=helpline)
-
-questionnaire.start()
-
-try:
-    questionnaire.ssm_client.get_parameter(
-        Name=questionnaire.ssm_key,
-        WithDecryption=True
-    )
-
-except ClientError as e:
-    if e.response['Error']['Code'] == 'ParameterNotFound':
-        print('Parameter not found, starting questionnaire for ' + helpline)
-
-
-    else:
-        print('Parameter found. continuing...')
+Questionnaire(helpline=helpline, blah="blah").start()
