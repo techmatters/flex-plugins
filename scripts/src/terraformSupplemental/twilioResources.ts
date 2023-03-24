@@ -13,8 +13,11 @@ import {
   patchFeatureFlags,
 } from './updateFlexServiceConfiguration';
 import { generateChatbotResource } from './generateChatbotResource';
+import { handleGlobalArgs } from './handleGlobalArgs';
 
 config();
+
+yargs.middleware(handleGlobalArgs);
 
 async function main() {
   yargs(process.argv.slice(2))
@@ -25,6 +28,30 @@ async function main() {
       global: true,
       describe:
         'Do a dry run, it will log the terraform import commands it would have otherwise run to stdout instead for you to review / copy & run manually',
+    })
+    .option('hl', {
+      type: 'string',
+      default: null,
+      alias: 'helpline',
+      global: true,
+      describe:
+        'Terragrunt Helpline short code - will use terragrunt instead of terraform, e.g. "as", "in", "ct"',
+    })
+    .option('hl_env', {
+      type: 'string',
+      default: null,
+      alias: 'helplineEnv',
+      global: true,
+      describe:
+        'Terragrunt Helpline environment - will use terragrunt instead of terraform, e.g. "dev", "staging", "prod"',
+    })
+    .option('st', {
+      type: 'string',
+      default: null,
+      alias: 'stage',
+      global: true,
+      describe:
+        'Terragrunt stage - will use terragrunt instead of terraform, e.g. "provision", "chatbot", "configure"',
     })
     .option('v', {
       type: 'string',
@@ -51,12 +78,6 @@ async function main() {
           alias: 'type',
           describe:
             "Specify a resource type to scan for by its Terraform name, e.g. 'twilio_autopilot_assistants_field_types_v1'. Can be specified multiple times. Omitting this will scan for all supported resource types.",
-        });
-        argv.option('d', {
-          type: 'boolean',
-          alias: 'dryRun',
-          describe:
-            'Do a dry run, it will log the terraform import commands it would have otherwise run to stdout instead for you to review / copy & run manually',
         });
         argv.option('v', {
           type: 'string',

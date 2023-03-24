@@ -11,10 +11,9 @@
     "compile": "npx tsc",
     "generateDeploymentFiles": "node dist/deploymentFiles/index.js",
     "copyFlow": "node dist/copyFlow/index.js",
-    "importDefaultTwilioResourcesToTerraform": "node dist/terraformSupplemental/importDefaultTwilioResourcesToTerraform.js",
     "createTwilioApiKeyAndSsmSecret": "node dist/terraformSupplemental/createTwilioApiKeyAndSsmSecret.js",
     "generateNewHelplineFormDefinitions": "node dist/formDefinitions/generateNewHelplineFormDefinitions.js",
-    "twilioResources": "node dist/terraformSupplemental/twilioResources.js"
+    "twilioResources": "ts-node --esm src/terraformSupplemental/twilioResources.ts"
   },
   "author": "",
   "license": "AGPL",
