@@ -55,8 +55,8 @@ type ResourceAttributesColumnProps = {
 export const ResourceAttributesColumn = styled(Column)<ResourceAttributesColumnProps>`
   flex: 1;
   margin: 5px;
-  border-left: ${props => (props.verticalLine ? '2px solid rgba(39, 48, 51, 0.3)' : 'none')};
-  padding-left: ${props => (props.verticalLine ? '10px' : 'none')};
+  border-right: ${props => (props.verticalLine ? '2px solid rgba(39, 48, 51, 0.3)' : 'none')};
+  padding-right: ${props => (props.verticalLine ? '5px' : 'none')};
 `;
 
 export const ResourceAttributeDescription = styled(FontOpenSans)`
