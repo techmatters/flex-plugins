@@ -410,7 +410,7 @@
   "Resources-LoadResourceError": "Something went wrong trying to load this resource.",
   "Resources-Search-FormTitle": "Search for Resources",
   "Resources-Search-ResultsTitle": "Search Results",
-  "Resources-Search-ResultsDescription": "Showing {{count}} results for <span style=\"font-weight:800\">\"{{omniSearchTerm}}\"</span>",
+  "Resources-Search-ResultsDescription": "Showing {{count}} results for <span style=\"font-weight:800\">\"{{generalSearchTerm}}\"</span>",
   "Resources-Search-ClearFormButton": "Clear Form",
   "Resources-ResourceSearchError": "Something went wrong trying to search for resources."
 }

@@ -15,7 +15,7 @@
  */
 
 // eslint-disable-next-line no-unused-vars
-import { Actions, ITask, TaskHelper, StateHelper } from '@twilio/flex-ui';
+import { Actions, ITask, TaskHelper } from '@twilio/flex-ui';
 
 import { transferStatuses, transferModes } from '../states/DomainConstants';
 import { CustomITask, isOfflineContactTask, isTwilioTask } from '../types/types';
@@ -177,8 +177,9 @@ export const closeCallOriginal = async (task: ITask) => {
  * @param {ITask} task
  * @returns {Promise<void>}
  */
-export const closeCallSelf = async (task: ITask) => {
+export const closeCallSelf = async (task: ITask): Promise<void> => {
   await setTransferRejected(task);
   await returnTaskControl(task);
+  await Actions.invokeAction('HangupCall', { sid: task.sid });
   await Actions.invokeAction('CompleteTask', { sid: task.sid });
 };
