@@ -59,18 +59,17 @@ export const getResource = async (resourceId: string): Promise<ReferrableResourc
 };
 
 type SearchParameters = {
-  nameSubstring: string;
-  ids: string[];
+  generalSearchTerm: string;
 };
 
 export const searchResources = async (
-  parameters: SearchParameters,
+  { generalSearchTerm }: SearchParameters,
   start: number,
   limit: number,
 ): Promise<{ totalCount: number; results: ReferrableResource[] }> => {
   const fromApi = await fetchResourceApi(`search?start=${start}&limit=${limit}`, {
     method: 'POST',
-    body: JSON.stringify(parameters),
+    body: JSON.stringify({ generalSearchTerm, filters: {} }),
   });
   return {
     ...fromApi,

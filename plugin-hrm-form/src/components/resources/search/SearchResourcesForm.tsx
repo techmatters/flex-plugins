@@ -38,9 +38,9 @@ import asyncDispatch from '../../../states/asyncDispatch';
 type OwnProps = {};
 
 const mapStateToProps = (state: RootState) => {
-  const { omniSearchTerm, pageSize } = state[namespace][referrableResourcesBase].search.parameters;
+  const { generalSearchTerm, pageSize } = state[namespace][referrableResourcesBase].search.parameters;
   return {
-    omniSearchTerm,
+    generalSearchTerm,
     pageSize,
   };
 };
@@ -48,9 +48,9 @@ const mapStateToProps = (state: RootState) => {
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
   const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
-    updateOmiSearchTerm: (omniSearchTerm: string) => dispatch(updateSearchFormAction({ omniSearchTerm })),
-    submitSearch: (omniSearchTerm: string, pageSize: number) =>
-      searchAsyncDispatch(searchResourceAsyncAction({ omniSearchTerm, pageSize }, 0)),
+    updateGeneralSearchTerm: (generalSearchTerm: string) => dispatch(updateSearchFormAction({ generalSearchTerm })),
+    submitSearch: (generalSearchTerm: string, pageSize: number) =>
+      searchAsyncDispatch(searchResourceAsyncAction({ generalSearchTerm, pageSize }, 0)),
     resetSearch: () => dispatch(resetSearchFormAction()),
   };
 };
@@ -60,9 +60,9 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const SearchResourcesForm: React.FC<Props> = ({
-  omniSearchTerm,
+  generalSearchTerm,
   pageSize,
-  updateOmiSearchTerm,
+  updateGeneralSearchTerm,
   submitSearch,
   resetSearch,
 }) => {
@@ -79,11 +79,11 @@ const SearchResourcesForm: React.FC<Props> = ({
           </Box>
           <SearchInput
             label={strings['Resources-SearchForm-OmniSearchLabel']}
-            searchTerm={omniSearchTerm}
+            searchTerm={generalSearchTerm}
             innerRef={firstElement}
-            onChangeSearch={event => updateOmiSearchTerm(event.target.value)}
+            onChangeSearch={event => updateGeneralSearchTerm(event.target.value)}
             clearSearchTerm={() => {
-              updateOmiSearchTerm('');
+              updateGeneralSearchTerm('');
             }}
             onShiftTab={() => {
               /**/
@@ -101,7 +101,11 @@ const SearchResourcesForm: React.FC<Props> = ({
         >
           <Template code="Resources-Search-ClearFormButton" />
         </StyledNextStepButton>
-        <StyledNextStepButton type="button" roundCorners={true} onClick={() => submitSearch(omniSearchTerm, pageSize)}>
+        <StyledNextStepButton
+          type="button"
+          roundCorners={true}
+          onClick={() => submitSearch(generalSearchTerm, pageSize)}
+        >
           <Template code="SearchForm-Button" />
         </StyledNextStepButton>
       </BottomButtonBar>
