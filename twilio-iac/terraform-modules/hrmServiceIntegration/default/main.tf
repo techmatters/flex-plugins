@@ -1,7 +1,7 @@
 locals {
   sync_key_provisioner_interpreter = var.local_os == "Windows" ? ["PowerShell", "-Command"] : null
 
-  cmd_args = var.stage == "" ? "-hd=${basename(abspath(path.root))}" : "-h=${basename(abspath(path.root))} -st=${var.stage} -hl=${var.helpline} -hle=${var.environment}"
+  cmd_args = var.stage == "" ? "-hd=${basename(abspath(path.root))}" : "-st=${var.stage} -hl=${var.helpline} -he=${var.environment}"
 }
 
 resource "null_resource" "hrm_static_api_key" {
