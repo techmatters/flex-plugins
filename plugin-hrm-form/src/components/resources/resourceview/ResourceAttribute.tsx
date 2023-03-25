@@ -45,17 +45,6 @@ const ResourceAttribute: React.FC<Props> = ({ description, children, isExpandabl
     }
 
     /*
-     * if (Array.isArray(content)) {
-     *   // typecasting content as any because of https://github.com/microsoft/TypeScript/issues/36390 =)
-     */
-
-    /*
-     *   if ((content as any[]).every(isString)) {
-     *     return (content as string[]).join('\n');
-     *   }
-     */
-
-    /*
      *   if ((content as any[]).every(isCategory)) {
      *     return (
      *       <ResourceCategoriesContainer>
@@ -73,7 +62,6 @@ const ResourceAttribute: React.FC<Props> = ({ description, children, isExpandabl
     return children;
   };
 
-  console.log('>>> ', description, children);
   return (
     <Box marginTop="8px" marginBottom="10px">
       <Column>

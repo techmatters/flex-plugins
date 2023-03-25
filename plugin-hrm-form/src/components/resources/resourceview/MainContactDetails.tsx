@@ -16,7 +16,7 @@
 
 import React from 'react';
 
-import { ResourceAttributeContent, ResourceAttributeSubDescription } from '../../../styles/ReferrableResources';
+import { ResourceAttributeContent, ResourceSubtitle } from '../../../styles/ReferrableResources';
 
 type Props = {
   mainContact: { name: string; title: string; phoneNumber: string; email: string };
@@ -25,13 +25,13 @@ type Props = {
 const MainContactDetails: React.FC<Props> = ({ mainContact }) => {
   return (
     <>
-      <ResourceAttributeSubDescription> Name </ResourceAttributeSubDescription>
+      <ResourceSubtitle>Name </ResourceSubtitle>
       <ResourceAttributeContent>{mainContact.name}</ResourceAttributeContent>
-      <ResourceAttributeSubDescription> Title </ResourceAttributeSubDescription>
+      <ResourceSubtitle>Title </ResourceSubtitle>
       <ResourceAttributeContent>{mainContact.title}</ResourceAttributeContent>
-      <ResourceAttributeSubDescription> Phone </ResourceAttributeSubDescription>
+      <ResourceSubtitle>Phone </ResourceSubtitle>
       <ResourceAttributeContent>{mainContact.phoneNumber}</ResourceAttributeContent>
-      <ResourceAttributeSubDescription> Email </ResourceAttributeSubDescription>
+      <ResourceSubtitle>Email </ResourceSubtitle>
       <ResourceAttributeContent>{mainContact.email}</ResourceAttributeContent>
     </>
   );

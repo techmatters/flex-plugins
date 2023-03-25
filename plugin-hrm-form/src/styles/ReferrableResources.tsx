@@ -50,13 +50,13 @@ export const ResourceAttributesContainer = styled(Row)`
 ResourceAttributesContainer.displayName = 'ResourceAttributesContainer';
 
 type ResourceAttributesColumnProps = {
-  verticalLine?: boolean;
+  addDivider?: boolean;
 };
 export const ResourceAttributesColumn = styled(Column)<ResourceAttributesColumnProps>`
   flex: 1;
   margin: 5px;
-  border-right: ${props => (props.verticalLine ? '2px solid rgba(39, 48, 51, 0.3)' : 'none')};
-  padding-right: ${props => (props.verticalLine ? '5px' : 'none')};
+  border-right: ${props => (props.addDivider ? '2px solid rgba(53, 61, 63, 0.3)' : 'none')};
+  padding-right: ${props => (props.addDivider ? '5px' : 'none')};
 `;
 
 export const ResourceAttributeDescription = styled(FontOpenSans)`
@@ -67,16 +67,12 @@ export const ResourceAttributeDescription = styled(FontOpenSans)`
 `;
 ResourceAttributeDescription.displayName = 'ResourceAttributeDescription';
 
-export const ResourceAttributeSubDescription = styled(ResourceAttributeDescription)`
-  color: #212f35;
-`;
-ResourceAttributeSubDescription.displayName = 'ResourceAttributeSubDescription';
-
 export const ResourceAttributeContent = styled(FontOpenSans)`
   color: #192b33;
   font-size: 12px;
   white-space: break-spaces;
-  padding-bottom: 3px;
+  padding-bottom: 5px;
+  line-height: initial;
 `;
 ResourceAttributeContent.displayName = 'ResourceAttributeContent';
 

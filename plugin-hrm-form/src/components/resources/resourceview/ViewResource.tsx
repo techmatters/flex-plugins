@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/jsx-max-depth */
-import React, { Dispatch, useState } from 'react';
+import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
@@ -37,8 +37,8 @@ import { loadResourceAsyncAction, navigateToSearchAction, ResourceLoadStatus } f
 import asyncDispatch from '../../../states/asyncDispatch';
 import ResourceIdCopyButton from '../ResourceIdCopyButton';
 import ResourceAttributeWithPrivacy from './ResourceAttributeWithPrivacy';
-import ViewResourceMainContactDetails from './MainContactDetails';
-import ViewResourceSiteDetails from './SiteDetails';
+import MainContactDetails from './MainContactDetails';
+import SiteDetails from './SiteDetails';
 import OperatingHours from './OperatingHours';
 import { convertKHPResourceData } from '../convertResourceData';
 
@@ -83,20 +83,11 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
     validation: null,
     touched: false,
   });
-  const [language, setLanguage] = useState(defaultOption);
+  // const [language, setLanguage] = useState(defaultOption);
 
   const resourceAttributes = convertKHPResourceData(resource.attributes, 'en');
   console.log('>>> resourceData', resourceAttributes);
 
-  /*
-   * const getDescriptionInfo = (descriptionObj, language: string) => {
-   *   const languageIndex = descriptionObj.findIndex(obj => obj.language === language);
-   *   if (descriptionObj[languageIndex].info.description) {
-   *     return descriptionObj[languageIndex].info.description;
-   *   }
-   *   return null;
-   * };
-   */
   /*
    * const handleTargetPopulation = (propVal) => {
    * Check if keyName is targetPopulation and format the value accordingly
@@ -139,24 +130,22 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                 <ResourceAttributesContainer>
                   {/* FIRST COLUMN */}
                   <ResourceAttributesColumn>
-                    <ResourceAttribute description="Status">{resourceAttributes.status}</ResourceAttribute>
-                    <ResourceAttribute description="Taxonomy Code">{resourceAttributes.taxonomyCode}</ResourceAttribute>
                     <ResourceAttribute description="Details" isExpandable={true}>
                       {resourceAttributes.description}
                     </ResourceAttribute>
                   </ResourceAttributesColumn>
 
                   {/* SECOND COLUMN */}
-                  <ResourceAttributesColumn verticalLine={true}>
+                  <ResourceAttributesColumn addDivider={true}>
                     <ResourceAttributeWithPrivacy
                       isPrivate={resourceAttributes.mainContact.isPrivate === 'true'}
                       description="Contact Info"
                     >
-                      <ViewResourceMainContactDetails mainContact={resourceAttributes.mainContact} />
+                      <MainContactDetails mainContact={resourceAttributes.mainContact} />
                     </ResourceAttributeWithPrivacy>
                     <ResourceAttribute description="Website">{resourceAttributes.website}</ResourceAttribute>
                     <ResourceAttribute description="Hours of Operation">
-                      <OperatingHours operations={resource.attributes.operations} />
+                      <OperatingHours operations={resourceAttributes.operations} />
                     </ResourceAttribute>
 
                     {[
@@ -185,12 +174,12 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
 
                   {/* THIRD COLUMN */}
                   <ResourceAttributesColumn>
-                    <span style={{ padding: '2px', width: '50%' }}>
+                    <span style={{ padding: '2px', width: '75%' }}>
                       <ResourceIdCopyButton resourceId={resource.id} />
                     </span>
                     <FieldSelect
                       id="select_language"
-                      label="Language"
+                      label="Language Preference"
                       name="language"
                       field={getField(defaultOption)}
                       options={languageOptions}
@@ -204,8 +193,8 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                     >
                       {resourceAttributes.primaryLocation}
                     </ResourceAttributeWithPrivacy>
-                    <ResourceAttribute description="Sites">
-                      <ViewResourceSiteDetails attributes={resource.attributes} />
+                    <ResourceAttribute description="">
+                      {/* <SiteDetails attributes={resource.attributes} /> */}
                     </ResourceAttribute>
                   </ResourceAttributesColumn>
                 </ResourceAttributesContainer>

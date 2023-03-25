@@ -27,14 +27,11 @@ const OperatingHours: React.FC<Props> = ({ operations }) => {
   return (
     <table>
       <tbody>
-        {Object.keys(operations).map(key => {
-          const dayData = operations[key][0];
-          const { hoursOfOperation, descriptionOfHours, day } = dayData.info;
-
+        {operations.map(day => {
+          const { hoursOfOperation, descriptionOfHours  } = day;
           if (hoursOfOperation) {
             return (
-              // <li style={{ listStyle: 'none' }} key={key}>
-              <tr key={key}>
+              <tr key={day}>
                 <td style={{ padding: '0 4px' }}>
                   <ResourceSubtitle>{day}</ResourceSubtitle>
                 </td>
@@ -44,20 +41,18 @@ const OperatingHours: React.FC<Props> = ({ operations }) => {
                   {descriptionOfHours}
                 </td>
               </tr>
-              // </li>
             );
           }
           return (
-            // <li style={{ listStyle: 'none' }} key={key}>
-            <tr key={key}>
+            <tr key={day}>
               <td style={{ padding: '0 4px' }}>
                 <ResourceSubtitle>{day}</ResourceSubtitle>
               </td>
               <td style={{ padding: '0 4px' }}>Closed</td>
             </tr>
-            // </li>
           );
-        })}
+        }
+        )}  
       </tbody>
     </table>
   );

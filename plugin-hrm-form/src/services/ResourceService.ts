@@ -22,8 +22,7 @@ export type ReferrableResourceAttributeValue =
   | string
   | string[]
   | { id: string; value: string; color?: string }[]
-  | { info: string | any; value: string; language: string }
-  | any;
+  | { info: string; value: string; language: string }[];
 
 export type ReferrableResource = {
   id: string;
@@ -58,30 +57,25 @@ const withFakeAttributes = (withoutAttributes: ReferrableResource) => ({
 });
 
 export const getResource = async (resourceId: string): Promise<ReferrableResource> => {
-  // return withFakeAttributes(resource);
-  // eslint-disable-next-line no-return-await
-  return await fetchResourceApi(`resource/${resourceId}`);
-};
+  const resource = await fetchResourceApi(`resource/${resourceId}`);
+  return resource};
 
 type SearchParameters = {
-  nameSubstring: string;
-  ids: string[];
+  generalSearchTerm: string;
 };
 
 export const searchResources = async (
-  parameters: SearchParameters,
+  { generalSearchTerm }: SearchParameters,
   start: number,
   limit: number,
 ): Promise<{ totalCount: number; results: ReferrableResource[] }> => {
   const fromApi = await fetchResourceApi(`search?start=${start}&limit=${limit}`, {
-    // const fromApi = await fetchResourceApi(`newSearch?start=${start}&limit=${limit}`, {
     method: 'POST',
-    body: JSON.stringify({ ...parameters, generalSearchTerm: parameters.nameSubstring }),
+    body: JSON.stringify({ generalSearchTerm, filters: {} }),
   });
-
   return {
     ...fromApi,
+    // results: fromApi.results.map(r => r),
     results: fromApi.results.map(r => withFakeAttributes(r)),
-    // results: fromApi.results,
   };
 };
