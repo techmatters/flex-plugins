@@ -20,8 +20,8 @@ config();
 
 async function main() {
   yargs(process.argv.slice(2))
-    .check((argv) => checkArgv(argv))
-    .middleware((argv) => handleTerraformArgs(argv))
+    .check(checkArgv)
+    .middleware(handleTerraformArgs)
     .option('helplineDirectory', {
       type: 'string',
       default: null,
