@@ -6,7 +6,7 @@ const TWILIO_TERRAFORM_ROOT_DIRECTORY = '../twilio-iac';
 
 // TODO: is there a fancy way to do this with typescript based on the UseTerragruntParams and UseTerraformParams types?
 export const TERRAFORM_REQUIRED_ARGS = ['helplineDirectory'];
-export const TERRAGRUNT_REQUIRED_ARGS = ['helpline', 'helplineEnvironment', 'stage'];
+export const TERRAGRUNT_REQUIRED_ARGS = ['helplineShortCode', 'helplineEnvironment', 'stage'];
 
 type TerraformEnvironment = {
   HL: string;
@@ -26,20 +26,20 @@ let terraformVarFile: string;
 let dryRun = false;
 
 export type UseTerragruntParams = {
-  helpline: string;
+  helplineShortCode: string;
   helplineEnvironment: string;
   stage: string;
 };
 
 export const useTerragrunt = ({
-  helpline,
+  helplineShortCode,
   helplineEnvironment,
   stage,
 }: UseTerragruntParams): void => {
   terraformCommand = TerraformCommand.TERRAGRUNT;
 
   env = {
-    HL: helpline,
+    HL: helplineShortCode,
     HL_ENV: helplineEnvironment,
   };
   cwd = `${TWILIO_TERRAFORM_ROOT_DIRECTORY}/stages/${stage}`;

@@ -10,7 +10,7 @@ terraform {
 locals {
   hrm_url           = var.hrm_url == "" ? (var.short_environment == "PROD" ? "https://hrm-production.tl.techmatters.org" : (var.short_environment == "STG" ? "https://hrm-staging.tl.techmatters.org" : "https://hrm-development.tl.techmatters.org")) : var.hrm_url
   permission_config = var.permission_config == "" ? var.operating_info_key : var.permission_config
-  cmd_args          = var.stage == "" ? "-hd=${basename(abspath(path.root))}" : "-st=${var.stage} -hl=${var.helpline} -he=${var.environment}"
+  cmd_args          = var.stage == "" ? "--helplineDirectory=${basename(abspath(path.root))}" : "--stage=${var.stage} --helplineShortCode=${var.helpline} --helplineEnvironment=${var.environment}"
 
   service_configuration_payload = jsonencode({ "ui_attributes" : {
     "warmTransfers" : {
@@ -81,6 +81,6 @@ resource "null_resource" "service_configuration" {
       TWILIO_FLEX_SERVICE_CONFIGURATION_PAYLOAD = local.service_configuration_payload
     }
     working_dir = "${path.module}/../../../../scripts"
-    command = "npm run twilioResources -- update-flex-configuration ${local.cmd_args}"
+    command     = "npm run twilioResources -- update-flex-configuration ${local.cmd_args}"
   }
 }

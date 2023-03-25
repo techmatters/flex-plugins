@@ -10,7 +10,7 @@ terraform {
 locals {
   sync_key_provisioner_interpreter = var.local_os == "Windows" ? ["PowerShell", "-Command"] : null
 
-  cmd_args = var.stage == "" ? "-hd=${basename(abspath(path.root))}" : "-st=${var.stage} -hl=${var.helpline} -he=${var.environment}"
+  cmd_args = var.stage == "" ? "--helplineDirectory=${basename(abspath(path.root))}" : "--stage=${var.stage} --helplineShortCode=${var.helpline} --helplineEnvironment=${var.environment}"
 }
 
 resource "twilio_chat_services_v2" "flex_chat_service" {

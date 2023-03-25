@@ -14,13 +14,13 @@ export const handleTerraformArgs = async (argv: any) => {
   // We depend on checkArgv to ensure that if stage is provided, helpline, helplineEnvironment,
   // and stage are all provided and that this is a terragrunt run.
   if (argv.stage) {
-    const { helpline, helplineEnvironment, stage } = argv;
+    const { helplineShortCode, helplineEnvironment, stage } = argv;
     useTerragrunt({
-      helpline,
+      helplineShortCode,
       helplineEnvironment,
       stage,
     });
-    await setEnvFromSsm(`${helplineEnvironment}/${helpline}`);
+    await setEnvFromSsm(`${helplineEnvironment}/${helplineShortCode}`);
     return;
   }
 

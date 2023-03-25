@@ -13,20 +13,20 @@
     "copyFlow": "node dist/copyFlow/index.js",
     "createTwilioApiKeyAndSsmSecret": "node dist/terraformSupplemental/createTwilioApiKeyAndSsmSecret.js",
     "generateNewHelplineFormDefinitions": "node dist/formDefinitions/generateNewHelplineFormDefinitions.js",
-    "twilioResources": "ts-node --esm src/terraformSupplemental/twilioResources.ts"
+    "twilioResources": "tsx src/terraformSupplemental/twilioResources.ts"
   },
   "author": "",
   "license": "AGPL",
   "dependencies": {
-    "axios": "^0.25.0",
     "aws-sdk": "^2.947.0",
+    "axios": "^0.25.0",
     "dotenv": "^10.0.0",
+    "hrm-form-definitions": "file:../hrm-form-definitions",
     "node-fetch": "^2.6.4",
     "prompt": "^1.2.0",
     "prompt-confirm": "^2.0.4",
     "twilio": "^3.66.0",
-    "yargs": "17.3.1",
-    "hrm-form-definitions": "file:../hrm-form-definitions"
+    "yargs": "17.3.1"
   },
   "devDependencies": {
     "@tsconfig/node14": "^1.0.1",
@@ -46,6 +46,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "prettier": "^2.3.2",
     "ts-node": "^10.1.0",
+    "tsx": "^3.12.6",
     "typescript": "^4.3.5"
   }
 }

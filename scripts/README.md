@@ -98,7 +98,7 @@ The script doesn't scan provided terraform variables automatically for its own u
 
 #### Example
 
-`npm run twilioResources -- import-tf -hd=a-helpline-staging ./terraform-modules/chatbots/terraform-modules/pre-survey-task/safespot/main.tf --sid var.bot_sid=UAxxx -m chatbots.custom_pre_survey_task[0] -v private.tfvars`
+`npm run twilioResources -- import-tf --helplineDirectory=a-helpline-staging ./terraform-modules/chatbots/terraform-modules/pre-survey-task/safespot/main.tf --sid var.bot_sid=UAxxx -m chatbots.custom_pre_survey_task[0] -v private.tfvars`
 
 The above command was used in the following scenario:
 

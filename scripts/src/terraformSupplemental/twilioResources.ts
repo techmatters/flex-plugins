@@ -18,14 +18,13 @@ import { handleTerraformArgs } from './handleTerraformArgs';
 
 config();
 
-yargs.middleware(handleTerraformArgs);
-
 async function main() {
   yargs(process.argv.slice(2))
-    .option('hd', {
+    .check((argv) => checkArgv(argv))
+    .middleware((argv) => handleTerraformArgs(argv))
+    .option('helplineDirectory', {
       type: 'string',
       default: null,
-      alias: 'helplineDirectory',
       global: true,
       describe:
         'The directory of the main.tf file for the target account, relative to the twilio-iac directory - only used for terraform based commands',
@@ -38,26 +37,23 @@ async function main() {
       describe:
         'Do a dry run, it will log the terraform import commands it would have otherwise run to stdout instead for you to review / copy & run manually',
     })
-    .option('hl', {
+    .option('helplineShortCode', {
       type: 'string',
       default: null,
-      alias: 'helpline',
       global: true,
       describe:
         'Terragrunt Helpline short code - will use terragrunt instead of terraform, e.g. "as", "in", "ct"',
     })
-    .option('he', {
+    .option('helplineEnvironment', {
       type: 'string',
       default: null,
-      alias: 'helplineEnvironment',
       global: true,
       describe:
         'Terragrunt Helpline environment - will use terragrunt instead of terraform, e.g. "dev", "staging", "prod"',
     })
-    .option('st', {
+    .option('stage', {
       type: 'string',
       default: null,
-      alias: 'stage',
       global: true,
       describe:
         'Terragrunt stage - will use terragrunt instead of terraform, e.g. "provision", "chatbot", "configure"',
@@ -290,7 +286,6 @@ async function main() {
       },
     )
     .demandCommand()
-    .check(checkArgv)
     .help()
     .parse();
 }
