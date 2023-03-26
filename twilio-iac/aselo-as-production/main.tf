@@ -59,7 +59,8 @@ locals {
     "enable_twilio_transcripts": true,
     "enable_external_transcripts": false,
     "post_survey_serverless_handled": true,
-    "enable_csam_clc_report": false
+    "enable_csam_clc_report": false,
+    "enable_emoji_picker": true
   }
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   twilio_channels = {
@@ -171,6 +172,7 @@ module aws {
   flex_proxy_service_sid = module.services.flex_proxy_service_sid
   post_survey_bot_sid = module.chatbots.post_survey_bot_sid
   survey_workflow_sid = module.survey.survey_workflow_sid
+  assets_bucket_url = module.assets.assets_bucket_url
 }
 
 module aws_monitoring {

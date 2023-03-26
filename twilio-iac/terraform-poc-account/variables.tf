@@ -59,7 +59,8 @@ variable "feature_flags" {
     "enable_canned_responses": true,
     "enable_dual_write": false,
     "enable_save_insights": true,
-    "enable_previous_contacts": true
+    "enable_previous_contacts": true,
+    "enable_emoji_picker": true
   }
 }
 

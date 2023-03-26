@@ -58,5 +58,6 @@ variable "feature_flags" {
     "enable_dual_write" = false
     "enable_save_insights" = true
     "enable_post_survey" = false
+    "enable_emoji_picker" = true
   }
 }

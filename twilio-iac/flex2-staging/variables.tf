@@ -62,7 +62,8 @@ variable "feature_flags" {
     "enable_contact_editing": true,
     "enable_twilio_transcripts": false,
     "enable_voice_recordings": false,
-    "enable_previous_contacts": true
+    "enable_previous_contacts": true,
+    "enable_emoji_picker" = true
   }
 }
 

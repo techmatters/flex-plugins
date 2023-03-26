@@ -45,5 +45,6 @@ variable "feature_flags" {
     "enable_manual_pulling" = true
     "enable_canned_responses" = true
     "enable_save_insights" = true
+    "enable_emoji_picker" = true
   }
 }

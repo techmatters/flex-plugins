@@ -59,7 +59,8 @@ locals {
     "enable_dual_write": false,
     "enable_save_insights": true,
     "enable_previous_contacts": true,
-    "enable_contact_editing": true
+    "enable_contact_editing": true,
+    "enable_emoji_picker": true
   }
   twilio_channels = {
     "facebook" = {"contact_identity" = "messenger:103574689075106", "channel_type" ="facebook" },

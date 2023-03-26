@@ -63,7 +63,8 @@ locals {
     "enable_twilio_transcripts": true,
     "enable_external_transcripts": false,
     "post_survey_serverless_handled": true,
-    "enable_csam_clc_report": false
+    "enable_csam_clc_report": false,
+    "enable_emoji_picker": true
   }
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   //Channels [Voice | Facebook | Webchat | WhatsApp]
