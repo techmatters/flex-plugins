@@ -35,7 +35,7 @@ resource "null_resource" "sync_api_key" {
   provisioner "local-exec" {
     working_dir = "${path.module}/../../../../scripts"
     #TODO: this needs to support terragrunt or terraform
-    command     = "npm run twilioResources -- new-key-with-ssm-secret ${cmd_args} \"Shared State Service\" ${var.short_environment}_TWILIO_${var.short_helpline}_SECRET \"${var.helpline}\" ${var.environment} --an=${var.short_environment}_TWILIO_${var.short_helpline}_API_KEY"
+    command     = "npm run twilioResources -- new-key-with-ssm-secret ${local.cmd_args} \"Shared State Service\" ${var.short_environment}_TWILIO_${var.short_helpline}_SECRET \"${var.helpline}\" ${var.environment} --an=${var.short_environment}_TWILIO_${var.short_helpline}_API_KEY"
     interpreter = local.sync_key_provisioner_interpreter
   }
 }
