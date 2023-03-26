@@ -1,8 +1,7 @@
 import { execSync } from 'child_process';
 import { logDebug, logInfo } from '../helpers/log';
 
-// TODO: use root of repo instead of relative path
-const TWILIO_TERRAFORM_ROOT_DIRECTORY = '../twilio-iac';
+const TWILIO_TERRAFORM_ROOT_DIRECTORY = '/twilio-iac';
 
 // TODO: is there a fancy way to do this with typescript based on the UseTerragruntParams and UseTerraformParams types?
 export const TERRAFORM_REQUIRED_ARGS = ['helplineDirectory'];
@@ -22,7 +21,6 @@ let terraformCommand: TerraformCommand;
 let env: TerraformEnvironment;
 let cwd: string;
 let terraformVarFile: string;
-
 let dryRun = false;
 
 export type UseTerragruntParams = {
@@ -31,18 +29,23 @@ export type UseTerragruntParams = {
   stage: string;
 };
 
+export const getTerraformRoot = (): string => {
+  // We use the git root because it will work in both the docker container and locally from any subdirectory
+  const repoRoot = execSync('git rev-parse --show-toplevel').toString().trim();
+  return `${repoRoot}${TWILIO_TERRAFORM_ROOT_DIRECTORY}`;
+};
+
 export const useTerragrunt = ({
   helplineShortCode,
   helplineEnvironment,
   stage,
 }: UseTerragruntParams): void => {
   terraformCommand = TerraformCommand.TERRAGRUNT;
-
   env = {
     HL: helplineShortCode,
     HL_ENV: helplineEnvironment,
   };
-  cwd = `${TWILIO_TERRAFORM_ROOT_DIRECTORY}/stages/${stage}`;
+  cwd = `${getTerraformRoot()}/stages/${stage}`;
 };
 
 export type UseTerraformParams = {
@@ -52,15 +55,18 @@ export type UseTerraformParams = {
 
 export const useTerraform = ({ helplineDirectory, varFile }: UseTerraformParams): void => {
   terraformCommand = TerraformCommand.TERRAFORM;
-  cwd = `${TWILIO_TERRAFORM_ROOT_DIRECTORY}/${helplineDirectory}`;
+  cwd = `${getTerraformRoot()}/${helplineDirectory}`;
+
   if (varFile) {
     terraformVarFile = varFile;
   }
 };
 
-export const isDryRun = (): void => {
+export const setIsDryRun = (): void => {
   dryRun = true;
 };
+
+export const isDryRun = (): boolean => dryRun;
 
 export const execTerraform = async (tfArgs?: string[]): Promise<void> => {
   if (!terraformCommand) {

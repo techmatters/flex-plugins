@@ -141,7 +141,7 @@ async function main() {
       },
       async (argv) => {
         const account = argv.stage
-          ? `${argv.helpline}-${argv.helplineEnvironment}-${argv.stage}`
+          ? `${argv.helplineShortCode}-${argv.helplineEnvironment}-${argv.stage}`
           : (argv.accountDirectory as string);
         await importDefaultResources(account);
       },

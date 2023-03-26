@@ -1,4 +1,4 @@
-import { execTerraform } from './execTerraform';
+import { execTerraform, isDryRun } from './execTerraform';
 import { logSuccess, logWarning } from '../helpers/log';
 
 type AttemptTerraformImportOptions = {
@@ -29,6 +29,9 @@ export async function attemptTerraformImport(
       logWarning(`${description} already in terraform, moving on.`);
     } else throw error;
   }
+
+  if (isDryRun()) return;
+
   logSuccess(
     `${description}, sid ${twilioResourceSid} successfully imported to terraform as '${terraformResource}'`,
   );
