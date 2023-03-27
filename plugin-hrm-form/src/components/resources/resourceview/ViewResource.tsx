@@ -84,7 +84,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
     touched: false,
   });
   // const [language, setLanguage] = useState(defaultOption);
-  const resourceAttributes = convertKHPResourceData(resource.attributes, 'fr');
+  const resourceAttributes = convertKHPResourceData(resource.attributes, 'en');
 
   return (
     <ResourceViewContainer>
@@ -166,8 +166,10 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                       field={getField(defaultOption)}
                       options={languageOptions}
                       handleChange={e => e.target?.value}
-                      handleBlur={() => {}}
-                      handleFocus={() => {}}
+                      /*
+                       * handleBlur={() => {}}
+                       * handleFocus={() => {}}
+                       */
                     />
                     <ResourceAttributeWithPrivacy
                       isPrivate={resourceAttributes.primaryLocationIsPrivate === true}

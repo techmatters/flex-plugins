@@ -49,8 +49,9 @@ const SiteDetails: React.FC<Props> = ({ site }) => {
         const { siteId, name, location, email, operations, isActive } = singleSite;
         return (
           <ExpandableSection key={siteId} title={name}>
-            <ResourceAttributeWithPrivacy isPrivate={isActive}>
-              <strong>Contact Info</strong>
+            <ResourceAttributeWithPrivacy isPrivate={false}>
+              {/* <ResourceAttributeWithPrivacy isPrivate={isLocationPrivate}> */}
+              <ResourceAttributeDescription>Contact Info</ResourceAttributeDescription>
               <ResourceAttributeContent>
                 {location.address1}. {location.address2}
                 <br />

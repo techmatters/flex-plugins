@@ -91,8 +91,8 @@ const extractSiteDetails = (sites: Object, language: Language) => {
         location,
         email: site.email[0]?.value || '',
         operations: extractOperatingHours(site.operations, language),
-        // isLocationPrivate: site.isLocationPrivate[0]?.value|| null,
-        isActive: site.isActive[0]?.value || null,
+        // isLocationPrivate: site.isLocationPrivate[0]?.value, // isLocationPrivate is missing. Temporarrily, hardcoded
+        isActive: site.isActive[0]?.value === 'true',
         details: site.details[langKey]?.info?.description || '',
       });
     }
@@ -101,16 +101,17 @@ const extractSiteDetails = (sites: Object, language: Language) => {
 };
 
 export const convertKHPResourceData = (attributes, language: Language): Resource['attributes'] => {
+  const langKey = language === 'fr' ? 1 : 0;
   return {
     status: getAttributeValue(attributes, language, 'status'),
     taxonomyCode: getAttributeValue(attributes, language, 'taxonomyCode'),
-    description: attributes.description[0]?.info.text,
+    description: attributes.description[langKey]?.info.text,
     mainContact: {
       name: getAttributeValue(attributes.mainContact, language, 'name'),
       title: getAttributeValue(attributes.mainContact, language, 'title'),
       phoneNumber: getAttributeValue(attributes.mainContact, language, 'phoneNumber'),
       email: getAttributeValue(attributes.mainContact, language, 'email'),
-      isPrivate: getAttributeValue(attributes.mainContact, language, 'isPrivate'),
+      isPrivate: getAttributeValue(attributes.mainContact, language, 'isPrivate') === 'true',
     },
     website: getAttributeValue(attributes, language, 'website'),
     available247: getAttributeValue(attributes, language, 'available247'),

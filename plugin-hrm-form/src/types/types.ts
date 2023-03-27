@@ -361,6 +361,7 @@ export type Resource = {
       }[];
       isActive: boolean;
       details: string;
+      isLocationPrivate: boolean;
     }[];
   };
 };

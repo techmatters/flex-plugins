@@ -32,12 +32,12 @@ const OperatingHours: React.FC<Props> = ({ operations, showDescriptionOfHours })
         {operations.map(day => {
           if (day.hoursOfOperation) {
             return (
-              <FontOpenSans>
-                <tr key={day.day}>
-                  <td style={{ padding: '0 4px' }}>
-                    <ResourceSubtitle>{day.day}</ResourceSubtitle>
-                  </td>
-                  <td style={{ padding: '0 4px', fontSize: '12px' }}>
+              <tr key={day.day}>
+                <td style={{ padding: '0 4px', width: '0' }}>
+                  <ResourceSubtitle>{day.day}</ResourceSubtitle>
+                </td>
+                <td style={{ padding: '0 4px', fontSize: '12px' }}>
+                  <FontOpenSans>
                     {day.hoursOfOperation}
                     {showDescriptionOfHours && (
                       <>
@@ -45,20 +45,20 @@ const OperatingHours: React.FC<Props> = ({ operations, showDescriptionOfHours })
                         {day.descriptionOfHours}
                       </>
                     )}
-                  </td>
-                </tr>
-              </FontOpenSans>
+                  </FontOpenSans>
+                </td>
+              </tr>
             );
           }
           return (
-            <FontOpenSans>
-              <tr key={day.day}>
-                <td style={{ padding: '0 4px' }}>
-                  <ResourceSubtitle>{day.day}</ResourceSubtitle>
-                </td>
-                <td style={{ padding: '0 4px' }}>Closed</td>
-              </tr>
-            </FontOpenSans>
+            <tr key={day.day}>
+              <td style={{ padding: '0 4px', width: '0' }}>
+                <ResourceSubtitle>{day.day}</ResourceSubtitle>
+              </td>
+              <td style={{ padding: '0 4px' }}>
+                <FontOpenSans>Closed</FontOpenSans>
+              </td>
+            </tr>
           );
         })}
       </tbody>
