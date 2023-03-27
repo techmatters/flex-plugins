@@ -16,9 +16,9 @@
 
 import React from 'react';
 
-import { FontOpenSans, Row } from '../../../styles/HrmStyles';
-import { Resource } from '../../../types/types';
-import { ResourceSubtitle } from '../../../styles/ReferrableResources';
+import { FontOpenSans, Row } from '../../../../styles/HrmStyles';
+import { Resource } from '../../../../types/types';
+import { ResourceSubtitle } from '../../../../styles/ReferrableResources';
 
 type Props = {
   operations: Resource['attributes']['operations'];

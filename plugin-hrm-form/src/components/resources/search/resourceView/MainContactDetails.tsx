@@ -16,8 +16,8 @@
 
 import React from 'react';
 
-import { Resource } from '../../../types/types';
-import { ResourceAttributeContent, ResourceSubtitle } from '../../../styles/ReferrableResources';
+import { Resource } from '../../../../types/types';
+import { ResourceAttributeContent, ResourceSubtitle } from '../../../../styles/ReferrableResources';
 
 type Props = {
   mainContact: Resource['attributes']['mainContact'];

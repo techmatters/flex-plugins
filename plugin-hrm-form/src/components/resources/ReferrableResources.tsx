@@ -21,7 +21,7 @@ import { namespace, referrableResourcesBase, RootState } from '../../states';
 import { ResourcePage } from '../../states/resources';
 import { ReferrableResourcesContainer } from '../../styles/ReferrableResources';
 import SearchResources from './search/SearchResources';
-import ViewResource from './resourceView/ViewResource';
+import ViewResource from './search/resourceView/ViewResource';
 
 const mapStateToProps = (state: RootState) => ({
   route: state[namespace][referrableResourcesBase].route,

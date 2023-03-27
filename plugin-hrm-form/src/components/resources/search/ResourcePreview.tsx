@@ -27,13 +27,12 @@ import {
   ResourcePreviewHeaderText,
   ResourcePreviewWrapper,
 } from '../../../styles/ReferrableResources';
-import { PreviewHeaderText, PreviewRow, PreviewWrapper, StyledLink } from '../../../styles/search';
+import { PreviewRow, StyledLink } from '../../../styles/search';
 import { ReferrableResourceResult } from '../../../states/resources/search';
 import CategoryWithTooltip from '../../common/CategoryWithTooltip';
 import ResourceIdCopyButton from '../ResourceIdCopyButton';
 import { convertKHPResourceData } from '../convertResourceData';
-import MainContactDetails from '../resourceView/MainContactDetails';
-import OperatingHours from '../resourceView/OperatingHours';
+import OperatingHours from './resourceView/OperatingHours';
 
 type OwnProps = {
   resourceResult: ReferrableResourceResult;

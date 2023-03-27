@@ -16,12 +16,12 @@
 
 import React from 'react';
 
-import { Resource } from '../../../types/types';
+import { Resource } from '../../../../types/types';
 import {
   ResourceAttributeContent,
   ResourceAttributeDescription,
   ResourceSubtitle,
-} from '../../../styles/ReferrableResources';
+} from '../../../../styles/ReferrableResources';
 import ExpandableSection from './ExpandableSection';
 import OperatingHours from './OperatingHours';
 import ResourceAttributeWithPrivacy from './ResourceAttributeWithPrivacy';
