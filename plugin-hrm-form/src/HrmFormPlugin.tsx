@@ -129,6 +129,8 @@ const setUpComponents = (
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
     strings.CallParticipantCustomerName = strings.MaskIdentifiers;
   }
+
+  Components.setupTeamViewFilters();
 };
 
 const setUpActions = (
