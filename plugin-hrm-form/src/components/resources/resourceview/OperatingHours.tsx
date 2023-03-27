@@ -16,43 +16,51 @@
 
 import React from 'react';
 
+import { FontOpenSans, Row } from '../../../styles/HrmStyles';
+import { Resource } from '../../../types/types';
 import { ResourceSubtitle } from '../../../styles/ReferrableResources';
 
 type Props = {
-  operations: any;
+  operations: Resource['attributes']['operations'];
+  showDescriptionOfHours: boolean;
 };
 
-const OperatingHours: React.FC<Props> = ({ operations }) => {
-  console.log('>>> operations', operations);
+const OperatingHours: React.FC<Props> = ({ operations, showDescriptionOfHours }) => {
   return (
     <table>
       <tbody>
         {operations.map(day => {
-          const { hoursOfOperation, descriptionOfHours  } = day;
-          if (hoursOfOperation) {
+          if (day.hoursOfOperation) {
             return (
-              <tr key={day}>
-                <td style={{ padding: '0 4px' }}>
-                  <ResourceSubtitle>{day}</ResourceSubtitle>
-                </td>
-                <td style={{ padding: '0 4px' }}>
-                  {hoursOfOperation}
-                  <br />
-                  {descriptionOfHours}
-                </td>
-              </tr>
+              <FontOpenSans>
+                <tr key={day.day}>
+                  <td style={{ padding: '0 4px' }}>
+                    <ResourceSubtitle>{day.day}</ResourceSubtitle>
+                  </td>
+                  <td style={{ padding: '0 4px', fontSize: '12px' }}>
+                    {day.hoursOfOperation}
+                    {showDescriptionOfHours && (
+                      <>
+                        <br />
+                        {day.descriptionOfHours}
+                      </>
+                    )}
+                  </td>
+                </tr>
+              </FontOpenSans>
             );
           }
           return (
-            <tr key={day}>
-              <td style={{ padding: '0 4px' }}>
-                <ResourceSubtitle>{day}</ResourceSubtitle>
-              </td>
-              <td style={{ padding: '0 4px' }}>Closed</td>
-            </tr>
+            <FontOpenSans>
+              <tr key={day.day}>
+                <td style={{ padding: '0 4px' }}>
+                  <ResourceSubtitle>{day.day}</ResourceSubtitle>
+                </td>
+                <td style={{ padding: '0 4px' }}>Closed</td>
+              </tr>
+            </FontOpenSans>
           );
-        }
-        )}  
+        })}
       </tbody>
     </table>
   );

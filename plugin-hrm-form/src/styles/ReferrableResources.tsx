@@ -19,6 +19,28 @@ import { ButtonBase } from '@material-ui/core';
 
 import { Box, Column, Flex, Absolute, Row, FontOpenSans } from './HrmStyles';
 
+export const ResourcePreviewWrapper = styled('div')`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 5px 20px 10px 20px;
+  width: 730px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+`;
+ResourcePreviewWrapper.displayName = 'ResourcePreviewWrapper';
+
+export const ResourcePreviewHeaderText = styled(FontOpenSans)`
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #192b33;
+  text-decoration: underline;
+`;
+
 export const ReferrableResourcesContainer = styled(Flex)`
   margin: 20px;
   max-width: 800px;
@@ -134,7 +156,6 @@ export const ResourcesSearchResultsDescription = styled(FontOpenSans)`
 `;
 ResourcesSearchResultsDescription.displayName = 'ResourcesSearchResultsDescription';
 
-// eslint-disable-next-line import/no-unused-modules
 export const PrivateResourceAttribute = styled('div')`
   background-color: #fefad3;
   border: 2px solid #ecb622;

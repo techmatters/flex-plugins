@@ -57,8 +57,8 @@ const withFakeAttributes = (withoutAttributes: ReferrableResource) => ({
 });
 
 export const getResource = async (resourceId: string): Promise<ReferrableResource> => {
-  const resource = await fetchResourceApi(`resource/${resourceId}`);
-  return resource};
+  return await fetchResourceApi(`resource/${resourceId}`);
+};
 
 type SearchParameters = {
   generalSearchTerm: string;
@@ -75,7 +75,7 @@ export const searchResources = async (
   });
   return {
     ...fromApi,
-    // results: fromApi.results.map(r => r),
-    results: fromApi.results.map(r => withFakeAttributes(r)),
+    results: fromApi.results.map(r => r),
+    // results: fromApi.results.map(r => withFakeAttributes(r)),
   };
 };

@@ -16,10 +16,11 @@
 
 import React from 'react';
 
+import { Resource } from '../../../types/types';
 import { ResourceAttributeContent, ResourceSubtitle } from '../../../styles/ReferrableResources';
 
 type Props = {
-  mainContact: { name: string; title: string; phoneNumber: string; email: string };
+  mainContact: Resource['attributes']['mainContact'];
 };
 
 const MainContactDetails: React.FC<Props> = ({ mainContact }) => {

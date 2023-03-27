@@ -14,7 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-const getAttributeValue = (attributes: Object, language: string, keyName: string) => {
+import { Resource } from '../../types/types';
+
+type Language = 'en' | 'fr' | '';
+
+const getAttributeValue = (attributes, language: Language, keyName: string) => {
   if (keyName in attributes) {
     const propVal = attributes[keyName];
     if (propVal[0].hasOwnProperty('value') && typeof propVal[0].value === 'string') {
@@ -24,15 +28,15 @@ const getAttributeValue = (attributes: Object, language: string, keyName: string
       } else if (propVal[0].value === 'false' && !keysToKeep.includes(keyName)) {
         return 'No';
       } else if (language === 'fr' && propVal[1]?.language === 'fr') {
-        return propVal[1].value;
+        return propVal[1]?.value;
       }
-      return propVal[0].value;
+      return propVal[0]?.value;
     }
   }
   return null;
 };
 
-const handleAgeRange = (attributes: Object, language: string) => {
+const extractAgeRange = (attributes, language: Language) => {
   const eligibilityMinAge = getAttributeValue(attributes, language, 'eligibilityMinAge');
   const eligibilityMaxAge = getAttributeValue(attributes, language, 'eligibilityMaxAge');
   if (eligibilityMinAge && eligibilityMaxAge) {
@@ -41,7 +45,7 @@ const handleAgeRange = (attributes: Object, language: string) => {
   return 'N/A';
 };
 
-const handlePrimaryLocation = (attributes: Object, language: string) => {
+const extractPrimaryLocation = (attributes, language: Language) => {
   const county = getAttributeValue(attributes, language, 'primaryLocationCounty');
   const city = getAttributeValue(attributes, language, 'primaryLocationCity');
   const province = getAttributeValue(attributes, language, 'primaryLocationProvince');
@@ -53,50 +57,54 @@ const handlePrimaryLocation = (attributes: Object, language: string) => {
   return `${county}, ${city}\r\n${province}, ${postalCode}\r\n${formattedPhone}`;
 };
 
-// const handleOperatingHours = (operations, language) => {
-//   const operationsObj = Object.keys(operations).reduce((obj, key) => {
-//     const dayData = language === 'fr' ? operations[key][1] : operations[key][0];
-//     const { hoursOfOperation, descriptionOfHours, day } = dayData.info;
-//     obj[day] = { hoursOfOperation, descriptionOfHours };
-//     return obj;
-//   }, {});
-//   const operationsArray = Object.entries(operationsObj).map(([day, { hoursOfOperation, descriptionOfHours }]) => ({
-//     day,
-//     hoursOfOperation,
-//     descriptionOfHours
-//   }));
-// };
-const handleOperatingHours = (operations: any, language: string) => {
-  type OperatingHours = {
-    [day: string]: {
-      hoursOfOperation: string| string[] | null,
-      descriptionOfHours: string | null
+const extractOperatingHours = (operations: any, language: Language) => {
+  return Object.keys(operations).map(key => {
+    const dayData = language === 'fr' ? operations[key][1] : operations[key][0];
+    const { hoursOfOperation, descriptionOfHours, day } = dayData.info;
+    return { day, hoursOfOperation, descriptionOfHours };
+  });
+};
+
+const extractSiteLocation = (location: any) => {
+  return {
+    address1: location.address1[0]?.value || '',
+    address2: location.address2[0]?.value || '',
+    city: location.city[0]?.value || '',
+    county: location.county[0]?.value || '',
+    postalCode: location.postalCode[0]?.value || '',
+    province: location.province[0]?.info?.name || '',
+    country: location.country[0]?.value || '',
+  };
+};
+
+const extractSiteDetails = (sites: Object, language: Language) => {
+  const siteDetails = [];
+  for (const key in sites) {
+    if (sites.hasOwnProperty(key)) {
+      const langKey = language === 'fr' ? 1 : 0;
+      const site = sites[key];
+      const location = extractSiteLocation(site.location);
+
+      siteDetails.push({
+        siteId: key,
+        name: site.name[langKey]?.value || '',
+        location,
+        email: site.email[0]?.value || '',
+        operations: extractOperatingHours(site.operations, language),
+        // isLocationPrivate: site.isLocationPrivate[0]?.value|| null,
+        isActive: site.isActive[0]?.value || null,
+        details: site.details[langKey]?.info?.description || '',
+      });
     }
   }
-  const operationsObj = Object.keys(operations).reduce((obj: OperatingHours, key) => {
-    const dayData = language === 'fr' ? operations[key][1] : operations[key][0]
-    const { hoursOfOperation, descriptionOfHours, day } = dayData.info;
-    obj[day] = { hoursOfOperation, descriptionOfHours };
-    return obj;
-  }, {});
-  const operationsArray = Object.entries(operationsObj).map(([day, { hoursOfOperation, descriptionOfHours }]) => ({
-    day,
-    hoursOfOperation,
-    descriptionOfHours
-  }));
-  return operationsArray;
-}
+  return siteDetails;
+};
 
-
-export const convertKHPResourceData = (attributes, language) => {
-  const { site } = attributes;
-  console.log('>>> attributes', attributes);
-  // console.log('>>> site', attributes.site)
-
+export const convertKHPResourceData = (attributes, language: Language): Resource['attributes'] => {
   return {
     status: getAttributeValue(attributes, language, 'status'),
     taxonomyCode: getAttributeValue(attributes, language, 'taxonomyCode'),
-    description: attributes.description[0].info.text,
+    description: attributes.description[0]?.info.text,
     mainContact: {
       name: getAttributeValue(attributes.mainContact, language, 'name'),
       title: getAttributeValue(attributes.mainContact, language, 'title'),
@@ -106,7 +114,7 @@ export const convertKHPResourceData = (attributes, language) => {
     },
     website: getAttributeValue(attributes, language, 'website'),
     available247: getAttributeValue(attributes, language, 'available247'),
-    ageRange: handleAgeRange(attributes, language),
+    ageRange: extractAgeRange(attributes, language),
     targetPopulation: attributes.targetPopulation[0][0].value,
     interpretationTranslationServicesAvailable: getAttributeValue(
       attributes,
@@ -120,8 +128,8 @@ export const convertKHPResourceData = (attributes, language) => {
     accessibility: getAttributeValue(attributes, language, 'accessibility'),
     documentsRequired: getAttributeValue(attributes, language, 'documentsRequired'),
     primaryLocationIsPrivate: getAttributeValue(attributes, language, 'primaryLocationIsPrivate') === 'true',
-    primaryLocation: handlePrimaryLocation(attributes, language),
-    operations: handleOperatingHours(attributes.operations, language),
-    site,
+    primaryLocation: extractPrimaryLocation(attributes, language),
+    operations: extractOperatingHours(attributes.operations, language),
+    site: extractSiteDetails(attributes.site, language),
   };
 };

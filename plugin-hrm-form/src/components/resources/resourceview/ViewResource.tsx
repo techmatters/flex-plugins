@@ -84,25 +84,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
     touched: false,
   });
   // const [language, setLanguage] = useState(defaultOption);
-
-  const resourceAttributes = convertKHPResourceData(resource.attributes, 'en');
-  console.log('>>> resourceData', resourceAttributes);
-
-  /*
-   * const handleTargetPopulation = (propVal) => {
-   * Check if keyName is targetPopulation and format the value accordingly
-   * const targetPopulation = propVal[0].value;
-   * if (targetPopulation && targetPopulation[0]?.value) {
-   *   const { value } = targetPopulation[0];
-   *   console.log('>>targetPopulation', keyName, value);
-   *   return `${value}`;
-   *   const targetPopulation = propVal[0].value;
-   *   if (targetPopulation && targetPopulation[0]?.value) {
-   *     const { value } = targetPopulation[0];
-   *     return `${value}`;
-   *   }
-   * };
-   */
+  const resourceAttributes = convertKHPResourceData(resource.attributes, 'fr');
 
   return (
     <ResourceViewContainer>
@@ -138,14 +120,14 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                   {/* SECOND COLUMN */}
                   <ResourceAttributesColumn addDivider={true}>
                     <ResourceAttributeWithPrivacy
-                      isPrivate={resourceAttributes.mainContact.isPrivate === 'true'}
+                      isPrivate={resourceAttributes.mainContact.isPrivate}
                       description="Contact Info"
                     >
                       <MainContactDetails mainContact={resourceAttributes.mainContact} />
                     </ResourceAttributeWithPrivacy>
                     <ResourceAttribute description="Website">{resourceAttributes.website}</ResourceAttribute>
                     <ResourceAttribute description="Hours of Operation">
-                      <OperatingHours operations={resourceAttributes.operations} />
+                      <OperatingHours operations={resourceAttributes.operations} showDescriptionOfHours={true} />
                     </ResourceAttribute>
 
                     {[
@@ -194,7 +176,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                       {resourceAttributes.primaryLocation}
                     </ResourceAttributeWithPrivacy>
                     <ResourceAttribute description="">
-                      {/* <SiteDetails attributes={resource.attributes} /> */}
+                      <SiteDetails site={resourceAttributes.site} />
                     </ResourceAttribute>
                   </ResourceAttributesColumn>
                 </ResourceAttributesContainer>
