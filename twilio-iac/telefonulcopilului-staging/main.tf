@@ -122,6 +122,7 @@ module aws {
   post_survey_bot_sid = module.chatbots.post_survey_bot_sid
   survey_workflow_sid = module.survey.survey_workflow_sid
   bucket_region = "eu-west-1"
+  assets_bucket_url = "https://assets-${lower(var.environment)}.tl.techmatters.org"
 }
 
 module aws_monitoring {

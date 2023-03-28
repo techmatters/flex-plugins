@@ -155,6 +155,7 @@ module aws {
   post_survey_bot_sid = twilio_autopilot_assistants_v1.chatbot_postsurvey.sid
   survey_workflow_sid = module.survey.survey_workflow_sid
   bucket_region = "us-east-1"
+  assets_bucket_url = "https://assets-${lower(var.environment)}.tl.techmatters.org"
 }
 
 module aws_monitoring {

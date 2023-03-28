@@ -208,6 +208,7 @@ module aws {
   flex_proxy_service_sid = module.services.flex_proxy_service_sid
   post_survey_bot_sid = module.custom_chatbots.post_survey_bot_es_sid
   survey_workflow_sid = module.survey.survey_workflow_sid
+  assets_bucket_url = "https://assets-${lower(var.environment)}.tl.techmatters.org"
 }
 
 module aws_monitoring {
