@@ -31,17 +31,15 @@ type Props = {
 };
 
 const SiteDetails: React.FC<Props> = ({ site }) => {
-  /*
-   * const phoneTypes = [
-   *   { type: 'tollFree', label: 'Toll Free' },
-   *   { type: 'hotline', label: 'Hotline' },
-   *   { type: 'outOfAreaLine', label: 'Out of Area Line' },
-   *   { type: 'afterHoursLine', label: 'After Hours Line' },
-   *   { type: 'businessLine', label: 'Business Line' },
-   *   { type: 'fax', label: 'Fax' },
-   *   { type: 'tty', label: 'TTY' },
-   * ];
-   */
+  const phoneTypes = [
+    { type: 'tollFree', label: 'Toll Free' },
+    { type: 'hotline', label: 'Hotline' },
+    { type: 'outOfAreaLine', label: 'Out of Area Line' },
+    { type: 'afterHoursLine', label: 'After Hours Line' },
+    { type: 'businessLine', label: 'Business Line' },
+    { type: 'fax', label: 'Fax' },
+    { type: 'tty', label: 'TTY' },
+  ];
 
   return (
     <div>

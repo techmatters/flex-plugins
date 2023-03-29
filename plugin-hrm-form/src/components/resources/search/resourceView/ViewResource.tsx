@@ -67,11 +67,6 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, navigateToSearch }) => {
-  if (!resource && !error) {
-    loadViewedResource();
-    return <div>Loading...</div>;
-  }
-
   const languageOptions = [
     { label: 'English', value: 'english' },
     { label: 'French', value: 'french' },
@@ -84,7 +79,13 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
     touched: false,
   });
   // const [language, setLanguage] = useState(defaultOption);
-  const resourceAttributes = convertKHPResourceAttributes(resource.attributes, 'en');
+
+  if (!resource && !error) {
+    loadViewedResource();
+    return <div>Loading...</div>;
+  }
+  const { id, name, attributes } = resource;
+  const resourceAttributes = convertKHPResourceAttributes(attributes, 'en');
 
   return (
     <ResourceViewContainer>
@@ -107,8 +108,8 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
           )}
           {resource && (
             <>
-              <ResourceTitle>{resource.name}</ResourceTitle>
-              {resource.attributes && (
+              <ResourceTitle>{name}</ResourceTitle>
+              {attributes && (
                 <ResourceAttributesContainer>
                   {/* FIRST COLUMN */}
                   <ResourceAttributesColumn>
@@ -157,7 +158,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                   {/* THIRD COLUMN */}
                   <ResourceAttributesColumn>
                     <span style={{ padding: '2px', width: '75%' }}>
-                      <ResourceIdCopyButton resourceId={resource.id} />
+                      <ResourceIdCopyButton resourceId={id} />
                     </span>
                     <FieldSelect
                       id="select_language"

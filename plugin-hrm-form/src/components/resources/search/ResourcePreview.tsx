@@ -42,8 +42,8 @@ type OwnProps = {
 type Props = OwnProps;
 
 const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource }) => {
-  const { id, name } = resourceResult;
-  const resourceAttributes = convertKHPResourceAttributes(resourceResult.attributes, 'en');
+  const { id, name, attributes } = resourceResult;
+  const resourceAttributes = convertKHPResourceAttributes(attributes, 'en');
   const { operations, ageRange, primaryLocation } = resourceAttributes;
 
   // type Category = { id: string; value: string; color: string };
@@ -79,10 +79,7 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
               <Column>
                 <Box marginBottom="6px">
                   <ResourceAttributeDescription>Contact Info</ResourceAttributeDescription>
-                  <ResourceAttributeContent>
-                    {/* {`${mainContact.name}\n${mainContact.title}\n${mainContact.phoneNumber}\n${mainContact.email}`} */}
-                    {primaryLocation}
-                  </ResourceAttributeContent>
+                  <ResourceAttributeContent>{primaryLocation}</ResourceAttributeContent>
 
                   <ResourceAttributeDescription>Ages Served</ResourceAttributeDescription>
                   <ResourceAttributeContent>{ageRange}</ResourceAttributeContent>

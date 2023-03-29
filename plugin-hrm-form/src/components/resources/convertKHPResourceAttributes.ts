@@ -100,6 +100,7 @@ const extractSiteDetails = (sites: Object, language: Language) => {
         // isLocationPrivate: site.isLocationPrivate[0]?.value, // isLocationPrivate is missing. Temporarily, hardcoded
         isActive: site.isActive[0]?.value === 'true',
         details: site.details[langKey]?.info?.description || '',
+        // phone:
       });
     }
   }
