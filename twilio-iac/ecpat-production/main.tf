@@ -74,7 +74,8 @@ locals {
    }
 
   custom_channels=[]
-
+  //serverless
+  ui_editable = false
 }
 
 provider "twilio" {
