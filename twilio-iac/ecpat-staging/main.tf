@@ -151,28 +151,6 @@ module twilioChannel {
 }
 
 
-/*
-module studioFlow {
-  source = "../terraform-modules/studioFlow/default"
-  custom_flow_definition = templatefile(
-    "../terraform-modules/studioFlow/ecpat/Messaging Flow.tftpl",
-    {
-      master_workflow_sid = module.taskRouter.master_workflow_sid
-      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-      pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
-      default_task_channel_sid = module.taskRouter.default_task_channel_sid
-      language_bot_sid = module.custom_chatbots.language_bot_sid
-      permission_bot_en_sid = module.custom_chatbots.permission_bot_en_sid
-      permission_bot_fil_sid = module.custom_chatbots.permission_bot_fil_sid
-      pre_survey_bot_fil_sid = module.custom_chatbots.pre_survey_bot_fil_sid
-    })
-  master_workflow_sid = module.taskRouter.master_workflow_sid
-  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-  default_task_channel_sid = module.taskRouter.default_task_channel_sid
-  pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
-}
-*/
-
 module flex {
   source = "../terraform-modules/flex/service-configuration"
   twilio_account_sid = local.secrets.twilio_account_sid
