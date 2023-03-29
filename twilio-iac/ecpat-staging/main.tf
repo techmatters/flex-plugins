@@ -137,8 +137,6 @@ module twilioChannel {
       presurvey_bot_en_sid =twilio_autopilot_assistants_v1.preSurvey_en_v2.sid
       presurvey_bot_fil_sid =twilio_autopilot_assistants_v1.preSurvey_fil_v2.sid
       operating_hours_function_sid = local.operating_hours_function_sid
-      //chatbot_en_sid = twilio_autopilot_assistants_v1.chatbot_en.sid
-      //chatbot_language_selector_sid = twilio_autopilot_assistants_v1.chatbot_language_selector.sid
       channel_attributes = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language =""})
       flow_description = "${title(each.key)} Messaging Flow"
     })
