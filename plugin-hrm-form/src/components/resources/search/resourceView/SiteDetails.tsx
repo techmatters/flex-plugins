@@ -16,7 +16,7 @@
 
 import React from 'react';
 
-import { Resource } from '../../../../types/types';
+import { KhpUiResource } from '../../../../types/types';
 import {
   ResourceAttributeContent,
   ResourceAttributeDescription,
@@ -27,7 +27,7 @@ import OperatingHours from './OperatingHours';
 import ResourceAttributeWithPrivacy from './ResourceAttributeWithPrivacy';
 
 type Props = {
-  site: Resource['attributes']['site'];
+  site: KhpUiResource['attributes']['site'];
 };
 
 const SiteDetails: React.FC<Props> = ({ site }) => {

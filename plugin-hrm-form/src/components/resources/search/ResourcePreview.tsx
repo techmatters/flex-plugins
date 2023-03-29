@@ -31,7 +31,7 @@ import { PreviewRow, StyledLink } from '../../../styles/search';
 import { ReferrableResourceResult } from '../../../states/resources/search';
 import CategoryWithTooltip from '../../common/CategoryWithTooltip';
 import ResourceIdCopyButton from '../ResourceIdCopyButton';
-import { convertKHPResourceData } from '../convertResourceData';
+import { convertKHPResourceAttributes } from '../convertKHPResourceAttributes';
 import OperatingHours from './resourceView/OperatingHours';
 
 type OwnProps = {
@@ -42,9 +42,9 @@ type OwnProps = {
 type Props = OwnProps;
 
 const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource }) => {
+  
   const { id, name } = resourceResult;
-
-  const resourceAttributes = convertKHPResourceData(resourceResult.attributes, 'en');
+  const resourceAttributes = convertKHPResourceAttributes(resourceResult.attributes, 'en');
   const { operations, ageRange, primaryLocation } = resourceAttributes;
 
   // type Category = { id: string; value: string; color: string };
@@ -53,10 +53,7 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
       <ResourcePreviewWrapper>
         <div>
           <PreviewRow>
-            {/* <Flex justifyContent="space-between" width="100%"> */}
-            {/* <Flex style={{ minWidth: 'fit-content' }}> */}
             <Flex justifyContent="space-between" style={{ minWidth: 'fit-content' }}>
-              {/* <Flex> */}
               <StyledLink underline={true} style={{ width: '70%', marginInlineEnd: 10 }} onClick={onClickViewResource}>
                 <ResourcePreviewHeaderText>{name}</ResourcePreviewHeaderText>
               </StyledLink>

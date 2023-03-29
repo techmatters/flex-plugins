@@ -309,7 +309,7 @@ export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === standaloneTaskSid;
 };
 
-export type Resource = {
+export type KhpUiResource = {
   resourceSid: string;
   name: string;
   attributes: {

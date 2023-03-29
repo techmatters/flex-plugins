@@ -17,11 +17,11 @@
 import React from 'react';
 
 import { FontOpenSans, Row } from '../../../../styles/HrmStyles';
-import { Resource } from '../../../../types/types';
+import { KhpUiResource } from '../../../../types/types';
 import { ResourceSubtitle } from '../../../../styles/ReferrableResources';
 
 type Props = {
-  operations: Resource['attributes']['operations'];
+  operations: KhpUiResource['attributes']['operations'];
   showDescriptionOfHours: boolean;
 };
 

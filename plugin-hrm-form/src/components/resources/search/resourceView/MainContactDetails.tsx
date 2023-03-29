@@ -16,11 +16,11 @@
 
 import React from 'react';
 
-import { Resource } from '../../../../types/types';
+import { KhpUiResource } from '../../../../types/types';
 import { ResourceAttributeContent, ResourceSubtitle } from '../../../../styles/ReferrableResources';
 
 type Props = {
-  mainContact: Resource['attributes']['mainContact'];
+  mainContact: KhpUiResource['attributes']['mainContact'];
 };
 
 const MainContactDetails: React.FC<Props> = ({ mainContact }) => {

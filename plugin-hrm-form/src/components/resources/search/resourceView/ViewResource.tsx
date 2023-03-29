@@ -40,7 +40,7 @@ import ResourceAttributeWithPrivacy from './ResourceAttributeWithPrivacy';
 import MainContactDetails from './MainContactDetails';
 import SiteDetails from './SiteDetails';
 import OperatingHours from './OperatingHours';
-import { convertKHPResourceData } from '../../convertResourceData';
+import { convertKHPResourceAttributes } from '../../convertKHPResourceAttributes';
 
 type OwnProps = {
   resourceId: string;
@@ -84,7 +84,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
     touched: false,
   });
   // const [language, setLanguage] = useState(defaultOption);
-  const resourceAttributes = convertKHPResourceData(resource.attributes, 'en');
+  const resourceAttributes = convertKHPResourceAttributes(resource.attributes, 'en');
 
   return (
     <ResourceViewContainer>
