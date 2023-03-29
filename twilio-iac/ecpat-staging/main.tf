@@ -30,7 +30,7 @@ locals {
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   helpline = "ECPAT"
   short_helpline = "PH"
-  operating_info_key = "mt"
+  operating_info_key = "aselo-dev"
   environment = "Staging"
   short_environment = "STG"
   definition_version = "ph-v1"
