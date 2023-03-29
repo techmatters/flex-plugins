@@ -23,11 +23,15 @@ const getAttributeValue = (attributes, language: Language, keyName: string) => {
     const propVal = attributes[keyName];
     const propValueByLanguage = propVal.find(item => item.language === language || item.language === '');
 
-    if (propValueByLanguage && propValueByLanguage.hasOwnProperty('value') && typeof propValueByLanguage.value === 'string') {
-      //For keysToKeep, do not chnage to Yes / No responses
+    if (
+      propValueByLanguage &&
+      propValueByLanguage.hasOwnProperty('value') &&
+      typeof propValueByLanguage.value === 'string'
+    ) {
+      // For keysToKeep, do not chnage to Yes / No responses
       const keysToKeep = ['primaryLocationIsPrivate', 'isLocationPrivate', 'isPrivate'];
       if (propValueByLanguage.value === 'true' && !keysToKeep.includes(keyName)) {
-        //TODO: implement translation strings for fr
+        // TODO: implement translation strings for fr
         return 'Yes';
       } else if (propValueByLanguage.value === 'false' && !keysToKeep.includes(keyName)) {
         return 'No';
@@ -48,7 +52,6 @@ const extractAgeRange = (attributes, language: Language) => {
 };
 
 const extractPrimaryLocation = (attributes, language: Language) => {
-  
   const county = getAttributeValue(attributes, language, 'primaryLocationCounty');
   const city = getAttributeValue(attributes, language, 'primaryLocationCity');
   const province = getAttributeValue(attributes, language, 'primaryLocationProvince');
@@ -62,7 +65,7 @@ const extractPrimaryLocation = (attributes, language: Language) => {
 
 const extractOperatingHours = (operations: any, language: Language) => {
   return Object.keys(operations).map(key => {
-    const dayData = operations[key].find(item => item.language === language|| item.language === '');
+    const dayData = operations[key].find(item => item.language === language || item.language === '');
     const { hoursOfOperation, descriptionOfHours, day } = dayData.info;
     return { day, hoursOfOperation, descriptionOfHours };
   });
@@ -94,7 +97,7 @@ const extractSiteDetails = (sites: Object, language: Language) => {
         location,
         email: site.email[0]?.value || '',
         operations: extractOperatingHours(site.operations, language),
-        // isLocationPrivate: site.isLocationPrivate[0]?.value, // isLocationPrivate is missing. Temporarrily, hardcoded
+        // isLocationPrivate: site.isLocationPrivate[0]?.value, // isLocationPrivate is missing. Temporarily, hardcoded
         isActive: site.isActive[0]?.value === 'true',
         details: site.details[langKey]?.info?.description || '',
       });
@@ -103,19 +106,17 @@ const extractSiteDetails = (sites: Object, language: Language) => {
   return siteDetails;
 };
 
-const extractDescriptionInfo = (description, language:Language)=>{
-  const descriptionByLanguage = description.find(item => item.language === language|| item.language === '');
+const extractDescriptionInfo = (description, language: Language) => {
+  const descriptionByLanguage = description.find(item => item.language === language || item.language === '');
   return descriptionByLanguage && descriptionByLanguage.info ? descriptionByLanguage.info.text : null;
-}
+};
 
 export const convertKHPResourceAttributes = (attributes, language: Language): KhpUiResource['attributes'] => {
-  // const langKey = language === 'fr' ? 1 : 0;
   return {
     status: getAttributeValue(attributes, language, 'status'),
     taxonomyCode: getAttributeValue(attributes, language, 'taxonomyCode'),
-    // description: attributes.description[0]?.info.text,
     description: extractDescriptionInfo(attributes.description, language),
-    
+
     mainContact: {
       name: getAttributeValue(attributes.mainContact, language, 'name'),
       title: getAttributeValue(attributes.mainContact, language, 'title'),

@@ -42,7 +42,6 @@ type OwnProps = {
 type Props = OwnProps;
 
 const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource }) => {
-  
   const { id, name } = resourceResult;
   const resourceAttributes = convertKHPResourceAttributes(resourceResult.attributes, 'en');
   const { operations, ageRange, primaryLocation } = resourceAttributes;
