@@ -87,7 +87,6 @@ module flex {
   operating_info_key = var.operating_info_key
   permission_config = "zm"
   definition_version = var.definition_version
-  serverless_url = module.serverless.serverless_environment_production_url
   hrm_url = "https://hrm-development-eu.tl.techmatters.org"
   multi_office_support = var.multi_office
   feature_flags = var.feature_flags
