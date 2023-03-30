@@ -206,7 +206,7 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   else prepopulateForm(task);
 
   // If this is the first counsellor that gets the task, say hi
-  if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
+  if (TaskHelper.isChatBasedTask(task)) {
     sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
   }
 };

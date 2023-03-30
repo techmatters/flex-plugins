@@ -72,23 +72,28 @@ export const mapChannelForInsights = (channel: string) => {
 };
 
 export const mapAge = (ageOptions: string[]) => (age: string) => {
-  const ageInt = parseInt(age, 10);
+  try {
+    const ageInt = parseInt(age, 10);
 
-  const maxAge = ageOptions.find(e => e.includes('>'));
+    const maxAge = ageOptions.find(e => e.includes('>'));
 
-  if (maxAge) {
-    const maxAgeInt = parseInt(maxAge.replace('>', ''), 10);
+    if (maxAge) {
+      const maxAgeInt = parseInt(maxAge.replace('>', ''), 10);
 
-    if (ageInt >= 0 && ageInt <= maxAgeInt) {
-      return ageOptions.find(o => parseInt(o, 10) === ageInt);
+      if (ageInt >= 0 && ageInt <= maxAgeInt) {
+        return ageOptions.find(o => parseInt(o, 10) === ageInt);
+      }
+
+      if (ageInt > maxAgeInt) return maxAge;
+    } else {
+      console.error('Pre populate form error: no maxAge option provided.');
     }
 
-    if (ageInt > maxAgeInt) return maxAge;
-  } else {
-    console.error('Pre populate form error: no maxAge option provided.');
+    return 'Unknown';
+  } catch (error) {
+    console.error('error', error);
+    return null;
   }
-
-  return 'Unknown';
 };
 
 export const mapGenericOption = (options: string[]) => (value: string) => {
