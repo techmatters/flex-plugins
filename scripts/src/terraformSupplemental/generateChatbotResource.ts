@@ -188,7 +188,9 @@ const generateTaskTF = (taskDefinition: TaskDefinition, referenceName: string) =
   const taskProperties = [
     `unique_name = "${taskDefinition.uniqueName}"`,
     `assistant_sid = twilio_autopilot_assistants_v1.${referenceName}.sid`,
-    ...(taskDefinition.friendlyName ? `friendly_name = "${taskDefinition.friendlyName}"` : []),
+    ...(taskDefinition.friendlyName && taskDefinition.friendlyName !== 'null'
+      ? `friendly_name = "${taskDefinition.friendlyName}"`
+      : []),
     `actions = jsonencode(${JSON.stringify({ actions: taskDefinition.actions }, null, '  ')})`,
   ];
 

@@ -15,8 +15,31 @@
  */
 
 import { styled } from '@twilio/flex-ui';
+import { ButtonBase } from '@material-ui/core';
 
-import { Box, Column, Flex, FontOpenSans, Row } from './HrmStyles';
+import { Box, Column, Flex, Absolute, Row, FontOpenSans } from './HrmStyles';
+
+export const ResourcePreviewWrapper = styled('div')`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 5px 20px 10px 20px;
+  width: 730px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+`;
+ResourcePreviewWrapper.displayName = 'ResourcePreviewWrapper';
+
+export const ResourcePreviewHeaderText = styled(FontOpenSans)`
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #192b33;
+  text-decoration: underline;
+`;
 
 export const ReferrableResourcesContainer = styled(Flex)`
   margin: 20px;
@@ -37,7 +60,7 @@ ResourceTitle.displayName = 'ResourceTitle';
 export const ViewResourceArea = styled('div')`
   width: 100%;
   background-color: white;
-  padding: 20px;
+  padding: 15px;
   border-radius: 4px;
   overflow-y: auto;
 `;
@@ -48,21 +71,30 @@ export const ResourceAttributesContainer = styled(Row)`
 `;
 ResourceAttributesContainer.displayName = 'ResourceAttributesContainer';
 
-export const ResourceAttributesColumn = styled(Column)`
+type ResourceAttributesColumnProps = {
+  addDivider?: boolean;
+};
+export const ResourceAttributesColumn = styled(Column)<ResourceAttributesColumnProps>`
   flex: 1;
   margin: 5px;
+  border-right: ${props => (props.addDivider ? '2px solid rgba(53, 61, 63, 0.3)' : 'none')};
+  padding-right: ${props => (props.addDivider ? '5px' : 'none')};
 `;
 
 export const ResourceAttributeDescription = styled(FontOpenSans)`
-  color: #8b8b8b;
-  font-size: 14px;
+  color: #192b33;
+  font-size: 12px;
   line-height: 20px;
+  font-weight: bold;
 `;
 ResourceAttributeDescription.displayName = 'ResourceAttributeDescription';
 
 export const ResourceAttributeContent = styled(FontOpenSans)`
   color: #192b33;
-  font-size: 14px;
+  font-size: 12px;
+  white-space: break-spaces;
+  padding-bottom: 5px;
+  line-height: initial;
 `;
 ResourceAttributeContent.displayName = 'ResourceAttributeContent';
 
@@ -123,3 +155,57 @@ export const ResourcesSearchResultsDescription = styled(FontOpenSans)`
   color: #192b33;
 `;
 ResourcesSearchResultsDescription.displayName = 'ResourcesSearchResultsDescription';
+
+export const PrivateResourceAttribute = styled('div')`
+  background-color: #fefad3;
+  border: 2px solid #ecb622;
+  color: #a8813c;
+  padding: 10px;
+  margin: 2px 5px 2px 1px;
+`;
+PrivateResourceAttribute.displayName = 'PrivateResourceAttribute';
+
+// ViewResource Page
+export const ResourceViewContainer = styled(Absolute)`
+  height: 100%;
+  width: 1280px;
+  background-color: #f6f6f6;
+`;
+ResourceViewContainer.displayName = 'ResourceViewContainer';
+
+type ColorProps = {
+  color?: string;
+};
+export const SectionTitleContainer = styled(Row)<ColorProps>`
+  background-color: #ecedf1;
+  padding: 8px 5px 8px;
+  margin: 2px 0;
+  border-left: ${({ color }) => (color ? `6px solid ${color}` : 'none')};
+`;
+SectionTitleContainer.displayName = 'SectionTitleContainer';
+
+export const SectionTitleButton = styled(ButtonBase)`
+  width: 100%;
+  padding: 0;
+  &:focus {
+    outline: auto;
+  }
+`;
+SectionTitleButton.displayName = 'SectionTitleButton';
+
+export const SectionTitleText = styled(FontOpenSans)`
+  margin-right: auto;
+  color: #192b33;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 13px;
+`;
+SectionTitleText.displayName = 'SectionTitleText';
+
+export const ResourceSubtitle = styled(FontOpenSans)`
+  color: #9b9b9b;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 16px;
+`;
+ResourceSubtitle.displayName = 'ResourceSubtitle';
