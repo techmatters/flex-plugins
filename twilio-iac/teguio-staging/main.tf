@@ -128,7 +128,7 @@ module twilioChannelv2 {
       operating_hours_function_sid = local.operating_hours_function_sid
       master_workflow_sid = module.taskRouter.master_workflow_sid
       chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-      channel_attributes = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language})
+      channel_attributes = templatefile("../terraform-modules/channels/twilio-channel-v2/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language,address=each.value.address})
       flow_description = "${title(each.key)} Messaging Flow"
       pre_survey_bot_sid = module.custom_chatbots.pre_survey_bot_es_sid
       target_task_name = local.target_task_name

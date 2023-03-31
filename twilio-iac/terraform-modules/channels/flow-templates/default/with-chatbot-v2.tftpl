@@ -45,16 +45,16 @@ ${
             "type": "send-to-auto-pilot",
             "name": "ChatBot",
             "properties": {
-              "body": "{{trigger.message.Body}}",
+              "body": "{{trigger.conversation.Body}}",
               "from": "Bot",
-              "chat_service": "{{trigger.message.InstanceSid}}",
+              "chat_service": "{{trigger.conversation.InstanceSid}}",
               "target_task": target_task_name,
               "timeout": 14400,
               "offset": {
                 "y": 110,
                 "x": -20
               },
-              "chat_channel": "{{trigger.message.ChannelSid}}",
+              "chat_channel": "{{trigger.conversation.ChannelSid}}",
               "autopilot_assistant_sid": pre_survey_bot_sid
             }
           },

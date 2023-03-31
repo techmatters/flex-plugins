@@ -1,10 +1,9 @@
 {
-  "name": "{{trigger.message.ChannelAttributes.from}}",
-  "channelType": "{{trigger.message.ChannelAttributes.channel_type}}",
-  "channelSid": "{{trigger.message.ChannelSid}}",
-  "twilioNumber": "{{trigger.message.ChannelAttributes.twilioNumber}}",
-  "ignoreAgent": "",
-  "language":"${task_language}",
-  "transferTargetType": "",
-  "memory": {{widgets.ChatBot.memory | to_json}}
+"name": "{{trigger.conversation.From}}",
+"twilioNumber": "$address",
+"channelType": "{{trigger.conversation.Source}}",
+"channelSid": "{{trigger.conversation.ChannelSid}}",
+"ignoreAgent":"",
+"language":"${task_language}",
+"transferTargetType":""
 }
