@@ -159,8 +159,8 @@ ${
               "x": -170,
               "y": 890
             },
-            "service": "{{trigger.message.InstanceSid}}",
-            "channel": "{{trigger.message.ChannelSid}}",
+            "service": "{{trigger.conversation.InstanceSid}}",
+            "channel": "{{trigger.conversation.ChannelSid}}",
             "from": "{{flow.channel.address}}",
             "to": "{{contact.channel.address}}",
             "body": operating_hours_closed
@@ -182,8 +182,8 @@ ${
               "x": 430,
               "y": 880
             },
-            "service": "{{trigger.message.InstanceSid}}",
-            "channel": "{{trigger.message.ChannelSid}}",
+            "service": "{{trigger.conversation.InstanceSid}}",
+            "channel": "{{trigger.conversation.ChannelSid}}",
             "from": "{{flow.channel.address}}",
             "to": "{{contact.channel.address}}",
             "body": operating_hours_holiday
@@ -205,15 +205,15 @@ ${
             }
           ],
           "properties": {
-            "chat_channel": "{{trigger.message.ChannelSid}}",
+            "chat_channel": "{{trigger.conversation.ChannelSid}}",
             "offset": {
               "x": 850,
               "y": 880
             },
             "autopilot_assistant_sid": pre_survey_bot_sid,
             "from": "{{flow.channel.address}}",
-            "chat_service": "{{trigger.message.InstanceSid}}",
-            "body": "{{trigger.message.Body}}",
+            "chat_service": "{{trigger.conversation.InstanceSid}}",
+            "body": "{{trigger.conversation.Body}}",
             "target_task": target_task_name,
             "timeout": 14400
           }
