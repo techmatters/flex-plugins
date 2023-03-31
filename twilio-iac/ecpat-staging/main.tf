@@ -137,8 +137,6 @@ module twilioChannel {
       presurvey_bot_en_sid =twilio_autopilot_assistants_v1.preSurvey_en_v2.sid
       presurvey_bot_fil_sid =twilio_autopilot_assistants_v1.preSurvey_fil_v2.sid
       operating_hours_function_sid = local.operating_hours_function_sid
-      //chatbot_en_sid = twilio_autopilot_assistants_v1.chatbot_en.sid
-      //chatbot_language_selector_sid = twilio_autopilot_assistants_v1.chatbot_language_selector.sid
       channel_attributes = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language =""})
       flow_description = "${title(each.key)} Messaging Flow"
     })
@@ -150,28 +148,6 @@ module twilioChannel {
   flex_chat_service_sid = module.services.flex_chat_service_sid
 }
 
-
-/*
-module studioFlow {
-  source = "../terraform-modules/studioFlow/default"
-  custom_flow_definition = templatefile(
-    "../terraform-modules/studioFlow/ecpat/Messaging Flow.tftpl",
-    {
-      master_workflow_sid = module.taskRouter.master_workflow_sid
-      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-      pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
-      default_task_channel_sid = module.taskRouter.default_task_channel_sid
-      language_bot_sid = module.custom_chatbots.language_bot_sid
-      permission_bot_en_sid = module.custom_chatbots.permission_bot_en_sid
-      permission_bot_fil_sid = module.custom_chatbots.permission_bot_fil_sid
-      pre_survey_bot_fil_sid = module.custom_chatbots.pre_survey_bot_fil_sid
-    })
-  master_workflow_sid = module.taskRouter.master_workflow_sid
-  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-  default_task_channel_sid = module.taskRouter.default_task_channel_sid
-  pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
-}
-*/
 
 module flex {
   source = "../terraform-modules/flex/service-configuration"
