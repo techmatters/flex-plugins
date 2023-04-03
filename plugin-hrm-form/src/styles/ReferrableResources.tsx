@@ -207,5 +207,6 @@ export const ResourceSubtitle = styled(FontOpenSans)`
   font-size: 11px;
   font-weight: 600;
   line-height: 16px;
+  width: max-content;
 `;
 ResourceSubtitle.displayName = 'ResourceSubtitle';

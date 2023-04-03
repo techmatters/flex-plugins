@@ -44,18 +44,22 @@ const ResourceAttribute: React.FC<Props> = ({ description, children, isExpandabl
       return <ExpandableAttributeContent expandLinkText="ReadMore" collapseLinkText="ReadLess" content={children} />;
     }
 
+    // For Documents Required attribute
+    if (Array.isArray(children)) {
+      return children.join(', ');
+    }
+
     /*
-     *   if ((content as any[]).every(isCategory)) {
-     *     return (
-     *       <ResourceCategoriesContainer>
-     *         {(content as Category[]).map(c => (
-     *           <Box key={`category-tag-${c.value}`} marginRight="8px" marginBottom="8px">
-     *             <CategoryWithTooltip category={c.value} color={c.color} fitTag={false} />
-     *           </Box>
-     *         ))}
-     *       </ResourceCategoriesContainer>
-     *     );
-     *   }
+     * if ((content as any[]).every(isCategory)) {
+     *   return (
+     *     <ResourceCategoriesContainer>
+     *       {(content as Category[]).map(c => (
+     *         <Box key={`category-tag-${c.value}`} marginRight="8px" marginBottom="8px">
+     *           <CategoryWithTooltip category={c.value} color={c.color} fitTag={false} />
+     *         </Box>
+     *       ))}
+     *     </ResourceCategoriesContainer>
+     *   );
      * }
      */
 

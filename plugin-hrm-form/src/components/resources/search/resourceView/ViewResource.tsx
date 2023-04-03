@@ -113,9 +113,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                 <ResourceAttributesContainer>
                   {/* FIRST COLUMN */}
                   <ResourceAttributesColumn>
-                    <ResourceAttribute description="Details" isExpandable={true}>
-                      {resourceAttributes.description}
-                    </ResourceAttribute>
+                    <ResourceAttribute description="Details">{resourceAttributes.description}</ResourceAttribute>
                   </ResourceAttributesColumn>
 
                   {/* SECOND COLUMN */}
@@ -132,25 +130,30 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                     </ResourceAttribute>
 
                     {[
-                      { subtitle: 'Is Open 24/7?', attributeName: resourceAttributes.available247 },
-                      { subtitle: 'Ages served', attributeName: resourceAttributes.ageRange },
+                      { subtitle: 'Is Open 24/7?', attributeToDisplay: resourceAttributes.available247 },
+
+                      { subtitle: 'Ages served', attributeToDisplay: resourceAttributes.ageRange },
                       {
                         subtitle: 'Target Population',
-                        attributeName: resourceAttributes.targetPopulation,
+                        attributeToDisplay: resourceAttributes.targetPopulation,
                       },
+
                       {
                         subtitle: 'Interpretation/ Translation Services Available?',
-                        attributeName: resourceAttributes.interpretationTranslationServicesAvailable,
+                        attributeToDisplay: resourceAttributes.interpretationTranslationServicesAvailable,
                       },
-                      { subtitle: 'Fee Structure', attributeName: resourceAttributes.feeStructureSource },
-                      { subtitle: 'How to Access Support', attributeName: resourceAttributes.howToAccessSupport },
-                      { subtitle: 'Application process', attributeName: resourceAttributes.applicationProcess },
-                      { subtitle: 'How is Service Offered', attributeName: resourceAttributes.howIsServiceOffered },
-                      { subtitle: 'Accessibility', attributeName: resourceAttributes.accessibility },
-                      { subtitle: 'Documents Required', attributeName: resourceAttributes.documentsRequired },
-                    ].map(({ subtitle, attributeName }) => (
-                      <ResourceAttribute key={attributeName} description={subtitle}>
-                        {attributeName}
+                      { subtitle: 'Fee Structure', attributeToDisplay: resourceAttributes.feeStructureSource },
+                      { subtitle: 'How to Access Support', attributeToDisplay: resourceAttributes.howToAccessSupport },
+                      { subtitle: 'Application process', attributeToDisplay: resourceAttributes.applicationProcess },
+                      {
+                        subtitle: 'How is Service Offered',
+                        attributeToDisplay: resourceAttributes.howIsServiceOffered,
+                      },
+                      { subtitle: 'Accessibility', attributeToDisplay: resourceAttributes.accessibility },
+                      { subtitle: 'Documents Required', attributeToDisplay: resourceAttributes.documentsRequired },
+                    ].map(({ subtitle, attributeToDisplay }) => (
+                      <ResourceAttribute key={subtitle} description={subtitle}>
+                        {attributeToDisplay}
                       </ResourceAttribute>
                     ))}
                   </ResourceAttributesColumn>
@@ -173,7 +176,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                        */
                     />
                     <ResourceAttributeWithPrivacy
-                      isPrivate={resourceAttributes.primaryLocationIsPrivate === true}
+                      isPrivate={resourceAttributes.primaryLocationIsPrivate}
                       description="Primary Address"
                     >
                       {resourceAttributes.primaryLocation}
