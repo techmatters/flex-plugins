@@ -28,7 +28,8 @@ locals {
     }
     "production" = {
       "us-east-1" = "https://hrm-production.tl.techmatters.org"
-      "us-west-1" = "https://hrm-staging-eu.tl.techmatters.org"
+      "eu-west-1"    = "https://hrm-staging-eu.tl.techmatters.org"
+      "ca-central-1" = "https://hrm-staging-ca.tl.techmatters.org"
     }
   }
 
