@@ -111,10 +111,8 @@ const extractSiteDetails = (sites: Object, language: Language) => {
         location,
         email: site.email[0]?.value || '',
         operations: extractOperatingHours(site.operations, language),
-        /*
-         * isLocationPrivate: site.isLocationPrivate[0]?.value || false,
-         * isActive: site.isActive[0]?.value,
-         */
+          isLocationPrivate: site.isLocationPrivate[0]?.value || false,
+          isActive: site.isActive[0]?.value,
         details: site.details[langKey]?.info?.description || '',
         phoneNumbers: extractPhoneNumbers(site.phone),
       });
@@ -175,7 +173,7 @@ export const convertKHPResourceAttributes = (
     howIsServiceOffered: getAttributeValue(attributes, language, 'howIsServiceOffered'),
     accessibility: getAttributeValue(attributes, language, 'accessibility'),
     documentsRequired: extractRequiredDocuments(attributes.documentsRequired, language),
-    primaryLocationIsPrivate: getAttributeValue(attributes, language, 'primaryLocationIsPrivate') === false,
+    primaryLocationIsPrivate: getAttributeValue(attributes, language, 'primaryLocationIsPrivate'),
     primaryLocation: extractPrimaryLocation(attributes, language),
     site: extractSiteDetails(attributes.site, language),
   };

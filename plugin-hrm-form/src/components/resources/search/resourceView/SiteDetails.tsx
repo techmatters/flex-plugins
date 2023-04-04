@@ -35,12 +35,11 @@ const SiteDetails: React.FC<Props> = ({ site }) => {
   return (
     <div>
       {site.map(singleSite => {
-        const { siteId, name, location, email, operations, phoneNumbers } = singleSite;
-        // const { siteId, name, location, email, operations, phoneNumbers, isLocationPrivate } = singleSite;
+        const { siteId, name, location, email, operations, phoneNumbers, isLocationPrivate } = singleSite;
 
         return (
           <ExpandableSection key={siteId} title={name}>
-            <ResourceAttributeWithPrivacy isPrivate={false} description="Contact Info">
+            <ResourceAttributeWithPrivacy isPrivate={isLocationPrivate} description="Contact Info">
               <ResourceAttributeContent>
                 {location.address1}. {location.address2}
                 <br />
