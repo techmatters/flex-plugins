@@ -1,7 +1,7 @@
 ${
   jsonencode(
   {
-  "description": flow_description,
+    "description": flow_description,
   "states": [
     {
       "name": "Trigger",
@@ -47,13 +47,13 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": -790,
-          "y": 2340
+          "x": -650,
+          "y": 2650
         },
         "workflow": master_workflow_sid,
         "channel": chat_task_channel_sid,
-        "attributes": "{\n  \"name\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"language\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.language}}\",\n  \"transferTargetType\": \"\",\n  \"memory\": {{ widgets.chatbot_EN.memory  | to_json}}\n}"
-      }
+        "attributes": channel_attributes_EN
+    }
     },
     {
       "name": "language_split",
@@ -132,8 +132,8 @@ ${
       "properties": {
         "chat_channel": "{{trigger.message.ChannelSid}}",
         "offset": {
-          "x": -760,
-          "y": 1800
+          "x": -1140,
+          "y": 2030
         },
         "autopilot_assistant_sid": chatbot_en_sid,
         "from": "Bot",
@@ -161,8 +161,8 @@ ${
       "properties": {
         "chat_channel": "{{trigger.message.ChannelSid}}",
         "offset": {
-          "x": 260,
-          "y": 1820
+          "x": 10,
+          "y": 2070
         },
         "autopilot_assistant_sid": chatbot_mt_sid,
         "from": "Bot",
@@ -190,8 +190,8 @@ ${
       "properties": {
         "chat_channel": "{{trigger.message.ChannelSid}}",
         "offset": {
-          "x": 1360,
-          "y": 1800
+          "x": 1030,
+          "y": 2110
         },
         "autopilot_assistant_sid": chatbot_ukr_sid,
         "from": "Bot",
@@ -226,8 +226,8 @@ ${
       "properties": {
         "input": "{{widgets.chatbot_EN.CurrentTask}}",
         "offset": {
-          "x": -790,
-          "y": 2020
+          "x": -780,
+          "y": 2360
         }
       }
     },
@@ -249,8 +249,8 @@ ${
       "properties": {
         "chat_channel": "{{trigger.message.ChannelSid}}",
         "offset": {
-          "x": -210,
-          "y": 440
+          "x": -650,
+          "y": 290
         },
         "autopilot_assistant_sid": chatbot_language_selector_sid,
         "from": "Bot",
@@ -375,8 +375,8 @@ ${
       "properties": {
         "input": "{{widgets.chatbot_MT.CurrentTask}}",
         "offset": {
-          "x": 220,
-          "y": 2040
+          "x": 340,
+          "y": 2240
         }
       }
     },
@@ -396,12 +396,12 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 350,
-          "y": 2320
+          "x": 310,
+          "y": 2670
         },
         "workflow": master_workflow_sid,
         "channel": chat_task_channel_sid,
-        "attributes": "{\n  \"name\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"language\":\"{{widgets.chatbot_language.memory.twilio.collected_data.collect_survey.answers.language.answer}}\",\n  \"transferTargetType\": \"\",\n  \"memory\": {{ widgets.chatbot_MT.memory  | to_json}}\n}\n"
+        "attributes": channel_attributes_MT
       }
     },
     {
@@ -429,8 +429,8 @@ ${
       "properties": {
         "input": "{{widgets.chatbot_UKR.CurrentTask}}",
         "offset": {
-          "x": 1350,
-          "y": 2010
+          "x": 1380,
+          "y": 2200
         }
       }
     },
@@ -450,12 +450,12 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 1490,
-          "y": 2340
+          "x": 1480,
+          "y": 2700
         },
         "workflow": master_workflow_sid,
         "channel": chat_task_channel_sid,
-        "attributes": "{\n  \"name\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"language\":\"{{widgets.chatbot_language.memory.twilio.collected_data.collect_survey.answers.language.answer}}\",\n  \"transferTargetType\": \"\",\n  \"memory\": {{ widgets.chatbot_UKR.memory  | to_json}}\n}\n"
+        "attributes": channel_attributes_UKR
       }
     },
     {
@@ -494,7 +494,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "chatbot_EN",
+          "next": "split_web_en",
           "event": "match",
           "conditions": [
             {
@@ -613,7 +613,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "chatbot_MT",
+          "next": "split_web_MT",
           "event": "match",
           "conditions": [
             {
@@ -732,7 +732,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "chatbot_UKR",
+          "next": "split_web_UKR",
           "event": "match",
           "conditions": [
             {
@@ -814,12 +814,105 @@ ${
         "to": "{{contact.channel.address}}",
         "body": "Вибачте, я не зрозумів вашу відповідь. У відповіді обов’язково вказуйте лише номер."
       }
+    },
+    {
+      "name": "split_web_en",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "chatbot_EN",
+          "event": "noMatch"
+        },
+        {
+          "next": "check_counselor_handoff_EN",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to web",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.channel_type}}"
+              ],
+              "type": "equal_to",
+              "value": "web"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.channel_type}}",
+        "offset": {
+          "x": -810,
+          "y": 1780
+        }
+      }
+    },
+    {
+      "name": "split_web_MT",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "chatbot_MT",
+          "event": "noMatch"
+        },
+        {
+          "next": "counselor_handoff_MT",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to web",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.channel_type}}"
+              ],
+              "type": "equal_to",
+              "value": "web"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.channel_type}}",
+        "offset": {
+          "x": 230,
+          "y": 1770
+        }
+      }
+    },
+    {
+      "name": "split_web_UKR",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "chatbot_UKR",
+          "event": "noMatch"
+        },
+        {
+          "next": "check_counselor_handoff_UKR",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to web",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.channel_type}}"
+              ],
+              "type": "equal_to",
+              "value": "web"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.channel_type}}",
+        "offset": {
+          "x": 1180,
+          "y": 1750
+        }
+      }
     }
   ],
-  "initial_state": "Trigger",
-  "flags": {
-    "allow_concurrent_calls": true
+    "initial_state": "Trigger",
+    "flags": {
+      "allow_concurrent_calls": true
+    }
+    }
+  )
   }
-}
-)
-}
