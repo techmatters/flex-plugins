@@ -64,8 +64,12 @@ locals {
   }
   twilio_channels = {
     "facebook" = {"contact_identity" = "messenger:103574689075106", "channel_type" ="facebook" },
-    "webchat" = {"contact_identity" = "", "channel_type" ="web"  },
-    "whatsapp" = {"contact_identity" = "whatsapp:+12135834846", "channel_type" ="whatsapp" }
+    "webchat" = {"contact_identity" = "", "channel_type" ="web"  }
+  }
+ twilio_channels_v2 = {
+
+    "whatsapp" = {"address" = "whatsapp:+12135834846", "channel_type" ="whatsapp" }
+
   }
   custom_channels=["twitter","instagram"]
   strings= jsondecode(file("${path.module}/../translations/${local.helpline_language}/strings.json"))
@@ -110,6 +114,37 @@ module "taskRouter" {
   serverless_url = module.serverless.serverless_environment_production_url
   helpline = local.helpline
   custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}] OR to IN [\"+17752526377\",\"+578005190671\"]"
+}
+
+module twilioChannelv2 {
+  for_each = local.twilio_channels_v2
+  source = "../terraform-modules/channels/twilio-channel-v2"
+  custom_flow_definition = templatefile(
+    "../terraform-modules/channels/flow-templates/operating-hours/with-chatbot-v2.tftpl",
+    {
+      channel_name = "${each.key}"
+      serverless_url=module.serverless.serverless_environment_production_url
+      serverless_service_sid = module.serverless.serverless_service_sid
+      serverless_environment_sid = module.serverless.serverless_environment_production_sid
+      operating_hours_function_sid = local.operating_hours_function_sid
+      master_workflow_sid = module.taskRouter.master_workflow_sid
+      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+      channel_attributes = templatefile("../terraform-modules/channels/twilio-channel-v2/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language,address=each.value.address})
+      flow_description = "${title(each.key)} Messaging Flow"
+      pre_survey_bot_sid = module.custom_chatbots.pre_survey_bot_es_sid
+      target_task_name = local.target_task_name
+      operating_hours_holiday = local.strings.operating_hours_holiday
+      operating_hours_closed = local.strings.operating_hours_closed
+
+    })
+  channel_type = each.value.channel_type
+  address= each.value.address
+  pre_survey_bot_sid = module.custom_chatbots.pre_survey_bot_es_sid
+  target_task_name = local.target_task_name
+  channel_name = "${each.key}"
+  master_workflow_sid = module.taskRouter.master_workflow_sid
+  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+  flex_chat_service_sid = module.services.flex_chat_service_sid
 }
 
 module twilioChannel {
