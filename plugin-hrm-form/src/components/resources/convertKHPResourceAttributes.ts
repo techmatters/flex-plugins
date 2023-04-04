@@ -111,8 +111,8 @@ const extractSiteDetails = (sites: Object, language: Language) => {
         location,
         email: site.email[0]?.value || '',
         operations: extractOperatingHours(site.operations, language),
-          isLocationPrivate: site.isLocationPrivate[0]?.value || false,
-          isActive: site.isActive[0]?.value,
+        isLocationPrivate: site.isLocationPrivate[0]?.value || false,
+        isActive: site.isActive[0]?.value,
         details: site.details[langKey]?.info?.description || '',
         phoneNumbers: extractPhoneNumbers(site.phone),
       });
