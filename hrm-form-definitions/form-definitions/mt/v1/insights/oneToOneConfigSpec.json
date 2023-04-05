@@ -1,1 +1,97 @@
-{}
+
+   
+{
+    "contactForm": {
+      "callerInformation": [
+        {
+          "name": "relationshipToChild",
+          "insights": ["conversations", "initiated_by"]
+        },
+        "callerInformation": [
+        {
+          "name": "region",
+          "insights": ["customers", "customer_attribute_3"]
+        },
+        "callerInformation": [
+        {
+          "name": "locality",
+          "insights": ["customers", "zip"]
+        }
+      ],
+      "childInformation": [
+        {
+          "name": "locality",
+          "insights": ["customers", "city"]
+        },
+        {
+          "name": "ethnicity",
+          "insights": ["customers", "customer_attribute_2"]
+        },
+        {
+          "name": "language",
+          "insights": ["conversations", "language"]
+        },
+        {
+          "name": "livingSituation",
+          "insights": ["customers", "customer_attribute_1"]
+        },
+        {
+          "name": "region",
+          "insights": ["customers", "region"]
+        }
+      ],
+      "caseInformation": [
+        {
+          "name": "repeatCaller",
+          "insights": ["conversations", "conversation_attribute_7"],
+          "type": "mixed-checkbox"
+        }      
+      ]
+    },
+    "caseForm": {
+      "topLevel": [
+        {
+          "name": "id",
+          "insights": ["conversations", "case"]
+        }
+      ],
+      "perpetrator": [
+        {
+          "name": "relationshipToChild",
+          "insights": ["customers", "organization"]
+        },
+        {
+          "name": "gender",
+          "insights": ["conversations", "followed_by"]
+        },
+        {
+          "name": "age",
+          "insights": ["conversations", "preceded_by"]
+        }
+      ],
+      "incident": [
+        {
+          "name": "duration",
+          "insights": ["conversations", "in_business_hours"]
+        },
+        {
+          "name": "location",
+          "insights": ["customers", "market_segment"]
+        },
+        {
+          "name": "SuicideIdeation",
+          "insights": ["conversations", "conversation_attribute_5"]
+        },
+        {
+          "name": "abuseIncident",
+          "insights": ["conversations", "conversation_attribute_6"]
+        }
+      ],
+      "referral": [
+        {
+          "name": "referredTo",
+          "insights": ["customers", "customer_manager"]
+        }
+      ]
+    }
+  }
