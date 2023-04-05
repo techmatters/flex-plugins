@@ -44,11 +44,6 @@ const ResourceAttribute: React.FC<Props> = ({ description, children, isExpandabl
       return <ExpandableAttributeContent expandLinkText="ReadMore" collapseLinkText="ReadLess" content={children} />;
     }
 
-    // For Documents Required attribute
-    if (Array.isArray(children)) {
-      return children.join(', ');
-    }
-
     /*
      * if ((content as any[]).every(isCategory)) {
      *   return (

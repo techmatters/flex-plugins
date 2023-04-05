@@ -38,7 +38,7 @@ export type KhpUiResource = {
     applicationProcess: string;
     howIsServiceOffered: string;
     accessibility: string;
-    documentsRequired: string[];
+    documentsRequired: string;
     primaryLocationIsPrivate: boolean;
     primaryLocation: string;
     operations: {

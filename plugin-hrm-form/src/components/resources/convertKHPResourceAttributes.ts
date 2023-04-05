@@ -128,7 +128,6 @@ const extractDescriptionInfo = (description, language: Language) => {
 
 const extractRequiredDocuments = (documentsRequired, language: Language) => {
   const documents = [];
-
   for (const key in documentsRequired) {
     if (documentsRequired.hasOwnProperty(key)) {
       const document = documentsRequired[key];
@@ -139,7 +138,7 @@ const extractRequiredDocuments = (documentsRequired, language: Language) => {
       }
     }
   }
-  return documents;
+  return documents.join(', ');
 };
 
 export const convertKHPResourceAttributes = (
