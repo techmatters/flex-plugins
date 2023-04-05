@@ -43,7 +43,9 @@ type Props = OwnProps;
 
 const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource }) => {
   const { id, name, attributes } = resourceResult;
+
   const resourceAttributes = convertKHPResourceAttributes(attributes, 'en');
+
   const { operations, ageRange, primaryLocation } = resourceAttributes;
 
   // type Category = { id: string; value: string; color: string };
@@ -52,8 +54,12 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
       <ResourcePreviewWrapper>
         <div>
           <PreviewRow>
-            <Flex justifyContent="space-between" style={{ minWidth: 'fit-content' }}>
-              <StyledLink underline={true} style={{ width: '70%', marginInlineEnd: 10 }} onClick={onClickViewResource}>
+            <Flex justifyContent="space-between" style={{ width: '100%' }}>
+              <StyledLink
+                underline={true}
+                style={{ width: '70%', marginInlineEnd: 10, justifyContent: 'left' }}
+                onClick={onClickViewResource}
+              >
                 <ResourcePreviewHeaderText>{name}</ResourcePreviewHeaderText>
               </StyledLink>
               {/* </Flex>*/}
@@ -80,7 +86,7 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
                 <Box marginBottom="6px">
                   <ResourceAttributeDescription>Contact Info</ResourceAttributeDescription>
                   <ResourceAttributeContent>{primaryLocation}</ResourceAttributeContent>
-
+                  <br />
                   <ResourceAttributeDescription>Ages Served</ResourceAttributeDescription>
                   <ResourceAttributeContent>{ageRange}</ResourceAttributeContent>
                 </Box>

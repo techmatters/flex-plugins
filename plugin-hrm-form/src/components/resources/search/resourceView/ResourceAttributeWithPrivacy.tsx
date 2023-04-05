@@ -27,7 +27,6 @@ import ResourceAttribute from './ResourceAttribute';
 type Props = {
   isPrivate: boolean;
   description?: string;
-  content?: string | JSX.Element;
 };
 
 const ResourceAttributeWithPrivacy: React.FC<Props> = ({ isPrivate, description, children }) => {
@@ -45,7 +44,10 @@ const ResourceAttributeWithPrivacy: React.FC<Props> = ({ isPrivate, description,
   );
 
   const renderPublicResourceAttribute = () => (
-    <ResourceAttribute description={description}>{children}</ResourceAttribute>
+    <>
+      <ResourceAttributeDescription>{description}</ResourceAttributeDescription>
+      <ResourceAttributeContent>{children}</ResourceAttributeContent>
+    </>
   );
 
   return isPrivate ? renderPrivateResourceAttribute() : renderPublicResourceAttribute();

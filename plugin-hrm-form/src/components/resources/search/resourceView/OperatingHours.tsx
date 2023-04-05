@@ -17,7 +17,7 @@
 import React from 'react';
 
 import { FontOpenSans, Row } from '../../../../styles/HrmStyles';
-import { KhpUiResource } from '../../../../types/types';
+import { KhpUiResource } from '../../types';
 import { ResourceSubtitle } from '../../../../styles/ReferrableResources';
 
 type Props = {
@@ -55,7 +55,7 @@ const OperatingHours: React.FC<Props> = ({ operations, showDescriptionOfHours })
               <td style={{ padding: '0 4px', width: '0' }}>
                 <ResourceSubtitle>{day.day}</ResourceSubtitle>
               </td>
-              <td style={{ padding: '0 4px' }}>
+              <td style={{ padding: '0 4px', fontSize: '12px' }}>
                 <FontOpenSans>Closed</FontOpenSans>
               </td>
             </tr>

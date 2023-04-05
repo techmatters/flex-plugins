@@ -45,17 +45,16 @@ const ResourceAttribute: React.FC<Props> = ({ description, children, isExpandabl
     }
 
     /*
-     *   if ((content as any[]).every(isCategory)) {
-     *     return (
-     *       <ResourceCategoriesContainer>
-     *         {(content as Category[]).map(c => (
-     *           <Box key={`category-tag-${c.value}`} marginRight="8px" marginBottom="8px">
-     *             <CategoryWithTooltip category={c.value} color={c.color} fitTag={false} />
-     *           </Box>
-     *         ))}
-     *       </ResourceCategoriesContainer>
-     *     );
-     *   }
+     * if ((content as any[]).every(isCategory)) {
+     *   return (
+     *     <ResourceCategoriesContainer>
+     *       {(content as Category[]).map(c => (
+     *         <Box key={`category-tag-${c.value}`} marginRight="8px" marginBottom="8px">
+     *           <CategoryWithTooltip category={c.value} color={c.color} fitTag={false} />
+     *         </Box>
+     *       ))}
+     *     </ResourceCategoriesContainer>
+     *   );
      * }
      */
 

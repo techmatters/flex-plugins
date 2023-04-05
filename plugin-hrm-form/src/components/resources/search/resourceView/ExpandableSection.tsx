@@ -42,7 +42,7 @@ const ExpandableSection: React.FC<ExpandableSectionProps> = ({ title, children, 
         </SectionTitleButton>
       </SectionTitleContainer>
       <SectionCollapse expanded={expanded} timeout="auto">
-        <div style={{ padding: '10px' }}>{children}</div>
+        <div style={{ padding: '10px 0' }}>{children}</div>
       </SectionCollapse>
     </>
   );
