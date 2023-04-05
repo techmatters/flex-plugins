@@ -205,7 +205,7 @@ resource "twilio_autopilot_assistants_tasks_v1" "languageBot_v2_survey_start" {
           "on_complete" : {
             "redirect" : {
               "method" : "POST",
-              "uri" : "https://cinnamon-newt-9274.twil.io/languagesplit"
+              "uri" : "https://black-numbat-7172.twil.io/languagesplit"
             }
           },
           "name" : "collect_survey",
