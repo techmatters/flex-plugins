@@ -7,12 +7,10 @@
           "name": "relationshipToChild",
           "insights": ["conversations", "initiated_by"]
         },
-        "callerInformation": [
         {
           "name": "region",
           "insights": ["customers", "customer_attribute_3"]
         },
-        "callerInformation": [
         {
           "name": "locality",
           "insights": ["customers", "zip"]
