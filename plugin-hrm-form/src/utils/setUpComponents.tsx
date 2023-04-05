@@ -399,3 +399,12 @@ export const setupTeamViewFilters = () => {
      */
   ];
 };
+
+export const setupWorkerDirectoryFilters = () => {
+  const activitiesArray = Array.from(Flex.Manager.getInstance().store.getState().flex.worker.activities.values());
+
+  const availableActivities = activitiesArray.filter(a => a.available).map(a => a.name);
+  const hiddenWorkerFilter = `data.activity_name IN ${JSON.stringify(availableActivities)}`;
+
+  Flex.WorkerDirectoryTabs.defaultProps.hiddenWorkerFilter = hiddenWorkerFilter;
+};
