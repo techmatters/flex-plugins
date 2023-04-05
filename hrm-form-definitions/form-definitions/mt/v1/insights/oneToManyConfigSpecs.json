@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "attributeName": "conversation_attribute_9",
+    "insightsObject": "conversations",
+    "paths": [
+      "savedContact.id"
+    ],
+    "saveForNonDataContacts": true
+  }
