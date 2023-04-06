@@ -56,3 +56,22 @@ variable "service_configuration_bump" {
   description = "Used to kick off a service configuration patch. Changes to the configuration will kick off an update automatically, but this can be used to update the config to the configured values anyway - for example if the configuration has been changed outside of terraform and needs to be reset. Simply change this to any value other than the current one to trigger an update next apply."
   default = null
 }
+
+variable "stage" {
+  description = "Set to stage for terragrunt runs"
+  type = string
+  default = ""
+}
+
+// It is a little weird that these are optional, but this entire system may be movoded outside of TF soon anyway
+variable "environment" {
+  description = "Full capitialised environment name, typically 'Production', 'Staging' or 'Development'"
+  type        = string
+  default     = ""
+}
+
+variable "short_helpline" {
+  description = "Short (usually 2 letter) upper case code for helpline"
+  type        = string
+  default     = ""
+}
