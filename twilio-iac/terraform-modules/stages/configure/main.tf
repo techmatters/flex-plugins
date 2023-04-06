@@ -27,13 +27,13 @@ locals {
       "us-west-1" = "https://hrm-staging-eu.tl.techmatters.org"
     }
     "production" = {
-      "us-east-1" = "https://hrm-production.tl.techmatters.org"
+      "us-east-1"    = "https://hrm-production.tl.techmatters.org"
       "eu-west-1"    = "https://hrm-production-eu.tl.techmatters.org"
       "ca-central-1" = "https://hrm-production-ca.tl.techmatters.org"
     }
   }
 
-  hrm_url = local.hrm_url_map[var.environment][var.region]
+  hrm_url = local.hrm_url_map[var.environment][var.helpline_region]
 
   stage = "configure"
 }
@@ -65,10 +65,10 @@ provider "twilio" {
 
 // TODO: this module should be moved into its own after_hook that can be called individually.
 module "flex" {
-  source               = "../../flex/service-configuration"
-  environment          = var.environment
-  short_helpline       = var.short_helpline
-  stage                = local.stage
+  source         = "../../flex/service-configuration"
+  environment    = var.environment
+  short_helpline = var.short_helpline
+  stage          = local.stage
 
   twilio_account_sid   = local.secrets.twilio_account_sid
   short_environment    = var.short_environment
@@ -79,7 +79,7 @@ module "flex" {
   multi_office_support = var.multi_office
   feature_flags        = var.feature_flags
   #tODO: this needs to be a configuration option
-  hrm_url              = local.hrm_url
+  hrm_url = local.hrm_url
 }
 
 module "twilioChannel" {

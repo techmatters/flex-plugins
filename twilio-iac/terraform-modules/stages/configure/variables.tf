@@ -3,6 +3,11 @@ variable "environment" {
   type        = string
 }
 
+variable "helpline_region" {
+  type        = string
+  description = "The region for the helpline."
+}
+
 variable "short_environment" {
   description = "The short code for the environment."
   type        = string
@@ -126,6 +131,6 @@ variable "janitor_enabled" {
 
 variable "permission_config" {
   description = "The permission config for the helpline."
-  type = string
-  default = ""
+  type        = string
+  default     = ""
 }
