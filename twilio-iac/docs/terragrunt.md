@@ -10,7 +10,7 @@ Terragrunt doesn't do anything fancy in Go to run terraform commands in the modu
 
 ### Working Directory and Cache
 
-Terraform copies files around to build the cache. The cache can come from git or, as in our use case, from the local filesystem. When using local terraform modules as the terraform source, terragrunt copies the dir structure before the `//` in the `source` argument into a local cache. It then uses the directory within that new cache that is defined after the `//` as a working dir for running terraform commands and generating blocks.
+Terragrunt copies files around to build the cache. The cache can come from git or, as in our use case, from the local filesystem. When using local terraform modules as the terraform source, terragrunt copies the dir structure before the `//` in the `source` argument into a local cache. It then uses the directory within that new cache that is defined after the `//` as a working dir for running terraform commands and generating blocks.
 
 For example, If you have a terraform block in your `terragrunt.hcl` like this:
 

@@ -8,6 +8,7 @@ TF_ROOT_PATH = $(MOUNT_PATH)/twilio-iac
 ifdef OS
     # We're running Windows, assume powershell
     MY_ENV := $(shell powershell Split-Path -Path (Get-Location) -Leaf)
+    MY_RELATIVE_PATH != powershell (Get-Location).Path.Replace(\"\\\", \"/\").Replace(\"$(MY_PWD)\", \"\")
     DIND_ARG = -v "//var/run/docker.sock:/var/run/docker.sock"
 else
     # We're NOT running windows, assume bash is available

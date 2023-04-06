@@ -8,11 +8,7 @@ const validateTerraformArgs = (argv: any): void => {
   const isTerraform = TERRAFORM_REQUIRED_ARGS.every((arg) => !!argv[arg]);
   const isTerragrunt = TERRAGRUNT_REQUIRED_ARGS.every((arg) => !!argv[arg]);
 
-  const errorPostfix = `args required for terraform (${TERRAFORM_REQUIRED_ARGS})`
-    ', ',
-  )}) for terraform OR args required for terragrunt (${TERRAGRUNT_REQUIRED_ARGS.concat(
-    ', ',
-  )}) to run this command.`;
+  const errorPostfix = `args required for terraform (${TERRAFORM_REQUIRED_ARGS}) OR args required for terragrunt (${TERRAGRUNT_REQUIRED_ARGS}) to run this command.`;
 
   if (isTerraform && isTerragrunt) {
     throw new Error(`Invalid Terraform Args: You must provide ONLY ${errorPostfix}`);
