@@ -47,13 +47,13 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": -650,
-          "y": 2650
+          "x": -660,
+          "y": 2710
         },
         "workflow": master_workflow_sid,
         "channel": chat_task_channel_sid,
         "attributes": channel_attributes_EN
-    }
+      }
     },
     {
       "name": "language_split",
@@ -164,7 +164,7 @@ ${
           "x": 10,
           "y": 2070
         },
-        "autopilot_assistant_sid": chatbot_mt_sid,
+        "autopilot_assistant_sid": "chatbot_mt_sid",
         "from": "Bot",
         "chat_service": "{{trigger.message.InstanceSid}}",
         "body": "{{trigger.message.Body}}",
@@ -209,7 +209,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "attributes_EN",
+          "next": "handoff_message_en",
           "event": "match",
           "conditions": [
             {
@@ -226,8 +226,8 @@ ${
       "properties": {
         "input": "{{widgets.chatbot_EN.CurrentTask}}",
         "offset": {
-          "x": -780,
-          "y": 2360
+          "x": -1120,
+          "y": 2330
         }
       }
     },
@@ -358,7 +358,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "attributes_MT",
+          "next": "handoff_message_MT",
           "event": "match",
           "conditions": [
             {
@@ -375,8 +375,8 @@ ${
       "properties": {
         "input": "{{widgets.chatbot_MT.CurrentTask}}",
         "offset": {
-          "x": 340,
-          "y": 2240
+          "x": -10,
+          "y": 2330
         }
       }
     },
@@ -412,7 +412,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "attributes_UKR",
+          "next": "handoff_message_UKR",
           "event": "match",
           "conditions": [
             {
@@ -429,8 +429,8 @@ ${
       "properties": {
         "input": "{{widgets.chatbot_UKR.CurrentTask}}",
         "offset": {
-          "x": 1380,
-          "y": 2200
+          "x": 1110,
+          "y": 2360
         }
       }
     },
@@ -824,7 +824,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "check_counselor_handoff_EN",
+          "next": "handoff_message_en",
           "event": "match",
           "conditions": [
             {
@@ -855,7 +855,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "counselor_handoff_MT",
+          "next": "handoff_message_MT",
           "event": "match",
           "conditions": [
             {
@@ -886,7 +886,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "check_counselor_handoff_UKR",
+          "next": "handoff_message_UKR",
           "event": "match",
           "conditions": [
             {
@@ -906,6 +906,78 @@ ${
           "x": 1180,
           "y": 1750
         }
+      }
+    },
+    {
+      "name": "handoff_message_en",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "attributes_EN",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -540,
+          "y": 2470
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "We'll transfer you now, please hold for a support mentor."
+      }
+    },
+    {
+      "name": "handoff_message_MT",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "attributes_MT",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 470,
+          "y": 2460
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "Ha nittrasferuk lil wieħed mis-Support Mentors tagħna."
+      }
+    },
+    {
+      "name": "handoff_message_UKR",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "attributes_UKR",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1630,
+          "y": 2430
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "Ми переведемо вас зараз, будь ласка, чекайте наставника підтримки."
       }
     }
   ],
