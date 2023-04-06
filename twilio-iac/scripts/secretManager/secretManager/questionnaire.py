@@ -1,25 +1,30 @@
 from botocore.exceptions import ClientError
 import json
 import re
+from mypy_boto3_ssm import SSMClient
+from typing import TypedDict
+from typing_extensions import Unpack
 
-from .config import questions
+from .config import questions, Question, Secrets
 from .ssm_client import get_ssm_client
+
+
+class InitArgsDict(TypedDict):
+    helpline: str
 
 
 class Questionnaire():
     """Class to handle questionnaire for secret management"""
 
-    _helpline = None
+    _helpline: str = None
+    _secrets: Secrets = None
 
-    _secrets = None
+    ssm_key: str = None
+    ssm_client: SSMClient = None
 
-    ssm_key = None
-    ssm_client = None
-    ssm_key_exists = False
-
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Unpack[InitArgsDict]):
         self._helpline = kwargs['helpline']
-        self.ssm_key = '/terraform/twilio-iac/' + self._helpline + '/secrets.json'
+        self.ssm_key = f'/terraform/twilio-iac/{self._helpline}/secrets.json'
         self.ssm_client = get_ssm_client()
 
     def start(self):
@@ -32,56 +37,59 @@ class Questionnaire():
         self.validate_new_secrets()
         self.send_secrets_to_ssm()
 
-    def load_secrets(self):
+    def load_secrets(self) -> None:
+        print (f'Loading secrets for {self._helpline} from SSM key: {self.ssm_key}')
         try:
             response = self.ssm_client.get_parameter(
                 Name=self.ssm_key,
                 WithDecryption=True
             )
-            print('Parameter found, loading secrets for ' + self._helpline)
+            print(f'Parameter found, loading secrets for {self._helpline}')
             self._secrets = json.loads(response['Parameter']['Value'])
-            self.ssm_key_exists = True
 
         except ClientError as e:
             if e.response['Error']['Code'] == 'ParameterNotFound':
-                print('Parameter not found, starting questionnaire for ' + self._helpline)
+                print(f'Parameter not found, starting questionnaire for {self._helpline}')
             else:
                 raise e
 
-    def validate_existing_secrets(self):
+    def validate_existing_secrets(self) -> None:
         print('These secrets currently exist in SSM:\n\n')
         self.print_secrets()
         print('\n')
 
-        confirm = input('Are the values correct for the ssm key: ' + self.ssm_key + '? (Y/n): ')
-
+        confirm = input(f'Are the values correct for the ssm key: {self.ssm_key}? (Y/n): ')
         if confirm == 'y' or confirm == '':
             print('Continuing...')
             exit()
 
-    def ask_questions(self):
+    def ask_questions(self) -> None:
         for question in questions:
             question['value'] = self.ask_question(question)
 
-    def ask_question(self, question):
-        currentValue = None
+    def ask_question(self, question: Question) -> str:
+        currentValue: str = None
 
         if self._secrets:
             currentValue = self._secrets.get(question['tfvar'], None)
 
-        questionText = question['question']
+        questionText: str = question['question']
         if currentValue:
-            questionText += ' [' + self.obfuscate_secret(question['tfvar'], currentValue) + ']'
+            obfuscatedValue = self.obfuscate_secret(
+                question['tfvar'],
+                currentValue
+            )
 
-        value = input(questionText + ': ') or currentValue
+            questionText += f' [{obfuscatedValue}]'
 
+        value: str = input(f'{questionText}: ') or currentValue
         if not re.match(question['regex'], value):
             print('Invalid value')
             value = self.ask_question(question)
 
         return value
 
-    def build_secrets(self):
+    def build_secrets(self) -> None:
         secrets = {}
 
         for question in questions:
@@ -89,33 +97,31 @@ class Questionnaire():
 
         self._secrets = secrets
 
-    def validate_new_secrets(self):
+    def validate_new_secrets(self) -> None:
         print('You entered the following values:\n\n')
         self.print_secrets()
         print('\n')
 
-        confirm = input('Are these values correct for the ssm key: ' + self.ssm_key + '? (y/N): ')
-
+        confirm = input(f'Are these values correct for the ssm key: {self.ssm_key}? (y/N): ')
         if confirm != 'y':
             print('Please re-run the script to try again')
             print('Exiting...')
             exit(1)
 
-    def print_secrets(self):
+    def print_secrets(self) -> None:
         for key, value in self._secrets.items():
             print(key + ': ' + self.obfuscate_secret(key, value))
 
-    def obfuscate_secret(self, tfvar, value):
-        if self.should_obfuscate_secret_by_tfvar(tfvar):
-            for i in range(3, len(value) - 3):
-                value = value[:i] + '*' + value[i+1:]
+    def obfuscate_secret(self, tfvar: str, value: str) -> str:
+        if not self.should_obfuscate_secret_by_tfvar(tfvar):
+            return value
 
-        return value
+        return value[:3] + '*' * (len(value)-6) + value[-3:]
 
-    def should_obfuscate_secret_by_tfvar(self, tfvar):
+    def should_obfuscate_secret_by_tfvar(self, tfvar: str) -> bool:
         return any(x for x in questions if x.get('tfvar') == tfvar and x.get('obfuscate'))
 
-    def send_secrets_to_ssm(self):
+    def send_secrets_to_ssm(self) -> None:
         print('Sending secrets to SSM')
         self.ssm_client.put_parameter(
             Name=self.ssm_key,

@@ -1,4 +1,22 @@
-questions = [
+from typing import TypedDict
+
+
+class Question(TypedDict):
+    tfvar: str
+    question: str
+    value: str
+    regex: str
+    obfuscate: bool
+
+
+class Secrets(TypedDict):
+    twilio_account_sid: str
+    twilio_auth_token: str
+    datadog_app_id: str
+    datadog_access_token: str
+
+
+questions: list[Question] = [
     {
         'tfvar': 'twilio_account_sid',
         'question': 'Twilio Account SID',
