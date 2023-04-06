@@ -10,35 +10,5 @@
     "label": "ผู้ติดต่ออื่น",
     "type": "button",
     "category": "data"
-  },
-  {
-    "name": "silent",
-    "label": "สายเงียบ",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "wrongNumber",
-    "label": "โทรผิด",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "joke",
-    "label": "ก่อกวน",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "abusive",
-    "label": "คุกคาม",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "hangup",
-    "label": "สายหลุด",
-    "type": "button",
-    "category": "non-data"
   }
 ]
