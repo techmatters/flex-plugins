@@ -1,5 +1,10 @@
 [
   {
+    "name": "friendlyName",
+    "label": "Nickname",
+    "type": "input"
+  },
+  {
     "name": "firstName",
     "label": "Nombre",
     "type": "input"
@@ -26,6 +31,10 @@
       {
         "value": "Femenino",
         "label": "Femenino"
+      },
+      {
+        "value": "No binario",
+        "label": "No binario"
       },
       {
         "value": "Otro",
@@ -1697,6 +1706,11 @@
     "type": "input"
   },
   {
+    "name": "schoolName",
+    "label": "Nombre del Colegio",
+    "type": "input"
+  },
+  {
     "name": "gradeLevel",
     "label": "Curso en Colegio",
     "type": "select",
@@ -1803,22 +1817,22 @@
   {
     "name": "inConflictWithTheLaw",
     "label": "Tiene conflictos con la ley",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "livingInConflictZone",
     "label": "Vive en una zona de conflicto",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "livingInPoverty",
     "label": "Vive en la pobreza",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "memberOfAnEthnic",
     "label": "Pertenece a una etnia",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "childOnTheMove",
@@ -1843,11 +1857,11 @@
   {
     "name": "childWithDisability",
     "label": "Tiene una discapacidad",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "LGBTQI+",
     "label": "Pertenece a la comunidad LGTBIQA+",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   }
 ]

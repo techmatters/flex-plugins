@@ -14,6 +14,14 @@
           "customers",
           "region"
         ]
+      },
+      {
+        "name": "LGBTQI+",
+        "insights": [
+          "customers",
+          "category"
+        ],
+        "type": "checkbox"
       }
     ],
     "caseInformation": [
@@ -23,7 +31,7 @@
           "conversations",
           "conversation_attribute_7"
         ],
-        "type": "mixed-checkbox"
+        "type": "checkbox"
       }
     ]
   },
@@ -34,6 +42,28 @@
         "insights": [
           "conversations",
           "case"
+        ]
+      },
+      {
+        "name": "status",
+        "insights": [
+          "customers",
+          "acquisition_date"
+        ]
+      }
+    ],
+    "incident": [
+      {
+        "name": "incidentType",
+        "insights": ["conversations", "in_business_hours"]
+      }
+    ],
+    "referral": [
+      {
+        "name": "referredTo",
+        "insights": [
+          "customers",
+          "customer_manager"
         ]
       }
     ]

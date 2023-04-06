@@ -16,7 +16,7 @@
 
 import React from 'react';
 
-import { KhpUiResource } from '../../../../types/types';
+import { KhpUiResource } from '../../types';
 import { ResourceAttributeContent, ResourceSubtitle } from '../../../../styles/ReferrableResources';
 
 type Props = {

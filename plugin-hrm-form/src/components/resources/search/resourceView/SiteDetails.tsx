@@ -16,7 +16,8 @@
 
 import React from 'react';
 
-import { KhpUiResource } from '../../../../types/types';
+import { KhpUiResource } from '../../types';
+import { FontOpenSans } from '../../../../styles/HrmStyles';
 import {
   ResourceAttributeContent,
   ResourceAttributeDescription,
@@ -31,25 +32,14 @@ type Props = {
 };
 
 const SiteDetails: React.FC<Props> = ({ site }) => {
-  const phoneTypes = [
-    { type: 'tollFree', label: 'Toll Free' },
-    { type: 'hotline', label: 'Hotline' },
-    { type: 'outOfAreaLine', label: 'Out of Area Line' },
-    { type: 'afterHoursLine', label: 'After Hours Line' },
-    { type: 'businessLine', label: 'Business Line' },
-    { type: 'fax', label: 'Fax' },
-    { type: 'tty', label: 'TTY' },
-  ];
-
   return (
     <div>
       {site.map(singleSite => {
-        const { siteId, name, location, email, operations, isActive } = singleSite;
+        const { siteId, name, location, email, operations, phoneNumbers, isLocationPrivate } = singleSite;
+
         return (
           <ExpandableSection key={siteId} title={name}>
-            <ResourceAttributeWithPrivacy isPrivate={false}>
-              {/* <ResourceAttributeWithPrivacy isPrivate={isLocationPrivate}> */}
-              <ResourceAttributeDescription>Contact Info</ResourceAttributeDescription>
+            <ResourceAttributeWithPrivacy isPrivate={isLocationPrivate} description="Contact Info">
               <ResourceAttributeContent>
                 {location.address1}. {location.address2}
                 <br />
@@ -59,6 +49,7 @@ const SiteDetails: React.FC<Props> = ({ site }) => {
               </ResourceAttributeContent>
             </ResourceAttributeWithPrivacy>
             <ResourceAttributeContent>{email}</ResourceAttributeContent>
+            <PhoneNumbersDisplay phoneNumbers={phoneNumbers} />
             <br />
             <ResourceAttributeContent>
               <ResourceAttributeDescription>Hours</ResourceAttributeDescription>
@@ -68,6 +59,44 @@ const SiteDetails: React.FC<Props> = ({ site }) => {
         );
       })}
     </div>
+  );
+};
+
+const PhoneNumbersDisplay = ({ phoneNumbers }) => {
+  const { businessLine, afterHoursLine, tty } = phoneNumbers;
+  return (
+    <ResourceAttributeContent>
+      {businessLine && (
+        <tr>
+          <td style={{ padding: '0 4px', width: '0', lineBreak: 'anywhere' }}>
+            <ResourceSubtitle>Business</ResourceSubtitle>
+          </td>
+          <td style={{ padding: '0 4px', fontSize: '12px' }}>
+            <FontOpenSans>{businessLine}</FontOpenSans>
+          </td>
+        </tr>
+      )}
+      {afterHoursLine && (
+        <tr>
+          <td style={{ padding: '0 4px', width: '0' }}>
+            <ResourceSubtitle>After Hours</ResourceSubtitle>
+          </td>
+          <td style={{ padding: '0 4px', fontSize: '12px' }}>
+            <FontOpenSans>{afterHoursLine}</FontOpenSans>
+          </td>
+        </tr>
+      )}
+      {tty && (
+        <tr>
+          <td style={{ padding: '0 4px', width: '0' }}>
+            <ResourceSubtitle>TTY</ResourceSubtitle>
+          </td>
+          <td style={{ padding: '0 4px', fontSize: '12px' }}>
+            <FontOpenSans>{tty}</FontOpenSans>
+          </td>
+        </tr>
+      )}
+    </ResourceAttributeContent>
   );
 };
 

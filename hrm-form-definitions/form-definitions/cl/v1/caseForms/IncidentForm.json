@@ -12,6 +12,7 @@
     "name": "duration",
     "label": "Duración",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -39,6 +40,7 @@
     "name": "location",
     "label": "Lugar del Incidente",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -113,6 +115,26 @@
       "value": true,
       "message": "RequiredFieldError"
     }
+  },
+  {
+    "name": "incidentType",
+    "label": "Tipo de Incidente",
+    "type": "select",
+    "unknownOption": "desconocido",
+    "options": [
+      {
+        "value": "desconocido",
+        "label": ""
+      },
+      {
+        "value": "Vulneración de derechos ",
+        "label": "Vulneración de derechos "
+      },
+      {
+        "value": "Comportamiento suicida",
+        "label": "Comportamiento suicida"
+      }
+    ]
   },
   {
     "name": "isCaregiverAware",
