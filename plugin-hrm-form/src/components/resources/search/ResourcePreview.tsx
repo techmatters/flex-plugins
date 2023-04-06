@@ -19,16 +19,20 @@ import React from 'react';
 import PhoneIcon from '@material-ui/icons/Phone';
 
 import { Box, Column, Flex } from '../../../styles/HrmStyles';
-import { PreviewHeaderText, PreviewRow, PreviewWrapper, StyledLink } from '../../../styles/search';
-import { ReferrableResourceResult } from '../../../states/resources/search';
 import {
   ResourceAttributeContent,
   ResourceAttributeDescription,
   ResourceAttributesColumn,
   ResourceCategoriesContainer,
+  ResourcePreviewHeaderText,
+  ResourcePreviewWrapper,
 } from '../../../styles/ReferrableResources';
+import { PreviewRow, StyledLink } from '../../../styles/search';
+import { ReferrableResourceResult } from '../../../states/resources/search';
 import CategoryWithTooltip from '../../common/CategoryWithTooltip';
 import ResourceIdCopyButton from '../ResourceIdCopyButton';
+import { convertKHPResourceAttributes } from '../convertKHPResourceAttributes';
+import OperatingHours from './resourceView/OperatingHours';
 
 type OwnProps = {
   resourceResult: ReferrableResourceResult;
@@ -38,45 +42,31 @@ type OwnProps = {
 type Props = OwnProps;
 
 const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource }) => {
-  const {
-    id,
-    name,
-    attributes: { Phone, Address, 'Ages Served': Ages, Hours, 'Service Categories': ServiceCategories },
-  } = resourceResult;
-  type Category = { id: string; value: string; color: string };
+  const { id, name, attributes } = resourceResult;
+
+  const resourceAttributes = convertKHPResourceAttributes(attributes, 'en');
+
+  const { operations, ageRange, primaryLocation } = resourceAttributes;
+
+  // type Category = { id: string; value: string; color: string };
   return (
     <Flex>
-      <PreviewWrapper>
+      <ResourcePreviewWrapper>
         <div>
           <PreviewRow>
-            <Flex justifyContent="space-between" width="100%">
-              <Flex style={{ minWidth: 'fit-content' }}>
-                <StyledLink
-                  underline={true}
-                  style={{ minWidth: 'inherit', marginInlineEnd: 10 }}
-                  onClick={onClickViewResource}
-                >
-                  <PreviewHeaderText style={{ textDecoration: 'underline', fontSize: '18px' }}>
-                    {name}
-                  </PreviewHeaderText>
-                </StyledLink>
-              </Flex>
-              <Flex>
+            <Flex justifyContent="space-between" style={{ width: '100%' }}>
+              <StyledLink
+                underline={true}
+                style={{ width: '70%', marginInlineEnd: 10, justifyContent: 'left' }}
+                onClick={onClickViewResource}
+              >
+                <ResourcePreviewHeaderText>{name}</ResourcePreviewHeaderText>
+              </StyledLink>
+              {/* </Flex>*/}
+              <Flex style={{ justifyContent: 'flex-end' }}>
                 <ResourceIdCopyButton resourceId={id} />
               </Flex>
             </Flex>
-          </PreviewRow>
-          <PreviewRow>
-            <ResourceAttributeDescription>
-              {Phone && (
-                <>
-                  <PhoneIcon fontSize="inherit" style={{ color: '#616C864D', marginRight: 5, marginBottom: -2 }} />
-                  {Phone}
-                </>
-              )}
-              {Phone && Address && ' | '}
-              {Address}
-            </ResourceAttributeDescription>
           </PreviewRow>
         </div>
         <PreviewRow>
@@ -84,12 +74,9 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
             <Box marginTop="8px" marginBottom="8px">
               <Column>
                 <Box marginBottom="6px">
-                  {/* eslint-disable-next-line react/jsx-max-depth */}
                   <ResourceAttributeDescription>Hours</ResourceAttributeDescription>
                 </Box>
-                {(Hours as string[]).map((dayHours, ordinal) => (
-                  <ResourceAttributeContent key={ordinal}>{dayHours}</ResourceAttributeContent>
-                ))}
+                <OperatingHours operations={operations} showDescriptionOfHours={false} />
               </Column>
             </Box>
           </ResourceAttributesColumn>
@@ -97,21 +84,24 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
             <Box marginTop="8px" marginBottom="8px">
               <Column>
                 <Box marginBottom="6px">
-                  <ResourceAttributeDescription>Ages</ResourceAttributeDescription>
+                  <ResourceAttributeDescription>Contact Info</ResourceAttributeDescription>
+                  <ResourceAttributeContent>{primaryLocation}</ResourceAttributeContent>
+                  <br />
+                  <ResourceAttributeDescription>Ages Served</ResourceAttributeDescription>
+                  <ResourceAttributeContent>{ageRange}</ResourceAttributeContent>
                 </Box>
-                <ResourceAttributeContent>{Ages}</ResourceAttributeContent>
               </Column>
             </Box>
           </ResourceAttributesColumn>
         </PreviewRow>
-        <ResourceCategoriesContainer>
+        {/* <ResourceCategoriesContainer>
           {(ServiceCategories as Category[]).map(c => (
             <Box key={`category-tag-${c.value}`} marginRight="8px" marginBottom="8px">
               <CategoryWithTooltip category={c.value} color={c.color} fitTag={false} />
             </Box>
           ))}
-        </ResourceCategoriesContainer>
-      </PreviewWrapper>
+        </ResourceCategoriesContainer> */}
+      </ResourcePreviewWrapper>
     </Flex>
   );
 };

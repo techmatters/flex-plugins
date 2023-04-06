@@ -52,6 +52,7 @@ const EmojiPicker: React.FC<TaskContextProps & ConnectedProps<typeof connector>>
   const [inputText, setInputText] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [emojisPerLine, setEmojisPerLine] = useState(EMOJIS_PER_LINE_DEFAULT);
+  const [firstTimeOpen, setFirstTimeOpen] = useState(false); // Tracks if the EmojiPicker was opened for the first time
 
   const { blockedEmojis } = definitionVersion ?? { blockedEmojis: [] };
   const conversationSid = getConversationSid(task);
@@ -87,13 +88,28 @@ const EmojiPicker: React.FC<TaskContextProps & ConnectedProps<typeof connector>>
     };
     const manager = Manager.getInstance();
     manager.events.addListener('flexSplitterResize', messagingCanvasResizeListener);
+    window.addEventListener('resize', messagingCanvasResizeListener);
+
+    /**
+     * Call once here to handle the initial state where the
+     * default screen width is small.
+     */
+    messagingCanvasResizeListener();
 
     return () => {
       manager.events.removeListener('flexSplitterResize', messagingCanvasResizeListener);
+      window.removeEventListener('resize', messagingCanvasResizeListener);
     };
-  }, []);
+  }, [firstTimeOpen]);
 
-  const togglePicker = () => setIsOpen(isOpen => !isOpen);
+  const togglePicker = () => {
+    if (!firstTimeOpen) {
+      setFirstTimeOpen(true);
+    }
+
+    setIsOpen(isOpen => !isOpen);
+  };
+
   const handleClickOutside = () => isOpen && setIsOpen(false);
 
   /**
