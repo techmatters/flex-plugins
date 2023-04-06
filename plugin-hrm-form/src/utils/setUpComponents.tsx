@@ -18,6 +18,7 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
+import { Actions, Button } from '@twilio/flex-ui';
 
 import { AcceptTransferButton, RejectTransferButton, TransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
@@ -44,6 +45,7 @@ import { Container } from '../styles/queuesStatus';
 import { FeatureFlags, isInMyBehalfITask } from '../types/types';
 import { colors } from '../channels/colors';
 import { getHrmConfig } from '../hrmConfig';
+import AseloMessageInput from '../components/AseloMessageInput';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
@@ -361,7 +363,7 @@ export const removeActionsIfTransferring = () => {
  */
 export const setupCannedResponses = () => {
   Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" />);
-  Flex.MessageInputV2.Content.add(<CannedResponses key="canned-responses" />);
+  Flex.MessageInputV2.Content.replace(<AseloMessageInput key="textarea" />, { sortOrder: -1 });
 };
 
 /**
