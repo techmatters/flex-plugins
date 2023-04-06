@@ -4,6 +4,7 @@ data "aws_ssm_parameter" "secrets" {
 
 locals {
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
+  stage   = "provision"
 }
 
 provider "twilio" {
@@ -17,6 +18,7 @@ module "hrmServiceIntegration" {
   short_helpline    = upper(var.short_helpline)
   environment       = title(var.environment)
   short_environment = var.short_environment
+  stage             = local.stage
 }
 
 module "serverless" {

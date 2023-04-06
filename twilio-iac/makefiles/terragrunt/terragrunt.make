@@ -38,7 +38,7 @@ apply: apply-tg
 
 apply-all: plan-all-tg apply-all-tg
 
-init: init-tg
+init: init-scripts init-tg
 
 init-all: init-all-tg
 
