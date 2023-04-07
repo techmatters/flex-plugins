@@ -38,13 +38,21 @@ import ManualPullButton from '../components/ManualPullButton';
 import { AddOfflineContactButton, OfflineContactTask } from '../components/OfflineContact';
 import { chatCapacityUpdated } from '../states/configuration/actions';
 import { namespace, routingBase } from '../states';
-import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles/HrmStyles';
+import {
+  Box,
+  Column,
+  HeaderContainer,
+  TaskCanvasOverride,
+  Flex as FlexContainer,
+  FontOpenSans,
+} from '../styles/HrmStyles';
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
 import { FeatureFlags, isInMyBehalfITask } from '../types/types';
 import { colors } from '../channels/colors';
 import { getHrmConfig } from '../hrmConfig';
+import { isWorkersTabReplaced } from './setUpActions';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
@@ -407,4 +415,29 @@ export const setupWorkerDirectoryFilters = () => {
   const hiddenWorkerFilter = `data.activity_name IN ${JSON.stringify(availableActivities)}`;
 
   Flex.WorkerDirectoryTabs.defaultProps.hiddenWorkerFilter = hiddenWorkerFilter;
+
+  const WORKERS_REPLACEMENT_KEY = 'workers-replacement';
+
+  Flex.WorkerDirectoryTabs.Content.remove('workers', {
+    if: () => isWorkersTabReplaced,
+  });
+  Flex.WorkerDirectoryTabs.Content.add(
+    <Flex.Tab key={WORKERS_REPLACEMENT_KEY} label={<Flex.Template code="Agents" />}>
+      <FlexContainer width="100%" flexDirection="row" justifyContent="center">
+        <Box marginTop="10px">
+          <FontOpenSans>
+            <Flex.Template code="No counsellors are available right now" />
+          </FontOpenSans>
+        </Box>
+      </FlexContainer>
+    </Flex.Tab>,
+    {
+      if: () => isWorkersTabReplaced,
+      align: 'start',
+      sortOrder: 0,
+    },
+  );
+  Flex.WorkerDirectoryTabs.Content.remove(WORKERS_REPLACEMENT_KEY, {
+    if: () => !isWorkersTabReplaced,
+  });
 };
