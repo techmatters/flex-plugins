@@ -28,6 +28,10 @@
         "label": "Femenino"
       },
       {
+        "value": "No binario",
+        "label": "No binario"
+      },
+      {
         "value": "Otro",
         "label": "Otro"
       },

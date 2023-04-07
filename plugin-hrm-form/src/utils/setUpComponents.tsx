@@ -18,6 +18,7 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
+import type { FilterDefinitionFactory } from '@twilio/flex-ui/src/components/view/TeamsView';
 
 import { AcceptTransferButton, RejectTransferButton, TransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
@@ -369,4 +370,41 @@ export const setupCannedResponses = () => {
  */
 export const setupEmojiPicker = () => {
   Flex.MessageInputActions.Content.add(<EmojiPicker key="emoji-picker" />);
+};
+
+const activityNoOfflineByDefault: FilterDefinitionFactory = (appState, _teamFiltersPanelProps) => {
+  const activitiesArray = Array.from(appState.flex.worker.activities.values());
+
+  const options = activitiesArray.map(activity => ({
+    value: activity.name,
+    label: activity.name,
+    default: activity.name !== 'Offline',
+  }));
+
+  return {
+    id: 'data.activity_name',
+    fieldName: 'activity',
+    type: Flex.FiltersListItemType.multiValue,
+    title: 'Activities',
+    options,
+  };
+};
+
+export const setupTeamViewFilters = () => {
+  Flex.TeamsView.defaultProps.filters = [
+    activityNoOfflineByDefault,
+    /*
+     * Omit the default since we already include offline in the above
+     * Flex.TeamsView.activitiesFilter
+     */
+  ];
+};
+
+export const setupWorkerDirectoryFilters = () => {
+  const activitiesArray = Array.from(Flex.Manager.getInstance().store.getState().flex.worker.activities.values());
+
+  const availableActivities = activitiesArray.filter(a => a.available).map(a => a.name);
+  const hiddenWorkerFilter = `data.activity_name IN ${JSON.stringify(availableActivities)}`;
+
+  Flex.WorkerDirectoryTabs.defaultProps.hiddenWorkerFilter = hiddenWorkerFilter;
 };
