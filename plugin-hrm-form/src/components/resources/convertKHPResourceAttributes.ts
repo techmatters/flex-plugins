@@ -14,44 +14,46 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { KhpUiResource } from '../../types/types';
+import { KhpUiResource, Language } from './types';
 
-type Language = 'en' | 'fr' | '';
+type Attributes = {
+  [key: string]: any;
+};
 
-const getAttributeValue = (attributes, language: Language, keyName: string) => {
+const getAttributeValue = (attributes: Attributes, language: Language, keyName: string) => {
   if (keyName in attributes) {
     const propVal = attributes[keyName];
+    if (propVal.length === 0) {
+      return null;
+    }
     const propValueByLanguage = propVal.find(item => item.language === language || item.language === '');
-
-    if (
-      propValueByLanguage &&
-      propValueByLanguage.hasOwnProperty('value') &&
-      typeof propValueByLanguage.value === 'string'
-    ) {
-      // For keysToKeep, do not chnage to Yes / No responses
+    if (propValueByLanguage && 'value' in propValueByLanguage && typeof propValueByLanguage.value === 'string') {
+      return propValueByLanguage.value;
+    } else if (propVal && 'value' in propVal[0] && typeof propVal[0].value === 'boolean') {
+      // For keysToKeep, do not change to Yes / No responses
       const keysToKeep = ['primaryLocationIsPrivate', 'isLocationPrivate', 'isPrivate'];
-      if (propValueByLanguage.value === 'true' && !keysToKeep.includes(keyName)) {
-        // TODO: implement translation strings for fr
+
+      if (propVal[0].value === true && !keysToKeep.includes(keyName)) {
         return 'Yes';
-      } else if (propValueByLanguage.value === 'false' && !keysToKeep.includes(keyName)) {
+      } else if (propVal[0].value === false && !keysToKeep.includes(keyName)) {
         return 'No';
       }
-      return propValueByLanguage.value;
     }
+    return propVal[0].value;
   }
   return null;
 };
 
-const extractAgeRange = (attributes, language: Language) => {
+const extractAgeRange = (attributes: Attributes, language: Language) => {
   const eligibilityMinAge = getAttributeValue(attributes, language, 'eligibilityMinAge');
   const eligibilityMaxAge = getAttributeValue(attributes, language, 'eligibilityMaxAge');
-  if (eligibilityMinAge && eligibilityMaxAge) {
+  if (eligibilityMinAge || eligibilityMaxAge) {
     return `${eligibilityMinAge} - ${eligibilityMaxAge} years`;
   }
   return 'N/A';
 };
 
-const extractPrimaryLocation = (attributes, language: Language) => {
+const extractPrimaryLocation = (attributes: Attributes, language: Language) => {
   const county = getAttributeValue(attributes, language, 'primaryLocationCounty');
   const city = getAttributeValue(attributes, language, 'primaryLocationCity');
   const province = getAttributeValue(attributes, language, 'primaryLocationProvince');
@@ -71,7 +73,7 @@ const extractOperatingHours = (operations: any, language: Language) => {
   });
 };
 
-const extractSiteLocation = (location: any) => {
+const extractSiteLocation = location => {
   return {
     address1: location.address1[0]?.value || '',
     address2: location.address2[0]?.value || '',
@@ -83,6 +85,19 @@ const extractSiteLocation = (location: any) => {
   };
 };
 
+const extractPhoneNumbers = (phoneObj: Object) => {
+  const phoneNumbers = {};
+  for (const key in phoneObj) {
+    if (phoneObj.hasOwnProperty(key)) {
+      const phoneData = phoneObj[key];
+      if (phoneData[0].hasOwnProperty('value')) {
+        phoneNumbers[key] = phoneData[0].value;
+      }
+    }
+  }
+  return phoneNumbers;
+};
+
 const extractSiteDetails = (sites: Object, language: Language) => {
   const siteDetails = [];
   for (const key in sites) {
@@ -90,17 +105,16 @@ const extractSiteDetails = (sites: Object, language: Language) => {
       const langKey = language === 'fr' ? 1 : 0;
       const site = sites[key];
       const location = extractSiteLocation(site.location);
-
       siteDetails.push({
         siteId: key,
         name: site.name[langKey]?.value || '',
         location,
         email: site.email[0]?.value || '',
         operations: extractOperatingHours(site.operations, language),
-        // isLocationPrivate: site.isLocationPrivate[0]?.value, // isLocationPrivate is missing. Temporarily, hardcoded
-        isActive: site.isActive[0]?.value === 'true',
+        isLocationPrivate: site.isLocationPrivate[0]?.value || false,
+        isActive: site.isActive[0]?.value,
         details: site.details[langKey]?.info?.description || '',
-        // phone:
+        phoneNumbers: extractPhoneNumbers(site.phone),
       });
     }
   }
@@ -112,20 +126,38 @@ const extractDescriptionInfo = (description, language: Language) => {
   return descriptionByLanguage && descriptionByLanguage.info ? descriptionByLanguage.info.text : null;
 };
 
-export const convertKHPResourceAttributes = (attributes, language: Language): KhpUiResource['attributes'] => {
+const extractRequiredDocuments = (documentsRequired, language: Language) => {
+  const documents = [];
+  for (const key in documentsRequired) {
+    if (documentsRequired.hasOwnProperty(key)) {
+      const document = documentsRequired[key];
+      const documentByLanguage = document.find(item => item.language === language || item.language === '');
+
+      if (documentByLanguage.hasOwnProperty('value')) {
+        documents.push(documentByLanguage.value);
+      }
+    }
+  }
+  return documents.join(', ');
+};
+
+export const convertKHPResourceAttributes = (
+  attributes: Attributes,
+  language: Language,
+): KhpUiResource['attributes'] => {
   return {
     status: getAttributeValue(attributes, language, 'status'),
     taxonomyCode: getAttributeValue(attributes, language, 'taxonomyCode'),
     description: extractDescriptionInfo(attributes.description, language),
-
     mainContact: {
       name: getAttributeValue(attributes.mainContact, language, 'name'),
       title: getAttributeValue(attributes.mainContact, language, 'title'),
       phoneNumber: getAttributeValue(attributes.mainContact, language, 'phoneNumber'),
       email: getAttributeValue(attributes.mainContact, language, 'email'),
-      isPrivate: getAttributeValue(attributes.mainContact, language, 'isPrivate') === 'true',
+      isPrivate: getAttributeValue(attributes.mainContact, language, 'isPrivate'),
     },
     website: getAttributeValue(attributes, language, 'website'),
+    operations: extractOperatingHours(attributes.operations, language),
     available247: getAttributeValue(attributes, language, 'available247'),
     ageRange: extractAgeRange(attributes, language),
     targetPopulation: attributes.targetPopulation[0][0].value,
@@ -139,10 +171,9 @@ export const convertKHPResourceAttributes = (attributes, language: Language): Kh
     applicationProcess: getAttributeValue(attributes, language, 'applicationProcess'),
     howIsServiceOffered: getAttributeValue(attributes, language, 'howIsServiceOffered'),
     accessibility: getAttributeValue(attributes, language, 'accessibility'),
-    documentsRequired: getAttributeValue(attributes, language, 'documentsRequired'),
-    primaryLocationIsPrivate: getAttributeValue(attributes, language, 'primaryLocationIsPrivate') === 'true',
+    documentsRequired: extractRequiredDocuments(attributes.documentsRequired, language),
+    primaryLocationIsPrivate: getAttributeValue(attributes, language, 'primaryLocationIsPrivate'),
     primaryLocation: extractPrimaryLocation(attributes, language),
-    operations: extractOperatingHours(attributes.operations, language),
     site: extractSiteDetails(attributes.site, language),
   };
 };
