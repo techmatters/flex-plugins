@@ -53,27 +53,12 @@ variable "enable_post_survey" {
   description = "Whether to enable the post survey for the helpline."
 }
 
-variable "custom_channels" {
-  type        = list(string)
-  description = "The custom channels for the helpline."
-}
-
 variable "twilio_channels" {
   type = map(object({
     channel_type     = string
     contact_identity = string
   }))
   description = "The twilio channels for the helpline."
-}
-
-variable "twilio_channel_custom_flow_template" {
-  type        = string
-  description = "The twilio channel custom flow template for the helpline."
-}
-
-variable "custom_channel_custom_flow_template" {
-  type        = string
-  description = "The custom channel custom flow template for the helpline."
 }
 
 variable "enable_voice_channel" {
@@ -84,11 +69,6 @@ variable "enable_voice_channel" {
 variable "channel_attributes" {
   type        = map(string)
   description = "The channel attributes for the helpline."
-}
-
-variable "custom_channel_attributes" {
-  type        = map(string)
-  description = "The custom channel attributes for the helpline."
 }
 
 variable "task_router_config" {
@@ -103,6 +83,30 @@ variable "task_router_config" {
       })
     )
   })
+}
+
+variable "twilio_channel_custom_flow_template" {
+  type        = string
+  description = "The twilio channel custom flow template for the helpline."
+  default     = ""
+}
+
+variable "custom_channel_custom_flow_template" {
+  type        = string
+  description = "The custom channel custom flow template for the helpline."
+  default     = ""
+}
+
+variable "custom_channel_attributes" {
+  type        = map(string)
+  description = "The custom channel attributes for the helpline."
+  default     = {}
+}
+
+variable "custom_channels" {
+  type        = list(string)
+  description = "The custom channels for the helpline."
+  default     = []
 }
 
 variable "operating_hours_function_sid" {

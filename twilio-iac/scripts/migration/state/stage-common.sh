@@ -52,10 +52,8 @@ function moveResources {
         continue
       fi
 
-      set -e
       echo "Moving resource ${from_to_array[0]} to ${from_to_array[1]}"
       terragrunt state mv ${from_to_array[0]} ${from_to_array[1]}
-      set +e
 
     else
       echo "From resource does not exist in the state. Skipping."

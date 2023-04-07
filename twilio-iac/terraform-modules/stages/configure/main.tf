@@ -94,7 +94,7 @@ module "twilioChannel" {
    * We can, eventually, do some more work to the underlying modules to make them a bit more "natively configuration driven",
    * but for the initial pass, this should be sufficient.
    **/
-  custom_flow_definition = templatefile(
+  custom_flow_definition = var.twilio_channel_custom_flow_template != "" ? templatefile(
     var.twilio_channel_custom_flow_template,
     {
       channel_name                 = "${each.key}"
@@ -110,7 +110,7 @@ module "twilioChannel" {
       target_task_name             = var.target_task_name
       operating_hours_holiday      = var.strings["operating_hours_holiday"]
       operating_hours_closed       = var.strings["operating_hours_closed"]
-  })
+  }) : ""
   channel_contact_identity = each.value.contact_identity
   channel_type             = each.value.channel_type
   pre_survey_bot_sid       = local.chatbot_sids.pre_survey
@@ -125,7 +125,7 @@ module "twilioChannel" {
 module "customChannel" {
   for_each = toset(var.custom_channels)
   source   = "../../channels/custom-channel"
-  custom_flow_definition = templatefile(
+  custom_flow_definition = var.custom_channel_custom_flow_template != "" ? templatefile(
     var.custom_channel_custom_flow_template,
     {
       channel_name                 = "${each.key}"
@@ -140,7 +140,7 @@ module "customChannel" {
       operating_hours_holiday      = var.strings["operating_hours_holiday"]
       operating_hours_closed       = var.strings["operating_hours_closed"]
 
-  })
+  }) : ""
   channel_name          = each.key
   janitor_enabled       = var.janitor_enabled
   master_workflow_sid   = local.task_router_master_workflow_sid

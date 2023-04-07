@@ -22,10 +22,6 @@ locals {
   custom_channel_attributes = {}
 
   custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
-
-  twilio_channel_custom_flow_template = "../../channels/flow-templates/operating-hours/with-chatbot.tftpl"
-  custom_channel_custom_flow_template = "../../channels/flow-templates/operating-hours/no-chatbot.tftpl"
-
   // TODO: these will probably move out of terraform and may not be correct.
   // Don't run apply for the configure stage until these are updated.
   feature_flags = {
