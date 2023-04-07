@@ -23,9 +23,6 @@ import {
   ActionFunction,
   ReplacedActionFunction,
   ChatOrchestratorEvent,
-  WorkerDirectoryTabs,
-  Tab,
-  Template,
 } from '@twilio/flex-ui';
 import { Conversation } from '@twilio/conversations';
 import { callTypes } from 'hrm-form-definitions';
