@@ -17,8 +17,8 @@ locals {
   // Default chatbot SIDs can be overwriten by custom chatbot SIDs included from the helpline's additional.chatbot.tf file
   default_chatbot_sids = {
     // UGH, this is a dirty hack to get a value from outputs of a module behind count without getting and empty tuple error.
-    pre_survey  = var.default_autopilot_chatbot_enabled ? split(",", join(",", module.chatbots.*.pre_survey_bot_sid))[0] : ""
-    post_survey = var.default_autopilot_chatbot_enabled ? split(",", join(",", module.chatbots.*.post_survey_bot_sid))[0] : ""
+    pre_survey  = var.default_autopilot_chatbot_enabled ? join("", module.chatbots.*.pre_survey_bot_sid) : ""
+    post_survey = var.default_autopilot_chatbot_enabled ? join("", module.chatbots.*.post_survey_bot_sid) : ""
   }
   chatbot_sids            = merge(local.default_chatbot_sids, local.custom_chatbot_sids)
   post_survey_chatbot_url = "https://channels.autopilot.twilio.com/v1/${local.twilio_account_sid}/${local.chatbot_sids["post_survey"]}/twilio-chat"
