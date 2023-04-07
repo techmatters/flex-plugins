@@ -24,23 +24,18 @@ import { prepopulateForm as prepopulateFormAction } from '../states/contacts/act
 import { getDefinitionVersions } from '../hrmConfig';
 
 const getUnknownOption = (key: string, definition: FormDefinition) => {
-  try {
-    const inputDef = definition.find(e => e.name === key);
+  const inputDef = definition.find(e => e.name === key);
 
-    if (inputDef && inputDef.type === 'select') {
-      const unknownOption = inputDef.unknownOption
-        ? inputDef.options.find(e => e.value === inputDef.unknownOption)
-        : inputDef.options.find(e => e.value === 'Unknown');
-      if (unknownOption && unknownOption.value) return unknownOption.value;
+  if (inputDef && inputDef.type === 'select') {
+    const unknownOption = inputDef.unknownOption
+      ? inputDef.options.find(e => e.value === inputDef.unknownOption)
+      : inputDef.options.find(e => e.value === 'Unknown');
+    if (unknownOption && unknownOption.value) return unknownOption.value;
 
-      console.error(`getUnknownOption couldn't determine a valid unknown option for key ${key}.`);
-    }
-
-    return 'Unknown';
-  } catch (error) {
-    console.error('error', error);
-    return null;
+    console.error(`getUnknownOption couldn't determine a valid unknown option for key ${key}.`);
   }
+
+  return 'Unknown';
 };
 
 /**
@@ -63,40 +58,33 @@ const getAnswerOrUnknown = (
   definition: FormDefinition,
   mapperFunction: MapperFunction = mapGenericOption,
 ) => {
-  try {
-    // This keys must be set with 'Unknown' value even if there's no answer
-    const isRequiredKey = key === 'age' || key === 'gender';
+  // This keys must be set with 'Unknown' value even if there's no answer
+  const isRequiredKey = key === 'age' || key === 'gender';
 
-    // This prevents setting redux state with the 'Unknown' value for a property that is not asked by the pre-survey
-    if (!isRequiredKey && !answers[key]) return null;
+  // This prevents setting redux state with the 'Unknown' value for a property that is not asked by the pre-survey
+  if (!isRequiredKey && !answers[key]) return null;
 
-    const itemDefinition = definition.find(e => e.name === key);
+  const itemDefinition = definition.find(e => e.name === key);
 
-    // This prevents setting redux state with the 'Unknown' value for a property that is not present on the definition
-    if (!itemDefinition) {
-      console.error(`${key} does not exist in the current definition`);
-      return null;
-    }
-
-    if (itemDefinition.type === 'select') {
-      const unknown = getUnknownOption(key, definition);
-      const isUnknownAnswer = answers[key].error || answers[key].answer === unknown;
-
-      if (isUnknownAnswer) return unknown;
-
-      const options = getSelectOptions(key)(definition);
-      const result = mapperFunction(options)(answers[key].answer);
-
-      console.log('result testing here', result, options, key, answers[key].answer);
-
-      return result === 'Unknown' ? unknown : result;
-    }
-
-    return answers[key].answer;
-  } catch (error) {
-    console.error('error', error);
+  // This prevents setting redux state with the 'Unknown' value for a property that is not present on the definition
+  if (!itemDefinition) {
+    console.error(`${key} does not exist in the current definition`);
     return null;
   }
+
+  if (itemDefinition.type === 'select') {
+    const unknown = getUnknownOption(key, definition);
+    const isUnknownAnswer = answers[key] === undefined || answers[key].error || answers[key].answer === unknown;
+
+    if (isUnknownAnswer) return unknown;
+
+    const options = getSelectOptions(key)(definition);
+    const result = mapperFunction(options)(answers[key].answer);
+
+    return result === 'Unknown' ? unknown : result;
+  }
+
+  return answers[key].answer;
 };
 
 const getValuesFromAnswers = (
@@ -156,88 +144,84 @@ export const getValuesFromPreEngagementData = (
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const prepopulateForm = (task: ITask) => {
-  try {
-    const { memory, preEngagementData } = task.attributes;
+  const { memory, preEngagementData } = task.attributes;
 
-    if (!memory && !preEngagementData) return;
+  if (!memory && !preEngagementData) return;
 
-    const { currentDefinitionVersion } = getDefinitionVersions();
-    if (!currentDefinitionVersion) {
-      console.warn('Attempting to prepopulate a form but no definition has been loaded, abandoning attempt.');
-      return;
-    }
-    const { tabbedForms, prepopulateKeys } = currentDefinitionVersion;
-    const { ChildInformationTab, CallerInformationTab, CaseInformationTab } = tabbedForms;
-    const { preEngagement, survey } = prepopulateKeys;
+  const { currentDefinitionVersion } = getDefinitionVersions();
+  if (!currentDefinitionVersion) {
+    console.warn('Attempting to prepopulate a form but no definition has been loaded, abandoning attempt.');
+    return;
+  }
+  const { tabbedForms, prepopulateKeys } = currentDefinitionVersion;
+  const { ChildInformationTab, CallerInformationTab, CaseInformationTab } = tabbedForms;
+  const { preEngagement, survey } = prepopulateKeys;
 
-    // When a helpline has preEnagagement form and no survey
-    if (preEngagementData && !memory) {
-      // PreEngagementData Values
-      const childInfoValues = getValuesFromPreEngagementData(
+  // When a helpline has preEnagagement form and no survey
+  if (preEngagementData && !memory) {
+    // PreEngagementData Values
+    const childInfoValues = getValuesFromPreEngagementData(
+      preEngagementData,
+      ChildInformationTab,
+      preEngagement.ChildInformationTab,
+    );
+    Manager.getInstance().store.dispatch(prepopulateFormAction(callTypes.child, childInfoValues, task.taskSid));
+    // Open tabbed form to first tab
+    Manager.getInstance().store.dispatch(
+      RoutingActions.changeRoute(
+        { route: 'tabbed-forms', subroute: 'childInformation', autoFocus: true },
+        task.taskSid,
+      ),
+    );
+    return;
+  }
+
+  const { answers } = memory.twilio.collected_data.collect_survey;
+
+  const isAboutSelf = answers.about_self.answer === 'Yes';
+  const callType = isAboutSelf || !answers.about_self ? callTypes.child : callTypes.caller;
+  const tabFormDefinition = isAboutSelf ? ChildInformationTab : CallerInformationTab;
+  const prepopulateSurveyKeys = isAboutSelf ? survey.ChildInformationTab : survey.CallerInformationTab;
+  const subroute = isAboutSelf ? 'childInformation' : 'callerInformation';
+
+  const surveyValues = getValuesFromAnswers(task, answers, tabFormDefinition, prepopulateSurveyKeys);
+
+  // When a helpline has survey and no preEnagagement form
+  if (memory && !preEngagementData) {
+    Manager.getInstance().store.dispatch(prepopulateFormAction(callType, surveyValues, task.taskSid));
+
+    // Open tabbed form to first tab
+    Manager.getInstance().store.dispatch(
+      RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
+    );
+    return;
+  }
+
+  // When a helpline has survey and preEnagagement form to populate
+  if (memory && preEngagementData) {
+    const prepopulatePreengagementKeys = isAboutSelf
+      ? preEngagement.ChildInformationTab
+      : preEngagement.CallerInformationTab;
+    const preEngagementValues = getValuesFromPreEngagementData(
+      preEngagementData,
+      tabFormDefinition,
+      prepopulatePreengagementKeys,
+    );
+    const values = { ...surveyValues, ...preEngagementValues };
+    Manager.getInstance().store.dispatch(prepopulateFormAction(callType, values, task.taskSid));
+
+    if (preEngagement.CaseInformationTab.length > 0) {
+      const caseInfoValues = getValuesFromPreEngagementData(
         preEngagementData,
-        ChildInformationTab,
-        preEngagement.ChildInformationTab,
+        CaseInformationTab,
+        preEngagement.CaseInformationTab,
       );
-      Manager.getInstance().store.dispatch(prepopulateFormAction(callTypes.child, childInfoValues, task.taskSid));
-      // Open tabbed form to first tab
-      Manager.getInstance().store.dispatch(
-        RoutingActions.changeRoute(
-          { route: 'tabbed-forms', subroute: 'childInformation', autoFocus: true },
-          task.taskSid,
-        ),
-      );
-      return;
+
+      Manager.getInstance().store.dispatch(prepopulateFormAction(callType, caseInfoValues, task.taskSid, true));
     }
-
-    const { answers } = memory.twilio.collected_data.collect_survey;
-
-    const isAboutSelf = answers.about_self.answer === 'Yes';
-    const callType = isAboutSelf || !answers.about_self ? callTypes.child : callTypes.caller;
-    const tabFormDefinition = isAboutSelf ? ChildInformationTab : CallerInformationTab;
-    const prepopulateSurveyKeys = isAboutSelf ? survey.ChildInformationTab : survey.CallerInformationTab;
-    const subroute = isAboutSelf ? 'childInformation' : 'callerInformation';
-
-    const surveyValues = getValuesFromAnswers(task, answers, tabFormDefinition, prepopulateSurveyKeys);
-
-    // When a helpline has survey and no preEnagagement form
-    if (memory && !preEngagementData) {
-      Manager.getInstance().store.dispatch(prepopulateFormAction(callType, surveyValues, task.taskSid));
-
-      // Open tabbed form to first tab
-      Manager.getInstance().store.dispatch(
-        RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
-      );
-      return;
-    }
-
-    // When a helpline has survey and preEnagagement form to populate
-    if (memory && preEngagementData) {
-      const prepopulatePreengagementKeys = isAboutSelf
-        ? preEngagement.ChildInformationTab
-        : preEngagement.CallerInformationTab;
-      const preEngagementValues = getValuesFromPreEngagementData(
-        preEngagementData,
-        tabFormDefinition,
-        prepopulatePreengagementKeys,
-      );
-      const values = { ...surveyValues, ...preEngagementValues };
-      Manager.getInstance().store.dispatch(prepopulateFormAction(callType, values, task.taskSid));
-
-      if (preEngagement.CaseInformationTab.length > 0) {
-        const caseInfoValues = getValuesFromPreEngagementData(
-          preEngagementData,
-          CaseInformationTab,
-          preEngagement.CaseInformationTab,
-        );
-
-        Manager.getInstance().store.dispatch(prepopulateFormAction(callType, caseInfoValues, task.taskSid, true));
-      }
-      // Open tabbed form to first tab
-      Manager.getInstance().store.dispatch(
-        RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
-      );
-    }
-  } catch (error) {
-    console.error('error', error);
+    // Open tabbed form to first tab
+    Manager.getInstance().store.dispatch(
+      RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
+    );
   }
 };

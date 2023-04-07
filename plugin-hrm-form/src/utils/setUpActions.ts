@@ -198,7 +198,7 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
 ) => {
   const { task } = payload;
 
-  if (TaskHelper.isChatBasedTask(task)) {
+  if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
     subscribeAlertOnConversationJoined(task);
   }
 
