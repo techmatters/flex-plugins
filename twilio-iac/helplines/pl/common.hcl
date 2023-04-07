@@ -12,7 +12,7 @@ locals {
     default_autopilot_chatbot_enabled = true
 
     twilio_channels = {
-      "webchat" = {"contact_identity" = "", "channel_type" ="web"  }
+      "webchat" = { "contact_identity" = "", "channel_type" = "web" }
     }
   }
 }
