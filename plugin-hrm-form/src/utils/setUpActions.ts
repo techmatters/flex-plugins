@@ -198,7 +198,7 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
 ) => {
   const { task } = payload;
 
-  if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
+  if (TaskHelper.isChatBasedTask(task)) {
     subscribeAlertOnConversationJoined(task);
   }
 
@@ -206,7 +206,7 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   else prepopulateForm(task);
 
   // If this is the first counsellor that gets the task, say hi
-  if (TaskHelper.isChatBasedTask(task)) {
+  if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
     sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
   }
 };

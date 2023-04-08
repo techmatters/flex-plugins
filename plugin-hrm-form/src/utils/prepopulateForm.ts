@@ -74,7 +74,7 @@ const getAnswerOrUnknown = (
 
   if (itemDefinition.type === 'select') {
     const unknown = getUnknownOption(key, definition);
-    const isUnknownAnswer = answers[key] === undefined || answers[key].error || answers[key].answer === unknown;
+    const isUnknownAnswer = !answers[key] || answers[key].error || answers[key].answer === unknown;
 
     if (isUnknownAnswer) return unknown;
 
