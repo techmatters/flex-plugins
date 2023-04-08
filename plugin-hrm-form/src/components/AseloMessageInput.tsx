@@ -1,33 +1,27 @@
 import { MessageInputChildrenProps } from '@twilio/flex-ui-core/src/components/channel/MessageInput/MessageInputImpl';
-import React, { useEffect, useState } from 'react';
-import { Actions, Button, Manager, Template, withTheme } from '@twilio/flex-ui';
+import React, { useRef } from 'react';
+import { Button, Manager, Template, withTheme } from '@twilio/flex-ui';
 
-import { getTemplateStrings } from '../hrmConfig';
-import EmojiPicker from './emojiPicker';
 import CannedResponses from './CannedResponses';
-import { Flex } from '../styles/HrmStyles';
+import useTraceUpdate from '../hooks/useTraceUpdate';
 
 type Props = Partial<MessageInputChildrenProps>;
 
 const AseloMessageInput: React.FC<Props> = props => {
+  useTraceUpdate(props, 'AseloMessageInput');
   const { conversationSid } = props;
   const manager = Manager.getInstance();
+  const textAreaRef = useRef<HTMLTextAreaElement>();
 
-  const [message, setMessage] = useState('');
-
-  const handleMessageChange = event => {
-    // 👇️ access textarea value
-    setMessage(event.target.value);
-  };
   return (
     <div key="textarea">
-      <textarea onChange={handleMessageChange} value={message} id="messageInputArea" />
+      <textarea id="messageInputArea" ref={textAreaRef} />
       <Button
         onClick={() => {
           manager.conversationsClient
             .getConversationBySid(conversationSid)
-            .then(conversation => conversation.sendMessage(message));
-          setMessage('');
+            .then(conversation => conversation.sendMessage(textAreaRef.current.value))
+            .then(() => (textAreaRef.current.value = ''));
         }}
       >
         <Template code="Send" />
