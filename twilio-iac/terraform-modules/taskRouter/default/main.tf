@@ -48,6 +48,8 @@ resource "twilio_taskrouter_workspaces_task_queues_v1" "helpline_queue" {
   target_workers = var.custom_target_workers != "" ? var.custom_target_workers : local.helplines_filter
 }
 
+
+#TODO? move to a separate module so this can be called by configure?
 // Workflow
 resource "twilio_taskrouter_workspaces_workflows_v1" "master_workflow" {
   friendly_name = "Master Workflow"
