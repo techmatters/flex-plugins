@@ -12,7 +12,7 @@ include "root" {
   * We define the dependencies for this stage. These are the modules that this stage depends on.
   * this enables us to use the outputs of these modules in the configuration of this stage. It
   * also enables us to use plann-all, init-all, and apply-all to run TG commands in all of the
-  *  stages in the correct order.
+  * stages in the correct order.
   */
 dependencies {
   paths = include.root.locals.use_local_state ? [] : ["../provision"]
