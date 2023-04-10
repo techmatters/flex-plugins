@@ -4,6 +4,7 @@
 provider "registry.terraform.io/hashicorp/aws" {
   version = "4.59.0"
   hashes = [
+    "h1:c3JuEpiXpTGpSEowWhnpZ6EK5F485nBfwImBaZ4o0TE=",
     "h1:fuIdjl9f2JEH0TLoq5kc9NIPbJAAV7YBbZ8fvNp5XSg=",
     "zh:0341a460210463a0bebd5c12ce13dc49bd8cae2399b215418c5efa607fed84e4",
     "zh:0544e9bbdd31d3551e7273bed7326d26a28653fd9c26b5cd06ac8ed76f188798",
@@ -28,6 +29,7 @@ provider "registry.terraform.io/twilio/twilio" {
   constraints = "0.17.0"
   hashes = [
     "h1:6bIJ9HISlNoRo35KeXc1Jp0QKjWo1dOd1YDpRSlUt6s=",
+    "h1:EZONIN61sfhOpVXPtji4gjolORFYL+hT3/bgbV4LX3I=",
     "zh:181fb8392e8f07eac2c265311a00a75167ffbd8bbb518bef470ba4f20069e81d",
     "zh:20cc435ffbadb1c94a8b529d79d119d25481672e176dab31934dcb2efb94ed6e",
     "zh:34c937aba896a017456063849c5c4995b633a0ad6a4cd42ca87e4d272fee56f7",

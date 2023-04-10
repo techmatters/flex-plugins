@@ -8,18 +8,18 @@ include "root" {
   expose = true
 }
 
-// /**
-//   * We define the dependencies for this stage. These are the modules that this stage depends on.
-//   * this enables us to use the outputs of these modules in the configuration of this stage. It
-//   * also enables us to use plann-all, init-all, and apply-all to run TG commands in all of the
-//   *  stages in the correct order.
-//   */
-// dependencies {
-//   paths = [
-//     "../provision",
-//     "../chatbot",
-//   ]
-// }
+/**
+  * We define the dependencies for this stage. These are the modules that this stage depends on.
+  * this enables us to use the outputs of these modules in the configuration of this stage. It
+  * also enables us to use plann-all, init-all, and apply-all to run TG commands in all of the
+  *  stages in the correct order.
+  */
+dependencies {
+  paths = include.root.locals.use_local_state ? [] : [
+    "../provision",
+    "../chatbot",
+  ]
+}
 
 // /**
 //   * Dependency blocks allow us to mock outputs from previous stages so that we can
@@ -60,10 +60,10 @@ inputs = local.config
 terraform {
 
   // TODO: remove or comment this out when we are ready to apply
-  before_hook "abort_apply" {
-    commands = ["apply"]
-    execute  = ["exit", "1"]
-  }
+  // before_hook "abort_apply" {
+  //   commands = ["apply"]
+  //   execute  = ["exit", "1"]
+  // }
 
   source = "../../terraform-modules//stages/${include.root.locals.stage}"
 }

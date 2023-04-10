@@ -16,9 +16,11 @@ locals {
 
   // Default chatbot SIDs can be overwriten by custom chatbot SIDs included from the helpline's additional.chatbot.tf file
   default_chatbot_sids = {
-    post_survey = var.default_autopilot_chatbot_enabled ? module.chatbots[0].post_survey_chatbot_sid : ""
+    // UGH, this is a dirty hack to get a value from outputs of a module behind count without getting and empty tuple error.
+    pre_survey  = var.default_autopilot_chatbot_enabled ? join("", module.chatbots.*.pre_survey_bot_sid) : ""
+    post_survey = var.default_autopilot_chatbot_enabled ? join("", module.chatbots.*.post_survey_bot_sid) : ""
   }
-  chatbot_sids            = merge(local.chatbot_sids, local.custom_chatbot_sids)
+  chatbot_sids            = merge(local.default_chatbot_sids, local.custom_chatbot_sids)
   post_survey_chatbot_url = "https://channels.autopilot.twilio.com/v1/${local.twilio_account_sid}/${local.chatbot_sids["post_survey"]}/twilio-chat"
 }
 
@@ -50,7 +52,7 @@ moved {
 }
 
 resource "aws_ssm_parameter" "twilio_post_survey_bot_chat_url_old" {
-  name        = "${var.short_environment}_${jsondecode(each.value)[0]}_${var.short_helpline}_${each.key}"
+  name        = "${var.short_environment}_TWILIO_${upper(var.short_helpline)}_POST_SURVEY_BOT_CHAT_URL"
   type        = "SecureString"
   value       = local.post_survey_chatbot_url
   description = "Twilio account - Post Survey bot chat url"

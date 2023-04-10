@@ -8,17 +8,15 @@ include "root" {
   expose = true
 }
 
-// Dependency must be disabled for migrate-state to work. These should be uncommented once helplines are all migrated
-// so that we can use plan-all commands.
-// /**
-//   * We define the dependencies for this stage. These are the modules that this stage depends on.
-//   * this enables us to use the outputs of these modules in the configuration of this stage. It
-//   * also enables us to use plann-all, init-all, and apply-all to run TG commands in all of the
-//   *  stages in the correct order.
-//   */
-// dependencies {
-//   paths = ["../provision", ]
-// }
+/**
+  * We define the dependencies for this stage. These are the modules that this stage depends on.
+  * this enables us to use the outputs of these modules in the configuration of this stage. It
+  * also enables us to use plann-all, init-all, and apply-all to run TG commands in all of the
+  * stages in the correct order.
+  */
+dependencies {
+  paths = include.root.locals.use_local_state ? [] : ["../provision"]
+}
 
 // /**
 //   * Dependency blocks allow us to mock outputs from previous stages so that we can

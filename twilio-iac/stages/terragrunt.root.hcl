@@ -38,7 +38,7 @@ locals {
   // We handle state migration locally to speed up the process. This is a temporary measure until all helplines are migrated
   use_local_state       = get_env("USE_LOCAL_STATE", "") == "" ? false : true
   backend_template_file = local.use_local_state ? find_in_parent_folders("backend-local.tftpl") : find_in_parent_folders("backend-remote.tftpl")
-  backend_content       = local.use_local_state ? templatefile(local.backend_template_file, merge(local.config, {local_state_path = "${get_terragrunt_dir()}/${local.short_helpline}-${local.environment}.tfstate"})) : templatefile(local.backend_template_file, local.config)
+  backend_content       = local.use_local_state ? templatefile(local.backend_template_file, merge(local.config, { local_state_path = "${get_terragrunt_dir()}/${local.short_helpline}-${local.environment}.tfstate" })) : templatefile(local.backend_template_file, local.config)
 }
 
 generate "backend" {

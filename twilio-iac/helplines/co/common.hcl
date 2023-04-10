@@ -30,6 +30,9 @@ locals {
 
     custom_channels = ["twitter", "instagram"]
 
+    twilio_channel_custom_flow_template = "../../channels/flow-templates/operating-hours/with-chatbot.tftpl"
+    custom_channel_custom_flow_template = "../../channels/flow-templates/operating-hours/no-chatbot.tftpl"
+
     // keys for ustom_channel_attributes  must match the custom_channels list
     custom_channel_attributes = {
       twitter   = templatefile("../../terraform-modules/channels/custom-channel/channel-attributes/twitter-attributes.tftpl", { task_language = local.task_language })

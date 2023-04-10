@@ -6,6 +6,12 @@ This is a living document to attempt to capture the steps required to migrate fr
 
 ## Migration Steps
 
+### Getting ready
+
+Ensure that no one else is currently working on the helpline/stage you are about to migrate. If they are, you will need to coordinate with them to avoid conflicts. Once you start this process, if anyone runs an apply on the old Terraform configuration, you will need to start over with a fresh migration.
+
+Add a check the `Locked` column in [terraform configuration tracking document](https://app.box.com/file/1109527438079).
+
 ### Setup new Helpline
 
 Helpline configurations live in the [helplines](../helplines/README.md) directory.
@@ -28,7 +34,9 @@ Answer "yes" to the final question that asks:
   Enter "yes" to copy and "no" to start with the existing state in the newly
   configured "s3" backend."
 
-State migration will take a *very* long time. Like, a couple of hours. There are retry systems in place, but It *may* fail along the way. It can be safely restarted by running `make HL=<short_code> HL_ENV=<environment> migrate-state` again. It will pick up where it left off.
+State migration could take a *very* long time. Like, a couple of hours. There are retry systems in place, but It *may* fail along the way. It can be safely restarted by running `make HL=<short_code> HL_ENV=<environment> migrate-state` again. It will pick up where it left off after asking you a few questions.
+
+It is safe to run `make HL=<short_code> HL_ENV=<environment> migrate-state` repeatedly until you have run a full apply for a stage.
 
 The `migrate-state` commands for each stage can be safely run in parallel. They will not conflict with each other. They are non-destructive to the running environment.
 
@@ -42,11 +50,16 @@ If the configuration of the helpline is correct, there should be no changes list
 
 Adjust the settings you have passed in in common.hcl, staging.hcl, and production.hcl until the plan is empty. You *may* also need to modify the underlying modules to get the plan to be empty. The goal is to have an empty plan.
 
+If you want to test all of the stages before applying the changes, you can run `make HL=<short_code> HL_ENV=<environment> apply tg_args="-refresh-only"` to update the required outputs in the state without actually applying any changes. Then the next stage will be able to produce a plan without having changes actually applied.
+
 Once the plan is empty, you can apply the changes with `make HL=<short_code> HL_ENV=<environment> apply` to update the outputs in the state for use by the next stages.
+
 
 ### Chatbot Stage
 
 Once the `provision` stage is applies, you can begin testing the `chatbot` stage. Run `make HL=<short_code> HL_ENV=<environment> plan` from the `/twilio-iac/stages/chatbot` directory.
+
+If you want to test all of the stages before applying the changes, you can run `make HL=<short_code> HL_ENV=<environment> apply tg_args="-refresh-only"` to update the required outputs in the state without actually applying any changes. Then the next stage will be able to produce a plan without having changes actually applied.
 
 The goal is to have an empty plan that only updates the outputs in the state. You may need to modify the underlying modules to get the plan to be empty. Once the plan is empty, you can apply the changes with `make HL=<short_code> HL_ENV=<environment> apply` to update the outputs in the state for use by the next stages.
 
@@ -72,4 +85,4 @@ The goal is to have an empty plan that is completely configuration driven. You w
 
 ## Cleaning up
 
-Once all of the stages have been migrated, you can remove the old Terraform base directory at the top level of `twilio-iac` and update the [terraform configuration tracking document](https://app.box.com/file/1109527438079) with relevant information.
+Once all of the stages have been migrated, you can remove the old Terraform base directory at the top level of `twilio-iac` and update the [terraform configuration tracking document](https://app.box.com/file/1109527438079) with relevant information and be sure to check the "Migrated" and "Clean Apply" boxes. (you do have a clean apply, right?)
