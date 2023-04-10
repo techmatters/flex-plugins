@@ -60,10 +60,10 @@ inputs = local.config
 terraform {
 
   // TODO: remove or comment this out when we are ready to apply
-  before_hook "abort_apply" {
-    commands = ["apply"]
-    execute  = ["exit", "1"]
-  }
+  // before_hook "abort_apply" {
+  //   commands = ["apply"]
+  //   execute  = ["exit", "1"]
+  // }
 
   source = "../../terraform-modules//stages/${include.root.locals.stage}"
 }

@@ -13,7 +13,7 @@ resource "null_resource" "hrm_static_api_key" {
     short_environment = var.short_environment
   }
   provisioner "local-exec" {
-    working_dir = "${path.module}/../../../../scripts"
+    working_dir = "/app/scripts"
     command     = "npm run twilioResources -- new-key-with-ssm-secret ${local.cmd_args} hrm-static-key ${var.short_environment}_TWILIO_${var.short_helpline}_HRM_STATIC_KEY \"${var.helpline}\" ${var.environment}"
     interpreter = local.sync_key_provisioner_interpreter
   }

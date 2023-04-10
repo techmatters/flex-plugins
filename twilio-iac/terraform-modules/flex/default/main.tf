@@ -99,7 +99,7 @@ resource "null_resource" "service_configuration" {
     environment = {
       TWILIO_FLEX_SERVICE_CONFIGURATION_PAYLOAD = local.service_configuration_payload
     }
-    working_dir = "${path.module}/../../../../scripts"
+    working_dir = "/app/scripts"
     command     = "npm run twilioResources -- update-flex-configuration ${local.cmd_args}"
   }
 }
