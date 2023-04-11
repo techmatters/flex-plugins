@@ -8,12 +8,8 @@ terraform {
 }
 
 locals {
-<<<<<<< HEAD
   hrm_url = var.hrm_url == "" ?  (var.short_environment == "PROD" ? "https://hrm-production.tl.techmatters.org" : (var.short_environment == "STG" ? "https://hrm-staging.tl.techmatters.org" : "https://hrm-development.tl.techmatters.org")) : var.hrm_url
   assets_bucket_url = var.assets_bucket_url == "" ?  (var.short_environment == "PROD" ? "https://s3.amazonaws.com/assets-production.tl.techmatters.org" : (var.short_environment == "STG" ? "https://s3.amazonaws.com/assets-staging.tl.techmatters.org" : "https://s3.amazonaws.com/assets-development.tl.techmatters.org")) : var.assets_bucket_url
-=======
-  hrm_url           = var.hrm_url == "" ? (var.short_environment == "PROD" ? "https://hrm-production.tl.techmatters.org" : (var.short_environment == "STG" ? "https://hrm-staging.tl.techmatters.org" : "https://hrm-development.tl.techmatters.org")) : var.hrm_url
->>>>>>> b569e04924cf88bef4cef8e17d9ebcac42d731b5
   permission_config = var.permission_config == "" ? var.operating_info_key : var.permission_config
 
   // This cmd_args hackery is temporary until all helplines are migrated to terragrunt or until these scripts are moved to post-apply/after hooks.
@@ -60,7 +56,6 @@ locals {
         }
       }
     },
-<<<<<<< HEAD
     "version_message": ""
   },
   "account_sid": var.twilio_account_sid,
@@ -79,25 +74,6 @@ locals {
     "serverless_base_url": var.serverless_url,
     "helplineLanguage": var.helpline_language
   }})
-=======
-    "version_message" : ""
-    },
-    "account_sid" : var.twilio_account_sid,
-    "attributes" : {
-      "feature_flags" : var.feature_flags,
-      "seenOnboarding" : true,
-      "permissionConfig" : var.permission_config,
-      "hrm_api_version" : "v0",
-      "definitionVersion" : var.definition_version,
-      "monitoringEnv" : "production",
-      "hrm_base_url" : local.hrm_url,
-      "pdfImagesSource" : "https://tl-public-chat.s3.amazonaws.com",
-      "logo_url" : "https://aselo-logo.s3.amazonaws.com/145+transparent+background+no+TM.png",
-      "multipleOfficeSupport" : var.multi_office_support,
-      "serverless_base_url" : var.serverless_url,
-      "helplineLanguage" : var.helpline_language
-  } })
->>>>>>> b569e04924cf88bef4cef8e17d9ebcac42d731b5
 }
 
 resource "null_resource" "service_configuration" {
