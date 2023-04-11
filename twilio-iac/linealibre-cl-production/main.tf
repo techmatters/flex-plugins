@@ -30,15 +30,16 @@ locals {
   helpline = "Linea Libre"
   short_helpline = "CL"
   operating_info_key = "cl"
-  task_language = "es-CL"
   environment = "Production"
   short_environment = "PROD"
   definition_version = "cl-v1"
   permission_config = "cl"
   helpline_language = "es-CL"
-  enable_post_survey = false
+  task_language = "es-CL"
+  voice_ivr_language = "es-MX"
+  operating_hours_function_sid = "ZHb02706803df7458aebd679967beb1005"
+  enable_post_survey = true
   multi_office = false
-  target_task_name = "greeting"
   twilio_numbers = [""]
   channel = ""
   custom_channel_attributes = ""
@@ -60,12 +61,16 @@ locals {
     "enable_previous_contacts": true,
     "enable_voice_recordings": false,
     "enable_twilio_transcripts": true,
-    "enable_external_transcripts": false,
+    "enable_external_transcripts": true,
     "post_survey_serverless_handled": true,
-    "enable_csam_clc_report": false
+    "enable_csam_clc_report": false,
+    "enable_counselor_toolkits": false,
+    "enable_resources": false
 
   }
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
+  strings= jsondecode(file("${path.module}/../translations/${local.helpline_language}/strings.json"))
+  slack_error_webhook = "https://hooks.slack.com/services/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"
   twilio_channels = {
     "webchat" = {"contact_identity" = "", "channel_type" ="web"  }
   }
@@ -104,7 +109,7 @@ module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = module.serverless.serverless_environment_production_url
   helpline = local.helpline
-  custom_task_routing_filter_expression = "channelType ==\"web\" OR isContactlessTask == true"
+  custom_task_routing_filter_expression = "channelType ==\"web\" OR channelType ==\"voice\" OR isContactlessTask == true"
 }
 
 module flex {
@@ -126,12 +131,22 @@ module twilioChannel {
   source = "../terraform-modules/channels/twilio-channel"
   channel_contact_identity = each.value.contact_identity
   custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/default/no-chatbot.tftpl",
+    "../terraform-modules/channels/flow-templates/operating-hours/no-chatbot.tftpl",
     {
+      channel_name = "${each.key}"
+      serverless_url=module.serverless.serverless_environment_production_url
+      serverless_service_sid = module.serverless.serverless_service_sid
+      serverless_environment_sid = module.serverless.serverless_environment_production_sid
+      operating_hours_function_sid = local.operating_hours_function_sid
       master_workflow_sid = module.taskRouter.master_workflow_sid
       chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-      channel_attributes =  templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language})
+      channel_attributes = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language})
       flow_description = "${title(each.key)} Messaging Flow"
+      chat_greeting_message = local.strings.chat_greeting_message
+      helpline = local.helpline
+      environment = local.environment
+      task_language=local.task_language
+      slack_error_webhook = local.slack_error_webhook
     })
   channel_name = "${each.key}"
   janitor_enabled = !local.enable_post_survey
@@ -139,6 +154,34 @@ module twilioChannel {
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
 }
+
+module voiceChannel {
+  source = "../terraform-modules/channels/voice-channel"
+  master_workflow_sid = module.taskRouter.master_workflow_sid
+  voice_task_channel_sid = module.taskRouter.voice_task_channel_sid
+  voice_ivr_language = local.voice_ivr_language
+  voice_ivr_greeting_message = local.strings.voice_ivr_greeting_message
+  custom_flow_definition = templatefile(
+    "../terraform-modules/channels/flow-templates/operating-hours/voice-ivr.tftpl",
+    {
+      master_workflow_sid = module.taskRouter.master_workflow_sid
+      voice_task_channel_sid = module.taskRouter.voice_task_channel_sid
+      channel_attributes =  templatefile("../terraform-modules/channels/voice-channel/channel-attributes/voice-attributes.tftpl",{task_language=local.task_language})
+      flow_description = "Voice IVR Flow"
+      voice_ivr_greeting_message = local.strings.voice_ivr_greeting_message
+      voice_ivr_language = local.voice_ivr_language
+      operating_hours_function_sid = local.operating_hours_function_sid
+      serverless_url=module.serverless.serverless_environment_production_url
+      serverless_service_sid = module.serverless.serverless_service_sid
+      serverless_environment_sid = module.serverless.serverless_environment_production_sid
+      helpline = local.helpline
+      environment = local.environment
+      task_language = local.task_language
+      slack_error_webhook = local.slack_error_webhook
+
+    })
+}
+
 
 module survey {
   source = "../terraform-modules/survey/default"
@@ -163,7 +206,7 @@ module aws {
   shared_state_sync_service_sid = module.services.shared_state_sync_service_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
   flex_proxy_service_sid = module.services.flex_proxy_service_sid
-  post_survey_bot_sid = ""
+  post_survey_bot_sid = twilio_autopilot_assistants_v1.post_survey_bot_es.sid
   survey_workflow_sid = module.survey.survey_workflow_sid
 }
 
