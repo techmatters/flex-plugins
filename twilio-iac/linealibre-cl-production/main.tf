@@ -65,7 +65,8 @@ locals {
     "post_survey_serverless_handled": true,
     "enable_csam_clc_report": false,
     "enable_counselor_toolkits": false,
-    "enable_resources": false
+    "enable_resources": false,
+    "enable_emoji_picker": true
 
   }
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
