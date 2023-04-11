@@ -43,6 +43,9 @@ npm run ssm:local:e2e
 
 ## Development
 
+**Note:**
+Ensure that twilio cli is configured to use the profile for the account you want to run the plugin against. You can check this by running `twilio profiles:list` and checking the active profile. If you need to change the active profile, run `twilio profiles:use <profile-name>`. use `twilio login` to login to a new account.
+
 If you just want to run the flex plugin locally, you can use the Webpack Dev Server by running:
 
 ```bash
