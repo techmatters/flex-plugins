@@ -13,6 +13,12 @@ variable "hrm_url" {
   type = string
   default = ""
 }
+variable "assets_bucket_url" {
+  description = "Custom URL for Assets (leave blank and it will infer a default) from the environments name"
+  type = string
+  default = ""
+}
+
 
 variable "short_environment" {
   description = "Short upper case environment identifier, typically 'PROD', 'STG' or 'DEV'"
