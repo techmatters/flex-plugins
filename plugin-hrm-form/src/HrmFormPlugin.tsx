@@ -132,6 +132,8 @@ const setUpComponents = (
 
   Components.setupTeamViewFilters();
   Components.setupWorkerDirectoryFilters();
+
+  Components.test();
 };
 
 const setUpActions = (

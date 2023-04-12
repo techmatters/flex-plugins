@@ -19,6 +19,7 @@
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 import type { FilterDefinitionFactory } from '@twilio/flex-ui/src/components/view/TeamsView';
+import AutoSizer from 'react-virtualized-auto-sizer';
 
 import { AcceptTransferButton, RejectTransferButton, TransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
@@ -407,4 +408,17 @@ export const setupWorkerDirectoryFilters = () => {
   const hiddenWorkerFilter = `data.activity_name IN ${JSON.stringify(availableActivities)}`;
 
   Flex.WorkerDirectoryTabs.defaultProps.hiddenWorkerFilter = hiddenWorkerFilter;
+};
+
+const AutoSizerWrapper: React.FC<{}> = ({ children }) => (
+  <div style={{ height: '100%', width: '100%' }}>{children}</div>
+);
+AutoSizerWrapper.displayName = 'AutoSizerWrapper';
+
+export const test = () => {
+  Flex.MessageList.Content.addWrapper(OriginalComponent => originalProps => (
+    <AutoSizerWrapper>
+      <AutoSizer>{() => <OriginalComponent {...originalProps} />}</AutoSizer>
+    </AutoSizerWrapper>
+  ));
 };
