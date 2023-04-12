@@ -298,6 +298,7 @@
   "ContactDetails-GeneralDetails-WouldRecommend": "Would the child recommend us to a friend?",
   "ContactDetails-GeneralDetails-externalReport": "Add CSAM Report",
   "ContactDetails-GeneralDetails-ExternalReportsFiled": "External Report(s) Filed",
+  "ContactDetails-GeneralDetails-ResourcesReferrals": "Resource(s) Shared",
   "ContactDetails-LoadRecording-Button": "Open Recording",
   "ContactDetails-LoadTranscript-Button": "Load Transcript",
   "ContactDetails-Transcript": "Transcript",
@@ -409,7 +410,7 @@
   "Resources-LoadResourceError": "Something went wrong trying to load this resource.",
   "Resources-Search-FormTitle": "Search for Resources",
   "Resources-Search-ResultsTitle": "Search Results",
-  "Resources-Search-ResultsDescription": "Showing {{count}} results for <span style=\"font-weight:800\">\"{{omniSearchTerm}}\"</span>",
+  "Resources-Search-ResultsDescription": "Showing {{count}} results for <span style=\"font-weight:800\">\"{{generalSearchTerm}}\"</span>",
   "Resources-Search-ClearFormButton": "Clear Form",
   "Resources-ResourceSearchError": "Something went wrong trying to search for resources."
 }

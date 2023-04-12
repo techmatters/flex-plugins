@@ -32,7 +32,7 @@ export enum ResourceSearchStatus {
 export type ReferrableResourceSearchState = {
   // eslint-disable-next-line prettier/prettier
   parameters: {
-    omniSearchTerm: string;
+    generalSearchTerm: string;
     filters: Record<string, any>;
     pageSize: number;
   };
@@ -46,7 +46,7 @@ export type ReferrableResourceSearchState = {
 export const initialState: ReferrableResourceSearchState = {
   parameters: {
     filters: {},
-    omniSearchTerm: '',
+    generalSearchTerm: '',
     pageSize: 5,
   },
   currentPage: 0,
@@ -81,10 +81,9 @@ const SEARCH_ACTION = 'resource-action/search';
 export const searchResourceAsyncAction = createAsyncAction(
   SEARCH_ACTION,
   async (parameters: SearchSettings, page: number) => {
-    const { pageSize, omniSearchTerm } = parameters;
-    const [nameSubstring, ...ids] = omniSearchTerm.split(';');
+    const { pageSize, generalSearchTerm } = parameters;
     const start = page * pageSize;
-    return { ...(await searchResources({ nameSubstring, ids }, start, pageSize)), start };
+    return { ...(await searchResources({ generalSearchTerm }, start, pageSize)), start };
   },
   ({ pageSize }: SearchSettings, page: number, newSearch: boolean = true) => ({ newSearch, start: page * pageSize }),
   // { promiseTypeDelimiter: '/' }, // Doesn't work :-(

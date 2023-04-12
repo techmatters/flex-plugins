@@ -52,7 +52,7 @@ locals {
     "enable_filter_cases": true,
     "enable_sort_cases": true,
     "enable_transfers": true,
-    "enable_manual_pulling": true,
+    "enable_manual_pulling": false,
     "enable_csam_report": false,
     "enable_canned_responses": true,
     "enable_dual_write": false,
@@ -104,7 +104,7 @@ module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = module.serverless.serverless_environment_production_url
   helpline = local.helpline
-  custom_task_routing_filter_expression = "channelType ==\"web\" OR isContactlessTask == true OR  phone=='+16602359810' OR phone=='+48800012935'"
+  custom_task_routing_filter_expression = "channelType ==\"web\" OR isContactlessTask == true"
 }
 
 module flex {
@@ -117,6 +117,7 @@ module flex {
   serverless_url = module.serverless.serverless_environment_production_url
   multi_office_support = local.multi_office
   feature_flags = local.feature_flags
+  helpline_language = local.helpline_language
 }
 
 module twilioChannel {

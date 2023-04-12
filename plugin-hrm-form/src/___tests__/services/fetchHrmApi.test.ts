@@ -43,6 +43,9 @@ describe('fetchHrmApi', () => {
         json(): Promise<any> {
           return Promise.resolve(responseBody);
         },
+        text(): Promise<any> {
+          return Promise.resolve(responseBody);
+        },
         ok: true,
         status: 200,
         statusText: 'OK',

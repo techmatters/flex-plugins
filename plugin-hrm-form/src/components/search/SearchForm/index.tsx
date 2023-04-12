@@ -36,7 +36,12 @@ import {
 import { SearchTitle } from '../../../styles/search';
 import { namespace, configurationBase, searchContactsBase } from '../../../states';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils';
-import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
+import {
+  getPermissionsForViewingIdentifiers,
+  PermissionActions,
+  canOnlyViewOwnCases,
+  canOnlyViewOwnContacts,
+} from '../../../permissions';
 import { channelTypes } from '../../../states/DomainConstants';
 import { SearchFormValues } from '../../../states/search/types';
 import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
@@ -65,6 +70,7 @@ const connector = connect(mapStateToProps);
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
+// eslint-disable-next-line complexity
 const SearchForm: React.FC<Props> = ({
   values,
   counselors,
@@ -150,6 +156,8 @@ const SearchForm: React.FC<Props> = ({
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
+  const canChooseCounselor = !(canOnlyViewOwnContacts() || canOnlyViewOwnCases());
+
   return (
     <>
       <Container data-testid="SearchForm">
@@ -176,16 +184,18 @@ const SearchForm: React.FC<Props> = ({
         </Row>
 
         <Row>
-          <FieldSelect
-            id="Search_Counselor"
-            name="counselor"
-            label={strings['SearchForm-Counselor']}
-            placeholder={strings['SearchForm-Name']}
-            field={getField(counselor)}
-            options={[{ label: '', value: '' }, ...counselorsOptions]}
-            {...defaultEventHandlers('counselor')}
-            style={{ marginRight: 25 }}
-          />
+          {canChooseCounselor && (
+            <FieldSelect
+              id="Search_Counselor"
+              name="counselor"
+              label={strings['SearchForm-Counselor']}
+              placeholder={strings['SearchForm-Name']}
+              field={getField(counselor)}
+              options={[{ label: '', value: '' }, ...counselorsOptions]}
+              {...defaultEventHandlers('counselor')}
+              style={{ marginRight: 25 }}
+            />
+          )}
           <FieldDate
             id="Search_DateFrom"
             label={strings['SearchForm-DateRange']}

@@ -15,9 +15,10 @@
  */
 
 import { omit } from 'lodash';
-import { CallTypes, callTypes } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-form-definitions';
 
 import * as t from './types';
+import { ContactsState, TaskEntry } from './types';
 import {
   DefinitionVersion,
   GeneralActionType,
@@ -35,7 +36,6 @@ import {
   EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION,
   EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
   ExistingContactAction,
-  ExistingContactsState,
   LOAD_CONTACT_ACTION,
   loadContactReducer,
   loadTranscriptReducer,
@@ -45,47 +45,14 @@ import {
   toggleCategoryExpandedReducer,
   updateDraftReducer,
 } from './existingContacts';
-import { CSAMReportEntry } from '../../types/types';
 import {
   ContactDetailsAction,
-  ContactDetailsState,
   DetailsContext,
   sectionExpandedStateReducer,
   TOGGLE_DETAIL_EXPANDED_ACTION,
 } from './contactDetails';
-import { ChannelTypes } from '../DomainConstants';
 import { ADD_EXTERNAL_REPORT_ENTRY, addExternalReportEntryReducer } from '../csam-report/existingContactExternalReport';
-
-export type TaskEntry = {
-  helpline: string;
-  callType: CallTypes;
-  childInformation: { [key: string]: string | boolean };
-  callerInformation: { [key: string]: string | boolean };
-  caseInformation: { [key: string]: string | boolean };
-  contactlessTask: { channel: ChannelTypes; [key: string]: string | boolean };
-  categories: string[];
-  csamReports: CSAMReportEntry[];
-  metadata: {
-    startMillis: number;
-    endMillis: number;
-    recreated: boolean;
-    categories: {
-      gridView: boolean;
-      expanded: { [key: string]: boolean };
-    };
-  };
-  isCallTypeCaller: boolean;
-};
-
-type ContactsState = {
-  tasks: {
-    [taskId: string]: TaskEntry;
-  };
-  existingContacts: ExistingContactsState;
-  contactDetails: ContactDetailsState;
-  editingContact: boolean;
-  isCallTypeCaller: boolean;
-};
+import { ReferralLookupStatus, resourceReferralReducer } from './resourceReferral';
 
 export const emptyCategories = [];
 
@@ -136,10 +103,17 @@ export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated
     csamReports: [],
     metadata,
     isCallTypeCaller: false,
+    draft: {
+      resourceReferralList: {
+        resourceReferralIdToAdd: '',
+        lookupStatus: ReferralLookupStatus.NOT_STARTED,
+      },
+    },
   };
 };
 
-const initialState: ContactsState = {
+// exposed for testing
+export const initialState: ContactsState = {
   tasks: {},
   existingContacts: {},
   contactDetails: {
@@ -150,11 +124,14 @@ const initialState: ContactsState = {
   isCallTypeCaller: false,
 };
 
+const boundReferralReducer = resourceReferralReducer(initialState);
+
 // eslint-disable-next-line import/no-unused-modules,complexity
 export function reduce(
-  state = initialState,
+  inputState = initialState,
   action: t.ContactsActionType | ExistingContactAction | ContactDetailsAction | GeneralActionType,
 ): ContactsState {
+  const state = boundReferralReducer(inputState, action as any);
   switch (action.type) {
     case INITIALIZE_CONTACT_STATE:
       return {

@@ -18,9 +18,9 @@ import type { ITask } from '@twilio/flex-ui';
 import SyncClient from 'twilio-sync';
 
 import { recordBackendError } from '../fullStory';
-import { TaskEntry } from '../states/contacts/reducer';
 import { issueSyncToken } from '../services/ServerlessService';
 import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
+import { TaskEntry } from '../states/contacts/types';
 
 let sharedStateClient: SyncClient;
 

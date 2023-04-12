@@ -36,7 +36,7 @@ locals {
  permission_config = "cl"
  helpline_language = "es-CL"
  task_language = "es-CL"
- enable_post_survey = false
+ enable_post_survey = true
  multi_office = false
  target_task_name = "greeting"
  twilio_numbers = [""]
@@ -53,7 +53,7 @@ locals {
    "enable_filter_cases": true,
    "enable_sort_cases": true,
    "enable_transfers": true,
-   "enable_manual_pulling": true,
+   "enable_manual_pulling": false,
    "enable_csam_report": false,
    "enable_canned_responses": true,
    "enable_dual_write": false,
@@ -123,6 +123,7 @@ module flex {
   serverless_url = module.serverless.serverless_environment_production_url
   multi_office_support = local.multi_office
   feature_flags = local.feature_flags
+  helpline_language = local.helpline_language
 }
 
 module twilioChannel {
@@ -167,7 +168,7 @@ module aws {
   shared_state_sync_service_sid = module.services.shared_state_sync_service_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
   flex_proxy_service_sid = module.services.flex_proxy_service_sid
-  post_survey_bot_sid = ""
+  post_survey_bot_sid = twilio_autopilot_assistants_v1.post_survey_bot_es.sid
   survey_workflow_sid = module.survey.survey_workflow_sid
 }
 

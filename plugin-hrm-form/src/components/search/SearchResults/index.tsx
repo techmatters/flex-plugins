@@ -48,6 +48,7 @@ import * as CaseActions from '../../../states/case/actions';
 import * as RoutingActions from '../../../states/routing/actions';
 import { SearchPages, SearchPagesType } from '../../../states/search/types';
 import { namespace, searchContactsBase, configurationBase } from '../../../states';
+import { getPermissionsForContact, getPermissionsForCase, PermissionActions } from '../../../permissions';
 
 export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;
@@ -241,13 +242,16 @@ const SearchResults: React.FC<Props> = ({
               </StyledResultsHeader>
               {contacts &&
                 contacts.length > 0 &&
-                contacts.map(contact => (
-                  <ContactPreview
-                    key={contact.contactId}
-                    contact={contact}
-                    handleViewDetails={() => handleViewDetails(contact)}
-                  />
-                ))}
+                contacts.map(contact => {
+                  const { can } = getPermissionsForContact(contact.overview.counselor);
+                  return (
+                    <ContactPreview
+                      key={contact.contactId}
+                      contact={contact}
+                      handleViewDetails={() => can(PermissionActions.VIEW_CONTACT) && handleViewDetails(contact)}
+                    />
+                  );
+                })}
               {contactsPageCount > 1 && (
                 <Pagination
                   page={contactsPage}
@@ -289,14 +293,17 @@ const SearchResults: React.FC<Props> = ({
 
               {cases &&
                 cases.length > 0 &&
-                cases.map(cas => (
-                  <CasePreview
-                    key={cas.id}
-                    currentCase={cas}
-                    counselorsHash={counselorsHash}
-                    onClickViewCase={handleClickViewCase(cas)}
-                  />
-                ))}
+                cases.map(cas => {
+                  const { can } = getPermissionsForCase(cas.twilioWorkerId, cas.status);
+                  return (
+                    <CasePreview
+                      key={cas.id}
+                      currentCase={cas}
+                      counselorsHash={counselorsHash}
+                      onClickViewCase={can(PermissionActions.VIEW_CASE) && handleClickViewCase(cas)}
+                    />
+                  );
+                })}
               {casesPageCount > 1 && (
                 <Pagination
                   page={casesPage}

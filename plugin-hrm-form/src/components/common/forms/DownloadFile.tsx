@@ -34,14 +34,20 @@ const DownloadFile: React.FC<Props> = ({ fileNameAtAws }) => {
   useEffect(() => {
     if (preSignedUrl) {
       downloadLink.current.click();
+      URL.revokeObjectURL(preSignedUrl);
     }
   }, [preSignedUrl, downloadLink]);
 
   const fileName = formatFileNameAtAws(fileNameAtAws);
 
   const handleClick = async () => {
-    const response = await getFileDownloadUrl(fileNameAtAws, fileName);
-    setPreSignedUrl(response.downloadUrl);
+    const encodedFilename = encodeURIComponent(fileName);
+    const fileUrl = await getFileDownloadUrl(fileNameAtAws, encodedFilename);
+    const response = await fetch(fileUrl.downloadUrl);
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    setPreSignedUrl(url);
   };
   return (
     <Flex flexDirection="column" alignItems="flex-start">

@@ -9,6 +9,11 @@
     }
   },
   {
+    "name": "repeatCaller",
+    "label": "Llamante Repetido?",
+    "type": "checkbox"
+  },
+  {
     "name": "actionTaken",
     "label": "Acción Tomada",
     "type": "listbox-multiselect",
@@ -30,16 +35,5 @@
         "label": "Se activa protocolo de protección"
       }
     ]
-  },
-  {
-    "name": "keepConfidential",
-    "label": "Mantener Confidencial",
-    "type": "mixed-checkbox",
-    "initialChecked": true
-  },
-  {
-    "name": "okForCaseWorkerToCall",
-    "label": "¿Se le puede recontactar?",
-    "type": "mixed-checkbox"
   }
 ]

@@ -29,10 +29,10 @@ import { updateForm } from '../../states/contacts/actions';
 import { Container, ColumnarBlock, TwoColumnLayout, ColumnarContent } from '../../styles/HrmStyles';
 import { configurationBase, namespace, RootState } from '../../states';
 import { selectWorkerSid } from '../../states/selectors/flexSelectors';
-import type { TaskEntry } from '../../states/contacts/reducer';
 import { createContactlessTaskTabDefinition } from './ContactlessTaskTabDefinition';
 import { splitDate, splitTime } from '../../utils/helpers';
 import type { OfflineContactTask } from '../../types/types';
+import { TaskEntry } from '../../states/contacts/types';
 
 type OwnProps = {
   task: OfflineContactTask;
@@ -126,7 +126,7 @@ const ContactlessTaskTab: React.FC<Props> = ({
 
 ContactlessTaskTab.displayName = 'ContactlessTaskTab';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
+const mapStateToProps = (state: RootState) => ({
   counselorsList: state[namespace][configurationBase].counselors.list,
 });
 

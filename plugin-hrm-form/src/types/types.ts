@@ -20,6 +20,7 @@ import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions';
 
 import { DateFilterValue } from '../components/caseList/filters/dateFilters';
 import { ChannelTypes } from '../states/DomainConstants';
+import { ResourceReferral } from '../states/contacts/resourceReferral';
 
 export type EntryInfo = {
   id: string;
@@ -113,7 +114,7 @@ export enum ContactMediaType {
 export type S3StoredTranscript = {
   store: 'S3';
   type: ContactMediaType.TRANSCRIPT;
-  url?: string;
+  location?: { bucket?: string; key?: string };
 };
 
 type S3StoredMedia = S3StoredTranscript;
@@ -141,6 +142,7 @@ export type HrmServiceContact = {
   number: string;
   conversationDuration: number;
   csamReports: CSAMReportEntry[];
+  referrals?: ResourceReferral[];
   createdBy: string;
   helpline: string;
   taskId: string;
@@ -174,6 +176,7 @@ export type SearchAPIContact = {
   };
   details: ContactRawJson;
   csamReports: CSAMReportEntry[];
+  referrals?: ResourceReferral[];
 };
 
 export type SearchUIContact = SearchAPIContact & { counselorName: string; callerName?: string };

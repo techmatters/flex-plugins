@@ -1,6 +1,10 @@
 **/*private.tfvars
 **/*private.json
+**/*.tfstate
+**/*.tfstate.lock.info
 
 .env
 
 .terraform/
+.terragrunt-cache/
+terragrunt-debug.tfvars.json

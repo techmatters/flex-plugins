@@ -100,5 +100,12 @@
     "name": "otherTools",
     "label": "If Other tools, please specify: ",
     "type": "input"
+  },  
+  {
+    "name": "referrals",
+    "label": "Referrals",
+    "type": "custom-contact-component",
+    "component": "resource-referral-list",
+    "saveable": false
   }
 ]

@@ -1,7 +1,7 @@
 import FS from 'fs';
 import twilio from 'twilio';
 import { attemptTerraformImport } from './twilioToTerraformImporter';
-import { logDebug, logInfo, logWarning } from '../helpers/log';
+import { logDebug, logWarning } from '../helpers/log';
 import { FieldValueParser, ResourceType } from './resourceParsers';
 import { assistant, fieldType, fieldTypeValue, task, taskSample } from './hclRegexPatterns';
 import {
@@ -57,11 +57,8 @@ function formatFullyQualifiedTerraformResource(
 async function processResourceTypeInHCLFile(
   client: twilio.Twilio,
   resourceType: ResourceType,
-  account: string,
   hcl: string,
-  dryRun: boolean,
   modulePrefix: string,
-  tfvarsFile?: string,
 ): Promise<void> {
   const { pattern, findResourceSids } = registry[resourceType];
   const matches = hcl.matchAll(pattern);
@@ -78,16 +75,15 @@ async function processResourceTypeInHCLFile(
         // eslint-disable-next-line no-await-in-loop
         const resourceIds = await findResourceSids(client, knownResourceSids, captures);
 
-        resourceIds.forEach(({ sid, terraformId, knownSidKey }) => {
+        resourceIds.forEach(async ({ sid, terraformId, knownSidKey }) => {
           const fqResourceName = formatFullyQualifiedTerraformResource(
             resourceType,
             resource,
             knownSidKey,
           );
           knownResourceSids[`${fqResourceName}.sid`] = sid;
-          attemptTerraformImport(terraformId, `${modulePrefix}${fqResourceName}`, account, {
-            dryRun,
-            tfvarsFile,
+          await attemptTerraformImport(terraformId, `${modulePrefix}${fqResourceName}`, {
+            description: 'Regex matched resource',
           });
         });
       }
@@ -96,29 +92,19 @@ async function processResourceTypeInHCLFile(
 }
 
 export type ImportResourcesOptions = {
-  dryRun: boolean;
   resourceTypes: ResourceType[];
-  tfvarsFile: string;
   sids: [name: string, value: string][];
   modulePath: string[];
 };
 
 export default async function importResources(
-  accountDirectory: string,
   tfFilePath: string,
   {
     resourceTypes = <ResourceType[]>Object.keys(registry),
-    dryRun = false,
-    tfvarsFile,
     sids,
     modulePath = [],
   }: Partial<ImportResourcesOptions>,
 ): Promise<void> {
-  if (dryRun) {
-    logInfo('================== DRY RUN ==================');
-    logInfo('No imports will be performed, command outputs are what would have been run.');
-  }
-
   const tfFullFilePath = `../twilio-iac/${tfFilePath}`;
   logDebug(`Loading from: ${tfFullFilePath}`);
   const hcl = FS.readFileSync(tfFullFilePath, {
@@ -137,14 +123,6 @@ export default async function importResources(
   // eslint-disable-next-line no-restricted-syntax
   for (const resourceType of resourceTypes) {
     // eslint-disable-next-line no-await-in-loop
-    await processResourceTypeInHCLFile(
-      client,
-      resourceType,
-      accountDirectory,
-      hcl,
-      dryRun,
-      modulePrefix,
-      tfvarsFile,
-    );
+    await processResourceTypeInHCLFile(client, resourceType, hcl, modulePrefix);
   }
 }

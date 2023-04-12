@@ -18,7 +18,7 @@ import { callTypes, DefinitionVersionId } from 'hrm-form-definitions';
 
 import { cancelCase, createCase } from '../../services/CaseService';
 import fetchHrmApi from '../../services/fetchHrmApi';
-import { TaskEntry } from '../../states/contacts/reducer';
+import { TaskEntry } from '../../states/contacts/types';
 
 jest.mock('../../services/fetchHrmApi');
 const mockFetchHrmAPi: jest.Mock = fetchHrmApi as jest.Mock;

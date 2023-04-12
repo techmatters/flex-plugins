@@ -31,11 +31,11 @@ import { ITask } from '@twilio/flex-ui';
 import { isNonDataCallType } from '../states/validationRules';
 import { mapChannelForInsights } from '../utils/mappers';
 import { getDateTime } from '../utils/helpers';
-import { TaskEntry } from '../states/contacts/reducer';
 import { Case, CustomITask, HrmServiceContact } from '../types/types';
 import { formatCategories } from '../utils/formatters';
 import { getDefinitionVersions } from '../hrmConfig';
 import { shouldSendInsightsData } from '../utils/setUpActions';
+import { TaskEntry } from '../states/contacts/types';
 
 /*
  * 'Any' is the best we can do, since we're limited by Twilio here.

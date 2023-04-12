@@ -19,11 +19,11 @@ import React, { useEffect } from 'react';
 import { format } from 'date-fns';
 import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
-import { Flex, Box } from '../../styles/HrmStyles';
+import { Flex, Box, Row } from '../../styles/HrmStyles';
 import { CSAMReportEntry, isS3StoredTranscript, isTwilioStoredMedia, SearchAPIContact } from '../../types/types';
 import {
   DetailsContainer,
@@ -47,7 +47,20 @@ import { createDraft, ContactDetailsRoute } from '../../states/contacts/existing
 import { TranscriptSection } from './TranscriptSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import { contactLabelFromSearchContact } from '../../states/contacts/contactIdentifier';
+import type { ResourceReferral } from '../../states/contacts/resourceReferral';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
+
+const formatResourceReferral = (referral: ResourceReferral) => {
+  return (
+    <Box marginBottom="5px">
+      <SectionValueText>
+        {referral.resourceName}
+        <br />
+        <Row>ID #{referral.resourceId}</Row>
+      </SectionValueText>
+    </Box>
+  );
+};
 
 const formatCsamReport = (report: CSAMReportEntry) => {
   const template =
@@ -116,7 +129,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   if (!savedContact || !definitionVersion) return null;
 
   // Object destructuring on contact
-  const { overview, details, csamReports } = savedContact as SearchAPIContact;
+  const { overview, details, csamReports, referrals } = savedContact as SearchAPIContact;
   const {
     counselor,
     dateTime,
@@ -287,7 +300,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           showActionIcons={showActionIcons}
           callType="caller"
         >
-          {definitionVersion.tabbedForms.CallerInformationTab.map(e => (
+          {definitionVersion.tabbedForms.CallerInformationTab.filter(e => !isNonSaveable(e)).map(e => (
             <SectionEntry key={`CallerInformation-${e.label}`} descriptionKey={e.label}>
               <SectionEntryValue value={savedContact.details.callerInformation[e.name]} definition={e} />
             </SectionEntry>
@@ -306,7 +319,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           showActionIcons={showActionIcons}
           callType="child"
         >
-          {definitionVersion.tabbedForms.ChildInformationTab.map(e => (
+          {definitionVersion.tabbedForms.ChildInformationTab.filter(e => !isNonSaveable(e)).map(e => (
             <SectionEntry key={`ChildInformation-${e.label}`} descriptionKey={e.label}>
               <SectionEntryValue value={savedContact.details.childInformation[e.name]} definition={e} />
             </SectionEntry>
@@ -351,7 +364,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
             navigate(ContactDetailsRoute.EDIT_CASE_INFORMATION);
           }}
         >
-          {definitionVersion.tabbedForms.CaseInformationTab.map(e => (
+          {definitionVersion.tabbedForms.CaseInformationTab.filter(e => !isNonSaveable(e)).map(e => (
             <SectionEntry key={`CaseInformation-${e.label}`} descriptionKey={e.label}>
               <SectionEntryValue
                 value={savedContact.details.caseInformation[e.name] as boolean | string}
@@ -359,6 +372,11 @@ const ContactDetailsHome: React.FC<Props> = function ({
               />
             </SectionEntry>
           ))}
+          {referrals && referrals.length && (
+            <SectionEntry descriptionKey="ContactDetails-GeneralDetails-ResourcesReferrals">
+              {referrals.map(formatResourceReferral)}
+            </SectionEntry>
+          )}
           {csamReportEnabled && can(PermissionActions.EDIT_CONTACT) && (
             <SectionEntry descriptionKey="ContactDetails-GeneralDetails-ExternalReportsFiled">
               {externalReportButton()}

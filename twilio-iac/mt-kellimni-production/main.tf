@@ -208,6 +208,10 @@ module aws_monitoring {
   cloudwatch_region = "us-east-1"
 }
 
+provider "github" {
+  owner = "techmatters"
+}
+
 module github {
   source = "../terraform-modules/github/default"
   twilio_account_sid = local.secrets.twilio_account_sid

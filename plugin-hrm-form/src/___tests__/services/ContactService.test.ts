@@ -33,10 +33,11 @@ import {
   transformValues,
   updateContactInHrm,
 } from '../../services/ContactService';
-import { createNewTaskEntry, TaskEntry } from '../../states/contacts/reducer';
+import { createNewTaskEntry } from '../../states/contacts/reducer';
 import { channelTypes } from '../../states/DomainConstants';
 import { offlineContactTaskSid } from '../../types/types';
 import { getDefinitionVersions } from '../../hrmConfig';
+import { TaskEntry } from '../../states/contacts/types';
 
 const helpline = 'ChildLine Zambia (ZM)';
 
@@ -101,6 +102,7 @@ describe('transformForm', () => {
       },
       csamReports: [],
       metadata: <any>{},
+      draft: <any>{},
     };
 
     const expectedCategories = oldForm.categories.reduce((acc, path) => set(path, true, acc), {
@@ -176,7 +178,7 @@ describe('saveContact()', () => {
   };
   const workerSid = 'worker-sid';
   const uniqueIdentifier = 'uniqueIdentifier';
-  const fetchSuccess = Promise.resolve(<any>{ ok: true, json: jest.fn() });
+  const fetchSuccess = Promise.resolve(<any>{ ok: true, json: jest.fn(), text: jest.fn() });
 
   test('data calltype saves form data', async () => {
     const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
@@ -214,7 +216,7 @@ describe('saveContact() (isContactlessTask)', () => {
   };
   const workerSid = 'worker-sid';
   const uniqueIdentifier = 'uniqueIdentifier';
-  const fetchSuccess = Promise.resolve(<any>{ ok: true, json: jest.fn() });
+  const fetchSuccess = Promise.resolve(<any>{ ok: true, json: jest.fn(), text: jest.fn() });
   let mockedFetch;
 
   beforeEach(() => {
@@ -361,9 +363,11 @@ describe('transformValues', () => {
 
 test('updateContactInHrm - calls a PATCH HRM endpoint using the supplied contact ID in the route', async () => {
   const responseBody = { from: 'HRM' };
-  const mockedFetch = jest
-    .spyOn(global, 'fetch')
-    .mockResolvedValue(<Response>{ ok: true, json: () => Promise.resolve(responseBody) });
+  const mockedFetch = jest.spyOn(global, 'fetch').mockResolvedValue(<Response>{
+    ok: true,
+    json: () => Promise.resolve(responseBody),
+    text: () => Promise.resolve(responseBody),
+  });
   try {
     const inputPatch = { rawJson: { caseInformation: { categories: {} } } };
     const ret = await updateContactInHrm('1234', inputPatch);
