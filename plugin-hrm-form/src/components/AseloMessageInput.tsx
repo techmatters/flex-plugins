@@ -15,7 +15,7 @@ const AseloMessageInput: React.FC<Props> = props => {
 
   return (
     <div key="textarea">
-      <textarea id="messageInputArea" ref={textAreaRef} />
+      <textarea style={{ height: 30, width: 'auto' }} id="messageInputArea" ref={textAreaRef} />
       <Button
         onClick={() => {
           manager.conversationsClient
