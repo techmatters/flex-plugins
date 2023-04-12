@@ -16,10 +16,20 @@
 
 /* eslint-disable react/display-name */
 /* eslint-disable react/no-multi-comp */
-import React from 'react';
+import React, { useMemo, useRef } from 'react';
 import * as Flex from '@twilio/flex-ui';
 import type { FilterDefinitionFactory } from '@twilio/flex-ui/src/components/view/TeamsView';
+import format from 'date-fns/format';
+import { ViewportList } from 'react-viewport-list';
 
+import { TranscriptMessage, TranscriptResult } from '../states/contacts/existingContacts';
+import MessageItem, { GroupedMessage } from '../components/contact/TranscriptSection/MessageItem';
+import {
+  DateRulerContainer,
+  DateRulerDateText,
+  DateRulerHr,
+  MessageList,
+} from '../components/contact/TranscriptSection/styles';
 import { AcceptTransferButton, RejectTransferButton, TransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
 import EmojiPicker from '../components/emojiPicker';
@@ -359,11 +369,111 @@ export const removeActionsIfTransferring = () => {
 };
 
 /**
+ * ============================================================================
+ */
+type MessageWithSenderInfo = TranscriptMessage & {
+  friendlyName: string;
+  isCounselor: boolean;
+};
+
+type ConversationStateMessage = Flex.ConversationState.ConversationState['messages'][number];
+type GroupedMessages = { [dateKey: string]: ConversationStateMessage[] };
+const groupMessagesByDate = (accum: GroupedMessages, m: ConversationStateMessage, index: number): GroupedMessages => {
+  const dateKey = format(new Date(m.source.dateCreated), 'yyyy/MM/dd');
+
+  if (!accum[dateKey]) {
+    return { ...accum, [dateKey]: [{ ...m }] };
+  }
+
+  /*
+   * const prevMessage = accum[dateKey][accum[dateKey].length - 1];
+   * const isGroupedWithPrevious = m.groupWithPrevious;
+   */
+
+  return { ...accum, [dateKey]: [...accum[dateKey], m] };
+};
+
+const groupMessages = (messages: ConversationStateMessage[]): GroupedMessages =>
+  messages.reduce(groupMessagesByDate, {});
+
+const renderGroupedMessages = (groupedMessages: GroupedMessages) =>
+  Object.entries(groupedMessages).flatMap(([dateKey, ms]) => {
+    const dateRuler = (
+      <DateRulerContainer>
+        <DateRulerHr />
+        <DateRulerDateText>{dateKey}</DateRulerDateText>
+        <DateRulerHr />
+      </DateRulerContainer>
+    );
+
+    const messages = ms.map(m => (
+      <MessageItem
+        key={m.source.sid}
+        message={{
+          body: m.source.body,
+          dateCreated: m.source.dateCreated,
+          friendlyName: m.authorName,
+          from: m.source.author,
+          index: m.index,
+          isCounselor: m.isFromMe,
+          isGroupedWithPrevious: m.groupWithPrevious,
+          media: m.bodyAttachment,
+          sid: m.source.sid,
+          type: m.source.type,
+        }}
+      />
+    ));
+
+    return [dateRuler, ...messages];
+  });
+
+type MessageListProps = {
+  channel?: any;
+  channelSid: string;
+  conversation: Flex.ConversationState.ConversationState;
+  conversationSid: string;
+  conversationType?: string;
+  dispatch: () => void;
+  isAppActive: boolean;
+  memberDisplayOptions: {
+    yourDefaultName: string;
+    theirDefaultName: string;
+    yourFriendlyNameOverride: boolean;
+    theirFriendlyNameOverride: boolean;
+  };
+  notVisible: boolean;
+  predefinedMessage?: string;
+  showReadStatus: boolean;
+  showTypingIndicator: boolean;
+  showWelcomeMessage: boolean;
+};
+
+const ReplaceMessageList: React.FC<any> = (props: MessageListProps) => {
+  const { messages } = props.conversation;
+  const renderedMessages = React.useMemo(() => renderGroupedMessages(groupMessages(messages)), [messages]);
+  const ref = React.useRef(null);
+
+  // return {renderedMessages}</MessageList>;
+  return (
+    <MessageList key="list">
+      <ViewportList ref={ref} items={renderedMessages}>
+        {item => item}
+      </ViewportList>
+    </MessageList>
+  );
+};
+/**
  * Canned responses
  */
 export const setupCannedResponses = () => {
-  Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" />);
+  // Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" />);
   Flex.MessageInputV2.Content.replace(<AseloMessageInput key="textarea" />, { sortOrder: -1 });
+
+  /*
+   * <div key="list" style={{ transform: 'translateZ(0)' }}>
+   *   </div>,
+   */
+  Flex.MessagingCanvas.MessageList.Content.replace(<ReplaceMessageList key="list" />);
 };
 
 /**
