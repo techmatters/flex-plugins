@@ -356,3 +356,30 @@ export const afterWrapupTask = (featureFlags: FeatureFlags, setupObject: SetupOb
     await triggerPostSurvey(setupObject, payload);
   }
 };
+
+// eslint-disable-next-line import/no-mutable-exports
+export let isWorkersTabReplaced = false;
+
+export const beforeShowDirectory = async (): Promise<void> => {
+  const { worker } = Manager.getInstance().store.getState().flex;
+  const activitiesArray = Array.from(worker.activities.values());
+  const availableActivities = activitiesArray.filter(a => a.available).map(a => a.name);
+
+  const availableWorkers = (
+    await Promise.all(
+      availableActivities.map(activity =>
+        Manager.getInstance().workspaceClient.fetchWorkers({ ActivityName: activity }),
+      ),
+    )
+  ).flatMap(m => Array.from(m.values()).filter(w => w.sid !== worker.worker?.sid));
+
+  const replaceWorkersTab = !Boolean(availableWorkers.length);
+
+  if (replaceWorkersTab) {
+    isWorkersTabReplaced = true;
+  }
+};
+
+export const afterHideDirectory = async (): Promise<void> => {
+  isWorkersTabReplaced = false;
+};

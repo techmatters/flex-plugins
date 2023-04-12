@@ -165,6 +165,9 @@ const setUpActions = (
   Flex.Actions.addListener('afterWrapupTask', afterWrapupAction);
 
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
+
+  Flex.Actions.addListener('beforeShowDirectory', ActionFunctions.beforeShowDirectory);
+  Flex.Actions.addListener('afterHideDirectory', ActionFunctions.afterHideDirectory);
 };
 
 export default class HrmFormPlugin extends FlexPlugin {
