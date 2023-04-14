@@ -44,24 +44,185 @@ locals {
     ]
 
   task_queues = [
-    { 
-      "friendly_name" = "KHP English",
-      "target_workers" = "routing.skills HAS 'KHP English'"
-    }
-  ]
+        {
+          "target_workers"= "1==1",
+          "friendly_name"= "Aggregate"
+        },
+        {
+          "target_workers"= "routing.skills HAS 'KHP English'",
+          "friendly_name"= "KHP English"
+        },
+        {
+          "target_workers"= "1==0",
+          "friendly_name"= "Survey"
+        },
+        {
+          "target_workers"= "routing.skills HAS 'KHP French'",
+          "friendly_name"= "KHP French"
+        },
+        {
+          "target_workers"= "routing.skills HAS 'Interpreter' ",
+          "friendly_name"= "Interpreter"
+        },
+        {
+          "target_workers"= "routing.skills HAS 'AB211 English'",
+          "friendly_name"= "AB211 English"
+        },
+        {
+          "target_workers"= "routing.skills HAS 'AB211 French'",
+          "friendly_name"= "AB211 French"
+        },
+        {
+          "target_workers"= "routing.skills HAS 'Good2Talk ON English'",
+          "friendly_name"= "Good2Talk ON English"
+        },
+        {
+          "target_workers"= "routing.skills HAS 'French Interpreter'",
+          "friendly_name"= "French Interpreter"
+        },
+        {
+          "target_workers"= "routing.skills HAS 'Good2Talk ON French'",
+          "friendly_name"= "Good2Talk ON French"
+        },
+        {
+          "target_workers"= "routing.skills HAS 'Supervisor'",
+          "friendly_name"= "Supervisor"
+        },
+        {
+          "target_workers"= "routing.skills HAS 'Training'",
+          "friendly_name"= "Training"
+        },
+        {
+          "target_workers"= "routing.skills HAS 'Good2Talk NS English'",
+          "friendly_name"= "Good2Talk NS English"
+        },
+        {
+          "target_workers"= "routing.skills HAS 'Good2Talk NS French'",
+          "friendly_name"= "Good2Talk NS French"
+        },
+        {
+          "target_workers"= "routing.skills HAS 'Health Canada English'",
+          "friendly_name"= "Health Canada English"
+        },
+        {
+          "target_workers"= "routing.skills HAS 'Health Canada French'",
+          "friendly_name"= "Health Canada French"
+        },
+        {
+          "target_workers"= "routing.skills HAS 'Good2Talk ON Mandarin'",
+          "friendly_name"= "Good2Talk ON Mandarin"
+        },
+        {
+          "target_workers"= "routing.skills HAS 'Chat English'",
+          "friendly_name"= "Chat English"
+        },
+        {
+          "target_workers"= "routing.skills HAS 'Chat French'",
+          "friendly_name"= "Chat French"
+        },
+        {
+          "target_workers"= "routing.skills HAS 'Indigenous [Interpreter]'",
+          "friendly_name"= "Indigenous [Interpreter]"
+        }
+      ]
   workflows = [
     {
        "friendly_name" = "Master Workflow",
-       "filters" = [{
-                    expression           = "(to==\"+15878407089\" AND language CONTAINS \"en-CA\") OR isContactlessTask == true"
-                    filter_friendly_name = "KHP English"
-                    targets              = [
-                            {
-                            expression = "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
-                            queue      = "KHP English"
-                            }
-                      ]
-                    }]
+       "filters" = [
+              {
+                filter_friendly_name= "Dialpad",
+                expression= "flexOutboundDialerTargetWorker != null",
+                targets= [
+                  {
+                    expression= "task.flexOutboundDialerTargetWorker == worker.contact_uri",
+                    queue= "Aggregate"
+                  }
+                ]
+              },
+              {
+                filter_friendly_name= "KHP English",
+                targets= [
+                  {
+                    queue= "KHP English",
+                    expression= "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
+                  }
+                ],
+                expression= "(to==\"+15878407089\" AND language CONTAINS \"en-CA\") OR isContactlessTask == true"
+              },
+              {
+                filter_friendly_name= "KHP French",
+                targets= [
+                  {
+                    expression= "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+                    queue= "KHP French",
+                    timeout= 20
+                  },
+                  {
+                    timeout= 0,
+                    priority= 0,
+                    expression= "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+                    queue= "KHP English"
+                  }
+                ],
+                expression= "(to==\"+15878407089\" AND language CONTAINS \"fr-CA\")"
+              },
+              {
+                filter_friendly_name= "Interpreter",
+                targets= [
+                  {
+                    expression= "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+                    queue= "Interpreter"
+                  }
+                ],
+                expression= "(to==\"+15878407089\" AND language CONTAINS \"en-CA\")"
+              },
+              {
+                targets= [
+                  {
+                    queue= "Good2Talk ON English",
+                    expression= "(worker.routing.skills HAS 'English Only') AND (worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+                    "skip_if"= "1==1"
+                  },
+                  {
+                    queue= "Good2Talk ON English",
+                    expression= "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
+                  }
+                ],
+                expression= "(to=\"+15814810744\" AND language CONTAINS \"en-CA\")",
+                filter_friendly_name= "G2T English"
+              },
+              {
+                targets= [
+                  {
+                    queue= "Aggregate",
+                    expression= "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
+                  }
+                ],
+                expression= "(to=\"+15814810744\" AND language CONTAINS \"fr-CA\")",
+                filter_friendly_name= "G2T French"
+              },
+              {
+                targets= [
+                  {
+                    queue= "Chat English",
+                    expression= "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
+                  }
+                ],
+                expression= "channelType=='web' AND language CONTAINS \"en-CA\"",
+                filter_friendly_name= "Chat English"
+              },
+              {
+                targets= [
+                  {
+                    queue= "Chat French",
+                    expression= "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
+                  }
+                ],
+                expression= "channelType=='web' AND language CONTAINS \"fr-CA\"",
+                filter_friendly_name= "Chat French"
+              }
+                    
+      ]
 
     }
   ]
