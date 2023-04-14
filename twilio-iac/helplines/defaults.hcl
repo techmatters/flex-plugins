@@ -48,24 +48,24 @@ locals {
 
   manage_github_secrets = true
 
-  task_router_config = {
-    event_filters = [
-      "task.created",
-      "task.canceled",
-      "task.completed",
-      "task.deleted",
-      "task.wrapup",
-      "task-queue.entered",
-      "task.system-deleted",
-      "reservation.accepted",
-      "reservation.rejected",
-      "reservation.timeout",
-      "reservation.wrapup",
-    ]
 
-    additional_queues = []
+  event_filters = [
+    "task.created",
+    "task.canceled",
+    "task.completed",
+    "task.deleted",
+    "task.wrapup",
+    "task-queue.entered",
+    "task.system-deleted",
+    "reservation.accepted",
+    "reservation.rejected",
+    "reservation.timeout",
+    "reservation.wrapup",
+  ]
 
-    channels = [
+  task_queues = []
+
+  task_channels = [
       {
         friendly_name = "Default"
         unique_name   = "default"
@@ -89,9 +89,13 @@ locals {
       {
         friendly_name = "Email"
         unique_name   = "email"
+      },
+      {
+        friendly_name = "Survey"
+        unique_name   = "survey"
       }
     ]
-  }
+  
 
   mock_outputs = {
     chatbot = {

@@ -27,11 +27,11 @@ variable "workflows" {
         filter_friendly_name  =  string
         expression            = string
         targets               = list (object({
-        expression  = string
-        queue       = string
-        timeout     = optional(number)
-        priority    = optional(number)
-        skip_if     = optional(string)
+            expression  = string
+            queue       = string
+            timeout     = optional(number)
+            priority    = optional(number)
+            skip_if     = optional(string)
         }))
     }))
   }))

@@ -14,5 +14,18 @@ locals {
     twilio_channels = {
       "webchat" = { "contact_identity" = "", "channel_type" = "web" }
     }
+    task_queues = [
+      { 
+        "friendly_name" = "KHP English",
+        "target_workers" = "routing.skills HAS 'KHP English'"
+      }
+     ]
+
+   
+
+
+
+
+
   }
 }
