@@ -142,7 +142,7 @@ module "taskRouter" {
 module studioFlow {
   source = "../terraform-modules/studioFlow/default"
   master_workflow_sid = module.taskRouter.workflow_id["Master Workflow"]
-  chat_task_channel_sid = module.taskRouter.task_channel_id["Chat"]
+  chat_task_channel_sid = module.taskRouter.task_channel_id["Programmable Chat"]
   default_task_channel_sid = module.taskRouter.task_channel_id["Default"]
   pre_survey_bot_sid = "UA1c64297b2953092b4ae9f0db543f3b25"
 
