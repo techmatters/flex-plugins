@@ -19,6 +19,7 @@ import type { Conversation } from '@twilio/conversations';
 
 import { FeatureFlags } from '../types/types';
 import * as TransferHelpers from './transfer';
+import { deactivateAseloListeners } from '../conversationListeners';
 
 const removeConversationListeners = (conversation: Conversation) => {
   const safelyRemoveListeners = (eventName: string) => {
@@ -42,7 +43,7 @@ const removeConversationListenersForTask = (task: ITask) => {
   }
 };
 
-const removeConversationListenersForTransferred = async (task: ITask) => {
+const deactivateConversationListenersForTransferred = async (task: ITask) => {
   try {
     if (
       TaskHelper.isChatBasedTask(task) &&
@@ -55,7 +56,7 @@ const removeConversationListenersForTransferred = async (task: ITask) => {
         task.attributes.transferMeta.originalConversationSid,
       );
 
-      removeConversationListeners(conversation);
+      deactivateAseloListeners(conversation);
     }
   } catch (err) {
     console.error('Error trying to run taskComplete taskrouter listener', err);
@@ -76,6 +77,6 @@ export const setTaskWrapupEventListeners = (featureFlags: FeatureFlags) => {
    * If transfers are on, after a task is transferred remove all the conversation listeners to prevent message notifications
    */
   if (featureFlags.enable_transfers) {
-    manager.events.addListener('taskCompleted', removeConversationListenersForTransferred);
+    manager.events.addListener('taskCompleted', deactivateConversationListenersForTransferred);
   }
 };
