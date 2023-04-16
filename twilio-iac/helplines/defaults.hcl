@@ -48,8 +48,7 @@ locals {
 
   manage_github_secrets = true
 
-
-  event_filters = [
+  events_filter = [
     "task.created",
     "task.canceled",
     "task.completed",
@@ -63,39 +62,64 @@ locals {
     "reservation.wrapup",
   ]
 
-  task_queues = []
+  task_queues = [
+    {
+      name = "master"
+      friendly_name = "Master"
+      target_workders = "1"
+      target_workers = "1==1"
+    },
+    // {
+    //   name = "survey"
+    //   friendly_name = "Survey"
+    //   target_workders = "1"
+    //   target_workers = "1==0"
+    // },
+  ]
+
+  workflows = [
+    {
+      name          = "master"
+      friendly_name = "Master Workflow"
+      templatefile  = "/app/twilio-iac/helplines/templates/master-workflow.json"
+    },
+    // {
+    //   name          = "survey"
+    //   friendly_name = "Survey"
+    //   templatefile  = "/app/twilio-iac/helplines/templates/survey-workflow.json"
+    // },
+  ]
 
   task_channels = [
-      {
-        friendly_name = "Default"
-        unique_name   = "default"
-      },
-      {
-        friendly_name = "Programmable Chat"
-        unique_name   = "chat"
-      },
-      {
-        friendly_name = "Voice"
-        unique_name   = "voice"
-      },
-      {
-        friendly_name = "SMS"
-        unique_name   = "sms"
-      },
-      {
-        friendly_name = "Video"
-        unique_name   = "video"
-      },
-      {
-        friendly_name = "Email"
-        unique_name   = "email"
-      },
-      {
-        friendly_name = "Survey"
-        unique_name   = "survey"
-      }
-    ]
-  
+    {
+      friendly_name = "Default"
+      unique_name   = "default"
+    },
+    {
+      friendly_name = "Programmable Chat"
+      unique_name   = "chat"
+    },
+    {
+      friendly_name = "Voice"
+      unique_name   = "voice"
+    },
+    {
+      friendly_name = "SMS"
+      unique_name   = "sms"
+    },
+    {
+      friendly_name = "Video"
+      unique_name   = "video"
+    },
+    {
+      friendly_name = "Email"
+      unique_name   = "email"
+    },
+    // {
+    //   friendly_name = "Survey"
+    //   unique_name   = "survey"
+    // },
+  ]
 
   mock_outputs = {
     chatbot = {

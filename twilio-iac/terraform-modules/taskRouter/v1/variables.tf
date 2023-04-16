@@ -11,8 +11,8 @@ variable "helplines" {
   default     = null
 }
 
-variable "event_callback_url" {
-  description = "Call back URL"
+variable "serverless_url" {
+  description = "URL used to access Aselo Twilio serverless functions"
   type        = string
 }
 
@@ -24,26 +24,18 @@ variable "events_filter" {
 variable "task_queues" {
   description = "Task queues"
   type = list(object({
+    name           = string
     friendly_name  = string
     target_workers = string
   }))
 }
 
 variable "workflows" {
-  description = "Workflows"
+  description = "Workflow template file"
   type = list(object({
+    name          = string
     friendly_name = string
-    filters = list(object({
-      filter_friendly_name = string
-      expression           = string
-      targets = list(object({
-        expression = string
-        queue      = string
-        timeout    = optional(number)
-        priority   = optional(number)
-        skip_if    = optional(string)
-      }))
-    }))
+    templatefile  = string
   }))
 }
 
@@ -53,4 +45,10 @@ variable "task_channels" {
     friendly_name = string
     unique_name   = string
   }))
+}
+
+variable "custom_task_routing_filter_expression" {
+  description = "Setting this will override the default task routing filter expression, which is helpline=='<var.helpline>'"
+  type        = string
+  default     = ""
 }
