@@ -36,7 +36,7 @@ locals {
         "friendly_name"  = "KHP English"
       },
       khp_fr : { "target_workers" = "routing.skills HAS 'KHP French'",
-        "friendly_name"  = "KHP French"
+        "friendly_name"           = "KHP French"
       },
       ab211_en : {
         "target_workers" = "routing.skills HAS 'AB211 English'",
@@ -78,7 +78,7 @@ locals {
         "target_workers" = "routing.skills HAS 'Supervisor'",
         "friendly_name"  = "Supervisor"
       },
-      training: {
+      training : {
         "target_workers" = "routing.skills HAS 'Training'",
         "friendly_name"  = "Training"
       },
