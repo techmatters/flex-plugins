@@ -23,8 +23,7 @@ variable "events_filter" {
 
 variable "task_queues" {
   description = "Task queues"
-  type = list(object({
-    name           = string
+  type = map(object({
     friendly_name  = string
     target_workers = string
   }))
@@ -32,8 +31,7 @@ variable "task_queues" {
 
 variable "workflows" {
   description = "Workflow template file"
-  type = list(object({
-    name          = string
+  type = map(object({
     friendly_name = string
     templatefile  = string
   }))
@@ -41,10 +39,7 @@ variable "workflows" {
 
 variable "task_channels" {
   description = "Task channels"
-  type = list(object({
-    friendly_name = string
-    unique_name   = string
-  }))
+  type        = map(string)
 }
 
 variable "custom_task_routing_filter_expression" {
