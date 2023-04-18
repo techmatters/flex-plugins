@@ -1242,3 +1242,12 @@ export const StyledCSAMReportDropdownList = styled('button')`
   border: none;
 `;
 StyledCSAMReportDropdownList.displayName = 'StyledCSAMReportDropdownList';
+
+export const TypingIndicatorText = styled(FontOpenSans)`
+  font-size: 10px;
+  margin: auto 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+TypingIndicatorText.displayName = 'TypingIndicatorText';

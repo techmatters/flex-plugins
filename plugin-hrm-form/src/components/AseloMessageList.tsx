@@ -4,7 +4,7 @@ import { ConversationState, Template } from '@twilio/flex-ui';
 
 import { MessageList } from './Messaging/MessageList';
 import type { GroupedMessage } from './Messaging/MessageItem';
-import { Flex } from '../styles/HrmStyles';
+import { Flex, TypingIndicatorText } from '../styles/HrmStyles';
 
 type ConversationStateMessage = ConversationState.ConversationState['messages'][number];
 
@@ -27,9 +27,9 @@ const getTypingIndicatorText = (typers: ConversationState.ParticipantState[]): R
   const typersNames = typers.map(v => (v.source.isTyping ? v.friendlyName : ''));
 
   return (
-    <span>
+    <TypingIndicatorText>
       <Template code="TypingIndicator" name={typersNames[0]} />
-    </span>
+    </TypingIndicatorText>
   );
 };
 
