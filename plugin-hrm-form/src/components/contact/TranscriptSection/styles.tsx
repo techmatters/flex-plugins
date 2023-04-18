@@ -52,10 +52,10 @@ export const MessageList = styled('div')`
   flex-direction: column;
   align-items: center;
   margin: 6px 0;
-  padding: 0 3.75%;
   padding-bottom: 50px;
   width: 100%;
-`;
+  `;
+  // padding: 0 3.75%;
 MessageList.displayName = 'MessageList';
 
 export const MessageItemContainer = styled(Row)<{ isCounselor: boolean; isGroupedWithPrevious: boolean }>`

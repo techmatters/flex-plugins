@@ -456,7 +456,7 @@ const ReplaceMessageList: React.FC<any> = (props: MessageListProps) => {
   // return {renderedMessages}</MessageList>;
   return (
     <MessageList key="list">
-      <ViewportList ref={ref} items={renderedMessages}>
+      <ViewportList ref={ref} items={renderedMessages} scrollThreshold={0} overscan={2}>
         {item => item}
       </ViewportList>
     </MessageList>
