@@ -1,28 +1,45 @@
 import { MessageInputChildrenProps } from '@twilio/flex-ui-core/src/components/channel/MessageInput/MessageInputImpl';
-import React, { useEffect, useState } from 'react';
-import { Button, Manager, Template, withTheme } from '@twilio/flex-ui';
+import React, { Dispatch, useEffect } from 'react';
+import { Button, Template, withTheme } from '@twilio/flex-ui';
 import { useForm } from 'react-hook-form';
 import debounce from 'lodash/debounce';
+import { connect } from 'react-redux';
 
 import CannedResponses from './CannedResponses';
-import useTraceUpdate from '../hooks/useTraceUpdate';
+import { conversationsBase, namespace, RootState } from '../states';
+import { newUpdateDraftMessageTextAction } from '../states/conversations';
 
-type Props = Partial<MessageInputChildrenProps>;
+type MessageProps = Partial<MessageInputChildrenProps>;
 
-type Conversation = Awaited<ReturnType<Manager['conversationsClient']['getConversationBySid']>>;
+const mapDispatchToProps = (
+  dispatch: Dispatch<{ type: string } & Record<string, any>>,
+  { conversationSid }: MessageProps,
+) => ({
+  updateDraftMessageText: (text: string) => dispatch(newUpdateDraftMessageTextAction(conversationSid, text)),
+});
 
-const AseloMessageInput: React.FC<Props> = props => {
-  const [conversation, setConversation] = useState<Conversation>();
+const mapStateToProps = (state: RootState, { conversationSid }: MessageProps) => ({
+  draftText: state[namespace][conversationsBase][conversationSid]?.draftMessageText ?? '',
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & MessageProps;
+
+const AseloMessageInput: React.FC<Props> = ({
+  conversationSid,
+  conversation: { source: conversation },
+  updateDraftMessageText,
+  draftText,
+}) => {
   const { register, handleSubmit, setValue, getValues } = useForm();
-  const { conversationSid } = props;
 
   useEffect(() => {
-    const fetchConversation = async () => {
-      const conversation = await Manager.getInstance().conversationsClient.getConversationBySid(conversationSid);
-      setConversation(conversation);
+    setValue('messageInputArea', draftText);
+    return () => {
+      updateDraftMessageText(getValues('messageInputArea'));
     };
-
-    fetchConversation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversationSid]);
 
   const triggerTyping = () => {
@@ -35,8 +52,6 @@ const AseloMessageInput: React.FC<Props> = props => {
     leading: true,
     trailing: true,
   });
-
-  useTraceUpdate(props, 'AseloMessageInput');
 
   return (
     <div key="textarea">
@@ -53,7 +68,10 @@ const AseloMessageInput: React.FC<Props> = props => {
           const message = getValues('messageInputArea');
 
           if (conversation) {
-            conversation.sendMessage(message).then(() => setValue('messageInputArea', ''));
+            conversation.sendMessage(message).then(() => {
+              setValue('messageInputArea', '');
+              updateDraftMessageText('');
+            });
           }
         })}
       >
@@ -65,4 +83,4 @@ const AseloMessageInput: React.FC<Props> = props => {
 };
 AseloMessageInput.displayName = 'AseloMessageInput';
 
-export default withTheme(AseloMessageInput);
+export default withTheme(connector(AseloMessageInput));
