@@ -134,28 +134,6 @@ actions = jsonencode(
 								"num_attempts": 2
 							}
 						}
-					},
-					{
-						"question": "${local.strings_mt["Do you accept our Terms and Conditions?"]}",
-						"name": "terms_conditions",
-						"type": "YesNo",
-						"validate": {
-							"on_failure": {
-								"messages": [
-									{
-										"say": "${local.strings_mt["Sorry, I didn't understand that. Please try again."]}"
-									},
-									{
-										"say": "${local.strings_mt["Sorry, I still didn't get that."]}"
-									}
-								],
-								"repeat_question": true
-							},
-							"max_attempts": {
-								"redirect": "task://redirect_function",
-								"num_attempts": 2
-							}
-						}
 					}
 				],
 				"on_complete": {
