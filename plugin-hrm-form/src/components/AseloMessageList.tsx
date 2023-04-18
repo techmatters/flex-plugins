@@ -1,9 +1,10 @@
 import React from 'react';
 import type { MessageListChildrenProps } from '@twilio/flex-ui-core/src/components/channel/MessageList/MessageList';
-import type { ConversationState } from '@twilio/flex-ui';
+import { ConversationState, Template } from '@twilio/flex-ui';
 
 import { MessageList } from './Messaging/MessageList';
 import type { GroupedMessage } from './Messaging/MessageItem';
+import { Flex } from '../styles/HrmStyles';
 
 type ConversationStateMessage = ConversationState.ConversationState['messages'][number];
 
@@ -20,10 +21,28 @@ const intoGroupedMessage = (m: ConversationStateMessage): GroupedMessage => ({
   type: m.source.type,
 });
 
+const getTypingIndicatorText = (typers: ConversationState.ParticipantState[]): React.ReactElement => {
+  if (typers.length === 0) return null;
+
+  const typersNames = typers.map(v => (v.source.isTyping ? v.friendlyName : ''));
+
+  return (
+    <span>
+      <Template code="TypingIndicator" name={typersNames[0]} />
+    </span>
+  );
+};
+
 const ReplaceMessageList: React.FC<any> = (props: MessageListChildrenProps) => {
-  const { messages } = props.conversation;
+  const { messages, typers } = props.conversation;
   const groupedMessages = React.useMemo(() => messages.map(intoGroupedMessage), [messages]);
-  return <MessageList messages={groupedMessages} />;
+
+  return (
+    <Flex flexDirection="column" width="100%">
+      <MessageList messages={groupedMessages} />
+      <div style={{ width: '100%', height: 28 }}>{getTypingIndicatorText(typers)}</div>
+    </Flex>
+  );
 };
 ReplaceMessageList.displayName = 'ReplaceMessageList';
 
