@@ -5,7 +5,6 @@ output "flex_task_assignment_workspace_sid" {
 
 output "workflow_ids" {
   value = { for idx, w in var.workflows : idx => twilio_taskrouter_workspaces_workflows_v1.workflow[idx].sid }
-  # value = zipmap(values(twilio_taskrouter_workspaces_workflows_v1.workflow)[*].name, values(twilio_taskrouter_workspaces_workflows_v1.workflow)[*].id)
 }
 
 output "task_channel_ids" {

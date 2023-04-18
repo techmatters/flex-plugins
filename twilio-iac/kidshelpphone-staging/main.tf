@@ -55,10 +55,7 @@ locals {
       "target_workers" = "1==1",
       "friendly_name"  = "Aggregate"
     },
-    survey : {
-      "target_workers" = "1==0",
-      "friendly_name"  = "Survey"
-    },
+
     khp_en : {
       "target_workers" = "routing.skills HAS 'KHP English'",
       "friendly_name"  = "KHP English"
@@ -139,7 +136,7 @@ locals {
     sms : "SMS"
     video : "Video"
     email : "Email"
-    survey : "Survey"
+    //survey : "Survey"
   }
 
 }
