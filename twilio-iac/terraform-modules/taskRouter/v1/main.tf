@@ -48,6 +48,7 @@ resource "twilio_taskrouter_workspaces_workflows_v1" "workflow" {
       helpline                       = var.helpline
       helplines                      = local.helplines
       task_routing_filter_expression = local.task_routing_filter_expression
+      phone_numbers                  = var.phone_numbers
     }
   )
 }

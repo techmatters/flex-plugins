@@ -13,7 +13,7 @@
         },
         {
           "filter_friendly_name": "KHP English",
-          "expression": "(to==\"+15878407089\" AND language CONTAINS \"en-CA\") OR isContactlessTask == true",
+          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] AND language CONTAINS \"en-CA\") OR isContactlessTask == true",
           "targets": [
             {
               "queue": "${task_queues.khp_en}",
@@ -23,7 +23,7 @@
         },
         {
           "filter_friendly_name": "KHP French",
-          "expression": "(to==\"+15878407089\" AND language CONTAINS \"fr-CA\")",
+          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] AND language CONTAINS \"fr-CA\")",
           "targets": [
             {
               "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
@@ -40,7 +40,7 @@
         },
         {
           "filter_friendly_name": "Interpreter",
-          "expression": "(to==\"+15878407089\" AND language CONTAINS \"en-CA\")",
+          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] AND language CONTAINS \"en-CA\")",
           "targets": [
             {
               "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
@@ -50,7 +50,7 @@
         },
         {
           "filter_friendly_name": "G2T English",
-          "expression": "(to=\"+15814810744\" AND language CONTAINS \"en-CA\")",
+          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.g2t))}] AND language CONTAINS \"en-CA\")",
           "targets": [
             {
               "queue": "${task_queues.g2t_on_en}",
@@ -65,7 +65,7 @@
         },
         {
           "filter_friendly_name": "G2T French",
-          "expression": "(to=\"+15814810744\" AND language CONTAINS \"fr-CA\")",
+          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.g2t))}] AND language CONTAINS \"fr-CA\")",
           "targets": [
             {
               "queue": "${task_queues.aggregate}",

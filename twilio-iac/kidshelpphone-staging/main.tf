@@ -43,6 +43,11 @@ locals {
     "reservation.wrapup",
   ]
 
+  phone_numbers = {
+    khp : ["+15878407089"],
+    g2t : ["+15814810744"]
+  }
+
   workflows = {
     master : {
       friendly_name = "Master Workflow"
@@ -178,6 +183,7 @@ module "taskRouter" {
   task_queues    = local.task_queues
   workflows      = local.workflows
   task_channels  = local.task_channels
+  phone_numbers  = local.phone_numbers
 }
 
 module "studioFlow" {
