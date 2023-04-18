@@ -23,241 +23,124 @@ provider "aws" {
 }
 
 data "aws_ssm_parameter" "secrets" {
-  name     = "/terraform/twilio-iac/${basename(abspath(path.module))}/secrets.json"
+  name = "/terraform/twilio-iac/${basename(abspath(path.module))}/secrets.json"
 }
 
 locals {
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
 
   events_filter = [
-      "task.created",
-      "task.canceled",
-      "task.completed",
-      "task.deleted",
-      "task.wrapup",
-      "task-queue.entered",
-      "task.system-deleted",
-      "reservation.accepted",
-      "reservation.rejected",
-      "reservation.timeout",
-      "reservation.wrapup",
-    ]
-
-  task_queues = [
-        {
-          "target_workers"= "1==1",
-          "friendly_name"= "Aggregate"
-        },
-        {
-          "target_workers"= "routing.skills HAS 'KHP English'",
-          "friendly_name"= "KHP English"
-        },
-        {
-          "target_workers"= "1==0",
-          "friendly_name"= "Survey"
-        },
-        {
-          "target_workers"= "routing.skills HAS 'KHP French'",
-          "friendly_name"= "KHP French"
-        },
-        {
-          "target_workers"= "routing.skills HAS 'Interpreter' ",
-          "friendly_name"= "Interpreter"
-        },
-        {
-          "target_workers"= "routing.skills HAS 'AB211 English'",
-          "friendly_name"= "AB211 English"
-        },
-        {
-          "target_workers"= "routing.skills HAS 'AB211 French'",
-          "friendly_name"= "AB211 French"
-        },
-        {
-          "target_workers"= "routing.skills HAS 'Good2Talk ON English'",
-          "friendly_name"= "Good2Talk ON English"
-        },
-        {
-          "target_workers"= "routing.skills HAS 'French Interpreter'",
-          "friendly_name"= "French Interpreter"
-        },
-        {
-          "target_workers"= "routing.skills HAS 'Good2Talk ON French'",
-          "friendly_name"= "Good2Talk ON French"
-        },
-        {
-          "target_workers"= "routing.skills HAS 'Supervisor'",
-          "friendly_name"= "Supervisor"
-        },
-        {
-          "target_workers"= "routing.skills HAS 'Training'",
-          "friendly_name"= "Training"
-        },
-        {
-          "target_workers"= "routing.skills HAS 'Good2Talk NS English'",
-          "friendly_name"= "Good2Talk NS English"
-        },
-        {
-          "target_workers"= "routing.skills HAS 'Good2Talk NS French'",
-          "friendly_name"= "Good2Talk NS French"
-        },
-        {
-          "target_workers"= "routing.skills HAS 'Health Canada English'",
-          "friendly_name"= "Health Canada English"
-        },
-        {
-          "target_workers"= "routing.skills HAS 'Health Canada French'",
-          "friendly_name"= "Health Canada French"
-        },
-        {
-          "target_workers"= "routing.skills HAS 'Good2Talk ON Mandarin'",
-          "friendly_name"= "Good2Talk ON Mandarin"
-        },
-        {
-          "target_workers"= "routing.skills HAS 'Chat English'",
-          "friendly_name"= "Chat English"
-        },
-        {
-          "target_workers"= "routing.skills HAS 'Chat French'",
-          "friendly_name"= "Chat French"
-        },
-        {
-          "target_workers"= "routing.skills HAS 'Indigenous [Interpreter]'",
-          "friendly_name"= "Indigenous [Interpreter]"
-        }
-      ]
-  workflows = [
-    {
-       "friendly_name" = "Master Workflow",
-       "filters" = [
-              {
-                filter_friendly_name= "Dialpad",
-                expression= "flexOutboundDialerTargetWorker != null",
-                targets= [
-                  {
-                    expression= "task.flexOutboundDialerTargetWorker == worker.contact_uri",
-                    queue= "Aggregate"
-                  }
-                ]
-              },
-              {
-                filter_friendly_name= "KHP English",
-                targets= [
-                  {
-                    queue= "KHP English",
-                    expression= "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
-                  }
-                ],
-                expression= "(to==\"+15878407089\" AND language CONTAINS \"en-CA\") OR isContactlessTask == true"
-              },
-              {
-                filter_friendly_name= "KHP French",
-                targets= [
-                  {
-                    expression= "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
-                    queue= "KHP French",
-                    timeout= 20
-                  },
-                  {
-                    timeout= 0,
-                    priority= 0,
-                    expression= "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
-                    queue= "KHP English"
-                  }
-                ],
-                expression= "(to==\"+15878407089\" AND language CONTAINS \"fr-CA\")"
-              },
-              {
-                filter_friendly_name= "Interpreter",
-                targets= [
-                  {
-                    expression= "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
-                    queue= "Interpreter"
-                  }
-                ],
-                expression= "(to==\"+15878407089\" AND language CONTAINS \"en-CA\")"
-              },
-              {
-                targets= [
-                  {
-                    queue= "Good2Talk ON English",
-                    expression= "(worker.routing.skills HAS 'English Only') AND (worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
-                    "skip_if"= "1==1"
-                  },
-                  {
-                    queue= "Good2Talk ON English",
-                    expression= "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
-                  }
-                ],
-                expression= "(to=\"+15814810744\" AND language CONTAINS \"en-CA\")",
-                filter_friendly_name= "G2T English"
-              },
-              {
-                targets= [
-                  {
-                    queue= "Aggregate",
-                    expression= "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
-                  }
-                ],
-                expression= "(to=\"+15814810744\" AND language CONTAINS \"fr-CA\")",
-                filter_friendly_name= "G2T French"
-              },
-              {
-                targets= [
-                  {
-                    queue= "Chat English",
-                    expression= "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
-                  }
-                ],
-                expression= "channelType=='web' AND language CONTAINS \"en-CA\"",
-                filter_friendly_name= "Chat English"
-              },
-              {
-                targets= [
-                  {
-                    queue= "Chat French",
-                    expression= "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
-                  }
-                ],
-                expression= "channelType=='web' AND language CONTAINS \"fr-CA\"",
-                filter_friendly_name= "Chat French"
-              }
-                    
-      ]
-
-    }
+    "task.created",
+    "task.canceled",
+    "task.completed",
+    "task.deleted",
+    "task.wrapup",
+    "task-queue.entered",
+    "task.system-deleted",
+    "reservation.accepted",
+    "reservation.rejected",
+    "reservation.timeout",
+    "reservation.wrapup",
   ]
 
-  task_channels = [
-      {
-        friendly_name = "Default"
-        unique_name   = "default"
-      },
-      {
-        friendly_name = "Programmable Chat"
-        unique_name   = "chat"
-      },
-      {
-        friendly_name = "Voice"
-        unique_name   = "voice"
-      },
-      {
-        friendly_name = "SMS"
-        unique_name   = "sms"
-      },
-      {
-        friendly_name = "Video"
-        unique_name   = "video"
-      },
-      {
-        friendly_name = "Email"
-        unique_name   = "email"
-      },
-      {
-        friendly_name = "Survey"
-        unique_name   = "survey"
-      }
-    ]
+  workflows = {
+    master : {
+      friendly_name = "Master Workflow"
+      templatefile  = "/app/twilio-iac/helplines/ca/templates/master-workflow.tftpl"
+    }
+  }
 
+  task_queues = {
+    aggregate : {
+      "target_workers" = "1==1",
+      "friendly_name"  = "Aggregate"
+    },
+    survey : {
+      "target_workers" = "1==0",
+      "friendly_name"  = "Survey"
+    },
+    khp_en : {
+      "target_workers" = "routing.skills HAS 'KHP English'",
+      "friendly_name"  = "KHP English"
+    },
+    khp_fr : { "target_workers" = "routing.skills HAS 'KHP French'",
+      "friendly_name"           = "KHP French"
+    },
+    ab211_en : {
+      "target_workers" = "routing.skills HAS 'AB211 English'",
+      "friendly_name"  = "AB211 English"
+    },
+    ab211_fr : {
+      "target_workers" = "routing.skills HAS 'AB211 French'",
+      "friendly_name"  = "AB211 French"
+    },
+    g2t_ns_en : {
+      "target_workers" = "routing.skills HAS 'Good2Talk NS English'",
+      "friendly_name"  = "Good2Talk NS English"
+    },
+    g2t_ns_fr : {
+      "target_workers" = "routing.skills HAS 'Good2Talk NS French'",
+      "friendly_name"  = "Good2Talk NS French"
+    },
+    g2t_on_en : {
+      "target_workers" = "routing.skills HAS 'Good2Talk ON English'",
+      "friendly_name"  = "Good2Talk ON English"
+    },
+    g2t_on_fr : {
+      "target_workers" = "routing.skills HAS 'Good2Talk ON French'",
+      "friendly_name"  = "Good2Talk ON French"
+    },
+    g2t_on_zh : {
+      "target_workers" = "routing.skills HAS 'Good2Talk ON Mandarin'",
+      "friendly_name"  = "Good2Talk ON Mandarin"
+    },
+    interpreter_en : {
+      "target_workers" = "routing.skills HAS 'Interpreter' ",
+      "friendly_name"  = "Interpreter"
+    },
+    interpreter_fr : {
+      "target_workers" = "routing.skills HAS 'French Interpreter'",
+      "friendly_name"  = "French Interpreter"
+    },
+    supervisor : {
+      "target_workers" = "routing.skills HAS 'Supervisor'",
+      "friendly_name"  = "Supervisor"
+    },
+    training : {
+      "target_workers" = "routing.skills HAS 'Training'",
+      "friendly_name"  = "Training"
+    },
+    health_canada_en : {
+      "target_workers" = "routing.skills HAS 'Health Canada English'",
+      "friendly_name"  = "Health Canada English"
+    },
+    health_canada_fr : {
+      "target_workers" = "routing.skills HAS 'Health Canada French'",
+      "friendly_name"  = "Health Canada French"
+    },
+    chat_en : {
+      "target_workers" = "routing.skills HAS 'Chat English'",
+      "friendly_name"  = "Chat English"
+    },
+    chat_fr : {
+      "target_workers" = "routing.skills HAS 'Chat French'",
+      "friendly_name"  = "Chat French"
+    },
+    indigenous : {
+      "target_workers" = "routing.skills HAS 'Indigenous [Interpreter]'",
+      "friendly_name"  = "Indigenous [Interpreter]"
+    }
+  }
+
+  task_channels = {
+    default : "Default"
+    chat : "Programmable Chat"
+    voice : "Voice"
+    sms : "SMS"
+    video : "Video"
+    email : "Email"
+    survey : "Survey"
+  }
 
 }
 
@@ -267,86 +150,86 @@ provider "twilio" {
 }
 
 module "hrmServiceIntegration" {
-  source = "../terraform-modules/hrmServiceIntegration/default"
-  local_os = var.local_os
-  helpline = var.helpline
-  short_helpline = var.short_helpline
-  environment = var.environment
+  source            = "../terraform-modules/hrmServiceIntegration/default"
+  local_os          = var.local_os
+  helpline          = var.helpline
+  short_helpline    = var.short_helpline
+  environment       = var.environment
   short_environment = var.short_environment
 }
 
 module "serverless" {
-  source = "../terraform-modules/serverless/default"
+  source             = "../terraform-modules/serverless/default"
   twilio_account_sid = local.secrets.twilio_account_sid
-  twilio_auth_token = local.secrets.twilio_auth_token
+  twilio_auth_token  = local.secrets.twilio_auth_token
 }
 
 module "services" {
-  source = "../terraform-modules/services/default"
-  local_os = var.local_os
-  helpline = var.helpline
-  short_helpline = var.short_helpline
-  environment = var.environment
-  short_environment = var.short_environment
+  source                    = "../terraform-modules/services/default"
+  local_os                  = var.local_os
+  helpline                  = var.helpline
+  short_helpline            = var.short_helpline
+  environment               = var.environment
+  short_environment         = var.short_environment
   uses_conversation_service = false
 }
 
 module "taskRouter" {
-  source = "../terraform-modules/taskRouter/module"
-  event_callback_url ="${module.serverless.serverless_environment_production_url}/webhooks/taskrouterCallback"
-  events_filter = local.events_filter
-  task_queues = local.task_queues
-  workflows = local.workflows
-  task_channels = local.task_channels
-}
-
-module studioFlow {
-  source = "../terraform-modules/studioFlow/default"
-  master_workflow_sid = module.taskRouter.workflow_id["Master Workflow"]
-  chat_task_channel_sid = module.taskRouter.task_channel_id["Programmable Chat"]
-  default_task_channel_sid = module.taskRouter.task_channel_id["Default"]
-  pre_survey_bot_sid = "UA1c64297b2953092b4ae9f0db543f3b25"
-
-}
-
-module flex {
-  source = "../terraform-modules/flex/default"
-  twilio_account_sid = local.secrets.twilio_account_sid
-  short_environment = var.short_environment
-  operating_info_key = var.operating_info_key
-  definition_version = var.definition_version
+  source         = "../terraform-modules/taskRouter/v1"
   serverless_url = module.serverless.serverless_environment_production_url
-  permission_config = "zm"
-  multi_office_support = var.multi_office
-  feature_flags = var.feature_flags
-  flex_chat_service_sid = module.services.flex_chat_service_sid
+  events_filter  = local.events_filter
+  task_queues    = local.task_queues
+  workflows      = local.workflows
+  task_channels  = local.task_channels
+}
+
+module "studioFlow" {
+  source                   = "../terraform-modules/studioFlow/default"
+  master_workflow_sid      = module.taskRouter.workflow_ids["master"]
+  chat_task_channel_sid    = module.taskRouter.task_channel_ids["chat"]
+  default_task_channel_sid = module.taskRouter.task_channel_ids["default"]
+  pre_survey_bot_sid       = "UA1c64297b2953092b4ae9f0db543f3b25"
+
+}
+
+module "flex" {
+  source                    = "../terraform-modules/flex/default"
+  twilio_account_sid        = local.secrets.twilio_account_sid
+  short_environment         = var.short_environment
+  operating_info_key        = var.operating_info_key
+  definition_version        = var.definition_version
+  serverless_url            = module.serverless.serverless_environment_production_url
+  permission_config         = "zm"
+  multi_office_support      = var.multi_office
+  feature_flags             = var.feature_flags
+  flex_chat_service_sid     = module.services.flex_chat_service_sid
   messaging_studio_flow_sid = module.studioFlow.messaging_studio_flow_sid
 }
 
-module survey {
-  source = "../terraform-modules/survey/default"
-  helpline = var.helpline
-  flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
+module "survey" {
+  source                                = "../terraform-modules/survey/default"
+  helpline                              = var.helpline
+  flex_task_assignment_workspace_sid    = module.taskRouter.flex_task_assignment_workspace_sid
   custom_task_routing_filter_expression = "isSurveyTask==true"
 }
 
-module aws {
-  source = "../terraform-modules/aws/default"
-  twilio_account_sid = local.secrets.twilio_account_sid
-  twilio_auth_token = local.secrets.twilio_auth_token
-  serverless_url = module.serverless.serverless_environment_production_url
-  helpline = var.helpline
-  short_helpline = var.short_helpline
-  environment = var.environment
-  short_environment = var.short_environment
-  operating_info_key = var.operating_info_key
-  datadog_app_id = local.secrets.datadog_app_id
-  datadog_access_token = local.secrets.datadog_access_token
+module "aws" {
+  source                             = "../terraform-modules/aws/default"
+  twilio_account_sid                 = local.secrets.twilio_account_sid
+  twilio_auth_token                  = local.secrets.twilio_auth_token
+  serverless_url                     = module.serverless.serverless_environment_production_url
+  helpline                           = var.helpline
+  short_helpline                     = var.short_helpline
+  environment                        = var.environment
+  short_environment                  = var.short_environment
+  operating_info_key                 = var.operating_info_key
+  datadog_app_id                     = local.secrets.datadog_app_id
+  datadog_access_token               = local.secrets.datadog_access_token
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
-  master_workflow_sid = module.taskRouter.workflow_id["Master Workflow"]
-  shared_state_sync_service_sid = module.services.shared_state_sync_service_sid
-  flex_chat_service_sid = module.services.flex_chat_service_sid
-  flex_proxy_service_sid = module.services.flex_proxy_service_sid
-  post_survey_bot_sid = "UAa1b1e9b74a9b36c37b8c794827fcaf87"
-  survey_workflow_sid = module.survey.survey_workflow_sid
+  master_workflow_sid                = module.taskRouter.workflow_ids["master"]
+  shared_state_sync_service_sid      = module.services.shared_state_sync_service_sid
+  flex_chat_service_sid              = module.services.flex_chat_service_sid
+  flex_proxy_service_sid             = module.services.flex_proxy_service_sid
+  post_survey_bot_sid                = "UAa1b1e9b74a9b36c37b8c794827fcaf87"
+  survey_workflow_sid                = module.survey.survey_workflow_sid
 }

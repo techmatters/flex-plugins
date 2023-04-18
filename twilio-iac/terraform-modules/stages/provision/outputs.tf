@@ -11,15 +11,15 @@ output "serverless_service_sid" {
 }
 
 output "task_router_master_workflow_sid" {
-  value = module.taskRouter.master_workflow_sid
+  value = module.taskRouter.workflow_ids["master"]
 }
 
 output "task_router_chat_task_channel_sid" {
-  value = module.taskRouter.chat_task_channel_sid
+  value = module.taskRouter.task_channel_ids["chat"]
 }
 
 output "task_router_voice_task_channel_sid" {
-  value = module.taskRouter.voice_task_channel_sid
+  value = module.taskRouter.task_channel_ids["voice"]
 }
 
 output "services_flex_chat_service_sid" {
