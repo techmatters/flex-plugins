@@ -28,6 +28,13 @@ data "aws_ssm_parameter" "secrets" {
 
 locals {
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
+  
+
+  channel_attributes = {
+      webchat: "/app/twilio-iac/helplines/ca/templates/channel_attributes/webchat.tftpl",
+      twitter: "/app/twilio-iac/helplines/ca/templates/channel_attributes/twitter.tftpl",
+      default: "/app/twilio-iac/helplines/ca/templates/channel_attributes/default.tftpl"
+  }
 
   events_filter = [
     "task.created",
@@ -51,7 +58,7 @@ locals {
   workflows = {
     master : {
       friendly_name = "Master Workflow"
-      templatefile  = "/app/twilio-iac/helplines/ca/templates/master-workflow.tftpl"
+      templatefile  = "/app/twilio-iac/helplines/ca/templates/workflows/master-workflow.tftpl"
     }
   }
 
