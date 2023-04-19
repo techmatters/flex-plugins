@@ -28,13 +28,9 @@ data "aws_ssm_parameter" "secrets" {
 
 locals {
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
-  
 
-  channel_attributes = {
-      webchat: "/app/twilio-iac/helplines/ca/templates/channel_attributes/webchat.tftpl",
-      twitter: "/app/twilio-iac/helplines/ca/templates/channel_attributes/twitter.tftpl",
-      default: "/app/twilio-iac/helplines/ca/templates/channel_attributes/default.tftpl"
-  }
+
+
 
   events_filter = [
     "task.created",
@@ -57,8 +53,8 @@ locals {
 
   workflows = {
     master : {
-      friendly_name = "Master Workflow"
-      templatefile  = "/app/twilio-iac/helplines/ca/templates/workflows/master-workflow.tftpl"
+      friendly_name : "Master Workflow"
+      templatefile : "/app/twilio-iac/helplines/ca/templates/workflows/master-workflow.tftpl"
     }
   }
 
@@ -151,6 +147,58 @@ locals {
     //survey : "Survey"
   }
 
+  helpline             = "Kids Help Phone"
+  short_helpline       = "CA"
+  environment          = "Staging"
+  short_environment    = "STG"
+  operating_info_key   = "ca"
+  permission_config    = "zm"
+  definition_version   = "ca-v1"
+  multi_office_support = false
+  task_language        = "en-CA"
+  helpline_language    = "en-CA"
+
+  feature_flags = {
+    "enable_fullstory_monitoring" = false
+    "enable_upload_documents"     = true
+    "enable_previous_contacts"    = true
+    "enable_case_management"      = true
+    "enable_offline_contact"      = true
+    "enable_transfers"            = true
+    "enable_manual_pulling"       = true
+    "enable_csam_report"          = false
+    "enable_canned_responses"     = true
+    "enable_dual_write"           = false
+    "enable_save_insights"        = true
+    "enable_post_survey"          = false
+  }
+
+
+  enable_post_survey = false
+  //common across all helplines
+  channel_attributes = {
+    webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
+    twitter : "/app/twilio-iac/helplines/templates/channel-attributes/twitter.tftpl"
+    default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
+  }
+  flow_vars = {
+    service_sid : "ZSb631f562c8306085ceb8329349fdd60b"
+    environment_sid : "ZEd72a0800eb472d514e48977ffab9b642"
+    time_cycle_function_sid : "ZH3ee5654cb3c8cda06c2aaf84593b11a6"
+    time_cycle_function_url : "https://test-service-dee-4583.twil.io/time_cycle"
+    engagement_function_sid : "ZH946d079ec6be9b1b899a6cf30be0660f"
+    engagement_function_url : "https://test-service-dee-4583.twil.io/engagement"
+  }
+  channels = {
+    webchat : {
+      channel_type : "web"
+      contact_identity : ""
+      templatefile : "/app/twilio-iac/helplines/ca/templates/studio-flows/webchat.tftpl"
+      channel_flow_vars : {}
+    }
+  }
+
+
 }
 
 provider "twilio" {
@@ -161,10 +209,10 @@ provider "twilio" {
 module "hrmServiceIntegration" {
   source            = "../terraform-modules/hrmServiceIntegration/default"
   local_os          = var.local_os
-  helpline          = var.helpline
-  short_helpline    = var.short_helpline
-  environment       = var.environment
-  short_environment = var.short_environment
+  helpline          = local.helpline
+  short_helpline    = local.short_helpline
+  environment       = local.environment
+  short_environment = local.short_environment
 }
 
 module "serverless" {
@@ -176,10 +224,10 @@ module "serverless" {
 module "services" {
   source                    = "../terraform-modules/services/default"
   local_os                  = var.local_os
-  helpline                  = var.helpline
-  short_helpline            = var.short_helpline
-  environment               = var.environment
-  short_environment         = var.short_environment
+  helpline                  = local.helpline
+  short_helpline            = local.short_helpline
+  environment               = local.environment
+  short_environment         = local.short_environment
   uses_conversation_service = false
 }
 
@@ -193,32 +241,40 @@ module "taskRouter" {
   phone_numbers  = local.phone_numbers
 }
 
-module "studioFlow" {
-  source                   = "../terraform-modules/studioFlow/default"
-  master_workflow_sid      = module.taskRouter.workflow_ids["master"]
-  chat_task_channel_sid    = module.taskRouter.task_channel_ids["chat"]
-  default_task_channel_sid = module.taskRouter.task_channel_ids["default"]
-  pre_survey_bot_sid       = "UA1c64297b2953092b4ae9f0db543f3b25"
 
+module "channel" {
+
+  source                = "../terraform-modules/channels/v1"
+  workflow_sids         = module.taskRouter.workflow_sids
+  task_channel_sids     = module.taskRouter.task_channel_sids
+  channel_attributes    = local.channel_attributes
+  channels              = local.channels
+  enable_post_survey    = local.enable_post_survey
+  flex_chat_service_sid = module.services.flex_chat_service_sid
+  task_language         = local.task_language
+  flow_vars             = local.flow_vars
+  short_environment     = local.short_environment
+  short_helpline        = local.short_helpline
 }
 
+
+
 module "flex" {
-  source                    = "../terraform-modules/flex/default"
-  twilio_account_sid        = local.secrets.twilio_account_sid
-  short_environment         = var.short_environment
-  operating_info_key        = var.operating_info_key
-  definition_version        = var.definition_version
-  serverless_url            = module.serverless.serverless_environment_production_url
-  permission_config         = "zm"
-  multi_office_support      = var.multi_office
-  feature_flags             = var.feature_flags
-  flex_chat_service_sid     = module.services.flex_chat_service_sid
-  messaging_studio_flow_sid = module.studioFlow.messaging_studio_flow_sid
+  source               = "../terraform-modules/flex/service-configuration"
+  twilio_account_sid   = local.secrets.twilio_account_sid
+  short_environment    = local.short_environment
+  operating_info_key   = local.operating_info_key
+  permission_config    = local.permission_config
+  definition_version   = local.definition_version
+  serverless_url       = module.serverless.serverless_environment_production_url
+  multi_office_support = local.multi_office_support
+  feature_flags        = local.feature_flags
+  helpline_language    = local.helpline_language
 }
 
 module "survey" {
   source                                = "../terraform-modules/survey/default"
-  helpline                              = var.helpline
+  helpline                              = local.helpline
   flex_task_assignment_workspace_sid    = module.taskRouter.flex_task_assignment_workspace_sid
   custom_task_routing_filter_expression = "isSurveyTask==true"
 }
@@ -228,15 +284,15 @@ module "aws" {
   twilio_account_sid                 = local.secrets.twilio_account_sid
   twilio_auth_token                  = local.secrets.twilio_auth_token
   serverless_url                     = module.serverless.serverless_environment_production_url
-  helpline                           = var.helpline
-  short_helpline                     = var.short_helpline
-  environment                        = var.environment
-  short_environment                  = var.short_environment
-  operating_info_key                 = var.operating_info_key
+  helpline                           = local.helpline
+  short_helpline                     = local.short_helpline
+  environment                        = local.environment
+  short_environment                  = local.short_environment
+  operating_info_key                 = local.operating_info_key
   datadog_app_id                     = local.secrets.datadog_app_id
   datadog_access_token               = local.secrets.datadog_access_token
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
-  master_workflow_sid                = module.taskRouter.workflow_ids["master"]
+  master_workflow_sid                = module.taskRouter.workflow_sids["master"]
   shared_state_sync_service_sid      = module.services.shared_state_sync_service_sid
   flex_chat_service_sid              = module.services.flex_chat_service_sid
   flex_proxy_service_sid             = module.services.flex_proxy_service_sid
