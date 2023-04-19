@@ -96,7 +96,10 @@ const AseloMessageInput: React.FC<Props> = ({
 
   const submitMessageForSending = handleSubmit(async () => {
     const message = getValues('messageInputArea');
-
+    /*
+     * Deliberately does not use the isDisabled state for this check, because that is set on a debounce.
+     * This way the user can hit 'Enter' straight after they finish typing and it will always send.
+     */
     if (conversation && message.length && sendStatus !== MessageSendStatus.SENDING) {
       await sendMessage(message);
     }
