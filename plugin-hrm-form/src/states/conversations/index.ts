@@ -14,43 +14,83 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+/**
+ * Currently this state is only used when the enable_aselo_messaging_ui feature flag is set.
+ * Otherwise internal Twilio flex state us used along with the default twilio message UI
+ */
+
+import { createAction, createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
+import { Conversation } from '@twilio/conversations';
+import { ConversationsState } from '@twilio/flex-ui';
+
+export enum MessageSendStatus {
+  SENDING = 'SENDING',
+  NOT_SENDING = 'NOT_SENDING',
+}
+
 type ConversationsState = {
   [conversationSid: string]: {
     draftMessageText: string;
+    messageSendStatus: MessageSendStatus;
   };
 };
 
-const initState = {};
+const initialState: ConversationsState = {};
 
 const UPDATE_DRAFT_MESSAGE_TEXT_ACTION = 'UPDATE_DRAFT_MESSAGE_TEXT';
 
-type UpdateDraftMessageTextAction = {
-  type: typeof UPDATE_DRAFT_MESSAGE_TEXT_ACTION;
-  payload: {
-    conversationSid: string;
-    draftMessageText: string;
-  };
-};
+export const newUpdateDraftMessageTextAction = createAction(
+  UPDATE_DRAFT_MESSAGE_TEXT_ACTION,
+  (conversationSid: string, draftMessageText: string) => ({ conversationSid, draftMessageText }),
+);
 
-export const newUpdateDraftMessageTextAction = (conversationSid: string, draftMessageText: string) => ({
-  type: UPDATE_DRAFT_MESSAGE_TEXT_ACTION,
-  payload: { conversationSid, draftMessageText },
-});
+const SEND_MESSAGE_ACTION = 'SEND_MESSAGE_ACTION';
 
-type TextMessagingActionTypes = UpdateDraftMessageTextAction;
+export const newSendMessageeAsyncAction = createAsyncAction(
+  SEND_MESSAGE_ACTION,
+  async (conversation: Conversation, messageText: string): Promise<{ returnStatus: number; sid: string }> => {
+    const returnStatus = await conversation.sendMessage(messageText);
+    return { returnStatus, sid: conversation.sid };
+  },
+  (conversation: Conversation, messageText: string) => ({ conversation, messageText }),
+);
 
-export const reduce = (state: ConversationsState = initState, action: TextMessagingActionTypes): ConversationsState => {
-  // eslint-disable-next-line sonarjs/no-small-switch
-  switch (action.type) {
-    case UPDATE_DRAFT_MESSAGE_TEXT_ACTION:
-      return {
-        ...state,
-        [action.payload.conversationSid]: {
-          ...state[action.payload.conversationSid],
-          draftMessageText: action.payload.draftMessageText,
-        },
-      };
-    default:
-      return state;
-  }
-};
+export const reduce = createReducer(initialState, handleAction => [
+  handleAction(newUpdateDraftMessageTextAction, (state, action) => {
+    return {
+      ...state,
+      [action.payload.conversationSid]: {
+        draftMessageText: action.payload.draftMessageText,
+        messageSendStatus: MessageSendStatus.NOT_SENDING,
+      },
+    };
+  }),
+  handleAction(newSendMessageeAsyncAction.pending as typeof newSendMessageeAsyncAction, (state, action) => {
+    return {
+      ...state,
+      [action.meta.conversation.sid]: {
+        draftMessageText: action.meta.messageText,
+        messageSendStatus: MessageSendStatus.SENDING,
+      },
+    };
+  }),
+  handleAction(newSendMessageeAsyncAction.fulfilled, (state, action) => {
+    return {
+      ...state,
+      [action.payload.sid]: {
+        draftMessageText: '',
+        messageSendStatus: MessageSendStatus.NOT_SENDING,
+      },
+    };
+  }),
+  handleAction(newSendMessageeAsyncAction.rejected, (state, action) => {
+    const meta = (action as any).meta as ReturnType<typeof newSendMessageeAsyncAction>['meta'];
+    return {
+      ...state,
+      [meta.conversation.sid]: {
+        draftMessageText: '',
+        messageSendStatus: MessageSendStatus.NOT_SENDING,
+      },
+    };
+  }),
+]);

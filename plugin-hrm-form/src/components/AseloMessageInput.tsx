@@ -1,5 +1,5 @@
 import { MessageInputChildrenProps } from '@twilio/flex-ui-core/src/components/channel/MessageInput/MessageInputImpl';
-import React, { Dispatch, useEffect } from 'react';
+import React, { Dispatch, useEffect, useState } from 'react';
 import { Button, Template, withTheme } from '@twilio/flex-ui';
 import { useForm } from 'react-hook-form';
 import debounce from 'lodash/debounce';
@@ -7,20 +7,30 @@ import { connect } from 'react-redux';
 
 import CannedResponses from './CannedResponses';
 import { conversationsBase, namespace, RootState } from '../states';
-import { newUpdateDraftMessageTextAction } from '../states/conversations';
+import {
+  MessageSendStatus,
+  newSendMessageeAsyncAction,
+  newUpdateDraftMessageTextAction,
+} from '../states/conversations';
+import asyncDispatch from '../states/asyncDispatch';
 
 type MessageProps = Partial<MessageInputChildrenProps>;
 
 const mapDispatchToProps = (
   dispatch: Dispatch<{ type: string } & Record<string, any>>,
-  { conversationSid }: MessageProps,
+  { conversationSid, conversation: { source: conversation } }: MessageProps,
 ) => ({
   updateDraftMessageText: (text: string) => dispatch(newUpdateDraftMessageTextAction(conversationSid, text)),
+  sendMessage: (text: string) => asyncDispatch(dispatch)(newSendMessageeAsyncAction(conversation, text)),
 });
 
-const mapStateToProps = (state: RootState, { conversationSid }: MessageProps) => ({
-  draftText: state[namespace][conversationsBase][conversationSid]?.draftMessageText ?? '',
-});
+const mapStateToProps = (state: RootState, { conversationSid }: MessageProps) => {
+  const convoState = state[namespace][conversationsBase][conversationSid];
+  return {
+    draftText: convoState?.draftMessageText ?? '',
+    sendStatus: convoState?.messageSendStatus ?? '',
+  };
+};
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
@@ -31,6 +41,8 @@ const AseloMessageInput: React.FC<Props> = ({
   conversation: { source: conversation },
   updateDraftMessageText,
   draftText,
+  sendMessage,
+  sendStatus,
 }) => {
   const { register, handleSubmit, setValue, getValues } = useForm();
 
@@ -42,16 +54,49 @@ const AseloMessageInput: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversationSid]);
 
-  const triggerTyping = () => {
-    if (conversation) {
-      conversation.typing();
+  useEffect(() => {
+    setValue('messageInputArea', draftText);
+    setIsDisabled(sendStatus === MessageSendStatus.SENDING || !draftText);
+  }, [draftText, sendStatus, setValue]);
+
+  const [isDisabled, setIsDisabled] = useState(sendStatus === MessageSendStatus.SENDING || !draftText);
+
+  const triggerTyping = debounce(
+    () => {
+      if (conversation) {
+        conversation.typing();
+      }
+    },
+    500,
+    {
+      leading: true,
+      trailing: true,
+    },
+  );
+
+  const updateSendButtonState = debounce(() => {
+    setIsDisabled(sendStatus === MessageSendStatus.SENDING || !getValues('messageInputArea'));
+  }, 200);
+
+  const submitMessageForSending = handleSubmit(async () => {
+    const message = getValues('messageInputArea');
+
+    if (conversation && message.length && sendStatus !== MessageSendStatus.SENDING) {
+      await sendMessage(message);
     }
+  });
+
+  const handleChange = () => {
+    triggerTyping();
+    updateSendButtonState();
   };
 
-  const handleChange = debounce(triggerTyping, 500, {
-    leading: true,
-    trailing: true,
-  });
+  const handleEnterInMessageInput = e => {
+    if (e.keyCode === 13 && e.shiftKey === false) {
+      e.preventDefault();
+      submitMessageForSending();
+    }
+  };
 
   return (
     <div key="textarea">
@@ -62,19 +107,9 @@ const AseloMessageInput: React.FC<Props> = ({
           register(ref);
         }}
         onChange={handleChange}
+        onKeyDown={handleEnterInMessageInput}
       />
-      <Button
-        onClick={handleSubmit(async () => {
-          const message = getValues('messageInputArea');
-
-          if (conversation) {
-            conversation.sendMessage(message).then(() => {
-              setValue('messageInputArea', '');
-              updateDraftMessageText('');
-            });
-          }
-        })}
-      >
+      <Button onClick={submitMessageForSending} disabled={isDisabled}>
         <Template code="Send" />
       </Button>
       <CannedResponses key="canned-responses" conversationSid={conversationSid} />
