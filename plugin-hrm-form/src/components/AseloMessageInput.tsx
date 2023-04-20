@@ -11,16 +11,16 @@ type Props = Partial<MessageInputChildrenProps>;
 
 type Conversation = Awaited<ReturnType<Manager['conversationsClient']['getConversationBySid']>>;
 
-const PADDING = 2;
+const PADDING_VERTICAL = 8;
 const BORDER_WIDTH = 1;
-const LINE_HEIGHT = 16;
+const LINE_HEIGHT = 20;
 const MIN_LINES = 1;
 const MAX_LINES = 5;
-const MIN_HEIGHT = MIN_LINES * LINE_HEIGHT + PADDING * 2 + BORDER_WIDTH * 2;
-const MAX_HEIGHT = MAX_LINES * LINE_HEIGHT + PADDING * 2 + BORDER_WIDTH * 2;
+const MIN_HEIGHT = MIN_LINES * LINE_HEIGHT + PADDING_VERTICAL * 2 + BORDER_WIDTH * 2;
+const MAX_HEIGHT = MAX_LINES * LINE_HEIGHT + PADDING_VERTICAL * 2 + BORDER_WIDTH * 2;
 
 const AseloMessageInput: React.FC<Props> = props => {
-  const initialHeight = MIN_LINES * LINE_HEIGHT + PADDING * 2 + BORDER_WIDTH * 2;
+  const initialHeight = MIN_LINES * LINE_HEIGHT + PADDING_VERTICAL * 2 + BORDER_WIDTH * 2;
   const [height, setHeight] = useState<number>(initialHeight);
   const [prevScrollHeight, setPrevScrollHeight] = useState<number>();
   const [conversation, setConversation] = useState<Conversation>();
@@ -90,6 +90,8 @@ const AseloMessageInput: React.FC<Props> = props => {
 
   useTraceUpdate(props, 'AseloMessageInput');
 
+  const overflow = height < MAX_HEIGHT ? 'hidden' : '';
+
   return (
     <div key="textarea">
       <textarea
@@ -100,10 +102,18 @@ const AseloMessageInput: React.FC<Props> = props => {
         }}
         onChange={handleChange}
         style={{
+          display: 'block',
+          boxSizing: 'border-box',
+          width: '100%',
+          overflow,
           height: `${height}px`,
           lineHeight: `${LINE_HEIGHT}px`,
-          padding: `${PADDING}px`,
-          boxSizing: 'border-box',
+          padding: `${PADDING_VERTICAL}px 12px`,
+          fontFamily: '"Open Sans"',
+          fontSize: '13px',
+          marginBottom: '10px',
+          borderColor: '#CACDD8',
+          borderRadius: '4px',
         }}
       />
       <Button
