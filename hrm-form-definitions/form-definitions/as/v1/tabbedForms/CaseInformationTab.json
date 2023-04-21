@@ -11,6 +11,19 @@
     "type": "checkbox"
   },
   {
+    "name": "urgencyLevel",
+    "label": "Urgency Level",
+    "type": "select",
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Urgent", "label": "Urgent" },
+      { "value": "Critical", "label": "Critical" },
+      { "value": "Non-critical", "label": "Non-critical" },
+      { "value": "Other", "label": "Other" }
+    ]
+  },
+  {
     "name": "actionTaken",
     "label": "Action Taken",
     "type": "listbox-multiselect",
@@ -32,6 +45,7 @@
     "label": "How did you know about our line/number?",
     "type": "select",
     "options": [
+      { "value": "Unknown", "label": "" },
       { "value": "Word of mouth", "label": "Word of mouth" },
       { "value": "Media", "label": "Media" },
       { "value": "Friend", "label": "Friend" },
