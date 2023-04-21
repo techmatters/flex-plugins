@@ -51,7 +51,7 @@ locals {
     "enable_filter_cases": true,
     "enable_sort_cases": true,
     "enable_transfers": true,
-    "enable_manual_pulling": true,
+    "enable_manual_pulling": false,
     "enable_csam_report": false,
     "enable_canned_responses": true,
     "enable_dual_write": false,
@@ -163,6 +163,7 @@ module flex {
   source = "../terraform-modules/flex/service-configuration"
   twilio_account_sid = local.secrets.twilio_account_sid
   short_environment = local.short_environment
+  environment = local.environment
   operating_info_key = local.operating_info_key
   permission_config = local.permission_config
   definition_version = local.definition_version
