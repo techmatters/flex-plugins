@@ -42,8 +42,8 @@
         "category": "non-data"
     },
     {
-        "name": "complaints",
-        "label": "Complaints",
+        "name": "emergency",
+        "label": "Emergency",
         "type": "button",
         "category": "non-data"
     }
