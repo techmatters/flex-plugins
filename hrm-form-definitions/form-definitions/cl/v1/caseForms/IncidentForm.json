@@ -148,7 +148,7 @@
   },
   {
     "name": "abuseReportedElsewhere",
-    "label": "¿Ha sido el abuso reportado en alguna parte?",
+    "label": "¿Ha sido el incidente reportado en alguna parte?",
     "type": "mixed-checkbox"
   },
   {
