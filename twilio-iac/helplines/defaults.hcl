@@ -78,11 +78,11 @@ locals {
   workflows = {
     master : {
       friendly_name = "Master Workflow"
-      templatefile  = "/app/twilio-iac/helplines/templates/master-workflow.json"
+      templatefile  = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
     },
     // survey : {
     //   friendly_name = "Survey"
-    //   templatefile  = "/app/twilio-iac/helplines/templates/survey-workflow.json"
+    //   templatefile  = "/app/twilio-iac/helplines/templates/workflows/survey.tftpl"
     // },
   }
 

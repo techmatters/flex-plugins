@@ -54,7 +54,7 @@ locals {
   workflows = {
     master : {
       friendly_name : "Master Workflow"
-      templatefile : "/app/twilio-iac/helplines/ca/templates/workflows/master-workflow.tftpl"
+      templatefile : "/app/twilio-iac/helplines/ca/templates/workflows/master.tftpl"
     }
   }
 

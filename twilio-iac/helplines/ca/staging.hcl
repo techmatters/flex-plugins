@@ -4,6 +4,11 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-    custom_task_routing_filter_expression = "channelType ==\"web\" OR isContactlessTask == true"
+    custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
+
+    phone_numbers = {
+      khp : ["+15878407089"],
+      g2t : ["+15814810744"]
+    }
   }
 }
