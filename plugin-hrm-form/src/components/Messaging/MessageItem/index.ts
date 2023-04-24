@@ -14,22 +14,5 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// Lifted from https://stackoverflow.com/a/51082563
-
-import { useEffect, useRef } from 'react';
-
-export default function useTraceUpdate(props, name: string) {
-  const prev = useRef(props);
-  useEffect(() => {
-    const changedProps = Object.entries(props).reduce((ps, [k, v]) => {
-      if (prev.current[k] !== v) {
-        ps[k] = [prev.current[k], v];
-      }
-      return ps;
-    }, {});
-    if (Object.keys(changedProps).length > 0) {
-      console.log(`[${name}]`, 'Changed props:', changedProps);
-    }
-    prev.current = props;
-  });
-}
+export { default as MessageItem } from './MessageItem';
+export type { GroupedMessage } from './MessageItem';
