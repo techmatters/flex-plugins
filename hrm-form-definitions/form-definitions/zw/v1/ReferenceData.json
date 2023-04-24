@@ -159,6 +159,10 @@
         {
           "value": "Umguza",
           "label": "Umguza"
+        },
+        {
+          "value": "Victoria Falls",
+          "label": "Victoria Falls"
         }
       ],
       "MTS": [
@@ -181,6 +185,10 @@
         {
           "value": "Beitbrigde",
           "label": "Beitbrigde"
+        },
+        {
+          "value": "Plumtree",
+          "label": "Plumtree"
         }
       ],
       "MSE": [
