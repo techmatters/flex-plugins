@@ -44,8 +44,7 @@
       { "value": "Western", "label": "Western" },
       { "value": "Southern", "label": "Southern" },
       { "value": "Unknown", "label": "Unknown"}
-    ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    ]
   },
   {
     "name": "district",
@@ -78,8 +77,7 @@
         { "value": "District C", "label": "District C" },
         { "value": "Unknown", "label": "Unknown"}
       ]
-    },
-    "required": { "value": true, "message": "RequiredFieldError" }
+    }
   },
   {
     "name": "postalCode",
