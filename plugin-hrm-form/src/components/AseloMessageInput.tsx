@@ -30,6 +30,21 @@ import {
 } from '../states/conversations';
 import asyncDispatch from '../states/asyncDispatch';
 
+/**
+ * The following CSS attributtes should be set in here
+ * so the dynamic resizing will work properly:
+ * - padding (vertical: top or bottom)
+ * - border-width
+ * - line-height
+ */
+const PADDING_VERTICAL = 8;
+const BORDER_WIDTH = 1;
+const LINE_HEIGHT = 20;
+const MIN_LINES = 1;
+const MAX_LINES = 5;
+const MIN_HEIGHT = MIN_LINES * LINE_HEIGHT + PADDING_VERTICAL * 2 + BORDER_WIDTH * 2;
+const MAX_HEIGHT = MAX_LINES * LINE_HEIGHT + PADDING_VERTICAL * 2 + BORDER_WIDTH * 2;
+
 type MessageProps = Partial<MessageInputChildrenProps>;
 
 const mapDispatchToProps = (
@@ -39,14 +54,6 @@ const mapDispatchToProps = (
   updateDraftMessageText: (text: string) => dispatch(newUpdateDraftMessageTextAction(conversationSid, text)),
   sendMessage: (text: string) => asyncDispatch(dispatch)(newSendMessageeAsyncAction(conversation, text)),
 });
-
-const PADDING_VERTICAL = 8;
-const BORDER_WIDTH = 1;
-const LINE_HEIGHT = 20;
-const MIN_LINES = 1;
-const MAX_LINES = 5;
-const MIN_HEIGHT = MIN_LINES * LINE_HEIGHT + PADDING_VERTICAL * 2 + BORDER_WIDTH * 2;
-const MAX_HEIGHT = MAX_LINES * LINE_HEIGHT + PADDING_VERTICAL * 2 + BORDER_WIDTH * 2;
 
 const mapStateToProps = (state: RootState, { conversationSid }: MessageProps) => {
   const convoState = state[namespace][conversationsBase][conversationSid];
@@ -87,6 +94,25 @@ const AseloMessageInput: React.FC<Props> = ({
     setIsDisabled(sendStatus === MessageSendStatus.SENDING || !draftText);
   }, [draftText, sendStatus, setValue]);
 
+  /**
+   * This function gets the "pure" height of the text inside the textarea.
+   *
+   * Ideally, textarea.scrollHeight would give us the height we need, but
+   * there are some edge cases that changes the value of textarea.scrollHeight.
+   * Example of edge cases:
+   *  - The scrollbar beign visible or not;
+   *  - Or if textarea min height would acommodate more than 1 line;
+   *
+   * In summary, this function overcome this issue with the following steps:
+   * - It changes textarea's height to 1
+   * - Handles scrollbar visibility
+   *    - If there's more than MAX_LINES of height, let the scrollbar visibible
+   *    - Else, it hides the scrollbar, because the scrollbar would change the
+   *    width space available, that can impact in the number of lines needed to
+   *    fit the whole text.
+   * - After this, gets textarea.scrollHeight. Now we get the correct value
+   * - Revert all changes to the textarea element
+   */
   const getPureScrollHeight = (textarea: HTMLTextAreaElement) => {
     const isNotDisplayingScrollbar = textarea.scrollHeight === textarea.clientHeight;
 
@@ -112,6 +138,15 @@ const AseloMessageInput: React.FC<Props> = ({
     const currentScrollHeight = getPureScrollHeight(textarea);
     const shouldExpand = currentScrollHeight > prevScrollHeight && height < MAX_HEIGHT;
     const shouldShrink = !shouldExpand && currentScrollHeight < prevScrollHeight && height > MIN_HEIGHT;
+
+    /*
+     * why the candidateHeight is not just currentScrollHeight?
+     *
+     * Because we're setting the textarea's "height" attribute, and we
+     * need to account for the space taken by the border as well.
+     * Also, we don't need to add padding here because we're setting
+     * "box-sizing: border-box;" that handle that for us.
+     */
     const candidateHeight = currentScrollHeight + BORDER_WIDTH * 2;
 
     if (shouldExpand) {
