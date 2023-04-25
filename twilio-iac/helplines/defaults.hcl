@@ -13,13 +13,16 @@ locals {
   twilio_numbers     = []
   channel            = ""
 
+  channel_attributes = {
+    webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
+    twitter : "/app/twilio-iac/helplines/templates/channel-attributes/twitter.tftpl"
+    default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
+  }
+
+
   enable_voice_channel = false
 
-  twilio_channels    = []
-  channel_attributes = {}
-
-  custom_channels           = []
-  custom_channel_attributes = {}
+  channels = {}
 
   custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
 
