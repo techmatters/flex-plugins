@@ -32,6 +32,21 @@ import asyncDispatch from '../states/asyncDispatch';
 import EmojiPicker from './emojiPicker';
 import { getAseloFeatureFlags } from '../hrmConfig';
 
+/**
+ * The following CSS attributtes should be set in here
+ * so the dynamic resizing will work properly:
+ * - padding (vertical: top or bottom)
+ * - border-width
+ * - line-height
+ */
+const PADDING_VERTICAL = 8;
+const BORDER_WIDTH = 1;
+const LINE_HEIGHT = 20;
+const MIN_LINES = 1;
+const MAX_LINES = 5;
+const MIN_HEIGHT = MIN_LINES * LINE_HEIGHT + PADDING_VERTICAL * 2 + BORDER_WIDTH * 2;
+const MAX_HEIGHT = MAX_LINES * LINE_HEIGHT + PADDING_VERTICAL * 2 + BORDER_WIDTH * 2;
+
 type MessageProps = Partial<MessageInputChildrenProps>;
 
 const mapDispatchToProps = (
@@ -64,6 +79,10 @@ const AseloMessageInput: React.FC<Props> = ({
   sendMessage,
   sendStatus,
 }) => {
+  const initialHeight = MIN_LINES * LINE_HEIGHT + PADDING_VERTICAL * 2 + BORDER_WIDTH * 2;
+  const [height, setHeight] = useState<number>(initialHeight);
+  const [prevScrollHeight, setPrevScrollHeight] = useState<number>();
+
   const { register, handleSubmit, setValue, getValues } = useForm();
   const {
     enable_canned_responses: enableCannedResponses,
@@ -74,6 +93,72 @@ const AseloMessageInput: React.FC<Props> = ({
     setValue('messageInputArea', draftText);
     setIsDisabled(sendStatus === MessageSendStatus.SENDING || !draftText);
   }, [draftText, sendStatus, setValue]);
+
+  /**
+   * This function gets the "pure" height of the text inside the textarea.
+   *
+   * Ideally, textarea.scrollHeight would give us the height we need, but
+   * there are some edge cases that changes the value of textarea.scrollHeight.
+   * Example of edge cases:
+   *  - The scrollbar beign visible or not;
+   *  - Or if textarea min height would acommodate more than 1 line;
+   *
+   * In summary, this function overcome this issue with the following steps:
+   * - It changes textarea's height to 1
+   * - Handles scrollbar visibility
+   *    - If there's more than MAX_LINES of height, let the scrollbar visibible
+   *    - Else, it hides the scrollbar, because the scrollbar would change the
+   *    width space available, that can impact in the number of lines needed to
+   *    fit the whole text.
+   * - After this, gets textarea.scrollHeight. Now we get the correct value
+   * - Revert all changes to the textarea element
+   */
+  const getPureScrollHeight = (textarea: HTMLTextAreaElement) => {
+    const isNotDisplayingScrollbar = textarea.scrollHeight === textarea.clientHeight;
+
+    const prevHeight = textarea.style.height;
+    const prevOverflow = textarea.style.overflow;
+    textarea.style.height = '1px';
+
+    if (isNotDisplayingScrollbar) {
+      textarea.style.overflow = 'hidden';
+    }
+
+    const { scrollHeight } = textarea;
+    textarea.style.height = prevHeight;
+
+    if (isNotDisplayingScrollbar) {
+      textarea.style.overflow = prevOverflow;
+    }
+
+    return scrollHeight;
+  };
+
+  const handleDynamicSize = (textarea: HTMLTextAreaElement) => {
+    const currentScrollHeight = getPureScrollHeight(textarea);
+    const shouldExpand = currentScrollHeight > prevScrollHeight && height < MAX_HEIGHT;
+    const shouldShrink = !shouldExpand && currentScrollHeight < prevScrollHeight && height > MIN_HEIGHT;
+
+    /*
+     * why the candidateHeight is not just currentScrollHeight?
+     *
+     * Because we're setting the textarea's "height" attribute, and we
+     * need to account for the space taken by the border as well.
+     * Also, we don't need to add padding here because we're setting
+     * "box-sizing: border-box;" that handle that for us.
+     */
+    const candidateHeight = currentScrollHeight + BORDER_WIDTH * 2;
+
+    if (shouldExpand) {
+      const nextHeight = Math.min(candidateHeight, MAX_HEIGHT);
+      setHeight(nextHeight);
+    } else if (shouldShrink) {
+      const nextHeight = Math.min(Math.max(candidateHeight, MIN_HEIGHT), MAX_HEIGHT);
+      setHeight(nextHeight);
+    }
+
+    setPrevScrollHeight(currentScrollHeight);
+  };
 
   const [isDisabled, setIsDisabled] = useState(sendStatus === MessageSendStatus.SENDING || !draftText);
 
@@ -105,7 +190,8 @@ const AseloMessageInput: React.FC<Props> = ({
     }
   });
 
-  const handleChange = () => {
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    handleDynamicSize(e.target);
     triggerTyping();
     updateSendButtonState();
   };
@@ -116,6 +202,8 @@ const AseloMessageInput: React.FC<Props> = ({
       submitMessageForSending();
     }
   };
+
+  const overflow = height < MAX_HEIGHT ? 'hidden' : '';
 
   return (
     <div key="textarea">
@@ -128,6 +216,20 @@ const AseloMessageInput: React.FC<Props> = ({
         onChange={handleChange}
         onKeyDown={handleEnterInMessageInput}
         onBlur={() => updateDraftMessageText(getValues('messageInputArea'))}
+        style={{
+          display: 'block',
+          boxSizing: 'border-box',
+          width: '100%',
+          overflow,
+          height: `${height}px`,
+          lineHeight: `${LINE_HEIGHT}px`,
+          padding: `${PADDING_VERTICAL}px 12px`,
+          fontFamily: '"Open Sans"',
+          fontSize: '13px',
+          marginBottom: '10px',
+          borderColor: '#CACDD8',
+          borderRadius: '4px',
+        }}
       />
       <FlexBox>
         <FlexBoxColumn>{enableEmojiPicker && <EmojiPicker conversationSid={conversationSid} />}</FlexBoxColumn>
