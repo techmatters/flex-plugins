@@ -37,15 +37,15 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
       workflow_sids     = var.workflow_sids,
       task_channel_sids = var.task_channel_sids
       channel_attributes = merge(
-        { for idx, chatbot in var.chatbots : idx => templatefile(
-          lookup(var.channel_attributes, each.key, var.channel_attributes["default"]),
-          { chatbot_name = idx }
-        ) },
+        {
+          for idx, chatbot in var.chatbots : idx => templatefile(
+            lookup(var.channel_attributes, each.key, var.channel_attributes["default"]),
+          { chatbot_name = idx })
+        },
         {
           default : templatefile(
             lookup(var.channel_attributes, each.key, var.channel_attributes["default"]),
-            { task_language = var.task_language }
-          )
+          { task_language = var.task_language })
         }
       )
 

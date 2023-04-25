@@ -182,19 +182,20 @@ locals {
     default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
   }
   flow_vars = {
-    service_sid : "ZSb631f562c8306085ceb8329349fdd60b"
-    environment_sid : "ZEd72a0800eb472d514e48977ffab9b642"
-    time_cycle_function_sid : "ZH3ee5654cb3c8cda06c2aaf84593b11a6"
-    time_cycle_function_url : "https://test-service-dee-4583.twil.io/time_cycle"
-    engagement_function_sid : "ZH946d079ec6be9b1b899a6cf30be0660f"
-    engagement_function_url : "https://test-service-dee-4583.twil.io/engagement"
-  }
+      service_sid = "ZSb631f562c8306085ceb8329349fdd60b"
+      environment_sid = "ZEd72a0800eb472d514e48977ffab9b642"
+      time_cycle_function_sid = "ZH3ee5654cb3c8cda06c2aaf84593b11a6"
+      time_cycle_function_url = "https://test-service-dee-4583.twil.io/time_cycle"
+      engagement_function_sid = "ZH946d079ec6be9b1b899a6cf30be0660f"
+      engagement_function_url = "https://test-service-dee-4583.twil.io/engagement"
+    }
+
   channels = {
     webchat : {
-      channel_type : "web"
-      contact_identity : ""
-      templatefile : "/app/twilio-iac/helplines/ca/templates/studio-flows/webchat.tftpl"
-      channel_flow_vars : {}
+      channel_type = "web"
+      contact_identity = ""
+      templatefile = "/app/twilio-iac/helplines/ca/templates/studio-flows/webchat.tftpl"
+      channel_flow_vars = {}
     }
   }
 

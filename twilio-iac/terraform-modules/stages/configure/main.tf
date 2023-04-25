@@ -12,6 +12,8 @@ locals {
   task_router_chat_task_channel_sid     = local.provision_config.task_router_chat_task_channel_sid
   task_router_voice_task_channel_sid    = local.provision_config.task_router_voice_task_channel_sid
   services_flex_chat_service_sid        = local.provision_config.services_flex_chat_service_sid
+  task_router_workflow_sids             = local.provision_config.task_router_workflow_sids
+  task_router_task_channel_sids         = local.provision_config.task_router_task_channel_sids
 
   permission_config = var.permission_config == "" ? var.short_helpline : var.permission_config
 
@@ -81,6 +83,24 @@ module "flex" {
   #tODO: this needs to be a configuration option
   hrm_url = local.hrm_url
 }
+
+module "channel" {
+
+  source                = "../../channels/v1"
+  flex_chat_service_sid = local.services_flex_chat_service_sid
+  workflow_sids         = local.task_router_workflow_sids
+  task_channel_sids     = local.task_router_task_channel_sids
+  channel_attributes    = var.channel_attributes
+  channels              = var.channels
+  chatbots              = var.chatbots
+  enable_post_survey    = var.enable_post_survey
+  flow_vars             = var.flow_vars
+  short_environment     = var.short_environment
+  task_language         = var.task_language
+  short_helpline        = upper(var.short_helpline)
+}
+
+
 
 module "twilioChannel" {
   for_each = var.twilio_channels

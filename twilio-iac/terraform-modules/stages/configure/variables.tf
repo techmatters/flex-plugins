@@ -138,3 +138,40 @@ variable "permission_config" {
   type        = string
   default     = ""
 }
+
+variable "task_language" {
+  type        = string
+  default     = ""
+  description = "Override the default language by setting this"
+}
+
+variable "channels" {
+  type = map(object({
+    templatefile      = string,
+    channel_type      = string,
+    contact_identity  = string
+    channel_flow_vars = map(string)
+  }))
+  description = "Map of enabled channel objects with their attributes"
+
+}
+
+variable "flow_vars" {
+  type    = map(string)
+  default = {}
+  description = "Studio flow variebles common to all channels"
+}
+
+variable "chatbots" {
+  type    = map(string)
+  default = {}
+}
+
+variable "channel_attributes" {
+  type = map(string)
+}
+
+variable "enable_post_survey" {
+  type    = bool
+  default = false
+}
