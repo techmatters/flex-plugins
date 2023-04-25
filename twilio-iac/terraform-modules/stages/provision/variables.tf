@@ -69,3 +69,10 @@ variable "custom_task_routing_filter_expression" {
   description = "The custom task routing filter expression for the helpline."
   default     = ""
 }
+
+
+variable "phone_numbers" {
+  description = "Phone numbers"
+  type        = map(list(string))
+  default = null
+}

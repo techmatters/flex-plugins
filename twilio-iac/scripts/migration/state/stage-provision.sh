@@ -16,6 +16,7 @@ delete_identifiers=(
   "^module.customChannel"
   "POST_SURVEY_BOT_CHAT_URL"
   "twilio_post_survey_bot_chat_url"
+  "^module.channel"
 )
 
 . ${script_dir}/stage-common.sh

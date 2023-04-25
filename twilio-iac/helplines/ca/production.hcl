@@ -21,6 +21,7 @@ locals {
         contact_identity = ""
         templatefile = "/app/twilio-iac/helplines/ca/templates/studio-flows/webchat.tftpl"
         channel_flow_vars = {}
+        chatbot_unique_names =[]
       }
     }
     phone_numbers = {

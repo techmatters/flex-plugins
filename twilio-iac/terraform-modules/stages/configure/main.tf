@@ -18,8 +18,7 @@ locals {
   permission_config = var.permission_config == "" ? var.short_helpline : var.permission_config
 
   chatbot_config = data.terraform_remote_state.chatbot.outputs
-  chatbot_sids   = local.chatbot_config.chatbot_sids
-
+  chatbots   = local.chatbot_config.chatbots
   hrm_url_map = {
     "development" = {
       "us-east-1" = "https://hrm-development.tl.techmatters.org"
@@ -85,14 +84,13 @@ module "flex" {
 }
 
 module "channel" {
-
   source                = "../../channels/v1"
   flex_chat_service_sid = local.services_flex_chat_service_sid
   workflow_sids         = local.task_router_workflow_sids
   task_channel_sids     = local.task_router_task_channel_sids
   channel_attributes    = var.channel_attributes
   channels              = var.channels
-  chatbots              = var.chatbots
+  chatbots              = local.chatbots
   enable_post_survey    = var.enable_post_survey
   flow_vars             = var.flow_vars
   short_environment     = var.short_environment
@@ -126,14 +124,14 @@ module "twilioChannel" {
       chat_task_channel_sid        = local.task_router_chat_task_channel_sid
       channel_attributes           = var.channel_attributes[each.key]
       flow_description             = "${title(each.key)} Messaging Flow"
-      pre_survey_bot_sid           = local.chatbot_sids.pre_survey
+      pre_survey_bot_sid           = local.chatbots.pre_survey["sid"]
       target_task_name             = var.target_task_name
       operating_hours_holiday      = var.strings["operating_hours_holiday"]
       operating_hours_closed       = var.strings["operating_hours_closed"]
   }) : ""
   channel_contact_identity = each.value.contact_identity
   channel_type             = each.value.channel_type
-  pre_survey_bot_sid       = local.chatbot_sids.pre_survey
+  pre_survey_bot_sid       = local.chatbots.pre_survey["sid"]
   target_task_name         = var.target_task_name
   channel_name             = each.key
   janitor_enabled          = var.janitor_enabled

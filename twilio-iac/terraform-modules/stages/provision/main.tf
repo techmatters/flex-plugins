@@ -44,6 +44,7 @@ module "taskRouter" {
   task_queues                           = var.task_queues
   workflows                             = var.workflows
   task_channels                         = var.task_channels
+  phone_numbers                         = var.phone_numbers
 }
 
 module "survey" {

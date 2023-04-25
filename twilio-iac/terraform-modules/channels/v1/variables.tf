@@ -15,10 +15,11 @@ variable "task_language" {
 
 variable "channels" {
   type = map(object({
-    templatefile      = string,
-    channel_type      = string,
-    contact_identity  = string
-    channel_flow_vars = map(string)
+    templatefile         = string,
+    channel_type         = string,
+    contact_identity     = string,
+    channel_flow_vars    = map(string)
+    chatbot_unique_names = list(string)
   }))
 
 }
@@ -36,7 +37,9 @@ variable "flow_vars" {
 }
 
 variable "chatbots" {
-  type    = map(string)
+  type = map(object({
+    sid = string
+  }))
   default = {}
 }
 

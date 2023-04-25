@@ -48,10 +48,6 @@ variable "target_task_name" {
   description = "The target task name for the helpline."
 }
 
-variable "enable_post_survey" {
-  type        = bool
-  description = "Whether to enable the post survey for the helpline."
-}
 
 variable "twilio_channels" {
   type = map(object({
@@ -59,17 +55,15 @@ variable "twilio_channels" {
     contact_identity = string
   }))
   description = "The twilio channels for the helpline."
+  default     = {}
 }
 
 variable "enable_voice_channel" {
   type        = bool
   description = "Whether to enable the voice channel for the helpline."
+  default     = false
 }
 
-variable "channel_attributes" {
-  type        = map(string)
-  description = "The channel attributes for the helpline."
-}
 
 variable "task_router_config" {
   description = "The task router config for the helpline."
@@ -83,6 +77,11 @@ variable "task_router_config" {
       })
     )
   })
+  default = {
+    event_filters     = []
+    additional_queues = []
+    channels          = []
+  }
 }
 
 variable "twilio_channel_custom_flow_template" {
@@ -151,21 +150,18 @@ variable "channels" {
     channel_type      = string,
     contact_identity  = string
     channel_flow_vars = map(string)
+    chatbot_unique_names = list(string)
   }))
   description = "Map of enabled channel objects with their attributes"
 
 }
 
 variable "flow_vars" {
-  type    = map(string)
-  default = {}
+  type        = map(string)
+  default     = {}
   description = "Studio flow variebles common to all channels"
 }
 
-variable "chatbots" {
-  type    = map(string)
-  default = {}
-}
 
 variable "channel_attributes" {
   type = map(string)

@@ -14,7 +14,7 @@ terraform {
 #(channel_flow_vars would be specific to the channel), like function sids (created outside terraform)
 #or other variables specific to the helpline or template being used.
 
-#var.chatbots should be a map with all the chatbots and their sids, this should be the ouput of the chatbot module, 
+#var.chatbots should be a map with all the chatbots objects (not just the sid, for amazon lex we might need a webhook or something), this should be the ouput of the chatbot module, 
 #so this module should be called after the creation of chatbots. The studio flow template will usually need the chatbot sids or identifier to call them.
 
 #I'm not sure about the "channel_attributes =" section, channel_attributes will be different depending on the channel and chatbots used.
@@ -33,14 +33,18 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
       flow_description  = "${title(each.key)} Studio Flow",
       flow_vars         = var.flow_vars
       channel_flow_vars = each.value.channel_flow_vars,
-      chatbots          = var.chatbots,
+      channel_chatbots          = {
+           for chatbot_name in each.value.chatbot_unique_names :
+            chatbot_name => var.chatbots[chatbot_name]
+      }
       workflow_sids     = var.workflow_sids,
       task_channel_sids = var.task_channel_sids
       channel_attributes = merge(
         {
-          for idx, chatbot in var.chatbots : idx => templatefile(
+          for  chatbot_name in each.value.chatbot_unique_names : 
+            chatbot_name => templatefile(
             lookup(var.channel_attributes, each.key, var.channel_attributes["default"]),
-          { chatbot_name = idx })
+            { chatbot_name = chatbot_name  })
         },
         {
           default : templatefile(
