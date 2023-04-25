@@ -4,16 +4,15 @@ locals {
   config              = merge(local.defaults_config, local.local_config)
 
   local_config = {
-    helpline       = "Kids Help Phone"
-    old_dir_prefix = "kidshelpphone"
-
-    definition_version = "ca-v1"
-
+    helpline                          = "Kids Help Phone"
+    old_dir_prefix                    = "kidshelpphone"
+    definition_version                = "ca-v1"
     default_autopilot_chatbot_enabled = false
+    task_language                     = "en-CA"
+    helpline_language                 = "en-CA"
 
-    twilio_channels = {
-      "webchat" = { "contact_identity" = "", "channel_type" = "web" }
-    }
+    enable_post_survey = false
+
 
     workflows = {
       master : {
