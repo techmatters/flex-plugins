@@ -23,7 +23,6 @@ import { MessageInputChildrenProps } from '@twilio/flex-ui-core/src/components/c
 import { selectCannedResponses } from '../states/selectors/hrmStateSelectors';
 import { CannedResponsesContainer, FormSelect, FormSelectWrapper, FormOption } from '../styles/HrmStyles';
 import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
-import useTraceUpdate from '../hooks/useTraceUpdate';
 import { newUpdateDraftMessageTextAction } from '../states/conversations';
 
 const mapDispatchToProps = (

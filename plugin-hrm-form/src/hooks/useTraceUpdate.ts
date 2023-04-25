@@ -14,10 +14,14 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// Lifted from https://stackoverflow.com/a/51082563
+/*
+ * Lifted from https://stackoverflow.com/a/51082563
+ * Dont leave calls to it in code long term, it's just for debugging
+ */
 
 import { useEffect, useRef } from 'react';
 
+// eslint-disable-next-line import/no-unused-modules
 export default function useTraceUpdate(props, name: string) {
   const prev = useRef(props);
   useEffect(() => {
