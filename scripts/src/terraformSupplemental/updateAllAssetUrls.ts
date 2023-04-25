@@ -8,9 +8,9 @@ import { logDebug } from '../helpers/log';
 async function main() {
   // eslint-disable-next-line no-restricted-syntax
   for (const environment of [
-    // Environment.DEVELOPMENT,
+    Environment.DEVELOPMENT,
     Environment.STAGING,
-    // Environment.PRODUCTION,
+    Environment.PRODUCTION,
   ]) {
     logDebug(`Updating asset urls for ${environment}`);
     // eslint-disable-next-line no-await-in-loop
@@ -20,7 +20,7 @@ async function main() {
       await patchFeatureFlags(
         {},
         { assets_bucket_url: `https://assets-${environment}.tl.techmatters.org` },
-        true,
+        false,
       );
     });
   }
