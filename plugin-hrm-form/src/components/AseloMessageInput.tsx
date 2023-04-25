@@ -16,7 +16,7 @@
 
 import { MessageInputChildrenProps } from '@twilio/flex-ui-core/src/components/channel/MessageInput/MessageInputImpl';
 import React, { Dispatch, useEffect, useState } from 'react';
-import { Button, Template, withTheme } from '@twilio/flex-ui';
+import { Button, FlexBox, FlexBoxColumn, Template, withTheme } from '@twilio/flex-ui';
 import { useForm } from 'react-hook-form';
 import debounce from 'lodash/debounce';
 import { connect } from 'react-redux';
@@ -29,6 +29,8 @@ import {
   newUpdateDraftMessageTextAction,
 } from '../states/conversations';
 import asyncDispatch from '../states/asyncDispatch';
+import EmojiPicker from './emojiPicker';
+import { getAseloFeatureFlags } from '../hrmConfig';
 
 /**
  * The following CSS attributtes should be set in here
@@ -82,14 +84,10 @@ const AseloMessageInput: React.FC<Props> = ({
   const [prevScrollHeight, setPrevScrollHeight] = useState<number>();
 
   const { register, handleSubmit, setValue, getValues } = useForm();
-
-  useEffect(() => {
-    setValue('messageInputArea', draftText);
-    return () => {
-      updateDraftMessageText(getValues('messageInputArea'));
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [conversationSid]);
+  const {
+    enable_canned_responses: enableCannedResponses,
+    enable_emoji_picker: enableEmojiPicker,
+  } = getAseloFeatureFlags();
 
   useEffect(() => {
     setValue('messageInputArea', draftText);
@@ -217,6 +215,7 @@ const AseloMessageInput: React.FC<Props> = ({
         }}
         onChange={handleChange}
         onKeyDown={handleEnterInMessageInput}
+        onBlur={() => updateDraftMessageText(getValues('messageInputArea'))}
         style={{
           display: 'block',
           boxSizing: 'border-box',
@@ -232,10 +231,15 @@ const AseloMessageInput: React.FC<Props> = ({
           borderRadius: '4px',
         }}
       />
-      <Button onClick={submitMessageForSending} disabled={isDisabled}>
-        <Template code="Send" />
-      </Button>
-      <CannedResponses key="canned-responses" conversationSid={conversationSid} />
+      <FlexBox>
+        <FlexBoxColumn>{enableEmojiPicker && <EmojiPicker conversationSid={conversationSid} />}</FlexBoxColumn>
+        <FlexBoxColumn>
+          <Button onClick={submitMessageForSending} disabled={isDisabled}>
+            <Template code="Send" />
+          </Button>
+        </FlexBoxColumn>
+      </FlexBox>
+      {enableCannedResponses && <CannedResponses key="canned-responses" conversationSid={conversationSid} />}
     </div>
   );
 };
