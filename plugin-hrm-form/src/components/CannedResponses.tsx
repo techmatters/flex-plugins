@@ -15,28 +15,43 @@
  */
 
 /* eslint-disable react/prop-types */
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { Dispatch } from 'react';
+import { connect, ConnectedProps, useSelector } from 'react-redux';
 import { Actions, withTheme } from '@twilio/flex-ui';
 import { MessageInputChildrenProps } from '@twilio/flex-ui-core/src/components/channel/MessageInput/MessageInputImpl';
 
 import { selectCannedResponses } from '../states/selectors/hrmStateSelectors';
 import { CannedResponsesContainer, FormSelect, FormSelectWrapper, FormOption } from '../styles/HrmStyles';
-import { getTemplateStrings } from '../hrmConfig';
-import useTraceUpdate from '../hooks/useTraceUpdate';
+import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
+import { newUpdateDraftMessageTextAction } from '../states/conversations';
 
-type Props = Partial<MessageInputChildrenProps>;
+const mapDispatchToProps = (
+  dispatch: Dispatch<{ type: string } & Record<string, any>>,
+  { conversationSid }: Partial<MessageInputChildrenProps>,
+) => {
+  return {
+    updateDraftMessageText: (text: string) => {
+      dispatch(newUpdateDraftMessageTextAction(conversationSid, text));
+    },
+  };
+};
 
-const CannedResponses: React.FC<Props> = props => {
+const connector = connect(null, mapDispatchToProps);
+
+type Props = Partial<MessageInputChildrenProps> & ConnectedProps<typeof connector>;
+
+const CannedResponses: React.FC<Props> = ({ conversationSid, updateDraftMessageText }) => {
   const cannedResponses = useSelector(selectCannedResponses);
-  useTraceUpdate(props, 'CannedResponses');
   const strings = getTemplateStrings();
-  const { conversationSid } = props;
   const handleChange: React.ChangeEventHandler<HTMLSelectElement> = event => {
-    Actions.invokeAction('SetInputText', {
-      conversationSid,
-      body: event.target.value,
-    });
+    if (getAseloFeatureFlags().enable_aselo_messaging_ui) {
+      updateDraftMessageText(event.target.value);
+    } else {
+      Actions.invokeAction('SetInputText', {
+        conversationSid,
+        body: event.target.value,
+      });
+    }
   };
 
   if (!cannedResponses) return null;
@@ -62,4 +77,4 @@ const CannedResponses: React.FC<Props> = props => {
 };
 CannedResponses.displayName = 'CannedResponses';
 
-export default withTheme(CannedResponses);
+export default withTheme(connector(CannedResponses));
