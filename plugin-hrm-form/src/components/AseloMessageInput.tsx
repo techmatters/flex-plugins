@@ -70,11 +70,6 @@ const AseloMessageInput: React.FC<Props> = ({
 
   useEffect(() => {
     setValue('messageInputArea', draftText);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [conversationSid]);
-
-  useEffect(() => {
-    setValue('messageInputArea', draftText);
     setIsDisabled(sendStatus === MessageSendStatus.SENDING || !draftText);
   }, [draftText, sendStatus, setValue]);
 
