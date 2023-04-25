@@ -21,6 +21,6 @@
   "editFollowUpDate":  [["everyone"]],
   "editContact":  [["everyone"]],
   "viewPostSurvey":  [["isSupervisor"]],
-  "viewExternalTranscript": [["isSupervisor"]],
+  "viewExternalTranscript": [["everyone"]],
   "viewIdentifiers": [["everyone"]]
 }

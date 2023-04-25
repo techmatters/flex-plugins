@@ -12,7 +12,7 @@
     "name": "duration",
     "label": "Időtartam",
     "type": "select",
-    "unknownOption": "",
+    "unknownOption": "Nem derült ki",
     "options": [
       {
         "value": "",
@@ -40,7 +40,7 @@
     "name": "location",
     "label": "Helyszín",
     "type": "select",
-    "unknownOption": "",
+    "unknownOption": "Nem derült ki",
     "options": [
       {
         "value": "",
