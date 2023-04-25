@@ -372,6 +372,7 @@ export const replaceTwilioMessageInput = () => {
  */
 export const setupCannedResponses = () => {
   Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" />);
+  Flex.MessageInputV2.Content.add(<CannedResponses key="canned-responses" />);
 };
 
 /**

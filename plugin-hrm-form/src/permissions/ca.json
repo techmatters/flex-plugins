@@ -21,5 +21,5 @@
   "editFollowUpDate": [["isSupervisor"], ["isCreator"]],
   "editContact": [["isCreator"],["isSupervisor"]],
   "viewExternalTranscript": [["isSupervisor"]],
-  "viewIdentifiers": [["isSupervisor"]]
+  "viewIdentifiers": [["everyone"]]
 }

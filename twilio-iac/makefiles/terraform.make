@@ -1,24 +1,23 @@
-apply: apply-tf
-
 apply-tf:
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) terraform apply $(tf_args)
 
-get:
+get-tf:
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) terraform get --update $(tf_args)
-
-init: init-tf init-scripts
 
 init-tf:
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) terraform init $(tf_args)
 
-plan:
+plan-tf:
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) terraform plan $(tf_args)
 
-destroy:
+destroy-tf:
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) terraform destroy $(tf_args)
 
-validate:
+validate-tf:
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) terraform validate $(tf_args)
+
+lint:
+	docker run -it --rm -v $(MY_PWD):/data -e TFLINT_LOG=warn --entrypoint '' -w /data/$(MY_ENV) wata727/tflint tflint --module .
 
 fmt:
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) terraform fmt $(tf_args)

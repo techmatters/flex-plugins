@@ -2,8 +2,8 @@
 
 These are scripts for provisioning some of the Aselo Twilio infrastructure.
 
-
 ## Note
+
 Try to keep track of the changes on the different accounts in [this spreadsheet](https://app.box.com/file/1109527438079) 🙏
 
 ## Prerequisites
@@ -36,26 +36,11 @@ There are currently some gotchas which mean that, unfortunately, it's not a simp
 
 The process for a first run is as follows:
 
-1. Create a new directory in `/twilio-iac` named using the {helpline}-{environment} convention
+1. Create a new directory in `/twilio-iac/helplines` named using the helpline short code (lowercase). IE: `/twilio-iac/helplines/as`
 
-2. Copy any `.tf` extension files from the `terraform-poc-account` folder into the new folder (or if it is a production account, copy from the helpline's staging account, this will save a lot of time aligning them later).
-Important notes:
-    - If you are copying over from `terraform-poc-account`, beware that in `main.tf`, under the `services` module, the flag `uses_conversation_service` is set to `false`. Remove this if you are working with a new Twilio account, as that is intended for compatibility with older setups of Flex.
-    - Check under `flex` module, the poc account uses `hrm_url` to specify the target url for the Aselo backend. Remove this and rely on the naming convention to decide if it's staging or production (or specify the target one if the regular notation does not applies to this case).
-    - Check under `flex` module, `permission_config` should be set to `var.permission_config` if you are describing it in the `variables.tf` file, or specify the correct one if not.
-    - Review the `main.tf` to make sure there are no stuff being harcoded unless you are sure that's what you want. A few minutes on this step might save you much more time debugging a missconfigured account.
+2. Within that directory copy `common.hcl` and `<environment>.hcl` from a helpline that already exists. IE: `/twilio-iac/helplines/pl/common.hcl`, `/twilio-iac/helplines/pl/staging.hcl`
 
-3. In the 'backend "s3""' section modify the 'key' to replace 'poc' with the account identifier convention we use for s3, i.e. {short_lowercase_helpline_code} . For example, Aarambh Production would look like this:
-```hcl
-  backend "s3" {
-    bucket         = "tl-terraform-state-production"
-    key            = "twilio/in/terraform.tfstate"
-    dynamodb_table = "terraform-locks"
-    encrypt        = true
-  }
-```
-
-4. Open the `variables.tf` file and update the defaults to ones appropriate to this helpline & environment or modify locals within `main.tf`
+3. Update the `common.hcl` and `<environment>.hcl` files with the correct configuration for the helpline.
 
 > For the following steps, make sure to have the following env vars loaded in your terminal session:
 > ```
@@ -79,7 +64,7 @@ Important notes:
 >
 > From now on, the above env vars are exported to this console session ~only~ (bash/powershell/whatever). Be sure you continue to use this session, or in case of opening a different one, you repeat the step to export the required variables.
 
-5. Run `make setup-new-environment` from your new folder (you might need to run `make init tf_args=-reconfigure` if it complains after you set up the ssm secrets.)
+5. Run `make HL=<helpline_short_code> HL_ENV=<environment> setup-new-environment` from the `/twilio-iac/stages/provision` directory.
 
 > The first time you run this, you will need to enter the following secrets:
 >
@@ -91,14 +76,14 @@ Important notes:
 >
 > *Datadog Access Token* - this is the Datadog Access Token for the Datadog account you are working on. You can find this in the Datadog console, under the "API" section.
 
+6. Run `make HL=<helpline_short_code> HL_ENV=<environment> apply` from the `/twilio-iac/stages/provision` directory and verify that the plan looks correct. Modify the helpline configuration in `common.hcl` and `<environment>.hcl` if necessary.
 
-Unfortunately, a feature gap in the twilio terraform provider means the domain URL cannot be extracted from the resource. The easiest workaround is to put it in a variable after it has been generated initially
-
-6. Go into Twilio Console -> Autopilot -> demo_chatbot and check if the 'redirect_function' task has the correct serverless url set. If it is not correct, update it manually in Twilio Console.
+7. Go into Twilio Console -> Autopilot -> demo_chatbot and check if the 'redirect_function' task has the correct serverless url set. If it is not correct, update it manually in Twilio Console.
     Unfortunately due to this issue with the provider, it may not be updated as part of the second `terraform apply`: https://github.com/twilio/terraform-provider-twilio/issues/92
 
-7. Don't forget to raise a PR to merge the new configuration you created
+8. Once the provision stage has been applied, run `make HL=<helpline_short_code> HL_ENV=<environment> apply` from the `/twilio-iac/stages/chatbot` and `/twilio-iac/stages/configure` directories making adjustments to the configuration as necessary.
 
+9. Don't forget to raise a PR to merge the new configuration you created
 
 ## Importing a pre-existing environment
 

@@ -1,6 +1,6 @@
 {
   "viewContact": [["everyone"]],
-  "viewCase": [["everyone"]],
+  "viewCase": [["isSupervisor"], ["isCreator"]],
   "closeCase": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "reopenCase": [["isSupervisor"]],
   "caseStatusTransition": [],

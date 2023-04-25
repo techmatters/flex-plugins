@@ -54,6 +54,8 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & MessageProps;
 
+const RETURN_KEY_CODE = 13;
+
 const AseloMessageInput: React.FC<Props> = ({
   conversationSid,
   conversation: { source: conversation },
@@ -109,7 +111,7 @@ const AseloMessageInput: React.FC<Props> = ({
   };
 
   const handleEnterInMessageInput = e => {
-    if (e.keyCode === 13 && e.shiftKey === false) {
+    if (e.keyCode === RETURN_KEY_CODE && e.shiftKey === false) {
       e.preventDefault();
       submitMessageForSending();
     }
