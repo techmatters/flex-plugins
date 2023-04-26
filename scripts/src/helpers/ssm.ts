@@ -1,4 +1,5 @@
 import AWS from 'aws-sdk';
+import { logDebug } from './log';
 
 require('dotenv').config();
 
@@ -51,6 +52,35 @@ export const getSSMParameter = (name: string) =>
       }
     });
   });
+
+const getSSMParametersChunkByPath = (path: string, token: string | undefined) =>
+  new Promise<AWS.SSM.GetParametersByPathResult>((resolve, reject) => {
+    ssm.getParametersByPath(
+      { Path: path, Recursive: true, NextToken: token, WithDecryption: true },
+      (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result ?? { NextToken: null, Parameters: [] });
+        }
+      },
+    );
+  });
+
+export const getSSMParametersByPath = async (path: string) => {
+  const parameters: AWS.SSM.ParameterList = [];
+  let nextToken: string | undefined;
+
+  do {
+    // eslint-disable-next-line no-await-in-loop
+    const { Parameters: results, NextToken } = await getSSMParametersChunkByPath(path, nextToken);
+    nextToken = results?.length ? NextToken : undefined;
+    logDebug(`Chunk of ${results?.length} parameters found for path: ${path}`);
+    parameters.push(...(results ?? []));
+  } while (nextToken);
+
+  return parameters;
+};
 
 // export const deleteSSMParameter = async (Name: string) => {
 //   ssm.deleteParameter({ Name }, (err, data) => {
