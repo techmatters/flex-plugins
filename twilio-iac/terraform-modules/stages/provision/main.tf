@@ -33,6 +33,7 @@ module "services" {
   short_helpline    = upper(var.short_helpline)
   environment       = title(var.environment)
   short_environment = var.short_environment
+  stage             = local.stage
 }
 
 module "taskRouter" {

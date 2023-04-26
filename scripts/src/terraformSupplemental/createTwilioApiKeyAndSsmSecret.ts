@@ -1,6 +1,6 @@
 import twilio from 'twilio';
 import { getSSMParameter, saveSSMParameter } from '../helpers/ssm';
-import { logDebug, logError, logInfo, logSuccess, logWarning } from '../helpers/log';
+import { logDebug, logInfo, logSuccess, logWarning } from '../helpers/log';
 
 export type CreateTwilioApiKeyAndSsmSecretOptions = {
   sidSmmParameterName: string;
@@ -30,7 +30,9 @@ export async function createTwilioApiKeyAndSsmSecret(
   const apiKeyAlreadyExists = !!(await client.keys.list()).find(
     (k) => k.friendlyName === twilioFriendlyName,
   );
+  logWarning('secretSsmParameterName', secretSsmParameterName);
   const ssmParamForSecretAlreadyExists = !!(await getSSMParameter(secretSsmParameterName));
+  logWarning('sidSmmParameterName', sidSmmParameterName);
   const smmParamForSidAlreadyExists = !!(
     sidSmmParameterName && (await getSSMParameter(sidSmmParameterName))
   );
