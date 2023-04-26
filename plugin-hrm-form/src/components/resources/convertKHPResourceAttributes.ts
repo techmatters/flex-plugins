@@ -20,25 +20,28 @@ type Attributes = {
   [key: string]: any;
 };
 
-const getAttributeValue = (attributes: Attributes | undefined, language: Language, keyName: string) => {
-  const propVal = (attributes ?? {})[keyName];
-  if (!propVal) {
-    return null;
-  }
-  const propValueByLanguage = propVal.find(item => item.language === language || item.language === '');
-  if (propValueByLanguage && 'value' in propValueByLanguage && typeof propValueByLanguage.value === 'string') {
-    return propValueByLanguage.value;
-  } else if (propVal && 'value' in propVal[0] && typeof propVal[0].value === 'boolean') {
-    // For keysToKeep, do not change to Yes / No responses
-    const keysToKeep = ['primaryLocationIsPrivate', 'isLocationPrivate', 'isPrivate'];
-
-    if (propVal[0].value === true && !keysToKeep.includes(keyName)) {
-      return 'Yes';
-    } else if (propVal[0].value === false && !keysToKeep.includes(keyName)) {
-      return 'No';
+const getAttributeValue = (attributes: Attributes, language: Language, keyName: string) => {
+  if (keyName in attributes) {
+    const propVal = attributes[keyName];
+    if (propVal.length === 0) {
+      return null;
     }
+    const propValueByLanguage = propVal.find(item => item.language === language || item.language === '');
+    if (propValueByLanguage && 'value' in propValueByLanguage && typeof propValueByLanguage.value === 'string') {
+      return propValueByLanguage.value;
+    } else if (propVal && 'value' in propVal[0] && typeof propVal[0].value === 'boolean') {
+      // For keysToKeep, do not change to Yes / No responses
+      const keysToKeep = ['primaryLocationIsPrivate', 'isLocationPrivate', 'isPrivate'];
+
+      if (propVal[0].value === true && !keysToKeep.includes(keyName)) {
+        return 'Yes';
+      } else if (propVal[0].value === false && !keysToKeep.includes(keyName)) {
+        return 'No';
+      }
+    }
+    return propVal[0].value;
   }
-  return propVal[0].value;
+  return null;
 };
 
 const extractAgeRange = (attributes: Attributes, language: Language) => {
@@ -57,13 +60,13 @@ const extractPrimaryLocation = (attributes: Attributes, language: Language) => {
   const postalCode = getAttributeValue(attributes, language, 'primaryLocationPostalCode');
   const phone = getAttributeValue(attributes, language, 'primaryLocationPhone');
   // eslint-disable-next-line prefer-named-capture-group
-  const formattedPhone = phone?.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+  const formattedPhone = phone.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
 
   return `${county}, ${city}\r\n${province}, ${postalCode}\r\n${formattedPhone}`;
 };
 
 const extractOperatingHours = (operations: any, language: Language) => {
-  return Object.keys(operations ?? {}).map(key => {
+  return Object.keys(operations).map(key => {
     const dayData = operations[key].find(item => item.language === language || item.language === '');
     const { hoursOfOperation, descriptionOfHours, day } = dayData.info;
     return { day, hoursOfOperation, descriptionOfHours };
@@ -82,9 +85,9 @@ const extractSiteLocation = location => {
   };
 };
 
-const extractPhoneNumbers = (phoneObj: any) => {
+const extractPhoneNumbers = (phoneObj: Object) => {
   const phoneNumbers = {};
-  for (const key in phoneObj ?? {}) {
+  for (const key in phoneObj) {
     if (phoneObj.hasOwnProperty(key)) {
       const phoneData = phoneObj[key];
       if (phoneData[0].hasOwnProperty('value')) {
@@ -97,7 +100,7 @@ const extractPhoneNumbers = (phoneObj: any) => {
 
 const extractSiteDetails = (sites: Object, language: Language) => {
   const siteDetails = [];
-  for (const key in sites ?? {}) {
+  for (const key in sites) {
     if (sites.hasOwnProperty(key)) {
       const langKey = language === 'fr' ? 1 : 0;
       const site = sites[key];
@@ -119,13 +122,13 @@ const extractSiteDetails = (sites: Object, language: Language) => {
 };
 
 const extractDescriptionInfo = (description, language: Language) => {
-  const descriptionByLanguage = description?.find(item => item.language === language || item.language === '');
+  const descriptionByLanguage = description.find(item => item.language === language || item.language === '');
   return descriptionByLanguage && descriptionByLanguage.info ? descriptionByLanguage.info.text : null;
 };
 
 const extractRequiredDocuments = (documentsRequired, language: Language) => {
   const documents = [];
-  for (const key in documentsRequired ?? {}) {
+  for (const key in documentsRequired) {
     if (documentsRequired.hasOwnProperty(key)) {
       const document = documentsRequired[key];
       const documentByLanguage = document.find(item => item.language === language || item.language === '');
@@ -137,8 +140,6 @@ const extractRequiredDocuments = (documentsRequired, language: Language) => {
   }
   return documents.join(', ');
 };
-
-const extractTargetPopulation = targetPopulationAttribute => ((targetPopulationAttribute ?? [])[0] ?? [])[0]?.value;
 
 export const convertKHPResourceAttributes = (
   attributes: Attributes,
@@ -159,7 +160,7 @@ export const convertKHPResourceAttributes = (
     operations: extractOperatingHours(attributes.operations, language),
     available247: getAttributeValue(attributes, language, 'available247'),
     ageRange: extractAgeRange(attributes, language),
-    targetPopulation: extractTargetPopulation(attributes.targetPopulation),
+    targetPopulation: attributes.targetPopulation[0][0].value,
     interpretationTranslationServicesAvailable: getAttributeValue(
       attributes,
       language,

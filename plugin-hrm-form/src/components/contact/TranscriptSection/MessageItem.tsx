@@ -47,7 +47,7 @@ const MessageItem: React.FC<Props> = ({ message }) => {
     <MessageItemContainer isCounselor={isCounselor} isGroupedWithPrevious={isGroupedWithPrevious}>
       {!isCounselor && (
         <AvatarContainer isGroupedWithPrevious={isGroupedWithPrevious}>
-          {isGroupedWithPrevious ? <div style={{ height: 24, width: 24 }} /> : <Icon icon="DefaultAvatar" />}
+          {!isGroupedWithPrevious && <Icon icon="DefaultAvatar" />}
         </AvatarContainer>
       )}
       <MessageBubbleContainer isCounselor={isCounselor}>

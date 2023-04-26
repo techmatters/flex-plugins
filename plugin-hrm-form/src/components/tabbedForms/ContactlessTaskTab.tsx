@@ -15,8 +15,8 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
-import { connect, ConnectedProps, useSelector } from 'react-redux';
+import React from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 import { FieldError, useFormContext } from 'react-hook-form';
 import { isFuture } from 'date-fns';
 import { get } from 'lodash';
@@ -58,7 +58,7 @@ const ContactlessTaskTab: React.FC<Props> = ({
 }) => {
   const { getValues, register, setError, setValue, watch, errors } = useFormContext();
 
-  const workerSid = useSelector(selectWorkerSid);
+  const workerSid = useFlexSelector(selectWorkerSid);
 
   const formDefinition = React.useMemo(
     () => createContactlessTaskTabDefinition({ counselorsList, helplineInformation, definition }),

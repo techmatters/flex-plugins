@@ -109,7 +109,7 @@ const setUpComponents = (
   Components.setUpStandaloneSearch();
   setUpReferrableResources();
   setUpCounselorToolkits();
-  if (featureFlags.enable_aselo_messaging_ui) Components.replaceTwilioMessageInput();
+
   if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 

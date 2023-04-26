@@ -231,7 +231,11 @@
   {
     "name": "phone1",
     "label": "Phone #1",
-    "type": "input"
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "race",

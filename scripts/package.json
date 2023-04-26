@@ -13,8 +13,7 @@
     "copyFlow": "node dist/copyFlow/index.js",
     "createTwilioApiKeyAndSsmSecret": "node dist/terraformSupplemental/createTwilioApiKeyAndSsmSecret.js",
     "generateNewHelplineFormDefinitions": "node dist/formDefinitions/generateNewHelplineFormDefinitions.js",
-    "twilioResources": "tsx src/terraformSupplemental/twilioResources.ts",
-    "updateAllAssetUrls": "tsx src/terraformSupplemental/updateAllAssetUrls.ts"
+    "twilioResources": "tsx src/terraformSupplemental/twilioResources.ts"
   },
   "author": "",
   "license": "AGPL",
