@@ -14,16 +14,14 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect, useState, useCallback, Dispatch } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { Actions, ActionPayload, withTaskContext, Manager } from '@twilio/flex-ui';
+import { Actions, ActionPayload, withTaskContext, TaskContextProps, ITask, Manager } from '@twilio/flex-ui';
 import { EmojiIcon } from '@twilio-paste/icons/cjs/EmojiIcon';
 import Picker from '@emoji-mart/react';
 
 import { Relative, Popup, SelectEmojiButton } from './styles';
 import { configurationBase, namespace, RootState } from '../../states';
-import { newUpdateDraftMessageTextAction } from '../../states/conversations';
-import { getAseloFeatureFlags } from '../../hrmConfig';
 
 type onEmojiSelectPayload = {
   native: string;
@@ -33,57 +31,36 @@ const EMOJIS_PER_LINE_DEFAULT = 9;
 const MESSAGING_CANVAS_WIDTH_DEFAULT = 420;
 const EMOJI_WIDTH = 36;
 
-// When added using Flex.MessageInputActions.Content.add, the conversationSid is passed as part of the MessageInputActionsProps
-type MyProps = {
-  conversationSid?: string;
-};
+const getConversationSid = (task: ITask) =>
+  task && task.attributes && (task.attributes.conversationSid || task.attributes.channelSid);
 
 const concatEmoji = (inputText: string, emoji: string) => {
   if (inputText.length === 0) {
     return emoji;
   }
 
-  return `${inputText}${inputText.endsWith(' ') ? '' : ' '}${emoji}`;
+  return `${inputText} ${emoji}`;
 };
 
-const mapStateToProps = (state: RootState, { conversationSid }: MyProps) => ({
+const mapStateToProps = (state: RootState) => ({
   definitionVersion: state[namespace][configurationBase].currentDefinitionVersion,
-  aseloUiDraftText: state[namespace].conversations[conversationSid]?.draftMessageText ?? '',
 });
 
-const mapDispatchToProps = (
-  dispatch: Dispatch<{ type: string } & Record<string, any>>,
-  { conversationSid }: MyProps,
-) => {
-  return {
-    updateDraftMessageText: (text: string) => {
-      dispatch(newUpdateDraftMessageTextAction(conversationSid, text));
-    },
-  };
-};
+const connector = connect(mapStateToProps);
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-const EmojiPicker: React.FC<MyProps & ConnectedProps<typeof connector>> = ({
-  conversationSid,
-  definitionVersion,
-  aseloUiDraftText,
-  updateDraftMessageText,
-}) => {
-  // Could do something fancier here with dependency injection, but doesn't seem worth it for now, especially if the default messaging UI gets fixed
-  const isAseloMessagingUi = Boolean(getAseloFeatureFlags().enable_aselo_messaging_ui);
+const EmojiPicker: React.FC<TaskContextProps & ConnectedProps<typeof connector>> = ({ task, definitionVersion }) => {
   const [inputText, setInputText] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [emojisPerLine, setEmojisPerLine] = useState(EMOJIS_PER_LINE_DEFAULT);
   const [firstTimeOpen, setFirstTimeOpen] = useState(false); // Tracks if the EmojiPicker was opened for the first time
 
   const { blockedEmojis } = definitionVersion ?? { blockedEmojis: [] };
+  const conversationSid = getConversationSid(task);
 
   /**
    * Adds listener on Action.SetInputText to track the InputText value
    */
   useEffect(() => {
-    // Only used when using Twilio Messaging UI
     const inputTextListener = (event: ActionPayload) => setInputText(event.body);
     Actions.addListener('afterSetInputText', inputTextListener);
 
@@ -140,18 +117,14 @@ const EmojiPicker: React.FC<MyProps & ConnectedProps<typeof connector>> = ({
    */
   const handleSelectEmoji = useCallback(
     (payload: onEmojiSelectPayload) => {
-      if (isAseloMessagingUi) {
-        updateDraftMessageText(concatEmoji(aseloUiDraftText, payload.native));
-      } else {
-        const body = concatEmoji(inputText, payload.native);
-        Actions.invokeAction('SetInputText', {
-          body,
-          conversationSid,
-        });
-      }
+      const body = concatEmoji(inputText, payload.native);
+      Actions.invokeAction('SetInputText', {
+        body,
+        conversationSid,
+      });
       setIsOpen(false);
     },
-    [isAseloMessagingUi, updateDraftMessageText, aseloUiDraftText, inputText, conversationSid],
+    [inputText, conversationSid],
   );
 
   return (

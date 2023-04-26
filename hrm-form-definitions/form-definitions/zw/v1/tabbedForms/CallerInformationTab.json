@@ -189,7 +189,11 @@
   {
     "name": "phone1",
     "label": "Phone Number (H)",
-    "type": "input"
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "phone2",
