@@ -31,10 +31,10 @@ test('getResource - GET /resource/{id}', () => {
 
 test('searchResources - POST /search?start={start}&limit={limit}', () => {
   mockFetchResourcesApi.mockResolvedValue({});
-  const params = { generalSearchTerm: 'bob' };
+  const params = { nameSubstring: 'bob', ids: [] };
   searchResources(params, 1337, 42);
-  expect(mockFetchResourcesApi).toHaveBeenCalledWith('search?start=1337&limit=42', {
+  expect(mockFetchResourcesApi).toHaveBeenCalledWith('searchByName?start=1337&limit=42', {
     method: 'POST',
-    body: JSON.stringify({ ...params, filters: {} }),
+    body: JSON.stringify(params),
   });
 });
