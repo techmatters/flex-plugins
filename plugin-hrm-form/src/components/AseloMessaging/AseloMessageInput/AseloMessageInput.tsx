@@ -200,7 +200,7 @@ const AseloMessageInput: React.FC<Props> = ({
       triggerTyping();
       updateSendButtonState();
     },
-    200,
+    300,
     {
       leading: true,
       trailing: true,
