@@ -21,16 +21,16 @@ import { useForm } from 'react-hook-form';
 import debounce from 'lodash/debounce';
 import { connect } from 'react-redux';
 
-import CannedResponses from './CannedResponses';
-import { conversationsBase, namespace, RootState } from '../states';
+import CannedResponses from '../CannedResponses';
+import { conversationsBase, namespace, RootState } from '../../states';
 import {
   MessageSendStatus,
   newSendMessageeAsyncAction,
   newUpdateDraftMessageTextAction,
-} from '../states/conversations';
-import asyncDispatch from '../states/asyncDispatch';
-import EmojiPicker from './emojiPicker';
-import { getAseloFeatureFlags } from '../hrmConfig';
+} from '../../states/conversations';
+import asyncDispatch from '../../states/asyncDispatch';
+import EmojiPicker from '../emojiPicker';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 /**
  * The following CSS attributtes should be set in here
