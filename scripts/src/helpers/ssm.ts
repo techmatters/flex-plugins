@@ -33,8 +33,6 @@ const getSsmConfig = async (): Promise<{
       };
     }
 
-    logDebug('Using SSM credentials from role: ', roleToAssume);
-
     return {
       accessKeyId: stsResponse.Credentials.AccessKeyId,
       secretAccessKey: stsResponse.Credentials.SecretAccessKey,
@@ -71,15 +69,12 @@ export const saveSSMParameter = async (
     Tier: 'Standard',
   };
 
-  logWarning('saveSSMParameter: ', config);
-
   const ssmClient = await getSsm();
   return ssmClient.putParameter(config).promise();
 };
 
 export const getSSMParameter = async (name: string) => {
   const ssmClient = await getSsm();
-  logWarning('getSSMParameter: ', name);
   try {
     const result = await ssmClient.getParameter({ Name: name, WithDecryption: true }).promise();
     return result;
