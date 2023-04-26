@@ -16,21 +16,31 @@
 
 import { MessageInputChildrenProps } from '@twilio/flex-ui-core/src/components/channel/MessageInput/MessageInputImpl';
 import React, { Dispatch, useEffect, useState } from 'react';
-import { Button, FlexBox, FlexBoxColumn, Template, withTheme } from '@twilio/flex-ui';
+import { Template, withTheme } from '@twilio/flex-ui';
 import { useForm } from 'react-hook-form';
 import debounce from 'lodash/debounce';
 import { connect } from 'react-redux';
 
-import CannedResponses from './CannedResponses';
-import { conversationsBase, namespace, RootState } from '../states';
+import CannedResponses from '../CannedResponses';
+import { conversationsBase, namespace, RootState } from '../../states';
 import {
   MessageSendStatus,
   newSendMessageeAsyncAction,
   newUpdateDraftMessageTextAction,
-} from '../states/conversations';
-import asyncDispatch from '../states/asyncDispatch';
-import EmojiPicker from './emojiPicker';
-import { getAseloFeatureFlags } from '../hrmConfig';
+} from '../../states/conversations';
+import asyncDispatch from '../../states/asyncDispatch';
+import EmojiPicker from '../emojiPicker';
+import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
+import {
+  AseloMessageInputContainer,
+  TextAreaContainer,
+  TextAreaContainerInner,
+  TextArea,
+  MessageInputActions,
+  MessageInputActionsInner,
+  ButtonContainer,
+  SendMessageButton,
+} from './styles';
 
 /**
  * The following CSS attributtes should be set in here
@@ -204,43 +214,44 @@ const AseloMessageInput: React.FC<Props> = ({
   };
 
   const overflow = height < MAX_HEIGHT ? 'hidden' : '';
+  const textAreaPlaceholder = getTemplateStrings()['Type message'] || 'Type message';
 
   return (
-    <div key="textarea">
-      <textarea
-        id="messageInputArea"
-        name="messageInputArea"
-        ref={ref => {
-          register(ref);
-        }}
-        onChange={handleChange}
-        onKeyDown={handleEnterInMessageInput}
-        onBlur={() => updateDraftMessageText(getValues('messageInputArea'))}
-        style={{
-          display: 'block',
-          boxSizing: 'border-box',
-          width: '100%',
-          overflow,
-          height: `${height}px`,
-          lineHeight: `${LINE_HEIGHT}px`,
-          padding: `${PADDING_VERTICAL}px 12px`,
-          fontFamily: '"Open Sans"',
-          fontSize: '13px',
-          marginBottom: '10px',
-          borderColor: '#CACDD8',
-          borderRadius: '4px',
-        }}
-      />
-      <FlexBox>
-        <FlexBoxColumn>{enableEmojiPicker && <EmojiPicker conversationSid={conversationSid} />}</FlexBoxColumn>
-        <FlexBoxColumn>
-          <Button onClick={submitMessageForSending} disabled={isDisabled}>
+    <AseloMessageInputContainer key="textarea">
+      <TextAreaContainer>
+        <TextAreaContainerInner>
+          <TextArea
+            id="messageInputArea"
+            name="messageInputArea"
+            ref={ref => {
+              register(ref);
+            }}
+            onChange={handleChange}
+            onKeyDown={handleEnterInMessageInput}
+            onBlur={() => updateDraftMessageText(getValues('messageInputArea'))}
+            rows={1}
+            placeholder={textAreaPlaceholder}
+            overflow={overflow}
+            height={height}
+            minHeight={MIN_HEIGHT}
+            maxHeight={MAX_HEIGHT}
+            lineHeight={LINE_HEIGHT}
+            paddingVertical={PADDING_VERTICAL}
+          />
+        </TextAreaContainerInner>
+      </TextAreaContainer>
+      <MessageInputActions>
+        <MessageInputActionsInner>
+          {enableEmojiPicker && <EmojiPicker conversationSid={conversationSid} />}
+        </MessageInputActionsInner>
+        <ButtonContainer>
+          <SendMessageButton size="small" onClick={submitMessageForSending} disabled={isDisabled}>
             <Template code="Send" />
-          </Button>
-        </FlexBoxColumn>
-      </FlexBox>
+          </SendMessageButton>
+        </ButtonContainer>
+      </MessageInputActions>
       {enableCannedResponses && <CannedResponses key="canned-responses" conversationSid={conversationSid} />}
-    </div>
+    </AseloMessageInputContainer>
   );
 };
 AseloMessageInput.displayName = 'AseloMessageInput';
