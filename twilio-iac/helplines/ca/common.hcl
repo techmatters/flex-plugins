@@ -10,8 +10,8 @@ locals {
     default_autopilot_chatbot_enabled = false
     task_language                     = "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
     helpline_language                 = "en-CA"
-
-    enable_post_survey = false
+    contacts_waiting_channels         = ["voice", "web"]
+    enable_post_survey                = false
 
 
     workflows = {
@@ -25,10 +25,6 @@ locals {
       aggregate : {
         "target_workers" = "1==1",
         "friendly_name"  = "Aggregate"
-      },
-      survey : {
-        "target_workers" = "1==0",
-        "friendly_name"  = "Survey"
       },
       khp_en : {
         "target_workers" = "routing.skills HAS 'KHP English'",
