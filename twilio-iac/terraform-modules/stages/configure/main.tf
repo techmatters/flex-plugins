@@ -18,7 +18,7 @@ locals {
   permission_config = var.permission_config == "" ? var.short_helpline : var.permission_config
 
   chatbot_config = data.terraform_remote_state.chatbot.outputs
-  chatbots   = local.chatbot_config.chatbots
+  chatbots       = local.chatbot_config.chatbots
   hrm_url_map = {
     "development" = {
       "us-east-1" = "https://hrm-development.tl.techmatters.org"
@@ -66,19 +66,20 @@ provider "twilio" {
 
 // TODO: this module should be moved into its own after_hook that can be called individually.
 module "flex" {
-  source         = "../../flex/service-configuration"
-  environment    = var.environment
-  short_helpline = var.short_helpline
-  stage          = local.stage
-
-  twilio_account_sid   = local.secrets.twilio_account_sid
-  short_environment    = var.short_environment
-  operating_info_key   = var.operating_info_key
-  permission_config    = local.permission_config
-  definition_version   = var.definition_version
-  serverless_url       = local.serverless_url
-  multi_office_support = var.multi_office
-  feature_flags        = var.feature_flags
+  source                    = "../../flex/service-configuration"
+  environment               = var.environment
+  short_helpline            = var.short_helpline
+  stage                     = local.stage
+  helpline_language         = var.helpline_language
+  twilio_account_sid        = local.secrets.twilio_account_sid
+  short_environment         = var.short_environment
+  operating_info_key        = var.operating_info_key
+  permission_config         = local.permission_config
+  definition_version        = var.definition_version
+  serverless_url            = local.serverless_url
+  multi_office_support      = var.multi_office
+  feature_flags             = var.feature_flags
+  contacts_waiting_channels = var.contacts_waiting_channels
   #tODO: this needs to be a configuration option
   hrm_url = local.hrm_url
 }

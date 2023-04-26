@@ -8,6 +8,12 @@ variable "helpline_region" {
   description = "The region for the helpline."
 }
 
+variable "helpline_language" {
+  description = "Keyword that determines the language to be used as default across the helpline"
+  type        = string
+  default     = ""
+}
+
 variable "short_environment" {
   description = "The short code for the environment."
   type        = string
@@ -41,6 +47,11 @@ variable "multi_office" {
 variable "feature_flags" {
   description = "A map of feature flags that need to be set for this helpline's flex plugin"
   type        = map(bool)
+}
+
+variable "contacts_waiting_channels" {
+  description = "List of contact waiting channels"
+  type        = list(string)
 }
 
 variable "target_task_name" {
@@ -146,10 +157,10 @@ variable "task_language" {
 
 variable "channels" {
   type = map(object({
-    templatefile      = string,
-    channel_type      = string,
-    contact_identity  = string
-    channel_flow_vars = map(string)
+    templatefile         = string,
+    channel_type         = string,
+    contact_identity     = string
+    channel_flow_vars    = map(string)
     chatbot_unique_names = list(string)
   }))
   description = "Map of enabled channel objects with their attributes"
@@ -161,7 +172,6 @@ variable "flow_vars" {
   default     = {}
   description = "Studio flow variebles common to all channels"
 }
-
 
 variable "channel_attributes" {
   type = map(string)

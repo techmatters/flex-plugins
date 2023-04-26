@@ -18,7 +18,7 @@ locals {
     twitter : "/app/twilio-iac/helplines/templates/channel-attributes/twitter.tftpl"
     default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
   }
-
+  contacts_waiting_channels = ["voice","web","whatsapp","facebook","twitter","instagram","line"]
 
   enable_voice_channel = false
 
