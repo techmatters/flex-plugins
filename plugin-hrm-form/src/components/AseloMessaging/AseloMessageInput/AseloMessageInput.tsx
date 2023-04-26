@@ -172,22 +172,15 @@ const AseloMessageInput: React.FC<Props> = ({
 
   const [isDisabled, setIsDisabled] = useState(sendStatus === MessageSendStatus.SENDING || !draftText);
 
-  const triggerTyping = debounce(
-    () => {
-      if (conversation) {
-        conversation.typing();
-      }
-    },
-    500,
-    {
-      leading: true,
-      trailing: true,
-    },
-  );
+  const triggerTyping = () => {
+    if (conversation) {
+      conversation.typing();
+    }
+  };
 
-  const updateSendButtonState = debounce(() => {
+  const updateSendButtonState = () => {
     setIsDisabled(sendStatus === MessageSendStatus.SENDING || !getValues('messageInputArea'));
-  }, 200);
+  };
 
   const submitMessageForSending = handleSubmit(async () => {
     const message = getValues('messageInputArea');
@@ -197,14 +190,22 @@ const AseloMessageInput: React.FC<Props> = ({
      */
     if (conversation && message.length && sendStatus !== MessageSendStatus.SENDING) {
       await sendMessage(message);
+      setHeight(initialHeight);
     }
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    handleDynamicSize(e.target);
-    triggerTyping();
-    updateSendButtonState();
-  };
+  const handleChange = debounce(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      handleDynamicSize(e.target);
+      triggerTyping();
+      updateSendButtonState();
+    },
+    200,
+    {
+      leading: true,
+      trailing: true,
+    },
+  );
 
   const handleEnterInMessageInput = e => {
     if (e.keyCode === RETURN_KEY_CODE && e.shiftKey === false) {
