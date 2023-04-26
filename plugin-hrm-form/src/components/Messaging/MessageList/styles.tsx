@@ -19,23 +19,14 @@ import { styled } from '@twilio/flex-ui';
 import { FontOpenSans } from '../../../styles/HrmStyles';
 
 export const MessageListContainer = styled('div')`
-  display: flex;
-  flex-flow: column-reverse;
-  -webkit-box-flex: 1;
-  flex-grow: 1;
-  min-width: 0px;
-  overflow-y: auto;
-`;
-MessageListContainer.displayName = 'MessageListContainer';
-
-export const MessageListInnerContainer = styled('div')`
-  display: flex;
-  flex-flow: column;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
   padding-left: 1rem;
   padding-right: 1rem;
   padding-bottom: 0px;
 `;
-MessageListInnerContainer.displayName = 'MessageListInnerContainer';
+MessageListContainer.displayName = 'MessageListContainer';
 
 export const DateRulerContainer = styled('div')`
   display: flex;

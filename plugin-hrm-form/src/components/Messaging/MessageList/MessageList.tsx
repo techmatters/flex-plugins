@@ -19,13 +19,7 @@ import { ViewportList } from 'react-viewport-list';
 import format from 'date-fns/format';
 
 import { GroupedMessage, MessageItem } from '../MessageItem';
-import {
-  DateRulerContainer,
-  DateRulerDateText,
-  DateRulerHr,
-  MessageListContainer,
-  MessageListInnerContainer,
-} from './styles';
+import { DateRulerContainer, DateRulerDateText, DateRulerHr, MessageListContainer } from './styles';
 
 type GroupedMessagesByDate = { [dateKey: string]: GroupedMessage[] };
 
@@ -66,11 +60,9 @@ const MessageList: React.FC<Props> = ({ messages }) => {
 
   return (
     <MessageListContainer>
-      <MessageListInnerContainer>
-        <ViewportList ref={ref} items={renderedMessages} scrollThreshold={3} overscan={2}>
-          {item => item}
-        </ViewportList>
-      </MessageListInnerContainer>
+      <ViewportList ref={ref} items={renderedMessages} scrollThreshold={3} overscan={2}>
+        {item => item}
+      </ViewportList>
     </MessageListContainer>
   );
 };
