@@ -45,8 +45,7 @@ import { Container } from '../styles/queuesStatus';
 import { FeatureFlags, isInMyBehalfITask } from '../types/types';
 import { colors } from '../channels/colors';
 import { getHrmConfig } from '../hrmConfig';
-import { AseloMessageInput } from '../components/AseloMessageInput';
-import AseloMessageList from '../components/AseloMessageList';
+import { AseloMessageInput, AseloMessageList } from '../components/AseloMessaging';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
