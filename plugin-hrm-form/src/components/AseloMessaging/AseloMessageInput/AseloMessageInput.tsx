@@ -15,7 +15,7 @@
  */
 
 import { MessageInputChildrenProps } from '@twilio/flex-ui-core/src/components/channel/MessageInput/MessageInputImpl';
-import React, { Dispatch, useEffect, useState } from 'react';
+import React, { Dispatch, useCallback, useEffect, useRef, useState } from 'react';
 import { Template, withTheme } from '@twilio/flex-ui';
 import { useForm } from 'react-hook-form';
 import debounce from 'lodash/debounce';
@@ -94,14 +94,47 @@ const AseloMessageInput: React.FC<Props> = ({
   const [prevScrollHeight, setPrevScrollHeight] = useState<number>();
 
   const { register, handleSubmit, setValue, getValues } = useForm();
+  const textAreaRef = useRef<HTMLTextAreaElement>();
   const {
     enable_canned_responses: enableCannedResponses,
     enable_emoji_picker: enableEmojiPicker,
   } = getAseloFeatureFlags();
 
+  const handleDynamicSize = useCallback(
+    (textarea: HTMLTextAreaElement) => {
+      const currentScrollHeight = getPureScrollHeight(textarea);
+      const shouldExpand = currentScrollHeight > prevScrollHeight && height < MAX_HEIGHT;
+      const shouldShrink = !shouldExpand && currentScrollHeight < prevScrollHeight && height > MIN_HEIGHT;
+
+      /*
+       * why the candidateHeight is not just currentScrollHeight?
+       *
+       * Because we're setting the textarea's "height" attribute, and we
+       * need to account for the space taken by the border as well.
+       * Also, we don't need to add padding here because we're setting
+       * "box-sizing: border-box;" that handle that for us.
+       */
+      const candidateHeight = currentScrollHeight + BORDER_WIDTH * 2;
+
+      if (shouldExpand) {
+        const nextHeight = Math.min(candidateHeight, MAX_HEIGHT);
+        setHeight(nextHeight);
+      } else if (shouldShrink) {
+        const nextHeight = Math.min(Math.max(candidateHeight, MIN_HEIGHT), MAX_HEIGHT);
+        setHeight(nextHeight);
+      }
+
+      setPrevScrollHeight(currentScrollHeight);
+    },
+    [height, prevScrollHeight],
+  );
+
   useEffect(() => {
     setValue('messageInputArea', draftText);
     setIsDisabled(sendStatus === MessageSendStatus.SENDING || !draftText);
+    handleDynamicSize(textAreaRef.current);
+    // Including handleDynamicSize in the deps array would cause a feedback loop that resets the text back to draftText
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draftText, sendStatus, setValue]);
 
   /**
@@ -142,32 +175,6 @@ const AseloMessageInput: React.FC<Props> = ({
     }
 
     return scrollHeight;
-  };
-
-  const handleDynamicSize = (textarea: HTMLTextAreaElement) => {
-    const currentScrollHeight = getPureScrollHeight(textarea);
-    const shouldExpand = currentScrollHeight > prevScrollHeight && height < MAX_HEIGHT;
-    const shouldShrink = !shouldExpand && currentScrollHeight < prevScrollHeight && height > MIN_HEIGHT;
-
-    /*
-     * why the candidateHeight is not just currentScrollHeight?
-     *
-     * Because we're setting the textarea's "height" attribute, and we
-     * need to account for the space taken by the border as well.
-     * Also, we don't need to add padding here because we're setting
-     * "box-sizing: border-box;" that handle that for us.
-     */
-    const candidateHeight = currentScrollHeight + BORDER_WIDTH * 2;
-
-    if (shouldExpand) {
-      const nextHeight = Math.min(candidateHeight, MAX_HEIGHT);
-      setHeight(nextHeight);
-    } else if (shouldShrink) {
-      const nextHeight = Math.min(Math.max(candidateHeight, MIN_HEIGHT), MAX_HEIGHT);
-      setHeight(nextHeight);
-    }
-
-    setPrevScrollHeight(currentScrollHeight);
   };
 
   const [isDisabled, setIsDisabled] = useState(sendStatus === MessageSendStatus.SENDING || !draftText);
@@ -226,6 +233,7 @@ const AseloMessageInput: React.FC<Props> = ({
             name="messageInputArea"
             ref={ref => {
               register(ref);
+              textAreaRef.current = ref;
             }}
             onChange={handleChange}
             onKeyDown={handleEnterInMessageInput}
