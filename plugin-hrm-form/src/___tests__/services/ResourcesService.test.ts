@@ -41,6 +41,6 @@ test('searchResources - valid params sends POST /search?start={start}&limit={lim
   await searchResources(params, 1337, 42);
   expect(mockFetchResourcesApi).toHaveBeenCalledWith('search?start=1337&limit=42', {
     method: 'POST',
-    body: JSON.stringify({ ...params, filters: {} }),
+    body: JSON.stringify(params),
   });
 });

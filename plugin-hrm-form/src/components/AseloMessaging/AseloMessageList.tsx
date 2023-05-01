@@ -18,9 +18,9 @@ import React from 'react';
 import type { MessageListChildrenProps } from '@twilio/flex-ui-core/src/components/channel/MessageList/MessageList';
 import { ConversationState, Template } from '@twilio/flex-ui';
 
-import { MessageList } from './Messaging/MessageList';
-import type { GroupedMessage } from './Messaging/MessageItem';
-import { Flex, TypingIndicatorText } from '../styles/HrmStyles';
+import { MessageList } from '../Messaging/MessageList';
+import type { GroupedMessage } from '../Messaging/MessageItem';
+import { Flex, TypingIndicatorText } from '../../styles/HrmStyles';
 
 type ConversationStateMessage = ConversationState.ConversationState['messages'][number];
 
