@@ -4,9 +4,9 @@ output "flex_task_assignment_workspace_sid" {
 }
 
 output "workflow_sids" {
-  value = { for idx, w in var.workflows : idx => twilio_taskrouter_workspaces_workflows_v1.workflow[idx].sid }
+  value = { for idx, w in var.workflows : idx => try(twilio_taskrouter_workspaces_workflows_v1.workflow[idx].sid, "") }
 }
 
 output "task_channel_sids" {
-  value = { for idx, tc in var.task_channels : idx => twilio_taskrouter_workspaces_task_channels_v1.task_channel[idx].sid }
+  value = { for idx, tc in var.task_channels : idx => try(twilio_taskrouter_workspaces_task_channels_v1.task_channel[idx].sid, "") }
 }
