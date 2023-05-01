@@ -3,9 +3,9 @@ import { getSSMParameter, saveSSMParameter } from '../helpers/ssm';
 import { logDebug, logInfo, logSuccess, logWarning } from '../helpers/log';
 
 export type CreateTwilioApiKeyAndSsmSecretOptions = {
-  sidSmmParameterName: string;
-  sidSmmParameterDescription: string;
-  secretSmmParameterDescription: string;
+  sidSsmParameterName: string;
+  sidSsmParameterDescription: string;
+  secretSsmParameterDescription: string;
 };
 
 export async function createTwilioApiKeyAndSsmSecret(
@@ -14,14 +14,14 @@ export async function createTwilioApiKeyAndSsmSecret(
   helpline: string,
   environment: string,
   {
-    sidSmmParameterName,
-    sidSmmParameterDescription = `SID for Twilio API key '${twilioFriendlyName}, ${helpline} (${environment})'`,
-    secretSmmParameterDescription = `Secret for Twilio API key '${twilioFriendlyName} ${helpline} (${environment})'`,
+    sidSsmParameterName,
+    sidSsmParameterDescription = `SID for Twilio API key '${twilioFriendlyName}, ${helpline} (${environment})'`,
+    secretSsmParameterDescription = `Secret for Twilio API key '${twilioFriendlyName} ${helpline} (${environment})'`,
   }: Partial<CreateTwilioApiKeyAndSsmSecretOptions>,
 ) {
   const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
   const ssmParametersString = (
-    sidSmmParameterName ? [secretSsmParameterName, sidSmmParameterName] : secretSsmParameterName
+    sidSsmParameterName ? [secretSsmParameterName, sidSsmParameterName] : secretSsmParameterName
   ).toString();
 
   logDebug(
@@ -32,15 +32,15 @@ export async function createTwilioApiKeyAndSsmSecret(
   );
   logWarning('secretSsmParameterName', secretSsmParameterName);
   const ssmParamForSecretAlreadyExists = !!(await getSSMParameter(secretSsmParameterName));
-  logWarning('sidSmmParameterName', sidSmmParameterName);
-  const smmParamForSidAlreadyExists = !!(
-    sidSmmParameterName && (await getSSMParameter(sidSmmParameterName))
+  logWarning('sidSsmParameterName', sidSsmParameterName);
+  const ssmParamForSidAlreadyExists = !!(
+    sidSsmParameterName && (await getSSMParameter(sidSsmParameterName))
   );
 
   if (
     apiKeyAlreadyExists &&
     ssmParamForSecretAlreadyExists &&
-    (!sidSmmParameterName || smmParamForSidAlreadyExists)
+    (!sidSsmParameterName || ssmParamForSidAlreadyExists)
   ) {
     logInfo(
       `API key '${twilioFriendlyName}' and ssm key(s) ${ssmParametersString} already exist, skipping creation. To recreate them, delete the ${ssmParametersString} SSM keys and they and the API key will be recreated`,
@@ -51,19 +51,19 @@ export async function createTwilioApiKeyAndSsmSecret(
   if (
     apiKeyAlreadyExists &&
     !ssmParamForSecretAlreadyExists &&
-    (!smmParamForSidAlreadyExists || !sidSmmParameterName)
+    (!ssmParamForSidAlreadyExists || !sidSsmParameterName)
   ) {
     logWarning(
       `API key '${twilioFriendlyName}' already exists but ssm key(s) ${ssmParametersString} do not. Recreating all 3 since the secret cannot be read from an existing key`,
     );
   }
 
-  if (!apiKeyAlreadyExists && (ssmParamForSecretAlreadyExists || smmParamForSidAlreadyExists)) {
+  if (!apiKeyAlreadyExists && (ssmParamForSecretAlreadyExists || ssmParamForSidAlreadyExists)) {
     let existingKeysDescription;
-    if (ssmParamForSecretAlreadyExists && smmParamForSidAlreadyExists) {
-      existingKeysDescription = `${secretSsmParameterName} and ${sidSmmParameterName}`;
+    if (ssmParamForSecretAlreadyExists && ssmParamForSidAlreadyExists) {
+      existingKeysDescription = `${secretSsmParameterName} and ${sidSsmParameterName}`;
     } else if (ssmParamForSecretAlreadyExists) {
-      existingKeysDescription = sidSmmParameterName;
+      existingKeysDescription = sidSsmParameterName;
     } else {
       existingKeysDescription = secretSsmParameterName;
     }
@@ -75,17 +75,17 @@ export async function createTwilioApiKeyAndSsmSecret(
   const key = await client.newKeys.create({ friendlyName: twilioFriendlyName });
   logSuccess(`Twilio API Key ${twilioFriendlyName} created.`);
   const { secret } = key;
-  await saveSSMParameter(secretSsmParameterName, secret, secretSmmParameterDescription, [
+  await saveSSMParameter(secretSsmParameterName, secret, secretSsmParameterDescription, [
     { Key: 'Helpline', Value: helpline },
     { Key: 'Environment', Value: environment },
   ]);
   logSuccess(`SSM parameter ${secretSsmParameterName} saved.`);
-  if (sidSmmParameterName) {
-    await saveSSMParameter(sidSmmParameterName, key.sid, sidSmmParameterDescription, [
+  if (sidSsmParameterName) {
+    await saveSSMParameter(sidSsmParameterName, key.sid, sidSsmParameterDescription, [
       { Key: 'Helpline', Value: helpline },
       { Key: 'Environment', Value: environment },
     ]);
-    logSuccess(`SSM parameter ${sidSmmParameterName} saved.`);
+    logSuccess(`SSM parameter ${sidSsmParameterName} saved.`);
   }
   logSuccess('All createTwilioApiKeyAndSsmSecret operations complete');
 }

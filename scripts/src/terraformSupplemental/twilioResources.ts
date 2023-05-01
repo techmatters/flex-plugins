@@ -213,9 +213,9 @@ async function main() {
           argv.helpline as string,
           argv.environment as string,
           {
-            sidSmmParameterDescription: argv.ssmApiKeySidDescription,
-            sidSmmParameterName: argv.ssmApiKeySidName,
-            secretSmmParameterDescription: argv.ssmSecretDescription,
+            sidSsmParameterDescription: argv.ssmApiKeySidDescription,
+            sidSsmParameterName: argv.ssmApiKeySidName,
+            secretSsmParameterDescription: argv.ssmSecretDescription,
           } as Partial<CreateTwilioApiKeyAndSsmSecretOptions>,
         );
       },
