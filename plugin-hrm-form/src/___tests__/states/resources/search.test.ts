@@ -74,6 +74,7 @@ describe('actions', () => {
   describe('searchResourceAsyncAction', () => {
     beforeEach(() => {
       mockSearchResources.mockReset();
+      mockSearchResources.mockResolvedValue({ results: [], totalCount: 0 });
     });
 
     test('Calls the searchResources service, calculating the start index from the provided page & limit', () => {
