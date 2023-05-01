@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-max-depth */
 /**
  * Copyright (C) 2021-2023 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -28,6 +29,9 @@ import {
   MessageBubbleNameText,
   MessageBubbleDateText,
   MessageBubbleBodyText,
+  MessageItemInnerContainer,
+  AvatarColumn,
+  MessageBubbleTextContainer,
 } from './styles';
 import { TranscriptMessage } from '../../../states/contacts/existingContacts';
 
@@ -43,26 +47,36 @@ type Props = {
 
 const MessageItem: React.FC<Props> = ({ message }) => {
   const { body, dateCreated, friendlyName, from, isCounselor, isGroupedWithPrevious } = message;
+  const renderIcon = !isCounselor && !isGroupedWithPrevious;
   return (
-    <MessageItemContainer isCounselor={isCounselor} isGroupedWithPrevious={isGroupedWithPrevious}>
-      {!isCounselor && (
-        <AvatarContainer isGroupedWithPrevious={isGroupedWithPrevious}>
-          {isGroupedWithPrevious ? <div style={{ height: 24, width: 24 }} /> : <Icon icon="DefaultAvatar" />}
-        </AvatarContainer>
-      )}
-      <MessageBubbleContainer isCounselor={isCounselor}>
-        <MessageBubleInnerContainer>
-          <MessageBubbleHeader>
-            <MessageBubbleNameText isCounselor={isCounselor}>{friendlyName || from}</MessageBubbleNameText>
-            <MessageBubbleDateText isCounselor={isCounselor}>
-              {format(new Date(dateCreated), 'hh:mm a')}
-            </MessageBubbleDateText>
-          </MessageBubbleHeader>
-          <MessageBubbleBody>
-            <MessageBubbleBodyText isCounselor={isCounselor}>{body}</MessageBubbleBodyText>
-          </MessageBubbleBody>
-        </MessageBubleInnerContainer>
-      </MessageBubbleContainer>
+    <MessageItemContainer isCounselor={isCounselor} isGroupedWithPrevious={isGroupedWithPrevious} role="listitem">
+      <MessageItemInnerContainer>
+        <AvatarColumn>
+          <AvatarContainer withBackground={renderIcon}>
+            {renderIcon ? (
+              <Icon icon="DefaultAvatar" />
+            ) : (
+              // Just fill in the column so divs wont float around :)
+              <div style={{ height: 24, width: 24 }} />
+            )}
+          </AvatarContainer>
+        </AvatarColumn>
+        <MessageBubbleContainer isCounselor={isCounselor}>
+          <MessageBubleInnerContainer isCounselor={isCounselor}>
+            <MessageBubbleTextContainer>
+              <MessageBubbleHeader>
+                <MessageBubbleNameText isCounselor={isCounselor}>{friendlyName || from}</MessageBubbleNameText>
+                <MessageBubbleDateText isCounselor={isCounselor}>
+                  {format(new Date(dateCreated), 'hh:mm a')}
+                </MessageBubbleDateText>
+              </MessageBubbleHeader>
+              <MessageBubbleBody>
+                <MessageBubbleBodyText isCounselor={isCounselor}>{body}</MessageBubbleBodyText>
+              </MessageBubbleBody>
+            </MessageBubbleTextContainer>
+          </MessageBubleInnerContainer>
+        </MessageBubbleContainer>
+      </MessageItemInnerContainer>
     </MessageItemContainer>
   );
 };

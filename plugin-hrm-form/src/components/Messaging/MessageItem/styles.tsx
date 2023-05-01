@@ -16,68 +16,102 @@
 
 import { styled } from '@twilio/flex-ui';
 
-import { FontOpenSans, Row } from '../../../styles/HrmStyles';
+import { FontOpenSans } from '../../../styles/HrmStyles';
 import HrmTheme from '../../../styles/HrmTheme';
 
-export const MessageItemContainer = styled(Row)<{ isCounselor: boolean; isGroupedWithPrevious: boolean }>`
-  flex-wrap: nowrap;
-  width: 100%;
-  align-items: start;
-  padding: 0 15px;
-  margin-top: ${({ isGroupedWithPrevious }) => (isGroupedWithPrevious ? '4px' : '20px')};
+export const MessageItemContainer = styled('div')<{ isCounselor: boolean; isGroupedWithPrevious: boolean }>`
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  min-width: 0px;
+  margin-top: ${({ isGroupedWithPrevious }) => (isGroupedWithPrevious ? '0.25rem' : '1.25rem')};
 `;
 MessageItemContainer.displayName = 'MessageItemContainer';
+
+const FlexGrowShrink = styled('div')`
+  display: flex;
+  -webkit-box-flex: 1;
+  flex-grow: 1;
+  flex-shrink: 1;
+`;
+
+export const MessageItemInnerContainer = styled(FlexGrowShrink)`
+  flex-flow: row nowrap;
+`;
 
 type MessageBubbleProps = {
   isCounselor: boolean;
 };
 
-export const MessageBubbleContainer = styled(Row)<MessageBubbleProps>`
-  border-radius: 4px;
-  overflow: hidden;
-  ${p => (p.isCounselor ? 'margin-left: auto;' : 'margin-right: auto;')}
-  align-items: ${p => (p.isCounselor ? 'right' : 'left')};
-  background-color: ${props => (props.isCounselor ? '#057d9e' : HrmTheme.colors.base2)};
-  padding: 5px 12px 8px 12px;
+export const MessageBubbleContainer = styled('div')<MessageBubbleProps>`
+  display: flex;
+  flex-direction: column;
+  max-width: 432px;
+  min-width: 100px;
+  ${p => !p.isCounselor && 'margin-right: 44px;'}
+  ${p => p.isCounselor && 'margin-left: auto;'}
+  box-sizing: borber-box;
 `;
 MessageBubbleContainer.displayName = 'MessageBubbleContainer';
 
-export const MessageBubleInnerContainer = styled('div')`
-  display: flex;
+export const MessageBubleInnerContainer = styled(FlexGrowShrink)<MessageBubbleProps>`
   flex-flow: column nowrap;
-  flex-grow: 1;
-  flex-shrink: 1;
+  overflow-x: hidden;
+  background-color: ${props => (props.isCounselor ? '#030B5D' : HrmTheme.colors.base2)};
+  padding: 0.75rem;
+  border-radius: 8px;
+  box-shadow: none;
+  margin-left: ${p => (p.isCounselor ? '44px' : '0px')};
 `;
 MessageBubleInnerContainer.displayName = 'MessageBubleInnerContainer';
 
-export const MessageBubbleHeader = styled('div')`
-  display: flex;
-  flex-direction: row;
+export const MessageBubbleTextContainer = styled(FlexGrowShrink)`
+  flex-flow: column nowrap;
+  overflow: visible;
+`;
+MessageBubbleTextContainer.displayName = 'MessageBubbleTextContainer';
+
+export const MessageBubbleHeader = styled(FlexGrowShrink)`
+  flex-flow: row nowrap;
+  -webkit-box-pack: justify;
   justify-content: space-between;
+  -webkit-box-align: center;
+  align-items: center;
 `;
 MessageBubbleHeader.displayName = 'MessageBubbleHeader';
 
-export const MessageBubbleNameText = styled(FontOpenSans)<{ isCounselor: boolean }>`
+export const MessageBubbleNameText = styled('div')<{ isCounselor: boolean }>`
+  font-family: Open Sans;
+  text-align: left;
+  color: ${({ isCounselor }) => (isCounselor ? '#FFFFFF' : '#121C2D')};
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 10px;
+  flex: 0 1 auto;
+  margin-right: 0.5rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  margin-right: 8px;
-  color: ${({ isCounselor }) => (isCounselor ? '#FFFFFF' : '#222222')};
 `;
 
-export const MessageBubbleDateText = styled(FontOpenSans)<{ isCounselor: boolean }>`
+export const MessageBubbleDateText = styled('div')<{ isCounselor: boolean }>`
+  font-family: Open Sans;
+  text-align: left;
+  color: ${({ isCounselor }) => (isCounselor ? '#FFFFFF' : '#121C2D')};
+  font-size: 0.75rem;
   white-space: nowrap;
-  font-size: 10px;
-  color: ${({ isCounselor }) => (isCounselor ? '#FFFFFF' : '#222222')};
+  flex: 0 0 auto;
 `;
 MessageBubbleDateText.displayName = 'MessageBubbleDateText';
 
 export const MessageBubbleBody = styled('div')`
   display: flex;
-  margin-top: 3px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  overflow-y: hidden;
   overflow-wrap: break-word;
-  max-width: 440px;
-  min-width: 100px;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 `;
 MessageBubbleBody.displayName = 'MessageBubbleBody';
 
@@ -89,11 +123,23 @@ export const MessageBubbleBodyText = styled(FontOpenSans)<{ isCounselor: boolean
 `;
 MessageBubbleBodyText.displayName = 'MessageBubbleBodyText';
 
-export const AvatarContainer = styled('div')<{ isGroupedWithPrevious: boolean }>`
-  margin-right: 12px;
+export const AvatarColumn = styled(FlexGrowShrink)`
+  flex-flow: row nowrap;
+  -webkit-box-flex: 0;
+  flex-grow: 0;
+`;
+AvatarColumn.displayName = 'AvatarColumn';
+
+export const AvatarContainer = styled('div')<{ withBackground: boolean }>`
+  display: flex;
+  margin-right: 0.5rem;
   width: 24px;
   height: 24px;
   border-radius: 18px;
-  background: ${props => (props.isGroupedWithPrevious ? 'transparent' : HrmTheme.colors.base2)};
+  background: ${props => (props.withBackground ? HrmTheme.colors.base2 : 'transparent')};
+  overflow: hidden;
+  justify-content: center;
+  align-self: end;
+  -webkit-box-pack: center;
 `;
 AvatarContainer.displayName = 'AvatarContainer';

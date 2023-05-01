@@ -15,22 +15,32 @@
  */
 
 import { MessageInputChildrenProps } from '@twilio/flex-ui-core/src/components/channel/MessageInput/MessageInputImpl';
-import React, { Dispatch, useEffect, useState } from 'react';
-import { Button, FlexBox, FlexBoxColumn, Template, withTheme } from '@twilio/flex-ui';
+import React, { Dispatch, useCallback, useEffect, useRef, useState } from 'react';
+import { Template, withTheme } from '@twilio/flex-ui';
 import { useForm } from 'react-hook-form';
 import debounce from 'lodash/debounce';
 import { connect } from 'react-redux';
 
-import CannedResponses from './CannedResponses';
-import { conversationsBase, namespace, RootState } from '../states';
+import CannedResponses from '../../CannedResponses';
+import { conversationsBase, namespace, RootState } from '../../../states';
 import {
   MessageSendStatus,
   newSendMessageeAsyncAction,
   newUpdateDraftMessageTextAction,
-} from '../states/conversations';
-import asyncDispatch from '../states/asyncDispatch';
-import EmojiPicker from './emojiPicker';
-import { getAseloFeatureFlags } from '../hrmConfig';
+} from '../../../states/conversations';
+import asyncDispatch from '../../../states/asyncDispatch';
+import EmojiPicker from '../../emojiPicker';
+import { getAseloFeatureFlags, getTemplateStrings } from '../../../hrmConfig';
+import {
+  AseloMessageInputContainer,
+  TextAreaContainer,
+  TextAreaContainerInner,
+  TextArea,
+  MessageInputActions,
+  MessageInputActionsInner,
+  ButtonContainer,
+  SendMessageButton,
+} from './styles';
 
 /**
  * The following CSS attributtes should be set in here
@@ -84,14 +94,47 @@ const AseloMessageInput: React.FC<Props> = ({
   const [prevScrollHeight, setPrevScrollHeight] = useState<number>();
 
   const { register, handleSubmit, setValue, getValues } = useForm();
+  const textAreaRef = useRef<HTMLTextAreaElement>();
   const {
     enable_canned_responses: enableCannedResponses,
     enable_emoji_picker: enableEmojiPicker,
   } = getAseloFeatureFlags();
 
+  const handleDynamicSize = useCallback(
+    (textarea: HTMLTextAreaElement) => {
+      const currentScrollHeight = getPureScrollHeight(textarea);
+      const shouldExpand = currentScrollHeight > prevScrollHeight && height < MAX_HEIGHT;
+      const shouldShrink = !shouldExpand && currentScrollHeight < prevScrollHeight && height > MIN_HEIGHT;
+
+      /*
+       * why the candidateHeight is not just currentScrollHeight?
+       *
+       * Because we're setting the textarea's "height" attribute, and we
+       * need to account for the space taken by the border as well.
+       * Also, we don't need to add padding here because we're setting
+       * "box-sizing: border-box;" that handle that for us.
+       */
+      const candidateHeight = currentScrollHeight + BORDER_WIDTH * 2;
+
+      if (shouldExpand) {
+        const nextHeight = Math.min(candidateHeight, MAX_HEIGHT);
+        setHeight(nextHeight);
+      } else if (shouldShrink) {
+        const nextHeight = Math.min(Math.max(candidateHeight, MIN_HEIGHT), MAX_HEIGHT);
+        setHeight(nextHeight);
+      }
+
+      setPrevScrollHeight(currentScrollHeight);
+    },
+    [height, prevScrollHeight],
+  );
+
   useEffect(() => {
     setValue('messageInputArea', draftText);
     setIsDisabled(sendStatus === MessageSendStatus.SENDING || !draftText);
+    handleDynamicSize(textAreaRef.current);
+    // Including handleDynamicSize in the deps array would cause a feedback loop that resets the text back to draftText
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draftText, sendStatus, setValue]);
 
   /**
@@ -134,50 +177,17 @@ const AseloMessageInput: React.FC<Props> = ({
     return scrollHeight;
   };
 
-  const handleDynamicSize = (textarea: HTMLTextAreaElement) => {
-    const currentScrollHeight = getPureScrollHeight(textarea);
-    const shouldExpand = currentScrollHeight > prevScrollHeight && height < MAX_HEIGHT;
-    const shouldShrink = !shouldExpand && currentScrollHeight < prevScrollHeight && height > MIN_HEIGHT;
-
-    /*
-     * why the candidateHeight is not just currentScrollHeight?
-     *
-     * Because we're setting the textarea's "height" attribute, and we
-     * need to account for the space taken by the border as well.
-     * Also, we don't need to add padding here because we're setting
-     * "box-sizing: border-box;" that handle that for us.
-     */
-    const candidateHeight = currentScrollHeight + BORDER_WIDTH * 2;
-
-    if (shouldExpand) {
-      const nextHeight = Math.min(candidateHeight, MAX_HEIGHT);
-      setHeight(nextHeight);
-    } else if (shouldShrink) {
-      const nextHeight = Math.min(Math.max(candidateHeight, MIN_HEIGHT), MAX_HEIGHT);
-      setHeight(nextHeight);
-    }
-
-    setPrevScrollHeight(currentScrollHeight);
-  };
-
   const [isDisabled, setIsDisabled] = useState(sendStatus === MessageSendStatus.SENDING || !draftText);
 
-  const triggerTyping = debounce(
-    () => {
-      if (conversation) {
-        conversation.typing();
-      }
-    },
-    500,
-    {
-      leading: true,
-      trailing: true,
-    },
-  );
+  const triggerTyping = () => {
+    if (conversation) {
+      conversation.typing();
+    }
+  };
 
-  const updateSendButtonState = debounce(() => {
+  const updateSendButtonState = () => {
     setIsDisabled(sendStatus === MessageSendStatus.SENDING || !getValues('messageInputArea'));
-  }, 200);
+  };
 
   const submitMessageForSending = handleSubmit(async () => {
     const message = getValues('messageInputArea');
@@ -187,14 +197,22 @@ const AseloMessageInput: React.FC<Props> = ({
      */
     if (conversation && message.length && sendStatus !== MessageSendStatus.SENDING) {
       await sendMessage(message);
+      setHeight(initialHeight);
     }
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    handleDynamicSize(e.target);
-    triggerTyping();
-    updateSendButtonState();
-  };
+  const handleChange = debounce(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      handleDynamicSize(e.target);
+      triggerTyping();
+      updateSendButtonState();
+    },
+    300,
+    {
+      leading: true,
+      trailing: true,
+    },
+  );
 
   const handleEnterInMessageInput = e => {
     if (e.keyCode === RETURN_KEY_CODE && e.shiftKey === false) {
@@ -204,43 +222,45 @@ const AseloMessageInput: React.FC<Props> = ({
   };
 
   const overflow = height < MAX_HEIGHT ? 'hidden' : '';
+  const textAreaPlaceholder = getTemplateStrings()['Type message'] || 'Type message';
 
   return (
-    <div key="textarea">
-      <textarea
-        id="messageInputArea"
-        name="messageInputArea"
-        ref={ref => {
-          register(ref);
-        }}
-        onChange={handleChange}
-        onKeyDown={handleEnterInMessageInput}
-        onBlur={() => updateDraftMessageText(getValues('messageInputArea'))}
-        style={{
-          display: 'block',
-          boxSizing: 'border-box',
-          width: '100%',
-          overflow,
-          height: `${height}px`,
-          lineHeight: `${LINE_HEIGHT}px`,
-          padding: `${PADDING_VERTICAL}px 12px`,
-          fontFamily: '"Open Sans"',
-          fontSize: '13px',
-          marginBottom: '10px',
-          borderColor: '#CACDD8',
-          borderRadius: '4px',
-        }}
-      />
-      <FlexBox>
-        <FlexBoxColumn>{enableEmojiPicker && <EmojiPicker conversationSid={conversationSid} />}</FlexBoxColumn>
-        <FlexBoxColumn>
-          <Button onClick={submitMessageForSending} disabled={isDisabled}>
+    <AseloMessageInputContainer key="textarea">
+      <TextAreaContainer>
+        <TextAreaContainerInner>
+          <TextArea
+            id="messageInputArea"
+            name="messageInputArea"
+            ref={ref => {
+              register(ref);
+              textAreaRef.current = ref;
+            }}
+            onChange={handleChange}
+            onKeyDown={handleEnterInMessageInput}
+            onBlur={() => updateDraftMessageText(getValues('messageInputArea'))}
+            rows={1}
+            placeholder={textAreaPlaceholder}
+            overflow={overflow}
+            height={height}
+            minHeight={MIN_HEIGHT}
+            maxHeight={MAX_HEIGHT}
+            lineHeight={LINE_HEIGHT}
+            paddingVertical={PADDING_VERTICAL}
+          />
+        </TextAreaContainerInner>
+      </TextAreaContainer>
+      <MessageInputActions>
+        <MessageInputActionsInner>
+          {enableEmojiPicker && <EmojiPicker conversationSid={conversationSid} />}
+        </MessageInputActionsInner>
+        <ButtonContainer>
+          <SendMessageButton size="small" onClick={submitMessageForSending} disabled={isDisabled}>
             <Template code="Send" />
-          </Button>
-        </FlexBoxColumn>
-      </FlexBox>
+          </SendMessageButton>
+        </ButtonContainer>
+      </MessageInputActions>
       {enableCannedResponses && <CannedResponses key="canned-responses" conversationSid={conversationSid} />}
-    </div>
+    </AseloMessageInputContainer>
   );
 };
 AseloMessageInput.displayName = 'AseloMessageInput';

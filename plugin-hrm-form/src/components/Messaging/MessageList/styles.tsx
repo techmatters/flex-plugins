@@ -19,11 +19,12 @@ import { styled } from '@twilio/flex-ui';
 import { FontOpenSans } from '../../../styles/HrmStyles';
 
 export const MessageListContainer = styled('div')`
-  display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 6px 0;
   width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 0px;
 `;
 MessageListContainer.displayName = 'MessageListContainer';
 

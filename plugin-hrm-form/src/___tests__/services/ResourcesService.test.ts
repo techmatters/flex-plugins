@@ -32,15 +32,15 @@ test('getResource - valid params sends GET /resource/{id} to mockFetchResourcesA
   expect(mockFetchResourcesApi).toHaveBeenCalledWith('resource/TEST RESOURCE');
 });
 
-test('searchResources - valid params sends POST /search?start={start}&limit={limit} to mockFetchResourcesApi', async () => {
+test('searchResources - valid params sends POST /searchByName?start={start}&limit={limit} to mockFetchResourcesApi', async () => {
   mockFetchResourcesApi.mockResolvedValue({
     results: [],
     totalCount: 0,
   });
   const params = { generalSearchTerm: 'bob' };
   await searchResources(params, 1337, 42);
-  expect(mockFetchResourcesApi).toHaveBeenCalledWith('search?start=1337&limit=42', {
+  expect(mockFetchResourcesApi).toHaveBeenCalledWith('searchByName?start=1337&limit=42', {
     method: 'POST',
-    body: JSON.stringify({ ...params, filters: {} }),
+    body: JSON.stringify(params),
   });
 });
