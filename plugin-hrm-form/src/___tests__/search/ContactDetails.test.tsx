@@ -30,6 +30,11 @@ import { DetailsContext } from '../../states/contacts/contactDetails';
 import { csamReportBase } from '../../states';
 import { SearchAPIContact } from '../../types/types';
 
+jest.mock('@twilio/flex-ui', () => ({
+  ...jest.requireActual('@twilio/flex-ui'),
+  Actions: { invokeAction: jest.fn() },
+}));
+
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
