@@ -83,7 +83,6 @@ variable "region" {
 variable "environment" {
   description = "Full capitialised environment name, typically 'Production', 'Staging' or 'Development'"
   type        = string
-  default     = ""
 }
 
 variable "short_helpline" {
