@@ -95,6 +95,14 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "chat" {
   }
 }
 
+resource "aws_s3_bucket_ownership_controls" "chat" {
+  bucket   = aws_s3_bucket.chat.bucket
+  provider = aws.bucket
+  rule {
+    object_ownership = "ObjectWriter"
+  }
+}
+
 // This is a hack to get around the fact that the provision step doesn't have access to the "POST_SURVEY_BOT_CHAT_URL" variable and it is added in the chatbot stage
 locals {
   aws_ssm_parameters = var.post_survey_bot_sid == "" ? {

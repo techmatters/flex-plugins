@@ -33,13 +33,19 @@ module "services" {
   short_helpline    = upper(var.short_helpline)
   environment       = title(var.environment)
   short_environment = var.short_environment
+  stage             = local.stage
 }
 
 module "taskRouter" {
-  source                                = "../../taskRouter/default"
-  serverless_url                        = module.serverless.serverless_environment_production_url
+  source                                = "../../taskRouter/v1"
   helpline                              = var.helpline
+  serverless_url                        = module.serverless.serverless_environment_production_url
   custom_task_routing_filter_expression = var.custom_task_routing_filter_expression
+  events_filter                         = var.events_filter
+  task_queues                           = var.task_queues
+  workflows                             = var.workflows
+  task_channels                         = var.task_channels
+  phone_numbers                         = var.phone_numbers
 }
 
 module "survey" {
@@ -61,7 +67,7 @@ module "aws" {
   datadog_app_id                     = local.secrets.datadog_app_id
   datadog_access_token               = local.secrets.datadog_access_token
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
-  master_workflow_sid                = module.taskRouter.master_workflow_sid
+  master_workflow_sid                = module.taskRouter.workflow_sids["master"]
   shared_state_sync_service_sid      = module.services.shared_state_sync_service_sid
   flex_chat_service_sid              = module.services.flex_chat_service_sid
   flex_proxy_service_sid             = module.services.flex_proxy_service_sid

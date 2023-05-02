@@ -12,12 +12,13 @@ locals {
   task_router_chat_task_channel_sid     = local.provision_config.task_router_chat_task_channel_sid
   task_router_voice_task_channel_sid    = local.provision_config.task_router_voice_task_channel_sid
   services_flex_chat_service_sid        = local.provision_config.services_flex_chat_service_sid
+  task_router_workflow_sids             = local.provision_config.task_router_workflow_sids
+  task_router_task_channel_sids         = local.provision_config.task_router_task_channel_sids
 
   permission_config = var.permission_config == "" ? var.short_helpline : var.permission_config
 
   chatbot_config = data.terraform_remote_state.chatbot.outputs
-  chatbot_sids   = local.chatbot_config.chatbot_sids
-
+  chatbots       = local.chatbot_config.chatbots
   hrm_url_map = {
     "development" = {
       "us-east-1" = "https://hrm-development.tl.techmatters.org"
@@ -65,22 +66,40 @@ provider "twilio" {
 
 // TODO: this module should be moved into its own after_hook that can be called individually.
 module "flex" {
-  source         = "../../flex/service-configuration"
-  environment    = var.environment
-  short_helpline = var.short_helpline
-  stage          = local.stage
-
-  twilio_account_sid   = local.secrets.twilio_account_sid
-  short_environment    = var.short_environment
-  operating_info_key   = var.operating_info_key
-  permission_config    = local.permission_config
-  definition_version   = var.definition_version
-  serverless_url       = local.serverless_url
-  multi_office_support = var.multi_office
-  feature_flags        = var.feature_flags
+  source                    = "../../flex/service-configuration"
+  environment               = var.environment
+  short_helpline            = var.short_helpline
+  stage                     = local.stage
+  helpline_language         = var.helpline_language
+  twilio_account_sid        = local.secrets.twilio_account_sid
+  short_environment         = var.short_environment
+  operating_info_key        = var.operating_info_key
+  permission_config         = local.permission_config
+  definition_version        = var.definition_version
+  serverless_url            = local.serverless_url
+  multi_office_support      = var.multi_office
+  feature_flags             = var.feature_flags
+  contacts_waiting_channels = var.contacts_waiting_channels
   #tODO: this needs to be a configuration option
   hrm_url = local.hrm_url
 }
+
+module "channel" {
+  source                = "../../channels/v1"
+  flex_chat_service_sid = local.services_flex_chat_service_sid
+  workflow_sids         = local.task_router_workflow_sids
+  task_channel_sids     = local.task_router_task_channel_sids
+  channel_attributes    = var.channel_attributes
+  channels              = var.channels
+  chatbots              = local.chatbots
+  enable_post_survey    = var.enable_post_survey
+  flow_vars             = var.flow_vars
+  short_environment     = var.short_environment
+  task_language         = var.task_language
+  short_helpline        = upper(var.short_helpline)
+}
+
+
 
 module "twilioChannel" {
   for_each = var.twilio_channels
@@ -106,14 +125,14 @@ module "twilioChannel" {
       chat_task_channel_sid        = local.task_router_chat_task_channel_sid
       channel_attributes           = var.channel_attributes[each.key]
       flow_description             = "${title(each.key)} Messaging Flow"
-      pre_survey_bot_sid           = local.chatbot_sids.pre_survey
+      pre_survey_bot_sid           = local.chatbots.pre_survey["sid"]
       target_task_name             = var.target_task_name
       operating_hours_holiday      = var.strings["operating_hours_holiday"]
       operating_hours_closed       = var.strings["operating_hours_closed"]
   }) : ""
   channel_contact_identity = each.value.contact_identity
   channel_type             = each.value.channel_type
-  pre_survey_bot_sid       = local.chatbot_sids.pre_survey
+  pre_survey_bot_sid       = local.chatbots.pre_survey["sid"]
   target_task_name         = var.target_task_name
   channel_name             = each.key
   janitor_enabled          = var.janitor_enabled

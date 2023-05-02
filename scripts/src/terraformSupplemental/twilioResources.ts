@@ -15,6 +15,8 @@ import {
 } from './updateFlexServiceConfiguration';
 import { generateChatbotResource } from './generateChatbotResource';
 import { handleTerraformArgs } from './handleTerraformArgs';
+import { handleSsmRoleArg } from './handleSsmRoleArg';
+import { setEnvFromSsm } from './setEnvFromSsm';
 
 config();
 
@@ -22,6 +24,7 @@ async function main() {
   yargs(process.argv.slice(2))
     .check(checkArgv)
     .middleware(handleTerraformArgs)
+    .middleware(handleSsmRoleArg)
     .option('helplineDirectory', {
       type: 'string',
       default: null,
@@ -43,6 +46,12 @@ async function main() {
       global: true,
       describe:
         'Terragrunt Helpline short code - will use terragrunt instead of terraform, e.g. "as", "in", "ct"',
+    })
+    .option('ssmRole', {
+      type: 'string',
+      default: null,
+      global: true,
+      describe: 'The role to assume for SSM access',
     })
     .option('helplineEnvironment', {
       type: 'string',
@@ -185,22 +194,28 @@ async function main() {
             'If the API Key SID needs storing as a SSM parameter alongside the secret, this option can be used to provide a description. Has no effect if ssmAPiKeyName is not set.',
           type: 'string',
         });
-        argv.option('requireTerraform', {
-          type: 'boolean',
-          default: true,
-          hidden: true,
-        });
       },
       async (argv) => {
+        let helplineDirectory: string;
+        if (argv.helplineDirectory) {
+          helplineDirectory = argv.helplineDirectory as string;
+        } else if (argv.helplineShortCode && argv.helplineEnvironment) {
+          helplineDirectory = `${argv.helplineEnvironment}/${argv.helplineShortCode}`;
+        } else {
+          throw new Error(
+            'Either helplineDirectory or both helplineShortCode and helplineEnvironment must be provided',
+          );
+        }
+        await setEnvFromSsm(helplineDirectory);
         await createTwilioApiKeyAndSsmSecret(
           argv.twilioFriendlyName as string,
           argv.ssmSecretName as string,
           argv.helpline as string,
           argv.environment as string,
           {
-            sidSmmParameterDescription: argv.ssmApiKeySidDescription,
-            sidSmmParameterName: argv.ssmApiKeySidName,
-            secretSmmParameterDescription: argv.ssmSecretDescription,
+            sidSsmParameterDescription: argv.ssmApiKeySidDescription,
+            sidSsmParameterName: argv.ssmApiKeySidName,
+            secretSsmParameterDescription: argv.ssmSecretDescription,
           } as Partial<CreateTwilioApiKeyAndSsmSecretOptions>,
         );
       },

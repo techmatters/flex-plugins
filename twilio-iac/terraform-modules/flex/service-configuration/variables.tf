@@ -19,6 +19,10 @@ variable "assets_bucket_url" {
   default = ""
 }
 
+variable "contacts_waiting_channels" {
+  description = "List of contact waiting channels"
+  type = list(string)
+}
 
 variable "short_environment" {
   description = "Short upper case environment identifier, typically 'PROD', 'STG' or 'DEV'"

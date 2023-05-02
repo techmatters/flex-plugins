@@ -13,13 +13,16 @@ locals {
   twilio_numbers     = []
   channel            = ""
 
+  channel_attributes = {
+    webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
+    twitter : "/app/twilio-iac/helplines/templates/channel-attributes/twitter.tftpl"
+    default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
+  }
+  contacts_waiting_channels = ["voice","web","whatsapp","facebook","twitter","instagram","line"]
+
   enable_voice_channel = false
 
-  twilio_channels    = []
-  channel_attributes = {}
-
-  custom_channels           = []
-  custom_channel_attributes = {}
+  channels = {}
 
   custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
 
@@ -48,49 +51,52 @@ locals {
 
   manage_github_secrets = true
 
-  task_router_config = {
-    event_filters = [
-      "task.created",
-      "task.canceled",
-      "task.completed",
-      "task.deleted",
-      "task.wrapup",
-      "task-queue.entered",
-      "task.system-deleted",
-      "reservation.accepted",
-      "reservation.rejected",
-      "reservation.timeout",
-      "reservation.wrapup",
-    ]
+  events_filter = [
+    "task.created",
+    "task.canceled",
+    "task.completed",
+    "task.deleted",
+    "task.wrapup",
+    "task-queue.entered",
+    "task.system-deleted",
+    "reservation.accepted",
+    "reservation.rejected",
+    "reservation.timeout",
+    "reservation.wrapup",
+  ]
 
-    additional_queues = []
+  task_queues = {
+    master : {
+      friendly_name   = "Master"
+      target_workders = "1"
+      target_workers  = "1==1"
+    },
+    // survey : {
+    //   friendly_name = "Survey"
+    //   target_workders = "1"
+    //   target_workers = "1==0"
+    // },
+  }
 
-    channels = [
-      {
-        friendly_name = "Default"
-        unique_name   = "default"
-      },
-      {
-        friendly_name = "Programmable Chat"
-        unique_name   = "chat"
-      },
-      {
-        friendly_name = "Voice"
-        unique_name   = "voice"
-      },
-      {
-        friendly_name = "SMS"
-        unique_name   = "sms"
-      },
-      {
-        friendly_name = "Video"
-        unique_name   = "video"
-      },
-      {
-        friendly_name = "Email"
-        unique_name   = "email"
-      }
-    ]
+  workflows = {
+    master : {
+      friendly_name = "Master Workflow"
+      templatefile  = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+    },
+    // survey : {
+    //   friendly_name = "Survey"
+    //   templatefile  = "/app/twilio-iac/helplines/templates/workflows/survey.tftpl"
+    // },
+  }
+
+  task_channels = {
+    default : "Default"
+    chat : "Programmable Chat"
+    voice : "Voice"
+    sms : "SMS"
+    video : "Video"
+    email : "Email"
+    // survey : "Survey"
   }
 
   mock_outputs = {
