@@ -40,11 +40,11 @@ locals {
   multi_office = false
   enable_post_survey = false
   target_task_name = "greeting"
-  twilio_numbers = []
+  twilio_numbers = ["messenger:123236277715368"]
   channel = ""
   custom_channel_attributes = ""
   feature_flags = {
-    "enable_fullstory_monitoring": false,
+    "enable_fullstory_monitoring": true,
     "enable_upload_documents": true,
     "enable_post_survey": local.enable_post_survey,
     "enable_contact_editing": true,
@@ -61,14 +61,16 @@ locals {
     "enable_previous_contacts": true,
     "enable_voice_recordings": false,
     "enable_twilio_transcripts": true,
-    "enable_external_transcripts": false,
+    "enable_external_transcripts": true,
     "post_survey_serverless_handled": true,
-    "enable_csam_clc_report": false
+    "enable_csam_clc_report": false,
+    "enable_emoji_picker": true
   }
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   //Channels [Voice | Facebook | Webchat | WhatsApp]
   twilio_channels = {
-    webchat = {"contact_identity" = "", "channel_type" ="web"  }
+    "facebook" = {"contact_identity" = "messenger:123236277715368", "channel_type" ="facebook"},
+    "webchat" = {"contact_identity" = "", "channel_type" ="web"  }
    }
   }
 
@@ -111,13 +113,14 @@ module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = module.serverless.serverless_environment_production_url
   helpline = local.helpline
-  custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true"
+  custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
 }
 
 module flex {
   source = "../terraform-modules/flex/service-configuration"
   twilio_account_sid = local.secrets.twilio_account_sid
   short_environment = local.short_environment
+  environment = local.environment
   operating_info_key = local.operating_info_key
   permission_config = local.permission_config
   definition_version = local.definition_version
@@ -130,6 +133,14 @@ module twilioChannel {
   for_each = local.twilio_channels
   source = "../terraform-modules/channels/twilio-channel"
   channel_contact_identity = each.value.contact_identity
+  custom_flow_definition = templatefile(
+    "../terraform-modules/channels/flow-templates/flow-zw/no-chatbot.tftpl",
+    {
+      master_workflow_sid = module.taskRouter.master_workflow_sid
+      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+      channel_attributes =  templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language})
+      flow_description = "${title(each.key)} Messaging Flow"
+    })
   pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
   janitor_enabled = !local.enable_post_survey
   target_task_name = local.target_task_name
