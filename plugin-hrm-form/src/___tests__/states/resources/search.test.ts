@@ -74,6 +74,7 @@ describe('actions', () => {
   describe('searchResourceAsyncAction', () => {
     beforeEach(() => {
       mockSearchResources.mockReset();
+      mockSearchResources.mockResolvedValue({ results: [], totalCount: 0 });
     });
 
     test('Calls the searchResources service, calculating the start index from the provided page & limit', () => {
@@ -96,6 +97,7 @@ describe('actions', () => {
       const state = getState();
       expect(state).toStrictEqual({ ...startingState, status: ResourceSearchStatus.ResultPending });
     });
+
     describe('resourceSearch completes', () => {
       test('dispatches pending action that sets status to ResultPending, then dispatches fulfilled action that sets status to ResultReceived and adds the result to the array', async () => {
         mockSearchResources.mockResolvedValue({
