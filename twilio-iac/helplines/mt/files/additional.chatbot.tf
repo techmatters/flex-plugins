@@ -7,7 +7,7 @@ locals {
       sid = twilio_autopilot_assistants_v1.chatbot_mt.sid
       }
     "ukr" : {
-      twilio_autopilot_assistants_v1.chatbot_ukr.sid
+      sid = twilio_autopilot_assistants_v1.chatbot_ukr.sid
       }
   }
 }
