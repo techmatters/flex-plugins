@@ -248,3 +248,14 @@ export const selfReportToIWF = async (form: ChildCSAMReportForm, caseNumber: str
   const response = await fetchProtectedApi('/selfReportToIWF', body);
   return response;
 };
+
+export const addConferenceParticipant = async ({ taskSid, to, from }) => {
+  const body = {
+    taskSid,
+    to,
+    from,
+  };
+
+  const response = await fetchProtectedApi('/addConferenceParticipant', body);
+  return response;
+};
