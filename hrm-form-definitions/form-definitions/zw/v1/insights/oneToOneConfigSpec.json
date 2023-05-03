@@ -1,1 +1,128 @@
-{}
+{
+    "contactForm": {
+        "callerInformation": [
+            {
+              "name": "relationshipToChild",
+              "insights": ["conversations", "initiated_by"]
+            }
+          ],
+        "childInformation": [
+          {
+            "name": "province",
+            "insights": [
+              "customers",
+              "area"
+            ]
+          },
+          {
+            "name": "district",
+            "insights": [
+              "customers",
+              "region"
+            ]
+          },
+          {
+            "name": "schoolName",
+            "insights": ["customers", "customer_attribute_1"]
+          },
+          {
+            "name": "gradeLevel",
+            "insights": ["customers", "acquisition_date"]
+          },
+          {
+            "name": "childStatus",
+            "insights": ["customers", "email"]
+          }
+        ],
+        "caseInformation": [
+          {
+            "name": "repeatCaller",
+            "insights": [
+              "conversations",
+              "conversation_attribute_7"
+            ],
+            "type": "checkbox"
+          },
+          {
+            "name": "department",
+            "insights": [
+              "customers",
+              "area"
+            ]
+          },
+          {
+            "name": "location",
+            "insights": [
+              "customers",
+              "region"
+            ]
+          },
+          {
+            "name": "concernLevel",
+            "insights": ["conversations", "initiative"]
+          }
+        ]
+      },
+      "caseForm": {
+        "topLevel": [
+          {
+            "name": "id",
+            "insights": [
+              "conversations",
+              "case"
+            ]
+          },
+          {
+            "name": "caseStatus",
+            "insights": [
+              "customers",
+              "acquisition_date"
+            ]
+          }
+        ],
+        "household": [
+            {
+              "name": "relationshipToChild",
+              "insights": ["customers", "initiated_by"]
+            },
+            {
+              "name": "gender",
+              "insights": ["conversations", "customer_attribute_1"]
+            },
+            {
+              "name": "age",
+              "insights": ["conversations", "customer_attribute_2"]
+            }
+          ],
+        "perpetrator": [
+            {
+              "name": "relationshipToChild",
+              "insights": ["customers", "organization"]
+            },
+            {
+              "name": "gender",
+              "insights": ["conversations", "followed_by"]
+            },
+            {
+              "name": "age",
+              "insights": ["conversations", "preceded_by"]
+            }
+          ],
+        "incident": [
+          {
+            "name": "incidentType",
+            "insights": ["conversations", "in_business_hours"]
+          }
+        ],
+        "referral": [
+          {
+            "name": "referredTo",
+            "insights": [
+              "customers",
+              "customer_manager"
+            ]
+          }
+        ]
+      }
+
+}
