@@ -47,14 +47,14 @@
             "name": "department",
             "insights": [
               "customers",
-              "area"
+              "organization"
             ]
           },
           {
             "name": "location",
             "insights": [
               "customers",
-              "region"
+              "city"
             ]
           },
           {
