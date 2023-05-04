@@ -34,7 +34,7 @@ const trySubscribeAudioAlerts = (task, ms: number, retries: number) => {
   setTimeout(() => {
     const convoState = StateHelper.getConversationStateForTask(task);
     // if channel is not ready, wait 200ms and retry
-    if (convoState?.isLoadingConversation) {
+    if (convoState?.isLoadingConversation || !convoState?.source) {
       if (retries < 10) trySubscribeAudioAlerts(task, 200, retries + 1);
       else console.error('Failed to subscribe audio alerts: max retries reached.');
     } else {
