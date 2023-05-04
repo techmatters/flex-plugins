@@ -94,28 +94,66 @@ locals {
     "reservation.timeout",
     "reservation.wrapup",
   ]
- task_channels = {
+  task_channels = {
     default : "Default"
     chat : "Programmable Chat"
     voice : "Voice"
     sms : "SMS"
     video : "Video"
     email : "Email"
-    //survey : "Survey"
+    survey : "Survey"
   }
- workflows = {
+  workflows = {
     master : {
       friendly_name : "Master Workflow"
-      templatefile : "/app/twilio-iac/helplines/ca/templates/workflows/master.tftpl"
+      templatefile : "/app/twilio-iac/helplines/cl/templates/workflows/master.tftpl"
+    },
+    survey : {
+      friendly_name : "Survey Workflow"
+      templatefile : "/app/twilio-iac/helplines/templates/workflows/survey.tftpl"
     }
   }
   phone_numbers = {
     linea_libre : ["?"]
   }
   task_queues = {
-    aggregate : {
+    master : {
       "target_workers" = "1==1",
-      "friendly_name"  = "Aggregate"
+      "friendly_name"  = "Linea Libre"
+    },
+    survey : {
+      "target_workers" = "1==0",
+      "friendly_name"  = "Survey"
+    }
+
+  }
+//I'm here
+ #Studio flow
+    flow_vars = {
+      service_sid = "ZSb631f562c8306085ceb8329349fdd60b"
+      environment_sid = "ZEd72a0800eb472d514e48977ffab9b642"
+      operating_hours_function_sid = "ZH3ee5654cb3c8cda06c2aaf84593b11a6"
+      operating_hours_function_url = "https://test-service-dee-4583.twil.io/time_cycle"
+      engagement_function_sid = "ZH946d079ec6be9b1b899a6cf30be0660f"
+      engagement_function_url = "https://test-service-dee-4583.twil.io/engagement"
+    }
+
+
+  #Channels
+  channels = {
+    webchat : {
+      channel_type         = "web"
+      contact_identity     = ""
+      templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours.tftpl"
+      channel_flow_vars    = {}
+      chatbot_unique_names = []
+    },
+    voice : {
+      channel_type         = "voice"
+      contact_identity     = ""
+      templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/voice-no-chatbot-operating-hours.tftpl"
+      channel_flow_vars    = {}
+      chatbot_unique_names = []
     }
   }
 
@@ -153,10 +191,14 @@ module "services" {
 
 
 module "taskRouter" {
-  source                                = "../terraform-modules/taskRouter/v1"
-  serverless_url                        = module.serverless.serverless_environment_production_url
-  helpline                              = local.helpline
-  custom_task_routing_filter_expression = "channelType ==\"web\" OR channelType ==\"voice\" OR isContactlessTask == true OR  phone=='+16602359810' OR phone=='+48800012935'"
+  source         = "../terraform-modules/taskRouter/v1"
+  serverless_url = module.serverless.serverless_environment_production_url
+  helpline       = local.helpline
+  events_filter  = local.events_filter
+  task_queues    = local.task_queues
+  workflows      = local.workflows
+  task_channels  = local.task_channels
+  phone_numbers  = local.phone_numbers
 }
 
 module "flex" {
@@ -174,6 +216,8 @@ module "flex" {
   contacts_waiting_channels = local.contacts_waiting_channels
 }
 
+
+
 module "twilioChannel" {
   for_each                 = local.twilio_channels
   channel_type             = each.value.channel_type
@@ -187,8 +231,8 @@ module "twilioChannel" {
       serverless_service_sid       = module.serverless.serverless_service_sid
       serverless_environment_sid   = module.serverless.serverless_environment_production_sid
       operating_hours_function_sid = local.operating_hours_function_sid
-      master_workflow_sid          = module.taskRouter.master_workflow_sid
-      chat_task_channel_sid        = module.taskRouter.chat_task_channel_sid
+      master_workflow_sid          = module.taskRouter.workflow_sids["master"]
+      chat_task_channel_sid        = module.taskRouter.task_channel_sids["chat"]
       channel_attributes           = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl", { task_language = local.task_language })
       flow_description             = "${title(each.key)} Messaging Flow"
       chat_greeting_message        = local.strings.chat_greeting_message
@@ -199,22 +243,22 @@ module "twilioChannel" {
   })
   channel_name          = each.key
   janitor_enabled       = !local.enable_post_survey
-  master_workflow_sid   = module.taskRouter.master_workflow_sid
-  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+  master_workflow_sid   = module.taskRouter.workflow_sids["master"]
+  chat_task_channel_sid = module.taskRouter.task_channel_sids["chat"]
   flex_chat_service_sid = module.services.flex_chat_service_sid
 }
 
 module "voiceChannel" {
   source                     = "../terraform-modules/channels/voice-channel"
-  master_workflow_sid        = module.taskRouter.master_workflow_sid
-  voice_task_channel_sid     = module.taskRouter.voice_task_channel_sid
+  master_workflow_sid        = module.taskRouter.workflow_sids["master"]
+  voice_task_channel_sid     = module.taskRouter.task_channel_sids["voice"]
   voice_ivr_language         = local.voice_ivr_language
   voice_ivr_greeting_message = local.strings.voice_ivr_greeting_message
   custom_flow_definition = templatefile(
     "../terraform-modules/channels/flow-templates/operating-hours/voice-ivr.tftpl",
     {
-      master_workflow_sid          = module.taskRouter.master_workflow_sid
-      voice_task_channel_sid       = module.taskRouter.voice_task_channel_sid
+      master_workflow_sid          = module.taskRouter.workflow_sids["master"]
+      voice_task_channel_sid       = module.taskRouter.task_channel_sids["voice"]
       channel_attributes           = templatefile("../terraform-modules/channels/voice-channel/channel-attributes/voice-attributes.tftpl", { task_language = local.task_language })
       flow_description             = "Voice IVR Flow"
       voice_ivr_greeting_message   = local.strings.voice_ivr_greeting_message
@@ -232,11 +276,6 @@ module "voiceChannel" {
 }
 
 
-module "survey" {
-  source                             = "../terraform-modules/survey/default"
-  helpline                           = local.helpline
-  flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
-}
 module "aws" {
   source                             = "../terraform-modules/aws/default"
   twilio_account_sid                 = local.secrets.twilio_account_sid
@@ -250,12 +289,12 @@ module "aws" {
   datadog_app_id                     = local.secrets.datadog_app_id
   datadog_access_token               = local.secrets.datadog_access_token
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
-  master_workflow_sid                = module.taskRouter.master_workflow_sid
+  master_workflow_sid                = module.taskRouter.workflow_sids["master"]
   shared_state_sync_service_sid      = module.services.shared_state_sync_service_sid
   flex_chat_service_sid              = module.services.flex_chat_service_sid
   flex_proxy_service_sid             = module.services.flex_proxy_service_sid
   post_survey_bot_sid                = twilio_autopilot_assistants_v1.post_survey_bot_es.sid
-  survey_workflow_sid                = module.survey.survey_workflow_sid
+  survey_workflow_sid                = module.taskRouter.workflow_sids["survey"]
 }
 
 module "aws_monitoring" {
