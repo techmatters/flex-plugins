@@ -6,16 +6,21 @@ import { conferenceApi } from '../../../services/ServerlessService';
 
 type Props = TaskContextProps;
 
-const ConferenceButton: React.FC<Props> = ({ task }) => {
+const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   const [targetNumber, setTargetNumber] = useState('');
   const [isAdding, setIsAdding] = useState(false);
+
+  if (!conference?.source?.conferenceSid || !task) {
+    return null;
+  }
+
+  const { conferenceSid } = conference.source;
 
   const handleClick = async () => {
     setIsAdding(true);
     const from = Manager.getInstance().serviceConfiguration.outbound_call_flows.default.caller_id;
     const to = targetNumber;
-    const { taskSid } = task;
-    const result = await conferenceApi.addParticipant({ from, taskSid, to });
+    const result = await conferenceApi.addParticipant({ from, conferenceSid, to });
     console.log('>>>>>>> addConferenceParticipant resulted on:', result);
     setIsAdding(false);
   };
@@ -45,4 +50,4 @@ const ConferenceButton: React.FC<Props> = ({ task }) => {
   );
 };
 
-export default withTaskContext(ConferenceButton);
+export default withTaskContext(ConferencePanel);

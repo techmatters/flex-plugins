@@ -7,12 +7,15 @@ import { conferenceApi } from '../../../services/ServerlessService';
 type Props = Partial<ParticipantCanvasChildrenProps>;
 
 const RemoveParticipant: React.FC<Props> = ({ participant, task, ...props }) => {
-  console.log('>>>>>>>> participant', participant);
-  console.log('>>>>>>>> task', task);
-  console.log('>>>>>>>> props', props);
+  if (!participant?.callSid || !task?.conference?.conferenceSid) {
+    return null;
+  }
 
   const handleClick = async () => {
-    await conferenceApi.removeParticipant({ participantSid: participant.participantSid, taskSid: task.taskSid });
+    await conferenceApi.removeParticipant({
+      callSid: participant.callSid,
+      conferenceSid: task.conference.conferenceSid,
+    });
   };
 
   return (
