@@ -117,3 +117,8 @@ button.Twilio-TaskCanvasHeader-EndButton:active {
 div.Twilio-ViewCollection{
     background-color: #f6f6f6;
 }
+
+/* The p tag was deeply nested with no Twilio class to reference. So this was the only way to over-ride the CSS  */
+div.Twilio .Twilio-MessageList div div div div div div div p {
+    font-size: 14px;
+}
