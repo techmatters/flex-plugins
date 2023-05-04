@@ -28,7 +28,7 @@
     "list": "twilio flex:plugins:list:plugins",
     "lint": "eslint --ext js --ext jsx --ext ts --ext tsx src/",
     "lint:fix": "npm run lint -- --fix",
-    "update-flex-ui-version": "npx ts-node --esm src/scripts/updateFlexUiVersion.ts",
+    "update-flex-ui-version": "ts-node --esm src/scripts/updateFlexUiVersion.ts",
     "ssm:local": "npm run ssm:local:appConfig && npm run ssm:local:secret",
     "ssm:local:appConfig": "docker run --rm -v ~/.aws:/home/aws/.aws -e AWS_DEFAULT_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY interrobangc/awscli2 ssm get-parameter --name \"/local/flex-plugins/plugin-hrm-form/appConfig.js\" --with-decryption --query \"Parameter.Value\" --output text > ./public/appConfig.js",
     "ssm:local:appConfig:e2e": "docker run --rm -v ~/.aws:/home/aws/.aws -e AWS_DEFAULT_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY interrobangc/awscli2 ssm get-parameter --name \"/local/flex-plugins/plugin-hrm-form/e2e-test/appConfig.js\" --with-decryption --query \"Parameter.Value\" --output text > ./public/appConfig.js",
@@ -113,6 +113,7 @@
     "rxjs-compat": "6.6.3",
     "timezoned-date": "^3.0.2",
     "ts-jest": "^26.5.6",
+    "ts-node": "^10.9.1",
     "twilio-cli": "^5.2.2",
     "typescript": "4.7.4",
     "webpack-bundle-analyzer": "^4.7.0"
