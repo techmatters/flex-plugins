@@ -120,6 +120,7 @@ export const MessageBubbleBodyText = styled(FontOpenSans)<{ isCounselor: boolean
   line-height: 1.54;
   overflow-wrap: break-word;
   white-space: break-spaces;
+  overflow-wrap: anywhere;
   color: ${({ isCounselor }) => (isCounselor ? '#FFFFFF' : '#222222')};
 `;
 MessageBubbleBodyText.displayName = 'MessageBubbleBodyText';

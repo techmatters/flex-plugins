@@ -22,6 +22,7 @@ variable "assets_bucket_url" {
 variable "contacts_waiting_channels" {
   description = "List of contact waiting channels"
   type = list(string)
+  default = ["voice","web","whatsapp","facebook","twitter","instagram","line"]
 }
 
 variable "short_environment" {
