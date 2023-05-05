@@ -33,7 +33,7 @@ locals {
       "enable_dual_write" : false,
       "enable_save_insights" : false,
       "enable_previous_contacts" : true,
-      "enable_voice_recordings" : false,
+      "enable_voice_recordings" : true,
       "enable_twilio_transcripts" : true,
       "enable_external_transcripts" : true,
       "post_survey_serverless_handled" : true,
