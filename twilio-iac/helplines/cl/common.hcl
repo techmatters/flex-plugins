@@ -13,7 +13,7 @@ locals {
     voice_ivr_language                = "es-MX"
     contacts_waiting_channels         = ["voice", "web"]
     enable_post_survey                = true
-
+    
     
 
     workflows = {

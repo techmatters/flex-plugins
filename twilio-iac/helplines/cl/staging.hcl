@@ -4,7 +4,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-
+    slack_webhook_url = "https://hooks.slack.com/example"
     #Studio flow
     flow_vars = {
       service_sid                  = "ZSeed7070ce3f2974cb12a0382a2c93340"
@@ -13,14 +13,14 @@ locals {
       operating_hours_function_url = "https://serverless-2776-production.twil.io/operatingHours"
     }
 
-
+    ui_editable = true
     #Chatbots
 
     #Feature flags
     feature_flags = {
       "enable_fullstory_monitoring" : true,
       "enable_upload_documents" : true,
-      "enable_post_survey" : local.enable_post_survey,
+      "enable_post_survey" : true,
       "enable_contact_editing" : true,
       "enable_case_management" : true,
       "enable_offline_contact" : true,

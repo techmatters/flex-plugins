@@ -76,3 +76,15 @@ variable "phone_numbers" {
   type        = map(list(string))
   default = null
 }
+
+variable "enable_old_survey_module" {
+  description = "true to create survey resources with survey module"
+  type        = bool
+  default = false
+}
+
+variable "ui_editable" {
+  description = " Whether or not the service is editable in the console"
+  type        = bool
+  default = false
+}
