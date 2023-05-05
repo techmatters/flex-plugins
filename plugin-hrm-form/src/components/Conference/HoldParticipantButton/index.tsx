@@ -15,33 +15,39 @@
  */
 
 import React from 'react';
-import { IconButton, Manager, TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
+import { IconButton, TaskHelper } from '@twilio/flex-ui';
 import type { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
 
 import { conferenceApi } from '../../../services/ServerlessService';
 
 type Props = Partial<ParticipantCanvasChildrenProps>;
 
-const RemoveParticipant: React.FC<Props> = ({ participant, task, ...props }) => {
+const HoldParticipantButton: React.FC<Props> = ({ participant, task, ...props }) => {
+  const [isLoading, setIsLoading] = React.useState(false);
+
   if (!participant?.callSid || !task?.conference?.conferenceSid) {
     return null;
   }
 
   const handleClick = async () => {
-    await conferenceApi.removeParticipant({
+    setIsLoading(true);
+    await conferenceApi.toogleHoldParticipant({
       callSid: participant.callSid,
       conferenceSid: task.conference.conferenceSid,
+      hold: !participant.onHold,
     });
+    setIsLoading(false);
   };
 
   return (
     <IconButton
-      icon="Hangup"
+      icon={participant.onHold ? 'HoldOff' : 'Hold'}
       onClick={handleClick}
       variant="secondary"
+      disabled={isLoading || !TaskHelper.canHold(task) || participant.status !== 'joined'}
       // title={}
     />
   );
 };
 
-export default RemoveParticipant;
+export default HoldParticipantButton;
