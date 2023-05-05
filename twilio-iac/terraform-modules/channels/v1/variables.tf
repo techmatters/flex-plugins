@@ -13,6 +13,12 @@ variable "task_language" {
   description = "Override the default language by setting this"
 }
 
+variable "slack_webhook_url" {
+  type        = string
+  default     = ""
+  description = "Slack income webhook"
+}
+
 variable "channels" {
   type = map(object({
     templatefile         = string,

@@ -73,9 +73,10 @@ locals {
   twilio_channels = {
     "webchat" = { "contact_identity" = "", "channel_type" = "web" }
   }
-  custom_channels     = []
-  strings             = jsondecode(file("${path.module}/../translations/${local.helpline_language}/strings.json"))
-  slack_error_webhook = "https://hooks.slack.com/services/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"
+  custom_channels    = []
+  strings            = jsondecode(file("${path.module}/../translations/${local.helpline_language}/strings.json"))
+  slack_webhook_url            = "https://hooks.slack.com/example"
+ 
   //serverless
   ui_editable = true
 
@@ -117,9 +118,13 @@ locals {
     linea_libre : ["?"]
   }
   task_queues = {
-    master : {
-      "target_workers" = "1==1",
-      "friendly_name"  = "Linea Libre"
+    voice : {
+      "target_workers" = "routing.skills HAS 'Calls'",
+      "friendly_name"  = "Voice Calls"
+    },
+    messaging : {
+      "target_workers" = "routing.skills HAS 'Messaging'",
+      "friendly_name"  = "Messaging"
     },
     survey : {
       "target_workers" = "1==0",
@@ -127,32 +132,41 @@ locals {
     }
 
   }
-//I'm here
- #Studio flow
-    flow_vars = {
-      service_sid = "ZSb631f562c8306085ceb8329349fdd60b"
-      environment_sid = "ZEd72a0800eb472d514e48977ffab9b642"
-      operating_hours_function_sid = "ZH3ee5654cb3c8cda06c2aaf84593b11a6"
-      operating_hours_function_url = "https://test-service-dee-4583.twil.io/time_cycle"
-      engagement_function_sid = "ZH946d079ec6be9b1b899a6cf30be0660f"
-      engagement_function_url = "https://test-service-dee-4583.twil.io/engagement"
-    }
-
+  
+  #Studio flow
+  flow_vars = {
+    service_sid                  = "ZSeed7070ce3f2974cb12a0382a2c93340"
+    environment_sid              = "ZEe424f8b564e45c01958e48a1bdfdb41d"
+    operating_hours_function_sid = "ZH3474ae11ae0fcd34edf418930a4abdaf"
+    operating_hours_function_url = "https://serverless-2776-production.twil.io/operatingHours"
+  }
+  channel_attributes = {
+    webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
+    twitter : "/app/twilio-iac/helplines/templates/channel-attributes/twitter.tftpl"
+    voice : "/app/twilio-iac/helplines/templates/channel-attributes/voice.tftpl"
+    default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
+  }
 
   #Channels
   channels = {
     webchat : {
-      channel_type         = "web"
-      contact_identity     = ""
-      templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours.tftpl"
-      channel_flow_vars    = {}
+      channel_type     = "web"
+      contact_identity = ""
+      templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours.tftpl"
+      channel_flow_vars = {
+        chat_greeting_message = "¡Hola, te doy la bienvenida a Línea Libre! Este es un espacio seguro donde podemos conversar con tranquilidad y confianza. Estamos para escucharte, apoyarte y orientarte. Antes de conversar, nos gustaría contarte que trabajamos bajo el Principio de Protección, donde en caso que percibamos que tu integridad o la de un tercero pueda estar en riesgo, nuestro equipo tomará las medidas necesarias para asegurar tu protección y bienestar. Cuéntanos ¿tienes alguna duda sobre esto?"
+        widget_from           = local.helpline
+      }
       chatbot_unique_names = []
     },
     voice : {
-      channel_type         = "voice"
-      contact_identity     = ""
-      templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/voice-no-chatbot-operating-hours.tftpl"
-      channel_flow_vars    = {}
+      channel_type     = "voice"
+      contact_identity = ""
+      templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-no-chatbot-operating-hours.tftpl"
+      channel_flow_vars = {
+        voice_ivr_greeting_message = "Hola, estás comunicándote con Línea Libre, un canal que ofrece una primera atención psicológica, y que busca apoyarte y orientarte en lo que sea que estés pasando. Antes de conversar, nos gustaría contarte que trabajamos bajo el principio de protección. Si percibimos que tu integridad o la de un tercero puede estar en riesgo, haremos lo necesario para asegurar tu protección y bienestar. Por tu seguridad, esta llamada podría ser grabada."
+        voice_ivr_language         = "es-MX"
+      }
       chatbot_unique_names = []
     }
   }
@@ -216,65 +230,20 @@ module "flex" {
   contacts_waiting_channels = local.contacts_waiting_channels
 }
 
-
-
-module "twilioChannel" {
-  for_each                 = local.twilio_channels
-  channel_type             = each.value.channel_type
-  source                   = "../terraform-modules/channels/twilio-channel"
-  channel_contact_identity = each.value.contact_identity
-  custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/operating-hours/no-chatbot.tftpl",
-    {
-      channel_name                 = "${each.key}"
-      serverless_url               = module.serverless.serverless_environment_production_url
-      serverless_service_sid       = module.serverless.serverless_service_sid
-      serverless_environment_sid   = module.serverless.serverless_environment_production_sid
-      operating_hours_function_sid = local.operating_hours_function_sid
-      master_workflow_sid          = module.taskRouter.workflow_sids["master"]
-      chat_task_channel_sid        = module.taskRouter.task_channel_sids["chat"]
-      channel_attributes           = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl", { task_language = local.task_language })
-      flow_description             = "${title(each.key)} Messaging Flow"
-      chat_greeting_message        = local.strings.chat_greeting_message
-      helpline                     = local.helpline
-      environment                  = local.environment
-      task_language                = local.task_language
-      slack_error_webhook          = local.slack_error_webhook
-  })
-  channel_name          = each.key
-  janitor_enabled       = !local.enable_post_survey
-  master_workflow_sid   = module.taskRouter.workflow_sids["master"]
-  chat_task_channel_sid = module.taskRouter.task_channel_sids["chat"]
+module "channel" {
+  source                = "../terraform-modules/channels/v1"
   flex_chat_service_sid = module.services.flex_chat_service_sid
+  workflow_sids         = module.taskRouter.workflow_sids
+  task_channel_sids     = module.taskRouter.task_channel_sids
+  channel_attributes    = local.channel_attributes
+  channels              = local.channels
+  enable_post_survey    = local.enable_post_survey
+  flow_vars             = local.flow_vars
+  short_environment     = local.short_environment
+  task_language         = local.task_language
+  short_helpline        = upper(local.short_helpline)
+  slack_webhook_url   = local.slack_webhook_url
 }
-
-module "voiceChannel" {
-  source                     = "../terraform-modules/channels/voice-channel"
-  master_workflow_sid        = module.taskRouter.workflow_sids["master"]
-  voice_task_channel_sid     = module.taskRouter.task_channel_sids["voice"]
-  voice_ivr_language         = local.voice_ivr_language
-  voice_ivr_greeting_message = local.strings.voice_ivr_greeting_message
-  custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/operating-hours/voice-ivr.tftpl",
-    {
-      master_workflow_sid          = module.taskRouter.workflow_sids["master"]
-      voice_task_channel_sid       = module.taskRouter.task_channel_sids["voice"]
-      channel_attributes           = templatefile("../terraform-modules/channels/voice-channel/channel-attributes/voice-attributes.tftpl", { task_language = local.task_language })
-      flow_description             = "Voice IVR Flow"
-      voice_ivr_greeting_message   = local.strings.voice_ivr_greeting_message
-      voice_ivr_language           = local.voice_ivr_language
-      operating_hours_function_sid = local.operating_hours_function_sid
-      serverless_url               = module.serverless.serverless_environment_production_url
-      serverless_service_sid       = module.serverless.serverless_service_sid
-      serverless_environment_sid   = module.serverless.serverless_environment_production_sid
-      helpline                     = local.helpline
-      environment                  = local.environment
-      task_language                = local.task_language
-      slack_error_webhook          = local.slack_error_webhook
-
-  })
-}
-
 
 module "aws" {
   source                             = "../terraform-modules/aws/default"

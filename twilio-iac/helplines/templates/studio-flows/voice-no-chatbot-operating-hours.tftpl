@@ -52,9 +52,9 @@ ${
             "x": 520,
             "y": 1160
           },
-          "workflow": master_workflow_sid,
-          "channel": voice_task_channel_sid,
-          "attributes":channel_attributes
+          "workflow": workflow_sids["master"],
+          "channel": task_channel_sids["voice"],
+          "attributes":channel_attributes["default"]
         }
       },
       {
@@ -73,8 +73,8 @@ ${
             "y": 880
           },
           "loop": 1,
-          "say": voice_ivr_greeting_message,
-          "language": voice_ivr_language
+          "say": channel_flow_vars["voice_ivr_greeting_message"],
+          "language": channel_flow_vars["voice_ivr_language"]
         }
       },
       {
@@ -91,13 +91,13 @@ ${
           }
         ],
         "properties": {
-          "service_sid": serverless_service_sid,
-          "environment_sid": serverless_environment_sid,
+          "service_sid": flow_vars["service_sid"],
+          "environment_sid": flow_vars["environment_sid"],
           "offset": {
             "x": 130,
             "y": 240
           },
-          "function_sid": operating_hours_function_sid,
+          "function_sid": flow_vars["operating_hours_function_sid"]
           "parameters": [
             {
               "value": "voice",
@@ -112,7 +112,7 @@ ${
               "key": "language"
             }
           ],
-          "url": "${serverless_url}/operatingHours"
+          "url": flow_vars["operating_hours_function_url"]
         }
       },
       {
@@ -178,8 +178,8 @@ ${
           },
           "method": "POST",
           "content_type": "application/json;charset=utf-8",
-          "body": "{ \"text\": \"Issue detected on ${helpline} ${environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
-          "url": slack_error_webhook
+          "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+          "url": slack_webhook_url
         }
       },
       {
@@ -198,7 +198,7 @@ ${
           },
           "loop": 1,
           "say": "{{widgets.check_operating_hours.parsed.message}}",
-          "language": voice_ivr_language
+          "language": channel_flow_vars["voice_ivr_language"]
         }
       }
     ],

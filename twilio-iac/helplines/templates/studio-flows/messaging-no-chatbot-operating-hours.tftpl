@@ -45,13 +45,13 @@ ${
           }
         ],
         "properties": {
-          "service_sid": serverless_service_sid,
-          "environment_sid": serverless_environment_sid,
+          "service_sid": flow_vars["service_sid"],
+          "environment_sid": flow_vars["environment_sid"],
           "offset": {
             "x": 50,
             "y": 160
           },
-          "function_sid": operating_hours_function_sid,
+          "function_sid": flow_vars["operating_hours_function_sid"],
           "parameters": [
             {
               "value": channel_name,
@@ -66,7 +66,7 @@ ${
               "key": "language"
             }
           ],
-          "url": "${serverless_url}/operatingHours"
+          "url": flow_vars["operating_hours_function_url"]
         }
       },
       {
@@ -132,8 +132,8 @@ ${
           },
           "method": "POST",
           "content_type": "application/json;charset=utf-8",
-          "body": "{ \"text\": \"Issue detected on ${helpline} ${environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
-          "url": slack_error_webhook
+          "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+          "url": slack_webhook_url
         }
       },
       {
@@ -156,9 +156,9 @@ ${
           },
           "service": "{{trigger.message.InstanceSid}}",
           "channel": "{{trigger.message.ChannelSid}}",
-          "from": helpline,
+          "from": channel_flow_vars["widget_from"],
           "to": "{{contact.channel.address}}",
-          "body": chat_greeting_message
+          "body": channel_flow_vars["chat_greeting_message"]
         }
       },
       {
@@ -180,7 +180,7 @@ ${
           },
           "service": "{{trigger.message.InstanceSid}}",
           "channel": "{{trigger.message.ChannelSid}}",
-          "from": helpline,
+          "from": channel_flow_vars["widget_from"],
           "to": "{{contact.channel.address}}",
           "body": "{{widgets.check_operating_hours.parsed.message}}"
         }
@@ -204,9 +204,9 @@ ${
             "x": 510,
             "y": 910
           },
-          "workflow": master_workflow_sid,
-          "channel": chat_task_channel_sid,
-          "attributes": channel_attributes
+        "workflow": workflow_sids["master"],
+        "channel": task_channel_sids["chat"],
+        "attributes": channel_attributes["default"]
         }
       }
     ],

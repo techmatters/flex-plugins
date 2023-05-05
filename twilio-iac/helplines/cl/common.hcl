@@ -1,0 +1,84 @@
+locals {
+  defaults_config_hcl = read_terragrunt_config(find_in_parent_folders("defaults.hcl"))
+  defaults_config     = local.defaults_config_hcl.locals
+  config              = merge(local.defaults_config, local.local_config)
+
+  local_config = {
+    helpline                          = "Linea Libre"
+    old_dir_prefix                    = "linealibre-cl"
+    definition_version                = "cl-v1"
+    default_autopilot_chatbot_enabled = false
+    task_language                     = "es-CL"
+    helpline_language                 = "es-CL"
+    voice_ivr_language                = "es-MX"
+    contacts_waiting_channels         = ["voice", "web"]
+    enable_post_survey                = true
+
+    
+
+    workflows = {
+      master : {
+        friendly_name : "Master Workflow"
+        templatefile : "/app/twilio-iac/helplines/cl/templates/workflows/master.tftpl"
+      },
+      survey : {
+        friendly_name : "Survey Workflow"
+        templatefile : "/app/twilio-iac/helplines/templates/workflows/survey.tftpl"
+      }
+    }
+
+    task_queues = {
+      voice : {
+        "target_workers" = "routing.skills HAS 'Calls'",
+        "friendly_name"  = "Voice Calls"
+      },
+      messaging : {
+        "target_workers" = "routing.skills HAS 'Messaging'",
+        "friendly_name"  = "Messaging"
+      },
+      survey : {
+        "target_workers" = "1==0",
+        "friendly_name"  = "Survey"
+      }
+
+    }
+    task_channels = {
+      default : "Default"
+      chat : "Programmable Chat"
+      voice : "Voice"
+      sms : "SMS"
+      video : "Video"
+      email : "Email"
+      survey : "Survey"
+    }
+
+    #Channels
+    channels = {
+      webchat : {
+        channel_type     = "web"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours.tftpl"
+        channel_flow_vars = {
+          chat_greeting_message = "¡Hola, te doy la bienvenida a Línea Libre! Este es un espacio seguro donde podemos conversar con tranquilidad y confianza. Estamos para escucharte, apoyarte y orientarte. Antes de conversar, nos gustaría contarte que trabajamos bajo el Principio de Protección, donde en caso que percibamos que tu integridad o la de un tercero pueda estar en riesgo, nuestro equipo tomará las medidas necesarias para asegurar tu protección y bienestar. Cuéntanos ¿tienes alguna duda sobre esto?"
+          widget_from           = "Linea Libre"
+        }
+        chatbot_unique_names = []
+      },
+      voice : {
+        channel_type     = "voice"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-no-chatbot-operating-hours.tftpl"
+        channel_flow_vars = {
+          voice_ivr_greeting_message = "Hola, estás comunicándote con Línea Libre, un canal que ofrece una primera atención psicológica, y que busca apoyarte y orientarte en lo que sea que estés pasando. Antes de conversar, nos gustaría contarte que trabajamos bajo el principio de protección. Si percibimos que tu integridad o la de un tercero puede estar en riesgo, haremos lo necesario para asegurar tu protección y bienestar. Por tu seguridad, esta llamada podría ser grabada."
+          voice_ivr_language         = "es-MX"
+        }
+        chatbot_unique_names = []
+      }
+    }
+    phone_numbers = {
+      khp : ["????"],
+      g2t : ["????"],
+    }
+
+  }
+}

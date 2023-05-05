@@ -31,20 +31,25 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
     each.value.templatefile,
     {
       flow_description  = "${title(each.key)} Studio Flow",
+      channel_name = each.key,
+      task_language = var.task_language,
       flow_vars         = var.flow_vars
       channel_flow_vars = each.value.channel_flow_vars,
-      channel_chatbots          = {
-           for chatbot_name in each.value.chatbot_unique_names :
-            chatbot_name => var.chatbots[chatbot_name]
+      channel_chatbots = {
+        for chatbot_name in each.value.chatbot_unique_names :
+        chatbot_name => var.chatbots[chatbot_name]
       }
-      workflow_sids     = var.workflow_sids,
-      task_channel_sids = var.task_channel_sids
+      workflow_sids       = var.workflow_sids,
+      task_channel_sids   = var.task_channel_sids
+      slack_webhook_url = var.slack_webhook_url
+      short_helpline      = var.short_helpline
+      short_environment   = var.short_environment
       channel_attributes = merge(
         {
-          for  chatbot_name in each.value.chatbot_unique_names : 
-            chatbot_name => templatefile(
+          for chatbot_name in each.value.chatbot_unique_names :
+          chatbot_name => templatefile(
             lookup(var.channel_attributes, each.key, var.channel_attributes["default"]),
-            { chatbot_name = chatbot_name  })
+          { chatbot_name = chatbot_name })
         },
         {
           default : templatefile(
