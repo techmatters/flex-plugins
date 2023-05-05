@@ -81,7 +81,6 @@ export const createSubcategoryCheckbox = (
                   onChange={updateCallback}
                   ref={register({ required: true, minLength: 1, maxLength: 3 })}
                   disabled={disabled}
-                  color={lighterColor}
                 />
                 {label}
               </CategoryCheckboxField>
