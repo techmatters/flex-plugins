@@ -39,7 +39,7 @@
             "name": "repeatCaller",
             "insights": [
               "conversations",
-              "conversation_attribute_7"
+              "conversation_attribute_6"
             ],
             "type": "checkbox"
           },
@@ -75,43 +75,43 @@
           {
             "name": "caseStatus",
             "insights": [
-              "customers",
-              "acquisition_date"
+              "conversations",
+              "in_business_hours"
             ]
           }
         ],
         "household": [
             {
               "name": "relationshipToChild",
-              "insights": ["customers", "initiated_by"]
+              "insights": ["conversations", "preceded_by"]
             },
             {
               "name": "gender",
-              "insights": ["conversations", "customer_attribute_1"]
+              "insights": ["conversations", "conversation_measure_1"]
             },
             {
               "name": "age",
-              "insights": ["conversations", "customer_attribute_2"]
+              "insights": ["conversations", "conversation_measure_2"]
             }
           ],
         "perpetrator": [
             {
               "name": "relationshipToChild",
-              "insights": ["customers", "organization"]
-            },
-            {
-              "name": "gender",
               "insights": ["conversations", "followed_by"]
             },
             {
+              "name": "gender",
+              "insights": ["conversations", "conversation_measure_3"]
+            },
+            {
               "name": "age",
-              "insights": ["conversations", "preceded_by"]
+              "insights": ["conversations", "conversation_measure_4"]
             }
           ],
         "incident": [
           {
             "name": "incidentType",
-            "insights": ["conversations", "in_business_hours"]
+            "insights": ["customers", "category"]
           }
         ],
         "referral": [
