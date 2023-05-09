@@ -5,7 +5,7 @@ locals {
 
   local_config = {
     
-    custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true"
+    custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true"
 
     #Studio flow
     flow_vars = {
