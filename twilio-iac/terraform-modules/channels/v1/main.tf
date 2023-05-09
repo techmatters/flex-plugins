@@ -59,7 +59,10 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
 }
 
 resource "twilio_flex_flex_flows_v1" "channel_flow" {
-  for_each             = var.channels
+  for_each = {
+    for idx, channel in var.channels :
+    idx => channel if(channel.channel_type != "voice")
+  }
   channel_type         = each.value.channel_type
   chat_service_sid     = var.flex_chat_service_sid
   friendly_name        = "Flex ${title(each.key)} Flow"

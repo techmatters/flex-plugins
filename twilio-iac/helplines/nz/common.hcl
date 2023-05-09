@@ -28,33 +28,6 @@ locals {
       }
     }
     
-    #Channels
-     channels = {
-      webchat : {
-        channel_type = "web"
-        contact_identity = ""
-        templatefile = "/app/twilio-iac/helplines/templates/studio-flows/webchat-basic.tftpl"
-        channel_flow_vars = {}
-        chatbot_unique_names =[]
-      }/*,
-      voice : {
-        channel_type = "voice"
-        contact_identity = ""
-        templatefile = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic.tftpl"
-        channel_flow_vars = {
-          voice_ivr_greeting_message = "Hello, welcome to Youthline. Please wait for a counsellor."
-          voice_ivr_language         = "en-US"
-        }
-        chatbot_unique_names =[]
-      },
-      sms : {
-        channel_type = "sms"
-        contact_identity = ""
-        templatefile = "/app/twilio-iac/helplines/templates/studio-flows/sms-basic.tftpl"
-        channel_flow_vars = {}
-        chatbot_unique_names =[]
-      }*/
-    }
-
+    
   }
 }
