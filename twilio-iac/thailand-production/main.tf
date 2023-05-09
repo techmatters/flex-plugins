@@ -35,7 +35,7 @@ locals {
   environment = "Production"
   short_environment = "PROD"
   definition_version = "th-v1"
-  permission_config = "demo"
+  permission_config = "th"
   multi_office = false
   enable_post_survey = false
   twilio_numbers = ["messenger:59591583805","twitter:1154628838472597505","instagram:59591583805","line:U65333e6b8ca9e96e41252ecb27c44cf9"]
