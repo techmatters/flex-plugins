@@ -187,13 +187,13 @@ ${
           }
         ],
         "properties": {
-          "service_sid": "ZSb631f562c8306085ceb8329349fdd60b",
-          "environment_sid": "ZEd72a0800eb472d514e48977ffab9b642",
+          "service_sid": flow_vars["service_sid"],
+          "environment_sid": flow_vars["environment_sid"],
           "offset": {
             "x": 1610,
             "y": 1750
           },
-          "function_sid": "ZH946d079ec6be9b1b899a6cf30be0660f",
+          "function_sid": flow_vars["engagement_function_sid"],
           "parameters": [
             {
               "value": "{{widgets.webAttributes.sid}}",
@@ -208,7 +208,7 @@ ${
               "key": "workspaceSid"
             }
           ],
-          "url": "https://test-service-dee-4583.twil.io/engagement"
+          "url": flow_vars["engagement_function_url"]
         }
       },
       {
@@ -224,20 +224,20 @@ ${
           }
         ],
         "properties": {
-          "service_sid": "ZSb631f562c8306085ceb8329349fdd60b",
-          "environment_sid": "ZEd72a0800eb472d514e48977ffab9b642",
+          "service_sid": flow_vars["service_sid"],
+          "environment_sid": flow_vars["environment_sid"],
           "offset": {
             "x": 720,
             "y": 1320
           },
-          "function_sid": "ZH3ee5654cb3c8cda06c2aaf84593b11a6",
+          "function_sid": flow_vars["time_cycle_function_sid"],
           "parameters": [
             {
               "value": "24",
               "key": "cycle_frequency"
             }
           ],
-          "url": "https://test-service-dee-4583.twil.io/time_cycle"
+          "url": flow_vars["time_cycle_function_url"]
         }
       },
       {
@@ -964,24 +964,24 @@ ${
           }
         ],
         "properties": {
-          "service_sid": "ZSb631f562c8306085ceb8329349fdd60b",
-          "environment_sid": "ZEd72a0800eb472d514e48977ffab9b642",
+          "service_sid": flow_vars["service_sid"],
+          "environment_sid": flow_vars["environment_sid"],
           "offset": {
             "x": -380,
             "y": -310
           },
-          "function_sid": "ZH12fcf06152bfd4dceacd1df0a4af7198",
+          "function_sid": flow_vars["check_queue_capacity_function_sid"],
           "parameters": [
             {
-              "value": "flow_vars["english_queue_sid"]",
+              "value": flow_vars["english_queue_sid"],
               "key": "taskQueueSid"
             },
             {
-              "value": "flow_vars["workspace_sid"]",
+              "value": flow_vars["workspace_sid"],
               "key": "workspaceSid"
             }
           ],
-          "url": "flow_vars["check_queue_capacity_function_url"]"
+          "url": flow_vars["check_queue_capacity_function_url"]
         }
       },
       {
@@ -998,24 +998,24 @@ ${
           }
         ],
         "properties": {
-          "service_sid": "ZSb631f562c8306085ceb8329349fdd60b",
-          "environment_sid": "ZEd72a0800eb472d514e48977ffab9b642",
+          "service_sid": flow_vars["service_sid"],
+          "environment_sid": flow_vars["environment_sid"],
           "offset": {
             "x": 1060,
             "y": -140
           },
-          "function_sid": "flow_vars["check_queue_capacity_function_sid"]",
+          "function_sid": flow_vars["check_queue_capacity_function_sid"],
           "parameters": [
             {
-              "value": "flow_vars["french_queue_sid"]",
+              "value": flow_vars["french_queue_sid"],
               "key": "taskQueueSid"
             },
             {
-              "value": "flow_vars["workspace_sid"]",
+              "value": flow_vars["workspace_sid"],
               "key": "workspaceSid"
             }
           ],
-          "url": "flow_vars["check_queue_capacity_function_url"]"
+          "url": flow_vars["check_queue_capacity_function_url"]
         }
       },
       {
