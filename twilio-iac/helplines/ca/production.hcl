@@ -12,6 +12,11 @@ locals {
       time_cycle_function_url = "https://twilio-service-4854.twil.io/time_cycle"
       engagement_function_sid = "ZH10286342f7b1a3952466a9d25eba5d1c"
       engagement_function_url = "https://twilio-service-4854.twil.io/engagement"
+      check_queue_capacity_function_sid = "ZS052e3d62a635572170cfbff86fb1ce1d"
+      check_queue_capacity_function_url = "https://twilio-service-4854.twil.io/check_queue_capacity"
+      workspace_sid = "WSf2e3f00412fa8cc45f4318b45a870ea5"
+      english_queue_sid = "WQf659c270357487d2372a657b649a3a7a"
+      french_queue_sid = "WQ43733e6ff913f64edafb10b041804c6e"
     }
 
     #Channels
