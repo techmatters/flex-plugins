@@ -50,8 +50,8 @@ ${
             "x": 240,
             "y": 820
           },
-          "workflow": "WWcc560fb79d0e552817c2d82bb3ec33bc",
-          "channel": "TCe480541ddf2d8c24b54f535b364c52f6",
+         "workflow": workflow_sids["master"],
+          "channel": task_channel_sids["default"],
           "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
         }
       },
@@ -75,10 +75,9 @@ ${
             "x": 590,
             "y": 810
           },
-          "workflow": "WWcc560fb79d0e552817c2d82bb3ec33bc",
-          "channel": "TC9746dfab4706fcb72f0117a3e17bbc54",
-          "attributes": "{\n  \"ip\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\n  \"firstName\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"helpline\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.helpline}}\",\n  \"language\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.language}}\",\n  \"ignoreAgent\": \"\",\n  \"transferTargetType\": \"\",\n  \"preEngagementData\": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}},\n  \"memory\": {{widgets.ChatBot.memory | to_json}}\n}\n"
-        }
+          "workflow": workflow_sids["master"],
+          "channel": task_channel_sids["chat"],
+          "attributes": channel_attributes["default"]        }
       },
       {
         "name": "AdjustAttributes",
