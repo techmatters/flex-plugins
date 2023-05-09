@@ -13,6 +13,8 @@ locals {
       time_cycle_function_url = "https://test-service-dee-4583.twil.io/time_cycle"
       engagement_function_sid = "ZH946d079ec6be9b1b899a6cf30be0660f"
       engagement_function_url = "https://test-service-dee-4583.twil.io/engagement"
+      check_queue_capacity_function_sid = "ZH12fcf06152bfd4dceacd1df0a4af7198"
+      check_queue_capacity_function_url = "https://test-service-dee-4583.twil.io/check_queue_capacity"
     }
 
     #Channels
