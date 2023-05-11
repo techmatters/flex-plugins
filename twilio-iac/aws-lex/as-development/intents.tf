@@ -20,6 +20,7 @@ resource "aws_lex_intent" "survey_intent" {
     "Incoming webchat contact",
   ]
 
+  # I am not sure this would work. Just added it for completeness sake
   initial_response {
     max_attempts = 2
 
@@ -102,6 +103,7 @@ resource "aws_lex_intent" "survey_intent" {
     }
   }
 
+  # I am not sure this would work. Just added it for completeness sake
   closing_response {
     max_attempts = 2
 
