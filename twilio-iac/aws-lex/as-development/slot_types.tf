@@ -29,8 +29,8 @@ resource "aws_lex_slot_type" "caller_types" {
 }
 
 resource "aws_lex_slot_type" "age" {
-  create_version = true
   description    = "Caller's age"
+  version        = "$LATEST"
 
   enumeration_value {
     synonyms = [
