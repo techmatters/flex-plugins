@@ -32,6 +32,18 @@ resource "aws_lex_slot_type" "age" {
   description    = "Caller's age"
   version        = "$LATEST"
 
+  sample_utterances = [
+    "Yeah",
+    "Yea",
+    "Y",
+    "N",
+    "No",
+    "Na",
+    "Nah",
+    "Nooo",
+    "Yah"
+  ]
+
   enumeration_value {
     synonyms = [
       "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
