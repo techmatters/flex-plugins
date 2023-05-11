@@ -4,6 +4,11 @@ terraform {
       source  = "twilio/twilio"
       version = "0.17.0"
     }
+
+    awscc = {
+      source  = "hashicorp/awscc"
+      version = "0.51.0"
+    }
   }
 
   backend "local" {
