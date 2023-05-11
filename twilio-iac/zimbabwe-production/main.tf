@@ -36,7 +36,7 @@ locals {
   environment = "Production"
   short_environment = "PROD"
   definition_version = "zw-v1"
-  permission_config = "demo"
+  permission_config = "zw"
   multi_office = false
   enable_post_survey = false
   target_task_name = "greeting"
