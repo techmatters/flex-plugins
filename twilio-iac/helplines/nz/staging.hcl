@@ -5,7 +5,7 @@ locals {
 
   local_config = {
     
-    custom_task_routing_filter_expression = "to IN ['+18645238101'] OR channelType =='web'  OR isContactlessTask == true"
+    custom_task_routing_filter_expression = "to IN ['+18645238101','+6478079100'] OR channelType =='web'  OR isContactlessTask == true"
 
     #Studio flow
     flow_vars = {
@@ -13,7 +13,7 @@ locals {
 
     #Task router 
     phone_numbers = {
-      youthline : ["+18645238101"]
+      youthline : ["+18645238101","+6478079100"]
     }
     
     #Channels
@@ -34,14 +34,14 @@ locals {
           voice_ivr_language         = "en-US"
         }
         chatbot_unique_names =[]
-      }/*,
+      },
       sms : {
         channel_type = "sms"
         contact_identity = "+18645238101"
         templatefile = "/app/twilio-iac/helplines/templates/studio-flows/sms-basic.tftpl"
         channel_flow_vars = {}
         chatbot_unique_names =[]
-      }*/
+      }
     }
 
     #Chatbots
