@@ -27,8 +27,8 @@ resource "aws_lex_bot" "aselo_development_bot" {
   idle_session_ttl_in_seconds = 600
 
   intent {
-    intent_name    = "Survey"
-    intent_version = "$$LATEST"
+    intent_name    = aws_lex_intent.survey_intent.name
+    intent_version = aws_lex_intent.survey_intent.version
   }
 
   locale           = "en-US"
