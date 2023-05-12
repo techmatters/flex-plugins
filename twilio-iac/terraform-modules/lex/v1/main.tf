@@ -2,7 +2,7 @@ terraform {
   required_providers {
     awscc = {
       source  = "hashicorp/awscc"
-      version = "0.51.0"
+      version = "0.52.0"
     }
   }
 }
@@ -18,4 +18,8 @@ resource "awscc_lex_bot" "this" {
   }
   idle_session_ttl_in_seconds = var.lex_config.idle_session_ttl_in_seconds
   bot_locales                 = var.lex_config.bot_locales
+}
+
+output "lex_config" {
+  value = var.lex_config
 }

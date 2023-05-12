@@ -1,6 +1,4 @@
 {
-  "child_directed": true,
-  "idle_session_ttl_in_seconds": 1500,
   "bot_locales": [
     {
       "locale_id": "en_US",
@@ -216,8 +214,7 @@
               "description": "Caller is calling for self or someone else",
               "slot_type_name": "CallerType",
               "obfuscation_setting": {
-                "obfuscation_setting_type": "DefaultObfuscation",
-                "slot_constraint": "Required"
+                "obfuscation_setting_type": "DefaultObfuscation"
               },
               "value_elicitation_setting": {
                 "slot_constraint": "Required",
@@ -240,8 +237,7 @@
               "description": "Caller's age",
               "slot_type_name": "age",
               "obfuscation_setting": {
-                "obfuscation_setting_type": "DefaultObfuscation",
-                "slot_constraint": "Required"
+                "obfuscation_setting_type": "DefaultObfuscation"
               },
               "value_elicitation_setting": {
                 "slot_constraint": "Required",
@@ -264,8 +260,7 @@
               "description": "Caller's gender",
               "slot_type_name": "gender",
               "obfuscation_setting": {
-                "obfuscation_setting_type": "DefaultObfuscation",
-                "slot_constraint": "Required"
+                "obfuscation_setting_type": "DefaultObfuscation"
               },
               "value_elicitation_setting": {
                 "slot_constraint": "Required",

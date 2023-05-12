@@ -11,3 +11,7 @@ module "lex" {
   environment    = var.environment
   lex_config     = var.lex_config
 }
+
+output "lex_config" {
+  value = module.lex[0].lex_config
+}
