@@ -13,6 +13,11 @@ locals {
       time_cycle_function_url = "https://test-service-dee-4583.twil.io/time_cycle"
       engagement_function_sid = "ZH946d079ec6be9b1b899a6cf30be0660f"
       engagement_function_url = "https://test-service-dee-4583.twil.io/engagement"
+      check_queue_capacity_function_sid = "ZH12fcf06152bfd4dceacd1df0a4af7198"
+      check_queue_capacity_function_url = "https://test-service-dee-4583.twil.io/check_queue_capacity"
+      workspace_sid = "WS33c3c168dad3428ead7c7a79e16460e3"
+      english_queue_sid = "WQ3edc0fed2331d352819501c6848d95f6"
+      french_queue_sid = "WQ0ff276ab319c71ee66d1a5cc9a40d834"
     }
 
     #Channels
