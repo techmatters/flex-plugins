@@ -4,6 +4,8 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
+    helpline_region = "ca-central-1"
+
     #Studio flow
     flow_vars = {
       service_sid = "ZS052e3d62a635572170cfbff86fb1ce1d"
