@@ -59,7 +59,7 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours.tftpl"
         channel_flow_vars = {
-          chat_greeting_message = "¡Hola, te doy la bienvenida a Línea Libre! Este es un espacio seguro donde podemos conversar con tranquilidad y confianza. Estamos para escucharte, apoyarte y orientarte. Antes de conversar, nos gustaría contarte que trabajamos bajo el Principio de Protección, donde en caso que percibamos que tu integridad o la de un tercero pueda estar en riesgo, nuestro equipo tomará las medidas necesarias para asegurar tu protección y bienestar. Cuéntanos ¿tienes alguna duda sobre esto?"
+          chat_greeting_message = "Te damos la bienvenida a Línea Libre, tu mensaje fue recibido exitosamente, la conversación será asignada a uno/a de nuestros psicólogos/as en los próximos instantes."
           widget_from           = "Linea Libre"
         }
         chatbot_unique_names = []
