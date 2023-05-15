@@ -20,16 +20,13 @@ jobs:
   lint:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x]
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 16
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '16.x'
       - name: Create Temp Files
         run: |
           touch ./public/appConfig.js
@@ -58,17 +55,13 @@ jobs:
   unit-test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x]
-
     steps:
     - name: Checkout Branch
       uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: '16.x'
     - name: Install the Twilio CLI and plugins
       run: npm install twilio-cli@5.3.1 -g && twilio plugins:install @twilio-labs/plugin-flex@6.0.3
       working-directory: ./plugin-hrm-form
