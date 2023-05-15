@@ -55,7 +55,7 @@ jobs:
       - name: Run e2e-test code Lint
         run: npm run lint
         working-directory: ./e2e-tests
-  test:
+  unit-test:
     runs-on: ubuntu-latest
 
     strategy:
@@ -126,7 +126,7 @@ jobs:
         run: npx playwright install
         working-directory: ./e2e-tests
 
-      # Run E2E tests
+      # Run UI tests
       - name: Run Playwright tests
         run: npm run test:ui
         working-directory: ./e2e-tests
