@@ -67,6 +67,7 @@ test.describe.serial('Case List', () => {
     };
 
     const scanFilterDialogue = async (filter: Filter) => {
+      console.debug(`Scanning the '${filter}' filter dialog...`);
       await caseListPage.openFilter(filter);
 
       const filterAccessibilityScanResults = await new AxeBuilder({ page })
