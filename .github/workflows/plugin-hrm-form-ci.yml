@@ -103,6 +103,28 @@ jobs:
         run: NODE_ENV=development npm ci
         working-directory: ./plugin-hrm-form
 
+      # Create Configuration file to replace AS_DEV_ACCOUNT_SID with E2E_ACCOUNT_SID
+      - name: Create appConfig.js
+        run: cp ./public/appConfig.template.e2e.js ./public/appConfig.js
+        working-directory: ./plugin-hrm-form
+        shell: bash
+
+      - name: Create secret.js
+        run: |
+          touch ./src/private/secret.js
+        working-directory: ./plugin-hrm-form
+        shell: bash
+      - name: Fill secret.js
+        run: |
+          cat <<EOT >> ./src/private/secret.js
+          export const rollbarAccessToken = 'x';
+          export const datadogAccessToken = 'x';
+          export const datadogApplicationID = 'x';
+          export const fullStoryId = 'x';
+          EOT
+        working-directory: ./plugin-hrm-form
+        shell: bash
+
       # Run server
       - name: Run Flex Dev Server
         # Creds aren't used in the tests, but I don't think the dev server starts without some set.
