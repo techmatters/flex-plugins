@@ -12,7 +12,8 @@ data "aws_ssm_parameter" "webhook_url_studio_errors" {
 }
 
 locals {
-  webhook_url_studio_errors = data.aws_ssm_parameter.webhook_url_studio_errors.value
+  #Marking this as non sensitive since we need to see the studio flow definition when running a plan to validate changes.
+  webhook_url_studio_errors = nonsensitive(data.aws_ssm_parameter.webhook_url_studio_errors.value)
 }
 
 #I'm not sure about this resource, the idea is to have 1 studio flow json template and also as few as possible
@@ -47,7 +48,7 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
       }
       workflow_sids     = var.workflow_sids,
       task_channel_sids = var.task_channel_sids
-      slack_webhook_url = local.webhook_url_studio_errors
+      webhook_url_studio_errors = local.webhook_url_studio_errors
       short_helpline    = var.short_helpline
       short_environment = var.short_environment
       channel_attributes = merge(

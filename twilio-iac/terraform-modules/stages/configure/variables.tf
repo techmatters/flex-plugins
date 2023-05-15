@@ -181,8 +181,3 @@ variable "enable_post_survey" {
   type    = bool
   default = false
 }
-
-variable "slack_webhook_url" {
-  type        = string
-  description = "Slack income webhook"
-}

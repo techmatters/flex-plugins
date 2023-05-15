@@ -4,7 +4,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-    slack_webhook_url = "https://hooks.slack.com/example"
+ 
     #Studio flow
     flow_vars = {
       service_sid                  = "ZSeed7070ce3f2974cb12a0382a2c93340"

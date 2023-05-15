@@ -75,9 +75,6 @@ locals {
     "webchat" = { "contact_identity" = "", "channel_type" = "web" }
   }
 
-
-  slack_webhook_url = "https://hooks.slack.com/example"
-
   //serverless
   ui_editable = true
 

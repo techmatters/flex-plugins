@@ -98,7 +98,6 @@ module "channel" {
   short_environment     = var.short_environment
   task_language         = var.task_language
   short_helpline        = upper(var.short_helpline)
-  slack_webhook_url     = var.slack_webhook_url
 }
 
 

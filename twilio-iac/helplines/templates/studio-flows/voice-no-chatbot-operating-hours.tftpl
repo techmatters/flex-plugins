@@ -39,11 +39,11 @@ ${
             "event": "callComplete"
           },
           {
-            "next": "slack_notify_error",
+            "next": "webhook_notify_error",
             "event": "failedToEnqueue"
           },
           {
-            "next": "slack_notify_error",
+            "next": "webhook_notify_error",
             "event": "callFailure"
           }
         ],
@@ -86,7 +86,7 @@ ${
             "event": "success"
           },
           {
-            "next": "slack_notify_error",
+            "next": "webhook_notify_error",
             "event": "fail"
           }
         ],
@@ -120,7 +120,7 @@ ${
         "type": "split-based-on",
         "transitions": [
           {
-            "next": "slack_notify_error",
+            "next": "webhook_notify_error",
             "event": "noMatch"
           },
           {
@@ -161,7 +161,7 @@ ${
         }
       },
       {
-        "name": "slack_notify_error",
+        "name": "webhook_notify_error",
         "type": "make-http-request",
         "transitions": [
           {
@@ -179,7 +179,7 @@ ${
           "method": "POST",
           "content_type": "application/json;charset=utf-8",
           "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
-          "url": slack_webhook_url
+          "url": webhook_url_studio_errors
         }
       },
       {
