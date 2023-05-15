@@ -30,7 +30,9 @@ import { usePrebuiltPlugin } from './local-resources';
  * @param browser
  */
 export const aseloPage = async (browser: Browser): Promise<Page> => {
-  await preload();
+  if (aseloContext.USE_UNMINIFIED_PLUGIN) {
+    await preload();
+  }
   const newContext = await browser.newContext({
     proxy: { server: `http://localhost:${mockServer.port()}`, bypass: 'localhost:3100' },
   });
@@ -39,7 +41,9 @@ export const aseloPage = async (browser: Browser): Promise<Page> => {
   if (aseloContext.CACHE_PREBUILT_PLUGIN) {
     await usePrebuiltPlugin(page);
   }
-  await useUnminifiedFlex(page);
+  if (aseloContext.USE_UNMINIFIED_PLUGIN) {
+    await useUnminifiedFlex(page);
+  }
   logPageTelemetry(page);
   await fakeAuthenticatedBrowser(page, flexContext.ACCOUNT_SID);
   await mockStartup(page);
