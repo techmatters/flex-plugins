@@ -43,6 +43,10 @@ variable "lex_config" {
         sample_utterances = list(object({
           utterance = string
         })),
+        slot_priorities = list(object({
+          priority  = number,
+          slot_name = string
+        })),
         slots = list(object({
           name           = string,
           description    = optional(string, null),
@@ -67,5 +71,6 @@ variable "lex_config" {
       }))
     }))
   })
+
   default = null
 }

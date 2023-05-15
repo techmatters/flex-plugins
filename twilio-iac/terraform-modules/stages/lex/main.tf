@@ -3,7 +3,7 @@ provider "awscc" {
 }
 
 module "lex" {
-  source = "../../lex/v1"
+  source = "../../lex/v2"
   count  = var.lex_config == null ? 0 : 1
 
   helpline       = var.helpline

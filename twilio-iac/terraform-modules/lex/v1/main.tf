@@ -1,25 +1,49 @@
 terraform {
-  required_providers {
-    awscc = {
-      source  = "hashicorp/awscc"
-      version = "0.52.0"
-    }
-  }
 }
 
 data "aws_caller_identity" "current" {}
 
-resource "awscc_lex_bot" "this" {
-  name = "${var.environment}-${var.helpline}"
-  # role_arn = aws_iam_service_linked_role.lex_service_role.arn
-  role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/lexv2.amazonaws.com/AWSServiceRoleForLexV2Bots"
-  data_privacy = {
-    child_directed = var.lex_config.child_directed
+resource "aws_lex_bot" "aselo_development_bot" {
+  abort_statement {
+    message {
+      content      = "Sorry, I didn't understand that. Please try again."
+      content_type = "PlainText"
+    }
   }
-  idle_session_ttl_in_seconds = var.lex_config.idle_session_ttl_in_seconds
-  bot_locales                 = var.lex_config.bot_locales
+
+  #   By specifying true to child_directed, you confirm that your use of Amazon Lex is related to a website,
+  #   program, or other application that is directed or targeted, in whole or in part, to
+  #   children under age 13 and subject to COPPA.
+  #   https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lex_bot#child_directed
+
+  child_directed = true
+
+  clarification_prompt {
+    max_attempts = 2
+
+    message {
+      content      = "Sorry, I didn't understand that. Please try again."
+      content_type = "PlainText"
+    }
+  }
+
+  create_version              = false
+  description                 = "Bot for contacting helplines via webchat"
+  idle_session_ttl_in_seconds = 600
+
+  intent {
+    intent_name    = "Survey"
+    intent_version = "$$LATEST"
+  }
+
+  locale           = "en-US"
+  name             = "Survey"
+  process_behavior = "BUILD"
 }
 
-output "lex_config" {
-  value = var.lex_config
+resource "aws_lex_bot_alias" "aselo_development" {
+  bot_name    = "AseloDevSurvey"
+  bot_version = "1"
+  description = "Aselo Development Version of the Wechat Bot."
+  name        = "AseloDevSurveyBot"
 }

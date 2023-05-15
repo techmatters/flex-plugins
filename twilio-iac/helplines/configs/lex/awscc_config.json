@@ -1,0 +1,300 @@
+{
+  "bot_locales": [
+    {
+      "locale_id": "en_US",
+      "nlu_confidence_threshold": 0.5,
+      "description": "English (US) language pack",
+      "slot_types": [
+        {
+          "name": "CallerType",
+          "description": "Caller is calling for self or someone else",
+          "value_selection_setting": {
+            "resolution_strategy": "ORIGINAL_VALUE"
+          },
+          "slot_type_values": [
+            {
+              "value": "yes",
+              "synonyms": [
+                {
+                  "value": "y"
+                },
+                {
+                  "value": "ya"
+                },
+                {
+                  "value": "yah"
+                },
+                {
+                  "value": "yeah"
+                },
+                {
+                  "value": "yea"
+                }
+              ]
+            },
+            {
+              "value": "no",
+              "synonyms": [
+                {
+                  "value": "n"
+                },
+                {
+                  "value": "nope"
+                },
+                {
+                  "value": "nah"
+                },
+                {
+                  "value": "no way"
+                },
+                {
+                  "value": "not a chance"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "age",
+          "description": "Caller's age",
+          "value_selection_setting": {
+            "resolution_strategy": "ORIGINAL_VALUE"
+          },
+          "slot_type_values": [
+            {
+              "value": "1"
+            },
+            {
+              "value": "2"
+            },
+            {
+              "value": "3"
+            },
+            {
+              "value": "4"
+            },
+            {
+              "value": "5"
+            },
+            {
+              "value": "6"
+            },
+            {
+              "value": "7"
+            },
+            {
+              "value": "8"
+            },
+            {
+              "value": "9"
+            },
+            {
+              "value": "10"
+            },
+            {
+              "value": "11"
+            },
+            {
+              "value": "12"
+            },
+            {
+              "value": "13"
+            },
+            {
+              "value": "14"
+            },
+            {
+              "value": "15"
+            },
+            {
+              "value": "16"
+            },
+            {
+              "value": "17"
+            },
+            {
+              "value": "18"
+            },
+            {
+              "value": "19"
+            },
+            {
+              "value": "20"
+            },
+            {
+              "value": "21"
+            },
+            {
+              "value": "Above 21",
+              "synonyms" : [
+                {
+                  "value": "22"
+                },
+                {
+                  "value": "23"
+                },
+                {
+                  "value": "24"
+                },
+                {
+                  "value": "25"
+                },
+                {
+                  "value": "26"
+                },
+                {
+                  "value": "27"
+                },
+                {
+                  "value": "28"
+                },
+                {
+                  "value": "TODO: fill in the rest"
+                }
+              ]
+            },
+            {
+              "value": "prefer not to say"
+            },
+            {
+              "value": "X"
+            }
+          ]
+        },
+        {
+          "name": "gender",
+          "description": "Caller's Gender",
+          "value_selection_setting": {
+            "resolution_strategy": "ORIGINAL_VALUE"
+          },
+          "slot_type_values": [
+            {
+              "value": "Boy",
+              "synonyms" : [
+                {
+                  "value": "m"
+                },
+                {
+                  "value": "male"
+                },
+                {
+                  "value": "TODO: fill in the rest"
+                }
+              ]
+            },
+            {
+              "value": "Girl",
+              "synonyms" : [
+                {
+                  "value": "f"
+                }
+              ]
+            },
+            {
+              "value": "the rest TODO: fill in the rest"
+            }
+          ]
+        }
+      ],
+      "intents": [
+        {
+          "name": "Survey",
+          "description": "Survey intent",
+          "sample_utterances": [
+            {
+              "utterance": "H"
+            },
+            {
+              "utterance": "TODO: fill in the rest"
+            }
+          ],
+          "slot_priorities": [
+            {
+              "priority": 1,
+              "slot_name": "callerType"
+            },
+            {
+              "priority": 2,
+              "slot_name": "age"
+            },
+            {
+              "priority": 3,
+              "slot_name": "gender"
+            }
+          ],
+          "slots": [
+            {
+              "name": "callerType",
+              "description": "Caller is calling for self or someone else",
+              "slot_type_name": "CallerType",
+              "obfuscation_setting": {
+                "obfuscation_setting_type": "DefaultObfuscation"
+              },
+              "value_elicitation_setting": {
+                "slot_constraint": "Required",
+                "prompt_specification": {
+                  "max_retries": 1,
+                  "message_groups_list": [
+                    {
+                      "message": {
+                        "plain_text_message": {
+                          "value": "Are you calling about yourself? Please answer Yes or No."
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "age",
+              "description": "Caller's age",
+              "slot_type_name": "age",
+              "obfuscation_setting": {
+                "obfuscation_setting_type": "DefaultObfuscation"
+              },
+              "value_elicitation_setting": {
+                "slot_constraint": "Required",
+                "prompt_specification": {
+                  "max_retries": 1,
+                  "message_groups_list": [
+                    {
+                      "message": {
+                        "plain_text_message": {
+                          "value": "How old are you?"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "gender",
+              "description": "Caller's gender",
+              "slot_type_name": "gender",
+              "obfuscation_setting": {
+                "obfuscation_setting_type": "DefaultObfuscation"
+              },
+              "value_elicitation_setting": {
+                "slot_constraint": "Required",
+                "prompt_specification": {
+                  "max_retries": 1,
+                  "message_groups_list": [
+                    {
+                      "message": {
+                        "plain_text_message": {
+                          "value": "What is your gender?"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
