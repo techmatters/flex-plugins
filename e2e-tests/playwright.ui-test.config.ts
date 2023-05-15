@@ -17,5 +17,6 @@ const config: PlaywrightTestConfig = {
   },
   testDir: './ui-tests',
   timeout: 60000,
+  workers: 1,
 };
 export default config;

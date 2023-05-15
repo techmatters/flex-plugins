@@ -8,6 +8,7 @@ import { addTaskToWorker } from '../aselo-service-mocks/task';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { preload, useUnminifiedFlex } from '../flex-in-a-box/local-resources';
 import { aseloPage } from '../aselo-service-mocks/aselo-page';
+import { delay } from 'mockttp/dist/util/util';
 
 test.describe.serial('Agent Desktop', () => {
   let page: Page;
@@ -18,6 +19,7 @@ test.describe.serial('Agent Desktop', () => {
 
   test.afterAll(async () => {
     await mockServer.stop();
+    await delay(5000);
   });
 
   test('Agent Desktop loads', async () => {

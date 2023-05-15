@@ -48,6 +48,7 @@ export const secureWebsocketServer = ({ key, cert }: { key: string; cert: string
     close: (): Promise<void> => {
       return new Promise<void>((resolve, reject) => {
         wss.close((err) => (err ? reject(err) : resolve()));
+        httpsServer.close((err) => (err ? reject(err) : resolve()));
       });
     },
     port: (): number => {

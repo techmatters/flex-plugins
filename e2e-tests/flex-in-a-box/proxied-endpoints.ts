@@ -7,7 +7,7 @@ export const MOCKTTP_SERVER_PORT = process.env.PROXY_SERVER_PORT
   ? Number.parseInt(process.env.PROXY_SERVER_PORT)
   : 4000;
 
-let mockServer: Mockttp;
+let mockServer: Mockttp | undefined;
 let mockWebsocketServer: MockSecureWebsocketServer;
 let websocketEndpoint: MockedEndpoint;
 
@@ -53,11 +53,12 @@ export async function start(): Promise<any> {
 export async function stop(): Promise<void> {
   const server = await mockttpServer();
   await server.stop();
+  mockServer = undefined;
   await mockWebsocketServer?.close();
   const websocketRequests = (await websocketEndpoint?.getSeenRequests()) ?? [];
   websocketRequests.forEach((r) => console.log('WEBSOCKET REQUEST PROXIED:', r.url));
 }
 
 export function port(): number {
-  return mockServer?.port;
+  return mockServer!.port;
 }
