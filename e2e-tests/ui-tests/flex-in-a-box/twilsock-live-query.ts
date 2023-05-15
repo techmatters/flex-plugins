@@ -1,3 +1,9 @@
+/**
+ * Low level functions used to mock live query / sync interactions with the flex backend
+ * The data set up here is used by the twilsock connections implemented in twilsock-socket.ts to service live query requests
+ * See ../aselo-service-mocks/task.ts as an example
+ */
+
 export type QuerySid = `QR${string}`;
 
 export type LiveQueryItem = {
@@ -17,6 +23,13 @@ const liveQueryResponses: Record<
 > = {};
 const liveQuerySidMap: Record<string, { path: string; queryString: string }> = {};
 
+/**
+ * Set up some starting data for a live query
+ * Will NOT fire updates to any existing subscriptions
+ * @param path
+ * @param queryString
+ * @param queryResponse
+ */
 export const initialiseLiveQueryData = (
   path: string,
   queryString: string,
@@ -35,6 +48,12 @@ export const getLiveQueryData = (path: string, queryString: string) =>
       .queryResponse,
   ).map(([key, data]) => ({ key, data }));
 
+/**
+ * Site a new live query to be serviced by the twilsock connection
+ * @param path
+ * @param queryString
+ * @param querySid
+ */
 export const createLiveQuery = (path: string, queryString: string, querySid: QuerySid) => {
   console.log(`CREATING LIVE QUERY:`, path, queryString, querySid);
   liveQuerySidMap[querySid] = { path, queryString };
@@ -43,6 +62,11 @@ export const createLiveQuery = (path: string, queryString: string, querySid: Que
   }
 };
 
+/**
+ * Subscribe to live query updates coming from Flex in your tests
+ * @param querySid
+ * @param handler
+ */
 export const subscribeToLiveQueryUpdates = (
   querySid: QuerySid,
   handler: (update: LiveQueryItem[]) => void,
@@ -59,6 +83,12 @@ export const subscribeToLiveQueryUpdates = (
   );
 };
 
+/**
+ * Update the data to be returned by a given live query and inform any subscribers
+ * @param path
+ * @param queryString
+ * @param updatedItems
+ */
 export const updateLiveQueryData = (
   path: string,
   queryString: string,

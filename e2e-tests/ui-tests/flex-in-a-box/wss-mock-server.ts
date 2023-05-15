@@ -4,6 +4,14 @@ import https from 'https';
 import { Server, WebSocket } from 'ws';
 import { IncomingMessage } from 'http';
 
+/**
+ * Creates a mock secure websocket server
+ * This module just takes care of the boilerplate of creating a secure websocket server
+ * and handling the initial handshake / connection event
+ * Actual mocking is taken care of by the handler you pass in to onConnection
+ * @param key
+ * @param cert
+ */
 export const secureWebsocketServer = ({ key, cert }: { key: string; cert: string }) => {
   const httpsServer = https.createServer({
     key,
@@ -32,6 +40,11 @@ export const secureWebsocketServer = ({ key, cert }: { key: string; cert: string
         }
       });
     },
+    /**
+     * This is the main entry point for mocking
+     * You would typicaly set up this mock via the twilio-wss-mock-server wrapper rather than calling this directly
+     * @param handler
+     */
     onConnection: (handler: (ws: WebSocket, message: IncomingMessage, path?: string) => void) => {
       wss.on('headers', (ev, headerMessage) => {
         console.log('WSS HEADERS EVENT', JSON.stringify(ev), headerMessage.url ?? '(NO URL)');

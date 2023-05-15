@@ -95,6 +95,10 @@ const EMPTY_RESERVATIONS_RESPONSE = {
   payload: { contents: [], meta: { list_key: 'contents' }, after_sid: null, before_sid: null },
 };
 
+/**
+ * Mocks out the channel service endpoints, can be modified to fake lists of available activities and channels for a worker
+ * @param page
+ */
 export const channelService = (page: Page) => {
   async function mockWsChannelsEndpoint(): Promise<void> {
     await page.route(`https://event-bridge.twilio.com/v1/wschannels`, (route) => {

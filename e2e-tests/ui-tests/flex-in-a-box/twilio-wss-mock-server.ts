@@ -4,6 +4,10 @@ import { twilsockSocket } from './twilsock-socket';
 import { twilioChunderwSocket } from './twilio-chunderw-socket';
 import { twilioChannelSocket } from './twilio-channel-socket';
 
+/**
+ * Wrapper for the mock WSS server that is used to set up mocks for the TwilSock and other WSS connections used in a flex session
+ * @param wss - mock WSS server to be wrapped
+ */
 export const twilioWssMockServer = (wss: MockSecureWebsocketServer) => {
   const twilsockSockets: { connected: Date; socket: ReturnType<typeof twilsockSocket> }[] = [];
   const chunderwSockets: { connected: Date; socket: ReturnType<typeof twilioChunderwSocket> }[] =

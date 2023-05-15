@@ -12,7 +12,12 @@ let mockWebsocketServer: MockSecureWebsocketServer;
 let websocketEndpoint: MockedEndpoint;
 
 /**
- * The Mockttp server should only be required to mock webscocket interactions
+ * A wrapper for mockttp for use mocking wss connections
+ * It actually starts 2 in process servers:
+ *   * The mockttp server which acts as a proxy for the https handshake and websocket data
+ *   * A mock wss server implemented in wss-mock-server.ts, which handles the actual handshake and allows mocked responses
+ * The mockttp server handles the HTTP based wss handshake, and then proxies the actual connection to the mock wss server
+ * The Mockttp server should only be required to mock websocket interactions
  * HTTP calls can be stubbed using playwrights page.route API
  */
 async function mockttpServer() {

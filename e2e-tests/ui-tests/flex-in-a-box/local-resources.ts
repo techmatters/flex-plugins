@@ -4,12 +4,21 @@ import * as fs from 'fs';
 
 let flexJsContent: Buffer;
 
+/**
+ * Optimises the loading of the unminified flex library by buffering it locally
+ */
 export const preload = async () => {
   flexJsContent = await fs.promises.readFile(
     './unminified/flex-ui/2.0.2/twilio-flex.unbundled-react.unmin.js',
   );
 };
 
+/**
+ * If you use an unminifier on the flex libraries, you can use this to swap it for the default version flex pulls from Twilio
+ * If we need to debug the bowels of Flex, this is a vaguely humane option.
+ * You need to call preload() before using this to buffer the unminified contents locally (or change the below function to read it directly from the local file system)
+ * @param page
+ */
 export const useUnminifiedFlex = async (page: Page) => {
   await page.route('https://**', (route) => {
     route.fulfill({ status: 404 });

@@ -4,6 +4,10 @@ import context from './global-context';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
+/**
+ * Mocks out the form definitions endpoint
+ * @param page
+ */
 export const mockFormDefinitions = async (page: Page) => {
   await page.route(new RegExp(`${context.FORM_DEFINITIONS_BASE_URL}(.+)`), async (route) => {
     const definitionFile = route

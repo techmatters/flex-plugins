@@ -182,6 +182,10 @@ const defaultPublicConfig = (accountSid: string) => ({
   ],
 });
 
+/**
+ * Used to fake out the flex configuration endpoints. Probably only need to modify the service configuration responses
+ * @param page
+ */
 export const configurationServices = (page: Page) => {
   async function mockFlexServiceConfigurationPublicEndpoint(
     accountSid: string,
@@ -216,6 +220,7 @@ export const configurationServices = (page: Page) => {
       });
     };
     await page.route(`https://flex-api.twilio.com/v1/Configuration?UiVersion=undefined`, handler);
+    // Yea... Probably need some sort of wildcard/ regex match here
     await page.route(`https://flex-api.twilio.com/v1/Configuration?UiVersion=2.0.0`, handler);
     await page.route(`https://flex-api.twilio.com/v1/Configuration?UiVersion=2.0.2`, handler);
   }

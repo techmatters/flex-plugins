@@ -90,6 +90,9 @@ const taskForLoggedInWorker = (channelType: ChannelType) => {
   };
 };
 
+/**
+ * Fakes the Twilio Sync websocket exchange required to add the fake task above to the worker's task list.
+ */
 export const addTaskToWorker = () => {
   const task = taskForLoggedInWorker(ChannelType.Chat);
   updateLiveQueryData('/v3/Insights/tr-task/Items', '', { [task.task_sid]: task });

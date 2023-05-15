@@ -21,6 +21,10 @@ const refreshResponse = (token: string) => ({
   identity: 'steveh_40techmatters_2Eorg',
 });
 
+/**
+ * Mocks the Twilio IAM service for the given accountSid
+ * Validates everything. :-)
+ */
 export const authenticationServices = (page: Page) => {
   async function mockTwilioIamValidate(accountSid: string): Promise<void> {
     await page.route(

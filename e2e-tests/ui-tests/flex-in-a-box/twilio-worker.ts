@@ -1,3 +1,7 @@
+/**
+ * Used to fake the behasviour of a Twilio Worker in Flex
+ */
+
 import context from './global-context';
 import { subHours } from 'date-fns';
 import { initialiseLiveQueryData } from './twilsock-live-query';
@@ -29,6 +33,9 @@ export const loggedInWorker = () => {
   };
 };
 
+/**
+ * Sets up a live query in Twilsock to return a logged in worker for the worker sid used in the global context
+ */
 export const setLoggedInWorkerLiveQuery = () =>
   initialiseLiveQueryData(
     '/v3/Insights/tr-worker/Items',

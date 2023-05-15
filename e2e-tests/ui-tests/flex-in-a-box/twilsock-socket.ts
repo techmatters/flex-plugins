@@ -1,4 +1,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+/**
+ * This module mocks a WSS socket that expects to use Twilios Twilsock protocol
+ * It sets up the basic Twilsock handshake and then allows for the sending and receiving of messages
+ *
+ */
+
 import { RawData, WebSocket } from 'ws';
 import {
   createLiveQuery,

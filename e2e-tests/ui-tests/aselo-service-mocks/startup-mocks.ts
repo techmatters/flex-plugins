@@ -12,6 +12,10 @@ import { mockIssueSyncToken } from './serverless/issueSyncToken';
 import { Page } from '@playwright/test';
 import { mockFormDefinitions } from './form-definitions';
 
+/**
+ * All the mocking required for a new Flex session with Aselo to successfully load
+ * @param page
+ */
 export const mockStartup = async (page: Page) => {
   const configServices = configurationServices(page);
   const authServices = authenticationServices(page);

@@ -1,5 +1,8 @@
 import context from './global-context';
 
+/**
+ * Faked out service configiutration response
+ */
 export const serviceConfigurationAttributes = () => ({
   feature_flags: {
     enable_fullstory_monitoring: true,

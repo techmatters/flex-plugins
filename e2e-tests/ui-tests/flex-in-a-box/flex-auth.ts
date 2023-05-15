@@ -2,6 +2,11 @@
 import { Page } from '@playwright/test';
 import context from './global-context';
 
+/**
+ * Sets up a browser session with the correct cookies and local storage to be in an authenticated state according to Flex
+ * @param page
+ * @param accountSid
+ */
 export const fakeAuthenticatedBrowser = async (page: Page, accountSid: string): Promise<Page> => {
   await page.context().addCookies([
     {
