@@ -75,8 +75,7 @@ locals {
   }
   custom_channels    = []
   strings            = jsondecode(file("${path.module}/../translations/${local.helpline_language}/strings.json"))
-  slack_webhook_url            = "https://hooks.slack.com/example"
- 
+
   //serverless
   ui_editable = true
 

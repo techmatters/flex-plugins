@@ -1,3 +1,8 @@
+variable "environment" {
+  description = "Environment identifier, typically 'production', 'staging' or 'development'"
+  type        = string
+}
+
 variable "short_environment" {
   description = "Short upper case environment identifier, typically 'PROD', 'STG' or 'DEV'"
   type        = string
@@ -11,12 +16,6 @@ variable "task_language" {
   type        = string
   default     = ""
   description = "Override the default language by setting this"
-}
-
-variable "slack_webhook_url" {
-  type        = string
-  default     = ""
-  description = "Slack income webhook"
 }
 
 variable "channels" {
