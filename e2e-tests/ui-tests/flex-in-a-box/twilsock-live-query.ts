@@ -1,7 +1,7 @@
 /**
  * Low level functions used to mock live query / sync interactions with the flex backend
  * The data set up here is used by the twilsock connections implemented in twilsock-socket.ts to service live query requests
- * See ../aselo-service-mocks/task.ts as an example
+ * See ../aselo-service-mocks/task.ts and ./twilio-worker.ts as examples
  */
 
 export type QuerySid = `QR${string}`;
