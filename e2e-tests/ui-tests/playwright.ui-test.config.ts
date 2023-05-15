@@ -22,7 +22,6 @@ import environmentVariables from '../environmentVariables';
 const config: PlaywrightTestConfig = {
   globalSetup: require.resolve('./ui-global-setup'),
   use: {
-    storageState: 'temp/state.json',
     baseURL: environmentVariables.PLAYWRIGHT_BASEURL ?? 'http://localhost:3000',
     permissions: ['microphone'],
     screenshot: 'only-on-failure',
