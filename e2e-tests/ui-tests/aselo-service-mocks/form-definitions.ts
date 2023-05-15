@@ -18,6 +18,7 @@
 import { Page } from '@playwright/test';
 import context from './global-context';
 import * as fs from 'fs/promises';
+import { existsSync as fileExists } from 'fs';
 import * as path from 'path';
 
 /**
@@ -36,6 +37,12 @@ export const mockFormDefinitions = async (page: Page) => {
     );
     console.log('Loading form def file:', definitionFilePath);
     try {
+      if (!fileExists(definitionFilePath)) {
+        await route.fulfill({
+          status: 404,
+        });
+        return;
+      }
       const definitionFileContent = await fs.readFile(definitionFilePath);
       console.log(
         'Loaded form def file:',
