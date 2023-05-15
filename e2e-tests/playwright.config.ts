@@ -28,6 +28,7 @@ const config: PlaywrightTestConfig = {
     screenshot: 'only-on-failure',
     video: 'retry-with-video',
   },
+  testDir: './tests',
   retries: 1,
   timeout: 60000,
 };

@@ -1,7 +1,7 @@
 // playwright.config.ts
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { PlaywrightTestConfig } from '@playwright/test';
-import environmentVariables from './environmentVariables';
+import environmentVariables from '../environmentVariables';
 
 const config: PlaywrightTestConfig = {
   globalSetup: require.resolve('./ui-global-setup'),
@@ -15,7 +15,7 @@ const config: PlaywrightTestConfig = {
     launchOptions: { proxy: { server: `https://per-context` } },
     ignoreHTTPSErrors: true,
   },
-  testDir: './ui-tests',
+  testDir: './tests',
   timeout: 60000,
   workers: 1,
 };

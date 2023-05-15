@@ -6,7 +6,7 @@ import * as mockServer from '../flex-in-a-box/proxied-endpoints';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { preload, useUnminifiedFlex } from '../flex-in-a-box/local-resources';
 import hrmCases from '../aselo-service-mocks/hrm/cases';
-import { caseList, Filter } from '../caseList';
+import { caseList, Filter } from '../../caseList';
 import AxeBuilder from '@axe-core/playwright';
 import { aseloPage } from '../aselo-service-mocks/aselo-page';
 import type { AxeResults } from 'axe-core';
