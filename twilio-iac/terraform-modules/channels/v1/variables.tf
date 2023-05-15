@@ -1,3 +1,8 @@
+variable "environment" {
+  description = "Environment identifier, typically 'production', 'staging' or 'development'"
+  type        = string
+}
+
 variable "short_environment" {
   description = "Short upper case environment identifier, typically 'PROD', 'STG' or 'DEV'"
   type        = string

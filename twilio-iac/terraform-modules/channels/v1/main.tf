@@ -7,20 +7,26 @@ terraform {
   }
 }
 
-#I'm not sure about this resource, the idea is to have 1 studio flow json template and also as few as possible 
-#channel attribute templates. 
+data "aws_ssm_parameter" "webhook_url_studio_errors" {
+  name = "/${var.environment}/slack/webhook_url_studio_errors"
+}
 
-#var.flow_vars would be a dynamic map with all variables needed that are set in the configuration layer and common to every channel 
+locals {
+  webhook_url_studio_errors = data.aws_ssm_parameter.webhook_url_studio_errors.value
+}
+
+#I'm not sure about this resource, the idea is to have 1 studio flow json template and also as few as possible
+#channel attribute templates.
+
+#var.flow_vars would be a dynamic map with all variables needed that are set in the configuration layer and common to every channel
 #(channel_flow_vars would be specific to the channel), like function sids (created outside terraform)
 #or other variables specific to the helpline or template being used.
 
-#var.chatbots should be a map with all the chatbots objects (not just the sid, for amazon lex we might need a webhook or something), this should be the ouput of the chatbot module, 
+#var.chatbots should be a map with all the chatbots objects (not just the sid, for amazon lex we might need a webhook or something), this should be the ouput of the chatbot module,
 #so this module should be called after the creation of chatbots. The studio flow template will usually need the chatbot sids or identifier to call them.
 
 #I'm not sure about the "channel_attributes =" section, channel_attributes will be different depending on the channel and chatbots used.
 #The chatbots are needed to save their memory inside the channel attributes. A default channel attribute with no chatbots will usually require only the task_language
-
-
 
 
 resource "twilio_studio_flows_v2" "channel_studio_flow" {
@@ -41,7 +47,7 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
       }
       workflow_sids     = var.workflow_sids,
       task_channel_sids = var.task_channel_sids
-      slack_webhook_url = var.slack_webhook_url
+      slack_webhook_url = local.webhook_url_studio_errors
       short_helpline    = var.short_helpline
       short_environment = var.short_environment
       channel_attributes = merge(

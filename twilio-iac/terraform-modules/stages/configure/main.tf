@@ -93,6 +93,7 @@ module "channel" {
   channels              = var.channels
   chatbots              = local.chatbots
   enable_post_survey    = var.enable_post_survey
+  environment           = var.environment
   flow_vars             = var.flow_vars
   short_environment     = var.short_environment
   task_language         = var.task_language
