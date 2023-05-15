@@ -19,7 +19,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Template } from '@twilio/flex-ui';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 
 import { namespace, contactFormsBase, RootState } from '../../../states';
 import { Container } from '../../../styles/HrmStyles';
@@ -49,7 +49,9 @@ const mapDispatchToProps = {
   releaseContactFromState: releaseContact,
 };
 
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ContactDetails: React.FC<Props> = ({
   contact,
@@ -120,4 +122,4 @@ const ContactDetails: React.FC<Props> = ({
 
 ContactDetails.displayName = 'ContactDetails';
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactDetails);
+export default connector(ContactDetails);

@@ -32,8 +32,8 @@ import { ContactDetailsSectionFormApi, IssueCategorizationSectionFormApi } from 
 import { clearDraft, refreshRawContact } from '../../states/contacts/existingContacts';
 import CloseCaseDialog from '../case/CloseCaseDialog';
 import * as t from '../../states/contacts/actions';
-import type { TaskEntry } from '../../states/contacts/reducer';
 import { getTemplateStrings } from '../../hrmConfig';
+import { TaskEntry } from '../../states/contacts/types';
 
 type OwnProps = {
   context: DetailsContext;

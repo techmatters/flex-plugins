@@ -19,21 +19,27 @@ import { getResource, searchResources } from '../../services/ResourceService';
 
 jest.mock('../../services/fetchResourcesApi');
 
-const mockFetchResourcesApi = fetchResourcesApi as jest.Mock;
+const mockFetchResourcesApi = fetchResourcesApi as jest.Mock<ReturnType<typeof fetchResourcesApi>>;
 
 beforeEach(() => mockFetchResourcesApi.mockReset());
 
-test('getResource - GET /resource/{id}', () => {
-  mockFetchResourcesApi.mockResolvedValue({});
-  getResource('TEST RESOURCE');
+test('getResource - valid params sends GET /resource/{id} to mockFetchResourcesApi', async () => {
+  mockFetchResourcesApi.mockResolvedValue({
+    results: [],
+    totalCount: 0,
+  });
+  await getResource('TEST RESOURCE');
   expect(mockFetchResourcesApi).toHaveBeenCalledWith('resource/TEST RESOURCE');
 });
 
-test('searchResources - POST /search?start={start}&limit={limit}', () => {
-  mockFetchResourcesApi.mockResolvedValue({});
-  const params = { nameSubstring: 'bob', ids: ['anna'] };
-  searchResources(params, 1337, 42);
-  expect(mockFetchResourcesApi).toHaveBeenCalledWith('search?start=1337&limit=42', {
+test('searchResources - valid params sends POST /searchByName?start={start}&limit={limit} to mockFetchResourcesApi', async () => {
+  mockFetchResourcesApi.mockResolvedValue({
+    results: [],
+    totalCount: 0,
+  });
+  const params = { generalSearchTerm: 'bob' };
+  await searchResources(params, 1337, 42);
+  expect(mockFetchResourcesApi).toHaveBeenCalledWith('searchByName?start=1337&limit=42', {
     method: 'POST',
     body: JSON.stringify(params),
   });

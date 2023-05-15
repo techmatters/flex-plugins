@@ -36,7 +36,7 @@ locals {
   environment = "Staging"
   short_environment = "STG"
   definition_version = "zw-v1"
-  permission_config = "demo"
+  permission_config = "zw"
   multi_office = false
   enable_post_survey = false
   target_task_name = "greeting"
@@ -61,9 +61,10 @@ locals {
     "enable_previous_contacts": true,
     "enable_voice_recordings": false,
     "enable_twilio_transcripts": true,
-    "enable_external_transcripts": false,
+    "enable_external_transcripts": true,
     "post_survey_serverless_handled": true,
-    "enable_csam_clc_report": false
+    "enable_csam_clc_report": false,
+    "enable_emoji_picker": true
   }
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   twilio_channels = {
@@ -118,6 +119,7 @@ module flex {
   source = "../terraform-modules/flex/service-configuration"
   twilio_account_sid = local.secrets.twilio_account_sid
   short_environment = local.short_environment
+  environment = local.environment
   operating_info_key = local.operating_info_key
   permission_config = local.permission_config
   definition_version = local.definition_version
@@ -130,6 +132,14 @@ module twilioChannel {
   for_each = local.twilio_channels
   source = "../terraform-modules/channels/twilio-channel"
   channel_contact_identity = each.value.contact_identity
+    custom_flow_definition = templatefile(
+    "../terraform-modules/channels/flow-templates/flow-zw/no-chatbot.tftpl",
+    {
+      master_workflow_sid = module.taskRouter.master_workflow_sid
+      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+      channel_attributes =  templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl",{task_language=local.task_language})
+      flow_description = "${title(each.key)} Messaging Flow"
+    })
   pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
   target_task_name = local.target_task_name
   channel_name = "${each.key}"

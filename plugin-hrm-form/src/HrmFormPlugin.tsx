@@ -40,7 +40,8 @@ import {
 import { setUpSharedStateClient } from './utils/sharedState';
 import { FeatureFlags } from './types/types';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
-import { subscribeNewMessageAlertOnPluginInit, subscribeReservedTaskAlert } from './utils/audioNotifications';
+import { subscribeNewMessageAlertOnPluginInit } from './notifications/newMessage';
+import { subscribeReservedTaskAlert } from './notifications/reservedTask';
 import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
@@ -108,13 +109,17 @@ const setUpComponents = (
   Components.setUpStandaloneSearch();
   setUpReferrableResources();
   setUpCounselorToolkits();
-
-  if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
-  if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
+  if (featureFlags.enable_aselo_messaging_ui) {
+    Components.replaceTwilioMessageInput();
+  } else {
+    if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
+    if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
+  }
 
   if (maskIdentifiers) {
     // Mask the identifiers in all default channels
     Channels.maskIdentifiersForDefaultChannels();
+
     // Mask the username within the messable bubbles in an conversation
     Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
       theirDefaultName: 'XXXXXX',
@@ -127,6 +132,9 @@ const setUpComponents = (
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
     strings.CallParticipantCustomerName = strings.MaskIdentifiers;
   }
+
+  Components.setupTeamViewFilters();
+  Components.setupWorkerDirectoryFilters();
 };
 
 const setUpActions = (

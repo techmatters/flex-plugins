@@ -12,6 +12,7 @@
     "name": "duration",
     "label": "Duración",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -39,6 +40,7 @@
     "name": "location",
     "label": "Lugar del Incidente",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -115,6 +117,26 @@
     }
   },
   {
+    "name": "incidentType",
+    "label": "Tipo de Incidente",
+    "type": "select",
+    "unknownOption": "desconocido",
+    "options": [
+      {
+        "value": "desconocido",
+        "label": ""
+      },
+      {
+        "value": "Vulneración de derechos ",
+        "label": "Vulneración de derechos "
+      },
+      {
+        "value": "Comportamiento suicida",
+        "label": "Comportamiento suicida"
+      }
+    ]
+  },
+  {
     "name": "isCaregiverAware",
     "label": "¿Está la persona responsable al tanto?",
     "type": "mixed-checkbox"
@@ -126,7 +148,7 @@
   },
   {
     "name": "abuseReportedElsewhere",
-    "label": "¿Ha sido el abuso reportado en alguna parte?",
+    "label": "¿Ha sido el incidente reportado en alguna parte?",
     "type": "mixed-checkbox"
   },
   {

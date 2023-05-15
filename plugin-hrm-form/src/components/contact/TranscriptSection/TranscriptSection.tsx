@@ -22,19 +22,12 @@ import format from 'date-fns/format';
 
 import type { TwilioStoredMedia, S3StoredTranscript } from '../../../types/types';
 import { contactFormsBase, namespace, RootState } from '../../../states';
-import { getFileDownloadUrlFromUrl } from '../../../services/ServerlessService';
+import { getFileDownloadUrl } from '../../../services/ServerlessService';
 import { loadTranscript, TranscriptMessage, TranscriptResult } from '../../../states/contacts/existingContacts';
-import {
-  ErrorFont,
-  ItalicFont,
-  MessageList,
-  LoadTranscriptButton,
-  LoadTranscriptButtonText,
-  DateRulerContainer,
-  DateRulerHr,
-  DateRulerDateText,
-} from './styles';
-import MessageItem, { GroupedMessage } from './MessageItem';
+import { Box } from '../../../styles/HrmStyles';
+import { GroupedMessage } from '../../Messaging/MessageItem';
+import { MessageList } from '../../Messaging/MessageList';
+import { ErrorFont, ItalicFont, LoadTranscriptButton, LoadTranscriptButtonText } from './styles';
 
 type OwnProps = {
   contactId: string;
@@ -70,35 +63,18 @@ const addSenderInfoToMessage = (participants: TranscriptResult['transcript']['pa
   return { ...message, friendlyName, isCounselor };
 };
 
-type GroupedMessages = { [dateKey: string]: GroupedMessage[] };
-const groupMessagesByDate = (accum: GroupedMessages, m: MessageWithSenderInfo, index: number): GroupedMessages => {
-  const dateKey = format(new Date(m.dateCreated), 'yyyy/MM/dd');
+const areSameDate = (m1: MessageWithSenderInfo, m2: MessageWithSenderInfo): boolean =>
+  format(new Date(m1.dateCreated), 'yyyy/MM/dd') === format(new Date(m2.dateCreated), 'yyyy/MM/dd');
 
-  if (!accum[dateKey]) {
-    return { ...accum, [dateKey]: [{ ...m, isGroupedWithPrevious: false }] };
-  }
+const groupMessagesByDate = (m: MessageWithSenderInfo, index: number, ms: MessageWithSenderInfo[]): GroupedMessage => {
+  const prevMessage = index > 0 ? ms[index - 1] : null;
+  const isGroupedWithPrevious = Boolean(prevMessage && prevMessage.from === m.from && areSameDate(prevMessage, m));
 
-  const prevMessage = accum[dateKey][accum[dateKey].length - 1];
-  const isGroupedWithPrevious = Boolean(index && prevMessage.from === m.from);
-
-  return { ...accum, [dateKey]: [...accum[dateKey], { ...m, isGroupedWithPrevious }] };
+  return { ...m, isGroupedWithPrevious };
 };
 
-const groupMessagesAndAddSenderInfo = (transcript: TranscriptResult['transcript']): GroupedMessages =>
-  transcript.messages.map(addSenderInfoToMessage(transcript.participants)).reduce(groupMessagesByDate, {});
-
-const renderGroupedMessages = (groupedMessages: GroupedMessages) =>
-  Object.entries(groupedMessages).flatMap(([dateKey, ms]) => {
-    const dateRuler = (
-      <DateRulerContainer>
-        <DateRulerHr />
-        <DateRulerDateText>{dateKey}</DateRulerDateText>
-        <DateRulerHr />
-      </DateRulerContainer>
-    );
-
-    return [dateRuler, ms.map(m => <MessageItem key={m.sid} message={m} />)];
-  });
+const groupMessagesAndAddSenderInfo = (transcript: TranscriptResult['transcript']): GroupedMessage[] =>
+  transcript.messages.map(addSenderInfoToMessage(transcript.participants)).map(groupMessagesByDate);
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
@@ -123,7 +99,7 @@ const TranscriptSection: React.FC<Props> = ({
 
   const handleFetchAndLoadException = err => {
     console.error(
-      `Error loading the transcript for contact ${contactId}, transcript url ${externalStoredTranscript.url}`,
+      `Error loading the transcript for contact ${contactId}, transcript url ${externalStoredTranscript.location.key}`,
       err,
     );
 
@@ -146,8 +122,7 @@ const TranscriptSection: React.FC<Props> = ({
   const fetchAndLoadTranscript = async () => {
     try {
       setLoading(true);
-
-      const transcriptPreSignedUrl = await getFileDownloadUrlFromUrl(externalStoredTranscript.url, '');
+      const transcriptPreSignedUrl = await getFileDownloadUrl(externalStoredTranscript.location.key);
       const transcriptResponse = await fetch(transcriptPreSignedUrl.downloadUrl);
 
       validateFetchResponse(transcriptResponse);
@@ -191,11 +166,15 @@ const TranscriptSection: React.FC<Props> = ({
   if (transcript) {
     const groupedMessages = groupMessagesAndAddSenderInfo(transcript);
 
-    return <MessageList>{renderGroupedMessages(groupedMessages)}</MessageList>;
+    return (
+      <Box padding="0 3.75% 50px 3.75%" width="100%">
+        <MessageList messages={groupedMessages} />
+      </Box>
+    );
   }
 
   // The external transcript is exported but it hasn't been fetched yet
-  if (externalStoredTranscript && externalStoredTranscript.url && !transcript) {
+  if (externalStoredTranscript && externalStoredTranscript.location && !transcript) {
     return (
       <LoadTranscriptButton type="button" onClick={fetchAndLoadTranscript}>
         <LoadTranscriptButtonText>
@@ -217,7 +196,7 @@ const TranscriptSection: React.FC<Props> = ({
   }
 
   // External is still pending and Twilio transcript is disabled
-  if (externalStoredTranscript && !externalStoredTranscript.url) {
+  if (externalStoredTranscript && !externalStoredTranscript.location) {
     return (
       <ItalicFont>
         <Template code="TranscriptSection-TranscriptNotAvailableCheckLater" />

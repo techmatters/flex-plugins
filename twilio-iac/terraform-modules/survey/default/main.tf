@@ -35,3 +35,11 @@ resource "twilio_taskrouter_workspaces_workflows_v1" "survey_workflow" {
     }
   })
 }
+
+//Task channel
+
+resource "twilio_taskrouter_workspaces_task_channels_v1" "survey" {
+  workspace_sid = var.flex_task_assignment_workspace_sid
+  friendly_name = "Survey"
+  unique_name = "survey"
+}

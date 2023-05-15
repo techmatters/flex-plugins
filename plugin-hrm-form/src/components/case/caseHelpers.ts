@@ -16,8 +16,8 @@
 
 import { HelplineDefinitions } from 'hrm-form-definitions';
 
-import { TaskEntry } from '../../states/contacts/reducer';
 import { CustomITask, isOfflineContactTask } from '../../types/types';
+import { TaskEntry } from '../../states/contacts/types';
 
 /**
  * Gets date from the entry form (for a contact that hasn't been saved).

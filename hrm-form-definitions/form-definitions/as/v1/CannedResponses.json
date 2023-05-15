@@ -7,6 +7,10 @@
     "text": "Before we continue, I would love for you to know that this is a safe space for you to just talk and share the challenges that you are having. Everything you say here will remain here except in cases where you indicate that you are being harmed by someone (meaning any form of abuse), that you want to harm yourself (meaning suicide) or you want to harm someone. In any of these cases, I would have to inform my supervisor and inform the relevant authorities. Do you understand this?"
   },
   {
+    "label": "Emergency Services Call",
+    "text": "I am going to call 911 and will ask you to provide as much information as you can about the situation. Do you know where the situation is taking place?"
+  },
+  {
     "label": "What is the helpline?",
     "text": "ChildLine is a 24/7 counseling helpline that provides free counselling and psychosocial support to children and teens under the age of 18 years."
   },

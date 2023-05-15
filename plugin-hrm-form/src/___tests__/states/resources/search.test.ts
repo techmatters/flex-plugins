@@ -55,7 +55,7 @@ const nonInitialState: ReferrableResourceSearchState = {
   currentPage: 2,
   status: ResourceSearchStatus.ResultPending,
   parameters: {
-    omniSearchTerm: 'something else',
+    generalSearchTerm: 'something else',
     filters: { some: 'other filter' },
     pageSize: 2,
   },
@@ -74,36 +74,18 @@ describe('actions', () => {
   describe('searchResourceAsyncAction', () => {
     beforeEach(() => {
       mockSearchResources.mockReset();
+      mockSearchResources.mockResolvedValue({ results: [], totalCount: 0 });
     });
 
     test('Calls the searchResources service, calculating the start index from the provided page & limit', () => {
-      searchResourceAsyncAction({ omniSearchTerm: 'hello', pageSize: 42 }, 1337, true);
+      searchResourceAsyncAction({ generalSearchTerm: 'hello', pageSize: 42 }, 1337, true);
       expect(searchResources).toHaveBeenCalledWith({ nameSubstring: 'hello', ids: [] }, 1337 * 42, 42);
     });
 
-    test('Semicolons in omniSearch term - splits on semicolon, first term is name, subsequent are IDs', () => {
-      searchResourceAsyncAction({ omniSearchTerm: 'hello;how;are;you;today', pageSize: 42 }, 1337, true);
-      expect(searchResources).toHaveBeenCalledWith(
-        { nameSubstring: 'hello', ids: ['how', 'are', 'you', 'today'] },
-        1337 * 42,
-        42,
-      );
-    });
-
-    test('Starts with semicolon in omniSearch term - splits on semicolon, all terms are IDs', () => {
-      searchResourceAsyncAction({ omniSearchTerm: ';hello;how;are;you;today', pageSize: 42 }, 1337, true);
-      expect(searchResources).toHaveBeenCalledWith(
-        { nameSubstring: '', ids: ['hello', 'how', 'are', 'you', 'today'] },
-        1337 * 42,
-        42,
-      );
-    });
-
     test("'newSearch' flag set - dispatches pending action that resets the result array and sets status to ResultPending", async () => {
-      const { dispatch, getState, subscribe } = testStore({ results: [null, null, null] });
-      subscribe(() => console.log(getState()));
+      const { dispatch, getState } = testStore({ results: [null, null, null] });
       const startingState = getState();
-      dispatch(searchResourceAsyncAction({ omniSearchTerm: 'hello', pageSize: 42 }, 1337, true));
+      dispatch(searchResourceAsyncAction({ generalSearchTerm: 'hello', pageSize: 42 }, 1337, true));
       const state = getState();
       expect(state).toStrictEqual({ ...startingState, status: ResourceSearchStatus.ResultPending, results: [] });
     });
@@ -111,10 +93,11 @@ describe('actions', () => {
     test("'newSearch' flag not set - dispatches pending action that sets status to ResultPending but leaves results array as is", async () => {
       const { dispatch, getState } = testStore({ results: [null, null, null] });
       const startingState = getState();
-      dispatch(searchResourceAsyncAction({ omniSearchTerm: 'hello', pageSize: 42 }, 1337, false));
+      dispatch(searchResourceAsyncAction({ generalSearchTerm: 'hello', pageSize: 42 }, 1337, false));
       const state = getState();
       expect(state).toStrictEqual({ ...startingState, status: ResourceSearchStatus.ResultPending });
     });
+
     describe('resourceSearch completes', () => {
       test('dispatches pending action that sets status to ResultPending, then dispatches fulfilled action that sets status to ResultReceived and adds the result to the array', async () => {
         mockSearchResources.mockResolvedValue({
@@ -127,7 +110,7 @@ describe('actions', () => {
         const { dispatch, getState } = testStore({ results: [null, null, null] });
         const startingState = getState();
         const dispatchPromise = (dispatch(
-          searchResourceAsyncAction({ omniSearchTerm: 'hello', pageSize: 2 }, 0),
+          searchResourceAsyncAction({ generalSearchTerm: 'hello', pageSize: 2 }, 0),
         ) as unknown) as PromiseLike<unknown>;
         const pendingState = getState();
         expect(pendingState).toStrictEqual({
@@ -249,7 +232,7 @@ describe('actions', () => {
         });
         const startingState = getState();
         await ((dispatch(
-          searchResourceAsyncAction({ omniSearchTerm: 'hello', pageSize: 2 }, 1, newSearch),
+          searchResourceAsyncAction({ generalSearchTerm: 'hello', pageSize: 2 }, 1, newSearch),
         ) as unknown) as PromiseLike<unknown>);
         const fulfilledState = getState();
         expect(fulfilledState).toStrictEqual({
@@ -269,7 +252,7 @@ describe('actions', () => {
         });
         const { dispatch, getState } = testStore({ results: [] });
         await ((dispatch(
-          searchResourceAsyncAction({ omniSearchTerm: 'hello', pageSize: 2 }, 0),
+          searchResourceAsyncAction({ generalSearchTerm: 'hello', pageSize: 2 }, 0),
         ) as unknown) as PromiseLike<unknown>);
         const fulfilledState = getState();
         expect(fulfilledState.results.length).toBeLessThan(50000);
@@ -290,7 +273,7 @@ describe('actions', () => {
         const startingState = getState();
         try {
           await ((dispatch(
-            searchResourceAsyncAction({ omniSearchTerm: 'hello', pageSize: 2 }, 0),
+            searchResourceAsyncAction({ generalSearchTerm: 'hello', pageSize: 2 }, 0),
           ) as unknown) as PromiseLike<unknown>);
         } catch {
           // Error still bubbles up so need to swallow it
@@ -317,7 +300,7 @@ describe('actions', () => {
         const startingState = getState();
         try {
           await ((dispatch(
-            searchResourceAsyncAction({ omniSearchTerm: 'hello', pageSize: 2 }, 0, false),
+            searchResourceAsyncAction({ generalSearchTerm: 'hello', pageSize: 2 }, 0, false),
           ) as unknown) as PromiseLike<unknown>);
         } catch {
           // Error still bubbles up so need to swallow it
@@ -335,7 +318,7 @@ describe('actions', () => {
   describe('updateSearchFormAction', () => {
     test('Updates search form parameters with those specified in the action payload, leaving the rest of the search state as was', () => {
       const updatedParameters: SearchSettings = {
-        omniSearchTerm: 'something else',
+        generalSearchTerm: 'something else',
         filters: { some: 'other filter' },
         pageSize: 10,
       };
@@ -353,12 +336,12 @@ describe('actions', () => {
 
       const { dispatch, getState } = testStore({
         ...nonInitialState,
-        parameters: { omniSearchTerm: 'something', filters: { some: 'filter' }, pageSize: 5 },
+        parameters: { generalSearchTerm: 'something', filters: { some: 'filter' }, pageSize: 5 },
       });
       dispatch(updateSearchFormAction(updatedParameters));
       expect(getState()).toStrictEqual({
         ...nonInitialState,
-        parameters: { omniSearchTerm: 'something', filters: { some: 'filter' }, pageSize: 10 },
+        parameters: { generalSearchTerm: 'something', filters: { some: 'filter' }, pageSize: 10 },
       });
     });
     test('Fully replaces filters, removes all existing ones', () => {
@@ -366,12 +349,15 @@ describe('actions', () => {
         filters: { other: 'setting' },
       };
       const newState = resourceSearchReducer(
-        { ...nonInitialState, parameters: { omniSearchTerm: 'something', filters: { some: 'filter' }, pageSize: 5 } },
+        {
+          ...nonInitialState,
+          parameters: { generalSearchTerm: 'something', filters: { some: 'filter' }, pageSize: 5 },
+        },
         updateSearchFormAction(updatedParameters),
       );
       expect(newState).toStrictEqual({
         ...nonInitialState,
-        parameters: { omniSearchTerm: 'something', filters: { other: 'setting' }, pageSize: 5 },
+        parameters: { generalSearchTerm: 'something', filters: { other: 'setting' }, pageSize: 5 },
       });
     });
   });

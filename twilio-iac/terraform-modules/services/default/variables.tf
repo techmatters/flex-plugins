@@ -29,3 +29,9 @@ variable "short_environment" {
   description = "Short upper case environment identifier, typically 'PROD', 'STG' or 'DEV'"
   type        = string
 }
+
+variable "stage" {
+  description = "Set to stage for terragrunt runs"
+  type = string
+  default = ""
+}

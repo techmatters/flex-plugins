@@ -15,8 +15,8 @@
  */
 
 /* eslint-disable react/prop-types */
-import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useState } from 'react';
+import { connect, ConnectedProps, useSelector } from 'react-redux';
 import { FieldError, useFormContext } from 'react-hook-form';
 import { isFuture } from 'date-fns';
 import { get } from 'lodash';
@@ -29,10 +29,10 @@ import { updateForm } from '../../states/contacts/actions';
 import { Container, ColumnarBlock, TwoColumnLayout, ColumnarContent } from '../../styles/HrmStyles';
 import { configurationBase, namespace, RootState } from '../../states';
 import { selectWorkerSid } from '../../states/selectors/flexSelectors';
-import type { TaskEntry } from '../../states/contacts/reducer';
 import { createContactlessTaskTabDefinition } from './ContactlessTaskTabDefinition';
 import { splitDate, splitTime } from '../../utils/helpers';
 import type { OfflineContactTask } from '../../types/types';
+import { TaskEntry } from '../../states/contacts/types';
 
 type OwnProps = {
   task: OfflineContactTask;
@@ -58,7 +58,7 @@ const ContactlessTaskTab: React.FC<Props> = ({
 }) => {
   const { getValues, register, setError, setValue, watch, errors } = useFormContext();
 
-  const workerSid = useFlexSelector(selectWorkerSid);
+  const workerSid = useSelector(selectWorkerSid);
 
   const formDefinition = React.useMemo(
     () => createContactlessTaskTabDefinition({ counselorsList, helplineInformation, definition }),
@@ -126,7 +126,7 @@ const ContactlessTaskTab: React.FC<Props> = ({
 
 ContactlessTaskTab.displayName = 'ContactlessTaskTab';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
+const mapStateToProps = (state: RootState) => ({
   counselorsList: state[namespace][configurationBase].counselors.list,
 });
 

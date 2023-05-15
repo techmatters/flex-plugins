@@ -124,6 +124,7 @@ describe('hrmServiceContactToSearchContact', () => {
       },
       details: input.rawJson,
       csamReports: [],
+      referrals: undefined,
     });
   });
 
@@ -148,6 +149,7 @@ describe('hrmServiceContactToSearchContact', () => {
       },
       details: input.rawJson,
       csamReports: [],
+      referrals: undefined,
     });
   });
 
@@ -164,11 +166,33 @@ describe('hrmServiceContactToSearchContact', () => {
           createdAt: 'yesterday',
         },
       ],
+      referrals: undefined,
     };
     expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
       contactId: undefined,
       overview: emptyOverview,
       csamReports: input.csamReports,
+      referrals: undefined,
+      details: input.rawJson,
+    });
+  });
+
+  test('input referrals are added to top level as is', () => {
+    const input: HrmServiceContact = {
+      ...emptyHrmContact,
+      referrals: [
+        {
+          resourceId: 'TEST_RESOURCE',
+          referredAt: new Date().toISOString(),
+          resourceName: 'A test referred resource',
+        },
+      ],
+    };
+    expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
+      contactId: undefined,
+      overview: emptyOverview,
+      csamReports: [],
+      referrals: input.referrals,
       details: input.rawJson,
     });
   });
@@ -185,6 +209,7 @@ describe('hrmServiceContactToSearchContact', () => {
       contactId: undefined,
       overview: { ...emptyOverview, callType: input.rawJson.callType },
       csamReports: [],
+      referrals: undefined,
       details: input.rawJson,
     });
   });
@@ -198,6 +223,7 @@ describe('hrmServiceContactToSearchContact', () => {
       contactId: input.id,
       overview: emptyOverview,
       csamReports: [],
+      referrals: undefined,
       details: input.rawJson,
     });
   });
@@ -217,6 +243,7 @@ describe('hrmServiceContactToSearchContact', () => {
       contactId: undefined,
       overview: { ...emptyOverview, notes: input.rawJson.caseInformation.callSummary },
       csamReports: [],
+      referrals: undefined,
       details: input.rawJson,
     });
   });
@@ -230,6 +257,7 @@ describe('hrmServiceContactToSearchContact', () => {
       contactId: undefined,
       overview: { ...emptyOverview, counselor: input.twilioWorkerId },
       csamReports: [],
+      referrals: undefined,
       details: input.rawJson,
     });
   });
@@ -243,6 +271,7 @@ describe('hrmServiceContactToSearchContact', () => {
       contactId: undefined,
       overview: { ...emptyOverview, dateTime: input.timeOfContact },
       csamReports: [],
+      referrals: undefined,
       details: input.rawJson,
     });
   });
@@ -283,6 +312,13 @@ describe('searchContactToHrmServiceContact', () => {
         acknowledged: true,
       },
     ],
+    referrals: [
+      {
+        resourceId: 'TEST_RESOURCE',
+        referredAt: new Date().toISOString(),
+        resourceName: 'A test referred resource',
+      },
+    ],
     details: {
       callType: 'child',
       childInformation: { firstName: 'Lo', lastName: 'Ballantyne' },
@@ -308,12 +344,13 @@ describe('searchContactToHrmServiceContact', () => {
     });
   });
 
-  test('copies details, csamReports and contactId to top level', () => {
+  test('copies details, csamReports, referrals and contactId to top level', () => {
     const hrmContact = searchContactToHrmServiceContact(baseSearchContact);
     expect(hrmContact).toMatchObject({
       id: baseSearchContact.contactId,
       rawJson: baseSearchContact.details,
       csamReports: baseSearchContact.csamReports,
+      referrals: baseSearchContact.referrals,
     });
   });
 });

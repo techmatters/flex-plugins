@@ -2,11 +2,7 @@
   {
     "name": "callSummary",
     "label": "Contact Summary",
-    "type": "textarea",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "type": "textarea"
   },
   {
     "name": "repeatCaller",
@@ -43,24 +39,210 @@
     "type": "mixed-checkbox"
   },
   {
-    "name": "Office",
-    "label": "Office",
+    "name": "department",
+    "label": "Department",
     "type": "select",
     "options": [
       {
-        "value": "Harare",
-        "label": "Harare"
+        "value": "",
+        "label": ""
       },
       {
-        "value": "Bulawayo",
-        "label": "Bulawayo"
+        "value": "Helpline",
+        "label": "Helpline"
       },
       {
-        "value": "Masvingo",
-        "label": "Masvingo"
+        "value": "Dropin",
+        "label": "Dropin"
+      },
+      {
+        "value": "Outreach",
+        "label": "Outreach"
       }
     ],
     "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "location",
+    "label": "Department Location",
+    "type": "dependent-select",
+    "dependsOn": "department",
+    "defaultOption": {
+      "value": "Unknown",
+      "label": ""
+    },
+    "options": {
+      "Helpline": [
+        {
+          "value": "Unknown",
+          "label": ""
+        },
+        {
+          "value": "Harare",
+          "label": "Harare"
+        },
+        {
+          "value": "Bulawayo",
+          "label": "Bulawayo"
+        },
+        {
+          "value": "Masvingo",
+          "label": "Masvingo"
+        }
+      ],
+      "Dropin": [
+        {
+          "value": "unknown",
+          "label": ""
+        },
+        {
+          "value": "Eastlea",
+          "label": "Eastlea"
+        },
+        {
+          "value": "Chitungwiza",
+          "label": "Chitungwiza"
+        },
+        {
+          "value": "Harare Magistrate Court",
+          "label": "Harare Magistrate Court"
+        },
+        {
+          "value": "House of Smiles",
+          "label": "House of Smiles"
+        },
+        {
+          "value": "Mbire",
+          "label": "Mbire"
+        },
+        {
+          "value": "Mabvuku",
+          "label": "Mabvuku"
+        },
+        {
+          "value": "Epworth",
+          "label": "Epworth"
+        },
+        {
+          "value": "Sekuru Sande",
+          "label": "Sekuru Sande"
+        },
+        {
+          "value": "Chinhoyi",
+          "label": "Chinhoyi"
+        },
+        {
+          "value": "Mazowe",
+          "label": "Mazowe"
+        },
+        {
+          "value": "Mutoko",
+          "label": "Mutoko"
+        },
+        {
+          "value": "Dzivarasekwa",
+          "label": "Dzivarasekwa"
+        },
+        {
+          "value": "Bulawayo City Centre",
+          "label": "Bulawayo City Centre"
+        },
+        {
+          "value": "Pumula",
+          "label": "Pumula"
+        },
+        {
+          "value": "United Bulawayo Hospitals",
+          "label": "United Bulawayo Hospitals"
+        },
+        {
+          "value": "Luveve",
+          "label": "Luveve"
+        },
+        {
+          "value": "Tsholotsho",
+          "label": "Tsholotsho"
+        },
+        {
+          "value": "Bulawayo Courts",
+          "label": "Bulawayo Courts"
+        },
+        {
+          "value": "Makokoba",
+          "label": "Makokoba"
+        },
+        {
+          "value": "Beitbridge",
+          "label": "Beitbridge"
+        },
+        {
+          "value": "Chipinige",
+          "label": "Chipinige"
+        },
+        {
+          "value": "Tongogara",
+          "label": "Tongogara"
+        },
+        {
+          "value": "Mutare",
+          "label": "Mutare"
+        },
+        {
+          "value": "Makoni",
+          "label": "Makoni"
+        },
+        {
+          "value": "Vhengere",
+          "label": "Vhengere"
+        },
+        {
+          "value": "Kwekwe",
+          "label": "Kwekwe"
+        },
+        {
+          "value": "Gweru",
+          "label": "Gweru"
+        },
+        {
+          "value": "Chiredzi",
+          "label": "Chiredzi"
+        },
+        {
+          "value": "Gutu",
+          "label": "Gutu"
+        },
+        {
+          "value": "Hopley",
+          "label": "Hopley"
+        },
+        {
+          "value": "Stoneridge",
+          "label": "Stoneridge"
+        },
+        {
+          "value": "Masvingo",
+          "label": "Masvingo"
+        },
+        {
+          "value": "Mutasa",
+          "label": "Mutasa"
+        },
+        {
+          "value": "Rusape",
+          "label": "Rusape"
+        }
+      ],
+      "Outreach": [
+        {
+          "value": "Not Applicable",
+          "label": "Not Applicable"
+        }
+      ]
+    },
+     "required": {
       "value": true,
       "message": "RequiredFieldError"
     }
@@ -75,6 +257,10 @@
     "label": "Level of Concern",
     "type": "select",
     "options": [
+      {
+        "value": "",
+        "label": ""
+      },
       {
         "value": "Level 1",
         "label": "Level 1"

@@ -1,1 +1,13 @@
-{}
+{
+  "contactForm": {
+    "caseInformation": [
+      {
+        "name": "center",
+        "insights": [
+          "conversations",
+          "initiative"
+        ]
+      }
+    ]
+  }
+}

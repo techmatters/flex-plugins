@@ -20,8 +20,8 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 import fetchHrmApi from './fetchHrmApi';
 import { getQueryParams } from './PaginationParams';
 import { Case, SearchCaseResult } from '../types/types';
-import type { TaskEntry as ContactForm } from '../states/contacts/reducer';
 import { unNestLegacyRawJson } from './ContactService';
+import { TaskEntry as ContactForm } from '../states/contacts/types';
 
 const convertLegacyContacts = (apiCase: Case): Case => {
   if (!apiCase.connectedContacts || apiCase.connectedContacts.length === 0) {

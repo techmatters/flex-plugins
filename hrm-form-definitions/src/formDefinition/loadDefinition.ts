@@ -53,6 +53,7 @@ export enum DefinitionVersionId {
   plV1 = 'pl-v1', // Telefon Zaufania (PL) v1
   roV1 = 'ro-v1', // Telefonul Copilului Romania v1
   mtV1 = 'mt-v1', // Kellimni Malta v1
+  nzV1 = 'nz-v1', // Youthline (NZ) v1
 }
 
 const expandFormDefinition = (

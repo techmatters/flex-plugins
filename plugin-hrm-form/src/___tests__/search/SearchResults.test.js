@@ -29,6 +29,19 @@ import SearchResults from '../../components/search/SearchResults';
 import { configurationBase, searchContactsBase, connectedCaseBase, contactFormsBase, namespace } from '../../states';
 import { getDefinitionVersions } from '../../hrmConfig';
 
+jest.mock('../../permissions', () => ({
+  getPermissionsForCase: jest.fn(() => ({
+    can: () => true,
+  })),
+  getPermissionsForContact: jest.fn(() => ({
+    can: () => true,
+  })),
+  getPermissionsForViewingIdentifiers: jest.fn(() => ({
+    canView: () => true,
+  })),
+  PermissionActions: {},
+}));
+
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 

@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { Dispatch, useState } from 'react';
+import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 import { useFormContext } from 'react-hook-form';
@@ -29,8 +29,8 @@ import {
   ColumnarContent,
 } from '../../styles/HrmStyles';
 import { disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
-import type { TaskEntry } from '../../states/contacts/reducer';
 import { useCreateFormFromDefinition } from '../forms';
+import { TaskEntry } from '../../states/contacts/types';
 
 type OwnProps = {
   display: boolean;
@@ -41,6 +41,8 @@ type OwnProps = {
   autoFocus?: boolean;
   extraChildrenRight?: React.ReactNode;
   updateFormActionDispatcher?: (dispatch: Dispatch<any>) => (values: any) => void;
+  contactId?: string;
+  taskSid?: string;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -55,6 +57,8 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
   autoFocus,
   updateForm,
   extraChildrenRight,
+  contactId,
+  taskSid,
 }) => {
   const { getValues } = useFormContext();
 
@@ -66,6 +70,7 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
       updateForm(getValues());
     },
     shouldFocusFirstElement: display && autoFocus,
+    context: { taskSid, contactId },
   });
 
   const [l, r] = React.useMemo(() => {
