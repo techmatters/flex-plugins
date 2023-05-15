@@ -90,7 +90,7 @@ const fetchDefinitionGivenConfig = async <T>(
   jsonPath: string,
   placeholder?: T,
 ) => {
-  const url = path.join(baseUrl, jsonPath);;
+  const url = path.join(baseUrl, jsonPath);
   const response = await fetch(url);
 
   if (response.ok) {
