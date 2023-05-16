@@ -5,6 +5,11 @@ provider "awscc" {
 module "lex" {
   source = "../../lex/v1"
 
+  providers = {
+    aws           = aws
+    aws.hl-region = aws.hl-region
+  }
+
   for_each = var.lex_bots
 
   helpline                    = var.helpline

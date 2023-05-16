@@ -1,7 +1,19 @@
+terraform {
+  required_providers {
+    aws = {
+      source                = "hashicorp/aws"
+      configuration_aliases = [aws.hl-region]
+    }
+
+  }
+}
+
 data "aws_caller_identity" "current" {}
 
 resource "aws_lex_slot_type" "this" {
   for_each = var.slot_types
+
+  provider = aws.hl-region
 
   name                     = "${var.name}_${each.key}"
   description              = each.value.description
@@ -17,7 +29,10 @@ resource "aws_lex_slot_type" "this" {
 }
 
 resource "aws_lex_intent" "this" {
-  for_each    = var.intents
+  for_each = var.intents
+
+  provider = aws.hl-region
+
   name        = "${var.name}_${each.key}"
   description = each.value.description
 
@@ -44,6 +59,7 @@ resource "aws_lex_intent" "this" {
 
   dynamic "slot" {
     for_each = each.value.slots
+
     content {
       description = slot.value.description
       name        = slot.key
@@ -67,6 +83,8 @@ resource "aws_lex_intent" "this" {
 
 
 resource "aws_lex_bot" "aselo_development_bot" {
+  provider = aws.hl-region
+
   name                        = var.name
   description                 = var.description
   locale                      = var.locale
@@ -107,6 +125,8 @@ resource "aws_lex_bot" "aselo_development_bot" {
 }
 
 # resource "aws_lex_bot_alias" "aselo_development" {
+#   provider = aws.hl-region
+#
 #   bot_name    = "AseloDevSurvey"
 #   bot_version = "1"
 #   description = "Aselo Development Version of the Wechat Bot."
