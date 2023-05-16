@@ -168,7 +168,7 @@ ${
           },
           "service": "{{trigger.message.InstanceSid}}",
           "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Bot",
+          "from": "System",
           "to": "{{contact.channel.address}}",
           "body": "Hi, welcome to Kids Help Phone’s Live Chat Counselling.\n\nFrom all of us, we want to share how grateful we are that you have reached out for support. It takes courage to do that.\n\nLive Chat Counselling is anonymous and confidential, meaning the only thing we know about you is what you choose to share with us.\n\nTo best care for your needs right now, the counsellor will ask you questions to understand what’s going on for you, check in on your safety and how to support you in this moment.\n\nAn average chat is roughly 45mins and you can anticipate that the counsellor will assist you in building next steps that are realistic and make sense for you and your life.\n\nTo make the most of your time together with the counsellor, you may find it helpful to think about what is most important to talk about in the conversation while you wait. Together you and the counsellor can give the topic the time and attention it deserves.\n\nAt Kids Help Phone, we want you to feel safe and respected. Our team of professional counsellors also deserve respect and safety. If anyone is abusive or using our service for inappropriate reasons the conversation will be ended. Anyone who continues to use our service in a harmful way may be denied from using our service. If you have any questions about this or any other part of our service, please speak with your counsellor or ask to speak to a manager. You can also review our Terms of Services on the website.\n\nOur average wait time to connect with a counsellor is 30 minutes. We understand that sometimes waiting can be tough. If you'd like to call a counsellor instead, please call 1-800-668-6868. It is confidential and anonymous, and available 24/7.\n\nOr if you prefer to text with a trained volunteer at our confidential texting service, you can text “LIVECHAT” to 686868 any time.\n\nIf this is an emergency, please call 911"
         }
@@ -288,7 +288,7 @@ ${
           },
           "service": "{{trigger.message.InstanceSid}}",
           "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Bot",
+          "from": "System",
           "to": "{{contact.channel.address}}",
           "body": "You are number {{widgets.engagement.parsed.nrOfOlderTasks}} in line. To keep your chat active, please do not leave/refresh this window or hit the back button."
         }
@@ -517,7 +517,7 @@ ${
           },
           "service": "{{trigger.message.InstanceSid}}",
           "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Bot",
+          "from": "System",
           "to": "{{contact.channel.address}}",
           "body": "We’re looking forward to chatting with you and appreciate your patience; a professional counsellor will be with you as soon as possible. If this is an emergency, please disconnect and dial 911."
         }
@@ -541,7 +541,7 @@ ${
           },
           "service": "{{trigger.message.InstanceSid}}",
           "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Bot",
+          "from": "System",
           "to": "{{contact.channel.address}}",
           "body": "We want you to know a counsellor would never disconnect without telling you first. However, technology can sometimes cause disconnections. We are truly sorry if this happens! If you get disconnected and are in crisis please call us at 1-800-668-6868. If this is an emergency and you get disconnected please call us or dial 911."
         }
@@ -565,7 +565,7 @@ ${
           },
           "service": "{{trigger.message.InstanceSid}}",
           "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Bot",
+          "from": "System",
           "to": "{{contact.channel.address}}",
           "body": "We appreciate your patience. If you would like to use our Texting service and speak with a Texting Crisis Responder, please text \"LIVECHAT\" to 686868. Otherwise, you will be connected with the next available counsellor."
         }
@@ -589,7 +589,7 @@ ${
           },
           "service": "{{trigger.message.InstanceSid}}",
           "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Bot",
+          "from": "System",
           "to": "{{contact.channel.address}}",
           "body": "I know waiting even a few minutes right now might seem impossible. A simple breathing exercise is easy to do and can really help to calm a busy mind or racing heart.\n\nSo, while you wait for a counsellor, maybe give SquareBreathing a try: \n\nBreathe in through your nose while counting to 4 slowly.\n\nHold your breath while counting to 4 slowly.\n\nBreathe out through your mouth while counting to 4 slowly.\n\nHold your breath while counting to 4 slowly.\n\nRepeat 4 times and notice how you feel."
         }
@@ -621,11 +621,11 @@ ${
         "type": "split-based-on",
         "transitions": [
           {
-            "next": "send_message",
+            "next": "chat_hours_en",
             "event": "noMatch"
           },
           {
-            "next": "check_queue_en",
+            "next": "chat_hours_en",
             "event": "match",
             "conditions": [
               {
@@ -639,7 +639,7 @@ ${
             ]
           },
           {
-            "next": "check_queue_fr",
+            "next": "chat_hours_fr",
             "event": "match",
             "conditions": [
               {
@@ -680,7 +680,7 @@ ${
           },
           "service": "{{trigger.message.InstanceSid}}",
           "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Bot",
+          "from": "Système",
           "to": "{{contact.channel.address}}",
           "body": "Salut! Bienvenue au service d’intervention Clavardage en direct de Jeunesse, J’écoute. \n\nNous tenons tous à te féliciter d’avoir demandé de l’aide. Ça prend un grand courage pour faire ça. \n\nLe service d’intervention Clavardage en direct est un service anonyme et confidentiel; tout ce que nous savons de toi, c’est ce que tu choisis de nous dire. \n\nAfin de t’offrir du soutien qui correspond e mieux possible à tes besoins en ce moment, l’intervenant clinique te posera des questions afin de comprendre ce qui se passe dans ton quotidien, pour s’assurer de ta sécurité et pour déterminer quel soutien te serait le plus utile dans l’immédiat. L’intervenant t’aidera à définir les prochaines étapes réalisables qui prendront un sens tout particulier dans ta vie pendant la session de clavardage, qui dure habituellement environ 45 minutes. \nPour bénéficier pleinement de ton échange avec l’intervenant, il pourrait être utile, pendant que tu es dans la file d’attente, de penser aux choses importantes dont tu aimerais discuter. L’intervenant et toi pourrez alors prendre le temps nécessaire pour faire le tour du sujet. \n\nChez Jeunesse, J’écoute, nous tenons à ce que tu te sentes en sécurité et respecté. Il en va de même pour les membres de notre équipe d’intervenants cliniques professionnels, qui méritent eux aussi de travailler dans un environnement respectueux et sécuritaire. Si quelqu’un abuse ou utilise notre service pour des raisons inappropriées, on mettra fin à la conversation. Toute personne qui continue à avoir recours à notre service de manière malveillante peut se voir refuser l’accès. Si tu as des questions à cet égard ou sur tout autre aspect de notre service, pose-les à ton intervenant ou demande à communiquer avec un gestionnaire. Tu peux aussi consulter les Conditions de services sur le site Web. \n\nDe façon générale, le temps d’attente pour échanger avec un intervenant est d’une moyenne de 30 minutes. Nous comprenons que ça peut être difficile d’attendre. Si tu préfères parler avec un intervenant, appelle au 1 800 668-6868. Ce service, offert 24 heures par jour, 7 jours par semaine, est confidentiel et anonyme. \n\nTu peux aussi échanger avec un bénévole qualifié par texto en envoyant LIVECHAT au 686868 en tout temps. \n\nSi la situation est urgente, signale le 911."
         }
@@ -848,7 +848,7 @@ ${
           },
           "service": "{{trigger.message.InstanceSid}}",
           "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Bot",
+          "from": "Système",
           "to": "{{contact.channel.address}}",
           "body": "Tu es le numéro {{widgets.engagement.parsed.nrOfOlderTasks}} dans la file d’attente. Pour garder cette fenêtre de clavardage active, ne quitte pas ou ne rafraîchis pas la page. Il ne faut pas non plus cliquer sur le bouton précédent."
         }
@@ -872,7 +872,7 @@ ${
           },
           "service": "{{trigger.message.InstanceSid}}",
           "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Bot",
+          "from": "Système",
           "to": "{{contact.channel.address}}",
           "body": "Nous avons hâte de clavarder avec toi et sommes reconnaissants de ta patience; un intervenant clinique professionnel te répondra aussitôt que possible! Si la situation est urgente, signale le 911 immédiatement."
         }
@@ -896,7 +896,7 @@ ${
           },
           "service": "{{trigger.message.InstanceSid}}",
           "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Bot",
+          "from": "Système",
           "to": "{{contact.channel.address}}",
           "body": "Nous tenons à mentionner que jamais un intervenant ne terminerait une conversation sans t’en avertir. Par contre, la technologie peut parfois faire en sorte qu’une communication soit rompue. Nous sommes vraiment désolés lorsque ceci arrive. Si la communication devait être coupée lorsque tu es en situation de crise, tu peux nous appeler au 1 800 668-6868. Si c’est une urgence, compose le 911 immédiatement."
         }
@@ -920,7 +920,7 @@ ${
           },
           "service": "{{trigger.message.InstanceSid}}",
           "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Bot",
+          "from": "Système",
           "to": "{{contact.channel.address}}",
           "body": "Nous te remercions de ta patience. Si tu aimerais utiliser notre service par texto afin d’échanger avec un Répondant aux crises, envoie ALLO au 686868. Si tu préfères attendre, la connexion sera établie avec le prochain intervenant qui se libère."
         }
@@ -944,7 +944,7 @@ ${
           },
           "service": "{{trigger.message.InstanceSid}}",
           "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Bot",
+          "from": "Système",
           "to": "{{contact.channel.address}}",
           "body": "J’imagine que de penser à une période d’attente de même quelques minutes doit être angoissant. Parfois, pratiquer un exercice de respiration est un moyen facile de se calmer et de diminuer notre niveau d’anxiété.  \n\nEn attendant de pouvoir échanger avec un intervenant, pourquoi ne pas essayer la respiration carrée :\n\nInspire par le nez, en comptant lentement jusqu’à 4.\n\nRetiens ton souffle, encore en comptant lentement jusqu’à 4.\n\nRelâche ton souffle, cette fois par la bouche, en comptant encore une fois lentement jusqu’à 4.\n\nRetiens ton souffle, en comptant lentement jusqu’à 4.\n\nRépète ces étapes quatre fois encore pour voir si tu ressens moins d’anxiété."
         }
@@ -1066,7 +1066,7 @@ ${
           },
           "service": "{{trigger.message.InstanceSid}}",
           "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Bot",
+          "from": "System",
           "to": "{{contact.channel.address}}",
           "body": "We're sorry, our Live Chat service is currently full. Please end your chat and try back soon. To reach a Kids Help Phone counsellor by phone, you can call us anytime at 1-800-668-6868. \nBe well, \nThe Kids Help Phone Team."
         }
@@ -1089,7 +1089,7 @@ ${
           },
           "service": "{{trigger.message.InstanceSid}}",
           "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Bot",
+          "from": "Système",
           "to": "{{contact.channel.address}}",
           "body": "Nous sommes désolés, mais notre service de clavardage en direct est actuellement complet. S'il te plaît, ferme l'onglet et réessaie plus tard. Pour parler à un intervenant de Jeunesse J'écoute, tu peux nous téléphoner au 1-800-668-6868. \nPrends soin de toi, \nL'équipe de Jeunesse J'écoute."
         }
@@ -1123,6 +1123,244 @@ ${
             "x": 1200,
             "y": 180
           }
+        }
+      },
+      {
+        "name": "chat_hours_en",
+        "type": "run-function",
+        "transitions": [
+          {
+            "next": "hours_split_en",
+            "event": "success"
+          },
+          {
+            "event": "fail"
+          }
+        ],
+        "properties": {
+          "service_sid": flow_vars["service_sid"],
+          "environment_sid": flow_vars["environment_sid"],
+          "offset": {
+            "x": -50,
+            "y": -500
+          },
+          "function_sid": flow_vars["operating_hours_function_sid"],
+          "parameters": [
+            {
+              "value": "webchat",
+              "key": "channel"
+            },
+            {
+              "value": "true",
+              "key": "includeMessageTextInResponse"
+            },
+            {
+              "value": "en-CA",
+              "key": "language"
+            }
+          ],
+          "url": flow_vars["operating_hours_function_url"]
+        }
+      },
+      {
+        "name": "hours_split_en",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "check_queue_en",
+            "event": "noMatch"
+          },
+          {
+            "next": "check_queue_en",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains open",
+                "arguments": [
+                  "{{widgets.chat_hours_en.parsed.status}}"
+                ],
+                "type": "contains",
+                "value": "open"
+              }
+            ]
+          },
+          {
+            "next": "send_closed",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains closed",
+                "arguments": [
+                  "{{widgets.chat_hours_en.parsed.status}}"
+                ],
+                "type": "contains",
+                "value": "closed"
+              }
+            ]
+          },
+          {
+            "next": "send_closed",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains holiday",
+                "arguments": [
+                  "{{widgets.chat_hours_en.parsed.status}}"
+                ],
+                "type": "contains",
+                "value": "holiday"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.chat_hours_en.parsed.status}}",
+          "offset": {
+            "x": -1030,
+            "y": -500
+          }
+        }
+      },
+      {
+        "name": "send_closed",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -1380,
+            "y": -220
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "System",
+          "to": "{{contact.channel.address}}",
+          "body": "{{widgets.chat_hours_en.parsed.message}}"
+        }
+      },
+      {
+        "name": "chat_hours_fr",
+        "type": "run-function",
+        "transitions": [
+          {
+            "next": "hours_split_fr",
+            "event": "success"
+          },
+          {
+            "event": "fail"
+          }
+        ],
+        "properties": {
+          "service_sid": flow_vars["service_sid"],
+          "environment_sid": flow_vars["environment_sid"],
+          "offset": {
+            "x": 690,
+            "y": -410
+          },
+          "function_sid": flow_vars["operating_hours_function_sid"],
+          "parameters": [
+            {
+              "value": "webchat",
+              "key": "channel"
+            },
+            {
+              "value": "true",
+              "key": "includeMessageTextInResponse"
+            },
+            {
+              "value": "fr-CA",
+              "key": "language"
+            }
+          ],
+          "url": flow_vars["operating_hours_function_url"]
+        }
+      },
+      {
+        "name": "hours_split_fr",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "check_queue_fr",
+            "event": "noMatch"
+          },
+          {
+            "next": "check_queue_fr",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains open",
+                "arguments": [
+                  "{{widgets.chat_hours_en.parsed.status}}"
+                ],
+                "type": "contains",
+                "value": "open"
+              }
+            ]
+          },
+          {
+            "next": "send_closed_fr",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains closed",
+                "arguments": [
+                  "{{widgets.chat_hours_en.parsed.status}}"
+                ],
+                "type": "contains",
+                "value": "closed"
+              }
+            ]
+          },
+          {
+            "next": "send_closed_fr",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains holiday",
+                "arguments": [
+                  "{{widgets.chat_hours_en.parsed.status}}"
+                ],
+                "type": "contains",
+                "value": "holiday"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.chat_hours_en.parsed.status}}",
+          "offset": {
+            "x": 1400,
+            "y": -340
+          }
+        }
+      },
+      {
+        "name": "send_closed_fr",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1640,
+            "y": -50
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "Système",
+          "to": "{{contact.channel.address}}",
+          "body": "{{widgets.check_hours_fr.parsed.message}}"
         }
       }
     ],
