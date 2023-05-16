@@ -50,7 +50,7 @@ resource "aws_lex_intent" "this" {
       priority    = slot.value.priority
 
       slot_constraint   = slot.value.slot_constraint
-      slot_type         = slot.value.slot_type
+      slot_type         = "${var.name}_${slot.value.slot_type}"
       slot_type_version = aws_lex_slot_type.this[slot.value.slot_type].version
 
       value_elicitation_prompt {
@@ -71,7 +71,7 @@ resource "aws_lex_bot" "aselo_development_bot" {
   description                 = var.description
   locale                      = var.locale
   process_behavior            = var.process_behavior
-  create_version              = true
+  create_version              = false
   idle_session_ttl_in_seconds = var.idle_session_ttl_in_seconds
 
   #   By specifying true to child_directed, you confirm that your use of Amazon Lex is related to a website,
@@ -100,7 +100,7 @@ resource "aws_lex_bot" "aselo_development_bot" {
   dynamic "intent" {
     for_each = var.intents
     content {
-      intent_name    = intent.key
+      intent_name    = "${var.name}_${intent.key}"
       intent_version = aws_lex_intent.this[intent.key].version
     }
   }
