@@ -13,57 +13,91 @@ variable "helpline" {
   type        = string
 }
 
-variable "lex_config" {
+variable "name" {
+  description = "The name of the lex bot."
+  type        = string
+}
+
+variable "description" {
+  description = "The description of the lex bot."
+  type        = string
+}
+variable "locale" {
+  description = "The locale of the lex bot."
+  type        = string
+  default     = "en-US"
+}
+
+variable "process_behavior" {
+  description = "The process behavior of the lex bot."
+  type        = string
+  default     = "BUILD"
+}
+
+variable "child_directed" {
+  description = "Whether the lex bot is child directed."
+  type        = bool
+}
+
+variable "idle_session_ttl_in_seconds" {
+  description = "The idle session ttl in seconds for the lex bot."
+  type        = number
+}
+
+variable "abort_statement" {
+  description = "The rejection statement for the lex bot."
   type = object({
-    child_directed              = optional(bool, true),
-    idle_session_ttl_in_seconds = optional(number, 1500),
-    bot_locales = list(object({
-      locale_id                = string,
-      nlu_confidence_threshold = number,
-      slot_types = list(object({
-        name = string,
-        slot_type_values = list(object({
-          sample_value = optional(object({
-            value    = string
-            synonyms = optional(list(string), null)
-          }), null),
-        })),
-        value_selection_setting = object({
-          resolution_strategy = string
-        })
-      })),
-      intents = list(object({
-        name        = string,
-        description = string,
-        sample_utterances = list(object({
-          utterance = string
-        })),
-        slot_priorities = list(object({
-          priority  = number,
-          slot_name = string
-        })),
-        slots = list(object({
-          name           = string,
-          description    = optional(string, null),
-          slot_type_name = string,
-          obfuscation_setting = optional(object({
-            obfuscation_setting_type = string,
-          }), null),
-          value_elicitation_setting = optional(object({
-            slot_constraint = string,
-            prompt_specification = optional(object({
-              max_retries = number,
-              message_groups_list = list(object({
-                message = object({
-                  plain_text_message = object({
-                    value = string
-                  })
-                })
-              }))
-            }), null)
-          }), null)
-        }))
-      }))
-    }))
+    content      = string
+    content_type = string
   })
+}
+
+variable "clarification_prompt" {
+  description = "The closing response for the lex bot."
+  type = object({
+    max_attempts = number
+    content      = string
+    content_type = string
+  })
+}
+
+variable "slot_types" {
+  description = "The slot types for the helpline."
+  type = map(object({
+    description              = string
+    value_selection_strategy = string
+    values = map(object({
+      synonyms = optional(list(string), []),
+    }))
+  }))
+}
+
+variable "intents" {
+  description = "The intents for the helpline."
+  type = map(object({
+    description       = string
+    sample_utterances = list(string)
+    fulfillment_activity = object({
+      type = string
+    })
+    conclusion_statement = object({
+      content      = string
+      content_type = string
+    })
+    rejection_statement = object({
+      content      = string
+      content_type = string
+    })
+    slots = map(object({
+      priority        = number
+      description     = string
+      slot_constraint = string
+      slot_type       = string
+      value_elicitation_prompt = object({
+        max_attempts = number
+        content      = string
+        content_type = string
+      })
+    }))
+  }))
 }
