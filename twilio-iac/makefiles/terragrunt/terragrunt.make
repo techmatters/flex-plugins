@@ -34,17 +34,17 @@ destroy-tg:
 destroy-all-tg:
 	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt rum-all destroy $(tg_args)
 
-apply: apply-tg
+apply: verify-pre-work apply-tg
 
-apply-all: plan-all-tg apply-all-tg
+apply-all: verify-pre-work plan-all-tg apply-all-tg
 
-init: init-scripts init-tg
+init: verify-pre-work init-scripts init-tg
 
-init-all: init-all-tg
+init-all: verify-pre-work init-all-tg
 
-plan: plan-tg
+plan: verify-pre-work plan-tg
 
-plan-all: plan-all-tg
+plan-all: verify-pre-work plan-all-tg
 
 destroy: destroy-tg
 
