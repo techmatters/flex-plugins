@@ -18,6 +18,8 @@ locals {
       workspace_sid                     = "WS33c3c168dad3428ead7c7a79e16460e3"
       english_queue_sid                 = "WQ3edc0fed2331d352819501c6848d95f6"
       french_queue_sid                  = "WQ0ff276ab319c71ee66d1a5cc9a40d834"
+      operating_hours_function_sid      = "ZHc3676ca6ff87edc2b4b4c9d2a4b22c82"
+      operating_hours_function_url      = "https://serverless-8126-dev.twil.io/operatingHours"
     }
 
     #Channels
