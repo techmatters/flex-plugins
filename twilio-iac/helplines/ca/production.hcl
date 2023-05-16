@@ -36,6 +36,9 @@ locals {
       g2t : ["????"],
     }
 
+     // THIS SHOULD BE REMOVED Serverless 
+    ui_editable = true
+
      #Chatbots
 
     #Feature flags
