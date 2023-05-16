@@ -76,3 +76,9 @@ variable "phone_numbers" {
   type        = map(list(string))
   default = null
 }
+
+variable "ui_editable" {
+  description = " Whether or not the service is editable in the console"
+  type        = bool
+  default = false
+}
