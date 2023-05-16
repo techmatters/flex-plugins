@@ -19,6 +19,8 @@ locals {
       workspace_sid = "WSf2e3f00412fa8cc45f4318b45a870ea5"
       english_queue_sid = "WQf659c270357487d2372a657b649a3a7a"
       french_queue_sid = "WQ43733e6ff913f64edafb10b041804c6e"
+      operating_hours_function_sid = "ZH77510a142c7bad7449d04e415b6c8187"
+      operating_hours_function_url = "https://serverless-3836-production.twil.io/operatingHours"
     }
 
     #Channels
