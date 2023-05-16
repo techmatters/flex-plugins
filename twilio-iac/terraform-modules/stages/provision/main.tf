@@ -25,6 +25,7 @@ module "serverless" {
   source             = "../../serverless/default"
   twilio_account_sid = local.secrets.twilio_account_sid
   twilio_auth_token  = local.secrets.twilio_auth_token
+  ui_editable        = var.ui_editable
 }
 
 module "services" {
