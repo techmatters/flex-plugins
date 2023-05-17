@@ -37,7 +37,7 @@ locals {
   enable_post_survey = true
   multi_office = false
   target_task_name = "greeting"
-  twilio_numbers = []
+  twilio_numbers = ["messenger:105642325869250", "instagram:105642325869250"]
   channel = ""
   feature_flags = {
     "enable_fullstory_monitoring": false,
@@ -63,9 +63,10 @@ locals {
   }
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   twilio_channels = {
-    "webchat" = {"contact_identity" = "", "channel_type" ="web"  }
+    "webchat" = {"contact_identity" = "", "channel_type" ="web"  },
+    "facebook" = {"contact_identity" = "messenger:105642325869250", "channel_type" ="facebook"}
   }
-  custom_channels=[]
+  custom_channels=["instagram"]
 }
 
 provider "twilio" {
@@ -73,7 +74,7 @@ provider "twilio" {
   password = local.secrets.twilio_auth_token
 }
 
-module "chatbots" {
+module "chatbots" {    
   source = "../terraform-modules/chatbots/default"
   serverless_url = module.serverless.serverless_environment_production_url
 }
@@ -106,7 +107,7 @@ module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = module.serverless.serverless_environment_production_url
   helpline = local.helpline
-  custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true"
+  custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
 }
 
 module flex {
