@@ -37,7 +37,7 @@ locals {
   enable_post_survey = true
   multi_office = false
   target_task_name = "greeting"
-  twilio_numbers = ["messenger:105642325869250", "instagram:105642325869250"]
+  twilio_numbers = ["messenger:105642325869250", "instagram:17841459369720372"]
   channel = ""
   feature_flags = {
     "enable_fullstory_monitoring": false,
