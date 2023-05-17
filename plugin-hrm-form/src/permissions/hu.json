@@ -23,5 +23,7 @@
   "editContact": [["isSupervisor"], ["isOwner"]],
   "viewExternalTranscript": [["isSupervisor"]],
 
-  "viewPostSurvey": [["isSupervisor"]]
+  "viewPostSurvey": [["isSupervisor"]],
+
+  "viewIdentifiers": []
 }
