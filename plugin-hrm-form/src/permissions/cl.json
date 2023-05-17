@@ -1,5 +1,4 @@
 {
-  "viewContact": [["everyone"]],
   "viewCase": [["everyone"]],
   "closeCase":  [["everyone"]],
   "reopenCase":  [["everyone"]],
@@ -19,8 +18,10 @@
   "editCaseSummary":  [["everyone"]],
   "editChildIsAtRisk":  [["everyone"]],
   "editFollowUpDate":  [["everyone"]],
+
+  "viewContact": [["everyone"]],
   "editContact":  [["everyone"]],
-  "viewPostSurvey":  [["isSupervisor"]],
-  "viewExternalTranscript": [["everyone"]],
-  "viewIdentifiers": [["everyone"]]
+  "viewExternalTranscript": [["isSupervisor"]],
+  
+  "viewPostSurvey":  [["isSupervisor"]]
 }

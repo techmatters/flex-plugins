@@ -1,5 +1,4 @@
 {
-  "viewContact": [["isSupervisor"], ["isOwner"]],
   "viewCase": [["isSupervisor"], ["isCreator"]],
   "closeCase": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "reopenCase": [["isSupervisor"]],
@@ -19,7 +18,10 @@
   "editCaseSummary": [["isSupervisor"], ["isCreator"]],
   "editChildIsAtRisk": [["isSupervisor"], ["isCreator"]],
   "editFollowUpDate": [["isSupervisor"], ["isCreator"]],
-  "editContact": [["isCreator"],["isSupervisor"]],
+
+  "viewContact": [["isSupervisor"], ["isOwner"]],
+  "editContact": [["isOwner"],["isSupervisor"]],
   "viewExternalTranscript": [["isSupervisor"]],
-  "viewIdentifiers": [["everyone"]]
+  
+  "viewPostSurvey": [["isSupervisor"]]
 }
