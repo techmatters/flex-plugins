@@ -244,7 +244,8 @@ module "channel" {
   short_environment     = local.short_environment
   task_language         = local.task_language
   short_helpline        = upper(local.short_helpline)
-  slack_webhook_url   = local.slack_webhook_url
+  environment           = lower(local.environment)
+
 }
 
 module "aws" {

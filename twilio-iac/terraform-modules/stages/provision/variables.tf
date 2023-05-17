@@ -88,3 +88,4 @@ variable "ui_editable" {
   type        = bool
   default = false
 
+}
