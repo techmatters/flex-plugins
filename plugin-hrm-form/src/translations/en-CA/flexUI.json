@@ -71,6 +71,7 @@
   "Toolkit-ConfirmTextTwo": "Click Yes to continue.",
   "Error-CategoryRequired": "Required 1 issue tag minimum, 3 issue tags maximum. Click on the icon next to an issue tag to open up the relevant tipsheet in a new tab.",
   "CaseList-Filters-Counselor": "Counsellor",
-  "CaseList-Filters-SearchForCounselor": "Search for counsellor by name"
+  "CaseList-Filters-SearchForCounselor": "Search for counsellor by name",
+  "CaseList-THChildName": "Child"
   
 }
