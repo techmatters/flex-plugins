@@ -41,14 +41,17 @@ export const CaseActions = {
   EDIT_INCIDENT: 'editIncident',
   EDIT_DOCUMENT: 'editDocument',
 } as const;
+type CaseActions = typeof CaseActions;
 export const ContactActions = {
   VIEW_CONTACT: 'viewContact',
   EDIT_CONTACT: 'editContact',
   VIEW_EXTERNAL_TRANSCRIPT: 'viewExternalTranscript',
 } as const;
+type ContactActions = typeof ContactActions;
 export const ViewIdentifiersAction = {
   VIEW_IDENTIFIERS: 'viewIdentifiers',
 } as const;
+type ViewIdentifiersAction = typeof ViewIdentifiersAction;
 
 export const PermissionActions = {
   ...CaseActions,
@@ -59,8 +62,72 @@ export const PermissionActions = {
 type PermissionActionsKeys = keyof typeof PermissionActions;
 export type PermissionActionType = typeof PermissionActions[PermissionActionsKeys];
 type Condition = 'isSupervisor' | 'isCreator' | 'isCaseOpen' | 'isOwner' | 'everyone';
-export type ConditionSet = Condition[];
-type ConditionSets = ConditionSet[];
+export type ConditionsSet = Condition[];
+type ConditionsSets = ConditionsSet[];
+
+type ConditionsState = Partial<{
+  isSupervisor: boolean;
+  isCreator: boolean;
+  isCaseOpen: boolean;
+  isOwner: boolean;
+  everyone: boolean;
+}>;
+
+const checkCondition = (conditionsState: ConditionsState) => (condition: Condition) => conditionsState[condition];
+const checkConditionsSet = (conditionsState: ConditionsState) => (conditionsSet: ConditionsSet) =>
+  conditionsSet.every(checkCondition(conditionsState));
+const checkConditionsSets = (conditionsState: ConditionsState) => (conditionsSets: ConditionsSets) =>
+  conditionsSets.some(checkConditionsSet(conditionsState));
+
+export const actionsMaps = {
+  case: CaseActions,
+  contact: ContactActions,
+  postSurvey: {
+    /* TODO: add when used */
+  },
+  viewIdentifiers: ViewIdentifiersAction,
+} as const;
+
+// Defines which actions are supported on each TargetKind
+const supportedTargetKindActions = {
+  case: ['isSupervisor', 'isCreator', 'isCaseOpen', 'everyone'],
+  contact: ['isSupervisor', 'isOwner', 'everyone'],
+  postSurvey: ['isSupervisor', 'everyone'],
+  viewIdentifiers: ['isSupervisor', 'everyone'],
+};
+
+const isValidTargetKind = (kind: string, css: ConditionsSets) =>
+  css.every(cs => cs.every(c => supportedTargetKindActions[kind].includes(c)));
+
+const validateTargetKindActions = (rules, kind: keyof typeof actionsMaps) =>
+  Object.values(actionsMaps[kind]).reduce<{ [k in keyof typeof actionsMaps]: boolean }>((accum, action) => {
+    return {
+      ...accum,
+      [action]: isValidTargetKind(kind, rules[action]),
+    };
+  }, {} as any);
+
+const isValidTargetKindActions = (validated: { [k in keyof typeof actionsMaps]: boolean }) =>
+  Object.values(validated).every(Boolean);
+
+export const validateRules = (permissionConfig: string, kind: keyof typeof actionsMaps) => {
+  const rules = fetchRules(permissionConfig);
+
+  const rulesAreValid = Object.values(PermissionActions).every(action => rules[action]);
+  if (!rulesAreValid) throw new Error(`Rules file for ${permissionConfig} is incomplete. Missing actions for ${kind}`);
+
+  const validated = validateTargetKindActions(rules, kind);
+
+  if (!isValidTargetKindActions(validated)) {
+    const invalidActions = Object.entries(validated)
+      .filter(([, val]) => !val)
+      .map(([key]) => key);
+    throw new Error(
+      `Error: rules file for ${permissionConfig} contains invalid actions mappings: ${JSON.stringify(invalidActions)}`,
+    );
+  }
+  return rules;
+};
 
 export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], status: t.Case['status']) => {
   const { workerSid, isSupervisor, permissionConfig } = getHrmConfig();
@@ -77,14 +144,7 @@ export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], 
     everyone: true,
   };
 
-  const checkCondition = (condition: Condition) => conditionsState[condition];
-  const checkConditionsSet = (conditionsSet: ConditionSet) => conditionsSet.every(checkCondition);
-  const checkConditionsSets = (conditionsSets: ConditionSets) => conditionsSets.some(checkConditionsSet);
-
-  const rules = fetchRules(permissionConfig);
-
-  const rulesAreValid = Object.values(PermissionActions).every(action => rules[action]);
-  if (!rulesAreValid) throw new Error(`Rules file for ${permissionConfig} is incomplete.`);
+  const rules = validateRules(permissionConfig, 'case');
 
   const can = (action: PermissionActionType): boolean => {
     if (!rules[action]) {
@@ -92,7 +152,7 @@ export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], 
       return isSupervisor || (isCreator && isCaseOpen);
     }
 
-    return checkConditionsSets(rules[action]);
+    return checkConditionsSets(conditionsState)(rules[action]);
   };
 
   return {
@@ -113,14 +173,7 @@ export const getPermissionsForContact = (twilioWorkerId: t.SearchAPIContact['ove
     everyone: true,
   };
 
-  const checkCondition = (condition: Condition) => conditionsState[condition];
-  const checkConditionsSet = (conditionsSet: ConditionSet) => conditionsSet.every(checkCondition);
-  const checkConditionsSets = (conditionsSets: ConditionSets) => conditionsSets.some(checkConditionsSet);
-
-  const rules = fetchRules(permissionConfig);
-
-  const rulesAreValid = Object.values(PermissionActions).every(action => rules[action]);
-  if (!rulesAreValid) throw new Error(`Rules file for ${permissionConfig} is incomplete.`);
+  const rules = validateRules(permissionConfig, 'contact');
 
   const can = (action: PermissionActionType): boolean => {
     if (!rules[action]) {
@@ -128,7 +181,7 @@ export const getPermissionsForContact = (twilioWorkerId: t.SearchAPIContact['ove
       return isSupervisor || isOwner;
     }
 
-    return checkConditionsSets(rules[action]);
+    return checkConditionsSets(conditionsState)(rules[action]);
   };
 
   return {
@@ -146,14 +199,7 @@ export const getPermissionsForViewingIdentifiers = () => {
     everyone: true,
   };
 
-  const checkCondition = (condition: Condition) => conditionsState[condition];
-  const checkConditionsSet = (conditionsSet: ConditionSet) => conditionsSet.every(checkCondition);
-  const checkConditionsSets = (conditionsSets: ConditionSets) => conditionsSets.some(checkConditionsSet);
-
-  const rules = fetchRules(permissionConfig);
-
-  const rulesAreValid = Object.values(PermissionActions).every(action => rules[action]);
-  if (!rulesAreValid) throw new Error(`Rules file for ${permissionConfig} is incomplete.`);
+  const rules = validateRules(permissionConfig, 'viewIdentifiers');
 
   const canView = (action: PermissionActionType): boolean => {
     if (!rules[action]) {
@@ -161,7 +207,7 @@ export const getPermissionsForViewingIdentifiers = () => {
       return isSupervisor;
     }
 
-    return checkConditionsSets(rules[action]);
+    return checkConditionsSets(conditionsState)(rules[action]);
   };
 
   return {
