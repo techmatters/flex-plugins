@@ -75,8 +75,10 @@ module "aws" {
   flex_proxy_service_sid             = module.services.flex_proxy_service_sid
   # TODO: manually delete this resource from SSM after migration
   # post_survey_bot_sid = module.chatbots.post_survey_bot_sid
-  survey_workflow_sid = module.taskRouter.workflow_sids["survey"]
-  bucket_region       = var.helpline_region
+  survey_workflow_sid = module.survey.survey_workflow_sid
+  #TODO: convert bucket_region to helpline_region (or, better yet,  pass in the correct provider)
+  bucket_region   = var.helpline_region
+  helpline_region = var.helpline_region
 }
 
 module "aws_monitoring" {

@@ -33,6 +33,7 @@ locals {
       "ca-central-1" = "https://hrm-production-ca.tl.techmatters.org"
     }
   }
+  
 
   hrm_url = local.hrm_url_map[var.environment][var.helpline_region]
 
@@ -81,7 +82,8 @@ module "flex" {
   feature_flags             = var.feature_flags
   contacts_waiting_channels = var.contacts_waiting_channels
   #tODO: this needs to be a configuration option
-  hrm_url = local.hrm_url
+  hrm_url            = local.hrm_url
+  resources_base_url = var.resources_base_url
 }
 
 module "channel" {

@@ -24,9 +24,20 @@ provider "aws" {
 
 data "aws_ssm_parameter" "secrets" {
   name = "/terraform/twilio-iac/${basename(abspath(path.module))}/secrets.json"
+  name = "/terraform/twilio-iac/${basename(abspath(path.module))}/secrets.json"
 }
 
 locals {
+  helpline                     = "Linea Libre"
+  short_helpline               = "CL"
+  operating_info_key           = "cl"
+  environment                  = "Production"
+  short_environment            = "PROD"
+  definition_version           = "cl-v1"
+  permission_config            = "cl"
+  helpline_language            = "es-CL"
+  task_language                = "es-CL"
+  voice_ivr_language           = "es-MX"
   helpline                     = "Linea Libre"
   short_helpline               = "CL"
   operating_info_key           = "cl"
@@ -43,7 +54,35 @@ locals {
   twilio_numbers               = [""]
   channel                      = ""
   custom_channel_attributes    = ""
+  enable_post_survey           = true
+  multi_office                 = false
+  twilio_numbers               = [""]
+  channel                      = ""
+  custom_channel_attributes    = ""
   feature_flags = {
+    "enable_fullstory_monitoring" : false,
+    "enable_upload_documents" : true,
+    "enable_post_survey" : local.enable_post_survey,
+    "enable_contact_editing" : true,
+    "enable_case_management" : true,
+    "enable_offline_contact" : true,
+    "enable_filter_cases" : true,
+    "enable_sort_cases" : true,
+    "enable_transfers" : true,
+    "enable_manual_pulling" : false,
+    "enable_csam_report" : false,
+    "enable_canned_responses" : true,
+    "enable_dual_write" : false,
+    "enable_save_insights" : false,
+    "enable_previous_contacts" : true,
+    "enable_voice_recordings" : false,
+    "enable_twilio_transcripts" : true,
+    "enable_external_transcripts" : true,
+    "post_survey_serverless_handled" : true,
+    "enable_csam_clc_report" : false,
+    "enable_counselor_toolkits" : false,
+    "enable_resources" : false,
+    "enable_emoji_picker" : true
     "enable_fullstory_monitoring" : false,
     "enable_upload_documents" : true,
     "enable_post_survey" : local.enable_post_survey,
@@ -183,16 +222,28 @@ module "hrmServiceIntegration" {
   helpline          = local.helpline
   short_helpline    = local.short_helpline
   environment       = local.environment
+  source            = "../terraform-modules/hrmServiceIntegration/default"
+  local_os          = var.local_os
+  helpline          = local.helpline
+  short_helpline    = local.short_helpline
+  environment       = local.environment
   short_environment = local.short_environment
 }
 
 module "serverless" {
   source             = "../terraform-modules/serverless/default"
+  source             = "../terraform-modules/serverless/default"
   twilio_account_sid = local.secrets.twilio_account_sid
+  twilio_auth_token  = local.secrets.twilio_auth_token
   twilio_auth_token  = local.secrets.twilio_auth_token
 }
 
 module "services" {
+  source            = "../terraform-modules/services/default"
+  local_os          = var.local_os
+  helpline          = local.helpline
+  short_helpline    = local.short_helpline
+  environment       = local.environment
   source            = "../terraform-modules/services/default"
   local_os          = var.local_os
   helpline          = local.helpline
@@ -279,6 +330,10 @@ module "aws_monitoring" {
 module "github" {
   source             = "../terraform-modules/github/default"
   twilio_account_sid = local.secrets.twilio_account_sid
+  twilio_auth_token  = local.secrets.twilio_auth_token
+  short_environment  = local.short_environment
+  short_helpline     = local.short_helpline
+  serverless_url     = module.serverless.serverless_environment_production_url
   twilio_auth_token  = local.secrets.twilio_auth_token
   short_environment  = local.short_environment
   short_helpline     = local.short_helpline
