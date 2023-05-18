@@ -49,7 +49,7 @@ locals {
   }
 
   hrm_url = local.hrm_url_map[var.environment][var.helpline_region]
-  resources_base_url = var.feature_flags["enable_resources"]==true ? local.resources_base_url_map[var.environment][var.helpline_region]:""
+
   stage = "configure"
 }
 
@@ -96,7 +96,7 @@ module "flex" {
   contacts_waiting_channels = var.contacts_waiting_channels
   #tODO: this needs to be a configuration option
   hrm_url            = local.hrm_url
-  resources_base_url = local.resources_base_url
+  resources_base_url = var.resources_base_url
 }
 
 module "channel" {

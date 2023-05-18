@@ -181,3 +181,9 @@ variable "enable_post_survey" {
   type    = bool
   default = false
 }
+
+variable "resources_base_url" {
+  description = "Custom URL for the Resources"
+  type        = string
+  default     = ""
+}
