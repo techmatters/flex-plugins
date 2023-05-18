@@ -9,7 +9,7 @@ terraform {
 
 locals {
   hrm_url            = var.hrm_url == "" ? (var.short_environment == "PROD" ? "https://hrm-production.tl.techmatters.org" : (var.short_environment == "STG" ? "https://hrm-staging.tl.techmatters.org" : "https://hrm-development.tl.techmatters.org")) : var.hrm_url
-  resources_base_url = var.resources_base_url == "" ? "https://hrm-${lower(var.environment)}.tl.techmatters.org" : var.resources_base_url
+  resources_base_url = var.resources_base_url
   assets_bucket_url  = "https://assets-${lower(var.environment)}.tl.techmatters.org"
   permission_config  = var.permission_config == "" ? var.operating_info_key : var.permission_config
 

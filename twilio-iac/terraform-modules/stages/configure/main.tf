@@ -33,7 +33,7 @@ locals {
       "ca-central-1" = "https://hrm-production-ca.tl.techmatters.org"
     }
   }
-  resources_base_url_map = {
+   resources_base_url_map = {
     "development" = {
       "us-east-1" = "https://hrm-development.tl.techmatters.org"
     }
@@ -48,9 +48,9 @@ locals {
     }
   }
 
-  hrm_url            = local.hrm_url_map[var.environment][var.helpline_region]
-  resources_base_url = local.resources_base_url_map[var.environment][var.helpline_region]
-  stage              = "configure"
+  hrm_url = local.hrm_url_map[var.environment][var.helpline_region]
+  resources_base_url = var.feature_flags["enable_resources"]==true ? local.resources_base_url_map[var.environment][var.helpline_region]:""
+  stage = "configure"
 }
 
 data "terraform_remote_state" "provision" {
