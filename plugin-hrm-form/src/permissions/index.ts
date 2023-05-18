@@ -62,7 +62,7 @@ export const PermissionActions = {
 type PermissionActionsKeys = keyof typeof PermissionActions;
 export type PermissionActionType = typeof PermissionActions[PermissionActionsKeys];
 type Condition = 'isSupervisor' | 'isCreator' | 'isCaseOpen' | 'isOwner' | 'everyone';
-type ConditionsSet = Condition[];
+export type ConditionsSet = Condition[];
 type ConditionsSets = ConditionsSet[];
 
 type ConditionsState = Partial<{
