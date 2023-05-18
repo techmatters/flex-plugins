@@ -514,6 +514,9 @@
         },
         {
           "label": "Thanks to Childline service"
+        },
+        {
+          "label": "SRHR services"
         }
       ]
     },
@@ -1390,6 +1393,29 @@
         },
         {
           "label": "Street child"
+        }
+      ]
+    },
+    "Behaviour Problems": {
+      "color": "#8055BA",
+      "subcategories": [
+        {
+          "label": "Aggressive Child"
+        },
+        {
+          "label": "Child Runaway"
+        },
+        {
+          "label": "Criminal Activity"
+        },
+        {
+          "label": "Discipline Problems"
+        },
+        {
+          "label": "Hyperactivity/ Attention deficit"
+        },
+        {
+          "label": "Uncontrollable child"
         }
       ]
     },
