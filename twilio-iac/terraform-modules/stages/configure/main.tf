@@ -33,20 +33,7 @@ locals {
       "ca-central-1" = "https://hrm-production-ca.tl.techmatters.org"
     }
   }
-   resources_base_url_map = {
-    "development" = {
-      "us-east-1" = "https://hrm-development.tl.techmatters.org"
-    }
-    "staging" = {
-      "us-east-1" = "https://hrm-staging.tl.techmatters.org"
-      "us-west-1" = "https://hrm-staging-eu.tl.techmatters.org"
-    }
-    "production" = {
-      "us-east-1"    = "https://hrm-production.tl.techmatters.org"
-      "eu-west-1"    = "https://hrm-production-eu.tl.techmatters.org"
-      "ca-central-1" = "https://hrm-production-ca.tl.techmatters.org"
-    }
-  }
+  
 
   hrm_url = local.hrm_url_map[var.environment][var.helpline_region]
 
