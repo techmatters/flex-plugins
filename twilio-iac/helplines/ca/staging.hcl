@@ -5,6 +5,8 @@ locals {
 
   local_config = {
 
+    resources_base_url = "https://hrm-staging.tl.techmatters.org"
+
     #Studio flow
     flow_vars = {
       service_sid                       = "ZSb631f562c8306085ceb8329349fdd60b"
