@@ -54,7 +54,7 @@ locals {
     "enable_sort_cases": true,
     "enable_transfers": true,
     "enable_manual_pulling": true,
-    "enable_csam_report": true,
+    "enable_csam_report": false,
     "enable_canned_responses": true,
     "enable_dual_write": false,
     "enable_save_insights": false,
