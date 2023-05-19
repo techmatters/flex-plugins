@@ -14,7 +14,9 @@ locals {
       operating_hours_function_sid  = "ZH3ef7c7c03c4533829cc1b53b38197de7"
       operating_hours_function_name = "operatingHours"
     }
-
+    //Serverless -- to allow enabling the operating hours check on this staging account.
+    ui_editable = true
+    
     #Task router 
     phone_numbers = {
       youthline : ["+18645238101","+6478079100"]
