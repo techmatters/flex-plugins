@@ -2,8 +2,11 @@ data "aws_ssm_parameter" "secrets" {
   name = "/terraform/twilio-iac/${var.environment}/${var.short_helpline}/secrets.json"
 }
 
+data "aws_caller_identity" "current" {}
+
 locals {
   secrets                               = jsondecode(data.aws_ssm_parameter.secrets.value)
+  aws_account_id                        = data.aws_caller_identity.current.account_id
   provision_config                      = data.terraform_remote_state.provision.outputs
   serverless_url                        = local.provision_config.serverless_url
   serverless_service_sid                = local.provision_config.serverless_service_sid
@@ -34,6 +37,7 @@ locals {
     }
   }
 
+
   hrm_url = local.hrm_url_map[var.environment][var.helpline_region]
 
   stage = "configure"
@@ -43,9 +47,10 @@ data "terraform_remote_state" "provision" {
   backend = "s3"
 
   config = {
-    bucket = "tl-terraform-state-${var.environment}"
-    key    = "twilio/${var.short_helpline}/provision/terraform.tfstate"
-    region = "us-east-1"
+    bucket   = "tl-terraform-state-${var.environment}"
+    key      = "twilio/${var.short_helpline}/provision/terraform.tfstate"
+    region   = "us-east-1"
+    role_arn = "arn:aws:iam::${local.aws_account_id}:role/tf-twilio-iac-${var.environment}"
   }
 }
 
@@ -53,9 +58,10 @@ data "terraform_remote_state" "chatbot" {
   backend = "s3"
 
   config = {
-    bucket = "tl-terraform-state-${var.environment}"
-    key    = "twilio/${var.short_helpline}/chatbot/terraform.tfstate"
-    region = "us-east-1"
+    bucket   = "tl-terraform-state-${var.environment}"
+    key      = "twilio/${var.short_helpline}/chatbot/terraform.tfstate"
+    region   = "us-east-1"
+    role_arn = "arn:aws:iam::${local.aws_account_id}:role/tf-twilio-iac-${var.environment}"
   }
 }
 
@@ -81,7 +87,8 @@ module "flex" {
   feature_flags             = var.feature_flags
   contacts_waiting_channels = var.contacts_waiting_channels
   #tODO: this needs to be a configuration option
-  hrm_url = local.hrm_url
+  hrm_url            = local.hrm_url
+  resources_base_url = var.resources_base_url
 }
 
 module "channel" {
@@ -93,10 +100,12 @@ module "channel" {
   channels              = var.channels
   chatbots              = local.chatbots
   enable_post_survey    = var.enable_post_survey
+  environment           = var.environment
   flow_vars             = var.flow_vars
   short_environment     = var.short_environment
   task_language         = var.task_language
   short_helpline        = upper(var.short_helpline)
+  serverless_url        = local.serverless_url
 }
 
 

@@ -1,10 +1,10 @@
-apply: apply-tf
+apply: verify-pre-work apply-tf
 
 get: get-tf
 
-init: init-scripts init-tf
+init: verify-pre-work init-scripts init-tf
 
-plan: plan-tf
+plan: verify-pre-work plan-tf
 
 destroy: destroy-tf
 
