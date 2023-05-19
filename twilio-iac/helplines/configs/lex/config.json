@@ -15,9 +15,9 @@
       "content_type": "PlainText"
     },
     "slot_types": {
-      "CallerType": {
-        "description": "Caller is calling for self or someone else",
-        "value_selection_strategy": "ORIGINAL_VALUE",
+      "YesNo": {
+        "description": "Custom slot for Yes-No kind of questions",
+        "value_selection_strategy": "TOP_RESOLUTION",
         "values": {
           "Yes": {
             "synonyms": [
@@ -43,7 +43,7 @@
       },
       "Age": {
         "description": "Age of caller",
-        "value_selection_strategy": "ORIGINAL_VALUE",
+        "value_selection_strategy": "TOP_RESOLUTION",
         "values": {
           "0": {
             "synonyms": [
@@ -181,7 +181,7 @@
       },
       "Gender": {
         "description": "Gender of caller",
-        "value_selection_strategy": "ORIGINAL_VALUE",
+        "value_selection_strategy": "TOP_RESOLUTION",
         "values": {
           "boy": {
             "synonyms": [
@@ -237,7 +237,7 @@
             "priority": 1,
             "description": "Caller is calling for self or someone else",
             "slot_constraint": "Required",
-            "slot_type": "CallerType",
+            "slot_type": "YesNo",
             "value_elicitation_prompt": {
               "max_attempts": 2,
               "content": "Are you calling about yourself? Please answer Yes or No.",
