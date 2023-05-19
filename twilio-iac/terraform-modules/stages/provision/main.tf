@@ -77,7 +77,7 @@ module "aws" {
   # post_survey_bot_sid = module.chatbots.post_survey_bot_sid
   # This is not pretty, ideally we will not create a variable if we don't create the survey resource
   # I'll refactor this module in the future but for now I'll assign a fixed 123 id since it doesn't accept empty strings.
-  survey_workflow_sid = try(module.taskRouter.workflow_sids.survey, null)
+  survey_workflow_sid = try(module.taskRouter.workflow_sids.survey, "")
   #TODO: convert bucket_region to helpline_region (or, better yet,  pass in the correct provider)
   bucket_region   = var.helpline_region
   helpline_region = var.helpline_region
