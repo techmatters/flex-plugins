@@ -2,8 +2,8 @@
   "task_routing": {
     "filters": [
       {
-        "filter_friendly_name": "${helpline}",
-        "expression": "1==1 : helpline IN [\"${helpline}\"] OR channelType ==\"web\" OR isContactlessTask == true",
+        "filter_friendly_name": "Survey Filter",
+        "expression": "isSurveyTask==true",
         "targets": [
           {
             "expression": "isSurveyTask==true",

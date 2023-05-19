@@ -1,5 +1,5 @@
 resource "twilio_autopilot_assistants_v1" "post_survey_bot_es" {
-  unique_name   = "post_survey_bot_es"
+  unique_name   = "post_survey_bot_es_cl"
   friendly_name = "A bot that collects a post-survey"
   style_sheet = jsonencode({
     "style_sheet" : {
@@ -80,7 +80,7 @@ resource "twilio_autopilot_assistants_tasks_v1" "post_survey_bot_es_complete_pos
       {
         "redirect" : {
           "method" : "POST",
-          "uri" : "${module.serverless.serverless_environment_production_url}/postSurveyComplete"
+          "uri" : "${var.serverless_url}/postSurveyComplete"
         }
       }
     ]

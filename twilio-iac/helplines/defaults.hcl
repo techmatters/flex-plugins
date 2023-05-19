@@ -16,6 +16,7 @@ locals {
   channel_attributes = {
     webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
     twitter : "/app/twilio-iac/helplines/templates/channel-attributes/twitter.tftpl"
+    voice : "/app/twilio-iac/helplines/templates/channel-attributes/voice.tftpl"
     default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
   }
   contacts_waiting_channels = ["voice","web","whatsapp","facebook","twitter","instagram","line"]

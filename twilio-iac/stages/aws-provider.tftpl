@@ -4,6 +4,8 @@ provider "aws" {
     session_name = "tf-${environment}-${short_helpline}-${stage}"
   }
 
+  region = "us-east-1"
+
   # Make it faster by skipping some things
   skip_region_validation      = true
   skip_credentials_validation = true
