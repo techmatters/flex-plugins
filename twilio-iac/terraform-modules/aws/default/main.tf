@@ -155,10 +155,10 @@ locals {
  ****************************************************************/
 // params are going into the region specified by var.bucket_region
 resource "aws_ssm_parameter" "main_group" {
-  for_each = {
+  for_each = nonsensitive({
     for idx, aws_ssm_parameter in local.aws_ssm_parameters :
-    idx => aws_ssm_parameter if(nonsensitive(jsondecode(aws_ssm_parameter)[1] != ""))
-  }
+    idx => aws_ssm_parameter if(jsondecode(aws_ssm_parameter)[1] != "")
+  })
   # Deserialise the JSON used for the keys - this way we can have multiple values per key
   # note: this can also be accomplished in a more "tf native" way by using an array of objects and a `for` loop.
   # see: https://github.com/techmatters/flex-plugins/blob/1edf877bba4760370af16f41045fa14956d5620f/twilio-iac/terraform-modules/aws/default/main.tf#L206
