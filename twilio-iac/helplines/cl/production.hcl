@@ -7,13 +7,13 @@ locals {
 
     #Studio flow
     flow_vars = {
-      service_sid                  = "ZSe84c8040f76f6e331310f132b88c25d8"
-      environment_sid              = "ZE79c328112066b496d1875fe19bfe2b5c"
-      operating_hours_function_sid = "ZHb02706803df7458aebd679967beb1005"
-      operating_hours_function_url = "https://serverless-6342-production.twil.io/operatingHours"
+      service_sid                   = "ZSe84c8040f76f6e331310f132b88c25d8"
+      environment_sid               = "ZE79c328112066b496d1875fe19bfe2b5c"
+      operating_hours_function_sid  = "ZHb02706803df7458aebd679967beb1005"
+      operating_hours_function_name = "operatingHours"
     }
 
-    
+
     #Chatbots
 
     #Feature flags

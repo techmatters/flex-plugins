@@ -12,6 +12,12 @@ variable "short_helpline" {
   description = "Short (usually 2 letter) upper case code for helpline"
   type        = string
 }
+
+variable "serverless_url" {
+  description = "Serverless URL"
+  type        = string
+}
+
 variable "task_language" {
   type        = string
   default     = ""

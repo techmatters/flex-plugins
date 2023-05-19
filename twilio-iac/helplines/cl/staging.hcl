@@ -4,13 +4,13 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
- 
+
     #Studio flow
     flow_vars = {
-      service_sid                  = "ZSeed7070ce3f2974cb12a0382a2c93340"
-      environment_sid              = "ZEe424f8b564e45c01958e48a1bdfdb41d"
-      operating_hours_function_sid = "ZH3474ae11ae0fcd34edf418930a4abdaf"
-      operating_hours_function_url = "https://serverless-2776-production.twil.io/operatingHours"
+      service_sid                   = "ZSeed7070ce3f2974cb12a0382a2c93340"
+      environment_sid               = "ZEe424f8b564e45c01958e48a1bdfdb41d"
+      operating_hours_function_sid  = "ZH3474ae11ae0fcd34edf418930a4abdaf"
+      operating_hours_function_name = "operatingHours"
     }
 
     ui_editable = true
