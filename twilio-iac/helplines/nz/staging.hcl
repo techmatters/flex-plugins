@@ -9,6 +9,10 @@ locals {
 
     #Studio flow
     flow_vars = {
+      service_sid                   = "ZSe8d4ba646d0eafbb6de85e2d96e473f7"
+      environment_sid               = "ZE6945a088f73c41632345fd0aae8df17b"
+      operating_hours_function_sid  = "ZH3ef7c7c03c4533829cc1b53b38197de7"
+      operating_hours_function_name = "operatingHours"
     }
 
     #Task router 
@@ -21,8 +25,11 @@ locals {
       webchat : {
         channel_type = "web"
         contact_identity = ""
-        templatefile = "/app/twilio-iac/helplines/templates/studio-flows/webchat-basic.tftpl"
-        channel_flow_vars = {}
+        templatefile = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours.tftpl"
+        channel_flow_vars = {
+          chat_greeting_message = "Hello, welcome to Youthline. Please wait for a counsellor."
+          widget_from           = "Youthline"
+        }
         chatbot_unique_names =[]
       },
       voice : {
