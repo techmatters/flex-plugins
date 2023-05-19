@@ -10,25 +10,6 @@
     "type": "mixed-checkbox"
   },
   {
-    "name": "actionTaken",
-    "label": "Action Taken",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": " "
-      },
-      {
-        "value": "Action taken",
-        "label": "Action taken"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      }
-    ]
-  },
-  {
     "name": "okForCaseWorkerToCall",
     "label": "Ok for case worker to call?",
     "type": "mixed-checkbox"
