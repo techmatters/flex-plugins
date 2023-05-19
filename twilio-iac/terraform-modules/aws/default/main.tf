@@ -113,7 +113,8 @@ resource "aws_s3_bucket_ownership_controls" "chat" {
 
 // This is a hack to get around the fact that the provision step doesn't have access to the "POST_SURVEY_BOT_CHAT_URL" variable and it is added in the chatbot stage
 locals {
-  aws_ssm_parameters =  {
+  post_survey_bot_chat_url = var.post_survey_bot_sid == "" ? "" : "https://channels.autopilot.twilio.com/v1/${var.twilio_account_sid}/${var.post_survey_bot_sid}/twilio-chat"
+  aws_ssm_parameters = {
     WORKSPACE_SID     = jsonencode(["TWILIO", var.flex_task_assignment_workspace_sid, "Twilio account - Workspace SID"])
     CHAT_WORKFLOW_SID = jsonencode(["TWILIO", var.master_workflow_sid, "Twilio account - Chat transfer workflow SID"])
     SYNC_SID          = jsonencode(["TWILIO", var.shared_state_sync_service_sid, "Twilio account - Sync service "])
@@ -125,7 +126,7 @@ locals {
     // API Key secrets are not accessible from the twilio terraform provider
     // HRM_STATIC_KEY = jsonencode(["TWILIO", "NOT_SET", "Twilio account - HRM static secret to perform backend calls"])
     S3_BUCKET_DOCS           = jsonencode(["TWILIO", local.docs_s3_location, "Twilio account - Post Survey bot chat url"])
-    POST_SURVEY_BOT_CHAT_URL = jsonencode(["TWILIO", "https://channels.autopilot.twilio.com/v1/${var.twilio_account_sid}/${var.post_survey_bot_sid}/twilio-chat", "Twilio account - Post Survey bot chat url"])
+    POST_SURVEY_BOT_CHAT_URL = jsonencode(["TWILIO", local.post_survey_bot_chat_url, "Twilio account - Post Survey bot chat url"])
     OPERATING_INFO_KEY       = jsonencode(["TWILIO", var.operating_info_key, "Twilio account - Operating Key info"])
     APP_ID                   = jsonencode(["DATADOG", var.datadog_app_id, "Datadog - Application ID"])
     ACCESS_TOKEN             = jsonencode(["DATADOG", var.datadog_access_token, "Datadog - Access Token"])
