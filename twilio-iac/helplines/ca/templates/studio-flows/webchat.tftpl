@@ -298,7 +298,7 @@ ${
         "type": "set-variables",
         "transitions": [
           {
-            "next": "time_delay",
+            "next": "engagement",
             "event": "next"
           }
         ],
@@ -1030,12 +1030,12 @@ ${
             "event": "match",
             "conditions": [
               {
-                "friendly_name": "If value greater_than 6",
+                "friendly_name": "If value greater_than 7",
                 "arguments": [
                   "{{widgets.check_queue_en.parsed.totalTasks}}"
                 ],
                 "type": "greater_than",
-                "value": "6"
+                "value": "7"
               }
             ]
           }
@@ -1107,12 +1107,12 @@ ${
             "event": "match",
             "conditions": [
               {
-                "friendly_name": "If value greater_than 6",
+                "friendly_name": "If value greater_than 3",
                 "arguments": [
                   "{{widgets.check_queue_fr.parsed.totalTasks}}"
                 ],
                 "type": "greater_than",
-                "value": "2"
+                "value": "3"
               }
             ]
           }
