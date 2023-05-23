@@ -25,7 +25,7 @@
   },
   {
      "label":"Absence of Response: Sadly, it seems like we have a connection issue...",
-     "text":"Sadly, it seems like we have a connection issue :( I will have to sign off, but please clal or try chat again"
+     "text":"Sadly, it seems like we have a connection issue :( I will have to sign off, but please call or try chat again"
   },
   {
      "label":"Absence of Response: Still there? I'd like to hear more about what's on your mind",
@@ -312,315 +312,315 @@
      "text":"Can you tell me about something you are proud of? How did you manage to do that?"
   },
   {
-     "label":"Absence de réponse: Salut, y a-t-il quelqu'un ?",
-     "text":"Salut, y a-t-il quelqu'un ?"
-  },
-  {
-     "label":"Absence de réponse: Heu, tu es toujours là ? Je suis prêt à discuter quand vous l'êtes.",
-     "text":"Heu, tu es toujours là ? Je suis prêt à discuter quand vous l'êtes."
-  },
-  {
-     "label":"Absence de réponse: Heu, je ne sais pas si c'est la technologie, mais aucun message ne passe",
-     "text":"Heu, je ne sais pas si c'est la technologie, mais aucun message ne passe"
-  },
-  {
-     "label":"Absence de réponse: Il semble que vous n'êtes peut-être plus là...",
-     "text":"Il semble que vous n'êtes peut-être plus là, je vais attendre quelques minutes de plus pour être sûr"
-  },
-  {
-     "label":"Absence de réponse: Ce n'est pas toujours facile de s'ouvrir...",
-     "text":"Ce n'est pas toujours facile de s'ouvrir. Si vous êtes là, mais vous ne savez pas par où commencer, donnez-moi simplement un petit coup de pouce ?"
-  },
-  {
-     "label":"Absence de réponse: D'accord, je dois me désengager maintenant, mais si vous souhaitez toujours parler...",
-     "text":"D'accord, je dois me désengager maintenant, mais si vous souhaitez toujours parler, revenez pour discuter ou appelez-nous à tout moment"
-  },
-  {
-     "label":"Absence de réponse: Malheureusement, il semble que nous ayons un problème de connexion...",
-     "text":"Malheureusement, il semble que nous ayons un problème de connexion :( Je dois me déconnecter, mais veuillez appeler ou essayer de discuter à nouveau"
-  },
-  {
-     "label":"Absence de réponse: Toujours là? J'aimerais en savoir plus sur ce que tu penses",
-     "text":"Toujours là? J'aimerais en savoir plus sur ce que tu penses"
-  },
-  {
-     "label":"Aborder les émotions - Au début du chat: Pouvez-vous me dire un peu ce qui se passait...?",
-     "text":"Pouvez-vous me dire un peu ce qui se passait juste avant que vous veniez sur le chat... que pensiez-vous et que ressentiez-vous ?"
-  },
-  {
-     "label":"Aborder les émotions - Au début du chat: Les sentiments peuvent être difficiles à décrire...",
-     "text":"Les sentiments peuvent être difficiles à décrire - pensez-vous que vous pourriez choisir une couleur, une image ou même une parole musicale qui m'aiderait à comprendre ce que vous ressentez ?"
-  },
-  {
-     "label":"Aborder les émotions - Au début du chat: L'un des défis de discuter avec vous est que je ne peux ni voir...",
-     "text":"L'un des défis de discuter avec vous est que je ne peux ni voir ni entendre comment vous allez. Comment décririez-vous ce que vous ressentez en ce moment ?"
-  },
-  {
-     "label":"Aborder les émotions - Au début du chat: Que pouvez-vous me dire sur la façon...",
-     "text":"Que pouvez-vous me dire sur la façon dont les choses se passent pour vous en ce moment ?"
-  },
-  {
-     "label":"Aborder les émotions - Au début du chat: Vous avez mentionné ce sentiment...",
-     "text":"Vous avez mentionné ce sentiment à quelques reprises maintenant... pouvez-vous m'en dire plus ?"
-  },
-  {
-     "label":"Aborder les émotions - Au début du chat: Il pourrait être une bonne idée d'essayer de mesurer votre état...",
-     "text":"Il pourrait être une bonne idée d'essayer de mesurer votre état d'esprit/comment vous vous sentez en ce moment. Où vous placeriez-vous sur une échelle de 1 à 10, 1 étant le pire et 10 étant vraiment génial ?"
-  },
-  {
-     "label":"Aborder les émotions - Plus tard dans le chat: Comment ça s'est passé d'en parler ?",
-     "text":"Comment ça s'est passé d'en parler ?"
-  },
-  {
-     "label":"Aborder les émotions - Plus tard dans le chat: Nous en parlons depuis un certain temps maintenant...",
-     "text":"Nous en parlons depuis un certain temps maintenant - je voulais vérifier... comment allez-vous maintenant par rapport au début de notre conversation ?"
-  },
-  {
-     "label":"Aborder les émotions - Plus tard dans le chat: Je suis curieux… Où vous placeriez-vous...",
-     "text":"Je suis curieux… Où vous placeriez-vous sur l'échelle que nous avons faite au début du chat ?"
-  },
-  {
-     "label":"Évaluation du risque suicidaire: Je peux dire que cette situation est une lutte pour vous...",
-     "text":"Je peux dire que cette situation est une lutte pour vous. Parfois, lorsque les gens font face à des luttes similaires, ils ont aussi des pensées suicidaires. Est-ce quelque chose à laquelle vous avez pensé ?"
-  },
-  {
-     "label":"Évaluation du risque suicidaire: Parfois, lorsque les gens sont confrontés à [problème ici]...",
-     "text":"Parfois, lorsque les gens sont confrontés à [problème ici], ils peuvent aussi penser à se faire du mal. Je veux juste vérifier, avez-vous eu l'une de ces pensées ?"
-  },
-  {
-     "label":"Évaluation du risque suicidaire: Avec tous les [problème ici] que vous rencontrez...",
-     "text":"Avec tous les [problème ici] que vous rencontrez, je voulais vérifier votre sécurité. Avez-vous pensé au suicide?"
-  },
-  {
-     "label":"Évaluation du risque suicidaire: Je suis heureux que vous ayez décidé de tendre la main...",
-     "text":"Je suis heureux que vous ayez décidé de tendre la main et d'en parler aujourd'hui. Avant de poursuivre, je veux faire un rapide contrôle de votre sécurité - vous ne m'avez donné aucune raison de penser que vous avez des pensées suicidaires, mais comme je ne peux pas vous voir ou vous entendre, il m'est difficile de savoir avec certitude. Puis-je vous demander si vous avez ce genre de pensées aujourd'hui ?"
-  },
-  {
-     "label":"Problèmes de déconnexion: Nous voulons-nous assurer que vous savez qu'un conseiller...",
-     "text":"Nous voulons-nous assurer que vous savez qu'un conseiller ne se déconnectera pas sans vous en informer au préalable. Mais à coup sûr, la déconnexion se produit. Si vous êtes en crise ou s'il s'agit d'une urgence et que vous êtes déconnecté, veuillez nous appeler ou composer le 911"
-  },
-  {
-     "label":"Obligation de signaler: Je veux simplement vous informer de notre devoir de signalement...",
-     "text":"Je veux simplement vous informer de notre devoir de signalement en tant que conseillers à Jeunesse, J'écoute. Si vous deviez partager des informations d'identification avec moi (votre nom et votre adresse par exemple) et que vous me parliez ensuite d'une situation où vous êtes en danger, je devrais peut-être faire un rapport à la police ou aux services de protection de l'enfance."
-  },
-  {
-     "label":"Obligation de signaler: Jeunesse, J'écoute est un service anonyme qui vous permet de parler de tout ce qui vous passe par la tête...",
-     "text":"Jeunesse, J'écoute est un service anonyme qui vous permet de parler de tout ce qui vous passe par la tête. Si vous parlez de quelque chose qui vous met en danger (comme une situation abusive ou si vous vous sentez suicidaire) et partagez ensuite avec moi des informations d'identification (comme votre nom, votre ville, ou votre école), je peux avoir l'obligation légale de faire un rapport à la police ou les services de protection de l'enfance. Si ce n'est pas ce que vous voulez, vous pouvoir rester anonyme en ne partageant rien qui vous identifie. Cela a-t-il un sens pour vous ?"
-  },
-  {
-     "label":"Élaboration: Que voudriez-vous que je sache d'autre ?",
-     "text":"Que voudriez-vous que je sache d'autre ?"
-  },
-  {
-     "label":"Élaboration: Que pouvez-vous me dire de plus à ce sujet ?",
-     "text":"Que pouvez-vous me dire de plus à ce sujet ?"
-  },
-  {
-     "label":"Élaboration: Vous semblez avoir beaucoup en ce moment… Je suis tout ouïe ! S'il vous plaît, continuez !",
-     "text":"Vous semblez avoir beaucoup en ce moment… Je suis tout ouïe ! S'il vous plaît, continuez !"
-  },
-  {
-     "label":"Élaboration: Continuez (vous vous débrouillez bien !)",
-     "text":"Continuez (vous vous débrouillez bien !)"
-  },
-  {
-     "label":"Élaboration: S'il vous plaît dites-moi plus",
-     "text":"S'il vous plaît dites-moi plus"
-  },
-  {
-     "label":"Élaboration: Quel serait un exemple de cela ?",
-     "text":"Quel serait un exemple de cela ?"
-  },
-  {
-     "label":"Élaboration: Quoi d'autre ?",
-     "text":"Quoi d'autre ?"
-  },
-  {
-     "label":"Réponses empathiques: Je peux imaginer que ce fut une expérience douloureuse pour vous.",
-     "text":"Je peux imaginer que ce fut une expérience douloureuse pour vous."
-  },
-  {
-     "label":"Réponses empathiques: Je peux voir à quel point gérer cela serait difficile pour vous.",
-     "text":"Je peux voir à quel point gérer cela serait difficile pour vous."
-  },
-  {
-     "label":"Réponses empathiques: On dirait que vous vous êtes senti blessé quand…",
-     "text":"On dirait que vous vous êtes senti blessé quand…"
-  },
-  {
-     "label":"Réponses empathiques: J'ai l'impression que cette expérience a été déroutante pour vous.",
-     "text":"J'ai l'impression que cette expérience a été déroutante pour vous."
-  },
-  {
-     "label":"Réponses empathiques: Je peux entendre à quel point cela est bouleversant pour vous.",
-     "text":"Je peux entendre à quel point cela est bouleversant pour vous."
-  },
-  {
-     "label":"Réponses empathiques: Je peux comprendre à quel point c'est difficile en ce moment...",
-     "text":"Je peux comprendre à quel point c'est difficile en ce moment... Merci de partager avec moi."
-  },
-  {
-     "label":"Encourager un appel à KHP ou une visite sur le site web: Compte tenu de ce que vous vivez, je me demande...",
-     "text":"Compte tenu de ce que vous vivez, je me demande ce que vous pensez de parler au téléphone ? Si vous deviez nous appeler au 1-800-668-6868, c'est également confidentiel et anonyme."
-  },
-  {
-     "label":"Encourager un appel à KHP ou une visite sur le site web: Je me demande si vous avez pensé à nous appeler...",
-     "text":"Je me demande si vous avez pensé à nous appeler ? Serait-ce une option ce soir ?"
-  },
-  {
-     "label":"Encourager un appel à KHP ou une visite sur le site web: Lorsque vous êtes entré dans le chat, avez-vous eu l'occasion...",
-     "text":"Lorsque vous êtes entré dans le chat, avez-vous eu l'occasion de regarder autour de notre site ? Peut-être que je peux vous indiquer quelques-unes des fonctionnalités qui pourraient vous être utiles…"
-  },
-  {
-     "label":"Terminer la conversation: Notre conversation va donc bientôt se terminer...",
-     "text":"Notre conversation va donc bientôt se terminer. Comment aimeriez-vous utiliser notre temps restant ensemble ?"
-  },
-  {
-     "label":"Terminer la conversation: Il nous reste environ 10 minutes à notre séance...",
-     "text":"Il nous reste environ 10 minutes à notre séance. Serait-il acceptable de vérifier comment vous vous sentez maintenant et de résumer notre discussion ?"
-  },
-  {
-     "label":"Terminer la conversation: Nous approchons de la fin de notre séance de ce soir...",
-     "text":"Nous approchons de la fin de notre séance de ce soir. Je me demande si vous pouvez essayer de récapituler ce dont nous avons parlé et ensuite nous pourrons solidifier vos prochaines étapes ?"
-  },
-  {
-     "label":"Terminer la conversation: Ouah! Vous avez vraiment réussi à exprimer...",
-     "text":"Ouah! Vous avez vraiment réussi à exprimer beaucoup de vos sentiments ce soir. [en espérant que vous vous sentez soulagé] Passons en revue votre prochaine étape afin que vous sachiez quoi faire ensuite lorsque nous terminerons le chat dans quelques minutes."
-  },
-  {
-     "label":"Terminer la conversation: Je suis vraiment fier de vous pour m'avoir parlé...",
-     "text":"Je suis vraiment fier de vous pour m'avoir parlé de cette situation difficile. Il nous reste environ 5 ou 10 minutes, je me demande ce qui vous serait le plus utile en ce moment alors que nous terminons ?"
-  },
-  {
-     "label":"Terminer la conversation: Nous discutons depuis environ une heure maintenant...",
-     "text":"Nous discutons depuis environ une heure maintenant et il sera bientôt temps de mettre fin à notre session. Vérifions-nous comment vous vous sentez et ce que vous pourriez faire une fois que nous aurons terminé ?"
-  },
-  {
-     "label":"Le Sujet: Je suis curieux, de quoi espériez-vous le plus discuter ce soir ?",
-     "text":"Je suis curieux, de quoi espériez-vous le plus discuter ce soir ?"
-  },
-  {
-     "label":"Le Sujet: Je me demande, à votre avis, quel pourrait être l'objectif le plus utile...",
-     "text":"Je me demande, à votre avis, quel pourrait être l'objectif le plus utile pour vous lors de notre conversation de ce soir ?"
-  },
-  {
-     "label":"Le Sujet: Nous discutons depuis un petit moment maintenant et je veux être sûr...",
-     "text":"Nous discutons depuis un petit moment maintenant et je veux être sûr que nous sommes sur la même longueur d'onde. Que diriez-vous de vous mettre d'accord sur un objectif ou une concentration pour notre temps ce soir ?"
-  },
-  {
-     "label":"Le Sujet: Merci d'être ouvert et de partager autant de ce qui s'est passé pour vous...",
-     "text":"Merci d'être ouvert et de partager autant de ce qui s'est passé pour vous. Il pourrait être utile pour nous de préciser un peu maintenant. Quelle est la partie la plus importante sur laquelle nous devons braquer les projecteurs pour le reste de notre temps ensemble ?"
-  },
-  {
-     "label":"Le Sujet: Je peux entendre tout ce que vous faites en ce moment...",
-     "text":"Je peux entendre tout ce que vous faites en ce moment. De toutes les choses que vous avez mentionnées, sur quoi aimeriez-vous vous concentrer en ce moment ?"
-  },
-  {
-     "label":"Salutation: Bienvenue au service d’intervention Clavardage en direct de Jeunesse, J’écoute. ",
-     "text":"Bienvenue au service d’intervention Clavardage en direct de Jeunesse, J’écoute. "
-  },
-  {
-     "label":"Salutation: Merci (nom du bavardage, le cas échéant) d'avoir attendu, qu'avez-vous en tête ?",
-     "text":"Merci (nom du bavardage, le cas échéant) d'avoir attendu, qu'avez-vous en tête ?"
-  },
-  {
-     "label":"Salutation: Bonjour, vous avez joint un conseiller, de quoi voudriez-vous parler ?",
-     "text":"Bonjour, vous avez joint un conseiller, de quoi voudriez-vous parler ?"
-  },
-  {
-     "label":"Présentation d'une évaluation des risques: Parfois, les personnes qui vivent ces expérience...",
-     "text":"Parfois, les personnes qui vivent ces expériences ont également des pensées suicidaires. Donc, je voulais vérifier : avez-vous des pensées suicidaires ?"
-  },
-  {
-     "label":"Présentation d'une évaluation des risques: Nous avons discuté de choses très douloureuses...",
-     "text":"Nous avons discuté de choses très douloureuses, est-ce que je peux vérifier votre sécurité ?"
-  },
-  {
-     "label":"Présentation d'une évaluation des risques: Je m'inquiète pour toi, te sens-tu en sécurité ce soir ?",
-     "text":"Je m'inquiète pour toi, te sens-tu en sécurité ce soir ?"
-  },
-  {
-     "label":"Présentation d'une évaluation des risques: Je veux vraiment aider et nous pouvons certainement...",
-     "text":"Je veux vraiment aider et nous pouvons certainement en parler davantage, mais d'abord je me demande si cela irait si je vous ai posé quelques questions sur votre sécurité ?"
-  },
-  {
-     "label":"Présentation d'une évaluation des risques: Vous avez mentionné certaines choses...",
-     "text":"Vous avez mentionné certaines choses qui m'inquiètent un peu, je m'interroge sur votre sécurité en ce moment."
-  },
-  {
-     "label":"Informations KHP: Jeunesse, J'écoute est ouvert 24 heures sur 24, 7 jours sur 7...",
-     "text":"Jeunesse, J'écoute est ouvert 24 heures sur 24, 7 jours sur 7. Il s'agit d'un service de soutien confidentiel et anonyme avec des conseillers qui parlent anglais et français. Vous pouvez nous joindre sur le chat en direct ou vous pouvez parler à un conseiller au téléphone."
-  },
-  {
-     "label":"Informations KHP: La service d'intervention clavardage en direct de Jeunesse, J'écoute...",
-     "text":"La service d'intervention clavardage en direct de Jeunesse, J'écoute c'est quand vous parlez avec un professionnel de tout ce qui vous passe par la tête. Ce professionnel est un conseiller - quelqu'un qui est formé pour vous parler de tout problème, grand ou petit. Au cours de la consultation, nous pouvons vous poser des questions pour vous aider à savoir plus sur votre situation. Nous travaillerons avec vous pour trouver des solutions ou les prochaines étapes ensemble. Nous sommes toujours là pour vous écouter."
-  },
-  {
-     "label":"Recentrer: Je me demande si (et dites-moi si je me trompe)...",
-     "text":"Je me demande si (et dites-moi si je me trompe), mais avons-nous dévié de ce dont nous parlions en premier ?"
-  },
-  {
-     "label":"Recentrer: Que pensez-vous de l'idée que nous nous sommes un peu détournés ?",
-     "text":"Que pensez-vous de l'idée que nous nous sommes un peu détournés ?"
-  },
-  {
-     "label":"Recentrer: Hum, on dirait que nous pourrions être distraits...",
-     "text":"Hum, on dirait que nous pourrions être distraits. Je comprends tout ce que vous avez, mais je veux faire le meilleur usage du temps dont nous disposons pour discuter."
-  },
-  {
-     "label":"Recentrer: J'apprécie à quel point vous voulez que je comprenne cette situation...",
-     "text":"J'apprécie à quel point vous voulez que je comprenne cette situation, mais revenons peut-être sur notre objectif initial pour le chat…"
-  },
-  {
-     "label":"Problèmes de sécurité: Je suis préoccupé par votre sécurité...",
-     "text":"Je suis préoccupé par votre sécurité. Pourriez-vous nous appeler et parler à quelqu'un en personne ? 1-800-668-6868. Si vous ne voulez pas nous appeler, que diriez-vous d'appeler le 9-1-1 ?"
-  },
-  {
-     "label":"Problèmes de sécurité: Si vous vous sentez en danger ou en danger...",
-     "text":"Si vous vous sentez en danger ou en danger, composez le 9-1-1 pour obtenir une aide immédiate…"
-  },
-  {
-     "label":"Problèmes de sécurité: Il semble que vous soyez prêt à appeler le 9-1-1...",
-     "text":"Il semble que vous soyez prêt à appeler le 9-1-1, si vous le souhaitez, je peux rester en conversation avec vous jusqu'à ce que quelqu'un arrive."
-  },
-  {
-     "label":"Questions basées sur les forces: Qu'est-ce qui vous donne de la force dans une période difficile ?",
-     "text":"Qu'est-ce qui vous donne de la force dans une période difficile ?"
-  },
-  {
-     "label":"Questions basées sur les forces: Pouvez-vous me parler d'une fois où vous avez répondu...",
-     "text":"Pouvez-vous me parler d'une fois où vous avez répondu à un défi d'une manière qui vous a fait vous sentir bien ?"
-  },
-  {
-     "label":"Questions basées sur les forces: Pouvez-vous me dire comment...",
-     "text":"Pouvez-vous me dire comment vous avez pris une décision difficile au passé ?"
-  },
-  {
-     "label":"Questions basées sur les forces: Quand les choses vont bien dans votre vie...",
-     "text":"Quand les choses vont bien dans votre vie, pouvez-vous me dire ce qui se passe ?"
-  },
-  {
-     "label":"Questions basées sur les forces: Pouvez-vous me parler d'une fois où vous avez réussi...",
-     "text":"Pouvez-vous me parler d'une fois où vous avez réussi à vous libérer de ce problème ne serait-ce que pour quelques instants ?"
-  },
-  {
-     "label":"Questions basées sur les forces: Comment avez-vous réussi à faire face à cette situation ?",
-     "text":"Comment avez-vous réussi à faire face à cette situation ?"
-  },
-  {
-     "label":"Questions basées sur les forces: Quelles sont quelques-uns de vos plus grandes forces ?",
-     "text":"Quelles sont quelques-uns de vos plus grandes forces ?"
-  },
-  {
-     "label":"Questions basées sur les forces: Qu'avez-vous essayé jusqu'à présent qui a été utile ?",
-     "text":"Qu'avez-vous essayé jusqu'à présent qui a été utile ?"
-  },
-  {
-     "label":"Questions basées sur les forces: Selon vos amis, quelle est votre meilleure...",
-     "text":"Selon vos amis, quelle est votre meilleure qualité ? Comment décririez-vous une journée réussie ?"
-  },
-  {
-     "label":"Questions basées sur les forces: Pouvez-vous me parler de quelque chose dont vous êtes fier...",
-     "text":"Pouvez-vous me parler de quelque chose dont vous êtes fier ? Comment avez-vous réussi à faire cela ?"
-  }
+    "label":"Aborder les émotions - Au début du chat: Peux-tu me dire un peu de ce qui se passait...",
+    "text":"Peux-tu me dire un peu de ce qui se passait juste avant que tu viennes sur le clavardage... que pensais-tu et que ressentais-tu?"
+ },
+ {
+    "label":"Aborder les émotions - Au début du chat: Les émotions peuvent être difficiles à décrire...",
+    "text":"Les émotions peuvent être difficiles à décrire - penses-tu que tu pourrais choisir une couleur, une image ou même les paroles d'une chanson pour m'aider comprendre ce que tu ressens?"
+ },
+ {
+    "label":"Aborder les émotions - Au début du chat: L'un des défis de discuter...",
+    "text":"L'un des défis de discuter en ligne avec toi est que je ne peux ni voir ni entendre comment tu te sens. Comment décrirais-tu ce que tu ressens en ce moment?"
+ },
+ {
+    "label":"Aborder les émotions - Au début du chat: Que peux-tu me dire...",
+    "text":"Que peux-tu me dire sur la façon dont les choses se passent pour toi en ce moment?"
+ },
+ {
+    "label":"Aborder les émotions - Au début du chat: Tu as mentionné cette émotion...",
+    "text":"Tu as mentionné cette émotion à quelques reprises maintenant... Peux-tu m'en dire plus?"
+ },
+ {
+    "label":"Aborder les émotions - Au début du chat: Cela pourrait...",
+    "text":"Cela pourrait être une bonne idée d'essayer de mesurer ton état d'esprit/comment tu te sens en ce moment. Où te placerais-tu sur une échelle de 1 à 10, 1 étant le pire et 10 étant vraiment bien?"
+ },
+ {
+    "label":"Aborder les émotions - Plus tard dans le chat: Qu'est-ce que cela te fait de pouvoir en discuter?",
+    "text":"Qu'est-ce que cela te fait de pouvoir en discuter?"
+ },
+ {
+    "label":"Aborder les émotions - Plus tard dans le chat: Nous en parlons depuis un certain temps...",
+    "text":"Nous en parlons depuis un certain temps maintenant - je voulais vérifier... comment te sens-tu maintenant par rapport au début de notre conversation?"
+ },
+ {
+    "label":"Aborder les émotions - Plus tard dans le chat: Je suis curieux∙se...",
+    "text":"Je suis curieux∙se… Où te placerais-tu maintenant sur l'échelle dont nous avons parlé au début de la conversation?"
+ },
+ {
+    "label":"Absence de réponse: Bonjour, y a-t-il quelqu'un?",
+    "text":"Bonjour, y a-t-il quelqu'un?"
+ },
+ {
+    "label":"Absence de réponse: Heu, tu es toujours là? Je suis prêt∙e à discuter quand tu l'es.",
+    "text":"Heu, tu es toujours là? Je suis prêt∙e à discuter quand tu l'es."
+ },
+ {
+    "label":"Absence de réponse: Heu, je ne sais pas si c'est la technologie, mais aucun message ne s'affiche",
+    "text":"Heu, je ne sais pas si c'est la technologie, mais aucun message ne s'affiche"
+ },
+ {
+    "label":"Absence de réponse: Il semble que tu n'es peut-être plus là...",
+    "text":"Il semble que tu n'es peut-être plus là, je vais attendre quelques minutes de plus pour être certain∙e."
+ },
+ {
+    "label":"Absence de réponse: Ce n'est pas toujours facile de se confier. Si tu es là...",
+    "text":"Ce n'est pas toujours facile de se confier. Si tu es là, mais que tu ne sais pas par où commencer, donnez-moi simplement un petit coup de pouce."
+ },
+ {
+    "label":"Absence de réponse: D'accord, je dois me déconnecter maintenant, mais si tu souhaites toujours parler...",
+    "text":"D'accord, je dois me déconnecter maintenant, mais si tu souhaites toujours parler, reviens pour discuter ou appele-nous à tout moment."
+ },
+ {
+    "label":"Absence de réponse: Malheureusement, il semble que nous ayons un problème de connexion...",
+    "text":"Malheureusement, il semble que nous ayons un problème de connexion :( Je dois me déconnecter, mais s'il te plaît rappelle ou essaie de te connecter au clavardage de nouveau."
+ },
+ {
+    "label":"Absence de réponse: Es-tu toujours là? J'aimerais en savoir plus sur ce que tu penses.",
+    "text":"Es-tu toujours là? J'aimerais en savoir plus sur ce que tu penses."
+ },
+ {
+    "label":"Élaboration: Que veux-tu que je sache d'autre?",
+    "text":"Que veux-tu que je sache d'autre?"
+ },
+ {
+    "label":"Élaboration: Que peux-tu me dire de plus à ce sujet?",
+    "text":"Que peux-tu me dire de plus à ce sujet?"
+ },
+ {
+    "label":"Élaboration: Il semble y avoir beaucoup de choses qui se passent en ce moment...",
+    "text":"Il semble y avoir beaucoup de choses qui se passent en ce moment… Je suis à l'écoute! S'il te plaît, continue!"
+ },
+ {
+    "label":"Élaboration: Continue (tu te débrouilles bien!)",
+    "text":"Continue (tu te débrouilles bien!)"
+ },
+ {
+    "label":"Élaboration: S'il te plaît, dis-moi en plus",
+    "text":"S'il te plaît, dis-moi en plus"
+ },
+ {
+    "label":"Élaboration: Quel serait un exemple de cela?",
+    "text":"Quel serait un exemple de cela?"
+ },
+ {
+    "label":"Élaboration: Quoi d'autre?",
+    "text":"Quoi d'autre?"
+ },
+ {
+    "label":"Encourager un appel à KHP ou une visite sur le site web: Compte tenu de ce que tu vis, je me demande...",
+    "text":"Compte tenu de ce que tu vis, je me demande ce que tu penses de parler au téléphone? Si tu devais nous appeler au 1-800-668-6868, c'est également confidentiel et anonyme."
+ },
+ {
+    "label":"Encourager un appel à KHP ou une visite sur le site web: Je me demande si tu as pensé à nous appeler...",
+    "text":"Je me demande si tu as pensé à nous appeler? Est-ce que cela serait une option ce soir?"
+ },
+ {
+    "label":"Encourager un appel à KHP ou une visite sur le site web: Lorsque tu es entré∙e dans le clavardage...",
+    "text":"Lorsque tu es entré∙e dans le clavardage, as-tu eu l'occasion de consulter notre site Web? Peut-être que je peux te montrer quelques-unes des fonctionnalités qui pourraient t'être utiles…"
+ },
+ {
+    "label":"Évaluation du risque suicidaire: Je peux dire que cette situation est un combat pour toi...",
+    "text":"Je peux dire que cette situation est un combat pour toi. Parfois, lorsque les gens font face à des situations similaires, ils ont aussi des pensées suicidaires. Est-ce quelque chose à laquelle tu as pensé?"
+ },
+ {
+    "label":"Évaluation du risque suicidaire: Parfois, lorsque les gens font face à [problème ici], ils∙elles peuvent...",
+    "text":"Parfois, lorsque les gens font face à [problème ici], ils∙elles peuvent aussi penser à se faire du mal. Je veux juste vérifier, as-tu eu l'une de ces pensées?"
+ },
+ {
+    "label":"Évaluation du risque suicidaire: Avec tous les [problèmes ici] auxquels tu fais face...",
+    "text":"Avec tous les [problèmes ici] auxquels tu fais face, je voudrais m'assurer que tu es en sécurité. As-tu pensé au suicide?"
+ },
+ {
+    "label":"Évaluation du risque suicidaire: Je suis heureux∙se que tu aies décidé de tendre...",
+    "text":"Je suis heureux∙se que tu aies décidé de tendre la main et d'en parler aujourd'hui. Avant de poursuivre, je veux faire une vérification rapide de ta sécurité - tu ne m'as donné aucune raison de penser que tu avais des pensées suicidaires, mais comme je ne peux pas te voir ou t'entendre, il m'est difficile de le savoir avec certitude. Puis-je te demander si tu as ce genre de pensées aujourd'hui?"
+ },
+ {
+    "label":"Informations KHP: Jeunesse, J'écoute est ouvert 24 heures sur 24, 7 jours sur 7...",
+    "text":"Jeunesse, J'écoute est ouvert 24 heures sur 24, 7 jours sur 7. C'est un service de soutien confidentiel et anonyme avec des intervenant∙e∙s qui parlent anglais et français. Tu peux nous joindre sur le Clavardage en direct ou tu peux parler à un∙e intervenant∙e au téléphone."
+ },
+ {
+    "label":"Informations KHP: Le service d'intervention Clavardage en direct de Jeunesse, J'écoute...",
+    "text":"Le service d'intervention Clavardage en direct de Jeunesse, J'écoute, c'est lorsque tu parles avec un∙e professionnel∙le de tout ce qui te passe par la tête. Ce∙tte professionnel∙le est une personne qui est formée pour te parler de tout problème, grand ou petit. Au cours de la consultation, nous pouvons te poser des questions pour t'aider à savoir plus sur ta situation. Nous travaillerons avec toi pour trouver des solutions ou les prochaines étapes ensemble. Nous sommes toujours là pour t'écouter."
+ },
+ {
+    "label":"Le sujet: Je suis curieux∙se, de quoi espères-tu le plus discuter ce soir?",
+    "text":"Je suis curieux∙se, de quoi espères-tu le plus discuter ce soir?"
+ },
+ {
+    "label":"Le sujet: Je me demande, à ton avis, quel pourrait être l'objectif...",
+    "text":"Je me demande, à ton avis, quel pourrait être l'objectif le plus utile pour toi lors de notre conversation de ce soir?"
+ },
+ {
+    "label":"Le sujet: Nous discutons depuis un petit moment maintenant et je veux être sûr∙e...",
+    "text":"Nous discutons depuis un petit moment maintenant et je veux être sûr∙e que nous sommes sur la même longueur d'onde. Que dirais-tu de vous mettre d'accord sur un objectif ou sur quoi concentrer notre temps ce soir?"
+ },
+ {
+    "label":"Le sujet: Merci d'être ouvert∙e et de partager ce qui se passe dans ta vie...",
+    "text":"Merci d'être ouvert∙e et de partager ce qui se passe dans ta vie. Cela pourrait être utile pour nous d'être un peu plus précis maintenant. Quelle est la partie la plus importante sur laquelle nous devons nous concentrer pour le reste de notre temps ensemble?"
+ },
+ {
+    "label":"Le sujet: Je comprends qu'il se passe beaucoup de choses. De toutes les choses...",
+    "text":"Je comprends qu'il se passe beaucoup de choses. De toutes les choses que tu as mentionnées, sur quoi aimerais-tu te concentrer en ce moment?"
+ },
+ {
+    "label":"Obligation de signaler: Je veux simplement t'informer de notre devoir de signalement...",
+    "text":"Je veux simplement t'informer de notre devoir de signalement en tant qu'intervanant∙e∙s à Jeunesse, J'écoute. Si tu partages des informations d'identification avec moi (ton nom et ton adresse par exemple) et que tu me parles ensuite d'une situation où tu es en danger, je devrai peut-être faire un rapport à la police ou aux services de protection de l'enfance."
+ },
+ {
+    "label":"Obligation de signaler: Jeunesse, J'écoute est un service anonyme qui te permet...",
+    "text":"Jeunesse, J'écoute est un service anonyme qui te permet de parler de tout ce qui te passe par la tête. Si tu parles de quelque chose qui te met en danger (comme une situation abusive ou si tu te sens suicidaire) et partage ensuite avec moi des informations d'identification (comme ton nom, ta ville, ou ton école), je peux avoir l'obligation légale de faire un rapport à la police ou aux services de protection de l'enfance. Si ce n'est pas ce que tu veux, tu peux rester anonyme en ne partageant rien qui t'identifie. Cela a-t-il un sens pour toi?"
+ },
+ {
+    "label":"Présentation d'une évaluation des risques: Parfois, les personnes qui vivent ces expériences ont également des pensées suicidaires...",
+    "text":"Parfois, les personnes qui vivent ces expériences ont également des pensées suicidaires. Donc, je voudrais vérifier : as-tu des pensées suicidaires?"
+ },
+ {
+    "label":"Présentation d'une évaluation des risques: Nous avons discuté de choses très difficiles...",
+    "text":"Nous avons discuté de choses très difficiles, est-ce que je peux vérifier si tu te sens en sécurité?"
+ },
+ {
+    "label":"Présentation d'une évaluation des risques: Je m'inquiète pour toi, te sens-tu en sécurité ce soir?",
+    "text":"Je m'inquiète pour toi, te sens-tu en sécurité ce soir?"
+ },
+ {
+    "label":"Présentation d'une évaluation des risques: Je veux vraiment aider et nous pouvons...",
+    "text":"Je veux vraiment aider et nous pouvons certainement en parler davantage, mais d'abord je me demande si cela t'irait si je te pose quelques questions sur ta sécurité?"
+ },
+ {
+    "label":"Présentation d'une évaluation des risques: Tu as mentionné certaines choses qui m'inquiètent...",
+    "text":"Tu as mentionné certaines choses qui m'inquiètent un peu, je m'interroge sur ta sécurité en ce moment."
+ },
+ {
+    "label":"Problèmes de déconnexion: Nous voulons-nous assurer que tu sais qu'un∙e intervenant∙e...",
+    "text":"Nous voulons-nous assurer que tu sais qu'un∙e intervenant∙e ne se déconnectera pas sans t'en informer au préalable. Mais parfois, il y a des problèmes de connexion. Si tu es en crise ou s'il s'agit d'une urgence et que tu es déconnecté∙e, appelle-nous ou compose le 911."
+ },
+ {
+    "label":"Problèmes de sécurité: Je suis préoccupé∙e par ta sécurité. Peux-tu nous appeler...",
+    "text":"Je suis préoccupé∙e par ta sécurité. Peux-tu nous appeler et parler à quelqu'un en personne? 1-800-668-6868. Si tu ne peux pas nous appeler, que dirais-tu d'appeler le 9-1-1?"
+ },
+ {
+    "label":"Problèmes de sécurité: Si tu te sens en danger ou si tu ne te sens pas en sécurité...",
+    "text":"Si tu te sens en danger ou si tu ne te sens pas en sécurité, compose le 9-1-1 pour obtenir une aide immédiate…"
+ },
+ {
+    "label":"Problèmes de sécurité: Il me semble que tu sois prêt∙e à appeler le 9-1-1, si tu le souhaites...",
+    "text":"Il me semble que tu sois prêt∙e à appeler le 9-1-1, si tu le souhaites, je peux rester en contact avec toi jusqu'à ce que quelqu'un arrive."
+ },
+ {
+    "label":"Questions basées sur les forces: Qu'est-ce qui te donne de la force pendant une période difficile?",
+    "text":"Qu'est-ce qui te donne de la force pendant une période difficile?"
+ },
+ {
+    "label":"Questions basées sur les forces: Peux-tu me parler d'une fois où tu as répondu...",
+    "text":"Peux-tu me parler d'une fois où tu as répondu à un défi d'une manière qui t'a fait sentir bien?"
+ },
+ {
+    "label":"Questions basées sur les forces: Peux-tu me dire comment tu as pris une décision difficile dans le passé?",
+    "text":"Peux-tu me dire comment tu as pris une décision difficile dans le passé?"
+ },
+ {
+    "label":"Questions basées sur les forces: Quand les choses vont bien dans ta vie, peux-tu me dire ce qui se passe?",
+    "text":"Quand les choses vont bien dans ta vie, peux-tu me dire ce qui se passe?"
+ },
+ {
+    "label":"Questions basées sur les forces: Peux-tu me parler d'une fois où tu as réussi...",
+    "text":"Peux-tu me parler d'une fois où tu as réussi à te libérer de ce problème ne serait-ce que pour quelques instants?"
+ },
+ {
+    "label":"Questions basées sur les forces: Comment as-tu réussi à faire face à cette situation?",
+    "text":"Comment as-tu réussi à faire face à cette situation?"
+ },
+ {
+    "label":"Questions basées sur les forces: Quelles sont quelques-unes de tes plus grandes forces?",
+    "text":"Quelles sont quelques-unes de tes plus grandes forces?"
+ },
+ {
+    "label":"Questions basées sur les forces: Qu'as-tu essayé jusqu'à présent qui a été utile?",
+    "text":"Qu'as-tu essayé jusqu'à présent qui a été utile?"
+ },
+ {
+    "label":"Questions basées sur les forces: Selon tes ami∙e∙s, quelle est ta plus belle...",
+    "text":"Selon tes ami∙e∙s, quelle est ta plus belle qualité? Comment décries-tu une journée réussie?"
+ },
+ {
+    "label":"Questions basées sur les forces: Peux-tu me parler de quelque chose...",
+    "text":"Peux-tu me parler de quelque chose dont tu es fier∙ère? Comment as-tu réussi à faire cela?"
+ },
+ {
+    "label":"Recentrer: Je me demande si (et dis-moi si je me trompe), mais avons-nous...",
+    "text":"Je me demande si (et dis-moi si je me trompe), mais avons-nous dévié de ce dont nous parlions en premier?"
+ },
+ {
+    "label":"Recentrer: Que penses-tu de l'idée que nous nous sommes un peu écarté∙e∙s?",
+    "text":"Que penses-tu de l'idée que nous nous sommes un peu écarté∙e∙s?"
+ },
+ {
+    "label":"Recentrer: Hum, on dirait que nous nous sommes écarté∙e∙s. Je comprends tout ce qui se passe, mais je veux faire...",
+    "text":"Hum, on dirait que nous nous sommes écarté∙e∙s. Je comprends tout ce qui se passe, mais je veux faire le meilleur usage du temps dont nous disposons pour discuter."
+ },
+ {
+    "label":"Recentrer: J'apprécie à quel point tu veux que je comprenne cette situation...",
+    "text":"J'apprécie à quel point tu veux que je comprenne cette situation, mais revenons peut-être sur notre objectif initial pour le clavardage…"
+ },
+ {
+    "label":"Réponses empathiques: Je peux imaginer que cela a été une expérience douloureuse pour toi.",
+    "text":"Je peux imaginer que cela a été une expérience douloureuse pour toi."
+ },
+ {
+    "label":"Réponses empathiques: Je peux voir à quel point gérer cela serait difficile pour toi.",
+    "text":"Je peux voir à quel point gérer cela serait difficile pour toi."
+ },
+ {
+    "label":"Réponses empathiques: On dirait que tu t'es senti∙e blessé∙e quand…",
+    "text":"On dirait que tu t'es senti∙e blessé∙e quand…"
+ },
+ {
+    "label":"Réponses empathiques: J'ai l'impression que cette expérience a été bouleversante pour toi.",
+    "text":"J'ai l'impression que cette expérience a été bouleversante pour toi."
+ },
+ {
+    "label":"Réponses empathiques: Je peux comprendre à quel point cela est bouleversant pour toi.",
+    "text":"Je peux comprendre à quel point cela est bouleversant pour toi."
+ },
+ {
+    "label":"Réponses empathiques: Je peux comprendre à quel point c'est difficile en ce moment...",
+    "text":"Je peux comprendre à quel point c'est difficile en ce moment... Merci de partager ce que tu vis avec moi."
+ },
+ {
+    "label":"Salutation: Bienvenue au service d’intervention Clavardage en direct de Jeunesse, J’écoute.",
+    "text":"Bienvenue au service d’intervention Clavardage en direct de Jeunesse, J’écoute."
+ },
+ {
+    "label":"Salutation: Merci (nom du∙de la clavardeur∙se, le cas échéant) d'avoir attendu, à quoi penses-tu?",
+    "text":"Merci (nom du∙de la clavardeur∙se, le cas échéant) d'avoir attendu, à quoi penses-tu?"
+ },
+ {
+    "label":"Salutation: Bonjour, tu es en contact avec un∙e intervenante, de quoi voudrais-tu parler?",
+    "text":"Bonjour, tu es en contact avec un∙e intervenante, de quoi voudrais-tu parler?"
+ },
+ {
+    "label":"Terminer la conversation: Notre conversation va donc bientôt se terminer...",
+    "text":"Notre conversation va donc bientôt se terminer. Comment aimerais-tu utiliser le temps qui reste ensemble?"
+ },
+ {
+    "label":"Terminer la conversation: Il nous reste environ 10 minutes à notre séance...",
+    "text":"Il nous reste environ 10 minutes à notre séance. Serait-il acceptable de vérifier comment tu te sens maintenant et de résumer notre discussion?"
+ },
+ {
+    "label":"Terminer la conversation: Nous approchons de la fin de notre séance de ce soir. Je me demande si tu pourrais essayer...",
+    "text":"Nous approchons de la fin de notre séance de ce soir. Je me demande si tu pourrais essayer de résumer ce dont nous avons parlé et ensuite nous pourrons solidifier tes prochaines étapes?"
+ },
+ {
+    "label":"Terminer la conversation: Wow! Tu as vraiment réussi à exprimer beaucoup...",
+    "text":"Wow! Tu as vraiment réussi à exprimer beaucoup de tes émotions ce soir. [en espérant que tu te sentes soulagé∙e] Passons en revue ta prochaine étape afin que tu saches quoi faire pour la suite des choses lorsque nous aurons terminé le clavardage dans quelques minutes."
+ },
+ {
+    "label":"Terminer la conversation: Je suis vraiment fier∙ère de toi pour m'avoir...",
+    "text":"Je suis vraiment fier∙ère de toi pour m'avoir parlé de cette situation difficile. Il nous reste environ 5 ou 10 minutes, je me demande ce qui vous serait le plus utile en ce moment alors que nous nous approchons de la fin."
+ },
+ {
+    "label":"Terminer la conversation: Nous discutons depuis environ une heure maintenant...",
+    "text":"Nous discutons depuis environ une heure maintenant et il sera bientôt temps de mettre fin à notre séance. Vérifions comment tu te sens et ce que tu pourrais faire une fois que nous aurons terminé?"
+ } 
 ]
