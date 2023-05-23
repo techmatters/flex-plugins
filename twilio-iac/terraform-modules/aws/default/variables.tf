@@ -77,7 +77,6 @@ variable "flex_proxy_service_sid" {
 variable "survey_workflow_sid" {
   description = "Internal Twilio resource SID provided by another module"
   type        = string
-  default     = ""
 }
 
 variable "bucket_region" {

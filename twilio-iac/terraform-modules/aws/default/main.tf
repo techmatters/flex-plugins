@@ -113,8 +113,22 @@ resource "aws_s3_bucket_ownership_controls" "chat" {
 
 // This is a hack to get around the fact that the provision step doesn't have access to the "POST_SURVEY_BOT_CHAT_URL" variable and it is added in the chatbot stage
 locals {
-  post_survey_bot_chat_url = var.post_survey_bot_sid == "" ? "" : "https://channels.autopilot.twilio.com/v1/${var.twilio_account_sid}/${var.post_survey_bot_sid}/twilio-chat"
-  aws_ssm_parameters = {
+  aws_ssm_parameters = var.post_survey_bot_sid == "" ? {
+    WORKSPACE_SID     = jsonencode(["TWILIO", var.flex_task_assignment_workspace_sid, "Twilio account - Workspace SID"])
+    CHAT_WORKFLOW_SID = jsonencode(["TWILIO", var.master_workflow_sid, "Twilio account - Chat transfer workflow SID"])
+    SYNC_SID          = jsonencode(["TWILIO", var.shared_state_sync_service_sid, "Twilio account - Sync service "])
+    // API Key secrets are not accessible from the twilio terraform provider
+    // SECRET = jsonencode(["TWILIO", "NOT_SET", "Twilio account - Sync API secret"])
+    CHAT_SERVICE_SID       = jsonencode(["TWILIO", var.flex_chat_service_sid, "Twilio account - Chat service SID"])
+    FLEX_PROXY_SERVICE_SID = jsonencode(["TWILIO", var.flex_proxy_service_sid, "Twilio account - Flex Proxy service SID"])
+    SURVEY_WORKFLOW_SID    = jsonencode(["TWILIO", var.survey_workflow_sid, "Twilio account - Survey Workflow SID"])
+    // API Key secrets are not accessible from the twilio terraform provider
+    // HRM_STATIC_KEY = jsonencode(["TWILIO", "NOT_SET", "Twilio account - HRM static secret to perform backend calls"])
+    S3_BUCKET_DOCS     = jsonencode(["TWILIO", local.docs_s3_location, "Twilio account - Post Survey bot chat url"])
+    OPERATING_INFO_KEY = jsonencode(["TWILIO", var.operating_info_key, "Twilio account - Operating Key info"])
+    APP_ID             = jsonencode(["DATADOG", var.datadog_app_id, "Datadog - Application ID"])
+    ACCESS_TOKEN       = jsonencode(["DATADOG", var.datadog_access_token, "Datadog - Access Token"])
+    } : {
     WORKSPACE_SID     = jsonencode(["TWILIO", var.flex_task_assignment_workspace_sid, "Twilio account - Workspace SID"])
     CHAT_WORKFLOW_SID = jsonencode(["TWILIO", var.master_workflow_sid, "Twilio account - Chat transfer workflow SID"])
     SYNC_SID          = jsonencode(["TWILIO", var.shared_state_sync_service_sid, "Twilio account - Sync service "])
@@ -126,7 +140,7 @@ locals {
     // API Key secrets are not accessible from the twilio terraform provider
     // HRM_STATIC_KEY = jsonencode(["TWILIO", "NOT_SET", "Twilio account - HRM static secret to perform backend calls"])
     S3_BUCKET_DOCS           = jsonencode(["TWILIO", local.docs_s3_location, "Twilio account - Post Survey bot chat url"])
-    POST_SURVEY_BOT_CHAT_URL = jsonencode(["TWILIO", local.post_survey_bot_chat_url, "Twilio account - Post Survey bot chat url"])
+    POST_SURVEY_BOT_CHAT_URL = jsonencode(["TWILIO", "https://channels.autopilot.twilio.com/v1/${var.twilio_account_sid}/${var.post_survey_bot_sid}/twilio-chat", "Twilio account - Post Survey bot chat url"])
     OPERATING_INFO_KEY       = jsonencode(["TWILIO", var.operating_info_key, "Twilio account - Operating Key info"])
     APP_ID                   = jsonencode(["DATADOG", var.datadog_app_id, "Datadog - Application ID"])
     ACCESS_TOKEN             = jsonencode(["DATADOG", var.datadog_access_token, "Datadog - Access Token"])
@@ -141,10 +155,8 @@ locals {
  ****************************************************************/
 // params are going into the region specified by var.bucket_region
 resource "aws_ssm_parameter" "main_group" {
-  for_each = nonsensitive({
-    for idx, aws_ssm_parameter in local.aws_ssm_parameters :
-    idx => aws_ssm_parameter if(jsondecode(aws_ssm_parameter)[1] != "")
-  })
+  for_each = local.aws_ssm_parameters
+
   # Deserialise the JSON used for the keys - this way we can have multiple values per key
   # note: this can also be accomplished in a more "tf native" way by using an array of objects and a `for` loop.
   # see: https://github.com/techmatters/flex-plugins/blob/1edf877bba4760370af16f41045fa14956d5620f/twilio-iac/terraform-modules/aws/default/main.tf#L206
