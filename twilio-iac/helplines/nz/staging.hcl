@@ -27,7 +27,7 @@ locals {
       webchat : {
         channel_type = "web"
         contact_identity = ""
-        templatefile = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours.tftpl"
+        templatefile = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-no-chatbot-operating-hours.tftpl"
         channel_flow_vars = {
           chat_greeting_message = "Hello, welcome to Youthline. Please wait for a counsellor."
           widget_from           = "Youthline"

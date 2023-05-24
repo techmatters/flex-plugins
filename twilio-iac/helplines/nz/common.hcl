@@ -10,7 +10,7 @@ locals {
     default_autopilot_chatbot_enabled = false
     task_language                     = "en-US"
     helpline_language                 = "en-US"
-    contacts_waiting_channels         = ["voice","sms","web"]
+    contacts_waiting_channels         = ["voice", "sms", "web"]
     enable_post_survey                = false
 
 
@@ -22,12 +22,16 @@ locals {
     }
 
     task_queues = {
-      master : {
-        "target_workers" = "1==1",
-        "friendly_name"  = "Youthline"
+      youthline_helpline : {
+        "target_workers" = "routing.skills HAS 'Youthline Helpline'",
+        "friendly_name"  = "Youthline Helpline"
+      },
+      triage : {
+        "target_workers" = "routing.skills HAS 'Triage'",
+        "friendly_name"  = "Triage"
       }
     }
-    
-    
+
+
   }
 }
