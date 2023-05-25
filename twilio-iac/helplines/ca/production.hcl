@@ -40,7 +40,7 @@ locals {
       g2t : ["????"],
     }
 
-    hrm_transcript_retention_override = 90
+    hrm_transcript_retention_days_override = 90
 
      // THIS SHOULD BE REMOVED Serverless
     ui_editable = true

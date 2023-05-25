@@ -195,9 +195,9 @@ moved {
 }
 
 resource "aws_ssm_parameter" "transcript_retention_override" {
-  count = var.hrm_transcript_retention_override >= 0 ? 1 : 0
+  count = var.hrm_transcript_retention_days_override >= 0 ? 1 : 0
 
   name  = "/${var.environment}/hrm/${local.secrets.twilio_account_sid}/transcript_retention_days"
   type  = "String"
-  value = var.hrm_transcript_retention_override
+  value = var.hrm_transcript_retention_days_override
 }
