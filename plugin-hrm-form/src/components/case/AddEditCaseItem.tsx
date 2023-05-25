@@ -191,8 +191,23 @@ const AddEditCaseItem: React.FC<Props> = ({
       };
       newInfo = sectionApi.upsertCaseSectionItemFromForm(info, newItem);
       formDefinition.forEach(fd => {
+        /*
+         * In the first instance when fd.type === 'copy-to', rawForm[fd.name] returns a boolean.
+         * Then subsequently rawForm[fd.name] returns an array
+         * First, we check when rawForm[fd.name] is a boolean and assign the value validateCopyTo.
+         * Next, we check when rawForm[fd.name] is array,
+         * validates if its length is greater than zero and assign the value to validateCopyTo
+         */
+
+        let validateCopyTo = rawForm[fd.name];
+        const isArray = Array.isArray(rawForm[fd.name]);
+
+        if (isArray) {
+          validateCopyTo = (rawForm[fd.name] as string).length > 0;
+        }
+
         // A preceding 'filter' call looks nicer but TS type narrowing isn't smart enough to work with that.
-        if (fd.type === 'copy-to' && rawForm[fd.name]) {
+        if (fd.type === 'copy-to' && validateCopyTo) {
           newInfo = copyCaseSectionItem({
             definition: definitionVersion,
             original: newInfo,
