@@ -137,7 +137,6 @@ resource "aws_ssm_parameter" "twilio_flex_proxy_service_sid" {
 }
 
 resource "aws_ssm_parameter" "twilio_survey_workflow_sid" {
-  count       = var.survey_workflow_sid == "" ? 0 : 1
   name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/survey_workflow_sid"
   type        = "SecureString"
   value       = var.survey_workflow_sid
