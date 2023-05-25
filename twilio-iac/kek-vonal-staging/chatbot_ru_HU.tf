@@ -126,7 +126,7 @@ resource "twilio_autopilot_assistants_tasks_v1" "chatbot_ru_HU_counselor_handoff
         }
       },
       {
-        "say" : "Свяжем тебя с нашим консультантом, с которым ты сможешь поговорить."
+        "say" : "Сейчас тебе ответит наш оператоп, с которым ты сможешь поговорить."
       }
     ]
   })
