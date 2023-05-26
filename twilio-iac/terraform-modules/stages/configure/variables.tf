@@ -187,3 +187,9 @@ variable "resources_base_url" {
   type        = string
   default     = ""
 }
+
+variable "hrm_transcript_retention_days_override" {
+  description = "Number of days to retain HRM Contact Job Cleanup logs"
+  type        = number
+  default     = -1
+}
