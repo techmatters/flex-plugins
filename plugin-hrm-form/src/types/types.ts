@@ -260,6 +260,7 @@ export type FeatureFlags = {
   enable_counselor_toolkits: boolean; // Enables Counselor Toolkits
   enable_emoji_picker: boolean; // Enables Emoji Picker
   enable_aselo_messaging_ui: boolean; // Enables Aselo Messaging UI iinstead of the default Twilio one - reduced functionality for low spec clients.
+  enable_resources_elastic_search: boolean; // Use the EasticSearch powered search for resources, rather than the interim name only version.
 };
 /* eslint-enable camelcase */
 
