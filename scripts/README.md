@@ -153,6 +153,10 @@ will create a new file `my_custom_bot.tf` that contains the definition of the bo
 
 ### patch-feature-flags
 
+**THIS SCRIPT IS ONLY FOR USE IN DEVELOPMENT ACCOUNTS AND OTHER ACCOUNTS NOT MANAGED BY THE NEW TERRAFORM SYSTEM**
+
+For accounts managed under the new terraform system, you should manage feature flags using the 'configuration' stage of that system.
+
 This script allows you to safely update the feature flags specified in a Twilio Account's Service Configuration without affecting other settings
 
 #### Providing Twilio Credentials
