@@ -251,7 +251,12 @@ export const selfReportToIWF = async (form: ChildCSAMReportForm, caseNumber: str
 
 type ConferenceAddParticipantParams = { conferenceSid: string; to: string; from: string };
 type ConferenceRemoveParticipantParams = { conferenceSid: string; callSid: string };
-type ConferenceToogleHoldParticipantParams = { conferenceSid: string; callSid: string; hold: boolean };
+type ConferenceUpdateParticipantParams = {
+  conferenceSid: string;
+  callSid: string;
+  updateAttribute: 'hold' | 'endConferenceOnExit';
+  updateValue: boolean;
+};
 
 export const conferenceApi = {
   addParticipant: async ({ conferenceSid, to, from }: ConferenceAddParticipantParams) => {
@@ -264,6 +269,7 @@ export const conferenceApi = {
     const response = await fetchProtectedApi('/conference/addParticipant', body);
     return response;
   },
+  
   removeParticipant: async ({ conferenceSid, callSid }: ConferenceRemoveParticipantParams) => {
     const body = {
       conferenceSid,
@@ -273,14 +279,21 @@ export const conferenceApi = {
     const response = await fetchProtectedApi('/conference/removeParticipant', body);
     return response;
   },
-  toogleHoldParticipant: async ({ callSid, conferenceSid, hold }: ConferenceToogleHoldParticipantParams) => {
+
+  updateParticipant: async ({
+    callSid,
+    conferenceSid,
+    updateAttribute,
+    updateValue,
+  }: ConferenceUpdateParticipantParams) => {
     const body = {
       conferenceSid,
       callSid,
-      hold: hold.toString(),
+      updateAttribute,
+      updateValue: updateValue.toString(),
     };
 
-    const response = await fetchProtectedApi('/conference/toogleHoldParticipant', body);
+    const response = await fetchProtectedApi('/conference/updateParticipant', body);
     return response;
   },
 };

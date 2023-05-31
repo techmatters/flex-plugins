@@ -39,13 +39,15 @@ const RemoveParticipantButton: React.FC<Props> = ({ participant, task, ...props 
   };
 
   return (
-    <IconButton
-      icon="Hangup"
-      onClick={handleClick}
-      variant="secondary"
-      disabled={isLoading || !TaskHelper.canHold(task) || participant.status !== 'joined'}
-      // title={}
-    />
+    <>
+      <IconButton
+        icon="Hangup"
+        onClick={handleClick}
+        variant="secondary"
+        disabled={isLoading || !TaskHelper.canHold(task) || participant.status !== 'joined'}
+        // title={}
+      />
+    </>
   );
 };
 

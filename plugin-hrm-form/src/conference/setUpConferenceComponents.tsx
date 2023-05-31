@@ -23,7 +23,7 @@ import RemoveParticipantButton from '../components/Conference/RemoveParticipantB
 
 export const setupConferenceComponents = () => {
   CallCanvasActions.Content.add(<ConferencePanel key="conference-panel" />, {
-    sortOrder: 99,
+    sortOrder: -1,
     if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
   });
   ParticipantCanvas.Actions.Content.remove('hold', {

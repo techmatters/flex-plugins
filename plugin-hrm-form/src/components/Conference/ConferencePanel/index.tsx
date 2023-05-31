@@ -15,17 +15,24 @@
  */
 
 import React, { useState } from 'react';
-import { IconButton, Manager, TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
+import { Button, Manager, TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
+import AddIcCallRounded from '@material-ui/icons/AddIcCallRounded';
+import { Phone } from '@material-ui/icons';
 
 import { Column } from '../../../styles/HrmStyles';
 import { conferenceApi } from '../../../services/ServerlessService';
+import { PhoneDialog, DialogArrow } from './style';
 
 type Props = TaskContextProps;
 
 const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   const [targetNumber, setTargetNumber] = useState('');
   const [isAdding, setIsAdding] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  const toggleDialog = () => {
+    setIsDialogOpen(!isDialogOpen);
+  };
   if (!conference?.source?.conferenceSid || !task) {
     return null;
   }
@@ -50,17 +57,43 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   return (
     <form>
       <Column>
-        <label htmlFor="number-input">
+        {/* <label htmlFor="number-input">
           <Template code="Phone number" />
           <input type="text" id="number-input" value={targetNumber} onChange={handleNumberChange} />
-        </label>
-        <IconButton
-          icon={isAdding ? 'Loading' : 'Add'}
+        </label> */}
+        <Button
+          style={{ borderStyle: 'none', borderRadius: '50%', minWidth: 'auto' }}
           disabled={!isLiveCall || isAdding}
-          onClick={handleClick}
+          onClick={toggleDialog}
           variant="secondary"
           // title={}
-        />
+        >
+          <AddIcCallRounded />
+        </Button>
+        {isDialogOpen && (
+          <PhoneDialog>
+            <DialogArrow />
+            <Template code='AddConferenceCallParticipant'/>
+
+            {/* http://catamphetamine.github.io/react-phone-number-input/ */}
+            <label htmlFor="number-input">
+              <Template code="Enter Phone number" /> <br />
+              <input type="text" id="number-input" value={targetNumber} onChange={handleNumberChange} />
+              <Button
+                autoFocus
+                tabIndex={1}
+                variant="contained"
+                size="medium"
+                onClick={handleClick}
+                style={{ backgroundColor: '#000', color: '#fff', marginLeft: 20 }}
+              >
+                <Phone />
+                <Template code="Dial" />
+              </Button>
+            </label>
+          </PhoneDialog>
+        )}
+        <span>Conference</span>
       </Column>
     </form>
   );
