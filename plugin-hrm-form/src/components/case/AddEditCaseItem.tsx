@@ -43,7 +43,7 @@ import { transformValues } from '../../services/ContactService';
 import { updateCase } from '../../services/CaseService';
 import { createStateItem, CustomHandlers, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
-import type { CaseInfo, CaseItemEntry, CaseItemFormValues, CustomITask, StandaloneITask } from '../../types/types';
+import type { CaseInfo, CaseItemEntry, CustomITask, StandaloneITask } from '../../types/types';
 import {
   AddCaseSectionRoute,
   AppRoutes,
