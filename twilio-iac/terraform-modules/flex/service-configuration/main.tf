@@ -8,9 +8,10 @@ terraform {
 }
 
 locals {
-  hrm_url           = var.hrm_url == "" ? (var.short_environment == "PROD" ? "https://hrm-production.tl.techmatters.org" : (var.short_environment == "STG" ? "https://hrm-staging.tl.techmatters.org" : "https://hrm-development.tl.techmatters.org")) : var.hrm_url
-  assets_bucket_url = "https://assets-${lower(var.environment)}.tl.techmatters.org"
-  permission_config = var.permission_config == "" ? var.operating_info_key : var.permission_config
+  hrm_url            = var.hrm_url == "" ? (var.short_environment == "PROD" ? "https://hrm-production.tl.techmatters.org" : (var.short_environment == "STG" ? "https://hrm-staging.tl.techmatters.org" : "https://hrm-development.tl.techmatters.org")) : var.hrm_url
+  resources_base_url = var.resources_base_url
+  assets_bucket_url  = "https://assets-${lower(var.environment)}.tl.techmatters.org"
+  permission_config  = var.permission_config == "" ? var.operating_info_key : var.permission_config
 
   // This cmd_args hackery is temporary until all helplines are migrated to terragrunt or until these scripts are moved to post-apply/after hooks.
   cmd_args = var.stage == "" ? "--helplineDirectory=${basename(abspath(path.root))}" : "--stage=${var.stage} --helplineShortCode=${lower(var.short_helpline)} --helplineEnvironment=${lower(var.environment)}"
@@ -68,6 +69,7 @@ locals {
       "monitoringEnv" : "production",
       "assets_bucket_url" : local.assets_bucket_url,
       "hrm_base_url" : local.hrm_url,
+      "resources_base_url" : local.resources_base_url
       "pdfImagesSource" : "https://tl-public-chat.s3.amazonaws.com",
       "logo_url" : "https://aselo-logo.s3.amazonaws.com/145+transparent+background+no+TM.png",
       "multipleOfficeSupport" : var.multi_office_support,
