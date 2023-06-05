@@ -18,12 +18,15 @@ import { styled } from '@twilio/flex-ui';
 
 import { Flex } from '../../../styles/HrmStyles';
 
-export const PhoneDialog = styled('div')`
+type PhoneDialogWrapperProps = {
+  width?: string;
+};
+export const PhoneDialogWrapper = styled('div')<PhoneDialogWrapperProps>`
   position: absolute;
   background: white;
   box-sizing: border-box;
-  width: 350px;
-  left:20px;
+  width: ${props => (props.width ? props.width : '300')};
+  left: 20px;
   bottom: 100px;
   min-width: 200px;
   padding: 25px 32px;
@@ -32,7 +35,7 @@ export const PhoneDialog = styled('div')`
   box-shadow: 0px 0px 3px 2px rgb(0 0 0 / 10%);
   z-index: 100;
 `;
-PhoneDialog.displayName = 'PhoneDialog';
+PhoneDialogWrapper.displayName = 'PhoneDialogWrapper';
 
 type DialogArrowProps = {
   left?: string;

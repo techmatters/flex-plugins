@@ -269,7 +269,7 @@ export const conferenceApi = {
     const response = await fetchProtectedApi('/conference/addParticipant', body);
     return response;
   },
-  
+
   removeParticipant: async ({ conferenceSid, callSid }: ConferenceRemoveParticipantParams) => {
     const body = {
       conferenceSid,

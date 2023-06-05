@@ -14,14 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Manager, TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
 import AddIcCallRounded from '@material-ui/icons/AddIcCallRounded';
-import { Phone } from '@material-ui/icons';
+import 'react-phone-number-input/style.css';
+import { isValidPhoneNumber } from 'react-phone-number-input';
 
-import { Column } from '../../../styles/HrmStyles';
 import { conferenceApi } from '../../../services/ServerlessService';
-import { PhoneDialog, DialogArrow } from './style';
+import PhoneInputDialog from './PhoneInputDialog';
+import { Column } from '../../../styles/HrmStyles';
 
 type Props = TaskContextProps;
 
@@ -33,6 +34,7 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   const toggleDialog = () => {
     setIsDialogOpen(!isDialogOpen);
   };
+
   if (!conference?.source?.conferenceSid || !task) {
     return null;
   }
@@ -43,13 +45,13 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
     setIsAdding(true);
     const from = Manager.getInstance().serviceConfiguration.outbound_call_flows.default.caller_id;
     const to = targetNumber;
-    const result = await conferenceApi.addParticipant({ from, conferenceSid, to });
-    console.log('>>>>>>> addConferenceParticipant resulted on:', result);
+    console.log('>>>', to, isValidPhoneNumber(to));
+    if (isValidPhoneNumber(to)) {
+      const result = await conferenceApi.addParticipant({ from, conferenceSid, to });
+      console.log('>>>>>>> addConferenceParticipant resulted on:', result);
+    }
     setIsAdding(false);
-  };
-
-  const handleNumberChange: React.ChangeEventHandler<HTMLInputElement> = e => {
-    setTargetNumber(e.target.value);
+    setIsDialogOpen(false);
   };
 
   const isLiveCall = TaskHelper.isLiveCall(task);
@@ -71,27 +73,12 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
           <AddIcCallRounded />
         </Button>
         {isDialogOpen && (
-          <PhoneDialog>
-            <DialogArrow />
-            <Template code='AddConferenceCallParticipant'/>
-
-            {/* http://catamphetamine.github.io/react-phone-number-input/ */}
-            <label htmlFor="number-input">
-              <Template code="Enter Phone number" /> <br />
-              <input type="text" id="number-input" value={targetNumber} onChange={handleNumberChange} />
-              <Button
-                autoFocus
-                tabIndex={1}
-                variant="contained"
-                size="medium"
-                onClick={handleClick}
-                style={{ backgroundColor: '#000', color: '#fff', marginLeft: 20 }}
-              >
-                <Phone />
-                <Template code="Dial" />
-              </Button>
-            </label>
-          </PhoneDialog>
+          <PhoneInputDialog
+            targetNumber={targetNumber}
+            setTargetNumber={setTargetNumber}
+            handleClick={handleClick}
+            setIsDialogOpen={setIsDialogOpen}
+          />
         )}
         <span>Conference</span>
       </Column>
