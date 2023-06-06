@@ -72,6 +72,7 @@ locals {
       enable_counselor_toolkits : true
       enable_resources : true
       enable_emoji_picker : true
+      enable_aselo_messaging_ui : true
     }
   }
 }
