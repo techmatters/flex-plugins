@@ -128,10 +128,11 @@ export const getValuesFromPreEngagementData = (
   const values = {};
   tabFormDefinition.forEach((field: FormItemDefinition) => {
     if (prepopulateKeys.indexOf(field.name) > -1) {
-      if (field.type === 'mixed-checkbox') {
-        if (preEngagementData[field.name]?.toLowerCase() === 'yes') {
+      if (['mixed-checkbox', 'checkbox'].includes(field.type)) {
+        const fieldValue = preEngagementData[field.name]?.toLowerCase();
+        if (fieldValue === 'yes') {
           values[field.name] = true;
-        } else if (preEngagementData[field.name]?.toLowerCase() === 'no') {
+        } else if (fieldValue === 'no' || field.type === 'checkbox') {
           values[field.name] = false;
         }
         return;

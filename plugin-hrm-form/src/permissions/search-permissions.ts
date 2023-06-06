@@ -17,13 +17,13 @@
 import isEqual from 'lodash/isEqual';
 import sortBy from 'lodash/sortBy';
 
-import { ConditionSet } from '.';
+import { ConditionsSet } from '.';
 import { fetchRules } from './fetchRules';
 import { getHrmConfig } from '../hrmConfig';
 
 type RulesFile = ReturnType<typeof fetchRules>;
 
-type TargetRule = Partial<Record<keyof RulesFile, ConditionSet>>;
+type TargetRule = Partial<Record<keyof RulesFile, ConditionsSet>>;
 
 /**
  * This function returns a function that check if a given rule exists.
