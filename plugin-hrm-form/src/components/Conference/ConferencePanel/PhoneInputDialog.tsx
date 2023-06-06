@@ -13,12 +13,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import React, { useEffect, useState } from 'react';
-import { Manager, Button, Template } from '@twilio/flex-ui';
-import { Phone } from '@material-ui/icons';
-import PhoneInput from 'react-phone-number-input';
+import React from 'react';
+import { Button, Template } from '@twilio/flex-ui';
+import { CallEnd as CallEndIcon } from '@material-ui/icons';
+import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 
-import { Column } from '../../../styles/HrmStyles';
+import { Row, Bold } from '../../../styles/HrmStyles';
 import { CloseButton } from '../../../styles/callTypeButtons';
 import { PhoneDialogWrapper, DialogArrow } from './style';
 
@@ -38,35 +39,40 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
   return (
     <PhoneDialogWrapper>
       <DialogArrow />
-      <strong>
-        <Template code="AddConferenceCallParticipant" />
-      </strong>
-      {/* <button type="button" onClick={() => setIsDialogOpen(false)}>
-        <CloseButton aria-label="CloseButton" />
-      </button> */}
-      <CloseButton onClick={() => setIsDialogOpen(false)} aria-label="CloseButton" />
+      <Row>
+        <Bold>
+          <Template code="Conference-AddConferenceCallParticipant" />
+        </Bold>
+        <CloseButton onClick={() => setIsDialogOpen(false)} aria-label="CloseButton" style={{ marginLeft: 'auto' }} />
+      </Row>
+
       <br />
-      <Template code="EnterPhoneNumber" /> <br />
-      <Column>
-        <PhoneInput placeholder="+1 234-555-5553" value={targetNumber} onChange={setTargetNumber} />
+      <Template code="Conference-EnterPhoneNumber" />
+      <Row>
+        <PhoneInput
+          style={{ fontSize: '20px' }}
+          placeholder="+1 234-555-5553"
+          value={targetNumber}
+          onChange={setTargetNumber}
+        />
         <Button
           autoFocus
           tabIndex={1}
-          variant="contained"
-          size="medium"
+          // size="medium"
           onClick={handleClick}
           style={{
-            backgroundColor: '#000',
+            backgroundColor: '#2762e1',
             color: '#fff',
             marginLeft: 20,
-            width: `-webkit-fill-available`,
-            margin: `10px`,
+            width: '30%',
+            margin: '0 2px',
           }}
+          disabled={!isValidPhoneNumber(targetNumber)}
         >
-          <Phone />
-          <Template code="Dial" />
+          <CallEndIcon fontSize="medium" /> &nbsp;
+          <Template code="Conference-DialButton" />
         </Button>
-      </Column>
+      </Row>
     </PhoneDialogWrapper>
   );
 };

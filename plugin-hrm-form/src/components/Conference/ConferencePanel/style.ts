@@ -28,8 +28,9 @@ export const PhoneDialogWrapper = styled('div')<PhoneDialogWrapperProps>`
   width: ${props => (props.width ? props.width : '300')};
   left: 20px;
   bottom: 100px;
-  min-width: 200px;
-  padding: 25px 32px;
+  min-width: 300px;
+  width: 90%;
+  padding: 15px 22px;
   border: 1px solid lightgray;
   border-radius: 4px;
   box-shadow: 0px 0px 3px 2px rgb(0 0 0 / 10%);
@@ -44,7 +45,7 @@ type DialogArrowProps = {
 export const DialogArrow = styled(Flex)<DialogArrowProps>`
   position: absolute;
   bottom: 0;
-  left: ${props => (props.left ? props.left : '75px')};
+  left: 150px;
   background: #ffffff;
   border: 0px solid #d3d3d3;
 

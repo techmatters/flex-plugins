@@ -17,7 +17,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Manager, TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
 import AddIcCallRounded from '@material-ui/icons/AddIcCallRounded';
-import 'react-phone-number-input/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 
 import { conferenceApi } from '../../../services/ServerlessService';
@@ -59,10 +58,6 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   return (
     <form>
       <Column>
-        {/* <label htmlFor="number-input">
-          <Template code="Phone number" />
-          <input type="text" id="number-input" value={targetNumber} onChange={handleNumberChange} />
-        </label> */}
         <Button
           style={{ borderStyle: 'none', borderRadius: '50%', minWidth: 'auto' }}
           disabled={!isLiveCall || isAdding}
