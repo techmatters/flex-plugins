@@ -16,12 +16,24 @@
 
 import fetchResourcesApi from '../../services/fetchResourcesApi';
 import { getResource, searchResources } from '../../services/ResourceService';
+import { getAseloFeatureFlags } from '../../hrmConfig';
+import { FeatureFlags } from '../../types/types';
 
 jest.mock('../../services/fetchResourcesApi');
+jest.mock('../../hrmConfig', () => ({
+  getReferrableResourceConfig: () => ({}),
+  getAseloFeatureFlags: jest.fn(),
+}));
 
 const mockFetchResourcesApi = fetchResourcesApi as jest.Mock<ReturnType<typeof fetchResourcesApi>>;
+const mockGetAseloFeatureFlags = getAseloFeatureFlags as jest.Mock<ReturnType<typeof getAseloFeatureFlags>>;
 
-beforeEach(() => mockFetchResourcesApi.mockReset());
+beforeEach(() => {
+  mockFetchResourcesApi.mockReset();
+  mockGetAseloFeatureFlags.mockReset();
+  // eslint-disable-next-line camelcase
+  mockGetAseloFeatureFlags.mockReturnValue({ enable_resources_elastic_search: true } as FeatureFlags);
+});
 
 test('getResource - valid params sends GET /resource/{id} to mockFetchResourcesApi', async () => {
   mockFetchResourcesApi.mockResolvedValue({
@@ -37,10 +49,10 @@ test('searchResources - valid params sends POST /searchByName?start={start}&limi
     results: [],
     totalCount: 0,
   });
-  const params = { generalSearchTerm: 'bob' };
+  const params = { generalSearchTerm: 'bob', filters: {} };
   await searchResources(params, 1337, 42);
-  expect(mockFetchResourcesApi).toHaveBeenCalledWith('searchByName?start=1337&limit=42', {
+  expect(mockFetchResourcesApi).toHaveBeenCalledWith('search?start=1337&limit=42', {
     method: 'POST',
-    body: JSON.stringify(params),
+    body: JSON.stringify({ generalSearchTerm: 'bob' }),
   });
 });
