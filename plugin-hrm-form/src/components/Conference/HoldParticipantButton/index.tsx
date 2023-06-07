@@ -22,7 +22,7 @@ import { conferenceApi } from '../../../services/ServerlessService';
 
 type Props = Partial<ParticipantCanvasChildrenProps>;
 
-const HoldParticipantButton: React.FC<Props> = ({ participant, task, ...props }) => {
+const HoldParticipantButton: React.FC<Props> = ({ participant, task }) => {
   const [isLoading, setIsLoading] = React.useState(false);
 
   if (!participant?.callSid || !task?.conference?.conferenceSid) {
@@ -31,6 +31,13 @@ const HoldParticipantButton: React.FC<Props> = ({ participant, task, ...props })
 
   const handleClick = async () => {
     setIsLoading(true);
+
+    console.log('>>> HoldParticipantButton ', {
+      callSid: participant.callSid,
+      conferenceSid: task.conference.conferenceSid,
+      updateAttribute: 'hold',
+      updateValue: !participant.onHold,
+    })
     await conferenceApi.updateParticipant({
       callSid: participant.callSid,
       conferenceSid: task.conference.conferenceSid,
