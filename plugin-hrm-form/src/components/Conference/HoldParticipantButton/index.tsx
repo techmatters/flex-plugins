@@ -31,22 +31,25 @@ const HoldParticipantButton: React.FC<Props> = ({ participant, task, ...props })
 
   const handleClick = async () => {
     setIsLoading(true);
-    await conferenceApi.toogleHoldParticipant({
+    await conferenceApi.updateParticipant({
       callSid: participant.callSid,
       conferenceSid: task.conference.conferenceSid,
-      hold: !participant.onHold,
+      updateAttribute: 'hold',
+      updateValue: !participant.onHold,
     });
     setIsLoading(false);
   };
 
   return (
-    <IconButton
-      icon={participant.onHold ? 'HoldOff' : 'Hold'}
-      onClick={handleClick}
-      variant="secondary"
-      disabled={isLoading || !TaskHelper.canHold(task) || participant.status !== 'joined'}
-      // title={}
-    />
+    <>
+      <IconButton
+        icon={participant.onHold ? 'HoldOff' : 'Hold'}
+        onClick={handleClick}
+        variant="secondary"
+        disabled={isLoading || !TaskHelper.canHold(task) || participant.status !== 'joined'}
+        // title={}
+      />
+    </>
   );
 };
 

@@ -15,16 +15,23 @@
  */
 
 import React, { useState } from 'react';
-import { IconButton, Manager, TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
+import { Button, Manager, TaskContextProps, TaskHelper, withTaskContext } from '@twilio/flex-ui';
+import AddIcCallRounded from '@material-ui/icons/AddIcCallRounded';
 
-import { Column } from '../../../styles/HrmStyles';
 import { conferenceApi } from '../../../services/ServerlessService';
+import PhoneInputDialog from './PhoneInputDialog';
+import { Column } from '../../../styles/HrmStyles';
 
 type Props = TaskContextProps;
 
 const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   const [targetNumber, setTargetNumber] = useState('');
   const [isAdding, setIsAdding] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const toggleDialog = () => {
+    setIsDialogOpen(!isDialogOpen);
+  };
 
   if (!conference?.source?.conferenceSid || !task) {
     return null;
@@ -38,11 +45,9 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
     const to = targetNumber;
     const result = await conferenceApi.addParticipant({ from, conferenceSid, to });
     console.log('>>>>>>> addConferenceParticipant resulted on:', result);
-    setIsAdding(false);
-  };
 
-  const handleNumberChange: React.ChangeEventHandler<HTMLInputElement> = e => {
-    setTargetNumber(e.target.value);
+    setIsAdding(false);
+    setIsDialogOpen(false);
   };
 
   const isLiveCall = TaskHelper.isLiveCall(task);
@@ -50,17 +55,24 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   return (
     <form>
       <Column>
-        <label htmlFor="number-input">
-          <Template code="Phone number" />
-          <input type="text" id="number-input" value={targetNumber} onChange={handleNumberChange} />
-        </label>
-        <IconButton
-          icon={isAdding ? 'Loading' : 'Add'}
+        <Button
+          style={{ borderStyle: 'none', borderRadius: '50%', minWidth: 'auto' }}
           disabled={!isLiveCall || isAdding}
-          onClick={handleClick}
+          onClick={toggleDialog}
           variant="secondary"
           // title={}
-        />
+        >
+          <AddIcCallRounded />
+        </Button>
+        {isDialogOpen && (
+          <PhoneInputDialog
+            targetNumber={targetNumber}
+            setTargetNumber={setTargetNumber}
+            handleClick={handleClick}
+            setIsDialogOpen={setIsDialogOpen}
+          />
+        )}
+        <span>Conference</span>
       </Column>
     </form>
   );

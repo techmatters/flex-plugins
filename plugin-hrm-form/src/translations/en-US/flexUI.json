@@ -412,5 +412,9 @@
   "Resources-Search-ResultsTitle": "Search Results",
   "Resources-Search-ResultsDescription": "Showing {{count}} results for <span style=\"font-weight:800\">\"{{generalSearchTerm}}\"</span>",
   "Resources-Search-ClearFormButton": "Clear Form",
-  "Resources-ResourceSearchError": "Something went wrong trying to search for resources."
+  "Resources-ResourceSearchError": "Something went wrong trying to search for resources.",
+
+  "Conference-AddConferenceCallParticipant": "Add Conference Call Participant",
+  "Conference-EnterPhoneNumber": "Enter phone number",
+  "Conference-DialButton": "Dial"
 }

@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { IconButton, Manager, TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
+import { IconButton, TaskHelper } from '@twilio/flex-ui';
 import type { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
 
 import { conferenceApi } from '../../../services/ServerlessService';
