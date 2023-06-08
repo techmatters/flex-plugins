@@ -24,7 +24,7 @@ import { Column } from '../../../styles/HrmStyles';
 
 type Props = TaskContextProps;
 
-const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
+const ConferencePanel: React.FC<Props> = ({ task, conference, ...rest }) => {
   const [targetNumber, setTargetNumber] = useState('');
   const [isAdding, setIsAdding] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -41,13 +41,33 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
 
   const handleClick = async () => {
     setIsAdding(true);
-    const from = Manager.getInstance().serviceConfiguration.outbound_call_flows.default.caller_id;
-    const to = targetNumber;
-    const result = await conferenceApi.addParticipant({ from, conferenceSid, to });
-    console.log('>>>>>>> addConferenceParticipant resulted on:', result);
+    try {
+      const from = Manager.getInstance().serviceConfiguration.outbound_call_flows.default.caller_id;
+      const to = targetNumber;
 
-    setIsAdding(false);
-    setIsDialogOpen(false);
+      await Promise.all(
+        conference.source.participants
+          .filter(p => !['worker', 'agent', 'supervisor'].includes(p.participantType))
+          .map(p =>
+            conferenceApi.updateParticipant({
+              callSid: p.callSid,
+              conferenceSid: task.conference.conferenceSid,
+              updateAttribute: 'hold',
+              updateValue: true,
+            }),
+          ),
+      );
+
+      const result = await conferenceApi.addParticipant({ from, conferenceSid, to });
+      console.log('>>>>>>> addConferenceParticipant resulted on:', result);
+
+      setIsDialogOpen(false);
+    } catch (err) {
+      console.error(`Error adding participant to call ${conferenceSid}: ${err}`);
+      window.alert('Something went wrong trying to add participant to the call, please try again.');
+    } finally {
+      setIsAdding(false);
+    }
   };
 
   const isLiveCall = TaskHelper.isLiveCall(task);
