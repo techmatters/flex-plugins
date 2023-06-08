@@ -181,3 +181,15 @@ variable "enable_post_survey" {
   type    = bool
   default = false
 }
+
+variable "resources_base_url" {
+  description = "Custom URL for the Resources"
+  type        = string
+  default     = ""
+}
+
+variable "hrm_transcript_retention_days_override" {
+  description = "Number of days to retain HRM Contact Job Cleanup logs"
+  type        = number
+  default     = -1
+}

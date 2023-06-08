@@ -39,8 +39,10 @@ locals {
       khp : ["????"],
       g2t : ["????"],
     }
-    
-     // THIS SHOULD BE REMOVED Serverless 
+
+    hrm_transcript_retention_days_override = 90
+
+     // THIS SHOULD BE REMOVED Serverless
     ui_editable = true
 
      #Chatbots

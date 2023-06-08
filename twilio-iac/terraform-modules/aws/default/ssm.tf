@@ -122,7 +122,6 @@ resource "aws_ssm_parameter" "twilio_chat_service_sid" {
   }
 }
 
-
 resource "aws_ssm_parameter" "twilio_flex_proxy_service_sid" {
   name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/flex_proxy_service_sid"
   type        = "SecureString"
