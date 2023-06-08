@@ -20,6 +20,7 @@ import { CallEnd as CallEndIcon } from '@material-ui/icons';
 
 import { conferenceApi } from '../../../services/ServerlessService';
 import { Column } from '../../../styles/HrmStyles';
+import { CustomCallCanvasAction } from './styles';
 
 type Props = TaskContextProps;
 
@@ -40,18 +41,20 @@ const Hangup: React.FC<Props> = ({ call, task }) => {
   const isLiveCall = TaskHelper.isLiveCall(task);
 
   return (
-    <Column>
-      <Button
-        style={{ borderStyle: 'none', borderRadius: '50%', minWidth: 'auto', color:'#c81c25' }}
-        disabled={!isLiveCall}
-        onClick={handleClick}
-        variant="secondary"
-        // title={}
-      >
-        <CallEndIcon fontSize="medium" /> &nbsp;
-      </Button>
-      <span>Hangup</span>
-    </Column>
+    <CustomCallCanvasAction>
+      <Column>
+        <Button
+          style={{ borderStyle: 'none', borderRadius: '50%', minWidth: 'auto', backgroundColor: '#c81c25', color:'#fff' }}
+          disabled={!isLiveCall}
+          onClick={handleClick}
+          variant="secondary"
+          // title={}
+        >
+          <CallEndIcon fontSize="large" /> &nbsp;
+        </Button>
+        <span>Hang Up</span>
+      </Column>
+    </CustomCallCanvasAction>
   );
 };
 

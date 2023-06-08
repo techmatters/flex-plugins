@@ -24,27 +24,26 @@ import HoldParticipantButton from '../components/Conference/HoldParticipantButto
 import RemoveParticipantButton from '../components/Conference/RemoveParticipantButton';
 
 export const setupConferenceComponents = () => {
+  CallCanvasActions.Content.remove('toggleMute', {
+    if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
+  });
+  CallCanvasActions.Content.remove('dialpad', {
+    if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
+  });
+  CallCanvasActions.Content.remove('hangup', {
+    if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
+  });
+
   CallCanvasActions.Content.add(<ConferencePanel key="conference-panel" />, {
     sortOrder: -1,
     if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
   });
   CallCanvasActions.Content.add(<ToggleMute key="conference-toggle" />, {
-    sortOrder: -1,
+    sortOrder: 1,
     if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
   });
   CallCanvasActions.Content.add(<Hangup key="conference-hangup" />, {
-    sortOrder: -1,
-    if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
-  });
-
-  CallCanvasActions.Content.remove('toggleMute', {
-    if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
-  });
-
-  CallCanvasActions.Content.remove('dialpad', {
-    if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
-  });
-  CallCanvasActions.Content.remove('hangup', {
+    sortOrder: 3,
     if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
   });
 

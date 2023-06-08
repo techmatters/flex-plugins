@@ -18,6 +18,11 @@ import { styled, Button } from '@twilio/flex-ui';
 
 import { Flex } from '../../../styles/HrmStyles';
 
+export const CustomCallCanvasAction = styled('div')`
+  margin-left: 8px;
+  margin-right: 8px;
+`;
+
 type PhoneDialogWrapperProps = {
   width?: string;
 };

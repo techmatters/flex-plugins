@@ -21,6 +21,7 @@ import AddIcCallRounded from '@material-ui/icons/AddIcCallRounded';
 import { conferenceApi } from '../../../services/ServerlessService';
 import PhoneInputDialog from './PhoneInputDialog';
 import { Column } from '../../../styles/HrmStyles';
+import { CustomCallCanvasAction } from './styles';
 
 type Props = TaskContextProps;
 
@@ -53,28 +54,30 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   const isLiveCall = TaskHelper.isLiveCall(task);
 
   return (
-    <form>
-      <Column>
-        <Button
-          style={{ borderStyle: 'none', borderRadius: '50%', minWidth: 'auto' }}
-          disabled={!isLiveCall || isAdding}
-          onClick={toggleDialog}
-          variant="secondary"
-          // title={}
-        >
-          <AddIcCallRounded />
-        </Button>
-        {isDialogOpen && (
-          <PhoneInputDialog
-            targetNumber={targetNumber}
-            setTargetNumber={setTargetNumber}
-            handleClick={handleClick}
-            setIsDialogOpen={setIsDialogOpen}
-          />
-        )}
-        <span>Conference</span>
-      </Column>
-    </form>
+    <CustomCallCanvasAction>
+      <form>
+        <Column>
+          <Button
+            style={{ borderStyle: 'none', borderRadius: '50%', minWidth: 'auto' }}
+            disabled={!isLiveCall || isAdding}
+            onClick={toggleDialog}
+            variant="secondary"
+            // title={}
+          >
+            <AddIcCallRounded />
+          </Button>
+          {isDialogOpen && (
+            <PhoneInputDialog
+              targetNumber={targetNumber}
+              setTargetNumber={setTargetNumber}
+              handleClick={handleClick}
+              setIsDialogOpen={setIsDialogOpen}
+            />
+          )}
+          <span>Conference</span>
+        </Column>
+      </form>
+    </CustomCallCanvasAction>
   );
 };
 

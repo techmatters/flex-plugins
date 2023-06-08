@@ -21,6 +21,7 @@ import MicOffOutlined from '@material-ui/icons/MicOffOutlined';
 
 import { conferenceApi } from '../../../services/ServerlessService';
 import { Column } from '../../../styles/HrmStyles';
+import { CustomCallCanvasAction } from './styles';
 
 type Props = TaskContextProps;
 
@@ -54,18 +55,20 @@ const ToggleMute: React.FC<Props> = ({ call, task, conference }) => {
   const isLiveCall = TaskHelper.isLiveCall(task);
 
   return (
-    <Column>
-      <Button
-        style={{ borderStyle: 'none', borderRadius: '50%', minWidth: 'auto' }}
-        disabled={!isLiveCall}
-        onClick={handleClick}
-        variant="secondary"
-        // title={}
-      >
-        {isMuted ? <MicOffOutlined /> : <MicNoneOutlined />}
-      </Button>
-      <span>Microphone</span>
-    </Column>
+    <CustomCallCanvasAction>
+      <Column>
+        <Button
+          style={{ borderStyle: 'none', borderRadius: '50%', minWidth: 'auto' }}
+          disabled={!isLiveCall}
+          onClick={handleClick}
+          variant="secondary"
+          // title={}
+        >
+          {isMuted ? <MicOffOutlined /> : <MicNoneOutlined />}
+        </Button>
+        <span>Microphone {isMuted ? 'On' : 'Off'}</span>
+      </Column>
+    </CustomCallCanvasAction>
   );
 };
 
