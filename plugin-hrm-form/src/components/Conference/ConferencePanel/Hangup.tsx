@@ -14,43 +14,45 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
-import { IconButton, TaskHelper } from '@twilio/flex-ui';
-import type { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
+import React, { useState } from 'react';
+import { Button, TaskContextProps, TaskHelper, withTaskContext } from '@twilio/flex-ui';
+import { CallEnd as CallEndIcon } from '@material-ui/icons';
 
 import { conferenceApi } from '../../../services/ServerlessService';
+import { Column } from '../../../styles/HrmStyles';
 
-type Props = Partial<ParticipantCanvasChildrenProps>;
+type Props = TaskContextProps;
 
-const HoldParticipantButton: React.FC<Props> = ({ participant, task }) => {
-  const [isLoading, setIsLoading] = React.useState(false);
-
-  if (!participant?.callSid || !task?.conference?.conferenceSid) {
+const Hangup: React.FC<Props> = ({ call, task }) => {
+  if (!task || !call) {
     return null;
   }
 
   const handleClick = async () => {
-    setIsLoading(true);
-    await conferenceApi.updateParticipant({
-      callSid: participant.callSid,
-      conferenceSid: task.conference.conferenceSid,
-      updateAttribute: 'hold',
-      updateValue: !participant.onHold,
+    const result = await conferenceApi.removeParticipant({
+      callSid: call?.parameters?.CallSid,
+      conferenceSid: task?.attributes?.conference?.sid,
     });
-    setIsLoading(false);
+
+    console.log('>>> handleClick workerParticipant removeParticipant', result);
   };
 
+  const isLiveCall = TaskHelper.isLiveCall(task);
+
   return (
-    <>
-      <IconButton
-        icon={participant.onHold ? 'HoldOff' : 'Hold'}
+    <Column>
+      <Button
+        style={{ borderStyle: 'none', borderRadius: '50%', minWidth: 'auto', color:'#c81c25' }}
+        disabled={!isLiveCall}
         onClick={handleClick}
         variant="secondary"
-        disabled={isLoading || !TaskHelper.canHold(task) || participant.status !== 'joined'}
         // title={}
-      />
-    </>
+      >
+        <CallEndIcon fontSize="medium" /> &nbsp;
+      </Button>
+      <span>Hangup</span>
+    </Column>
   );
 };
 
-export default HoldParticipantButton;
+export default withTaskContext(Hangup);

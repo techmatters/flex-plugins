@@ -24,46 +24,47 @@ import { Column } from '../../../styles/HrmStyles';
 
 type Props = TaskContextProps;
 
-const ToggleMute: React.FC<Props> = ({ ...props }) => {
+const ToggleMute: React.FC<Props> = ({ call, task, conference }) => {
   const [isMuted, setIsMuted] = useState(false);
 
-//   if (!task) {
-//     return null;
-//   }
-  console.log('>>> callSid', props.call?.parameters?.CallSid);
-  console.log('>>> ToggleMute conferenceSid', props.task?.attributes?.conference?.sid);
-  console.log('>>> ToggleMute conferenceSid', props.task?.attributes?.conference?.conferenceSid);
-
-
+  if (!task || !call || !conference) {
+    return null;
+  }
 
   const handleClick = async () => {
-    const toggleSound = !isMuted;
-    // const result = await conferenceApi.updateParticipant({
-    //   callSid: props.call?.parameters?.CallSid,
-    //   conferenceSid: task.conference.conferenceSid,
-    //   updateAttribute: 'hold',
-    //   updateValue: !participant.onHold,
-    // });
-  console.log('>>> ToggleMute handleClick props', props);
+    const { participants } = conference?.source;
+    const workerParticipant = participants.find(participant => participant.isCurrentWorker === true);
 
+    if (workerParticipant) {
+      const currentMutedState = workerParticipant.muted;
+      const toggleMute = !currentMutedState;
 
-    setIsMuted(toggleSound);
+      const result = await conferenceApi.updateParticipant({
+        callSid: call?.parameters?.CallSid,
+        conferenceSid: task?.attributes?.conference?.sid,
+        updateAttribute: 'muted',
+        updateValue: toggleMute,
+      });
+
+      console.log('>>> handleClick workerParticipant muted', result);
+      setIsMuted(toggleMute);
+    }
   };
 
-//   const isLiveCall = TaskHelper.isLiveCall(task);
+  const isLiveCall = TaskHelper.isLiveCall(task);
 
   return (
     <Column>
       <Button
         style={{ borderStyle: 'none', borderRadius: '50%', minWidth: 'auto' }}
-        // disabled={!isLiveCall}
+        disabled={!isLiveCall}
         onClick={handleClick}
         variant="secondary"
         // title={}
       >
         {isMuted ? <MicOffOutlined /> : <MicNoneOutlined />}
       </Button>
-      <span>Micropnone</span>
+      <span>Microphone</span>
     </Column>
   );
 };

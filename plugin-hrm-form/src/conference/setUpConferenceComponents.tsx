@@ -17,6 +17,7 @@
 import React from 'react';
 import { CallCanvasActions, ParticipantCanvas, TaskHelper } from '@twilio/flex-ui';
 
+import Hangup from '../components/Conference/ConferencePanel/Hangup';
 import ConferencePanel from '../components/Conference/ConferencePanel';
 import ToggleMute from '../components/Conference/ConferencePanel/ToggleMute';
 import HoldParticipantButton from '../components/Conference/HoldParticipantButton';
@@ -31,11 +32,15 @@ export const setupConferenceComponents = () => {
     sortOrder: -1,
     if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
   });
-  /*
-   * CallCanvasActions.Content.remove('toggleMute', {
-   *   if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
-   * });
-   */
+  CallCanvasActions.Content.add(<Hangup key="conference-hangup" />, {
+    sortOrder: -1,
+    if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
+  });
+
+  CallCanvasActions.Content.remove('toggleMute', {
+    if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
+  });
+
   CallCanvasActions.Content.remove('dialpad', {
     if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
   });
