@@ -25,6 +25,10 @@ type Props = Partial<ParticipantCanvasChildrenProps>;
 const HoldParticipantButton: React.FC<Props> = ({ participant, task, ...props }) => {
   const [isLoading, setIsLoading] = React.useState(false);
 
+  console.log('>>> HoldParticipantButton conferenceSid', task?.conference?.conferenceSid);
+  console.log('>>> HoldParticipantButton {props}, {task}', {props}, {task});
+
+
   if (!participant?.callSid || !task?.conference?.conferenceSid) {
     return null;
   }

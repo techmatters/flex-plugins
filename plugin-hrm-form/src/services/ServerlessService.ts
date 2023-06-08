@@ -254,7 +254,7 @@ type ConferenceRemoveParticipantParams = { conferenceSid: string; callSid: strin
 type ConferenceUpdateParticipantParams = {
   conferenceSid: string;
   callSid: string;
-  updateAttribute: 'hold' | 'endConferenceOnExit';
+  updateAttribute: 'hold' | 'endConferenceOnExit'  | 'muted';
   updateValue: boolean;
 };
 
