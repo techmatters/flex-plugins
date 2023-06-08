@@ -18,7 +18,7 @@ locals {
 
     #Feature flags
     feature_flags = {
-      "enable_fullstory_monitoring" : true,
+      "enable_fullstory_monitoring" : false,
       "enable_upload_documents" : true,
       "enable_post_survey" : true,
       "enable_contact_editing" : true,
@@ -31,7 +31,7 @@ locals {
       "enable_csam_report" : false,
       "enable_canned_responses" : true,
       "enable_dual_write" : false,
-      "enable_save_insights" : false,
+      "enable_save_insights" : true,
       "enable_previous_contacts" : true,
       "enable_voice_recordings" : true,
       "enable_twilio_transcripts" : true,
