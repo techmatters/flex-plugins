@@ -79,7 +79,7 @@ describe('actions', () => {
 
     test('Calls the searchResources service, calculating the start index from the provided page & limit', () => {
       searchResourceAsyncAction({ generalSearchTerm: 'hello', pageSize: 42 }, 1337, true);
-      expect(searchResources).toHaveBeenCalledWith({ nameSubstring: 'hello', ids: [] }, 1337 * 42, 42);
+      expect(searchResources).toHaveBeenCalledWith({ generalSearchTerm: 'hello', filters: {} }, 1337 * 42, 42);
     });
 
     test("'newSearch' flag set - dispatches pending action that resets the result array and sets status to ResultPending", async () => {
