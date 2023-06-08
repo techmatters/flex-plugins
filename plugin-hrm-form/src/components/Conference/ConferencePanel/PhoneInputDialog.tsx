@@ -27,19 +27,19 @@ import { PhoneDialogWrapper, DialogArrow } from './styles';
 
 type PhoneDialogProps = {
   targetNumber: string;
-  setTargetNumber: (targetNumber: string) => void;
+  setPhoneNumber: (targetNumber: string) => void;
   handleClick: () => void;
   setIsDialogOpen: (isDialogOpen: boolean) => void;
 };
 
 const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
   targetNumber,
-  setTargetNumber,
+  setPhoneNumber,
   handleClick,
   setIsDialogOpen,
 }) => {
   const handleNumberChange: React.ChangeEventHandler<HTMLInputElement> = e => {
-    setTargetNumber(e.target.value);
+    setPhoneNumber(e.target.value);
   };
   return (
     <PhoneDialogWrapper>
@@ -58,7 +58,7 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
           style={{ fontSize: '20px' }}
           placeholder="+1 234-555-5553"
           value={targetNumber}
-          onChange={setTargetNumber}
+          onChange={setPhoneNumber}
         /> */}
         <input
           type="text"

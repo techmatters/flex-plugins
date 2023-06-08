@@ -17,17 +17,23 @@
 import React, { useState } from 'react';
 import { Button, Manager, TaskContextProps, TaskHelper, withTaskContext } from '@twilio/flex-ui';
 import AddIcCallRounded from '@material-ui/icons/AddIcCallRounded';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { conferenceApi } from '../../../services/ServerlessService';
 import PhoneInputDialog from './PhoneInputDialog';
 import { Column } from '../../../styles/HrmStyles';
+import { conferencingBase, namespace, RootState } from '../../../states';
+import { setIsDialogOpenAction, setIsLoadingAction, setPhoneNumberAction } from '../../../states/conferencing'
 
 type Props = TaskContextProps;
 
 const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
-  const [targetNumber, setTargetNumber] = useState('');
-  const [isAdding, setIsAdding] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { isDialogOpen, isLoading, phoneNumber } = useSelector((state: RootState) => state[namespace][conferencingBase].tasks[task.taskSid]);
+  const dispatch = useDispatch();
+
+  const setIsDialogOpen = (isOpen: boolean) => dispatch(setIsLoadingAction(task.taskSid, isOpen));
+  const setIsLoading = (isLoading: boolean) => dispatch(setIsLoadingAction(task.taskSid, isLoading));
+  const setPhoneNumber = (number: string) => dispatch(setPhoneNumberAction(task.taskSid, number));
 
   const toggleDialog = () => {
     setIsDialogOpen(!isDialogOpen);
@@ -40,13 +46,13 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   const { conferenceSid } = conference.source;
 
   const handleClick = async () => {
-    setIsAdding(true);
+    setIsLoading(true);
     const from = Manager.getInstance().serviceConfiguration.outbound_call_flows.default.caller_id;
-    const to = targetNumber;
+    const to = phoneNumber;
     const result = await conferenceApi.addParticipant({ from, conferenceSid, to });
     console.log('>>>>>>> addConferenceParticipant resulted on:', result);
 
-    setIsAdding(false);
+    setIsLoading(false);
     setIsDialogOpen(false);
   };
 
@@ -57,17 +63,16 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
       <Column>
         <Button
           style={{ borderStyle: 'none', borderRadius: '50%', minWidth: 'auto' }}
-          disabled={!isLiveCall || isAdding}
+          disabled={!isLiveCall || isLoading}
           onClick={toggleDialog}
           variant="secondary"
-          // title={}
         >
           <AddIcCallRounded />
         </Button>
         {isDialogOpen && (
           <PhoneInputDialog
-            targetNumber={targetNumber}
-            setTargetNumber={setTargetNumber}
+            targetNumber={phoneNumber}
+            setPhoneNumber={setPhoneNumber}
             handleClick={handleClick}
             setIsDialogOpen={setIsDialogOpen}
           />
