@@ -44,13 +44,19 @@ const Hangup: React.FC<Props> = ({ call, task }) => {
     <CustomCallCanvasAction>
       <Column>
         <Button
-          style={{ borderStyle: 'none', borderRadius: '50%', minWidth: 'auto', backgroundColor: '#c81c25', color:'#fff' }}
+          style={{
+            borderStyle: 'none',
+            borderRadius: '50%',
+            minWidth: 'auto',
+            backgroundColor: '#c81c25',
+            color: '#fff',
+          }}
           disabled={!isLiveCall}
           onClick={handleClick}
           variant="secondary"
           // title={}
         >
-          <CallEndIcon fontSize="large" /> &nbsp;
+          <CallEndIcon /> &nbsp;
         </Button>
         <span>Hang Up</span>
       </Column>
