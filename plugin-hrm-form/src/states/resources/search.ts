@@ -165,9 +165,12 @@ const SEARCH_ACTION = 'resource-action/search';
 export const searchResourceAsyncAction = createAsyncAction(
   SEARCH_ACTION,
   async (parameters: SearchSettings, page: number) => {
-    const { pageSize, generalSearchTerm, filterSelections: filters } = parameters;
+    const { pageSize, generalSearchTerm, filterSelections } = parameters;
     const start = page * pageSize;
-    return { ...(await searchResources({ generalSearchTerm, filters }, start, pageSize)), start };
+    return {
+      ...(await searchResources({ generalSearchTerm, filters: filterSelections ?? {} }, start, pageSize)),
+      start,
+    };
   },
   ({ pageSize }: SearchSettings, page: number, newSearch: boolean = true) => ({ newSearch, start: page * pageSize }),
   // { promiseTypeDelimiter: '/' }, // Doesn't work :-(
@@ -202,13 +205,20 @@ const getFilterOptionsBasedOnSelections = (
 const ensureFilterSelectionsAreValid = (
   filterSelections: ReferrableResourceSearchState['parameters']['filterSelections'],
   filterOptions: ReferrableResourceSearchState['filterOptions'],
-): ReferrableResourceSearchState['parameters']['filterSelections'] => ({
-  ...filterSelections,
-  minEligibleAge: filterOptions.minEligibleAge.find(opt => opt.value === filterSelections.minEligibleAge)?.value,
-  maxEligibleAge: filterOptions.maxEligibleAge.find(opt => opt.value === filterSelections.maxEligibleAge)?.value,
-  province: filterOptions.province.find(opt => opt.value === filterSelections.province)?.value,
-  city: filterOptions.city.find(opt => opt.value === filterSelections.city)?.value,
-});
+): ReferrableResourceSearchState['parameters']['filterSelections'] => {
+  return {
+    ...filterSelections,
+    // Don't add undefined values to the filter selections
+    ...Object.fromEntries(
+      Object.entries({
+        minEligibleAge: filterOptions.minEligibleAge.find(opt => opt.value === filterSelections.minEligibleAge)?.value,
+        maxEligibleAge: filterOptions.maxEligibleAge.find(opt => opt.value === filterSelections.maxEligibleAge)?.value,
+        province: filterOptions.province.find(opt => opt.value === filterSelections.province)?.value,
+        city: filterOptions.city.find(opt => opt.value === filterSelections.city)?.value,
+      }).filter(([, value]) => value !== undefined),
+    ),
+  };
+};
 
 export const resourceSearchReducer = createReducer(initialState, handleAction => [
   /*

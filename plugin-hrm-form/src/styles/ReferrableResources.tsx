@@ -114,13 +114,18 @@ ViewResourceArea.displayName = 'ViewResourceArea';
 
 export const ResourcesSearchFormArea = styled('div')`
   width: 100%;
+  padding: 20px;
+`;
+
+export const ResourcesSearchFormSettingBox = styled('div')`
+  width: 100%;
   background-color: white;
   padding: 20px;
+  margin: 5px;
 `;
 
 export const ResourcesSearchFormContainer = styled(Column)`
   width: 100%;
-  background-color: white;
   justify-content: space-between;
   max-width: 800px;
 `;

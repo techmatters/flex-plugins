@@ -19,6 +19,7 @@ import React, { Dispatch, useRef } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
+import { Grid } from '@material-ui/core';
 
 import { namespace, referrableResourcesBase, RootState } from '../../../states';
 import {
@@ -37,6 +38,7 @@ import {
   ResourcesSearchFormContainer,
   ResourcesSearchFormFilterHeader,
   ResourcesSearchFormSectionHeader,
+  ResourcesSearchFormSettingBox,
   ResourcesSearchTitle,
 } from '../../../styles/ReferrableResources';
 import {
@@ -104,11 +106,11 @@ const SearchResourcesForm: React.FC<Props> = ({
   const firstElement = useRef(null);
   const strings = getTemplateStrings();
   const { province, city, maxEligibleAge, minEligibleAge, ...checkboxOptions } = filterOptions;
-
   const ageRangeDropDown = (dropdown: 'Min' | 'Max', optionList: FilterOption<number>[]) => (
-    <Column>
-      <FormSelectWrapper>
+    <Row>
+      <FormSelectWrapper style={{ width: '70px' }}>
         <FormSelect
+          style={{ width: '50px' }}
           id={`age-range-${dropdown.toLowerCase()}`}
           data-testid={`Resources-Search-Age-Range-${dropdown}`}
           name={dropdown === 'Min' ? 'minEligibleAge' : 'maxEligibleAge'}
@@ -130,46 +132,53 @@ const SearchResourcesForm: React.FC<Props> = ({
       <FormLabel htmlFor={`age-range-${dropdown.toLowerCase()}`} style={{ flexDirection: 'row' }}>
         <Template code={`Resources-Search-Age-Range-${dropdown}`} />
       </FormLabel>
-    </Column>
+    </Row>
   );
 
   const checboxSet = (optionSet: CheckboxFilterName, options: FilterOption[]) => {
     const selectedOptions = filterSelections[optionSet] ?? [];
     return (
-      <Box key={optionSet} marginTop="10px" marginBottom="10px">
+      <ResourcesSearchFormSettingBox>
         <ResourcesSearchFormFilterHeader>
           <Template code={`Resources-Search-${optionSet}`} />
         </ResourcesSearchFormFilterHeader>
-        {options.map(({ value, label }) => (
-          <FormLabel key={value} htmlFor={value} style={{ flexDirection: 'row' }}>
-            <FiltersCheckbox
-              id={value}
-              name={value}
-              type="checkbox"
-              defaultChecked={selectedOptions.includes(value)}
-              onChange={({ target: { checked } }) => {
-                const newSelections = checked
-                  ? [...selectedOptions, value]
-                  : selectedOptions.filter(option => option !== value);
-                updateFilterSelection(optionSet as CheckboxFilterName, newSelections);
-              }}
-            />
-            <MultiSelectCheckboxLabel>{label ?? value}</MultiSelectCheckboxLabel>
-          </FormLabel>
-        ))}
-      </Box>
+        <Grid container>
+          {options.map(({ value, label }) => (
+            <Grid key={value} xs={4} item>
+              <FormLabel htmlFor={value} style={{ flexDirection: 'row' }}>
+                <FiltersCheckbox
+                  id={value}
+                  name={value}
+                  type="checkbox"
+                  defaultChecked={selectedOptions.includes(value)}
+                  onChange={({ target: { checked } }) => {
+                    const newSelections = checked
+                      ? [...selectedOptions, value]
+                      : selectedOptions.filter(option => option !== value);
+                    updateFilterSelection(optionSet as CheckboxFilterName, newSelections);
+                  }}
+                />
+                <MultiSelectCheckboxLabel>{label ?? value}</MultiSelectCheckboxLabel>
+              </FormLabel>
+            </Grid>
+          ))}
+        </Grid>
+      </ResourcesSearchFormSettingBox>
     );
   };
 
   return (
     <ResourcesSearchFormContainer>
       <ResourcesSearchFormArea>
-        <Row>
+        <Box marginTop="10px" marginBottom="10px" style={{ boxShadow: 'rgba(0, 0, 0, 0.1) 0px -2px 2px 0px' }}>
+          <ResourcesSearchTitle data-testid="Resources-Search-Title">
+            <Template code="Resources-Search-FormTitle" />
+          </ResourcesSearchTitle>
+        </Box>
+        <ResourcesSearchFormSettingBox>
           <Column>
-            <Box marginTop="10px" marginBottom="10px">
-              <ResourcesSearchTitle data-testid="Resources-Search-Title">
-                <Template code="Resources-Search-FormTitle" />
-              </ResourcesSearchTitle>
+            <Box>
+              <Template code="Resources-Search-SearchTermHeader" />
             </Box>
             <SearchInput
               label={strings['Resources-SearchForm-OmniSearchLabel']}
@@ -184,67 +193,75 @@ const SearchResourcesForm: React.FC<Props> = ({
               }}
             />
           </Column>
-        </Row>
-
+        </ResourcesSearchFormSettingBox>
+        <ResourcesSearchFormSectionHeader data-testid="Resources-Search-FilterHeader">
+          <Template code="Resources-Search-FilterHeader" />
+        </ResourcesSearchFormSectionHeader>
         <Row>
           <Column>
-            <ResourcesSearchFormSectionHeader data-testid="Resources-Search-FilterHeader">
-              <Template code="Resources-Search-FilterHeader" />
-            </ResourcesSearchFormSectionHeader>
-            <Box key="location" marginTop="10px" marginBottom="10px">
+            <ResourcesSearchFormSettingBox>
               <ResourcesSearchFormFilterHeader>
                 <Template code="Resources-Search-Location" />
               </ResourcesSearchFormFilterHeader>
-              <Column>
-                <FormLabel htmlFor="location-province" />
-                <FormSelectWrapper>
-                  <FormSelect
-                    id="location-province"
-                    data-testid="Resources-Search-Location-Province"
-                    name="location-province"
-                    onChange={({ target: { value } }) => updateFilterSelection('province', value)}
-                    value={filterSelections.province}
-                  >
-                    {province.map(({ value, label }) => (
-                      <FormOption key={value} value={value}>
-                        {label ?? value}
-                      </FormOption>
-                    ))}
-                  </FormSelect>
-                </FormSelectWrapper>
-              </Column>
-              <Column>
-                <FormLabel htmlFor="location-city" />
-                <FormSelectWrapper>
-                  <FormSelect
-                    id="location-city"
-                    data-testid="Resources-Search-Location-Province"
-                    name="location-city"
-                    onChange={({ target: { value } }) => updateFilterSelection('city', value)}
-                    disabled={city.length === 0}
-                    value={filterSelections.city}
-                  >
-                    {/* eslint-disable-next-line sonarjs/no-identical-functions */}
-                    {city.map(({ value, label }) => (
-                      <FormOption key={value} value={value}>
-                        {label ?? value}
-                      </FormOption>
-                    ))}
-                  </FormSelect>
-                </FormSelectWrapper>
-              </Column>
-            </Box>
-            <Box key="age-range" marginTop="10px" marginBottom="10px">
-              <ResourcesSearchFormFilterHeader>
-                <Template code="Resources-Search-Age-Range" />
-              </ResourcesSearchFormFilterHeader>
-              <Box>
-                {ageRangeDropDown('Min', minEligibleAge)} - {ageRangeDropDown('Max', maxEligibleAge)}
+              <Row key="location" style={{ marginTop: '10px', marginBottom: '10px' }}>
                 <Column>
+                  <FormLabel htmlFor="location-province">
+                    <Template code="Resources-Search-Location-Province" />
+                  </FormLabel>
+                  <FormSelectWrapper>
+                    <FormSelect
+                      id="location-province"
+                      data-testid="Resources-Search-Location-Province"
+                      name="location-province"
+                      onChange={({ target: { value } }) => updateFilterSelection('province', value)}
+                      value={filterSelections.province}
+                    >
+                      {province.map(({ value, label }) => (
+                        <FormOption key={value} value={value}>
+                          {label ?? value}
+                        </FormOption>
+                      ))}
+                    </FormSelect>
+                  </FormSelectWrapper>
+                </Column>
+                <Column>
+                  <FormLabel htmlFor="location-city">
+                    <Template code="Resources-Search-Location-City" />
+                  </FormLabel>
+                  <FormSelectWrapper>
+                    <FormSelect
+                      id="location-city"
+                      data-testid="Resources-Search-Location-City"
+                      name="location-city"
+                      onChange={({ target: { value } }) => updateFilterSelection('city', value)}
+                      value={filterSelections.city}
+                    >
+                      {/* eslint-disable-next-line sonarjs/no-identical-functions */}
+                      {city.map(({ value, label }) => (
+                        <FormOption key={value} value={value}>
+                          {label ?? value}
+                        </FormOption>
+                      ))}
+                    </FormSelect>
+                  </FormSelectWrapper>
+                </Column>
+              </Row>
+            </ResourcesSearchFormSettingBox>
+            <Row key="age-range" style={{ alignItems: 'stretch' }}>
+              <ResourcesSearchFormSettingBox key="age-range" style={{ marginTop: '10px', marginBottom: '10px' }}>
+                <ResourcesSearchFormFilterHeader>
+                  <Template code="Resources-Search-Age-Range" />
+                </ResourcesSearchFormFilterHeader>
+                <Row>
+                  {ageRangeDropDown('Min', minEligibleAge)} - {ageRangeDropDown('Max', maxEligibleAge)}
+                </Row>
+              </ResourcesSearchFormSettingBox>
+              <ResourcesSearchFormSettingBox>
+                <Column>
+                  <ResourcesSearchFormFilterHeader>
+                    <Template code="Resources-Search-InterpretationTranslationServicesAvailable" />
+                  </ResourcesSearchFormFilterHeader>
                   <FormLabel htmlFor="interpretationTranslationServicesAvailable" style={{ flexDirection: 'row' }}>
-                    <ResourcesSearchFormFilterHeader>
-                      <Template code="Resources-Search-InterpretationTranslationServicesAvailable" />
-                    </ResourcesSearchFormFilterHeader>
                     <FiltersCheckbox
                       id="interpretationTranslationServicesAvailable"
                       name="interpretationTranslationServicesAvailable"
@@ -254,14 +271,16 @@ const SearchResourcesForm: React.FC<Props> = ({
                         updateFilterSelection('interpretationTranslationServicesAvailable', checked || undefined);
                       }}
                     />
+                    <Template code="Resources-Search-InterpretationTranslationServicesAvailable-Checkbox" />
                   </FormLabel>
                 </Column>
-              </Box>
-            </Box>
-
-            {Object.entries(checkboxOptions).map(([optionSet, options]) =>
-              checboxSet(optionSet as CheckboxFilterName, options),
-            )}
+              </ResourcesSearchFormSettingBox>
+            </Row>
+            <Grid container>
+              {Object.entries(checkboxOptions).map(([optionSet, options]) =>
+                checboxSet(optionSet as CheckboxFilterName, options),
+              )}
+            </Grid>
           </Column>
         </Row>
       </ResourcesSearchFormArea>
