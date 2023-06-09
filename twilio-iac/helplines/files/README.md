@@ -2,7 +2,7 @@
 
 ## Background Knowledge
 
-To understand how this works, you need to have a basic understand of how terragrunt and generate blocks work. Definitely review the [terragrunt overview](./terragrunt.md) before continuing.
+To understand how this works, you need to have a basic understand of how terragrunt and generate blocks work. Definitely review the [terragrunt overview](./docs/terragrunt.md) before continuing.
 
 ## Overview
 

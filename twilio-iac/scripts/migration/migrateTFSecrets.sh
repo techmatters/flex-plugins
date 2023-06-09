@@ -4,6 +4,11 @@ old_dir_name=$1
 environment=$2
 short_helpline=$3
 
+if [ ! -z ${PROVISION_SKIP_MIGRATION+x} ]; then
+  echo "Skipping secrets migration because PROVISION_SKIP_MIGRATION is set"
+  exit 0
+fi
+
 old_key="/terraform/twilio-iac/${old_dir_name}/secrets.json"
 new_key="/terraform/twilio-iac/${environment}/${short_helpline}/secrets.json"
 

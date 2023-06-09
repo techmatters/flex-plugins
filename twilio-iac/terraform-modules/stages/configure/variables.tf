@@ -8,6 +8,12 @@ variable "helpline_region" {
   description = "The region for the helpline."
 }
 
+variable "helpline_language" {
+  description = "Keyword that determines the language to be used as default across the helpline"
+  type        = string
+  default     = ""
+}
+
 variable "short_environment" {
   description = "The short code for the environment."
   type        = string
@@ -43,15 +49,16 @@ variable "feature_flags" {
   type        = map(bool)
 }
 
+variable "contacts_waiting_channels" {
+  description = "List of contact waiting channels"
+  type        = list(string)
+}
+
 variable "target_task_name" {
   type        = string
   description = "The target task name for the helpline."
 }
 
-variable "enable_post_survey" {
-  type        = bool
-  description = "Whether to enable the post survey for the helpline."
-}
 
 variable "twilio_channels" {
   type = map(object({
@@ -59,17 +66,15 @@ variable "twilio_channels" {
     contact_identity = string
   }))
   description = "The twilio channels for the helpline."
+  default     = {}
 }
 
 variable "enable_voice_channel" {
   type        = bool
   description = "Whether to enable the voice channel for the helpline."
+  default     = false
 }
 
-variable "channel_attributes" {
-  type        = map(string)
-  description = "The channel attributes for the helpline."
-}
 
 variable "task_router_config" {
   description = "The task router config for the helpline."
@@ -83,6 +88,11 @@ variable "task_router_config" {
       })
     )
   })
+  default = {
+    event_filters     = []
+    additional_queues = []
+    channels          = []
+  }
 }
 
 variable "twilio_channel_custom_flow_template" {
@@ -137,4 +147,49 @@ variable "permission_config" {
   description = "The permission config for the helpline."
   type        = string
   default     = ""
+}
+
+variable "task_language" {
+  type        = string
+  default     = ""
+  description = "Override the default language by setting this"
+}
+
+variable "channels" {
+  type = map(object({
+    templatefile         = string,
+    channel_type         = string,
+    contact_identity     = string
+    channel_flow_vars    = map(string)
+    chatbot_unique_names = list(string)
+  }))
+  description = "Map of enabled channel objects with their attributes"
+
+}
+
+variable "flow_vars" {
+  type        = map(string)
+  default     = {}
+  description = "Studio flow variebles common to all channels"
+}
+
+variable "channel_attributes" {
+  type = map(string)
+}
+
+variable "enable_post_survey" {
+  type    = bool
+  default = false
+}
+
+variable "resources_base_url" {
+  description = "Custom URL for the Resources"
+  type        = string
+  default     = ""
+}
+
+variable "hrm_transcript_retention_days_override" {
+  description = "Number of days to retain HRM Contact Job Cleanup logs"
+  type        = number
+  default     = -1
 }

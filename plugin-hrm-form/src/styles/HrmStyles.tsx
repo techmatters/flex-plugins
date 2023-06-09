@@ -1071,7 +1071,7 @@ export const FormOption = styled('option')<FormOptionProps>`
 `;
 FormOption.displayName = 'FormOption';
 
-type CategoryCheckboxProps = { color: string; disabled: boolean };
+type CategoryCheckboxProps = { disabled: boolean };
 // eslint-disable-next-line import/no-unused-modules
 export const CategoryCheckbox = styled(CheckboxBase)<CategoryCheckboxProps>`
   padding: 8px;
@@ -1090,7 +1090,7 @@ export const CategoryCheckbox = styled(CheckboxBase)<CategoryCheckboxProps>`
     font-family: 'Font Awesome 5 Free';
     content: '\\f00c';
     font-weight: 900;
-    color: ${({ color }) => color};
+    color: #000;
   }
 
   svg {

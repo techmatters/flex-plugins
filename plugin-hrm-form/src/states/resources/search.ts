@@ -83,8 +83,7 @@ export const searchResourceAsyncAction = createAsyncAction(
   async (parameters: SearchSettings, page: number) => {
     const { pageSize, generalSearchTerm } = parameters;
     const start = page * pageSize;
-    const [nameSubstring, ...ids] = generalSearchTerm.split(';');
-    return { ...(await searchResources({ nameSubstring, ids }, start, pageSize)), start };
+    return { ...(await searchResources({ generalSearchTerm, filters: {} }, start, pageSize)), start };
   },
   ({ pageSize }: SearchSettings, page: number, newSearch: boolean = true) => ({ newSearch, start: page * pageSize }),
   // { promiseTypeDelimiter: '/' }, // Doesn't work :-(
