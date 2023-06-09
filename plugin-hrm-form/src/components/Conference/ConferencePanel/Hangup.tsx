@@ -50,6 +50,7 @@ const Hangup: React.FC<Props> = ({ call, task }) => {
             minWidth: 'auto',
             backgroundColor: '#c81c25',
             color: '#fff',
+            paddingLeft: '16px',
           }}
           disabled={!isLiveCall}
           onClick={handleClick}
