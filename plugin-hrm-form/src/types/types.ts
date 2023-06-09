@@ -259,7 +259,8 @@ export type FeatureFlags = {
   enable_csam_clc_report: boolean; // Enables CSAM child Reports
   enable_counselor_toolkits: boolean; // Enables Counselor Toolkits
   enable_emoji_picker: boolean; // Enables Emoji Picker
-  enable_aselo_messaging_ui: boolean; // Enables Aselo Messaging UI iinstead of the default Twilio one - reduced functionality for low spec clients.
+  enable_aselo_messaging_ui: boolean; // Enables Aselo Messaging UI instead of the default Twilio one - reduced functionality for low spec clients.
+  enable_conferencing: boolean; // Enables Conferencing UI and replaces deault Twilio components and behavior
 };
 /* eslint-enable camelcase */
 
