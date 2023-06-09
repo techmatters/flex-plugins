@@ -135,6 +135,26 @@ export const ResourcesSearchTitle = styled(FontOpenSans)`
 `;
 ResourcesSearchTitle.displayName = 'ResourcesSearchTitle';
 
+export const ResourcesSearchFormSectionHeader = styled(FontOpenSans)`
+  font-family: Inter-Bold, serif;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 800;
+  display: inline-block;
+  color: #192b33;
+`;
+ResourcesSearchFormSectionHeader.displayName = 'ResourcesSearchFormSectionHeader';
+
+export const ResourcesSearchFormFilterHeader = styled(FontOpenSans)`
+  font-family: Inter-Bold, serif;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 800;
+  display: inline-block;
+  color: #192b33;
+`;
+ResourcesSearchFormFilterHeader.displayName = 'ResourcesSearchFormFilterHeader';
+
 export const ResourcesSearchResultsHeader = styled(Box)`
   box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.1);
   padding-top: 10px;
