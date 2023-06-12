@@ -18,6 +18,15 @@ import { styled, Button } from '@twilio/flex-ui';
 
 import { Flex } from '../../../styles/HrmStyles';
 
+export const StyledConferenceButtonWrapper = styled('div')`
+  margin-left: 8px;
+  margin-right: 8px;
+  display: flex;
+  flex-direction: column;
+  flex-flow: column;
+  align-items: center;
+`;
+
 type PhoneDialogWrapperProps = {
   width?: string;
 };
@@ -44,7 +53,7 @@ type DialogArrowProps = {
 export const DialogArrow = styled(Flex)<DialogArrowProps>`
   position: absolute;
   bottom: 0;
-  left: 120px;
+  left: 85px;
   background: #ffffff;
   border: 0px solid #d3d3d3;
 
@@ -75,3 +84,18 @@ export const DialogArrow = styled(Flex)<DialogArrowProps>`
   }
 `;
 DialogArrow.displayName = 'DialogArrow';
+
+export const StyledConferenceButton = styled('button')`
+  border-style: none;
+  border-radius: 50%;
+  min-width: auto;
+  cursor: pointer;
+  background-color: none;
+`;
+StyledConferenceButton.displayName = 'StyledConferenceButton';
+
+export const StyledHangUpButton = styled(StyledConferenceButton)`
+  background-color: #c81c25;
+  color: #fff;
+`;
+StyledHangUpButton.displayName = 'StyledHangUpButton';

@@ -17,10 +17,6 @@ import React from 'react';
 import { Template, Button } from '@twilio/flex-ui';
 import { CallEnd as CallEndIcon } from '@material-ui/icons';
 
-/*
- * import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input';
- * import 'react-phone-number-input/style.css';
- */
 import { Row, Bold } from '../../../styles/HrmStyles';
 import { CloseButton } from '../../../styles/callTypeButtons';
 import { PhoneDialogWrapper, DialogArrow } from './styles';

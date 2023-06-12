@@ -15,12 +15,12 @@
  */
 
 import React, { useState } from 'react';
-import { Button, Manager, TaskContextProps, TaskHelper, withTaskContext } from '@twilio/flex-ui';
+import { Manager, TaskContextProps, TaskHelper, withTaskContext } from '@twilio/flex-ui';
 import AddIcCallRounded from '@material-ui/icons/AddIcCallRounded';
 
 import { conferenceApi } from '../../../services/ServerlessService';
 import PhoneInputDialog from './PhoneInputDialog';
-import { Column } from '../../../styles/HrmStyles';
+import { StyledConferenceButtonWrapper, StyledConferenceButton } from './styles';
 
 type Props = TaskContextProps;
 
@@ -29,22 +29,18 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   const [isAdding, setIsAdding] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  const conferenceSid = conference?.source?.conferenceSid;
+  const participants = conference?.source?.participants || [];
+
   const toggleDialog = () => {
     setIsDialogOpen(!isDialogOpen);
   };
-
-  if (!conference?.source?.conferenceSid || !task) {
-    return null;
-  }
-
-  const { conferenceSid } = conference.source;
 
   const handleClick = async () => {
     setIsAdding(true);
     const from = Manager.getInstance().serviceConfiguration.outbound_call_flows.default.caller_id;
     const to = targetNumber;
-    const result = await conferenceApi.addParticipant({ from, conferenceSid, to });
-    console.log('>>>>>>> addConferenceParticipant resulted on:', result);
+    await conferenceApi.addParticipant({ from, conferenceSid, to });
 
     setIsAdding(false);
     setIsDialogOpen(false);
@@ -52,18 +48,23 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
 
   const isLiveCall = TaskHelper.isLiveCall(task);
 
+  if (!conferenceSid || !participants || !task) {
+    return null;
+  }
+
   return (
-    <form>
-      <Column>
-        <Button
-          style={{ borderStyle: 'none', borderRadius: '50%', minWidth: 'auto' }}
-          disabled={!isLiveCall || isAdding}
+    <StyledConferenceButtonWrapper>
+      <>
+        <StyledConferenceButton
+          disabled={
+            !isLiveCall ||
+            isAdding ||
+            (participants && participants.filter(participant => participant.status === 'joined').length >= 3)
+          }
           onClick={toggleDialog}
-          variant="secondary"
-          // title={}
         >
           <AddIcCallRounded />
-        </Button>
+        </StyledConferenceButton>
         {isDialogOpen && (
           <PhoneInputDialog
             targetNumber={targetNumber}
@@ -72,9 +73,9 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
             setIsDialogOpen={setIsDialogOpen}
           />
         )}
-        <span>Conference</span>
-      </Column>
-    </form>
+      </>
+      <span>Conference</span>
+    </StyledConferenceButtonWrapper>
   );
 };
 
