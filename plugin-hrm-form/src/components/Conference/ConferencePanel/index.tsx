@@ -14,8 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
-import { Button, Manager, TaskContextProps, TaskHelper, withTaskContext } from '@twilio/flex-ui';
+import React from 'react';
+import { Button, ConferenceParticipant, Manager, TaskContextProps, TaskHelper, withTaskContext } from '@twilio/flex-ui';
 import AddIcCallRounded from '@material-ui/icons/AddIcCallRounded';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -23,15 +23,18 @@ import { conferenceApi } from '../../../services/ServerlessService';
 import PhoneInputDialog from './PhoneInputDialog';
 import { Column } from '../../../styles/HrmStyles';
 import { conferencingBase, namespace, RootState } from '../../../states';
-import { setIsDialogOpenAction, setIsLoadingAction, setPhoneNumberAction } from '../../../states/conferencing'
+import { setIsDialogOpenAction, setIsLoadingAction, setPhoneNumberAction } from '../../../states/conferencing';
 
 type Props = TaskContextProps;
 
 const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
-  const { isDialogOpen, isLoading, phoneNumber } = useSelector((state: RootState) => state[namespace][conferencingBase].tasks[task.taskSid]);
+  const { isDialogOpen, isLoading, phoneNumber } = useSelector(
+    (state: RootState) => state[namespace][conferencingBase].tasks[task.taskSid],
+  );
+  const conferencesStates = useSelector((state: RootState) => state.flex.conferences.states);
   const dispatch = useDispatch();
 
-  const setIsDialogOpen = (isOpen: boolean) => dispatch(setIsLoadingAction(task.taskSid, isOpen));
+  const setIsDialogOpen = (isOpen: boolean) => dispatch(setIsDialogOpenAction(task.taskSid, isOpen));
   const setIsLoading = (isLoading: boolean) => dispatch(setIsLoadingAction(task.taskSid, isLoading));
   const setPhoneNumber = (number: string) => dispatch(setPhoneNumberAction(task.taskSid, number));
 
@@ -45,13 +48,37 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
 
   const { conferenceSid } = conference.source;
 
+  const addNewParticipantToState = (newParticipant: any) => {
+    const conferences = new Set();
+    conferencesStates.forEach(conf => {
+      if (conf.source.sid === conference.source.sid) {
+        const { participants } = conf.source;
+
+        const fakeParticipant = new ConferenceParticipant({
+          ...newParticipant,
+          mediaProperties: {
+            ...newParticipant,
+          },
+          connecting: true,
+          type: 'external',
+        } as any);
+
+        participants.push(fakeParticipant);
+        conferences.add(conference.source);
+      } else {
+        conferences.add(conf);
+      }
+    });
+
+    dispatch({ type: 'CONFERENCE_MULTIPLE_UPDATE', payload: { conferences } });
+  };
+
   const handleClick = async () => {
     setIsLoading(true);
     const from = Manager.getInstance().serviceConfiguration.outbound_call_flows.default.caller_id;
     const to = phoneNumber;
     const result = await conferenceApi.addParticipant({ from, conferenceSid, to });
-    console.log('>>>>>>> addConferenceParticipant resulted on:', result);
-
+    addNewParticipantToState(result.participant);
     setIsLoading(false);
     setIsDialogOpen(false);
   };

@@ -36,4 +36,11 @@ export const setupConferenceComponents = () => {
     sortOrder: 99,
     if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
   });
+  ParticipantCanvas.Actions.Content.remove('cancel-transfer', {
+    if: props =>
+      TaskHelper.isCallTask(props.task) &&
+      TaskHelper.isLiveCall(props.task) &&
+      props.participant?.connecting &&
+      props.participant?.participantType === 'external',
+  });
 };
