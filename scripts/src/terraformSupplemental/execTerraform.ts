@@ -8,8 +8,16 @@ export const TERRAFORM_REQUIRED_ARGS = ['helplineDirectory'];
 export const TERRAGRUNT_REQUIRED_ARGS = ['helplineShortCode', 'helplineEnvironment', 'stage'];
 
 type TerraformEnvironment = {
-  HL: string;
+  HL?: string;
   HL_ENV?: string;
+  PATH: string;
+  AWS_ACCESS_KEY_ID?: string;
+  AWS_SECRET_ACCESS_KEY?: string;
+  AWS_SESSION_TOKEN?: string;
+  AWS_DEFAULT_REGION?: string;
+  AWS_REGION?: string;
+  TERRAGRUNT_DOWNLOAD?: string;
+  PROVISION_SKIP_MIGRATION?: boolean;
 };
 
 enum TerraformCommand {
@@ -18,7 +26,16 @@ enum TerraformCommand {
 }
 
 let terraformCommand: TerraformCommand;
-let env: TerraformEnvironment;
+let env: TerraformEnvironment = {
+  PATH: process.env.PATH || '',
+  AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || '',
+  AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || '',
+  AWS_SESSION_TOKEN: process.env.AWS_SESSION_TOKEN || '',
+  AWS_DEFAULT_REGION: process.env.AWS_DEFAULT_REGION || '',
+  AWS_REGION: process.env.AWS_REGION || '',
+  TERRAGRUNT_DOWNLOAD: process.env.TERRAGRUNT_DOWNLOAD || '',
+  PROVISION_SKIP_MIGRATION: true,
+};
 let cwd: string;
 let terraformVarFile: string;
 let dryRun = false;
@@ -42,6 +59,7 @@ export const useTerragrunt = ({
 }: UseTerragruntParams): void => {
   terraformCommand = TerraformCommand.TERRAGRUNT;
   env = {
+    ...env,
     HL: helplineShortCode,
     HL_ENV: helplineEnvironment,
   };

@@ -213,6 +213,9 @@ const AddEditCaseItem: React.FC<Props> = ({
   async function saveAndStay() {
     await save();
     closeActions({ ...routing, action: CaseItemAction.Add });
+
+    // Reset the entire form state, fields reference, and subscriptions.
+    methods.reset();
   }
 
   async function saveAndLeave() {

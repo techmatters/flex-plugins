@@ -5,3 +5,6 @@ manage-ssm-secrets:
 
 twilio-resources-import-account-defaults:
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/deploy-scripts/terraform/twilioResourceImportAccountDefaults.sh
+
+verify-pre-work:
+	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/verifyPreWork.sh $(MY_ENV)
