@@ -15,13 +15,12 @@
  */
 
 import React, { useState } from 'react';
-import { Button, TaskContextProps, TaskHelper, withTaskContext } from '@twilio/flex-ui';
+import { TaskContextProps, TaskHelper, withTaskContext } from '@twilio/flex-ui';
 import MicNoneOutlined from '@material-ui/icons/MicNoneOutlined';
 import MicOffOutlined from '@material-ui/icons/MicOffOutlined';
 
 import { conferenceApi } from '../../../services/ServerlessService';
-import { Column } from '../../../styles/HrmStyles';
-import { CustomCallCanvasAction } from './styles';
+import { StyledConferenceButtonWrapper, StyledConferenceButton } from './styles';
 
 type Props = TaskContextProps;
 
@@ -40,14 +39,13 @@ const ToggleMute: React.FC<Props> = ({ call, task, conference }) => {
       const currentMutedState = workerParticipant.muted;
       const toggleMute = !currentMutedState;
 
-      const result = await conferenceApi.updateParticipant({
+      await conferenceApi.updateParticipant({
         callSid: call?.parameters?.CallSid,
         conferenceSid: task?.attributes?.conference?.sid,
         updateAttribute: 'muted',
         updateValue: toggleMute,
       });
 
-      console.log('>>> handleClick workerParticipant muted', result);
       setIsMuted(toggleMute);
     }
   };
@@ -55,20 +53,12 @@ const ToggleMute: React.FC<Props> = ({ call, task, conference }) => {
   const isLiveCall = TaskHelper.isLiveCall(task);
 
   return (
-    <CustomCallCanvasAction>
-      <Column>
-        <Button
-          style={{ borderStyle: 'none', borderRadius: '50%', minWidth: 'auto' }}
-          disabled={!isLiveCall}
-          onClick={handleClick}
-          variant="secondary"
-          // title={}
-        >
-          {isMuted ? <MicOffOutlined /> : <MicNoneOutlined />}
-        </Button>
-        <span>Microphone {isMuted ? 'On' : 'Off'}</span>
-      </Column>
-    </CustomCallCanvasAction>
+    <StyledConferenceButtonWrapper>
+      <StyledConferenceButton disabled={!isLiveCall} onClick={handleClick}>
+        {isMuted ? <MicOffOutlined /> : <MicNoneOutlined />}
+      </StyledConferenceButton>
+      <span>Microphone {isMuted ? 'On' : 'Off'}</span>
+    </StyledConferenceButtonWrapper>
   );
 };
 

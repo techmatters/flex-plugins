@@ -14,13 +14,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
-import { Button, TaskContextProps, TaskHelper, withTaskContext } from '@twilio/flex-ui';
+import React from 'react';
+import { TaskContextProps, TaskHelper, withTaskContext } from '@twilio/flex-ui';
 import { CallEnd as CallEndIcon } from '@material-ui/icons';
 
 import { conferenceApi } from '../../../services/ServerlessService';
-import { Column } from '../../../styles/HrmStyles';
-import { CustomCallCanvasAction } from './styles';
+import { StyledConferenceButtonWrapper, StyledConferenceButton } from './styles';
 
 type Props = TaskContextProps;
 
@@ -30,38 +29,21 @@ const Hangup: React.FC<Props> = ({ call, task }) => {
   }
 
   const handleClick = async () => {
-    const result = await conferenceApi.removeParticipant({
+    await conferenceApi.removeParticipant({
       callSid: call?.parameters?.CallSid,
       conferenceSid: task?.attributes?.conference?.sid,
     });
-
-    console.log('>>> handleClick workerParticipant removeParticipant', result);
   };
 
   const isLiveCall = TaskHelper.isLiveCall(task);
 
   return (
-    <CustomCallCanvasAction>
-      <Column>
-        <Button
-          style={{
-            borderStyle: 'none',
-            borderRadius: '50%',
-            minWidth: 'auto',
-            backgroundColor: '#c81c25',
-            color: '#fff',
-            paddingLeft: '16px',
-          }}
-          disabled={!isLiveCall}
-          onClick={handleClick}
-          variant="secondary"
-          // title={}
-        >
-          <CallEndIcon /> &nbsp;
-        </Button>
-        <span>Hang Up</span>
-      </Column>
-    </CustomCallCanvasAction>
+    <StyledConferenceButtonWrapper>
+      <StyledConferenceButton color="#fff" backgroundColor="#c81c25" disabled={!isLiveCall} onClick={handleClick}>
+        <CallEndIcon />
+      </StyledConferenceButton>
+      <span>Hang Up</span>
+    </StyledConferenceButtonWrapper>
   );
 };
 

@@ -14,14 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect, useState } from 'react';
-import { Button, Manager, TaskContextProps, TaskHelper, withTaskContext } from '@twilio/flex-ui';
+import React, { useState } from 'react';
+import { Manager, TaskContextProps, TaskHelper, withTaskContext } from '@twilio/flex-ui';
 import AddIcCallRounded from '@material-ui/icons/AddIcCallRounded';
 
 import { conferenceApi } from '../../../services/ServerlessService';
 import PhoneInputDialog from './PhoneInputDialog';
-import { Column } from '../../../styles/HrmStyles';
-import { CustomCallCanvasAction } from './styles';
+import { StyledConferenceButtonWrapper, StyledConferenceButton } from './styles';
 
 type Props = TaskContextProps;
 
@@ -29,16 +28,9 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   const [targetNumber, setTargetNumber] = useState('');
   const [isAdding, setIsAdding] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [conferenceParticipants, setConferenceParticipants] = useState(1);
 
   const conferenceSid = conference?.source?.conferenceSid;
   const participants = conference?.source?.participants || [];
-
-  const joinedParticipantsCount = participants.filter(participant => participant.status === 'joined').length;
-
-  useEffect(() => {
-    setConferenceParticipants(joinedParticipantsCount);
-  }, [joinedParticipantsCount]);
 
   const toggleDialog = () => {
     setIsDialogOpen(!isDialogOpen);
@@ -61,30 +53,29 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   }
 
   return (
-    <CustomCallCanvasAction>
-      <form>
-        <Column>
-          <Button
-            style={{ borderStyle: 'none', borderRadius: '50%', minWidth: 'auto' }}
-            disabled={!isLiveCall || isAdding || (participants && conferenceParticipants >= 3)}
-            onClick={toggleDialog}
-            variant="secondary"
-            // title={}
-          >
-            <AddIcCallRounded />
-          </Button>
-          {isDialogOpen && (
-            <PhoneInputDialog
-              targetNumber={targetNumber}
-              setTargetNumber={setTargetNumber}
-              handleClick={handleClick}
-              setIsDialogOpen={setIsDialogOpen}
-            />
-          )}
-          <span>Conference</span>
-        </Column>
-      </form>
-    </CustomCallCanvasAction>
+    <StyledConferenceButtonWrapper>
+      <>
+        <StyledConferenceButton
+          disabled={
+            !isLiveCall ||
+            isAdding ||
+            (participants && participants.filter(participant => participant.status === 'joined').length >= 3)
+          }
+          onClick={toggleDialog}
+        >
+          <AddIcCallRounded />
+        </StyledConferenceButton>
+        {isDialogOpen && (
+          <PhoneInputDialog
+            targetNumber={targetNumber}
+            setTargetNumber={setTargetNumber}
+            handleClick={handleClick}
+            setIsDialogOpen={setIsDialogOpen}
+          />
+        )}
+      </>
+      <span>Conference</span>
+    </StyledConferenceButtonWrapper>
   );
 };
 
