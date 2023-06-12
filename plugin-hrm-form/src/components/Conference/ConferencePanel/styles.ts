@@ -44,7 +44,7 @@ type DialogArrowProps = {
 export const DialogArrow = styled(Flex)<DialogArrowProps>`
   position: absolute;
   bottom: 0;
-  left: 150px;
+  left: 120px;
   background: #ffffff;
   border: 0px solid #d3d3d3;
 

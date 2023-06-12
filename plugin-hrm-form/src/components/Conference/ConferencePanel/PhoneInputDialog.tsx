@@ -14,13 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import React from 'react';
-import { Button, Template } from '@twilio/flex-ui';
+import { Template, Button } from '@twilio/flex-ui';
 import { CallEnd as CallEndIcon } from '@material-ui/icons';
+
 /*
  * import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input';
  * import 'react-phone-number-input/style.css';
  */
-
 import { Row, Bold } from '../../../styles/HrmStyles';
 import { CloseButton } from '../../../styles/callTypeButtons';
 import { PhoneDialogWrapper, DialogArrow } from './styles';
@@ -50,31 +50,24 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
         </Bold>
         <CloseButton onClick={() => setIsDialogOpen(false)} aria-label="CloseButton" style={{ marginLeft: 'auto' }} />
       </Row>
-
-      <br />
       <Template code="Conference-EnterPhoneNumber" />
       <Row>
-        {/* <PhoneInput
-          style={{ fontSize: '20px' }}
-          placeholder="+1 234-555-5553"
-          value={targetNumber}
-          onChange={setTargetNumber}
-        /> */}
         <input
           type="text"
           id="number-input"
+          placeholder="+1 "
           value={targetNumber}
           onChange={handleNumberChange}
-          style={{ fontSize: 'x-large', width: '55%' }}
+          style={{ width: '60%', padding: '5px' }}
         />
         <Button
-          style={{ backgroundColor: '#2762e1', color: '#fff', marginLeft: '20', width: '30%', margin: '0 2px' }}
+          style={{ backgroundColor: '#2762e1', color: '#fff', width: '30%', margin: '0 4px', height: '35px' }}
           autoFocus
           tabIndex={1}
           onClick={handleClick}
           //   disabled={!isValidPhoneNumber(targetNumber)}
         >
-          <CallEndIcon fontSize="medium" /> &nbsp;
+          <CallEndIcon fontSize="medium" /> &nbsp; &nbsp;
           <Template code="Conference-DialButton" />
         </Button>
       </Row>
