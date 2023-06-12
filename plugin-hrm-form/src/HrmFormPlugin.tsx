@@ -138,7 +138,8 @@ const setUpComponents = (
   Components.setupTeamViewFilters();
   Components.setupWorkerDirectoryFilters();
 
-  if (featureFlags.enable_conferencing) setupConferenceComponents();
+  // if (featureFlags.enable_conferencing) setupConferenceComponents();
+  setupConferenceComponents();
 };
 
 const setUpActions = (

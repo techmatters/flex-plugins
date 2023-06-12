@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Manager, TaskContextProps, TaskHelper, withTaskContext } from '@twilio/flex-ui';
 import AddIcCallRounded from '@material-ui/icons/AddIcCallRounded';
 
@@ -29,23 +29,26 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   const [targetNumber, setTargetNumber] = useState('');
   const [isAdding, setIsAdding] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [conferenceParticipants, setConferenceParticipants] = useState(1);
+
+  const conferenceSid = conference?.source?.conferenceSid;
+  const participants = conference?.source?.participants || [];
+
+  const joinedParticipantsCount = participants.filter(participant => participant.status === 'joined').length;
+
+  useEffect(() => {
+    setConferenceParticipants(joinedParticipantsCount);
+  }, [joinedParticipantsCount]);
 
   const toggleDialog = () => {
     setIsDialogOpen(!isDialogOpen);
   };
 
-  if (!conference?.source?.conferenceSid || !task) {
-    return null;
-  }
-
-  const { conferenceSid } = conference.source;
-
   const handleClick = async () => {
     setIsAdding(true);
     const from = Manager.getInstance().serviceConfiguration.outbound_call_flows.default.caller_id;
     const to = targetNumber;
-    const result = await conferenceApi.addParticipant({ from, conferenceSid, to });
-    console.log('>>>>>>> addConferenceParticipant resulted on:', result);
+    await conferenceApi.addParticipant({ from, conferenceSid, to });
 
     setIsAdding(false);
     setIsDialogOpen(false);
@@ -53,13 +56,17 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
 
   const isLiveCall = TaskHelper.isLiveCall(task);
 
+  if (!conferenceSid || !participants || !task) {
+    return null;
+  }
+
   return (
     <CustomCallCanvasAction>
       <form>
         <Column>
           <Button
             style={{ borderStyle: 'none', borderRadius: '50%', minWidth: 'auto' }}
-            disabled={!isLiveCall || isAdding}
+            disabled={!isLiveCall || isAdding || (participants && conferenceParticipants >= 3)}
             onClick={toggleDialog}
             variant="secondary"
             // title={}
