@@ -20,7 +20,6 @@ import { CallCanvasActions, ParticipantCanvas, TaskHelper } from '@twilio/flex-u
 import ConferencePanel from '../components/Conference/ConferenceActions/ConferencePanel';
 import ToggleMute from '../components/Conference/ConferenceActions/ToggleMute';
 import Hangup from '../components/Conference/ConferenceActions/Hangup';
-
 import HoldParticipantButton from '../components/Conference/HoldParticipantButton';
 import RemoveParticipantButton from '../components/Conference/RemoveParticipantButton';
 
