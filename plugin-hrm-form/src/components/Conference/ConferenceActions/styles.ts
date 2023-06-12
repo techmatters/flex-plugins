@@ -85,13 +85,17 @@ export const DialogArrow = styled(Flex)<DialogArrowProps>`
 `;
 DialogArrow.displayName = 'DialogArrow';
 
-type StyledConferenceButtonProps = {
-  backgroundColor?: string;
-  color?: string;
-};
-export const StyledConferenceButton = styled('button')<StyledConferenceButtonProps>`
+export const StyledConferenceButton = styled('button')`
   border-style: none;
   border-radius: 50%;
   min-width: auto;
+  cursor: pointer;
+  background-color: none;
 `;
 StyledConferenceButton.displayName = 'StyledConferenceButton';
+
+export const StyledHangUpButton = styled(StyledConferenceButton)`
+  background-color: #c81c25;
+  color: #fff;
+`;
+StyledHangUpButton.displayName = 'StyledHangUpButton';
