@@ -14,8 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
-import { Manager, TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
+import React from 'react';
+import {
+  ConferenceParticipant,
+  Manager,
+  TaskContextProps,
+  TaskHelper,
+  Template,
+  withTaskContext,
+} from '@twilio/flex-ui';
 import AddIcCallRounded from '@material-ui/icons/AddIcCallRounded';
 import { useDispatch, useSelector } from 'react-redux';
 
