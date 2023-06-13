@@ -160,7 +160,6 @@ export const ResourcesSearchFormFilterHeader = styled(FontOpenSans)`
   font-size: 13px;
   line-height: 18px;
   font-weight: 700;
-  margin-bottom: 10px;
   display: inline-block;
   color: black;
 `;

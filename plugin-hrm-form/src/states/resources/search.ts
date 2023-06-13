@@ -54,7 +54,6 @@ export type ReferrableResourceSearchState = {
   filterOptions: {
     feeStructure: FilterOption[];
     howServiceIsOffered: FilterOption[];
-    targetPopulations: FilterOption[];
     province: FilterOption[];
     city?: FilterOption[];
     minEligibleAge: FilterOption<number>[];
@@ -70,7 +69,6 @@ export type ReferrableResourceSearchState = {
       maxEligibleAge?: number;
       feeStructure?: string[];
       howServiceIsOffered?: string[];
-      targetPopulations?: string[];
     };
     pageSize: number;
   };
@@ -111,13 +109,6 @@ export const initialState: ReferrableResourceSearchState = {
       { value: 'One Time Small Fee' },
     ],
     howServiceIsOffered: [{ value: 'In-person Support' }, { value: 'Online Support' }, { value: 'Phone Support' }],
-    targetPopulations: [
-      { value: 'Open to All' },
-      { value: 'Black Community' },
-      { value: 'LGTBQ2S+ Community' },
-      { value: 'Inuit Community' },
-      { value: 'Canadian Newcomer Community' },
-    ],
     province: [
       { label: '', value: undefined },
       { label: 'Alberta', value: 'CA/AB' },

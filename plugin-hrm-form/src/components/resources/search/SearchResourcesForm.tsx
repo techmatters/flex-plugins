@@ -58,7 +58,7 @@ type FilterName = keyof ReferrableResourceSearchState['parameters']['filterSelec
 // This type definition is a bit convoluted but it self checks if the option names change in the state;
 type CheckboxFilterName = keyof Pick<
   ReferrableResourceSearchState['parameters']['filterSelections'],
-  'howServiceIsOffered' | 'feeStructure' | 'targetPopulations'
+  'howServiceIsOffered' | 'feeStructure'
 >;
 
 const mapStateToProps = (state: RootState) => {
