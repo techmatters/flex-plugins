@@ -65,14 +65,12 @@ const mapStateToProps = (state: RootState) => {
   const {
     parameters: { generalSearchTerm, pageSize, filterSelections },
     filterOptions,
-    searchSpecified,
   } = state[namespace][referrableResourcesBase].search;
   return {
     generalSearchTerm,
     pageSize,
     filterSelections,
     filterOptions,
-    searchSpecified,
   };
 };
 
