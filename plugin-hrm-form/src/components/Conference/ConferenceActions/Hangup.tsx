@@ -15,10 +15,9 @@
  */
 
 import React from 'react';
-import { TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
+import { Actions, TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
 import { CallEndOutlined as CallEndIcon } from '@material-ui/icons';
 
-import { conferenceApi } from '../../../services/ServerlessService';
 import { StyledConferenceButtonWrapper, StyledHangUpButton } from './styles';
 
 type Props = TaskContextProps;
@@ -29,10 +28,7 @@ const Hangup: React.FC<Props> = ({ call, task }) => {
   }
 
   const handleClick = async () => {
-    await conferenceApi.removeParticipant({
-      callSid: call?.parameters?.CallSid,
-      conferenceSid: task?.attributes?.conference?.sid,
-    });
+    await Actions.invokeAction('HangupCall', { task });
   };
 
   const isLiveCall = TaskHelper.isLiveCall(task);
