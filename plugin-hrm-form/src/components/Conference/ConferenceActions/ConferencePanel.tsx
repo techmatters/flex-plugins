@@ -59,7 +59,7 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
           disabled={
             !isLiveCall ||
             isAdding ||
-            (participants && participants.filter(participant => participant.status === 'joined').length >= 3)
+            (participants && participants.filter(participant => participant.status === 'joined').length >= 4)
           }
           onClick={toggleDialog}
         >
