@@ -115,55 +115,59 @@ ViewResourceArea.displayName = 'ViewResourceArea';
 export const ResourcesSearchFormArea = styled('div')`
   width: 100%;
   padding: 20px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px -2px 2px 0px;
 `;
 
 export const ResourcesSearchFormSettingBox = styled('div')`
   width: 100%;
   background-color: white;
   padding: 20px;
-  margin: 5px;
+  margin: 4px 4px 4px 0;
 `;
 
 export const ResourcesSearchFormContainer = styled(Column)`
   width: 100%;
   justify-content: space-between;
   max-width: 800px;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+  color: black;
+  overflow: auto;
 `;
 
 export const ResourcesSearchTitle = styled(FontOpenSans)`
-  font-family: Inter-Bold, serif;
   font-size: 24px;
   line-height: 32px;
-  font-weight: 800;
+  font-weight: 700;
   display: inline-block;
   color: #192b33;
 `;
 ResourcesSearchTitle.displayName = 'ResourcesSearchTitle';
 
 export const ResourcesSearchFormSectionHeader = styled(FontOpenSans)`
-  font-family: Inter-Bold, serif;
   font-size: 14px;
-  line-height: 18px;
-  font-weight: 800;
+  line-height: 24px;
+  font-weight: 700;
   display: inline-block;
   color: #192b33;
 `;
 ResourcesSearchFormSectionHeader.displayName = 'ResourcesSearchFormSectionHeader';
 
 export const ResourcesSearchFormFilterHeader = styled(FontOpenSans)`
-  font-family: Inter-Bold, serif;
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 800;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
   display: inline-block;
-  color: #192b33;
+  color: black;
 `;
 ResourcesSearchFormFilterHeader.displayName = 'ResourcesSearchFormFilterHeader';
 
 export const ResourcesSearchResultsHeader = styled(Box)`
   box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.1);
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
 `;
 ResourcesSearchResultsHeader.displayName = 'ResourcesSearchResultsHeader';
 

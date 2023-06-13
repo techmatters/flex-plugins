@@ -422,7 +422,7 @@
   "Resources-Search-Age-Range-Min": "Youngest",
   "Resources-Search-Age-Range-Max": "Oldest",
   "Resources-Search-InterpretationTranslationServicesAvailable": "Interpretation / Translation Services Available?",
-  "\nResources-Search-InterpretationTranslationServicesAvailable-Checkbox": "Yes",
+  "Resources-Search-InterpretationTranslationServicesAvailable-Checkbox": "Yes",
   "Resources-Search-howServiceIsOffered": "How is this service offered?",
   "Resources-Search-feeStructure": "Fee Structure",
   "Resources-Search-targetPopulations": "Target Populations"

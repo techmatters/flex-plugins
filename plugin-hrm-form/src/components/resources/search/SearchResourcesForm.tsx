@@ -65,12 +65,14 @@ const mapStateToProps = (state: RootState) => {
   const {
     parameters: { generalSearchTerm, pageSize, filterSelections },
     filterOptions,
+    searchSpecified,
   } = state[namespace][referrableResourcesBase].search;
   return {
     generalSearchTerm,
     pageSize,
     filterSelections,
     filterOptions,
+    searchSpecified,
   };
 };
 
@@ -106,11 +108,23 @@ const SearchResourcesForm: React.FC<Props> = ({
   const firstElement = useRef(null);
   const strings = getTemplateStrings();
   const { province, city, maxEligibleAge, minEligibleAge, ...checkboxOptions } = filterOptions;
+  const [generalSearchTermBoxText, setGeneralSearchTermBoxText] = React.useState(generalSearchTerm);
+
+  const hasValidSearchSettings = () =>
+    generalSearchTermBoxText !== '' ||
+    Object.values(filterSelections).some(value => value !== undefined && value !== '');
+
+  const submitSearchIfValid = () => {
+    if (hasValidSearchSettings()) {
+      submitSearch(generalSearchTermBoxText, filterSelections, pageSize);
+    }
+  };
+
   const ageRangeDropDown = (dropdown: 'Min' | 'Max', optionList: FilterOption<number>[]) => (
     <Row>
-      <FormSelectWrapper style={{ width: '70px' }}>
+      <FormSelectWrapper style={{ width: '80px' }}>
         <FormSelect
-          style={{ width: '50px' }}
+          style={{ width: '80px' }}
           id={`age-range-${dropdown.toLowerCase()}`}
           data-testid={`Resources-Search-Age-Range-${dropdown}`}
           name={dropdown === 'Min' ? 'minEligibleAge' : 'maxEligibleAge'}
@@ -129,13 +143,13 @@ const SearchResourcesForm: React.FC<Props> = ({
           ))}
         </FormSelect>
       </FormSelectWrapper>
-      <FormLabel htmlFor={`age-range-${dropdown.toLowerCase()}`} style={{ flexDirection: 'row' }}>
+      <FormLabel htmlFor={`age-range-${dropdown.toLowerCase()}`} style={{ marginLeft: '4px', flexDirection: 'row' }}>
         <Template code={`Resources-Search-Age-Range-${dropdown}`} />
       </FormLabel>
     </Row>
   );
 
-  const checboxSet = (optionSet: CheckboxFilterName, options: FilterOption[]) => {
+  const checkboxSet = (optionSet: CheckboxFilterName, options: FilterOption[]) => {
     const selectedOptions = filterSelections[optionSet] ?? [];
     return (
       <ResourcesSearchFormSettingBox>
@@ -155,7 +169,10 @@ const SearchResourcesForm: React.FC<Props> = ({
                     const newSelections = checked
                       ? [...selectedOptions, value]
                       : selectedOptions.filter(option => option !== value);
-                    updateFilterSelection(optionSet as CheckboxFilterName, newSelections);
+                    updateFilterSelection(
+                      optionSet as CheckboxFilterName,
+                      newSelections.length ? newSelections : undefined,
+                    );
                   }}
                 />
                 <MultiSelectCheckboxLabel>{label ?? value}</MultiSelectCheckboxLabel>
@@ -169,12 +186,12 @@ const SearchResourcesForm: React.FC<Props> = ({
 
   return (
     <ResourcesSearchFormContainer>
+      <Box marginBottom="10px" marginTop="10px" style={{ paddingBottom: '15px', paddingLeft: '20px' }}>
+        <ResourcesSearchTitle data-testid="Resources-Search-Title">
+          <Template code="Resources-Search-FormTitle" />
+        </ResourcesSearchTitle>
+      </Box>
       <ResourcesSearchFormArea>
-        <Box marginTop="10px" marginBottom="10px" style={{ boxShadow: 'rgba(0, 0, 0, 0.1) 0px -2px 2px 0px' }}>
-          <ResourcesSearchTitle data-testid="Resources-Search-Title">
-            <Template code="Resources-Search-FormTitle" />
-          </ResourcesSearchTitle>
-        </Box>
         <ResourcesSearchFormSettingBox>
           <Column>
             <Box>
@@ -182,11 +199,15 @@ const SearchResourcesForm: React.FC<Props> = ({
             </Box>
             <SearchInput
               label={strings['Resources-SearchForm-OmniSearchLabel']}
-              searchTerm={generalSearchTerm}
+              searchTerm={generalSearchTermBoxText}
               innerRef={firstElement}
-              onChangeSearch={event => updateGeneralSearchTerm(event.target.value)}
+              onBlurSearch={text => updateGeneralSearchTerm(text)}
+              onChangeSearch={event => setGeneralSearchTermBoxText(event.target.value)}
+              onEnter={() => {
+                submitSearchIfValid();
+              }}
               clearSearchTerm={() => {
-                updateGeneralSearchTerm('');
+                setGeneralSearchTermBoxText('');
               }}
               onShiftTab={() => {
                 /**/
@@ -197,92 +218,97 @@ const SearchResourcesForm: React.FC<Props> = ({
         <ResourcesSearchFormSectionHeader data-testid="Resources-Search-FilterHeader">
           <Template code="Resources-Search-FilterHeader" />
         </ResourcesSearchFormSectionHeader>
-        <Row>
-          <Column>
-            <ResourcesSearchFormSettingBox>
+        <Column>
+          <ResourcesSearchFormSettingBox>
+            <ResourcesSearchFormFilterHeader>
+              <Template code="Resources-Search-Location" />
+            </ResourcesSearchFormFilterHeader>
+            <Row
+              key="location"
+              style={{ marginTop: '10px', marginBottom: '10px', justifyContent: 'stretch', gap: '60px' }}
+            >
+              <Column style={{ flexGrow: 1, gap: '4px' }}>
+                <FormLabel htmlFor="location-province">
+                  <Template code="Resources-Search-Location-Province" />
+                </FormLabel>
+                <FormSelectWrapper style={{ width: '100%' }}>
+                  <FormSelect
+                    id="location-province"
+                    data-testid="Resources-Search-Location-Province"
+                    name="location-province"
+                    onChange={({ target: { value } }) => updateFilterSelection('province', value)}
+                    value={filterSelections.province}
+                    style={{ width: '100%' }}
+                  >
+                    {province.map(({ value, label }) => (
+                      <FormOption key={value} value={value}>
+                        {label ?? value}
+                      </FormOption>
+                    ))}
+                  </FormSelect>
+                </FormSelectWrapper>
+              </Column>
+              <Column style={{ flexGrow: 2, opacity: filterSelections.province ? 1 : 0.2, gap: '4px' }}>
+                <FormLabel htmlFor="location-city">
+                  <Template code="Resources-Search-Location-City" />
+                </FormLabel>
+                <FormSelectWrapper style={{ width: '100%' }}>
+                  <FormSelect
+                    id="location-city"
+                    data-testid="Resources-Search-Location-City"
+                    name="location-city"
+                    onChange={({ target: { value } }) => updateFilterSelection('city', value)}
+                    value={filterSelections.city}
+                    style={{ width: '100%' }}
+                  >
+                    {/* eslint-disable-next-line sonarjs/no-identical-functions */}
+                    {city.map(({ value, label }) => (
+                      <FormOption key={value} value={value}>
+                        {label ?? value}
+                      </FormOption>
+                    ))}
+                  </FormSelect>
+                </FormSelectWrapper>
+              </Column>
+            </Row>
+          </ResourcesSearchFormSettingBox>
+          <Row key="age-range" style={{ alignItems: 'stretch', justifyContent: 'stretch' }}>
+            <ResourcesSearchFormSettingBox key="age-range" style={{ flexShrink: 2 }}>
               <ResourcesSearchFormFilterHeader>
-                <Template code="Resources-Search-Location" />
+                <Template code="Resources-Search-Age-Range" />
               </ResourcesSearchFormFilterHeader>
-              <Row key="location" style={{ marginTop: '10px', marginBottom: '10px' }}>
-                <Column>
-                  <FormLabel htmlFor="location-province">
-                    <Template code="Resources-Search-Location-Province" />
-                  </FormLabel>
-                  <FormSelectWrapper>
-                    <FormSelect
-                      id="location-province"
-                      data-testid="Resources-Search-Location-Province"
-                      name="location-province"
-                      onChange={({ target: { value } }) => updateFilterSelection('province', value)}
-                      value={filterSelections.province}
-                    >
-                      {province.map(({ value, label }) => (
-                        <FormOption key={value} value={value}>
-                          {label ?? value}
-                        </FormOption>
-                      ))}
-                    </FormSelect>
-                  </FormSelectWrapper>
-                </Column>
-                <Column>
-                  <FormLabel htmlFor="location-city">
-                    <Template code="Resources-Search-Location-City" />
-                  </FormLabel>
-                  <FormSelectWrapper>
-                    <FormSelect
-                      id="location-city"
-                      data-testid="Resources-Search-Location-City"
-                      name="location-city"
-                      onChange={({ target: { value } }) => updateFilterSelection('city', value)}
-                      value={filterSelections.city}
-                    >
-                      {/* eslint-disable-next-line sonarjs/no-identical-functions */}
-                      {city.map(({ value, label }) => (
-                        <FormOption key={value} value={value}>
-                          {label ?? value}
-                        </FormOption>
-                      ))}
-                    </FormSelect>
-                  </FormSelectWrapper>
-                </Column>
+              <Row style={{ alignItems: 'baseline', justifyContent: 'space-between' }}>
+                {ageRangeDropDown('Min', minEligibleAge)}
+                <Box>&mdash;</Box>
+                {ageRangeDropDown('Max', maxEligibleAge)}
               </Row>
             </ResourcesSearchFormSettingBox>
-            <Row key="age-range" style={{ alignItems: 'stretch' }}>
-              <ResourcesSearchFormSettingBox key="age-range" style={{ marginTop: '10px', marginBottom: '10px' }}>
+            <ResourcesSearchFormSettingBox style={{ flexShrink: 3, marginLeft: '4px' }}>
+              <Column>
                 <ResourcesSearchFormFilterHeader>
-                  <Template code="Resources-Search-Age-Range" />
+                  <Template code="Resources-Search-InterpretationTranslationServicesAvailable" />
                 </ResourcesSearchFormFilterHeader>
-                <Row>
-                  {ageRangeDropDown('Min', minEligibleAge)} - {ageRangeDropDown('Max', maxEligibleAge)}
-                </Row>
-              </ResourcesSearchFormSettingBox>
-              <ResourcesSearchFormSettingBox>
-                <Column>
-                  <ResourcesSearchFormFilterHeader>
-                    <Template code="Resources-Search-InterpretationTranslationServicesAvailable" />
-                  </ResourcesSearchFormFilterHeader>
-                  <FormLabel htmlFor="interpretationTranslationServicesAvailable" style={{ flexDirection: 'row' }}>
-                    <FiltersCheckbox
-                      id="interpretationTranslationServicesAvailable"
-                      name="interpretationTranslationServicesAvailable"
-                      type="checkbox"
-                      defaultChecked={Boolean(filterSelections.interpretationTranslationServicesAvailable)}
-                      onChange={({ target: { checked } }) => {
-                        updateFilterSelection('interpretationTranslationServicesAvailable', checked || undefined);
-                      }}
-                    />
-                    <Template code="Resources-Search-InterpretationTranslationServicesAvailable-Checkbox" />
-                  </FormLabel>
-                </Column>
-              </ResourcesSearchFormSettingBox>
-            </Row>
-            <Grid container>
-              {Object.entries(checkboxOptions).map(([optionSet, options]) =>
-                checboxSet(optionSet as CheckboxFilterName, options),
-              )}
-            </Grid>
-          </Column>
-        </Row>
+                <FormLabel htmlFor="interpretationTranslationServicesAvailable" style={{ flexDirection: 'row' }}>
+                  <FiltersCheckbox
+                    id="interpretationTranslationServicesAvailable"
+                    name="interpretationTranslationServicesAvailable"
+                    type="checkbox"
+                    defaultChecked={Boolean(filterSelections.interpretationTranslationServicesAvailable)}
+                    onChange={({ target: { checked } }) => {
+                      updateFilterSelection('interpretationTranslationServicesAvailable', checked || undefined);
+                    }}
+                  />
+                  <Template code="Resources-Search-InterpretationTranslationServicesAvailable-Checkbox" />
+                </FormLabel>
+              </Column>
+            </ResourcesSearchFormSettingBox>
+          </Row>
+          <Grid container>
+            {Object.entries(checkboxOptions).map(([optionSet, options]) =>
+              checkboxSet(optionSet as CheckboxFilterName, options),
+            )}
+          </Grid>
+        </Column>
       </ResourcesSearchFormArea>
       <BottomButtonBar>
         <StyledNextStepButton
@@ -295,9 +321,10 @@ const SearchResourcesForm: React.FC<Props> = ({
           <Template code="Resources-Search-ClearFormButton" />
         </StyledNextStepButton>
         <StyledNextStepButton
+          style={{ opacity: hasValidSearchSettings() ? 1 : 0.2 }}
           type="button"
           roundCorners={true}
-          onClick={() => submitSearch(generalSearchTerm, filterSelections, pageSize)}
+          onClick={() => submitSearchIfValid()}
         >
           <Template code="SearchForm-Button" />
         </StyledNextStepButton>

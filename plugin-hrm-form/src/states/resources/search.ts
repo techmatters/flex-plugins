@@ -22,7 +22,17 @@ export type SearchSettings = Omit<Partial<ReferrableResourceSearchState['paramet
   filterSelections?: Partial<ReferrableResourceSearchState['parameters']['filterSelections']>;
 };
 
-export type ReferrableResourceResult = ReferrableResource;
+// Represents a resource whose ID was returned by a search, but which is not in the database
+type MissingResource = {
+  id: string;
+  name: string;
+  _status: 'missing';
+};
+
+export const isMissingResource = (resource: ReferrableResource | MissingResource): resource is MissingResource =>
+  '_status' in resource && resource._status === 'missing';
+
+export type ReferrableResourceResult = ReferrableResource | MissingResource;
 
 export enum ResourceSearchStatus {
   NotSearched,
@@ -65,6 +75,7 @@ export type ReferrableResourceSearchState = {
     pageSize: number;
   };
   currentPage: number;
+  searchSpecified: boolean;
   suggesters: Record<string, string[]>;
   results: ReferrableResourceResult[];
   status: ResourceSearchStatus;
@@ -133,6 +144,7 @@ export const initialState: ReferrableResourceSearchState = {
     generalSearchTerm: '',
     pageSize: 5,
   },
+  searchSpecified: false,
   currentPage: 0,
   suggesters: {},
   status: ResourceSearchStatus.NotSearched,
@@ -256,17 +268,19 @@ export const resourceSearchReducer = createReducer(initialState, handleAction =>
       ...state.parameters.filterSelections,
       ...(payload.filterSelections ?? {}),
     });
+    const validatedFilterSelections = ensureFilterSelectionsAreValid(
+      { ...state.parameters.filterSelections, ...payload.filterSelections },
+      updatedFilterOptions,
+    );
     return {
       ...state,
       filterOptions: updatedFilterOptions,
       parameters: {
         ...state.parameters,
         ...payload,
-        filterSelections: ensureFilterSelectionsAreValid(
-          { ...state.parameters.filterSelections, ...payload.filterSelections },
-          updatedFilterOptions,
-        ),
+        filterSelections: validatedFilterSelections,
       },
+      searchSpecified: Boolean(state.parameters.generalSearchTerm || Object.keys(validatedFilterSelections).length > 0),
     };
   }),
   handleAction(resetSearchFormAction, state => {
