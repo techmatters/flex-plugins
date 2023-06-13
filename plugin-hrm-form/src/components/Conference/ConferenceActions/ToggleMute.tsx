@@ -15,7 +15,7 @@
  */
 
 import React, { useState } from 'react';
-import { TaskContextProps, TaskHelper, withTaskContext } from '@twilio/flex-ui';
+import { TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
 import MicNoneOutlined from '@material-ui/icons/MicNoneOutlined';
 import MicOffOutlined from '@material-ui/icons/MicOffOutlined';
 
@@ -51,13 +51,16 @@ const ToggleMute: React.FC<Props> = ({ call, task, conference }) => {
   };
 
   const isLiveCall = TaskHelper.isLiveCall(task);
+  const buttonText = `Microphone ${isMuted ? 'On' : 'Off'}`;
 
   return (
     <StyledConferenceButtonWrapper>
       <StyledConferenceButton disabled={!isLiveCall} onClick={handleClick}>
         {isMuted ? <MicOffOutlined /> : <MicNoneOutlined />}
       </StyledConferenceButton>
-      <span>Microphone {isMuted ? 'On' : 'Off'}</span>
+      <span>
+        <Template code={buttonText} />
+      </span>
     </StyledConferenceButtonWrapper>
   );
 };
