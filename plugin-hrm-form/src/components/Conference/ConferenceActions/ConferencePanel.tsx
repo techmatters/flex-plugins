@@ -26,8 +26,8 @@ import {
 } from '@twilio/flex-ui';
 import AddIcCallRounded from '@material-ui/icons/AddIcCallRounded';
 import { useDispatch, useSelector } from 'react-redux';
-import { ConferenceNotifications } from 'conference/setUpConferenceActions';
 
+import { ConferenceNotifications } from '../../../conference/setUpConferenceActions';
 import { conferenceApi } from '../../../services/ServerlessService';
 import PhoneInputDialog from './PhoneInputDialog';
 import { StyledConferenceButtonWrapper, StyledConferenceButton } from './styles';
