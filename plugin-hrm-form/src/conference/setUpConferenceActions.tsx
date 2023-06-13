@@ -3,6 +3,7 @@ import { Actions, ITask, NotificationType, Notifications, Template } from '@twil
 
 export const ConferenceNotifications = {
   UnholdParticipantsNotification: 'ConferenceNotifications_UnholdParticipantsNotification',
+  ErrorAddingParticipantNotification: 'ConferenceNotifications_ErrorAddingParticipantNotification',
 };
 
 const setupConferenceNotifications = () => {
@@ -12,6 +13,12 @@ const setupConferenceNotifications = () => {
     content: (
       <Template code="Can't leave conference because some participants are on hold. Please unhold and try again." />
     ),
+  });
+
+  Notifications.registerNotification({
+    id: ConferenceNotifications.ErrorAddingParticipantNotification,
+    type: NotificationType.error,
+    content: <Template code="Something went wrong trying to add participant to the call, please try again." />,
   });
 };
 

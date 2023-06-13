@@ -18,6 +18,7 @@ import React from 'react';
 import {
   ConferenceParticipant,
   Manager,
+  Notifications,
   TaskContextProps,
   TaskHelper,
   Template,
@@ -25,6 +26,7 @@ import {
 } from '@twilio/flex-ui';
 import AddIcCallRounded from '@material-ui/icons/AddIcCallRounded';
 import { useDispatch, useSelector } from 'react-redux';
+import { ConferenceNotifications } from 'conference/setUpConferenceActions';
 
 import { conferenceApi } from '../../../services/ServerlessService';
 import PhoneInputDialog from './PhoneInputDialog';
@@ -105,7 +107,7 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
       setIsDialogOpen(false);
     } catch (err) {
       console.error(`Error adding participant to call ${conferenceSid}: ${err}`);
-      window.alert('Something went wrong trying to add participant to the call, please try again.');
+      Notifications.showNotification(ConferenceNotifications.UnholdParticipantsNotification);
     } finally {
       setIsLoading(false);
     }
