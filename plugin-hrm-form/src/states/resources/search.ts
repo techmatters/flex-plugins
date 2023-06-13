@@ -75,7 +75,6 @@ export type ReferrableResourceSearchState = {
     pageSize: number;
   };
   currentPage: number;
-  searchSpecified: boolean;
   suggesters: Record<string, string[]>;
   results: ReferrableResourceResult[];
   status: ResourceSearchStatus;
@@ -144,7 +143,6 @@ export const initialState: ReferrableResourceSearchState = {
     generalSearchTerm: '',
     pageSize: 5,
   },
-  searchSpecified: false,
   currentPage: 0,
   suggesters: {},
   status: ResourceSearchStatus.NotSearched,
@@ -280,7 +278,6 @@ export const resourceSearchReducer = createReducer(initialState, handleAction =>
         ...payload,
         filterSelections: validatedFilterSelections,
       },
-      searchSpecified: Boolean(state.parameters.generalSearchTerm || Object.keys(validatedFilterSelections).length > 0),
     };
   }),
   handleAction(resetSearchFormAction, state => {
