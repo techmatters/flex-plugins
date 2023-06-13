@@ -121,7 +121,7 @@ export const ResourcesSearchFormArea = styled('div')`
 export const ResourcesSearchFormSettingBox = styled('div')`
   width: 100%;
   background-color: white;
-  padding: 20px;
+  padding: 17px;
   margin: 4px 4px 4px 0;
 `;
 
@@ -151,6 +151,8 @@ export const ResourcesSearchFormSectionHeader = styled(FontOpenSans)`
   font-weight: 700;
   display: inline-block;
   color: #192b33;
+  margin-bottom: 5px;
+  margin-top: 10px;
 `;
 ResourcesSearchFormSectionHeader.displayName = 'ResourcesSearchFormSectionHeader';
 
