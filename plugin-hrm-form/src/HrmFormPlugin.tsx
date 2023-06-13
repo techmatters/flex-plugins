@@ -138,8 +138,7 @@ const setUpComponents = (
   Components.setupTeamViewFilters();
   Components.setupWorkerDirectoryFilters();
 
-  // TODO: hide behind feature flag
-  setupConferenceComponents();
+  if (featureFlags.enable_conferencing) setupConferenceComponents();
 };
 
 const setUpActions = (
