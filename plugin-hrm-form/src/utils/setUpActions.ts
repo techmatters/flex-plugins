@@ -253,6 +253,7 @@ export const customTransferTask = (setupObject: SetupObject): ReplacedActionFunc
   await TransferHelpers.setTransferMeta(payload, documentName, counselorName);
 
   if (TaskHelper.isCallTask(payload.task)) {
+    // TODO: also check isLoading from conference state
     const disableTransfer = payload.task.conference.liveParticipantCount >= 3;
 
     if (disableTransfer) {

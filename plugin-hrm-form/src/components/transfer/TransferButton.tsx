@@ -17,17 +17,21 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Actions, Template, TaskHelper, TaskContextProps, withTaskContext } from '@twilio/flex-ui';
+import { useSelector } from 'react-redux';
 
+import { conferencingBase, namespace, RootState } from '../../states';
 import { TransferStyledButton } from '../../styles/HrmStyles';
 import HhrTheme from '../../styles/HrmTheme';
 
 const TransferButton: React.FC<TaskContextProps> = ({ task, conference }) => {
+  const { isLoading } = useSelector((state: RootState) => state[namespace][conferencingBase].tasks[task.taskSid]);
+
   if (!task) {
     return null;
   }
 
   const isLiveCall = TaskHelper.isLiveCall(task);
-  const disabled = isLiveCall && conference && conference.source.liveParticipantCount >= 3;
+  const disabled = (isLiveCall && conference && conference.source.liveParticipantCount >= 3) || isLoading;
 
   return (
     <TransferStyledButton
