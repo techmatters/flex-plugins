@@ -49,10 +49,10 @@ test('searchResources - valid params sends POST /searchByName?start={start}&limi
     results: [],
     totalCount: 0,
   });
-  const params = { generalSearchTerm: 'bob', filters: {} };
+  const params = { generalSearchTerm: 'bob', filters: { province: 'CA/ON' } };
   await searchResources(params, 1337, 42);
   expect(mockFetchResourcesApi).toHaveBeenCalledWith('search?start=1337&limit=42', {
     method: 'POST',
-    body: JSON.stringify({ generalSearchTerm: 'bob' }),
+    body: JSON.stringify({ generalSearchTerm: 'bob', filters: { province: 'CA/ON' } }),
   });
 });

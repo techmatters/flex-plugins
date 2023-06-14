@@ -75,7 +75,7 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const SearchResourcesForm: React.FC<Props> = ({
+const SearchResourcesResults: React.FC<Props> = ({
   parameters,
   currentPageResults,
   error,
@@ -141,6 +141,6 @@ const SearchResourcesForm: React.FC<Props> = ({
   );
 };
 
-SearchResourcesForm.displayName = 'ViewResource';
+SearchResourcesResults.displayName = 'ViewResource';
 
-export default connector(SearchResourcesForm);
+export default connector(SearchResourcesResults);
