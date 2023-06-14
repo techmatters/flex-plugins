@@ -34,8 +34,7 @@ const HoldParticipantButton: React.FC<Props> = ({ participant, task }) => {
     await conferenceApi.updateParticipant({
       callSid: participant.callSid,
       conferenceSid: task.conference.conferenceSid,
-      updateAttribute: 'hold',
-      updateValue: !participant.onHold,
+      updates: { hold: !participant.onHold },
     });
     setIsLoading(false);
   };
