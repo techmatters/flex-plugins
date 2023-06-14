@@ -54,6 +54,8 @@ import { getTemplateStrings } from '../../../hrmConfig';
 import asyncDispatch from '../../../states/asyncDispatch';
 import { FiltersCheckbox, MultiSelectCheckboxLabel } from '../../../styles/caseList/filters';
 
+const NO_AGE_SELECTED = -1;
+
 type OwnProps = {};
 type FilterName = keyof ReferrableResourceSearchState['parameters']['filterSelections'];
 // This type definition is a bit convoluted but it self checks if the option names change in the state;
@@ -79,8 +81,17 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
   const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
     updateGeneralSearchTerm: (generalSearchTerm: string) => dispatch(updateSearchFormAction({ generalSearchTerm })),
-    updateFilterSelection: (filterName: FilterName, filterValue: string | number | boolean | string[]) =>
-      dispatch(updateSearchFormAction({ filterSelections: { [filterName]: filterValue } })),
+    updateFilterSelection: (filterName: FilterName, filterValue: string | number | boolean | string[]) => {
+      if (filterName === 'maxEligibleAge' || filterName === 'minEligibleAge') {
+        dispatch(
+          updateSearchFormAction({
+            filterSelections: { [filterName]: filterValue === NO_AGE_SELECTED ? undefined : filterValue },
+          }),
+        );
+      } else {
+        dispatch(updateSearchFormAction({ filterSelections: { [filterName]: filterValue } }));
+      }
+    },
     submitSearch: (
       generalSearchTerm: string,
       filterSelections: ReferrableResourceSearchState['parameters']['filterSelections'],
@@ -119,34 +130,38 @@ const SearchResourcesForm: React.FC<Props> = ({
     }
   };
 
-  const ageRangeDropDown = (dropdown: 'Min' | 'Max', optionList: FilterOption<number>[]) => (
-    <Row>
-      <FormSelectWrapper style={{ width: '80px' }}>
-        <FormSelect
-          style={{ width: '80px' }}
-          id={`age-range-${dropdown.toLowerCase()}`}
-          data-testid={`Resources-Search-Age-Range-${dropdown}`}
-          name={dropdown === 'Min' ? 'minEligibleAge' : 'maxEligibleAge'}
-          onChange={({ target: { value } }) =>
-            updateFilterSelection(
-              dropdown === 'Min' ? 'minEligibleAge' : 'maxEligibleAge',
-              value ? parseInt(value, 10) : undefined,
-            )
-          }
-          value={dropdown === 'Min' ? filterSelections.minEligibleAge : filterSelections.maxEligibleAge}
-        >
-          {optionList.map(({ value, label }) => (
-            <FormOption key={value} value={value}>
-              {label ?? value}
-            </FormOption>
-          ))}
-        </FormSelect>
-      </FormSelectWrapper>
-      <FormLabel htmlFor={`age-range-${dropdown.toLowerCase()}`} style={{ marginLeft: '4px', flexDirection: 'row' }}>
-        <Template code={`Resources-Search-Age-Range-${dropdown}`} />
-      </FormLabel>
-    </Row>
-  );
+  const ageRangeDropDown = (dropdown: 'Min' | 'Max', optionList: FilterOption<number>[]) => {
+    const currentSelection =
+      (dropdown === 'Min' ? filterSelections.minEligibleAge : filterSelections.maxEligibleAge) ?? NO_AGE_SELECTED;
+    return (
+      <Row>
+        <FormSelectWrapper style={{ width: '80px' }}>
+          <FormSelect
+            style={{ width: '80px' }}
+            id={`age-range-${dropdown.toLowerCase()}`}
+            data-testid={`Resources-Search-Age-Range-${dropdown}`}
+            name={dropdown === 'Min' ? 'minEligibleAge' : 'maxEligibleAge'}
+            onChange={({ target: { value } }) =>
+              updateFilterSelection(
+                dropdown === 'Min' ? 'minEligibleAge' : 'maxEligibleAge',
+                value ? parseInt(value, 10) : undefined,
+              )
+            }
+            value={currentSelection}
+          >
+            {optionList.map(({ value, label }) => (
+              <FormOption key={value ?? NO_AGE_SELECTED} value={value ?? NO_AGE_SELECTED}>
+                {label ?? value}
+              </FormOption>
+            ))}
+          </FormSelect>
+        </FormSelectWrapper>
+        <FormLabel htmlFor={`age-range-${dropdown.toLowerCase()}`} style={{ marginLeft: '4px', flexDirection: 'row' }}>
+          <Template code={`Resources-Search-Age-Range-${dropdown}`} />
+        </FormLabel>
+      </Row>
+    );
+  };
 
   const checkboxSet = (optionSet: CheckboxFilterName, options: FilterOption[]) => {
     const selectedOptions = filterSelections[optionSet] ?? [];
