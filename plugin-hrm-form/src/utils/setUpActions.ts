@@ -253,7 +253,13 @@ export const customTransferTask = (setupObject: SetupObject): ReplacedActionFunc
   await TransferHelpers.setTransferMeta(payload, documentName, counselorName);
 
   if (TaskHelper.isCallTask(payload.task)) {
-    return safeTransfer(() => original(payload), payload.task);
+    const disableTransfer = payload.task.conference.liveParticipantCount >= 3;
+
+    if (disableTransfer) {
+      window.alert(Manager.getInstance().strings['Transfer-CannotTransferTooManyParticipants']);
+    } else {
+      return safeTransfer(() => original(payload), payload.task);
+    }
   }
 
   const body = {
