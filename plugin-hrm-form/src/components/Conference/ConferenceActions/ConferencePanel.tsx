@@ -106,7 +106,7 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
       setIsDialogOpen(false);
     } catch (err) {
       console.error(`Error adding participant to call ${conferenceSid}: ${err}`);
-      Notifications.showNotification(ConferenceNotifications.UnholdParticipantsNotification);
+      Notifications.showNotification(ConferenceNotifications.ErrorAddingParticipantNotification);
     } finally {
       setIsLoading(false);
     }
