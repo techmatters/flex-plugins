@@ -83,12 +83,32 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
 
   const handleClick = async () => {
     setIsLoading(true);
-    const from = Manager.getInstance().serviceConfiguration.outbound_call_flows.default.caller_id;
-    const to = phoneNumber;
-    const result = await conferenceApi.addParticipant({ from, conferenceSid, to });
-    addNewParticipantToState(result.participant);
-    setIsLoading(false);
-    setIsDialogOpen(false);
+    try {
+      const from = Manager.getInstance().serviceConfiguration.outbound_call_flows.default.caller_id;
+      const to = phoneNumber;
+
+      await Promise.all(
+        conference.source.participants
+          .filter(p => !['worker', 'agent', 'supervisor'].includes(p.participantType))
+          .map(p =>
+            conferenceApi.updateParticipant({
+              callSid: p.callSid,
+              conferenceSid: task.conference.conferenceSid,
+              updateAttribute: 'hold',
+              updateValue: true,
+            }),
+          ),
+      );
+
+      const result = await conferenceApi.addParticipant({ from, conferenceSid, to });
+      addNewParticipantToState(result.participant);
+      setIsDialogOpen(false);
+    } catch (err) {
+      console.error(`Error adding participant to call ${conferenceSid}: ${err}`);
+      window.alert('Something went wrong trying to add participant to the call, please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const isLiveCall = TaskHelper.isLiveCall(task);
