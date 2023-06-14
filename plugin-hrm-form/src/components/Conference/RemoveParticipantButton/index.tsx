@@ -44,7 +44,6 @@ const RemoveParticipantButton: React.FC<Props> = ({ participant, task, ...props 
       onClick={handleClick}
       variant="secondary"
       disabled={isLoading || !TaskHelper.canHold(task) || participant.status !== 'joined'}
-      // title={}
     />
   );
 };

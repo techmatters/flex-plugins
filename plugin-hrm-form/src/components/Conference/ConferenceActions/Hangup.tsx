@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { TaskContextProps, TaskHelper, withTaskContext } from '@twilio/flex-ui';
+import { TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
 import { CallEndOutlined as CallEndIcon } from '@material-ui/icons';
 
 import { conferenceApi } from '../../../services/ServerlessService';
@@ -42,7 +42,9 @@ const Hangup: React.FC<Props> = ({ call, task }) => {
       <StyledHangUpButton disabled={!isLiveCall} onClick={handleClick}>
         <CallEndIcon />
       </StyledHangUpButton>
-      <span>Hang Up</span>
+      <span>
+        <Template code="Hang Up" />
+      </span>
     </StyledConferenceButtonWrapper>
   );
 };
