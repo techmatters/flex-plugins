@@ -108,6 +108,7 @@ export const ResourcesSearchArea = styled('div')`
   max-width: 800px;
   width: 100%;
   padding: 10px;
+  overflow-y: auto;
 `;
 ViewResourceArea.displayName = 'ViewResourceArea';
 

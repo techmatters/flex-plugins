@@ -55,6 +55,7 @@ import asyncDispatch from '../../../states/asyncDispatch';
 import { FiltersCheckbox, MultiSelectCheckboxLabel } from '../../../styles/caseList/filters';
 
 const NO_AGE_SELECTED = -1;
+const NO_LOCATION_SELECTED = '__NO_LOCATION_SELECTED__';
 
 type OwnProps = {};
 type FilterName = keyof ReferrableResourceSearchState['parameters']['filterSelections'];
@@ -82,15 +83,13 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
   return {
     updateGeneralSearchTerm: (generalSearchTerm: string) => dispatch(updateSearchFormAction({ generalSearchTerm })),
     updateFilterSelection: (filterName: FilterName, filterValue: string | number | boolean | string[]) => {
+      let reduxFilterValue = filterValue;
       if (filterName === 'maxEligibleAge' || filterName === 'minEligibleAge') {
-        dispatch(
-          updateSearchFormAction({
-            filterSelections: { [filterName]: filterValue === NO_AGE_SELECTED ? undefined : filterValue },
-          }),
-        );
-      } else {
-        dispatch(updateSearchFormAction({ filterSelections: { [filterName]: filterValue } }));
+        reduxFilterValue = filterValue === NO_AGE_SELECTED ? undefined : filterValue;
+      } else if (filterName === 'province' || filterName === 'city') {
+        reduxFilterValue = filterValue === NO_LOCATION_SELECTED ? undefined : filterValue;
       }
+      dispatch(updateSearchFormAction({ filterSelections: { [filterName]: reduxFilterValue } }));
     },
     submitSearch: (
       generalSearchTerm: string,
@@ -178,7 +177,7 @@ const SearchResourcesForm: React.FC<Props> = ({
                   id={value}
                   name={value}
                   type="checkbox"
-                  defaultChecked={selectedOptions.includes(value)}
+                  checked={selectedOptions.includes(value)}
                   onChange={({ target: { checked } }) => {
                     const newSelections = checked
                       ? [...selectedOptions, value]
@@ -252,11 +251,11 @@ const SearchResourcesForm: React.FC<Props> = ({
                     data-testid="Resources-Search-Location-Province"
                     name="location-province"
                     onChange={({ target: { value } }) => updateFilterSelection('province', value)}
-                    value={filterSelections.province}
+                    value={filterSelections.province ?? NO_LOCATION_SELECTED}
                     style={{ width: '100%' }}
                   >
                     {province.map(({ value, label }) => (
-                      <FormOption key={value} value={value}>
+                      <FormOption key={value ?? NO_LOCATION_SELECTED} value={value ?? NO_LOCATION_SELECTED}>
                         {label ?? value}
                       </FormOption>
                     ))}
@@ -273,12 +272,12 @@ const SearchResourcesForm: React.FC<Props> = ({
                     data-testid="Resources-Search-Location-City"
                     name="location-city"
                     onChange={({ target: { value } }) => updateFilterSelection('city', value)}
-                    value={filterSelections.city}
+                    value={filterSelections.city ?? NO_LOCATION_SELECTED}
                     style={{ width: '100%' }}
                   >
                     {/* eslint-disable-next-line sonarjs/no-identical-functions */}
                     {city.map(({ value, label }) => (
-                      <FormOption key={value} value={value}>
+                      <FormOption key={value ?? NO_LOCATION_SELECTED} value={value ?? NO_LOCATION_SELECTED}>
                         {label ?? value}
                       </FormOption>
                     ))}
@@ -308,7 +307,7 @@ const SearchResourcesForm: React.FC<Props> = ({
                     id="interpretationTranslationServicesAvailable"
                     name="interpretationTranslationServicesAvailable"
                     type="checkbox"
-                    defaultChecked={Boolean(filterSelections.interpretationTranslationServicesAvailable)}
+                    checked={Boolean(filterSelections.interpretationTranslationServicesAvailable)}
                     onChange={({ target: { checked } }) => {
                       updateFilterSelection('interpretationTranslationServicesAvailable', checked || undefined);
                     }}
@@ -330,7 +329,10 @@ const SearchResourcesForm: React.FC<Props> = ({
           type="button"
           secondary={true}
           roundCorners={true}
-          onClick={resetSearch}
+          onClick={() => {
+            setGeneralSearchTermBoxText('');
+            resetSearch();
+          }}
           style={{ marginRight: '15px ' }}
         >
           <Template code="Resources-Search-ClearFormButton" />
