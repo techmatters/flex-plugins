@@ -39,6 +39,7 @@ import {
   ResourcesSearchFormFilterHeader,
   ResourcesSearchFormSectionHeader,
   ResourcesSearchFormSettingBox,
+  ResourcesSearchFormTopRule,
   ResourcesSearchTitle,
 } from '../../../styles/ReferrableResources';
 import {
@@ -189,6 +190,7 @@ const SearchResourcesForm: React.FC<Props> = ({
           <Template code="Resources-Search-FormTitle" />
         </ResourcesSearchTitle>
       </Box>
+      <ResourcesSearchFormTopRule />
       <ResourcesSearchFormArea>
         <ResourcesSearchFormSettingBox>
           <Column>

@@ -108,14 +108,15 @@ export const ResourcesSearchArea = styled('div')`
   max-width: 800px;
   width: 100%;
   padding: 10px;
-  overflow-y: auto;
 `;
 ViewResourceArea.displayName = 'ViewResourceArea';
 
 export const ResourcesSearchFormArea = styled('div')`
   width: 100%;
   padding: 20px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px -2px 2px 0px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  flex-grow: 1;
 `;
 
 export const ResourcesSearchFormSettingBox = styled('div')`
@@ -133,7 +134,16 @@ export const ResourcesSearchFormContainer = styled(Column)`
   line-height: 18px;
   font-weight: 400;
   color: black;
-  overflow: auto;
+`;
+
+export const ResourcesSearchFormTopRule = styled('hr')`
+  color: #d8d8d8;
+  background-color: #d8d8d8;
+  height: 1px;
+  width: 100%;
+  margin-left: 5px;
+  border: 0;
+  border-top: 1px solid #d8d8d8;
 `;
 
 export const ResourcesSearchTitle = styled(FontOpenSans)`

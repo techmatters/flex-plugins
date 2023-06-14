@@ -43,12 +43,15 @@ export enum ResourceSearchStatus {
 
 export type FilterOption<T extends string | number = string> = { value: T; label?: string };
 
-const ageOptions: FilterOption<number>[] = [
-  { label: '', value: undefined },
-  ...Array.from({ length: 30 }, (_, i) => i).map(age => ({ value: age })),
-  { value: 100, label: '30+' },
+const minAgeOptions: FilterOption<number>[] = [
+  { label: '0', value: undefined },
+  ...Array.from({ length: 30 }, (_, i) => i + 1).map(age => ({ value: age })),
 ];
 
+const maxAgeOptions: FilterOption<number>[] = [
+  ...Array.from({ length: 30 }, (_, i) => i).map(age => ({ value: age })),
+  { value: undefined, label: '30+' },
+];
 export type ReferrableResourceSearchState = {
   // eslint-disable-next-line prettier/prettier
   filterOptions: {
@@ -126,8 +129,8 @@ export const initialState: ReferrableResourceSearchState = {
       { label: 'Yukon', value: 'CA/YT' },
     ],
     city: [],
-    minEligibleAge: ageOptions,
-    maxEligibleAge: ageOptions,
+    minEligibleAge: minAgeOptions,
+    maxEligibleAge: maxAgeOptions,
   },
   parameters: {
     filterSelections: {},
@@ -189,11 +192,11 @@ const getFilterOptionsBasedOnSelections = (
 ): ReferrableResourceSearchState['filterOptions'] => {
   return {
     ...initialState.filterOptions,
-    minEligibleAge: ageOptions.filter(opt => {
+    minEligibleAge: minAgeOptions.filter(opt => {
       const maxSelection = filterSelections.maxEligibleAge ?? 1000;
       return opt.value === undefined || opt.value <= maxSelection;
     }),
-    maxEligibleAge: ageOptions.filter(opt => {
+    maxEligibleAge: maxAgeOptions.filter(opt => {
       const minSelection = filterSelections.minEligibleAge ?? 0;
       return opt.value === undefined || opt.value >= minSelection;
     }),
