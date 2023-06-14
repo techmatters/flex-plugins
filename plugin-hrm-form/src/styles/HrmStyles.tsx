@@ -530,17 +530,20 @@ export const TransferStyledButton = styled('button')<TransferStyledButtonProps>`
   border: none;
   align-self: center;
   font-weight: 600;
-  &:hover {
+  &:hover:not([disabled]) {
     cursor: pointer;
     border: 1px solid gray;
     padding: 0px 15px;
   }
-  &:focus {
+  &:focus:not([disabled]) {
     outline: auto;
     outline-color: #1976d2;
   }
-  &:active {
+  &:active:not([disabled]) {
     background: rgb(172, 179, 181);
+  }
+  &:disabled {
+    opacity: 50%;
   }
 `;
 TransferStyledButton.displayName = 'TransferStyledButton';
