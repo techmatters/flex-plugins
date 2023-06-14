@@ -27,14 +27,34 @@ type OwnProps = {
   searchTerm: string;
   innerRef: Ref<any>;
   onChangeSearch: (event: any) => void;
+  onBlurSearch?: (text: string) => void;
   clearSearchTerm: () => void;
   onShiftTab: (event: any) => void;
+  onEnter?: (text: string) => void;
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps;
 
-const SearchInput: React.FC<Props> = ({ label, searchTerm, innerRef, onChangeSearch, clearSearchTerm, onShiftTab }) => {
+const SearchInput: React.FC<Props> = ({
+  label,
+  searchTerm,
+  innerRef,
+  onChangeSearch,
+  // eslint-disable-next-line no-empty-function
+  onBlurSearch = () => {},
+  clearSearchTerm,
+  onShiftTab,
+  // eslint-disable-next-line no-empty-function
+  onEnter = () => {},
+}) => {
+  const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = event => {
+    if (event.key === 'Enter') {
+      onEnter(event.currentTarget.value);
+    }
+    onShiftTab(event);
+  };
+
   const showClearButton = searchTerm.length > 1;
 
   return (
@@ -48,10 +68,11 @@ const SearchInput: React.FC<Props> = ({ label, searchTerm, innerRef, onChangeSea
           id="search-input"
           ref={innerRef}
           value={searchTerm}
-          onChange={onChangeSearch}
           type="string"
-          onKeyDown={onShiftTab}
+          onKeyDown={onKeyDown}
           autoComplete="off"
+          onChange={onChangeSearch}
+          onBlur={event => onBlurSearch(event.currentTarget.value)}
         />
         {showClearButton && (
           <ClearIcon

@@ -18,9 +18,21 @@ import { createAction, createAsyncAction, createReducer } from 'redux-promise-mi
 
 import { ReferrableResource, searchResources } from '../../services/ResourceService';
 
-export type SearchSettings = Partial<ReferrableResourceSearchState['parameters']>;
+export type SearchSettings = Omit<Partial<ReferrableResourceSearchState['parameters']>, 'filterSelections'> & {
+  filterSelections?: Partial<ReferrableResourceSearchState['parameters']['filterSelections']>;
+};
 
-export type ReferrableResourceResult = ReferrableResource;
+// Represents a resource whose ID was returned by a search, but which is not in the database
+type MissingResource = {
+  id: string;
+  name: string;
+  _status: 'missing';
+};
+
+export const isMissingResource = (resource: ReferrableResource | MissingResource): resource is MissingResource =>
+  '_status' in resource && resource._status === 'missing';
+
+export type ReferrableResourceResult = ReferrableResource | MissingResource;
 
 export enum ResourceSearchStatus {
   NotSearched,
@@ -29,11 +41,38 @@ export enum ResourceSearchStatus {
   Error,
 }
 
+export type FilterOption<T extends string | number = string> = { value: T; label?: string };
+
+const minAgeOptions: FilterOption<number>[] = [
+  { label: '0', value: undefined },
+  ...Array.from({ length: 30 }, (_, i) => i + 1).map(age => ({ value: age })),
+];
+
+const maxAgeOptions: FilterOption<number>[] = [
+  ...Array.from({ length: 30 }, (_, i) => i).map(age => ({ value: age })),
+  { value: undefined, label: '30+' },
+];
 export type ReferrableResourceSearchState = {
   // eslint-disable-next-line prettier/prettier
+  filterOptions: {
+    feeStructure: FilterOption[];
+    howServiceIsOffered: FilterOption[];
+    province: FilterOption[];
+    city?: FilterOption[];
+    minEligibleAge: FilterOption<number>[];
+    maxEligibleAge: FilterOption<number>[];
+  };
   parameters: {
     generalSearchTerm: string;
-    filters: Record<string, any>;
+    filterSelections: {
+      city?: string;
+      province?: string;
+      interpretationTranslationServicesAvailable?: true;
+      minEligibleAge?: number;
+      maxEligibleAge?: number;
+      feeStructure?: string[];
+      howServiceIsOffered?: string[];
+    };
     pageSize: number;
   };
   currentPage: number;
@@ -43,9 +82,58 @@ export type ReferrableResourceSearchState = {
   error?: Error;
 };
 
+const allCities: FilterOption[] = [
+  { label: '', value: undefined },
+  { label: 'Vancouver', value: 'CA/BC/Vancouver' },
+  { label: 'Victoria', value: 'CA/BC/Victoria' },
+  { label: 'Kelowna', value: 'CA/BC/Kelowna' },
+  { label: 'Abbotsford', value: 'CA/BC/Abbotsford' },
+  { label: 'Nanaimo', value: 'CA/BC/Nanaimo' },
+  { label: 'White Rock', value: 'CA/BC/White Rock' },
+  { label: 'Kamloops', value: 'CA/BC/Kamloops' },
+  { label: 'Toronto', value: 'CA/ON/Toronto' },
+  { label: 'Ottawa', value: 'CA/ON/Ottawa' },
+  { label: 'Mississauga', value: 'CA/ON/Mississauga' },
+  { label: 'Hamilton', value: 'CA/ON/Hamilton' },
+  { label: 'Brampton', value: 'CA/ON/Brampton' },
+  { label: 'London', value: 'CA/ON/London' },
+  { label: 'Markham', value: 'CA/ON/Markham' },
+  { label: 'Vaughan', value: 'CA/ON/Vaughan' },
+];
+
 export const initialState: ReferrableResourceSearchState = {
+  filterOptions: {
+    feeStructure: [
+      { value: 'Free' },
+      { value: 'Cost Unknown' },
+      { value: 'Membership Fee' },
+      { value: 'Cost for Service' },
+      { value: 'Sliding Scale' },
+      { value: 'One Time Small Fee' },
+    ],
+    howServiceIsOffered: [{ value: 'In-person Support' }, { value: 'Online Support' }, { value: 'Phone Support' }],
+    province: [
+      { label: '', value: undefined },
+      { label: 'Alberta', value: 'CA/AB' },
+      { label: 'British Columbia', value: 'CA/BC' },
+      { label: 'Manitoba', value: 'CA/MB' },
+      { label: 'New Brunswick', value: 'CA/NB' },
+      { label: 'Newfoundland and Labrador', value: 'CA/NL' },
+      { label: 'Northwest Territories', value: 'CA/NT' },
+      { label: 'Nova Scotia', value: 'CA/NS' },
+      { label: 'Nunavut', value: 'CA/NU' },
+      { label: 'Ontario', value: 'CA/ON' },
+      { label: 'Prince Edward Island', value: 'CA/PE' },
+      { label: 'Quebec', value: 'CA/QC' },
+      { label: 'Saskatchewan', value: 'CA/SK' },
+      { label: 'Yukon', value: 'CA/YT' },
+    ],
+    city: [],
+    minEligibleAge: minAgeOptions,
+    maxEligibleAge: maxAgeOptions,
+  },
   parameters: {
-    filters: {},
+    filterSelections: {},
     generalSearchTerm: '',
     pageSize: 5,
   },
@@ -81,9 +169,12 @@ const SEARCH_ACTION = 'resource-action/search';
 export const searchResourceAsyncAction = createAsyncAction(
   SEARCH_ACTION,
   async (parameters: SearchSettings, page: number) => {
-    const { pageSize, generalSearchTerm } = parameters;
+    const { pageSize, generalSearchTerm, filterSelections } = parameters;
     const start = page * pageSize;
-    return { ...(await searchResources({ generalSearchTerm, filters: {} }, start, pageSize)), start };
+    return {
+      ...(await searchResources({ generalSearchTerm, filters: filterSelections ?? {} }, start, pageSize)),
+      start,
+    };
   },
   ({ pageSize }: SearchSettings, page: number, newSearch: boolean = true) => ({ newSearch, start: page * pageSize }),
   // { promiseTypeDelimiter: '/' }, // Doesn't work :-(
@@ -95,6 +186,43 @@ export const searchResourceAsyncAction = createAsyncAction(
  * (most users don't care about much beyond the 10th search result)
  */
 const HARD_SEARCH_RESULT_LIMIT = 10000;
+
+const getFilterOptionsBasedOnSelections = (
+  filterSelections: ReferrableResourceSearchState['parameters']['filterSelections'],
+): ReferrableResourceSearchState['filterOptions'] => {
+  return {
+    ...initialState.filterOptions,
+    minEligibleAge: minAgeOptions.filter(opt => {
+      const maxSelection = filterSelections.maxEligibleAge ?? 1000;
+      return opt.value === undefined || opt.value <= maxSelection;
+    }),
+    maxEligibleAge: maxAgeOptions.filter(opt => {
+      const minSelection = filterSelections.minEligibleAge ?? 0;
+      return opt.value === undefined || opt.value >= minSelection;
+    }),
+    city: allCities.filter(({ value }) =>
+      filterSelections.province ? !value || value.startsWith(filterSelections.province) : false,
+    ),
+  };
+};
+
+const ensureFilterSelectionsAreValid = (
+  filterSelections: ReferrableResourceSearchState['parameters']['filterSelections'],
+  filterOptions: ReferrableResourceSearchState['filterOptions'],
+): ReferrableResourceSearchState['parameters']['filterSelections'] => {
+  return {
+    ...filterSelections,
+    // Don't add undefined values to the filter selections
+    ...Object.fromEntries(
+      Object.entries({
+        minEligibleAge: filterOptions.minEligibleAge.find(opt => opt.value === filterSelections.minEligibleAge)?.value,
+        maxEligibleAge: filterOptions.maxEligibleAge.find(opt => opt.value === filterSelections.maxEligibleAge)?.value,
+        province: filterOptions.province.find(opt => opt.value === filterSelections.province)?.value,
+        city: filterOptions.city.find(opt => opt.value === filterSelections.city)?.value,
+      }).filter(([, value]) => value !== undefined),
+    ),
+  };
+};
 
 export const resourceSearchReducer = createReducer(initialState, handleAction => [
   /*
@@ -128,9 +256,22 @@ export const resourceSearchReducer = createReducer(initialState, handleAction =>
     };
   }),
   handleAction(updateSearchFormAction, (state, { payload }) => {
+    const updatedFilterOptions = getFilterOptionsBasedOnSelections({
+      ...state.parameters.filterSelections,
+      ...(payload.filterSelections ?? {}),
+    });
+    const validatedFilterSelections = ensureFilterSelectionsAreValid(
+      { ...state.parameters.filterSelections, ...payload.filterSelections },
+      updatedFilterOptions,
+    );
     return {
       ...state,
-      parameters: { ...state.parameters, ...payload },
+      filterOptions: updatedFilterOptions,
+      parameters: {
+        ...state.parameters,
+        ...payload,
+        filterSelections: validatedFilterSelections,
+      },
     };
   }),
   handleAction(resetSearchFormAction, state => {
