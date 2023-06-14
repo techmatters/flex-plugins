@@ -44,7 +44,7 @@ import { setUpReferrableResources } from './components/resources/setUpReferrable
 import { subscribeNewMessageAlertOnPluginInit } from './notifications/newMessage';
 import { subscribeReservedTaskAlert } from './notifications/reservedTask';
 import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
-import { setupConferenceComponents } from './conference';
+import { setupConferenceComponents, setUpConferenceActions } from './conference';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -172,6 +172,8 @@ const setUpActions = (
   Flex.Actions.addListener('afterWrapupTask', afterWrapupAction);
 
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
+
+  if (featureFlags.enable_conferencing) setUpConferenceActions();
 };
 
 export default class HrmFormPlugin extends FlexPlugin {
