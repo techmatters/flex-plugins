@@ -44,14 +44,14 @@ type SearchParameters = {
 };
 
 export const searchResources = async (
-  { generalSearchTerm }: SearchParameters,
+  parameters: SearchParameters,
   start: number,
   limit: number,
 ): Promise<{ totalCount: number; results: ReferrableResource[] }> => {
   if (getAseloFeatureFlags().enable_resources_elastic_search) {
     const fromApi = await fetchResourceApi(`search?start=${start}&limit=${limit}`, {
       method: 'POST',
-      body: JSON.stringify({ generalSearchTerm }),
+      body: JSON.stringify(parameters),
     });
     return {
       ...fromApi,
@@ -60,7 +60,7 @@ export const searchResources = async (
   }
   const fromApi = await fetchResourceApi(`searchByName?start=${start}&limit=${limit}`, {
     method: 'POST',
-    body: JSON.stringify({ nameSubstring: generalSearchTerm, ids: [] }),
+    body: JSON.stringify({ nameSubstring: parameters.generalSearchTerm, ids: [] }),
   });
   return {
     ...fromApi,
