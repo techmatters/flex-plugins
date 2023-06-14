@@ -32,6 +32,10 @@
           {
             "name": "childStatus",
             "insights": ["customers", "email"]
+          },
+          {
+            "name": "concernLevel",
+            "insights": ["conversations", "initiative"]
           }
         ],
         "caseInformation": [
@@ -56,10 +60,6 @@
               "customers",
               "city"
             ]
-          },
-          {
-            "name": "concernLevel",
-            "insights": ["conversations", "initiative"]
           }
         ]
       },
