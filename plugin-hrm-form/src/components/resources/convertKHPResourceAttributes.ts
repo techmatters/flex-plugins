@@ -15,35 +15,40 @@
  */
 
 import { KhpOperationsDay, KhpUiResource, Language } from './types';
+import { AttributeData, Attributes } from '../../services/ResourceService';
 
-type Attributes = {
-  [key: string]: any;
+const getAttributeData = (attributes: Attributes | undefined, language: Language, keyName: string): AttributeData => {
+  const propDataList = (attributes ?? {})[keyName];
+  if (propDataList && Array.isArray(propDataList)) {
+    const propDataByLanguage = propDataList.find(item => item?.language === language || item?.language === '');
+    if (propDataByLanguage && 'value' in propDataByLanguage && typeof propDataByLanguage.value === 'string') {
+      return propDataByLanguage;
+    } else if ('value' in propDataList[0]) {
+      return propDataList[0];
+    }
+  }
+  return undefined;
 };
 
 const getAttributeValue = (attributes: Attributes | undefined, language: Language, keyName: string) => {
-  const propVal = (attributes ?? {})[keyName];
-  if (!propVal) {
-    return '';
-  }
-  const propValueByLanguage = propVal.find(item => item?.language === language || item?.language === '');
-  if (propValueByLanguage && 'value' in propValueByLanguage && typeof propValueByLanguage.value === 'string') {
-    return propValueByLanguage.value;
-  } else if (propVal && 'value' in propVal[0] && typeof propVal[0].value === 'boolean') {
-    // For keysToKeep, do not change to Yes / No responses
-    const keysToKeep = ['primaryLocationIsPrivate', 'isLocationPrivate', 'isPrivate'];
-
-    if (propVal[0].value === true && !keysToKeep.includes(keyName)) {
+  const { value } = getAttributeData(attributes, language, keyName) ?? {};
+  if (typeof value === 'boolean') {
+    if (value) {
       return 'Yes';
-    } else if (propVal[0].value === false && !keysToKeep.includes(keyName)) {
-      return 'No';
     }
+    return 'No';
   }
-  return propVal[0].value;
+  return (value ?? '').toString();
+};
+
+const getBooleanAttributeValue = (attributes: Attributes | undefined, language: Language, keyName: string) => {
+  const { value } = getAttributeData(attributes, language, keyName);
+  return Boolean(value);
 };
 
 const getAttributeValuesAsCsv = (attributes: Attributes | undefined, language: Language, keyName: string) => {
   const propVal = (attributes ?? {})[keyName];
-  if (!propVal) {
+  if (!propVal || Array.isArray(propVal)) {
     return '';
   }
   return Object.keys(propVal)
@@ -70,8 +75,8 @@ const extractPrimaryLocation = (attributes: Attributes, language: Language) => {
   const address1 = getAttributeValue(attributes, language, 'primaryLocationAddress1');
   const address2 = getAttributeValue(attributes, language, 'primaryLocationAddress2');
   const county = getAttributeValue(attributes, language, 'primaryLocationCounty');
-  const city = getAttributeValue(attributes, language, 'primaryLocationCity');
-  const province = getAttributeValue(attributes, language, 'primaryLocationProvince');
+  const city = getAttributeData(attributes, language, 'primaryLocationCity')?.info?.name;
+  const province = getAttributeData(attributes, language, 'primaryLocationProvince')?.info?.name;
   const postalCode = getAttributeValue(attributes, language, 'primaryLocationPostalCode');
   const phone = getAttributeValue(attributes, language, 'primaryLocationPhone');
   // eslint-disable-next-line prefer-named-capture-group
@@ -80,30 +85,31 @@ const extractPrimaryLocation = (attributes: Attributes, language: Language) => {
   return `${toCsv(address1, address2)}${toCsv(county, city)}${toCsv(province, postalCode)}${formattedPhone}`;
 };
 
-const extractOperatingHours = (
-  operations: Record<string, { info: KhpOperationsDay; value: string; language: string }[]>,
-  language: Language,
-): KhpOperationsDay[] => {
+const extractOperatingHours = (operations: Attributes, language: Language): KhpOperationsDay[] => {
   return Object.values(operations ?? {})
     .flat()
     .filter(item => item.language === language || item.language === '')
     .map(({ value, info }, index) => {
+      const khpOperationsDayInfo = info as KhpOperationsDay;
       return {
         key: index.toString(),
-        day: value,
-        hoursOfOperation: info?.hoursOfOperation,
-        descriptionOfHours: info?.descriptionOfHours,
+        day: value?.toString(),
+        hoursOfOperation: khpOperationsDayInfo?.hoursOfOperation,
+        descriptionOfHours: khpOperationsDayInfo?.descriptionOfHours,
       };
     });
 };
 
-const extractResourceOperatingHours = (operationsList: Attributes, language: Language): KhpOperationsDay[] => {
+const extractResourceOperatingHours = (
+  operationsList: Attributes | undefined,
+  language: Language,
+): KhpOperationsDay[] => {
   if (operationsList) {
     const sets = Object.values(operationsList);
-    const resourceOperations = sets.find(s => !s.siteId);
-    if (resourceOperations) {
+    const resourceOperations = sets.find(s => !Array.isArray(s) && s.siteId);
+    if (resourceOperations && !Array.isArray(resourceOperations)) {
       return extractOperatingHours(resourceOperations, language);
-    } else if (sets.length === 1) {
+    } else if (sets.length === 1 && !Array.isArray(sets[0])) {
       /*
        * If there is no global 'resource operations' set and only one site level operations set, return that for the resource
        * Don't return anything if there are no global 'resource operations' sets and more than one site level operations set
@@ -122,11 +128,13 @@ const extractSiteOperatingHours = (
 ): KhpOperationsDay[] => {
   if (resourceOperationsList) {
     const sets = Object.values(resourceOperationsList);
-    const siteResourceOperations = siteId ? sets.find(s => s.siteId === siteId) : undefined;
-    if (siteResourceOperations) {
+    const siteResourceOperations = siteId
+      ? sets.find(s => !Array.isArray(s) && Array.isArray(s.siteId) && s.siteId[0].value === siteId)
+      : undefined;
+    if (siteResourceOperations && !Array.isArray(siteResourceOperations)) {
       // The top level resource operations set should include a set of operations for each site, linked via siteId
       return extractOperatingHours(siteResourceOperations, language);
-    } else if (siteOperations?.length > 0) {
+    } else if (Array.isArray(siteOperations) && siteOperations.length > 0) {
       /*
        * If there is no set of operations for this resource at this site, return the operations from the site object (assuming there is one, if not return empty array)
        * Unsure as to the use case for a site having more than one set of operations, but let's just return the first one
@@ -163,24 +171,29 @@ const extractPhoneNumbers = (phoneObj: any) => {
   return phoneNumbers;
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const extractSiteDetails = (resource: Attributes, sites: Attributes, language: Language) => {
   const siteDetails = [];
   for (const key in sites ?? {}) {
-    if (sites.key) {
+    if (!Array.isArray(sites) && sites.key) {
       const langKey = language === 'fr' ? 1 : 0;
       const site = sites[key];
-      const siteId = site.siteId?.[0]?.value;
-      const location = extractSiteLocation(site.location);
-      siteDetails.push({
-        siteId: key,
-        name: site.name[langKey]?.value || '',
-        location,
-        email: site.email[0]?.value || '',
-        operations: extractSiteOperatingHours(siteId, resource.operations, site.operations, language),
-        isActive: site.isActive[0]?.value,
-        details: site.details[langKey]?.info?.description || '',
-        phoneNumbers: extractPhoneNumbers(site.phone),
-      });
+      if (site && !Array.isArray(site)) {
+        const siteId = site.siteId?.[0]?.value;
+        const location = extractSiteLocation(site.location);
+        const operationsAttributes = Array.isArray(resource.operations) ? {} : resource.operations;
+        const siteOperations = Array.isArray(site.operations) ? {} : site.operations;
+        siteDetails.push({
+          siteId: key,
+          name: site.name[langKey]?.value || '',
+          location,
+          email: site.email[0]?.value || '',
+          operations: extractSiteOperatingHours(siteId, operationsAttributes, siteOperations, language),
+          isActive: site.isActive[0]?.value,
+          details: site.details[langKey]?.info?.description || '',
+          phoneNumbers: extractPhoneNumbers(site.phone),
+        });
+      }
     }
   }
   return siteDetails;
@@ -212,6 +225,14 @@ export const convertKHPResourceAttributes = (
   attributes: Attributes,
   language: Language,
 ): KhpUiResource['attributes'] => {
+  if (!attributes || Array.isArray(attributes)) {
+    throw new Error('Invalid attributes to convert to KHP resource');
+  }
+  if (!attributes.mainContact || Array.isArray(attributes.mainContact)) {
+    throw new Error('Invalid attributes.mainContact to convert to KHP resource');
+  }
+  const sites = attributes.sites && !Array.isArray(attributes.sites) ? attributes.sites : {};
+  const operations = attributes.operations && !Array.isArray(attributes.operations) ? attributes.operations : undefined;
   return {
     status: getAttributeValue(attributes, language, 'status'),
     taxonomyCode: getAttributeValue(attributes, language, 'taxonomyCode'),
@@ -221,10 +242,10 @@ export const convertKHPResourceAttributes = (
       title: getAttributeValue(attributes.mainContact, language, 'title'),
       phoneNumber: getAttributeValue(attributes.mainContact, language, 'phoneNumber'),
       email: getAttributeValue(attributes.mainContact, language, 'email'),
-      isPrivate: getAttributeValue(attributes.mainContact, language, 'isPrivate'),
+      isPrivate: getBooleanAttributeValue(attributes.mainContact, language, 'isPrivate'),
     },
     website: getAttributeValue(attributes, language, 'website'),
-    operations: extractResourceOperatingHours(attributes.operations, language),
+    operations: extractResourceOperatingHours(operations, language),
     available247: getAttributeValue(attributes, language, 'available247'),
     ageRange: extractAgeRange(attributes, language),
     targetPopulation: extractTargetPopulation(attributes.targetPopulation),
@@ -239,8 +260,8 @@ export const convertKHPResourceAttributes = (
     howIsServiceOffered: getAttributeValuesAsCsv(attributes, language, 'howIsServiceOffered'),
     accessibility: getAttributeValue(attributes, language, 'accessibility'),
     documentsRequired: extractRequiredDocuments(attributes.documentsRequired, language),
-    primaryLocationIsPrivate: getAttributeValue(attributes, language, 'primaryLocationIsPrivate'),
+    primaryLocationIsPrivate: getBooleanAttributeValue(attributes, language, 'primaryLocationIsPrivate'),
     primaryLocation: extractPrimaryLocation(attributes, language),
-    site: extractSiteDetails(attributes, attributes.site, language),
+    site: extractSiteDetails(attributes, sites, language),
   };
 };
