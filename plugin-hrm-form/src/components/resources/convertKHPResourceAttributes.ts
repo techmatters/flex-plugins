@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { KhpUiResource, Language } from './types';
+import { KhpOperationsDay, KhpUiResource, Language } from './types';
 
 type Attributes = {
   [key: string]: any;
@@ -23,9 +23,9 @@ type Attributes = {
 const getAttributeValue = (attributes: Attributes | undefined, language: Language, keyName: string) => {
   const propVal = (attributes ?? {})[keyName];
   if (!propVal) {
-    return null;
+    return '';
   }
-  const propValueByLanguage = propVal.find(item => item.language === language || item.language === '');
+  const propValueByLanguage = propVal.find(item => item?.language === language || item?.language === '');
   if (propValueByLanguage && 'value' in propValueByLanguage && typeof propValueByLanguage.value === 'string') {
     return propValueByLanguage.value;
   } else if (propVal && 'value' in propVal[0] && typeof propVal[0].value === 'boolean') {
@@ -41,6 +41,17 @@ const getAttributeValue = (attributes: Attributes | undefined, language: Languag
   return propVal[0].value;
 };
 
+const getAttributeValuesAsCsv = (attributes: Attributes | undefined, language: Language, keyName: string) => {
+  const propVal = (attributes ?? {})[keyName];
+  if (!propVal) {
+    return '';
+  }
+  return Object.keys(propVal)
+    .map(itemKey => getAttributeValue(propVal, language, itemKey))
+    .filter(v => v)
+    .join(', ');
+};
+
 const extractAgeRange = (attributes: Attributes, language: Language) => {
   const eligibilityMinAge = getAttributeValue(attributes, language, 'eligibilityMinAge');
   const eligibilityMaxAge = getAttributeValue(attributes, language, 'eligibilityMaxAge');
@@ -50,7 +61,14 @@ const extractAgeRange = (attributes: Attributes, language: Language) => {
   return 'N/A';
 };
 
+const toCsv = (...args: string[]) => {
+  const text = args.filter(v => v).join(', ');
+  return text ? `${text}\r\n` : '';
+};
+
 const extractPrimaryLocation = (attributes: Attributes, language: Language) => {
+  const address1 = getAttributeValue(attributes, language, 'primaryLocationAddress1');
+  const address2 = getAttributeValue(attributes, language, 'primaryLocationAddress2');
   const county = getAttributeValue(attributes, language, 'primaryLocationCounty');
   const city = getAttributeValue(attributes, language, 'primaryLocationCity');
   const province = getAttributeValue(attributes, language, 'primaryLocationProvince');
@@ -59,15 +77,64 @@ const extractPrimaryLocation = (attributes: Attributes, language: Language) => {
   // eslint-disable-next-line prefer-named-capture-group
   const formattedPhone = phone?.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
 
-  return `${county}, ${city}\r\n${province}, ${postalCode}\r\n${formattedPhone}`;
+  return `${toCsv(address1, address2)}${toCsv(county, city)}${toCsv(province, postalCode)}${formattedPhone}`;
 };
 
-const extractOperatingHours = (operations: any, language: Language) => {
-  return Object.keys(operations ?? {}).map(key => {
-    const dayData = operations[key].find(item => item.language === language || item.language === '');
-    const { hoursOfOperation, descriptionOfHours, day } = dayData.info;
-    return { day, hoursOfOperation, descriptionOfHours };
-  });
+const extractOperatingHours = (
+  operations: Record<string, { info: KhpOperationsDay; value: string; language: string }[]>,
+  language: Language,
+): KhpOperationsDay[] => {
+  return Object.values(operations ?? {})
+    .flat()
+    .filter(item => item.language === language || item.language === '')
+    .map(({ value, info }, index) => {
+      return {
+        key: index.toString(),
+        day: value,
+        hoursOfOperation: info?.hoursOfOperation,
+        descriptionOfHours: info?.descriptionOfHours,
+      };
+    });
+};
+
+const extractResourceOperatingHours = (operationsList: Attributes, language: Language): KhpOperationsDay[] => {
+  if (operationsList) {
+    const sets = Object.values(operationsList);
+    const resourceOperations = sets.find(s => !s.siteId);
+    if (resourceOperations) {
+      return extractOperatingHours(resourceOperations, language);
+    } else if (sets.length === 1) {
+      /*
+       * If there is no global 'resource operations' set and only one site level operations set, return that for the resource
+       * Don't return anything if there are no global 'resource operations' sets and more than one site level operations set
+       */
+      return extractOperatingHours(sets[0], language);
+    }
+  }
+  return [];
+};
+
+const extractSiteOperatingHours = (
+  siteId: string,
+  resourceOperationsList: Attributes,
+  siteOperations: Attributes | undefined,
+  language: Language,
+): KhpOperationsDay[] => {
+  if (resourceOperationsList) {
+    const sets = Object.values(resourceOperationsList);
+    const siteResourceOperations = siteId ? sets.find(s => s.siteId === siteId) : undefined;
+    if (siteResourceOperations) {
+      // The top level resource operations set should include a set of operations for each site, linked via siteId
+      return extractOperatingHours(siteResourceOperations, language);
+    } else if (siteOperations?.length > 0) {
+      /*
+       * If there is no set of operations for this resource at this site, return the operations from the site object (assuming there is one, if not return empty array)
+       * Unsure as to the use case for a site having more than one set of operations, but let's just return the first one
+       */
+      return extractOperatingHours(siteOperations[0], language);
+    }
+  }
+  return [];
 };
 
 const extractSiteLocation = location => {
@@ -78,7 +145,8 @@ const extractSiteLocation = location => {
     county: location.county[0]?.value || '',
     postalCode: location.postalCode[0]?.value || '',
     province: location.province[0]?.info?.name || '',
-    country: location.country[0]?.value || '',
+    country: 'Canada',
+    isPrivate: location.isPrivate[0]?.value || false,
   };
 };
 
@@ -95,20 +163,20 @@ const extractPhoneNumbers = (phoneObj: any) => {
   return phoneNumbers;
 };
 
-const extractSiteDetails = (sites: Object, language: Language) => {
+const extractSiteDetails = (resource: Attributes, sites: Attributes, language: Language) => {
   const siteDetails = [];
   for (const key in sites ?? {}) {
-    if (sites.hasOwnProperty(key)) {
+    if (sites.key) {
       const langKey = language === 'fr' ? 1 : 0;
       const site = sites[key];
+      const siteId = site.siteId?.[0]?.value;
       const location = extractSiteLocation(site.location);
       siteDetails.push({
         siteId: key,
         name: site.name[langKey]?.value || '',
         location,
         email: site.email[0]?.value || '',
-        operations: extractOperatingHours(site.operations, language),
-        isLocationPrivate: site.isLocationPrivate[0]?.value || false,
+        operations: extractSiteOperatingHours(siteId, resource.operations, site.operations, language),
         isActive: site.isActive[0]?.value,
         details: site.details[langKey]?.info?.description || '',
         phoneNumbers: extractPhoneNumbers(site.phone),
@@ -156,7 +224,7 @@ export const convertKHPResourceAttributes = (
       isPrivate: getAttributeValue(attributes.mainContact, language, 'isPrivate'),
     },
     website: getAttributeValue(attributes, language, 'website'),
-    operations: extractOperatingHours(attributes.operations, language),
+    operations: extractResourceOperatingHours(attributes.operations, language),
     available247: getAttributeValue(attributes, language, 'available247'),
     ageRange: extractAgeRange(attributes, language),
     targetPopulation: extractTargetPopulation(attributes.targetPopulation),
@@ -165,14 +233,14 @@ export const convertKHPResourceAttributes = (
       language,
       'interpretationTranslationServicesAvailable',
     ),
-    feeStructureSource: getAttributeValue(attributes, language, 'feeStructureSource'),
-    howToAccessSupport: getAttributeValue(attributes, language, 'howToAccessSupport'),
+    feeStructureSource: getAttributeValuesAsCsv(attributes, language, 'feeStructureSource'),
+    howToAccessSupport: getAttributeValuesAsCsv(attributes, language, 'howToAccessSupport'),
     applicationProcess: getAttributeValue(attributes, language, 'applicationProcess'),
-    howIsServiceOffered: getAttributeValue(attributes, language, 'howIsServiceOffered'),
+    howIsServiceOffered: getAttributeValuesAsCsv(attributes, language, 'howIsServiceOffered'),
     accessibility: getAttributeValue(attributes, language, 'accessibility'),
     documentsRequired: extractRequiredDocuments(attributes.documentsRequired, language),
     primaryLocationIsPrivate: getAttributeValue(attributes, language, 'primaryLocationIsPrivate'),
     primaryLocation: extractPrimaryLocation(attributes, language),
-    site: extractSiteDetails(attributes.site, language),
+    site: extractSiteDetails(attributes, attributes.site, language),
   };
 };

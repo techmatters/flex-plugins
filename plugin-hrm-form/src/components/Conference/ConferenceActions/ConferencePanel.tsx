@@ -14,43 +14,104 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
-import { Manager, TaskContextProps, TaskHelper, withTaskContext } from '@twilio/flex-ui';
+import React from 'react';
+import {
+  ConferenceParticipant,
+  Manager,
+  TaskContextProps,
+  TaskHelper,
+  Template,
+  withTaskContext,
+} from '@twilio/flex-ui';
 import AddIcCallRounded from '@material-ui/icons/AddIcCallRounded';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { conferenceApi } from '../../../services/ServerlessService';
 import PhoneInputDialog from './PhoneInputDialog';
 import { StyledConferenceButtonWrapper, StyledConferenceButton } from './styles';
+import { conferencingBase, namespace, RootState } from '../../../states';
+import { setIsDialogOpenAction, setIsLoadingAction, setPhoneNumberAction } from '../../../states/conferencing';
 
 type Props = TaskContextProps;
 
 const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
-  const [targetNumber, setTargetNumber] = useState('');
-  const [isAdding, setIsAdding] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { isDialogOpen, isLoading, phoneNumber } = useSelector(
+    (state: RootState) => state[namespace][conferencingBase].tasks[task.taskSid],
+  );
+  const conferencesStates = useSelector((state: RootState) => state.flex.conferences.states);
+  const dispatch = useDispatch();
 
-  const conferenceSid = conference?.source?.conferenceSid;
-  const participants = conference?.source?.participants || [];
+  const setIsDialogOpen = (isOpen: boolean) => dispatch(setIsDialogOpenAction(task.taskSid, isOpen));
+  const setIsLoading = (isLoading: boolean) => dispatch(setIsLoadingAction(task.taskSid, isLoading));
+  const setPhoneNumber = (number: string) => dispatch(setPhoneNumberAction(task.taskSid, number));
 
   const toggleDialog = () => {
     setIsDialogOpen(!isDialogOpen);
   };
 
-  const handleClick = async () => {
-    setIsAdding(true);
-    const from = Manager.getInstance().serviceConfiguration.outbound_call_flows.default.caller_id;
-    const to = targetNumber;
-    await conferenceApi.addParticipant({ from, conferenceSid, to });
-
-    setIsAdding(false);
-    setIsDialogOpen(false);
-  };
-
-  const isLiveCall = TaskHelper.isLiveCall(task);
+  const conferenceSid = conference?.source?.conferenceSid;
+  const participants = conference?.source?.participants || [];
 
   if (!conferenceSid || !participants || !task) {
     return null;
   }
+
+  const addNewParticipantToState = (newParticipant: any) => {
+    const conferences = new Set();
+    conferencesStates.forEach(conf => {
+      if (conf.source.sid === conference.source.sid) {
+        const { participants } = conf.source;
+
+        const fakeParticipant = new ConferenceParticipant({
+          ...newParticipant,
+          mediaProperties: {
+            ...newParticipant,
+          },
+          connecting: true,
+          type: 'external',
+        } as any);
+
+        participants.push(fakeParticipant);
+        conferences.add(conference.source);
+      } else {
+        conferences.add(conf);
+      }
+    });
+
+    dispatch({ type: 'CONFERENCE_MULTIPLE_UPDATE', payload: { conferences } });
+  };
+
+  const handleClick = async () => {
+    setIsLoading(true);
+    try {
+      const from = Manager.getInstance().serviceConfiguration.outbound_call_flows.default.caller_id;
+      const to = phoneNumber;
+
+      await Promise.all(
+        conference.source.participants
+          .filter(p => !['worker', 'agent', 'supervisor'].includes(p.participantType))
+          .map(p =>
+            conferenceApi.updateParticipant({
+              callSid: p.callSid,
+              conferenceSid: task.conference.conferenceSid,
+              updateAttribute: 'hold',
+              updateValue: true,
+            }),
+          ),
+      );
+
+      const result = await conferenceApi.addParticipant({ from, conferenceSid, to });
+      addNewParticipantToState(result.participant);
+      setIsDialogOpen(false);
+    } catch (err) {
+      console.error(`Error adding participant to call ${conferenceSid}: ${err}`);
+      window.alert('Something went wrong trying to add participant to the call, please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const isLiveCall = TaskHelper.isLiveCall(task);
 
   return (
     <StyledConferenceButtonWrapper>
@@ -58,8 +119,8 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
         <StyledConferenceButton
           disabled={
             !isLiveCall ||
-            isAdding ||
-            (participants && participants.filter(participant => participant.status === 'joined').length >= 3)
+            isLoading ||
+            (participants && participants.filter(participant => participant.status === 'joined').length >= 4)
           }
           onClick={toggleDialog}
         >
@@ -67,14 +128,16 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
         </StyledConferenceButton>
         {isDialogOpen && (
           <PhoneInputDialog
-            targetNumber={targetNumber}
-            setTargetNumber={setTargetNumber}
+            targetNumber={phoneNumber}
+            setTargetNumber={setPhoneNumber}
             handleClick={handleClick}
             setIsDialogOpen={setIsDialogOpen}
           />
         )}
       </>
-      <span>Conference</span>
+      <span>
+        <Template code="Conference" />
+      </span>
     </StyledConferenceButtonWrapper>
   );
 };

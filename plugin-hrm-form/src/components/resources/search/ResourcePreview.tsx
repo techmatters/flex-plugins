@@ -16,20 +16,17 @@
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
 import React from 'react';
-import PhoneIcon from '@material-ui/icons/Phone';
 
 import { Box, Column, Flex } from '../../../styles/HrmStyles';
 import {
   ResourceAttributeContent,
   ResourceAttributeDescription,
   ResourceAttributesColumn,
-  ResourceCategoriesContainer,
   ResourcePreviewHeaderText,
   ResourcePreviewWrapper,
 } from '../../../styles/ReferrableResources';
 import { PreviewRow, StyledLink } from '../../../styles/search';
-import { ReferrableResourceResult } from '../../../states/resources/search';
-import CategoryWithTooltip from '../../common/CategoryWithTooltip';
+import { isMissingResource, ReferrableResourceResult } from '../../../states/resources/search';
 import ResourceIdCopyButton from '../ResourceIdCopyButton';
 import { convertKHPResourceAttributes } from '../convertKHPResourceAttributes';
 import OperatingHours from './resourceView/OperatingHours';
@@ -42,6 +39,10 @@ type OwnProps = {
 type Props = OwnProps;
 
 const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource }) => {
+  if (isMissingResource(resourceResult)) {
+    // We could put a placeholder here, but it's probably better to just not show anything
+    return <hr style={{ width: '100%', height: '3px', opacity: 0.3 }} />;
+  }
   const { id, name, attributes } = resourceResult;
 
   const resourceAttributes = convertKHPResourceAttributes(attributes, 'en');

@@ -61,7 +61,6 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
           autoFocus
           tabIndex={1}
           onClick={handleClick}
-          //   disabled={!isValidPhoneNumber(targetNumber)}
         >
           <CallEndIcon fontSize="medium" /> &nbsp; &nbsp;
           <Template code="Conference-DialButton" />

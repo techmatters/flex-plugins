@@ -47,7 +47,6 @@ const HoldParticipantButton: React.FC<Props> = ({ participant, task }) => {
         onClick={handleClick}
         variant="secondary"
         disabled={isLoading || !TaskHelper.canHold(task) || participant.status !== 'joined'}
-        // title={}
       />
     </>
   );
