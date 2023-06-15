@@ -33,6 +33,10 @@
       "unknownOption": "Unknown",
       "options": [
         {
+          "value": "India",
+          "label": "India"
+        },
+        {
           "value": "Afghanistan",
           "label": "Afghanistan"
         },
@@ -339,10 +343,6 @@
         {
           "value": "Iceland",
           "label": "Iceland"
-        },
-        {
-          "value": "India",
-          "label": "India"
         },
         {
           "value": "Indonesia",
