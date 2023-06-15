@@ -1790,8 +1790,16 @@
         "label": "Community"
       },
       {
+        "value": "NGO",
+        "label": "NGO"
+      },
+      {
         "value": "Friend",
         "label": "Friend"
+      },
+      {
+        "value": "Family",
+        "label": "Family"
       },
       {
         "value": "Social media",
