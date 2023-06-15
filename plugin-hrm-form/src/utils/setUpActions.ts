@@ -35,7 +35,7 @@ import {
   getDefinitionVersion,
   postSurveyInit,
 } from '../services/ServerlessService';
-import { namespace, contactFormsBase, configurationBase, dualWriteBase } from '../states';
+import { namespace, contactFormsBase, configurationBase, dualWriteBase, conferencingBase } from '../states';
 import * as Actions from '../states/contacts/actions';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { changeRoute } from '../states/routing/actions';
@@ -253,8 +253,7 @@ export const customTransferTask = (setupObject: SetupObject): ReplacedActionFunc
   await TransferHelpers.setTransferMeta(payload, documentName, counselorName);
 
   if (TaskHelper.isCallTask(payload.task)) {
-    // TODO: also check isLoading from conference state
-    const disableTransfer = payload.task.conference.liveParticipantCount >= 3;
+    const disableTransfer = !TransferHelpers.canTransferConference(payload.task);
 
     if (disableTransfer) {
       window.alert(Manager.getInstance().strings['Transfer-CannotTransferTooManyParticipants']);
