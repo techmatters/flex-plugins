@@ -23,6 +23,7 @@ import each from 'jest-each';
 import * as TransferHelpers from '../../utils/transfer';
 import { transferModes, transferStatuses } from '../../states/DomainConstants';
 import { acceptTask, createTask } from '../helpers';
+import { conferencingBase, namespace } from '../../states';
 
 const members = new Map();
 members.set('some_40identity', { source: { sid: 'member1' } });
@@ -459,5 +460,74 @@ describe('TransferredTaskJanitor helpers', () => {
     originalCounselor: 'worker1',
     transferStatus,
     sidWithTaskControl,
+  });
+});
+
+describe('Conference Transfer', () => {
+  jest.mock('@twilio/flex-ui', () => ({
+    ...jest.requireActual('@twilio/flex-ui'),
+    TaskHelper: { isLiveCall: jest.fn() },
+    Manager: { getInstance: jest.fn() },
+  }));
+
+  afterEach(() => jest.resetAllMocks());
+
+  const task = {
+    taskSid: 'task-sid',
+    conference: {
+      liveParticipantCount: 2,
+    },
+  };
+
+  const mockIsLiveCall = (value: boolean) => jest.spyOn(Flex.TaskHelper, 'isLiveCall').mockReturnValue(value);
+  const mockIsLoading = (task: Required<{ taskSid: string }>, value: boolean) => {
+    const instance = {
+      ...Flex.Manager,
+      store: {
+        getState: () => ({
+          [namespace]: {
+            [conferencingBase]: {
+              tasks: {
+                [task.taskSid]: {
+                  isLoading: value,
+                },
+              },
+            },
+          },
+        }),
+      },
+    };
+    jest.spyOn(Flex.Manager, 'getInstance').mockReturnValue(instance as any);
+  };
+
+  test('Cannot transfer if is not live call', () => {
+    mockIsLiveCall(false);
+    mockIsLoading(task, false);
+
+    expect(TransferHelpers.canTransferConference(task as Flex.ITask)).toBe(false);
+  });
+
+  test('Cannot transfer while isLoading', () => {
+    mockIsLiveCall(true);
+    mockIsLoading(task, true);
+
+    expect(TransferHelpers.canTransferConference(task as Flex.ITask)).toBe(false);
+  });
+
+  test('Cannot transfer if there are three or more participants', () => {
+    const threeParticipantsTask = { ...task };
+    threeParticipantsTask.conference.liveParticipantCount = 3;
+
+    mockIsLiveCall(true);
+    mockIsLoading(threeParticipantsTask, false);
+
+    expect(TransferHelpers.canTransferConference(threeParticipantsTask as Flex.ITask)).toBe(false);
+  });
+
+  test('Should be able to transfer', () => {
+    mockIsLiveCall(true);
+    mockIsLoading(task, false);
+
+    expect(TransferHelpers.canTransferConference(task as Flex.ITask)).toBe(false);
   });
 });
