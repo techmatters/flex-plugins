@@ -241,7 +241,7 @@ const SearchResourcesForm: React.FC<Props> = ({
               key="location"
               style={{ marginTop: '10px', marginBottom: '10px', justifyContent: 'stretch', gap: '60px' }}
             >
-              <Column style={{ flexGrow: 1, gap: '4px' }}>
+              <Column style={{ width: '50%', gap: '4px' }}>
                 <FormLabel htmlFor="location-province">
                   <Template code="Resources-Search-Location-Province" />
                 </FormLabel>
@@ -262,7 +262,7 @@ const SearchResourcesForm: React.FC<Props> = ({
                   </FormSelect>
                 </FormSelectWrapper>
               </Column>
-              <Column style={{ flexGrow: 2, opacity: filterSelections.province ? 1 : 0.2, gap: '4px' }}>
+              <Column style={{ width: '50%', opacity: filterSelections.province ? 1 : 0.2, gap: '4px' }}>
                 <FormLabel htmlFor="location-city">
                   <Template code="Resources-Search-Location-City" />
                 </FormLabel>
