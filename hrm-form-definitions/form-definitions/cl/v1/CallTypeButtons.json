@@ -42,6 +42,12 @@
     "category": "non-data"
   },
   {
+    "name": "1515SeguroReale",
+    "label": "*1515 Seguro Reale",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
     "name": "test",
     "label": "Prueba",
     "type": "button",
