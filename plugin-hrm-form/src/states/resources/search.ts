@@ -17,6 +17,7 @@
 import { createAction, createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
 import { ReferrableResource, searchResources } from '../../services/ResourceService';
+import { cityOptions, provinceOptions } from './locations';
 
 export type SearchSettings = Omit<Partial<ReferrableResourceSearchState['parameters']>, 'filterSelections'> & {
   filterSelections?: Partial<ReferrableResourceSearchState['parameters']['filterSelections']>;
@@ -82,24 +83,7 @@ export type ReferrableResourceSearchState = {
   error?: Error;
 };
 
-const allCities: FilterOption[] = [
-  { label: '', value: undefined },
-  { label: 'Vancouver', value: 'CA/BC/Vancouver' },
-  { label: 'Victoria', value: 'CA/BC/Victoria' },
-  { label: 'Kelowna', value: 'CA/BC/Kelowna' },
-  { label: 'Abbotsford', value: 'CA/BC/Abbotsford' },
-  { label: 'Nanaimo', value: 'CA/BC/Nanaimo' },
-  { label: 'White Rock', value: 'CA/BC/White Rock' },
-  { label: 'Kamloops', value: 'CA/BC/Kamloops' },
-  { label: 'Toronto', value: 'CA/ON/Toronto' },
-  { label: 'Ottawa', value: 'CA/ON/Ottawa' },
-  { label: 'Mississauga', value: 'CA/ON/Mississauga' },
-  { label: 'Hamilton', value: 'CA/ON/Hamilton' },
-  { label: 'Brampton', value: 'CA/ON/Brampton' },
-  { label: 'London', value: 'CA/ON/London' },
-  { label: 'Markham', value: 'CA/ON/Markham' },
-  { label: 'Vaughan', value: 'CA/ON/Vaughan' },
-];
+const allCities: FilterOption[] = [{ label: '', value: undefined }, ...cityOptions];
 
 export const initialState: ReferrableResourceSearchState = {
   filterOptions: {
@@ -112,22 +96,7 @@ export const initialState: ReferrableResourceSearchState = {
       { value: 'One Time Small Fee' },
     ],
     howServiceIsOffered: [{ value: 'In-person Support' }, { value: 'Online Support' }, { value: 'Phone Support' }],
-    province: [
-      { label: '', value: undefined },
-      { label: 'Alberta', value: 'CA/AB' },
-      { label: 'British Columbia', value: 'CA/BC' },
-      { label: 'Manitoba', value: 'CA/MB' },
-      { label: 'New Brunswick', value: 'CA/NB' },
-      { label: 'Newfoundland and Labrador', value: 'CA/NL' },
-      { label: 'Northwest Territories', value: 'CA/NT' },
-      { label: 'Nova Scotia', value: 'CA/NS' },
-      { label: 'Nunavut', value: 'CA/NU' },
-      { label: 'Ontario', value: 'CA/ON' },
-      { label: 'Prince Edward Island', value: 'CA/PE' },
-      { label: 'Quebec', value: 'CA/QC' },
-      { label: 'Saskatchewan', value: 'CA/SK' },
-      { label: 'Yukon', value: 'CA/YT' },
-    ],
+    province: [{ label: '', value: undefined }, ...provinceOptions],
     city: [],
     minEligibleAge: minAgeOptions,
     maxEligibleAge: maxAgeOptions,
