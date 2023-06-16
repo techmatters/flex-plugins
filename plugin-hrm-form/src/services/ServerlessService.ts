@@ -249,7 +249,7 @@ export const selfReportToIWF = async (form: ChildCSAMReportForm, caseNumber: str
   return response;
 };
 
-type ConferenceAddParticipantParams = { conferenceSid: string; to: string; from: string };
+type ConferenceAddParticipantParams = { conferenceSid: string; to: string; from: string, label: string };
 type ConferenceRemoveParticipantParams = { conferenceSid: string; callSid: string };
 type ConferenceUpdateParticipantParams = {
   conferenceSid: string;
@@ -259,11 +259,12 @@ type ConferenceUpdateParticipantParams = {
 };
 
 export const conferenceApi = {
-  addParticipant: async ({ conferenceSid, to, from }: ConferenceAddParticipantParams) => {
+  addParticipant: async ({ conferenceSid, to, from, label }: ConferenceAddParticipantParams) => {
     const body = {
       conferenceSid,
       to,
       from,
+      label
     };
 
     const response = await fetchProtectedApi('/conference/addParticipant', body);
