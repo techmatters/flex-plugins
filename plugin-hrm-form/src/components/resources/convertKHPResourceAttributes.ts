@@ -254,7 +254,7 @@ export const convertKHPResourceAttributes = (
       language,
       'interpretationTranslationServicesAvailable',
     ),
-    feeStructureSource: getAttributeValuesAsCsv(attributes, language, 'feeStructureSource'),
+    feeStructureSource: getAttributeValuesAsCsv(attributes, language, 'feeStructure'),
     howToAccessSupport: getAttributeValuesAsCsv(attributes, language, 'howToAccessSupport'),
     applicationProcess: getAttributeValue(attributes, language, 'applicationProcess'),
     howIsServiceOffered: getAttributeValuesAsCsv(attributes, language, 'howIsServiceOffered'),
