@@ -14,3 +14,4 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 export { setupConferenceComponents } from './setUpConferenceComponents';
+export { setUpConferenceActions } from './setUpConferenceActions';
