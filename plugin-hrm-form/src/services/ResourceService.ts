@@ -18,18 +18,26 @@
 import fetchResourceApi from './fetchResourcesApi';
 import { getAseloFeatureFlags, getReferrableResourceConfig } from '../hrmConfig';
 
+export type AttributeData<T = any> = {
+  language?: string;
+  value: string | boolean | number;
+  info: T;
+};
+
+export type Attributes = {
+  [key: string]: AttributeData[] | Attributes;
+};
+
 export type ReferrableResourceAttributeValue =
   | string
   | string[]
-  | { id: string; value: string; color?: string }[]
+  | { id: string; value: string }[]
   | { info: string; value: string; language: string }[];
 
 export type ReferrableResource = {
   id: string;
   name: string;
-  attributes: {
-    [attr: string]: ReferrableResourceAttributeValue;
-  };
+  attributes: Record<string, Attributes>;
 };
 
 export const referrableResourcesEnabled = () => Boolean(getReferrableResourceConfig().resourcesBaseUrl);
