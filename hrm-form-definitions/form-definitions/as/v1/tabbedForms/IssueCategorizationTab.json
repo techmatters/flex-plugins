@@ -12,13 +12,14 @@
     "Violence": {
       "color": "#F5A623",
       "subcategories": [
-        {"label": "Bullying"},
+        {"label": "Active Shooter", "toolkitUrl": "https://www.fbi.gov/about/partnerships/office-of-partner-engagement/active-shooter-resources"},
+        {"label": "Active Threat", "toolkitUrl": "https://www.directives.doe.gov/terms_definitions/active-threat"},
+        {"label": "Assault", "toolkitUrl": "https://apps.leg.wa.gov/rcw/default.aspx?cite=9a.36&full=true#:~:text=(1)%20A%20person%20i s%20guilty,child%20or%20vulnerable%20adult%3B%20or"},
+        {"label": "Bullying", "toolkitUrl": "https://www.cdc.gov/violenceprevention/pdf/bullying-factsheet508.pdf"},
         {"label": "Child/Early/Forced marriage"},
         {"label": "Child labour"},
         {"label": "Commercial sexual exploitation (offline)"},
-        {"label": "Female Genital Mutilation (FGM)"},
-        {"label": "Gender-based harmful traditional practices (other than FGM)"},
-        {"label": "Harmful traditional practices other than child marriage and FGM"},
+        {"label": "Firearm posession", "toolkitUrl": "https://app.leg.wa.gov/rcw/default.aspx?cite=9.41.040"},
         {"label": "Mental/Emotional violence", "toolkitUrl": "https://google.com"},
         {"label": "Neglect (or negligent treatment)", "toolkitUrl": "https://google.com"},
         {"label": "Online sexual abuse (OSA)"},
@@ -33,15 +34,18 @@
       "color": "#F8E900",
       "subcategories": [
         {"label": "Addictive behaviours and substance use"},
+        {"label": "Anxiety", "toolkitUrl": "https://www.apa.org/topics/anxiety"},
         {"label": "Behavioural problems"},
-        {"label": "Concerns about the self"},
+        {"label": "Depression", "toolkitUrl": "https://psychiatry.org/patients-families/depression/what-is-depression"},
         {"label": "Emotional distress – anger problems"},
         {"label": "Emotional distress – fear and anxiety problems"},
         {"label": "Emotional distress – mood problems"},
         {"label": "Neurodevelopmental concerns"},
         {"label": "Problems with eating behaviour"},
         {"label": "Self-harming behaviour"},
-        {"label": "Suicidal thoughts and suicide attempts"},
+        {"label": "Suicidal ideation or threats", "toolkitUrl": "https://store.samhsa.gov/sites/default/files/SAMHSA_Digital_Download/PEP20-06-01-002.pdf"},
+        {"label": "Suicidal attempt", "toolkitUrl": "https://www.cdc.gov/suicide/facts/index.html"},
+        {"label": "Stress", "toolkitUrl": "https://www.nimh.nih.gov/health/publications/so-stressed-out-fact-sheet"},
         {"label": "Traumatic distress"},
         {"label": "Unspecified/Other"}
       ]
@@ -65,7 +69,7 @@
         {"label": "Education"},
         {"label": "Essential needs"},
         {"label": "General healthcare services"},
-        {"label": "Legal services and advice"},
+        {"label": "Homelessness", "toolkitUrl": "https://socialinnovation.usc.edu/wp-content/uploads/2021/04/Defining-Homelessness.pdf"},
         {"label": "Mental health services"},
         {"label": "Sexual health services"},
         {"label": "Socio-economical services"},
@@ -75,6 +79,7 @@
     "Discrimination and Exclusion": {
       "color": "#B971AF",
       "subcategories": [
+        {"label": "Discrimination", "toolkitUrl": "https://apps.leg.wa.gov/rcw/default.aspx?cite=49.60.030"},
         {"label": "Ethnicity/nationality"},
         {"label": "Financial situation"},
         {"label": "Gender"},

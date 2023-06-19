@@ -27,7 +27,9 @@ const getUnknownOption = (key: string, definition: FormDefinition) => {
   const inputDef = definition.find(e => e.name === key);
 
   if (inputDef && inputDef.type === 'select') {
-    const unknownOption = inputDef.unknownOption || inputDef.options.find(e => e.value === 'Unknown');
+    const unknownOption = inputDef.unknownOption
+      ? inputDef.options.find(e => e.value === inputDef.unknownOption)
+      : inputDef.options.find(e => e.value === 'Unknown');
     if (unknownOption && unknownOption.value) return unknownOption.value;
 
     console.error(`getUnknownOption couldn't determine a valid unknown option for key ${key}.`);
@@ -72,7 +74,7 @@ const getAnswerOrUnknown = (
 
   if (itemDefinition.type === 'select') {
     const unknown = getUnknownOption(key, definition);
-    const isUnknownAnswer = answers[key].error || answers[key].answer === unknown;
+    const isUnknownAnswer = !answers[key] || answers[key].error || answers[key].answer === unknown;
 
     if (isUnknownAnswer) return unknown;
 
@@ -126,10 +128,11 @@ export const getValuesFromPreEngagementData = (
   const values = {};
   tabFormDefinition.forEach((field: FormItemDefinition) => {
     if (prepopulateKeys.indexOf(field.name) > -1) {
-      if (field.type === 'mixed-checkbox') {
-        if (preEngagementData[field.name]?.toLowerCase() === 'yes') {
+      if (['mixed-checkbox', 'checkbox'].includes(field.type)) {
+        const fieldValue = preEngagementData[field.name]?.toLowerCase();
+        if (fieldValue === 'yes') {
           values[field.name] = true;
-        } else if (preEngagementData[field.name]?.toLowerCase() === 'no') {
+        } else if (fieldValue === 'no' || field.type === 'checkbox') {
           values[field.name] = false;
         }
         return;
@@ -143,6 +146,7 @@ export const getValuesFromPreEngagementData = (
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const prepopulateForm = (task: ITask) => {
   const { memory, preEngagementData } = task.attributes;
+
   if (!memory && !preEngagementData) return;
 
   const { currentDefinitionVersion } = getDefinitionVersions();
@@ -163,7 +167,6 @@ export const prepopulateForm = (task: ITask) => {
       preEngagement.ChildInformationTab,
     );
     Manager.getInstance().store.dispatch(prepopulateFormAction(callTypes.child, childInfoValues, task.taskSid));
-
     // Open tabbed form to first tab
     Manager.getInstance().store.dispatch(
       RoutingActions.changeRoute(

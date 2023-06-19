@@ -16,20 +16,28 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import fetchResourceApi from './fetchResourcesApi';
-import { getReferrableResourceConfig } from '../hrmConfig';
+import { getAseloFeatureFlags, getReferrableResourceConfig } from '../hrmConfig';
+
+export type AttributeData<T = any> = {
+  language?: string;
+  value: string | boolean | number;
+  info: T;
+};
+
+export type Attributes = {
+  [key: string]: AttributeData[] | Attributes;
+};
 
 export type ReferrableResourceAttributeValue =
   | string
   | string[]
-  | { id: string; value: string; color?: string }[]
+  | { id: string; value: string }[]
   | { info: string; value: string; language: string }[];
 
 export type ReferrableResource = {
   id: string;
   name: string;
-  attributes: {
-    [attr: string]: ReferrableResourceAttributeValue;
-  };
+  attributes: Record<string, Attributes>;
 };
 
 export const referrableResourcesEnabled = () => Boolean(getReferrableResourceConfig().resourcesBaseUrl);
@@ -40,19 +48,30 @@ export const getResource = async (resourceId: string): Promise<ReferrableResourc
 
 type SearchParameters = {
   generalSearchTerm: string;
+  filters: Record<string, string | string[] | number | boolean>;
 };
 
 export const searchResources = async (
-  { generalSearchTerm }: SearchParameters,
+  parameters: SearchParameters,
   start: number,
   limit: number,
 ): Promise<{ totalCount: number; results: ReferrableResource[] }> => {
-  const fromApi = await fetchResourceApi(`search?start=${start}&limit=${limit}`, {
+  if (getAseloFeatureFlags().enable_resources_elastic_search) {
+    const fromApi = await fetchResourceApi(`search?start=${start}&limit=${limit}`, {
+      method: 'POST',
+      body: JSON.stringify(parameters),
+    });
+    return {
+      ...fromApi,
+      results: fromApi.results,
+    };
+  }
+  const fromApi = await fetchResourceApi(`searchByName?start=${start}&limit=${limit}`, {
     method: 'POST',
-    body: JSON.stringify({ generalSearchTerm, filters: {} }),
+    body: JSON.stringify({ nameSubstring: parameters.generalSearchTerm, ids: [] }),
   });
   return {
     ...fromApi,
-    results: fromApi.results.map(r => r),
+    results: fromApi.results,
   };
 };

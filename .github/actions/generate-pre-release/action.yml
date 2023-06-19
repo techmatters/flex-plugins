@@ -41,7 +41,7 @@ runs:
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14.x'
+        node-version: '16.x'
 
     # Get latest tag for this version
     - name: Get latest tag

@@ -14,6 +14,24 @@ variable "hrm_url" {
   default     = ""
 }
 
+variable "resources_base_url" {
+  description = "Custom URL for the Resources"
+  type        = string
+  default     = ""
+}
+
+variable "assets_bucket_url" {
+  description = "Custom URL for Assets (leave blank and it will infer a default) from the environments name"
+  type = string
+  default = ""
+}
+
+variable "contacts_waiting_channels" {
+  description = "List of contact waiting channels"
+  type = list(string)
+  default = ["voice","web","whatsapp","facebook","twitter","instagram","line"]
+}
+
 variable "short_environment" {
   description = "Short upper case environment identifier, typically 'PROD', 'STG' or 'DEV'"
   type        = string
@@ -73,7 +91,6 @@ variable "region" {
 variable "environment" {
   description = "Full capitialised environment name, typically 'Production', 'Staging' or 'Development'"
   type        = string
-  default     = ""
 }
 
 variable "short_helpline" {

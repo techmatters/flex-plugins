@@ -3,7 +3,7 @@
     "name": "gender",
     "label": "Nem",
     "type": "select",
-    "unknownOption": "",
+    "unknownOption": "Nem derült ki",
     "options": [
       {
         "value": "",
@@ -166,7 +166,7 @@
     "options": [
       {
         "value": "Nem derült ki",
-        "label": ""
+        "label": "Nem derült ki"
       },
       {
         "value": "Kortárs",

@@ -22,6 +22,7 @@ delete_identifiers=(
   "^module.aws"
   "^module.aws_monitoring"
   "^module.github"
+  "^module.channel"
 )
 
 . ${script_dir}/stage-common.sh

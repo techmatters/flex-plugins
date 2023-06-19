@@ -14,6 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+export type KhpOperationsDay = {
+  key: string;
+  day: string;
+  hoursOfOperation: string | null;
+  descriptionOfHours: string | null;
+};
+
 export type KhpUiResource = {
   resourceSid: string;
   name: string;
@@ -41,11 +48,7 @@ export type KhpUiResource = {
     documentsRequired: string;
     primaryLocationIsPrivate: boolean;
     primaryLocation: string;
-    operations: {
-      day: string;
-      hoursOfOperation: string | null;
-      descriptionOfHours: string | null;
-    }[];
+    operations: KhpOperationsDay[];
     site: {
       siteId: string;
       name: string;
@@ -57,19 +60,15 @@ export type KhpUiResource = {
         postalCode: string;
         province: string;
         country: string;
+        isPrivate: boolean;
       };
       phoneNumbers: {
         [key: string]: string;
       };
       email: string;
-      operations: {
-        day: string;
-        hoursOfOperation: string | null;
-        descriptionOfHours: string | null;
-      }[];
+      operations: KhpOperationsDay[];
       isActive: boolean;
       details: string;
-      isLocationPrivate: boolean;
     }[];
   };
 };

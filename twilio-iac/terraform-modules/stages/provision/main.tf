@@ -25,6 +25,7 @@ module "serverless" {
   source             = "../../serverless/default"
   twilio_account_sid = local.secrets.twilio_account_sid
   twilio_auth_token  = local.secrets.twilio_auth_token
+  ui_editable        = var.ui_editable
 }
 
 module "services" {
@@ -33,17 +34,24 @@ module "services" {
   short_helpline    = upper(var.short_helpline)
   environment       = title(var.environment)
   short_environment = var.short_environment
+  stage             = local.stage
 }
 
 module "taskRouter" {
-  source                                = "../../taskRouter/default"
-  serverless_url                        = module.serverless.serverless_environment_production_url
+  source                                = "../../taskRouter/v1"
   helpline                              = var.helpline
+  serverless_url                        = module.serverless.serverless_environment_production_url
   custom_task_routing_filter_expression = var.custom_task_routing_filter_expression
+  events_filter                         = var.events_filter
+  task_queues                           = var.task_queues
+  workflows                             = var.workflows
+  task_channels                         = var.task_channels
+  phone_numbers                         = var.phone_numbers
 }
 
 module "survey" {
   source                             = "../../survey/default"
+  count                              = var.enable_old_survey_module ? 1 : 0
   helpline                           = var.helpline
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
 }
@@ -61,14 +69,18 @@ module "aws" {
   datadog_app_id                     = local.secrets.datadog_app_id
   datadog_access_token               = local.secrets.datadog_access_token
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
-  master_workflow_sid                = module.taskRouter.master_workflow_sid
+  master_workflow_sid                = module.taskRouter.workflow_sids["master"]
   shared_state_sync_service_sid      = module.services.shared_state_sync_service_sid
   flex_chat_service_sid              = module.services.flex_chat_service_sid
   flex_proxy_service_sid             = module.services.flex_proxy_service_sid
   # TODO: manually delete this resource from SSM after migration
   # post_survey_bot_sid = module.chatbots.post_survey_bot_sid
-  survey_workflow_sid = module.survey.survey_workflow_sid
-  bucket_region       = var.helpline_region
+  # The serverless deploy action assumes that this paramater exists, so in order not to break it
+  # we need to add a non-valid workflow sid.
+  survey_workflow_sid = try(module.taskRouter.workflow_sids.survey, "NOTVALIDWORKFLOWSID")
+  #TODO: convert bucket_region to helpline_region (or, better yet,  pass in the correct provider)
+  bucket_region   = var.helpline_region
+  helpline_region = var.helpline_region
 }
 
 module "aws_monitoring" {
