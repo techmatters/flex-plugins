@@ -74,13 +74,11 @@ const ConferenceMonitor: React.FC<Props> = ({ conference }) => {
     const monitorEffect = async () => {
       if (shouldDisableEndConferenceOnExit) {
         setUpdating(true);
-        console.log('>>>>>> shouldDisableEndConferenceOnExit', shouldDisableEndConferenceOnExit);
 
         await Promise.all(participants.filter(isJoinedWithEnd).map(updateEndConferenceOnExit(false)));
         setUpdating(false);
       } else if (shouldEnableEndConferenceOnExit) {
         setUpdating(true);
-        console.log('>>>>>> shouldEnableEndConferenceOnExit', shouldEnableEndConferenceOnExit);
 
         await Promise.all(participants.filter(isJoinedWithoutEnd).map(updateEndConferenceOnExit(true)));
         setUpdating(false);
