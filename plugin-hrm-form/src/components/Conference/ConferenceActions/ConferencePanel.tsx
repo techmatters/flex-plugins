@@ -90,15 +90,15 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
       const to = phoneNumber;
 
       await Promise.all(
-        conference.source.participants.map(p =>
-          conferenceApi.updateParticipant({
-            callSid: p.callSid,
-            conferenceSid: task.conference.conferenceSid,
-            updates: ['worker', 'agent', 'supervisor'].includes(p.participantType)
-              ? { endConferenceOnExit: false }
-              : { hold: true, endConferenceOnExit: false },
-          }),
-        ),
+        conference.source.participants
+          .filter(p => !['worker', 'agent', 'supervisor'].includes(p.participantType))
+          .map(p =>
+            conferenceApi.updateParticipant({
+              callSid: p.callSid,
+              conferenceSid: task.conference.conferenceSid,
+              updates: { hold: true },
+            }),
+          ),
       );
 
       const result = await conferenceApi.addParticipant({ from, conferenceSid, to });
