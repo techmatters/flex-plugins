@@ -5,12 +5,18 @@ variable "twilio_account_sid" {
 
 variable "twilio_auth_token" {
   description = "Twilio Auth Token"
-  type = string
+  type        = string
 }
 
 variable "helpline" {
   description = "Full capitalised helpline name"
   type        = string
+}
+
+variable "helpline_region" {
+  description = "Full capitalised helpline region name"
+  type        = string
+  default     = "us-east-1"
 }
 
 variable "short_helpline" {
@@ -73,18 +79,19 @@ variable "survey_workflow_sid" {
   type        = string
 }
 
-variable "post_survey_bot_sid" {
-  description = "Internal Twilio resource SID provided by another module"
-  type        = string
-}
-
 variable "bucket_region" {
   description = "The region where the document & chat s3 buckets should be created"
-  type = string
-  default = "us-east-1"
+  type        = string
+  default     = "us-east-1"
 }
 
 variable "serverless_url" {
   description = "URL used to access Aselo Twilio serverless functions"
   type        = string
+}
+
+variable "post_survey_bot_sid" {
+  description = "Internal Twilio resource SID provided by another module"
+  type        = string
+  default     = ""
 }

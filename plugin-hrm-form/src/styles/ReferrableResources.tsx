@@ -114,31 +114,72 @@ ViewResourceArea.displayName = 'ViewResourceArea';
 
 export const ResourcesSearchFormArea = styled('div')`
   width: 100%;
-  background-color: white;
   padding: 20px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  flex-grow: 1;
+`;
+
+export const ResourcesSearchFormSettingBox = styled('div')`
+  width: 100%;
+  background-color: white;
+  padding: 17px;
+  margin: 4px 4px 4px 0;
 `;
 
 export const ResourcesSearchFormContainer = styled(Column)`
   width: 100%;
-  background-color: white;
   justify-content: space-between;
   max-width: 800px;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+  color: black;
+`;
+
+export const ResourcesSearchFormTopRule = styled('hr')`
+  color: #d8d8d8;
+  background-color: #d8d8d8;
+  height: 1px;
+  width: 100%;
+  margin-left: 5px;
+  border: 0;
+  border-top: 1px solid #d8d8d8;
 `;
 
 export const ResourcesSearchTitle = styled(FontOpenSans)`
-  font-family: Inter-Bold, serif;
   font-size: 24px;
   line-height: 32px;
-  font-weight: 800;
+  font-weight: 700;
   display: inline-block;
   color: #192b33;
 `;
 ResourcesSearchTitle.displayName = 'ResourcesSearchTitle';
 
+export const ResourcesSearchFormSectionHeader = styled(FontOpenSans)`
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 700;
+  display: inline-block;
+  color: #192b33;
+  margin-bottom: 5px;
+  margin-top: 10px;
+`;
+ResourcesSearchFormSectionHeader.displayName = 'ResourcesSearchFormSectionHeader';
+
+export const ResourcesSearchFormFilterHeader = styled(FontOpenSans)`
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 700;
+  display: inline-block;
+  color: black;
+`;
+ResourcesSearchFormFilterHeader.displayName = 'ResourcesSearchFormFilterHeader';
+
 export const ResourcesSearchResultsHeader = styled(Box)`
   box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.1);
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
 `;
 ResourcesSearchResultsHeader.displayName = 'ResourcesSearchResultsHeader';
 
@@ -155,6 +196,11 @@ export const ResourcesSearchResultsDescription = styled(FontOpenSans)`
   color: #192b33;
 `;
 ResourcesSearchResultsDescription.displayName = 'ResourcesSearchResultsDescription';
+
+export const ResourcesSearchResultsDescriptionItem = styled('span')`
+  padding-left: 5px;
+`;
+ResourcesSearchResultsDescriptionItem.displayName = 'ResourcesSearchResultsDescriptionItem';
 
 export const PrivateResourceAttribute = styled('div')`
   background-color: #fefad3;

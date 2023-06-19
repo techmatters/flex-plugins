@@ -1,7 +1,9 @@
-
-
-provider "github" {
-  owner = "techmatters"
+terraform {
+  required_providers {
+    github = {
+      source  = "hashicorp/github"
+    }
+  }
 }
 
 

@@ -1,24 +1,13 @@
 #!/usr/bin/env python3
 
-from sys import argv
+from os import environ
+from sys import argv, exit
 from secretManager import Questionnaire
 
-helpline = argv[1]
+if environ.get('PROVISION_SKIP_MIGRATION'):
+    print('Skipping secret management because PROVISION_SKIP_MIGRATION is set')
+    exit(0)
 
-questionnaire = Questionnaire(helpline=helpline)
+helpline = str(argv[1])
 
-questionnaire.start()
-
-try:
-    questionnaire.ssm_client.get_parameter(
-        Name=questionnaire.ssm_key,
-        WithDecryption=True
-    )
-
-except ClientError as e:
-    if e.response['Error']['Code'] == 'ParameterNotFound':
-        print('Parameter not found, starting questionnaire for ' + helpline)
-
-
-    else:
-        print('Parameter found. continuing...')
+Questionnaire(helpline=helpline).start()

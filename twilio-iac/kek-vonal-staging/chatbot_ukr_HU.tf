@@ -62,7 +62,7 @@ resource "twilio_autopilot_assistants_tasks_v1" "chatbot_ukr_HU_greeting" {
         }
       },
       {
-        "say" : "Привіт, це Блакитна Лінія! Будь ласка, дай відповіді на наступні запитання, щоб ми могли краще допомогти тобі."
+        "say" : "Привіт, це Kék Vonal! Будь ласка, дай відповіді на наступні запитання, щоб ми могли допомогти тобі."
       },
       {
         "redirect" : "task://survey_start"
@@ -126,7 +126,7 @@ resource "twilio_autopilot_assistants_tasks_v1" "chatbot_ukr_HU_counselor_handof
         }
       },
       {
-        "say" : "Зв'яжемо тебе із нашим консультантом, з яким ти зможеш поговорити."
+        "say" : "Зв'яжемо тебе із нашим оператором, з яким ти зможеш поговорити."
       }
     ]
   })
@@ -232,7 +232,7 @@ resource "twilio_autopilot_assistants_tasks_v1" "chatbot_ukr_HU_survey_start" {
                   "num_attempts" : 2
                 }
               },
-              "question" : "Тобі потрібна допомога у власному випадку? Будь ласка, дай відповідь Так або Ні.",
+              "question" : "Тобі потрібна допомога для себе, чи для когось іншого? Будь ласка, дай відповідь «Так» або «Ні».",
               "name" : "about_self"
             }
           ]
@@ -296,30 +296,8 @@ resource "twilio_autopilot_assistants_tasks_v1" "chatbot_ukr_HU_survey" {
                   "num_attempts" : 2
                 }
               },
-              "question" : "Скільки тобі років?",
+              "question" : "Скільки тобі років? Будь ласка, дай відповідь цифрою.",
               "name" : "age"
-            },
-            {
-              "type" : "Gender",
-              "validate" : {
-                "on_failure" : {
-                  "repeat_question" : true,
-                  "messages" : [
-                    {
-                      "say" : "Мені шкода, я цього не розумію"
-                    },
-                    {
-                      "say" : "Мені шкода, я все ще не розумію"
-                    }
-                  ]
-                },
-                "max_attempts" : {
-                  "redirect" : "task://redirect_function",
-                  "num_attempts" : 2
-                }
-              },
-              "question" : "Якої ти статі?",
-              "name" : "gender"
             }
           ]
         }

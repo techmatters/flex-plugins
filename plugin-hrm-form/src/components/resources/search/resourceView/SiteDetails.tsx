@@ -28,24 +28,32 @@ import OperatingHours from './OperatingHours';
 import ResourceAttributeWithPrivacy from './ResourceAttributeWithPrivacy';
 
 type Props = {
-  site: KhpUiResource['attributes']['site'];
+  sites: KhpUiResource['attributes']['site'];
 };
 
-const SiteDetails: React.FC<Props> = ({ site }) => {
+const SiteDetails: React.FC<Props> = ({ sites }) => {
   return (
     <div>
-      {site.map(singleSite => {
-        const { siteId, name, location, email, operations, phoneNumbers, isLocationPrivate } = singleSite;
-
+      {sites.map(singleSite => {
+        const { siteId, name, location, email, operations, phoneNumbers } = singleSite;
+        const { isPrivate, province, city, country, county, postalCode, address1, address2 } = location ?? {};
         return (
           <ExpandableSection key={siteId} title={name}>
-            <ResourceAttributeWithPrivacy isPrivate={isLocationPrivate} description="Contact Info">
+            <ResourceAttributeWithPrivacy isPrivate={isPrivate} description="Contact Info">
               <ResourceAttributeContent>
-                {location.address1}. {location.address2}
+                {address1}
+                {address1 ? '. ' : ''}
+                {address2}
                 <br />
-                {location.city}, {location.county}
+                {city}
+                {city ? ', ' : ''}
+                {county}
                 <br />
-                {location.province}, {location.postalCode}. {location.country}
+                {province}
+                {province ? ', ' : ''}
+                {postalCode}
+                {postalCode ? '. ' : ''}
+                {country}
               </ResourceAttributeContent>
             </ResourceAttributeWithPrivacy>
             <ResourceAttributeContent>{email}</ResourceAttributeContent>

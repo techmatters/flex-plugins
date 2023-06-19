@@ -45,6 +45,7 @@ import { Container } from '../styles/queuesStatus';
 import { FeatureFlags, isInMyBehalfITask } from '../types/types';
 import { colors } from '../channels/colors';
 import { getHrmConfig } from '../hrmConfig';
+import { AseloMessageInput, AseloMessageList } from '../components/AseloMessaging';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
@@ -355,6 +356,14 @@ export const removeActionsIfTransferring = () => {
   Flex.ParticipantCanvas.Content.remove('actions', {
     if: props => hasNoControlAndIsWarm(props.task) && props.participant.participantType === 'worker',
   });
+};
+
+/**
+ *
+ */
+export const replaceTwilioMessageInput = () => {
+  Flex.MessageInputV2.Content.replace(<AseloMessageInput key="textarea" />, { sortOrder: -1 });
+  Flex.MessageList.Content.replace(<AseloMessageList key="list" />);
 };
 
 /**

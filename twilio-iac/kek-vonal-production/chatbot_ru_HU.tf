@@ -62,7 +62,7 @@ resource "twilio_autopilot_assistants_tasks_v1" "chatbot_ru_HU_greeting" {
         }
       },
       {
-        "say" : "Привет, это Синяя Линия! Пожалуйста, ответь на следующие вопросы, чтобы мы могли лучше помочь тебе."
+        "say" : "Привет, это Kék Vonal! Пожалуйста, ответь на пару вопросов, чтобы мы могли тебе помочь"
       },
       {
         "redirect" : "task://survey_start"
@@ -126,7 +126,7 @@ resource "twilio_autopilot_assistants_tasks_v1" "chatbot_ru_HU_counselor_handoff
         }
       },
       {
-        "say" : "Свяжем тебя с нашим консультантом, с которым ты сможешь поговорить."
+        "say" : "Сейчас тебе ответит наш оператоп, с которым ты сможешь поговорить."
       }
     ]
   })
@@ -232,7 +232,7 @@ resource "twilio_autopilot_assistants_tasks_v1" "chatbot_ru_HU_survey_start" {
                   "num_attempts" : 2
                 }
               },
-              "question" : "Тебе нужна помощь в своем собственном случае? Пожалуйста, ответь Да или Нет.",
+              "question" : "Тебе нужна помощь для себя или для кого-то другого? Пожалуйста, ответь «Да» или «Нет».",
               "name" : "about_self"
             }
           ]
@@ -268,7 +268,7 @@ resource "twilio_autopilot_assistants_tasks_v1" "chatbot_ru_HU_survey" {
         }
       },
       {
-        "say" : "Спасибо. Если не хочешь отвечать, нажми клавишу X."
+        "say" : "Спасибо. Если не хочешь отвечать на этот вопрос, напиши «Дальше»."
       },
       {
         "collect" : {
@@ -296,30 +296,8 @@ resource "twilio_autopilot_assistants_tasks_v1" "chatbot_ru_HU_survey" {
                   "num_attempts" : 2
                 }
               },
-              "question" : "Сколько тебе лет?",
+              "question" : "Сколько тебе лет? Пожалуйста, дай ответ цифрой.",
               "name" : "age"
-            },
-            {
-              "type" : "Gender",
-              "validate" : {
-                "on_failure" : {
-                  "repeat_question" : true,
-                  "messages" : [
-                    {
-                      "say" : "Мне жаль, я этого не понимаю"
-                    },
-                    {
-                      "say" : "Мне жаль, я все еще не понимаю"
-                    }
-                  ]
-                },
-                "max_attempts" : {
-                  "redirect" : "task://redirect_function",
-                  "num_attempts" : 2
-                }
-              },
-              "question" : "Какого ти пола?",
-              "name" : "gender"
             }
           ]
         }

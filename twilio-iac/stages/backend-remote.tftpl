@@ -1,0 +1,17 @@
+terraform {
+  required_providers {
+    twilio = {
+      source  = "twilio/twilio"
+      version = "0.17.0"
+    }
+  }
+
+  backend "s3" {
+    bucket         = "tl-terraform-state-${environment}"
+    key            = "twilio/${short_helpline}/${stage}/terraform.tfstate"
+    dynamodb_table = "terraform-locks"
+    encrypt        = true
+    role_arn       = "arn:aws:iam::712893914485:role/tf-twilio-iac-${environment}"
+    region         = "us-east-1"
+  }
+}

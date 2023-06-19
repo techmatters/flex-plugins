@@ -84,3 +84,22 @@ variable "custom_flex_webchat_flow_enabled" {
   type = bool
   default = null
 }
+
+variable "stage" {
+  description = "Set to stage for terragrunt runs"
+  type = string
+  default = ""
+}
+
+// It is a little weird that these are optional, but this entire system may be movoded outside of TF soon anyway
+variable "environment" {
+  description = "Full capitialised environment name, typically 'Production', 'Staging' or 'Development'"
+  type        = string
+  default     = ""
+}
+
+variable "short_helpline" {
+  description = "Short (usually 2 letter) upper case code for helpline"
+  type        = string
+  default     = ""
+}

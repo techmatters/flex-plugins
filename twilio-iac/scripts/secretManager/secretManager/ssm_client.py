@@ -1,7 +1,13 @@
 import boto3
+from botocore.config import Config
+from mypy_boto3_ssm import SSMClient
 import time
 
-client = None
+client: SSMClient = None
+
+my_config = Config(
+    region_name = 'us-east-1',
+)
 
 
 def get_ssm_client():
@@ -11,9 +17,7 @@ def get_ssm_client():
         return client
 
     ts = time.time()
-
-    stsClient = boto3.client("sts")
-
+    stsClient = boto3.client("sts", config=my_config)
     response = stsClient.assume_role(
         RoleArn="arn:aws:iam::712893914485:role/tf-twilio-iac-ssm-admin",
         RoleSessionName="secret-manager" + str(ts),
@@ -24,6 +28,6 @@ def get_ssm_client():
         aws_secret_access_key=response['Credentials']['SecretAccessKey'],
         aws_session_token=response['Credentials']['SessionToken'],
     )
-
     client = session.client("ssm")
+
     return client
