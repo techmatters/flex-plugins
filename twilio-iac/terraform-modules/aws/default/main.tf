@@ -60,6 +60,14 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "docs" {
   }
 }
 
+resource "aws_s3_bucket_ownership_controls" "docs" {
+  bucket   = aws_s3_bucket.docs.bucket
+  provider = aws.bucket
+  rule {
+    object_ownership = "ObjectWriter"
+  }
+}
+
 resource "aws_s3_bucket" "chat" {
   bucket   = local.chat_s3_location
   provider = aws.bucket
@@ -92,6 +100,14 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "chat" {
     apply_server_side_encryption_by_default {
       sse_algorithm = "AES256"
     }
+  }
+}
+
+resource "aws_s3_bucket_ownership_controls" "chat" {
+  bucket   = aws_s3_bucket.chat.bucket
+  provider = aws.bucket
+  rule {
+    object_ownership = "ObjectWriter"
   }
 }
 

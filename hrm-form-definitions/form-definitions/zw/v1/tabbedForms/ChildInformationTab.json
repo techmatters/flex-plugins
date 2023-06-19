@@ -231,11 +231,7 @@
   {
     "name": "phone1",
     "label": "Phone #1",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "type": "input"
   },
   {
     "name": "race",
@@ -345,6 +341,33 @@
         "label": "Out of School"
       }
     ]
+  },
+  {
+    "name": "concernLevel",
+    "label": "Level of Concern",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Level 1",
+        "label": "Level 1"
+      },
+      {
+        "value": "Level 2",
+        "label": "Level 2"
+      },
+      {
+        "value": "Level 3",
+        "label": "Level 3"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "livingSituation",

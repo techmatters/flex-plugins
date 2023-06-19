@@ -19,7 +19,7 @@ export async function importDefaultResources(account: string) {
     if (taskChannel) {
       await attemptTerraformImport(
         `${workspaceSid}/${taskChannel.sid}`,
-        `module.taskRouter.twilio_taskrouter_workspaces_task_channels_v1.${taskChannelUniqueName}`,
+        `module.taskRouter.twilio_taskrouter_workspaces_task_channels_v1.task_channel["${taskChannelUniqueName}"]`,
         { description: `${taskChannelUniqueName} task channel` },
       );
     } else {
