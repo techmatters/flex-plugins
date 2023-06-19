@@ -41,14 +41,18 @@ const SiteDetails: React.FC<Props> = ({ sites }) => {
           <ExpandableSection key={siteId} title={name}>
             <ResourceAttributeWithPrivacy isPrivate={isPrivate} description="Contact Info">
               <ResourceAttributeContent>
-                {address1}${address1 ? '. ' : ''}
+                {address1}
+                {address1 ? '. ' : ''}
                 {address2}
                 <br />
-                {city}${city ? ', ' : ''}
+                {city}
+                {city ? ', ' : ''}
                 {county}
                 <br />
-                {province}${province ? ', ' : ''}
-                {postalCode}${postalCode ? '. ' : ''}
+                {province}
+                {province ? ', ' : ''}
+                {postalCode}
+                {postalCode ? '. ' : ''}
                 {country}
               </ResourceAttributeContent>
             </ResourceAttributeWithPrivacy>

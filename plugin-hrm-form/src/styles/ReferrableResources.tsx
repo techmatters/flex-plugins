@@ -108,6 +108,7 @@ export const ResourcesSearchArea = styled('div')`
   max-width: 800px;
   width: 100%;
   padding: 10px;
+  overflow-y: auto;
 `;
 ViewResourceArea.displayName = 'ViewResourceArea';
 
@@ -195,6 +196,11 @@ export const ResourcesSearchResultsDescription = styled(FontOpenSans)`
   color: #192b33;
 `;
 ResourcesSearchResultsDescription.displayName = 'ResourcesSearchResultsDescription';
+
+export const ResourcesSearchResultsDescriptionItem = styled('span')`
+  padding-left: 5px;
+`;
+ResourcesSearchResultsDescriptionItem.displayName = 'ResourcesSearchResultsDescriptionItem';
 
 export const PrivateResourceAttribute = styled('div')`
   background-color: #fefad3;
