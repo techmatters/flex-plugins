@@ -19,7 +19,6 @@ import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
-import PhoneIcon from '@material-ui/icons/Phone';
 
 import FieldSelect from '../../../FieldSelect';
 import { namespace, referrableResourcesBase, RootState } from '../../../../states';
@@ -182,7 +181,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                       {resourceAttributes.primaryLocation}
                     </ResourceAttributeWithPrivacy>
                     <ResourceAttribute description="">
-                      <SiteDetails site={resourceAttributes.site} />
+                      <SiteDetails sites={resourceAttributes.site} />
                     </ResourceAttribute>
                   </ResourceAttributesColumn>
                 </ResourceAttributesContainer>

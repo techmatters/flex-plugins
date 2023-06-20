@@ -52,11 +52,12 @@ const testStore = (stateChanges: Partial<ReferrableResourceSearchState> = {}) =>
   });
 
 const nonInitialState: ReferrableResourceSearchState = {
+  filterOptions: initialState.filterOptions,
   currentPage: 2,
   status: ResourceSearchStatus.ResultPending,
   parameters: {
     generalSearchTerm: 'something else',
-    filters: { some: 'other filter' },
+    filterSelections: { interpretationTranslationServicesAvailable: true },
     pageSize: 2,
   },
   results: [
@@ -79,7 +80,7 @@ describe('actions', () => {
 
     test('Calls the searchResources service, calculating the start index from the provided page & limit', () => {
       searchResourceAsyncAction({ generalSearchTerm: 'hello', pageSize: 42 }, 1337, true);
-      expect(searchResources).toHaveBeenCalledWith({ nameSubstring: 'hello', ids: [] }, 1337 * 42, 42);
+      expect(searchResources).toHaveBeenCalledWith({ generalSearchTerm: 'hello', filters: {} }, 1337 * 42, 42);
     });
 
     test("'newSearch' flag set - dispatches pending action that resets the result array and sets status to ResultPending", async () => {
@@ -319,7 +320,7 @@ describe('actions', () => {
     test('Updates search form parameters with those specified in the action payload, leaving the rest of the search state as was', () => {
       const updatedParameters: SearchSettings = {
         generalSearchTerm: 'something else',
-        filters: { some: 'other filter' },
+        filterSelections: { interpretationTranslationServicesAvailable: true },
         pageSize: 10,
       };
       const { dispatch, getState } = testStore(nonInitialState);
@@ -336,28 +337,44 @@ describe('actions', () => {
 
       const { dispatch, getState } = testStore({
         ...nonInitialState,
-        parameters: { generalSearchTerm: 'something', filters: { some: 'filter' }, pageSize: 5 },
+        parameters: {
+          generalSearchTerm: 'something',
+          filterSelections: { interpretationTranslationServicesAvailable: true },
+          pageSize: 5,
+        },
       });
       dispatch(updateSearchFormAction(updatedParameters));
       expect(getState()).toStrictEqual({
         ...nonInitialState,
-        parameters: { generalSearchTerm: 'something', filters: { some: 'filter' }, pageSize: 10 },
+        parameters: {
+          generalSearchTerm: 'something',
+          filterSelections: { interpretationTranslationServicesAvailable: true },
+          pageSize: 10,
+        },
       });
     });
     test('Fully replaces filters, removes all existing ones', () => {
       const updatedParameters: Partial<SearchSettings> = {
-        filters: { other: 'setting' },
+        filterSelections: { interpretationTranslationServicesAvailable: true },
       };
       const newState = resourceSearchReducer(
         {
           ...nonInitialState,
-          parameters: { generalSearchTerm: 'something', filters: { some: 'filter' }, pageSize: 5 },
+          parameters: {
+            generalSearchTerm: 'something',
+            filterSelections: { interpretationTranslationServicesAvailable: true },
+            pageSize: 5,
+          },
         },
         updateSearchFormAction(updatedParameters),
       );
       expect(newState).toStrictEqual({
         ...nonInitialState,
-        parameters: { generalSearchTerm: 'something', filters: { other: 'setting' }, pageSize: 5 },
+        parameters: {
+          generalSearchTerm: 'something',
+          filterSelections: { interpretationTranslationServicesAvailable: true },
+          pageSize: 5,
+        },
       });
     });
   });

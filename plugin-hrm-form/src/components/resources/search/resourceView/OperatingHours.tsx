@@ -16,7 +16,7 @@
 
 import React from 'react';
 
-import { FontOpenSans, Row } from '../../../../styles/HrmStyles';
+import { FontOpenSans } from '../../../../styles/HrmStyles';
 import { KhpUiResource } from '../../types';
 import { ResourceSubtitle } from '../../../../styles/ReferrableResources';
 
@@ -32,7 +32,7 @@ const OperatingHours: React.FC<Props> = ({ operations, showDescriptionOfHours })
         {operations.map(day => {
           if (day.hoursOfOperation) {
             return (
-              <tr key={day.day}>
+              <tr key={day.key}>
                 <td style={{ padding: '0 4px', width: '0' }}>
                   <ResourceSubtitle>{day.day}</ResourceSubtitle>
                 </td>
