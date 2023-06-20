@@ -1,228 +1,108 @@
 [
   {
-    "name": "firstName",
-    "label": "First Name",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "lastName",
-    "label": "Last Name",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "relationshipToChild",
-    "label": "Relationship to child",
+    "name": "callerRole",
+    "label": "Is the caller the?",
     "type": "select",
+    "unknownOption": "Unknown",
     "options": [
       {
-        "value": "",
+        "value": "Unknown",
         "label": ""
       },
       {
-        "value": "Caregiver",
-        "label": "Caregiver"
+        "value": "Perpetrator",
+        "label": "Perpetrator"
       },
       {
-        "value": "Friend",
-        "label": "Friend"
+        "value": "Third party",
+        "label": "Third party"
       },
       {
-        "value": "Grandparent",
-        "label": "Grandparent"
+        "value": "Victim",
+        "label": "Victim"
+      }
+    ]
+  },
+  {
+    "name": "abuseType",
+    "label": "Type of abuse",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
       },
       {
-        "value": "Neighbour",
-        "label": "Neighbour"
+        "value": "Emotional",
+        "label": "Emotional"
       },
       {
-        "value": "Parent",
-        "label": "Parent"
+        "value": "Neglect",
+        "label": "Neglect"
       },
       {
-        "value": "Partner",
-        "label": "Partner"
+        "value": "Physical",
+        "label": "Physical"
       },
       {
-        "value": "Person in a position of responsibility",
-        "label": "Person in a position of responsibility"
-      },
-      {
-        "value": "Sibling",
-        "label": "Sibling"
-      },
-      {
-        "value": "Stranger",
-        "label": "Stranger"
+        "value": "Sexual",
+        "label": "Sexual"
       },
       {
         "value": "Other",
         "label": "Other"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
       }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    ]
   },
   {
-    "name": "streetAddress",
-    "label": "Street Address",
-    "type": "input"
-  },
-  {
-    "name": "province",
-    "label": "Province",
+    "name": "ageOfVictim",
+    "label": "Age  of the victim",
     "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Central",
-        "label": "Central"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "district",
-    "label": "District",
-    "type": "dependent-select",
-    "dependsOn": "province",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "District1": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ],
-      "District2": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "phone1",
-    "label": "Phone #1",
-    "type": "input"
-  },
-  {
-    "name": "gender",
-    "label": "Gender",
-    "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Boy",
-        "label": "Boy"
-      },
-      {
-        "value": "Girl",
-        "label": "Girl"
-      },
-      {
-        "value": "Non-Binary",
-        "label": "Non-Binary"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "age",
-    "label": "Age",
-    "type": "select",
+    "unknownOption": "Unknown",
     "options": [
       {
         "value": "Unknown",
         "label": ""
       },
       {
-        "value": "0",
+        "value": "00",
         "label": "0"
       },
       {
-        "value": "1",
+        "value": "01",
         "label": "1"
       },
       {
-        "value": "2",
+        "value": "02",
         "label": "2"
       },
       {
-        "value": "3",
+        "value": "03",
         "label": "3"
       },
       {
-        "value": "4",
+        "value": "04",
         "label": "4"
       },
       {
-        "value": "5",
+        "value": "05",
         "label": "5"
       },
       {
-        "value": "6",
+        "value": "06",
         "label": "6"
       },
       {
-        "value": "7",
+        "value": "07",
         "label": "7"
       },
       {
-        "value": "8",
+        "value": "08",
         "label": "8"
       },
       {
-        "value": "9",
+        "value": "09",
         "label": "9"
       },
       {
@@ -430,41 +310,386 @@
         "label": "60"
       },
       {
-        "value": ">60",
-        "label": ">60"
+        "value": "61",
+        "label": "61"
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
+        "value": "62",
+        "label": "62"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "63",
+        "label": "63"
+      },
+      {
+        "value": "64",
+        "label": "64"
+      },
+      {
+        "value": "65",
+        "label": "65"
+      },
+      {
+        "value": "66",
+        "label": "66"
+      },
+      {
+        "value": "67",
+        "label": "67"
+      },
+      {
+        "value": "68",
+        "label": "68"
+      },
+      {
+        "value": "69",
+        "label": "69"
+      },
+      {
+        "value": "70",
+        "label": "70"
+      },
+      {
+        "value": "71",
+        "label": "71"
+      },
+      {
+        "value": "72",
+        "label": "72"
+      },
+      {
+        "value": "73",
+        "label": "73"
+      },
+      {
+        "value": "74",
+        "label": "74"
+      },
+      {
+        "value": "75",
+        "label": "75"
+      },
+      {
+        "value": "76",
+        "label": "76"
+      },
+      {
+        "value": "77",
+        "label": "77"
+      },
+      {
+        "value": "78",
+        "label": "78"
+      },
+      {
+        "value": "79",
+        "label": "79"
+      },
+      {
+        "value": "80",
+        "label": "80"
+      },
+      {
+        "value": "81",
+        "label": "81"
+      },
+      {
+        "value": "82",
+        "label": "82"
+      },
+      {
+        "value": "83",
+        "label": "83"
+      },
+      {
+        "value": "84",
+        "label": "84"
+      },
+      {
+        "value": "85",
+        "label": "85"
+      },
+      {
+        "value": "86",
+        "label": "86"
+      },
+      {
+        "value": "87",
+        "label": "87"
+      },
+      {
+        "value": "88",
+        "label": "88"
+      },
+      {
+        "value": "89",
+        "label": "89"
+      },
+      {
+        "value": "90",
+        "label": "90"
+      },
+      {
+        "value": "91",
+        "label": "91"
+      },
+      {
+        "value": "92",
+        "label": "92"
+      },
+      {
+        "value": "93",
+        "label": "93"
+      },
+      {
+        "value": "94",
+        "label": "94"
+      },
+      {
+        "value": "95",
+        "label": "95"
+      },
+      {
+        "value": "96",
+        "label": "96"
+      },
+      {
+        "value": "97",
+        "label": "97"
+      },
+      {
+        "value": "98",
+        "label": "98"
+      },
+      {
+        "value": "99",
+        "label": "99"
+      },
+      {
+        "value": "100",
+        "label": "100"
       }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    ]
   },
   {
-    "name": "language",
-    "label": "Language",
+    "name": "relationshipToPerpetrator",
+    "label": "Relationship to Perpetrator",
     "type": "select",
+    "unknownOption": "Unknown",
     "options": [
       {
         "value": "Unknown",
         "label": ""
       },
       {
-        "value": "language1",
-        "label": "language1"
+        "value": "Parent",
+        "label": "Parent"
+      },
+      {
+        "value": "Sibling",
+        "label": "Sibling"
+      },
+      {
+        "value": "Friend",
+        "label": "Friend"
+      },
+      {
+        "value": "Partner",
+        "label": "Partner"
       }
     ]
   },
   {
-    "name": "ethnicity",
-    "label": "Ethnicity",
-    "type": "input"
+    "name": "isVulnerable",
+    "label": "If the victim is 17 or over, do you have reason to believe they are vulnerable i.e. intellectual disability?",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+  },
+  {
+    "name": "abuseDetails",
+    "label": "Details",
+    "type": "textarea"
+  },
+  {
+    "name": "abuseCurrent",
+    "label": "Is the abuse current?",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+  },
+  {
+    "name": "abuseLocation",
+    "label": "Location abuse occurs/occurred?",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "School",
+        "label": "School"
+      },
+      {
+        "value": "House",
+        "label": "House"
+      },
+      {
+        "value": "Public Place",
+        "label": "Public Place"
+      }
+    ]
+  },
+  {
+    "name": "frequencyDuration",
+    "label": "Frequency and duration",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Frequent",
+        "label": "Frequent"
+      },
+      {
+        "value": "One time",
+        "label": "One time"
+      }
+    ]
+  },
+  {
+    "name": "othersAtRisk",
+    "label": "Are there other young people at risk?",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+  },
+  {
+    "name": "riskDetails",
+    "label": "Risk Details",
+    "type": "textarea"
+  },
+  {
+    "name": "supportSystems",
+    "label": "Support systems",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Many Supports",
+        "label": "Many Supports"
+      },
+      {
+        "value": "Few Supports",
+        "label": "Few Supports"
+      },
+      {
+        "value": "Isolated",
+        "label": "Isolated"
+      }
+    ]
+  },
+  {
+    "name": "supportDetails",
+    "label": "Suport Sytem Details",
+    "type": "textarea"
+  },
+  {
+    "name": "safetyPlanMade",
+    "label": "Did you make a Safety Plan?",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+  },
+  {
+    "name": "planDetails",
+    "label": "Safety Plan Details",
+    "type": "textarea"
+  },
+  {
+    "name": "externalInvertionMade",
+    "label": "Was an external intervention made?",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+  },
+  {
+    "name": "externalInvertionDetails",
+    "label": "External Intervention Details",
+    "type": "textarea"
   }
 ]
