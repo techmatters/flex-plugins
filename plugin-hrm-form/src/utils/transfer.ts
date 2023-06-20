@@ -189,5 +189,5 @@ export const canTransferConference = (task: ITask) => {
   const isLiveCall = TaskHelper.isLiveCall(task);
   const { isLoading } = Manager.getInstance().store.getState()[namespace][conferencingBase].tasks[task.taskSid];
 
-  return isLiveCall && !isLoading && task?.conference.liveParticipantCount < 3;
+  return isLiveCall && !isLoading && task.conference && task.conference.liveParticipantCount < 3;
 };
