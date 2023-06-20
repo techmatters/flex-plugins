@@ -25,6 +25,7 @@ import SearchResultsBackButton from '../../search/SearchResults/SearchResultsBac
 import {
   ResourcesSearchArea,
   ResourcesSearchResultsDescription,
+  ResourcesSearchResultsDescriptionItem,
   ResourcesSearchResultsHeader,
   ResourcesSearchResultsList,
   ResourcesSearchTitle,
@@ -47,10 +48,11 @@ type OwnProps = {};
 
 const mapStateToProps = (state: RootState) => {
   const searchState = state[namespace][referrableResourcesBase].search;
-  const { error, status, currentPage, parameters } = searchState;
+  const { error, status, currentPage, parameters, filterOptions } = searchState;
   const currentPageResults = getCurrentPageResults(searchState);
   return {
     parameters,
+    filterOptions,
     currentPageResults,
     currentPage,
     error,
@@ -86,12 +88,75 @@ const SearchResourcesResults: React.FC<Props> = ({
   retrievePageResults,
   returnToForm,
   viewResource,
+  filterOptions,
 }) => {
   // If any results for the current page are undefined (i.e. expected to exist given the total result count but not in  redux yet) query the back end
   if (!currentPageResults.every(res => res)) {
     retrievePageResults(parameters, currentPage);
     return null;
   }
+
+  const ageRangeDescription = () => {
+    const {
+      filterSelections: { minEligibleAge, maxEligibleAge },
+    } = parameters;
+    if (minEligibleAge && maxEligibleAge) {
+      return (
+        <ResourcesSearchResultsDescriptionItem>
+          <Template
+            code="Resources-Search-ResultsDescription-AgeRange"
+            minEligibleAge={minEligibleAge}
+            maxEligibleAge={maxEligibleAge}
+          />
+        </ResourcesSearchResultsDescriptionItem>
+      );
+    } else if (minEligibleAge) {
+      return (
+        <ResourcesSearchResultsDescriptionItem>
+          <Template code="Resources-Search-ResultsDescription-MinimumAge" minEligibleAge={minEligibleAge} />
+        </ResourcesSearchResultsDescriptionItem>
+      );
+    } else if (maxEligibleAge) {
+      return (
+        <ResourcesSearchResultsDescriptionItem>
+          <Template code="Resources-Search-ResultsDescription-MaximumAge" maxEligibleAge={maxEligibleAge} />
+        </ResourcesSearchResultsDescriptionItem>
+      );
+    }
+    return null;
+  };
+
+  const locationDescription = () => {
+    const {
+      filterSelections: { province, city },
+    } = parameters;
+    const location = [
+      filterOptions.city.find(({ value }) => value === city)?.label,
+      filterOptions.province.find(({ value }) => value === province)?.label,
+    ]
+      .filter(Boolean)
+      .join(', ');
+    if (location) {
+      return (
+        <ResourcesSearchResultsDescriptionItem>
+          <Template code="Resources-Search-ResultsDescription-Location" location={location} />
+        </ResourcesSearchResultsDescriptionItem>
+      );
+    }
+    return null;
+  };
+
+  const filterDescription = (code: string, selections: string[]) => {
+    const selectionsText = (selections ?? []).join(', ');
+    if (selectionsText) {
+      return (
+        <ResourcesSearchResultsDescriptionItem>
+          <Template code={code} selections={selectionsText} />
+        </ResourcesSearchResultsDescriptionItem>
+      );
+    }
+    return null;
+  };
 
   return (
     <ResourcesSearchArea>
@@ -108,7 +173,28 @@ const SearchResourcesResults: React.FC<Props> = ({
             <Template code="Resources-Search-ResultsTitle" />
           </ResourcesSearchTitle>
           <ResourcesSearchResultsDescription>
-            <Template code="Resources-Search-ResultsDescription" count={resultCount} {...parameters} />
+            <Template code="Resources-Search-ResultsDescription" count={resultCount} />
+            {parameters.generalSearchTerm && (
+              <Template
+                code="Resources-Search-ResultsDescription-GeneralSearchTerm"
+                generalSearchTerm={parameters.generalSearchTerm}
+              />
+            )}
+            {locationDescription()}
+            {parameters.filterSelections.interpretationTranslationServicesAvailable && (
+              <ResourcesSearchResultsDescriptionItem>
+                <Template code="Resources-Search-ResultsDescription-InterpretationTranslationServicesAvailable" />
+              </ResourcesSearchResultsDescriptionItem>
+            )}
+            {ageRangeDescription()}
+            {filterDescription(
+              'Resources-Search-ResultsDescription-FeeStructure',
+              parameters.filterSelections.feeStructure,
+            )}
+            {filterDescription(
+              'Resources-Search-ResultsDescription-HowServiceIsOffered',
+              parameters.filterSelections.howServiceIsOffered,
+            )}
           </ResourcesSearchResultsDescription>
         </ResourcesSearchResultsHeader>
         {error && ( // TODO: translation / friendlyisation layer

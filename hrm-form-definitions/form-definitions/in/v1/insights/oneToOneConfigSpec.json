@@ -20,6 +20,10 @@
         "insights": ["customers", "zip"]
       },
       {
+        "name": "country",
+        "insights": ["customers", "email"]
+      },
+      {
         "name": "livingSituation",
         "insights": ["customers", "customer_attribute_1"]
       },
