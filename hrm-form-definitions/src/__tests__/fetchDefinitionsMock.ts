@@ -23,7 +23,7 @@ type MockResponse = {
 };
 
 const FORM_DEFINITIONS_PATH = '../../form-definitions';
-const BASE_URL_MOCK = 'http://BASE_URL_MOCK';
+const BASE_URL_MOCK = 'http://base_url_mock';
 
 const files = [
   'LayoutDefinitions.json',
