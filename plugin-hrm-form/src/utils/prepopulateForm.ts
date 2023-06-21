@@ -22,6 +22,7 @@ import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
 import { prepopulateForm as prepopulateFormAction } from '../states/contacts/actions';
 import { getDefinitionVersions } from '../hrmConfig';
+import { FeatureFlags } from 'types/types';
 
 const getUnknownOption = (key: string, definition: FormDefinition) => {
   const inputDef = definition.find(e => e.name === key);
@@ -74,17 +75,17 @@ const getAnswerOrUnknown = (
 
   if (itemDefinition.type === 'select') {
     const unknown = getUnknownOption(key, definition);
-    const isUnknownAnswer = !answers[key] || answers[key].error || answers[key].answer === unknown;
+    const isUnknownAnswer = !answers[key] || answers[key] === unknown;
 
     if (isUnknownAnswer) return unknown;
 
     const options = getSelectOptions(key)(definition);
-    const result = mapperFunction(options)(answers[key].answer);
+    const result = mapperFunction(options)(answers[key]);
 
     return result === 'Unknown' ? unknown : result;
   }
 
-  return answers[key].answer;
+  return answers[key];
 };
 
 const getValuesFromAnswers = (
@@ -143,8 +144,25 @@ export const getValuesFromPreEngagementData = (
   return values;
 };
 
+const transformAnswers = answers => {
+  /**
+   * Map naming mismatches between autopilot and lex
+   * TODO: rename Lex 'slots' so we don't need to use this map
+   */
+  const keyRenames = {
+    // eslint-disable-next-line camelcase
+    about_self: 'CallerType',
+  };
+
+  const renameKey = key => (Object.keys(keyRenames).includes(key) ? keyRenames[key] : key);
+  return Object.keys(answers).reduce(
+    (acc, currentKey) => ({ ...acc, [renameKey(currentKey)]: answers[currentKey].answer }),
+    {},
+  );
+};
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export const prepopulateForm = (task: ITask) => {
+export const prepopulateForm = (task: ITask, featureFlags: FeatureFlags) => {
   const { memory, preEngagementData } = task.attributes;
 
   if (!memory && !preEngagementData) return;
@@ -177,10 +195,12 @@ export const prepopulateForm = (task: ITask) => {
     return;
   }
 
-  const { answers } = memory.twilio.collected_data.collect_survey;
+  const answers = featureFlags.enable_lex_prepopulate
+    ? memory.slots
+    : transformAnswers(memory.twilio.collected_data.collect_survey.answers);
 
-  const isAboutSelf = answers.about_self.answer === 'Yes';
-  const callType = isAboutSelf || !answers.about_self ? callTypes.child : callTypes.caller;
+  const isAboutSelf = answers.CallerType === 'Yes';
+  const callType = isAboutSelf || !answers.CallerType ? callTypes.child : callTypes.caller;
   const tabFormDefinition = isAboutSelf ? ChildInformationTab : CallerInformationTab;
   const prepopulateSurveyKeys = isAboutSelf ? survey.ChildInformationTab : survey.CallerInformationTab;
   const subroute = isAboutSelf ? 'childInformation' : 'callerInformation';
