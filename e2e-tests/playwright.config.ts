@@ -17,7 +17,9 @@
 // playwright.config.ts
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { PlaywrightTestConfig } from '@playwright/test';
-import { getConfigValue } from './config';
+import { config, getConfigValue } from './config';
+
+console.log('playwright.config.ts: config', config);
 
 const playwrightConfig: PlaywrightTestConfig = {
   globalSetup: require.resolve('./global-setup'),

@@ -30,13 +30,14 @@ async function globalSetup(config: FullConfig) {
     );
   }
 
+  console.log('Global setup: initConfig');
   await initConfig();
 
   await oktaSsoLoginViaApi(
-    getConfigValue('baseURL')!,
-    getConfigValue('oktaUsername')!,
-    getConfigValue('oktaPassword')!,
-    getConfigValue('twilioAccountSid')!,
+    getConfigValue('baseURL')! as string,
+    getConfigValue('oktaUsername')! as string,
+    getConfigValue('oktaPassword')! as string,
+    getConfigValue('twilioAccountSid')! as string,
   );
   /* await oktaSsoLoginViaGui(
     config,

@@ -14,30 +14,85 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { config as dotenvConfig } from 'dotenv';
-import { getSsmParameter, getSsmParametersByPath } from './ssmClient';
-dotenvConfig();
+import dotenv from 'dotenv';
+import { getSsmParameter } from './ssmClient';
 
-const getBaseUrl = () =>
-  process.env.PLAYWRIGHT_BASEURL ?? process.env.SSM_ENVIRONMENT
-    ? 'https://flex.twilio.com/'
-    : 'http://localhost:3000';
+dotenv.config();
 
-const config: Record<string, boolean | string | undefined> = {
-  oktaUsername: process.env.PLAYWRIGHT_USER_USERNAME,
-  oktaPassword: process.env.PLAYWRIGHT_USER_PASSWORD,
-  baseURL: getBaseUrl(),
-  browserTelemetryLevel: process.env.PLAYWRIGHT_BROWSER_TELEMETRY_LEVEL ?? 'errors',
-  browserTelemetryLogResponseBody:
-    process.env.PLAYWRIGHT_BROWSER_TELEMETRY_LOG_RESPONSE_BODY ?? 'false',
-  twilioAccountSid: process.env.TWILIO_ACCOUNT_SID,
-  twilioAuthToken: process.env.TWILIO_AUTH_TOKEN,
-  debug: process.env.DEBUG,
-  isProduction: process.env.SSM_ENVIRONMENT === 'production' || !!process.env.IS_PRODUCTION,
-  isStaging: process.env.SSM_ENVIRONMENT === 'staging' || !!process.env.IS_STAGING,
+export type ConfigOption = {
+  env: string;
+  ssmPath?: string;
+  default?: ConfigValue;
 };
 
+export type ConfigOptions = {
+  [key: string]: ConfigOption;
+};
+
+export type ConfigValue = boolean | string | undefined;
+
+export type Config = {
+  [key: string]: ConfigValue;
+};
+
+const configEnv = process.env.CONFIG_ENVIRONMENT || 'local';
+const helplineShortCode = process.env.HELPLINE_SHORT_CODE || '';
+const shouldLoadFromSsm = !!(process.env.LOAD_FROM_SSM && process.env.LOAD_FROM_SSM !== 'false');
+
+const configOptions: ConfigOptions = {
+  oktaUsername: {
+    env: 'PLAYWRIGHT_USER_USERNAME',
+    ssmPath: `/${configEnv}/flex-plugins/e2e/okta_username`,
+  },
+  oktaPassword: {
+    env: 'PLAYWRIGHT_USER_PASSWORD',
+    ssmPath: `/${configEnv}/flex-plugins/e2e/okta_password`,
+  },
+  baseURL: {
+    env: 'PLAYWRIGHT_BASEURL',
+    default: process.env.CONFIG_ENVIRONMENT ? 'https://flex.twilio.com/' : 'http://localhost:3000',
+  },
+  browserTelemetryLevel: {
+    env: 'PLAYWRIGHT_BROWSER_TELEMETRY_LEVEL',
+    default: 'errors',
+  },
+  browserTelemetryLogResponseBody: {
+    env: 'PLAYWRIGHT_BROWSER_TELEMETRY_LOG_RESPONSE_BODY',
+    default: 'false',
+  },
+  twilioAccountSid: {
+    env: 'TWILIO_ACCOUNT_SID',
+    ssmPath: `/${configEnv}/twilio/${helplineShortCode.toUpperCase()}/account_sid`,
+  },
+  twilioAuthToken: {
+    env: 'TWILIO_AUTH_TOKEN',
+  },
+  debug: {
+    env: 'DEBUG',
+    default: false,
+  },
+  isProduction: {
+    env: 'IS_PRODUCTION',
+    default: process.env.CONFIG_ENVIRONMENT === 'production' || false,
+  },
+  isStaging: {
+    env: 'IS_STAGING',
+    default: process.env.CONFIG_ENVIRONMENT === 'staging' || false,
+  },
+  isDevelopment: {
+    env: 'IS_DEVELOPMENT',
+    default: process.env.CONFIG_ENVIRONMENT === 'staging' || false,
+  },
+  skipDataUpdate: {
+    env: 'SKIP_DATA_UPDATE',
+    default: false,
+  },
+};
+
+export const config: Config = {};
+
 export const getConfigValue = (key: string) => {
+  console.dir(config, { depth: null });
   if (!config[key]) {
     throw new Error(`Config value ${key} is not set`);
   }
@@ -45,12 +100,9 @@ export const getConfigValue = (key: string) => {
   return config[key];
 };
 
-export const setConfigValue = (key: string, value: string | undefined) => {
-  if (!value) {
-    throw new Error(`Config value for ${key} is not passed`);
-  }
-
+export const setConfigValue = (key: string, value: ConfigValue) => {
   config[key] = value;
+  process.env[configOptions[key].env] = value as string;
 };
 
 export const shouldSkipDataUpdate = () => {
@@ -61,29 +113,63 @@ export const shouldSkipDataUpdate = () => {
   return config.skipDataUpdate;
 };
 
-const setEnvConfigFromSsm = async () => {
-  if (!process.env.HELPLINE_SHORT_CODE) {
-    throw new Error('In Production mode, but HELPLINE_SHORT_CODE is not set');
+const setConfigValueFromSsm = async (key: string) => {
+  if (!configEnv) {
+    throw new Error('Trying to load config from SSM, but CONFIG_ENVIRONMENT is not set');
+  }
+  if (!helplineShortCode) {
+    throw new Error('Trying to load config from SSM, but HELPLINE_SHORT_CODE is not set');
   }
 
-  const env = process.env.SSM_ENVIRONMENT;
-  const shortCode = process.env.HELPLINE_SHORT_CODE;
-  const oktaSsmPath = `/${env}/flex-plugins/e2e`;
+  if (!configOptions[key].ssmPath) return;
 
-  const oktaParameters = await getSsmParametersByPath(oktaSsmPath);
-  setConfigValue('oktaUsername', oktaParameters[`${oktaSsmPath}/okta_username`]);
-  setConfigValue('oktaPassword', oktaParameters[`${oktaSsmPath}/okta_password`]);
+  if (process.env[configOptions[key].env]) {
+    console.warn(
+      `Trying to load config from SSM, but ${configOptions[key].env} is already set. Using env value instead.`,
+    );
+    setConfigValue(key, process.env[configOptions[key].env]);
+    return;
+  }
 
-  const accountSid = await getSsmParameter(`/${env}/twilio/${shortCode.toUpperCase()}/account_sid`);
-  setConfigValue('twilioAccountSid', accountSid);
-  setConfigValue(
-    'twilioAuthToken',
-    await getSsmParameter(`/${env}/twilio/${accountSid}/auth_token`),
-  );
+  setConfigValue(key, await getSsmParameter(configOptions[key].ssmPath!));
+};
+
+const setDefaultConfigValue = (key: string) => {
+  const option = configOptions[key];
+
+  if (option.default == null) {
+    throw new Error(`Config value ${key} doesn't have a default value`);
+  }
+  setConfigValue(key, option.default);
+};
+
+const initConfigValue = async (key: string) => {
+  const option = configOptions[key];
+
+  if (shouldLoadFromSsm) {
+    await setConfigValueFromSsm(key);
+    return;
+  }
+
+  if (process.env[option.env]) {
+    setConfigValue(key, process.env[option.env]);
+    return;
+  }
+
+  setDefaultConfigValue(key);
 };
 
 export const initConfig = async () => {
-  if (process.env.SSM_ENVIRONMENT) await setEnvConfigFromSsm();
+  const promises = Object.keys(configOptions).map(async (key) => {
+    await initConfigValue(key);
+  });
+  await Promise.all(promises);
 
-  config.skipDataUpdate = config.isProduction || config.isStaging;
+  setConfigValue('skipDataUpdate', config.isProduction || config.isStaging);
 };
+
+Object.keys(configOptions).forEach((key) => {
+  if (configOptions[key].default == null) return;
+
+  setDefaultConfigValue(key);
+});

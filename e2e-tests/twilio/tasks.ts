@@ -18,15 +18,15 @@
 import twilio from 'twilio';
 import { getConfigValue } from '../config';
 
-const accountSid = getConfigValue('twilioAccountSid');
-const authToken = getConfigValue('twilioAuthToken');
-const twilioClient = twilio(accountSid, authToken);
-
 export const deleteAllTasksInQueue = async (
   workspaceName: string,
   workflowName: string,
   taskQueueName: string,
 ): Promise<void> => {
+  const accountSid = getConfigValue('twilioAccountSid');
+  const authToken = getConfigValue('twilioAuthToken');
+  const twilioClient = twilio(accountSid, authToken);
+
   const workspace = (
     await twilioClient.taskrouter.workspaces.list({
       friendlyName: workspaceName,

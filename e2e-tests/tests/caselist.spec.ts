@@ -17,13 +17,15 @@
 import { Page, test } from '@playwright/test';
 import { logPageTelemetry } from '../browser-logs';
 import { caseList } from '../caseList';
-import { shouldSkipDataUpdate } from '../config';
+import { initConfig, shouldSkipDataUpdate } from '../config';
 import { notificationBar } from '../notificationBar';
 
 test.describe.serial('Open and Edit a Case in Case List page', () => {
   let pluginPage: Page;
 
   test.beforeAll(async ({ browser }) => {
+    // await initConfig();
+    if (shouldSkipDataUpdate()) return;
     test.setTimeout(600000);
     pluginPage = await browser.newPage();
     logPageTelemetry(pluginPage);
