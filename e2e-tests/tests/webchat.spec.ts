@@ -27,6 +27,7 @@ import {
   counselorStatement,
 } from '../chatModel';
 import { flexChat } from '../flexChat';
+import { shouldSkipDataUpdate } from '../config';
 import { tasks } from '../tasks';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { deleteAllTasksInQueue } from '../twilio/tasks';
@@ -134,6 +135,9 @@ test.describe.serial('Web chat caller', () => {
         },
       },
     ]);
+
+    if (shouldSkipDataUpdate()) return;
+
     console.log('Saving form');
     await form.save();
   });

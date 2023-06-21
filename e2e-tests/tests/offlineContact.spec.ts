@@ -18,6 +18,7 @@ import { expect, Page, test } from '@playwright/test';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { caseHome } from '../case';
 import { agentDesktop } from '../agent-desktop';
+import { shouldSkipDataUpdate } from '../config';
 import { logPageTelemetry } from '../browser-logs';
 import { notificationBar } from '../notificationBar';
 
@@ -43,6 +44,7 @@ test.describe.serial('Offline Contact (with Case)', () => {
   });
 
   test('Offline Contact', async () => {
+    if (shouldSkipDataUpdate()) return;
     console.log('Open a new offline contact');
     const agentDesktopPage = agentDesktop(pluginPage);
     await agentDesktopPage.addOfflineContact();

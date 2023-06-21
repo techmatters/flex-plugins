@@ -17,6 +17,7 @@
 import { Page, test } from '@playwright/test';
 import { logPageTelemetry } from '../browser-logs';
 import { caseList } from '../caseList';
+import { shouldSkipDataUpdate } from '../config';
 import { notificationBar } from '../notificationBar';
 
 test.describe.serial('Open and Edit a Case in Case List page', () => {
@@ -38,6 +39,8 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
   });
 
   test('Filter Cases and Update a Case', async () => {
+    if (shouldSkipDataUpdate()) return;
+
     console.log('Open Case List page');
     let page = caseList(pluginPage);
 
