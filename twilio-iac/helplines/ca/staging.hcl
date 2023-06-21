@@ -39,7 +39,7 @@ locals {
     #Task router 
     phone_numbers = {
       khp : ["+15878407089"],
-      g2t : ["+15814810744"]
+      g2t : ["+15812215204", "+15814810744", "+12264070015", "+18446052258", "+18882913868", "+18559768844"]
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
