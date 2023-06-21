@@ -1,7 +1,7 @@
 [
   {
     "name": "firstName",
-    "label": "First Name",
+    "label": "Preferred Name",
     "type": "input",
     "required": {
       "value": true,
@@ -11,219 +11,25 @@
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "relationshipToChild",
-    "label": "Relationship to child",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Caregiver",
-        "label": "Caregiver"
-      },
-      {
-        "value": "Friend",
-        "label": "Friend"
-      },
-      {
-        "value": "Grandparent",
-        "label": "Grandparent"
-      },
-      {
-        "value": "Neighbour",
-        "label": "Neighbour"
-      },
-      {
-        "value": "Parent",
-        "label": "Parent"
-      },
-      {
-        "value": "Partner",
-        "label": "Partner"
-      },
-      {
-        "value": "Person in a position of responsibility",
-        "label": "Person in a position of responsibility"
-      },
-      {
-        "value": "Sibling",
-        "label": "Sibling"
-      },
-      {
-        "value": "Stranger",
-        "label": "Stranger"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      }
-    ]
-  },
-  {
-    "name": "streetAddress",
-    "label": "Street Address",
     "type": "input"
-  },
-  {
-    "name": "province",
-    "label": "Province",
-    "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Central",
-        "label": "Central"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "district",
-    "label": "District",
-    "type": "dependent-select",
-    "dependsOn": "province",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "District1": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ],
-      "District2": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "phone1",
-    "label": "Phone #1",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "gender",
-    "label": "Gender",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Boy",
-        "label": "Boy"
-      },
-      {
-        "value": "Girl",
-        "label": "Girl"
-      },
-      {
-        "value": "Non-Binary",
-        "label": "Non-Binary"
-      }
-    ]
   },
   {
     "name": "age",
     "label": "Age",
     "type": "select",
+    "unknownOption": "Unknown",
     "options": [
       {
         "value": "Unknown",
         "label": ""
       },
       {
-        "value": "0",
-        "label": "0"
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
-        "value": "1",
-        "label": "1"
-      },
-      {
-        "value": "2",
-        "label": "2"
-      },
-      {
-        "value": "3",
-        "label": "3"
-      },
-      {
-        "value": "4",
-        "label": "4"
-      },
-      {
-        "value": "5",
-        "label": "5"
-      },
-      {
-        "value": "6",
-        "label": "6"
-      },
-      {
-        "value": "7",
-        "label": "7"
-      },
-      {
-        "value": "8",
-        "label": "8"
-      },
-      {
-        "value": "9",
-        "label": "9"
-      },
-      {
-        "value": "10",
-        "label": "10"
-      },
-      {
-        "value": "11",
-        "label": "11"
-      },
-      {
-        "value": "12",
-        "label": "12"
+        "value": "<13",
+        "label": "<13"
       },
       {
         "value": "13",
@@ -278,37 +84,209 @@
         "label": "25"
       },
       {
-        "value": ">25",
-        "label": ">25"
+        "value": "26",
+        "label": "26"
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
+        "value": "27",
+        "label": "27"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "28",
+        "label": "28"
+      },
+      {
+        "value": "29",
+        "label": "29"
+      },
+      {
+        "value": "30",
+        "label": "30"
+      },
+      {
+        "value": "31-64",
+        "label": "31-64"
+      },
+      {
+        "value": ">64",
+        "label": ">64"
       }
     ]
   },
   {
-    "name": "language",
-    "label": "Language",
+    "name": "gender",
+    "label": "Gender",
     "type": "select",
+    "unknownOption": "Desconocido",
+    "options": [
+      {
+        "value": "Desconocido",
+        "label": ""
+      },
+      {
+        "value": "Male / Tāne",
+        "label": "Male / Tāne"
+      },
+      {
+        "value": "Female / Wāhine",
+        "label": "Female / Wāhine"
+      },
+      {
+        "value": "Non-binary",
+        "label": "Non-binary"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ]
+  },
+  {
+    "name": "relationshipToChild",
+    "label": "Relationship to young person",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Caregiver",
+        "label": "Caregiver"
+      },
+      {
+        "value": "Friend",
+        "label": "Friend"
+      },
+      {
+        "value": "Parent",
+        "label": "Parent"
+      },
+      {
+        "value": "Friend",
+        "label": "Friend"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "region",
+    "label": "Region",
+    "type": "select",
+    "unknownOption": "Unknown",
     "options": [
       {
         "value": "Unknown",
         "label": ""
       },
       {
-        "value": "language1",
-        "label": "language1"
+        "value": "Unknown",
+        "label": "Unknown"
+      },
+      {
+        "value": "Northland",
+        "label": "Northland"
+      },
+      {
+        "value": "Auckland",
+        "label": "Auckland"
+      },
+      {
+        "value": "Waikato",
+        "label": "Waikato"
+      },
+      {
+        "value": "Bay of Plenty",
+        "label": "Bay of Plenty"
+      },
+      {
+        "value": "Gisborne",
+        "label": "Gisborne"
+      },
+      {
+        "value": "Hawke's Bay",
+        "label": "Hawke's Bay"
+      },
+      {
+        "value": "Taranaki",
+        "label": "Taranaki"
+      },
+      {
+        "value": "Manawatū-Whanganui",
+        "label": "Manawatū-Whanganui"
+      },
+      {
+        "value": "Wellington",
+        "label": "Wellington"
+      },
+      {
+        "value": "Tasman",
+        "label": "Tasman"
+      },
+      {
+        "value": "Nelson",
+        "label": "Nelson"
+      },
+      {
+        "value": "Marlborough",
+        "label": "Marlborough"
+      },
+      {
+        "value": "West Coast",
+        "label": "West Coast"
+      },
+      {
+        "value": "Canterbury",
+        "label": "Canterbury"
+      },
+      {
+        "value": "Otago",
+        "label": "Otago"
+      },
+      {
+        "value": "Southland",
+        "label": "Southland"
       }
     ]
   },
   {
     "name": "ethnicity",
     "label": "Ethnicity",
-    "type": "input"
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "African American",
+        "label": "African American"
+      },
+      {
+        "value": "Asian",
+        "label": "Asian"
+      },
+      {
+        "value": "Hispanic",
+        "label": "Hispanic"
+      },
+      {
+        "value": "White",
+        "label": "White"
+      },
+      {
+        "value": "American Indian",
+        "label": "American Indian"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
   }
 ]
