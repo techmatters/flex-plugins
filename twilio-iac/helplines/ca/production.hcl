@@ -37,7 +37,7 @@ locals {
     }
     phone_numbers = {
       khp : ["????"],
-      g2t : ["????"],
+      g2t : ["+13656546095", "+13656546120", "+13656546032"],
     }
 
     hrm_transcript_retention_days_override = 90
