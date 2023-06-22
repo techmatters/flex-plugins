@@ -22,8 +22,10 @@ import { StyledConferenceButtonWrapper, StyledHangUpButton } from './styles';
 
 type Props = TaskContextProps;
 
-const Hangup: React.FC<Props> = ({ call, task }) => {
-  if (!task || !call) {
+const Hangup: React.FC<Props> = ({ call, task, conference }) => {
+  const participants = conference?.source?.participants || [];
+
+  if (!task || !call || !participants) {
     return null;
   }
 
@@ -39,7 +41,11 @@ const Hangup: React.FC<Props> = ({ call, task }) => {
         <CallEndIcon />
       </StyledHangUpButton>
       <span>
-        <Template code="Hang Up" />
+        {participants && participants.filter(participant => participant.status === 'joined').length > 2 ? (
+          <Template code="Leave Call" />
+        ) : (
+          <Template code="Hang Up" />
+        )}
       </span>
     </StyledConferenceButtonWrapper>
   );
