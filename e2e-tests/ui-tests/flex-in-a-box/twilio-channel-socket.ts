@@ -14,24 +14,24 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// playwright.config.ts
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { PlaywrightTestConfig } from '@playwright/test';
-import { config, getConfigValue } from './config';
+import { WebSocket } from 'ws';
+import context from './global-context';
 
-// console.log('playwright.config.ts: config', config);
-
-const playwrightConfig: PlaywrightTestConfig = {
-  globalSetup: require.resolve('./global-setup'),
-  use: {
-    storageState: 'temp/state.json',
-    baseURL: getConfigValue('baseURL'),
-    permissions: ['microphone'],
-    screenshot: 'only-on-failure',
-    video: 'retry-with-video',
+const serverInitMessage = () => ({
+  event_type: 'init',
+  payload: {
+    token_lifetime: 3566253,
+    workspace_sid: context.WORKSPACE_SID,
+    account_sid: context.ACCOUNT_SID,
+    channel_id: context.LOGGED_IN_WORKER_SID,
   },
-  testDir: './tests',
-  retries: 1,
-  timeout: 60000,
+});
+
+export const twilioChannelSocket = (websocket: WebSocket) => {
+  websocket.send(JSON.stringify(serverInitMessage()));
+  const keepAliveInterval = setInterval(() => websocket.send('\n'), 15 * 1000);
+  websocket.send('\n');
+  websocket.on('close', () => clearInterval(keepAliveInterval));
+
+  return {};
 };
-export default playwrightConfig;

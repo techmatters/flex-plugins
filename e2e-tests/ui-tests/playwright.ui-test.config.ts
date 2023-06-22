@@ -17,21 +17,20 @@
 // playwright.config.ts
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { PlaywrightTestConfig } from '@playwright/test';
-import { config, getConfigValue } from './config';
+import environmentVariables from '../environmentVariables';
 
-// console.log('playwright.config.ts: config', config);
-
-const playwrightConfig: PlaywrightTestConfig = {
-  globalSetup: require.resolve('./global-setup'),
+const config: PlaywrightTestConfig = {
+  globalSetup: require.resolve('./ui-global-setup'),
   use: {
-    storageState: 'temp/state.json',
-    baseURL: getConfigValue('baseURL'),
+    baseURL: environmentVariables.PLAYWRIGHT_BASEURL ?? 'http://localhost:3000',
     permissions: ['microphone'],
     screenshot: 'only-on-failure',
-    video: 'retry-with-video',
+    video: 'retain-on-failure',
+    // Browser proxy option is required for Chromium on Windows
+    launchOptions: { proxy: { server: `https://per-context` } },
+    ignoreHTTPSErrors: true,
   },
   testDir: './tests',
-  retries: 1,
   timeout: 60000,
 };
-export default playwrightConfig;
+export default config;

@@ -14,24 +14,16 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// playwright.config.ts
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { PlaywrightTestConfig } from '@playwright/test';
-import { config, getConfigValue } from './config';
+export const enum TwilioWebsocketType {
+  Twilsock = 'twilsock',
+  ChunderW = 'chunderw',
+  Channels = 'channels',
+  Other = 'other',
+}
 
-// console.log('playwright.config.ts: config', config);
-
-const playwrightConfig: PlaywrightTestConfig = {
-  globalSetup: require.resolve('./global-setup'),
-  use: {
-    storageState: 'temp/state.json',
-    baseURL: getConfigValue('baseURL'),
-    permissions: ['microphone'],
-    screenshot: 'only-on-failure',
-    video: 'retry-with-video',
-  },
-  testDir: './tests',
-  retries: 1,
-  timeout: 60000,
+export const identifySocketType = (path: string = ''): TwilioWebsocketType => {
+  if (path.startsWith('/signal')) return TwilioWebsocketType.ChunderW;
+  if (path.startsWith('/v3/wsconnect')) return TwilioWebsocketType.Twilsock;
+  if (path.startsWith('/v1/wschannels')) return TwilioWebsocketType.Channels;
+  return TwilioWebsocketType.Other;
 };
-export default playwrightConfig;

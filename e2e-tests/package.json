@@ -6,6 +6,7 @@
   "scripts": {
     "postinstall": "npx playwright install",
     "test": "npx playwright test --workers 1",
+    "test:ui": "npx playwright test --config ui-tests/playwright.ui-test.config.ts",
     "test:local": "run-s ssm:local  test:local:run",
     "test:local:run": "cross-env DEBUG=pw:api PLAYWRIGHT_BASEURL=http://localhost:3000 npm run test",
     "test:staging:ca": "cross-env LOAD_SSM_CONFIG=true HL_ENV=staging HL=ca npm run test",
@@ -26,11 +27,12 @@
   },
   "homepage": "https://github.com/techmatters/flex-plugin#readme",
   "devDependencies": {
-    "@playwright/test": "^1.22.2",
+    "@axe-core/playwright": "^4.6.0",
+    "@playwright/test": "^1.30.0",
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
+    "axe-core": "^4.6.3",
     "cross-env": "^7.0.3",
-    "date-fns": "^2.28.0",
     "eslint": "^8.16.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -39,8 +41,11 @@
     "eslint-import-resolver-typescript": "^2.7.1",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "hrm-form-definitions": "file:../hrm-form-definitions",
+    "mock-socket": "^9.1.5",
     "npm-run-all": "^4.1.5",
-    "playwright-core": "^1.22.2",
+    "playwright-core": "^1.30.0",
+    "plugin-hrm-form": "file:../plugin-hrm-form",
     "prettier": "^2.6.2",
     "twilio": "^4.10.0",
     "typescript": "^4.7.2"
@@ -55,6 +60,10 @@
   },
   "dependencies": {
     "@aws-sdk/client-ssm": "^3.354.0",
-    "dotenv": "^16.0.1"
+    "@types/ws": "^8.5.4",
+    "date-fns": "^2.28.0",
+    "dotenv": "^16.0.1",
+    "global-agent": "^3.0.0",
+    "mockttp": "^3.5.1"
   }
 }

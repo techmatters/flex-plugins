@@ -14,24 +14,25 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// playwright.config.ts
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { PlaywrightTestConfig } from '@playwright/test';
-import { config, getConfigValue } from './config';
+import { Page } from '@playwright/test';
+import context from '../global-context';
+import flexContext from '../../flex-in-a-box/global-context';
 
-// console.log('playwright.config.ts: config', config);
-
-const playwrightConfig: PlaywrightTestConfig = {
-  globalSetup: require.resolve('./global-setup'),
-  use: {
-    storageState: 'temp/state.json',
-    baseURL: getConfigValue('baseURL'),
-    permissions: ['microphone'],
-    screenshot: 'only-on-failure',
-    video: 'retry-with-video',
-  },
-  testDir: './tests',
-  retries: 1,
-  timeout: 60000,
+export const mockPopulateCounselors = async (page: Page) => {
+  await page.route(
+    new URL('/populateCounselors', context.SERVERLESS_BASE_URL).toString(),
+    (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          workerSummaries: [
+            { fullName: 'Logged In Counsellor', sid: flexContext.LOGGED_IN_WORKER_SID },
+            { fullName: 'Lorna Ballentyne', sid: 'WK_LORNA' },
+          ],
+        }),
+      });
+    },
+  );
 };
-export default playwrightConfig;

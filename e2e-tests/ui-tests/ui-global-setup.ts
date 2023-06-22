@@ -14,24 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// playwright.config.ts
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { PlaywrightTestConfig } from '@playwright/test';
-import { config, getConfigValue } from './config';
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+async function globalSetup() {}
 
-// console.log('playwright.config.ts: config', config);
-
-const playwrightConfig: PlaywrightTestConfig = {
-  globalSetup: require.resolve('./global-setup'),
-  use: {
-    storageState: 'temp/state.json',
-    baseURL: getConfigValue('baseURL'),
-    permissions: ['microphone'],
-    screenshot: 'only-on-failure',
-    video: 'retry-with-video',
-  },
-  testDir: './tests',
-  retries: 1,
-  timeout: 60000,
-};
-export default playwrightConfig;
+export default globalSetup;
