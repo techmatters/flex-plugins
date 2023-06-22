@@ -20,8 +20,12 @@ import { logPageTelemetry } from '../browser-logs';
 test('Plugin loads', async ({ page }) => {
   logPageTelemetry(page);
   await page.goto('/agent-desktop', { waitUntil: 'networkidle' });
+  await page.waitForSelector('.Twilio-AgentDesktopView-default');
+  await page.waitForNavigation({ waitUntil: 'networkidle' });
+  const content = await page.content();
+  console.log(content);
   const callsWaitingLabel = page.locator(
-    "div.Twilio-AgentDesktopView-default div[data-testid='Childline-voice']",
+    "div.Twilio-AgentDesktopView-default div[data-testid='AddTaskButton']",
   );
   await callsWaitingLabel.waitFor({ state: 'visible' });
 });

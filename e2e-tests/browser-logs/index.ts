@@ -31,7 +31,7 @@ export type PageTelemetryConfig = {
 
 const DEFAULT_CONFIG: PageTelemetryConfig = {
   level: <PageTelemetryLevel>getConfigValue('browserTelemetryLevel'),
-  logResponseBody: getConfigValue('browserTelemetryLogResponseBody')?.toLowerCase() === 'true',
+  logResponseBody: getConfigValue('browserTelemetryLogResponseBody') as boolean,
 };
 
 export function logPageTelemetry(

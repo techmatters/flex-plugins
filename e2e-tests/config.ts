@@ -34,11 +34,12 @@ export type Config = {
 };
 
 const helplineEnv = process.env.HL_ENV || 'local';
-const helplineShortCode = process.env.HL || 'as';
+const helplineShortCode = process.env.HL || 'e2e';
 const shouldLoadFromSsm = process.env.LOAD_SSM_CONFIG && process.env.LOAD_SSM_CONFIG !== 'false';
 
 const skipDataUpdateEnvs = ['staging', 'production'];
 const flexEnvs = ['development', 'staging', 'production'];
+const webchatUrlEnv = helplineEnv == 'local' ? 'development' : helplineEnv;
 
 const configOptions: ConfigOptions = {
   helplineShortCode: {
@@ -96,6 +97,10 @@ const configOptions: ConfigOptions = {
     env: 'SKIP_DATA_UPDATE',
     default: skipDataUpdateEnvs.includes(helplineEnv),
   },
+  webchatUrl: {
+    env: 'WEBCHAT_URL',
+    default: `https://assets-${webchatUrlEnv}.tl.techmatters.org/webchat/${helplineShortCode}/aselo-chat.min.js`,
+  },
 };
 
 export const config: Config = {};
@@ -109,7 +114,16 @@ export const getConfigValue = (key: string) => {
 };
 
 export const setConfigValue = (key: string, value: ConfigValue) => {
-  config[key] = value;
+  let typedValue: ConfigValue = value;
+
+  // Handle correctly converting boolean values from environment variables
+  if (value === 'true') {
+    typedValue = true;
+  } else if (value === 'false') {
+    typedValue = false;
+  }
+
+  config[key] = typedValue;
   // This probably seems weird, and it is. Playwright doesn't run in a
   // single process, so we can't just set a global variable. Instead,
   // we depend on environment variables to be the source of truth.
@@ -128,15 +142,18 @@ export const shouldSkipDataUpdate = () => {
 };
 
 const setConfigValueFromSsm = async (key: string) => {
-  if (!configOptions[key].ssmPath) return;
+  const option = configOptions[key];
+  if (!option.ssmPath) return;
 
-  // If we have a value in the environment, we don't want to load from SSM
-  if (process.env[configOptions[key].env]) {
-    setConfigValue(key, process.env[configOptions[key].env]);
+  const envValue = process.env[option.env];
+
+  // If we have a value in the environment and it is not the default, we don't want/need to load from SSM
+  if (envValue && envValue !== option.default) {
+    setConfigValue(key, process.env[option.env]);
     return;
   }
 
-  setConfigValue(key, await getSsmParameter(configOptions[key].ssmPath!));
+  setConfigValue(key, await getSsmParameter(option.ssmPath!));
 };
 
 const initSsmConfigValues = async () => {

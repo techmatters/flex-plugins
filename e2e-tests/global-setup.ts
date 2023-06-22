@@ -19,7 +19,7 @@ import { FullConfig } from '@playwright/test';
 import { differenceInMilliseconds } from 'date-fns';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { oktaSsoLoginViaApi, oktaSsoLoginViaGui } from './okta/sso-login';
-import { config, getConfigValue, initConfig } from './config';
+import { getConfigValue, initConfig } from './config';
 
 async function globalSetup(config: FullConfig) {
   const start = new Date();
@@ -31,7 +31,6 @@ async function globalSetup(config: FullConfig) {
   }
 
   await initConfig();
-  console.dir(config, { depth: 10 });
   await oktaSsoLoginViaApi(
     getConfigValue('baseURL') as string,
     getConfigValue('oktaUsername') as string,

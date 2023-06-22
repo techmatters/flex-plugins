@@ -17,9 +17,9 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Browser, expect } from '@playwright/test';
 import { ChatStatement, ChatStatementOrigin } from './chatModel';
+import { getConfigValue } from './config';
 
-// const ASELO_DEV_CHAT_URL = 'https://tl-public-chat-staging.s3.amazonaws.com/chat-staging.html';
-const E2E_CHAT_URL = 'https://tl-public-chat-e2e-dev.s3.amazonaws.com/e2e-chat-development.html';
+const E2E_CHAT_URL = getConfigValue('webchatUrl');
 
 export type WebChatPage = {
   openChat: () => Promise<void>;
