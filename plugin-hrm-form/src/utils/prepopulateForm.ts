@@ -18,7 +18,7 @@ import { ITask, Manager } from '@twilio/flex-ui';
 import { capitalize } from 'lodash';
 import { callTypes, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
 
-import { FeatureFlags } from '../types/types';
+import { LexMemory, AutopilotMemory, FeatureFlags } from '../types/types';
 import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
 import { prepopulateForm as prepopulateFormAction } from '../states/contacts/actions';
@@ -144,7 +144,10 @@ export const getValuesFromPreEngagementData = (
   return values;
 };
 
-const transformAnswers = answers => {
+type PreSurveyAnswers = LexMemory['slots'];
+type AutopilotAnswers = AutopilotMemory['twilio']['collected_data']['collect_survey']['answers'];
+
+const transformAnswers = (answers: AutopilotAnswers): PreSurveyAnswers => {
   /**
    * Map naming mismatches between autopilot and lex
    * TODO: rename Lex 'slots' so we don't need to use this map
@@ -159,6 +162,16 @@ const transformAnswers = answers => {
     (acc, currentKey) => ({ ...acc, [renameKey(currentKey)]: answers[currentKey].answer }),
     {},
   );
+};
+
+const getAnswers = (isLexMemory: boolean, memory: LexMemory | AutopilotMemory): PreSurveyAnswers => {
+  if (isLexMemory) {
+    return (memory as LexMemory).slots;
+  }
+
+  // This can be removed after every helpline is using Lex
+  const autopilotAnswers = (memory as AutopilotMemory).twilio.collected_data.collect_survey.answers;
+  return transformAnswers(autopilotAnswers);
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -195,9 +208,7 @@ export const prepopulateForm = (task: ITask, featureFlags: FeatureFlags) => {
     return;
   }
 
-  const answers = featureFlags.enable_lex_prepopulate
-    ? memory.slots
-    : transformAnswers(memory.twilio.collected_data.collect_survey.answers);
+  const answers = getAnswers(featureFlags.enable_lex_prepopulate, memory);
 
   const isAboutSelf = answers.CallerType === 'Yes';
   const callType = isAboutSelf || !answers.CallerType ? callTypes.child : callTypes.caller;

@@ -266,6 +266,30 @@ export type FeatureFlags = {
 };
 /* eslint-enable camelcase */
 
+export type LexMemory = {
+  slots: {
+    CallerType?: 'Yes' | 'No';
+    [key: string]: string;
+  };
+};
+
+/* eslint-disable camelcase */
+export type AutopilotMemory = {
+  twilio: {
+    collected_data: {
+      collect_survey: {
+        answers: {
+          [key: string]: {
+            answer: string;
+            error: string;
+          };
+        };
+      };
+    };
+  };
+};
+/* eslint-enable camelcase */
+
 /**
  * Custom tasks
  */
