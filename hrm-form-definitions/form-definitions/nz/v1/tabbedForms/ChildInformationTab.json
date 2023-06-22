@@ -1,7 +1,7 @@
 [
   {
     "name": "firstName",
-    "label": "First Name",
+    "label": "Preferred Name",
     "type": "input",
     "required": {
       "value": true,
@@ -11,7 +11,35 @@
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input",
+    "type": "input"
+  },
+  {
+    "name": "gender",
+    "label": "Gender",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Male / Tāne",
+        "label": "Male / Tāne"
+      },
+      {
+        "value": "Female / Wāhine",
+        "label": "Female / Wāhine"
+      },
+      {
+        "value": "Non-binary",
+        "label": "Non-binary"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -21,66 +49,19 @@
     "name": "age",
     "label": "Age",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
         "label": ""
       },
       {
-        "value": "Unborn",
-        "label": "Unborn"
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
-        "value": "0",
-        "label": "0"
-      },
-      {
-        "value": "1",
-        "label": "1"
-      },
-      {
-        "value": "2",
-        "label": "2"
-      },
-      {
-        "value": "3",
-        "label": "3"
-      },
-      {
-        "value": "4",
-        "label": "4"
-      },
-      {
-        "value": "5",
-        "label": "5"
-      },
-      {
-        "value": "6",
-        "label": "6"
-      },
-      {
-        "value": "7",
-        "label": "7"
-      },
-      {
-        "value": "8",
-        "label": "8"
-      },
-      {
-        "value": "9",
-        "label": "9"
-      },
-      {
-        "value": "10",
-        "label": "10"
-      },
-      {
-        "value": "11",
-        "label": "11"
-      },
-      {
-        "value": "12",
-        "label": "12"
+        "value": "<13",
+        "label": "<13"
       },
       {
         "value": "13",
@@ -135,16 +116,32 @@
         "label": "25"
       },
       {
-        "value": ">25",
-        "label": ">25"
+        "value": "26",
+        "label": "26"
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
+        "value": "27",
+        "label": "27"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "28",
+        "label": "28"
+      },
+      {
+        "value": "29",
+        "label": "29"
+      },
+      {
+        "value": "30",
+        "label": "30"
+      },
+      {
+        "value": "31-64",
+        "label": "31-64"
+      },
+      {
+        "value": ">64",
+        "label": ">64"
       }
     ],
     "required": {
@@ -153,169 +150,186 @@
     }
   },
   {
-    "name": "gender",
-    "label": "Gender",
+    "name": "region",
+    "label": "Region",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
         "label": ""
       },
       {
-        "value": "Male",
-        "label": "Male"
-      },
-      {
-        "value": "Female",
-        "label": "Female"
-      },
-      {
-        "value": "Non-binary",
-        "label": "Non-binary"
-      },
-      {
         "value": "Unknown",
         "label": "Unknown"
+      },
+      {
+        "value": "Northland",
+        "label": "Northland"
+      },
+      {
+        "value": "Auckland",
+        "label": "Auckland"
+      },
+      {
+        "value": "Waikato",
+        "label": "Waikato"
+      },
+      {
+        "value": "Bay of Plenty",
+        "label": "Bay of Plenty"
+      },
+      {
+        "value": "Gisborne",
+        "label": "Gisborne"
+      },
+      {
+        "value": "Hawke's Bay",
+        "label": "Hawke's Bay"
+      },
+      {
+        "value": "Taranaki",
+        "label": "Taranaki"
+      },
+      {
+        "value": "Manawatū-Whanganui",
+        "label": "Manawatū-Whanganui"
+      },
+      {
+        "value": "Wellington",
+        "label": "Wellington"
+      },
+      {
+        "value": "Tasman",
+        "label": "Tasman"
+      },
+      {
+        "value": "Nelson",
+        "label": "Nelson"
+      },
+      {
+        "value": "Marlborough",
+        "label": "Marlborough"
+      },
+      {
+        "value": "West Coast",
+        "label": "West Coast"
+      },
+      {
+        "value": "Canterbury",
+        "label": "Canterbury"
+      },
+      {
+        "value": "Otago",
+        "label": "Otago"
+      },
+      {
+        "value": "Southland",
+        "label": "Southland"
       }
     ],
     "required": {
       "value": true,
       "message": "RequiredFieldError"
     }
-  },
-  {
-    "name": "streetAddress",
-    "label": "Street Address",
-    "type": "input"
-  },
-  {
-    "name": "province",
-    "label": "Province",
-    "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Central",
-        "label": "Central"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "district",
-    "label": "District",
-    "type": "dependent-select",
-    "dependsOn": "province",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "District1": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ],
-      "District2": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "phone1",
-    "label": "Phone #1",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "language",
-    "label": "Language",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "language1",
-        "label": "language1"
-      }
-    ]
   },
   {
     "name": "ethnicity",
     "label": "Ethnicity",
-    "type": "input"
-  },
-  {
-    "name": "schoolName",
-    "label": "School Name",
-    "type": "input"
-  },
-  {
-    "name": "gradeLevel",
-    "label": "Grade Level",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
-        "value": "Grade 1 to 4",
-        "label": "Grade 1 to 4"
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
-        "value": "Grade 5 to 7",
-        "label": "Grade 5 to 7"
+        "value": "African",
+        "label": "African"
       },
       {
-        "value": "Grade 8 to 9",
-        "label": "Grade 8 to 9"
+        "value": "Chinese",
+        "label": "Chinese"
       },
       {
-        "value": "Grade 10 to 12",
-        "label": "Grade 10 to 12"
+        "value": "Cook Island Maori",
+        "label": "Cook Island Maori"
       },
       {
-        "value": "Out of school",
-        "label": "Out of school"
+        "value": "Fijian",
+        "label": "Fijian"
+      },
+      {
+        "value": "Indian",
+        "label": "Indian"
+      },
+      {
+        "value": "Latin American",
+        "label": "Latin American"
+      },
+      {
+        "value": "Maori",
+        "label": "Maori"
+      },
+      {
+        "value": "Middle Eastern",
+        "label": "Middle Eastern"
+      },
+      {
+        "value": "Niuean",
+        "label": "Niuean"
+      },
+      {
+        "value": "NZ European/Pakeha",
+        "label": "NZ European/Pakeha"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Other Asian",
+        "label": "Other Asian"
+      },
+      {
+        "value": "Other European",
+        "label": "Other European"
+      },
+      {
+        "value": "Other Pacific Peoples",
+        "label": "Other Pacific Peoples"
+      },
+      {
+        "value": "Samoan",
+        "label": "Samoan"
+      },
+      {
+        "value": "South-East Asian",
+        "label": "South-East Asian"
+      },
+      {
+        "value": "Tokelauan",
+        "label": "Tokelauan"
+      },
+      {
+        "value": "Tongan",
+        "label": "Tongan"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "livingSituation",
     "label": "Living Situation",
     "type": "select",
+    "unknownOption": "Unknown",
     "options": [
       {
         "value": "Unknown",
@@ -356,16 +370,6 @@
     ]
   },
   {
-    "name": "hivPositive",
-    "label": "Child HIV Positive?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "livingInConflictZone",
-    "label": "Child living in conflict zone",
-    "type": "mixed-checkbox"
-  },
-  {
     "name": "inConflictWithTheLaw",
     "label": "Child in conflict with the law",
     "type": "mixed-checkbox"
@@ -386,50 +390,8 @@
     "type": "mixed-checkbox"
   },
   {
-    "name": "LGBTQI+",
+    "name": "lgbtqi",
     "label": "LGBTQI+ / SOGIESC child",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "childOnTheMove",
-    "label": "Child on the move",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Involuntary",
-        "label": "Involuntary"
-      },
-      {
-        "value": "Voluntary",
-        "label": "Voluntary"
-      }
-    ]
-  },
-  {
-    "name": "region",
-    "label": "Region",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Cities",
-        "label": "Cities"
-      },
-      {
-        "value": "Rural areas",
-        "label": "Rural areas"
-      },
-      {
-        "value": "Town & semi-dense areas",
-        "label": "Town & semi-dense areas"
-      }
-    ]
+    "type": "checkbox"
   }
 ]

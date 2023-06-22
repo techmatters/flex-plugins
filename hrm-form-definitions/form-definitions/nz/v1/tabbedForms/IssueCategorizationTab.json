@@ -5,8 +5,8 @@
       "subcategories": [
         {"label": "Child abduction"},
         {"label": "Lost, unaccounted for or otherwise missing child"},
-        {"label": "Runaway", "toolkitUrl": "https://google.com"},
-        {"label": "Unspecified/Other"}
+        {"label": "Runaway"},
+        {"label": "Unspecified/Other - MS"}
       ]
     },
     "Violence": {
@@ -19,14 +19,14 @@
         {"label": "Female Genital Mutilation (FGM)"},
         {"label": "Gender-based harmful traditional practices (other than FGM)"},
         {"label": "Harmful traditional practices other than child marriage and FGM"},
-        {"label": "Mental/Emotional violence", "toolkitUrl": "https://google.com"},
-        {"label": "Neglect (or negligent treatment)", "toolkitUrl": "https://google.com"},
+        {"label": "Mental/Emotional violence"},
+        {"label": "Neglect (or negligent treatment)"},
         {"label": "Online sexual abuse (OSA)"},
         {"label": "Online sexual exploitation (OSE)"},
         {"label": "Information seeking about OSE/OSA"},
         {"label": "Physical violence"},
         {"label": "Sexual violence"},
-        {"label": "Unspecified/Other"}
+        {"label": "Unspecified/Other - V"}
       ]
     },
     "Mental Health": {
@@ -43,7 +43,7 @@
         {"label": "Self-harming behaviour"},
         {"label": "Suicidal thoughts and suicide attempts"},
         {"label": "Traumatic distress"},
-        {"label": "Unspecified/Other"}
+        {"label": "Unspecified/Other - MH"}
       ]
     },
     "Physical Health": {
@@ -56,7 +56,7 @@
         {"label": "Pregnancy and maternal care"},
         {"label": "Sexual and reproductive health"},
         {"label": "Nutrition"},
-        {"label": "Unspecified/Other"}
+        {"label": "Unspecified/Other - PH"}
       ]
     },
     "Accessibility": {
@@ -69,7 +69,7 @@
         {"label": "Mental health services"},
         {"label": "Sexual health services"},
         {"label": "Socio-economical services"},
-        {"label": "Unspecified/Other"}
+        {"label": "Unspecified/Other - A"}
       ]
     },
     "Discrimination and Exclusion": {
@@ -81,7 +81,7 @@
         {"label": "Gender identity or expression and sexual orientation"},
         {"label": "Health"},
         {"label": "Philosophical or religious beliefs"},
-        {"label": "Unspecified/Other"}
+        {"label": "Unspecified/Other - DE"}
       ]
     },
     "Family Relationships": {
@@ -91,7 +91,7 @@
         {"label": "Relationship to caregiver"},
         {"label": "Family health and wellbeing"},
         {"label": "Relationship with sibling(s)"},
-        {"label": "Unspecified/Other"}
+        {"label": "Unspecified/Other - FR"}
       ]
     },
     "Peer Relationships": {
@@ -100,7 +100,7 @@
         {"label": "Friends and friendships"},
         {"label": "Partner relationships"},
         {"label": "Classmates/colleagues relationships"},
-        {"label": "Unspecified/Other"}
+        {"label": "Unspecified/Other - PR"}
       ]
     },
     "Education and Occupation": {
@@ -109,7 +109,7 @@
         {"label": "Academic issues"},
         {"label": "Teacher and school problems"},
         {"label": "Problems at work"},
-        {"label": "Unspecified/Other"}
+        {"label": "Unspecified/Other - EO"}
       ]
     },
     "Sexuality": {
@@ -117,68 +117,27 @@
       "subcategories": [
         {"label": "Sexual orientation and gender identity"},
         {"label": "Sexual behaviours"},
-        {"label": "Unspecified/Other"}
-      ]
-    }
-  },
-  "LifeLine": {
-    "Physical and Sexual Health": {
-      "color": "#BBE3FF",
-      "subcategories": [
-        {"label": "COVID-19"},
-        {"label": "Condom Use"},
-        {"label": "Medical or lifestyle information about HIV/AIDS"},
-        {"label": "Male Circumcision"},
-        {"label": "Pregnancy and maternal care"},
-        {"label": "Sexual and reproductive health"},
-        {"label": "Sexually Transmitted Diseases"},
-        {"label": "Nutrition"},
-        {"label": "Unspecified/Other"}
+        {"label": "Unspecified/Other - S"}
       ]
     },
-    "Mental Health": {
-      "color": "#F5A623",
+    "Crime": {
+      "color": "#C1570B",
       "subcategories": [
-        {"label": "Emotional distress – anger problems"},
-        {"label": "Emotional distress – fear and anxiety problems"},
-        {"label": "Emotional distress – mood problems"},
-        {"label": "Problems with eating behaviour"},
-        {"label": "Self-harming behaviour"},
-        {"label": "Suicidal thoughts and suicide attempts"},
-        {"label": "Traumatic distress"},
-        {"label": "Unspecified/Other"}
+        {"label": "Victim of crime"},
+        {"label": "Perpetrator of crime"},
+        {"label": "Unspecified/Other - C"}
       ]
     },
-    "Abuse": {
-      "color": "#F8E900",
+    "Other": {
+      "color": "#C1570B",
       "subcategories": [
-        {"label": "Addictive behaviours and substance use"},
-        {"label": "Cyber Bullying"},
-        {"label": "Gender Based Violence (GBV)"},
-        {"label": "Mental/Emotional violence"},
-        {"label": "Economic abuse"},
-        {"label": "Online sexual abuse"},
-        {"label": "Online sexual exploitation"},
-        {"label": "Physical violence"},
-        {"label": "Sexual violence"},
-        {"label": "Unspecified/Other"}
-      ]
-    },
-    "Relationships": {
-      "color": "#E86B6B",
-      "subcategories": [
-        {"label": "Family Relationships"},
-        {"label": "Marital Issues"},
-        {"label": "Unspecified/Other"}
-      ]
-    },
-    "Education and Occupation": {
-      "color": "#8055BA",
-      "subcategories": [
-        {"label": "Problems at learning institution"},
-        {"label": "Problems at work"},
-        {"label": "Unspecified/Other"}
+        {"label": "Complaints about the child helpline"},
+        {"label": "Questions about the child helpline"},
+        {"label": "Questions about other services"},
+        {"label": "Thank you for your assistance"},
+        {"label": "Unspecified/Other - O"}
       ]
     }
   }
+  
 }
