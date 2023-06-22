@@ -18,7 +18,7 @@ import { expect, Page, test } from '@playwright/test';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { caseHome } from '../case';
 import { agentDesktop } from '../agent-desktop';
-import { initConfig, shouldSkipDataUpdate } from '../config';
+import { shouldSkipDataUpdate } from '../config';
 import { logPageTelemetry } from '../browser-logs';
 import { notificationBar } from '../notificationBar';
 
@@ -26,7 +26,6 @@ test.describe.serial('Offline Contact (with Case)', () => {
   let pluginPage: Page;
 
   test.beforeAll(async ({ browser }) => {
-    // await initConfig();
     pluginPage = await browser.newPage();
     if (shouldSkipDataUpdate()) return;
     logPageTelemetry(pluginPage);

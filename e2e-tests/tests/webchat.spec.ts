@@ -27,7 +27,7 @@ import {
   counselorStatement,
 } from '../chatModel';
 import { flexChat } from '../flexChat';
-import { initConfig, shouldSkipDataUpdate } from '../config';
+import { shouldSkipDataUpdate } from '../config';
 import { tasks } from '../tasks';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { deleteAllTasksInQueue } from '../twilio/tasks';
@@ -37,7 +37,6 @@ import { notificationBar } from '../notificationBar';
 test.describe.serial('Web chat caller', () => {
   let chatPage: WebChatPage, pluginPage: Page;
   test.beforeAll(async ({ browser }) => {
-    // await initConfig();
     pluginPage = await browser.newPage();
     logPageTelemetry(pluginPage);
     console.log('Plugin page browser session launched.');

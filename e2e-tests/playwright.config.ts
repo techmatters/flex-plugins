@@ -19,7 +19,7 @@
 import { PlaywrightTestConfig } from '@playwright/test';
 import { config, getConfigValue } from './config';
 
-console.log('playwright.config.ts: config', config);
+// console.log('playwright.config.ts: config', config);
 
 const playwrightConfig: PlaywrightTestConfig = {
   globalSetup: require.resolve('./global-setup'),
