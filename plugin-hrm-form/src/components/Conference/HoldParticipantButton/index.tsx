@@ -45,10 +45,15 @@ const HoldParticipantButton: React.FC<Props> = ({ participant, task, ...props })
   };
 
   // Adds phone number to participants in ParticipantCanvas
-  ParticipantCanvas.Actions.Content.add(<p key="participant-name">{phoneNumber}</p>, {
-    sortOrder: -2,
-    if: props => TaskHelper.isLiveCall(props.task) && !props.participant?.isCurrentWorker,
-  });
+  ParticipantCanvas.Actions.Content.add(
+    <p key="participant-name">
+      <strong>{phoneNumber}</strong>
+    </p>,
+    {
+      sortOrder: -2,
+      if: props => TaskHelper.isLiveCall(props.task) && !props.participant?.isCurrentWorker,
+    },
+  );
 
   return (
     <>
