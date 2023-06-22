@@ -40,7 +40,6 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   const { isDialogOpen, isLoading, phoneNumber } = useSelector(
     (state: RootState) => state[namespace][conferencingBase].tasks[task.taskSid],
   );
-  const conferencesStates = useSelector((state: RootState) => state.flex.conferences.states);
   const dispatch = useDispatch();
 
   const setIsDialogOpen = (isOpen: boolean) => dispatch(setIsDialogOpenAction(task.taskSid, isOpen));
@@ -58,31 +57,6 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
     return null;
   }
 
-  const addNewParticipantToState = (newParticipant: any) => {
-    const conferences = new Set();
-    conferencesStates.forEach(conf => {
-      if (conf.source.sid === conference.source.sid) {
-        const { participants } = conf.source;
-
-        const fakeParticipant = new ConferenceParticipant({
-          ...newParticipant,
-          mediaProperties: {
-            ...newParticipant,
-          },
-          connecting: true,
-          type: 'external',
-        } as any);
-
-        participants.push(fakeParticipant);
-        conferences.add(conference.source);
-      } else {
-        conferences.add(conf);
-      }
-    });
-
-    dispatch({ type: 'CONFERENCE_MULTIPLE_UPDATE', payload: { conferences } });
-  };
-
   const handleClick = async () => {
     setIsLoading(true);
     try {
@@ -91,7 +65,7 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
 
       await Promise.all(
         conference.source.participants
-          .filter(p => !['worker', 'agent', 'supervisor'].includes(p.participantType))
+          .filter(p => p.status === 'joined' && !['worker', 'agent', 'supervisor'].includes(p.participantType))
           .map(p =>
             conferenceApi.updateParticipant({
               callSid: p.callSid,
@@ -101,12 +75,12 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
           ),
       );
 
-      const result = await conferenceApi.addParticipant({ from, conferenceSid, to });
-      addNewParticipantToState(result.participant);
+      await conferenceApi.addParticipant({ from, conferenceSid, to });
+
       setIsDialogOpen(false);
     } catch (err) {
       console.error(`Error adding participant to call ${conferenceSid}: ${err}`);
-      Notifications.showNotification(ConferenceNotifications.ErrorAddingParticipantNotification);
+      Notifications.showNotificationSingle(ConferenceNotifications.ErrorAddingParticipantNotification);
     } finally {
       setIsLoading(false);
     }
