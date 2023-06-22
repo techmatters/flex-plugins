@@ -9,5 +9,13 @@
         ]
       }
     ]
+  },
+  "caseForm": {
+    "topLevel": [
+      {
+        "name": "id",
+        "insights": ["conversations", "case"]
+      }
+    ]
   }
 }
