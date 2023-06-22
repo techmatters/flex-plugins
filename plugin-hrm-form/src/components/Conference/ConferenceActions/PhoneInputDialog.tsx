@@ -14,6 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Template, Button } from '@twilio/flex-ui';
 import { CallEnd as CallEndIcon } from '@material-ui/icons';
 

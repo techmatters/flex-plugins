@@ -15,15 +15,19 @@
  */
 
 import React from 'react';
-import { IconButton, TaskHelper } from '@twilio/flex-ui';
+import { useSelector } from 'react-redux';
+import { IconButton, TaskHelper, ParticipantCanvas } from '@twilio/flex-ui';
 import type { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
 
+import { conferencingBase, namespace, RootState } from '../../../states';
 import { conferenceApi } from '../../../services/ServerlessService';
 
 type Props = Partial<ParticipantCanvasChildrenProps>;
 
-const HoldParticipantButton: React.FC<Props> = ({ participant, task }) => {
+const HoldParticipantButton: React.FC<Props> = ({ participant, task, ...props }) => {
+  console.log('>>> HoldParticipantButton', participant, task, props);
   const [isLoading, setIsLoading] = React.useState(false);
+  const { phoneNumber } = useSelector((state: RootState) => state[namespace][conferencingBase].tasks[task.taskSid]);
 
   if (!participant?.callSid || !task?.conference?.conferenceSid) {
     return null;
@@ -39,6 +43,12 @@ const HoldParticipantButton: React.FC<Props> = ({ participant, task }) => {
     });
     setIsLoading(false);
   };
+
+  // Adds phone number to participants in ParticipantCanvas
+  ParticipantCanvas.Actions.Content.add(<p key="participant-name">{phoneNumber}</p>, {
+    sortOrder: -2,
+    if: props => TaskHelper.isLiveCall(props.task) && !props.participant?.isCurrentWorker,
+  });
 
   return (
     <>
