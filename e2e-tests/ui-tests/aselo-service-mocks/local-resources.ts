@@ -14,22 +14,22 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// playwright.config.ts
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { PlaywrightTestConfig } from '@playwright/test';
-import environmentVariables from './environmentVariables';
+import { Page } from '@playwright/test';
+import fs from 'fs';
+import context from './global-context';
 
-const config: PlaywrightTestConfig = {
-  globalSetup: require.resolve('./global-setup'),
-  use: {
-    storageState: 'temp/state.json',
-    baseURL: environmentVariables.PLAYWRIGHT_BASEURL ?? 'http://localhost:3000',
-    permissions: ['microphone'],
-    screenshot: 'only-on-failure',
-    video: 'retry-with-video',
-  },
-  testDir: './tests',
-  retries: 1,
-  timeout: 60000,
+/**
+ * An option to prebuild the plugin and cache it in the test runner
+ * This can speed things up but the plugin needs to e rebuilt if the plugin code changes
+ */
+export const usePrebuiltPlugin = async (page: Page) => {
+  if (context.CACHE_PREBUILT_PLUGIN) {
+    const pluginJsContent = await fs.promises.readFile(
+      '../plugin-hrm-form/build/plugin-hrm-form.js',
+    );
+    await page.route('http://localhost:3000/plugins/plugin-hrm-form.js', (route) => {
+      route.fulfill({ body: pluginJsContent, contentType: 'application/javascript' });
+    });
+  }
 };
-export default config;

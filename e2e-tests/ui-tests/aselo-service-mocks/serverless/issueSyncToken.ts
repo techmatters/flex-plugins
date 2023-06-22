@@ -14,22 +14,18 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// playwright.config.ts
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { PlaywrightTestConfig } from '@playwright/test';
-import environmentVariables from './environmentVariables';
+import { Page } from '@playwright/test';
+import context from '../global-context';
 
-const config: PlaywrightTestConfig = {
-  globalSetup: require.resolve('./global-setup'),
-  use: {
-    storageState: 'temp/state.json',
-    baseURL: environmentVariables.PLAYWRIGHT_BASEURL ?? 'http://localhost:3000',
-    permissions: ['microphone'],
-    screenshot: 'only-on-failure',
-    video: 'retry-with-video',
-  },
-  testDir: './tests',
-  retries: 1,
-  timeout: 60000,
+export const mockIssueSyncToken = async (page: Page) => {
+  await page.route(new URL('/issueSyncToken', context.SERVERLESS_BASE_URL).toString(), (route) => {
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        token: 'FAKE_SYNC_TOKEN',
+      }),
+    });
+  });
 };
-export default config;

@@ -14,22 +14,16 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// playwright.config.ts
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { PlaywrightTestConfig } from '@playwright/test';
-import environmentVariables from './environmentVariables';
+/**
+ * Variables used in mocks that need to be aligned globally for most test cases
+ */
 
-const config: PlaywrightTestConfig = {
-  globalSetup: require.resolve('./global-setup'),
-  use: {
-    storageState: 'temp/state.json',
-    baseURL: environmentVariables.PLAYWRIGHT_BASEURL ?? 'http://localhost:3000',
-    permissions: ['microphone'],
-    screenshot: 'only-on-failure',
-    video: 'retry-with-video',
-  },
-  testDir: './tests',
-  retries: 1,
-  timeout: 60000,
+const context = {
+  HRM_BASE_URL: new URL('https://fake.hrm.url'),
+  SERVERLESS_BASE_URL: new URL('https://serverless-0000-production.twil.io'),
+  FORM_DEFINITIONS_BASE_URL: new URL('https://fake.form-definitions.url'),
+  CACHE_PREBUILT_PLUGIN: (process.env.CACHE_PREBUILT_PLUGIN ?? 'false') === 'true',
+  USE_UNMINIFIED_PLUGIN: (process.env.USE_UNMINIFIED_PLUGIN ?? 'false') === 'true',
 };
-export default config;
+
+export default context;

@@ -20,16 +20,13 @@ jobs:
   lint:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x]
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 16
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '16.x'
       - name: Create Temp Files
         run: |
           touch ./public/appConfig.js
@@ -55,12 +52,8 @@ jobs:
       - name: Run e2e-test code Lint
         run: npm run lint
         working-directory: ./e2e-tests
-  test:
+  unit-test:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [16.x]
 
     steps:
     - name: Checkout Branch
@@ -68,7 +61,7 @@ jobs:
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: '16.x'
     - name: Install the Twilio CLI and plugins
       run: npm install twilio-cli@5.3.1 -g && twilio plugins:install @twilio-labs/plugin-flex@6.0.3
       working-directory: ./plugin-hrm-form
@@ -86,3 +79,76 @@ jobs:
       working-directory: ./plugin-hrm-form
       env:
         CI: true
+  ui-test:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout Branch
+        uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16.x'
+
+      # Build Flex-plugins
+      - name: Install the Twilio CLI and plugins
+        run: npm install twilio-cli@5.2.2 -g && twilio plugins:install @twilio-labs/plugin-flex@6.0.3
+      - name: Install hrm-form-definitions Packages
+        run: npm ci
+        working-directory: ./hrm-form-definitions
+      - name: Install Flex Plugin Packages
+        run: NODE_ENV=development npm ci
+        working-directory: ./plugin-hrm-form
+
+      # Create Configuration file to replace AS_DEV_ACCOUNT_SID with E2E_ACCOUNT_SID
+      - name: Create appConfig.js
+        run: cp ./public/appConfig.template.e2e.js ./public/appConfig.js
+        working-directory: ./plugin-hrm-form
+        shell: bash
+
+      - name: Create secret.js
+        run: |
+          touch ./src/private/secret.js
+        working-directory: ./plugin-hrm-form
+        shell: bash
+      - name: Fill secret.js
+        run: |
+          cat <<EOT >> ./src/private/secret.js
+          export const rollbarAccessToken = 'x';
+          export const datadogAccessToken = 'x';
+          export const datadogApplicationID = 'x';
+          export const fullStoryId = 'x';
+          EOT
+        working-directory: ./plugin-hrm-form
+        shell: bash
+
+      # Run server
+      - name: Run Flex Dev Server
+        # Creds aren't used in the tests, but I don't think the dev server starts without some set.
+        run: NODE_ENV=development TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npm run start &
+        working-directory: ./plugin-hrm-form
+
+      # Build Playwright
+      - name: Install e2e-tests dependencies
+        run: npm install
+        working-directory: ./e2e-tests
+      - name: Setup dependencies for playwright/browsers
+        uses: microsoft/playwright-github-action@v1
+      - name: Install Playwright CLI
+        run: npx playwright install
+        working-directory: ./e2e-tests
+
+      # Run UI tests
+      - name: Run Playwright tests
+        run: npm run test:ui
+        working-directory: ./e2e-tests
+
+      # Upload artifacts
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: test-artifacts
+          path: e2e-tests/test-results
