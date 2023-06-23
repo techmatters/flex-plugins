@@ -36,8 +36,9 @@ export const agentDesktop = (page: Page) => {
 
 export const navigateToAgentDesktop = async (page: Page) => {
   await page.goto('/agent-desktop', { waitUntil: 'networkidle' });
-  const callsWaitingLabel = page.locator(
+
+  // There are multiple elements so we need to use waitForSelector instead of a locator/waitFor
+  await page.waitForSelector(
     "div.Twilio-AgentDesktopView-default button[data-testid='AddTaskButton']",
   );
-  await callsWaitingLabel.waitFor({ state: 'visible' });
 };

@@ -18,9 +18,16 @@ import dotenv from 'dotenv';
 import { getSsmParameter } from './ssmClient';
 
 export type ConfigOption = {
-  envKey: string; // The name of the env var for this config option
-  ssmPath?: string; // An optional path to the ssm param to load this config option from
-  default?: ConfigValue; // The optional default value to use if no env var or ssm param is present
+  // The name of the env var for this config option
+  envKey: string;
+
+  // An optional path to the ssm param to load this config option from. A function
+  // can be used to dynamically generate the path based on other config values
+  ssmPath?: string | (() => string);
+
+  // The optional default value to use if no env var or ssm param is present A function
+  // can be used to dynamically generate the default based on other config values
+  default?: ConfigValue | (() => ConfigValue);
 };
 
 export type ConfigOptions = {
@@ -45,6 +52,17 @@ const flexEnvs = ['development', 'staging', 'production'];
 
 // This is kindof a hack to get the correct default remote webchat url for the local env
 const webchatUrlEnv = helplineEnv == 'local' ? 'development' : helplineEnv;
+
+export const config: Config = {};
+
+export const getConfigValue = (key: string) => {
+  // We assume all config values are required for now
+  if (config[key] == null) {
+    throw new Error(`Config value ${key} is not set`);
+  }
+
+  return config[key];
+};
 
 /**
  * The config options config is the heart of the dynamic configuration system.
@@ -93,6 +111,8 @@ const configOptions: ConfigOptions = {
   },
   twilioAuthToken: {
     envKey: 'TWILIO_AUTH_TOKEN',
+    // Order is important here. We use a function so that we can reference the twilioAccountSid config value above.
+    ssmPath: () => `/${helplineEnv}/twilio/${getConfigValue('twilioAccountSid')}/auth_token`,
   },
   debug: {
     envKey: 'DEBUG',
@@ -121,17 +141,6 @@ const configOptions: ConfigOptions = {
     // the assets bucket because we don't want to deal with CloudFront caching issues.
     default: `https://s3.amazonaws.com/assets-${webchatUrlEnv}.tl.techmatters.org/webchat/${helplineShortCode}/e2e-chat.html`,
   },
-};
-
-export const config: Config = {};
-
-export const getConfigValue = (key: string) => {
-  // We assume all config values are required for now
-  if (config[key] == null) {
-    throw new Error(`Config value ${key} is not set`);
-  }
-
-  return config[key];
 };
 
 export const setConfigValue = (key: string, value: ConfigValue) => {
@@ -177,8 +186,9 @@ const setConfigValueFromSsm = async (key: string) => {
     return;
   }
 
+  const ssmPath = typeof option.ssmPath === 'function' ? option.ssmPath() : option.ssmPath;
   try {
-    setConfigValue(key, await getSsmParameter(option.ssmPath!));
+    setConfigValue(key, await getSsmParameter(ssmPath));
   } catch (err) {
     if (!option.default) {
       throw err;
@@ -197,10 +207,10 @@ const initSsmConfigValues = async () => {
     throw new Error('Trying to load config from SSM, but HELPLINE_SHORT_CODE is not set');
   }
 
-  const promises = Object.keys(configOptions).map(async (key) => {
+  // This must be done in series because some config options depend on others
+  for (const key of Object.keys(configOptions)) {
     await setConfigValueFromSsm(key);
-  });
-  await Promise.all(promises);
+  }
 };
 
 /**
@@ -224,7 +234,9 @@ const initStaticConfigValue = (key: string) => {
   }
 
   if (option.default == null) return;
-  setConfigValue(key, option.default);
+
+  const defaultValue = typeof option.default === 'function' ? option.default() : option.default;
+  setConfigValue(key, defaultValue);
 };
 
 const initStaticConfigValues = () => {

@@ -72,7 +72,7 @@ jobs:
 
       # Run E2E tests against actual E2E Flex instance
       - name: Run Playwright tests
-        run: npm run test:ci:development
+        run: npm run test:development:e2e
         working-directory: ./e2e-tests
 
       # Upload artifacts

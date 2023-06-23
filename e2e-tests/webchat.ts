@@ -26,6 +26,7 @@ export type WebChatPage = {
   selectHelpline: (helpline: string) => Promise<void>;
   chat: (statements: ChatStatement[]) => AsyncIterable<ChatStatement>;
   close: () => Promise<void>;
+  printPageContent: () => Promise<void>;
 };
 
 export async function open(browser: Browser): Promise<WebChatPage> {
@@ -39,9 +40,7 @@ export async function open(browser: Browser): Promise<WebChatPage> {
     preEngagementWindow: page.locator('div.Twilio-PreEngagementCanvas'),
     helplineDropdown: page.locator('div#select-helpline'),
     helplineOptions: page.locator('div#menu-helpline ul'),
-    startChatButton: page.locator(
-      'div.Twilio-PreEngagementCanvas button.Twilio-DynamicForm-submit',
-    ),
+    startChatButton: page.locator('div.Twilio-PreEngagementCanvas button[type="submit"]'),
 
     //Chatting
     chatMessageArea: page.locator('div.Twilio-MessagingCanvas'),
@@ -50,9 +49,7 @@ export async function open(browser: Browser): Promise<WebChatPage> {
     messageBubbles: page.locator('div.Twilio-MessageListItem div.Twilio-MessageBubble'),
     chatAvatars: page.locator('div.Twilio-MessageListItem div.Twilio-ChatItem-Avatar'),
     messageWithText: (text: string) =>
-      chatPanelWindow.locator(
-        `div.Twilio-MessageListItem div.Twilio-MessageBubble-Body:text-is("${text}")`,
-      ),
+      chatPanelWindow.locator(`div.Twilio-MessageListItem div:text-is("${text}")`),
   };
   await page.goto(E2E_CHAT_URL);
   console.log('Waiting for start chat button to render.');
@@ -88,6 +85,8 @@ export async function open(browser: Browser): Promise<WebChatPage> {
       await selectors.chatInput.waitFor();
 
       for (const statementItem of statements) {
+        const content = await page.content();
+        console.log(content);
         const { text, origin }: ChatStatement = statementItem;
         switch (origin) {
           case ChatStatementOrigin.CALLER:
@@ -105,6 +104,10 @@ export async function open(browser: Browser): Promise<WebChatPage> {
     },
     close: async () => {
       await page.close();
+    },
+    printPageContent: async () => {
+      const content = await page.content();
+      console.log(content);
     },
   };
 }

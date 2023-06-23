@@ -16,15 +16,19 @@
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import twilio from 'twilio';
-import { getConfigValue } from '../config';
+import { config, getConfigValue, initConfig } from '../config';
 
 export const deleteAllTasksInQueue = async (
   workspaceName: string,
   workflowName: string,
   taskQueueName: string,
 ): Promise<void> => {
-  const accountSid = getConfigValue('twilioAccountSid');
-  const authToken = getConfigValue('twilioAuthToken');
+  console.dir(config, { depth: null });
+  console.log(process.env);
+  // Somehow the call stack when we get here doesn't have the config loaded, so we need to do it again
+  await initConfig();
+  const accountSid = getConfigValue('twilioAccountSid') as string;
+  const authToken = getConfigValue('twilioAuthToken') as string;
   const twilioClient = twilio(accountSid, authToken);
 
   const workspace = (
