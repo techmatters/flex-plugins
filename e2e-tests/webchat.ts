@@ -26,7 +26,6 @@ export type WebChatPage = {
   selectHelpline: (helpline: string) => Promise<void>;
   chat: (statements: ChatStatement[]) => AsyncIterable<ChatStatement>;
   close: () => Promise<void>;
-  printPageContent: () => Promise<void>;
 };
 
 export async function open(browser: Browser): Promise<WebChatPage> {
@@ -85,8 +84,6 @@ export async function open(browser: Browser): Promise<WebChatPage> {
       await selectors.chatInput.waitFor();
 
       for (const statementItem of statements) {
-        const content = await page.content();
-        console.log(content);
         const { text, origin }: ChatStatement = statementItem;
         switch (origin) {
           case ChatStatementOrigin.CALLER:
@@ -104,10 +101,6 @@ export async function open(browser: Browser): Promise<WebChatPage> {
     },
     close: async () => {
       await page.close();
-    },
-    printPageContent: async () => {
-      const content = await page.content();
-      console.log(content);
     },
   };
 }
