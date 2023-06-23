@@ -28,17 +28,17 @@ on:
         required: true
 
 jobs:
-  # deploy:
-  #   uses: ./.github/workflows/custom_helpline.yml
-  #   secrets: inherit
-  #   with:
-  #     helpline_code: E2E
-  #     environment_code: DEV
-  #     changelog: ${{ inputs.changelog }}
-  #     send-slack-message: 'false'
+  deploy:
+    uses: ./.github/workflows/custom_helpline.yml
+    secrets: inherit
+    with:
+      helpline_code: E2E
+      environment_code: DEV
+      changelog: ${{ inputs.changelog }}
+      send-slack-message: 'false'
 
   run-e2e-tests:
-    # needs: deploy
+    needs: deploy
 
     runs-on: ubuntu-latest
 
