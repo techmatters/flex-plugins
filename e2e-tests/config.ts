@@ -18,9 +18,9 @@ import dotenv from 'dotenv';
 import { getSsmParameter } from './ssmClient';
 
 export type ConfigOption = {
-  env: string;
-  ssmPath?: string;
-  default?: ConfigValue;
+  env: string; // The name of the env var to use
+  ssmPath?: string; // The optional path to the ssm param to use
+  default?: ConfigValue; // The optional default value to use
 };
 
 export type ConfigOptions = {
@@ -33,14 +33,31 @@ export type Config = {
   [key: string]: ConfigValue;
 };
 
-const helplineEnv = process.env.HL_ENV || 'local';
-const helplineShortCode = process.env.HL || 'e2e';
+const helplineShortCode = process.env.HL?.toLocaleLowerCase() || 'e2e';
+const helplineEnv = process.env.HL_ENV?.toLocaleLowerCase() || 'local';
 const shouldLoadFromSsm = process.env.LOAD_SSM_CONFIG && process.env.LOAD_SSM_CONFIG !== 'false';
 
+// These are environments where we want to avoid actually updating HRM data
 const skipDataUpdateEnvs = ['staging', 'production'];
+
+// These are environments where we want to hit remote flex instead of localhost
 const flexEnvs = ['development', 'staging', 'production'];
+
+// This is kindof a hack to get the correct default remote webchat url for the local env
 const webchatUrlEnv = helplineEnv == 'local' ? 'development' : helplineEnv;
 
+/**
+ * The config options config is the heart of the dynamic configuration system.
+ *
+ * The order of precedence for config values is:
+ * 1. Explicit env vars
+ * 2. .env file via dotenv
+ * 3. SSM parameters
+ *
+ * The HL settings are an outlier to the normal default pattern because they are
+ * used in the config itself. We use the vars we set earlier as the default to keep
+ * the default dry instead of duplicating the values here.
+ */
 const configOptions: ConfigOptions = {
   helplineShortCode: {
     env: 'HL',
@@ -99,13 +116,16 @@ const configOptions: ConfigOptions = {
   },
   webchatUrl: {
     env: 'WEBCHAT_URL',
-    default: `https://assets-${webchatUrlEnv}.tl.techmatters.org/webchat/${helplineShortCode}/aselo-chat.min.js`,
+    // In this case there is a default and an ssmPath. The default will be used if the ssmPath does not exist.
+    // This will allow us to override the default for production tests if needed.
+    default: `https://assets-${webchatUrlEnv}.tl.techmatters.org/webchat/${helplineShortCode}/e2e-chat.html`,
   },
 };
 
 export const config: Config = {};
 
 export const getConfigValue = (key: string) => {
+  // We assume all config values are required for now
   if (config[key] == null) {
     throw new Error(`Config value ${key} is not set`);
   }
@@ -116,20 +136,23 @@ export const getConfigValue = (key: string) => {
 export const setConfigValue = (key: string, value: ConfigValue) => {
   let typedValue: ConfigValue = value;
 
-  // Handle correctly converting boolean values from environment variables
+  // Handle correctly converting boolean values from environment variable strings
   if (value === 'true') {
     typedValue = true;
   } else if (value === 'false') {
     typedValue = false;
   }
-
   config[key] = typedValue;
-  // This probably seems weird, and it is. Playwright doesn't run in a
-  // single process, so we can't just set a global variable. Instead,
-  // we depend on environment variables to be the source of truth.
-  // When we explicitly set a config value, we also set the environment
-  // which will be always be the first source loaded when attempting to
-  // init a config value.
+
+  /**
+   * This probably seems weird, and it is. Playwright doesn't run in a
+   * single process, so we can't just set a global variable. Instead,
+   * we depend on environment variables to be the global source of truth
+   * and to help us to only load SSM values once.
+   * When we explicitly set a config value, we also set the env var
+   * which will be always be the first source loaded when attempting to
+   * init a config value.
+   */
   process.env[configOptions[key].env] = value as string;
 };
 
@@ -138,7 +161,7 @@ export const shouldSkipDataUpdate = () => {
     console.log('Data update is disabled. Skipping...');
   }
 
-  return config.skipDataUpdate;
+  return config.skipDataUpdate as boolean;
 };
 
 const setConfigValueFromSsm = async (key: string) => {
@@ -153,7 +176,15 @@ const setConfigValueFromSsm = async (key: string) => {
     return;
   }
 
-  setConfigValue(key, await getSsmParameter(option.ssmPath!));
+  try {
+    setConfigValue(key, await getSsmParameter(option.ssmPath!));
+  } catch (err) {
+    if (!option.default) {
+      throw err;
+    }
+
+    console.log(`Failed to load config value from SSM at ${option.ssmPath}. Using default value`);
+  }
 };
 
 const initSsmConfigValues = async () => {
@@ -171,10 +202,12 @@ const initSsmConfigValues = async () => {
   await Promise.all(promises);
 };
 
-// Loading config from SSM is async, so we need to provide a way for it to be
-// initialized before we can use it. This is a bit of a hack, but it works.
-// We call this once in global-setup and it populates ENV vars which are then used
-// to initialize the config values via initStaticConfigValues on subsequent runs.
+/**
+ * Loading config from SSM is async, so we need to provide a way for it to be
+ * initialized before we can use it. This is a bit of a hack, but it works.
+ * We call this once in global-setup and it populates ENV vars which are then used
+ * to initialize the config values via initStaticConfigValues on subsequent runs.
+ */
 export const initConfig = async () => {
   await initSsmConfigValues();
 };

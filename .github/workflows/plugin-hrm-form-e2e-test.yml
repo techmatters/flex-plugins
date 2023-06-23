@@ -14,7 +14,7 @@
 
 name: End to End Testing CI
 
-# Action 
+# Action
 on: [pull_request, workflow_dispatch]
 concurrency: e2e
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -29,16 +29,25 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Branch
         uses: actions/checkout@v2
+
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
           node-version: '16.x'
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
       # Create Configuration file to replace AS_DEV_ACCOUNT_SID with E2E_ACCOUNT_SID
       - name: Create appConfig.js
         run: cp ./public/appConfig.template.e2e.js ./public/appConfig.js
         working-directory: ./plugin-hrm-form
         shell: bash
+
       - name: Replace Twilio account SID in appConfig.js
         uses: falnyr/replace-env-vars-action@master
         env:
@@ -51,6 +60,7 @@ jobs:
           touch ./src/private/secret.js
         working-directory: ./plugin-hrm-form
         shell: bash
+
       - name: Fill secret.js
         run: |
           cat <<EOT >> ./src/private/secret.js
@@ -65,9 +75,11 @@ jobs:
       # Build Flex-plugins
       - name: Install the Twilio CLI and plugins
         run: npm install twilio-cli@5.2.2 -g && twilio plugins:install @twilio-labs/plugin-flex@6.0.3
+
       - name: Install hrm-form-definitions Packages
         run: npm ci
         working-directory: ./hrm-form-definitions
+
       - name: Install Flex Plugin Packages
         run: NODE_ENV=development npm ci
         working-directory: ./plugin-hrm-form
@@ -81,8 +93,10 @@ jobs:
       - name: Install e2e-tests dependencies
         run: npm install
         working-directory: ./e2e-tests
+
       - name: Setup dependencies for playwright/browsers
         uses: microsoft/playwright-github-action@v1
+
       - name: Install Playwright CLI
         run: npx playwright install
         working-directory: ./e2e-tests

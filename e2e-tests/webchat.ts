@@ -19,7 +19,7 @@ import { Browser, expect } from '@playwright/test';
 import { ChatStatement, ChatStatementOrigin } from './chatModel';
 import { getConfigValue } from './config';
 
-const E2E_CHAT_URL = getConfigValue('webchatUrl');
+const E2E_CHAT_URL = getConfigValue('webchatUrl') as string;
 
 export type WebChatPage = {
   openChat: () => Promise<void>;

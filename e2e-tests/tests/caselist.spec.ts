@@ -21,10 +21,11 @@ import { shouldSkipDataUpdate } from '../config';
 import { notificationBar } from '../notificationBar';
 
 test.describe.serial('Open and Edit a Case in Case List page', () => {
+  test.skip(shouldSkipDataUpdate(), 'Data update disabled. Skipping test.');
+
   let pluginPage: Page;
 
   test.beforeAll(async ({ browser }) => {
-    if (shouldSkipDataUpdate()) return;
     test.setTimeout(600000);
     pluginPage = await browser.newPage();
     logPageTelemetry(pluginPage);
@@ -40,8 +41,6 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
   });
 
   test('Filter Cases and Update a Case', async () => {
-    if (shouldSkipDataUpdate()) return;
-
     console.log('Open Case List page');
     let page = caseList(pluginPage);
 

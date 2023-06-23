@@ -33,3 +33,12 @@ export const agentDesktop = (page: Page) => {
     addOfflineContact,
   };
 };
+
+export const navigateToAgentDesktop = async (page: Page) => {
+  await page.goto('/agent-desktop', { waitUntil: 'networkidle' });
+  const callsWaitingLabel = page.locator(
+    "div.Twilio-AgentDesktopView-default button[data-testid='AddTaskButton']",
+    // 'div.Twilio-AgentDesktopView-default',
+  );
+  await callsWaitingLabel.waitFor({ state: 'visible' });
+};

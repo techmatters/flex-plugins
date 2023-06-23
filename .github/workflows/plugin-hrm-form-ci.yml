@@ -88,6 +88,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Branch
         uses: actions/checkout@v2
+
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
@@ -96,9 +97,11 @@ jobs:
       # Build Flex-plugins
       - name: Install the Twilio CLI and plugins
         run: npm install twilio-cli@5.2.2 -g && twilio plugins:install @twilio-labs/plugin-flex@6.0.3
+
       - name: Install hrm-form-definitions Packages
         run: npm ci
         working-directory: ./hrm-form-definitions
+
       - name: Install Flex Plugin Packages
         run: NODE_ENV=development npm ci
         working-directory: ./plugin-hrm-form
@@ -114,6 +117,7 @@ jobs:
           touch ./src/private/secret.js
         working-directory: ./plugin-hrm-form
         shell: bash
+
       - name: Fill secret.js
         run: |
           cat <<EOT >> ./src/private/secret.js
@@ -135,8 +139,10 @@ jobs:
       - name: Install e2e-tests dependencies
         run: npm install
         working-directory: ./e2e-tests
+
       - name: Setup dependencies for playwright/browsers
         uses: microsoft/playwright-github-action@v1
+
       - name: Install Playwright CLI
         run: npx playwright install
         working-directory: ./e2e-tests

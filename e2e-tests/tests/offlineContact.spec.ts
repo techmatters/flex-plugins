@@ -17,24 +17,25 @@
 import { expect, Page, test } from '@playwright/test';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { caseHome } from '../case';
-import { agentDesktop } from '../agent-desktop';
+import { agentDesktop, navigateToAgentDesktop } from '../agent-desktop';
 import { shouldSkipDataUpdate } from '../config';
 import { logPageTelemetry } from '../browser-logs';
 import { notificationBar } from '../notificationBar';
 
 test.describe.serial('Offline Contact (with Case)', () => {
+  test.skip(shouldSkipDataUpdate(), 'Data update disabled. Skipping test.');
+
   let pluginPage: Page;
 
   test.beforeAll(async ({ browser }) => {
     pluginPage = await browser.newPage();
-    if (shouldSkipDataUpdate()) return;
     logPageTelemetry(pluginPage);
     console.log('Plugin page browser session launched.');
 
     await Promise.all([
       // Wait for this to be sure counsellors dropdown is populated
       pluginPage.waitForResponse('**/populateCounselors'),
-      pluginPage.goto('/agent-desktop', { waitUntil: 'networkidle', timeout: 120000 }),
+      navigateToAgentDesktop(pluginPage),
     ]);
     console.log('Plugin page visited.');
   });
@@ -45,7 +46,6 @@ test.describe.serial('Offline Contact (with Case)', () => {
   });
 
   test('Offline Contact', async () => {
-    if (shouldSkipDataUpdate()) return;
     console.log('Open a new offline contact');
     const agentDesktopPage = agentDesktop(pluginPage);
     await agentDesktopPage.addOfflineContact();
