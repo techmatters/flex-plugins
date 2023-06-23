@@ -59,9 +59,9 @@ jobs:
           aws-region: us-east-1
 
       # e2e now depends on the Flex plugin, so we need to install its requirements
-      - name: Install flex requirements
-        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex
-        working-directory: ./e2e-tests
+      # Build Flex-plugins
+      - name: Install the Twilio CLI and plugins
+        run: npm install twilio-cli@5.2.2 -g && twilio plugins:install @twilio-labs/plugin-flex@6.0.3
 
       # Build Playwright
       - name: Install e2e-tests dependencies
