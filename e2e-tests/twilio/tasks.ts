@@ -23,10 +23,6 @@ export const deleteAllTasksInQueue = async (
   workflowName: string,
   taskQueueName: string,
 ): Promise<void> => {
-  console.dir(config, { depth: null });
-  console.log(process.env);
-  // Somehow the call stack when we get here doesn't have the config loaded, so we need to do it again
-  await initConfig();
   const accountSid = getConfigValue('twilioAccountSid') as string;
   const authToken = getConfigValue('twilioAuthToken') as string;
   const twilioClient = twilio(accountSid, authToken);
