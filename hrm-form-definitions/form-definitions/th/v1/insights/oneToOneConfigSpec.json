@@ -15,6 +15,13 @@
       {
         "name": "id",
         "insights": ["conversations", "case"]
+      },
+      {
+        "name": "caseStatus",
+        "insights": [
+          "conversations",
+          "in_business_hours"
+        ]
       }
     ]
   }
