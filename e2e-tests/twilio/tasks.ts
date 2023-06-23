@@ -16,7 +16,7 @@
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import twilio from 'twilio';
-import { config, getConfigValue, initConfig } from '../config';
+import { getConfigValue } from '../config';
 
 export const deleteAllTasksInQueue = async (
   workspaceName: string,
