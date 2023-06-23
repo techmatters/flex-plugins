@@ -58,6 +58,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      # e2e now depends on the Flex plugin, so we need to install its requirements
+      - name: Install flex requirements
+        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex
+
       # Build Playwright
       - name: Install e2e-tests dependencies
         run: npm install
