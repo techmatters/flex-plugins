@@ -18,9 +18,9 @@ import dotenv from 'dotenv';
 import { getSsmParameter } from './ssmClient';
 
 export type ConfigOption = {
-  env: string; // The name of the env var to use
-  ssmPath?: string; // The optional path to the ssm param to use
-  default?: ConfigValue; // The optional default value to use
+  envKey: string; // The name of the env var for this config option
+  ssmPath?: string; // An optional path to the ssm param to load this config option from
+  default?: ConfigValue; // The optional default value to use if no env var or ssm param is present
 };
 
 export type ConfigOptions = {
@@ -37,7 +37,7 @@ const helplineShortCode = process.env.HL?.toLocaleLowerCase() || 'e2e';
 const helplineEnv = process.env.HL_ENV?.toLocaleLowerCase() || 'local';
 const shouldLoadFromSsm = process.env.LOAD_SSM_CONFIG && process.env.LOAD_SSM_CONFIG !== 'false';
 
-// These are environments where we want to avoid actually updating HRM data
+// These are environments where we want to avoid tests or steps that update HRM data
 const skipDataUpdateEnvs = ['staging', 'production'];
 
 // These are environments where we want to hit remote flex instead of localhost
@@ -60,65 +60,66 @@ const webchatUrlEnv = helplineEnv == 'local' ? 'development' : helplineEnv;
  */
 const configOptions: ConfigOptions = {
   helplineShortCode: {
-    env: 'HL',
+    envKey: 'HL',
     default: helplineShortCode,
   },
   helplineEnv: {
-    env: 'HL_ENV',
+    envKey: 'HL_ENV',
     default: helplineEnv,
   },
   oktaUsername: {
-    env: 'PLAYWRIGHT_USER_USERNAME',
+    envKey: 'PLAYWRIGHT_USER_USERNAME',
     ssmPath: `/${helplineEnv}/flex-plugins/e2e/okta_username`,
   },
   oktaPassword: {
-    env: 'PLAYWRIGHT_USER_PASSWORD',
+    envKey: 'PLAYWRIGHT_USER_PASSWORD',
     ssmPath: `/${helplineEnv}/flex-plugins/e2e/okta_password`,
   },
   baseURL: {
-    env: 'PLAYWRIGHT_BASEURL',
+    envKey: 'PLAYWRIGHT_BASEURL',
     default: flexEnvs.includes(helplineEnv) ? 'https://flex.twilio.com/' : 'http://localhost:3000',
   },
   browserTelemetryLevel: {
-    env: 'PLAYWRIGHT_BROWSER_TELEMETRY_LEVEL',
+    envKey: 'PLAYWRIGHT_BROWSER_TELEMETRY_LEVEL',
     default: 'errors',
   },
   browserTelemetryLogResponseBody: {
-    env: 'PLAYWRIGHT_BROWSER_TELEMETRY_LOG_RESPONSE_BODY',
+    envKey: 'PLAYWRIGHT_BROWSER_TELEMETRY_LOG_RESPONSE_BODY',
     default: 'false',
   },
   twilioAccountSid: {
-    env: 'TWILIO_ACCOUNT_SID',
+    envKey: 'TWILIO_ACCOUNT_SID',
     ssmPath: `/${helplineEnv}/twilio/${helplineShortCode.toUpperCase()}/account_sid`,
   },
   twilioAuthToken: {
-    env: 'TWILIO_AUTH_TOKEN',
+    envKey: 'TWILIO_AUTH_TOKEN',
   },
   debug: {
-    env: 'DEBUG',
+    envKey: 'DEBUG',
     default: false,
   },
   isProduction: {
-    env: 'IS_PRODUCTION',
+    envKey: 'IS_PRODUCTION',
     default: helplineEnv === 'production',
   },
   isStaging: {
-    env: 'IS_STAGING',
+    envKey: 'IS_STAGING',
     default: helplineEnv === 'staging',
   },
   isDevelopment: {
-    env: 'IS_DEVELOPMENT',
+    envKey: 'IS_DEVELOPMENT',
     default: helplineEnv === 'staging',
   },
   skipDataUpdate: {
-    env: 'SKIP_DATA_UPDATE',
+    envKey: 'SKIP_DATA_UPDATE',
     default: skipDataUpdateEnvs.includes(helplineEnv),
   },
   webchatUrl: {
-    env: 'WEBCHAT_URL',
+    envKey: 'WEBCHAT_URL',
     // In this case there is a default and an ssmPath. The default will be used if the ssmPath does not exist.
-    // This will allow us to override the default for production tests if needed.
-    default: `https://assets-${webchatUrlEnv}.tl.techmatters.org/webchat/${helplineShortCode}/e2e-chat.html`,
+    // This will allow us to override the default for production tests if needed. We use the direct s3 url for
+    // the assets bucket because we don't want to deal with CloudFront caching issues.
+    default: `https://s3.amazonaws.com/assets-${webchatUrlEnv}.tl.techmatters.org/webchat/${helplineShortCode}/e2e-chat.html`,
   },
 };
 
@@ -153,7 +154,7 @@ export const setConfigValue = (key: string, value: ConfigValue) => {
    * which will be always be the first source loaded when attempting to
    * init a config value.
    */
-  process.env[configOptions[key].env] = value as string;
+  process.env[configOptions[key].envKey] = value as string;
 };
 
 export const shouldSkipDataUpdate = () => {
@@ -168,11 +169,11 @@ const setConfigValueFromSsm = async (key: string) => {
   const option = configOptions[key];
   if (!option.ssmPath) return;
 
-  const envValue = process.env[option.env];
+  const envValue = process.env[option.envKey];
 
   // If we have a value in the environment and it is not the default, we don't want/need to load from SSM
   if (envValue && envValue !== option.default) {
-    setConfigValue(key, process.env[option.env]);
+    setConfigValue(key, process.env[option.envKey]);
     return;
   }
 
@@ -206,7 +207,8 @@ const initSsmConfigValues = async () => {
  * Loading config from SSM is async, so we need to provide a way for it to be
  * initialized before we can use it. This is a bit of a hack, but it works.
  * We call this once in global-setup and it populates ENV vars which are then used
- * to initialize the config values via initStaticConfigValues on subsequent runs.
+ * to initialize the config values via initStaticConfigValues when subsequent test
+ * processes include this file.
  */
 export const initConfig = async () => {
   await initSsmConfigValues();
@@ -216,8 +218,8 @@ const initStaticConfigValue = (key: string) => {
   const option = configOptions[key];
 
   // If we have a value in the environment, use that since it is the source of truth
-  if (process.env[option.env]) {
-    setConfigValue(key, process.env[option.env]);
+  if (process.env[option.envKey]) {
+    setConfigValue(key, process.env[option.envKey]);
     return;
   }
 
