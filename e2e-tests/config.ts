@@ -50,8 +50,8 @@ const skipDataUpdateEnvs = ['staging', 'production'];
 // These are environments where we want to hit remote flex instead of localhost
 const flexEnvs = ['development', 'staging', 'production'];
 
-// This is kindof a hack to get the correct default remote webchat url for the local env
-const webchatUrlEnv = helplineEnv == 'local' ? 'development' : helplineEnv;
+// This is kindof a hack to get the correct default remote webchat url and twilio account info for the local env
+const localOverrideEnv = helplineEnv == 'local' ? 'development' : helplineEnv;
 
 export const config: Config = {};
 
@@ -107,12 +107,12 @@ const configOptions: ConfigOptions = {
   },
   twilioAccountSid: {
     envKey: 'TWILIO_ACCOUNT_SID',
-    ssmPath: `/${helplineEnv}/twilio/${helplineShortCode.toUpperCase()}/account_sid`,
+    ssmPath: `/${localOverrideEnv}/twilio/${helplineShortCode.toUpperCase()}/account_sid`,
   },
   twilioAuthToken: {
     envKey: 'TWILIO_AUTH_TOKEN',
     // Order is important here. We use a function so that we can reference the twilioAccountSid config value above.
-    ssmPath: () => `/${helplineEnv}/twilio/${getConfigValue('twilioAccountSid')}/auth_token`,
+    ssmPath: () => `/${localOverrideEnv}/twilio/${getConfigValue('twilioAccountSid')}/auth_token`,
   },
   debug: {
     envKey: 'DEBUG',
@@ -139,7 +139,7 @@ const configOptions: ConfigOptions = {
     // In this case there is a default and an ssmPath. The default will be used if the ssmPath does not exist.
     // This will allow us to override the default for production tests if needed. We use the direct s3 url for
     // the assets bucket because we don't want to deal with CloudFront caching issues.
-    default: `https://s3.amazonaws.com/assets-${webchatUrlEnv}.tl.techmatters.org/webchat/${helplineShortCode}/e2e-chat.html`,
+    default: `https://s3.amazonaws.com/assets-${localOverrideEnv}.tl.techmatters.org/webchat/${helplineShortCode}/e2e-chat.html`,
   },
 };
 
@@ -191,6 +191,9 @@ const setConfigValueFromSsm = async (key: string) => {
     setConfigValue(key, await getSsmParameter(ssmPath));
   } catch (err) {
     if (!option.default) {
+      console.error(
+        `Failed to load config value from SSM at ${ssmPath}. No default value provided`,
+      );
       throw err;
     }
 
