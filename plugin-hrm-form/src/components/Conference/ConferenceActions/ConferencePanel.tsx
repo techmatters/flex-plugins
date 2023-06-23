@@ -15,40 +15,45 @@
  */
 
 import React from 'react';
-import {
-  ConferenceParticipant,
-  Manager,
-  Notifications,
-  TaskContextProps,
-  TaskHelper,
-  Template,
-  withTaskContext,
-} from '@twilio/flex-ui';
+import { Manager, Notifications, TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
 import AddIcCallRounded from '@material-ui/icons/AddIcCallRounded';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { createCallStatusSyncDocument } from '../../../utils/sharedState';
 import { ConferenceNotifications } from '../../../conference/setUpConferenceActions';
 import { conferenceApi } from '../../../services/ServerlessService';
 import PhoneInputDialog from './PhoneInputDialog';
 import { StyledConferenceButtonWrapper, StyledConferenceButton } from './styles';
 import { conferencingBase, namespace, RootState } from '../../../states';
-import { setIsDialogOpenAction, setIsLoadingAction, setPhoneNumberAction } from '../../../states/conferencing';
+import {
+  CallStatus,
+  isCallStatusLoading,
+  setCallStatusAction,
+  setIsDialogOpenAction,
+  setPhoneNumberAction,
+} from '../../../states/conferencing';
 
 type Props = TaskContextProps;
 
 const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
-  const { isDialogOpen, isLoading, phoneNumber } = useSelector(
+  const { isDialogOpen, callStatus, phoneNumber } = useSelector(
     (state: RootState) => state[namespace][conferencingBase].tasks[task.taskSid],
   );
   const dispatch = useDispatch();
 
   const setIsDialogOpen = (isOpen: boolean) => dispatch(setIsDialogOpenAction(task.taskSid, isOpen));
-  const setIsLoading = (isLoading: boolean) => dispatch(setIsLoadingAction(task.taskSid, isLoading));
+  const setCallStatus = (callStatus: CallStatus) => dispatch(setCallStatusAction(task.taskSid, callStatus));
   const setPhoneNumber = (number: string) => dispatch(setPhoneNumberAction(task.taskSid, number));
 
   const toggleDialog = () => {
     setIsDialogOpen(!isDialogOpen);
   };
+
+  React.useEffect(() => {
+    if (callStatus === 'busy' || callStatus === 'failed') {
+      Notifications.showNotificationSingle(ConferenceNotifications.ErrorAddingParticipantNotification);
+    }
+  }, [callStatus]);
 
   const conferenceSid = conference?.source?.conferenceSid;
   const participants = conference?.source?.participants || [];
@@ -58,8 +63,15 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   }
 
   const handleClick = async () => {
-    setIsLoading(true);
     try {
+      const { status, callStatusSyncDocument } = await createCallStatusSyncDocument(({ data }) => {
+        setCallStatus(data.CallStatus);
+      });
+
+      if (status === 'failure') {
+        throw new Error('call to createCallStatusSyncDocument failed'); // throw error here so it's handled by below catch block
+      }
+
       const from = Manager.getInstance().serviceConfiguration.outbound_call_flows.default.caller_id;
       const to = phoneNumber;
 
@@ -75,14 +87,16 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
           ),
       );
 
-      await conferenceApi.addParticipant({ from, conferenceSid, to });
-
-      setIsDialogOpen(false);
+      await conferenceApi.addParticipant({
+        from,
+        conferenceSid,
+        to,
+        callStatusSyncDocumentSid: callStatusSyncDocument.sid,
+      });
     } catch (err) {
       console.error(`Error adding participant to call ${conferenceSid}: ${err}`);
+      setCallStatus('no-call');
       Notifications.showNotificationSingle(ConferenceNotifications.ErrorAddingParticipantNotification);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -94,7 +108,6 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
         <StyledConferenceButton
           disabled={
             !isLiveCall ||
-            isLoading ||
             (participants && participants.filter(participant => participant.status === 'joined').length >= 4)
           }
           onClick={toggleDialog}
@@ -107,6 +120,7 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
             setTargetNumber={setPhoneNumber}
             handleClick={handleClick}
             setIsDialogOpen={setIsDialogOpen}
+            isLoading={isCallStatusLoading(callStatus)}
           />
         )}
       </>
