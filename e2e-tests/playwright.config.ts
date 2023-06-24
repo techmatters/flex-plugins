@@ -19,19 +19,20 @@
 import { PlaywrightTestConfig } from '@playwright/test';
 import { getConfigValue } from './config';
 
-// console.log('playwright.config.ts: config', config);
+const inLambda = getConfigValue('inLambda') as boolean;
 
 const playwrightConfig: PlaywrightTestConfig = {
   globalSetup: require.resolve('./global-setup'),
   use: {
-    storageState: 'temp/state.json',
+    storageState: getConfigValue('storageStatePath') as string,
     baseURL: getConfigValue('baseURL') as string,
     permissions: ['microphone'],
-    screenshot: 'only-on-failure',
-    video: 'retry-with-video',
+    screenshot: inLambda ? 'off' : 'only-on-failure',
+    video: inLambda ? 'off' : 'retry-with-video',
   },
   testDir: './tests',
   retries: 1,
   timeout: 60000,
 };
+
 export default playwrightConfig;

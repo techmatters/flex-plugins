@@ -18,7 +18,10 @@ const { spawn } = require('child_process');
 
 module.exports.handler = async (event, context) => {
   try {
-    const cmd = spawn('npm', ['run', 'test'], { stdio: 'inherit', stderr: 'inherit' });
+    const cmd = spawn('npm', ['-loglevel silent', 'run', 'test'], {
+      stdio: 'inherit',
+      stderr: 'inherit',
+    });
 
     const result = await new Promise((resolve, reject) => {
       cmd.on('exit', (code) => {

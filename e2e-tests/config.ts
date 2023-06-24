@@ -141,6 +141,20 @@ const configOptions: ConfigOptions = {
     // the assets bucket because we don't want to deal with CloudFront caching issues.
     default: `https://s3.amazonaws.com/assets-${localOverrideEnv}.tl.techmatters.org/webchat/${helplineShortCode}/e2e-chat.html`,
   },
+  inLambda: {
+    envKey: 'TEST_IN_LAMBDA',
+    default: false,
+  },
+  storageStatePath: {
+    envKey: 'STORAGE_STATE_PATH',
+    default: () => {
+      if (getConfigValue('inLambda')) {
+        return '/tmp/state.json';
+      } else {
+        return 'temp/state.json';
+      }
+    },
+  },
 };
 
 export const setConfigValue = (key: string, value: ConfigValue) => {

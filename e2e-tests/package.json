@@ -14,7 +14,7 @@
     "lint": "eslint --ext ts .",
     "lint:fix": "npm run lint -- --fix .",
     "docker:build": "docker buildx build --load -t e2e-test -f ./Dockerfile ../",
-    "docker:run": "docker run -it --rm -e AWS_DEFAULT_REGION -e AWS_SECRET_ACCESS_KEY -e AWS_ACCESS_KEY_ID -e DEBUG=pw:api -e LOAD_SSM_CONFIG=true -e HL_ENV=development -e HL=e2e -p 9000:8080 e2e-test",
+    "docker:run": "docker run -it --rm -e AWS_DEFAULT_REGION -e AWS_SECRET_ACCESS_KEY -e AWS_ACCESS_KEY_ID -e DEBUG=pw:api -e LOAD_SSM_CONFIG=true -e HL_ENV=development -e HL=e2e -e TEST_IN_LAMBDA=true -p 9000:8080 e2e-test",
     "docker:sendEvent": "curl -XPOST 'http://localhost:9000/2015-03-31/functions/function/invocations' -d '{}'"
   },
   "repository": {

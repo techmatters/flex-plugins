@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
-FROM mcr.microsoft.com/playwright:v1.30.0-jammy
+FROM mcr.microsoft.com/playwright:v1.30.0-jammy AS build
 
 WORKDIR /app
 
@@ -41,12 +41,31 @@ RUN cd hrm-form-definitions && \
     cd ../e2e-tests && \
     npm ci
 
+FROM mcr.microsoft.com/playwright:v1.30.0-jammy
+
+WORKDIR /app
+
+# Lambdas can only write to /tmp, so we hae to set the npm cache to /tmp
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get install nodejs && \
+    npm config set cache /tmp --global && \
+    rm -rf /root/.npm/*
+
+COPY --from=build /usr/local/bin/aws-lambda-rie /usr/local/bin/aws-lambda-rie
+COPY --from=build /usr/bin /usr/bin
+COPY --from=build /usr/lib/node_modules /usr/lib/node_modules
+COPY --from=build /app/hrm-form-definitions /app/hrm-form-definitions
+COPY --from=build /app/e2e-tests /app/e2e-tests
+COPY --from=build /ms-playwright /ms-playwright
+
 COPY hrm-form-definitions /app/hrm-form-definitions
 COPY e2e-tests /app/e2e-tests
 COPY --chmod=0755 e2e-tests/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY e2e-tests/lambda/handler.js /app/e2e-tests/handler.js
 
 WORKDIR /app/e2e-tests
+
+ENV TEST_IN_LAMBDA=true
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["handler.handler"]
