@@ -21,4 +21,7 @@ import { navigateToAgentDesktop } from '../agent-desktop';
 test('Plugin loads', async ({ page }) => {
   logPageTelemetry(page);
   await navigateToAgentDesktop(page);
+  console.log('Agent Desktop loaded');
+
+  page.close();
 });

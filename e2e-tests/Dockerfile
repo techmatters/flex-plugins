@@ -39,17 +39,29 @@ COPY e2e-tests/package*.json /app/e2e-tests/
 RUN cd hrm-form-definitions && \
     npm ci && \
     cd ../e2e-tests && \
-    npm ci
+    npm ci && \
+    rm -rf /ms-playwright/* && \
+    npm run postinstall && \
+    ls -al /ms-playwright && \
+    du -hs /ms-playwright
 
-FROM mcr.microsoft.com/playwright:v1.30.0-jammy
+FROM ubuntu:jammy
+
+ENV TEST_IN_LAMBDA=true
 
 WORKDIR /app
 
 # Lambdas can only write to /tmp, so we hae to set the npm cache to /tmp
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
-    apt-get install nodejs && \
+RUN apt-get update && \
+    apt-get install -y curl wget gpg && \
+    curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get install -y nodejs && \
     npm config set cache /tmp --global && \
-    rm -rf /root/.npm/*
+    rm -rf /root/.npm/* && \
+    apt-get install -y --no-install-recommends git openssh-client && \
+    npm install -g yarn && \
+    # clean apt cache
+    rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /usr/local/bin/aws-lambda-rie /usr/local/bin/aws-lambda-rie
 COPY --from=build /usr/bin /usr/bin
@@ -58,14 +70,20 @@ COPY --from=build /app/hrm-form-definitions /app/hrm-form-definitions
 COPY --from=build /app/e2e-tests /app/e2e-tests
 COPY --from=build /ms-playwright /ms-playwright
 
+WORKDIR /app/e2e-tests
+
+RUN npx playwright install-deps
+
 COPY hrm-form-definitions /app/hrm-form-definitions
 COPY e2e-tests /app/e2e-tests
 COPY --chmod=0755 e2e-tests/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY e2e-tests/lambda/handler.js /app/e2e-tests/handler.js
+COPY e2e-tests/docker/fonts.conf /etc/fonts/fonts.conf
 
-WORKDIR /app/e2e-tests
-
-ENV TEST_IN_LAMBDA=true
+ENV XDG_CONFIG_HOME=/tmp/.config
+ENV SKIP_DATA_UPDATE=true
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+ENV PLAYWRIGHT_BROWSER_TELEMETRY_DISABLED=true
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["handler.handler"]

@@ -26,13 +26,35 @@ const playwrightConfig: PlaywrightTestConfig = {
   use: {
     storageState: getConfigValue('storageStatePath') as string,
     baseURL: getConfigValue('baseURL') as string,
+    ignoreHTTPSErrors: inLambda ? true : false,
     permissions: ['microphone'],
     screenshot: inLambda ? 'off' : 'only-on-failure',
     video: inLambda ? 'off' : 'retry-with-video',
+    headless: inLambda ? true : false,
+    launchOptions: inLambda
+      ? {
+          // Put your chromium-specific args here
+          args: [
+            '--single-process',
+            '--disable-gpu',
+            '--disable-dev-shm-usage',
+            '--use-gl=swiftshader',
+            '--autoplay-policy=no-user-gesture-required',
+            '--use-fake-ui-for-media-stream',
+            '--use-fake-device-for-media-stream',
+            '--disable-sync',
+          ],
+        }
+      : {},
   },
   testDir: './tests',
-  retries: 1,
+  retries: inLambda ? 0 : 1,
   timeout: 60000,
 };
+
+// Only /tmp is writable in a lambda
+if (inLambda) {
+  playwrightConfig.outputDir = '/tmp/test-results';
+}
 
 export default playwrightConfig;

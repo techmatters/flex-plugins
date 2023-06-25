@@ -4,7 +4,7 @@
   "description": "End to end tests for the Aselo HRM",
   "main": "index.js",
   "scripts": {
-    "postinstall": "npx playwright install",
+    "postinstall": "npx playwright install chromium",
     "test": "npx playwright test --workers 1",
     "test:ui": "npx playwright test --config ui-tests/playwright.ui-test.config.ts",
     "test:local": "DEBUG=pw:api LOAD_SSM_CONFIG=true npm run test",
@@ -13,9 +13,14 @@
     "test:production:ca": "cross-env DEBUG=pw:api LOAD_SSM_CONFIG=true HL_ENV=production HL=ca npm run test",
     "lint": "eslint --ext ts .",
     "lint:fix": "npm run lint -- --fix .",
-    "docker:build": "docker buildx build --load -t e2e-test -f ./Dockerfile ../",
-    "docker:run": "docker run -it --rm -e AWS_DEFAULT_REGION -e AWS_SECRET_ACCESS_KEY -e AWS_ACCESS_KEY_ID -e DEBUG=pw:api -e LOAD_SSM_CONFIG=true -e HL_ENV=development -e HL=e2e -e TEST_IN_LAMBDA=true -p 9000:8080 e2e-test",
-    "docker:sendEvent": "curl -XPOST 'http://localhost:9000/2015-03-31/functions/function/invocations' -d '{}'"
+    "docker:build": "docker build --platform linux/arm64 -t e2e-test -f ./Dockerfile ../",
+    "docker:run": "docker run -it --rm --read-only --tmpfs /tmp:exec -e AWS_DEFAULT_REGION -e AWS_SECRET_ACCESS_KEY -e AWS_ACCESS_KEY_ID -e LOAD_SSM_CONFIG=true -e HL_ENV=development -e HL=e2e -e TEST_IN_LAMBDA=true -e AWS_LAMBDA_FUNCTION_TIMEOUT=900 -p 9000:8080 e2e-test",
+    "docker:run:writable": "docker run -it --rm --tmpfs /tmp -e AWS_DEFAULT_REGION -e AWS_SECRET_ACCESS_KEY -e AWS_ACCESS_KEY_ID -e LOAD_SSM_CONFIG=true -e HL_ENV=development -e HL=e2e -e TEST_IN_LAMBDA=true -e AWS_LAMBDA_FUNCTION_TIMEOUT=900 -p 9000:8080 e2e-test",
+    "docker:sendEvent": "curl -XPOST 'http://localhost:9000/2015-03-31/functions/function/invocations' -d '{}'",
+    "docker:push": "npm run docker:push:login && npm run docker:push:tag && npm run docker:push:push",
+    "docker:push:login": "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 712893914485.dkr.ecr.us-east-1.amazonaws.com",
+    "docker:push:tag": "docker tag e2e-test:latest 712893914485.dkr.ecr.us-east-1.amazonaws.com/development/e2e-test:live",
+    "docker:push:push": "docker push 712893914485.dkr.ecr.us-east-1.amazonaws.com/development/e2e-test:live"
   },
   "repository": {
     "type": "git",

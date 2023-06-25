@@ -13,11 +13,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
-
-# export PLAYWRIGHT_BROWSERS_PATH=/tmp
-# ls -l /tmp
-# mv /ms-playwright/* /tmp
-
 if [ -z "${AWS_LAMBDA_RUNTIME_API}" ]; then
   exec /usr/local/bin/aws-lambda-rie /usr/bin/aws-lambda-ric $@
 else

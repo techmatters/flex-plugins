@@ -105,6 +105,10 @@ const configOptions: ConfigOptions = {
     envKey: 'PLAYWRIGHT_BROWSER_TELEMETRY_LOG_RESPONSE_BODY',
     default: 'false',
   },
+  browserTelemetryDisabled: {
+    envKey: 'PLAYWRIGHT_BROWSER_TELEMETRY_DISABLED',
+    default: 'false',
+  },
   twilioAccountSid: {
     envKey: 'TWILIO_ACCOUNT_SID',
     ssmPath: `/${localOverrideEnv}/twilio/${helplineShortCode.toUpperCase()}/account_sid`,
@@ -116,7 +120,7 @@ const configOptions: ConfigOptions = {
   },
   debug: {
     envKey: 'DEBUG',
-    default: false,
+    default: '',
   },
   isProduction: {
     envKey: 'IS_PRODUCTION',
@@ -149,6 +153,7 @@ const configOptions: ConfigOptions = {
     envKey: 'STORAGE_STATE_PATH',
     default: () => {
       if (getConfigValue('inLambda')) {
+        // Only /tmp is writable in a lambda
         return '/tmp/state.json';
       } else {
         return 'temp/state.json';
