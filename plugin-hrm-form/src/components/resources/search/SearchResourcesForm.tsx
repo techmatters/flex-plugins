@@ -199,131 +199,133 @@ const SearchResourcesForm: React.FC<Props> = ({
 
   return (
     <ResourcesSearchFormContainer>
-      <Box marginBottom="10px" marginTop="10px" style={{ paddingLeft: '20px' }}>
-        <ResourcesSearchTitle data-testid="Resources-Search-Title">
-          <Template code="Resources-Search-FormTitle" />
-        </ResourcesSearchTitle>
-      </Box>
-      <ResourcesSearchFormTopRule />
-      <ResourcesSearchFormArea>
-        <ResourcesSearchFormSettingBox>
-          <Column>
-            <Box>
-              <Template code="Resources-Search-SearchTermHeader" />
-            </Box>
-            <SearchInput
-              label={strings['Resources-SearchForm-OmniSearchLabel']}
-              searchTerm={generalSearchTermBoxText}
-              innerRef={firstElement}
-              onBlurSearch={text => updateGeneralSearchTerm(text)}
-              onChangeSearch={event => setGeneralSearchTermBoxText(event.target.value)}
-              onEnter={() => {
-                submitSearchIfValid();
-              }}
-              clearSearchTerm={() => {
-                setGeneralSearchTermBoxText('');
-              }}
-              onShiftTab={() => {
-                /**/
-              }}
-            />
-          </Column>
-        </ResourcesSearchFormSettingBox>
-        <ResourcesSearchFormSectionHeader data-testid="Resources-Search-FilterHeader">
-          <Template code="Resources-Search-FilterHeader" />
-        </ResourcesSearchFormSectionHeader>
-        <Column>
+      <Box style={{ overflowX: 'hidden', overflowY: 'auto' }}>
+        <Box marginBottom="10px" marginTop="10px" style={{ paddingLeft: '20px' }}>
+          <ResourcesSearchTitle data-testid="Resources-Search-Title">
+            <Template code="Resources-Search-FormTitle" />
+          </ResourcesSearchTitle>
+        </Box>
+        <ResourcesSearchFormTopRule />
+        <ResourcesSearchFormArea>
           <ResourcesSearchFormSettingBox>
-            <ResourcesSearchFormFilterHeader>
-              <Template code="Resources-Search-Location" />
-            </ResourcesSearchFormFilterHeader>
-            <Row
-              key="location"
-              style={{ marginTop: '10px', marginBottom: '10px', justifyContent: 'stretch', gap: '60px' }}
-            >
-              <Column style={{ width: '50%', gap: '4px' }}>
-                <FormLabel htmlFor="location-province">
-                  <Template code="Resources-Search-Location-Province" />
-                </FormLabel>
-                <FormSelectWrapper style={{ width: '100%' }}>
-                  <FormSelect
-                    id="location-province"
-                    data-testid="Resources-Search-Location-Province"
-                    name="location-province"
-                    onChange={({ target: { value } }) => updateFilterSelection('province', value)}
-                    value={filterSelections.province ?? NO_LOCATION_SELECTED}
-                    style={{ width: '100%' }}
-                  >
-                    {province.map(({ value, label }) => (
-                      <FormOption key={value ?? NO_LOCATION_SELECTED} value={value ?? NO_LOCATION_SELECTED}>
-                        {label ?? value}
-                      </FormOption>
-                    ))}
-                  </FormSelect>
-                </FormSelectWrapper>
-              </Column>
-              <Column style={{ width: '50%', opacity: filterSelections.province ? 1 : 0.2, gap: '4px' }}>
-                <FormLabel htmlFor="location-city">
-                  <Template code="Resources-Search-Location-City" />
-                </FormLabel>
-                <FormSelectWrapper style={{ width: '100%' }}>
-                  <FormSelect
-                    id="location-city"
-                    data-testid="Resources-Search-Location-City"
-                    name="location-city"
-                    onChange={({ target: { value } }) => updateFilterSelection('city', value)}
-                    value={filterSelections.city ?? NO_LOCATION_SELECTED}
-                    style={{ width: '100%' }}
-                  >
-                    {/* eslint-disable-next-line sonarjs/no-identical-functions */}
-                    {city.map(({ value, label }) => (
-                      <FormOption key={value ?? NO_LOCATION_SELECTED} value={value ?? NO_LOCATION_SELECTED}>
-                        {label ?? value}
-                      </FormOption>
-                    ))}
-                  </FormSelect>
-                </FormSelectWrapper>
-              </Column>
-            </Row>
+            <Column>
+              <Box>
+                <Template code="Resources-Search-SearchTermHeader" />
+              </Box>
+              <SearchInput
+                label={strings['Resources-SearchForm-OmniSearchLabel']}
+                searchTerm={generalSearchTermBoxText}
+                innerRef={firstElement}
+                onBlurSearch={text => updateGeneralSearchTerm(text)}
+                onChangeSearch={event => setGeneralSearchTermBoxText(event.target.value)}
+                onEnter={() => {
+                  submitSearchIfValid();
+                }}
+                clearSearchTerm={() => {
+                  setGeneralSearchTermBoxText('');
+                }}
+                onShiftTab={() => {
+                  /**/
+                }}
+              />
+            </Column>
           </ResourcesSearchFormSettingBox>
-          <Row key="age-range" style={{ alignItems: 'stretch', justifyContent: 'stretch' }}>
-            <ResourcesSearchFormSettingBox key="age-range" style={{ flexShrink: 2 }}>
+          <ResourcesSearchFormSectionHeader data-testid="Resources-Search-FilterHeader">
+            <Template code="Resources-Search-FilterHeader" />
+          </ResourcesSearchFormSectionHeader>
+          <Column>
+            <ResourcesSearchFormSettingBox>
               <ResourcesSearchFormFilterHeader>
-                <Template code="Resources-Search-Age-Range" />
+                <Template code="Resources-Search-Location" />
               </ResourcesSearchFormFilterHeader>
-              <Row style={{ alignItems: 'baseline', justifyContent: 'space-between' }}>
-                {ageRangeDropDown('Min', minEligibleAge)}
-                <Box>&mdash;</Box>
-                {ageRangeDropDown('Max', maxEligibleAge)}
+              <Row
+                key="location"
+                style={{ marginTop: '10px', marginBottom: '10px', justifyContent: 'stretch', gap: '60px' }}
+              >
+                <Column style={{ width: '50%', gap: '4px' }}>
+                  <FormLabel htmlFor="location-province">
+                    <Template code="Resources-Search-Location-Province" />
+                  </FormLabel>
+                  <FormSelectWrapper style={{ width: '100%' }}>
+                    <FormSelect
+                      id="location-province"
+                      data-testid="Resources-Search-Location-Province"
+                      name="location-province"
+                      onChange={({ target: { value } }) => updateFilterSelection('province', value)}
+                      value={filterSelections.province ?? NO_LOCATION_SELECTED}
+                      style={{ width: '100%' }}
+                    >
+                      {province.map(({ value, label }) => (
+                        <FormOption key={value ?? NO_LOCATION_SELECTED} value={value ?? NO_LOCATION_SELECTED}>
+                          {label ?? value}
+                        </FormOption>
+                      ))}
+                    </FormSelect>
+                  </FormSelectWrapper>
+                </Column>
+                <Column style={{ width: '50%', opacity: filterSelections.province ? 1 : 0.2, gap: '4px' }}>
+                  <FormLabel htmlFor="location-city">
+                    <Template code="Resources-Search-Location-City" />
+                  </FormLabel>
+                  <FormSelectWrapper style={{ width: '100%' }}>
+                    <FormSelect
+                      id="location-city"
+                      data-testid="Resources-Search-Location-City"
+                      name="location-city"
+                      onChange={({ target: { value } }) => updateFilterSelection('city', value)}
+                      value={filterSelections.city ?? NO_LOCATION_SELECTED}
+                      style={{ width: '100%' }}
+                    >
+                      {/* eslint-disable-next-line sonarjs/no-identical-functions */}
+                      {city.map(({ value, label }) => (
+                        <FormOption key={value ?? NO_LOCATION_SELECTED} value={value ?? NO_LOCATION_SELECTED}>
+                          {label ?? value}
+                        </FormOption>
+                      ))}
+                    </FormSelect>
+                  </FormSelectWrapper>
+                </Column>
               </Row>
             </ResourcesSearchFormSettingBox>
-            <ResourcesSearchFormSettingBox style={{ flexShrink: 3, marginLeft: '4px' }}>
-              <Column>
+            <Row key="age-range" style={{ alignItems: 'stretch', justifyContent: 'stretch' }}>
+              <ResourcesSearchFormSettingBox key="age-range" style={{ flexShrink: 2 }}>
                 <ResourcesSearchFormFilterHeader>
-                  <Template code="Resources-Search-InterpretationTranslationServicesAvailable" />
+                  <Template code="Resources-Search-Age-Range" />
                 </ResourcesSearchFormFilterHeader>
-                <FormLabel htmlFor="interpretationTranslationServicesAvailable" style={{ flexDirection: 'row' }}>
-                  <FiltersCheckbox
-                    id="interpretationTranslationServicesAvailable"
-                    name="interpretationTranslationServicesAvailable"
-                    type="checkbox"
-                    checked={Boolean(filterSelections.interpretationTranslationServicesAvailable)}
-                    onChange={({ target: { checked } }) => {
-                      updateFilterSelection('interpretationTranslationServicesAvailable', checked || undefined);
-                    }}
-                  />
-                  <Template code="Resources-Search-InterpretationTranslationServicesAvailable-Checkbox" />
-                </FormLabel>
-              </Column>
-            </ResourcesSearchFormSettingBox>
-          </Row>
-          <Grid container>
-            {Object.entries(checkboxOptions).map(([optionSet, options]) =>
-              checkboxSet(optionSet as CheckboxFilterName, options),
-            )}
-          </Grid>
-        </Column>
-      </ResourcesSearchFormArea>
+                <Row style={{ alignItems: 'baseline', justifyContent: 'space-between' }}>
+                  {ageRangeDropDown('Min', minEligibleAge)}
+                  <Box>&mdash;</Box>
+                  {ageRangeDropDown('Max', maxEligibleAge)}
+                </Row>
+              </ResourcesSearchFormSettingBox>
+              <ResourcesSearchFormSettingBox style={{ flexShrink: 3, marginLeft: '4px' }}>
+                <Column>
+                  <ResourcesSearchFormFilterHeader>
+                    <Template code="Resources-Search-InterpretationTranslationServicesAvailable" />
+                  </ResourcesSearchFormFilterHeader>
+                  <FormLabel htmlFor="interpretationTranslationServicesAvailable" style={{ flexDirection: 'row' }}>
+                    <FiltersCheckbox
+                      id="interpretationTranslationServicesAvailable"
+                      name="interpretationTranslationServicesAvailable"
+                      type="checkbox"
+                      checked={Boolean(filterSelections.interpretationTranslationServicesAvailable)}
+                      onChange={({ target: { checked } }) => {
+                        updateFilterSelection('interpretationTranslationServicesAvailable', checked || undefined);
+                      }}
+                    />
+                    <Template code="Resources-Search-InterpretationTranslationServicesAvailable-Checkbox" />
+                  </FormLabel>
+                </Column>
+              </ResourcesSearchFormSettingBox>
+            </Row>
+            <Grid container>
+              {Object.entries(checkboxOptions).map(([optionSet, options]) =>
+                checkboxSet(optionSet as CheckboxFilterName, options),
+              )}
+            </Grid>
+          </Column>
+        </ResourcesSearchFormArea>
+      </Box>
       <BottomButtonBar>
         <StyledNextStepButton
           type="button"

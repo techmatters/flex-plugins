@@ -1425,8 +1425,8 @@ export const cityOptions = [
     value: 'CA/NB/Grand Falls',
   },
   {
-    label: 'Saint-L�onard',
-    value: 'CA/NB/Saint-L�onard',
+    label: 'Saint-Léonard',
+    value: 'CA/NB/Saint-Léonard',
   },
   {
     label: 'Edmundston',
@@ -1461,8 +1461,3492 @@ export const cityOptions = [
     value: 'CA/NB/Shippagan',
   },
   {
-    label: 'Lam�que',
-    value: 'CA/NB/Lam�que',
+    label: 'Lamèque',
+    value: 'CA/NB/Lamèque',
+  },
+  {
+    label: 'Les Îles-de-la-Madeleine',
+    value: 'CA/QC/Les Îles-de-la-Madeleine',
+  },
+  {
+    label: 'Grosse-Île',
+    value: 'CA/QC/Grosse-Île',
+  },
+  {
+    label: 'Percé',
+    value: 'CA/QC/Percé',
+  },
+  {
+    label: 'Sainte-Thérèse-de-Gaspé',
+    value: 'CA/QC/Sainte-Thérèse-de-Gaspé',
+  },
+  {
+    label: 'Grande-Rivière',
+    value: 'CA/QC/Grande-Rivière',
+  },
+  {
+    label: 'Chandler',
+    value: 'CA/QC/Chandler',
+  },
+  {
+    label: 'Port-Daniel--Gascons',
+    value: 'CA/QC/Port-Daniel--Gascons',
+  },
+  {
+    label: 'Gaspé',
+    value: 'CA/QC/Gaspé',
+  },
+  {
+    label: 'Petite-Vallée',
+    value: 'CA/QC/Petite-Vallée',
+  },
+  {
+    label: 'Grande-Vallée',
+    value: 'CA/QC/Grande-Vallée',
+  },
+  {
+    label: 'Murdochville',
+    value: 'CA/QC/Murdochville',
+  },
+  {
+    label: 'Sainte-Madeleine-de-la-Rivière-Madeleine',
+    value: 'CA/QC/Sainte-Madeleine-de-la-Rivière-Madeleine',
+  },
+  {
+    label: 'Saint-Maxime-du-Mont-Louis',
+    value: 'CA/QC/Saint-Maxime-du-Mont-Louis',
+  },
+  {
+    label: 'Rivière-à-Claude',
+    value: 'CA/QC/Rivière-à-Claude',
+  },
+  {
+    label: 'La Martre',
+    value: 'CA/QC/La Martre',
+  },
+  {
+    label: 'Sainte-Anne-des-Monts',
+    value: 'CA/QC/Sainte-Anne-des-Monts',
+  },
+  {
+    label: 'Cap-Chat',
+    value: 'CA/QC/Cap-Chat',
+  },
+  {
+    label: 'Shigawake',
+    value: 'CA/QC/Shigawake',
+  },
+  {
+    label: 'Hope Town',
+    value: 'CA/QC/Hope Town',
+  },
+  {
+    label: 'Paspébiac',
+    value: 'CA/QC/Paspébiac',
+  },
+  {
+    label: 'New Carlisle',
+    value: 'CA/QC/New Carlisle',
+  },
+  {
+    label: 'Bonaventure',
+    value: 'CA/QC/Bonaventure',
+  },
+  {
+    label: 'Saint-Elzéar',
+    value: 'CA/QC/Saint-Elzéar',
+  },
+  {
+    label: 'Caplan',
+    value: 'CA/QC/Caplan',
+  },
+  {
+    label: 'Saint-Alphonse',
+    value: 'CA/QC/Saint-Alphonse',
+  },
+  {
+    label: 'New Richmond',
+    value: 'CA/QC/New Richmond',
+  },
+  {
+    label: 'Cascapédia--Saint-Jules',
+    value: 'CA/QC/Cascapédia--Saint-Jules',
+  },
+  {
+    label: 'Maria',
+    value: 'CA/QC/Maria',
+  },
+  {
+    label: 'Carleton-sur-Mer',
+    value: 'CA/QC/Carleton-sur-Mer',
+  },
+  {
+    label: 'Nouvelle',
+    value: 'CA/QC/Nouvelle',
+  },
+  {
+    label: 'Escuminac',
+    value: 'CA/QC/Escuminac',
+  },
+  {
+    label: 'Pointe-à-la-Croix',
+    value: 'CA/QC/Pointe-à-la-Croix',
+  },
+  {
+    label: 'Saint-André-de-Restigouche',
+    value: 'CA/QC/Saint-André-de-Restigouche',
+  },
+  {
+    label: 'Matapédia',
+    value: 'CA/QC/Matapédia',
+  },
+  {
+    label: 'Saint-Alexis-de-Matapédia',
+    value: 'CA/QC/Saint-Alexis-de-Matapédia',
+  },
+  {
+    label: "Saint-François-d'Assise",
+    value: "CA/QC/Saint-François-d'Assise",
+  },
+  {
+    label: "L'Ascension-de-Patapédia",
+    value: "CA/QC/L'Ascension-de-Patapédia",
+  },
+  {
+    label: 'Sainte-Marguerite-Marie',
+    value: 'CA/QC/Sainte-Marguerite-Marie',
+  },
+  {
+    label: 'Sainte-Florence',
+    value: 'CA/QC/Sainte-Florence',
+  },
+  {
+    label: 'Causapscal',
+    value: 'CA/QC/Causapscal',
+  },
+  {
+    label: 'Albertville',
+    value: 'CA/QC/Albertville',
+  },
+  {
+    label: 'Amqui',
+    value: 'CA/QC/Amqui',
+  },
+  {
+    label: 'Lac-au-Saumon',
+    value: 'CA/QC/Lac-au-Saumon',
+  },
+  {
+    label: 'Saint-Vianney',
+    value: 'CA/QC/Saint-Vianney',
+  },
+  {
+    label: 'Val-Brillant',
+    value: 'CA/QC/Val-Brillant',
+  },
+  {
+    label: 'Sayabec',
+    value: 'CA/QC/Sayabec',
+  },
+  {
+    label: 'Les Méchins',
+    value: 'CA/QC/Les Méchins',
+  },
+  {
+    label: 'Grosses-Roches',
+    value: 'CA/QC/Grosses-Roches',
+  },
+  {
+    label: 'Sainte-Félicité',
+    value: 'CA/QC/Sainte-Félicité',
+  },
+  {
+    label: 'Saint-René-de-Matane',
+    value: 'CA/QC/Saint-René-de-Matane',
+  },
+  {
+    label: 'Sainte-Paule',
+    value: 'CA/QC/Sainte-Paule',
+  },
+  {
+    label: 'Matane',
+    value: 'CA/QC/Matane',
+  },
+  {
+    label: 'Saint-Ulric',
+    value: 'CA/QC/Saint-Ulric',
+  },
+  {
+    label: 'Baie-des-Sables',
+    value: 'CA/QC/Baie-des-Sables',
+  },
+  {
+    label: 'Les Hauteurs',
+    value: 'CA/QC/Les Hauteurs',
+  },
+  {
+    label: 'Saint-Gabriel-de-Rimouski',
+    value: 'CA/QC/Saint-Gabriel-de-Rimouski',
+  },
+  {
+    label: 'Sainte-Angèle-de-Mérici',
+    value: 'CA/QC/Sainte-Angèle-de-Mérici',
+  },
+  {
+    label: 'Padoue',
+    value: 'CA/QC/Padoue',
+  },
+  {
+    label: 'Métis-sur-Mer',
+    value: 'CA/QC/Métis-sur-Mer',
+  },
+  {
+    label: 'Grand-Métis',
+    value: 'CA/QC/Grand-Métis',
+  },
+  {
+    label: 'Mont-Joli',
+    value: 'CA/QC/Mont-Joli',
+  },
+  {
+    label: 'Sainte-Luce',
+    value: 'CA/QC/Sainte-Luce',
+  },
+  {
+    label: 'Esprit-Saint',
+    value: 'CA/QC/Esprit-Saint',
+  },
+  {
+    label: 'Rimouski',
+    value: 'CA/QC/Rimouski',
+  },
+  {
+    label: 'Saint-Jean-de-Dieu',
+    value: 'CA/QC/Saint-Jean-de-Dieu',
+  },
+  {
+    label: 'Sainte-Rita',
+    value: 'CA/QC/Sainte-Rita',
+  },
+  {
+    label: 'Saint-Guy',
+    value: 'CA/QC/Saint-Guy',
+  },
+  {
+    label: 'Saint-Médard',
+    value: 'CA/QC/Saint-Médard',
+  },
+  {
+    label: 'Trois-Pistoles',
+    value: 'CA/QC/Trois-Pistoles',
+  },
+  {
+    label: 'Notre-Dame-des-Neiges',
+    value: 'CA/QC/Notre-Dame-des-Neiges',
+  },
+  {
+    label: 'Saint-Cyprien',
+    value: 'CA/QC/Saint-Cyprien',
+  },
+  {
+    label: 'Saint-Hubert-de-Rivière-du-Loup',
+    value: 'CA/QC/Saint-Hubert-de-Rivière-du-Loup',
+  },
+  {
+    label: 'Saint-Antonin',
+    value: 'CA/QC/Saint-Antonin',
+  },
+  {
+    label: 'Saint-Modeste',
+    value: 'CA/QC/Saint-Modeste',
+  },
+  {
+    label: 'Saint-François-Xavier-de-Viger',
+    value: 'CA/QC/Saint-François-Xavier-de-Viger',
+  },
+  {
+    label: 'Saint-Épiphane',
+    value: 'CA/QC/Saint-Épiphane',
+  },
+  {
+    label: "L'Isle-Verte",
+    value: "CA/QC/L'Isle-Verte",
+  },
+  {
+    label: 'Cacouna',
+    value: 'CA/QC/Cacouna',
+  },
+  {
+    label: 'Rivière-du-Loup',
+    value: 'CA/QC/Rivière-du-Loup',
+  },
+  {
+    label: 'Notre-Dame-du-Portage',
+    value: 'CA/QC/Notre-Dame-du-Portage',
+  },
+  {
+    label: 'Dégelis',
+    value: 'CA/QC/Dégelis',
+  },
+  {
+    label: 'Saint-Jean-de-la-Lande',
+    value: 'CA/QC/Saint-Jean-de-la-Lande',
+  },
+  {
+    label: 'Rivière-Bleue',
+    value: 'CA/QC/Rivière-Bleue',
+  },
+  {
+    label: 'Saint-Juste-du-Lac',
+    value: 'CA/QC/Saint-Juste-du-Lac',
+  },
+  {
+    label: 'Auclair',
+    value: 'CA/QC/Auclair',
+  },
+  {
+    label: 'Lejeune',
+    value: 'CA/QC/Lejeune',
+  },
+  {
+    label: 'Biencourt',
+    value: 'CA/QC/Biencourt',
+  },
+  {
+    label: 'Lac-des-Aigles',
+    value: 'CA/QC/Lac-des-Aigles',
+  },
+  {
+    label: 'Saint-Michel-du-Squatec',
+    value: 'CA/QC/Saint-Michel-du-Squatec',
+  },
+  {
+    label: 'Témiscouata-sur-le-Lac',
+    value: 'CA/QC/Témiscouata-sur-le-Lac',
+  },
+  {
+    label: 'Saint-Pierre-de-Lamy',
+    value: 'CA/QC/Saint-Pierre-de-Lamy',
+  },
+  {
+    label: 'Saint-Elzéar-de-Témiscouata',
+    value: 'CA/QC/Saint-Elzéar-de-Témiscouata',
+  },
+  {
+    label: 'Saint-Honoré-de-Témiscouata',
+    value: 'CA/QC/Saint-Honoré-de-Témiscouata',
+  },
+  {
+    label: 'Pohénégamook',
+    value: 'CA/QC/Pohénégamook',
+  },
+  {
+    label: 'Saint-Athanase',
+    value: 'CA/QC/Saint-Athanase',
+  },
+  {
+    label: 'Mont-Carmel',
+    value: 'CA/QC/Mont-Carmel',
+  },
+  {
+    label: 'Saint-Bruno-de-Kamouraska',
+    value: 'CA/QC/Saint-Bruno-de-Kamouraska',
+  },
+  {
+    label: 'Saint-Pascal',
+    value: 'CA/QC/Saint-Pascal',
+  },
+  {
+    label: 'Sainte-Hélène-de-Kamouraska',
+    value: 'CA/QC/Sainte-Hélène-de-Kamouraska',
+  },
+  {
+    label: 'Saint-Alexandre-de-Kamouraska',
+    value: 'CA/QC/Saint-Alexandre-de-Kamouraska',
+  },
+  {
+    label: 'Saint-André',
+    value: 'CA/QC/Saint-André',
+  },
+  {
+    label: 'Kamouraska',
+    value: 'CA/QC/Kamouraska',
+  },
+  {
+    label: 'Saint-Denis-De La Bouteillerie',
+    value: 'CA/QC/Saint-Denis-De La Bouteillerie',
+  },
+  {
+    label: 'Rivière-Ouelle',
+    value: 'CA/QC/Rivière-Ouelle',
+  },
+  {
+    label: 'Saint-Pacôme',
+    value: 'CA/QC/Saint-Pacôme',
+  },
+  {
+    label: 'Saint-Gabriel-Lalemant',
+    value: 'CA/QC/Saint-Gabriel-Lalemant',
+  },
+  {
+    label: "Saint-Onésime-d'Ixworth",
+    value: "CA/QC/Saint-Onésime-d'Ixworth",
+  },
+  {
+    label: 'La Pocatière',
+    value: 'CA/QC/La Pocatière',
+  },
+  {
+    label: 'La Malbaie',
+    value: 'CA/QC/La Malbaie',
+  },
+  {
+    label: 'Notre-Dame-des-Monts',
+    value: 'CA/QC/Notre-Dame-des-Monts',
+  },
+  {
+    label: 'Saint-Aimé-des-Lacs',
+    value: 'CA/QC/Saint-Aimé-des-Lacs',
+  },
+  {
+    label: 'Clermont',
+    value: 'CA/QC/Clermont',
+  },
+  {
+    label: 'Saint-Siméon',
+    value: 'CA/QC/Saint-Siméon',
+  },
+  {
+    label: 'Baie-Sainte-Catherine',
+    value: 'CA/QC/Baie-Sainte-Catherine',
+  },
+  {
+    label: 'Petite-Rivière-Saint-François',
+    value: 'CA/QC/Petite-Rivière-Saint-François',
+  },
+  {
+    label: 'Baie-Saint-Paul',
+    value: 'CA/QC/Baie-Saint-Paul',
+  },
+  {
+    label: "L'Isle-aux-Coudres",
+    value: "CA/QC/L'Isle-aux-Coudres",
+  },
+  {
+    label: 'Les Éboulements',
+    value: 'CA/QC/Les Éboulements',
+  },
+  {
+    label: 'Saint-Omer',
+    value: 'CA/QC/Saint-Omer',
+  },
+  {
+    label: 'Saint-Pamphile',
+    value: 'CA/QC/Saint-Pamphile',
+  },
+  {
+    label: 'Saint-Adalbert',
+    value: 'CA/QC/Saint-Adalbert',
+  },
+  {
+    label: 'Saint-Marcel',
+    value: 'CA/QC/Saint-Marcel',
+  },
+  {
+    label: 'Sainte-Félicité',
+    value: 'CA/QC/Sainte-Félicité',
+  },
+  {
+    label: 'Sainte-Perpétue',
+    value: 'CA/QC/Sainte-Perpétue',
+  },
+  {
+    label: 'Tourville',
+    value: 'CA/QC/Tourville',
+  },
+  {
+    label: "Saint-Damase-de-L'Islet",
+    value: "CA/QC/Saint-Damase-de-L'Islet",
+  },
+  {
+    label: 'Saint-Aubert',
+    value: 'CA/QC/Saint-Aubert',
+  },
+  {
+    label: 'Saint-Jean-Port-Joli',
+    value: 'CA/QC/Saint-Jean-Port-Joli',
+  },
+  {
+    label: "L'Islet",
+    value: "CA/QC/L'Islet",
+  },
+  {
+    label: 'Saint-Just-de-Bretenières',
+    value: 'CA/QC/Saint-Just-de-Bretenières',
+  },
+  {
+    label: 'Lac-Frontière',
+    value: 'CA/QC/Lac-Frontière',
+  },
+  {
+    label: 'Sainte-Lucie-de-Beauregard',
+    value: 'CA/QC/Sainte-Lucie-de-Beauregard',
+  },
+  {
+    label: 'Saint-Paul-de-Montminy',
+    value: 'CA/QC/Saint-Paul-de-Montminy',
+  },
+  {
+    label: 'Sainte-Euphémie-sur-Rivière-du-Sud',
+    value: 'CA/QC/Sainte-Euphémie-sur-Rivière-du-Sud',
+  },
+  {
+    label: 'Notre-Dame-du-Rosaire',
+    value: 'CA/QC/Notre-Dame-du-Rosaire',
+  },
+  {
+    label: 'Cap-Saint-Ignace',
+    value: 'CA/QC/Cap-Saint-Ignace',
+  },
+  {
+    label: 'Montmagny',
+    value: 'CA/QC/Montmagny',
+  },
+  {
+    label: 'Saint-François-de-la-Rivière-du-Sud',
+    value: 'CA/QC/Saint-François-de-la-Rivière-du-Sud',
+  },
+  {
+    label: 'Berthier-sur-Mer',
+    value: 'CA/QC/Berthier-sur-Mer',
+  },
+  {
+    label: 'Armagh',
+    value: 'CA/QC/Armagh',
+  },
+  {
+    label: 'Saint-Nérée-de-Bellechasse',
+    value: 'CA/QC/Saint-Nérée-de-Bellechasse',
+  },
+  {
+    label: 'Saint-Lazare-de-Bellechasse',
+    value: 'CA/QC/Saint-Lazare-de-Bellechasse',
+  },
+  {
+    label: 'Sainte-Claire',
+    value: 'CA/QC/Sainte-Claire',
+  },
+  {
+    label: 'Saint-Anselme',
+    value: 'CA/QC/Saint-Anselme',
+  },
+  {
+    label: 'Saint-Henri',
+    value: 'CA/QC/Saint-Henri',
+  },
+  {
+    label: 'Honfleur',
+    value: 'CA/QC/Honfleur',
+  },
+  {
+    label: 'Saint-Gervais',
+    value: 'CA/QC/Saint-Gervais',
+  },
+  {
+    label: 'Saint-Raphaël',
+    value: 'CA/QC/Saint-Raphaël',
+  },
+  {
+    label: 'Saint-Charles-de-Bellechasse',
+    value: 'CA/QC/Saint-Charles-de-Bellechasse',
+  },
+  {
+    label: 'Beaumont',
+    value: 'CA/QC/Beaumont',
+  },
+  {
+    label: 'Saint-Michel-de-Bellechasse',
+    value: 'CA/QC/Saint-Michel-de-Bellechasse',
+  },
+  {
+    label: 'Saint-Vallier',
+    value: 'CA/QC/Saint-Vallier',
+  },
+  {
+    label: "Saint-François-de-l'Île-d'Orléans",
+    value: "CA/QC/Saint-François-de-l'Île-d'Orléans",
+  },
+  {
+    label: "Saint-Jean-de-l'Île-d'Orléans",
+    value: "CA/QC/Saint-Jean-de-l'Île-d'Orléans",
+  },
+  {
+    label: "Saint-Laurent-de-l'Île-d'Orléans",
+    value: "CA/QC/Saint-Laurent-de-l'Île-d'Orléans",
+  },
+  {
+    label: "Saint-Pierre-de-l'Île-d'Orléans",
+    value: "CA/QC/Saint-Pierre-de-l'Île-d'Orléans",
+  },
+  {
+    label: 'Saint-Tite-des-Caps',
+    value: 'CA/QC/Saint-Tite-des-Caps',
+  },
+  {
+    label: 'Saint-Ferréol-les-Neiges',
+    value: 'CA/QC/Saint-Ferréol-les-Neiges',
+  },
+  {
+    label: 'Beaupré',
+    value: 'CA/QC/Beaupré',
+  },
+  {
+    label: 'Sainte-Anne-de-Beaupré',
+    value: 'CA/QC/Sainte-Anne-de-Beaupré',
+  },
+  {
+    label: 'Château-Richer',
+    value: 'CA/QC/Château-Richer',
+  },
+  {
+    label: "L'Ange-Gardien",
+    value: "CA/QC/L'Ange-Gardien",
+  },
+  {
+    label: 'Boischatel',
+    value: 'CA/QC/Boischatel',
+  },
+  {
+    label: 'Sainte-Catherine-de-la-Jacques-Cartier',
+    value: 'CA/QC/Sainte-Catherine-de-la-Jacques-Cartier',
+  },
+  {
+    label: 'Fossambault-sur-le-Lac',
+    value: 'CA/QC/Fossambault-sur-le-Lac',
+  },
+  {
+    label: 'Lac-Saint-Joseph',
+    value: 'CA/QC/Lac-Saint-Joseph',
+  },
+  {
+    label: 'Shannon',
+    value: 'CA/QC/Shannon',
+  },
+  {
+    label: 'Saint-Gabriel-de-Valcartier',
+    value: 'CA/QC/Saint-Gabriel-de-Valcartier',
+  },
+  {
+    label: 'Lac-Delage',
+    value: 'CA/QC/Lac-Delage',
+  },
+  {
+    label: 'Lac-Beauport',
+    value: 'CA/QC/Lac-Beauport',
+  },
+  {
+    label: 'Sainte-Brigitte-de-Laval',
+    value: 'CA/QC/Sainte-Brigitte-de-Laval',
+  },
+  {
+    label: 'Québec',
+    value: 'CA/QC/Québec',
+  },
+  {
+    label: "L'Ancienne-Lorette",
+    value: "CA/QC/L'Ancienne-Lorette",
+  },
+  {
+    label: 'Saint-Augustin-de-Desmaures',
+    value: 'CA/QC/Saint-Augustin-de-Desmaures',
+  },
+  {
+    label: 'Lévis',
+    value: 'CA/QC/Lévis',
+  },
+  {
+    label: 'Frampton',
+    value: 'CA/QC/Frampton',
+  },
+  {
+    label: 'Vallée-Jonction',
+    value: 'CA/QC/Vallée-Jonction',
+  },
+  {
+    label: 'Saint-Elzéar',
+    value: 'CA/QC/Saint-Elzéar',
+  },
+  {
+    label: 'Sainte-Marie',
+    value: 'CA/QC/Sainte-Marie',
+  },
+  {
+    label: 'Scott',
+    value: 'CA/QC/Scott',
+  },
+  {
+    label: 'Saint-Bernard',
+    value: 'CA/QC/Saint-Bernard',
+  },
+  {
+    label: 'Saint-Isidore',
+    value: 'CA/QC/Saint-Isidore',
+  },
+  {
+    label: 'Saint-Lambert-de-Lauzon',
+    value: 'CA/QC/Saint-Lambert-de-Lauzon',
+  },
+  {
+    label: 'Saint-Victor',
+    value: 'CA/QC/Saint-Victor',
+  },
+  {
+    label: 'Saint-Alfred',
+    value: 'CA/QC/Saint-Alfred',
+  },
+  {
+    label: 'Beauceville',
+    value: 'CA/QC/Beauceville',
+  },
+  {
+    label: 'Saint-Joseph-de-Beauce',
+    value: 'CA/QC/Saint-Joseph-de-Beauce',
+  },
+  {
+    label: 'Saint-Joseph-des-Érables',
+    value: 'CA/QC/Saint-Joseph-des-Érables',
+  },
+  {
+    label: 'Saint-Zacharie',
+    value: 'CA/QC/Saint-Zacharie',
+  },
+  {
+    label: 'Sainte-Aurélie',
+    value: 'CA/QC/Sainte-Aurélie',
+  },
+  {
+    label: 'Saint-Prosper',
+    value: 'CA/QC/Saint-Prosper',
+  },
+  {
+    label: 'Saint-Benjamin',
+    value: 'CA/QC/Saint-Benjamin',
+  },
+  {
+    label: 'Sainte-Rose-de-Watford',
+    value: 'CA/QC/Sainte-Rose-de-Watford',
+  },
+  {
+    label: 'Saint-Louis-de-Gonzague',
+    value: 'CA/QC/Saint-Louis-de-Gonzague',
+  },
+  {
+    label: 'Sainte-Justine',
+    value: 'CA/QC/Sainte-Justine',
+  },
+  {
+    label: 'Lac-Etchemin',
+    value: 'CA/QC/Lac-Etchemin',
+  },
+  {
+    label: 'Saint-Luc-de-Bellechasse',
+    value: 'CA/QC/Saint-Luc-de-Bellechasse',
+  },
+  {
+    label: 'Saint-Magloire',
+    value: 'CA/QC/Saint-Magloire',
+  },
+  {
+    label: 'Saint-Théophile',
+    value: 'CA/QC/Saint-Théophile',
+  },
+  {
+    label: 'Saint-Gédéon-de-Beauce',
+    value: 'CA/QC/Saint-Gédéon-de-Beauce',
+  },
+  {
+    label: 'Saint-Évariste-de-Forsyth',
+    value: 'CA/QC/Saint-Évariste-de-Forsyth',
+  },
+  {
+    label: 'Saint-Honoré-de-Shenley',
+    value: 'CA/QC/Saint-Honoré-de-Shenley',
+  },
+  {
+    label: 'Saint-Côme--Linière',
+    value: 'CA/QC/Saint-Côme--Linière',
+  },
+  {
+    label: 'Saint-Philibert',
+    value: 'CA/QC/Saint-Philibert',
+  },
+  {
+    label: 'Saint-Georges',
+    value: 'CA/QC/Saint-Georges',
+  },
+  {
+    label: 'Saint-Benoît-Labre',
+    value: 'CA/QC/Saint-Benoît-Labre',
+  },
+  {
+    label: 'Saint-Éphrem-de-Beauce',
+    value: 'CA/QC/Saint-Éphrem-de-Beauce',
+  },
+  {
+    label: 'Saint-Simon-les-Mines',
+    value: 'CA/QC/Saint-Simon-les-Mines',
+  },
+  {
+    label: 'Notre-Dame-des-Bois',
+    value: 'CA/QC/Notre-Dame-des-Bois',
+  },
+  {
+    label: 'Val-Racine',
+    value: 'CA/QC/Val-Racine',
+  },
+  {
+    label: 'Piopolis',
+    value: 'CA/QC/Piopolis',
+  },
+  {
+    label: 'Frontenac',
+    value: 'CA/QC/Frontenac',
+  },
+  {
+    label: 'Lac-Mégantic',
+    value: 'CA/QC/Lac-Mégantic',
+  },
+  {
+    label: 'Milan',
+    value: 'CA/QC/Milan',
+  },
+  {
+    label: 'Nantes',
+    value: 'CA/QC/Nantes',
+  },
+  {
+    label: 'Sainte-Cécile-de-Whitton',
+    value: 'CA/QC/Sainte-Cécile-de-Whitton',
+  },
+  {
+    label: 'Audet',
+    value: 'CA/QC/Audet',
+  },
+  {
+    label: 'Saint-Robert-Bellarmin',
+    value: 'CA/QC/Saint-Robert-Bellarmin',
+  },
+  {
+    label: 'Saint-Ludger',
+    value: 'CA/QC/Saint-Ludger',
+  },
+  {
+    label: 'Lac-Drolet',
+    value: 'CA/QC/Lac-Drolet',
+  },
+  {
+    label: 'Saint-Sébastien',
+    value: 'CA/QC/Saint-Sébastien',
+  },
+  {
+    label: 'Courcelles',
+    value: 'CA/QC/Courcelles',
+  },
+  {
+    label: 'Lambton',
+    value: 'CA/QC/Lambton',
+  },
+  {
+    label: 'Saint-Romain',
+    value: 'CA/QC/Saint-Romain',
+  },
+  {
+    label: 'Stornoway',
+    value: 'CA/QC/Stornoway',
+  },
+  {
+    label: 'Beaulac-Garthby',
+    value: 'CA/QC/Beaulac-Garthby',
+  },
+  {
+    label: 'Disraeli',
+    value: 'CA/QC/Disraeli',
+  },
+  {
+    label: 'Saint-Fortunat',
+    value: 'CA/QC/Saint-Fortunat',
+  },
+  {
+    label: 'Saint-Julien',
+    value: 'CA/QC/Saint-Julien',
+  },
+  {
+    label: 'Irlande',
+    value: 'CA/QC/Irlande',
+  },
+  {
+    label: 'Saint-Joseph-de-Coleraine',
+    value: 'CA/QC/Saint-Joseph-de-Coleraine',
+  },
+  {
+    label: 'Adstock',
+    value: 'CA/QC/Adstock',
+  },
+  {
+    label: 'Sainte-Clotilde-de-Beauce',
+    value: 'CA/QC/Sainte-Clotilde-de-Beauce',
+  },
+  {
+    label: 'Thetford Mines',
+    value: 'CA/QC/Thetford Mines',
+  },
+  {
+    label: "Saint-Adrien-d'Irlande",
+    value: "CA/QC/Saint-Adrien-d'Irlande",
+  },
+  {
+    label: 'Saint-Jean-de-Brébeuf',
+    value: 'CA/QC/Saint-Jean-de-Brébeuf',
+  },
+  {
+    label: "Kinnear's Mills",
+    value: "CA/QC/Kinnear's Mills",
+  },
+  {
+    label: 'East Broughton',
+    value: 'CA/QC/East Broughton',
+  },
+  {
+    label: 'Saint-Pierre-de-Broughton',
+    value: 'CA/QC/Saint-Pierre-de-Broughton',
+  },
+  {
+    label: 'Saint-Jacques-de-Leeds',
+    value: 'CA/QC/Saint-Jacques-de-Leeds',
+  },
+  {
+    label: 'Saint-Ferdinand',
+    value: 'CA/QC/Saint-Ferdinand',
+  },
+  {
+    label: "Sainte-Sophie-d'Halifax",
+    value: "CA/QC/Sainte-Sophie-d'Halifax",
+  },
+  {
+    label: 'Princeville',
+    value: 'CA/QC/Princeville',
+  },
+  {
+    label: 'Plessisville',
+    value: 'CA/QC/Plessisville',
+  },
+  {
+    label: 'Inverness',
+    value: 'CA/QC/Inverness',
+  },
+  {
+    label: 'Lyster',
+    value: 'CA/QC/Lyster',
+  },
+  {
+    label: 'Laurierville',
+    value: 'CA/QC/Laurierville',
+  },
+  {
+    label: 'Villeroy',
+    value: 'CA/QC/Villeroy',
+  },
+  {
+    label: 'Saint-Sylvestre',
+    value: 'CA/QC/Saint-Sylvestre',
+  },
+  {
+    label: 'Sainte-Agathe-de-Lotbinière',
+    value: 'CA/QC/Sainte-Agathe-de-Lotbinière',
+  },
+  {
+    label: 'Saint-Patrice-de-Beaurivage',
+    value: 'CA/QC/Saint-Patrice-de-Beaurivage',
+  },
+  {
+    label: 'Dosquet',
+    value: 'CA/QC/Dosquet',
+  },
+  {
+    label: 'Saint-Agapit',
+    value: 'CA/QC/Saint-Agapit',
+  },
+  {
+    label: 'Saint-Flavien',
+    value: 'CA/QC/Saint-Flavien',
+  },
+  {
+    label: 'Saint-Janvier-de-Joly',
+    value: 'CA/QC/Saint-Janvier-de-Joly',
+  },
+  {
+    label: 'Val-Alain',
+    value: 'CA/QC/Val-Alain',
+  },
+  {
+    label: 'Saint-Apollinaire',
+    value: 'CA/QC/Saint-Apollinaire',
+  },
+  {
+    label: 'Saint-Antoine-de-Tilly',
+    value: 'CA/QC/Saint-Antoine-de-Tilly',
+  },
+  {
+    label: 'Sainte-Croix',
+    value: 'CA/QC/Sainte-Croix',
+  },
+  {
+    label: 'Lotbinière',
+    value: 'CA/QC/Lotbinière',
+  },
+  {
+    label: 'Leclercville',
+    value: 'CA/QC/Leclercville',
+  },
+  {
+    label: 'Neuville',
+    value: 'CA/QC/Neuville',
+  },
+  {
+    label: 'Pont-Rouge',
+    value: 'CA/QC/Pont-Rouge',
+  },
+  {
+    label: 'Donnacona',
+    value: 'CA/QC/Donnacona',
+  },
+  {
+    label: 'Cap-Santé',
+    value: 'CA/QC/Cap-Santé',
+  },
+  {
+    label: 'Saint-Basile',
+    value: 'CA/QC/Saint-Basile',
+  },
+  {
+    label: 'Portneuf',
+    value: 'CA/QC/Portneuf',
+  },
+  {
+    label: 'Deschambault-Grondines',
+    value: 'CA/QC/Deschambault-Grondines',
+  },
+  {
+    label: 'Saint-Marc-des-Carrières',
+    value: 'CA/QC/Saint-Marc-des-Carrières',
+  },
+  {
+    label: 'Saint-Casimir',
+    value: 'CA/QC/Saint-Casimir',
+  },
+  {
+    label: 'Saint-Ubalde',
+    value: 'CA/QC/Saint-Ubalde',
+  },
+  {
+    label: 'Saint-Alban',
+    value: 'CA/QC/Saint-Alban',
+  },
+  {
+    label: "Sainte-Christine-d'Auvergne",
+    value: "CA/QC/Sainte-Christine-d'Auvergne",
+  },
+  {
+    label: 'Saint-Léonard-de-Portneuf',
+    value: 'CA/QC/Saint-Léonard-de-Portneuf',
+  },
+  {
+    label: 'Lac-Sergent',
+    value: 'CA/QC/Lac-Sergent',
+  },
+  {
+    label: 'Saint-Raymond',
+    value: 'CA/QC/Saint-Raymond',
+  },
+  {
+    label: 'Rivière-à-Pierre',
+    value: 'CA/QC/Rivière-à-Pierre',
+  },
+  {
+    label: 'Notre-Dame-de-Montauban',
+    value: 'CA/QC/Notre-Dame-de-Montauban',
+  },
+  {
+    label: 'Saint-Tite',
+    value: 'CA/QC/Saint-Tite',
+  },
+  {
+    label: 'Sainte-Thècle',
+    value: 'CA/QC/Sainte-Thècle',
+  },
+  {
+    label: 'Trois-Rives',
+    value: 'CA/QC/Trois-Rives',
+  },
+  {
+    label: 'Shawinigan',
+    value: 'CA/QC/Shawinigan',
+  },
+  {
+    label: 'Trois-Rivières',
+    value: 'CA/QC/Trois-Rivières',
+  },
+  {
+    label: 'Sainte-Anne-de-la-Pérade',
+    value: 'CA/QC/Sainte-Anne-de-la-Pérade',
+  },
+  {
+    label: 'Batiscan',
+    value: 'CA/QC/Batiscan',
+  },
+  {
+    label: 'Champlain',
+    value: 'CA/QC/Champlain',
+  },
+  {
+    label: 'Saint-Luc-de-Vincennes',
+    value: 'CA/QC/Saint-Luc-de-Vincennes',
+  },
+  {
+    label: 'Saint-Stanislas',
+    value: 'CA/QC/Saint-Stanislas',
+  },
+  {
+    label: 'Saint-Prosper-de-Champlain',
+    value: 'CA/QC/Saint-Prosper-de-Champlain',
+  },
+  {
+    label: 'Saint-Sylvère',
+    value: 'CA/QC/Saint-Sylvère',
+  },
+  {
+    label: 'Bécancour',
+    value: 'CA/QC/Bécancour',
+  },
+  {
+    label: 'Sainte-Marie-de-Blandford',
+    value: 'CA/QC/Sainte-Marie-de-Blandford',
+  },
+  {
+    label: 'Lemieux',
+    value: 'CA/QC/Lemieux',
+  },
+  {
+    label: 'Manseau',
+    value: 'CA/QC/Manseau',
+  },
+  {
+    label: 'Sainte-Françoise',
+    value: 'CA/QC/Sainte-Françoise',
+  },
+  {
+    label: 'Fortierville',
+    value: 'CA/QC/Fortierville',
+  },
+  {
+    label: 'Saint-Pierre-les-Becquets',
+    value: 'CA/QC/Saint-Pierre-les-Becquets',
+  },
+  {
+    label: 'Deschaillons-sur-Saint-Laurent',
+    value: 'CA/QC/Deschaillons-sur-Saint-Laurent',
+  },
+  {
+    label: 'Notre-Dame-de-Ham',
+    value: 'CA/QC/Notre-Dame-de-Ham',
+  },
+  {
+    label: 'Saint-Rémi-de-Tingwick',
+    value: 'CA/QC/Saint-Rémi-de-Tingwick',
+  },
+  {
+    label: 'Tingwick',
+    value: 'CA/QC/Tingwick',
+  },
+  {
+    label: 'Chesterville',
+    value: 'CA/QC/Chesterville',
+  },
+  {
+    label: 'Sainte-Hélène-de-Chester',
+    value: 'CA/QC/Sainte-Hélène-de-Chester',
+  },
+  {
+    label: "Saint-Norbert-d'Arthabaska",
+    value: "CA/QC/Saint-Norbert-d'Arthabaska",
+  },
+  {
+    label: 'Victoriaville',
+    value: 'CA/QC/Victoriaville',
+  },
+  {
+    label: 'Warwick',
+    value: 'CA/QC/Warwick',
+  },
+  {
+    label: 'Saint-Albert',
+    value: 'CA/QC/Saint-Albert',
+  },
+  {
+    label: 'Sainte-Élizabeth-de-Warwick',
+    value: 'CA/QC/Sainte-Élizabeth-de-Warwick',
+  },
+  {
+    label: 'Kingsey Falls',
+    value: 'CA/QC/Kingsey Falls',
+  },
+  {
+    label: 'Sainte-Clotilde-de-Horton',
+    value: 'CA/QC/Sainte-Clotilde-de-Horton',
+  },
+  {
+    label: 'Saint-Samuel',
+    value: 'CA/QC/Saint-Samuel',
+  },
+  {
+    label: 'Saint-Valère',
+    value: 'CA/QC/Saint-Valère',
+  },
+  {
+    label: 'Sainte-Anne-du-Sault',
+    value: 'CA/QC/Sainte-Anne-du-Sault',
+  },
+  {
+    label: 'Daveluyville',
+    value: 'CA/QC/Daveluyville',
+  },
+  {
+    label: 'Maddington Falls',
+    value: 'CA/QC/Maddington Falls',
+  },
+  {
+    label: 'Saint-Louis-de-Blandford',
+    value: 'CA/QC/Saint-Louis-de-Blandford',
+  },
+  {
+    label: 'Ham-Sud',
+    value: 'CA/QC/Ham-Sud',
+  },
+  {
+    label: 'Saint-Adrien',
+    value: 'CA/QC/Saint-Adrien',
+  },
+  {
+    label: 'Wotton',
+    value: 'CA/QC/Wotton',
+  },
+  {
+    label: 'Saint-Georges-de-Windsor',
+    value: 'CA/QC/Saint-Georges-de-Windsor',
+  },
+  {
+    label: 'Asbestos',
+    value: 'CA/QC/Asbestos',
+  },
+  {
+    label: 'Danville',
+    value: 'CA/QC/Danville',
+  },
+  {
+    label: 'Saint-Isidore-de-Clifton',
+    value: 'CA/QC/Saint-Isidore-de-Clifton',
+  },
+  {
+    label: 'Chartierville',
+    value: 'CA/QC/Chartierville',
+  },
+  {
+    label: 'La Patrie',
+    value: 'CA/QC/La Patrie',
+  },
+  {
+    label: 'Newport',
+    value: 'CA/QC/Newport',
+  },
+  {
+    label: 'Cookshire-Eaton',
+    value: 'CA/QC/Cookshire-Eaton',
+  },
+  {
+    label: 'Ascot Corner',
+    value: 'CA/QC/Ascot Corner',
+  },
+  {
+    label: 'East Angus',
+    value: 'CA/QC/East Angus',
+  },
+  {
+    label: 'Bury',
+    value: 'CA/QC/Bury',
+  },
+  {
+    label: 'Scotstown',
+    value: 'CA/QC/Scotstown',
+  },
+  {
+    label: 'Weedon',
+    value: 'CA/QC/Weedon',
+  },
+  {
+    label: 'Dudswell',
+    value: 'CA/QC/Dudswell',
+  },
+  {
+    label: 'Stoke',
+    value: 'CA/QC/Stoke',
+  },
+  {
+    label: 'Saint-François-Xavier-de-Brompton',
+    value: 'CA/QC/Saint-François-Xavier-de-Brompton',
+  },
+  {
+    label: 'Saint-Denis-de-Brompton',
+    value: 'CA/QC/Saint-Denis-de-Brompton',
+  },
+  {
+    label: 'Racine',
+    value: 'CA/QC/Racine',
+  },
+  {
+    label: 'Bonsecours',
+    value: 'CA/QC/Bonsecours',
+  },
+  {
+    label: 'Sainte-Anne-de-la-Rochelle',
+    value: 'CA/QC/Sainte-Anne-de-la-Rochelle',
+  },
+  {
+    label: 'Valcourt',
+    value: 'CA/QC/Valcourt',
+  },
+  {
+    label: 'Maricourt',
+    value: 'CA/QC/Maricourt',
+  },
+  {
+    label: 'Ulverton',
+    value: 'CA/QC/Ulverton',
+  },
+  {
+    label: 'Windsor',
+    value: 'CA/QC/Windsor',
+  },
+  {
+    label: 'Val-Joli',
+    value: 'CA/QC/Val-Joli',
+  },
+  {
+    label: 'Richmond',
+    value: 'CA/QC/Richmond',
+  },
+  {
+    label: 'Saint-Claude',
+    value: 'CA/QC/Saint-Claude',
+  },
+  {
+    label: 'Sherbrooke',
+    value: 'CA/QC/Sherbrooke',
+  },
+  {
+    label: 'Saint-Malo',
+    value: 'CA/QC/Saint-Malo',
+  },
+  {
+    label: 'Saint-Venant-de-Paquette',
+    value: 'CA/QC/Saint-Venant-de-Paquette',
+  },
+  {
+    label: 'East Hereford',
+    value: 'CA/QC/East Hereford',
+  },
+  {
+    label: 'Saint-Herménégilde',
+    value: 'CA/QC/Saint-Herménégilde',
+  },
+  {
+    label: 'Dixville',
+    value: 'CA/QC/Dixville',
+  },
+  {
+    label: 'Coaticook',
+    value: 'CA/QC/Coaticook',
+  },
+  {
+    label: 'Barnston-Ouest',
+    value: 'CA/QC/Barnston-Ouest',
+  },
+  {
+    label: 'Stanstead-Est',
+    value: 'CA/QC/Stanstead-Est',
+  },
+  {
+    label: 'Martinville',
+    value: 'CA/QC/Martinville',
+  },
+  {
+    label: 'Compton',
+    value: 'CA/QC/Compton',
+  },
+  {
+    label: 'Waterville',
+    value: 'CA/QC/Waterville',
+  },
+  {
+    label: 'Stanstead',
+    value: 'CA/QC/Stanstead',
+  },
+  {
+    label: 'Ogden',
+    value: 'CA/QC/Ogden',
+  },
+  {
+    label: 'Hatley',
+    value: 'CA/QC/Hatley',
+  },
+  {
+    label: 'Sainte-Catherine-de-Hatley',
+    value: 'CA/QC/Sainte-Catherine-de-Hatley',
+  },
+  {
+    label: 'Magog',
+    value: 'CA/QC/Magog',
+  },
+  {
+    label: 'Saint-Benoît-du-Lac',
+    value: 'CA/QC/Saint-Benoît-du-Lac',
+  },
+  {
+    label: 'Austin',
+    value: 'CA/QC/Austin',
+  },
+  {
+    label: 'Eastman',
+    value: 'CA/QC/Eastman',
+  },
+  {
+    label: 'Bolton-Est',
+    value: 'CA/QC/Bolton-Est',
+  },
+  {
+    label: 'Saint-Étienne-de-Bolton',
+    value: 'CA/QC/Saint-Étienne-de-Bolton',
+  },
+  {
+    label: 'Frelighsburg',
+    value: 'CA/QC/Frelighsburg',
+  },
+  {
+    label: 'Saint-Armand',
+    value: 'CA/QC/Saint-Armand',
+  },
+  {
+    label: 'Pike River',
+    value: 'CA/QC/Pike River',
+  },
+  {
+    label: 'Stanbridge Station',
+    value: 'CA/QC/Stanbridge Station',
+  },
+  {
+    label: 'Bedford',
+    value: 'CA/QC/Bedford',
+  },
+  {
+    label: 'Stanbridge East',
+    value: 'CA/QC/Stanbridge East',
+  },
+  {
+    label: 'Dunham',
+    value: 'CA/QC/Dunham',
+  },
+  {
+    label: 'Sutton',
+    value: 'CA/QC/Sutton',
+  },
+  {
+    label: 'Bolton-Ouest',
+    value: 'CA/QC/Bolton-Ouest',
+  },
+  {
+    label: 'Lac-Brome',
+    value: 'CA/QC/Lac-Brome',
+  },
+  {
+    label: 'Bromont',
+    value: 'CA/QC/Bromont',
+  },
+  {
+    label: 'Cowansville',
+    value: 'CA/QC/Cowansville',
+  },
+  {
+    label: 'East Farnham',
+    value: 'CA/QC/East Farnham',
+  },
+  {
+    label: 'Brigham',
+    value: 'CA/QC/Brigham',
+  },
+  {
+    label: 'Saint-Ignace-de-Stanbridge',
+    value: 'CA/QC/Saint-Ignace-de-Stanbridge',
+  },
+  {
+    label: 'Notre-Dame-de-Stanbridge',
+    value: 'CA/QC/Notre-Dame-de-Stanbridge',
+  },
+  {
+    label: 'Sainte-Sabine',
+    value: 'CA/QC/Sainte-Sabine',
+  },
+  {
+    label: 'Farnham',
+    value: 'CA/QC/Farnham',
+  },
+  {
+    label: 'Saint-Alphonse-de-Granby',
+    value: 'CA/QC/Saint-Alphonse-de-Granby',
+  },
+  {
+    label: 'Granby',
+    value: 'CA/QC/Granby',
+  },
+  {
+    label: 'Waterloo',
+    value: 'CA/QC/Waterloo',
+  },
+  {
+    label: 'Saint-Joachim-de-Shefford',
+    value: 'CA/QC/Saint-Joachim-de-Shefford',
+  },
+  {
+    label: 'Roxton Pond',
+    value: 'CA/QC/Roxton Pond',
+  },
+  {
+    label: 'Sainte-Cécile-de-Milton',
+    value: 'CA/QC/Sainte-Cécile-de-Milton',
+  },
+  {
+    label: 'Béthanie',
+    value: 'CA/QC/Béthanie',
+  },
+  {
+    label: 'Acton Vale',
+    value: 'CA/QC/Acton Vale',
+  },
+  {
+    label: 'Upton',
+    value: 'CA/QC/Upton',
+  },
+  {
+    label: "Saint-Théodore-d'Acton",
+    value: "CA/QC/Saint-Théodore-d'Acton",
+  },
+  {
+    label: 'Saint-Félix-de-Kingsey',
+    value: 'CA/QC/Saint-Félix-de-Kingsey',
+  },
+  {
+    label: 'Durham-Sud',
+    value: 'CA/QC/Durham-Sud',
+  },
+  {
+    label: 'Lefebvre',
+    value: 'CA/QC/Lefebvre',
+  },
+  {
+    label: "L'Avenir",
+    value: "CA/QC/L'Avenir",
+  },
+  {
+    label: 'Saint-Lucien',
+    value: 'CA/QC/Saint-Lucien',
+  },
+  {
+    label: 'Wickham',
+    value: 'CA/QC/Wickham',
+  },
+  {
+    label: 'Saint-Germain-de-Grantham',
+    value: 'CA/QC/Saint-Germain-de-Grantham',
+  },
+  {
+    label: 'Drummondville',
+    value: 'CA/QC/Drummondville',
+  },
+  {
+    label: 'Saint-Cyrille-de-Wendover',
+    value: 'CA/QC/Saint-Cyrille-de-Wendover',
+  },
+  {
+    label: 'Saint-Eugène',
+    value: 'CA/QC/Saint-Eugène',
+  },
+  {
+    label: 'Saint-Guillaume',
+    value: 'CA/QC/Saint-Guillaume',
+  },
+  {
+    label: 'Saint-Bonaventure',
+    value: 'CA/QC/Saint-Bonaventure',
+  },
+  {
+    label: 'Sainte-Eulalie',
+    value: 'CA/QC/Sainte-Eulalie',
+  },
+  {
+    label: 'Aston-Jonction',
+    value: 'CA/QC/Aston-Jonction',
+  },
+  {
+    label: 'Saint-Wenceslas',
+    value: 'CA/QC/Saint-Wenceslas',
+  },
+  {
+    label: 'Saint-Célestin',
+    value: 'CA/QC/Saint-Célestin',
+  },
+  {
+    label: "Saint-Léonard-d'Aston",
+    value: "CA/QC/Saint-Léonard-d'Aston",
+  },
+  {
+    label: 'Sainte-Monique',
+    value: 'CA/QC/Sainte-Monique',
+  },
+  {
+    label: 'Grand-Saint-Esprit',
+    value: 'CA/QC/Grand-Saint-Esprit',
+  },
+  {
+    label: 'Nicolet',
+    value: 'CA/QC/Nicolet',
+  },
+  {
+    label: 'La Visitation-de-Yamaska',
+    value: 'CA/QC/La Visitation-de-Yamaska',
+  },
+  {
+    label: 'Baie-du-Febvre',
+    value: 'CA/QC/Baie-du-Febvre',
+  },
+  {
+    label: 'Pierreville',
+    value: 'CA/QC/Pierreville',
+  },
+  {
+    label: 'Saint-François-du-Lac',
+    value: 'CA/QC/Saint-François-du-Lac',
+  },
+  {
+    label: 'Maskinongé',
+    value: 'CA/QC/Maskinongé',
+  },
+  {
+    label: 'Louiseville',
+    value: 'CA/QC/Louiseville',
+  },
+  {
+    label: 'Yamachiche',
+    value: 'CA/QC/Yamachiche',
+  },
+  {
+    label: 'Saint-Justin',
+    value: 'CA/QC/Saint-Justin',
+  },
+  {
+    label: 'Saint-Édouard-de-Maskinongé',
+    value: 'CA/QC/Saint-Édouard-de-Maskinongé',
+  },
+  {
+    label: 'Sainte-Angèle-de-Prémont',
+    value: 'CA/QC/Sainte-Angèle-de-Prémont',
+  },
+  {
+    label: 'Saint-Paulin',
+    value: 'CA/QC/Saint-Paulin',
+  },
+  {
+    label: 'Saint-Mathieu-du-Parc',
+    value: 'CA/QC/Saint-Mathieu-du-Parc',
+  },
+  {
+    label: 'Saint-Élie-de-Caxton',
+    value: 'CA/QC/Saint-Élie-de-Caxton',
+  },
+  {
+    label: 'Charette',
+    value: 'CA/QC/Charette',
+  },
+  {
+    label: 'Saint-Boniface',
+    value: 'CA/QC/Saint-Boniface',
+  },
+  {
+    label: 'Lavaltrie',
+    value: 'CA/QC/Lavaltrie',
+  },
+  {
+    label: 'Lanoraie',
+    value: 'CA/QC/Lanoraie',
+  },
+  {
+    label: 'Sainte-Élisabeth',
+    value: 'CA/QC/Sainte-Élisabeth',
+  },
+  {
+    label: 'Berthierville',
+    value: 'CA/QC/Berthierville',
+  },
+  {
+    label: 'Sainte-Geneviève-de-Berthier',
+    value: 'CA/QC/Sainte-Geneviève-de-Berthier',
+  },
+  {
+    label: 'Saint-Ignace-de-Loyola',
+    value: 'CA/QC/Saint-Ignace-de-Loyola',
+  },
+  {
+    label: "La Visitation-de-l'Île-Dupas",
+    value: "CA/QC/La Visitation-de-l'Île-Dupas",
+  },
+  {
+    label: 'Saint-Cuthbert',
+    value: 'CA/QC/Saint-Cuthbert',
+  },
+  {
+    label: 'Saint-Cléophas-de-Brandon',
+    value: 'CA/QC/Saint-Cléophas-de-Brandon',
+  },
+  {
+    label: 'Saint-Gabriel',
+    value: 'CA/QC/Saint-Gabriel',
+  },
+  {
+    label: 'Saint-Gabriel-de-Brandon',
+    value: 'CA/QC/Saint-Gabriel-de-Brandon',
+  },
+  {
+    label: 'Mandeville',
+    value: 'CA/QC/Mandeville',
+  },
+  {
+    label: 'Saint-David',
+    value: 'CA/QC/Saint-David',
+  },
+  {
+    label: 'Saint-Aimé',
+    value: 'CA/QC/Saint-Aimé',
+  },
+  {
+    label: 'Saint-Robert',
+    value: 'CA/QC/Saint-Robert',
+  },
+  {
+    label: 'Sainte-Victoire-de-Sorel',
+    value: 'CA/QC/Sainte-Victoire-de-Sorel',
+  },
+  {
+    label: 'Saint-Ours',
+    value: 'CA/QC/Saint-Ours',
+  },
+  {
+    label: 'Saint-Roch-de-Richelieu',
+    value: 'CA/QC/Saint-Roch-de-Richelieu',
+  },
+  {
+    label: 'Saint-Joseph-de-Sorel',
+    value: 'CA/QC/Saint-Joseph-de-Sorel',
+  },
+  {
+    label: 'Sorel-Tracy',
+    value: 'CA/QC/Sorel-Tracy',
+  },
+  {
+    label: 'Sainte-Anne-de-Sorel',
+    value: 'CA/QC/Sainte-Anne-de-Sorel',
+  },
+  {
+    label: 'Yamaska',
+    value: 'CA/QC/Yamaska',
+  },
+  {
+    label: 'Saint-Pie',
+    value: 'CA/QC/Saint-Pie',
+  },
+  {
+    label: 'Saint-Damase',
+    value: 'CA/QC/Saint-Damase',
+  },
+  {
+    label: 'La Présentation',
+    value: 'CA/QC/La Présentation',
+  },
+  {
+    label: 'Saint-Hyacinthe',
+    value: 'CA/QC/Saint-Hyacinthe',
+  },
+  {
+    label: 'Saint-Dominique',
+    value: 'CA/QC/Saint-Dominique',
+  },
+  {
+    label: 'Saint-Valérien-de-Milton',
+    value: 'CA/QC/Saint-Valérien-de-Milton',
+  },
+  {
+    label: 'Saint-Liboire',
+    value: 'CA/QC/Saint-Liboire',
+  },
+  {
+    label: 'Saint-Simon',
+    value: 'CA/QC/Saint-Simon',
+  },
+  {
+    label: 'Sainte-Hélène-de-Bagot',
+    value: 'CA/QC/Sainte-Hélène-de-Bagot',
+  },
+  {
+    label: 'Saint-Hugues',
+    value: 'CA/QC/Saint-Hugues',
+  },
+  {
+    label: 'Saint-Barnabé-Sud',
+    value: 'CA/QC/Saint-Barnabé-Sud',
+  },
+  {
+    label: 'Saint-Jude',
+    value: 'CA/QC/Saint-Jude',
+  },
+  {
+    label: 'Saint-Bernard-de-Michaudville',
+    value: 'CA/QC/Saint-Bernard-de-Michaudville',
+  },
+  {
+    label: 'Saint-Louis',
+    value: 'CA/QC/Saint-Louis',
+  },
+  {
+    label: 'Saint-Marcel-de-Richelieu',
+    value: 'CA/QC/Saint-Marcel-de-Richelieu',
+  },
+  {
+    label: 'Ange-Gardien',
+    value: 'CA/QC/Ange-Gardien',
+  },
+  {
+    label: "Saint-Paul-d'Abbotsford",
+    value: "CA/QC/Saint-Paul-d'Abbotsford",
+  },
+  {
+    label: 'Saint-Césaire',
+    value: 'CA/QC/Saint-Césaire',
+  },
+  {
+    label: 'Sainte-Angèle-de-Monnoir',
+    value: 'CA/QC/Sainte-Angèle-de-Monnoir',
+  },
+  {
+    label: 'Rougemont',
+    value: 'CA/QC/Rougemont',
+  },
+  {
+    label: 'Marieville',
+    value: 'CA/QC/Marieville',
+  },
+  {
+    label: 'Richelieu',
+    value: 'CA/QC/Richelieu',
+  },
+  {
+    label: 'Saint-Mathias-sur-Richelieu',
+    value: 'CA/QC/Saint-Mathias-sur-Richelieu',
+  },
+  {
+    label: 'Venise-en-Québec',
+    value: 'CA/QC/Venise-en-Québec',
+  },
+  {
+    label: 'Saint-Georges-de-Clarenceville',
+    value: 'CA/QC/Saint-Georges-de-Clarenceville',
+  },
+  {
+    label: 'Noyan',
+    value: 'CA/QC/Noyan',
+  },
+  {
+    label: 'Lacolle',
+    value: 'CA/QC/Lacolle',
+  },
+  {
+    label: 'Saint-Valentin',
+    value: 'CA/QC/Saint-Valentin',
+  },
+  {
+    label: "Saint-Paul-de-l'Île-aux-Noix",
+    value: "CA/QC/Saint-Paul-de-l'Île-aux-Noix",
+  },
+  {
+    label: 'Henryville',
+    value: 'CA/QC/Henryville',
+  },
+  {
+    label: 'Saint-Sébastien',
+    value: 'CA/QC/Saint-Sébastien',
+  },
+  {
+    label: 'Saint-Alexandre',
+    value: 'CA/QC/Saint-Alexandre',
+  },
+  {
+    label: 'Saint-Blaise-sur-Richelieu',
+    value: 'CA/QC/Saint-Blaise-sur-Richelieu',
+  },
+  {
+    label: 'Saint-Jean-sur-Richelieu',
+    value: 'CA/QC/Saint-Jean-sur-Richelieu',
+  },
+  {
+    label: 'Mont-Saint-Grégoire',
+    value: 'CA/QC/Mont-Saint-Grégoire',
+  },
+  {
+    label: "Sainte-Brigide-d'Iberville",
+    value: "CA/QC/Sainte-Brigide-d'Iberville",
+  },
+  {
+    label: 'Chambly',
+    value: 'CA/QC/Chambly',
+  },
+  {
+    label: 'Carignan',
+    value: 'CA/QC/Carignan',
+  },
+  {
+    label: 'Saint-Basile-le-Grand',
+    value: 'CA/QC/Saint-Basile-le-Grand',
+  },
+  {
+    label: 'McMasterville',
+    value: 'CA/QC/McMasterville',
+  },
+  {
+    label: 'Otterburn Park',
+    value: 'CA/QC/Otterburn Park',
+  },
+  {
+    label: 'Saint-Jean-Baptiste',
+    value: 'CA/QC/Saint-Jean-Baptiste',
+  },
+  {
+    label: 'Mont-Saint-Hilaire',
+    value: 'CA/QC/Mont-Saint-Hilaire',
+  },
+  {
+    label: 'Beloeil',
+    value: 'CA/QC/Beloeil',
+  },
+  {
+    label: 'Saint-Mathieu-de-Beloeil',
+    value: 'CA/QC/Saint-Mathieu-de-Beloeil',
+  },
+  {
+    label: 'Saint-Marc-sur-Richelieu',
+    value: 'CA/QC/Saint-Marc-sur-Richelieu',
+  },
+  {
+    label: 'Saint-Charles-sur-Richelieu',
+    value: 'CA/QC/Saint-Charles-sur-Richelieu',
+  },
+  {
+    label: 'Saint-Denis-sur-Richelieu',
+    value: 'CA/QC/Saint-Denis-sur-Richelieu',
+  },
+  {
+    label: 'Saint-Antoine-sur-Richelieu',
+    value: 'CA/QC/Saint-Antoine-sur-Richelieu',
+  },
+  {
+    label: 'Brossard',
+    value: 'CA/QC/Brossard',
+  },
+  {
+    label: 'Saint-Lambert',
+    value: 'CA/QC/Saint-Lambert',
+  },
+  {
+    label: 'Boucherville',
+    value: 'CA/QC/Boucherville',
+  },
+  {
+    label: 'Saint-Bruno-de-Montarville',
+    value: 'CA/QC/Saint-Bruno-de-Montarville',
+  },
+  {
+    label: 'Longueuil',
+    value: 'CA/QC/Longueuil',
+  },
+  {
+    label: 'Sainte-Julie',
+    value: 'CA/QC/Sainte-Julie',
+  },
+  {
+    label: 'Saint-Amable',
+    value: 'CA/QC/Saint-Amable',
+  },
+  {
+    label: 'Varennes',
+    value: 'CA/QC/Varennes',
+  },
+  {
+    label: 'Verchères',
+    value: 'CA/QC/Verchères',
+  },
+  {
+    label: 'Calixa-Lavallée',
+    value: 'CA/QC/Calixa-Lavallée',
+  },
+  {
+    label: 'Contrecoeur',
+    value: 'CA/QC/Contrecoeur',
+  },
+  {
+    label: 'Charlemagne',
+    value: 'CA/QC/Charlemagne',
+  },
+  {
+    label: 'Repentigny',
+    value: 'CA/QC/Repentigny',
+  },
+  {
+    label: "L'Assomption",
+    value: "CA/QC/L'Assomption",
+  },
+  {
+    label: "L'Épiphanie",
+    value: "CA/QC/L'Épiphanie",
+  },
+  {
+    label: 'Saint-Paul',
+    value: 'CA/QC/Saint-Paul',
+  },
+  {
+    label: 'Crabtree',
+    value: 'CA/QC/Crabtree',
+  },
+  {
+    label: 'Joliette',
+    value: 'CA/QC/Joliette',
+  },
+  {
+    label: 'Saint-Thomas',
+    value: 'CA/QC/Saint-Thomas',
+  },
+  {
+    label: 'Notre-Dame-des-Prairies',
+    value: 'CA/QC/Notre-Dame-des-Prairies',
+  },
+  {
+    label: 'Saint-Charles-Borromée',
+    value: 'CA/QC/Saint-Charles-Borromée',
+  },
+  {
+    label: 'Saint-Ambroise-de-Kildare',
+    value: 'CA/QC/Saint-Ambroise-de-Kildare',
+  },
+  {
+    label: 'Notre-Dame-de-Lourdes',
+    value: 'CA/QC/Notre-Dame-de-Lourdes',
+  },
+  {
+    label: 'Sainte-Mélanie',
+    value: 'CA/QC/Sainte-Mélanie',
+  },
+  {
+    label: 'Saint-Félix-de-Valois',
+    value: 'CA/QC/Saint-Félix-de-Valois',
+  },
+  {
+    label: 'Saint-Jean-de-Matha',
+    value: 'CA/QC/Saint-Jean-de-Matha',
+  },
+  {
+    label: 'Sainte-Béatrix',
+    value: 'CA/QC/Sainte-Béatrix',
+  },
+  {
+    label: 'Saint-Alphonse-Rodriguez',
+    value: 'CA/QC/Saint-Alphonse-Rodriguez',
+  },
+  {
+    label: 'Sainte-Marcelline-de-Kildare',
+    value: 'CA/QC/Sainte-Marcelline-de-Kildare',
+  },
+  {
+    label: 'Rawdon',
+    value: 'CA/QC/Rawdon',
+  },
+  {
+    label: 'Chertsey',
+    value: 'CA/QC/Chertsey',
+  },
+  {
+    label: 'Entrelacs',
+    value: 'CA/QC/Entrelacs',
+  },
+  {
+    label: 'Notre-Dame-de-la-Merci',
+    value: 'CA/QC/Notre-Dame-de-la-Merci',
+  },
+  {
+    label: 'Saint-Donat',
+    value: 'CA/QC/Saint-Donat',
+  },
+  {
+    label: "Sainte-Émélie-de-l'Énergie",
+    value: "CA/QC/Sainte-Émélie-de-l'Énergie",
+  },
+  {
+    label: 'Saint-Zénon',
+    value: 'CA/QC/Saint-Zénon',
+  },
+  {
+    label: 'Saint-Michel-des-Saints',
+    value: 'CA/QC/Saint-Michel-des-Saints',
+  },
+  {
+    label: 'Saint-Jacques',
+    value: 'CA/QC/Saint-Jacques',
+  },
+  {
+    label: 'Saint-Alexis',
+    value: 'CA/QC/Saint-Alexis',
+  },
+  {
+    label: 'Saint-Esprit',
+    value: 'CA/QC/Saint-Esprit',
+  },
+  {
+    label: "Saint-Roch-de-l'Achigan",
+    value: "CA/QC/Saint-Roch-de-l'Achigan",
+  },
+  {
+    label: 'Saint-Roch-Ouest',
+    value: 'CA/QC/Saint-Roch-Ouest',
+  },
+  {
+    label: 'Saint-Lin--Laurentides',
+    value: 'CA/QC/Saint-Lin--Laurentides',
+  },
+  {
+    label: 'Saint-Calixte',
+    value: 'CA/QC/Saint-Calixte',
+  },
+  {
+    label: 'Sainte-Julienne',
+    value: 'CA/QC/Sainte-Julienne',
+  },
+  {
+    label: 'Terrebonne',
+    value: 'CA/QC/Terrebonne',
+  },
+  {
+    label: 'Mascouche',
+    value: 'CA/QC/Mascouche',
+  },
+  {
+    label: 'Laval',
+    value: 'CA/QC/Laval',
+  },
+  {
+    label: 'Montréal-Est',
+    value: 'CA/QC/Montréal-Est',
+  },
+  {
+    label: 'Montréal',
+    value: 'CA/QC/Montréal',
+  },
+  {
+    label: 'Westmount',
+    value: 'CA/QC/Westmount',
+  },
+  {
+    label: 'Montréal-Ouest',
+    value: 'CA/QC/Montréal-Ouest',
+  },
+  {
+    label: 'Côte-Saint-Luc',
+    value: 'CA/QC/Côte-Saint-Luc',
+  },
+  {
+    label: 'Hampstead',
+    value: 'CA/QC/Hampstead',
+  },
+  {
+    label: 'Mont-Royal',
+    value: 'CA/QC/Mont-Royal',
+  },
+  {
+    label: 'Dorval',
+    value: 'CA/QC/Dorval',
+  },
+  {
+    label: "L'Île-Dorval",
+    value: "CA/QC/L'Île-Dorval",
+  },
+  {
+    label: 'Pointe-Claire',
+    value: 'CA/QC/Pointe-Claire',
+  },
+  {
+    label: 'Kirkland',
+    value: 'CA/QC/Kirkland',
+  },
+  {
+    label: 'Beaconsfield',
+    value: 'CA/QC/Beaconsfield',
+  },
+  {
+    label: "Baie-D'Urfé",
+    value: "CA/QC/Baie-D'Urfé",
+  },
+  {
+    label: 'Sainte-Anne-de-Bellevue',
+    value: 'CA/QC/Sainte-Anne-de-Bellevue',
+  },
+  {
+    label: 'Dollard-Des Ormeaux',
+    value: 'CA/QC/Dollard-Des Ormeaux',
+  },
+  {
+    label: 'Saint-Mathieu',
+    value: 'CA/QC/Saint-Mathieu',
+  },
+  {
+    label: 'Saint-Philippe',
+    value: 'CA/QC/Saint-Philippe',
+  },
+  {
+    label: 'La Prairie',
+    value: 'CA/QC/La Prairie',
+  },
+  {
+    label: 'Candiac',
+    value: 'CA/QC/Candiac',
+  },
+  {
+    label: 'Delson',
+    value: 'CA/QC/Delson',
+  },
+  {
+    label: 'Sainte-Catherine',
+    value: 'CA/QC/Sainte-Catherine',
+  },
+  {
+    label: 'Saint-Constant',
+    value: 'CA/QC/Saint-Constant',
+  },
+  {
+    label: 'Mercier',
+    value: 'CA/QC/Mercier',
+  },
+  {
+    label: 'Châteauguay',
+    value: 'CA/QC/Châteauguay',
+  },
+  {
+    label: 'Léry',
+    value: 'CA/QC/Léry',
+  },
+  {
+    label: 'Sainte-Clotilde',
+    value: 'CA/QC/Sainte-Clotilde',
+  },
+  {
+    label: 'Saint-Patrice-de-Sherrington',
+    value: 'CA/QC/Saint-Patrice-de-Sherrington',
+  },
+  {
+    label: 'Napierville',
+    value: 'CA/QC/Napierville',
+  },
+  {
+    label: 'Saint-Cyprien-de-Napierville',
+    value: 'CA/QC/Saint-Cyprien-de-Napierville',
+  },
+  {
+    label: 'Saint-Jacques-le-Mineur',
+    value: 'CA/QC/Saint-Jacques-le-Mineur',
+  },
+  {
+    label: 'Saint-Édouard',
+    value: 'CA/QC/Saint-Édouard',
+  },
+  {
+    label: 'Saint-Michel',
+    value: 'CA/QC/Saint-Michel',
+  },
+  {
+    label: 'Saint-Rémi',
+    value: 'CA/QC/Saint-Rémi',
+  },
+  {
+    label: 'Franklin',
+    value: 'CA/QC/Franklin',
+  },
+  {
+    label: 'Saint-Chrysostome',
+    value: 'CA/QC/Saint-Chrysostome',
+  },
+  {
+    label: 'Howick',
+    value: 'CA/QC/Howick',
+  },
+  {
+    label: 'Ormstown',
+    value: 'CA/QC/Ormstown',
+  },
+  {
+    label: 'Hinchinbrooke',
+    value: 'CA/QC/Hinchinbrooke',
+  },
+  {
+    label: 'Elgin',
+    value: 'CA/QC/Elgin',
+  },
+  {
+    label: 'Huntingdon',
+    value: 'CA/QC/Huntingdon',
+  },
+  {
+    label: 'Sainte-Barbe',
+    value: 'CA/QC/Sainte-Barbe',
+  },
+  {
+    label: 'Saint-Anicet',
+    value: 'CA/QC/Saint-Anicet',
+  },
+  {
+    label: 'Saint-Urbain-Premier',
+    value: 'CA/QC/Saint-Urbain-Premier',
+  },
+  {
+    label: 'Sainte-Martine',
+    value: 'CA/QC/Sainte-Martine',
+  },
+  {
+    label: 'Beauharnois',
+    value: 'CA/QC/Beauharnois',
+  },
+  {
+    label: 'Saint-Étienne-de-Beauharnois',
+    value: 'CA/QC/Saint-Étienne-de-Beauharnois',
+  },
+  {
+    label: 'Saint-Stanislas-de-Kostka',
+    value: 'CA/QC/Saint-Stanislas-de-Kostka',
+  },
+  {
+    label: 'Salaberry-de-Valleyfield',
+    value: 'CA/QC/Salaberry-de-Valleyfield',
+  },
+  {
+    label: 'Rivière-Beaudette',
+    value: 'CA/QC/Rivière-Beaudette',
+  },
+  {
+    label: 'Saint-Télesphore',
+    value: 'CA/QC/Saint-Télesphore',
+  },
+  {
+    label: 'Saint-Polycarpe',
+    value: 'CA/QC/Saint-Polycarpe',
+  },
+  {
+    label: 'Saint-Zotique',
+    value: 'CA/QC/Saint-Zotique',
+  },
+  {
+    label: 'Les Coteaux',
+    value: 'CA/QC/Les Coteaux',
+  },
+  {
+    label: 'Coteau-du-Lac',
+    value: 'CA/QC/Coteau-du-Lac',
+  },
+  {
+    label: 'Saint-Clet',
+    value: 'CA/QC/Saint-Clet',
+  },
+  {
+    label: 'Les Cèdres',
+    value: 'CA/QC/Les Cèdres',
+  },
+  {
+    label: "L'Île-Perrot",
+    value: "CA/QC/L'Île-Perrot",
+  },
+  {
+    label: "Notre-Dame-de-l'Île-Perrot",
+    value: "CA/QC/Notre-Dame-de-l'Île-Perrot",
+  },
+  {
+    label: 'Pincourt',
+    value: 'CA/QC/Pincourt',
+  },
+  {
+    label: 'Terrasse-Vaudreuil',
+    value: 'CA/QC/Terrasse-Vaudreuil',
+  },
+  {
+    label: 'Vaudreuil-Dorion',
+    value: 'CA/QC/Vaudreuil-Dorion',
+  },
+  {
+    label: "L'Île-Cadieux",
+    value: "CA/QC/L'Île-Cadieux",
+  },
+  {
+    label: 'Hudson',
+    value: 'CA/QC/Hudson',
+  },
+  {
+    label: 'Saint-Lazare',
+    value: 'CA/QC/Saint-Lazare',
+  },
+  {
+    label: 'Sainte-Marthe',
+    value: 'CA/QC/Sainte-Marthe',
+  },
+  {
+    label: 'Sainte-Justine-de-Newton',
+    value: 'CA/QC/Sainte-Justine-de-Newton',
+  },
+  {
+    label: 'Très-Saint-Rédempteur',
+    value: 'CA/QC/Très-Saint-Rédempteur',
+  },
+  {
+    label: 'Rigaud',
+    value: 'CA/QC/Rigaud',
+  },
+  {
+    label: 'Saint-Eustache',
+    value: 'CA/QC/Saint-Eustache',
+  },
+  {
+    label: 'Deux-Montagnes',
+    value: 'CA/QC/Deux-Montagnes',
+  },
+  {
+    label: 'Sainte-Marthe-sur-le-Lac',
+    value: 'CA/QC/Sainte-Marthe-sur-le-Lac',
+  },
+  {
+    label: 'Pointe-Calumet',
+    value: 'CA/QC/Pointe-Calumet',
+  },
+  {
+    label: 'Saint-Joseph-du-Lac',
+    value: 'CA/QC/Saint-Joseph-du-Lac',
+  },
+  {
+    label: 'Oka',
+    value: 'CA/QC/Oka',
+  },
+  {
+    label: 'Saint-Placide',
+    value: 'CA/QC/Saint-Placide',
+  },
+  {
+    label: 'Boisbriand',
+    value: 'CA/QC/Boisbriand',
+  },
+  {
+    label: 'Sainte-Thérèse',
+    value: 'CA/QC/Sainte-Thérèse',
+  },
+  {
+    label: 'Blainville',
+    value: 'CA/QC/Blainville',
+  },
+  {
+    label: 'Rosemère',
+    value: 'CA/QC/Rosemère',
+  },
+  {
+    label: 'Lorraine',
+    value: 'CA/QC/Lorraine',
+  },
+  {
+    label: 'Bois-des-Filion',
+    value: 'CA/QC/Bois-des-Filion',
+  },
+  {
+    label: 'Sainte-Anne-des-Plaines',
+    value: 'CA/QC/Sainte-Anne-des-Plaines',
+  },
+  {
+    label: 'Mirabel',
+    value: 'CA/QC/Mirabel',
+  },
+  {
+    label: 'Saint-Colomban',
+    value: 'CA/QC/Saint-Colomban',
+  },
+  {
+    label: 'Saint-Jérôme',
+    value: 'CA/QC/Saint-Jérôme',
+  },
+  {
+    label: 'Sainte-Sophie',
+    value: 'CA/QC/Sainte-Sophie',
+  },
+  {
+    label: 'Prévost',
+    value: 'CA/QC/Prévost',
+  },
+  {
+    label: 'Saint-Hippolyte',
+    value: 'CA/QC/Saint-Hippolyte',
+  },
+  {
+    label: "Saint-André-d'Argenteuil",
+    value: "CA/QC/Saint-André-d'Argenteuil",
+  },
+  {
+    label: 'Lachute',
+    value: 'CA/QC/Lachute',
+  },
+  {
+    label: 'Mille-Isles',
+    value: 'CA/QC/Mille-Isles',
+  },
+  {
+    label: 'Brownsburg-Chatham',
+    value: 'CA/QC/Brownsburg-Chatham',
+  },
+  {
+    label: 'Grenville-sur-la-Rouge',
+    value: 'CA/QC/Grenville-sur-la-Rouge',
+  },
+  {
+    label: 'Estérel',
+    value: 'CA/QC/Estérel',
+  },
+  {
+    label: 'Sainte-Marguerite-du-Lac-Masson',
+    value: 'CA/QC/Sainte-Marguerite-du-Lac-Masson',
+  },
+  {
+    label: 'Sainte-Adèle',
+    value: 'CA/QC/Sainte-Adèle',
+  },
+  {
+    label: 'Piedmont',
+    value: 'CA/QC/Piedmont',
+  },
+  {
+    label: 'Saint-Sauveur',
+    value: 'CA/QC/Saint-Sauveur',
+  },
+  {
+    label: 'Morin-Heights',
+    value: 'CA/QC/Morin-Heights',
+  },
+  {
+    label: 'Lac-des-Seize-Îles',
+    value: 'CA/QC/Lac-des-Seize-Îles',
+  },
+  {
+    label: 'Wentworth-Nord',
+    value: 'CA/QC/Wentworth-Nord',
+  },
+  {
+    label: "Saint-Adolphe-d'Howard",
+    value: "CA/QC/Saint-Adolphe-d'Howard",
+  },
+  {
+    label: 'Val-Morin',
+    value: 'CA/QC/Val-Morin',
+  },
+  {
+    label: 'Lantier',
+    value: 'CA/QC/Lantier',
+  },
+  {
+    label: 'Sainte-Lucie-des-Laurentides',
+    value: 'CA/QC/Sainte-Lucie-des-Laurentides',
+  },
+  {
+    label: 'Sainte-Agathe-des-Monts',
+    value: 'CA/QC/Sainte-Agathe-des-Monts',
+  },
+  {
+    label: 'Ivry-sur-le-Lac',
+    value: 'CA/QC/Ivry-sur-le-Lac',
+  },
+  {
+    label: 'Saint-Faustin--Lac-Carré',
+    value: 'CA/QC/Saint-Faustin--Lac-Carré',
+  },
+  {
+    label: 'Barkmere',
+    value: 'CA/QC/Barkmere',
+  },
+  {
+    label: 'Montcalm',
+    value: 'CA/QC/Montcalm',
+  },
+  {
+    label: 'Huberdeau',
+    value: 'CA/QC/Huberdeau',
+  },
+  {
+    label: 'Lac-Supérieur',
+    value: 'CA/QC/Lac-Supérieur',
+  },
+  {
+    label: 'Val-des-Lacs',
+    value: 'CA/QC/Val-des-Lacs',
+  },
+  {
+    label: 'Mont-Tremblant',
+    value: 'CA/QC/Mont-Tremblant',
+  },
+  {
+    label: 'La Conception',
+    value: 'CA/QC/La Conception',
+  },
+  {
+    label: 'Labelle',
+    value: 'CA/QC/Labelle',
+  },
+  {
+    label: 'Lac-Tremblant-Nord',
+    value: 'CA/QC/Lac-Tremblant-Nord',
+  },
+  {
+    label: 'La Minerve',
+    value: 'CA/QC/La Minerve',
+  },
+  {
+    label: 'Notre-Dame-du-Laus',
+    value: 'CA/QC/Notre-Dame-du-Laus',
+  },
+  {
+    label: 'Notre-Dame-de-Pontmain',
+    value: 'CA/QC/Notre-Dame-de-Pontmain',
+  },
+  {
+    label: 'Lac-du-Cerf',
+    value: 'CA/QC/Lac-du-Cerf',
+  },
+  {
+    label: 'Saint-Aimé-du-Lac-des-Îles',
+    value: 'CA/QC/Saint-Aimé-du-Lac-des-Îles',
+  },
+  {
+    label: 'Kiamika',
+    value: 'CA/QC/Kiamika',
+  },
+  {
+    label: 'Nominingue',
+    value: 'CA/QC/Nominingue',
+  },
+  {
+    label: 'Rivière-Rouge',
+    value: 'CA/QC/Rivière-Rouge',
+  },
+  {
+    label: 'La Macaza',
+    value: 'CA/QC/La Macaza',
+  },
+  {
+    label: "L'Ascension",
+    value: "CA/QC/L'Ascension",
+  },
+  {
+    label: 'Chute-Saint-Philippe',
+    value: 'CA/QC/Chute-Saint-Philippe',
+  },
+  {
+    label: 'Lac-des-Écorces',
+    value: 'CA/QC/Lac-des-Écorces',
+  },
+  {
+    label: 'Mont-Laurier',
+    value: 'CA/QC/Mont-Laurier',
+  },
+  {
+    label: 'Ferme-Neuve',
+    value: 'CA/QC/Ferme-Neuve',
+  },
+  {
+    label: 'Lac-Saint-Paul',
+    value: 'CA/QC/Lac-Saint-Paul',
+  },
+  {
+    label: 'Mont-Saint-Michel',
+    value: 'CA/QC/Mont-Saint-Michel',
+  },
+  {
+    label: 'Sainte-Anne-du-Lac',
+    value: 'CA/QC/Sainte-Anne-du-Lac',
+  },
+  {
+    label: 'Fassett',
+    value: 'CA/QC/Fassett',
+  },
+  {
+    label: 'Montebello',
+    value: 'CA/QC/Montebello',
+  },
+  {
+    label: 'Notre-Dame-de-Bonsecours',
+    value: 'CA/QC/Notre-Dame-de-Bonsecours',
+  },
+  {
+    label: 'Notre-Dame-de-la-Paix',
+    value: 'CA/QC/Notre-Dame-de-la-Paix',
+  },
+  {
+    label: 'Saint-André-Avellin',
+    value: 'CA/QC/Saint-André-Avellin',
+  },
+  {
+    label: 'Papineauville',
+    value: 'CA/QC/Papineauville',
+  },
+  {
+    label: 'Plaisance',
+    value: 'CA/QC/Plaisance',
+  },
+  {
+    label: 'Thurso',
+    value: 'CA/QC/Thurso',
+  },
+  {
+    label: 'Mayo',
+    value: 'CA/QC/Mayo',
+  },
+  {
+    label: 'Saint-Sixte',
+    value: 'CA/QC/Saint-Sixte',
+  },
+  {
+    label: 'Ripon',
+    value: 'CA/QC/Ripon',
+  },
+  {
+    label: 'Mulgrave-et-Derry',
+    value: 'CA/QC/Mulgrave-et-Derry',
+  },
+  {
+    label: 'Montpellier',
+    value: 'CA/QC/Montpellier',
+  },
+  {
+    label: 'Lac-Simon',
+    value: 'CA/QC/Lac-Simon',
+  },
+  {
+    label: 'Chénéville',
+    value: 'CA/QC/Chénéville',
+  },
+  {
+    label: 'Namur',
+    value: 'CA/QC/Namur',
+  },
+  {
+    label: 'Boileau',
+    value: 'CA/QC/Boileau',
+  },
+  {
+    label: 'Saint-Émile-de-Suffolk',
+    value: 'CA/QC/Saint-Émile-de-Suffolk',
+  },
+  {
+    label: 'Lac-des-Plages',
+    value: 'CA/QC/Lac-des-Plages',
+  },
+  {
+    label: 'Duhamel',
+    value: 'CA/QC/Duhamel',
+  },
+  {
+    label: 'Val-des-Bois',
+    value: 'CA/QC/Val-des-Bois',
+  },
+  {
+    label: 'Bowman',
+    value: 'CA/QC/Bowman',
+  },
+  {
+    label: 'Gatineau',
+    value: 'CA/QC/Gatineau',
+  },
+  {
+    label: "L'Ange-Gardien",
+    value: "CA/QC/L'Ange-Gardien",
+  },
+  {
+    label: 'Notre-Dame-de-la-Salette',
+    value: 'CA/QC/Notre-Dame-de-la-Salette',
+  },
+  {
+    label: 'Val-des-Monts',
+    value: 'CA/QC/Val-des-Monts',
+  },
+  {
+    label: 'Cantley',
+    value: 'CA/QC/Cantley',
+  },
+  {
+    label: 'Chelsea',
+    value: 'CA/QC/Chelsea',
+  },
+  {
+    label: 'Pontiac',
+    value: 'CA/QC/Pontiac',
+  },
+  {
+    label: 'La Pêche',
+    value: 'CA/QC/La Pêche',
+  },
+  {
+    label: 'Denholm',
+    value: 'CA/QC/Denholm',
+  },
+  {
+    label: 'Kazabazua',
+    value: 'CA/QC/Kazabazua',
+  },
+  {
+    label: 'Lac-Sainte-Marie',
+    value: 'CA/QC/Lac-Sainte-Marie',
+  },
+  {
+    label: 'Gracefield',
+    value: 'CA/QC/Gracefield',
+  },
+  {
+    label: 'Cayamant',
+    value: 'CA/QC/Cayamant',
+  },
+  {
+    label: 'Blue Sea',
+    value: 'CA/QC/Blue Sea',
+  },
+  {
+    label: 'Bouchette',
+    value: 'CA/QC/Bouchette',
+  },
+  {
+    label: 'Sainte-Thérèse-de-la-Gatineau',
+    value: 'CA/QC/Sainte-Thérèse-de-la-Gatineau',
+  },
+  {
+    label: 'Messines',
+    value: 'CA/QC/Messines',
+  },
+  {
+    label: 'Maniwaki',
+    value: 'CA/QC/Maniwaki',
+  },
+  {
+    label: 'Déléage',
+    value: 'CA/QC/Déléage',
+  },
+  {
+    label: 'Egan-Sud',
+    value: 'CA/QC/Egan-Sud',
+  },
+  {
+    label: 'Bois-Franc',
+    value: 'CA/QC/Bois-Franc',
+  },
+  {
+    label: 'Montcerf-Lytton',
+    value: 'CA/QC/Montcerf-Lytton',
+  },
+  {
+    label: 'Grand-Remous',
+    value: 'CA/QC/Grand-Remous',
+  },
+  {
+    label: 'Bristol',
+    value: 'CA/QC/Bristol',
+  },
+  {
+    label: 'Shawville',
+    value: 'CA/QC/Shawville',
+  },
+  {
+    label: 'Clarendon',
+    value: 'CA/QC/Clarendon',
+  },
+  {
+    label: 'Bryson',
+    value: 'CA/QC/Bryson',
+  },
+  {
+    label: "Campbell's Bay",
+    value: "CA/QC/Campbell's Bay",
+  },
+  {
+    label: "L'Île-du-Grand-Calumet",
+    value: "CA/QC/L'Île-du-Grand-Calumet",
+  },
+  {
+    label: 'Litchfield',
+    value: 'CA/QC/Litchfield',
+  },
+  {
+    label: 'Thorne',
+    value: 'CA/QC/Thorne',
+  },
+  {
+    label: 'Alleyn-et-Cawood',
+    value: 'CA/QC/Alleyn-et-Cawood',
+  },
+  {
+    label: 'Otter Lake',
+    value: 'CA/QC/Otter Lake',
+  },
+  {
+    label: 'Mansfield-et-Pontefract',
+    value: 'CA/QC/Mansfield-et-Pontefract',
+  },
+  {
+    label: 'Waltham',
+    value: 'CA/QC/Waltham',
+  },
+  {
+    label: "L'Isle-aux-Allumettes",
+    value: "CA/QC/L'Isle-aux-Allumettes",
+  },
+  {
+    label: 'Sheenboro',
+    value: 'CA/QC/Sheenboro',
+  },
+  {
+    label: 'Rapides-des-Joachims',
+    value: 'CA/QC/Rapides-des-Joachims',
+  },
+  {
+    label: 'Témiscaming',
+    value: 'CA/QC/Témiscaming',
+  },
+  {
+    label: 'Kipawa',
+    value: 'CA/QC/Kipawa',
+  },
+  {
+    label: 'Béarn',
+    value: 'CA/QC/Béarn',
+  },
+  {
+    label: 'Ville-Marie',
+    value: 'CA/QC/Ville-Marie',
+  },
+  {
+    label: 'Duhamel-Ouest',
+    value: 'CA/QC/Duhamel-Ouest',
+  },
+  {
+    label: 'Lorrainville',
+    value: 'CA/QC/Lorrainville',
+  },
+  {
+    label: 'Saint-Bruno-de-Guigues',
+    value: 'CA/QC/Saint-Bruno-de-Guigues',
+  },
+  {
+    label: 'Laverlochère',
+    value: 'CA/QC/Laverlochère',
+  },
+  {
+    label: 'Fugèreville',
+    value: 'CA/QC/Fugèreville',
+  },
+  {
+    label: 'Belleterre',
+    value: 'CA/QC/Belleterre',
+  },
+  {
+    label: 'Laforce',
+    value: 'CA/QC/Laforce',
+  },
+  {
+    label: 'Moffet',
+    value: 'CA/QC/Moffet',
+  },
+  {
+    label: 'Saint-Eugène-de-Guigues',
+    value: 'CA/QC/Saint-Eugène-de-Guigues',
+  },
+  {
+    label: 'Notre-Dame-du-Nord',
+    value: 'CA/QC/Notre-Dame-du-Nord',
+  },
+  {
+    label: 'Rémigny',
+    value: 'CA/QC/Rémigny',
+  },
+  {
+    label: 'Rouyn-Noranda',
+    value: 'CA/QC/Rouyn-Noranda',
+  },
+  {
+    label: 'Duparquet',
+    value: 'CA/QC/Duparquet',
+  },
+  {
+    label: 'Rapide-Danseur',
+    value: 'CA/QC/Rapide-Danseur',
+  },
+  {
+    label: 'Roquemaure',
+    value: 'CA/QC/Roquemaure',
+  },
+  {
+    label: 'Gallichan',
+    value: 'CA/QC/Gallichan',
+  },
+  {
+    label: 'Palmarolle',
+    value: 'CA/QC/Palmarolle',
+  },
+  {
+    label: 'Sainte-Germaine-Boulé',
+    value: 'CA/QC/Sainte-Germaine-Boulé',
+  },
+  {
+    label: 'Poularies',
+    value: 'CA/QC/Poularies',
+  },
+  {
+    label: 'Taschereau',
+    value: 'CA/QC/Taschereau',
+  },
+  {
+    label: 'Authier',
+    value: 'CA/QC/Authier',
+  },
+  {
+    label: 'Macamic',
+    value: 'CA/QC/Macamic',
+  },
+  {
+    label: 'Clerval',
+    value: 'CA/QC/Clerval',
+  },
+  {
+    label: 'La Reine',
+    value: 'CA/QC/La Reine',
+  },
+  {
+    label: 'Dupuy',
+    value: 'CA/QC/Dupuy',
+  },
+  {
+    label: 'La Sarre',
+    value: 'CA/QC/La Sarre',
+  },
+  {
+    label: 'Chazel',
+    value: 'CA/QC/Chazel',
+  },
+  {
+    label: 'Authier-Nord',
+    value: 'CA/QC/Authier-Nord',
+  },
+  {
+    label: 'Val-Saint-Gilles',
+    value: 'CA/QC/Val-Saint-Gilles',
+  },
+  {
+    label: 'Normétal',
+    value: 'CA/QC/Normétal',
+  },
+  {
+    label: 'Champneuf',
+    value: 'CA/QC/Champneuf',
+  },
+  {
+    label: 'Rochebaucourt',
+    value: 'CA/QC/Rochebaucourt',
+  },
+  {
+    label: 'La Morandière',
+    value: 'CA/QC/La Morandière',
+  },
+  {
+    label: 'Barraute',
+    value: 'CA/QC/Barraute',
+  },
+  {
+    label: 'La Corne',
+    value: 'CA/QC/La Corne',
+  },
+  {
+    label: 'La Motte',
+    value: 'CA/QC/La Motte',
+  },
+  {
+    label: "Saint-Mathieu-d'Harricana",
+    value: "CA/QC/Saint-Mathieu-d'Harricana",
+  },
+  {
+    label: 'Amos',
+    value: 'CA/QC/Amos',
+  },
+  {
+    label: 'Saint-Félix-de-Dalquier',
+    value: 'CA/QC/Saint-Félix-de-Dalquier',
+  },
+  {
+    label: 'Saint-Dominique-du-Rosaire',
+    value: 'CA/QC/Saint-Dominique-du-Rosaire',
+  },
+  {
+    label: 'Berry',
+    value: 'CA/QC/Berry',
+  },
+  {
+    label: 'Sainte-Gertrude-Manneville',
+    value: 'CA/QC/Sainte-Gertrude-Manneville',
+  },
+  {
+    label: 'Preissac',
+    value: 'CA/QC/Preissac',
+  },
+  {
+    label: "Val-d'Or",
+    value: "CA/QC/Val-d'Or",
+  },
+  {
+    label: 'Rivière-Héva',
+    value: 'CA/QC/Rivière-Héva',
+  },
+  {
+    label: 'Malartic',
+    value: 'CA/QC/Malartic',
+  },
+  {
+    label: 'Senneterre',
+    value: 'CA/QC/Senneterre',
+  },
+  {
+    label: 'Belcourt',
+    value: 'CA/QC/Belcourt',
+  },
+  {
+    label: 'La Tuque',
+    value: 'CA/QC/La Tuque',
+  },
+  {
+    label: 'La Bostonnais',
+    value: 'CA/QC/La Bostonnais',
+  },
+  {
+    label: 'Lac-Édouard',
+    value: 'CA/QC/Lac-Édouard',
+  },
+  {
+    label: 'Lac-Bouchette',
+    value: 'CA/QC/Lac-Bouchette',
+  },
+  {
+    label: 'Saint-François-de-Sales',
+    value: 'CA/QC/Saint-François-de-Sales',
+  },
+  {
+    label: 'Chambord',
+    value: 'CA/QC/Chambord',
+  },
+  {
+    label: 'Roberval',
+    value: 'CA/QC/Roberval',
+  },
+  {
+    label: 'Sainte-Hedwidge',
+    value: 'CA/QC/Sainte-Hedwidge',
+  },
+  {
+    label: 'Saint-Prime',
+    value: 'CA/QC/Saint-Prime',
+  },
+  {
+    label: 'Saint-Félicien',
+    value: 'CA/QC/Saint-Félicien',
+  },
+  {
+    label: 'Péribonka',
+    value: 'CA/QC/Péribonka',
+  },
+  {
+    label: 'Dolbeau-Mistassini',
+    value: 'CA/QC/Dolbeau-Mistassini',
+  },
+  {
+    label: 'Albanel',
+    value: 'CA/QC/Albanel',
+  },
+  {
+    label: 'Normandin',
+    value: 'CA/QC/Normandin',
+  },
+  {
+    label: 'Saint-Thomas-Didyme',
+    value: 'CA/QC/Saint-Thomas-Didyme',
+  },
+  {
+    label: 'Saint-Edmond-les-Plaines',
+    value: 'CA/QC/Saint-Edmond-les-Plaines',
+  },
+  {
+    label: 'Girardville',
+    value: 'CA/QC/Girardville',
+  },
+  {
+    label: 'Notre-Dame-de-Lorette',
+    value: 'CA/QC/Notre-Dame-de-Lorette',
+  },
+  {
+    label: "Saint-Eugène-d'Argentenay",
+    value: "CA/QC/Saint-Eugène-d'Argentenay",
+  },
+  {
+    label: 'Saint-Stanislas',
+    value: 'CA/QC/Saint-Stanislas',
+  },
+  {
+    label: 'Desbiens',
+    value: 'CA/QC/Desbiens',
+  },
+  {
+    label: 'Métabetchouan--Lac-à-la-Croix',
+    value: 'CA/QC/Métabetchouan--Lac-à-la-Croix',
+  },
+  {
+    label: 'Hébertville',
+    value: 'CA/QC/Hébertville',
+  },
+  {
+    label: 'Saint-Bruno',
+    value: 'CA/QC/Saint-Bruno',
+  },
+  {
+    label: 'Saint-Gédéon',
+    value: 'CA/QC/Saint-Gédéon',
+  },
+  {
+    label: 'Alma',
+    value: 'CA/QC/Alma',
+  },
+  {
+    label: 'Saint-Nazaire',
+    value: 'CA/QC/Saint-Nazaire',
+  },
+  {
+    label: 'Labrecque',
+    value: 'CA/QC/Labrecque',
+  },
+  {
+    label: 'Lamarche',
+    value: 'CA/QC/Lamarche',
+  },
+  {
+    label: 'Saint-Henri-de-Taillon',
+    value: 'CA/QC/Saint-Henri-de-Taillon',
+  },
+  {
+    label: 'Sainte-Monique',
+    value: 'CA/QC/Sainte-Monique',
+  },
+  {
+    label: 'Saint-Ludger-de-Milot',
+    value: 'CA/QC/Saint-Ludger-de-Milot',
+  },
+  {
+    label: 'Saguenay',
+    value: 'CA/QC/Saguenay',
+  },
+  {
+    label: 'Petit-Saguenay',
+    value: 'CA/QC/Petit-Saguenay',
+  },
+  {
+    label: "L'Anse-Saint-Jean",
+    value: "CA/QC/L'Anse-Saint-Jean",
+  },
+  {
+    label: 'Rivière-Éternité',
+    value: 'CA/QC/Rivière-Éternité',
+  },
+  {
+    label: 'Ferland-et-Boilleau',
+    value: 'CA/QC/Ferland-et-Boilleau',
+  },
+  {
+    label: "Saint-Félix-d'Otis",
+    value: "CA/QC/Saint-Félix-d'Otis",
+  },
+  {
+    label: 'Saint-Fulgence',
+    value: 'CA/QC/Saint-Fulgence',
+  },
+  {
+    label: 'Saint-Honoré',
+    value: 'CA/QC/Saint-Honoré',
+  },
+  {
+    label: 'Saint-David-de-Falardeau',
+    value: 'CA/QC/Saint-David-de-Falardeau',
+  },
+  {
+    label: 'Bégin',
+    value: 'CA/QC/Bégin',
+  },
+  {
+    label: 'Saint-Ambroise',
+    value: 'CA/QC/Saint-Ambroise',
+  },
+  {
+    label: 'Saint-Charles-de-Bourget',
+    value: 'CA/QC/Saint-Charles-de-Bourget',
+  },
+  {
+    label: 'Larouche',
+    value: 'CA/QC/Larouche',
+  },
+  {
+    label: 'Sacré-Coeur',
+    value: 'CA/QC/Sacré-Coeur',
+  },
+  {
+    label: 'Les Bergeronnes',
+    value: 'CA/QC/Les Bergeronnes',
+  },
+  {
+    label: 'Les Escoumins',
+    value: 'CA/QC/Les Escoumins',
+  },
+  {
+    label: 'Longue-Rive',
+    value: 'CA/QC/Longue-Rive',
+  },
+  {
+    label: 'Portneuf-sur-Mer',
+    value: 'CA/QC/Portneuf-sur-Mer',
+  },
+  {
+    label: 'Forestville',
+    value: 'CA/QC/Forestville',
+  },
+  {
+    label: 'Colombier',
+    value: 'CA/QC/Colombier',
+  },
+  {
+    label: 'Franquelin',
+    value: 'CA/QC/Franquelin',
+  },
+  {
+    label: 'Baie-Comeau',
+    value: 'CA/QC/Baie-Comeau',
+  },
+  {
+    label: 'Sept-Îles',
+    value: 'CA/QC/Sept-Îles',
+  },
+  {
+    label: 'Port-Cartier',
+    value: 'CA/QC/Port-Cartier',
+  },
+  {
+    label: 'Fermont',
+    value: 'CA/QC/Fermont',
+  },
+  {
+    label: 'Schefferville',
+    value: 'CA/QC/Schefferville',
+  },
+  {
+    label: 'Blanc-Sablon',
+    value: 'CA/QC/Blanc-Sablon',
+  },
+  {
+    label: 'Bonne-Espérance',
+    value: 'CA/QC/Bonne-Espérance',
+  },
+  {
+    label: 'Saint-Augustin',
+    value: 'CA/QC/Saint-Augustin',
+  },
+  {
+    label: 'Gros-Mécatina',
+    value: 'CA/QC/Gros-Mécatina',
+  },
+  {
+    label: 'Côte-Nord-du-Golfe-du-Saint-Laurent',
+    value: 'CA/QC/Côte-Nord-du-Golfe-du-Saint-Laurent',
+  },
+  {
+    label: "L'Île-d'Anticosti",
+    value: "CA/QC/L'Île-d'Anticosti",
+  },
+  {
+    label: 'Aguanish',
+    value: 'CA/QC/Aguanish',
+  },
+  {
+    label: 'Baie-Johan-Beetz',
+    value: 'CA/QC/Baie-Johan-Beetz',
+  },
+  {
+    label: 'Havre-Saint-Pierre',
+    value: 'CA/QC/Havre-Saint-Pierre',
+  },
+  {
+    label: 'Longue-Pointe-de-Mingan',
+    value: 'CA/QC/Longue-Pointe-de-Mingan',
+  },
+  {
+    label: 'Rivière-Saint-Jean',
+    value: 'CA/QC/Rivière-Saint-Jean',
+  },
+  {
+    label: 'Rivière-au-Tonnerre',
+    value: 'CA/QC/Rivière-au-Tonnerre',
+  },
+  {
+    label: 'Lebel-sur-Quévillon',
+    value: 'CA/QC/Lebel-sur-Quévillon',
+  },
+  {
+    label: 'Matagami',
+    value: 'CA/QC/Matagami',
+  },
+  {
+    label: 'Chapais',
+    value: 'CA/QC/Chapais',
+  },
+  {
+    label: 'Chibougamau',
+    value: 'CA/QC/Chibougamau',
+  },
+  {
+    label: 'Eeyou Istchee Baie-James',
+    value: 'CA/QC/Eeyou Istchee Baie-James',
   },
   {
     label: 'Cornwall',
