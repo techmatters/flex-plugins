@@ -138,12 +138,7 @@ const setUpComponents = (
   Components.setupTeamViewFilters();
   Components.setupWorkerDirectoryFilters();
 
-  const strings = getTemplateStrings();
-  if (featureFlags.enable_conferencing) {
-    setupConferenceComponents();
-    strings.TaskLineCallEndedTitle = strings.TaskLineCallLeaveTitle;
-    strings.HangupCallTooltip = strings.HangupCallLeaveTooltip;
-  }
+  if (featureFlags.enable_conferencing) setupConferenceComponents();
 };
 
 const setUpActions = (

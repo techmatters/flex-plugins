@@ -25,7 +25,7 @@ type Props = TaskContextProps;
 const Hangup: React.FC<Props> = ({ call, task, conference }) => {
   const participants = conference?.source?.participants || [];
 
-  if (!task || !call || !participants) {
+  if (!task || !call || participants.length === 0) {
     return null;
   }
 
