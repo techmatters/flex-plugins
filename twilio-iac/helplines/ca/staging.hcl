@@ -48,8 +48,8 @@ locals {
           checkcounsellors_function_sid: "ZHa0218fd2a7b2e3aa800ab78e0367acf7"
           checkcounsellors_function_url: "https://test-service-dee-4583.twil.io/check_counsellors"
           g2tonen_queue_sid: ""
-          g2tonfr_queue_sid: "WQ35e4fceff9d82cc1d9ce2a49a1c93330"
-          g2ttr_queue_sid: "WQ8351ee438539d776c083c4286f51bad9"
+          g2tonfr_queue_sid: "WQf14ba3410c3614abd554652d7531f4d0"
+          g2ttr_queue_sid: "WQe668c7c05bfb1a0748635e7ef0a2b30e"
 
           #Recording URLs
           en_function_url: "https://test-service-dee-4583.twil.io/6013_g2ton_english"
