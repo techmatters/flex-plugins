@@ -17,7 +17,8 @@
 // eslint-disable-next-line no-unused-vars
 import { Actions, ITask, TaskHelper, Manager } from '@twilio/flex-ui';
 
-import { namespace, conferencingBase } from '../states';
+import { namespace, conferencingBase, RootState } from '../states';
+import { isCallStatusLoading } from '../states/conferencing';
 import { transferStatuses, transferModes } from '../states/DomainConstants';
 import { CustomITask, isTwilioTask } from '../types/types';
 
@@ -187,7 +188,9 @@ export const closeCallSelf = async (task: ITask): Promise<void> => {
 
 export const canTransferConference = (task: ITask) => {
   const isLiveCall = TaskHelper.isLiveCall(task);
-  const { isLoading } = Manager.getInstance().store.getState()[namespace][conferencingBase].tasks[task.taskSid];
+  const { callStatus } = (Manager.getInstance().store.getState() as RootState)[namespace][conferencingBase].tasks[
+    task.taskSid
+  ];
 
-  return isLiveCall && !isLoading && task.conference && task.conference.liveParticipantCount < 3;
+  return isLiveCall && !isCallStatusLoading(callStatus) && task.conference && task.conference.liveParticipantCount < 3;
 };
