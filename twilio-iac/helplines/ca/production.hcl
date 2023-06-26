@@ -73,6 +73,7 @@ locals {
       enable_resources : true
       enable_emoji_picker : true
       enable_aselo_messaging_ui : true
+      enable_conferencing : true
     }
   }
 }
