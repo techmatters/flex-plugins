@@ -18,7 +18,10 @@ import { test } from '@playwright/test';
 import { logPageTelemetry } from '../browser-logs';
 import { navigateToAgentDesktop } from '../agent-desktop';
 
-test('Plugin loads', async ({ page }) => {
+test('Plugin loads', async ({ browser }) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const dummyPage = await context.newPage();
   logPageTelemetry(page);
   await navigateToAgentDesktop(page);
   console.log('Agent Desktop loaded');

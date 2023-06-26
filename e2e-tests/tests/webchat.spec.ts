@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Page, test } from '@playwright/test';
+import { BrowserContext, Page, test } from '@playwright/test';
 import * as webchat from '../webchat';
 import { WebChatPage } from '../webchat';
 import { statusIndicator, WorkerStatus } from '../workerStatus';
@@ -39,14 +39,15 @@ test.describe.serial('Web chat caller', () => {
   // Eventually this test will need to be refactored to return success before the await form.save();
   test.skip(shouldSkipDataUpdate(), 'Data update disabled. Skipping test.');
 
-  let chatPage: WebChatPage, pluginPage: Page;
+  let chatPage: WebChatPage, pluginPage: Page, context: BrowserContext;
   test.beforeAll(async ({ browser }) => {
-    pluginPage = await browser.newPage();
+    context = await browser.newContext();
+    pluginPage = await context.newPage();
     logPageTelemetry(pluginPage);
     console.log('Plugin page browser session launched.');
     await navigateToAgentDesktop(pluginPage);
     console.log('Plugin page visited.');
-    chatPage = await webchat.open(browser);
+    chatPage = await webchat.open(context);
     console.log('Webchat browser session launched.');
   });
 
@@ -57,7 +58,7 @@ test.describe.serial('Web chat caller', () => {
     }
     await Promise.all([
       chatPage?.close(),
-      pluginPage?.close(),
+      // pluginPage?.close(),
       deleteAllTasksInQueue('Flex Task Assignment', 'Master Workflow', 'Childline'),
     ]);
   });
