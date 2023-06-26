@@ -19,6 +19,7 @@ import { FlexPlugin, loadCSS } from '@twilio/flex-plugin';
 import type Rollbar from 'rollbar';
 
 import './styles/global-overrides.css';
+
 import reducers, { namespace } from './states';
 import HrmTheme, { overrides } from './styles/HrmTheme';
 import { initLocalization } from './utils/pluginHelpers';
@@ -43,6 +44,7 @@ import { setUpReferrableResources } from './components/resources/setUpReferrable
 import { subscribeNewMessageAlertOnPluginInit } from './notifications/newMessage';
 import { subscribeReservedTaskAlert } from './notifications/reservedTask';
 import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
+import { setupConferenceComponents, setUpConferenceActions } from './conference';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -135,6 +137,8 @@ const setUpComponents = (
 
   Components.setupTeamViewFilters();
   Components.setupWorkerDirectoryFilters();
+
+  if (featureFlags.enable_conferencing) setupConferenceComponents();
 };
 
 const setUpActions = (
@@ -168,6 +172,8 @@ const setUpActions = (
   Flex.Actions.addListener('afterWrapupTask', afterWrapupAction);
 
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
+
+  if (featureFlags.enable_conferencing) setUpConferenceActions();
 };
 
 export default class HrmFormPlugin extends FlexPlugin {
@@ -204,6 +210,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     if (featureFlags.enable_transfers) setUpTransfers();
     setUpComponents(featureFlags, config, translateUI);
     setUpActions(featureFlags, config, getMessage);
+
     TaskRouterListeners.setTaskWrapupEventListeners(featureFlags);
 
     subscribeReservedTaskAlert();

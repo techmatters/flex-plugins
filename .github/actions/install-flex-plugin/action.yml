@@ -1,0 +1,35 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+name: 'install-flex-plugin'
+description: 'install flex plugin'
+inputs:
+  path:
+    description: 'path to the plugin repo root'
+    required: false
+    default: '.'
+runs:
+  using: "composite"
+  steps:
+    - name: Install the Twilio CLI and plugins
+      run: npm install -g twilio-cli  && twilio plugins:install @twilio-labs/plugin-flex@6.0.3
+      shell: bash
+    - name: Install hrm-form-definitions Packages
+      run: npm ci
+      working-directory: ${{ inputs.path }}/hrm-form-definitions
+      shell: bash
+    - name: Install plugin-hrm-form Packages
+      run: npm ci
+      working-directory: ${{ inputs.path }}/plugin-hrm-form
+      shell: bash
