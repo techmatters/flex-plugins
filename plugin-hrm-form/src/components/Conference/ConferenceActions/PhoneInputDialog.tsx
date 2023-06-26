@@ -59,7 +59,6 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
         <Button
           style={{ backgroundColor: '#192b33', color: '#fff', width: '30%', margin: '0 4px', height: '35px' }}
           autoFocus
-          tabIndex={1}
           onClick={handleClick}
         >
           <CallEndIcon fontSize="medium" /> &nbsp; &nbsp;
