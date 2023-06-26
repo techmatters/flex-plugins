@@ -1,0 +1,35 @@
+{
+  "development": {
+    "us-east-1": {
+      "lambda-groups": {
+        "resources-import-consumer": ["resources-import-consumer"],
+      }
+    }
+  },
+  "staging": {
+    "us-east-1": {
+      "lambda-groups": {
+        "resources-import-consumer": ["resources-import-consumer"],
+      }
+    },
+    "eu-west-1": {
+      "lambda-groups": {
+      }
+    }
+  },
+  "production": {
+    "us-east-1": {
+      "lambda-groups": {
+      }
+    },
+    "eu-west-1": {
+      "lambda-groups": {
+      }
+    },
+    "ca-central-1": {
+      "lambda-groups": {
+        "resources-import-consumer": [],
+      }
+    }
+  }
+}
