@@ -50,17 +50,16 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
       <Template code="Conference-EnterPhoneNumber" />
       <Row>
         <input
-          type="text"
+          type="number"
           id="number-input"
-          placeholder="+1 "
+          placeholder="+1 234-567-8910"
           value={targetNumber}
           onChange={handleNumberChange}
           style={{ width: '60%', padding: '5px' }}
         />
         <Button
-          style={{ backgroundColor: '#2762e1', color: '#fff', width: '30%', margin: '0 4px', height: '35px' }}
+          style={{ backgroundColor: '#192b33', color: '#fff', width: '30%', margin: '0 4px', height: '35px' }}
           autoFocus
-          tabIndex={1}
           onClick={handleClick}
         >
           <CallEndIcon fontSize="medium" /> &nbsp; &nbsp;

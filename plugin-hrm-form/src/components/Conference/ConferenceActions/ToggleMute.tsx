@@ -51,7 +51,7 @@ const ToggleMute: React.FC<Props> = ({ call, task, conference }) => {
   };
 
   const isLiveCall = TaskHelper.isLiveCall(task);
-  const buttonText = `Microphone ${isMuted ? 'On' : 'Off'}`;
+  const buttonText = `${isMuted ? 'Unmute' : 'Mute'}`;
 
   return (
     <StyledConferenceButtonWrapper>

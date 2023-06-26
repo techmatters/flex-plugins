@@ -22,8 +22,13 @@ import ToggleMute from '../components/Conference/ConferenceActions/ToggleMute';
 import Hangup from '../components/Conference/ConferenceActions/Hangup';
 import HoldParticipantButton from '../components/Conference/HoldParticipantButton';
 import RemoveParticipantButton from '../components/Conference/RemoveParticipantButton';
+import { getTemplateStrings } from '../hrmConfig';
 
 export const setupConferenceComponents = () => {
+  const strings = getTemplateStrings();
+  strings.TaskLineCallEndedTitle = strings.TaskLineCallLeaveTitle;
+  strings.HangupCallTooltip = strings.HangupCallLeaveTooltip;
+
   CallCanvasActions.Content.remove('toggleMute', {
     if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
   });

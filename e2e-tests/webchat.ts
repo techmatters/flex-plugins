@@ -17,9 +17,9 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Browser, expect } from '@playwright/test';
 import { ChatStatement, ChatStatementOrigin } from './chatModel';
+import { getConfigValue } from './config';
 
-// const ASELO_DEV_CHAT_URL = 'https://tl-public-chat-staging.s3.amazonaws.com/chat-staging.html';
-const E2E_CHAT_URL = 'https://tl-public-chat-e2e-dev.s3.amazonaws.com/e2e-chat-development.html';
+const E2E_CHAT_URL = getConfigValue('webchatUrl') as string;
 
 export type WebChatPage = {
   openChat: () => Promise<void>;
@@ -39,9 +39,7 @@ export async function open(browser: Browser): Promise<WebChatPage> {
     preEngagementWindow: page.locator('div.Twilio-PreEngagementCanvas'),
     helplineDropdown: page.locator('div#select-helpline'),
     helplineOptions: page.locator('div#menu-helpline ul'),
-    startChatButton: page.locator(
-      'div.Twilio-PreEngagementCanvas button.Twilio-DynamicForm-submit',
-    ),
+    startChatButton: page.locator('div.Twilio-PreEngagementCanvas button[type="submit"]'),
 
     //Chatting
     chatMessageArea: page.locator('div.Twilio-MessagingCanvas'),
@@ -50,9 +48,7 @@ export async function open(browser: Browser): Promise<WebChatPage> {
     messageBubbles: page.locator('div.Twilio-MessageListItem div.Twilio-MessageBubble'),
     chatAvatars: page.locator('div.Twilio-MessageListItem div.Twilio-ChatItem-Avatar'),
     messageWithText: (text: string) =>
-      chatPanelWindow.locator(
-        `div.Twilio-MessageListItem div.Twilio-MessageBubble-Body:text-is("${text}")`,
-      ),
+      chatPanelWindow.locator(`div.Twilio-MessageListItem div:text-is("${text}")`),
   };
   await page.goto(E2E_CHAT_URL);
   console.log('Waiting for start chat button to render.');
