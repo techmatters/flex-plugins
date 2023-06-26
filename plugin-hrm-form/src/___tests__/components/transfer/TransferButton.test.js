@@ -23,6 +23,10 @@ import HrmTheme from '../../../styles/HrmTheme';
 import TransferButton from '../../../components/transfer/TransferButton';
 import { transferStatuses } from '../../../states/DomainConstants';
 
+jest.mock('../../../utils/transfer', () => ({
+  canTransferConference: () => true,
+}));
+
 expect.extend(toHaveNoViolations);
 
 const task = {

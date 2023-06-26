@@ -44,25 +44,38 @@ jobs:
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
       - name: Use Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: '16.x'
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Install Flex Plugin
+        uses: ./.github/actions/install-flex-plugin
+
       # Build Playwright
       - name: Install e2e-tests dependencies
-        run: npm install
+        run: npm ci
         working-directory: ./e2e-tests
+
       - name: Setup dependencies for playwright/browsers
         uses: microsoft/playwright-github-action@v1
+
       - name: Install Playwright CLI
         run: npx playwright install
         working-directory: ./e2e-tests
 
       # Run E2E tests against actual E2E Flex instance
       - name: Run Playwright tests
-        run: DEBUG=pw:api PLAYWRIGHT_BASEURL=${{secrets.PLAYWRIGHT_BASEURL_E2E}} PLAYWRIGHT_USER_USERNAME=${{secrets.PLAYWRIGHT_USER_USERNAME}} PLAYWRIGHT_USER_PASSWORD=${{secrets.PLAYWRIGHT_USER_PASSWORD}} TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npx playwright test --workers 1
+        run: npm run test:development:e2e
         working-directory: ./e2e-tests
 
       # Upload artifacts

@@ -17,6 +17,8 @@
 import * as Flex from '@twilio/flex-ui';
 import each from 'jest-each';
 
+import '../mockStyled';
+
 import { setUpIncomingTransferMessage } from '../../channels/setUpChannels';
 import { transferModes } from '../../states/DomainConstants';
 import { getTemplateStrings } from '../../hrmConfig';

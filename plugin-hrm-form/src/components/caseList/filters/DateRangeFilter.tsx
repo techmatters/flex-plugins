@@ -255,6 +255,7 @@ const DateRangeFilter: React.FC<Props> = ({
   return (
     <div style={{ position: 'relative' }}>
       <MultiSelectButton
+        data-testid={`FilterBy-${name}-Button`}
         isOpened={isOpened}
         isActive={Boolean(current)}
         type="button"

@@ -27,19 +27,24 @@ import {
   counselorStatement,
 } from '../chatModel';
 import { flexChat } from '../flexChat';
+import { shouldSkipDataUpdate } from '../config';
 import { tasks } from '../tasks';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { deleteAllTasksInQueue } from '../twilio/tasks';
 import { logPageTelemetry } from '../browser-logs';
 import { notificationBar } from '../notificationBar';
+import { navigateToAgentDesktop } from '../agent-desktop';
 
 test.describe.serial('Web chat caller', () => {
+  // Eventually this test will need to be refactored to return success before the await form.save();
+  test.skip(shouldSkipDataUpdate(), 'Data update disabled. Skipping test.');
+
   let chatPage: WebChatPage, pluginPage: Page;
   test.beforeAll(async ({ browser }) => {
     pluginPage = await browser.newPage();
     logPageTelemetry(pluginPage);
     console.log('Plugin page browser session launched.');
-    await pluginPage.goto('/agent-desktop', { waitUntil: 'networkidle', timeout: 120000 });
+    await navigateToAgentDesktop(pluginPage);
     console.log('Plugin page visited.');
     chatPage = await webchat.open(browser);
     console.log('Webchat browser session launched.');
@@ -134,6 +139,7 @@ test.describe.serial('Web chat caller', () => {
         },
       },
     ]);
+
     console.log('Saving form');
     await form.save();
   });

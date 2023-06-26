@@ -74,6 +74,9 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
 
       const from = Manager.getInstance().serviceConfiguration.outbound_call_flows.default.caller_id;
       const to = phoneNumber;
+      const label = `Participant ${String(
+        participants.filter(participant => participant.status === 'joined').length + 1,
+      )}`;
 
       await Promise.all(
         conference.source.participants
@@ -92,6 +95,7 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
         conferenceSid,
         to,
         callStatusSyncDocumentSid: callStatusSyncDocument.sid,
+        label,
       });
     } catch (err) {
       console.error(`Error adding participant to call ${conferenceSid}: ${err}`);
