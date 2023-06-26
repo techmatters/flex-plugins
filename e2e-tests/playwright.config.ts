@@ -17,18 +17,21 @@
 // playwright.config.ts
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { PlaywrightTestConfig } from '@playwright/test';
-import environmentVariables from './environmentVariables';
+import { getConfigValue } from './config';
 
-const config: PlaywrightTestConfig = {
+// console.log('playwright.config.ts: config', config);
+
+const playwrightConfig: PlaywrightTestConfig = {
   globalSetup: require.resolve('./global-setup'),
   use: {
     storageState: 'temp/state.json',
-    baseURL: environmentVariables.PLAYWRIGHT_BASEURL ?? 'http://localhost:3000',
+    baseURL: getConfigValue('baseURL') as string,
     permissions: ['microphone'],
     screenshot: 'only-on-failure',
     video: 'retry-with-video',
   },
+  testDir: './tests',
   retries: 1,
   timeout: 60000,
 };
-export default config;
+export default playwrightConfig;

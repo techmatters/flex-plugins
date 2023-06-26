@@ -19,7 +19,7 @@ import { FullConfig } from '@playwright/test';
 import { differenceInMilliseconds } from 'date-fns';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { oktaSsoLoginViaApi, oktaSsoLoginViaGui } from './okta/sso-login';
-import environmentVariables from './environmentVariables';
+import { getConfigValue, initConfig } from './config';
 
 async function globalSetup(config: FullConfig) {
   const start = new Date();
@@ -30,16 +30,17 @@ async function globalSetup(config: FullConfig) {
     );
   }
 
+  await initConfig();
   await oktaSsoLoginViaApi(
-    config.projects[0].use.baseURL!,
-    environmentVariables.PLAYWRIGHT_USER_USERNAME!,
-    environmentVariables.PLAYWRIGHT_USER_PASSWORD!,
-    environmentVariables.TWILIO_ACCOUNT_SID!,
+    getConfigValue('baseURL') as string,
+    getConfigValue('oktaUsername') as string,
+    getConfigValue('oktaPassword') as string,
+    getConfigValue('twilioAccountSid') as string,
   );
   /* await oktaSsoLoginViaGui(
     config,
-    environmentVariables.PLAYWRIGHT_USER_USERNAME ?? 'NOT SET',
-    environmentVariables.PLAYWRIGHT_USER_PASSWORD ?? 'NOT SET',
+    getConfigValue('oktaUsername') ?? 'NOT SET',
+    getConfigValue('oktaPassword') ?? 'NOT SET',
   );
    */
 

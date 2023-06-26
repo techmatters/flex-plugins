@@ -8,8 +8,8 @@ locals {
     old_dir_prefix                    = ""
     definition_version                = "nz-v1"
     default_autopilot_chatbot_enabled = false
-    task_language                     = "en-US"
-    helpline_language                 = "en-US"
+    task_language                     = "en-NZ"
+    helpline_language                 = "en-NZ"
     contacts_waiting_channels         = ["voice", "sms", "web"]
     enable_post_survey                = false
 
