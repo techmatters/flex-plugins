@@ -15,13 +15,14 @@
  */
 
 import React from 'react';
-import { CallCanvasActions, ParticipantCanvas, TaskHelper } from '@twilio/flex-ui';
+import { CallCanvas, CallCanvasActions, ParticipantCanvas, TaskHelper } from '@twilio/flex-ui';
 
 import ConferencePanel from '../components/Conference/ConferenceActions/ConferencePanel';
 import ToggleMute from '../components/Conference/ConferenceActions/ToggleMute';
 import Hangup from '../components/Conference/ConferenceActions/Hangup';
 import HoldParticipantButton from '../components/Conference/HoldParticipantButton';
 import RemoveParticipantButton from '../components/Conference/RemoveParticipantButton';
+import ConferenceMonitor from '../components/Conference/ConferenceMonitor';
 import { getTemplateStrings } from '../hrmConfig';
 
 export const setupConferenceComponents = () => {
@@ -29,6 +30,7 @@ export const setupConferenceComponents = () => {
   strings.TaskLineCallEndedTitle = strings.TaskLineCallLeaveTitle;
   strings.HangupCallTooltip = strings.HangupCallLeaveTooltip;
 
+  CallCanvas.Content.add(<ConferenceMonitor key="conference-monitor" />);
   CallCanvasActions.Content.remove('toggleMute', {
     if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
   });
