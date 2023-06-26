@@ -81,7 +81,7 @@ COPY e2e-tests/lambda/handler.js /app/e2e-tests/handler.js
 COPY e2e-tests/docker/fonts.conf /etc/fonts/fonts.conf
 
 ENV XDG_CONFIG_HOME=/tmp/.config
-ENV SKIP_DATA_UPDATE=true
+# ENV SKIP_DATA_UPDATE=true
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 ENV PLAYWRIGHT_BROWSER_TELEMETRY_DISABLED=true
 

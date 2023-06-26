@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { expect, Page, test } from '@playwright/test';
+import { BrowserContext, expect, Page, test } from '@playwright/test';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { caseHome } from '../case';
 import { agentDesktop, navigateToAgentDesktop } from '../agent-desktop';
@@ -25,10 +25,11 @@ import { notificationBar } from '../notificationBar';
 test.describe.serial('Offline Contact (with Case)', () => {
   test.skip(shouldSkipDataUpdate(), 'Data update disabled. Skipping test.');
 
-  let pluginPage: Page;
+  let pluginPage: Page, context: BrowserContext;
 
   test.beforeAll(async ({ browser }) => {
-    pluginPage = await browser.newPage();
+    context = await browser.newContext();
+    pluginPage = await context.newPage();
     logPageTelemetry(pluginPage);
     console.log('Plugin page browser session launched.');
 
@@ -42,7 +43,7 @@ test.describe.serial('Offline Contact (with Case)', () => {
 
   test.afterAll(async () => {
     await notificationBar(pluginPage).dismissAllNotifications();
-    await pluginPage?.close();
+    // await pluginPage?.close();
   });
 
   test('Offline Contact', async () => {

@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Page, test } from '@playwright/test';
+import { BrowserContext, Page, test } from '@playwright/test';
 import { logPageTelemetry } from '../browser-logs';
 import { caseList } from '../caseList';
 import { shouldSkipDataUpdate } from '../config';
@@ -23,11 +23,12 @@ import { notificationBar } from '../notificationBar';
 test.describe.serial('Open and Edit a Case in Case List page', () => {
   test.skip(shouldSkipDataUpdate(), 'Data update disabled. Skipping test.');
 
-  let pluginPage: Page;
+  let pluginPage: Page, context: BrowserContext;
 
   test.beforeAll(async ({ browser }) => {
     test.setTimeout(600000);
-    pluginPage = await browser.newPage();
+    context = await browser.newContext();
+    pluginPage = await context.newPage();
     logPageTelemetry(pluginPage);
     console.log('Plugin page browser session launched');
 
@@ -37,7 +38,7 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
   });
 
   test.afterAll(async () => {
-    await pluginPage?.close();
+    // await pluginPage?.close();
   });
 
   test('Filter Cases and Update a Case', async () => {
