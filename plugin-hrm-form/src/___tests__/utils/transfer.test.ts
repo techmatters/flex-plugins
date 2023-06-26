@@ -24,6 +24,7 @@ import * as TransferHelpers from '../../utils/transfer';
 import { transferModes, transferStatuses } from '../../states/DomainConstants';
 import { acceptTask, createTask } from '../helpers';
 import { conferencingBase, namespace } from '../../states';
+import * as conferencing from '../../states/conferencing';
 
 const members = new Map();
 members.set('some_40identity', { source: { sid: 'member1' } });
@@ -480,7 +481,7 @@ describe('Conference Transfer', () => {
   };
 
   const mockIsLiveCall = (value: boolean) => jest.spyOn(Flex.TaskHelper, 'isLiveCall').mockReturnValue(value);
-  const mockIsLoading = (task: Required<{ taskSid: string }>, value: boolean) => {
+  const mockInstance = (task: Required<{ taskSid: string }>) => {
     const instance = {
       ...Flex.Manager,
       store: {
@@ -488,9 +489,7 @@ describe('Conference Transfer', () => {
           [namespace]: {
             [conferencingBase]: {
               tasks: {
-                [task.taskSid]: {
-                  isLoading: value,
-                },
+                [task.taskSid]: {},
               },
             },
           },
@@ -499,17 +498,21 @@ describe('Conference Transfer', () => {
     };
     jest.spyOn(Flex.Manager, 'getInstance').mockReturnValue(instance as any);
   };
+  const mockIsCallStatusLoading = (task: Required<{ taskSid: string }>, value: boolean) =>
+    jest.spyOn(conferencing, 'isCallStatusLoading').mockReturnValue(value);
 
   test('Cannot transfer if is not live call', () => {
     mockIsLiveCall(false);
-    mockIsLoading(task, false);
+    mockInstance(task);
+    mockIsCallStatusLoading(task, false);
 
     expect(TransferHelpers.canTransferConference(task as Flex.ITask)).toBe(false);
   });
 
   test('Cannot transfer while isLoading', () => {
     mockIsLiveCall(true);
-    mockIsLoading(task, true);
+    mockInstance(task);
+    mockIsCallStatusLoading(task, true);
 
     expect(TransferHelpers.canTransferConference(task as Flex.ITask)).toBe(false);
   });
@@ -519,14 +522,16 @@ describe('Conference Transfer', () => {
     threeParticipantsTask.conference.liveParticipantCount = 3;
 
     mockIsLiveCall(true);
-    mockIsLoading(threeParticipantsTask, false);
+    mockInstance(task);
+    mockIsCallStatusLoading(threeParticipantsTask, false);
 
     expect(TransferHelpers.canTransferConference(threeParticipantsTask as Flex.ITask)).toBe(false);
   });
 
   test('Should be able to transfer', () => {
     mockIsLiveCall(true);
-    mockIsLoading(task, false);
+    mockInstance(task);
+    mockIsCallStatusLoading(task, false);
 
     expect(TransferHelpers.canTransferConference(task as Flex.ITask)).toBe(false);
   });
