@@ -57,17 +57,13 @@ locals {
         "target_workers" = "routing.skills HAS 'G2TONFr'",
         "friendly_name"  = "Good2Talk ON French"
       },
-      g2t_on_zh : {
+      g2t_int : {
         "target_workers" = "routing.skills HAS 'G2TONTr'",
-        "friendly_name"  = "Good2Talk ON Mandarin"
+        "friendly_name"  = "Good2Talk Interpreter"
       },
       interpreter_en : {
         "target_workers" = "routing.skills HAS 'Interpreter' ",
         "friendly_name"  = "Interpreter"
-      },
-      interpreter_fr : {
-        "target_workers" = "routing.skills HAS 'French Interpreter'",
-        "friendly_name"  = "French Interpreter"
       },
       supervisor : {
         "target_workers" = "routing.skills HAS 'Supervisor'",
