@@ -40,9 +40,11 @@ RUN cd hrm-form-definitions && \
     npm ci && \
     cd ../e2e-tests && \
     npm ci && \
+    # We clean the base image browsers and only install the one we need to reduce the image size
     rm -rf /ms-playwright/* && \
     npm run postinstall
 
+# After initial build, we switch to a smaller base image and only copy the necessary files
 FROM ubuntu:jammy
 
 WORKDIR /app
@@ -52,6 +54,7 @@ RUN apt-get update && \
     apt-get install -y curl wget gpg && \
     curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
     apt-get install -y nodejs && \
+    # move global cache for use in lambda
     npm config set cache /tmp --global && \
     rm -rf /root/.npm/* && \
     apt-get install -y --no-install-recommends git openssh-client && \
