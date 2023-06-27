@@ -14,7 +14,7 @@
     "lint": "eslint --ext ts .",
     "lint:fix": "npm run lint -- --fix .",
     "docker:build": "docker build --platform linux/arm64 -t e2e-test -f ./Dockerfile ../",
-    "docker:run": "docker run -it --rm --read-only --tmpfs /tmp:exec -e AWS_DEFAULT_REGION -e AWS_SECRET_ACCESS_KEY -e AWS_ACCESS_KEY_ID -e LOAD_SSM_CONFIG=true -e HL_ENV=development -e HL=e2e -e TEST_IN_LAMBDA=true -e AWS_LAMBDA_FUNCTION_TIMEOUT=900 -p 9000:8080 e2e-test",
+    "docker:run": "docker run -it --rm --read-only --tmpfs /tmp:exec -e DEBUG=pw:browser -e AWS_DEFAULT_REGION -e AWS_SECRET_ACCESS_KEY -e AWS_ACCESS_KEY_ID -e LOAD_SSM_CONFIG=true -e HL_ENV=development -e HL=e2e -e TEST_IN_LAMBDA=true -e AWS_LAMBDA_FUNCTION_TIMEOUT=900 -p 9000:8080 e2e-test",
     "docker:run:writable": "docker run -it --rm --tmpfs /tmp -e AWS_DEFAULT_REGION -e AWS_SECRET_ACCESS_KEY -e AWS_ACCESS_KEY_ID -e LOAD_SSM_CONFIG=true -e HL_ENV=development -e HL=e2e -e TEST_IN_LAMBDA=true -e AWS_LAMBDA_FUNCTION_TIMEOUT=900 -p 9000:8080 e2e-test",
     "docker:sendEvent": "curl -XPOST 'http://localhost:9000/2015-03-31/functions/function/invocations' -d '{}'",
     "docker:push": "npm run docker:push:login && npm run docker:push:tag && npm run docker:push:push",

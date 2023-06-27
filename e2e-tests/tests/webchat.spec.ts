@@ -31,9 +31,9 @@ import { shouldSkipDataUpdate } from '../config';
 import { tasks } from '../tasks';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { deleteAllTasksInQueue } from '../twilio/tasks';
-import { logPageTelemetry } from '../browser-logs';
 import { notificationBar } from '../notificationBar';
 import { navigateToAgentDesktop } from '../agent-desktop';
+import { setupPluginPage, teardownPluginPage } from '../pluginPage';
 
 test.describe.serial('Web chat caller', () => {
   // Eventually this test will need to be refactored to return success before the await form.save();
@@ -41,10 +41,7 @@ test.describe.serial('Web chat caller', () => {
 
   let chatPage: WebChatPage, pluginPage: Page, context: BrowserContext;
   test.beforeAll(async ({ browser }) => {
-    context = await browser.newContext();
-    pluginPage = await context.newPage();
-    logPageTelemetry(pluginPage);
-    console.log('Plugin page browser session launched.');
+    ({ pluginPage, context } = await setupPluginPage(browser));
     await navigateToAgentDesktop(pluginPage);
     console.log('Plugin page visited.');
     chatPage = await webchat.open(context);
@@ -56,12 +53,10 @@ test.describe.serial('Web chat caller', () => {
     if (pluginPage) {
       await notificationBar(pluginPage).dismissAllNotifications();
     }
-    await Promise.all([
-      chatPage?.close(),
-      // pluginPage?.close(),
-      deleteAllTasksInQueue('Flex Task Assignment', 'Master Workflow', 'Childline'),
-    ]);
+    await teardownPluginPage(pluginPage);
+    await deleteAllTasksInQueue('Flex Task Assignment', 'Master Workflow', 'Childline');
   });
+
   test('Chat ', async () => {
     test.setTimeout(180000);
     await chatPage.openChat();

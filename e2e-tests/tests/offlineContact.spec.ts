@@ -19,8 +19,8 @@ import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { caseHome } from '../case';
 import { agentDesktop, navigateToAgentDesktop } from '../agent-desktop';
 import { shouldSkipDataUpdate } from '../config';
-import { logPageTelemetry } from '../browser-logs';
 import { notificationBar } from '../notificationBar';
+import { setupPluginPage, teardownPluginPage } from '../pluginPage';
 
 test.describe.serial('Offline Contact (with Case)', () => {
   test.skip(shouldSkipDataUpdate(), 'Data update disabled. Skipping test.');
@@ -28,10 +28,7 @@ test.describe.serial('Offline Contact (with Case)', () => {
   let pluginPage: Page, context: BrowserContext;
 
   test.beforeAll(async ({ browser }) => {
-    context = await browser.newContext();
-    pluginPage = await context.newPage();
-    logPageTelemetry(pluginPage);
-    console.log('Plugin page browser session launched.');
+    ({ pluginPage, context } = await setupPluginPage(browser));
 
     await Promise.all([
       // Wait for this to be sure counsellors dropdown is populated
@@ -43,7 +40,7 @@ test.describe.serial('Offline Contact (with Case)', () => {
 
   test.afterAll(async () => {
     await notificationBar(pluginPage).dismissAllNotifications();
-    // await pluginPage?.close();
+    await teardownPluginPage(pluginPage);
   });
 
   test('Offline Contact', async () => {

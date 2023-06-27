@@ -14,17 +14,22 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { test } from '@playwright/test';
-import { logPageTelemetry } from '../browser-logs';
+import { BrowserContext, Page, test } from '@playwright/test';
 import { navigateToAgentDesktop } from '../agent-desktop';
+import { setupPluginPage, teardownPluginPage } from '../pluginPage';
 
-test('Plugin loads', async ({ browser }) => {
-  const context = await browser.newContext();
-  const page = await context.newPage();
-  const dummyPage = await context.newPage();
-  logPageTelemetry(page);
-  await navigateToAgentDesktop(page);
-  console.log('Agent Desktop loaded');
+test.describe.serial('Login', () => {
+  let pluginPage: Page, context: BrowserContext;
+  test.beforeAll(async ({ browser }) => {
+    pluginPage = await setupPluginPage(browser);
+  });
 
-  page.close();
+  test.afterAll(async () => {
+    await teardownPluginPage(pluginPage);
+  });
+
+  test('Plugin loads', async () => {
+    await navigateToAgentDesktop(pluginPage);
+    console.log('Agent Desktop loaded');
+  });
 });

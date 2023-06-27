@@ -15,7 +15,7 @@
  */
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { BrowserContext, expect } from '@playwright/test';
+import { Browser, BrowserContext, expect } from '@playwright/test';
 import { ChatStatement, ChatStatementOrigin } from './chatModel';
 import { getConfigValue } from './config';
 
@@ -28,8 +28,8 @@ export type WebChatPage = {
   close: () => Promise<void>;
 };
 
-export async function open(context: BrowserContext): Promise<WebChatPage> {
-  const page = await context.newPage();
+export async function open(browser: Browser | BrowserContext): Promise<WebChatPage> {
+  const page = await browser.newPage();
   const chatPanelWindow = page.locator('div.Twilio-MainContainer');
   const selectors = {
     chatPanelWindow,

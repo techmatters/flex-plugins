@@ -41,13 +41,9 @@ RUN cd hrm-form-definitions && \
     cd ../e2e-tests && \
     npm ci && \
     rm -rf /ms-playwright/* && \
-    npm run postinstall && \
-    ls -al /ms-playwright && \
-    du -hs /ms-playwright
+    npm run postinstall
 
 FROM ubuntu:jammy
-
-ENV TEST_IN_LAMBDA=true
 
 WORKDIR /app
 
@@ -80,9 +76,10 @@ COPY --chmod=0755 e2e-tests/docker-entrypoint.sh /usr/local/bin/docker-entrypoin
 COPY e2e-tests/lambda/handler.js /app/e2e-tests/handler.js
 COPY e2e-tests/docker/fonts.conf /etc/fonts/fonts.conf
 
+ENV TEST_IN_LAMBDA=true
 ENV XDG_CONFIG_HOME=/tmp/.config
 # ENV SKIP_DATA_UPDATE=true
-ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+ENV PLAYWRIGHT_BROWSERS_PATH=/tmp
 ENV PLAYWRIGHT_BROWSER_TELEMETRY_DISABLED=true
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

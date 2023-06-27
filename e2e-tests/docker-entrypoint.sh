@@ -13,6 +13,13 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
+# Nothing is writable on a lambda except /tmp. We need to copy the browser there and set it as our home directory
+# so that chromium can write to it.
+cp -r /ms-playwright/* /tmp/
+
+# Some chromeium startup writes to ~/some/directory. We need to set the home directory to /tmp so that it can write
+export HOME=/tmp
+
 if [ -z "${AWS_LAMBDA_RUNTIME_API}" ]; then
   exec /usr/local/bin/aws-lambda-rie /usr/bin/aws-lambda-ric $@
 else
