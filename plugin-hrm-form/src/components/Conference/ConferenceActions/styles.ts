@@ -18,6 +18,10 @@ import { styled } from '@twilio/flex-ui';
 
 import { Flex } from '../../../styles/HrmStyles';
 
+/**
+ *  Components for the Actions bar
+ */
+
 export const StyledConferenceButtonWrapper = styled('div')`
   margin-left: 8px;
   margin-right: 8px;
@@ -26,6 +30,25 @@ export const StyledConferenceButtonWrapper = styled('div')`
   flex-flow: column;
   align-items: center;
 `;
+
+export const StyledConferenceButton = styled('button')`
+  border-style: none;
+  border-radius: 50%;
+  min-width: auto;
+  cursor: pointer;
+  background-color: none;
+`;
+StyledConferenceButton.displayName = 'StyledConferenceButton';
+
+export const StyledHangUpButton = styled(StyledConferenceButton)`
+  background-color: #c81c25;
+  color: #fff;
+`;
+StyledHangUpButton.displayName = 'StyledHangUpButton';
+
+/**
+ *  Components within Phone Input Dialog
+ */
 
 type PhoneDialogWrapperProps = {
   width?: string;
