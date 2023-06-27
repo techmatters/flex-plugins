@@ -33,16 +33,55 @@ const playwrightConfig: PlaywrightTestConfig = {
     headless: inLambda ? true : false,
     launchOptions: inLambda
       ? {
-          // Put your chromium-specific args here
           args: [
+            /**
+             * --single-process is needed for AWS Lambda to work, but it breaks
+             * some browser rehandling features in the current versions of chromium/Playwright.
+             * When you start getting weird brwoser start/stop errors, consider refactoring
+             * lambda runs to run a single test per lambda invocation instead of a whole suite.
+             */
             '--single-process',
-            '--disable-gpu',
+            '--autoplay-policy=user-gesture-required',
+            '--disable-background-networking',
+            '--disable-background-timer-throttling',
+            '--disable-backgrounding-occluded-windows',
+            '--disable-breakpad',
+            '--disable-client-side-phishing-detection',
+            '--disable-component-update',
+            '--disable-default-apps',
             '--disable-dev-shm-usage',
+            '--disable-domain-reliability',
+            '--disable-extensions',
+            '--disable-features=AudioServiceOutOfProcess',
+            '--disable-hang-monitor',
+            '--disable-ipc-flooding-protection',
+            '--disable-notifications',
+            '--disable-offer-store-unmasked-wallet-cards',
+            '--disable-popup-blocking',
+            '--disable-print-preview',
+            '--disable-prompt-on-repost',
+            '--disable-renderer-backgrounding',
+            '--disable-setuid-sandbox',
+            '--disable-speech-api',
+            '--disable-sync',
+            '--disk-cache-size=33554432',
+            '--hide-scrollbars',
+            '--ignore-gpu-blacklist',
+            '--metrics-recording-only',
+            '--mute-audio',
+            '--no-default-browser-check',
+            '--no-first-run',
+            '--no-pings',
+            '--no-sandbox',
+            '--no-zygote',
+            '--password-store=basic',
+            '--use-gl=swiftshader',
+            '--use-mock-keychain',
+            '--disable-gpu',
             '--use-gl=swiftshader',
             '--autoplay-policy=no-user-gesture-required',
             '--use-fake-ui-for-media-stream',
             '--use-fake-device-for-media-stream',
-            '--disable-sync',
           ],
         }
       : {},

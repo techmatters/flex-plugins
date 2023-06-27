@@ -14,18 +14,18 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { BrowserContext, Page, test } from '@playwright/test';
+import { Page, test } from '@playwright/test';
 import { navigateToAgentDesktop } from '../agent-desktop';
-import { setupPluginPage, teardownPluginPage } from '../pluginPage';
+import { setupContextAndPage, closePage } from '../browser';
 
 test.describe.serial('Login', () => {
-  let pluginPage: Page, context: BrowserContext;
+  let pluginPage: Page;
   test.beforeAll(async ({ browser }) => {
-    pluginPage = await setupPluginPage(browser);
+    ({ page: pluginPage } = await setupContextAndPage(browser));
   });
 
   test.afterAll(async () => {
-    await teardownPluginPage(pluginPage);
+    await closePage(pluginPage);
   });
 
   test('Plugin loads', async () => {

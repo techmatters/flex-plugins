@@ -14,19 +14,19 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { BrowserContext, Page, test } from '@playwright/test';
+import { Page, test } from '@playwright/test';
 import { caseList } from '../caseList';
 import { shouldSkipDataUpdate } from '../config';
 import { notificationBar } from '../notificationBar';
-import { setupPluginPage, teardownPluginPage } from '../pluginPage';
+import { setupContextAndPage, closePage } from '../browser';
 
 test.describe.serial('Open and Edit a Case in Case List page', () => {
   test.skip(shouldSkipDataUpdate(), 'Data update disabled. Skipping test.');
 
-  let pluginPage: Page, context: BrowserContext;
+  let pluginPage: Page;
   test.beforeAll(async ({ browser }) => {
     test.setTimeout(600000);
-    pluginPage = await setupPluginPage(browser);
+    ({ page: pluginPage } = await setupContextAndPage(browser));
 
     // Open Case List
     await pluginPage.goto('/case-list', { waitUntil: 'networkidle', timeout: 20000 });
@@ -34,7 +34,7 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
   });
 
   test.afterAll(async () => {
-    await teardownPluginPage(pluginPage);
+    await closePage(pluginPage);
   });
 
   test('Filter Cases and Update a Case', async () => {

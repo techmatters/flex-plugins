@@ -14,21 +14,21 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { BrowserContext, expect, Page, test } from '@playwright/test';
+import { expect, Page, test } from '@playwright/test';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { caseHome } from '../case';
 import { agentDesktop, navigateToAgentDesktop } from '../agent-desktop';
 import { shouldSkipDataUpdate } from '../config';
 import { notificationBar } from '../notificationBar';
-import { setupPluginPage, teardownPluginPage } from '../pluginPage';
+import { setupContextAndPage, closePage } from '../browser';
 
 test.describe.serial('Offline Contact (with Case)', () => {
   test.skip(shouldSkipDataUpdate(), 'Data update disabled. Skipping test.');
 
-  let pluginPage: Page, context: BrowserContext;
+  let pluginPage: Page;
 
   test.beforeAll(async ({ browser }) => {
-    ({ pluginPage, context } = await setupPluginPage(browser));
+    ({ page: pluginPage } = await setupContextAndPage(browser));
 
     await Promise.all([
       // Wait for this to be sure counsellors dropdown is populated
@@ -40,7 +40,7 @@ test.describe.serial('Offline Contact (with Case)', () => {
 
   test.afterAll(async () => {
     await notificationBar(pluginPage).dismissAllNotifications();
-    await teardownPluginPage(pluginPage);
+    await closePage(pluginPage);
   });
 
   test('Offline Contact', async () => {
