@@ -17,10 +17,10 @@ description: 'run e2e tests'
 inputs:
   aws-access-key-id:
     description: 'AWS credentials for Aselo user'
-    required: true
+    required: false
   aws-secret-access-key:
     description: 'AWS credentials for Aselo user'
-    required: true
+    required: false
   path:
     description: 'path to the plugin repo root'
     required: false
@@ -37,6 +37,10 @@ inputs:
     description: 'skip flex plugin install'
     required: false
     default: 'false'
+  run-ui-tests:
+    description: 'run ui tests'
+    required: false
+    default: 'false'
 
 runs:
   using: "composite"
@@ -48,6 +52,7 @@ runs:
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
+      if: ${{ inputs.run-ui-tests == 'false' }}
       with:
         aws-access-key-id: ${{ inputs.aws-access-key-id }}
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
@@ -73,7 +78,14 @@ runs:
       shell: bash
 
     - name: Run Playwright tests
+      if: ${{ inputs.run-ui-tests == 'false' }}
       run: LOAD_SSM_CONFIG=true HL=${{inputs.helpline-shortcode}} HL_ENV=${{inputs.environment}} npm run test
+      working-directory: ${{ inputs.path }}/e2e-tests
+      shell: bash
+
+    - name: Run UI tests
+      if: ${{ inputs.run-ui-tests == 'true' }}
+      run: npm run test:ui
       working-directory: ${{ inputs.path }}/e2e-tests
       shell: bash
 

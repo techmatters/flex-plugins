@@ -81,7 +81,7 @@ jobs:
         working-directory: ./plugin-hrm-form
 
       - name: Run e2e tests
-        uses: ./.github/actions/install-flex-plugin
+        uses: ./.github/actions/run-e2e-tests
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
