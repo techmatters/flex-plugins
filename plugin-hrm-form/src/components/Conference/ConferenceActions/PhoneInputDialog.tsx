@@ -20,7 +20,7 @@ import { CircularProgress } from '@material-ui/core';
 
 import { Row, Bold } from '../../../styles/HrmStyles';
 import { CloseButton } from '../../../styles/callTypeButtons';
-import { PhoneDialogWrapper, DialogArrow } from './styles';
+import { PhoneDialogWrapper, DialogArrow, StyledPhoneInput } from './styles';
 
 type PhoneDialogProps = {
   targetNumber: string;
@@ -30,7 +30,7 @@ type PhoneDialogProps = {
   isLoading: boolean;
 };
 
-const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
+const StyledPhoneInputDialog: React.FC<PhoneDialogProps> = ({
   targetNumber,
   setTargetNumber,
   handleClick,
@@ -51,8 +51,8 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
       </Row>
       <Template code="Conference-EnterPhoneNumber" />
       <Row>
-        <input
-          type="number"
+        <StyledPhoneInput
+          type="text"
           id="number-input"
           placeholder="+1 234-567-8910"
           value={targetNumber}
@@ -80,4 +80,4 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
   );
 };
 
-export default PhoneInputDialog;
+export default StyledPhoneInputDialog;

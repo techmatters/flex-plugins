@@ -108,17 +108,18 @@ export const DialogArrow = styled(Flex)<DialogArrowProps>`
 `;
 DialogArrow.displayName = 'DialogArrow';
 
-export const StyledConferenceButton = styled('button')`
-  border-style: none;
-  border-radius: 50%;
-  min-width: auto;
-  cursor: pointer;
-  background-color: none;
-`;
-StyledConferenceButton.displayName = 'StyledConferenceButton';
+export const StyledPhoneInput = styled('input')`
+  border: none;
+  flex-grow: 1;
+  padding: 5px;
+  width: 60%;
 
-export const StyledHangUpButton = styled(StyledConferenceButton)`
-  background-color: #c81c25;
-  color: #fff;
+  &:focus {
+    outline: none;
+  }
+
+  &:disabled {
+    background-color: white;
+  }
 `;
-StyledHangUpButton.displayName = 'StyledHangUpButton';
+StyledPhoneInput.displayName = 'StyledPhoneInput';

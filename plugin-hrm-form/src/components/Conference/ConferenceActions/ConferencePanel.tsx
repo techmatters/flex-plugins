@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Manager, Notifications, TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
 import AddIcCallRounded from '@material-ui/icons/AddIcCallRounded';
 import { useDispatch, useSelector } from 'react-redux';
@@ -49,7 +49,7 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
     setIsDialogOpen(!isDialogOpen);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (callStatus === 'busy' || callStatus === 'failed') {
       Notifications.showNotificationSingle(ConferenceNotifications.ErrorAddingParticipantNotification);
     }
@@ -61,6 +61,24 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   if (!conferenceSid || !participants || !task) {
     return null;
   }
+
+  // Focus Trapping
+  const firstElement = useRef(null);
+  const lastElement = useRef(null);
+
+  const handleTabForLastElement = event => {
+    if (!event.shiftKey && event.key === 'Tab') {
+      event.preventDefault();
+      firstElement.current?.focus();
+    }
+  };
+
+  const handleShiftTabForFirstElement = event => {
+    if (event.shiftKey && event.key === 'Tab') {
+      event.preventDefault();
+      lastElement.current?.focus();
+    }
+  };
 
   const handleClick = async () => {
     try {
@@ -108,6 +126,8 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
     <StyledConferenceButtonWrapper>
       <>
         <StyledConferenceButton
+          ref={firstElement}
+          onKeyDown={handleShiftTabForFirstElement}
           disabled={
             !isLiveCall ||
             (participants && participants.filter(participant => participant.status === 'joined').length >= 4)
@@ -118,6 +138,9 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
         </StyledConferenceButton>
         {isDialogOpen && (
           <PhoneInputDialog
+            aria-labelledby="dialog-title"
+            // ref={lastElement}
+            // onKeyDown={handleTabForLastElement}
             targetNumber={phoneNumber}
             setTargetNumber={setPhoneNumber}
             handleClick={handleClick}
