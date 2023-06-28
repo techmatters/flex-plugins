@@ -71,7 +71,7 @@ locals {
       enable_canned_responses : true
       enable_dual_write : false
       enable_save_insights : false
-      enable_previous_contacts : false
+      enable_previous_contacts : true
       enable_voice_recordings : false
       enable_twilio_transcripts : false
       enable_external_transcripts : true
