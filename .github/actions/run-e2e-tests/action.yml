@@ -60,7 +60,7 @@ runs:
 
     - name: Install flex plugin
       if: ${{ inputs.skip-flex-plugin-install != 'true' }}
-      uses: ${{ inputs.path }}/.github/actions/install-flex-plugin
+      uses: ../install-flex-plugin
       with:
         path: ${{ inputs.path }}
 
