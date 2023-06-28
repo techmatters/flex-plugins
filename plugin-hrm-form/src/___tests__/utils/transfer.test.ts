@@ -467,7 +467,10 @@ describe('TransferredTaskJanitor helpers', () => {
 describe('Conference Transfer', () => {
   jest.mock('@twilio/flex-ui', () => ({
     ...jest.requireActual('@twilio/flex-ui'),
-    TaskHelper: { isLiveCall: jest.fn() },
+    TaskHelper: {
+      isLiveCall: jest.fn(),
+      isChatBasedTask: jest.fn(),
+    },
     Manager: { getInstance: jest.fn() },
   }));
 
@@ -480,6 +483,7 @@ describe('Conference Transfer', () => {
     },
   };
 
+  const mockIsChatBasedTask = (value: boolean) => jest.spyOn(Flex.TaskHelper, 'isChatBasedTask').mockReturnValue(value);
   const mockIsLiveCall = (value: boolean) => jest.spyOn(Flex.TaskHelper, 'isLiveCall').mockReturnValue(value);
   const mockInstance = (task: Required<{ taskSid: string }>) => {
     const instance = {
@@ -489,7 +493,7 @@ describe('Conference Transfer', () => {
           [namespace]: {
             [conferencingBase]: {
               tasks: {
-                [task.taskSid]: {},
+                [task.taskSid]: task,
               },
             },
           },
@@ -502,6 +506,7 @@ describe('Conference Transfer', () => {
     jest.spyOn(conferencing, 'isCallStatusLoading').mockReturnValue(value);
 
   test('Cannot transfer if is not live call', () => {
+    mockIsChatBasedTask(false);
     mockIsLiveCall(false);
     mockInstance(task);
     mockIsCallStatusLoading(task, false);
@@ -510,6 +515,7 @@ describe('Conference Transfer', () => {
   });
 
   test('Cannot transfer while isLoading', () => {
+    mockIsChatBasedTask(false);
     mockIsLiveCall(true);
     mockInstance(task);
     mockIsCallStatusLoading(task, true);
@@ -518,9 +524,10 @@ describe('Conference Transfer', () => {
   });
 
   test('Cannot transfer if there are three or more participants', () => {
-    const threeParticipantsTask = { ...task };
+    const threeParticipantsTask = { ...task, conference: { ...task.conference } };
     threeParticipantsTask.conference.liveParticipantCount = 3;
 
+    mockIsChatBasedTask(false);
     mockIsLiveCall(true);
     mockInstance(task);
     mockIsCallStatusLoading(threeParticipantsTask, false);
@@ -529,10 +536,20 @@ describe('Conference Transfer', () => {
   });
 
   test('Should be able to transfer', () => {
+    mockIsChatBasedTask(false);
     mockIsLiveCall(true);
     mockInstance(task);
     mockIsCallStatusLoading(task, false);
 
-    expect(TransferHelpers.canTransferConference(task as Flex.ITask)).toBe(false);
+    expect(TransferHelpers.canTransferConference(task as Flex.ITask)).toBe(true);
+  });
+
+  test('Should be able to transfer when chat task', () => {
+    mockIsChatBasedTask(true);
+    mockIsLiveCall(false);
+    mockInstance(task);
+    mockIsCallStatusLoading(task, false);
+
+    expect(TransferHelpers.canTransferConference(task as Flex.ITask)).toBe(true);
   });
 });
