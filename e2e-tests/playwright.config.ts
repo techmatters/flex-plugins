@@ -30,7 +30,6 @@ const playwrightConfig: PlaywrightTestConfig = {
     permissions: ['microphone'],
     screenshot: inLambda ? 'off' : 'only-on-failure',
     video: inLambda ? 'off' : 'retry-with-video',
-    headless: inLambda ? true : false,
     launchOptions: inLambda
       ? {
           args: [
