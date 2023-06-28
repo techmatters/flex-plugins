@@ -74,9 +74,7 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
 
       const from = Manager.getInstance().serviceConfiguration.outbound_call_flows.default.caller_id;
       const to = phoneNumber;
-      const label = `Participant ${String(
-        participants.filter(participant => participant.status === 'joined').length + 1,
-      )}`;
+      const label = `External party ${to}`;
 
       await Promise.all(
         conference.source.participants

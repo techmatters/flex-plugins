@@ -52,7 +52,7 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
       <Template code="Conference-EnterPhoneNumber" />
       <Row>
         <input
-          type="number"
+          type="text"
           id="number-input"
           placeholder="+1 234-567-8910"
           value={targetNumber}
