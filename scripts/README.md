@@ -10,6 +10,7 @@
   - [import-tf](#import-tf)
   - [generate-chatbot-tf](#generate-chatbot-tf)
   - [patch-feature-flags](#patch-feature-flags)
+- [convertAutopilotToLex](#convertAutopilotToLex)
 
 ## generateDeploymentFiles
 
@@ -207,3 +208,20 @@ This sets the same flags as the example above, but uses AWS to look up the Twili
 ```
 
 This sets the same flags as the example above, but uses AWS to look up the Twilio credentials for all the accounts in the development environment and will set the flags for each of them.
+
+
+## convertAutopilotToLex
+
+```bash
+npm run convertAutopilotToLex -- -e {development | staging | production}
+```
+
+Requires AWS creds including region in the environment to run.
+
+This script will convert all the autopilot bots in the specified environment to config files used to generate Lex bots in our helpline Terraform configuration.
+
+It will generate a separate file for each helpline in the environment you specify, and place them all in the ./src/autopilot-migration/json directory.
+
+The configs generated are not 'ready to go', they are a 'best efforts' baseline that will need to be manually curated, deduplicated and tested before they can be used to generate Lex bots, they are intended to be a labour-saving device, not an end to end automation. 
+
+Unfortunately Autopilot and Lex do not fully map, at least not without a much larger investment of engineering time, and since this is a one time migration, this seems like a reasonable compromise.
