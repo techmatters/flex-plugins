@@ -51,6 +51,9 @@ jobs:
         with:
           node-version: '16.x'
 
+      - name: Install Flex Plugin
+        uses: ./.github/actions/install-flex-plugin
+
       - name: Run e2e tests
         uses: ./.github/actions/run-e2e-tests
         with:

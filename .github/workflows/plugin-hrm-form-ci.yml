@@ -118,4 +118,3 @@ jobs:
         uses: ./.github/actions/run-e2e-tests
         with:
           run-ui-tests: 'true'
-          skip-flex-plugin-install: 'true'

@@ -33,10 +33,6 @@ inputs:
     description: 'environment'
     required: false
     default: 'development'
-  skip-flex-plugin-install:
-    description: 'skip flex plugin install'
-    required: false
-    default: 'false'
   run-ui-tests:
     description: 'run ui tests'
     required: false
@@ -57,12 +53,6 @@ runs:
         aws-access-key-id: ${{ inputs.aws-access-key-id }}
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
         aws-region: us-east-1
-
-    - name: Install flex plugin
-      if: ${{ inputs.skip-flex-plugin-install != 'true' }}
-      uses: ../install-flex-plugin
-      with:
-        path: ${{ inputs.path }}
 
     - name: Install e2e-tests dependencies
       run: npm ci
