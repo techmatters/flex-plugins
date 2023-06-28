@@ -18,12 +18,13 @@ import { expect, Page, test } from '@playwright/test';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { caseHome } from '../case';
 import { agentDesktop, navigateToAgentDesktop } from '../agent-desktop';
-import { shouldSkipDataUpdate } from '../config';
+import { skipTestIfNotTargeted, skipTestIfDataUpdateDisabled } from '../skipTest';
 import { notificationBar } from '../notificationBar';
 import { setupContextAndPage, closePage } from '../browser';
 
 test.describe.serial('Offline Contact (with Case)', () => {
-  test.skip(shouldSkipDataUpdate(), 'Data update disabled. Skipping test.');
+  skipTestIfNotTargeted();
+  skipTestIfDataUpdateDisabled();
 
   let pluginPage: Page;
 

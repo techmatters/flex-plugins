@@ -77,14 +77,19 @@ export const getConfigValue = (key: string) => {
  * the default dry instead of duplicating the values here.
  */
 const configOptions: ConfigOptions = {
+  // The helpline short code is used to generate the ssm param paths for the other config options
   helplineShortCode: {
     envKey: 'HL',
     default: helplineShortCode,
   },
+
+  // The helpline env is used to generate the ssm param paths for the other config options
   helplineEnv: {
     envKey: 'HL_ENV',
     default: helplineEnv,
   },
+
+  // The okta username and password are used to login to flex
   oktaUsername: {
     envKey: 'PLAYWRIGHT_USER_USERNAME',
     ssmPath: `/${helplineEnv}/flex-plugins/e2e/okta_username`,
@@ -93,22 +98,32 @@ const configOptions: ConfigOptions = {
     envKey: 'PLAYWRIGHT_USER_PASSWORD',
     ssmPath: `/${helplineEnv}/flex-plugins/e2e/okta_password`,
   },
+
+  // The baseUrl is used to navigate to the flex app
   baseURL: {
     envKey: 'PLAYWRIGHT_BASEURL',
     default: flexEnvs.includes(helplineEnv) ? 'https://flex.twilio.com/' : 'http://localhost:3000',
   },
+
+  // The telemetry level is used to configure our logging
   browserTelemetryLevel: {
     envKey: 'PLAYWRIGHT_BROWSER_TELEMETRY_LEVEL',
     default: 'errors',
   },
+
+  // The browser telemetry log response body is used to configure the verbosity of our browser logs
   browserTelemetryLogResponseBody: {
     envKey: 'PLAYWRIGHT_BROWSER_TELEMETRY_LOG_RESPONSE_BODY',
     default: 'false',
   },
+
+  // This allows us to disable browser telemetry logging
   browserTelemetryDisabled: {
     envKey: 'PLAYWRIGHT_BROWSER_TELEMETRY_DISABLED',
     default: 'false',
   },
+
+  // The twilio account sid and auth token are used to target a flex account
   twilioAccountSid: {
     envKey: 'TWILIO_ACCOUNT_SID',
     ssmPath: `/${localOverrideEnv}/twilio/${helplineShortCode.toUpperCase()}/account_sid`,
@@ -118,10 +133,14 @@ const configOptions: ConfigOptions = {
     // Order is important here. We use a function so that we can reference the twilioAccountSid config value above.
     ssmPath: () => `/${localOverrideEnv}/twilio/${getConfigValue('twilioAccountSid')}/auth_token`,
   },
+
+  // I don't think this is used anywhere
   debug: {
     envKey: 'DEBUG',
     default: '',
   },
+
+  // These are internal environment switches.
   isProduction: {
     envKey: 'IS_PRODUCTION',
     default: helplineEnv === 'production',
@@ -134,10 +153,14 @@ const configOptions: ConfigOptions = {
     envKey: 'IS_DEVELOPMENT',
     default: helplineEnv === 'staging',
   },
+
+  // We can skip data updates in certain environments to keep from impacting real data
   skipDataUpdate: {
     envKey: 'SKIP_DATA_UPDATE',
     default: skipDataUpdateEnvs.includes(helplineEnv),
   },
+
+  // The url of the webchat app is used to navigate to the webchat app
   webchatUrl: {
     envKey: 'WEBCHAT_URL',
     // In this case there is a default and an ssmPath. The default will be used if the ssmPath does not exist.
@@ -145,20 +168,23 @@ const configOptions: ConfigOptions = {
     // the assets bucket because we don't want to deal with CloudFront caching issues.
     default: `https://s3.amazonaws.com/assets-${localOverrideEnv}.tl.techmatters.org/webchat/${helplineShortCode}/e2e-chat.html`,
   },
+
+  // inLambda is used to determine if we are running in a lambda or not and set other config values accordingly
   inLambda: {
     envKey: 'TEST_IN_LAMBDA',
     default: false,
   },
+
+  // The storage state path is used to store the state of the browser between tests
   storageStatePath: {
     envKey: 'STORAGE_STATE_PATH',
-    default: () => {
-      if (getConfigValue('inLambda')) {
-        // Only /tmp is writable in a lambda
-        return '/tmp/state.json';
-      } else {
-        return 'temp/state.json';
-      }
-    },
+    default: () => (getConfigValue('inLambda') ? '/tmp/state.json' : 'temp/state.json'),
+  },
+
+  // Specifying a test name will cause only the matching test file to be run.
+  testName: {
+    envKey: 'TEST_NAME',
+    default: () => (getConfigValue('inLambda') ? 'login' : ''),
   },
 };
 
@@ -183,14 +209,6 @@ export const setConfigValue = (key: string, value: ConfigValue) => {
    * init a config value.
    */
   process.env[configOptions[key].envKey] = value as string;
-};
-
-export const shouldSkipDataUpdate = () => {
-  if (config.skipDataUpdate) {
-    console.log('Data update is disabled. Skipping...');
-  }
-
-  return config.skipDataUpdate as boolean;
 };
 
 const setConfigValueFromSsm = async (key: string) => {

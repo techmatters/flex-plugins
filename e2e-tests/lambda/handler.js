@@ -17,28 +17,32 @@
 const { spawn } = require('child_process');
 
 module.exports.handler = async (event, context) => {
-  try {
-    const cmd = spawn('npm', ['-loglevel silent', 'run', 'test'], {
-      stdio: 'inherit',
-      stderr: 'inherit',
-    });
+  const env = { ...process.env };
 
-    const result = await new Promise((resolve, reject) => {
-      cmd.on('exit', (code) => {
-        if (code !== 0) {
-          reject(`Execution error: ${code}`);
-        } else {
-          resolve(`Exited with code: ${code}`);
-        }
-      });
-
-      cmd.on('error', (error) => {
-        reject(`Execution error: ${error}`);
-      });
-    });
-
-    console.log(result);
-  } catch (error) {
-    console.error(error);
+  const { testName } = event;
+  if (testName) {
+    env.TEST_NAME = testName;
   }
+
+  const cmd = spawn('npm', ['-loglevel silent', 'run', 'test'], {
+    stdio: 'inherit',
+    stderr: 'inherit',
+    env,
+  });
+
+  const result = await new Promise((resolve, reject) => {
+    cmd.on('exit', (code) => {
+      if (code !== 0) {
+        reject(`Execution error: ${code}`);
+      } else {
+        resolve(`Exited with code: ${code}`);
+      }
+    });
+
+    cmd.on('error', (error) => {
+      reject(`Execution error: ${error}`);
+    });
+  });
+
+  console.log(result);
 };

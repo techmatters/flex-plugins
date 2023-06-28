@@ -16,12 +16,13 @@
 
 import { Page, test } from '@playwright/test';
 import { caseList } from '../caseList';
-import { shouldSkipDataUpdate } from '../config';
+import { skipTestIfNotTargeted, skipTestIfDataUpdateDisabled } from '../skipTest';
 import { notificationBar } from '../notificationBar';
 import { setupContextAndPage, closePage } from '../browser';
 
 test.describe.serial('Open and Edit a Case in Case List page', () => {
-  test.skip(shouldSkipDataUpdate(), 'Data update disabled. Skipping test.');
+  skipTestIfNotTargeted();
+  skipTestIfDataUpdateDisabled();
 
   let pluginPage: Page;
   test.beforeAll(async ({ browser }) => {

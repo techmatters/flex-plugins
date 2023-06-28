@@ -27,7 +27,7 @@ import {
   counselorStatement,
 } from '../chatModel';
 import { flexChat } from '../flexChat';
-import { shouldSkipDataUpdate } from '../config';
+import { skipTestIfNotTargeted, skipTestIfDataUpdateDisabled } from '../skipTest';
 import { tasks } from '../tasks';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { deleteAllTasksInQueue } from '../twilio/tasks';
@@ -36,8 +36,9 @@ import { navigateToAgentDesktop } from '../agent-desktop';
 import { setupContextAndPage, closePage } from '../browser';
 
 test.describe.serial('Web chat caller', () => {
-  // Eventually this test will need to be refactored to return success before the await form.save();
-  test.skip(shouldSkipDataUpdate(), 'Data update disabled. Skipping test.');
+  // Eventually this test will need to be refactored to return success before the await form.save() using skipIfDatUpdateDisabled() and a separate test
+  skipTestIfNotTargeted();
+  skipTestIfDataUpdateDisabled();
 
   let chatPage: WebChatPage, pluginPage: Page, context: BrowserContext;
   test.beforeAll(async ({ browser }) => {

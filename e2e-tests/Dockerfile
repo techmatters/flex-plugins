@@ -81,7 +81,6 @@ COPY e2e-tests/docker/fonts.conf /etc/fonts/fonts.conf
 
 ENV TEST_IN_LAMBDA=true
 ENV XDG_CONFIG_HOME=/tmp/.config
-ENV SKIP_DATA_UPDATE=true
 ENV PLAYWRIGHT_BROWSERS_PATH=/tmp
 ENV PLAYWRIGHT_BROWSER_TELEMETRY_DISABLED=true
 

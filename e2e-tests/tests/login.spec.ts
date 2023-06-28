@@ -17,8 +17,11 @@
 import { Page, test } from '@playwright/test';
 import { navigateToAgentDesktop } from '../agent-desktop';
 import { setupContextAndPage, closePage } from '../browser';
+import { skipTestIfNotTargeted } from '../skipTest';
 
 test.describe.serial('Login', () => {
+  skipTestIfNotTargeted();
+
   let pluginPage: Page;
   test.beforeAll(async ({ browser }) => {
     ({ page: pluginPage } = await setupContextAndPage(browser));

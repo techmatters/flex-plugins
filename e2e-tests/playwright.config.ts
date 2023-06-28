@@ -36,9 +36,9 @@ const playwrightConfig: PlaywrightTestConfig = {
           args: [
             /**
              * --single-process is needed for AWS Lambda to work, but it breaks
-             * some browser rehandling features in the current versions of chromium/Playwright.
-             * When you start getting weird brwoser start/stop errors, consider refactoring
-             * lambda runs to run a single test per lambda invocation instead of a whole suite.
+             * some browser rehandling features between tests in the current versions
+             * of chromium/Playwright. We use the `TEST_NAME` environment variable to set
+             * a unique target for each test that runs in lambdas to avoid this issue.
              */
             '--single-process',
             '--autoplay-policy=user-gesture-required',
