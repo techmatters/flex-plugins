@@ -183,3 +183,23 @@ export const savePendingContactToSharedState = async (task, payload, error) => {
   }
   return null;
 };
+
+export const createCallStatusSyncDocument = async (onUpdateCallback: ({ data }: any) => void) => {
+  if (!isSharedStateClientConnected(sharedStateClient)) {
+    console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
+    console.error(getTemplateStrings().SharedStateSaveContactError);
+    return { status: 'failure', callStatusSyncDocument: null } as const;
+  }
+
+  const callStatusSyncDocument = await sharedStateClient.document({
+    mode: 'create_new',
+    data: { CallStatus: 'initiating' },
+    ttl: 60 * 2, // No need to keep track of this for longer than two minutes
+  });
+
+  callStatusSyncDocument.on('updated', onUpdateCallback);
+  // Trigger the callback with the initial value of the document
+  onUpdateCallback({ data: callStatusSyncDocument.data });
+
+  return { status: 'success', callStatusSyncDocument } as const;
+};

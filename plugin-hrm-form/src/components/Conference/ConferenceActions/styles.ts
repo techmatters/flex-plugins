@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { styled, Button } from '@twilio/flex-ui';
+import { styled } from '@twilio/flex-ui';
 
 import { Flex } from '../../../styles/HrmStyles';
 

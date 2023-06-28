@@ -18,12 +18,23 @@ import { omit } from 'lodash';
 
 import { GeneralActionType, INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE } from '../types';
 import { removeContactState } from '../actions';
+import { RootState, conferencingBase, namespace } from '..';
+
+export type CallStatus =
+  | 'no-call'
+  | 'initiating'
+  | 'initiated'
+  | 'ringing'
+  | 'busy'
+  | 'failed'
+  | 'in-progress'
+  | 'completed';
 
 export type ConferencingState = {
   tasks: {
     [taskId: string]: {
       isDialogOpen: boolean;
-      isLoading: boolean;
+      callStatus: CallStatus;
       phoneNumber: string;
     };
   };
@@ -31,7 +42,7 @@ export type ConferencingState = {
 
 export const newTaskEntry = {
   isDialogOpen: false,
-  isLoading: false,
+  callStatus: 'no-call' as CallStatus,
   phoneNumber: '',
 };
 
@@ -42,11 +53,11 @@ export const setIsDialogOpenAction = createAction(SET_IS_DIALOG_OPEN, (taskId: s
   isDialogOpen,
 }));
 
-const SET_IS_LOADING = 'conferencing/set-is-loading';
+const SET_CALL_STATUS = 'conferencing/set-call-status';
 
-export const setIsLoadingAction = createAction(SET_IS_LOADING, (taskId: string, isLoading: boolean) => ({
+export const setCallStatusAction = createAction(SET_CALL_STATUS, (taskId: string, callStatus: CallStatus) => ({
   taskId,
-  isLoading,
+  callStatus,
 }));
 
 const SET_PHONE_NUMBER = 'conferencing/set-phone-number';
@@ -58,7 +69,7 @@ export const setPhoneNumberAction = createAction(SET_PHONE_NUMBER, (taskId: stri
 
 type ConferencingStateAction =
   | ReturnType<typeof setIsDialogOpenAction>
-  | ReturnType<typeof setIsLoadingAction>
+  | ReturnType<typeof setCallStatusAction>
   | ReturnType<typeof setPhoneNumberAction>;
 
 const initialState: ConferencingState = {
@@ -105,13 +116,13 @@ const conferencingReducer = createReducer(initialState, handleAction => [
       },
     },
   })),
-  handleAction(setIsLoadingAction, (state, { payload }) => ({
+  handleAction(setCallStatusAction, (state, { payload }) => ({
     ...state,
     tasks: {
       ...state.tasks,
       [payload.taskId]: {
         ...state.tasks[payload.taskId],
-        isLoading: payload.isLoading,
+        callStatus: payload.callStatus,
       },
     },
   })),
@@ -134,3 +145,6 @@ export const reduce = (
 ): ConferencingState => {
   return conferencingReducer(inputState, action);
 };
+
+export const isCallStatusLoading = (callStatus: CallStatus) =>
+  callStatus === 'initiating' || callStatus === 'initiated' || callStatus === 'ringing';

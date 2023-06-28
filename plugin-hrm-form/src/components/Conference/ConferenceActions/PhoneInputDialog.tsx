@@ -16,6 +16,7 @@
 import React from 'react';
 import { Template, Button } from '@twilio/flex-ui';
 import { CallEnd as CallEndIcon } from '@material-ui/icons';
+import { CircularProgress } from '@material-ui/core';
 
 import { Row, Bold } from '../../../styles/HrmStyles';
 import { CloseButton } from '../../../styles/callTypeButtons';
@@ -26,6 +27,7 @@ type PhoneDialogProps = {
   setTargetNumber: (targetNumber: string) => void;
   handleClick: () => void;
   setIsDialogOpen: (isDialogOpen: boolean) => void;
+  isLoading: boolean;
 };
 
 const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
@@ -33,6 +35,7 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
   setTargetNumber,
   handleClick,
   setIsDialogOpen,
+  isLoading,
 }) => {
   const handleNumberChange: React.ChangeEventHandler<HTMLInputElement> = e => {
     setTargetNumber(e.target.value);
@@ -55,15 +58,22 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
           value={targetNumber}
           onChange={handleNumberChange}
           style={{ width: '60%', padding: '5px' }}
+          disabled={isLoading}
         />
         <Button
           style={{ backgroundColor: '#192b33', color: '#fff', width: '30%', margin: '0 4px', height: '35px' }}
           autoFocus
-          tabIndex={1}
           onClick={handleClick}
+          disabled={isLoading}
         >
-          <CallEndIcon fontSize="medium" /> &nbsp; &nbsp;
-          <Template code="Conference-DialButton" />
+          {isLoading ? (
+            <CircularProgress size={30} style={{ color: '#fff' }} />
+          ) : (
+            <>
+              <CallEndIcon fontSize="medium" /> &nbsp; &nbsp;
+              <Template code="Conference-DialButton" />
+            </>
+          )}
         </Button>
       </Row>
     </PhoneDialogWrapper>
