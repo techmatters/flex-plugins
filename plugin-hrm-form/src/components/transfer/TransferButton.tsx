@@ -16,19 +16,25 @@
 
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Actions, Template } from '@twilio/flex-ui';
+import { Actions, Template, TaskContextProps, withTaskContext } from '@twilio/flex-ui';
 
+import { canTransferConference } from '../../utils/transfer';
 import { TransferStyledButton } from '../../styles/HrmStyles';
 import HhrTheme from '../../styles/HrmTheme';
 
-type Props = {};
+const TransferButton: React.FC<TaskContextProps> = ({ task }) => {
+  if (!task) {
+    return null;
+  }
 
-const TransferButton: React.FC<Props> = () => {
+  const disabled = !canTransferConference(task);
+
   return (
     <TransferStyledButton
       color={HhrTheme.colors.secondaryButtonTextColor}
       background={HhrTheme.colors.secondaryButtonColor}
       onClick={() => Actions.invokeAction('ShowDirectory')}
+      disabled={disabled}
       data-fs-id="Task-Transfer-Button"
     >
       <Template code="Transfer-TransferButton" />
@@ -38,4 +44,4 @@ const TransferButton: React.FC<Props> = () => {
 
 TransferButton.displayName = 'TransferButton';
 
-export default TransferButton;
+export default withTaskContext(TransferButton);

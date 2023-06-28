@@ -16,6 +16,7 @@
 
 /* eslint-disable global-require */
 /* eslint-disable import/no-dynamic-require */
+import path from 'path';
 import {
   CallTypeButtonsDefinitions,
   CannedResponsesDefinitions,
@@ -89,8 +90,10 @@ const fetchDefinitionGivenConfig = async <T>(
   jsonPath: string,
   placeholder?: T,
 ) => {
-  const url = `${baseUrl}/${jsonPath}`;
-  const response = await fetch(url);
+  const baseUrlObj = new URL(baseUrl);
+
+  const url = new URL(path.join(baseUrlObj.pathname, jsonPath), baseUrlObj.origin);
+  const response = await fetch(url.toString());
 
   if (response.ok) {
     const json = await response.json();

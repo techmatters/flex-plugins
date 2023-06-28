@@ -259,7 +259,7 @@ const Filters: React.FC<Props> = ({
         </CasesCount>
       </FiltersContainer>
       {featureFlags.enable_filter_cases && (
-        <FiltersContainer>
+        <FiltersContainer data-testid="CaseList-Filters-Panel">
           <FilterList fontSize="small" />
           <FilterTitle>
             <Template code="CaseList-FilterBy" />

@@ -248,3 +248,61 @@ export const selfReportToIWF = async (form: ChildCSAMReportForm, caseNumber: str
   const response = await fetchProtectedApi('/selfReportToIWF', body);
   return response;
 };
+
+const validUpdates = ['endConferenceOnExit', 'hold', 'muted'] as const;
+
+type ConferenceAddParticipantParams = {
+  conferenceSid: string;
+  to: string;
+  from: string;
+  callStatusSyncDocumentSid: string;
+  label: string;
+};
+type ConferenceRemoveParticipantParams = { conferenceSid: string; callSid: string };
+type ConferenceUpdateParticipantParams = {
+  conferenceSid: string;
+  callSid: string;
+  updates: { [K in typeof validUpdates[number]]?: boolean };
+};
+
+export const conferenceApi = {
+  addParticipant: async ({
+    conferenceSid,
+    to,
+    from,
+    callStatusSyncDocumentSid,
+    label,
+  }: ConferenceAddParticipantParams) => {
+    const body = {
+      conferenceSid,
+      to,
+      from,
+      callStatusSyncDocumentSid,
+      label,
+    };
+
+    const response = await fetchProtectedApi('/conference/addParticipant', body);
+    return response;
+  },
+
+  removeParticipant: async ({ conferenceSid, callSid }: ConferenceRemoveParticipantParams) => {
+    const body = {
+      conferenceSid,
+      callSid,
+    };
+
+    const response = await fetchProtectedApi('/conference/removeParticipant', body);
+    return response;
+  },
+
+  updateParticipant: async ({ callSid, conferenceSid, updates }: ConferenceUpdateParticipantParams) => {
+    const body = {
+      conferenceSid,
+      callSid,
+      updates: JSON.stringify(updates),
+    };
+
+    const response = await fetchProtectedApi('/conference/updateParticipant', body);
+    return response;
+  },
+};

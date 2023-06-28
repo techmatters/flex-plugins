@@ -13,6 +13,13 @@ variable "hrm_url" {
   type        = string
   default     = ""
 }
+
+variable "resources_base_url" {
+  description = "Custom URL for the Resources"
+  type        = string
+  default     = ""
+}
+
 variable "assets_bucket_url" {
   description = "Custom URL for Assets (leave blank and it will infer a default) from the environments name"
   type = string
