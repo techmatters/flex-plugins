@@ -186,6 +186,11 @@ export const closeCallSelf = async (task: ITask): Promise<void> => {
 };
 
 export const canTransferConference = (task: ITask) => {
+  const isChatTask = TaskHelper.isChatBasedTask(task);
+  if (isChatTask) {
+    return true;
+  }
+
   const isLiveCall = TaskHelper.isLiveCall(task);
   const { isLoading } = Manager.getInstance().store.getState()[namespace][conferencingBase].tasks[task.taskSid];
 
