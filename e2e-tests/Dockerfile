@@ -12,6 +12,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
+# We start with a large official playwright base image to build the dependencies.
 FROM mcr.microsoft.com/playwright:v1.30.0-jammy AS build
 
 WORKDIR /app
@@ -28,7 +29,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
         cmake \
         unzip \
         libcurl4-openssl-dev && \
+    # aws-lambda-rie provides the scaffolding to run the lambda in a container
     npm install aws-lambda-ric -g && \
+    #aws-lambda-rie provides emulation of the aws runtime interface for local development
     if [ "$TARGETARCH" = "arm64" ]; then export REI_FILE="aws-lambda-rie-arm64"; else export REI_FILE="aws-lambda-rie"; fi && \
     curl -Lo /usr/local/bin/aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/${REI_FILE} && \
     chmod +x /usr/local/bin/aws-lambda-rie
@@ -40,21 +43,20 @@ RUN cd hrm-form-definitions && \
     npm ci && \
     cd ../e2e-tests && \
     npm ci && \
-    # We clean the base image browsers and only install the one we need to reduce the image size
+    # We clean the base image browsers and only install the one we need to reduce the final image size
     rm -rf /ms-playwright/* && \
     npm run postinstall
 
-# After initial build, we switch to a smaller base image and only copy the necessary files
+# After initial build, we switch to a smaller base image and only copy the necessary files to reduce the final image size.
 FROM ubuntu:jammy
 
 WORKDIR /app
 
-# Lambdas can only write to /tmp, so we hae to set the npm cache to /tmp
 RUN apt-get update && \
     apt-get install -y curl wget gpg && \
     curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
     apt-get install -y nodejs && \
-    # move global cache for use in lambda
+    # move npm cache to /tmp for use in lambda
     npm config set cache /tmp --global && \
     rm -rf /root/.npm/* && \
     apt-get install -y --no-install-recommends git openssh-client && \
@@ -77,7 +79,6 @@ COPY hrm-form-definitions /app/hrm-form-definitions
 COPY e2e-tests /app/e2e-tests
 COPY --chmod=0755 e2e-tests/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY e2e-tests/lambda/handler.js /app/e2e-tests/handler.js
-COPY e2e-tests/docker/fonts.conf /etc/fonts/fonts.conf
 
 ENV TEST_IN_LAMBDA=true
 ENV XDG_CONFIG_HOME=/tmp/.config

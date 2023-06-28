@@ -134,7 +134,7 @@ const configOptions: ConfigOptions = {
     ssmPath: () => `/${localOverrideEnv}/twilio/${getConfigValue('twilioAccountSid')}/auth_token`,
   },
 
-  // I don't think this is used anywhere
+  // Turn on debug mode. Possibly unused.
   debug: {
     envKey: 'DEBUG',
     default: '',

@@ -18,6 +18,7 @@ import { test } from '@playwright/test';
 import { getConfigValue } from './config';
 
 export const NOT_TARGETED_MSG = 'Skipping test because it is not the one specified in TEST_NAME';
+export const SKIP_DATA_UPDATE_MSG = 'Skipping test because skipDataUpdate is enabled';
 
 const getCallerFileName = (): string | null => {
   const origPrepareStackTrace = Error.prepareStackTrace;
@@ -49,5 +50,5 @@ export const skipTestIfNotTargeted = () => {
 export const skipTestIfDataUpdateDisabled = () => {
   const shouldSkip = getConfigValue('skipDataUpdate') as boolean;
 
-  test.skip(shouldSkip, NOT_TARGETED_MSG);
+  test.skip(shouldSkip, SKIP_DATA_UPDATE_MSG);
 };

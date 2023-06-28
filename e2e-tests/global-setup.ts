@@ -23,7 +23,6 @@ import { getConfigValue, initConfig } from './config';
 
 async function globalSetup(config: FullConfig) {
   const start = new Date();
-
   console.log('Global setup started');
   if (config.projects.length > 1) {
     console.warn(
