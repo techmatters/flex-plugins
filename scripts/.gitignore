@@ -9,3 +9,4 @@ private/
 # Generated files
 new-flex-plugins-workflow.yml
 new-serverless-workflow.yml
+/src/autopilot-migration/json/
