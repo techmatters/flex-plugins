@@ -20,9 +20,9 @@ async function main() {
     logDebug(`Updating asset urls for ${environment}`);
     // eslint-disable-next-line no-await-in-loop
     await runAgainstAllAccountsForEnvironment(environment, async (accountSid, authToken) => {
-      process.env.TWILIO_ACCOUNT_SID = accountSid;
-      process.env.TWILIO_AUTH_TOKEN = authToken;
       await patchFeatureFlags(
+        accountSid,
+        authToken,
         {},
         { assets_bucket_url: `https://assets-${environment}.tl.techmatters.org` },
         false,

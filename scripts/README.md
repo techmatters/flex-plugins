@@ -153,16 +153,57 @@ will create a new file `my_custom_bot.tf` that contains the definition of the bo
 
 ### patch-feature-flags
 
+**THIS SCRIPT IS ONLY FOR USE IN DEVELOPMENT ACCOUNTS AND OTHER ACCOUNTS NOT MANAGED BY THE NEW TERRAFORM SYSTEM**
+
+For accounts managed under the new terraform system, you should manage feature flags using the 'configuration' stage of that system.
+
 This script allows you to safely update the feature flags specified in a Twilio Account's Service Configuration without affecting other settings
 
+#### Providing Twilio Credentials
+
+If you want to update feature flags for a single account and have their credentials handy, you can set them in your environment to use this tool:
+
 You need to have `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` environment variables set (either passed in the command itself or in a `.env` file).
-You also must provide the following parameters to the script:
+
+#### Using AWS credentials to look up accounts
+
+If you have an AWS account with privileges to look up SSM parameters, you can set up your aws creds in the environment.
+
+Then, to select a single account, you pass the `--helplineEnvironment` argument with either `development`, `staging` or `production` and `--helplineShortCode` with the helpline account (upper case, e.g. `AS`, `ZM`).
+
+Alternatively you can just set the `--helplineEnvironment` and omit a `--helplineShortCode` to set the flags for all accounts in a given environment.
+
+NB: **These parameters need to be specified ahead of the `patch-feature-flags` command, not after like the flags you want to set.**
+
+#### Specifying the flags
+
+Using either approach, you also must provide the following parameters to the script:
 
 - `-f / --flag`: Use this to specify a flag and what you wish to set it to. The value must take the form {flag_name}:{flag_set}, e.g. -f my_flag:true. Can be specified multiple times
-  Example:
+
+Examples:
+
+1. Single account (Twilio credentials in environment):
 
 ```
 ➜ npm run twilioResources patch-feature-flags -- -f enable_voice_recordings:false -f enable_twilio_transcripts:true
 ```
 
 will set the `enable_voice_recordings` to false, and the `enable_transcripts` flag to true, creating them if they didn't previously exist, or overwriting their previous setting if they did.
+
+2. Single account (AWS credentials in environment):
+
+```
+➜ npm run twilioResources -- --helplineEnvironment development --helplineShortCode AS patch-feature-flags -f enable_voice_recordings:false -f enable_twilio_transcripts:true
+```
+
+This sets the same flags as the example above, but uses AWS to look up the Twilio credentials for the Aselo Development account. Note that the `--helplineShortCode` and the `--helplineEnvironment` arguments are passed in before the `patch-feature-flags` command, not after.
+
+
+3Single account (AWS credentials in environment):
+
+```
+➜ npm run twilioResources -- --helplineEnvironment development --helplineShortCode AS patch-feature-flags -f enable_voice_recordings:false -f enable_twilio_transcripts:true
+```
+
+This sets the same flags as the example above, but uses AWS to look up the Twilio credentials for all the accounts in the development environment and will set the flags for each of them.
