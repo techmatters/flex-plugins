@@ -1,6 +1,6 @@
 {
-  "survey_en": {
-    "description": "Survey bot",
+  "pre_survey_en": {
+    "description": "Pre Survey bot",
     "locale": "en-US",
     "process_behavior": "BUILD",
     "child_directed": true,

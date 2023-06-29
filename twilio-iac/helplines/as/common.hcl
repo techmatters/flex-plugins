@@ -7,6 +7,8 @@ locals {
     helpline                          = "Aselo"
     old_dir_prefix                    = "aselo-as"
     definition_version                = "ca-v1"
-    lex_bots                          = jsondecode(file("/app/twilio-iac/helplines/configs/lex/config.json"))
+    lex_bots                          = merge(jsondecode(file("/app/twilio-iac/helplines/configs/lex/pre_survey.json")),
+                                              jsondecode(file("/app/twilio-iac/helplines/configs/lex/post_survey.json")),
+                                        )
   }
 }
