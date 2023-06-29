@@ -17,7 +17,6 @@
 import fetchResourcesApi from '../../services/fetchResourcesApi';
 import { getResource, searchResources } from '../../services/ResourceService';
 import { getAseloFeatureFlags } from '../../hrmConfig';
-import { FeatureFlags } from '../../types/types';
 
 jest.mock('../../services/fetchResourcesApi');
 jest.mock('../../hrmConfig', () => ({
@@ -32,7 +31,6 @@ beforeEach(() => {
   mockFetchResourcesApi.mockReset();
   mockGetAseloFeatureFlags.mockReset();
   // eslint-disable-next-line camelcase
-  mockGetAseloFeatureFlags.mockReturnValue({ enable_resources_elastic_search: true } as FeatureFlags);
 });
 
 test('getResource - valid params sends GET /resource/{id} to mockFetchResourcesApi', async () => {
