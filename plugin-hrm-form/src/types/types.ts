@@ -267,10 +267,8 @@ export type FeatureFlags = {
 /* eslint-enable camelcase */
 
 export type LexMemory = {
-  slots: {
-    CallerType?: 'Yes' | 'No';
-    [key: string]: string;
-  };
+  callerType?: 'Yes' | 'No';
+  [key: string]: string;
 };
 
 /* eslint-disable camelcase */

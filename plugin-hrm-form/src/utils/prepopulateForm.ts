@@ -144,7 +144,7 @@ export const getValuesFromPreEngagementData = (
   return values;
 };
 
-type PreSurveyAnswers = LexMemory['slots'];
+type PreSurveyAnswers = LexMemory;
 type AutopilotAnswers = AutopilotMemory['twilio']['collected_data']['collect_survey']['answers'];
 
 const transformAnswers = (answers: AutopilotAnswers): PreSurveyAnswers => {
@@ -154,7 +154,7 @@ const transformAnswers = (answers: AutopilotAnswers): PreSurveyAnswers => {
    */
   const keyRenames = {
     // eslint-disable-next-line camelcase
-    about_self: 'CallerType',
+    about_self: 'aboutSelf',
   };
 
   const renameKey = key => (Object.keys(keyRenames).includes(key) ? keyRenames[key] : key);
@@ -166,7 +166,7 @@ const transformAnswers = (answers: AutopilotAnswers): PreSurveyAnswers => {
 
 const getAnswers = (isLexMemory: boolean, memory: LexMemory | AutopilotMemory): PreSurveyAnswers => {
   if (isLexMemory) {
-    return (memory as LexMemory).slots;
+    return memory as LexMemory;
   }
 
   // This can be removed after every helpline is using Lex
@@ -210,8 +210,8 @@ export const prepopulateForm = (task: ITask, featureFlags: FeatureFlags) => {
 
   const answers = getAnswers(featureFlags.enable_lex_prepopulate, memory);
 
-  const isAboutSelf = answers.CallerType === 'Yes';
-  const callType = isAboutSelf || !answers.CallerType ? callTypes.child : callTypes.caller;
+  const isAboutSelf = answers.aboutSelf === 'Yes';
+  const callType = isAboutSelf || !answers.aboutSelf ? callTypes.child : callTypes.caller;
   const tabFormDefinition = isAboutSelf ? ChildInformationTab : CallerInformationTab;
   const prepopulateSurveyKeys = isAboutSelf ? survey.ChildInformationTab : survey.CallerInformationTab;
   const subroute = isAboutSelf ? 'childInformation' : 'callerInformation';
