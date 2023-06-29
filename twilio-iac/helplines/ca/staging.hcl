@@ -110,7 +110,6 @@ locals {
       post_survey_serverless_handled : true
       enable_csam_clc_report : false
       enable_counselor_toolkits : true
-      enable_resources : true
       enable_emoji_picker : true
       enable_aselo_messaging_ui : true
       enable_conferencing : true
