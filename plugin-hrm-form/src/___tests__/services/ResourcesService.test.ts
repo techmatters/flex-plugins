@@ -20,7 +20,6 @@ import { getAseloFeatureFlags } from '../../hrmConfig';
 
 jest.mock('../../services/fetchResourcesApi');
 jest.mock('../../hrmConfig', () => ({
-  getReferrableResourceConfig: () => ({}),
   getAseloFeatureFlags: jest.fn(),
 }));
 
