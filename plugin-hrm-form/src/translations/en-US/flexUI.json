@@ -94,6 +94,7 @@
   "Transfer-Warm": "Warm",
   "Transfer-FormNotEditable": "Form locked until transfer is completed.",
   "Transfer-ChatWarmNotAllowed": "Warm transfer for chats is currently not supported.",
+  "Transfer-CannotTransferTooManyParticipants": "Cannot transfer while there are 3 or more participants",
   "BottomBar-Next": "Next",
   "BottomBar-SaveAndAddToCase": "Save and Add to Case...",
   "BottomBar-SaveContact": "Save",
@@ -437,5 +438,7 @@
 
   "Conference-AddConferenceCallParticipant": "Add Conference Call Participant",
   "Conference-EnterPhoneNumber": "Enter phone number",
-  "Conference-DialButton": "Dial"
+  "Conference-DialButton": "Dial",
+  "TaskLineCallLeaveTitle": "YOU HAVE LEFT THE CALL",
+  "HangupCallLeaveTooltip": "Leave Call"
 }

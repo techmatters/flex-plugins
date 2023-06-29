@@ -17,9 +17,12 @@
 import { Page, test } from '@playwright/test';
 import { logPageTelemetry } from '../browser-logs';
 import { caseList } from '../caseList';
+import { shouldSkipDataUpdate } from '../config';
 import { notificationBar } from '../notificationBar';
 
 test.describe.serial('Open and Edit a Case in Case List page', () => {
+  test.skip(shouldSkipDataUpdate(), 'Data update disabled. Skipping test.');
+
   let pluginPage: Page;
 
   test.beforeAll(async ({ browser }) => {

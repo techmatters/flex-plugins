@@ -15,10 +15,11 @@
  */
 
 import React from 'react';
-import { IconButton, TaskHelper } from '@twilio/flex-ui';
+import { IconButton, Notifications, TaskHelper } from '@twilio/flex-ui';
 import type { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
 
 import { conferenceApi } from '../../../services/ServerlessService';
+import { ConferenceNotifications } from '../../../conference/setUpConferenceActions';
 
 type Props = Partial<ParticipantCanvasChildrenProps>;
 
@@ -31,18 +32,23 @@ const RemoveParticipantButton: React.FC<Props> = ({ participant, task, ...props 
 
   const handleClick = async () => {
     setIsLoading(true);
-    await conferenceApi.removeParticipant({
-      callSid: participant.callSid,
-      conferenceSid: task.conference.conferenceSid,
-    });
-    setIsLoading(false);
+    try {
+      await conferenceApi.removeParticipant({
+        callSid: participant.callSid,
+        conferenceSid: task.conference.conferenceSid,
+      });
+    } catch (err) {
+      Notifications.showNotificationSingle(ConferenceNotifications.ErrorUpdatingParticipantNotification);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <IconButton
       icon="Hangup"
       onClick={handleClick}
-      variant="secondary"
+      variant="destructive"
       disabled={isLoading || !TaskHelper.canHold(task) || participant.status !== 'joined'}
     />
   );

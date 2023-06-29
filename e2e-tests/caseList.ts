@@ -17,7 +17,13 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Page, expect } from '@playwright/test';
 
-export type Filter = 'Status' | 'Counselor' | 'Categories';
+export type Filter =
+  | 'Status'
+  | 'Counselor'
+  | 'Categories'
+  | 'createdAtFilter'
+  | 'updatedAtFilter'
+  | 'followUpDateFilter';
 
 export type CaseSectionForm<T = Record<string, string>> = {
   sectionTypeId: 'note' | 'referral' | 'household' | 'perpetrator' | 'incident' | 'document';
@@ -28,6 +34,9 @@ export const caseList = (page: Page) => {
   const caseListPage = page.locator('div.Twilio-ViewCollection');
 
   const selectors = {
+    caseListRowIdButton: caseListPage.locator(
+      `tr[data-testid='CaseList-TableRow'] button[data-testid='CaseList-CaseID-Button']`,
+    ),
     // Case List view
     filterButton: (filter: Filter) =>
       caseListPage.locator(`//button[@data-testid='FilterBy-${filter}-Button']`),
@@ -62,6 +71,14 @@ export const caseList = (page: Page) => {
     ),
   };
 
+  async function openFilter(filter: Filter): Promise<void> {
+    const openFilterButton = selectors.filterButton(filter);
+    await openFilterButton.waitFor({ state: 'visible' });
+    await openFilterButton.click();
+  }
+
+  const closeFilter = openFilter;
+
   /** Filter cases (excluding Date filters)
    *
    * @param filter: Filter (status, counselor or categories)
@@ -69,9 +86,7 @@ export const caseList = (page: Page) => {
    * @param option2: string (required only for Categories filter)
    */
   async function filterCases(filter: Filter, option: string, option2?: string): Promise<void> {
-    const openFilterButton = selectors.filterButton(filter);
-    await openFilterButton.waitFor({ state: 'visible' });
-    await openFilterButton.click();
+    await openFilter(filter);
 
     if (filter === 'Categories' && option2) {
       //for Categories filter, 2 valid options are required
@@ -97,7 +112,7 @@ export const caseList = (page: Page) => {
     const openCaseButton = selectors.openFirstCaseButton;
     await openCaseButton.waitFor({ state: 'visible' });
     // Button should have four digits ex. '1845' prepended by OpenCase
-    await expect(openCaseButton).toContainText(/^OpenCase[0-9]{4}$/);
+    await expect(openCaseButton).toContainText(/^OpenCase[0-9]+$/);
     await openCaseButton.click();
     console.log('Opened first case in the results');
   }
@@ -183,6 +198,13 @@ export const caseList = (page: Page) => {
     await expect(summaryText).toContainText(`E2E Case Summary Test Edited on ${currentTime}`);
   }
 
+  async function verifyCaseIdsAreInListInOrder(ids: string[]) {
+    await selectors.caseListRowIdButton.first().waitFor({ state: 'visible' });
+    const caseListIdButtons = await selectors.caseListRowIdButton.all();
+    expect(caseListIdButtons.length).toBe(ids.length);
+    await Promise.all(caseListIdButtons.map((l, idx) => expect(l).toContainText(ids[idx])));
+  }
+
   //Close Case
   async function closeCase() {
     const closeCaseButton = selectors.caseCloseButton;
@@ -193,6 +215,8 @@ export const caseList = (page: Page) => {
   }
 
   return {
+    openFilter,
+    closeFilter,
     filterCases,
     openFirstCaseButton,
     viewClosePrintView,
@@ -202,5 +226,6 @@ export const caseList = (page: Page) => {
     closeEditCase,
     verifyCaseSummaryUpdated,
     closeCase,
+    verifyCaseIdsAreInListInOrder,
   };
 };

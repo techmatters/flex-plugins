@@ -15,10 +15,12 @@
  */
 
 // eslint-disable-next-line no-unused-vars
-import { Actions, ITask, TaskHelper } from '@twilio/flex-ui';
+import { Actions, ITask, TaskHelper, Manager } from '@twilio/flex-ui';
 
+import { namespace, conferencingBase, RootState } from '../states';
+import { isCallStatusLoading } from '../states/conferencing';
 import { transferStatuses, transferModes } from '../states/DomainConstants';
-import { CustomITask, isOfflineContactTask, isTwilioTask } from '../types/types';
+import { CustomITask, isTwilioTask } from '../types/types';
 
 export const hasTransferStarted = (task: ITask) => Boolean(task.attributes && task.attributes.transferMeta);
 
@@ -182,4 +184,18 @@ export const closeCallSelf = async (task: ITask): Promise<void> => {
   await returnTaskControl(task);
   await Actions.invokeAction('HangupCall', { sid: task.sid });
   await Actions.invokeAction('CompleteTask', { sid: task.sid });
+};
+
+export const canTransferConference = (task: ITask) => {
+  const isChatTask = TaskHelper.isChatBasedTask(task);
+  if (isChatTask) {
+    return true;
+  }
+
+  const isLiveCall = TaskHelper.isLiveCall(task);
+  const { callStatus } = (Manager.getInstance().store.getState() as RootState)[namespace][conferencingBase].tasks[
+    task.taskSid
+  ];
+
+  return isLiveCall && !isCallStatusLoading(callStatus) && task.conference && task.conference.liveParticipantCount < 3;
 };

@@ -21,7 +21,7 @@ import { DefinitionVersion, DefinitionVersionId, loadDefinition, useFetchDefinit
 import {
   reduce,
   setIsDialogOpenAction,
-  setIsLoadingAction,
+  setCallStatusAction,
   setPhoneNumberAction,
   ConferencingState,
   newTaskEntry,
@@ -114,18 +114,24 @@ describe('reduce', () => {
     },
   );
 
-  each([{ value: true }, { value: false }]).test(
-    'when setIsLoadingAction is called with $value, set isLoading to $value',
-    async ({ value }) => {
-      const initializedState = reduce(undefined, initializeContactState(mockV1)('WT12345'));
+  each([
+    { value: 'no-call' },
+    { value: 'initiating' },
+    { value: 'initiated' },
+    { value: 'ringing' },
+    { value: 'busy' },
+    { value: 'failed' },
+    { value: 'in-progress' },
+    { value: 'completed' },
+  ]).test('when setCallStatusAction is called with $value, set isLoading to $value', async ({ value }) => {
+    const initializedState = reduce(undefined, initializeContactState(mockV1)('WT12345'));
 
-      const result = reduce(initializedState, setIsLoadingAction('WT12345', value));
+    const result = reduce(initializedState, setCallStatusAction('WT12345', value));
 
-      const expected: ConferencingState = { tasks: { WT12345: { ...newTaskEntry, isLoading: value } } };
+    const expected: ConferencingState = { tasks: { WT12345: { ...newTaskEntry, callStatus: value } } };
 
-      expect(result).toMatchObject(expected);
-    },
-  );
+    expect(result).toMatchObject(expected);
+  });
 
   test('when setPhoneNumberAction is called, set phoneNumber', async () => {
     const initializedState = reduce(undefined, initializeContactState(mockV1)('WT12345'));

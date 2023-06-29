@@ -14,19 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { config } from 'dotenv';
-config();
-
-const environmentVariables = {
-  PLAYWRIGHT_USER_USERNAME: process.env.PLAYWRIGHT_USER_USERNAME,
-  PLAYWRIGHT_USER_PASSWORD: process.env.PLAYWRIGHT_USER_PASSWORD,
-  PLAYWRIGHT_BASEURL: process.env.PLAYWRIGHT_BASEURL,
-  PLAYWRIGHT_BROWSER_TELEMETRY_LEVEL: process.env.PLAYWRIGHT_BROWSER_TELEMETRY_LEVEL,
-  PLAYWRIGHT_BROWSER_TELEMETRY_LOG_RESPONSE_BODY:
-    process.env.PLAYWRIGHT_BROWSER_TELEMETRY_LOG_RESPONSE_BODY,
-  TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
-  TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
-  DEBUG: process.env.DEBUG,
+const context = {
+  ACCOUNT_SID: 'AC_FAKE_UI_TEST_ACCOUNT',
+  WORKSPACE_SID: 'WS_FAKE_WORKSPACE',
+  LOGGED_IN_WORKER_SID: 'WK_LOGGED_IN_WORKER',
+  FLEX_SSO_TOKEN: 'STUB_FLEX_SSO_TOKEN',
 };
 
-export default environmentVariables;
+export default context;

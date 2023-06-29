@@ -115,8 +115,6 @@ ViewResourceArea.displayName = 'ViewResourceArea';
 export const ResourcesSearchFormArea = styled('div')`
   width: 100%;
   padding: 20px;
-  overflow-x: hidden;
-  overflow-y: auto;
   flex-grow: 1;
 `;
 

@@ -20,6 +20,7 @@ import { Actions, ITask, NotificationType, Notifications, Template } from '@twil
 export const ConferenceNotifications = {
   UnholdParticipantsNotification: 'ConferenceNotifications_UnholdParticipantsNotification',
   ErrorAddingParticipantNotification: 'ConferenceNotifications_ErrorAddingParticipantNotification',
+  ErrorUpdatingParticipantNotification: 'ConferenceNotifications_ErrorUpdatingParticipantNotification',
 };
 
 const setupConferenceNotifications = () => {
@@ -36,6 +37,12 @@ const setupConferenceNotifications = () => {
     type: NotificationType.error,
     content: <Template code="Something went wrong trying to add participant to the call, please try again." />,
   });
+
+  Notifications.registerNotification({
+    id: ConferenceNotifications.ErrorUpdatingParticipantNotification,
+    type: NotificationType.error,
+    content: <Template code="Something went wrong trying to update the participant, please try again." />,
+  });
 };
 
 export const setUpConferenceActions = () => {
@@ -43,8 +50,8 @@ export const setUpConferenceActions = () => {
   Actions.addListener('beforeHangupCall', async (payload: { task: ITask }, abortFunction) => {
     const { conference } = payload.task;
 
-    if (conference.participants.length > 2 && conference.participants.some(p => p.onHold)) {
-      Notifications.showNotification(ConferenceNotifications.UnholdParticipantsNotification);
+    if (conference.participants.length > 2 && conference.participants.some(p => p.onHold && p.status === 'joined')) {
+      Notifications.showNotificationSingle(ConferenceNotifications.UnholdParticipantsNotification);
       abortFunction();
     }
   });

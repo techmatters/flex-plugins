@@ -11,20 +11,48 @@
   {
     "name": "repeatCaller",
     "label": "Repeat Caller?",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "actionTaken",
     "label": "Action Taken",
-    "type": "select",
+    "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Unknown",
-        "label": " "
+        "value": "Direct interventions by the child helpline",
+        "label": "Direct interventions by the child helpline"
       },
       {
-        "value": "Action taken",
-        "label": "Action taken"
+        "value": "Recommendations of resources",
+        "label": "Recommendations of resources"
+      },
+      {
+        "value": "Referrals to child protection agencies",
+        "label": "Referrals to child protection agencies"
+      },
+      {
+        "value": "Referrals to general healthcare services",
+        "label": "Referrals to general healthcare services"
+      },
+      {
+        "value": "Referrals to law enforcement agencies",
+        "label": "Referrals to law enforcement agencies"
+      },
+      {
+        "value": "Referrals to mental health services",
+        "label": "Referrals to mental health services"
+      },
+      {
+        "value": "Referrals to other organisations",
+        "label": "Referrals to other organisations"
+      },
+      {
+        "value": "Referrals to school counsellors",
+        "label": "Referrals to school counsellors"
+      },
+      {
+        "value": "Reports to Child Sexual Abuse Material",
+        "label": "Reports to Child Sexual Abuse Material"
       },
       {
         "value": "Other",
@@ -33,13 +61,63 @@
     ]
   },
   {
-    "name": "okForCaseWorkerToCall",
-    "label": "Ok for case worker to call?",
+    "name": "howDidYouKnowAboutOurLine",
+    "label": "How did you know about our line/number?",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "Word of mouth",
+        "label": "Word of mouth"
+      },
+      {
+        "value": "Media",
+        "label": "Media"
+      },
+      {
+        "value": "Friend",
+        "label": "Friend"
+      },
+      {
+        "value": "School",
+        "label": "School"
+      },
+      {
+        "value": "Others",
+        "label": "Others"
+      }
+    ]
+  },
+  {
+    "name": "didTheChildFeelWeSolvedTheirProblem",
+    "label": "Did the young person feel we solved their problem?",
     "type": "mixed-checkbox"
   },
   {
     "name": "didYouDiscussRightsWithTheChild",
-    "label": "Did you discuss rights with the child?",
+    "label": "Did you discuss privacy rights and consent with the young person?",
     "type": "mixed-checkbox"
+  },
+  {
+    "name": "safetyPlanCreated",
+    "label": "Safety Plan Created? pending",
+    "type": "checkbox"
+  },
+  {
+    "name": "safetyPlan",
+    "label": "Safety Plan pending",
+    "type": "input"
+  },
+  {
+    "name": "referredTo",
+    "label": "Referred To pending",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "Pending",
+        "label": "Pending"
+      }
+    ]
   }
 ]
