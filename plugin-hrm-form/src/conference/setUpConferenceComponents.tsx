@@ -16,6 +16,7 @@
 
 import React from 'react';
 import { CallCanvas, CallCanvasActions, ParticipantCanvas, TaskHelper } from '@twilio/flex-ui';
+import { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
 
 import ConferencePanel from '../components/Conference/ConferenceActions/ConferencePanel';
 import ToggleMute from '../components/Conference/ConferenceActions/ToggleMute';
@@ -24,6 +25,7 @@ import HoldParticipantButton from '../components/Conference/HoldParticipantButto
 import RemoveParticipantButton from '../components/Conference/RemoveParticipantButton';
 import ConferenceMonitor from '../components/Conference/ConferenceMonitor';
 import { getTemplateStrings } from '../hrmConfig';
+import ParticipantLabel from '../components/Conference/ParticipantLabel';
 
 export const setupConferenceComponents = () => {
   const strings = getTemplateStrings();
@@ -70,5 +72,15 @@ export const setupConferenceComponents = () => {
       TaskHelper.isLiveCall(props.task) &&
       props.participant?.connecting &&
       props.participant?.participantType === 'external',
+  });
+  ParticipantCanvas.Content.remove('name', {
+    if: (props: ParticipantCanvasChildrenProps) =>
+      props.participant?.participantType === 'external' || props.participant?.participantType === 'unknown',
+  });
+  // @ts-ignore
+  ParticipantCanvas.Content.add(<ParticipantLabel key="participant-name" />, {
+    if: (props: ParticipantCanvasChildrenProps) =>
+      props.participant?.participantType === 'external' || props.participant?.participantType === 'unknown',
+    sortOrder: 2,
   });
 };
