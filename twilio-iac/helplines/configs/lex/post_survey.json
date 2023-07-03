@@ -46,7 +46,10 @@
           "post_survey":{
             "description": "Post Survey Intent",
             "sample_utterances": [
-                "survey ended, survey closed, counselor ended survey, caller exited call"
+                "survey ended", 
+                "survey closed", 
+                "counselor ended survey", 
+                "caller exited call"
             ],
             "fulfillment_activity": {
                 "type": "ReturnIntent"

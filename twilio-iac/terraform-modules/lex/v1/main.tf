@@ -124,11 +124,10 @@ resource "aws_lex_bot" "aselo_development_bot" {
   }
 }
 
-# resource "aws_lex_bot_alias" "aselo_development" {
-#   provider = aws.hl-region
-#
-#   bot_name    = "AseloDevSurvey"
-#   bot_version = "1"
-#   description = "Aselo Development Version of the Wechat Bot."
-#   name        = "AseloDevSurveyBot"
-# }
+resource "aws_lex_bot_alias" "this" {
+  provider = aws.hl-region
+  bot_name    = var.name
+  bot_version = "$LATEST"
+  description = "Bot alias"
+  name        = "latest"
+}
