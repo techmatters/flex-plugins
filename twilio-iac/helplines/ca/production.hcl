@@ -48,7 +48,7 @@ locals {
           checkcounsellors_function_url: "https://twilio-service-4854.twil.io/check_counsellors"
           g2tonen_queue_sid: "WQc774f3a1d09a93ae8eaba80be323e600"
           g2tonfr_queue_sid: "WQ61ef6d908e82fe48bb90bd259099260e"
-          g2ttr_queue_sid: "WQ8351ee438539d776c083c4286f51bad9"
+          g2ttr_queue_sid: "WQb003ea620f2a0d7d2fbb5049a2b24762"
 
           #Recording URLs
           en_function_url: "https://twilio-service-4854.twil.io/6013_g2ton_english"
