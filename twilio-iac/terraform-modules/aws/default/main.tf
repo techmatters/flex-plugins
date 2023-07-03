@@ -68,6 +68,22 @@ resource "aws_s3_bucket_ownership_controls" "docs" {
   }
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "hrm_export_expiry" {
+  bucket = aws_s3_bucket.docs.arn
+
+  rule {
+    expiration {
+      days = 30
+    }
+    filter {
+      prefix = "hrm-data/"
+    }
+    id = "HRM Exported Data Expiration Policy"
+    status = "Enabled"
+  }
+
+}
+
 resource "aws_s3_bucket" "chat" {
   bucket   = local.chat_s3_location
   provider = aws.bucket
