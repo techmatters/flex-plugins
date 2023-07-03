@@ -45,15 +45,12 @@ import { subscribeNewMessageAlertOnPluginInit } from './notifications/newMessage
 import { subscribeReservedTaskAlert } from './notifications/reservedTask';
 import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
 import { setupConferenceComponents, setUpConferenceActions } from './conference';
+import { setUpTransfers } from './transfer';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
 // eslint-disable-next-line import/no-unused-modules
 export type SetupObject = ReturnType<typeof getHrmConfig>;
-
-const setUpTransfers = () => {
-  setUpSharedStateClient();
-};
 
 const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   const manager = Flex.Manager.getInstance();
@@ -207,6 +204,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     const { translateUI, getMessage } = setUpLocalization(config);
     ActionFunctions.loadCurrentDefinitionVersion();
 
+    setUpSharedStateClient();
     if (featureFlags.enable_transfers) setUpTransfers();
     setUpComponents(featureFlags, config, translateUI);
     setUpActions(featureFlags, config, getMessage);
