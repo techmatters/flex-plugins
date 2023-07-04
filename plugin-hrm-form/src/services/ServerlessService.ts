@@ -258,7 +258,6 @@ type ConferenceAddParticipantParams = {
   callStatusSyncDocumentSid: string;
   label: string;
 };
-type ConferenceGetParticipantParams = { conferenceSid: string; callSid: string };
 type ConferenceRemoveParticipantParams = { conferenceSid: string; callSid: string };
 type ConferenceUpdateParticipantParams = {
   conferenceSid: string;
@@ -283,16 +282,6 @@ export const conferenceApi = {
     };
 
     const response = await fetchProtectedApi('/conference/addParticipant', body);
-    return response;
-  },
-
-  getParticipant: async ({ callSid, conferenceSid }: ConferenceGetParticipantParams): Promise<{ participant: any }> => {
-    const body = {
-      conferenceSid,
-      callSid,
-    };
-
-    const response = await fetchProtectedApi('/conference/getParticipant', body);
     return response;
   },
 
