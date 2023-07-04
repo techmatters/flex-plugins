@@ -18,23 +18,10 @@ variable "helpline" {
   type        = string
 }
 
-variable "lex_bots" {
+variable "lex_bot_languages" {
   description = "The configuration for the lex bots."
   type = map(object({
-    description                 = string
-    locale                      = optional(string, "en-US")
-    process_behavior            = optional(string, "BUILD")
-    child_directed              = optional(bool, true)
-    idle_session_ttl_in_seconds = optional(number, 600)
-    abort_statement = object({
-      content      = string
-      content_type = string
-    })
-    clarification_prompt = object({
-      max_attempts = number
-      content      = string
-      content_type = string
-    })
+
     slot_types = optional(map(object({
       description              = string
       value_selection_strategy = string
@@ -42,6 +29,7 @@ variable "lex_bots" {
         synonyms = optional(list(string), []),
       }))
     })), null)
+
     intents = optional(map(object({
       description       = string
       sample_utterances = list(string)
@@ -68,6 +56,25 @@ variable "lex_bots" {
         })
       }))
     })), null)
+
+    bots = optional(map(object({
+      description                 = string
+      locale                      = optional(string, "en-US")
+      process_behavior            = optional(string, "BUILD")
+      child_directed              = optional(bool, true)
+      idle_session_ttl_in_seconds = optional(number, 600)
+      abort_statement = object({
+        content      = string
+        content_type = string
+      })
+      clarification_prompt = object({
+        max_attempts = number
+        content      = string
+        content_type = string
+      })
+      intents = list(string)
+    })), null)
+
   }))
 }
 

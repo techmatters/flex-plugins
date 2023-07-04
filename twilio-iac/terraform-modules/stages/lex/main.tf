@@ -10,19 +10,15 @@ module "lex" {
     aws.hl-region = aws.hl-region
   }
 
-  for_each = var.lex_bots
+  for_each = var.lex_bot_languages
 
-  helpline                    = var.helpline
-  short_helpline              = var.short_helpline
-  environment                 = var.environment
-  name                        = "${var.environment}_${var.short_helpline}_${each.key}"
-  description                 = each.value.description
-  child_directed              = each.value.child_directed
-  idle_session_ttl_in_seconds = each.value.idle_session_ttl_in_seconds
-  abort_statement             = each.value.abort_statement
-  clarification_prompt        = each.value.clarification_prompt
-  slot_types                  = each.value.slot_types
-  intents                     = each.value.intents
+  helpline       = var.helpline
+  short_helpline = var.short_helpline
+  environment    = var.environment
+  language       = each.key
+  slot_types     = each.value.slot_types
+  intents        = each.value.intents
+  bots           = each.value.bots
 }
 
 module "lexv2" {

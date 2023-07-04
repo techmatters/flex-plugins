@@ -1,0 +1,140 @@
+{
+  "age": {
+    "description": "Age of caller",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "0": {
+        "synonyms": [
+          "zero",
+          "none"
+        ]
+      },
+      "1": {
+        "synonyms": [
+          "one"
+        ]
+      },
+      "2": {
+        "synonyms": [
+          "two"
+        ]
+      },
+      "3": {
+        "synonyms": [
+          "three"
+        ]
+      },
+      "4": {
+        "synonyms": [
+          "four"
+        ]
+      },
+      "5": {
+        "synonyms": [
+          "five"
+        ]
+      },
+      "6": {
+        "synonyms": [
+          "six"
+        ]
+      },
+      "7": {
+        "synonyms": [
+          "seven"
+        ]
+      },
+      "8": {
+        "synonyms": [
+          "eight"
+        ]
+      },
+      "9": {
+        "synonyms": [
+          "nine"
+        ]
+      },
+      "10": {
+        "synonyms": [
+          "ten"
+        ]
+      },
+      "11": {
+        "synonyms": [
+          "eleven"
+        ]
+      },
+      "12": {
+        "synonyms": [
+          "twelve"
+        ]
+      },
+      "13": {
+        "synonyms": [
+          "thirteen"
+        ]
+      },
+      "14": {
+        "synonyms": [
+          "fourteen"
+        ]
+      },
+      "15": {
+        "synonyms": [
+          "fifteen"
+        ]
+      },
+      "16": {
+        "synonyms": [
+          "sixteen"
+        ]
+      },
+      "17": {
+        "synonyms": [
+          "seventeen"
+        ]
+      },
+      "18": {
+        "synonyms": [
+          "eighteen"
+        ]
+      },
+      "19": {
+        "synonyms": [
+          "nineteen"
+        ]
+      },
+      "20": {
+        "synonyms": [
+          "twenty"
+        ]
+      },
+      "21": {
+        "synonyms": [
+          "twenty one"
+        ]
+      },
+      "Above 21": {
+        "synonyms": [
+          "22", "23", "24", "25", "26", "27", "28", "29", "30", "31",
+          "32", "33", "34", "35", "36", "37", "38", "39", "40", "41",
+          "42", "43", "44", "45", "46", "47", "48", "49", "50", "51",
+          "52", "53", "54", "55", "56", "57", "58", "59", "60", "61",
+          "62", "63", "64", "65", "66", "67", "68", "69", "70", "71",
+          "72", "73", "74", "75", "76", "77", "78", "79", "80", "81",
+          "82", "83", "84", "85", "86", "87", "88", "89", "90", "91",
+          "92", "93", "94", "95", "96", "97", "98", "99", "100", "101",
+          "102", "103", "104", "105", "106", "107", "108", "109", "110"
+        ]
+      },
+      "X": {
+        "synonyms": [
+          "x"
+        ]
+      },
+      "prefer not to answer": {
+        "synonyms": ["prefer not", "not answer", "not answering", "not answering"]
+      }
+    }
+  }
+}
