@@ -36,7 +36,6 @@ export type ConferencingState = {
       isDialogOpen: boolean;
       callStatus: CallStatus;
       phoneNumber: string;
-      participantsLabels: { [participantSid: string]: string };
     };
   };
 };
@@ -45,7 +44,6 @@ export const newTaskEntry = {
   isDialogOpen: false,
   callStatus: 'no-call' as CallStatus,
   phoneNumber: '',
-  participantsLabels: {},
 };
 
 const SET_IS_DIALOG_OPEN = 'conferencing/set-is-dialog-open';
@@ -69,22 +67,10 @@ export const setPhoneNumberAction = createAction(SET_PHONE_NUMBER, (taskId: stri
   phoneNumber,
 }));
 
-const ADD_PARTICIPANT_LABEL = 'conferencing/add-participant-label';
-
-export const addParticipantLabelAction = createAction(
-  ADD_PARTICIPANT_LABEL,
-  (taskId: string, participantSid: string, participantLabel: string) => ({
-    taskId,
-    participantSid,
-    participantLabel,
-  }),
-);
-
 type ConferencingStateAction =
   | ReturnType<typeof setIsDialogOpenAction>
   | ReturnType<typeof setCallStatusAction>
-  | ReturnType<typeof setPhoneNumberAction>
-  | ReturnType<typeof addParticipantLabelAction>;
+  | ReturnType<typeof setPhoneNumberAction>;
 
 const initialState: ConferencingState = {
   tasks: {},
@@ -147,19 +133,6 @@ const conferencingReducer = createReducer(initialState, handleAction => [
       [payload.taskId]: {
         ...state.tasks[payload.taskId],
         phoneNumber: payload.phoneNumber,
-      },
-    },
-  })),
-  handleAction(addParticipantLabelAction, (state, { payload }) => ({
-    ...state,
-    tasks: {
-      ...state.tasks,
-      [payload.taskId]: {
-        ...state.tasks[payload.taskId],
-        participantsLabels: {
-          ...state.tasks[payload.taskId].participantsLabels,
-          [payload.participantSid]: payload.participantLabel,
-        },
       },
     },
   })),
