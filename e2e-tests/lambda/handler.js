@@ -14,25 +14,35 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Page, test } from '@playwright/test';
-import { navigateToAgentDesktop } from '../agent-desktop';
-import { setupContextAndPage, closePage } from '../browser';
-import { skipTestIfNotTargeted } from '../skipTest';
+const { spawn } = require('child_process');
 
-test.describe.serial('Login', () => {
-  skipTestIfNotTargeted();
+module.exports.handler = async (event, context) => {
+  const env = { ...process.env };
 
-  let pluginPage: Page;
-  test.beforeAll(async ({ browser }) => {
-    ({ page: pluginPage } = await setupContextAndPage(browser));
+  const { testName } = event;
+  if (testName) {
+    env.TEST_NAME = testName;
+  }
+
+  const cmd = spawn('npm', ['-loglevel silent', 'run', 'test'], {
+    stdio: 'inherit',
+    stderr: 'inherit',
+    env,
   });
 
-  test.afterAll(async () => {
-    await closePage(pluginPage);
+  const result = await new Promise((resolve, reject) => {
+    cmd.on('exit', (code) => {
+      if (code !== 0) {
+        reject(`Execution error: ${code}`);
+      } else {
+        resolve(`Exited with code: ${code}`);
+      }
+    });
+
+    cmd.on('error', (error) => {
+      reject(`Execution error: ${error}`);
+    });
   });
 
-  test('Plugin loads', async () => {
-    await navigateToAgentDesktop(pluginPage);
-    console.log('Agent Desktop loaded');
-  });
-});
+  console.log(result);
+};
