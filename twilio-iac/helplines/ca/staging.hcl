@@ -68,6 +68,7 @@ locals {
           tr_intro_url: "https://test-service-dee-4583.twil.io/Msg10006G2TTr.mp3"
           en_inflight_url: "https://test-service-dee-4583.twil.io/Msg60011E.mp3"
           fr_inflight_url: "https://test-service-dee-4583.twil.io/Msg60021.mp3"
+          tr_inflight_url: "https://test-service-dee-4583.twil.io/Msg60011Tr.mp3"
           fr_nocounsellors_url: "https://test-service-dee-4583.twil.io/Msg60025.mp3"
           fr_issues_url: "https://test-service-dee-4583.twil.io/FrTechIssuesmp3"
           fr_switch_url: "https://test-service-dee-4583.twil.io/FrSwitchInterpreter.mp3"
