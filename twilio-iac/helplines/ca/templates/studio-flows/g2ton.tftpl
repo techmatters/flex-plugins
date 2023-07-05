@@ -845,7 +845,7 @@ ${
       "type": "gather-input-on-call",
       "transitions": [
         {
-          "next": "split_keys_E",
+          "next": "split_keys_tr",
           "event": "keypress"
         },
         {
@@ -932,7 +932,7 @@ ${
       "type": "say-play",
       "transitions": [
         {
-          "next": "Msg10006E-InfoMessage2",
+          "next": "split_Invalid",
           "event": "audioComplete"
         }
       ],
@@ -1101,6 +1101,110 @@ ${
           "y": 1030
         },
         "loop": 1
+      }
+    },
+    {
+      "name": "split_Invalid",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "Msg10006E-InfoMessage2",
+          "event": "noMatch"
+        },
+        {
+          "next": "Msg10006E-InfoMessage2",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains en_number",
+              "arguments": [
+                "{{trigger.call.To}}"
+              ],
+              "type": "contains",
+              "value": channel_flow_vars["en_number"]
+            }
+          ]
+        },
+        {
+          "next": "Msg10006E-InfoOtherLanguages",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains tr_number",
+              "arguments": [
+                "{{trigger.call.To}}"
+              ],
+              "type": "contains",
+              "value": channel_flow_vars["tr_number"]
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.call.To}}",
+        "offset": {
+          "x": -2850,
+          "y": 1190
+        }
+      }
+    },
+    {
+      "name": "split_keys_tr",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "en_set_retry",
+          "event": "noMatch"
+        },
+        {
+          "next": "Msg10010E-PrivacyMsg",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 5",
+              "arguments": [
+                "{{widgets.Msg10006E-InfoOtherLanguages.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "next": "Msg10015E-ToS",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 6",
+              "arguments": [
+                "{{widgets.Msg10006E-InfoOtherLanguages.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "6"
+            }
+          ]
+        },
+        {
+          "next": "cyara_test",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 9",
+              "arguments": [
+                "{{widgets.Msg10006E-InfoOtherLanguages.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "9"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.Msg10006E-InfoOtherLanguages.Digits}}",
+        "offset": {
+          "x": -650,
+          "y": 140
+        }
       }
     }
   ],
