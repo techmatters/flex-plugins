@@ -114,6 +114,10 @@ jobs:
         run: |
           DOCKER_IMAGE=$(echo "${{ env.DOCKER_IMAGE }}" | sed -r 's/${{ env.PRIMARY_AWS_REGION }}/${{ matrix.region }}/g')
           FUNCTION_NAMES=$(aws lambda list-functions --region ${{ matrix.region }} | jq -r '.Functions[] | select(.FunctionName | test("${{ inputs.environment }}-.*-e2e")) .FunctionName')
+          if [ $? -ne 0 ]; then
+            echo "Error listing functions"
+            exit 1
+          fi
           for FUNCTION_NAME in $FUNCTION_NAMES; do
             aws lambda update-function-code --function-name $FUNCTION_NAME --image-uri "$DOCKER_IMAGE" --publish
           done
