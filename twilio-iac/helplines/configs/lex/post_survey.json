@@ -17,7 +17,7 @@
         "slot_types":{
           "yes_no": {
             "description": "Yes/No option",
-            "value_selection_strategy": "ORIGINAL_VALUE",
+            "value_selection_strategy": "TOP_RESOLUTION",
             "values": {
                 "Yes": {
                   "synonyms": [
