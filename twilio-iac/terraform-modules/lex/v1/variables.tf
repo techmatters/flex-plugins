@@ -13,52 +13,9 @@ variable "helpline" {
   type        = string
 }
 
-variable "name" {
-  description = "The name of the lex bot."
+variable "language" {
+  description = "The language for the lex bot."
   type        = string
-}
-
-variable "description" {
-  description = "The description of the lex bot."
-  type        = string
-}
-variable "locale" {
-  description = "The locale of the lex bot."
-  type        = string
-  default     = "en-US"
-}
-
-variable "process_behavior" {
-  description = "The process behavior of the lex bot."
-  type        = string
-  default     = "BUILD"
-}
-
-variable "child_directed" {
-  description = "Whether the lex bot is child directed."
-  type        = bool
-}
-
-variable "idle_session_ttl_in_seconds" {
-  description = "The idle session ttl in seconds for the lex bot."
-  type        = number
-}
-
-variable "abort_statement" {
-  description = "The rejection statement for the lex bot."
-  type = object({
-    content      = string
-    content_type = string
-  })
-}
-
-variable "clarification_prompt" {
-  description = "The closing response for the lex bot."
-  type = object({
-    max_attempts = number
-    content      = string
-    content_type = string
-  })
 }
 
 variable "slot_types" {
@@ -99,5 +56,26 @@ variable "intents" {
         content_type = string
       })
     }))
+  }))
+}
+
+variable "bots" {
+  description = "The bots for the helpline."
+  type = map(object({
+    description                 = string
+    locale                      = optional(string, "en-US")
+    process_behavior            = optional(string, "BUILD")
+    child_directed              = optional(bool, true)
+    idle_session_ttl_in_seconds = optional(number, 300)
+    abort_statement = object({
+      content      = string
+      content_type = string
+    })
+    clarification_prompt = object({
+      max_attempts = number
+      content      = string
+      content_type = string
+    })
+    intents = list(string)
   }))
 }
