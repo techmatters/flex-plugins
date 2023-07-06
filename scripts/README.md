@@ -201,14 +201,13 @@ will set the `enable_voice_recordings` to false, and the `enable_transcripts` fl
 This sets the same flags as the example above, but uses AWS to look up the Twilio credentials for the Aselo Development account. Note that the `--helplineShortCode` and the `--helplineEnvironment` arguments are passed in before the `patch-feature-flags` command, not after.
 
 
-3Single account (AWS credentials in environment):
+3. All accounts for environment (AWS credentials in environment):
 
 ```
-➜ npm run twilioResources -- --helplineEnvironment development --helplineShortCode AS patch-feature-flags -f enable_voice_recordings:false -f enable_twilio_transcripts:true
+➜ npm run twilioResources -- --helplineEnvironment development patch-feature-flags -f enable_voice_recordings:false -f enable_twilio_transcripts:true
 ```
 
 This sets the same flags as the example above, but uses AWS to look up the Twilio credentials for all the accounts in the development environment and will set the flags for each of them.
-
 
 ## convertAutopilotToLex
 

@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Page, test } from '@playwright/test';
+import { BrowserContext, Page, test } from '@playwright/test';
 import * as webchat from '../webchat';
 import { WebChatPage } from '../webchat';
 import { statusIndicator, WorkerStatus } from '../workerStatus';
@@ -27,26 +27,25 @@ import {
   counselorStatement,
 } from '../chatModel';
 import { flexChat } from '../flexChat';
-import { shouldSkipDataUpdate } from '../config';
+import { skipTestIfNotTargeted, skipTestIfDataUpdateDisabled } from '../skipTest';
 import { tasks } from '../tasks';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { deleteAllTasksInQueue } from '../twilio/tasks';
-import { logPageTelemetry } from '../browser-logs';
 import { notificationBar } from '../notificationBar';
 import { navigateToAgentDesktop } from '../agent-desktop';
+import { setupContextAndPage, closePage } from '../browser';
 
 test.describe.serial('Web chat caller', () => {
-  // Eventually this test will need to be refactored to return success before the await form.save();
-  test.skip(shouldSkipDataUpdate(), 'Data update disabled. Skipping test.');
+  // Eventually this test will need to be refactored to return success before the await form.save() using skipIfDatUpdateDisabled() and a separate test
+  skipTestIfNotTargeted();
+  skipTestIfDataUpdateDisabled();
 
-  let chatPage: WebChatPage, pluginPage: Page;
+  let chatPage: WebChatPage, pluginPage: Page, context: BrowserContext;
   test.beforeAll(async ({ browser }) => {
-    pluginPage = await browser.newPage();
-    logPageTelemetry(pluginPage);
-    console.log('Plugin page browser session launched.');
+    ({ context, page: pluginPage } = await setupContextAndPage(browser));
     await navigateToAgentDesktop(pluginPage);
     console.log('Plugin page visited.');
-    chatPage = await webchat.open(browser);
+    chatPage = await webchat.open(context);
     console.log('Webchat browser session launched.');
   });
 
@@ -55,12 +54,10 @@ test.describe.serial('Web chat caller', () => {
     if (pluginPage) {
       await notificationBar(pluginPage).dismissAllNotifications();
     }
-    await Promise.all([
-      chatPage?.close(),
-      pluginPage?.close(),
-      deleteAllTasksInQueue('Flex Task Assignment', 'Master Workflow', 'Childline'),
-    ]);
+    await closePage(pluginPage);
+    await deleteAllTasksInQueue('Flex Task Assignment', 'Master Workflow', 'Childline');
   });
+
   test('Chat ', async () => {
     test.setTimeout(180000);
     await chatPage.openChat();
