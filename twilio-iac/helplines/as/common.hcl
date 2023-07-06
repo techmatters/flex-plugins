@@ -4,19 +4,19 @@ locals {
   config              = merge(local.defaults_config, local.local_config)
 
   en_us_slot_types = merge(
-    jsondecode(file("/app/twilio-iac/helplines/configs/lex/en/slot_types/age.json")),
-    jsondecode(file("/app/twilio-iac/helplines/configs/lex/en/slot_types/gender.json")),
-    jsondecode(file("/app/twilio-iac/helplines/configs/lex/en/slot_types/yes_no.json")),
+    jsondecode(file("/app/twilio-iac/helplines/configs/lex/en_US/slot_types/age.json")),
+    jsondecode(file("/app/twilio-iac/helplines/configs/lex/en_US/slot_types/gender.json")),
+    jsondecode(file("/app/twilio-iac/helplines/configs/lex/en_US/slot_types/yes_no.json")),
   )
 
   en_us_intents = merge(
-    jsondecode(file("/app/twilio-iac/helplines/configs/lex/en/intents/post_survey.json")),
-    jsondecode(file("/app/twilio-iac/helplines/configs/lex/en/intents/pre_survey.json")),
+    jsondecode(file("/app/twilio-iac/helplines/configs/lex/en_US/intents/post_survey.json")),
+    jsondecode(file("/app/twilio-iac/helplines/configs/lex/en_US/intents/pre_survey.json")),
   )
 
   en_us_bots = merge(
-    jsondecode(file("/app/twilio-iac/helplines/configs/lex/en/bots/post_survey.json")),
-    jsondecode(file("/app/twilio-iac/helplines/configs/lex/en/bots/pre_survey.json")),
+    jsondecode(file("/app/twilio-iac/helplines/configs/lex/en_US/bots/post_survey.json")),
+    jsondecode(file("/app/twilio-iac/helplines/configs/lex/en_US/bots/pre_survey.json")),
   )
 
   local_config = {
