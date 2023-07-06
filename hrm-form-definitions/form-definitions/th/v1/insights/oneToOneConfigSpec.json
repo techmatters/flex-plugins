@@ -8,6 +8,16 @@
           "initiative"
         ]
       }
+    ],
+     "childInformation": [
+      {
+        "name": "province",
+        "insights": ["customers", "city"]
+      },
+      {
+        "name": "area",
+        "insights": ["customers", "area"]
+      }
     ]
   },
   "caseForm": {
