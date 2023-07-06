@@ -16,7 +16,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import fetchResourceApi from './fetchResourcesApi';
-import { getAseloFeatureFlags, getReferrableResourceConfig } from '../hrmConfig';
+import { getReferrableResourceConfig } from '../hrmConfig';
 
 export type AttributeData<T = any> = {
   language?: string;
@@ -56,19 +56,9 @@ export const searchResources = async (
   start: number,
   limit: number,
 ): Promise<{ totalCount: number; results: ReferrableResource[] }> => {
-  if (getAseloFeatureFlags().enable_resources_elastic_search) {
-    const fromApi = await fetchResourceApi(`search?start=${start}&limit=${limit}`, {
-      method: 'POST',
-      body: JSON.stringify(parameters),
-    });
-    return {
-      ...fromApi,
-      results: fromApi.results,
-    };
-  }
-  const fromApi = await fetchResourceApi(`searchByName?start=${start}&limit=${limit}`, {
+  const fromApi = await fetchResourceApi(`search?start=${start}&limit=${limit}`, {
     method: 'POST',
-    body: JSON.stringify({ nameSubstring: parameters.generalSearchTerm, ids: [] }),
+    body: JSON.stringify(parameters),
   });
   return {
     ...fromApi,

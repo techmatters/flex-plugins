@@ -16,6 +16,7 @@
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { chromium, expect, FullConfig, request } from '@playwright/test';
+import { getConfigValue } from '../config';
 
 function delay(time: number) {
   return new Promise(function (resolve) {
@@ -110,7 +111,7 @@ export async function oktaSsoLoginViaApi(
   expect(flexPageResponse.ok()).toBe(true);
   await flexPageResponse.dispose(); //Not sure if this is strictly necessary
 
-  await apiRequest.storageState({ path: 'temp/state.json' });
+  await apiRequest.storageState({ path: getConfigValue('storageStatePath') as string });
 }
 
 export async function oktaSsoLoginViaGui(
@@ -138,6 +139,6 @@ export async function oktaSsoLoginViaGui(
   const logoImage = page.locator('.Twilio.Twilio-MainHeader img');
   await logoImage.waitFor();
   await expect(logoImage).toHaveAttribute('src', /.*aselo.*/);
-  await page.context().storageState({ path: 'temp/state.json' });
+  await page.context().storageState({ path: getConfigValue('storageStatePath') as string });
   await browser.close();
 }
