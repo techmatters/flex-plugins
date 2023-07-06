@@ -9,7 +9,7 @@
           "name": "CallerType",
           "description": "Caller is calling for self or someone else",
           "value_selection_setting": {
-            "resolution_strategy": "ORIGINAL_VALUE"
+            "resolution_strategy": "TOP_RESOLUTION"
           },
           "slot_type_values": [
             {
@@ -58,7 +58,7 @@
           "name": "age",
           "description": "Caller's age",
           "value_selection_setting": {
-            "resolution_strategy": "ORIGINAL_VALUE"
+            "resolution_strategy": "TOP_RESOLUTION"
           },
           "slot_type_values": [
             {
