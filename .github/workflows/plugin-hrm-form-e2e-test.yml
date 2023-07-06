@@ -80,26 +80,9 @@ jobs:
         run: NODE_ENV=development TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npm run start &
         working-directory: ./plugin-hrm-form
 
-      # Build Playwright
-      - name: Install e2e-tests dependencies
-        run: npm install
-        working-directory: ./e2e-tests
-
-      - name: Setup dependencies for playwright/browsers
-        uses: microsoft/playwright-github-action@v1
-
-      - name: Install Playwright CLI
-        run: npx playwright install
-        working-directory: ./e2e-tests
-
-      # Run E2E tests
-      - name: Run Playwright tests
-        run: npm run test:local
-        working-directory: ./e2e-tests
-
-      # Upload artifacts
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
+      - name: Run e2e tests
+        uses: ./.github/actions/run-e2e-tests
         with:
-          name: test-artifacts
-          path: e2e-tests/test-results
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          environment: local

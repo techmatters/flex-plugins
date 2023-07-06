@@ -51,39 +51,14 @@ jobs:
         with:
           node-version: '16.x'
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
       - name: Install Flex Plugin
         uses: ./.github/actions/install-flex-plugin
 
-      # Build Playwright
-      - name: Install e2e-tests dependencies
-        run: npm ci
-        working-directory: ./e2e-tests
-
-      - name: Setup dependencies for playwright/browsers
-        uses: microsoft/playwright-github-action@v1
-
-      - name: Install Playwright CLI
-        run: npx playwright install
-        working-directory: ./e2e-tests
-
-      # Run E2E tests against actual E2E Flex instance
-      - name: Run Playwright tests
-        run: npm run test:development:e2e
-        working-directory: ./e2e-tests
-
-      # Upload artifacts
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
+      - name: Run e2e tests
+        uses: ./.github/actions/run-e2e-tests
         with:
-          name: test-artifacts
-          path: e2e-tests/test-results
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   generate-pre-release:
     needs: run-e2e-tests

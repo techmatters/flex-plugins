@@ -38,7 +38,5 @@ export const navigateToAgentDesktop = async (page: Page) => {
   await page.goto('/agent-desktop', { waitUntil: 'networkidle' });
 
   // There are multiple elements so we need to use waitForSelector instead of a locator/waitFor
-  await page.waitForSelector(
-    "div.Twilio-AgentDesktopView-default button[data-testid='AddTaskButton']",
-  );
+  await page.waitForSelector('button[data-testid="AddTaskButton"]');
 };

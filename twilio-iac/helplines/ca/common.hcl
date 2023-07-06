@@ -34,40 +34,36 @@ locals {
         "friendly_name"           = "KHP French"
       },
       ab211_en : {
-        "target_workers" = "routing.skills HAS 'AB211 English'",
+        "target_workers" = "routing.skills HAS 'AB211En'",
         "friendly_name"  = "AB211 English"
       },
       ab211_fr : {
-        "target_workers" = "routing.skills HAS 'AB211 French'",
+        "target_workers" = "routing.skills HAS 'AB211Fr'",
         "friendly_name"  = "AB211 French"
       },
       g2t_ns_en : {
-        "target_workers" = "routing.skills HAS 'Good2Talk NS English'",
+        "target_workers" = "routing.skills HAS 'G2TNSEn'",
         "friendly_name"  = "Good2Talk NS English"
       },
       g2t_ns_fr : {
-        "target_workers" = "routing.skills HAS 'Good2Talk NS French'",
+        "target_workers" = "routing.skills HAS 'G2TNSFr'",
         "friendly_name"  = "Good2Talk NS French"
       },
       g2t_on_en : {
-        "target_workers" = "routing.skills HAS 'Good2Talk ON English'",
+        "target_workers" = "routing.skills HAS 'G2TONEn'",
         "friendly_name"  = "Good2Talk ON English"
       },
       g2t_on_fr : {
-        "target_workers" = "routing.skills HAS 'Good2Talk ON French'",
+        "target_workers" = "routing.skills HAS 'G2TONFr'",
         "friendly_name"  = "Good2Talk ON French"
       },
-      g2t_on_zh : {
-        "target_workers" = "routing.skills HAS 'Good2Talk ON Mandarin'",
-        "friendly_name"  = "Good2Talk ON Mandarin"
+      g2t_int : {
+        "target_workers" = "routing.skills HAS 'G2TONTr'",
+        "friendly_name"  = "Good2Talk Interpreter"
       },
       interpreter_en : {
         "target_workers" = "routing.skills HAS 'Interpreter' ",
         "friendly_name"  = "Interpreter"
-      },
-      interpreter_fr : {
-        "target_workers" = "routing.skills HAS 'French Interpreter'",
-        "friendly_name"  = "French Interpreter"
       },
       supervisor : {
         "target_workers" = "routing.skills HAS 'Supervisor'",
@@ -78,11 +74,11 @@ locals {
         "friendly_name"  = "Training"
       },
       health_canada_en : {
-        "target_workers" = "routing.skills HAS 'Health Canada English'",
+        "target_workers" = "routing.skills HAS 'HCENG'",
         "friendly_name"  = "Health Canada English"
       },
       health_canada_fr : {
-        "target_workers" = "routing.skills HAS 'Health Canada French'",
+        "target_workers" = "routing.skills HAS 'HCFR'",
         "friendly_name"  = "Health Canada French"
       },
       chat_en : {

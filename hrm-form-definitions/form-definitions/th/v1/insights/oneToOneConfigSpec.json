@@ -8,6 +8,31 @@
           "initiative"
         ]
       }
+    ],
+     "childInformation": [
+      {
+        "name": "province",
+        "insights": ["customers", "city"]
+      },
+      {
+        "name": "area",
+        "insights": ["customers", "area"]
+      }
+    ]
+  },
+  "caseForm": {
+    "topLevel": [
+      {
+        "name": "id",
+        "insights": ["conversations", "case"]
+      },
+      {
+        "name": "caseStatus",
+        "insights": [
+          "conversations",
+          "in_business_hours"
+        ]
+      }
     ]
   }
 }
