@@ -4,7 +4,22 @@ import { logDebug, logWarning } from './log';
 require('dotenv').config();
 
 let ssm: AWS.SSM;
+let privilegedSsm: AWS.SSM;
 let roleToAssume: string = 'arn:aws:iam::712893914485:role/tf-twilio-iac-ssm-read-only';
+
+const getPrivilegedSsm = async (): Promise<AWS.SSM> => {
+  if (!privilegedSsm) {
+    privilegedSsm = new SSM({
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+      },
+      region: process.env.AWS_REGION ?? 'us-east-1',
+    });
+  }
+
+  return privilegedSsm;
+};
 
 export const setRoleToAssume = (role: string) => {
   logDebug('Setting role to assume: ', role);
@@ -73,15 +88,36 @@ export const saveSSMParameter = async (
   return ssmClient.putParameter(config).promise();
 };
 
-export const getSSMParameter = async (name: string) => {
-  const ssmClient = await getSsm();
+export const getSSMParameter = async (name: string, usePrivilegedAccess = false) => {
+  const ssmClient = await (usePrivilegedAccess ? getPrivilegedSsm() : getSsm());
   try {
-    const result = await ssmClient.getParameter({ Name: name, WithDecryption: true }).promise();
-    return result;
+    return await ssmClient.getParameter({ Name: name, WithDecryption: true }).promise();
   } catch (e) {
     logWarning('getSSMParameter error: ', e);
     return null;
   }
+};
+
+const getSSMParametersChunkByPath = async (path: string, token: string | undefined) => {
+  const ssmClient = await getPrivilegedSsm();
+  return ssmClient
+    .getParametersByPath({ Path: path, Recursive: true, NextToken: token, WithDecryption: true })
+    .promise();
+};
+
+export const getSSMParametersByPath = async (path: string) => {
+  const parameters: AWS.SSM.ParameterList = [];
+  let nextToken: string | undefined;
+
+  do {
+    // eslint-disable-next-line no-await-in-loop
+    const { Parameters: results, NextToken } = await getSSMParametersChunkByPath(path, nextToken);
+    nextToken = results?.length ? NextToken : undefined;
+    logDebug(`Chunk of ${results?.length} parameters found for path: ${path}`);
+    parameters.push(...(results ?? []));
+  } while (nextToken);
+
+  return parameters;
 };
 
 // export const deleteSSMParameter = async (Name: string) => {

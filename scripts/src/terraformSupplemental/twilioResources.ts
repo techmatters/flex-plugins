@@ -10,13 +10,18 @@ import {
   CreateTwilioApiKeyAndSsmSecretOptions,
 } from './createTwilioApiKeyAndSsmSecret';
 import {
-  updateFlexServiceConfiguration,
   patchFeatureFlags,
+  updateFlexServiceConfiguration,
 } from './updateFlexServiceConfiguration';
 import { generateChatbotResource } from './generateChatbotResource';
 import { handleTerraformArgs } from './handleTerraformArgs';
 import { handleSsmRoleArg } from './handleSsmRoleArg';
 import { setEnvFromSsm } from './setEnvFromSsm';
+import {
+  forShortCodes,
+  runAgainstAllAccountsForEnvironment,
+  Strategy,
+} from './runAgainstAllAccountsForEnvironment';
 
 config();
 
@@ -243,7 +248,11 @@ async function main() {
             'Flex Service configuration payload must be set either via the --payload argument or the TWILIO_FLEX_SERVICE_CONFIGURATION_PAYLOAD environment variable.',
           );
         }
-        await updateFlexServiceConfiguration(JSON.parse(jsonPayload));
+        await updateFlexServiceConfiguration(
+          process.env.TWILIO_ACCOUNT_SID!,
+          process.env.TWILIO_AUTH_TOKEN!,
+          JSON.parse(jsonPayload),
+        );
       },
     )
     .command(
@@ -270,7 +279,23 @@ async function main() {
             return [flag, textSetting.toLowerCase() === 'true'];
           }),
         );
-        await patchFeatureFlags(flagMap);
+        if (argv.helplineEnvironment) {
+          await runAgainstAllAccountsForEnvironment(
+            argv.helplineEnvironment,
+            async (twilioAccountSid, twilioAuthToken) => {
+              await patchFeatureFlags(twilioAccountSid, twilioAuthToken, flagMap);
+            },
+            Strategy.CONCURRENT,
+            argv.helplineShortCode ? forShortCodes(argv.helplineShortCode) : () => true,
+          );
+        } else {
+          // Assumes the environment variables for a Twilio account are set
+          await patchFeatureFlags(
+            process.env.TWILIO_ACCOUNT_SID!,
+            process.env.TWILIO_AUTH_TOKEN!,
+            flagMap,
+          );
+        }
       },
     )
     .command(
