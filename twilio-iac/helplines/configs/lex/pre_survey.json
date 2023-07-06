@@ -233,7 +233,7 @@
           "content_type": "PlainText"
         },
         "slots": {
-          "callerType": {
+          "aboutSelf": {
             "priority": 1,
             "description": "Caller is calling for self or someone else",
             "slot_constraint": "Required",
