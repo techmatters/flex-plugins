@@ -172,6 +172,11 @@ const ResourceReferralList: React.FC<Props> = ({
             <ReferralItemInfo>
               <span>{resourceName}</span>
               <span>ID #{resourceId}</span>
+              <span>
+                <button color="blue" type="submit">
+                  Delete
+                </button>
+              </span>
             </ReferralItemInfo>
           </ReferralItem>
         ))}
