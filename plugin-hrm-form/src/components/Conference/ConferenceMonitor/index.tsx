@@ -18,6 +18,7 @@ import React from 'react';
 import { ConferenceParticipant, TaskContextProps } from '@twilio/flex-ui';
 
 import { conferenceApi } from '../../../services/ServerlessService';
+import { hasTaskControl, isOriginalReservation, isTransferring } from '../../../utils/transfer';
 
 const isJoinedWithEnd = (p: ConferenceParticipant) => p.status === 'joined' && p.mediaProperties.endConferenceOnExit;
 const isJoinedWithoutEnd = (p: ConferenceParticipant) =>
@@ -25,17 +26,22 @@ const isJoinedWithoutEnd = (p: ConferenceParticipant) =>
 
 type Props = TaskContextProps;
 
-const ConferenceMonitor: React.FC<Props> = ({ conference }) => {
+const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
   const [updating, setUpdating] = React.useState(false);
 
   const { conferenceSid, participants } = conference?.source || {};
 
+  const thisInstanceShouldMonitor =
+    Boolean(task) && (hasTaskControl(task) || (isOriginalReservation(task) && isTransferring(task)));
+
   const shouldDisableEndConferenceOnExit =
+    thisInstanceShouldMonitor &&
     Boolean(participants) &&
     participants.filter(p => p.status === 'joined').length > 2 &&
     participants.some(isJoinedWithEnd);
 
   const shouldEnableEndConferenceOnExit =
+    thisInstanceShouldMonitor &&
     Boolean(participants) &&
     participants.filter(p => p.status === 'joined').length <= 2 &&
     participants.some(isJoinedWithoutEnd);
