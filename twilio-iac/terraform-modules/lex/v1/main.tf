@@ -124,7 +124,7 @@ resource "aws_lex_bot" "this" {
   dynamic "intent" {
     for_each = each.value.intents
     content {
-      intent_name    = "${local.name_prefix}_${each.key}_${intent.value}"
+      intent_name    = "${local.name_prefix}_${intent.value}"
       intent_version = aws_lex_intent.this[intent.value].version
     }
   }
@@ -136,6 +136,8 @@ resource "aws_lex_bot_alias" "this" {
   provider    = aws.hl-region
   bot_name    = "${local.name_prefix}_${each.key}"
   bot_version = "$LATEST"
-  description = "Bot alias"
+  description = "Bot alias for ${local.name_prefix}_${each.key}"
   name        = "latest"
+
+  depends_on = [aws_lex_bot.this[each.key]]
 }
