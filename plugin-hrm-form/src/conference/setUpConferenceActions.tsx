@@ -17,6 +17,9 @@
 import React from 'react';
 import { Actions, ITask, NotificationType, Notifications, Template } from '@twilio/flex-ui';
 
+import { hasTaskControl, isTransferring } from '../utils/transfer';
+import { TransfersNotifications } from '../transfer/setUpTransferActions';
+
 export const ConferenceNotifications = {
   UnholdParticipantsNotification: 'ConferenceNotifications_UnholdParticipantsNotification',
   ErrorAddingParticipantNotification: 'ConferenceNotifications_ErrorAddingParticipantNotification',
@@ -50,7 +53,16 @@ export const setUpConferenceActions = () => {
   Actions.addListener('beforeHangupCall', async (payload: { task: ITask }, abortFunction) => {
     const { conference } = payload.task;
 
-    if (conference.participants.length > 2 && conference.participants.some(p => p.onHold && p.status === 'joined')) {
+    const someParticipantIsOnHold =
+      conference.participants.filter(p => p.status === 'joined').length > 2 &&
+      conference.participants.some(p => p.onHold && p.status === 'joined');
+
+    if (isTransferring(payload.task)) {
+      Notifications.showNotificationSingle(TransfersNotifications.CantHangTransferInProgressNotification);
+      abortFunction();
+    }
+
+    if (someParticipantIsOnHold && hasTaskControl(payload.task)) {
       Notifications.showNotificationSingle(ConferenceNotifications.UnholdParticipantsNotification);
       abortFunction();
     }

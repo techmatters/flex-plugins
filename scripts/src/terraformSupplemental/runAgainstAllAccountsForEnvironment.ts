@@ -1,4 +1,4 @@
-import { getSSMParametersByPath } from '../helpers/ssm';
+import { getSSMParameter, getSSMParametersByPath } from '../helpers/ssm';
 import { logDebug } from '../helpers/log';
 
 export const enum Environment {
@@ -15,10 +15,14 @@ export const enum Strategy {
 
 type AccountSID = `AC${string}`;
 
+export const forShortCodes = (helplineCodes: string[] | string) => (shortCode: string) =>
+  (Array.isArray(helplineCodes) ? helplineCodes : [helplineCodes]).includes(shortCode);
+
 export const runAgainstAllAccountsForEnvironment = async (
   environment: Environment,
-  action: (accountSid: AccountSID, authToken: string) => Promise<void>,
+  action: (accountSid: AccountSID, authToken: string, shortCode: string) => Promise<void>,
   strategy: Strategy = Strategy.SEQUENTIAL,
+  filter: (shortCode: string, accountSid: AccountSID) => boolean = () => true,
 ) => {
   const allTwilioTokenParameters = await getSSMParametersByPath(`/${environment}/twilio`);
   logDebug(
@@ -26,25 +30,44 @@ export const runAgainstAllAccountsForEnvironment = async (
     `/${environment}/twilio`,
     allTwilioTokenParameters.length,
   );
-  const allCreds = allTwilioTokenParameters
+  const allAccounts = allTwilioTokenParameters
     .map((parameter) => {
-      logDebug('Testing parameter:', parameter.Name);
-      const match = parameter.Name!.match(/\/[a-z]+\/twilio\/(AC[0-9a-fA-F]+)\/auth_token/);
+      const match = parameter.Name!.match(/\/[a-z]+\/twilio\/([0-9a-zA-Z]+)\/account_sid/);
       if (match) {
-        logDebug('found accountSid:', match[1]);
-        return { accountSid: match[1], authToken: parameter.Value! };
+        logDebug('found accountSid:', match[1], parameter.Value);
+        return { shortCode: match[1], accountSid: parameter.Value! as AccountSID };
       }
+      logDebug('Miss:', parameter.Name);
+
       return null;
     })
-    .filter((p) => p) as { accountSid: AccountSID; authToken: string }[];
+    .filter(
+      (p: { shortCode: string; accountSid: AccountSID } | null) =>
+        p && filter(p.shortCode, p.accountSid),
+    );
+  const allCreds = await Promise.all(
+    allAccounts.map(async (p) => {
+      const { accountSid, shortCode } = p!;
+      return {
+        shortCode,
+        accountSid,
+        authToken: (await getSSMParameter(`/${environment}/twilio/${accountSid}/auth_token`, true))!
+          .Parameter!.Value!,
+      };
+    }),
+  );
   logDebug('account cred sets found:', allCreds.length);
   if (strategy === Strategy.SEQUENTIAL) {
     // eslint-disable-next-line no-restricted-syntax
-    for (const { accountSid, authToken } of allCreds) {
+    for (const { accountSid, authToken, shortCode } of allCreds) {
       // eslint-disable-next-line no-await-in-loop
-      await action(accountSid, authToken);
+      await action(accountSid, authToken, shortCode);
     }
   } else {
-    await Promise.all(allCreds.map(({ accountSid, authToken }) => action(accountSid, authToken)));
+    await Promise.all(
+      allCreds.map(({ accountSid, authToken, shortCode }) =>
+        action(accountSid, authToken, shortCode),
+      ),
+    );
   }
 };

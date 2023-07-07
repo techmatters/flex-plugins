@@ -38,6 +38,8 @@ export function logPageTelemetry(
   page: Page,
   configOverrides: Partial<PageTelemetryConfig> = {},
 ): void {
+  if (getConfigValue('browserTelemetryDisabled')) return;
+
   const config: PageTelemetryConfig = { ...DEFAULT_CONFIG, ...configOverrides };
   if (config.level === PageTelemetryLevel.NONE) return;
   page.on('console', (message) => {

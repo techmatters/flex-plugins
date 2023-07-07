@@ -17,6 +17,8 @@
 import { KhpOperationsDay, KhpUiResource, Language } from './types';
 import { AttributeData, Attributes } from '../../services/ResourceService';
 
+const BLANK_MAIN_CONTACT = { name: '', title: '', email: '', phoneNumber: '', isPrivate: false };
+
 const getAttributeData = (attributes: Attributes | undefined, language: Language, keyName: string): AttributeData => {
   const propDataList = (attributes ?? {})[keyName];
   if (propDataList && Array.isArray(propDataList)) {
@@ -228,22 +230,22 @@ export const convertKHPResourceAttributes = (
   if (!attributes || Array.isArray(attributes)) {
     throw new Error('Invalid attributes to convert to KHP resource');
   }
-  if (!attributes.mainContact || Array.isArray(attributes.mainContact)) {
-    throw new Error('Invalid attributes.mainContact to convert to KHP resource');
-  }
   const sites = attributes.site && !Array.isArray(attributes.site) ? attributes.site : {};
   const operations = attributes.operations && !Array.isArray(attributes.operations) ? attributes.operations : undefined;
   return {
     status: getAttributeValue(attributes, language, 'status'),
     taxonomyCode: getAttributeValue(attributes, language, 'taxonomyCode'),
     description: extractDescriptionInfo(attributes.description, language),
-    mainContact: {
-      name: getAttributeValue(attributes.mainContact, language, 'name'),
-      title: getAttributeValue(attributes.mainContact, language, 'title'),
-      phoneNumber: getAttributeValue(attributes.mainContact, language, 'phoneNumber'),
-      email: getAttributeValue(attributes.mainContact, language, 'email'),
-      isPrivate: getBooleanAttributeValue(attributes.mainContact, 'isPrivate'),
-    },
+    mainContact:
+      attributes.mainContact && !Array.isArray(attributes.mainContact)
+        ? {
+            name: getAttributeValue(attributes.mainContact, language, 'name'),
+            title: getAttributeValue(attributes.mainContact, language, 'title'),
+            phoneNumber: getAttributeValue(attributes.mainContact, language, 'phoneNumber'),
+            email: getAttributeValue(attributes.mainContact, language, 'email'),
+            isPrivate: getBooleanAttributeValue(attributes.mainContact, 'isPrivate'),
+          }
+        : BLANK_MAIN_CONTACT,
     website: getAttributeValue(attributes, language, 'website'),
     operations: extractResourceOperatingHours(operations, language),
     available247: getAttributeValue(attributes, language, 'available247'),
