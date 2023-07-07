@@ -134,10 +134,8 @@ resource "aws_lex_bot_alias" "this" {
   for_each = var.bots
 
   provider    = aws.hl-region
-  bot_name    = "${local.name_prefix}_${each.key}"
+  bot_name    = aws_lex_bot.this[each.key].name
   bot_version = "$LATEST"
-  description = "Bot alias for ${local.name_prefix}_${each.key}"
+  description = "Bot alias for ${aws_lex_bot.this[each.key].name}"
   name        = "latest"
-
-  depends_on = [aws_lex_bot.this[each.key]]
 }
