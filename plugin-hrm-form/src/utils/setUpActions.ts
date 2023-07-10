@@ -330,9 +330,7 @@ const setChatOrchestrationsForPostSurvey = () => {
 };
 
 export const setUpPostSurvey = (featureFlags: FeatureFlags) => {
-  console.log('>>> 1 b setUpPostSurvey')
   if (featureFlags.enable_post_survey) {
-    console.log('>>> 2 b setChatOrchestrationsForPostSurvey')
     setChatOrchestrationsForPostSurvey();
   }
 };

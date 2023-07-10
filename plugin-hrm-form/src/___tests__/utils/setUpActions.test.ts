@@ -18,7 +18,6 @@
 import { ITask, ChatOrchestrator } from '@twilio/flex-ui';
 
 import { afterCompleteTask, setUpPostSurvey } from '../../utils/setUpActions';
-
 import { REMOVE_CONTACT_STATE } from '../../states/types';
 import { FeatureFlags } from '../../types/types';
 
@@ -55,3 +54,21 @@ describe('afterCompleteTask', () => {
   });
 });
 
+describe('setUpPostSurvey', () => {
+  test('featureFlags.enable_post_survey === false should not change ChatOrchestrator', async () => {
+    const setOrchestrationsSpy = jest.spyOn(ChatOrchestrator, 'setOrchestrations');
+    setUpPostSurvey(<FeatureFlags>{ enable_post_survey: false });
+
+    expect(setOrchestrationsSpy).not.toHaveBeenCalled();
+  });
+
+  test('featureFlags.enable_post_survey === true should change ChatOrchestrator', async () => {
+    const setOrchestrationsSpy = jest.spyOn(ChatOrchestrator, 'setOrchestrations').mockImplementation();
+
+    setUpPostSurvey(<FeatureFlags>{ enable_post_survey: true });
+
+    expect(setOrchestrationsSpy).toHaveBeenCalledTimes(2);
+    expect(setOrchestrationsSpy).toHaveBeenCalledWith('wrapup', expect.any(Function));
+    expect(setOrchestrationsSpy).toHaveBeenCalledWith('completed', expect.any(Function));
+  });
+});
