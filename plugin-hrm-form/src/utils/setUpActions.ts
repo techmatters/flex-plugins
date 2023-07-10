@@ -33,7 +33,6 @@ import {
   adjustChatCapacity,
   sendSystemMessage,
   getDefinitionVersion,
-  postSurveyInit,
 } from '../services/ServerlessService';
 import { namespace, contactFormsBase, configurationBase, dualWriteBase, conferencingBase } from '../states';
 import * as Actions from '../states/contacts/actions';
@@ -331,39 +330,14 @@ const setChatOrchestrationsForPostSurvey = () => {
 };
 
 export const setUpPostSurvey = (featureFlags: FeatureFlags) => {
+  console.log('>>> 1 b setUpPostSurvey')
   if (featureFlags.enable_post_survey) {
+    console.log('>>> 2 b setChatOrchestrationsForPostSurvey')
     setChatOrchestrationsForPostSurvey();
-  }
-};
-
-const triggerPostSurvey = async (setupObject: SetupObject, payload: ActionPayload): Promise<void> => {
-  const { task } = payload;
-
-  const shouldTriggerPostSurvey =
-    TaskHelper.isChatBasedTask(task) && !isAseloCustomChannelTask(task) && TransferHelpers.hasTaskControl(task);
-
-  if (shouldTriggerPostSurvey) {
-    const { taskSid } = task;
-    const channelSid = TaskHelper.getTaskConversationSid(task);
-
-    const taskLanguage = getTaskLanguage(setupObject)(payload);
-
-    const body = taskLanguage ? { channelSid, taskSid, taskLanguage } : { channelSid, taskSid };
-
-    await postSurveyInit(body);
   }
 };
 
 export const afterCompleteTask = (payload: ActionPayload): void => {
   const manager = Manager.getInstance();
   manager.store.dispatch(GeneralActions.removeContactState(payload.task.taskSid));
-};
-
-export const afterWrapupTask = (featureFlags: FeatureFlags, setupObject: SetupObject) => async (
-  payload: ActionPayload,
-): Promise<void> => {
-  // TODO: Remove this once all accounts are handled by taskrouter
-  if (featureFlags.enable_post_survey && !featureFlags.post_survey_serverless_handled) {
-    await triggerPostSurvey(setupObject, payload);
-  }
 };

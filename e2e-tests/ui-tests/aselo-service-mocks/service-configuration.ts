@@ -41,7 +41,7 @@ export const serviceConfigurationAttributes = () => ({
     enable_csam_report: true,
     post_survey_serverless_handled: true,
     enable_voice_recordings: true,
-    enable_post_survey: true,
+    // enable_post_survey: true,
   },
   seenOnboarding: true,
   permissionConfig: 'dev',
