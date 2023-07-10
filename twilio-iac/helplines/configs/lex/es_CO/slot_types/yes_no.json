@@ -1,0 +1,21 @@
+{
+  "yes_no": {
+    "description": "Custom slot for Yes-No kind of questions",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "Yes": {
+        "synonyms": [
+          "s",
+          "sí",
+          "si"
+        ]
+      },
+      "No": {
+        "synonyms": [
+          "n",
+          "no"
+        ]
+      }
+    }
+  }
+}

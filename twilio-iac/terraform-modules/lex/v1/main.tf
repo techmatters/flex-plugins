@@ -97,6 +97,7 @@ resource "aws_lex_bot" "this" {
   process_behavior            = each.value.process_behavior
   create_version              = false
   idle_session_ttl_in_seconds = each.value.idle_session_ttl_in_seconds
+  enable_model_improvements   = each.value.enable_model_improvements
 
   #   By specifying true to child_directed, you confirm that your use of Amazon Lex is related to a website,
   #   program, or other application that is directed or targeted, in whole or in part, to
