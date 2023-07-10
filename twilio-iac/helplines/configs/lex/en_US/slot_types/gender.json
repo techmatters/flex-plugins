@@ -1,0 +1,25 @@
+{
+  "gender": {
+    "description": "Gender of caller",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "boy": {
+        "synonyms": [
+          "m", "dude", "guy", "man", "he", "male"
+        ]
+      },
+      "girl": {
+        "synonyms": ["f", "she", "female", "lady", "woman"]
+      },
+      "non-binary": {
+        "synonyms": ["none", "nonbinary", "non binary"]
+      },
+      "unknown": {
+        "synonyms": ["not sure", "unsure", "x"]
+      },
+      "prefer not to answer": {
+        "synonyms": ["prefer not", "not answer", "not answering"]
+      }
+    }
+  }
+}
