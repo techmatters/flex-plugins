@@ -165,6 +165,7 @@
   "Case-AddIncident": "Add Incident",
   "Case-AddDocument": "Add Document",
   "Case-EditNote": "Edit Note",
+  "Case-DeleteDocument": "Delete",
   "Case-EditReferral": "Edit Referral",
   "Case-EditHousehold": "Edit Household Member",
   "Case-EditPerpetrator": "Edit Perpetrator",
