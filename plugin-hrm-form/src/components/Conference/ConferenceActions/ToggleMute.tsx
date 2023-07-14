@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
 import MicNoneOutlined from '@material-ui/icons/MicNoneOutlined';
 import MicOffOutlined from '@material-ui/icons/MicOffOutlined';
@@ -26,6 +26,14 @@ type Props = TaskContextProps;
 
 const ToggleMute: React.FC<Props> = ({ call, task, conference }) => {
   const [isMuted, setIsMuted] = useState(false);
+
+  useEffect(() => {
+    const workerParticipant = task?.conference?.participants.find(participant => participant.isCurrentWorker === true);
+
+    if (workerParticipant && workerParticipant.isCurrentWorker && workerParticipant.muted) {
+      setIsMuted(true);
+    }
+  }, [task?.conference?.participants]);
 
   if (!task || !call || !conference) {
     return null;
