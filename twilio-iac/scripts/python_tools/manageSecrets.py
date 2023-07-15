@@ -2,7 +2,7 @@
 
 from os import environ
 from sys import argv, exit
-from secretManager import Questionnaire
+from src.secretManager import Questionnaire
 
 if environ.get('PROVISION_SKIP_MIGRATION'):
     print('Skipping secret management because PROVISION_SKIP_MIGRATION is set')

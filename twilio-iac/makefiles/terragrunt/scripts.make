@@ -1,7 +1,7 @@
 setup-new-environment: init manage-ssm-secrets twilio-resources-import-account-defaults
 
 manage-ssm-secrets:
-	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/secretManager/manageSecrets.py "$(HL_ENV)/$(HL)"
+	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/python-tools/manageSecrets.py "$(HL_ENV)/$(HL)"
 
 twilio-resources-import-account-defaults:
 	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/deploy-scripts/terragrunt/twilioResourceImportAccountDefaults.sh

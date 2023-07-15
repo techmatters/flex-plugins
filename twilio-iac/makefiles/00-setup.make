@@ -1,5 +1,5 @@
 DOCKER_IMAGE ?= public.ecr.aws/techmatters/terraform
-TF_VER ?= 1.3.9
+TF_VER ?= 1.5.3
 
 MY_PWD ?= $(shell git rev-parse --show-toplevel)
 MOUNT_PATH = /app

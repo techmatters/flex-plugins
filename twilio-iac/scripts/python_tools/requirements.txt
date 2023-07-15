@@ -1,0 +1,5 @@
+boto3==1.28.3
+boto3-stubs[ssm,sts]
+twilio==8.5.0
+twilio-stubs==0.2.0
+typing-extensions==4.7.1
