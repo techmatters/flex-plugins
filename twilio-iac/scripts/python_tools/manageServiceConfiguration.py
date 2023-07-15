@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
 
-from src.serviceConfiguration import Manager
+from src.service_configuration import Manager
 
-manager = Manager()
+Manager().main()

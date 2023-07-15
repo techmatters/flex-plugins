@@ -4,12 +4,19 @@ from typing import NotRequired, Type, TypedDict
 from ..aws import SSMClient
 from ..twilio import Twilio
 
+ACTIONS = {
+    'SHOW': 'show',
+    'UPDATE': 'update',
+}
+
 
 class ConfigDict(TypedDict):
+    action: str
     helpline_code: NotRequired[str]
     environment: NotRequired[str]
     account_sid: NotRequired[str]
     auth_token: NotRequired[str]
+    dry_run: NotRequired[bool]
     twilio_clients: dict[str, Type[Twilio]]
 
 
@@ -17,7 +24,8 @@ class Config():
     _ssm_client: SSMClient
     _arg_parser: ArgumentParser
     _config: ConfigDict = {
-        'twilio_clients': {}
+        'action': ACTIONS['SHOW'],
+        'twilio_clients': {},
     }
 
     def __init__(self):
@@ -30,11 +38,15 @@ class Config():
     def init_arg_parser(self):
         self._arg_parser = ArgumentParser()
         self._arg_parser.add_argument(
+            'action', choices=ACTIONS.values(), default=ACTIONS['SHOW'])
+        self._arg_parser.add_argument(
             '--account_sid', required=False, default=os.environ.get('TWILIO_ACCOUNT_SID'))
         self._arg_parser.add_argument(
             '--helpline_code', required=False, default=os.environ.get('HL'))
         self._arg_parser.add_argument(
             '--environment', required=False, default=os.environ.get('HL_ENV'))
+        self._arg_parser.add_argument(
+            '--dry_run', required=False, default=False)
 
     def parse_args(self):
         args = self._arg_parser.parse_args()
@@ -77,6 +89,9 @@ class Config():
 
     def get_value(self, key: str):
         return self._config.get(key)
+
+    def get_twilio_client(self, account_sid: str):
+        return self._config['twilio_clients'][account_sid]
 
 
 config = Config()
