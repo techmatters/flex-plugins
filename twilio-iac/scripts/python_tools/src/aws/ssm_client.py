@@ -10,7 +10,7 @@ import re
 
 
 class GetHelplinesForEnvArgsDict(TypedDict):
-    helpline: str
+    helpline_code: str
     account_sid: str
 
 
@@ -136,14 +136,14 @@ class SSMClient():
     def get_helplines_for_env(self, environment: str):
         helplines: List[GetHelplinesForEnvArgsDict] = []
         pattern = re.compile(
-            rf'^/{environment}/twilio/(?P<helpline>\w+)/account_sid$')
+            rf'^/{environment}/twilio/(?P<helpline_code>\w+)/account_sid$')
 
         parameters = self.get_all_parameters_by_path(f"/{environment}/twilio")
         for parameter in parameters:
             match = pattern.match(parameter['Name'])
             if match:
                 helplines.append({
-                    'helpline': match.group('helpline'),
+                    'helpline_code': match.group('helpline_code'),
                     'account_sid': parameter['Value']
                 })
 

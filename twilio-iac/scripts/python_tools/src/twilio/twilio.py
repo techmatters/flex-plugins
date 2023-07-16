@@ -12,15 +12,17 @@ FLEX_CONFIGURATION_ENDPOINT = 'https://flex-api.twilio.com/v1/Configuration'
 
 
 class InitArgsDict(TypedDict):
-    helpline_code: NotRequired[str]
-    environment: NotRequired[str]
-    account_sid: NotRequired[str]
-    auth_token: NotRequired[str]
+    helpline_code: str
+    environment: str
+    account_sid: NotRequired[str | None]
+    auth_token: NotRequired[str | None]
 
 
 class Twilio():
     client: Client
     account_sid: str
+    helpline_code: str
+    environment: str
     _auth_token: str
     _ssm_client: SSMClient
 
@@ -46,8 +48,11 @@ class Twilio():
             raise Exception(
                 "Could not find Twilio credentials. Please provide account_sid and auth_token")
 
+        self.helpline_code = helpline_code
+        self.environment = environment
         self.account_sid = account_sid
         self._auth_token = auth_token
+
         return Client(account_sid, auth_token)
 
     def get_flex_configuration_headers(self) -> dict[str, str | dict[str, str]]:
