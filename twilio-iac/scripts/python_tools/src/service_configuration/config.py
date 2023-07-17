@@ -13,11 +13,67 @@ ACTIONS = {
     'SHOW_NEW': 'show_new',
     'SHOW_DIFF': 'show_diff',
     'PLAN': 'plan',
-    'UPDATE': 'update',
+    'APPLY': 'apply',
+}
+
+JSON_ACTIONS = [
+    ACTIONS['SHOW_REMOTE'],
+    ACTIONS['SHOW_LOCAL'],
+    ACTIONS['SHOW_NEW'],
+    ACTIONS['PLAN']
+]
+
+ENVIRONMENTS = [
+    'development',
+    'staging',
+    'production',
+]
+
+ARGS = {
+    'action': {
+        'choices': ACTIONS.values(),
+        'nargs': '?',
+        'default': ACTIONS['SHOW'],
+        'help': 'Action to take.',
+    },
+    '--account_sid': {
+        'required': False,
+        'default': os.environ.get('TWILIO_ACCOUNT_SID'),
+        'help': 'Twilio account SID.',
+    },
+    '--helpline_code': {
+        'required': False,
+        'default': os.environ.get('HL'),
+        'help': 'Helpline short code. Examples: as, e2e, th, etc.',
+    },
+    '--environment': {
+        'choices': ENVIRONMENTS,
+        'required': False,
+        'default': os.environ.get('HL_ENV'),
+        'help': 'Helpline Environment',
+    },
+    '--prop': {
+        'required': False,
+        'default': None,
+        'help': 'Property to update. Example: attributes.hrm_api_version',
+    },
+    '--dry_run': {
+        'required': False,
+        'default': False,
+        'help': 'Enable dry run.',
+    },
+    '--json': {
+        'required': False,
+        'action': 'store_true',
+        'default': False,
+        'help': 'Enable json only output.',
+    },
 }
 
 
 class ConfigDict(TypedDict):
+    # WARNING: ConfigDict is used in the magic __getattr__ method, so keys
+    # must not bet the same as any methods or attributes of the Config class
     action: str
     prop: NotRequired[str]
     helpline_code: str | None
@@ -48,23 +104,19 @@ class Config():
         self.init_arg_parser()
         self.parse_args()
         self._ssm_client = SSMClient(
-            f"arn:aws:iam::712893914485:role/tf-twilio-iac-{self.get_value('environment')}")
+            f"arn:aws:iam::712893914485:role/tf-twilio-iac-{self.environment}")
         self.init_service_configurations()
+
+    def __getattr__(self, name: str):
+        try:
+            return self.get_value(name)
+        except KeyError:
+            raise AttributeError(f"No such attribute: {name}")
 
     def init_arg_parser(self) -> None:
         self._arg_parser = ArgumentParser()
-        self._arg_parser.add_argument(
-            'action', choices=ACTIONS.values(), nargs='?', default=ACTIONS['SHOW'])
-        self._arg_parser.add_argument(
-            '--account_sid', required=False, default=os.environ.get('TWILIO_ACCOUNT_SID'))
-        self._arg_parser.add_argument(
-            '--helpline_code', required=False, default=os.environ.get('HL'))
-        self._arg_parser.add_argument(
-            '--environment', required=False, default=os.environ.get('HL_ENV'))
-        self._arg_parser.add_argument(
-            '--prop', required=False, default=None)
-        self._arg_parser.add_argument(
-            '--dry_run', required=False, default=False)
+        for arg, options in ARGS.items():
+            self._arg_parser.add_argument(arg, **options)
 
     def parse_args(self):
         args = self._arg_parser.parse_args()
@@ -76,6 +128,8 @@ class Config():
         if auth_token:
             self._config['auth_token'] = auth_token
 
+        self.validate_json()
+
     def init_service_configurations(self):
         account_sid = self._config.get('account_sid')
         auth_token = self._config.get('auth_token')
@@ -83,7 +137,10 @@ class Config():
         environment = self._config.get('environment')
 
         if (helpline_code) and environment:
-            print(f"Initializing service configuration for {helpline_code}")
+            if (not self.json):
+                print(
+                    f"Initializing service configuration for {helpline_code}")
+
             self.init_service_configuration(
                 helpline_code=helpline_code,
                 environment=environment,
@@ -96,8 +153,8 @@ class Config():
             self.init_service_configurations_for_environment(environment)
             return
 
-        raise Exception(
-            "Invalid configuration. Please provide environment and optionally an account_sid or helpline_code ")
+        print("ERROR: Invalid configuration. Please provide environment and optionally an account_sid or helpline_code ")
+        exit(1)
 
     def init_service_configuration(self, **kwargs: Unpack[InitServiceConfigurationArgsDict]):
         twilio_client = Twilio(**kwargs)
@@ -123,6 +180,12 @@ class Config():
 
     def get_account_sids(self):
         return self._config['service_configurations'].keys()
+
+    def validate_json(self):
+        if self.json and (self.action not in JSON_ACTIONS):
+            print("ERROR: JSON output is only available for the following actions: " +
+                  ', '.join(JSON_ACTIONS))
+            exit(1)
 
 
 config = Config()
