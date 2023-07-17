@@ -67,6 +67,7 @@ variable "bots" {
     process_behavior            = optional(string, "BUILD")
     child_directed              = optional(bool, true)
     idle_session_ttl_in_seconds = optional(number, 300)
+    enable_model_improvements   = optional(bool, true)
     abort_statement = object({
       content      = string
       content_type = string
