@@ -18,7 +18,7 @@ locals {
 
     #Feature flags
     feature_flags = {
-      "enable_fullstory_monitoring" : false,
+      "enable_fullstory_monitoring" : true,
       "enable_upload_documents" : true,
       "enable_post_survey" : true,
       "enable_contact_editing" : true,
