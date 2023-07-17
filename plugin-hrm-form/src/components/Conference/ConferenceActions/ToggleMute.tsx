@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
 import MicNoneOutlined from '@material-ui/icons/MicNoneOutlined';
 import MicOffOutlined from '@material-ui/icons/MicOffOutlined';
@@ -25,19 +25,13 @@ import { StyledConferenceButtonWrapper, StyledConferenceButton } from './styles'
 type Props = TaskContextProps;
 
 const ToggleMute: React.FC<Props> = ({ call, task, conference }) => {
-  const [isMuted, setIsMuted] = useState(false);
-
-  useEffect(() => {
-    const workerParticipant = task?.conference?.participants.find(participant => participant.isCurrentWorker === true);
-
-    if (workerParticipant && workerParticipant.isCurrentWorker && workerParticipant.muted) {
-      setIsMuted(true);
-    }
-  }, [task?.conference?.participants]);
-
+  let isMuted = false;
   if (!task || !call || !conference) {
     return null;
   }
+
+  const workerParticipant = task?.conference?.participants.find(participant => participant.isCurrentWorker);
+  isMuted = workerParticipant && workerParticipant.muted;
 
   const handleClick = async () => {
     const { participants } = conference?.source;
@@ -53,7 +47,7 @@ const ToggleMute: React.FC<Props> = ({ call, task, conference }) => {
         updates: { muted: toggleMute },
       });
 
-      setIsMuted(toggleMute);
+      isMuted = toggleMute;
     }
   };
 
