@@ -28,7 +28,8 @@ locals {
       "enable_save_insights" : true,
       "enable_previous_contacts" : true,
       "enable_contact_editing" : true,
-      "enable_twilio_transcripts" : true
+      "enable_twilio_transcripts" : true,
+      "enable_aselo_messaging_ui" : true
     }
 
     strings_en  = jsondecode(file("../../translations/en-MT/strings.json"))
