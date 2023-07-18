@@ -84,7 +84,8 @@ locals {
     phone_numbers = {
       khp : ["+15878407089"],
       g2ton : ["+15812215204", "+15814810744", "+18446052258", "+18559768844"],
-      g2ttr: ["+12264070015", "+15814810744", "+18882913868", "+18559768844"]
+      g2ttr: ["+12264070015", "+15814810744", "+18882913868", "+18559768844"],
+      g2tns : ["+15814810744", "+15812215204"]
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
