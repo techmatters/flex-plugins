@@ -44,22 +44,24 @@ locals {
   custom_channel_attributes = ""
   feature_flags = {
     "enable_fullstory_monitoring" : true,
+    "enable_external_transcripts" : true,
     "enable_upload_documents" : true,
     "enable_post_survey" : local.enable_post_survey,
+    "enable_contact_editing" : true,
     "enable_case_management" : true,
+    "enable_twilio_transcripts" : false,
     "enable_offline_contact" : true,
-    "enable_filter_cases" : true,
-    "enable_sort_cases" : true,
-    "enable_transfers" : true,
+    "enable_filter_cases": true,
+    "enable_aselo_messaging_ui": true,
+    "enable_sort_cases": true,
+    "enable_transfers": true,
     "enable_manual_pulling" : false,
     "enable_csam_report" : false,
-    "enable_canned_responses" : true,
+    "enable_canned_responses": true,
+    "enable_emoji_picker" : true,
     "enable_dual_write" : false,
     "enable_save_insights" : true,
-    "enable_previous_contacts" : true,
-    "enable_contact_editing" : true,
-    "enable_twilio_transcripts" : true
-
+    "enable_previous_contacts" : true
   }
   twilio_channels = {
     "facebook" = { "contact_identity" = "messenger:325981127456443", "channel_type" = "facebook" },
