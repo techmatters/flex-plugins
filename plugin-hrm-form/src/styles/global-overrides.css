@@ -117,3 +117,7 @@ button.Twilio-TaskCanvasHeader-EndButton:active {
 div.Twilio-ViewCollection{
     background-color: #f6f6f6;
 }
+
+div.Twilio-Splitter div.Twilio-AgentDesktopView\.Panel2 {
+    border-left-width: 0px;
+}
