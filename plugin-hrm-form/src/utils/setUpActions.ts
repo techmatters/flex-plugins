@@ -208,7 +208,7 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   }
 
   if (featureFlags.enable_transfers && TransferHelpers.hasTransferStarted(task)) handleTransferredTask(task);
-  else prepopulateForm(task);
+  else prepopulateForm(task, featureFlags);
 
   // If this is the first counsellor that gets the task, say hi
   if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
