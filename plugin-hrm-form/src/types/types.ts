@@ -262,7 +262,7 @@ export type FeatureFlags = {
   enable_aselo_messaging_ui: boolean; // Enables Aselo Messaging UI iinstead of the default Twilio one - reduced functionality for low spec clients.
   enable_resources_elastic_search: boolean; // Use the EasticSearch powered search for resources, rather than the interim name only version.
   enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior
-  enable_lex_prepopulate: boolean; // Enables forms prepopulation from Lex bots
+  enable_lex: boolean; // Enables consuming from Lex bots
 };
 /* eslint-enable camelcase */
 

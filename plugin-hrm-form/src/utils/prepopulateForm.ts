@@ -208,7 +208,7 @@ export const prepopulateForm = (task: ITask, featureFlags: FeatureFlags) => {
     return;
   }
 
-  const answers = getAnswers(featureFlags.enable_lex_prepopulate, memory);
+  const answers = getAnswers(featureFlags.enable_lex, memory);
 
   const isAboutSelf = answers.aboutSelf === 'Yes';
   const callType = isAboutSelf || !answers.aboutSelf ? callTypes.child : callTypes.caller;
