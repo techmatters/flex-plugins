@@ -79,6 +79,26 @@
           ]
         },
         {
+          "filter_friendly_name": "G2T NS English",
+          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.g2tns))}] AND language CONTAINS \"en-CA\")",
+          "targets": [
+            {
+              "queue": "${task_queues.g2t_ns_en}",
+              "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
+            }
+          ]
+        },
+        {
+          "filter_friendly_name": "G2T NS French",
+          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.g2tns))}] AND language CONTAINS \"fr-CA\")",
+          "targets": [
+            {
+              "queue": "${task_queues.g2t_ns_fr}",
+              "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
+            }
+          ]
+        },
+        {
           "filter_friendly_name": "Chat English",
           "expression": "channelType=='web' AND (language CONTAINS \"en-CA\" OR language=='')",
           "targets": [
