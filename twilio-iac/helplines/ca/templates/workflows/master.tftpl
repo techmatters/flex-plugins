@@ -80,7 +80,7 @@
         },
         {
           "filter_friendly_name": "Chat English",
-          "expression": "channelType=='web' AND language CONTAINS \"en-CA\"",
+          "expression": "channelType=='web' AND (language CONTAINS \"en-CA\" OR language=='')",
           "targets": [
             {
               "queue": "${task_queues.chat_en}",
