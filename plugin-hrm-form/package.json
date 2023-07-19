@@ -14,6 +14,8 @@
     "dev:local-form-definition-server": "npx http-server ../hrm-form-definitions/form-definitions -p 8090 --cors -c-1",
     "dev": "cross-env UNBUNDLED_REACT=true NO_MONITORING=true REACT_FORM_DEFINITIONS_BASE_URL=http://localhost:8090 run-p dev:local-form-definition-server start",
     "dev:s3-forms": "cross-env UNBUNDLED_REACT=true NO_MONITORING=true npm start",
+    "dev:staging": "cross-env REACT_HRM_BASE_URL=http://hrm-staging.tl.techmatters.org npm run dev",
+    "dev:staging:eu": "cross-env REACT_HRM_BASE_URL=http://hrm-staging-eu.tl.techmatters.org npm run dev",
     "dev:local": "cross-env REACT_HRM_BASE_URL=http://localhost:8080 npm run dev",
     "dev:local:docker": "cross-env REACT_HRM_BASE_URL=http://localhost:8081 npm run dev",
     "dev:local:e2e": "npm run ssm:local:appConfig:e2e && cross-env REACT_SERVERLESS_BASE_URL=http://localhost:3030 REACT_HRM_BASE_URL=http://localhost:8080 npm run dev",

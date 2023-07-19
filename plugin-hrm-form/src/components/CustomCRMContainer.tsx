@@ -60,7 +60,7 @@ const CustomCRMContainer: React.FC<Props> = ({ selectedTaskSid, isAddingOfflineC
   return (
     <Absolute top="0" bottom="0" left="0" right="0">
       {renderITask && <TaskView task={task} key={`controller-${selectedTaskSid}`} />}
-      {renderOfflineContactTask && <TaskView task={offlineContactTask} key={`controller-${selectedTaskSid}`} />}
+      {renderOfflineContactTask && <TaskView task={offlineContactTask} key="controller-offline-contact" />}
     </Absolute>
   );
 };
