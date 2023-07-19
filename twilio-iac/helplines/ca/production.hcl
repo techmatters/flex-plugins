@@ -46,8 +46,8 @@ locals {
           tr_number: "3656546032"
 
           #Twilio things
-          checkcounsellors_function_sid: "ZH95bed62f9c0af98771e01cba4bd86d1f"
-          checkcounsellors_function_url: "https://twilio-service-4854.twil.io/check_counsellors"
+          check_counsellors_function_sid: "ZH95bed62f9c0af98771e01cba4bd86d1f"
+          check_counsellors_function_url: "https://twilio-service-4854.twil.io/check_counsellors"
           g2tonen_queue_sid: "WQc774f3a1d09a93ae8eaba80be323e600"
           g2tonfr_queue_sid: "WQ61ef6d908e82fe48bb90bd259099260e"
           g2ttr_queue_sid: "WQb003ea620f2a0d7d2fbb5049a2b24762"
@@ -87,14 +87,16 @@ locals {
           fr_number: "8663092068"
 
           #Twilio things
-          checkcounsellors_function_sid: "ZH95bed62f9c0af98771e01cba4bd86d1f"
-          checkcounsellors_function_url: "https://twilio-service-4854.twil.io/check_counsellors"
+          check_counsellors_function_sid: "ZH95bed62f9c0af98771e01cba4bd86d1f"
+          check_counsellors_function_url: "https://twilio-service-4854.twil.io/check_counsellors"
           g2tnsen_queue_sid: "WQe4336d184540020b222d80ab28805938"
           g2tnsfr_queue_sid: "WQe831ab19f57512b0fbcd3e4228df099e"
+          g2ttr_queue_sid: "WQb003ea620f2a0d7d2fbb5049a2b24762"
 
           #Recording URLs
           en_function_url: "https://twilio-service-4854.twil.io/6015_g2tns_english"
           fr_function_url: "https://twilio-service-4854.twil.io/6016_g2tns_french"
+          tr_function_url: "https://twilio-service-4854.twil.io/6019_g2t_interpreter"
           en_tos_url: "https://twilio-service-4854.twil.io/G2TENToS.mp3"
           fr_tos_url: "https://twilio-service-4854.twil.io/G2TFRToS.mp3"
           en_privacy_url: "https://twilio-service-4854.twil.io/G2TEnPrivacy.mp3"
