@@ -78,6 +78,42 @@ locals {
 
         }
         chatbot_unique_names = []
+      },
+      g2tns : {
+        channel_type         = "voice"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/g2tns.tftpl"
+        channel_flow_vars    = {
+          en_number: "5814810744"
+          fr_number: "5814810744"
+
+          #Twilio things
+          checkcounsellors_function_sid: "ZHa0218fd2a7b2e3aa800ab78e0367acf7"
+          checkcounsellors_function_url: "https://test-service-dee-4583.twil.io/check_counsellors"
+          g2tnsen_queue_sid: "WQ08c18a81b8a8fbc12a1e143c47dea7e1"
+          g2tnsfr_queue_sid: "WQea1bcc502ff7d4ec64deddada25f1467"
+
+          #Recording URLs
+          en_function_url: "https://test-service-dee-4583.twil.io/6015_g2tns_english"
+          fr_function_url: "https://test-service-dee-4583.twil.io/6016_g2tns_french"
+          en_tos_url: "https://test-service-dee-4583.twil.io/G2TENToS.mp3"
+          fr_tos_url: "https://test-service-dee-4583.twil.io/G2TFRToS.mp3"
+          en_privacy_url: "https://test-service-dee-4583.twil.io/G2TEnPrivacy.mp3"
+          fr_privacy_url: "https://test-service-dee-4583.twil.io/G2TFrPrivacy.mp3"
+          en_invalid_url: "https://test-service-dee-4583.twil.io/EnInvalid.mp3"
+          fr_invalid_url: "https://test-service-dee-4583.twil.io/FrInvalid.mp3"
+          en_disconnect_url: "https://test-service-dee-4583.twil.io/EnDisconnect.mp3"
+          fr_disconnect_url: "https://test-service-dee-4583.twil.io/FrDisconnect.mp3"
+          en_intro_url: "https://test-service-dee-4583.twil.io/Msg10006G2TONEn.mp3"
+          fr_intro_url: "https://test-service-dee-4583.twil.io/Msg10006G2TFr.mp3"
+          en_inflight_url: "https://test-service-dee-4583.twil.io/Msg60011E.mp3"
+          fr_inflight_url: "https://test-service-dee-4583.twil.io/Msg60021.mp3"
+          fr_nocounsellors_url: "https://test-service-dee-4583.twil.io/Msg60025.mp3"
+          fr_issues_url: "https://test-service-dee-4583.twil.io/FrTechIssuesmp3"
+          fr_switch_url: "https://test-service-dee-4583.twil.io/FrSwitchInterpreter.mp3"
+
+        }
+        chatbot_unique_names = []
       }
     }
     #Task router 
@@ -118,6 +154,5 @@ locals {
       enable_aselo_messaging_ui : true
       enable_conferencing : true
     }
-
   }
 }
