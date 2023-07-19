@@ -22,10 +22,6 @@ locals {
     }
 
     task_queues = {
-      aggregate : {
-        "target_workers" = "1==1",
-        "friendly_name"  = "Aggregate"
-      },
       khp_en : {
         "target_workers" = "routing.skills HAS 'KHP English'",
         "friendly_name"  = "KHP English"
@@ -92,6 +88,10 @@ locals {
       indigenous : {
         "target_workers" = "routing.skills HAS 'Indigenous [Interpreter]'",
         "friendly_name"  = "Indigenous [Interpreter]"
+      },
+      workflow_test : {
+        "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
+        "friendly_name"  = "Workflow Test Queue"
       }
     }
   }
