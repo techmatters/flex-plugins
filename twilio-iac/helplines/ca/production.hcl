@@ -77,6 +77,42 @@ locals {
 
         }
         chatbot_unique_names = []
+      },
+      g2tns : {
+        channel_type         = "voice"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/g2ton.tftpl"
+        channel_flow_vars    = {
+          en_number: "8665514658"
+          fr_number: "8663092068"
+
+          #Twilio things
+          checkcounsellors_function_sid: "ZH95bed62f9c0af98771e01cba4bd86d1f"
+          checkcounsellors_function_url: "https://twilio-service-4854.twil.io/check_counsellors"
+          g2tnsen_queue_sid: "WQe4336d184540020b222d80ab28805938"
+          g2tnsfr_queue_sid: "WQe831ab19f57512b0fbcd3e4228df099e"
+
+          #Recording URLs
+          en_function_url: "https://twilio-service-4854.twil.io/6015_g2tns_english"
+          fr_function_url: "https://twilio-service-4854.twil.io/6016_g2tns_french"
+          en_tos_url: "https://twilio-service-4854.twil.io/G2TENToS.mp3"
+          fr_tos_url: "https://twilio-service-4854.twil.io/G2TFRToS.mp3"
+          en_privacy_url: "https://twilio-service-4854.twil.io/G2TEnPrivacy.mp3"
+          fr_privacy_url: "https://twilio-service-4854.twil.io/G2TFrPrivacy.mp3"
+          en_invalid_url: "https://twilio-service-4854.twil.io/EnInvalid.mp3"
+          fr_invalid_url: "https://twilio-service-4854.twil.io/FrInvalid.mp3"
+          en_disconnect_url: "https://twilio-service-4854.twil.io/EnDisconnect.mp3"
+          fr_disconnect_url: "https://twilio-service-4854.twil.io/FrDisconnect.mp3"
+          en_intro_url: "https://twilio-service-4854.twil.io/Msg10006G2TONEn.mp3"
+          fr_intro_url: "https://twilio-service-4854.twil.io/Msg10006G2TFr.mp3"
+          en_inflight_url: "https://twilio-service-4854.twil.io/Msg60011E.mp3"
+          fr_inflight_url: "https://twilio-service-4854.twil.io/Msg60021.mp3"
+          fr_nocounsellors_url: "https://twilio-service-4854.twil.io/Msg60025.mp3"
+          fr_issues_url: "https://twilio-service-4854.twil.io/FrTechIssues.mp3"
+          fr_switch_url: "https://twilio-service-4854.twil.io/FrSwitchInterpreter.mp3"
+
+        }
+        chatbot_unique_names = []
       }
     }
     phone_numbers = {
