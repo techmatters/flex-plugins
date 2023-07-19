@@ -607,11 +607,7 @@
           "value": "Unknown",
           "label": "Did not disclose/Did not ask"
         }
-      ],
-      "required": {
-        "value": true,
-        "message": "RequiredFieldError"
-      }
+      ]
   },
   {
     "name": "Newcomer",
