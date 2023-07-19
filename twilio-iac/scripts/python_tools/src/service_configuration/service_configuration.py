@@ -1,28 +1,43 @@
 import json
+from copy import deepcopy
 from deepdiff import DeepDiff
 from deepmerge import always_merger
 from os.path import exists as path_exists
+from typing import List, TypedDict
+from typing_extensions import Unpack
+from ..aws import SSMClient
 from ..twilio import Twilio
 
 JSON_PATH_ROOT = "/app/twilio-iac/helplines"
 JSON_CONFIG_PATH_PARTIAL = "configs/service-configuration"
 
 SSM_FIELDS = {
-    "attributes.serverless_base_url": "/${environment}/serverless/${twilio_account_sid}/base_url",
+    "attributes.serverless_base_url": "/{environment}/serverless/{account_sid}/base_url",
 }
 
 TEMPLATE_FIELDS = {
-    "attributes.assets_bucket_url": "https://assets-${environment}.tl.techmatters.org",
-    "attributes.hrm_base_url": "https://hrm-${environment}.tl.techmatters.org",
-    "attributes.logo_url": "https://aselo-logo.s3.amazonaws.com/145+transparent+background+no+TM.png",
-    "attributes.monitoringEnv": "production",
-    "attributes.seenOnboarding": True,
-    "attributes.hrm_api_version": "v0",
-    "account_sid": "${twilio_account_sid}",
+    "attributes.assets_bucket_url": "https://assets-{environment}.tl.techmatters.org",
+    "attributes.hrm_base_url": "https://hrm-{environment}.tl.techmatters.org",
+    "account_sid": "{account_sid}",
 }
 
 
+def set_nested_key(data: dict, keys: List[str], value: object):
+    if len(keys) > 1:
+        key = keys.pop(0)
+        if key not in data:
+            data[key] = {}
+
+        set_nested_key(data[key], keys, value)
+    else:
+        data[keys[0]] = value
+
+class InitArgsDict(TypedDict):
+    twilio_client: Twilio
+    ssm_client: SSMClient
+
 class ServiceConfiguration():
+    _ssm_client: SSMClient
     _twilio_client: Twilio
     remote_state: dict
     local_state: dict = {}
@@ -32,11 +47,12 @@ class ServiceConfiguration():
     helpline_code: str
     environment: str
 
-    def __init__(self, twilio_client: Twilio) -> None:
-        self._twilio_client = twilio_client
-        self.account_sid = twilio_client.account_sid
-        self.helpline_code = twilio_client.helpline_code
-        self.environment = twilio_client.environment
+    def __init__(self, **kwargs: Unpack[InitArgsDict]) -> None:
+        self._twilio_client = kwargs['twilio_client']
+        self._ssm_client = kwargs['ssm_client']
+        self.account_sid = self._twilio_client.account_sid
+        self.helpline_code = self._twilio_client.helpline_code
+        self.environment = self._twilio_client.environment
         self.remote_state = self._twilio_client.get_flex_configuration()
         self.init_local_state()
         self.init_new_state()
@@ -56,12 +72,49 @@ class ServiceConfiguration():
 
             with open(path, 'r') as f:
                 self.local_state = always_merger.merge(
-                    self.local_state, json.load(f))
+                    self.local_state,
+                    json.load(f)
+                )
+
+        self.init_template_fields()
+        self.init_ssm_fields()
 
     def init_new_state(self):
         self.new_state = always_merger.merge(
-            self.new_state, self.local_state)
+            # deepcopy to avoid modifying remote_state even though the docs
+            # say the function is non-destructive, it is
+            deepcopy(self.remote_state),
+            self.local_state,
+        )
+
+    def init_template_fields(self):
+        for key, value in TEMPLATE_FIELDS.items():
+            templated_value = value.format(
+                environment=self.environment,
+                account_sid=self.account_sid,
+                helpline_code=self.helpline_code
+            )
+            keys = key.split('.')
+            set_nested_key(self.local_state, keys, templated_value)
+
+    def init_ssm_fields(self):
+        for key, value in SSM_FIELDS.items():
+            ssm_key_name: str = value.format(
+                environment=self.environment,
+                account_sid=self.account_sid,
+                helpline_code=self.helpline_code
+            )
+            ssm_value = self._ssm_client.get_parameter(ssm_key_name)
+            keys = key.split('.')
+            set_nested_key(self.local_state, keys, ssm_value)
 
     def init_plan(self):
         self.plan = DeepDiff(
-            self.remote_state, self.new_state, ignore_order=True)
+            self.remote_state,
+            self.new_state,
+            ignore_order=True,
+            view="tree",
+        )
+
+    def init_local_json(self):
+        pass

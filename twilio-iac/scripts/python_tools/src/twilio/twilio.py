@@ -16,6 +16,7 @@ class InitArgsDict(TypedDict):
     environment: str
     account_sid: NotRequired[str | None]
     auth_token: NotRequired[str | None]
+    ssm_client: NotRequired[SSMClient | None]
 
 
 class Twilio():
@@ -27,8 +28,7 @@ class Twilio():
     _ssm_client: SSMClient
 
     def __init__(self, **kwargs: Unpack[InitArgsDict]):
-        self._ssm_client = SSMClient(
-            f"arn:aws:iam::712893914485:role/tf-twilio-iac-{kwargs.get('environment')}")
+        self._ssm_client = kwargs.get('ssm_client') or SSMClient()
         self.client = self.getClient(**kwargs)
 
     def getClient(self, **kwargs: Unpack[InitArgsDict]):
@@ -46,7 +46,7 @@ class Twilio():
 
         if not (account_sid and auth_token):
             raise Exception(
-                "Could not find Twilio credentials. Please provide account_sid and auth_token")
+                'Could not find Twilio credentials. Please provide account_sid and auth_token')
 
         self.helpline_code = helpline_code
         self.environment = environment
@@ -57,7 +57,7 @@ class Twilio():
 
     def get_flex_configuration_headers(self) -> dict[str, str | dict[str, str]]:
         credentials = base64.b64encode(
-            f"{self.account_sid}:{self._auth_token}".encode('utf-8')).decode('utf-8')
+            f'{self.account_sid}:{self._auth_token}'.encode('utf-8')).decode('utf-8')
         return {
             'Content-Type': 'application/json',
             'Authorization': f'Basic {credentials}'
@@ -72,7 +72,7 @@ class Twilio():
         with request.urlopen(req) as response:
             if response.status != 200:
                 raise Exception(
-                    f"Request failed with status {response.status}")
+                    f'Request failed with status {response.status}')
 
             body = response.read()
             data = json.loads(body)
@@ -90,7 +90,7 @@ class Twilio():
         with request.urlopen(req) as response:
             if response.status != 200:
                 raise Exception(
-                    f"Request failed with status {response.status}")
+                    f'Request failed with status {response.status}')
 
             body = response.read()
             data = json.loads(body)

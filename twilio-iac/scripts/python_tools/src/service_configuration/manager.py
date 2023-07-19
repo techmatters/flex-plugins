@@ -36,14 +36,28 @@ def print_plan(plan: DeepDiff):
         print(plan.to_json())
         return
 
-    lines = plan.pretty().split('\n')  # split the diff into lines
+    if (not plan):
+        print('No changes.')
+        return
 
-    for line in lines:
-        if 'added' in line:
+    output = []
+    for diff_type, changes in plan.items():
+        for change in changes:
+            path = change.path().replace("root[", "").replace("][", ".").replace("]", "").replace("'", "")
+            if diff_type == 'dictionary_item_added':
+                output.append(f'Add {path} with value {change.t2}')
+            elif diff_type == 'dictionary_item_removed':
+                output.append(f'Remove {path} with value {change.t1}')
+            elif diff_type == 'values_changed':
+                output.append(f'Update {path} from {change.t1} to {change.t2}')
+
+
+    for line in output:
+        if 'Add' in line:
             print(colored(line, 'green'))
-        elif 'removed' in line:
+        elif 'Remove' in line:
             print(colored(line, 'red'))
-        elif 'changed' in line:
+        elif 'Update' in line:
             print(colored(line, 'yellow'))
         else:
             print(line)
@@ -59,6 +73,7 @@ def print_service_configuration_info(service_configuration: ServiceConfiguration
 
 def show(service_configuration: ServiceConfiguration):
     show_remote(service_configuration)
+    show_local(service_configuration)
     show_new(service_configuration)
     plan(service_configuration)
 
@@ -86,7 +101,7 @@ def plan(service_configuration: ServiceConfiguration):
 def apply(service_configuration: ServiceConfiguration):
     plan(service_configuration)
     if config.dry_run:
-        print("Dry run enabled. Exiting...")
+        print('Dry run enabled. Exiting...')
         return
 
     confirm = input(
@@ -97,3 +112,8 @@ def apply(service_configuration: ServiceConfiguration):
         exit(1)
 
     print('Updating service configuration...')
+
+def sync_plan(service_configuration: ServiceConfiguration):
+    print('Syncing remote state with local state...')
+    service_configuration.sync_remote_state_with_local_state()
+    print('Done.')

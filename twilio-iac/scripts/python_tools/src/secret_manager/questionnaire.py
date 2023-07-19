@@ -13,7 +13,7 @@ class InitArgsDict(TypedDict):
 
 
 class Questionnaire():
-    """Class to handle questionnaire for secret management"""
+    '''Class to handle questionnaire for secret management'''
 
     _helpline: str
     _secrets: Secrets | None = None
@@ -24,7 +24,7 @@ class Questionnaire():
     def __init__(self, **kwargs: Unpack[InitArgsDict]):
         self._helpline = kwargs['helpline']
         self.ssm_key = f'/terraform/twilio-iac/{self._helpline}/secrets.json'
-        self.ssm_client = SSMClient()
+        self.ssm_client = SSMClient('arn:aws:iam::712893914485:role/tf-twilio-iac-ssm-admin')
 
     def start(self):
         self.load_secrets()

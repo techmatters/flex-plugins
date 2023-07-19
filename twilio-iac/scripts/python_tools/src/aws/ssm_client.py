@@ -20,19 +20,22 @@ class SSMClient():
 
     def __init__(
         self,
-        role_arn: str = 'arn:aws:iam::712893914485:role/tf-twilio-iac-ssm-admin'
+        role_arn: str | None = None
     ):
         self.client = self.get_ssm_client(role_arn)
 
-    def get_ssm_client(self, role_arn: str):
+    def get_ssm_client(self, role_arn: str | None = None):
         if self.client:
             return self.client
 
+        if (not role_arn):
+            return boto3.client('ssm', config=self._config)
+
         ts = time.time()
-        sts_client: STSClient = boto3.client("sts", config=self._config)
+        sts_client: STSClient = boto3.client('sts', config=self._config)
         response = sts_client.assume_role(
             RoleArn=role_arn,
-            RoleSessionName="secret-manager" + str(ts),
+            RoleSessionName='secret-manager' + str(ts),
         )
 
         session = boto3.session.Session(
@@ -41,7 +44,7 @@ class SSMClient():
             aws_session_token=response['Credentials']['SessionToken'],
         )
 
-        return session.client("ssm")
+        return session.client('ssm')
 
     def get_parameter(self, name: str, with_decryption: bool = True):
         response = self.client.get_parameter(
@@ -114,22 +117,22 @@ class SSMClient():
         if not account_sid:
             if not helpline:
                 raise Exception(
-                    "Please provide either helpline or account_sid")
+                    'Please provide either helpline or account_sid')
 
             account_sid = self.get_parameter(
-                name=f"/{environment}/twilio/{helpline.upper()}/account_sid"
+                name=f'/{environment}/twilio/{helpline.upper()}/account_sid'
             )
 
         if not account_sid:
             raise Exception(
-                f"Could not find account_sid for {helpline} in {environment}")
+                f'Could not find account_sid for {helpline} in {environment}')
 
         auth_token = self.get_parameter(
-            name=f"/{environment}/twilio/{account_sid}/auth_token"
+            name=f'/{environment}/twilio/{account_sid}/auth_token'
         )
         if not auth_token:
             raise Exception(
-                f"Could not find auth_token for {account_sid} in {environment}")
+                f'Could not find auth_token for {account_sid} in {environment}')
 
         return account_sid, auth_token
 
@@ -138,7 +141,7 @@ class SSMClient():
         pattern = re.compile(
             rf'^/{environment}/twilio/(?P<helpline_code>\w+)/account_sid$')
 
-        parameters = self.get_all_parameters_by_path(f"/{environment}/twilio")
+        parameters = self.get_all_parameters_by_path(f'/{environment}/twilio')
         for parameter in parameters:
             match = pattern.match(parameter['Name'])
             if match:
