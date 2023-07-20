@@ -1,7 +1,6 @@
 from argparse import ArgumentParser
 import os
-from typing import NotRequired, TypedDict
-from typing_extensions import Unpack
+from typing import NotRequired, TypedDict, Unpack
 from ..aws import SSMClient
 from ..twilio import Twilio
 from .service_configuration import ServiceConfiguration
@@ -87,13 +86,15 @@ class ConfigDict(TypedDict):
     # WARNING: ConfigDict is used in the magic __getattr__ method, so keys
     # must not bet the same as any methods or attributes of the Config class
     action: str
+    all_env_action: bool
     prop: NotRequired[str]
     helpline_code: str | None
     environment: NotRequired[str]
     account_sid: NotRequired[str]
     auth_token: NotRequired[str]
     dry_run: NotRequired[bool]
-    service_configurations: dict[str, ServiceConfiguration]
+    service_configs: dict[str, ServiceConfiguration]
+    helplines: dict[str, dict[str, str]]
 
 
 class InitServiceConfigurationArgsDict(TypedDict):
@@ -107,9 +108,11 @@ class Config():
     ssm_client: SSMClient
     _arg_parser: ArgumentParser
     _config: ConfigDict = {
+        'all_env_action': False,
         'helpline_code': None,
         'action': ACTIONS['SHOW'],
-        'service_configurations': {},
+        'service_configs': {},
+        'helplines': {},
     }
 
     def __init__(self):
@@ -117,8 +120,8 @@ class Config():
         self.parse_args()
         self.validate_args()
         self.ssm_client = SSMClient(
-            f'arn:aws:iam::712893914485:role/tf-twilio-iac-{self.environment}')
-        self.init_service_configurations()
+            'arn:aws:iam::712893914485:role/twilio-iac-service-config-manager')
+        self.init_service_configs()
 
     def __getattr__(self, name: str):
         try:
@@ -142,7 +145,9 @@ class Config():
         if auth_token:
             self._config['auth_token'] = auth_token
 
-    def init_service_configurations(self):
+        self._config['all_env_action'] = self.action in ALL_ENV_ACTIONS
+
+    def init_service_configs(self):
         if (self.helpline_code or self.account_sid) and self.environment:
             if (not self.json):
                 print(
@@ -150,25 +155,47 @@ class Config():
                     f'{self.helpline_code}'
                 )
 
-            self.init_service_configurations_for_helpline()
+            self.init_service_configs_for_helpline()
             return
 
         if self.environment:
-            self.init_service_configurations_for_environment(self.environment)
+            self.init_service_configs_for_environment(self.environment)
             return
 
-        if self.action not in ALL_ENV_ACTIONS:
+        if not self.all_env_action:
             raise Exception('Something went wrong, you should never get here unless you are trying to sync remote state.')
 
         for env in ENVIRONMENTS:
-            self.init_service_configurations_for_environment(env)
+            self.init_service_configs_for_environment(env)
 
-    def init_service_configuration(self, **kwargs: Unpack[InitServiceConfigurationArgsDict]):
+    def add_helpline(
+        self,
+        helpline_code: str,
+        environment: str,
+        service_config: ServiceConfiguration
+    ):
+        helpline_code_lower = helpline_code.lower()
+        if helpline_code_lower not in self._config['helplines']:
+            print(f'Adding helpline {helpline_code_lower}')
+            self._config['helplines'][helpline_code_lower] = {}
+
+        self._config['helplines'][helpline_code_lower][environment] = service_config
+
+    def init_service_config(self, **kwargs: Unpack[InitServiceConfigurationArgsDict]):
         twilio_client = Twilio(ssm_client=self.ssm_client,  **kwargs)
-        self._config['service_configurations'][twilio_client.account_sid] = ServiceConfiguration(
-            twilio_client=twilio_client, ssm_client=self.ssm_client)
+        service_config = ServiceConfiguration(
+            twilio_client=twilio_client,
+            ssm_client=self.ssm_client
+        )
+        self._config['service_configs'][twilio_client.account_sid] = service_config
 
-    def init_service_configurations_for_helpline(
+        self.add_helpline(
+            helpline_code=twilio_client.helpline_code,
+            environment=twilio_client.environment,
+            service_config=service_config,
+        )
+
+    def init_service_configs_for_helpline(
         self,
         environment_arg: str | None = None,
         helpline_code_arg: str | None = None,
@@ -186,20 +213,24 @@ class Config():
             account_sid, _ = self.ssm_client.get_twilio_creds_from_ssm(
                 environment, helpline_code)
 
-        self.init_service_configuration(
+        self.init_service_config(
             account_sid=account_sid,
             auth_token=self.auth_token,
             environment=environment,
             helpline_code=helpline_code,
         )
 
-    def init_service_configurations_for_environment(self, environment: str):
+    def init_service_configs_for_environment(self, environment: str):
         print(f'Initializing service configurations for {environment}')
         for hl in self.ssm_client.get_helplines_for_env(environment):
+            # if helpline_code is set, only initialize service configs for that helpline across all environments
+            if (self.helpline_code and hl['helpline_code'].lower() != self.helpline_code.lower()):
+                continue
+
             print(
                 f'Initializing service configuration for '
                 f'{hl["helpline_code"]}')
-            self.init_service_configuration(
+            self.init_service_config(
                 environment=environment,
                 account_sid=hl['account_sid'],
                 helpline_code=hl['helpline_code'],
@@ -208,15 +239,15 @@ class Config():
     def get_value(self, key: str):
         return self._config.get(key)
 
-    def get_service_configuration(self, account_sid: str) -> ServiceConfiguration:
-        return self._config['service_configurations'][account_sid]
+    def get_service_config(self, account_sid: str) -> ServiceConfiguration:
+        return self._config['service_configs'][account_sid]
 
     def get_account_sids(self):
-        return self._config['service_configurations'].keys()
+        return self._config['service_configs'].keys()
 
     def validate_args(self):
         self.validate_json()
-        self.validate_helpline_and_environment()
+        self.validate_action_requirements()
 
     def validate_json(self):
         if self.json and (self.action not in JSON_ACTIONS):
@@ -225,13 +256,15 @@ class Config():
             exit(1)
 
     def validate_action_requirements(self):
-        if self.action in ALL_ENV_ACTIONS:
+        print('action', self.action)
+        print('all_env_action', self.all_env_action)
+        if self.all_env_action:
             self.validate_no_environment()
             return
 
-        self.validate_helpline_and_environment()
+        self.validate_environment()
 
-    def validate_helpline_and_environment(self):
+    def validate_environment(self):
         if not (self.environment):
             print('ERROR: Please provide an environment argument '
                   '(--environment, HL_ENV)')

@@ -2,16 +2,31 @@ import json
 from pygments import highlight, lexers, formatters
 from termcolor import colored
 from .config import config
+from .remote_syncer import RemoteSyncer
 from .service_configuration import DeepDiff, ServiceConfiguration
 
 
 def main():
+    if config.all_env_action:
+        run_all_env_action()
+        return
+
+    run_account_sid_action()
+
+
+def run_account_sid_action():
     action = config.action
     for account_sid in config.get_account_sids():
-        service_configuration = config.get_service_configuration(
+        service_config = config.get_service_config(
             account_sid)
-        print_service_configuration_info(service_configuration)
-        globals()[action](service_configuration)
+        print_service_config_info(service_config)
+        globals()[action](service_config)
+
+
+def run_all_env_action():
+    action = config.action
+    for helpline_code, service_configs in config.helplines.items():
+        globals()[action](helpline_code, service_configs)
 
 
 def print_text(text: object):
@@ -63,49 +78,49 @@ def print_plan(plan: DeepDiff):
             print(line)
 
 
-def print_service_configuration_info(service_configuration: ServiceConfiguration):
+def print_service_config_info(service_config: ServiceConfiguration):
     print_text("\n------------------")
-    print_text(f"Environment: {service_configuration.environment}")
-    print_text(f"Helpline Code: {service_configuration.helpline_code}")
-    print_text(f"Account SID: {service_configuration.account_sid}")
+    print_text(f"Environment: {service_config.environment}")
+    print_text(f"Helpline Code: {service_config.helpline_code}")
+    print_text(f"Account SID: {service_config.account_sid}")
     print_text("")
 
 
-def show(service_configuration: ServiceConfiguration):
-    show_remote(service_configuration)
-    show_local(service_configuration)
-    show_new(service_configuration)
-    plan(service_configuration)
+def show(service_config: ServiceConfiguration):
+    show_remote(service_config)
+    show_local(service_config)
+    show_new(service_config)
+    plan(service_config)
 
 
-def show_remote(service_configuration: ServiceConfiguration):
+def show_remote(service_config: ServiceConfiguration):
     print_text("Remote:")
-    print_json(service_configuration.remote_state)
+    print_json(service_config.remote_state)
 
 
-def show_local(service_configuration: ServiceConfiguration):
+def show_local(service_config: ServiceConfiguration):
     print_text("Local:")
-    print_json(service_configuration.local_state)
+    print_json(service_config.local_state)
 
 
-def show_new(service_configuration: ServiceConfiguration):
+def show_new(service_config: ServiceConfiguration):
     print_text("New:")
-    print_json(service_configuration.new_state)
+    print_json(service_config.new_state)
 
 
-def plan(service_configuration: ServiceConfiguration):
+def plan(service_config: ServiceConfiguration):
     print_text("Plan:")
-    print_plan(service_configuration.plan)
+    print_plan(service_config.plan)
 
 
-def apply(service_configuration: ServiceConfiguration):
-    plan(service_configuration)
+def apply(service_config: ServiceConfiguration):
+    plan(service_config)
     if config.dry_run:
         print('Dry run enabled. Exiting...')
         return
 
     confirm = input(
-        f'Do you want to apply these updates to the {service_configuration.helpline_code}-{service_configuration.environment} service configuration? (y/N): ')
+        f'Do you want to apply these updates to the {service_config.helpline_code}-{service_config.environment} service configuration? (y/N): ')
     if confirm != 'y':
         print('Please re-run the script to try again')
         print('Exiting...')
@@ -113,7 +128,11 @@ def apply(service_configuration: ServiceConfiguration):
 
     print('Updating service configuration...')
 
-def sync_plan(service_configuration: ServiceConfiguration):
+
+def sync_plan(helpline_code: str, service_configs: dict[str, ServiceConfiguration]):
     print('Syncing remote state with local state...')
-    service_configuration.sync_remote_state_with_local_state()
+    remote_syncer = RemoteSyncer(
+        helpline_code=helpline_code,
+        service_configs=service_configs
+    )
     print('Done.')
