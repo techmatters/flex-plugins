@@ -40,6 +40,13 @@ export type ReferrableResource = {
   attributes: Record<string, Attributes>;
 };
 
+export type TaxonomyLevelNameCompletion = {
+  taxonomyLevelNameCompletion: Array<{
+    text: string;
+    score: number;
+  }>;
+};
+
 export const referrableResourcesEnabled = () => Boolean(getReferrableResourceConfig().resourcesBaseUrl);
 
 export const getResource = async (resourceId: string): Promise<ReferrableResource> => {
@@ -64,4 +71,8 @@ export const searchResources = async (
     ...fromApi,
     results: fromApi.results,
   };
+};
+
+export const suggestResources = async (prefix: string, size: string): Promise<TaxonomyLevelNameCompletion> => {
+  return fetchResourceApi(`suggest?prefix=${prefix}&size=${size}`);
 };

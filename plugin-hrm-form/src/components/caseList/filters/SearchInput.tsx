@@ -26,7 +26,7 @@ type OwnProps = {
   label: string;
   searchTerm: string;
   innerRef: Ref<any>;
-  onChangeSearch: (event: any) => void;
+  onChangeSearch?: (event: any) => void;
   onBlurSearch?: (text: string) => void;
   clearSearchTerm: () => void;
   onShiftTab: (event: any) => void;

@@ -53,9 +53,40 @@ import SearchInput from '../../caseList/filters/SearchInput';
 import { getTemplateStrings } from '../../../hrmConfig';
 import asyncDispatch from '../../../states/asyncDispatch';
 import { FiltersCheckbox, MultiSelectCheckboxLabel } from '../../../styles/caseList/filters';
+import SearchAutoComplete from './SearchAutoComplete';
+import { TaxonomyLevelNameCompletion } from '../../../services/ResourceService';
 
 const NO_AGE_SELECTED = -1;
 const NO_LOCATION_SELECTED = '__NO_LOCATION_SELECTED__';
+
+const MOCK_SUGGEST_DATA: TaxonomyLevelNameCompletion = {
+  taxonomyLevelNameCompletion: [
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Test this (Fred more)', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more {get test} fred yes', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Frend Atlas', score: 1 },
+    { text: 'Frend Atlas', score: 1 },
+    { text: 'Frend Atlas', score: 1 },
+    { text: 'Frend Atlas', score: 1 },
+    { text: 'Frend Atlas', score: 1 },
+    { text: 'Frend Atlas', score: 1 },
+    { text: 'Steve', score: 1 },
+    { text: 'Steve', score: 1 },
+    { text: 'Steve (test more) steve', score: 1 },
+    { text: 'Steve', score: 1 },
+  ],
+};
 
 type OwnProps = {};
 type FilterName = keyof ReferrableResourceSearchState['parameters']['filterSelections'];
@@ -230,6 +261,11 @@ const SearchResourcesForm: React.FC<Props> = ({
               />
             </Column>
           </ResourcesSearchFormSettingBox>
+          <SearchAutoComplete
+            generalSearchTermBoxText={generalSearchTermBoxText}
+            MOCK_SUGGEST_DATA={MOCK_SUGGEST_DATA}
+            setGeneralSearchTermBoxText={setGeneralSearchTermBoxText}
+          />
           <ResourcesSearchFormSectionHeader data-testid="Resources-Search-FilterHeader">
             <Template code="Resources-Search-FilterHeader" />
           </ResourcesSearchFormSectionHeader>

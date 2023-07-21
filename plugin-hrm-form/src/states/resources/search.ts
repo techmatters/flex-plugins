@@ -16,7 +16,7 @@
 
 import { createAction, createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
-import { ReferrableResource, searchResources } from '../../services/ResourceService';
+import { ReferrableResource, searchResources, suggestResources } from '../../services/ResourceService';
 import { cityOptions, provinceOptions } from './locations';
 
 export type SearchSettings = Omit<Partial<ReferrableResourceSearchState['parameters']>, 'filterSelections'> & {
@@ -135,11 +135,15 @@ export const returnToSearchFormAction = createAction(RETURN_TO_SEARCH_FORM_ACTIO
 
 const SEARCH_ACTION = 'resource-action/search';
 
+const SUGGEST_ACTION = 'resource-action/suggest';
+
 export const searchResourceAsyncAction = createAsyncAction(
   SEARCH_ACTION,
   async (parameters: SearchSettings, page: number) => {
     const { pageSize, generalSearchTerm, filterSelections } = parameters;
     const start = page * pageSize;
+    // Trying to call the suggestResources API to see if I will get any response
+    console.log('suggestResources test', await suggestResources('Steve', '10'));
     return {
       ...(await searchResources({ generalSearchTerm, filters: filterSelections ?? {} }, start, pageSize)),
       start,
@@ -148,6 +152,11 @@ export const searchResourceAsyncAction = createAsyncAction(
   ({ pageSize }: SearchSettings, page: number, newSearch: boolean = true) => ({ newSearch, start: page * pageSize }),
   // { promiseTypeDelimiter: '/' }, // Doesn't work :-(
 );
+
+// eslint-disable-next-line import/no-unused-modules
+export const suggestResourcesAsyncAction = createAsyncAction(SUGGEST_ACTION, async (prefix: string) => {
+  return { ...(await suggestResources(prefix, '10')) };
+});
 
 /*
  * To prevent insane arrays being allocated if totalCount is huge.

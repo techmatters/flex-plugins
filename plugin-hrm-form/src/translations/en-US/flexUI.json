@@ -413,7 +413,7 @@
   "Resources-Search-FormTitle": "Resources",
   "Resources-Search-ResultsTitle": "Search Results",
   "Resources-Search-ResultsDescription": "Showing {{count}} results",
-  "Resources-Search-ResultsDescription-GeneralSearchTerm": "for <span style=\"font-weight:800\">\"{{generalSearchTerm}}\"</span>.",
+  "Resources-Search-ResultsDescription-GeneralSearchTerm": " for <span style=\"font-weight:800\">\"{{generalSearchTerm}}\"</span>.",
   "Resources-Search-ResultsDescription-MinimumAge": "Ages <span style=\"font-weight:800\">{{minEligibleAge}}</span> or over.",
   "Resources-Search-ResultsDescription-MaximumAge": "Ages <span style=\"font-weight:800\">{{maxEligibleAge}}</span> or under.",
   "Resources-Search-ResultsDescription-AgeRange": "Ages <span style=\"font-weight:800\">{{minEligibleAge}}</span>-<span style=\"font-weight:800\">{{maxEligibleAge}}</span>.",
