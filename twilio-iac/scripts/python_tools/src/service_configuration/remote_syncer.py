@@ -46,7 +46,7 @@ class RemoteSyncer():
     common_data = {}
     environments_data = {}
     previous_envs = set([str])
-    environments_duplicates = defaultdict(dict)
+    environments_duplicates = defaultdict(dict[str, GetDupValueKeysArgsDict])
 
     def __init__(self, **kwargs: Unpack[InitArgsDict]) -> None:
         self.helpline_code = kwargs['helpline_code']
