@@ -1,4 +1,5 @@
 import json
+import os
 from pygments import highlight, lexers, formatters
 from termcolor import colored
 from .config import config
@@ -128,11 +129,44 @@ def apply(service_config: ServiceConfiguration):
 
     print('Updating service configuration...')
 
-
 def sync_plan(helpline_code: str, service_configs: dict[str, ServiceConfiguration]):
-    print('Syncing remote state with local state...')
+    print('Config json updates:\n\n')
     remote_syncer = RemoteSyncer(
         helpline_code=helpline_code,
         service_configs=service_configs
     )
-    print('Done.')
+
+    show_common = True
+    for service_config in service_configs.values():
+        if (show_common):
+            print(service_config.get_config_path('common'))
+            print_json(remote_syncer.configs['common'])
+            show_common = False
+
+        print(service_config.get_config_path('environment'))
+        print_json(remote_syncer.configs[service_config.environment])
+
+    return remote_syncer
+
+def sync_apply(helpline_code: str, service_configs: dict[str, ServiceConfiguration]):
+    remote_syncer = sync_plan(helpline_code, service_configs)
+
+    confirm = input(
+        f'Do you want to make these updates to the files above? (y/N): ')
+    if confirm != 'y':
+        print('Please re-run the script to try again')
+        print('Exiting...')
+        exit(1)
+
+    print('Updating service configuration...')
+    write_common = True
+    for service_config in service_configs.values():
+        if (write_common):
+            dir_path = os.path.dirname(service_config.get_config_path('common'))
+            os.makedirs(dir_path, exist_ok=True)
+            with open(service_config.get_config_path('common'), 'w') as f:
+                json.dump(remote_syncer.configs['common'], f, indent=4, sort_keys=True)
+            write_common = False
+
+        with open(service_config.get_config_path('environment'), 'w') as f:
+            json.dump(remote_syncer.configs[service_config.environment], f, indent=4, sort_keys=True)

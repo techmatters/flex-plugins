@@ -1,6 +1,6 @@
 import json
 from collections import defaultdict
-from typing import List, TypedDict, Unpack
+from typing import List, Set, TypedDict, Unpack
 from .service_configuration import (
     ServiceConfiguration,
     delete_nested_key,
@@ -9,6 +9,7 @@ from .service_configuration import (
     set_nested_key
 )
 
+
 class GetDupValueKeysArgsDict(TypedDict):
     keys: List[str]
     value: object
@@ -16,7 +17,7 @@ class GetDupValueKeysArgsDict(TypedDict):
 
 def get_duplicate_value_keys(
     d: dict[str, object]
-) -> List[dict[str, GetDupValueKeysArgsDict]]:
+) -> List[GetDupValueKeysArgsDict]:
     value_keys: dict[object, List[str]] = {}
 
     for key, value in d.items():
@@ -25,7 +26,7 @@ def get_duplicate_value_keys(
         else:
             value_keys[value].append(key)
 
-    results = []
+    results: List[GetDupValueKeysArgsDict] = []
     for value, keys in value_keys.items():
         if len(keys) > 1:
             results.append({'keys': keys, 'value': value})
@@ -39,22 +40,20 @@ class InitArgsDict(TypedDict):
 
 
 class RemoteSyncer():
-    helpline_code: str
-    _service_configs: dict[str, ServiceConfiguration]
-    configs: dict[str, object] = {}
-    common_keys = set([str])
-    common_data = {}
-    environments_data = {}
-    previous_envs = set([str])
-    environments_duplicates = defaultdict(dict[str, GetDupValueKeysArgsDict])
-
     def __init__(self, **kwargs: Unpack[InitArgsDict]) -> None:
+        self.configs: dict[str, object] = {}
+        self.common_keys: Set[str] = set()
+        self.common_data: dict[str, object] = {}
+        self.environments_data = {}
+        self.previous_envs: Set[str] = set()
+        self.environments_duplicates: dict[str, GetDupValueKeysArgsDict] = defaultdict(dict)
+
         self.helpline_code = kwargs['helpline_code']
-        self._service_configs = kwargs['service_configs']
+        self._service_configs: dict[str, ServiceConfiguration] = kwargs['service_configs']
         self.init_configs()
 
     def process_change(self, env, change):
-        env_data = self.environments_data[env]
+        env_data: dict[str, object] = self.environments_data[env]
         path = get_dot_notation_path(change)
         value = change.t1
 
@@ -112,4 +111,3 @@ class RemoteSyncer():
         for env, data in self.environments_data.items():
             self.configs[env] = data
 
-        print(json.dumps(self.configs, indent=4))

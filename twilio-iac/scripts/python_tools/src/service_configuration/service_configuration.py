@@ -64,6 +64,7 @@ def get_nested_key(data, key):
 
     return current
 
+
 def delete_nested_key(data, key):
     """Delete a nested key in a dict"""
 
@@ -82,9 +83,11 @@ def delete_nested_key(data, key):
 def get_dot_notation_path(change) -> str:
     return change.path().replace("root[", "").replace("][", ".").replace("]", "").replace("'", "")
 
+
 class InitArgsDict(TypedDict):
     twilio_client: Twilio
     ssm_client: SSMClient
+    skip_local_config: bool
 
 
 class LocalConfigsItemDict(TypedDict):
@@ -99,24 +102,19 @@ class LocalConfigsDict(TypedDict):
 
 
 class ServiceConfiguration():
-    _ssm_client: SSMClient
-    _twilio_client: Twilio
-    remote_state: dict[str, object]
-    local_state: dict[str, object] = {}
-    new_state: dict[str, object] = {}
-    local_configs: dict[str, object] = {}
-    plan: DeepDiff
-    account_sid: str
-    helpline_code: str
-    environment: str
 
     def __init__(self, **kwargs: Unpack[InitArgsDict]) -> None:
+        self.local_state: dict[str, object] = {}
+        self.new_state: dict[str, object] = {}
+        self.local_configs: dict[str, object] = {}
+
         self._twilio_client = kwargs['twilio_client']
         self._ssm_client = kwargs['ssm_client']
+        self.skip_local_config = kwargs['skip_local_config']
         self.account_sid = self._twilio_client.account_sid
         self.helpline_code = self._twilio_client.helpline_code
         self.environment = self._twilio_client.environment
-        self.remote_state = self._twilio_client.get_flex_configuration()
+        self.remote_state: dict[str, object] = self._twilio_client.get_flex_configuration()
         self.init_local_state()
         self.init_new_state()
         self.init_plan()
@@ -129,7 +127,7 @@ class ServiceConfiguration():
             key = conf['key']
             path = conf['path_tpl'].format(
                 environment=self.environment,
-                helpline_code=self.helpline_code
+                helpline_code=self.helpline_code.lower()
             )
             self.local_configs[key] = {
                 'path': path,
@@ -140,13 +138,16 @@ class ServiceConfiguration():
                 print(f"Could not load {path}... skipping")
                 continue
 
+            # we don't want to load helpline local configs for migration
+            if self.skip_local_config and key != 'defaults':
+                continue
+
             with open(path, 'r') as f:
                 self.local_configs[key]['data'] = json.load(f)
                 self.local_state = always_merger.merge(
                     deepcopy(self.local_state),
                     self.local_configs[key]['data'],
                 )
-
 
     def init_new_state(self):
         self.new_state = always_merger.merge(
@@ -183,5 +184,5 @@ class ServiceConfiguration():
             view="tree",
         )
 
-    def init_local_json(self):
-        pass
+    def get_config_path(self, type: str) -> str:
+        return self.local_configs[type].get('path')

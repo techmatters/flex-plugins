@@ -1,4 +1,5 @@
 from argparse import ArgumentParser
+from collections import defaultdict
 import os
 from typing import NotRequired, TypedDict, Unpack
 from ..aws import SSMClient
@@ -28,6 +29,12 @@ JSON_ACTIONS = [
 
 # actions that act on all environments
 ALL_ENV_ACTIONS = [
+    ACTIONS['SYNC_PLAN'],
+    ACTIONS['SYNC_APPLY'],
+]
+
+SKIP_LOCAL_CONFIG_ACTIONS = [
+    ACTIONS['SHOW_REMOTE'],
     ACTIONS['SYNC_PLAN'],
     ACTIONS['SYNC_APPLY'],
 ]
@@ -95,6 +102,7 @@ class ConfigDict(TypedDict):
     dry_run: NotRequired[bool]
     service_configs: dict[str, ServiceConfiguration]
     helplines: dict[str, dict[str, str]]
+    skip_local_config: bool
 
 
 class InitServiceConfigurationArgsDict(TypedDict):
@@ -107,15 +115,17 @@ class InitServiceConfigurationArgsDict(TypedDict):
 class Config():
     ssm_client: SSMClient
     _arg_parser: ArgumentParser
-    _config: ConfigDict = {
-        'all_env_action': False,
-        'helpline_code': None,
-        'action': ACTIONS['SHOW'],
-        'service_configs': {},
-        'helplines': {},
-    }
 
     def __init__(self):
+        self._config: ConfigDict = {
+            'all_env_action': False,
+            'helpline_code': None,
+            'action': ACTIONS['SHOW'],
+            'service_configs': {},
+            'helplines': defaultdict(dict),
+            'skip_local_config': False,
+        }
+
         self.init_arg_parser()
         self.parse_args()
         self.validate_args()
@@ -146,6 +156,7 @@ class Config():
             self._config['auth_token'] = auth_token
 
         self._config['all_env_action'] = self.action in ALL_ENV_ACTIONS
+        self._config['skip_local_config'] = self.action in SKIP_LOCAL_CONFIG_ACTIONS
 
     def init_service_configs(self):
         if (self.helpline_code or self.account_sid) and self.environment:
@@ -175,16 +186,14 @@ class Config():
         service_config: ServiceConfiguration
     ):
         helpline_code_lower = helpline_code.lower()
-        if helpline_code_lower not in self._config['helplines']:
-            self._config['helplines'][helpline_code_lower] = {}
-
         self._config['helplines'][helpline_code_lower][environment] = service_config
 
     def init_service_config(self, **kwargs: Unpack[InitServiceConfigurationArgsDict]):
         twilio_client = Twilio(ssm_client=self.ssm_client,  **kwargs)
         service_config = ServiceConfiguration(
             twilio_client=twilio_client,
-            ssm_client=self.ssm_client
+            ssm_client=self.ssm_client,
+            skip_local_config=self.skip_local_config,
         )
         self._config['service_configs'][twilio_client.account_sid] = service_config
 
