@@ -6,9 +6,9 @@
         "value": "Youthline",
         "default": true,
         "manager": {
-          "name": "Helpline Manager",
+          "name": "Helen O'Toole",
           "phone": "+123 45 678",
-          "email": "supervisor@helpline.org"
+          "email": "helen.otoole@youthline.co.nz"
         }
       }
     ]
