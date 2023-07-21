@@ -344,10 +344,6 @@
     "unknownOption": "Unknown",
     "options": [
       {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
         "value": "Many Supports",
         "label": "Many Supports"
       },

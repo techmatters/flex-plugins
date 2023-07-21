@@ -186,10 +186,6 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Unkonwn",
-        "label": ""
-      },
-      {
         "value": "Counsellor/Therapist/Mental Health Worker",
         "label": "Counsellor/Therapist/Mental Health Worker"
       },
