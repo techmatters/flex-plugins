@@ -85,7 +85,7 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/g2tns.tftpl"
         channel_flow_vars    = {
           en_number: "5814810744"
-          fr_number: "5814810744"
+          fr_number: "5812215204"
 
           #Twilio things
           check_counsellors_function_sid: "ZHa0218fd2a7b2e3aa800ab78e0367acf7"
