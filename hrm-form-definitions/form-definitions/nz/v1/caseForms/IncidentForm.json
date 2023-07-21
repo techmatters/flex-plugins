@@ -1,7 +1,7 @@
 [
   {
     "name": "selfHarm",
-    "label": "Does the client self harm? \n Have you hurt yourself on purpose like cutting, biting, burning hitting without the intention of ending your life? If client intended to end life, please complete Suicide Incident Report instead",
+    "label": "Does the client self harm?  Have you hurt yourself on purpose like cutting, biting, burning hitting without the intention of ending your life? If client intended to end life, please complete Suicide Incident Report instead",
     "type": "select",
     "unknownOption": "Unknown",
     "options": [
@@ -30,7 +30,7 @@
   },
   {
     "name": "aftercarePerformed",
-    "label": "Aftercare performed? \n Have you hurt yourself so badly that you require medical attention? If e.g. cutting, where are the cuts, how deep are they, in which direction are they, did you cut deeper than intended, can the blood loss be stemmed, is there arterial bleeding? Have you taken care of the wounds afterwards?",
+    "label": "Aftercare performed? Have you hurt yourself so badly that you require medical attention? If e.g. cutting, where are the cuts, how deep are they, in which direction are they, did you cut deeper than intended, can the blood loss be stemmed, is there arterial bleeding? Have you taken care of the wounds afterwards?",
     "type": "select",
     "unknownOption": "Unknown",
     "options": [
