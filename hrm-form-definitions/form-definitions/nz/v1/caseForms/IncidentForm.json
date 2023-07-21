@@ -1,191 +1,101 @@
 [
   {
-    "name": "selfHarm",
-    "label": "Does the client self harm?  Have you hurt yourself on purpose like cutting, biting, burning hitting without the intention of ending your life? If client intended to end life, please complete Suicide Incident Report instead",
+    "name": "date",
+    "label": "Date",
+    "type": "date-input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "duration",
+    "label": "Duration",
     "type": "select",
-    "unknownOption": "Unknown",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
-        "value": "Yes",
-        "label": "Yes"
+        "value": "Ongoing",
+        "label": "Ongoing"
       },
       {
-        "value": "No",
-        "label": "No"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ]
-  },
-  {
-    "name": "selfHarmDetails",
-    "label": "Details of the self harm",
-    "type": "textarea"
-  },
-  {
-    "name": "aftercarePerformed",
-    "label": "Aftercare performed? Have you hurt yourself so badly that you require medical attention? If e.g. cutting, where are the cuts, how deep are they, in which direction are they, did you cut deeper than intended, can the blood loss be stemmed, is there arterial bleeding? Have you taken care of the wounds afterwards?",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Yes",
-        "label": "Yes"
-      },
-      {
-        "value": "No",
-        "label": "No"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ]
-  },
-  {
-    "name": "aftercarePerformedDetails",
-    "label": "Details of aftercare",
-    "type": "textarea"
-  },
-  {
-    "name": "accessToMeans",
-    "label": "Access to means",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Yes",
-        "label": "Yes"
-      },
-      {
-        "value": "No",
-        "label": "No"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ]
-  },
-  {
-    "name": "meansDetails",
-    "label": "Details of access to means",
-    "type": "textarea"
-  },
-  {
-    "name": "frequency",
-    "label": "Frequency",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Daily",
-        "label": "Daily"
-      },
-      {
-        "value": "Weekly",
-        "label": "Weekly"
-      },
-      {
-        "value": "Monthly",
-        "label": "Monthly"
-      },
-      {
-        "value": "One Off",
-        "label": "One Off"
+        "value": "Once Off",
+        "label": "Once Off"
       },
       {
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "frequencyDetails",
-    "label": "Details of frequency",
-    "type": "textarea"
-  },
-  {
-    "name": "intentionToContinue",
-    "label": "Intending to continue self harming",
+    "name": "location",
+    "label": "Location",
     "type": "select",
-    "unknownOption": "Unknown",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
-      },
-      {
-        "value": "Yes",
-        "label": "Yes"
-      },
-      {
-        "value": "No",
-        "label": "No"
       },
       {
         "value": "Unknown",
         "label": "Unknown"
-      }
-    ]
-  },
-  {
-    "name": "intentionDetails",
-    "label": "Details of intention to continue",
-    "type": "textarea"
-  },
-  {
-    "name": "supportSystems",
-    "label": "Support systems",
-    "type": "listbox-multiselect",
-    "options": [
-      {
-        "value": "Counsellor/Therapist/Mental Health Worker",
-        "label": "Counsellor/Therapist/Mental Health Worker"
       },
       {
-        "value": "Responsible Trusted Adult",
-        "label": "Responsible Trusted Adult"
+        "value": "School",
+        "label": "School"
       },
       {
-        "value": "Parents",
-        "label": "Parents"
+        "value": "Home",
+        "label": "Home"
       },
       {
-        "value": "Responsible friend",
-        "label": "Responsible friend"
+        "value": "Institution",
+        "label": "Institution"
       },
       {
-        "value": "No one",
-        "label": "No one"
+        "value": "Online",
+        "label": "Online"
+      },
+      {
+        "value": "Public Place",
+        "label": "Public Place"
       },
       {
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "supportSystemsDetails",
-    "label": "Details of support system",
-    "type": "textarea"
+    "name": "isCaregiverAware",
+    "label": "Is caregiver aware?",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "incidentWitnessed",
+    "label": "Was the incident witnessed by anyone?",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "abuseReportedElsewhere",
+    "label": "Has abuse been reported elsewhere?",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "whereElseBeenReported",
+    "label": "Where else the incident has been reported?",
+    "type": "mixed-checkbox"
   }
 ]
