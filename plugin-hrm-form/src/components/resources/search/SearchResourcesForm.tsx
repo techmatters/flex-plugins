@@ -335,7 +335,13 @@ const SearchResourcesForm: React.FC<Props> = ({
             setGeneralSearchTermBoxText('');
             resetSearch();
           }}
-          style={{ marginRight: '15px ' }}
+          style={{
+            marginRight: '15px ',
+            background: 'white',
+            backgroundImage: 'none!important', // Not sure why the important flag is needed here to override a style with less specificity
+            color: 'rgb(13, 116, 213)',
+            opacity: hasValidSearchSettings() ? 1 : 0,
+          }}
         >
           <Template code="Resources-Search-ClearFormButton" />
         </StyledNextStepButton>
