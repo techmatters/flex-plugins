@@ -31,21 +31,56 @@ SSM_FIELDS = {
 
 TEMPLATE_FIELDS = {
     "attributes.assets_bucket_url": "https://assets-{environment}.tl.techmatters.org",
+    # TODO: this needs to deal with region
     "attributes.hrm_base_url": "https://hrm-{environment}.tl.techmatters.org",
     "account_sid": "{account_sid}",
 }
 
 
-def set_nested_key(data: dict[str, object], keys: List[str], value: object):
-    if len(keys) > 1:
-        key = keys.pop(0)
-        if key not in data:
-            data[key] = {}
+def set_nested_key(data, key, value):
+    """Set a nested key in a dict"""
 
-        set_nested_key(data[key], keys, value)
-    else:
-        data[keys[0]] = value
+    path = key.split('.')
 
+    current = data
+    for path_key in path[:-1]:
+        if path_key not in current:
+            current[path_key] = {}
+        current = current[path_key]
+
+    current[path[-1]] = value
+
+
+def get_nested_key(data, key):
+    """Get a nested key in a dict"""
+
+    path = key.split('.')
+    current = data
+
+    for path_key in path:
+        if path_key not in current:
+            return None
+        current = current[path_key]
+
+    return current
+
+def delete_nested_key(data, key):
+    """Delete a nested key in a dict"""
+
+    path = key.split('.')
+    current = data
+
+    for path_key in path[:-1]:
+        if path_key not in current:
+            # Key path doesn't exist
+            return
+        current = current[path_key]
+
+    del current[path[-1]]
+
+
+def get_dot_notation_path(change) -> str:
+    return change.path().replace("root[", "").replace("][", ".").replace("]", "").replace("'", "")
 
 class InitArgsDict(TypedDict):
     twilio_client: Twilio
@@ -87,6 +122,9 @@ class ServiceConfiguration():
         self.init_plan()
 
     def init_local_state(self):
+        self.init_template_fields()
+        self.init_ssm_fields()
+
         for conf in JSON_CONFIGS:
             key = conf['key']
             path = conf['path_tpl'].format(
@@ -109,8 +147,6 @@ class ServiceConfiguration():
                     self.local_configs[key]['data'],
                 )
 
-        self.init_template_fields()
-        self.init_ssm_fields()
 
     def init_new_state(self):
         self.new_state = always_merger.merge(
@@ -127,8 +163,7 @@ class ServiceConfiguration():
                 account_sid=self.account_sid,
                 helpline_code=self.helpline_code
             )
-            keys = key.split('.')
-            set_nested_key(self.local_state, keys, templated_value)
+            set_nested_key(self.local_state, key, templated_value)
 
     def init_ssm_fields(self):
         for key, value in SSM_FIELDS.items():
@@ -138,8 +173,7 @@ class ServiceConfiguration():
                 helpline_code=self.helpline_code
             )
             ssm_value = self._ssm_client.get_parameter(ssm_key_name)
-            keys = key.split('.')
-            set_nested_key(self.local_state, keys, ssm_value)
+            set_nested_key(self.local_state, key, ssm_value)
 
     def init_plan(self):
         self.plan = DeepDiff(

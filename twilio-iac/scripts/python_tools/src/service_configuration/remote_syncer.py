@@ -1,22 +1,27 @@
-# TODO: remove typing_extensions dependency
 import json
+from collections import defaultdict
 from copy import deepcopy
 from deepdiff import DeepDiff
-from typing import TypedDict, Unpack
+from typing import TypedDict, Dict, Any, Unpack
 
 from .config import ENVIRONMENTS
-from .service_configuration import ServiceConfiguration
+from .service_configuration import ServiceConfiguration, delete_nested_key, get_dot_notation_path, get_nested_key, set_nested_key
 
+def get_dup_value_keys(d):
+  value_keys = {}
 
-def extract_dict(partial_dict: dict[str, object], large_dict: dict[str, object]):
-    extracted_dict: dict[str, object] = {}
-    for key, value in partial_dict.items():
-        if key in large_dict:
-            if isinstance(value, dict):
-                extracted_dict[key] = extract_dict(value, large_dict[key])
-            else:
-                extracted_dict[key] = large_dict[key]
-    return extracted_dict
+  for key, value in d.items():
+    if value not in value_keys:
+        value_keys[value] = [key]
+    else:
+        value_keys[value].append(key)
+
+  results = []
+  for value, keys in value_keys.items():
+    if len(keys) > 1:
+        results.append({'keys': keys, 'value': value})
+
+  return results
 
 
 class InitArgsDict(TypedDict):
@@ -34,25 +39,72 @@ class RemoteSyncer():
     def __init__(self, **kwargs: Unpack[InitArgsDict]) -> None:
         self.helpline_code = kwargs['helpline_code']
         self._service_configs = kwargs['service_configs']
-        self.default_config = self._service_configs['production'].local_configs['defaults']['data']
         self.init_configs()
-        print(json.dumps(self.configs, indent=4))
-        for env, diff in self._diffs.items():
-            print(f'Changes for {env}:')
-            print(diff.to_json())
 
     def init_configs(self):
-        for env in ENVIRONMENTS:
-            self.init_diff_for_environment(env)
+        common_keys = defaultdict(set)
+        common_data = {}
+        environments = {}
+        previous_envs = set()
+        environments_duplicates = {}
 
-    def init_diff_for_environment(self, env: str):
-        print(self._service_configs)
-        self.configs[env] = extract_dict(
-            self.default_config,
-            self._service_configs[env].remote_state
-        )
-        self._diffs[env] = DeepDiff(
-            deepcopy(self.default_config),
-            self.configs[env],
-            ignore_order=True
-        )
+        for env in self._service_configs.keys():
+            env_data = {}
+            environments[env] = env_data
+
+            if env not in self._service_configs:
+                continue
+
+            for change_type, changes in self._service_configs[env].plan.items():
+                if change_type == 'dictionary_item_added':
+                    continue
+
+                for change in changes:
+                    path = get_dot_notation_path(change)
+                    value = change.t1
+
+                    if len(previous_envs) == 0:
+                        common_keys[path]
+                        set_nested_key(common_data, path, value)
+                        continue
+
+                    if path not in common_keys:
+                        set_nested_key(env_data, path, value)
+                        if (path not in environments_duplicates):
+                            environments_duplicates[path] = {}
+                        environments_duplicates[path][env] = value
+                        continue
+
+                    common_value = get_nested_key(common_data, path)
+
+                    if value == common_value:
+                        continue
+                    else:
+                        for prev_env in previous_envs:
+                            set_nested_key(environments[prev_env], path, common_value)
+                            delete_nested_key(common_data, path)
+                            if (path not in environments_duplicates):
+                                environments_duplicates[path] = {}
+                            environments_duplicates[path][env] = value
+                            set_nested_key(env_data, path, value)
+
+            previous_envs.add(env)
+
+        for path, envs in environments_duplicates.items():
+            duplicates = get_dup_value_keys(envs)
+            for duplicate in duplicates:
+                for key in duplicate['keys']:
+                    delete_nested_key(environments[key], path)
+                    set_nested_key(common_data, path, duplicate['value'])
+
+
+        ret = {
+            "common": common_data,
+            "environments": environments
+        }
+
+        self.configs['common'] = common_data
+        for env, data in environments.items():
+            self.configs[env] = data
+
+        print(json.dumps(self.configs, indent=4))

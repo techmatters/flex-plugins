@@ -33,9 +33,9 @@ ALL_ENV_ACTIONS = [
 ]
 
 ENVIRONMENTS = [
-    'development',
-    'staging',
     'production',
+    'staging',
+    'development',
 ]
 
 ARGS = {
@@ -176,7 +176,6 @@ class Config():
     ):
         helpline_code_lower = helpline_code.lower()
         if helpline_code_lower not in self._config['helplines']:
-            print(f'Adding helpline {helpline_code_lower}')
             self._config['helplines'][helpline_code_lower] = {}
 
         self._config['helplines'][helpline_code_lower][environment] = service_config
@@ -256,8 +255,6 @@ class Config():
             exit(1)
 
     def validate_action_requirements(self):
-        print('action', self.action)
-        print('all_env_action', self.all_env_action)
         if self.all_env_action:
             self.validate_no_environment()
             return

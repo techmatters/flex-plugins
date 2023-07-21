@@ -3,7 +3,7 @@ from pygments import highlight, lexers, formatters
 from termcolor import colored
 from .config import config
 from .remote_syncer import RemoteSyncer
-from .service_configuration import DeepDiff, ServiceConfiguration
+from .service_configuration import DeepDiff, ServiceConfiguration, get_dot_notation_path
 
 
 def main():
@@ -58,7 +58,7 @@ def print_plan(plan: DeepDiff):
     output = []
     for diff_type, changes in plan.items():
         for change in changes:
-            path = change.path().replace("root[", "").replace("][", ".").replace("]", "").replace("'", "")
+            path = get_dot_notation_path(change)
             if diff_type == 'dictionary_item_added':
                 output.append(f'Add {path} with value {change.t2}')
             elif diff_type == 'dictionary_item_removed':
