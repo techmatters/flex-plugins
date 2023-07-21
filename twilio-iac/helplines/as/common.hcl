@@ -37,6 +37,11 @@ locals {
     helpline           = "Aselo"
     old_dir_prefix     = "aselo-as"
     definition_version = "as-v1"
+
+    default_autopilot_chatbot_enabled = false
+    helpline_language                 = local.helpline_language
+    contacts_waiting_channels         = ["web"]
+    enable_post_survey                = true
     lex_bot_languages  = {
       en_US : {
         slot_types : local.en_us_slot_types
@@ -49,6 +54,49 @@ locals {
         intents    : local.es_co_intents
         bots       : local.es_co_bots
       }
+    }
+
+    workflows = {
+      master : {
+        friendly_name : "Master Workflow"
+        templatefile : "/app/twilio-iac/helplines/cl/templates/workflows/master.tftpl"
+      },
+      survey : {
+        friendly_name : "Survey Workflow"
+        templatefile : "/app/twilio-iac/helplines/templates/workflows/survey.tftpl"
+      }
+    } 
+
+    workflows = {
+      master : {
+        friendly_name : "Master Workflow"
+        templatefile : "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+      },
+      survey : {
+        friendly_name : "Survey Workflow"
+        templatefile : "/app/twilio-iac/helplines/templates/workflows/survey.tftpl"
+      }
+    } 
+
+    task_queues = {
+      messaging : {
+        "target_workers" = "routing.skills HAS 'Messaging'",
+        "friendly_name"  = "Messaging"
+      },
+      survey : {
+        "target_workers" = "1==0",
+        "friendly_name"  = "Survey"
+      }
+
+    }
+    task_channels = {
+      default : "Default"
+      chat : "Programmable Chat"
+      voice : "Voice"
+      sms : "SMS"
+      video : "Video"
+      email : "Email"
+      survey : "Survey"
     }
   }
 }
