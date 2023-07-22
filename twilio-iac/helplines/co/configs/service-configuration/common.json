@@ -1,0 +1,42 @@
+{
+    "attributes": {
+        "feature_flags": {
+            "enable_conferencing": false,
+            "enable_counselor_toolkits": false,
+            "enable_csam_clc_report": false,
+            "enable_csam_report": true,
+            "enable_emoji_picker": false,
+            "enable_external_transcripts": false,
+            "enable_lex": false,
+            "enable_post_survey": false,
+            "enable_save_insights": true,
+            "enable_transcripts": false,
+            "enable_voice_recordings": false
+        }
+    },
+    "ui_attributes": {
+        "colorTheme": {
+            "baseName": "GreyLight",
+            "overrides": {
+                "MainHeader": {
+                    "Container": {
+                        "background": "#FFFFFF"
+                    }
+                },
+                "SideNav": {
+                    "Button": {
+                        "background": "#FFFFFF"
+                    },
+                    "Container": {
+                        "background": "#FFFFFF"
+                    }
+                }
+            },
+            "preset": {
+                "id": "mono-light",
+                "name": "Simple Light"
+            }
+        },
+        "theme": null
+    }
+}

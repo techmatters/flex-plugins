@@ -69,15 +69,17 @@ def delete_nested_key(data, key):
     """Delete a nested key in a dict"""
 
     path = key.split('.')
-    current = data
-
-    for path_key in path[:-1]:
-        if path_key not in current:
-            # Key path doesn't exist
-            return
-        current = current[path_key]
-
-    del current[path[-1]]
+    if len(path) == 1:
+        # base case: remove the key from the dictionary and check if it's empty
+        del data[path[0]]
+        return not bool(data)
+    else:
+        # recursive case: go one level deeper
+        sub_key = '.'.join(path[1:])
+        if path[0] in data and delete_nested_key(data[path[0]], sub_key):
+            # if the sub-dictionary is empty after the deletion, remove it
+            del data[path[0]]
+        return not bool(data)
 
 
 def get_dot_notation_path(change) -> str:

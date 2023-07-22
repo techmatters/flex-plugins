@@ -1,0 +1,34 @@
+{
+    "attributes": {
+        "feature_flags": {
+            "enable_fullstory_monitoring": true,
+            "enable_transcripts": false
+        },
+        "pdfImagesSource": "https://tl-public-chat-zm-prod.s3.amazonaws.com"
+    },
+    "ui_attributes": {
+        "colorTheme": {
+            "baseName": "GreyLight",
+            "overrides": {
+                "MainHeader": {
+                    "Container": {
+                        "background": "#FFFFFF"
+                    }
+                },
+                "SideNav": {
+                    "Button": {
+                        "background": "#FFFFFF"
+                    },
+                    "Container": {
+                        "background": "#FFFFFF"
+                    }
+                }
+            },
+            "preset": {
+                "id": "mono-light",
+                "name": "Simple Light"
+            }
+        },
+        "theme": null
+    }
+}

@@ -1,0 +1,6 @@
+{
+    "attributes": {
+        "hrm_base_url": "https://hrm-test.tl.techmatters.org",
+        "pdfImagesSource": "https://tl-public-chat-in-stg.s3.amazonaws.com"
+    }
+}

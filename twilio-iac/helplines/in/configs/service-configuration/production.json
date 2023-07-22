@@ -1,0 +1,9 @@
+{
+    "attributes": {
+        "feature_flags": {
+            "enable_dual_write": false,
+            "enable_fullstory_monitoring": true
+        },
+        "pdfImagesSource": "https://tl-public-chat-in-prod.s3.amazonaws.com"
+    }
+}

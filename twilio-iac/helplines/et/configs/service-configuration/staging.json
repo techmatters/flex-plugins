@@ -1,0 +1,7 @@
+{
+    "attributes": {
+        "feature_flags": {
+            "post_survey_serverless_handled": false
+        }
+    }
+}

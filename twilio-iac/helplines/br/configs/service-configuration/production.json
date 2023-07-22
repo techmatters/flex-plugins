@@ -1,0 +1,32 @@
+{
+    "attributes": {
+        "feature_flags": {
+            "enable_fullstory_monitoring": false
+        }
+    },
+    "ui_attributes": {
+        "colorTheme": {
+            "baseName": "GreyLight",
+            "overrides": {
+                "MainHeader": {
+                    "Container": {
+                        "background": "#FFFFFF"
+                    }
+                },
+                "SideNav": {
+                    "Button": {
+                        "background": "#FFFFFF"
+                    },
+                    "Container": {
+                        "background": "#FFFFFF"
+                    }
+                }
+            },
+            "preset": {
+                "id": "mono-light",
+                "name": "Simple Light"
+            }
+        },
+        "notifications": null
+    }
+}
