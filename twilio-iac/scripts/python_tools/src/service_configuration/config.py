@@ -13,12 +13,12 @@ s3 bucket for locking and revert with 60 day lifecycle policy
 
 on apply create a lock file in each helplines directory s3 bucket with the following format:
 
-md5 the remote state, check for an existing file with that name, if it doesn't exist
-create a new file with the md5 as the name and the state as the content
+sha the remote state, check for an existing file with that name, if it doesn't exist
+create a new file with the sha as the name and the state as the content
 
-changelog file is a json file with an array of the md5s of the state files that have been applied and the date they were applied
+changelog file is a json file with an array of the shas of the state files that have been applied and the date they were applied
 
-when update is complete pull remote state again and create a new file with the md5 as the name and the state as the content to keep a record
+when update is complete pull remote state again and create a new file with the sha as the name and the state as the content to keep a record
 """
 
 
@@ -102,7 +102,7 @@ ARGS = {
     },
 }
 
-
+AWS_ROLE_ARN = 'arn:aws:iam::712893914485:role/twilio-iac-service-config-manager'
 
 class ConfigDict(TypedDict):
     # WARNING: ConfigDict is used in the magic __getattr__ method, so keys
@@ -144,8 +144,7 @@ class Config():
         self.init_arg_parser()
         self.parse_args()
         self.validate_args()
-        self.ssm_client = SSMClient(
-            'arn:aws:iam::712893914485:role/twilio-iac-service-config-manager')
+        self.ssm_client = SSMClient(AWS_ROLE_ARN)
         self.init_service_configs()
 
     def __getattr__(self, name: str):

@@ -1,12 +1,12 @@
 import boto3
+import re
 from botocore.config import Config
 from mypy_boto3_ssm import SSMClient as BotoSSMClient
 from mypy_boto3_ssm.literals import ParameterTypeType
 from mypy_boto3_ssm.type_defs import ParameterTypeDef
-from mypy_boto3_sts import STSClient
-import time
 from typing import List, TypedDict
-import re
+
+from .sts_client import STSClient
 
 
 class GetHelplinesForEnvArgsDict(TypedDict):
@@ -22,29 +22,18 @@ class SSMClient():
         self,
         role_arn: str | None = None
     ):
-        self.client = self.get_ssm_client(role_arn)
+        self.init_client(role_arn)
 
-    def get_ssm_client(self, role_arn: str | None = None):
+    def init_client(self, role_arn: str | None = None):
         if self.client:
-            return self.client
+            return
 
         if (not role_arn):
-            return boto3.client('ssm', config=self._config)
+            self.client = boto3.client('ssm', config=self._config)
 
-        ts = time.time()
-        sts_client: STSClient = boto3.client('sts', config=self._config)
-        response = sts_client.assume_role(
-            RoleArn=role_arn,
-            RoleSessionName='secret-manager' + str(ts),
-        )
+        sts_client = STSClient(role_arn)
 
-        session = boto3.session.Session(
-            aws_access_key_id=response['Credentials']['AccessKeyId'],
-            aws_secret_access_key=response['Credentials']['SecretAccessKey'],
-            aws_session_token=response['Credentials']['SessionToken'],
-        )
-
-        return session.client('ssm')
+        self.client = sts_client.get_session_client('ssm')
 
     def get_parameter(self, name: str, with_decryption: bool = True):
         response = self.client.get_parameter(
