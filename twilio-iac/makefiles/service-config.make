@@ -15,3 +15,6 @@ service-config-sync-plan:
 
 service-config-sync-apply:
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/python_tools/manageServiceConfig.py sync_apply
+
+service-config-unlock:
+	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/python_tools/manageServiceConfig.py unlock

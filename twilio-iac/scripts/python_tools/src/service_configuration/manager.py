@@ -13,6 +13,7 @@ def main():
         return
 
     run_account_sid_action()
+    cleanup_and_exit()
 
 
 def run_account_sid_action():
@@ -117,20 +118,20 @@ def plan(service_config: ServiceConfiguration):
 def apply(service_config: ServiceConfiguration):
     plan(service_config)
     if config.dry_run:
-        print('Dry run enabled. Exiting...')
+        print_text('Dry run enabled. Exiting...')
         return
 
     confirm = input(
         f'Do you want to apply these updates to the {service_config.helpline_code}-{service_config.environment} service configuration? (y/N): ')
     if confirm != 'y':
-        print('Please re-run the script to try again')
-        print('Exiting...')
-        exit(1)
+        print_text('Please re-run the script to try again')
+        cleanup_and_exit(1)
 
-    print('Updating service configuration...')
+    print_text('Updating service configuration...')
+
 
 def sync_plan(helpline_code: str, service_configs: dict[str, ServiceConfiguration]):
-    print('Config json updates:\n\n')
+    print_text('Config json updates:\n\n')
     remote_syncer = RemoteSyncer(
         helpline_code=helpline_code,
         service_configs=service_configs
@@ -139,26 +140,26 @@ def sync_plan(helpline_code: str, service_configs: dict[str, ServiceConfiguratio
     show_common = True
     for service_config in service_configs.values():
         if (show_common):
-            print(service_config.get_config_path('common'))
+            print_text(service_config.get_config_path('common'))
             print_json(remote_syncer.configs['common'])
             show_common = False
 
-        print(service_config.get_config_path('environment'))
+        print_text(service_config.get_config_path('environment'))
         print_json(remote_syncer.configs[service_config.environment])
 
     return remote_syncer
+
 
 def sync_apply(helpline_code: str, service_configs: dict[str, ServiceConfiguration]):
     remote_syncer = sync_plan(helpline_code, service_configs)
 
     confirm = input(
-        f'Do you want to make these updates to the files above? (y/N): ')
+        'Do you want to make these updates to the files above? (y/N): ')
     if confirm != 'y':
-        print('Please re-run the script to try again')
-        print('Exiting...')
-        exit(1)
+        print_text('Please re-run the script to try again')
+        cleanup_and_exit(1)
 
-    print('Updating service configuration...')
+    print_text('Updating service configuration...')
     write_common = True
     for service_config in service_configs.values():
         if (write_common):
@@ -170,3 +171,14 @@ def sync_apply(helpline_code: str, service_configs: dict[str, ServiceConfigurati
 
         with open(service_config.get_config_path('environment'), 'w') as f:
             json.dump(remote_syncer.configs[service_config.environment], f, indent=4, sort_keys=True)
+
+
+def unlock(helpline_code: str, service_configs: dict[str, ServiceConfiguration]):
+    print_text('Unlocking service configurations...')
+    for service_config in service_configs.values():
+        service_config.cleanup()
+
+def cleanup_and_exit(code: int = 0):
+    print_text('Cleaning up...')
+    config.cleanup()
+    exit(code)

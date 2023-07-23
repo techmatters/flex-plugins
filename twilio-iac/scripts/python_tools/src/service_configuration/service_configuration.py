@@ -3,10 +3,10 @@ from copy import deepcopy
 from deepdiff import DeepDiff
 from deepmerge import always_merger
 from os.path import exists as path_exists
-from typing import List, TypedDict
-from typing_extensions import Unpack
+from typing import List, TypedDict, Unpack
 from ..aws import SSMClient
 from ..twilio import Twilio
+from .versions import Versions
 
 JSON_PATH_ROOT = "/app/twilio-iac/helplines"
 JSON_CONFIG_PATH_PARTIAL = "configs/service-configuration"
@@ -90,6 +90,8 @@ class InitArgsDict(TypedDict):
     twilio_client: Twilio
     ssm_client: SSMClient
     skip_local_config: bool
+    has_version: bool
+    skip_lock: bool
 
 
 class LocalConfigsItemDict(TypedDict):
@@ -113,10 +115,13 @@ class ServiceConfiguration():
         self._twilio_client = kwargs['twilio_client']
         self._ssm_client = kwargs['ssm_client']
         self.skip_local_config = kwargs['skip_local_config']
+        self.has_version = kwargs['has_version']
+        self.skip_lock = kwargs['skip_lock']
         self.account_sid = self._twilio_client.account_sid
         self.helpline_code = self._twilio_client.helpline_code
         self.environment = self._twilio_client.environment
         self.remote_state: dict[str, object] = self._twilio_client.get_flex_configuration()
+        self.init_version()
         self.init_local_state()
         self.init_new_state()
         self.init_plan()
@@ -186,5 +191,21 @@ class ServiceConfiguration():
             view="tree",
         )
 
+    def init_version(self):
+        if not self.has_version:
+            self.version = None
+            return
+
+        self.version = Versions(
+            environment=self.environment,
+            helpline_code=self.helpline_code,
+            remote_state=self.remote_state,
+            skip_lock=self.skip_lock,
+        )
+
     def get_config_path(self, type: str) -> str:
         return self.local_configs[type].get('path')
+
+    def cleanup(self):
+        if self.version:
+            self.version.unlock()

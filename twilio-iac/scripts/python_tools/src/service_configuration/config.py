@@ -4,6 +4,7 @@ import os
 from typing import NotRequired, TypedDict, Unpack
 from ..aws import SSMClient
 from ..twilio import Twilio
+from .constants import AWS_ROLE_ARN
 from .service_configuration import ServiceConfiguration
 
 """
@@ -32,6 +33,7 @@ ACTIONS = {
     'SHOW_DIFF': 'show_diff',
     'SYNC_PLAN': 'sync_plan',
     'SYNC_APPLY': 'sync_apply',
+    'UNLOCK': 'unlock',
 }
 
 #  actions that support json output
@@ -46,12 +48,25 @@ JSON_ACTIONS = [
 ALL_ENV_ACTIONS = [
     ACTIONS['SYNC_PLAN'],
     ACTIONS['SYNC_APPLY'],
+    ACTIONS['UNLOCK'],
 ]
 
 SKIP_LOCAL_CONFIG_ACTIONS = [
     ACTIONS['SHOW_REMOTE'],
     ACTIONS['SYNC_PLAN'],
     ACTIONS['SYNC_APPLY'],
+]
+
+# actions that init the version class and require a lock by default
+VERSION_ACTIONS = [
+    ACTIONS['APPLY'],
+    ACTIONS['SYNC_APPLY'],
+    ACTIONS['UNLOCK'],
+]
+
+# subset of VERSION_ACTIONS that do not require a lock
+SKIP_LOCK_ACTIONS = [
+    ACTIONS['UNLOCK'],
 ]
 
 ENVIRONMENTS = [
@@ -102,8 +117,6 @@ ARGS = {
     },
 }
 
-AWS_ROLE_ARN = 'arn:aws:iam::712893914485:role/twilio-iac-service-config-manager'
-
 class ConfigDict(TypedDict):
     # WARNING: ConfigDict is used in the magic __getattr__ method, so keys
     # must not bet the same as any methods or attributes of the Config class
@@ -118,6 +131,8 @@ class ConfigDict(TypedDict):
     service_configs: dict[str, ServiceConfiguration]
     helplines: dict[str, dict[str, str]]
     skip_local_config: bool
+    has_version: bool
+    skip_lock: bool
 
 
 class InitServiceConfigurationArgsDict(TypedDict):
@@ -171,6 +186,8 @@ class Config():
 
         self._config['all_env_action'] = self.action in ALL_ENV_ACTIONS
         self._config['skip_local_config'] = self.action in SKIP_LOCAL_CONFIG_ACTIONS
+        self._config['has_version'] = self.action in VERSION_ACTIONS
+        self._config['skip_lock'] = self.action in SKIP_LOCK_ACTIONS
 
     def init_service_configs(self):
         if (self.helpline_code or self.account_sid) and self.environment:
@@ -208,6 +225,8 @@ class Config():
             twilio_client=twilio_client,
             ssm_client=self.ssm_client,
             skip_local_config=self.skip_local_config,
+            has_version=self.has_version,
+            skip_lock=self.skip_lock,
         )
         self._config['service_configs'][twilio_client.account_sid] = service_config
 
@@ -295,6 +314,10 @@ class Config():
             print(f'ERROR: The {self.action} action does not support the '
                   f'environment argument.')
             exit(1)
+
+    def cleanup(self):
+        for service_config in self.service_configs.values():
+            service_config.cleanup()
 
 
 config = Config()

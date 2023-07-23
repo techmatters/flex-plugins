@@ -2,8 +2,7 @@ import base64
 import json
 from urllib import request
 from twilio.rest import Client
-from typing import TypedDict, NotRequired
-from typing_extensions import Unpack
+from typing import TypedDict, NotRequired, Unpack
 
 from ..aws import SSMClient
 
