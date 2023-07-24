@@ -20,26 +20,26 @@ import { connect, ConnectedProps } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 
-import FieldSelect from '../../../FieldSelect';
-import { namespace, referrableResourcesBase, RootState } from '../../../../states';
-import { Box, Column } from '../../../../styles/HrmStyles';
-import SearchResultsBackButton from '../../../search/SearchResults/SearchResultsBackButton';
+import FieldSelect from '../../FieldSelect';
+import { namespace, referrableResourcesBase, RootState } from '../../../states';
+import { Box, Column } from '../../../styles/HrmStyles';
+import SearchResultsBackButton from '../../search/SearchResults/SearchResultsBackButton';
 import {
   ResourceAttributesColumn,
   ResourceAttributesContainer,
   ResourceTitle,
   ViewResourceArea,
   ResourceViewContainer,
-} from '../../../../styles/ReferrableResources';
+} from '../../../styles/ReferrableResources';
 import ResourceAttribute from './ResourceAttribute';
-import { loadResourceAsyncAction, navigateToSearchAction, ResourceLoadStatus } from '../../../../states/resources';
-import asyncDispatch from '../../../../states/asyncDispatch';
-import ResourceIdCopyButton from '../../ResourceIdCopyButton';
+import { loadResourceAsyncAction, navigateToSearchAction, ResourceLoadStatus } from '../../../states/resources';
+import asyncDispatch from '../../../states/asyncDispatch';
+import ResourceIdCopyButton from '../ResourceIdCopyButton';
 import ResourceAttributeWithPrivacy from './ResourceAttributeWithPrivacy';
 import MainContactDetails from './MainContactDetails';
 import SiteDetails from './SiteDetails';
 import OperatingHours from './OperatingHours';
-import { convertKHPResourceAttributes } from '../../convertKHPResourceAttributes';
+import { convertKHPResourceAttributes } from '../convertKHPResourceAttributes';
 
 type OwnProps = {
   resourceId: string;

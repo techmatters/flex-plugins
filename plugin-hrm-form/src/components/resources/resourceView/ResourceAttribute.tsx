@@ -16,14 +16,9 @@
 
 import React from 'react';
 
-import { Box, Column } from '../../../../styles/HrmStyles';
-import {
-  ResourceAttributeContent,
-  ResourceAttributeDescription,
-  ResourceCategoriesContainer,
-} from '../../../../styles/ReferrableResources';
-import CategoryWithTooltip from '../../../common/CategoryWithTooltip';
-import type { ReferrableResourceAttributeValue } from '../../../../services/ResourceService';
+import { Box, Column } from '../../../styles/HrmStyles';
+import { ResourceAttributeContent, ResourceAttributeDescription } from '../../../styles/ReferrableResources';
+import type { ReferrableResourceAttributeValue } from '../../../services/ResourceService';
 import ExpandableAttributeContent from './ExpandableAttributeContent';
 
 type Props = {
@@ -32,31 +27,11 @@ type Props = {
   isExpandable?: boolean;
 };
 
-const isString = (s: any): s is string => typeof s === 'string';
-
-type Category = { id: string; value: string; color: string };
-const isCategory = (c: any): c is Category =>
-  c && isString(c.id) && isString(c.value) && (isString(c.color) || !c.color);
-
 const ResourceAttribute: React.FC<Props> = ({ description, children, isExpandable }) => {
   const renderContent = () => {
     if (typeof children === 'string' && isExpandable === true) {
       return <ExpandableAttributeContent expandLinkText="ReadMore" collapseLinkText="ReadLess" content={children} />;
     }
-
-    /*
-     * if ((content as any[]).every(isCategory)) {
-     *   return (
-     *     <ResourceCategoriesContainer>
-     *       {(content as Category[]).map(c => (
-     *         <Box key={`category-tag-${c.value}`} marginRight="8px" marginBottom="8px">
-     *           <CategoryWithTooltip category={c.value} color={c.color} fitTag={false} />
-     *         </Box>
-     *       ))}
-     *     </ResourceCategoriesContainer>
-     *   );
-     * }
-     */
 
     return children;
   };
