@@ -128,32 +128,6 @@ ${
       }
     },
     {
-      "name": "sendToQ6003_Interpreter",
-      "type": "send-to-flex",
-      "transitions": [
-        {
-          "event": "callComplete"
-        },
-        {
-          "event": "failedToEnqueue"
-        },
-        {
-          "event": "callFailure"
-        }
-      ],
-      "properties": {
-        "waitUrl": channel_flow_vars["tr_function_url"],
-        "offset": {
-          "x": -1180,
-          "y": 1040
-        },
-        "workflow": workflow_sids["master"],
-        "channel": task_channel_sids["voice"],
-        "attributes": "{\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\"}",
-        "waitUrlMethod": "GET"
-      }
-    },
-    {
       "name": "Msg10006E-InfoMessage2",
       "type": "gather-input-on-call",
       "transitions": [
@@ -477,20 +451,6 @@ ${
               "value": "1"
             }
           ]
-        },
-        {
-          "next": "check_interpreter",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to 2",
-              "arguments": [
-                "{{widgets.Msg60025-F.Digits}}"
-              ],
-              "type": "equal_to",
-              "value": "2"
-            }
-          ]
         }
       ],
       "properties": {
@@ -565,90 +525,6 @@ ${
       }
     },
     {
-      "name": "check_interpreter",
-      "type": "run-function",
-      "transitions": [
-        {
-          "next": "interpreter_capacity",
-          "event": "success"
-        },
-        {
-          "next": "sendToQ6003_Interpreter",
-          "event": "fail"
-        }
-      ],
-      "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
-        "offset": {
-          "x": -180,
-          "y": 1680
-        },
-        "function_sid": channel_flow_vars["check_counsellors_function_sid"],
-        "parameters": [
-          {
-            "value": flow_vars["workspace_sid"],
-            "key": "workspaceSid"
-          },
-          {
-            "value": channel_flow_vars["g2ttr_queue_sid"],
-            "key": "taskQueueSid"
-          }
-        ],
-        "url": channel_flow_vars["check_counsellors_function_url"]
-      }
-    },
-    {
-      "name": "interpreter_capacity",
-      "type": "split-based-on",
-      "transitions": [
-        {
-          "next": "switch_interpreter",
-          "event": "noMatch"
-        },
-        {
-          "next": "no_interpreter",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to 0",
-              "arguments": [
-                "{{widgets.check_interpreter.parsed.totalCounsellors}}"
-              ],
-              "type": "equal_to",
-              "value": "0"
-            }
-          ]
-        }
-      ],
-      "properties": {
-        "input": "{{widgets.check_interpreter.parsed.totalCounsellors}}",
-        "offset": {
-          "x": -160,
-          "y": 1920
-        }
-      }
-    },
-    {
-      "name": "no_interpreter",
-      "type": "say-play",
-      "transitions": [
-        {
-          "event": "audioComplete"
-        }
-      ],
-      "properties": {
-        "play": channel_flow_vars["fr_issues_url"],
-        "voice": "alice",
-        "offset": {
-          "x": 100,
-          "y": 2130
-        },
-        "loop": 1,
-        "language": "fr-CA"
-      }
-    },
-    {
       "name": "set_retry_fr_2",
       "type": "set-variables",
       "transitions": [
@@ -699,26 +575,6 @@ ${
           "x": 800,
           "y": 1980
         }
-      }
-    },
-    {
-      "name": "switch_interpreter",
-      "type": "say-play",
-      "transitions": [
-        {
-          "next": "sendToQ6003_Interpreter",
-          "event": "audioComplete"
-        }
-      ],
-      "properties": {
-        "play": channel_flow_vars["fr_switch_url"],
-        "voice": "alice",
-        "offset": {
-          "x": -270,
-          "y": 2150
-        },
-        "loop": 1,
-        "language": "fr-CA"
       }
     },
     {
