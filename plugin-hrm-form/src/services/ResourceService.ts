@@ -17,6 +17,7 @@
  */
 import fetchResourceApi from './fetchResourcesApi';
 import { getReferrableResourceConfig } from '../hrmConfig';
+import { TaxonomyLevelNameCompletion } from '../states/resources/search';
 
 export type AttributeData<T = any> = {
   language?: string;
@@ -40,11 +41,33 @@ export type ReferrableResource = {
   attributes: Record<string, Attributes>;
 };
 
-export type TaxonomyLevelNameCompletion = {
-  taxonomyLevelNameCompletion: Array<{
-    text: string;
-    score: number;
-  }>;
+export const MOCK_SUGGEST_DATA: TaxonomyLevelNameCompletion = {
+  taxonomyLevelNameCompletion: [
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Test this (Fred more)', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more {get test} fred yes', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Fred more', score: 1 },
+    { text: 'Frend Atlas', score: 1 },
+    { text: 'Frend Atlas', score: 1 },
+    { text: 'Frend Atlas', score: 1 },
+    { text: 'Frend Atlas', score: 1 },
+    { text: 'Frend Atlas', score: 1 },
+    { text: 'Frend Atlas', score: 1 },
+    { text: 'Steve', score: 1 },
+    { text: 'Steve', score: 1 },
+    { text: 'Steve (test more) steve', score: 1 },
+    { text: 'Steve', score: 1 },
+  ],
 };
 
 export const referrableResourcesEnabled = () => Boolean(getReferrableResourceConfig().resourcesBaseUrl);
@@ -73,6 +96,6 @@ export const searchResources = async (
   };
 };
 
-export const suggestResources = async (prefix: string, size: string): Promise<TaxonomyLevelNameCompletion> => {
-  return fetchResourceApi(`suggest?prefix=${prefix}&size=${size}`);
+export const suggestSearch = async (prefix: string): Promise<TaxonomyLevelNameCompletion> => {
+  return fetchResourceApi(`suggest?prefix=${prefix}`);
 };

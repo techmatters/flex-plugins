@@ -18,19 +18,19 @@
 import React from 'react';
 
 import { AutoCompleteDropdown, AutoCompleteDropdownRow } from '../../../styles/ReferrableResources';
-import { TaxonomyLevelNameCompletion } from '../../../services/ResourceService';
+import { TaxonomyLevelNameCompletion } from '../../../states/resources/search';
 
 type OwnProps = {
   generalSearchTermBoxText: string;
   setGeneralSearchTermBoxText: (event: string) => void;
-  MOCK_SUGGEST_DATA: TaxonomyLevelNameCompletion;
+  suggestSearch: TaxonomyLevelNameCompletion;
 };
 
 type Props = OwnProps;
 
 const SearchAutoComplete: React.FC<Props> = ({
   generalSearchTermBoxText,
-  MOCK_SUGGEST_DATA,
+  suggestSearch,
   setGeneralSearchTermBoxText,
 }) => {
   const searchTerm = generalSearchTermBoxText.toLocaleLowerCase();
@@ -42,7 +42,7 @@ const SearchAutoComplete: React.FC<Props> = ({
 
   return (
     <AutoCompleteDropdown>
-      {MOCK_SUGGEST_DATA.taxonomyLevelNameCompletion
+      {suggestSearch.taxonomyLevelNameCompletion
         .filter(item => {
           const text = item.text.toLocaleLowerCase();
           return searchTermLength && text.includes(searchTerm) && text !== searchTerm;

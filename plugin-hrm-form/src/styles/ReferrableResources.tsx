@@ -261,12 +261,12 @@ type AutoCompleteProps = {
 };
 
 export const AutoCompleteDropdown = styled('div')<AutoCompleteProps>`
-  background-color: white;
+  background-color: #fff;
   margin-bottom: 140px;
   width: 95.3%;
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(94, 99, 105, 0.8);
+  border: 1px solid #979797;
   border-radius: 4px;
   padding: 0 15px;
   margin-top: -36px;
@@ -288,12 +288,17 @@ export const AutoCompleteDropdownRow = styled('div')`
   background-color: white;
   padding: 10px 0 10px 15px;
   width: 100%;
+  color: #192b33;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 30px;
 
   &:last-child {
     padding-bottom: 17px;
   }
 
   &:hover {
-    background-color: ${HrmTheme.colors.inputBackgroundColor};
+    background-blend-mode: darken;
+    background: ${HrmTheme.colors.inputBackgroundColor};
   }
 `;

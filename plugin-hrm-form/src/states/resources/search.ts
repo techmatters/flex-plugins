@@ -16,7 +16,7 @@
 
 import { createAction, createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
-import { ReferrableResource, searchResources, suggestResources } from '../../services/ResourceService';
+import { ReferrableResource, searchResources, suggestSearch } from '../../services/ResourceService';
 import { cityOptions, provinceOptions } from './locations';
 
 export type SearchSettings = Omit<Partial<ReferrableResourceSearchState['parameters']>, 'filterSelections'> & {
@@ -83,6 +83,17 @@ export type ReferrableResourceSearchState = {
   error?: Error;
 };
 
+export type TaxonomyLevelNameCompletion = {
+  taxonomyLevelNameCompletion: Array<{
+    text: string;
+    score: number;
+  }>;
+};
+
+export const suggestSearchInitialState: TaxonomyLevelNameCompletion = {
+  taxonomyLevelNameCompletion: [],
+};
+
 const allCities: FilterOption[] = [{ label: '', value: undefined }, ...cityOptions];
 
 export const initialState: ReferrableResourceSearchState = {
@@ -142,8 +153,7 @@ export const searchResourceAsyncAction = createAsyncAction(
   async (parameters: SearchSettings, page: number) => {
     const { pageSize, generalSearchTerm, filterSelections } = parameters;
     const start = page * pageSize;
-    // Trying to call the suggestResources API to see if I will get any response
-    console.log('suggestResources test', await suggestResources('Steve', '10'));
+    // Trying to call the suggestSearch API to see if I will get any response
     return {
       ...(await searchResources({ generalSearchTerm, filters: filterSelections ?? {} }, start, pageSize)),
       start,
@@ -154,8 +164,8 @@ export const searchResourceAsyncAction = createAsyncAction(
 );
 
 // eslint-disable-next-line import/no-unused-modules
-export const suggestResourcesAsyncAction = createAsyncAction(SUGGEST_ACTION, async (prefix: string) => {
-  return { ...(await suggestResources(prefix, '10')) };
+export const suggestSearchAsyncAction = createAsyncAction(SUGGEST_ACTION, async (prefix: string) => {
+  return { ...(await suggestSearch(prefix)) };
 });
 
 /*
@@ -202,6 +212,35 @@ const ensureFilterSelectionsAreValid = (
   };
 };
 
+const rejectedAsyncAction = handleAction =>
+  handleAction(searchResourceAsyncAction.rejected, (state, { payload }) => {
+    return {
+      ...state,
+      status: ResourceSearchStatus.Error,
+      error: payload,
+    };
+  });
+
+export const suggestSearchReducer = createReducer(suggestSearchInitialState, handleAction => [
+  handleAction(suggestSearchAsyncAction.pending, (state, action) => {
+    return {
+      ...state,
+      taxonomyLevelNameCompletion: [],
+      status: ResourceSearchStatus.ResultPending,
+    };
+  }),
+
+  handleAction(suggestSearchAsyncAction.fulfilled, (state, { payload }) => {
+    return {
+      ...state,
+      taxonomyLevelNameCompletion: payload.taxonomyLevelNameCompletion,
+      status: ResourceSearchStatus.ResultReceived,
+    };
+  }),
+
+  rejectedAsyncAction(handleAction),
+]);
+
 export const resourceSearchReducer = createReducer(initialState, handleAction => [
   /*
    * Cast is a workaround for https://github.com/omichelsen/redux-promise-middleware-actions/issues/13
@@ -226,13 +265,9 @@ export const resourceSearchReducer = createReducer(initialState, handleAction =>
       results: fullResults,
     };
   }),
-  handleAction(searchResourceAsyncAction.rejected, (state, { payload }) => {
-    return {
-      ...state,
-      status: ResourceSearchStatus.Error,
-      error: payload,
-    };
-  }),
+
+  rejectedAsyncAction(handleAction),
+
   handleAction(updateSearchFormAction, (state, { payload }) => {
     const updatedFilterOptions = getFilterOptionsBasedOnSelections({
       ...state.parameters.filterSelections,

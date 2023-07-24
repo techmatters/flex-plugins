@@ -15,7 +15,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { Dispatch, useRef } from 'react';
+import React, { Dispatch, useEffect, useRef } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
@@ -48,45 +48,16 @@ import {
   updateSearchFormAction,
   FilterOption,
   ReferrableResourceSearchState,
+  suggestSearchAsyncAction,
 } from '../../../states/resources/search';
 import SearchInput from '../../caseList/filters/SearchInput';
 import { getTemplateStrings } from '../../../hrmConfig';
 import asyncDispatch from '../../../states/asyncDispatch';
 import { FiltersCheckbox, MultiSelectCheckboxLabel } from '../../../styles/caseList/filters';
 import SearchAutoComplete from './SearchAutoComplete';
-import { TaxonomyLevelNameCompletion } from '../../../services/ResourceService';
 
 const NO_AGE_SELECTED = -1;
 const NO_LOCATION_SELECTED = '__NO_LOCATION_SELECTED__';
-
-const MOCK_SUGGEST_DATA: TaxonomyLevelNameCompletion = {
-  taxonomyLevelNameCompletion: [
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Test this (Fred more)', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more {get test} fred yes', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Frend Atlas', score: 1 },
-    { text: 'Frend Atlas', score: 1 },
-    { text: 'Frend Atlas', score: 1 },
-    { text: 'Frend Atlas', score: 1 },
-    { text: 'Frend Atlas', score: 1 },
-    { text: 'Frend Atlas', score: 1 },
-    { text: 'Steve', score: 1 },
-    { text: 'Steve', score: 1 },
-    { text: 'Steve (test more) steve', score: 1 },
-    { text: 'Steve', score: 1 },
-  ],
-};
 
 type OwnProps = {};
 type FilterName = keyof ReferrableResourceSearchState['parameters']['filterSelections'];
@@ -101,11 +72,13 @@ const mapStateToProps = (state: RootState) => {
     parameters: { generalSearchTerm, pageSize, filterSelections },
     filterOptions,
   } = state[namespace][referrableResourcesBase].search;
+  const { suggestSearch } = state[namespace][referrableResourcesBase];
   return {
     generalSearchTerm,
     pageSize,
     filterSelections,
     filterOptions,
+    suggestSearch,
   };
 };
 
@@ -128,6 +101,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
       pageSize: number,
     ) => searchAsyncDispatch(searchResourceAsyncAction({ generalSearchTerm, pageSize, filterSelections }, 0)),
     resetSearch: () => dispatch(resetSearchFormAction()),
+    updateSuggestSearch: (prefix: string) => searchAsyncDispatch(suggestSearchAsyncAction(prefix)),
   };
 };
 
@@ -144,6 +118,8 @@ const SearchResourcesForm: React.FC<Props> = ({
   resetSearch,
   filterOptions,
   filterSelections,
+  suggestSearch,
+  updateSuggestSearch,
 }) => {
   const firstElement = useRef(null);
   const strings = getTemplateStrings();
@@ -159,6 +135,10 @@ const SearchResourcesForm: React.FC<Props> = ({
       submitSearch(generalSearchTermBoxText, filterSelections, pageSize);
     }
   };
+
+  useEffect(() => {
+    updateSuggestSearch(generalSearchTermBoxText);
+  }, [generalSearchTermBoxText, updateSuggestSearch]);
 
   const ageRangeDropDown = (dropdown: 'Min' | 'Max', optionList: FilterOption<number>[]) => {
     const currentSelection =
@@ -263,7 +243,7 @@ const SearchResourcesForm: React.FC<Props> = ({
           </ResourcesSearchFormSettingBox>
           <SearchAutoComplete
             generalSearchTermBoxText={generalSearchTermBoxText}
-            MOCK_SUGGEST_DATA={MOCK_SUGGEST_DATA}
+            suggestSearch={suggestSearch}
             setGeneralSearchTermBoxText={setGeneralSearchTermBoxText}
           />
           <ResourcesSearchFormSectionHeader data-testid="Resources-Search-FilterHeader">
