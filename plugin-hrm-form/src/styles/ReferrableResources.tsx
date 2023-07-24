@@ -98,11 +98,6 @@ export const ResourceAttributeContent = styled(FontOpenSans)`
 `;
 ResourceAttributeContent.displayName = 'ResourceAttributeContent';
 
-export const ResourceCategoriesContainer = styled(Row)`
-  flex-wrap: wrap;
-`;
-ResourceCategoriesContainer.displayName = 'ResourceCategoriesContainer';
-
 export const ResourcesSearchArea = styled('div')`
   margin: 10px;
   max-width: 800px;
