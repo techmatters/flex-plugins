@@ -23,8 +23,8 @@ class RemoteSyncer():
         self.environments_duplicates: dict[str, dict[str, List[str]]] = defaultdict(dict)
 
         self.helpline_code = kwargs['helpline_code']
-        self._service_configs: dict[str, ServiceConfiguration] = kwargs['service_configs']
-        self.env_count = len(self._service_configs.keys())
+        self.service_configs: dict[str, ServiceConfiguration] = kwargs['service_configs']
+        self.env_count = len(self.service_configs.keys())
         self.init_configs()
 
     def process_change(self, env: str, change, change_type: str):
@@ -44,7 +44,7 @@ class RemoteSyncer():
         set_nested_key(env_data, path, value)
 
     def split_configs(self, env):
-        for change_type, changes in self._service_configs[env].plan.items():
+        for change_type, changes in self.service_configs[env].plan.items():
             for change in changes:
                 self.process_change(env, change, change_type)
 
@@ -57,10 +57,10 @@ class RemoteSyncer():
                         set_nested_key(self.common_data, path, value)
 
     def init_configs(self):
-        for env in self._service_configs.keys():
+        for env in self.service_configs.keys():
             self.environments_data[env] = {}
 
-            if env not in self._service_configs:
+            if env not in self.service_configs:
                 continue
 
             self.split_configs(env)

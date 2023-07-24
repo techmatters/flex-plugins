@@ -5,18 +5,21 @@ from termcolor import colored
 from .config import config
 from .remote_syncer import RemoteSyncer
 from .service_configuration import DeepDiff, ServiceConfiguration, get_dot_notation_path
+from .remote_syncer import RemoteSyncer
 
 
 def main():
-    if config.all_env_action:
-        run_all_env_action()
-        return
+    if config.argument == 'service_config':
+        run_service_config_action()
+    elif config.argument == 'syncer':
+        run_sync_action()
+    else:
+        raise Exception('Invalid argument configuration')
 
-    run_account_sid_action()
     cleanup_and_exit()
 
 
-def run_account_sid_action():
+def run_service_config_action():
     action = config.action
     for account_sid in config.get_account_sids():
         service_config = config.get_service_config(
@@ -25,10 +28,10 @@ def run_account_sid_action():
         globals()[action](service_config)
 
 
-def run_all_env_action():
+def run_sync_action():
     action = config.action
-    for helpline_code, service_configs in config.helplines.items():
-        globals()[action](helpline_code, service_configs)
+    for syncer in config.syncers:
+        globals()[action](syncer)
 
 
 def print_text(text: object):
@@ -130,28 +133,22 @@ def apply(service_config: ServiceConfiguration):
     print_text('Updating service configuration...')
 
 
-def sync_plan(helpline_code: str, service_configs: dict[str, ServiceConfiguration]):
+def sync_plan(syncer: RemoteSyncer):
     print_text('Config json updates:\n\n')
-    remote_syncer = RemoteSyncer(
-        helpline_code=helpline_code,
-        service_configs=service_configs
-    )
-
     show_common = True
-    for service_config in service_configs.values():
+    for service_config in syncer.service_configs.values():
         if (show_common):
             print_text(service_config.get_config_path('common'))
-            print_json(remote_syncer.configs['common'])
+            print_json(syncer.configs['common'])
             show_common = False
 
         print_text(service_config.get_config_path('environment'))
-        print_json(remote_syncer.configs[service_config.environment])
-
-    return remote_syncer
+        print_json(syncer.configs[service_config.environment])
 
 
-def sync_apply(helpline_code: str, service_configs: dict[str, ServiceConfiguration]):
-    remote_syncer = sync_plan(helpline_code, service_configs)
+
+def sync_apply(syncer: RemoteSyncer):
+    sync_plan(syncer)
 
     confirm = input(
         'Do you want to make these updates to the files above? (y/N): ')
@@ -161,19 +158,19 @@ def sync_apply(helpline_code: str, service_configs: dict[str, ServiceConfigurati
 
     print_text('Updating service configuration...')
     write_common = True
-    for service_config in service_configs.values():
+    for service_config in syncer.service_configs.values():
         if (write_common):
             dir_path = os.path.dirname(service_config.get_config_path('common'))
             os.makedirs(dir_path, exist_ok=True)
             with open(service_config.get_config_path('common'), 'w') as f:
-                json.dump(remote_syncer.configs['common'], f, indent=4, sort_keys=True)
+                json.dump(syncer.configs['common'], f, indent=4, sort_keys=True)
             write_common = False
 
         with open(service_config.get_config_path('environment'), 'w') as f:
-            json.dump(remote_syncer.configs[service_config.environment], f, indent=4, sort_keys=True)
+            json.dump(syncer.configs[service_config.environment], f, indent=4, sort_keys=True)
 
 
-def unlock(helpline_code: str, service_configs: dict[str, ServiceConfiguration]):
+def unlock(service_configs: dict[str, ServiceConfiguration]):
     print_text('Unlocking service configurations...')
     for service_config in service_configs.values():
         service_config.cleanup()

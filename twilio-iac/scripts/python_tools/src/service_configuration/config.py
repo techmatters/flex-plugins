@@ -6,6 +6,7 @@ from ..aws import SSMClient
 from ..twilio import Twilio
 from .constants import AWS_ROLE_ARN
 from .service_configuration import ServiceConfiguration
+from .remote_syncer import RemoteSyncer
 
 """
 TODO: Locking and revert
@@ -36,38 +37,66 @@ ACTIONS = {
     'UNLOCK': 'unlock',
 }
 
-#  actions that support json output
-JSON_ACTIONS = [
-    ACTIONS['SHOW_REMOTE'],
-    ACTIONS['SHOW_LOCAL'],
-    ACTIONS['SHOW_NEW'],
-    ACTIONS['PLAN']
-]
+class ActionConfigsDict(TypedDict):
+    argument: str
+    has_sync: NotRequired[bool]
+    json: bool
+    skip_local_config: bool
+    has_version: bool
+    skip_lock: bool
 
-# actions that act on all environments
-ALL_ENV_ACTIONS = [
-    ACTIONS['SYNC_PLAN'],
-    ACTIONS['SYNC_APPLY'],
-    ACTIONS['UNLOCK'],
-]
+ACTION_CONFIGS = {
+    ACTIONS['APPLY']: {
+        'argument': 'service_config',
+        'has_version': True,
+    },
+    ACTIONS['PLAN']: {
+        'argument': 'service_config',
+        'json_available': True,
+    },
+    ACTIONS['SHOW']: {
+        'argument': 'service_config',
+        'json_available': True,
+    },
+    ACTIONS['SHOW_REMOTE']: {
+        'argument': 'service_config',
+        'json': True,
+        'skip_local_config': True,
+    },
+    ACTIONS['SHOW_LOCAL']: {
+        'argument': 'service_config',
+        'json_available': True,
+    },
+    ACTIONS['SHOW_NEW']: {
+        'argument': 'service_config',
+        'json_available': True,
+    },
+    ACTIONS['SHOW_DIFF']: {
+        'argument': 'service_config',
+        'json_available': True,
+    },
+    ACTIONS['SYNC_PLAN']: {
+        'argument': 'syncer',
+        'json_available': True,
+        'has_sync': True,
+        'skip_local_config': True,
+    },
+    ACTIONS['SYNC_APPLY']: {
+        'argument': 'syncer',
+        'json_available': True,
+        'has_sync': True,
+        'skip_local_config': True,
+    },
+    ACTIONS['UNLOCK']: {
+        'argument': 'service_config',
+        'json_available': True,
+        'skip_local_config': True,
+        'has_version': True,
+        'skip_lock': True,
+    },
 
-SKIP_LOCAL_CONFIG_ACTIONS = [
-    ACTIONS['SHOW_REMOTE'],
-    ACTIONS['SYNC_PLAN'],
-    ACTIONS['SYNC_APPLY'],
-]
 
-# actions that init the version class and require a lock by default
-VERSION_ACTIONS = [
-    ACTIONS['APPLY'],
-    ACTIONS['SYNC_APPLY'],
-    ACTIONS['UNLOCK'],
-]
-
-# subset of VERSION_ACTIONS that do not require a lock
-SKIP_LOCK_ACTIONS = [
-    ACTIONS['UNLOCK'],
-]
+}
 
 ENVIRONMENTS = [
     'production',
@@ -117,11 +146,11 @@ ARGS = {
     },
 }
 
+
 class ConfigDict(TypedDict):
     # WARNING: ConfigDict is used in the magic __getattr__ method, so keys
     # must not bet the same as any methods or attributes of the Config class
     action: str
-    all_env_action: bool
     prop: NotRequired[str]
     helpline_code: str | None
     environment: NotRequired[str]
@@ -133,6 +162,8 @@ class ConfigDict(TypedDict):
     skip_local_config: bool
     has_version: bool
     skip_lock: bool
+    sync_action: bool
+    argument: str
 
 
 class InitServiceConfigurationArgsDict(TypedDict):
@@ -148,12 +179,14 @@ class Config():
 
     def __init__(self):
         self._config: ConfigDict = {
-            'all_env_action': False,
             'helpline_code': None,
             'action': ACTIONS['SHOW'],
             'service_configs': {},
             'helplines': defaultdict(dict),
+            'has_version': False,
+            'skip_lock': False,
             'skip_local_config': False,
+            'sync_action': False,
         }
 
         self.init_arg_parser()
@@ -161,6 +194,7 @@ class Config():
         self.validate_args()
         self.ssm_client = SSMClient(AWS_ROLE_ARN)
         self.init_service_configs()
+        self.init_syncers()
 
     def __getattr__(self, name: str):
         try:
@@ -184,10 +218,12 @@ class Config():
         if auth_token:
             self._config['auth_token'] = auth_token
 
-        self._config['all_env_action'] = self.action in ALL_ENV_ACTIONS
-        self._config['skip_local_config'] = self.action in SKIP_LOCAL_CONFIG_ACTIONS
-        self._config['has_version'] = self.action in VERSION_ACTIONS
-        self._config['skip_lock'] = self.action in SKIP_LOCK_ACTIONS
+        self._config['sync_action'] = ACTION_CONFIGS[self.action].get('has_sync') or False
+        self._config['skip_local_config'] = ACTION_CONFIGS[self.action].get('skip_local_config') or False
+        self._config['has_version'] = ACTION_CONFIGS[self.action].get('has_version') or False
+        self._config['skip_lock'] = ACTION_CONFIGS[self.action].get('skip_lock') or False
+        self._config['argument'] = ACTION_CONFIGS[self.action]['argument']
+        self._config['json_available'] = ACTION_CONFIGS[self.action].get('json_available') or False
 
     def init_service_configs(self):
         if (self.helpline_code or self.account_sid) and self.environment:
@@ -203,9 +239,6 @@ class Config():
         if self.environment:
             self.init_service_configs_for_environment(self.environment)
             return
-
-        if not self.all_env_action:
-            raise Exception('Something went wrong, you should never get here unless you are trying to sync remote state.')
 
         for env in ENVIRONMENTS:
             self.init_service_configs_for_environment(env)
@@ -261,6 +294,21 @@ class Config():
             helpline_code=helpline_code,
         )
 
+    def init_syncers(self):
+        self.syncers = []
+        if not self.sync_action:
+            return
+
+        if self.helplines is None:
+            raise Exception('No helplines found')
+
+        for helpline_code, service_configs in self.helplines.items():
+            syncer = RemoteSyncer(
+                helpline_code=helpline_code,
+                service_configs=service_configs,
+            )
+            self.syncers.append(syncer)
+
     def init_service_configs_for_environment(self, environment: str):
         print(f'Initializing service configurations for {environment}')
         for hl in self.ssm_client.get_helplines_for_env(environment):
@@ -291,22 +339,22 @@ class Config():
         self.validate_action_requirements()
 
     def validate_json(self):
-        if self.json and (self.action not in JSON_ACTIONS):
-            print('ERROR: JSON output is only available for the following ' +
-                  'actions: , '.join(JSON_ACTIONS))
+        if self.json and (not self.json_available):
+            print(f'ERROR: JSON output is not available for the {self.action} action.')
             exit(1)
 
     def validate_action_requirements(self):
-        if self.all_env_action:
+        if self.sync_action:
             self.validate_no_environment()
             return
 
-        self.validate_environment()
+        self.validate_environment_or_helpline()
 
-    def validate_environment(self):
-        if not (self.environment):
+    def validate_environment_or_helpline(self):
+        if not (self.environment or self.helpline_code):
             print('ERROR: Please provide an environment argument '
-                  '(--environment, HL_ENV)')
+                  '(--environment, HL_ENV) or a helpline code argument '
+                  '(--helpline_code, HL)')
             exit(1)
 
     def validate_no_environment(self):
