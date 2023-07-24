@@ -21,8 +21,7 @@ import {
   PrivateResourceAttribute,
   ResourceAttributeContent,
   ResourceAttributeDescription,
-} from '../../../../styles/ReferrableResources';
-import ResourceAttribute from './ResourceAttribute';
+} from '../../../styles/ReferrableResources';
 
 type Props = {
   isPrivate: boolean;

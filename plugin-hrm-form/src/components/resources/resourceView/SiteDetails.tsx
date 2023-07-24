@@ -16,13 +16,13 @@
 
 import React from 'react';
 
-import { KhpUiResource } from '../../types';
-import { FontOpenSans } from '../../../../styles/HrmStyles';
+import { KhpUiResource } from '../types';
+import { FontOpenSans } from '../../../styles/HrmStyles';
 import {
   ResourceAttributeContent,
   ResourceAttributeDescription,
   ResourceSubtitle,
-} from '../../../../styles/ReferrableResources';
+} from '../../../styles/ReferrableResources';
 import ExpandableSection from './ExpandableSection';
 import OperatingHours from './OperatingHours';
 import ResourceAttributeWithPrivacy from './ResourceAttributeWithPrivacy';
