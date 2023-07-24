@@ -8,22 +8,6 @@ from .constants import AWS_ROLE_ARN
 from .service_configuration import ServiceConfiguration
 from .remote_syncer import RemoteSyncer
 
-"""
-TODO: Locking and revert
-
-s3 bucket for locking and revert with 60 day lifecycle policy
-
-on apply create a lock file in each helplines directory s3 bucket with the following format:
-
-sha the remote state, check for an existing file with that name, if it doesn't exist
-create a new file with the sha as the name and the state as the content
-
-changelog file is a json file with an array of the shas of the state files that have been applied and the date they were applied
-
-when update is complete pull remote state again and create a new file with the sha as the name and the state as the content to keep a record
-"""
-
-
 ACTIONS = {
     'APPLY': 'apply',
     'PLAN': 'plan',
@@ -37,13 +21,15 @@ ACTIONS = {
     'UNLOCK': 'unlock',
 }
 
+
 class ActionConfigsDict(TypedDict):
     argument: str
     has_sync: NotRequired[bool]
-    json: bool
-    skip_local_config: bool
-    has_version: bool
-    skip_lock: bool
+    json: NotRequired[bool]
+    skip_local_config: NotRequired[bool]
+    has_version: NotRequired[bool]
+    skip_lock: NotRequired[bool]
+
 
 ACTION_CONFIGS = {
     ACTIONS['APPLY']: {
@@ -344,24 +330,17 @@ class Config():
             exit(1)
 
     def validate_action_requirements(self):
-        if self.sync_action:
-            self.validate_no_environment()
-            return
-
         self.validate_environment_or_helpline()
 
     def validate_environment_or_helpline(self):
         if not (self.environment or self.helpline_code):
-            print('ERROR: Please provide an environment argument '
-                  '(--environment, HL_ENV) or a helpline code argument '
-                  '(--helpline_code, HL)')
-            exit(1)
-
-    def validate_no_environment(self):
-        if self.environment:
-            print(f'ERROR: The {self.action} action does not support the '
-                  f'environment argument.')
-            exit(1)
+            confirm = input(
+                'No environment or helpline code provided. '
+                'Do you want to run this command for all helplines in environments? (y/N): '
+            )
+            if confirm != 'y':
+                print('Please re-run the script to try again')
+                exit(1)
 
     def cleanup(self):
         for service_config in self.service_configs.values():
