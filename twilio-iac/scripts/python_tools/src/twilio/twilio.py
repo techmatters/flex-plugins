@@ -78,7 +78,7 @@ class Twilio():
 
         return data
 
-    def update_flex_configuration(self, configuration):
+    def update_flex_configuration(self, configuration: dict[str, object]):
         req = request.Request(
             FLEX_CONFIGURATION_ENDPOINT,
             data=configuration,

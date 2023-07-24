@@ -8,17 +8,19 @@ from .constants import AWS_ROLE_ARN
 
 S3_BUCKET = 'tl-aselo-twilio-service-config'
 
+
 class InitArgsDict(TypedDict):
     environment: str
     helpline_code: str
-    remote_state: dict[str, str]
+    state: dict[str, str]
     skip_lock: NotRequired[bool | None]
 
-class Versions():
+
+class Version():
     def __init__(self, **kwargs: Unpack[InitArgsDict]):
         self.environment = kwargs['environment']
         self.helpline_code = kwargs['helpline_code']
-        self.remote_state = kwargs['remote_state']
+        self.state = kwargs['state']
         self.skip_lock = kwargs.get('skip_lock') or False
         self.s3_client = S3Client(AWS_ROLE_ARN)
         self.init_ip()
@@ -31,7 +33,7 @@ class Versions():
         self.ip = requests.get('https://api.ipify.org').text
 
     def init_sha(self):
-        self.sha = hashlib.sha256(json.dumps(self.remote_state).encode('utf-8')).hexdigest()
+        self.sha = hashlib.sha256(json.dumps(self.state).encode('utf-8')).hexdigest()
 
     def init_s3_paths(self):
         self.key_prefix = f'{self.environment}/{self.helpline_code}'
@@ -43,7 +45,7 @@ class Versions():
         self.s3_client.put_object(
             S3_BUCKET,
             f'{self.version_prefix}/{self.sha}',
-            json.dumps(self.remote_state)
+            json.dumps(self.state)
         )
 
         self.s3_client.put_object(

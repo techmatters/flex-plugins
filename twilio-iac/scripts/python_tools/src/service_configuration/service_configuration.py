@@ -6,7 +6,7 @@ from os.path import exists as path_exists
 from typing import List, TypedDict, Unpack
 from ..aws import SSMClient
 from ..twilio import Twilio
-from .versions import Versions
+from .version import Version
 
 JSON_PATH_ROOT = "/app/twilio-iac/helplines"
 JSON_CONFIG_PATH_PARTIAL = "configs/service-configuration"
@@ -86,6 +86,19 @@ def get_dot_notation_path(change) -> str:
     return change.path().replace("root[", "").replace("][", ".").replace("]", "").replace("'", "")
 
 
+def remove_empty(input_dict):
+    """
+    Remove keys with the value ``None`` in a dictionary, recursively.
+    """
+    output_dict = {}
+    for k, v in input_dict.items():
+        if isinstance(v, dict):
+            v = remove_empty(v)
+        if v:
+            output_dict[k] = v
+    return output_dict
+
+
 class InitArgsDict(TypedDict):
     twilio_client: Twilio
     ssm_client: SSMClient
@@ -156,6 +169,8 @@ class ServiceConfiguration():
                     self.local_configs[key]['data'],
                 )
 
+            self.local_state = remove_empty(self.local_state)
+
     def init_new_state(self):
         self.new_state = always_merger.merge(
             # deepcopy to avoid modifying remote_state even though the docs
@@ -163,6 +178,7 @@ class ServiceConfiguration():
             deepcopy(self.remote_state),
             self.local_state,
         )
+
 
     def init_template_fields(self):
         for key, value in TEMPLATE_FIELDS.items():
@@ -196,15 +212,30 @@ class ServiceConfiguration():
             self.version = None
             return
 
-        self.version = Versions(
+        self.version = Version(
             environment=self.environment,
             helpline_code=self.helpline_code,
-            remote_state=self.remote_state,
+            state=self.remote_state,
             skip_lock=self.skip_lock,
         )
 
     def get_config_path(self, type: str) -> str:
         return self.local_configs[type].get('path')
+
+    def apply(self):
+        if not self.version:
+            raise Exception(
+                'Cannot apply changes without a version. Something went wrong.')
+
+        self._twilio_client.update_flex_configuration(self.new_state)
+
+        # add a new version for the new state
+        Version(
+            environment=self.environment,
+            helpline_code=self.helpline_code,
+            state=self.new_state,
+            skip_lock=True,
+        )
 
     def cleanup(self):
         if self.version:

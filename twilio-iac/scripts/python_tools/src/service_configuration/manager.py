@@ -9,14 +9,17 @@ from .remote_syncer import RemoteSyncer
 
 
 def main():
-    if config.argument == 'service_config':
-        run_service_config_action()
-    elif config.argument == 'syncer':
-        run_sync_action()
-    else:
-        raise Exception('Invalid argument configuration')
-
-    cleanup_and_exit()
+    try:
+        if config.argument == 'service_config':
+            run_service_config_action()
+        elif config.argument == 'syncer':
+            run_sync_action()
+        else:
+            raise Exception('Invalid argument configuration')
+        cleanup_and_exit()
+    except KeyboardInterrupt:
+        print("\nCaught Ctrl+C. Program exiting...")
+        cleanup_and_exit(1)
 
 
 def run_service_config_action():
@@ -121,7 +124,10 @@ def plan(service_config: ServiceConfiguration):
 def apply(service_config: ServiceConfiguration):
     plan(service_config)
     if config.dry_run:
-        print_text('Dry run enabled. Exiting...')
+        print_text('Dry run enabled.')
+        return
+
+    if not service_config.plan:
         return
 
     confirm = input(
@@ -131,6 +137,7 @@ def apply(service_config: ServiceConfiguration):
         cleanup_and_exit(1)
 
     print_text('Updating service configuration...')
+    service_config.apply()
 
 
 def sync_plan(syncer: RemoteSyncer):
@@ -170,10 +177,10 @@ def sync_apply(syncer: RemoteSyncer):
             json.dump(syncer.configs[service_config.environment], f, indent=4, sort_keys=True)
 
 
-def unlock(service_configs: dict[str, ServiceConfiguration]):
-    print_text('Unlocking service configurations...')
-    for service_config in service_configs.values():
-        service_config.cleanup()
+def unlock(service_config: ServiceConfiguration):
+    print_text('Unlocking service configuration...')
+    service_config.cleanup()
+
 
 def cleanup_and_exit(code: int = 0):
     print_text('Cleaning up...')
