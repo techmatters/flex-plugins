@@ -99,10 +99,8 @@ export const ResourceAttributeContent = styled(FontOpenSans)`
 ResourceAttributeContent.displayName = 'ResourceAttributeContent';
 
 export const ResourcesSearchArea = styled('div')`
-  margin: 15px;
   max-width: 800px;
   width: 100%;
-  padding: 10px;
   overflow-y: auto;
 `;
 ViewResourceArea.displayName = 'ViewResourceArea';
@@ -178,14 +176,14 @@ export const ResourceSearchFormClearButton = styled(StyledNextStepButton)`
 `;
 
 export const ResourcesSearchResultsHeader = styled(Box)`
-  box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.1);
+  margin-left: 25px;
   padding-top: 15px;
   padding-bottom: 15px;
 `;
 ResourcesSearchResultsHeader.displayName = 'ResourcesSearchResultsHeader';
 
 export const ResourcesSearchResultsList = styled(`ul`)`
-  margin: 0;
+  margin: 0 0 0 25px;
   padding: 0;
   list-style: none;
 `;
