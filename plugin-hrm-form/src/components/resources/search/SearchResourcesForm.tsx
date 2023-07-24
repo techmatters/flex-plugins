@@ -200,7 +200,7 @@ const SearchResourcesForm: React.FC<Props> = ({
   return (
     <ResourcesSearchFormContainer>
       <Box style={{ overflowX: 'hidden', overflowY: 'auto' }}>
-        <Box marginBottom="10px" marginTop="10px" style={{ paddingLeft: '20px' }}>
+        <Box margin="25px 0px 10px 25px">
           <ResourcesSearchTitle data-testid="Resources-Search-Title">
             <Template code="Resources-Search-FormTitle" />
           </ResourcesSearchTitle>

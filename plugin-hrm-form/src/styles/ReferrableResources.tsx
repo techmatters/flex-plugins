@@ -60,7 +60,7 @@ ResourceTitle.displayName = 'ResourceTitle';
 export const ViewResourceArea = styled('div')`
   width: 100%;
   background-color: white;
-  padding: 15px;
+  padding: 25px;
   border-radius: 4px;
   overflow-y: auto;
 `;
@@ -99,7 +99,7 @@ export const ResourceAttributeContent = styled(FontOpenSans)`
 ResourceAttributeContent.displayName = 'ResourceAttributeContent';
 
 export const ResourcesSearchArea = styled('div')`
-  margin: 10px;
+  margin: 15px;
   max-width: 800px;
   width: 100%;
   padding: 10px;
@@ -109,7 +109,7 @@ ViewResourceArea.displayName = 'ViewResourceArea';
 
 export const ResourcesSearchFormArea = styled('div')`
   width: 100%;
-  padding: 20px;
+  padding: 20px 20px 20px 25px;
   flex-grow: 1;
 `;
 
@@ -211,6 +211,7 @@ export const ResourceViewContainer = styled(Absolute)`
   height: 100%;
   width: 1280px;
   background-color: #f6f6f6;
+  margin-left: 5px;
 `;
 ResourceViewContainer.displayName = 'ResourceViewContainer';
 
