@@ -17,7 +17,7 @@
 import { styled } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 
-import { Box, Column, Flex, Absolute, Row, FontOpenSans } from './HrmStyles';
+import { Box, Column, Flex, Absolute, Row, FontOpenSans, StyledNextStepButton } from './HrmStyles';
 
 export const ResourcePreviewWrapper = styled('div')`
   display: flex;
@@ -60,7 +60,7 @@ ResourceTitle.displayName = 'ResourceTitle';
 export const ViewResourceArea = styled('div')`
   width: 100%;
   background-color: white;
-  padding: 15px;
+  padding: 25px;
   border-radius: 4px;
   overflow-y: auto;
 `;
@@ -99,7 +99,7 @@ export const ResourceAttributeContent = styled(FontOpenSans)`
 ResourceAttributeContent.displayName = 'ResourceAttributeContent';
 
 export const ResourcesSearchArea = styled('div')`
-  margin: 10px;
+  margin: 15px;
   max-width: 800px;
   width: 100%;
   padding: 10px;
@@ -109,7 +109,7 @@ ViewResourceArea.displayName = 'ViewResourceArea';
 
 export const ResourcesSearchFormArea = styled('div')`
   width: 100%;
-  padding: 20px;
+  padding: 20px 20px 20px 25px;
   flex-grow: 1;
 `;
 
@@ -117,7 +117,8 @@ export const ResourcesSearchFormSettingBox = styled('div')`
   width: 100%;
   background-color: white;
   padding: 17px;
-  margin: 4px 4px 4px 0;
+  margin: 4px 0 4px 0;
+  border-radius: 4px;
 `;
 
 export const ResourcesSearchFormContainer = styled(Column)`
@@ -163,11 +164,18 @@ ResourcesSearchFormSectionHeader.displayName = 'ResourcesSearchFormSectionHeader
 export const ResourcesSearchFormFilterHeader = styled(FontOpenSans)`
   font-size: 13px;
   line-height: 18px;
-  font-weight: 700;
+  margin-bottom: 8px;
+  font-weight: 600;
   display: inline-block;
   color: black;
 `;
 ResourcesSearchFormFilterHeader.displayName = 'ResourcesSearchFormFilterHeader';
+
+export const ResourceSearchFormClearButton = styled(StyledNextStepButton)`
+  margin-right: 15px;
+  background: transparent !important; // Not sure why the important flag is needed here to override a style with less specificity
+  color: rgb(13, 116, 213);
+`;
 
 export const ResourcesSearchResultsHeader = styled(Box)`
   box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.1);
@@ -209,6 +217,7 @@ export const ResourceViewContainer = styled(Absolute)`
   height: 100%;
   width: 1280px;
   background-color: #f6f6f6;
+  margin-left: 5px;
 `;
 ResourceViewContainer.displayName = 'ResourceViewContainer';
 

@@ -34,6 +34,7 @@ import {
   StyledNextStepButton,
 } from '../../../styles/HrmStyles';
 import {
+  ResourceSearchFormClearButton,
   ResourcesSearchFormArea,
   ResourcesSearchFormContainer,
   ResourcesSearchFormFilterHeader,
@@ -43,11 +44,11 @@ import {
   ResourcesSearchTitle,
 } from '../../../styles/ReferrableResources';
 import {
+  FilterOption,
+  ReferrableResourceSearchState,
   resetSearchFormAction,
   searchResourceAsyncAction,
   updateSearchFormAction,
-  FilterOption,
-  ReferrableResourceSearchState,
 } from '../../../states/resources/search';
 import SearchInput from '../../caseList/filters/SearchInput';
 import { getTemplateStrings } from '../../../hrmConfig';
@@ -200,7 +201,7 @@ const SearchResourcesForm: React.FC<Props> = ({
   return (
     <ResourcesSearchFormContainer>
       <Box style={{ overflowX: 'hidden', overflowY: 'auto' }}>
-        <Box marginBottom="10px" marginTop="10px" style={{ paddingLeft: '20px' }}>
+        <Box margin="25px 0px 10px 25px">
           <ResourcesSearchTitle data-testid="Resources-Search-Title">
             <Template code="Resources-Search-FormTitle" />
           </ResourcesSearchTitle>
@@ -287,7 +288,7 @@ const SearchResourcesForm: React.FC<Props> = ({
                 </Column>
               </Row>
             </ResourcesSearchFormSettingBox>
-            <Row key="age-range" style={{ alignItems: 'stretch', justifyContent: 'stretch' }}>
+            <Row key="age-range" style={{ alignItems: 'stretch', justifyContent: 'stretch', gap: '4px' }}>
               <ResourcesSearchFormSettingBox key="age-range" style={{ flexShrink: 2 }}>
                 <ResourcesSearchFormFilterHeader>
                   <Template code="Resources-Search-Age-Range" />
@@ -327,7 +328,7 @@ const SearchResourcesForm: React.FC<Props> = ({
         </ResourcesSearchFormArea>
       </Box>
       <BottomButtonBar>
-        <StyledNextStepButton
+        <ResourceSearchFormClearButton
           type="button"
           secondary={true}
           roundCorners={true}
@@ -336,15 +337,11 @@ const SearchResourcesForm: React.FC<Props> = ({
             resetSearch();
           }}
           style={{
-            marginRight: '15px ',
-            background: 'white',
-            backgroundImage: 'none!important', // Not sure why the important flag is needed here to override a style with less specificity
-            color: 'rgb(13, 116, 213)',
             opacity: hasValidSearchSettings() ? 1 : 0,
           }}
         >
           <Template code="Resources-Search-ClearFormButton" />
-        </StyledNextStepButton>
+        </ResourceSearchFormClearButton>
         <StyledNextStepButton
           style={{ opacity: hasValidSearchSettings() ? 1 : 0.2 }}
           type="button"
