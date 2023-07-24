@@ -118,6 +118,7 @@ export const ResourcesSearchFormSettingBox = styled('div')`
   background-color: white;
   padding: 17px;
   margin: 4px 0 4px 0;
+  border-radius: 4px;
 `;
 
 export const ResourcesSearchFormContainer = styled(Column)`
@@ -163,7 +164,8 @@ ResourcesSearchFormSectionHeader.displayName = 'ResourcesSearchFormSectionHeader
 export const ResourcesSearchFormFilterHeader = styled(FontOpenSans)`
   font-size: 13px;
   line-height: 18px;
-  font-weight: 700;
+  margin-bottom: 8px;
+  font-weight: 600;
   display: inline-block;
   color: black;
 `;
