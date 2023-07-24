@@ -1,77 +1,59 @@
 [
   {
     "name": "firstName",
-    "label": "Client type",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Perpetrator",
-        "label": "Perpetrator"
-      },
-      {
-        "value": "Third party",
-        "label": "Third party"
-      },
-      {
-        "value": "Victim",
-        "label": "Victim"
-      }
-    ]
+    "label": "Nombre",
+    "type": "input"
   },
   {
-    "name": "gender",
-    "label": "Type of abuse",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Emotional",
-        "label": "Emotional"
-      },
-      {
-        "value": "Neglect",
-        "label": "Neglect"
-      },
-      {
-        "value": "Physical",
-        "label": "Physical"
-      },
-      {
-        "value": "Sexual",
-        "label": "Sexual"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      }
-    ]
+    "name": "lastName",
+    "label": "Apellidos",
+    "type": "input"
   },
   {
     "name": "age",
-    "label": "Victim's age",
+    "label": "Edad",
     "type": "select",
-    "unknownOption": "Unknown",
+    "unknownOption": "",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
+        "value": "<5",
+        "label": "<5"
       },
       {
-        "value": "<13",
-        "label": "<13"
+        "value": "05",
+        "label": "5"
+      },
+      {
+        "value": "06",
+        "label": "6"
+      },
+      {
+        "value": "07",
+        "label": "7"
+      },
+      {
+        "value": "08",
+        "label": "8"
+      },
+      {
+        "value": "09",
+        "label": "9"
+      },
+      {
+        "value": "10",
+        "label": "10"
+      },
+      {
+        "value": "11",
+        "label": "11"
+      },
+      {
+        "value": "12",
+        "label": "12"
       },
       {
         "value": "13",
@@ -146,220 +128,312 @@
         "label": "30"
       },
       {
-        "value": "31-64",
-        "label": "31-64"
+        "value": "31",
+        "label": "31"
       },
       {
-        "value": ">64",
-        "label": ">64"
+        "value": "32",
+        "label": "32"
+      },
+      {
+        "value": "33",
+        "label": "33"
+      },
+      {
+        "value": "34",
+        "label": "34"
+      },
+      {
+        "value": "35",
+        "label": "35"
+      },
+      {
+        "value": "36",
+        "label": "36"
+      },
+      {
+        "value": "37",
+        "label": "37"
+      },
+      {
+        "value": "38",
+        "label": "38"
+      },
+      {
+        "value": "39",
+        "label": "39"
+      },
+      {
+        "value": "40",
+        "label": "40"
+      },
+      {
+        "value": "41",
+        "label": "41"
+      },
+      {
+        "value": "42",
+        "label": "42"
+      },
+      {
+        "value": "43",
+        "label": "43"
+      },
+      {
+        "value": "44",
+        "label": "44"
+      },
+      {
+        "value": "45",
+        "label": "45"
+      },
+      {
+        "value": "46",
+        "label": "46"
+      },
+      {
+        "value": "47",
+        "label": "47"
+      },
+      {
+        "value": "48",
+        "label": "48"
+      },
+      {
+        "value": "49",
+        "label": "49"
+      },
+      {
+        "value": "50",
+        "label": "50"
+      },
+      {
+        "value": "51",
+        "label": "51"
+      },
+      {
+        "value": "52",
+        "label": "52"
+      },
+      {
+        "value": "53",
+        "label": "53"
+      },
+      {
+        "value": "54",
+        "label": "54"
+      },
+      {
+        "value": "55",
+        "label": "55"
+      },
+      {
+        "value": "56",
+        "label": "56"
+      },
+      {
+        "value": "57",
+        "label": "57"
+      },
+      {
+        "value": "58",
+        "label": "58"
+      },
+      {
+        "value": "59",
+        "label": "59"
+      },
+      {
+        "value": "60",
+        "label": "60"
+      },
+      {
+        "value": "61",
+        "label": "61"
+      },
+      {
+        "value": "62",
+        "label": "62"
+      },
+      {
+        "value": "63",
+        "label": "63"
+      },
+      {
+        "value": "64",
+        "label": "64"
+      },
+      {
+        "value": "65",
+        "label": "65"
+      },
+      {
+        "value": "66",
+        "label": "66"
+      },
+      {
+        "value": "67",
+        "label": "67"
+      },
+      {
+        "value": "68",
+        "label": "68"
+      },
+      {
+        "value": "69",
+        "label": "69"
+      },
+      {
+        "value": "70",
+        "label": "70"
+      },
+      {
+        "value": "71",
+        "label": "71"
+      },
+      {
+        "value": "72",
+        "label": "72"
+      },
+      {
+        "value": "73",
+        "label": "73"
+      },
+      {
+        "value": "74",
+        "label": "74"
+      },
+      {
+        "value": "75",
+        "label": "75"
+      },
+      {
+        "value": "76",
+        "label": "76"
+      },
+      {
+        "value": "77",
+        "label": "77"
+      },
+      {
+        "value": "78",
+        "label": "78"
+      },
+      {
+        "value": "79",
+        "label": "79"
+      },
+      {
+        "value": "80",
+        "label": "80"
+      },
+      {
+        "value": ">80",
+        "label": ">80"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "gender",
+    "label": "Género",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Masculino",
+        "label": "Masculino"
+      },
+      {
+        "value": "Femenino",
+        "label": "Femenino"
+      },
+      {
+        "value": "No binario",
+        "label": "No binario"
+      },
+      {
+        "value": "Otro",
+        "label": "Otro"
+      },
+      {
+        "value": "Prefiero no decir",
+        "label": "Prefiero no decir"
+      },
+      {
+        "value": "Desconocido",
+        "label": "Desconocido"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "relationshipToChild",
-    "label": "Relationship to Perpetrator",
+    "label": "Relación con el niño",
     "type": "select",
-    "unknownOption": "Unknown",
+    "unknownOption": "Desconocido",
     "options": [
       {
-        "value": "Unknown",
+        "value": "Desconocido",
         "label": ""
       },
       {
-        "value": "Parent",
-        "label": "Parent"
+        "value": "Par",
+        "label": "Par"
       },
       {
-        "value": "Sibling",
-        "label": "Sibling"
+        "value": "Cuidador Principal",
+        "label": "Cuidador Principal"
       },
       {
-        "value": "Friend",
-        "label": "Friend"
+        "value": "Pareja",
+        "label": "Pareja"
       },
       {
-        "value": "Partner",
-        "label": "Partner"
+        "value": "Adulto/a Significativo/a",
+        "label": "Adulto/a Significativo/a"
+      },
+      {
+        "value": "Hermano/a",
+        "label": "Hermano/a"
+      },
+      {
+        "value": "Extraño",
+        "label": "Extraño"
+      },
+      {
+        "value": "Educador/a",
+        "label": "Educador/a"
+      },
+      {
+        "value": "Otro",
+        "label": "Otro"
       }
     ]
   },
   {
-    "name": "isVulnerable",
-    "label": "If the victim is 17 or over, do you have reason to believe they are vulnerable i.e. intellectual disability?",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Yes",
-        "label": "Yes"
-      },
-      {
-        "value": "No",
-        "label": "No"
-      }
-    ]
+    "name": "streetAddress",
+    "label": "Dirección Exacta",
+    "type": "input"
   },
   {
-    "name": "abuseDetails",
-    "label": "Details of intellectual disability",
-    "type": "textarea"
+    "name": "email",
+    "label": "Email",
+    "type": "input"
   },
   {
-    "name": "abuseCurrent",
-    "label": "Is the abuse current?",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Yes",
-        "label": "Yes"
-      },
-      {
-        "value": "No",
-        "label": "No"
-      }
-    ]
-  },
-  {
-    "name": "abuseLocation",
-    "label": "Location abuse occurs/occurred?",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Home",
-        "label": "Home"
-      },
-      {
-        "value": "School",
-        "label": "School"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      }
-    ]
-  },
-  {
-    "name": "frequencyDuration",
-    "label": "Frequency",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Daily",
-        "label": "Daily"
-      },
-      {
-        "value": "Weekly",
-        "label": "Weekly"
-      },
-      {
-        "value": "Monthly",
-        "label": "Monthly"
-      },
-      {
-        "value": "One time",
-        "label": "One time"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ]
-  },
-  {
-    "name": "othersAtRisk",
-    "label": "Are there other young people at risk?",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Yes",
-        "label": "Yes"
-      },
-      {
-        "value": "No",
-        "label": "No"
-      }
-    ]
-  },
-  {
-    "name": "riskDetails",
-    "label": "Details of risk to other young people",
-    "type": "textarea"
-  },
-  {
-    "name": "adultsAware",
-    "label": "Are any other adults aware of the abuse?",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Yes",
-        "label": "Yes"
-      },
-      {
-        "value": "No",
-        "label": "No"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ]
-  },
-  {
-    "name": "supportSystems",
-    "label": "Support systems",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Many Supports",
-        "label": "Many Supports"
-      },
-      {
-        "value": "Few Supports",
-        "label": "Few Supports"
-      },
-      {
-        "value": "Isolated",
-        "label": "Isolated"
-      }
-    ]
-  },
-  {
-    "name": "supportDetails",
-    "label": "Suport Sytem Details",
-    "type": "textarea"
+    "name": "phone1",
+    "label": "Teléfono",
+    "type": "input"
   }
 ]
