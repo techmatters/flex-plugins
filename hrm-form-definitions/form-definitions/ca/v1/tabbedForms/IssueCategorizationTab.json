@@ -198,7 +198,7 @@
           {"label": "Unspecified/Other"}
         ]
       },
-      "Other (i.e., Abusive, Wrong Number, Testing)"": {
+      "Other (i.e., Abusive, Wrong Number, Testing)": {
         "color": "#0095C8",
         "subcategories": [
           {"label": "Other"}
