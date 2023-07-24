@@ -34,6 +34,7 @@ import {
   StyledNextStepButton,
 } from '../../../styles/HrmStyles';
 import {
+  ResourceSearchFormClearButton,
   ResourcesSearchFormArea,
   ResourcesSearchFormContainer,
   ResourcesSearchFormFilterHeader,
@@ -43,11 +44,11 @@ import {
   ResourcesSearchTitle,
 } from '../../../styles/ReferrableResources';
 import {
+  FilterOption,
+  ReferrableResourceSearchState,
   resetSearchFormAction,
   searchResourceAsyncAction,
   updateSearchFormAction,
-  FilterOption,
-  ReferrableResourceSearchState,
 } from '../../../states/resources/search';
 import SearchInput from '../../caseList/filters/SearchInput';
 import { getTemplateStrings } from '../../../hrmConfig';
@@ -327,7 +328,7 @@ const SearchResourcesForm: React.FC<Props> = ({
         </ResourcesSearchFormArea>
       </Box>
       <BottomButtonBar>
-        <StyledNextStepButton
+        <ResourceSearchFormClearButton
           type="button"
           secondary={true}
           roundCorners={true}
@@ -336,15 +337,11 @@ const SearchResourcesForm: React.FC<Props> = ({
             resetSearch();
           }}
           style={{
-            marginRight: '15px ',
-            background: 'white',
-            backgroundImage: 'none!important', // Not sure why the important flag is needed here to override a style with less specificity
-            color: 'rgb(13, 116, 213)',
             opacity: hasValidSearchSettings() ? 1 : 0,
           }}
         >
           <Template code="Resources-Search-ClearFormButton" />
-        </StyledNextStepButton>
+        </ResourceSearchFormClearButton>
         <StyledNextStepButton
           style={{ opacity: hasValidSearchSettings() ? 1 : 0.2 }}
           type="button"
