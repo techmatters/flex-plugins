@@ -29,7 +29,7 @@ import { PreviewRow, StyledLink } from '../../../styles/search';
 import { isMissingResource, ReferrableResourceResult } from '../../../states/resources/search';
 import ResourceIdCopyButton from '../ResourceIdCopyButton';
 import { convertKHPResourceAttributes } from '../convertKHPResourceAttributes';
-import OperatingHours from './resourceView/OperatingHours';
+import OperatingHours from '../resourceView/OperatingHours';
 
 type OwnProps = {
   resourceResult: ReferrableResourceResult;

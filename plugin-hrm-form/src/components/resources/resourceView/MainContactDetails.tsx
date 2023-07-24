@@ -16,8 +16,8 @@
 
 import React from 'react';
 
-import { KhpUiResource } from '../../types';
-import { ResourceAttributeContent, ResourceSubtitle } from '../../../../styles/ReferrableResources';
+import { KhpUiResource } from '../types';
+import { ResourceAttributeContent, ResourceSubtitle } from '../../../styles/ReferrableResources';
 
 type Props = {
   mainContact: KhpUiResource['attributes']['mainContact'];

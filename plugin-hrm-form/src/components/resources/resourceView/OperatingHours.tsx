@@ -16,9 +16,9 @@
 
 import React from 'react';
 
-import { FontOpenSans } from '../../../../styles/HrmStyles';
-import { KhpUiResource } from '../../types';
-import { ResourceSubtitle } from '../../../../styles/ReferrableResources';
+import { FontOpenSans } from '../../../styles/HrmStyles';
+import { KhpUiResource } from '../types';
+import { ResourceSubtitle } from '../../../styles/ReferrableResources';
 
 type Props = {
   operations: KhpUiResource['attributes']['operations'];
