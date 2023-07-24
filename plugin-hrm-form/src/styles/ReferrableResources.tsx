@@ -117,7 +117,7 @@ export const ResourcesSearchFormSettingBox = styled('div')`
   width: 100%;
   background-color: white;
   padding: 17px;
-  margin: 4px 4px 4px 0;
+  margin: 4px 0 4px 0;
 `;
 
 export const ResourcesSearchFormContainer = styled(Column)`

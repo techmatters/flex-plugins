@@ -287,7 +287,7 @@ const SearchResourcesForm: React.FC<Props> = ({
                 </Column>
               </Row>
             </ResourcesSearchFormSettingBox>
-            <Row key="age-range" style={{ alignItems: 'stretch', justifyContent: 'stretch' }}>
+            <Row key="age-range" style={{ alignItems: 'stretch', justifyContent: 'stretch', gap: '4px' }}>
               <ResourcesSearchFormSettingBox key="age-range" style={{ flexShrink: 2 }}>
                 <ResourcesSearchFormFilterHeader>
                   <Template code="Resources-Search-Age-Range" />
