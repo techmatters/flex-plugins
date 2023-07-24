@@ -1,14 +1,5 @@
 [
   {
-    "name": "date",
-    "label": "Date",
-    "type": "date-input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
     "name": "selfHarm",
     "label": "Does the client self harm?  Have you hurt yourself on purpose like cutting, biting, burning hitting without the intention of ending your life? If client intended to end life, please complete Suicide Incident Report instead",
     "type": "select",

@@ -1,6 +1,6 @@
 [
   {
-    "name": "callerRole",
+    "name": "firstName",
     "label": "Client type",
     "type": "select",
     "unknownOption": "Unknown",
@@ -24,7 +24,7 @@
     ]
   },
   {
-    "name": "abuseType",
+    "name": "gender",
     "label": "Type of abuse",
     "type": "select",
     "unknownOption": "Unknown",
@@ -56,7 +56,7 @@
     ]
   },
   {
-    "name": "ageOfVictim",
+    "name": "age",
     "label": "Victim's age",
     "type": "select",
     "unknownOption": "Unknown",
@@ -156,7 +156,7 @@
     ]
   },
   {
-    "name": "relationshipToPerpetrator",
+    "name": "relationshipToChild",
     "label": "Relationship to Perpetrator",
     "type": "select",
     "unknownOption": "Unknown",

@@ -24,7 +24,7 @@
     ]
   },
   {
-    "name": "frequencyOfThoughts",
+    "name": "firstName",
     "label": "Frequency of thoughts or feelings",
     "type": "select",
     "unknownOption": "Unkonwn",
@@ -56,7 +56,7 @@
     ]
   },
   {
-    "name": "suicidalThoughtsDetails",
+    "name": "relationshipToChild",
     "label": "Details of the frequency & duration of suicidal thoughts or feelings",
     "type": "textarea"
   },
@@ -181,7 +181,7 @@
     "type": "textarea"
   },
   {
-    "name": "supportSystems",
+    "name": "age",
     "label": "Support systems",
     "type": "listbox-multiselect",
     "options": [
@@ -217,7 +217,7 @@
     "type": "textarea"
   },
   {
-    "name": "healthHistory",
+    "name": "gender",
     "label": "Is there any Health/Mental health history?",
     "type": "select",
     "unknownOption": "Unknown",

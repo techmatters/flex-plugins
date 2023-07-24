@@ -1,102 +1,20 @@
 [
-    {
-      "name": "safetyPlan",
-      "label": "Did you make a Safety Plan?",
-      "type": "select",
-      "unknownOption": "Unknown",
-      "options": [
-        {
-          "value": "Unknown",
-          "label": ""
-        },
-        {
-          "value": "Yes",
-          "label": "Yes"
-        },
-        {
-          "value": "No",
-          "label": "No"
-        }
-      ]
-    },
-    {
-      "name": "safetyPlanDetails",
-      "label": "Safety Plan details",
-      "type": "textarea"
-    },
-    {
-      "name": "externalIntervention",
-      "label": "Was an external intervention made?",
-      "type": "select",
-      "unknownOption": "Unknown",
-      "options": [
-        {
-          "value": "Unknown",
-          "label": ""
-        },
-        {
-          "value": "Yes",
-          "label": "Yes"
-        },
-        {
-          "value": "No",
-          "label": "No"
-        }
-      ]
-    },
-    {
-      "name": "externalInterventionDetails",
-      "label": "External Intervention Details \n Include Emergency services incident number if available",
-      "type": "textarea"
-    },
-    {
-      "name": "additionalInformation",
-      "label": "Additional information",
-      "type": "textarea"
-    },
-    {
-      "name": "nextSteps",
-      "label": "Next Steps",
-      "type": "textarea"
-    },
-    {
-      "name": "triageInformed",
-      "label": "Triage informed",
-      "type": "select",
-      "unknownOption": "Unknown",
-      "options": [
-        {
-          "value": "Unknown",
-          "label": ""
-        },
-        {
-          "value": "Yes",
-          "label": "Yes"
-        },
-        {
-          "value": "No",
-          "label": "No"
-        }
-      ]
-    },
-    {
-      "name": "followUpRecommended",
-      "label": "Clinical follow up recommended",
-      "type": "select",
-      "unknownOption": "Unknown",
-      "options": [
-        {
-          "value": "Unknown",
-          "label": ""
-        },
-        {
-          "value": "Yes",
-          "label": "Yes"
-        },
-        {
-          "value": "No",
-          "label": "No"
-        }
-      ]
+  {
+    "name": "fileName",
+    "type": "file-upload",
+    "label": "File",
+    "description": "Accepted file formats: Word, PDFs, or JPGs.\nFile size not to exceed 5MB",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     }
-  ]
+  },
+  {
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 20,
+    "width": 289
+  }
+]
