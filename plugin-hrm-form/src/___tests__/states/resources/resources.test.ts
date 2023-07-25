@@ -31,12 +31,16 @@ import {
   initialState,
   initialState as searchInitialState,
   resourceSearchReducer,
+  suggestSearchInitialState,
+  suggestSearchReducer,
 } from '../../../states/resources/search';
 import { getResource, ReferrableResource } from '../../../services/ResourceService';
 
 jest.mock('../../../states/resources/search', () => ({
   initialState: jest.requireActual('../../../states/resources/search').initialState,
+  suggestSearchInitialState: jest.requireActual('../../../states/resources/search').suggestSearchInitialState,
   resourceSearchReducer: jest.fn(),
+  suggestSearchReducer: jest.fn(),
 }));
 jest.mock('../../../services/ResourceService');
 
@@ -53,10 +57,14 @@ const testStore = (stateChanges: Partial<ReferrableResourcesState> = {}) =>
   });
 
 const mockResourceSearchReducer = resourceSearchReducer as jest.Mock<ReturnType<typeof resourceSearchReducer>>;
+const mockSuggestSearchReducer = suggestSearchReducer as jest.Mock<ReturnType<typeof suggestSearchReducer>>;
 
 beforeEach(() => {
   mockResourceSearchReducer.mockClear();
   mockResourceSearchReducer.mockImplementation(state => state);
+
+  mockSuggestSearchReducer.mockClear();
+  mockSuggestSearchReducer.mockImplementation(state => state);
 });
 
 const resource = (id: string): ReferrableResource => ({
@@ -78,8 +86,18 @@ const loadedResourceState = (
 const now = new Date();
 describe('reduce', () => {
   test('Always delegates to search reducer', () => {
-    reduce({ resources: {}, search: searchInitialState }, { type: 'NOT_FOR_THE_LIKES_OF_YOU' } as any);
+    reduce({ resources: {}, search: searchInitialState, suggestSearch: suggestSearchInitialState }, {
+      type: 'NOT_FOR_THE_LIKES_OF_YOU',
+    } as any);
     expect(mockResourceSearchReducer).toHaveBeenCalledWith(searchInitialState, { type: 'NOT_FOR_THE_LIKES_OF_YOU' });
+  });
+  test('Always delegates to suggest reducer', () => {
+    reduce({ resources: {}, search: searchInitialState, suggestSearch: suggestSearchInitialState }, {
+      type: 'NOT_FOR_THE_LIKES_OF_YOU',
+    } as any);
+    expect(mockSuggestSearchReducer).toHaveBeenCalledWith(suggestSearchInitialState, {
+      type: 'NOT_FOR_THE_LIKES_OF_YOU',
+    });
   });
   test('Always removes any resources in state with a data significantly older than now', () => {
     const state = reduce(
@@ -169,6 +187,7 @@ describe('reduce', () => {
         existingResource: loadedResourceState('existingResource', now),
       },
       search: searchInitialState,
+      suggestSearch: suggestSearchInitialState,
     };
     test('Resource with ID exists - set route to viewing resource with that ID', () => {
       const state = reduce(initialState, viewResourceAction('existingResource'));
@@ -220,6 +239,7 @@ describe('reduce', () => {
         id: 'existingResource',
       },
       search: searchInitialState,
+      suggestSearch: suggestSearchInitialState,
     };
     test('Sets route to search', () => {
       const state = reduce(initialState, navigateToSearchAction());
