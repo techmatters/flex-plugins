@@ -24,6 +24,7 @@ import { Box, Column } from '../../../styles/HrmStyles';
 import SearchResultsBackButton from '../../search/SearchResults/SearchResultsBackButton';
 import {
   ResourcesSearchArea,
+  ResourcesSearchFormTopRule,
   ResourcesSearchResultsDescription,
   ResourcesSearchResultsDescriptionItem,
   ResourcesSearchResultsHeader,
@@ -161,13 +162,14 @@ const SearchResourcesResults: React.FC<Props> = ({
   return (
     <ResourcesSearchArea>
       <Column>
-        <Box style={{ paddingBottom: '10px' }}>
+        <Box margin="25px 0 0 25px" style={{ paddingBottom: '10px' }}>
           <SearchResultsBackButton
             text={<Template code="Return to Search Criteria" />}
             // eslint-disable-next-line no-empty-function
             handleBack={returnToForm}
           />
         </Box>
+        <ResourcesSearchFormTopRule />
         <ResourcesSearchResultsHeader>
           <ResourcesSearchTitle data-testid="SearchResources-Title">
             <Template code="Resources-Search-ResultsTitle" />

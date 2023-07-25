@@ -156,6 +156,7 @@ const SearchResourcesForm: React.FC<Props> = ({
             ))}
           </FormSelect>
         </FormSelectWrapper>
+        &nbsp;
         <FormLabel htmlFor={`age-range-${dropdown.toLowerCase()}`} style={{ marginLeft: '4px', flexDirection: 'row' }}>
           <Template code={`Resources-Search-Age-Range-${dropdown}`} />
         </FormLabel>
@@ -189,7 +190,7 @@ const SearchResourcesForm: React.FC<Props> = ({
                     );
                   }}
                 />
-                <MultiSelectCheckboxLabel>{label ?? value}</MultiSelectCheckboxLabel>
+                {label ?? value}
               </FormLabel>
             </Grid>
           ))}
@@ -200,8 +201,8 @@ const SearchResourcesForm: React.FC<Props> = ({
 
   return (
     <ResourcesSearchFormContainer>
-      <Box style={{ overflowX: 'hidden', overflowY: 'auto' }}>
-        <Box margin="25px 0px 10px 25px">
+      <Box margin="0px 5px 0px 5px" style={{ overflowX: 'hidden', overflowY: 'auto' }}>
+        <Box margin="25px -5px 10px 20px">
           <ResourcesSearchTitle data-testid="Resources-Search-Title">
             <Template code="Resources-Search-FormTitle" />
           </ResourcesSearchTitle>
@@ -239,11 +240,8 @@ const SearchResourcesForm: React.FC<Props> = ({
               <ResourcesSearchFormFilterHeader>
                 <Template code="Resources-Search-Location" />
               </ResourcesSearchFormFilterHeader>
-              <Row
-                key="location"
-                style={{ marginTop: '10px', marginBottom: '10px', justifyContent: 'stretch', gap: '60px' }}
-              >
-                <Column style={{ width: '50%', gap: '4px' }}>
+              <Row key="location" style={{ marginTop: '10px', marginBottom: '10px', gap: '60px' }}>
+                <Column style={{ width: '50%', maxWidth: '250px', gap: '4px' }}>
                   <FormLabel htmlFor="location-province">
                     <Template code="Resources-Search-Location-Province" />
                   </FormLabel>
@@ -264,7 +262,9 @@ const SearchResourcesForm: React.FC<Props> = ({
                     </FormSelect>
                   </FormSelectWrapper>
                 </Column>
-                <Column style={{ width: '50%', opacity: filterSelections.province ? 1 : 0.2, gap: '4px' }}>
+                <Column
+                  style={{ width: '50%', maxWidth: '250px', opacity: filterSelections.province ? 1 : 0.2, gap: '4px' }}
+                >
                   <FormLabel htmlFor="location-city">
                     <Template code="Resources-Search-Location-City" />
                   </FormLabel>
@@ -289,7 +289,7 @@ const SearchResourcesForm: React.FC<Props> = ({
               </Row>
             </ResourcesSearchFormSettingBox>
             <Row key="age-range" style={{ alignItems: 'stretch', justifyContent: 'stretch', gap: '4px' }}>
-              <ResourcesSearchFormSettingBox key="age-range" style={{ flexShrink: 2 }}>
+              <ResourcesSearchFormSettingBox key="age-range" style={{ flexShrink: 1 }}>
                 <ResourcesSearchFormFilterHeader>
                   <Template code="Resources-Search-Age-Range" />
                 </ResourcesSearchFormFilterHeader>
@@ -299,7 +299,7 @@ const SearchResourcesForm: React.FC<Props> = ({
                   {ageRangeDropDown('Max', maxEligibleAge)}
                 </Row>
               </ResourcesSearchFormSettingBox>
-              <ResourcesSearchFormSettingBox style={{ flexShrink: 3, marginLeft: '4px' }}>
+              <ResourcesSearchFormSettingBox style={{ flexShrink: 1, marginLeft: '4px' }}>
                 <Column>
                   <ResourcesSearchFormFilterHeader>
                     <Template code="Resources-Search-InterpretationTranslationServicesAvailable" />
@@ -337,13 +337,13 @@ const SearchResourcesForm: React.FC<Props> = ({
             resetSearch();
           }}
           style={{
-            opacity: hasValidSearchSettings() ? 1 : 0,
+            opacity: hasValidSearchSettings() ? 1 : 0.3,
           }}
         >
           <Template code="Resources-Search-ClearFormButton" />
         </ResourceSearchFormClearButton>
         <StyledNextStepButton
-          style={{ opacity: hasValidSearchSettings() ? 1 : 0.2 }}
+          style={{ opacity: hasValidSearchSettings() ? 1 : 0.3 }}
           type="button"
           roundCorners={true}
           onClick={() => submitSearchIfValid()}
