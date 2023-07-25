@@ -41,35 +41,6 @@ export type ReferrableResource = {
   attributes: Record<string, Attributes>;
 };
 
-export const MOCK_SUGGEST_DATA: TaxonomyLevelNameCompletion = {
-  taxonomyLevelNameCompletion: [
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Test this (Fred more)', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more {get test} fred yes', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Fred more', score: 1 },
-    { text: 'Frend Atlas', score: 1 },
-    { text: 'Frend Atlas', score: 1 },
-    { text: 'Frend Atlas', score: 1 },
-    { text: 'Frend Atlas', score: 1 },
-    { text: 'Frend Atlas', score: 1 },
-    { text: 'Frend Atlas', score: 1 },
-    { text: 'Steve', score: 1 },
-    { text: 'Steve', score: 1 },
-    { text: 'Steve (test more) steve', score: 1 },
-    { text: 'Steve', score: 1 },
-  ],
-};
-
 export const referrableResourcesEnabled = () => Boolean(getReferrableResourceConfig().resourcesBaseUrl);
 
 export const getResource = async (resourceId: string): Promise<ReferrableResource> => {
