@@ -39,7 +39,7 @@ locals {
     definition_version = "as-v1"
 
     default_autopilot_chatbot_enabled = false
-    helpline_language                 = local.helpline_language
+    helpline_language                 = "en-US"
     contacts_waiting_channels         = ["web"]
     enable_post_survey                = true
     lex_bot_languages  = {
@@ -55,17 +55,6 @@ locals {
         bots       : local.es_co_bots
       }
     }
-
-    workflows = {
-      master : {
-        friendly_name : "Master Workflow"
-        templatefile : "/app/twilio-iac/helplines/cl/templates/workflows/master.tftpl"
-      },
-      survey : {
-        friendly_name : "Survey Workflow"
-        templatefile : "/app/twilio-iac/helplines/templates/workflows/survey.tftpl"
-      }
-    } 
 
     workflows = {
       master : {
