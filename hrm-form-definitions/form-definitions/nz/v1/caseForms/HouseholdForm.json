@@ -1,7 +1,7 @@
 [
   {
-    "name": "callerRole",
-    "label": "Is the caller the?",
+    "name": "firstName",
+    "label": "Client type",
     "type": "select",
     "unknownOption": "Unknown",
     "options": [
@@ -24,7 +24,7 @@
     ]
   },
   {
-    "name": "abuseType",
+    "name": "gender",
     "label": "Type of abuse",
     "type": "select",
     "unknownOption": "Unknown",
@@ -56,8 +56,8 @@
     ]
   },
   {
-    "name": "ageOfVictim",
-    "label": "Age  of the victim",
+    "name": "age",
+    "label": "Victim's age",
     "type": "select",
     "unknownOption": "Unknown",
     "options": [
@@ -66,56 +66,12 @@
         "label": ""
       },
       {
-        "value": "00",
-        "label": "0"
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
-        "value": "01",
-        "label": "1"
-      },
-      {
-        "value": "02",
-        "label": "2"
-      },
-      {
-        "value": "03",
-        "label": "3"
-      },
-      {
-        "value": "04",
-        "label": "4"
-      },
-      {
-        "value": "05",
-        "label": "5"
-      },
-      {
-        "value": "06",
-        "label": "6"
-      },
-      {
-        "value": "07",
-        "label": "7"
-      },
-      {
-        "value": "08",
-        "label": "8"
-      },
-      {
-        "value": "09",
-        "label": "9"
-      },
-      {
-        "value": "10",
-        "label": "10"
-      },
-      {
-        "value": "11",
-        "label": "11"
-      },
-      {
-        "value": "12",
-        "label": "12"
+        "value": "<13",
+        "label": "<13"
       },
       {
         "value": "13",
@@ -190,289 +146,17 @@
         "label": "30"
       },
       {
-        "value": "31",
-        "label": "31"
+        "value": "31-64",
+        "label": "31-64"
       },
       {
-        "value": "32",
-        "label": "32"
-      },
-      {
-        "value": "33",
-        "label": "33"
-      },
-      {
-        "value": "34",
-        "label": "34"
-      },
-      {
-        "value": "35",
-        "label": "35"
-      },
-      {
-        "value": "36",
-        "label": "36"
-      },
-      {
-        "value": "37",
-        "label": "37"
-      },
-      {
-        "value": "38",
-        "label": "38"
-      },
-      {
-        "value": "39",
-        "label": "39"
-      },
-      {
-        "value": "40",
-        "label": "40"
-      },
-      {
-        "value": "41",
-        "label": "41"
-      },
-      {
-        "value": "42",
-        "label": "42"
-      },
-      {
-        "value": "43",
-        "label": "43"
-      },
-      {
-        "value": "44",
-        "label": "44"
-      },
-      {
-        "value": "45",
-        "label": "45"
-      },
-      {
-        "value": "46",
-        "label": "46"
-      },
-      {
-        "value": "47",
-        "label": "47"
-      },
-      {
-        "value": "48",
-        "label": "48"
-      },
-      {
-        "value": "49",
-        "label": "49"
-      },
-      {
-        "value": "50",
-        "label": "50"
-      },
-      {
-        "value": "51",
-        "label": "51"
-      },
-      {
-        "value": "52",
-        "label": "52"
-      },
-      {
-        "value": "53",
-        "label": "53"
-      },
-      {
-        "value": "54",
-        "label": "54"
-      },
-      {
-        "value": "55",
-        "label": "55"
-      },
-      {
-        "value": "56",
-        "label": "56"
-      },
-      {
-        "value": "57",
-        "label": "57"
-      },
-      {
-        "value": "58",
-        "label": "58"
-      },
-      {
-        "value": "59",
-        "label": "59"
-      },
-      {
-        "value": "60",
-        "label": "60"
-      },
-      {
-        "value": "61",
-        "label": "61"
-      },
-      {
-        "value": "62",
-        "label": "62"
-      },
-      {
-        "value": "63",
-        "label": "63"
-      },
-      {
-        "value": "64",
-        "label": "64"
-      },
-      {
-        "value": "65",
-        "label": "65"
-      },
-      {
-        "value": "66",
-        "label": "66"
-      },
-      {
-        "value": "67",
-        "label": "67"
-      },
-      {
-        "value": "68",
-        "label": "68"
-      },
-      {
-        "value": "69",
-        "label": "69"
-      },
-      {
-        "value": "70",
-        "label": "70"
-      },
-      {
-        "value": "71",
-        "label": "71"
-      },
-      {
-        "value": "72",
-        "label": "72"
-      },
-      {
-        "value": "73",
-        "label": "73"
-      },
-      {
-        "value": "74",
-        "label": "74"
-      },
-      {
-        "value": "75",
-        "label": "75"
-      },
-      {
-        "value": "76",
-        "label": "76"
-      },
-      {
-        "value": "77",
-        "label": "77"
-      },
-      {
-        "value": "78",
-        "label": "78"
-      },
-      {
-        "value": "79",
-        "label": "79"
-      },
-      {
-        "value": "80",
-        "label": "80"
-      },
-      {
-        "value": "81",
-        "label": "81"
-      },
-      {
-        "value": "82",
-        "label": "82"
-      },
-      {
-        "value": "83",
-        "label": "83"
-      },
-      {
-        "value": "84",
-        "label": "84"
-      },
-      {
-        "value": "85",
-        "label": "85"
-      },
-      {
-        "value": "86",
-        "label": "86"
-      },
-      {
-        "value": "87",
-        "label": "87"
-      },
-      {
-        "value": "88",
-        "label": "88"
-      },
-      {
-        "value": "89",
-        "label": "89"
-      },
-      {
-        "value": "90",
-        "label": "90"
-      },
-      {
-        "value": "91",
-        "label": "91"
-      },
-      {
-        "value": "92",
-        "label": "92"
-      },
-      {
-        "value": "93",
-        "label": "93"
-      },
-      {
-        "value": "94",
-        "label": "94"
-      },
-      {
-        "value": "95",
-        "label": "95"
-      },
-      {
-        "value": "96",
-        "label": "96"
-      },
-      {
-        "value": "97",
-        "label": "97"
-      },
-      {
-        "value": "98",
-        "label": "98"
-      },
-      {
-        "value": "99",
-        "label": "99"
-      },
-      {
-        "value": "100",
-        "label": "100"
+        "value": ">64",
+        "label": ">64"
       }
     ]
   },
   {
-    "name": "relationshipToPerpetrator",
+    "name": "relationshipToChild",
     "label": "Relationship to Perpetrator",
     "type": "select",
     "unknownOption": "Unknown",
@@ -521,7 +205,7 @@
   },
   {
     "name": "abuseDetails",
-    "label": "Details",
+    "label": "Details of intellectual disability",
     "type": "textarea"
   },
   {
@@ -555,22 +239,22 @@
         "label": ""
       },
       {
+        "value": "Home",
+        "label": "Home"
+      },
+      {
         "value": "School",
         "label": "School"
       },
       {
-        "value": "House",
-        "label": "House"
-      },
-      {
-        "value": "Public Place",
-        "label": "Public Place"
+        "value": "Other",
+        "label": "Other"
       }
     ]
   },
   {
     "name": "frequencyDuration",
-    "label": "Frequency and duration",
+    "label": "Frequency",
     "type": "select",
     "unknownOption": "Unknown",
     "options": [
@@ -579,12 +263,28 @@
         "label": ""
       },
       {
-        "value": "Frequent",
-        "label": "Frequent"
+        "value": "Daily",
+        "label": "Daily"
+      },
+      {
+        "value": "Weekly",
+        "label": "Weekly"
+      },
+      {
+        "value": "Monthly",
+        "label": "Monthly"
       },
       {
         "value": "One time",
         "label": "One time"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ]
   },
@@ -610,12 +310,12 @@
   },
   {
     "name": "riskDetails",
-    "label": "Risk Details",
+    "label": "Details of risk to other young people",
     "type": "textarea"
   },
   {
-    "name": "supportSystems",
-    "label": "Support systems",
+    "name": "adultsAware",
+    "label": "Are any other adults aware of the abuse?",
     "type": "select",
     "unknownOption": "Unknown",
     "options": [
@@ -623,6 +323,26 @@
         "value": "Unknown",
         "label": ""
       },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ]
+  },
+  {
+    "name": "supportSystems",
+    "label": "Support systems",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
       {
         "value": "Many Supports",
         "label": "Many Supports"
@@ -640,56 +360,6 @@
   {
     "name": "supportDetails",
     "label": "Suport Sytem Details",
-    "type": "textarea"
-  },
-  {
-    "name": "safetyPlanMade",
-    "label": "Did you make a Safety Plan?",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Yes",
-        "label": "Yes"
-      },
-      {
-        "value": "No",
-        "label": "No"
-      }
-    ]
-  },
-  {
-    "name": "planDetails",
-    "label": "Safety Plan Details",
-    "type": "textarea"
-  },
-  {
-    "name": "externalInvertionMade",
-    "label": "Was an external intervention made?",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Yes",
-        "label": "Yes"
-      },
-      {
-        "value": "No",
-        "label": "No"
-      }
-    ]
-  },
-  {
-    "name": "externalInvertionDetails",
-    "label": "External Intervention Details",
     "type": "textarea"
   }
 ]
