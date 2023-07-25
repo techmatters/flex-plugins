@@ -19,9 +19,9 @@ import React from 'react';
 
 import { Box, Column, Flex } from '../../../styles/HrmStyles';
 import {
-  ResourceAttributeContent,
-  ResourceAttributeDescription,
   ResourceAttributesColumn,
+  ResourcePreviewAttributeContent,
+  ResourcePreviewAttributeDescription,
   ResourcePreviewHeaderText,
   ResourcePreviewWrapper,
 } from '../../../styles/ReferrableResources';
@@ -29,7 +29,7 @@ import { PreviewRow, StyledLink } from '../../../styles/search';
 import { isMissingResource, ReferrableResourceResult } from '../../../states/resources/search';
 import ResourceIdCopyButton from '../ResourceIdCopyButton';
 import { convertKHPResourceAttributes } from '../convertKHPResourceAttributes';
-import OperatingHours from './resourceView/OperatingHours';
+import OperatingHours from '../resourceView/OperatingHours';
 
 type OwnProps = {
   resourceResult: ReferrableResourceResult;
@@ -75,7 +75,7 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
             <Box marginTop="8px" marginBottom="8px">
               <Column>
                 <Box marginBottom="6px">
-                  <ResourceAttributeDescription>Hours</ResourceAttributeDescription>
+                  <ResourcePreviewAttributeDescription>Hours</ResourcePreviewAttributeDescription>
                 </Box>
                 <OperatingHours operations={operations} showDescriptionOfHours={false} />
               </Column>
@@ -85,11 +85,11 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
             <Box marginTop="8px" marginBottom="8px">
               <Column>
                 <Box marginBottom="6px">
-                  <ResourceAttributeDescription>Contact Info</ResourceAttributeDescription>
-                  <ResourceAttributeContent>{primaryLocation}</ResourceAttributeContent>
+                  <ResourcePreviewAttributeDescription>Contact Info</ResourcePreviewAttributeDescription>
+                  <ResourcePreviewAttributeContent>{primaryLocation}</ResourcePreviewAttributeContent>
                   <br />
-                  <ResourceAttributeDescription>Ages Served</ResourceAttributeDescription>
-                  <ResourceAttributeContent>{ageRange}</ResourceAttributeContent>
+                  <ResourcePreviewAttributeDescription>Ages Served</ResourcePreviewAttributeDescription>
+                  <ResourcePreviewAttributeContent>{ageRange}</ResourcePreviewAttributeContent>
                 </Box>
               </Column>
             </Box>
