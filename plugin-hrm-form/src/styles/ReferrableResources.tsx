@@ -120,6 +120,7 @@ export const ResourcesSearchArea = styled('div')`
   width: 100%;
   overflow-y: auto;
   background-color: #f6f6f6;
+  padding: 0 10px 0 5px;
 `;
 ViewResourceArea.displayName = 'ViewResourceArea';
 
