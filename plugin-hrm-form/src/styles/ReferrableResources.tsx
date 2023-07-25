@@ -40,6 +40,23 @@ export const ResourcePreviewHeaderText = styled(FontOpenSans)`
   text-decoration: underline;
 `;
 
+export const ResourcePreviewAttributeDescription = styled(FontOpenSans)`
+  color: #192b33;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: bold;
+`;
+ResourcePreviewAttributeDescription.displayName = 'ResourcePreviewAttributeDescription';
+
+export const ResourcePreviewAttributeContent = styled(FontOpenSans)`
+  color: #192b33;
+  font-size: 14px;
+  white-space: break-spaces;
+  padding-bottom: 5px;
+  line-height: initial;
+`;
+ResourcePreviewAttributeContent.displayName = 'ResourcePreviewAttributeContent';
+
 export const ReferrableResourcesContainer = styled(Flex)`
   margin: 20px;
   max-width: 800px;
@@ -82,16 +99,16 @@ export const ResourceAttributesColumn = styled(Column)<ResourceAttributesColumnP
 `;
 
 export const ResourceAttributeDescription = styled(FontOpenSans)`
-  color: #192b33;
-  font-size: 12px;
+  color: #121c2e;
+  font-size: 13px;
   line-height: 20px;
   font-weight: bold;
 `;
 ResourceAttributeDescription.displayName = 'ResourceAttributeDescription';
 
 export const ResourceAttributeContent = styled(FontOpenSans)`
-  color: #192b33;
-  font-size: 12px;
+  color: #121c2e;
+  font-size: 13px;
   white-space: break-spaces;
   padding-bottom: 5px;
   line-height: initial;
@@ -102,6 +119,7 @@ export const ResourcesSearchArea = styled('div')`
   max-width: 800px;
   width: 100%;
   overflow-y: auto;
+  background-color: #f6f6f6;
 `;
 ViewResourceArea.displayName = 'ViewResourceArea';
 
@@ -250,9 +268,8 @@ export const SectionTitleText = styled(FontOpenSans)`
 SectionTitleText.displayName = 'SectionTitleText';
 
 export const ResourceSubtitle = styled(FontOpenSans)`
-  color: #9b9b9b;
-  font-size: 11px;
-  font-weight: 600;
+  color: #606b85;
+  font-size: 13px;
   line-height: 16px;
   width: max-content;
 `;

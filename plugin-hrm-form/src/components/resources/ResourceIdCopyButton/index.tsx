@@ -27,7 +27,7 @@ type OwnProps = {
   height?: string;
 };
 
-const ResourceIdCopyButton: React.FC<OwnProps> = ({ resourceId, height }) => {
+const ResourceIdCopyButton: React.FC<OwnProps> = ({ resourceId, height = '36px' }) => {
   const [justCopied, setJustCopied] = useState(false);
 
   const copyClicked = () => {
@@ -37,13 +37,13 @@ const ResourceIdCopyButton: React.FC<OwnProps> = ({ resourceId, height }) => {
   };
 
   return justCopied ? (
-    <Button type="button" title={`#${resourceId}`} style={{ ...{ height } }}>
+    <Button type="button" title={`#${resourceId}`} style={{ height }}>
       <CheckIcon style={{ marginRight: '8px' }} />
       &nbsp;
       <Template code="Resources-IdCopied" />
     </Button>
   ) : (
-    <Button type="button" onClick={copyClicked} title={`#${resourceId}`} style={{ ...{ height } }}>
+    <Button type="button" onClick={copyClicked} title={`#${resourceId}`} style={{ height }}>
       <CopyIcon style={{ marginRight: '8px' }} />
       &nbsp;
       <Template code="Resources-CopyId" />
