@@ -45,6 +45,7 @@ export const ReferrableResourcesContainer = styled(Flex)`
   margin: 20px;
   max-width: 800px;
   width: 100%;
+  background-color: #f6f6f6;
 `;
 ReferrableResourcesContainer.displayName = 'ReferrableResourcesContainer';
 
@@ -109,7 +110,7 @@ ViewResourceArea.displayName = 'ViewResourceArea';
 
 export const ResourcesSearchFormArea = styled('div')`
   width: 100%;
-  padding: 20px 20px 20px 25px;
+  padding: 10px 20px 10px 20px;
   flex-grow: 1;
 `;
 
@@ -119,13 +120,15 @@ export const ResourcesSearchFormSettingBox = styled('div')`
   padding: 17px;
   margin: 4px 0 4px 0;
   border-radius: 4px;
+  border: #e6e6e6 1px solid;
 `;
 
 export const ResourcesSearchFormContainer = styled(Column)`
   width: 100%;
+  background-color: #f6f6f6;
   justify-content: space-between;
   max-width: 800px;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 18px;
   font-weight: 400;
   color: black;
@@ -136,7 +139,7 @@ export const ResourcesSearchFormTopRule = styled('hr')`
   background-color: #d8d8d8;
   height: 1px;
   width: 100%;
-  margin-left: 5px;
+  margin: 0 5px 0 5px;
   border: 0;
   border-top: 1px solid #d8d8d8;
 `;
@@ -156,7 +159,7 @@ export const ResourcesSearchFormSectionHeader = styled(FontOpenSans)`
   font-weight: 700;
   display: inline-block;
   color: #192b33;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   margin-top: 10px;
 `;
 ResourcesSearchFormSectionHeader.displayName = 'ResourcesSearchFormSectionHeader';
