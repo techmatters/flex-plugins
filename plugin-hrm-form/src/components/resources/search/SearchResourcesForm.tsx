@@ -337,7 +337,7 @@ const SearchResourcesForm: React.FC<Props> = ({
             resetSearch();
           }}
           style={{
-            opacity: hasValidSearchSettings() ? 1 : 0,
+            opacity: hasValidSearchSettings() ? 1 : 0.3,
           }}
         >
           <Template code="Resources-Search-ClearFormButton" />

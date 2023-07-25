@@ -174,7 +174,6 @@ ResourcesSearchFormFilterHeader.displayName = 'ResourcesSearchFormFilterHeader';
 export const ResourceSearchFormClearButton = styled(StyledNextStepButton)`
   margin-right: 15px;
   background: transparent !important; // Not sure why the important flag is needed here to override a style with less specificity
-  color: rgb(13, 116, 213);
 `;
 
 export const ResourcesSearchResultsHeader = styled(Box)`
