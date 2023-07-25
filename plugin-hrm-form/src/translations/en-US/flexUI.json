@@ -436,6 +436,11 @@
   "Resources-Search-howServiceIsOffered": "How is this service offered?",
   "Resources-Search-feeStructure": "Fee Structure",
   "Resources-Search-targetPopulations": "Target Populations",
+  "Resources-Search-Preview-PrimaryAddress": "Primary Address",
+  "Resources-Search-Preview-AgesServed": "Ages Served",
+  "Resources-Search-Preview-OperatingHours": "Hours",
+  "Resources-CopyId": "Copy ID",
+  "Resources-IdCopied": "Copied!",
 
   "Conference-AddConferenceCallParticipant": "Add Conference Call Participant",
   "Conference-EnterPhoneNumber": "Enter phone number",
