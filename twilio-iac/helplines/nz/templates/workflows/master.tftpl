@@ -3,7 +3,7 @@
     "filters": [
       {
         "filter_friendly_name": "Youthline Helpline",
-        "expression": "((channelType IN [\"voice\",\"web\", \"sms\"] OR to IN [${join(", ", formatlist("'%s'", phone_numbers.youthline))}] ) AND preEngagementData.reason != \"emergency\" AND preEngagementData.phoneNumber != \"123123123\") OR isContactlessTask == true  ",
+        "expression": "((channelType IN [\"voice\",\"web\", \"sms\"] OR to IN [${join(", ", formatlist("'%s'", phone_numbers.youthline))}] ) AND preEngagementData.reason != \"emergency\" ) OR isContactlessTask == true  ",
         "targets": [
           {
             "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
@@ -13,11 +13,11 @@
       },
       {
         "filter_friendly_name": "Clinical",
-        "expression": "((channelType IN [\"voice\",\"web\", \"sms\"] OR to IN [${join(", ", formatlist("'%s'", phone_numbers.youthline))}]) AND preEngagementData.reason != \"emergency\" AND preEngagementData.phoneNumber == \"123123123\" )",
+        "expression": "((channelType IN [\"voice\",\"web\", \"sms\"] OR to IN [${join(", ", formatlist("'%s'", phone_numbers.youthline))}]) AND preEngagementData.reason != \"emergency\" )",
         "targets": [
           {
             "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
-            "queue": "${task_queues.youthline_helpline}"
+            "queue": "${task_queues.clinical}"
           }
         ]
       },
@@ -27,7 +27,7 @@
         "targets": [
           {
             "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
-            "queue": "${task_queues.youthline_helpline}"
+            "queue": "${task_queues.priority}"
           }
         ]
       }
