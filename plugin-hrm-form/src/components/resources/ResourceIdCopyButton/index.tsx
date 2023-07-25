@@ -18,14 +18,16 @@ import * as React from 'react';
 import CopyIcon from '@material-ui/icons/FileCopyOutlined';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import { useState } from 'react';
+import { Template } from '@twilio/flex-ui';
 
 import { Button } from './styles';
 
 type OwnProps = {
   resourceId: string;
+  height?: string;
 };
 
-const ResourceIdCopyButton: React.FC<OwnProps> = ({ resourceId }) => {
+const ResourceIdCopyButton: React.FC<OwnProps> = ({ resourceId, height }) => {
   const [justCopied, setJustCopied] = useState(false);
 
   const copyClicked = () => {
@@ -35,12 +37,16 @@ const ResourceIdCopyButton: React.FC<OwnProps> = ({ resourceId }) => {
   };
 
   return justCopied ? (
-    <Button type="button">
-      <CheckIcon style={{ marginRight: '8px' }} /> Copied!
+    <Button type="button" title={`#${resourceId}`} style={{ ...{ height } }}>
+      <CheckIcon style={{ marginRight: '8px' }} />
+      &nbsp;
+      <Template code="Resources-IdCopied" />
     </Button>
   ) : (
-    <Button type="button" onClick={copyClicked}>
-      <CopyIcon style={{ marginRight: '8px' }} /> Copy ID #{resourceId}
+    <Button type="button" onClick={copyClicked} title={`#${resourceId}`} style={{ ...{ height } }}>
+      <CopyIcon style={{ marginRight: '8px' }} />
+      &nbsp;
+      <Template code="Resources-CopyId" />
     </Button>
   );
 };

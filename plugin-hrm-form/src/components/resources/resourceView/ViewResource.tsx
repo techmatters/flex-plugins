@@ -160,7 +160,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                   {/* THIRD COLUMN */}
                   <ResourceAttributesColumn>
                     <span style={{ padding: '2px', width: '75%' }}>
-                      <ResourceIdCopyButton resourceId={id} />
+                      <ResourceIdCopyButton resourceId={id} height="44px" />
                     </span>
                     <FieldSelect
                       id="select_language"
