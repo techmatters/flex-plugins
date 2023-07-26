@@ -16,12 +16,14 @@
 
 import React from 'react';
 import WarningIcon from '@material-ui/icons/Warning';
+import { Template } from '@twilio/flex-ui';
 
 import {
   PrivateResourceAttribute,
   ResourceAttributeContent,
   ResourceAttributeDescription,
 } from '../../../styles/ReferrableResources';
+import ResourceAttribute from './ResourceAttribute';
 
 type Props = {
   isPrivate: boolean;
@@ -31,22 +33,25 @@ type Props = {
 const ResourceAttributeWithPrivacy: React.FC<Props> = ({ isPrivate, description, children }) => {
   const renderPrivateResourceAttribute = () => (
     <>
-      <ResourceAttributeDescription>{description}</ResourceAttributeDescription>
+      <ResourceAttributeDescription>
+        <Template code={description} />
+      </ResourceAttributeDescription>
       <PrivateResourceAttribute>
         <span style={{ fontWeight: 'bold', fontSize: '10px' }}>
           <WarningIcon style={{ color: '#f6ca4a', paddingRight: '4px', paddingTop: '6px' }} />
-          This location is private. Do not share with child.
+          <Template code="Resources-View-PrivateInformationWarning" />
         </span>
-        <ResourceAttributeContent>{children}</ResourceAttributeContent>
+        <ResourceAttributeContent>
+          {children || <Template code="Resources-View-MissingProperty" />}
+        </ResourceAttributeContent>
       </PrivateResourceAttribute>
     </>
   );
 
   const renderPublicResourceAttribute = () => (
-    <>
-      <ResourceAttributeDescription>{description}</ResourceAttributeDescription>
-      <ResourceAttributeContent>{children}</ResourceAttributeContent>
-    </>
+    <ResourceAttribute description={description} isExpandable={false}>
+      {children}
+    </ResourceAttribute>
   );
 
   return isPrivate ? renderPrivateResourceAttribute() : renderPublicResourceAttribute();

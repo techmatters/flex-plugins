@@ -17,7 +17,7 @@
 import { styled } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 
-import { Box, Column, Flex, Absolute, Row, FontOpenSans, StyledNextStepButton } from './HrmStyles';
+import { Box, Column, Flex, Row, FontOpenSans, StyledNextStepButton } from './HrmStyles';
 
 export const ResourcePreviewWrapper = styled('div')`
   display: flex;
@@ -59,10 +59,11 @@ export const ResourcePreviewAttributeContent = styled(FontOpenSans)`
 ResourcePreviewAttributeContent.displayName = 'ResourcePreviewAttributeContent';
 
 export const ReferrableResourcesContainer = styled(Flex)`
-  margin: 20px;
-  max-width: 800px;
+  padding: 20px;
+  max-width: 1230px;
   width: 100%;
   background-color: #f6f6f6;
+  overflow-y: auto;
 `;
 ReferrableResourcesContainer.displayName = 'ReferrableResourcesContainer';
 
@@ -94,14 +95,14 @@ type ResourceAttributesColumnProps = {
 };
 export const ResourceAttributesColumn = styled(Column)<ResourceAttributesColumnProps>`
   flex: 1;
-  margin: 5px;
-  border-right: ${props => (props.addDivider ? '2px solid rgba(53, 61, 63, 0.3)' : 'none')};
+  margin: 5px 15px 5px 15px;
+  border-right: ${props => (props.addDivider ? '1px solid #d8d8d8' : 'none')};
   padding-right: ${props => (props.addDivider ? '5px' : 'none')};
 `;
 
 export const ResourceAttributeDescription = styled(FontOpenSans)`
-  color: #121c2e;
-  font-size: 13px;
+  color: #192b33;
+  font-size: 14px;
   line-height: 20px;
   font-weight: bold;
 `;
@@ -232,11 +233,11 @@ export const PrivateResourceAttribute = styled('div')`
 PrivateResourceAttribute.displayName = 'PrivateResourceAttribute';
 
 // ViewResource Page
-export const ResourceViewContainer = styled(Absolute)`
+export const ResourceViewContainer = styled('div')`
   height: 100%;
-  width: 1280px;
+  width: 100%;
   background-color: #f6f6f6;
-  margin-left: 5px;
+  margin: 5px;
 `;
 ResourceViewContainer.displayName = 'ResourceViewContainer';
 
