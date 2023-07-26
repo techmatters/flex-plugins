@@ -1,6 +1,7 @@
 {
     "attributes": {
         "definitionVersion": "uk-v1",
+        "environment": null,
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_conferencing": false,
@@ -13,7 +14,7 @@
             "enable_voice_recordings": false,
             "post_survey_serverless_handled": false
         },
-        "form_definitions_base_url": null,
+        "helpline_code": null,
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",
         "multipleOfficeSupport": true,
         "permissionConfig": "uk",

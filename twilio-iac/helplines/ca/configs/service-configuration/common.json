@@ -5,6 +5,7 @@
             "web"
         ],
         "definitionVersion": "ca-v1",
+        "environment": null,
         "feature_flags": {
             "enable_aselo_messaging_ui": true,
             "enable_counselor_toolkits": true,
@@ -20,6 +21,7 @@
             "enable_voice_recordings": true
         },
         "helplineLanguage": "en-CA",
+        "helpline_code": null,
         "permissionConfig": "ca"
     },
     "ui_attributes": {

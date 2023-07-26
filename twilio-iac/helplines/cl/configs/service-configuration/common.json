@@ -5,6 +5,7 @@
             "web"
         ],
         "definitionVersion": "cl-v1",
+        "environment": null,
         "feature_flags": {
             "enable_aselo_messaging_ui": true,
             "enable_conferencing": false,
@@ -16,6 +17,7 @@
             "enable_voice_recordings": true
         },
         "helplineLanguage": "es-CL",
+        "helpline_code": null,
         "permissionConfig": "cl"
     },
     "ui_attributes": {

@@ -1,6 +1,7 @@
 {
     "attributes": {
         "definitionVersion": "demo-v1",
-        "form_definitions_base_url": null
+        "environment": null,
+        "helpline_code": null
     }
 }

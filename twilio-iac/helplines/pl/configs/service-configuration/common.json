@@ -1,6 +1,7 @@
 {
     "attributes": {
         "definitionVersion": "pl-v1",
+        "environment": null,
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_conferencing": false,
@@ -15,8 +16,8 @@
             "enable_twilio_transcripts": false,
             "enable_voice_recordings": false
         },
-        "form_definitions_base_url": null,
         "helplineLanguage": "",
+        "helpline_code": null,
         "permissionConfig": "pl",
         "resources_base_url": null
     },

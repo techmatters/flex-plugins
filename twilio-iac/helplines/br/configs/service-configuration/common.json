@@ -2,6 +2,7 @@
     "attributes": {
         "configuredLanguage": "pt-BR",
         "definitionVersion": "br-v1",
+        "environment": null,
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_conferencing": false,
@@ -15,8 +16,8 @@
             "enable_transcripts": false,
             "enable_voice_recordings": false
         },
-        "form_definitions_base_url": null,
         "helplineLanguage": "pt-BR",
+        "helpline_code": null,
         "multipleOfficeSupport": true,
         "pdfImagesSource": "https://tl-public-chat-br-prod.s3.amazonaws.com",
         "permissionConfig": "br",

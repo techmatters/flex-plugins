@@ -1,6 +1,7 @@
 {
     "attributes": {
         "definitionVersion": "ph-v1",
+        "environment": null,
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_conferencing": false,
@@ -9,8 +10,8 @@
             "enable_save_insights": true,
             "enable_transcripts": false
         },
-        "form_definitions_base_url": null,
         "helplineLanguage": "",
+        "helpline_code": null,
         "permissionConfig": "ph",
         "resources_base_url": null
     },

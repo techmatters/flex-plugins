@@ -1,6 +1,7 @@
 {
     "attributes": {
         "definitionVersion": "co-v1",
+        "environment": null,
         "feature_flags": {
             "enable_conferencing": false,
             "enable_counselor_toolkits": false,
@@ -14,8 +15,8 @@
             "enable_transcripts": false,
             "enable_voice_recordings": false
         },
-        "form_definitions_base_url": null,
         "helplineLanguage": "es-CO",
+        "helpline_code": null,
         "permissionConfig": "co",
         "resources_base_url": null
     },

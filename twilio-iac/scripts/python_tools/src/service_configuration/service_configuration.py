@@ -34,8 +34,8 @@ TEMPLATE_FIELDS = {
     # TODO: this needs to deal with region
     "attributes.hrm_base_url": "https://hrm-{environment}.tl.techmatters.org",
     "attributes.resources_base_url": "https://hrm-{environment}.tl.techmatters.org",
-    "attributes.form_definitions_base_url": "https://assets-{environment}.tl.techmatters.org/form-definitions/",
-    "account_sid": "{account_sid}",
+    "attributes.environment": "{environment}",
+    "attributes.helpline_code": "{helpline_code}",
 }
 
 # These are fields that will be excluded from the payload sent to twilio

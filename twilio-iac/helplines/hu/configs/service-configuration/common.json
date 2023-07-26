@@ -1,6 +1,7 @@
 {
     "attributes": {
         "definitionVersion": "hu-v1",
+        "environment": null,
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_conferencing": false,
@@ -11,8 +12,8 @@
             "enable_post_survey": false,
             "enable_save_insights": true
         },
-        "form_definitions_base_url": null,
         "helplineLanguage": "hu-HU",
+        "helpline_code": null,
         "permissionConfig": "hu",
         "resources_base_url": null
     },

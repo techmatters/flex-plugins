@@ -4,6 +4,7 @@
             "assets_bucket_url": "https://assets-development.tl.techmatters.org"
         },
         "definitionVersion": "e2e-v1",
+        "environment": null,
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_contact_editing": false,
@@ -20,7 +21,7 @@
             "enable_voice_recordings": false,
             "post_survey_serverless_handled": false
         },
-        "form_definitions_base_url": null,
+        "helpline_code": null,
         "permissionConfig": "e2e",
         "previous_ui_version": {
             "date": "2022-11-09T18:45:11.317Z",

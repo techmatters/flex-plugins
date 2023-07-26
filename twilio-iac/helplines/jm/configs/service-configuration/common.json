@@ -1,6 +1,7 @@
 {
     "attributes": {
         "definitionVersion": "jm-v1",
+        "environment": null,
         "feature_flags": {
             "enable_conferencing": false,
             "enable_counselor_toolkits": false,
@@ -9,7 +10,7 @@
             "enable_post_survey": false,
             "enable_save_insights": true
         },
-        "form_definitions_base_url": null,
+        "helpline_code": null,
         "permissionConfig": "jm",
         "resources_base_url": null
     },
