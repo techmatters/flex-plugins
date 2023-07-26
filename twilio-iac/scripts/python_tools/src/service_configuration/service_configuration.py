@@ -6,6 +6,7 @@ from os.path import exists as path_exists
 from typing import List, TypedDict, Unpack
 from ..aws import SSMClient
 from ..twilio import Twilio
+from .constants import AWS_ROLE_ARN
 from .version import Version
 
 JSON_PATH_ROOT = "/app/twilio-iac/helplines"
@@ -124,7 +125,6 @@ def remove_empty(input_dict):
 
 class InitArgsDict(TypedDict):
     twilio_client: Twilio
-    ssm_client: SSMClient
     skip_local_config: bool
     has_version: bool
     skip_lock: bool
@@ -150,7 +150,6 @@ class ServiceConfiguration():
         self.template_config: dict[str, object] = {}
 
         self._twilio_client = kwargs['twilio_client']
-        self._ssm_client = kwargs['ssm_client']
         self.skip_local_config = kwargs['skip_local_config']
         self.has_version = kwargs['has_version']
         self.skip_lock = kwargs['skip_lock']
@@ -164,9 +163,12 @@ class ServiceConfiguration():
         self.init_new_state()
         self.init_plan()
 
+    def get_ssm_client(self):
+        return SSMClient(AWS_ROLE_ARN)
+
     def init_region(self):
         try:
-            self.region = self._ssm_client.get_parameter(
+            self.region = self.get_ssm_client().get_parameter(
                 f"/{self.environment}/aws/{self.account_sid}/region"
             )
         except Exception:
@@ -203,6 +205,9 @@ class ServiceConfiguration():
             self.local_state = remove_empty(self.local_state)
 
     def init_new_state(self):
+        if self.skip_local_config:
+            return
+
         self.new_state = always_merger.merge(
             # deepcopy to avoid modifying remote_state even though the docs
             # say the function is non-destructive, it is
@@ -242,7 +247,7 @@ class ServiceConfiguration():
                 account_sid=self.account_sid,
                 helpline_code=self.helpline_code
             )
-            ssm_value = self._ssm_client.get_parameter(ssm_key_name)
+            ssm_value = self.get_ssm_client().get_parameter(ssm_key_name)
             set_nested_key(self.new_state, key, ssm_value)
 
     def init_plan(self):
