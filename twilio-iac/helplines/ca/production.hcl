@@ -83,8 +83,8 @@ locals {
         contact_identity     = ""
         templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/g2ton.tftpl"
         channel_flow_vars    = {
-          en_number: "8665514658"
-          fr_number: "8663092068"
+          en_number: "5878043655"
+          fr_number: "5878044316"
 
           #Twilio things
           check_counsellors_function_sid: "ZH95bed62f9c0af98771e01cba4bd86d1f"
@@ -121,7 +121,7 @@ locals {
       khp : ["+18252547345"],
       g2ton : ["+13656546095", "+13656546120"],
       g2ttr : ["+13656546032", "+13656546120"],
-      g2tns : ["+18665514658", "+18663092068"]
+      g2tns : ["+15878043655", "+15878044316"]
     }
 
     hrm_transcript_retention_days_override = 90
