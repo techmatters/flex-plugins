@@ -35,6 +35,7 @@ ResourcePreviewWrapper.displayName = 'ResourcePreviewWrapper';
 
 export const ResourcePreviewHeaderText = styled(FontOpenSans)`
   font-size: 14px;
+  font-weight: 600;
   line-height: 1.2;
   color: #192b33;
   text-decoration: underline;
