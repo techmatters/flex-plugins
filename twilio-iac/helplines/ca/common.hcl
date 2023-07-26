@@ -6,13 +6,9 @@ locals {
   local_config = {
     helpline                          = "Kids Help Phone"
     old_dir_prefix                    = "kidshelpphone"
-    definition_version                = "ca-v1"
     default_autopilot_chatbot_enabled = false
     task_language                     = "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
-    helpline_language                 = "en-CA"
     contacts_waiting_channels         = ["voice", "web"]
-    enable_post_survey                = false
-
 
     workflows = {
       master : {
