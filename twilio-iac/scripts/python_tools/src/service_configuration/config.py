@@ -329,7 +329,7 @@ class Config():
         if not (self.environment or self.helpline_code):
             confirm = input(
                 'No environment or helpline code provided. '
-                'Do you want to run this command for all helplines in environments? (y/N): '
+                'Do you want to run this command for ALL helplines in ALL environments? (y/N): '
             )
             if confirm != 'y':
                 print('Please re-run the script to try again')

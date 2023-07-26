@@ -1,7 +1,7 @@
 import json
 from copy import deepcopy
 from deepdiff import DeepDiff
-from deepmerge import always_merger
+from deepmerge import always_merger, Merger
 from os.path import exists as path_exists
 from typing import List, TypedDict, Unpack
 from ..aws import SSMClient
@@ -35,6 +35,22 @@ TEMPLATE_FIELDS = {
     "attributes.hrm_base_url": "https://hrm-{environment}.tl.techmatters.org",
     "account_sid": "{account_sid}",
 }
+
+# These are fields that will be excluded from the payload sent to twilio
+EXCLUDED_FIELDS = [
+    "flex_service_instance_sid",
+    "runtime_domain",
+    "flex_insights_hr",
+    "taskrouter_workspace_sid",
+    "service_version",
+    "taskrouter_offline_activity_sid",
+    "status",
+]
+
+OVERRIDE_FIELDS = [
+    'attributes',
+    'ui_attributes',
+]
 
 
 def set_nested_key(data, key, value):
@@ -94,7 +110,7 @@ def remove_empty(input_dict):
     for k, v in input_dict.items():
         if isinstance(v, dict):
             v = remove_empty(v)
-        if v:
+        if v is not None:
             output_dict[k] = v
     return output_dict
 
@@ -179,6 +195,11 @@ class ServiceConfiguration():
             self.local_state,
         )
 
+        # override fields in the new state with the local state
+        for field in OVERRIDE_FIELDS:
+            local_value = get_nested_key(self.local_state, field)
+            if local_value:
+                set_nested_key(self.new_state, field, local_value)
 
     def init_template_fields(self):
         for key, value in TEMPLATE_FIELDS.items():
@@ -227,7 +248,13 @@ class ServiceConfiguration():
             raise Exception(
                 'Cannot apply changes without a version. Something went wrong.')
 
-        self._twilio_client.update_flex_configuration(self.new_state)
+        new_state = deepcopy(self.new_state)
+        # remove excluded fields from the new state, we ned to keep them in the
+        # self.new_state for the changelog
+        for field in EXCLUDED_FIELDS:
+            delete_nested_key(new_state, field)
+
+        self._twilio_client.update_flex_configuration(new_state)
 
         # add a new version for the new state
         Version(

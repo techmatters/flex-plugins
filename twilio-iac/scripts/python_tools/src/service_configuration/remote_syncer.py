@@ -1,5 +1,5 @@
-import json
 from collections import defaultdict
+from hashlib import md5
 from typing import List, Set, TypedDict, Unpack
 from .service_configuration import (
     ServiceConfiguration,
@@ -21,6 +21,7 @@ class RemoteSyncer():
         self.common_data: dict[str, object] = {}
         self.environments_data = {}
         self.environments_duplicates: dict[str, dict[str, List[str]]] = defaultdict(dict)
+        self.hash_value_lookup: dict[str, object] = {}
 
         self.helpline_code = kwargs['helpline_code']
         self.service_configs: dict[str, ServiceConfiguration] = kwargs['service_configs']
@@ -36,10 +37,14 @@ class RemoteSyncer():
         else:
             value = None if change_type == 'dictionary_item_added' else change.t1
 
-        if value not in self.environments_duplicates[path]:
-            self.environments_duplicates[path][value] = [env]
+        hashed_value = md5(str(value).encode('utf-8')).hexdigest()
+
+        self.hash_value_lookup[hashed_value] = value
+
+        if hashed_value not in self.environments_duplicates[path]:
+            self.environments_duplicates[path][hashed_value] = [env]
         else:
-            self.environments_duplicates[path][value].append(env)
+            self.environments_duplicates[path][hashed_value].append(env)
 
         set_nested_key(env_data, path, value)
 
@@ -50,11 +55,11 @@ class RemoteSyncer():
 
     def eliminate_duplicates(self):
         for path, values in self.environments_duplicates.items():
-            for value, envs in values.items():
+            for hashed_value, envs in values.items():
                 if len(envs) == self.env_count:
                     for env in envs:
                         delete_nested_key(self.environments_data[env], path)
-                        set_nested_key(self.common_data, path, value)
+                        set_nested_key(self.common_data, path, self.hash_value_lookup[hashed_value])
 
     def init_configs(self):
         for env in self.service_configs.keys():

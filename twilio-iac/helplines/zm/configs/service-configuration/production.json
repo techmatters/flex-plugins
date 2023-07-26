@@ -4,15 +4,27 @@
             "enable_fullstory_monitoring": true,
             "enable_transcripts": false
         },
-        "pdfImagesSource": "https://tl-public-chat-zm-prod.s3.amazonaws.com"
+        "pdfImagesSource": "https://tl-public-chat-zm-prod.s3.amazonaws.com",
+        "previous_ui_version": {
+            "date": "2022-12-15T10:56:19.523Z",
+            "semver": "~1.31.2",
+            "version": "1.31.2"
+        }
     },
     "ui_attributes": {
         "colorTheme": {
             "baseName": "GreyLight",
             "overrides": {
                 "MainHeader": {
+                    "Button": {
+                        "color": "#000000"
+                    },
                     "Container": {
-                        "background": "#FFFFFF"
+                        "background": "#FFFFFF",
+                        "color": "#000000"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 },
                 "SideNav": {
@@ -21,6 +33,9 @@
                     },
                     "Container": {
                         "background": "#FFFFFF"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 }
             },

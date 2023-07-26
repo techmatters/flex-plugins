@@ -6,6 +6,17 @@ from typing import NotRequired, TypedDict, Unpack
 from ..aws import S3Client
 from .constants import AWS_ROLE_ARN
 
+"""
+We keep track of every version of the service configuration in S3 so we have a change log.
+We *could* add a revert system to this tool to allow users to select past revisions to revert to,
+But really once it is in use and we are using git, it should be easy enough to just revertt the
+change in the gti repo and re-run the tool to update the service configuration.
+
+But for a case in which the service configuration has been updated outside of the git repo or
+if something else has gone terribly wrong, having past versions of the service configuration
+in S3 will allow us to revert to a past version.
+"""
+
 S3_BUCKET = 'tl-aselo-twilio-service-config'
 
 

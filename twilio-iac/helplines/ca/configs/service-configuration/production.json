@@ -1,5 +1,7 @@
 {
     "attributes": {
-        "hrm_base_url": "https://hrm-production-ca.tl.techmatters.org"
+        "form_definitions_base_url": "https://assets-production.tl.techmatters.org/form-definitions/",
+        "hrm_base_url": "https://hrm-production-ca.tl.techmatters.org",
+        "resources_base_url": ""
     }
 }

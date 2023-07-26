@@ -1,5 +1,6 @@
 {
     "attributes": {
+        "definitionVersion": "uk-v1",
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_conferencing": false,
@@ -13,15 +14,28 @@
             "post_survey_serverless_handled": false
         },
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",
-        "multipleOfficeSupport": true
+        "multipleOfficeSupport": true,
+        "permissionConfig": "uk",
+        "previous_ui_version": {
+            "date": "2022-12-05T10:53:44.614Z",
+            "semver": "~1.31.2",
+            "version": "1.31.2"
+        }
     },
     "ui_attributes": {
         "colorTheme": {
             "baseName": "GreyLight",
             "overrides": {
                 "MainHeader": {
+                    "Button": {
+                        "color": "#000000"
+                    },
                     "Container": {
-                        "background": "#FFFFFF"
+                        "background": "#FFFFFF",
+                        "color": "#000000"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 },
                 "SideNav": {
@@ -30,6 +44,9 @@
                     },
                     "Container": {
                         "background": "#FFFFFF"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 }
             },

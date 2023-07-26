@@ -9,8 +9,15 @@
             "baseName": "GreyLight",
             "overrides": {
                 "MainHeader": {
+                    "Button": {
+                        "color": "#000000"
+                    },
                     "Container": {
-                        "background": "#FFFFFF"
+                        "background": "#FFFFFF",
+                        "color": "#000000"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 },
                 "SideNav": {
@@ -19,6 +26,9 @@
                     },
                     "Container": {
                         "background": "#FFFFFF"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 }
             },

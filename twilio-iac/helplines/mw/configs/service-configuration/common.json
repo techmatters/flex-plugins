@@ -1,5 +1,6 @@
 {
     "attributes": {
+        "definitionVersion": "mw-v1",
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_conferencing": false,
@@ -12,15 +13,23 @@
             "enable_transcripts": false,
             "enable_twilio_transcripts": false,
             "enable_voice_recordings": false
-        }
+        },
+        "permissionConfig": "mw"
     },
     "ui_attributes": {
         "colorTheme": {
             "baseName": "GreyLight",
             "overrides": {
                 "MainHeader": {
+                    "Button": {
+                        "color": "#000000"
+                    },
                     "Container": {
-                        "background": "#FFFFFF"
+                        "background": "#FFFFFF",
+                        "color": "#000000"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 },
                 "SideNav": {
@@ -29,6 +38,9 @@
                     },
                     "Container": {
                         "background": "#FFFFFF"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 }
             },

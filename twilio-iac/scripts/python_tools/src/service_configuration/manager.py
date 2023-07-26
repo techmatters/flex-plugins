@@ -1,11 +1,21 @@
 import json
 import os
+import signal
 from pygments import highlight, lexers, formatters
 from termcolor import colored
 from .config import config
 from .remote_syncer import RemoteSyncer
 from .service_configuration import DeepDiff, ServiceConfiguration, get_dot_notation_path
 from .remote_syncer import RemoteSyncer
+
+
+def signal_handler(signal, frame):
+    print('\n\nYou pressed Ctrl+C! Cleaning up...')
+    config.cleanup()
+    exit(1)
+
+
+signal.signal(signal.SIGINT, signal_handler)
 
 
 def main():
@@ -17,9 +27,10 @@ def main():
         else:
             raise Exception('Invalid argument configuration')
         cleanup_and_exit()
-    except KeyboardInterrupt:
-        print("\nCaught Ctrl+C. Program exiting...")
-        cleanup_and_exit(1)
+    except Exception as e:
+        print_text('Cleaning up...')
+        config.cleanup()
+        raise e
 
 
 def run_service_config_action():
@@ -151,7 +162,6 @@ def sync_plan(syncer: RemoteSyncer):
 
         print_text(service_config.get_config_path('environment'))
         print_json(syncer.configs[service_config.environment])
-
 
 
 def sync_apply(syncer: RemoteSyncer):

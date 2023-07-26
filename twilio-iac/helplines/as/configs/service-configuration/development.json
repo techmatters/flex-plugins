@@ -1,5 +1,8 @@
 {
     "attributes": {
+        "attributeUpdates": {
+            "assets_bucket_url": "https://assets-development.tl.techmatters.org"
+        },
         "feature_flags": {
             "enable_aselo_messaging_ui": true,
             "enable_counselor_toolkits": true,
@@ -7,18 +10,29 @@
             "enable_csam_report": true,
             "enable_fullstory_monitoring": true,
             "enable_lex": true,
+            "enable_resources": true,
+            "enable_resources_elastic_search": true,
             "enable_save_insights": true,
             "enable_transcripts": true
         },
-        "multipleOfficeSupport": true
+        "multipleOfficeSupport": true,
+        "permissionConfig": "dev",
+        "resources_base_url": "https://hrm-development.tl.techmatters.org"
     },
     "ui_attributes": {
         "colorTheme": {
             "baseName": "GreyLight",
             "overrides": {
                 "MainHeader": {
+                    "Button": {
+                        "color": "#000000"
+                    },
                     "Container": {
-                        "background": "#FFFFFF"
+                        "background": "#FFFFFF",
+                        "color": "#000000"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 },
                 "SideNav": {
@@ -27,6 +41,9 @@
                     },
                     "Container": {
                         "background": "#FFFFFF"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 }
             },
@@ -34,6 +51,7 @@
                 "id": "mono-light",
                 "name": "Simple Light"
             }
-        }
+        },
+        "showRealtimeQueuesStats": true
     }
 }

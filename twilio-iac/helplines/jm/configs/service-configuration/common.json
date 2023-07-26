@@ -1,5 +1,6 @@
 {
     "attributes": {
+        "definitionVersion": "jm-v1",
         "feature_flags": {
             "enable_conferencing": false,
             "enable_counselor_toolkits": false,
@@ -7,15 +8,23 @@
             "enable_lex": false,
             "enable_post_survey": false,
             "enable_save_insights": true
-        }
+        },
+        "permissionConfig": "jm"
     },
     "ui_attributes": {
         "colorTheme": {
             "baseName": "GreyLight",
             "overrides": {
                 "MainHeader": {
+                    "Button": {
+                        "color": "#000000"
+                    },
                     "Container": {
-                        "background": "#FFFFFF"
+                        "background": "#FFFFFF",
+                        "color": "#000000"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 },
                 "SideNav": {
@@ -24,6 +33,9 @@
                     },
                     "Container": {
                         "background": "#FFFFFF"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 }
             },

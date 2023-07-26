@@ -1,5 +1,9 @@
 {
     "attributes": {
+        "contacts_waiting_channels": [
+            "voice",
+            "web"
+        ],
         "feature_flags": {
             "enable_canned_responses": false,
             "enable_contact_editing": false,
