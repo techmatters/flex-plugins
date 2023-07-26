@@ -4,7 +4,6 @@
             "enable_emoji_picker": false
         },
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
-        "helplineLanguage": "",
-        "hrm_base_url": "https://hrm-staging-eu.tl.techmatters.org"
+        "helplineLanguage": ""
     }
 }

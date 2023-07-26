@@ -31,9 +31,8 @@ SSM_FIELDS = {
 
 TEMPLATE_FIELDS = {
     "attributes.assets_bucket_url": "https://assets-{environment}.tl.techmatters.org",
-    # TODO: this needs to deal with region
-    "attributes.hrm_base_url": "https://hrm-{environment}.tl.techmatters.org",
-    "attributes.resources_base_url": "https://hrm-{environment}.tl.techmatters.org",
+    "attributes.hrm_base_url": "https://hrm-{environment}{region_url_postfix}.tl.techmatters.org",
+    "attributes.resources_base_url": "https://hrm-{environment}{region_url_postfix}.tl.techmatters.org",
     "attributes.environment": "{environment}",
     "attributes.helpline_code": "{helpline_code}",
 }
@@ -53,6 +52,12 @@ OVERRIDE_FIELDS = [
     'attributes',
     'ui_attributes',
 ]
+
+REGION_URL_POSTFIX_MAP = {
+    'us-east-1': '',
+    'eu-west-1': '-eu',
+    'ca-central-1': '-ca',
+}
 
 
 def set_nested_key(data, key, value):
@@ -154,9 +159,19 @@ class ServiceConfiguration():
         self.environment = self._twilio_client.environment
         self.remote_state: dict[str, object] = self._twilio_client.get_flex_configuration()
         self.init_version()
+        self.init_region()
         self.init_local_state()
         self.init_new_state()
         self.init_plan()
+
+    def init_region(self):
+        try:
+            self.region = self._ssm_client.get_parameter(
+                f"/{self.environment}/aws/{self.account_sid}/region"
+            )
+        except Exception:
+            # TODO: remove this once all helplines have the region parameter
+            self.region = 'us-east-1'
 
     def init_local_state(self):
         for conf in JSON_CONFIGS:
@@ -215,7 +230,8 @@ class ServiceConfiguration():
             templated_value = value.format(
                 environment=self.environment,
                 account_sid=self.account_sid,
-                helpline_code=self.helpline_code
+                helpline_code=self.helpline_code,
+                region_url_postfix=REGION_URL_POSTFIX_MAP[self.region],
             )
             self.template_config[key] = templated_value
 

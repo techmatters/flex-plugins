@@ -5,7 +5,6 @@
             "enable_twilio_transcripts": false
         },
         "form_definitions_base_url": "https://assets-production.tl.techmatters.org/form-definitions/",
-        "helplineLanguage": "en-MT",
-        "hrm_base_url": "https://hrm-production-eu.tl.techmatters.org"
+        "helplineLanguage": "en-MT"
     }
 }
