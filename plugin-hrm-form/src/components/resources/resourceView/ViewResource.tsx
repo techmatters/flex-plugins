@@ -20,7 +20,6 @@ import { connect, ConnectedProps } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 
-import FieldSelect from '../../FieldSelect';
 import { namespace, referrableResourcesBase, RootState } from '../../../states';
 import { Box, Column } from '../../../styles/HrmStyles';
 import SearchResultsBackButton from '../../search/SearchResults/SearchResultsBackButton';
@@ -66,19 +65,6 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, navigateToSearch }) => {
-  const languageOptions = [
-    { label: 'English', value: 'english' },
-    { label: 'French', value: 'french' },
-  ];
-  const defaultOption = languageOptions[0];
-  const getField = value => ({
-    value,
-    error: null,
-    validation: null,
-    touched: false,
-  });
-  // const [language, setLanguage] = useState(defaultOption);
-
   if (!resource && !error) {
     loadViewedResource();
     return <div>Loading...</div>;
@@ -111,20 +97,24 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
               {attributes && (
                 <ResourceAttributesContainer>
                   {/* FIRST COLUMN */}
-                  <ResourceAttributesColumn>
-                    <ResourceAttribute description="Details">{resourceAttributes.description}</ResourceAttribute>
+                  <ResourceAttributesColumn style={{ flexGrow: 3 }}>
+                    <ResourceAttribute description="Resources-View-Details">
+                      {resourceAttributes.description}
+                    </ResourceAttribute>
                   </ResourceAttributesColumn>
 
                   {/* SECOND COLUMN */}
-                  <ResourceAttributesColumn addDivider={true}>
+                  <ResourceAttributesColumn style={{ flexGrow: 3 }} addDivider={true}>
                     <ResourceAttributeWithPrivacy
                       isPrivate={resourceAttributes.mainContact.isPrivate}
-                      description="Contact Info"
+                      description="Resources-View-ContactInfo"
                     >
                       <MainContactDetails mainContact={resourceAttributes.mainContact} />
                     </ResourceAttributeWithPrivacy>
-                    <ResourceAttribute description="Website">{resourceAttributes.website}</ResourceAttribute>
-                    <ResourceAttribute description="Hours of Operation">
+                    <ResourceAttribute description="Resources-View-Website">
+                      {resourceAttributes.website}
+                    </ResourceAttribute>
+                    <ResourceAttribute description="Resources-View-OperatingHours">
                       <OperatingHours operations={resourceAttributes.operations} showDescriptionOfHours={true} />
                     </ResourceAttribute>
 
@@ -158,29 +148,17 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                   </ResourceAttributesColumn>
 
                   {/* THIRD COLUMN */}
-                  <ResourceAttributesColumn>
+                  <ResourceAttributesColumn style={{ flexGrow: 4 }}>
                     <span style={{ padding: '2px', width: '75%' }}>
                       <ResourceIdCopyButton resourceId={id} height="44px" />
                     </span>
-                    <FieldSelect
-                      id="select_language"
-                      label="Language Preference"
-                      name="language"
-                      field={getField(defaultOption)}
-                      options={languageOptions}
-                      handleChange={e => e.target?.value}
-                      /*
-                       * handleBlur={() => {}}
-                       * handleFocus={() => {}}
-                       */
-                    />
                     <ResourceAttributeWithPrivacy
                       isPrivate={resourceAttributes.primaryLocationIsPrivate}
-                      description="Primary Address"
+                      description="Resources-View-PrimaryAddress"
                     >
                       {resourceAttributes.primaryLocation}
                     </ResourceAttributeWithPrivacy>
-                    <ResourceAttribute description="">
+                    <ResourceAttribute description="Resources-View-Sites">
                       <SiteDetails sites={resourceAttributes.site} />
                     </ResourceAttribute>
                   </ResourceAttributesColumn>

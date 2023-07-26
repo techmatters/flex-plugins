@@ -53,7 +53,7 @@ import {
 import SearchInput from '../../caseList/filters/SearchInput';
 import { getTemplateStrings } from '../../../hrmConfig';
 import asyncDispatch from '../../../states/asyncDispatch';
-import { FiltersCheckbox, MultiSelectCheckboxLabel } from '../../../styles/caseList/filters';
+import { FiltersCheckbox } from '../../../styles/caseList/filters';
 
 const NO_AGE_SELECTED = -1;
 const NO_LOCATION_SELECTED = '__NO_LOCATION_SELECTED__';
@@ -209,7 +209,7 @@ const SearchResourcesForm: React.FC<Props> = ({
         </Box>
         <ResourcesSearchFormTopRule />
         <ResourcesSearchFormArea>
-          <ResourcesSearchFormSettingBox>
+          <ResourcesSearchFormSettingBox style={{ border: 'none' }}>
             <Column>
               <Box>
                 <Template code="Resources-Search-SearchTermHeader" />
