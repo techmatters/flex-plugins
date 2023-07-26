@@ -15,20 +15,22 @@
  */
 
 import React from 'react';
+import { Template } from '@twilio/flex-ui';
 
 import { Box, Column } from '../../../styles/HrmStyles';
 import { ResourceAttributeContent, ResourceAttributeDescription } from '../../../styles/ReferrableResources';
-import type { ReferrableResourceAttributeValue } from '../../../services/ResourceService';
 import ExpandableAttributeContent from './ExpandableAttributeContent';
 
 type Props = {
   description: string;
-  content?: ReferrableResourceAttributeValue | JSX.Element;
   isExpandable?: boolean;
 };
 
 const ResourceAttribute: React.FC<Props> = ({ description, children, isExpandable }) => {
   const renderContent = () => {
+    if (!children) {
+      return <Template code="Resources-View-MissingProperty" />;
+    }
     if (typeof children === 'string' && isExpandable === true) {
       return <ExpandableAttributeContent expandLinkText="ReadMore" collapseLinkText="ReadLess" content={children} />;
     }
@@ -40,7 +42,9 @@ const ResourceAttribute: React.FC<Props> = ({ description, children, isExpandabl
     <Box marginTop="8px" marginBottom="10px">
       <Column>
         <Box marginBottom="4px">
-          <ResourceAttributeDescription>{description}</ResourceAttributeDescription>
+          <ResourceAttributeDescription>
+            <Template code={description} />
+          </ResourceAttributeDescription>
         </Box>
         <ResourceAttributeContent>{renderContent()}</ResourceAttributeContent>
       </Column>

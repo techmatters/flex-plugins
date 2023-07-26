@@ -439,6 +439,7 @@
   "Resources-Search-Preview-PrimaryAddress": "Primary Address",
   "Resources-Search-Preview-AgesServed": "Ages Served",
   "Resources-Search-Preview-OperatingHours": "Hours",
+  "Resources-View-MissingProperty": "Not Listed",
   "Resources-CopyId": "Copy ID",
   "Resources-IdCopied": "Copied!",
 
