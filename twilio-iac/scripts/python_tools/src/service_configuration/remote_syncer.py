@@ -32,6 +32,8 @@ class RemoteSyncer():
         env_data: dict[str, object] = self.environments_data[env]
         path = get_dot_notation_path(change)
 
+        print(f"Processing change: {change_type} {path} {change.t1} {change.t2}")
+
         if change_type == 'dictionary_item_added' and path.startswith('attributes.feature_flags'):
             value = False
         else:

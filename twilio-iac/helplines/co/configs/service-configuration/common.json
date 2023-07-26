@@ -14,8 +14,10 @@
             "enable_transcripts": false,
             "enable_voice_recordings": false
         },
+        "form_definitions_base_url": null,
         "helplineLanguage": "es-CO",
-        "permissionConfig": "co"
+        "permissionConfig": "co",
+        "resources_base_url": null
     },
     "ui_attributes": {
         "colorTheme": {

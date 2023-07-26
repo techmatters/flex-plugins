@@ -323,9 +323,17 @@ class Config():
             exit(1)
 
     def validate_action_requirements(self):
-        self.validate_environment_or_helpline()
+        if self.argument == 'syncer':
+            self.validate_no_environment()
 
-    def validate_environment_or_helpline(self):
+        self.validate_all_helplines()
+
+    def validate_no_environment(self):
+        if self.environment:
+            print(f'ERROR: The {self.action} action does not accept an environment argument.')
+            exit(1)
+
+    def validate_all_helplines(self):
         if not (self.environment or self.helpline_code):
             confirm = input(
                 'No environment or helpline code provided. '

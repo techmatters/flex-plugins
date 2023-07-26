@@ -14,7 +14,9 @@
             "enable_twilio_transcripts": false,
             "enable_voice_recordings": false
         },
-        "permissionConfig": "mw"
+        "form_definitions_base_url": null,
+        "permissionConfig": "mw",
+        "resources_base_url": null
     },
     "ui_attributes": {
         "colorTheme": {

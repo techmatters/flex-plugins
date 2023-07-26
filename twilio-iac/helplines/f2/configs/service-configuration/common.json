@@ -13,8 +13,10 @@
             "enable_twilio_transcripts": false,
             "post_survey_serverless_handled": false
         },
+        "form_definitions_base_url": null,
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",
-        "permissionConfig": "dev"
+        "permissionConfig": "dev",
+        "resources_base_url": null
     },
     "ui_attributes": {
         "colorTheme": {

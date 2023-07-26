@@ -15,6 +15,7 @@
             "enable_transcripts": false,
             "enable_voice_recordings": false
         },
+        "form_definitions_base_url": null,
         "helplineLanguage": "pt-BR",
         "multipleOfficeSupport": true,
         "pdfImagesSource": "https://tl-public-chat-br-prod.s3.amazonaws.com",
@@ -23,7 +24,8 @@
             "date": "2022-12-15T10:15:23.862Z",
             "semver": "~1.31.2",
             "version": "1.31.2"
-        }
+        },
+        "resources_base_url": null
     },
     "ui_attributes": {
         "theme": null

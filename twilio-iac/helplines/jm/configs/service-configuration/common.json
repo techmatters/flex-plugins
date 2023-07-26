@@ -9,7 +9,9 @@
             "enable_post_survey": false,
             "enable_save_insights": true
         },
-        "permissionConfig": "jm"
+        "form_definitions_base_url": null,
+        "permissionConfig": "jm",
+        "resources_base_url": null
     },
     "ui_attributes": {
         "colorTheme": {

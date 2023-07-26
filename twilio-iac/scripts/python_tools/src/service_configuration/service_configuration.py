@@ -33,6 +33,8 @@ TEMPLATE_FIELDS = {
     "attributes.assets_bucket_url": "https://assets-{environment}.tl.techmatters.org",
     # TODO: this needs to deal with region
     "attributes.hrm_base_url": "https://hrm-{environment}.tl.techmatters.org",
+    "attributes.resources_base_url": "https://hrm-{environment}.tl.techmatters.org",
+    "attributes.form_definitions_base_url": "https://assets-{environment}.tl.techmatters.org/form-definitions/",
     "account_sid": "{account_sid}",
 }
 
@@ -140,6 +142,7 @@ class ServiceConfiguration():
         self.local_state: dict[str, object] = {}
         self.new_state: dict[str, object] = {}
         self.local_configs: dict[str, object] = {}
+        self.template_config: dict[str, object] = {}
 
         self._twilio_client = kwargs['twilio_client']
         self._ssm_client = kwargs['ssm_client']
@@ -156,9 +159,6 @@ class ServiceConfiguration():
         self.init_plan()
 
     def init_local_state(self):
-        self.init_template_fields()
-        self.init_ssm_fields()
-
         for conf in JSON_CONFIGS:
             key = conf['key']
             path = conf['path_tpl'].format(
@@ -201,6 +201,15 @@ class ServiceConfiguration():
             if local_value:
                 set_nested_key(self.new_state, field, local_value)
 
+        self.init_ssm_fields()
+        self.init_template_fields()
+        for key, value in self.template_config.items():
+            new_value = get_nested_key(self.new_state, key)
+            if new_value and new_value != value:
+                continue
+
+            set_nested_key(self.new_state, key, value)
+
     def init_template_fields(self):
         for key, value in TEMPLATE_FIELDS.items():
             templated_value = value.format(
@@ -208,7 +217,7 @@ class ServiceConfiguration():
                 account_sid=self.account_sid,
                 helpline_code=self.helpline_code
             )
-            set_nested_key(self.local_state, key, templated_value)
+            self.template_config[key] = templated_value
 
     def init_ssm_fields(self):
         for key, value in SSM_FIELDS.items():
@@ -218,7 +227,7 @@ class ServiceConfiguration():
                 helpline_code=self.helpline_code
             )
             ssm_value = self._ssm_client.get_parameter(ssm_key_name)
-            set_nested_key(self.local_state, key, ssm_value)
+            set_nested_key(self.new_state, key, ssm_value)
 
     def init_plan(self):
         self.plan = DeepDiff(

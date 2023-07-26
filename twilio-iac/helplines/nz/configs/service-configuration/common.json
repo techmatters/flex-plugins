@@ -17,7 +17,6 @@
             "enable_transcripts": false,
             "enable_twilio_transcripts": false
         },
-        "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
         "helplineLanguage": "en-NZ",
         "permissionConfig": "nz",
         "resources_base_url": ""

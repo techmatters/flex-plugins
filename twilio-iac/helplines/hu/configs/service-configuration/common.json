@@ -11,8 +11,10 @@
             "enable_post_survey": false,
             "enable_save_insights": true
         },
+        "form_definitions_base_url": null,
         "helplineLanguage": "hu-HU",
-        "permissionConfig": "hu"
+        "permissionConfig": "hu",
+        "resources_base_url": null
     },
     "ui_attributes": {
         "colorTheme": {

@@ -23,7 +23,7 @@ def main():
         if config.argument == 'service_config':
             run_service_config_action()
         elif config.argument == 'syncer':
-            run_sync_action()
+            run_syncer_action()
         else:
             raise Exception('Invalid argument configuration')
         cleanup_and_exit()
@@ -34,18 +34,16 @@ def main():
 
 
 def run_service_config_action():
-    action = config.action
     for account_sid in config.get_account_sids():
         service_config = config.get_service_config(
             account_sid)
         print_service_config_info(service_config)
-        globals()[action](service_config)
+        globals()[config.action](service_config)
 
 
-def run_sync_action():
-    action = config.action
+def run_syncer_action():
     for syncer in config.syncers:
-        globals()[action](syncer)
+        globals()[config.action](syncer)
 
 
 def print_text(text: object):

@@ -16,8 +16,7 @@
             "enable_transcripts": true
         },
         "multipleOfficeSupport": true,
-        "permissionConfig": "dev",
-        "resources_base_url": "https://hrm-development.tl.techmatters.org"
+        "permissionConfig": "dev"
     },
     "ui_attributes": {
         "colorTheme": {
