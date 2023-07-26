@@ -119,27 +119,41 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                     </ResourceAttribute>
 
                     {[
-                      { subtitle: 'Is Open 24/7?', attributeToDisplay: resourceAttributes.available247 },
+                      { subtitle: 'Resources-View-247', attributeToDisplay: resourceAttributes.available247 },
 
-                      { subtitle: 'Ages served', attributeToDisplay: resourceAttributes.ageRange },
+                      { subtitle: 'Resources-View-AgesServed', attributeToDisplay: resourceAttributes.ageRange },
                       {
-                        subtitle: 'Target Population',
+                        subtitle: 'Resources-View-TargetPopulation',
                         attributeToDisplay: resourceAttributes.targetPopulation,
                       },
-
                       {
-                        subtitle: 'Interpretation/ Translation Services Available?',
+                        subtitle: 'Resources-View-TranslationServicesAvailable',
                         attributeToDisplay: resourceAttributes.interpretationTranslationServicesAvailable,
                       },
-                      { subtitle: 'Fee Structure', attributeToDisplay: resourceAttributes.feeStructureSource },
-                      { subtitle: 'How to Access Support', attributeToDisplay: resourceAttributes.howToAccessSupport },
-                      { subtitle: 'Application process', attributeToDisplay: resourceAttributes.applicationProcess },
                       {
-                        subtitle: 'How is Service Offered',
+                        subtitle: 'Resources-View-FeeStructure',
+                        attributeToDisplay: resourceAttributes.feeStructureSource,
+                      },
+                      {
+                        subtitle: 'Resources-View-HowToAccessSupport',
+                        attributeToDisplay: resourceAttributes.howToAccessSupport,
+                      },
+                      {
+                        subtitle: 'Resources-View-ApplicationProcess',
+                        attributeToDisplay: resourceAttributes.applicationProcess,
+                      },
+                      {
+                        subtitle: 'Resources-View-HowIsServiceOffered',
                         attributeToDisplay: resourceAttributes.howIsServiceOffered,
                       },
-                      { subtitle: 'Accessibility', attributeToDisplay: resourceAttributes.accessibility },
-                      { subtitle: 'Documents Required', attributeToDisplay: resourceAttributes.documentsRequired },
+                      {
+                        subtitle: 'Resources-View-Accessibility',
+                        attributeToDisplay: resourceAttributes.accessibility,
+                      },
+                      {
+                        subtitle: 'Resources-View-DocumentsRequired',
+                        attributeToDisplay: resourceAttributes.documentsRequired,
+                      },
                     ].map(({ subtitle, attributeToDisplay }) => (
                       <ResourceAttribute key={subtitle} description={subtitle}>
                         {attributeToDisplay}
