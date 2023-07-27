@@ -73,6 +73,20 @@ export const AddButton = styled('button')<AddButtonProps>`
   }
 `;
 
+// eslint-disable-next-line import/no-unused-modules
+export const DeleteButton = styled('span')`
+  color: #1876d1;
+  font-family: OpenSans;
+  font-size: 13px;
+  line-height: 16px;
+  width: 237px;
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-style: normal !important;
+`;
+
 export const Error = styled('p')`
   display: flex;
   color: red;

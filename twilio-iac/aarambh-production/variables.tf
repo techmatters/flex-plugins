@@ -36,7 +36,7 @@ variable "feature_flags" {
   description = "A map of feature flags that need to be set for this helpline's flex plugin"
   type = map(bool)
   default = {
-
+    "enable_fullstory_monitoring" : true
     "enable_upload_documents" = true
     "enable_previous_contacts" = true
     "enable_case_management" = true

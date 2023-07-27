@@ -15,21 +15,19 @@
  */
 
 import { Page, test } from '@playwright/test';
-import { logPageTelemetry } from '../browser-logs';
 import { caseList } from '../caseList';
-import { shouldSkipDataUpdate } from '../config';
+import { skipTestIfNotTargeted, skipTestIfDataUpdateDisabled } from '../skipTest';
 import { notificationBar } from '../notificationBar';
+import { setupContextAndPage, closePage } from '../browser';
 
 test.describe.serial('Open and Edit a Case in Case List page', () => {
-  test.skip(shouldSkipDataUpdate(), 'Data update disabled. Skipping test.');
+  skipTestIfNotTargeted();
+  skipTestIfDataUpdateDisabled();
 
   let pluginPage: Page;
-
   test.beforeAll(async ({ browser }) => {
     test.setTimeout(600000);
-    pluginPage = await browser.newPage();
-    logPageTelemetry(pluginPage);
-    console.log('Plugin page browser session launched');
+    ({ page: pluginPage } = await setupContextAndPage(browser));
 
     // Open Case List
     await pluginPage.goto('/case-list', { waitUntil: 'networkidle', timeout: 20000 });
@@ -37,7 +35,7 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
   });
 
   test.afterAll(async () => {
-    await pluginPage?.close();
+    await closePage(pluginPage);
   });
 
   test('Filter Cases and Update a Case', async () => {

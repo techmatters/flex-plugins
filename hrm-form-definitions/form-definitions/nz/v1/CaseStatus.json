@@ -4,6 +4,22 @@
     "label": "Open",
     "color": "green",
     "transitions": [
+      "readyForReview"
+    ]
+  },
+  "readyForReview": {
+    "value": "readyForReview",
+    "label": "Ready for Review",
+    "color": "yellow",
+    "transitions": [
+      "submitted"
+    ]
+  },
+  "submitted": {
+    "value": "submitted",
+    "label": "Submitted",
+    "color": "blue",
+    "transitions": [
       "closed"
     ]
   },
@@ -12,7 +28,7 @@
     "label": "Closed",
     "color": "red",
     "transitions": [
-      "open"
+      "readyForReview", "submitted"
     ]
   }
 }

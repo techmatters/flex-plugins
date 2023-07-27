@@ -67,6 +67,10 @@
     "unknownOption": "",
     "options": [
       {
+        "value": "",
+        "label": ""
+      },
+      {
         "value": "Word of mouth",
         "label": "Word of mouth"
       },
@@ -97,27 +101,5 @@
     "name": "didYouDiscussRightsWithTheChild",
     "label": "Did you discuss privacy rights and consent with the young person?",
     "type": "mixed-checkbox"
-  },
-  {
-    "name": "safetyPlanCreated",
-    "label": "Safety Plan Created? pending",
-    "type": "checkbox"
-  },
-  {
-    "name": "safetyPlan",
-    "label": "Safety Plan pending",
-    "type": "input"
-  },
-  {
-    "name": "referredTo",
-    "label": "Referred To pending",
-    "type": "select",
-    "unknownOption": "",
-    "options": [
-      {
-        "value": "Pending",
-        "label": "Pending"
-      }
-    ]
   }
 ]

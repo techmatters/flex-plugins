@@ -17,7 +17,7 @@
 import { styled } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 
-import { Box, Column, Flex, Absolute, Row, FontOpenSans } from './HrmStyles';
+import { Box, Column, Flex, Row, FontOpenSans, StyledNextStepButton } from './HrmStyles';
 
 export const ResourcePreviewWrapper = styled('div')`
   display: flex;
@@ -34,17 +34,36 @@ export const ResourcePreviewWrapper = styled('div')`
 ResourcePreviewWrapper.displayName = 'ResourcePreviewWrapper';
 
 export const ResourcePreviewHeaderText = styled(FontOpenSans)`
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
   line-height: 1.2;
   color: #192b33;
   text-decoration: underline;
 `;
 
+export const ResourcePreviewAttributeDescription = styled(FontOpenSans)`
+  color: #192b33;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: bold;
+`;
+ResourcePreviewAttributeDescription.displayName = 'ResourcePreviewAttributeDescription';
+
+export const ResourcePreviewAttributeContent = styled(FontOpenSans)`
+  color: #192b33;
+  font-size: 14px;
+  white-space: break-spaces;
+  padding-bottom: 5px;
+  line-height: initial;
+`;
+ResourcePreviewAttributeContent.displayName = 'ResourcePreviewAttributeContent';
+
 export const ReferrableResourcesContainer = styled(Flex)`
-  margin: 20px;
-  max-width: 800px;
+  padding: 20px;
+  max-width: 1230px;
   width: 100%;
+  background-color: #f6f6f6;
+  overflow-y: auto;
 `;
 ReferrableResourcesContainer.displayName = 'ReferrableResourcesContainer';
 
@@ -60,7 +79,7 @@ ResourceTitle.displayName = 'ResourceTitle';
 export const ViewResourceArea = styled('div')`
   width: 100%;
   background-color: white;
-  padding: 15px;
+  padding: 25px;
   border-radius: 4px;
   overflow-y: auto;
 `;
@@ -76,45 +95,40 @@ type ResourceAttributesColumnProps = {
 };
 export const ResourceAttributesColumn = styled(Column)<ResourceAttributesColumnProps>`
   flex: 1;
-  margin: 5px;
-  border-right: ${props => (props.addDivider ? '2px solid rgba(53, 61, 63, 0.3)' : 'none')};
+  margin: 5px 15px 5px 15px;
+  border-right: ${props => (props.addDivider ? '1px solid #d8d8d8' : 'none')};
   padding-right: ${props => (props.addDivider ? '5px' : 'none')};
 `;
 
 export const ResourceAttributeDescription = styled(FontOpenSans)`
   color: #192b33;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 20px;
   font-weight: bold;
 `;
 ResourceAttributeDescription.displayName = 'ResourceAttributeDescription';
 
 export const ResourceAttributeContent = styled(FontOpenSans)`
-  color: #192b33;
-  font-size: 12px;
+  color: #121c2e;
+  font-size: 13px;
   white-space: break-spaces;
   padding-bottom: 5px;
   line-height: initial;
 `;
 ResourceAttributeContent.displayName = 'ResourceAttributeContent';
 
-export const ResourceCategoriesContainer = styled(Row)`
-  flex-wrap: wrap;
-`;
-ResourceCategoriesContainer.displayName = 'ResourceCategoriesContainer';
-
 export const ResourcesSearchArea = styled('div')`
-  margin: 10px;
   max-width: 800px;
   width: 100%;
-  padding: 10px;
   overflow-y: auto;
+  background-color: #f6f6f6;
+  padding: 0 10px 0 5px;
 `;
 ViewResourceArea.displayName = 'ViewResourceArea';
 
 export const ResourcesSearchFormArea = styled('div')`
   width: 100%;
-  padding: 20px;
+  padding: 10px 20px 10px 20px;
   flex-grow: 1;
 `;
 
@@ -122,14 +136,17 @@ export const ResourcesSearchFormSettingBox = styled('div')`
   width: 100%;
   background-color: white;
   padding: 17px;
-  margin: 4px 4px 4px 0;
+  margin: 4px 0 4px 0;
+  border-radius: 4px;
+  border: #e6e6e6 1px solid;
 `;
 
 export const ResourcesSearchFormContainer = styled(Column)`
   width: 100%;
+  background-color: #f6f6f6;
   justify-content: space-between;
   max-width: 800px;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 18px;
   font-weight: 400;
   color: black;
@@ -140,7 +157,7 @@ export const ResourcesSearchFormTopRule = styled('hr')`
   background-color: #d8d8d8;
   height: 1px;
   width: 100%;
-  margin-left: 5px;
+  margin: 0 5px 0 5px;
   border: 0;
   border-top: 1px solid #d8d8d8;
 `;
@@ -160,7 +177,7 @@ export const ResourcesSearchFormSectionHeader = styled(FontOpenSans)`
   font-weight: 700;
   display: inline-block;
   color: #192b33;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   margin-top: 10px;
 `;
 ResourcesSearchFormSectionHeader.displayName = 'ResourcesSearchFormSectionHeader';
@@ -168,21 +185,27 @@ ResourcesSearchFormSectionHeader.displayName = 'ResourcesSearchFormSectionHeader
 export const ResourcesSearchFormFilterHeader = styled(FontOpenSans)`
   font-size: 13px;
   line-height: 18px;
-  font-weight: 700;
+  margin-bottom: 8px;
+  font-weight: 600;
   display: inline-block;
   color: black;
 `;
 ResourcesSearchFormFilterHeader.displayName = 'ResourcesSearchFormFilterHeader';
 
+export const ResourceSearchFormClearButton = styled(StyledNextStepButton)`
+  margin-right: 15px;
+  background: transparent !important; // Not sure why the important flag is needed here to override a style with less specificity
+`;
+
 export const ResourcesSearchResultsHeader = styled(Box)`
-  box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.1);
+  margin-left: 25px;
   padding-top: 15px;
   padding-bottom: 15px;
 `;
 ResourcesSearchResultsHeader.displayName = 'ResourcesSearchResultsHeader';
 
 export const ResourcesSearchResultsList = styled(`ul`)`
-  margin: 0;
+  margin: 0 0 0 25px;
   padding: 0;
   list-style: none;
 `;
@@ -210,10 +233,11 @@ export const PrivateResourceAttribute = styled('div')`
 PrivateResourceAttribute.displayName = 'PrivateResourceAttribute';
 
 // ViewResource Page
-export const ResourceViewContainer = styled(Absolute)`
+export const ResourceViewContainer = styled('div')`
   height: 100%;
-  width: 1280px;
+  width: 100%;
   background-color: #f6f6f6;
+  margin: 5px;
 `;
 ResourceViewContainer.displayName = 'ResourceViewContainer';
 
@@ -247,9 +271,8 @@ export const SectionTitleText = styled(FontOpenSans)`
 SectionTitleText.displayName = 'SectionTitleText';
 
 export const ResourceSubtitle = styled(FontOpenSans)`
-  color: #9b9b9b;
-  font-size: 11px;
-  font-weight: 600;
+  color: #606b85;
+  font-size: 13px;
   line-height: 16px;
   width: max-content;
 `;

@@ -1,0 +1,71 @@
+{
+  "post_survey_yes":{
+    "description": "Post Survey Intent - Yes",
+    "sample_utterances": [
+      "y",
+      "yes",
+      "yep",
+      "yeah",
+      "yup",
+      "ya",
+      "yah"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "Thank you for reaching out. Please contact us again if you need more help.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Sorry, I didn't understand that.",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "wasHelpful": {
+        "priority": 1,
+        "description": "wasHelpful",
+        "slot_constraint": "Required",
+        "slot_type": "yes_no",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "Did you find this conversation helpful? Please answer Yes or No.",
+          "content_type": "PlainText"
+        }
+      },
+      "wouldRecommend": {
+        "priority": 1,
+        "description": "wasHelpful",
+        "slot_constraint": "Required",
+        "slot_type": "yes_no",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "Based on this conversation, would you recommend that someone in a similar situation contact us? Please answer Yes or No.",
+          "content_type": "PlainText"
+        }
+      }
+    }
+  },
+  "post_survey_no":{
+    "description": "Post Survey Intent - Yes",
+    "sample_utterances": [
+      "n",
+      "no",
+      "nope",
+      "nah",
+      "not"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "Thank you for reaching out. Please contact us again if you need more help.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Sorry, I didn't understand that.",
+      "content_type": "PlainText"
+    },
+    "slots": {}
+  }
+}

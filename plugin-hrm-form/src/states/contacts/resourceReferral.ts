@@ -67,6 +67,13 @@ export const addResourceReferralForUnsavedContactAction = createAction(
   }),
 );
 
+const REMOVE_RESOURCE_REFERRAL_FOR_UNSAVED_CONTACT = 'RemoveResourceReferralForUnsavedContact';
+
+export const removeResourceReferralForUnsavedContactAction = createAction(
+  REMOVE_RESOURCE_REFERRAL_FOR_UNSAVED_CONTACT,
+  (taskId: string, referralId: string) => ({ taskId, referralId }),
+);
+
 const patchUnsavedContactReferralResourceState = (
   state: ContactsState,
   taskId: string,
@@ -139,6 +146,19 @@ export const resourceReferralReducer = (initialState: ContactsState) =>
                 lookupStatus: ReferralLookupStatus.NOT_STARTED,
               },
             },
+          },
+        },
+      };
+    }),
+    handleAction(removeResourceReferralForUnsavedContactAction, (state, { payload: { taskId, referralId } }) => {
+      const referrals = state.tasks[taskId].referrals.filter(referral => referral.resourceId !== referralId);
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [taskId]: {
+            ...state.tasks[taskId],
+            referrals,
           },
         },
       };
