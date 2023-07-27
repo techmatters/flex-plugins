@@ -333,3 +333,4 @@ export function isTwilioTask(task: CustomITask): task is ITask {
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === standaloneTaskSid;
 };
+
