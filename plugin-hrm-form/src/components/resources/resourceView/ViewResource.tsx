@@ -20,7 +20,6 @@ import { connect, ConnectedProps } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 
-import FieldSelect from '../../FieldSelect';
 import { namespace, referrableResourcesBase, RootState } from '../../../states';
 import { Box, Column } from '../../../styles/HrmStyles';
 import SearchResultsBackButton from '../../search/SearchResults/SearchResultsBackButton';
@@ -36,7 +35,6 @@ import { loadResourceAsyncAction, navigateToSearchAction, ResourceLoadStatus } f
 import asyncDispatch from '../../../states/asyncDispatch';
 import ResourceIdCopyButton from '../ResourceIdCopyButton';
 import ResourceAttributeWithPrivacy from './ResourceAttributeWithPrivacy';
-import MainContactDetails from './MainContactDetails';
 import SiteDetails from './SiteDetails';
 import OperatingHours from './OperatingHours';
 import { convertKHPResourceAttributes } from '../convertKHPResourceAttributes';
@@ -66,19 +64,6 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, navigateToSearch }) => {
-  const languageOptions = [
-    { label: 'English', value: 'english' },
-    { label: 'French', value: 'french' },
-  ];
-  const defaultOption = languageOptions[0];
-  const getField = value => ({
-    value,
-    error: null,
-    validation: null,
-    touched: false,
-  });
-  // const [language, setLanguage] = useState(defaultOption);
-
   if (!resource && !error) {
     loadViewedResource();
     return <div>Loading...</div>;
@@ -111,47 +96,29 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
               {attributes && (
                 <ResourceAttributesContainer>
                   {/* FIRST COLUMN */}
-                  <ResourceAttributesColumn>
-                    <ResourceAttribute description="Details">{resourceAttributes.description}</ResourceAttribute>
-                  </ResourceAttributesColumn>
-
-                  {/* SECOND COLUMN */}
-                  <ResourceAttributesColumn addDivider={true}>
-                    <ResourceAttributeWithPrivacy
-                      isPrivate={resourceAttributes.mainContact.isPrivate}
-                      description="Contact Info"
-                    >
-                      <MainContactDetails mainContact={resourceAttributes.mainContact} />
-                    </ResourceAttributeWithPrivacy>
-                    <ResourceAttribute description="Website" data-testid="resource-website">
-                      {resourceAttributes.website}
-                    </ResourceAttribute>
-                    <ResourceAttribute description="Hours of Operation">
-                      <OperatingHours operations={resourceAttributes.operations} showDescriptionOfHours={true} />
-                    </ResourceAttribute>
-
+                  <ResourceAttributesColumn style={{ flexGrow: 3 }}>
                     {[
-                      { subtitle: 'Is Open 24/7?', attributeToDisplay: resourceAttributes.available247 },
-
-                      { subtitle: 'Ages served', attributeToDisplay: resourceAttributes.ageRange },
                       {
-                        subtitle: 'Target Population',
+                        subtitle: 'Resources-View-Details',
+                        attributeToDisplay: resourceAttributes.description,
+                      },
+                      {
+                        subtitle: 'Resources-View-TargetPopulation',
                         attributeToDisplay: resourceAttributes.targetPopulation,
                       },
-
                       {
-                        subtitle: 'Interpretation/ Translation Services Available?',
-                        attributeToDisplay: resourceAttributes.interpretationTranslationServicesAvailable,
+                        subtitle: 'Resources-View-Accessibility',
+                        attributeToDisplay: resourceAttributes.accessibility,
                       },
-                      { subtitle: 'Fee Structure', attributeToDisplay: resourceAttributes.feeStructureSource },
-                      { subtitle: 'How to Access Support', attributeToDisplay: resourceAttributes.howToAccessSupport },
-                      { subtitle: 'Application process', attributeToDisplay: resourceAttributes.applicationProcess },
                       {
-                        subtitle: 'How is Service Offered',
-                        attributeToDisplay: resourceAttributes.howIsServiceOffered,
+                        subtitle: 'Resources-View-HowToAccessSupport',
+                        attributeToDisplay: resourceAttributes.howToAccessSupport,
                       },
-                      { subtitle: 'Accessibility', attributeToDisplay: resourceAttributes.accessibility },
-                      { subtitle: 'Documents Required', attributeToDisplay: resourceAttributes.documentsRequired },
+                      {
+                        subtitle: 'Resources-View-DocumentsRequired',
+                        attributeToDisplay: resourceAttributes.documentsRequired,
+                      },
+                      { subtitle: 'Resources-View-AgesServed', attributeToDisplay: resourceAttributes.ageRange },
                     ].map(({ subtitle, attributeToDisplay }) => (
                       <ResourceAttribute key={subtitle} description={subtitle}>
                         {attributeToDisplay}
@@ -159,30 +126,61 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                     ))}
                   </ResourceAttributesColumn>
 
+                  {/* SECOND COLUMN */}
+                  <ResourceAttributesColumn style={{ flexGrow: 3 }} addDivider={true}>
+                    {[
+                      {
+                        subtitle: 'Resources-View-Website',
+                        attributeToDisplay: resourceAttributes.website,
+                        dataTestId: 'resource-website',
+                      },
+                      {
+                        subtitle: 'Resources-View-ApplicationProcess',
+                        attributeToDisplay: resourceAttributes.applicationProcess,
+                      },
+                      { subtitle: 'Resources-View-247', attributeToDisplay: resourceAttributes.available247 },
+                      {
+                        subtitle: 'Resources-View-HowIsServiceOffered',
+                        attributeToDisplay: resourceAttributes.howIsServiceOffered,
+                      },
+                      {
+                        subtitle: 'Resources-View-FeeStructure',
+                        attributeToDisplay: resourceAttributes.feeStructureSource,
+                      },
+                      {
+                        subtitle: 'Resources-View-TranslationServicesAvailable',
+                        attributeToDisplay: resourceAttributes.interpretationTranslationServicesAvailable,
+                      },
+                      // eslint-disable-next-line sonarjs/no-identical-functions
+                    ].map(({ subtitle, attributeToDisplay, dataTestId }) => (
+                      <ResourceAttribute key={subtitle} description={subtitle} data-testid={dataTestId}>
+                        {attributeToDisplay}
+                      </ResourceAttribute>
+                    ))}
+                  </ResourceAttributesColumn>
+
                   {/* THIRD COLUMN */}
-                  <ResourceAttributesColumn>
+                  <ResourceAttributesColumn style={{ flexGrow: 4 }}>
                     <span style={{ padding: '2px', width: '75%' }}>
                       <ResourceIdCopyButton resourceId={id} height="44px" />
                     </span>
-                    <FieldSelect
-                      id="select_language"
-                      label="Language Preference"
-                      name="language"
-                      field={getField(defaultOption)}
-                      options={languageOptions}
-                      handleChange={e => e.target?.value}
-                      /*
-                       * handleBlur={() => {}}
-                       * handleFocus={() => {}}
-                       */
-                    />
                     <ResourceAttributeWithPrivacy
                       isPrivate={resourceAttributes.primaryLocationIsPrivate}
-                      description="Primary Address"
+                      description="Resources-View-PrimaryAddress"
                     >
                       {resourceAttributes.primaryLocation}
                     </ResourceAttributeWithPrivacy>
-                    <ResourceAttribute description="">
+
+                    <ResourceAttributeWithPrivacy
+                      isPrivate={resourceAttributes.mainContact.isPrivate}
+                      description="Resources-View-ContactInfo"
+                    >
+                      {resourceAttributes.mainContact.mainContactText}
+                    </ResourceAttributeWithPrivacy>
+                    <ResourceAttribute description="Resources-View-OperatingHours">
+                      <OperatingHours operations={resourceAttributes.operations} showDescriptionOfHours={true} />
+                    </ResourceAttribute>
+                    <ResourceAttribute description="Resources-View-Sites">
                       <SiteDetails sites={resourceAttributes.site} />
                     </ResourceAttribute>
                   </ResourceAttributesColumn>

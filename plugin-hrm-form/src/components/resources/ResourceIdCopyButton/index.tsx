@@ -27,17 +27,17 @@ type OwnProps = {
   height?: string;
 };
 
-const ResourceIdCopyButton: React.FC<OwnProps> = ({ resourceId, height }) => {
+const ResourceIdCopyButton: React.FC<OwnProps> = ({ resourceId, height = '36px' }) => {
   const [justCopied, setJustCopied] = useState(false);
 
-  const copyClicked = () => {
-    navigator.clipboard.writeText(resourceId);
+  const copyClicked = async () => {
+    await navigator.clipboard.writeText(resourceId);
     setJustCopied(true);
     setTimeout(() => setJustCopied(false), 2000);
   };
 
   return justCopied ? (
-    <Button type="button" title={`#${resourceId}`} style={{ ...{ height } }}>
+    <Button type="button" title={`#${resourceId}`} style={{ height }}>
       <CheckIcon style={{ marginRight: '8px' }} />
       &nbsp;
       <Template code="Resources-IdCopied" />
@@ -47,7 +47,7 @@ const ResourceIdCopyButton: React.FC<OwnProps> = ({ resourceId, height }) => {
       type="button"
       onClick={copyClicked}
       title={`#${resourceId}`}
-      style={{ ...{ height } }}
+      style={{ height }}
       data-testid="copy-id-button"
     >
       <CopyIcon style={{ marginRight: '8px' }} />
