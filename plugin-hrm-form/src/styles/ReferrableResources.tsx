@@ -17,7 +17,8 @@
 import { styled } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 
-import { Box, Column, Flex, Row, FontOpenSans, StyledNextStepButton } from './HrmStyles';
+import { Box, Column, Flex, Absolute, Row, FontOpenSans, StyledNextStepButton } from './HrmStyles';
+import HrmTheme from './HrmTheme';
 
 export const ResourcePreviewWrapper = styled('div')`
   display: flex;
@@ -277,3 +278,48 @@ export const ResourceSubtitle = styled(FontOpenSans)`
   width: max-content;
 `;
 ResourceSubtitle.displayName = 'ResourceSubtitle';
+
+type AutoCompleteProps = {
+  border?: string;
+};
+
+export const AutoCompleteDropdown = styled('div')<AutoCompleteProps>`
+  position: absolute;
+  background-color: #fff;
+  margin: -36px 0 140px 18px;
+  width: 95.4%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #979797;
+  border-radius: 4px;
+  padding: 0 15px;
+  z-index: 1;
+
+  &:empty {
+    border: none;
+  }
+`;
+
+export const AutoCompleteDropdownRow = styled('div')`
+  position: relative;
+  cursor: pointer;
+  font-family: Open Sans;
+  text-align: start;
+  font-size: 13px;
+  background-color: white;
+  padding: 7px 0 7px 15px;
+  width: 100%;
+  color: #192b33;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 30px;
+
+  &:last-child {
+    padding-bottom: 13px;
+  }
+
+  &:hover {
+    background-blend-mode: darken;
+    background: ${HrmTheme.colors.inputBackgroundColor};
+  }
+`;
