@@ -55,8 +55,8 @@ The order of precedence for configuration file override relative to the `twilio-
 
 `configs/service-configuration/defaults.json` - the default configuration for all helplines
 
-`configs/<helpline_short_code>/service-configuration/common.json` - the common configuration for a specific helpline
+`<helpline_short_code>/configs/service-configuration/common.json` - the common configuration for a specific helpline
 
-`configs/<helpline_short_code>/service-configuration/<environment>.json` - the environment specific configuration for a specific helpline
+`configs/<helpline_short_code>/configs/service-configuration/<environment>.json` - the environment specific configuration for a specific helpline
 
 The `defaults.json`, `common.json` and `<environment>.json` files are merged together to create the final configuration for a helpline in a given environment.
