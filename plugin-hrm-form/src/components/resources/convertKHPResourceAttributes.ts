@@ -88,7 +88,8 @@ const extractPrimaryLocation = (attributes: Attributes, language: Language) => {
 };
 
 const extractOperatingHours = (operations: Attributes, language: Language): KhpOperationsDay[] => {
-  return Object.values(operations ?? {})
+  const { siteId, ...opsWithoutSiteId } = operations;
+  return Object.values(opsWithoutSiteId ?? {})
     .flat()
     .filter(item => item.language === language || item.language === '')
     .map(({ value, info }, index) => {

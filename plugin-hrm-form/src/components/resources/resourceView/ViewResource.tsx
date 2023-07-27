@@ -101,6 +101,29 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                     <ResourceAttribute description="Resources-View-Details">
                       {resourceAttributes.description}
                     </ResourceAttribute>
+                    {[
+                      {
+                        subtitle: 'Resources-View-TargetPopulation',
+                        attributeToDisplay: resourceAttributes.targetPopulation,
+                      },
+                      {
+                        subtitle: 'Resources-View-Accessibility',
+                        attributeToDisplay: resourceAttributes.accessibility,
+                      },
+                      {
+                        subtitle: 'Resources-View-HowToAccessSupport',
+                        attributeToDisplay: resourceAttributes.howToAccessSupport,
+                      },
+                      {
+                        subtitle: 'Resources-View-DocumentsRequired',
+                        attributeToDisplay: resourceAttributes.documentsRequired,
+                      },
+                      { subtitle: 'Resources-View-AgesServed', attributeToDisplay: resourceAttributes.ageRange },
+                    ].map(({ subtitle, attributeToDisplay }) => (
+                      <ResourceAttribute key={subtitle} description={subtitle}>
+                        {attributeToDisplay}
+                      </ResourceAttribute>
+                    ))}
                   </ResourceAttributesColumn>
 
                   {/* SECOND COLUMN */}
@@ -111,49 +134,30 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                     >
                       <MainContactDetails mainContact={resourceAttributes.mainContact} />
                     </ResourceAttributeWithPrivacy>
-                    <ResourceAttribute description="Resources-View-Website">
-                      {resourceAttributes.website}
-                    </ResourceAttribute>
-                    <ResourceAttribute description="Resources-View-OperatingHours">
-                      <OperatingHours operations={resourceAttributes.operations} showDescriptionOfHours={true} />
-                    </ResourceAttribute>
 
                     {[
-                      { subtitle: 'Resources-View-247', attributeToDisplay: resourceAttributes.available247 },
-
-                      { subtitle: 'Resources-View-AgesServed', attributeToDisplay: resourceAttributes.ageRange },
                       {
-                        subtitle: 'Resources-View-TargetPopulation',
-                        attributeToDisplay: resourceAttributes.targetPopulation,
+                        subtitle: 'Resources-View-Website',
+                        attributeToDisplay: resourceAttributes.website,
                       },
                       {
-                        subtitle: 'Resources-View-TranslationServicesAvailable',
-                        attributeToDisplay: resourceAttributes.interpretationTranslationServicesAvailable,
+                        subtitle: 'Resources-View-ApplicationProcess',
+                        attributeToDisplay: resourceAttributes.applicationProcess,
+                      },
+                      { subtitle: 'Resources-View-247', attributeToDisplay: resourceAttributes.available247 },
+                      {
+                        subtitle: 'Resources-View-HowIsServiceOffered',
+                        attributeToDisplay: resourceAttributes.howIsServiceOffered,
                       },
                       {
                         subtitle: 'Resources-View-FeeStructure',
                         attributeToDisplay: resourceAttributes.feeStructureSource,
                       },
                       {
-                        subtitle: 'Resources-View-HowToAccessSupport',
-                        attributeToDisplay: resourceAttributes.howToAccessSupport,
+                        subtitle: 'Resources-View-TranslationServicesAvailable',
+                        attributeToDisplay: resourceAttributes.interpretationTranslationServicesAvailable,
                       },
-                      {
-                        subtitle: 'Resources-View-ApplicationProcess',
-                        attributeToDisplay: resourceAttributes.applicationProcess,
-                      },
-                      {
-                        subtitle: 'Resources-View-HowIsServiceOffered',
-                        attributeToDisplay: resourceAttributes.howIsServiceOffered,
-                      },
-                      {
-                        subtitle: 'Resources-View-Accessibility',
-                        attributeToDisplay: resourceAttributes.accessibility,
-                      },
-                      {
-                        subtitle: 'Resources-View-DocumentsRequired',
-                        attributeToDisplay: resourceAttributes.documentsRequired,
-                      },
+                      // eslint-disable-next-line sonarjs/no-identical-functions
                     ].map(({ subtitle, attributeToDisplay }) => (
                       <ResourceAttribute key={subtitle} description={subtitle}>
                         {attributeToDisplay}
@@ -172,6 +176,9 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                     >
                       {resourceAttributes.primaryLocation}
                     </ResourceAttributeWithPrivacy>
+                    <ResourceAttribute description="Resources-View-OperatingHours">
+                      <OperatingHours operations={resourceAttributes.operations} showDescriptionOfHours={true} />
+                    </ResourceAttribute>
                     <ResourceAttribute description="Resources-View-Sites">
                       <SiteDetails sites={resourceAttributes.site} />
                     </ResourceAttribute>
