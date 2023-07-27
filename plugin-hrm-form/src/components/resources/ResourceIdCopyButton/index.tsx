@@ -43,7 +43,13 @@ const ResourceIdCopyButton: React.FC<OwnProps> = ({ resourceId, height = '36px' 
       <Template code="Resources-IdCopied" />
     </Button>
   ) : (
-    <Button type="button" onClick={copyClicked} title={`#${resourceId}`} style={{ height }}>
+    <Button
+      type="button"
+      onClick={copyClicked}
+      title={`#${resourceId}`}
+      style={{ height }}
+      data-testid="copy-id-button"
+    >
       <CopyIcon style={{ marginRight: '8px' }} />
       &nbsp;
       <Template code="Resources-CopyId" />

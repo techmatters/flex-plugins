@@ -24,9 +24,10 @@ import ExpandableAttributeContent from './ExpandableAttributeContent';
 type Props = {
   description: string;
   isExpandable?: boolean;
+  'data-testid'?: string;
 };
 
-const ResourceAttribute: React.FC<Props> = ({ description, children, isExpandable }) => {
+const ResourceAttribute: React.FC<Props> = ({ description, children, isExpandable, 'data-testid': dataTestId }) => {
   const renderContent = () => {
     if (!children) {
       return <Template code="Resources-View-MissingProperty" />;
@@ -46,7 +47,7 @@ const ResourceAttribute: React.FC<Props> = ({ description, children, isExpandabl
             <Template code={description} />
           </ResourceAttributeDescription>
         </Box>
-        <ResourceAttributeContent>{renderContent()}</ResourceAttributeContent>
+        <ResourceAttributeContent data-testid={dataTestId}>{renderContent()}</ResourceAttributeContent>
       </Column>
     </Box>
   );

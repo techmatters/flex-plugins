@@ -92,7 +92,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
           )}
           {resource && (
             <>
-              <ResourceTitle>{name}</ResourceTitle>
+              <ResourceTitle data-testid="resource-title">{name}</ResourceTitle>
               {attributes && (
                 <ResourceAttributesContainer>
                   {/* FIRST COLUMN */}
@@ -132,6 +132,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                       {
                         subtitle: 'Resources-View-Website',
                         attributeToDisplay: resourceAttributes.website,
+                        dataTestId: 'resource-website',
                       },
                       {
                         subtitle: 'Resources-View-ApplicationProcess',
@@ -151,8 +152,8 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                         attributeToDisplay: resourceAttributes.interpretationTranslationServicesAvailable,
                       },
                       // eslint-disable-next-line sonarjs/no-identical-functions
-                    ].map(({ subtitle, attributeToDisplay }) => (
-                      <ResourceAttribute key={subtitle} description={subtitle}>
+                    ].map(({ subtitle, attributeToDisplay, dataTestId }) => (
+                      <ResourceAttribute key={subtitle} description={subtitle} data-testid={dataTestId}>
                         {attributeToDisplay}
                       </ResourceAttribute>
                     ))}

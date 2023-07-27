@@ -154,11 +154,13 @@ const ResourceReferralList: React.FC<Props> = ({
           onChange={e => resourceReferralToAddInputChanged(e.target.value)}
           value={resourceReferralToAddText}
           disabled={lookupStatus === ReferralLookupStatus.PENDING}
+          data-testid="add-resource-input"
         />
         <AddButton
           type="submit"
           onClick={checkResourceAndAddReferral}
           disabled={lookupStatus === ReferralLookupStatus.PENDING || !resourceReferralToAddText}
+          data-testid="add-resource-button"
         >
           <Template code="Add" />
         </AddButton>
@@ -171,7 +173,7 @@ const ResourceReferralList: React.FC<Props> = ({
       )}
       <ReferralList>
         {referrals.map(({ resourceName, resourceId }) => (
-          <ReferralItem key={resourceId}>
+          <ReferralItem key={resourceId} data-testid="added-resource-item">
             <ReplyIcon
               style={{
                 transform: 'rotateY(180deg)',

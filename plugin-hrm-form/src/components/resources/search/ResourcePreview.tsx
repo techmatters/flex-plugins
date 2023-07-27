@@ -61,6 +61,7 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
                 underline={true}
                 style={{ width: '70%', marginInlineEnd: 10, justifyContent: 'left' }}
                 onClick={onClickViewResource}
+                data-testid="resource-name"
               >
                 <ResourcePreviewHeaderText>{name}</ResourcePreviewHeaderText>
               </StyledLink>
