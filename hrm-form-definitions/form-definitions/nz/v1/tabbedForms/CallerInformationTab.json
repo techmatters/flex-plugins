@@ -1,6 +1,6 @@
 [
   {
-    "name": "firstName",
+    "name": "friendlyName",
     "label": "Preferred Name",
     "type": "input",
     "required": {
@@ -264,28 +264,80 @@
         "label": ""
       },
       {
-        "value": "African American",
-        "label": "African American"
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
-        "value": "Asian",
-        "label": "Asian"
+        "value": "African",
+        "label": "African"
       },
       {
-        "value": "Hispanic",
-        "label": "Hispanic"
+        "value": "Chinese",
+        "label": "Chinese"
       },
       {
-        "value": "White",
-        "label": "White"
+        "value": "Cook Island Maori",
+        "label": "Cook Island Maori"
       },
       {
-        "value": "American Indian",
-        "label": "American Indian"
+        "value": "Fijian",
+        "label": "Fijian"
+      },
+      {
+        "value": "Indian",
+        "label": "Indian"
+      },
+      {
+        "value": "Latin American",
+        "label": "Latin American"
+      },
+      {
+        "value": "Maori",
+        "label": "Maori"
+      },
+      {
+        "value": "Middle Eastern",
+        "label": "Middle Eastern"
+      },
+      {
+        "value": "Niuean",
+        "label": "Niuean"
+      },
+      {
+        "value": "NZ European/Pakeha",
+        "label": "NZ European/Pakeha"
       },
       {
         "value": "Other",
         "label": "Other"
+      },
+      {
+        "value": "Other Asian",
+        "label": "Other Asian"
+      },
+      {
+        "value": "Other European",
+        "label": "Other European"
+      },
+      {
+        "value": "Other Pacific Peoples",
+        "label": "Other Pacific Peoples"
+      },
+      {
+        "value": "Samoan",
+        "label": "Samoan"
+      },
+      {
+        "value": "South-East Asian",
+        "label": "South-East Asian"
+      },
+      {
+        "value": "Tokelauan",
+        "label": "Tokelauan"
+      },
+      {
+        "value": "Tongan",
+        "label": "Tongan"
       }
     ]
   }

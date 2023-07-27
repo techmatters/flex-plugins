@@ -15,6 +15,7 @@
  */
 
 import React from 'react';
+import { Template } from '@twilio/flex-ui';
 
 import { KhpUiResource } from '../types';
 import { ResourceAttributeContent, ResourceSubtitle } from '../../../styles/ReferrableResources';
@@ -23,17 +24,19 @@ type Props = {
   mainContact: KhpUiResource['attributes']['mainContact'];
 };
 
-const MainContactDetails: React.FC<Props> = ({ mainContact }) => {
+const orPlaceholder = (value: string | undefined) => value || <Template code="Resources-View-MissingProperty" />;
+
+const MainContactDetails: React.FC<Props> = ({ mainContact: { name, title, phoneNumber, email } }) => {
   return (
     <>
       <ResourceSubtitle>Name </ResourceSubtitle>
-      <ResourceAttributeContent>{mainContact.name}</ResourceAttributeContent>
+      <ResourceAttributeContent>{orPlaceholder(name)}</ResourceAttributeContent>
       <ResourceSubtitle>Title </ResourceSubtitle>
-      <ResourceAttributeContent>{mainContact.title}</ResourceAttributeContent>
+      <ResourceAttributeContent>{orPlaceholder(title)}</ResourceAttributeContent>
       <ResourceSubtitle>Phone </ResourceSubtitle>
-      <ResourceAttributeContent>{mainContact.phoneNumber}</ResourceAttributeContent>
+      <ResourceAttributeContent>{orPlaceholder(phoneNumber)}</ResourceAttributeContent>
       <ResourceSubtitle>Email </ResourceSubtitle>
-      <ResourceAttributeContent>{mainContact.email}</ResourceAttributeContent>
+      <ResourceAttributeContent>{orPlaceholder(email)}</ResourceAttributeContent>
     </>
   );
 };

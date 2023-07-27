@@ -16,12 +16,13 @@
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
 import React from 'react';
+import { Template } from '@twilio/flex-ui';
 
 import { Box, Column, Flex } from '../../../styles/HrmStyles';
 import {
-  ResourceAttributeContent,
-  ResourceAttributeDescription,
   ResourceAttributesColumn,
+  ResourcePreviewAttributeContent,
+  ResourcePreviewAttributeDescription,
   ResourcePreviewHeaderText,
   ResourcePreviewWrapper,
 } from '../../../styles/ReferrableResources';
@@ -75,7 +76,9 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
             <Box marginTop="8px" marginBottom="8px">
               <Column>
                 <Box marginBottom="6px">
-                  <ResourceAttributeDescription>Hours</ResourceAttributeDescription>
+                  <ResourcePreviewAttributeDescription>
+                    <Template code="Resources-Search-Preview-OperatingHours" />
+                  </ResourcePreviewAttributeDescription>
                 </Box>
                 <OperatingHours operations={operations} showDescriptionOfHours={false} />
               </Column>
@@ -85,11 +88,15 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
             <Box marginTop="8px" marginBottom="8px">
               <Column>
                 <Box marginBottom="6px">
-                  <ResourceAttributeDescription>Contact Info</ResourceAttributeDescription>
-                  <ResourceAttributeContent>{primaryLocation}</ResourceAttributeContent>
+                  <ResourcePreviewAttributeDescription>
+                    <Template code="Resources-Search-Preview-PrimaryAddress" />
+                  </ResourcePreviewAttributeDescription>
+                  <ResourcePreviewAttributeContent>{primaryLocation}</ResourcePreviewAttributeContent>
                   <br />
-                  <ResourceAttributeDescription>Ages Served</ResourceAttributeDescription>
-                  <ResourceAttributeContent>{ageRange}</ResourceAttributeContent>
+                  <ResourcePreviewAttributeDescription>
+                    <Template code="Resources-Search-Preview-AgesServed" />
+                  </ResourcePreviewAttributeDescription>
+                  <ResourcePreviewAttributeContent>{ageRange}</ResourcePreviewAttributeContent>
                 </Box>
               </Column>
             </Box>
