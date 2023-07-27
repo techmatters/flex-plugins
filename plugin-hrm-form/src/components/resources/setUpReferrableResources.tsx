@@ -22,7 +22,6 @@ import { referrableResourcesEnabled } from '../../services/ResourceService';
 import ReferrableResources from './ReferrableResources';
 
 export const setUpReferrableResources = () => {
-  console.log('[E2E-TEST]: referrableResourcesEnabled', { referrableResourcesEnabled: referrableResourcesEnabled() });
   if (referrableResourcesEnabled()) {
     Flex.ViewCollection.Content.add(
       <Flex.View name="referrable-resources" key="referrable-resources-view">
