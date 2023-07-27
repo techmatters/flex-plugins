@@ -21,7 +21,7 @@
 
   "viewContact": [["everyone"]],
   "editContact":  [["everyone"]],
-  "viewExternalTranscript": [["isSupervisor"]],
+  "viewExternalTranscript": [["everyone"]],
   
   "viewPostSurvey":  [["isSupervisor"]],
 
