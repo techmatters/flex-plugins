@@ -265,16 +265,15 @@ type AutoCompleteProps = {
 };
 
 export const AutoCompleteDropdown = styled('div')<AutoCompleteProps>`
+  position: absolute;
   background-color: #fff;
-  margin-bottom: 140px;
-  width: 95.3%;
+  margin: -36px 0 140px 18px;
+  width: 95.4%;
   display: flex;
   flex-direction: column;
   border: 1px solid #979797;
   border-radius: 4px;
   padding: 0 15px;
-  margin-top: -36px;
-  margin-left: 18px;
   z-index: 1;
 
   &:empty {

@@ -41,25 +41,27 @@ const SearchAutoComplete: React.FC<Props> = ({
   };
 
   return (
-    <AutoCompleteDropdown>
-      {suggestSearch.taxonomyLevelNameCompletion
-        .filter(item => {
-          const text = item.text.toLocaleLowerCase();
-          return searchTermLength && text.includes(searchTerm) && text !== searchTerm;
-        })
-        .slice(0, 9)
-        .map((item, index) => {
-          const regex = new RegExp(searchTerm, 'gi');
-          const modifiedItem = item.text.replace(regex, match => `<span style="font-weight: bold">${match}</span>`);
-          return (
-            <AutoCompleteDropdownRow
-              onClick={() => onSearch(item.text)}
-              key={index}
-              dangerouslySetInnerHTML={{ __html: modifiedItem }}
-            />
-          );
-        })}
-    </AutoCompleteDropdown>
+    <div style={{ position: 'relative', width: '100%' }}>
+      <AutoCompleteDropdown>
+        {suggestSearch.taxonomyLevelNameCompletion
+          .filter(item => {
+            const text = item.text.toLocaleLowerCase();
+            return searchTermLength && text.includes(searchTerm) && text !== searchTerm;
+          })
+          .slice(0, 9)
+          .map((item, index) => {
+            const regex = new RegExp(searchTerm, 'gi');
+            const modifiedItem = item.text.replace(regex, match => `<span style="font-weight: bold">${match}</span>`);
+            return (
+              <AutoCompleteDropdownRow
+                onClick={() => onSearch(item.text)}
+                key={index}
+                dangerouslySetInnerHTML={{ __html: modifiedItem }}
+              />
+            );
+          })}
+      </AutoCompleteDropdown>
+    </div>
   );
 };
 export default SearchAutoComplete;

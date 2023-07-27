@@ -20,6 +20,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 import { Grid } from '@material-ui/core';
+import debounce from 'lodash/debounce';
 
 import { namespace, referrableResourcesBase, RootState } from '../../../states';
 import {
@@ -137,6 +138,15 @@ const SearchResourcesForm: React.FC<Props> = ({
     }
   };
 
+  const handleSearch = debounce(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => setGeneralSearchTermBoxText(e.target.value),
+    300,
+    {
+      leading: true,
+      trailing: true,
+    },
+  );
+
   useEffect(() => {
     updateSuggestSearch(generalSearchTermBoxText);
   }, [generalSearchTermBoxText, updateSuggestSearch]);
@@ -229,7 +239,7 @@ const SearchResourcesForm: React.FC<Props> = ({
                 searchTerm={generalSearchTermBoxText}
                 innerRef={firstElement}
                 onBlurSearch={text => updateGeneralSearchTerm(text)}
-                onChangeSearch={event => setGeneralSearchTermBoxText(event.target.value)}
+                onChangeSearch={handleSearch}
                 onEnter={() => {
                   submitSearchIfValid();
                 }}
