@@ -347,6 +347,7 @@ const SearchResourcesForm: React.FC<Props> = ({
           type="button"
           roundCorners={true}
           onClick={() => submitSearchIfValid()}
+          data-testid="search-button"
         >
           <Template code="SearchForm-Button" />
         </StyledNextStepButton>

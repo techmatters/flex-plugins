@@ -14,13 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { expect, Page, test } from '@playwright/test';
+import { Page, test } from '@playwright/test';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
-import { caseHome } from '../case';
 import { agentDesktop, navigateToAgentDesktop } from '../agent-desktop';
 import { skipTestIfNotTargeted, skipTestIfDataUpdateDisabled } from '../skipTest';
 import { notificationBar } from '../notificationBar';
 import { setupContextAndPage, closePage } from '../browser';
+import { referableResources } from '../referrableResources';
 
 test.describe.serial('Resource Search', () => {
   skipTestIfNotTargeted();
@@ -50,7 +50,6 @@ test.describe.serial('Resource Search', () => {
     await agentDesktopPage.addOfflineContact();
 
     console.log('Starting filling form');
-
     const form = contactForm(pluginPage);
     await form.selectChildCallType();
     await form.fill([
@@ -96,90 +95,20 @@ test.describe.serial('Resource Search', () => {
       },
     ]);
 
-    // Go to resource pages
-    // Search for faketon
-    // Click on first result to see details
-    // Check following attributes: Title, Website
-    // Click on Copy Id button
-    // Go back to add offline contact
-    // Paste Id
-    // Click Add
-    // Check Title and ID
-    // Save Contact
-
-    const beforeDate = new Date(); // Capture date here since we'll create case inmediately after saving contact
+    console.log('Search for a resource and add it to the contact');
+    const referrableResourcesPage = referableResources(pluginPage);
+    await referrableResourcesPage.openReferrableResources();
+    await referrableResourcesPage.searchResources('faketon');
+    await referrableResourcesPage.selectFirstResource();
+    await referrableResourcesPage.verifyTitle(
+      'Multicultural Association of the Faketon Area - Newcomer Settlement Services',
+    );
+    await referrableResourcesPage.verifyWebsite('https://place-holder.org/programs/');
+    await referrableResourcesPage.copyId();
+    await referrableResourcesPage.openAgentDesktop();
+    await referrableResourcesPage.addResourceToContact();
 
     console.log('Saving form');
-    await form.save({ saveAndAddToCase: true });
-
-    const casePage = caseHome(pluginPage);
-    await casePage.getNewCaseId.waitFor({ state: 'visible' });
-    const caseIdText = await casePage.getNewCaseId.textContent();
-    const caseId = parseInt(caseIdText!.slice(caseIdText!.indexOf('#') + 1), 10);
-    expect(caseId).not.toBeNaN();
-
-    await casePage.addCaseSection({
-      sectionTypeId: 'note',
-      items: {
-        note: 'E2E TEST NOTE',
-      },
-    });
-
-    await casePage.addCaseSection({
-      sectionTypeId: 'household',
-      items: {
-        firstName: 'FIRST NAME',
-        lastName: 'LAST NAME',
-        relationshipToChild: 'Unknown',
-        province: 'Northern',
-        district: 'District A',
-        gender: 'Unknown',
-        age: 'Unknown',
-      },
-    });
-
-    await casePage.saveCaseAndEnd();
-
-    // Check if the case got properly saved in HRM
-    const resultCase = await pluginPage.evaluate(
-      async ([caseIdArg]) => {
-        const manager = (window as any).Twilio.Flex.Manager.getInstance();
-        const token = manager.user.token;
-        const hrmBaseUrl = `${manager.serviceConfiguration.attributes.hrm_base_url}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`;
-
-        const url = `${hrmBaseUrl}/cases/${caseIdArg}`;
-        const options = {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        };
-
-        const response = await window.fetch(url, options);
-        return response.json();
-      },
-      [caseId],
-    );
-
-    expect(new Date(resultCase.createdAt).getTime()).toBeGreaterThan(beforeDate.getTime());
-    expect(resultCase.info.counsellorNotes).toMatchObject([
-      {
-        note: 'E2E TEST NOTE',
-      },
-    ]);
-    expect(resultCase.info.households).toMatchObject([
-      {
-        household: {
-          firstName: 'FIRST NAME',
-          lastName: 'LAST NAME',
-          relationshipToChild: 'Unknown',
-          province: 'Northern',
-          district: 'District A',
-          gender: 'Unknown',
-          age: 'Unknown',
-        },
-      },
-    ]);
+    await form.save();
   });
 });

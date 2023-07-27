@@ -25,9 +25,10 @@ type Props = {
   description: string;
   content?: ReferrableResourceAttributeValue | JSX.Element;
   isExpandable?: boolean;
+  'data-testid'?: string;
 };
 
-const ResourceAttribute: React.FC<Props> = ({ description, children, isExpandable }) => {
+const ResourceAttribute: React.FC<Props> = ({ description, children, isExpandable, 'data-testid': dataTestId }) => {
   const renderContent = () => {
     if (typeof children === 'string' && isExpandable === true) {
       return <ExpandableAttributeContent expandLinkText="ReadMore" collapseLinkText="ReadLess" content={children} />;
@@ -42,7 +43,7 @@ const ResourceAttribute: React.FC<Props> = ({ description, children, isExpandabl
         <Box marginBottom="4px">
           <ResourceAttributeDescription>{description}</ResourceAttributeDescription>
         </Box>
-        <ResourceAttributeContent>{renderContent()}</ResourceAttributeContent>
+        <ResourceAttributeContent data-testid={dataTestId}>{renderContent()}</ResourceAttributeContent>
       </Column>
     </Box>
   );

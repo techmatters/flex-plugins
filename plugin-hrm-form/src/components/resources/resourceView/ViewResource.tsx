@@ -107,7 +107,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
           )}
           {resource && (
             <>
-              <ResourceTitle>{name}</ResourceTitle>
+              <ResourceTitle data-testid="resource-title">{name}</ResourceTitle>
               {attributes && (
                 <ResourceAttributesContainer>
                   {/* FIRST COLUMN */}
@@ -123,7 +123,9 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                     >
                       <MainContactDetails mainContact={resourceAttributes.mainContact} />
                     </ResourceAttributeWithPrivacy>
-                    <ResourceAttribute description="Website">{resourceAttributes.website}</ResourceAttribute>
+                    <ResourceAttribute description="Website" data-testid="resource-website">
+                      {resourceAttributes.website}
+                    </ResourceAttribute>
                     <ResourceAttribute description="Hours of Operation">
                       <OperatingHours operations={resourceAttributes.operations} showDescriptionOfHours={true} />
                     </ResourceAttribute>
