@@ -35,7 +35,6 @@ import { loadResourceAsyncAction, navigateToSearchAction, ResourceLoadStatus } f
 import asyncDispatch from '../../../states/asyncDispatch';
 import ResourceIdCopyButton from '../ResourceIdCopyButton';
 import ResourceAttributeWithPrivacy from './ResourceAttributeWithPrivacy';
-import MainContactDetails from './MainContactDetails';
 import SiteDetails from './SiteDetails';
 import OperatingHours from './OperatingHours';
 import { convertKHPResourceAttributes } from '../convertKHPResourceAttributes';
@@ -98,10 +97,11 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                 <ResourceAttributesContainer>
                   {/* FIRST COLUMN */}
                   <ResourceAttributesColumn style={{ flexGrow: 3 }}>
-                    <ResourceAttribute description="Resources-View-Details">
-                      {resourceAttributes.description}
-                    </ResourceAttribute>
                     {[
+                      {
+                        subtitle: 'Resources-View-Details',
+                        attributeToDisplay: resourceAttributes.description,
+                      },
                       {
                         subtitle: 'Resources-View-TargetPopulation',
                         attributeToDisplay: resourceAttributes.targetPopulation,
@@ -128,13 +128,6 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
 
                   {/* SECOND COLUMN */}
                   <ResourceAttributesColumn style={{ flexGrow: 3 }} addDivider={true}>
-                    <ResourceAttributeWithPrivacy
-                      isPrivate={resourceAttributes.mainContact.isPrivate}
-                      description="Resources-View-ContactInfo"
-                    >
-                      <MainContactDetails mainContact={resourceAttributes.mainContact} />
-                    </ResourceAttributeWithPrivacy>
-
                     {[
                       {
                         subtitle: 'Resources-View-Website',
@@ -175,6 +168,13 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                       description="Resources-View-PrimaryAddress"
                     >
                       {resourceAttributes.primaryLocation}
+                    </ResourceAttributeWithPrivacy>
+
+                    <ResourceAttributeWithPrivacy
+                      isPrivate={resourceAttributes.mainContact.isPrivate}
+                      description="Resources-View-ContactInfo"
+                    >
+                      {resourceAttributes.mainContact.mainContactText}
                     </ResourceAttributeWithPrivacy>
                     <ResourceAttribute description="Resources-View-OperatingHours">
                       <OperatingHours operations={resourceAttributes.operations} showDescriptionOfHours={true} />

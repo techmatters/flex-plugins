@@ -29,10 +29,7 @@ export type KhpUiResource = {
     taxonomyCode: string;
     description: string;
     mainContact: {
-      name: string;
-      title: string;
-      phoneNumber: string;
-      email: string;
+      mainContactText: string;
       isPrivate: boolean;
     };
     website: string;
