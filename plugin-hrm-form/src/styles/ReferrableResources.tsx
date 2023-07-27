@@ -20,7 +20,6 @@ import { ButtonBase } from '@material-ui/core';
 import { Box, Column, Flex, Absolute, Row, FontOpenSans, StyledNextStepButton } from './HrmStyles';
 import HrmTheme from './HrmTheme';
 
-
 export const ResourcePreviewWrapper = styled('div')`
   display: flex;
   flex-direction: column;

@@ -58,7 +58,6 @@ import asyncDispatch from '../../../states/asyncDispatch';
 import { FiltersCheckbox, MultiSelectCheckboxLabel } from '../../../styles/caseList/filters';
 import SearchAutoComplete from './SearchAutoComplete';
 
-
 const NO_AGE_SELECTED = -1;
 const NO_LOCATION_SELECTED = '__NO_LOCATION_SELECTED__';
 
@@ -104,7 +103,10 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
       pageSize: number,
     ) => searchAsyncDispatch(searchResourceAsyncAction({ generalSearchTerm, pageSize, filterSelections }, 0)),
     resetSearch: () => dispatch(resetSearchFormAction()),
-    updateSuggestSearch: (prefix: string) => searchAsyncDispatch(suggestSearchAsyncAction(prefix)),
+    updateSuggestSearch: debounce((prefix: string) => searchAsyncDispatch(suggestSearchAsyncAction(prefix)), 300, {
+      leading: true,
+      trailing: true,
+    }),
   };
 };
 
@@ -138,15 +140,6 @@ const SearchResourcesForm: React.FC<Props> = ({
       submitSearch(generalSearchTermBoxText, filterSelections, pageSize);
     }
   };
-
-  const handleSearch = debounce(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => setGeneralSearchTermBoxText(e.target.value),
-    300,
-    {
-      leading: true,
-      trailing: true,
-    },
-  );
 
   useEffect(() => {
     updateSuggestSearch(generalSearchTermBoxText);
@@ -241,7 +234,7 @@ const SearchResourcesForm: React.FC<Props> = ({
                 searchTerm={generalSearchTermBoxText}
                 innerRef={firstElement}
                 onBlurSearch={text => updateGeneralSearchTerm(text)}
-                onChangeSearch={handleSearch}
+                onChangeSearch={event => setGeneralSearchTermBoxText(event.target.value)}
                 onEnter={() => {
                   submitSearchIfValid();
                 }}
