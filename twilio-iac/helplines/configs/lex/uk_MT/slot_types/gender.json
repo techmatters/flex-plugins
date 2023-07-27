@@ -1,0 +1,32 @@
+{
+  "gender": {
+    "description": "Gender of caller",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "Unknown": {
+        "synonyms": [
+          "4",
+          "x"
+        ]
+      },
+      "Other": {
+        "synonyms": [
+          "3",
+          "Others"
+        ]
+      },
+      "Male": {
+        "synonyms": [
+          "2",
+          "boy"
+        ]
+      },
+      "Female": {
+        "synonyms": [
+          "1",
+          "girl"
+        ]
+      }
+    }
+  }
+}

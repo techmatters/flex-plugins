@@ -1,0 +1,95 @@
+{
+    "parish": {
+        "description": null,
+        "value_selection_strategy": "TOP_RESOLUTION",
+        "values": {
+          "St. Ann": {
+            "synonyms": [
+              "st.ann",
+              "sta nn",
+              "s ann",
+              "st ann",
+              "stann"
+            ]
+          },
+          "Unknown": {
+            "synonyms": [
+              "no",
+              "x"
+            ]
+          },
+          "Portland": {
+            "synonyms": []
+          },
+          "St. Mary": {
+            "synonyms": [
+              "s mary",
+              "stm ary",
+              "st mary",
+              "stmary"
+            ]
+          },
+          "Trelawny": {
+            "synonyms": []
+          },
+          "St. James": {
+            "synonyms": [
+              "stj ames",
+              "s james",
+              "stjames",
+              "st james"
+            ]
+          },
+          "Hanover": {
+            "synonyms": []
+          },
+          "Westmoreland": {
+            "synonyms": []
+          },
+          "St. Elizabeth": {
+            "synonyms": [
+              "stelizabeth",
+              "se lizabeth",
+              "s elizabeth",
+              "st elizabeth"
+            ]
+          },
+          "Manchester": {
+            "synonyms": []
+          },
+          "Clarendon": {
+            "synonyms": []
+          },
+          "St. Catherine": {
+            "synonyms": [
+              "sc atherine",
+              "s catherine",
+              "stcatherine",
+              "st catherine"
+            ]
+          },
+          "St. Thomas": {
+            "synonyms": [
+              "stthomas",
+              "s thomas",
+              "st homas",
+              "thomas",
+              "st thomas"
+            ]
+          },
+          "St. Andrew": {
+            "synonyms": [
+              "sa ndrew",
+              "standrew",
+              "s andrew",
+              "st andrew",
+              "andrew"
+            ]
+          },
+          "Kingston": {
+            "synonyms": []
+          }
+        }
+      }
+
+}

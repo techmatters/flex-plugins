@@ -1,0 +1,313 @@
+{
+  "age": {
+    "description": "Age of caller",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "1": {
+        "synonyms": []
+      },
+      "2": {
+        "synonyms": []
+      },
+      "3": {
+        "synonyms": []
+      },
+      "4": {
+        "synonyms": []
+      },
+      "5": {
+        "synonyms": []
+      },
+      "6": {
+        "synonyms": []
+      },
+      "7": {
+        "synonyms": []
+      },
+      "8": {
+        "synonyms": []
+      },
+      "9": {
+        "synonyms": []
+      },
+      "10": {
+        "synonyms": []
+      },
+      "11": {
+        "synonyms": []
+      },
+      "12": {
+        "synonyms": []
+      },
+      "13": {
+        "synonyms": []
+      },
+      "14": {
+        "synonyms": []
+      },
+      "15": {
+        "synonyms": []
+      },
+      "16": {
+        "synonyms": []
+      },
+      "17": {
+        "synonyms": []
+      },
+      "18": {
+        "synonyms": []
+      },
+      "19": {
+        "synonyms": []
+      },
+      "20": {
+        "synonyms": []
+      },
+      "21": {
+        "synonyms": []
+      },
+      "22": {
+        "synonyms": []
+      },
+      "23": {
+        "synonyms": []
+      },
+      "24": {
+        "synonyms": []
+      },
+      "25": {
+        "synonyms": []
+      },
+      "26": {
+        "synonyms": []
+      },
+      "27": {
+        "synonyms": []
+      },
+      "28": {
+        "synonyms": []
+      },
+      "29": {
+        "synonyms": []
+      },
+      "31": {
+        "synonyms": []
+      },
+      "32": {
+        "synonyms": []
+      },
+      "33": {
+        "synonyms": []
+      },
+      "34": {
+        "synonyms": []
+      },
+      "35": {
+        "synonyms": []
+      },
+      "36": {
+        "synonyms": []
+      },
+      "37": {
+        "synonyms": []
+      },
+      "38": {
+        "synonyms": []
+      },
+      "39": {
+        "synonyms": []
+      },
+      "40": {
+        "synonyms": []
+      },
+      "41": {
+        "synonyms": []
+      },
+      "42": {
+        "synonyms": []
+      },
+      "43": {
+        "synonyms": []
+      },
+      "44": {
+        "synonyms": []
+      },
+      "45": {
+        "synonyms": []
+      },
+      "46": {
+        "synonyms": []
+      },
+      "47": {
+        "synonyms": []
+      },
+      "48": {
+        "synonyms": []
+      },
+      "49": {
+        "synonyms": []
+      },
+      "50": {
+        "synonyms": []
+      },
+      "51": {
+        "synonyms": []
+      },
+      "52": {
+        "synonyms": []
+      },
+      "53": {
+        "synonyms": []
+      },
+      "54": {
+        "synonyms": []
+      },
+      "55": {
+        "synonyms": []
+      },
+      "56": {
+        "synonyms": []
+      },
+      "57": {
+        "synonyms": []
+      },
+      "58": {
+        "synonyms": []
+      },
+      "59": {
+        "synonyms": []
+      },
+      "60": {
+        "synonyms": []
+      },
+      "61": {
+        "synonyms": []
+      },
+      "62": {
+        "synonyms": []
+      },
+      "63": {
+        "synonyms": []
+      },
+      "64": {
+        "synonyms": []
+      },
+      "65": {
+        "synonyms": []
+      },
+      "66": {
+        "synonyms": []
+      },
+      "67": {
+        "synonyms": []
+      },
+      "68": {
+        "synonyms": []
+      },
+      "69": {
+        "synonyms": []
+      },
+      "70": {
+        "synonyms": []
+      },
+      "71": {
+        "synonyms": []
+      },
+      "72": {
+        "synonyms": []
+      },
+      "73": {
+        "synonyms": []
+      },
+      "74": {
+        "synonyms": []
+      },
+      "75": {
+        "synonyms": []
+      },
+      "76": {
+        "synonyms": []
+      },
+      "77": {
+        "synonyms": []
+      },
+      "78": {
+        "synonyms": []
+      },
+      "79": {
+        "synonyms": []
+      },
+      "80": {
+        "synonyms": []
+      },
+      "81": {
+        "synonyms": []
+      },
+      "82": {
+        "synonyms": []
+      },
+      "83": {
+        "synonyms": []
+      },
+      "84": {
+        "synonyms": []
+      },
+      "85": {
+        "synonyms": []
+      },
+      "86": {
+        "synonyms": []
+      },
+      "87": {
+        "synonyms": []
+      },
+      "88": {
+        "synonyms": []
+      },
+      "89": {
+        "synonyms": []
+      },
+      "90": {
+        "synonyms": []
+      },
+      "91": {
+        "synonyms": []
+      },
+      "92": {
+        "synonyms": []
+      },
+      "93": {
+        "synonyms": []
+      },
+      "94": {
+        "synonyms": []
+      },
+      "95": {
+        "synonyms": []
+      },
+      "96": {
+        "synonyms": []
+      },
+      "97": {
+        "synonyms": []
+      },
+      "98": {
+        "synonyms": []
+      },
+      "99": {
+        "synonyms": []
+      },
+      "100": {
+        "synonyms": []
+      },
+      "Unknown": {
+        "synonyms": [
+          "X",
+          "prefer not to",
+          "prefer not",
+          "Prefer not to answer"
+        ]
+      }
+    }
+  }
+}

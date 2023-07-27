@@ -1,0 +1,35 @@
+{
+  "gender": {
+    "description": "Gender of caller",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "Unknown": {
+        "synonyms": [
+          "4",
+          "x",
+          "Ma nixtieqx naghti risposta"
+        ]
+      },
+      "Other": {
+        "synonyms": [
+          "3",
+          "Oħrajn"
+        ]
+      },
+      "Male": {
+        "synonyms": [
+          "Raġel",
+          "Tifel",
+          "2"
+        ]
+      },
+      "Female": {
+        "synonyms": [
+          "Tifla",
+          "1",
+          "Mara"
+        ]
+      }
+    }
+  }
+}

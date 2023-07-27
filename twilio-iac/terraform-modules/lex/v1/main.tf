@@ -24,12 +24,25 @@ resource "aws_lex_slot_type" "this" {
   value_selection_strategy = each.value.value_selection_strategy
 
   dynamic "enumeration_value" {
-    for_each = each.value.values
+    for_each = {
+      for idx, value in each.value.values :
+      idx => value if(length(value.synonyms) != 0)
+    }
     content {
       value    = enumeration_value.key
       synonyms = enumeration_value.value.synonyms
     }
   }
+  dynamic "enumeration_value" {
+    for_each = {
+      for idx, value in each.value.values :
+      idx => value if(length(value.synonyms) == 0)
+    }
+    content {
+      value    = enumeration_value.key
+    }
+  }
+
 }
 
 resource "aws_lex_intent" "this" {

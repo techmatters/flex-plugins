@@ -2,6 +2,7 @@ provider "awscc" {
   region = var.helpline_region
 }
 
+
 module "lex" {
   source = "../../lex/v1"
 
@@ -16,10 +17,15 @@ module "lex" {
   short_helpline = var.short_helpline
   environment    = var.environment
   language       = each.key
-  slot_types     = each.value.slot_types
-  intents        = each.value.intents
-  bots           = each.value.bots
+
+  slot_types = merge([
+    for file_path in fileset("/app/twilio-iac/helplines/configs/lex/${each.key}/slot_types", "*.json") :
+    jsondecode(file("/app/twilio-iac/helplines/configs/lex/${each.key}/slot_types/${file_path}"))
+  ]...)
+  intents = merge([for bot in each.value : jsondecode(file("/app/twilio-iac/helplines/configs/lex/${each.key}/intents/${bot}.json"))]...)
+  bots    = merge([for bot in each.value : jsondecode(file("/app/twilio-iac/helplines/configs/lex/${each.key}/bots/${bot}.json"))]...)
 }
+
 
 module "lexv2" {
   source = "../../lex/v2"
