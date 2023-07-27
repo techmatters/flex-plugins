@@ -36,6 +36,7 @@ TEMPLATE_FIELDS = {
     "attributes.resources_base_url": "https://hrm-{environment}{region_url_postfix}.tl.techmatters.org",
     "attributes.environment": "{environment}",
     "attributes.helpline_code": "{helpline_code}",
+    "attributes.aws_region": "{region}",
 }
 
 # These are fields that will be excluded from the payload sent to twilio
@@ -236,6 +237,7 @@ class ServiceConfiguration():
                 environment=self.environment,
                 account_sid=self.account_sid,
                 helpline_code=self.helpline_code,
+                region=self.region,
                 region_url_postfix=REGION_URL_POSTFIX_MAP[self.region],
             )
             self.template_config[key] = templated_value
