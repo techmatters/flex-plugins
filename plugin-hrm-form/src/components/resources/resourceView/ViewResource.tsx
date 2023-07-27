@@ -35,7 +35,6 @@ import { loadResourceAsyncAction, navigateToSearchAction, ResourceLoadStatus } f
 import asyncDispatch from '../../../states/asyncDispatch';
 import ResourceIdCopyButton from '../ResourceIdCopyButton';
 import ResourceAttributeWithPrivacy from './ResourceAttributeWithPrivacy';
-import MainContactDetails from './MainContactDetails';
 import SiteDetails from './SiteDetails';
 import OperatingHours from './OperatingHours';
 import { convertKHPResourceAttributes } from '../convertKHPResourceAttributes';
@@ -98,62 +97,60 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                 <ResourceAttributesContainer>
                   {/* FIRST COLUMN */}
                   <ResourceAttributesColumn style={{ flexGrow: 3 }}>
-                    <ResourceAttribute description="Resources-View-Details">
-                      {resourceAttributes.description}
-                    </ResourceAttribute>
-                  </ResourceAttributesColumn>
-
-                  {/* SECOND COLUMN */}
-                  <ResourceAttributesColumn style={{ flexGrow: 3 }} addDivider={true}>
-                    <ResourceAttributeWithPrivacy
-                      isPrivate={resourceAttributes.mainContact.isPrivate}
-                      description="Resources-View-ContactInfo"
-                    >
-                      <MainContactDetails mainContact={resourceAttributes.mainContact} />
-                    </ResourceAttributeWithPrivacy>
-                    <ResourceAttribute description="Resources-View-Website">
-                      {resourceAttributes.website}
-                    </ResourceAttribute>
-                    <ResourceAttribute description="Resources-View-OperatingHours">
-                      <OperatingHours operations={resourceAttributes.operations} showDescriptionOfHours={true} />
-                    </ResourceAttribute>
-
                     {[
-                      { subtitle: 'Resources-View-247', attributeToDisplay: resourceAttributes.available247 },
-
-                      { subtitle: 'Resources-View-AgesServed', attributeToDisplay: resourceAttributes.ageRange },
+                      {
+                        subtitle: 'Resources-View-Details',
+                        attributeToDisplay: resourceAttributes.description,
+                      },
                       {
                         subtitle: 'Resources-View-TargetPopulation',
                         attributeToDisplay: resourceAttributes.targetPopulation,
-                      },
-                      {
-                        subtitle: 'Resources-View-TranslationServicesAvailable',
-                        attributeToDisplay: resourceAttributes.interpretationTranslationServicesAvailable,
-                      },
-                      {
-                        subtitle: 'Resources-View-FeeStructure',
-                        attributeToDisplay: resourceAttributes.feeStructureSource,
-                      },
-                      {
-                        subtitle: 'Resources-View-HowToAccessSupport',
-                        attributeToDisplay: resourceAttributes.howToAccessSupport,
-                      },
-                      {
-                        subtitle: 'Resources-View-ApplicationProcess',
-                        attributeToDisplay: resourceAttributes.applicationProcess,
-                      },
-                      {
-                        subtitle: 'Resources-View-HowIsServiceOffered',
-                        attributeToDisplay: resourceAttributes.howIsServiceOffered,
                       },
                       {
                         subtitle: 'Resources-View-Accessibility',
                         attributeToDisplay: resourceAttributes.accessibility,
                       },
                       {
+                        subtitle: 'Resources-View-HowToAccessSupport',
+                        attributeToDisplay: resourceAttributes.howToAccessSupport,
+                      },
+                      {
                         subtitle: 'Resources-View-DocumentsRequired',
                         attributeToDisplay: resourceAttributes.documentsRequired,
                       },
+                      { subtitle: 'Resources-View-AgesServed', attributeToDisplay: resourceAttributes.ageRange },
+                    ].map(({ subtitle, attributeToDisplay }) => (
+                      <ResourceAttribute key={subtitle} description={subtitle}>
+                        {attributeToDisplay}
+                      </ResourceAttribute>
+                    ))}
+                  </ResourceAttributesColumn>
+
+                  {/* SECOND COLUMN */}
+                  <ResourceAttributesColumn style={{ flexGrow: 3 }} addDivider={true}>
+                    {[
+                      {
+                        subtitle: 'Resources-View-Website',
+                        attributeToDisplay: resourceAttributes.website,
+                      },
+                      {
+                        subtitle: 'Resources-View-ApplicationProcess',
+                        attributeToDisplay: resourceAttributes.applicationProcess,
+                      },
+                      { subtitle: 'Resources-View-247', attributeToDisplay: resourceAttributes.available247 },
+                      {
+                        subtitle: 'Resources-View-HowIsServiceOffered',
+                        attributeToDisplay: resourceAttributes.howIsServiceOffered,
+                      },
+                      {
+                        subtitle: 'Resources-View-FeeStructure',
+                        attributeToDisplay: resourceAttributes.feeStructureSource,
+                      },
+                      {
+                        subtitle: 'Resources-View-TranslationServicesAvailable',
+                        attributeToDisplay: resourceAttributes.interpretationTranslationServicesAvailable,
+                      },
+                      // eslint-disable-next-line sonarjs/no-identical-functions
                     ].map(({ subtitle, attributeToDisplay }) => (
                       <ResourceAttribute key={subtitle} description={subtitle}>
                         {attributeToDisplay}
@@ -172,6 +169,16 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                     >
                       {resourceAttributes.primaryLocation}
                     </ResourceAttributeWithPrivacy>
+
+                    <ResourceAttributeWithPrivacy
+                      isPrivate={resourceAttributes.mainContact.isPrivate}
+                      description="Resources-View-ContactInfo"
+                    >
+                      {resourceAttributes.mainContact.mainContactText}
+                    </ResourceAttributeWithPrivacy>
+                    <ResourceAttribute description="Resources-View-OperatingHours">
+                      <OperatingHours operations={resourceAttributes.operations} showDescriptionOfHours={true} />
+                    </ResourceAttribute>
                     <ResourceAttribute description="Resources-View-Sites">
                       <SiteDetails sites={resourceAttributes.site} />
                     </ResourceAttribute>

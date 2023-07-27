@@ -16,14 +16,11 @@
 
 import React from 'react';
 import WarningIcon from '@material-ui/icons/Warning';
-import { Template } from '@twilio/flex-ui';
+import { FlexBox, Template } from '@twilio/flex-ui';
 
-import {
-  PrivateResourceAttribute,
-  ResourceAttributeContent,
-  ResourceAttributeDescription,
-} from '../../../styles/ReferrableResources';
+import { PrivateResourceAttribute } from '../../../styles/ReferrableResources';
 import ResourceAttribute from './ResourceAttribute';
+import { Column } from '../../../styles/HrmStyles';
 
 type Props = {
   isPrivate: boolean;
@@ -33,17 +30,20 @@ type Props = {
 const ResourceAttributeWithPrivacy: React.FC<Props> = ({ isPrivate, description, children }) => {
   const renderPrivateResourceAttribute = () => (
     <>
-      <ResourceAttributeDescription>
-        <Template code={description} />
-      </ResourceAttributeDescription>
       <PrivateResourceAttribute>
-        <span style={{ fontWeight: 'bold', fontSize: '10px' }}>
-          <WarningIcon style={{ color: '#f6ca4a', paddingRight: '4px', paddingTop: '6px' }} />
-          <Template code="Resources-View-PrivateInformationWarning" />
-        </span>
-        <ResourceAttributeContent>
-          {children || <Template code="Resources-View-MissingProperty" />}
-        </ResourceAttributeContent>
+        <FlexBox>
+          <Column>
+            <WarningIcon style={{ color: '#f6ca4a', paddingRight: '4px', paddingTop: '6px' }} />
+          </Column>
+          <Column>
+            <span style={{ fontWeight: 'bold', fontSize: '13px', color: '#192b33', paddingTop: '4px' }}>
+              <Template code="Resources-View-PrivateInformationWarning" />
+            </span>
+          </Column>
+        </FlexBox>
+        <ResourceAttribute description={description} isExpandable={false}>
+          {children}
+        </ResourceAttribute>
       </PrivateResourceAttribute>
     </>
   );

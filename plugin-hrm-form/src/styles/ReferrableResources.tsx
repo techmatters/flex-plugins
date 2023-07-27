@@ -86,7 +86,7 @@ export const ViewResourceArea = styled('div')`
 ViewResourceArea.displayName = 'ViewResourceArea';
 
 export const ResourceAttributesContainer = styled(Row)`
-  align-items: start;
+  align-items: stretch;
 `;
 ResourceAttributesContainer.displayName = 'ResourceAttributesContainer';
 
@@ -95,9 +95,9 @@ type ResourceAttributesColumnProps = {
 };
 export const ResourceAttributesColumn = styled(Column)<ResourceAttributesColumnProps>`
   flex: 1;
-  margin: 5px 15px 5px 15px;
+  margin: 5px;
   border-right: ${props => (props.addDivider ? '1px solid #d8d8d8' : 'none')};
-  padding-right: ${props => (props.addDivider ? '5px' : 'none')};
+  padding: ${props => (props.addDivider ? '0 15px 0 10px' : '0 10px 0 10px')};
 `;
 
 export const ResourceAttributeDescription = styled(FontOpenSans)`
