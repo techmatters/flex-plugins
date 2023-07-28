@@ -13,7 +13,7 @@
         },
         {
           "filter_friendly_name": "E2E Test",
-          "expression": "channelType=='web' AND testFlag=='true',
+          "expression": "channelType=='web' AND e2eTestMode=='true'",
           "targets": [
             {
               "queue": "${task_queues.workflow_test}",
