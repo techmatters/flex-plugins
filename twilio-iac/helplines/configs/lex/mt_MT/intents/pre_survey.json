@@ -48,8 +48,18 @@
       "content_type": "PlainText"
     },
     "slots": {
-      "age": {
+      "about_self": {
         "priority": 0,
+        "description": "Imported from question 'about_self'",
+        "slot_type": "yes_no",
+        "value_elicitation_prompt": {
+          "content": "Qed iċċempel dwarek innifsek? Jekk jogħġbok wieġeb Iva jew Le",
+          "content_type": "PlainText",
+          "max_attempts": 3
+        }
+      },
+      "age": {
+        "priority": 1,
         "description": "Imported from question 'age'",
         "slot_type": "age",
         "value_elicitation_prompt": {
@@ -59,7 +69,7 @@
         }
       },
       "gender": {
-        "priority": 1,
+        "priority": 2,
         "description": "Imported from question 'gender'",
         "slot_type": "gender",
         "value_elicitation_prompt": {
@@ -69,7 +79,7 @@
         }
       },
       "feeling": {
-        "priority": 2,
+        "priority": 3,
         "description": "Imported from question 'feeling'",
         "slot_type": "feeling",
         "value_elicitation_prompt": {

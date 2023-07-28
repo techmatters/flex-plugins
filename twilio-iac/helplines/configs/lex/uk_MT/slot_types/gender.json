@@ -6,25 +6,29 @@
       "Unknown": {
         "synonyms": [
           "4",
-          "x"
+          "x",
+          "Не хочу відповідати"
         ]
       },
       "Other": {
         "synonyms": [
           "3",
+          "Інший",
           "Others"
         ]
       },
       "Male": {
         "synonyms": [
           "2",
-          "boy"
+          "Чоловік",
+          "Хлопець"
         ]
       },
       "Female": {
         "synonyms": [
           "1",
-          "girl"
+          "Жінка",
+          "дівчина"
         ]
       }
     }

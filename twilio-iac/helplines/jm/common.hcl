@@ -25,6 +25,10 @@ locals {
       master : {
         friendly_name : "Master Workflow"
         templatefile : "/app/twilio-iac/helplines/jm/templates/workflows/master.tftpl"
+      },
+      survey : {
+        friendly_name : "Survey Workflow"
+        templatefile : "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
 
@@ -32,6 +36,10 @@ locals {
       messaging : {
         "target_workers" = "1==1",
         "friendly_name"  = "Messaging"
+      },
+       survey : {
+        "target_workers" = "1==0",
+        "friendly_name"  = "Survey"
       }
     }
     task_channels = {
