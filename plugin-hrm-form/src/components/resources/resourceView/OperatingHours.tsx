@@ -15,6 +15,7 @@
  */
 
 import React from 'react';
+import { Template } from '@twilio/flex-ui';
 
 import { KhpUiResource } from '../types';
 import { ResourcePreviewAttributeContent, ResourceSubtitle } from '../../../styles/ReferrableResources';
@@ -28,6 +29,16 @@ const OperatingHours: React.FC<Props> = ({ operations, showDescriptionOfHours })
   return (
     <table>
       <tbody>
+        {!operations ||
+          (operations.length === 0 && (
+            <tr>
+              <td>
+                <ResourcePreviewAttributeContent>
+                  <Template code="Resources-View-MissingProperty" />
+                </ResourcePreviewAttributeContent>
+              </td>
+            </tr>
+          ))}
         {operations.map(day => {
           if (day.hoursOfOperation) {
             return (
