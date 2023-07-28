@@ -22,6 +22,7 @@ import { getConfigValue } from './config';
 const E2E_CHAT_URL = getConfigValue('webchatUrl') as string;
 
 export type WebChatPage = {
+  fillPreEngagementForm: () => Promise<void>;
   openChat: () => Promise<void>;
   selectHelpline: (helpline: string) => Promise<void>;
   chat: (statements: ChatStatement[]) => AsyncIterable<ChatStatement>;
@@ -40,6 +41,8 @@ export async function open(browser: Browser | BrowserContext): Promise<WebChatPa
     helplineDropdown: page.locator('div#select-helpline'),
     helplineOptions: page.locator('div#menu-helpline ul'),
     startChatButton: page.locator('div.Twilio-PreEngagementCanvas button[type="submit"]'),
+    nameInput: page.locator('input#name'),
+    termsAndConditionsCheckbox: page.locator('input#termsAndConditions'),
 
     //Chatting
     chatMessageArea: page.locator('div.Twilio-MessagingCanvas'),
@@ -56,6 +59,16 @@ export async function open(browser: Browser | BrowserContext): Promise<WebChatPa
   console.log('Found start chat button.');
 
   return {
+    fillPreEngagementForm: async () => {
+      await selectors.preEngagementWindow.waitFor();
+      if (await selectors.nameInput.isVisible()) {
+        await selectors.nameInput.fill('name');
+      }
+      if (await selectors.termsAndConditionsCheckbox.isVisible()) {
+        await selectors.termsAndConditionsCheckbox.check();
+      }
+    },
+
     openChat: async () => {
       await expect(selectors.chatPanelWindow).toHaveCount(0, { timeout: 500 });
       await selectors.toggleChatOpenButton.click();

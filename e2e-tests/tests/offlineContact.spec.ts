@@ -18,13 +18,13 @@ import { expect, Page, test } from '@playwright/test';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { caseHome } from '../case';
 import { agentDesktop, navigateToAgentDesktop } from '../agent-desktop';
-import { skipTestIfNotTargeted, skipTestIfDataUpdateDisabled } from '../skipTest';
+import { getConfigValue } from '../config';
+import { skipTestIfNotTargeted } from '../skipTest';
 import { notificationBar } from '../notificationBar';
 import { setupContextAndPage, closePage } from '../browser';
 
 test.describe.serial('Offline Contact (with Case)', () => {
   skipTestIfNotTargeted();
-  skipTestIfDataUpdateDisabled();
 
   let pluginPage: Page;
 
@@ -97,6 +97,11 @@ test.describe.serial('Offline Contact (with Case)', () => {
     ]);
 
     const beforeDate = new Date(); // Capture date here since we'll create case inmediately after saving contact
+
+    if (getConfigValue('skipDataUpdate') as boolean) {
+      console.log('Skipping saving form');
+      return;
+    }
 
     console.log('Saving form');
     await form.save({ saveAndAddToCase: true });

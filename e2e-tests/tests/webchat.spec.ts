@@ -19,15 +19,13 @@ import * as webchat from '../webchat';
 import { WebChatPage } from '../webchat';
 import { statusIndicator, WorkerStatus } from '../workerStatus';
 import {
-  botStatement,
-  callerStatement,
   ChatStatement,
   ChatStatementOrigin,
-  counselorAutoStatement,
-  counselorStatement,
 } from '../chatModel';
+import { webchatScripts } from '../chatScripts';
 import { flexChat } from '../flexChat';
-import { skipTestIfNotTargeted, skipTestIfDataUpdateDisabled } from '../skipTest';
+import { getConfigValue } from '../config';
+import { skipTestIfNotTargeted } from '../skipTest';
 import { tasks } from '../tasks';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { deleteAllTasksInQueue } from '../twilio/tasks';
@@ -36,9 +34,7 @@ import { navigateToAgentDesktop } from '../agent-desktop';
 import { setupContextAndPage, closePage } from '../browser';
 
 test.describe.serial('Web chat caller', () => {
-  // Eventually this test will need to be refactored to return success before the await form.save() using skipIfDatUpdateDisabled() and a separate test
   skipTestIfNotTargeted();
-  skipTestIfDataUpdateDisabled();
 
   let chatPage: WebChatPage, pluginPage: Page, context: BrowserContext;
   test.beforeAll(async ({ browser }) => {
@@ -61,23 +57,11 @@ test.describe.serial('Web chat caller', () => {
   test('Chat ', async () => {
     test.setTimeout(180000);
     await chatPage.openChat();
+    await chatPage.fillPreEngagementForm();
     // await chatPage.selectHelpline('Fake Helpline'); // Step required in Aselo Dev, not in E2E
-    const chatScript = [
-      botStatement(
-        'Welcome to the helpline. To help us better serve you, please answer the following three questions.',
-      ),
-      botStatement('Are you calling about yourself? Please answer Yes or No.'),
-      callerStatement('yes'),
-      botStatement("Thank you. You can say 'prefer not to answer' (or type X) to any question."),
-      botStatement('How old are you?'),
-      callerStatement('10'),
-      botStatement('What is your gender?'), // Step required in Aselo Dev, not in E2E
-      callerStatement('girl'),
-      botStatement("We'll transfer you now. Please hold for a counsellor."),
-      counselorAutoStatement('Hi, this is the counsellor. How can I help you?'),
-      callerStatement('CALLER TEST CHAT MESSAGE'),
-      counselorStatement('COUNSELLOR TEST CHAT MESSAGE'),
-    ];
+
+    const helplineShortCode = getConfigValue('helplineShortCode') as string;
+    const chatScript = webchatScripts[helplineShortCode];
 
     const webchatProgress = chatPage.chat(chatScript);
     const flexChatProgress: AsyncIterator<ChatStatement> = flexChat(pluginPage).chat(chatScript);
@@ -136,6 +120,11 @@ test.describe.serial('Web chat caller', () => {
         },
       },
     ]);
+
+    if (getConfigValue('skipDataUpdate') as boolean) {
+      console.log('Skipping saving form');
+      return;
+    }
 
     console.log('Saving form');
     await form.save();
