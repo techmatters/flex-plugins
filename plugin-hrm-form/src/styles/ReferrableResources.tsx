@@ -17,7 +17,7 @@
 import { styled } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 
-import { Box, Column, Flex, Absolute, Row, FontOpenSans, StyledNextStepButton } from './HrmStyles';
+import { Box, Column, Flex, Row, FontOpenSans, StyledNextStepButton } from './HrmStyles';
 import HrmTheme from './HrmTheme';
 
 export const ResourcePreviewWrapper = styled('div')`
@@ -60,7 +60,7 @@ export const ResourcePreviewAttributeContent = styled(FontOpenSans)`
 ResourcePreviewAttributeContent.displayName = 'ResourcePreviewAttributeContent';
 
 export const ReferrableResourcesContainer = styled(Flex)`
-  padding: 20px;
+  padding: 10px 20px 20px 25px;
   max-width: 1230px;
   width: 100%;
   background-color: #f6f6f6;

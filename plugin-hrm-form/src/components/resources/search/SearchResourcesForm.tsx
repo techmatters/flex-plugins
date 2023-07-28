@@ -55,7 +55,7 @@ import {
 import SearchInput from '../../caseList/filters/SearchInput';
 import { getTemplateStrings } from '../../../hrmConfig';
 import asyncDispatch from '../../../states/asyncDispatch';
-import { FiltersCheckbox, MultiSelectCheckboxLabel } from '../../../styles/caseList/filters';
+import { FiltersCheckbox } from '../../../styles/caseList/filters';
 import SearchAutoComplete from './SearchAutoComplete';
 
 const NO_AGE_SELECTED = -1;
@@ -205,7 +205,7 @@ const SearchResourcesForm: React.FC<Props> = ({
                     );
                   }}
                 />
-                {label ?? value}
+                &nbsp;&nbsp;{label ?? value}
               </FormLabel>
             </Grid>
           ))}
@@ -334,6 +334,7 @@ const SearchResourcesForm: React.FC<Props> = ({
                         updateFilterSelection('interpretationTranslationServicesAvailable', checked || undefined);
                       }}
                     />
+                    &nbsp;&nbsp;
                     <Template code="Resources-Search-InterpretationTranslationServicesAvailable-Checkbox" />
                   </FormLabel>
                 </Column>
