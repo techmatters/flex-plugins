@@ -74,6 +74,7 @@ locals {
           fr_nocounsellors_url: "https://test-service-dee-4583.twil.io/Msg60025.mp3"
           fr_issues_url: "https://test-service-dee-4583.twil.io/FrTechIssuesmp3"
           fr_switch_url: "https://test-service-dee-4583.twil.io/FrSwitchInterpreter.mp3"
+          fr_switch_english_url: "https://test-service-dee-4583.twil.io/FrSwitchEnglish.mp3"
           cyara_url: "https://test-service-dee-4583.twil.io/cyara-vq-testaudio.wav"
 
         }
