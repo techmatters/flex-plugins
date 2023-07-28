@@ -445,7 +445,7 @@ ${
             {
               "friendly_name": "If value equal_to 1",
               "arguments": [
-                "{{widgets.Msg60025-F.Digits}}"
+                "{{widgets.FrSwitchEnglish.Digits}}"
               ],
               "type": "equal_to",
               "value": "1"
@@ -454,7 +454,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.Msg60025-F.Digits}}",
+        "input": "{{widgets.FrSwitchEnglish.Digits}}",
         "offset": {
           "x": 240,
           "y": 1410
@@ -462,7 +462,7 @@ ${
       }
     },
     {
-      "name": "Msg60025-F",
+      "name": "FrSwitchEnglish",
       "type": "gather-input-on-call",
       "transitions": [
         {
@@ -473,12 +473,11 @@ ${
           "event": "speech"
         },
         {
-          "next": "set_retry_fr_2",
           "event": "timeout"
         }
       ],
       "properties": {
-        "play": channel_flow_vars["fr_nocounsellors_url"],
+        "play": channel_flow_vars["fr_switch_english_url"],
         "speech_timeout": "auto",
         "offset": {
           "x": 560,
@@ -502,7 +501,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "Msg60025-F",
+          "next": "FrSwitchEnglish",
           "event": "match",
           "conditions": [
             {
@@ -582,7 +581,7 @@ ${
       "type": "say-play",
       "transitions": [
         {
-          "next": "Msg60025-F",
+          "next": "FrSwitchEnglish",
           "event": "audioComplete"
         }
       ],
