@@ -37,6 +37,7 @@
       "about_self": {
         "priority": 0,
         "description": "Imported from question 'about_self'",
+        "slot_constraint": "Required",
         "slot_type": "yes_no",
         "value_elicitation_prompt": {
           "content": "Are you calling about yourself? Please answer Yes or No.",
@@ -47,6 +48,7 @@
       "age": {
         "priority": 1,
         "description": "Imported from question 'age'",
+        "slot_constraint": "Required",
         "slot_type": "age",
         "value_elicitation_prompt": {
           "content": "How old are you?",
@@ -57,6 +59,7 @@
       "gender": {
         "priority": 2,
         "description": "Imported from question 'gender'",
+        "slot_constraint": "Required",
         "slot_type": "gender",
         "value_elicitation_prompt": {
           "content": "What is your gender? \n 1. Female \n 2. Male \n 3. Others \n 4. Rather not say ",
@@ -67,6 +70,7 @@
       "feeling": {
         "priority": 3,
         "description": "Imported from question 'feeling'",
+        "slot_constraint": "Required",
         "slot_type": "feeling",
         "value_elicitation_prompt": {
           "content": "How are you feeling? You can write the number or word of your choice. \n 1. Happy \n 2. Confused \n 3. Angry \n 4. Shocked \n 5. Scared \n 6. Uncertain ",

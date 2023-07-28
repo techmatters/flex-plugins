@@ -13,7 +13,7 @@ locals {
     voice_ivr_language                = ""
     contacts_waiting_channels         = ["web", "whatsapp", "facebook", "instagram"]
     enable_post_survey                = false
-
+    helpline_region                   = "eu-west-1"
 
 
     lex_bot_languages = {
@@ -26,7 +26,7 @@ locals {
     workflows = {
       master : {
         friendly_name : "Master Workflow"
-        templatefile : "/app/twilio-iac/helplines/jm/templates/workflows/master.tftpl"
+        templatefile : "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
       },
       survey : {
         friendly_name : "Survey Workflow"
@@ -55,56 +55,7 @@ locals {
     }
 
 
-    #Channels
-    channels = {
-      webchat : {
-        channel_type     = "web"
-        contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/mt/templates/studio-flows/web.tftpl"
-        channel_flow_vars = {
-          handoff_message_EN = "We'll transfer you now, please hold for a professional."
-          handoff_message_MT = "Ha nittrasferuk lil wieħed Proffesjonist/a tagħna."
-          handoff_message_UK = "Ми переведемо вас зараз, будь ласка, чекайте спеціаліста."
-          widget_from           = "Kellimni"
-        }
-        chatbot_unique_names = []
-      },
-       facebook : {
-        channel_type     = "web"
-        contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging.tftpl"
-        channel_flow_vars = {
-          handoff_message_EN = "We'll transfer you now, please hold for a professional."
-          handoff_message_MT = "Ha nittrasferuk lil wieħed Proffesjonist/a tagħna."
-          handoff_message_UK = "Ми переведемо вас зараз, будь ласка, чекайте спеціаліста."
-          widget_from           = "Kellimni"
-        }
-        chatbot_unique_names = []
-      }
-       whatsapp : {
-        channel_type     = "web"
-        contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging.tftpl"
-        channel_flow_vars = {
-          handoff_message_EN = "We'll transfer you now, please hold for a professional."
-          handoff_message_MT = "Ha nittrasferuk lil wieħed Proffesjonist/a tagħna."
-          handoff_message_UK = "Ми переведемо вас зараз, будь ласка, чекайте спеціаліста."
-          widget_from           = "Kellimni"
-        }
-        chatbot_unique_names = []
-      }
-       instagram : {
-        channel_type     = "web"
-        contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging.tftpl"
-        channel_flow_vars = {
-          handoff_message_EN = "We'll transfer you now, please hold for a professional."
-          handoff_message_MT = "Ha nittrasferuk lil wieħed Proffesjonist/a tagħna."
-          handoff_message_UK = "Ми переведемо вас зараз, будь ласка, чекайте спеціаліста."
-          widget_from           = "Kellimni"
-        }
-        chatbot_unique_names = []
-      }
-    }
+
     phone_numbers = {}
   }
+}

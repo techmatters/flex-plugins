@@ -32,7 +32,7 @@
       "Вітаю",
       "Здрастуйте",
       "Допомога",
-      "Будь ласка, допоможіть",
+      "Будь ласка допоможіть",
       "Я потребую допомоги",
       "Будь ласка"
     ],
@@ -51,7 +51,8 @@
       "language": {
         "priority": 0,
         "description": "Imported from question 'language'",
-        "slot_type": "Language",
+        "slot_constraint": "Required",
+        "slot_type": "language",
         "value_elicitation_prompt": {
           "content": "What language do you speak? Please select from the below supported languages: \n 1. English \n 2. Maltese \n 3. Ukranian",
           "content_type": "PlainText",

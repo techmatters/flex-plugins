@@ -32,7 +32,7 @@
       "Вітаю",
       "Здрастуйте",
       "Допомога",
-      "Будь ласка, допоможіть",
+      "Будь ласка допоможіть",
       "Я потребую допомоги",
       "Будь ласка"
     ],
@@ -51,6 +51,7 @@
       "about_self": {
         "priority": 0,
         "description": "Imported from question 'about_self'",
+        "slot_constraint": "Required",
         "slot_type": "yes_no",
         "value_elicitation_prompt": {
           "content": "Qed iċċempel dwarek innifsek? Jekk jogħġbok wieġeb Iva jew Le",
@@ -61,6 +62,7 @@
       "age": {
         "priority": 1,
         "description": "Imported from question 'age'",
+        "slot_constraint": "Required",
         "slot_type": "age",
         "value_elicitation_prompt": {
           "content": "Kemm għandek żmien?",
@@ -71,6 +73,7 @@
       "gender": {
         "priority": 2,
         "description": "Imported from question 'gender'",
+        "slot_constraint": "Required",
         "slot_type": "gender",
         "value_elicitation_prompt": {
           "content": "X'inhu s-sess tiegħek? \n 1. Mara \n 2. Raġel \n 3. Oħrajn \n 4. Ma nixtieqx naghti risposta",
@@ -81,6 +84,7 @@
       "feeling": {
         "priority": 3,
         "description": "Imported from question 'feeling'",
+        "slot_constraint": "Required",
         "slot_type": "feeling",
         "value_elicitation_prompt": {
           "content": "Kif qed tħossok?  Tista' tikteb in-numru jew il-kelma li tapplika għalik. \n 1. Ferħan \n 2. Konfuż \n 3. Rrabjat \n 4. Ixxukkjat \n 5. Begħzan \n 6. Inċert ",
