@@ -38,7 +38,7 @@ export function flexChat(page: Page) {
     messageWithText: (type: string, text: string) =>
       type == 'twilio'
         ? taskCanvas.locator(`div.Twilio-MessageBubble-Body :text-is("${text}")`)
-        : taskCanvas.locator(`div[role="listitem"] p:text-is("${text}")`),
+        : taskCanvas.locator(`p:text-is("${text}")`),
   };
 
   return {
@@ -74,14 +74,17 @@ export function flexChat(page: Page) {
             try {
               await selectors
                 .messageWithText(type, text)
-                .waitFor({ timeout: 3000, state: 'attached' });
+                .waitFor({ timeout: 2000, state: 'attached' });
+              continue;
             } catch (err) {
               console.log(
-                `Caller statement '${text}' not found after 3 seconds. Assuming action is required to send it so the flex chat processor is yielding control.`,
+                `Caller statement '${text}' not found after 2 seconds. Assuming action is required to send it so the flex chat processor is yielding control.`,
               );
               yield statementItem;
             }
-            await selectors.messageWithText(type, text).waitFor({ timeout: 60000 });
+            await selectors
+              .messageWithText(type, text)
+              .waitFor({ timeout: 60000, state: 'attached' });
             break;
         }
       }
