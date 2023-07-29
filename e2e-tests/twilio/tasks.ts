@@ -18,31 +18,32 @@
 import twilio from 'twilio';
 import { getConfigValue } from '../config';
 
-export const deleteAllTasksInQueue = async (
-  workspaceName: string,
-  workflowName: string,
-  taskQueueName: string,
-): Promise<void> => {
+export const deleteAllTasksInQueue = async (): Promise<void> => {
   const accountSid = getConfigValue('twilioAccountSid') as string;
   const authToken = getConfigValue('twilioAuthToken') as string;
   const twilioClient = twilio(accountSid, authToken);
 
-  const workspace = (
-    await twilioClient.taskrouter.workspaces.list({
-      friendlyName: workspaceName,
-    })
-  )[0];
-  if (!workspace) {
-    throw new Error(`Workspace with friendly name '${workspaceName}' not found.`);
+  const workspaces = await twilioClient.taskrouter.v1.workspaces.list();
+  if (!workspaces) {
+    throw new Error(`Workspaces not found.`);
   }
-  const tasksInQueue = await workspace.tasks().list({
-    workflowName,
-    taskQueueName,
+
+  workspaces.forEach(async (workspace) => {
+    const tasksInQueue = await workspace.tasks().list();
+
+    await Promise.all(
+      tasksInQueue.map((task) => {
+        const attributes = JSON.parse(task.attributes);
+
+        if (attributes.e2eTestMode !== 'true') {
+          return Promise.resolve();
+        }
+        console.log(`Removing task ${task.sid}`);
+        return task.remove();
+      }),
+    );
   });
-  await Promise.all(
-    tasksInQueue.map((t) => {
-      console.log(`Removing task ${t.sid}`);
-      return t.remove();
-    }),
-  );
 };
+
+process.on('SIGINT', deleteAllTasksInQueue);
+process.on('SIGTERM', deleteAllTasksInQueue);

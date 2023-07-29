@@ -18,11 +18,8 @@ import { BrowserContext, Page, test } from '@playwright/test';
 import * as webchat from '../webchat';
 import { WebChatPage } from '../webchat';
 import { statusIndicator, WorkerStatus } from '../workerStatus';
-import {
-  ChatStatement,
-  ChatStatementOrigin,
-} from '../chatModel';
-import { webchatScripts } from '../chatScripts';
+import { ChatStatement, ChatStatementOrigin } from '../chatModel';
+import { getWebchatScript } from '../chatScripts';
 import { flexChat } from '../flexChat';
 import { getConfigValue } from '../config';
 import { skipTestIfNotTargeted } from '../skipTest';
@@ -51,7 +48,11 @@ test.describe.serial('Web chat caller', () => {
       await notificationBar(pluginPage).dismissAllNotifications();
     }
     await closePage(pluginPage);
-    await deleteAllTasksInQueue('Flex Task Assignment', 'Master Workflow', 'Childline');
+    await deleteAllTasksInQueue();
+  });
+
+  test.afterEach(async () => {
+    await deleteAllTasksInQueue();
   });
 
   test('Chat ', async () => {
@@ -60,8 +61,7 @@ test.describe.serial('Web chat caller', () => {
     await chatPage.fillPreEngagementForm();
     // await chatPage.selectHelpline('Fake Helpline'); // Step required in Aselo Dev, not in E2E
 
-    const helplineShortCode = getConfigValue('helplineShortCode') as string;
-    const chatScript = webchatScripts[helplineShortCode];
+    const chatScript = getWebchatScript();
 
     const webchatProgress = chatPage.chat(chatScript);
     const flexChatProgress: AsyncIterator<ChatStatement> = flexChat(pluginPage).chat(chatScript);

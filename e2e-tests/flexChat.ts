@@ -24,13 +24,21 @@ export function flexChat(page: Page) {
   const selectors = {
     //Chatting
     chatMessageArea: taskCanvas.locator('div.Twilio-MessagingCanvas'),
-    chatInput: taskCanvas.locator("//textarea[@data-test='message-input']"),
-    chatSendButton: taskCanvas.locator('button.Twilio-MessageInput-SendButton'),
-    messageBubbles: taskCanvas.locator('div.Twilio-MessageListItem div.Twilio-MessageBubble'),
-    messageWithText: (text: string) =>
-      taskCanvas.locator(
-        `div.Twilio-MessageListItem div.Twilio-MessageBubble-Body :text-is("${text}")`,
-      ),
+    anyChatInput: taskCanvas.locator(
+      "//textarea[@id='messageInputArea' or @data-test='message-input']",
+    ),
+    twilioChatInput: taskCanvas.locator('textarea[data-test="message-input"]'),
+    aseloChatInput: taskCanvas.locator('textarea#messageInputArea'),
+    chatInput: (type: string) =>
+      type == 'twilio' ? selectors.twilioChatInput : selectors.aseloChatInput,
+    chatSendButton: (type: string) =>
+      type == 'twilio'
+        ? taskCanvas.locator('button.Twilio-MessageInput-SendButton')
+        : taskCanvas.locator('button.Twilio-Button span.Twilio:text-is("Send")'),
+    messageWithText: (type: string, text: string) =>
+      type == 'twilio'
+        ? taskCanvas.locator(`div.Twilio-MessageBubble-Body :text-is("${text}")`)
+        : taskCanvas.locator(`div[role="listitem"] p:text-is("${text}")`),
   };
 
   return {
@@ -44,31 +52,40 @@ export function flexChat(page: Page) {
      * @param statements - a unified list of all the chat statements in a conversation, for caller and counselor
      */
     chat: async function* (statements: ChatStatement[]): AsyncIterator<ChatStatement> {
-      await selectors.chatInput.waitFor();
+      await selectors.anyChatInput.waitFor();
+
+      let type = 'aselo';
+      if (await selectors.twilioChatInput.isVisible()) {
+        console.log('Using twilio chat input');
+        type = 'twilio';
+      }
 
       for (const statementItem of statements) {
         const { text, origin }: ChatStatement = statementItem;
         switch (origin) {
           case ChatStatementOrigin.COUNSELOR:
             console.log('Typing message in flex:', text);
-            await selectors.chatInput.fill(text);
+            await selectors.chatInput(type).fill(text);
             console.log('Sending message in flex:', text);
-            await selectors.chatSendButton.click();
+            await selectors.chatSendButton(type).click();
             console.log('Sent message in flex:', text);
             break;
           case ChatStatementOrigin.CALLER:
             try {
-              await selectors.messageWithText(text).waitFor({ timeout: 2000, state: 'attached' });
+              await selectors
+                .messageWithText(type, text)
+                .waitFor({ timeout: 3000, state: 'attached' });
             } catch (err) {
               console.log(
-                `Caller statement '${text}' not found after 2 seconds. Assuming action is required to send it so the flex chat processor is yielding control.`,
+                `Caller statement '${text}' not found after 3 seconds. Assuming action is required to send it so the flex chat processor is yielding control.`,
               );
               yield statementItem;
             }
-            await selectors.messageWithText(text).waitFor({ timeout: 60000 });
+            await selectors.messageWithText(type, text).waitFor({ timeout: 60000 });
             break;
         }
       }
     },
   };
 }
+2;
