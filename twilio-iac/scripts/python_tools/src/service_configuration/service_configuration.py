@@ -157,7 +157,8 @@ class ServiceConfiguration():
         self.account_sid = self._twilio_client.account_sid
         self.helpline_code = self._twilio_client.helpline_code
         self.environment = self._twilio_client.environment
-        self.remote_state: dict[str, object] = self._twilio_client.get_flex_configuration()
+        self.remote_state: dict[str,
+                                object] = self._twilio_client.get_flex_configuration()
         self.init_version()
         self.init_region()
         self.init_local_state()
@@ -224,9 +225,12 @@ class ServiceConfiguration():
 
         self.init_ssm_fields()
         self.init_template_fields()
+
         for key, value in self.template_config.items():
-            new_value = get_nested_key(self.new_state, key)
-            if new_value and new_value != value:
+            local_value = get_nested_key(self.local_state, key)
+            # We want to allow the user to override the template value with a
+            # local value.
+            if local_value:
                 continue
 
             set_nested_key(self.new_state, key, value)
