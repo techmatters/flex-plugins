@@ -81,7 +81,7 @@ locals {
       g2tns : {
         channel_type         = "voice"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/g2ton.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/g2tns.tftpl"
         channel_flow_vars    = {
           en_number: "5878043655"
           fr_number: "5878044316"
