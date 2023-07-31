@@ -89,9 +89,9 @@ locals {
         "target_workers" = "routing.skills HAS 'Indigenous [Interpreter]'",
         "friendly_name"  = "Indigenous [Interpreter]"
       },
-      workflow_test : {
+      e2e_test : {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
-        "friendly_name"  = "Workflow Test Queue"
+        "friendly_name"  = "E2E Test Queue"
       }
     }
   }
