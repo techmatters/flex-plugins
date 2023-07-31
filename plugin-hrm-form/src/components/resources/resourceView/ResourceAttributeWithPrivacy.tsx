@@ -16,13 +16,11 @@
 
 import React from 'react';
 import WarningIcon from '@material-ui/icons/Warning';
+import { FlexBox, Template } from '@twilio/flex-ui';
 
-import {
-  PrivateResourceAttribute,
-  ResourceAttributeContent,
-  ResourceAttributeDescription,
-} from '../../../../styles/ReferrableResources';
+import { PrivateResourceAttribute } from '../../../styles/ReferrableResources';
 import ResourceAttribute from './ResourceAttribute';
+import { Column } from '../../../styles/HrmStyles';
 
 type Props = {
   isPrivate: boolean;
@@ -32,22 +30,28 @@ type Props = {
 const ResourceAttributeWithPrivacy: React.FC<Props> = ({ isPrivate, description, children }) => {
   const renderPrivateResourceAttribute = () => (
     <>
-      <ResourceAttributeDescription>{description}</ResourceAttributeDescription>
       <PrivateResourceAttribute>
-        <span style={{ fontWeight: 'bold', fontSize: '10px' }}>
-          <WarningIcon style={{ color: '#f6ca4a', paddingRight: '4px', paddingTop: '6px' }} />
-          This location is private. Do not share with child.
-        </span>
-        <ResourceAttributeContent>{children}</ResourceAttributeContent>
+        <FlexBox>
+          <Column>
+            <WarningIcon style={{ color: '#f6ca4a', paddingRight: '4px', paddingTop: '6px' }} />
+          </Column>
+          <Column>
+            <span style={{ fontWeight: 'bold', fontSize: '13px', color: '#192b33', paddingTop: '4px' }}>
+              <Template code="Resources-View-PrivateInformationWarning" />
+            </span>
+          </Column>
+        </FlexBox>
+        <ResourceAttribute description={description} isExpandable={false}>
+          {children}
+        </ResourceAttribute>
       </PrivateResourceAttribute>
     </>
   );
 
   const renderPublicResourceAttribute = () => (
-    <>
-      <ResourceAttributeDescription>{description}</ResourceAttributeDescription>
-      <ResourceAttributeContent>{children}</ResourceAttributeContent>
-    </>
+    <ResourceAttribute description={description} isExpandable={false}>
+      {children}
+    </ResourceAttribute>
   );
 
   return isPrivate ? renderPrivateResourceAttribute() : renderPublicResourceAttribute();

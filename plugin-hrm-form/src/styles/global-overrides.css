@@ -91,9 +91,13 @@ a.link-text-decoration-none:active { text-decoration: none; color: #1874e1; }
 
 .Twilio-View-case-list
 .Twilio-View-search
-.Twilio-View-referrable-resources
 {
     background-color: #f6f6f6;
+}
+
+.Twilio-View-referrable-resources
+{
+    background-color: #ECEDF1;
 }
 
 .Twilio-SidePanel-Title.Twilio-SidePanel-TranscriptPlayer-Title {

@@ -11,27 +11,22 @@
       "splitFormAt": 7
     },
     "perpetrators": {
-      "splitFormAt": 7
+      "splitFormAt": 9
     },
     "incidents": {
       "previewFields": [
-        "date",
-        "duration",
-        "location"
+        "frequency",
+        "selfHarmDetails"
       ],
       "layout": {
-        "date": {
-          "includeLabel": false,
-          "format": "date"
-        },
-        "duration": {
+        "frequency": {
           "includeLabel": true
         },
-        "location": {
+        "selfHarmDetails": {
           "includeLabel": true
         }
       },
-      "splitFormAt": 3
+      "splitFormAt": 6
     },
     "referrals": {
       "splitFormAt": 2
