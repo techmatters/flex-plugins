@@ -63,5 +63,5 @@ export const getWebchatScript = (): ChatStatement[] => {
   const helplineShortCode = getConfigValue('helplineShortCode') as string;
   const helplineEnv = getConfigValue('helplineEnv') as string;
 
-  return webchatScripts[helplineEnv][helplineShortCode] || webchatScripts.default;
+  return webchatScripts[helplineEnv]?.[helplineShortCode] || webchatScripts.default;
 };
