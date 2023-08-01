@@ -125,3 +125,14 @@ div.Twilio-ViewCollection{
 div.Twilio-Splitter div.Twilio-AgentDesktopView\.Panel2 {
     border-left-width: 0px;
 }
+
+/**
+ * Conferencing Dialog was hidden after @twilio/flex-ui@2.3.3
+ * The following overrides will fix this issue
+ */
+ div.Twilio-TaskDetailsPanel-Buttons > div.Twilio-CallCanvasActions {
+    overflow-x: visible;
+    width: 100%;
+    justify-content: center;
+ }
+ 
