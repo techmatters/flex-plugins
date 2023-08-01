@@ -1,7 +1,6 @@
 {
     "attributes": {
         "definitionVersion": "za-v1",
-        "environment": null,
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_conferencing": false,
@@ -11,10 +10,8 @@
             "enable_post_survey": false,
             "enable_save_insights": true
         },
-        "helpline_code": null,
         "multipleOfficeSupport": true,
-        "permissionConfig": "za",
-        "resources_base_url": null
+        "permissionConfig": "za"
     },
     "ui_attributes": {
         "colorTheme": {

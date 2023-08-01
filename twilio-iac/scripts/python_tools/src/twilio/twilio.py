@@ -27,7 +27,7 @@ class Twilio():
     _ssm_client: SSMClient
 
     def __init__(self, **kwargs: Unpack[InitArgsDict]):
-        self._ssm_client = kwargs.get('ssm_client') or SSMClient()
+        self._ssm_client = kwargs.get('ssm_client')
         self.client = self.getClient(**kwargs)
 
     def getClient(self, **kwargs: Unpack[InitArgsDict]):

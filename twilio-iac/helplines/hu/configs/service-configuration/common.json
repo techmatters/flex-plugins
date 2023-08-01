@@ -1,7 +1,6 @@
 {
     "attributes": {
         "definitionVersion": "hu-v1",
-        "environment": null,
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_conferencing": false,
@@ -13,9 +12,7 @@
             "enable_save_insights": true
         },
         "helplineLanguage": "hu-HU",
-        "helpline_code": null,
-        "permissionConfig": "hu",
-        "resources_base_url": null
+        "permissionConfig": "hu"
     },
     "ui_attributes": {
         "colorTheme": {

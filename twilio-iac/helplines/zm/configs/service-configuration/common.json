@@ -1,7 +1,6 @@
 {
     "attributes": {
         "definitionVersion": "v1",
-        "environment": null,
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_conferencing": false,
@@ -13,8 +12,6 @@
             "enable_save_insights": true,
             "enable_voice_recordings": false
         },
-        "helpline_code": null,
-        "permissionConfig": "zm",
-        "resources_base_url": null
+        "permissionConfig": "zm"
     }
 }

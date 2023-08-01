@@ -58,12 +58,5 @@ inputs = local.config
   * This is the main terragrunt block that defines the stage module and the hooks that run before it.
   */
 terraform {
-
-  // TODO: remove or comment this out when we are ready to apply
-  // before_hook "abort_apply" {
-  //   commands = ["apply"]
-  //   execute  = ["exit", "1"]
-  // }
-
   source = "../../terraform-modules//stages/${include.root.locals.stage}"
 }

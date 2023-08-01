@@ -6,6 +6,7 @@ from os.path import exists as path_exists
 from typing import List, TypedDict, Unpack
 from ..aws import SSMClient
 from ..twilio import Twilio
+from .constants import AWS_ROLE_ARN
 from .version import Version
 
 JSON_PATH_ROOT = "/app/twilio-iac/helplines"
@@ -32,9 +33,9 @@ SSM_FIELDS = {
 TEMPLATE_FIELDS = {
     "attributes.assets_bucket_url": "https://assets-{environment}.tl.techmatters.org",
     "attributes.hrm_base_url": "https://hrm-{environment}{region_url_postfix}.tl.techmatters.org",
-    "attributes.resources_base_url": "https://hrm-{environment}{region_url_postfix}.tl.techmatters.org",
     "attributes.environment": "{environment}",
     "attributes.helpline_code": "{helpline_code}",
+    "attributes.aws_region": "{region}",
 }
 
 # These are fields that will be excluded from the payload sent to twilio
@@ -124,7 +125,6 @@ def remove_empty(input_dict):
 
 class InitArgsDict(TypedDict):
     twilio_client: Twilio
-    ssm_client: SSMClient
     skip_local_config: bool
     has_version: bool
     skip_lock: bool
@@ -150,23 +150,26 @@ class ServiceConfiguration():
         self.template_config: dict[str, object] = {}
 
         self._twilio_client = kwargs['twilio_client']
-        self._ssm_client = kwargs['ssm_client']
         self.skip_local_config = kwargs['skip_local_config']
         self.has_version = kwargs['has_version']
         self.skip_lock = kwargs['skip_lock']
         self.account_sid = self._twilio_client.account_sid
         self.helpline_code = self._twilio_client.helpline_code
         self.environment = self._twilio_client.environment
-        self.remote_state: dict[str, object] = self._twilio_client.get_flex_configuration()
+        self.remote_state: dict[str,
+                                object] = self._twilio_client.get_flex_configuration()
         self.init_version()
         self.init_region()
         self.init_local_state()
         self.init_new_state()
         self.init_plan()
 
+    def get_ssm_client(self):
+        return SSMClient(AWS_ROLE_ARN)
+
     def init_region(self):
         try:
-            self.region = self._ssm_client.get_parameter(
+            self.region = self.get_ssm_client().get_parameter(
                 f"/{self.environment}/aws/{self.account_sid}/region"
             )
         except Exception:
@@ -218,9 +221,12 @@ class ServiceConfiguration():
 
         self.init_ssm_fields()
         self.init_template_fields()
+
         for key, value in self.template_config.items():
-            new_value = get_nested_key(self.new_state, key)
-            if new_value and new_value != value:
+            local_value = get_nested_key(self.local_state, key)
+            # We want to allow the user to override the template value with a
+            # local value.
+            if local_value:
                 continue
 
             set_nested_key(self.new_state, key, value)
@@ -231,6 +237,7 @@ class ServiceConfiguration():
                 environment=self.environment,
                 account_sid=self.account_sid,
                 helpline_code=self.helpline_code,
+                region=self.region,
                 region_url_postfix=REGION_URL_POSTFIX_MAP[self.region],
             )
             self.template_config[key] = templated_value
@@ -242,7 +249,7 @@ class ServiceConfiguration():
                 account_sid=self.account_sid,
                 helpline_code=self.helpline_code
             )
-            ssm_value = self._ssm_client.get_parameter(ssm_key_name)
+            ssm_value = self.get_ssm_client().get_parameter(ssm_key_name)
             set_nested_key(self.new_state, key, ssm_value)
 
     def init_plan(self):
