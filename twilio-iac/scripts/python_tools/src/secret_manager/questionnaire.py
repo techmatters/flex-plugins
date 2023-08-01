@@ -1,12 +1,11 @@
 from botocore.exceptions import ClientError
 import json
 import re
-from mypy_boto3_ssm import SSMClient
 from typing import TypedDict
 from typing_extensions import Unpack
 
 from .config import questions, Question, Secrets
-from .ssm_client import get_ssm_client
+from ..aws import SSMClient
 
 
 class InitArgsDict(TypedDict):
@@ -16,16 +15,16 @@ class InitArgsDict(TypedDict):
 class Questionnaire():
     """Class to handle questionnaire for secret management"""
 
-    _helpline: str = None
-    _secrets: Secrets = None
+    _helpline: str
+    _secrets: Secrets | None = None
 
-    ssm_key: str = None
-    ssm_client: SSMClient = None
+    ssm_key: str
+    ssm_client: SSMClient
 
     def __init__(self, **kwargs: Unpack[InitArgsDict]):
         self._helpline = kwargs['helpline']
         self.ssm_key = f'/terraform/twilio-iac/{self._helpline}/secrets.json'
-        self.ssm_client = get_ssm_client()
+        self.ssm_client = SSMClient()
 
     def start(self):
         self.load_secrets()
@@ -38,18 +37,19 @@ class Questionnaire():
         self.send_secrets_to_ssm()
 
     def load_secrets(self) -> None:
-        print (f'Loading secrets for {self._helpline} from SSM key: {self.ssm_key}')
+        print(
+            f'Loading secrets for {self._helpline} from SSM key: {self.ssm_key}')
         try:
             response = self.ssm_client.get_parameter(
-                Name=self.ssm_key,
-                WithDecryption=True
+                self.ssm_key
             )
             print(f'Parameter found, loading secrets for {self._helpline}')
-            self._secrets = json.loads(response['Parameter']['Value'])
+            self._secrets = json.loads(response)
 
         except ClientError as e:
             if e.response['Error']['Code'] == 'ParameterNotFound':
-                print(f'Parameter not found, starting questionnaire for {self._helpline}')
+                print(
+                    f'Parameter not found, starting questionnaire for {self._helpline}')
             else:
                 raise e
 
@@ -58,7 +58,8 @@ class Questionnaire():
         self.print_secrets()
         print('\n')
 
-        confirm = input(f'Are the values correct for the ssm key: {self.ssm_key}? (Y/n): ')
+        confirm = input(
+            f'Are the values correct for the ssm key: {self.ssm_key}? (Y/n): ')
         if confirm == 'y' or confirm == '':
             print('Continuing...')
             exit()
@@ -102,7 +103,8 @@ class Questionnaire():
         self.print_secrets()
         print('\n')
 
-        confirm = input(f'Are these values correct for the ssm key: {self.ssm_key}? (y/N): ')
+        confirm = input(
+            f'Are these values correct for the ssm key: {self.ssm_key}? (y/N): ')
         if confirm != 'y':
             print('Please re-run the script to try again')
             print('Exiting...')
@@ -124,8 +126,6 @@ class Questionnaire():
     def send_secrets_to_ssm(self) -> None:
         print('Sending secrets to SSM')
         self.ssm_client.put_parameter(
-            Name=self.ssm_key,
-            Value=json.dumps(self._secrets),
-            Type='SecureString',
-            Overwrite=True,
+            name=self.ssm_key,
+            value=json.dumps(self._secrets),
         )

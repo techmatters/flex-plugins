@@ -27,7 +27,7 @@ const playwrightConfig: PlaywrightTestConfig = {
     storageState: getConfigValue('storageStatePath') as string,
     baseURL: getConfigValue('baseURL') as string,
     ignoreHTTPSErrors: inLambda ? true : false,
-    permissions: ['microphone'],
+    permissions: ['microphone', 'clipboard-write', 'clipboard-read'],
     screenshot: inLambda ? 'off' : 'only-on-failure',
     video: inLambda ? 'off' : 'retry-with-video',
     launchOptions: inLambda

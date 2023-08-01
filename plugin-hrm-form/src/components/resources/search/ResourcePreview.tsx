@@ -16,12 +16,13 @@
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
 import React from 'react';
+import { Template } from '@twilio/flex-ui';
 
 import { Box, Column, Flex } from '../../../styles/HrmStyles';
 import {
-  ResourceAttributeContent,
-  ResourceAttributeDescription,
   ResourceAttributesColumn,
+  ResourcePreviewAttributeContent,
+  ResourcePreviewAttributeDescription,
   ResourcePreviewHeaderText,
   ResourcePreviewWrapper,
 } from '../../../styles/ReferrableResources';
@@ -29,7 +30,7 @@ import { PreviewRow, StyledLink } from '../../../styles/search';
 import { isMissingResource, ReferrableResourceResult } from '../../../states/resources/search';
 import ResourceIdCopyButton from '../ResourceIdCopyButton';
 import { convertKHPResourceAttributes } from '../convertKHPResourceAttributes';
-import OperatingHours from './resourceView/OperatingHours';
+import OperatingHours from '../resourceView/OperatingHours';
 
 type OwnProps = {
   resourceResult: ReferrableResourceResult;
@@ -60,6 +61,7 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
                 underline={true}
                 style={{ width: '70%', marginInlineEnd: 10, justifyContent: 'left' }}
                 onClick={onClickViewResource}
+                data-testid="resource-name"
               >
                 <ResourcePreviewHeaderText>{name}</ResourcePreviewHeaderText>
               </StyledLink>
@@ -71,11 +73,13 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
           </PreviewRow>
         </div>
         <PreviewRow>
-          <ResourceAttributesColumn style={{ alignSelf: 'baseline' }}>
+          <ResourceAttributesColumn style={{ paddingLeft: 0, marginLeft: 0, alignSelf: 'baseline' }}>
             <Box marginTop="8px" marginBottom="8px">
               <Column>
                 <Box marginBottom="6px">
-                  <ResourceAttributeDescription>Hours</ResourceAttributeDescription>
+                  <ResourcePreviewAttributeDescription>
+                    <Template code="Resources-Search-Preview-OperatingHours" />
+                  </ResourcePreviewAttributeDescription>
                 </Box>
                 <OperatingHours operations={operations} showDescriptionOfHours={false} />
               </Column>
@@ -85,11 +89,15 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
             <Box marginTop="8px" marginBottom="8px">
               <Column>
                 <Box marginBottom="6px">
-                  <ResourceAttributeDescription>Contact Info</ResourceAttributeDescription>
-                  <ResourceAttributeContent>{primaryLocation}</ResourceAttributeContent>
+                  <ResourcePreviewAttributeDescription>
+                    <Template code="Resources-Search-Preview-PrimaryAddress" />
+                  </ResourcePreviewAttributeDescription>
+                  <ResourcePreviewAttributeContent>{primaryLocation}</ResourcePreviewAttributeContent>
                   <br />
-                  <ResourceAttributeDescription>Ages Served</ResourceAttributeDescription>
-                  <ResourceAttributeContent>{ageRange}</ResourceAttributeContent>
+                  <ResourcePreviewAttributeDescription>
+                    <Template code="Resources-Search-Preview-AgesServed" />
+                  </ResourcePreviewAttributeDescription>
+                  <ResourcePreviewAttributeContent>{ageRange}</ResourcePreviewAttributeContent>
                 </Box>
               </Column>
             </Box>

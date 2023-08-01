@@ -15,10 +15,10 @@
  */
 
 import React from 'react';
+import { Template } from '@twilio/flex-ui';
 
-import { FontOpenSans } from '../../../../styles/HrmStyles';
-import { KhpUiResource } from '../../types';
-import { ResourceSubtitle } from '../../../../styles/ReferrableResources';
+import { KhpUiResource } from '../types';
+import { ResourcePreviewAttributeContent, ResourceSubtitle } from '../../../styles/ReferrableResources';
 
 type Props = {
   operations: KhpUiResource['attributes']['operations'];
@@ -29,15 +29,25 @@ const OperatingHours: React.FC<Props> = ({ operations, showDescriptionOfHours })
   return (
     <table>
       <tbody>
+        {!operations ||
+          (operations.length === 0 && (
+            <tr>
+              <td>
+                <ResourcePreviewAttributeContent>
+                  <Template code="Resources-View-MissingProperty" />
+                </ResourcePreviewAttributeContent>
+              </td>
+            </tr>
+          ))}
         {operations.map(day => {
           if (day.hoursOfOperation) {
             return (
               <tr key={day.key}>
-                <td style={{ padding: '0 4px', width: '0' }}>
+                <td style={{ paddingRight: '4px', width: '0' }}>
                   <ResourceSubtitle>{day.day}</ResourceSubtitle>
                 </td>
-                <td style={{ padding: '0 4px', fontSize: '12px' }}>
-                  <FontOpenSans>
+                <td style={{ padding: '0 4px', fontSize: '14px' }}>
+                  <ResourcePreviewAttributeContent>
                     {day.hoursOfOperation}
                     {showDescriptionOfHours && (
                       <>
@@ -45,7 +55,7 @@ const OperatingHours: React.FC<Props> = ({ operations, showDescriptionOfHours })
                         {day.descriptionOfHours}
                       </>
                     )}
-                  </FontOpenSans>
+                  </ResourcePreviewAttributeContent>
                 </td>
               </tr>
             );
@@ -55,8 +65,8 @@ const OperatingHours: React.FC<Props> = ({ operations, showDescriptionOfHours })
               <td style={{ padding: '0 4px', width: '0' }}>
                 <ResourceSubtitle>{day.day}</ResourceSubtitle>
               </td>
-              <td style={{ padding: '0 4px', fontSize: '12px' }}>
-                <FontOpenSans>Closed</FontOpenSans>
+              <td style={{ padding: '0 4px', fontSize: '14px' }}>
+                <ResourcePreviewAttributeContent>Closed</ResourcePreviewAttributeContent>
               </td>
             </tr>
           );
