@@ -23,7 +23,7 @@ data "aws_iam_policy_document" "this" {
       "s3:AbortMultipartUpload",
       "s3:ListMultipartUploadParts"
     ]
-    resources = ["arn:aws:s3:::${var.bucket_name}/voice-recordings/*"]
+    resources = ["arn:aws:s3:::${var.bucket_name}/${var.path}/*"]
   }
 }
 

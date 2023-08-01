@@ -58,4 +58,9 @@ inputs = local.config
   */
 terraform {
   source = "../../terraform-modules//stages/${include.root.locals.stage}"
+
+  after_hook "noop" {
+    commands = ["apply"]
+    execute  = ["/app/twilio-iac/scripts/noop/external-recordings/after.sh"]
+  }
 }
