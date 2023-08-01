@@ -85,14 +85,8 @@ module "flex" {
   source                    = "../terraform-modules/flex/default"
   twilio_account_sid        = local.secrets.twilio_account_sid
   short_environment         = var.short_environment
-  operating_info_key        = var.operating_info_key
-  definition_version        = var.definition_version
-  serverless_url            = module.serverless.serverless_environment_production_url
-  multi_office_support      = var.multi_office
-  feature_flags             = var.feature_flags
   flex_chat_service_sid     = module.services.flex_chat_service_sid
   messaging_studio_flow_sid = module.studioFlow.messaging_studio_flow_sid
-
 }
 
 module "survey" {

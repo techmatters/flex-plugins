@@ -11,7 +11,6 @@ locals {
    * This is kindof hacky, but locals that are referenced by other items within the local_config
    * must be defined at the base level becauase a local object cannot reference properties of itself
    **/
-  helpline_language = "es-CO"
   task_language     = "es-CO"
 
   /**
@@ -21,12 +20,10 @@ locals {
     helpline       = "Te Guío"
     old_dir_prefix = "teguio"
 
-    helpline_language  = local.helpline_language
     target_task_name   = "execute_initial_flow"
     task_language      = local.task_language
     voice_ivr_language = "es-MX"
     operating_info_key = "co"
-    definition_version = "co-v1"
 
     custom_channels = ["twitter", "instagram"]
 
@@ -45,7 +42,7 @@ locals {
       whatsapp = templatefile("../../terraform-modules/channels/twilio-channel/channel-attributes/whatsapp-attributes.tftpl", { task_language = local.task_language })
     }
 
-    strings = jsondecode(file("../../translations/${local.helpline_language}/strings.json"))
+    strings = jsondecode(file("../../translations/${local.task_language}/strings.json"))
 
     manage_github_secrets = false
 
