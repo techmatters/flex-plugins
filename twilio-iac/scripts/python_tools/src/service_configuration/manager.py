@@ -81,6 +81,13 @@ def print_plan(plan: DeepDiff):
                 output.append(f'Remove {path} with value {change.t1}')
             elif diff_type == 'values_changed':
                 output.append(f'Update {path} from {change.t1} to {change.t2}')
+            elif diff_type == 'iterable_item_added':
+                output.append(f'Added item to {path} with value {change.t2}')
+            elif diff_type == 'iterable_item_removed':
+                output.append(
+                    f'Removed item from {path} with value {change.t1}')
+            else:
+                output.append(f'Unknown change: {change}')
 
     for line in output:
         if 'Add' in line:
