@@ -1,7 +1,6 @@
 {
     "attributes": {
         "definitionVersion": "ro-v1",
-        "environment": null,
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_conferencing": false,
@@ -17,9 +16,7 @@
             "enable_voice_recordings": false
         },
         "helplineLanguage": "",
-        "helpline_code": null,
-        "permissionConfig": "demo",
-        "resources_base_url": null
+        "permissionConfig": "demo"
     },
     "ui_attributes": {
         "colorTheme": {

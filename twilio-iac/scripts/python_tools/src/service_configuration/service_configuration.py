@@ -33,9 +33,9 @@ SSM_FIELDS = {
 TEMPLATE_FIELDS = {
     "attributes.assets_bucket_url": "https://assets-{environment}.tl.techmatters.org",
     "attributes.hrm_base_url": "https://hrm-{environment}{region_url_postfix}.tl.techmatters.org",
-    "attributes.resources_base_url": "https://hrm-{environment}{region_url_postfix}.tl.techmatters.org",
     "attributes.environment": "{environment}",
     "attributes.helpline_code": "{helpline_code}",
+    "attributes.aws_region": "{region}",
 }
 
 # These are fields that will be excluded from the payload sent to twilio
@@ -156,7 +156,8 @@ class ServiceConfiguration():
         self.account_sid = self._twilio_client.account_sid
         self.helpline_code = self._twilio_client.helpline_code
         self.environment = self._twilio_client.environment
-        self.remote_state: dict[str, object] = self._twilio_client.get_flex_configuration()
+        self.remote_state: dict[str,
+                                object] = self._twilio_client.get_flex_configuration()
         self.init_version()
         self.init_region()
         self.init_local_state()
@@ -205,9 +206,6 @@ class ServiceConfiguration():
             self.local_state = remove_empty(self.local_state)
 
     def init_new_state(self):
-        if self.skip_local_config:
-            return
-
         self.new_state = always_merger.merge(
             # deepcopy to avoid modifying remote_state even though the docs
             # say the function is non-destructive, it is
@@ -223,9 +221,12 @@ class ServiceConfiguration():
 
         self.init_ssm_fields()
         self.init_template_fields()
+
         for key, value in self.template_config.items():
-            new_value = get_nested_key(self.new_state, key)
-            if new_value and new_value != value:
+            local_value = get_nested_key(self.local_state, key)
+            # We want to allow the user to override the template value with a
+            # local value.
+            if local_value:
                 continue
 
             set_nested_key(self.new_state, key, value)
@@ -236,6 +237,7 @@ class ServiceConfiguration():
                 environment=self.environment,
                 account_sid=self.account_sid,
                 helpline_code=self.helpline_code,
+                region=self.region,
                 region_url_postfix=REGION_URL_POSTFIX_MAP[self.region],
             )
             self.template_config[key] = templated_value

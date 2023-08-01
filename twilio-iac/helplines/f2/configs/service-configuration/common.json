@@ -1,7 +1,6 @@
 {
     "attributes": {
         "definitionVersion": "demo-v1",
-        "environment": null,
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_conferencing": false,
@@ -14,10 +13,8 @@
             "enable_twilio_transcripts": false,
             "post_survey_serverless_handled": false
         },
-        "helpline_code": null,
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",
-        "permissionConfig": "dev",
-        "resources_base_url": null
+        "permissionConfig": "dev"
     },
     "ui_attributes": {
         "colorTheme": {

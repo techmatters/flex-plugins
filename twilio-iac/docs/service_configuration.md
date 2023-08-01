@@ -13,6 +13,7 @@ All make commands are run from the `twilio-iac` directory.
 These env vars are optional. If they are not set, the commands will run against ALL helplines in ALL environemnts.
 
 `HL` - the helpline short code (lowercase)
+
 `HL_ENV` - the environment (lowercase) - one of `development`, `staging`, or `production`
 
 
@@ -21,6 +22,7 @@ These env vars are optional. If they are not set, the commands will run against 
 These commands are used to manage the service configuration for a helpline.
 
 `make service-config-plan` - outputs a plan for the service configuration update
+
 `make service-config-apply` - applies the service configuration update
 
 ### Remote Sync Commands
@@ -30,6 +32,7 @@ These commands are used to update the local json config files based on the remot
 *Note: these commands do not accept an HL_ENV argument as they must load the configurations for all environments in order to compare them.*
 
 `make service-config-sync-plan` - outputs a plan for the service configuration sync
+
 `make service-config-sync-apply` - applies the service configuration sync
 
 ### Get Remote Service Configuration
@@ -41,6 +44,7 @@ In addition to the normal `HL` and `HL_ENV` targeting ENV vars, this command can
 ### Other Commands
 
 `make service-config-show-remote` - dumps the remote service configuration to the terminal.
+
 `make service-config-unlock` - removes lock if something went wrong and the lock is stuck.
 
 ## JSON Config Files
@@ -50,7 +54,9 @@ The helpline specific configuration is managed primarily via a cascading set of 
 The order of precedence for configuration file override relative to the `twilio-iac/helplines` directory is as follows:
 
 `configs/service-configuration/defaults.json` - the default configuration for all helplines
-`configs/<helpline_short_code>/service-configuration/common.json` - the common configuration for a specific helpline
-`configs/<helpline_short_code>/service-configuration/<environment>.json` - the environment specific configuration for a specific helpline
 
-The `defaults.json, `common.json` and `<environment>.json` files are merged together to create the final configuration for a helpline in a given environment.
+`<helpline_short_code>/configs/service-configuration/common.json` - the common configuration for a specific helpline
+
+`configs/<helpline_short_code>/configs/service-configuration/<environment>.json` - the environment specific configuration for a specific helpline
+
+The `defaults.json`, `common.json` and `<environment>.json` files are merged together to create the final configuration for a helpline in a given environment.

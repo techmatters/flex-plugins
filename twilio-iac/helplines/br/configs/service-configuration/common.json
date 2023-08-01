@@ -2,7 +2,6 @@
     "attributes": {
         "configuredLanguage": "pt-BR",
         "definitionVersion": "br-v1",
-        "environment": null,
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_conferencing": false,
@@ -17,7 +16,6 @@
             "enable_voice_recordings": false
         },
         "helplineLanguage": "pt-BR",
-        "helpline_code": null,
         "multipleOfficeSupport": true,
         "pdfImagesSource": "https://tl-public-chat-br-prod.s3.amazonaws.com",
         "permissionConfig": "br",
@@ -25,8 +23,7 @@
             "date": "2022-12-15T10:15:23.862Z",
             "semver": "~1.31.2",
             "version": "1.31.2"
-        },
-        "resources_base_url": null
+        }
     },
     "ui_attributes": {
         "theme": null

@@ -85,37 +85,8 @@ locals {
 
     hrm_transcript_retention_days_override = 90
 
-     // THIS SHOULD BE REMOVED Serverless
+    // THIS SHOULD BE REMOVED Serverless
     ui_editable = true
 
-     #Chatbots
-
-    #Feature flags
-    feature_flags = {
-      enable_fullstory_monitoring : true
-      enable_upload_documents : false
-      enable_post_survey : false
-      enable_contact_editing : true
-      enable_case_management : true
-      enable_offline_contact : true
-      enable_filter_cases : true
-      enable_sort_cases : true
-      enable_transfers : true
-      enable_manual_pulling : false
-      enable_csam_report : false
-      enable_canned_responses : true
-      enable_dual_write : false
-      enable_save_insights : true
-      enable_previous_contacts : false
-      enable_voice_recordings : true
-      enable_twilio_transcripts : false
-      enable_external_transcripts : true
-      post_survey_serverless_handled : true
-      enable_csam_clc_report : false
-      enable_counselor_toolkits : true
-      enable_emoji_picker : true
-      enable_aselo_messaging_ui : true
-      enable_conferencing: true
-    }
   }
 }

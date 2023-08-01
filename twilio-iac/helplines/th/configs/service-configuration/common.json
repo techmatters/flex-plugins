@@ -1,7 +1,6 @@
 {
     "attributes": {
         "definitionVersion": "th-v1",
-        "environment": null,
         "feature_flags": {
             "enable_conferencing": false,
             "enable_counselor_toolkits": false,
@@ -11,9 +10,7 @@
             "enable_transcripts": false
         },
         "helplineLanguage": "th-TH",
-        "helpline_code": null,
-        "permissionConfig": "th",
-        "resources_base_url": null
+        "permissionConfig": "th"
     },
     "ui_attributes": {
         "colorTheme": {
