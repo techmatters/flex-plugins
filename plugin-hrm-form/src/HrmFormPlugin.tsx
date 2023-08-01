@@ -197,73 +197,42 @@ export default class HrmFormPlugin extends FlexPlugin {
     const config = getHrmConfig();
     const featureFlags = getAseloFeatureFlags();
 
-    Flex.Actions.addListener('afterAcceptTask', ({ task }) => {
-      // /// DEBUG
-      const debugEvents = (task: Flex.ITask) => {
-        const conversationState = Flex.StateHelper.getConversationStateForTask(task);
-
-        if (conversationState.isLoadingConversation) {
-          console.log('>>>>>>>> waiting :)');
-          setTimeout(() => debugEvents(task), 1000);
-        } else {
-          console.log('>>>>>>>> conversationState', conversationState);
-          console.log('>>>>>>>> eventNames', conversationState.source.eventNames());
-          conversationState.source.eventNames().forEach(eventName => {
-            conversationState.source.addListener(eventName as any, (data: any) => {
-              console.log('>>>>>>>>', eventName, data);
-            });
-          });
-        }
-      };
-
-      debugEvents(task);
-      // /// DEBUG
-    });
-
     /*
      * localization setup (translates the UI if necessary)
      * WARNING: the way this is done right now is "hacky". More info in initLocalization declaration
      */
-    /*
-     * const { translateUI, getMessage } = setUpLocalization(config);
-     * ActionFunctions.loadCurrentDefinitionVersion();
-     */
+    const { translateUI, getMessage } = setUpLocalization(config);
+    ActionFunctions.loadCurrentDefinitionVersion();
 
-    /*
-     * setUpSharedStateClient();
-     * if (featureFlags.enable_transfers) setUpTransfers();
-     * setUpComponents(featureFlags, config, translateUI);
-     * setUpActions(featureFlags, config, getMessage);
-     */
+    setUpSharedStateClient();
+    if (featureFlags.enable_transfers) setUpTransfers();
+    setUpComponents(featureFlags, config, translateUI);
+    setUpActions(featureFlags, config, getMessage);
 
-    // TaskRouterListeners.setTaskWrapupEventListeners(featureFlags);
+    TaskRouterListeners.setTaskWrapupEventListeners(featureFlags);
 
-    /*
-     * subscribeReservedTaskAlert();
-     * subscribeNewMessageAlertOnPluginInit();
-     */
+    subscribeReservedTaskAlert();
+    subscribeNewMessageAlertOnPluginInit();
 
-    /*
-     * const managerConfiguration: Flex.Config = {
-     *   // colorTheme: HrmTheme,
-     *   theme: {
-     *     componentThemeOverrides: overrides,
-     *     tokens: {
-     *       backgroundColors: {
-     *         colorBackground: HrmTheme.colors.base2,
-     *       },
-     *     },
-     *   },
-     * };
-     * manager.updateConfig(managerConfiguration);
-     */
+    const managerConfiguration: Flex.Config = {
+      // colorTheme: HrmTheme,
+      theme: {
+        componentThemeOverrides: overrides,
+        tokens: {
+          backgroundColors: {
+            colorBackground: HrmTheme.colors.base2,
+          },
+        },
+      },
+    };
+    manager.updateConfig(managerConfiguration);
 
-    // // TODO(nick): Eventually remove this log line or set to debug.  Should we fail hard here?
-    // const { hrmBaseUrl } = config;
-    // console.log(`HRM URL: ${hrmBaseUrl}`);
-    // if (hrmBaseUrl === undefined) {
-    //   console.error('HRM base URL not defined, you must provide this to save program data');
-    // }
+    // TODO(nick): Eventually remove this log line or set to debug.  Should we fail hard here?
+    const { hrmBaseUrl } = config;
+    console.log(`HRM URL: ${hrmBaseUrl}`);
+    if (hrmBaseUrl === undefined) {
+      console.error('HRM base URL not defined, you must provide this to save program data');
+    }
   }
 
   /**
