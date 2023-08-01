@@ -4,7 +4,7 @@
 # this file, please also modify the requirements in infrastructure-config:/terraform/Dockerfile
 # and build/push a new terraform docker image.
 boto3==1.28.3
-boto3-stubs[ssm,sts]
+boto3-stubs[s3,ssm,sts]
 deepdiff[cli]==6.3.1
 deepmerge==1.1.0
 pygments==2.15.1

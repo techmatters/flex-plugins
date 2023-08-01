@@ -1,8 +1,7 @@
 from botocore.exceptions import ClientError
 import json
 import re
-from typing import TypedDict
-from typing_extensions import Unpack
+from typing import TypedDict, Unpack
 
 from .config import questions, Question, Secrets
 from ..aws import SSMClient

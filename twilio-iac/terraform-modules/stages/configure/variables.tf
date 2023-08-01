@@ -8,12 +8,6 @@ variable "helpline_region" {
   description = "The region for the helpline."
 }
 
-variable "helpline_language" {
-  description = "Keyword that determines the language to be used as default across the helpline"
-  type        = string
-  default     = ""
-}
-
 variable "short_environment" {
   description = "The short code for the environment."
   type        = string
@@ -29,26 +23,6 @@ variable "helpline" {
   type        = string
 }
 
-variable "definition_version" {
-  description = "The definition version for the helpline."
-  type        = string
-}
-
-variable "operating_info_key" {
-  type        = string
-  description = "The operating info key for the helpline."
-}
-
-variable "multi_office" {
-  type        = bool
-  description = "Sets the multipleOfficeSupport flag in Flex Service Configuration"
-}
-
-variable "feature_flags" {
-  description = "A map of feature flags that need to be set for this helpline's flex plugin"
-  type        = map(bool)
-}
-
 variable "contacts_waiting_channels" {
   description = "List of contact waiting channels"
   type        = list(string)
@@ -58,7 +32,6 @@ variable "target_task_name" {
   type        = string
   description = "The target task name for the helpline."
 }
-
 
 variable "twilio_channels" {
   type = map(object({
@@ -142,13 +115,6 @@ variable "janitor_enabled" {
   description = "Whether to enable the janitor for the helpline."
   default     = true
 }
-
-variable "permission_config" {
-  description = "The permission config for the helpline."
-  type        = string
-  default     = ""
-}
-
 variable "task_language" {
   type        = string
   default     = ""
@@ -180,12 +146,6 @@ variable "channel_attributes" {
 variable "enable_post_survey" {
   type    = bool
   default = false
-}
-
-variable "resources_base_url" {
-  description = "Custom URL for the Resources"
-  type        = string
-  default     = ""
 }
 
 variable "hrm_transcript_retention_days_override" {
