@@ -19,7 +19,8 @@
             "enable_transcripts": false
         },
         "helplineLanguage": "",
-        "permissionConfig": "demo"
+        "permissionConfig": "demo",
+        "resources_base_url": "https://hrm-production.tl.techmatters.org"
     },
     "ui_attributes": {
         "colorTheme": {

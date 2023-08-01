@@ -33,10 +33,6 @@ SSM_FIELDS = {
 TEMPLATE_FIELDS = {
     "attributes.assets_bucket_url": "https://assets-{environment}.tl.techmatters.org",
     "attributes.hrm_base_url": "https://hrm-{environment}{region_url_postfix}.tl.techmatters.org",
-    # The resources_base_url is currently used to turn on/off the resources system
-    # since it is the exception, not the rule we'll disable it and set it manually
-    # in the helpline configs that need it.
-    # "attributes.resources_base_url": "https://hrm-{environment}{region_url_postfix}.tl.techmatters.org",
     "attributes.environment": "{environment}",
     "attributes.helpline_code": "{helpline_code}",
     "attributes.aws_region": "{region}",
@@ -210,9 +206,6 @@ class ServiceConfiguration():
             self.local_state = remove_empty(self.local_state)
 
     def init_new_state(self):
-        if self.skip_local_config:
-            return
-
         self.new_state = always_merger.merge(
             # deepcopy to avoid modifying remote_state even though the docs
             # say the function is non-destructive, it is

@@ -1,7 +1,6 @@
 {
     "attributes": {
         "definitionVersion": "zw-v1",
-        "environment": null,
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_conferencing": false,
@@ -13,7 +12,6 @@
             "enable_transcripts": false
         },
         "helplineLanguage": "",
-        "helpline_code": null,
         "permissionConfig": "zw"
     },
     "ui_attributes": {

@@ -10,7 +10,6 @@
             "line"
         ],
         "definitionVersion": "mt-v1",
-        "environment": null,
         "feature_flags": {
             "enable_aselo_messaging_ui": true,
             "enable_conferencing": false,
@@ -24,7 +23,6 @@
             "enable_voice_recordings": false,
             "post_survey_serverless_handled": false
         },
-        "helpline_code": null,
         "permissionConfig": "mt",
         "resources_base_url": ""
     },

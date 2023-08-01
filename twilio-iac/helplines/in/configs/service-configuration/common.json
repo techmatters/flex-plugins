@@ -1,7 +1,6 @@
 {
     "attributes": {
         "definitionVersion": "in-v1",
-        "environment": null,
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_conferencing": false,
@@ -15,9 +14,7 @@
             "enable_twilio_transcripts": false,
             "enable_voice_recordings": false
         },
-        "helpline_code": null,
-        "permissionConfig": "in",
-        "resources_base_url": null
+        "permissionConfig": "in"
     },
     "ui_attributes": {
         "colorTheme": {

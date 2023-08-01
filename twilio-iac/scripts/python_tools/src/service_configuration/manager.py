@@ -6,7 +6,6 @@ from termcolor import colored
 from .config import config
 from .remote_syncer import RemoteSyncer
 from .service_configuration import DeepDiff, ServiceConfiguration, get_dot_notation_path
-from .remote_syncer import RemoteSyncer
 
 
 def signal_handler(signal, frame):
@@ -82,7 +81,6 @@ def print_plan(plan: DeepDiff):
                 output.append(f'Remove {path} with value {change.t1}')
             elif diff_type == 'values_changed':
                 output.append(f'Update {path} from {change.t1} to {change.t2}')
-
 
     for line in output:
         if 'Add' in line:
@@ -175,14 +173,17 @@ def sync_apply(syncer: RemoteSyncer):
     write_common = True
     for service_config in syncer.service_configs.values():
         if (write_common):
-            dir_path = os.path.dirname(service_config.get_config_path('common'))
+            dir_path = os.path.dirname(
+                service_config.get_config_path('common'))
             os.makedirs(dir_path, exist_ok=True)
             with open(service_config.get_config_path('common'), 'w') as f:
-                json.dump(syncer.configs['common'], f, indent=4, sort_keys=True)
+                json.dump(syncer.configs['common'],
+                          f, indent=4, sort_keys=True)
             write_common = False
 
         with open(service_config.get_config_path('environment'), 'w') as f:
-            json.dump(syncer.configs[service_config.environment], f, indent=4, sort_keys=True)
+            json.dump(
+                syncer.configs[service_config.environment], f, indent=4, sort_keys=True)
 
 
 def unlock(service_config: ServiceConfiguration):

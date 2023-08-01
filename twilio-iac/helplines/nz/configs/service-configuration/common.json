@@ -6,7 +6,6 @@
             "web"
         ],
         "definitionVersion": "nz-v1",
-        "environment": null,
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_conferencing": false,
@@ -20,7 +19,6 @@
         },
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
         "helplineLanguage": "en-NZ",
-        "helpline_code": null,
         "permissionConfig": "nz",
         "resources_base_url": ""
     },
