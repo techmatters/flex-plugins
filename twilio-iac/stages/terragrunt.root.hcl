@@ -23,6 +23,10 @@ locals {
     "production"  = "PROD"
   }
 
+  aws_account_id = get_aws_account_id()
+  env_role = "arn:aws:iam::${local.aws_account_id}:role/tf-twilio-iac-${local.environment}"
+  admin_role = "arn:aws:iam::${local.aws_account_id}:role/tf-admin"
+
   // These are values that will be added to the generated master config that are derived from other locals.
   computed_config = {
     stage              = local.stage
@@ -31,6 +35,8 @@ locals {
     short_helpline     = local.short_helpline
     old_dir_name       = "${local.env_config.old_dir_prefix}-${local.environment}"
     operating_info_key = local.short_helpline
+    aws_account_id     = local.aws_account_id
+    role_arn           = local.stage == "external-recording" ? local.admin_role : local.env_role
   }
 
   config = merge(local.env_config, local.computed_config)
@@ -56,5 +62,5 @@ generate "aws-provider" {
 generate "additional-tf" {
   path      = "additional.tf"
   if_exists = "overwrite_terragrunt"
-  contents  = fileexists(local.additional_file) ? file(local.additional_file) : file(local.additional_default_file)
+  contents  = fileexists(local.additional_file) ? file(local.additional_file) : fileexists(local.additional_default_file) ? file(local.additional_default_file) : ""
 }
