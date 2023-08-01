@@ -22,9 +22,13 @@ locals {
         "target_workers" = "routing.skills HAS 'Youthline Helpline'",
         "friendly_name"  = "Youthline Helpline"
       },
-      triage : {
-        "target_workers" = "routing.skills HAS 'Triage'",
-        "friendly_name"  = "Triage"
+      priority : {
+        "target_workers" = "routing.skills HAS 'Priority'",
+        "friendly_name"  = "Priority"
+      },
+      clinical : {
+        "target_workers" = "routing.skills HAS 'Clinical'",
+        "friendly_name"  = "Clinical"
       }
     }
 

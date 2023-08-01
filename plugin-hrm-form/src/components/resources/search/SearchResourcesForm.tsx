@@ -15,11 +15,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { Dispatch, useRef } from 'react';
+import React, { Dispatch, useEffect, useRef } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 import { Grid } from '@material-ui/core';
+import debounce from 'lodash/debounce';
 
 import { namespace, referrableResourcesBase, RootState } from '../../../states';
 import {
@@ -34,6 +35,7 @@ import {
   StyledNextStepButton,
 } from '../../../styles/HrmStyles';
 import {
+  ResourceSearchFormClearButton,
   ResourcesSearchFormArea,
   ResourcesSearchFormContainer,
   ResourcesSearchFormFilterHeader,
@@ -43,16 +45,18 @@ import {
   ResourcesSearchTitle,
 } from '../../../styles/ReferrableResources';
 import {
+  FilterOption,
+  ReferrableResourceSearchState,
   resetSearchFormAction,
   searchResourceAsyncAction,
   updateSearchFormAction,
-  FilterOption,
-  ReferrableResourceSearchState,
+  suggestSearchAsyncAction,
 } from '../../../states/resources/search';
 import SearchInput from '../../caseList/filters/SearchInput';
 import { getTemplateStrings } from '../../../hrmConfig';
 import asyncDispatch from '../../../states/asyncDispatch';
-import { FiltersCheckbox, MultiSelectCheckboxLabel } from '../../../styles/caseList/filters';
+import { FiltersCheckbox } from '../../../styles/caseList/filters';
+import SearchAutoComplete from './SearchAutoComplete';
 
 const NO_AGE_SELECTED = -1;
 const NO_LOCATION_SELECTED = '__NO_LOCATION_SELECTED__';
@@ -70,11 +74,13 @@ const mapStateToProps = (state: RootState) => {
     parameters: { generalSearchTerm, pageSize, filterSelections },
     filterOptions,
   } = state[namespace][referrableResourcesBase].search;
+  const { suggestSearch } = state[namespace][referrableResourcesBase];
   return {
     generalSearchTerm,
     pageSize,
     filterSelections,
     filterOptions,
+    suggestSearch,
   };
 };
 
@@ -97,6 +103,10 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
       pageSize: number,
     ) => searchAsyncDispatch(searchResourceAsyncAction({ generalSearchTerm, pageSize, filterSelections }, 0)),
     resetSearch: () => dispatch(resetSearchFormAction()),
+    updateSuggestSearch: debounce((prefix: string) => searchAsyncDispatch(suggestSearchAsyncAction(prefix)), 300, {
+      leading: true,
+      trailing: true,
+    }),
   };
 };
 
@@ -113,6 +123,8 @@ const SearchResourcesForm: React.FC<Props> = ({
   resetSearch,
   filterOptions,
   filterSelections,
+  suggestSearch,
+  updateSuggestSearch,
 }) => {
   const firstElement = useRef(null);
   const strings = getTemplateStrings();
@@ -128,6 +140,10 @@ const SearchResourcesForm: React.FC<Props> = ({
       submitSearch(generalSearchTermBoxText, filterSelections, pageSize);
     }
   };
+
+  useEffect(() => {
+    updateSuggestSearch(generalSearchTermBoxText);
+  }, [generalSearchTermBoxText, updateSuggestSearch]);
 
   const ageRangeDropDown = (dropdown: 'Min' | 'Max', optionList: FilterOption<number>[]) => {
     const currentSelection =
@@ -155,6 +171,7 @@ const SearchResourcesForm: React.FC<Props> = ({
             ))}
           </FormSelect>
         </FormSelectWrapper>
+        &nbsp;
         <FormLabel htmlFor={`age-range-${dropdown.toLowerCase()}`} style={{ marginLeft: '4px', flexDirection: 'row' }}>
           <Template code={`Resources-Search-Age-Range-${dropdown}`} />
         </FormLabel>
@@ -188,7 +205,7 @@ const SearchResourcesForm: React.FC<Props> = ({
                     );
                   }}
                 />
-                <MultiSelectCheckboxLabel>{label ?? value}</MultiSelectCheckboxLabel>
+                &nbsp;&nbsp;{label ?? value}
               </FormLabel>
             </Grid>
           ))}
@@ -199,15 +216,15 @@ const SearchResourcesForm: React.FC<Props> = ({
 
   return (
     <ResourcesSearchFormContainer>
-      <Box style={{ overflowX: 'hidden', overflowY: 'auto' }}>
-        <Box marginBottom="10px" marginTop="10px" style={{ paddingLeft: '20px' }}>
+      <Box margin="0px 5px 0px 5px" style={{ overflowX: 'hidden', overflowY: 'auto' }}>
+        <Box margin="25px -5px 10px 20px">
           <ResourcesSearchTitle data-testid="Resources-Search-Title">
             <Template code="Resources-Search-FormTitle" />
           </ResourcesSearchTitle>
         </Box>
         <ResourcesSearchFormTopRule />
         <ResourcesSearchFormArea>
-          <ResourcesSearchFormSettingBox>
+          <ResourcesSearchFormSettingBox style={{ border: 'none' }}>
             <Column>
               <Box>
                 <Template code="Resources-Search-SearchTermHeader" />
@@ -230,6 +247,11 @@ const SearchResourcesForm: React.FC<Props> = ({
               />
             </Column>
           </ResourcesSearchFormSettingBox>
+          <SearchAutoComplete
+            generalSearchTermBoxText={generalSearchTermBoxText}
+            suggestSearch={suggestSearch}
+            setGeneralSearchTermBoxText={setGeneralSearchTermBoxText}
+          />
           <ResourcesSearchFormSectionHeader data-testid="Resources-Search-FilterHeader">
             <Template code="Resources-Search-FilterHeader" />
           </ResourcesSearchFormSectionHeader>
@@ -238,11 +260,8 @@ const SearchResourcesForm: React.FC<Props> = ({
               <ResourcesSearchFormFilterHeader>
                 <Template code="Resources-Search-Location" />
               </ResourcesSearchFormFilterHeader>
-              <Row
-                key="location"
-                style={{ marginTop: '10px', marginBottom: '10px', justifyContent: 'stretch', gap: '60px' }}
-              >
-                <Column style={{ width: '50%', gap: '4px' }}>
+              <Row key="location" style={{ marginTop: '10px', marginBottom: '10px', gap: '60px' }}>
+                <Column style={{ width: '50%', maxWidth: '250px', gap: '4px' }}>
                   <FormLabel htmlFor="location-province">
                     <Template code="Resources-Search-Location-Province" />
                   </FormLabel>
@@ -263,7 +282,9 @@ const SearchResourcesForm: React.FC<Props> = ({
                     </FormSelect>
                   </FormSelectWrapper>
                 </Column>
-                <Column style={{ width: '50%', opacity: filterSelections.province ? 1 : 0.2, gap: '4px' }}>
+                <Column
+                  style={{ width: '50%', maxWidth: '250px', opacity: filterSelections.province ? 1 : 0.2, gap: '4px' }}
+                >
                   <FormLabel htmlFor="location-city">
                     <Template code="Resources-Search-Location-City" />
                   </FormLabel>
@@ -287,8 +308,8 @@ const SearchResourcesForm: React.FC<Props> = ({
                 </Column>
               </Row>
             </ResourcesSearchFormSettingBox>
-            <Row key="age-range" style={{ alignItems: 'stretch', justifyContent: 'stretch' }}>
-              <ResourcesSearchFormSettingBox key="age-range" style={{ flexShrink: 2 }}>
+            <Row key="age-range" style={{ alignItems: 'stretch', justifyContent: 'stretch', gap: '4px' }}>
+              <ResourcesSearchFormSettingBox key="age-range" style={{ flexShrink: 1 }}>
                 <ResourcesSearchFormFilterHeader>
                   <Template code="Resources-Search-Age-Range" />
                 </ResourcesSearchFormFilterHeader>
@@ -298,7 +319,7 @@ const SearchResourcesForm: React.FC<Props> = ({
                   {ageRangeDropDown('Max', maxEligibleAge)}
                 </Row>
               </ResourcesSearchFormSettingBox>
-              <ResourcesSearchFormSettingBox style={{ flexShrink: 3, marginLeft: '4px' }}>
+              <ResourcesSearchFormSettingBox style={{ flexShrink: 1, marginLeft: '4px' }}>
                 <Column>
                   <ResourcesSearchFormFilterHeader>
                     <Template code="Resources-Search-InterpretationTranslationServicesAvailable" />
@@ -313,6 +334,7 @@ const SearchResourcesForm: React.FC<Props> = ({
                         updateFilterSelection('interpretationTranslationServicesAvailable', checked || undefined);
                       }}
                     />
+                    &nbsp;&nbsp;
                     <Template code="Resources-Search-InterpretationTranslationServicesAvailable-Checkbox" />
                   </FormLabel>
                 </Column>
@@ -327,7 +349,7 @@ const SearchResourcesForm: React.FC<Props> = ({
         </ResourcesSearchFormArea>
       </Box>
       <BottomButtonBar>
-        <StyledNextStepButton
+        <ResourceSearchFormClearButton
           type="button"
           secondary={true}
           roundCorners={true}
@@ -335,15 +357,18 @@ const SearchResourcesForm: React.FC<Props> = ({
             setGeneralSearchTermBoxText('');
             resetSearch();
           }}
-          style={{ marginRight: '15px ' }}
+          style={{
+            opacity: hasValidSearchSettings() ? 1 : 0.3,
+          }}
         >
           <Template code="Resources-Search-ClearFormButton" />
-        </StyledNextStepButton>
+        </ResourceSearchFormClearButton>
         <StyledNextStepButton
-          style={{ opacity: hasValidSearchSettings() ? 1 : 0.2 }}
+          style={{ opacity: hasValidSearchSettings() ? 1 : 0.3 }}
           type="button"
           roundCorners={true}
           onClick={() => submitSearchIfValid()}
+          data-testid="search-button"
         >
           <Template code="SearchForm-Button" />
         </StyledNextStepButton>

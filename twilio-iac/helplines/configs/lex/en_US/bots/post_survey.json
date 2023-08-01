@@ -16,7 +16,8 @@
       "content_type": "PlainText"
     },
     "intents": [
-      "post_survey"
+      "post_survey_yes",
+      "post_survey_no"
     ]
   }
 }

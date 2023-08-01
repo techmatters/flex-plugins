@@ -1,11 +1,14 @@
 {
-  "post_survey":{
-    "description": "Post Survey Intent",
+  "post_survey_yes":{
+    "description": "Post Survey Intent - Yes",
     "sample_utterances": [
-      "survey ended",
-      "survey closed",
-      "counselor ended survey",
-      "caller exited call"
+      "y",
+      "yes",
+      "yep",
+      "yeah",
+      "yup",
+      "ya",
+      "yah"
     ],
     "fulfillment_activity": {
       "type": "ReturnIntent"
@@ -19,17 +22,6 @@
       "content_type": "PlainText"
     },
     "slots": {
-      "answerQuestions": {
-        "priority": 1,
-        "description": "answerQuestions",
-        "slot_constraint": "Required",
-        "slot_type": "yes_no",
-        "value_elicitation_prompt": {
-          "max_attempts": 2,
-          "content": "The counsellor has left the chat. Thank you for reaching out. Please contact us again if you need more help. \nBefore you leave, would you be willing to answer a few questions about the service you received today? Please answer Yes or No.",
-          "content_type": "PlainText"
-        }
-      },
       "wasHelpful": {
         "priority": 1,
         "description": "wasHelpful",
@@ -53,5 +45,27 @@
         }
       }
     }
+  },
+  "post_survey_no":{
+    "description": "Post Survey Intent - Yes",
+    "sample_utterances": [
+      "n",
+      "no",
+      "nope",
+      "nah",
+      "not"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "Thank you for reaching out. Please contact us again if you need more help.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Sorry, I didn't understand that.",
+      "content_type": "PlainText"
+    },
+    "slots": {}
   }
 }

@@ -37,6 +37,7 @@ locals {
   twilio_numbers            = ["messenger:111279668497853"]
   channel                   = ""
   custom_channel_attributes = ""
+
   twilio_channels = {
     "webchat"  = { "contact_identity" = "", "channel_type" = "web" },
     "facebook" = { "contact_identity" = "messenger:111279668497853", "channel_type" = "facebook" }

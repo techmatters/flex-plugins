@@ -1,7 +1,7 @@
 ${
   jsonencode(
   {
-  "description": "Good2Talk ON IVR",
+  "description": "Good2Talk NS IVR",
   "states": [
     {
       "name": "Trigger",
@@ -49,20 +49,6 @@ ${
               ],
               "type": "contains",
               "value": channel_flow_vars["en_number"]
-            }
-          ]
-        },
-        {
-          "next": "Msg10006E-InfoOtherLanguages",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value contains tr_number",
-              "arguments": [
-                "{{trigger.call.To}}"
-              ],
-              "type": "contains",
-              "value": channel_flow_vars["tr_number"]
             }
           ]
         },
@@ -142,32 +128,6 @@ ${
       }
     },
     {
-      "name": "sendToQ6003_Interpreter",
-      "type": "send-to-flex",
-      "transitions": [
-        {
-          "event": "callComplete"
-        },
-        {
-          "event": "failedToEnqueue"
-        },
-        {
-          "event": "callFailure"
-        }
-      ],
-      "properties": {
-        "waitUrl": channel_flow_vars["tr_function_url"],
-        "offset": {
-          "x": -1180,
-          "y": 1040
-        },
-        "workflow": workflow_sids["master"],
-        "channel": task_channel_sids["voice"],
-        "attributes": "{\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\"}",
-        "waitUrlMethod": "GET"
-      }
-    },
-    {
       "name": "Msg10006E-InfoMessage2",
       "type": "gather-input-on-call",
       "transitions": [
@@ -179,7 +139,7 @@ ${
           "event": "speech"
         },
         {
-          "next": "split_Inflight",
+          "next": "Msg60011E-Inflight",
           "event": "timeout"
         }
       ],
@@ -204,7 +164,7 @@ ${
       "type": "say-play",
       "transitions": [
         {
-          "next": "split_Inflight",
+          "next": "Msg60011E-Inflight",
           "event": "audioComplete"
         }
       ],
@@ -223,7 +183,7 @@ ${
       "type": "say-play",
       "transitions": [
         {
-          "next": "split_Inflight",
+          "next": "Msg60011E-Inflight",
           "event": "audioComplete"
         }
       ],
@@ -289,20 +249,6 @@ ${
               ],
               "type": "equal_to",
               "value": "6"
-            }
-          ]
-        },
-        {
-          "next": "cyara_test",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to 9",
-              "arguments": [
-                "{{widgets.Msg10006E-InfoMessage2.Digits}}"
-              ],
-              "type": "equal_to",
-              "value": "9"
             }
           ]
         }
@@ -381,20 +327,6 @@ ${
               ],
               "type": "equal_to",
               "value": "6"
-            }
-          ]
-        },
-        {
-          "next": "Copy_of_cyara_test",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to 9",
-              "arguments": [
-                "{{widgets.Msg10006F-InfoMessage2.Digits}}"
-              ],
-              "type": "equal_to",
-              "value": "9"
             }
           ]
         }
@@ -491,7 +423,7 @@ ${
             "key": "workspaceSid"
           },
           {
-            "value": channel_flow_vars["g2tonfr_queue_sid"],
+            "value": channel_flow_vars["g2tnsfr_queue_sid"],
             "key": "taskQueueSid"
           }
         ],
@@ -513,30 +445,16 @@ ${
             {
               "friendly_name": "If value equal_to 1",
               "arguments": [
-                "{{widgets.Msg60025-F.Digits}}"
+                "{{widgets.FrSwitchEnglish.Digits}}"
               ],
               "type": "equal_to",
               "value": "1"
             }
           ]
-        },
-        {
-          "next": "check_interpreter",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to 2",
-              "arguments": [
-                "{{widgets.Msg60025-F.Digits}}"
-              ],
-              "type": "equal_to",
-              "value": "2"
-            }
-          ]
         }
       ],
       "properties": {
-        "input": "{{widgets.Msg60025-F.Digits}}",
+        "input": "{{widgets.FrSwitchEnglish.Digits}}",
         "offset": {
           "x": 240,
           "y": 1410
@@ -544,7 +462,7 @@ ${
       }
     },
     {
-      "name": "Msg60025-F",
+      "name": "FrSwitchEnglish",
       "type": "gather-input-on-call",
       "transitions": [
         {
@@ -555,12 +473,11 @@ ${
           "event": "speech"
         },
         {
-          "next": "set_retry_fr_2",
           "event": "timeout"
         }
       ],
       "properties": {
-        "play": channel_flow_vars["fr_nocounsellors_url"],
+        "play": channel_flow_vars["fr_switch_english_url"],
         "speech_timeout": "auto",
         "offset": {
           "x": 560,
@@ -584,7 +501,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "Msg60025-F",
+          "next": "FrSwitchEnglish",
           "event": "match",
           "conditions": [
             {
@@ -604,153 +521,6 @@ ${
           "x": -60,
           "y": 950
         }
-      }
-    },
-    {
-      "name": "check_interpreter",
-      "type": "run-function",
-      "transitions": [
-        {
-          "next": "interpreter_capacity",
-          "event": "success"
-        },
-        {
-          "next": "sendToQ6003_Interpreter",
-          "event": "fail"
-        }
-      ],
-      "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
-        "offset": {
-          "x": -180,
-          "y": 1680
-        },
-        "function_sid": channel_flow_vars["check_counsellors_function_sid"],
-        "parameters": [
-          {
-            "value": flow_vars["workspace_sid"],
-            "key": "workspaceSid"
-          },
-          {
-            "value": channel_flow_vars["g2ttr_queue_sid"],
-            "key": "taskQueueSid"
-          }
-        ],
-        "url": channel_flow_vars["check_counsellors_function_url"]
-      }
-    },
-    {
-      "name": "interpreter_capacity",
-      "type": "split-based-on",
-      "transitions": [
-        {
-          "next": "switch_interpreter",
-          "event": "noMatch"
-        },
-        {
-          "next": "no_interpreter",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to 0",
-              "arguments": [
-                "{{widgets.check_interpreter.parsed.totalCounsellors}}"
-              ],
-              "type": "equal_to",
-              "value": "0"
-            }
-          ]
-        }
-      ],
-      "properties": {
-        "input": "{{widgets.check_interpreter.parsed.totalCounsellors}}",
-        "offset": {
-          "x": -160,
-          "y": 1920
-        }
-      }
-    },
-    {
-      "name": "no_interpreter",
-      "type": "say-play",
-      "transitions": [
-        {
-          "event": "audioComplete"
-        }
-      ],
-      "properties": {
-        "play": channel_flow_vars["fr_issues_url"],
-        "voice": "alice",
-        "offset": {
-          "x": 100,
-          "y": 2130
-        },
-        "loop": 1,
-        "language": "fr-CA"
-      }
-    },
-    {
-      "name": "split_Inflight",
-      "type": "split-based-on",
-      "transitions": [
-        {
-          "event": "noMatch"
-        },
-        {
-          "next": "Msg60011E-Inflight",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value contains 8446052258",
-              "arguments": [
-                "{{trigger.call.To}}"
-              ],
-              "type": "contains",
-              "value": channel_flow_vars["en_number"]
-            }
-          ]
-        },
-        {
-          "next": "Msg60011I-Inflight",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value contains 8882913868",
-              "arguments": [
-                "{{trigger.call.To}}"
-              ],
-              "type": "contains",
-              "value": channel_flow_vars["tr_number"]
-            }
-          ]
-        }
-      ],
-      "properties": {
-        "input": "{{trigger.call.To}}",
-        "offset": {
-          "x": -1250,
-          "y": 450
-        }
-      }
-    },
-    {
-      "name": "Msg60011I-Inflight",
-      "type": "say-play",
-      "transitions": [
-        {
-          "next": "sendToQ6003_Interpreter",
-          "event": "audioComplete"
-        }
-      ],
-      "properties": {
-        "play": channel_flow_vars["tr_inflight_url"],
-        "offset": {
-          "x": -1210,
-          "y": 730
-        },
-        "loop": 1,
-        "language": "en-CA"
       }
     },
     {
@@ -807,97 +577,11 @@ ${
       }
     },
     {
-      "name": "cyara_test",
-      "type": "say-play",
-      "transitions": [
-        {
-          "event": "audioComplete"
-        }
-      ],
-      "properties": {
-        "play": channel_flow_vars["cyara_url"],
-        "offset": {
-          "x": -1070,
-          "y": 230
-        },
-        "loop": 2
-      }
-    },
-    {
-      "name": "Copy_of_cyara_test",
-      "type": "say-play",
-      "transitions": [
-        {
-          "event": "audioComplete"
-        }
-      ],
-      "properties": {
-        "play": channel_flow_vars["cyara_url"],
-        "offset": {
-          "x": 1110,
-          "y": 170
-        },
-        "loop": 2
-      }
-    },
-    {
-      "name": "Msg10006E-InfoOtherLanguages",
-      "type": "gather-input-on-call",
-      "transitions": [
-        {
-          "next": "split_keys_tr",
-          "event": "keypress"
-        },
-        {
-          "event": "speech"
-        },
-        {
-          "next": "split_Inflight",
-          "event": "timeout"
-        }
-      ],
-      "properties": {
-        "play": channel_flow_vars["tr_intro_url"],
-        "speech_timeout": "auto",
-        "offset": {
-          "x": -580,
-          "y": -190
-        },
-        "loop": 1,
-        "finish_on_key": "#",
-        "language": "en-CA",
-        "stop_gather": true,
-        "gather_language": "en",
-        "profanity_filter": "true",
-        "timeout": 2
-      }
-    },
-    {
-      "name": "switch_interpreter",
-      "type": "say-play",
-      "transitions": [
-        {
-          "next": "sendToQ6003_Interpreter",
-          "event": "audioComplete"
-        }
-      ],
-      "properties": {
-        "play": channel_flow_vars["fr_switch_url"],
-        "voice": "alice",
-        "offset": {
-          "x": -270,
-          "y": 2150
-        },
-        "loop": 1,
-        "language": "fr-CA"
-      }
-    },
-    {
       "name": "fr_invalid_2",
       "type": "say-play",
       "transitions": [
         {
-          "next": "Msg60025-F",
+          "next": "FrSwitchEnglish",
           "event": "audioComplete"
         }
       ],
@@ -932,7 +616,7 @@ ${
       "type": "say-play",
       "transitions": [
         {
-          "next": "split_Invalid",
+          "next": "Msg10006E-InfoMessage2",
           "event": "audioComplete"
         }
       ],
@@ -1101,110 +785,6 @@ ${
           "y": 1030
         },
         "loop": 1
-      }
-    },
-    {
-      "name": "split_Invalid",
-      "type": "split-based-on",
-      "transitions": [
-        {
-          "next": "Msg10006E-InfoMessage2",
-          "event": "noMatch"
-        },
-        {
-          "next": "Msg10006E-InfoMessage2",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value contains en_number",
-              "arguments": [
-                "{{trigger.call.To}}"
-              ],
-              "type": "contains",
-              "value": channel_flow_vars["en_number"]
-            }
-          ]
-        },
-        {
-          "next": "Msg10006E-InfoOtherLanguages",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value contains tr_number",
-              "arguments": [
-                "{{trigger.call.To}}"
-              ],
-              "type": "contains",
-              "value": channel_flow_vars["tr_number"]
-            }
-          ]
-        }
-      ],
-      "properties": {
-        "input": "{{trigger.call.To}}",
-        "offset": {
-          "x": -2850,
-          "y": 1190
-        }
-      }
-    },
-    {
-      "name": "split_keys_tr",
-      "type": "split-based-on",
-      "transitions": [
-        {
-          "next": "en_set_retry",
-          "event": "noMatch"
-        },
-        {
-          "next": "Msg10010E-PrivacyMsg",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to 5",
-              "arguments": [
-                "{{widgets.Msg10006E-InfoOtherLanguages.Digits}}"
-              ],
-              "type": "equal_to",
-              "value": "5"
-            }
-          ]
-        },
-        {
-          "next": "Msg10015E-ToS",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to 6",
-              "arguments": [
-                "{{widgets.Msg10006E-InfoOtherLanguages.Digits}}"
-              ],
-              "type": "equal_to",
-              "value": "6"
-            }
-          ]
-        },
-        {
-          "next": "cyara_test",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to 9",
-              "arguments": [
-                "{{widgets.Msg10006E-InfoOtherLanguages.Digits}}"
-              ],
-              "type": "equal_to",
-              "value": "9"
-            }
-          ]
-        }
-      ],
-      "properties": {
-        "input": "{{widgets.Msg10006E-InfoOtherLanguages.Digits}}",
-        "offset": {
-          "x": -650,
-          "y": 140
-        }
       }
     }
   ],

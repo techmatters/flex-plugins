@@ -29,6 +29,7 @@ const ReferrableResourceSideLink: React.FC<Props> = ({ showLabel, activeView, on
       iconActive={<DocumentationIcon decorative={false} title="Resources" />}
       isActive={activeView === 'referrable-resources'}
       onClick={onClick}
+      data-testid="referrable-resources-side-link"
     >
       <Template code="ReferrableResource-SideNav" />
     </SideLink>

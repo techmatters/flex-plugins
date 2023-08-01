@@ -70,7 +70,7 @@ resource "aws_s3_bucket_ownership_controls" "docs" {
 
 resource "aws_s3_bucket_lifecycle_configuration" "hrm_export_expiry" {
   bucket = aws_s3_bucket.docs.bucket
-
+  provider = aws.bucket
   rule {
     expiration {
       days = 30
