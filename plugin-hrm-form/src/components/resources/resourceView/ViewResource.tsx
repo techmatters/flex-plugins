@@ -96,7 +96,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
               {attributes && (
                 <ResourceAttributesContainer>
                   {/* FIRST COLUMN */}
-                  <ResourceAttributesColumn style={{ flexGrow: 3 }}>
+                  <ResourceAttributesColumn style={{ flexGrow: 3, paddingLeft: 0, marginLeft: '1px' }}>
                     {[
                       {
                         subtitle: 'Resources-View-Details',
