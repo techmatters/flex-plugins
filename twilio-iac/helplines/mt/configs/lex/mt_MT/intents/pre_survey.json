@@ -1,0 +1,97 @@
+{
+  "pre_survey": {
+    "description": "Helpline Specific helplines/mt/configs/lex/mt_MT/intents Pre Survey Intent",
+    "sample_utterances": [
+      "H",
+      "Hi",
+      "Hello",
+      "Help",
+      "I need help",
+      "Pls",
+      "Please",
+      "Incoming webchat contact",
+      "Bongu",
+      "Bonġu",
+      "Ħelow",
+      "Ħaj",
+      "Għajjatni",
+      "Jekk jogħġbok",
+      "Jekk jogħġbkom",
+      "Jum it-tajjeb",
+      "Bongu u saħħa",
+      "Wara x-xogħol kont tinsab",
+      "Intgħażel tagħmel webchat",
+      "Привіт",
+      "Добрий день",
+      "Доброго ранку",
+      "Доброї ночі",
+      "Будь ласка",
+      "Допоможіть",
+      "Я потребую допомоги",
+      "Вхідний веб-чат контакт",
+      "Вітаю",
+      "Здрастуйте",
+      "Допомога",
+      "Будь ласка допоможіть",
+      "Я потребую допомоги",
+      "Будь ласка"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "Ha nittrasferuk lil wieħed Proffesjonist/a tagħna..",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Sorry, mhux nista' ngħin f'dan iż-żmien.",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "aboutSelf": {
+        "priority": 0,
+        "description": "Imported from question 'about_self'",
+        "slot_constraint": "Required",
+        "slot_type": "yes_no",
+        "value_elicitation_prompt": {
+          "content": "Qed iċċempel dwarek innifsek? Jekk jogħġbok wieġeb Iva jew Le",
+          "content_type": "PlainText",
+          "max_attempts": 3
+        }
+      },
+      "age": {
+        "priority": 1,
+        "description": "Imported from question 'age'",
+        "slot_constraint": "Required",
+        "slot_type": "age",
+        "value_elicitation_prompt": {
+          "content": "Kemm għandek żmien?",
+          "content_type": "PlainText",
+          "max_attempts": 3
+        }
+      },
+      "gender": {
+        "priority": 2,
+        "description": "Imported from question 'gender'",
+        "slot_constraint": "Required",
+        "slot_type": "gender",
+        "value_elicitation_prompt": {
+          "content": "X'inhu s-sess tiegħek? \n 1. Mara \n 2. Raġel \n 3. Oħrajn \n 4. Ma nixtieqx naghti risposta",
+          "content_type": "PlainText",
+          "max_attempts": 3
+        }
+      },
+      "feeling": {
+        "priority": 3,
+        "description": "Imported from question 'feeling'",
+        "slot_constraint": "Required",
+        "slot_type": "feeling",
+        "value_elicitation_prompt": {
+          "content": "Kif qed tħossok?  Tista' tikteb in-numru jew il-kelma li tapplika għalik. \n 1. Ferħan \n 2. Konfuż \n 3. Rrabjat \n 4. Ixxukkjat \n 5. Begħzan \n 6. Inċert ",
+          "content_type": "PlainText",
+          "max_attempts": 3
+        }
+      }
+    }
+  }
+}

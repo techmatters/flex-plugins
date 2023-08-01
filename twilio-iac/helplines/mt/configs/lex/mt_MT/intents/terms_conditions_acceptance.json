@@ -1,0 +1,50 @@
+{
+  "terms_conditions_acceptance": {
+    "description": "Helpline Specific helplines/mt/configs/lex/mt_MT/intents Terms and conditions intent",
+    "sample_utterances": [
+      "H",
+      "Hi",
+      "Hello",
+      "Help",
+      "I need help",
+      "Pls",
+      "Please",
+      "Incoming webchat contact",
+      "Bongu",
+      "Bonġu",
+      "Ħelow",
+      "Ħaj",
+      "Għajjatni",
+      "Jekk jogħġbok",
+      "Jekk jogħġbkom",
+      "Jum it-tajjeb",
+      "Bongu u saħħa",
+      "Wara x-xogħol kont tinsab",
+      "Intgħażel tagħmel webchat"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "Grazzi",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Skuzani, mhux nista' nassistu f'dan iż-żmien.",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "terms_conditions_response": {
+        "priority": 0,
+        "description": "terms and conditions",
+        "slot_constraint": "Required",
+        "slot_type": "yes_no",
+        "value_elicitation_prompt": {
+          "content": "Inti taċċetta t-Termini u l-Kundizzjonijiet tagħna? https://kellimni.com/chat-terms/ . Jekk jogħġbok wieġeb billi tagħżel numru:\n1. Iva, naċċetta t-Termini u l-Kundizzjonijiet. \n2. Le, ma naċċettax t-Termini u l-Kundizzjonijiet.",
+          "content_type": "PlainText",
+          "max_attempts": 3
+        }
+      }
+    }
+  }
+}

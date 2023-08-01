@@ -19,7 +19,7 @@ locals {
     lex_bot_languages = {
       en_MT : ["pre_survey", "language_selector","terms_conditions_acceptance"],
       mt_MT : ["pre_survey","terms_conditions_acceptance"],
-      uk_MT : ["pre_survey","terms_conditions_acceptance"]
+      uk : ["pre_survey","terms_conditions_acceptance"]
     }
 
 

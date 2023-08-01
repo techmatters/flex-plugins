@@ -1,0 +1,22 @@
+{
+  "pre_survey": {
+    "description": "General configs/lex/uk/bots Pre Survey Bot",
+    "locale": "en-US",
+    "process_behavior": "BUILD",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "enable_model_improvements": true,
+    "abort_statement": {
+      "content": "Вибачте, на даний час я не можу допомогти.",
+      "content_type": "PlainText"
+    },
+    "clarification_prompt": {
+      "max_attempts": 2,
+      "content": "Вибачте, я не зрозумів. Будь ласка, спробуйте ще раз.",
+      "content_type": "PlainText"
+    },
+    "intents": [
+      "pre_survey"
+    ]
+  }
+}

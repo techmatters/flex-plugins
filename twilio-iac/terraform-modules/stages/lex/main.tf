@@ -3,6 +3,66 @@ provider "awscc" {
 }
 
 
+locals {
+  helpline       = var.helpline
+  short_helpline = var.short_helpline
+  environment    = var.environment
+  bots_definitions = tomap({
+    for language, bots in var.lex_bot_languages :
+    language => merge(
+      [
+        for bot in bots :
+        fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/bots/${bot}.json") ?
+        jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/bots/${bot}.json")) :
+        fileexists("/app/twilio-iac/helplines/configs/lex/${language}/bots/${bot}.json") ?
+        jsondecode(file("/app/twilio-iac/helplines/configs/lex/${language}/bots/${bot}.json")) :
+        jsondecode(file("/app/twilio-iac/helplines/configs/lex/${substr(language, 0, 2)}/bots/${bot}.json"))
+
+
+    ]...)
+  })
+
+  intents_definitions = tomap({
+    for language, bots in var.lex_bot_languages :
+    language => merge(
+      [
+        for bot in bots :
+        fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/intents/${bot}.json") ?
+        jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/intents/${bot}.json")) :
+        fileexists("/app/twilio-iac/helplines/configs/lex/${language}/intents/${bot}.json") ?
+        jsondecode(file("/app/twilio-iac/helplines/configs/lex/${language}/intents/${bot}.json")) :
+        jsondecode(file("/app/twilio-iac/helplines/configs/lex/${substr(language, 0, 2)}/intents/${bot}.json"))
+
+
+    ]...)
+  })
+
+  slot_types_names = tomap({
+    for language, bots in var.lex_bot_languages :
+    language => distinct(flatten([
+      for obj_key, obj_value in local.intents_definitions[language] : [
+        for slot_name, slot_data in obj_value["slots"] :
+        slot_data["slot_type"]
+      ]
+  ])) })
+
+  slot_types_definitions = tomap({
+    for language, bots in var.lex_bot_languages :
+    language => merge(
+      [
+        for slot_type in local.slot_types_names[language] :
+        fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/slot_types/${slot_type}.json") ?
+        jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/slot_types/${slot_type}.json")) :
+        fileexists("/app/twilio-iac/helplines/configs/lex/${language}/slot_types/${slot_type}.json") ?
+        jsondecode(file("/app/twilio-iac/helplines/configs/lex/${language}/slot_types/${slot_type}.json")) :
+        jsondecode(file("/app/twilio-iac/helplines/configs/lex/${substr(language, 0, 2)}/slot_types/${slot_type}.json"))
+      ]...
+  ) })
+
+
+
+}
+
 module "lex" {
   source = "../../lex/v1"
 
@@ -18,19 +78,10 @@ module "lex" {
   environment    = var.environment
   language       = each.key
 
-  /*slot_types = merge([
-    for file_path in fileset("/app/twilio-iac/helplines/configs/lex/${each.key}/slot_types", "*.json") :
-    jsondecode(file("/app/twilio-iac/helplines/configs/lex/${each.key}/slot_types/${file_path}"))
-  ]...)*/
-  intents = merge([for bot in each.value : jsondecode(file("/app/twilio-iac/helplines/configs/lex/${each.key}/intents/${bot}.json"))]...)
-  
-  slot_type_names = flatten([
-      for obj_key, obj_value in intents : [
-        for slot_name, slot_data in obj_value["slots"] : slot_data["slot_type"]
-      ]
-    ])
-  
-  bots    = merge([for bot in each.value : jsondecode(file("/app/twilio-iac/helplines/configs/lex/${each.key}/bots/${bot}.json"))]...)
+  bots = local.bots_definitions[each.key]
+  intents = local.intents_definitions[each.key]
+  slot_types = local.slot_types_definitions[each.key]
+
 }
 
 
@@ -42,4 +93,9 @@ module "lexv2" {
   short_helpline = var.short_helpline
   environment    = var.environment
   lex_config     = var.lex_v2_config
+}
+
+
+output "slot_types_definitions" {
+  value = local.slot_types_definitions
 }

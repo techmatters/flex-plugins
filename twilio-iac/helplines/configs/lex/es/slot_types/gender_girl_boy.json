@@ -1,0 +1,62 @@
+{
+    "gender": {
+        "description": "Gender of caller",
+        "value_selection_strategy": "TOP_RESOLUTION",
+        "values": {
+            "girl": {
+                "synonyms": [
+                    "m",
+                    "mujer",
+                    "chica",
+                    "muchacha",
+                    "niña",
+                    "femenino",
+                    "ella",
+                    "1"
+                ]
+            },
+            "boy": {
+                "synonyms": [
+                    "h",
+                    "hombre",
+                    "chico",
+                    "muchacho",
+                    "niño",
+                    "chaval",
+                    "masculino",
+                    "él",
+                    "el",
+                    "2"
+                ]
+            },
+            "non-binary": {
+                "synonyms": [
+                    "ninguno",
+                    "ninguna",
+                    "No binario",
+                    "No binaria",
+                    "3"
+                ]
+            },
+            
+            "prefer not to answer": {
+                "synonyms": [
+                    "prefiero no",
+                    "no responder",
+                    "sin responder",
+                    "4"
+                ]
+            },
+            "unknown": {
+                "synonyms": [
+                    "desconocido",
+                    "desconocida",
+                    "inseguro",
+                    "insegura",
+                    "x",
+                    "5"
+                ]
+            }
+        }
+    }
+}

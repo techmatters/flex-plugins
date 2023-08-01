@@ -1,0 +1,83 @@
+{
+  "pre_survey": {
+    "description": "Helpline Specific helplines/mt/configs/lex/en_MT/intents Pre Survey Intent",
+    "sample_utterances": [
+      "H",
+      "Hi",
+      "Hello",
+      "Help",
+      "I need help",
+      "Pls",
+      "Please",
+      "Incoming webchat contact",
+      "Bongu",
+      "Bonġu",
+      "Ħelow",
+      "Ħaj",
+      "Għajjatni",
+      "Jekk jogħġbok",
+      "Jekk jogħġbkom",
+      "Jum it-tajjeb",
+      "Bongu u saħħa",
+      "Wara x-xogħol kont tinsab",
+      "Intgħażel tagħmel webchat"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "We'll transfer you now. Please hold for a professional.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Sorry, I am not able to assist at this time.",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "aboutSelf": {
+        "priority": 0,
+        "description": "Imported from question 'about_self'",
+        "slot_constraint": "Required",
+        "slot_type": "yes_no",
+        "value_elicitation_prompt": {
+          "content": "Are you calling about yourself? Please answer Yes or No.",
+          "content_type": "PlainText",
+          "max_attempts": 3
+        }
+      },
+      "age": {
+        "priority": 1,
+        "description": "Imported from question 'age'",
+        "slot_constraint": "Required",
+        "slot_type": "age",
+        "value_elicitation_prompt": {
+          "content": "How old are you?",
+          "content_type": "PlainText",
+          "max_attempts": 3
+        }
+      },
+      "gender": {
+        "priority": 2,
+        "description": "Imported from question 'gender'",
+        "slot_constraint": "Required",
+        "slot_type": "gender",
+        "value_elicitation_prompt": {
+          "content": "What is your gender? \n 1. Female \n 2. Male \n 3. Others \n 4. Rather not say ",
+          "content_type": "PlainText",
+          "max_attempts": 3
+        }
+      },
+      "feeling": {
+        "priority": 3,
+        "description": "Imported from question 'feeling'",
+        "slot_constraint": "Required",
+        "slot_type": "feeling",
+        "value_elicitation_prompt": {
+          "content": "How are you feeling? You can write the number or word of your choice. \n 1. Happy \n 2. Confused \n 3. Angry \n 4. Shocked \n 5. Scared \n 6. Uncertain ",
+          "content_type": "PlainText",
+          "max_attempts": 3
+        }
+      }
+    }
+  }
+}

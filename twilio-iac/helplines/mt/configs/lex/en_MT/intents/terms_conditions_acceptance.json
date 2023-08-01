@@ -1,0 +1,50 @@
+{
+  "terms_conditions_acceptance": {
+    "description": "Helpline Specific helplines/mt/configs/lex/en_MT/intents Terms and conditions intent",
+    "sample_utterances": [
+      "H",
+      "Hi",
+      "Hello",
+      "Help",
+      "I need help",
+      "Pls",
+      "Please",
+      "Incoming webchat contact",
+      "Bongu",
+      "Bonġu",
+      "Ħelow",
+      "Ħaj",
+      "Għajjatni",
+      "Jekk jogħġbok",
+      "Jekk jogħġbkom",
+      "Jum it-tajjeb",
+      "Bongu u saħħa",
+      "Wara x-xogħol kont tinsab",
+      "Intgħażel tagħmel webchat"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "We'll transfer you now. Please hold for a professional.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Sorry, I am not able to assist at this time.",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "terms_conditions_response": {
+        "priority": 0,
+        "description": "terms and conditions",
+        "slot_constraint": "Required",
+        "slot_type": "yes_no",
+        "value_elicitation_prompt": {
+          "content": "Do you accept our Terms and Conditions? https://kellimni.com/chat-terms/ .Please answer with a number: \n1. Yes, I accept the terms and conditions. \n2. No, I don't accept the terms and conditions.",
+          "content_type": "PlainText",
+          "max_attempts": 3
+        }
+      }
+    }
+  }
+}
