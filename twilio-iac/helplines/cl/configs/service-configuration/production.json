@@ -1,7 +1,11 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_save_insights": true
-        }
+            "enable_lex": false,
+            "enable_save_insights": true,
+            "enable_transcripts": false
+        },
+        "form_definitions_base_url": "https://assets-production.tl.techmatters.org/form-definitions/",
+        "resources_base_url": ""
     }
 }

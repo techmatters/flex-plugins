@@ -16,7 +16,13 @@
         },
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",
         "multipleOfficeSupport": true,
-        "pdfImagesSource": "https://tl-public-chat-as-stg.s3.amazonaws.com"
+        "pdfImagesSource": "https://tl-public-chat-as-stg.s3.amazonaws.com",
+        "permissionConfig": "demo",
+        "previous_ui_version": {
+            "date": "2022-12-07T21:41:43.160Z",
+            "semver": "~2.0.0",
+            "version": "2.0.0"
+        }
     },
     "ui_attributes": {
         "colorTheme": {
@@ -24,6 +30,7 @@
             "light": null,
             "overrides": null,
             "preset": null
-        }
+        },
+        "showRealtimeQueuesStats": true
     }
 }

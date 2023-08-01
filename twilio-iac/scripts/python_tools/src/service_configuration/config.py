@@ -23,42 +23,35 @@ ACTIONS = {
 
 
 class ActionConfigsDict(TypedDict):
-    argument: str
+    argument: NotRequired[str]
     has_sync: NotRequired[bool]
-    json: NotRequired[bool]
+    json_available: NotRequired[bool]
     skip_local_config: NotRequired[bool]
     has_version: NotRequired[bool]
     skip_lock: NotRequired[bool]
 
 
-ACTION_CONFIGS = {
+ACTION_CONFIGS: dict[str, ActionConfigsDict] = {
     ACTIONS['APPLY']: {
-        'argument': 'service_config',
         'has_version': True,
     },
     ACTIONS['PLAN']: {
-        'argument': 'service_config',
         'json_available': True,
     },
     ACTIONS['SHOW']: {
-        'argument': 'service_config',
         'json_available': True,
     },
     ACTIONS['SHOW_REMOTE']: {
-        'argument': 'service_config',
-        'json': True,
+        'json_available': True,
         'skip_local_config': True,
     },
     ACTIONS['SHOW_LOCAL']: {
-        'argument': 'service_config',
         'json_available': True,
     },
     ACTIONS['SHOW_NEW']: {
-        'argument': 'service_config',
         'json_available': True,
     },
     ACTIONS['SHOW_DIFF']: {
-        'argument': 'service_config',
         'json_available': True,
     },
     ACTIONS['SYNC_PLAN']: {
@@ -74,14 +67,11 @@ ACTION_CONFIGS = {
         'skip_local_config': True,
     },
     ACTIONS['UNLOCK']: {
-        'argument': 'service_config',
         'json_available': True,
         'skip_local_config': True,
         'has_version': True,
         'skip_lock': True,
     },
-
-
 }
 
 ENVIRONMENTS = [
@@ -144,7 +134,8 @@ class ConfigDict(TypedDict):
     auth_token: NotRequired[str]
     dry_run: NotRequired[bool]
     service_configs: dict[str, ServiceConfiguration]
-    helplines: dict[str, dict[str, str]]
+    helplines: dict[str, dict[str, ServiceConfiguration]]
+    syncers: list[RemoteSyncer]
     skip_local_config: bool
     has_version: bool
     skip_lock: bool
@@ -160,25 +151,26 @@ class InitServiceConfigurationArgsDict(TypedDict):
 
 
 class Config():
-    ssm_client: SSMClient
     _arg_parser: ArgumentParser
 
     def __init__(self):
         self._config: ConfigDict = {
             'helpline_code': None,
             'action': ACTIONS['SHOW'],
+            'argument': 'service_config',
             'service_configs': {},
             'helplines': defaultdict(dict),
             'has_version': False,
             'skip_lock': False,
             'skip_local_config': False,
+            'json_available': False,
             'sync_action': False,
+            'syncers': [],
         }
 
         self.init_arg_parser()
         self.parse_args()
         self.validate_args()
-        self.ssm_client = SSMClient(AWS_ROLE_ARN)
         self.init_service_configs()
         self.init_syncers()
 
@@ -187,6 +179,9 @@ class Config():
             return self.get_value(name)
         except KeyError:
             raise AttributeError(f'No such attribute: {name}')
+
+    def get_ssm_client(self):
+        return SSMClient(AWS_ROLE_ARN)
 
     def init_arg_parser(self) -> None:
         self._arg_parser = ArgumentParser()
@@ -208,11 +203,11 @@ class Config():
         self._config['skip_local_config'] = ACTION_CONFIGS[self.action].get('skip_local_config') or False
         self._config['has_version'] = ACTION_CONFIGS[self.action].get('has_version') or False
         self._config['skip_lock'] = ACTION_CONFIGS[self.action].get('skip_lock') or False
-        self._config['argument'] = ACTION_CONFIGS[self.action]['argument']
+        self._config['argument'] = ACTION_CONFIGS[self.action].get('argument') or self._config['argument']
         self._config['json_available'] = ACTION_CONFIGS[self.action].get('json_available') or False
 
     def init_service_configs(self):
-        if (self.helpline_code or self.account_sid) and self.environment:
+        if (self.helpline_code and self.environment) or self.account_sid:
             if (not self.json):
                 print(
                     f'Initializing service configuration for '
@@ -239,10 +234,10 @@ class Config():
         self._config['helplines'][helpline_code_lower][environment] = service_config
 
     def init_service_config(self, **kwargs: Unpack[InitServiceConfigurationArgsDict]):
-        twilio_client = Twilio(ssm_client=self.ssm_client,  **kwargs)
+        ssm_client = None if self.auth_token else self.get_ssm_client()
+        twilio_client = Twilio(ssm_client=ssm_client,  **kwargs)
         service_config = ServiceConfiguration(
             twilio_client=twilio_client,
-            ssm_client=self.ssm_client,
             skip_local_config=self.skip_local_config,
             has_version=self.has_version,
             skip_lock=self.skip_lock,
@@ -265,12 +260,12 @@ class Config():
         environment = environment_arg or self.environment
         account_sid = account_sid_arg or self.account_sid
 
-        if not (helpline_code and environment):
+        if not (helpline_code and environment) and not account_sid :
             raise Exception(
                 'Could not find helpline code or environment. Please provide helpline code and environment')
 
         if not account_sid:
-            account_sid, _ = self.ssm_client.get_twilio_creds_from_ssm(
+            account_sid, _ = self.get_ssm_client().get_twilio_creds_from_ssm(
                 environment, helpline_code)
 
         self.init_service_config(
@@ -281,7 +276,6 @@ class Config():
         )
 
     def init_syncers(self):
-        self.syncers = []
         if not self.sync_action:
             return
 
@@ -297,7 +291,7 @@ class Config():
 
     def init_service_configs_for_environment(self, environment: str):
         print(f'Initializing service configurations for {environment}')
-        for hl in self.ssm_client.get_helplines_for_env(environment):
+        for hl in self.get_ssm_client().get_helplines_for_env(environment):
             # if helpline_code is set, only initialize service configs for that helpline across all environments
             if (self.helpline_code and hl['helpline_code'].lower() != self.helpline_code.lower()):
                 continue
@@ -330,13 +324,21 @@ class Config():
             exit(1)
 
     def validate_action_requirements(self):
-        self.validate_environment_or_helpline()
+        if self.argument == 'syncer':
+            self.validate_no_environment()
 
-    def validate_environment_or_helpline(self):
-        if not (self.environment or self.helpline_code):
+        self.validate_all_helplines()
+
+    def validate_no_environment(self):
+        if self.environment:
+            print(f'ERROR: The {self.action} action does not accept an environment argument.')
+            exit(1)
+
+    def validate_all_helplines(self):
+        if not (self.environment or self.helpline_code or self.account_sid):
             confirm = input(
-                'No environment or helpline code provided. '
-                'Do you want to run this command for all helplines in environments? (y/N): '
+                'No environment or helpline provided. '
+                'Do you want to run this command for ALL helplines in ALL environments? (y/N): '
             )
             if confirm != 'y':
                 print('Please re-run the script to try again')

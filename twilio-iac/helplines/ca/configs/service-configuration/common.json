@@ -1,5 +1,10 @@
 {
     "attributes": {
+        "contacts_waiting_channels": [
+            "voice",
+            "web"
+        ],
+        "definitionVersion": "ca-v1",
         "feature_flags": {
             "enable_aselo_messaging_ui": true,
             "enable_counselor_toolkits": true,
@@ -13,15 +18,24 @@
             "enable_twilio_transcripts": false,
             "enable_upload_documents": false,
             "enable_voice_recordings": true
-        }
+        },
+        "helplineLanguage": "en-CA",
+        "permissionConfig": "ca"
     },
     "ui_attributes": {
         "colorTheme": {
             "baseName": "GreyLight",
             "overrides": {
                 "MainHeader": {
+                    "Button": {
+                        "color": "#000000"
+                    },
                     "Container": {
-                        "background": "#FFFFFF"
+                        "background": "#FFFFFF",
+                        "color": "#000000"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 },
                 "SideNav": {
@@ -30,6 +44,9 @@
                     },
                     "Container": {
                         "background": "#FFFFFF"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 }
             },

@@ -36,7 +36,6 @@ locals {
   local_config = {
     helpline           = "Aselo"
     old_dir_prefix     = "aselo-as"
-    definition_version = "as-v1"
     lex_bot_languages  = {
       en_US : {
         slot_types : local.en_us_slot_types

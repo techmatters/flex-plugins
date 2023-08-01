@@ -1,12 +1,13 @@
 import json
 from copy import deepcopy
 from deepdiff import DeepDiff
-from deepmerge import always_merger
+from deepmerge import always_merger, Merger
 from os.path import exists as path_exists
 from typing import List, TypedDict, Unpack
 from ..aws import SSMClient
 from ..twilio import Twilio
-from .versions import Versions
+from .constants import AWS_ROLE_ARN
+from .version import Version
 
 JSON_PATH_ROOT = "/app/twilio-iac/helplines"
 JSON_CONFIG_PATH_PARTIAL = "configs/service-configuration"
@@ -31,9 +32,32 @@ SSM_FIELDS = {
 
 TEMPLATE_FIELDS = {
     "attributes.assets_bucket_url": "https://assets-{environment}.tl.techmatters.org",
-    # TODO: this needs to deal with region
-    "attributes.hrm_base_url": "https://hrm-{environment}.tl.techmatters.org",
-    "account_sid": "{account_sid}",
+    "attributes.hrm_base_url": "https://hrm-{environment}{region_url_postfix}.tl.techmatters.org",
+    "attributes.environment": "{environment}",
+    "attributes.helpline_code": "{helpline_code}",
+    "attributes.aws_region": "{region}",
+}
+
+# These are fields that will be excluded from the payload sent to twilio
+EXCLUDED_FIELDS = [
+    "flex_service_instance_sid",
+    "runtime_domain",
+    "flex_insights_hr",
+    "taskrouter_workspace_sid",
+    "service_version",
+    "taskrouter_offline_activity_sid",
+    "status",
+]
+
+OVERRIDE_FIELDS = [
+    'attributes',
+    'ui_attributes',
+]
+
+REGION_URL_POSTFIX_MAP = {
+    'us-east-1': '',
+    'eu-west-1': '-eu',
+    'ca-central-1': '-ca',
 }
 
 
@@ -86,9 +110,21 @@ def get_dot_notation_path(change) -> str:
     return change.path().replace("root[", "").replace("][", ".").replace("]", "").replace("'", "")
 
 
+def remove_empty(input_dict):
+    """
+    Remove keys with the value ``None`` in a dictionary, recursively.
+    """
+    output_dict = {}
+    for k, v in input_dict.items():
+        if isinstance(v, dict):
+            v = remove_empty(v)
+        if v is not None:
+            output_dict[k] = v
+    return output_dict
+
+
 class InitArgsDict(TypedDict):
     twilio_client: Twilio
-    ssm_client: SSMClient
     skip_local_config: bool
     has_version: bool
     skip_lock: bool
@@ -111,25 +147,36 @@ class ServiceConfiguration():
         self.local_state: dict[str, object] = {}
         self.new_state: dict[str, object] = {}
         self.local_configs: dict[str, object] = {}
+        self.template_config: dict[str, object] = {}
 
         self._twilio_client = kwargs['twilio_client']
-        self._ssm_client = kwargs['ssm_client']
         self.skip_local_config = kwargs['skip_local_config']
         self.has_version = kwargs['has_version']
         self.skip_lock = kwargs['skip_lock']
         self.account_sid = self._twilio_client.account_sid
         self.helpline_code = self._twilio_client.helpline_code
         self.environment = self._twilio_client.environment
-        self.remote_state: dict[str, object] = self._twilio_client.get_flex_configuration()
+        self.remote_state: dict[str,
+                                object] = self._twilio_client.get_flex_configuration()
         self.init_version()
+        self.init_region()
         self.init_local_state()
         self.init_new_state()
         self.init_plan()
 
-    def init_local_state(self):
-        self.init_template_fields()
-        self.init_ssm_fields()
+    def get_ssm_client(self):
+        return SSMClient(AWS_ROLE_ARN)
 
+    def init_region(self):
+        try:
+            self.region = self.get_ssm_client().get_parameter(
+                f"/{self.environment}/aws/{self.account_sid}/region"
+            )
+        except Exception:
+            # TODO: remove this once all helplines have the region parameter
+            self.region = 'us-east-1'
+
+    def init_local_state(self):
         for conf in JSON_CONFIGS:
             key = conf['key']
             path = conf['path_tpl'].format(
@@ -156,6 +203,8 @@ class ServiceConfiguration():
                     self.local_configs[key]['data'],
                 )
 
+            self.local_state = remove_empty(self.local_state)
+
     def init_new_state(self):
         self.new_state = always_merger.merge(
             # deepcopy to avoid modifying remote_state even though the docs
@@ -164,14 +213,34 @@ class ServiceConfiguration():
             self.local_state,
         )
 
+        # override fields in the new state with the local state
+        for field in OVERRIDE_FIELDS:
+            local_value = get_nested_key(self.local_state, field)
+            if local_value:
+                set_nested_key(self.new_state, field, local_value)
+
+        self.init_ssm_fields()
+        self.init_template_fields()
+
+        for key, value in self.template_config.items():
+            local_value = get_nested_key(self.local_state, key)
+            # We want to allow the user to override the template value with a
+            # local value.
+            if local_value:
+                continue
+
+            set_nested_key(self.new_state, key, value)
+
     def init_template_fields(self):
         for key, value in TEMPLATE_FIELDS.items():
             templated_value = value.format(
                 environment=self.environment,
                 account_sid=self.account_sid,
-                helpline_code=self.helpline_code
+                helpline_code=self.helpline_code,
+                region=self.region,
+                region_url_postfix=REGION_URL_POSTFIX_MAP[self.region],
             )
-            set_nested_key(self.local_state, key, templated_value)
+            self.template_config[key] = templated_value
 
     def init_ssm_fields(self):
         for key, value in SSM_FIELDS.items():
@@ -180,8 +249,8 @@ class ServiceConfiguration():
                 account_sid=self.account_sid,
                 helpline_code=self.helpline_code
             )
-            ssm_value = self._ssm_client.get_parameter(ssm_key_name)
-            set_nested_key(self.local_state, key, ssm_value)
+            ssm_value = self.get_ssm_client().get_parameter(ssm_key_name)
+            set_nested_key(self.new_state, key, ssm_value)
 
     def init_plan(self):
         self.plan = DeepDiff(
@@ -196,15 +265,36 @@ class ServiceConfiguration():
             self.version = None
             return
 
-        self.version = Versions(
+        self.version = Version(
             environment=self.environment,
             helpline_code=self.helpline_code,
-            remote_state=self.remote_state,
+            state=self.remote_state,
             skip_lock=self.skip_lock,
         )
 
     def get_config_path(self, type: str) -> str:
         return self.local_configs[type].get('path')
+
+    def apply(self):
+        if not self.version:
+            raise Exception(
+                'Cannot apply changes without a version. Something went wrong.')
+
+        new_state = deepcopy(self.new_state)
+        # remove excluded fields from the new state, we ned to keep them in the
+        # self.new_state for the changelog
+        for field in EXCLUDED_FIELDS:
+            delete_nested_key(new_state, field)
+
+        self._twilio_client.update_flex_configuration(new_state)
+
+        # add a new version for the new state
+        Version(
+            environment=self.environment,
+            helpline_code=self.helpline_code,
+            state=self.new_state,
+            skip_lock=True,
+        )
 
     def cleanup(self):
         if self.version:

@@ -1,37 +1,48 @@
 import json
 import os
+import signal
 from pygments import highlight, lexers, formatters
 from termcolor import colored
 from .config import config
 from .remote_syncer import RemoteSyncer
 from .service_configuration import DeepDiff, ServiceConfiguration, get_dot_notation_path
-from .remote_syncer import RemoteSyncer
+
+
+def signal_handler(signal, frame):
+    print('\n\nYou pressed Ctrl+C! Cleaning up...')
+    config.cleanup()
+    exit(1)
+
+
+signal.signal(signal.SIGINT, signal_handler)
 
 
 def main():
-    if config.argument == 'service_config':
-        run_service_config_action()
-    elif config.argument == 'syncer':
-        run_sync_action()
-    else:
-        raise Exception('Invalid argument configuration')
-
-    cleanup_and_exit()
+    try:
+        if config.argument == 'service_config':
+            run_service_config_action()
+        elif config.argument == 'syncer':
+            run_syncer_action()
+        else:
+            raise Exception('Invalid argument configuration')
+        cleanup_and_exit()
+    except Exception as e:
+        print_text('Cleaning up...')
+        config.cleanup()
+        raise e
 
 
 def run_service_config_action():
-    action = config.action
     for account_sid in config.get_account_sids():
         service_config = config.get_service_config(
             account_sid)
         print_service_config_info(service_config)
-        globals()[action](service_config)
+        globals()[config.action](service_config)
 
 
-def run_sync_action():
-    action = config.action
+def run_syncer_action():
     for syncer in config.syncers:
-        globals()[action](syncer)
+        globals()[config.action](syncer)
 
 
 def print_text(text: object):
@@ -70,7 +81,13 @@ def print_plan(plan: DeepDiff):
                 output.append(f'Remove {path} with value {change.t1}')
             elif diff_type == 'values_changed':
                 output.append(f'Update {path} from {change.t1} to {change.t2}')
-
+            elif diff_type == 'iterable_item_added':
+                output.append(f'Added item to {path} with value {change.t2}')
+            elif diff_type == 'iterable_item_removed':
+                output.append(
+                    f'Removed item from {path} with value {change.t1}')
+            else:
+                output.append(f'Unknown change: {change}')
 
     for line in output:
         if 'Add' in line:
@@ -121,7 +138,10 @@ def plan(service_config: ServiceConfiguration):
 def apply(service_config: ServiceConfiguration):
     plan(service_config)
     if config.dry_run:
-        print_text('Dry run enabled. Exiting...')
+        print_text('Dry run enabled.')
+        return
+
+    if not service_config.plan:
         return
 
     confirm = input(
@@ -131,6 +151,7 @@ def apply(service_config: ServiceConfiguration):
         cleanup_and_exit(1)
 
     print_text('Updating service configuration...')
+    service_config.apply()
 
 
 def sync_plan(syncer: RemoteSyncer):
@@ -146,7 +167,6 @@ def sync_plan(syncer: RemoteSyncer):
         print_json(syncer.configs[service_config.environment])
 
 
-
 def sync_apply(syncer: RemoteSyncer):
     sync_plan(syncer)
 
@@ -160,20 +180,23 @@ def sync_apply(syncer: RemoteSyncer):
     write_common = True
     for service_config in syncer.service_configs.values():
         if (write_common):
-            dir_path = os.path.dirname(service_config.get_config_path('common'))
+            dir_path = os.path.dirname(
+                service_config.get_config_path('common'))
             os.makedirs(dir_path, exist_ok=True)
             with open(service_config.get_config_path('common'), 'w') as f:
-                json.dump(syncer.configs['common'], f, indent=4, sort_keys=True)
+                json.dump(syncer.configs['common'],
+                          f, indent=4, sort_keys=True)
             write_common = False
 
         with open(service_config.get_config_path('environment'), 'w') as f:
-            json.dump(syncer.configs[service_config.environment], f, indent=4, sort_keys=True)
+            json.dump(
+                syncer.configs[service_config.environment], f, indent=4, sort_keys=True)
 
 
-def unlock(service_configs: dict[str, ServiceConfiguration]):
-    print_text('Unlocking service configurations...')
-    for service_config in service_configs.values():
-        service_config.cleanup()
+def unlock(service_config: ServiceConfiguration):
+    print_text('Unlocking service configuration...')
+    service_config.cleanup()
+
 
 def cleanup_and_exit(code: int = 0):
     print_text('Cleaning up...')
