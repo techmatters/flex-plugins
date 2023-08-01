@@ -1,5 +1,9 @@
 {
     "attributes": {
+        "attributeUpdates": {
+            "assets_bucket_url": "https://assets-development.tl.techmatters.org"
+        },
+        "definitionVersion": "e2e-v1",
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_contact_editing": false,
@@ -9,20 +13,35 @@
             "enable_external_transcripts": false,
             "enable_lex": false,
             "enable_post_survey": false,
+            "enable_resources_elastic_search": true,
             "enable_save_insights": true,
             "enable_transcripts": false,
             "enable_twilio_transcripts": false,
             "enable_voice_recordings": false,
             "post_survey_serverless_handled": false
-        }
+        },
+        "permissionConfig": "e2e",
+        "previous_ui_version": {
+            "date": "2022-11-09T18:45:11.317Z",
+            "semver": "~1.31.2",
+            "version": "1.31.2"
+        },
+        "resources_base_url": "https://hrm-development.tl.techmatters.org"
     },
     "ui_attributes": {
         "colorTheme": {
             "baseName": "GreyLight",
             "overrides": {
                 "MainHeader": {
+                    "Button": {
+                        "color": "#000000"
+                    },
                     "Container": {
-                        "background": "#FFFFFF"
+                        "background": "#FFFFFF",
+                        "color": "#000000"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 },
                 "SideNav": {
@@ -31,6 +50,9 @@
                     },
                     "Container": {
                         "background": "#FFFFFF"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 }
             },

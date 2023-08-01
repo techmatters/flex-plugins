@@ -147,34 +147,13 @@ locals {
     //survey : "Survey"
   }
 
-  helpline             = "Kids Help Phone"
-  short_helpline       = "CA"
-  environment          = "Staging"
-  short_environment    = "STG"
-  operating_info_key   = "ca"
-  permission_config    = "zm"
-  definition_version   = "ca-v1"
-  multi_office_support = false
-  task_language        = "en-CA"
-  helpline_language    = "en-CA"
+  helpline           = "Kids Help Phone"
+  short_helpline     = "CA"
+  environment        = "Staging"
+  short_environment  = "STG"
+  operating_info_key = "ca"
+  task_language      = "en-CA"
 
-  feature_flags = {
-    "enable_fullstory_monitoring" = false
-    "enable_upload_documents"     = true
-    "enable_previous_contacts"    = true
-    "enable_case_management"      = true
-    "enable_offline_contact"      = true
-    "enable_transfers"            = true
-    "enable_manual_pulling"       = true
-    "enable_csam_report"          = false
-    "enable_canned_responses"     = true
-    "enable_dual_write"           = false
-    "enable_save_insights"        = true
-    "enable_post_survey"          = false
-  }
-
-
-  enable_post_survey = false
   //common across all helplines
   channel_attributes = {
     webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
@@ -245,32 +224,18 @@ module "taskRouter" {
 
 module "channel" {
 
-  source                = "../terraform-modules/channels/v1"
-  workflow_sids         = module.taskRouter.workflow_sids
-  task_channel_sids     = module.taskRouter.task_channel_sids
-  channel_attributes    = local.channel_attributes
-  channels              = local.channels
+  source             = "../terraform-modules/channels/v1"
+  workflow_sids      = module.taskRouter.workflow_sids
+  task_channel_sids  = module.taskRouter.task_channel_sids
+  channel_attributes = local.channel_attributes
+  channels           = local.channels
+  //YAH: need enabl_post_survey apparently
   enable_post_survey    = local.enable_post_survey
   flex_chat_service_sid = module.services.flex_chat_service_sid
   task_language         = local.task_language
   flow_vars             = local.flow_vars
   short_environment     = local.short_environment
   short_helpline        = local.short_helpline
-}
-
-
-
-module "flex" {
-  source               = "../terraform-modules/flex/service-configuration"
-  twilio_account_sid   = local.secrets.twilio_account_sid
-  short_environment    = local.short_environment
-  operating_info_key   = local.operating_info_key
-  permission_config    = local.permission_config
-  definition_version   = local.definition_version
-  serverless_url       = module.serverless.serverless_environment_production_url
-  multi_office_support = local.multi_office_support
-  feature_flags        = local.feature_flags
-  helpline_language    = local.helpline_language
 }
 
 module "survey" {

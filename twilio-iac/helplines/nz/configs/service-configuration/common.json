@@ -1,5 +1,11 @@
 {
     "attributes": {
+        "contacts_waiting_channels": [
+            "voice",
+            "sms",
+            "web"
+        ],
+        "definitionVersion": "nz-v1",
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_conferencing": false,
@@ -7,17 +13,29 @@
             "enable_fullstory_monitoring": true,
             "enable_lex": false,
             "enable_post_survey": false,
+            "enable_resources": false,
             "enable_transcripts": false,
             "enable_twilio_transcripts": false
-        }
+        },
+        "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
+        "helplineLanguage": "en-NZ",
+        "permissionConfig": "nz",
+        "resources_base_url": ""
     },
     "ui_attributes": {
         "colorTheme": {
             "baseName": "GreyLight",
             "overrides": {
                 "MainHeader": {
+                    "Button": {
+                        "color": "#000000"
+                    },
                     "Container": {
-                        "background": "#FFFFFF"
+                        "background": "#FFFFFF",
+                        "color": "#000000"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 },
                 "SideNav": {
@@ -26,6 +44,9 @@
                     },
                     "Container": {
                         "background": "#FFFFFF"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 }
             },

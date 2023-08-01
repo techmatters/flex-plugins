@@ -1,9 +1,8 @@
 import base64
 import json
-from urllib import request
+from urllib import error as urllib_error, request
 from twilio.rest import Client
-from typing import TypedDict, NotRequired
-from typing_extensions import Unpack
+from typing import TypedDict, NotRequired, Unpack
 
 from ..aws import SSMClient
 
@@ -28,7 +27,7 @@ class Twilio():
     _ssm_client: SSMClient
 
     def __init__(self, **kwargs: Unpack[InitArgsDict]):
-        self._ssm_client = kwargs.get('ssm_client') or SSMClient()
+        self._ssm_client = kwargs.get('ssm_client')
         self.client = self.getClient(**kwargs)
 
     def getClient(self, **kwargs: Unpack[InitArgsDict]):
@@ -79,20 +78,26 @@ class Twilio():
 
         return data
 
-    def update_flex_configuration(self, configuration):
+    def update_flex_configuration(self, configuration: dict[str, object]):
+        configuration_bytes = json.dumps(configuration).encode('utf-8')
+
         req = request.Request(
             FLEX_CONFIGURATION_ENDPOINT,
-            data=configuration,
+            data=configuration_bytes,
             headers=self.get_flex_configuration_headers(),
             method='POST'
         )
+        try:
+            with request.urlopen(req) as response:
+                if response.status != 200:
+                    raise Exception(
+                        f'Request failed with status {response.status}')
 
-        with request.urlopen(req) as response:
-            if response.status != 200:
-                raise Exception(
-                    f'Request failed with status {response.status}')
-
-            body = response.read()
-            data = json.loads(body)
+                body = response.read()
+                data = json.loads(body)
+        except urllib_error.HTTPError as e:
+            print("Response code:", e.code)
+            print("Response body:", e.read())
+            raise e
 
         return data

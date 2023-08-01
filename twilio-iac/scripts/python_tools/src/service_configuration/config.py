@@ -4,23 +4,9 @@ import os
 from typing import NotRequired, TypedDict, Unpack
 from ..aws import SSMClient
 from ..twilio import Twilio
+from .constants import AWS_ROLE_ARN
 from .service_configuration import ServiceConfiguration
-
-"""
-TODO: Locking and revert
-
-s3 bucket for locking and revert with 60 day lifecycle policy
-
-on apply create a lock file in each helplines directory s3 bucket with the following format:
-
-md5 the remote state, check for an existing file with that name, if it doesn't exist
-create a new file with the md5 as the name and the state as the content
-
-changelog file is a json file with an array of the md5s of the state files that have been applied and the date they were applied
-
-when update is complete pull remote state again and create a new file with the md5 as the name and the state as the content to keep a record
-"""
-
+from .remote_syncer import RemoteSyncer
 
 ACTIONS = {
     'APPLY': 'apply',
@@ -32,27 +18,61 @@ ACTIONS = {
     'SHOW_DIFF': 'show_diff',
     'SYNC_PLAN': 'sync_plan',
     'SYNC_APPLY': 'sync_apply',
+    'UNLOCK': 'unlock',
 }
 
-#  actions that support json output
-JSON_ACTIONS = [
-    ACTIONS['SHOW_REMOTE'],
-    ACTIONS['SHOW_LOCAL'],
-    ACTIONS['SHOW_NEW'],
-    ACTIONS['PLAN']
-]
 
-# actions that act on all environments
-ALL_ENV_ACTIONS = [
-    ACTIONS['SYNC_PLAN'],
-    ACTIONS['SYNC_APPLY'],
-]
+class ActionConfigsDict(TypedDict):
+    argument: NotRequired[str]
+    has_sync: NotRequired[bool]
+    json_available: NotRequired[bool]
+    skip_local_config: NotRequired[bool]
+    has_version: NotRequired[bool]
+    skip_lock: NotRequired[bool]
 
-SKIP_LOCAL_CONFIG_ACTIONS = [
-    ACTIONS['SHOW_REMOTE'],
-    ACTIONS['SYNC_PLAN'],
-    ACTIONS['SYNC_APPLY'],
-]
+
+ACTION_CONFIGS: dict[str, ActionConfigsDict] = {
+    ACTIONS['APPLY']: {
+        'has_version': True,
+    },
+    ACTIONS['PLAN']: {
+        'json_available': True,
+    },
+    ACTIONS['SHOW']: {
+        'json_available': True,
+    },
+    ACTIONS['SHOW_REMOTE']: {
+        'json_available': True,
+        'skip_local_config': True,
+    },
+    ACTIONS['SHOW_LOCAL']: {
+        'json_available': True,
+    },
+    ACTIONS['SHOW_NEW']: {
+        'json_available': True,
+    },
+    ACTIONS['SHOW_DIFF']: {
+        'json_available': True,
+    },
+    ACTIONS['SYNC_PLAN']: {
+        'argument': 'syncer',
+        'json_available': True,
+        'has_sync': True,
+        'skip_local_config': True,
+    },
+    ACTIONS['SYNC_APPLY']: {
+        'argument': 'syncer',
+        'json_available': True,
+        'has_sync': True,
+        'skip_local_config': True,
+    },
+    ACTIONS['UNLOCK']: {
+        'json_available': True,
+        'skip_local_config': True,
+        'has_version': True,
+        'skip_lock': True,
+    },
+}
 
 ENVIRONMENTS = [
     'production',
@@ -103,12 +123,10 @@ ARGS = {
 }
 
 
-
 class ConfigDict(TypedDict):
     # WARNING: ConfigDict is used in the magic __getattr__ method, so keys
     # must not bet the same as any methods or attributes of the Config class
     action: str
-    all_env_action: bool
     prop: NotRequired[str]
     helpline_code: str | None
     environment: NotRequired[str]
@@ -116,8 +134,13 @@ class ConfigDict(TypedDict):
     auth_token: NotRequired[str]
     dry_run: NotRequired[bool]
     service_configs: dict[str, ServiceConfiguration]
-    helplines: dict[str, dict[str, str]]
+    helplines: dict[str, dict[str, ServiceConfiguration]]
+    syncers: list[RemoteSyncer]
     skip_local_config: bool
+    has_version: bool
+    skip_lock: bool
+    sync_action: bool
+    argument: str
 
 
 class InitServiceConfigurationArgsDict(TypedDict):
@@ -128,31 +151,37 @@ class InitServiceConfigurationArgsDict(TypedDict):
 
 
 class Config():
-    ssm_client: SSMClient
     _arg_parser: ArgumentParser
 
     def __init__(self):
         self._config: ConfigDict = {
-            'all_env_action': False,
             'helpline_code': None,
             'action': ACTIONS['SHOW'],
+            'argument': 'service_config',
             'service_configs': {},
             'helplines': defaultdict(dict),
+            'has_version': False,
+            'skip_lock': False,
             'skip_local_config': False,
+            'json_available': False,
+            'sync_action': False,
+            'syncers': [],
         }
 
         self.init_arg_parser()
         self.parse_args()
         self.validate_args()
-        self.ssm_client = SSMClient(
-            'arn:aws:iam::712893914485:role/twilio-iac-service-config-manager')
         self.init_service_configs()
+        self.init_syncers()
 
     def __getattr__(self, name: str):
         try:
             return self.get_value(name)
         except KeyError:
             raise AttributeError(f'No such attribute: {name}')
+
+    def get_ssm_client(self):
+        return SSMClient(AWS_ROLE_ARN)
 
     def init_arg_parser(self) -> None:
         self._arg_parser = ArgumentParser()
@@ -170,11 +199,15 @@ class Config():
         if auth_token:
             self._config['auth_token'] = auth_token
 
-        self._config['all_env_action'] = self.action in ALL_ENV_ACTIONS
-        self._config['skip_local_config'] = self.action in SKIP_LOCAL_CONFIG_ACTIONS
+        self._config['sync_action'] = ACTION_CONFIGS[self.action].get('has_sync') or False
+        self._config['skip_local_config'] = ACTION_CONFIGS[self.action].get('skip_local_config') or False
+        self._config['has_version'] = ACTION_CONFIGS[self.action].get('has_version') or False
+        self._config['skip_lock'] = ACTION_CONFIGS[self.action].get('skip_lock') or False
+        self._config['argument'] = ACTION_CONFIGS[self.action].get('argument') or self._config['argument']
+        self._config['json_available'] = ACTION_CONFIGS[self.action].get('json_available') or False
 
     def init_service_configs(self):
-        if (self.helpline_code or self.account_sid) and self.environment:
+        if (self.helpline_code and self.environment) or self.account_sid:
             if (not self.json):
                 print(
                     f'Initializing service configuration for '
@@ -187,9 +220,6 @@ class Config():
         if self.environment:
             self.init_service_configs_for_environment(self.environment)
             return
-
-        if not self.all_env_action:
-            raise Exception('Something went wrong, you should never get here unless you are trying to sync remote state.')
 
         for env in ENVIRONMENTS:
             self.init_service_configs_for_environment(env)
@@ -204,11 +234,13 @@ class Config():
         self._config['helplines'][helpline_code_lower][environment] = service_config
 
     def init_service_config(self, **kwargs: Unpack[InitServiceConfigurationArgsDict]):
-        twilio_client = Twilio(ssm_client=self.ssm_client,  **kwargs)
+        ssm_client = None if self.auth_token else self.get_ssm_client()
+        twilio_client = Twilio(ssm_client=ssm_client,  **kwargs)
         service_config = ServiceConfiguration(
             twilio_client=twilio_client,
-            ssm_client=self.ssm_client,
             skip_local_config=self.skip_local_config,
+            has_version=self.has_version,
+            skip_lock=self.skip_lock,
         )
         self._config['service_configs'][twilio_client.account_sid] = service_config
 
@@ -228,12 +260,12 @@ class Config():
         environment = environment_arg or self.environment
         account_sid = account_sid_arg or self.account_sid
 
-        if not (helpline_code and environment):
+        if not (helpline_code and environment) and not account_sid :
             raise Exception(
                 'Could not find helpline code or environment. Please provide helpline code and environment')
 
         if not account_sid:
-            account_sid, _ = self.ssm_client.get_twilio_creds_from_ssm(
+            account_sid, _ = self.get_ssm_client().get_twilio_creds_from_ssm(
                 environment, helpline_code)
 
         self.init_service_config(
@@ -243,9 +275,23 @@ class Config():
             helpline_code=helpline_code,
         )
 
+    def init_syncers(self):
+        if not self.sync_action:
+            return
+
+        if self.helplines is None:
+            raise Exception('No helplines found')
+
+        for helpline_code, service_configs in self.helplines.items():
+            syncer = RemoteSyncer(
+                helpline_code=helpline_code,
+                service_configs=service_configs,
+            )
+            self.syncers.append(syncer)
+
     def init_service_configs_for_environment(self, environment: str):
         print(f'Initializing service configurations for {environment}')
-        for hl in self.ssm_client.get_helplines_for_env(environment):
+        for hl in self.get_ssm_client().get_helplines_for_env(environment):
             # if helpline_code is set, only initialize service configs for that helpline across all environments
             if (self.helpline_code and hl['helpline_code'].lower() != self.helpline_code.lower()):
                 continue
@@ -273,29 +319,34 @@ class Config():
         self.validate_action_requirements()
 
     def validate_json(self):
-        if self.json and (self.action not in JSON_ACTIONS):
-            print('ERROR: JSON output is only available for the following ' +
-                  'actions: , '.join(JSON_ACTIONS))
+        if self.json and (not self.json_available):
+            print(f'ERROR: JSON output is not available for the {self.action} action.')
             exit(1)
 
     def validate_action_requirements(self):
-        if self.all_env_action:
+        if self.argument == 'syncer':
             self.validate_no_environment()
-            return
 
-        self.validate_environment()
-
-    def validate_environment(self):
-        if not (self.environment):
-            print('ERROR: Please provide an environment argument '
-                  '(--environment, HL_ENV)')
-            exit(1)
+        self.validate_all_helplines()
 
     def validate_no_environment(self):
         if self.environment:
-            print(f'ERROR: The {self.action} action does not support the '
-                  f'environment argument.')
+            print(f'ERROR: The {self.action} action does not accept an environment argument.')
             exit(1)
+
+    def validate_all_helplines(self):
+        if not (self.environment or self.helpline_code or self.account_sid):
+            confirm = input(
+                'No environment or helpline provided. '
+                'Do you want to run this command for ALL helplines in ALL environments? (y/N): '
+            )
+            if confirm != 'y':
+                print('Please re-run the script to try again')
+                exit(1)
+
+    def cleanup(self):
+        for service_config in self.service_configs.values():
+            service_config.cleanup()
 
 
 config = Config()

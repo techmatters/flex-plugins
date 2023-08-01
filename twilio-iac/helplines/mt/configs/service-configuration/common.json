@@ -1,5 +1,15 @@
 {
     "attributes": {
+        "contacts_waiting_channels": [
+            "voice",
+            "web",
+            "whatsapp",
+            "facebook",
+            "twitter",
+            "instagram",
+            "line"
+        ],
+        "definitionVersion": "mt-v1",
         "feature_flags": {
             "enable_aselo_messaging_ui": true,
             "enable_conferencing": false,
@@ -12,15 +22,24 @@
             "enable_transcripts": false,
             "enable_voice_recordings": false,
             "post_survey_serverless_handled": false
-        }
+        },
+        "permissionConfig": "mt",
+        "resources_base_url": ""
     },
     "ui_attributes": {
         "colorTheme": {
             "baseName": "GreyLight",
             "overrides": {
                 "MainHeader": {
+                    "Button": {
+                        "color": "#000000"
+                    },
                     "Container": {
-                        "background": "#FFFFFF"
+                        "background": "#FFFFFF",
+                        "color": "#000000"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 },
                 "SideNav": {
@@ -29,6 +48,9 @@
                     },
                     "Container": {
                         "background": "#FFFFFF"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 }
             },

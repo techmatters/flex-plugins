@@ -1,5 +1,14 @@
 {
     "attributes": {
+        "contacts_waiting_channels": [
+            "voice",
+            "web",
+            "whatsapp",
+            "facebook",
+            "twitter",
+            "instagram",
+            "line"
+        ],
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_conferencing": false,
@@ -8,15 +17,25 @@
             "enable_external_transcripts": false,
             "enable_lex": false,
             "enable_transcripts": false
-        }
+        },
+        "helplineLanguage": "",
+        "permissionConfig": "demo",
+        "resources_base_url": "https://hrm-production.tl.techmatters.org"
     },
     "ui_attributes": {
         "colorTheme": {
             "baseName": "GreyLight",
             "overrides": {
                 "MainHeader": {
+                    "Button": {
+                        "color": "#000000"
+                    },
                     "Container": {
-                        "background": "#FFFFFF"
+                        "background": "#FFFFFF",
+                        "color": "#000000"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 },
                 "SideNav": {
@@ -25,6 +44,9 @@
                     },
                     "Container": {
                         "background": "#FFFFFF"
+                    },
+                    "Icon": {
+                        "color": "#000000"
                     }
                 }
             },
