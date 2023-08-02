@@ -55,7 +55,13 @@ export const webchatScripts = {
       counselorStatement('COUNSELLOR TEST CHAT MESSAGE'),
     ],
   },
-  staging: {},
+  staging: {
+    ca: [
+      counselorAutoStatement(
+        'You are number 1 in line. To keep your chat active, please do not leave/refresh this window or hit the back button.',
+      ),
+    ],
+  },
   production: {},
 };
 

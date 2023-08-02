@@ -66,6 +66,9 @@ test.describe.serial('Web chat caller', () => {
     const webchatProgress = chatPage.chat(chatScript);
     const flexChatProgress: AsyncIterator<ChatStatement> = flexChat(pluginPage).chat(chatScript);
 
+    const helplineShortCode = getConfigValue('helplineShortCode') as string;
+    const helplineEnv = getConfigValue('helplineEnv') as string;
+
     // Currently this loop handles the handing back and forth of control between the caller & counselor sides of the chat.
     // Each time round the loop it allows the webchat to process statements until it yields control back to this loop
     // And each time flexChatProgress.next(), the flex chat processes statements until it yields
@@ -77,6 +80,9 @@ test.describe.serial('Web chat caller', () => {
           case ChatStatementOrigin.COUNSELOR_AUTO:
             if (expectedCounselorStatement.text.startsWith('Hi, this is the counsellor')) {
               await statusIndicator(pluginPage).setStatus(WorkerStatus.AVAILABLE);
+              await tasks(pluginPage).acceptNextTask();
+            } else if (helplineShortCode === 'ca') {
+              await statusIndicator(pluginPage).setStatus(WorkerStatus.READY);
               await tasks(pluginPage).acceptNextTask();
             }
             await flexChatProgress.next();
@@ -90,36 +96,65 @@ test.describe.serial('Web chat caller', () => {
     }
     console.log('Starting filling form');
     const form = contactForm(pluginPage);
-    await form.fill([
-      <ContactFormTab>{
-        id: 'childInformation',
-        label: 'Child',
-        fill: form.fillStandardTab,
-        items: {
-          firstName: 'E2E',
-          lastName: 'TEST',
-          phone1: '1234512345',
-          province: 'Northern',
-          district: 'District A',
+    if (helplineEnv === 'development') {
+      await form.fill([
+        <ContactFormTab>{
+          id: 'childInformation',
+          label: 'Child',
+          fill: form.fillStandardTab,
+          items: {
+            firstName: 'E2E',
+            lastName: 'TEST',
+            phone1: '1234512345',
+            province: 'Northern',
+            district: 'District A',
+          },
         },
-      },
-      <ContactFormTab<Categories>>{
-        id: 'categories',
-        label: 'Categories',
-        fill: form.fillCategoriesTab,
-        items: {
-          Accessibility: ['Education'],
+        <ContactFormTab<Categories>>{
+          id: 'categories',
+          label: 'Categories',
+          fill: form.fillCategoriesTab,
+          items: {
+            Accessibility: ['Education'],
+          },
         },
-      },
-      <ContactFormTab>{
-        id: 'caseInformation',
-        label: 'Summary',
-        fill: form.fillStandardTab,
-        items: {
-          callSummary: 'E2E TEST CALL',
+        <ContactFormTab>{
+          id: 'caseInformation',
+          label: 'Summary',
+          fill: form.fillStandardTab,
+          items: {
+            callSummary: 'E2E TEST CALL',
+          },
         },
-      },
-    ]);
+      ]);
+    } else if (
+      helplineShortCode === 'ca' &&
+      (helplineEnv === 'staging' || helplineEnv === 'production')
+    ) {
+      await form.fill([
+        <ContactFormTab>{
+          id: 'person',
+          label: 'Person',
+          fill: form.fillStandardTab,
+        },
+        <ContactFormTab<Categories>>{
+          id: 'categories',
+          label: 'Issue Tags',
+          fill: form.fillCategoriesTab,
+          items: {
+            Parenting: ['Parenting'],
+          },
+        },
+        <ContactFormTab>{
+          id: 'caseInformation',
+          label: 'Summary',
+          fill: form.fillStandardTab,
+          items: {
+            callSummary: 'E2E TEST CALL',
+          },
+        },
+      ]);
+    }
 
     if (getConfigValue('skipDataUpdate') as boolean) {
       console.log('Skipping saving form');
