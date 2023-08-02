@@ -192,8 +192,8 @@ const getFilterOptionsBasedOnSelections = (
       const minSelection = filterSelections.minEligibleAge ?? 0;
       return opt.value === undefined || opt.value >= minSelection;
     }),
-    city: allCities.filter(({ value }) =>
-      filterSelections.province ? !value || value.startsWith(filterSelections.province) : false,
+    city: allCities.filter(
+      ({ value }) => filterSelections.province && (!value || value.startsWith(filterSelections.province)),
     ),
   };
 };
@@ -203,10 +203,10 @@ const ensureFilterSelectionsAreValid = (
   filterOptions: ReferrableResourceSearchState['filterOptions'],
 ): ReferrableResourceSearchState['parameters']['filterSelections'] => {
   return {
-    ...filterSelections,
     // Don't add undefined values to the filter selections
     ...Object.fromEntries(
       Object.entries({
+        ...filterSelections,
         minEligibleAge: filterOptions.minEligibleAge.find(opt => opt.value === filterSelections.minEligibleAge)?.value,
         maxEligibleAge: filterOptions.maxEligibleAge.find(opt => opt.value === filterSelections.maxEligibleAge)?.value,
         province: filterOptions.province.find(opt => opt.value === filterSelections.province)?.value,
