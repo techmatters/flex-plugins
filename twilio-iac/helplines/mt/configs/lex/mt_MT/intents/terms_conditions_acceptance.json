@@ -2,25 +2,7 @@
   "terms_conditions_acceptance": {
     "description": "Helpline Specific helplines/mt/configs/lex/mt_MT/intents Terms and conditions intent",
     "sample_utterances": [
-      "H",
-      "Hi",
-      "Hello",
-      "Help",
-      "I need help",
-      "Pls",
-      "Please",
-      "Incoming webchat contact",
-      "Bongu",
-      "Bonġu",
-      "Ħelow",
-      "Ħaj",
-      "Għajjatni",
-      "Jekk jogħġbok",
-      "Jekk jogħġbkom",
-      "Jum it-tajjeb",
-      "Bongu u saħħa",
-      "Wara x-xogħol kont tinsab",
-      "Intgħażel tagħmel webchat"
+      "trigger_terms_conditions_acceptance"
     ],
     "fulfillment_activity": {
       "type": "ReturnIntent"

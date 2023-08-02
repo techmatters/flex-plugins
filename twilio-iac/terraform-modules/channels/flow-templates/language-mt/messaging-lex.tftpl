@@ -8,7 +8,7 @@ ${
       "type": "trigger",
       "transitions": [
         {
-          "next": "language_selector_complete",
+          "next": "split_web",
           "event": "incomingMessage"
         },
         {
@@ -212,7 +212,7 @@ ${
             "key": "memoryAttribute"
           }
         ],
-        "url": "${serverless_url}channelCapture/captureChannelWithBot"
+        "url": "${serverless_url}/channelCapture/captureChannelWithBot"
       }
     },
     {
@@ -299,7 +299,7 @@ ${
             "key": "releaseFlag"
           }
         ],
-        "url": "${serverless_url}channelCapture/captureChannelWithBot"
+        "url": "${serverless_url}/channelCapture/captureChannelWithBot"
       }
     },
     {
@@ -390,7 +390,7 @@ ${
             "key": "memoryAttribute"
           }
         ],
-        "url": "${serverless_url}channelCapture/captureChannelWithBot"
+        "url": "${serverless_url}/channelCapture/captureChannelWithBot"
       }
     },
     {
@@ -571,7 +571,7 @@ ${
             "key": "memoryAttribute"
           }
         ],
-        "url": "${serverless_url}channelCapture/captureChannelWithBot"
+        "url": "${serverless_url}/channelCapture/captureChannelWithBot"
       }
     },
     {
@@ -658,9 +658,196 @@ ${
             "key": "releaseFlag"
           }
         ],
-        "url": "${serverless_url}channelCapture/captureChannelWithBot"
+        "url": "${serverless_url}/channelCapture/captureChannelWithBot"
       }
-    }
+    },
+    {
+      "name": "split_web",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "language_selector_complete",
+          "event": "noMatch"
+        },
+        {
+          "next": "language_split_web",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to web",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.channel_type}}"
+              ],
+              "type": "equal_to",
+              "value": "web"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.channel_type}}",
+        "offset": {
+          "x": -260,
+          "y": -30
+        }
+      }
+    },
+    {
+      "name": "language_split_web",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_message_en_mt",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_message_en_mt",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to en-MT",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+              ],
+              "type": "equal_to",
+              "value": "en-MT"
+            }
+          ]
+        },
+        {
+          "next": "send_message_mt_mt",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to mt-MT",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+              ],
+              "type": "equal_to",
+              "value": "mt-MT"
+            }
+          ]
+        },
+        {
+          "next": "send_message_uk",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to ukr-MT",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+              ],
+              "type": "equal_to",
+              "value": "ukr-MT"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}",
+        "offset": {
+          "x": 470,
+          "y": 200
+        }
+      }
+    },
+    {
+      "name": "send_message_en_mt",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "web_attributes",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 430,
+          "y": 480
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Kellimni",
+        "to": "{{contact.channel.address}}",
+        "body": "We'll transfer you now, please hold for a professional."
+      }
+    },
+    {
+      "name": "send_message_mt_mt",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "web_attributes",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 770,
+          "y": 480
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Kellimni",
+        "to": "{{contact.channel.address}}",
+        "body": "Ha nittrasferuk lil wieħed Proffesjonist/a tagħna.."
+      }
+    },
+    {
+      "name": "send_message_uk",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "web_attributes",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1120,
+          "y": 480
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Kellimni",
+        "to": "{{contact.channel.address}}",
+        "body": "Ми переведемо вас зараз, будь ласка, чекайте спеціаліста."
+      }
+    },
+    {
+      "name": "web_attributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 930,
+          "y": 790
+        },
+        "workflow": "WW8f360381b5ce33df532296cf10584ef4",
+        "channel": "TC2baa5b4854d31daa709dd39479243173",
+        "attributes": "{\n  \"name\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"language\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.language  | default: 'en-MT'}}\",\n  \"transferTargetType\": \"\",\n  \"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}\n}"
+      }
+      }
+    
   ],
   "initial_state": "Trigger",
   "flags": {

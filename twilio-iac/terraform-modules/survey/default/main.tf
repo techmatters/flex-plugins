@@ -30,7 +30,16 @@ resource "twilio_taskrouter_workspaces_workflows_v1" "survey_workflow" {
               "queue": twilio_taskrouter_workspaces_task_queues_v1.survey_queue.sid
             }
           ]
-        }
+        },
+      {
+        "filter_friendly_name": "CaptureChannel",
+        "expression": "isChatCaptureControl==true",
+        "targets": [
+          {
+            "queue": twilio_taskrouter_workspaces_task_queues_v1.survey_queue.sid
+          }
+        ]
+      }
       ]
     }
   })
