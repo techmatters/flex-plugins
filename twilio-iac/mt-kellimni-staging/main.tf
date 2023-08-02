@@ -122,12 +122,13 @@ module "twilioChannel" {
   channel_contact_identity = each.value.contact_identity
   channel_type             = each.value.channel_type
   custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/language-mt/with-chatbot.tftpl",
+    "../terraform-modules/channels/flow-templates/language-mt/messaging-lex.tftpl",
     {
       channel_name                  = "${each.key}"
       serverless_url                = module.serverless.serverless_environment_production_url
       serverless_service_sid        = module.serverless.serverless_service_sid
       serverless_environment_sid    = module.serverless.serverless_environment_production_sid
+      capture_channel_with_bot      = "ZH75af18446e362dd58e4fd76cc4e1dca1"
       master_workflow_sid           = module.taskRouter.master_workflow_sid
       chat_task_channel_sid         = module.taskRouter.chat_task_channel_sid
       chatbot_en_sid                = twilio_autopilot_assistants_v1.chatbot_en.sid

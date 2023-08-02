@@ -34,13 +34,14 @@
       "Допомога",
       "Будь ласка допоможіть",
       "Я потребую допомоги",
-      "Будь ласка"
+      "Будь ласка",
+      "trigger_language_selector"
     ],
     "fulfillment_activity": {
       "type": "ReturnIntent"
     },
     "conclusion_statement": {
-      "content": "OK thank you",
+      "content": "OK,thank you.",
       "content_type": "PlainText"
     },
     "rejection_statement": {

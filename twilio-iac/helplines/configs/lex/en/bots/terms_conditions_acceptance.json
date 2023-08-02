@@ -12,7 +12,7 @@
     },
     "clarification_prompt": {
       "max_attempts": 2,
-      "content": "Sorry, I didn't understand that. Please try again.",
+      "content": "Sorry, I didn't understand that. Please try again. \nPlease answer with a number: \n1. Yes, I accept the terms and conditions. \n2. No, I don't accept the terms and conditions.",
       "content_type": "PlainText"
     },
     "intents": [

@@ -20,7 +20,8 @@
       "Jum it-tajjeb",
       "Bongu u saħħa",
       "Wara x-xogħol kont tinsab",
-      "Intgħażel tagħmel webchat"
+      "Intgħażel tagħmel webchat",
+      "trigger_pre_survey"
     ],
     "fulfillment_activity": {
       "type": "ReturnIntent"

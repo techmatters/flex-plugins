@@ -95,7 +95,7 @@ module "lexv2" {
   lex_config     = var.lex_v2_config
 }
 
-
+/*
 output "slot_types_definitions" {
   value = local.slot_types_definitions
-}
+}*/

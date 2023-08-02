@@ -12,7 +12,7 @@
     },
     "clarification_prompt": {
       "max_attempts": 2,
-      "content": "Sorry, I didn't understand that. Please try again.",
+      "content": "Sorry, I didn't understand that. Please try again. \n What language do you speak? Please select from the below supported languages: \n 1. English \n 2. Maltese \n 3. Ukranian ",
       "content_type": "PlainText"
     },
     "intents": [
