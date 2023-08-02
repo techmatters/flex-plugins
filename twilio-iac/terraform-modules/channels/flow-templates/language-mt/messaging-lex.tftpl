@@ -150,8 +150,8 @@ ${
       "properties": {
         "input": "{{trigger.message.ChannelAttributes.isSelectLanguageComplete}}",
         "offset": {
-          "x": -250,
-          "y": 90
+          "x": -360,
+          "y": 190
         }
       }
     },
@@ -173,7 +173,7 @@ ${
           "x": -850,
           "y": 570
         },
-        "function_sid": capture_channel_with_bot,
+        "function_sid": capture_channel_with_bot_sid,
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -264,7 +264,7 @@ ${
           "x": 720,
           "y": 1670
         },
-        "function_sid": capture_channel_with_bot,
+        "function_sid": capture_channel_with_bot_sid,
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -351,7 +351,7 @@ ${
           "x": -710,
           "y": 990
         },
-        "function_sid": capture_channel_with_bot,
+        "function_sid": capture_channel_with_bot_sid,
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -425,65 +425,6 @@ ${
       }
     },
     {
-      "name": "language_split_terms_no_acceptance",
-      "type": "split-based-on",
-      "transitions": [
-        {
-          "next": "no_acceptance_EN",
-          "event": "noMatch"
-        },
-        {
-          "next": "no_acceptance_EN",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to en-MT",
-              "arguments": [
-                "{{trigger.message.ChannelAttributes.languageMemory.language}}"
-              ],
-              "type": "equal_to",
-              "value": "en-MT"
-            }
-          ]
-        },
-        {
-          "next": "no_acceptance_MT",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to mt-MT",
-              "arguments": [
-                "{{trigger.message.ChannelAttributes.languageMemory.language}}"
-              ],
-              "type": "equal_to",
-              "value": "mt-MT"
-            }
-          ]
-        },
-        {
-          "next": "no_acceptance_UKR",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to ukr-MT",
-              "arguments": [
-                "{{trigger.message.ChannelAttributes.languageMemory.language}}"
-              ],
-              "type": "equal_to",
-              "value": "ukr-MT"
-            }
-          ]
-        }
-      ],
-      "properties": {
-        "input": "{{trigger.message.ChannelAttributes.languageMemory.language}}",
-        "offset": {
-          "x": -30,
-          "y": 1110
-        }
-      }
-    },
-    {
       "name": "uk_split",
       "type": "split-based-on",
       "transitions": [
@@ -532,7 +473,7 @@ ${
           "x": -330,
           "y": 1000
         },
-        "function_sid": capture_channel_with_bot,
+        "function_sid": capture_channel_with_bot_sid,
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -623,7 +564,7 @@ ${
           "x": 1070,
           "y": 1670
         },
-        "function_sid": capture_channel_with_bot,
+        "function_sid": capture_channel_with_bot_sid,
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -842,11 +783,121 @@ ${
           "x": 930,
           "y": 790
         },
-        "workflow": "WW8f360381b5ce33df532296cf10584ef4",
-        "channel": "TC2baa5b4854d31daa709dd39479243173",
+        "workflow": master_workflow_sid,
+        "channel": chat_task_channel_sid,
         "attributes": "{\n  \"name\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"language\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.language  | default: 'en-MT'}}\",\n  \"transferTargetType\": \"\",\n  \"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}\n}"
       }
+      },
+    {
+      "name": "send_message_run_janitor_en",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": -670,
+          "y": 1510
+        },
+        "function_sid": send_message_janitor_sid",
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "I'm sorry, if you don't accept our terms and conditions we can't provide counselling to you.",
+            "key": "message"
+          },
+          {
+            "value": "Kellimni",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
       }
+      
+    },
+    {
+    
+      "name": "send_message_run_janitor_mt",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": -320,
+          "y": 1510
+        },
+        "function_sid": send_message_janitor_sid,
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "Jiddispjaċini, ma fhimtx eżatt. Jekk jogħġbok wieġeb b&#39;numru wieħed biss.",
+            "key": "message"
+          },
+          {
+            "value": "Kellimni",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "send_message_run_janitor_uk",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": 20,
+          "y": 1500
+        },
+        "function_sid": send_message_janitor_sid,
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "На жаль, якщо ви не приймете наші умови, ми не зможемо надати вам підтримку.",
+            "key": "message"
+          },
+          {
+            "value": "Kellimni",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    }
     
   ],
   "initial_state": "Trigger",

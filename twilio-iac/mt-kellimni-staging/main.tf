@@ -95,14 +95,15 @@ module "twilioChannel" {
   custom_flow_definition = templatefile(
     "../terraform-modules/channels/flow-templates/language-mt/messaging-lex.tftpl",
     {
-      channel_name               = "${each.key}"
-      serverless_url             = module.serverless.serverless_environment_production_url
-      serverless_service_sid     = module.serverless.serverless_service_sid
-      serverless_environment_sid = module.serverless.serverless_environment_production_sid
-      capture_channel_with_bot   = "ZH75af18446e362dd58e4fd76cc4e1dca1"
-      master_workflow_sid        = module.taskRouter.master_workflow_sid
-      chat_task_channel_sid      = module.taskRouter.chat_task_channel_sid
-      flow_description           = "${title(each.key)} Messaging Flow"
+      channel_name                 = "${each.key}"
+      serverless_url               = module.serverless.serverless_environment_production_url
+      serverless_service_sid       = module.serverless.serverless_service_sid
+      serverless_environment_sid   = module.serverless.serverless_environment_production_sid
+      capture_channel_with_bot_sid = "ZH75af18446e362dd58e4fd76cc4e1dca1"
+      send_message_janitor_sid     = "ZH19f41d74c3c64c23b5d624ab84d1ddde"
+      master_workflow_sid          = module.taskRouter.master_workflow_sid
+      chat_task_channel_sid        = module.taskRouter.chat_task_channel_sid
+      flow_description             = "${title(each.key)} Messaging Flow"
   })
   target_task_name      = local.target_task_name
   channel_name          = each.key
@@ -120,14 +121,15 @@ module "customChannel" {
   custom_flow_definition = templatefile(
     "../terraform-modules/channels/flow-templates/language-mt/messaging-lex.tftpl",
     {
-      channel_name               = "${each.key}"
-      serverless_url             = module.serverless.serverless_environment_production_url
-      serverless_service_sid     = module.serverless.serverless_service_sid
-      serverless_environment_sid = module.serverless.serverless_environment_production_sid
-      capture_channel_with_bot   = "ZH75af18446e362dd58e4fd76cc4e1dca1"
-      master_workflow_sid        = module.taskRouter.master_workflow_sid
-      chat_task_channel_sid      = module.taskRouter.chat_task_channel_sid
-      flow_description           = "${title(each.key)} Messaging Flow"
+      channel_name                 = "${each.key}"
+      serverless_url               = module.serverless.serverless_environment_production_url
+      serverless_service_sid       = module.serverless.serverless_service_sid
+      serverless_environment_sid   = module.serverless.serverless_environment_production_sid
+      capture_channel_with_bot_sid = "ZH75af18446e362dd58e4fd76cc4e1dca1"
+      send_message_janitor_sid     = "ZH19f41d74c3c64c23b5d624ab84d1ddde"
+      master_workflow_sid          = module.taskRouter.master_workflow_sid
+      chat_task_channel_sid        = module.taskRouter.chat_task_channel_sid
+      flow_description             = "${title(each.key)} Messaging Flow"
   })
   master_workflow_sid   = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
