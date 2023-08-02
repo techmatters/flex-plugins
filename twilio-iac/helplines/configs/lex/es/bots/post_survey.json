@@ -1,18 +1,18 @@
 {
   "post_survey": {
-    "description": "General configs/lex/en/bots Post Survey bot",
-    "locale": "en-US",
+    "description": "General configs/lex/es/bots Post Survey bot",
+    "locale": "es-419",
     "process_behavior": "BUILD",
     "child_directed": true,
     "idle_session_ttl_in_seconds": "600",
     "enable_model_improvements": true,
     "abort_statement": {
-      "content": "Sorry, I am not able to assist at this time.",
+      "content": "Lo siento, no puedo ayudarte en este momento.",
       "content_type": "PlainText"
     },
     "clarification_prompt": {
       "max_attempts": 2,
-      "content": "Sorry, I didn't understand that. Please try again.",
+      "content": "Lo siento, no entendí eso. Por favor, inténtalo nuevamente.",
       "content_type": "PlainText"
     },
     "intents": [

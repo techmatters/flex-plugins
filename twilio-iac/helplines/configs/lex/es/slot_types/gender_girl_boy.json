@@ -1,6 +1,6 @@
 {
     "gender": {
-        "description": "Gender of caller",
+        "description": " General configs/lex/es/slot_types Gender of caller",
         "value_selection_strategy": "TOP_RESOLUTION",
         "values": {
             "girl": {
