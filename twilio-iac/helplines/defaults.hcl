@@ -7,7 +7,6 @@ locals {
   helpline_region       = "us-east-1"
   aws_monitoring_region = "us-east-1"
 
-  multi_office       = false
   enable_post_survey = false
   target_task_name   = "greeting"
   twilio_numbers     = []
@@ -30,28 +29,6 @@ locals {
 
   custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
 
-  // TODO: these will probably move out of terraform and may not be correct.
-  // Don't run apply for the configure stage until these are updated.
-  feature_flags = {
-    "enable_fullstory_monitoring" : true,
-    "enable_external_transcripts" : true,
-    "enable_upload_documents" : true,
-    "enable_post_survey" : false,
-    "enable_contact_editing" : true,
-    "enable_case_management" : true,
-    "enable_offline_contact" : true,
-    "enable_filter_cases" : true,
-    "enable_sort_cases" : true,
-    "enable_transfers" : true,
-    "enable_manual_pulling" : true,
-    "enable_csam_report" : true,
-    "enable_save_insights" : true,
-    "enable_canned_responses" : true,
-    "enable_emoji_picker" : true,
-    "enable_dual_write" : false,
-    "post_survey_serverless_handled" : true,
-    "enable_previous_contacts" : true,
-  }
 
   manage_github_secrets = true
 
