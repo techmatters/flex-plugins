@@ -41,7 +41,7 @@ export async function open(browser: Browser | BrowserContext): Promise<WebChatPa
     helplineDropdown: page.locator('div#select-helpline'),
     helplineOptions: page.locator('div#menu-helpline ul'),
     startChatButton: page.locator('div.Twilio-PreEngagementCanvas button[type="submit"]'),
-    nameInput: page.locator('input#name'),
+    nameInput: page.locator("//input[@id='name' or @id='nickname']"),
     termsAndConditionsCheckbox: page.locator('input#termsAndConditions'),
 
     //Chatting
