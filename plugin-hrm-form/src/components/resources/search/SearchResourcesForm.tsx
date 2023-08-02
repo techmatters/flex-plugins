@@ -136,6 +136,7 @@ const SearchResourcesForm: React.FC<Props> = ({
     Object.values(filterSelections).some(value => value !== undefined && value !== '');
 
   const submitSearchIfValid = () => {
+    updateGeneralSearchTerm(generalSearchTermBoxText);
     if (hasValidSearchSettings()) {
       submitSearch(generalSearchTermBoxText, filterSelections, pageSize);
     }
@@ -144,6 +145,10 @@ const SearchResourcesForm: React.FC<Props> = ({
   useEffect(() => {
     updateSuggestSearch(generalSearchTermBoxText);
   }, [generalSearchTermBoxText, updateSuggestSearch]);
+
+  useEffect(() => {
+    setGeneralSearchTermBoxText(generalSearchTerm);
+  }, [generalSearchTerm, setGeneralSearchTermBoxText]);
 
   const ageRangeDropDown = (dropdown: 'Min' | 'Max', optionList: FilterOption<number>[]) => {
     const currentSelection =
@@ -239,7 +244,7 @@ const SearchResourcesForm: React.FC<Props> = ({
                   submitSearchIfValid();
                 }}
                 clearSearchTerm={() => {
-                  setGeneralSearchTermBoxText('');
+                  updateGeneralSearchTerm('');
                 }}
                 onShiftTab={() => {
                   /**/
@@ -250,7 +255,9 @@ const SearchResourcesForm: React.FC<Props> = ({
           <SearchAutoComplete
             generalSearchTermBoxText={generalSearchTermBoxText}
             suggestSearch={suggestSearch}
-            setGeneralSearchTermBoxText={setGeneralSearchTermBoxText}
+            setGeneralSearchTermBoxText={term => {
+              updateGeneralSearchTerm(term);
+            }}
           />
           <ResourcesSearchFormSectionHeader data-testid="Resources-Search-FilterHeader">
             <Template code="Resources-Search-FilterHeader" />
