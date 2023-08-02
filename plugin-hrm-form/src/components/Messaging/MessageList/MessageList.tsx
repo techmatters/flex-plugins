@@ -63,7 +63,6 @@ const MessageList: React.FC<Props> = ({ messages }) => {
     <MessageListContainer ref={ref}>
       <ViewportList viewportRef={ref} items={messagesToRender}>
         {item => {
-          // console.log('MessageList.tsx: rendered message: ', item.sid);
           return isItemDateDivider(item) ? (
             <DateRulerContainer>
               <DateRulerHr />
