@@ -159,7 +159,11 @@ export const searchResourceAsyncAction = createAsyncAction(
       start,
     };
   },
-  ({ pageSize }: SearchSettings, page: number, newSearch: boolean = true) => ({ newSearch, start: page * pageSize }),
+  ({ pageSize, generalSearchTerm }: SearchSettings, page: number, newSearch: boolean = true) => ({
+    generalSearchTerm,
+    newSearch,
+    start: page * pageSize,
+  }),
   // { promiseTypeDelimiter: '/' }, // Doesn't work :-(
 );
 
@@ -249,6 +253,10 @@ export const resourceSearchReducer = createReducer(initialState, handleAction =>
   handleAction(searchResourceAsyncAction.pending as typeof searchResourceAsyncAction, (state, action) => {
     return {
       ...state,
+      parameters: {
+        ...state.parameters,
+        generalSearchTerm: action.meta.generalSearchTerm,
+      },
       results: action.meta.newSearch ? [] : state.results,
       status: ResourceSearchStatus.ResultPending,
     };

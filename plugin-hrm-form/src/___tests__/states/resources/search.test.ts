@@ -88,7 +88,15 @@ describe('actions', () => {
       const startingState = getState();
       dispatch(searchResourceAsyncAction({ generalSearchTerm: 'hello', pageSize: 42 }, 1337, true));
       const state = getState();
-      expect(state).toStrictEqual({ ...startingState, status: ResourceSearchStatus.ResultPending, results: [] });
+      expect(state).toStrictEqual({
+        ...startingState,
+        parameters: {
+          ...startingState.parameters,
+          generalSearchTerm: 'hello',
+        },
+        status: ResourceSearchStatus.ResultPending,
+        results: [],
+      });
     });
 
     test("'newSearch' flag not set - dispatches pending action that sets status to ResultPending but leaves results array as is", async () => {
@@ -96,7 +104,14 @@ describe('actions', () => {
       const startingState = getState();
       dispatch(searchResourceAsyncAction({ generalSearchTerm: 'hello', pageSize: 42 }, 1337, false));
       const state = getState();
-      expect(state).toStrictEqual({ ...startingState, status: ResourceSearchStatus.ResultPending });
+      expect(state).toStrictEqual({
+        ...startingState,
+        parameters: {
+          ...startingState.parameters,
+          generalSearchTerm: 'hello',
+        },
+        status: ResourceSearchStatus.ResultPending,
+      });
     });
 
     describe('resourceSearch completes', () => {
@@ -116,6 +131,10 @@ describe('actions', () => {
         const pendingState = getState();
         expect(pendingState).toStrictEqual({
           ...startingState,
+          parameters: {
+            ...startingState.parameters,
+            generalSearchTerm: 'hello',
+          },
           status: ResourceSearchStatus.ResultPending,
           results: [],
         });
@@ -123,6 +142,10 @@ describe('actions', () => {
         const fulfilledState = getState();
         expect(fulfilledState).toStrictEqual({
           ...startingState,
+          parameters: {
+            ...startingState.parameters,
+            generalSearchTerm: 'hello',
+          },
           status: ResourceSearchStatus.ResultReceived,
           results: [
             { id: 'RESULT_1', name: 'Result 1', attributes: {} },
@@ -238,6 +261,10 @@ describe('actions', () => {
         const fulfilledState = getState();
         expect(fulfilledState).toStrictEqual({
           ...startingState,
+          parameters: {
+            ...startingState.parameters,
+            generalSearchTerm: 'hello',
+          },
           status: ResourceSearchStatus.ResultReceived,
           results: expectedResults,
         });
@@ -282,6 +309,10 @@ describe('actions', () => {
         const rejectedState = getState();
         expect(rejectedState).toStrictEqual({
           ...startingState,
+          parameters: {
+            ...startingState.parameters,
+            generalSearchTerm: 'hello',
+          },
           status: ResourceSearchStatus.Error,
           error,
           results: [],
@@ -309,6 +340,10 @@ describe('actions', () => {
         const rejectedState = getState();
         expect(rejectedState).toStrictEqual({
           ...startingState,
+          parameters: {
+            ...startingState.parameters,
+            generalSearchTerm: 'hello',
+          },
           status: ResourceSearchStatus.Error,
           error,
         });
