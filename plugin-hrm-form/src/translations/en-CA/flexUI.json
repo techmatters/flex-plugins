@@ -73,7 +73,7 @@
   "Error-CategoryRequired": "Required 1 issue tag minimum, 3 issue tags maximum. Click on the icon next to an issue tag to open up the relevant tipsheet in a new tab.",
   "CaseList-Filters-Counselor": "Counsellor",
   "CaseList-Filters-SearchForCounselor": "Search for counsellor by name",
-  "CaseList-THChildName": "Child"
+  "CaseList-THChildName": "Child",
 
   "TaskHeaderLineTwitter": "@{{task.attributes.twitterUserHandle}}",
   "TaskHeaderEndCall": "Hang Up",
@@ -357,8 +357,6 @@
   "PreviousContacts-Returned": "returned in this search.",
   "PreviousContacts-PreviousContacts": "previous contacts",
   "PreviousContacts-PreviousContact": "previous contact",
-  "PreviousContacts-Case": "case",
-  "PreviousContacts-Cases": "cases",
   "PreviousContacts-And": "and",
   "PreviousContacts-From": "from",
   "PreviousContacts-IPAddress": "IP address",
