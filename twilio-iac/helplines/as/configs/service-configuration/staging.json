@@ -1,1 +1,36 @@
-{}
+{
+    "attributes": {
+        "feature_flags": {
+            "enable_aselo_messaging_ui": false,
+            "enable_conferencing": false,
+            "enable_contact_editing": false,
+            "enable_counselor_toolkits": false,
+            "enable_csam_clc_report": false,
+            "enable_csam_report": true,
+            "enable_external_transcripts": false,
+            "enable_lex": false,
+            "enable_save_insights": true,
+            "enable_transcripts": false,
+            "enable_twilio_transcripts": false,
+            "enable_voice_recordings": false
+        },
+        "hrm_base_url": "https://hrm-test.tl.techmatters.org",
+        "multipleOfficeSupport": true,
+        "pdfImagesSource": "https://tl-public-chat-as-stg.s3.amazonaws.com",
+        "permissionConfig": "demo",
+        "previous_ui_version": {
+            "date": "2022-12-07T21:41:43.160Z",
+            "semver": "~2.0.0",
+            "version": "2.0.0"
+        }
+    },
+    "ui_attributes": {
+        "colorTheme": {
+            "baseName": null,
+            "light": null,
+            "overrides": null,
+            "preset": null
+        },
+        "showRealtimeQueuesStats": true
+    }
+}

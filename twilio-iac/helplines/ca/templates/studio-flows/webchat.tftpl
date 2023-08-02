@@ -1167,11 +1167,11 @@ ${
         "type": "split-based-on",
         "transitions": [
           {
-            "next": "check_queue_en",
+            "next": "check_counsellors_en",
             "event": "noMatch"
           },
           {
-            "next": "check_queue_en",
+            "next": "check_counsellors_en",
             "event": "match",
             "conditions": [
               {
@@ -1286,11 +1286,11 @@ ${
         "type": "split-based-on",
         "transitions": [
           {
-            "next": "check_queue_fr",
+            "next": "check_counsellors_fr",
             "event": "noMatch"
           },
           {
-            "next": "check_queue_fr",
+            "next": "check_counsellors_fr",
             "event": "match",
             "conditions": [
               {
@@ -1361,6 +1361,136 @@ ${
           "from": "Système",
           "to": "{{contact.channel.address}}",
           "body": "{{widgets.check_hours_fr.parsed.message}}"
+        }
+      },
+      {
+        "name": "check_counsellors_fr",
+        "type": "run-function",
+        "transitions": [
+          {
+            "next": "fr_counsellors",
+            "event": "success"
+          },
+          {
+            "next": "check_queue_fr",
+            "event": "fail"
+          }
+        ],
+        "properties": {
+          "service_sid": flow_vars["service_sid"],
+          "environment_sid": flow_vars["environment_sid"],
+          "offset": {
+            "x": 1560,
+            "y": -200
+          },
+          "function_sid": flow_vars["check_counsellors_function_sid"],
+          "parameters": [
+            {
+              "value": flow_vars["workspace_sid"],
+              "key": "workspaceSid"
+            },
+            {
+              "value": flow_vars["french_queue_sid"],
+              "key": "taskQueueSid"
+            }
+          ],
+          "url": flow_vars["check_counsellors_function_url"]
+        }
+      },
+      {
+        "name": "fr_counsellors",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "send_queue_full_fr",
+            "event": "noMatch"
+          },
+          {
+            "next": "check_queue_fr",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value greater_than 0",
+                "arguments": [
+                  "{{widgets.check_counsellors_fr.parsed.totalCounsellors}}"
+                ],
+                "type": "greater_than",
+                "value": "0"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.check_counsellors_fr.parsed.totalCounsellors}}",
+          "offset": {
+            "x": 1680,
+            "y": 80
+          }
+        }
+      },
+      {
+        "name": "check_counsellors_en",
+        "type": "run-function",
+        "transitions": [
+          {
+            "next": "en_counsellors",
+            "event": "success"
+          },
+          {
+            "next": "check_queue_en",
+            "event": "fail"
+          }
+        ],
+        "properties": {
+          "service_sid": flow_vars["service_sid"],
+          "environment_sid": flow_vars["environment_sid"],
+          "offset": {
+            "x": -810,
+            "y": -210
+          },
+          "function_sid": flow_vars["check_counsellors_function_sid"],
+          "parameters": [
+            {
+              "value": flow_vars["workspace_sid"],
+              "key": "workspaceSid"
+            },
+            {
+              "value": flow_vars["english_queue_sid"],
+              "key": "taskQueueSid"
+            }
+          ],
+          "url": flow_vars["check_counsellors_function_url"]
+        }
+      },
+      {
+        "name": "en_counsellors",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "send_queue_full_en",
+            "event": "noMatch"
+          },
+          {
+            "next": "check_queue_en",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value greater_than 0",
+                "arguments": [
+                  "{{widgets.check_counsellors_en.parsed.totalCounsellors}}"
+                ],
+                "type": "greater_than",
+                "value": "0"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.check_counsellors_en.parsed.totalCounsellors}}",
+          "offset": {
+            "x": -940,
+            "y": -10
+          }
         }
       }
     ],
