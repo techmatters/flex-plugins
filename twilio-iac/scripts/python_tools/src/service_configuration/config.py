@@ -19,6 +19,7 @@ ACTIONS = {
     'SYNC_PLAN': 'sync_plan',
     'SYNC_APPLY': 'sync_apply',
     'UNLOCK': 'unlock',
+    'UPDATE_PROP': 'update_prop',
 }
 
 
@@ -72,6 +73,7 @@ ACTION_CONFIGS: dict[str, ActionConfigsDict] = {
         'has_version': True,
         'skip_lock': True,
     },
+    ACTIONS['UPDATE_PROP']: {},
 }
 
 ENVIRONMENTS = [
@@ -108,6 +110,11 @@ ARGS = {
         'required': False,
         'default': None,
         'help': 'Property to update. Example: attributes.hrm_api_version',
+    },
+    '--value': {
+        'required': False,
+        'default': None,
+        'help': 'Value to set for property',
     },
     '--dry_run': {
         'required': False,
@@ -199,12 +206,18 @@ class Config():
         if auth_token:
             self._config['auth_token'] = auth_token
 
-        self._config['sync_action'] = ACTION_CONFIGS[self.action].get('has_sync') or False
-        self._config['skip_local_config'] = ACTION_CONFIGS[self.action].get('skip_local_config') or False
-        self._config['has_version'] = ACTION_CONFIGS[self.action].get('has_version') or False
-        self._config['skip_lock'] = ACTION_CONFIGS[self.action].get('skip_lock') or False
-        self._config['argument'] = ACTION_CONFIGS[self.action].get('argument') or self._config['argument']
-        self._config['json_available'] = ACTION_CONFIGS[self.action].get('json_available') or False
+        self._config['sync_action'] = ACTION_CONFIGS[self.action].get(
+            'has_sync') or False
+        self._config['skip_local_config'] = ACTION_CONFIGS[self.action].get(
+            'skip_local_config') or False
+        self._config['has_version'] = ACTION_CONFIGS[self.action].get(
+            'has_version') or False
+        self._config['skip_lock'] = ACTION_CONFIGS[self.action].get(
+            'skip_lock') or False
+        self._config['argument'] = ACTION_CONFIGS[self.action].get(
+            'argument') or self._config['argument']
+        self._config['json_available'] = ACTION_CONFIGS[self.action].get(
+            'json_available') or False
 
     def init_service_configs(self):
         if (self.helpline_code and self.environment) or self.account_sid:
@@ -260,7 +273,7 @@ class Config():
         environment = environment_arg or self.environment
         account_sid = account_sid_arg or self.account_sid
 
-        if not (helpline_code and environment) and not account_sid :
+        if not (helpline_code and environment) and not account_sid:
             raise Exception(
                 'Could not find helpline code or environment. Please provide helpline code and environment')
 
@@ -320,7 +333,8 @@ class Config():
 
     def validate_json(self):
         if self.json and (not self.json_available):
-            print(f'ERROR: JSON output is not available for the {self.action} action.')
+            print(
+                f'ERROR: JSON output is not available for the {self.action} action.')
             exit(1)
 
     def validate_action_requirements(self):
@@ -331,7 +345,8 @@ class Config():
 
     def validate_no_environment(self):
         if self.environment:
-            print(f'ERROR: The {self.action} action does not accept an environment argument.')
+            print(
+                f'ERROR: The {self.action} action does not accept an environment argument.')
             exit(1)
 
     def validate_all_helplines(self):
