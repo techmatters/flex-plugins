@@ -19,7 +19,14 @@ import { AnyAction } from 'redux';
 import { createAction, createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
 import { ReferrableResource, getResource } from '../../services/ResourceService';
-import { ReferrableResourceSearchState, initialState as initialSearchState, resourceSearchReducer } from './search';
+import {
+  ReferrableResourceSearchState,
+  initialState as initialSearchState,
+  suggestSearchInitialState,
+  suggestSearchReducer,
+  resourceSearchReducer,
+  TaxonomyLevelNameCompletion,
+} from './search';
 
 export const enum ResourcePage {
   ViewResource = 'view-resource',
@@ -66,6 +73,7 @@ export type ReferrableResourcesState = {
     )
   >;
   search: ReferrableResourceSearchState;
+  suggestSearch: TaxonomyLevelNameCompletion;
 };
 
 const initialState: ReferrableResourcesState = {
@@ -74,6 +82,7 @@ const initialState: ReferrableResourcesState = {
     page: ResourcePage.Search,
   },
   search: initialSearchState,
+  suggestSearch: suggestSearchInitialState,
 };
 
 const expireOldResources = (inputState: ReferrableResourcesState, now: Date): ReferrableResourcesState => ({
@@ -132,6 +141,7 @@ export function reduce(inputState = initialState, action: AnyAction): Referrable
   const state: ReferrableResourcesState = {
     ...expireOldResources(inputState, now),
     search: resourceSearchReducer(inputState.search, action),
+    suggestSearch: suggestSearchReducer(inputState.suggestSearch, action),
   };
   return resourceReducer(state, action as any);
 }

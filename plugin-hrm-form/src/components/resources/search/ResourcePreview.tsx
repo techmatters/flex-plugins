@@ -61,6 +61,7 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
                 underline={true}
                 style={{ width: '70%', marginInlineEnd: 10, justifyContent: 'left' }}
                 onClick={onClickViewResource}
+                data-testid="resource-name"
               >
                 <ResourcePreviewHeaderText>{name}</ResourcePreviewHeaderText>
               </StyledLink>
@@ -72,7 +73,7 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
           </PreviewRow>
         </div>
         <PreviewRow>
-          <ResourceAttributesColumn style={{ alignSelf: 'baseline' }}>
+          <ResourceAttributesColumn style={{ paddingLeft: 0, marginLeft: 0, alignSelf: 'baseline' }}>
             <Box marginTop="8px" marginBottom="8px">
               <Column>
                 <Box marginBottom="6px">

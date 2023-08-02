@@ -35,7 +35,7 @@ export const PhoneDialogWrapper = styled('div')<PhoneDialogWrapperProps>`
   background: white;
   box-sizing: border-box;
   left: 20px;
-  bottom: 100px;
+  bottom: 80px;
   min-width: 300px;
   width: 90%;
   padding: 15px 22px;
@@ -53,7 +53,7 @@ type DialogArrowProps = {
 export const DialogArrow = styled(Flex)<DialogArrowProps>`
   position: absolute;
   bottom: 0;
-  left: 85px;
+  left: 125px;
   background: #ffffff;
   border: 0px solid #d3d3d3;
 

@@ -15,11 +15,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { Dispatch, useRef } from 'react';
+import React, { Dispatch, useEffect, useRef } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 import { Grid } from '@material-ui/core';
+import debounce from 'lodash/debounce';
 
 import { namespace, referrableResourcesBase, RootState } from '../../../states';
 import {
@@ -49,11 +50,13 @@ import {
   resetSearchFormAction,
   searchResourceAsyncAction,
   updateSearchFormAction,
+  suggestSearchAsyncAction,
 } from '../../../states/resources/search';
 import SearchInput from '../../caseList/filters/SearchInput';
 import { getTemplateStrings } from '../../../hrmConfig';
 import asyncDispatch from '../../../states/asyncDispatch';
-import { FiltersCheckbox, MultiSelectCheckboxLabel } from '../../../styles/caseList/filters';
+import { FiltersCheckbox } from '../../../styles/caseList/filters';
+import SearchAutoComplete from './SearchAutoComplete';
 
 const NO_AGE_SELECTED = -1;
 const NO_LOCATION_SELECTED = '__NO_LOCATION_SELECTED__';
@@ -71,11 +74,13 @@ const mapStateToProps = (state: RootState) => {
     parameters: { generalSearchTerm, pageSize, filterSelections },
     filterOptions,
   } = state[namespace][referrableResourcesBase].search;
+  const { suggestSearch } = state[namespace][referrableResourcesBase];
   return {
     generalSearchTerm,
     pageSize,
     filterSelections,
     filterOptions,
+    suggestSearch,
   };
 };
 
@@ -98,6 +103,10 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
       pageSize: number,
     ) => searchAsyncDispatch(searchResourceAsyncAction({ generalSearchTerm, pageSize, filterSelections }, 0)),
     resetSearch: () => dispatch(resetSearchFormAction()),
+    updateSuggestSearch: debounce((prefix: string) => searchAsyncDispatch(suggestSearchAsyncAction(prefix)), 300, {
+      leading: true,
+      trailing: true,
+    }),
   };
 };
 
@@ -114,6 +123,8 @@ const SearchResourcesForm: React.FC<Props> = ({
   resetSearch,
   filterOptions,
   filterSelections,
+  suggestSearch,
+  updateSuggestSearch,
 }) => {
   const firstElement = useRef(null);
   const strings = getTemplateStrings();
@@ -125,10 +136,19 @@ const SearchResourcesForm: React.FC<Props> = ({
     Object.values(filterSelections).some(value => value !== undefined && value !== '');
 
   const submitSearchIfValid = () => {
+    updateGeneralSearchTerm(generalSearchTermBoxText);
     if (hasValidSearchSettings()) {
       submitSearch(generalSearchTermBoxText, filterSelections, pageSize);
     }
   };
+
+  useEffect(() => {
+    updateSuggestSearch(generalSearchTermBoxText);
+  }, [generalSearchTermBoxText, updateSuggestSearch]);
+
+  useEffect(() => {
+    setGeneralSearchTermBoxText(generalSearchTerm);
+  }, [generalSearchTerm, setGeneralSearchTermBoxText]);
 
   const ageRangeDropDown = (dropdown: 'Min' | 'Max', optionList: FilterOption<number>[]) => {
     const currentSelection =
@@ -190,7 +210,7 @@ const SearchResourcesForm: React.FC<Props> = ({
                     );
                   }}
                 />
-                {label ?? value}
+                &nbsp;&nbsp;{label ?? value}
               </FormLabel>
             </Grid>
           ))}
@@ -209,7 +229,7 @@ const SearchResourcesForm: React.FC<Props> = ({
         </Box>
         <ResourcesSearchFormTopRule />
         <ResourcesSearchFormArea>
-          <ResourcesSearchFormSettingBox>
+          <ResourcesSearchFormSettingBox style={{ border: 'none' }}>
             <Column>
               <Box>
                 <Template code="Resources-Search-SearchTermHeader" />
@@ -224,7 +244,7 @@ const SearchResourcesForm: React.FC<Props> = ({
                   submitSearchIfValid();
                 }}
                 clearSearchTerm={() => {
-                  setGeneralSearchTermBoxText('');
+                  updateGeneralSearchTerm('');
                 }}
                 onShiftTab={() => {
                   /**/
@@ -232,6 +252,13 @@ const SearchResourcesForm: React.FC<Props> = ({
               />
             </Column>
           </ResourcesSearchFormSettingBox>
+          <SearchAutoComplete
+            generalSearchTermBoxText={generalSearchTermBoxText}
+            suggestSearch={suggestSearch}
+            setGeneralSearchTermBoxText={term => {
+              updateGeneralSearchTerm(term);
+            }}
+          />
           <ResourcesSearchFormSectionHeader data-testid="Resources-Search-FilterHeader">
             <Template code="Resources-Search-FilterHeader" />
           </ResourcesSearchFormSectionHeader>
@@ -314,6 +341,7 @@ const SearchResourcesForm: React.FC<Props> = ({
                         updateFilterSelection('interpretationTranslationServicesAvailable', checked || undefined);
                       }}
                     />
+                    &nbsp;&nbsp;
                     <Template code="Resources-Search-InterpretationTranslationServicesAvailable-Checkbox" />
                   </FormLabel>
                 </Column>
@@ -347,6 +375,7 @@ const SearchResourcesForm: React.FC<Props> = ({
           type="button"
           roundCorners={true}
           onClick={() => submitSearchIfValid()}
+          data-testid="search-button"
         >
           <Template code="SearchForm-Button" />
         </StyledNextStepButton>
