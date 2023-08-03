@@ -1,13 +1,18 @@
 # E2E Tests
 
-These end-to-end tests are a Proof of Concept written using the Playwright testing framework (https://playwright.dev/).
+These end-to-end tests are written using the Playwright testing framework (https://playwright.dev/).
 
 ## To run the tests
 
 Make sure you have playwright installed, if not you can install it like `npx playwright install`.
 
-1. Set any required environment variables (see 'Environment Variable Reference' below').
+1. There are two approaches when using environmental variables:
+
+- Option 1. Ensure that your AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY enviromental variables are set in env vars in the bash command. `LOAD_SSM_CONFIG` will run any environment with the correct helpline account (`HL_ENV` and `HL`) and respective okta username
+
+- Option 2. Set required environment variables specific to a helpline and okta username (see 'Environment Variable Reference' below').
    This can be done either by attaching the env vars in the bash command to run the tests (step 3) or setting them in a `.env` file in the root of this folder.
+
 2. Run the plugin in the dev server (i.e. `npm run dev` from `../plugin-hrm-form/`).
 3. Run `npx playwright test` for headless tests or `npx playwright test --headed` to see the browser sessions (`ENV_VAR_1=xxxxxxxxx <...more env vars...> npx playwright test` if you are setting env vars in the command).
 
@@ -28,7 +33,9 @@ npx playwright test --headed webchat.spec.ts
 | PLAYWRIGHT_BASEURL       | URL where the flex plugin you are testing is running, defaults to 'https://localhost:3000' |                                                  |
 | TWILIO_ACCOUNT_SID       | E2E twilio account SID                                                                     |                                                  |
 | TWILIO_AUTH_TOKEN        | E2E twilio auth token                                                                      |                                                  |
+| LOAD_SSM_CONFIG          |   true                                                        | loads each helpline's respective variables based on HL and HL_ENV                                                 |
 | DEBUG                    | pw:api                                                                                     | optional, but recommended for useable log output |
+- See `config.ts` for more comprehensive uses of other variables.
 
 ### Requirements
 
