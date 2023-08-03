@@ -57,6 +57,10 @@ locals {
         "target_workers" = "routing.skills HAS 'KHP Interpreter' ",
         "friendly_name"  = "KHP Interpreter"
       },
+      interpreter_fr : {
+        "target_workers" = "routing.skills HAS 'French Interpreter' ",
+        "friendly_name"  = "French Interpreter"
+      },
       supervisor : {
         "target_workers" = "routing.skills HAS 'Supervisor'",
         "friendly_name"  = "Supervisor"
