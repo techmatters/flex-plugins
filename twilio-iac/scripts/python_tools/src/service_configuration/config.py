@@ -144,6 +144,7 @@ class ConfigDict(TypedDict):
     helplines: dict[str, dict[str, ServiceConfiguration]]
     syncers: list[RemoteSyncer]
     skip_local_config: bool
+    json_available: bool
     has_version: bool
     skip_lock: bool
     sync_action: bool
