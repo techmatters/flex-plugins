@@ -1,7 +1,6 @@
 ${
-  jsonencode(
-        {
-  "description": "Facebook Messaging Flow - Lex",
+  jsonencode( {
+  "description": flow_description,
   "states": [
     {
       "name": "Trigger",
@@ -50,78 +49,9 @@ ${
           "x": 1410,
           "y": 1380
         },
-        "workflow":  master_workflow_sid,
+        "workflow": master_workflow_sid,
         "channel": chat_task_channel_sid,
         "attributes": "{\n  \"name\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"language\":\"{{trigger.message.ChannelAttributes.languageMemory.language  | default: 'en-MT'}}\",\n  \"transferTargetType\": \"\",\n  \"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}\n}"
-      }
-    },
-    {
-      "name": "no_acceptance_EN",
-      "type": "send-message",
-      "transitions": [
-        {
-          "event": "sent"
-        },
-        {
-          "event": "failed"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": -320,
-          "y": 1450
-        },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "{{flow.channel.address}}",
-        "to": "{{contact.channel.address}}",
-        "body": "I'm sorry, if you don't accept our terms and conditions we can't provide counselling to you."
-      }
-    },
-    {
-      "name": "no_acceptance_MT",
-      "type": "send-message",
-      "transitions": [
-        {
-          "event": "sent"
-        },
-        {
-          "event": "failed"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 50,
-          "y": 1440
-        },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "{{flow.channel.address}}",
-        "to": "{{contact.channel.address}}",
-        "body": "Jiddispjaċini, ma fhimtx eżatt. Jekk jogħġbok wieġeb b&#39;numru wieħed biss."
-      }
-    },
-    {
-      "name": "no_acceptance_UKR",
-      "type": "send-message",
-      "transitions": [
-        {
-          "event": "sent"
-        },
-        {
-          "event": "failed"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 410,
-          "y": 1440
-        },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "{{flow.channel.address}}",
-        "to": "{{contact.channel.address}}",
-        "body": "На жаль, якщо ви не приймете наші умови, ми не зможемо надати вам підтримку."
       }
     },
     {
@@ -421,6 +351,65 @@ ${
         "offset": {
           "x": 240,
           "y": 780
+        }
+      }
+    },
+    {
+      "name": "language_split_terms_no_acceptance",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_message_run_janitor_en",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_message_run_janitor_en",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to en-MT",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.languageMemory.language}}"
+              ],
+              "type": "equal_to",
+              "value": "en-MT"
+            }
+          ]
+        },
+        {
+          "next": "send_message_run_janitor_mt",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to mt-MT",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.languageMemory.language}}"
+              ],
+              "type": "equal_to",
+              "value": "mt-MT"
+            }
+          ]
+        },
+        {
+          "next": "send_message_run_janitor_uk",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to ukr-MT",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.languageMemory.language}}"
+              ],
+              "type": "equal_to",
+              "value": "ukr-MT"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.languageMemory.language}}",
+        "offset": {
+          "x": -30,
+          "y": 1110
         }
       }
     },
@@ -785,9 +774,9 @@ ${
         },
         "workflow": master_workflow_sid,
         "channel": chat_task_channel_sid,
-        "attributes": "{\n  \"name\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"language\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.language  | default: 'en-MT'}}\",\n  \"transferTargetType\": \"\",\n  \"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}\n}"
+        "attributes": "{\n  \"name\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"language\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.language  | default: 'en-MT'}}\",\n  \"transferTargetType\": \"\",\n \"preEngagementData\": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}}, \n  \"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}\n}"
       }
-      },
+    },
     {
       "name": "send_message_run_janitor_en",
       "type": "run-function",
@@ -803,10 +792,10 @@ ${
         "service_sid": serverless_service_sid,
         "environment_sid": serverless_environment_sid,
         "offset": {
-          "x": -670,
-          "y": 1510
+          "x": -440,
+          "y": 1680
         },
-        "function_sid": send_message_janitor_sid",
+        "function_sid": send_message_janitor_sid,
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -823,10 +812,8 @@ ${
         ],
         "url": "${serverless_url}/sendMessageAndRunJanitor"
       }
-      
     },
     {
-    
       "name": "send_message_run_janitor_mt",
       "type": "run-function",
       "transitions": [
@@ -841,8 +828,8 @@ ${
         "service_sid": serverless_service_sid,
         "environment_sid": serverless_environment_sid,
         "offset": {
-          "x": -320,
-          "y": 1510
+          "x": -20,
+          "y": 1680
         },
         "function_sid": send_message_janitor_sid,
         "parameters": [
@@ -877,8 +864,8 @@ ${
         "service_sid": serverless_service_sid,
         "environment_sid": serverless_environment_sid,
         "offset": {
-          "x": 20,
-          "y": 1500
+          "x": 330,
+          "y": 1680
         },
         "function_sid": send_message_janitor_sid,
         "parameters": [
@@ -898,13 +885,13 @@ ${
         "url": "${serverless_url}/sendMessageAndRunJanitor"
       }
     }
-    
   ],
   "initial_state": "Trigger",
   "flags": {
     "allow_concurrent_calls": true
   }
 }
+
 
   )
 }
