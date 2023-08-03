@@ -18,10 +18,6 @@ locals {
     }
 
     task_queues = {
-      aggregate : {
-        "target_workers" = "1==1",
-        "friendly_name"  = "Aggregate"
-      },
       khp_en : {
         "target_workers" = "routing.skills HAS 'KHP English'",
         "friendly_name"  = "KHP English"
@@ -58,8 +54,8 @@ locals {
         "friendly_name"  = "Good2Talk Interpreter"
       },
       interpreter_en : {
-        "target_workers" = "routing.skills HAS 'Interpreter' ",
-        "friendly_name"  = "Interpreter"
+        "target_workers" = "routing.skills HAS 'KHP Interpreter' ",
+        "friendly_name"  = "KHP Interpreter"
       },
       supervisor : {
         "target_workers" = "routing.skills HAS 'Supervisor'",
@@ -86,8 +82,8 @@ locals {
         "friendly_name"  = "Chat French"
       },
       indigenous : {
-        "target_workers" = "routing.skills HAS 'Indigenous [Interpreter]'",
-        "friendly_name"  = "Indigenous [Interpreter]"
+        "target_workers" = "routing.skills HAS 'Indigenous/Interpreter'",
+        "friendly_name"  = "Indigenous/Interpreter"
       }
     }
   }
