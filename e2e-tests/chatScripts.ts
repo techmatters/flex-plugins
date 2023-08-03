@@ -15,6 +15,7 @@
  */
 
 import {
+  ChatStatement,
   botStatement,
   callerStatement,
   counselorAutoStatement,
@@ -57,9 +58,10 @@ export const webchatScripts = {
   },
   staging: {
     ca: [
-      counselorAutoStatement(
+      botStatement(
         'You are number 1 in line. To keep your chat active, please do not leave/refresh this window or hit the back button.',
       ),
+      counselorAutoStatement("Hi, you've reached a counsellor. What would you like to talk about?"),
     ],
   },
   production: {},
