@@ -8,7 +8,7 @@ ${
         "type": "trigger",
         "transitions": [
           {
-            "next": "language_split",
+            "next": "test_flag",
             "event": "incomingMessage"
           },
           {
@@ -1492,12 +1492,57 @@ ${
             "y": -10
           }
         }
+      },
+    {
+      "name": "test_flag",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "language_split",
+          "event": "noMatch"
+        },
+        {
+          "next": "webAttributes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains true",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.e2eTestMode}}"
+              ],
+              "type": "contains",
+              "value": "true"
+            }
+          ]
+        },
+        {
+          "next": "language_split",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains false",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.e2eTestMode}}"
+              ],
+              "type": "contains",
+              "value": "false"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.pre_engagement_data.e2eTestMode}}",
+        "offset": {
+          "x": 1260,
+          "y": -630
+        }
       }
-    ],
-    "initial_state": "Trigger",
-    "flags": {
-      "allow_concurrent_calls": true
     }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
   }
     )
   }
