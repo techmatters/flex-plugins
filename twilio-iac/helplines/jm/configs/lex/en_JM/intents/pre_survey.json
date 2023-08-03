@@ -24,7 +24,8 @@
       "Mi rate di vibes",
       "Link mi up",
       "Mi deh pon di corner",
-      "Incoming webchat contact"
+      "Incoming webchat contact",
+      "trigger_pre_survey"
     ],
     "fulfillment_activity": {
       "type": "ReturnIntent"
