@@ -35,13 +35,19 @@ const removeConversationListeners = (conversation: Conversation) => {
   conversation.eventNames().forEach(safelyRemoveListeners);
 };
 
-const removeConversationListenersForTask = (task: ITask) => {
+const runCallbackIfChatBasedTask = (callback: (conversation: Conversation) => void) => (task: ITask) => {
   if (TaskHelper.isChatBasedTask(task)) {
     const conversationState = StateHelper.getConversationStateForTask(task);
 
-    removeConversationListeners(conversationState.source);
+    // eslint-disable-next-line callback-return
+    callback(conversationState.source);
   }
 };
+
+const removeParticipantLeftConversationListeners = runCallbackIfChatBasedTask((conversation: Conversation) => {
+  conversation.removeAllListeners('participantLeft');
+});
+const removeConversationListenersForTask = runCallbackIfChatBasedTask(removeConversationListeners);
 
 const deactivateConversationListenersForTransferred = async (task: ITask) => {
   try {
@@ -71,6 +77,9 @@ export const setTaskWrapupEventListeners = (featureFlags: FeatureFlags) => {
    */
   if (featureFlags.enable_post_survey) {
     manager.events.addListener('taskWrapup', removeConversationListenersForTask);
+  } else {
+    // prevent weird bug when task is wrapped outside from Flex, where the chat history disappears
+    manager.events.addListener('taskWrapup', removeParticipantLeftConversationListeners);
   }
 
   /**
