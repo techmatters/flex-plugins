@@ -21,13 +21,28 @@ import SearchIcon from '@material-ui/icons/Search';
 
 type Props = SideNavChildrenProps & { showLabel: boolean; onClick: () => void };
 
-const StandaloneSearchSideLink: React.FC<Props> = ({ showLabel, activeView, onClick }) => {
+const IconActive = () => (
+  <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="9.5" cy="9.5" r="6" fill="black" />
+    <path
+      d="M15.5 14h-.79l-.28-.27v.79l5 4.99L20.49 19l-4.99-5z"
+      stroke="black"
+      strokeWidth="2"
+    />
+  </svg>
+);
+
+const StandaloneSearchSideLink: React.FC<Props> = ({
+  showLabel,
+  activeView,
+  onClick,
+}) => {
   return (
     <SideLink
       showLabel={showLabel}
       icon={<SearchIcon />}
-      iconActive={<SearchIcon />}
-      isActive={activeView === 'standalone-search'}
+      iconActive={<IconActive />}
+      isActive={activeView === 'search'}
       onClick={onClick}
     >
       <Template code="StandaloneSearch-SideNav" />

@@ -22,7 +22,11 @@ import FolderIcon from '@material-ui/icons/Folder';
 
 type Props = SideNavChildrenProps & { showLabel: boolean; onClick: () => void };
 
-const CaseListSideLink: React.FC<Props> = ({ showLabel, activeView, onClick }) => {
+const CaseListSideLink: React.FC<Props> = ({
+  showLabel,
+  activeView,
+  onClick,
+}) => {
   return (
     <SideLink
       showLabel={showLabel}
