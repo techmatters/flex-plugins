@@ -35,7 +35,8 @@ ${
       "name": "split_keys_lang",
       "type": "split-based-on",
       "transitions": [
-        {
+        { 
+          "next": "intro_set_retry",
           "event": "noMatch"
         },
         {
@@ -45,7 +46,7 @@ ${
             {
               "friendly_name": "If value contains en_number",
               "arguments": [
-                {{"widgets.G2TNSIntro.Digits"}}
+                "{{widgets.G2TNSIntro.Digits}}",
               ],
               "type": "contains",
               "value": "1"
@@ -59,7 +60,7 @@ ${
             {
               "friendly_name": "If value contains fr_number",
               "arguments": [
-                {{widgets.G2TNSIntro.Digits}}"
+                "{{widgets.G2TNSIntro.Digits}}"
               ],
               "type": "contains",
               "value": "2"

@@ -62,7 +62,6 @@
             "enable_previous_contacts": true,
             "enable_save_insights": false,
             "enable_sort_cases": true,
-            "enable_transcripts": false,
             "enable_transfers": true,
             "enable_twilio_transcripts": true,
             "enable_upload_documents": true,
