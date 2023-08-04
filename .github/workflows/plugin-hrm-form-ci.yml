@@ -108,7 +108,7 @@ jobs:
         working-directory: ./plugin-hrm-form
         shell: bash
 
-      - name: Run Form Defintions Server
+      - name: Run Form Definitions Server
         run: NODE_ENV=development npm run dev:local-form-definition-server &
         working-directory: ./plugin-hrm-form
 

@@ -75,7 +75,7 @@ jobs:
       - name: Install Flex Plugin
         uses: ./.github/actions/install-flex-plugin
 
-      - name: Run Form Defintions Server
+      - name: Run Form Definitions Server
         run: NODE_ENV=development npm run dev:local-form-definition-server &
         working-directory: ./plugin-hrm-form
 
