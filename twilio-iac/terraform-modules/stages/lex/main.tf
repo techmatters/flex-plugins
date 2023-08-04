@@ -1,6 +1,6 @@
-provider "awscc" {
-  region = var.helpline_region
-}
+# provider "awscc" {
+#   region = var.helpline_region
+# }
 
 module "lex" {
   source = "../../lex/v1"
@@ -22,17 +22,12 @@ module "lex" {
   slot_types = var.lex_slot_types[each.key]
 }
 
-module "lexv2" {
-  source = "../../lex/v2"
-  count  = var.lex_v2_config == null ? 0 : 1
+# module "lexv2" {
+#   source = "../../lex/v2"
+#   count  = var.lex_v2_config == null ? 0 : 1
 
-  helpline       = var.helpline
-  short_helpline = var.short_helpline
-  environment    = var.environment
-  lex_config     = var.lex_v2_config
-}
-
-/*
-output "slot_types_definitions" {
-  value = local.slot_types_definitions
-}*/
+#   helpline       = var.helpline
+#   short_helpline = var.short_helpline
+#   environment    = var.environment
+#   lex_config     = var.lex_v2_config
+# }
