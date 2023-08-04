@@ -45,7 +45,7 @@ ${
             {
               "friendly_name": "If value contains en_number",
               "arguments": [
-                "{{trigger.call.To}}"
+                {{"widgets.G2TNSIntro.Digits"}}
               ],
               "type": "contains",
               "value": "1"
@@ -59,7 +59,7 @@ ${
             {
               "friendly_name": "If value contains fr_number",
               "arguments": [
-                "{{trigger.call.To}}"
+                {{widgets.G2TNSIntro.Digits}}"
               ],
               "type": "contains",
               "value": "2"
@@ -68,7 +68,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{trigger.call.To}}",
+        "input": "{{widgets.G2TNSIntro.Digits}}",
         "offset": {
           "x": -590,
           "y": -540
