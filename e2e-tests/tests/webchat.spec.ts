@@ -66,6 +66,8 @@ test.describe.serial('Web chat caller', () => {
     const webchatProgress = chatPage.chat(chatScript);
     const flexChatProgress: AsyncIterator<ChatStatement> = flexChat(pluginPage).chat(chatScript);
 
+    const helplineShortCode = getConfigValue('helplineShortCode') as string;
+
     // Currently this loop handles the handing back and forth of control between the caller & counselor sides of the chat.
     // Each time round the loop it allows the webchat to process statements until it yields control back to this loop
     // And each time flexChatProgress.next(), the flex chat processes statements until it yields
@@ -78,6 +80,9 @@ test.describe.serial('Web chat caller', () => {
             if (expectedCounselorStatement.text.startsWith('Hi, this is the counsellor')) {
               await statusIndicator(pluginPage).setStatus(WorkerStatus.AVAILABLE);
               await tasks(pluginPage).acceptNextTask();
+            } else if (helplineShortCode === 'ca') {
+              await statusIndicator(pluginPage).setStatus(WorkerStatus.READY);
+              await tasks(pluginPage).acceptNextTask();
             }
             await flexChatProgress.next();
             break;
@@ -85,9 +90,14 @@ test.describe.serial('Web chat caller', () => {
             await flexChatProgress.next();
             break;
         }
-      } else {
       }
     }
+
+    if (getConfigValue('skipDataUpdate') as boolean) {
+      console.log('Skipping saving form');
+      return;
+    }
+
     console.log('Starting filling form');
     const form = contactForm(pluginPage);
     await form.fill([
@@ -120,11 +130,6 @@ test.describe.serial('Web chat caller', () => {
         },
       },
     ]);
-
-    if (getConfigValue('skipDataUpdate') as boolean) {
-      console.log('Skipping saving form');
-      return;
-    }
 
     console.log('Saving form');
     await form.save();
