@@ -18,6 +18,10 @@ locals {
     }
 
     task_queues = {
+      aggregate : {
+        "target_workers" = "1==1",
+        "friendly_name"  = "Aggregate"
+      },
       khp_en : {
         "target_workers" = "routing.skills HAS 'KHP English'",
         "friendly_name"  = "KHP English"
