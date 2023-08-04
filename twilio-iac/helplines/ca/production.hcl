@@ -94,6 +94,7 @@ locals {
           g2ttr_queue_sid: "WQb003ea620f2a0d7d2fbb5049a2b24762"
 
           #Recording URLs
+          intro_url: "https://twilio-service-4854.twil.io/G2TNS_Intro.mp3"
           en_function_url: "https://twilio-service-4854.twil.io/6015_g2tns_english"
           fr_function_url: "https://twilio-service-4854.twil.io/6016_g2tns_french"
           tr_function_url: "https://twilio-service-4854.twil.io/6019_g2t_interpreter"
