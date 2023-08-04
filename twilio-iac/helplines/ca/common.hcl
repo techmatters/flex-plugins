@@ -73,11 +73,11 @@ locals {
         "target_workers" = "routing.skills HAS 'Training'",
         "friendly_name"  = "Training"
       },
-      health_canada_en : {
+      hc_en : {
         "target_workers" = "routing.skills HAS 'HCENG'",
         "friendly_name"  = "Health Canada English"
       },
-      health_canada_fr : {
+      hc_fr : {
         "target_workers" = "routing.skills HAS 'HCFR'",
         "friendly_name"  = "Health Canada French"
       },
