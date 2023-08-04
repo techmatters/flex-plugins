@@ -21,6 +21,7 @@ export enum WorkerStatus {
   UNKNOWN,
   AVAILABLE = 'Available',
   OFFLINE = 'Offline',
+  READY = 'Ready',
 }
 
 export function statusIndicator(page: Page) {
