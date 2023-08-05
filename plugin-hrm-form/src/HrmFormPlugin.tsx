@@ -16,7 +16,6 @@
 
 import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin, loadCSS } from '@twilio/flex-plugin';
-import type Rollbar from 'rollbar';
 
 import './styles/global-overrides.css';
 
@@ -173,8 +172,6 @@ export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
     super(PLUGIN_NAME);
   }
-
-  public Rollbar?: Rollbar;
 
   /**
    * This code is run when your plugin is being started
