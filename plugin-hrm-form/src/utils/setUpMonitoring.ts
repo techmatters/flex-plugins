@@ -58,10 +58,7 @@ function helplineIdentifierFullStory(workerClient) {
   FullStory.setUserVars({ accountSid });
 }
 
-export default function setUpMonitoring(
-  workerClient: Worker,
-  serviceConfiguration: ServiceConfiguration,
-) {
+export default function setUpMonitoring(workerClient: Worker, serviceConfiguration: ServiceConfiguration) {
   const monitoringEnv = serviceConfiguration.attributes.monitoringEnv || 'staging';
 
   if (process.env.REACT_APP_ENABLE_MONITORING === 'true') {
