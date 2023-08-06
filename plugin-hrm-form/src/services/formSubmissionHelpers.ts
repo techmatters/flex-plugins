@@ -18,10 +18,10 @@
 import { Actions, ITask, Manager } from '@twilio/flex-ui';
 
 import { Case, CustomITask, isOfflineContactTask, offlineContactTaskSid } from '../types/types';
-import { channelTypes } from '../states/DomainConstants';
+import { channelTypes, isVoiceChannel } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
 import { saveContact } from './ContactService';
-import { assignOfflineContactInit, assignOfflineContactResolve } from './ServerlessService';
+import { assignOfflineContactInit, assignOfflineContactResolve, getExternalRecordingData } from './ServerlessService';
 import { removeContactState } from '../states/actions';
 import { getHrmConfig } from '../hrmConfig';
 import { TaskEntry as ContactForm } from '../states/contacts/types';
@@ -54,6 +54,28 @@ export const completeContactlessTask = async () => {
 export const completeTask = (task: CustomITask) =>
   isOfflineContactTask(task) ? completeContactlessTask() : completeContactTask(task);
 
+export const getExternalRecordingInfo = async (task: CustomITask) => {
+  if (isOfflineContactTask(task)) return {};
+
+  const { channelType } = task;
+  if (!isVoiceChannel(channelType)) return {};
+
+  const { externalRecordingsEnabled } = getHrmConfig();
+  if (!externalRecordingsEnabled) return {};
+
+  console.log(JSON.stringify(task.attributes));
+
+  // The call id related to the worker is always the one with the recording, as far as I can tell (rbd)
+  const callSid = task.attributes.conference?.participants?.worker;
+  if (!callSid) return {};
+
+  const recordingData = await getExternalRecordingData(callSid);
+
+  return {
+
+
+};
+
 export const submitContactForm = async (task: CustomITask, contactForm: ContactForm, caseForm: Case) => {
   const { workerSid } = getHrmConfig();
 
@@ -78,6 +100,8 @@ export const submitContactForm = async (task: CustomITask, contactForm: ContactF
       throw err;
     }
   }
+
+
 
   const savedContact = await saveContact(task, contactForm, workerSid, task.taskSid);
   const finalAttributes = buildInsightsData(task, contactForm, caseForm, savedContact);

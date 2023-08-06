@@ -43,6 +43,8 @@ const readConfig = () => {
   const assetsBucketUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
   const getFormDefinitionsBaseUrl = buildFormDefinitionsBaseUrlGetter(new URL(configuredFormDefinitionsBaseUrl));
 
+  const externalRecordingsEnabled = manager.serviceConfiguration.attributes.external_recordings_enabled || false;
+
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid;
   const { helpline, counselorLanguage, full_name: counselorName, roles } = manager.workerClient.attributes as any;
@@ -92,6 +94,7 @@ const readConfig = () => {
       multipleOfficeSupport,
       permissionConfig,
       contactsWaitingChannels,
+      externalRecordingsEnabled,
     },
     referrableResources: {
       resourcesBaseUrl,
