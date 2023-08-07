@@ -136,6 +136,13 @@ export type ContactRawJson = {
   conversationMedia: ConversationMedia[];
 };
 
+export type ExternalRecordingInfo = {
+  recordingSid: string;
+  bucket: string;
+  key: string;
+  urlProvider: string;
+};
+
 export type HrmServiceContact = {
   id: string;
   twilioWorkerId: string;

@@ -45,6 +45,7 @@ import {
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
 import { TaskEntry } from '../states/contacts/types';
+import { getExternalRecordingInfo } from './ExternalRecordingService';
 
 type NestedInformation = { name?: { firstName: string; lastName: string } };
 type LegacyInformationObject = NestedInformation & {
@@ -225,6 +226,8 @@ const saveContactToHrm = async (
   const timeOfContact = new Date(getDateTime(rawForm.contactlessTask)).toISOString();
 
   const { helpline, csamReports, referrals } = form;
+
+  const externalRecordingInfo = await getExternalRecordingInfo(task);
 
   let channelSid;
   let serviceSid;

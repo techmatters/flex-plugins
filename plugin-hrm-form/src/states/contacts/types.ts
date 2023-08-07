@@ -16,7 +16,7 @@
 
 import { CallTypes, DataCallTypes } from 'hrm-form-definitions';
 
-import { CSAMReportEntry } from '../../types/types';
+import { CSAMReportEntry, ExternalRecordingInfo } from '../../types/types';
 import { ChannelTypes } from '../DomainConstants';
 import { DraftResourceReferralState, ResourceReferral } from './resourceReferral';
 import { ExistingContactsState } from './existingContacts';
@@ -62,6 +62,7 @@ export type TaskEntry = {
   };
   isCallTypeCaller: boolean;
   reservationSid?: string;
+  externalRecordingInfo?: ExternalRecordingInfo;
   draft: {
     resourceReferralList: DraftResourceReferralState;
   };

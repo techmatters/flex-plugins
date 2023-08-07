@@ -219,7 +219,7 @@ export const getFileUploadUrl = async (fileName: string, mimeType: string) => {
 /**
  * Gets a recording s3 information from the corresponding call sid
  */
-export const getExternalRecordingData = async (callSid: string) => {
+export const getExternalRecordingS3Location = async (callSid: string) => {
   const body = { callSid };
   const response = await fetchProtectedApi('/getExternalRecordingData', body);
   return response;
