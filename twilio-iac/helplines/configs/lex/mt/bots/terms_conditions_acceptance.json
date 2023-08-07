@@ -1,0 +1,22 @@
+{
+  "terms_conditions_acceptance": {
+    "description": "Terms and Conditions bot",
+    "locale": "en-US",
+    "process_behavior": "BUILD",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "enable_model_improvements": true,
+    "abort_statement": {
+      "content": "Skuzani, mhux nista' nassistu f'dan il-ħin",
+      "content_type": "PlainText"
+    },
+    "clarification_prompt": {
+      "max_attempts": 2,
+      "content": "Skuzani, ma nifhimtx dak. Jekk jogħġbok erġa' ppwera",
+      "content_type": "PlainText"
+    },
+    "intents": [
+      "terms_conditions_acceptance"
+    ]
+  }
+}

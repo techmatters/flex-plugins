@@ -27,6 +27,7 @@ locals {
 
   custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
 
+  lex_bot_languages = {}
 
   manage_github_secrets = true
 

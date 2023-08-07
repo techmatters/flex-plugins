@@ -16,9 +16,10 @@ module "lex" {
   short_helpline = var.short_helpline
   environment    = var.environment
   language       = each.key
-  slot_types     = each.value.slot_types
-  intents        = each.value.intents
-  bots           = each.value.bots
+
+  bots       = var.lex_bots[each.key]
+  intents    = var.lex_intents[each.key]
+  slot_types = var.lex_slot_types[each.key]
 }
 
 # module "lexv2" {
