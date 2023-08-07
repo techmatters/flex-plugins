@@ -44,7 +44,11 @@ import {
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
 import { TaskEntry } from '../states/contacts/types';
-import { ExternalRecordingInfoSuccess, getExternalRecordingInfo } from './ExternalRecordingService';
+import {
+  ExternalRecordingInfoSuccess,
+  ExternalRecordingUnneeded,
+  getExternalRecordingInfo,
+} from './getExternalRecordingInfo';
 
 type NestedInformation = { name?: { firstName: string; lastName: string } };
 type LegacyInformationObject = NestedInformation & {

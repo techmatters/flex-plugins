@@ -25,7 +25,7 @@ import { assignOfflineContactInit, assignOfflineContactResolve } from './Serverl
 import { removeContactState } from '../states/actions';
 import { getHrmConfig } from '../hrmConfig';
 import { TaskEntry as ContactForm } from '../states/contacts/types';
-import { ExternalRecordingInfoSuccess } from './ExternalRecordingService';
+import { ExternalRecordingInfoSuccess } from './getExternalRecordingInfo';
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
@@ -85,7 +85,10 @@ export const submitContactForm = async (task: CustomITask, contactForm: ContactF
       return savedContact;
     } catch (err) {
       // If something went wrong remove the task for this offline contact
-      assignOfflineContactResolve({ action: 'remove', taskSid: inBehalfTask.sid });
+      assignOfflineContactResolve({
+        action: 'remove',
+        taskSid: inBehalfTask.sid,
+      });
       // TODO: should we do this? Should we care about removing the savedContact if it succeded? This step could break our "idempotence on contacts"
 
       // Raise error to caller

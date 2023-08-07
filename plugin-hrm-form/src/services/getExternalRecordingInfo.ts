@@ -3,7 +3,7 @@ import { isVoiceChannel } from '../states/DomainConstants';
 import { CustomITask, isOfflineContactTask } from '../types/types';
 import { getExternalRecordingS3Location } from './ServerlessService';
 
-type ExternalRecordingUnneeded = {
+export type ExternalRecordingUnneeded = {
   status: 'unneeded';
 };
 
