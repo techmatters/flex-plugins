@@ -85,9 +85,6 @@ module "studioFlow" {
       master_workflow_sid      = module.taskRouter.master_workflow_sid
       chat_task_channel_sid    = module.taskRouter.chat_task_channel_sid
       default_task_channel_sid = module.taskRouter.default_task_channel_sid
-      chatbot_default_sid      = twilio_autopilot_assistants_v1.chatbot_default.sid
-      chatbot_ru_HU_sid        = twilio_autopilot_assistants_v1.chatbot_ru_HU.sid
-      chatbot_ukr_HU_sid       = twilio_autopilot_assistants_v1.chatbot_ukr_HU.sid
   })
 }
 
