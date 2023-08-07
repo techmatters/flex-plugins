@@ -23,7 +23,10 @@ const isSuccessfulExternalRecordingInfo = r => r && r.status === 'success';
 const isUnneededExternalRecordingInfo = r => r && r.status === 'unneeded';
 const isFailureExternalRecordingInfo = r => r && r.status === 'failure';
 
-type ExternalRecordingInfo = ExternalRecordingInfoSuccess | ExternalRecordingUnneeded | ExternalRecordingInfoFailure;
+export type ExternalRecordingInfo =
+  | ExternalRecordingInfoSuccess
+  | ExternalRecordingUnneeded
+  | ExternalRecordingInfoFailure;
 
 const unneededRecordingInfo: ExternalRecordingUnneeded = {
   status: 'unneeded',

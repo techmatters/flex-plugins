@@ -45,6 +45,7 @@ import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
 import { TaskEntry } from '../states/contacts/types';
 import {
+  ExternalRecordingInfo,
   ExternalRecordingInfoSuccess,
   ExternalRecordingUnneeded,
   getExternalRecordingInfo,
@@ -203,26 +204,31 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
   };
 }
 
-const handleTwilioTask = async task => {
-  let channelSid: string;
-  let serviceSid: string;
-  const conversationMedia: ConversationMedia[] = [];
+type HandleTwilioTaskResponse = {
+  channelSid: string;
+  serviceSid: string;
+  conversationMedia: ConversationMedia[];
+  externalRecordingInfo: ExternalRecordingInfoSuccess | ExternalRecordingUnneeded;
+};
+
+const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> => {
+  const returnData = {
+    channelSid: undefined,
+    serviceSid: undefined,
+    conversationMedia: [],
+    externalRecordingInfo: undefined,
+  };
 
   if (!isTwilioTask(task)) {
-    return {
-      conversationMedia,
-      channelSid,
-      serviceSid,
-      externalRecordingInfo: undefined,
-    };
+    return returnData;
   }
 
   if (TaskHelper.isChatBasedTask(task)) {
-    ({ channelSid } = task.attributes);
-    serviceSid = getHrmConfig().chatServiceSid;
+    returnData.channelSid = task.attributes.channelSid;
+    returnData.serviceSid = getHrmConfig().chatServiceSid;
 
     // Store a pending transcript
-    conversationMedia.push({
+    returnData.conversationMedia.push({
       store: 'S3',
       type: 'TRANSCRIPT',
       location: undefined,
@@ -231,7 +237,7 @@ const handleTwilioTask = async task => {
 
   if (TaskHelper.isChatBasedTask(task) || TaskHelper.isCallTask(task)) {
     // Store reservation sid to use Twilio insights overlay (recordings/transcript)
-    conversationMedia.push({
+    returnData.conversationMedia.push({
       store: 'twilio',
       reservationSid: task.sid,
     });
@@ -244,7 +250,7 @@ const handleTwilioTask = async task => {
 
   if (externalRecordingInfo.status === 'success') {
     const { bucket, key, recordingSid } = externalRecordingInfo;
-    conversationMedia.push({
+    returnData.conversationMedia.push({
       store: 'S3',
       type: 'RECORDING',
       location: {
@@ -254,12 +260,12 @@ const handleTwilioTask = async task => {
     });
   }
 
-  return { conversationMedia, channelSid, serviceSid, externalRecordingInfo };
+  return returnData;
 };
 
 type NewHrmServiceContact = Omit<HrmServiceContact, 'id' | 'updatedAt' | 'updatedBy' | 'createdBy'>;
 
-type HandleTwilioTaskResponse = {
+type SaveContactToHrmResponse = {
   response: HrmServiceContact;
   request: NewHrmServiceContact;
   externalRecordingInfo?: ExternalRecordingInfoSuccess | ExternalRecordingUnneeded;
@@ -274,7 +280,7 @@ const saveContactToHrm = async (
   workerSid: string,
   uniqueIdentifier: string,
   shouldFillEndMillis = true,
-): Promise<HandleTwilioTaskResponse> => {
+): Promise<SaveContactToHrmResponse> => {
   // if we got this far, we assume the form is valid and ready to submit
   const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
   const conversationDuration = getConversationDuration(task, metadata);
