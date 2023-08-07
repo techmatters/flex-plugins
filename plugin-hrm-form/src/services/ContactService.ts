@@ -45,7 +45,10 @@ import {
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
 import { TaskEntry } from '../states/contacts/types';
-import { getExternalRecordingInfo } from './ExternalRecordingService';
+import {
+  ExternalRecordingInfoSuccess,
+  getExternalRecordingInfo,
+} from './ExternalRecordingService';
 
 type NestedInformation = { name?: { firstName: string; lastName: string } };
 type LegacyInformationObject = NestedInformation & {
@@ -184,7 +187,62 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
   };
 }
 
+const handleTwilioTask = async (task) => {
+  let channelSid: string;
+  let serviceSid: string;
+  const conversationMedia: ConversationMedia[] = [];
+
+  if (!isTwilioTask(task)) {
+    return { conversationMedia, channelSid, serviceSid, externalRecordingInfo: undefined };
+  }
+
+  if (TaskHelper.isChatBasedTask(task)) {
+    ({ channelSid } = task.attributes);
+    serviceSid = getHrmConfig().chatServiceSid;
+
+    // Store a pending transcript
+    conversationMedia.push({
+      store: 'S3',
+      type: 'TRANSCRIPT',
+      location: undefined,
+    });
+  }
+
+  if (TaskHelper.isChatBasedTask(task) || TaskHelper.isCallTask(task)) {
+    // Store reservation sid to use Twilio insights overlay (recordings/transcript)
+    conversationMedia.push({
+      store: 'twilio',
+      reservationSid: task.sid,
+    });
+  }
+
+  const externalRecordingInfo = await getExternalRecordingInfo(task);
+  if (externalRecordingInfo.status === 'failure') {
+    throw new Error(`Error getting external recording info: ${externalRecordingInfo.error}`);
+  }
+
+  if (externalRecordingInfo.status === 'success') {
+    const { bucket, key, recordingSid } = externalRecordingInfo;
+    conversationMedia.push({
+      store: 'S3',
+      type: 'RECORDING',
+      location: {
+        bucket,
+        key,
+      },
+    });
+  }
+
+  return { conversationMedia, channelSid, serviceSid, externalRecordingInfo };
+};
+
 type NewHrmServiceContact = Omit<HrmServiceContact, 'id' | 'updatedAt' | 'updatedBy' | 'createdBy'>;
+
+type HandleTwilioTaskResponse = {
+  response: HrmServiceContact;
+  request: NewHrmServiceContact;
+  externalRecordingInfo?: ExternalRecordingInfoSuccess;
+};
 /**
  * Function that saves the form to Contacts table.
  * If you don't intend to complete the twilio task, set shouldFillEndMillis=false
@@ -195,7 +253,7 @@ const saveContactToHrm = async (
   workerSid: string,
   uniqueIdentifier: string,
   shouldFillEndMillis = true,
-): Promise<{ response: HrmServiceContact; request: NewHrmServiceContact }> => {
+): Promise<HandleTwilioTaskResponse> => {
   // if we got this far, we assume the form is valid and ready to submit
   const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
   const conversationDuration = getConversationDuration(task, metadata);
@@ -227,33 +285,8 @@ const saveContactToHrm = async (
 
   const { helpline, csamReports, referrals } = form;
 
-  const externalRecordingInfo = await getExternalRecordingInfo(task);
+  const { conversationMedia, channelSid, serviceSid, externalRecordingInfo } = await handleTwilioTask(task);
 
-  let channelSid;
-  let serviceSid;
-  const conversationMedia: ConversationMedia[] = [];
-
-  if (isTwilioTask(task)) {
-    if (TaskHelper.isChatBasedTask(task)) {
-      ({ channelSid } = task.attributes);
-      serviceSid = getHrmConfig().chatServiceSid;
-
-      // Store a pending transcript
-      conversationMedia.push({
-        store: 'S3',
-        type: ContactMediaType.TRANSCRIPT,
-        location: undefined,
-      });
-    }
-
-    if (TaskHelper.isChatBasedTask(task) || TaskHelper.isCallTask(task)) {
-      // Store reservation sid to use Twilio insights overlay (recordings/transcript)
-      conversationMedia.push({
-        store: 'twilio',
-        reservationSid: task.sid,
-      });
-    }
-  }
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.
@@ -284,7 +317,7 @@ const saveContactToHrm = async (
 
   const responseJson: HrmServiceContact = await fetchHrmApi(`/contacts`, options);
 
-  return { response: responseJson, request: body };
+  return { response: responseJson, request: body, externalRecordingInfo };
 };
 
 export const updateContactInHrm = async (
@@ -319,7 +352,10 @@ export const saveContact = async (
       err,
     );
   }
-  return payloads.response;
+  return {
+    contact: payloads.response,
+    externalRecordingInfo: payloads.externalRecordingInfo
+  };
 };
 
 export async function connectToCase(contactId, caseId) {

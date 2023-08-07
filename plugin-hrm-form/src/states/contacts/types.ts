@@ -62,7 +62,6 @@ export type TaskEntry = {
   };
   isCallTypeCaller: boolean;
   reservationSid?: string;
-  externalRecordingInfo?: ExternalRecordingInfo;
   draft: {
     resourceReferralList: DraftResourceReferralState;
   };

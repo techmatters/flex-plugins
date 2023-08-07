@@ -25,6 +25,7 @@ import { assignOfflineContactInit, assignOfflineContactResolve } from './Serverl
 import { removeContactState } from '../states/actions';
 import { getHrmConfig } from '../hrmConfig';
 import { TaskEntry as ContactForm } from '../states/contacts/types';
+import { ExternalRecordingInfoSuccess } from './ExternalRecordingService';
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
@@ -54,6 +55,19 @@ export const completeContactlessTask = async () => {
 export const completeTask = (task: CustomITask) =>
   isOfflineContactTask(task) ? completeContactlessTask() : completeContactTask(task);
 
+const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSuccess) => {
+  const { hrmBaseUrl } = getHrmConfig();
+
+  const { bucket, key } = externalRecordingInfo;
+  return [
+    {
+      type: 'VoiceRecording',
+      // eslint-disable-next-line camelcase
+      url_provider: `${hrmBaseUrl}/lambda/getSignedS3Url?method=getObject&bucket=${bucket}&key=${key}`,
+    },
+  ];
+};
+
 export const submitContactForm = async (task: CustomITask, contactForm: ContactForm, caseForm: Case) => {
   const { workerSid } = getHrmConfig();
 
@@ -61,7 +75,7 @@ export const submitContactForm = async (task: CustomITask, contactForm: ContactF
     const targetWorkerSid = contactForm.contactlessTask.createdOnBehalfOf as string;
     const inBehalfTask = await assignOfflineContactInit(targetWorkerSid, task.attributes);
     try {
-      const savedContact = await saveContact(task, contactForm, workerSid, inBehalfTask.sid);
+      const { contact: savedContact } = await saveContact(task, contactForm, workerSid, inBehalfTask.sid);
       const finalAttributes = buildInsightsData(inBehalfTask, contactForm, caseForm, savedContact);
       await assignOfflineContactResolve({
         action: 'complete',
@@ -79,7 +93,13 @@ export const submitContactForm = async (task: CustomITask, contactForm: ContactF
     }
   }
 
-  const savedContact = await saveContact(task, contactForm, workerSid, task.taskSid);
+  const { contact: savedContact, externalRecordingInfo } = await saveContact(
+    task,
+    contactForm,
+    workerSid,
+    task.taskSid,
+  );
+
   const finalAttributes = buildInsightsData(task, contactForm, caseForm, savedContact);
   await task.setAttributes(finalAttributes);
   return savedContact;
