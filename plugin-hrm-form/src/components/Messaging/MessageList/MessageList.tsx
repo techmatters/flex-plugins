@@ -27,26 +27,28 @@ type Props = {
   messages: GroupedMessage[];
 };
 
-const renderGroupedMessages = (groupedMessages: GroupedMessagesByDate) =>
+type DateDividerItem = {
+  dateText: string;
+};
+
+const isItemDateDivider = (item: GroupedMessage | DateDividerItem): item is DateDividerItem => {
+  return Boolean((item as DateDividerItem).dateText);
+};
+
+const flattenGroupedMessages = (groupedMessages: GroupedMessagesByDate): (GroupedMessage | DateDividerItem)[] =>
   Object.entries(groupedMessages).flatMap(([dateKey, ms]) => {
-    const dateRuler = (
-      <DateRulerContainer>
-        <DateRulerHr />
-        <DateRulerDateText>{dateKey}</DateRulerDateText>
-        <DateRulerHr />
-      </DateRulerContainer>
-    );
+    const dateRuler = {
+      dateText: dateKey,
+    };
 
-    const messages = ms.map(m => <MessageItem key={m.sid} message={m} />);
-
-    return [dateRuler, ...messages];
+    return [dateRuler, ...ms];
   });
 
 const groupMessagesByDate = (accum: GroupedMessagesByDate, m: GroupedMessage): GroupedMessagesByDate => {
   const dateKey = format(new Date(m.dateCreated), 'yyyy/MM/dd');
 
   if (!accum[dateKey]) {
-    return { ...accum, [dateKey]: [{ ...m }] };
+    return { ...accum, [dateKey]: [m] };
   }
 
   return { ...accum, [dateKey]: [...accum[dateKey], m] };
@@ -55,13 +57,22 @@ const groupMessagesByDate = (accum: GroupedMessagesByDate, m: GroupedMessage): G
 const groupMessages = (messages: GroupedMessage[]): GroupedMessagesByDate => messages.reduce(groupMessagesByDate, {});
 
 const MessageList: React.FC<Props> = ({ messages }) => {
-  const renderedMessages = React.useMemo(() => renderGroupedMessages(groupMessages(messages)), [messages]);
+  const messagesToRender = React.useMemo(() => flattenGroupedMessages(groupMessages(messages)), [messages]);
   const ref = React.useRef(null);
-
   return (
-    <MessageListContainer>
-      <ViewportList ref={ref} items={renderedMessages} scrollThreshold={3} overscan={2}>
-        {item => item}
+    <MessageListContainer ref={ref}>
+      <ViewportList viewportRef={ref} items={messagesToRender}>
+        {item => {
+          return isItemDateDivider(item) ? (
+            <DateRulerContainer>
+              <DateRulerHr />
+              <DateRulerDateText>{item.dateText}</DateRulerDateText>
+              <DateRulerHr />
+            </DateRulerContainer>
+          ) : (
+            <MessageItem key={item.sid} message={item} />
+          );
+        }}
       </ViewportList>
     </MessageListContainer>
   );

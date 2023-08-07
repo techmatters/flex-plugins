@@ -568,11 +568,11 @@
   },
   {
     "name": "upset",
-    "label": "On a scale of 1 to 7, how upset is the person?",
+    "label": "(Chat Only) On a scale of 1 to 7, how upset is the person?",
     "type": "select",
     "options": [
         {
-          "value": "",
+          "value": "N/A - Call",
           "label": ""
         },
         {

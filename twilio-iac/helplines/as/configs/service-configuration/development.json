@@ -1,0 +1,62 @@
+{
+    "attributes": {
+        "attributeUpdates": {
+            "assets_bucket_url": "https://assets-development.tl.techmatters.org"
+        },
+        "feature_flags": {
+            "enable_aselo_messaging_ui": true,
+            "enable_counselor_toolkits": true,
+            "enable_csam_clc_report": true,
+            "enable_csam_report": true,
+            "enable_fullstory_monitoring": true,
+            "enable_lex": true,
+            "enable_resources": true,
+            "enable_resources_elastic_search": true,
+            "enable_save_insights": true,
+            "enable_transcripts": true
+        },
+        "multipleOfficeSupport": true,
+        "permissionConfig": "dev",
+        "previous_ui_version": {
+            "date": "2023-08-01T10:04:57.028Z",
+            "semver": "2.n",
+            "version": "2.2.0"
+        },
+        "resources_base_url": "https://hrm-development.tl.techmatters.org"
+    },
+    "ui_attributes": {
+        "colorTheme": {
+            "baseName": "GreyLight",
+            "overrides": {
+                "MainHeader": {
+                    "Button": {
+                        "color": "#000000"
+                    },
+                    "Container": {
+                        "background": "#FFFFFF",
+                        "color": "#000000"
+                    },
+                    "Icon": {
+                        "color": "#000000"
+                    }
+                },
+                "SideNav": {
+                    "Button": {
+                        "background": "#FFFFFF"
+                    },
+                    "Container": {
+                        "background": "#FFFFFF"
+                    },
+                    "Icon": {
+                        "color": "#000000"
+                    }
+                }
+            },
+            "preset": {
+                "id": "mono-light",
+                "name": "Simple Light"
+            }
+        },
+        "showRealtimeQueuesStats": true
+    }
+}

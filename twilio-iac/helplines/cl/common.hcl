@@ -6,15 +6,11 @@ locals {
   local_config = {
     helpline                          = "Linea Libre"
     old_dir_prefix                    = "linealibre-cl"
-    definition_version                = "cl-v1"
     default_autopilot_chatbot_enabled = false
     task_language                     = "es-CL"
-    helpline_language                 = "es-CL"
     voice_ivr_language                = "es-MX"
     contacts_waiting_channels         = ["voice", "web"]
     enable_post_survey                = true
-    
-    
 
     workflows = {
       master : {

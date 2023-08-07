@@ -1,0 +1,74 @@
+{
+    "ui_attributes": {
+        "version_compatibility": "yes",
+        "colorTheme": {
+            "light": true,
+            "baseName": "FlexLight",
+            "preset": {
+                "id": "light-blue",
+                "name": "Light Blue"
+            },
+            "overrides": {
+                "MainHeader": {
+                    "Container": {
+                        "background": "#233659"
+                    }
+                },
+                "SideNav": {
+                    "Button": {
+                        "background": "#4F5E7A"
+                    },
+                    "Container": {
+                        "background": "#4F5E7A"
+                    }
+                }
+            }
+        },
+        "notifications": {
+            "browser": true
+        },
+        "theme": {
+            "isLight": true
+        },
+        "warmTransfers": {
+            "enabled": true
+        },
+        "version_message": ""
+    },
+    "attributes": {
+        "seenOnboarding" : true,
+        "hrm_api_version" : "v0",
+        "monitoringEnv" : "production",
+        "pdfImagesSource" : "https://tl-public-chat.s3.amazonaws.com",
+        "logo_url" : "https://aselo-logo.s3.amazonaws.com/145+transparent+background+no+TM.png",
+        "feature_flags": {
+            "enable_aselo_messaging_ui": false,
+            "enable_canned_responses": true,
+            "enable_case_management": true,
+            "enable_conferencing": true,
+            "enable_contact_editing": true,
+            "enable_counselor_toolkits": false,
+            "enable_csam_clc_report": false,
+            "enable_csam_report": false,
+            "enable_dual_write": false,
+            "enable_emoji_picker": true,
+            "enable_external_transcripts": true,
+            "enable_filter_cases": true,
+            "enable_fullstory_monitoring": false,
+            "enable_lex": false,
+            "enable_manual_pulling": true,
+            "enable_offline_contact": true,
+            "enable_post_survey": true,
+            "enable_previous_contacts": true,
+            "enable_save_insights": false,
+            "enable_sort_cases": true,
+            "enable_transcripts": false,
+            "enable_transfers": true,
+            "enable_twilio_transcripts": true,
+            "enable_upload_documents": true,
+            "enable_voice_recordings": false,
+            "post_survey_serverless_handled": true
+        },
+        "multipleOfficeSupport": false
+    }
+}

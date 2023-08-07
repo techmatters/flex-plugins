@@ -18,6 +18,7 @@ import { ITask, Manager } from '@twilio/flex-ui';
 import { capitalize } from 'lodash';
 import { callTypes, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
 
+import { LexMemory, AutopilotMemory, FeatureFlags } from '../types/types';
 import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
 import { prepopulateForm as prepopulateFormAction } from '../states/contacts/actions';
@@ -74,17 +75,17 @@ const getAnswerOrUnknown = (
 
   if (itemDefinition.type === 'select') {
     const unknown = getUnknownOption(key, definition);
-    const isUnknownAnswer = !answers[key] || answers[key].error || answers[key].answer === unknown;
+    const isUnknownAnswer = !answers[key] || answers[key] === unknown;
 
     if (isUnknownAnswer) return unknown;
 
     const options = getSelectOptions(key)(definition);
-    const result = mapperFunction(options)(answers[key].answer);
+    const result = mapperFunction(options)(answers[key]);
 
     return result === 'Unknown' ? unknown : result;
   }
 
-  return answers[key].answer;
+  return answers[key];
 };
 
 const getValuesFromAnswers = (
@@ -143,8 +144,38 @@ export const getValuesFromPreEngagementData = (
   return values;
 };
 
+type PreSurveyAnswers = LexMemory;
+type AutopilotAnswers = AutopilotMemory['twilio']['collected_data']['collect_survey']['answers'];
+
+const transformAnswers = (answers: AutopilotAnswers): PreSurveyAnswers => {
+  /**
+   * Map naming mismatches between autopilot and lex
+   * TODO: rename Lex 'slots' so we don't need to use this map
+   */
+  const keyRenames = {
+    // eslint-disable-next-line camelcase
+    about_self: 'aboutSelf',
+  };
+
+  const renameKey = key => (Object.keys(keyRenames).includes(key) ? keyRenames[key] : key);
+  return Object.keys(answers).reduce(
+    (acc, currentKey) => ({ ...acc, [renameKey(currentKey)]: answers[currentKey].answer }),
+    {},
+  );
+};
+
+const getAnswers = (isLexMemory: boolean, memory: LexMemory | AutopilotMemory): PreSurveyAnswers => {
+  if (isLexMemory) {
+    return memory as LexMemory;
+  }
+
+  // This can be removed after every helpline is using Lex
+  const autopilotAnswers = (memory as AutopilotMemory).twilio.collected_data.collect_survey.answers;
+  return transformAnswers(autopilotAnswers);
+};
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export const prepopulateForm = (task: ITask) => {
+export const prepopulateForm = (task: ITask, featureFlags: FeatureFlags) => {
   const { memory, preEngagementData } = task.attributes;
 
   if (!memory && !preEngagementData) return;
@@ -177,10 +208,10 @@ export const prepopulateForm = (task: ITask) => {
     return;
   }
 
-  const { answers } = memory.twilio.collected_data.collect_survey;
+  const answers = getAnswers(featureFlags.enable_lex, memory);
 
-  const isAboutSelf = answers.about_self.answer === 'Yes';
-  const callType = isAboutSelf || !answers.about_self ? callTypes.child : callTypes.caller;
+  const isAboutSelf = answers.aboutSelf === 'Yes';
+  const callType = isAboutSelf || !answers.aboutSelf ? callTypes.child : callTypes.caller;
   const tabFormDefinition = isAboutSelf ? ChildInformationTab : CallerInformationTab;
   const prepopulateSurveyKeys = isAboutSelf ? survey.ChildInformationTab : survey.CallerInformationTab;
   const subroute = isAboutSelf ? 'childInformation' : 'callerInformation';

@@ -28,7 +28,7 @@
     "label": "Training/Tech Testing",
     "type": "button",
     "category": "non-data"
-  },  
+  }, 
   {
     "name": "emergency",
     "label": "CM Only - Emergency",

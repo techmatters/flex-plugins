@@ -18,19 +18,18 @@ import { expect, Page, test } from '@playwright/test';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { caseHome } from '../case';
 import { agentDesktop, navigateToAgentDesktop } from '../agent-desktop';
-import { shouldSkipDataUpdate } from '../config';
-import { logPageTelemetry } from '../browser-logs';
+import { skipTestIfNotTargeted, skipTestIfDataUpdateDisabled } from '../skipTest';
 import { notificationBar } from '../notificationBar';
+import { setupContextAndPage, closePage } from '../browser';
 
 test.describe.serial('Offline Contact (with Case)', () => {
-  test.skip(shouldSkipDataUpdate(), 'Data update disabled. Skipping test.');
+  skipTestIfNotTargeted();
+  skipTestIfDataUpdateDisabled();
 
   let pluginPage: Page;
 
   test.beforeAll(async ({ browser }) => {
-    pluginPage = await browser.newPage();
-    logPageTelemetry(pluginPage);
-    console.log('Plugin page browser session launched.');
+    ({ page: pluginPage } = await setupContextAndPage(browser));
 
     await Promise.all([
       // Wait for this to be sure counsellors dropdown is populated
@@ -42,7 +41,7 @@ test.describe.serial('Offline Contact (with Case)', () => {
 
   test.afterAll(async () => {
     await notificationBar(pluginPage).dismissAllNotifications();
-    await pluginPage?.close();
+    await closePage(pluginPage);
   });
 
   test('Offline Contact', async () => {
@@ -98,6 +97,11 @@ test.describe.serial('Offline Contact (with Case)', () => {
     ]);
 
     const beforeDate = new Date(); // Capture date here since we'll create case inmediately after saving contact
+
+    // if (getConfigValue('skipDataUpdate') as boolean) {
+    //   console.log('Skipping saving form');
+    //   return;
+    // }
 
     console.log('Saving form');
     await form.save({ saveAndAddToCase: true });

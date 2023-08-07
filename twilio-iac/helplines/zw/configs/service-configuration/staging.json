@@ -1,0 +1,15 @@
+{
+    "attributes": {
+        "contacts_waiting_channels": [
+            "voice",
+            "web",
+            "whatsapp",
+            "facebook",
+            "twitter",
+            "instagram",
+            "line"
+        ],
+        "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
+        "resources_base_url": ""
+    }
+}

@@ -20,7 +20,7 @@ export const forShortCodes = (helplineCodes: string[] | string) => (shortCode: s
 
 export const runAgainstAllAccountsForEnvironment = async (
   environment: Environment,
-  action: (accountSid: AccountSID, authToken: string) => Promise<void>,
+  action: (accountSid: AccountSID, authToken: string, shortCode: string) => Promise<void>,
   strategy: Strategy = Strategy.SEQUENTIAL,
   filter: (shortCode: string, accountSid: AccountSID) => boolean = () => true,
 ) => {
@@ -47,8 +47,9 @@ export const runAgainstAllAccountsForEnvironment = async (
     );
   const allCreds = await Promise.all(
     allAccounts.map(async (p) => {
-      const { accountSid } = p!;
+      const { accountSid, shortCode } = p!;
       return {
+        shortCode,
         accountSid,
         authToken: (await getSSMParameter(`/${environment}/twilio/${accountSid}/auth_token`, true))!
           .Parameter!.Value!,
@@ -58,11 +59,15 @@ export const runAgainstAllAccountsForEnvironment = async (
   logDebug('account cred sets found:', allCreds.length);
   if (strategy === Strategy.SEQUENTIAL) {
     // eslint-disable-next-line no-restricted-syntax
-    for (const { accountSid, authToken } of allCreds) {
+    for (const { accountSid, authToken, shortCode } of allCreds) {
       // eslint-disable-next-line no-await-in-loop
-      await action(accountSid, authToken);
+      await action(accountSid, authToken, shortCode);
     }
   } else {
-    await Promise.all(allCreds.map(({ accountSid, authToken }) => action(accountSid, authToken)));
+    await Promise.all(
+      allCreds.map(({ accountSid, authToken, shortCode }) =>
+        action(accountSid, authToken, shortCode),
+      ),
+    );
   }
 };

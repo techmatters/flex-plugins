@@ -15,20 +15,21 @@
  */
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { Browser, expect } from '@playwright/test';
+import { Browser, BrowserContext, expect } from '@playwright/test';
 import { ChatStatement, ChatStatementOrigin } from './chatModel';
 import { getConfigValue } from './config';
 
 const E2E_CHAT_URL = getConfigValue('webchatUrl') as string;
 
 export type WebChatPage = {
+  fillPreEngagementForm: () => Promise<void>;
   openChat: () => Promise<void>;
   selectHelpline: (helpline: string) => Promise<void>;
   chat: (statements: ChatStatement[]) => AsyncIterable<ChatStatement>;
   close: () => Promise<void>;
 };
 
-export async function open(browser: Browser): Promise<WebChatPage> {
+export async function open(browser: Browser | BrowserContext): Promise<WebChatPage> {
   const page = await browser.newPage();
   const chatPanelWindow = page.locator('div.Twilio-MainContainer');
   const selectors = {
@@ -40,6 +41,8 @@ export async function open(browser: Browser): Promise<WebChatPage> {
     helplineDropdown: page.locator('div#select-helpline'),
     helplineOptions: page.locator('div#menu-helpline ul'),
     startChatButton: page.locator('div.Twilio-PreEngagementCanvas button[type="submit"]'),
+    nameInput: page.locator("//input[@id='name' or @id='nickname']"),
+    termsAndConditionsCheckbox: page.locator('input#termsAndConditions'),
 
     //Chatting
     chatMessageArea: page.locator('div.Twilio-MessagingCanvas'),
@@ -56,6 +59,16 @@ export async function open(browser: Browser): Promise<WebChatPage> {
   console.log('Found start chat button.');
 
   return {
+    fillPreEngagementForm: async () => {
+      await selectors.preEngagementWindow.waitFor();
+      if (await selectors.nameInput.isVisible()) {
+        await selectors.nameInput.fill('name');
+      }
+      if (await selectors.termsAndConditionsCheckbox.isVisible()) {
+        await selectors.termsAndConditionsCheckbox.check();
+      }
+    },
+
     openChat: async () => {
       await expect(selectors.chatPanelWindow).toHaveCount(0, { timeout: 500 });
       await selectors.toggleChatOpenButton.click();

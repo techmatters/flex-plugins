@@ -1,0 +1,66 @@
+{
+  "pre_survey": {
+    "description": "Survey intent",
+    "sample_utterances": [
+      "Hola",
+      "Ayuda",
+      "Necesito ayuda",
+      "Por favor",
+      "Vida",
+      "No seguro",
+      "No segura",
+      "Matar",
+      "Herido",
+      "Herida",
+      "Mí",
+      "Mi",
+      "Incoming webchat contact"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "Te transferiremos ahora. Por favor espere para un consejero.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Lo siento, no puedo ayudar en este momento.",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "aboutSelf": {
+        "priority": 1,
+        "description": "Caller is calling for self or someone else",
+        "slot_constraint": "Required",
+        "slot_type": "yes_no",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "¿Estás llamando por ti? Por favor responda Sí o No.",
+          "content_type": "PlainText"
+        }
+      },
+      "age": {
+        "priority": 2,
+        "description": "Age of caller",
+        "slot_constraint": "Required",
+        "slot_type": "age",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "¿Cuántos años tiene?",
+          "content_type": "PlainText"
+        }
+      },
+      "gender": {
+        "priority": 3,
+        "description": "Caller's gender",
+        "slot_constraint": "Required",
+        "slot_type": "gender",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "¿Cuál es su género?",
+          "content_type": "PlainText"
+        }
+      }
+    }
+  }
+}

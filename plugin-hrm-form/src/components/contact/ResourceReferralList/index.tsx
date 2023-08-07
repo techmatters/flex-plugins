@@ -28,6 +28,7 @@ import {
   updateResourceReferralIdToAddForUnsavedContactAction,
   updateResourceReferralLookupStatusForUnsavedContactAction,
   addResourceReferralForUnsavedContactAction,
+  removeResourceReferralForUnsavedContactAction,
 } from '../../../states/contacts/resourceReferral';
 import asyncDispatch from '../../../states/asyncDispatch';
 import { loadResourceAsyncAction, ResourceLoadStatus } from '../../../states/resources';
@@ -41,6 +42,7 @@ import {
   ReferralItem,
   ReferralItemInfo,
   Error,
+  DeleteButton,
 } from './styles';
 
 type OwnProps = {
@@ -72,6 +74,10 @@ const mapDispatchToProps = (dispatch, { taskSid }: OwnProps) => ({
   addResourceReferral: (resource: ReferrableResource) => {
     dispatch(addResourceReferralForUnsavedContactAction(taskSid, resource));
   },
+
+  updateResourceReferralIdToRemove: (value: string) => {
+    dispatch(removeResourceReferralForUnsavedContactAction(taskSid, value));
+  },
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -87,6 +93,7 @@ const ResourceReferralList: React.FC<Props> = ({
   loadResource,
   lookupStatus,
   addResourceReferral,
+  updateResourceReferralIdToRemove,
 }) => {
   // component state 'buffer' to keep the input responsive
   const [resourceReferralToAddText, setResourceReferralToAddText] = useState(resourceReferralIdToAdd);
@@ -101,6 +108,10 @@ const ResourceReferralList: React.FC<Props> = ({
     if (lookupStatus !== ReferralLookupStatus.NOT_STARTED) {
       updateResourceReferralLookupStatus(ReferralLookupStatus.NOT_STARTED);
     }
+  };
+
+  const handleRemoveReferral = (resourceId: string) => {
+    updateResourceReferralIdToRemove(resourceId);
   };
 
   // To retain state if we change the task
@@ -143,11 +154,13 @@ const ResourceReferralList: React.FC<Props> = ({
           onChange={e => resourceReferralToAddInputChanged(e.target.value)}
           value={resourceReferralToAddText}
           disabled={lookupStatus === ReferralLookupStatus.PENDING}
+          data-testid="add-resource-input"
         />
         <AddButton
           type="submit"
           onClick={checkResourceAndAddReferral}
           disabled={lookupStatus === ReferralLookupStatus.PENDING || !resourceReferralToAddText}
+          data-testid="add-resource-button"
         >
           <Template code="Add" />
         </AddButton>
@@ -160,7 +173,7 @@ const ResourceReferralList: React.FC<Props> = ({
       )}
       <ReferralList>
         {referrals.map(({ resourceName, resourceId }) => (
-          <ReferralItem key={resourceId}>
+          <ReferralItem key={resourceId} data-testid="added-resource-item">
             <ReplyIcon
               style={{
                 transform: 'rotateY(180deg)',
@@ -172,6 +185,9 @@ const ResourceReferralList: React.FC<Props> = ({
             <ReferralItemInfo>
               <span>{resourceName}</span>
               <span>ID #{resourceId}</span>
+              <DeleteButton onClick={() => handleRemoveReferral(resourceId)}>
+                <Template code="Case-DeleteDocument" />
+              </DeleteButton>
             </ReferralItemInfo>
           </ReferralItem>
         ))}

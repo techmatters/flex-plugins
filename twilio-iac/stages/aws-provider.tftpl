@@ -10,3 +10,18 @@ provider "aws" {
   skip_region_validation      = true
   skip_credentials_validation = true
 }
+
+provider "aws" {
+  region = "${helpline_region}"
+  alias  = "hl-region"
+
+  assume_role {
+    role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-${environment}"
+    session_name = "tf-${environment}-${short_helpline}-${stage}"
+  }
+
+  # Make it faster by skipping some things
+  skip_metadata_api_check     = true
+  skip_region_validation      = true
+  skip_credentials_validation = true
+}

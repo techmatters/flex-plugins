@@ -74,52 +74,61 @@ describe('setTaskWrapupEventListeners', () => {
         ];
       })
       .map(testCase => {
-        const expectToRemoveListeners = testCase.featureFlags.enable_post_survey && testCase.isChatTask;
+        const expectToRemoveAllListeners = testCase.featureFlags.enable_post_survey && testCase.isChatTask;
+        const expectToRemoveParticipantLeftListeners = testCase.isChatTask && !testCase.featureFlags.enable_post_survey;
 
         return {
           ...testCase,
           description: `enable_post_survey === ${testCase.featureFlags.enable_post_survey} should ${
-            expectToRemoveListeners ? '' : 'not '
+            expectToRemoveAllListeners || expectToRemoveParticipantLeftListeners ? '' : 'not '
           }unsubscribe for ${testCase.isChatTask ? '' : 'non-'}chat tasks`,
-          expectToRemoveListeners,
+          expectToRemoveAllListeners,
+          expectToRemoveParticipantLeftListeners,
         };
       }),
-  ).test('$description', async ({ featureFlags, isChatTask, expectToRemoveListeners }) => {
-    const task = ({
-      attributes: { ...(isChatTask && { channelSid: 'CHxxxxxx' }) },
-      taskSid: 'THIS IS THE TASK SID!',
-    } as unknown) as ITask;
-    jest.spyOn(TaskHelper, 'isChatBasedTask').mockImplementation(() => isChatTask);
-    jest.spyOn(TaskHelper, 'getTaskConversationSid').mockImplementationOnce(() => task.attributes.channelSid);
-    const removeAllListenersMock = jest.fn();
-    const getConversationStateForTaskSpy = jest
-      .spyOn(StateHelper, 'getConversationStateForTask')
-      .mockImplementationOnce(
-        () =>
-          ({
-            source: {
-              listenerCount: jest.fn(() => true),
-              eventNames: jest.fn(() => ['event1', 'event2']),
-              removeAllListeners: removeAllListenersMock,
-            },
-          } as any),
-      );
+  ).test(
+    '$description',
+    async ({ featureFlags, isChatTask, expectToRemoveAllListeners, expectToRemoveParticipantLeftListeners }) => {
+      const task = ({
+        attributes: { ...(isChatTask && { channelSid: 'CHxxxxxx' }) },
+        taskSid: 'THIS IS THE TASK SID!',
+      } as unknown) as ITask;
+      jest.spyOn(TaskHelper, 'isChatBasedTask').mockImplementation(() => isChatTask);
+      jest.spyOn(TaskHelper, 'getTaskConversationSid').mockImplementationOnce(() => task.attributes.channelSid);
+      const removeAllListenersMock = jest.fn();
+      const getConversationStateForTaskSpy = jest
+        .spyOn(StateHelper, 'getConversationStateForTask')
+        .mockImplementationOnce(
+          () =>
+            ({
+              source: {
+                listenerCount: jest.fn(() => true),
+                eventNames: jest.fn(() => ['event1', 'event2', 'participantLeft']),
+                removeAllListeners: removeAllListenersMock,
+              },
+            } as any),
+        );
 
-    setTaskWrapupEventListeners(featureFlags);
+      setTaskWrapupEventListeners(featureFlags);
 
-    expect(removeAllListenersMock).not.toHaveBeenCalled();
-    expect(getConversationStateForTaskSpy).not.toHaveBeenCalled();
-
-    /** Emmit event to trigger the callback (if added) */
-    mockEventEmitter.emmit('taskWrapup');
-
-    if (expectToRemoveListeners) {
-      expect(getConversationStateForTaskSpy).toHaveBeenCalled();
-      expect(removeAllListenersMock).toHaveBeenCalledWith('event1');
-      expect(removeAllListenersMock).toHaveBeenCalledWith('event2');
-    } else {
       expect(removeAllListenersMock).not.toHaveBeenCalled();
       expect(getConversationStateForTaskSpy).not.toHaveBeenCalled();
-    }
-  });
+
+      /** Emmit event to trigger the callback (if added) */
+      mockEventEmitter.emmit('taskWrapup');
+
+      if (expectToRemoveAllListeners) {
+        expect(getConversationStateForTaskSpy).toHaveBeenCalled();
+        expect(removeAllListenersMock).toHaveBeenCalledWith('event1');
+        expect(removeAllListenersMock).toHaveBeenCalledWith('event2');
+        expect(removeAllListenersMock).toHaveBeenCalledWith('participantLeft');
+      } else if (expectToRemoveParticipantLeftListeners) {
+        expect(getConversationStateForTaskSpy).toHaveBeenCalled();
+        expect(removeAllListenersMock).toHaveBeenCalledWith('participantLeft');
+      } else {
+        expect(removeAllListenersMock).not.toHaveBeenCalled();
+        expect(getConversationStateForTaskSpy).not.toHaveBeenCalled();
+      }
+    },
+  );
 });

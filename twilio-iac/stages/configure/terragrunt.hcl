@@ -58,12 +58,15 @@ inputs = local.config
   * This is the main terragrunt block that defines the stage module and the hooks that run before it.
   */
 terraform {
-
-  // TODO: remove or comment this out when we are ready to apply
-  // before_hook "abort_apply" {
-  //   commands = ["apply"]
-  //   execute  = ["exit", "1"]
-  // }
-
   source = "../../terraform-modules//stages/${include.root.locals.stage}"
+
+  after_hook "service_configuration" {
+    commands = ["apply"]
+    execute  = [
+      "/app/twilio-iac/scripts/python_tools/manageServiceConfig.py",
+      "--helpline_code=${include.root.locals.short_helpline}",
+      "--environment=${include.root.locals.environment}",
+      "apply"
+    ]
+  }
 }

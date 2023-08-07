@@ -261,6 +261,29 @@ export type FeatureFlags = {
   enable_emoji_picker: boolean; // Enables Emoji Picker
   enable_aselo_messaging_ui: boolean; // Enables Aselo Messaging UI iinstead of the default Twilio one - reduced functionality for low spec clients.
   enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior
+  enable_lex: boolean; // Enables consuming from Lex bots
+};
+/* eslint-enable camelcase */
+
+export type LexMemory = {
+  aboutSelf?: 'Yes' | 'No';
+  [key: string]: string;
+};
+
+/* eslint-disable camelcase */
+export type AutopilotMemory = {
+  twilio: {
+    collected_data: {
+      collect_survey: {
+        answers: {
+          [key: string]: {
+            answer: string;
+            error: string;
+          };
+        };
+      };
+    };
+  };
 };
 /* eslint-enable camelcase */
 
