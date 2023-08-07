@@ -12,6 +12,8 @@ locals {
   twilio_numbers     = []
   channel            = ""
 
+  enable_external_recordings = false
+
   channel_attributes = {
     webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
     voice   : "/app/twilio-iac/helplines/templates/channel-attributes/voice.tftpl"
