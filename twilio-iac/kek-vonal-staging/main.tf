@@ -78,7 +78,6 @@ module "studioFlow" {
   master_workflow_sid      = module.taskRouter.master_workflow_sid
   chat_task_channel_sid    = module.taskRouter.chat_task_channel_sid
   default_task_channel_sid = module.taskRouter.default_task_channel_sid
-  pre_survey_bot_sid       = twilio_autopilot_assistants_v1.chatbot_default.sid
   custom_flow_definition = templatefile(
     "./flow.tftpl",
     {
