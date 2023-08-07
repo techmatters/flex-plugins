@@ -1,0 +1,517 @@
+{
+    "age": {
+      "description": "General configs/lex/mt/slot_types Age Slot Type",
+      "value_selection_strategy": "TOP_RESOLUTION",
+      "values": {
+        "1": {
+          "synonyms": [
+            "wieħed"
+          ]
+        },
+        "2": {
+          "synonyms": [
+            "żewġ"
+          ]
+        },
+        "3": {
+          "synonyms": [
+            "tlieta"
+          ]
+        },
+        "4": {
+          "synonyms": [
+            "erbgħa"
+          ]
+        },
+        "5": {
+          "synonyms": [
+            "ħamsa"
+          ]
+        },
+        "6": {
+          "synonyms": [
+            "sitta"
+          ]
+        },
+        "7": {
+          "synonyms": [
+            "sebgħa"
+          ]
+        },
+        "8": {
+          "synonyms": [
+            "tmienja"
+          ]
+        },
+        "9": {
+          "synonyms": [
+            "disgħa"
+          ]
+        },
+        "10": {
+          "synonyms": [
+            "għaxra"
+          ]
+        },
+        "11": {
+          "synonyms": [
+            "ħdax"
+          ]
+        },
+        "12": {
+          "synonyms": [
+            "tnax"
+          ]
+        },
+        "13": {
+          "synonyms": [
+            "tlettax"
+          ]
+        },
+        "14": {
+          "synonyms": [
+            "erbatax"
+          ]
+        },
+        "15": {
+          "synonyms": [
+            "ħmistax"
+          ]
+        },
+        "16": {
+          "synonyms": [
+            "sittax"
+          ]
+        },
+        "17": {
+          "synonyms": [
+            "sbatax"
+          ]
+        },
+        "18": {
+          "synonyms": [
+            "tmintax"
+          ]
+        },
+        "19": {
+          "synonyms": [
+            "dsatax"
+          ]
+        },
+        "20": {
+          "synonyms": [
+            "għoxrin"
+          ]
+        },
+        "21": {
+          "synonyms": [
+            "għoxrin u wieħed"
+          ]
+        },
+        "22": {
+          "synonyms": [
+            "għoxrin u żewġ"
+          ]
+        },
+        "23": {
+          "synonyms": [
+            "għoxrin u tlieta"
+          ]
+        },
+        "24": {
+          "synonyms": [
+            "għoxrin u erbgħa"
+          ]
+        },
+        "25": {
+          "synonyms": [
+            "għoxrin u ħamsa"
+          ]
+        },
+        "26": {
+          "synonyms": [
+            "għoxrin u sitta"
+          ]
+        },
+        "27": {
+          "synonyms": [
+            "għoxrin u sebgħa"
+          ]
+        },
+        "28": {
+          "synonyms": [
+            "għoxrin u tmienja"
+          ]
+        },
+        "29": {
+          "synonyms": [
+            "għoxrin u disgħa"
+          ]
+        },
+        "30": {
+          "synonyms": [
+            "tletin"
+          ]
+        },
+        "31": {
+          "synonyms": [
+            "tletin u wieħed"
+          ]
+        },
+        "32": {
+          "synonyms": [
+            "tletin u żewġ"
+          ]
+        },
+        "33": {
+          "synonyms": [
+            "tletin u tlieta"
+          ]
+        },
+        "34": {
+          "synonyms": [
+            "tletin u erbgħa"
+          ]
+        },
+        "35": {
+          "synonyms": [
+            "tletin u ħamsa"
+          ]
+        },
+        "36": {
+          "synonyms": [
+            "tletin u sitta"
+          ]
+        },
+        "37": {
+          "synonyms": [
+            "tletin u sebgħa"
+          ]
+        },
+        "38": {
+          "synonyms": [
+            "tletin u tmienja"
+          ]
+        },
+        "39": {
+          "synonyms": [
+            "tletin u disgħa"
+          ]
+        },
+        "40": {
+          "synonyms": [
+            "erbgħin"
+          ]
+        },
+        "41": {
+          "synonyms": [
+            "erbgħin u wieħed"
+          ]
+        },
+        "42": {
+          "synonyms": [
+            "erbgħin u żewġ"
+          ]
+        },
+        "43": {
+          "synonyms": [
+            "erbgħin u tlieta"
+          ]
+        },
+        "44": {
+          "synonyms": [
+            "erbgħin u erbgħa"
+          ]
+        },
+        "45": {
+          "synonyms": [
+            "erbgħin u ħamsa"
+          ]
+        },
+        "46": {
+          "synonyms": [
+            "erbgħin u sitta"
+          ]
+        },
+        "47": {
+          "synonyms": [
+            "erbgħin u sebgħa"
+          ]
+        },
+        "48": {
+          "synonyms": [
+            "erbgħin u tmienja"
+          ]
+        },
+        "49": {
+          "synonyms": [
+            "erbgħin u disgħa"
+          ]
+        },
+        "50": {
+          "synonyms": [
+            "ħamsin"
+          ]
+        },
+        "51": {
+          "synonyms": [
+            "ħamsin u wieħed"
+          ]
+        },
+        "52": {
+          "synonyms": [
+            "ħamsin u żewġ"
+          ]
+        },
+        "53": {
+          "synonyms": [
+            "ħamsin u tlieta"
+          ]
+        },
+        "54": {
+          "synonyms": [
+            "ħamsin u erbgħa"
+          ]
+        },
+        "55": {
+          "synonyms": [
+            "ħamsin u ħamsa"
+          ]
+        },
+        "56": {
+          "synonyms": [
+            "ħamsin u sitta"
+          ]
+        },
+        "57": {
+          "synonyms": [
+            "ħamsin u sebgħa"
+          ]
+        },
+        "58": {
+          "synonyms": [
+            "ħamsin u tmienja"
+          ]
+        },
+        "59": {
+          "synonyms": [
+            "ħamsin u disgħa"
+          ]
+        },
+        "60": {
+          "synonyms": [
+            "sittin"
+          ]
+        },
+        "61": {
+          "synonyms": [
+            "sittin u wieħed"
+          ]
+        },
+        "62": {
+          "synonyms": [
+            "sittin u żewġ"
+          ]
+        },
+        "63": {
+          "synonyms": [
+            "sittin u tlieta"
+          ]
+        },
+        "64": {
+          "synonyms": [
+            "sittin u erbgħa"
+          ]
+        },
+        "65": {
+          "synonyms": [
+            "sittin u ħamsa"
+          ]
+        },
+        "66": {
+          "synonyms": [
+            "sittin u sitta"
+          ]
+        },
+        "67": {
+          "synonyms": [
+            "sittin u sebgħa"
+          ]
+        },
+        "68": {
+          "synonyms": [
+            "sittin u tmienja"
+          ]
+        },
+        "69": {
+          "synonyms": [
+            "sittin u disgħa"
+          ]
+        },
+        "70": {
+          "synonyms": [
+            "sab'in"
+          ]
+        },
+        "71": {
+          "synonyms": [
+            "sab'in u wieħed"
+          ]
+        },
+        "72": {
+          "synonyms": [
+            "sab'in u żewġ"
+          ]
+        },
+        "73": {
+          "synonyms": [
+            "sab'in u tlieta"
+          ]
+        },
+        "74": {
+          "synonyms": [
+            "sab'in u erbgħa"
+          ]
+        },
+        "75": {
+          "synonyms": [
+            "sab'in u ħamsa"
+          ]
+        },
+        "76": {
+          "synonyms": [
+            "sab'in u sitta"
+          ]
+        },
+        "77": {
+          "synonyms": [
+            "sab'in u sebgħa"
+          ]
+        },
+        "78": {
+          "synonyms": [
+            "sab'in u tmienja"
+          ]
+        },
+        "79": {
+          "synonyms": [
+            "sab'in u disgħa"
+          ]
+        },
+        "80": {
+          "synonyms": [
+            "tmienxa"
+          ]
+        },
+        "81": {
+          "synonyms": [
+            "tmienxa u wieħed"
+          ]
+        },
+        "82": {
+          "synonyms": [
+            "tmienxa u żewġ"
+          ]
+        },
+        "83": {
+          "synonyms": [
+            "tmienxa u tlieta"
+          ]
+        },
+        "84": {
+          "synonyms": [
+            "tmienxa u erbgħa"
+          ]
+        },
+        "85": {
+          "synonyms": [
+            "tmienxa u ħamsa"
+          ]
+        },
+        "86": {
+          "synonyms": [
+            "tmienxa u sitta"
+          ]
+        },
+        "87": {
+          "synonyms": [
+            "tmienxa u sebgħa"
+          ]
+        },
+        "88": {
+          "synonyms": [
+            "tmienxa u tmienja"
+          ]
+        },
+        "89": {
+          "synonyms": [
+            "tmienxa u disgħa"
+          ]
+        },
+        "90": {
+          "synonyms": [
+            "disgħin"
+          ]
+        },
+        "91": {
+          "synonyms": [
+            "disgħin u wieħed"
+          ]
+        },
+        "92": {
+          "synonyms": [
+            "disgħin u żewġ"
+          ]
+        },
+        "93": {
+          "synonyms": [
+            "disgħin u tlieta"
+          ]
+        },
+        "94": {
+          "synonyms": [
+            "disgħin u erbgħa"
+          ]
+        },
+        "95": {
+          "synonyms": [
+            "disgħin u ħamsa"
+          ]
+        },
+        "96": {
+          "synonyms": [
+            "disgħin u sitta"
+          ]
+        },
+        "97": {
+          "synonyms": [
+            "disgħin u sebgħa"
+          ]
+        },
+        "98": {
+          "synonyms": [
+            "disgħin u tmienja"
+          ]
+        },
+        "99": {
+          "synonyms": [
+            "disgħin u disgħa"
+          ]
+        },
+        "100": {
+          "synonyms": [
+            "mitt"
+          ]
+        },
+        "Unknown": {
+          "synonyms": [
+            "Mhux magħruf",
+            "X",
+            "Preferi ma jgħidux",
+            "Preferi ma nsemmix",
+            "Għadni ma nistax ngħin f'dan il-mument"
+          ]
+        }
+      }
+    }
+  }

@@ -23,6 +23,14 @@ You will require the following environment variables set in your local terminal:
   - `AWS_ACCESS_KEY_ID` & `AWS_SECRET_ACCESS_KEY` set for your personal one user.
   - `GITHUB_TOKEN` - a personal access token with write access to the tech matters serverless & flex plugins repo.
 
+You should *not* set these by running `export AWS_SECRET_ACCESS_KEY=xxx` in your terminal, as this will save the token to the bash/zsh history on your local machine in plain text. Reach out to a developer for suggestions on how to do set these tokens in a more secure way.
+
+## Flex Service Configuration Manager
+
+There is a system for managing the flex service_configuration via a command line tool.
+
+See [here](./docs/service_configuration.md) for more information.
+
 ## Preparation
 
 In order to set up the Aselo Terraform project:

@@ -36,12 +36,6 @@ locals {
   local_config = {
     helpline           = "Aselo"
     old_dir_prefix     = "aselo-as"
-    definition_version = "as-v1"
-
-    default_autopilot_chatbot_enabled = false
-    helpline_language                 = "en-US"
-    contacts_waiting_channels         = ["web"]
-    enable_post_survey                = true
     lex_bot_languages  = {
       en_US : {
         slot_types : local.en_us_slot_types

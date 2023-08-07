@@ -19,64 +19,71 @@ variable "helpline" {
 }
 
 variable "lex_bot_languages" {
-  description = "The configuration for the lex bots."
-  type = map(object({
+  type    = map(list(string))
+  default = {}
+}
 
-    slot_types = optional(map(object({
-      description              = string
-      value_selection_strategy = string
-      values = map(object({
-        synonyms = optional(list(string), []),
-      }))
-    })), null)
+variable "lex_slot_types" {
+  description = "The slot types for the helpline."
+  type = map(map(object({
+    description              = string
+    value_selection_strategy = string
+    values = map(object({
+      synonyms = optional(list(string), []),
+    }))
+  })))
+}
 
-    intents = optional(map(object({
-      description       = string
-      sample_utterances = list(string)
-      fulfillment_activity = object({
-        type = string
-      })
-      conclusion_statement = object({
-        content      = string
-        content_type = string
-      })
-      rejection_statement = object({
-        content      = string
-        content_type = string
-      })
-      slots = map(object({
-        priority        = number
-        description     = string
-        slot_constraint = string
-        slot_type       = string
-        value_elicitation_prompt = object({
-          max_attempts = number
-          content      = string
-          content_type = string
-        })
-      }))
-    })), null)
-
-    bots = optional(map(object({
-      description                 = string
-      locale                      = optional(string, "en-US")
-      process_behavior            = optional(string, "BUILD")
-      child_directed              = optional(bool, true)
-      idle_session_ttl_in_seconds = optional(number, 600)
-      enable_model_improvements   = optional(bool, true)
-      abort_statement = object({
-        content      = string
-        content_type = string
-      })
-      clarification_prompt = object({
+variable "lex_intents" {
+  description = "The intents for the helpline."
+  type = map(map(object({
+    description       = string
+    sample_utterances = list(string)
+    fulfillment_activity = object({
+      type = string
+    })
+    conclusion_statement = object({
+      content      = string
+      content_type = string
+    })
+    rejection_statement = object({
+      content      = string
+      content_type = string
+    })
+    slots = map(object({
+      priority        = number
+      description     = string
+      slot_constraint = string
+      slot_type       = string
+      value_elicitation_prompt = object({
         max_attempts = number
         content      = string
         content_type = string
       })
-      intents = list(string)
-    })), null)
+    }))
+  })))
+}
 
-  }))
+variable "lex_bots" {
+  description = "The bots for the helpline."
+  type = map(map(object({
+    description                 = string
+    locale                      = optional(string, "en-US")
+    process_behavior            = optional(string, "BUILD")
+    child_directed              = optional(bool, true)
+    idle_session_ttl_in_seconds = optional(number, 300)
+    enable_model_improvements   = optional(bool, true)
+    abort_statement = object({
+      content      = string
+      content_type = string
+    })
+    clarification_prompt = object({
+      max_attempts = number
+      content      = string
+      content_type = string
+    })
+    intents = list(string)
+  })))
 }
 
 // Used for lex v2 via awscc leaving here for now

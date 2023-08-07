@@ -1,0 +1,46 @@
+{
+  "gender": {
+    "description": "Helpline Specific helplines/jm/configs/lex/en_JM/slot_types Gender Slot Type",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "Unknown": {
+        "synonyms": [
+          "idk",
+          "i dont know",
+          "i don't know",
+          "dont want to say",
+          "don't want to say",
+          "prefer not",
+          "x",
+          "prefer not to say",
+          "no thank you",
+          "no"
+        ]
+      },
+      "Male": {
+        "synonyms": [
+          "m",
+          "b",
+          "men",
+          "man",
+          "boy",
+          "male"
+        ]
+      },
+      "Female": {
+        "synonyms": [
+          "women",
+          "fe",
+          "gal",
+          "femme",
+          "fem",
+          "woman",
+          "f",
+          "g",
+          "girl",
+          "female"
+        ]
+      }
+    }
+  }
+}

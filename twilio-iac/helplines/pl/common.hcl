@@ -7,8 +7,6 @@ locals {
     helpline       = "Telefon Zaufania"
     old_dir_prefix = "telefonzaufania-pl"
 
-    definition_version = "pl-v1"
-
     default_autopilot_chatbot_enabled = true
 
     twilio_channels = {

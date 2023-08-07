@@ -4,36 +4,58 @@ locals {
   config              = merge(local.defaults_config, local.local_config)
 
   local_config = {
-    helpline       = "Kellimni"
-    old_dir_prefix = "mt-kellimni"
+    helpline                          = "Kellimni"
+    old_dir_prefix                    = "mt-kellimni"
+    definition_version                = "mt-v1"
+    default_autopilot_chatbot_enabled = false
+    task_language                     = "en-MT"
+    helpline_language                 = "en-MT"
+    voice_ivr_language                = ""
+    contacts_waiting_channels         = ["web", "whatsapp", "facebook", "instagram"]
+    enable_post_survey                = false
+    helpline_region                   = "eu-west-1"
 
-    helpline_region = "eu-west-1"
 
-    definition_version = "mt-v1"
-    helpline_language  = "en-MT"
-
-    feature_flags = {
-      "enable_fullstory_monitoring" : true,
-      "enable_upload_documents" : true,
-      "enable_post_survey" : false,
-      "enable_case_management" : true,
-      "enable_offline_contact" : true,
-      "enable_filter_cases" : true,
-      "enable_sort_cases" : true,
-      "enable_transfers" : true,
-      "enable_manual_pulling" : true,
-      "enable_csam_report" : false,
-      "enable_canned_responses" : true,
-      "enable_dual_write" : false,
-      "enable_save_insights" : true,
-      "enable_previous_contacts" : true,
-      "enable_contact_editing" : true,
-      "enable_twilio_transcripts" : true,
-      "enable_aselo_messaging_ui" : true
+    lex_bot_languages = {
+      en_MT : ["pre_survey", "language_selector","terms_conditions_acceptance"],
+      mt_MT : ["pre_survey","terms_conditions_acceptance"],
+      uk : ["pre_survey","terms_conditions_acceptance"]
     }
 
-    strings_en  = jsondecode(file("../../translations/en-MT/strings.json"))
-    strings_mt  = jsondecode(file("../../translations/mt-MT/strings.json"))
-    strings_ukr = jsondecode(file("../../translations/ukr-MT/strings.json"))
+
+    workflows = {
+      master : {
+        friendly_name : "Master Workflow"
+        templatefile : "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+      },
+      survey : {
+        friendly_name : "Survey Workflow"
+        templatefile : "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+      }
+    }
+
+    task_queues = {
+      messaging : {
+        "target_workers" = "1==1",
+        "friendly_name"  = "Messaging"
+      },
+      survey : {
+        "target_workers" = "1==0",
+        "friendly_name"  = "Survey"
+      }
+    }
+    task_channels = {
+      default : "Default"
+      chat : "Programmable Chat"
+      voice : "Voice"
+      sms : "SMS"
+      video : "Video"
+      email : "Email"
+      survey : "Survey"
+    }
+
+
+
+    phone_numbers = {}
   }
 }

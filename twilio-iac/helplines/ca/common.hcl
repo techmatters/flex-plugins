@@ -6,13 +6,9 @@ locals {
   local_config = {
     helpline                          = "Kids Help Phone"
     old_dir_prefix                    = "kidshelpphone"
-    definition_version                = "ca-v1"
     default_autopilot_chatbot_enabled = false
     task_language                     = "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
-    helpline_language                 = "en-CA"
     contacts_waiting_channels         = ["voice", "web"]
-    enable_post_survey                = false
-
 
     workflows = {
       master : {
@@ -92,6 +88,10 @@ locals {
       indigenous : {
         "target_workers" = "routing.skills HAS 'Indigenous [Interpreter]'",
         "friendly_name"  = "Indigenous [Interpreter]"
+      },
+      e2e_test : {
+        "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
+        "friendly_name"  = "E2E Test Queue"
       }
     }
   }

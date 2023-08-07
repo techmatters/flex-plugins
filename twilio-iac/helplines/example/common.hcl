@@ -11,7 +11,6 @@ locals {
    * This is kindof hacky, but locals that are referenced by other items within the local_config
    * must be defined at the base level becauase a local object cannot reference properties of itself
    **/
-  helpline_language = ""
   task_language     = ""
 
   /**
@@ -20,9 +19,6 @@ locals {
   local_config = {
     helpline       = ""
     old_dir_prefix = ""
-
-    helpline_language  = local.helpline_language
-    definition_version = ""
 
     custom_channels = ["twitter", "instagram"]
 

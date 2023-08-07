@@ -31,6 +31,16 @@
     "type": "input"
   },
   {
+    "name": "abuseDetails",
+    "label": "If Abusive, Please Select All That Apply:",
+    "type": "listbox-multiselect",
+    "options": [
+      { "value": "Directly Abusive", "label": "Direct Abusive to Counsellor" },
+      { "value": "Arousal", "label": "Sexually Inappropriate/Arousal Caller" },
+      { "value": "Other", "label": "Other" }
+    ]
+  },
+  {
     "name": "safetyPlan",
     "label": "Safety plan created with the service user",
     "type": "checkbox"

@@ -17,7 +17,8 @@
 import { styled } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 
-import { Box, Column, Flex, Absolute, Row, FontOpenSans, StyledNextStepButton } from './HrmStyles';
+import { Box, Column, Flex, Row, FontOpenSans, StyledNextStepButton } from './HrmStyles';
+import HrmTheme from './HrmTheme';
 
 export const ResourcePreviewWrapper = styled('div')`
   display: flex;
@@ -35,6 +36,7 @@ ResourcePreviewWrapper.displayName = 'ResourcePreviewWrapper';
 
 export const ResourcePreviewHeaderText = styled(FontOpenSans)`
   font-size: 14px;
+  font-weight: 600;
   line-height: 1.2;
   color: #192b33;
   text-decoration: underline;
@@ -58,10 +60,11 @@ export const ResourcePreviewAttributeContent = styled(FontOpenSans)`
 ResourcePreviewAttributeContent.displayName = 'ResourcePreviewAttributeContent';
 
 export const ReferrableResourcesContainer = styled(Flex)`
-  margin: 20px;
-  max-width: 800px;
+  padding: 10px 20px 20px 25px;
+  max-width: 1230px;
   width: 100%;
   background-color: #f6f6f6;
+  overflow-y: auto;
 `;
 ReferrableResourcesContainer.displayName = 'ReferrableResourcesContainer';
 
@@ -84,7 +87,7 @@ export const ViewResourceArea = styled('div')`
 ViewResourceArea.displayName = 'ViewResourceArea';
 
 export const ResourceAttributesContainer = styled(Row)`
-  align-items: start;
+  align-items: stretch;
 `;
 ResourceAttributesContainer.displayName = 'ResourceAttributesContainer';
 
@@ -94,13 +97,13 @@ type ResourceAttributesColumnProps = {
 export const ResourceAttributesColumn = styled(Column)<ResourceAttributesColumnProps>`
   flex: 1;
   margin: 5px;
-  border-right: ${props => (props.addDivider ? '2px solid rgba(53, 61, 63, 0.3)' : 'none')};
-  padding-right: ${props => (props.addDivider ? '5px' : 'none')};
+  border-right: ${props => (props.addDivider ? '1px solid #d8d8d8' : 'none')};
+  padding: ${props => (props.addDivider ? '0 15px 0 10px' : '0 10px 0 10px')};
 `;
 
 export const ResourceAttributeDescription = styled(FontOpenSans)`
-  color: #121c2e;
-  font-size: 13px;
+  color: #192b33;
+  font-size: 14px;
   line-height: 20px;
   font-weight: bold;
 `;
@@ -120,6 +123,7 @@ export const ResourcesSearchArea = styled('div')`
   width: 100%;
   overflow-y: auto;
   background-color: #f6f6f6;
+  padding: 0 10px 0 5px;
 `;
 ViewResourceArea.displayName = 'ViewResourceArea';
 
@@ -230,11 +234,11 @@ export const PrivateResourceAttribute = styled('div')`
 PrivateResourceAttribute.displayName = 'PrivateResourceAttribute';
 
 // ViewResource Page
-export const ResourceViewContainer = styled(Absolute)`
+export const ResourceViewContainer = styled('div')`
   height: 100%;
-  width: 1280px;
+  width: 100%;
   background-color: #f6f6f6;
-  margin-left: 5px;
+  margin: 5px;
 `;
 ResourceViewContainer.displayName = 'ResourceViewContainer';
 
@@ -274,3 +278,48 @@ export const ResourceSubtitle = styled(FontOpenSans)`
   width: max-content;
 `;
 ResourceSubtitle.displayName = 'ResourceSubtitle';
+
+type AutoCompleteProps = {
+  border?: string;
+};
+
+export const AutoCompleteDropdown = styled('div')<AutoCompleteProps>`
+  position: absolute;
+  background-color: #fff;
+  margin: -36px 0 140px 18px;
+  width: 95.4%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #979797;
+  border-radius: 4px;
+  padding: 0 15px;
+  z-index: 1;
+
+  &:empty {
+    border: none;
+  }
+`;
+
+export const AutoCompleteDropdownRow = styled('div')`
+  position: relative;
+  cursor: pointer;
+  font-family: Open Sans;
+  text-align: start;
+  font-size: 13px;
+  background-color: white;
+  padding: 7px 0 7px 15px;
+  width: 100%;
+  color: #192b33;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 30px;
+
+  &:last-child {
+    padding-bottom: 13px;
+  }
+
+  &:hover {
+    background-blend-mode: darken;
+    background: ${HrmTheme.colors.inputBackgroundColor};
+  }
+`;

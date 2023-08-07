@@ -6,13 +6,9 @@ locals {
   local_config = {
     helpline                          = "Youthline"
     old_dir_prefix                    = ""
-    definition_version                = "nz-v1"
     default_autopilot_chatbot_enabled = false
     task_language                     = "en-NZ"
-    helpline_language                 = "en-NZ"
     contacts_waiting_channels         = ["voice", "sms", "web"]
-    enable_post_survey                = false
-
 
     workflows = {
       master : {
@@ -26,9 +22,13 @@ locals {
         "target_workers" = "routing.skills HAS 'Youthline Helpline'",
         "friendly_name"  = "Youthline Helpline"
       },
-      triage : {
-        "target_workers" = "routing.skills HAS 'Triage'",
-        "friendly_name"  = "Triage"
+      priority : {
+        "target_workers" = "routing.skills HAS 'Priority'",
+        "friendly_name"  = "Priority"
+      },
+      clinical : {
+        "target_workers" = "routing.skills HAS 'Clinical'",
+        "friendly_name"  = "Clinical"
       }
     }
 

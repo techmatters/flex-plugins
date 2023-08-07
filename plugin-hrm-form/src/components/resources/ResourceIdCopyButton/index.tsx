@@ -21,6 +21,7 @@ import { useState } from 'react';
 import { Template } from '@twilio/flex-ui';
 
 import { Button } from './styles';
+import { getTemplateStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   resourceId: string;
@@ -28,22 +29,29 @@ type OwnProps = {
 };
 
 const ResourceIdCopyButton: React.FC<OwnProps> = ({ resourceId, height = '36px' }) => {
+  const strings = getTemplateStrings();
   const [justCopied, setJustCopied] = useState(false);
 
-  const copyClicked = () => {
-    navigator.clipboard.writeText(resourceId);
+  const copyClicked = async () => {
+    await navigator.clipboard.writeText(resourceId);
     setJustCopied(true);
     setTimeout(() => setJustCopied(false), 2000);
   };
 
   return justCopied ? (
-    <Button type="button" title={`#${resourceId}`} style={{ height }}>
+    <Button type="button" title={`${strings['Resources-IdCopied']} #${resourceId}`} style={{ height }}>
       <CheckIcon style={{ marginRight: '8px' }} />
       &nbsp;
       <Template code="Resources-IdCopied" />
     </Button>
   ) : (
-    <Button type="button" onClick={copyClicked} title={`#${resourceId}`} style={{ height }}>
+    <Button
+      type="button"
+      onClick={copyClicked}
+      title={`${strings['Resources-CopyId']} #${resourceId}`}
+      style={{ height }}
+      data-testid="copy-id-button"
+    >
       <CopyIcon style={{ marginRight: '8px' }} />
       &nbsp;
       <Template code="Resources-CopyId" />
