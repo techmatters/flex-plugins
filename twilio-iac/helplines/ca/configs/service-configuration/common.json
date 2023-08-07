@@ -14,7 +14,6 @@
             "enable_post_survey": false,
             "enable_previous_contacts": false,
             "enable_save_insights": true,
-            "enable_transcripts": false,
             "enable_twilio_transcripts": false,
             "enable_upload_documents": false,
             "enable_voice_recordings": true
