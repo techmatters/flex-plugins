@@ -108,10 +108,13 @@ jobs:
         working-directory: ./plugin-hrm-form
         shell: bash
 
-      # Run server
+      - name: Run Form Definitions Server
+        run: NODE_ENV=development npm run dev:local-form-definition-server &
+        working-directory: ./plugin-hrm-form
+
       - name: Run Flex Dev Server
         # Creds aren't used in the tests, but I don't think the dev server starts without some set.
-        run: NODE_ENV=development TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npm run start &
+        run: NODE_ENV=development REACT_FORM_DEFINITIONS_BASE_URL=http://localhost:8090 TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npm run start &
         working-directory: ./plugin-hrm-form
 
       - name: Run e2e tests
