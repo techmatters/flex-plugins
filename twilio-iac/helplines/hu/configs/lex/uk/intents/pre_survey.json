@@ -1,0 +1,66 @@
+{
+  "pre_survey": {
+    "description": "Helpline Specific configs/lex/en_JM/intents Pre Survey Intent Survey intent",
+    "sample_utterances": [
+      "H",
+      "Hi",
+      "Hello",
+      "Help",
+      "I need help",
+      "Pls",
+      "Please",
+      "Waah gwaan",
+      "How yuh do",
+      "Big up",
+      "Respect",
+      "Mi deh yah",
+      "Bless up",
+      "Link up",
+      "One love",
+      "Jah guide",
+      "Mi soon come",
+      "Wha gwaan",
+      "Mi deh pon di beach",
+      "Mi rate di vibes",
+      "Link mi up",
+      "Mi deh pon di corner",
+      "Incoming webchat contact",
+      "trigger_pre_survey"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "Зв'яжемо тебе із нашим оператором, з яким ти зможеш поговорити.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Мені шкода, я цього не розумію",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "aboutSelf": {
+        "priority": 1,
+        "description": "Caller is calling for self or someone else",
+        "slot_constraint": "Required",
+        "slot_type": "yes_no",
+        "value_elicitation_prompt": {
+          "max_attempts": 3,
+          "content": "Привіт, це Kék Vonal! Будь ласка, дай відповіді на наступні запитання, щоб ми могли допомогти тобі. Тобі потрібна допомога у власній справі?",
+          "content_type": "PlainText"
+        }
+      },
+      "age": {
+        "priority": 2,
+        "description": "Age of caller",
+        "slot_constraint": "Required",
+        "slot_type": "age",
+        "value_elicitation_prompt": {
+          "max_attempts": 3,
+          "content": "Скільки тобі років? Будь ласка, дай відповідь цифрою.",
+          "content_type": "PlainText"
+        }
+      }
+    }
+  }
+}
