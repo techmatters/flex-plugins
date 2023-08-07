@@ -58,4 +58,19 @@ inputs = local.config
   */
 terraform {
   source = "../../terraform-modules//stages/${include.root.locals.stage}"
+
+  after_hook "noop" {
+    commands = ["apply"]
+    execute  = ["/app/twilio-iac/scripts/noop/external-recordings/after.sh"]
+  }
+
+  after_hook "update_service_config" {
+    commands = ["apply"]
+    execute  = [
+      "/app/twilio-iac/scripts/python_tools/manageServiceConfig.py",
+      "update_prop",
+      "--prop=attributes.external_recordings_enabled",
+      "--value=True"
+    ]
+  }
 }

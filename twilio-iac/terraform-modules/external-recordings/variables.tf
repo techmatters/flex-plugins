@@ -22,3 +22,9 @@ variable "twilio_account_sid" {
   description = "The Twilio account SID."
   type        = string
 }
+
+variable "path" {
+  description = "The path in the S3 bucket."
+  type        = string
+  default     = "voice-recordings"
+}
