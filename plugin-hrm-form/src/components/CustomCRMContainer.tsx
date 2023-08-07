@@ -24,7 +24,7 @@ import { Absolute } from '../styles/HrmStyles';
 import { populateCounselors } from '../services/ServerlessService';
 import { populateCounselorsState } from '../states/configuration/actions';
 import { RootState, namespace, routingBase } from '../states';
-import { OfflineContactTask } from '../types/types';
+import { OfflineContactTask, offlineContactTaskSid } from '../types/types';
 
 const offlineContactTask: OfflineContactTask = {
   taskSid: 'offline-contact-task-sid',
@@ -39,7 +39,12 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const CustomCRMContainer: React.FC<Props> = ({ selectedTaskSid, isAddingOfflineContact, task, dispatch }) => {
+const CustomCRMContainer: React.FC<Props> = ({
+  selectedTaskSid,
+  isAddingOfflineContact,
+  task,
+  dispatch,
+}) => {
   useEffect(() => {
     const fetchPopulateCounselors = async () => {
       try {
@@ -59,8 +64,15 @@ const CustomCRMContainer: React.FC<Props> = ({ selectedTaskSid, isAddingOfflineC
 
   return (
     <Absolute top="0" bottom="0" left="0" right="0">
-      {renderITask && <TaskView task={task} key={`controller-${selectedTaskSid}`} />}
-      {renderOfflineContactTask && <TaskView task={offlineContactTask} key="controller-offline-contact" />}
+      {renderITask && (
+        <TaskView task={task} key={`controller-${selectedTaskSid}`} />
+      )}
+      {renderOfflineContactTask && (
+        <TaskView
+          task={offlineContactTask}
+          key={`controller-${offlineContactTaskSid}`}
+        />
+      )}
     </Absolute>
   );
 };
