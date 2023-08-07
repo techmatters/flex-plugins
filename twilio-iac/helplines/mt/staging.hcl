@@ -6,11 +6,39 @@ locals {
   twilio_numbers = ["messenger:111279668497853"]
 
   local_config = {
-    twilio_numbers = local.twilio_numbers
-    twilio_channels = {
-      "webchat"  = { "contact_identity" = "", "channel_type" = "web" },
-      "facebook" = { "contact_identity" = "messenger:111279668497853", "channel_type" = "facebook" }
+
+   #Studio flow
+    flow_vars = {
+      service_sid                            = "xx"
+      environment_sid                        = "xx"
+      capture_channel_with_bot_function_sid  = "xx"
+      capture_channel_with_bot_function_name = "channelCapture/captureChannelWithBot"
     }
+
+   #Channels
+    channels = {
+      webchat : {
+        channel_type     = "web"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/mt/templates/studio-flows/web.tftpl"
+        channel_flow_vars = {
+
+        }
+        chatbot_unique_names = []
+      },
+       facebook : {
+        channel_type     = "facebook"
+        contact_identity = "messenger:111279668497853"
+        templatefile     = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging.tftpl"
+        channel_flow_vars = {         
+        }
+        chatbot_unique_names = []
+      }
+    }
+
+
+
+    twilio_numbers = local.twilio_numbers
     custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
   }
 }

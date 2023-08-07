@@ -1,0 +1,27 @@
+{
+    "language": {
+        "description": "Helpline Specific configs/lex/en_MT/slot_types Language Slot Type",
+        "value_selection_strategy": "TOP_RESOLUTION",
+        "values": {
+          "ukr-MT": {
+            "synonyms": [
+              "ukranian",
+              "3"
+            ]
+          },
+          "en-MT": {
+            "synonyms": [
+              "english",
+              "1"
+            ]
+          },
+          "mt-MT": {
+            "synonyms": [
+              "maltese",
+              "2"
+            ]
+          }
+        }
+      }
+
+}

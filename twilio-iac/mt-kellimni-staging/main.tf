@@ -37,7 +37,6 @@ locals {
   twilio_numbers            = ["messenger:111279668497853"]
   channel                   = ""
   custom_channel_attributes = ""
-
   twilio_channels = {
     "webchat"  = { "contact_identity" = "", "channel_type" = "web" },
     "facebook" = { "contact_identity" = "messenger:111279668497853", "channel_type" = "facebook" }
@@ -56,10 +55,6 @@ provider "twilio" {
   password = local.secrets.twilio_auth_token
 }
 
-module "chatbots" {
-  source         = "../terraform-modules/chatbots/default"
-  serverless_url = module.serverless.serverless_environment_production_url
-}
 
 module "hrmServiceIntegration" {
   source            = "../terraform-modules/hrmServiceIntegration/default"
@@ -98,22 +93,17 @@ module "twilioChannel" {
   channel_contact_identity = each.value.contact_identity
   channel_type             = each.value.channel_type
   custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/language-mt/with-chatbot.tftpl",
+    "../terraform-modules/channels/flow-templates/language-mt/messaging-lex.tftpl",
     {
-      channel_name                  = "${each.key}"
-      serverless_url                = module.serverless.serverless_environment_production_url
-      serverless_service_sid        = module.serverless.serverless_service_sid
-      serverless_environment_sid    = module.serverless.serverless_environment_production_sid
-      master_workflow_sid           = module.taskRouter.master_workflow_sid
-      chat_task_channel_sid         = module.taskRouter.chat_task_channel_sid
-      chatbot_en_sid                = twilio_autopilot_assistants_v1.chatbot_en.sid
-      chatbot_mt_sid                = twilio_autopilot_assistants_v1.chatbot_mt.sid
-      chatbot_ukr_sid               = twilio_autopilot_assistants_v1.chatbot_ukr.sid
-      chatbot_language_selector_sid = twilio_autopilot_assistants_v1.chatbot_language_selector.sid
-      channel_attributes_EN         = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes-mt/${each.key}-attributes.tftpl", { chatbot_language = "chatbot_EN" })
-      channel_attributes_MT         = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes-mt/${each.key}-attributes.tftpl", { chatbot_language = "chatbot_MT" })
-      channel_attributes_UKR        = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes-mt/${each.key}-attributes.tftpl", { chatbot_language = "chatbot_UKR" })
-      flow_description              = "${title(each.key)} Messaging Flow"
+      channel_name                 = "${each.key}"
+      serverless_url               = module.serverless.serverless_environment_production_url
+      serverless_service_sid       = module.serverless.serverless_service_sid
+      serverless_environment_sid   = module.serverless.serverless_environment_production_sid
+      capture_channel_with_bot_sid = "ZH75af18446e362dd58e4fd76cc4e1dca1"
+      send_message_janitor_sid     = "ZH19f41d74c3c64c23b5d624ab84d1ddde"
+      master_workflow_sid          = module.taskRouter.master_workflow_sid
+      chat_task_channel_sid        = module.taskRouter.chat_task_channel_sid
+      flow_description             = "${title(each.key)} Messaging Flow"
   })
   target_task_name      = local.target_task_name
   channel_name          = each.key
@@ -124,10 +114,23 @@ module "twilioChannel" {
 }
 
 module "customChannel" {
-  for_each              = toset(local.custom_channels)
-  source                = "../terraform-modules/channels/custom-channel"
-  channel_name          = each.key
-  janitor_enabled       = true
+  for_each        = toset(local.custom_channels)
+  source          = "../terraform-modules/channels/custom-channel"
+  channel_name    = each.key
+  janitor_enabled = true
+  custom_flow_definition = templatefile(
+    "../terraform-modules/channels/flow-templates/language-mt/messaging-lex.tftpl",
+    {
+      channel_name                 = "${each.key}"
+      serverless_url               = module.serverless.serverless_environment_production_url
+      serverless_service_sid       = module.serverless.serverless_service_sid
+      serverless_environment_sid   = module.serverless.serverless_environment_production_sid
+      capture_channel_with_bot_sid = "ZH75af18446e362dd58e4fd76cc4e1dca1"
+      send_message_janitor_sid     = "ZH19f41d74c3c64c23b5d624ab84d1ddde"
+      master_workflow_sid          = module.taskRouter.master_workflow_sid
+      chat_task_channel_sid        = module.taskRouter.chat_task_channel_sid
+      flow_description             = "${title(each.key)} Messaging Flow"
+  })
   master_workflow_sid   = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
@@ -158,7 +161,7 @@ module "aws" {
   shared_state_sync_service_sid      = module.services.shared_state_sync_service_sid
   flex_chat_service_sid              = module.services.flex_chat_service_sid
   flex_proxy_service_sid             = module.services.flex_proxy_service_sid
-  post_survey_bot_sid                = module.chatbots.post_survey_bot_sid
+  post_survey_bot_sid                = "post survey deleted"
   survey_workflow_sid                = module.survey.survey_workflow_sid
   bucket_region                      = "eu-west-1"
   helpline_region                    = "eu-west-1"
