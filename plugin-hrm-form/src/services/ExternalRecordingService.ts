@@ -3,7 +3,7 @@ import { isVoiceChannel } from '../states/DomainConstants';
 import { CustomITask, isOfflineContactTask } from '../types/types';
 import { getExternalRecordingS3Location } from './ServerlessService';
 
-export type ExternalRecordingUnneeded = {
+type ExternalRecordingUnneeded = {
   status: 'unneeded';
 };
 
@@ -19,11 +19,11 @@ type ExternalRecordingInfoFailure = {
   error: string;
 };
 
-export const isSuccessfulExternalRecordingInfo = (r) => r && r.status === 'success';
-export const isUnneededExternalRecordingInfo = (r) => r && r.status === 'unneeded';
-export const isFailureExternalRecordingInfo = (r) => r && r.status === 'failure';
+const isSuccessfulExternalRecordingInfo = r => r && r.status === 'success';
+const isUnneededExternalRecordingInfo = r => r && r.status === 'unneeded';
+const isFailureExternalRecordingInfo = r => r && r.status === 'failure';
 
-export type ExternalRecordingInfo = ExternalRecordingInfoSuccess | ExternalRecordingUnneeded | ExternalRecordingInfoFailure;
+type ExternalRecordingInfo = ExternalRecordingInfoSuccess | ExternalRecordingUnneeded | ExternalRecordingInfoFailure;
 
 const unneededRecordingInfo: ExternalRecordingUnneeded = {
   status: 'unneeded',

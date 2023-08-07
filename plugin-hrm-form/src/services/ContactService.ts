@@ -34,7 +34,6 @@ import fetchHrmApi from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import {
-  ContactMediaType,
   ContactRawJson,
   ConversationMedia,
   HrmServiceContact,
@@ -45,10 +44,7 @@ import {
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
 import { TaskEntry } from '../states/contacts/types';
-import {
-  ExternalRecordingInfoSuccess,
-  getExternalRecordingInfo,
-} from './ExternalRecordingService';
+import { ExternalRecordingInfoSuccess, getExternalRecordingInfo } from './ExternalRecordingService';
 
 type NestedInformation = { name?: { firstName: string; lastName: string } };
 type LegacyInformationObject = NestedInformation & {
@@ -70,7 +66,10 @@ export const unNestLegacyRawJson = (legacy: LegacyContactRawJson): ContactRawJso
     callerInformation: LegacyInformationObject;
   };
   const withFixedChildInformation: PartiallyTransformed = legacy.childInformation
-    ? { ...legacy, childInformation: unNestLegacyInformationObject(legacy.childInformation) }
+    ? {
+        ...legacy,
+        childInformation: unNestLegacyInformationObject(legacy.childInformation),
+      }
     : (legacy as PartiallyTransformed);
   return withFixedChildInformation.callerInformation
     ? {
@@ -101,7 +100,14 @@ export async function searchContacts(
     contacts: rawResult.contacts.map(c => {
       const details = unNestLegacyRawJson(c.details);
       const { firstName, lastName } = details.childInformation ?? {};
-      return { ...c, details, overview: { ...c.overview, name: `${firstName ?? ''} ${lastName ?? ''}` } };
+      return {
+        ...c,
+        details,
+        overview: {
+          ...c.overview,
+          name: `${firstName ?? ''} ${lastName ?? ''}`,
+        },
+      };
     }),
   };
 }
@@ -135,7 +141,13 @@ const deTransformValue = (e: FormItemDefinition) => (value: string | boolean | n
 };
 
 export const searchResultToContactForm = (def: FormDefinition, information: Record<string, string | boolean>) => {
-  return def.reduce((acc, e) => ({ ...acc, [e.name]: deTransformValue(e)(information[e.name]) }), {});
+  return def.reduce(
+    (acc, e) => ({
+      ...acc,
+      [e.name]: deTransformValue(e)(information[e.name]),
+    }),
+    {},
+  );
 };
 
 export function transformCategories(
@@ -187,13 +199,18 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
   };
 }
 
-const handleTwilioTask = async (task) => {
+const handleTwilioTask = async task => {
   let channelSid: string;
   let serviceSid: string;
   const conversationMedia: ConversationMedia[] = [];
 
   if (!isTwilioTask(task)) {
-    return { conversationMedia, channelSid, serviceSid, externalRecordingInfo: undefined };
+    return {
+      conversationMedia,
+      channelSid,
+      serviceSid,
+      externalRecordingInfo: undefined,
+    };
   }
 
   if (TaskHelper.isChatBasedTask(task)) {
@@ -241,7 +258,7 @@ type NewHrmServiceContact = Omit<HrmServiceContact, 'id' | 'updatedAt' | 'update
 type HandleTwilioTaskResponse = {
   response: HrmServiceContact;
   request: NewHrmServiceContact;
-  externalRecordingInfo?: ExternalRecordingInfoSuccess;
+  externalRecordingInfo?: ExternalRecordingInfoSuccess | ExternalRecordingUnneeded;
 };
 /**
  * Function that saves the form to Contacts table.
@@ -273,7 +290,9 @@ const saveContactToHrm = async (
       ...createNewTaskEntry(currentDefinitionVersion)(false),
       callType: form.callType,
       metadata: form.metadata,
-      ...(isOfflineContactTask(task) && { contactlessTask: form.contactlessTask }),
+      ...(isOfflineContactTask(task) && {
+        contactlessTask: form.contactlessTask,
+      }),
     };
   }
 
@@ -354,7 +373,7 @@ export const saveContact = async (
   }
   return {
     contact: payloads.response,
-    externalRecordingInfo: payloads.externalRecordingInfo
+    externalRecordingInfo: payloads.externalRecordingInfo,
   };
 };
 

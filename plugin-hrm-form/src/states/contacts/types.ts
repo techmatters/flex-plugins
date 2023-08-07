@@ -16,7 +16,7 @@
 
 import { CallTypes, DataCallTypes } from 'hrm-form-definitions';
 
-import { CSAMReportEntry, ExternalRecordingInfo } from '../../types/types';
+import { CSAMReportEntry } from '../../types/types';
 import { ChannelTypes } from '../DomainConstants';
 import { DraftResourceReferralState, ResourceReferral } from './resourceReferral';
 import { ExistingContactsState } from './existingContacts';
@@ -130,7 +130,10 @@ type SetEditingContact = {
   editing: boolean;
 };
 
-type CheckButtonDataAction = { type: typeof SET_CALL_TYPE; isCallTypeCaller: boolean };
+type CheckButtonDataAction = {
+  type: typeof SET_CALL_TYPE;
+  isCallTypeCaller: boolean;
+};
 
 export type ContactsActionType =
   | UpdateFormAction

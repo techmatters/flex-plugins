@@ -93,12 +93,7 @@ export const submitContactForm = async (task: CustomITask, contactForm: ContactF
     }
   }
 
-  const { contact: savedContact, externalRecordingInfo } = await saveContact(
-    task,
-    contactForm,
-    workerSid,
-    task.taskSid,
-  );
+  const { contact: savedContact } = await saveContact(task, contactForm, workerSid, task.taskSid);
 
   const finalAttributes = buildInsightsData(task, contactForm, caseForm, savedContact);
   await task.setAttributes(finalAttributes);
