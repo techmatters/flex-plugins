@@ -28,7 +28,7 @@ data "aws_iam_policy_document" "this" {
 }
 
 resource "aws_iam_user" "this" {
-  name = "${var.short_helpline}-${var.short_environment}-twilio-external-recordings"
+  name = "${lower(var.short_helpline)}-${var.environment}-twilio-external-recordings"
 
   tags = {
     environment = var.environment
@@ -39,7 +39,7 @@ resource "aws_iam_user" "this" {
 }
 
 resource "aws_iam_user_policy" "this" {
-  name   = "${var.short_helpline}-${var.short_environment}-twilio-external-recordings"
+  name   = "${var.short_helpline}-${var.environment}-twilio-external-recordings"
   user   = aws_iam_user.this.name
   policy = data.aws_iam_policy_document.this.json
 }

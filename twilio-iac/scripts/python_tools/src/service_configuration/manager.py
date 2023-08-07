@@ -1,11 +1,12 @@
 import json
 import os
 import signal
+from copy import deepcopy
 from pygments import highlight, lexers, formatters
 from termcolor import colored
 from .config import config
 from .remote_syncer import RemoteSyncer
-from .service_configuration import DeepDiff, ServiceConfiguration, get_dot_notation_path
+from .service_configuration import DeepDiff, ServiceConfiguration, get_dot_notation_path, set_nested_key
 
 
 def signal_handler(signal, frame):
@@ -196,6 +197,24 @@ def sync_apply(syncer: RemoteSyncer):
 def unlock(service_config: ServiceConfiguration):
     print_text('Unlocking service configuration...')
     service_config.cleanup()
+
+
+def update_prop(service_config: ServiceConfiguration):
+    print_text('Updating service configuration...')
+    local_env_config = deepcopy(
+        service_config.local_configs['environment']['data'])
+
+    set_nested_key(local_env_config, config.prop, config.value)
+
+    with open(service_config.get_config_path('environment'), 'w') as f:
+        json.dump(
+            local_env_config, f, indent=4, sort_keys=True)
+
+    service_config.init_local_state()
+    service_config.init_new_state()
+    service_config.init_plan()
+
+    apply(service_config)
 
 
 def cleanup_and_exit(code: int = 0):
