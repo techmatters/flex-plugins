@@ -221,7 +221,7 @@ export const getFileUploadUrl = async (fileName: string, mimeType: string) => {
  */
 export const getExternalRecordingS3Location = async (callSid: string) => {
   const body = { callSid };
-  const response = await fetchProtectedApi('/getExternalRecordingData', body);
+  const response = await fetchProtectedApi('/getExternalRecordingS3Location', body);
   return response;
 };
 

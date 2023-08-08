@@ -19,9 +19,17 @@ type ExternalRecordingInfoFailure = {
   error: string;
 };
 
-const isSuccessfulExternalRecordingInfo = r => r && r.status === 'success';
-const isUnneededExternalRecordingInfo = r => r && r.status === 'unneeded';
-const isFailureExternalRecordingInfo = r => r && r.status === 'failure';
+export const isSuccessfulExternalRecordingInfo = (r: any): r is ExternalRecordingInfoSuccess => {
+  return r && r.status === 'success';
+};
+
+const isUnneededExternalRecordingInfo = (r: any): r is ExternalRecordingUnneeded => {
+  return r && r.status === 'unneeded';
+};
+
+export const isFailureExternalRecordingInfo = (r: any): r is ExternalRecordingInfoFailure => {
+  return r && r.status === 'failure';
+};
 
 export type ExternalRecordingInfo =
   | ExternalRecordingInfoSuccess
@@ -40,8 +48,6 @@ export const getExternalRecordingInfo = async (task: CustomITask): Promise<Exter
 
   const { externalRecordingsEnabled, hrmBaseUrl } = getHrmConfig();
   if (!externalRecordingsEnabled) return unneededRecordingInfo;
-
-  console.log(JSON.stringify(task.attributes));
 
   // The call id related to the worker is always the one with the recording, as far as I can tell (rbd)
   const callSid = task.attributes.conference?.participants?.worker;

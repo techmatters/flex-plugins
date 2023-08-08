@@ -45,10 +45,11 @@ import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
 import { TaskEntry } from '../states/contacts/types';
 import {
-  ExternalRecordingInfo,
   ExternalRecordingInfoSuccess,
   ExternalRecordingUnneeded,
   getExternalRecordingInfo,
+  isFailureExternalRecordingInfo,
+  isSuccessfulExternalRecordingInfo,
 } from './getExternalRecordingInfo';
 
 type NestedInformation = { name?: { firstName: string; lastName: string } };
@@ -205,18 +206,15 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
 }
 
 type HandleTwilioTaskResponse = {
-  channelSid: string;
-  serviceSid: string;
+  channelSid?: string;
+  serviceSid?: string;
   conversationMedia: ConversationMedia[];
-  externalRecordingInfo: ExternalRecordingInfoSuccess | ExternalRecordingUnneeded;
+  externalRecordingInfo?: ExternalRecordingInfoSuccess | ExternalRecordingUnneeded;
 };
 
 const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> => {
   const returnData = {
-    channelSid: undefined,
-    serviceSid: undefined,
     conversationMedia: [],
-    externalRecordingInfo: undefined,
   };
 
   if (!isTwilioTask(task)) {
@@ -243,13 +241,14 @@ const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> => {
     });
   }
 
-  const externalRecordingInfo = await getExternalRecordingInfo(task);
-  if (externalRecordingInfo.status === 'failure') {
+  returnData.externalRecordingInfo = await getExternalRecordingInfo(task);
+  const { externalRecordingInfo } = returnData;
+  if (isFailureExternalRecordingInfo(externalRecordingInfo)) {
     throw new Error(`Error getting external recording info: ${externalRecordingInfo.error}`);
   }
 
-  if (externalRecordingInfo.status === 'success') {
-    const { bucket, key, recordingSid } = externalRecordingInfo;
+  if (isSuccessfulExternalRecordingInfo(externalRecordingInfo)) {
+    const { bucket, key } = externalRecordingInfo;
     returnData.conversationMedia.push({
       store: 'S3',
       type: 'RECORDING',
@@ -313,7 +312,6 @@ const saveContactToHrm = async (
   const timeOfContact = new Date(getDateTime(rawForm.contactlessTask)).toISOString();
 
   const { helpline, csamReports, referrals } = form;
-
   const { conversationMedia, channelSid, serviceSid, externalRecordingInfo } = await handleTwilioTask(task);
 
   /*
