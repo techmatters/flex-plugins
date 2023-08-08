@@ -234,7 +234,7 @@ const extractSiteDetails = (resource: Attributes, sites: Attributes, language: L
       siteId,
       name: getAttributeValue(site, language, 'name') || getAttributeValue(site, language, 'nameDetails'),
       location,
-      email: getAttributeValue(site, '', 'name'),
+      email: getAttributeValue(site, '', 'email'),
       operations: extractSiteOperatingHours(siteId, operationsAttributes, siteOperations, language),
       isActive: getBooleanAttributeValue(site, 'isActive'),
       details: getAttributeData(site, language, 'details')?.info?.details ?? '',
