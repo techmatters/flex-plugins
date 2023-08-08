@@ -41,6 +41,11 @@
     ]
   },
   {
+    "name": "otherAbuseDetails",
+    "label": "If Other, Provide Details",
+    "type": "input"
+  },
+  {
     "name": "safetyPlan",
     "label": "Safety plan created with the service user",
     "type": "checkbox"
