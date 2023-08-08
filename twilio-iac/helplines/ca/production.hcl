@@ -94,6 +94,7 @@ locals {
           g2ttr_queue_sid: "WQb003ea620f2a0d7d2fbb5049a2b24762"
 
           #Recording URLs
+          intro_url: "https://twilio-service-4854.twil.io/G2TNS_Intro.mp3"
           en_function_url: "https://twilio-service-4854.twil.io/6015_g2tns_english"
           fr_function_url: "https://twilio-service-4854.twil.io/6016_g2tns_french"
           tr_function_url: "https://twilio-service-4854.twil.io/6019_g2t_interpreter"
@@ -118,10 +119,13 @@ locals {
       }
     }
     phone_numbers = {
-      khp : ["+18252547345"],
+      khp : ["+12268878353"],
       g2ton : ["+13656546095", "+13656546120"],
       g2ttr : ["+13656546032", "+13656546120"],
-      g2tns : ["+15878043655", "+15878044316"]
+      g2tns : ["+15878043655", "+15878044316"],
+      ab211 : ["+15877412408", "+15876095765"],
+      hc : ["+13656540516", "+13656520724"],
+      training : ["+18252547345"]
     }
 
     hrm_transcript_retention_days_override = 90

@@ -93,6 +93,7 @@ locals {
           g2ttr_queue_sid: "WQe668c7c05bfb1a0748635e7ef0a2b30e"
 
           #Recording URLs
+          intro_url: "https://test-service-dee-4583.twil.io/G2TNS_Intro.mp3"
           en_function_url: "https://test-service-dee-4583.twil.io/6015_g2tns_english"
           fr_function_url: "https://test-service-dee-4583.twil.io/6016_g2tns_french"
           tr_function_url: "https://test-service-dee-4583.twil.io/6019_g2t_interpreter"
@@ -118,10 +119,13 @@ locals {
     }
     #Task router
     phone_numbers = {
-      khp : ["+15878407089"],
+      khp : ["+12048186655", "+15878407089"],
       g2ton : ["+18446052258", "+18559768844"],
       g2ttr: ["+18882913868", "+18559768844"],
-      g2tns : ["+15814810744", "+15812215204"]
+      g2tns : ["+15814810744", "+15812215204"],
+      ab211 : ["+13656495517", "+15063065053"],
+      hc : ["+12264070015", "+17787663852"],
+      training: ["+15878407089"]
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true

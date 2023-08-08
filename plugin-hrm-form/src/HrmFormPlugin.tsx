@@ -149,7 +149,7 @@ const setUpActions = (
   const transferOverride = ActionFunctions.customTransferTask(setupObject);
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject, getMessage);
   const beforeCompleteAction = ActionFunctions.beforeCompleteTask(featureFlags);
-  const afterWrapupAction = ActionFunctions.afterWrapupTask(featureFlags, setupObject);
+  // const afterWrapupAction = ActionFunctions.afterWrapupTask(featureFlags, setupObject);
 
   Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
 
@@ -166,7 +166,7 @@ const setUpActions = (
 
   Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
 
-  Flex.Actions.addListener('afterWrapupTask', afterWrapupAction);
+  // Flex.Actions.addListener('afterWrapupTask', afterWrapupAction);
 
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
 

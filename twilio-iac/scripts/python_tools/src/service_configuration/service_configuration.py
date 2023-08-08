@@ -1,9 +1,9 @@
 import json
 from copy import deepcopy
 from deepdiff import DeepDiff
-from deepmerge import always_merger, Merger
+from deepmerge import always_merger
 from os.path import exists as path_exists
-from typing import List, TypedDict, Unpack
+from typing import TypedDict, Unpack
 from ..aws import SSMClient
 from ..twilio import Twilio
 from .constants import AWS_ROLE_ARN

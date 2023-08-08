@@ -58,8 +58,12 @@ locals {
         "friendly_name"  = "Good2Talk Interpreter"
       },
       interpreter_en : {
-        "target_workers" = "routing.skills HAS 'Interpreter' ",
-        "friendly_name"  = "Interpreter"
+        "target_workers" = "routing.skills HAS 'KHP Interpreter' ",
+        "friendly_name"  = "KHP Interpreter"
+      },
+      interpreter_fr : {
+        "target_workers" = "routing.skills HAS 'French Interpreter' ",
+        "friendly_name"  = "French Interpreter"
       },
       supervisor : {
         "target_workers" = "routing.skills HAS 'Supervisor'",
@@ -69,11 +73,11 @@ locals {
         "target_workers" = "routing.skills HAS 'Training'",
         "friendly_name"  = "Training"
       },
-      health_canada_en : {
+      hc_en : {
         "target_workers" = "routing.skills HAS 'HCENG'",
         "friendly_name"  = "Health Canada English"
       },
-      health_canada_fr : {
+      hc_fr : {
         "target_workers" = "routing.skills HAS 'HCFR'",
         "friendly_name"  = "Health Canada French"
       },
@@ -86,8 +90,8 @@ locals {
         "friendly_name"  = "Chat French"
       },
       indigenous : {
-        "target_workers" = "routing.skills HAS 'Indigenous [Interpreter]'",
-        "friendly_name"  = "Indigenous [Interpreter]"
+        "target_workers" = "routing.skills HAS 'Indigenous/Interpreter'",
+        "friendly_name"  = "Indigenous/Interpreter"
       },
       e2e_test : {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
