@@ -212,7 +212,7 @@ type HandleTwilioTaskResponse = {
   externalRecordingInfo?: ExternalRecordingInfoSuccess | ExternalRecordingUnneeded;
 };
 
-const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> => {
+export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> => {
   const returnData = {
     conversationMedia: [],
   };

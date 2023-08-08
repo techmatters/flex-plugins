@@ -18,7 +18,8 @@
 
 import { DefinitionVersion, DefinitionVersionId } from 'hrm-form-definitions';
 
-const baseMockConfig = {
+export const baseMockConfig = {
+  accountSid: 'ACfake',
   hrmBaseUrl: 'http://fake.hrm.com',
   serverlessBaseUrl: 'http://fake.protected.com',
   assetsBucketUrl: 'http://assets.fake.com',
