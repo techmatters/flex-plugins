@@ -114,7 +114,9 @@ locals {
           fr_issues_url: "https://twilio-service-4854.twil.io/FrTechIssues.mp3"
           fr_switch_english_url: "https://twilio-service-4854.twil.io/FrSwitchEnglish.mp3"
 
-        },
+        }
+        chatbot_unique_names = []
+      },
       khp_main : {
         channel_type         = "voice"
         contact_identity     = ""
@@ -156,6 +158,39 @@ locals {
           fr_switch_url: "https://twilio-service-4854.twil.io/FrSwitchInterpreter.mp3"
           ind_subintro_url: "https://twilio-service-4854.twil.io/KHP_SubIntro_Indigenous.mp3"
           cyara_url: "https://twilio-service-4854.twil.io/cyara-vq-testaudio.wav"
+
+        }
+        chatbot_unique_names = []
+      },
+      hc : {
+        channel_type         = "voice"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/g2tns.tftpl"
+        channel_flow_vars    = {
+
+          #Twilio things
+          check_counsellors_function_sid: "ZH95bed62f9c0af98771e01cba4bd86d1f"
+          check_counsellors_function_url: "https://twilio-service-4854.twil.io/check_counsellors"
+          hcfr_queue_sid: "WQ68c87b0132af573d34ddc0acfb68b35f"
+
+          #Recording URLs
+          main_url: "https://twilio-service-4854.twil.io/HCMain.mp3"
+          en_function_url: "https://twilio-service-4854.twil.io/6017_hc_english"
+          fr_function_url: "https://twilio-service-4854.twil.io/6018_hc_french"
+          en_tos_url: "https://twilio-service-4854.twil.io/KHPENToS.mp3"
+          fr_tos_url: "https://twilio-service-4854.twil.io/KHPFRToS.mp3"
+          en_privacy_url: "https://twilio-service-4854.twil.io/KHPENPrivacy.mp3"
+          fr_privacy_url: "https://twilio-service-4854.twil.io/KHPFRPrivacy.mp3"
+          en_invalid_url: "https://twilio-service-4854.twil.io/EnInvalid.mp3"
+          fr_invalid_url: "https://twilio-service-4854.twil.io/FrInvalid.mp3"
+          en_disconnect_url: "https://twilio-service-4854.twil.io/EnDisconnect.mp3"
+          fr_disconnect_url: "https://twilio-service-4854.twil.io/FrDisconnect.mp3"
+          en_intro_url: "https://twilio-service-4854.twil.io/MSG10006E.mp3"
+          fr_intro_url: "https://twilio-service-4854.twil.io/MSG10006F.mp3"
+          en_inflight_url: "https://twilio-service-4854.twil.io/Msg60011E.mp3"
+          fr_inflight_url: "https://twilio-service-4854.twil.io/Msg60021.mp3"
+          fr_issues_url: "https://twilio-service-4854.twil.io/FrTechIssues.mp3"
+          fr_switch_english_url: "https://twilio-service-4854.twil.io/FrSwitchEnglish.mp3"
 
         }
         chatbot_unique_names = []
