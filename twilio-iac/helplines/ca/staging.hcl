@@ -113,6 +113,49 @@ locals {
           fr_issues_url: "https://test-service-dee-4583.twil.io/FrTechIssuesmp3"
           fr_switch_english_url: "https://test-service-dee-4583.twil.io/FrSwitchEnglish.mp3"
 
+        },
+      khp_main : {
+        channel_type         = "voice"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/g2tns.tftpl"
+        channel_flow_vars    = {
+
+          #Twilio things
+          check_counsellors_function_sid: "ZHa0218fd2a7b2e3aa800ab78e0367acf7"
+          check_counsellors_function_url: "https://test-service-dee-4583.twil.io/check_counsellors"
+          khpen_queue_sid: "WQc92043986a3a474a991125031a0acb55"
+          khpfr_queue_sid: "WQ35e4fceff9d82cc1d9ce2a49a1c93330"
+          khptr_queue_sid: "WQ8351ee438539d776c083c4286f51bad9"
+          khpfrtr_queue_sid: "WQc628604231d70284771389da92867ae9"
+          khpind_queue_sid: "WQ332b547dac5e90660af40138ab002f05"
+
+          #Recording URLs
+          menu_url: ""
+          en_function_url: "https://test-service-dee-4583.twil.io/6001_khp_english"
+          fr_function_url: "https://test-service-dee-4583.twil.io/6002_khp_french"
+          tr_function_url: "https://test-service-dee-4583.twil.io/6003_khp_int"
+          frtr_function_url: "https://test-service-dee-4583.twil.io/6004_khp_french_int"
+          ind_function_url: "https://test-service-dee-4583.twil.io/6005_khp_ind_int"
+          en_tos_url: "https://test-service-dee-4583.twil.io/KHPENToS.mp3"
+          fr_tos_url: "https://test-service-dee-4583.twil.io/KHPFRToS.mp3"
+          en_privacy_url: "https://test-service-dee-4583.twil.io/KHPENPrivacy.mp3"
+          fr_privacy_url: "https://test-service-dee-4583.twil.io/KHPFRPrivacy.mp3"
+          en_invalid_url: "https://test-service-dee-4583.twil.io/EnInvalid.mp3"
+          fr_invalid_url: "https://test-service-dee-4583.twil.io/FrInvalid.mp3"
+          en_disconnect_url: "https://test-service-dee-4583.twil.io/EnDisconnect.mp3"
+          fr_disconnect_url: "https://test-service-dee-4583.twil.io/FrDisconnect.mp3"
+          en_intro_url: "https://test-service-dee-4583.twil.io/Msg10006E.mp3"
+          fr_intro_url: "https://test-service-dee-4583.twil.io/MSG10006F.mp3"
+          tr_intro_url: ""
+          en_inflight_url: "https://test-service-dee-4583.twil.io/Msg60011E.mp3"
+          fr_inflight_url: "https://test-service-dee-4583.twil.io/Msg60021.mp3"
+          tr_inflight_url: "https://test-service-dee-4583.twil.io/Msg60011Tr.mp3"
+          fr_nocounsellors_url: "https://test-service-dee-4583.twil.io/Msg60025.mp3"
+          fr_issues_url: "https://test-service-dee-4583.twil.io/FrTechIssuesmp3"
+          fr_switch_url: "https://test-service-dee-4583.twil.io/FrSwitchInterpreter.mp3"
+          ind_subintro_url: "https://test-service-dee-4583.twil.io/KHP_SubIntro_Indigeneous.mp3"
+          cyara_url: "https://test-service-dee-4583.twil.io/cyara-vq-testaudio.wav"
+
         }
         chatbot_unique_names = []
       }
