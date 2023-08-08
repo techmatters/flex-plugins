@@ -50,7 +50,7 @@ const getBooleanAttributeValue = (attributes: Attributes | undefined, keyName: s
   return Boolean(value);
 };
 
-const getAttributeValues = (attributes: Attributes | undefined, language: Language, keyName: string) => {
+const getAttributeDataItems = (attributes: Attributes | undefined, language: Language, keyName: string) => {
   const propVal = (attributes ?? {})[keyName];
   if (!propVal || Array.isArray(propVal)) {
     return [];
@@ -60,8 +60,15 @@ const getAttributeValues = (attributes: Attributes | undefined, language: Langua
     .filter(v => v);
 };
 
+const getAttributeNode = (attributes: Attributes | undefined, keyName: string): Attributes => {
+  const propVal = (attributes ?? {})[keyName];
+  if (!propVal || Array.isArray(propVal)) {
+    return {};
+  }
+  return propVal;
+};
 const getAttributeValuesAsCsv = (attributes: Attributes | undefined, language: Language, keyName: string) =>
-  getAttributeValues(attributes, language, keyName)
+  getAttributeDataItems(attributes, language, keyName)
     .map(attributeData => extractAttributeValue(attributeData))
     .join(', ');
 
@@ -151,23 +158,21 @@ const extractSiteOperatingHours = (
   if (resourceOperationsList) {
     const sets = Object.values(resourceOperationsList);
     const siteResourceOperations = siteId
-      ? sets.find(s => !Array.isArray(s) && Array.isArray(s.siteId) && s.siteId[0].value === siteId)
+      ? sets.find(s => !Array.isArray(s) && getAttributeValue(s, '', 'siteId') === siteId)
       : undefined;
     if (siteResourceOperations && !Array.isArray(siteResourceOperations)) {
       // The top level resource operations set should include a set of operations for each site, linked via siteId
       return extractOperatingHours(siteResourceOperations, language);
-    } else if (Array.isArray(siteOperations) && siteOperations.length > 0) {
-      /*
-       * If there is no set of operations for this resource at this site, return the operations from the site object (assuming there is one, if not return empty array)
-       * Unsure as to the use case for a site having more than one set of operations, but let's just return the first one
-       */
-      return extractOperatingHours(siteOperations[0], language);
+    } else if (siteOperations) {
+      // If there is no set of operations for this resource at this site, return the operations from the site object (assuming there is one, if not return empty array)
+      return extractOperatingHours(siteOperations, language);
     }
   }
   return [];
 };
 
-const extractSiteLocation = location => {
+const extractSiteLocation = (site: Attributes) => {
+  const location = getAttributeNode(site, 'location');
   return {
     address1: getAttributeValue(location, '', 'address1'),
     address2: getAttributeValue(location, '', 'address2'),
@@ -180,16 +185,11 @@ const extractSiteLocation = location => {
   };
 };
 
-const extractPhoneNumbers = (phoneObj: any) => {
+const extractPhoneNumbers = (phoneObj: Attributes) => {
   const phoneNumbers = {};
-  for (const key in phoneObj ?? {}) {
-    if (phoneObj.hasOwnProperty(key)) {
-      const phoneData = phoneObj[key];
-      if (phoneData[0].hasOwnProperty('value')) {
-        phoneNumbers[key] = phoneData[0].value;
-      }
-    }
-  }
+  Object.keys(phoneObj ?? {}).forEach(key => {
+    phoneNumbers[key] = getAttributeValue(phoneObj, '', key);
+  });
   return phoneNumbers;
 };
 
@@ -207,49 +207,40 @@ const extractCoverageItemDescription = (coverageData: AttributeData, language: s
 };
 
 const extractCoverage = (coverage: Attributes, language: Language, siteId: string = null): string => {
-  if (!Array.isArray(coverage)) {
-    const coverageList = Object.values(coverage ?? {});
-    return coverageList
-      .filter(item => {
-        if (!Array.isArray(item)) {
-          return false;
-        }
-        const itemSiteId = item[0]?.info?.siteId;
-        return (!siteId && !itemSiteId) || (siteId && itemSiteId === siteId);
-      })
-      .map(coverageItems => extractCoverageItemDescription(coverageItems[0], language))
-      .filter(ci => ci)
-      .join('\n');
-  }
-  return '';
+  const coverageList = Object.values(coverage ?? {});
+  return coverageList
+    .filter(item => {
+      if (!Array.isArray(item)) {
+        return false;
+      }
+      const itemSiteId = item[0]?.info?.siteId;
+      return (!siteId && !itemSiteId) || (siteId && itemSiteId === siteId);
+    })
+    .map(coverageItems => extractCoverageItemDescription(coverageItems[0], language))
+    .filter(ci => ci)
+    .join('\n');
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const extractSiteDetails = (resource: Attributes, sites: Attributes, language: Language) => {
   const siteDetails = [];
-  if (!Array.isArray(sites)) {
-    const siteList = Object.entries(sites ?? {});
-    for (const [key, site] of siteList) {
-      const langKey = language === 'fr' ? 1 : 0;
-      if (site && !Array.isArray(site)) {
-        const siteId = site.siteId?.[0]?.value;
-        const location = extractSiteLocation(site.location);
-        const operationsAttributes = Array.isArray(resource.operations) ? {} : resource.operations;
-        const coverageAttributes = Array.isArray(resource.coverage) ? {} : resource.coverage;
-        const siteOperations = Array.isArray(site.operations) ? {} : site.operations;
-        siteDetails.push({
-          siteId: key,
-          name: site.name?.[langKey]?.value || site.nameDetails?.[langKey]?.value || '',
-          location,
-          email: site.email?.[0]?.value || '',
-          operations: extractSiteOperatingHours(siteId, operationsAttributes, siteOperations, language),
-          isActive: site.isActive?.[0]?.value,
-          details: site.details?.[langKey]?.info?.description || '',
-          phoneNumbers: extractPhoneNumbers(site.phone),
-          coverage: extractCoverage(coverageAttributes, language, siteId),
-        });
-      }
-    }
+  const siteList = Object.keys(sites ?? {});
+  for (const siteId of siteList) {
+    const site = getAttributeNode(sites, siteId);
+    const location = extractSiteLocation(site);
+    const operationsAttributes = getAttributeNode(resource, 'operations');
+    const coverageAttributes = getAttributeNode(resource, 'coverage');
+    const siteOperations = getAttributeNode(site, 'operations');
+    siteDetails.push({
+      siteId,
+      name: getAttributeValue(site, language, 'name') || getAttributeValue(site, language, 'nameDetails'),
+      location,
+      email: getAttributeValue(site, '', 'name'),
+      operations: extractSiteOperatingHours(siteId, operationsAttributes, siteOperations, language),
+      isActive: getBooleanAttributeValue(site, 'isActive'),
+      details: getAttributeData(site, language, 'details')?.info?.details ?? '',
+      phoneNumbers: extractPhoneNumbers(getAttributeNode(site, 'phoneNumbers')),
+      coverage: extractCoverage(coverageAttributes, language, siteId),
+    });
   }
   return siteDetails;
 };
@@ -277,7 +268,7 @@ const extractRequiredDocuments = (documentsRequired, language: Language) => {
 const extractTargetPopulation = targetPopulationAttribute => ((targetPopulationAttribute ?? [])[0] ?? [])[0]?.value;
 
 const extractLanguages = (resource: Attributes) =>
-  getAttributeValues(resource, '', 'languages')
+  getAttributeDataItems(resource, '', 'languages')
     .map(attributeData => {
       const language = attributeData?.info?.language;
       if (language && typeof language === 'string') {
