@@ -30,8 +30,7 @@ const getAttributeData = (attributes: Attributes | undefined, language: Language
   return undefined;
 };
 
-const getAttributeValue = (attributes: Attributes | undefined, language: Language, keyName: string) => {
-  const { value } = getAttributeData(attributes, language, keyName) ?? {};
+const extractAttributeValue = ({ value }: AttributeData) => {
   if (typeof value === 'boolean') {
     if (value) {
       return 'Yes';
@@ -41,21 +40,30 @@ const getAttributeValue = (attributes: Attributes | undefined, language: Languag
   return (value ?? '').toString();
 };
 
+const getAttributeValue = (attributes: Attributes | undefined, language: Language, keyName: string) =>
+  extractAttributeValue(
+    getAttributeData(attributes, language, keyName) ?? { value: undefined, language: '', info: null },
+  );
+
 const getBooleanAttributeValue = (attributes: Attributes | undefined, keyName: string) => {
   const { value } = getAttributeData(attributes, '', keyName) ?? {};
   return Boolean(value);
 };
 
-const getAttributeValuesAsCsv = (attributes: Attributes | undefined, language: Language, keyName: string) => {
+const getAttributeValues = (attributes: Attributes | undefined, language: Language, keyName: string) => {
   const propVal = (attributes ?? {})[keyName];
   if (!propVal || Array.isArray(propVal)) {
-    return '';
+    return [];
   }
   return Object.keys(propVal)
-    .map(itemKey => getAttributeValue(propVal, language, itemKey))
-    .filter(v => v)
-    .join(', ');
+    .map(itemKey => getAttributeData(propVal, language, itemKey))
+    .filter(v => v);
 };
+
+const getAttributeValuesAsCsv = (attributes: Attributes | undefined, language: Language, keyName: string) =>
+  getAttributeValues(attributes, language, keyName)
+    .map(attributeData => extractAttributeValue(attributeData))
+    .join(', ');
 
 const extractAgeRange = (attributes: Attributes, language: Language) => {
   const eligibilityMinAge = getAttributeValue(attributes, language, 'eligibilityMinAge');
@@ -185,6 +193,37 @@ const extractPhoneNumbers = (phoneObj: any) => {
   return phoneNumbers;
 };
 
+const extractCoverageItemDescription = (coverageData: AttributeData, language: string): string => {
+  const coverageInfo = coverageData?.info;
+  if (coverageInfo) {
+    if (coverageInfo.country) {
+      // New coverage data format
+      return toCsv(coverageInfo.postalCode, coverageInfo.city, coverageInfo.region, coverageInfo.province);
+    }
+    // Legacy coverage data format
+    return coverageInfo[language] ?? coverageInfo.en;
+  }
+  return '';
+};
+
+const extractCoverage = (coverage: Attributes, language: Language, siteId: string = null): string => {
+  if (!Array.isArray(coverage)) {
+    const coverageList = Object.values(coverage ?? {});
+    return coverageList
+      .filter(item => {
+        if (!Array.isArray(item)) {
+          return false;
+        }
+        const itemSiteId = item[0]?.info?.siteId;
+        return (!siteId && !itemSiteId) || (siteId && itemSiteId === siteId);
+      })
+      .map(coverageItems => extractCoverageItemDescription(coverageItems[0], language))
+      .filter(ci => ci)
+      .join('\n');
+  }
+  return '';
+};
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const extractSiteDetails = (resource: Attributes, sites: Attributes, language: Language) => {
   const siteDetails = [];
@@ -196,6 +235,7 @@ const extractSiteDetails = (resource: Attributes, sites: Attributes, language: L
         const siteId = site.siteId?.[0]?.value;
         const location = extractSiteLocation(site.location);
         const operationsAttributes = Array.isArray(resource.operations) ? {} : resource.operations;
+        const coverageAttributes = Array.isArray(resource.coverage) ? {} : resource.coverage;
         const siteOperations = Array.isArray(site.operations) ? {} : site.operations;
         siteDetails.push({
           siteId: key,
@@ -206,6 +246,7 @@ const extractSiteDetails = (resource: Attributes, sites: Attributes, language: L
           isActive: site.isActive?.[0]?.value,
           details: site.details?.[langKey]?.info?.description || '',
           phoneNumbers: extractPhoneNumbers(site.phone),
+          coverage: extractCoverage(coverageAttributes, language, siteId),
         });
       }
     }
@@ -235,6 +276,18 @@ const extractRequiredDocuments = (documentsRequired, language: Language) => {
 
 const extractTargetPopulation = targetPopulationAttribute => ((targetPopulationAttribute ?? [])[0] ?? [])[0]?.value;
 
+const extractLanguages = (resource: Attributes) =>
+  getAttributeValues(resource, '', 'languages')
+    .map(attributeData => {
+      const language = attributeData?.info?.language;
+      if (language && typeof language === 'string') {
+        return language;
+      }
+      return '';
+    })
+    .filter(l => l)
+    .join(', ');
+
 export const convertKHPResourceAttributes = (
   attributes: Attributes,
   language: Language,
@@ -244,6 +297,7 @@ export const convertKHPResourceAttributes = (
   }
   const sites = attributes.site && !Array.isArray(attributes.site) ? attributes.site : {};
   const operations = attributes.operations && !Array.isArray(attributes.operations) ? attributes.operations : undefined;
+  const coverage = attributes.coverage && !Array.isArray(attributes.coverage) ? attributes.coverage : undefined;
   return {
     status: getAttributeValue(attributes, language, 'status'),
     taxonomyCode: getAttributeValue(attributes, language, 'taxonomyCode'),
@@ -266,10 +320,12 @@ export const convertKHPResourceAttributes = (
     howToAccessSupport: getAttributeValuesAsCsv(attributes, language, 'howToAccessSupport'),
     applicationProcess: getAttributeValue(attributes, language, 'applicationProcess'),
     howIsServiceOffered: getAttributeValuesAsCsv(attributes, language, 'howIsServiceOffered'),
+    languagesServiced: extractLanguages(attributes),
     accessibility: getAttributeValue(attributes, language, 'accessibility'),
     documentsRequired: extractRequiredDocuments(attributes.documentsRequired, language),
     primaryLocationIsPrivate: getBooleanAttributeValue(attributes, 'primaryLocationIsPrivate'),
     primaryLocation: extractPrimaryLocation(attributes, language),
+    coverage: extractCoverage(coverage, language),
     site: extractSiteDetails(attributes, sites, language),
   };
 };
