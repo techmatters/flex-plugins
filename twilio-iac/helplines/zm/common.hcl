@@ -55,7 +55,13 @@ locals {
     }
 
     lex_bot_languages = {
-      
+      en_US : ["pre_survey", "language_selector"],
+      bem : ["pre_survey"],
+      kqn : ["pre_survey"],
+      loz : ["pre_survey"],
+      lun : ["pre_survey"],
+      nyz : ["pre_survey"],
+      toi : ["pre_survey"]
     }
 
   }

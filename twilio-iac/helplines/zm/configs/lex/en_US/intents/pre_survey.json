@@ -19,7 +19,7 @@
         "aboutSelf": {
             "priority": 0,
             "description": "Imported from question 'about_self'",
-            "slot_type": "Self",
+            "slot_type": "yes_no",
             "slot_constraint": "Required",
             "value_elicitation_prompt": {
               "content": "Are you calling about yourself? Please answer Yes or No.",
@@ -41,10 +41,10 @@
           "age": {
             "priority": 2,
             "description": "Imported from question 'age'",
-            "slot_type": "Age",
+            "slot_type": "age",
             "slot_constraint": "Required",
             "value_elicitation_prompt": {
-              "content": "How old are you?",
+              "content": "Thank you. You can say 'prefer not to answer' (or type X) to any question. \nHow old are you?",
               "content_type": "PlainText",
               "max_attempts": 2
             }
@@ -52,7 +52,7 @@
           "gender": {
             "priority": 3,
             "description": "Imported from question 'gender'",
-            "slot_type": "Gender",
+            "slot_type": "gender",
             "slot_constraint": "Required",
             "value_elicitation_prompt": {
               "content": "What is your gender?",
