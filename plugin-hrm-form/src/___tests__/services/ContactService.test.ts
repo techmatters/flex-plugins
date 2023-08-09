@@ -566,6 +566,7 @@ describe('transformCategories', () => {
 });
 
 describe('handleTwilioTask() (externalRecording)', () => {
+  // eslint-disable-next-line sonarjs/no-identical-functions
   beforeAll(() => {
     getHrmConfig.mockReturnValue({
       ...mockBaseConfig,
