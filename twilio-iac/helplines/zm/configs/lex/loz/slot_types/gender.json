@@ -1,0 +1,31 @@
+{
+    "gender": {
+        "description": "Helpline Specific zm/configs/lex/loz/slot_types Gender Slot Type",
+        "value_selection_strategy": "TOP_RESOLUTION",
+        "values": {
+            "Unknown": {
+                "synonyms": [
+                    "X"
+                ]
+            },
+            "Non-Binary": {
+                "synonyms": [
+                    "Kimazwi afi a bunolo a yitusisizwe mwa ngambolo"
+                ]
+            },
+            "Boy": {
+                "synonyms": [
+                    "Muna",
+                    "Mushimani"
+                ]
+            },
+            "Girl": {
+                "synonyms": [
+                    "wa musali",
+                    "Musali wa muna",
+                    "Musizana"
+                ]
+            }
+        }
+    }
+}

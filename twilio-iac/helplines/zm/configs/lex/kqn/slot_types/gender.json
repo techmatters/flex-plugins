@@ -1,0 +1,41 @@
+{
+    "gender": {
+        "description": "Helpline Specific zm/configs/lex/loz/slot_types Gender Slot Type",
+        "value_selection_strategy": "TOP_RESOLUTION",
+        "values": {
+            "Unknown": {
+                "synonyms": [
+                    "X"
+                ]
+            },
+            "Non-Binary": {
+                "synonyms": [
+                    "blonse biywanga pamo"
+                ]
+            },
+            "Girl": {
+                "synonyms": [
+                    "kazhi",
+                    "woman",
+                    "female",
+                    "wamukazhi",
+                    "inetu",
+                    "wamukazhi inetu",
+                    "nsongwa kazhi"
+                ]
+            },
+            "Boy": {
+                "synonyms": [
+                    "lume",
+                    "shetu",
+                    "kwamba",
+                    "mwakonsha",
+                    "mukwipipisha",
+                    "mwakonsha kwamba",
+                    "wamulume shetu",
+                    "nsogwa lume"
+                ]
+            }
+        }
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "helpline": {
+      "description": "Helpline Specific zm/configs/lex/loz/slot_types Gender Slot Type",
+      "value_selection_strategy": "TOP_RESOLUTION",
+      "values": {
+     
+      }
+    }
+  }
