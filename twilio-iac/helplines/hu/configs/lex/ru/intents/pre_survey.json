@@ -2,28 +2,6 @@
   "pre_survey": {
     "description": "Helpline Specific configs/lex/en_JM/intents Pre Survey Intent Survey intent",
     "sample_utterances": [
-      "H",
-      "Hi",
-      "Hello",
-      "Help",
-      "I need help",
-      "Pls",
-      "Please",
-      "Waah gwaan",
-      "How yuh do",
-      "Big up",
-      "Respect",
-      "Mi deh yah",
-      "Bless up",
-      "Link up",
-      "One love",
-      "Jah guide",
-      "Mi soon come",
-      "Wha gwaan",
-      "Mi deh pon di beach",
-      "Mi rate di vibes",
-      "Link mi up",
-      "Mi deh pon di corner",
       "Incoming webchat contact",
       "trigger_pre_survey"
     ],
@@ -35,7 +13,7 @@
       "content_type": "PlainText"
     },
     "rejection_statement": {
-      "content": "Мне жаль, я этого не понимаю.",
+      "content": "Мне жаль, я этого не понимаю. Сейчас тебе ответит наш оператор, с которым ты сможешь поговорить.",
       "content_type": "PlainText"
     },
     "slots": {
