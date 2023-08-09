@@ -23,7 +23,7 @@
         "slot_constraint": "Required",
         "slot_type": "language",
         "value_elicitation_prompt": {
-          "content": "What language do you speak? Please select from the below supported languages: \n 1. English \n 2. Maltese \n 3. Ukranian",
+          "content": "What language do you speak? Please select from the below supported languages: \n 1. English \n 2. Maltese \n 3. Ukrainian",
           "content_type": "PlainText",
           "max_attempts": 2
         }
