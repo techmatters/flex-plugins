@@ -24,7 +24,7 @@
         "value_elicitation_prompt": {
           "content": "Qed iċċempel dwarek innifsek? Jekk jogħġbok wieġeb Iva jew Le",
           "content_type": "PlainText",
-          "max_attempts": 3
+          "max_attempts": 2
         }
       },
       "age": {
@@ -35,7 +35,7 @@
         "value_elicitation_prompt": {
           "content": "Kemm għandek żmien?",
           "content_type": "PlainText",
-          "max_attempts": 3
+          "max_attempts": 2
         }
       },
       "gender": {
@@ -46,7 +46,7 @@
         "value_elicitation_prompt": {
           "content": "X'inhu s-sess tiegħek? \n 1. Mara \n 2. Raġel \n 3. Oħrajn \n 4. Ma nixtieqx naghti risposta",
           "content_type": "PlainText",
-          "max_attempts": 3
+          "max_attempts": 2
         }
       },
       "feeling": {
@@ -57,7 +57,7 @@
         "value_elicitation_prompt": {
           "content": "Kif qed tħossok?  Tista' tikteb in-numru jew il-kelma li tapplika għalik. \n 1. Ferħan \n 2. Konfuż \n 3. Rrabjat \n 4. Ixxukkjat \n 5. Begħzan \n 6. Inċert ",
           "content_type": "PlainText",
-          "max_attempts": 3
+          "max_attempts": 2
         }
       }
     }
