@@ -23,7 +23,7 @@
         "slot_constraint": "Required",
         "slot_type": "yes_no",
         "value_elicitation_prompt": {
-          "max_attempts": 3,
+          "max_attempts": 2,
           "content": "Welcome to the helpline. To help us better serve you, please answer the following questions. You can say 'prefer not to answer' (or type X) to any question. \n Are you calling about yourself? Please answer Yes or No.",
           "content_type": "PlainText"
         }
@@ -34,7 +34,7 @@
         "slot_constraint": "Required",
         "slot_type": "age",
         "value_elicitation_prompt": {
-          "max_attempts": 3,
+          "max_attempts": 2,
           "content": "Thank you. How old are you?",
           "content_type": "PlainText"
         }
@@ -58,7 +58,7 @@
         "value_elicitation_prompt": {
           "content": "What parish are you located in?",
           "content_type": "PlainText",
-          "max_attempts": 3
+          "max_attempts": 2
         }
       },
       "howDidYouKnowAboutOurLine": {
@@ -69,7 +69,7 @@
         "value_elicitation_prompt": {
           "content": "How did you hear about us? Please select one: \n 1: Advertisement \n 2: Social Media \n 3: SMS/Text Message \n 4: Traditional Media \n 5: Word of Mouth",
           "content_type": "PlainText",
-          "max_attempts": 3
+          "max_attempts": 2
         }
       }
     }
