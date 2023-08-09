@@ -8,11 +8,11 @@
       "type": "ReturnIntent"
     },
     "conclusion_statement": {
-      "content": "Ha nittrasferuk lil wieħed Proffesjonist/a tagħna..",
+      "content": "Ha nittrasferuk lil wieħed Proffesjonist/a tagħna.",
       "content_type": "PlainText"
     },
     "rejection_statement": {
-      "content": "Sorry, mhux nista' ngħin f'dan iż-żmien.",
+      "content": "Sorry, mhux nista' ngħin f'dan iż-żmien. Ha nittrasferuk lil wieħed Proffesjonist/a tagħna.",
       "content_type": "PlainText"
     },
     "slots": {
