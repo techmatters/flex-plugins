@@ -24,7 +24,7 @@
         "value_elicitation_prompt": {
           "content": "Ти звертаєшся з приводу себе? так або ні",
           "content_type": "PlainText",
-          "max_attempts": 3
+          "max_attempts": 2
         }
       },
       "age": {
@@ -35,7 +35,7 @@
         "value_elicitation_prompt": {
           "content": "Скільки тобі років?",
           "content_type": "PlainText",
-          "max_attempts": 3
+          "max_attempts": 2
         }
       },
       "gender": {
@@ -46,7 +46,7 @@
         "value_elicitation_prompt": {
           "content": "Яка у вас стать? \n 1. Жінка \n 2. Чоловік \n 3. Інші \n 4. Не хочу відповідати ",
           "content_type": "PlainText",
-          "max_attempts": 3
+          "max_attempts": 2
         }
       },
       "feeling": {
@@ -57,7 +57,7 @@
         "value_elicitation_prompt": {
           "content": "HЯк ти себе почуваєш? \n 1. Щасливий \n 2. Збентежений \n 3. Злий \n 4. Шокований \n 5. Переляканий \n 6. Розгублений ",
           "content_type": "PlainText",
-          "max_attempts": 3
+          "max_attempts": 2
         }
       }
     }
