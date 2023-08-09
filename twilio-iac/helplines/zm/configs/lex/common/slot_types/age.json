@@ -1,6 +1,6 @@
 {
     "age": {
-      "description": "General zm/configs/lex/loz/slot_types Age Slot Type",
+      "description": "Helpline Specific zm/configs/lex/common/slot_types Age Slot Type",
       "value_selection_strategy": "TOP_RESOLUTION",
       "values": {
         "1": {

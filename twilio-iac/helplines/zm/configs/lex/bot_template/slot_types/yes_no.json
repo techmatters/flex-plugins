@@ -1,9 +1,0 @@
-{
-    "yes_no": {
-      "description": "Specific zm/configs/lex/loz/slot_types slot type for Yes-No kind of questions",
-      "value_selection_strategy": "TOP_RESOLUTION",
-      "values": {
-      
-      }
-    }
-  }

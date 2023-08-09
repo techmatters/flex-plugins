@@ -1,6 +1,6 @@
 {
     "pre_survey": {
-      "description": "Helpline Specific helplines/zm/configs/lex/loz/intents Pre Survey Intent",
+      "description": "Helpline Specific helplines/zm/configs/lex//intents Pre Survey Intent",
       "sample_utterances": [
         "trigger_pre_survey"
       ],
@@ -8,7 +8,7 @@
         "type": "ReturnIntent"
       },
       "conclusion_statement": {
-        "content": "Luka kuisa ku mwelezi, u libelele hanyani.",
+        "content": "Chuna kuitemesha ahembeleliku chanti kundi ankhong'u.",
         "content_type": "PlainText"
       },
       "rejection_statement": {
@@ -22,7 +22,7 @@
             "slot_type": "yes_no",
             "slot_constraint": "Required",
             "value_elicitation_prompt": {
-              "content": "Kiwena ya liza kapa cwani? Alaba eni kapa batili.",
+              "content": "Muna kuchumina enu aweni ndi? Mwakuli Eng'a hela Inehi.",
               "content_type": "PlainText",
               "max_attempts": 2
             }
@@ -33,7 +33,7 @@
             "slot_type": "helpline",
             "slot_constraint": "Required",
             "value_elicitation_prompt": {
-              "content": "Ki tusomani yelukami tusa? \n 1.LifeLine 933 (older than 18) \n 2.ChildLine 116 (18 years old or younger)",
+              "content": "Munachumi nenu tuyikwastiku ngal? \n 1.LifeLine 933 (older than 18) \n 2.ChildLine 116 (18 years old or younger)",
               "content_type": "PlainText",
               "max_attempts": 2
             }
@@ -44,7 +44,7 @@
             "slot_type": "age",
             "slot_constraint": "Required",
             "value_elicitation_prompt": {
-              "content": "Nitumezi wa kona ku salaba puzo yeli kaufela kapa ku nola x kwa puzo.\nUna ni lilimo ze kai?",
+              "content": "Kusakililaku mwani munachweshi kuhosha nemunakeng'a wanyi kuhosha shenuhu chilukilu cha x Hadi chihulu chidi chaka zhima.\nAdi Nayaka yakusemuka, ying'ai?",
               "content_type": "PlainText",
               "max_attempts": 2
             }
@@ -55,7 +55,7 @@
             "slot_type": "gender",
             "slot_constraint": "Required",
             "value_elicitation_prompt": {
-              "content": "U mushimani kapa u musizana?",
+              "content": "Udi weyala ndi wamumbanda?",
               "content_type": "PlainText",
               "max_attempts": 2
             }

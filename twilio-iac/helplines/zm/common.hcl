@@ -49,30 +49,9 @@ locals {
 
     #Channels
     channels = {
-      webchat : {
-        channel_type     = "web"
-        contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours.tftpl"
-        channel_flow_vars = {
-          chat_greeting_message = "Te damos la bienvenida a Línea Libre, tu mensaje fue recibido exitosamente, la conversación será asignada a uno/a de nuestros psicólogos/as en los próximos instantes."
-          widget_from           = "Linea Libre"
-        }
-        chatbot_unique_names = []
-      },
-      voice : {
-        channel_type     = "voice"
-        contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-no-chatbot-operating-hours.tftpl"
-        channel_flow_vars = {
-          voice_ivr_greeting_message = "Hola, estás comunicándote con Línea Libre, un canal que ofrece una primera atención psicológica, y que busca apoyarte y orientarte en lo que sea que estés pasando. Antes de conversar, nos gustaría contarte que trabajamos bajo el principio de protección. Si percibimos que tu integridad o la de un tercero puede estar en riesgo, haremos lo necesario para asegurar tu protección y bienestar. Por tu seguridad, esta llamada podría ser grabada."
-          voice_ivr_language         = "es-MX"
-        }
-        chatbot_unique_names = []
-      }
+    
     }
     phone_numbers = {
-      khp : ["????"],
-      g2t : ["????"],
     }
 
     lex_bot_languages = {

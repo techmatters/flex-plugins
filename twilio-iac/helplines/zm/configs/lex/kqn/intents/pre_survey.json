@@ -8,7 +8,7 @@
         "type": "ReturnIntent"
       },
       "conclusion_statement": {
-        "content": "We'll transfer you now. Please hold for a professional.",
+        "content": "Tusakwimi tuma pembelelai, pacheche ba nkwasho.",
         "content_type": "PlainText"
       },
       "rejection_statement": {
@@ -24,7 +24,7 @@
             "value_elicitation_prompt": {
               "content": "Mwena kwitumina anwe bene, mwitabe emwane nangwa ine.",
               "content_type": "PlainText",
-              "max_attempts": 3
+              "max_attempts": 2
             }
           },
           "helpline": {
@@ -33,9 +33,9 @@
             "slot_type": "helpline",
             "slot_constraint": "Required",
             "value_elicitation_prompt": {
-              "content": "",
+              "content": "Mwatuma amba twimikwashe ko byepi? \n 1.LifeLine 933 (older than 18) \n 2.ChildLine 116 (18 years old or younger)",
               "content_type": "PlainText",
-              "max_attempts": 3
+              "max_attempts": 2
             }
           },
           "age": {
@@ -44,9 +44,9 @@
             "slot_type": "age",
             "slot_constraint": "Required",
             "value_elicitation_prompt": {
-              "content": "Muji na myaka inga?",
+              "content": "Twasanta mwankosha nga kemwena kukeba ne kwamba, kubikapo x pajipusho. \nMuji na myaka inga?",
               "content_type": "PlainText",
-              "max_attempts": 3
+              "max_attempts": 2
             }
           },
           "gender": {
@@ -57,7 +57,7 @@
             "value_elicitation_prompt": {
               "content": "Mwibabalume nangwa babakazhi?",
               "content_type": "PlainText",
-              "max_attempts": 3
+              "max_attempts": 2
             }
           }
 

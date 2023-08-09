@@ -1,0 +1,24 @@
+{
+  "helpline": {
+    "description": "Helpline Specific zm/configs/lex/common/slot_types Helpline Slot Type",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "ChildLine Zambia (ZM)": {
+        "synonyms": [
+          "116",
+          "childline",
+          "child",
+          "2"
+        ]
+      },
+      "LifeLine Zambia (ZM)": {
+        "synonyms": [
+          "933",
+          "lifeline",
+          "life",
+          "1"
+        ]
+      }
+    }
+  }
+}
