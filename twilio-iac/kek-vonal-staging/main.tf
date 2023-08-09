@@ -81,6 +81,10 @@ module "studioFlow" {
   custom_flow_definition = templatefile(
     "./flow.tftpl",
     {
+      serverless_url               = module.serverless.serverless_environment_production_url
+      serverless_service_sid       = module.serverless.serverless_service_sid
+      serverless_environment_sid   = module.serverless.serverless_environment_production_sid
+      capture_channel_with_bot_sid = "ZH8d0ea0faa5530dd54872bb0a4b4dca51"
       master_workflow_sid      = module.taskRouter.master_workflow_sid
       chat_task_channel_sid    = module.taskRouter.chat_task_channel_sid
       default_task_channel_sid = module.taskRouter.default_task_channel_sid
@@ -120,7 +124,7 @@ module "aws" {
   shared_state_sync_service_sid      = module.services.shared_state_sync_service_sid
   flex_chat_service_sid              = module.services.flex_chat_service_sid
   flex_proxy_service_sid             = module.services.flex_proxy_service_sid
-  post_survey_bot_sid                = twilio_autopilot_assistants_v1.chatbot_postsurvey.sid
+  post_survey_bot_sid                = "DELETED"
   survey_workflow_sid                = module.survey.survey_workflow_sid
   bucket_region                      = "us-east-1"
 }

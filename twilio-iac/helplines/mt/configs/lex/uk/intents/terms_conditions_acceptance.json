@@ -24,7 +24,7 @@
         "value_elicitation_prompt": {
           "content": "Ви приймаєте наші умови? https://kellimni.com/chat-terms/ . Будь ласка, дайте відповідь цифрою: \n1. Так, я приймаю умови. \n2. Ні, я не приймаю умови.",
           "content_type": "PlainText",
-          "max_attempts": 3
+          "max_attempts": 2
         }
       }
     }

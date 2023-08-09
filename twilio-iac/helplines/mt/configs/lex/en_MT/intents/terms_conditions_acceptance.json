@@ -12,7 +12,7 @@
       "content_type": "PlainText"
     },
     "rejection_statement": {
-      "content": "Sorry, I am not able to assist at this time.",
+      "content": "Sorry, I'm having trouble understanding.",
       "content_type": "PlainText"
     },
     "slots": {
@@ -24,7 +24,7 @@
         "value_elicitation_prompt": {
           "content": "Do you accept our Terms and Conditions? https://kellimni.com/chat-terms/ .Please answer with a number: \n1. Yes, I accept the terms and conditions. \n2. No, I don't accept the terms and conditions.",
           "content_type": "PlainText",
-          "max_attempts": 3
+          "max_attempts": 2
         }
       }
     }

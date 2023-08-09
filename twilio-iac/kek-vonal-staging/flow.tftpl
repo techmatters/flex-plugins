@@ -49,33 +49,9 @@ ${
           "x": -1420,
           "y": 1260
         },
-        "workflow": "WW5814cf7617d435faf2103e8bdb3fba52",
-        "channel": "TCcf0554f1eed13b297c4c7edcc8023679",
+        "workflow": master_workflow_sid,
+        "channel": default_task_channel_sid,
         "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
-      }
-    },
-    {
-      "name": "whatsappAttributes",
-      "type": "send-to-flex",
-      "transitions": [
-        {
-          "event": "callComplete"
-        },
-        {
-          "event": "failedToEnqueue"
-        },
-        {
-          "event": "callFailure"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": -1060,
-          "y": 1260
-        },
-        "workflow": "WW5814cf7617d435faf2103e8bdb3fba52",
-        "channel": "TC83c2500c69637fccebd6ca4d83875ac9",
-        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
       }
     },
     {
@@ -154,8 +130,8 @@ ${
           "x": 390,
           "y": 1260
         },
-        "workflow": "WW5814cf7617d435faf2103e8bdb3fba52",
-        "channel": "TC83c2500c69637fccebd6ca4d83875ac9",
+        "workflow": master_workflow_sid,
+        "channel": chat_task_channel_sid,
         "attributes": "{\"language\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.language}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"Kék Vonal\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBotRU.memory | to_json}}}"
       }
     },
@@ -178,8 +154,8 @@ ${
           "x": 940,
           "y": 1250
         },
-        "workflow": "WW5814cf7617d435faf2103e8bdb3fba52",
-        "channel": "TC83c2500c69637fccebd6ca4d83875ac9",
+        "workflow": master_workflow_sid,
+        "channel": chat_task_channel_sid,
         "attributes": "{\"language\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.language}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"Kék Vonal\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBotUKR.memory | to_json}}}"
       }
     },
@@ -226,13 +202,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": "ZSbb22d7f5e61b8fde6158ece8d28386f1",
-        "environment_sid": "ZEbaf991c98520207c96c75ee3592292ea",
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": 1140,
           "y": 720
         },
-        "function_sid": "ZH8d0ea0faa5530dd54872bb0a4b4dca51",
+        "function_sid": capture_channel_with_bot_sid,
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -267,7 +243,7 @@ ${
             "key": "releaseFlag"
           }
         ],
-        "url": "https://serverless-6055-production.twil.io/channelCapture/captureChannelWithBot"
+        "url": "${serverless_url}/channelCapture/captureChannelWithBot"
       }
     },
     {
@@ -313,13 +289,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": "ZSbb22d7f5e61b8fde6158ece8d28386f1",
-        "environment_sid": "ZEbaf991c98520207c96c75ee3592292ea",
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": -130,
           "y": 680
         },
-        "function_sid": "ZH8d0ea0faa5530dd54872bb0a4b4dca51",
+        "function_sid": capture_channel_with_bot_sid,
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -354,7 +330,7 @@ ${
             "key": "releaseFlag"
           }
         ],
-        "url": "https://serverless-6055-production.twil.io/channelCapture/captureChannelWithBot"
+        "url": "{{trigger.message.ChannelAttributes.preSurveyComplete}}"
       }
     }
   ],
