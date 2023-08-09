@@ -213,7 +213,7 @@ type HandleTwilioTaskResponse = {
 };
 
 export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> => {
-  const returnData = {
+  const returnData: HandleTwilioTaskResponse = {
     conversationMedia: [],
   };
 
@@ -241,11 +241,12 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
     });
   }
 
-  returnData.externalRecordingInfo = await getExternalRecordingInfo(task);
-  const { externalRecordingInfo } = returnData;
+  const externalRecordingInfo = await getExternalRecordingInfo(task);
   if (isFailureExternalRecordingInfo(externalRecordingInfo)) {
     throw new Error(`Error getting external recording info: ${externalRecordingInfo.error}`);
   }
+
+  returnData.externalRecordingInfo = externalRecordingInfo;
 
   if (isSuccessfulExternalRecordingInfo(externalRecordingInfo)) {
     const { bucket, key } = externalRecordingInfo;
