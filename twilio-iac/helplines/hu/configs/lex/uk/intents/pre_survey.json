@@ -23,7 +23,7 @@
         "slot_constraint": "Required",
         "slot_type": "yes_no",
         "value_elicitation_prompt": {
-          "max_attempts": 3,
+          "max_attempts": 2,
           "content": "Привіт, це Kék Vonal! Будь ласка, дай відповіді на наступні запитання, щоб ми могли допомогти тобі. Тобі потрібна допомога у власній справі?",
           "content_type": "PlainText"
         }
@@ -34,7 +34,7 @@
         "slot_constraint": "Required",
         "slot_type": "age",
         "value_elicitation_prompt": {
-          "max_attempts": 3,
+          "max_attempts": 2,
           "content": "Скільки тобі років? Будь ласка, дай відповідь цифрою.",
           "content_type": "PlainText"
         }
