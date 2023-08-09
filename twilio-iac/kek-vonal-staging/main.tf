@@ -81,6 +81,10 @@ module "studioFlow" {
   custom_flow_definition = templatefile(
     "./flow.tftpl",
     {
+      serverless_url               = module.serverless.serverless_environment_production_url
+      serverless_service_sid       = module.serverless.serverless_service_sid
+      serverless_environment_sid   = module.serverless.serverless_environment_production_sid
+      capture_channel_with_bot_sid = "ZH8d0ea0faa5530dd54872bb0a4b4dca51"
       master_workflow_sid      = module.taskRouter.master_workflow_sid
       chat_task_channel_sid    = module.taskRouter.chat_task_channel_sid
       default_task_channel_sid = module.taskRouter.default_task_channel_sid
