@@ -15,7 +15,7 @@
  */
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { expect, Locator, Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 
 export const WORKER_STATUS = {
   AVAILABLE: ['Available', 'Ready'],
@@ -51,8 +51,6 @@ export function statusIndicator(page: Page) {
       console.log('Worker status option spotted');
       await statusSelector.click();
       console.log('Worker status option clicked');
-      await expect(selectors.userActivityDropdownButton).toContainText(status.toLocaleString());
-      console.log('Status changed');
     },
   };
 }

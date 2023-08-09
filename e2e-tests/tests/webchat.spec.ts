@@ -18,7 +18,7 @@ import { BrowserContext, Page, test } from '@playwright/test';
 import * as webchat from '../webchat';
 import { WebChatPage } from '../webchat';
 import { statusIndicator } from '../workerStatus';
-import { ChatStatement } from '../chatModel';
+import { ChatStatement, ChatStatementOrigin } from '../chatModel';
 import { getWebchatScript } from '../chatScripts';
 import { flexChat } from '../flexChat';
 import { getConfigValue } from '../config';
@@ -43,7 +43,7 @@ test.describe.serial('Web chat caller', () => {
   });
 
   test.afterAll(async () => {
-    await statusIndicator(pluginPage)?.setStatus('AVAILABLE');
+    await statusIndicator(pluginPage)?.setStatus('OFFLINE');
     if (pluginPage) {
       await notificationBar(pluginPage).dismissAllNotifications();
     }
@@ -65,16 +65,24 @@ test.describe.serial('Web chat caller', () => {
     const webchatProgress = chatPage.chat(chatScript);
     const flexChatProgress: AsyncIterator<ChatStatement> = flexChat(pluginPage).chat(chatScript);
 
-    await statusIndicator(pluginPage).setStatus('AVAILABLE');
-    await tasks(pluginPage).acceptNextTask();
-
     // Currently this loop handles the handing back and forth of control between the caller & counselor sides of the chat.
     // Each time round the loop it allows the webchat to process statements until it yields control back to this loop
     // And each time flexChatProgress.next(), the flex chat processes statements until it yields
     // Should be moved out to it's own function in time, and a cleaner was of injecting actions to be taken partway through the chat should be implemented.
     for await (const expectedCounselorStatement of webchatProgress) {
       console.log('Statement for flex chat to process', expectedCounselorStatement);
-      if (expectedCounselorStatement) await flexChatProgress.next();
+      if (expectedCounselorStatement) {
+        switch (expectedCounselorStatement.origin) {
+          case ChatStatementOrigin.COUNSELOR_AUTO:
+            await statusIndicator(pluginPage).setStatus('AVAILABLE');
+            await tasks(pluginPage).acceptNextTask();
+            await flexChatProgress.next();
+            break;
+          default:
+            await flexChatProgress.next();
+            break;
+        }
+      }
     }
 
     if (getConfigValue('skipDataUpdate') as boolean) {
