@@ -1,0 +1,22 @@
+{
+  "terms_conditions_acceptance": {
+    "description": "General configs/lex/en/bots Terms and Conditions bot",
+    "locale": "en-US",
+    "process_behavior": "BUILD",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "enable_model_improvements": true,
+    "abort_statement": {
+      "content": "Desculpe, não posso ajudar neste momento.",
+      "content_type": "PlainText"
+    },
+    "clarification_prompt": {
+      "max_attempts": 2,
+      "content": "Desculpa, não entendi. Por favor, responda com um número.",
+      "content_type": "PlainText"
+    },
+    "intents": [
+      "contact_reason"
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "yes_no": {
+    "description": "General configs/lex/en/slot_types slot type for Yes-No kind of questions",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "1": {
+        "synonyms": [
+          "Você quer denunciar um conteúdo na Internet?"
+        ]
+      },
+      "2": {
+        "synonyms": [
+          "Você sofreu violência na Internet e quer obter ajuda?"
+        ]
+      },
+      "3": {
+        "synonyms": [
+          "Você é jornalista ou pesquisador e quer entrevista/dados da SaferNet? "
+        ]
+      },
+      "4": {
+        "synonyms": [
+          "Nenhuma das opções acima"
+        ]
+      }
+    }
+  }
+}
