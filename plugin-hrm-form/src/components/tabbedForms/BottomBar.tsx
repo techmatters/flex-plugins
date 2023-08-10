@@ -85,7 +85,9 @@ const BottomBar: React.FC<
       await submitContactForm(task, contactForm, caseForm);
       await completeTask(task);
     } catch (error) {
+      console.error('submitContactForm Error', error);
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
+        console.error('submitContactForm COMPLETING TASK WITHOUT RECORDING', error);
         await completeTask(task);
       }
     } finally {
