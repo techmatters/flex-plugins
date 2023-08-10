@@ -1,0 +1,26 @@
+{
+  "yes_no": {
+    "description": "General configs/lex/en/slot_types slot type for Yes-No kind of questions",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "Yes": {
+        "synonyms": [
+          "y",
+          "sim",
+          "claro",
+          "yeah",
+          "OK",
+          "1"
+        ]
+      },
+      "No": {
+        "synonyms": [
+          "n",
+          "no",
+          "não",
+          "2"
+        ]
+      }
+    }
+  }
+}
