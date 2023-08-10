@@ -2,25 +2,6 @@
   "pre_survey": {
     "description": "Helpline Specific helplines/mt/configs/lex/en_MT/intents Pre Survey Intent",
     "sample_utterances": [
-      "H",
-      "Hi",
-      "Hello",
-      "Help",
-      "I need help",
-      "Pls",
-      "Please",
-      "Incoming webchat contact",
-      "Bongu",
-      "Bonġu",
-      "Ħelow",
-      "Ħaj",
-      "Għajjatni",
-      "Jekk jogħġbok",
-      "Jekk jogħġbkom",
-      "Jum it-tajjeb",
-      "Bongu u saħħa",
-      "Wara x-xogħol kont tinsab",
-      "Intgħażel tagħmel webchat",
       "trigger_pre_survey"
     ],
     "fulfillment_activity": {
