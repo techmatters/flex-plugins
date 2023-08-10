@@ -105,6 +105,7 @@ export const initialState: ReferrableResourceSearchState = {
       { value: 'Cost for Service' },
       { value: 'Sliding Scale' },
       { value: 'One Time Small Fee' },
+      { value: 'Covered by Health Insurance' },
     ],
     howServiceIsOffered: [{ value: 'In-person Support' }, { value: 'Online Support' }, { value: 'Phone Support' }],
     province: [{ label: '', value: undefined }, ...provinceOptions],
@@ -226,7 +227,7 @@ const rejectedAsyncAction = handleAction =>
   });
 
 export const suggestSearchReducer = createReducer(suggestSearchInitialState, handleAction => [
-  handleAction(suggestSearchAsyncAction.pending, (state, action) => {
+  handleAction(suggestSearchAsyncAction.pending, state => {
     return {
       ...state,
       taxonomyLevelNameCompletion: [],
