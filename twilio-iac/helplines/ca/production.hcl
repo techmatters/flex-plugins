@@ -133,7 +133,7 @@ locals {
           khpind_queue_sid: "WQ9b052e6f56db438435b63805dd85e6cb"
 
           #Recording URLs
-          menu_url: ""
+          menu_url: "https://twilio-service-4854.twil.io/KHP_Main.mp3"
           en_function_url: "https://twilio-service-4854.twil.io/6001_khp_english"
           fr_function_url: "https://twilio-service-4854.twil.io/6002_khp_french"
           tr_function_url: "https://twilio-service-4854.twil.io/6003_khp_int"
@@ -149,7 +149,7 @@ locals {
           fr_disconnect_url: "https://twilio-service-4854.twil.io/FrDisconnect.mp3"
           en_intro_url: "https://twilio-service-4854.twil.io/MSG10006E.mp3"
           fr_intro_url: "https://twilio-service-4854.twil.io/MSG10006F.mp3"
-          tr_intro_url: ""
+          tr_intro_url: "https://twilio-service-4854.twil.io/MSG10006Tr.mp3"
           en_inflight_url: "https://twilio-service-4854.twil.io/Msg60011E.mp3"
           fr_inflight_url: "https://twilio-service-4854.twil.io/Msg60021.mp3"
           tr_inflight_url: "https://twilio-service-4854.twil.io/Msg60011Tr.mp3"
