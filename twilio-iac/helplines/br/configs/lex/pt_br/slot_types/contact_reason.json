@@ -1,0 +1,41 @@
+{
+  "yes_no": {
+    "description": "General configs/lex/pt_br/slot_types slot type for Contact Reason questions",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "1. Você quer denunciar um conteúdo na Internet?": {
+        "synonyms": [
+          "internet",
+          "conteúdo online",
+          "na internet",
+          "online",
+          "1"
+        ]
+      },
+      "2. Você sofreu violência na Internet e quer obter ajuda?": {
+        "synonyms": [
+          "crime report",
+          "crime",
+          "Human rights crime",
+          "direitos humanos",
+          "violência",
+          "2"
+        ]
+      },
+      "3. Você é jornalista ou pesquisador e quer entrevista/dados da SaferNet?": {
+        "synonyms": [
+          "jornalista",
+          "pesquisador",
+          "researcher",
+          "3"
+        ]
+      },
+      "4. Nenhuma das opções acima": {
+        "synonyms": [
+          "other",
+          "4"
+        ]
+      }
+    }
+  }
+}
