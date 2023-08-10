@@ -2,23 +2,8 @@
   "pre_survey": {
     "description": "Helpline Specific helplines/br/configs/lex/pt-br/bot Survey intent",
     "sample_utterances": [
-      "H",
-      "Hi",
-      "Hello",
-      "Olá",
-      "Oi",
-      "Help",
-      "Ajuda",
-      "eu preciso de ajuda",
-      "Assistência",
-      "Pls",
-      "Por favor",
-      "Minha vida",
-      "Estou em perigo",
-      "Não é seguro",
-      "matar",
-      "Ferir",
-      "Incoming webchat contact"
+      "Incoming webchat contact",
+      "trigger_pre_survey"
     ],
     "fulfillment_activity": {
       "type": "ReturnIntent"
@@ -58,10 +43,21 @@
         "priority": 3,
         "description": "Caller's gender",
         "slot_constraint": "Required",
-        "slot_type": "gender_girl_boy",
+        "slot_type": "gender",
         "value_elicitation_prompt": {
           "max_attempts": 2,
-          "content": "Qual é o seu gênero?",
+          "content": "Qual é o seu gênero? Por favor escreva menina ou mulher, menino ou homem, não-binário",
+          "content_type": "PlainText"
+        }
+      },
+      "ethnicity": {
+        "priority": 4,
+        "description": "Caller's enthinicity",
+        "slot_constraint": "Required",
+        "slot_type": "ethnicity",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "Qual sua cor/raça? Branca, Preta, Parda, Amarela, Indígena",
           "content_type": "PlainText"
         }
       }

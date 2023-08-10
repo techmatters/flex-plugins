@@ -1,0 +1,53 @@
+{
+  "gender_female_male": {
+    "description": "General configs/lex/en/slot_types Gender Female Male Slot Type",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "female": {
+        "synonyms": [
+          "f",
+          "ela",
+          "garota",
+          "senhora",
+          "mulher",
+          "1"
+        ]
+      },
+      "male": {
+        "synonyms": [
+          "m",
+          "cara",
+          "rapaz",
+          "homem",
+          "ele",
+          "menino",
+          "2"
+        ]
+      },
+      "non-binary": {
+        "synonyms": [
+          "nenhum",
+          "não-binário",
+          "não binário",
+          "3"
+        ]
+      },
+      "prefer not to answer": {
+        "synonyms": [
+          "prefiro não responder",
+          "não responder",
+          "não estou respondendo",
+          "4"
+        ]
+      },
+      "unknown": {
+        "synonyms": [
+          "não tenho certeza",
+          "indeciso",
+          "x",
+          "5"
+        ]
+      }
+    }
+  }
+}
