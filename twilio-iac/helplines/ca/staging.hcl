@@ -119,7 +119,7 @@ locals {
       khp_main : {
         channel_type         = "voice"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/g2tns.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/khp_main.tftpl"
         channel_flow_vars    = {
 
           #Twilio things
@@ -164,7 +164,7 @@ locals {
       hc : {
         channel_type         = "voice"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/g2tns.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/hc.tftpl"
         channel_flow_vars    = {
 
           #Twilio things
@@ -196,7 +196,7 @@ locals {
     }
     #Task router
     phone_numbers = {
-      khp : ["+12048186655", "+18332030748],
+      khp : ["+12048186655", "+18332030748"],
       g2ton : ["+18446052258", "+18559768844"],
       g2ttr: ["+18882913868", "+18559768844"],
       g2tns : ["+15814810744", "+15812215204"],
