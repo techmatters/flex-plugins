@@ -1,0 +1,70 @@
+{
+  "pre_survey": {
+    "description": "Helpline Specific helplines/br/configs/lex/pt-br/bot Survey intent",
+    "sample_utterances": [
+      "H",
+      "Hi",
+      "Hello",
+      "Olá",
+      "Oi",
+      "Help",
+      "Ajuda",
+      "eu preciso de ajuda",
+      "Assistência",
+      "Pls",
+      "Por favor",
+      "Minha vida",
+      "Estou em perigo",
+      "Não é seguro",
+      "matar",
+      "Ferir",
+      "Incoming webchat contact"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "Vamos transferir você. Por favor, aguarde até ser atendido.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Desculpe, não posso ajudar neste momento.",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "aboutSelf": {
+        "priority": 1,
+        "description": "Caller is calling for self or someone else",
+        "slot_constraint": "Required",
+        "slot_type": "yes_no",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "Você está buscando ajuda para você mesm? Sim ou não",
+          "content_type": "PlainText"
+        }
+      },
+      "age": {
+        "priority": 2,
+        "description": "Age of caller",
+        "slot_constraint": "Required",
+        "slot_type": "age",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "Quantos anos você tem? Por favor escreva um número",
+          "content_type": "PlainText"
+        }
+      },
+      "gender": {
+        "priority": 3,
+        "description": "Caller's gender",
+        "slot_constraint": "Required",
+        "slot_type": "gender_girl_boy",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "Qual é o seu gênero?",
+          "content_type": "PlainText"
+        }
+      }
+    }
+  }
+}

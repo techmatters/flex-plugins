@@ -1,0 +1,22 @@
+{
+  "pre_survey": {
+    "description": "Helpline Specific helplines/br/configs/lex/pt-br/bot Pre Survey bot",
+    "locale": "en-US",
+    "process_behavior": "BUILD",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "enable_model_improvements": true,
+    "abort_statement": {
+      "content": "Desculpe, não posso ajudar neste momento.",
+      "content_type": "PlainText"
+    },
+    "clarification_prompt": {
+      "max_attempts": 2,
+      "content": "Desculpe, eu não entendi isso. Por favor, tente novamente. \nPor favor, responda às perguntas.",
+      "content_type": "PlainText"
+    },
+    "intents": [
+      "pre_survey"
+    ]
+  }
+}
