@@ -132,7 +132,7 @@ ${
         },
         "workflow": master_workflow_sid,
         "channel": chat_task_channel_sid,
-        "attributes": "{\"language\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.language}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"Kék Vonal\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBotRU.memory | to_json}}}"
+        "attributes": "{\"language\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.language}}\", \"ip\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"Kék Vona}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"preEngagementData\": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}},\n\"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}}"
       }
     },
     {
@@ -156,7 +156,7 @@ ${
         },
         "workflow": master_workflow_sid,
         "channel": chat_task_channel_sid,
-        "attributes": "{\"language\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.language}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"Kék Vonal\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBotUKR.memory | to_json}}}"
+        "attributes": "{\"language\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.language}}\", \"ip\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"Kék Vona}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"preEngagementData\": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}},\n\"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}}"
       }
     },
     {
