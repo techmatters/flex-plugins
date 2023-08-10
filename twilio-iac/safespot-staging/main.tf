@@ -29,518 +29,282 @@ data "aws_ssm_parameter" "secrets" {
 locals {
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   safespot_flow_definition = jsonencode({
-  "states": [
-    {
-      "name": "Trigger",
-      "type": "trigger",
-      "transitions": [
-        {
-          "next": "AvoidChatBot",
-          "event": "incomingMessage"
-        },
-        {
-          "event": "incomingCall"
-        },
-        {
-          "event": "incomingConversationMessage"
-        },
-        {
-          "event": "incomingRequest"
-        },
-        {
-          "event": "incomingParent"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": -100,
-          "y": -520
-        }
-      }
-    },
-    {
-      "name": "smsAttributes",
-      "type": "send-to-flex",
-      "transitions": [
-        {
-          "event": "callComplete"
-        },
-        {
-          "event": "failedToEnqueue"
-        },
-        {
-          "event": "callFailure"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 840,
-          "y": 1110
-        },
-        "workflow": module.taskRouter.master_workflow_sid,
-        "channel": module.taskRouter.chat_task_channel_sid,
-        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
-      }
-    },
-    {
-      "name": "check_counselor_handoff",
-      "type": "split-based-on",
-      "transitions": [
-        {
-          "event": "noMatch"
-        },
-        {
-          "next": "AdjustAttributes",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to counselor_handoff",
-              "arguments": [
-                "{{widgets.ChatBot.CurrentTask}}"
-              ],
-              "type": "equal_to",
-              "value": "counselor_handoff"
-            }
-          ]
-        }
-      ],
-      "properties": {
-        "input": "{{widgets.ChatBot.CurrentTask}}",
-        "offset": {
-          "x": 610,
-          "y": 540
-        }
-      }
-    },
-    {
-      "name": "defaultAttributes",
-      "type": "send-to-flex",
-      "transitions": [
-        {
-          "event": "callComplete"
-        },
-        {
-          "event": "failedToEnqueue"
-        },
-        {
-          "event": "callFailure"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": -120,
-          "y": 1110
-        },
-        "workflow": module.taskRouter.master_workflow_sid,
-        "channel": module.taskRouter.chat_task_channel_sid,
-        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
-      }
-    },
-    {
-      "name": "whatsappAttributes",
-      "type": "send-to-flex",
-      "transitions": [
-        {
-          "event": "callComplete"
-        },
-        {
-          "event": "failedToEnqueue"
-        },
-        {
-          "event": "callFailure"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 200,
-          "y": 1110
-        },
-        "workflow": module.taskRouter.master_workflow_sid,
-        "channel": module.taskRouter.chat_task_channel_sid,
-        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
-      }
-    },
-    {
-      "name": "facebookAttributes",
-      "type": "send-to-flex",
-      "transitions": [
-        {
-          "event": "callComplete"
-        },
-        {
-          "event": "failedToEnqueue"
-        },
-        {
-          "event": "callFailure"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 520,
-          "y": 1110
-        },
-        "workflow": module.taskRouter.master_workflow_sid,
-        "channel": module.taskRouter.chat_task_channel_sid,
-        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
-      }
-    },
-    {
-      "name": "webAttributes",
-      "type": "send-to-flex",
-      "transitions": [
-        {
-          "event": "callComplete"
-        },
-        {
-          "event": "failedToEnqueue"
-        },
-        {
-          "event": "callFailure"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 1160,
-          "y": 1110
-        },
-        "workflow": module.taskRouter.master_workflow_sid,
-        "channel": module.taskRouter.chat_task_channel_sid,
-        "attributes": "{\"ip\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.helpline}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
-      }
-    },
-    {
-      "name": "AdjustAttributes",
-      "type": "split-based-on",
-      "transitions": [
-        {
-          "next": "defaultAttributes",
-          "event": "noMatch"
-        },
-        {
-          "next": "whatsappAttributes",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to whatsapp",
-              "arguments": [
-                "{{trigger.message.ChannelAttributes.channel_type}}"
-              ],
-              "type": "equal_to",
-              "value": "whatsapp"
-            }
-          ]
-        },
-        {
-          "next": "facebookAttributes",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to facebook",
-              "arguments": [
-                "{{trigger.message.ChannelAttributes.channel_type}}"
-              ],
-              "type": "equal_to",
-              "value": "facebook"
-            }
-          ]
-        },
-        {
-          "next": "smsAttributes",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to sms",
-              "arguments": [
-                "{{trigger.message.ChannelAttributes.channel_type}}"
-              ],
-              "type": "equal_to",
-              "value": "sms"
-            }
-          ]
-        },
-        {
-          "next": "webAttributes",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to web",
-              "arguments": [
-                "{{trigger.message.ChannelAttributes.channel_type}}"
-              ],
-              "type": "equal_to",
-              "value": "web"
-            }
-          ]
-        }
-      ],
-      "properties": {
-        "input": "{{trigger.message.ChannelAttributes.channel_type}}",
-        "offset": {
-          "x": 400,
-          "y": 800
-        }
-      }
-    },
-    {
-      "name": "check_response",
-      "type": "split-based-on",
-      "transitions": [
-        {
-          "event": "noMatch"
-        },
-        {
-          "next": "pre_survey_complete",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value contains 2",
-              "arguments": [
-                "{{widgets.ReasonBot.memory.twilio.collected_data.collect_survey.answers.service.answer}}"
-              ],
-              "type": "contains",
-              "value": "2"
-            }
-          ]
-        }
-      ],
-      "properties": {
-        "input": "{{widgets.ReasonBot.memory.twilio.collected_data.collect_survey.answers.service.answer}}",
-        "offset": {
-          "x": -70,
-          "y": 120
-        }
-      }
-    },
-    {
-      "name": "AvoidChatBot",
-      "type": "split-based-on",
-      "transitions": [
-        {
-          "next": "contact_reason_complete",
-          "event": "noMatch"
-        },
-        {
-          "next": "lineAttributes",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to line",
-              "arguments": [
-                "{{trigger.message.ChannelAttributes.channel_type}}"
-              ],
-              "type": "equal_to",
-              "value": "line"
-            }
-          ]
-        }
-      ],
-      "properties": {
-        "input": "{{trigger.message.ChannelAttributes.channel_type}}",
-        "offset": {
-          "x": 160,
-          "y": -290
-        }
-      }
-    },
-    {
-      "name": "lineAttributes",
-      "type": "send-to-flex",
-      "transitions": [
-        {
-          "event": "callComplete"
-        },
-        {
-          "event": "failedToEnqueue"
-        },
-        {
-          "event": "callFailure"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 570,
-          "y": -60
-        },
-        "workflow": module.taskRouter.master_workflow_sid,
-        "channel": module.taskRouter.chat_task_channel_sid,
-        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\",\"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
-      }
-    },
-    {
-      "name": "capture_channel_bot",
-      "type": "run-function",
-      "transitions": [
-        {
-          "event": "success"
-        },
-        {
-          "event": "fail"
-        }
-      ],
-      "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
-        "offset": {
-          "x": -290,
-          "y": 550
-        },
-        "function_sid": capture_channel_with_bot_sid,
-        "parameters": [
+    "states" : [
+      {
+        "transitions" : [
           {
-            "value": "{{flow.channel.address}}",
-            "key": "channelSid"
+            "event" : "incomingMessage",
+            "next" : "ChatBot"
           },
           {
-            "value": "trigger_pre_survey",
-            "key": "message"
+            "event" : "incomingCall"
           },
           {
-            "value": "{{flow.flow_sid}}",
-            "key": "studioFlowSid"
+            "event" : "incomingRequest"
           },
           {
-            "value": "pt",
-            "key": "language"
-          },
-          {
-            "value": "pre_survey",
-            "key": "botSuffix"
-          },
-          {
-            "value": "withUserMessage",
-            "key": "triggerType"
-          },
-          {
-            "value": "triggerStudioFlow",
-            "key": "releaseType"
-          },
-          {
-            "value": "preSurveyComplete",
-            "key": "releaseFlag"
+            "event" : "incomingParent"
           }
         ],
-        "url": "https://serverless-7688-production.twil.io/channelCapture/captureChannelWithBot"
-      }
-    },
-    {
-      "name": "pre_survey_complete",
-      "type": "split-based-on",
-      "transitions": [
-        {
-          "next": "capture_channel_bot",
-          "event": "noMatch"
-        },
-        {
-          "next": "check_counselor_handoff",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to true",
-              "arguments": [
-                "{{trigger.message.ChannelAttributes.preSurveyComplete}}"
-              ],
-              "type": "equal_to",
-              "value": "true"
-            }
-          ]
+        "type" : "trigger",
+        "name" : "Trigger",
+        "properties" : {
+          "offset" : {
+            "y" : -70,
+            "x" : 0
+          }
         }
-      ],
-      "properties": {
-        "input": "{{trigger.message.ChannelAttributes.preSurveyComplete}}",
-        "offset": {
-          "x": 70,
-          "y": 330
-        }
-      }
-    },
-    {
-      "name": "reason_bot",
-      "type": "run-function",
-      "transitions": [
-        {
-          "event": "success"
-        },
-        {
-          "event": "fail"
-        }
-      ],
-      "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
-        "offset": {
-          "x": -770,
-          "y": 150
-        },
-        "function_sid": capture_channel_with_bot_sid,
-        "parameters": [
+      },
+      {
+        "transitions" : [
           {
-            "value": "{{flow.channel.address}}",
-            "key": "channelSid"
+            "event" : "callComplete"
           },
           {
-            "value": "trigger_contact_reason",
-            "key": "message"
+            "event" : "failedToEnqueue"
           },
           {
-            "value": "{{flow.flow_sid}}",
-            "key": "studioFlowSid"
-          },
-          {
-            "value": "pt",
-            "key": "language"
-          },
-          {
-            "value": "contact_reason",
-            "key": "botSuffix"
-          },
-          {
-            "value": "withUserMessage",
-            "key": "triggerType"
-          },
-          {
-            "value": "triggerStudioFlow",
-            "key": "releaseType"
-          },
-          {
-            "value": "contactReasonComplete",
-            "key": "releaseFlag"
+            "event" : "callFailure"
           }
         ],
-        "url": "https://serverless-7688-production.twil.io/channelCapture/captureChannelWithBot"
-      }
-    },
-    {
-      "name": "contact_reason_complete",
-      "type": "split-based-on",
-      "transitions": [
-        {
-          "next": "reason_bot",
-          "event": "noMatch"
-        },
-        {
-          "next": "check_response",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to true",
-              "arguments": [
-                "{{trigger.message.ChannelAttributes.contactReasonComplete}}"
-              ],
-              "type": "equal_to",
-              "value": "true"
-            }
-          ]
+        "type" : "send-to-flex",
+        "name" : "smsAttributes",
+        "properties" : {
+          "attributes" : "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+          "workflow" : module.taskRouter.master_workflow_sid,
+          "channel" : module.taskRouter.chat_task_channel_sid,
+          "offset" : {
+            "y" : 810,
+            "x" : 270
+          }
         }
-      ],
-      "properties": {
-        "input": "{{trigger.message.ChannelAttributes.contactReasonComplete}}",
-        "offset": {
-          "x": -330,
-          "y": -90
+      },
+      {
+        "transitions" : [
+          {
+            "event" : "sessionEnded",
+            "next" : "check_counselor_handoff"
+          },
+          {
+            "event" : "failure"
+          }
+        ],
+        "type" : "send-to-auto-pilot",
+        "name" : "ChatBot",
+        "properties" : {
+          "body" : "{{trigger.message.Body}}",
+          "from" : "Bot",
+          "chat_service" : "{{trigger.message.InstanceSid}}",
+          "target_task" : "greeting",
+          "timeout" : 14400,
+          "offset" : {
+            "y" : 110,
+            "x" : -20
+          },
+          "chat_channel" : "{{trigger.message.ChannelSid}}",
+          "autopilot_assistant_sid" : module.chatbots.pre_survey_bot_sid
+        }
+      },
+      {
+        "transitions" : [
+          {
+            "event" : "noMatch"
+          },
+          {
+            "conditions" : [
+              {
+                "type" : "equal_to",
+                "friendly_name" : "If value equal_to counselor_handoff",
+                "arguments" : [
+                  "{{widgets.ChatBot.CurrentTask}}"
+                ],
+                "value" : "counselor_handoff"
+              }
+            ],
+            "event" : "match",
+            "next" : "AdjustAttributes"
+          }
+        ],
+        "type" : "split-based-on",
+        "name" : "check_counselor_handoff",
+        "properties" : {
+          "input" : "{{widgets.ChatBot.CurrentTask}}",
+          "offset" : {
+            "y" : 340,
+            "x" : -20
+          }
+        }
+      },
+      {
+        "transitions" : [
+          {
+            "event" : "callComplete"
+          },
+          {
+            "event" : "failedToEnqueue"
+          },
+          {
+            "event" : "callFailure"
+          }
+        ],
+        "type" : "send-to-flex",
+        "name" : "defaultAttributes",
+        "properties" : {
+          "attributes" : "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+          "workflow" : module.taskRouter.master_workflow_sid,
+          "channel" : module.taskRouter.default_task_channel_sid,
+          "offset" : {
+            "y" : 810,
+            "x" : -690
+          }
+        }
+      },
+      {
+        "transitions" : [
+          {
+            "event" : "callComplete"
+          },
+          {
+            "event" : "failedToEnqueue"
+          },
+          {
+            "event" : "callFailure"
+          }
+        ],
+        "type" : "send-to-flex",
+        "name" : "whatsappAttributes",
+        "properties" : {
+          "attributes" : "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+          "workflow" : module.taskRouter.master_workflow_sid,
+          "channel" : module.taskRouter.chat_task_channel_sid,
+          "offset" : {
+            "y" : 810,
+            "x" : -370
+          }
+        }
+      },
+      {
+        "transitions" : [
+          {
+            "event" : "callComplete"
+          },
+          {
+            "event" : "failedToEnqueue"
+          },
+          {
+            "event" : "callFailure"
+          }
+        ],
+        "type" : "send-to-flex",
+        "name" : "facebookAttributes",
+        "properties" : {
+          "attributes" : "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+          "workflow" : module.taskRouter.master_workflow_sid,
+          "channel" : module.taskRouter.chat_task_channel_sid,
+          "offset" : {
+            "y" : 810,
+            "x" : -50
+          }
+        }
+      },
+      {
+        "transitions" : [
+          {
+            "event" : "callComplete"
+          },
+          {
+            "event" : "failedToEnqueue"
+          },
+          {
+            "event" : "callFailure"
+          }
+        ],
+        "type" : "send-to-flex",
+        "name" : "webAttributes",
+        "properties" : {
+          "attributes" : "{\"ip\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\"firstName\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"SafeSpot\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
+          "workflow" : module.taskRouter.master_workflow_sid,
+          "channel" : module.taskRouter.chat_task_channel_sid,
+          "offset" : {
+            "y" : 810,
+            "x" : 590
+          }
+        }
+      },
+      {
+        "transitions" : [
+          {
+            "event" : "noMatch",
+            "next" : "defaultAttributes"
+          },
+          {
+            "conditions" : [
+              {
+                "type" : "equal_to",
+                "friendly_name" : "If value equal_to whatsapp",
+                "arguments" : [
+                  "{{trigger.message.ChannelAttributes.channel_type}}"
+                ],
+                "value" : "whatsapp"
+              }
+            ],
+            "event" : "match",
+            "next" : "whatsappAttributes"
+          },
+          {
+            "conditions" : [
+              {
+                "type" : "equal_to",
+                "friendly_name" : "If value equal_to facebook",
+                "arguments" : [
+                  "{{trigger.message.ChannelAttributes.channel_type}}"
+                ],
+                "value" : "facebook"
+              }
+            ],
+            "event" : "match",
+            "next" : "facebookAttributes"
+          },
+          {
+            "conditions" : [
+              {
+                "type" : "equal_to",
+                "friendly_name" : "If value equal_to sms",
+                "arguments" : [
+                  "{{trigger.message.ChannelAttributes.channel_type}}"
+                ],
+                "value" : "sms"
+              }
+            ],
+            "event" : "match",
+            "next" : "smsAttributes"
+          },
+          {
+            "conditions" : [
+              {
+                "type" : "equal_to",
+                "friendly_name" : "If value equal_to web",
+                "arguments" : [
+                  "{{trigger.message.ChannelAttributes.channel_type}}"
+                ],
+                "value" : "web"
+              }
+            ],
+            "event" : "match",
+            "next" : "webAttributes"
+          }
+        ],
+        "type" : "split-based-on",
+        "name" : "AdjustAttributes",
+        "properties" : {
+          "input" : "{{trigger.message.ChannelAttributes.channel_type}}",
+          "offset" : {
+            "y" : 560,
+            "x" : -200
+          }
         }
       }
-    }
-  ],
+    ],
     "initial_state" : "Trigger",
     "flags" : {
       "allow_concurrent_calls" : true
@@ -554,6 +318,11 @@ provider "twilio" {
   password = local.secrets.twilio_auth_token
 }
 
+module "chatbots" {
+  source            = "../terraform-modules/chatbots/default"
+  serverless_url    = module.serverless.serverless_environment_production_url
+  gender_field_type = "safespot"
+}
 
 module "hrmServiceIntegration" {
   source            = "../terraform-modules/hrmServiceIntegration/default"
@@ -595,7 +364,7 @@ module "studioFlow" {
   master_workflow_sid      = module.taskRouter.master_workflow_sid
   chat_task_channel_sid    = module.taskRouter.chat_task_channel_sid
   default_task_channel_sid = module.taskRouter.default_task_channel_sid
-  pre_survey_bot_sid       = "deleted"
+  pre_survey_bot_sid       = module.chatbots.pre_survey_bot_sid
 }
 
 module "flex" {
@@ -629,6 +398,6 @@ module "aws" {
   shared_state_sync_service_sid      = module.services.shared_state_sync_service_sid
   flex_chat_service_sid              = module.services.flex_chat_service_sid
   flex_proxy_service_sid             = module.services.flex_proxy_service_sid
-  post_survey_bot_sid                = "deleted"
+  post_survey_bot_sid                = module.chatbots.post_survey_bot_sid
   survey_workflow_sid                = module.survey.survey_workflow_sid
 }
