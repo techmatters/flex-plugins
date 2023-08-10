@@ -30,8 +30,7 @@ const getAttributeData = (attributes: Attributes | undefined, language: Language
   return undefined;
 };
 
-const getAttributeValue = (attributes: Attributes | undefined, language: Language, keyName: string) => {
-  const { value } = getAttributeData(attributes, language, keyName) ?? {};
+const extractAttributeValue = ({ value }: AttributeData) => {
   if (typeof value === 'boolean') {
     if (value) {
       return 'Yes';
@@ -41,21 +40,37 @@ const getAttributeValue = (attributes: Attributes | undefined, language: Languag
   return (value ?? '').toString();
 };
 
+const getAttributeValue = (attributes: Attributes | undefined, language: Language, keyName: string) =>
+  extractAttributeValue(
+    getAttributeData(attributes, language, keyName) ?? { value: undefined, language: '', info: null },
+  );
+
 const getBooleanAttributeValue = (attributes: Attributes | undefined, keyName: string) => {
   const { value } = getAttributeData(attributes, '', keyName) ?? {};
   return Boolean(value);
 };
 
-const getAttributeValuesAsCsv = (attributes: Attributes | undefined, language: Language, keyName: string) => {
+const getAttributeDataItems = (attributes: Attributes | undefined, language: Language, keyName: string) => {
   const propVal = (attributes ?? {})[keyName];
   if (!propVal || Array.isArray(propVal)) {
-    return '';
+    return [];
   }
   return Object.keys(propVal)
-    .map(itemKey => getAttributeValue(propVal, language, itemKey))
-    .filter(v => v)
-    .join(', ');
+    .map(itemKey => getAttributeData(propVal, language, itemKey))
+    .filter(v => v);
 };
+
+const getAttributeNode = (attributes: Attributes | undefined, keyName: string): Attributes => {
+  const propVal = (attributes ?? {})[keyName];
+  if (!propVal || Array.isArray(propVal)) {
+    return {};
+  }
+  return propVal;
+};
+const getAttributeValuesAsCsv = (attributes: Attributes | undefined, language: Language, keyName: string) =>
+  getAttributeDataItems(attributes, language, keyName)
+    .map(attributeData => extractAttributeValue(attributeData))
+    .join(', ');
 
 const extractAgeRange = (attributes: Attributes, language: Language) => {
   const eligibilityMinAge = getAttributeValue(attributes, language, 'eligibilityMinAge');
@@ -143,23 +158,21 @@ const extractSiteOperatingHours = (
   if (resourceOperationsList) {
     const sets = Object.values(resourceOperationsList);
     const siteResourceOperations = siteId
-      ? sets.find(s => !Array.isArray(s) && Array.isArray(s.siteId) && s.siteId[0].value === siteId)
+      ? sets.find(s => !Array.isArray(s) && getAttributeValue(s, '', 'siteId') === siteId)
       : undefined;
     if (siteResourceOperations && !Array.isArray(siteResourceOperations)) {
       // The top level resource operations set should include a set of operations for each site, linked via siteId
       return extractOperatingHours(siteResourceOperations, language);
-    } else if (Array.isArray(siteOperations) && siteOperations.length > 0) {
-      /*
-       * If there is no set of operations for this resource at this site, return the operations from the site object (assuming there is one, if not return empty array)
-       * Unsure as to the use case for a site having more than one set of operations, but let's just return the first one
-       */
-      return extractOperatingHours(siteOperations[0], language);
+    } else if (siteOperations) {
+      // If there is no set of operations for this resource at this site, return the operations from the site object (assuming there is one, if not return empty array)
+      return extractOperatingHours(siteOperations, language);
     }
   }
   return [];
 };
 
-const extractSiteLocation = location => {
+const extractSiteLocation = (site: Attributes) => {
+  const location = getAttributeNode(site, 'location');
   return {
     address1: getAttributeValue(location, '', 'address1'),
     address2: getAttributeValue(location, '', 'address2'),
@@ -172,43 +185,62 @@ const extractSiteLocation = location => {
   };
 };
 
-const extractPhoneNumbers = (phoneObj: any) => {
+const extractPhoneNumbers = (phoneObj: Attributes) => {
   const phoneNumbers = {};
-  for (const key in phoneObj ?? {}) {
-    if (phoneObj.hasOwnProperty(key)) {
-      const phoneData = phoneObj[key];
-      if (phoneData[0].hasOwnProperty('value')) {
-        phoneNumbers[key] = phoneData[0].value;
-      }
-    }
-  }
+  Object.keys(phoneObj ?? {}).forEach(key => {
+    phoneNumbers[key] = getAttributeValue(phoneObj, '', key);
+  });
   return phoneNumbers;
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
+const extractCoverageItemDescription = (coverageData: AttributeData, language: string): string => {
+  const coverageInfo = coverageData?.info;
+  if (coverageInfo) {
+    if (coverageInfo.country) {
+      // New coverage data format
+      return toCsv(coverageInfo.postalCode, coverageInfo.city, coverageInfo.region, coverageInfo.province);
+    }
+    // Legacy coverage data format
+    return coverageInfo[language] ?? coverageInfo.en;
+  }
+  return '';
+};
+
+const extractCoverage = (coverage: Attributes, language: Language, siteId: string = null): string => {
+  const coverageList = Object.values(coverage ?? {});
+  return coverageList
+    .filter(item => {
+      if (!Array.isArray(item)) {
+        return false;
+      }
+      const itemSiteId = item[0]?.info?.siteId;
+      return (!siteId && !itemSiteId) || (siteId && itemSiteId === siteId);
+    })
+    .map(coverageItems => extractCoverageItemDescription(coverageItems[0], language))
+    .filter(ci => ci)
+    .join('\n');
+};
+
 const extractSiteDetails = (resource: Attributes, sites: Attributes, language: Language) => {
   const siteDetails = [];
-  if (!Array.isArray(sites)) {
-    const siteList = Object.entries(sites ?? {});
-    for (const [key, site] of siteList) {
-      const langKey = language === 'fr' ? 1 : 0;
-      if (site && !Array.isArray(site)) {
-        const siteId = site.siteId?.[0]?.value;
-        const location = extractSiteLocation(site.location);
-        const operationsAttributes = Array.isArray(resource.operations) ? {} : resource.operations;
-        const siteOperations = Array.isArray(site.operations) ? {} : site.operations;
-        siteDetails.push({
-          siteId: key,
-          name: site.name?.[langKey]?.value || site.nameDetails?.[langKey]?.value || '',
-          location,
-          email: site.email?.[0]?.value || '',
-          operations: extractSiteOperatingHours(siteId, operationsAttributes, siteOperations, language),
-          isActive: site.isActive?.[0]?.value,
-          details: site.details?.[langKey]?.info?.description || '',
-          phoneNumbers: extractPhoneNumbers(site.phone),
-        });
-      }
-    }
+  const siteList = Object.keys(sites ?? {});
+  for (const siteId of siteList) {
+    const site = getAttributeNode(sites, siteId);
+    const location = extractSiteLocation(site);
+    const operationsAttributes = getAttributeNode(resource, 'operations');
+    const coverageAttributes = getAttributeNode(resource, 'coverage');
+    const siteOperations = getAttributeNode(site, 'operations');
+    siteDetails.push({
+      siteId,
+      name: getAttributeValue(site, language, 'name') || getAttributeValue(site, language, 'nameDetails'),
+      location,
+      email: getAttributeValue(site, '', 'email'),
+      operations: extractSiteOperatingHours(siteId, operationsAttributes, siteOperations, language),
+      isActive: getBooleanAttributeValue(site, 'isActive'),
+      details: getAttributeData(site, language, 'details')?.info?.details ?? '',
+      phoneNumbers: extractPhoneNumbers(getAttributeNode(site, 'phoneNumbers')),
+      coverage: extractCoverage(coverageAttributes, language, siteId),
+    });
   }
   return siteDetails;
 };
@@ -235,6 +267,18 @@ const extractRequiredDocuments = (documentsRequired, language: Language) => {
 
 const extractTargetPopulation = targetPopulationAttribute => ((targetPopulationAttribute ?? [])[0] ?? [])[0]?.value;
 
+const extractLanguages = (resource: Attributes) =>
+  getAttributeDataItems(resource, '', 'languages')
+    .map(attributeData => {
+      const language = attributeData?.info?.language;
+      if (language && typeof language === 'string') {
+        return language;
+      }
+      return '';
+    })
+    .filter(l => l)
+    .join(', ');
+
 export const convertKHPResourceAttributes = (
   attributes: Attributes,
   language: Language,
@@ -244,6 +288,7 @@ export const convertKHPResourceAttributes = (
   }
   const sites = attributes.site && !Array.isArray(attributes.site) ? attributes.site : {};
   const operations = attributes.operations && !Array.isArray(attributes.operations) ? attributes.operations : undefined;
+  const coverage = attributes.coverage && !Array.isArray(attributes.coverage) ? attributes.coverage : undefined;
   return {
     status: getAttributeValue(attributes, language, 'status'),
     taxonomyCode: getAttributeValue(attributes, language, 'taxonomyCode'),
@@ -266,10 +311,12 @@ export const convertKHPResourceAttributes = (
     howToAccessSupport: getAttributeValuesAsCsv(attributes, language, 'howToAccessSupport'),
     applicationProcess: getAttributeValue(attributes, language, 'applicationProcess'),
     howIsServiceOffered: getAttributeValuesAsCsv(attributes, language, 'howIsServiceOffered'),
+    languagesServiced: extractLanguages(attributes),
     accessibility: getAttributeValue(attributes, language, 'accessibility'),
     documentsRequired: extractRequiredDocuments(attributes.documentsRequired, language),
     primaryLocationIsPrivate: getBooleanAttributeValue(attributes, 'primaryLocationIsPrivate'),
     primaryLocation: extractPrimaryLocation(attributes, language),
+    coverage: extractCoverage(coverage, language),
     site: extractSiteDetails(attributes, sites, language),
   };
 };

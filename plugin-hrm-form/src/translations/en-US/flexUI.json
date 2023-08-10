@@ -457,6 +457,8 @@
   "Resources-View-ApplicationProcess": "Application Process",
   "Resources-View-HowIsServiceOffered": "How is Service Offered",
   "Resources-View-DocumentsRequired": "Documents Required",
+  "Resources-View-LanguagesServiced": "Languages Serviced",
+  "Resources-View-Coverage": "Coverage",
   "Resources-CopyId": "Copy ID",
   "Resources-IdCopied": "Copied!",
 
