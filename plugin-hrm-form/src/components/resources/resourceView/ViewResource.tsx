@@ -119,6 +119,10 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                         attributeToDisplay: resourceAttributes.documentsRequired,
                       },
                       { subtitle: 'Resources-View-AgesServed', attributeToDisplay: resourceAttributes.ageRange },
+                      {
+                        subtitle: 'Resources-View-LanguagesServiced',
+                        attributeToDisplay: resourceAttributes.languagesServiced,
+                      },
                     ].map(({ subtitle, attributeToDisplay }) => (
                       <ResourceAttribute key={subtitle} description={subtitle}>
                         {attributeToDisplay}
@@ -150,6 +154,10 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                       {
                         subtitle: 'Resources-View-TranslationServicesAvailable',
                         attributeToDisplay: resourceAttributes.interpretationTranslationServicesAvailable,
+                      },
+                      {
+                        subtitle: 'Resources-View-Coverage',
+                        attributeToDisplay: resourceAttributes.coverage,
                       },
                       // eslint-disable-next-line sonarjs/no-identical-functions
                     ].map(({ subtitle, attributeToDisplay, dataTestId }) => (

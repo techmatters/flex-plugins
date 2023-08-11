@@ -25,13 +25,14 @@ const featureFlagEnvVarPrefix = 'REACT_FF_';
 const readConfig = () => {
   const manager = Flex.Manager.getInstance();
 
+  const accountSid = manager.serviceConfiguration.account_sid;
   const hrmBaseUrl = `${process.env.REACT_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}/${
     manager.serviceConfiguration.attributes.hrm_api_version
-  }/accounts/${manager.workerClient.accountSid}`;
+  }/accounts/${accountSid}`;
   const resourcesConfiguredBaseUrl =
     process.env.REACT_RESOURCES_BASE_URL || manager.serviceConfiguration.attributes.resources_base_url;
   const resourcesBaseUrl = resourcesConfiguredBaseUrl
-    ? `${resourcesConfiguredBaseUrl}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`
+    ? `${resourcesConfiguredBaseUrl}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${accountSid}`
     : undefined;
   const serverlessBaseUrl =
     process.env.REACT_SERVERLESS_BASE_URL || manager.serviceConfiguration.attributes.serverless_base_url;
@@ -42,6 +43,8 @@ const readConfig = () => {
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
   const assetsBucketUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
   const getFormDefinitionsBaseUrl = buildFormDefinitionsBaseUrlGetter(new URL(configuredFormDefinitionsBaseUrl));
+
+  const externalRecordingsEnabled = manager.serviceConfiguration.attributes.external_recordings_enabled || false;
 
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid;
@@ -65,13 +68,19 @@ const readConfig = () => {
     ]);
   const featureFlagsFromEnv = Object.fromEntries(featureFlagsFromEnvEntries);
   const featureFlagsFromServiceConfig: FeatureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
-  const featureFlags = { ...featureFlagsFromServiceConfig, ...featureFlagsFromEnv };
-  const { strings } = (manager as unknown) as { strings: { [key: string]: string } };
+  const featureFlags = {
+    ...featureFlagsFromServiceConfig,
+    ...featureFlagsFromEnv,
+  };
+  const { strings } = (manager as unknown) as {
+    strings: { [key: string]: string };
+  };
 
   return {
     featureFlags,
     strings,
     hrm: {
+      accountSid,
       hrmBaseUrl,
       serverlessBaseUrl,
       logoUrl,
@@ -92,6 +101,7 @@ const readConfig = () => {
       multipleOfficeSupport,
       permissionConfig,
       contactsWaitingChannels,
+      externalRecordingsEnabled,
     },
     referrableResources: {
       resourcesBaseUrl,

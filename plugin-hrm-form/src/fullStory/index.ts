@@ -125,6 +125,7 @@ export function recordingErrorHandler(
  * @param backendError - The error object produced by the back end interaction
  */
 export function recordBackendError(action: string, backendError: Error): void {
+  console.error(`Backend Error: ${action}`, backendError);
   recordEvent('Backend Error', {
     // eslint-disable-next-line camelcase
     action_str: action,

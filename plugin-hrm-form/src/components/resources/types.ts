@@ -41,11 +41,13 @@ export type KhpUiResource = {
     howToAccessSupport: string;
     applicationProcess: string;
     howIsServiceOffered: string;
+    languagesServiced: string;
     accessibility: string;
     documentsRequired: string;
     primaryLocationIsPrivate: boolean;
     primaryLocation: string;
     operations: KhpOperationsDay[];
+    coverage: string;
     site: {
       siteId: string;
       name: string;
@@ -66,6 +68,7 @@ export type KhpUiResource = {
       operations: KhpOperationsDay[];
       isActive: boolean;
       details: string;
+      coverage: string;
     }[];
   };
 };
