@@ -53,7 +53,7 @@ locals {
     }
 
      lex_bot_languages = {
-      es_CO : ["pre_survey","post_survey"]
+      es_CO : ["post_survey"]
     }
   }
 }

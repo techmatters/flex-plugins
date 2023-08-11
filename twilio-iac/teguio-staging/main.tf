@@ -107,7 +107,6 @@ module "twilioChannelv2" {
   })
   channel_type          = each.value.channel_type
   address               = each.value.address
-  target_task_name      = local.target_task_name
   channel_name          = each.key
   master_workflow_sid   = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
@@ -133,9 +132,8 @@ module "twilioChannel" {
   })
   channel_contact_identity = each.value.contact_identity
   channel_type             = each.value.channel_type
-  target_task_name         = local.target_task_name
   channel_name             = each.key
-  janitor_enabled          = true
+  janitor_enabled          = false
   master_workflow_sid      = module.taskRouter.master_workflow_sid
   chat_task_channel_sid    = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid    = module.services.flex_chat_service_sid
@@ -158,6 +156,11 @@ module "customChannel" {
       flow_description             = "${title(each.key)} Messaging Flow"
       operating_hours_holiday      = local.strings.operating_hours_holiday
       operating_hours_closed       = local.strings.operating_hours_closed
+      task_language                = local.task_language
+      helpline                     = local.helpline
+      environment                  = local.environment
+      slack_error_webhook          = "http://www.notValidURLWillUpdateManually.com"
+      chat_greeting_message        = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a la escucha y la orientación de inquietudes que se puedan tener sobre conductas sexuales perjudiciales en niñas, niños y adolescentes. ¡Qué gusto que te contactes con nosotros! \n\nPara empezar a ayudarte, por favor marca únicamente el número de una de las siguientes opciones, según tu caso: \n\n1. Tienes una duda o inquietud y deseas que la respondamos por este chat. En este servicio, nos escribes tu pregunta y te contestamos, sin necesidad de que nos brindes tus datos personales. \n\n2. Deseas tener una cita virtual y recibir una orientación personalizada. Aquí puedes conversar con uno de nuestros guías acerca de tu caso específico. Para ello, solicitamos tus datos personales y la autorización para el uso de los mismos."
 
   })
   channel_name          = each.key
