@@ -33,9 +33,14 @@ import { mapChannelForInsights } from '../utils/mappers';
 import { getDateTime } from '../utils/helpers';
 import { Case, CustomITask, HrmServiceContact } from '../types/types';
 import { formatCategories } from '../utils/formatters';
-import { getDefinitionVersions } from '../hrmConfig';
+import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import { shouldSendInsightsData } from '../utils/setUpActions';
 import { TaskEntry } from '../states/contacts/types';
+import {
+  ExternalRecordingInfo,
+  ExternalRecordingInfoSuccess,
+  isSuccessfulExternalRecordingInfo,
+} from './getExternalRecordingInfo';
 
 /*
  * 'Any' is the best we can do, since we're limited by Twilio here.
@@ -391,6 +396,19 @@ const getInsightsUpdateFunctionsForConfig = (
   return [baseUpdates, contactlessTaskUpdates, ...applyCustomUpdates];
 };
 
+const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSuccess, contact: HrmServiceContact) => {
+  const { accountSid, hrmBaseUrl } = getHrmConfig();
+
+  const { bucket, key } = externalRecordingInfo;
+  return [
+    {
+      type: 'VoiceRecording',
+      // eslint-disable-next-line camelcase
+      url_provider: `${hrmBaseUrl}/lambda/getSignedS3Url?method=getObject&contactId=${contact.id}&bucket=${bucket}&key=${key}&accountSid=${accountSid}&requestType=url_provider`,
+    },
+  ];
+};
+
 /*
  * The idea here is to apply a cascading series of modifications to the attributes for Insights.
  * We may have a set of core values to add, plus conditional core values (such as if this is a
@@ -404,10 +422,17 @@ export const buildInsightsData = (
   contactForm: TaskEntry,
   caseForm: Case,
   savedContact: HrmServiceContact,
+  externalRecordingInfo: ExternalRecordingInfo | null = null,
 ) => {
   const previousAttributes = typeof task.attributes === 'string' ? JSON.parse(task.attributes) : task.attributes;
 
-  if (!shouldSendInsightsData({ ...task, attributes: previousAttributes } as ITask)) return previousAttributes;
+  if (
+    !shouldSendInsightsData({
+      ...task,
+      attributes: previousAttributes,
+    } as ITask)
+  )
+    return previousAttributes;
 
   const { currentDefinitionVersion } = getDefinitionVersions();
 
@@ -415,6 +440,14 @@ export const buildInsightsData = (
   const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(currentDefinitionVersion.insights)
     .map(f => f(previousAttributes, contactForm, caseForm, savedContact))
     .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
+
+  if (isSuccessfulExternalRecordingInfo(externalRecordingInfo)) {
+    const urlProviderBlock = generateUrlProviderBlock(externalRecordingInfo, savedContact);
+    finalAttributes.conversations = {
+      ...finalAttributes.conversations,
+      media: [...(finalAttributes.conversations.media || []), ...urlProviderBlock],
+    };
+  }
 
   return finalAttributes;
 };
