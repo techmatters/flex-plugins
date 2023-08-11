@@ -36,7 +36,6 @@ locals {
   environment                  = "Staging"
   short_environment            = "STG"
   operating_hours_function_sid = "ZH5fcc5dee5089c176acd0bd24e7fa873e"
-  target_task_name             = "execute_initial_flow"
   twilio_numbers               = ["messenger:103574689075106", "twitter:1540032139563073538", "instagram:17841454586132629", "whatsapp:+12135834846"]
   channel                      = ""
 
@@ -56,11 +55,6 @@ locals {
 provider "twilio" {
   username = local.secrets.twilio_account_sid
   password = local.secrets.twilio_auth_token
-}
-
-module "custom_chatbots" {
-  source         = "../terraform-modules/chatbots/te-guio-co"
-  serverless_url = module.serverless.serverless_environment_production_url
 }
 
 module "hrmServiceIntegration" {
@@ -98,7 +92,7 @@ module "twilioChannelv2" {
   for_each = local.twilio_channels_v2
   source   = "../terraform-modules/channels/twilio-channel-v2"
   custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/operating-hours/with-chatbot-v2.tftpl",
+    "../terraform-modules/channels/flow-templates/co/flow-v2.tftpl",
     {
       channel_name                 = "${each.key}"
       serverless_url               = module.serverless.serverless_environment_production_url
@@ -107,17 +101,12 @@ module "twilioChannelv2" {
       operating_hours_function_sid = local.operating_hours_function_sid
       master_workflow_sid          = module.taskRouter.master_workflow_sid
       chat_task_channel_sid        = module.taskRouter.chat_task_channel_sid
-      channel_attributes           = templatefile("../terraform-modules/channels/twilio-channel-v2/channel-attributes/${each.key}-attributes.tftpl", { task_language = local.task_language, address = each.value.address })
+      channel_attributes           = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/co/default-attributes.tftpl", { task_language = local.task_language, address = each.value.address })
       flow_description             = "${title(each.key)} Messaging Flow"
-      pre_survey_bot_sid           = module.custom_chatbots.pre_survey_bot_es_sid
-      target_task_name             = local.target_task_name
-      operating_hours_holiday      = local.strings.operating_hours_holiday
-      operating_hours_closed       = local.strings.operating_hours_closed
 
   })
   channel_type          = each.value.channel_type
   address               = each.value.address
-  pre_survey_bot_sid    = module.custom_chatbots.pre_survey_bot_es_sid
   target_task_name      = local.target_task_name
   channel_name          = each.key
   master_workflow_sid   = module.taskRouter.master_workflow_sid
@@ -129,7 +118,7 @@ module "twilioChannel" {
   for_each = local.twilio_channels
   source   = "../terraform-modules/channels/twilio-channel"
   custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/operating-hours/with-chatbot.tftpl",
+    "../terraform-modules/channels/flow-templates/co/flow.tftpl",
     {
       channel_name                 = "${each.key}"
       serverless_url               = module.serverless.serverless_environment_production_url
@@ -138,17 +127,12 @@ module "twilioChannel" {
       operating_hours_function_sid = local.operating_hours_function_sid
       master_workflow_sid          = module.taskRouter.master_workflow_sid
       chat_task_channel_sid        = module.taskRouter.chat_task_channel_sid
-      channel_attributes           = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl", { task_language = local.task_language })
+      channel_attributes           = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/co/default-attributes.tftpl", { task_language = local.task_language })
       flow_description             = "${title(each.key)} Messaging Flow"
-      pre_survey_bot_sid           = module.custom_chatbots.pre_survey_bot_es_sid
-      target_task_name             = local.target_task_name
-      operating_hours_holiday      = local.strings.operating_hours_holiday
-      operating_hours_closed       = local.strings.operating_hours_closed
 
   })
   channel_contact_identity = each.value.contact_identity
   channel_type             = each.value.channel_type
-  pre_survey_bot_sid       = module.custom_chatbots.pre_survey_bot_es_sid
   target_task_name         = local.target_task_name
   channel_name             = each.key
   janitor_enabled          = true
@@ -216,7 +200,7 @@ module "aws" {
   shared_state_sync_service_sid      = module.services.shared_state_sync_service_sid
   flex_chat_service_sid              = module.services.flex_chat_service_sid
   flex_proxy_service_sid             = module.services.flex_proxy_service_sid
-  post_survey_bot_sid                = module.custom_chatbots.post_survey_bot_es_sid
+  post_survey_bot_sid                = "DELETED"
   survey_workflow_sid                = module.survey.survey_workflow_sid
 }
 
