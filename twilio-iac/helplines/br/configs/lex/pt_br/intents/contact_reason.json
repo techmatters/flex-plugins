@@ -1,5 +1,5 @@
 {
-  "pre_survey": {
+  "contact_reason": {
     "description": "Helpline Specific helplines/br/configs/lex/pt_br/bot Survey intent",
     "sample_utterances": [
       "Incoming webchat contact",

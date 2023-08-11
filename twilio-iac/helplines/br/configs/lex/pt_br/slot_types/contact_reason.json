@@ -1,5 +1,5 @@
 {
-  "yes_no": {
+  "contact_reason": {
     "description": "General configs/lex/pt_br/slot_types slot type for Contact Reason questions",
     "value_selection_strategy": "TOP_RESOLUTION",
     "values": {

@@ -13,7 +13,7 @@
       "content_type": "PlainText"
     },
     "rejection_statement": {
-      "content": "Desculpe, não posso ajudar neste momento.",
+      "content": "Desculpe, não posso ajudar neste momento. Por favor, aguarde até ser atendido.",
       "content_type": "PlainText"
     },
     "slots": {

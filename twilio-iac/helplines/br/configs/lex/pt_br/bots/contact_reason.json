@@ -1,5 +1,5 @@
 {
-  "terms_conditions_acceptance": {
+  "contact_reason": {
     "description": "General configs/lex/pt_br/bots Contact Reason bot",
     "locale": "en-US",
     "process_behavior": "BUILD",
