@@ -24,7 +24,7 @@
         "value_elicitation_prompt": {
           "content": "Inti taċċetta t-Termini u l-Kundizzjonijiet tagħna? https://kellimni.com/chat-terms/ . Jekk jogħġbok wieġeb billi tagħżel numru:\n1. Iva, naċċetta t-Termini u l-Kundizzjonijiet. \n2. Le, ma naċċettax t-Termini u l-Kundizzjonijiet.",
           "content_type": "PlainText",
-          "max_attempts": 3
+          "max_attempts": 2
         }
       }
     }

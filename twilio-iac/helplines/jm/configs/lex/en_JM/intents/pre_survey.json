@@ -2,28 +2,6 @@
   "pre_survey": {
     "description": "Helpline Specific configs/lex/en_JM/intents Pre Survey Intent Survey intent",
     "sample_utterances": [
-      "H",
-      "Hi",
-      "Hello",
-      "Help",
-      "I need help",
-      "Pls",
-      "Please",
-      "Waah gwaan",
-      "How yuh do",
-      "Big up",
-      "Respect",
-      "Mi deh yah",
-      "Bless up",
-      "Link up",
-      "One love",
-      "Jah guide",
-      "Mi soon come",
-      "Wha gwaan",
-      "Mi deh pon di beach",
-      "Mi rate di vibes",
-      "Link mi up",
-      "Mi deh pon di corner",
       "Incoming webchat contact",
       "trigger_pre_survey"
     ],
@@ -35,7 +13,7 @@
       "content_type": "PlainText"
     },
     "rejection_statement": {
-      "content": "Sorry, I am not able to assist at this time.",
+      "content": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a counsellor.",
       "content_type": "PlainText"
     },
     "slots": {
@@ -45,8 +23,8 @@
         "slot_constraint": "Required",
         "slot_type": "yes_no",
         "value_elicitation_prompt": {
-          "max_attempts": 3,
-          "content": "Welcome to the helpline. To help us better serve you, please answer the following five  questions.\n Are you calling about yourself? Please answer Yes or No.",
+          "max_attempts": 2,
+          "content": "Welcome to the helpline. To help us better serve you, please answer the following questions. You can say 'prefer not to answer' (or type X) to any question. \n Are you calling about yourself? Please answer Yes or No.",
           "content_type": "PlainText"
         }
       },
@@ -56,8 +34,8 @@
         "slot_constraint": "Required",
         "slot_type": "age",
         "value_elicitation_prompt": {
-          "max_attempts": 3,
-          "content": "Thank you. You can say 'prefer not to answer' (or type X) to any question. \n How old are you?",
+          "max_attempts": 2,
+          "content": "Thank you. How old are you?",
           "content_type": "PlainText"
         }
       },
@@ -80,7 +58,7 @@
         "value_elicitation_prompt": {
           "content": "What parish are you located in?",
           "content_type": "PlainText",
-          "max_attempts": 3
+          "max_attempts": 2
         }
       },
       "howDidYouKnowAboutOurLine": {
@@ -91,7 +69,7 @@
         "value_elicitation_prompt": {
           "content": "How did you hear about us? Please select one: \n 1: Advertisement \n 2: Social Media \n 3: SMS/Text Message \n 4: Traditional Media \n 5: Word of Mouth",
           "content_type": "PlainText",
-          "max_attempts": 3
+          "max_attempts": 2
         }
       }
     }

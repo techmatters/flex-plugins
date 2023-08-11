@@ -6,19 +6,25 @@
           "ukr-MT": {
             "synonyms": [
               "ukranian",
-              "3"
+              "ukr",           
+              "uk",  
+                "3"
             ]
           },
           "en-MT": {
             "synonyms": [
               "english",
-              "1"
+              "eng",
+              "en",
+                "1"
             ]
           },
           "mt-MT": {
             "synonyms": [
               "maltese",
-              "2"
+              "mt",
+                "mal",
+                "2"
             ]
           }
         }
