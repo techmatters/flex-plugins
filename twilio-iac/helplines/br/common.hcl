@@ -9,15 +9,16 @@ locals {
     old_dir_prefix                    = "safernet"
     definition_version                = "br-v1"
     default_autopilot_chatbot_enabled = false
-    task_language                     = "en-US"
-    helpline_language                 = "en-US"
+    task_language                     = "pt-BR"
+    helpline_language                 = "pt-BR"
     voice_ivr_language                = ""
-    contacts_waiting_channels         = ["web","line","facebook","instagram"]
+    contacts_waiting_channels         = ["facebook","instagram"]
     enable_post_survey                = false
     
    
     lex_bot_languages  = {
-      pt : ["pre_survey"]
+      pt : ["pre_survey"],
+      pt_br : ["contact_reason"]
     }
     
 
