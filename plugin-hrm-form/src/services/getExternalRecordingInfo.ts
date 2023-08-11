@@ -62,7 +62,7 @@ export const getExternalRecordingInfo = async (task: CustomITask): Promise<Exter
   const { channelType } = task;
   if (!isVoiceChannel(channelType)) return unneededRecordingInfo;
 
-  const { externalRecordingsEnabled, hrmBaseUrl } = getHrmConfig();
+  const { externalRecordingsEnabled } = getHrmConfig();
   if (!externalRecordingsEnabled) return unneededRecordingInfo;
 
   // The call id related to the worker is always the one with the recording, as far as I can tell (rbd)
