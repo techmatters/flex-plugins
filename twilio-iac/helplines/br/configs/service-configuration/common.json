@@ -9,7 +9,7 @@
             "enable_csam_clc_report": false,
             "enable_csam_report": false,
             "enable_dual_write": true,
-            "enable_lex": false,
+            "enable_lex": true,
             "enable_post_survey": false,
             "enable_save_insights": true,
             "enable_transcripts": false,

@@ -1,0 +1,42 @@
+{
+  "ethnicity": {
+    "description": "General configs/lex/pt/slot_types slot type for Ethnicity",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "Branca": {
+        "synonyms": [
+          "Branco"
+        ]
+      },
+      "Preta": {
+        "synonyms": [
+          "Preto"
+        ]
+      },
+      "Parda": {
+        "synonyms": [
+          "Pardo"
+        ]
+      },
+      "Amarela": {
+        "synonyms": [
+          "Amarelo"
+        ]
+      },
+      "Indígena": {
+        "synonyms": [
+          "Indigenous"
+        ]
+      },
+      "Desconhecido": {
+        "synonyms": [
+          "X",
+          "prefiro não",
+          "prefiro não responder",
+          "Preferia não dizer",
+          "Gostaria de não dizer"
+        ]
+      }
+    }
+  }
+}
