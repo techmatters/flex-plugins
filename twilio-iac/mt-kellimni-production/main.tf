@@ -98,21 +98,16 @@ module "twilioChannel" {
   channel_contact_identity = each.value.contact_identity
   channel_type             = each.value.channel_type
   custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/language-mt/with-chatbot.tftpl",
+    "../terraform-modules/channels/flow-templates/language-mt/messaging-lex.tftpl",
     {
       channel_name                  = "${each.key}"
       serverless_url                = module.serverless.serverless_environment_production_url
       serverless_service_sid        = module.serverless.serverless_service_sid
       serverless_environment_sid    = module.serverless.serverless_environment_production_sid
+      capture_channel_with_bot_sid = "ZH95285b8e20b443a167ada3db38b1ff99"
+      send_message_janitor_sid     = "ZH91ec531cde681192daf63e306db90d88"
       master_workflow_sid           = module.taskRouter.master_workflow_sid
       chat_task_channel_sid         = module.taskRouter.chat_task_channel_sid
-      chatbot_en_sid                = twilio_autopilot_assistants_v1.chatbot_en.sid
-      chatbot_mt_sid                = twilio_autopilot_assistants_v1.chatbot_mt.sid
-      chatbot_ukr_sid               = twilio_autopilot_assistants_v1.chatbot_ukr.sid
-      chatbot_language_selector_sid = twilio_autopilot_assistants_v1.chatbot_language_selector.sid
-      channel_attributes_EN         = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes-mt/${each.key}-attributes.tftpl", { chatbot_language = "chatbot_EN" })
-      channel_attributes_MT         = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes-mt/${each.key}-attributes.tftpl", { chatbot_language = "chatbot_MT" })
-      channel_attributes_UKR        = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes-mt/${each.key}-attributes.tftpl", { chatbot_language = "chatbot_UKR" })
       flow_description              = "${title(each.key)} Messaging Flow"
   })
   target_task_name      = local.target_task_name
@@ -128,12 +123,24 @@ module "customChannel" {
   source                = "../terraform-modules/channels/custom-channel"
   channel_name          = each.key
   janitor_enabled       = true
+    custom_flow_definition = templatefile(
+    "../terraform-modules/channels/flow-templates/language-mt/messaging-lex.tftpl",
+    {
+      channel_name                 = "${each.key}"
+      serverless_url               = module.serverless.serverless_environment_production_url
+      serverless_service_sid       = module.serverless.serverless_service_sid
+      serverless_environment_sid   = module.serverless.serverless_environment_production_sid
+      capture_channel_with_bot_sid = "ZH95285b8e20b443a167ada3db38b1ff99"
+      send_message_janitor_sid     = "ZH91ec531cde681192daf63e306db90d88"
+      master_workflow_sid          = module.taskRouter.master_workflow_sid
+      chat_task_channel_sid        = module.taskRouter.chat_task_channel_sid
+      flow_description             = "${title(each.key)} Messaging Flow"
+  })
   master_workflow_sid   = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
   short_helpline        = local.short_helpline
   short_environment     = local.short_environment
-  task_language         = "en-MT"
 }
 
 module "survey" {

@@ -1,7 +1,6 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_lex": true
         },
         "helpline_code": "cl"
     }
