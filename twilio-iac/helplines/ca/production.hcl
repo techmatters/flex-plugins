@@ -120,7 +120,7 @@ locals {
       khp_main : {
         channel_type         = "voice"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/g2tns.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/khp_main.tftpl"
         channel_flow_vars    = {
 
           #Twilio things
@@ -165,7 +165,7 @@ locals {
       hc : {
         channel_type         = "voice"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/g2tns.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/hc.tftpl"
         channel_flow_vars    = {
 
           #Twilio things
