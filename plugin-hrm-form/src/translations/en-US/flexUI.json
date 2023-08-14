@@ -465,6 +465,7 @@
   "Conference-AddConferenceCallParticipant": "Add Conference Call Participant",
   "Conference-EnterPhoneNumber": "Enter phone number",
   "Conference-DialButton": "Dial",
-  "TaskLineCallLeaveTitle": "YOU HAVE LEFT THE CALL",
+  "TaskLineCallLeaveTitleAgent": "YOU HAVE LEFT THE CALL",
+  "TaskLineCallLeaveTitleServiceUser": "USER LEFT THE CALL",
   "HangupCallLeaveTooltip": "Leave Call"
 }

@@ -32,6 +32,7 @@ import {
   setIsDialogOpenAction,
   setPhoneNumberAction,
 } from '../../../states/conferencing';
+import { getTemplateStrings } from '../../../hrmConfig';
 
 type Props = TaskContextProps;
 
@@ -61,6 +62,8 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   if (!conferenceSid || !participants || !task) {
     return null;
   }
+
+  const strings = getTemplateStrings();
 
   const handleClick = async () => {
     try {
@@ -103,6 +106,12 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   };
 
   const isLiveCall = TaskHelper.isLiveCall(task);
+
+  if (participants && participants.filter(participant => participant.isCurrentWorker)) {
+    strings.TaskLineCallEndedTitle = strings.TaskLineCallLeaveTitleAgent;
+  } else {
+    strings.TaskLineCallEndedTitle = strings.TaskLineCallLeaveTitleServiceUser;
+  }
 
   return (
     <StyledConferenceButtonWrapper>
