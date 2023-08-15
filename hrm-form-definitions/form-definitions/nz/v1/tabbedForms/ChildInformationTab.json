@@ -390,8 +390,8 @@
     "type": "mixed-checkbox"
   },
   {
-    "name": "lgbtqi",
+    "name": "LGBTQI+",
     "label": "LGBTQI+ / SOGIESC child",
-    "type": "checkbox"
+    "type": "mixed-checkbox"
   }
 ]
