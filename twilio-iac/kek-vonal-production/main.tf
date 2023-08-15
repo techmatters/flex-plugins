@@ -67,9 +67,8 @@ module "services" {
 
 module "taskRouter" {
   source                                = "../terraform-modules/taskRouter/default"
-  custom_task_routing_filter_expression = "phone=='+3680984590' OR phone=='+3612344587' OR channelType=='web'"
+  custom_task_routing_filter_expression = "phone=='+3680984590' OR phone=='+12014821989' OR channelType=='web' OR isContactlessTask==true"
   serverless_url                        = module.serverless.serverless_environment_production_url
-  skip_timeout_expression               = "1==1"
   include_default_filter                = true
   helpline                              = "Kék Vonal"
 }
