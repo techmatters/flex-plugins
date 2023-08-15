@@ -22,7 +22,7 @@
         ]
       },
       {
-        "filter_friendly_name": "Priority",
+        "filter_friendly_name": "Priority Youthline Helpline",
         "expression": "((channelType IN [\"voice\",\"web\", \"sms\"] OR to IN [${join(", ", formatlist("'%s'", phone_numbers.youthline))}]) AND preEngagementData.reason == \"emergency\" )",
         "targets": [
           {

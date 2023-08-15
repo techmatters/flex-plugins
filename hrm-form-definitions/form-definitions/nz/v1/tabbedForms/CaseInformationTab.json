@@ -94,7 +94,7 @@
   },
   {
     "name": "didTheChildFeelWeSolvedTheirProblem",
-    "label": "Did the young person feel we solved their problem?",
+    "label": "Did the client feel supported after contacting our Helpline?",
     "type": "mixed-checkbox"
   },
   {
