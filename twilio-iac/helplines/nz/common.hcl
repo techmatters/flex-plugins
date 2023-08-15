@@ -24,7 +24,7 @@ locals {
       },
       priority : {
         "target_workers" = "routing.skills HAS 'Priority'",
-        "friendly_name"  = "Priority"
+        "friendly_name"  = "Priority Youthline Helpline"
       },
       clinical : {
         "target_workers" = "routing.skills HAS 'Clinical'",
