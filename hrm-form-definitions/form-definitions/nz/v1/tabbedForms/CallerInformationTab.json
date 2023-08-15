@@ -1,6 +1,6 @@
 [
   {
-    "name": "friendlyName",
+    "name": "firstName",
     "label": "Preferred Name",
     "type": "input",
     "required": {
@@ -164,8 +164,8 @@
         "label": "Parent"
       },
       {
-        "value": "Friend",
-        "label": "Friend"
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ],
     "required": {
