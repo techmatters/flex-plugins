@@ -54,7 +54,7 @@
         "priority": 3,
         "description": "Caller's gender",
         "slot_constraint": "Required",
-        "slot_type": "gender_girl_boy",
+        "slot_type": "gender",
         "value_elicitation_prompt": {
           "max_attempts": 2,
           "content": "What is your gender?",
