@@ -228,7 +228,7 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
     // Store a pending transcript
     returnData.conversationMedia.push({
       store: 'S3',
-      type: 'TRANSCRIPT',
+      type: 'transcript',
       location: undefined,
     });
   }
@@ -252,7 +252,7 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
     const { bucket, key } = externalRecordingInfo;
     returnData.conversationMedia.push({
       store: 'S3',
-      type: 'RECORDING',
+      type: 'recording',
       location: {
         bucket,
         key,

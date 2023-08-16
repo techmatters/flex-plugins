@@ -380,7 +380,7 @@ describe('saveContact() (externalRecording)', () => {
       { store: 'twilio' },
       {
         store: 'S3',
-        type: 'RECORDING',
+        type: 'recording',
         location: {
           bucket: 'bucket',
           key: 'key',
@@ -603,7 +603,7 @@ describe('handleTwilioTask() (externalRecording)', () => {
         { store: 'twilio', reservationSid: undefined },
         {
           store: 'S3',
-          type: 'RECORDING',
+          type: 'recording',
           location: {
             bucket: 'bucket',
             key: 'key',
