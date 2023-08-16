@@ -17,7 +17,8 @@ locals {
     
    
     lex_bot_languages  = {
-      pt_br : ["pre_survey","contact_reason"]
+      en : ["pre_survey"],
+      en_MW : ["youth_testing"]
     }
     
 
