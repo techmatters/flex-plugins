@@ -265,8 +265,6 @@ const extractRequiredDocuments = (documentsRequired, language: Language) => {
   return documents.join(', ');
 };
 
-const extractTargetPopulation = targetPopulationAttribute => ((targetPopulationAttribute ?? [])[0] ?? [])[0]?.value;
-
 const extractLanguages = (resource: Attributes) =>
   getAttributeDataItems(resource, '', 'languages')
     .map(attributeData => {
@@ -301,7 +299,7 @@ export const convertKHPResourceAttributes = (
     operations: extractResourceOperatingHours(operations, language),
     available247: getAttributeValue(attributes, language, 'available247'),
     ageRange: extractAgeRange(attributes, language),
-    targetPopulation: extractTargetPopulation(attributes.targetPopulation),
+    targetPopulation: getAttributeValuesAsCsv(attributes, language, 'targetPopulation'),
     interpretationTranslationServicesAvailable: getAttributeValue(
       attributes,
       language,
