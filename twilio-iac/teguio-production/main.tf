@@ -84,14 +84,14 @@ module "taskRouter" {
   source                                = "../terraform-modules/taskRouter/default"
   serverless_url                        = module.serverless.serverless_environment_production_url
   helpline                              = local.helpline
-  custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
+  custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}] OR to == \"+578005190690\""
 }
 
 module "twilioChannel" {
   for_each = local.twilio_channels
   source   = "../terraform-modules/channels/twilio-channel"
   custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/operating-hours/with-chatbot.tftpl",
+    "../terraform-modules/channels/flow-templates/co/flow.tftpl",
     {
       channel_name                 = "${each.key}"
       serverless_url               = module.serverless.serverless_environment_production_url
@@ -102,16 +102,10 @@ module "twilioChannel" {
       chat_task_channel_sid        = module.taskRouter.chat_task_channel_sid
       channel_attributes           = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl", { task_language = local.task_language })
       flow_description             = "${title(each.key)} Messaging Flow"
-      pre_survey_bot_sid           = module.custom_chatbots.pre_survey_bot_es_sid
-      target_task_name             = local.target_task_name
-      operating_hours_holiday      = local.strings.operating_hours_holiday
-      operating_hours_closed       = local.strings.operating_hours_closed
 
   })
   channel_contact_identity = each.value.contact_identity
   channel_type             = each.value.channel_type
-  pre_survey_bot_sid       = module.custom_chatbots.pre_survey_bot_es_sid
-  target_task_name         = local.target_task_name
   channel_name             = each.key
   janitor_enabled          = true
   master_workflow_sid      = module.taskRouter.master_workflow_sid
@@ -136,6 +130,11 @@ module "customChannel" {
       flow_description             = "${title(each.key)} Messaging Flow"
       operating_hours_holiday      = local.strings.operating_hours_holiday
       operating_hours_closed       = local.strings.operating_hours_closed
+      task_language                = local.task_language
+      helpline                     = local.helpline
+      environment                  = local.environment
+      slack_error_webhook          = "http://www.notValidURLWillUpdateManually.com"
+      chat_greeting_message        = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a la escucha y la orientación de inquietudes que se puedan tener sobre conductas sexuales perjudiciales en niñas, niños y adolescentes. ¡Qué gusto que te contactes con nosotros! \n\nPara empezar a ayudarte, por favor marca únicamente el número de una de las siguientes opciones, según tu caso: \n\n1. Tienes una duda o inquietud y deseas que la respondamos por este chat. En este servicio, nos escribes tu pregunta y te contestamos, sin necesidad de que nos brindes tus datos personales. \n\n2. Deseas tener una cita virtual y recibir una orientación personalizada. Aquí puedes conversar con uno de nuestros guías acerca de tu caso específico. Para ello, solicitamos tus datos personales y la autorización para el uso de los mismos."
 
   })
   channel_name          = each.key
