@@ -106,22 +106,15 @@ export type TwilioStoredMedia = {
   reservationSid: string;
 };
 
-const CONTACT_MEDIA_TYPES = {
-  RECORDING: 'recording',
-  TRANSCRIPT: 'transcript',
-};
-
-export type ContactMediaType = keyof typeof CONTACT_MEDIA_TYPES;
-
 export type S3StoredTranscript = {
   store: 'S3';
-  type: 'TRANSCRIPT';
+  type: 'transcript';
   location?: { bucket?: string; key?: string };
 };
 
 export type S3StoredRecording = {
   store: 'S3';
-  type: 'RECORDING';
+  type: 'recording';
   location?: { bucket?: string; key?: string };
 };
 
@@ -131,9 +124,9 @@ export type ConversationMedia = TwilioStoredMedia | S3StoredMedia;
 
 export const isTwilioStoredMedia = (m: ConversationMedia): m is TwilioStoredMedia => m.store === 'twilio';
 export const isS3StoredTranscript = (m: ConversationMedia): m is S3StoredTranscript =>
-  m.store === 'S3' && m.type === 'TRANSCRIPT';
+  m.store === 'S3' && m.type === 'transcript';
 export const isS3StoredRecording = (m: ConversationMedia): m is S3StoredRecording =>
-  m.store === 'S3' && m.type === 'RECORDING';
+  m.store === 'S3' && m.type === 'recording';
 
 // Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
 export type ContactRawJson = {
