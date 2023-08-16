@@ -193,20 +193,19 @@ const extractPhoneNumbers = (phoneObj: Attributes) => {
   return phoneNumbers;
 };
 
-const extractCoverageItemDescription = (coverageData: AttributeData, language: string): string => {
+const extractCoverageItemDescription = (coverageData: AttributeData): string => {
   const coverageInfo = coverageData?.info;
   if (coverageInfo) {
-    if (coverageInfo.country) {
-      // New coverage data format
-      return toCsv(coverageInfo.postalCode, coverageInfo.city, coverageInfo.region, coverageInfo.province);
-    }
-    // Legacy coverage data format
-    return coverageInfo[language] ?? coverageInfo.en;
+    // New coverage data format
+    return (
+      toCsv(coverageInfo.postalCode, coverageInfo.city, coverageInfo.region, coverageInfo.province) ??
+      coverageInfo.country
+    );
   }
   return '';
 };
 
-const extractCoverage = (coverage: Attributes, language: Language, siteId: string = null): string => {
+const extractCoverage = (coverage: Attributes, siteId: string = null): string => {
   const coverageList = Object.values(coverage ?? {});
   return coverageList
     .filter(item => {
@@ -216,7 +215,7 @@ const extractCoverage = (coverage: Attributes, language: Language, siteId: strin
       const itemSiteId = item[0]?.info?.siteId;
       return (!siteId && !itemSiteId) || (siteId && itemSiteId === siteId);
     })
-    .map(coverageItems => extractCoverageItemDescription(coverageItems[0], language))
+    .map(coverageItems => extractCoverageItemDescription(coverageItems[0]))
     .filter(ci => ci)
     .join('\n');
 };
@@ -239,7 +238,7 @@ const extractSiteDetails = (resource: Attributes, sites: Attributes, language: L
       isActive: getBooleanAttributeValue(site, 'isActive'),
       details: getAttributeData(site, language, 'details')?.info?.details ?? '',
       phoneNumbers: extractPhoneNumbers(getAttributeNode(site, 'phoneNumbers')),
-      coverage: extractCoverage(coverageAttributes, language, siteId),
+      coverage: extractCoverage(coverageAttributes, siteId),
     });
   }
   return siteDetails;
