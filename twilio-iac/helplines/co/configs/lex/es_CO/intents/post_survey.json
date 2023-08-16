@@ -1,6 +1,6 @@
 {
   "post_survey_yes": {
-    "description": "Helpline Specific helplines/cl/configs/lex/es_cl/intents  post_survey_yes",
+    "description": "Helpline Specific helplines/co/configs/lex/es_co/intents  post_survey_yes",
     "sample_utterances": [
       "Sí",
       "Si",
@@ -26,35 +26,46 @@
       "content_type": "PlainText"
     },
     "slots": {
-      "wasHelpful": {
+      "didUserFeelSupported": {
         "priority": 0,
-        "description": "Imported from question 'wasHelpful'",
+        "description": "Imported from question 'didUserFeelSupported'",
         "slot_type": "fourLevelAssessment",
         "slot_constraint": "Required",
         "value_elicitation_prompt": {
-          "content": "¿La atención recibida me ayudó a encontrar estrategias o planes de acción para abordar el malestar por el cual consulté? Escriba el número que corresponda: \n 1 - No me ayudó nada \n2 - Me ayudó poco \n3 - Me ayudó \n4 - Me ayudó mucho",
-          "content_type": "PlainText",
-          "max_attempts": 2
-        }
-      },
-      "feltSupported": {
-        "priority": 1,
-        "description": "Imported from question 'feltSupported'",
-        "slot_type": "fourLevelAssessment",
-        "slot_constraint": "Required",
-        "value_elicitation_prompt": {
-          "content": "¿Te sentiste escuchado/a y apoyado/a por la/el psicólogo que te atendió?  Escriba el número que corresponda:\n1 - No me sentí escuchad@ \n2 - Me sentí  poco escuchad@ \n3 - Me sentí escuchad@ \n4 - Me sentí muy escuchad@",
+          "content": "¿Te sentiste escuchado/a y apoyado/a por el guía que te atendió? Responde con el número que corresponda:\n 1: Nahhh. Para nada. \n2: Un poco \n3: Sí \n4: Uffff. ¡Un montón! ",
           "content_type": "PlainText",
           "max_attempts": 2
         }
       },
       "wouldRecommend": {
-        "priority": 2,
+        "priority": 1,
         "description": "Imported from question 'wouldRecommend'",
         "slot_type": "yes_no",
         "slot_constraint": "Required",
         "value_elicitation_prompt": {
-          "content": "¿Recomendarías el servicio de chat de Línea Libre a otras personas? Escriba el número que corresponda:\n1 - Sí \n2 - No",
+          "content": "¿Recomendarías a alguien cercano a ti comunicarse con nosotros? Responde con el número que corresponda:\n 1: Sí \n2: No",
+          "content_type": "PlainText",
+          "max_attempts": 2
+        }
+      },
+      "wouldRepeat": {
+        "priority": 2,
+        "description": "Imported from question 'wouldRepeat'",
+        "slot_type": "yes_no",
+        "slot_constraint": "Required",
+        "value_elicitation_prompt": {
+          "content": "¿Volverías a comunicarte con nosotros? Responde con el número que corresponda:\n1: Sí \n2: No",
+          "content_type": "PlainText",
+          "max_attempts": 2
+        }
+      },
+      "wasHelpful": {
+        "priority": 3,
+        "description": "Imported from question 'wasHelpful'",
+        "slot_type": "fourLevelAssessment",
+        "slot_constraint": "Required",
+        "value_elicitation_prompt": {
+          "content": "¿Fue útil para ti la información que te brindamos? Responde con el número que corresponda:\n 1: Nahhh. Para nada. \n2: Un poco \n3: Sí \n4: Uffff. ¡Un montón",
           "content_type": "PlainText",
           "max_attempts": 2
         }
