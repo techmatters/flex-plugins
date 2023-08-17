@@ -44,7 +44,7 @@ import { configurationBase, contactFormsBase, namespace, RootState } from '../..
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getPermissionsForContact, getPermissionsForViewingIdentifiers, PermissionActions } from '../../permissions';
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
-import { TranscriptSection } from './TranscriptSection';
+import { RecordingSection, TranscriptSection } from './TranscriptsRecordingsSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import { contactLabelFromSearchContact } from '../../states/contacts/contactIdentifier';
 import type { ResourceReferral } from '../../states/contacts/resourceReferral';
@@ -214,6 +214,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const loadConversationIntoOverlay = async () => {
     const twilioStoredMedia = savedContact.details.conversationMedia.find(isTwilioStoredMedia);
+    console.log('>>> loadConversationIntoOverlay', twilioStoredMedia);
     await Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_PLAY, {
       taskSid: twilioStoredMedia.reservationSid,
     });
@@ -235,10 +236,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
     featureFlags.enable_external_transcripts &&
     can(PermissionActions.VIEW_EXTERNAL_TRANSCRIPT) &&
     savedContact.details.conversationMedia?.find(isS3StoredTranscript);
-  const showTranscriptSection = Boolean(
-    isChatChannel(channel) &&
-      savedContact.details.conversationMedia?.length &&
-      (twilioStoredTranscript || externalStoredTranscript),
+  const showTranscriptRecordingsSection = Boolean(
+    savedContact.details.conversationMedia?.length && (twilioStoredTranscript || externalStoredTranscript),
   );
   const csamReportEnabled = featureFlags.enable_csam_report && featureFlags.enable_csam_clc_report;
 
@@ -385,28 +384,34 @@ const ContactDetailsHome: React.FC<Props> = function ({
           )}
         </ContactDetailsSection>
       )}
-      {recordingAvailable && (
-        <SectionTitleContainer style={{ justifyContent: 'right', paddingTop: '10px', paddingBottom: '10px' }}>
-          <SectionActionButton type="button" onClick={loadConversationIntoOverlay}>
-            <Template code="ContactDetails-LoadRecording-Button" />
-          </SectionActionButton>
-        </SectionTitleContainer>
-      )}
-      {showTranscriptSection && (
+      {showTranscriptRecordingsSection && (
         <ContactDetailsSection
-          sectionTitle={<Template code="ContactDetails-Transcript" />}
+          sectionTitle={
+            isChatChannel(channel) ? (
+              <Template code="ContactDetails-Transcript" />
+            ) : (
+              <Template code="ContactDetails-Recording" />
+            )
+          }
           expanded={detailsExpanded[TRANSCRIPT]}
           handleExpandClick={() => toggleSection(TRANSCRIPT)}
           buttonDataTestid="ContactDetails-Section-Transcript"
           showEditButton={false}
         >
           <Flex justifyContent="center" flexDirection="row" paddingTop="20px">
-            <TranscriptSection
-              contactId={contactId}
-              twilioStoredTranscript={twilioStoredTranscript}
-              externalStoredTranscript={externalStoredTranscript}
-              loadConversationIntoOverlay={loadConversationIntoOverlay}
-            />
+            {isChatChannel(channel) && (
+              <TranscriptSection
+                contactId={contactId}
+                twilioStoredTranscript={twilioStoredTranscript}
+                externalStoredTranscript={externalStoredTranscript}
+                loadConversationIntoOverlay={loadConversationIntoOverlay}
+              />
+            )}
+            {isVoiceChannel(channel) && (
+              <>
+                <RecordingSection contactId={contactId} loadConversationIntoOverlay={loadConversationIntoOverlay} />
+              </>
+            )}
           </Flex>
         </ContactDetailsSection>
       )}

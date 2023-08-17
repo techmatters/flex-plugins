@@ -315,6 +315,7 @@
   "ContactDetails-LoadRecording-Button": "Open Recording",
   "ContactDetails-LoadTranscript-Button": "Load Transcript",
   "ContactDetails-Transcript": "Transcript",
+  "ContactDetails-Recording": "Recording",
   "ContactDetails-ActionHeaderAdded": "Added on {{date}} at {{time}} by {{counsellor}}",
   "ContactDetails-ActionHeaderUpdated": "Updated on {{date}} at {{time}} by {{counsellor}}",
   "ContactDetails-NoCategoryProvided": "No category provided",
