@@ -52,7 +52,7 @@ const ExpandableAttributeContent: React.FC<ExpandableAttributeContentProps & Par
           maxHeight: isExpanded ? undefined : '120px',
         }}
       >
-        {content}
+        <Template code={content} />
         {isExpanded && (
           <StyledLink
             underline={true}

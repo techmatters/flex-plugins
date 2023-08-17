@@ -32,8 +32,11 @@ const ResourceAttribute: React.FC<Props> = ({ description, children, isExpandabl
     if (!children) {
       return <Template code="Resources-View-MissingProperty" />;
     }
-    if (typeof children === 'string' && isExpandable === true) {
-      return <ExpandableAttributeContent expandLinkText="ReadMore" collapseLinkText="ReadLess" content={children} />;
+    if (typeof children === 'string') {
+      if (isExpandable === true) {
+        return <ExpandableAttributeContent expandLinkText="ReadMore" collapseLinkText="ReadLess" content={children} />;
+      }
+      return <Template code={children} />;
     }
 
     return children;

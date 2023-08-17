@@ -198,7 +198,7 @@ const extractCoverageItemDescription = (coverageData: AttributeData): string => 
   if (coverageInfo) {
     // New coverage data format
     return (
-      toCsv(coverageInfo.postalCode, coverageInfo.city, coverageInfo.region, coverageInfo.province) ??
+      toCsv(coverageInfo.postalCode, coverageInfo.city, coverageInfo.region, coverageInfo.province) ||
       coverageInfo.country
     );
   }
@@ -207,17 +207,29 @@ const extractCoverageItemDescription = (coverageData: AttributeData): string => 
 
 const extractCoverage = (coverage: Attributes, siteId: string = null): string => {
   const coverageList = Object.values(coverage ?? {});
-  return coverageList
-    .filter(item => {
-      if (!Array.isArray(item)) {
-        return false;
+  /*
+   * Each item in the coverage object is an array of coverage items.
+   * Should only ever be one item in the array but by flat mapping we're covered if there are more
+   */
+  const coverageDescription = coverageList
+    .flatMap(coverageItems => {
+      if (!Array.isArray(coverageItems)) {
+        return [];
       }
-      const itemSiteId = item[0]?.info?.siteId;
-      return (!siteId && !itemSiteId) || (siteId && itemSiteId === siteId);
+      return coverageItems
+        .filter(ci => {
+          const itemSiteId = ci?.info?.siteId;
+          return (!siteId && !itemSiteId) || (siteId && itemSiteId === siteId);
+        })
+        .map(extractCoverageItemDescription);
     })
-    .map(coverageItems => extractCoverageItemDescription(coverageItems[0]))
     .filter(ci => ci)
     .join('\n');
+  // If this is for the overall resource, there is no resource level coverage, but there is site specific coverage info, direct the user to the site info rather than just saying 'Not Listed'.
+  if (!coverageDescription && !siteId && coverageList.length) {
+    return 'Resources-View-Coverage-SeeSites';
+  }
+  return coverageDescription;
 };
 
 const extractSiteDetails = (resource: Attributes, sites: Attributes, language: Language) => {
@@ -313,7 +325,7 @@ export const convertKHPResourceAttributes = (
     documentsRequired: extractRequiredDocuments(attributes.documentsRequired, language),
     primaryLocationIsPrivate: getBooleanAttributeValue(attributes, 'primaryLocationIsPrivate'),
     primaryLocation: extractPrimaryLocation(attributes, language),
-    coverage: extractCoverage(coverage, language),
+    coverage: extractCoverage(coverage),
     site: extractSiteDetails(attributes, sites, language),
   };
 };
