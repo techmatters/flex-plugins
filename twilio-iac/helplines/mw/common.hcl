@@ -12,7 +12,6 @@ locals {
     task_language                     = "en"
     helpline_language                 = "en"
     voice_ivr_language                = ""
-    contacts_waiting_channels         = ""
     enable_post_survey                = false
     
    
