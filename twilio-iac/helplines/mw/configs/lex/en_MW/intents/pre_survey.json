@@ -31,6 +31,7 @@
       "name": {
         "priority": 2,
         "description": "Caller's name",
+        "slot_constraint": "Required",
         "value_elicitation_prompt": {
           "max_attempts": 2,
           "content": "What is your first name?",

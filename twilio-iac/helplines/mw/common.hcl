@@ -5,27 +5,26 @@ locals {
 
  
   local_config = {
-    helpline                          = "SaferNet"
-    old_dir_prefix                    = "safernet"
+    helpline                          = "Tithandizane"
+    old_dir_prefix                    = "tithandizane"
     definition_version                = "mw-v1"
     default_autopilot_chatbot_enabled = false
     task_language                     = "en"
     helpline_language                 = "en"
     voice_ivr_language                = ""
-    contacts_waiting_channels         = ["facebook"]
+    contacts_waiting_channels         = ""
     enable_post_survey                = false
     
    
     lex_bot_languages  = {
-      en : ["pre_survey"],
-      en_MW : ["youth_testing"]
+      en_MW : ["pre_survey","youth_testing"]
     }
     
 
     workflows = {
       master : {
         friendly_name : "Master Workflow"
-        templatefile : "/app/twilio-iac/helplines/jm/templates/workflows/master.tftpl"
+        templatefile : "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
       },
       survey : {
         friendly_name : "Survey Workflow"
