@@ -32,6 +32,7 @@
         "priority": 2,
         "description": "Caller's name",
         "slot_constraint": "Required",
+        "slot_type": "AMAZON.AlphaNumeric",
         "value_elicitation_prompt": {
           "max_attempts": 2,
           "content": "What is your first name?",
