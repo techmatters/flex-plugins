@@ -29,7 +29,6 @@ import ParticipantLabel from '../components/Conference/ParticipantLabel';
 
 export const setupConferenceComponents = () => {
   const strings = getTemplateStrings();
-  strings.TaskLineCallEndedTitle = strings.TaskLineCallLeaveTitle;
   strings.HangupCallTooltip = strings.HangupCallLeaveTooltip;
 
   CallCanvas.Content.add(<ConferenceMonitor key="conference-monitor" />);
