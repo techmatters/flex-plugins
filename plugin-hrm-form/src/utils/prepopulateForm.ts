@@ -211,7 +211,7 @@ export const prepopulateForm = (task: ITask, featureFlags: FeatureFlags) => {
   const answers = getAnswers(featureFlags.enable_lex, memory);
 
   const isAboutSelf = answers.aboutSelf === 'Yes';
-  const callType = isAboutSelf || !answers.aboutSelf ? callTypes.child : callTypes.caller;
+  const callType = isAboutSelf ? callTypes.child : callTypes.caller;
   const tabFormDefinition = isAboutSelf ? ChildInformationTab : CallerInformationTab;
   const prepopulateSurveyKeys = isAboutSelf ? survey.ChildInformationTab : survey.CallerInformationTab;
   const subroute = isAboutSelf ? 'childInformation' : 'callerInformation';
