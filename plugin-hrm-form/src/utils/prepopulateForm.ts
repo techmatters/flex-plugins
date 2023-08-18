@@ -246,20 +246,20 @@ export const prepopulateForm = (task: ITask, featureFlags: FeatureFlags) => {
       );
       const values = { ...surveyValues, ...preEngagementValues };
       Manager.getInstance().store.dispatch(prepopulateFormAction(callType, values, task.taskSid));
-    }
 
-    if (preEngagement.CaseInformationTab.length > 0) {
-      const caseInfoValues = getValuesFromPreEngagementData(
-        preEngagementData,
-        CaseInformationTab,
-        preEngagement.CaseInformationTab,
+      if (preEngagement.CaseInformationTab.length > 0) {
+        const caseInfoValues = getValuesFromPreEngagementData(
+          preEngagementData,
+          CaseInformationTab,
+          preEngagement.CaseInformationTab,
+        );
+
+        Manager.getInstance().store.dispatch(prepopulateFormAction(callType, caseInfoValues, task.taskSid, true));
+      }
+      // Open tabbed form to first tab
+      Manager.getInstance().store.dispatch(
+        RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
       );
-
-      Manager.getInstance().store.dispatch(prepopulateFormAction(callType, caseInfoValues, task.taskSid, true));
     }
-    // Open tabbed form to first tab
-    Manager.getInstance().store.dispatch(
-      RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
-    );
   }
 };
