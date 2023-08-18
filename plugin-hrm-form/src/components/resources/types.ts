@@ -48,6 +48,7 @@ export type KhpUiResource = {
     primaryLocation: string;
     operations: KhpOperationsDay[];
     coverage: string;
+    eligibilityPhrase: string;
     site: {
       siteId: string;
       name: string;

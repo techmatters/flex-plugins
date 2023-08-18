@@ -120,6 +120,10 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                       },
                       { subtitle: 'Resources-View-AgesServed', attributeToDisplay: resourceAttributes.ageRange },
                       {
+                        subtitle: 'Resources-View-Eligibility',
+                        attributeToDisplay: resourceAttributes.eligibilityPhrase,
+                      },
+                      {
                         subtitle: 'Resources-View-LanguagesServiced',
                         attributeToDisplay: resourceAttributes.languagesServiced,
                       },
