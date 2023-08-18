@@ -210,6 +210,7 @@ export const prepopulateForm = (task: ITask, featureFlags: FeatureFlags) => {
 
   const answers = getAnswers(featureFlags.enable_lex, memory);
 
+  const isValidSurvey = Boolean(answers.aboutSelf); // determines if the memory has valid values or if it was aborted
   const isAboutSelf = answers.aboutSelf === 'Yes';
   const callType = isAboutSelf ? callTypes.child : callTypes.caller;
   const tabFormDefinition = isAboutSelf ? ChildInformationTab : CallerInformationTab;
@@ -220,27 +221,32 @@ export const prepopulateForm = (task: ITask, featureFlags: FeatureFlags) => {
 
   // When a helpline has survey and no preEnagagement form
   if (memory && !preEngagementData) {
-    Manager.getInstance().store.dispatch(prepopulateFormAction(callType, surveyValues, task.taskSid));
+    if (isValidSurvey) {
+      Manager.getInstance().store.dispatch(prepopulateFormAction(callType, surveyValues, task.taskSid));
 
-    // Open tabbed form to first tab
-    Manager.getInstance().store.dispatch(
-      RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
-    );
+      // Open tabbed form to first tab
+      Manager.getInstance().store.dispatch(
+        RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
+      );
+    }
+
     return;
   }
 
   // When a helpline has survey and preEnagagement form to populate
   if (memory && preEngagementData) {
-    const prepopulatePreengagementKeys = isAboutSelf
-      ? preEngagement.ChildInformationTab
-      : preEngagement.CallerInformationTab;
-    const preEngagementValues = getValuesFromPreEngagementData(
-      preEngagementData,
-      tabFormDefinition,
-      prepopulatePreengagementKeys,
-    );
-    const values = { ...surveyValues, ...preEngagementValues };
-    Manager.getInstance().store.dispatch(prepopulateFormAction(callType, values, task.taskSid));
+    if (isValidSurvey) {
+      const prepopulatePreengagementKeys = isAboutSelf
+        ? preEngagement.ChildInformationTab
+        : preEngagement.CallerInformationTab;
+      const preEngagementValues = getValuesFromPreEngagementData(
+        preEngagementData,
+        tabFormDefinition,
+        prepopulatePreengagementKeys,
+      );
+      const values = { ...surveyValues, ...preEngagementValues };
+      Manager.getInstance().store.dispatch(prepopulateFormAction(callType, values, task.taskSid));
+    }
 
     if (preEngagement.CaseInformationTab.length > 0) {
       const caseInfoValues = getValuesFromPreEngagementData(
