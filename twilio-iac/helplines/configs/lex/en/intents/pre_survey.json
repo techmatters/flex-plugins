@@ -2,19 +2,8 @@
   "pre_survey": {
     "description": "Survey intent",
     "sample_utterances": [
-      "H",
-      "Hi",
-      "Hello",
-      "Help",
-      "I need help",
-      "Pls",
-      "Please",
-      "Life",
-      "Not safe",
-      "Kill",
-      "Hurt",
-      "Me",
-      "Incoming webchat contact"
+      "Incoming webchat contact",
+      "trigger_pre_survey"
     ],
     "fulfillment_activity": {
       "type": "ReturnIntent"
