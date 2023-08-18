@@ -298,6 +298,8 @@ export const convertKHPResourceAttributes = (
   const sites = attributes.site && !Array.isArray(attributes.site) ? attributes.site : {};
   const operations = attributes.operations && !Array.isArray(attributes.operations) ? attributes.operations : undefined;
   const coverage = attributes.coverage && !Array.isArray(attributes.coverage) ? attributes.coverage : undefined;
+  const eligibility =
+    attributes.eligibility && !Array.isArray(attributes.eligibility) ? attributes.eligibility : undefined;
   return {
     status: getAttributeValue(attributes, language, 'status'),
     taxonomyCode: getAttributeValue(attributes, language, 'taxonomyCode'),
@@ -326,6 +328,7 @@ export const convertKHPResourceAttributes = (
     primaryLocationIsPrivate: getBooleanAttributeValue(attributes, 'primaryLocationIsPrivate'),
     primaryLocation: extractPrimaryLocation(attributes, language),
     coverage: extractCoverage(coverage),
+    eligibilityPhrase: getAttributeValue(eligibility, language, 'phrase'),
     site: extractSiteDetails(attributes, sites, language),
   };
 };
