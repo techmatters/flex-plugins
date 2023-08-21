@@ -83,8 +83,9 @@ resource "aws_lex_intent" "this" {
       priority    = slot.value.priority
 
       slot_constraint   = slot.value.slot_constraint
-      slot_type         = "${local.name_prefix}_${slot.value.slot_type}"
-      slot_type_version = aws_lex_slot_type.this[slot.value.slot_type].version
+      slot_type         = !startswith(slot.value.slot_type, "AMAZON.") ? "${local.name_prefix}_${slot.value.slot_type}" : slot.value.slot_type
+      slot_type_version = !startswith(slot.value.slot_type, "AMAZON.") ? aws_lex_slot_type.this[slot.value.slot_type].version : null
+     
 
       value_elicitation_prompt {
         max_attempts = slot.value.value_elicitation_prompt.max_attempts

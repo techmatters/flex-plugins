@@ -86,7 +86,7 @@ locals {
         flatten([
           for obj_key, obj_value in local.lex_intents[language] : [
             for slot_name, slot_data in obj_value["slots"] :
-            slot_data["slot_type"]
+             slot_data["slot_type"] if !startswith(slot_data["slot_type"], "AMAZON.")
           ]
         ])
       )

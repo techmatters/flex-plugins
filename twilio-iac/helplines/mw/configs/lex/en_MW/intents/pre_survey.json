@@ -17,19 +17,30 @@
       "content_type": "PlainText"
     },
     "slots": {
-      "aboutSelf": {
+      "permission": {
         "priority": 1,
-        "description": "Caller is calling for self or someone else",
+        "description": "Caller permission to collect information",
         "slot_constraint": "Required",
         "slot_type": "yes_no",
         "value_elicitation_prompt": {
           "max_attempts": 2,
-          "content": "Welcome. To help us better serve you, please answer the following questions.\n\n Are you calling about yourself? Please answer Yes or No.",
+          "content": "Do we have your permission to collect personal information? Please answer Yes or No.",
+          "content_type": "PlainText"
+        }
+      },
+      "name": {
+        "priority": 2,
+        "description": "Caller's name",
+        "slot_constraint": "Required",
+        "slot_type": "AMAZON.AlphaNumeric",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "What is your first name?",
           "content_type": "PlainText"
         }
       },
       "age": {
-        "priority": 2,
+        "priority": 3,
         "description": "Age of caller",
         "slot_constraint": "Required",
         "slot_type": "age",
@@ -40,13 +51,24 @@
         }
       },
       "gender": {
-        "priority": 3,
+        "priority": 4,
         "description": "Caller's gender",
         "slot_constraint": "Required",
         "slot_type": "gender",
         "value_elicitation_prompt": {
           "max_attempts": 2,
           "content": "What is your gender?",
+          "content_type": "PlainText"
+        }
+      },
+      "aboutSelf": {
+        "priority": 5,
+        "description": "Caller is calling for self or someone else",
+        "slot_constraint": "Required",
+        "slot_type": "yes_no",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "Are you calling about yourself? Please answer Yes or No.",
           "content_type": "PlainText"
         }
       }

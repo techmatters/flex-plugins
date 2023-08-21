@@ -1,5 +1,5 @@
 {
-  "gender_female_male": {
+  "gender": {
     "description": "General configs/lex/en/slot_types Gender Female Male Slot Type",
     "value_selection_strategy": "TOP_RESOLUTION",
     "values": {
