@@ -143,7 +143,7 @@ module "customChannel" {
   for_each = toset(local.custom_channels)
   source   = "../terraform-modules/channels/custom-channel"
   custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/operating-hours/no-chatbot.tftpl",
+    "../terraform-modules/channels/flow-templates/co/no-chatbot.tftpl",
     {
       channel_name                 = "${each.key}"
       serverless_url               = module.serverless.serverless_environment_production_url
