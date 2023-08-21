@@ -170,13 +170,6 @@ module "aws" {
   bucket_region                      = "eu-west-1"
   helpline_region                    = "eu-west-1"
 }
-module "aws_monitoring" {
-  source            = "../terraform-modules/aws-monitoring/default"
-  helpline          = local.helpline
-  short_helpline    = local.short_helpline
-  environment       = local.environment
-  cloudwatch_region = "us-east-1"
-}
 
 provider "github" {
   owner = "techmatters"
