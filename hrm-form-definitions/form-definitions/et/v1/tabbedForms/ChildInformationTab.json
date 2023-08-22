@@ -12,7 +12,7 @@
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
-    "name": "gender",
+    "name": "gender", 
     "label": "Sex",
     "type": "select",
     "options": [
