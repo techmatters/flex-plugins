@@ -403,7 +403,7 @@ const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSu
   const { bucket, key } = externalRecordingInfo;
   const url_provider = generateUrl(
     new URL(lambdaBaseUrl),
-    `/files/contactRecordings?method=getObject&contactId=${contact.id}&bucket=${bucket}&key=${key}`,
+    `/files/urls?method=getObject&objectType=contact&objectId=${contact.id}&fileType=recording&bucket=${bucket}&key=${key}`,
   ).toString();
   return [
     {
