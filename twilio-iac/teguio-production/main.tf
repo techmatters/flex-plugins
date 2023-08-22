@@ -98,7 +98,6 @@ module "twilioChannel" {
       serverless_service_sid       = module.serverless.serverless_service_sid
       serverless_environment_sid   = module.serverless.serverless_environment_production_sid
       operating_hours_function_sid = local.operating_hours_function_sid
-      send_system_message_function_sid= "ZHcf683d6c026a231bb6b7dac257968495"
       master_workflow_sid          = module.taskRouter.master_workflow_sid
       chat_task_channel_sid        = module.taskRouter.chat_task_channel_sid
       channel_attributes           = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl", { task_language = local.task_language })
@@ -120,22 +119,23 @@ module "customChannel" {
   custom_flow_definition = templatefile(
     "../terraform-modules/channels/flow-templates/co/no-chatbot.tftpl",
     {
-      channel_name                 = "${each.key}"
-      serverless_url               = module.serverless.serverless_environment_production_url
-      serverless_service_sid       = module.serverless.serverless_service_sid
-      serverless_environment_sid   = module.serverless.serverless_environment_production_sid
-      operating_hours_function_sid = local.operating_hours_function_sid
-      master_workflow_sid          = module.taskRouter.master_workflow_sid
-      chat_task_channel_sid        = module.taskRouter.chat_task_channel_sid
-      channel_attributes           = templatefile("../terraform-modules/channels/custom-channel/channel-attributes/${each.key}-attributes.tftpl", { task_language = local.task_language })
-      flow_description             = "${title(each.key)} Messaging Flow"
-      operating_hours_holiday      = local.strings.operating_hours_holiday
-      operating_hours_closed       = local.strings.operating_hours_closed
-      task_language                = local.task_language
-      helpline                     = local.helpline
-      environment                  = local.environment
-      slack_error_webhook          = "http://www.notValidURLWillUpdateManually.com"
-      chat_greeting_message        = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a la escucha y la orientación de inquietudes que se puedan tener sobre conductas sexuales perjudiciales en niñas, niños y adolescentes. ¡Qué gusto que te contactes con nosotros! \n\nPara empezar a ayudarte, por favor marca únicamente el número de una de las siguientes opciones, según tu caso: \n\n1. Tienes una duda o inquietud y deseas que la respondamos por este chat. En este servicio, nos escribes tu pregunta y te contestamos, sin necesidad de que nos brindes tus datos personales. \n\n2. Deseas tener una cita virtual y recibir una orientación personalizada. Aquí puedes conversar con uno de nuestros guías acerca de tu caso específico. Para ello, solicitamos tus datos personales y la autorización para el uso de los mismos."
+      channel_name                     = "${each.key}"
+      serverless_url                   = module.serverless.serverless_environment_production_url
+      serverless_service_sid           = module.serverless.serverless_service_sid
+      serverless_environment_sid       = module.serverless.serverless_environment_production_sid
+      operating_hours_function_sid     = local.operating_hours_function_sid
+      send_system_message_function_sid = "ZHcf683d6c026a231bb6b7dac257968495"
+      master_workflow_sid              = module.taskRouter.master_workflow_sid
+      chat_task_channel_sid            = module.taskRouter.chat_task_channel_sid
+      channel_attributes               = templatefile("../terraform-modules/channels/custom-channel/channel-attributes/${each.key}-attributes.tftpl", { task_language = local.task_language })
+      flow_description                 = "${title(each.key)} Messaging Flow"
+      operating_hours_holiday          = local.strings.operating_hours_holiday
+      operating_hours_closed           = local.strings.operating_hours_closed
+      task_language                    = local.task_language
+      helpline                         = local.helpline
+      environment                      = local.environment
+      slack_error_webhook              = "http://www.notValidURLWillUpdateManually.com"
+      chat_greeting_message            = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a la escucha y la orientación de inquietudes que se puedan tener sobre conductas sexuales perjudiciales en niñas, niños y adolescentes. ¡Qué gusto que te contactes con nosotros! \n\nPara empezar a ayudarte, por favor marca únicamente el número de una de las siguientes opciones, según tu caso: \n\n1. Tienes una duda o inquietud y deseas que la respondamos por este chat. En este servicio, nos escribes tu pregunta y te contestamos, sin necesidad de que nos brindes tus datos personales. \n\n2. Deseas tener una cita virtual y recibir una orientación personalizada. Aquí puedes conversar con uno de nuestros guías acerca de tu caso específico. Para ello, solicitamos tus datos personales y la autorización para el uso de los mismos."
 
   })
   channel_name          = each.key
