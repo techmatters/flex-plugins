@@ -24,7 +24,7 @@
         "slot_type": "yes_no",
         "value_elicitation_prompt": {
           "max_attempts": 2,
-          "content": "Welcome. To help us better serve you, please answer the following questions.\n\n Are you calling about yourself? Please answer Yes or No.",
+          "content": "Welcome. To help us better serve you, please answer the following questions.\n\nAre you calling about yourself? Please answer Yes or No.",
           "content_type": "PlainText"
         }
       },
