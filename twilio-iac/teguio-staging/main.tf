@@ -143,13 +143,14 @@ module "customChannel" {
   for_each = toset(local.custom_channels)
   source   = "../terraform-modules/channels/custom-channel"
   custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/operating-hours/no-chatbot.tftpl",
+    "../terraform-modules/channels/flow-templates/co/no-chatbot.tftpl",
     {
       channel_name                 = "${each.key}"
       serverless_url               = module.serverless.serverless_environment_production_url
       serverless_service_sid       = module.serverless.serverless_service_sid
       serverless_environment_sid   = module.serverless.serverless_environment_production_sid
       operating_hours_function_sid = local.operating_hours_function_sid
+      send_system_message_function_sid= "ZH50df94f723c1ef2b4d1a9c301b422c0c"
       master_workflow_sid          = module.taskRouter.master_workflow_sid
       chat_task_channel_sid        = module.taskRouter.chat_task_channel_sid
       channel_attributes           = templatefile("../terraform-modules/channels/custom-channel/channel-attributes/${each.key}-attributes.tftpl", { task_language = local.task_language })
