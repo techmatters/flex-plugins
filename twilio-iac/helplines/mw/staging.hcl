@@ -28,7 +28,7 @@ locals {
       },
        facebook : {
         channel_type     = "facebook"
-        contact_identity = "messenger:104153648721033"
+        contact_identity = "messenger:103647528912458"
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging.tftpl"
         channel_flow_vars = {         
         }
