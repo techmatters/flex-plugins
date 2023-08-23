@@ -29,7 +29,7 @@ on:
 
 jobs:
   deploy:
-    uses: ./.github/workflows/custom_helpline.yml
+    uses: ./.github/workflows/flex_custom_helpline.yml
     secrets: inherit
     with:
       helpline_code: E2E

@@ -1,0 +1,87 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+# This is a basic workflow to publish a Twilio Flex-plugins with Github Actions
+
+name: Flex Custom Helpline Deploy
+
+# Controls when the action will run.
+on:
+  workflow_dispatch:
+    inputs:
+      helpline_code:
+        description: The short (usually 2 character) upper case code used to identify the helpline internally, e.g. ZA, IN, BR.
+        required: true
+      environment_code:
+        description: The short upper case code used to identify the environment internally, e.g. STG, PROD, DEV
+        required: true
+      changelog:
+        description: Release Changelog - Add a comment about the changes to be included in this release.
+        required: true
+  workflow_call:
+    inputs:
+      helpline_code:
+        required: true
+        type: string
+      environment_code:
+        required: true
+        type: string
+      changelog:
+        description: Release Changelog - Add a comment about the changes to be included in this release.
+        required: true
+        type: string
+      send-slack-message:
+        description: If set to false a slack message will not be sent - useful for E2E test deploys.
+        default: 'true'
+        type: string
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    env:
+      TWILIO_ACCOUNT_SID_SECRET_NAME: ${{inputs.helpline_code}}_${{inputs.environment_code}}_ACCOUNT_SID
+      TWILIO_AUTH_TOKEN_SECRET_NAME: ${{inputs.helpline_code}}_${{inputs.environment_code}}_AUTH_TOKEN
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16.x'
+      # Call main-action to compile and deploy
+      - name: Executing main-action
+        uses: ./.github/actions/main-action
+        with:
+          account-sid: ${{ secrets[env.TWILIO_ACCOUNT_SID_SECRET_NAME] }}
+          auth-token: ${{ secrets[env.TWILIO_AUTH_TOKEN_SECRET_NAME] }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          helpline-id: ${{inputs.helpline_code}}_${{inputs.environment_code}}
+          send-slack-message: ${{ inputs.send-slack-message }}
+
+  deploy_form_definitions:
+    uses: ./.github/workflows/deploy_form_definitions.yml
+    needs: build
+    secrets: inherit
+    with:
+      helpline_code: ${{ inputs.helpline_code }}
+      environment: ${{ inputs.environment_code }}
+      send-slack-message: 'false'
