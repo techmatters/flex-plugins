@@ -6,5 +6,5 @@
   "ignoreAgent": "",
   "language":"${task_language}",
   "transferTargetType": "",
-  "memory": {{widgets.ChatBot.memory | to_json}}
+  "memory": {{trigger.message.ChannelAttributes.memory | to_json}}
 }

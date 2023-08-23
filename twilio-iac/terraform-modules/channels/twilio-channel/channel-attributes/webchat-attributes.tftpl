@@ -8,5 +8,5 @@
   "ignoreAgent": "",
   "transferTargetType": "",
   "preEngagementData": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}},
-  "memory": {{widgets.ChatBot.memory | to_json}}
+  "memory": {{trigger.message.ChannelAttributes.memory | to_json}}
 }
