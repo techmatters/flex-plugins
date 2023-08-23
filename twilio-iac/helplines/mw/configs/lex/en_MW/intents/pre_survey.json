@@ -17,7 +17,7 @@
       "content_type": "PlainText"
     },
     "slots": {
-      "name": {
+      "firstName": {
         "priority": 2,
         "description": "Caller's name",
         "slot_constraint": "Required",
