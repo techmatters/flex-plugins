@@ -6,5 +6,5 @@
   "ignoreAgent": "",
   "language":"{{widgets.chatbot_language.memory.twilio.collected_data.collect_survey.answers.language.answer}}",
   "transferTargetType": "",
-  "memory": {{ widgets.${chatbot_language}.memory  | to_json}}
+  "memory": {{ trigger.message.ChannelAttributes.memory  | to_json}}
 }
