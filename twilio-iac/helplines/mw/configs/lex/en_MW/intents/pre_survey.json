@@ -17,25 +17,14 @@
       "content_type": "PlainText"
     },
     "slots": {
-      "permission": {
-        "priority": 1,
-        "description": "Caller permission to collect information",
-        "slot_constraint": "Required",
-        "slot_type": "yes_no",
-        "value_elicitation_prompt": {
-          "max_attempts": 2,
-          "content": "Do we have your permission to collect personal information? Please answer Yes or No.",
-          "content_type": "PlainText"
-        }
-      },
-      "name": {
+      "firstName": {
         "priority": 2,
         "description": "Caller's name",
         "slot_constraint": "Required",
         "slot_type": "AMAZON.AlphaNumeric",
         "value_elicitation_prompt": {
           "max_attempts": 2,
-          "content": "What is your first name?",
+          "content": "Welcome to the helpline. To help us better serve you, please answer the following questions. \n\nWhat is your first name?",
           "content_type": "PlainText"
         }
       },

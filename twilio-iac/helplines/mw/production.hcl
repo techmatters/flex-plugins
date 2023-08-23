@@ -3,7 +3,7 @@ locals {
   common_config     = local.common_config_hcl.locals.config
   config            = merge(local.common_config, local.local_config)
 
-  twilio_numbers = ["messenger:103647528912458"]
+  twilio_numbers = ["messenger:113053900394672"]
 
   local_config = {
 
@@ -28,7 +28,7 @@ locals {
       },
        facebook : {
         channel_type     = "facebook"
-        contact_identity = "messenger:103647528912458"
+        contact_identity = "messenger:113053900394672"
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging.tftpl"
         channel_flow_vars = {         
         }
