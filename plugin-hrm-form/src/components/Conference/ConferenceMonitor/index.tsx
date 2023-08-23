@@ -49,6 +49,15 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
   const updateEndConferenceOnExit = React.useCallback(
     (endConferenceOnExit: boolean) => async (participant: ConferenceParticipant) => {
       if (participant.connecting) return;
+      // A participant should always have a callSid, but we are seeing some that don't, and we can't update them
+      if (!participant.callSid) {
+        console.error(
+          'endConferenceOnExit: Participant missing callSid, abandoning attempt to update state',
+          participant,
+          conference,
+        );
+        return;
+      }
 
       try {
         const startedOnHold = participant.onHold;
@@ -70,36 +79,42 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
         console.error('Error setting participant endConferenceOnExit', participant, err);
       }
     },
+    // Exhaustive deps mandates that we include 'conference', but that's only used for logging
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [conferenceSid],
   );
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  React.useEffect(() => {
-    if (!conferenceSid || !participants || updating) return;
+  React.useEffect(
+    () => {
+      if (!conferenceSid || !participants || updating) return;
 
-    const monitorEffect = async () => {
-      if (shouldDisableEndConferenceOnExit) {
-        setUpdating(true);
+      const monitorEffect = async () => {
+        if (shouldDisableEndConferenceOnExit) {
+          setUpdating(true);
 
-        await Promise.all(participants.filter(isJoinedWithEnd).map(updateEndConferenceOnExit(false)));
-        setUpdating(false);
-      } else if (shouldEnableEndConferenceOnExit) {
-        setUpdating(true);
+          await Promise.all(participants.filter(isJoinedWithEnd).map(updateEndConferenceOnExit(false)));
+          setUpdating(false);
+        } else if (shouldEnableEndConferenceOnExit) {
+          setUpdating(true);
 
-        await Promise.all(participants.filter(isJoinedWithoutEnd).map(updateEndConferenceOnExit(true)));
-        setUpdating(false);
-      }
-    };
+          await Promise.all(participants.filter(isJoinedWithoutEnd).map(updateEndConferenceOnExit(true)));
+          setUpdating(false);
+        }
+      };
 
-    monitorEffect();
-  }, [
-    conferenceSid,
-    participants,
-    shouldDisableEndConferenceOnExit,
-    shouldEnableEndConferenceOnExit,
-    updateEndConferenceOnExit,
-    updating,
-  ]);
+      monitorEffect();
+    },
+    // Exhaustive deps mandates that we include 'updating', but this causes an infinite loop if updating the participant fails
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      conferenceSid,
+      participants,
+      shouldDisableEndConferenceOnExit,
+      shouldEnableEndConferenceOnExit,
+      updateEndConferenceOnExit,
+    ],
+  );
 
   return null;
 };
