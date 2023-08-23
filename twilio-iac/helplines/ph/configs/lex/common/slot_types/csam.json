@@ -1,0 +1,30 @@
+{
+  "csam": {
+    "description": "Helpline specific ph/configs/lex/common csam slot_type",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "csam": {
+        "synonyms": [
+          "report",
+          "report csam",
+          "1",
+          "yes",
+          "oo"
+        ]
+      },
+      "noCsam": {
+        "synonyms": [
+          "not reporting",
+          "2",
+          "no",
+          "hindi"
+        ]
+      },
+      "unknown": {
+        "synonyms": [
+          "x"
+        ]
+      }
+    }
+  }
+}
