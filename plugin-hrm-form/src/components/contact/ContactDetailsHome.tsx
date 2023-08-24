@@ -408,9 +408,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
               />
             )}
             {isVoiceChannel(channel) && (
-              <>
-                <RecordingSection contactId={contactId} loadConversationIntoOverlay={loadConversationIntoOverlay} />
-              </>
+              <RecordingSection contactId={contactId} loadConversationIntoOverlay={loadConversationIntoOverlay} />
             )}
           </Flex>
         </ContactDetailsSection>
