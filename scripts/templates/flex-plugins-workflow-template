@@ -12,7 +12,7 @@ on:
 
 jobs:
   deploy:
-    uses: ./.github/workflows/flex_custom_helpline.yml
+    uses: ./.github/workflows/flex-custom-helpline-deploy.yml
     secrets: inherit
     with:
       helpline_code: <SHORT_HELPLINE>

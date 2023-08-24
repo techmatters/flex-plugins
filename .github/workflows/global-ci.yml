@@ -12,23 +12,14 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
-# This is a basic workflow to publish a Twilio Flex-plugins with Github Actions
+name: Flex Plugins CI
 
-name: Aselo Beta release
-
-# Controls when the action will run.
-on:
-  workflow_dispatch:
-    inputs:
-      changelog:
-        description: Release Changelog - Add a comment about the changes to be included in this release.
-        required: true
+on: [push]
 
 jobs:
-  deploy:
-    uses: ./.github/workflows/flex_custom_helpline.yml
+  flex-ci:
+    uses: ./.github/workflows/flex-ci.yml
     secrets: inherit
-    with:
-      helpline_code: AS
-      environment_code: STG
-      changelog: ${{ inputs.changelog }}
+  webchat-ci:
+    uses: ./.github/workflows/webchat-ci.yml
+    secrets: inherit

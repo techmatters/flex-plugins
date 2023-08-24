@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
-name: Run plugin-hrm-form actions on push against master
+name: Check Flex Translations
 
 on:
   push:

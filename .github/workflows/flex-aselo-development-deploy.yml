@@ -12,19 +12,21 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
-# This is a basic workflow to build and upload Webchat to S3 bucket with Github Actions
-
-name: Aselo Development release
+name: Flex Aselo Development Deploy
 
 # Controls when the action will run.
 on:
-  workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      changelog:
+        description: Release Changelog - Add a comment about the changes to be included in this release.
+        required: true
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   deploy:
-    uses: ./.github/workflows/webchat_custom_helpline.yml
+    uses: ./.github/workflows/flex-custom-helpline-deploy.yml
     secrets: inherit
     with:
-      environment: development
       helpline_code: AS
+      environment_code: DEV
+      changelog: ${{ inputs.changelog }}

@@ -47,6 +47,10 @@ on:
         description: "Recaptcha Verify URL"
         required: false
         type: string
+      send-slack-message:
+        description: If set to false a slack message will not be sent - useful for E2E test deploys.
+        default: 'true'
+        type: string
 
 env:
   recaptcha_verify_url_default: https://hrm-${{ inputs.environment }}.tl.techmatters.org/lambda/recaptchaVerify
@@ -228,6 +232,7 @@ jobs:
       - name: Slack Aselo channel
         id: slack
         uses: slackapi/slack-github-action@v1.14.0
+        if: ${{ inputs.send-slack-message != 'false' }}
         with:
           channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
           slack-message: "`[WEBCHAT]` Deployment to `${{inputs.helpline_code}}-${{inputs.environment}}` of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed using workflow '${{ github.workflow }}' with SHA ${{ github.sha }} :rocket:."
