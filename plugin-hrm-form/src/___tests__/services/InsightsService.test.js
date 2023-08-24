@@ -647,7 +647,7 @@ describe('InsightsService - buildInsightsData() (externalRecordings)', () => {
       {
         type: 'VoiceRecording',
         url_provider:
-          'http://fake.hrm.com/files/contactRecordings?method=getObject&contactId=123&bucket=bucket&key=key',
+          'http://fake.hrm.com/files/urls?method=getObject&objectType=contact&objectId=123&fileType=recording&bucket=bucket&key=key',
       },
     ]);
   });
