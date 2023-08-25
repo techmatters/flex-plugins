@@ -16,7 +16,8 @@
             "enable_emoji_picker": false,
             "enable_external_transcripts": false,
             "enable_lex": false,
-            "enable_transcripts": false
+            "enable_transcripts": false,
+            "enable_save_insights": true
         },
         "helplineLanguage": "",
         "permissionConfig": "demo",
