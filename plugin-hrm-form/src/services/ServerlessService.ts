@@ -179,15 +179,6 @@ export const getWorkerAttributes = async (workerSid: string) => {
   return response;
 };
 
-export const postSurveyInit = async (body: {
-  channelSid: string;
-  taskSid: string;
-  taskLanguage?: string;
-}): Promise<any> => {
-  const response = await fetchProtectedApi('/postSurveyInit', body);
-  return response;
-};
-
 /**
  * Deletes a file from the corresponding S3 bucket
  */
@@ -213,6 +204,15 @@ export const getFileDownloadUrl = async (fileNameAtAws: string, fileName?: strin
 export const getFileUploadUrl = async (fileName: string, mimeType: string) => {
   const body = { fileName, mimeType };
   const response = await fetchProtectedApi('/getFileUploadUrl', body);
+  return response;
+};
+
+/**
+ * Gets a recording s3 information from the corresponding call sid
+ */
+export const getExternalRecordingS3Location = async (callSid: string) => {
+  const body = { callSid };
+  const response = await fetchProtectedApi('/getExternalRecordingS3Location', body);
   return response;
 };
 

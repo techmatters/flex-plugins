@@ -1,0 +1,98 @@
+{
+  "post_survey_yes": {
+    "description": "Helpline Specific helplines/co/configs/lex/es_co/intents  post_survey_yes",
+    "sample_utterances": [
+      "Sí",
+      "Si",
+      "si",
+      "s",
+      "Afirmativo",
+      "Correcto",
+      "Claro",
+      "Por supuesto",
+      "¡Sí!",
+      "1",
+      "ok"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "Gracias por contactarnos. No dudes en escribirnos de nuevo cuando necesites ayuda.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Lo siento, no entendí. Por favor responde con el número que corresponda",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "didUserFeelSupported": {
+        "priority": 0,
+        "description": "Imported from question 'didUserFeelSupported'",
+        "slot_type": "fourLevelAssessment",
+        "slot_constraint": "Required",
+        "value_elicitation_prompt": {
+          "content": "¿Te sentiste escuchado/a y apoyado/a por el guía que te atendió? Responde con el número que corresponda:\n 1: Nahhh. Para nada. \n2: Un poco \n3: Sí \n4: Uffff. ¡Un montón! ",
+          "content_type": "PlainText",
+          "max_attempts": 2
+        }
+      },
+      "wouldRecommend": {
+        "priority": 1,
+        "description": "Imported from question 'wouldRecommend'",
+        "slot_type": "yes_no",
+        "slot_constraint": "Required",
+        "value_elicitation_prompt": {
+          "content": "¿Recomendarías a alguien cercano a ti comunicarse con nosotros? Responde con el número que corresponda:\n 1: Sí \n2: No",
+          "content_type": "PlainText",
+          "max_attempts": 2
+        }
+      },
+      "wouldRepeat": {
+        "priority": 2,
+        "description": "Imported from question 'wouldRepeat'",
+        "slot_type": "yes_no",
+        "slot_constraint": "Required",
+        "value_elicitation_prompt": {
+          "content": "¿Volverías a comunicarte con nosotros? Responde con el número que corresponda:\n1: Sí \n2: No",
+          "content_type": "PlainText",
+          "max_attempts": 2
+        }
+      },
+      "wasHelpful": {
+        "priority": 3,
+        "description": "Imported from question 'wasHelpful'",
+        "slot_type": "fourLevelAssessment",
+        "slot_constraint": "Required",
+        "value_elicitation_prompt": {
+          "content": "¿Fue útil para ti la información que te brindamos? Responde con el número que corresponda:\n 1: Nahhh. Para nada. \n2: Un poco \n3: Sí \n4: Uffff. ¡Un montón",
+          "content_type": "PlainText",
+          "max_attempts": 2
+        }
+      }
+    }
+  },
+  "post_survey_no": {
+    "description": "Helpline Specific helplines/cl/configs/lex/es/intents  post_survey_no",
+    "sample_utterances": [
+      "n",
+      "no",
+      "nope",
+      "nah",
+      "not",
+      "2"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "Gracias por contactarnos. No dudes en escribirnos de nuevo cuando necesites ayuda.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Lo siento, no entendí. Por favor escriba Si o No",
+      "content_type": "PlainText"
+    },
+    "slots": {}
+  }
+}

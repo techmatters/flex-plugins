@@ -1,15 +1,12 @@
 {
-  "extends": [
-    "twilio-react",
-    "plugin:sonarjs/recommended"
-  ],
+  "extends": ["twilio-react", "plugin:sonarjs/recommended"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": 2019,
-    "sourceType": "module", 
-    "ecmaFeatures": { 
-    "jsx": true
-   }
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
   },
   "rules": {
     "no-console": "off",
@@ -29,6 +26,13 @@
     "react/no-multi-comp": "off",
     "react/jsx-no-bind": "off",
     "sonarjs/no-nested-template-literals": "off",
-    "sonar/unused-import": "off"
+    "sonar/unused-import": "off",
+    "prettier/prettier": [
+      "warn",
+      {},
+      {
+        "usePrettierrc": true
+      }
+    ]
   }
 }

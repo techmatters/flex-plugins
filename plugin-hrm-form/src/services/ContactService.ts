@@ -34,7 +34,6 @@ import fetchHrmApi from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import {
-  ContactMediaType,
   ContactRawJson,
   ConversationMedia,
   HrmServiceContact,
@@ -45,6 +44,13 @@ import {
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
 import { TaskEntry } from '../states/contacts/types';
+import {
+  ExternalRecordingInfoSuccess,
+  ExternalRecordingUnneeded,
+  getExternalRecordingInfo,
+  isFailureExternalRecordingInfo,
+  isSuccessfulExternalRecordingInfo,
+} from './getExternalRecordingInfo';
 
 type NestedInformation = { name?: { firstName: string; lastName: string } };
 type LegacyInformationObject = NestedInformation & {
@@ -66,7 +72,10 @@ export const unNestLegacyRawJson = (legacy: LegacyContactRawJson): ContactRawJso
     callerInformation: LegacyInformationObject;
   };
   const withFixedChildInformation: PartiallyTransformed = legacy.childInformation
-    ? { ...legacy, childInformation: unNestLegacyInformationObject(legacy.childInformation) }
+    ? {
+        ...legacy,
+        childInformation: unNestLegacyInformationObject(legacy.childInformation),
+      }
     : (legacy as PartiallyTransformed);
   return withFixedChildInformation.callerInformation
     ? {
@@ -97,7 +106,14 @@ export async function searchContacts(
     contacts: rawResult.contacts.map(c => {
       const details = unNestLegacyRawJson(c.details);
       const { firstName, lastName } = details.childInformation ?? {};
-      return { ...c, details, overview: { ...c.overview, name: `${firstName ?? ''} ${lastName ?? ''}` } };
+      return {
+        ...c,
+        details,
+        overview: {
+          ...c.overview,
+          name: `${firstName ?? ''} ${lastName ?? ''}`,
+        },
+      };
     }),
   };
 }
@@ -131,7 +147,13 @@ const deTransformValue = (e: FormItemDefinition) => (value: string | boolean | n
 };
 
 export const searchResultToContactForm = (def: FormDefinition, information: Record<string, string | boolean>) => {
-  return def.reduce((acc, e) => ({ ...acc, [e.name]: deTransformValue(e)(information[e.name]) }), {});
+  return def.reduce(
+    (acc, e) => ({
+      ...acc,
+      [e.name]: deTransformValue(e)(information[e.name]),
+    }),
+    {},
+  );
 };
 
 export function transformCategories(
@@ -183,7 +205,71 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
   };
 }
 
+type HandleTwilioTaskResponse = {
+  channelSid?: string;
+  serviceSid?: string;
+  conversationMedia: ConversationMedia[];
+  externalRecordingInfo?: ExternalRecordingInfoSuccess | ExternalRecordingUnneeded;
+};
+
+export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> => {
+  const returnData: HandleTwilioTaskResponse = {
+    conversationMedia: [],
+  };
+
+  if (!isTwilioTask(task)) {
+    return returnData;
+  }
+
+  if (TaskHelper.isChatBasedTask(task)) {
+    returnData.channelSid = task.attributes.channelSid;
+    returnData.serviceSid = getHrmConfig().chatServiceSid;
+
+    // Store a pending transcript
+    returnData.conversationMedia.push({
+      store: 'S3',
+      type: 'transcript',
+      location: undefined,
+    });
+  }
+
+  if (TaskHelper.isChatBasedTask(task) || TaskHelper.isCallTask(task)) {
+    // Store reservation sid to use Twilio insights overlay (recordings/transcript)
+    returnData.conversationMedia.push({
+      store: 'twilio',
+      reservationSid: task.sid,
+    });
+  }
+
+  const externalRecordingInfo = await getExternalRecordingInfo(task);
+  if (isFailureExternalRecordingInfo(externalRecordingInfo)) {
+    throw new Error(`Error getting external recording info: ${externalRecordingInfo.error}`);
+  }
+
+  returnData.externalRecordingInfo = externalRecordingInfo;
+
+  if (isSuccessfulExternalRecordingInfo(externalRecordingInfo)) {
+    const { bucket, key } = externalRecordingInfo;
+    returnData.conversationMedia.push({
+      store: 'S3',
+      type: 'recording',
+      location: {
+        bucket,
+        key,
+      },
+    });
+  }
+
+  return returnData;
+};
+
 type NewHrmServiceContact = Omit<HrmServiceContact, 'id' | 'updatedAt' | 'updatedBy' | 'createdBy'>;
+
+type SaveContactToHrmResponse = {
+  response: HrmServiceContact;
+  request: NewHrmServiceContact;
+  externalRecordingInfo?: ExternalRecordingInfoSuccess | ExternalRecordingUnneeded;
+};
 /**
  * Function that saves the form to Contacts table.
  * If you don't intend to complete the twilio task, set shouldFillEndMillis=false
@@ -194,7 +280,7 @@ const saveContactToHrm = async (
   workerSid: string,
   uniqueIdentifier: string,
   shouldFillEndMillis = true,
-): Promise<{ response: HrmServiceContact; request: NewHrmServiceContact }> => {
+): Promise<SaveContactToHrmResponse> => {
   // if we got this far, we assume the form is valid and ready to submit
   const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
   const conversationDuration = getConversationDuration(task, metadata);
@@ -214,7 +300,9 @@ const saveContactToHrm = async (
       ...createNewTaskEntry(currentDefinitionVersion)(false),
       callType: form.callType,
       metadata: form.metadata,
-      ...(isOfflineContactTask(task) && { contactlessTask: form.contactlessTask }),
+      ...(isOfflineContactTask(task) && {
+        contactlessTask: form.contactlessTask,
+      }),
     };
   }
 
@@ -225,32 +313,8 @@ const saveContactToHrm = async (
   const timeOfContact = new Date(getDateTime(rawForm.contactlessTask)).toISOString();
 
   const { helpline, csamReports, referrals } = form;
+  const { conversationMedia, channelSid, serviceSid, externalRecordingInfo } = await handleTwilioTask(task);
 
-  let channelSid;
-  let serviceSid;
-  const conversationMedia: ConversationMedia[] = [];
-
-  if (isTwilioTask(task)) {
-    if (TaskHelper.isChatBasedTask(task)) {
-      ({ channelSid } = task.attributes);
-      serviceSid = getHrmConfig().chatServiceSid;
-
-      // Store a pending transcript
-      conversationMedia.push({
-        store: 'S3',
-        type: ContactMediaType.TRANSCRIPT,
-        location: undefined,
-      });
-    }
-
-    if (TaskHelper.isChatBasedTask(task) || TaskHelper.isCallTask(task)) {
-      // Store reservation sid to use Twilio insights overlay (recordings/transcript)
-      conversationMedia.push({
-        store: 'twilio',
-        reservationSid: task.sid,
-      });
-    }
-  }
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.
@@ -281,7 +345,7 @@ const saveContactToHrm = async (
 
   const responseJson: HrmServiceContact = await fetchHrmApi(`/contacts`, options);
 
-  return { response: responseJson, request: body };
+  return { response: responseJson, request: body, externalRecordingInfo };
 };
 
 export const updateContactInHrm = async (
@@ -316,7 +380,10 @@ export const saveContact = async (
       err,
     );
   }
-  return payloads.response;
+  return {
+    contact: payloads.response,
+    externalRecordingInfo: payloads.externalRecordingInfo,
+  };
 };
 
 export async function connectToCase(contactId, caseId) {

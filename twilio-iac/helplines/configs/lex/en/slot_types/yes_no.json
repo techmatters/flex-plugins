@@ -12,6 +12,7 @@
           "yup",
           "ya",
           "yah",
+          "accept",
           "1"
         ]
       },
@@ -22,6 +23,7 @@
           "nope",
           "nah",
           "not",
+          "reject",
           "2"
         ]
       }

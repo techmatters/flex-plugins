@@ -15,14 +15,11 @@
  */
 
 /* eslint-disable camelcase */
-import { ITask, TaskHelper, ChatOrchestrator } from '@twilio/flex-ui';
-import each from 'jest-each';
+import { ITask, ChatOrchestrator } from '@twilio/flex-ui';
 
-import { afterCompleteTask, afterWrapupTask, setUpPostSurvey } from '../../utils/setUpActions';
+import { afterCompleteTask, setUpPostSurvey } from '../../utils/setUpActions';
 import { REMOVE_CONTACT_STATE } from '../../states/types';
-import * as ServerlessService from '../../services/ServerlessService';
 import { FeatureFlags } from '../../types/types';
-import { getHrmConfig } from '../../hrmConfig';
 
 const mockFlexManager = {
   store: {
@@ -54,68 +51,6 @@ describe('afterCompleteTask', () => {
       type: REMOVE_CONTACT_STATE,
       taskId: 'THIS IS THE TASK SID!',
     });
-  });
-});
-
-describe('afterWrapupTask', () => {
-  each(
-    ['', 'default', 'web', 'voice']
-      .flatMap(channelType => [
-        {
-          channelType,
-          featureFlags: { enable_post_survey: false, post_survey_serverless_handled: false },
-        },
-        {
-          channelType,
-          featureFlags: { enable_post_survey: true, post_survey_serverless_handled: false },
-        },
-        {
-          channelType,
-          featureFlags: { enable_post_survey: false, post_survey_serverless_handled: true },
-        },
-        {
-          channelType,
-          featureFlags: { enable_post_survey: true, post_survey_serverless_handled: true },
-        },
-      ])
-      .map(testCase => {
-        const { channelType, featureFlags } = testCase;
-        const isChatChannel = channelType && channelType !== 'voice' && channelType !== 'default';
-        const shouldCallPostSurveyInit =
-          isChatChannel && featureFlags.enable_post_survey && !featureFlags.post_survey_serverless_handled;
-        const description = `featureFlags.enable_post_survey === ${
-          featureFlags.enable_post_survey
-        } && post_survey_serverless_handled === ${featureFlags.post_survey_serverless_handled} should ${
-          shouldCallPostSurveyInit ? '' : 'not '
-        } trigger post survey for ${isChatChannel ? '' : 'non-'}chat task`;
-
-        return {
-          ...testCase,
-          isChatChannel,
-          shouldCallPostSurveyInit,
-          description,
-        };
-      }),
-  ).test('$description', async ({ channelType, featureFlags, isChatChannel, shouldCallPostSurveyInit }) => {
-    const postSurveyInitSpy = jest.spyOn(ServerlessService, 'postSurveyInit').mockImplementationOnce(async () => ({}));
-
-    const task = ({
-      attributes: { channelSid: 'CHxxxxxx' },
-      taskSid: 'THIS IS THE TASK SID!',
-      channelType,
-      taskChannelUniqueName: isChatChannel ? 'chat' : channelType,
-    } as unknown) as ITask;
-
-    jest.spyOn(TaskHelper, 'isChatBasedTask').mockImplementation(() => isChatChannel);
-    jest.spyOn(TaskHelper, 'getTaskConversationSid').mockImplementationOnce(() => task.attributes.channelSid);
-
-    await afterWrapupTask(featureFlags, <ReturnType<typeof getHrmConfig>>{})({ task });
-
-    if (shouldCallPostSurveyInit) {
-      expect(postSurveyInitSpy).toHaveBeenCalled();
-    } else {
-      expect(postSurveyInitSpy).not.toHaveBeenCalled();
-    }
   });
 });
 

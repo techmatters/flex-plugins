@@ -18,7 +18,7 @@
 import React from 'react';
 
 import { AutoCompleteDropdown, AutoCompleteDropdownRow } from '../../../styles/ReferrableResources';
-import { TaxonomyLevelNameCompletion } from '../../../states/resources/search';
+import { sanitizeInputForSuggestions, TaxonomyLevelNameCompletion } from '../../../states/resources/search';
 
 type OwnProps = {
   generalSearchTermBoxText: string;
@@ -33,7 +33,7 @@ const SearchAutoComplete: React.FC<Props> = ({
   suggestSearch,
   setGeneralSearchTermBoxText,
 }) => {
-  const searchTerm = generalSearchTermBoxText.toLocaleLowerCase();
+  const searchTerm = sanitizeInputForSuggestions(generalSearchTermBoxText);
   const searchTermLength = searchTerm.length >= 3;
 
   const onSearch = (searchTerm: string) => {

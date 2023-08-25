@@ -22,4 +22,5 @@ variable "default_task_channel_sid" {
 variable "pre_survey_bot_sid" {
   description = "Internal Twilio resource SID provided by another module"
   type        = string
+  default ="DELETED"
 }

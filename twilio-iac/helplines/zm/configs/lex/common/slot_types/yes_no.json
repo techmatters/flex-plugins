@@ -1,0 +1,50 @@
+{
+  "yes_no": {
+    "description": "Specific zm/configs/lex/loz/slot_types slot type for Yes-No kind of questions",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "No": {
+        "synonyms": [
+          "n",
+          "no",
+          "nope",
+          "nah",
+          "not",
+          "ine mwane",
+          "ine",
+          "batili",
+          "Inehi",
+          "nehi",
+          "peepe",
+          "pepe",
+          "awe",
+          "iyo",
+          "iyayi",
+          "aye"
+        ]
+      },
+      "Yes": {
+        "synonyms": [
+          "y",
+          "yes",
+          "yep",
+          "yeah",
+          "yup",
+          "ya",
+          "yah",
+          "ee mwane",
+          "ee",
+          "eni",
+          "e",
+          "eng'a",
+          "enga",
+          "iiyi",
+          "inzya",
+          "iyii",
+          "inde",
+          "eya"
+        ]
+      }
+    }
+  }
+}

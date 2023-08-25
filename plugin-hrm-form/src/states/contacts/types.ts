@@ -130,7 +130,10 @@ type SetEditingContact = {
   editing: boolean;
 };
 
-type CheckButtonDataAction = { type: typeof SET_CALL_TYPE; isCallTypeCaller: boolean };
+type CheckButtonDataAction = {
+  type: typeof SET_CALL_TYPE;
+  isCallTypeCaller: boolean;
+};
 
 export type ContactsActionType =
   | UpdateFormAction

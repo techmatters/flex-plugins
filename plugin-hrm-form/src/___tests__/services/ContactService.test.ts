@@ -23,10 +23,12 @@ import {
   loadDefinition,
   useFetchDefinitions,
 } from 'hrm-form-definitions';
+import { TaskHelper } from '@twilio/flex-ui';
 
-import { mockGetDefinitionsResponse } from '../mockGetConfig';
+import { baseMockConfig as mockBaseConfig, mockGetDefinitionsResponse } from '../mockGetConfig';
 import {
   createCategoriesObject,
+  handleTwilioTask,
   saveContact,
   transformCategories,
   transformForm,
@@ -35,8 +37,8 @@ import {
 } from '../../services/ContactService';
 import { createNewTaskEntry } from '../../states/contacts/reducer';
 import { channelTypes } from '../../states/DomainConstants';
+import { getDefinitionVersions, getHrmConfig } from '../../hrmConfig';
 import { offlineContactTaskSid } from '../../types/types';
-import { getDefinitionVersions } from '../../hrmConfig';
 import { TaskEntry } from '../../states/contacts/types';
 
 const helpline = 'ChildLine Zambia (ZM)';
@@ -48,6 +50,16 @@ jest.mock('../../services/formSubmissionHelpers', () => ({
   getHelplineToSave: () => ({
     helpline: Promise.resolve(helpline),
   }),
+}));
+
+jest.mock('../../services/ServerlessService', () => ({
+  getExternalRecordingS3Location: () =>
+    Promise.resolve({
+      status: 'success',
+      recordingSid: 'recordingSid',
+      bucket: 'bucket',
+      key: 'key',
+    }),
 }));
 
 jest.mock('@twilio/flex-ui', () => ({
@@ -318,6 +330,66 @@ describe('saveContact() (isContactlessTask)', () => {
   });
 });
 
+describe('saveContact() (externalRecording)', () => {
+  const fetchSuccess = Promise.resolve(<any>{ ok: true, json: jest.fn(), text: jest.fn() });
+  let mockedFetch;
+
+  beforeEach(() => {
+    mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
+  });
+
+  afterEach(() => {
+    mockedFetch.mockClear();
+  });
+
+  beforeAll(() => {
+    getHrmConfig.mockReturnValue({
+      ...mockBaseConfig,
+      externalRecordingsEnabled: true,
+    });
+
+    TaskHelper.isChatBasedTask = () => false;
+    TaskHelper.isCallTask = () => true;
+  });
+
+  afterAll(() => {
+    jest.unmock('../../hrmConfig');
+    jest.unmock('@twilio/flex-ui');
+  });
+
+  test('should send conversatonMedia when external recording is enabled', async () => {
+    const task = {
+      taskSid: 'taskSid',
+      channelType: channelTypes.voice,
+      attributes: {
+        conference: {
+          participants: {
+            worker: {
+              callSid: 'callSid',
+            },
+          },
+        },
+      },
+    };
+
+    const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
+    await saveContact(task, form, 'workerSid', 'uniqueIdentifier');
+
+    const formFromPOST = getFormFromPOST(mockedFetch);
+    expect(formFromPOST.conversationMedia).toStrictEqual([
+      { store: 'twilio' },
+      {
+        store: 'S3',
+        type: 'recording',
+        location: {
+          bucket: 'bucket',
+          key: 'key',
+        },
+      },
+    ]);
+  });
+});
+
 describe('transformValues', () => {
   test('Strips entries in formValues that are not defined in provided form definition and adds undefined entries for form items without values', () => {
     const result = transformValues([
@@ -490,5 +562,72 @@ describe('transformCategories', () => {
       },
       category2: true,
     });
+  });
+});
+
+describe('handleTwilioTask() (externalRecording)', () => {
+  // eslint-disable-next-line sonarjs/no-identical-functions
+  beforeAll(() => {
+    getHrmConfig.mockReturnValue({
+      ...mockBaseConfig,
+      externalRecordingsEnabled: true,
+    });
+
+    TaskHelper.isChatBasedTask = () => false;
+    TaskHelper.isCallTask = () => true;
+  });
+
+  afterAll(() => {
+    jest.unmock('../../hrmConfig');
+    jest.unmock('@twilio/flex-ui');
+  });
+
+  test('should return conversationMedia with correct data if external recording is enabled', async () => {
+    const task = {
+      taskSid: 'taskSid',
+      channelType: channelTypes.voice,
+      attributes: {
+        conference: {
+          participants: {
+            worker: {
+              callSid: 'callSid',
+            },
+          },
+        },
+      },
+    };
+
+    const result = await handleTwilioTask(task);
+    expect(result).toStrictEqual({
+      conversationMedia: [
+        { store: 'twilio', reservationSid: undefined },
+        {
+          store: 'S3',
+          type: 'recording',
+          location: {
+            bucket: 'bucket',
+            key: 'key',
+          },
+        },
+      ],
+      externalRecordingInfo: {
+        status: 'success',
+        recordingSid: 'recordingSid',
+        bucket: 'bucket',
+        key: 'key',
+      },
+    });
+  });
+
+  test('should return conversationMedia with correct data if external recording is enabled', async () => {
+    const task = {
+      taskSid: 'taskSid',
+      channelType: channelTypes.voice,
+      attributes: {},
+    };
+
+    await expect(handleTwilioTask(task)).rejects.toThrow(
+      'Error getting external recording info: Could not find call sid',
+    );
   });
 });

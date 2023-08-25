@@ -34,7 +34,7 @@
         "value_elicitation_prompt": {
           "content": "¿La atención recibida me ayudó a encontrar estrategias o planes de acción para abordar el malestar por el cual consulté? Escriba el número que corresponda: \n 1 - No me ayudó nada \n2 - Me ayudó poco \n3 - Me ayudó \n4 - Me ayudó mucho",
           "content_type": "PlainText",
-          "max_attempts": 3
+          "max_attempts": 2
         }
       },
       "feltSupported": {
@@ -45,7 +45,7 @@
         "value_elicitation_prompt": {
           "content": "¿Te sentiste escuchado/a y apoyado/a por la/el psicólogo que te atendió?  Escriba el número que corresponda:\n1 - No me sentí escuchad@ \n2 - Me sentí  poco escuchad@ \n3 - Me sentí escuchad@ \n4 - Me sentí muy escuchad@",
           "content_type": "PlainText",
-          "max_attempts": 3
+          "max_attempts": 2
         }
       },
       "wouldRecommend": {
@@ -56,7 +56,7 @@
         "value_elicitation_prompt": {
           "content": "¿Recomendarías el servicio de chat de Línea Libre a otras personas? Escriba el número que corresponda:\n1 - Sí \n2 - No",
           "content_type": "PlainText",
-          "max_attempts": 3
+          "max_attempts": 2
         }
       }
     }

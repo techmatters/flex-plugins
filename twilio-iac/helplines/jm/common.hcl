@@ -12,7 +12,6 @@ locals {
     task_language                     = "en-US"
     helpline_language                 = "en-US"
     voice_ivr_language                = ""
-    contacts_waiting_channels         = ["web","whatsapp","facebook","instagram"]
     enable_post_survey                = false
     
    

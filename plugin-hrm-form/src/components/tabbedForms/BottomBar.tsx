@@ -86,7 +86,10 @@ const BottomBar: React.FC<
       await completeTask(task);
     } catch (error) {
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
+        recordBackendError('Submit Contact Form TASK COMPLETED WITHOUT RECORDING', error);
         await completeTask(task);
+      } else {
+        recordBackendError('Submit Contact Form', error);
       }
     } finally {
       setSubmitting(false);

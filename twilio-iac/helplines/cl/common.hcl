@@ -9,7 +9,6 @@ locals {
     default_autopilot_chatbot_enabled = false
     task_language                     = "es-CL"
     voice_ivr_language                = "es-MX"
-    contacts_waiting_channels         = ["voice", "web"]
     enable_post_survey                = true
 
     workflows = {

@@ -105,6 +105,7 @@ export const initialState: ReferrableResourceSearchState = {
       { value: 'Cost for Service' },
       { value: 'Sliding Scale' },
       { value: 'One Time Small Fee' },
+      { value: 'Covered by Health Insurance' },
     ],
     howServiceIsOffered: [{ value: 'In-person Support' }, { value: 'Online Support' }, { value: 'Phone Support' }],
     province: [{ label: '', value: undefined }, ...provinceOptions],
@@ -167,9 +168,12 @@ export const searchResourceAsyncAction = createAsyncAction(
   // { promiseTypeDelimiter: '/' }, // Doesn't work :-(
 );
 
+export const sanitizeInputForSuggestions = (input: string): string =>
+  input.trim().replaceAll(/"/g, '').toLocaleLowerCase();
+
 // eslint-disable-next-line import/no-unused-modules
 export const suggestSearchAsyncAction = createAsyncAction(SUGGEST_ACTION, async (prefix: string) => {
-  return { ...(await suggestSearch(prefix)) };
+  return { ...(await suggestSearch(sanitizeInputForSuggestions(prefix))) };
 });
 
 /*
@@ -226,7 +230,7 @@ const rejectedAsyncAction = handleAction =>
   });
 
 export const suggestSearchReducer = createReducer(suggestSearchInitialState, handleAction => [
-  handleAction(suggestSearchAsyncAction.pending, (state, action) => {
+  handleAction(suggestSearchAsyncAction.pending, state => {
     return {
       ...state,
       taxonomyLevelNameCompletion: [],
