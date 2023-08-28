@@ -42,7 +42,7 @@ jobs:
     secrets: inherit
     with:
       helpline_code: E2E
-      environment_code: development
+      environment: development
       send-slack-message: 'false'
 
   run-e2e-tests:
