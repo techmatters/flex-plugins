@@ -99,24 +99,20 @@ module "twilioChannel" {
   channel_contact_identity = each.value.contact_identity
   channel_type             = each.value.channel_type
   custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/multiple-queues-ph/with-chatbot.tftpl",
+    "../terraform-modules/channels/flow-templates/multiple-queues-ph/with-lex-chatbot.tftpl",
     {
-      channel_name                         = "${each.key}"
-      serverless_url                       = module.serverless.serverless_environment_production_url
-      serverless_service_sid               = module.serverless.serverless_service_sid
-      serverless_environment_sid           = module.serverless.serverless_environment_production_sid
-      master_workflow_sid                  = module.taskRouter.master_workflow_sid
-      outside_operating_hours_workflow_sid = module.taskRouter.outside_operating_hours_workflow_sid
-      non_counselling_workflow_sid         = module.taskRouter.non_counselling_workflow_sid
-      chat_task_channel_sid                = module.taskRouter.chat_task_channel_sid
-      language_bot_sid                     = twilio_autopilot_assistants_v1.languageBot_v2.sid
-      permission_en_bot_sid                = twilio_autopilot_assistants_v1.permissionBot_en_v2.sid
-      permission_fil_bot_sid               = twilio_autopilot_assistants_v1.permissionBot_fil_v2.sid
-      presurvey_bot_en_sid                 = twilio_autopilot_assistants_v1.preSurvey_en_v2.sid
-      presurvey_bot_fil_sid                = twilio_autopilot_assistants_v1.preSurvey_fil_v2.sid
-      operating_hours_function_sid         = local.operating_hours_function_sid
-      channel_attributes                   = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl", { task_language = "" })
-      flow_description                     = "${title(each.key)} Messaging Flow"
+      channel_name                          = "${each.key}"
+      serverless_url                        = module.serverless.serverless_environment_production_url
+      serverless_service_sid                = module.serverless.serverless_service_sid
+      serverless_environment_sid            = module.serverless.serverless_environment_production_sid
+      capture_channel_with_bot_function_sid = "ZH520142ac0ba1c7e75bc2a24ab5d8fce6"
+      master_workflow_sid                   = module.taskRouter.master_workflow_sid
+      outside_operating_hours_workflow_sid  = module.taskRouter.outside_operating_hours_workflow_sid
+      non_counselling_workflow_sid          = module.taskRouter.non_counselling_workflow_sid
+      chat_task_channel_sid                 = module.taskRouter.chat_task_channel_sid
+      operating_hours_function_sid          = local.operating_hours_function_sid
+      channel_attributes                    = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl", { task_language = "" })
+      flow_description                      = "${title(each.key)} Messaging Flow"
   })
   target_task_name      = local.target_task_name
   channel_name          = each.key
@@ -149,7 +145,7 @@ module "aws" {
   shared_state_sync_service_sid      = module.services.shared_state_sync_service_sid
   flex_chat_service_sid              = module.services.flex_chat_service_sid
   flex_proxy_service_sid             = module.services.flex_proxy_service_sid
-  post_survey_bot_sid                = module.chatbots.post_survey_bot_sid
+  post_survey_bot_sid                = "DELETED"
   survey_workflow_sid                = module.survey.survey_workflow_sid
 }
 

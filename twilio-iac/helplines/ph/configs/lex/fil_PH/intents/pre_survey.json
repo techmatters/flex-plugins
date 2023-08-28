@@ -9,22 +9,33 @@
       "type": "ReturnIntent"
     },
     "conclusion_statement": {
-      "content": "We'll transfer you now. Please hold for a counsellor.",
+      "content": "Ita-transfer ka namin sa isang youth responder. Maaring pakihintay",
       "content_type": "PlainText"
     },
     "rejection_statement": {
-      "content": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a counsellor.",
+      "content": "Ita-transfer ka namin sa isang youth responder. Maaring pakihintay",
       "content_type": "PlainText"
     },
     "slots": {
-      "firstName": {
-        "priority": 2,
-        "description": "Caller's name",
+      "aboutSelf": {
+        "priority": 1,
+        "description": "Caller is calling for self or someone else",
         "slot_constraint": "Required",
-        "slot_type": "AMAZON.AlphaNumeric",
+        "slot_type": "yes_no",
         "value_elicitation_prompt": {
           "max_attempts": 2,
-          "content": "Welcome to the helpline. To help us better serve you, please answer the following questions. \n\nWhat is your first name?",
+          "content": "Ikaw ba ay nagrereport tungkol sa iyong sarili? Oo o Hindi",
+          "content_type": "PlainText"
+        }
+      },
+      "csam": {
+        "priority": 2,
+        "description": "CSAM",
+        "slot_constraint": "Required",
+        "slot_type": "csam",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "Nais mo bang mag report ng Child Sexual Abuse Material (CSAM) o insidente ng Sexual Exploitation? Mangyaring tumugon 1 para sa pag-uulat ng CSAM, 2 kung hindi ka nag-uulat.",
           "content_type": "PlainText"
         }
       },
@@ -35,7 +46,7 @@
         "slot_type": "age",
         "value_elicitation_prompt": {
           "max_attempts": 2,
-          "content": "How old are you?",
+          "content": "Ilan taon ka na?",
           "content_type": "PlainText"
         }
       },
@@ -46,18 +57,7 @@
         "slot_type": "gender",
         "value_elicitation_prompt": {
           "max_attempts": 2,
-          "content": "What is your gender?",
-          "content_type": "PlainText"
-        }
-      },
-      "aboutSelf": {
-        "priority": 5,
-        "description": "Caller is calling for self or someone else",
-        "slot_constraint": "Required",
-        "slot_type": "yes_no",
-        "value_elicitation_prompt": {
-          "max_attempts": 2,
-          "content": "Are you calling about yourself? Please answer Yes or No.",
+          "content": "Gender: 1.Babae, 2.Lalaki, 3.LGBTQ+",
           "content_type": "PlainText"
         }
       }

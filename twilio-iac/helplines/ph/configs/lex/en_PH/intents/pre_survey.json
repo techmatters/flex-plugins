@@ -1,6 +1,6 @@
 {
   "pre_survey": {
-    "description": "Survey intent",
+    "description": "Helpline Specific ph/configs/lex/en_PH/intents Pre Survey Intent Survey intent",
     "sample_utterances": [
       "Incoming webchat contact",
       "trigger_pre_survey"
@@ -13,18 +13,29 @@
       "content_type": "PlainText"
     },
     "rejection_statement": {
-      "content": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a counsellor.",
+      "content": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a youth responder.",
       "content_type": "PlainText"
     },
     "slots": {
-      "firstName": {
-        "priority": 2,
-        "description": "Caller's name",
+      "aboutSelf": {
+        "priority": 1,
+        "description": "Caller is calling for self or someone else",
         "slot_constraint": "Required",
-        "slot_type": "AMAZON.AlphaNumeric",
+        "slot_type": "yes_no",
         "value_elicitation_prompt": {
           "max_attempts": 2,
-          "content": "Welcome to the helpline. To help us better serve you, please answer the following questions. \n\nWhat is your first name?",
+          "content": "Are you reporting about yourself? Please answer Yes or No.",
+          "content_type": "PlainText"
+        }
+      },
+      "csam": {
+        "priority": 2,
+        "description": "CSAM",
+        "slot_constraint": "Required",
+        "slot_type": "csam",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "Are you reporting a child sexual abuse material (CSAM) or Incident of Sexual Exploitation? Respond 1 to report and 2 if you are not reporting.",
           "content_type": "PlainText"
         }
       },
@@ -46,19 +57,19 @@
         "slot_type": "gender",
         "value_elicitation_prompt": {
           "max_attempts": 2,
-          "content": "What is your gender?",
+          "content": "What is your gender? Please enter 1.Male, 2.Female, 3.LGBTQ+",
           "content_type": "PlainText"
         }
       },
-      "aboutSelf": {
+      "counsellorGenderPreference": {
         "priority": 5,
-        "description": "Caller is calling for self or someone else",
+        "description": "Imported from question 'cgender'",
+        "slot_type": "counsellorGenderPreference",
         "slot_constraint": "Required",
-        "slot_type": "yes_no",
         "value_elicitation_prompt": {
-          "max_attempts": 2,
-          "content": "Are you calling about yourself? Please answer Yes or No.",
-          "content_type": "PlainText"
+          "content": "Do you have a counselor preference? 1. Male counselor 2. Female counselor 3. Non-binary 4. No preference",
+          "content_type": "PlainText",
+          "max_attempts": 3
         }
       }
     }
