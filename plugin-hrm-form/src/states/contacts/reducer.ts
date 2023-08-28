@@ -242,7 +242,7 @@ export function reduce(
           ...state.tasks,
           [action.taskId]: {
             ...currentTask,
-            callType,
+            callType: callType ? callType : state.tasks[action.taskId].callType,
             [formName]: {
               ...currentTask[formName],
               ...values,
