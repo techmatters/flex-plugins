@@ -28,8 +28,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        short_helplines: ['AS', 'CA', 'CL', 'PH', 'ET', 'JM', 'MW', 'IN', 'RO', 'BR', 'ZA', 'CO', 'TH', 'UK', 'HU', 'ZM', 'ZW', 'PL', 'MT', 'NZ']
-        environment_code: [STG]
+        short_helplines: ['AS', 'CA', 'CL', 'PH', 'ET', 'JM', 'MW', 'IN', 'BR', 'ZA', 'CO', 'TH', 'HU', 'ZM', 'ZW', 'MT']
+        environment_code: [PROD]
     uses: ./.github/workflows/flex-deploy.yml
     secrets: inherit
     with:
@@ -69,6 +69,6 @@ jobs:
         uses: slackapi/slack-github-action@v1.14.0
         with:
           channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-          slack-message: "`[FLEX PARALLEL DEPLOYMENT]` All Flex Staging helplines successfully deployed :rocket:."
+          slack-message: "`[FLEX PARALLEL DEPLOYMENT]` All Flex Production helplines successfully deployed :rocket:."
         env:
           SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
