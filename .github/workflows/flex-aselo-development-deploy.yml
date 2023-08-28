@@ -24,7 +24,7 @@ on:
 
 jobs:
   deploy:
-    uses: ./.github/workflows/flex-custom-helpline-deploy.yml
+    uses: ./.github/workflows/flex-deploy.yml
     secrets: inherit
     with:
       helpline_code: AS

@@ -19,7 +19,7 @@ on:
 
 jobs:
   deploy:
-    uses: ./.github/workflows/webchat-custom-helpline-deploy.yml
+    uses: ./.github/workflows/webchat-deploy.yml
     secrets: inherit
     with:
       environment: development
