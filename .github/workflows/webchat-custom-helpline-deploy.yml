@@ -14,7 +14,7 @@
 
 # This is a basic workflow to build and upload Webchat to S3 bucket with Github Actions
 
-name: Webchat Custom Helpline Release
+name: Webchat Custom Helpline Deploy
 
 # Controls when the action will run.
 on:
