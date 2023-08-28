@@ -36,7 +36,7 @@ const translations: Translations = {
     WhatIsYourHelpline: 'What is your helpline?',
     SelectHelpline: 'Select helpline',
     FakeHelpline: 'Fake Helpline',
-    LetsChat: "Let's chat! Test",
+    LetsChat: "Let's chat!",
   },
   es: {
     EntryPointTagline: 'Chatea con nosotros',

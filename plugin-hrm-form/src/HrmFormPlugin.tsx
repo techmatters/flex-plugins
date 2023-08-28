@@ -254,4 +254,5 @@ export default class HrmFormPlugin extends FlexPlugin {
   }
 }
 
+console.log('[TEST123]');
 initializeConfig();
