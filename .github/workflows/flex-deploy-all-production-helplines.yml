@@ -14,7 +14,7 @@
 
 # This is a basic workflow to deploy Flex to all helpline staging environments
 
-name: Deploy Flex to all Staging Helplines
+name: Deploy Flex to all Production Helplines
 
 on:
   workflow_dispatch:
