@@ -29,7 +29,7 @@ on:
 
 jobs:
   deploy-flex:
-    uses: ./.github/workflows/flex-custom-helpline-deploy.yml
+    uses: ./.github/workflows/flex-deploy.yml
     secrets: inherit
     with:
       helpline_code: E2E
@@ -38,7 +38,7 @@ jobs:
       send-slack-message: 'false'
 
   deploy-webchat:
-    uses: ./.github/workflows/webchat-custom-helpline-deploy.yml
+    uses: ./.github/workflows/webchat-deploy.yml
     secrets: inherit
     with:
       helpline_code: E2E

@@ -14,7 +14,7 @@
 
 # This is a basic workflow to publish a Twilio Flex-plugins with Github Actions
 
-name: Flex Custom Helpline Deploy
+name: Flex Deploy
 
 # Controls when the action will run.
 on:
