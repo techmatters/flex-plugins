@@ -56,7 +56,6 @@ env:
   recaptcha_verify_url_default: https://hrm-${{ inputs.environment }}.tl.techmatters.org/lambda/recaptchaVerify
    # this is part of a dirty hack to get the right recaptcha_verify_url
   recaptcha_verify_url_ca: https://hrm-production-ca.tl.techmatters.org/lambda/recaptchaVerify
-  recaptcha_verify_url: ${{ inputs.helpline_code == 'CA' && env.recaptcha_verify_url_ca || env.recaptcha_verify_url_default }}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -145,6 +144,10 @@ jobs:
           touch ./private/secret.ts
         working-directory: ./webchat
 
+      # this is part of a dirty hack to get the right recaptcha_verify_url
+      - name: set FALLBACK_RECAPTCHA_VERIFY_URL
+        id: set_fallback_recaptcha_verify_url
+        run: echo "FALLBACK_RECAPTCHA_VERIFY_URL=${{ inputs.helpline_code == 'CA' && env.recaptcha_verify_url_ca || env.recaptcha_verify_url_default }}" >> $GITHUB_ENV
       # This includes a dirty hack to get the recaptcha_verify_url into the secret.ts file with the correct region for CA
       # We should really start adding a helpline specific HRM url to the SSM parameters as part of twilio_iac and pulling
       # that in here, but this will do for now.
@@ -154,7 +157,7 @@ jobs:
           export const API_KEY = '${{ env.IP_FIND_API_KEY }}';
           export const SERVERLESS_URL = '${{ env.SERVERLESS_URL }}';
           export const RECAPTCHA_KEY = '${{ env.RECAPTCHA_KEY }}';
-          export const RECAPTCHA_VERIFY_URL = '${{ inputs.recaptcha_verify_url || env.recaptcha_verify_url }}';
+          export const RECAPTCHA_VERIFY_URL = '${{ inputs.recaptcha_verify_url || env.FALLBACK_RECAPTCHA_VERIFY_URL }}';
           EOT
         working-directory: ./webchat
 
