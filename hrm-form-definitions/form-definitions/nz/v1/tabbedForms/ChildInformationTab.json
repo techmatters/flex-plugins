@@ -9,6 +9,11 @@
     }
   },
   {
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input"
+  },
+  {
     "name": "lastName",
     "label": "Last Name",
     "type": "input"
@@ -371,27 +376,27 @@
   },
   {
     "name": "inConflictWithTheLaw",
-    "label": "Child in conflict with the law",
+    "label": "Person of concern in conflict with the law",
     "type": "mixed-checkbox"
   },
   {
     "name": "livingInPoverty",
-    "label": "Child living in poverty",
+    "label": "Person of concern living in poverty",
     "type": "mixed-checkbox"
   },
   {
     "name": "memberOfAnEthnic",
-    "label": "Child member of an ethnic, racial or religious minority",
+    "label": "Person of concern member of an ethnic, racial or religious minority",
     "type": "mixed-checkbox"
   },
   {
     "name": "childWithDisability",
-    "label": "Child with disability",
+    "label": "Person of concern with disability",
     "type": "mixed-checkbox"
   },
   {
     "name": "LGBTQI+",
-    "label": "LGBTQI+ / SOGIESC child",
+    "label": "LGBTQI+ / SOGIESC",
     "type": "mixed-checkbox"
   }
 ]
