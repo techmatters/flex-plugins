@@ -29,7 +29,7 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours.tftpl"
         channel_flow_vars = {
-          chat_greeting_message = "Kia ora, thank you for contacting Youthline. One of our counsellors will back to you as soon as we can. If you or someone else are in immediate danger, please call 111 immediately."
+          chat_greeting_message = "Kia ora, thank you for contacting Youthline. One of our counsellors will get back to you as soon as we can. If you or someone else are in immediate danger, please call 111 immediately."
           widget_from           = "Youthline"
         }
         chatbot_unique_names = []
@@ -39,7 +39,7 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/voice.tftpl"
         channel_flow_vars = {
-          voice_ivr_greeting_message = "Kia ora, thank you for contacting Youthline. One of our counsellors will back to you as soon as we can. If you or someone else are in immediate danger, please call 111 immediately."
+          voice_ivr_greeting_message = "Kia ora, thank you for contacting Youthline. One of our counsellors will get back to you as soon as we can. If you or someone else are in immediate danger, please call 111 immediately."
           voice_ivr_language         = "en-US"
         }
         chatbot_unique_names = []
