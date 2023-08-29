@@ -33,6 +33,7 @@ import CasePrintMultiSection from './CasePrintMultiSection';
 import CasePrintNotes from './CasePrintNotes';
 import CasePrintHeader from './CasePrintHeader';
 import CasePrintFooter from './CasePrintFooter';
+import CasePrintCSAMReports from './CasePrintCSAMReports';
 // import CasePrintContact from './CasePrintContact'; // Removed by ZA request, could be useful for other helplines.
 import { getImageAsString, ImageSource } from './helpers';
 import { getLocaleDateTime } from '../../../utils/helpers';
@@ -99,6 +100,8 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   if (definitionVersion.layoutVersion.thaiCharacterPdfSupport) useThaiFontFamily();
+
+  console.log('>>> caseDetails', caseDetails);
 
   return (
     <CasePrintViewContainer>
@@ -171,6 +174,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                     values={{
                       ...caseDetails.contact?.rawJson?.caseInformation,
                       ...caseDetails.contact?.rawJson?.childInformation,
+                      ...caseDetails.contact?.csamReports,
                     }}
                   />
                 )}
@@ -206,6 +210,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                 />
                 <CasePrintNotes notes={caseDetails.notes} counselorsHash={counselorsHash} />
                 <CasePrintSummary summary={caseDetails.summary} />
+                <CasePrintCSAMReports csamReports={caseDetails.contact?.csamReports} />
               </View>
               <CasePrintFooter />
             </Page>
