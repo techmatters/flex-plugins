@@ -79,8 +79,6 @@ const readConfig = () => {
     strings: { [key: string]: string };
   };
 
-  console.log('hrmMicroserviceBaseUrl', hrmMicroserviceBaseUrl);
-
   return {
     featureFlags,
     strings,
