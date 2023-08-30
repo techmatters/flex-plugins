@@ -18,22 +18,8 @@ on: [push]
 
 jobs:
   flex-ci:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/flex-ci.yml
+    uses: ./.github/workflows/flex-ci.yml
+    secrets: inherit
   webchat-ci:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/webchat-ci.yml
-  webchat-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/webchat-lint.yml
-  webchat-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/webchat-test.yml
+    uses: ./.github/workflows/webchat-ci.yml
+    secrets: inherit

@@ -14,13 +14,16 @@
 
 name: Flex CI
 
+on:
+  workflow_call:
+
 jobs:
   lint:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
       - name: Use Node.js 16
         uses: actions/setup-node@v1
         with:
