@@ -20,10 +20,12 @@ jobs:
   flex-ci:
     steps:
       - uses: actions/checkout@v3
-      - uses: ./.github/actions/flex-ci.yml
+      - name: Flex CI
+        uses: ./.github/actions/flex-ci.yml
         secrets: inherit
   webchat-ci:
     steps:
       - uses: actions/checkout@v3
-      - uses: ./.github/actions/webchat-ci.yml
+      - name: Webchat CI
+        uses: ./.github/actions/webchat-ci.yml
         secrets: inherit
