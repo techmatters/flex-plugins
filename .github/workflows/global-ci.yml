@@ -18,6 +18,14 @@ on: [push]
 
 jobs:
   flex-ci:
-    uses: ./.github/actions/flex-ci.yml
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Flex CI
+        uses: ./.github/actions/flex-ci.yml
   webchat-ci:
-    uses: ./.github/actions/webchat-ci.yml
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Webchat CI
+        uses: ./.github/actions/webchat-ci.yml
