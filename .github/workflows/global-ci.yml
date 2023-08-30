@@ -23,9 +23,11 @@ jobs:
       - uses: actions/checkout@v3
       - name: Flex CI
         uses: ./.github/actions/flex-ci.yml
+        secrets: inherit
   webchat-ci:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Webchat CI
         uses: ./.github/actions/webchat-ci.yml
+        secrets: inherit
