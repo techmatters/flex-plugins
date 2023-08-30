@@ -19,14 +19,12 @@ on: [push]
 jobs:
   flex-ci:
     runs-on: ubuntu-latest
-    secrets: inherit
     steps:
       - uses: actions/checkout@v3
       - name: Flex CI
         uses: ./.github/actions/flex-ci.yml
   webchat-ci:
     runs-on: ubuntu-latest
-    secrets: inherit
     steps:
       - uses: actions/checkout@v3
       - name: Webchat CI
