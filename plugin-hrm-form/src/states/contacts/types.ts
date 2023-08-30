@@ -101,7 +101,7 @@ type HandleExpandCategoryAction = {
 
 type PrePopulateFormAction = {
   type: typeof PREPOPULATE_FORM;
-  callType: DataCallTypes;
+  callType: DataCallTypes | null;
   values: { [property: string]: string };
   taskId: string;
   isCaseInfo: Boolean;

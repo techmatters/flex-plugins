@@ -24,7 +24,7 @@
         "slot_type": "contact_reason",
         "value_elicitation_prompt": {
           "max_attempts": 2,
-          "content": "Obrigada por nos contactar, escolha uma das opções abaixo antes de falar conosco: \n 1 - Você quer denunciar um conteúdo na Internet? \n 2 - Você sofreu violência na Internet e quer obter ajuda? \n 3 - Você é jornalista ou pesquisador e quer entrevista/dados da SaferNet? \n 4 -Nenhuma das opções acima",
+          "content": "Obrigada por nos contactar, escolha uma das opções abaixo antes de falar conosco: \n 1 - Você quer denunciar um conteúdo na Internet? \n 2 - Você precisa de ajuda para alguma violência que sofreu na Internet? \n 3 - Você é jornalista ou pesquisador e quer entrevista/dados da SaferNet? \n 4 -Nenhuma das opções acima",
           "content_type": "PlainText"
         }
       }

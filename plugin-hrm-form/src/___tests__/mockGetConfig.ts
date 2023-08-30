@@ -21,6 +21,7 @@ import { DefinitionVersion, DefinitionVersionId } from 'hrm-form-definitions';
 export const baseMockConfig = {
   accountSid: 'ACfake',
   hrmBaseUrl: 'http://fake.hrm.com',
+  lambdaBaseUrl: 'http://fake.hrm.com',
   serverlessBaseUrl: 'http://fake.protected.com',
   assetsBucketUrl: 'http://assets.fake.com',
   serviceSid: '',

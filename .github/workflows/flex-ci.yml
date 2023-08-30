@@ -1,0 +1,124 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+name: Flex CI
+
+on:
+  workflow_call:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v2
+      - name: Use Node.js 16
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16.x'
+      - name: Create Temp Files
+        run: |
+          touch ./public/appConfig.js
+          touch ./src/private/secret.js
+        working-directory: ./plugin-hrm-form
+      - name: Install Flex Plugin
+        uses: ./.github/actions/install-flex-plugin
+      - name: Run hrm-form-definitions Lint
+        run: npm run lint
+        working-directory: ./hrm-form-definitions
+      - name: Run plugin-hrm-form code Lint
+        run: npm run lint --if-present
+        working-directory: ./plugin-hrm-form
+      - name: Install e2e-test Packages
+        run: npm ci
+        working-directory: ./e2e-tests
+      - name: Run e2e-test code Lint
+        run: npm run lint
+        working-directory: ./e2e-tests
+  unit-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Branch
+      uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: '16.x'
+    - name: Install Flex Plugin
+      uses: ./.github/actions/install-flex-plugin
+    - name: Run hrm-form-definitions Tests
+      run: npm run test
+      working-directory: ./hrm-form-definitions
+
+    - name: Run plugin-hrm-form Tests
+      run: TWILIO_ACCOUNT_SID=${{secrets.AS_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.AS_DEV_AUTH_TOKEN}} npm run test
+      working-directory: ./plugin-hrm-form
+      env:
+        CI: true
+  ui-test:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout Branch
+        uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16.x'
+
+      - name: Install Flex Plugin
+        uses: ./.github/actions/install-flex-plugin
+
+      # Create Configuration file to replace AS_DEV_ACCOUNT_SID with E2E_ACCOUNT_SID
+      - name: Create appConfig.js
+        run: cp ./public/appConfig.template.e2e.js ./public/appConfig.js
+        working-directory: ./plugin-hrm-form
+        shell: bash
+
+      - name: Create secret.js
+        run: |
+          touch ./src/private/secret.js
+        working-directory: ./plugin-hrm-form
+        shell: bash
+
+      - name: Fill secret.js
+        run: |
+          cat <<EOT >> ./src/private/secret.js
+          export const rollbarAccessToken = 'x';
+          export const datadogAccessToken = 'x';
+          export const datadogApplicationID = 'x';
+          export const fullStoryId = 'x';
+          EOT
+        working-directory: ./plugin-hrm-form
+        shell: bash
+
+      - name: Run Form Definitions Server
+        run: NODE_ENV=development npm run dev:local-form-definition-server &
+        working-directory: ./plugin-hrm-form
+
+      - name: Run Flex Dev Server
+        # Creds aren't used in the tests, but I don't think the dev server starts without some set.
+        run: NODE_ENV=development REACT_FORM_DEFINITIONS_BASE_URL=http://localhost:8090 TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npm run start &
+        working-directory: ./plugin-hrm-form
+
+      - name: Run e2e tests
+        uses: ./.github/actions/run-e2e-tests
+        with:
+          run-ui-tests: 'true'

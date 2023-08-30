@@ -41,6 +41,7 @@ import {
   ExternalRecordingInfoSuccess,
   isSuccessfulExternalRecordingInfo,
 } from './getExternalRecordingInfo';
+import { generateUrl } from './fetchApi';
 
 /*
  * 'Any' is the best we can do, since we're limited by Twilio here.
@@ -397,14 +398,18 @@ const getInsightsUpdateFunctionsForConfig = (
 };
 
 const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSuccess, contact: HrmServiceContact) => {
-  const { accountSid, hrmBaseUrl } = getHrmConfig();
+  const { lambdaBaseUrl } = getHrmConfig();
 
   const { bucket, key } = externalRecordingInfo;
+  const url_provider = generateUrl(
+    new URL(lambdaBaseUrl),
+    `/files/urls?method=getObject&objectType=contact&objectId=${contact.id}&fileType=recording&bucket=${bucket}&key=${key}`,
+  ).toString();
   return [
     {
       type: 'VoiceRecording',
       // eslint-disable-next-line camelcase
-      url_provider: `${hrmBaseUrl}/lambda/getSignedS3Url?method=getObject&contactId=${contact.id}&bucket=${bucket}&key=${key}&accountSid=${accountSid}&requestType=url_provider`,
+      url_provider,
     },
   ];
 };

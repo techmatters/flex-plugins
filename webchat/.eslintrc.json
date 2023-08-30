@@ -1,0 +1,21 @@
+{
+  "extends": ["twilio-react", "prettier/prettier"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2019,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "no-console": "off",
+    "no-alert": "off",
+    "import/no-extraneous-dependencies": "off",
+    "no-use-before-define": "off",
+    "react/display-name": "off",
+    "no-negated-condition": "off",
+    "no-warning-comments": "off"
+  },
+  "ignorePatterns": ["config.ts"]
+}
