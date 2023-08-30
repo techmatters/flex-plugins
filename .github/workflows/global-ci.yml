@@ -18,8 +18,12 @@ on: [push]
 
 jobs:
   flex-ci:
-    uses: ./.github/workflows/flex-ci.yml
-    secrets: inherit
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/flex-ci.yml
+        secrets: inherit
   webchat-ci:
-    uses: ./.github/workflows/webchat-ci.yml
-    secrets: inherit
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/webchat-ci.yml
+        secrets: inherit
