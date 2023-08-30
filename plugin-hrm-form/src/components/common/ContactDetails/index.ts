@@ -21,6 +21,7 @@ export const ContactDetailsSections = {
   ISSUE_CATEGORIZATION: 'Issue categorization',
   CONTACT_SUMMARY: 'Contact summary',
   TRANSCRIPT: 'Transcript',
+  RECORDING: 'Recording',
   EXTERNAL_REPORT: 'External Report',
 } as const;
 
