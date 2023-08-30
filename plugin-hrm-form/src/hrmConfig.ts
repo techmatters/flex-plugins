@@ -26,10 +26,12 @@ const readConfig = () => {
   const manager = Flex.Manager.getInstance();
 
   const accountSid = manager.serviceConfiguration.account_sid;
-  const hrmBaseUrl = `${process.env.REACT_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}/${
+  const hrmBaseUrl = `${process.env.REACT_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}${
     manager.serviceConfiguration.attributes.hrm_api_version
   }/accounts/${accountSid}`;
-  const lambdaBaseUrl = `${process.env.REACT_HRM_LAMBDA_BASE_URL || hrmBaseUrl}`;
+  const hrmMicroserviceBaseUrl = process.env.REACT_HRM_MICROSERVICE_BASE_URL
+    ? `${process.env.REACT_HRM_MICROSERVICE_BASE_URL}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${accountSid}`
+    : hrmBaseUrl;
   const resourcesConfiguredBaseUrl =
     process.env.REACT_RESOURCES_BASE_URL || manager.serviceConfiguration.attributes.resources_base_url;
   const resourcesBaseUrl = resourcesConfiguredBaseUrl
@@ -77,13 +79,15 @@ const readConfig = () => {
     strings: { [key: string]: string };
   };
 
+  console.log('hrmMicroserviceBaseUrl', hrmMicroserviceBaseUrl);
+
   return {
     featureFlags,
     strings,
     hrm: {
       accountSid,
       hrmBaseUrl,
-      lambdaBaseUrl,
+      hrmMicroserviceBaseUrl,
       serverlessBaseUrl,
       logoUrl,
       assetsBucketUrl,
