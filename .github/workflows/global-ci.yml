@@ -21,9 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: ./.github/actions/flex-ci.yml
+      - uses: ./actions/flex-ci.yml
   webchat-ci:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: ./.github/actions/webchat-ci.yml
+      - uses: ./actions/webchat-ci.yml
