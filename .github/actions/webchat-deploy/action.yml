@@ -12,43 +12,27 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
-# Upload Webchat to S3 bucket with Github Actions
+# This is a basic workflow to build and upload Webchat to S3 bucket with Github Actions
+
 name: Webchat Deploy
 
-on:
-  workflow_dispatch:
-    inputs:
-      helpline_code:
-        description: "The short (usually 2 character) upper case code used to identify the helpline internally, e.g. ZA, IN, BR."
-        required: true
-        type: string
-      environment:
-        description: "Helpline Environment: development, staging, production"
-        required: true
-        type: string
-      recaptcha_verify_url:
-        description: "Recaptcha Verify URL"
-        required: false
-        type: string
-
-  workflow_call:
-    inputs:
-      helpline_code:
-        description: "The short (usually 2 character) upper case code used to identify the helpline internally, e.g. ZA, IN, BR."
-        required: true
-        type: string
-      environment:
-        description: "Helpline Environment"
-        required: true
-        type: string
-      recaptcha_verify_url:
-        description: "Recaptcha Verify URL"
-        required: false
-        type: string
-      send-slack-message:
-        description: If set to false a slack message will not be sent - useful for E2E test deploys.
-        default: 'true'
-        type: string
+inputs:
+  helpline_code:
+    description: The short (usually 2 character) upper case code used to identify the helpline internally, e.g. ZA, IN, BR.
+    required: true
+    type: string
+  environment:
+    description: "Helpline Environment"
+    required: true
+    type: string
+  recaptcha_verify_url:
+    description: "Recaptcha Verify URL"
+    required: false
+    type: string
+  send-slack-message:
+    description: If set to false a slack message will not be sent - useful for E2E test deploys.
+    default: 'true'
+    type: string
 
 env:
   recaptcha_verify_url_default: https://hrm-${{ inputs.environment }}.tl.techmatters.org/lambda/recaptchaVerify

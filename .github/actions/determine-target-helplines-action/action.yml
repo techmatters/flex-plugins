@@ -1,0 +1,39 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+name: 'determine-target-helplines-action'
+inputs:
+  environment:
+    description: The environment to deploy to, e.g. staging, production, development
+    required: true
+outputs:
+  target_helplines:
+    description: 'The short codes of each helpline in the target environment as a JSON array string'
+    value: ${{ steps.determine-target-helplines.outputs.target_helplines }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Determine helplines to deploy
+      id: determine-target-helplines
+      shell: bash
+      run: |
+        environment=${{ inputs.environment }}
+        # Fetch all parameters under the path '/${environment}/twilio'
+        ssm_parameters=$(aws ssm get-parameters-by-path --path "/${environment}/twilio" --recursive --query "Parameters[].Name" --output json)
+
+        # Use jq to filter out parameters that match the pattern and extract accounts into an array
+        helplines=$(echo $ssm_parameters | jq -c 'map(select(test("/'$environment'/twilio/[^/]+/account_sid")) | gsub("/'$environment'/twilio/";"") | gsub("/account_sid";""))')
+
+        # Set the GitHub Actions output
+        echo "target_helplines=$helplines" >> $GITHUB_OUTPUT

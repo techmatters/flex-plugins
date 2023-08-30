@@ -12,8 +12,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
-# This is a basic workflow to deploy Flex to all helpline staging environments
-
 name: Deploy Flex to all Production Helplines
 
 on:
@@ -24,51 +22,31 @@ on:
         required: true
 
 jobs:
-  deploy-helplines:
-    strategy:
-      fail-fast: false
-      matrix:
-        short_helplines: ['AS', 'CA', 'CL', 'PH', 'ET', 'JM', 'MW', 'IN', 'BR', 'ZA', 'CO', 'TH', 'HU', 'ZM', 'ZW', 'MT']
-        environment_code: [PROD]
-    uses: ./.github/workflows/flex-deploy.yml
-    secrets: inherit
-    with:
-      helpline_code: ${{ matrix.short_helplines }}
-      environment_code: ${{ matrix.environment_code }}
-      changelog: ${{ inputs.changelog }}
-
-  # Send Slack notifying success
-  send-slack-message:
-    # The type of runner that the job will run on
+  configure:
+    name: Determine Configuration
     runs-on: ubuntu-latest
-    needs: [deploy-helplines]
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    outputs:
+      target_helplines: ${{ steps.determine-target-helplines.outputs.target_helplines }}
     steps:
-      # Setup credentials to access AWS for parameters
+      - uses: actions/checkout@v2
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
-      # Set any env vars needed from Parameter Store here
-      # Slack env
-      - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+          aws-region: us-east-1
+      - id: determine-target-helplines
+        name: Executing main-action
+        uses: ./.github/actions/determine-target-helplines-action
         with:
-          ssm_parameter: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
-          env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
-      - name: Set ASELO_DEPLOYS_CHANNEL_ID
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
-        with:
-          ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
-          env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
-
-      - name: Slack Aselo channel
-        id: slack
-        uses: slackapi/slack-github-action@v1.14.0
-        with:
-          channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-          slack-message: "`[FLEX PARALLEL DEPLOYMENT]` All Flex Production helplines successfully deployed :rocket:."
-        env:
-          SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+          environment: production
+  deploy-helplines:
+    name: Run All Production Deployments
+    needs: configure
+    uses: ./.github/actions/deploy-multiple-accounts.yml
+    secrets: inherit
+    with:
+      project: flex
+      helplines: ${{ needs.configure.outputs.target_helplines }}
+      environments: '[ "PROD" ]'
+      changelog: ${{ inputs.changelog }}

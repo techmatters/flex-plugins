@@ -12,29 +12,32 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
-# This is a basic workflow to publish a Twilio Flex-plugins with Github Actions
-
+# Publish a Twilio Flex-plugins with Github Actions
 name: Flex Deploy
 
-# Controls when the action will run.
 on:
   workflow_dispatch:
     inputs:
       helpline_code:
         description: The short (usually 2 character) upper case code used to identify the helpline internally, e.g. ZA, IN, BR.
         required: true
+        type: string
       environment_code:
         description: The short upper case code used to identify the environment internally, e.g. STG, PROD, DEV
         required: true
+        type: string
       changelog:
         description: Release Changelog - Add a comment about the changes to be included in this release.
         required: true
+        type: string
   workflow_call:
     inputs:
       helpline_code:
+        description: The short (usually 2 character) upper case code used to identify the helpline internally, e.g. ZA, IN, BR.
         required: true
         type: string
       environment_code:
+        description: The short upper case code used to identify the environment internally, e.g. STG, PROD, DEV
         required: true
         type: string
       changelog:
@@ -45,7 +48,6 @@ on:
         description: If set to false a slack message will not be sent - useful for E2E test deploys.
         default: 'true'
         type: string
-
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
