@@ -30,11 +30,13 @@ jobs:
           helplines=$(node webchat/scripts/output-helplines-for-environment.js production)
           echo "target_helplines=$helplines" >> $GITHUB_OUTPUT
   deploy-helplines:
-    name: Run All Production Deployments
-    needs: configure
-    uses: ./.github/actions/deploy-multiple-helplines.yml
-    secrets: inherit
-    with:
-      project: webchat
-      helplines: ${{ needs.configure.outputs.target_helplines }}
-      environments: '[ "production" ]'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run All Production Deployments
+        needs: configure
+        uses: ./.github/actions/deploy-multiple-helplines.yml
+        secrets: inherit
+        with:
+          project: webchat
+          helplines: ${{ needs.configure.outputs.target_helplines }}
+          environments: '[ "production" ]'

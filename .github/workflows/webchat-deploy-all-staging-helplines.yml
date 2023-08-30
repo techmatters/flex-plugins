@@ -30,11 +30,13 @@ jobs:
           helplines=$(node webchat/scripts/output-helplines-for-environment.js staging)
           echo "target_helplines=$helplines" >> $GITHUB_OUTPUT
   deploy-helplines:
-    name: Run All Staging Deployments
-    needs: configure
-    uses: ./.github/actions/deploy-multiple-helplines.yml
-    secrets: inherit
-    with:
-      project: webchat
-      helplines: ${{ needs.configure.outputs.target_helplines }}
-      environments: '[ "staging" ]'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run All Staging Deployments
+        needs: configure
+        uses: ./.github/actions/deploy-multiple-helplines.yml
+        secrets: inherit
+        with:
+          project: webchat
+          helplines: ${{ needs.configure.outputs.target_helplines }}
+          environments: '[ "staging" ]'

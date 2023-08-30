@@ -41,12 +41,14 @@ jobs:
         with:
           environment: production
   deploy-helplines:
-    name: Run All Production Deployments
-    needs: configure
-    uses: ./.github/actions/deploy-multiple-accounts.yml
-    secrets: inherit
-    with:
-      project: flex
-      helplines: ${{ needs.configure.outputs.target_helplines }}
-      environments: '[ "PROD" ]'
-      changelog: ${{ inputs.changelog }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run All Production Deployments
+        needs: configure
+        uses: ./.github/actions/deploy-multiple-accounts.yml
+        secrets: inherit
+        with:
+          project: flex
+          helplines: ${{ needs.configure.outputs.target_helplines }}
+          environments: '[ "PROD" ]'
+          changelog: ${{ inputs.changelog }}
