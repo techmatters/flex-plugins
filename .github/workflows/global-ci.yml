@@ -22,11 +22,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/flex-ci.yml
-  # webchat-ci:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: ./.github/actions/webchat-ci.yml
+  webchat-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/webchat-ci.yml
   webchat-lint:
     runs-on: ubuntu-latest
     steps:
