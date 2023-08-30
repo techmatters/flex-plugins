@@ -12,28 +12,24 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
-name: Flex Plugins CI
+name: Webchat Lint
 
-on: [push]
+runs:
+  using: composite
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-jobs:
-  flex-ci:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/flex-ci.yml
-  # webchat-ci:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: ./.github/actions/webchat-ci.yml
-  webchat-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/webchat-lint.yml
-  webchat-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/webchat-test.yml
+    - name: Create secret.ts
+      run: |
+        touch ./private/secret.ts
+      working-directory: ./webchat
+
+    - name: Install dependencies
+      run: npm install eslint
+      working-directory: ./webchat
+
+    # Run linting
+    - name: Run ESLint
+      run: npm run lint --if-present
+      working-directory: ./webchat
