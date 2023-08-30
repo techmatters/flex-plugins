@@ -34,6 +34,7 @@ variable "workflows" {
   type = map(object({
     friendly_name = string
     templatefile  = string
+    task_reservation_timeout = optional(number)
   }))
 }
 

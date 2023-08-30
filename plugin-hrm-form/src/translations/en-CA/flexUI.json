@@ -460,7 +460,6 @@
   "Conference-AddConferenceCallParticipant": "Add Conference Call Participant",
   "Conference-EnterPhoneNumber": "Enter phone number",
   "Conference-DialButton": "Dial",
-  "TaskLineCallLeaveTitle": "The call has been ended.",
+  "TaskLineCallEndedTitle": "The call has been ended.",
   "HangupCallLeaveTooltip": "Leave Call"
-  
 }

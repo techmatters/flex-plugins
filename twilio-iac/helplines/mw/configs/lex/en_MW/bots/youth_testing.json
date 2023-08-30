@@ -1,0 +1,22 @@
+{
+  "youth_testing": {
+    "description": "General configs/lex/mw/bots Youth Testing bot",
+    "locale": "en-US",
+    "process_behavior": "BUILD",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "enable_model_improvements": true,
+    "abort_statement": {
+      "content": "Sorry, I am not able to assist at this time.",
+      "content_type": "PlainText"
+    },
+    "clarification_prompt": {
+      "max_attempts": 2,
+      "content": "Sorry, I didn't understand that. Please try again. \nPlease answer the questions.",
+      "content_type": "PlainText"
+    },
+    "intents": [
+      "youth_testing"
+    ]
+  }
+}

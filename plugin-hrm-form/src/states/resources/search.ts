@@ -168,9 +168,12 @@ export const searchResourceAsyncAction = createAsyncAction(
   // { promiseTypeDelimiter: '/' }, // Doesn't work :-(
 );
 
+export const sanitizeInputForSuggestions = (input: string): string =>
+  input.trim().replaceAll(/"/g, '').toLocaleLowerCase();
+
 // eslint-disable-next-line import/no-unused-modules
 export const suggestSearchAsyncAction = createAsyncAction(SUGGEST_ACTION, async (prefix: string) => {
-  return { ...(await suggestSearch(prefix)) };
+  return { ...(await suggestSearch(sanitizeInputForSuggestions(prefix))) };
 });
 
 /*

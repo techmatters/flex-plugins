@@ -1,0 +1,29 @@
+{
+  "youth_testing": {
+    "description": "General configs/lex/mw/slot_types slot type for Youth Testing questions",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "1": {
+        "synonyms": [
+          "Information"
+        ]
+      },
+      "2": {
+        "synonyms": [
+          "csam",
+          "report",
+          "images",
+          "video",
+          "social media"
+        ]
+      },
+      "3": {
+        "synonyms": [
+          "counsellor",
+          "help",
+          "speak"
+        ]
+      }
+    }
+  }
+}

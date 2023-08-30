@@ -12,8 +12,14 @@ locals {
 
     workflows = {
       master : {
-        friendly_name = "Master Workflow"
-        templatefile  = "/app/twilio-iac/helplines/nz/templates/workflows/master.tftpl"
+        friendly_name            = "Master Workflow - Messaging"
+        templatefile             = "/app/twilio-iac/helplines/nz/templates/workflows/master_messaging.tftpl",
+        task_reservation_timeout = 120
+      },
+      master_calls : {
+        friendly_name            = "Master Workflow - Calls"
+        templatefile             = "/app/twilio-iac/helplines/nz/templates/workflows/master_calls.tftpl",
+        task_reservation_timeout = 30
       }
     }
 

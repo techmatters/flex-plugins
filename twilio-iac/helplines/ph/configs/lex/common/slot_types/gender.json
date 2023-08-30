@@ -1,0 +1,64 @@
+{
+  "gender": {
+    "description": "Helpline specific ph/configs/lex/common/slot_types gender slot_type",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "Non-Binary": {
+        "synonyms": [
+          "t",
+          "agender",
+          "trans sexual",
+          "bi",
+          "l",
+          "nonbinary",
+          "bisexual",
+          "lgbtq",
+          "q",
+          "non binary",
+          "trans",
+          "lesbian",
+          "NB",
+          "gay",
+          "lgbtq+",
+          "3"
+        ]
+      },
+      "Boy": {
+        "synonyms": [
+          "M",
+          "males",
+          "dude",
+          "guy",
+          "man",
+          "B",
+          "male",
+          "babae",
+          "baba",
+          "1"
+        ]
+      },
+      "Girl": {
+        "synonyms": [
+          "G",
+          "female",
+          "females",
+          "W",
+          "woman",
+          "lady",
+          "F",
+          "lalaki",
+          "2"
+        ]
+      },
+      "Unknown": {
+        "synonyms": [
+          "prefer not",
+          "none of your business",
+          "prefer not to answer",
+          "X",
+          "prefer not to"
+        ]
+      }
+    }
+  }
+}

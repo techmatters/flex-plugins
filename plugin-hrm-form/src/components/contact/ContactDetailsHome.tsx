@@ -372,7 +372,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
               />
             </SectionEntry>
           ))}
-          {referrals && referrals.length && (
+          {referrals && Boolean(referrals.length) && (
             <SectionEntry descriptionKey="ContactDetails-GeneralDetails-ResourcesReferrals">
               {referrals.map(formatResourceReferral)}
             </SectionEntry>
