@@ -26,19 +26,21 @@ const readConfig = () => {
   const manager = Flex.Manager.getInstance();
 
   const accountSid = manager.serviceConfiguration.account_sid;
-  const hrmBaseUrl = `${process.env.REACT_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}/${
+  const hrmBaseUrl = `${process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}/${
     manager.serviceConfiguration.attributes.hrm_api_version
   }/accounts/${accountSid}`;
-  const lambdaBaseUrl = `${process.env.REACT_HRM_LAMBDA_BASE_URL || hrmBaseUrl}`;
+  const hrmMicroserviceBaseUrl = process.env.REACT_APP_HRM_MICROSERVICE_BASE_URL
+    ? `${process.env.REACT_APP_HRM_MICROSERVICE_BASE_URL}${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${accountSid}`
+    : hrmBaseUrl;
   const resourcesConfiguredBaseUrl =
-    process.env.REACT_RESOURCES_BASE_URL || manager.serviceConfiguration.attributes.resources_base_url;
+    process.env.REACT_APP_RESOURCES_BASE_URL || manager.serviceConfiguration.attributes.resources_base_url;
   const resourcesBaseUrl = resourcesConfiguredBaseUrl
     ? `${resourcesConfiguredBaseUrl}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${accountSid}`
     : undefined;
   const serverlessBaseUrl =
-    process.env.REACT_SERVERLESS_BASE_URL || manager.serviceConfiguration.attributes.serverless_base_url;
+    process.env.REACT_APP_SERVERLESS_BASE_URL || manager.serviceConfiguration.attributes.serverless_base_url;
   const configuredFormDefinitionsBaseUrl =
-    process.env.REACT_FORM_DEFINITIONS_BASE_URL ||
+    process.env.REACT_APP_FORM_DEFINITIONS_BASE_URL ||
     manager.serviceConfiguration.attributes.form_definitions_base_url ||
     inferConfiguredFormDefinitionsBaseUrl(manager);
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
@@ -83,7 +85,7 @@ const readConfig = () => {
     hrm: {
       accountSid,
       hrmBaseUrl,
-      lambdaBaseUrl,
+      hrmMicroserviceBaseUrl,
       serverlessBaseUrl,
       logoUrl,
       assetsBucketUrl,

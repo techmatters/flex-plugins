@@ -28,6 +28,8 @@ import {
 import { getDefinitionVersions } from '../../hrmConfig';
 import { channelTypes } from '../../states/DomainConstants';
 
+jest.spyOn(console, 'error').mockImplementation();
+
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 

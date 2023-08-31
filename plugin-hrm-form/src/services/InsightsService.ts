@@ -398,11 +398,11 @@ const getInsightsUpdateFunctionsForConfig = (
 };
 
 const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSuccess, contact: HrmServiceContact) => {
-  const { lambdaBaseUrl } = getHrmConfig();
+  const { hrmMicroserviceBaseUrl } = getHrmConfig();
 
   const { bucket, key } = externalRecordingInfo;
   const url_provider = generateUrl(
-    new URL(lambdaBaseUrl),
+    new URL(hrmMicroserviceBaseUrl),
     `/files/urls?method=getObject&objectType=contact&objectId=${contact.id}&fileType=recording&bucket=${bucket}&key=${key}`,
   ).toString();
   return [
