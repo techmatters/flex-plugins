@@ -16,3 +16,26 @@ name: Deploy Webchat to all Staging Helplines
 
 on:
   workflow_dispatch:
+
+jobs:
+  configure:
+    name: Determine Configuration
+    runs-on: ubuntu-latest
+    outputs:
+      target_helplines: ${{ steps.determine-target-helplines.outputs.target_helplines }}
+    steps:
+      - uses: actions/checkout@v3
+      - id: determine-target-helplines
+        shell: bash
+        run: |
+          helplines=$(node webchat/scripts/output-helplines-for-environment.js staging)
+          echo "target_helplines=$helplines" >> $GITHUB_OUTPUT
+  deploy-helplines:
+    name: Deploy to multiple helplines
+    needs: configure
+    uses: ./.github/workflows/deploy-multiple-helplines.yml
+    secrets: inherit
+    with:
+      project: webchat
+      helplines: ${{ needs.configure.outputs.target_helplines }}
+      environments: '[ "staging" ]'
