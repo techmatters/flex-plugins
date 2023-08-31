@@ -12,113 +12,118 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
-name: Flex CI
+name: Webchat CI
 
 on:
   workflow_call:
 
 jobs:
-  lint:
+  build:
     runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Branch
-        uses: actions/checkout@v2
-      - name: Use Node.js 16
-        uses: actions/setup-node@v1
-        with:
-          node-version: '16.x'
-      - name: Create Temp Files
-        run: |
-          touch ./public/appConfig.js
-          touch ./src/private/secret.js
-        working-directory: ./plugin-hrm-form
-      - name: Install Flex Plugin
-        uses: ./.github/actions/install-flex-plugin
-      - name: Run hrm-form-definitions Lint
-        run: npm run lint
-        working-directory: ./hrm-form-definitions
-      - name: Run plugin-hrm-form code Lint
-        run: npm run lint --if-present
-        working-directory: ./plugin-hrm-form
-      - name: Install e2e-test Packages
-        run: npm ci
-        working-directory: ./e2e-tests
-      - name: Run e2e-test code Lint
-        run: npm run lint
-        working-directory: ./e2e-tests
-  unit-test:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout Branch
-      uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: '16.x'
-    - name: Install Flex Plugin
-      uses: ./.github/actions/install-flex-plugin
-    - name: Run hrm-form-definitions Tests
-      run: npm run test
-      working-directory: ./hrm-form-definitions
-
-    - name: Run plugin-hrm-form Tests
-      run: TWILIO_ACCOUNT_SID=${{secrets.AS_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.AS_DEV_AUTH_TOKEN}} npm run test
-      working-directory: ./plugin-hrm-form
-      env:
-        CI: true
-  ui-test:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Checkout Branch
-        uses: actions/checkout@v2
+      # Setup credentials to access AWS for parameters
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: "us-east-1"
+
+      - name: Set ACCOUNT_SID
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "/development/twilio/AS/account_sid"
+          env_variable_name: "ACCOUNT_SID"
+
+      - name: Set IP_FIND_API_KEY
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "IP_FIND_API_KEY"
+          env_variable_name: "IP_FIND_API_KEY"
+
+      - name: Set SERVERLESS_URL
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "/development/serverless/${{ env.ACCOUNT_SID }}/base_url"
+          env_variable_name: "SERVERLESS_URL"
+
+      - name: Set RECAPTCHA_KEY
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "/global/google/recaptcha/site_key"
+          env_variable_name: "RECAPTCHA_KEY"
+
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Use Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: "18.x"
 
-      - name: Install Flex Plugin
-        uses: ./.github/actions/install-flex-plugin
-
-      # Create Configuration file to replace AS_DEV_ACCOUNT_SID with E2E_ACCOUNT_SID
-      - name: Create appConfig.js
-        run: cp ./public/appConfig.template.e2e.js ./public/appConfig.js
-        working-directory: ./plugin-hrm-form
-        shell: bash
-
-      - name: Create secret.js
+      # Create and fill secret.ts
+      - name: Create secret.ts
         run: |
-          touch ./src/private/secret.js
-        working-directory: ./plugin-hrm-form
-        shell: bash
+          touch ./private/secret.ts
+        working-directory: ./webchat
 
-      - name: Fill secret.js
+      - name: Fill secret.ts
         run: |
-          cat <<EOT >> ./src/private/secret.js
-          export const rollbarAccessToken = 'x';
-          export const datadogAccessToken = 'x';
-          export const datadogApplicationID = 'x';
-          export const fullStoryId = 'x';
+          cat <<EOT >> ./private/secret.ts
+          export const API_KEY = '${{ env.IP_FIND_API_KEY }}';
+          export const SERVERLESS_URL = '${{ env.SERVERLESS_URL }}';
+          export const RECAPTCHA_KEY = '${{ env.RECAPTCHA_KEY }}';
+          export const RECAPTCHA_VERIFY_URL = 'https://hrm-development.tl.techmatters.org/lambda/recaptchaVerify'
           EOT
-        working-directory: ./plugin-hrm-form
+        working-directory: ./webchat
+
+      # Run a single command using the runners shell to install dependencies
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./webchat
+
+      # Get the blockedIps for this account
+      - name: Get blockedIps
+        run: curl -o ./src/blockedIps.json https://tl-public-chat-as-dev.s3.amazonaws.com/blockedIps.json
+        working-directory: ./webchat
         shell: bash
 
-      - name: Run Form Definitions Server
-        run: NODE_ENV=development npm run dev:local-form-definition-server &
-        working-directory: ./plugin-hrm-form
+      # Build and compile Webchat
+      - name: Run build command
+        run: CONFIG=as-development npm run build
+        working-directory: ./webchat
 
-      - name: Run Flex Dev Server
-        # Creds aren't used in the tests, but I don't think the dev server starts without some set.
-        run: NODE_ENV=development REACT_FORM_DEFINITIONS_BASE_URL=http://localhost:8090 TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npm run start &
-        working-directory: ./plugin-hrm-form
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Run e2e tests
-        uses: ./.github/actions/run-e2e-tests
-        with:
-          run-ui-tests: 'true'
+      - name: Create secret.ts
+        run: |
+          touch ./private/secret.ts
+        working-directory: ./webchat
+
+      - name: Install dependencies
+        run: npm install eslint
+        working-directory: ./webchat
+
+      # Run linting
+      - name: Run ESLint
+        run: npm run lint --if-present
+        working-directory: ./webchat
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./webchat
+
+      - name: Run Tests
+        run: npm run test
+        working-directory: ./webchat
