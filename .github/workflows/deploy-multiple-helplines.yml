@@ -50,6 +50,11 @@ on:
         type: string
         required: false
 
+jobs:
+  test-job:
+    shell: bash
+    run: echo 'test 123'
+
 # jobs:
 #   deploy-flex-helplines:
 #     if: inputs.project == 'flex'
