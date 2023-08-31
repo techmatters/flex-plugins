@@ -35,7 +35,6 @@ jobs:
       - name: Run All Staging Deployments
         needs: configure
         uses: ./.github/actions/deploy-multiple-helplines.yml
-        secrets: inherit
         with:
           project: webchat
           helplines: ${{ needs.configure.outputs.target_helplines }}
