@@ -41,14 +41,12 @@ jobs:
         with:
           environment: staging
   deploy-helplines:
-    steps:
-      - uses: actions/checkout@v3
-      - name: Run All Staging Deployments
-        needs: configure
-        uses: ./.github/actions/deploy-multiple-accounts.yml
-        secrets: inherit
-        with:
-          project: flex
-          helplines: ${{ needs.configure.outputs.target_helplines }}
-          environments: '[ "STG" ]'
-          changelog: ${{ inputs.changelog }}
+    name: Deploy to multiple helplines
+    needs: configure
+    uses: ./.github/workflows/deploy-multiple-helplines.yml
+    secrets: inherit
+    with:
+      project: flex
+      helplines: ${{ needs.configure.outputs.target_helplines }}
+      environments: '[ "STG" ]'
+      changelog: ${{ inputs.changelog }}
