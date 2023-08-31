@@ -67,7 +67,7 @@ jobs:
   #     matrix:
   #       short_helplines: ${{ fromJson(inputs.helplines) }}
   #       environment: ${{ fromJson(inputs.environments) }}
-  #   uses: ./.github/workflows/flex-deploy
+  #   uses: ./.github/workflows/flex-deploy.yml
   #   secrets: inherit
   #   with:
   #     helpline_code: ${{ matrix.short_helplines }}
@@ -82,7 +82,7 @@ jobs:
       matrix:
         short_helplines: ${{ fromJson(inputs.helplines) }}
         environment: ${{ fromJson(inputs.environments) }}
-    uses: ./.github/workflows/webchat-deploy
+    uses: ./.github/workflows/webchat-deploy.yml
     secrets: inherit
     with:
       helpline_code: ${{ matrix.short_helplines }}
