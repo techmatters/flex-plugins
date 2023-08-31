@@ -52,56 +52,46 @@ on:
         required: false
 
 jobs:
-  job1:
-    runs-on: ubuntu-latest
+  deploy-flex-helplines:
     if: inputs.project == 'flex'
-    steps:
-      - run: echo "job1"
-  job2:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        short_helplines: ${{ fromJson(inputs.helplines) }}
+        environment: ${{ fromJson(inputs.environments) }}
+    uses: ./.github/workflows/flex-deploy.yml
+    secrets: inherit
+    with:
+      helpline_code: ${{ matrix.short_helplines }}
+      environment_code: ${{ matrix.environment }}
+      changelog: ${{ inputs.changelog }}
+      send-slack-message: ${{ inputs.send_slack_message_per_deploy }}
+
+  deploy-web-chat-helplines:
     if: inputs.project == 'webchat'
-    steps:
-      - run: echo "job2"
-
-  # deploy-flex-helplines:
-  #   if: inputs.project == 'flex'
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       short_helplines: ${{ fromJson(inputs.helplines) }}
-  #       environment: ${{ fromJson(inputs.environments) }}
-  #   uses: ./.github/workflows/flex-deploy.yml
-  #   secrets: inherit
-  #   with:
-  #     helpline_code: ${{ matrix.short_helplines }}
-  #     environment_code: ${{ matrix.environment }}
-  #     changelog: ${{ inputs.changelog }}
-  #     send-slack-message: ${{ inputs.send_slack_message_per_deploy }}
-
-  # deploy-web-chat-helplines:
-  #   if: inputs.project == 'webchat'
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       short_helplines: ${{ fromJson(inputs.helplines) }}
-  #       environment: ${{ fromJson(inputs.environments) }}
-  #   uses: ./.github/workflows/webchat-deploy.yml
-  #   secrets: inherit
-  #   with:
-  #     helpline_code: ${{ matrix.short_helplines }}
-  #     environment: ${{ matrix.environment }}
-  #     recaptcha_verify_url: ${{ inputs.recaptcha_verify_url }}
-  #     send-slack-message: ${{ inputs.send_slack_message_per_deploy }}
+    strategy:
+      fail-fast: false
+      matrix:
+        short_helplines: ${{ fromJson(inputs.helplines) }}
+        environment: ${{ fromJson(inputs.environments) }}
+    uses: ./.github/workflows/webchat-deploy.yml
+    secrets: inherit
+    with:
+      helpline_code: ${{ matrix.short_helplines }}
+      environment: ${{ matrix.environment }}
+      recaptcha_verify_url: ${{ inputs.recaptcha_verify_url }}
+      send-slack-message: ${{ inputs.send_slack_message_per_deploy }}
 
   # Send Slack notifying success
   send-slack-message:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    needs: [job1, job2]
+    # needs with conditional: https://stackoverflow.com/a/68952093
+    needs: [deploy-flex-helplines, deploy-web-chat-helplines]
     if: |
       always() &&
-      (needs.job1.result == 'success' || needs.job1.result == 'skipped') &&
-      (needs.job2.result == 'success' || needs.job2.result == 'skipped') &&
+      (needs.deploy-flex-helplines.result == 'success' || needs.deploy-flex-helplines.result == 'skipped') &&
+      (needs.deploy-web-chat-helplines.result == 'success' || needs.deploy-web-chat-helplines.result == 'skipped') &&
       inputs.send_final_slack_message == 'true'
 
     # Steps represent a sequence of tasks that will be executed as part of the job
