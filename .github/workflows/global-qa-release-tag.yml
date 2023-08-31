@@ -1,0 +1,99 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+# Workflow to create a new pre-release with qa suffix
+
+name: Create a QA candidate release
+
+# Controls when the action will run.
+on:
+  workflow_dispatch:
+    inputs:
+      tag-prefix:
+        description: Release tag prefix (generally the version, e.g. v1.2.3).
+        required: true
+      title:
+        description: Release title - The title that will be given to this pre-release.
+        required: true
+
+jobs:
+  deploy-flex:
+    uses: ./.github/workflows/flex-deploy.yml
+    secrets: inherit
+    with:
+      helpline_code: E2E
+      environment_code: DEV
+      changelog: ${{ inputs.changelog }}
+      send-slack-message: 'false'
+
+  deploy-webchat:
+    uses: ./.github/workflows/webchat-deploy.yml
+    secrets: inherit
+    with:
+      helpline_code: E2E
+      environment: development
+      send-slack-message: 'false'
+
+  run-e2e-tests:
+    needs: [deploy-flex, deploy-webchat]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+
+      - name: Install Flex Plugin
+        uses: ./.github/actions/install-flex-plugin
+
+      - name: Run e2e tests
+        uses: ./.github/actions/run-e2e-tests
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  generate-pre-release:
+    needs: run-e2e-tests
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Create pre release
+        uses: ./.github/actions/generate-pre-release
+        with:
+          tag-prefix: ${{ inputs.tag-prefix }}
+          tag-suffix: 'qa'
+          title: ${{ inputs.title }}
+          repository: ${{ github.repository }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+        id: create_pre_release
+
+      # Send Slack notifying success
+      - name: Slack aselo-deploys channel
+        uses: ./.github/actions/notify-deploys
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          slack-message: "`[Flex]` Release from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}. Release tag is ${{ steps.create_pre_release.outputs.generated-pre-release-tag }} :rocket:."
+        env:
+          SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}

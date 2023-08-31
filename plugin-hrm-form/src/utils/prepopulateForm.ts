@@ -210,8 +210,10 @@ export const prepopulateForm = (task: ITask, featureFlags: FeatureFlags) => {
 
   const answers = getAnswers(featureFlags.enable_lex, memory);
 
+  const isValidSurvey = Boolean(answers.aboutSelf); // determines if the memory has valid values or if it was aborted
   const isAboutSelf = answers.aboutSelf === 'Yes';
-  const callType = isAboutSelf || !answers.aboutSelf ? callTypes.child : callTypes.caller;
+  // eslint-disable-next-line no-nested-ternary
+  const callType = isValidSurvey ? (isAboutSelf ? callTypes.child : callTypes.caller) : null;
   const tabFormDefinition = isAboutSelf ? ChildInformationTab : CallerInformationTab;
   const prepopulateSurveyKeys = isAboutSelf ? survey.ChildInformationTab : survey.CallerInformationTab;
   const subroute = isAboutSelf ? 'childInformation' : 'callerInformation';
@@ -220,28 +222,20 @@ export const prepopulateForm = (task: ITask, featureFlags: FeatureFlags) => {
 
   // When a helpline has survey and no preEnagagement form
   if (memory && !preEngagementData) {
-    Manager.getInstance().store.dispatch(prepopulateFormAction(callType, surveyValues, task.taskSid));
+    if (callType) {
+      Manager.getInstance().store.dispatch(prepopulateFormAction(callType, surveyValues, task.taskSid));
 
-    // Open tabbed form to first tab
-    Manager.getInstance().store.dispatch(
-      RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
-    );
+      // Open tabbed form to first tab
+      Manager.getInstance().store.dispatch(
+        RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
+      );
+    }
+
     return;
   }
 
   // When a helpline has survey and preEnagagement form to populate
   if (memory && preEngagementData) {
-    const prepopulatePreengagementKeys = isAboutSelf
-      ? preEngagement.ChildInformationTab
-      : preEngagement.CallerInformationTab;
-    const preEngagementValues = getValuesFromPreEngagementData(
-      preEngagementData,
-      tabFormDefinition,
-      prepopulatePreengagementKeys,
-    );
-    const values = { ...surveyValues, ...preEngagementValues };
-    Manager.getInstance().store.dispatch(prepopulateFormAction(callType, values, task.taskSid));
-
     if (preEngagement.CaseInformationTab.length > 0) {
       const caseInfoValues = getValuesFromPreEngagementData(
         preEngagementData,
@@ -251,9 +245,23 @@ export const prepopulateForm = (task: ITask, featureFlags: FeatureFlags) => {
 
       Manager.getInstance().store.dispatch(prepopulateFormAction(callType, caseInfoValues, task.taskSid, true));
     }
-    // Open tabbed form to first tab
-    Manager.getInstance().store.dispatch(
-      RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
-    );
+
+    if (callType) {
+      const prepopulatePreengagementKeys = isAboutSelf
+        ? preEngagement.ChildInformationTab
+        : preEngagement.CallerInformationTab;
+      const preEngagementValues = getValuesFromPreEngagementData(
+        preEngagementData,
+        tabFormDefinition,
+        prepopulatePreengagementKeys,
+      );
+      const values = { ...surveyValues, ...preEngagementValues };
+      Manager.getInstance().store.dispatch(prepopulateFormAction(callType, values, task.taskSid));
+
+      // Open tabbed form to first tab
+      Manager.getInstance().store.dispatch(
+        RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
+      );
+    }
   }
 };
