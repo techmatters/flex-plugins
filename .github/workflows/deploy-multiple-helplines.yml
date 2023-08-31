@@ -120,7 +120,7 @@ jobs:
 
       - name: Slack message prefix - Flex
         if: inputs.project == 'flex'
-        run: echo "SLACK_MESSAGE_PREFIX=`[FLEX PARALLEL DEPLOYMENT]` Flex" >> $GITHUB_ENV
+        run: echo "SLACK_MESSAGE_PREFIX=\`[FLEX PARALLEL DEPLOYMENT]\` Flex" >> $GITHUB_ENV
 
       - name: Slack message prefix - Webchat
         if: inputs.project == 'webchat'
