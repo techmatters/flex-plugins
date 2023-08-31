@@ -124,7 +124,7 @@ jobs:
 
       - name: Slack message prefix - Webchat
         if: inputs.project == 'webchat'
-        run: echo "SLACK_MESSAGE_PREFIX='`[WEBCHAT PARALLEL DEPLOYMENT]` Webchat'" >> $GITHUB_ENV
+        run: echo "SLACK_MESSAGE_PREFIX='\`[WEBCHAT PARALLEL DEPLOYMENT]\` Webchat'" >> $GITHUB_ENV
 
       - name: Slack Aselo channel
         id: slack
