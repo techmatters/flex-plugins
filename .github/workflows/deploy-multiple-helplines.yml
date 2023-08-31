@@ -52,8 +52,11 @@ on:
 
 jobs:
   test-job:
-    shell: bash
-    run: echo 'test 123'
+    runs-on: ubuntu-latest
+    steps:
+      - id: step 1
+        shell: bash
+        run: echo 'test 123'
 
 # jobs:
 #   deploy-flex-helplines:
