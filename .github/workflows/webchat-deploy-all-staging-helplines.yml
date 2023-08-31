@@ -37,7 +37,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Run All Staging Deployments
-        uses: ./.github/actions/deploy-multiple-helplines.yml
+        uses: ./.github/workflows/deploy-multiple-helplines.yml
+        secrets: inherit
         with:
           project: webchat
           helplines: ${{ needs.configure.outputs.target_helplines }}
