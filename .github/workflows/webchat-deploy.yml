@@ -12,11 +12,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
-# This is a basic workflow to build and upload Webchat to S3 bucket with Github Actions
-
+# Upload Webchat to S3 bucket with Github Actions
 name: Webchat Deploy
 
-# Controls when the action will run.
 on:
   workflow_dispatch:
     inputs:

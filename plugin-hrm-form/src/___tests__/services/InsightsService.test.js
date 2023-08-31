@@ -28,6 +28,8 @@ import {
 import { getDefinitionVersions } from '../../hrmConfig';
 import { channelTypes } from '../../states/DomainConstants';
 
+jest.spyOn(console, 'error').mockImplementation();
+
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
@@ -647,7 +649,7 @@ describe('InsightsService - buildInsightsData() (externalRecordings)', () => {
       {
         type: 'VoiceRecording',
         url_provider:
-          'http://fake.hrm.com/lambda/getSignedS3Url?method=getObject&contactId=123&bucket=bucket&key=key&accountSid=ACfake&requestType=url_provider',
+          'http://fake.hrm.com/files/urls?method=getObject&objectType=contact&objectId=123&fileType=recording&bucket=bucket&key=key',
       },
     ]);
   });

@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
-name: Deploy Flex to all Staging Helplines
+name: Deploy Flex to all Production Helplines
 
 on:
   workflow_dispatch:
@@ -39,7 +39,7 @@ jobs:
         name: Executing main-action
         uses: ./.github/actions/determine-target-helplines-action
         with:
-          environment: staging
+          environment: production
   deploy-helplines:
     name: Deploy to multiple helplines
     needs: configure
@@ -48,5 +48,5 @@ jobs:
     with:
       project: flex
       helplines: ${{ needs.configure.outputs.target_helplines }}
-      environments: '[ "STG" ]'
+      environments: '[ "PROD" ]'
       changelog: ${{ inputs.changelog }}

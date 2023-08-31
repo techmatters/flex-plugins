@@ -1,0 +1,124 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+# Auxiliary Github Action to deploy a flex or webchat to multiple helplines at once
+name: Deploy Multiple Helplines
+inputs:
+  project:
+    description: Project to deploy, e.g. flex, webchat
+    required: true
+  helplines:
+    description: List of helplines to deploy to (as a JSON array)
+    type: string
+    required: true
+  environments:
+    description: Environments to deploy to (as a JSON array)
+    type: string
+    required: true
+  send_final_slack_message:
+    type: string
+    description: Send a Slack Message when all deploys are complete
+    required: false
+    default: true
+  send_slack_message_per_deploy:
+    type: string
+    description: Send a slack message confirming each deploy
+    required: false
+    default: true
+  # Change log is only used for deploying Flex
+  changelog:
+    description: Release Changelog - Add a comment about the changes to be included in this release.
+    type: string
+    required: false
+  # Recaptcha Verify URL is only used for deploying Webchat
+  recaptcha_verify_url:
+    description: Recaptcha Verify URL
+    type: string
+    required: false
+
+jobs:
+  deploy-flex-helplines:
+    if: inputs.project == 'flex'
+    strategy:
+      fail-fast: false
+      matrix:
+        short_helplines: ${{ fromJson(inputs.helplines) }}
+        environment: ${{ fromJson(inputs.environments) }}
+    uses: ./.github/workflows/flex-deploy
+    secrets: inherit
+    with:
+      helpline_code: ${{ matrix.short_helplines }}
+      environment_code: ${{ matrix.environment }}
+      changelog: ${{ inputs.changelog }}
+      send-slack-message: ${{ inputs.send_slack_message_per_deploy }}
+
+  deploy-web-chat-helplines:
+    if: inputs.project == 'webchat'
+    strategy:
+      fail-fast: false
+      matrix:
+        short_helplines: ${{ fromJson(inputs.helplines) }}
+        environment: ${{ fromJson(inputs.environments) }}
+    uses: ./.github/workflows/webchat-deploy
+    secrets: inherit
+    with:
+      helpline_code: ${{ matrix.short_helplines }}
+      environment: ${{ matrix.environment }}
+      recaptcha_verify_url: ${{ inputs.recaptcha_verify_url }}
+      send-slack-message: ${{ inputs.send_slack_message_per_deploy }}
+
+  # Send Slack notifying success
+  send-slack-message:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    needs: [deploy-flex-helplines, deploy-web-chat-helplines]
+    if: ${{ inputs.send_final_slack_message == 'true' }}
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Setup credentials to access AWS for parameters
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+      # Set any env vars needed from Parameter Store here
+      # Slack env
+      - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
+          env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
+      - name: Set ASELO_DEPLOYS_CHANNEL_ID
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
+          env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
+
+      - name: Slack message prefix - Flex
+        if: inputs.project == 'flex'
+        run: echo "SLACK_MESSAGE_PREFIX=`[FLEX PARALLEL DEPLOYMENT]` Flex" >> $GITHUB_ENV
+
+      - name: Slack message prefix - Webchat
+        if: inputs.project == 'flex'
+        run: echo "SLACK_MESSAGE_PREFIX=`[WEBCHAT PARALLEL DEPLOYMENT]` Webchat" >> $GITHUB_ENV
+
+      - name: Slack Aselo channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.14.0
+        with:
+          channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+          slack-message: "${{ env.SLACK_MESSAGE_PREFIX }} helplines ${{ inputs.helplines }} successfully deployed to the following environments: ${{ inputs.environments }} from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` with SHA ${{ github.sha }} :rocket:."
+        env:
+          SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}

@@ -6,16 +6,13 @@
     "preinstall": "cd ../hrm-form-definitions && npm ci && npm run build",
     "lint": "eslint --ext js .",
     "lint:fix": "npm run lint -- --fix",
-    "copyFlowLegacy": "node copyFlow.js",
-    "configure": "node configureNewAccount.js",
     "compile": "npx tsc",
     "generateDeploymentFiles": "node dist/deploymentFiles/index.js",
     "copyFlow": "node dist/copyFlow/index.js",
     "createTwilioApiKeyAndSsmSecret": "node dist/terraformSupplemental/createTwilioApiKeyAndSsmSecret.js",
     "generateNewHelplineFormDefinitions": "node dist/formDefinitions/generateNewHelplineFormDefinitions.js",
     "twilioResources": "tsx src/terraformSupplemental/twilioResources.ts",
-    "updateAllAssetUrls": "tsx src/terraformSupplemental/updateAllAssetUrls.ts",
-    "convertAutopilotToLex": "tsx src/autopilot-migration/convertAutopilotToLexTerraformConfigJson.ts"
+    "updateAllAssetUrls": "tsx src/terraformSupplemental/updateAllAssetUrls.ts"
   },
   "author": "",
   "license": "AGPL",
