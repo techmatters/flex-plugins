@@ -55,7 +55,7 @@ jobs:
   test-job:
     runs-on: ubuntu-latest
     steps:
-      - id: step 1
+      - id: step-1
         shell: bash
         run: echo 'test 123'
 
