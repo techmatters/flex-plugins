@@ -20,6 +20,7 @@
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
 import { format } from 'date-fns';
+
 import styles from './styles';
 import { getTemplateStrings } from '../../../hrmConfig';
 
