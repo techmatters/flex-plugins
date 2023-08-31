@@ -30,6 +30,8 @@ jobs:
           helplines=$(node webchat/scripts/output-helplines-for-environment.js staging)
           echo "target_helplines=$helplines" >> $GITHUB_OUTPUT
   deploy-helplines:
+    name: Deploy to multiple helplines
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Run All Staging Deployments
