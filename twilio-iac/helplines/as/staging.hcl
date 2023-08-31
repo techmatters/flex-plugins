@@ -7,14 +7,27 @@ locals {
 
     #Studio flow
     flow_vars = {
-
+      service_sid                            = "xx"
+      environment_sid                        = "xx"
+      capture_channel_with_bot_function_sid  = "xx"
+      capture_channel_with_bot_function_name = "channelCapture/captureChannelWithBot"
     }
 
-    ui_editable = true
-    #Chatbots
 
-    #Feature flags
-    feature_flags = {
+   #Channels
+    channels = {
+      webchat : {
+        channel_type     = "web"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/web.tftpl"
+        channel_flow_vars = {
+
+        }
+        chatbot_unique_names = []
+      }
+
+    twilio_numbers = local.twilio_numbers
+    custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
     }
   }
 }

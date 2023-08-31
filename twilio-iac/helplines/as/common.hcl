@@ -48,6 +48,8 @@ locals {
         intents    : local.es_co_intents
         bots       : local.es_co_bots
       }
+
+      en : ["pre_survey"]
     }
 
     workflows = {
@@ -63,7 +65,7 @@ locals {
 
     task_queues = {
       messaging : {
-        "target_workers" = "routing.skills HAS 'Messaging'",
+        "target_workers" = "1==1",
         "friendly_name"  = "Messaging"
       },
       survey : {
