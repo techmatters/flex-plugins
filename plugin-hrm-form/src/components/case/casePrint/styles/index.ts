@@ -23,6 +23,7 @@ import sectionStyles from './section';
 import notesStyles from './notes';
 import summaryStyles from './summary';
 import categoriesStyles from './categories';
+import csamReportStyles from './csamReport';
 
 /*
  * Unfortunately we have to import each font that we want to use (even with the style and weight variations)
@@ -68,6 +69,7 @@ const { childName, caseId, officeName } = headerStyles;
 const { sectionHeader, whiteText, sectionItemRowEven, sectionItemRowOdd } = sectionStyles;
 const { caseSummaryText } = summaryStyles;
 const { caseDetailsLabel } = detailsStyles;
+const { csamReportText } = csamReportStyles;
 
 /**
  * 'Roboto' font family works for all languages/fonts supported thus far.
@@ -91,6 +93,7 @@ export const useThaiFontFamily = () => {
     sectionItemRowOdd,
     caseSummaryText,
     caseDetailsLabel,
+    csamReportText,
   ].forEach(el => (el.fontFamily = 'NotoSerifThai'));
 };
 
@@ -102,6 +105,7 @@ const styles = StyleSheet.create({
   ...notesStyles,
   ...summaryStyles,
   ...categoriesStyles,
+  ...csamReportStyles,
   page: {
     display: 'flex',
     flexDirection: 'column',

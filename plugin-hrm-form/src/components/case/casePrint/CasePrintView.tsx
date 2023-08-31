@@ -101,8 +101,6 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
   // eslint-disable-next-line react-hooks/rules-of-hooks
   if (definitionVersion.layoutVersion.thaiCharacterPdfSupport) useThaiFontFamily();
 
-  console.log('>>> caseDetails', caseDetails);
-
   return (
     <CasePrintViewContainer>
       <ButtonBase onClick={onClickClose} style={{ marginLeft: 'auto' }} data-testid="CasePrint-CloseCross">

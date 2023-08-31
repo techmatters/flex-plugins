@@ -63,7 +63,6 @@ const formatResourceReferral = (referral: ResourceReferral) => {
 };
 
 const formatCsamReport = (report: CSAMReportEntry) => {
-  console.log('>>>> formatCsamReport', report);
   const template =
     report.reportType === 'counsellor-generated' ? (
       <Template code="CSAMReportForm-Counsellor-Attachment" />
