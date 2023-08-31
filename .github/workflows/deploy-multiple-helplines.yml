@@ -20,6 +20,7 @@ on:
     inputs:
       project:
         description: Project to deploy, e.g. flex, webchat
+        type: string
         required: true
       helplines:
         description: List of helplines to deploy to (as a JSON array)
