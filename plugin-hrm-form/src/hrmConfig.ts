@@ -29,6 +29,7 @@ const readConfig = () => {
   const hrmBaseUrl = `${process.env.REACT_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}/${
     manager.serviceConfiguration.attributes.hrm_api_version
   }/accounts/${accountSid}`;
+  const lambdaBaseUrl = `${process.env.REACT_HRM_LAMBDA_BASE_URL || hrmBaseUrl}`;
   const resourcesConfiguredBaseUrl =
     process.env.REACT_RESOURCES_BASE_URL || manager.serviceConfiguration.attributes.resources_base_url;
   const resourcesBaseUrl = resourcesConfiguredBaseUrl
@@ -82,6 +83,7 @@ const readConfig = () => {
     hrm: {
       accountSid,
       hrmBaseUrl,
+      lambdaBaseUrl,
       serverlessBaseUrl,
       logoUrl,
       assetsBucketUrl,
