@@ -59,9 +59,9 @@ jobs:
       - run: echo "job1"
   job2:
     runs-on: ubuntu-latest
-      if: inputs.project == 'webchat'
-      steps:
-        - run: echo "job2"
+    if: inputs.project == 'webchat'
+    steps:
+      - run: echo "job2"
 
   # deploy-flex-helplines:
   #   if: inputs.project == 'flex'
