@@ -168,11 +168,37 @@
     "name": "gender",
     "label": "What is their relationship to the person causing the risk?",
     "type": "select",
-    "defaultOption": {
-      "value": "unknown",
-      "label": ""
-    },
-    "optionsReferenceKey": "genderOptions"
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Caregiver",
+        "label": "Caregiver"
+      },
+      {
+        "value": "Whānau",
+        "label": "Whānau"
+      },
+      {
+        "value": "Partner",
+        "label": "Partner"
+      },
+      {
+        "value": "Peer",
+        "label": "Peer"
+      },
+      {
+        "value": "Stranger",
+        "label": "Stranger"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
   },
   {
     "name": "relationshipDetails",
