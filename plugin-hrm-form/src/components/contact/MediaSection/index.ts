@@ -15,3 +15,4 @@
  */
 
 export { default as TranscriptSection } from './TranscriptSection';
+export { default as RecordingSection } from './RecordingSection';

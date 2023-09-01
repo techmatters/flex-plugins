@@ -122,11 +122,11 @@ const TranscriptSection: React.FC<Props> = ({
   const fetchAndLoadTranscript = async () => {
     try {
       setLoading(true);
+
       const transcriptPreSignedUrl = await getFileDownloadUrl(externalStoredTranscript.location.key);
       const transcriptResponse = await fetch(transcriptPreSignedUrl.downloadUrl);
 
       validateFetchResponse(transcriptResponse);
-
       const transcriptJson: TranscriptResult = await transcriptResponse.json();
 
       loadTranscript(contactId, transcriptJson.transcript);

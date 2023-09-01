@@ -24,7 +24,13 @@ import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
 import { Flex, Box, Row } from '../../styles/HrmStyles';
-import { CSAMReportEntry, isS3StoredTranscript, isTwilioStoredMedia, SearchAPIContact } from '../../types/types';
+import {
+  CSAMReportEntry,
+  isS3StoredRecording,
+  isS3StoredTranscript,
+  isTwilioStoredMedia,
+  SearchAPIContact,
+} from '../../types/types';
 import {
   DetailsContainer,
   NameText,
@@ -44,7 +50,7 @@ import { configurationBase, contactFormsBase, namespace, RootState } from '../..
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getPermissionsForContact, getPermissionsForViewingIdentifiers, PermissionActions } from '../../permissions';
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
-import { TranscriptSection } from './TranscriptSection';
+import { TranscriptSection, RecordingSection } from './MediaSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import { contactLabelFromSearchContact } from '../../states/contacts/contactIdentifier';
 import type { ResourceReferral } from '../../states/contacts/resourceReferral';
@@ -240,6 +246,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
       savedContact.details.conversationMedia?.length &&
       (twilioStoredTranscript || externalStoredTranscript),
   );
+  const externalStoredRecording = savedContact.details.conversationMedia?.find(isS3StoredRecording);
+
   const csamReportEnabled = featureFlags.enable_csam_report && featureFlags.enable_csam_clc_report;
 
   const { canView } = getPermissionsForViewingIdentifiers();
@@ -392,6 +400,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           </SectionActionButton>
         </SectionTitleContainer>
       )}
+      <RecordingSection externalStoredRecording={externalStoredRecording} />
       {showTranscriptSection && (
         <ContactDetailsSection
           sectionTitle={<Template code="ContactDetails-Transcript" />}
