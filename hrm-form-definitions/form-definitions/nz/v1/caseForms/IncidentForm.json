@@ -5,10 +5,6 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
         "value": "The person I talked with",
         "label": "The person I talked with"
       },
@@ -23,10 +19,6 @@
     "label": "What is the type of harm?",
     "type": "listbox-multiselect",
     "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
       {
         "value": "Physical",
         "label": "Physical"

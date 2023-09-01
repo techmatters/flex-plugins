@@ -385,11 +385,6 @@
     "type": "mixed-checkbox"
   },
   {
-    "name": "memberOfAnEthnic",
-    "label": "Person of concern member of an ethnic, racial or religious minority",
-    "type": "mixed-checkbox"
-  },
-  {
     "name": "childWithDisability",
     "label": "Person of concern with disability",
     "type": "mixed-checkbox"
@@ -397,6 +392,11 @@
   {
     "name": "LGBTQI+",
     "label": "LGBTQI+ / SOGIESC",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "memberOfAnEthnic",
+    "label": "Person of concern member of an ethnic, racial or religious minority",
     "type": "mixed-checkbox"
   }
 ]

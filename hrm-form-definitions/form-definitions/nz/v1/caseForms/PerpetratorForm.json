@@ -5,10 +5,6 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Unkonwn",
-        "label": ""
-      },
-      {
         "value": "The person I talked with",
         "label": "The person I talked with"
       },
@@ -29,10 +25,6 @@
     "label": "What is the type of harm that is happening?",
     "type": "listbox-multiselect",
     "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
       {
         "value": "Physical",
         "label": "Physical"
@@ -70,10 +62,6 @@
     "label": "What is the age of the person who is at risk?",
     "type": "listbox-multiselect",
     "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
       {
         "value": "Unknown",
         "label": "Unknown"
