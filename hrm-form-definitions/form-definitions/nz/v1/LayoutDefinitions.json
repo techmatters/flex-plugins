@@ -15,14 +15,14 @@
     },
     "incidents": {
       "previewFields": [
-        "frequency",
-        "selfHarmDetails"
+        "whoPresentsRisk",
+        "typeOfHarm"
       ],
       "layout": {
-        "frequency": {
+        "whoPresentsRisk": {
           "includeLabel": true
         },
-        "selfHarmDetails": {
+        "typeOfHarm": {
           "includeLabel": true
         }
       },
