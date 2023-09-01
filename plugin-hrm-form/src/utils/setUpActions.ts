@@ -309,29 +309,26 @@ const isAseloCustomChannelTask = (task: CustomITask) =>
  * - task wrapup: removes DeactivateConversation
  * - task completed: removes DeactivateConversation
  */
-const setChatOrchestrationsForPostSurvey = () => {
-  const setExcludedDeactivateConversation = (event: keyof ChatOrchestrationsEvents) => {
-    const excludeDeactivateConversation = (orchestrations: ChatOrchestratorEvent[]) =>
-      orchestrations.filter(e => e !== ChatOrchestratorEvent.DeactivateConversation);
+export const excludeDeactivateConversationOrchestration = (featureFlags: FeatureFlags) => {
+  // TODO: remove conditions once all accounts are updated, since we want this code to be executed in all Flex instances once CHI-2202 is implemented and in place
+  if (featureFlags.backend_handled_chat_janitor || featureFlags.enable_post_survey) {
+    const setExcludedDeactivateConversation = (event: keyof ChatOrchestrationsEvents) => {
+      const excludeDeactivateConversation = (orchestrations: ChatOrchestratorEvent[]) =>
+        orchestrations.filter(e => e !== ChatOrchestratorEvent.DeactivateConversation);
 
-    const defaultOrchestrations = ChatOrchestrator.getOrchestrations(event);
+      const defaultOrchestrations = ChatOrchestrator.getOrchestrations(event);
 
-    if (Array.isArray(defaultOrchestrations)) {
-      ChatOrchestrator.setOrchestrations(event, task => {
-        return isAseloCustomChannelTask(task)
-          ? defaultOrchestrations
-          : excludeDeactivateConversation(defaultOrchestrations);
-      });
-    }
-  };
+      if (Array.isArray(defaultOrchestrations)) {
+        ChatOrchestrator.setOrchestrations(event, task => {
+          return isAseloCustomChannelTask(task)
+            ? defaultOrchestrations
+            : excludeDeactivateConversation(defaultOrchestrations);
+        });
+      }
+    };
 
-  setExcludedDeactivateConversation('wrapup');
-  setExcludedDeactivateConversation('completed');
-};
-
-export const setUpPostSurvey = (featureFlags: FeatureFlags) => {
-  if (featureFlags.enable_post_survey) {
-    setChatOrchestrationsForPostSurvey();
+    setExcludedDeactivateConversation('wrapup');
+    setExcludedDeactivateConversation('completed');
   }
 };
 

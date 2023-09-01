@@ -143,7 +143,7 @@ const setUpActions = (
   setupObject: ReturnType<typeof getHrmConfig>,
   getMessage: (key: string) => (language: string) => Promise<string>,
 ) => {
-  ActionFunctions.setUpPostSurvey(featureFlags);
+  ActionFunctions.excludeDeactivateConversationOrchestration(featureFlags);
 
   // bind setupObject to the functions that requires some initialization
   const transferOverride = ActionFunctions.customTransferTask(setupObject);
