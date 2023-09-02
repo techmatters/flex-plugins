@@ -33,7 +33,7 @@ export const ItalicFont = styled(FontOpenSans)`
 `;
 ItalicFont.displayName = 'ItalicFont';
 
-export const LoadTranscriptButton = styled('button')`
+export const LoadMediaButton = styled('button')`
   height: 28px;
   width: 30%;
   background-color: ${props => (HrmTheme.colors as any).secondaryButtonColor};
@@ -41,8 +41,8 @@ export const LoadTranscriptButton = styled('button')`
   border-style: none;
 `;
 
-export const LoadTranscriptButtonText = styled(FontOpenSans)`
+export const LoadMediaButtonText = styled(FontOpenSans)`
   ${sectionTitleFontStyle};
   text-align: center;
 `;
-LoadTranscriptButtonText.displayName = 'LoadTranscriptButtonText';
+LoadMediaButtonText.displayName = 'LoadMediaButtonText';

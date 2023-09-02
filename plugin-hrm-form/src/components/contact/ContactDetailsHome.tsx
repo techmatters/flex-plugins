@@ -26,8 +26,8 @@ import { Grid } from '@material-ui/core';
 import { Flex, Box, Row } from '../../styles/HrmStyles';
 import {
   CSAMReportEntry,
-  isS3StoredRecording,
   isS3StoredTranscript,
+  isS3StoredRecording,
   isTwilioStoredMedia,
   SearchAPIContact,
 } from '../../types/types';
@@ -201,6 +201,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
     ISSUE_CATEGORIZATION,
     CONTACT_SUMMARY,
     TRANSCRIPT,
+    RECORDING,
   } = ContactDetailsSections;
   const addedBy = counselorsHash[createdBy];
   const counselorName = counselorsHash[counselor];
@@ -245,6 +246,13 @@ const ContactDetailsHome: React.FC<Props> = function ({
     isChatChannel(channel) &&
       savedContact.details.conversationMedia?.length &&
       (twilioStoredTranscript || externalStoredTranscript),
+  );
+
+  const showRecordingSection = Boolean(
+    // featureFlags.enable_voice_recordings &&
+    isVoiceChannel(channel) &&
+      canViewTwilioTranscript &&
+      savedContact.details.conversationMedia?.find(isS3StoredRecording),
   );
   const externalStoredRecording = savedContact.details.conversationMedia?.find(isS3StoredRecording);
 
@@ -393,14 +401,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           )}
         </ContactDetailsSection>
       )}
-      {recordingAvailable && (
-        <SectionTitleContainer style={{ justifyContent: 'right', paddingTop: '10px', paddingBottom: '10px' }}>
-          <SectionActionButton type="button" onClick={loadConversationIntoOverlay}>
-            <Template code="ContactDetails-LoadRecording-Button" />
-          </SectionActionButton>
-        </SectionTitleContainer>
-      )}
-      <RecordingSection externalStoredRecording={externalStoredRecording} />
+
       {showTranscriptSection && (
         <ContactDetailsSection
           sectionTitle={<Template code="ContactDetails-Transcript" />}
@@ -416,6 +417,20 @@ const ContactDetailsHome: React.FC<Props> = function ({
               externalStoredTranscript={externalStoredTranscript}
               loadConversationIntoOverlay={loadConversationIntoOverlay}
             />
+          </Flex>
+        </ContactDetailsSection>
+      )}
+
+      {showRecordingSection && (
+        <ContactDetailsSection
+          sectionTitle={<Template code="ContactDetails-Recording" />}
+          expanded={detailsExpanded[RECORDING]}
+          handleExpandClick={() => toggleSection(RECORDING)}
+          buttonDataTestid="ContactDetails-Section-Recording"
+          showEditButton={false}
+        >
+          <Flex justifyContent="center" flexDirection="row" paddingTop="20px">
+            <RecordingSection externalStoredRecording={externalStoredRecording} />{' '}
           </Flex>
         </ContactDetailsSection>
       )}

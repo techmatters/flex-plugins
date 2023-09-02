@@ -22,6 +22,7 @@ export const ContactDetailsSections = {
   CONTACT_SUMMARY: 'Contact summary',
   TRANSCRIPT: 'Transcript',
   EXTERNAL_REPORT: 'External Report',
+  RECORDING: 'Recording',
 } as const;
 
 export type ContactDetailsSectionsType = typeof ContactDetailsSections[keyof typeof ContactDetailsSections];
