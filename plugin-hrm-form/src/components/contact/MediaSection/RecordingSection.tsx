@@ -15,18 +15,19 @@
  */
 import React, { useState } from 'react';
 import { Template } from '@twilio/flex-ui';
-
-import { S3StoredRecording } from '../../../types/types';
-import { getFileDownloadUrl } from '../../../services/ServerlessService';
-import { ErrorFont, ItalicFont, LoadMediaButton, LoadMediaButtonText } from './styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-type OwnProps = { externalStoredRecording: S3StoredRecording };
+import { ErrorFont, LoadMediaButton, LoadMediaButtonText } from './styles';
+import { S3StoredRecording } from '../../../types/types';
+import { getFileDownloadUrl } from '../../../services/ServerlessService';
 
-const RecordingSection: React.FC<OwnProps> = ({ externalStoredRecording }) => {
-  const [audioUrl, setAudioUrl] = useState(null);
+type OwnProps = { contactId: string; externalStoredRecording: S3StoredRecording };
+
+const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecording }) => {
+  const [voiceRecording, setVoiceRecording] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showButton, setShowButton] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const fetchAndLoadRecording = async () => {
     try {
@@ -35,15 +36,34 @@ const RecordingSection: React.FC<OwnProps> = ({ externalStoredRecording }) => {
 
       const recordingPreSignedUrl = await getFileDownloadUrl(externalStoredRecording.location.key);
       const recordingResponse = await fetch(recordingPreSignedUrl.downloadUrl);
-      const recording = await recordingResponse.blob();
-      const audio = new Audio(URL.createObjectURL(recording));
-      setAudioUrl(audio.src);
+      const recordingBlob = await recordingResponse.blob();
+      const voiceRecording = new Audio(URL.createObjectURL(recordingBlob));
+      setVoiceRecording(voiceRecording.src);
 
       setLoading(false);
     } catch (error) {
-      console.log('error:trouble loading the audio file', error);
+      handleFetchAndLoadException(error);
     }
   };
+
+  const handleFetchAndLoadException = err => {
+    console.error(
+      `Error loading the recording for contact ${contactId}, recording url ${externalStoredRecording.location.key}`,
+      err,
+    );
+    const errorMessage = 'RecordingSection-Error';
+
+    setErrorMessage(errorMessage);
+    setLoading(false);
+  };
+
+  if (errorMessage) {
+    return (
+      <ErrorFont>
+        <Template code={errorMessage} />
+      </ErrorFont>
+    );
+  }
 
   if (loading) {
     return <CircularProgress size={30} />;
@@ -65,15 +85,7 @@ const RecordingSection: React.FC<OwnProps> = ({ externalStoredRecording }) => {
 
   return (
     <div>
-      <audio
-        controls
-        src={audioUrl}
-        preload="auto"
-        onError={() => {
-          // handle error
-          console.log('cant load audio');
-        }}
-      >
+      <audio controls src={voiceRecording} preload="auto" onError={handleFetchAndLoadException}>
         <track kind="captions" />
       </audio>
     </div>

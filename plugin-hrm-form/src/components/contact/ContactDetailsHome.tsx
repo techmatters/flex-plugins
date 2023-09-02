@@ -35,7 +35,6 @@ import {
   DetailsContainer,
   NameText,
   ContactAddedFont,
-  SectionTitleContainer,
   SectionActionButton,
   SectionValueText,
   ContactDetailsIcon,
@@ -430,7 +429,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           showEditButton={false}
         >
           <Flex justifyContent="center" flexDirection="row" paddingTop="20px">
-            <RecordingSection externalStoredRecording={externalStoredRecording} />{' '}
+            <RecordingSection contactId={contactId} externalStoredRecording={externalStoredRecording} />{' '}
           </Flex>
         </ContactDetailsSection>
       )}
