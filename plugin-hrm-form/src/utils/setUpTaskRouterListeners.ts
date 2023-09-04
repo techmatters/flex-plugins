@@ -58,7 +58,7 @@ const deactivateConversationListenersForTransferred = async (task: ITask) => {
     ) {
       const manager = Manager.getInstance();
 
-      const conversation = await manager.conversationsClient.getConversationBySid(
+      const conversation = await manager.conversationsClient.peekConversationBySid(
         task.attributes.transferMeta.originalConversationSid,
       );
 
