@@ -11,6 +11,7 @@
   "rules": {
     "no-console": "off",
     "no-warning-comments": "off",
+    "multiline-comment-style": "off",
     "no-confusing-arrow": "off",
     "no-alert": "off",
     "no-shadow": "off",
