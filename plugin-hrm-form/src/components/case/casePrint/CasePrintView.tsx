@@ -172,7 +172,6 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                     values={{
                       ...caseDetails.contact?.rawJson?.caseInformation,
                       ...caseDetails.contact?.rawJson?.childInformation,
-                      ...caseDetails.contact?.csamReports,
                     }}
                   />
                 )}

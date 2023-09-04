@@ -23,9 +23,10 @@ import { format } from 'date-fns';
 
 import styles from './styles';
 import { getTemplateStrings } from '../../../hrmConfig';
+import { CSAMReportEntry } from '../../../types/types';
 
 type OwnProps = {
-  csamReports?: Array<any>;
+  csamReports?: Array<CSAMReportEntry>;
 };
 
 type Props = OwnProps;
