@@ -60,7 +60,7 @@ const CannedResponses: React.FC<Props> = ({ conversationSid, updateDraftMessageT
     <CannedResponsesContainer>
       <FormSelectWrapper fullWidth={true}>
         <FormSelect id="canned_response" name="canned_response" onChange={handleChange} value="" fullWidth={true}>
-          <FormOption disabled selected isEmptyValue={true} value="">
+          <FormOption disabled isEmptyValue={true} value="">
             {strings.CannedResponses}
           </FormOption>
           {cannedResponses.map(r => {

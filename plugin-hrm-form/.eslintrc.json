@@ -28,6 +28,7 @@
     "react/jsx-no-bind": "off",
     "sonarjs/no-nested-template-literals": "off",
     "sonar/unused-import": "off",
+    "multiline-comment-style": "off",
     "prettier/prettier": [
       "warn",
       {},
