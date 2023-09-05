@@ -16,7 +16,7 @@
 
 import { CallTypes, DataCallTypes } from 'hrm-form-definitions';
 
-import { CSAMReportEntry } from '../../types/types';
+import { CSAMReportEntry, HrmServiceContact } from '../../types/types';
 import { ChannelTypes } from '../DomainConstants';
 import { DraftResourceReferralState, ResourceReferral } from './resourceReferral';
 import { ExistingContactsState } from './existingContacts';
@@ -68,7 +68,7 @@ export type TaskEntry = {
 };
 export type ContactsState = {
   tasks: {
-    [taskId: string]: TaskEntry;
+    [taskId: string]: HrmServiceContact;
   };
   existingContacts: ExistingContactsState;
   contactDetails: ContactDetailsState;

@@ -276,7 +276,7 @@ type SaveContactToHrmResponse = {
  */
 const saveContactToHrm = async (
   task,
-  form: TaskEntry,
+  contact: TaskEntry,
   workerSid: string,
   uniqueIdentifier: string,
   shouldFillEndMillis = true,
@@ -364,7 +364,7 @@ export const updateContactInHrm = async (
 
 export const saveContact = async (
   task,
-  form: TaskEntry,
+  contact: HrmServiceContact,
   workerSid: string,
   uniqueIdentifier: string,
   shouldFillEndMillis = true,

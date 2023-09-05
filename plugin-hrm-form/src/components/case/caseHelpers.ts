@@ -16,7 +16,7 @@
 
 import { HelplineDefinitions } from 'hrm-form-definitions';
 
-import { CustomITask, isOfflineContactTask } from '../../types/types';
+import { CustomITask, HrmServiceContact, isOfflineContactTask } from '../../types/types';
 import { TaskEntry } from '../../states/contacts/types';
 
 /**
@@ -24,9 +24,9 @@ import { TaskEntry } from '../../states/contacts/types';
  * @param task Twilio Task Sid
  * @param form Entry Form
  */
-export const getDateFromNotSavedContact = (task: CustomITask, form: TaskEntry): Date => {
+export const getDateFromNotSavedContact = (task: CustomITask, form: HrmServiceContact): Date => {
   if (isOfflineContactTask(task)) {
-    const { date: dateString, time } = form.contactlessTask;
+    const { date: dateString, time } = form.rawJson.contactlessTask;
     return new Date(`${dateString}T${time}:00`);
   }
 

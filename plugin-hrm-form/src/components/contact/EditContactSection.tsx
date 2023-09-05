@@ -34,13 +34,14 @@ import CloseCaseDialog from '../case/CloseCaseDialog';
 import * as t from '../../states/contacts/actions';
 import { getTemplateStrings } from '../../hrmConfig';
 import { TaskEntry } from '../../states/contacts/types';
+import { ContactRawJson } from '../../types/types';
 
 type OwnProps = {
   context: DetailsContext;
   contactId: string;
   contactDetailsSectionForm: ContactDetailsSectionFormApi | IssueCategorizationSectionFormApi;
   children: React.ReactNode;
-  tabPath: keyof TaskEntry;
+  tabPath: keyof ContactRawJson;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -117,7 +118,7 @@ const EditContactSection: React.FC<Props> = ({
   };
 
   // With tabPath as an input, this function returns the localized string for section's title
-  const editContactSectionTitle = (tabPath: keyof TaskEntry): string => {
+  const editContactSectionTitle = (tabPath: keyof ContactRawJson | 'categories'): string => {
     if (tabPath === 'callerInformation') {
       return strings['Contact-EditCaller'];
     } else if (tabPath === 'childInformation') {

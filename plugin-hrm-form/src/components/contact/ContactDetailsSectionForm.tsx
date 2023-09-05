@@ -31,13 +31,17 @@ import {
 import { disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import { TaskEntry } from '../../states/contacts/types';
+import { ContactRawJson, HrmServiceContact } from '../../types/types';
 
 type OwnProps = {
   display: boolean;
   definition: FormDefinition;
   layoutDefinition?: LayoutDefinition;
-  tabPath: keyof TaskEntry;
-  initialValues: TaskEntry['callerInformation'] | TaskEntry['childInformation'] | TaskEntry['caseInformation'];
+  tabPath: keyof ContactRawJson;
+  initialValues:
+    | ContactRawJson['callerInformation']
+    | ContactRawJson['childInformation']
+    | ContactRawJson['caseInformation'];
   autoFocus?: boolean;
   extraChildrenRight?: React.ReactNode;
   updateFormActionDispatcher?: (dispatch: Dispatch<any>) => (values: any) => void;

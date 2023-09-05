@@ -134,7 +134,8 @@ export type ContactRawJson = {
   callType: CallTypes | '';
   childInformation: Record<string, boolean | string>;
   callerInformation: Record<string, boolean | string>;
-  caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
+  caseInformation: Record<string, boolean | string>;
+  categories: Record<string, string[]>;
   contactlessTask: { channel: ChannelTypes; [key: string]: string | boolean };
   conversationMedia: ConversationMedia[];
 };
