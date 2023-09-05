@@ -10,7 +10,7 @@
   },
   {
     "name": "repeatCaller",
-    "label": "Repeat Caller?",
+    "label": "Suspected Repeat Client",
     "type": "checkbox"
   },
   {
@@ -64,10 +64,10 @@
     "name": "howDidYouKnowAboutOurLine",
     "label": "How did you know about our line/number?",
     "type": "select",
-    "unknownOption": "",
+    "unknownOption": "Unknown",
     "options": [
       {
-        "value": "",
+        "value": "Unknown",
         "label": ""
       },
       {
@@ -99,7 +99,7 @@
   },
   {
     "name": "didYouDiscussRightsWithTheChild",
-    "label": "Did you discuss privacy rights and consent with the young person?",
+    "label": "Did you discuss privacy rights and consent with the client?",
     "type": "mixed-checkbox"
   }
 ]
