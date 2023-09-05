@@ -85,9 +85,15 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
 
   return (
     <div>
-      <audio controls src={voiceRecording} preload="auto" onError={handleFetchAndLoadException}>
-        <track kind="captions" />
-      </audio>
+      {voiceRecording ? (
+        <audio controls src={voiceRecording} preload="auto" onError={handleFetchAndLoadException}>
+          <track kind="captions" />
+        </audio>
+      ) : (
+        <ErrorFont>
+          <Template code={errorMessage} />
+        </ErrorFont>
+      )}
     </div>
   );
 };
