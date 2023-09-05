@@ -22,7 +22,7 @@
   "viewContact": [["everyone"]],
   "editContact":  [["everyone"]],
   "viewExternalTranscript": [["everyone"]],
-  
+  "viewRecording": [["everyone"]],
   "viewPostSurvey":  [["isSupervisor"]],
 
   "viewIdentifiers": [["everyone"]]
