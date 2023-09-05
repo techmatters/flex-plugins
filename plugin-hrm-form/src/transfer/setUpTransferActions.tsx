@@ -148,16 +148,18 @@ const takeControlIfTransfer = async (task: ITask) => {
 
 const handleTransferredTask = async (task: ITask) => {
   await takeControlIfTransfer(task);
-  const convo = StateHelper.getConversationStateForTask(task)?.source;
+  const { source: convo, participants } = StateHelper.getConversationStateForTask(task) ?? {};
   if (convo) {
     reactivateAseloListeners(convo);
-
-    // Force a refresh of the conversation state when accepting a transfer - this prevents issues caused by pre-existing state for the conversation being loaded prior to accepting the transfer.
-    // Reverse engineering an internal Flex action is one level of grevious hackery below deleting the conversation state from the redux store directly =-/
-    Manager.getInstance().store.dispatch({
-      type: 'CONVERSATION_UNLOAD',
-      meta: { channelSid: convo.sid, conversationSid: convo.sid },
-    });
+    if (participants.size === 0) {
+      // Force a refresh of the conversation state when accepting a transfer if the current state has no participants
+      // This works around an issue where pre-existing state for the conversation being loaded prior to accepting the transfer borks the state once the transfer is accepted for some reason.
+      // Reverse engineering an internal Flex action is one level of grevious hackery below deleting the conversation state from the redux store directly =-/
+      Manager.getInstance().store.dispatch({
+        type: 'CONVERSATION_UNLOAD',
+        meta: { channelSid: convo.sid, conversationSid: convo.sid },
+      });
+    }
   }
   await restoreFormIfTransfer(task);
 };
