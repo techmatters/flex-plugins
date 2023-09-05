@@ -225,14 +225,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
     });
   };
 
-  const recordingAvailable = Boolean(
-    featureFlags.enable_voice_recordings &&
-      isVoiceChannel(channel) &&
-      canViewTwilioTranscript &&
-      savedContact.details.conversationMedia?.length,
-    // && typeof savedContact.overview.conversationDuration === 'number',
-  );
-
   const twilioStoredTranscript =
     featureFlags.enable_twilio_transcripts &&
     canViewTwilioTranscript &&
@@ -241,6 +233,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
     featureFlags.enable_external_transcripts &&
     can(PermissionActions.VIEW_EXTERNAL_TRANSCRIPT) &&
     savedContact.details.conversationMedia?.find(isS3StoredTranscript);
+
   const showTranscriptSection = Boolean(
     isChatChannel(channel) &&
       savedContact.details.conversationMedia?.length &&
@@ -248,9 +241,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
   );
 
   const showRecordingSection = Boolean(
-    // featureFlags.enable_voice_recordings &&
     isVoiceChannel(channel) &&
-      canViewTwilioTranscript &&
+      can(PermissionActions.VIEW_RECORDING) &&
       savedContact.details.conversationMedia?.find(isS3StoredRecording),
   );
   const externalStoredRecording = savedContact.details.conversationMedia?.find(isS3StoredRecording);
