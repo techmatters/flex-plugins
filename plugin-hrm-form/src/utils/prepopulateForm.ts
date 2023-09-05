@@ -18,6 +18,7 @@ import { ITask, Manager } from '@twilio/flex-ui';
 import { capitalize } from 'lodash';
 import { callTypes, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
 
+import { LexMemory, AutopilotMemory } from '../types/types';
 import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
 import { prepopulateForm as prepopulateFormAction } from '../states/contacts/actions';
@@ -143,6 +144,35 @@ export const getValuesFromPreEngagementData = (
   return values;
 };
 
+type PreSurveyAnswers = LexMemory;
+type AutopilotAnswers = AutopilotMemory['twilio']['collected_data']['collect_survey']['answers'];
+
+const transformAnswers = (answers: AutopilotAnswers): PreSurveyAnswers => {
+  /**
+   * Map naming mismatches between autopilot and lex
+   * TODO: rename Lex 'slots' so we don't need to use this map
+   */
+  const keyRenames = {
+    // eslint-disable-next-line camelcase
+    about_self: 'aboutSelf',
+  };
+
+  const renameKey = key => (Object.keys(keyRenames).includes(key) ? keyRenames[key] : key);
+  return Object.keys(answers).reduce(
+    (acc, currentKey) => ({ ...acc, [renameKey(currentKey)]: answers[currentKey].answer }),
+    {},
+  );
+};
+
+const getAnswers = (memory: LexMemory | AutopilotMemory): PreSurveyAnswers => {
+  // This can be removed after every helpline is using Lex
+  if (typeof memory.twilio === 'object') {
+    const autopilotAnswers = (memory as AutopilotMemory).twilio.collected_data.collect_survey.answers;
+    return transformAnswers(autopilotAnswers);
+  }
+  return memory as LexMemory;
+};
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const prepopulateForm = (task: ITask) => {
   const { memory, preEngagementData } = task.attributes;
@@ -177,15 +207,17 @@ export const prepopulateForm = (task: ITask) => {
     return;
   }
 
-  const isValidSurvey = Boolean(memory.aboutSelf); // determines if the memory has valid values or if it was aborted
-  const isAboutSelf = memory.aboutSelf === 'Yes';
+  const answers = getAnswers(memory);
+
+  const isValidSurvey = Boolean(answers.aboutSelf); // determines if the memory has valid values or if it was aborted
+  const isAboutSelf = answers.aboutSelf === 'Yes';
   // eslint-disable-next-line no-nested-ternary
   const callType = isValidSurvey ? (isAboutSelf ? callTypes.child : callTypes.caller) : null;
   const tabFormDefinition = isAboutSelf ? ChildInformationTab : CallerInformationTab;
   const prepopulateSurveyKeys = isAboutSelf ? survey.ChildInformationTab : survey.CallerInformationTab;
   const subroute = isAboutSelf ? 'childInformation' : 'callerInformation';
 
-  const surveyValues = getValuesFromAnswers(task, memory, tabFormDefinition, prepopulateSurveyKeys);
+  const surveyValues = getValuesFromAnswers(task, answers, tabFormDefinition, prepopulateSurveyKeys);
 
   // When a helpline has survey and no preEnagagement form
   if (memory && !preEngagementData) {
