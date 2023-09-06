@@ -53,7 +53,8 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
   const { definitionVersion: versionId } = info;
   const orphanedCase = !connectedContacts || connectedContacts.length === 0;
   const firstContact = !orphanedCase && connectedContacts[0];
-  const { categories, callSummary } = ((firstContact || {}).rawJson || {}).caseInformation || {
+  const { categories } = (firstContact || {}).rawJson || {};
+  const { callSummary } = ((firstContact || {}).rawJson || {}).caseInformation || {
     callSummary: undefined,
   };
   const summary = info?.summary || callSummary;
@@ -93,11 +94,7 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
           </PreviewDescription>
         )}
 
-        <TagsAndCounselor
-          counselor={counselor}
-          categories={retrieveCategories(categories)}
-          definitionVersion={definitionVersion}
-        />
+        <TagsAndCounselor counselor={counselor} categories={categories} definitionVersion={definitionVersion} />
       </PreviewWrapper>
     </Flex>
   );

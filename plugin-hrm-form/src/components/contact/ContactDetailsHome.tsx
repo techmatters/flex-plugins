@@ -24,7 +24,7 @@ import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
 import { Flex, Box, Row } from '../../styles/HrmStyles';
-import { CSAMReportEntry, isS3StoredTranscript, isTwilioStoredMedia, SearchAPIContact } from '../../types/types';
+import { CSAMReportEntry, isS3StoredTranscript, isTwilioStoredMedia, HrmServiceContact } from '../../types/types';
 import {
   DetailsContainer,
   NameText,
@@ -46,7 +46,7 @@ import { getPermissionsForContact, getPermissionsForViewingIdentifiers, Permissi
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
 import { TranscriptSection } from './TranscriptSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
-import { contactLabelFromSearchContact } from '../../states/contacts/contactIdentifier';
+import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import type { ResourceReferral } from '../../states/contacts/resourceReferral';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 
@@ -112,7 +112,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   canViewTwilioTranscript,
   createDraftCsamReport,
 }) {
-  const version = savedContact?.details.definitionVersion;
+  const version = savedContact?.rawJson.definitionVersion;
 
   const definitionVersion = definitionVersions[version];
 
@@ -128,20 +128,21 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   if (!savedContact || !definitionVersion) return null;
 
-  // Object destructuring on contact
-  const { overview, details, csamReports, referrals } = savedContact as SearchAPIContact;
   const {
-    counselor,
-    dateTime,
-    customerNumber,
-    callType,
-    channel,
+    twilioWorkerId,
+    number,
+    timeOfContact,
+    csamReports,
+    referrals,
     conversationDuration,
-    categories,
+    channel,
     createdBy,
     updatedAt,
     updatedBy,
-  } = overview;
+    rawJson,
+  } = savedContact;
+
+  const { callType, categories } = rawJson;
 
   const auditMessage = (timestampText: string, workerSid: string, templateKey: string) => {
     if (timestampText && workerSid) {
@@ -164,19 +165,18 @@ const ContactDetailsHome: React.FC<Props> = function ({
   };
 
   // Permission to edit is based the counselor who created the contact - identified by Twilio worker ID
-  const createdByTwilioWorkerId = savedContact?.overview.counselor;
-  const { can } = getPermissionsForContact(createdByTwilioWorkerId);
+  const { can } = getPermissionsForContact(twilioWorkerId);
 
   // Format the obtained information
   const isDataCall = !isNonDataCallType(callType);
-  const childOrUnknown = contactLabelFromSearchContact(definitionVersion, savedContact, {
+  const childOrUnknown = contactLabelFromHrmContact(definitionVersion, savedContact, {
     substituteForId: false,
   });
   const formattedChannel =
     channel === 'default'
-      ? mapChannelForInsights(details.contactlessTask.channel.toString())
+      ? mapChannelForInsights(rawJson.contactlessTask.channel.toString())
       : mapChannelForInsights(channel);
-  const addedDate = new Date(dateTime);
+  const addedDate = new Date(timeOfContact);
 
   const formattedDate = `${format(addedDate, 'MMM dd, yyyy')}`;
   const formattedTime = `${format(addedDate, 'h:mm aaaaa')}m`;
@@ -197,7 +197,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
     TRANSCRIPT,
   } = ContactDetailsSections;
   const addedBy = counselorsHash[createdBy];
-  const counselorName = counselorsHash[counselor];
+  const counselorName = counselorsHash[twilioWorkerId];
   const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(section);
   const navigate = (route: ContactDetailsRoute) => createContactDraft(route);
 
@@ -213,7 +213,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   );
 
   const loadConversationIntoOverlay = async () => {
-    const twilioStoredMedia = savedContact.details.conversationMedia.find(isTwilioStoredMedia);
+    const twilioStoredMedia = savedContact.rawJson.conversationMedia.find(isTwilioStoredMedia);
     await Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_PLAY, {
       taskSid: twilioStoredMedia.reservationSid,
     });
@@ -223,21 +223,21 @@ const ContactDetailsHome: React.FC<Props> = function ({
     featureFlags.enable_voice_recordings &&
       isVoiceChannel(channel) &&
       canViewTwilioTranscript &&
-      savedContact.details.conversationMedia?.length,
+      savedContact.rawJson.conversationMedia?.length,
     // && typeof savedContact.overview.conversationDuration === 'number',
   );
 
   const twilioStoredTranscript =
     featureFlags.enable_twilio_transcripts &&
     canViewTwilioTranscript &&
-    savedContact.details.conversationMedia?.find(isTwilioStoredMedia);
+    savedContact.rawJson.conversationMedia?.find(isTwilioStoredMedia);
   const externalStoredTranscript =
     featureFlags.enable_external_transcripts &&
     can(PermissionActions.VIEW_EXTERNAL_TRANSCRIPT) &&
-    savedContact.details.conversationMedia?.find(isS3StoredTranscript);
+    savedContact.rawJson.conversationMedia?.find(isS3StoredTranscript);
   const showTranscriptSection = Boolean(
     isChatChannel(channel) &&
-      savedContact.details.conversationMedia?.length &&
+      savedContact.rawJson.conversationMedia?.length &&
       (twilioStoredTranscript || externalStoredTranscript),
   );
   const csamReportEnabled = featureFlags.enable_csam_report && featureFlags.enable_csam_clc_report;
@@ -245,9 +245,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
-  const displayContactId = savedContact.contactId?.toString().startsWith('__unsaved')
+  const displayContactId = savedContact.id?.toString().startsWith('__unsaved')
     ? 'ContactDetails-UnsavedContact'
-    : `#${savedContact.contactId}`;
+    : `#${savedContact.id}`;
 
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
@@ -255,7 +255,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
         <Template code={displayContactId} /> {childOrUnknown}
       </NameText>
 
-      {auditMessage(dateTime, createdBy, 'ContactDetails-ActionHeaderAdded')}
+      {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
 
       {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
 
@@ -270,7 +270,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
         </SectionEntry>
         {isPhoneContact && (
           <SectionEntry descriptionKey="ContactDetails-GeneralDetails-PhoneNumber">
-            <SectionEntryValue value={maskIdentifiers ? strings.MaskIdentifiers : customerNumber} />
+            <SectionEntryValue value={maskIdentifiers ? strings.MaskIdentifiers : number} />
           </SectionEntry>
         )}
         <SectionEntry descriptionKey="ContactDetails-GeneralDetails-ConversationDuration">
@@ -282,7 +282,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
         <SectionEntry descriptionKey="ContactDetails-GeneralDetails-DateTime">
           <SectionEntryValue value={`${formattedDate} / ${formattedTime}`} />
         </SectionEntry>
-        {addedBy && addedBy !== counselor && (
+        {addedBy && addedBy !== twilioWorkerId && (
           <SectionEntry descriptionKey="ContactDetails-GeneralDetails-AddedBy">
             <SectionEntryValue value={addedBy} />
           </SectionEntry>
@@ -302,7 +302,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
         >
           {definitionVersion.tabbedForms.CallerInformationTab.filter(e => !isNonSaveable(e)).map(e => (
             <SectionEntry key={`CallerInformation-${e.label}`} descriptionKey={e.label}>
-              <SectionEntryValue value={savedContact.details.callerInformation[e.name]} definition={e} />
+              <SectionEntryValue value={savedContact.rawJson.callerInformation[e.name]} definition={e} />
             </SectionEntry>
           ))}
         </ContactDetailsSection>
@@ -321,7 +321,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
         >
           {definitionVersion.tabbedForms.ChildInformationTab.filter(e => !isNonSaveable(e)).map(e => (
             <SectionEntry key={`ChildInformation-${e.label}`} descriptionKey={e.label}>
-              <SectionEntryValue value={savedContact.details.childInformation[e.name]} definition={e} />
+              <SectionEntryValue value={savedContact.rawJson.childInformation[e.name]} definition={e} />
             </SectionEntry>
           ))}
         </ContactDetailsSection>
@@ -367,7 +367,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           {definitionVersion.tabbedForms.CaseInformationTab.filter(e => !isNonSaveable(e)).map(e => (
             <SectionEntry key={`CaseInformation-${e.label}`} descriptionKey={e.label}>
               <SectionEntryValue
-                value={savedContact.details.caseInformation[e.name] as boolean | string}
+                value={savedContact.rawJson.caseInformation[e.name] as boolean | string}
                 definition={e}
               />
             </SectionEntry>

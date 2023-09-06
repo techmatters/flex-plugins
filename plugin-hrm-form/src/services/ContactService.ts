@@ -91,7 +91,7 @@ export async function searchContacts(
   offset,
 ): Promise<{
   count: number;
-  contacts: SearchAPIContact[];
+  contacts: HrmServiceContact[];
 }> {
   const queryParams = getQueryParams({ limit, offset });
 
@@ -101,22 +101,72 @@ export async function searchContacts(
   };
 
   const rawResult = await fetchHrmApi(`/contacts/search${queryParams}`, options);
+
   return {
     ...rawResult,
-    contacts: rawResult.contacts.map(c => {
-      const details = unNestLegacyRawJson(c.details);
-      const { firstName, lastName } = details.childInformation ?? {};
-      return {
-        ...c,
-        details,
-        overview: {
-          ...c.overview,
-          name: `${firstName ?? ''} ${lastName ?? ''}`,
-        },
-      };
-    }),
+    contacts: transformToHrmServiceContact(rawResult.contacts),
+    // contacts: rawResult.contacts.map(c => {
+    //   const details = unNestLegacyRawJson(c.details);
+    //   const { firstName, lastName } = details.childInformation ?? {};
+    //   return {
+    //     ...c,
+    //     details,
+    //     overview: {
+    //       ...c.overview,
+    //       name: `${firstName ?? ''} ${lastName ?? ''}`,
+    //     },
+    //   };
+    // }),
   };
 }
+
+/**
+ * This function converts contacts returned by /searchContacts into pure HRM Contacts.
+ * This function is meant to be temporary, while HRM is not updated yet.
+ */
+const transformToHrmServiceContact = (
+  contacts: SearchAPIContact[] | HrmServiceContact[],
+): Partial<HrmServiceContact>[] => {
+  const isSearchAPIContact = contact => contact.contactId !== undefined;
+  const shouldTransform = contacts.length > 0 && isSearchAPIContact(contacts[0]);
+
+  if (!shouldTransform) {
+    return contacts as HrmServiceContact[];
+  }
+
+  /**
+   * Fields that cannot be mapped:
+   * - accountSid
+   * - createdAt
+   * - queueName
+   * - channelSid
+   * - serviceSid
+   */
+  return contacts.map(contact => ({
+    id: contact.contactId,
+    twilioWorkerId: contact.overview.counselor,
+    number: contact.overview.customerNumber,
+    conversationDuration: contact.overview.conversationDuration,
+    csamReports: contact.csamReports,
+    referrals: contact.referrals,
+    conversationMedia: contact.conversationMedia,
+    createdBy: contact.overview.createdBy,
+    helpline: contact.overview.helpline,
+    taskId: contact.overview.taskId,
+    channel: contact.overview.channel,
+    updatedBy: contact.overview.updatedBy,
+    updatedAt: contact.overview.updatedAt,
+    rawJson: {
+      ...contact.details,
+      categories: contact.overview.categories, // categories from overview already comes typed as Record<string, string[]>
+      caseInformation: {
+        ...contact.details.caseInformation,
+        categories: undefined, // Optional: remove categories from caseInformation
+      },
+    },
+    timeOfContact: contact.overview.dateTime,
+  }));
+};
 
 /**
  * Adds a category with the corresponding subcategories set to false to the provided object (obj)
@@ -156,7 +206,7 @@ export const searchResultToContactForm = (def: FormDefinition, information: Reco
   );
 };
 
-export function transformCategories(
+function transformCategoriesOld(
   helpline,
   categories: TaskEntry['categories'],
   definition: DefinitionVersion,
@@ -168,6 +218,30 @@ export function transformCategories(
   });
 
   return transformedCategories.categories;
+}
+
+export function transformCategories(
+  helpline,
+  categories: TaskEntry['categories'],
+  definition: DefinitionVersion,
+): Record<string, string[]> {
+  return categories.reduce((acc, path) => {
+    const [category, subcategory] = path.split('.');
+    const previousSubcategories = acc[category];
+    const subcategories = previousSubcategories ? [...previousSubcategories, subcategory] : [subcategory];
+
+    return {
+      ...acc,
+      [category]: subcategories,
+    };
+  }, {});
+  // const { IssueCategorizationTab } = definition.tabbedForms;
+  // const cleanCategories = createCategoriesObject(IssueCategorizationTab(helpline));
+  // const transformedCategories = categories.reduce((acc, path) => set(path, true, acc), {
+  //   categories: cleanCategories, // use an object with categories property so we can reuse the entire path (they look like categories.Category.Subcategory)
+  // });
+
+  // return transformedCategories.categories;
 }
 
 /**
@@ -185,8 +259,7 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
     childInformation: transformValues(ChildInformationTab)(form.childInformation),
   };
 
-  const { callerInformation } = transformedValues;
-  const { childInformation } = transformedValues;
+  const { childInformation, callerInformation, caseInformation } = transformedValues;
 
   const categories = transformCategories(form.helpline, form.categories, currentDefinitionVersion);
   const { definitionVersion } = getHrmConfig();
@@ -196,12 +269,10 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
     callType,
     callerInformation,
     childInformation,
-    caseInformation: {
-      ...transformedValues.caseInformation,
-      categories,
-    },
+    caseInformation,
     contactlessTask,
     conversationMedia,
+    categories,
   };
 }
 
@@ -263,7 +334,10 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
   return returnData;
 };
 
-type NewHrmServiceContact = Omit<HrmServiceContact, 'id' | 'updatedAt' | 'updatedBy' | 'createdBy'>;
+type NewHrmServiceContact = Omit<
+  HrmServiceContact,
+  'id' | 'accountSid' | 'createdAt' | 'updatedAt' | 'updatedBy' | 'createdBy'
+>;
 
 type SaveContactToHrmResponse = {
   response: HrmServiceContact;
@@ -351,7 +425,8 @@ const saveContactToHrm = async (
 export const updateContactInHrm = async (
   contactId: string,
   body: {
-    rawJson: Partial<Omit<ContactRawJson, 'caseInformation'>> & Partial<ContactRawJson['caseInformation']>;
+    rawJson: Partial<ContactRawJson>;
+    // rawJson: Partial<Omit<ContactRawJson, 'caseInformation'>> & Partial<ContactRawJson['caseInformation']>;
   },
 ) => {
   const options = {

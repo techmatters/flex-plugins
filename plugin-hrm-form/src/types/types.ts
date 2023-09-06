@@ -134,18 +134,22 @@ export type ContactRawJson = {
   callType: CallTypes | '';
   childInformation: Record<string, boolean | string>;
   callerInformation: Record<string, boolean | string>;
-  caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
+  caseInformation: Record<string, boolean | string>;
   contactlessTask: { channel: ChannelTypes; [key: string]: string | boolean };
   conversationMedia: ConversationMedia[];
+  categories?: Record<string, string[]>;
 };
 
 export type HrmServiceContact = {
   id: string;
+  accountSid: string;
   twilioWorkerId: string;
   number: string;
   conversationDuration: number;
   csamReports: CSAMReportEntry[];
   referrals?: ResourceReferral[];
+  conversationMedia?: ConversationMedia[];
+  createdAt: string;
   createdBy: string;
   helpline: string;
   taskId: string;
@@ -165,6 +169,7 @@ export type SearchAPIContact = {
   overview: {
     helpline: string;
     dateTime: string;
+    name: string;
     customerNumber: string;
     callType: CallTypes | '';
     categories: {};
@@ -182,11 +187,9 @@ export type SearchAPIContact = {
   referrals?: ResourceReferral[];
 };
 
-export type SearchUIContact = SearchAPIContact & { counselorName: string; callerName?: string };
-
 export type SearchContactResult = {
   count: number;
-  contacts: SearchUIContact[];
+  contacts: HrmServiceContact[];
 };
 
 export type SearchCaseResult = {

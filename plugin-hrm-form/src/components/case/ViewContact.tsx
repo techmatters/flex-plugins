@@ -24,7 +24,7 @@ import { CaseLayout } from '../../styles/case';
 import { connectedCaseBase, contactFormsBase, namespace, RootState } from '../../states';
 import ContactDetails from '../contact/ContactDetails';
 import type { CustomITask, StandaloneITask } from '../../types/types';
-import { loadContact, loadRawContact, releaseContact } from '../../states/contacts/existingContacts';
+import { loadContact, releaseContact } from '../../states/contacts/existingContacts';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 
 const mapStateToProps = (state: RootState, { task, contactId }: OwnProps) => {
@@ -44,7 +44,7 @@ const mapStateToProps = (state: RootState, { task, contactId }: OwnProps) => {
 };
 
 const mapDispatchToProps = {
-  loadRawContactIntoState: loadRawContact,
+  loadRawContactIntoState: loadContact,
   loadContactIntoState: loadContact,
   releaseContactFromState: releaseContact,
 };

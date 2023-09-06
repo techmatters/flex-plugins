@@ -18,7 +18,7 @@ import { omit } from 'lodash';
 
 import * as t from './types';
 import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE, GeneralActionType } from '../types';
-import { SearchAPIContact, SearchCaseResult, standaloneTaskSid } from '../../types/types';
+import { HrmServiceContact, SearchCaseResult, standaloneTaskSid } from '../../types/types';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 
 type PreviousContacts = {
@@ -28,7 +28,7 @@ type PreviousContacts = {
 
 type TaskEntry = {
   currentPage: t.SearchPagesType;
-  currentContact: SearchAPIContact;
+  currentContact: HrmServiceContact;
   form: t.SearchFormValues;
   detailsExpanded: {
     [key in ContactDetailsSectionsType]: boolean;

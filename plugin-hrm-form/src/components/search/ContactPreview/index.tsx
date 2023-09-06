@@ -16,39 +16,71 @@
 
 import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { callTypes } from 'hrm-form-definitions';
 
 import ContactHeader from './ContactHeader';
 import TagsAndCounselor from '../TagsAndCounselor';
 import { PreviewWrapper } from '../../../styles/search';
 import { Flex } from '../../../styles/HrmStyles';
-import { SearchUIContact } from '../../../types/types';
+import { ContactRawJson, HrmServiceContact } from '../../../types/types';
 import { PreviewDescription } from '../PreviewDescription';
 import { isNonDataCallType } from '../../../states/validationRules';
 import { getDefinitionVersion } from '../../../services/ServerlessService';
 import { updateDefinitionVersion } from '../../../states/configuration/actions';
 import { configurationBase, namespace, RootState } from '../../../states';
-import { contactLabelFromSearchContact } from '../../../states/contacts/contactIdentifier';
+import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
 
 type ContactPreviewProps = {
-  contact: SearchUIContact;
+  contact: HrmServiceContact;
   handleViewDetails: () => void;
 };
 
 const mapStateToProps = (state: RootState) => ({
   definitionVersions: state[namespace][configurationBase].definitionVersions,
+  counselorsHash: state[namespace][configurationBase].counselors.hash,
 });
 
 const connector = connect(mapStateToProps);
 
 type Props = ContactPreviewProps & ConnectedProps<typeof connector>;
 
-const ContactPreview: React.FC<Props> = ({ contact, handleViewDetails, definitionVersions }) => {
-  const { counselorName, callerName } = contact;
-  const { callType } = contact.overview;
-  const { definitionVersion: versionId, caseInformation } = contact.details;
+/**
+ * This function gets the name from childInformation or callerInformation.
+ * Since different helplines can have different forms, this function is a
+ * best-effort for finding out the name.
+ */
+const getCallerName = (rawJson: ContactRawJson) => {
+  const { callType } = rawJson;
+  const childOrCallerInfo = callType === callTypes.child ? rawJson.childInformation : rawJson.callerInformation;
+  const { firstName, lastName, name, nickname } = childOrCallerInfo;
+
+  if (firstName && lastName) {
+    return `${firstName} ${lastName}`;
+  }
+
+  if (firstName) {
+    return firstName as string;
+  }
+
+  if (name) {
+    return name as string;
+  }
+
+  if (nickname) {
+    return nickname as string;
+  }
+
+  return '';
+};
+
+const ContactPreview: React.FC<Props> = ({ contact, handleViewDetails, definitionVersions, counselorsHash }) => {
+  const { callType } = contact.rawJson;
+  const callerName = getCallerName(contact.rawJson);
+  const counselorName = counselorsHash[contact.twilioWorkerId];
+  const { definitionVersion: versionId, caseInformation } = contact.rawJson;
   const { callSummary } = caseInformation;
   const definition = definitionVersions[versionId];
-  const contactLabel = contactLabelFromSearchContact(definition, contact, {
+  const contactLabel = contactLabelFromHrmContact(definition, contact, {
     substituteForId: false,
     placeholder: '',
   });
@@ -61,15 +93,15 @@ const ContactPreview: React.FC<Props> = ({ contact, handleViewDetails, definitio
 
   return (
     <Flex>
-      <PreviewWrapper key={contact.contactId}>
+      <PreviewWrapper key={contact.id}>
         <ContactHeader
-          id={contact.contactId}
-          channel={contact.overview.channel}
-          callType={contact.overview.callType}
+          id={contact.id}
+          channel={contact.channel}
+          callType={callType}
           name={contactLabel}
           callerName={callerName}
-          number={contact.overview.customerNumber}
-          date={contact.overview.dateTime}
+          number={contact.number}
+          date={contact.timeOfContact}
           onClickFull={handleViewDetails}
         />
         {callSummary && (
@@ -82,7 +114,7 @@ const ContactPreview: React.FC<Props> = ({ contact, handleViewDetails, definitio
         ) : (
           <TagsAndCounselor
             counselor={counselorName}
-            categories={contact.overview.categories}
+            categories={contact.rawJson.categories}
             definitionVersion={definition}
           />
         )}
