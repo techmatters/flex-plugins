@@ -14,15 +14,24 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId, HelplineEntry, StatusInfo } from 'hrm-form-definitions';
+import { HelplineEntry, StatusInfo } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
-import { Case, CaseItemEntry, HrmServiceContact } from '../../types/types';
+import { CaseItemEntry, HrmServiceContact } from '../../types/types';
 import { ChannelTypes } from '../DomainConstants';
 
 // Action types
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
 export const REMOVE_CONNECTED_CASE = 'REMOVE_CONNECTED_CASE';
+export const UPDATE_CASE_ACTION = 'case-action/updated-case';
+export const CREATE_CASE_ACTION = 'case-action/create-case';
+
+export enum SavedCaseStatus {
+  NotSaved,
+  ResultPending,
+  ResultReceived,
+  Error,
+}
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;
@@ -33,6 +42,11 @@ type SetConnectedCaseAction = {
 type RemoveConnectedCaseAction = {
   type: typeof REMOVE_CONNECTED_CASE;
   taskId: string;
+};
+
+export type SavedCaseState = {
+  case: t.Case;
+  status: SavedCaseStatus;
 };
 
 export type CaseActionType = SetConnectedCaseAction | RemoveConnectedCaseAction;
@@ -102,7 +116,12 @@ export type CaseDetails = {
 };
 
 export const caseItemHistory = (
-  info: { updatedAt?: string; updatedBy?: string; createdAt: string; twilioWorkerId: string },
+  info: {
+    updatedAt?: string;
+    updatedBy?: string;
+    createdAt: string;
+    twilioWorkerId: string;
+  },
   counselorsHash: Record<string, string>,
 ) => {
   const addingCounsellorName = counselorsHash[info.twilioWorkerId] || 'Unknown';
@@ -131,7 +150,7 @@ export type CaseWorkingCopy = {
 export type CaseState = {
   tasks: {
     [taskId: string]: {
-      connectedCase: Case;
+      connectedCase: t.Case;
       caseWorkingCopy: CaseWorkingCopy;
       availableStatusTransitions: StatusInfo[];
     };

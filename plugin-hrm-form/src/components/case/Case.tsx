@@ -27,9 +27,10 @@ import {
   namespace,
   RootState,
   routingBase,
+  saveCaseBase,
 } from '../../states';
 import { connectToCase, transformCategories } from '../../services/ContactService';
-import { cancelCase, updateCase } from '../../services/CaseService';
+import { cancelCase } from '../../services/CaseService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { getActivitiesFromCase, getActivitiesFromContacts, isNoteActivity, sortActivities } from './caseActivities';
 import { getDateFromNotSavedContact, getHelplineData } from './caseHelpers';
@@ -71,6 +72,8 @@ import { searchContactToHrmServiceContact, taskFormToSearchContact } from '../..
 import { ChannelTypes } from '../../states/DomainConstants';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
+import { updateCaseAsyncAction } from '../../states/case/saveCase';
+import { isCaseUpdated } from './useConnectedCaseUpdater';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -103,6 +106,9 @@ const Case: React.FC<Props> = ({
   loadRawContacts,
   releaseContacts,
   cancelNewCase,
+  updatedCase,
+  updateCaseAction,
+  createCase,
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
@@ -112,6 +118,14 @@ const Case: React.FC<Props> = ({
   const savedContactsJson = JSON.stringify(savedContacts);
   const { workerSid } = getHrmConfig();
   const strings = getTemplateStrings();
+
+  useEffect(() => {
+    const isFilled = isCaseUpdated(updatedCase);
+
+    console.log('createCase in case', createCase);
+
+    if (isFilled) setConnectedCase(updatedCase, task.taskSid);
+  }, [updatedCase, task.taskSid]);
 
   const timeline: Activity[] = useMemo(
     () => {
@@ -254,8 +268,9 @@ const Case: React.FC<Props> = ({
     setLoading(true);
 
     try {
-      const updatedCase = await updateCase(connectedCase.id, { ...connectedCase });
-      setConnectedCase(updatedCase, task.taskSid);
+      updateCaseAction(connectedCase.id, {
+        ...connectedCase,
+      });
     } catch (error) {
       console.error(error);
       recordBackendError('Update Case', error);
@@ -279,7 +294,7 @@ const Case: React.FC<Props> = ({
     try {
       releaseContacts(loadedContactIds, task.taskSid);
       const contact = await submitContactForm(task, form, connectedCase);
-      await updateCase(connectedCase.id, { ...connectedCase });
+      updateCaseAction(connectedCase.id, { ...connectedCase });
       await connectToCase(contact.id, connectedCase.id);
       await completeTask(task);
     } catch (error) {
@@ -400,7 +415,11 @@ const Case: React.FC<Props> = ({
       return (
         <CasePrintView
           caseDetails={caseDetails}
-          {...{ counselorsHash, onClickClose: handleCloseSection, definitionVersion }}
+          {...{
+            counselorsHash,
+            onClickClose: handleCloseSection,
+            definitionVersion,
+          }}
         />
       );
     default:
@@ -437,6 +456,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const newSearchContact =
     state[namespace][contactFormsBase].existingContacts[newContactTemporaryId(connectedCase)]?.savedContact;
   const { definitionVersions, currentDefinitionVersion } = state[namespace][configurationBase];
+  const updatedCase = state[namespace][saveCaseBase].updatedCase.case;
+  const { createCase } = state[namespace][saveCaseBase];
   return {
     form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
     connectedCaseState: caseState,
@@ -449,6 +470,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
       .filter(contact => connectedContactIds.has(contact.savedContact.contactId))
       .map(ecs => searchContactToHrmServiceContact(ecs.savedContact)),
     newContact: newSearchContact ? searchContactToHrmServiceContact(newSearchContact) : undefined,
+    updatedCase,
+    createCase,
   };
 };
 
@@ -473,6 +496,8 @@ const mapDispatchToProps = dispatch => {
     loadRawContacts: bindActionCreators(ContactActions.loadRawContacts, dispatch),
     loadContact: bindActionCreators(ContactActions.loadContact, dispatch),
     cancelNewCase,
+    updateCaseAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
+      dispatch(updateCaseAsyncAction(caseId, body)),
   };
 };
 

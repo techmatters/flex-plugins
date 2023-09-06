@@ -35,12 +35,11 @@ import {
 } from '../../styles/HrmStyles';
 import { CaseActionFormContainer, CaseActionLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
+import { configurationBase, connectedCaseBase, namespace, RootState, saveCaseBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { changeRoute } from '../../states/routing/actions';
-import { updateCase } from '../../services/CaseService';
-import type { CustomITask, StandaloneITask } from '../../types/types';
+import type { Case, CustomITask, StandaloneITask } from '../../types/types';
 import { recordingErrorHandler } from '../../fullStory';
 import { caseItemHistory, CaseSummaryWorkingCopy } from '../../states/case/types';
 import CloseCaseDialog from './CloseCaseDialog';
@@ -54,6 +53,8 @@ import { PermissionActions, PermissionActionType } from '../../permissions';
 import { disperseInputs, splitAt } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import { getTemplateStrings } from '../../hrmConfig';
+import { updateCaseAsyncAction } from '../../states/case/saveCase';
+import useConnectedCaseUpdater from './useConnectedCaseUpdater';
 
 export type EditCaseSummaryProps = {
   task: CustomITask | StandaloneITask;
@@ -69,12 +70,13 @@ const EditCaseSummary: React.FC<Props> = ({
   counselorsHash,
   exitRoute,
   connectedCaseState,
-  setConnectedCase,
   workingCopy,
   initialiseWorkingCopy,
   updateWorkingCopy,
   closeActions,
   can,
+  updateCaseAction,
+  updatedCase,
 }) => {
   const formDefinition: FormDefinition = useMemo(() => {
     try {
@@ -131,6 +133,8 @@ const EditCaseSummary: React.FC<Props> = ({
     }
   });
 
+  useConnectedCaseUpdater(updatedCase, task.taskSid);
+
   const form = useCreateFormFromDefinition({
     definition: formDefinition,
     initialValues: workingCopy,
@@ -158,8 +162,10 @@ const EditCaseSummary: React.FC<Props> = ({
     const { info, id } = connectedCaseState.connectedCase;
     const { status, ...updatedInfoValues } = workingCopy;
 
-    const updatedCase = await updateCase(id, { status, info: { ...info, ...updatedInfoValues } });
-    setConnectedCase(updatedCase, task.taskSid);
+    updateCaseAction(id, {
+      status,
+      info: { ...info, ...updatedInfoValues },
+    });
   };
 
   const saveAndLeave = async () => {
@@ -238,8 +244,9 @@ const mapStateToProps = (state: RootState, ownProps: EditCaseSummaryProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
   const connectedCaseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
   const workingCopy = connectedCaseState?.caseWorkingCopy.caseSummary;
+  const updatedCase = state[namespace][saveCaseBase].updatedCase.case;
 
-  return { connectedCaseState, counselorsHash, workingCopy };
+  return { connectedCaseState, counselorsHash, workingCopy, updatedCase };
 };
 
 const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
@@ -252,6 +259,7 @@ const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
       dispatch(removeCaseSummaryWorkingCopy(task.taskSid));
       dispatch(changeRoute(route, task.taskSid));
     },
+    updateCaseAction: (caseId: Case['id'], body: Partial<Case>) => dispatch(updateCaseAsyncAction(caseId, body)),
   };
 };
 

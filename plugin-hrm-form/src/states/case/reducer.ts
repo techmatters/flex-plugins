@@ -15,8 +15,9 @@
  */
 
 import { omit } from 'lodash';
+import { AnyAction } from 'redux';
 
-import { CaseActionType, CaseState, REMOVE_CONNECTED_CASE, SET_CONNECTED_CASE } from './types';
+import { CaseActionType, CaseState, REMOVE_CONNECTED_CASE, SET_CONNECTED_CASE, SavedCaseState } from './types';
 import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
 import {
   CaseWorkingCopyActionType,
@@ -37,15 +38,26 @@ import {
 } from './caseWorkingCopy';
 import { configurationBase, RootState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
+import { updateCaseReducer, initialState as savedCaseInitialState, createCaseReducer } from './saveCase';
 
-const initialState: CaseState = {
+const caseState: CaseState = {
   tasks: {},
 };
 
+type SaveCaseState = {
+  updatedCase: SavedCaseState;
+  createCase: SavedCaseState;
+};
+
+const saveCaseInitialState: SaveCaseState = {
+  updatedCase: savedCaseInitialState,
+  createCase: savedCaseInitialState,
+};
+
 // eslint-disable-next-line import/no-unused-modules
-export function reduce(
+function caseReduce(
   rootState: RootState['plugin-hrm-form'],
-  state = initialState,
+  state = caseState,
   action: CaseActionType | CaseWorkingCopyActionType | GeneralActionType,
 ): CaseState {
   switch (action.type) {
@@ -94,3 +106,12 @@ export function reduce(
       return state;
   }
 }
+
+function saveCaseReduce(inputState = saveCaseInitialState, action: AnyAction): SaveCaseState {
+  return {
+    updatedCase: updateCaseReducer(inputState.updatedCase, action),
+    createCase: createCaseReducer(inputState.createCase, action),
+  };
+}
+
+export { caseReduce, saveCaseReduce };
