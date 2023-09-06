@@ -15,7 +15,36 @@
  */
 
 import React from 'react';
-import { NotificationType, Notifications, Template } from '@twilio/flex-ui';
+import {
+  NotificationType,
+  Notifications,
+  Template,
+  ITask,
+  ReplacedActionFunction,
+  ActionFunction,
+  TaskHelper,
+  Manager,
+  StateHelper,
+} from '@twilio/flex-ui';
+import { callTypes } from 'hrm-form-definitions';
+import * as Flex from '@twilio/flex-ui';
+
+import * as TransferHelpers from '../utils/transfer';
+import { transferModes } from '../states/DomainConstants';
+import { recordEvent } from '../fullStory';
+import { loadFormSharedState, saveFormSharedState } from '../utils/sharedState';
+import { transferChatStart } from '../services/ServerlessService';
+import { getHrmConfig } from '../hrmConfig';
+import { contactFormsBase, namespace } from '../states';
+import * as Actions from '../states/contacts/actions';
+import { changeRoute } from '../states/routing/actions';
+import { reactivateAseloListeners } from '../conversationListeners';
+import { prepopulateForm } from '../utils/prepopulateForm';
+
+type SetupObject = ReturnType<typeof getHrmConfig>;
+type ActionPayload = { task: ITask };
+type ActionPayloadWithOptions = ActionPayload & { options: { mode: string }; targetSid: string };
+const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 export const TransfersNotifications = {
   CantHangTransferInProgressNotification: 'TransfersNotifications_CantHangTransferInProgressNotification',
@@ -29,6 +58,120 @@ const setUpTransfersNotifications = () => {
   });
 };
 
-export const setUpTransferActions = () => {
+const safeTransfer = async (transferFunction: () => Promise<any>, task: ITask): Promise<void> => {
+  try {
+    await transferFunction();
+  } catch (err) {
+    await TransferHelpers.clearTransferMeta(task);
+  }
+};
+
+/**
+ * Given a taskSid, retrieves the state of the form (stored in redux) for that task
+ */
+const getStateContactForms = (taskSid: string) => {
+  return Manager.getInstance().store.getState()[namespace][contactFormsBase].tasks[taskSid];
+};
+
+/**
+ * Custom override for TransferTask action. Saves the form to share with another counseler (if possible) and then starts the transfer
+ */
+const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction => async (
+  payload: ActionPayloadWithOptions,
+  original: ActionFunction,
+) => {
+  const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
+
+  /*
+   * Currently (as of 2 Dec 2020) warm text transfers are not supported.
+   * We shortcut the rest of the function to save extra time and unnecessary visual changes.
+   */
+  if (!TaskHelper.isCallTask(payload.task) && mode === transferModes.warm) {
+    recordEvent('Transfer Warm Chat Blocked', {});
+    window.alert(Manager.getInstance().strings['Transfer-ChatWarmNotAllowed']);
+    return () => undefined; // Not calling original(payload) prevents the additional "Task cannot be transferred" notification
+  }
+
+  const { workerSid, counselorName } = setupObject;
+
+  // save current form state as sync document (if there is a form)
+  const form = getStateContactForms(payload.task.taskSid);
+  const documentName = await saveFormSharedState(form, payload.task);
+
+  // set metadata for the transfer
+  await TransferHelpers.setTransferMeta(payload, documentName, counselorName);
+
+  if (TaskHelper.isCallTask(payload.task)) {
+    const disableTransfer = !TransferHelpers.canTransferConference(payload.task);
+
+    if (disableTransfer) {
+      window.alert(Manager.getInstance().strings['Transfer-CannotTransferTooManyParticipants']);
+    } else {
+      return safeTransfer(() => original(payload), payload.task);
+    }
+  }
+
+  const body = {
+    mode,
+    taskSid: payload.task.taskSid,
+    targetSid: payload.targetSid,
+    ignoreAgent: workerSid,
+  };
+
+  return safeTransfer(() => transferChatStart(body), payload.task);
+};
+
+const afterCancelTransfer = (payload: ActionPayload) => {
+  TransferHelpers.clearTransferMeta(payload.task);
+};
+
+const restoreFormIfTransfer = async (task: ITask) => {
+  const form = await loadFormSharedState(task);
+  if (form) {
+    Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, task.taskSid));
+
+    if (form.callType === callTypes.child) {
+      Manager.getInstance().store.dispatch(
+        changeRoute({ route: 'tabbed-forms', subroute: 'childInformation' }, task.taskSid),
+      );
+    } else if (form.callType === callTypes.caller) {
+      Manager.getInstance().store.dispatch(
+        changeRoute({ route: 'tabbed-forms', subroute: 'callerInformation' }, task.taskSid),
+      );
+    }
+  }
+};
+
+const takeControlIfTransfer = async (task: ITask) => {
+  if (TransferHelpers.isColdTransfer(task)) await TransferHelpers.takeTaskControl(task);
+};
+
+const handleTransferredTask = async (task: ITask) => {
+  await takeControlIfTransfer(task);
+  const { source: convo, participants } = StateHelper.getConversationStateForTask(task) ?? {};
+  if (convo) {
+    reactivateAseloListeners(convo);
+    if (participants.size === 0) {
+      // Force a refresh of the conversation state when accepting a transfer if the current state has no participants
+      // This works around an issue where pre-existing state for the conversation being loaded prior to accepting the transfer borks the state once the transfer is accepted for some reason.
+      // Reverse engineering an internal Flex action is one level of grevious hackery below deleting the conversation state from the redux store directly =-/
+      Manager.getInstance().store.dispatch({
+        type: 'CONVERSATION_UNLOAD',
+        meta: { channelSid: convo.sid, conversationSid: convo.sid },
+      });
+    }
+  }
+  await restoreFormIfTransfer(task);
+};
+
+const afterAcceptTask = (transfersEnabled: boolean) => async ({ task }: ActionPayload) => {
+  if (transfersEnabled && TransferHelpers.hasTransferStarted(task)) await handleTransferredTask(task);
+  else prepopulateForm(task);
+};
+
+export const setUpTransferActions = (transfersEnabled: boolean, setupObject: SetupObject) => {
   setUpTransfersNotifications();
+  if (transfersEnabled) Flex.Actions.replaceAction('TransferTask', customTransferTask(setupObject));
+  Flex.Actions.addListener('afterAcceptTask', afterAcceptTask(transfersEnabled));
+  Flex.Actions.addListener('afterCancelTransfer', afterCancelTransfer);
 };

@@ -75,7 +75,7 @@ const ContactDetailsSection: React.FC<Props> = ({
     <>
       <SectionTitleContainer data-testid="ContactDetails-Section">
         <SectionTitleButton
-          buttonRef={buttonRef => {
+          ref={buttonRef => {
             if (htmlElRef) {
               htmlElRef.current = buttonRef;
             }

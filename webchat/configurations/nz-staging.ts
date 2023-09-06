@@ -357,15 +357,11 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         },
         {
           value: "emergency",
-          label: "I'm having an emergency"
+          label: "I’m facing an emergency"
         },
         {
           value: "counselling",
-          label: "I need support or counselling"
-        },
-        {
-          value: "questions",
-          label: "I have questions about the helpline"
+          label: "I’m looking for support"
         },
         {
           value: "Unknown",

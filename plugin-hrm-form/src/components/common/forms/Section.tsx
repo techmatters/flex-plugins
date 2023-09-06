@@ -58,7 +58,7 @@ const Section: React.FC<MyProps> = ({
   <>
     <SectionTitleContainer color={color}>
       <SectionTitleButton
-        buttonRef={buttonRef => {
+        ref={buttonRef => {
           if (htmlElRef) {
             htmlElRef.current = buttonRef;
           }

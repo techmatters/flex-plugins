@@ -18,7 +18,7 @@ import { ITask, Manager } from '@twilio/flex-ui';
 import { capitalize } from 'lodash';
 import { callTypes, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
 
-import { LexMemory, AutopilotMemory, FeatureFlags } from '../types/types';
+import { LexMemory, AutopilotMemory } from '../types/types';
 import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
 import { prepopulateForm as prepopulateFormAction } from '../states/contacts/actions';
@@ -164,18 +164,17 @@ const transformAnswers = (answers: AutopilotAnswers): PreSurveyAnswers => {
   );
 };
 
-const getAnswers = (isLexMemory: boolean, memory: LexMemory | AutopilotMemory): PreSurveyAnswers => {
-  if (isLexMemory) {
-    return memory as LexMemory;
-  }
-
+const getAnswers = (memory: LexMemory | AutopilotMemory): PreSurveyAnswers => {
   // This can be removed after every helpline is using Lex
-  const autopilotAnswers = (memory as AutopilotMemory).twilio.collected_data.collect_survey.answers;
-  return transformAnswers(autopilotAnswers);
+  if (typeof memory.twilio === 'object') {
+    const autopilotAnswers = (memory as AutopilotMemory).twilio.collected_data.collect_survey.answers;
+    return transformAnswers(autopilotAnswers);
+  }
+  return memory as LexMemory;
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export const prepopulateForm = (task: ITask, featureFlags: FeatureFlags) => {
+export const prepopulateForm = (task: ITask) => {
   const { memory, preEngagementData } = task.attributes;
 
   if (!memory && !preEngagementData) return;
@@ -208,7 +207,7 @@ export const prepopulateForm = (task: ITask, featureFlags: FeatureFlags) => {
     return;
   }
 
-  const answers = getAnswers(featureFlags.enable_lex, memory);
+  const answers = getAnswers(memory);
 
   const isValidSurvey = Boolean(answers.aboutSelf); // determines if the memory has valid values or if it was aborted
   const isAboutSelf = answers.aboutSelf === 'Yes';

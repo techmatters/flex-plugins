@@ -14,4 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-export { default as TranscriptSection } from './TranscriptSection';
+import ReactPDF from '@react-pdf/renderer';
+
+const csamReportStyles: ReactPDF.Styles = {
+  csamReportText: {
+    fontFamily: 'Roboto',
+    fontSize: 12,
+  },
+};
+
+export default csamReportStyles;

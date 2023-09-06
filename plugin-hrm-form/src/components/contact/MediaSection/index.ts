@@ -14,8 +14,5 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { setUpTransferActions } from './setUpTransferActions';
-
-export const setUpTransfers = () => {
-  setUpTransferActions();
-};
+export { default as TranscriptSection } from './TranscriptSection';
+export { default as RecordingSection } from './RecordingSection';

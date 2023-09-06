@@ -8,21 +8,21 @@
   },
   "case": {
     "households": {
-      "splitFormAt": 7
+      "splitFormAt": 11
     },
     "perpetrators": {
       "splitFormAt": 9
     },
     "incidents": {
       "previewFields": [
-        "frequency",
-        "selfHarmDetails"
+        "whoPresentsRisk",
+        "typeOfHarm"
       ],
       "layout": {
-        "frequency": {
+        "whoPresentsRisk": {
           "includeLabel": true
         },
-        "selfHarmDetails": {
+        "typeOfHarm": {
           "includeLabel": true
         }
       },
