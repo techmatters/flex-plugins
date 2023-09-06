@@ -4,18 +4,4 @@ variable "local_os" {
   default     = "Linux"
 }
 
-variable "helpline" {
-  default = "SafeSpot"
-}
-variable "short_helpline" {
-  default = "JM"
-}
-variable "operating_info_key" {
-  default = "jm"
-}
-variable "environment" {
-  default = "Staging"
-}
-variable "short_environment" {
-  default = "STG"
-}
+

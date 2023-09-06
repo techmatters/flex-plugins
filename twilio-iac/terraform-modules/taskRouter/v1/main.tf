@@ -36,7 +36,10 @@ moved {
   to   = twilio_taskrouter_workspaces_task_queues_v1.task_queue["master"]
 }
 
-
+moved {
+  from = module.survey.twilio_taskrouter_workspaces_task_queues_v1.survey
+  to   = twilio_taskrouter_workspaces_task_queues_v1.task_queue["survey"]
+}
 
 
 // Workflow
@@ -62,7 +65,10 @@ moved {
   to   = twilio_taskrouter_workspaces_workflows_v1.workflow["master"]
 }
 
-
+moved {
+  from = module.survey.twilio_taskrouter_workspaces_workflows_v1.survey_workflow
+  to   = twilio_taskrouter_workspaces_workflows_v1.workflow["survey"]
+}
 
 
 //Task Channels
@@ -103,4 +109,8 @@ moved {
   to   = twilio_taskrouter_workspaces_task_channels_v1.task_channel["email"]
 }
 
+moved {
+  from = module.survey.twilio_taskrouter_workspaces_task_channels_v1.survey
+  to   = twilio_taskrouter_workspaces_task_channels_v1.task_channel["survey"]
+}
 

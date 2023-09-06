@@ -6,7 +6,7 @@ terraform {
     }
   }
 }
-
+/*
 data "aws_ssm_parameter" "webhook_url_studio_errors" {
   name = "/${var.environment}/slack/webhook_url_studio_errors"
 }
@@ -14,6 +14,11 @@ data "aws_ssm_parameter" "webhook_url_studio_errors" {
 locals {
   #Marking this as non sensitive since we need to see the studio flow definition when running a plan to validate changes.
   webhook_url_studio_errors = nonsensitive(data.aws_ssm_parameter.webhook_url_studio_errors.value)
+}*/
+#Temporary change to be able to move forward
+locals {
+  #Marking this as non sensitive since we need to see the studio flow definition when running a plan to validate changes.
+  webhook_url_studio_errors = "http://www.google.com"
 }
 
 #I'm not sure about this resource, the idea is to have 1 studio flow json template and also as few as possible
@@ -80,7 +85,7 @@ resource "twilio_flex_flex_flows_v1" "channel_flow" {
   chat_service_sid     = var.flex_chat_service_sid
   friendly_name        = "Flex ${title(each.key)} Flow"
   integration_type     = "studio"
-  janitor_enabled      = each.value.channel_type == "custom" ? true : !var.enable_post_survey
+  janitor_enabled      = !var.enable_post_survey
   contact_identity     = each.value.contact_identity
   integration_flow_sid = twilio_studio_flows_v2.channel_studio_flow[each.key].sid
   enabled              = true
