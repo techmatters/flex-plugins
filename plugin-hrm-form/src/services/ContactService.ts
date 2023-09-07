@@ -271,7 +271,7 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
     childInformation,
     caseInformation,
     contactlessTask,
-    conversationMedia,
+    conversationMedia, // When can we remove this from here?
     categories,
   };
 }
@@ -410,6 +410,7 @@ const saveContactToHrm = async (
     serviceSid,
     csamReports,
     referrals,
+    conversationMedia,
   };
 
   const options = {

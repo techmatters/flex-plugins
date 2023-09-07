@@ -219,7 +219,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   );
 
   const loadConversationIntoOverlay = async () => {
-    const twilioStoredMedia = savedContact.rawJson.conversationMedia.find(isTwilioStoredMedia);
+    const twilioStoredMedia = savedContact.conversationMedia.find(isTwilioStoredMedia);
     await Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_PLAY, {
       taskSid: twilioStoredMedia.reservationSid,
     });
@@ -228,24 +228,24 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const twilioStoredTranscript =
     featureFlags.enable_twilio_transcripts &&
     canViewTwilioTranscript &&
-    savedContact.rawJson.conversationMedia?.find(isTwilioStoredMedia);
+    savedContact.conversationMedia?.find(isTwilioStoredMedia);
   const externalStoredTranscript =
     featureFlags.enable_external_transcripts &&
     can(PermissionActions.VIEW_EXTERNAL_TRANSCRIPT) &&
-    savedContact.rawJson.conversationMedia?.find(isS3StoredTranscript);
+    savedContact.conversationMedia?.find(isS3StoredTranscript);
 
   const showTranscriptSection = Boolean(
     isChatChannel(channel) &&
-      savedContact.rawJson.conversationMedia?.length &&
+      savedContact.conversationMedia?.length &&
       (twilioStoredTranscript || externalStoredTranscript),
   );
 
   const showRecordingSection = Boolean(
     isVoiceChannel(channel) &&
       can(PermissionActions.VIEW_RECORDING) &&
-      savedContact.rawJson.conversationMedia?.find(isS3StoredRecording),
+      savedContact.conversationMedia?.find(isS3StoredRecording),
   );
-  const externalStoredRecording = savedContact.rawJson.conversationMedia?.find(isS3StoredRecording);
+  const externalStoredRecording = savedContact.conversationMedia?.find(isS3StoredRecording);
 
   const csamReportEnabled = featureFlags.enable_csam_report && featureFlags.enable_csam_clc_report;
 
