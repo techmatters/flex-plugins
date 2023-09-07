@@ -24,12 +24,17 @@ import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
 import { Flex, Box, Row } from '../../styles/HrmStyles';
-import { CSAMReportEntry, isS3StoredTranscript, isTwilioStoredMedia, HrmServiceContact } from '../../types/types';
+import {
+  CSAMReportEntry,
+  isS3StoredTranscript,
+  isS3StoredRecording,
+  isTwilioStoredMedia,
+  HrmServiceContact,
+} from '../../types/types';
 import {
   DetailsContainer,
   NameText,
   ContactAddedFont,
-  SectionTitleContainer,
   SectionActionButton,
   SectionValueText,
   ContactDetailsIcon,
@@ -44,7 +49,7 @@ import { configurationBase, contactFormsBase, namespace, RootState } from '../..
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getPermissionsForContact, getPermissionsForViewingIdentifiers, PermissionActions } from '../../permissions';
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
-import { TranscriptSection } from './TranscriptSection';
+import { TranscriptSection, RecordingSection } from './MediaSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import type { ResourceReferral } from '../../states/contacts/resourceReferral';
@@ -195,6 +200,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
     ISSUE_CATEGORIZATION,
     CONTACT_SUMMARY,
     TRANSCRIPT,
+    RECORDING,
   } = ContactDetailsSections;
   const addedBy = counselorsHash[createdBy];
   const counselorName = counselorsHash[twilioWorkerId];
@@ -219,14 +225,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
     });
   };
 
-  const recordingAvailable = Boolean(
-    featureFlags.enable_voice_recordings &&
-      isVoiceChannel(channel) &&
-      canViewTwilioTranscript &&
-      savedContact.rawJson.conversationMedia?.length,
-    // && typeof savedContact.overview.conversationDuration === 'number',
-  );
-
   const twilioStoredTranscript =
     featureFlags.enable_twilio_transcripts &&
     canViewTwilioTranscript &&
@@ -235,11 +233,20 @@ const ContactDetailsHome: React.FC<Props> = function ({
     featureFlags.enable_external_transcripts &&
     can(PermissionActions.VIEW_EXTERNAL_TRANSCRIPT) &&
     savedContact.rawJson.conversationMedia?.find(isS3StoredTranscript);
+
   const showTranscriptSection = Boolean(
     isChatChannel(channel) &&
       savedContact.rawJson.conversationMedia?.length &&
       (twilioStoredTranscript || externalStoredTranscript),
   );
+
+  const showRecordingSection = Boolean(
+    isVoiceChannel(channel) &&
+      can(PermissionActions.VIEW_RECORDING) &&
+      savedContact.rawJson.conversationMedia?.find(isS3StoredRecording),
+  );
+  const externalStoredRecording = savedContact.rawJson.conversationMedia?.find(isS3StoredRecording);
+
   const csamReportEnabled = featureFlags.enable_csam_report && featureFlags.enable_csam_clc_report;
 
   const { canView } = getPermissionsForViewingIdentifiers();
@@ -385,13 +392,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           )}
         </ContactDetailsSection>
       )}
-      {recordingAvailable && (
-        <SectionTitleContainer style={{ justifyContent: 'right', paddingTop: '10px', paddingBottom: '10px' }}>
-          <SectionActionButton type="button" onClick={loadConversationIntoOverlay}>
-            <Template code="ContactDetails-LoadRecording-Button" />
-          </SectionActionButton>
-        </SectionTitleContainer>
-      )}
+
       {showTranscriptSection && (
         <ContactDetailsSection
           sectionTitle={<Template code="ContactDetails-Transcript" />}
@@ -407,6 +408,20 @@ const ContactDetailsHome: React.FC<Props> = function ({
               externalStoredTranscript={externalStoredTranscript}
               loadConversationIntoOverlay={loadConversationIntoOverlay}
             />
+          </Flex>
+        </ContactDetailsSection>
+      )}
+
+      {showRecordingSection && (
+        <ContactDetailsSection
+          sectionTitle={<Template code="ContactDetails-Recording" />}
+          expanded={detailsExpanded[RECORDING]}
+          handleExpandClick={() => toggleSection(RECORDING)}
+          buttonDataTestid="ContactDetails-Section-Recording"
+          showEditButton={false}
+        >
+          <Flex justifyContent="center" flexDirection="row" paddingTop="20px">
+            <RecordingSection contactId={contactId} externalStoredRecording={externalStoredRecording} />{' '}
           </Flex>
         </ContactDetailsSection>
       )}

@@ -68,6 +68,7 @@ export const newTaskEntry: TaskEntry = {
     [ContactDetailsSections.CONTACT_SUMMARY]: false,
     [ContactDetailsSections.TRANSCRIPT]: false,
     [ContactDetailsSections.EXTERNAL_REPORT]: false,
+    [ContactDetailsSections.RECORDING]: false,
   },
   searchContactsResult: { count: 0, contacts: [] },
   searchCasesResult: { count: 0, cases: [] },

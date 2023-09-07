@@ -19,12 +19,11 @@
 /* eslint-disable import/no-unused-modules */
 /* eslint-disable react/display-name */
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React from 'react';
 import GridIcon from '@material-ui/icons/GridOn';
 import ListIcon from '@material-ui/icons/List';
 import { Template } from '@twilio/flex-ui';
 import { CategoriesDefinition } from 'hrm-form-definitions';
-import { Button, Popover } from '@material-ui/core';
 
 import Section from './Section';
 import {
@@ -62,8 +61,8 @@ export const createSubcategoryCheckbox = (
   const path = [...parents, label].join('.');
 
   return (
-    <CategoryCheckboxWrapper>
-      <ConnectForm key={path}>
+    <CategoryCheckboxWrapper key={path}>
+      <ConnectForm>
         {({ register, getValues }) => {
           const { categories } = getValues();
           const checked = categories && categories.includes(path);
@@ -159,7 +158,7 @@ export const CategoriesFromDefinition: React.FC<Props> = ({
       </CategorySubtitleSection>
       <CategoriesWrapper>
         {Object.entries(definition).map(([category, { color }], index) => (
-          <Box marginBottom="6px" key={`IssueCategorization_${category}`}>
+          <Box marginBottom="6px" key={`IssueCategorization_${category}_${index}`}>
             <Section
               sectionTitle={category}
               color={color}

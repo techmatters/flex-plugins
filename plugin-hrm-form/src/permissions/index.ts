@@ -46,6 +46,7 @@ export const ContactActions = {
   VIEW_CONTACT: 'viewContact',
   EDIT_CONTACT: 'editContact',
   VIEW_EXTERNAL_TRANSCRIPT: 'viewExternalTranscript',
+  VIEW_RECORDING: 'viewRecording',
 } as const;
 type ContactActions = typeof ContactActions;
 export const ViewIdentifiersAction = {

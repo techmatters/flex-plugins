@@ -21,40 +21,26 @@ import {
   ChatOrchestrator,
   ITask,
   ActionFunction,
-  ReplacedActionFunction,
   ChatOrchestratorEvent,
 } from '@twilio/flex-ui';
 import { Conversation } from '@twilio/conversations';
-import { callTypes } from 'hrm-form-definitions';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
-import {
-  transferChatStart,
-  adjustChatCapacity,
-  sendSystemMessage,
-  getDefinitionVersion,
-} from '../services/ServerlessService';
-import { namespace, contactFormsBase, configurationBase, dualWriteBase, conferencingBase } from '../states';
+import { adjustChatCapacity, sendSystemMessage, getDefinitionVersion } from '../services/ServerlessService';
+import { namespace, configurationBase, dualWriteBase } from '../states';
 import * as Actions from '../states/contacts/actions';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
-import { changeRoute } from '../states/routing/actions';
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
-import { transferModes, customChannelTypes } from '../states/DomainConstants';
+import { customChannelTypes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
-import { saveFormSharedState, loadFormSharedState } from './sharedState';
-import { prepopulateForm } from './prepopulateForm';
-import { recordEvent } from '../fullStory';
 import { CustomITask, FeatureFlags } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
-import { reactivateAseloListeners } from '../conversationListeners';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
 type ActionPayload = { task: ITask };
-type ActionPayloadWithOptions = ActionPayload & { options: { mode: string }; targetSid: string };
-const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 export const loadCurrentDefinitionVersion = async () => {
   const { definitionVersion } = getHrmConfig();
@@ -63,13 +49,6 @@ export const loadCurrentDefinitionVersion = async () => {
   Manager.getInstance().store.dispatch(populateCurrentDefinitionVersion(definitions));
   // already populate this to be consumed for data display components
   Manager.getInstance().store.dispatch(updateDefinitionVersion(definitionVersion, definitions));
-};
-
-/**
- * Given a taskSid, retrieves the state of the form (stored in redux) for that task
- */
-const getStateContactForms = (taskSid: string) => {
-  return Manager.getInstance().store.getState()[namespace][contactFormsBase].tasks[taskSid];
 };
 
 /**
@@ -100,36 +79,6 @@ export const initializeContactForm = (payload: ActionPayload) => {
   Manager.getInstance().store.dispatch(
     GeneralActions.initializeContactState(currentDefinitionVersion)(payload.task.taskSid),
   );
-};
-
-const restoreFormIfTransfer = async (task: ITask) => {
-  const form = await loadFormSharedState(task);
-  if (form) {
-    Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, task.taskSid));
-
-    if (form.callType === callTypes.child) {
-      Manager.getInstance().store.dispatch(
-        changeRoute({ route: 'tabbed-forms', subroute: 'childInformation' }, task.taskSid),
-      );
-    } else if (form.callType === callTypes.caller) {
-      Manager.getInstance().store.dispatch(
-        changeRoute({ route: 'tabbed-forms', subroute: 'callerInformation' }, task.taskSid),
-      );
-    }
-  }
-};
-
-const takeControlIfTransfer = async (task: ITask) => {
-  if (TransferHelpers.isColdTransfer(task)) await TransferHelpers.takeTaskControl(task);
-};
-
-const handleTransferredTask = async (task: ITask) => {
-  await takeControlIfTransfer(task);
-  const convo = StateHelper.getConversationStateForTask(task);
-  if (convo?.source) {
-    reactivateAseloListeners(convo.source);
-  }
-  await restoreFormIfTransfer(task);
 };
 
 export const getTaskLanguage = ({ helplineLanguage }: Pick<SetupObject, 'helplineLanguage'>) => ({
@@ -206,73 +155,10 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
     subscribeAlertOnConversationJoined(task);
   }
 
-  if (featureFlags.enable_transfers && TransferHelpers.hasTransferStarted(task)) handleTransferredTask(task);
-  else prepopulateForm(task, featureFlags);
-
   // If this is the first counsellor that gets the task, say hi
   if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
     sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
   }
-};
-
-const safeTransfer = async (transferFunction: () => Promise<any>, task: ITask): Promise<void> => {
-  try {
-    await transferFunction();
-  } catch (err) {
-    await TransferHelpers.clearTransferMeta(task);
-  }
-};
-
-/**
- * Custom override for TransferTask action. Saves the form to share with another counseler (if possible) and then starts the transfer
- */
-export const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction => async (
-  payload: ActionPayloadWithOptions,
-  original: ActionFunction,
-) => {
-  const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
-
-  /*
-   * Currently (as of 2 Dec 2020) warm text transfers are not supported.
-   * We shortcut the rest of the function to save extra time and unnecessary visual changes.
-   */
-  if (!TaskHelper.isCallTask(payload.task) && mode === transferModes.warm) {
-    recordEvent('Transfer Warm Chat Blocked', {});
-    window.alert(Manager.getInstance().strings['Transfer-ChatWarmNotAllowed']);
-    return () => undefined; // Not calling original(payload) prevents the additional "Task cannot be transferred" notification
-  }
-
-  const { workerSid, counselorName } = setupObject;
-
-  // save current form state as sync document (if there is a form)
-  const form = getStateContactForms(payload.task.taskSid);
-  const documentName = await saveFormSharedState(form, payload.task);
-
-  // set metadata for the transfer
-  await TransferHelpers.setTransferMeta(payload, documentName, counselorName);
-
-  if (TaskHelper.isCallTask(payload.task)) {
-    const disableTransfer = !TransferHelpers.canTransferConference(payload.task);
-
-    if (disableTransfer) {
-      window.alert(Manager.getInstance().strings['Transfer-CannotTransferTooManyParticipants']);
-    } else {
-      return safeTransfer(() => original(payload), payload.task);
-    }
-  }
-
-  const body = {
-    mode,
-    taskSid: payload.task.taskSid,
-    targetSid: payload.targetSid,
-    ignoreAgent: workerSid,
-  };
-
-  return safeTransfer(() => transferChatStart(body), payload.task);
-};
-
-export const afterCancelTransfer = (payload: ActionPayload) => {
-  TransferHelpers.clearTransferMeta(payload.task);
 };
 
 export const hangupCall = fromActionFunction(saveEndMillis);
@@ -309,29 +195,26 @@ const isAseloCustomChannelTask = (task: CustomITask) =>
  * - task wrapup: removes DeactivateConversation
  * - task completed: removes DeactivateConversation
  */
-const setChatOrchestrationsForPostSurvey = () => {
-  const setExcludedDeactivateConversation = (event: keyof ChatOrchestrationsEvents) => {
-    const excludeDeactivateConversation = (orchestrations: ChatOrchestratorEvent[]) =>
-      orchestrations.filter(e => e !== ChatOrchestratorEvent.DeactivateConversation);
+export const excludeDeactivateConversationOrchestration = (featureFlags: FeatureFlags) => {
+  // TODO: remove conditions once all accounts are updated, since we want this code to be executed in all Flex instances once CHI-2202 is implemented and in place
+  if (featureFlags.backend_handled_chat_janitor || featureFlags.enable_post_survey) {
+    const setExcludedDeactivateConversation = (event: keyof ChatOrchestrationsEvents) => {
+      const excludeDeactivateConversation = (orchestrations: ChatOrchestratorEvent[]) =>
+        orchestrations.filter(e => e !== ChatOrchestratorEvent.DeactivateConversation);
 
-    const defaultOrchestrations = ChatOrchestrator.getOrchestrations(event);
+      const defaultOrchestrations = ChatOrchestrator.getOrchestrations(event);
 
-    if (Array.isArray(defaultOrchestrations)) {
-      ChatOrchestrator.setOrchestrations(event, task => {
-        return isAseloCustomChannelTask(task)
-          ? defaultOrchestrations
-          : excludeDeactivateConversation(defaultOrchestrations);
-      });
-    }
-  };
+      if (Array.isArray(defaultOrchestrations)) {
+        ChatOrchestrator.setOrchestrations(event, task => {
+          return isAseloCustomChannelTask(task)
+            ? defaultOrchestrations
+            : excludeDeactivateConversation(defaultOrchestrations);
+        });
+      }
+    };
 
-  setExcludedDeactivateConversation('wrapup');
-  setExcludedDeactivateConversation('completed');
-};
-
-export const setUpPostSurvey = (featureFlags: FeatureFlags) => {
-  if (featureFlags.enable_post_survey) {
-    setChatOrchestrationsForPostSurvey();
+    setExcludedDeactivateConversation('wrapup');
+    setExcludedDeactivateConversation('completed');
   }
 };
 

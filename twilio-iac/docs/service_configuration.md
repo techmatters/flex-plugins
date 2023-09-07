@@ -4,6 +4,10 @@
 
 See requirements in [twilio-iac/README.md](../README.md)
 
+If at some point you run into an error inside the container, you can try pulling the latest docker image by running
+`docker pull public.ecr.aws/techmatters/terraform:x.y.z` where x.y.z is the docker image defined in `/home/buonapasta/Desktop/TechMatters/flex-plugins/twilio-iac/makefiles/00-setup.make`.
+
+
 ## Usage
 
 All make commands are run from the `twilio-iac` directory.
