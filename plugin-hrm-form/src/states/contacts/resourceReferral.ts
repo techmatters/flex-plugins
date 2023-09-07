@@ -87,9 +87,9 @@ const patchUnsavedContactReferralResourceState = (
           [taskId]: {
             ...state.tasks[taskId],
             draft: {
-              ...state.tasks[taskId].draft,
+              ...state.tasks[taskId].metadata.draft,
               resourceReferralList: {
-                ...state.tasks[taskId].draft.resourceReferralList,
+                ...state.tasks[taskId].metadata.draft.resourceReferralList,
                 ...patch,
               },
             },
@@ -105,7 +105,7 @@ export const resourceReferralReducer = (initialState: ContactsState) =>
       (state, { payload: { taskId, resourceReferralIdToAdd } }) => {
         if (
           !state.tasks[taskId] ||
-          state.tasks[taskId].draft.resourceReferralList.resourceReferralIdToAdd === resourceReferralIdToAdd
+          state.tasks[taskId].metadata.draft.resourceReferralList.resourceReferralIdToAdd === resourceReferralIdToAdd
         ) {
           // Don't clobber the lookup status if the text hasn't actually changed
           return state;
@@ -123,7 +123,7 @@ export const resourceReferralReducer = (initialState: ContactsState) =>
       if (!state.tasks[taskId]) {
         return state;
       }
-      if (state.tasks[taskId].referrals?.find(r => r.resourceId === resource.id)) {
+      if (state.tasks[taskId].contact.referrals?.find(r => r.resourceId === resource.id)) {
         // Don't add a referral if it already exists
         return patchUnsavedContactReferralResourceState(state, taskId, {
           lookupStatus: ReferralLookupStatus.NOT_STARTED,
@@ -136,13 +136,13 @@ export const resourceReferralReducer = (initialState: ContactsState) =>
           [taskId]: {
             ...state.tasks[taskId],
             referrals: [
-              ...(state.tasks[taskId].referrals ?? []),
+              ...(state.tasks[taskId].contact.referrals ?? []),
               { resourceId: resource.id, referredAt: new Date().toISOString(), resourceName: resource.name },
             ],
             draft: {
-              ...state.tasks[taskId].draft,
+              ...state.tasks[taskId].metadata.draft,
               resourceReferralList: {
-                ...state.tasks[taskId].draft.resourceReferralList,
+                ...state.tasks[taskId].metadata.draft.resourceReferralList,
                 lookupStatus: ReferralLookupStatus.NOT_STARTED,
               },
             },
@@ -151,7 +151,7 @@ export const resourceReferralReducer = (initialState: ContactsState) =>
       };
     }),
     handleAction(removeResourceReferralForUnsavedContactAction, (state, { payload: { taskId, referralId } }) => {
-      const referrals = state.tasks[taskId].referrals.filter(referral => referral.resourceId !== referralId);
+      const referrals = state.tasks[taskId].contact.referrals.filter(referral => referral.resourceId !== referralId);
       return {
         ...state,
         tasks: {
