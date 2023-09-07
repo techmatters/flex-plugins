@@ -47,8 +47,8 @@ ${
         ],
         "properties": {
             "offset": {
-            "x": 320,
-            "y": 510
+             "x": 420,
+             "y": 970
             },
             "workflow": workflow_sids["master"],
             "channel": task_channel_sids["chat"],
@@ -102,8 +102,8 @@ ${
                 "service_sid": flow_vars["service_sid"],
                 "environment_sid": flow_vars["environment_sid"],
                 "offset": {
-                "x": -140,
-                "y": 520
+                 "x": -130,
+                 "y": 500
                 },
                 "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
                 "parameters": [
@@ -112,7 +112,7 @@ ${
                     "key": "channelSid"
                 },
                 {
-                    "value": "{{trigger.message.Body}}",
+                    "value": "trigger_pre_survey",
                     "key": "message"
                 },
                 {
@@ -159,8 +159,8 @@ ${
                 "service_sid": flow_vars["service_sid"],
                 "environment_sid": flow_vars["environment_sid"],
                 "offset": {
-                "x": -250,
-                "y": 620
+                 "x": -60,
+                 "y": 720
                 },
                 "function_sid": flow_vars["chatbot_callback_cleanup_function_id"],
                 "parameters": [
