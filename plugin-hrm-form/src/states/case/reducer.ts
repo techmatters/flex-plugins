@@ -17,7 +17,15 @@
 import { omit } from 'lodash';
 import { AnyAction } from 'redux';
 
-import { CaseActionType, CaseState, REMOVE_CONNECTED_CASE, SET_CONNECTED_CASE, SavedCaseState, UPDATE_CASE_ACTION } from './types';
+import {
+  CaseActionType,
+  CaseState,
+  REMOVE_CONNECTED_CASE,
+  SET_CONNECTED_CASE,
+  SavedCaseState,
+  UPDATE_CASE_ACTION,
+  UpdatedCaseAction,
+} from './types';
 import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
 import {
   CaseWorkingCopyActionType,
@@ -38,25 +46,25 @@ import {
 } from './caseWorkingCopy';
 import { configurationBase, RootState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
-import { updateCaseReducer, initialState as savedCaseInitialState, createCaseReducer } from './saveCase';
+import { updateCaseReducer, initialState as savedCaseInitialState } from './saveCase';
 
 const caseState: CaseState = {
   tasks: {},
 };
 
-type SaveCaseState = {
-  createCase: SavedCaseState;
+export type SaveCaseState = {
+  updatedCase: CaseState;
 };
 
-const saveCaseInitialState: SaveCaseState = {
-  createCase: savedCaseInitialState,
-};
+// const saveCaseInitialState: SaveCaseState = {
+//   createCase: savedCaseInitialState,
+// };
 
 // eslint-disable-next-line import/no-unused-modules
-function caseReduce(
+export function reduce(
   rootState: RootState['plugin-hrm-form'],
   state = caseState,
-  action: CaseActionType | CaseWorkingCopyActionType | GeneralActionType,
+  action: CaseActionType | CaseWorkingCopyActionType | GeneralActionType | UpdatedCaseAction,
 ): CaseState {
   switch (action.type) {
     case SET_CONNECTED_CASE:
@@ -101,16 +109,17 @@ function caseReduce(
     case REMOVE_CASE_SUMMARY_WORKING_COPY:
       return removeCaseSummaryWorkingCopyReducer(state, action);
     case UPDATE_CASE_ACTION:
-      updateCaseReducer(rootState, caseState, action)
+      const updateCase = state;
+      return updateCaseReducer({ updateCase, rootState }, action.taskId) as any;
     default:
       return state;
   }
 }
 
-function saveCaseReduce(inputState = saveCaseInitialState, action: AnyAction): SaveCaseState {
-  return {
-    createCase: createCaseReducer(inputState.createCase, action),
-  };
-}
+// function saveCaseReduce(updateCase: CaseState, rootState: RootState['plugin-hrm-form'], action: AnyAction): SaveCaseState {
+//   return {
+//     updatedCase: updateCaseReducer({updateCase, rootState}, action.taskId) as any
+//   }
+// }
 
-export { caseReduce, saveCaseReduce };
+// export { caseReduce };

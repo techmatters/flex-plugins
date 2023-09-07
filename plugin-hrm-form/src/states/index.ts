@@ -19,7 +19,7 @@ import { combineReducers } from 'redux';
 
 import { reduce as ContactStateReducer } from './contacts/reducer';
 import { reduce as SearchFormReducer } from './search/reducer';
-import { caseReduce as ConnectedCaseReducer, saveCaseReduce as saveCaseReducer } from './case/reducer';
+import { reduce as ConnectedCaseReducer, SaveCaseState } from './case/reducer';
 import { reduce as CaseListReducer } from './caseList/reducer';
 import { reduce as QueuesStatusReducer } from './queuesStatus/reducer';
 import { reduce as ConfigurationReducer } from './configuration/reducer';
@@ -60,7 +60,6 @@ const reducers = {
   [referrableResourcesBase]: ReferrableResourcesReducer,
   [conversationsBase]: ConversationsReducer,
   [conferencingBase]: ConferencingReducer,
-  [saveCaseBase]: saveCaseReducer,
   /*
    * [csamClcReportBase]: CSAMCLCReportReducer,
    * [connectedCaseBase] - this is going to be combined manually, rather than using 'combineReducers', so isn't in this map

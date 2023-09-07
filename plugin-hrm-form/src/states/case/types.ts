@@ -25,7 +25,6 @@ export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
 export const REMOVE_CONNECTED_CASE = 'REMOVE_CONNECTED_CASE';
 export const UPDATE_CASE_ACTION = 'case-action/updated-case';
 export const CREATE_CASE_ACTION = 'case-action/create-case';
-export const SET_UPDATED_CASE_ACTION = 'case-action/set-updated-case';
 
 export enum SavedCaseStatus {
   NotSaved,
@@ -50,9 +49,10 @@ export type SavedCaseState = {
   status: SavedCaseStatus;
 };
 
-type UpdatedCaseAction = {
+export type UpdatedCaseAction = {
   type: typeof UPDATE_CASE_ACTION;
-  connectedCase: t.Case;
+  caseId: t.Case['id'];
+  body: Partial<t.Case>;
   taskId: string;
 };
 
