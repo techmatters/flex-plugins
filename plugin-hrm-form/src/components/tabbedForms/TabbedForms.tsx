@@ -33,7 +33,7 @@ import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute } from '../../states/routing/actions';
 import { emptyCategories } from '../../states/contacts/reducer';
 import { NewCaseSubroutes, TabbedFormSubroutes } from '../../states/routing/types';
-import { CustomITask, isOfflineContactTask, SearchAPIContact } from '../../types/types';
+import { ContactRawJson, CustomITask, isOfflineContactTask, SearchAPIContact } from '../../types/types';
 import { Box, Row, StyledTabs, TabbedFormsContainer, TabbedFormTabContainer } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import Search from '../search';
@@ -51,7 +51,6 @@ import { newCSAMReportAction } from '../../states/csam-report/actions';
 import { CSAMReportTypes } from '../../states/csam-report/types';
 // Ensure ww import any custom components that might be used in a form
 import '../contact/ResourceReferralList';
-import { TaskEntry } from '../../states/contacts/types';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -75,7 +74,7 @@ const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
 
 const isEmptyCallType = callType => [null, undefined, ''].includes(callType);
 
-const mapTabsToIndex = (task: CustomITask, contactForm: TaskEntry): TabbedFormSubroutes[] => {
+const mapTabsToIndex = (task: CustomITask, contactForm: ContactRawJson): TabbedFormSubroutes[] => {
   const isCallerType = contactForm.callType === callTypes.caller;
 
   if (isOfflineContactTask(task)) {
@@ -106,7 +105,7 @@ const TabbedForms: React.FC<Props> = ({
   dispatch,
   routing,
   task,
-  contactForm,
+  contact,
   currentDefinitionVersion,
   csamReportEnabled,
   csamClcReportEnabled,
@@ -118,14 +117,17 @@ const TabbedForms: React.FC<Props> = ({
     mode: 'onChange',
   });
 
-  const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={contactForm.csamReports} />, [
-    contactForm.csamReports,
+  const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={contact.csamReports} />, [
+    contact.csamReports,
   ]);
 
   const isMounted = React.useRef(false); // mutable value to avoid reseting the state in the first render.
 
   const { setValue } = methods;
-  const { helpline } = contactForm;
+  const {
+    helpline,
+    rawJson: { callType, callerInformation, childInformation, caseInformation, contactlessTask },
+  } = contact;
 
   /**
    * Clear some parts of the form state when helpline changes.
@@ -140,7 +142,7 @@ const TabbedForms: React.FC<Props> = ({
   if (!currentDefinitionVersion) return null;
 
   const taskId = task.taskSid;
-  const isCallerType = contactForm.callType === callTypes.caller;
+  const isCallerType = contact.rawJson.callType === callTypes.caller;
 
   const onSelectSearchResult = (searchResult: SearchAPIContact) => {
     const selectedIsCaller = searchResult.details.callType === callTypes.caller;
@@ -170,7 +172,7 @@ const TabbedForms: React.FC<Props> = ({
     dispatch(changeRoute({ route: 'select-call-type' }, taskId));
   };
 
-  const tabsToIndex = mapTabsToIndex(task, contactForm);
+  const tabsToIndex = mapTabsToIndex(task, contact.rawJson);
   const tabs = tabsToIndex.map(mapTabsComponents(methods.errors));
 
   const handleTabsChange = (_event: any, t: number) => {
@@ -203,8 +205,8 @@ const TabbedForms: React.FC<Props> = ({
         ]
       : undefined;
 
-  const isDataCallType = !isNonDataCallType(contactForm.callType);
-  const showSubmitButton = !isEmptyCallType(contactForm.callType) && tabIndex === tabs.length - 1;
+  const isDataCallType = !isNonDataCallType(callType);
+  const showSubmitButton = !isEmptyCallType(callType) && tabIndex === tabs.length - 1;
 
   // eslint-disable-next-line react/display-name
   const HeaderControlButtons = () => (
@@ -257,7 +259,7 @@ const TabbedForms: React.FC<Props> = ({
                     display={subroute === 'contactlessTask'}
                     helplineInformation={currentDefinitionVersion.helplineInformation}
                     definition={currentDefinitionVersion.tabbedForms.ContactlessTaskTab}
-                    initialValues={contactForm.contactlessTask}
+                    initialValues={contactlessTask}
                     autoFocus={autoFocus}
                   />
                 </TabbedFormTabContainer>
@@ -268,7 +270,7 @@ const TabbedForms: React.FC<Props> = ({
                     tabPath="callerInformation"
                     definition={currentDefinitionVersion.tabbedForms.CallerInformationTab}
                     layoutDefinition={currentDefinitionVersion.layoutVersion.contact.callerInformation}
-                    initialValues={contactForm.callerInformation}
+                    initialValues={callerInformation}
                     display={subroute === 'callerInformation'}
                     autoFocus={autoFocus}
                     updateFormActionDispatcher={dispatch => values =>
@@ -284,7 +286,7 @@ const TabbedForms: React.FC<Props> = ({
                       tabPath="childInformation"
                       definition={currentDefinitionVersion.tabbedForms.ChildInformationTab}
                       layoutDefinition={currentDefinitionVersion.layoutVersion.contact.childInformation}
-                      initialValues={contactForm.childInformation}
+                      initialValues={childInformation}
                       display={subroute === 'childInformation'}
                       autoFocus={autoFocus}
                       updateFormActionDispatcher={dispatch => values =>
@@ -296,7 +298,6 @@ const TabbedForms: React.FC<Props> = ({
                     <IssueCategorizationSectionForm
                       stateApi={forTask(task)}
                       display={subroute === 'categories'}
-                      initialValue={contactForm.categories}
                       definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab(helpline)}
                       autoFocus={autoFocus}
                     />
@@ -306,7 +307,7 @@ const TabbedForms: React.FC<Props> = ({
                       tabPath="caseInformation"
                       definition={currentDefinitionVersion.tabbedForms.CaseInformationTab}
                       layoutDefinition={currentDefinitionVersion.layoutVersion.contact.caseInformation}
-                      initialValues={contactForm.caseInformation}
+                      initialValues={caseInformation}
                       display={subroute === 'caseInformation'}
                       autoFocus={autoFocus}
                       extraChildrenRight={csamAttachments}
@@ -344,13 +345,13 @@ TabbedForms.displayName = 'TabbedForms';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const routing = state[namespace][routingBase].tasks[ownProps.task.taskSid];
-  const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
+  const { contact } = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid] ?? {};
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
   const { currentDefinitionVersion } = state[namespace][configurationBase];
   const { isCallTypeCaller } = state[namespace][contactFormsBase];
   return {
     routing,
-    contactForm,
+    contact,
     currentDefinitionVersion,
     editContactFormOpen,
     isCallTypeCaller,

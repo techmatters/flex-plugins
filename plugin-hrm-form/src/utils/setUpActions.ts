@@ -34,7 +34,7 @@ import {
   sendSystemMessage,
   getDefinitionVersion,
 } from '../services/ServerlessService';
-import { namespace, contactFormsBase, configurationBase, dualWriteBase, conferencingBase } from '../states';
+import { namespace, contactFormsBase, configurationBase, dualWriteBase } from '../states';
 import * as Actions from '../states/contacts/actions';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { changeRoute } from '../states/routing/actions';
@@ -103,15 +103,15 @@ export const initializeContactForm = (payload: ActionPayload) => {
 };
 
 const restoreFormIfTransfer = async (task: ITask) => {
-  const form = await loadFormSharedState(task);
-  if (form) {
-    Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, task.taskSid));
-
-    if (form.callType === callTypes.child) {
+  const contact = await loadFormSharedState(task);
+  if (contact) {
+    Manager.getInstance().store.dispatch(Actions.restoreEntireContact(contact, task.taskSid));
+    const { rawJson } = contact;
+    if (rawJson.callType === callTypes.child) {
       Manager.getInstance().store.dispatch(
         changeRoute({ route: 'tabbed-forms', subroute: 'childInformation' }, task.taskSid),
       );
-    } else if (form.callType === callTypes.caller) {
+    } else if (rawJson.callType === callTypes.caller) {
       Manager.getInstance().store.dispatch(
         changeRoute({ route: 'tabbed-forms', subroute: 'callerInformation' }, task.taskSid),
       );

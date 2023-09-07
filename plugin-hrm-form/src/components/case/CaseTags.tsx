@@ -23,15 +23,12 @@ import { DefinitionVersion } from 'hrm-form-definitions';
 import { Flex } from '../../styles/HrmStyles';
 import { TagsWrapper } from '../../styles/search';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
-import { retrieveCategories } from '../../states/contacts/contactDetailsAdapter';
 import { getContactTags } from '../../utils/categories';
 import styles from './casePrint/styles';
 
 type OwnProps = {
   categories?: {
-    [category: string]: {
-      [subcategory: string]: boolean;
-    };
+    [category: string]: string[];
   };
   definitionVersion: DefinitionVersion;
   printPDF?: boolean;
@@ -41,7 +38,7 @@ type Props = OwnProps;
 
 // eslint-disable-next-line react/no-multi-comp
 const CaseTags: React.FC<Props> = ({ categories, definitionVersion, printPDF }) => {
-  const [category1, category2, category3] = getContactTags(definitionVersion, retrieveCategories(categories));
+  const [category1, category2, category3] = getContactTags(definitionVersion, categories);
 
   if (printPDF) {
     return (

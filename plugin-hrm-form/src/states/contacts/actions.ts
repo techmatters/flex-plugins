@@ -18,7 +18,7 @@
 import { CallTypes, DataCallTypes } from 'hrm-form-definitions';
 
 import * as t from './types';
-import { CSAMReportEntry } from '../../types/types';
+import { CSAMReportEntry, HrmServiceContact } from '../../types/types';
 import { TaskEntry } from './types';
 
 // Action creators
@@ -67,9 +67,9 @@ export const prepopulateForm = (
   isCaseInfo,
 });
 
-export const restoreEntireForm = (form: TaskEntry, taskId: string): t.ContactsActionType => ({
+export const restoreEntireContact = (contact: HrmServiceContact, taskId: string): t.ContactsActionType => ({
   type: t.RESTORE_ENTIRE_FORM,
-  form,
+  contact,
   taskId,
 });
 

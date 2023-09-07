@@ -136,7 +136,13 @@ export type ContactRawJson = {
   callerInformation: Record<string, boolean | string>;
   caseInformation: Record<string, boolean | string>;
   categories: Record<string, string[]>;
-  contactlessTask: { channel: ChannelTypes; [key: string]: string | boolean };
+  contactlessTask: {
+    channel: ChannelTypes;
+    date: string;
+    time: string;
+    createdOnBehalfOf: string;
+    [key: string]: string | boolean;
+  };
   conversationMedia: ConversationMedia[];
 };
 

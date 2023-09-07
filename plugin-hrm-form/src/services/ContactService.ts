@@ -14,19 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/* eslint-disable sonarjs/prefer-immediate-return */
-import { set } from 'lodash/fp';
 import { TaskHelper } from '@twilio/flex-ui';
 import {
-  CategoriesDefinition,
-  CategoryEntry,
   DefinitionVersion,
   FormDefinition,
   FormItemDefinition,
   isNonSaveable,
 } from 'hrm-form-definitions';
 
-import { createNewTaskEntry } from '../states/contacts/reducer';
+import { createContactWithMetadata } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/validationRules';
 import { getQueryParams } from './PaginationParams';
 import { fillEndMillis, getConversationDuration } from '../utils/conversationDuration';
@@ -43,7 +39,7 @@ import {
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
-import { TaskEntry } from '../states/contacts/types';
+import { ContactMetadata } from '../states/contacts/types';
 import {
   ExternalRecordingInfoSuccess,
   ExternalRecordingUnneeded,
@@ -52,37 +48,12 @@ import {
   isSuccessfulExternalRecordingInfo,
 } from './getExternalRecordingInfo';
 
-type NestedInformation = { name?: { firstName: string; lastName: string } };
-type LegacyInformationObject = NestedInformation & {
-  [key: string]: string | boolean | NestedInformation[keyof NestedInformation]; // having NestedInformation[keyof NestedInformation] makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
-};
-
-type LegacyContactRawJson = Omit<ContactRawJson, 'callerInformation' | 'childInformation'> & {
-  childInformation: LegacyInformationObject;
-  callerInformation: LegacyInformationObject;
-};
-
-const unNestLegacyInformationObject = (legacy: LegacyInformationObject): Record<string, string | boolean> => {
-  const { name, ...rest } = legacy;
-  return typeof name === 'object' ? { ...rest, ...name } : (legacy as Record<string, string | boolean>);
-};
-
-export const unNestLegacyRawJson = (legacy: LegacyContactRawJson): ContactRawJson => {
-  type PartiallyTransformed = Omit<ContactRawJson, 'callerInformation'> & {
-    callerInformation: LegacyInformationObject;
+type HrmServiceContactForApi = Omit<HrmServiceContact, 'rawJson'> & {
+  rawJson: Omit<ContactRawJson, 'categories' | 'caseInformation'> & {
+    caseInformation: Record<string, string | boolean | Record<string, Record<string, boolean>>> & {
+      categories: Record<string, Record<string, boolean>>;
+    };
   };
-  const withFixedChildInformation: PartiallyTransformed = legacy.childInformation
-    ? {
-        ...legacy,
-        childInformation: unNestLegacyInformationObject(legacy.childInformation),
-      }
-    : (legacy as PartiallyTransformed);
-  return withFixedChildInformation.callerInformation
-    ? {
-        ...withFixedChildInformation,
-        callerInformation: unNestLegacyInformationObject(withFixedChildInformation.callerInformation),
-      }
-    : (withFixedChildInformation as ContactRawJson);
 };
 
 export async function searchContacts(
@@ -104,11 +75,9 @@ export async function searchContacts(
   return {
     ...rawResult,
     contacts: rawResult.contacts.map(c => {
-      const details = unNestLegacyRawJson(c.details);
-      const { firstName, lastName } = details.childInformation ?? {};
+      const { firstName, lastName } = c.details.childInformation ?? {};
       return {
         ...c,
-        details,
         overview: {
           ...c.overview,
           name: `${firstName ?? ''} ${lastName ?? ''}`,
@@ -117,17 +86,6 @@ export async function searchContacts(
     }),
   };
 }
-
-/**
- * Adds a category with the corresponding subcategories set to false to the provided object (obj)
- */
-const createCategory = <T extends {}>(obj: T, [category, { subcategories }]: [string, CategoryEntry]) => ({
-  ...obj,
-  [category]: subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory.label]: false }), {}),
-});
-
-export const createCategoriesObject = (categoriesFormDefinition: CategoriesDefinition) =>
-  Object.entries(categoriesFormDefinition).reduce(createCategory, {});
 
 const transformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
   if (e.type === 'mixed-checkbox' && value === 'mixed') return null;
@@ -158,50 +116,47 @@ export const searchResultToContactForm = (def: FormDefinition, information: Reco
 
 export function transformCategories(
   helpline,
-  categories: TaskEntry['categories'],
+  categories: ContactRawJson['categories'],
   definition: DefinitionVersion,
 ): Record<string, Record<string, boolean>> {
   const { IssueCategorizationTab } = definition.tabbedForms;
-  const cleanCategories = createCategoriesObject(IssueCategorizationTab(helpline));
-  const transformedCategories = categories.reduce((acc, path) => set(path, true, acc), {
-    categories: cleanCategories, // use an object with categories property so we can reuse the entire path (they look like categories.Category.Subcategory)
+  const transformedCategoryList = Object.entries(categories).map(([category, subcategories]) => {
+    const subcategoryChecklist = IssueCategorizationTab(helpline)[category].subcategories.map<[string, boolean]>(
+      ({ label }) => [label, subcategories.includes(label)],
+    );
+    return [category, Object.fromEntries(subcategoryChecklist)];
   });
 
-  return transformedCategories.categories;
+  return Object.fromEntries(transformedCategoryList);
 }
 
 /**
  * Transforms the form to be saved as the backend expects it
  * VisibleForTesting
  */
-export function transformForm(form: TaskEntry, conversationMedia: ConversationMedia[] = []): ContactRawJson {
-  const { callType, contactlessTask } = form;
+export function transformForm(contact: HrmServiceContact): HrmServiceContactForApi {
+  const { rawJson, helpline } = contact;
+  const { callType, contactlessTask, conversationMedia, categories: inputCategories } = rawJson;
   const { currentDefinitionVersion } = getDefinitionVersions();
   const { CallerInformationTab, CaseInformationTab, ChildInformationTab } = currentDefinitionVersion.tabbedForms;
   // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
-  const transformedValues = {
-    callerInformation: transformValues(CallerInformationTab)(form.callerInformation),
-    caseInformation: transformValues(CaseInformationTab)(form.caseInformation),
-    childInformation: transformValues(ChildInformationTab)(form.childInformation),
-  };
 
-  const { callerInformation } = transformedValues;
-  const { childInformation } = transformedValues;
-
-  const categories = transformCategories(form.helpline, form.categories, currentDefinitionVersion);
+  const categories = transformCategories(helpline, inputCategories, currentDefinitionVersion);
   const { definitionVersion } = getHrmConfig();
 
   return {
-    definitionVersion,
-    callType,
-    callerInformation,
-    childInformation,
-    caseInformation: {
-      ...transformedValues.caseInformation,
-      categories,
+    ...contact,
+    rawJson: {
+      ...contact.rawJson,
+      callerInformation: transformValues(CallerInformationTab)(rawJson.callerInformation),
+      caseInformation: { ...transformValues(CaseInformationTab)(rawJson.caseInformation), categories },
+      childInformation: transformValues(ChildInformationTab)(rawJson.childInformation),
+
+      definitionVersion,
+      callType,
+      contactlessTask,
+      conversationMedia,
     },
-    contactlessTask,
-    conversationMedia,
   };
 }
 
@@ -212,7 +167,7 @@ type HandleTwilioTaskResponse = {
   externalRecordingInfo?: ExternalRecordingInfoSuccess | ExternalRecordingUnneeded;
 };
 
-export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> => {
+const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> => {
   const returnData: HandleTwilioTaskResponse = {
     conversationMedia: [],
   };
@@ -263,7 +218,7 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
   return returnData;
 };
 
-type NewHrmServiceContact = Omit<HrmServiceContact, 'id' | 'updatedAt' | 'updatedBy' | 'createdBy'>;
+type NewHrmServiceContact = Omit<HrmServiceContactForApi, 'id' | 'updatedAt' | 'updatedBy' | 'createdBy'>;
 
 type SaveContactToHrmResponse = {
   response: HrmServiceContact;
@@ -276,19 +231,21 @@ type SaveContactToHrmResponse = {
  */
 const saveContactToHrm = async (
   task,
-  contact: TaskEntry,
+  contact: HrmServiceContact,
+  metadata: ContactMetadata,
   workerSid: string,
   uniqueIdentifier: string,
   shouldFillEndMillis = true,
 ): Promise<SaveContactToHrmResponse> => {
   // if we got this far, we assume the form is valid and ready to submit
-  const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
-  const conversationDuration = getConversationDuration(task, metadata);
+  const form = contact.rawJson;
+  const metadataForDuration = shouldFillEndMillis ? fillEndMillis(metadata) : metadata;
+  const conversationDuration = getConversationDuration(task, metadataForDuration);
   const { callType } = form;
   const number = getNumberFromTask(task);
 
   let rawForm = form;
-  rawForm.reservationSid = task.sid;
+  const reservationSid = task.sid;
   const { currentDefinitionVersion } = getDefinitionVersions();
 
   if (!currentDefinitionVersion) {
@@ -296,13 +253,14 @@ const saveContactToHrm = async (
   }
 
   if (isNonDataCallType(callType)) {
+    const newContactWithMetaData = createContactWithMetadata(currentDefinitionVersion)(false);
     rawForm = {
-      ...createNewTaskEntry(currentDefinitionVersion)(false),
+      ...newContactWithMetaData.contact.rawJson,
       callType: form.callType,
-      metadata: form.metadata,
       ...(isOfflineContactTask(task) && {
         contactlessTask: form.contactlessTask,
       }),
+      conversationMedia: form.conversationMedia,
     };
   }
 
@@ -312,7 +270,7 @@ const saveContactToHrm = async (
   // This might change if isNonDataCallType, that's why we use rawForm
   const timeOfContact = new Date(getDateTime(rawForm.contactlessTask)).toISOString();
 
-  const { helpline, csamReports, referrals } = form;
+  const { helpline, csamReports, referrals } = contact;
   const { conversationMedia, channelSid, serviceSid, externalRecordingInfo } = await handleTwilioTask(task);
 
   /*
@@ -320,10 +278,9 @@ const saveContactToHrm = async (
    * Not sure if we should drop that all into one function or not.
    * Probably.  It would just require passing the task.
    */
-  const formToSend = transformForm(rawForm, conversationMedia);
 
-  const body: NewHrmServiceContact = {
-    rawJson: formToSend,
+  const contactToSave: HrmServiceContact = {
+    ...contact,
     twilioWorkerId,
     queueName: task.queueName,
     channel: task.channelType,
@@ -337,15 +294,16 @@ const saveContactToHrm = async (
     csamReports,
     referrals,
   };
+  const requestBody = transformForm(contactToSave);
 
   const options = {
     method: 'POST',
-    body: JSON.stringify(body),
+    body: JSON.stringify(requestBody),
   };
 
   const responseJson: HrmServiceContact = await fetchHrmApi(`/contacts`, options);
 
-  return { response: responseJson, request: body, externalRecordingInfo };
+  return { response: responseJson, request: requestBody, externalRecordingInfo };
 };
 
 export const updateContactInHrm = async (
@@ -365,11 +323,12 @@ export const updateContactInHrm = async (
 export const saveContact = async (
   task,
   contact: HrmServiceContact,
+  metadata: ContactMetadata,
   workerSid: string,
   uniqueIdentifier: string,
   shouldFillEndMillis = true,
 ) => {
-  const payloads = await saveContactToHrm(task, form, workerSid, uniqueIdentifier, shouldFillEndMillis);
+  const payloads = await saveContactToHrm(task, contact, metadata, workerSid, uniqueIdentifier, shouldFillEndMillis);
 
   // TODO: add catch clause to handle saving to Sync Doc
   try {

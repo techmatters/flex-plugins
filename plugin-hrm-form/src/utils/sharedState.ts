@@ -21,6 +21,7 @@ import { recordBackendError } from '../fullStory';
 import { issueSyncToken } from '../services/ServerlessService';
 import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
 import { TaskEntry } from '../states/contacts/types';
+import { HrmServiceContact } from '../types/types';
 
 let sharedStateClient: SyncClient;
 
@@ -89,7 +90,7 @@ export const saveFormSharedState = async (form: TaskEntry, task: ITask): Promise
 /**
  * Restores the contact form from Sync Client (if there is any)
  */
-export const loadFormSharedState = async (task: ITask): Promise<TaskEntry> => {
+export const loadFormSharedState = async (task: ITask): Promise<HrmServiceContact> => {
   if (!getAseloFeatureFlags().enable_transfers) return null;
 
   try {
@@ -108,7 +109,7 @@ export const loadFormSharedState = async (task: ITask): Promise<TaskEntry> => {
     const documentName = task.attributes.transferMeta.formDocument;
     if (documentName) {
       const document = await sharedStateClient.document(documentName);
-      return document.data as TaskEntry;
+      return document.data as HrmServiceContact;
     }
 
     return null;

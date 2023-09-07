@@ -77,7 +77,7 @@ export const getShortSummary = (summary, charLimit, chooseMessage = 'call') => {
  * @param {{ [category: string]: string[] }} categories
  * @returns {string[]}
  */
-export const formatCategories = categories =>
+export const formatCategories = (categories: Record<string, string[]>) =>
   // maybe we should define domain constants for the categories/subcategories in case we change them?
   Object.entries(categories).flatMap(([cat, subcats]: [string, any]) =>
     subcats.map(subcat => (subcat === 'Unspecified/Other' ? `${subcat} - ${cat}` : subcat)),

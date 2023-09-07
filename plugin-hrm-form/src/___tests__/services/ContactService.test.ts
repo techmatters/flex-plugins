@@ -17,6 +17,8 @@
 import { set } from 'lodash/fp';
 import {
   callTypes,
+  CategoriesDefinition,
+  CategoryEntry,
   DefinitionVersion,
   DefinitionVersionId,
   FormInputType,
@@ -27,15 +29,13 @@ import { TaskHelper } from '@twilio/flex-ui';
 
 import { baseMockConfig as mockBaseConfig, mockGetDefinitionsResponse } from '../mockGetConfig';
 import {
-  createCategoriesObject,
-  handleTwilioTask,
   saveContact,
   transformCategories,
   transformForm,
   transformValues,
   updateContactInHrm,
 } from '../../services/ContactService';
-import { createNewTaskEntry } from '../../states/contacts/reducer';
+import { createContactWithMetadata } from '../../states/contacts/reducer';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions, getHrmConfig } from '../../hrmConfig';
 import { offlineContactTaskSid } from '../../types/types';
@@ -72,6 +72,17 @@ jest.mock('@twilio/flex-ui', () => ({
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+
+/**
+ * Adds a category with the corresponding subcategories set to false to the provided object (obj)
+ */
+const createCategory = <T extends {}>(obj: T, [category, { subcategories }]: [string, CategoryEntry]) => ({
+  ...obj,
+  [category]: subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory.label]: false }), {}),
+});
+
+const createCategoriesObject = (categoriesFormDefinition: CategoriesDefinition) =>
+  Object.entries(categoriesFormDefinition).reduce(createCategory, {});
 
 let mockV1;
 
@@ -163,7 +174,7 @@ describe('transformForm', () => {
 });
 
 const createForm = ({ callType, childFirstName }, contactlessTaskInfo = undefined) => {
-  const blankForm = createNewTaskEntry(mockV1)(false);
+  const blankForm = createContactWithMetadata(mockV1)(false);
   const contactlessTask = contactlessTaskInfo || blankForm.contactlessTask;
 
   return {

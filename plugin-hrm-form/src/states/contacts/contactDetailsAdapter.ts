@@ -20,9 +20,6 @@
  */
 
 import { HrmServiceContact, SearchAPIContact } from '../../types/types';
-import { getNumberFromTask } from '../../utils';
-import { transformForm } from '../../services/ContactService';
-import { getConversationDuration } from '../../utils/conversationDuration';
 
 /**
  * @param {string[]} accumulator
@@ -57,8 +54,7 @@ export const hrmServiceContactToSearchContact = (contact: HrmServiceContact): Se
   const dateTime = contact.timeOfContact;
 
   const customerNumber = contact.number;
-  const { callType, caseInformation } = contact.rawJson;
-  const categories = retrieveCategories(caseInformation.categories);
+  const { callType, caseInformation, categories } = contact.rawJson;
   const notes = caseInformation.callSummary as string;
   const {
     conversationDuration,
@@ -126,37 +122,5 @@ export const searchContactToHrmServiceContact = (contact: SearchAPIContact): Hrm
     channelSid: undefined,
     serviceSid: undefined,
     queueName: undefined,
-  };
-};
-
-export const taskFormToSearchContact = (task, form, date, counselor, temporaryId): SearchAPIContact => {
-  const details = transformForm(form);
-  const dateTime = date;
-  const customerNumber = getNumberFromTask(task);
-  const { callType, caseInformation } = details;
-  const categories = retrieveCategories(caseInformation.categories);
-  const notes = caseInformation.callSummary as string;
-  const { channelType, taskSid } = task;
-  const conversationDuration = getConversationDuration(task, form.metadata);
-  const { csamReports, helpline, referrals } = form;
-
-  return {
-    contactId: temporaryId,
-    overview: {
-      helpline,
-      createdBy: counselor,
-      dateTime,
-      customerNumber,
-      callType,
-      categories,
-      counselor,
-      notes,
-      channel: channelType,
-      conversationDuration,
-      taskId: taskSid,
-    },
-    details,
-    csamReports,
-    referrals,
   };
 };

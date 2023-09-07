@@ -35,6 +35,21 @@ export const ADD_CSAM_REPORT_ENTRY = 'contacts/ADD_CSAM_REPORT_ENTRY';
 export const SET_EDITING_CONTACT = 'SET_EDITING_CONTACT';
 export const SET_CALL_TYPE = 'SET_CALL_TYPE';
 
+export type ContactMetadata = {
+  startMillis: number;
+  endMillis: number;
+  recreated: boolean;
+  categories: {
+    gridView: boolean;
+    expanded: { [key: string]: boolean };
+  };
+  draft: {
+    resourceReferralList: DraftResourceReferralState;
+  };
+};
+
+export type HrmServiceContactWithMetadata = { contact: HrmServiceContact; metadata: ContactMetadata };
+
 export type TaskEntry = {
   helpline: string;
   callType: CallTypes;
@@ -51,24 +66,12 @@ export type TaskEntry = {
   categories: string[];
   referrals?: ResourceReferral[];
   csamReports: CSAMReportEntry[];
-  metadata: {
-    startMillis: number;
-    endMillis: number;
-    recreated: boolean;
-    categories: {
-      gridView: boolean;
-      expanded: { [key: string]: boolean };
-    };
-  };
-  isCallTypeCaller: boolean;
+  metadata: ContactMetadata;
   reservationSid?: string;
-  draft: {
-    resourceReferralList: DraftResourceReferralState;
-  };
 };
 export type ContactsState = {
   tasks: {
-    [taskId: string]: HrmServiceContact;
+    [taskId: string]: HrmServiceContactWithMetadata;
   };
   existingContacts: ExistingContactsState;
   contactDetails: ContactDetailsState;
@@ -109,7 +112,7 @@ type PrePopulateFormAction = {
 
 type RestoreEntireFormAction = {
   type: typeof RESTORE_ENTIRE_FORM;
-  form: TaskEntry;
+  contact: HrmServiceContact;
   taskId: string;
 };
 

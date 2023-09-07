@@ -30,6 +30,7 @@ import { reduce as ReferrableResourcesReducer } from './resources';
 import { reduce as ConversationsReducer } from './conversations';
 import { reduce as ConferencingReducer } from './conferencing';
 import { CaseState } from './case/types';
+import { ContactsState } from './contacts/types';
 
 // Register your redux store under a unique namespace
 export const namespace = 'plugin-hrm-form';
@@ -48,7 +49,6 @@ export const referrableResourcesBase = 'referrableResources';
 export const conferencingBase = 'conferencing';
 
 const reducers = {
-  [contactFormsBase]: ContactStateReducer,
   [searchContactsBase]: SearchFormReducer,
   [queuesStatusBase]: QueuesStatusReducer,
   [caseListBase]: CaseListReducer,
@@ -66,7 +66,7 @@ const reducers = {
 };
 type HrmState = {
   [P in keyof typeof reducers]: ReturnType<typeof reducers[P]>;
-} & { [connectedCaseBase]: CaseState };
+} & { [connectedCaseBase]: CaseState; [contactFormsBase]: ContactsState };
 
 export type RootState = FlexState & { [namespace]: HrmState };
 const combinedReducers = combineReducers(reducers);
@@ -80,6 +80,7 @@ const reducer = (state: HrmState, action): HrmState => {
      * This makes it incompatible with combineReducers, so instead, we add the case state property with an explicit call to ConnectedCaseReducer, where we specify the extra parameter
      */
     [connectedCaseBase]: ConnectedCaseReducer(state, (state ?? {})[connectedCaseBase], action),
+    [contactFormsBase]: ContactStateReducer(state, state[contactFormsBase], action),
   };
 };
 
