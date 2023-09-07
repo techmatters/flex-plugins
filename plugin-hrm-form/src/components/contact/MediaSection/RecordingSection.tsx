@@ -19,6 +19,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { ErrorFont, LoadMediaButton, LoadMediaButtonText } from './styles';
 import { S3StoredRecording } from '../../../types/types';
+import { generateExternalMediaPath } from '../../../services/ContactService';
 import { getFileDownloadUrl } from '../../../services/ServerlessService';
 import fetchHrmApi from '../../../services/fetchHrmApi';
 
@@ -35,22 +36,16 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
       setLoading(true);
       setShowButton(false);
 
-      console.log('>>> externalStoredRecording:', externalStoredRecording);
-
-      const recordingPreSignedUrl = await getFileDownloadUrl(externalStoredRecording.location.key);
-
-      console.log(
-        '>>>  > file: RecordingSection.tsx:39 > fetchAndLoadRecording > recordingPreSignedUrl:',
-        recordingPreSignedUrl,
-      );
-      const recordingPreSignedUrlFromHRM = await fetchHrmApi(externalStoredRecording.location.key);
-
-      console.log(
-        '>>>  > file: RecordingSection.tsx:45 > fetchAndLoadRecording > recordingPreSignedUrlFromHRM:',
-        recordingPreSignedUrlFromHRM,
+      // TODO: this won't currently work for local dev env
+      const { media_url: recordingPreSignedUrl } = await fetchHrmApi(
+        generateExternalMediaPath(
+          contactId,
+          externalStoredRecording.location.bucket,
+          externalStoredRecording.location.key,
+        ),
       );
 
-      const recordingResponse = await fetch(recordingPreSignedUrl.downloadUrl);
+      const recordingResponse = await fetch(recordingPreSignedUrl);
       const recordingBlob = await recordingResponse.blob();
       const voiceRecording = new Audio(URL.createObjectURL(recordingBlob));
       setVoiceRecording(voiceRecording.src);
