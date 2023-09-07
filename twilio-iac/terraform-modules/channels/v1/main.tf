@@ -80,7 +80,7 @@ resource "twilio_flex_flex_flows_v1" "channel_flow" {
   chat_service_sid     = var.flex_chat_service_sid
   friendly_name        = "Flex ${title(each.key)} Flow"
   integration_type     = "studio"
-  janitor_enabled      = each.value.channel_type == "custom" ? true : !var.enable_post_survey
+  janitor_enabled      = !var.enable_post_survey
   contact_identity     = each.value.contact_identity
   integration_flow_sid = twilio_studio_flows_v2.channel_studio_flow[each.key].sid
   enabled              = true
