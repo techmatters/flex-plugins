@@ -17,7 +17,7 @@
 import { omit } from 'lodash';
 import { AnyAction } from 'redux';
 
-import { CaseActionType, CaseState, REMOVE_CONNECTED_CASE, SET_CONNECTED_CASE, SavedCaseState } from './types';
+import { CaseActionType, CaseState, REMOVE_CONNECTED_CASE, SET_CONNECTED_CASE, SavedCaseState, UPDATE_CASE_ACTION } from './types';
 import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
 import {
   CaseWorkingCopyActionType,
@@ -45,12 +45,10 @@ const caseState: CaseState = {
 };
 
 type SaveCaseState = {
-  updatedCase: SavedCaseState;
   createCase: SavedCaseState;
 };
 
 const saveCaseInitialState: SaveCaseState = {
-  updatedCase: savedCaseInitialState,
   createCase: savedCaseInitialState,
 };
 
@@ -102,6 +100,8 @@ function caseReduce(
       return updateCaseSummaryWorkingCopyReducer(state, action);
     case REMOVE_CASE_SUMMARY_WORKING_COPY:
       return removeCaseSummaryWorkingCopyReducer(state, action);
+    case UPDATE_CASE_ACTION:
+      updateCaseReducer(rootState, caseState, action)
     default:
       return state;
   }
@@ -109,7 +109,6 @@ function caseReduce(
 
 function saveCaseReduce(inputState = saveCaseInitialState, action: AnyAction): SaveCaseState {
   return {
-    updatedCase: updateCaseReducer(inputState.updatedCase, action),
     createCase: createCaseReducer(inputState.createCase, action),
   };
 }

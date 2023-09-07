@@ -37,12 +37,13 @@ import {
 } from '../../styles/HrmStyles';
 import { CaseActionFormContainer, CaseActionLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { configurationBase, connectedCaseBase, namespace, RootState, saveCaseBase } from '../../states';
+import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import { transformValues } from '../../services/ContactService';
+import { updateCase } from '../../services/CaseService';
 import { createStateItem, CustomHandlers, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
-import type { Case, CaseInfo, CaseItemEntry, CustomITask, StandaloneITask } from '../../types/types';
+import type { CaseInfo, CaseItemEntry, CustomITask, StandaloneITask } from '../../types/types';
 import {
   AddCaseSectionRoute,
   AppRoutes,
@@ -64,8 +65,6 @@ import {
   updateCaseSectionWorkingCopy,
 } from '../../states/case/caseWorkingCopy';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
-import { updateCaseAsyncAction } from '../../states/case/saveCase';
-import useConnectedCaseUpdater from './useConnectedCaseUpdater';
 
 export type AddEditCaseItemProps = {
   task: CustomITask | StandaloneITask;
@@ -97,12 +96,8 @@ const AddEditCaseItem: React.FC<Props> = ({
   reactHookFormOptions,
   sectionApi,
   workingCopy,
-  updateCaseAction,
-  updatedCase,
 }) => {
   const { id } = isEditCaseSectionRoute(routing) ? routing : { id: undefined };
-
-  useConnectedCaseUpdater(updatedCase, task.taskSid);
 
   const formDefinition = React.useMemo(
     () =>
@@ -207,8 +202,8 @@ const AddEditCaseItem: React.FC<Props> = ({
         }
       });
     }
-
-    updateCaseAction(caseId, { info: newInfo });
+    const updatedCase = await updateCase(caseId, { info: newInfo });
+    setConnectedCase(updatedCase, task.taskSid);
   };
 
   function close() {
@@ -320,9 +315,8 @@ const mapStateToProps = (state: RootState, { task, routing, sectionApi }: AddEdi
   const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
   const { connectedCase, caseWorkingCopy } = caseState.tasks[task.taskSid];
   const workingCopy = sectionApi.getWorkingCopy(caseWorkingCopy, id);
-  const updatedCase = state[namespace][saveCaseBase].updatedCase.case;
 
-  return { connectedCase, counselorsHash, workingCopy, updatedCase };
+  return { connectedCase, counselorsHash, workingCopy };
 };
 
 const mapDispatchToProps = (dispatch, props: AddEditCaseItemProps) => {
@@ -337,7 +331,6 @@ const mapDispatchToProps = (dispatch, props: AddEditCaseItemProps) => {
       dispatch(removeCaseSectionWorkingCopy(task.taskSid, sectionApi, id));
       dispatch(changeRoute(route, task.taskSid));
     },
-    updateCaseAction: (caseId: Case['id'], body: Partial<Case>) => dispatch(updateCaseAsyncAction(caseId, body)),
   };
 };
 

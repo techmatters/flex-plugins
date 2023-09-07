@@ -20,10 +20,14 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 import { createCase, updateCase } from '../../services/CaseService';
 import { TaskEntry as ContactForm } from '../contacts/types';
 import { Case } from '../../types/types';
-import { UPDATE_CASE_ACTION, CREATE_CASE_ACTION, SavedCaseState, SavedCaseStatus } from './types';
+import { UPDATE_CASE_ACTION, CREATE_CASE_ACTION, SavedCaseState, SavedCaseStatus, SET_UPDATED_CASE_ACTION, CaseActionType, CaseState } from './types';
+import { configurationBase, RootState } from '..';
+import { CaseWorkingCopyActionType } from './caseWorkingCopy';
+import { GeneralActionType } from 'states/types';
+import { getAvailableCaseStatusTransitions } from './caseStatus';
 
 export const initialState: SavedCaseState = {
-  case: {
+ connectedCase: {
     accountSid: '',
     id: 0,
     status: '',
@@ -41,10 +45,6 @@ export const initialState: SavedCaseState = {
 export const createCaseAsyncAction = createAsyncAction(
   CREATE_CASE_ACTION,
   async (contactForm: ContactForm, workerSid: string, definitionVersion: DefinitionVersionId) => {
-    const testcases = await createCase(contactForm, workerSid, definitionVersion);
-
-    console.log('testcases here now 33', testcases);
-
     return { ...(await createCase(contactForm, workerSid, definitionVersion)) };
   },
 );
@@ -56,21 +56,38 @@ export const updateCaseAsyncAction = createAsyncAction(
   },
 );
 
-export const updateCaseReducer = createReducer(initialState, handleAction => [
+export const setUpdatedCaseAsyncAction = createAsyncAction(
+  UPDATE_CASE_ACTION,
+  async(connectedCase: Case, taskId: string) => ({connectedCase, taskId})
+
+)
+
+export const updateCaseReducer = (rootState: RootState['plugin-hrm-form'], initialState: CaseState, action: CaseActionType | CaseWorkingCopyActionType | GeneralActionType) => 
+createReducer({rootState, initialState}, handleAction => [
+
   handleAction(updateCaseAsyncAction.pending, state => {
     return {
       ...state,
-      case: initialState.case,
+      tasks: initialState.tasks,
       status: SavedCaseStatus.ResultPending,
     };
   }),
 
-  handleAction(updateCaseAsyncAction.fulfilled, (state, { payload }) => {
+  handleAction(updateCaseAsyncAction.fulfilled, (state, {payload}) => {
+    const caseDefinitionVersion =
+        rootState[configurationBase].definitionVersions[payload?.info?.definitionVersion];
     return {
       ...state,
-      case: {
-        ...state.case,
-        ...payload,
+      tasks: {
+        ...initialState.tasks,
+        [action.taskId]:{
+          connectedCase: payload,
+          caseWorkingCopy: { sections: {} },
+          availableStatusTransitions: caseDefinitionVersion
+            ? getAvailableCaseStatusTransitions(payload, caseDefinitionVersion)
+            : [],
+        }
+       
       },
       status: SavedCaseStatus.ResultReceived,
     };
@@ -89,17 +106,16 @@ export const createCaseReducer = createReducer(initialState, handleAction => [
   handleAction(createCaseAsyncAction.pending, state => {
     return {
       ...state,
-      case: initialState.case,
+      case: initialState.connectedCase,
       status: SavedCaseStatus.ResultPending,
     };
   }),
 
   handleAction(updateCaseAsyncAction.fulfilled, (state, { payload }) => {
-    console.log('createCase payload is here', payload);
+    
     return {
       ...state,
-      case: {
-        ...state.case,
+      connectedCase: {
         ...payload,
       },
       status: SavedCaseStatus.ResultReceived,

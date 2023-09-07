@@ -67,7 +67,7 @@ const BottomBar: React.FC<
 
   useEffect(() => {
     console.log('createCases is here now 1', createCases);
-  }, []);
+  }, [createCases]);
 
   const handleOpenNewCase = async () => {
     const { taskSid } = task;
@@ -78,8 +78,6 @@ const BottomBar: React.FC<
     try {
       const caseFromDB = await createCase(contactForm, workerSid, definitionVersion);
       createCaseAction(contactForm, workerSid, definitionVersion);
-
-      console.log('createCases is here 2', createCases, caseFromDB);
 
       changeRoute({ route: 'new-case' }, taskSid);
       setConnectedCase(caseFromDB, taskSid);
@@ -178,9 +176,7 @@ const mapStateToProps = (state, ownProps: BottomBarProps) => {
   const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
   const caseForm = (caseState && caseState.connectedCase) || {};
   const createCaseState = state[namespace][saveCaseBase];
-  const createCases = createCaseState?.createCase;
-
-  // console.log('contactForm and caseForm and createCases', createCases)
+  const createCases = createCaseState?.createCase?.case;
 
   return { contactForm, caseForm, createCases };
 };
