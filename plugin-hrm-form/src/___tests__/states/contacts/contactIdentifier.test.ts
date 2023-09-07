@@ -17,7 +17,7 @@
 import { callTypes, DefinitionVersion, FormInputType } from 'hrm-form-definitions';
 import each from 'jest-each';
 
-import { contactLabelFromHrmContact, contactLabelFromSearchContact } from '../../../states/contacts/contactIdentifier';
+import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
 import { ContactRawJson, HrmServiceContact, SearchAPIContact } from '../../../types/types';
 
 const baselineDefinition: Partial<DefinitionVersion> = {
@@ -33,7 +33,8 @@ const baselineDefinition: Partial<DefinitionVersion> = {
 const baselineRawJson: ContactRawJson = {
   childInformation: {},
   callerInformation: {},
-  caseInformation: { categories: {} },
+  caseInformation: {},
+  categories: {},
   callType: callTypes.child,
   conversationMedia: [],
   contactlessTask: {
@@ -78,15 +79,6 @@ describe('contactLabel', () => {
       contactLabelFunctionToTest: contactLabelFromHrmContact,
       contactWithChildName: hrmContactWithChildName,
       contactType: 'HrmContact',
-    },
-    {
-      baselineContact: {
-        contactId: '1234',
-        details: baselineRawJson,
-      },
-      contactLabelFunctionToTest: contactLabelFromSearchContact,
-      contactWithChildName: searchAPIContactWithChildName,
-      contactType: 'SearchContact',
     },
   ]).describe('for $contactType', ({ baselineContact, contactLabelFunctionToTest, contactWithChildName }) => {
     describe('ChildInformation has firstName or lastName inputs', () => {

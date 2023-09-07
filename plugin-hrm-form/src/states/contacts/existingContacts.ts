@@ -67,7 +67,7 @@ type ExportTranscripParticipants = {
   };
 };
 
-type Transcript = {
+export type Transcript = {
   accountSid: string;
   serviceSid: string;
   channelSid: string;
@@ -119,7 +119,7 @@ export const loadContact = (
 });
 
 export const loadContacts = (
-  contacts: HrmServiceContact[],
+  contacts: Partial<HrmServiceContact>[],
   reference: string,
   replaceExisting = false,
 ): LoadContactAction => ({
