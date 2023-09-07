@@ -45,14 +45,19 @@ const connector = connect(mapStateToProps);
 type Props = ContactPreviewProps & ConnectedProps<typeof connector>;
 
 /**
- * This function gets the name from childInformation or callerInformation.
  * Since different helplines can have different forms, this function is a
  * best-effort for finding out the name.
+ *
+ * Return undefined if calling about self
  */
 const getCallerName = (rawJson: ContactRawJson) => {
   const { callType } = rawJson;
-  const childOrCallerInfo = callType === callTypes.child ? rawJson.childInformation : rawJson.callerInformation;
-  const { firstName, lastName, name, nickname } = childOrCallerInfo;
+
+  if (callType === callTypes.child) {
+    return undefined;
+  }
+
+  const { firstName, lastName, name, nickname } = rawJson.callerInformation;
 
   if (firstName && lastName) {
     return `${firstName} ${lastName}`;
@@ -70,13 +75,13 @@ const getCallerName = (rawJson: ContactRawJson) => {
     return nickname as string;
   }
 
-  return '';
+  return undefined;
 };
 
 const ContactPreview: React.FC<Props> = ({ contact, handleViewDetails, definitionVersions, counselorsHash }) => {
   const { callType } = contact.rawJson;
   const callerName = getCallerName(contact.rawJson);
-  const counselorName = counselorsHash[contact.twilioWorkerId];
+  const counselorName = counselorsHash[contact.twilioWorkerId] || 'Unknown';
   const { definitionVersion: versionId, caseInformation } = contact.rawJson;
   const { callSummary } = caseInformation;
   const definition = definitionVersions[versionId];
