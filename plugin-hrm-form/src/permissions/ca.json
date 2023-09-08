@@ -22,7 +22,7 @@
   "viewContact": [["isSupervisor"], ["isOwner"]],
   "editContact": [["isOwner"], ["isSupervisor"]],
   "viewExternalTranscript": [["isSupervisor"]],
-  "viewRecording": [],
+  "viewRecording": [["isSupervisor"]],
 
   "viewPostSurvey": [["isSupervisor"]],
 
