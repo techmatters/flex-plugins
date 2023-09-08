@@ -42,6 +42,7 @@ export const isFailureExternalRecordingInfo = (r: any): r is ExternalRecordingIn
 
 export type ExternalRecordingInfo = ExternalRecordingInfoSuccess | ExternalRecordingInfoFailure;
 
+/* eslint-disable sonarjs/prefer-single-boolean-return */
 export const shouldGetExternalRecordingInfo = (task: CustomITask): task is InMyBehalfITask => {
   if (isOfflineContactTask(task)) return false;
 
@@ -53,6 +54,7 @@ export const shouldGetExternalRecordingInfo = (task: CustomITask): task is InMyB
 
   return true;
 };
+/* eslint-enable sonarjs/prefer-single-boolean-return */
 
 export const getExternalRecordingInfo = async (task: CustomITask): Promise<ExternalRecordingInfo> => {
   if (!shouldGetExternalRecordingInfo(task)) {

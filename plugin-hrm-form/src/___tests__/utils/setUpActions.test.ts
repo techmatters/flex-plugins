@@ -57,7 +57,10 @@ describe('afterCompleteTask', () => {
 describe('excludeDeactivateConversationOrchestration', () => {
   test('backend_handled_chat_janitor === false and enable_post_survey === false should not change ChatOrchestrator', async () => {
     const setOrchestrationsSpy = jest.spyOn(ChatOrchestrator, 'setOrchestrations');
-    excludeDeactivateConversationOrchestration(<FeatureFlags>{ enable_post_survey: false, backend_handled_chat_janitor: false });
+    excludeDeactivateConversationOrchestration(<FeatureFlags>{
+      enable_post_survey: false,
+      backend_handled_chat_janitor: false,
+    });
 
     expect(setOrchestrationsSpy).not.toHaveBeenCalled();
   });
