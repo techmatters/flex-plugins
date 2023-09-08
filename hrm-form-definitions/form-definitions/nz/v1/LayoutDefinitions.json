@@ -8,7 +8,7 @@
   },
   "case": {
     "households": {
-      "splitFormAt": 11
+      "splitFormAt": 13
     },
     "perpetrators": {
       "splitFormAt": 9
