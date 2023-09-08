@@ -46,10 +46,9 @@ import { getNumberFromTask } from '../utils';
 import { TaskEntry } from '../states/contacts/types';
 import {
   ExternalRecordingInfoSuccess,
-  ExternalRecordingUnneeded,
   getExternalRecordingInfo,
   isFailureExternalRecordingInfo,
-  isSuccessfulExternalRecordingInfo,
+  shouldGetExternalRecordingInfo,
 } from './getExternalRecordingInfo';
 import { generateUrl } from './fetchApi';
 
@@ -210,7 +209,7 @@ type HandleTwilioTaskResponse = {
   channelSid?: string;
   serviceSid?: string;
   conversationMedia: ConversationMedia[];
-  externalRecordingInfo?: ExternalRecordingInfoSuccess | ExternalRecordingUnneeded;
+  externalRecordingInfo?: ExternalRecordingInfoSuccess;
 };
 
 export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> => {
@@ -242,24 +241,23 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
     });
   }
 
+  if (!shouldGetExternalRecordingInfo(task)) return returnData;
+
   const externalRecordingInfo = await getExternalRecordingInfo(task);
   if (isFailureExternalRecordingInfo(externalRecordingInfo)) {
     throw new Error(`Error getting external recording info: ${externalRecordingInfo.error}`);
   }
 
   returnData.externalRecordingInfo = externalRecordingInfo;
-
-  if (isSuccessfulExternalRecordingInfo(externalRecordingInfo)) {
-    const { bucket, key } = externalRecordingInfo;
-    returnData.conversationMedia.push({
-      store: 'S3',
-      type: 'recording',
-      location: {
-        bucket,
-        key,
-      },
-    });
-  }
+  const { bucket, key } = externalRecordingInfo;
+  returnData.conversationMedia.push({
+    store: 'S3',
+    type: 'recording',
+    location: {
+      bucket,
+      key,
+    },
+  });
 
   return returnData;
 };
@@ -269,7 +267,7 @@ type NewHrmServiceContact = Omit<HrmServiceContact, 'id' | 'updatedAt' | 'update
 type SaveContactToHrmResponse = {
   response: HrmServiceContact;
   request: NewHrmServiceContact;
-  externalRecordingInfo?: ExternalRecordingInfoSuccess | ExternalRecordingUnneeded;
+  externalRecordingInfo?: ExternalRecordingInfoSuccess;
 };
 /**
  * Function that saves the form to Contacts table.
