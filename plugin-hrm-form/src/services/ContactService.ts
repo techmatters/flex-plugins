@@ -51,6 +51,7 @@ import {
   isFailureExternalRecordingInfo,
   isSuccessfulExternalRecordingInfo,
 } from './getExternalRecordingInfo';
+import { generateUrl } from './fetchApi';
 
 type NestedInformation = { name?: { firstName: string; lastName: string } };
 type LegacyInformationObject = NestedInformation & {
@@ -396,3 +397,6 @@ export async function connectToCase(contactId, caseId) {
 
   return fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
 }
+
+export const generateExternalMediaPath = (contactId: string, bucket: string, key: string) =>
+  `/files/urls?method=getObject&objectType=contact&objectId=${contactId}&fileType=recording&bucket=${bucket}&key=${key}`;
