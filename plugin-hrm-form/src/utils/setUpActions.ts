@@ -54,11 +54,11 @@ export const loadCurrentDefinitionVersion = async () => {
 /**
  * @param task
  */
-export const shouldSendInsightsData = (task: ITask) => {
+export const shouldSendInsightsData = (task: CustomITask) => {
   const featureFlags = getAseloFeatureFlags();
   const hasTaskControl = !featureFlags.enable_transfers || TransferHelpers.hasTaskControl(task);
 
-  return hasTaskControl && featureFlags.enable_save_insights && !task.attributes?.skipInsights;
+  return hasTaskControl && featureFlags.enable_save_insights && !(task.attributes as any)?.skipInsights;
 };
 
 const saveEndMillis = async (payload: ActionPayload) => {
