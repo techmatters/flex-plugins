@@ -46,26 +46,22 @@ import {
 } from './caseWorkingCopy';
 import { configurationBase, RootState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
-import { updateCaseReducer, initialState as savedCaseInitialState } from './saveCase';
+import { updateCaseReducer } from './saveCase';
 
-const caseState: CaseState = {
+const initialState: CaseState = {
   tasks: {},
 };
-
-export type SaveCaseState = {
-  updatedCase: CaseState;
-};
-
-// const saveCaseInitialState: SaveCaseState = {
-//   createCase: savedCaseInitialState,
-// };
 
 // eslint-disable-next-line import/no-unused-modules
 export function reduce(
   rootState: RootState['plugin-hrm-form'],
-  state = caseState,
-  action: CaseActionType | CaseWorkingCopyActionType | GeneralActionType | UpdatedCaseAction,
+  inputState = initialState,
+  action: CaseActionType | CaseWorkingCopyActionType | GeneralActionType,
 ): CaseState {
+
+  const boundUpdateCaseReducer = updateCaseReducer(rootState, initialState, action.taskId);
+  const state = boundUpdateCaseReducer(inputState, action as any);
+
   switch (action.type) {
     case SET_CONNECTED_CASE:
       const caseDefinitionVersion =
@@ -108,18 +104,7 @@ export function reduce(
       return updateCaseSummaryWorkingCopyReducer(state, action);
     case REMOVE_CASE_SUMMARY_WORKING_COPY:
       return removeCaseSummaryWorkingCopyReducer(state, action);
-    case UPDATE_CASE_ACTION:
-      const updateCase = state;
-      return updateCaseReducer({ updateCase, rootState }, action.taskId) as any;
     default:
       return state;
   }
 }
-
-// function saveCaseReduce(updateCase: CaseState, rootState: RootState['plugin-hrm-form'], action: AnyAction): SaveCaseState {
-//   return {
-//     updatedCase: updateCaseReducer({updateCase, rootState}, action.taskId) as any
-//   }
-// }
-
-// export { caseReduce };

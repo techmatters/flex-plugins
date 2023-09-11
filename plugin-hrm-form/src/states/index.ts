@@ -19,7 +19,7 @@ import { combineReducers } from 'redux';
 
 import { reduce as ContactStateReducer } from './contacts/reducer';
 import { reduce as SearchFormReducer } from './search/reducer';
-import { reduce as ConnectedCaseReducer, SaveCaseState } from './case/reducer';
+import { reduce as ConnectedCaseReducer } from './case/reducer';
 import { reduce as CaseListReducer } from './caseList/reducer';
 import { reduce as QueuesStatusReducer } from './queuesStatus/reducer';
 import { reduce as ConfigurationReducer } from './configuration/reducer';

@@ -23,7 +23,7 @@ import { ChannelTypes } from '../DomainConstants';
 // Action types
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
 export const REMOVE_CONNECTED_CASE = 'REMOVE_CONNECTED_CASE';
-export const UPDATE_CASE_ACTION = 'case-action/updated-case';
+export const UPDATE_CASE_ACTION = 'case-action/update-case';
 export const CREATE_CASE_ACTION = 'case-action/create-case';
 
 export enum SavedCaseStatus {
@@ -51,8 +51,7 @@ export type SavedCaseState = {
 
 export type UpdatedCaseAction = {
   type: typeof UPDATE_CASE_ACTION;
-  caseId: t.Case['id'];
-  body: Partial<t.Case>;
+  connectedCase: t.Case;
   taskId: string;
 };
 
