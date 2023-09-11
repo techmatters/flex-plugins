@@ -14,10 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Manager, StateHelper, AudioPlayerManager, AudioPlayerError } from '@twilio/flex-ui';
+import { Manager, StateHelper } from '@twilio/flex-ui';
 
-import { getHrmConfig } from '../hrmConfig';
 import { addAseloListener } from '../conversationListeners';
+import { playNotification } from './playNotification';
 
 export const subscribeAlertOnConversationJoined = task => {
   const manager = Manager.getInstance();
@@ -46,23 +46,13 @@ const trySubscribeAudioAlerts = (task, ms: number, retries: number) => {
 const notifyNewMessage = messageInstance => {
   try {
     const manager = Manager.getInstance();
-    const { assetsBucketUrl } = getHrmConfig();
 
     const notificationTone = 'bell';
-    const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
 
     const isCounsellor = manager.conversationsClient.user.identity === messageInstance.author;
 
     if (!isCounsellor && document.visibilityState === 'hidden') {
-      AudioPlayerManager.play(
-        {
-          url: notificationUrl,
-          repeatable: false,
-        },
-        (error: AudioPlayerError) => {
-          console.log('AudioPlayerError:', error);
-        },
-      );
+      playNotification(notificationTone);
     }
   } catch (error) {
     console.error('Error in notifyNewMessage:', error);
