@@ -55,6 +55,7 @@ export const contactDetailsSectionFormApi: {
     getFormDefinition: def => def.tabbedForms.ChildInformationTab,
     getLayoutDefinition: def => def.layoutVersion.contact.childInformation,
     formToPayload: (def, form) => ({
+      // TODO: Remove this and other calls to 'tranformValues' in components & helpers when we save via redux and can put ut uin the reducer
       childInformation: transformValues(def.tabbedForms.ChildInformationTab)(form.childInformation),
     }),
   },

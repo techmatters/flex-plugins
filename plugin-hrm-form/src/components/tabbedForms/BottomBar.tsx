@@ -28,7 +28,7 @@ import * as RoutingActions from '../../states/routing/actions';
 import { createCase } from '../../services/CaseService';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import { hasTaskControl } from '../../utils/transfer';
-import { namespace, contactFormsBase, connectedCaseBase } from '../../states';
+import { namespace, contactFormsBase, connectedCaseBase, RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { CustomITask } from '../../types/types';
@@ -131,7 +131,7 @@ const BottomBar: React.FC<
         )}
         {showSubmitButton && (
           <>
-            {featureFlags.enable_case_management && !isNonDataCallType(contact.callType) && (
+            {featureFlags.enable_case_management && !isNonDataCallType(contact.rawJson.callType) && (
               <Box marginRight="15px">
                 <StyledNextStepButton
                   type="button"
@@ -167,10 +167,10 @@ const BottomBar: React.FC<
 
 BottomBar.displayName = 'BottomBar';
 
-const mapStateToProps = (state, ownProps: BottomBarProps) => {
+const mapStateToProps = (state: RootState, ownProps: BottomBarProps) => {
   const { contact, metadata } = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid] ?? {};
   const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
-  const caseForm = (caseState && caseState.connectedCase) || {};
+  const caseForm = caseState && caseState.connectedCase;
   return { contact, metadata, caseForm };
 };
 

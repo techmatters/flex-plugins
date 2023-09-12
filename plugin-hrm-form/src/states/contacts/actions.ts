@@ -24,13 +24,15 @@ import { ContactRawJson, CSAMReportEntry, HrmServiceContact } from '../../types/
 export const updateForm = (
   taskId: string,
   parent: keyof ContactRawJson,
-  payload: ContactRawJson[keyof ContactRawJson],
-): t.ContactsActionType => ({
-  type: t.UPDATE_FORM,
-  taskId,
-  parent,
-  payload,
-});
+  payload: ContactRawJson[typeof parent],
+): t.ContactsActionType => {
+  return {
+    type: t.UPDATE_FORM,
+    taskId,
+    parent,
+    payload,
+  };
+};
 
 export const updateCallType = (taskId: string, callType: CallTypes | ''): t.ContactsActionType => ({
   type: t.UPDATE_FORM,

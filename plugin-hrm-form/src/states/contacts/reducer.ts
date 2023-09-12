@@ -56,6 +56,7 @@ import { ReferralLookupStatus, resourceReferralReducer } from './resourceReferra
 import { ContactRawJson } from '../../types/types';
 import { ContactCategoryAction, toggleSubCategoriesReducer } from './categories';
 import { configurationBase, RootState } from '..';
+import { transformValues } from '../../services/ContactService';
 
 export const emptyCategories = [];
 
@@ -187,7 +188,24 @@ export function reduce(
         ...state,
         tasks: omit(state.tasks, action.taskId),
       };
-    case t.UPDATE_FORM:
+    case t.UPDATE_FORM: {
+      const updateFormDefinition =
+        rootState[configurationBase].definitionVersions[state.tasks[action.taskId].contact.rawJson.definitionVersion] ??
+        rootState[configurationBase].currentDefinitionVersion;
+      let updatedForm: ContactRawJson[keyof ContactRawJson];
+      const formDefinitionsMap = {
+        childInformation: updateFormDefinition.tabbedForms.ChildInformationTab,
+        callerInformation: updateFormDefinition.tabbedForms.CallerInformationTab,
+        caseInformation: updateFormDefinition.tabbedForms.CaseInformationTab,
+      };
+      const formDefinition = formDefinitionsMap[action.parent];
+      if (formDefinition) {
+        updatedForm = transformValues(formDefinition)(
+          action.payload as ContactRawJson['childInformation' | 'callerInformation' | 'caseInformation'],
+        );
+      } else {
+        updatedForm = action.payload;
+      }
       return {
         ...state,
         tasks: {
@@ -198,12 +216,13 @@ export function reduce(
               ...state.tasks[action.taskId].contact,
               rawJson: {
                 ...state.tasks[action.taskId].contact.rawJson,
-                [action.parent]: action.payload,
+                [action.parent]: updatedForm,
               },
             },
           },
         },
       };
+    }
     case t.SAVE_END_MILLIS: {
       const taskToEnd = state.tasks[action.taskId];
 
