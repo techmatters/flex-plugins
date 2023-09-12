@@ -94,7 +94,6 @@ const Case: React.FC<Props> = ({
   task,
   form,
   counselorsHash,
-  setConnectedCase,
   removeConnectedCase,
   changeRoute,
   isCreating,
@@ -191,13 +190,12 @@ const Case: React.FC<Props> = ({
     const fetchDefinitionVersions = async () => {
       const definitionVersion = await getDefinitionVersion(version);
       updateDefinitionVersion(connectedCase, version, definitionVersion);
-      setConnectedCase(connectedCase, task.taskSid);
     };
 
     if (version && !definitionVersions[version]) {
       fetchDefinitionVersions();
     }
-  }, [connectedCase, definitionVersions, setConnectedCase, task.taskSid, updateDefinitionVersion, version]);
+  }, [connectedCase, definitionVersions, task.taskSid, updateDefinitionVersion, version]);
 
   if (routing.route === 'csam-report') return null;
 
@@ -462,7 +460,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
   const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   const cancelNewCase = (taskSid: string, loadedContactIds: string[]) => {
     dispatch(CaseActions.removeConnectedCase(taskSid));
@@ -473,19 +471,17 @@ const mapDispatchToProps = dispatch => {
   };
   const updateCaseDefinition = (connectedCase: CaseType, taskSid: string, definition) => {
     dispatch(ConfigActions.updateDefinitionVersion(connectedCase.info.definitionVersion, definition));
-    dispatch(CaseActions.setConnectedCase(connectedCase, taskSid));
   };
   return {
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
     removeConnectedCase: bindActionCreators(CaseActions.removeConnectedCase, dispatch),
-    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     updateDefinitionVersion: updateCaseDefinition,
     releaseContacts: bindActionCreators(ContactActions.releaseContacts, dispatch),
     loadRawContacts: bindActionCreators(ContactActions.loadRawContacts, dispatch),
     loadContact: bindActionCreators(ContactActions.loadContact, dispatch),
     cancelNewCase,
     updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
-      searchAsyncDispatch(updateCaseAsyncAction(caseId, body)),
+      searchAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
   };
 };
 

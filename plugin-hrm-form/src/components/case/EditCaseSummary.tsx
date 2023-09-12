@@ -258,7 +258,7 @@ const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
       dispatch(changeRoute(route, task.taskSid));
     },
     updateCaseAsyncAction: (caseId: Case['id'], body: Partial<Case>) =>
-      searchAsyncDispatch(updateCaseAsyncAction(caseId, body)),
+      searchAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
   };
 };
 

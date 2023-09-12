@@ -47,20 +47,23 @@ import {
 import { configurationBase, RootState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { updateCaseReducer } from './saveCase';
+import { CaseListContentStateAction, OPEN_CASE_DETAILS } from '../caseList/listContent';
 
 const initialState: CaseState = {
   tasks: {},
 };
+const boundUpdateCaseReducer = updateCaseReducer({
+  state: initialState,
+  rootState: {} as RootState['plugin-hrm-form'],
+});
 
 // eslint-disable-next-line import/no-unused-modules
 export function reduce(
   rootState: RootState['plugin-hrm-form'],
   inputState = initialState,
-  action: CaseActionType | CaseWorkingCopyActionType | GeneralActionType,
+  action: CaseActionType | CaseWorkingCopyActionType | GeneralActionType | CaseListContentStateAction,
 ): CaseState {
-
-  const boundUpdateCaseReducer = updateCaseReducer(rootState, initialState, action.taskId);
-  const state = boundUpdateCaseReducer(inputState, action as any);
+  const { state } = boundUpdateCaseReducer({ state: inputState, rootState }, action as any);
 
   switch (action.type) {
     case SET_CONNECTED_CASE:

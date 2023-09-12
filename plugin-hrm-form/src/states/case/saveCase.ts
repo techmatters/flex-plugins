@@ -33,57 +33,65 @@ export const createCaseAsyncAction = createAsyncAction(
 
 export const updateCaseAsyncAction = createAsyncAction(
   UPDATE_CASE_ACTION,
-  async (caseId: Case['id'], body: Partial<Case>): Promise<Case> => {
-    return updateCase(caseId, body);
-  }
+  async (caseId: Case['id'], taskSid: string, body: Partial<Case>): Promise<{ taskSid: string; case: Case }> => {
+    return { taskSid, case: await updateCase(caseId, body) };
+  },
 );
 
-export const updateCaseReducer = (
-  rootState: RootState['plugin-hrm-form'],
-  initialState: CaseState,
-  taskId: string,
-) => createReducer(initialState, handleAction => [
-    handleAction(updateCaseAsyncAction.pending as typeof updateCaseAsyncAction, (state) => {
+// In order to use the createReducer helper, we need to combine the case state and the root state into a single object
+// Perhaps we should just pass the root state to simplify things?
+type UpdateCaseReducerState = { state: CaseState; rootState: RootState['plugin-hrm-form'] };
+
+export const updateCaseReducer = (initialState: UpdateCaseReducerState) =>
+  // We need to return a state object of the same type as we are passed, so we need to return the rootState even though we don't change it.
+  createReducer(initialState, handleAction => [
+    handleAction(updateCaseAsyncAction.pending as typeof updateCaseAsyncAction, ({ state, rootState }) => {
       return {
-        ...state,
-        tasks: {
-          ...state.tasks,
+        state: {
+          ...state,
+          status: SavedCaseStatus.ResultPending,
         },
-        status: SavedCaseStatus.ResultPending,
+        rootState,
       };
     }),
 
-    handleAction(updateCaseAsyncAction.fulfilled, (state, {payload}) => {
-      if (!state.tasks[taskId]) return state;
-      const caseDefinitionVersion =
-        rootState[configurationBase].definitionVersions[payload?.info?.definitionVersion];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [taskId]: {
-            connectedCase: payload,
-            caseWorkingCopy: { sections: {} },
-            availableStatusTransitions: caseDefinitionVersion
-              ? getAvailableCaseStatusTransitions(payload, caseDefinitionVersion)
-              : [],
+    handleAction(
+      updateCaseAsyncAction.fulfilled,
+      ({ state, rootState }, { payload: { case: connectedCase, taskSid } }): UpdateCaseReducerState => {
+        if (!state.tasks[taskSid]) return { state, rootState };
+        const caseDefinitionVersion =
+          rootState[configurationBase].definitionVersions[connectedCase?.info?.definitionVersion];
+        return {
+          state: {
+            // status: SavedCaseStatus.ResultReceived,
+            ...state,
+            tasks: {
+              ...state.tasks,
+              [taskSid]: {
+                connectedCase,
+                caseWorkingCopy: { sections: {} },
+                availableStatusTransitions: caseDefinitionVersion
+                  ? getAvailableCaseStatusTransitions(connectedCase, caseDefinitionVersion)
+                  : [],
+              },
+            },
           },
-        },
-        status: SavedCaseStatus.ResultReceived,
-      };
-    }),
+          rootState,
+        };
+      },
+    ),
 
-    handleAction(updateCaseAsyncAction.rejected, (state, {payload}) => {
+    handleAction(updateCaseAsyncAction.rejected, ({ state, rootState }, { payload }) => {
       return {
-        ...state,
-        tasks: {      
-            ...state.tasks,   
+        state: {
+          ...state,
+          status: SavedCaseStatus.ResultReceived,
+          error: payload,
         },
-        status: SavedCaseStatus.ResultPending,
-        error: payload,
+        rootState,
       };
     }),
-  ])
+  ]);
 
 // export const createCaseReducer = createReducer(initialState, handleAction => [
 //   handleAction(createCaseAsyncAction.pending, state => {
