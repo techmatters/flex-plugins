@@ -112,7 +112,7 @@ type PrePopulateFormAction = {
 
 type RestoreEntireFormAction = {
   type: typeof RESTORE_ENTIRE_FORM;
-  contact: HrmServiceContact;
+  contact: HrmServiceContactWithMetadata;
   taskId: string;
 };
 

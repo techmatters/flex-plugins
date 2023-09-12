@@ -34,7 +34,7 @@ import {
   sendSystemMessage,
   getDefinitionVersion,
 } from '../services/ServerlessService';
-import { namespace, contactFormsBase, configurationBase, dualWriteBase } from '../states';
+import { namespace, contactFormsBase, configurationBase, dualWriteBase, RootState } from '../states';
 import * as Actions from '../states/contacts/actions';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { changeRoute } from '../states/routing/actions';
@@ -69,7 +69,7 @@ export const loadCurrentDefinitionVersion = async () => {
  * Given a taskSid, retrieves the state of the form (stored in redux) for that task
  */
 const getStateContactForms = (taskSid: string) => {
-  return Manager.getInstance().store.getState()[namespace][contactFormsBase].tasks[taskSid];
+  return (Manager.getInstance().store.getState() as RootState)[namespace][contactFormsBase].tasks[taskSid];
 };
 
 /**
@@ -106,7 +106,9 @@ const restoreFormIfTransfer = async (task: ITask) => {
   const contact = await loadFormSharedState(task);
   if (contact) {
     Manager.getInstance().store.dispatch(Actions.restoreEntireContact(contact, task.taskSid));
-    const { rawJson } = contact;
+    const {
+      contact: { rawJson },
+    } = contact;
     if (rawJson.callType === callTypes.child) {
       Manager.getInstance().store.dispatch(
         changeRoute({ route: 'tabbed-forms', subroute: 'childInformation' }, task.taskSid),
@@ -252,8 +254,10 @@ export const customTransferTask = (setupObject: SetupObject): ReplacedActionFunc
   const { workerSid, counselorName } = setupObject;
 
   // save current form state as sync document (if there is a form)
-  const form = getStateContactForms(payload.task.taskSid);
-  const documentName = await saveFormSharedState(form, payload.task);
+  const contact = getStateContactForms(payload.task.taskSid);
+  if (!contact) return original(payload);
+
+  const documentName = await saveFormSharedState(contact, payload.task);
 
   // set metadata for the transfer
   await TransferHelpers.setTransferMeta(payload, documentName, counselorName);

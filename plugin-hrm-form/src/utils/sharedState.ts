@@ -19,10 +19,62 @@ import SyncClient from 'twilio-sync';
 
 import { recordBackendError } from '../fullStory';
 import { issueSyncToken } from '../services/ServerlessService';
-import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
+import { getAseloFeatureFlags, getDefinitionVersions, getTemplateStrings } from '../hrmConfig';
 import { HrmServiceContact } from '../types/types';
+import { HrmServiceContactWithMetadata, TaskEntry } from '../states/contacts/types';
+import { createContactWithMetadata } from '../states/contacts/reducer';
 
 let sharedStateClient: SyncClient;
+
+const transferFormCategoriesToContactCategories = (
+  transferFormCategories: TaskEntry['categories'],
+): HrmServiceContact['rawJson']['categories'] => {
+  const contactCategories = {};
+  transferFormCategories.forEach(transferFormCategories => {
+    const [, category, subCategory] = transferFormCategories.split('.');
+    contactCategories[category] = [...(contactCategories[category] ?? []), subCategory];
+  });
+  return contactCategories;
+};
+
+const transferFormToContact = (transferForm: TaskEntry): HrmServiceContactWithMetadata => {
+  const { metadata, helpline, csamReports, referrals, reservationSid, ...form } = transferForm;
+  return {
+    contact: {
+      ...createContactWithMetadata(getDefinitionVersions().currentDefinitionVersion)(true).contact,
+      helpline,
+      csamReports,
+      referrals,
+      rawJson: {
+        ...form,
+        contactlessTask: form.contactlessTask as HrmServiceContact['rawJson']['contactlessTask'],
+        categories: transferFormCategoriesToContactCategories(form.categories),
+        conversationMedia: [],
+      },
+    },
+    metadata,
+  };
+};
+
+const contactFormCategoriesToTransferFormCategories = (
+  contactCategories: HrmServiceContact['rawJson']['categories'],
+): TaskEntry['categories'] => {
+  return Object.entries(contactCategories).flatMap(([category, subCategories]) =>
+    subCategories.map(subCategory => `categories.${category}.${subCategory}`),
+  );
+};
+
+const contactToTransferForm = ({ contact, metadata }: HrmServiceContactWithMetadata): TaskEntry => {
+  const { helpline, csamReports, referrals, rawJson } = contact;
+  return {
+    helpline,
+    csamReports,
+    referrals,
+    ...rawJson,
+    categories: contactFormCategoriesToTransferFormCategories(rawJson.categories),
+    metadata,
+  };
+};
 
 export const setUpSharedStateClient = () => {
   const updateSharedStateToken = async () => {
@@ -55,10 +107,13 @@ const DOCUMENT_TTL_SECONDS = 24 * 60 * 60; // 24 hours
 
 /**
  * Saves the actual form into the Sync Client
- * @param {*} contact current contact (or undefined)
+ * @param {*} contactWithMetaData current contact (or undefined)
  * @param task
  */
-export const saveFormSharedState = async (contact: HrmServiceContact, task: ITask): Promise<string | null> => {
+export const saveFormSharedState = async (
+  contactWithMetaData: HrmServiceContactWithMetadata,
+  task: ITask,
+): Promise<string | null> => {
   if (!getAseloFeatureFlags().enable_transfers) return null;
 
   try {
@@ -69,13 +124,11 @@ export const saveFormSharedState = async (contact: HrmServiceContact, task: ITas
       return null;
     }
 
-    const documentName = contact ? `pending-form-${task.taskSid}` : null;
+    const documentName = contactWithMetaData ? `pending-form-${task.taskSid}` : null;
 
     if (documentName) {
-      const newForm: HrmServiceContact = { ...contact };
-
       const document = await sharedStateClient.document(documentName);
-      await document.set(newForm, { ttl: DOCUMENT_TTL_SECONDS }); // set time to live to 24 hours
+      await document.set(contactToTransferForm(contactWithMetaData), { ttl: DOCUMENT_TTL_SECONDS }); // set time to live to 24 hours
       return documentName;
     }
 
@@ -89,7 +142,7 @@ export const saveFormSharedState = async (contact: HrmServiceContact, task: ITas
 /**
  * Restores the contact form from Sync Client (if there is any)
  */
-export const loadFormSharedState = async (task: ITask): Promise<HrmServiceContact> => {
+export const loadFormSharedState = async (task: ITask): Promise<HrmServiceContactWithMetadata> => {
   if (!getAseloFeatureFlags().enable_transfers) return null;
 
   try {
@@ -108,7 +161,7 @@ export const loadFormSharedState = async (task: ITask): Promise<HrmServiceContac
     const documentName = task.attributes.transferMeta.formDocument;
     if (documentName) {
       const document = await sharedStateClient.document(documentName);
-      return document.data as HrmServiceContact;
+      return transferFormToContact(document.data as TaskEntry);
     }
 
     return null;

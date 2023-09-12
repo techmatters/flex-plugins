@@ -74,10 +74,7 @@ export const createContactWithMetadata = (definitions: DefinitionVersion) => (
 
   const categoriesMeta = {
     gridView: false,
-    expanded: Object.keys(definitions.tabbedForms.IssueCategorizationTab(defaultHelpline)).reduce(
-      (acc, category) => ({ ...acc, [category]: false }),
-      {},
-    ),
+    expanded: {},
   };
 
   const metadata = {
@@ -314,14 +311,15 @@ export function reduce(
       };
     }
     case t.RESTORE_ENTIRE_FORM: {
-      const definition = rootState[configurationBase].definitionVersions[action.contact.rawJson.definitionVersion];
+      const definition =
+        rootState[configurationBase].definitionVersions[action.contact.contact.rawJson.definitionVersion];
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...(state.tasks[action.taskId] || createContactWithMetadata(definition)(true)),
-            contact: action.contact,
+            ...action.contact,
           },
         },
       };
