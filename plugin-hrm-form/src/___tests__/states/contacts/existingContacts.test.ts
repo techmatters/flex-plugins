@@ -332,7 +332,7 @@ describe('loadContactReducer', () => {
   });
 
   test('loadContact', () => {
-    const input = { id: baseContact.id, bleep: 'bloop' };
+    const input = { ...baseContact };
     const outAction = loadContact(input, 'TEST_REFERENCE');
     expect(outAction.contacts.length).toEqual(1);
     expect(outAction.contacts[0]).toStrictEqual(baseContact);
@@ -340,8 +340,8 @@ describe('loadContactReducer', () => {
   });
 
   test('loadContacts', () => {
-    const input1 = { id: baseContact.id, bleep: 'bloop' };
-    const input2 = { id: '42', bleep: 'bloop' };
+    const input1 = { ...baseContact };
+    const input2 = { ...baseContact, id: '42' };
     const outAction = loadContacts([input1, input2], 'TEST_REFERENCE');
     expect(outAction.contacts.length).toEqual(2);
     expect(outAction.contacts[0]).toStrictEqual(baseContact);
