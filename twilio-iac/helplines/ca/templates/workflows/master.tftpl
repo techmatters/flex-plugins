@@ -22,43 +22,6 @@
           ]
         },
         {
-          "filter_friendly_name": "KHP English",
-          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] AND language CONTAINS \"en-CA\") OR isContactlessTask == true",
-          "targets": [
-            {
-              "queue": "${task_queues.khp_en}",
-              "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
-            }
-          ]
-        },
-        {
-          "filter_friendly_name": "KHP French",
-          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] AND language CONTAINS \"fr-CA\")",
-          "targets": [
-            {
-              "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
-              "queue": "${task_queues.khp_fr}",
-              "timeout": 20
-            },
-            {
-              "timeout": 0,
-              "priority": 0,
-              "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
-              "queue": "${task_queues.khp_en}"
-            }
-          ]
-        },
-        {
-          "filter_friendly_name": "KHP Interpreter",
-          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] AND interpreter CONTAINS \"main\")",
-          "targets": [
-            {
-              "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
-              "queue": "${task_queues.interpreter_en}"
-            }
-          ]
-        },
-        {
           "filter_friendly_name": "French Interpreter",
           "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] AND interpreter CONTAINS \"fr\")",
           "targets": [
@@ -75,6 +38,36 @@
             {
               "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
               "queue": "${task_queues.indigenous}"
+            }
+          ]
+        },
+        {
+          "filter_friendly_name": "KHP English",
+          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] AND language CONTAINS \"en-CA\") OR isContactlessTask == true",
+          "targets": [
+            {
+              "queue": "${task_queues.khp_en}",
+              "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
+            }
+          ]
+        },
+        {
+          "filter_friendly_name": "KHP French",
+          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] AND language CONTAINS \"fr-CA\")",
+          "targets": [
+            {
+              "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+              "queue": "${task_queues.khp_fr}"
+            }
+          ]
+        },
+        {
+          "filter_friendly_name": "KHP Interpreter",
+          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] AND interpreter CONTAINS \"main\")",
+          "targets": [
+            {
+              "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+              "queue": "${task_queues.interpreter_en}"
             }
           ]
         },
