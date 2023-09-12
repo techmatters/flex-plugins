@@ -82,6 +82,7 @@ describe('InsightsService', () => {
     };
 
     const contactForm = {
+      id: 'id',
       helpline: previousAttributes.helpline,
       callType: 'Abusive',
       callerInformation: {
@@ -96,6 +97,7 @@ describe('InsightsService', () => {
     };
 
     const result = buildInsightsData(twilioTask, contactForm, {});
+    console.log('>>> buildInsightsData', result);
 
     const expectedNewAttributes = {
       ...previousAttributes,
@@ -108,6 +110,7 @@ describe('InsightsService', () => {
         conversation_attribute_4: contactForm.callerInformation.gender,
         conversation_attribute_8: previousAttributes.helpline,
         language: contactForm.childInformation.language,
+        conversation_attribute_10: '',
       },
       customers: {
         year_of_birth: contactForm.childInformation.age,
@@ -161,6 +164,7 @@ describe('InsightsService', () => {
         conversation_attribute_4: null,
         conversation_attribute_8: previousAttributes.helpline,
         language: null,
+        conversation_attribute_10: '',
       },
       customers: {
         year_of_birth: null,
@@ -189,6 +193,7 @@ describe('InsightsService', () => {
     };
 
     const contactForm = {
+      id: 'id',
       helpline: previousAttributes.helpline,
       callType: 'Child calling about self',
       childInformation: {
@@ -251,6 +256,7 @@ describe('InsightsService', () => {
     const date = '2020-12-30';
     const time = '14:50';
     const contactForm = {
+      id: 'id',
       helpline: previousAttributes.helpline,
       callType: 'Child calling about self',
       contactlessTask: {
