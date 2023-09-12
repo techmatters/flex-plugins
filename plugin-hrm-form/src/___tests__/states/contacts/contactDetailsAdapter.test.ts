@@ -14,44 +14,82 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { callTypes } from 'hrm-form-definitions';
+import { configurationBase, namespace } from '../../../states';
+import { retrieveCategories, taskFormToHrmServiceContact } from '../../../states/contacts/contactDetailsAdapter';
+import * as ContactService from '../../../services/ContactService';
 
-import { retrieveCategories } from '../../../states/contacts/contactDetailsAdapter';
-import { HrmServiceContact, SearchAPIContact } from '../../../types/types';
+describe('retrieveCategories', () => {
+  test('empty object input, empty object output', () => expect(retrieveCategories({})).toStrictEqual({}));
+  test('Categories with enabled subcategories input, categories with enables subcategories in a list as output', () =>
+    expect(
+      retrieveCategories({
+        category1: { sub1: true, sub2: false, sub3: true },
+        category2: { sub1: true, sub2: true, sub3: false },
+      }),
+    ).toStrictEqual({ category1: ['sub1', 'sub3'], category2: ['sub1', 'sub2'] }));
+  test('Falsy categories - throw', () =>
+    expect(() =>
+      retrieveCategories({
+        category1: null,
+        category2: { sub1: true, sub2: true, sub3: false },
+      }),
+    ).toThrow());
+  test('Categories with no subcategories input, not included in output', () =>
+    expect(
+      retrieveCategories({
+        category1: {},
+        category2: { sub1: true, sub2: true, sub3: false },
+      }),
+    ).toStrictEqual({ category2: ['sub1', 'sub2'] }));
+  test('Categories with no enabled subcategories input, not included in output', () =>
+    expect(
+      retrieveCategories({
+        category1: { sub1: false, sub2: false, sub3: false },
+        category2: { sub1: true, sub2: true, sub3: false },
+      }),
+    ).toStrictEqual({ category2: ['sub1', 'sub2'] }));
+});
 
-// TODO: rewrite retrieveCategories tests
-// describe('retrieveCategories', () => {
-//   test('falsy input, empty object output', () => expect(retrieveCategories(null)).toStrictEqual({}));
-//   test('empty object input, empty object output', () => expect(retrieveCategories({})).toStrictEqual({}));
-//   test('Categories with enabled subcategories input, categories with enables subcategories in a list as output', () =>
-//     expect(
-//       retrieveCategories({
-//         category1: { sub1: true, sub2: false, sub3: true },
-//         category2: { sub1: true, sub2: true, sub3: false },
-//       }),
-//     ).toStrictEqual({ category1: ['sub1', 'sub3'], category2: ['sub1', 'sub2'] }));
-//   test('Falsy categories - throw', () =>
-//     expect(() =>
-//       retrieveCategories({
-//         category1: null,
-//         category2: { sub1: true, sub2: true, sub3: false },
-//       }),
-//     ).toThrow());
-//   test('Categories with no subcategories input, not included in output', () =>
-//     expect(
-//       retrieveCategories({
-//         category1: {},
-//         category2: { sub1: true, sub2: true, sub3: false },
-//       }),
-//     ).toStrictEqual({ category2: ['sub1', 'sub2'] }));
-//   test('Categories with no enabled subcategories input, not included in output', () =>
-//     expect(
-//       retrieveCategories({
-//         category1: { sub1: false, sub2: false, sub3: false },
-//         category2: { sub1: true, sub2: true, sub3: false },
-//       }),
-//     ).toStrictEqual({ category2: ['sub1', 'sub2'] }));
-// });
+jest.mock('../../../services/ContactService', () => ({
+  ...jest.requireActual('../../../services/ContactService'),
+  transformForm: (form: any) => ({
+    callType: '',
+    childInformation: {},
+    callerInformation: {},
+    contactlessTask: {
+      channel: 'web',
+    },
+    caseInformation: {
+      callSummary: '',
+    },
+    categories: {
+      category1: ['subCategory1', 'subCategory2'],
+      category2: ['subCategory3'],
+    },
+  }),
+}));
 
-// TODO
-// describe('taskFormToHrmServiceContact' , () => {});
+describe('taskFormToHrmServiceContact', () => {
+  test('should return Partial<HrmServiceContact>', () => {
+    const task = {
+      taskSid: 'offline-contact-task-sid',
+      channelType: 'default',
+    };
+    const form = {};
+    const date = '2023-01-01';
+    const twilioWorkerId = 'WKxxx';
+    const temporaryId = '123';
+
+    const contact = taskFormToHrmServiceContact(task, form, date, twilioWorkerId, temporaryId);
+
+    expect(contact.id).toEqual(temporaryId);
+    expect(contact.twilioWorkerId).toEqual(twilioWorkerId);
+    expect(contact.timeOfContact).toEqual(date);
+    expect(contact.taskId).toEqual(task.taskSid);
+    expect(contact.channel).toEqual(task.channelType);
+    expect(contact.rawJson?.categories).toStrictEqual({
+      category1: ['subCategory1', 'subCategory2'],
+      category2: ['subCategory3'],
+    });
+  });
+});

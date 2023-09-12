@@ -28,7 +28,6 @@ import { getDefinitionVersion } from '../../../services/ServerlessService';
 import { updateDefinitionVersion } from '../../../states/configuration/actions';
 import { configurationBase, namespace, RootState } from '../../../states';
 import TagsAndCounselor from '../TagsAndCounselor';
-import { retrieveCategories } from '../../../states/contacts/contactDetailsAdapter';
 import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
 
 type OwnProps = {
