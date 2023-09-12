@@ -22,7 +22,9 @@ import format from 'date-fns/format';
 
 import type { TwilioStoredMedia, S3StoredTranscript } from '../../../types/types';
 import { contactFormsBase, namespace, RootState } from '../../../states';
-import { getFileDownloadUrl } from '../../../services/ServerlessService';
+import { generateExternalMediaPath } from '../../../services/ContactService';
+import fetchHrmApi from '../../../services/fetchHrmApi';
+
 import { loadTranscript, TranscriptMessage, TranscriptResult } from '../../../states/contacts/existingContacts';
 import { Box } from '../../../styles/HrmStyles';
 import { GroupedMessage } from '../../Messaging/MessageItem';
@@ -123,7 +125,24 @@ const TranscriptSection: React.FC<Props> = ({
     try {
       setLoading(true);
 
-      const transcriptPreSignedUrl = await getFileDownloadUrl(externalStoredTranscript.location.key);
+      const mediaType = 'transcript';
+
+      console.log('>>> fetchAndLoadTranscript',contactId,
+      mediaType,
+      externalStoredTranscript.location.bucket,
+      externalStoredTranscript.location.key)
+      //fetchAndLoadTranscript 14799 transcript tl-aselo-docs-as-development transcripts/2023/09/11/20230911183503-WT1c08de7b919803824bd60b7228a1190a.json
+
+      const transcriptPreSignedUrl = await fetchHrmApi(
+        generateExternalMediaPath(
+          contactId,
+          mediaType,
+          externalStoredTranscript.location.bucket,
+          externalStoredTranscript.location.key,
+        ),
+      );
+      console.log('>>> transcriptPreSignedUrl', transcriptPreSignedUrl)
+
       const transcriptResponse = await fetch(transcriptPreSignedUrl.downloadUrl);
 
       validateFetchResponse(transcriptResponse);
@@ -133,6 +152,7 @@ const TranscriptSection: React.FC<Props> = ({
 
       setLoading(false);
     } catch (err) {
+      console.log('>>>', err)
       handleFetchAndLoadException(err);
     }
   };

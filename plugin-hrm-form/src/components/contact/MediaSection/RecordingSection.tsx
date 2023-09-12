@@ -37,7 +37,6 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
 
       const mediaType = 'recording';
 
-      // TODO: this won't currently work for local dev env
       const { media_url: recordingPreSignedUrl } = await fetchHrmApi(
         generateExternalMediaPath(
           contactId,
