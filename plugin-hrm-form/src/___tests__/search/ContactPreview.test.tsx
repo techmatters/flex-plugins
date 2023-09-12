@@ -49,11 +49,18 @@ test('<ContactPreview> should mount', async () => {
   const defaultDef = await loadDefinition(formDefinitionsBaseUrl);
   mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, defaultDef);
 
+  const counselorsHash = {
+    WKxxxx: 'John Doe',
+  };
+
   const initialState: DeepPartial<RootState> = {
     [namespace]: {
       [configurationBase]: {
         definitionVersions: {
           [DefinitionVersionId.v1]: defaultDef,
+        },
+        counselors: {
+          hash: counselorsHash,
         },
       },
     },
@@ -64,7 +71,7 @@ test('<ContactPreview> should mount', async () => {
     timeOfContact: '2019-01-01T00:00:00.000Z',
     number: '+12025550440',
     channel: 'whatsapp',
-    twilioWorkerId: '',
+    twilioWorkerId: 'WKxxxx',
     helpline: 'test helpline',
     conversationDuration: 0,
     createdBy: '',
@@ -134,7 +141,7 @@ test('<ContactPreview> should mount', async () => {
   expect(callType).toEqual(contact.rawJson.callType);
   expect(channel).toEqual(contact.channel);
   expect(number).toEqual(contact.number);
-  expect(counselor).toEqual(contact.twilioWorkerId);
+  expect(counselor).toEqual(counselorsHash[contact.twilioWorkerId]);
   expect(date).toEqual(contact.timeOfContact);
   expect(categories).toEqual(contact.rawJson.categories);
 });
