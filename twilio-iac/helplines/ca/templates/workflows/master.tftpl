@@ -22,6 +22,26 @@
           ]
         },
         {
+          "filter_friendly_name": "French Interpreter",
+          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] AND interpreter CONTAINS \"fr\")",
+          "targets": [
+            {
+              "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+              "queue": "${task_queues.interpreter_fr}"
+            }
+          ]
+        },
+        {
+          "filter_friendly_name": "Indigenous",
+          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] AND interpreter CONTAINS \"indigenous\")",
+          "targets": [
+            {
+              "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+              "queue": "${task_queues.indigenous}"
+            }
+          ]
+        },
+        {
           "filter_friendly_name": "KHP English",
           "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] AND language CONTAINS \"en-CA\") OR isContactlessTask == true",
           "targets": [
@@ -48,26 +68,6 @@
             {
               "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
               "queue": "${task_queues.interpreter_en}"
-            }
-          ]
-        },
-        {
-          "filter_friendly_name": "French Interpreter",
-          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] AND interpreter CONTAINS \"fr\")",
-          "targets": [
-            {
-              "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
-              "queue": "${task_queues.interpreter_fr}"
-            }
-          ]
-        },
-        {
-          "filter_friendly_name": "Indigenous",
-          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] AND interpreter CONTAINS \"indigenous\")",
-          "targets": [
-            {
-              "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
-              "queue": "${task_queues.indigenous}"
             }
           ]
         },
