@@ -28,11 +28,104 @@ data "aws_ssm_parameter" "secrets" {
 
 locals {
   secrets                   = jsondecode(data.aws_ssm_parameter.secrets.value)
+
   helpline                  = "Kellimni"
   short_helpline            = "MT"
   operating_info_key        = "mt"
   environment               = "Staging"
   short_environment         = "STG"
+ 
+  task_language      = "en-US"
+  enable_post_survey = false
+
+  events_filter = [
+    "task.created",
+    "task.canceled",
+    "task.completed",
+    "task.deleted",
+    "task.wrapup",
+    "task-queue.entered",
+    "task.system-deleted",
+    "reservation.accepted",
+    "reservation.rejected",
+    "reservation.timeout",
+    "reservation.wrapup",
+  ]
+
+
+  custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true OR  twilioNumber IN ['messenger:111279668497853']"
+
+  workflows = {
+    master : {
+      friendly_name : "Master Workflow"
+      templatefile : "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+    },
+    survey : {
+      friendly_name : "Survey Workflow"
+      templatefile : "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+    }
+  }
+
+  task_queues = {
+    master : {
+      "target_workers" = "1==1",
+      "friendly_name"  = "Master"
+    },
+    survey : {
+      "target_workers" = "1==0",
+      "friendly_name"  = "Survey"
+    },
+    e2e_test : {
+        "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
+        "friendly_name"  = "E2E Test Queue"
+    }
+  }
+
+  task_channels = {
+    default : "Default"
+    chat : "Programmable Chat"
+    voice : "Voice"
+    sms : "SMS"
+    video : "Video"
+    email : "Email"
+    survey : "Survey"
+  }
+
+
+  //common across all helplines
+  channel_attributes = {
+    webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
+    voice : "/app/twilio-iac/helplines/templates/channel-attributes/voice.tftpl"
+    twitter : "/app/twilio-iac/helplines/templates/channel-attributes/twitter.tftpl"
+    default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
+  }
+
+  flow_vars = {
+    service_sid                            = "ZS2cf2a4933a3f9782a2907146287f3f1a"
+    environment_sid                        = "ZE512e22f5abb4cc30757b4db4181ab40b"
+    capture_channel_with_bot_function_sid  = "ZH75af18446e362dd58e4fd76cc4e1dca1"
+    chatbot_callback_cleanup_function_id   = "ZH85433c3fc77c22dc1c6cf385853598d8"
+    send_message_janitor_function_sid = "ZH19f41d74c3c64c23b5d624ab84d1ddde"
+  }
+
+  channels = {
+    webchat : {
+      channel_type      = "web"
+      contact_identity  = ""
+      templatefile      = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex.tftpl"
+      channel_flow_vars = {}
+      chatbot_unique_names = []
+    },
+    facebook : {
+      channel_type      = "facebook"
+      contact_identity  = "messenger:111279668497853"
+      templatefile      = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex.tftpl"
+      channel_flow_vars = {}
+      chatbot_unique_names = []
+    }
+  }
+
+
   target_task_name          = "greeting"
   twilio_numbers            = ["messenger:111279668497853"]
   channel                   = ""
