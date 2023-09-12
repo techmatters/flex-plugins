@@ -194,7 +194,13 @@ export function reduce(
           ...state.tasks,
           [action.taskId]: {
             ...state.tasks[action.taskId],
-            [action.parent]: action.payload,
+            contact: {
+              ...state.tasks[action.taskId].contact,
+              rawJson: {
+                ...state.tasks[action.taskId].contact.rawJson,
+                [action.parent]: action.payload,
+              },
+            },
           },
         },
       };

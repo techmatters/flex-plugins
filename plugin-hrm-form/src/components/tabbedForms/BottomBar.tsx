@@ -50,7 +50,8 @@ const BottomBar: React.FC<
   showSubmitButton,
   handleSubmitIfValid,
   optionalButtons,
-  contactForm,
+  contact,
+  metadata,
   task,
   changeRoute,
   setConnectedCase,
@@ -67,7 +68,7 @@ const BottomBar: React.FC<
     if (!hasTaskControl(task)) return;
 
     try {
-      const caseFromDB = await createCase(contactForm, workerSid, definitionVersion);
+      const caseFromDB = await createCase(contact, workerSid, definitionVersion);
       changeRoute({ route: 'new-case' }, taskSid);
       setConnectedCase(caseFromDB, taskSid);
     } catch (error) {
@@ -82,7 +83,7 @@ const BottomBar: React.FC<
     setSubmitting(true);
 
     try {
-      await submitContactForm(task, contactForm, caseForm);
+      await submitContactForm(task, contact, metadata, caseForm);
       await completeTask(task);
     } catch (error) {
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
@@ -111,7 +112,13 @@ const BottomBar: React.FC<
         {optionalButtons &&
           optionalButtons.map((i, index) => (
             <Box key={`optional-button-${index}`} marginRight="15px">
-              <StyledNextStepButton type="button" roundCorners secondary onClick={i.onClick} disabled={isSubmitting}>
+              <StyledNextStepButton
+                type="button"
+                roundCorners
+                secondary="true"
+                onClick={i.onClick}
+                disabled={isSubmitting}
+              >
                 <Template code={i.label} />
               </StyledNextStepButton>
             </Box>
@@ -124,12 +131,12 @@ const BottomBar: React.FC<
         )}
         {showSubmitButton && (
           <>
-            {featureFlags.enable_case_management && !isNonDataCallType(contactForm.callType) && (
+            {featureFlags.enable_case_management && !isNonDataCallType(contact.callType) && (
               <Box marginRight="15px">
                 <StyledNextStepButton
                   type="button"
                   roundCorners
-                  secondary
+                  secondary="true"
                   onClick={handleSubmitIfValid(handleOpenNewCase, onError)}
                   data-fs-id="Contact-SaveAndAddToCase-Button"
                   data-testid="BottomBar-SaveAndAddToCase-Button"
@@ -161,10 +168,10 @@ const BottomBar: React.FC<
 BottomBar.displayName = 'BottomBar';
 
 const mapStateToProps = (state, ownProps: BottomBarProps) => {
-  const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
+  const { contact, metadata } = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid] ?? {};
   const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
   const caseForm = (caseState && caseState.connectedCase) || {};
-  return { contactForm, caseForm };
+  return { contact, metadata, caseForm };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

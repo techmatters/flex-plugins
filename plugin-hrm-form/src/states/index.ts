@@ -80,7 +80,7 @@ const reducer = (state: HrmState, action): HrmState => {
      * This makes it incompatible with combineReducers, so instead, we add the case state property with an explicit call to ConnectedCaseReducer, where we specify the extra parameter
      */
     [connectedCaseBase]: ConnectedCaseReducer(state, (state ?? {})[connectedCaseBase], action),
-    [contactFormsBase]: ContactStateReducer(state, state[contactFormsBase], action),
+    [contactFormsBase]: ContactStateReducer(state, (state ?? {})[contactFormsBase], action),
   };
 };
 

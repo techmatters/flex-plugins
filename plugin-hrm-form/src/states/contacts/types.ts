@@ -16,7 +16,7 @@
 
 import { CallTypes, DataCallTypes } from 'hrm-form-definitions';
 
-import { CSAMReportEntry, HrmServiceContact } from '../../types/types';
+import { ContactRawJson, CSAMReportEntry, HrmServiceContact } from '../../types/types';
 import { ChannelTypes } from '../DomainConstants';
 import { DraftResourceReferralState, ResourceReferral } from './resourceReferral';
 import { ExistingContactsState } from './existingContacts';
@@ -81,8 +81,8 @@ export type ContactsState = {
 type UpdateFormAction = {
   type: typeof UPDATE_FORM;
   taskId: string;
-  parent: keyof TaskEntry;
-  payload: any;
+  parent: keyof ContactRawJson;
+  payload: Partial<ContactRawJson[keyof ContactRawJson]>;
 };
 
 type SaveEndMillisAction = {

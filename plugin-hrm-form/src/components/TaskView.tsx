@@ -44,14 +44,7 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const TaskView: React.FC<Props> = props => {
-  const {
-    shouldRecreateState,
-    currentDefinitionVersion,
-    task,
-    contactForm,
-    updateHelpline,
-    recreateContactState,
-  } = props;
+  const { shouldRecreateState, currentDefinitionVersion, task, contact, updateHelpline, recreateContactState } = props;
 
   React.useEffect(() => {
     if (shouldRecreateState) {
@@ -66,15 +59,15 @@ const TaskView: React.FC<Props> = props => {
     };
   }, [task]);
 
-  const contactInitialized = Boolean(contactForm);
-  const helpline = contactForm?.helpline;
-  const contactlessTask = contactForm?.contactlessTask;
+  const contactInitialized = Boolean(contact);
+  const helpline = contact?.helpline;
+  const contactlessTask = contact?.rawJson?.contactlessTask;
 
   // Set contactForm.helpline for all contacts on the first run. React to helpline changes for offline contacts only
   React.useEffect(() => {
     const setHelpline = async () => {
       if (task && !isStandaloneITask(task)) {
-        const helplineToSave = await getHelplineToSave(task, contactlessTask || { channel: 'web' });
+        const helplineToSave = await getHelplineToSave(task, contactlessTask);
         if (helpline !== helplineToSave) {
           updateHelpline(task.taskSid, helplineToSave);
         }
@@ -131,8 +124,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const { task } = ownProps;
   const { currentDefinitionVersion } = state[namespace][configurationBase];
   // Check if the entry for this task exists in each reducer
-  const contactForm = task && state[namespace][contactFormsBase]?.tasks[task.taskSid];
-  const contactFormStateExists = Boolean(contactForm);
+  const { contact } = (task && state[namespace][contactFormsBase]?.tasks[task.taskSid]) ?? {};
+  const contactFormStateExists = Boolean(contact);
   const routingStateExists = Boolean(task && state[namespace][routingBase].tasks[task.taskSid]);
   const searchStateExists = Boolean(task && state[namespace][searchContactsBase].tasks[task.taskSid]);
 
@@ -140,7 +133,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     currentDefinitionVersion && (!contactFormStateExists || !routingStateExists || !searchStateExists);
 
   return {
-    contactForm,
+    contact,
     shouldRecreateState,
     currentDefinitionVersion,
   };

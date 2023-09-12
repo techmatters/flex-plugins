@@ -30,8 +30,7 @@ import {
 } from '../../styles/HrmStyles';
 import { disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
-import { TaskEntry } from '../../states/contacts/types';
-import { ContactRawJson, HrmServiceContact } from '../../types/types';
+import { ContactRawJson } from '../../types/types';
 
 type OwnProps = {
   display: boolean;

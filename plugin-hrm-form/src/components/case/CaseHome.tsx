@@ -64,7 +64,6 @@ type Props = CaseHomeProps & ConnectedProps<typeof connector>;
 const CaseHome: React.FC<Props> = ({
   definitionVersion,
   task,
-  form,
   routing,
   changeRoute,
   isCreating,
@@ -220,7 +219,7 @@ const CaseHome: React.FC<Props> = ({
           <CaseSummary task={task} />
         </Box>
         <Box margin="25px 0 0 25px">
-          <Timeline timelineActivities={timeline} taskSid={task.taskSid} form={form} can={can} route={route} />
+          <Timeline timelineActivities={timeline} taskSid={task.taskSid} can={can} route={route} />
         </Box>
         <Box margin="25px 0 0 25px">
           <CaseSection
@@ -267,7 +266,7 @@ const CaseHome: React.FC<Props> = ({
             <Box marginRight="15px">
               <StyledNextStepButton
                 data-testid="CaseHome-CancelButton"
-                secondary
+                secondary="true"
                 roundCorners
                 onClick={handleCancelNewCaseAndClose}
               >
@@ -282,7 +281,12 @@ const CaseHome: React.FC<Props> = ({
         {!isCreating && (
           <>
             <Box marginRight="15px">
-              <StyledNextStepButton data-testid="CaseHome-CloseButton" secondary roundCorners onClick={handleClose}>
+              <StyledNextStepButton
+                data-testid="CaseHome-CloseButton"
+                secondary="true"
+                roundCorners
+                onClick={handleClose}
+              >
                 <Template code="BottomBar-Close" />
               </StyledNextStepButton>
             </Box>
@@ -296,12 +300,11 @@ const CaseHome: React.FC<Props> = ({
 CaseHome.displayName = 'CaseHome';
 
 const mapStateToProps = (state: RootState, ownProps: CaseHomeProps) => {
-  const form = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
   const routing = state[namespace][routingBase].tasks[ownProps.task.taskSid];
   const caseState: CaseState = state[namespace][connectedCaseBase];
   const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
 
-  return { form, routing, connectedCaseState };
+  return { routing, connectedCaseState };
 };
 
 const mapDispatchToProps = {

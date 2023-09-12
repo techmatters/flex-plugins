@@ -18,14 +18,13 @@
 import { CallTypes, DataCallTypes } from 'hrm-form-definitions';
 
 import * as t from './types';
-import { CSAMReportEntry, HrmServiceContact } from '../../types/types';
-import { TaskEntry } from './types';
+import { ContactRawJson, CSAMReportEntry, HrmServiceContact } from '../../types/types';
 
 // Action creators
 export const updateForm = (
   taskId: string,
-  parent: keyof TaskEntry,
-  payload: TaskEntry[keyof TaskEntry],
+  parent: keyof ContactRawJson,
+  payload: ContactRawJson[keyof ContactRawJson],
 ): t.ContactsActionType => ({
   type: t.UPDATE_FORM,
   taskId,

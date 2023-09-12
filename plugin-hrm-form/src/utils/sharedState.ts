@@ -20,7 +20,6 @@ import SyncClient from 'twilio-sync';
 import { recordBackendError } from '../fullStory';
 import { issueSyncToken } from '../services/ServerlessService';
 import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
-import { TaskEntry } from '../states/contacts/types';
 import { HrmServiceContact } from '../types/types';
 
 let sharedStateClient: SyncClient;
@@ -56,10 +55,10 @@ const DOCUMENT_TTL_SECONDS = 24 * 60 * 60; // 24 hours
 
 /**
  * Saves the actual form into the Sync Client
- * @param {*} form form for current contact (or undefined)
+ * @param {*} contact current contact (or undefined)
  * @param task
  */
-export const saveFormSharedState = async (form: TaskEntry, task: ITask): Promise<string | null> => {
+export const saveFormSharedState = async (contact: HrmServiceContact, task: ITask): Promise<string | null> => {
   if (!getAseloFeatureFlags().enable_transfers) return null;
 
   try {
@@ -70,10 +69,10 @@ export const saveFormSharedState = async (form: TaskEntry, task: ITask): Promise
       return null;
     }
 
-    const documentName = form ? `pending-form-${task.taskSid}` : null;
+    const documentName = contact ? `pending-form-${task.taskSid}` : null;
 
     if (documentName) {
-      const newForm: TaskEntry = { ...form };
+      const newForm: HrmServiceContact = { ...contact };
 
       const document = await sharedStateClient.document(documentName);
       await document.set(newForm, { ttl: DOCUMENT_TTL_SECONDS }); // set time to live to 24 hours

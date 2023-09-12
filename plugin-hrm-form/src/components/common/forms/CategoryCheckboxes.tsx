@@ -59,6 +59,7 @@ const createSubcategoryCheckbox = (
                   onChange={() => toggleCallback(category, label)}
                   ref={register({ required: true, minLength: 1, maxLength: 3 })}
                   disabled={disabled}
+                  checked={selected}
                 />
                 {label}
               </CategoryCheckboxField>

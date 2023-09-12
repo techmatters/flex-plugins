@@ -94,7 +94,8 @@ const CallTypeButtons: React.FC<Props> = props => {
     if (!hasTaskControl(task)) return;
 
     try {
-      await submitContactForm(task, contactForm, caseForm);
+      const { contact, metadata } = contactForm;
+      await submitContactForm(task, contact, metadata, caseForm);
       await completeTask(task);
     } catch (error) {
       const strings = getTemplateStrings();

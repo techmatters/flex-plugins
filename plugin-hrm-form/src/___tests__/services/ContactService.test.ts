@@ -33,7 +33,7 @@ import {
   transformCategories,
   transformForm,
   transformValues,
-  updateContactInHrm,
+  updateContactsFormInHrm,
 } from '../../services/ContactService';
 import { createContactWithMetadata } from '../../states/contacts/reducer';
 import { channelTypes } from '../../states/DomainConstants';
@@ -444,7 +444,7 @@ describe('transformValues', () => {
   });
 });
 
-test('updateContactInHrm - calls a PATCH HRM endpoint using the supplied contact ID in the route', async () => {
+test('updateContactsFormInHrm - calls a PATCH HRM endpoint using the supplied contact ID in the route', async () => {
   const responseBody = { from: 'HRM' };
   const mockedFetch = jest.spyOn(global, 'fetch').mockResolvedValue(<Response>{
     ok: true,
@@ -453,7 +453,7 @@ test('updateContactInHrm - calls a PATCH HRM endpoint using the supplied contact
   });
   try {
     const inputPatch = { rawJson: { caseInformation: { categories: {} } } };
-    const ret = await updateContactInHrm('1234', inputPatch);
+    const ret = await updateContactsFormInHrm('1234', inputPatch);
     expect(ret).toStrictEqual(responseBody);
     expect(mockedFetch).toHaveBeenCalledWith(
       expect.stringContaining('/contacts/1234'),

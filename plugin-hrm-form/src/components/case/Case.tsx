@@ -39,7 +39,7 @@ import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import ViewContact from './ViewContact';
 import { Activity, CaseDetails, ConnectedCaseActivity, NoteActivity } from '../../states/case/types';
-import { Case as CaseType, CustomITask, StandaloneITask } from '../../types/types';
+import { Case as CaseType, CustomITask, HrmServiceContact, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import {
   AppRoutes,
@@ -212,9 +212,9 @@ const Case: React.FC<Props> = ({
 
   if (!props.connectedCaseState || !definitionVersion) return null;
 
-  const getCategories = firstConnectedContact => {
-    if (firstConnectedContact?.rawJson?.caseInformation) {
-      return firstConnectedContact.rawJson.caseInformation.categories;
+  const getCategories = (firstConnectedContact: HrmServiceContact): Record<string, string[]> => {
+    if (firstConnectedContact?.rawJson) {
+      return firstConnectedContact.rawJson.categories;
     }
     return contact?.rawJson?.categories;
   };
@@ -223,7 +223,7 @@ const Case: React.FC<Props> = ({
 
   const firstConnectedContact = (savedContacts && savedContacts[0]) ?? newContact;
 
-  const categories = getCategories(firstConnectedContact);
+  const categories = getCategories(firstConnectedContact) ?? {};
   const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase || {};
   const caseCounselor = counselorsHash[twilioWorkerId];
   const currentCounselor = counselorsHash[workerSid];
@@ -269,9 +269,9 @@ const Case: React.FC<Props> = ({
 
     try {
       releaseContacts(loadedContactIds, task.taskSid);
-      const contact = await submitContactForm(task, contact, metadata, connectedCase);
+      const savedContact = await submitContactForm(task, contact, metadata, connectedCase);
       await updateCase(connectedCase.id, { ...connectedCase });
-      await connectToCase(contact.id, connectedCase.id);
+      await connectToCase(savedContact.id, connectedCase.id);
       await completeTask(task);
     } catch (error) {
       console.error(error);

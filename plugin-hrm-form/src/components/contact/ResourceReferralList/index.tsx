@@ -51,9 +51,11 @@ type OwnProps = {
 
 const mapStateToProps = (state: RootState, { taskSid }: OwnProps) => {
   const {
-    referrals,
-    draft: {
-      resourceReferralList: { lookupStatus, resourceReferralIdToAdd },
+    contact: { referrals },
+    metadata: {
+      draft: {
+        resourceReferralList: { lookupStatus, resourceReferralIdToAdd },
+      },
     },
   } = state[namespace][contactFormsBase].tasks[taskSid];
   return {

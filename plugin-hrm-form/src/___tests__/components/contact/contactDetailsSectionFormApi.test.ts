@@ -23,12 +23,7 @@ import {
   useFetchDefinitions,
 } from 'hrm-form-definitions';
 
-import {
-  ContactDetailsSectionFormApi,
-  contactDetailsSectionFormApi,
-  ContactFormValues,
-  IssueCategorizationSectionFormApi,
-} from '../../../components/contact/contactDetailsSectionFormApi';
+import { contactDetailsSectionFormApi } from '../../../components/contact/contactDetailsSectionFormApi';
 import { SearchAPIContact } from '../../../types/types';
 import details from '../../../components/case/casePrint/styles/details';
 
@@ -111,9 +106,8 @@ const emptySearchContact: SearchAPIContact = {
   details: {
     childInformation: {},
     callerInformation: {},
-    caseInformation: {
-      categories: {},
-    },
+    caseInformation: {},
+    categories: {},
     callType: undefined,
     contactlessTask: { channel: 'voice' },
     conversationMedia: [],

@@ -47,7 +47,7 @@ export function toggleSubCategoriesReducer(state: ContactsState, action: Contact
   switch (action.type) {
     case TOGGLE_SUBCATEGORY: {
       const currentSubcategories =
-        state.existingContacts[action.contactId].draftContact.overview.categories[action.category];
+        state.existingContacts[action.contactId].draftContact.overview.categories[action.category] ?? [];
       const updatedSubcategories = toggleSubcategoryState(currentSubcategories, action.subcategory);
       return {
         ...state,
@@ -71,26 +71,22 @@ export function toggleSubCategoriesReducer(state: ContactsState, action: Contact
       };
     }
     case TOGGLE_TASK_SUBCATEGORY: {
-      const currentSubcategories = state.tasks[action.taskId].contact.rawJson.categories[action.category];
-      const subcategoriesWithoutSelection = currentSubcategories.filter(
-        subcategory => subcategory !== action.subcategory,
-      );
-      // If filtering the subcategory from the current selections left the list unchanged, it mustn't have been selected, so add it.
-      const updatedSubcategories =
-        subcategoriesWithoutSelection.length === currentSubcategories.length
-          ? [...currentSubcategories, action.subcategory]
-          : subcategoriesWithoutSelection;
+      const currentTaskSubcategories = state.tasks[action.taskId].contact.rawJson.categories[action.category] ?? [];
+      const updatedTaskSubcategories = toggleSubcategoryState(currentTaskSubcategories, action.subcategory);
       return {
         ...state,
-        [action.taskId]: {
-          ...state.tasks[action.taskId],
-          contact: {
-            ...state.tasks[action.taskId].contact,
-            rawJson: {
-              ...state.tasks[action.taskId].contact.rawJson,
-              categories: {
-                ...state.tasks[action.taskId].contact.rawJson.categories,
-                [action.category]: updatedSubcategories,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...state.tasks[action.taskId],
+            contact: {
+              ...state.tasks[action.taskId].contact,
+              rawJson: {
+                ...state.tasks[action.taskId].contact.rawJson,
+                categories: {
+                  ...state.tasks[action.taskId].contact.rawJson.categories,
+                  [action.category]: updatedTaskSubcategories,
+                },
               },
             },
           },

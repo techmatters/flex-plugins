@@ -15,12 +15,7 @@
  */
 
 import { TaskHelper } from '@twilio/flex-ui';
-import {
-  DefinitionVersion,
-  FormDefinition,
-  FormItemDefinition,
-  isNonSaveable,
-} from 'hrm-form-definitions';
+import { DefinitionVersion, FormDefinition, FormItemDefinition, isNonSaveable } from 'hrm-form-definitions';
 
 import { createContactWithMetadata } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/validationRules';
@@ -48,12 +43,30 @@ import {
   isSuccessfulExternalRecordingInfo,
 } from './getExternalRecordingInfo';
 
-type HrmServiceContactForApi = Omit<HrmServiceContact, 'rawJson'> & {
-  rawJson: Omit<ContactRawJson, 'categories' | 'caseInformation'> & {
-    caseInformation: Record<string, string | boolean | Record<string, Record<string, boolean>>> & {
-      categories: Record<string, Record<string, boolean>>;
-    };
+type ContactRawJsonForApi = Omit<ContactRawJson, 'categories' | 'caseInformation'> & {
+  caseInformation: Record<string, string | boolean | Record<string, Record<string, boolean>>> & {
+    categories: Record<string, Record<string, boolean>>;
   };
+};
+
+type HrmServiceContactForApi = Omit<HrmServiceContact, 'rawJson'> & {
+  rawJson: ContactRawJsonForApi;
+};
+
+// Temporary compatibility fix to convert Record<strin, <Record<string, boolean>>> to Record<string, string[]> format categories
+// TODO: Remove this function when API is updated
+export const transformFromApiCategories = (
+  apiCategories: Record<string, Record<string, boolean>>,
+): Record<string, string[]> => {
+  const transformedEntries = Object.entries(apiCategories).map(([category, subcategories]) => {
+    return [
+      category,
+      Object.entries(subcategories)
+        .filter(([, flag]) => flag)
+        .map(([key]) => key),
+    ];
+  });
+  return Object.fromEntries(transformedEntries);
 };
 
 export async function searchContacts(
@@ -75,12 +88,13 @@ export async function searchContacts(
   return {
     ...rawResult,
     contacts: rawResult.contacts.map(c => {
-      const { firstName, lastName } = c.details.childInformation ?? {};
+      const { categories, ...caseInformation } = c.details.caseInformation ?? {};
       return {
         ...c,
-        overview: {
-          ...c.overview,
-          name: `${firstName ?? ''} ${lastName ?? ''}`,
+        details: {
+          ...c.details,
+          categories: transformFromApiCategories(categories ?? {}),
+          caseInformation,
         },
       };
     }),
@@ -134,29 +148,23 @@ export function transformCategories(
  * Transforms the form to be saved as the backend expects it
  * VisibleForTesting
  */
-export function transformForm(contact: HrmServiceContact): HrmServiceContactForApi {
-  const { rawJson, helpline } = contact;
-  const { callType, contactlessTask, conversationMedia, categories: inputCategories } = rawJson;
+export function transformForm(rawJson: Partial<ContactRawJson>, helpline: string): Partial<ContactRawJsonForApi> {
+  const { categories: inputCategories, ...rawJsonWithoutCategories } = rawJson;
   const { currentDefinitionVersion } = getDefinitionVersions();
-  const { CallerInformationTab, CaseInformationTab, ChildInformationTab } = currentDefinitionVersion.tabbedForms;
   // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
-
-  const categories = transformCategories(helpline, inputCategories, currentDefinitionVersion);
+  const apiForm = rawJsonWithoutCategories as ContactRawJsonForApi;
   const { definitionVersion } = getHrmConfig();
 
-  return {
-    ...contact,
-    rawJson: {
-      ...contact.rawJson,
-      callerInformation: transformValues(CallerInformationTab)(rawJson.callerInformation),
-      caseInformation: { ...transformValues(CaseInformationTab)(rawJson.caseInformation), categories },
-      childInformation: transformValues(ChildInformationTab)(rawJson.childInformation),
+  if (rawJson.categories) {
+    const categories = transformCategories(helpline, inputCategories, currentDefinitionVersion);
+    apiForm.caseInformation = apiForm.caseInformation ?? { categories: {} };
+    apiForm.caseInformation.categories = categories;
+  }
 
-      definitionVersion,
-      callType,
-      contactlessTask,
-      conversationMedia,
-    },
+  return {
+    ...apiForm,
+
+    definitionVersion,
   };
 }
 
@@ -279,8 +287,12 @@ const saveContactToHrm = async (
    * Probably.  It would just require passing the task.
    */
 
-  const contactToSave: HrmServiceContact = {
+  const contactToSave: HrmServiceContactForApi = {
     ...contact,
+    rawJson: {
+      ...(transformForm(contact.rawJson, helpline) as ContactRawJsonForApi),
+      conversationMedia,
+    },
     twilioWorkerId,
     queueName: task.queueName,
     channel: task.channelType,
@@ -294,30 +306,37 @@ const saveContactToHrm = async (
     csamReports,
     referrals,
   };
-  const requestBody = transformForm(contactToSave);
 
   const options = {
     method: 'POST',
-    body: JSON.stringify(requestBody),
+    body: JSON.stringify(contactToSave),
   };
 
   const responseJson: HrmServiceContact = await fetchHrmApi(`/contacts`, options);
 
-  return { response: responseJson, request: requestBody, externalRecordingInfo };
+  return { response: responseJson, request: contactToSave, externalRecordingInfo };
 };
 
-export const updateContactInHrm = async (
+export const updateContactsFormInHrm = async (
   contactId: string,
-  body: {
-    rawJson: Partial<Omit<ContactRawJson, 'caseInformation'>> & Partial<ContactRawJson['caseInformation']>;
-  },
-) => {
+  body: Partial<ContactRawJson>,
+  helpline: string,
+): Promise<HrmServiceContact> => {
   const options = {
     method: 'PATCH',
-    body: JSON.stringify(body),
+    body: JSON.stringify({ rawJson: transformForm(body, helpline) }),
   };
 
-  return fetchHrmApi(`/contacts/${contactId}`, options);
+  const response = await fetchHrmApi(`/contacts/${contactId}`, options);
+  const { categories, ...caseInformationWithoutCategories } = response.rawJson.caseInformation;
+  return {
+    ...response,
+    rawJson: {
+      ...response.rawJson,
+      caseInformation: caseInformationWithoutCategories,
+      categories: transformFromApiCategories(categories),
+    },
+  };
 };
 
 export const saveContact = async (
