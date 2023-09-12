@@ -99,7 +99,6 @@ describe('InsightsService', () => {
     };
 
     const result = buildInsightsData(twilioTask, contactForm, {});
-    console.log('>>> buildInsightsData', result);
 
     const expectedNewAttributes = {
       ...previousAttributes,
