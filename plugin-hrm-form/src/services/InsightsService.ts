@@ -400,11 +400,12 @@ const getInsightsUpdateFunctionsForConfig = (
 
 const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSuccess, contact: HrmServiceContact) => {
   const { hrmMicroserviceBaseUrl } = getHrmConfig();
+  const mediaType = 'recording';
   const { bucket, key } = externalRecordingInfo;
 
   const url_provider = generateUrl(
     new URL(hrmMicroserviceBaseUrl),
-    generateExternalMediaPath(contact.id, bucket, key),
+    generateExternalMediaPath(contact.id, mediaType, bucket, key),
   ).toString();
 
   return [

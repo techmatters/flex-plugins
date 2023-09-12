@@ -40,6 +40,7 @@ import {
   isOfflineContactTask,
   isTwilioTask,
   SearchAPIContact,
+  ContactMediaType
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
@@ -396,5 +397,6 @@ export async function connectToCase(contactId, caseId) {
   return fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
 }
 
-export const generateExternalMediaPath = (contactId: string, bucket: string, key: string) =>
-  `/files/urls?method=getObject&objectType=contact&objectId=${contactId}&fileType=recording&bucket=${bucket}&key=${key}`;
+
+export const generateExternalMediaPath = (contactId: string, mediaType: ContactMediaType, bucket: string, key: string) =>
+  `/files/urls?method=getObject&objectType=contact&objectId=${contactId}&fileType=${mediaType}&bucket=${bucket}&key=${key}`;
