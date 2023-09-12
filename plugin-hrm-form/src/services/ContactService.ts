@@ -220,11 +220,7 @@ function transformCategoriesOld(
   return transformedCategories.categories;
 }
 
-export function transformCategories(
-  helpline,
-  categories: TaskEntry['categories'],
-  definition: DefinitionVersion,
-): Record<string, string[]> {
+export function transformCategories(categories: TaskEntry['categories']): Record<string, string[]> {
   return categories.reduce((acc, path) => {
     const [category, subcategory] = path.split('.');
     const previousSubcategories = acc[category];
@@ -232,7 +228,7 @@ export function transformCategories(
 
     return {
       ...acc,
-      [category]: subcategories,
+      [category]: subcategories.filter(s => s),
     };
   }, {});
   // const { IssueCategorizationTab } = definition.tabbedForms;
@@ -261,7 +257,7 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
 
   const { childInformation, callerInformation, caseInformation } = transformedValues;
 
-  const categories = transformCategories(form.helpline, form.categories, currentDefinitionVersion);
+  const categories = transformCategories(form.categories);
   const { definitionVersion } = getHrmConfig();
 
   return {
