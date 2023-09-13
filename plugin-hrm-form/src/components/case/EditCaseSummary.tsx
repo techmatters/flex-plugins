@@ -22,7 +22,7 @@ import { connect } from 'react-redux';
 import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
 import { DefinitionVersion, FormDefinition, FormInputType } from 'hrm-form-definitions';
 import { isEqual } from 'lodash';
-import { AnyAction, bindActionCreators } from 'redux';
+import { bindActionCreators } from 'redux';
 
 import {
   BottomButtonBar,
@@ -35,11 +35,10 @@ import {
 } from '../../styles/HrmStyles';
 import { CaseActionFormContainer, CaseActionLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
+import { configurationBase, connectedCaseBase, contactFormsBase, namespace, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { changeRoute } from '../../states/routing/actions';
-import { updateCase } from '../../services/CaseService';
 import type { Case, CustomITask, StandaloneITask } from '../../types/types';
 import { recordingErrorHandler } from '../../fullStory';
 import { caseItemHistory, CaseSummaryWorkingCopy } from '../../states/case/types';
@@ -55,7 +54,6 @@ import { disperseInputs, splitAt } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import { getTemplateStrings } from '../../hrmConfig';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
-import asyncDispatch from '../../states/asyncDispatch';
 
 export type EditCaseSummaryProps = {
   task: CustomITask | StandaloneITask;
@@ -242,12 +240,12 @@ const mapStateToProps = (state: RootState, ownProps: EditCaseSummaryProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
   const connectedCaseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
   const workingCopy = connectedCaseState?.caseWorkingCopy.caseSummary;
+  const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
 
-  return { connectedCaseState, counselorsHash, workingCopy };
+  return { connectedCaseState, counselorsHash, workingCopy, contactForm };
 };
 
 const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
-  const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
@@ -258,7 +256,7 @@ const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
       dispatch(changeRoute(route, task.taskSid));
     },
     updateCaseAsyncAction: (caseId: Case['id'], body: Partial<Case>) =>
-      searchAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
+      dispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
   };
 };
 

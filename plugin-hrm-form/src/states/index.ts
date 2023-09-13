@@ -46,7 +46,6 @@ export const dualWriteBase = 'dualWrite';
 export const referrableResourcesBase = 'referrableResources';
 // eslint-disable-next-line import/no-unused-modules
 export const conferencingBase = 'conferencing';
-export const saveCaseBase = 'saveCase';
 
 const reducers = {
   [contactFormsBase]: ContactStateReducer,

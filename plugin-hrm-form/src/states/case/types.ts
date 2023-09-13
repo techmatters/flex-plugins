@@ -44,18 +44,19 @@ type RemoveConnectedCaseAction = {
   taskId: string;
 };
 
-export type SavedCaseState = {
-  connectedCase: t.Case;
-  status: SavedCaseStatus;
-};
-
-export type UpdatedCaseAction = {
+type UpdatedCaseAction = {
   type: typeof UPDATE_CASE_ACTION;
   connectedCase: t.Case;
   taskId: string;
 };
 
-export type CaseActionType = SetConnectedCaseAction | RemoveConnectedCaseAction | UpdatedCaseAction;
+type CreateCaseAction = {
+  type: typeof CREATE_CASE_ACTION;
+  connectedCase: t.Case;
+  taskId: string;
+};
+
+export type CaseActionType = SetConnectedCaseAction | RemoveConnectedCaseAction | UpdatedCaseAction | CreateCaseAction;
 
 export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
 

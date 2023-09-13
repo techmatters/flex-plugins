@@ -14,9 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import { AnyAction, bindActionCreators } from 'redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/Folder';
@@ -26,13 +26,12 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
-import { createCase } from '../../services/CaseService';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import { hasTaskControl } from '../../utils/transfer';
-import { namespace, contactFormsBase, connectedCaseBase, saveCaseBase } from '../../states';
+import { namespace, contactFormsBase, connectedCaseBase, RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
-import { CustomITask } from '../../types/types';
+import { Case, CustomITask } from '../../types/types';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
 import { TaskEntry } from '../../states/contacts/types';
@@ -59,15 +58,10 @@ const BottomBar: React.FC<
   setConnectedCase,
   nextTab,
   caseForm,
-  createCaseAction,
-  createCases,
+  createCaseAsyncAction,
 }) => {
   const [isSubmitting, setSubmitting] = useState(false);
   const strings = getTemplateStrings();
-
-  useEffect(() => {
-    console.log('createCases is here now 1', createCases);
-  }, [createCases]);
 
   const handleOpenNewCase = async () => {
     const { taskSid } = task;
@@ -76,11 +70,14 @@ const BottomBar: React.FC<
     if (!hasTaskControl(task)) return;
 
     try {
-      const caseFromDB = await createCase(contactForm, workerSid, definitionVersion);
-      createCaseAction(contactForm, workerSid, definitionVersion);
+      // const caseFromDB = await createCase(contactForm, workerSid, definitionVersion);
+
+      createCaseAsyncAction(contactForm, workerSid, definitionVersion);
+
+      console.log('caseFromDB here', caseForm, taskSid, hasTaskControl(task));
 
       changeRoute({ route: 'new-case' }, taskSid);
-      setConnectedCase(caseFromDB, taskSid);
+      // setConnectedCase(caseFromDB, taskSid);
     } catch (error) {
       recordBackendError('Open New Case', error);
       window.alert(strings['Error-Backend']);
@@ -93,7 +90,7 @@ const BottomBar: React.FC<
     setSubmitting(true);
 
     try {
-      await submitContactForm(task, contactForm, caseForm);
+      await submitContactForm(task, contactForm, caseForm as Case);
       await completeTask(task);
     } catch (error) {
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
@@ -171,21 +168,20 @@ const BottomBar: React.FC<
 
 BottomBar.displayName = 'BottomBar';
 
-const mapStateToProps = (state, ownProps: BottomBarProps) => {
+const mapStateToProps = (state: RootState, ownProps: BottomBarProps) => {
   const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
-  const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
-  const caseForm = (caseState && caseState.connectedCase) || {};
-  const createCaseState = state[namespace][saveCaseBase];
-  const createCases = createCaseState?.createCase?.case;
+  const caseForm = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase || {};
 
-  return { contactForm, caseForm, createCases };
+  return { contactForm, caseForm };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
-  setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
-  createCaseAction: (contactForm: TaskEntry, workerSid: string, definitionVersion: DefinitionVersionId) =>
-    dispatch(createCaseAsyncAction(contactForm, workerSid, definitionVersion)),
-});
+const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
+  return {
+    changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
+    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
+    createCaseAsyncAction: (contactForm: TaskEntry, workerSid: string, definitionVersion: DefinitionVersionId) =>
+      dispatch(createCaseAsyncAction(contactForm, task.taskSid, workerSid, definitionVersion)),
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(BottomBar);

@@ -15,17 +15,8 @@
  */
 
 import { omit } from 'lodash';
-import { AnyAction } from 'redux';
 
-import {
-  CaseActionType,
-  CaseState,
-  REMOVE_CONNECTED_CASE,
-  SET_CONNECTED_CASE,
-  SavedCaseState,
-  UPDATE_CASE_ACTION,
-  UpdatedCaseAction,
-} from './types';
+import { CaseActionType, CaseState, REMOVE_CONNECTED_CASE, SET_CONNECTED_CASE } from './types';
 import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
 import {
   CaseWorkingCopyActionType,
@@ -47,7 +38,7 @@ import {
 import { configurationBase, RootState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { updateCaseReducer } from './saveCase';
-import { CaseListContentStateAction, OPEN_CASE_DETAILS } from '../caseList/listContent';
+import { CaseListContentStateAction } from '../caseList/listContent';
 
 const initialState: CaseState = {
   tasks: {},

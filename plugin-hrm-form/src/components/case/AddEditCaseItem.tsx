@@ -23,7 +23,7 @@ import { connect } from 'react-redux';
 import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
 import type { DefinitionVersion } from 'hrm-form-definitions';
 import { isEqual } from 'lodash';
-import { AnyAction, bindActionCreators } from 'redux';
+import { bindActionCreators } from 'redux';
 
 import {
   BottomButtonBar,
@@ -323,7 +323,6 @@ const mapStateToProps = (state: RootState, { task, routing, sectionApi }: AddEdi
 const mapDispatchToProps = (dispatch, props: AddEditCaseItemProps) => {
   const { sectionApi, routing, task } = props;
   const id = isEditCaseSectionRoute(routing) ? routing.id : undefined;
-  const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     updateCaseSectionWorkingCopy: bindActionCreators(updateCaseSectionWorkingCopy, dispatch),
@@ -334,7 +333,7 @@ const mapDispatchToProps = (dispatch, props: AddEditCaseItemProps) => {
       dispatch(changeRoute(route, task.taskSid));
     },
     updateCaseAsyncAction: (caseId: Case['id'], body: Partial<Case>) =>
-      searchAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
+      dispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
   };
 };
 

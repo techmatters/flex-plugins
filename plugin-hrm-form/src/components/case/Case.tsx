@@ -30,7 +30,7 @@ import {
   // saveCaseBase,
 } from '../../states';
 import { connectToCase, transformCategories } from '../../services/ContactService';
-import { cancelCase, updateCase } from '../../services/CaseService';
+import { cancelCase } from '../../services/CaseService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { getActivitiesFromCase, getActivitiesFromContacts, isNoteActivity, sortActivities } from './caseActivities';
 import { getDateFromNotSavedContact, getHelplineData } from './caseHelpers';
@@ -73,7 +73,6 @@ import { ChannelTypes } from '../../states/DomainConstants';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
-import asyncDispatch from '../../states/asyncDispatch';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -461,7 +460,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 };
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
-  const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   const cancelNewCase = (taskSid: string, loadedContactIds: string[]) => {
     dispatch(CaseActions.removeConnectedCase(taskSid));
     dispatch(
@@ -481,7 +479,7 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     loadContact: bindActionCreators(ContactActions.loadContact, dispatch),
     cancelNewCase,
     updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
-      searchAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
+      dispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
   };
 };
 
