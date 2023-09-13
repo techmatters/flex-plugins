@@ -54,6 +54,7 @@ export const loadCurrentDefinitionVersion = async () => {
 /**
  * @param task
  */
+/* eslint-disable sonarjs/prefer-single-boolean-return */
 export const shouldSendInsightsData = (task: CustomITask) => {
   const featureFlags = getAseloFeatureFlags();
 
@@ -66,6 +67,7 @@ export const shouldSendInsightsData = (task: CustomITask) => {
 
   return true;
 };
+/* eslint-enable sonarjs/prefer-single-boolean-return */
 
 const saveEndMillis = async (payload: ActionPayload) => {
   Manager.getInstance().store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
