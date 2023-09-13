@@ -62,8 +62,7 @@ export const shouldSendInsightsData = (task: CustomITask) => {
   if (isOfflineContactTask(task)) return false;
   if (task.attributes?.skipInsights) return false;
 
-  const hasTaskControl = !featureFlags.enable_transfers || TransferHelpers.hasTaskControl(task);
-  if (!hasTaskControl) return false;
+  if (featureFlags.enable_transfers && !TransferHelpers.hasTaskControl(task)) return false;
 
   return true;
 };
