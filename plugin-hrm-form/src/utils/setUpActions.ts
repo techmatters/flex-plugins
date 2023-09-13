@@ -59,7 +59,7 @@ export const shouldSendInsightsData = (task: CustomITask) => {
   const featureFlags = getAseloFeatureFlags();
 
   if (!featureFlags.enable_save_insights) return false;
-  if (!isOfflineContactTask(task) && task.attributes?.skipInsights) return false;
+  if (task.attributes?.skipInsights) return false;
   if (featureFlags.enable_transfers && !TransferHelpers.hasTaskControl(task)) return false;
 
   return true;
