@@ -39,12 +39,14 @@ describe('InsightsService', () => {
    * This helper matches the way attributes were updated previous the changes Gian introduced in https://github.com/tech-matters/flex-plugins/pull/364/commits/9d09afec0db49716ef0b7518aaa5f7bc6159db64
    * Used to test that the attributes matches with what we expected before
    */
-  const zambiaUpdates = (attributes, contactForm, caseForm) => {
+  const zambiaUpdates = (attributes, contactForm, caseForm, savedContact) => {
     const attsToReturn = processHelplineConfig(contactForm, caseForm, v1.insights.oneToOneConfigSpec);
 
     attsToReturn.customers.area = [contactForm.childInformation.province, contactForm.childInformation.district].join(
       ';',
     );
+
+    attsToReturn.conversations.conversation_attribute_10 = '';
 
     return attsToReturn;
   };
@@ -108,6 +110,7 @@ describe('InsightsService', () => {
         conversation_attribute_4: contactForm.callerInformation.gender,
         conversation_attribute_8: previousAttributes.helpline,
         language: contactForm.childInformation.language,
+        conversation_attribute_10: '',
       },
       customers: {
         year_of_birth: contactForm.childInformation.age,
@@ -161,6 +164,7 @@ describe('InsightsService', () => {
         conversation_attribute_4: null,
         conversation_attribute_8: previousAttributes.helpline,
         language: null,
+        conversation_attribute_10: '',
       },
       customers: {
         year_of_birth: null,
