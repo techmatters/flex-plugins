@@ -223,7 +223,7 @@ const Case: React.FC<Props> = ({
       return firstConnectedContact.rawJson.caseInformation.categories;
     }
     if (form?.categories && form?.helpline) {
-      return transformCategories(form.helpline, form.categories, definitionVersion);
+      return transformCategories(form.categories);
     }
     return null;
   };

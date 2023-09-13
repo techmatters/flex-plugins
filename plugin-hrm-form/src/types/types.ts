@@ -155,7 +155,7 @@ export type HrmServiceContact = {
   taskId: string;
   channel: ChannelTypes | 'default';
   updatedBy: string;
-  updatedAt: string;
+  updatedAt?: string;
   rawJson: ContactRawJson;
   timeOfContact: string;
   queueName: string;
