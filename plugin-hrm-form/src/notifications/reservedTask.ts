@@ -14,10 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Manager, AudioPlayerManager, AudioPlayerError } from '@twilio/flex-ui';
+import { Manager } from '@twilio/flex-ui';
 
 import { isTwilioTask } from '../types/types';
-import { getHrmConfig } from '../hrmConfig';
+import { playNotification } from './playNotification';
 
 const reservedTaskMedias: { [reservationSid: string]: string } = {};
 
@@ -29,30 +29,19 @@ export const subscribeReservedTaskAlert = () => {
 const notifyReservedTask = reservation => {
   try {
     if (isTwilioTask(reservation.task)) {
-      const { assetsBucketUrl } = getHrmConfig();
-
-      const notificationTone = 'ringtone';
-      const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
-
-      playWhilePending(reservation, notificationUrl);
+      playWhilePending(reservation);
     }
   } catch (error) {
     console.error('Error in notifyReservedTask:', error);
   }
 };
 
-const playWhilePending = (reservation: { sid: string; status: string }, notificationUrl: string) => {
+const playWhilePending = (reservation: { sid: string; status: string }) => {
   const playNotificationIfPending = () => {
     if (reservation.status === 'pending') {
-      const mediaId = AudioPlayerManager.play(
-        {
-          url: notificationUrl,
-          repeatable: false,
-        },
-        (error: AudioPlayerError) => {
-          console.log('AudioPlayerError:', error);
-        },
-      );
+      const notificationTone = 'ringtone';
+
+      const mediaId = playNotification(notificationTone);
 
       reservedTaskMedias[reservation.sid] = mediaId;
       setTimeout(playNotificationIfPending, 500);
