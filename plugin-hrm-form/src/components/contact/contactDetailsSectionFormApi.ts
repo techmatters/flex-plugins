@@ -91,13 +91,13 @@ export const contactDetailsSectionFormApi: {
     type: 'IssueCategorizationSectionForm',
     getFormValues: (def, contact) => ({
       categories: Object.entries<string[]>(contact.rawJson.categories).flatMap(([category, subCategories]) =>
-        subCategories.map(subCategories => `categories.${category}.${subCategories}`),
+        subCategories.map(subCategories => `${category}.${subCategories}`),
       ),
     }),
     getFormDefinition: def => def.tabbedForms.CallerInformationTab,
     getLayoutDefinition: def => def.layoutVersion.contact.callerInformation,
     formToPayload: (def, form, helpline) => ({
-      rawJson: { categories: transformCategories(helpline, form.categories, def) },
+      rawJson: { categories: transformCategories(form.categories) },
     }),
   },
   CASE_INFORMATION: {
