@@ -23,6 +23,8 @@ import { transferStatuses } from '../../states/DomainConstants';
 import { createTask } from '../helpers';
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { loadFormSharedState, saveFormSharedState, setUpSharedStateClient } from '../../utils/sharedState';
+import { HrmServiceContact } from '../../types/types';
+import { ContactMetadata, HrmServiceContactWithMetadata } from '../../states/contacts/types';
 
 jest.mock('../../services/ServerlessService', () => ({
   issueSyncToken: jest.fn(),
@@ -39,7 +41,12 @@ jest.mock('../../hrmConfig', () => ({
 }));
 
 jest.mock('twilio-sync', () => jest.fn());
-const form = { helpline: 'a helpline' } as TaskEntry;
+const contact = { helpline: 'a helpline' } as HrmServiceContact;
+const metadata = {} as ContactMetadata;
+const form: HrmServiceContactWithMetadata = {
+  contact,
+  metadata,
+};
 const task = createTask();
 
 const mockSharedState = {

@@ -14,10 +14,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { callTypes, DefinitionVersionId } from 'hrm-form-definitions';
+import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { cancelCase, createCase } from '../../services/CaseService';
 import fetchHrmApi from '../../services/fetchHrmApi';
+import { HrmServiceContact } from '../../types/types';
+import { VALID_EMPTY_CONTACT } from '../testContacts';
 
 jest.mock('../../services/fetchHrmApi');
 const mockFetchHrmAPi: jest.Mock = fetchHrmApi as jest.Mock;
@@ -77,40 +79,22 @@ describe('createCase()', () => {
     categories: {},
   };
 
-  const baselineContactForm: TaskEntry = {
+  const baselineContact: HrmServiceContact = {
+    ...VALID_EMPTY_CONTACT,
     helpline: 'a helpline',
-    callType: callTypes.child,
-    contactlessTask: {
-      channel: 'voice',
-    },
-    childInformation: {},
-    callerInformation: {},
-    caseInformation: {},
-    categories: [],
-    csamReports: [],
-    isCallTypeCaller: false,
-    metadata: { startMillis: 0, endMillis: 0, categories: { gridView: false, expanded: {} }, recreated: false },
+  };
+
+  const baselineMetadata = {
+    startMillis: 0,
+    endMillis: 0,
+    categories: { gridView: false, expanded: {} },
+    recreated: false,
   };
 
   test('No createdOnBehalfOf set - assumes a twilio contact, calls "POST /cases with twilioWorkerId set to owning worker', async () => {
-    const contactForm: TaskEntry = {
-      helpline: 'a helpline',
-      callType: callTypes.child,
-      contactlessTask: {
-        channel: 'voice',
-      },
-      childInformation: {},
-      callerInformation: {},
-      caseInformation: {},
-      categories: [],
-      csamReports: [],
-      isCallTypeCaller: false,
-      metadata: { startMillis: 0, endMillis: 0, categories: { gridView: false, expanded: {} }, recreated: false },
-    };
-
     mockFetchHrmAPi.mockResolvedValue(baselineResponse);
 
-    const response = await createCase(contactForm, 'creating worker', DefinitionVersionId.demoV1);
+    const response = await createCase(baselineContact, 'creating worker', DefinitionVersionId.demoV1);
 
     const expectedUrl = `/cases`;
     const expectedOptions = {
@@ -135,11 +119,14 @@ describe('createCase()', () => {
       twilioWorkerId: 'owning worker',
     };
 
-    const contactForm: TaskEntry = {
-      ...baselineContactForm,
-      contactlessTask: {
-        channel: 'voice',
-        createdOnBehalfOf: 'owning worker',
+    const contactForm: HrmServiceContact = {
+      ...baselineContact,
+      rawJson: {
+        ...baselineContact.rawJson,
+        contactlessTask: {
+          ...baselineContact.rawJson.contactlessTask,
+          createdOnBehalfOf: 'owning worker',
+        },
       },
     };
 
