@@ -84,7 +84,6 @@ describe('InsightsService', () => {
     };
 
     const contactForm = {
-      id: 'id',
       helpline: previousAttributes.helpline,
       callType: 'Abusive',
       callerInformation: {
@@ -194,7 +193,6 @@ describe('InsightsService', () => {
     };
 
     const contactForm = {
-      id: 'id',
       helpline: previousAttributes.helpline,
       callType: 'Child calling about self',
       childInformation: {
@@ -257,7 +255,6 @@ describe('InsightsService', () => {
     const date = '2020-12-30';
     const time = '14:50';
     const contactForm = {
-      id: 'id',
       helpline: previousAttributes.helpline,
       callType: 'Child calling about self',
       contactlessTask: {
