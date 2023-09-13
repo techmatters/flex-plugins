@@ -21,7 +21,7 @@ import { ContactRawJson } from '../../types/types';
 import { transformCategories, transformValues } from '../../services/ContactService';
 import { SearchContactDraftChanges } from '../../states/contacts/existingContacts';
 
-export type ContactFormValues = {
+type ContactFormValues = {
   [key in 'childInformation' | 'callerInformation' | 'caseInformation']?: Record<string, string | boolean>;
 };
 
