@@ -14,6 +14,6 @@ locals {
     }
 
     ui_editable = true
-    #Chatbots
+    enable_external_recordings = true
   }
 }
