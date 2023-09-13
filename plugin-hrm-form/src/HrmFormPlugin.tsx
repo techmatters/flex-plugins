@@ -210,7 +210,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     subscribeReservedTaskAlert();
     subscribeNewMessageAlertOnPluginInit();
     // Force one notification on init so AudioPlayer is eagerly loaded
-    playNotification('bell');
+    playNotification('silence');
 
     const managerConfiguration: Flex.Config = {
       // colorTheme: HrmTheme,
