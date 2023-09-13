@@ -47,7 +47,7 @@ export const generateUrl = (baseUrl: URL, endpointPath: string): URL => {
  */
 export const fetchApi = async (baseUrl: URL, endpointPath: string, options: RequestInit): Promise<any> => {
   const url = generateUrl(baseUrl, endpointPath);
-  console.log('>>> fetchApi url', url)
+
   const defaultOptions = {
     method: 'GET',
     headers: {
@@ -75,7 +75,6 @@ export const fetchApi = async (baseUrl: URL, endpointPath: string, options: Requ
     try {
       body = await response.json();
     } catch (err) {
-      console.log('>>> fetchApi err', err)
       body = await response.text();
     }
     throw new ApiError(`Error response: ${response.status} (${response.statusText})`, { response, body });
