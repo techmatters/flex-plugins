@@ -31,7 +31,7 @@ import { ITask } from '@twilio/flex-ui';
 import { isNonDataCallType } from '../states/validationRules';
 import { mapChannelForInsights } from '../utils/mappers';
 import { getDateTime } from '../utils/helpers';
-import { Case, CustomITask, HrmServiceContact } from '../types/types';
+import { Case, CustomITask, HrmServiceContact, isTwilioTask } from '../types/types';
 import { formatCategories } from '../utils/formatters';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import { shouldSendInsightsData } from '../utils/setUpActions';
@@ -433,13 +433,7 @@ export const buildInsightsData = (
 ) => {
   const previousAttributes = typeof task.attributes === 'string' ? JSON.parse(task.attributes) : task.attributes;
 
-  if (
-    !shouldSendInsightsData({
-      ...task,
-      attributes: previousAttributes,
-    } as ITask)
-  )
-    return previousAttributes;
+  if (!shouldSendInsightsData(task)) return previousAttributes;
 
   const { currentDefinitionVersion } = getDefinitionVersions();
 

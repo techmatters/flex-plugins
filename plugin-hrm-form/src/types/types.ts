@@ -301,6 +301,7 @@ export type OfflineContactTask = {
     channelType: 'default';
     helplineToSave?: string;
     preEngagementData?: Record<string, string>;
+    skipInsights?: boolean;
   };
   channelType: 'default';
 };
