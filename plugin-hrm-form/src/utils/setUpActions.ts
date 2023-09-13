@@ -34,7 +34,7 @@ import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
 import { customChannelTypes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
-import { CustomITask, FeatureFlags } from '../types/types';
+import { CustomITask, FeatureFlags, isOfflineContactTask } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
 
@@ -56,9 +56,15 @@ export const loadCurrentDefinitionVersion = async () => {
  */
 export const shouldSendInsightsData = (task: CustomITask) => {
   const featureFlags = getAseloFeatureFlags();
-  const hasTaskControl = !featureFlags.enable_transfers || TransferHelpers.hasTaskControl(task);
 
-  return hasTaskControl && featureFlags.enable_save_insights && !(task.attributes as any)?.skipInsights;
+  if (!featureFlags.enable_save_insights) return false;
+  if (isOfflineContactTask(task)) return false;
+  if (task.attributes?.skipInsights) return false;
+
+  const hasTaskControl = !featureFlags.enable_transfers || TransferHelpers.hasTaskControl(task);
+  if (!hasTaskControl) return false;
+
+  return true;
 };
 
 const saveEndMillis = async (payload: ActionPayload) => {
