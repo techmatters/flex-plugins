@@ -16,12 +16,6 @@ locals {
     helpline_region                   = "eu-west-1"
 
 
-    lex_bot_languages = {
-      en_MT : ["pre_survey", "language_selector","terms_conditions_acceptance"],
-      mt_MT : ["pre_survey","terms_conditions_acceptance"],
-      uk : ["pre_survey","terms_conditions_acceptance"]
-    }
-
 
     workflows = {
       master : {
@@ -35,13 +29,17 @@ locals {
     }
 
     task_queues = {
-      messaging : {
+      master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "Messaging"
+        "friendly_name"  = "Master"
       },
       survey : {
         "target_workers" = "1==0",
         "friendly_name"  = "Survey"
+      },
+      e2e_test : {
+        "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
+        "friendly_name"  = "E2E Test Queue"
       }
     }
     task_channels = {
