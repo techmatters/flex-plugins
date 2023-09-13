@@ -23,7 +23,6 @@ import { transferStatuses } from '../../states/DomainConstants';
 import { createTask } from '../helpers';
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { loadFormSharedState, saveFormSharedState, setUpSharedStateClient } from '../../utils/sharedState';
-import { TaskEntry } from '../../states/contacts/types';
 
 jest.mock('../../services/ServerlessService', () => ({
   issueSyncToken: jest.fn(),

@@ -16,13 +16,39 @@
 
 import type { ITask } from '@twilio/flex-ui';
 import SyncClient from 'twilio-sync';
+import { CallTypes } from 'hrm-form-definitions';
 
 import { recordBackendError } from '../fullStory';
 import { issueSyncToken } from '../services/ServerlessService';
 import { getAseloFeatureFlags, getDefinitionVersions, getTemplateStrings } from '../hrmConfig';
-import { HrmServiceContact } from '../types/types';
-import { HrmServiceContactWithMetadata, TaskEntry } from '../states/contacts/types';
+import { CSAMReportEntry, HrmServiceContact } from '../types/types';
+import { ContactMetadata, HrmServiceContactWithMetadata } from '../states/contacts/types';
 import { createContactWithMetadata } from '../states/contacts/reducer';
+import { ChannelTypes } from '../states/DomainConstants';
+import { ResourceReferral } from '../states/contacts/resourceReferral';
+
+// Legacy type previously used for unsaved contact forms, kept around to ensure transfers are compatible between new & old clients
+// Not much point in replacing the use of this type in the shared state, since we will drop use of shared state in favour of the HRM DB for managing transfer state soon anyway
+type TaskEntry = {
+  helpline: string;
+  callType: CallTypes;
+  childInformation: { [key: string]: string | boolean };
+  callerInformation: { [key: string]: string | boolean };
+  caseInformation: { [key: string]: string | boolean };
+  contactlessTask: {
+    channel: ChannelTypes;
+    date?: string;
+    time?: string;
+    createdOnBehalfOf?: string;
+    [key: string]: string | boolean;
+  };
+  categories: string[];
+  referrals?: ResourceReferral[];
+  csamReports: CSAMReportEntry[];
+  metadata: ContactMetadata;
+  reservationSid?: string;
+};
+type TransferForm = TaskEntry & { draft: ContactMetadata['draft'] };
 
 let sharedStateClient: SyncClient;
 
@@ -37,7 +63,7 @@ const transferFormCategoriesToContactCategories = (
   return contactCategories;
 };
 
-const transferFormToContact = (transferForm: TaskEntry): HrmServiceContactWithMetadata => {
+const transferFormToContact = (transferForm: TransferForm): HrmServiceContactWithMetadata => {
   const { metadata, helpline, csamReports, referrals, reservationSid, ...form } = transferForm;
   return {
     contact: {
@@ -52,7 +78,10 @@ const transferFormToContact = (transferForm: TaskEntry): HrmServiceContactWithMe
         conversationMedia: [],
       },
     },
-    metadata,
+    metadata: {
+      ...metadata,
+      draft: form.draft,
+    },
   };
 };
 
@@ -64,14 +93,16 @@ const contactFormCategoriesToTransferFormCategories = (
   );
 };
 
-const contactToTransferForm = ({ contact, metadata }: HrmServiceContactWithMetadata): TaskEntry => {
+const contactToTransferForm = ({ contact, metadata }: HrmServiceContactWithMetadata): TransferForm => {
   const { helpline, csamReports, referrals, rawJson } = contact;
+  const { draft } = metadata;
   return {
     helpline,
     csamReports,
     referrals,
     ...rawJson,
     categories: contactFormCategoriesToTransferFormCategories(rawJson.categories),
+    draft,
     metadata,
   };
 };
@@ -161,7 +192,7 @@ export const loadFormSharedState = async (task: ITask): Promise<HrmServiceContac
     const documentName = task.attributes.transferMeta.formDocument;
     if (documentName) {
       const document = await sharedStateClient.document(documentName);
-      return transferFormToContact(document.data as TaskEntry);
+      return transferFormToContact(document.data as TransferForm);
     }
 
     return null;

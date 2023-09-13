@@ -39,7 +39,6 @@ import { createContactWithMetadata } from '../../states/contacts/reducer';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions, getHrmConfig } from '../../hrmConfig';
 import { offlineContactTaskSid } from '../../types/types';
-import { TaskEntry } from '../../states/contacts/types';
 
 const helpline = 'ChildLine Zambia (ZM)';
 

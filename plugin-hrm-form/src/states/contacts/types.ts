@@ -14,11 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { CallTypes, DataCallTypes } from 'hrm-form-definitions';
+import { DataCallTypes } from 'hrm-form-definitions';
 
 import { ContactRawJson, CSAMReportEntry, HrmServiceContact } from '../../types/types';
-import { ChannelTypes } from '../DomainConstants';
-import { DraftResourceReferralState, ResourceReferral } from './resourceReferral';
+import { DraftResourceReferralState } from './resourceReferral';
 import { ExistingContactsState } from './existingContacts';
 import { ContactDetailsState } from './contactDetails';
 
@@ -50,25 +49,6 @@ export type ContactMetadata = {
 
 export type HrmServiceContactWithMetadata = { contact: HrmServiceContact; metadata: ContactMetadata };
 
-export type TaskEntry = {
-  helpline: string;
-  callType: CallTypes;
-  childInformation: { [key: string]: string | boolean };
-  callerInformation: { [key: string]: string | boolean };
-  caseInformation: { [key: string]: string | boolean };
-  contactlessTask: {
-    channel: ChannelTypes;
-    date?: string;
-    time?: string;
-    createdOnBehalfOf?: string;
-    [key: string]: string | boolean;
-  };
-  categories: string[];
-  referrals?: ResourceReferral[];
-  csamReports: CSAMReportEntry[];
-  metadata: ContactMetadata;
-  reservationSid?: string;
-};
 export type ContactsState = {
   tasks: {
     [taskId: string]: HrmServiceContactWithMetadata;
