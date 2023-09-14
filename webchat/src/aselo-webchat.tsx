@@ -207,7 +207,7 @@ export const initWebchat = async () => {
 
   FlexWebChat.Actions.addListener('afterRestartEngagement', (payload) => {
     if (payload.exit) {
-      setTimeout(() => window.open('https://google.com', '_self'), 1000);
+      setTimeout(() => window.location.replace('https://google.com'), 1000);
     }
   });
 

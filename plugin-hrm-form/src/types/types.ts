@@ -120,6 +120,9 @@ export type S3StoredRecording = {
 
 type S3StoredMedia = S3StoredTranscript | S3StoredRecording;
 
+// Extract the 'type' property from S3StoredMedia to create ContactMediaType
+export type ContactMediaType = S3StoredMedia['type'];
+
 export type ConversationMedia = TwilioStoredMedia | S3StoredMedia;
 
 export const isTwilioStoredMedia = (m: ConversationMedia): m is TwilioStoredMedia => m.store === 'twilio';

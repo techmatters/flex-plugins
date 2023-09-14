@@ -35,10 +35,12 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
       setLoading(true);
       setShowButton(false);
 
-      // TODO: this won't currently work for local dev env
+      const mediaType = 'recording';
+
       const { media_url: recordingPreSignedUrl } = await fetchHrmApi(
         generateExternalMediaPath(
           contactId,
+          mediaType,
           externalStoredRecording.location.bucket,
           externalStoredRecording.location.key,
         ),
