@@ -23,6 +23,7 @@ export const upsertCaseSectionItemUsingSectionName = (listProperty: string, entr
   original: CaseInfo,
   temporaryInfo: CaseItemEntry,
 ) => {
+  console.log('>>>  3. upsertCaseSectionItemUsingSectionName', original, temporaryInfo);
   const sectionList = [...((original ?? {})[listProperty] ?? [])];
   const { ...entry } = { ...temporaryInfo, [entryProperty]: temporaryInfo.form };
   if (entryProperty !== 'form') {
@@ -42,6 +43,7 @@ export const upsertCaseSectionItem = <T extends EntryInfo>(
   listGetter: (ci: CaseInfo) => T[] | undefined,
   caseItemToListItem: (caseItemEntry: CaseItemEntry) => T,
 ): CaseUpdater => (original: CaseInfo, temporaryInfo: CaseItemEntry, id?: string) => {
+  console.log('>>>  upsertCaseSectionItem', original, temporaryInfo, id);
   const copy = { ...original };
   const sectionList = listGetter(copy);
   const entry: T = caseItemToListItem(temporaryInfo);
