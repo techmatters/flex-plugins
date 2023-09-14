@@ -84,13 +84,6 @@ describe('createCase()', () => {
     helpline: 'a helpline',
   };
 
-  const baselineMetadata = {
-    startMillis: 0,
-    endMillis: 0,
-    categories: { gridView: false, expanded: {} },
-    recreated: false,
-  };
-
   test('No createdOnBehalfOf set - assumes a twilio contact, calls "POST /cases with twilioWorkerId set to owning worker', async () => {
     mockFetchHrmAPi.mockResolvedValue(baselineResponse);
 

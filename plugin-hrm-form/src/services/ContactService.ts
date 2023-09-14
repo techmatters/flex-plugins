@@ -175,7 +175,7 @@ type HandleTwilioTaskResponse = {
   externalRecordingInfo?: ExternalRecordingInfoSuccess | ExternalRecordingUnneeded;
 };
 
-const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> => {
+export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> => {
   const returnData: HandleTwilioTaskResponse = {
     conversationMedia: [],
   };
@@ -253,7 +253,7 @@ const saveContactToHrm = async (
   const number = getNumberFromTask(task);
 
   let rawForm = form;
-  const reservationSid = task.sid;
+  // const reservationSid = task.sid;
   const { currentDefinitionVersion } = getDefinitionVersions();
 
   if (!currentDefinitionVersion) {
