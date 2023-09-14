@@ -22,6 +22,7 @@ import {
   searchContactToHrmServiceContact,
 } from '../../../states/contacts/contactDetailsAdapter';
 import { HrmServiceContact, SearchAPIContact } from '../../../types/types';
+import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 describe('retrieveCategories', () => {
   test('falsy input, empty object output', () => expect(retrieveCategories(null)).toStrictEqual({}));
@@ -57,67 +58,36 @@ describe('retrieveCategories', () => {
 });
 
 describe('hrmServiceContactToSearchContact', () => {
-  const emptyHrmContact: HrmServiceContact = {
-    rawJson: {
-      caseInformation: {
-        categories: {},
-      },
-      callerInformation: {},
-      callType: callTypes.child,
-      childInformation: {},
-      contactlessTask: {
-        channel: 'voice',
-      },
-      conversationMedia: [],
-    },
-    conversationDuration: 0,
-    csamReports: [],
-    id: undefined,
-    twilioWorkerId: undefined,
-    serviceSid: undefined,
-    queueName: undefined,
-    channelSid: undefined,
-    number: undefined,
-    taskId: undefined,
-    helpline: undefined,
-    updatedBy: undefined,
-    updatedAt: undefined,
-    timeOfContact: undefined,
-    createdBy: undefined,
-    channel: undefined,
-  };
-
   const emptyOverview: SearchAPIContact['overview'] = {
-    helpline: undefined,
-    dateTime: undefined,
-    customerNumber: undefined,
+    helpline: '',
+    dateTime: '',
+    customerNumber: '',
     callType: callTypes.child,
     categories: {},
-    counselor: undefined,
+    counselor: '',
     notes: undefined,
-    channel: undefined,
+    channel: 'default',
     conversationDuration: 0,
-    createdBy: undefined,
-    taskId: undefined,
-    updatedBy: undefined,
-    updatedAt: undefined,
+    createdBy: '',
+    taskId: '',
+    updatedBy: '',
+    updatedAt: '',
   };
 
   test('input rawJson.caseInformation.categories are converted using retrieveCategories and added to overview', () => {
     const input: HrmServiceContact = {
-      ...emptyHrmContact,
+      ...VALID_EMPTY_CONTACT,
       rawJson: {
-        ...emptyHrmContact.rawJson,
-        caseInformation: {
-          categories: {
-            category1: { sub1: true, sub2: false, sub3: true },
-            category2: { sub1: true, sub2: true, sub3: false },
-          },
+        ...VALID_EMPTY_CONTACT.rawJson,
+        categories: {
+          category1: ['sub1', 'sub3'],
+          category2: ['sub1', 'sub2'],
         },
+        caseInformation: {},
       },
     };
     expect(hrmServiceContactToSearchContact(input as HrmServiceContact)).toStrictEqual({
-      contactId: undefined,
+      contactId: '',
       overview: {
         ...emptyOverview,
         categories: { category1: ['sub1', 'sub3'], category2: ['sub1', 'sub2'] },
@@ -130,7 +100,7 @@ describe('hrmServiceContactToSearchContact', () => {
 
   test('input conversationDuration, channel, createdBy & helpline are added to overview as is', () => {
     const input: Partial<HrmServiceContact> = {
-      ...emptyHrmContact,
+      ...VALID_EMPTY_CONTACT,
       conversationDuration: 1234,
       helpline: 'my-helpline',
       createdBy: 'bob',
@@ -138,7 +108,7 @@ describe('hrmServiceContactToSearchContact', () => {
       taskId: 'TASK_SID',
     };
     expect(hrmServiceContactToSearchContact(input as HrmServiceContact)).toStrictEqual({
-      contactId: undefined,
+      contactId: '',
       overview: {
         ...emptyOverview,
         conversationDuration: input.conversationDuration,
@@ -155,7 +125,7 @@ describe('hrmServiceContactToSearchContact', () => {
 
   test('input csamReports are added to top level as is', () => {
     const input: HrmServiceContact = {
-      ...emptyHrmContact,
+      ...VALID_EMPTY_CONTACT,
       csamReports: [
         {
           csamReportId: '',
@@ -169,7 +139,7 @@ describe('hrmServiceContactToSearchContact', () => {
       referrals: undefined,
     };
     expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
-      contactId: undefined,
+      contactId: '',
       overview: emptyOverview,
       csamReports: input.csamReports,
       referrals: undefined,
@@ -179,7 +149,7 @@ describe('hrmServiceContactToSearchContact', () => {
 
   test('input referrals are added to top level as is', () => {
     const input: HrmServiceContact = {
-      ...emptyHrmContact,
+      ...VALID_EMPTY_CONTACT,
       referrals: [
         {
           resourceId: 'TEST_RESOURCE',
@@ -189,7 +159,7 @@ describe('hrmServiceContactToSearchContact', () => {
       ],
     };
     expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
-      contactId: undefined,
+      contactId: '',
       overview: emptyOverview,
       csamReports: [],
       referrals: input.referrals,
@@ -199,14 +169,14 @@ describe('hrmServiceContactToSearchContact', () => {
 
   test('input rawJson.callType is added to overview as is', () => {
     const input = {
-      ...emptyHrmContact,
+      ...VALID_EMPTY_CONTACT,
       rawJson: {
-        ...emptyHrmContact.rawJson,
+        ...VALID_EMPTY_CONTACT.rawJson,
         callType: callTypes.caller,
       },
     };
     expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
-      contactId: undefined,
+      contactId: '',
       overview: { ...emptyOverview, callType: input.rawJson.callType },
       csamReports: [],
       referrals: undefined,
@@ -216,7 +186,7 @@ describe('hrmServiceContactToSearchContact', () => {
 
   test('input id is added to top level as contactId', () => {
     const input = {
-      ...emptyHrmContact,
+      ...VALID_EMPTY_CONTACT,
       id: 'an id',
     };
     expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
@@ -230,17 +200,17 @@ describe('hrmServiceContactToSearchContact', () => {
 
   test('input rawJson.caseInformation.callSummary mapped to output overView.notes', () => {
     const input: HrmServiceContact = {
-      ...emptyHrmContact,
+      ...VALID_EMPTY_CONTACT,
       rawJson: {
-        ...emptyHrmContact.rawJson,
+        ...VALID_EMPTY_CONTACT.rawJson,
+        categories: {},
         caseInformation: {
           callSummary: 'a summary',
-          categories: {},
         },
       },
     };
     expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
-      contactId: undefined,
+      contactId: '',
       overview: { ...emptyOverview, notes: input.rawJson.caseInformation.callSummary },
       csamReports: [],
       referrals: undefined,
@@ -250,11 +220,11 @@ describe('hrmServiceContactToSearchContact', () => {
 
   test('input twilioWorkerId mapped to output overView.counselor', () => {
     const input = {
-      ...emptyHrmContact,
+      ...VALID_EMPTY_CONTACT,
       twilioWorkerId: 'a worker',
     };
     expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
-      contactId: undefined,
+      contactId: '',
       overview: { ...emptyOverview, counselor: input.twilioWorkerId },
       csamReports: [],
       referrals: undefined,
@@ -264,11 +234,11 @@ describe('hrmServiceContactToSearchContact', () => {
 
   test('input timeOfContact mapped to output overView.dateTime', () => {
     const input = {
-      ...emptyHrmContact,
+      ...VALID_EMPTY_CONTACT,
       timeOfContact: 'a string, not a JS Date',
     };
     expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
-      contactId: undefined,
+      contactId: '',
       overview: { ...emptyOverview, dateTime: input.timeOfContact },
       csamReports: [],
       referrals: undefined,
@@ -323,8 +293,12 @@ describe('searchContactToHrmServiceContact', () => {
       callType: 'child',
       childInformation: { firstName: 'Lo', lastName: 'Ballantyne' },
       callerInformation: { firstName: 'Lo', lastName: 'Ballantyne' },
-      caseInformation: { categories: {} },
-      contactlessTask: { channel: 'voice' },
+      caseInformation: {},
+      categories: {},
+      contactlessTask: {
+        ...VALID_EMPTY_CONTACT.rawJson.contactlessTask,
+        channel: 'voice',
+      },
       conversationMedia: [],
     },
   };

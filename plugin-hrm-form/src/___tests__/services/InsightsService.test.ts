@@ -15,7 +15,13 @@
  */
 
 /* eslint-disable camelcase */
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import {
+  DefinitionVersionId,
+  InsightsFieldSpec,
+  loadDefinition,
+  OneToOneConfigSpec,
+  useFetchDefinitions,
+} from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import {
@@ -27,31 +33,34 @@ import {
 } from '../../services/InsightsService';
 import { getDefinitionVersions } from '../../hrmConfig';
 import { channelTypes } from '../../states/DomainConstants';
+import { Case, ContactRawJson, CustomITask, HrmServiceContact } from '../../types/types';
+import { VALID_EMPTY_CONTACT } from '../testContacts';
+import { ExternalRecordingInfo } from '../../services/getExternalRecordingInfo';
 
 jest.spyOn(console, 'error').mockImplementation();
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+type InsightsObject = InsightsFieldSpec['insights'][0];
 
 describe('InsightsService', () => {
+  const helpline = 'helpline';
   let v1;
   /*
    * This helper matches the way attributes were updated previous the changes Gian introduced in https://github.com/tech-matters/flex-plugins/pull/364/commits/9d09afec0db49716ef0b7518aaa5f7bc6159db64
    * Used to test that the attributes matches with what we expected before
    */
-  const zambiaUpdates = (attributes, contactForm, caseForm) => {
-    const attsToReturn = processHelplineConfig(contactForm, caseForm, v1.insights.oneToOneConfigSpec);
+  const zambiaUpdates = (attributes, { rawJson }: HrmServiceContact, caseForm: Case) => {
+    const attsToReturn = processHelplineConfig(rawJson, caseForm, v1.insights.oneToOneConfigSpec);
 
-    attsToReturn.customers.area = [contactForm.childInformation.province, contactForm.childInformation.district].join(
-      ';',
-    );
+    attsToReturn.customers.area = [rawJson.childInformation.province, rawJson.childInformation.district].join(';');
 
     return attsToReturn;
   };
 
-  const expectWithV1Zambia = (attributes, contactForm, caseForm) =>
+  const expectWithV1Zambia = (attributes, contact: HrmServiceContact, caseForm: Case) =>
     [baseUpdates, contactlessTaskUpdates, zambiaUpdates]
-      .map(f => f(attributes, contactForm, caseForm))
+      .map(f => f(attributes, contact, caseForm, contact))
       .reduce((acc, curr) => mergeAttributes(acc, curr), { ...attributes });
 
   beforeEach(() => {
@@ -73,30 +82,33 @@ describe('InsightsService', () => {
       conversations: {
         content: 'content',
       },
-      helpline: 'helpline',
-    };
+      helpline,
+    } as CustomITask['attributes'];
 
     const twilioTask = {
       attributes: previousAttributes,
-      setAttributes: jest.fn(),
+    } as CustomITask;
+
+    const contact: HrmServiceContact = {
+      ...VALID_EMPTY_CONTACT,
+      helpline,
+      rawJson: {
+        ...VALID_EMPTY_CONTACT.rawJson,
+        callType: 'Abusive',
+        callerInformation: {
+          age: '26',
+          gender: 'Girl',
+        },
+        childInformation: {
+          age: '18',
+          gender: 'Boy',
+          language: 'language',
+        },
+      },
     };
 
-    const contactForm = {
-      helpline: previousAttributes.helpline,
-      callType: 'Abusive',
-      callerInformation: {
-        age: '26',
-        gender: 'Girl',
-      },
-      childInformation: {
-        age: '18',
-        gender: 'Boy',
-        language: 'language',
-      },
-    };
-
-    const result = buildInsightsData(twilioTask, contactForm, {});
-
+    const result = buildInsightsData(twilioTask, contact, {} as Case, contact);
+    const { rawJson: form } = contact;
     const expectedNewAttributes = {
       ...previousAttributes,
       conversations: {
@@ -104,14 +116,14 @@ describe('InsightsService', () => {
         conversation_attribute_2: 'Abusive',
         conversation_attribute_5: null,
         communication_channel: 'SMS',
-        conversation_attribute_3: contactForm.callerInformation.age,
-        conversation_attribute_4: contactForm.callerInformation.gender,
-        conversation_attribute_8: previousAttributes.helpline,
-        language: contactForm.childInformation.language,
+        conversation_attribute_3: form.callerInformation.age,
+        conversation_attribute_4: form.callerInformation.gender,
+        conversation_attribute_8: helpline,
+        language: form.childInformation.language,
       },
       customers: {
-        year_of_birth: contactForm.childInformation.age,
-        gender: contactForm.childInformation.gender,
+        year_of_birth: form.childInformation.age,
+        gender: form.childInformation.gender,
       },
     };
 
@@ -125,30 +137,33 @@ describe('InsightsService', () => {
       conversations: {
         content: 'content',
       },
-      helpline: 'helpline',
+      helpline,
       helplineToSave: 'helpline',
-    };
+    } as CustomITask['attributes'];
 
     const twilioTask = {
       attributes: previousAttributes,
-      setAttributes: jest.fn(),
+    } as CustomITask;
+
+    const contactForm: HrmServiceContact = {
+      ...VALID_EMPTY_CONTACT,
+      helpline,
+      rawJson: {
+        ...VALID_EMPTY_CONTACT.rawJson,
+        callType: 'Abusive',
+        callerInformation: {
+          age: '',
+          gender: '',
+        },
+        childInformation: {
+          age: '',
+          gender: '',
+          language: '',
+        },
+      },
     };
 
-    const contactForm = {
-      helpline: previousAttributes.helpline,
-      callType: 'Abusive',
-      callerInformation: {
-        age: '',
-        gender: '',
-      },
-      childInformation: {
-        age: '',
-        gender: '',
-        language: '',
-      },
-    };
-
-    const result = buildInsightsData(twilioTask, contactForm, {});
+    const result = buildInsightsData(twilioTask, contactForm, {} as Case, contactForm);
 
     const expectedNewAttributes = {
       ...previousAttributes,
@@ -159,7 +174,7 @@ describe('InsightsService', () => {
         communication_channel: 'SMS',
         conversation_attribute_3: null,
         conversation_attribute_4: null,
-        conversation_attribute_8: previousAttributes.helpline,
+        conversation_attribute_8: helpline,
         language: null,
       },
       customers: {
@@ -181,40 +196,43 @@ describe('InsightsService', () => {
       customers: {
         name: 'John Doe',
       },
-    };
+    } as CustomITask['attributes'];
 
     const twilioTask = {
       attributes: previousAttributes,
-      setAttributes: jest.fn(),
-    };
+    } as CustomITask;
 
-    const contactForm = {
-      helpline: previousAttributes.helpline,
-      callType: 'Child calling about self',
-      childInformation: {
-        age: '13-15',
-        gender: 'Boy',
-        language: 'language',
+    const contact: HrmServiceContact = {
+      ...VALID_EMPTY_CONTACT,
+      helpline: 'helpline',
+      rawJson: {
+        ...VALID_EMPTY_CONTACT.rawJson,
+        callType: 'Child calling about self',
+        childInformation: {
+          age: '13-15',
+          gender: 'Boy',
+          language: 'language',
+        },
+        callerInformation: {
+          age: '26',
+          gender: 'Girl',
+        },
+        caseInformation: {},
+        categories: {
+          'Missing children': ['Unspecified/Other'],
+          Violence: ['Bullying'],
+          'Mental Health': ['Addictive behaviours and substance use'],
+        },
       },
-      callerInformation: {
-        age: '26',
-        gender: 'Girl',
-      },
-      caseInformation: {},
-      categories: [
-        'categories.Missing children.Unspecified/Other',
-        'categories.Violence.Bullying',
-        'categories.Mental Health.Addictive behaviours and substance use',
-      ],
     };
 
     const caseForm = {
       id: 123,
-    };
+    } as Case;
 
-    const expectedNewAttributes = expectWithV1Zambia(twilioTask.attributes, contactForm, caseForm);
+    const expectedNewAttributes = expectWithV1Zambia(twilioTask.attributes, contact, caseForm);
 
-    const result = buildInsightsData(twilioTask, contactForm, caseForm);
+    const result = buildInsightsData(twilioTask, contact, caseForm, contact);
 
     /*
      * const expectedNewAttributes = {
@@ -241,43 +259,49 @@ describe('InsightsService', () => {
       taskSid: 'task-sid',
       isContactlessTask: true,
       channelType: 'default',
-    };
+    } as CustomITask['attributes'];
 
     const twilioTask = {
       attributes: previousAttributes,
-      setAttributes: jest.fn(),
-    };
+    } as CustomITask;
 
     const date = '2020-12-30';
     const time = '14:50';
-    const contactForm = {
-      helpline: previousAttributes.helpline,
-      callType: 'Child calling about self',
-      contactlessTask: {
-        channel: 'sms',
-        date,
-        time,
+    const contactForm: HrmServiceContact = {
+      ...VALID_EMPTY_CONTACT,
+      helpline,
+      rawJson: {
+        ...VALID_EMPTY_CONTACT.rawJson,
+        callType: 'Child calling about self',
+        contactlessTask: {
+          channel: 'sms',
+          date,
+          time,
+          createdOnBehalfOf: undefined,
+        },
+        childInformation: {
+          age: '3',
+          gender: 'Unknown',
+          language: 'language',
+        },
+        callerInformation: {
+          age: '26',
+          gender: 'Girl',
+        },
+        caseInformation: {},
+        categories: {
+          Violence: ['Unspecified/Other'],
+        },
       },
-      childInformation: {
-        age: '3',
-        gender: 'Unknown',
-        language: 'language',
-      },
-      callerInformation: {
-        age: '26',
-        gender: 'Girl',
-      },
-      caseInformation: {},
-      categories: ['categories.Violence.Unspecified/Other'],
     };
 
     const caseForm = {
       id: 123,
-    };
+    } as Case;
 
     const expectedNewAttributes = expectWithV1Zambia(twilioTask.attributes, contactForm, caseForm);
 
-    const result = buildInsightsData(twilioTask, contactForm, caseForm);
+    const result = buildInsightsData(twilioTask, contactForm, caseForm, contactForm);
 
     /*
      * const expectedNewAttributes = {
@@ -299,22 +323,23 @@ describe('InsightsService', () => {
   });
 
   test('processHelplineConfig works for basic cases', async () => {
-    const helplineConfig = {
+    const helplineConfig: OneToOneConfigSpec = {
       contactForm: {
         childInformation: [
           {
             name: 'village',
-            insights: ['customers', 'city'],
+            insights: ['customers' as InsightsObject, 'city'],
           },
           {
             name: 'language',
-            insights: ['conversations', 'language'],
+            insights: ['conversations' as InsightsObject, 'language'],
           },
         ],
       },
     };
 
-    const contactForm = {
+    const contactForm: ContactRawJson = {
+      ...VALID_EMPTY_CONTACT.rawJson,
       callType: 'Child calling about self',
 
       childInformation: {
@@ -324,14 +349,14 @@ describe('InsightsService', () => {
         gender: 'Boy',
       },
       caseInformation: {},
-      categories: [
-        'categories.Missing children.Unspecified/Other',
-        'categories.Violence.Bullying',
-        'categories.Mental Health.Addictive behaviours and substance use',
-      ],
+      categories: {
+        'Missing children': ['Unspecified/Other'],
+        Violence: ['Bullying'],
+        'Mental Health': ['Addictive behaviours and substance use'],
+      },
     };
 
-    const caseForm = {};
+    const caseForm = {} as Case;
 
     const expected = {
       conversations: {
@@ -356,9 +381,10 @@ describe('InsightsService', () => {
           },
         ],
       },
-    };
+    } as OneToOneConfigSpec;
 
-    const contactForm = {
+    const contactForm: ContactRawJson = {
+      ...VALID_EMPTY_CONTACT.rawJson,
       callType: 'Child calling about self',
 
       childInformation: {
@@ -366,7 +392,7 @@ describe('InsightsService', () => {
       },
     };
 
-    const caseForm = {};
+    const caseForm = {} as Case;
 
     const expected = {
       conversations: {},
@@ -387,79 +413,87 @@ describe('InsightsService', () => {
   });
 
   test('processHelplineConfig for case data', () => {
-    const helplineConfig = {
+    const helplineConfig: OneToOneConfigSpec = {
       contactForm: {},
       caseForm: {
         topLevel: [
           {
             name: 'id',
-            insights: ['conversations', 'case'],
+            insights: ['conversations' as InsightsObject, 'case'],
           },
         ],
         perpetrator: [
           {
             name: 'relationshipToChild',
-            insights: ['customers', 'organization'],
+            insights: ['customers' as InsightsObject, 'organization'],
           },
           {
             name: 'gender',
-            insights: ['conversations', 'followed_by'],
+            insights: ['conversations' as InsightsObject, 'followed_by'],
           },
           {
             name: 'age',
-            insights: ['conversations', 'preceded_by'],
+            insights: ['conversations' as InsightsObject, 'preceded_by'],
           },
         ],
         incident: [
           {
             name: 'duration',
-            insights: ['conversations', 'in_business_hours'],
+            insights: ['conversations' as InsightsObject, 'in_business_hours'],
           },
           {
             name: 'location',
-            insights: ['customers', 'market_segment'],
+            insights: ['customers' as InsightsObject, 'market_segment'],
           },
         ],
         referral: [
           {
             name: 'referredTo',
-            insights: ['customers', 'customer_manager'],
+            insights: ['customers' as InsightsObject, 'customer_manager'],
           },
         ],
       },
     };
 
-    const contactForm = {};
+    const contactForm = {} as ContactRawJson;
 
-    const caseForm = {
+    const caseForm: Case = {
+      accountSid: 'AC123',
+      categories: {},
+      createdAt: '2020-01-01T00:00:00.000Z',
+      updatedAt: '2020-01-01T00:00:00.000Z',
       id: 102,
       status: 'open',
       helpline: '',
       twilioWorkerId: 'worker',
       info: {
         summary: 'case summary',
-        notes: ['my note'],
+        counsellorNotes: [
+          {
+            id: '1',
+            note: 'my note',
+            createdAt: '',
+            twilioWorkerId: '',
+          },
+        ],
         perpetrators: [
           {
+            id: '1',
             perpetrator: {
-              name: {
-                firstName: 'first',
-                lastName: 'last',
-              },
+              firstName: 'first',
+              lastName: 'last',
               relationshipToChild: 'Grandparent',
               gender: 'Boy',
               age: '>25',
               language: 'Bemba',
               nationality: 'Zambian',
               ethnicity: 'Bembese',
-              location: {
-                streetAddress: '',
-                city: '',
-                stateOrCounty: '',
-                postalCode: '',
-                phone1: '',
-                phone2: '',
-              },
+              streetAddress: '',
+              city: '',
+              stateOrCounty: '',
+              postalCode: '',
+              phone1: '',
+              phone2: '',
             },
             createdAt: '',
             twilioWorkerId: '',
@@ -467,25 +501,22 @@ describe('InsightsService', () => {
         ],
         households: [
           {
+            id: '1',
             household: {
-              name: {
-                firstName: 'first',
-                lastName: 'last',
-              },
+              firstName: 'first',
+              lastName: 'last',
               relationshipToChild: 'Mother',
               gender: 'Girl',
               age: '>25',
               language: 'Bemba',
               nationality: 'Zambian',
               ethnicity: 'Bembese',
-              location: {
-                streetAddress: '',
-                city: '',
-                stateOrCounty: '',
-                postalCode: '',
-                phone1: '',
-                phone2: '',
-              },
+              streetAddress: '',
+              city: '',
+              stateOrCounty: '',
+              postalCode: '',
+              phone1: '',
+              phone2: '',
             },
             createdAt: '',
             twilioWorkerId: '',
@@ -493,26 +524,35 @@ describe('InsightsService', () => {
         ],
         referrals: [
           {
-            date: new Date(),
+            id: '1',
+            date: new Date().toISOString(),
             referredTo: 'Referral Agency 1',
             comments: 'A referral',
+            createdAt: '',
+            twilioWorkerId: '',
           },
           {
-            date: new Date(),
+            id: '1',
+            date: new Date().toISOString(),
             referredTo: 'Referral Agency 2',
             comments: 'Another referral',
+            createdAt: '',
+            twilioWorkerId: '',
           },
         ],
         incidents: [
           {
-            duration: '2',
-            location: 'At home',
+            id: '1',
+            incident: {
+              duration: '2',
+              location: 'At home',
+            },
+            createdAt: '',
+            twilioWorkerId: '',
           },
         ],
         followUpDate: '2021-01-30',
       },
-      createdAt: '',
-      updatdAt: '',
       connectedContacts: [],
     };
 
@@ -534,24 +574,25 @@ describe('InsightsService', () => {
   });
 
   test('processHelplineConfig does not add caller fields for child call types', async () => {
-    const helplineConfig = {
+    const helplineConfig: OneToOneConfigSpec = {
       contactForm: {
         callerInformation: [
           {
             name: 'gender',
-            insights: ['conversations', 'conversation_attribute_4'],
+            insights: ['conversations' as InsightsObject, 'conversation_attribute_4'],
           },
         ],
         childInformation: [
           {
             name: 'language',
-            insights: ['conversations', 'language'],
+            insights: ['conversations' as InsightsObject, 'language'],
           },
         ],
       },
     };
 
-    const contactForm = {
+    const contactForm: ContactRawJson = {
+      ...VALID_EMPTY_CONTACT.rawJson,
       callType: 'Child calling about self',
 
       callerInformation: {
@@ -562,7 +603,7 @@ describe('InsightsService', () => {
       },
     };
 
-    const caseForm = {};
+    const caseForm = {} as Case;
 
     const expected = {
       conversations: {
@@ -575,19 +616,21 @@ describe('InsightsService', () => {
   });
 
   test('zambiaUpdates handles custom entries', () => {
-    const contactForm = {
-      callType: 'Child calling about self',
+    const contact: HrmServiceContact = {
+      ...VALID_EMPTY_CONTACT,
+      rawJson: {
+        ...VALID_EMPTY_CONTACT.rawJson,
+        callType: 'Child calling about self',
 
-      callerInformation: {},
-      childInformation: {
-        province: 'Eastern',
-        district: 'Sinda',
+        callerInformation: {},
+        childInformation: {
+          province: 'Eastern',
+          district: 'Sinda',
+        },
       },
-      caseInformation: {},
-      categories: [],
     };
 
-    const returnedAttributes = zambiaUpdates({}, contactForm, {});
+    const returnedAttributes = zambiaUpdates({}, contact, {} as Case);
     expect(returnedAttributes.customers.area).toEqual('Eastern;Sinda');
   });
 });
@@ -596,44 +639,48 @@ describe('InsightsService - buildInsightsData() (externalRecordings)', () => {
   test('Should add url provider block to attributes when passed a successful externalRecordingInfo', async () => {
     const previousAttributes = {
       taskSid: 'task-sid',
-      channelType: channelTypes.VOICE,
+      channelType: channelTypes.voice,
       conversations: {
         content: 'content',
       },
       helpline: 'helpline',
-    };
+    } as CustomITask['attributes'];
 
     const twilioTask = {
       attributes: previousAttributes,
-      setAttributes: jest.fn(),
-    };
+    } as CustomITask;
 
-    const contactForm = {
-      helpline: previousAttributes.helpline,
-      callType: 'Child calling about self',
-      contactlessTask: {
-        channel: channelTypes.VOICE,
-        date: '2020-12-30',
-        time: '14:50',
+    const contactForm: HrmServiceContact = {
+      ...VALID_EMPTY_CONTACT,
+      helpline: 'helpline',
+      rawJson: {
+        ...VALID_EMPTY_CONTACT.rawJson,
+        callType: 'Child calling about self',
+        contactlessTask: {
+          channel: channelTypes.voice,
+          date: '2020-12-30',
+          time: '14:50',
+          createdOnBehalfOf: undefined,
+        },
+        childInformation: {
+          age: '3',
+          gender: 'Unknown',
+          language: 'language',
+        },
+        callerInformation: {
+          age: '26',
+          gender: 'Girl',
+        },
+        caseInformation: {},
+        categories: { Violence: ['Unspecified/Other'] },
       },
-      childInformation: {
-        age: '3',
-        gender: 'Unknown',
-        language: 'language',
-      },
-      callerInformation: {
-        age: '26',
-        gender: 'Girl',
-      },
-      caseInformation: {},
-      categories: ['categories.Violence.Unspecified/Other'],
     };
 
     const caseForm = {
       id: 123,
-    };
+    } as Case;
 
-    const externalRecordingInfo = {
+    const externalRecordingInfo: ExternalRecordingInfo = {
       status: 'success',
       recordingSid: 'recordingSid',
       bucket: 'bucket',
@@ -641,8 +688,8 @@ describe('InsightsService - buildInsightsData() (externalRecordings)', () => {
     };
 
     const savedContact = {
-      id: 123,
-    };
+      id: '123',
+    } as HrmServiceContact;
 
     const result = buildInsightsData(twilioTask, contactForm, caseForm, savedContact, externalRecordingInfo);
     expect(result.conversations.media).toEqual([

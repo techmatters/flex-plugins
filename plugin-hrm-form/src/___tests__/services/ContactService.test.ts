@@ -41,7 +41,7 @@ import { ContactRawJson, offlineContactTaskSid } from '../../types/types';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
 import { HrmServiceContactWithMetadata } from '../../states/contacts/types';
 
-const helpline = 'ChildLine Zambia (ZM)';
+const helpline = 'ChildLine';
 const mockGetHrmConfig = getHrmConfig as jest.Mock;
 
 // eslint-disable-next-line no-empty-function
@@ -92,15 +92,16 @@ beforeEach(() => {
   mockReset();
 });
 
+let EMPTY_API_CATEGORIES: Record<string, Record<string, boolean>>;
+
 beforeAll(async () => {
   const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
   mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+  EMPTY_API_CATEGORIES = createCategoriesObject(mockV1.tabbedForms.IssueCategorizationTab(helpline));
 });
-
-const EMPTY_API_CATEGORIES = createCategoriesObject(mockV1.tabbedForms.IssueCategorizationTab(helpline).categories);
 
 describe('transformForm', () => {
   test('removes control information and presents values only', () => {
@@ -174,6 +175,7 @@ describe('transformForm', () => {
     expect(transformed.caseInformation.callSummary).toBe('My summary');
     expect(transformed.contactlessTask).toStrictEqual({
       channel: 'web',
+      createdOnBehalfOf: undefined,
       date: '',
       time: '',
     });
@@ -463,8 +465,9 @@ describe('transformValues', () => {
   });
 });
 
+// TODO: test category transformation
 test('updateContactsFormInHrm - calls a PATCH HRM endpoint using the supplied contact ID in the route', async () => {
-  const responseBody = { from: 'HRM' };
+  const responseBody = { rawJson: { caseInformation: { categories: {} } } };
   const mockedFetch = jest.spyOn(global, 'fetch').mockResolvedValue(<Response>(<unknown>{
     ok: true,
     json: () => Promise.resolve(responseBody),
@@ -473,12 +476,14 @@ test('updateContactsFormInHrm - calls a PATCH HRM endpoint using the supplied co
   try {
     const inputPatch = { caseInformation: {}, categories: {} };
     const ret = await updateContactsFormInHrm('1234', inputPatch, helpline);
-    expect(ret).toStrictEqual(responseBody);
+    expect(ret).toStrictEqual({ rawJson: inputPatch });
     expect(mockedFetch).toHaveBeenCalledWith(
       expect.stringContaining('/contacts/1234'),
       expect.objectContaining({
         method: 'PATCH',
-        body: JSON.stringify(inputPatch),
+        body: JSON.stringify({
+          rawJson: { caseInformation: { categories: EMPTY_API_CATEGORIES }, definitionVersion: DefinitionVersionId.v1 },
+        }),
       }),
     );
   } finally {
@@ -573,9 +578,17 @@ describe('transformCategories', () => {
   });
 
   test('Empty categories in input - adds empty category to output', () => {
-    const transformed = transformCategories('a helpline', { category2: [] }, mockDef);
+    const transformed = transformCategories('a helpline', { category3: [] }, mockDef);
     expect(transformed).toStrictEqual({
-      category2: {},
+      category1: {
+        subCategory1: false,
+        subCategory2: false,
+      },
+      category2: {
+        subCategory1: false,
+        subCategory2: false,
+      },
+      category3: {},
     });
   });
 });

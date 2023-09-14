@@ -133,15 +133,26 @@ export function transformCategories(
   categories: ContactRawJson['categories'],
   definition: DefinitionVersion,
 ): Record<string, Record<string, boolean>> {
-  const { IssueCategorizationTab } = definition.tabbedForms;
-  const transformedCategoryList = Object.entries(categories).map(([category, subcategories]) => {
-    const subcategoryChecklist = IssueCategorizationTab(helpline)[category].subcategories.map<[string, boolean]>(
-      ({ label }) => [label, subcategories.includes(label)],
-    );
+  const definitionCategories = definition.tabbedForms.IssueCategorizationTab(helpline);
+  // Expand a full set of categories with all subcategories set to false
+  const emptyCategoryList = Object.entries(definitionCategories).map(([category, { subcategories }]) => {
+    const subcategoryChecklist = subcategories.map<[string, boolean]>(({ label }) => [
+      label,
+      (categories[category] ?? []).includes(label),
+    ]);
     return [category, Object.fromEntries(subcategoryChecklist)];
   });
+  const expandedCategories = Object.fromEntries(emptyCategoryList);
 
-  return Object.fromEntries(transformedCategoryList);
+  // Merge the empty categories with the ones that have been set
+  Object.entries(categories).forEach(([category, subcategories]) => {
+    expandedCategories[category] = expandedCategories[category] ?? {};
+    subcategories.forEach(subcategory => {
+      expandedCategories[category][subcategory] = true;
+    });
+  });
+
+  return expandedCategories;
 }
 
 /**
@@ -152,12 +163,12 @@ export function transformForm(rawJson: Partial<ContactRawJson>, helpline: string
   const { categories: inputCategories, ...rawJsonWithoutCategories } = rawJson;
   const { currentDefinitionVersion } = getDefinitionVersions();
   // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
-  const apiForm = rawJsonWithoutCategories as ContactRawJsonForApi;
+  const apiForm = { ...rawJsonWithoutCategories } as ContactRawJsonForApi;
   const { definitionVersion } = getHrmConfig();
 
   if (rawJson.categories) {
     const categories = transformCategories(helpline, inputCategories, currentDefinitionVersion);
-    apiForm.caseInformation = apiForm.caseInformation ?? { categories: {} };
+    apiForm.caseInformation = { ...(apiForm.caseInformation ?? { categories: {} }) };
     apiForm.caseInformation.categories = categories;
   }
 
@@ -246,13 +257,12 @@ const saveContactToHrm = async (
   shouldFillEndMillis = true,
 ): Promise<SaveContactToHrmResponse> => {
   // if we got this far, we assume the form is valid and ready to submit
-  const form = contact.rawJson;
   const metadataForDuration = shouldFillEndMillis ? fillEndMillis(metadata) : metadata;
   const conversationDuration = getConversationDuration(task, metadataForDuration);
-  const { callType } = form;
+  const { callType } = contact.rawJson;
   const number = getNumberFromTask(task);
 
-  let rawForm = form;
+  let rawForm = contact.rawJson;
   // const reservationSid = task.sid;
   const { currentDefinitionVersion } = getDefinitionVersions();
 
@@ -264,16 +274,16 @@ const saveContactToHrm = async (
     const newContactWithMetaData = createContactWithMetadata(currentDefinitionVersion)(false);
     rawForm = {
       ...newContactWithMetaData.contact.rawJson,
-      callType: form.callType,
+      callType,
       ...(isOfflineContactTask(task) && {
-        contactlessTask: form.contactlessTask,
+        contactlessTask: contact.rawJson.contactlessTask,
       }),
-      conversationMedia: form.conversationMedia,
+      conversationMedia: contact.rawJson.conversationMedia,
     };
   }
 
   // If isOfflineContactTask, send the target Sid as twilioWorkerId value and store workerSid (issuer) in rawForm
-  const twilioWorkerId = isOfflineContactTask(task) ? form.contactlessTask.createdOnBehalfOf : workerSid;
+  const twilioWorkerId = isOfflineContactTask(task) ? rawForm.contactlessTask.createdOnBehalfOf : workerSid;
 
   // This might change if isNonDataCallType, that's why we use rawForm
   const timeOfContact = new Date(getDateTime(rawForm.contactlessTask)).toISOString();
@@ -290,7 +300,7 @@ const saveContactToHrm = async (
   const contactToSave: HrmServiceContactForApi = {
     ...contact,
     rawJson: {
-      ...(transformForm(contact.rawJson, helpline) as ContactRawJsonForApi),
+      ...(transformForm(rawForm, helpline) as ContactRawJsonForApi),
       conversationMedia,
     },
     twilioWorkerId,
