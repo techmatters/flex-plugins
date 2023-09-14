@@ -158,7 +158,7 @@ const transformToHrmServiceContact = (
     updatedAt: contact.overview.updatedAt,
     rawJson: {
       ...contact.details,
-      categories: contact.overview.categories, // categories from overview already comes typed as Record<string, string[]>
+      categories: contact.details.categories,
       caseInformation: {
         ...contact.details.caseInformation,
         categories: undefined, // Optional: remove categories from caseInformation
@@ -222,7 +222,7 @@ function transformCategoriesOld(
 
 export function transformCategories(categories: TaskEntry['categories']): Record<string, string[]> {
   return categories.reduce((acc, path) => {
-    const [category, subcategory] = path.split('.');
+    const [_, category, subcategory] = path.split('.');
     const previousSubcategories = acc[category];
     const subcategories = previousSubcategories ? [...previousSubcategories, subcategory] : [subcategory];
 
