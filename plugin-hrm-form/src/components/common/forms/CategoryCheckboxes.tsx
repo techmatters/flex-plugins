@@ -25,7 +25,6 @@ import {
   HtmlTooltip,
   CategoryCheckboxWrapper,
 } from '../../../styles/HrmStyles';
-import { ConnectForm } from './formGenerators';
 
 type Subcategory = {
   label: string;
@@ -39,34 +38,26 @@ const createSubcategoryCheckbox = (
   toggleCallback: (category: string, subcategory: string) => void,
   selected: boolean,
   counselorToolkitsEnabled: boolean,
+  selectedCount: number,
 ) => {
   const { label, toolkitUrl } = subcategory;
+  const lighterColor = `${color}99`; // Hex with alpha 0.6
+  const disabled = selectedCount >= 3 && !selected;
 
   return (
     <CategoryCheckboxWrapper key={`${category}-${label}`}>
-      <ConnectForm>
-        {({ register, getValues }) => {
-          const { categories } = getValues();
-          const disabled = categories && categories.length >= 3 && !selected;
-          const lighterColor = `${color}99`; // Hex with alpha 0.6
-
-          return (
-            <CategoryCheckboxLabel>
-              <CategoryCheckboxField color={lighterColor} selected={selected} disabled={disabled}>
-                <CategoryCheckbox
-                  type="checkbox"
-                  name="categories"
-                  onChange={() => toggleCallback(category, label)}
-                  ref={register({ required: true, minLength: 1, maxLength: 3 })}
-                  disabled={disabled}
-                  checked={selected}
-                />
-                {label}
-              </CategoryCheckboxField>
-            </CategoryCheckboxLabel>
-          );
-        }}
-      </ConnectForm>
+      <CategoryCheckboxLabel>
+        <CategoryCheckboxField color={lighterColor} selected={selected} disabled={disabled}>
+          <CategoryCheckbox
+            type="checkbox"
+            name="categories"
+            onChange={() => toggleCallback(category, label)}
+            disabled={disabled}
+            checked={selected}
+          />
+          {label}
+        </CategoryCheckboxField>
+      </CategoryCheckboxLabel>
       {counselorToolkitsEnabled && toolkitUrl && (
         <HtmlTooltip title={`${label} - Tipsheet`} placement="bottom">
           <a href={toolkitUrl} target="_blank" rel="noreferrer">
@@ -85,6 +76,7 @@ type Props = {
   counselorToolkitsEnabled: boolean;
   selectedSubcategories: string[];
   gridView: boolean;
+  selectedCount: number;
 };
 
 const CategoryCheckboxes: React.FC<Props> = ({
@@ -94,6 +86,7 @@ const CategoryCheckboxes: React.FC<Props> = ({
   counselorToolkitsEnabled,
   selectedSubcategories,
   gridView,
+  selectedCount,
 }) => {
   return (
     <SubcategoriesWrapper gridView={gridView}>
@@ -105,6 +98,7 @@ const CategoryCheckboxes: React.FC<Props> = ({
           toggleSubcategory,
           selectedSubcategories.includes(subcategory.label),
           counselorToolkitsEnabled,
+          selectedCount,
         ),
       )}
     </SubcategoriesWrapper>

@@ -61,6 +61,7 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
 }) => {
   const shouldFocusFirstElement = display && autoFocus;
   const firstElementRef = useFocus(shouldFocusFirstElement);
+  const selectedCount = Object.values(selectedCategories).reduce((acc, curr) => acc + curr.length, 0);
 
   return (
     <Container>
@@ -96,6 +97,7 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
                 toggleSubcategory={toggleSubcategory}
                 selectedSubcategories={selectedCategories[category] ?? []}
                 counselorToolkitsEnabled={getAseloFeatureFlags().enable_counselor_toolkits}
+                selectedCount={selectedCount}
               />
             </Section>
           </Box>
