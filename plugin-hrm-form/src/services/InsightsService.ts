@@ -26,7 +26,6 @@ import {
   OneToManyConfigSpec,
   OneToManyConfigSpecs,
 } from 'hrm-form-definitions';
-import { ITask } from '@twilio/flex-ui';
 
 import { isNonDataCallType } from '../states/validationRules';
 import { mapChannelForInsights } from '../utils/mappers';
