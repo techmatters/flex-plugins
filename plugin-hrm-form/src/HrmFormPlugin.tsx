@@ -149,7 +149,6 @@ const setUpActions = (
   // bind setupObject to the functions that requires some initialization
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject, getMessage);
   const beforeCompleteAction = ActionFunctions.beforeCompleteTask(featureFlags);
-  // const afterWrapupAction = ActionFunctions.afterWrapupTask(featureFlags, setupObject);
 
   Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
 
@@ -162,8 +161,6 @@ const setUpActions = (
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
 
   Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
-
-  // Flex.Actions.addListener('afterWrapupTask', afterWrapupAction);
 
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
 
