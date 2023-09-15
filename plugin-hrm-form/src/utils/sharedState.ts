@@ -55,6 +55,7 @@ let sharedStateClient: SyncClient;
 const transferFormCategoriesToContactCategories = (
   transferFormCategories: TaskEntry['categories'],
 ): HrmServiceContact['rawJson']['categories'] => {
+  if (!transferFormCategories) return undefined;
   const contactCategories = {};
   transferFormCategories.forEach(transferFormCategories => {
     const [, category, subCategory] = transferFormCategories.split('.');
@@ -88,6 +89,7 @@ const transferFormToContact = (transferForm: TransferForm): HrmServiceContactWit
 const contactFormCategoriesToTransferFormCategories = (
   contactCategories: HrmServiceContact['rawJson']['categories'],
 ): TaskEntry['categories'] => {
+  if (!contactCategories) return undefined;
   return Object.entries(contactCategories).flatMap(([category, subCategories]) =>
     subCategories.map(subCategory => `categories.${category}.${subCategory}`),
   );
@@ -101,7 +103,7 @@ const contactToTransferForm = ({ contact, metadata }: HrmServiceContactWithMetad
     csamReports,
     referrals,
     ...rawJson,
-    categories: contactFormCategoriesToTransferFormCategories(rawJson.categories),
+    categories: contactFormCategoriesToTransferFormCategories(rawJson?.categories),
     draft,
     metadata,
   };
@@ -198,7 +200,7 @@ export const loadFormSharedState = async (task: ITask): Promise<HrmServiceContac
     return null;
   } catch (err) {
     console.error('Error while loading form from shared state', err);
-    return null;
+    throw err;
   }
 };
 
