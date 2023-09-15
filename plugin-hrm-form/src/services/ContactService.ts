@@ -31,17 +31,18 @@ import {
   isOfflineContactTask,
   isTwilioTask,
   SearchAPIContact,
+  ContactMediaType,
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
 import { ContactMetadata } from '../states/contacts/types';
 import {
   ExternalRecordingInfoSuccess,
-  ExternalRecordingUnneeded,
   getExternalRecordingInfo,
   isFailureExternalRecordingInfo,
-  isSuccessfulExternalRecordingInfo,
+  shouldGetExternalRecordingInfo,
 } from './getExternalRecordingInfo';
+import { generateUrl } from './fetchApi';
 
 type ContactRawJsonForApi = Omit<ContactRawJson, 'categories' | 'caseInformation'> & {
   caseInformation: Record<string, string | boolean | Record<string, Record<string, boolean>>> & {
@@ -183,7 +184,7 @@ type HandleTwilioTaskResponse = {
   channelSid?: string;
   serviceSid?: string;
   conversationMedia: ConversationMedia[];
-  externalRecordingInfo?: ExternalRecordingInfoSuccess | ExternalRecordingUnneeded;
+  externalRecordingInfo?: ExternalRecordingInfoSuccess;
 };
 
 export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> => {
@@ -215,24 +216,23 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
     });
   }
 
+  if (!shouldGetExternalRecordingInfo(task)) return returnData;
+
   const externalRecordingInfo = await getExternalRecordingInfo(task);
   if (isFailureExternalRecordingInfo(externalRecordingInfo)) {
     throw new Error(`Error getting external recording info: ${externalRecordingInfo.error}`);
   }
 
   returnData.externalRecordingInfo = externalRecordingInfo;
-
-  if (isSuccessfulExternalRecordingInfo(externalRecordingInfo)) {
-    const { bucket, key } = externalRecordingInfo;
-    returnData.conversationMedia.push({
-      store: 'S3',
-      type: 'recording',
-      location: {
-        bucket,
-        key,
-      },
-    });
-  }
+  const { bucket, key } = externalRecordingInfo;
+  returnData.conversationMedia.push({
+    store: 'S3',
+    type: 'recording',
+    location: {
+      bucket,
+      key,
+    },
+  });
 
   return returnData;
 };
@@ -242,7 +242,7 @@ type NewHrmServiceContact = Omit<HrmServiceContactForApi, 'id' | 'updatedAt' | '
 type SaveContactToHrmResponse = {
   response: HrmServiceContact;
   request: NewHrmServiceContact;
-  externalRecordingInfo?: ExternalRecordingInfoSuccess | ExternalRecordingUnneeded;
+  externalRecordingInfo?: ExternalRecordingInfoSuccess;
 };
 /**
  * Function that saves the form to Contacts table.
@@ -384,3 +384,11 @@ export async function connectToCase(contactId, caseId) {
 
   return fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
 }
+
+export const generateExternalMediaPath = (
+  contactId: string,
+  mediaType: ContactMediaType,
+  bucket: string,
+  key: string,
+) =>
+  `/files/urls?method=getObject&objectType=contact&objectId=${contactId}&fileType=${mediaType}&bucket=${bucket}&key=${key}`;

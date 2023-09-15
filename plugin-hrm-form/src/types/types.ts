@@ -120,6 +120,9 @@ export type S3StoredRecording = {
 
 type S3StoredMedia = S3StoredTranscript | S3StoredRecording;
 
+// Extract the 'type' property from S3StoredMedia to create ContactMediaType
+export type ContactMediaType = S3StoredMedia['type'];
+
 export type ConversationMedia = TwilioStoredMedia | S3StoredMedia;
 
 export const isTwilioStoredMedia = (m: ConversationMedia): m is TwilioStoredMedia => m.store === 'twilio';
@@ -265,13 +268,13 @@ export type FeatureFlags = {
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
   enable_external_transcripts: boolean; // Enables Viewing Transcripts Stored Outside of Twilio
-  post_survey_serverless_handled: boolean; // Post Survey handled in serverless instead of in Flex
   enable_csam_clc_report: boolean; // Enables CSAM child Reports
   enable_counselor_toolkits: boolean; // Enables Counselor Toolkits
   enable_emoji_picker: boolean; // Enables Emoji Picker
   enable_aselo_messaging_ui: boolean; // Enables Aselo Messaging UI iinstead of the default Twilio one - reduced functionality for low spec clients.
   enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior
   enable_lex: boolean; // Enables consuming from Lex bots
+  backend_handled_chat_janitor: boolean; // [Temporary flag until all accounts are migrated] Enables handling the janitor from taskrouter event listeners
 };
 /* eslint-enable camelcase */
 
@@ -308,6 +311,7 @@ export type OfflineContactTask = {
     channelType: 'default';
     helplineToSave?: string;
     preEngagementData?: Record<string, string>;
+    skipInsights?: boolean;
   };
   channelType: 'default';
 };

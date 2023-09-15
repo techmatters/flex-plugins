@@ -17,7 +17,7 @@ echo "
 Collect Required Information.
 
 1. You will need to lookup the IAM secret key for the ${short_helpline}-${short_environment}-twilio-external-recordings IAM user in the AWS console here:
-https://us-east-1.console.aws.amazon.com/systems-manager/parameters/${secret_ssm_key}/description?region=us-east-1&tab=Table
+https://us-east-1.console.aws.amazon.com/systems-manager/parameters${secret_ssm_key}/description?region=us-east-1&tab=Table
 "
 
 press_any_key_to_continue
@@ -49,6 +49,8 @@ press_any_key_to_continue
 
 echo "
 Enable External Voice Recording in Twilio.
+
+** ONLY AN ACCOUNT ADMIN CAN COMPLETE THIS STEP, YOU MAY NEED TO ASK FOR HELP **
 
 1. Navigate to the "Voice Settings" dashboard in twilio:
 https://console.twilio.com/us1/develop/voice/settings/general?frameUrl=%2Fconsole%2Fvoice%2Fsettings%3Fx-target-region%3Dus1

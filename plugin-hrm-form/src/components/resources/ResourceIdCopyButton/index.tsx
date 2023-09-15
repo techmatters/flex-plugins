@@ -17,7 +17,7 @@
 import * as React from 'react';
 import CopyIcon from '@material-ui/icons/FileCopyOutlined';
 import CheckIcon from '@material-ui/icons/CheckCircle';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Template } from '@twilio/flex-ui';
 
 import { Button } from './styles';
@@ -31,12 +31,25 @@ type OwnProps = {
 const ResourceIdCopyButton: React.FC<OwnProps> = ({ resourceId, height = '36px' }) => {
   const strings = getTemplateStrings();
   const [justCopied, setJustCopied] = useState(false);
+  let copiedStateTimerId: NodeJS.Timer;
 
   const copyClicked = async () => {
     await navigator.clipboard.writeText(resourceId);
     setJustCopied(true);
-    setTimeout(() => setJustCopied(false), 2000);
+    copiedStateTimerId = setTimeout(() => {
+      setJustCopied(false);
+      copiedStateTimerId = undefined;
+    }, 2000);
   };
+
+  useEffect(
+    () => () => {
+      if (copiedStateTimerId) {
+        clearTimeout(copiedStateTimerId);
+      }
+    },
+    [copiedStateTimerId],
+  );
 
   return justCopied ? (
     <Button type="button" title={`${strings['Resources-IdCopied']} #${resourceId}`} style={{ height }}>

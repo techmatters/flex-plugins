@@ -22,12 +22,13 @@ import format from 'date-fns/format';
 
 import type { TwilioStoredMedia, S3StoredTranscript } from '../../../types/types';
 import { contactFormsBase, namespace, RootState } from '../../../states';
-import { getFileDownloadUrl } from '../../../services/ServerlessService';
+import { generateExternalMediaPath } from '../../../services/ContactService';
+import fetchHrmApi from '../../../services/fetchHrmApi';
 import { loadTranscript, TranscriptMessage, TranscriptResult } from '../../../states/contacts/existingContacts';
 import { Box } from '../../../styles/HrmStyles';
 import { GroupedMessage } from '../../Messaging/MessageItem';
 import { MessageList } from '../../Messaging/MessageList';
-import { ErrorFont, ItalicFont, LoadTranscriptButton, LoadTranscriptButtonText } from './styles';
+import { ErrorFont, ItalicFont, LoadMediaButton, LoadMediaButtonText } from './styles';
 
 type OwnProps = {
   contactId: string;
@@ -122,11 +123,21 @@ const TranscriptSection: React.FC<Props> = ({
   const fetchAndLoadTranscript = async () => {
     try {
       setLoading(true);
-      const transcriptPreSignedUrl = await getFileDownloadUrl(externalStoredTranscript.location.key);
+
+      const mediaType = 'transcript';
+
+      const transcriptPreSignedUrl = await fetchHrmApi(
+        generateExternalMediaPath(
+          contactId,
+          mediaType,
+          externalStoredTranscript.location.bucket,
+          externalStoredTranscript.location.key,
+        ),
+      );
+
       const transcriptResponse = await fetch(transcriptPreSignedUrl.downloadUrl);
 
       validateFetchResponse(transcriptResponse);
-
       const transcriptJson: TranscriptResult = await transcriptResponse.json();
 
       loadTranscript(contactId, transcriptJson.transcript);
@@ -176,22 +187,22 @@ const TranscriptSection: React.FC<Props> = ({
   // The external transcript is exported but it hasn't been fetched yet
   if (externalStoredTranscript && externalStoredTranscript.location && !transcript) {
     return (
-      <LoadTranscriptButton type="button" onClick={fetchAndLoadTranscript}>
-        <LoadTranscriptButtonText>
+      <LoadMediaButton type="button" onClick={fetchAndLoadTranscript}>
+        <LoadMediaButtonText>
           <Template code="ContactDetails-LoadTranscript-Button" />
-        </LoadTranscriptButtonText>
-      </LoadTranscriptButton>
+        </LoadMediaButtonText>
+      </LoadMediaButton>
     );
   }
 
   // External transcript is pending/disabled but Twilio transcript is enabled
   if (twilioStoredTranscript) {
     return (
-      <LoadTranscriptButton type="button" onClick={loadTwilioStoredTranscript}>
-        <LoadTranscriptButtonText>
+      <LoadMediaButton type="button" onClick={loadTwilioStoredTranscript}>
+        <LoadMediaButtonText>
           <Template code="ContactDetails-LoadTranscript-Button" />
-        </LoadTranscriptButtonText>
-      </LoadTranscriptButton>
+        </LoadMediaButtonText>
+      </LoadMediaButton>
     );
   }
 

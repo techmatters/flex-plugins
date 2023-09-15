@@ -16,12 +16,8 @@
 
 import { getHrmConfig } from '../hrmConfig';
 import { isVoiceChannel } from '../states/DomainConstants';
-import { CustomITask, isOfflineContactTask } from '../types/types';
+import { CustomITask, isOfflineContactTask, InMyBehalfITask } from '../types/types';
 import { getExternalRecordingS3Location } from './ServerlessService';
-
-export type ExternalRecordingUnneeded = {
-  status: 'unneeded';
-};
 
 export type ExternalRecordingInfoSuccess = {
   status: 'success';
@@ -32,6 +28,7 @@ export type ExternalRecordingInfoSuccess = {
 
 type ExternalRecordingInfoFailure = {
   status: 'failure';
+  name: string;
   error: string;
 };
 
@@ -39,37 +36,41 @@ export const isSuccessfulExternalRecordingInfo = (r: any): r is ExternalRecordin
   return r && r.status === 'success';
 };
 
-const isUnneededExternalRecordingInfo = (r: any): r is ExternalRecordingUnneeded => {
-  return r && r.status === 'unneeded';
-};
-
 export const isFailureExternalRecordingInfo = (r: any): r is ExternalRecordingInfoFailure => {
   return r && r.status === 'failure';
 };
 
-export type ExternalRecordingInfo =
-  | ExternalRecordingInfoSuccess
-  | ExternalRecordingUnneeded
-  | ExternalRecordingInfoFailure;
+export type ExternalRecordingInfo = ExternalRecordingInfoSuccess | ExternalRecordingInfoFailure;
 
-const unneededRecordingInfo: ExternalRecordingUnneeded = {
-  status: 'unneeded',
-};
-
-export const getExternalRecordingInfo = async (task: CustomITask): Promise<ExternalRecordingInfo> => {
-  if (isOfflineContactTask(task)) return unneededRecordingInfo;
+/* eslint-disable sonarjs/prefer-single-boolean-return */
+export const shouldGetExternalRecordingInfo = (task: CustomITask): task is InMyBehalfITask => {
+  if (isOfflineContactTask(task)) return false;
 
   const { channelType } = task;
-  if (!isVoiceChannel(channelType)) return unneededRecordingInfo;
+  if (!isVoiceChannel(channelType)) return false;
 
   const { externalRecordingsEnabled } = getHrmConfig();
-  if (!externalRecordingsEnabled) return unneededRecordingInfo;
+  if (!externalRecordingsEnabled) return false;
+
+  return true;
+};
+/* eslint-enable sonarjs/prefer-single-boolean-return */
+
+export const getExternalRecordingInfo = async (task: CustomITask): Promise<ExternalRecordingInfo> => {
+  if (!shouldGetExternalRecordingInfo(task)) {
+    return {
+      status: 'failure',
+      name: 'InvalidTask',
+      error: 'Invalid task',
+    };
+  }
 
   // The call id related to the worker is always the one with the recording, as far as I can tell (rbd)
   const callSid = task.attributes.conference?.participants?.worker;
   if (!callSid) {
     return {
       status: 'failure',
+      name: 'NoCallSid',
       error: 'Could not find call sid',
     };
   }

@@ -31,7 +31,7 @@ import { ITask } from '@twilio/flex-ui';
 import { isNonDataCallType } from '../states/validationRules';
 import { mapChannelForInsights, formatCategories } from '../utils';
 import { getDateTime } from '../utils/helpers';
-import { Case, CustomITask, HrmServiceContact, ContactRawJson } from '../types/types';
+import { Case, CustomITask, HrmServiceContact, ContactRawJson, isTwilioTask } from '../types/types';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import { shouldSendInsightsData } from '../utils/setUpActions';
 import {
@@ -40,6 +40,7 @@ import {
   isSuccessfulExternalRecordingInfo,
 } from './getExternalRecordingInfo';
 import { generateUrl } from './fetchApi';
+import { generateExternalMediaPath } from './ContactService';
 
 /*
  * 'Any' is the best we can do, since we're limited by Twilio here.
@@ -360,12 +361,14 @@ const getInsightsUpdateFunctionsForConfig = (
 
 const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSuccess, contact: HrmServiceContact) => {
   const { hrmMicroserviceBaseUrl } = getHrmConfig();
-
+  const mediaType = 'recording';
   const { bucket, key } = externalRecordingInfo;
+
   const url_provider = generateUrl(
     new URL(hrmMicroserviceBaseUrl),
-    `/files/urls?method=getObject&objectType=contact&objectId=${contact.id}&fileType=recording&bucket=${bucket}&key=${key}`,
+    generateExternalMediaPath(contact.id, mediaType, bucket, key),
   ).toString();
+
   return [
     {
       type: 'VoiceRecording',
@@ -392,13 +395,7 @@ export const buildInsightsData = (
 ) => {
   const previousAttributes = typeof task.attributes === 'string' ? JSON.parse(task.attributes) : task.attributes;
 
-  if (
-    !shouldSendInsightsData({
-      ...task,
-      attributes: previousAttributes,
-    } as ITask)
-  )
-    return previousAttributes;
+  if (!shouldSendInsightsData(task)) return previousAttributes;
 
   const { currentDefinitionVersion } = getDefinitionVersions();
 
