@@ -13,8 +13,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
-import each from 'jest-each';
 import {
   DefinitionVersion,
   DefinitionVersionId,
@@ -25,7 +23,7 @@ import {
 
 import { contactDetailsSectionFormApi } from '../../../components/contact/contactDetailsSectionFormApi';
 import { SearchAPIContact } from '../../../types/types';
-import details from '../../../components/case/casePrint/styles/details';
+import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -91,7 +89,6 @@ const emptySearchContact: SearchAPIContact = {
   overview: {
     helpline: undefined,
     dateTime: undefined,
-    name: undefined,
     customerNumber: undefined,
     callType: undefined,
     categories: {},
@@ -109,7 +106,7 @@ const emptySearchContact: SearchAPIContact = {
     caseInformation: {},
     categories: {},
     callType: undefined,
-    contactlessTask: { channel: 'voice' },
+    contactlessTask: { channel: 'voice', ...VALID_EMPTY_CONTACT.rawJson.contactlessTask },
     conversationMedia: [],
   },
 };
@@ -155,27 +152,6 @@ describe('getFormValues', () => {
       },
     });
   });
-  test('ISSUE_CATEGORIZATION - flattens overview categories into single string array', () => {
-    expect(
-      contactDetailsSectionFormApi.ISSUE_CATEGORIZATION.getFormValues(definition, {
-        ...emptySearchContact,
-        overview: {
-          ...emptySearchContact.overview,
-          categories: {
-            category1: ['sub2', 'sub4'],
-            category2: ['sub1', 'sub4'],
-          },
-        },
-      }),
-    ).toStrictEqual({
-      categories: expect.arrayContaining([
-        'categories.category1.sub2',
-        'categories.category1.sub4',
-        'categories.category2.sub1',
-        'categories.category2.sub4',
-      ]),
-    });
-  });
   test('CASE_INFORMATION - creates undefined props for form items without values', () => {
     expect(
       contactDetailsSectionFormApi.CASE_INFORMATION.getFormValues(definition, {
@@ -206,12 +182,10 @@ describe('formToPayload', () => {
         },
       }),
     ).toStrictEqual({
-      rawJson: {
-        childInformation: {
-          firstName: 'Lorna',
-          lastName: undefined,
-          otherProp: 'something',
-        },
+      childInformation: {
+        firstName: 'Lorna',
+        lastName: undefined,
+        otherProp: 'something',
       },
     });
   });
@@ -225,37 +199,10 @@ describe('formToPayload', () => {
         },
       }),
     ).toStrictEqual({
-      rawJson: {
-        callerInformation: {
-          firstName: 'Lorna',
-          lastName: undefined,
-          prop: 'something',
-        },
-      },
-    });
-  });
-  test('ISSUE_CATEGORIZATION - builds map of boolean maps from flattened category paths', () => {
-    expect(
-      contactDetailsSectionFormApi.ISSUE_CATEGORIZATION.formToPayload(
-        definition,
-        {
-          categories: [
-            'categories.category1.sub2',
-            'categories.category1.sub4',
-            'categories.category2.sub1',
-            'categories.category2.sub4',
-          ],
-        },
-        'test helpline',
-      ),
-    ).toStrictEqual({
-      rawJson: {
-        caseInformation: {
-          categories: {
-            category1: { sub1: false, sub2: true, sub3: false, sub4: true },
-            category2: { sub1: true, sub2: false, sub3: false, sub4: true },
-          },
-        },
+      callerInformation: {
+        firstName: 'Lorna',
+        lastName: undefined,
+        prop: 'something',
       },
     });
   });
@@ -267,11 +214,9 @@ describe('formToPayload', () => {
         },
       }),
     ).toStrictEqual({
-      rawJson: {
-        caseInformation: {
-          prop1: 'yerp',
-          prop2: undefined,
-        },
+      caseInformation: {
+        prop1: 'yerp',
+        prop2: undefined,
       },
     });
   });
