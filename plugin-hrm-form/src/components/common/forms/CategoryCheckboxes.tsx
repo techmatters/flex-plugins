@@ -54,6 +54,7 @@ const createSubcategoryCheckbox = (
             onChange={() => toggleCallback(category, label)}
             disabled={disabled}
             checked={selected}
+            data-testid={`categories.${category}.${label}`}
           />
           {label}
         </CategoryCheckboxField>
