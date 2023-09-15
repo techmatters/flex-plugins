@@ -371,10 +371,7 @@ const bindApplyCustomUpdates = (customConfigObject: {
   return [getProcessedAtts, ...customUpdatesFuns];
 };
 
-const mergeAttributes = (
-  previousAttributes: TaskAttributes,
-  newAttributes: InsightsAttributes,
-): TaskAttributes => {
+const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: InsightsAttributes): TaskAttributes => {
   return {
     ...previousAttributes,
     ...newAttributes,
