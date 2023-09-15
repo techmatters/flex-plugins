@@ -30,14 +30,6 @@ export type EntryInfo = {
   twilioWorkerId: string;
 };
 
-/*
- * export type ReferralEntry = {
- *   date: string;
- *   referredTo: string;
- *   comments: string;
- * };
- */
-
 export type CaseItemFormValues = { [key: string]: string | boolean };
 
 export type CaseItemEntry = { form: CaseItemFormValues } & EntryInfo;
