@@ -16,8 +16,9 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { format, formatISO } from 'date-fns';
 
-import { StyledInput, StyledLabel, ErrorText, TextField, FormDateInput, FormLabel } from '../styles/HrmStyles';
+import { ErrorText, TextField, FormDateInput, FormLabel } from '../styles/HrmStyles';
 import RequiredAsterisk from './RequiredAsterisk';
 import { fieldType } from '../types';
 
@@ -60,6 +61,10 @@ class FieldDate extends Component {
 
   handleMouseLeave = () => !this.state.isFocused && this.setState({ type: 'text' });
 
+  convertUiValueToSavedValue = uiValue => (uiValue ? formatISO(new Date(`${uiValue} 00:00:00`)) : undefined);
+
+  convertSavedValueToUiValue = savedValue => (savedValue ? format(new Date(savedValue), 'yyyy-MM-dd') : undefined);
+
   render() {
     const { id, label, placeholder, field, rows, handleBlur, handleChange, handleFocus, ...rest } = this.props;
     const { type } = this.state;
@@ -76,12 +81,16 @@ class FieldDate extends Component {
           id={id}
           placeholder={placeholder}
           error={field.error !== null}
-          value={field.value}
+          value={this.convertSavedValueToUiValue(field.value)}
           multiline={Boolean(rows)}
           rows={rows}
           type={type}
           pattern="yyyy-mm-dd"
-          onChange={handleChange}
+          onChange={e =>
+            handleChange({
+              target: { value: this.convertUiValueToSavedValue(e.target.value) },
+            })
+          }
           onFocus={this.handleFocus}
           onBlur={this.handleBlur}
           onMouseEnter={this.handleMouseEnter}
