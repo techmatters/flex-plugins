@@ -206,23 +206,9 @@ export const searchResultToContactForm = (def: FormDefinition, information: Reco
   );
 };
 
-function transformCategoriesOld(
-  helpline,
-  categories: TaskEntry['categories'],
-  definition: DefinitionVersion,
-): Record<string, Record<string, boolean>> {
-  const { IssueCategorizationTab } = definition.tabbedForms;
-  const cleanCategories = createCategoriesObject(IssueCategorizationTab(helpline));
-  const transformedCategories = categories.reduce((acc, path) => set(path, true, acc), {
-    categories: cleanCategories, // use an object with categories property so we can reuse the entire path (they look like categories.Category.Subcategory)
-  });
-
-  return transformedCategories.categories;
-}
-
 export function transformCategories(categories: TaskEntry['categories']): Record<string, string[]> {
   return categories.reduce((acc, path) => {
-    const [_, category, subcategory] = path.split('.');
+    const [_, category, subcategory] = path.split('.'); // categories format: categories.Category.Subcategory
     const previousSubcategories = acc[category];
     const subcategories = previousSubcategories ? [...previousSubcategories, subcategory] : [subcategory];
 
@@ -231,13 +217,6 @@ export function transformCategories(categories: TaskEntry['categories']): Record
       [category]: subcategories.filter(s => s),
     };
   }, {});
-  // const { IssueCategorizationTab } = definition.tabbedForms;
-  // const cleanCategories = createCategoriesObject(IssueCategorizationTab(helpline));
-  // const transformedCategories = categories.reduce((acc, path) => set(path, true, acc), {
-  //   categories: cleanCategories, // use an object with categories property so we can reuse the entire path (they look like categories.Category.Subcategory)
-  // });
-
-  // return transformedCategories.categories;
 }
 
 /**
