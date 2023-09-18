@@ -15,12 +15,10 @@
  */
 
 /* eslint-disable sonarjs/prefer-immediate-return */
-import { set } from 'lodash/fp';
 import { TaskHelper } from '@twilio/flex-ui';
 import {
   CategoriesDefinition,
   CategoryEntry,
-  DefinitionVersion,
   FormDefinition,
   FormItemDefinition,
   isNonSaveable,
@@ -105,18 +103,6 @@ export async function searchContacts(
   return {
     ...rawResult,
     contacts: transformToHrmServiceContact(rawResult.contacts),
-    // contacts: rawResult.contacts.map(c => {
-    //   const details = unNestLegacyRawJson(c.details);
-    //   const { firstName, lastName } = details.childInformation ?? {};
-    //   return {
-    //     ...c,
-    //     details,
-    //     overview: {
-    //       ...c.overview,
-    //       name: `${firstName ?? ''} ${lastName ?? ''}`,
-    //     },
-    //   };
-    // }),
   };
 }
 
@@ -385,7 +371,7 @@ const saveContactToHrm = async (
     serviceSid,
     csamReports,
     referrals,
-    conversationMedia,
+    // TODO: conversationMedia. It will be passed here in the future, in a new format.
   };
 
   const options = {
