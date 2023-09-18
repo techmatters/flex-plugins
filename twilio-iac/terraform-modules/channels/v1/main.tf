@@ -6,7 +6,7 @@ terraform {
     }
   }
 }
-
+/*
 data "aws_ssm_parameter" "webhook_url_studio_errors" {
   name = "/${var.environment}/slack/webhook_url_studio_errors"
 }
@@ -15,7 +15,11 @@ locals {
   #Marking this as non sensitive since we need to see the studio flow definition when running a plan to validate changes.
   webhook_url_studio_errors = nonsensitive(data.aws_ssm_parameter.webhook_url_studio_errors.value)
 }
-
+*/
+locals {
+  #Marking this as non sensitive since we need to see the studio flow definition when running a plan to validate changes.
+  webhook_url_studio_errors = "https://www.google.com"
+}
 #I'm not sure about this resource, the idea is to have 1 studio flow json template and also as few as possible
 #channel attribute templates.
 
