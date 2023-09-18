@@ -232,7 +232,12 @@ describe('formToPayload', () => {
       contactDetailsSectionFormApi.ISSUE_CATEGORIZATION.formToPayload(
         definition,
         {
-          categories: ['category1.sub2', 'category1.sub4', 'category2.sub1', 'category2.sub4'],
+          categories: [
+            'categories.category1.sub2',
+            'categories.category1.sub4',
+            'categories.category2.sub1',
+            'categories.category2.sub4',
+          ],
         },
         'test helpline',
       ),

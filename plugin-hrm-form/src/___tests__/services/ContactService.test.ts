@@ -14,7 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { set } from 'lodash/fp';
 import {
   callTypes,
   DefinitionVersion,
@@ -102,7 +101,7 @@ describe('transformForm', () => {
         gender: 'Male',
         refugee: false,
       },
-      categories: ['Abuse.Abduction'],
+      categories: ['categories.Abuse.Abduction'],
       caseInformation: {
         callSummary: 'My summary',
       },
@@ -487,7 +486,7 @@ describe('transformCategories', () => {
   });
 
   test('Categories in input match the paths of those in definition', () => {
-    const transformed = transformCategories(['category1.subCategory2', 'category2.subCategory1']);
+    const transformed = transformCategories(['categories.category1.subCategory2', 'categories.category2.subCategory1']);
     expect(transformed).toStrictEqual({
       category1: ['subCategory2'],
       category2: ['subCategory1'],
@@ -500,7 +499,7 @@ describe('transformCategories', () => {
   });
 
   test("Categories in input don't match the paths of those in definition", () => {
-    const transformed = transformCategories(['category3.subCategory2', 'category2.subCategory1']);
+    const transformed = transformCategories(['categories.category3.subCategory2', 'categories.category2.subCategory1']);
     expect(transformed).toStrictEqual({
       category2: ['subCategory1'],
       category3: ['subCategory2'],
@@ -508,7 +507,10 @@ describe('transformCategories', () => {
   });
 
   test('Categories in input has paths with something other than 2 sections', () => {
-    const transformed = transformCategories(['category2', 'category1.subCategory1.subSubCategory']);
+    const transformed = transformCategories([
+      'categories.category2',
+      'categories.category1.subCategory1.subSubCategory',
+    ]);
     /*
      * Stuff gets weird, subCategory1 was a boolean, but it now has a sub property so got converted to a 'Boolean' wrapper type.
      * Probably best to avoid this scenario :-P
