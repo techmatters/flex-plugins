@@ -14,33 +14,36 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { ChangeEvent, Component } from 'react';
 import { format, formatISO } from 'date-fns';
 
 import { ErrorText, TextField, FormDateInput, FormLabel } from '../styles/HrmStyles';
 import RequiredAsterisk from './RequiredAsterisk';
-import { fieldType } from '../types';
 
-class FieldDate extends Component {
+type Counselor = {
+  label: string;
+  value: string;
+};
+
+type Field = {
+  value: string | boolean | Counselor;
+  error?: string;
+  validation: string[];
+  touched: boolean;
+};
+
+type MyProps = {
+  id: string;
+  label?: string;
+  placeholder?: string;
+  field: Field;
+  handleBlur: React.FocusEventHandler<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>;
+  handleFocus: React.FocusEventHandler<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>;
+  handleChange: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>;
+};
+
+class FieldDate extends Component<MyProps> {
   static displayName = 'FieldDate';
-
-  static propTypes = {
-    id: PropTypes.string.isRequired,
-    label: PropTypes.string,
-    placeholder: PropTypes.string,
-    field: fieldType.isRequired,
-    rows: PropTypes.number,
-    handleBlur: PropTypes.func.isRequired,
-    handleChange: PropTypes.func.isRequired,
-    handleFocus: PropTypes.func.isRequired,
-  };
-
-  static defaultProps = {
-    placeholder: '',
-    rows: null,
-    label: '',
-  };
 
   state = {
     isFocused: false,
@@ -66,7 +69,7 @@ class FieldDate extends Component {
   convertSavedValueToUiValue = savedValue => (savedValue ? format(new Date(savedValue), 'yyyy-MM-dd') : undefined);
 
   render() {
-    const { id, label, placeholder, field, rows, handleBlur, handleChange, handleFocus, ...rest } = this.props;
+    const { id, label = '', placeholder = '', field, handleBlur, handleChange, handleFocus, ...rest } = this.props;
     const { type } = this.state;
 
     return (
@@ -82,20 +85,18 @@ class FieldDate extends Component {
           placeholder={placeholder}
           error={field.error !== null}
           value={this.convertSavedValueToUiValue(field.value)}
-          multiline={Boolean(rows)}
-          rows={rows}
           type={type}
           pattern="yyyy-mm-dd"
           onChange={e =>
             handleChange({
               target: { value: this.convertUiValueToSavedValue(e.target.value) },
-            })
+            } as ChangeEvent<HTMLInputElement>)
           }
           onFocus={this.handleFocus}
           onBlur={this.handleBlur}
           onMouseEnter={this.handleMouseEnter}
           onMouseLeave={this.handleMouseLeave}
-          style={{ width: '110px' }}
+          style={{ width: '110px', marginRight: '10px' }}
         />
         {field.error && <ErrorText>{field.error}</ErrorText>}
       </TextField>
