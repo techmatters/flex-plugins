@@ -34,13 +34,13 @@ locals {
   environment               = "Production"
   short_environment         = "PROD"
   target_task_name          = "greeting"
-  twilio_numbers            = ["instagram:17841400289612325", "messenger:325981127456443", "whatsapp:+15077097722"]
+  twilio_numbers            = ["instagram:17841400289612325", "messenger:325981127456443", "whatsapp:+15077097720"]
   channel                   = ""
   custom_channel_attributes = ""
   twilio_channels = {
     "facebook" = { "contact_identity" = "messenger:325981127456443", "channel_type" = "facebook" },
     "webchat"  = { "contact_identity" = "", "channel_type" = "web" }
-    "whatsapp" = { "contact_identity" = "whatsapp:+15077097722", "channel_type" = "whatsapp" }
+    "whatsapp" = { "contact_identity" = "whatsapp:+15077097720", "channel_type" = "whatsapp" }
   }
 
   custom_channels = [
