@@ -137,13 +137,6 @@ module "aws" {
   survey_workflow_sid                = module.survey.survey_workflow_sid
 }
 
-module "aws_monitoring" {
-  source         = "../terraform-modules/aws-monitoring/default"
-  helpline       = local.helpline
-  short_helpline = local.short_helpline
-  environment    = local.environment
-}
-
 provider "github" {
   owner = "techmatters"
 }
