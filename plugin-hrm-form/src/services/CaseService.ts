@@ -110,8 +110,11 @@ export async function listCases(queryParams, listCasesPayload): Promise<SearchCa
   };
 }
 
-const generateCaseDocumentPath = (caseId: string, bucket: string, key: string) =>
-  `/files/urls?method=getObject&objectType=case&objectId=${caseId}&fileType=document&bucket=${bucket}&key=${key}`;
+type SignedURLMethod = 'getObject' | 'putObject' | 'deleteObject';
+
+const generateCaseDocumentPath = (method: SignedURLMethod, caseId: string, bucket: string, key: string) =>
+  // `/files/urls?method={getObject}&objectType=case&objectId=${caseId}&fileType=document&bucket=${bucket}&key=${key}`;
+  `/files/urls?method=${method}&objectType=case&objectId=${caseId}&fileType=document&bucket=${bucket}&key=${key}`;
 
 /**
  * Gets a file download url from the corresponding S3 bucket
