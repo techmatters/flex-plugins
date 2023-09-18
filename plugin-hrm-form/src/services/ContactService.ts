@@ -209,7 +209,7 @@ export function transformCategories(categories: TaskEntry['categories']): Record
  * Transforms the form to be saved as the backend expects it
  * VisibleForTesting
  */
-export function transformForm(form: TaskEntry, conversationMedia: ConversationMedia[] = []): ContactRawJson {
+export function transformForm(form: TaskEntry): ContactRawJson {
   const { callType, contactlessTask } = form;
   const { currentDefinitionVersion } = getDefinitionVersions();
   const { CallerInformationTab, CaseInformationTab, ChildInformationTab } = currentDefinitionVersion.tabbedForms;
@@ -232,7 +232,6 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
     childInformation,
     caseInformation,
     contactlessTask,
-    conversationMedia, // When can we remove this from here?
     categories,
   };
 }
@@ -300,6 +299,26 @@ type NewHrmServiceContact = Omit<
   'id' | 'accountSid' | 'createdAt' | 'updatedAt' | 'updatedBy' | 'createdBy'
 >;
 
+/**
+ * Currently we're sending conversationMedia as part of rawJson.
+ * But HrmServiceContact has conversationMedia as a top level attribute.
+ * This function transforms a HrmServiceContact to the format the backend expects.
+ *
+ * This adapter is temporary, since we plan on passing conversationMedia as
+ * a top level attribute, but it will have a slightly different format.
+ */
+const adaptConversationMedia = (contact: NewHrmServiceContact) => {
+  const { conversationMedia = [], ...rest } = contact;
+
+  return {
+    ...rest,
+    rawJson: {
+      ...rest.rawJson,
+      conversationMedia,
+    },
+  };
+};
+
 type SaveContactToHrmResponse = {
   response: HrmServiceContact;
   request: NewHrmServiceContact;
@@ -355,9 +374,9 @@ const saveContactToHrm = async (
    * Not sure if we should drop that all into one function or not.
    * Probably.  It would just require passing the task.
    */
-  const formToSend = transformForm(rawForm, conversationMedia);
+  const formToSend = transformForm(rawForm);
 
-  const body: NewHrmServiceContact = {
+  const contact: NewHrmServiceContact = {
     rawJson: formToSend,
     twilioWorkerId,
     queueName: task.queueName,
@@ -371,8 +390,10 @@ const saveContactToHrm = async (
     serviceSid,
     csamReports,
     referrals,
-    // TODO: conversationMedia. It will be passed here in the future, in a new format.
+    conversationMedia,
   };
+
+  const body = adaptConversationMedia(contact);
 
   const options = {
     method: 'POST',
