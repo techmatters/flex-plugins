@@ -73,8 +73,6 @@ const ViewCaseItem: React.FC<Props> = ({
     changeRoute({ ...routing, action: CaseItemAction.Edit }, task.taskSid);
   };
 
-  console.log('>>> connectedCase.id', connectedCase.id);
-
   return (
     <CaseLayout>
       <Container>

@@ -42,31 +42,31 @@ const DownloadFile: React.FC<Props> = ({ fileNameAtAws, objectId }) => {
 
   const fileName = formatFileNameAtAws(fileNameAtAws);
 
-  console.log('>>> ', { fileName, objectId, fileNameAtAws });
-
   const handleClick = async () => {
     const { docsBucket: bucket } = getHrmConfig();
-
-    console.log('>>> ', { fileName, bucket, objectId, fileNameAtAws });
     const key = encodeURIComponent(fileNameAtAws);
 
-    const { media_url: preSignedUrl } = await fetchHrmApi(
-      generateSignedURLPath({
-        method: 'getObject',
-        objectType: 'case',
-        objectId,
-        fileType: 'document',
-        location: {
-          bucket,
-          key,
-        },
-      }),
-    );
-    const response = await fetch(preSignedUrl);
-
-    const blob = await response.blob();
-    const url = URL.createObjectURL(blob);
-    setPreSignedUrl(url);
+    try {
+      const { media_url: preSignedUrl } = await fetchHrmApi(
+        generateSignedURLPath({
+          method: 'getObject',
+          objectType: 'case',
+          objectId,
+          fileType: 'document',
+          location: {
+            bucket,
+            key,
+          },
+        }),
+      );
+      const response = await fetch(preSignedUrl);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      setPreSignedUrl(url);
+    } catch (error) {
+      // TODO: actually throw something.
+      return;
+    }
   };
   return (
     <Flex flexDirection="column" alignItems="flex-start">
