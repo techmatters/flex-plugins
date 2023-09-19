@@ -24,7 +24,6 @@ import { CaseLayout } from '../../styles/case';
 import { connectedCaseBase, contactFormsBase, namespace, RootState } from '../../states';
 import ContactDetails from '../contact/ContactDetails';
 import type { CustomITask, StandaloneITask } from '../../types/types';
-import { loadContact, loadRawContact, releaseContact } from '../../states/contacts/existingContacts';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 
 const mapStateToProps = (state: RootState, { task, contactId }: OwnProps) => {
@@ -43,19 +42,13 @@ const mapStateToProps = (state: RootState, { task, contactId }: OwnProps) => {
   return { editContactFormOpen };
 };
 
-const mapDispatchToProps = {
-  loadRawContactIntoState: loadRawContact,
-  loadContactIntoState: loadContact,
-  releaseContactFromState: releaseContact,
-};
-
 type OwnProps = {
   task: CustomITask | StandaloneITask;
   contactId: string;
   onClickClose: () => void;
 };
 
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
 const ViewContact: React.FC<Props> = ({ onClickClose, editContactFormOpen, contactId, enableEditing }) => {
   const handleClose = () => {
@@ -78,4 +71,4 @@ const ViewContact: React.FC<Props> = ({ onClickClose, editContactFormOpen, conta
 
 ViewContact.displayName = 'ViewContact';
 
-export default connect(mapStateToProps, mapDispatchToProps)(ViewContact);
+export default connect(mapStateToProps)(ViewContact);

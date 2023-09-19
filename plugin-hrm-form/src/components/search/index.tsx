@@ -29,7 +29,7 @@ import SearchResults, { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './SearchResult
 import ContactDetails from './ContactDetails';
 import Case from '../case';
 import { SearchPages, SearchParams } from '../../states/search/types';
-import { CustomITask, SearchAPIContact, standaloneTaskSid } from '../../types/types';
+import { CustomITask, HrmServiceContact, standaloneTaskSid } from '../../types/types';
 import SearchResultsBackButton from './SearchResults/SearchResultsBackButton';
 import {
   handleSearchFormChange,
@@ -51,7 +51,7 @@ import { Flex } from '../../styles/HrmStyles';
 type OwnProps = {
   task: CustomITask;
   currentIsCaller?: boolean;
-  handleSelectSearchResult?: (contact: SearchAPIContact) => void;
+  handleSelectSearchResult?: (contact: HrmServiceContact) => void;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -72,11 +72,11 @@ const Search: React.FC<Props> = props => {
     if (dateTo) {
       searchParamsToSubmit.dateTo = formatISO(endOfDay(parseISO(dateTo)));
     }
-    props.searchContacts(searchParamsToSubmit, props.counselorsHash, CONTACTS_PER_PAGE, newOffset);
+    props.searchContacts(searchParamsToSubmit, CONTACTS_PER_PAGE, newOffset);
   };
 
   const handleSearchCases = (newSearchParams, newOffset) => {
-    props.searchCases(newSearchParams, props.counselorsHash, CASES_PER_PAGE, newOffset);
+    props.searchCases(newSearchParams, CASES_PER_PAGE, newOffset);
   };
 
   const setSearchParamsAndHandleSearch = newSearchParams => {
@@ -122,7 +122,7 @@ const Search: React.FC<Props> = props => {
   const goToForm = () => props.changeSearchPage('form');
 
   const goToResultsOnContacts = async () => {
-    await props.searchContacts(searchParams, props.counselorsHash, CONTACTS_PER_PAGE, 0);
+    await props.searchContacts(searchParams, CONTACTS_PER_PAGE, 0);
     props.changeSearchPage(SearchPages.resultsContacts);
   };
 
@@ -131,7 +131,7 @@ const Search: React.FC<Props> = props => {
      * This returns you to the first page of results from viewing a case, which is safest for now since the UI state is inconsistent otherwise.
      * We will need a follow on fix to allow returning to the same page of results as the case to work correctly
      */
-    await props.searchCases(searchParams, props.counselorsHash, CASES_PER_PAGE, 0);
+    await props.searchCases(searchParams, CASES_PER_PAGE, 0);
     props.changeSearchPage(SearchPages.resultsCases);
   };
 
@@ -233,7 +233,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const searchContactsState = state[namespace][searchContactsBase];
   const taskId = ownProps.task.taskSid;
   const taskSearchState = searchContactsState.tasks[taskId];
-  const { counselors } = state[namespace][configurationBase];
   const routing = state[namespace][routingBase].tasks[taskId];
   const isStandaloneSearch = taskId === standaloneTaskSid;
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
@@ -246,7 +245,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     form: taskSearchState.form,
     searchContactsResults: taskSearchState.searchContactsResult,
     searchCasesResults: taskSearchState.searchCasesResult,
-    counselorsHash: counselors.hash,
     showActionIcons: !isStandaloneSearch,
     editContactFormOpen,
     routing,
