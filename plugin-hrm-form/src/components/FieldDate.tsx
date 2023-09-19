@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { ChangeEvent, Component } from 'react';
+import React, { useState } from 'react';
 import { format, formatISO } from 'date-fns';
 
 import { ErrorText, TextField, FormDateInput, FormLabel } from '../styles/HrmStyles';
@@ -42,66 +42,76 @@ type MyProps = {
   handleChange: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>;
 };
 
-class FieldDate extends Component<MyProps> {
-  static displayName = 'FieldDate';
+const FieldDate: React.FC<MyProps> = ({
+  id,
+  label = '',
+  placeholder = '',
+  field,
+  handleBlur,
+  handleChange,
+  handleFocus,
+  ...rest
+}) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const [type, setType] = useState('text');
 
-  state = {
-    isFocused: false,
-    type: 'text',
+  const onFocus = event => {
+    setIsFocused(true);
+    handleFocus(event);
   };
 
-  handleFocus = event => {
-    this.setState({ isFocused: true });
-    this.props.handleFocus(event);
+  const onBlur = event => {
+    setType('text');
+    setIsFocused(false);
+    handleBlur(event);
   };
 
-  handleBlur = event => {
-    this.setState({ type: 'text', isFocused: false });
-    this.props.handleBlur(event);
+  const onChange: React.ChangeEventHandler<HTMLInputElement> = event => {
+    handleChange({
+      ...event,
+      target: {
+        ...event.target,
+        value: convertUiValueToSavedValue(event.target.value),
+      },
+    });
   };
 
-  handleMouseEnter = () => this.setState({ type: 'date' });
+  const onMouseEnter = () => setType('date');
 
-  handleMouseLeave = () => !this.state.isFocused && this.setState({ type: 'text' });
+  const onMouseLeave = () => !isFocused && setType('text');
 
-  convertUiValueToSavedValue = uiValue => (uiValue ? formatISO(new Date(`${uiValue} 00:00:00`)) : undefined);
+  const convertUiValueToSavedValue = uiValue => (uiValue ? formatISO(new Date(`${uiValue} 00:00:00`)) : undefined);
 
-  convertSavedValueToUiValue = savedValue => (savedValue ? format(new Date(savedValue), 'yyyy-MM-dd') : undefined);
+  const convertSavedValueToUiValue = savedValue =>
+    savedValue ? format(new Date(savedValue), 'yyyy-MM-dd') : undefined;
 
-  render() {
-    const { id, label = '', placeholder = '', field, handleBlur, handleChange, handleFocus, ...rest } = this.props;
-    const { type } = this.state;
+  return (
+    <TextField {...rest}>
+      {label && (
+        <FormLabel htmlFor={id}>
+          {label}
+          <RequiredAsterisk field={field} />
+        </FormLabel>
+      )}
+      <FormDateInput
+        id={id}
+        placeholder={placeholder}
+        error={field.error !== null}
+        value={convertSavedValueToUiValue(field.value)}
+        type={type}
+        pattern="yyyy-mm-dd"
+        onChange={onChange}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        style={{ width: '110px', marginRight: '10px' }}
+      />
+      {field.error && <ErrorText>{field.error}</ErrorText>}
+    </TextField>
+  );
+};
 
-    return (
-      <TextField {...rest}>
-        {label && (
-          <FormLabel htmlFor={id}>
-            {label}
-            <RequiredAsterisk field={field} />
-          </FormLabel>
-        )}
-        <FormDateInput
-          id={id}
-          placeholder={placeholder}
-          error={field.error !== null}
-          value={this.convertSavedValueToUiValue(field.value)}
-          type={type}
-          pattern="yyyy-mm-dd"
-          onChange={e =>
-            handleChange({
-              target: { value: this.convertUiValueToSavedValue(e.target.value) },
-            } as ChangeEvent<HTMLInputElement>)
-          }
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur}
-          onMouseEnter={this.handleMouseEnter}
-          onMouseLeave={this.handleMouseLeave}
-          style={{ width: '110px', marginRight: '10px' }}
-        />
-        {field.error && <ErrorText>{field.error}</ErrorText>}
-      </TextField>
-    );
-  }
-}
+FieldDate.displayName = 'FieldDate';
 
 export default FieldDate;

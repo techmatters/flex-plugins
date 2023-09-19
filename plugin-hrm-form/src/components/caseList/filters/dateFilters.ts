@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { addDays, endOfDay, startOfDay, subDays } from 'date-fns';
+import { addDays, endOfDay, formatISO, startOfDay, subDays } from 'date-fns';
 
 type RelativeDateRange = {
   titleKey: string;
@@ -121,11 +121,6 @@ export const isFixedDateRange = (item: any): item is FixedDateRange =>
 
 export const isExistsDateFilter = (item: any): item is ExistsDateFilter => Boolean((<ExistsDateFilter>item)?.exists);
 
-const isRelativeDateRange = (item: any): item is RelativeDateRange => {
-  const rdr = <RelativeDateRange>item;
-  return typeof rdr.from === 'function' && typeof rdr.to === 'function';
-};
-
 export const isExistsDateFilterValue = (filterValue: DateFilterValue): filterValue is ExistsDateFilterValue =>
   Boolean((filterValue as ExistsDateFilterValue)?.exists);
 
@@ -156,7 +151,6 @@ export const followUpDateFilterOptions = (): DateFilterOptions => [
 /**
  * Creates the date filters sub section of the search endpoint POST payload from a list of DateFilter objects
  * @param filters - the input date filters used to build the payload
- * @param referenceDate - optional date to specify 'now' as the reference point for calculating relative date ranges. Current time is used if not specified. Primarily for testing
  */
 export const dateFilterPayloadFromFilters = (filters: Record<string, DateFilterValue>) => {
   if (!filters) return {};
@@ -170,8 +164,8 @@ export const dateFilterPayloadFromFilters = (filters: Record<string, DateFilterV
         };
       } else {
         filterPayload = {
-          from: filter.from?.toISOString(),
-          to: filter.to?.toISOString(),
+          from: filter.from ? formatISO(startOfDay(filter.from)) : undefined,
+          to: filter.to ? formatISO(endOfDay(filter.to)) : undefined,
           exists: DateExistsCondition.MUST_EXIST,
         };
       }

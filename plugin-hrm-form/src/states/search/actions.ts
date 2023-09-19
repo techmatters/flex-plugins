@@ -17,6 +17,7 @@
 /* eslint-disable import/no-unused-modules */
 import { Dispatch } from 'redux';
 import { ITask } from '@twilio/flex-ui';
+import { endOfDay, formatISO, startOfDay } from 'date-fns';
 
 import * as t from './types';
 import { ConfigurationState } from '../configuration/reducer';
@@ -26,7 +27,8 @@ import { searchCases as searchCasesApiCall } from '../../services/CaseService';
 import { searchAPIContactToSearchUIContact } from './helpers';
 import { updateDefinitionVersion } from '../configuration/actions';
 import { getContactsMissingVersions, getCasesMissingVersions } from '../../utils/definitionVersions';
-import { getNumberFromTask } from '../../utils/task';
+import { getNumberFromTask } from '../../utils';
+import { SearchParams } from './types';
 
 // Action creators
 export const handleSearchFormChange = (taskId: string) => <K extends keyof t.SearchFormValues>(
@@ -42,7 +44,7 @@ export const handleSearchFormChange = (taskId: string) => <K extends keyof t.Sea
 };
 
 export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => async (
-  searchParams: any,
+  searchParams: SearchParams,
   counselorsHash: ConfigurationState['counselors']['hash'],
   limit: number,
   offset: number,
@@ -81,8 +83,8 @@ export const searchCases = (dispatch: Dispatch<any>) => (taskId: string) => asyn
       ...rest,
       filters: {
         createdAt: {
-          from: dateFrom ? new Date(dateFrom).toISOString() : undefined,
-          to: dateTo ? new Date(dateTo).toISOString() : undefined,
+          from: dateFrom ? formatISO(startOfDay(new Date(dateFrom))) : undefined,
+          to: dateTo ? formatISO(endOfDay(new Date(dateTo))) : undefined,
         },
       },
     };

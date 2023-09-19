@@ -22,13 +22,14 @@ import { bindActionCreators } from 'redux';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import { Template } from '@twilio/flex-ui';
+import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
 import SearchForm from './SearchForm';
 import SearchResults, { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './SearchResults';
 import ContactDetails from './ContactDetails';
 import Case from '../case';
-import { SearchPages } from '../../states/search/types';
-import { CustomITask, isTwilioTask, SearchAPIContact, standaloneTaskSid } from '../../types/types';
+import { SearchPages, SearchParams } from '../../states/search/types';
+import { CustomITask, SearchAPIContact, standaloneTaskSid } from '../../types/types';
 import SearchResultsBackButton from './SearchResults/SearchResultsBackButton';
 import {
   handleSearchFormChange,
@@ -46,8 +47,6 @@ import {
   contactFormsBase,
 } from '../../states';
 import { Flex } from '../../styles/HrmStyles';
-import { ChannelTypes, channelTypes } from '../../states/DomainConstants';
-import { getContactValueTemplate } from '../../utils';
 
 type OwnProps = {
   task: CustomITask;
@@ -64,8 +63,16 @@ const Search: React.FC<Props> = props => {
 
   const closeDialog = () => setMockedMessage('');
 
-  const handleSearchContacts = (newSearchParams, newOffset) => {
-    props.searchContacts(newSearchParams, props.counselorsHash, CONTACTS_PER_PAGE, newOffset);
+  const handleSearchContacts = (newSearchParams: SearchParams, newOffset) => {
+    const { dateFrom, dateTo, ...rest } = newSearchParams;
+    const searchParamsToSubmit: SearchParams = rest;
+    if (dateFrom) {
+      searchParamsToSubmit.dateFrom = formatISO(startOfDay(parseISO(dateFrom)));
+    }
+    if (dateTo) {
+      searchParamsToSubmit.dateTo = formatISO(endOfDay(parseISO(dateTo)));
+    }
+    props.searchContacts(searchParamsToSubmit, props.counselorsHash, CONTACTS_PER_PAGE, newOffset);
   };
 
   const handleSearchCases = (newSearchParams, newOffset) => {

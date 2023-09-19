@@ -44,6 +44,10 @@ export type SearchFormValues = {
   [K in keyof typeof newSearchFormEntry]: typeof newSearchFormEntry[K];
 };
 
+export type SearchParams = Partial<SearchFormValues> & {
+  taskSid?: string;
+};
+
 export const SearchPages = {
   form: 'form',
   resultsContacts: 'results.contacts',

@@ -51,7 +51,7 @@ import {
   isFailureExternalRecordingInfo,
   shouldGetExternalRecordingInfo,
 } from './getExternalRecordingInfo';
-import { generateUrl } from './fetchApi';
+import { SearchParams } from '../states/search/types';
 
 type NestedInformation = { name?: { firstName: string; lastName: string } };
 type LegacyInformationObject = NestedInformation & {
@@ -87,7 +87,7 @@ export const unNestLegacyRawJson = (legacy: LegacyContactRawJson): ContactRawJso
 };
 
 export async function searchContacts(
-  searchParams,
+  searchParams: SearchParams,
   limit,
   offset,
 ): Promise<{
@@ -95,7 +95,6 @@ export async function searchContacts(
   contacts: SearchAPIContact[];
 }> {
   const queryParams = getQueryParams({ limit, offset });
-
   const options = {
     method: 'POST',
     body: JSON.stringify(searchParams),
