@@ -27,6 +27,10 @@ inputs:
   slack-message:
     description: 'The message to send'
     required: true
+  channel-id:
+    description: 'The channel to send the message to'
+    required: false
+
 runs:
   using: "composite"
   steps:
@@ -53,7 +57,7 @@ runs:
       id: slack
       uses: slackapi/slack-github-action@v1.14.0
       with:
-        channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+        channel-id: ${{ coalesce(inputs.channel-id, env.ASELO_DEPLOYS_CHANNEL_ID) }}
         slack-message: ${{ inputs.slack-message }}
       env:
         SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
