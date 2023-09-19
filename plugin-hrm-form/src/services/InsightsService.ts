@@ -402,16 +402,16 @@ const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSu
   const { hrmMicroserviceBaseUrl } = getHrmConfig();
   const { bucket, key } = externalRecordingInfo;
 
-  const url_provider = generateUrl(
-    new URL(hrmMicroserviceBaseUrl),
-    generateSignedURLPath('getObject', 'contact', contact.id, 'recording', bucket, key),
-  ).toString();
+  // const url_provider = generateUrl(
+  //   new URL(hrmMicroserviceBaseUrl),
+  //   generateSignedURLPath('getObject', 'contact', contact.id, 'recording', bucket, key),
+  // ).toString();
 
   return [
     {
       type: 'VoiceRecording',
       // eslint-disable-next-line camelcase
-      url_provider,
+      // url_provider,
     },
   ];
 };

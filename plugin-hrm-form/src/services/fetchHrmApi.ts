@@ -40,13 +40,23 @@ type SignedURLMethod = 'getObject' | 'putObject' | 'deleteObject';
 type ObjectType = 'case' | 'contact';
 type MediaType = 'recording' | 'transcript' | 'document';
 
-export const generateSignedURLPath = (
-  method: SignedURLMethod,
-  objectType: ObjectType,
-  objectId: string,
-  fileType: MediaType,
-  bucket: string,
-  key: string,
-) => {
+type GenerateSignedUrlPathParams = {
+  method: SignedURLMethod;
+  objectType: ObjectType;
+  objectId: string;
+  fileType: MediaType;
+  bucket: string;
+  key: string;
+};
+
+// eslint-disable-next-line import/no-unused-modules
+export const generateSignedURLPath = ({
+  method,
+  objectType,
+  objectId,
+  fileType,
+  bucket,
+  key,
+}: GenerateSignedUrlPathParams) => {
   return `/files/urls?method=${method}&objectType=${objectType}&objectId=${objectId}&fileType=${fileType}&bucket=${bucket}&key=${key}`;
 };
