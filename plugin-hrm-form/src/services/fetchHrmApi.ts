@@ -16,6 +16,7 @@
 
 import { fetchApi } from './fetchApi';
 import { getHrmConfig } from '../hrmConfig';
+import { S3StoredMedia } from '../types';
 
 /**
  * Factored out function that handles api calls hosted in HRM backend.
@@ -45,8 +46,7 @@ type GenerateSignedUrlPathParams = {
   objectType: ObjectType;
   objectId: string;
   fileType: MediaType;
-  bucket: string;
-  key: string;
+  location: S3StoredMedia['location'];
 };
 
 // eslint-disable-next-line import/no-unused-modules
@@ -55,8 +55,7 @@ export const generateSignedURLPath = ({
   objectType,
   objectId,
   fileType,
-  bucket,
-  key,
+  location: { bucket, key },
 }: GenerateSignedUrlPathParams) => {
   return `/files/urls?method=${method}&objectType=${objectType}&objectId=${objectId}&fileType=${fileType}&bucket=${bucket}&key=${key}`;
 };

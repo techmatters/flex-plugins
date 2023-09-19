@@ -123,15 +123,13 @@ const TranscriptSection: React.FC<Props> = ({
     try {
       setLoading(true);
 
-      const { bucket, key } = externalStoredTranscript.location;
       const { media_url: transcriptPreSignedUrl } = await fetchHrmApi(
         generateSignedURLPath({
           method: 'getObject',
           objectType: 'contact',
           objectId: contactId,
           fileType: 'transcript',
-          bucket,
-          key,
+          location: externalStoredTranscript.location,
         }),
       );
 

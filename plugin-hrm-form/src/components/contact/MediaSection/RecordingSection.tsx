@@ -34,18 +34,17 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
       setLoading(true);
       setShowButton(false);
 
-      // const { media_url: recordingPreSignedUrl } = await fetchHrmApi(
-      //   generateSignedURLPath(
-      //     'getObject',
-      //     'contact',
-      //     contactId,
-      //     'recording',
-      //     externalStoredRecording.location.bucket,
-      //     externalStoredRecording.location.key,
-      //   ),
-      // );
+      const { media_url: recordingPreSignedUrl } = await fetchHrmApi(
+        generateSignedURLPath({
+          method: 'getObject',
+          objectType: 'contact',
+          objectId: contactId,
+          fileType: 'recording',
+          location: externalStoredRecording.location,
+        }),
+      );
 
-      // setVoiceRecording(recordingPreSignedUrl);
+      setVoiceRecording(recordingPreSignedUrl);
 
       setLoading(false);
     } catch (error) {
