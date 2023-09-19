@@ -24,7 +24,7 @@ import { getHrmConfig } from '../hrmConfig';
  * @param {Partial<RequestInit>} options Same options object that will be passed to the fetch function (here you can include the BODY of the request)
  * @returns {Promise<any>} the api response (if not error)
  */
-const fetchHrmApi = (endPoint: string, options: Partial<RequestInit> = {}): Promise<any> => {
+export const fetchHrmApi = (endPoint: string, options: Partial<RequestInit> = {}): Promise<any> => {
   const { hrmBaseUrl, token } = getHrmConfig();
 
   return fetchApi(new URL(hrmBaseUrl), endPoint, {
@@ -36,4 +36,17 @@ const fetchHrmApi = (endPoint: string, options: Partial<RequestInit> = {}): Prom
   });
 };
 
-export default fetchHrmApi;
+type SignedURLMethod = 'getObject' | 'putObject' | 'deleteObject';
+type ObjectType = 'case' | 'contact';
+type MediaType = 'recording' | 'transcript' | 'document';
+
+export const generateSignedURLPath = (
+  method: SignedURLMethod,
+  objectType: ObjectType,
+  objectId: string,
+  fileType: MediaType,
+  bucket: string,
+  key: string,
+) => {
+  return `/files/urls?method=${method}&objectType=${objectType}&objectId=${objectId}&fileType=${fileType}&bucket=${bucket}&key=${key}`;
+};

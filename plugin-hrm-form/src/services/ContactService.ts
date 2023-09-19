@@ -30,7 +30,7 @@ import { createNewTaskEntry } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/validationRules';
 import { getQueryParams } from './PaginationParams';
 import { fillEndMillis, getConversationDuration } from '../utils/conversationDuration';
-import fetchHrmApi from './fetchHrmApi';
+import { fetchHrmApi, generateSignedURLPath } from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import {
@@ -397,10 +397,12 @@ export async function connectToCase(contactId, caseId) {
   return fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
 }
 
-export const generateExternalMediaPath = (
-  contactId: string,
-  mediaType: ContactMediaType,
-  bucket: string,
-  key: string,
-) =>
-  `/files/urls?method=getObject&objectType=contact&objectId=${contactId}&fileType=${mediaType}&bucket=${bucket}&key=${key}`;
+// export const generateExternalMediaPath = (
+//   contactId: string,
+//   mediaType: ContactMediaType,
+//   bucket: string,
+//   key: string,
+// ) =>
+//   `/files/urls?method=getObject&objectType=contact&objectId=${contactId}&fileType=${mediaType}&bucket=${bucket}&key=${key}`;
+// const externalMediaPath = generateSignedURLPath('getObject', 'contact', contactId, 'recording', bucket, key);
+// console.log(externalMediaPath); // Output should match that of generateExternalMediaPath

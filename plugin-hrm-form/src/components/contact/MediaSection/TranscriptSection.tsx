@@ -22,8 +22,7 @@ import format from 'date-fns/format';
 
 import type { TwilioStoredMedia, S3StoredTranscript } from '../../../types/types';
 import { contactFormsBase, namespace, RootState } from '../../../states';
-import { generateExternalMediaPath } from '../../../services/ContactService';
-import fetchHrmApi from '../../../services/fetchHrmApi';
+import { fetchHrmApi, generateSignedURLPath } from '../../../services/fetchHrmApi';
 import { loadTranscript, TranscriptMessage, TranscriptResult } from '../../../states/contacts/existingContacts';
 import { Box } from '../../../styles/HrmStyles';
 import { GroupedMessage } from '../../Messaging/MessageItem';
@@ -124,12 +123,12 @@ const TranscriptSection: React.FC<Props> = ({
     try {
       setLoading(true);
 
-      const mediaType = 'transcript';
-
       const transcriptPreSignedUrl = await fetchHrmApi(
-        generateExternalMediaPath(
+        generateSignedURLPath(
+          'getObject',
+          'contact',
           contactId,
-          mediaType,
+          'transcript',
           externalStoredTranscript.location.bucket,
           externalStoredTranscript.location.key,
         ),

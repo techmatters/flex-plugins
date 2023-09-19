@@ -17,7 +17,7 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
-import fetchHrmApi from './fetchHrmApi';
+import { fetchHrmApi } from './fetchHrmApi';
 import { getQueryParams } from './PaginationParams';
 import { Case, SearchCaseResult } from '../types/types';
 import { unNestLegacyRawJson } from './ContactService';
@@ -111,10 +111,17 @@ export async function listCases(queryParams, listCasesPayload): Promise<SearchCa
 }
 
 type SignedURLMethod = 'getObject' | 'putObject' | 'deleteObject';
+type ObjectType = 'case' | 'contact';
 
-const generateCaseDocumentPath = (method: SignedURLMethod, caseId: string, bucket: string, key: string) =>
+const generateCaseDocumentPath = (
+  method: SignedURLMethod,
+  type: ObjectType,
+  caseId: string,
+  bucket: string,
+  key: string,
+) =>
   // `/files/urls?method={getObject}&objectType=case&objectId=${caseId}&fileType=document&bucket=${bucket}&key=${key}`;
-  `/files/urls?method=${method}&objectType=case&objectId=${caseId}&fileType=document&bucket=${bucket}&key=${key}`;
+  `/files/urls?method=${method}&objectType=${type}&objectId=${caseId}&fileType=document&bucket=${bucket}&key=${key}`;
 
 /**
  * Gets a file download url from the corresponding S3 bucket

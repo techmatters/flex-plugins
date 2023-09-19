@@ -42,7 +42,7 @@ import {
   isSuccessfulExternalRecordingInfo,
 } from './getExternalRecordingInfo';
 import { generateUrl } from './fetchApi';
-import { generateExternalMediaPath } from './ContactService';
+import { generateSignedURLPath } from './fetchHrmApi';
 
 /*
  * 'Any' is the best we can do, since we're limited by Twilio here.
@@ -400,12 +400,11 @@ const getInsightsUpdateFunctionsForConfig = (
 
 const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSuccess, contact: HrmServiceContact) => {
   const { hrmMicroserviceBaseUrl } = getHrmConfig();
-  const mediaType = 'recording';
   const { bucket, key } = externalRecordingInfo;
 
   const url_provider = generateUrl(
     new URL(hrmMicroserviceBaseUrl),
-    generateExternalMediaPath(contact.id, mediaType, bucket, key),
+    generateSignedURLPath('getObject', 'contact', contact.id, 'recording', bucket, key),
   ).toString();
 
   return [
