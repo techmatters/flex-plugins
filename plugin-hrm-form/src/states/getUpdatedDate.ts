@@ -17,28 +17,26 @@
 /* eslint-disable prefer-destructuring */
 import { differenceInMinutes } from 'date-fns';
 
-import { Case, SearchAPIContact } from '../types/types';
+import { Case, HrmServiceContact } from '../types/types';
 
-const isSearchContact = (input: SearchAPIContact | Case): input is SearchAPIContact =>
-  Boolean((<SearchAPIContact>input).overview);
+const isSearchContact = (input: HrmServiceContact | Case): input is HrmServiceContact =>
+  Boolean((<HrmServiceContact>input).rawJson);
 
 /**
- * Takes a raw Case or SearchAPIContact object and calculates its updated date.
+ * Takes a raw Case or HrmServiceContact object and calculates its updated date.
  * If the case/contact has last been updated within 10 minutes of creation, by the same user who created it,
  * or there is no updated date, it is not considered 'updated' and undefined is returned
  * @param input
  */
-const getUpdatedDate = (input: SearchAPIContact | Case): Date | undefined => {
+const getUpdatedDate = (input: HrmServiceContact | Case): Date | undefined => {
   let createdAt: Date;
   let updatedAt: Date | undefined;
   let createdBy: string;
   let updatedBy: string;
   if (isSearchContact(input)) {
-    const { overview } = input;
-    createdBy = overview.createdBy;
-    createdAt = new Date(overview.dateTime);
-    updatedBy = overview.updatedBy;
-    updatedAt = overview.updatedAt ? new Date(overview.updatedAt) : undefined;
+    ({ createdBy, updatedBy } = input);
+    createdAt = new Date(input.timeOfContact);
+    updatedAt = input.updatedAt ? new Date(input.updatedAt) : undefined;
   } else {
     createdBy = input.twilioWorkerId;
     createdAt = new Date(input.createdAt);

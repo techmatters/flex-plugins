@@ -14,7 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import each from 'jest-each';
 import {
   DefinitionVersion,
   DefinitionVersionId,
@@ -23,14 +22,8 @@ import {
   useFetchDefinitions,
 } from 'hrm-form-definitions';
 
-import {
-  ContactDetailsSectionFormApi,
-  contactDetailsSectionFormApi,
-  ContactFormValues,
-  IssueCategorizationSectionFormApi,
-} from '../../../components/contact/contactDetailsSectionFormApi';
-import { SearchAPIContact } from '../../../types/types';
-import details from '../../../components/case/casePrint/styles/details';
+import { contactDetailsSectionFormApi } from '../../../components/contact/contactDetailsSectionFormApi';
+import { HrmServiceContact } from '../../../types/types';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -91,32 +84,31 @@ beforeAll(async () => {
   };
 });
 
-const emptySearchContact: SearchAPIContact = {
-  contactId: '0',
-  overview: {
-    helpline: undefined,
-    dateTime: undefined,
-    name: undefined,
-    customerNumber: undefined,
-    callType: undefined,
-    categories: {},
-    counselor: undefined,
-    notes: undefined,
-    channel: undefined,
-    conversationDuration: 0,
-    createdBy: undefined,
-    taskId: undefined,
-  },
+const emptySearchContact: HrmServiceContact = {
+  id: '0',
+  timeOfContact: '',
+  helpline: '',
+  number: '',
+  twilioWorkerId: '',
+  channel: 'default',
+  conversationDuration: 0,
+  createdBy: '',
+  accountSid: '',
+  createdAt: '',
+  updatedBy: '',
+  queueName: '',
+  channelSid: '',
+  serviceSid: '',
+  taskId: '',
   csamReports: [],
-  details: {
+  conversationMedia: [],
+  rawJson: {
     childInformation: {},
     callerInformation: {},
-    caseInformation: {
-      categories: {},
-    },
-    callType: undefined,
+    caseInformation: {},
+    categories: {},
+    callType: '',
     contactlessTask: { channel: 'voice' },
-    conversationMedia: [],
   },
 };
 
@@ -125,8 +117,8 @@ describe('getFormValues', () => {
     expect(
       contactDetailsSectionFormApi.CHILD_INFORMATION.getFormValues(definition, {
         ...emptySearchContact,
-        details: {
-          ...emptySearchContact.details,
+        rawJson: {
+          ...emptySearchContact.rawJson,
           childInformation: {
             firstName: 'Lorna',
             lastName: 'Ballantyne',
@@ -145,8 +137,8 @@ describe('getFormValues', () => {
     expect(
       contactDetailsSectionFormApi.CALLER_INFORMATION.getFormValues(definition, {
         ...emptySearchContact,
-        details: {
-          ...emptySearchContact.details,
+        rawJson: {
+          ...emptySearchContact.rawJson,
           callerInformation: {
             firstName: 'Lorna',
             lastName: 'Ballantyne',
@@ -165,8 +157,8 @@ describe('getFormValues', () => {
     expect(
       contactDetailsSectionFormApi.ISSUE_CATEGORIZATION.getFormValues(definition, {
         ...emptySearchContact,
-        overview: {
-          ...emptySearchContact.overview,
+        rawJson: {
+          ...emptySearchContact.rawJson,
           categories: {
             category1: ['sub2', 'sub4'],
             category2: ['sub1', 'sub4'],
@@ -174,23 +166,18 @@ describe('getFormValues', () => {
         },
       }),
     ).toStrictEqual({
-      categories: expect.arrayContaining([
-        'categories.category1.sub2',
-        'categories.category1.sub4',
-        'categories.category2.sub1',
-        'categories.category2.sub4',
-      ]),
+      categories: expect.arrayContaining(['category1.sub2', 'category1.sub4', 'category2.sub1', 'category2.sub4']),
     });
   });
   test('CASE_INFORMATION - creates undefined props for form items without values', () => {
     expect(
       contactDetailsSectionFormApi.CASE_INFORMATION.getFormValues(definition, {
         ...emptySearchContact,
-        details: {
-          ...emptySearchContact.details,
+        rawJson: {
+          ...emptySearchContact.rawJson,
           caseInformation: {
             prop1: 'something',
-            categories: emptySearchContact.details.caseInformation.categories,
+            categories: emptySearchContact.rawJson.caseInformation.categories,
           },
         },
       }),
@@ -256,11 +243,9 @@ describe('formToPayload', () => {
       ),
     ).toStrictEqual({
       rawJson: {
-        caseInformation: {
-          categories: {
-            category1: { sub1: false, sub2: true, sub3: false, sub4: true },
-            category2: { sub1: true, sub2: false, sub3: false, sub4: true },
-          },
+        categories: {
+          category1: ['sub2', 'sub4'],
+          category2: ['sub1', 'sub4'],
         },
       },
     });

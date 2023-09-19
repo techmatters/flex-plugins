@@ -44,7 +44,6 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 
 const PreviousContactsBanner: React.FC<Props> = ({
   task,
-  counselorsHash,
   previousContacts,
   viewPreviousContacts,
   searchContacts,
@@ -62,11 +61,11 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
       if (isTraceableNumber) {
         const searchParams = { contactNumber };
-        searchContacts(searchParams, counselorsHash, CONTACTS_PER_PAGE, 0, true);
-        searchCases(searchParams, counselorsHash, CASES_PER_PAGE, 0, true);
+        searchContacts(searchParams, CONTACTS_PER_PAGE, 0, true);
+        searchCases(searchParams, CASES_PER_PAGE, 0, true);
       }
     }
-  }, [task, counselorsHash, searchContacts, searchCases, previousContacts]);
+  }, [task, searchContacts, searchCases, previousContacts]);
 
   const contactsCount = previousContacts?.contacts?.count || 0;
   const casesCount = previousContacts?.cases?.count || 0;

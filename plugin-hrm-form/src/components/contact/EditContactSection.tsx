@@ -29,7 +29,7 @@ import { CaseActionTitle, EditContactContainer } from '../../styles/case';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { ContactDetailsSectionFormApi, IssueCategorizationSectionFormApi } from './contactDetailsSectionFormApi';
-import { clearDraft, refreshRawContact } from '../../states/contacts/existingContacts';
+import { clearDraft, refreshContact } from '../../states/contacts/existingContacts';
 import CloseCaseDialog from '../case/CloseCaseDialog';
 import * as t from '../../states/contacts/actions';
 import { getTemplateStrings } from '../../hrmConfig';
@@ -64,7 +64,7 @@ const EditContactSection: React.FC<Props> = ({
   });
   const strings = getTemplateStrings();
 
-  const version = savedContact?.details.definitionVersion;
+  const version = savedContact?.rawJson.definitionVersion;
 
   const definitionVersion = definitionVersions[version];
 
@@ -92,7 +92,7 @@ const EditContactSection: React.FC<Props> = ({
     const payload = contactDetailsSectionForm.formToPayload(
       definitionVersion,
       methods.getValues() as { categories: string[] },
-      savedContact.overview.helpline,
+      savedContact.helpline,
     );
     try {
       const updatedContact = await updateContactInHrm(contactId, payload);
@@ -194,7 +194,7 @@ const EditContactSection: React.FC<Props> = ({
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string, any>>, { contactId }: OwnProps) => ({
-  refreshContact: contact => dispatch(refreshRawContact(contact)),
+  refreshContact: contact => dispatch(refreshContact(contact)),
   setEditContactPageOpen: () => dispatch(t.setEditContactPageOpen()),
   setEditContactPageClosed: () => dispatch(t.setEditContactPageClosed()),
   clearContactDraft: () => {
