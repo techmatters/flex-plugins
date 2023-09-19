@@ -50,7 +50,7 @@ export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => a
   try {
     dispatch({ type: t.SEARCH_CONTACTS_REQUEST, taskId });
 
-    const { dateFrom, dateTo, ...rest } = searchParams;
+    const { dateFrom, dateTo, ...rest } = searchParams ?? {};
     const searchParamsToSubmit: SearchParams = rest;
     if (dateFrom) {
       searchParamsToSubmit.dateFrom = formatISO(startOfDay(parseISO(dateFrom)));
