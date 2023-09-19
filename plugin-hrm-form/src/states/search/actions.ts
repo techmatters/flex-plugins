@@ -17,7 +17,7 @@
 /* eslint-disable import/no-unused-modules */
 import { Dispatch } from 'redux';
 import { ITask } from '@twilio/flex-ui';
-import { endOfDay, formatISO, startOfDay } from 'date-fns';
+import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
 import * as t from './types';
 import { HrmServiceContact } from '../../types/types';
@@ -50,7 +50,16 @@ export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => a
   try {
     dispatch({ type: t.SEARCH_CONTACTS_REQUEST, taskId });
 
-    const searchResultRaw = await searchContactsApiCall(searchParams, limit, offset);
+    const { dateFrom, dateTo, ...rest } = searchParams;
+    const searchParamsToSubmit: SearchParams = rest;
+    if (dateFrom) {
+      searchParamsToSubmit.dateFrom = formatISO(startOfDay(parseISO(dateFrom)));
+    }
+    if (dateTo) {
+      searchParamsToSubmit.dateTo = formatISO(endOfDay(parseISO(dateTo)));
+    }
+
+    const searchResultRaw = await searchContactsApiCall(searchParamsToSubmit, limit, offset);
     const searchResult = { ...searchResultRaw, contacts: searchResultRaw.contacts };
 
     const definitions = await getContactsMissingVersions(searchResultRaw.contacts);
@@ -78,8 +87,8 @@ export const searchCases = (dispatch: Dispatch<any>) => (taskId: string) => asyn
       ...rest,
       filters: {
         createdAt: {
-          from: dateFrom ? formatISO(startOfDay(new Date(dateFrom))) : undefined,
-          to: dateTo ? formatISO(endOfDay(new Date(dateTo))) : undefined,
+          from: dateFrom ? formatISO(startOfDay(parseISO(dateFrom))) : undefined,
+          to: dateTo ? formatISO(endOfDay(parseISO(dateTo))) : undefined,
         },
       },
     };
