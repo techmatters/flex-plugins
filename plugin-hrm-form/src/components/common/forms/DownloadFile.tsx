@@ -19,15 +19,17 @@ import React, { useState, useRef, useEffect } from 'react';
 import DownloadIcon from '@material-ui/icons/GetApp';
 import { Template } from '@twilio/flex-ui';
 
+import { getHrmConfig } from '../../../hrmConfig';
 import { Flex, Box, StyledNextStepButton, HiddenText } from '../../../styles/HrmStyles';
 import { formatFileNameAtAws } from '../../../utils';
-import { getFileDownloadUrl } from '../../../services/ServerlessService';
+import { fetchHrmApi, generateSignedURLPath } from '../../../services/fetchHrmApi';
 
 type Props = {
   fileNameAtAws: string;
+  objectId: string;
 };
 
-const DownloadFile: React.FC<Props> = ({ fileNameAtAws }) => {
+const DownloadFile: React.FC<Props> = ({ fileNameAtAws, objectId }) => {
   const [preSignedUrl, setPreSignedUrl] = useState('');
   const downloadLink = useRef<HTMLAnchorElement>();
 
@@ -40,10 +42,27 @@ const DownloadFile: React.FC<Props> = ({ fileNameAtAws }) => {
 
   const fileName = formatFileNameAtAws(fileNameAtAws);
 
+  console.log('>>> ', { fileName, objectId, fileNameAtAws });
+
   const handleClick = async () => {
-    const encodedFilename = encodeURIComponent(fileName);
-    const fileUrl = await getFileDownloadUrl(fileNameAtAws, encodedFilename);
-    const response = await fetch(fileUrl.downloadUrl);
+    const { docsBucket: bucket } = getHrmConfig();
+
+    console.log('>>> ', { fileName, bucket, objectId, fileNameAtAws });
+    const key = encodeURIComponent(fileNameAtAws);
+
+    const { media_url: preSignedUrl } = await fetchHrmApi(
+      generateSignedURLPath({
+        method: 'getObject',
+        objectType: 'case',
+        objectId,
+        fileType: 'document',
+        location: {
+          bucket,
+          key,
+        },
+      }),
+    );
+    const response = await fetch(preSignedUrl);
 
     const blob = await response.blob();
     const url = URL.createObjectURL(blob);

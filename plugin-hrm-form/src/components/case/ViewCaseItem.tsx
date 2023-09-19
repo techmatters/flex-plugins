@@ -73,6 +73,8 @@ const ViewCaseItem: React.FC<Props> = ({
     changeRoute({ ...routing, action: CaseItemAction.Edit }, task.taskSid);
   };
 
+  console.log('>>> connectedCase.id', connectedCase.id);
+
   return (
     <CaseLayout>
       <Container>
@@ -93,7 +95,7 @@ const ViewCaseItem: React.FC<Props> = ({
             <>
               {formDefinition.map(e => (
                 <SectionEntry key={`entry-${e.label}`} descriptionKey={e.label}>
-                  <SectionEntryValue value={item.form[e.name]} definition={e} />
+                  <SectionEntryValue value={item.form[e.name]} objectId={connectedCase.id} definition={e} />
                 </SectionEntry>
               ))}
             </>

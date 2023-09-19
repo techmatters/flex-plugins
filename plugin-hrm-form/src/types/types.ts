@@ -106,19 +106,24 @@ export type TwilioStoredMedia = {
   reservationSid: string;
 };
 
+export type S3Location = {
+  bucket: string;
+  key: string;
+};
+
 export type S3StoredTranscript = {
   store: 'S3';
   type: 'transcript';
-  location?: { bucket?: string; key?: string };
+  location?: S3Location;
 };
 
 export type S3StoredRecording = {
   store: 'S3';
   type: 'recording';
-  location?: { bucket?: string; key?: string };
+  location?: S3Location;
 };
 
-type S3StoredMedia = S3StoredTranscript | S3StoredRecording;
+export type S3StoredMedia = S3StoredTranscript | S3StoredRecording;
 
 // Extract the 'type' property from S3StoredMedia to create ContactMediaType
 export type ContactMediaType = S3StoredMedia['type'];
