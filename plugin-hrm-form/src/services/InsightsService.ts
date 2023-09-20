@@ -26,12 +26,11 @@ import {
   OneToManyConfigSpec,
   OneToManyConfigSpecs,
 } from 'hrm-form-definitions';
-import { ITask } from '@twilio/flex-ui';
 
 import { isNonDataCallType } from '../states/validationRules';
 import { mapChannelForInsights } from '../utils/mappers';
 import { getDateTime } from '../utils/helpers';
-import { Case, CustomITask, HrmServiceContact } from '../types/types';
+import { Case, CustomITask, HrmServiceContact, isTwilioTask } from '../types/types';
 import { formatCategories } from '../utils/formatters';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import { shouldSendInsightsData } from '../utils/setUpActions';
@@ -151,7 +150,7 @@ type CoreAttributes = {
  *  - year_of_birth
  *  - gender
  */
-export const baseUpdates: InsightsUpdateFunction = (
+const baseUpdates: InsightsUpdateFunction = (
   taskAttributes: TaskAttributes,
   contactForm: TaskEntry,
   caseForm: Case,
@@ -204,7 +203,7 @@ export const baseUpdates: InsightsUpdateFunction = (
   };
 };
 
-export const contactlessTaskUpdates: InsightsUpdateFunction = (
+const contactlessTaskUpdates: InsightsUpdateFunction = (
   attributes: TaskAttributes,
   contactForm: TaskEntry,
   caseForm: Case,
@@ -372,10 +371,7 @@ const bindApplyCustomUpdates = (customConfigObject: {
   return [getProcessedAtts, ...customUpdatesFuns];
 };
 
-export const mergeAttributes = (
-  previousAttributes: TaskAttributes,
-  newAttributes: InsightsAttributes,
-): TaskAttributes => {
+const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: InsightsAttributes): TaskAttributes => {
   return {
     ...previousAttributes,
     ...newAttributes,
@@ -400,11 +396,12 @@ const getInsightsUpdateFunctionsForConfig = (
 
 const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSuccess, contact: HrmServiceContact) => {
   const { hrmMicroserviceBaseUrl } = getHrmConfig();
+  const mediaType = 'recording';
   const { bucket, key } = externalRecordingInfo;
 
   const url_provider = generateUrl(
     new URL(hrmMicroserviceBaseUrl),
-    generateExternalMediaPath(contact.id, bucket, key),
+    generateExternalMediaPath(contact.id, mediaType, bucket, key),
   ).toString();
 
   return [
@@ -433,13 +430,7 @@ export const buildInsightsData = (
 ) => {
   const previousAttributes = typeof task.attributes === 'string' ? JSON.parse(task.attributes) : task.attributes;
 
-  if (
-    !shouldSendInsightsData({
-      ...task,
-      attributes: previousAttributes,
-    } as ITask)
-  )
-    return previousAttributes;
+  if (!shouldSendInsightsData(task)) return previousAttributes;
 
   const { currentDefinitionVersion } = getDefinitionVersions();
 

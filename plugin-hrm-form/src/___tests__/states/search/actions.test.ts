@@ -27,7 +27,6 @@ import { getDefinitionVersions } from '../../../hrmConfig';
 
 jest.mock('../../../services/ContactService', () => ({ searchContacts: jest.fn() }));
 jest.mock('../../../services/CaseService', () => ({ searchCases: jest.fn() }));
-jest.mock('../../../states/search/helpers', () => ({ searchAPIContactToSearchUIContact: jest.fn((_hash, xs) => xs) }));
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -93,11 +92,10 @@ describe('test action creators', () => {
     });
   });
 
-  test('searchContacts (succes)', async () => {
+  test('searchContacts (success)', async () => {
     const contact = {
-      contactId: 'fake contact',
-      overview: {},
-      details: { definitionVersion: 'v1' },
+      id: 'fake contact',
+      rawJson: { definitionVersion: 'v1' },
       counselor: '',
       tags: [],
     };
@@ -110,7 +108,7 @@ describe('test action creators', () => {
     searchContacts.mockReturnValueOnce(Promise.resolve(searchResult));
     const dispatch = jest.fn();
 
-    await actions.searchContacts(dispatch)(taskId)(null, null, CONTACTS_PER_PAGE, 0);
+    await actions.searchContacts(dispatch)(taskId)(null, CONTACTS_PER_PAGE, 0);
 
     expect(dispatch).toBeCalledTimes(2);
     expect(dispatch).toBeCalledWith({ type: t.SEARCH_CONTACTS_REQUEST, taskId });
@@ -123,14 +121,14 @@ describe('test action creators', () => {
     searchContacts.mockReturnValueOnce(Promise.reject(error));
     const dispatch = jest.fn();
 
-    await actions.searchContacts(dispatch)(taskId)(null, null, CONTACTS_PER_PAGE, 0);
+    await actions.searchContacts(dispatch)(taskId)(null, CONTACTS_PER_PAGE, 0);
 
     expect(dispatch).toBeCalledTimes(2);
     expect(dispatch).toBeCalledWith({ type: t.SEARCH_CONTACTS_REQUEST, taskId });
     expect(dispatch).toBeCalledWith({ type: t.SEARCH_CONTACTS_FAILURE, taskId, error });
   });
 
-  test('searchCases (succes)', async () => {
+  test('searchCases (success)', async () => {
     const caseObject = {
       createdAt: '2020-11-23T17:38:42.227Z',
       updatedAt: '2020-11-23T17:38:42.227Z',
@@ -149,7 +147,7 @@ describe('test action creators', () => {
     (searchCases as jest.Mock).mockReturnValueOnce(Promise.resolve(searchResult));
     const dispatch = jest.fn();
 
-    await actions.searchCases(dispatch)(taskId)(null, null, CASES_PER_PAGE, 0);
+    await actions.searchCases(dispatch)(taskId)(null, CASES_PER_PAGE, 0);
 
     expect(dispatch).toBeCalledTimes(2);
     expect(dispatch).toBeCalledWith({ type: t.SEARCH_CASES_REQUEST, taskId });
@@ -180,7 +178,6 @@ describe('test action creators', () => {
 
     await actions.searchCases(dispatch)(taskId)(
       { dateFrom: '2020-11-23', dateTo: '2020-11-23', anotherProperty: 'anotherProperty' },
-      null,
       CASES_PER_PAGE,
       0,
     );
@@ -193,8 +190,8 @@ describe('test action creators', () => {
         anotherProperty: 'anotherProperty',
         filters: {
           createdAt: {
-            from: '2020-11-23T00:00:00.000Z',
-            to: '2020-11-23T00:00:00.000Z',
+            from: '2020-11-23T00:00:00Z',
+            to: '2020-11-23T23:59:59Z',
           },
         },
       },
@@ -209,7 +206,7 @@ describe('test action creators', () => {
     searchCases.mockReturnValueOnce(Promise.reject(error));
     const dispatch = jest.fn();
 
-    await actions.searchCases(dispatch)(taskId)(null, null, CASES_PER_PAGE, 0);
+    await actions.searchCases(dispatch)(taskId)(null, CASES_PER_PAGE, 0);
 
     expect(dispatch).toBeCalledTimes(2);
     expect(dispatch).toBeCalledWith({ type: t.SEARCH_CASES_REQUEST, taskId });

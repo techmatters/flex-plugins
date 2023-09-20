@@ -46,6 +46,7 @@ import { subscribeReservedTaskAlert } from './notifications/reservedTask';
 import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
 import { setupConferenceComponents, setUpConferenceActions } from './conference';
 import { setUpTransferActions } from './transfer/setUpTransferActions';
+import { playNotification } from './notifications/playNotification';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -208,6 +209,8 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     subscribeReservedTaskAlert();
     subscribeNewMessageAlertOnPluginInit();
+    // Force one notification on init so AudioPlayer is eagerly loaded
+    playNotification('silence');
 
     const managerConfiguration: Flex.Config = {
       // colorTheme: HrmTheme,

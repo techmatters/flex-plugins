@@ -22,7 +22,7 @@ import { Template, Tab as TwilioTab } from '@twilio/flex-ui';
 
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
-import { SearchContactResult, SearchCaseResult, SearchAPIContact, Case, CustomITask } from '../../../types/types';
+import { SearchContactResult, SearchCaseResult, HrmServiceContact, Case, CustomITask } from '../../../types/types';
 import { Row } from '../../../styles/HrmStyles';
 import {
   ResultsHeader,
@@ -64,7 +64,7 @@ type OwnProps = {
   toggleNonDataContacts: () => void;
   toggleClosedCases: () => void;
   handleBack: () => void;
-  handleViewDetails: (contact: SearchAPIContact) => void;
+  handleViewDetails: (contact: HrmServiceContact) => void;
   changeSearchPage: (SearchPagesType) => void;
   setConnectedCase: (currentCase: Case, taskSid: string) => void;
   currentPage: SearchPagesType;
@@ -75,7 +75,6 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 
 const SearchResults: React.FC<Props> = ({
   task,
-
   searchContactsResults,
   searchCasesResults,
   onlyDataContacts,
@@ -243,10 +242,10 @@ const SearchResults: React.FC<Props> = ({
               {contacts &&
                 contacts.length > 0 &&
                 contacts.map(contact => {
-                  const { can } = getPermissionsForContact(contact.overview.counselor);
+                  const { can } = getPermissionsForContact(contact.twilioWorkerId);
                   return (
                     <ContactPreview
-                      key={contact.contactId}
+                      key={contact.id}
                       contact={contact}
                       handleViewDetails={() => can(PermissionActions.VIEW_CONTACT) && handleViewDetails(contact)}
                     />

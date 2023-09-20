@@ -161,7 +161,7 @@ export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], 
   };
 };
 
-export const getPermissionsForContact = (twilioWorkerId: t.SearchAPIContact['overview']['counselor']) => {
+export const getPermissionsForContact = (twilioWorkerId: t.HrmServiceContact['twilioWorkerId']) => {
   const { workerSid, isSupervisor, permissionConfig } = getHrmConfig();
 
   if (!permissionConfig || !twilioWorkerId) return { can: undefined };

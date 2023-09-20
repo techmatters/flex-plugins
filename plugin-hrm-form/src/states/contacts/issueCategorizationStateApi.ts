@@ -53,6 +53,6 @@ export const forExistingContact = (contactId: string): IssueCategorizationStateA
       const [, category, subCategory] = c.split('.');
       draftCategories[category] = [...(draftCategories[category] ?? []), subCategory];
     });
-    dispatch(updateDraft(contactId, { overview: { categories: draftCategories } }));
+    dispatch(updateDraft(contactId, { rawJson: { categories: draftCategories } }));
   },
 });

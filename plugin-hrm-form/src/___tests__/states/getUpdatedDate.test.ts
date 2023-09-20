@@ -16,7 +16,7 @@
 
 import { addDays, addSeconds, subSeconds } from 'date-fns';
 
-import { Case, SearchAPIContact } from '../../types/types';
+import { Case, HrmServiceContact } from '../../types/types';
 import getUpdatedDate from '../../states/getUpdatedDate';
 
 describe('getUpdatedDate', () => {
@@ -65,48 +65,44 @@ describe('getUpdatedDate', () => {
     });
   });
 
-  describe('SearchAPIContact input', () => {
-    const patchOverView: (
-      original: SearchAPIContact,
-      updates: Partial<SearchAPIContact['overview']>,
-    ) => SearchAPIContact = (original, updates) => ({
+  describe('HrmServiceContact input', () => {
+    const patchOverView: (original: HrmServiceContact, updates: Partial<HrmServiceContact>) => HrmServiceContact = (
+      original,
+      updates,
+    ) => ({
       ...original,
-      overview: {
-        ...original.overview,
-        ...updates,
-      },
+      ...updates,
     });
 
-    const baseContact: SearchAPIContact = {
-      contactId: '0',
-      overview: {
-        createdBy: 'PEGGY',
-        helpline: undefined,
-        dateTime: baselineDate.toISOString(),
-        updatedAt: baselineDate.toISOString(),
-        name: undefined,
-        channel: 'default',
-        customerNumber: undefined,
-        counselor: 'SUE',
-        taskId: undefined,
-        callType: '',
-        categories: {},
-        notes: undefined,
-        conversationDuration: 0,
-      },
-      details: {
+    const baseContact: HrmServiceContact = {
+      id: '0',
+      accountSid: '',
+      helpline: 'helpline',
+      createdAt: baselineDate.toISOString(),
+      createdBy: 'PEGGY',
+      updatedAt: baselineDate.toISOString(),
+      updatedBy: '',
+      timeOfContact: baselineDate.toISOString(),
+      channel: 'default',
+      twilioWorkerId: 'SUE',
+      number: '',
+      taskId: '',
+      conversationDuration: 0,
+      queueName: '',
+      channelSid: '',
+      serviceSid: '',
+      csamReports: [],
+      conversationMedia: [],
+      rawJson: {
         callType: '',
         callerInformation: {},
         childInformation: {},
-        caseInformation: {
-          categories: {},
-        },
+        caseInformation: {},
+        categories: {},
         contactlessTask: {
           channel: 'voice',
         },
-        conversationMedia: [],
       },
-      csamReports: [],
     };
 
     test('Contact overview has same updated date as dateTime but undefined updatedBy - returns updatedAt', () => {
@@ -163,14 +159,14 @@ describe('getUpdatedDate', () => {
     });
 
     test('Contact has invalid dateTime - returns updatedTime if creator and updater are different', () => {
-      expect(getUpdatedDate(patchOverView(baseContact, { dateTime: 'NOT A DATE', updatedBy: 'SUE' }))).toEqual(
+      expect(getUpdatedDate(patchOverView(baseContact, { timeOfContact: 'NOT A DATE', updatedBy: 'SUE' }))).toEqual(
         baselineDate,
       );
     });
 
     test('Contact has invalid dateTime - returns undefined if creator and updater are the same', () => {
       expect(
-        getUpdatedDate(patchOverView(baseContact, { dateTime: 'NOT A DATE', updatedBy: 'PEGGY' })),
+        getUpdatedDate(patchOverView(baseContact, { timeOfContact: 'NOT A DATE', updatedBy: 'PEGGY' })),
       ).toBeUndefined();
     });
   });

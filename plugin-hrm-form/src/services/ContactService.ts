@@ -15,12 +15,10 @@
  */
 
 /* eslint-disable sonarjs/prefer-immediate-return */
-import { set } from 'lodash/fp';
 import { TaskHelper } from '@twilio/flex-ui';
 import {
   CategoriesDefinition,
   CategoryEntry,
-  DefinitionVersion,
   FormDefinition,
   FormItemDefinition,
   isNonSaveable,
@@ -40,6 +38,7 @@ import {
   isOfflineContactTask,
   isTwilioTask,
   SearchAPIContact,
+  ContactMediaType,
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
@@ -50,7 +49,7 @@ import {
   isFailureExternalRecordingInfo,
   shouldGetExternalRecordingInfo,
 } from './getExternalRecordingInfo';
-import { generateUrl } from './fetchApi';
+import { SearchParams } from '../states/search/types';
 
 type NestedInformation = { name?: { firstName: string; lastName: string } };
 type LegacyInformationObject = NestedInformation & {
@@ -86,37 +85,74 @@ export const unNestLegacyRawJson = (legacy: LegacyContactRawJson): ContactRawJso
 };
 
 export async function searchContacts(
-  searchParams,
+  searchParams: SearchParams,
   limit,
   offset,
 ): Promise<{
   count: number;
-  contacts: SearchAPIContact[];
+  contacts: HrmServiceContact[];
 }> {
   const queryParams = getQueryParams({ limit, offset });
-
   const options = {
     method: 'POST',
     body: JSON.stringify(searchParams),
   };
 
   const rawResult = await fetchHrmApi(`/contacts/search${queryParams}`, options);
+
   return {
     ...rawResult,
-    contacts: rawResult.contacts.map(c => {
-      const details = unNestLegacyRawJson(c.details);
-      const { firstName, lastName } = details.childInformation ?? {};
-      return {
-        ...c,
-        details,
-        overview: {
-          ...c.overview,
-          name: `${firstName ?? ''} ${lastName ?? ''}`,
-        },
-      };
-    }),
+    contacts: transformToHrmServiceContact(rawResult.contacts),
   };
 }
+
+/**
+ * This function converts contacts returned by /searchContacts into pure HRM Contacts.
+ * This function is meant to be temporary, while HRM is not updated yet.
+ */
+const transformToHrmServiceContact = (
+  contacts: SearchAPIContact[] | HrmServiceContact[],
+): Partial<HrmServiceContact>[] => {
+  const isSearchAPIContact = contact => contact.contactId !== undefined;
+  const shouldTransform = contacts.length > 0 && isSearchAPIContact(contacts[0]);
+
+  if (!shouldTransform) {
+    return contacts as HrmServiceContact[];
+  }
+
+  /**
+   * Fields that cannot be mapped:
+   * - accountSid
+   * - createdAt
+   * - queueName
+   * - channelSid
+   * - serviceSid
+   */
+  return contacts.map(contact => ({
+    id: contact.contactId,
+    twilioWorkerId: contact.overview.counselor,
+    number: contact.overview.customerNumber,
+    conversationDuration: contact.overview.conversationDuration,
+    csamReports: contact.csamReports,
+    referrals: contact.referrals,
+    conversationMedia: contact.conversationMedia,
+    createdBy: contact.overview.createdBy,
+    helpline: contact.overview.helpline,
+    taskId: contact.overview.taskId,
+    channel: contact.overview.channel,
+    updatedBy: contact.overview.updatedBy,
+    updatedAt: contact.overview.updatedAt,
+    rawJson: {
+      ...contact.details,
+      categories: contact.details.categories,
+      caseInformation: {
+        ...contact.details.caseInformation,
+        categories: undefined, // Optional: remove categories from caseInformation
+      },
+    },
+    timeOfContact: contact.overview.dateTime,
+  }));
+};
 
 /**
  * Adds a category with the corresponding subcategories set to false to the provided object (obj)
@@ -156,25 +192,24 @@ export const searchResultToContactForm = (def: FormDefinition, information: Reco
   );
 };
 
-export function transformCategories(
-  helpline,
-  categories: TaskEntry['categories'],
-  definition: DefinitionVersion,
-): Record<string, Record<string, boolean>> {
-  const { IssueCategorizationTab } = definition.tabbedForms;
-  const cleanCategories = createCategoriesObject(IssueCategorizationTab(helpline));
-  const transformedCategories = categories.reduce((acc, path) => set(path, true, acc), {
-    categories: cleanCategories, // use an object with categories property so we can reuse the entire path (they look like categories.Category.Subcategory)
-  });
+export function transformCategories(categories: TaskEntry['categories']): Record<string, string[]> {
+  return categories.reduce((acc, path) => {
+    const [_, category, subcategory] = path.split('.'); // categories format: categories.Category.Subcategory
+    const previousSubcategories = acc[category];
+    const subcategories = previousSubcategories ? [...previousSubcategories, subcategory] : [subcategory];
 
-  return transformedCategories.categories;
+    return {
+      ...acc,
+      [category]: subcategories.filter(s => s),
+    };
+  }, {});
 }
 
 /**
  * Transforms the form to be saved as the backend expects it
  * VisibleForTesting
  */
-export function transformForm(form: TaskEntry, conversationMedia: ConversationMedia[] = []): ContactRawJson {
+export function transformForm(form: TaskEntry): ContactRawJson {
   const { callType, contactlessTask } = form;
   const { currentDefinitionVersion } = getDefinitionVersions();
   const { CallerInformationTab, CaseInformationTab, ChildInformationTab } = currentDefinitionVersion.tabbedForms;
@@ -185,10 +220,9 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
     childInformation: transformValues(ChildInformationTab)(form.childInformation),
   };
 
-  const { callerInformation } = transformedValues;
-  const { childInformation } = transformedValues;
+  const { childInformation, callerInformation, caseInformation } = transformedValues;
 
-  const categories = transformCategories(form.helpline, form.categories, currentDefinitionVersion);
+  const categories = transformCategories(form.categories);
   const { definitionVersion } = getHrmConfig();
 
   return {
@@ -196,12 +230,9 @@ export function transformForm(form: TaskEntry, conversationMedia: ConversationMe
     callType,
     callerInformation,
     childInformation,
-    caseInformation: {
-      ...transformedValues.caseInformation,
-      categories,
-    },
+    caseInformation,
     contactlessTask,
-    conversationMedia,
+    categories,
   };
 }
 
@@ -262,7 +293,30 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
   return returnData;
 };
 
-type NewHrmServiceContact = Omit<HrmServiceContact, 'id' | 'updatedAt' | 'updatedBy' | 'createdBy'>;
+type NewHrmServiceContact = Omit<
+  HrmServiceContact,
+  'id' | 'accountSid' | 'createdAt' | 'updatedAt' | 'updatedBy' | 'createdBy'
+>;
+
+/**
+ * Currently we're sending conversationMedia as part of rawJson.
+ * But HrmServiceContact has conversationMedia as a top level attribute.
+ * This function transforms a HrmServiceContact to the format the backend expects.
+ *
+ * This adapter is temporary, since we plan on passing conversationMedia as
+ * a top level attribute, but it will have a slightly different format.
+ */
+const adaptConversationMedia = (contact: NewHrmServiceContact) => {
+  const { conversationMedia = [], ...rest } = contact;
+
+  return {
+    ...rest,
+    rawJson: {
+      ...rest.rawJson,
+      conversationMedia,
+    },
+  };
+};
 
 type SaveContactToHrmResponse = {
   response: HrmServiceContact;
@@ -319,9 +373,9 @@ const saveContactToHrm = async (
    * Not sure if we should drop that all into one function or not.
    * Probably.  It would just require passing the task.
    */
-  const formToSend = transformForm(rawForm, conversationMedia);
+  const formToSend = transformForm(rawForm);
 
-  const body: NewHrmServiceContact = {
+  const contact: NewHrmServiceContact = {
     rawJson: formToSend,
     twilioWorkerId,
     queueName: task.queueName,
@@ -335,7 +389,10 @@ const saveContactToHrm = async (
     serviceSid,
     csamReports,
     referrals,
+    conversationMedia,
   };
+
+  const body = adaptConversationMedia(contact);
 
   const options = {
     method: 'POST',
@@ -350,7 +407,8 @@ const saveContactToHrm = async (
 export const updateContactInHrm = async (
   contactId: string,
   body: {
-    rawJson: Partial<Omit<ContactRawJson, 'caseInformation'>> & Partial<ContactRawJson['caseInformation']>;
+    rawJson: Partial<ContactRawJson>;
+    // rawJson: Partial<Omit<ContactRawJson, 'caseInformation'>> & Partial<ContactRawJson['caseInformation']>;
   },
 ) => {
   const options = {
@@ -396,5 +454,10 @@ export async function connectToCase(contactId, caseId) {
   return fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
 }
 
-export const generateExternalMediaPath = (contactId: string, bucket: string, key: string) =>
-  `/files/urls?method=getObject&objectType=contact&objectId=${contactId}&fileType=recording&bucket=${bucket}&key=${key}`;
+export const generateExternalMediaPath = (
+  contactId: string,
+  mediaType: ContactMediaType,
+  bucket: string,
+  key: string,
+) =>
+  `/files/urls?method=getObject&objectType=contact&objectId=${contactId}&fileType=${mediaType}&bucket=${bucket}&key=${key}`;

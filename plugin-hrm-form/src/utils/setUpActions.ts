@@ -34,7 +34,7 @@ import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
 import { customChannelTypes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
-import { CustomITask, FeatureFlags } from '../types/types';
+import { CustomITask, FeatureFlags, isOfflineContactTask } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
 
@@ -54,12 +54,17 @@ export const loadCurrentDefinitionVersion = async () => {
 /**
  * @param task
  */
-export const shouldSendInsightsData = (task: ITask) => {
+/* eslint-disable sonarjs/prefer-single-boolean-return */
+export const shouldSendInsightsData = (task: CustomITask) => {
   const featureFlags = getAseloFeatureFlags();
-  const hasTaskControl = !featureFlags.enable_transfers || TransferHelpers.hasTaskControl(task);
 
-  return hasTaskControl && featureFlags.enable_save_insights && !task.attributes?.skipInsights;
+  if (!featureFlags.enable_save_insights) return false;
+  if (task.attributes?.skipInsights) return false;
+  if (featureFlags.enable_transfers && !TransferHelpers.hasTaskControl(task)) return false;
+
+  return true;
 };
+/* eslint-enable sonarjs/prefer-single-boolean-return */
 
 const saveEndMillis = async (payload: ActionPayload) => {
   Manager.getInstance().store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
