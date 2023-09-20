@@ -16,7 +16,6 @@
 
 import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin, loadCSS } from '@twilio/flex-plugin';
-import type Rollbar from 'rollbar';
 
 import './styles/global-overrides.css';
 
@@ -175,8 +174,6 @@ export default class HrmFormPlugin extends FlexPlugin {
     super(PLUGIN_NAME);
   }
 
-  public Rollbar?: Rollbar;
-
   /**
    * This code is run when your plugin is being started
    * Use this to modify any UI components or attach to the actions framework
@@ -184,7 +181,7 @@ export default class HrmFormPlugin extends FlexPlugin {
   init(flex: typeof Flex, manager: Flex.Manager) {
     loadCSS('https://use.fontawesome.com/releases/v5.15.4/css/solid.css');
 
-    setUpMonitoring(this, manager.workerClient, manager.serviceConfiguration);
+    setUpMonitoring(manager.workerClient, manager.serviceConfiguration);
 
     console.log(`Welcome to ${PLUGIN_NAME}`);
     this.registerReducers(manager);
