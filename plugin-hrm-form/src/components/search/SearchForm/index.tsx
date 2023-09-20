@@ -202,7 +202,6 @@ const SearchForm: React.FC<Props> = ({
             placeholder={strings['SearchForm-Start']}
             field={getField(dateFrom)}
             {...defaultEventHandlers('dateFrom')}
-            style={{ marginRight: '10px' }}
           />
           <FieldDate
             id="Search_DateTo"
@@ -210,7 +209,6 @@ const SearchForm: React.FC<Props> = ({
             placeholder={strings['SearchForm-End']}
             field={getField(dateTo)}
             {...defaultEventHandlers('dateTo')}
-            style={{ marginRight: '10px' }}
           />
         </Row>
         <Row>

@@ -166,7 +166,7 @@ export const CategoryRequiredText = styled('p')`
 `;
 CategoryRequiredText.displayName = 'CategoryRequiredText';
 
-export const StyledInput = styled(Input)`
+const StyledInput = styled(Input)`
   display: flex;
   flex-grow: 0;
   font-size: 12px;

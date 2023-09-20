@@ -128,7 +128,7 @@ describe('test action creators', () => {
     expect(dispatch).toBeCalledWith({ type: t.SEARCH_CONTACTS_FAILURE, taskId, error });
   });
 
-  test('searchCases (succes)', async () => {
+  test('searchCases (success)', async () => {
     const caseObject = {
       createdAt: '2020-11-23T17:38:42.227Z',
       updatedAt: '2020-11-23T17:38:42.227Z',
@@ -190,8 +190,8 @@ describe('test action creators', () => {
         anotherProperty: 'anotherProperty',
         filters: {
           createdAt: {
-            from: '2020-11-23T00:00:00.000Z',
-            to: '2020-11-23T00:00:00.000Z',
+            from: '2020-11-23T00:00:00Z',
+            to: '2020-11-23T23:59:59Z',
           },
         },
       },

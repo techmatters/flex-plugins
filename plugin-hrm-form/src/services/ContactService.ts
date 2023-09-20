@@ -42,7 +42,7 @@ import {
   isFailureExternalRecordingInfo,
   shouldGetExternalRecordingInfo,
 } from './getExternalRecordingInfo';
-import { generateUrl } from './fetchApi';
+import { SearchParams } from '../states/search/types';
 
 type ContactRawJsonForApi = Omit<ContactRawJson, 'categories' | 'caseInformation'> & {
   caseInformation: Record<string, string | boolean | Record<string, Record<string, boolean>>> & {
@@ -71,7 +71,7 @@ export const transformFromApiCategories = (
 };
 
 export async function searchContacts(
-  searchParams,
+  searchParams: SearchParams,
   limit,
   offset,
 ): Promise<{
@@ -79,7 +79,6 @@ export async function searchContacts(
   contacts: HrmServiceContact[];
 }> {
   const queryParams = getQueryParams({ limit, offset });
-
   const options = {
     method: 'POST',
     body: JSON.stringify(searchParams),
