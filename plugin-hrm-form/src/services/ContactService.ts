@@ -15,7 +15,7 @@
  */
 
 import { TaskHelper } from '@twilio/flex-ui';
-import { CallTypes, DefinitionVersion, FormDefinition, FormItemDefinition, isNonSaveable } from 'hrm-form-definitions';
+import { CallTypes, DefinitionVersion, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
 
 import { createContactWithMetadata } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/validationRules';
@@ -166,16 +166,6 @@ const transformSearchAPIContactToContact = (
     timeOfContact: contact.overview.dateTime,
   }));
 };
-
-const transformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
-  if (e.type === 'mixed-checkbox' && value === 'mixed') return null;
-
-  return value;
-};
-
-// TODO: find a place where this is shared, as it's used also in case forms
-export const transformValues = (def: FormDefinition) => (values: { [key: string]: string | boolean }) =>
-  def.reduce((acc, e) => (isNonSaveable(e) ? acc : { ...acc, [e.name]: transformValue(e)(values[e.name]) }), {});
 
 const deTransformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
   // de-transform mixed checkbox null DB value to be "mixed"

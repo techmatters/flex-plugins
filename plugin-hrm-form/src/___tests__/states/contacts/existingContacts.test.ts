@@ -14,6 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { DefinitionVersion, DefinitionVersionId, FormInputType } from 'hrm-form-definitions';
+
 import {
   clearDraft,
   ContactDetailsRoute,
@@ -24,20 +26,22 @@ import {
   loadContact,
   loadContactReducer,
   loadContacts,
+  loadTranscript,
+  loadTranscriptReducer,
   releaseContact,
   releaseContactReducer,
   releaseContacts,
-  loadTranscript,
-  loadTranscriptReducer,
   setCategoriesGridView,
   setCategoriesGridViewReducer,
   toggleCategoryExpanded,
   toggleCategoryExpandedReducer,
+  Transcript,
   updateDraft,
   updateDraftReducer,
-  Transcript,
 } from '../../../states/contacts/existingContacts';
 import { HrmServiceContact } from '../../../types/types';
+import { ConfigurationState } from '../../../states/configuration/reducer';
+import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 const baseContact: HrmServiceContact = {
   id: '1337',
@@ -59,12 +63,16 @@ const baseContact: HrmServiceContact = {
   conversationMedia: [],
   csamReports: [],
   rawJson: {
+    definitionVersion: DefinitionVersionId.v1,
     callType: 'Child calling about self',
     caseInformation: {},
     childInformation: { firstName: 'Lorna', lastName: 'Ballantyne' },
     callerInformation: { firstName: 'Charlie', lastName: 'Ballantyne' },
     categories: {},
-    contactlessTask: { channel: 'web' },
+    contactlessTask: {
+      ...VALID_EMPTY_CONTACT.rawJson.contactlessTask,
+      channel: 'web',
+    },
   },
 };
 
@@ -573,10 +581,34 @@ describe('setCategoriesGridViewReducer', () => {
 });
 
 describe('updateDraftReducer', () => {
+  const config: ConfigurationState = {
+    counselors: { hash: {}, list: undefined },
+    definitionVersions: {},
+    language: '',
+    workerInfo: { chatChannelCapacity: 0 },
+    currentDefinitionVersion: {
+      tabbedForms: {
+        ChildInformationTab: [
+          {
+            label: 'First Name',
+            name: 'firstName',
+            type: FormInputType.Input,
+          },
+          {
+            label: 'Last Name',
+            name: 'lastName',
+            type: FormInputType.Input,
+          },
+        ],
+      },
+    } as DefinitionVersion,
+  };
+
   describe('updateDraft', () => {
     test('Contact ID not loaded - noop', () => {
       const newState = updateDraftReducer(
         baseState,
+        config,
         updateDraft('42', { rawJson: { categories: { category1: ['x', 'y'] } } }),
       );
       expect(newState).toEqual(baseState);
@@ -594,6 +626,7 @@ describe('updateDraftReducer', () => {
       };
       const newState = updateDraftReducer(
         baseState,
+        config,
         updateDraft(baseContact.id, { rawJson: { categories: { category1: ['x', 'y'] } } }),
       );
       expect(newState).toEqual<ExistingContactsState>({

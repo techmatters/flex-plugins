@@ -77,7 +77,7 @@ export function reduce(
         tasks: omit(state.tasks, action.taskId),
       };
     case UPDATE_CASE_SECTION_WORKING_COPY:
-      return updateCaseSectionWorkingCopyReducer(state, action);
+      return updateCaseSectionWorkingCopyReducer(state, rootState.configuration, action);
     case INIT_EXISTING_CASE_SECTION_WORKING_COPY:
       return initialiseCaseSectionWorkingCopyReducer(state, action);
     case INIT_NEW_CASE_SECTION_WORKING_COPY:

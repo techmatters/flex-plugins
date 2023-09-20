@@ -14,31 +14,36 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/**
- * @param {string[]} accumulator
- * @param {[string, boolean]} currentValue
- */
-const subcatsReducer = (accumulator, [subcat, bool]: [string, boolean]) =>
-  bool ? [...accumulator, subcat] : accumulator;
+import { DefinitionVersion, FormDefinition, FormItemDefinition, isNonSaveable } from 'hrm-form-definitions';
 
-/**
- * @param {{ [category: string]: string[] }} accumulator
- * @param {[string, { [subcategory: string]: boolean }]} currentValue
- */
-const catsReducer = (accumulator, [cat, subcats]: [string, Record<string, boolean>]) => {
-  const subcatsList = Object.entries(subcats).reduce(subcatsReducer, []);
+import { ContactRawJson, HrmServiceContact } from '../../types/types';
+import { RecursivePartial } from '../../___tests__/RecursivePartial';
 
-  if (!subcatsList.length) return accumulator;
+const transformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
+  if (e.type === 'mixed-checkbox' && value === 'mixed') return null;
 
-  return { ...accumulator, [cat]: subcatsList };
+  return value;
 };
 
-/**
- * @param {{ [category: string]: { [subcategory: string]: boolean } }} categories categories object
- * @returns {{ [category: string]: string[] }} returns an object containing each truthy subcategory under the category name
- */
-export const retrieveCategories = (categories: Record<string, Record<string, boolean>>): Record<string, string[]> => {
-  if (!categories) return {};
+export const transformValues = (def: FormDefinition) => (values: { [key: string]: string | boolean }) =>
+  def.reduce((acc, e) => (isNonSaveable(e) ? acc : { ...acc, [e.name]: transformValue(e)(values[e.name]) }), {});
 
-  return Object.entries(categories).reduce(catsReducer, {});
+export const transformValuesForContactForm = (definition: DefinitionVersion) => (
+  form: RecursivePartial<ContactRawJson>,
+): RecursivePartial<ContactRawJson> => {
+  // Transform from RHF friendly values to the state we want in redux
+  if (!form) return form;
+  const transformed = {
+    ...form,
+  };
+  [
+    { property: 'callerInformation', formDefinition: definition.tabbedForms.CallerInformationTab },
+    { property: 'childInformation', formDefinition: definition.tabbedForms.ChildInformationTab },
+    { property: 'caseInformation', formDefinition: definition.tabbedForms.CaseInformationTab },
+  ].forEach(({ property, formDefinition }) => {
+    if (form[property]) {
+      transformed[property] = transformValues(formDefinition)(form[property]);
+    }
+  });
+  return transformed;
 };
