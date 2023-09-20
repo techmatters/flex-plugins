@@ -19,11 +19,9 @@ import { Dispatch } from 'redux';
 import { ITask } from '@twilio/flex-ui';
 
 import * as t from './types';
-import { ConfigurationState } from '../configuration/reducer';
-import { SearchAPIContact } from '../../types/types';
+import { HrmServiceContact } from '../../types/types';
 import { searchContacts as searchContactsApiCall } from '../../services/ContactService';
 import { searchCases as searchCasesApiCall } from '../../services/CaseService';
-import { searchAPIContactToSearchUIContact } from './helpers';
 import { updateDefinitionVersion } from '../configuration/actions';
 import { getContactsMissingVersions, getCasesMissingVersions } from '../../utils/definitionVersions';
 import { getNumberFromTask } from '../../utils/task';
@@ -43,7 +41,6 @@ export const handleSearchFormChange = (taskId: string) => <K extends keyof t.Sea
 
 export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => async (
   searchParams: any,
-  counselorsHash: ConfigurationState['counselors']['hash'],
   limit: number,
   offset: number,
   dispatchedFromPreviousContacts?: boolean,
@@ -52,8 +49,7 @@ export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => a
     dispatch({ type: t.SEARCH_CONTACTS_REQUEST, taskId });
 
     const searchResultRaw = await searchContactsApiCall(searchParams, limit, offset);
-    const contactsWithCounselorName = searchAPIContactToSearchUIContact(counselorsHash, searchResultRaw.contacts);
-    const searchResult = { ...searchResultRaw, contacts: contactsWithCounselorName };
+    const searchResult = { ...searchResultRaw, contacts: searchResultRaw.contacts };
 
     const definitions = await getContactsMissingVersions(searchResultRaw.contacts);
     definitions.forEach(d => dispatch(updateDefinitionVersion(d.version, d.definition)));
@@ -66,7 +62,6 @@ export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => a
 
 export const searchCases = (dispatch: Dispatch<any>) => (taskId: string) => async (
   searchParams: any,
-  counselorsHash: ConfigurationState['counselors']['hash'],
   limit: number,
   offset: number,
   dispatchedFromPreviousContacts?: boolean,
@@ -111,7 +106,7 @@ export const changeSearchPage = (taskId: string) => (page: t.SearchPagesType): t
   taskId,
 });
 
-export const viewContactDetails = (taskId: string) => (contact: SearchAPIContact): t.SearchActionType => ({
+export const viewContactDetails = (taskId: string) => (contact: HrmServiceContact): t.SearchActionType => ({
   type: t.VIEW_CONTACT_DETAILS,
   contact,
   taskId,

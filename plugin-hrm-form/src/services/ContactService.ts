@@ -76,7 +76,7 @@ export async function searchContacts(
   offset,
 ): Promise<{
   count: number;
-  contacts: SearchAPIContact[];
+  contacts: HrmServiceContact[];
 }> {
   const queryParams = getQueryParams({ limit, offset });
 
@@ -86,21 +86,71 @@ export async function searchContacts(
   };
 
   const rawResult = await fetchHrmApi(`/contacts/search${queryParams}`, options);
+
   return {
     ...rawResult,
-    contacts: rawResult.contacts.map(c => {
-      const { categories, ...caseInformation } = c.details.caseInformation ?? {};
-      return {
-        ...c,
-        details: {
-          ...c.details,
-          categories: transformFromApiCategories(categories ?? {}),
-          caseInformation,
-        },
-      };
-    }),
+    contacts: transformToHrmServiceContact(rawResult.contacts),
   };
 }
+
+/**
+ * This function converts contacts returned by /searchContacts into pure HRM Contacts.
+ * This function is meant to be temporary, while HRM is not updated yet.
+ */
+const transformToHrmServiceContact = (
+  contacts: SearchAPIContact[] | HrmServiceContact[],
+): Partial<HrmServiceContact>[] => {
+  const isSearchAPIContact = contact => contact.contactId !== undefined;
+  const shouldTransform = contacts.length > 0 && isSearchAPIContact(contacts[0]);
+
+  if (!shouldTransform) {
+    return contacts as HrmServiceContact[];
+  }
+
+  /**
+   * Fields that cannot be mapped:
+   * - accountSid
+   * - createdAt
+   * - queueName
+   * - channelSid
+   * - serviceSid
+   */
+  return contacts.map(contact => ({
+    id: contact.contactId,
+    twilioWorkerId: contact.overview.counselor,
+    number: contact.overview.customerNumber,
+    conversationDuration: contact.overview.conversationDuration,
+    csamReports: contact.csamReports,
+    referrals: contact.referrals,
+    conversationMedia: contact.conversationMedia,
+    createdBy: contact.overview.createdBy,
+    helpline: contact.overview.helpline,
+    taskId: contact.overview.taskId,
+    channel: contact.overview.channel,
+    updatedBy: contact.overview.updatedBy,
+    updatedAt: contact.overview.updatedAt,
+    rawJson: {
+      ...contact.details,
+      categories: contact.details.categories,
+      caseInformation: {
+        ...contact.details.caseInformation,
+        categories: undefined, // Optional: remove categories from caseInformation
+      },
+    },
+    timeOfContact: contact.overview.dateTime,
+  }));
+};
+
+/**
+ * Adds a category with the corresponding subcategories set to false to the provided object (obj)
+ */
+const createCategory = <T extends {}>(obj: T, [category, { subcategories }]: [string, CategoryEntry]) => ({
+  ...obj,
+  [category]: subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory.label]: false }), {}),
+});
+
+export const createCategoriesObject = (categoriesFormDefinition: CategoriesDefinition) =>
+  Object.entries(categoriesFormDefinition).reduce(createCategory, {});
 
 const transformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
   if (e.type === 'mixed-checkbox' && value === 'mixed') return null;
@@ -237,7 +287,30 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
   return returnData;
 };
 
-type NewHrmServiceContact = Omit<HrmServiceContactForApi, 'id' | 'updatedAt' | 'updatedBy' | 'createdBy'>;
+type NewHrmServiceContact = Omit<
+  HrmServiceContactForApi,
+  'id' | 'accountSid' | 'createdAt' | 'updatedAt' | 'updatedBy' | 'createdBy'
+>;
+
+/**
+ * Currently we're sending conversationMedia as part of rawJson.
+ * But HrmServiceContact has conversationMedia as a top level attribute.
+ * This function transforms a HrmServiceContact to the format the backend expects.
+ *
+ * This adapter is temporary, since we plan on passing conversationMedia as
+ * a top level attribute, but it will have a slightly different format.
+ */
+const adaptConversationMedia = (contact: NewHrmServiceContact) => {
+  const { conversationMedia = [], ...rest } = contact;
+
+  return {
+    ...rest,
+    rawJson: {
+      ...rest.rawJson,
+      conversationMedia,
+    },
+  };
+};
 
 type SaveContactToHrmResponse = {
   response: HrmServiceContact;
@@ -278,7 +351,7 @@ const saveContactToHrm = async (
       ...(isOfflineContactTask(task) && {
         contactlessTask: contact.rawJson.contactlessTask,
       }),
-      conversationMedia: contact.rawJson.conversationMedia,
+      conversationMedia: contact.conversationMedia,
     };
   }
 
@@ -299,10 +372,7 @@ const saveContactToHrm = async (
 
   const contactToSave: HrmServiceContactForApi = {
     ...contact,
-    rawJson: {
-      ...(transformForm(rawForm, helpline) as ContactRawJsonForApi),
-      conversationMedia,
-    },
+    rawJson: transformForm(rawForm, helpline) as ContactRawJsonForApi,
     twilioWorkerId,
     queueName: task.queueName,
     channel: task.channelType,
@@ -315,11 +385,14 @@ const saveContactToHrm = async (
     serviceSid,
     csamReports,
     referrals,
+    conversationMedia,
   };
+
+  const body = adaptConversationMedia(contactToSave);
 
   const options = {
     method: 'POST',
-    body: JSON.stringify(contactToSave),
+    body: JSON.stringify(body),
   };
 
   const responseJson: HrmServiceContact = await fetchHrmApi(`/contacts`, options);

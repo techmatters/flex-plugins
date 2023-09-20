@@ -138,22 +138,24 @@ export type ContactRawJson = {
     createdOnBehalfOf: string;
     [key: string]: string | boolean;
   };
-  conversationMedia: ConversationMedia[];
 };
 
 export type HrmServiceContact = {
   id: string;
+  accountSid: string;
   twilioWorkerId: string;
   number: string;
   conversationDuration: number;
   csamReports: CSAMReportEntry[];
   referrals?: ResourceReferral[];
+  conversationMedia?: ConversationMedia[];
+  createdAt: string;
   createdBy: string;
   helpline: string;
   taskId: string;
   channel: ChannelTypes | 'default';
   updatedBy: string;
-  updatedAt: string;
+  updatedAt?: string;
   rawJson: ContactRawJson;
   timeOfContact: string;
   queueName: string;
@@ -167,6 +169,7 @@ export type SearchAPIContact = {
   overview: {
     helpline: string;
     dateTime: string;
+    name: string;
     customerNumber: string;
     callType: CallTypes | '';
     categories: {};
@@ -184,11 +187,9 @@ export type SearchAPIContact = {
   referrals?: ResourceReferral[];
 };
 
-export type SearchUIContact = SearchAPIContact & { counselorName: string; callerName?: string };
-
 export type SearchContactResult = {
   count: number;
-  contacts: SearchUIContact[];
+  contacts: HrmServiceContact[];
 };
 
 export type SearchCaseResult = {

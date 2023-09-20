@@ -39,7 +39,6 @@ import { getDefinitionVersions } from '../../../hrmConfig';
 import { HrmServiceContact, StandaloneITask } from '../../../types/types';
 import { LOAD_CONTACT_ACTION } from '../../../states/contacts/existingContacts';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
-import { hrmServiceContactToSearchContact } from '../../../states/contacts/contactDetailsAdapter';
 
 // From https://stackoverflow.com/questions/47914536/use-partial-in-nested-property-with-typescript
 type RecursivePartial<T> = {
@@ -214,9 +213,7 @@ describe('useState mocked', () => {
 
     expect(store.dispatch).toHaveBeenCalledWith({
       contacts: [
-        hrmServiceContactToSearchContact(
-          initialState[namespace][contactFormsBase].tasks.task1.contact as HrmServiceContact,
-        ),
+          initialState[namespace][contactFormsBase].tasks.task1.contact,
       ],
       reference: 'task1',
       replaceExisting: false,
@@ -231,9 +228,9 @@ describe('useState mocked', () => {
         ...initialState[namespace][contactFormsBase],
         existingContacts: {
           '__unsavedFromCase:123': {
-            savedContact: hrmServiceContactToSearchContact(
-              initialState[namespace][contactFormsBase].tasks.task1.contact as HrmServiceContact,
-            ),
+            savedContact:
+              initialState[namespace][contactFormsBase].tasks.task1.contact,
+
             references: ['task1'],
           },
         },
@@ -281,9 +278,8 @@ describe('useState mocked', () => {
 
     expect(store.dispatch).toHaveBeenCalledWith({
       contacts: [
-        hrmServiceContactToSearchContact(
-          initialState[namespace][contactFormsBase].tasks.task1.contact as HrmServiceContact,
-        ),
+          initialState[namespace][contactFormsBase].tasks.task1.contact,
+
       ],
       reference: 'task1',
       replaceExisting: false,

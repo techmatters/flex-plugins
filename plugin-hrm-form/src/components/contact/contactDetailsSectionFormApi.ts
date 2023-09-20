@@ -50,7 +50,7 @@ export const contactDetailsSectionFormApi: {
 } = {
   CHILD_INFORMATION: {
     getFormValues: (def, contact) => ({
-      childInformation: mapFormToDefinition(def.tabbedForms.ChildInformationTab, contact.details.childInformation),
+      childInformation: mapFormToDefinition(def.tabbedForms.ChildInformationTab, contact.rawJson.childInformation),
     }),
     getFormDefinition: def => def.tabbedForms.ChildInformationTab,
     getLayoutDefinition: def => def.layoutVersion.contact.childInformation,
@@ -61,7 +61,7 @@ export const contactDetailsSectionFormApi: {
   },
   CALLER_INFORMATION: {
     getFormValues: (def, contact) => ({
-      callerInformation: mapFormToDefinition(def.tabbedForms.CallerInformationTab, contact.details.callerInformation),
+      callerInformation: mapFormToDefinition(def.tabbedForms.CallerInformationTab, contact.rawJson.callerInformation),
     }),
     getFormDefinition: def => def.tabbedForms.CallerInformationTab,
     getLayoutDefinition: def => def.layoutVersion.contact.callerInformation,
@@ -71,7 +71,7 @@ export const contactDetailsSectionFormApi: {
   },
   CASE_INFORMATION: {
     getFormValues: (def, contact) => {
-      const { categories, ...caseInformation } = contact.details.caseInformation;
+      const { categories, ...caseInformation } = contact.rawJson.caseInformation;
       return { caseInformation } as ContactFormValues;
     },
     getFormDefinition: def => def.tabbedForms.CaseInformationTab,

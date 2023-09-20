@@ -67,10 +67,6 @@ import { referralSectionApi } from '../../states/case/sections/referral';
 import { noteSectionApi } from '../../states/case/sections/note';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import * as ContactActions from '../../states/contacts/existingContacts';
-import {
-  hrmServiceContactToSearchContact,
-  searchContactToHrmServiceContact,
-} from '../../states/contacts/contactDetailsAdapter';
 import { ChannelTypes } from '../../states/DomainConstants';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
@@ -103,7 +99,7 @@ const Case: React.FC<Props> = ({
   newContact,
   savedContacts,
   loadContact,
-  loadRawContacts,
+  loadContacts,
   releaseContacts,
   cancelNewCase,
   ...props
@@ -163,13 +159,13 @@ const Case: React.FC<Props> = ({
     if (!connectedCase) return;
     const { connectedContacts } = connectedCase;
     if (connectedContacts?.length) {
-      loadRawContacts(connectedContacts, task.taskSid);
+      loadContacts(connectedContacts, task.taskSid);
       setLoadedContactIds(connectedContacts.map(cc => cc.id));
     } else if (!isStandaloneITask(task)) {
       setLoadedContactIds([newContactTemporaryId(connectedCase)]);
-      loadContact(hrmServiceContactToSearchContact(contact), task.taskSid);
+      loadContact(contact, task.taskSid);
     }
-  }, [connectedCase, contact, loadContact, loadRawContacts, releaseContacts, task, workerSid]);
+  }, [connectedCase, contact, loadContact, loadContacts, releaseContacts, task, workerSid]);
 
   const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;
@@ -437,9 +433,9 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     definitionVersions,
     currentDefinitionVersion,
     savedContacts: Object.values(state[namespace][contactFormsBase].existingContacts)
-      .filter(contact => connectedContactIds.has(contact.savedContact.contactId))
-      .map(ecs => searchContactToHrmServiceContact(ecs.savedContact)),
-    newContact: newSearchContact ? searchContactToHrmServiceContact(newSearchContact) : undefined,
+      .filter(contact => connectedContactIds.has(contact.savedContact.id))
+      .map(ecs => ecs.savedContact),
+    newContact: newSearchContact,
   };
 };
 
@@ -461,7 +457,7 @@ const mapDispatchToProps = dispatch => {
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     updateDefinitionVersion: updateCaseDefinition,
     releaseContacts: bindActionCreators(ContactActions.releaseContacts, dispatch),
-    loadRawContacts: bindActionCreators(ContactActions.loadRawContacts, dispatch),
+    loadContacts: bindActionCreators(ContactActions.loadContacts, dispatch),
     loadContact: bindActionCreators(ContactActions.loadContact, dispatch),
     cancelNewCase,
   };

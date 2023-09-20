@@ -29,7 +29,7 @@ import { CaseActionTitle, EditContactContainer } from '../../styles/case';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { ContactDetailsSectionFormApi } from './contactDetailsSectionFormApi';
-import { clearDraft, refreshRawContact } from '../../states/contacts/existingContacts';
+import { clearDraft, refreshContact } from '../../states/contacts/existingContacts';
 import CloseCaseDialog from '../case/CloseCaseDialog';
 import * as t from '../../states/contacts/actions';
 import { getTemplateStrings } from '../../hrmConfig';
@@ -65,7 +65,7 @@ const EditContactSection: React.FC<Props> = ({
   });
   const strings = getTemplateStrings();
 
-  const version = savedContact?.details.definitionVersion;
+  const version = savedContact?.rawJson.definitionVersion;
 
   const definitionVersion = definitionVersions[version];
 
@@ -97,11 +97,10 @@ const EditContactSection: React.FC<Props> = ({
     if (contactDetailsSectionForm) {
       payload = contactDetailsSectionForm.formToPayload(definitionVersion, methods.getValues());
     } else {
-      // Temporary hack, can clean up once SearchAPiContact goes away
-      payload = { categories: draftContact?.overview?.categories };
+      payload = draftContact?.rawJson;
     }
     try {
-      const updatedContact = await updateContactsFormInHrm(contactId, payload, savedContact.overview.helpline);
+      const updatedContact = await updateContactsFormInHrm(contactId, payload, savedContact.helpline);
       refreshContact(updatedContact);
     } catch (error) {
       setSubmitting(false);
@@ -200,7 +199,7 @@ const EditContactSection: React.FC<Props> = ({
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string, any>>, { contactId }: OwnProps) => ({
-  refreshContact: contact => dispatch(refreshRawContact(contact)),
+  refreshContact: contact => dispatch(refreshContact(contact)),
   setEditContactPageOpen: () => dispatch(t.setEditContactPageOpen()),
   setEditContactPageClosed: () => dispatch(t.setEditContactPageClosed()),
   clearContactDraft: () => {

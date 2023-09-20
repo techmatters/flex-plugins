@@ -26,7 +26,6 @@ import {
   OneToManyConfigSpec,
   OneToManyConfigSpecs,
 } from 'hrm-form-definitions';
-import { ITask } from '@twilio/flex-ui';
 
 import { isNonDataCallType } from '../states/validationRules';
 import { mapChannelForInsights, formatCategories } from '../utils';
@@ -119,7 +118,7 @@ type CoreAttributes = {
  *  - year_of_birth
  *  - gender
  */
-export const baseUpdates: InsightsUpdateFunction = (
+const baseUpdates: InsightsUpdateFunction = (
   taskAttributes: TaskAttributes,
   {
     rawJson: { callType, contactlessTask, childInformation, callerInformation, categories },
@@ -169,7 +168,7 @@ export const baseUpdates: InsightsUpdateFunction = (
   };
 };
 
-export const contactlessTaskUpdates: InsightsUpdateFunction = (
+const contactlessTaskUpdates: InsightsUpdateFunction = (
   attributes: TaskAttributes,
   { rawJson: { contactlessTask } }: HrmServiceContact,
 ): InsightsAttributes => {
@@ -333,10 +332,7 @@ const bindApplyCustomUpdates = (customConfigObject: {
   return [getProcessedAtts, ...customUpdatesFuns];
 };
 
-export const mergeAttributes = (
-  previousAttributes: TaskAttributes,
-  newAttributes: InsightsAttributes,
-): TaskAttributes => {
+const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: InsightsAttributes): TaskAttributes => {
   return {
     ...previousAttributes,
     ...newAttributes,

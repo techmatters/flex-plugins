@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+
 import {
   DefinitionVersion,
   DefinitionVersionId,
@@ -22,7 +23,7 @@ import {
 } from 'hrm-form-definitions';
 
 import { contactDetailsSectionFormApi } from '../../../components/contact/contactDetailsSectionFormApi';
-import { SearchAPIContact } from '../../../types/types';
+import { HrmServiceContact } from '../../../types/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -84,30 +85,31 @@ beforeAll(async () => {
   };
 });
 
-const emptySearchContact: SearchAPIContact = {
-  contactId: '0',
-  overview: {
-    helpline: undefined,
-    dateTime: undefined,
-    customerNumber: undefined,
-    callType: undefined,
-    categories: {},
-    counselor: undefined,
-    notes: undefined,
-    channel: undefined,
-    conversationDuration: 0,
-    createdBy: undefined,
-    taskId: undefined,
-  },
+const emptySearchContact: HrmServiceContact = {
+  id: '0',
+  timeOfContact: '',
+  helpline: '',
+  number: '',
+  twilioWorkerId: '',
+  channel: 'default',
+  conversationDuration: 0,
+  createdBy: '',
+  accountSid: '',
+  createdAt: '',
+  updatedBy: '',
+  queueName: '',
+  channelSid: '',
+  serviceSid: '',
+  taskId: '',
   csamReports: [],
-  details: {
+  conversationMedia: [],
+  rawJson: {
     childInformation: {},
     callerInformation: {},
     caseInformation: {},
     categories: {},
-    callType: undefined,
-    contactlessTask: { channel: 'voice', ...VALID_EMPTY_CONTACT.rawJson.contactlessTask },
-    conversationMedia: [],
+    callType: '',
+    contactlessTask: { channel: 'voice' },
   },
 };
 
@@ -116,8 +118,8 @@ describe('getFormValues', () => {
     expect(
       contactDetailsSectionFormApi.CHILD_INFORMATION.getFormValues(definition, {
         ...emptySearchContact,
-        details: {
-          ...emptySearchContact.details,
+        rawJson: {
+          ...emptySearchContact.rawJson,
           childInformation: {
             firstName: 'Lorna',
             lastName: 'Ballantyne',
@@ -136,8 +138,8 @@ describe('getFormValues', () => {
     expect(
       contactDetailsSectionFormApi.CALLER_INFORMATION.getFormValues(definition, {
         ...emptySearchContact,
-        details: {
-          ...emptySearchContact.details,
+        rawJson: {
+          ...emptySearchContact.rawJson,
           callerInformation: {
             firstName: 'Lorna',
             lastName: 'Ballantyne',
@@ -156,11 +158,11 @@ describe('getFormValues', () => {
     expect(
       contactDetailsSectionFormApi.CASE_INFORMATION.getFormValues(definition, {
         ...emptySearchContact,
-        details: {
-          ...emptySearchContact.details,
+        rawJson: {
+          ...emptySearchContact.rawJson,
           caseInformation: {
             prop1: 'something',
-            categories: emptySearchContact.details.caseInformation.categories,
+            categories: emptySearchContact.rawJson.caseInformation.categories,
           },
         },
       }),

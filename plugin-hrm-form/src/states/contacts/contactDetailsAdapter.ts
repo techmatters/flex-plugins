@@ -15,13 +15,6 @@
  */
 
 /**
- * TODO(murilo): This file replicates some code from the hrm repo. We should implement
- * a better solution later on.
- */
-
-import { HrmServiceContact, SearchAPIContact } from '../../types/types';
-
-/**
  * @param {string[]} accumulator
  * @param {[string, boolean]} currentValue
  */
@@ -48,79 +41,4 @@ export const retrieveCategories = (categories: Record<string, Record<string, boo
   if (!categories) return {};
 
   return Object.entries(categories).reduce(catsReducer, {});
-};
-
-export const hrmServiceContactToSearchContact = (contact: HrmServiceContact): SearchAPIContact => {
-  const dateTime = contact.timeOfContact;
-
-  const customerNumber = contact.number;
-  const { callType, caseInformation, categories } = contact.rawJson;
-  const notes = caseInformation.callSummary as string;
-  const {
-    conversationDuration,
-    csamReports,
-    referrals,
-    createdBy,
-    helpline,
-    taskId,
-    channel,
-    updatedBy,
-    updatedAt,
-  } = contact;
-
-  return {
-    contactId: contact.id,
-    overview: {
-      helpline,
-      dateTime,
-      customerNumber,
-      callType,
-      categories,
-      counselor: contact.twilioWorkerId,
-      notes,
-      channel,
-      conversationDuration,
-      createdBy,
-      taskId,
-      updatedBy,
-      updatedAt,
-    },
-    details: contact.rawJson,
-    csamReports,
-    referrals,
-  };
-};
-
-export const searchContactToHrmServiceContact = (contact: SearchAPIContact): HrmServiceContact => {
-  const {
-    conversationDuration,
-    createdBy,
-    helpline,
-    channel,
-    counselor,
-    customerNumber,
-    dateTime,
-    updatedAt,
-    updatedBy,
-    taskId,
-  } = contact.overview;
-  return {
-    id: contact.contactId,
-    number: customerNumber,
-    rawJson: contact.details,
-    csamReports: contact.csamReports,
-    referrals: contact.referrals,
-    timeOfContact: dateTime,
-    twilioWorkerId: counselor,
-    conversationDuration,
-    createdBy,
-    helpline,
-    channel,
-    updatedAt,
-    updatedBy,
-    taskId,
-    channelSid: undefined,
-    serviceSid: undefined,
-    queueName: undefined,
-  };
 };
