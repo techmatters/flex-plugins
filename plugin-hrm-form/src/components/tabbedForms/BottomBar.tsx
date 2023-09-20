@@ -28,12 +28,7 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import { hasTaskControl } from '../../utils/transfer';
-import {
-  namespace,
-  contactFormsBase,
-  connectedCaseBase,
-  RootState,
-} from '../../states';
+import { namespace, contactFormsBase, connectedCaseBase, RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { Case, CustomITask } from '../../types/types';

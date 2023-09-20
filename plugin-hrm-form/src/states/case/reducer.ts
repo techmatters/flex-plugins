@@ -40,16 +40,16 @@ import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { SaveCaseReducerState, saveCaseReducer } from './saveCase';
 import { CaseListContentStateAction } from '../caseList/listContent';
 
-export const initialState: CaseState = {
+const initialState: CaseState = {
   tasks: {},
 };
 
 export const saveCaseState: SaveCaseReducerState = {
   state: initialState,
   rootState: {} as RootState['plugin-hrm-form'],
-}
+};
 
-export const boundSaveCaseReducer = saveCaseReducer(saveCaseState);
+const boundSaveCaseReducer = saveCaseReducer(saveCaseState);
 
 // eslint-disable-next-line import/no-unused-modules
 export function reduce(
