@@ -15,19 +15,18 @@
  */
 
 import {
-  Manager,
-  TaskHelper,
-  StateHelper,
-  ChatOrchestrator,
-  ITask,
   ActionFunction,
+  ChatOrchestrator,
   ChatOrchestratorEvent,
+  ITask,
+  Manager,
+  StateHelper,
+  TaskHelper,
 } from '@twilio/flex-ui';
 import { Conversation } from '@twilio/conversations';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
-import { adjustChatCapacity, sendSystemMessage, getDefinitionVersion } from '../services/ServerlessService';
-import { namespace, configurationBase, dualWriteBase } from '../states';
+import { adjustChatCapacity, getDefinitionVersion, sendSystemMessage } from '../services/ServerlessService';
 import * as Actions from '../states/contacts/actions';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
@@ -37,6 +36,8 @@ import * as TransferHelpers from './transfer';
 import { CustomITask, FeatureFlags } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
+import type { RootState } from '../states';
+import { getTaskLanguage } from './task';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -74,23 +75,21 @@ const fromActionFunction = (fun: ActionFunction) => async (payload: ActionPayloa
  * Initializes an empty form (in redux store) for the task within payload
  */
 export const initializeContactForm = (payload: ActionPayload) => {
-  const { currentDefinitionVersion } = Manager.getInstance().store.getState()[namespace][configurationBase];
+  const { currentDefinitionVersion } = (Manager.getInstance().store.getState() as RootState)[
+    'plugin-hrm-form'
+  ].configuration;
 
   Manager.getInstance().store.dispatch(
     GeneralActions.initializeContactState(currentDefinitionVersion)(payload.task.taskSid),
   );
 };
 
-export const getTaskLanguage = ({ helplineLanguage }: Pick<SetupObject, 'helplineLanguage'>) => ({
-  task,
-}: ActionPayload) => task.attributes.language || helplineLanguage;
-
 const sendMessageOfKey = (messageKey: string) => (
   setupObject: SetupObject,
   conversation: Conversation,
   getMessage: (key: string) => (key: string) => Promise<string>,
 ): ActionFunction => async (payload: ActionPayload) => {
-  const taskLanguage = getTaskLanguage(setupObject)(payload);
+  const taskLanguage = getTaskLanguage(setupObject)(payload.task);
   const message = await getMessage(messageKey)(taskLanguage);
   await conversation.sendMessage(message);
 };
@@ -99,7 +98,7 @@ const sendSystemMessageOfKey = (messageKey: string) => (
   setupObject: SetupObject,
   getMessage: (key: string) => (key: string) => Promise<string>,
 ) => async (payload: ActionPayload) => {
-  const taskLanguage = getTaskLanguage(setupObject)(payload);
+  const taskLanguage = getTaskLanguage(setupObject)(payload.task);
   const message = await getMessage(messageKey)(taskLanguage);
   await sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
 };
@@ -116,7 +115,8 @@ const sendGoodbyeMessage = (taskSid: string) => {
 
   const customGoodbyeMessage =
     enableDualWrite &&
-    Manager.getInstance().store.getState()[namespace][dualWriteBase].tasks[taskSid]?.customGoodbyeMessage;
+    (Manager.getInstance().store.getState() as RootState)['plugin-hrm-form'].dualWrite.tasks[taskSid]
+      ?.customGoodbyeMessage;
   return customGoodbyeMessage
     ? sendSystemCustomGoodbyeMessage(customGoodbyeMessage)
     : sendSystemMessageOfKey('GoodbyeMsg');

@@ -16,13 +16,12 @@
 
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 import { DefinitionVersionId } from 'hrm-form-definitions';
-import { ActionCreator } from 'redux';
 
 import { createCase, updateCase } from '../../services/CaseService';
 import { TaskEntry } from '../contacts/types';
 import { Case } from '../../types/types';
 import { UPDATE_CASE_ACTION, CREATE_CASE_ACTION, SavedCaseStatus, CaseState } from './types';
-import { RootState, configurationBase } from '..';
+import type { RootState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 
 export const createCaseAsyncAction = createAsyncAction(
@@ -67,8 +66,9 @@ export const handleFulfilledAction = (handleAction, asyncAction) =>
   handleAction(
     asyncAction,
     ({ state, rootState }, { payload: { case: connectedCase, taskSid } }): SaveCaseReducerState => {
-      const caseDefinitionVersion =
-        rootState[configurationBase].definitionVersions[connectedCase?.info?.definitionVersion];
+      const caseDefinitionVersion = (rootState as RootState['plugin-hrm-form']).configuration.definitionVersions[
+        connectedCase?.info?.definitionVersion
+      ];
       return {
         state: {
           ...state,

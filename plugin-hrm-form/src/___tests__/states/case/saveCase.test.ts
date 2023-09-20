@@ -15,48 +15,10 @@
  */
 import promiseMiddleware from 'redux-promise-middleware';
 import { configureStore } from '@reduxjs/toolkit';
-import { DefinitionVersionId } from 'hrm-form-definitions';
 
-import {
-  SaveCaseReducerState,
-  handleFulfilledAction,
-  saveCaseReducer,
-  handlePendingAction,
-  createCaseAsyncAction,
-  handleRejectedAction,
-  updateCaseAsyncAction,
-} from '../../../states/case/saveCase';
-import { configurationBase, connectedCaseBase, namespace, RootState } from '../../../states';
-import { createCase, updateCase } from '../../../services/CaseService';
-import { Case } from '../../../types/types';
+import { SaveCaseReducerState, saveCaseReducer, updateCaseAsyncAction } from '../../../states/case/saveCase';
+import { configurationBase, RootState } from '../../../states';
 import { saveCaseState as initialState } from '../../../states/case/reducer';
-import {
-  CREATE_CASE_ACTION,
-  CaseActionType,
-  CaseState,
-  SavedCaseStatus,
-  UPDATE_CASE_ACTION,
-  UpdatedCaseAction,
-} from '../../../states/case/types';
-import { TaskEntry } from '../../../states/contacts/types';
-import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
-
-jest.mock('../../../services/CaseService');
-
-const mockUpdateCase = updateCase as jest.Mock<Promise<{ taskSid: string; case: Case }>>;
-
-jest.mock('../../../states/case/saveCase', () => ({
-  handleFulfilledAction: jest.fn(),
-  saveCaseReducer: jest.fn(),
-  handlePendingAction: jest.fn(),
-  createCaseAsyncAction: jest.fn(),
-  updateCaseAsyncAction: jest.fn(),
-}));
-
-jest.mock('../../../states/case/reducer', () => ({
-  boundSaveCaseReducer: jest.fn(),
-  reduce: jest.fn(),
-}));
 
 const stubRootState = {} as RootState['plugin-hrm-form'];
 
