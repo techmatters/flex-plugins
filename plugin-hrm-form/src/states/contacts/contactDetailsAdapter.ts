@@ -16,7 +16,7 @@
 
 import { DefinitionVersion, FormDefinition, FormItemDefinition, isNonSaveable } from 'hrm-form-definitions';
 
-import { ContactRawJson, HrmServiceContact } from '../../types/types';
+import { ContactRawJson } from '../../types/types';
 import { RecursivePartial } from '../../___tests__/RecursivePartial';
 
 const transformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {

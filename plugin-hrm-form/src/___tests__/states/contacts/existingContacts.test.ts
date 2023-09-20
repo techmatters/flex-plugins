@@ -87,8 +87,6 @@ const baseState: ExistingContactsState = {
   },
 } as const;
 
-jest.mock('../../../states/contacts/contactDetailsAdapter');
-
 describe('loadContactReducer', () => {
   describe('replaceExisting set to false', () => {
     test('Nothing currently for that ID - adds the contact with provided reference and blank categories state', () => {
@@ -639,7 +637,7 @@ describe('updateDraftReducer', () => {
   });
   describe('clearDraft', () => {
     test('Contact ID not loaded - noop', () => {
-      const newState = updateDraftReducer(baseState, clearDraft('42'));
+      const newState = updateDraftReducer(baseState, config, clearDraft('42'));
       expect(newState).toEqual(baseState);
     });
 
@@ -653,7 +651,7 @@ describe('updateDraftReducer', () => {
           },
         },
       };
-      const newState = updateDraftReducer(baseState, clearDraft('42'));
+      const newState = updateDraftReducer(baseState, config, clearDraft('42'));
       expect(newState).toEqual<ExistingContactsState>(baseState);
     });
   });

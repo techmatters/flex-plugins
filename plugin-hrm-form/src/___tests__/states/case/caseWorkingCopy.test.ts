@@ -14,7 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import {
+  DefinitionVersion,
+  DefinitionVersionId,
+  FormInputType,
+  loadDefinition,
+  useFetchDefinitions,
+} from 'hrm-form-definitions';
 
 import { CaseItemEntry } from '../../../types/types';
 import { CaseSectionApi } from '../../../states/case/sections/api';
@@ -31,19 +37,44 @@ import {
   initialiseNewCaseSectionWorkingCopy,
 } from '../../../states/case/caseWorkingCopy';
 import { RootState } from '../../../states';
+import { RecursivePartial } from '../../RecursivePartial';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
-const stubRootState = {} as RootState['plugin-hrm-form'];
+const partialRootState: RecursivePartial<RootState['plugin-hrm-form']> = {
+  configuration: {
+    counselors: { hash: {}, list: undefined },
+    definitionVersions: {},
+    language: '',
+    workerInfo: { chatChannelCapacity: 0 },
+    currentDefinitionVersion: {
+      caseForms: {
+        HouseholdForm: [
+          {
+            label: 'Other Property',
+            name: 'otherProp',
+            type: FormInputType.Input,
+          },
+        ],
+      },
+    } as DefinitionVersion,
+  },
+};
+
+const stubRootState = partialRootState as RootState['plugin-hrm-form'];
 
 beforeEach(() => {
   mockReset();
 });
 
+type CaseStateEntry = CaseState['tasks'][keyof CaseState['tasks']];
+
 describe('Working copy reducers', () => {
-  const task = { taskSid: 'task1' };
-  const state: CaseState = { tasks: {} };
+  const task: RecursivePartial<CaseStateEntry> = {
+    connectedCase: { info: { definitionVersion: DefinitionVersionId.v1 } },
+  };
+  const state: CaseState = { tasks: { task1: task as CaseStateEntry } };
   let mockV1;
 
   beforeAll(async () => {
@@ -107,7 +138,7 @@ describe('Working copy reducers', () => {
       const result = reduce(
         stubRootState,
         initialState,
-        updateCaseSectionWorkingCopy(task.taskSid, stubApi, updatedSection, 'existingHousehold'),
+        updateCaseSectionWorkingCopy('task1', stubApi, updatedSection, 'existingHousehold'),
       );
       expect(result).toStrictEqual(expected);
       expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
@@ -140,7 +171,7 @@ describe('Working copy reducers', () => {
       const result = reduce(
         stubRootState,
         initialState,
-        updateCaseSectionWorkingCopy(task.taskSid, stubApi, updatedSection),
+        updateCaseSectionWorkingCopy('task1', stubApi, updatedSection),
       );
       expect(result).toStrictEqual(expected);
       expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
@@ -153,7 +184,7 @@ describe('Working copy reducers', () => {
 
   describe('Initialise case section', () => {
     describe('INIT_EXISTING_CASE_SECTION_WORKING_COPY', () => {
-      state.tasks.task1 = {
+      const initTask = {
         connectedCase: {
           accountSid: 'ACxxx',
           id: 1,
@@ -176,11 +207,11 @@ describe('Working copy reducers', () => {
         const initialState: CaseState = {
           tasks: {
             task1: {
-              ...state.tasks.task1,
+              ...initTask,
               connectedCase: {
-                ...state.tasks.task1.connectedCase,
+                ...initTask.connectedCase,
                 info: {
-                  ...state.tasks.task1.connectedCase.info,
+                  ...initTask.connectedCase.info,
                   households: [
                     {
                       id: 'existingHousehold',
@@ -210,7 +241,7 @@ describe('Working copy reducers', () => {
         const result = reduce(
           stubRootState,
           initialState,
-          initialiseExistingCaseSectionWorkingCopy(task.taskSid, stubApi, 'existingHousehold'),
+          initialiseExistingCaseSectionWorkingCopy('task1', stubApi, 'existingHousehold'),
         );
         expect(result).toStrictEqual(expected);
         expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
@@ -224,7 +255,7 @@ describe('Working copy reducers', () => {
         const initialState: CaseState = {
           tasks: {
             task1: {
-              ...state.tasks.task1,
+              ...initTask,
               caseWorkingCopy: {
                 sections: {},
               },
@@ -236,7 +267,7 @@ describe('Working copy reducers', () => {
           reduce(
             stubRootState,
             initialState,
-            initialiseExistingCaseSectionWorkingCopy(task.taskSid, stubApi, 'existingHousehold'),
+            initialiseExistingCaseSectionWorkingCopy('task1', stubApi, 'existingHousehold'),
           ),
         ).toThrow();
       });
@@ -263,11 +294,7 @@ describe('Working copy reducers', () => {
           },
         };
 
-        const result = reduce(
-          stubRootState,
-          initialState,
-          initialiseNewCaseSectionWorkingCopy(task.taskSid, stubApi, {}),
-        );
+        const result = reduce(stubRootState, initialState, initialiseNewCaseSectionWorkingCopy('task1', stubApi, {}));
         expect(result).toStrictEqual(expected);
         expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(initialState.tasks.task1.caseWorkingCopy, {
           id: expect.any(String),
@@ -300,7 +327,7 @@ describe('Working copy reducers', () => {
         const result = reduce(
           stubRootState,
           initialState,
-          initialiseNewCaseSectionWorkingCopy(task.taskSid, stubApi, { a: 'b', b: true, c: 'wakka wakka' }),
+          initialiseNewCaseSectionWorkingCopy('task1', stubApi, { a: 'b', b: true, c: 'wakka wakka' }),
         );
         expect(result).toStrictEqual(expected);
         expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(initialState.tasks.task1.caseWorkingCopy, {
@@ -354,7 +381,7 @@ describe('Working copy reducers', () => {
         },
       };
 
-      const resultWithoutId = reduce(stubRootState, initialState, removeCaseSectionWorkingCopy(task.taskSid, stubApi));
+      const resultWithoutId = reduce(stubRootState, initialState, removeCaseSectionWorkingCopy('task1', stubApi));
       expect(resultWithoutId).toStrictEqual(expected);
       expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
         initialState.tasks.task1.caseWorkingCopy,
@@ -362,11 +389,7 @@ describe('Working copy reducers', () => {
         undefined,
       );
 
-      const resultWithId = reduce(
-        stubRootState,
-        initialState,
-        removeCaseSectionWorkingCopy(task.taskSid, stubApi, 'an id'),
-      );
+      const resultWithId = reduce(stubRootState, initialState, removeCaseSectionWorkingCopy('task1', stubApi, 'an id'));
       expect(resultWithId).toStrictEqual(expected);
       expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
         initialState.tasks.task1.caseWorkingCopy,
