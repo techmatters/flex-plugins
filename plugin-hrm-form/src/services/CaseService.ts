@@ -79,7 +79,7 @@ export async function cancelCase(caseId: Case['id']) {
 }
 
 export async function updateCase(caseId: Case['id'], body: Partial<Case>) {
-  console.log('>>>  4 updateCase', caseId, body);
+  console.log('>>> 6 CaseService updateCase', caseId, body);
   const options = {
     method: 'PUT',
     body: JSON.stringify(body),
@@ -109,56 +109,3 @@ export async function listCases(queryParams, listCasesPayload): Promise<SearchCa
     cases: responseJson.cases.map(convertLegacyContacts),
   };
 }
-
-type SignedURLMethod = 'getObject' | 'putObject' | 'deleteObject';
-type ObjectType = 'case' | 'contact';
-
-const generateCaseDocumentPath = (
-  method: SignedURLMethod,
-  type: ObjectType,
-  caseId: string,
-  bucket: string,
-  key: string,
-) =>
-  // `/files/urls?method={getObject}&objectType=case&objectId=${caseId}&fileType=document&bucket=${bucket}&key=${key}`;
-  `/files/urls?method=${method}&objectType=${type}&objectId=${caseId}&fileType=document&bucket=${bucket}&key=${key}`;
-
-/**
- * Gets a file download url from the corresponding S3 bucket
- */
-// export const getFileDownloadUrl = async (fileNameAtAws: string, fileName?: string) => {
-//   console.log('>>> 2. getFileDownloadUrl start', fileNameAtAws, fileName);
-//   const getFileName = formatFileNameAtAws(fileNameAtAws);
-//   const body = { fileNameAtAws, fileName: fileName ? fileName : getFileName };
-//   const response = await fetchProtectedApi('/getFileDownloadUrl', body);
-//   console.log('>>> 2 getFileDownloadUrl response', response);
-//   return response;
-// };
-/**
- * Removes the prefixed milliseconds from the fileName saved at AWS and returns only the original fileName
- * @param fileNameAtAws File Name of the resource at AWS
- * @returns Original file name
- */
-
-// export const formatFileNameAtAws = fileNameAtAws =>
-//   fileNameAtAws ? fileNameAtAws.substring(fileNameAtAws.indexOf('-') + 1) : '';
-
-/**
- * Gets a file upload url to the corresponding S3 bucket
- */
-// export const getFileUploadUrl = async (fileName: string, mimeType: string) => {
-//   console.log('>>> 1. getFileUploadUrl start', fileName, mimeType);
-//   const body = { fileName, mimeType };
-//   const response = await fetchProtectedApi('/getFileUploadUrl', body);
-//   console.log('>>> getFileUploadUrl response', response);
-//   return response;
-// };
-
-/**
- * Deletes a file from the corresponding S3 bucket
- */
-// export const deleteFile = async (fileName: string) => {
-//   const body = { fileName };
-//   const response = await fetchProtectedApi('/deleteFile', body);
-//   return response;
-// };

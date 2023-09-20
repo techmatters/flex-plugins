@@ -19,8 +19,6 @@ import { parseISO } from 'date-fns';
 import { CaseInfo } from '../../../types/types';
 
 export const getSectionItemById = (propertyName: string) => (caseInfo: CaseInfo, id: string) => {
-  console.log('>>>  Download document   <<<<');
-  console.log('>>>  1. getSectionItemById', propertyName, caseInfo, id);
   const sectionList = caseInfo[propertyName];
   if (Array.isArray(sectionList)) {
     return sectionList.find(s => s.id === id);

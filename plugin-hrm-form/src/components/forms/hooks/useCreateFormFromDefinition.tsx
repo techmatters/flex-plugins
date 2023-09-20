@@ -32,6 +32,7 @@ type UseFormFromDefinition = {
   context?: {
     taskSid?: string;
     contactId?: string;
+    caseId?: string;
   };
 };
 

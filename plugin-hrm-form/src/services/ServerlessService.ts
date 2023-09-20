@@ -189,29 +189,6 @@ export const deleteFile = async (fileName: string) => {
 };
 
 /**
- * Gets a file download url from the corresponding S3 bucket
- */
-export const getFileDownloadUrl = async (fileNameAtAws: string, fileName?: string) => {
-  console.log('>>> 2. getFileDownloadUrl start', fileNameAtAws, fileName);
-  const getFileName = formatFileNameAtAws(fileNameAtAws);
-  const body = { fileNameAtAws, fileName: fileName ? fileName : getFileName };
-  const response = await fetchProtectedApi('/getFileDownloadUrl', body);
-  console.log('>>> 2 getFileDownloadUrl response', response);
-  return response;
-};
-
-/**
- * Gets a file upload url to the corresponding S3 bucket
- */
-export const getFileUploadUrl = async (fileName: string, mimeType: string) => {
-  console.log('>>> 1. getFileUploadUrl start', fileName, mimeType);
-  const body = { fileName, mimeType };
-  const response = await fetchProtectedApi('/getFileUploadUrl', body);
-  console.log('>>> getFileUploadUrl response', response);
-  return response;
-};
-
-/**
  * Gets a recording s3 information from the corresponding call sid
  */
 export const getExternalRecordingS3Location = async (callSid: string) => {

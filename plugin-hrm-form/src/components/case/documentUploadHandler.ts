@@ -14,8 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { deleteFile, getFileUploadUrl } from '../../services/ServerlessService';
+import { deleteFile } from '../../services/ServerlessService';
 import { CustomHandlers } from '../common/forms/formGenerators';
+import { getHrmConfig } from '../../hrmConfig';
+import { fetchHrmApi, generateSignedURLPath } from '../../services/fetchHrmApi';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 /**
@@ -33,6 +35,7 @@ const uploadDocument = async (file: File, preSignedUrl: string, mimeType: string
     body: file,
     headers,
   };
+  console.log('>>> 4. documentUploadHandler.uploadDocument', { file, preSignedUrl, mimeType, options });
   await fetch(preSignedUrl, options);
 };
 
@@ -45,20 +48,37 @@ const uploadDocument = async (file: File, preSignedUrl: string, mimeType: string
  */
 const onFileChange = async event => {
   const file = event.target.files[0];
+  const { name, size, type } = file;
 
-  if (file.size > MAX_FILE_SIZE) {
+  if (size > MAX_FILE_SIZE) {
     alert('File exceeds max size.');
     return '';
   }
+  const mimeType = type;
+  const { docsBucket: bucket } = getHrmConfig();
 
-  const mimeType = file.type;
-  const response = await getFileUploadUrl(file.name, mimeType);
-  await uploadDocument(file, response.uploadUrl, mimeType);
+  const key = `${new Date().getTime()}-${name}`;
 
-  return response.fileNameAtAws;
+  const { media_url: preSignedUrl } = await fetchHrmApi(
+    generateSignedURLPath({
+      method: 'putObject',
+      objectType: 'case',
+      objectId: '5137',
+      fileType: 'document',
+      location: {
+        bucket,
+        key,
+      },
+    }),
+  );
+
+  await uploadDocument(file, preSignedUrl, mimeType);
+
+  return key;
 };
 
 const onDeleteFile = async (fileName: string) => {
+  console.log('>>> documentUploadHandler.onDeleteFile fileName', { fileName });
   await deleteFile(fileName);
 };
 

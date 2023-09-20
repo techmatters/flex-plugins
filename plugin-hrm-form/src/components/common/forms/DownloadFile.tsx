@@ -65,7 +65,7 @@ const DownloadFile: React.FC<Props> = ({ fileNameAtAws, objectId }) => {
       setPreSignedUrl(url);
     } catch (error) {
       // TODO: actually throw something.
-      return;
+      console.log('error', error);
     }
   };
   return (

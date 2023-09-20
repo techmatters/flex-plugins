@@ -23,7 +23,7 @@ export const upsertCaseSectionItemUsingSectionName = (listProperty: string, entr
   original: CaseInfo,
   temporaryInfo: CaseItemEntry,
 ) => {
-  console.log('>>>  3. upsertCaseSectionItemUsingSectionName', original, temporaryInfo);
+  console.log('>>>  5. upsertCaseSectionItemUsingSectionName ', original, temporaryInfo);
   const sectionList = [...((original ?? {})[listProperty] ?? [])];
   const { ...entry } = { ...temporaryInfo, [entryProperty]: temporaryInfo.form };
   if (entryProperty !== 'form') {
