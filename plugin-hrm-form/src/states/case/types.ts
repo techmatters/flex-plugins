@@ -44,10 +44,11 @@ type RemoveConnectedCaseAction = {
   taskId: string;
 };
 
-type UpdatedCaseAction = {
+export type UpdatedCaseAction = {
   type: typeof UPDATE_CASE_ACTION;
-  connectedCase: t.Case;
-  taskId: string;
+  payload: Promise<{ taskSid: string; case: t.Case; }>;
+  taskId?: string;
+  meta: unknown;
 };
 
 type CreateCaseAction = {

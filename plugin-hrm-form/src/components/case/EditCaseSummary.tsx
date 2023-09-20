@@ -22,7 +22,7 @@ import { connect } from 'react-redux';
 import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
 import { DefinitionVersion, FormDefinition, FormInputType } from 'hrm-form-definitions';
 import { isEqual } from 'lodash';
-import { bindActionCreators } from 'redux';
+import { AnyAction, bindActionCreators } from 'redux';
 
 import {
   BottomButtonBar,
@@ -54,6 +54,7 @@ import { disperseInputs, splitAt } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import { getTemplateStrings } from '../../hrmConfig';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
+import asyncDispatch from '../../states/asyncDispatch';
 
 export type EditCaseSummaryProps = {
   task: CustomITask | StandaloneITask;
@@ -246,6 +247,7 @@ const mapStateToProps = (state: RootState, ownProps: EditCaseSummaryProps) => {
 };
 
 const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
+  const updateCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
@@ -256,7 +258,7 @@ const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
       dispatch(changeRoute(route, task.taskSid));
     },
     updateCaseAsyncAction: (caseId: Case['id'], body: Partial<Case>) =>
-      dispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
+      updateCaseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
   };
 };
 

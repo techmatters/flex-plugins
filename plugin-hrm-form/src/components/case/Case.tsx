@@ -73,6 +73,7 @@ import { ChannelTypes } from '../../states/DomainConstants';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
+import asyncDispatch from '../../states/asyncDispatch';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -460,6 +461,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 };
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
+  const updateCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   const cancelNewCase = (taskSid: string, loadedContactIds: string[]) => {
     dispatch(CaseActions.removeConnectedCase(taskSid));
     dispatch(
@@ -479,7 +481,7 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     loadContact: bindActionCreators(ContactActions.loadContact, dispatch),
     cancelNewCase,
     updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
-      dispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
+      updateCaseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
   };
 };
 

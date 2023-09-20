@@ -37,16 +37,19 @@ import {
 } from './caseWorkingCopy';
 import { configurationBase, RootState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
-import { updateCaseReducer } from './saveCase';
+import { SaveCaseReducerState, saveCaseReducer } from './saveCase';
 import { CaseListContentStateAction } from '../caseList/listContent';
 
-const initialState: CaseState = {
+export const initialState: CaseState = {
   tasks: {},
 };
-const boundUpdateCaseReducer = updateCaseReducer({
+
+export const saveCaseState: SaveCaseReducerState = {
   state: initialState,
   rootState: {} as RootState['plugin-hrm-form'],
-});
+}
+
+export const boundSaveCaseReducer = saveCaseReducer(saveCaseState);
 
 // eslint-disable-next-line import/no-unused-modules
 export function reduce(
@@ -54,7 +57,7 @@ export function reduce(
   inputState = initialState,
   action: CaseActionType | CaseWorkingCopyActionType | GeneralActionType | CaseListContentStateAction,
 ): CaseState {
-  const { state } = boundUpdateCaseReducer({ state: inputState, rootState }, action as any);
+  const { state } = boundSaveCaseReducer({ state: inputState, rootState }, action as any);
 
   switch (action.type) {
     case SET_CONNECTED_CASE:

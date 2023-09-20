@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { AnyAction, bindActionCreators } from 'redux';
 import { Template } from '@twilio/flex-ui';
@@ -28,13 +28,19 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import { hasTaskControl } from '../../utils/transfer';
-import { namespace, contactFormsBase, connectedCaseBase, RootState } from '../../states';
+import {
+  namespace,
+  contactFormsBase,
+  connectedCaseBase,
+  RootState,
+} from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { Case, CustomITask } from '../../types/types';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
 import { TaskEntry } from '../../states/contacts/types';
+import asyncDispatch from '../../states/asyncDispatch';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;
@@ -74,7 +80,7 @@ const BottomBar: React.FC<
 
       createCaseAsyncAction(contactForm, workerSid, definitionVersion);
 
-      console.log('caseFromDB here', caseForm, taskSid, hasTaskControl(task));
+      console.log('caseFromDB here', contactForm);
 
       changeRoute({ route: 'new-case' }, taskSid);
       // setConnectedCase(caseFromDB, taskSid);
@@ -176,11 +182,12 @@ const mapStateToProps = (state: RootState, ownProps: BottomBarProps) => {
 };
 
 const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
+  const createCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     createCaseAsyncAction: (contactForm: TaskEntry, workerSid: string, definitionVersion: DefinitionVersionId) =>
-      dispatch(createCaseAsyncAction(contactForm, task.taskSid, workerSid, definitionVersion)),
+      createCaseAsyncDispatch(createCaseAsyncAction(contactForm, task.taskSid, workerSid, definitionVersion)),
   };
 };
 

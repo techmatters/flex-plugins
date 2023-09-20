@@ -46,24 +46,24 @@ export const updateCaseAsyncAction = createAsyncAction(
 
 // In order to use the createReducer helper, we need to combine the case state and the root state into a single object
 // Perhaps we should just pass the root state to simplify things?
-type SaveCaseReducerState = {
+export type SaveCaseReducerState = {
   state: CaseState;
   rootState: RootState['plugin-hrm-form'];
 };
 
 // We need to return a state object of the same type as we are passed, so we need to return the rootState even though we don't change it.
-const handlePendingAction = (handleAction, asyncAction) =>
+export const handlePendingAction = (handleAction, asyncAction) =>
   handleAction(asyncAction as typeof asyncAction, ({ state, rootState }) => {
     return {
       state: {
         ...state,
-        status: SavedCaseStatus.ResultReceived,
       },
       rootState,
+      status: SavedCaseStatus.ResultReceived,
     };
   });
 
-const handleFulfilledAction = (handleAction, asyncAction) =>
+export const handleFulfilledAction = (handleAction, asyncAction) =>
   handleAction(
     asyncAction,
     ({ state, rootState }, { payload: { case: connectedCase, taskSid } }): SaveCaseReducerState => {
@@ -88,19 +88,19 @@ const handleFulfilledAction = (handleAction, asyncAction) =>
     },
   );
 
-const handleRejectedAction = (handleAction, asyncAction) =>
+export const handleRejectedAction = (handleAction, asyncAction) =>
   handleAction(asyncAction, ({ state, rootState }, { payload }) => {
     return {
       state: {
         ...state,
-        error: payload,
-        status: SavedCaseStatus.ResultReceived,
       },
       rootState,
+      error: payload,
+      status: SavedCaseStatus.ResultReceived,
     };
   });
 
-export const updateCaseReducer = (initialState: SaveCaseReducerState) =>
+export const saveCaseReducer = (initialState: SaveCaseReducerState) =>
   createReducer(initialState, handleAction => [
     handlePendingAction(handleAction, updateCaseAsyncAction.pending),
     handleFulfilledAction(handleAction, updateCaseAsyncAction.fulfilled),
