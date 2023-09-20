@@ -33,7 +33,7 @@ import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute } from '../../states/routing/actions';
 import { emptyCategories } from '../../states/contacts/reducer';
 import { NewCaseSubroutes, TabbedFormSubroutes } from '../../states/routing/types';
-import { CustomITask, isOfflineContactTask, SearchAPIContact } from '../../types/types';
+import { CustomITask, isOfflineContactTask, HrmServiceContact } from '../../types/types';
 import { Box, Row, StyledTabs, TabbedFormsContainer, TabbedFormTabContainer } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import Search from '../search';
@@ -142,12 +142,12 @@ const TabbedForms: React.FC<Props> = ({
   const taskId = task.taskSid;
   const isCallerType = contactForm.callType === callTypes.caller;
 
-  const onSelectSearchResult = (searchResult: SearchAPIContact) => {
-    const selectedIsCaller = searchResult.details.callType === callTypes.caller;
+  const onSelectSearchResult = (searchResult: HrmServiceContact) => {
+    const selectedIsCaller = searchResult.rawJson.callType === callTypes.caller;
     if (isCallerType && selectedIsCaller && isCallTypeCaller) {
       const deTransformed = searchResultToContactForm(
         currentDefinitionVersion.tabbedForms.CallerInformationTab,
-        searchResult.details.callerInformation,
+        searchResult.rawJson.callerInformation,
       );
 
       dispatch(updateForm(task.taskSid, 'callerInformation', deTransformed));
@@ -155,7 +155,7 @@ const TabbedForms: React.FC<Props> = ({
     } else {
       const deTransformed = searchResultToContactForm(
         currentDefinitionVersion.tabbedForms.ChildInformationTab,
-        searchResult.details.childInformation,
+        searchResult.rawJson.childInformation,
       );
 
       dispatch(updateForm(task.taskSid, 'childInformation', deTransformed));

@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { SearchAPIContact, SearchCaseResult, SearchUIContact } from '../../types/types';
+import { HrmServiceContact, SearchCaseResult } from '../../types/types';
 
 // Action types
 export const HANDLE_SEARCH_FORM_CHANGE = 'HANDLE_SEARCH_FORM_CHANGE';
@@ -44,6 +44,10 @@ export type SearchFormValues = {
   [K in keyof typeof newSearchFormEntry]: typeof newSearchFormEntry[K];
 };
 
+export type SearchParams = Partial<SearchFormValues> & {
+  taskSid?: string;
+};
+
 export const SearchPages = {
   form: 'form',
   resultsContacts: 'results.contacts',
@@ -56,7 +60,7 @@ export type SearchPagesType = typeof SearchPages[keyof typeof SearchPages];
 
 export type DetailedSearchContactsResult = {
   count: number;
-  contacts: SearchUIContact[];
+  contacts: HrmServiceContact[];
 };
 
 // Supported action object types
@@ -97,7 +101,7 @@ type SearchCasesFailureAction = { type: typeof SEARCH_CASES_FAILURE; error: any;
 // maybe we can migrate this to be handled by the routing instead later on?
 type SearchChangePageAction = { type: typeof CHANGE_SEARCH_PAGE; page: SearchPagesType; taskId: string };
 
-type SearchViewContactAction = { type: typeof VIEW_CONTACT_DETAILS; contact: SearchAPIContact; taskId: string };
+type SearchViewContactAction = { type: typeof VIEW_CONTACT_DETAILS; contact: HrmServiceContact; taskId: string };
 
 type ViewPreviousContactsAction = {
   type: typeof VIEW_PREVIOUS_CONTACTS;

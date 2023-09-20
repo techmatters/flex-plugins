@@ -14,7 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { set } from 'lodash/fp';
 import {
   callTypes,
   DefinitionVersion,
@@ -27,7 +26,6 @@ import { TaskHelper } from '@twilio/flex-ui';
 
 import { baseMockConfig as mockBaseConfig, mockGetDefinitionsResponse } from '../mockGetConfig';
 import {
-  createCategoriesObject,
   handleTwilioTask,
   saveContact,
   transformCategories,
@@ -117,9 +115,9 @@ describe('transformForm', () => {
       draft: <any>{},
     };
 
-    const expectedCategories = oldForm.categories.reduce((acc, path) => set(path, true, acc), {
-      categories: createCategoriesObject(mockV1.tabbedForms.IssueCategorizationTab(helpline)),
-    }).categories;
+    const expectedCategories = {
+      Abuse: ['Abduction'],
+    };
 
     const expected = {
       definitionVersion: 'v1',
@@ -131,7 +129,6 @@ describe('transformForm', () => {
       },
       caseInformation: {
         // copy paste from ContactService. This will come from redux later on and we can mockup definitions
-        categories: expectedCategories,
         callSummary: 'My summary',
       },
       contactlessTask: {
@@ -139,6 +136,7 @@ describe('transformForm', () => {
         date: '',
         time: '',
       },
+      categories: expectedCategories,
       metadata: {},
     };
 
@@ -152,7 +150,7 @@ describe('transformForm', () => {
     expect(transformed.childInformation.gender).toBe('Male');
     expect(transformed.childInformation.firstName).toBe('child');
     expect(transformed.childInformation.lastName).toBe('');
-    expect(transformed.caseInformation.categories).toStrictEqual(expected.caseInformation.categories);
+    expect(transformed.categories).toStrictEqual(expected.categories);
     expect(transformed.caseInformation.callSummary).toBe('My summary');
     expect(transformed.contactlessTask).toStrictEqual({
       channel: 'web',
@@ -487,67 +485,32 @@ describe('transformCategories', () => {
     };
   });
 
-  test("Categories in input match the paths of those in definition - sets the subcategories found in defintions to 'true'", () => {
-    const transformed = transformCategories(
-      'a helpline',
-      ['categories.category1.subCategory2', 'categories.category2.subCategory1'],
-      mockDef,
-    );
+  test('Categories in input match the paths of those in definition', () => {
+    const transformed = transformCategories(['categories.category1.subCategory2', 'categories.category2.subCategory1']);
     expect(transformed).toStrictEqual({
-      category1: {
-        subCategory1: false,
-        subCategory2: true,
-      },
-      category2: {
-        subCategory1: true,
-        subCategory2: false,
-      },
-    });
-    // Supplied helpline should be used to look up the categories
-    expect(mockDef.tabbedForms.IssueCategorizationTab).toBeCalledWith('a helpline');
-  });
-
-  test("Empty array of categories - produces matrix of categories all set 'false'", () => {
-    const transformed = transformCategories('a helpline', [], mockDef);
-    expect(transformed).toStrictEqual({
-      category1: {
-        subCategory1: false,
-        subCategory2: false,
-      },
-      category2: {
-        subCategory1: false,
-        subCategory2: false,
-      },
+      category1: ['subCategory2'],
+      category2: ['subCategory1'],
     });
   });
 
-  test("Categories in input don't match the paths of those in definition - adds the missing paths to the output set to 'true'", () => {
-    const transformed = transformCategories(
-      'a helpline',
-      ['categories.category3.subCategory2', 'categories.category2.subCategory1'],
-      mockDef,
-    );
+  test('Empty array of categories', () => {
+    const transformed = transformCategories([]);
+    expect(transformed).toStrictEqual({});
+  });
+
+  test("Categories in input don't match the paths of those in definition", () => {
+    const transformed = transformCategories(['categories.category3.subCategory2', 'categories.category2.subCategory1']);
     expect(transformed).toStrictEqual({
-      category1: {
-        subCategory1: false,
-        subCategory2: false,
-      },
-      category2: {
-        subCategory1: true,
-        subCategory2: false,
-      },
-      category3: {
-        subCategory2: true,
-      },
+      category2: ['subCategory1'],
+      category3: ['subCategory2'],
     });
   });
 
-  test("Categories in input has paths with something other than 2 sections - adds the paths anyway to the output set to 'true'", () => {
-    const transformed = transformCategories(
-      'a helpline',
-      ['categories.category2', 'categories.category1.subCategory1.subSubCategory'],
-      mockDef,
-    );
+  test('Categories in input has paths with something other than 2 sections', () => {
+    const transformed = transformCategories([
+      'categories.category2',
+      'categories.category1.subCategory1.subSubCategory',
+    ]);
     /*
      * Stuff gets weird, subCategory1 was a boolean, but it now has a sub property so got converted to a 'Boolean' wrapper type.
      * Probably best to avoid this scenario :-P
@@ -556,11 +519,8 @@ describe('transformCategories', () => {
     const subCategory1 = new Boolean();
     (<any>subCategory1).subSubCategory = true;
     expect(transformed).toStrictEqual({
-      category1: {
-        subCategory1,
-        subCategory2: false,
-      },
-      category2: true,
+      category1: ['subCategory1'],
+      category2: [],
     });
   });
 });
