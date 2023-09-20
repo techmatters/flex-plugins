@@ -24,12 +24,12 @@ import { Row } from '../../styles/HrmStyles';
 import { ConfirmContainer, ConfirmText, CancelButton } from '../../styles/search';
 import TabPressWrapper from '../TabPressWrapper';
 import { hasTaskControl } from '../../utils/transfer';
-import { SearchAPIContact } from '../../types/types';
+import { HrmServiceContact } from '../../types/types';
 
 type Props = {
   anchorEl: Element;
   currentIsCaller: boolean;
-  contact: SearchAPIContact;
+  contact: HrmServiceContact;
   handleConfirm: () => void;
   handleClose: () => void;
   task: ITask;
@@ -49,7 +49,7 @@ const ConnectDialog: React.FC<Props> = ({
   const id = isOpen ? 'simple-popover' : undefined;
 
   const getText = () => {
-    const callType = contact && contact.details && contact.details.callType;
+    const callType = contact && contact.rawJson && contact.rawJson.callType;
     if (!callType) return '';
 
     switch (callType) {

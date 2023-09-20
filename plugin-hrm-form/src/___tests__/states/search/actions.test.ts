@@ -19,11 +19,12 @@ import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-fo
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import * as t from '../../../states/search/types';
 import * as actions from '../../../states/search/actions';
-import { SearchAPIContact } from '../../../types/types';
 import { searchContacts } from '../../../services/ContactService';
 import { searchCases } from '../../../services/CaseService';
 import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../../components/search/SearchResults';
 import { getDefinitionVersions } from '../../../hrmConfig';
+import { HrmServiceContact } from '../../../types/types';
+import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 jest.mock('../../../services/ContactService', () => ({ searchContacts: jest.fn() }));
 jest.mock('../../../services/CaseService', () => ({ searchCases: jest.fn() }));
@@ -82,13 +83,12 @@ describe('test action creators', () => {
   });
 
   test('viewContactDetails', () => {
-    const contact: unknown = { contactId: 'fake contact', overview: {}, details: {}, counselor: '', tags: [] };
-    const typedContact = contact as SearchAPIContact; // type casting to avoid writing an entire SearchContact
+    const contact: HrmServiceContact = { ...VALID_EMPTY_CONTACT, id: 'fake contact' };
 
-    expect(actions.viewContactDetails(taskId)(typedContact)).toStrictEqual({
+    expect(actions.viewContactDetails(taskId)(contact)).toStrictEqual({
       type: t.VIEW_CONTACT_DETAILS,
       taskId,
-      contact: typedContact,
+      contact,
     });
   });
 

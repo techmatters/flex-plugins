@@ -21,12 +21,14 @@ import { ContactMetadata } from '../states/contacts/types';
 import { ReferralLookupStatus } from '../states/contacts/resourceReferral';
 
 export const VALID_EMPTY_CONTACT: HrmServiceContact = {
+  accountSid: '',
   id: '',
   taskId: '',
   serviceSid: '',
   channelSid: '',
   number: '',
   createdBy: '',
+  createdAt: '',
   updatedBy: '',
   updatedAt: '',
   queueName: '',
@@ -45,8 +47,8 @@ export const VALID_EMPTY_CONTACT: HrmServiceContact = {
     callerInformation: {},
     caseInformation: {},
     categories: {},
-    conversationMedia: [],
   },
+  conversationMedia: [],
   twilioWorkerId: '',
   timeOfContact: '',
   conversationDuration: 0,

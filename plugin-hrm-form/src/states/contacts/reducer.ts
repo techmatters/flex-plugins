@@ -106,6 +106,7 @@ export const createContactWithMetadata = (definitions: DefinitionVersion) => (
 
   return {
     contact: {
+      accountSid: '',
       id: '',
       twilioWorkerId: '',
       timeOfContact: new Date().toISOString(),
@@ -115,12 +116,12 @@ export const createContactWithMetadata = (definitions: DefinitionVersion) => (
         childInformation: initialChildInformation,
         callerInformation: initialCallerInformation,
         caseInformation: initialCaseInformation,
-        conversationMedia: [],
         callType: '',
         contactlessTask,
         categories: {},
       },
       createdBy: '',
+      createdAt: '',
       updatedBy: '',
       updatedAt: '',
       queueName: '',
@@ -130,6 +131,7 @@ export const createContactWithMetadata = (definitions: DefinitionVersion) => (
       channelSid: '',
       serviceSid: '',
       csamReports: [],
+      conversationMedia: [],
     },
     metadata,
   };

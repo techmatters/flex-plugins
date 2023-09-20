@@ -150,13 +150,13 @@ describe('transformForm', () => {
       caseInformation: {
         // copy paste from ContactService. This will come from redux later on and we can mockup definitions
         callSummary: 'My summary',
+        categories: expectedCategories,
       },
       contactlessTask: {
         channel: '',
         date: '',
         time: '',
       },
-      categories: expectedCategories,
       metadata: {},
     };
 
@@ -170,7 +170,7 @@ describe('transformForm', () => {
     expect(transformed.childInformation.gender).toBe('Male');
     expect(transformed.childInformation.firstName).toBe('child');
     expect(transformed.childInformation.lastName).toBe('');
-    expect(transformed.categories).toStrictEqual(expected.categories);
+    expect(transformed.caseInformation.categories).toStrictEqual(expected.caseInformation.categories);
     expect(transformed.caseInformation.callSummary).toBe('My summary');
     expect(transformed.contactlessTask).toStrictEqual({
       channel: 'web',
@@ -481,7 +481,11 @@ test('updateContactsFormInHrm - calls a PATCH HRM endpoint using the supplied co
       expect.objectContaining({
         method: 'PATCH',
         body: JSON.stringify({
-          rawJson: { caseInformation: { categories: EMPTY_API_CATEGORIES }, definitionVersion: DefinitionVersionId.v1 },
+          rawJson: {
+            caseInformation: { categories: EMPTY_API_CATEGORIES },
+            categories: {},
+            definitionVersion: DefinitionVersionId.v1,
+          },
         }),
       }),
     );
@@ -544,14 +548,15 @@ describe('transformCategories', () => {
   test("Empty array of categories - produces matrix of categories all set 'false'", () => {
     const transformed = transformCategories('a helpline', {}, mockDef);
     expect(transformed).toStrictEqual({
-      category1: ['subCategory2'],
-      category2: ['subCategory1'],
+      category1: {
+        subCategory1: false,
+        subCategory2: false,
+      },
+      category2: {
+        subCategory1: false,
+        subCategory2: false,
+      },
     });
-  });
-
-  test('Empty array of categories', () => {
-    const transformed = transformCategories([]);
-    expect(transformed).toStrictEqual({});
   });
 
   test("Categories in input don't match the paths of those in definition - adds the missing paths to the output set to 'true'", () => {
@@ -561,8 +566,17 @@ describe('transformCategories', () => {
       mockDef,
     );
     expect(transformed).toStrictEqual({
-      category2: ['subCategory1'],
-      category3: ['subCategory2'],
+      category1: {
+        subCategory1: false,
+        subCategory2: false,
+      },
+      category2: {
+        subCategory1: true,
+        subCategory2: false,
+      },
+      category3: {
+        subCategory2: true,
+      },
     });
   });
 

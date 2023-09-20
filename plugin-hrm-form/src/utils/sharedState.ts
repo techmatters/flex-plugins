@@ -76,8 +76,8 @@ const transferFormToContact = (transferForm: TransferForm): HrmServiceContactWit
         ...form,
         contactlessTask: form.contactlessTask as HrmServiceContact['rawJson']['contactlessTask'],
         categories: transferFormCategoriesToContactCategories(form.categories),
-        conversationMedia: [],
       },
+      conversationMedia: [],
     },
     metadata: {
       ...metadata,

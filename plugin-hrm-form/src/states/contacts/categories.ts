@@ -63,7 +63,7 @@ export function toggleSubCategoriesReducer(state: ContactsState, action: Contact
   switch (action.type) {
     case TOGGLE_SUBCATEGORY: {
       const currentSubcategories =
-        state.existingContacts[action.contactId].draftContact.overview.categories[action.category] ?? [];
+        state.existingContacts[action.contactId].draftContact.rawJson.categories[action.category] ?? [];
       const updatedSubcategories = toggleSubcategoryState(currentSubcategories, action.subcategory);
       return {
         ...state,
@@ -74,10 +74,10 @@ export function toggleSubCategoriesReducer(state: ContactsState, action: Contact
             ...state.existingContacts[action.contactId],
             draftContact: {
               ...state.existingContacts[action.contactId].draftContact,
-              overview: {
-                ...state.existingContacts[action.contactId].draftContact.overview,
+              rawJson: {
+                ...state.existingContacts[action.contactId].draftContact.rawJson,
                 categories: {
-                  ...state.existingContacts[action.contactId].draftContact.overview.categories,
+                  ...state.existingContacts[action.contactId].draftContact.rawJson.categories,
                   [action.category]: updatedSubcategories,
                 },
               },

@@ -36,14 +36,10 @@ import {
   RootState,
 } from '../../../states';
 import { getDefinitionVersions } from '../../../hrmConfig';
-import { HrmServiceContact, StandaloneITask } from '../../../types/types';
+import { StandaloneITask } from '../../../types/types';
 import { LOAD_CONTACT_ACTION } from '../../../states/contacts/existingContacts';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
-
-// From https://stackoverflow.com/questions/47914536/use-partial-in-nested-property-with-typescript
-type RecursivePartial<T> = {
-  [P in keyof T]?: RecursivePartial<T[P]>;
-};
+import { RecursivePartial } from '../../RecursivePartial';
 
 jest.mock('../../../services/CaseService', () => ({ getActivities: jest.fn(() => []), cancelCase: jest.fn() }));
 jest.mock('../../../permissions', () => ({
@@ -212,9 +208,7 @@ describe('useState mocked', () => {
     expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe('—');
 
     expect(store.dispatch).toHaveBeenCalledWith({
-      contacts: [
-          initialState[namespace][contactFormsBase].tasks.task1.contact,
-      ],
+      contacts: [initialState[namespace][contactFormsBase].tasks.task1.contact],
       reference: 'task1',
       replaceExisting: false,
       type: LOAD_CONTACT_ACTION,
@@ -228,8 +222,7 @@ describe('useState mocked', () => {
         ...initialState[namespace][contactFormsBase],
         existingContacts: {
           '__unsavedFromCase:123': {
-            savedContact:
-              initialState[namespace][contactFormsBase].tasks.task1.contact,
+            savedContact: initialState[namespace][contactFormsBase].tasks.task1.contact,
 
             references: ['task1'],
           },
@@ -277,10 +270,7 @@ describe('useState mocked', () => {
     expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe('6/29/2020');
 
     expect(store.dispatch).toHaveBeenCalledWith({
-      contacts: [
-          initialState[namespace][contactFormsBase].tasks.task1.contact,
-
-      ],
+      contacts: [initialState[namespace][contactFormsBase].tasks.task1.contact],
       reference: 'task1',
       replaceExisting: false,
       type: LOAD_CONTACT_ACTION,

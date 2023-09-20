@@ -16,11 +16,12 @@
 
 import { forExistingContact, forTask } from '../../../states/contacts/issueCategorizationStateApi';
 import { CustomITask } from '../../../types/types';
-import { contactFormsBase, namespace } from '../../../states';
+import { contactFormsBase, namespace, RootState } from '../../../states';
 import * as taskActions from '../../../states/contacts/actions';
 import { toggleSubcategoryForTask, toggleSubcategory } from '../../../states/contacts/categories';
 import * as existingContactActions from '../../../states/contacts/existingContacts';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
+import { RecursivePartial } from '../../RecursivePartial';
 
 describe('forTask', () => {
   const api = forTask(<CustomITask>{ taskSid: 'mock task' });
@@ -67,18 +68,19 @@ describe('forExistingCategory', () => {
   const api = forExistingContact(MOCK_CONTACT_ID);
   test('retrieveState - Returns contact from the existing contacts area of the state', () => {
     const mockCategories = { gridView: true, expanded: {} };
-    const retrieved = api.retrieveState(<any>{
+    const mockState: RecursivePartial<RootState> = {
       [namespace]: {
         [contactFormsBase]: {
           existingContacts: {
             [MOCK_CONTACT_ID]: {
               categories: mockCategories,
-              draftContact: { overview: { categories: { category1: ['subcategory1'] } } },
+              draftContact: { rawJson: { categories: { category1: ['subcategory1'] } } },
             },
           },
         },
       },
-    });
+    };
+    const retrieved = api.retrieveState(mockState as any);
     expect(retrieved).toStrictEqual({ ...mockCategories, selectedCategories: { category1: ['subcategory1'] } });
   });
   test('toggleCategoryExpandedActionDispatcher - dispatches an existing contact expand action with the category & task ID', () => {

@@ -51,7 +51,7 @@ export const forTask = (task: CustomITask): IssueCategorizationStateApi => ({
 export const forExistingContact = (contactId: string): IssueCategorizationStateApi => ({
   retrieveState: state => ({
     ...state[namespace][contactFormsBase].existingContacts[contactId].categories,
-    selectedCategories: state[namespace][contactFormsBase].existingContacts[contactId].draftContact.overview.categories,
+    selectedCategories: state[namespace][contactFormsBase].existingContacts[contactId].draftContact.rawJson.categories,
   }),
   toggleCategoryExpandedActionDispatcher: dispatch => category => dispatch(toggleCategoryExpanded(contactId, category)),
   setGridViewActionDispatcher: dispatch => useGridView => dispatch(setCategoriesGridView(contactId, useGridView)),

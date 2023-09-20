@@ -18,7 +18,8 @@ import { callTypes, DefinitionVersion, FormInputType } from 'hrm-form-definition
 import each from 'jest-each';
 
 import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
-import { ContactRawJson, HrmServiceContact, SearchAPIContact } from '../../../types/types';
+import { ContactRawJson, HrmServiceContact } from '../../../types/types';
+import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 const baselineDefinition: Partial<DefinitionVersion> = {
   tabbedForms: {
@@ -36,8 +37,8 @@ const baselineRawJson: ContactRawJson = {
   caseInformation: {},
   categories: {},
   callType: callTypes.child,
-  conversationMedia: [],
   contactlessTask: {
+    ...VALID_EMPTY_CONTACT.rawJson.contactlessTask,
     channel: 'voice',
   },
 };
@@ -56,19 +57,6 @@ const hrmContactWithChildName = (firstName: string, lastName: string): HrmServic
   return baselineHrmContact as HrmServiceContact;
 };
 
-const searchAPIContactWithChildName = (firstName: string, lastName: string): SearchAPIContact => {
-  const baselineContact: Partial<SearchAPIContact> = {
-    contactId: '1234',
-    details: {
-      ...baselineRawJson,
-      childInformation: {
-        lastName,
-        firstName,
-      },
-    },
-  };
-  return baselineContact as SearchAPIContact;
-};
 describe('contactLabel', () => {
   each([
     {

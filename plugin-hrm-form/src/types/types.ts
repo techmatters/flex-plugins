@@ -16,7 +16,7 @@
 
 /* eslint-disable import/no-unused-modules */
 import { ITask } from '@twilio/flex-ui';
-import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions';
+import { CallTypes, DefinitionVersionId } from 'hrm-form-definitions';
 
 import { DateFilterValue } from '../components/caseList/filters/dateFilters';
 import { ChannelTypes } from '../states/DomainConstants';
@@ -161,30 +161,6 @@ export type HrmServiceContact = {
   queueName: string;
   channelSid: string;
   serviceSid: string;
-};
-
-// Information about a single contact, as expected from search contacts endpoint (we might want to reuse this type in backend) - (is this a correct placement for this?)
-export type SearchAPIContact = {
-  contactId: string;
-  overview: {
-    helpline: string;
-    dateTime: string;
-    name: string;
-    customerNumber: string;
-    callType: CallTypes | '';
-    categories: {};
-    counselor: string;
-    notes: string;
-    channel: ChannelTypes | 'default';
-    conversationDuration: number;
-    createdBy: string;
-    taskId: string;
-    updatedBy?: string;
-    updatedAt?: string;
-  };
-  details: ContactRawJson;
-  csamReports: CSAMReportEntry[];
-  referrals?: ResourceReferral[];
 };
 
 export type SearchContactResult = {
