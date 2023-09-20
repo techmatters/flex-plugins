@@ -27,7 +27,7 @@ import SearchForm from './SearchForm';
 import SearchResults, { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './SearchResults';
 import ContactDetails from './ContactDetails';
 import Case from '../case';
-import { SearchPages } from '../../states/search/types';
+import { SearchPages, SearchParams } from '../../states/search/types';
 import { CustomITask, HrmServiceContact, standaloneTaskSid } from '../../types/types';
 import SearchResultsBackButton from './SearchResults/SearchResultsBackButton';
 import {
@@ -37,17 +37,8 @@ import {
   searchContacts,
   searchCases,
 } from '../../states/search/actions';
-import {
-  namespace,
-  searchContactsBase,
-  configurationBase,
-  routingBase,
-  RootState,
-  contactFormsBase,
-} from '../../states';
+import { namespace, searchContactsBase, routingBase, RootState, contactFormsBase } from '../../states';
 import { Flex } from '../../styles/HrmStyles';
-import { ChannelTypes, channelTypes } from '../../states/DomainConstants';
-import { getContactValueTemplate } from '../../utils';
 
 type OwnProps = {
   task: CustomITask;
@@ -58,18 +49,34 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-const Search: React.FC<Props> = props => {
+const Search: React.FC<Props> = ({
+  task,
+  currentIsCaller,
+  searchContacts,
+  searchCases,
+  changeSearchPage,
+  handleSearchFormChange,
+  handleSelectSearchResult,
+  viewContactDetails,
+  showActionIcons,
+  currentPage,
+  currentContact,
+  searchContactsResults,
+  searchCasesResults,
+  form,
+  routing,
+}) => {
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});
 
   const closeDialog = () => setMockedMessage('');
 
-  const handleSearchContacts = (newSearchParams, newOffset) => {
-    props.searchContacts(newSearchParams, CONTACTS_PER_PAGE, newOffset);
+  const handleSearchContacts = (newSearchParams: SearchParams, newOffset) => {
+    searchContacts(newSearchParams, CONTACTS_PER_PAGE, newOffset);
   };
 
   const handleSearchCases = (newSearchParams, newOffset) => {
-    props.searchCases(newSearchParams, CASES_PER_PAGE, newOffset);
+    searchCases(newSearchParams, CASES_PER_PAGE, newOffset);
   };
 
   const setSearchParamsAndHandleSearch = newSearchParams => {
@@ -112,11 +119,11 @@ const Search: React.FC<Props> = props => {
     }
   };
 
-  const goToForm = () => props.changeSearchPage('form');
+  const goToForm = () => changeSearchPage('form');
 
   const goToResultsOnContacts = async () => {
-    await props.searchContacts(searchParams, CONTACTS_PER_PAGE, 0);
-    props.changeSearchPage(SearchPages.resultsContacts);
+    await searchContacts(searchParams, CONTACTS_PER_PAGE, 0);
+    changeSearchPage(SearchPages.resultsContacts);
   };
 
   const goToResultsOnCases = async () => {
@@ -124,8 +131,8 @@ const Search: React.FC<Props> = props => {
      * This returns you to the first page of results from viewing a case, which is safest for now since the UI state is inconsistent otherwise.
      * We will need a follow on fix to allow returning to the same page of results as the case to work correctly
      */
-    await props.searchCases(searchParams, CASES_PER_PAGE, 0);
-    props.changeSearchPage(SearchPages.resultsCases);
+    await searchCases(searchParams, CASES_PER_PAGE, 0);
+    changeSearchPage(SearchPages.resultsCases);
   };
 
   const renderMockDialog = () => {
@@ -144,9 +151,9 @@ const Search: React.FC<Props> = props => {
       case SearchPages.form:
         return (
           <SearchForm
-            task={props.task}
+            task={task}
             values={form}
-            handleSearchFormChange={props.handleSearchFormChange}
+            handleSearchFormChange={handleSearchFormChange}
             handleSearch={setSearchParamsAndHandleSearch}
           />
         );
@@ -154,30 +161,30 @@ const Search: React.FC<Props> = props => {
       case SearchPages.resultsCases:
         return (
           <SearchResults
-            task={props.task}
-            currentIsCaller={props.currentIsCaller}
+            task={task}
+            currentIsCaller={currentIsCaller}
             searchContactsResults={searchContactsResults}
             searchCasesResults={searchCasesResults}
             onlyDataContacts={searchParams.onlyDataContacts}
             closedCases={searchParams.closedCases}
-            handleSelectSearchResult={props.handleSelectSearchResult}
+            handleSelectSearchResult={handleSelectSearchResult}
             handleSearchContacts={setOffsetAndHandleSearchContacts}
             handleSearchCases={setOffsetAndHandleSearchCases}
             toggleNonDataContacts={toggleNonDataContacts}
             toggleClosedCases={toggleClosedCases}
             handleBack={goToForm}
-            handleViewDetails={props.viewContactDetails}
+            handleViewDetails={viewContactDetails}
           />
         );
       case SearchPages.details:
         return (
           <ContactDetails
-            task={props.task}
-            showActionIcons={props.showActionIcons}
-            currentIsCaller={props.currentIsCaller}
+            task={task}
+            showActionIcons={showActionIcons}
+            currentIsCaller={currentIsCaller}
             contact={currentContact}
             handleBack={goToResultsOnContacts}
-            handleSelectSearchResult={props.handleSelectSearchResult}
+            handleSelectSearchResult={handleSelectSearchResult}
             // buttonData={props.checkButtonData('ContactDetails-Section-ChildInformation')}
           />
         );
@@ -195,7 +202,7 @@ const Search: React.FC<Props> = props => {
                 />
               </Flex>
             )}
-            <Case task={props.task} isCreating={false} handleClose={goToResultsOnCases} />
+            <Case task={task} isCreating={false} handleClose={goToResultsOnCases} />
           </>
         );
       default:
@@ -203,8 +210,6 @@ const Search: React.FC<Props> = props => {
     }
   };
   renderSearchPages.displayName = 'SearchPage';
-
-  const { currentPage, currentContact, searchContactsResults, searchCasesResults, form, routing } = props;
 
   return (
     // TODO: Needs converting to a div and the className={editContactFormOpen ? 'editingContact' : ''} adding, but that messes up the CSS

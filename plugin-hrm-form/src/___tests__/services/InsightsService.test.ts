@@ -46,31 +46,31 @@ const oneToOneConfigSpec: DefinitionVersion['insights']['oneToOneConfigSpec'] = 
     childInformation: [
       {
         name: 'toCustomers',
-        insights: [InsightsObject.Customers, 'customer_attribute_1'],
+        insights: ['customers', 'customer_attribute_1'],
       },
       {
         name: 'toConversations',
-        insights: [InsightsObject.Conversations, 'conversation_measure_1'],
+        insights: ['conversations', 'conversation_measure_1'],
       },
     ],
     callerInformation: [
       {
         name: 'toCustomers',
-        insights: [InsightsObject.Customers, 'customer_attribute_2'],
+        insights: ['customers', 'customer_attribute_2'],
       },
       {
         name: 'toConversations',
-        insights: [InsightsObject.Conversations, 'conversation_measure_2'],
+        insights: ['conversations', 'conversation_measure_2'],
       },
     ],
     caseInformation: [
       {
         name: 'toCustomers',
-        insights: [InsightsObject.Customers, 'customer_attribute_3'],
+        insights: ['customers', 'customer_attribute_3'],
       },
       {
         name: 'toConversations',
-        insights: [InsightsObject.Conversations, 'conversation_measure_3'],
+        insights: ['conversations', 'conversation_measure_3'],
       },
     ],
   },
@@ -78,14 +78,14 @@ const oneToOneConfigSpec: DefinitionVersion['insights']['oneToOneConfigSpec'] = 
     topLevel: [
       {
         name: 'id',
-        insights: [InsightsObject.Conversations, 'case'],
+        insights: ['conversations', 'case'],
       },
     ],
   },
 };
 
 // const oneToManyConfigSpecs: DefinitionVersion['insights']['oneToManyConfigSpecs'] = [
-//   { attributeName: 'customer_attribute_7', insightsObject: InsightsObject.Customers, paths: [''] },
+//   { attributeName: 'customer_attribute_7', insightsObject: 'customers', paths: [''] },
 // ];
 
 const taskWithAttributes = (attributes: {}) =>
@@ -268,13 +268,13 @@ describe('buildInsightsData', () => {
                     oneToManyConfigSpecs: [
                       {
                         attributeName: 'customer_attribute_7',
-                        insightsObject: InsightsObject.Customers,
+                        insightsObject: 'customers',
                         paths: ['savedContact.id', 'contactForm.helpline'],
                         ...(saveForNonDataContacts && { saveForNonDataContacts }),
                       },
                       {
                         attributeName: 'conversation_measure_7',
-                        insightsObject: InsightsObject.Conversations,
+                        insightsObject: 'conversations',
                         paths: ['savedContact.id', 'contactForm.helpline'],
                         ...(saveForNonDataContacts && { saveForNonDataContacts }),
                       },
@@ -455,44 +455,44 @@ describe('buildInsightsData', () => {
                     oneToManyConfigSpecs: [
                       {
                         attributeName: 'customer_attribute_7',
-                        insightsObject: InsightsObject.Customers,
+                        insightsObject: 'customers',
                         paths: ['savedContact.id', 'contactForm.helpline', 'caseForm.id'],
                       },
                       {
                         attributeName: 'conversation_measure_7',
-                        insightsObject: InsightsObject.Conversations,
+                        insightsObject: 'conversations',
                         paths: ['savedContact.id', 'contactForm.helpline', 'caseForm.id'],
                       },
                       {
                         attributeName: 'customer_attribute_1',
-                        insightsObject: InsightsObject.Customers,
+                        insightsObject: 'customers',
                         paths: ['contactForm.childInformation.toCustomers'],
                       },
                       {
                         attributeName: 'conversation_measure_1',
-                        insightsObject: InsightsObject.Conversations,
+                        insightsObject: 'conversations',
                         paths: ['contactForm.childInformation.toConversations'],
                       },
 
                       {
                         attributeName: 'customer_attribute_2',
-                        insightsObject: InsightsObject.Customers,
+                        insightsObject: 'customers',
                         paths: ['contactForm.callerInformation.toCustomers'],
                       },
                       {
                         attributeName: 'conversation_measure_2',
-                        insightsObject: InsightsObject.Conversations,
+                        insightsObject: 'conversations',
                         paths: ['contactForm.callerInformation.toConversations'],
                       },
 
                       {
                         attributeName: 'customer_attribute_3',
-                        insightsObject: InsightsObject.Customers,
+                        insightsObject: 'customers',
                         paths: ['contactForm.caseInformation.toCustomers'],
                       },
                       {
                         attributeName: 'conversation_measure_3',
-                        insightsObject: InsightsObject.Conversations,
+                        insightsObject: 'conversations',
                         paths: ['contactForm.caseInformation.toConversations'],
                       },
                     ],
@@ -563,11 +563,11 @@ describe('buildInsightsData', () => {
                         childInformation: [
                           {
                             name: 'toCustomers',
-                            insights: [InsightsObject.Customers, 'customer_attribute_7'],
+                            insights: ['customers', 'customer_attribute_7'],
                           },
                           {
                             name: 'toConversations',
-                            insights: [InsightsObject.Conversations, 'conversation_measure_7'],
+                            insights: ['conversations', 'conversation_measure_7'],
                           },
                         ],
                       },
@@ -575,12 +575,12 @@ describe('buildInsightsData', () => {
                     oneToManyConfigSpecs: [
                       {
                         attributeName: 'customer_attribute_7',
-                        insightsObject: InsightsObject.Customers,
+                        insightsObject: 'customers',
                         paths: ['savedContact.id', 'contactForm.helpline', 'caseForm.id'],
                       },
                       {
                         attributeName: 'conversation_measure_7',
-                        insightsObject: InsightsObject.Conversations,
+                        insightsObject: 'conversations',
                         paths: ['savedContact.id', 'contactForm.helpline', 'caseForm.id'],
                       },
                     ],

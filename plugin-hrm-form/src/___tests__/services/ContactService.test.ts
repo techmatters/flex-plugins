@@ -113,7 +113,7 @@ describe('transformForm', () => {
       csamReports: [],
       metadata: <any>{},
       draft: <any>{},
-    };  
+    };
 
     const expectedCategories = {
       Abuse: ['Abduction'],

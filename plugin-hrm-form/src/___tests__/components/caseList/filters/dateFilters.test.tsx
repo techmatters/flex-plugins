@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { addDays, subDays } from 'date-fns';
+import { addDays, endOfDay, formatISO } from 'date-fns';
 
 import { DateExistsCondition, dateFilterPayloadFromFilters } from '../../../../components/caseList/filters/dateFilters';
 
@@ -74,11 +74,15 @@ describe('dateFilterPayloadFromFilters', () => {
     expect(payload).toStrictEqual({
       filter1: {
         exists: DateExistsCondition.MUST_EXIST,
-        from: baseline.toISOString(),
-        to: addDays(baseline, 2).toISOString(),
+        from: formatISO(baseline),
+        to: formatISO(endOfDay(addDays(baseline, 2))),
       },
-      filter2: { exists: DateExistsCondition.MUST_EXIST, from: baseline.toISOString(), to: undefined },
-      filter3: { exists: DateExistsCondition.MUST_EXIST, from: undefined, to: addDays(baseline, 2).toISOString() },
+      filter2: { exists: DateExistsCondition.MUST_EXIST, from: formatISO(baseline), to: undefined },
+      filter3: {
+        exists: DateExistsCondition.MUST_EXIST,
+        from: undefined,
+        to: formatISO(endOfDay(addDays(baseline, 2))),
+      },
     });
   });
 });
