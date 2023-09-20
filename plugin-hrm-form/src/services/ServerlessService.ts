@@ -180,15 +180,6 @@ export const getWorkerAttributes = async (workerSid: string) => {
 };
 
 /**
- * Deletes a file from the corresponding S3 bucket
- */
-export const deleteFile = async (fileName: string) => {
-  const body = { fileName };
-  const response = await fetchProtectedApi('/deleteFile', body);
-  return response;
-};
-
-/**
  * Gets a recording s3 information from the corresponding call sid
  */
 export const getExternalRecordingS3Location = async (callSid: string) => {

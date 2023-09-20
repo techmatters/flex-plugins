@@ -43,7 +43,6 @@ export async function createCase(
   creatingWorkerSid: string,
   definitionVersion: DefinitionVersionId,
 ) {
-  console.log('>>>  createCase', contactForm, creatingWorkerSid, definitionVersion);
   const { helpline } = contactForm;
 
   const caseRecord = contactForm.contactlessTask?.createdOnBehalfOf
@@ -79,7 +78,6 @@ export async function cancelCase(caseId: Case['id']) {
 }
 
 export async function updateCase(caseId: Case['id'], body: Partial<Case>) {
-  console.log('>>> 6 CaseService updateCase', caseId, body);
   const options = {
     method: 'PUT',
     body: JSON.stringify(body),

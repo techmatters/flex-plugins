@@ -85,7 +85,6 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
     try {
       setLoading(true);
       const fileNameAtAws = await onFileChange(event);
-      console.log('>>> 4. UploadFileInput handleChange', { fileNameAtAws, event });
       setLoading(false);
       setValue(path, fileNameAtAws);
       clearErrors(path); // Error was not being cleared (maybe because we're using a hidden field?)
