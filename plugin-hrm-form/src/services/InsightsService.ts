@@ -26,12 +26,11 @@ import {
   OneToManyConfigSpec,
   OneToManyConfigSpecs,
 } from 'hrm-form-definitions';
-import { ITask } from '@twilio/flex-ui';
 
 import { isNonDataCallType } from '../states/validationRules';
 import { mapChannelForInsights } from '../utils/mappers';
 import { getDateTime } from '../utils/helpers';
-import { Case, CustomITask, HrmServiceContact, isTwilioTask } from '../types/types';
+import { Case, CustomITask, HrmServiceContact } from '../types/types';
 import { formatCategories } from '../utils/formatters';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import { shouldSendInsightsData } from '../utils/setUpActions';
@@ -41,8 +40,7 @@ import {
   ExternalRecordingInfoSuccess,
   isSuccessfulExternalRecordingInfo,
 } from './getExternalRecordingInfo';
-import { generateUrl } from './fetchApi';
-import { generateSignedURLPath } from './fetchHrmApi';
+import { generateSignedURLPath, fetchHrmApi } from './fetchHrmApi';
 
 /*
  * 'Any' is the best we can do, since we're limited by Twilio here.
@@ -399,21 +397,30 @@ const getInsightsUpdateFunctionsForConfig = (
 };
 
 const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSuccess, contact: HrmServiceContact) => {
-  const { hrmMicroserviceBaseUrl } = getHrmConfig();
   const { bucket, key } = externalRecordingInfo;
 
-  // const url_provider = generateUrl(
-  //   new URL(hrmMicroserviceBaseUrl),
-  //   generateSignedURLPath('getObject', 'contact', contact.id, 'recording', bucket, key),
-  // ).toString();
+  try {
+    const mediaUrl = fetchHrmApi(
+      generateSignedURLPath({
+        method: 'getObject',
+        objectType: 'contact',
+        objectId: contact.id.toString(),
+        fileType: 'recording',
+        location: { bucket, key },
+      }),
+    );
+    console.log('>>> mediaUrl', mediaUrl);
 
-  return [
-    {
-      type: 'VoiceRecording',
-      // eslint-disable-next-line camelcase
-      // url_provider,
-    },
-  ];
+    return [
+      {
+        type: 'VoiceRecording',
+        mediaUrl,
+      },
+    ];
+  } catch (error) {
+    console.error('Error generating mediaUrl', error);
+    throw new Error('Error generating mediaUrl');
+  }
 };
 
 /*
