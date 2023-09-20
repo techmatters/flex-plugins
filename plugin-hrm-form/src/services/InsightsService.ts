@@ -30,7 +30,7 @@ import {
 import { isNonDataCallType } from '../states/validationRules';
 import { mapChannelForInsights, formatCategories } from '../utils';
 import { getDateTime } from '../utils/helpers';
-import { Case, CustomITask, HrmServiceContact, ContactRawJson, isTwilioTask } from '../types/types';
+import { Case, CustomITask, HrmServiceContact, ContactRawJson } from '../types/types';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import { shouldSendInsightsData } from '../utils/setUpActions';
 import {
@@ -261,7 +261,7 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
   };
 };
 
-export const processHelplineConfig = (
+const processHelplineConfig = (
   contactForm: ContactRawJson,
   caseForm: Case,
   oneToOneConfigSpec: OneToOneConfigSpec,
