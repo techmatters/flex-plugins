@@ -177,7 +177,6 @@ describe('Test with connected sharedState', () => {
           categories: undefined,
           contactlessTask: undefined,
           draft: undefined,
-          conversationMedia: [],
         } as any,
         timeOfContact: expect.any(String),
         csamReports: undefined,
