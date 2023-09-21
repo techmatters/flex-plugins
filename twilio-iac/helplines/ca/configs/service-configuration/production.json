@@ -1,5 +1,6 @@
 {
     "attributes": {
+        "external_recordings_enabled": "True",
         "form_definitions_base_url": "https://assets-production.tl.techmatters.org/form-definitions/",
         "resources_base_url": ""
     }
