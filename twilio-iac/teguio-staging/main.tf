@@ -38,17 +38,103 @@ locals {
   operating_hours_function_sid = "ZH5fcc5dee5089c176acd0bd24e7fa873e"
   twilio_numbers               = ["messenger:103574689075106", "twitter:1540032139563073538", "instagram:17841454586132629", "whatsapp:+12135834846"]
   channel                      = ""
+  enable_post_survey = true
 
-  twilio_channels = {
-    "facebook" = { "contact_identity" = "messenger:103574689075106", "channel_type" = "facebook" },
-    "webchat"  = { "contact_identity" = "", "channel_type" = "web" }
+  events_filter = [
+    "task.created",
+    "task.canceled",
+    "task.completed",
+    "task.deleted",
+    "task.wrapup",
+    "task-queue.entered",
+    "task.system-deleted",
+    "reservation.accepted",
+    "reservation.rejected",
+    "reservation.timeout",
+    "reservation.wrapup",
+  ]
+
+  custom_task_routing_filter_expression = "isContactlessTask==true OR channelType=='web' OR to=='+14244147346' OR twilioNumber=='whatsapp:+18767287042' OR twilioNumber=='instagram:17841453865951519'"
+
+  workflows = {
+    master : {
+      friendly_name : "Master Workflow"
+      templatefile : "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+    },
+    survey : {
+      friendly_name : "Survey Workflow"
+      templatefile : "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+    }
   }
-  twilio_channels_v2 = {
 
-    "whatsapp" = { "address" = "whatsapp:+12135834846", "channel_type" = "whatsapp" }
-
+  task_queues = {
+    master : {
+      "target_workers" = "1==1",
+      "friendly_name"  = "Master"
+    },
+    survey : {
+      "target_workers" = "1==0",
+      "friendly_name"  = "Survey"
+    },
+    e2e_test : {
+        "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
+        "friendly_name"  = "E2E Test Queue"
+    }
   }
-  custom_channels = ["twitter", "instagram"]
+
+  task_channels = {
+    default : "Default"
+    chat : "Programmable Chat"
+    voice : "Voice"
+    sms : "SMS"
+    video : "Video"
+    email : "Email"
+    survey : "Survey"
+  }
+
+
+  //common across all helplines
+  channel_attributes = {
+    webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
+    voice : "/app/twilio-iac/helplines/templates/channel-attributes/voice.tftpl"
+    twitter : "/app/twilio-iac/helplines/templates/channel-attributes/twitter.tftpl"
+    default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
+  }
+
+  flow_vars = {
+    service_sid                            = "ZS9dbe7c77fe5f0a6ed3c392c63bba9c90"
+    environment_sid                        = "ZE82cbf2bcb65cf4e44c436a24d3024fb5"
+    capture_channel_with_bot_function_sid  = "ZH07b25b75594049950f1b4384ceeedfcb"
+    capture_channel_with_bot_function_name = "channelCapture/captureChannelWithBot"
+    chatbot_callback_cleanup_function_id   = "ZHd8e7e7801687a833b4377b5c90305452"
+    chatbot_callback_cleanup_function_name = "channelCapture/chatbotCallbackCleanup"
+    bot_language                           = "es-CO"
+  }
+
+  channels = {
+    webchat : {
+      channel_type      = "web"
+      contact_identity  = ""
+      templatefile      = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
+      channel_flow_vars = {}
+      chatbot_unique_names = []
+    },
+    facebook : {
+      channel_type      = "facebook"
+      contact_identity  = "messenger:103574689075106"
+      templatefile      = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
+      channel_flow_vars = {}
+      chatbot_unique_names = []
+    },
+    instagram : {
+      channel_type      = "custom"
+      contact_identity  = "instagram"
+      templatefile      = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
+      channel_flow_vars = {}
+      chatbot_unique_names = []
+    }
+  }
+
   strings         = jsondecode(file("${path.module}/../translations/${local.task_language}/strings.json"))
 }
 
