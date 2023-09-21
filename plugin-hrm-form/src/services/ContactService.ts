@@ -15,7 +15,7 @@
  */
 
 import { TaskHelper } from '@twilio/flex-ui';
-import { CallTypes, DefinitionVersion, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
+import { CallTypes, DefinitionVersion } from 'hrm-form-definitions';
 
 import { createContactWithMetadata } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/validationRules';
@@ -165,24 +165,6 @@ const transformSearchAPIContactToContact = (
     },
     timeOfContact: contact.overview.dateTime,
   }));
-};
-
-const deTransformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
-  // de-transform mixed checkbox null DB value to be "mixed"
-  if (e.type === 'mixed-checkbox' && value === null) return 'mixed';
-
-  return value;
-};
-
-// TODO: Remove this once the API is aligned with the type we use in the front end
-export const searchResultToContactForm = (def: FormDefinition, information: Record<string, string | boolean>) => {
-  return def.reduce(
-    (acc, e) => ({
-      ...acc,
-      [e.name]: deTransformValue(e)(information[e.name]),
-    }),
-    {},
-  );
 };
 
 // @VisibleForTesting

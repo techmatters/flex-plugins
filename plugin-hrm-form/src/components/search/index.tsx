@@ -167,7 +167,6 @@ const Search: React.FC<Props> = ({
             searchCasesResults={searchCasesResults}
             onlyDataContacts={searchParams.onlyDataContacts}
             closedCases={searchParams.closedCases}
-            handleSelectSearchResult={handleSelectSearchResult}
             handleSearchContacts={setOffsetAndHandleSearchContacts}
             handleSearchCases={setOffsetAndHandleSearchCases}
             toggleNonDataContacts={toggleNonDataContacts}
