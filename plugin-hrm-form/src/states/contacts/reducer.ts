@@ -18,7 +18,7 @@ import { omit } from 'lodash';
 import { callTypes } from 'hrm-form-definitions';
 
 import * as t from './types';
-import { ContactsState, HrmServiceContactWithMetadata } from './types';
+import { ContactsState, ContactWithMetadata } from './types';
 import {
   DefinitionVersion,
   GeneralActionType,
@@ -63,7 +63,7 @@ export const emptyCategories = [];
 // eslint-disable-next-line import/no-unused-modules
 export const createContactWithMetadata = (definitions: DefinitionVersion) => (
   recreated: boolean,
-): HrmServiceContactWithMetadata => {
+): ContactWithMetadata => {
   const initialChildInformation = definitions.tabbedForms.ChildInformationTab.reduce(createStateItem, {});
   const initialCallerInformation = definitions.tabbedForms.CallerInformationTab.reduce(createStateItem, {});
   const initialCaseInformation = definitions.tabbedForms.CaseInformationTab.reduce(createStateItem, {});

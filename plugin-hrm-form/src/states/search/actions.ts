@@ -20,7 +20,7 @@ import { ITask } from '@twilio/flex-ui';
 import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
 import * as t from './types';
-import { HrmServiceContact } from '../../types/types';
+import { Contact } from '../../types/types';
 import { searchContacts as searchContactsApiCall } from '../../services/ContactService';
 import { searchCases as searchCasesApiCall } from '../../services/CaseService';
 import { updateDefinitionVersion } from '../configuration/actions';
@@ -117,7 +117,7 @@ export const changeSearchPage = (taskId: string) => (page: t.SearchPagesType): t
   taskId,
 });
 
-export const viewContactDetails = (taskId: string) => (contact: HrmServiceContact): t.SearchActionType => ({
+export const viewContactDetails = (taskId: string) => (contact: Contact): t.SearchActionType => ({
   type: t.VIEW_CONTACT_DETAILS,
   contact,
   taskId,

@@ -18,7 +18,7 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { cancelCase, createCase } from '../../services/CaseService';
 import fetchHrmApi from '../../services/fetchHrmApi';
-import { HrmServiceContact } from '../../types/types';
+import { Contact } from '../../types/types';
 import { VALID_EMPTY_CONTACT } from '../testContacts';
 
 jest.mock('../../services/fetchHrmApi');
@@ -79,7 +79,7 @@ describe('createCase()', () => {
     categories: {},
   };
 
-  const baselineContact: HrmServiceContact = {
+  const baselineContact: Contact = {
     ...VALID_EMPTY_CONTACT,
     helpline: 'a helpline',
   };
@@ -112,7 +112,7 @@ describe('createCase()', () => {
       twilioWorkerId: 'owning worker',
     };
 
-    const contactForm: HrmServiceContact = {
+    const contactForm: Contact = {
       ...baselineContact,
       rawJson: {
         ...baselineContact.rawJson,

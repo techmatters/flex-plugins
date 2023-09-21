@@ -22,7 +22,7 @@ import ContactHeader from './ContactHeader';
 import TagsAndCounselor from '../TagsAndCounselor';
 import { PreviewWrapper } from '../../../styles/search';
 import { Flex } from '../../../styles/HrmStyles';
-import { ContactRawJson, HrmServiceContact } from '../../../types/types';
+import { ContactRawJson, Contact } from '../../../types/types';
 import { PreviewDescription } from '../PreviewDescription';
 import { isNonDataCallType } from '../../../states/validationRules';
 import { getDefinitionVersion } from '../../../services/ServerlessService';
@@ -31,7 +31,7 @@ import { configurationBase, namespace, RootState } from '../../../states';
 import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
 
 type ContactPreviewProps = {
-  contact: HrmServiceContact;
+  contact: Contact;
   handleViewDetails: () => void;
 };
 

@@ -16,7 +16,7 @@
 
 import { omit } from 'lodash';
 
-import { HrmServiceContact } from '../../types/types';
+import { Contact } from '../../types/types';
 import { AddExternalReportEntryAction } from '../csam-report/existingContactExternalReport';
 import { configurationBase, namespace, RootState } from '..';
 import { ConfigurationState } from '../configuration/reducer';
@@ -34,7 +34,7 @@ type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
 };
 
-export type SearchContactDraftChanges = RecursivePartial<HrmServiceContact>;
+export type SearchContactDraftChanges = RecursivePartial<Contact>;
 
 // TODO: Update this type when the Lambda worker is "done"
 export type TranscriptMessage = {
@@ -91,7 +91,7 @@ export type TranscriptResult = {
 export type ExistingContactsState = {
   [contactId: string]: {
     references: Set<string>;
-    savedContact: HrmServiceContact;
+    savedContact: Contact;
     draftContact?: SearchContactDraftChanges;
     categories: {
       gridView: boolean;
@@ -105,16 +105,12 @@ export const LOAD_CONTACT_ACTION = 'LOAD_CONTACT_ACTION';
 
 type LoadContactAction = {
   type: typeof LOAD_CONTACT_ACTION;
-  contacts: Partial<HrmServiceContact>[];
+  contacts: Partial<Contact>[];
   reference?: string;
   replaceExisting: boolean;
 };
 
-export const loadContact = (
-  contact: Partial<HrmServiceContact>,
-  reference,
-  replaceExisting = false,
-): LoadContactAction => ({
+export const loadContact = (contact: Partial<Contact>, reference, replaceExisting = false): LoadContactAction => ({
   type: LOAD_CONTACT_ACTION,
   contacts: [contact],
   reference,
@@ -122,7 +118,7 @@ export const loadContact = (
 });
 
 export const loadContacts = (
-  contacts: Partial<HrmServiceContact>[],
+  contacts: Partial<Contact>[],
   reference: string,
   replaceExisting = false,
 ): LoadContactAction => ({

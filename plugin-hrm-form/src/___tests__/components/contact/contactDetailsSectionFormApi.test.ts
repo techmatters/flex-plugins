@@ -23,7 +23,7 @@ import {
 } from 'hrm-form-definitions';
 
 import { contactDetailsSectionFormApi } from '../../../components/contact/contactDetailsSectionFormApi';
-import { HrmServiceContact } from '../../../types/types';
+import { Contact } from '../../../types/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -85,7 +85,7 @@ beforeAll(async () => {
   };
 });
 
-const emptySearchContact: HrmServiceContact = {
+const emptySearchContact: Contact = {
   ...VALID_EMPTY_CONTACT,
   id: '0',
   channel: 'default',
