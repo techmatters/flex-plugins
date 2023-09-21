@@ -44,7 +44,7 @@ type RemoveConnectedCaseAction = {
   taskId: string;
 };
 
-export type UpdatedCaseAction = {
+type UpdatedCaseAction = {
   type: typeof UPDATE_CASE_ACTION;
   payload: Promise<{ taskSid: string; case: t.Case }>;
   taskId?: string;
@@ -53,8 +53,9 @@ export type UpdatedCaseAction = {
 
 type CreateCaseAction = {
   type: typeof CREATE_CASE_ACTION;
-  connectedCase: t.Case;
-  taskId: string;
+  payload: Promise<{ taskSid: string; case: t.Case }>;
+  taskId?: string;
+  meta: unknown;
 };
 
 export type CaseActionType = SetConnectedCaseAction | RemoveConnectedCaseAction | UpdatedCaseAction | CreateCaseAction;

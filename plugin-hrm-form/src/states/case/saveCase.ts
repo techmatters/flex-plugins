@@ -51,7 +51,7 @@ export type SaveCaseReducerState = {
 };
 
 // We need to return a state object of the same type as we are passed, so we need to return the rootState even though we don't change it.
-export const handlePendingAction = (handleAction, asyncAction) =>
+const handlePendingAction = (handleAction, asyncAction) =>
   handleAction(asyncAction as typeof asyncAction, ({ state, rootState }) => {
     return {
       state: {
@@ -62,7 +62,7 @@ export const handlePendingAction = (handleAction, asyncAction) =>
     };
   });
 
-export const handleFulfilledAction = (handleAction, asyncAction) =>
+const handleFulfilledAction = (handleAction, asyncAction) =>
   handleAction(
     asyncAction,
     ({ state, rootState }, { payload: { case: connectedCase, taskSid } }): SaveCaseReducerState => {
@@ -88,7 +88,7 @@ export const handleFulfilledAction = (handleAction, asyncAction) =>
     },
   );
 
-export const handleRejectedAction = (handleAction, asyncAction) =>
+const handleRejectedAction = (handleAction, asyncAction) =>
   handleAction(asyncAction, ({ state, rootState }, { payload }) => {
     return {
       state: {
