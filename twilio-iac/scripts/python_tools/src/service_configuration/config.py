@@ -316,7 +316,7 @@ class Config():
             self.init_service_config(
                 environment=environment,
                 account_sid=hl['account_sid'],
-                helpline_code=hl['helpline_code'],
+                helpline_code=hl['helpline_code'].lower(),
             )
 
     def get_value(self, key: str):
