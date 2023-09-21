@@ -135,4 +135,16 @@ div.Twilio-Splitter div.Twilio-AgentDesktopView\.Panel2 {
     width: 100%;
     justify-content: center;
  }
+
+/**
+ * Teams View CSS Overrides:
+ * 1. Make first column wider (Agent column)
+ */
+ .Twilio-WorkersDataTable th:not(:first-of-type) {
+    width: calc(14rem) !important;
+ }
+
+ .Twilio-WorkersDataTable th:first-of-type {
+    width: auto !important;
+ }
  
