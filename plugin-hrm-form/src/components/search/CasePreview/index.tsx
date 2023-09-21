@@ -28,7 +28,6 @@ import { getDefinitionVersion } from '../../../services/ServerlessService';
 import { updateDefinitionVersion } from '../../../states/configuration/actions';
 import { configurationBase, namespace, RootState } from '../../../states';
 import TagsAndCounselor from '../TagsAndCounselor';
-import { retrieveCategories } from '../../../states/contacts/contactDetailsAdapter';
 import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
 
 type OwnProps = {
@@ -53,7 +52,8 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
   const { definitionVersion: versionId } = info;
   const orphanedCase = !connectedContacts || connectedContacts.length === 0;
   const firstContact = !orphanedCase && connectedContacts[0];
-  const { categories, callSummary } = ((firstContact || {}).rawJson || {}).caseInformation || {
+  const { categories } = (firstContact || {}).rawJson || {};
+  const { callSummary } = ((firstContact || {}).rawJson || {}).caseInformation || {
     callSummary: undefined,
   };
   const summary = info?.summary || callSummary;
@@ -93,11 +93,7 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
           </PreviewDescription>
         )}
 
-        <TagsAndCounselor
-          counselor={counselor}
-          categories={retrieveCategories(categories)}
-          definitionVersion={definitionVersion}
-        />
+        <TagsAndCounselor counselor={counselor} categories={categories} definitionVersion={definitionVersion} />
       </PreviewWrapper>
     </Flex>
   );

@@ -83,7 +83,7 @@ describe('forExistingCategory', () => {
     ]);
     expect(mockDispatcher).toHaveBeenCalledWith(
       existingContactActions.updateDraft(MOCK_CONTACT_ID, {
-        overview: {
+        rawJson: {
           categories: {
             category1: ['subcategory1', 'subcategory2'],
             category2: ['subcategory1'],

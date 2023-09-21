@@ -149,7 +149,7 @@ type CoreAttributes = {
  *  - year_of_birth
  *  - gender
  */
-export const baseUpdates: InsightsUpdateFunction = (
+const baseUpdates: InsightsUpdateFunction = (
   taskAttributes: TaskAttributes,
   contactForm: TaskEntry,
   caseForm: Case,
@@ -202,7 +202,7 @@ export const baseUpdates: InsightsUpdateFunction = (
   };
 };
 
-export const contactlessTaskUpdates: InsightsUpdateFunction = (
+const contactlessTaskUpdates: InsightsUpdateFunction = (
   attributes: TaskAttributes,
   contactForm: TaskEntry,
   caseForm: Case,
@@ -370,10 +370,7 @@ const bindApplyCustomUpdates = (customConfigObject: {
   return [getProcessedAtts, ...customUpdatesFuns];
 };
 
-export const mergeAttributes = (
-  previousAttributes: TaskAttributes,
-  newAttributes: InsightsAttributes,
-): TaskAttributes => {
+const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: InsightsAttributes): TaskAttributes => {
   return {
     ...previousAttributes,
     ...newAttributes,

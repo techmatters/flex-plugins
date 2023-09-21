@@ -31,7 +31,7 @@ import { namespace, configurationBase, contactFormsBase, connectedCaseBase, rout
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { StandaloneITask } from '../../../types/types';
 import { LOAD_CONTACT_ACTION } from '../../../states/contacts/existingContacts';
-import { taskFormToSearchContact } from '../../../states/contacts/contactDetailsAdapter';
+import { taskFormToHrmServiceContact } from '../../../states/contacts/contactDetailsAdapter';
 
 jest.mock('../../../services/CaseService', () => ({ getActivities: jest.fn(() => []), cancelCase: jest.fn() }));
 jest.mock('../../../permissions', () => ({
@@ -190,7 +190,7 @@ describe('useState mocked', () => {
 
     expect(store.dispatch).toHaveBeenCalledWith({
       contacts: [
-        taskFormToSearchContact(
+        taskFormToHrmServiceContact(
           initialState[namespace][connectedCaseBase].tasks.task1,
           initialState[namespace][contactFormsBase].tasks.task1,
           expect.anything(),
@@ -211,7 +211,7 @@ describe('useState mocked', () => {
         ...initialState[namespace][contactFormsBase],
         existingContacts: {
           '__unsavedFromCase:123': {
-            savedContact: taskFormToSearchContact(
+            savedContact: taskFormToHrmServiceContact(
               initialState[namespace][connectedCaseBase].tasks.task1,
               initialState[namespace][contactFormsBase].tasks.task1,
               expect.anything(),
@@ -265,7 +265,7 @@ describe('useState mocked', () => {
 
     expect(store.dispatch).toHaveBeenCalledWith({
       contacts: [
-        taskFormToSearchContact(
+        taskFormToHrmServiceContact(
           initialState[namespace][connectedCaseBase].tasks.task1,
           initialState[namespace][contactFormsBase].tasks.task1,
           expect.anything(),

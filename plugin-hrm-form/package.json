@@ -63,7 +63,6 @@
     "react-viewport-list": "^7.1.0",
     "redux": "^4.1.2",
     "redux-promise-middleware-actions": "^3.1.0",
-    "rollbar": "^2.25.0",
     "slate": "^0.81.1",
     "slate-history": "^0.66.0",
     "slate-hyperscript": "^0.77.0",

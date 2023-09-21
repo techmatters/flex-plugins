@@ -7,7 +7,7 @@
             "enable_lex": false,
             "enable_post_survey": false,
             "enable_save_insights": true,
-            "enable_transcripts": false
+            "enable_manual_pulling": false
         },
         "helplineLanguage": "th-TH",
         "permissionConfig": "th"
