@@ -15,6 +15,7 @@
  */
 
 import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import * as t from '../../../states/search/types';
@@ -25,7 +26,6 @@ import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../../components/search/Se
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { HrmServiceContact } from '../../../types/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
-import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
 jest.mock('../../../services/ContactService', () => ({ searchContacts: jest.fn() }));
 jest.mock('../../../services/CaseService', () => ({ searchCases: jest.fn() }));
