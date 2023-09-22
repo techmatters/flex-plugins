@@ -159,7 +159,10 @@ const transformSearchAPIContactToContact = (
       updatedAt: contact.overview.updatedAt,
       rawJson: {
         ...contact.details,
-        categories: contact.overview.categories,
+        categories: {
+          ...contact.overview.categories,
+          ...contact.details.categories,
+        },
         caseInformation,
       },
       timeOfContact: contact.overview.dateTime,
