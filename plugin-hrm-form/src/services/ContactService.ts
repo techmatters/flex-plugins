@@ -139,30 +139,33 @@ const transformSearchAPIContactToContact = (contacts: SearchAPIContact[] | Conta
    * - channelSid
    * - serviceSid
    */
-  return contacts.map(contact => ({
-    id: contact.contactId,
-    twilioWorkerId: contact.overview.counselor,
-    number: contact.overview.customerNumber,
-    conversationDuration: contact.overview.conversationDuration,
-    csamReports: contact.csamReports,
-    referrals: contact.referrals,
-    conversationMedia: contact.conversationMedia,
-    createdBy: contact.overview.createdBy,
-    helpline: contact.overview.helpline,
-    taskId: contact.overview.taskId,
-    channel: contact.overview.channel,
-    updatedBy: contact.overview.updatedBy,
-    updatedAt: contact.overview.updatedAt,
-    rawJson: {
-      ...contact.details,
-      categories: contact.details.categories,
-      caseInformation: {
-        ...contact.details.caseInformation,
-        categories: undefined, // Optional: remove categories from caseInformation
+  return contacts.map(contact => {
+    const { categories, ...caseInformation } = contact.details?.caseInformation ?? {};
+    return {
+      id: contact.contactId,
+      twilioWorkerId: contact.overview.counselor,
+      number: contact.overview.customerNumber,
+      conversationDuration: contact.overview.conversationDuration,
+      csamReports: contact.csamReports,
+      referrals: contact.referrals,
+      conversationMedia: contact.conversationMedia,
+      createdBy: contact.overview.createdBy,
+      helpline: contact.overview.helpline,
+      taskId: contact.overview.taskId,
+      channel: contact.overview.channel,
+      updatedBy: contact.overview.updatedBy,
+      updatedAt: contact.overview.updatedAt,
+      rawJson: {
+        ...contact.details,
+        categories: {
+          ...contact.overview.categories,
+          ...contact.details.categories,
+        },
+        caseInformation,
       },
-    },
-    timeOfContact: contact.overview.dateTime,
-  }));
+      timeOfContact: contact.overview.dateTime,
+    };
+  });
 };
 
 // @VisibleForTesting
@@ -333,7 +336,6 @@ const saveContactToHrm = async (
   const number = getNumberFromTask(task);
 
   let form = contact.rawJson;
-  // const reservationSid = task.sid;
   const { currentDefinitionVersion } = getDefinitionVersions();
 
   if (!currentDefinitionVersion) {
