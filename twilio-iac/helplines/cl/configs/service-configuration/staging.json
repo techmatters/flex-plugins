@@ -1,6 +1,6 @@
 {
     "attributes": {
-        "external_recordings_enabled": "True",
+        "external_recordings_enabled": true,
         "feature_flags": {},
         "helpline_code": "cl"
     }

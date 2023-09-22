@@ -204,7 +204,9 @@ def update_prop(service_config: ServiceConfiguration):
     local_env_config = deepcopy(
         service_config.local_configs['environment']['data'])
 
-    set_nested_key(local_env_config, config.prop, config.value)
+    value = True if config.value == "True" else False if config.value == "False" else config.value
+
+    set_nested_key(local_env_config, config.prop, value)
 
     with open(service_config.get_config_path('environment'), 'w') as f:
         json.dump(
