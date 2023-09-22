@@ -272,7 +272,7 @@ const AddEditCaseItem: React.FC<Props> = ({
         <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
         <BottomButtonBar>
           <Box marginRight="15px">
-            <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={checkForEdits}>
+            <StyledNextStepButton data-testid="Case-CloseButton" secondary="true" roundCorners onClick={checkForEdits}>
               <Template code="BottomBar-Cancel" />
             </StyledNextStepButton>
             <CloseCaseDialog
@@ -287,7 +287,7 @@ const AddEditCaseItem: React.FC<Props> = ({
             <Box marginRight="15px">
               <StyledNextStepButton
                 data-testid="Case-AddEditItemScreen-SaveAndAddAnotherItem"
-                secondary
+                secondary="true"
                 roundCorners
                 onClick={methods.handleSubmit(saveAndStay, onError)}
               >

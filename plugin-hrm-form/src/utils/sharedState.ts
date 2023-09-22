@@ -16,13 +16,98 @@
 
 import type { ITask } from '@twilio/flex-ui';
 import SyncClient from 'twilio-sync';
+import { CallTypes } from 'hrm-form-definitions';
 
 import { recordBackendError } from '../fullStory';
 import { issueSyncToken } from '../services/ServerlessService';
-import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
-import { TaskEntry } from '../states/contacts/types';
+import { getAseloFeatureFlags, getDefinitionVersions, getTemplateStrings } from '../hrmConfig';
+import { CSAMReportEntry, HrmServiceContact } from '../types/types';
+import { ContactMetadata, HrmServiceContactWithMetadata } from '../states/contacts/types';
+import { createContactWithMetadata } from '../states/contacts/reducer';
+import { ChannelTypes } from '../states/DomainConstants';
+import { ResourceReferral } from '../states/contacts/resourceReferral';
+
+// Legacy type previously used for unsaved contact forms, kept around to ensure transfers are compatible between new & old clients
+// Not much point in replacing the use of this type in the shared state, since we will drop use of shared state in favour of the HRM DB for managing transfer state soon anyway
+type TaskEntry = {
+  helpline: string;
+  callType: CallTypes;
+  childInformation: { [key: string]: string | boolean };
+  callerInformation: { [key: string]: string | boolean };
+  caseInformation: { [key: string]: string | boolean };
+  contactlessTask: {
+    channel: ChannelTypes;
+    date?: string;
+    time?: string;
+    createdOnBehalfOf?: string;
+    [key: string]: string | boolean;
+  };
+  categories: string[];
+  referrals?: ResourceReferral[];
+  csamReports: CSAMReportEntry[];
+  metadata: ContactMetadata;
+  reservationSid?: string;
+};
+type TransferForm = TaskEntry & { draft: ContactMetadata['draft'] };
 
 let sharedStateClient: SyncClient;
+
+const transferFormCategoriesToContactCategories = (
+  transferFormCategories: TaskEntry['categories'],
+): HrmServiceContact['rawJson']['categories'] => {
+  if (!transferFormCategories) return undefined;
+  const contactCategories = {};
+  transferFormCategories.forEach(transferFormCategories => {
+    const [, category, subCategory] = transferFormCategories.split('.');
+    contactCategories[category] = [...(contactCategories[category] ?? []), subCategory];
+  });
+  return contactCategories;
+};
+
+const transferFormToContact = (transferForm: TransferForm): HrmServiceContactWithMetadata => {
+  const { metadata, helpline, csamReports, referrals, reservationSid, ...form } = transferForm;
+  return {
+    contact: {
+      ...createContactWithMetadata(getDefinitionVersions().currentDefinitionVersion)(true).contact,
+      helpline,
+      csamReports,
+      referrals,
+      rawJson: {
+        ...form,
+        contactlessTask: form.contactlessTask as HrmServiceContact['rawJson']['contactlessTask'],
+        categories: transferFormCategoriesToContactCategories(form.categories),
+      },
+      conversationMedia: [],
+    },
+    metadata: {
+      ...metadata,
+      draft: form.draft,
+    },
+  };
+};
+
+const contactFormCategoriesToTransferFormCategories = (
+  contactCategories: HrmServiceContact['rawJson']['categories'],
+): TaskEntry['categories'] => {
+  if (!contactCategories) return undefined;
+  return Object.entries(contactCategories).flatMap(([category, subCategories]) =>
+    subCategories.map(subCategory => `categories.${category}.${subCategory}`),
+  );
+};
+
+const contactToTransferForm = ({ contact, metadata }: HrmServiceContactWithMetadata): TransferForm => {
+  const { helpline, csamReports, referrals, rawJson } = contact;
+  const { draft } = metadata;
+  return {
+    helpline,
+    csamReports,
+    referrals,
+    ...rawJson,
+    categories: contactFormCategoriesToTransferFormCategories(rawJson?.categories),
+    draft,
+    metadata,
+  };
+};
 
 export const setUpSharedStateClient = () => {
   const updateSharedStateToken = async () => {
@@ -55,10 +140,13 @@ const DOCUMENT_TTL_SECONDS = 24 * 60 * 60; // 24 hours
 
 /**
  * Saves the actual form into the Sync Client
- * @param {*} form form for current contact (or undefined)
+ * @param {*} contactWithMetaData current contact (or undefined)
  * @param task
  */
-export const saveFormSharedState = async (form: TaskEntry, task: ITask): Promise<string | null> => {
+export const saveFormSharedState = async (
+  contactWithMetaData: HrmServiceContactWithMetadata,
+  task: ITask,
+): Promise<string | null> => {
   if (!getAseloFeatureFlags().enable_transfers) return null;
 
   try {
@@ -69,13 +157,11 @@ export const saveFormSharedState = async (form: TaskEntry, task: ITask): Promise
       return null;
     }
 
-    const documentName = form ? `pending-form-${task.taskSid}` : null;
+    const documentName = contactWithMetaData ? `pending-form-${task.taskSid}` : null;
 
     if (documentName) {
-      const newForm: TaskEntry = { ...form };
-
       const document = await sharedStateClient.document(documentName);
-      await document.set(newForm, { ttl: DOCUMENT_TTL_SECONDS }); // set time to live to 24 hours
+      await document.set(contactToTransferForm(contactWithMetaData), { ttl: DOCUMENT_TTL_SECONDS }); // set time to live to 24 hours
       return documentName;
     }
 
@@ -89,7 +175,7 @@ export const saveFormSharedState = async (form: TaskEntry, task: ITask): Promise
 /**
  * Restores the contact form from Sync Client (if there is any)
  */
-export const loadFormSharedState = async (task: ITask): Promise<TaskEntry> => {
+export const loadFormSharedState = async (task: ITask): Promise<HrmServiceContactWithMetadata> => {
   if (!getAseloFeatureFlags().enable_transfers) return null;
 
   try {
@@ -108,13 +194,13 @@ export const loadFormSharedState = async (task: ITask): Promise<TaskEntry> => {
     const documentName = task.attributes.transferMeta.formDocument;
     if (documentName) {
       const document = await sharedStateClient.document(documentName);
-      return document.data as TaskEntry;
+      return transferFormToContact(document.data as TransferForm);
     }
 
     return null;
   } catch (err) {
     console.error('Error while loading form from shared state', err);
-    return null;
+    throw err;
   }
 };
 

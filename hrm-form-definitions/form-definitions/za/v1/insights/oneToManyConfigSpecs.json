@@ -7,5 +7,13 @@
       "contactForm.childInformation.municipality",
       "contactForm.childInformation.district"
     ]
+  },
+  {
+    "attributeName": "conversation_attribute_10",
+    "insightsObject": "conversations",
+    "paths": [
+      "savedContact.id"
+    ],
+    "saveForNonDataContacts": true
   }
 ]

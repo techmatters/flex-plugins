@@ -17,7 +17,7 @@
 /* eslint-disable camelcase */
 import { ITask, ChatOrchestrator } from '@twilio/flex-ui';
 
-import { afterCompleteTask, setUpPostSurvey } from '../../utils/setUpActions';
+import { afterCompleteTask, excludeDeactivateConversationOrchestration } from '../../utils/setUpActions';
 import { REMOVE_CONTACT_STATE } from '../../states/types';
 import { FeatureFlags } from '../../types/types';
 
@@ -54,10 +54,13 @@ describe('afterCompleteTask', () => {
   });
 });
 
-describe('setUpPostSurvey', () => {
-  test('featureFlags.enable_post_survey === false should not change ChatOrchestrator', async () => {
+describe('excludeDeactivateConversationOrchestration', () => {
+  test('backend_handled_chat_janitor === false and enable_post_survey === false should not change ChatOrchestrator', async () => {
     const setOrchestrationsSpy = jest.spyOn(ChatOrchestrator, 'setOrchestrations');
-    setUpPostSurvey(<FeatureFlags>{ enable_post_survey: false });
+    excludeDeactivateConversationOrchestration(<FeatureFlags>{
+      enable_post_survey: false,
+      backend_handled_chat_janitor: false,
+    });
 
     expect(setOrchestrationsSpy).not.toHaveBeenCalled();
   });
@@ -65,7 +68,16 @@ describe('setUpPostSurvey', () => {
   test('featureFlags.enable_post_survey === true should change ChatOrchestrator', async () => {
     const setOrchestrationsSpy = jest.spyOn(ChatOrchestrator, 'setOrchestrations').mockImplementation();
 
-    setUpPostSurvey(<FeatureFlags>{ enable_post_survey: true });
+    excludeDeactivateConversationOrchestration(<FeatureFlags>{ enable_post_survey: true });
+
+    expect(setOrchestrationsSpy).toHaveBeenCalledTimes(2);
+    expect(setOrchestrationsSpy).toHaveBeenCalledWith('wrapup', expect.any(Function));
+    expect(setOrchestrationsSpy).toHaveBeenCalledWith('completed', expect.any(Function));
+  });
+  test('backend_handled_chat_janitor === true should change ChatOrchestrator', async () => {
+    const setOrchestrationsSpy = jest.spyOn(ChatOrchestrator, 'setOrchestrations').mockImplementation();
+
+    excludeDeactivateConversationOrchestration(<FeatureFlags>{ backend_handled_chat_janitor: true });
 
     expect(setOrchestrationsSpy).toHaveBeenCalledTimes(2);
     expect(setOrchestrationsSpy).toHaveBeenCalledWith('wrapup', expect.any(Function));

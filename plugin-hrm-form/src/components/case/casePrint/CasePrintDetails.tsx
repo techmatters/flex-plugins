@@ -38,9 +38,7 @@ type OwnProps = {
     email: string;
   };
   categories?: {
-    [category: string]: {
-      [subcategory: string]: boolean;
-    };
+    [category: string]: string[];
   };
   chkOnBlob?: string;
   chkOffBlob?: string;

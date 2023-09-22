@@ -15,6 +15,7 @@
  */
 import promiseMiddleware from 'redux-promise-middleware';
 import { configureStore } from '@reduxjs/toolkit';
+import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import {
   SaveCaseReducerState,
@@ -24,11 +25,9 @@ import {
 } from '../../../states/case/saveCase';
 import { configurationBase, connectedCaseBase, RootState } from '../../../states';
 import { saveCaseState, reduce } from '../../../states/case/reducer';
-import { getAseloFeatureFlags } from '../../../hrmConfig';
 import { updateCase, createCase } from '../../../services/CaseService';
 import { SavedCaseStatus } from '../../../states/case/types';
 import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
-import { TaskEntry } from '../../../states/contacts/types';
 
 jest.mock('../../../services/CaseService');
 
@@ -103,7 +102,7 @@ const nonInitialState: SaveCaseReducerState = {
   rootState: stubRootState,
 };
 
-const contactForm: TaskEntry = {
+const contact = {
   callType: 'chile',
   callerInformation: {
     age: 'Unknown',
@@ -146,24 +145,24 @@ const contactForm: TaskEntry = {
   referrals: [],
 };
 const workerSid = 'Worker-Sid';
-const definitionVersion = 'DefinitionVersion-id';
+const definitionVersion = 'demo-v1';
 const expectObject = {
-    tasks: {
-        task1: {
-          connectedCase: mockPayload.case,
-          caseWorkingCopy: {
-            sections: {},
-            caseSummary: {
-              status: 'test-st',
-              followUpDate: '',
-              childIsAtRisk: false,
-              summary: '',
-            },
-          },
-          availableStatusTransitions: [],
+  tasks: {
+    task1: {
+      connectedCase: mockPayload.case,
+      caseWorkingCopy: {
+        sections: {},
+        caseSummary: {
+          status: 'test-st',
+          followUpDate: '',
+          childIsAtRisk: false,
+          summary: '',
         },
       },
-}
+      availableStatusTransitions: [],
+    },
+  },
+};
 
 describe('actions', () => {
   test('Calls the updateCase service, and update a case', () => {
@@ -172,8 +171,8 @@ describe('actions', () => {
   });
 
   test('Calls the createCase service, and create a case', () => {
-    createCaseAsyncAction(contactForm, mockPayload.taskSid, workerSid, definitionVersion);
-    expect(createCase).toHaveBeenCalledWith(contactForm, workerSid, definitionVersion);
+    createCaseAsyncAction(contact, mockPayload.taskSid, workerSid, definitionVersion as DefinitionVersionId);
+    expect(createCase).toHaveBeenCalledWith(contact, workerSid, definitionVersion);
   });
 
   test('should dispatch updateCaseAsyncAction correctly', async () => {
@@ -193,7 +192,7 @@ describe('actions', () => {
   test('should dispatch createCaseAsyncAction correctly', async () => {
     const { dispatch, getState } = testStore(nonInitialState);
     const startingState = getState();
-    dispatch(createCaseAsyncAction(contactForm, mockPayload.taskSid, workerSid, definitionVersion));
+    dispatch(createCaseAsyncAction(contact, mockPayload.taskSid, workerSid, definitionVersion as DefinitionVersionId));
     const state = getState();
     expect(state).toStrictEqual({
       state: {
@@ -221,7 +220,7 @@ describe('actions', () => {
     const result = reduce(
       nonInitialState.rootState,
       nonInitialState.state,
-      createCaseAsyncAction(contactForm, mockPayload.taskSid, workerSid, definitionVersion),
+      createCaseAsyncAction(contact, mockPayload.taskSid, workerSid, definitionVersion as DefinitionVersionId),
     );
     expect(result).toEqual(expected);
   });

@@ -26,17 +26,17 @@ import { Container } from '../../../styles/HrmStyles';
 import GeneralContactDetails from '../../contact/ContactDetails';
 import ConnectDialog from '../ConnectDialog';
 import BackToSearchResultsButton from '../SearchResults/SearchResultsBackButton';
-import { SearchAPIContact } from '../../../types/types';
+import { HrmServiceContact } from '../../../types/types';
 import { loadContact, releaseContact } from '../../../states/contacts/existingContacts';
 import { DetailsContext } from '../../../states/contacts/contactDetails';
 
 type OwnProps = {
   task: any;
   currentIsCaller: boolean;
-  contact: SearchAPIContact;
+  contact: HrmServiceContact;
   showActionIcons: boolean;
   handleBack: () => void;
-  handleSelectSearchResult: (contact: SearchAPIContact) => void;
+  handleSelectSearchResult: (contact: HrmServiceContact) => void;
 };
 const mapStateToProps = (state: RootState) => {
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
@@ -72,7 +72,7 @@ const ContactDetails: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contact]);
   const handleBackToResults = () => {
-    releaseContactFromState(contact.contactId, task.taskSid);
+    releaseContactFromState(contact.id, task.taskSid);
     handleBack();
   };
 
@@ -113,7 +113,7 @@ const ContactDetails: React.FC<Props> = ({
       <GeneralContactDetails
         context={DetailsContext.CONTACT_SEARCH}
         showActionIcons={showActionIcons}
-        contactId={contact.contactId}
+        contactId={contact.id}
         handleOpenConnectDialog={handleOpenConnectDialog}
       />
     </Container>

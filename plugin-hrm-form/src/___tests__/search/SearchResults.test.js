@@ -190,23 +190,22 @@ describe('Search Results', () => {
       count: 1,
       contacts: [
         {
-          contactId: 'Jill-Smith-id',
-          overview: {
-            dateTime: '2020-03-10',
-            name: 'Jill Smith',
-            customerNumber: 'Anonymous',
+          id: 'Jill-Smith-id',
+          twilioWorkerId: 'counselor-id',
+          timeOfContact: '2020-03-10',
+          number: 'Anonymous',
+          rawJson: {
             callType: 'Child calling about self',
-            categories: { category1: ['Tag1', 'Tag2'] },
-            counselor: 'counselor-id',
-            notes: 'Jill Smith Notes',
-          },
-          details: {
             definitionVersion: 'v1',
-            caseInformation: {
-              callSummary: 'Summary',
+            childInformation: {
+              firstName: 'Jill',
+              lastName: 'Smith',
             },
+            caseInformation: {
+              callSummary: 'Jill Smith Notes',
+            },
+            categories: { category1: ['Tag1', 'Tag2'] },
           },
-          counselor: 'Counselor',
         },
       ],
     };
@@ -276,42 +275,40 @@ describe('Search Results', () => {
       count: 2,
       contacts: [
         {
-          contactId: 'Jill-Smith-id',
-          overview: {
-            dateTime: '2020-03-10',
-            name: 'Jill Smith',
-            customerNumber: 'Anonymous',
+          id: 'Jill-Smith-id',
+          twilioWorkerId: 'counselor-id',
+          timeOfContact: '2020-03-10',
+          number: 'Anonymous',
+          rawJson: {
             callType: 'Child calling about self',
-            categories: { category1: ['Tag1', 'Tag2'] },
-            counselor: 'counselor-id',
-            notes: 'Jill Smith Notes',
-          },
-          details: {
             definitionVersion: 'v1',
-            caseInformation: {
-              callSummary: 'Summary',
+            childInformation: {
+              firstName: 'Jill',
+              lastName: 'Smith',
             },
+            caseInformation: {
+              callSummary: 'Jill Smith Notes',
+            },
+            categories: { category1: ['Tag1', 'Tag2'] },
           },
-          counselor: 'Counselor',
         },
         {
-          contactId: 'Sarah-Park-id',
-          overview: {
-            dateTime: '2020-03-20',
-            name: 'Sarah Park',
-            customerNumber: 'Anonymous',
+          id: 'Sarah-Park-id',
+          twilioWorkerId: 'counselor-id-2',
+          timeOfContact: '2020-03-20',
+          number: 'Anonymous',
+          rawJson: {
             callType: 'Child calling about self',
-            categories: { category1: ['Tag3'] },
-            counselor: 'counselor-id',
-            notes: 'Jill Smith Notes',
-          },
-          details: {
             definitionVersion: 'v1',
-            caseInformation: {
-              callSummary: 'Summary',
+            childInformation: {
+              firstName: 'Sarah',
+              lastName: 'Park',
             },
+            caseInformation: {
+              callSummary: 'Sarah Park Notes',
+            },
+            categories: { category1: ['Tag3'] },
           },
-          counselor: 'Counselor',
         },
       ],
     };

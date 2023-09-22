@@ -26,14 +26,14 @@ import {
 import { Conversation } from '@twilio/conversations';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
-import { adjustChatCapacity, getDefinitionVersion, sendSystemMessage } from '../services/ServerlessService';
+import { adjustChatCapacity, sendSystemMessage, getDefinitionVersion } from '../services/ServerlessService';
 import * as Actions from '../states/contacts/actions';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
 import { customChannelTypes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
-import { CustomITask, FeatureFlags } from '../types/types';
+import { CustomITask, FeatureFlags, isOfflineContactTask } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
 import type { RootState } from '../states';
@@ -55,12 +55,17 @@ export const loadCurrentDefinitionVersion = async () => {
 /**
  * @param task
  */
-export const shouldSendInsightsData = (task: ITask) => {
+/* eslint-disable sonarjs/prefer-single-boolean-return */
+export const shouldSendInsightsData = (task: CustomITask) => {
   const featureFlags = getAseloFeatureFlags();
-  const hasTaskControl = !featureFlags.enable_transfers || TransferHelpers.hasTaskControl(task);
 
-  return hasTaskControl && featureFlags.enable_save_insights && !task.attributes?.skipInsights;
+  if (!featureFlags.enable_save_insights) return false;
+  if (task.attributes?.skipInsights) return false;
+  if (featureFlags.enable_transfers && !TransferHelpers.hasTaskControl(task)) return false;
+
+  return true;
 };
+/* eslint-enable sonarjs/prefer-single-boolean-return */
 
 const saveEndMillis = async (payload: ActionPayload) => {
   Manager.getInstance().store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
@@ -195,29 +200,26 @@ const isAseloCustomChannelTask = (task: CustomITask) =>
  * - task wrapup: removes DeactivateConversation
  * - task completed: removes DeactivateConversation
  */
-const setChatOrchestrationsForPostSurvey = () => {
-  const setExcludedDeactivateConversation = (event: keyof ChatOrchestrationsEvents) => {
-    const excludeDeactivateConversation = (orchestrations: ChatOrchestratorEvent[]) =>
-      orchestrations.filter(e => e !== ChatOrchestratorEvent.DeactivateConversation);
+export const excludeDeactivateConversationOrchestration = (featureFlags: FeatureFlags) => {
+  // TODO: remove conditions once all accounts are updated, since we want this code to be executed in all Flex instances once CHI-2202 is implemented and in place
+  if (featureFlags.backend_handled_chat_janitor || featureFlags.enable_post_survey) {
+    const setExcludedDeactivateConversation = (event: keyof ChatOrchestrationsEvents) => {
+      const excludeDeactivateConversation = (orchestrations: ChatOrchestratorEvent[]) =>
+        orchestrations.filter(e => e !== ChatOrchestratorEvent.DeactivateConversation);
 
-    const defaultOrchestrations = ChatOrchestrator.getOrchestrations(event);
+      const defaultOrchestrations = ChatOrchestrator.getOrchestrations(event);
 
-    if (Array.isArray(defaultOrchestrations)) {
-      ChatOrchestrator.setOrchestrations(event, task => {
-        return isAseloCustomChannelTask(task)
-          ? defaultOrchestrations
-          : excludeDeactivateConversation(defaultOrchestrations);
-      });
-    }
-  };
+      if (Array.isArray(defaultOrchestrations)) {
+        ChatOrchestrator.setOrchestrations(event, task => {
+          return isAseloCustomChannelTask(task)
+            ? defaultOrchestrations
+            : excludeDeactivateConversation(defaultOrchestrations);
+        });
+      }
+    };
 
-  setExcludedDeactivateConversation('wrapup');
-  setExcludedDeactivateConversation('completed');
-};
-
-export const setUpPostSurvey = (featureFlags: FeatureFlags) => {
-  if (featureFlags.enable_post_survey) {
-    setChatOrchestrationsForPostSurvey();
+    setExcludedDeactivateConversation('wrapup');
+    setExcludedDeactivateConversation('completed');
   }
 };
 

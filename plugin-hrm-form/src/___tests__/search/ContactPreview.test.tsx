@@ -27,7 +27,7 @@ import ContactPreview from '../../components/search/ContactPreview';
 import ContactHeader from '../../components/search/ContactPreview/ContactHeader';
 import TagsAndCounselor from '../../components/search/TagsAndCounselor';
 import { getDefinitionVersions } from '../../hrmConfig';
-import { SearchUIContact } from '../../types/types';
+import { HrmServiceContact } from '../../types/types';
 import { configurationBase, namespace, RootState } from '../../states';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -49,32 +49,45 @@ test('<ContactPreview> should mount', async () => {
   const defaultDef = await loadDefinition(formDefinitionsBaseUrl);
   mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, defaultDef);
 
+  const counselorsHash = {
+    WKxxxx: 'John Doe',
+  };
+
   const initialState: DeepPartial<RootState> = {
     [namespace]: {
       [configurationBase]: {
         definitionVersions: {
           [DefinitionVersionId.v1]: defaultDef,
         },
+        counselors: {
+          hash: counselorsHash,
+        },
       },
     },
   };
-  const contact: SearchUIContact = {
-    contactId: '123',
-    overview: {
-      dateTime: '2019-01-01T00:00:00.000Z',
-      channel: 'whatsapp',
-      customerNumber: '+12025550440',
-      callType: 'Child calling about self',
-      counselor: '',
-      notes: '',
-      categories: { category1: ['Tag1', 'Tag2'] },
-      helpline: 'test helpline',
-      conversationDuration: 0,
-      createdBy: '',
-      taskId: 'TASK_ID',
-    },
-    details: {
+  const contact: HrmServiceContact = {
+    id: '123',
+    accountSid: '',
+    timeOfContact: '2019-01-01T00:00:00.000Z',
+    number: '+12025550440',
+    channel: 'whatsapp',
+    twilioWorkerId: 'WKxxxx',
+    helpline: 'test helpline',
+    conversationDuration: 0,
+    createdBy: '',
+    createdAt: '',
+    updatedBy: '',
+    updatedAt: '',
+    queueName: '',
+    channelSid: '',
+    serviceSid: '',
+    taskId: 'TASK_ID',
+    conversationMedia: [],
+    csamReports: [],
+    rawJson: {
       definitionVersion: DefinitionVersionId.v1,
+      callType: 'Child calling about self',
+      categories: { category1: ['Tag1', 'Tag2'] },
       childInformation: {
         firstName: 'Name',
         lastName: 'Last',
@@ -95,15 +108,10 @@ test('<ContactPreview> should mount', async () => {
         didYouDiscussRightsWithTheChild: false,
         didTheChildFeelWeSolvedTheirProblem: false,
         wouldTheChildRecommendUsToAFriend: false,
-        categories: {},
       },
-      callType: 'Someone calling about a child',
-      conversationMedia: [],
       callerInformation: {},
       contactlessTask: { channel: 'voice' },
     },
-    counselorName: 'Counselor',
-    csamReports: [],
   };
 
   const handleOpenConnectDialog = jest.fn();
@@ -130,10 +138,10 @@ test('<ContactPreview> should mount', async () => {
   const { counselor, categories } = wrapper.findByType(TagsAndCounselor).props;
 
   expect(name).toEqual('Name Last');
-  expect(callType).toEqual(contact.overview.callType);
-  expect(channel).toEqual(contact.overview.channel);
-  expect(number).toEqual(contact.overview.customerNumber);
-  expect(counselor).toEqual(contact.counselorName);
-  expect(date).toEqual(contact.overview.dateTime);
-  expect(categories).toEqual(contact.overview.categories);
+  expect(callType).toEqual(contact.rawJson.callType);
+  expect(channel).toEqual(contact.channel);
+  expect(number).toEqual(contact.number);
+  expect(counselor).toEqual(counselorsHash[contact.twilioWorkerId]);
+  expect(date).toEqual(contact.timeOfContact);
+  expect(categories).toEqual(contact.rawJson.categories);
 });

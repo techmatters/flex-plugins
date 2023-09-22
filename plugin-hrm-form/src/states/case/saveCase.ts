@@ -18,7 +18,6 @@ import { createAsyncAction, createReducer } from 'redux-promise-middleware-actio
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { createCase, updateCase } from '../../services/CaseService';
-import { TaskEntry } from '../contacts/types';
 import { Case } from '../../types/types';
 import { UPDATE_CASE_ACTION, CREATE_CASE_ACTION, SavedCaseStatus, CaseState } from './types';
 import type { RootState } from '..';
@@ -27,12 +26,12 @@ import { getAvailableCaseStatusTransitions } from './caseStatus';
 export const createCaseAsyncAction = createAsyncAction(
   CREATE_CASE_ACTION,
   async (
-    contactForm: TaskEntry,
+    contact,
     taskSid: string,
     workerSid: string,
     definitionVersion: DefinitionVersionId,
   ): Promise<{ taskSid: string; case: Case }> => {
-    return { taskSid, case: await createCase(contactForm, workerSid, definitionVersion) };
+    return { taskSid, case: await createCase(contact, workerSid, definitionVersion) };
   },
 );
 

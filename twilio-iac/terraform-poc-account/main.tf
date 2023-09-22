@@ -113,13 +113,6 @@ module "aws" {
   survey_workflow_sid                = module.survey.survey_workflow_sid
 }
 
-module "aws_monitoring" {
-  source         = "../terraform-modules/aws-monitoring/default"
-  helpline       = var.helpline
-  short_helpline = var.short_helpline
-  environment    = var.environment
-}
-
 module "github" {
   source             = "../terraform-modules/github/default"
   twilio_account_sid = local.secrets.twilio_account_sid

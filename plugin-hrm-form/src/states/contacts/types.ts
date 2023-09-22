@@ -14,11 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { CallTypes, DataCallTypes } from 'hrm-form-definitions';
+import { DataCallTypes } from 'hrm-form-definitions';
 
-import { CSAMReportEntry } from '../../types/types';
-import { ChannelTypes } from '../DomainConstants';
-import { DraftResourceReferralState, ResourceReferral } from './resourceReferral';
+import { ContactRawJson, CSAMReportEntry, HrmServiceContact } from '../../types/types';
+import { DraftResourceReferralState } from './resourceReferral';
 import { ExistingContactsState } from './existingContacts';
 import { ContactDetailsState } from './contactDetails';
 
@@ -35,40 +34,24 @@ export const ADD_CSAM_REPORT_ENTRY = 'contacts/ADD_CSAM_REPORT_ENTRY';
 export const SET_EDITING_CONTACT = 'SET_EDITING_CONTACT';
 export const SET_CALL_TYPE = 'SET_CALL_TYPE';
 
-export type TaskEntry = {
-  helpline: string;
-  callType: CallTypes;
-  childInformation: { [key: string]: string | boolean };
-  callerInformation: { [key: string]: string | boolean };
-  caseInformation: { [key: string]: string | boolean };
-  contactlessTask: {
-    channel: ChannelTypes;
-    date?: string;
-    time?: string;
-    createdOnBehalfOf?: string;
-    [key: string]: string | boolean;
+export type ContactMetadata = {
+  startMillis: number;
+  endMillis: number;
+  recreated: boolean;
+  categories: {
+    gridView: boolean;
+    expanded: { [key: string]: boolean };
   };
-  categories: string[];
-  referrals?: ResourceReferral[];
-  csamReports: CSAMReportEntry[];
-  metadata: {
-    startMillis: number;
-    endMillis: number;
-    recreated: boolean;
-    categories: {
-      gridView: boolean;
-      expanded: { [key: string]: boolean };
-    };
-  };
-  isCallTypeCaller: boolean;
-  reservationSid?: string;
   draft: {
     resourceReferralList: DraftResourceReferralState;
   };
 };
+
+export type HrmServiceContactWithMetadata = { contact: HrmServiceContact; metadata: ContactMetadata };
+
 export type ContactsState = {
   tasks: {
-    [taskId: string]: TaskEntry;
+    [taskId: string]: HrmServiceContactWithMetadata;
   };
   existingContacts: ExistingContactsState;
   contactDetails: ContactDetailsState;
@@ -78,8 +61,8 @@ export type ContactsState = {
 type UpdateFormAction = {
   type: typeof UPDATE_FORM;
   taskId: string;
-  parent: keyof TaskEntry;
-  payload: any;
+  parent: keyof ContactRawJson;
+  payload: Partial<ContactRawJson[keyof ContactRawJson]>;
 };
 
 type SaveEndMillisAction = {
@@ -109,7 +92,7 @@ type PrePopulateFormAction = {
 
 type RestoreEntireFormAction = {
   type: typeof RESTORE_ENTIRE_FORM;
-  form: TaskEntry;
+  contact: HrmServiceContactWithMetadata;
   taskId: string;
 };
 

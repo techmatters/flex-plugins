@@ -29,18 +29,18 @@ import {
   routingBase,
   // saveCaseBase,
 } from '../../states';
-import { connectToCase, transformCategories } from '../../services/ContactService';
 import { cancelCase } from '../../services/CaseService';
+import { connectToCase } from '../../services/ContactService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { getActivitiesFromCase, getActivitiesFromContacts, isNoteActivity, sortActivities } from './caseActivities';
-import { getDateFromNotSavedContact, getHelplineData } from './caseHelpers';
+import { getHelplineData } from './caseHelpers';
 import { getLocaleDateTime } from '../../utils/helpers';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import ViewContact from './ViewContact';
 import { Activity, CaseDetails, ConnectedCaseActivity, NoteActivity } from '../../states/case/types';
-import { Case as CaseType, CustomITask, StandaloneITask } from '../../types/types';
+import { Case as CaseType, CustomITask, HrmServiceContact, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import {
   AppRoutes,
@@ -68,7 +68,6 @@ import { referralSectionApi } from '../../states/case/sections/referral';
 import { noteSectionApi } from '../../states/case/sections/note';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import * as ContactActions from '../../states/contacts/existingContacts';
-import { searchContactToHrmServiceContact, taskFormToSearchContact } from '../../states/contacts/contactDetailsAdapter';
 import { ChannelTypes } from '../../states/DomainConstants';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
@@ -92,7 +91,7 @@ const newContactTemporaryId = (connectedCase: CaseType) => `__unsavedFromCase:${
 
 const Case: React.FC<Props> = ({
   task,
-  form,
+  form: { contact, metadata } = {},
   counselorsHash,
   removeConnectedCase,
   changeRoute,
@@ -102,7 +101,7 @@ const Case: React.FC<Props> = ({
   newContact,
   savedContacts,
   loadContact,
-  loadRawContacts,
+  loadContacts,
   releaseContacts,
   cancelNewCase,
   updateCaseAsyncAction,
@@ -156,29 +155,20 @@ const Case: React.FC<Props> = ({
     },
     // savedContacts is not present but savedContactsJson is
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [newContact, savedContactsJson, task, form, props.connectedCaseId, props.connectedCaseState?.connectedCase],
+    [newContact, savedContactsJson, task, contact, props.connectedCaseId, props.connectedCaseState?.connectedCase],
   );
 
   useEffect(() => {
     if (!connectedCase) return;
     const { connectedContacts } = connectedCase;
     if (connectedContacts?.length) {
-      loadRawContacts(connectedContacts, task.taskSid);
+      loadContacts(connectedContacts, task.taskSid);
       setLoadedContactIds(connectedContacts.map(cc => cc.id));
     } else if (!isStandaloneITask(task)) {
       setLoadedContactIds([newContactTemporaryId(connectedCase)]);
-      loadContact(
-        taskFormToSearchContact(
-          task,
-          form,
-          getDateFromNotSavedContact(task, form).toISOString(),
-          workerSid,
-          newContactTemporaryId(connectedCase),
-        ),
-        task.taskSid,
-      );
+      loadContact(contact, task.taskSid);
     }
-  }, [connectedCase, form, loadContact, loadRawContacts, releaseContacts, task, workerSid]);
+  }, [connectedCase, contact, loadContact, loadContacts, releaseContacts, task, workerSid]);
 
   const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;
@@ -220,21 +210,18 @@ const Case: React.FC<Props> = ({
 
   if (!props.connectedCaseState || !definitionVersion) return null;
 
-  const getCategories = firstConnectedContact => {
-    if (firstConnectedContact?.rawJson?.caseInformation) {
-      return firstConnectedContact.rawJson.caseInformation.categories;
+  const getCategories = (firstConnectedContact: HrmServiceContact): Record<string, string[]> => {
+    if (firstConnectedContact?.rawJson) {
+      return firstConnectedContact.rawJson.categories;
     }
-    if (form?.categories && form?.helpline) {
-      return transformCategories(form.helpline, form.categories, definitionVersion);
-    }
-    return null;
+    return contact?.rawJson?.categories;
   };
 
   const { can } = getPermissionsForCase(connectedCase.twilioWorkerId, connectedCase.status);
 
   const firstConnectedContact = (savedContacts && savedContacts[0]) ?? newContact;
 
-  const categories = getCategories(firstConnectedContact);
+  const categories = getCategories(firstConnectedContact) ?? {};
   const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase || {};
   const caseCounselor = counselorsHash[twilioWorkerId];
   const currentCounselor = counselorsHash[workerSid];
@@ -280,11 +267,12 @@ const Case: React.FC<Props> = ({
 
     try {
       releaseContacts(loadedContactIds, task.taskSid);
-      const contact = await submitContactForm(task, form, connectedCase);
       updateCaseAsyncAction(connectedCase.id, {
         ...connectedCase,
       });
       await connectToCase(contact.id, connectedCase.id);
+      const savedContact = await submitContactForm(task, contact, metadata, connectedCase);
+      await connectToCase(savedContact.id, connectedCase.id);
       await completeTask(task);
     } catch (error) {
       console.error(error);
@@ -454,9 +442,9 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     definitionVersions,
     currentDefinitionVersion,
     savedContacts: Object.values(state[namespace][contactFormsBase].existingContacts)
-      .filter(contact => connectedContactIds.has(contact.savedContact.contactId))
-      .map(ecs => searchContactToHrmServiceContact(ecs.savedContact)),
-    newContact: newSearchContact ? searchContactToHrmServiceContact(newSearchContact) : undefined,
+      .filter(contact => connectedContactIds.has(contact.savedContact.id))
+      .map(ecs => ecs.savedContact),
+    newContact: newSearchContact,
   };
 };
 
@@ -477,7 +465,7 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     removeConnectedCase: bindActionCreators(CaseActions.removeConnectedCase, dispatch),
     updateDefinitionVersion: updateCaseDefinition,
     releaseContacts: bindActionCreators(ContactActions.releaseContacts, dispatch),
-    loadRawContacts: bindActionCreators(ContactActions.loadRawContacts, dispatch),
+    loadContacts: bindActionCreators(ContactActions.loadContacts, dispatch),
     loadContact: bindActionCreators(ContactActions.loadContact, dispatch),
     cancelNewCase,
     updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>

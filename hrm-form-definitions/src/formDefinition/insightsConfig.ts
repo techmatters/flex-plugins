@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-enum InsightsObject {
+export enum InsightsObject {
   Customers = 'customers',
   Conversations = 'conversations',
 }

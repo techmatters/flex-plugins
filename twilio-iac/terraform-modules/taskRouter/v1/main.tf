@@ -38,7 +38,6 @@ moved {
 
 
 
-
 // Workflow
 resource "twilio_taskrouter_workspaces_workflows_v1" "workflow" {
   for_each                 = var.workflows
@@ -61,8 +60,6 @@ moved {
   from = twilio_taskrouter_workspaces_workflows_v1.master_workflow
   to   = twilio_taskrouter_workspaces_workflows_v1.workflow["master"]
 }
-
-
 
 
 //Task Channels

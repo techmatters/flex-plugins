@@ -100,9 +100,7 @@ export type CaseDetails = {
   id: number;
   contactIdentifier: string;
   categories?: {
-    [category: string]: {
-      [subcategory: string]: boolean;
-    };
+    [category: string]: string[];
   };
   status: string;
   caseCounselor: string;

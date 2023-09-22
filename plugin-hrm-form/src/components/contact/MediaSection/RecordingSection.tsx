@@ -19,7 +19,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { ErrorFont, LoadMediaButton, LoadMediaButtonText } from './styles';
 import { S3StoredRecording } from '../../../types/types';
-import { getFileDownloadUrl } from '../../../services/ServerlessService';
+import { generateExternalMediaPath } from '../../../services/ContactService';
+import fetchHrmApi from '../../../services/fetchHrmApi';
 
 type OwnProps = { contactId: string; externalStoredRecording: S3StoredRecording };
 
@@ -34,11 +35,18 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
       setLoading(true);
       setShowButton(false);
 
-      const recordingPreSignedUrl = await getFileDownloadUrl(externalStoredRecording.location.key);
-      const recordingResponse = await fetch(recordingPreSignedUrl.downloadUrl);
-      const recordingBlob = await recordingResponse.blob();
-      const voiceRecording = new Audio(URL.createObjectURL(recordingBlob));
-      setVoiceRecording(voiceRecording.src);
+      const mediaType = 'recording';
+
+      const { media_url: recordingPreSignedUrl } = await fetchHrmApi(
+        generateExternalMediaPath(
+          contactId,
+          mediaType,
+          externalStoredRecording.location.bucket,
+          externalStoredRecording.location.key,
+        ),
+      );
+
+      setVoiceRecording(recordingPreSignedUrl);
 
       setLoading(false);
     } catch (error) {
@@ -86,7 +94,7 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
   return (
     <div>
       {voiceRecording ? (
-        <audio controls src={voiceRecording} preload="auto" onError={handleFetchAndLoadException}>
+        <audio controls src={voiceRecording} preload="metadata" onError={handleFetchAndLoadException}>
           <track kind="captions" />
         </audio>
       ) : (

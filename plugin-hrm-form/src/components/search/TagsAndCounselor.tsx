@@ -57,9 +57,11 @@ const TagsAndCounselor: React.FC<Props> = props => {
 
     return (
       <TagsWrapper>
-        <SilentText>
-          <TagText>{props.nonDataCallType}</TagText>
-        </SilentText>
+        {props.nonDataCallType && (
+          <SilentText>
+            <TagText>{props.nonDataCallType}</TagText>
+          </SilentText>
+        )}
       </TagsWrapper>
     );
   };
