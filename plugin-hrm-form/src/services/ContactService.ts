@@ -369,7 +369,6 @@ const saveContactToHrm = async (
   const number = getNumberFromTask(task);
 
   let form = contact.rawJson;
-  // const reservationSid = task.sid;
   const { currentDefinitionVersion } = getDefinitionVersions();
 
   if (!currentDefinitionVersion) {
