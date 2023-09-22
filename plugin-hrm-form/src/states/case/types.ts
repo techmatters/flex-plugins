@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId, HelplineEntry, StatusInfo } from 'hrm-form-definitions';
+import { HelplineEntry, StatusInfo } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
 import { Case, CaseItemEntry, HrmServiceContact } from '../../types/types';
@@ -77,9 +77,7 @@ export type CaseDetails = {
   id: number;
   contactIdentifier: string;
   categories?: {
-    [category: string]: {
-      [subcategory: string]: boolean;
-    };
+    [category: string]: string[];
   };
   status: string;
   caseCounselor: string;

@@ -14,10 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { ITask } from '@twilio/flex-ui';
+
 import { isNullOrUndefined } from './checkers';
 import { isOfflineContactTask } from '../types/types';
+import { ContactMetadata } from '../states/contacts/types';
 
-export const fillEndMillis = metadata => ({
+export const fillEndMillis = (metadata: ContactMetadata): ContactMetadata => ({
   ...metadata,
   endMillis: metadata.endMillis || new Date().getTime(),
 });
@@ -26,13 +29,12 @@ export const fillEndMillis = metadata => ({
  * Metrics will be invalid if:
  * - page was reloaded (form recreated and thus initial information will be lost)
  * - endMillis was not set
- * @param {import('../types/types').CustomITask} task
+ * @param {ITask} task
  * @param {{ startMillis: number, endMillis: number, recreated: boolean }} metadata
  */
-export const getConversationDuration = (task, metadata) => {
+export const getConversationDuration = (task: ITask, { startMillis, endMillis, recreated }) => {
   if (isOfflineContactTask(task)) return null;
 
-  const { startMillis, endMillis, recreated } = metadata;
   const validMetrics = !recreated && !isNullOrUndefined(endMillis);
 
   if (!validMetrics) return null;

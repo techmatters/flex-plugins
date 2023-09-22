@@ -14,14 +14,16 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { HelplineDefinitions } from 'hrm-form-definitions';
+import PropTypes from 'prop-types';
 
-/**
- * Gets Helpline Data (Name, Case Manager, etc.)
- * @param helpline Helpline to filter
- * @param helplineInformation Helpline Information Collection
- */
-export const getHelplineData = (helpline?: string, helplineInformation?: HelplineDefinitions) => {
-  if (helpline && helplineInformation) return helplineInformation.helplines.find(x => x.value === helpline);
-  return undefined;
-};
+export const counselorType = PropTypes.shape({
+  label: PropTypes.string,
+  value: PropTypes.string,
+});
+
+export const fieldType = PropTypes.shape({
+  value: PropTypes.oneOfType([PropTypes.bool, PropTypes.string, counselorType]),
+  error: PropTypes.string,
+  validation: PropTypes.arrayOf(PropTypes.string),
+  touched: PropTypes.bool,
+});

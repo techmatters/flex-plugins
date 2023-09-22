@@ -22,19 +22,10 @@ import { useFormContext, RegisterOptions } from 'react-hook-form';
 import { get, pick } from 'lodash';
 import { format, startOfDay } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
-import {
-  FormItemDefinition,
-  FormDefinition,
-  InputOption,
-  SelectOption,
-  MixedOrBool,
-  FormInputType,
-} from 'hrm-form-definitions';
+import { FormItemDefinition, InputOption, SelectOption, MixedOrBool, FormInputType } from 'hrm-form-definitions';
 
 import {
   Box,
-  ColumnarBlock,
-  TwoColumnLayout,
   FormLabel,
   DependentSelectLabel,
   FormError,
@@ -56,7 +47,6 @@ import {
   FormListboxMultiselectOptionsContainer,
   FormListboxMultiselectOption,
   FormListboxMultiselectOptionLabel,
-  ColumnarContent,
 } from '../../../styles/HrmStyles';
 import type { HTMLElementRef } from './types';
 import UploadFileInput from './UploadFileInput';
@@ -115,7 +105,7 @@ export const createStateItem = <T extends {}>(obj: T, def: FormItemDefinition): 
   [def.name]: getInitialValue(def),
 });
 
-export const ConnectForm: React.FC<{
+const ConnectForm: React.FC<{
   children: <P extends ReturnType<typeof useFormContext>>(args: P) => JSX.Element;
 }> = ({ children }) => {
   const methods = useFormContext();
@@ -162,7 +152,6 @@ const calculateOptionsTabIndexes = (currentValue: any[], options: InputOption[])
  * @param parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
  * @param updateCallback Callback called to update form state. When is the callback called is specified in the input type.
  * @param customHandlers Set of additional handlers specific to file uploads.
- * @param def Definition for a single input.
  */
 export const getInputType = (parents: string[], updateCallback: () => void, customHandlers?: CustomHandlers) => (
   def: FormItemDefinition,

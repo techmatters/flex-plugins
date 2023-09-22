@@ -29,6 +29,7 @@ import { HouseholdEntry, PerpetratorEntry, StandaloneITask } from '../../../type
 import { CaseDetails } from '../../../states/case/types';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
+import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -100,18 +101,23 @@ describe('useState mocked', () => {
       [contactFormsBase]: {
         tasks: {
           task1: {
-            taskSid: 'task1',
-            childInformation: {
-              firstName: 'first',
-              lastName: 'last',
-            },
             metadata: {},
-            caseInformation: {
-              callSummary: 'contact call summary',
+            contact: {
+              ...VALID_EMPTY_CONTACT,
+              rawJson: {
+                ...VALID_EMPTY_CONTACT.rawJson,
+                childInformation: {
+                  firstName: 'first',
+                  lastName: 'last',
+                },
+                caseInformation: {
+                  callSummary: 'contact call summary',
+                },
+                categories: {},
+              },
+              taskSid: 'task1',
             },
-            categories: [],
           },
-          temporaryCaseInfo: '',
         },
       },
       [connectedCaseBase]: {
@@ -138,6 +144,7 @@ describe('useState mocked', () => {
     jest.spyOn(React, 'useState').mockImplementation(useStateMock);
 
     caseDetails = {
+      contactIdentifier: '',
       id: 0,
       households: [],
       incidents: [],
@@ -145,7 +152,6 @@ describe('useState mocked', () => {
       documents: [],
       notes: [],
       referrals: [],
-      name: { firstName: '', lastName: '' },
       childIsAtRisk: false,
       summary: '',
       status: 'open',
@@ -155,8 +161,9 @@ describe('useState mocked', () => {
       updatedAt: '',
       followUpDate: '',
       followUpPrintedDate: '',
-      contact: {},
-      contacts: [{}],
+      categories: {},
+      contact: VALID_EMPTY_CONTACT,
+      contacts: [VALID_EMPTY_CONTACT],
     };
 
     ownProps = {
@@ -169,7 +176,6 @@ describe('useState mocked', () => {
       handleClose: jest.fn(),
       handleUpdate: jest.fn(),
       handleSaveAndEnd: jest.fn(),
-      onStatusChange: jest.fn(),
     };
   });
 

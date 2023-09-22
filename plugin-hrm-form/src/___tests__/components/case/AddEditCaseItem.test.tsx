@@ -32,6 +32,8 @@ import { CustomITask } from '../../../types/types';
 import { AppRoutes, CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
 import { householdSectionApi } from '../../../states/case/sections/household';
 import { changeRoute } from '../../../states/routing/actions';
+import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
+import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -123,21 +125,37 @@ const hrmState: Partial<RootState[typeof namespace]> = {
     existingContacts: {},
     tasks: {
       task1: {
-        childInformation: {
-          firstName: 'first',
-          lastName: 'last',
+        contact: {
+          ...VALID_EMPTY_CONTACT,
+          rawJson: {
+            ...VALID_EMPTY_CONTACT.rawJson,
+            childInformation: {
+              firstName: 'first',
+              lastName: 'last',
+            },
+            callType: 'Child calling about self',
+            callerInformation: {},
+            categories: {},
+            caseInformation: {},
+            contactlessTask: {
+              ...VALID_EMPTY_CONTACT.rawJson.contactlessTask,
+              channel: 'voice',
+            },
+          },
+          helpline: '',
         },
-        helpline: '',
-        callType: 'Child calling about self',
-        callerInformation: {},
-        categories: [],
-        caseInformation: {},
-        metadata: { startMillis: 0, endMillis: 0, categories: { gridView: false, expanded: {} }, recreated: false },
-        isCallTypeCaller: false,
-        contactlessTask: {
-          channel: 'voice',
+        metadata: {
+          startMillis: 0,
+          endMillis: 0,
+          categories: { gridView: false, expanded: {} },
+          recreated: false,
+          draft: {
+            resourceReferralList: {
+              lookupStatus: ReferralLookupStatus.NOT_STARTED,
+              resourceReferralIdToAdd: undefined,
+            },
+          },
         },
-        csamReports: [],
       },
     },
   },

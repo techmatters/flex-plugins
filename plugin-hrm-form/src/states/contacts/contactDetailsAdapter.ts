@@ -14,16 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { HrmServiceContact } from '../../types/types';
-import { getNumberFromTask } from '../../utils';
-import { transformForm } from '../../services/ContactService';
-import { getConversationDuration } from '../../utils/conversationDuration';
-
-/**
- * TODO(murilo): This file replicates some code from the hrm repo. We should implement
- * a better solution later on.
- */
-
 /**
  * @param {string[]} accumulator
  * @param {[string, boolean]} currentValue
@@ -51,43 +41,4 @@ export const retrieveCategories = (categories: Record<string, Record<string, boo
   if (!categories) return {};
 
   return Object.entries(categories).reduce(catsReducer, {});
-};
-
-export const taskFormToHrmServiceContact = (
-  task,
-  form,
-  date,
-  twilioWorkerId,
-  temporaryId,
-): Partial<HrmServiceContact> => {
-  const rawJson = transformForm(form);
-  const timeOfContact = date;
-  const number = getNumberFromTask(task);
-  const { caseInformation, categories } = rawJson;
-  const notes = caseInformation.callSummary as string;
-  const { channelType, taskSid } = task;
-  const conversationDuration = getConversationDuration(task, form.metadata);
-  const { csamReports, helpline, referrals } = form;
-
-  return {
-    id: temporaryId,
-    twilioWorkerId,
-    number,
-    conversationDuration,
-    csamReports,
-    referrals,
-    createdBy: twilioWorkerId,
-    timeOfContact,
-    helpline,
-    taskId: taskSid,
-    channel: channelType,
-    rawJson: {
-      ...rawJson,
-      caseInformation: {
-        ...caseInformation,
-        notes,
-      },
-      categories,
-    },
-  };
 };

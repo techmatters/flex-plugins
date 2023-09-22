@@ -14,14 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { HelplineDefinitions } from 'hrm-form-definitions';
-
-/**
- * Gets Helpline Data (Name, Case Manager, etc.)
- * @param helpline Helpline to filter
- * @param helplineInformation Helpline Information Collection
- */
-export const getHelplineData = (helpline?: string, helplineInformation?: HelplineDefinitions) => {
-  if (helpline && helplineInformation) return helplineInformation.helplines.find(x => x.value === helpline);
-  return undefined;
+// From https://stackoverflow.com/questions/47914536/use-partial-in-nested-property-with-typescript
+export type RecursivePartial<T> = {
+  [P in keyof T]?: RecursivePartial<T[P]>;
 };

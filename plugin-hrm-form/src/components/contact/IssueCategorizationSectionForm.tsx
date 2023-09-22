@@ -15,20 +15,31 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useCallback, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
+import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import type { CategoriesDefinition, HelplineDefinitions, HelplineEntry } from 'hrm-form-definitions';
+import type { CategoriesDefinition } from 'hrm-form-definitions';
+import { Template } from '@twilio/flex-ui';
+import GridIcon from '@material-ui/icons/GridOn';
+import ListIcon from '@material-ui/icons/List';
 
 import { RootState } from '../../states';
-import { CategoriesFromDefinition, createSubCategoriesInputs } from '../common/forms/categoriesTabGenerator';
 import useFocus from '../../utils/useFocus';
 import { IssueCategorizationStateApi } from '../../states/contacts/issueCategorizationStateApi';
 import { getAseloFeatureFlags } from '../../hrmConfig';
+import {
+  Box,
+  CategoriesWrapper,
+  CategoryRequiredText,
+  CategorySubtitleSection,
+  CategoryTitle,
+  Container,
+  ToggleViewButton,
+} from '../../styles/HrmStyles';
+import Section from '../common/forms/Section';
+import CategoryCheckboxes from '../common/forms/CategoryCheckboxes';
 
 type OwnProps = {
   display: boolean;
-  initialValue: string[];
   definition: CategoriesDefinition;
   autoFocus: boolean;
   stateApi: IssueCategorizationStateApi;
@@ -39,66 +50,71 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const IssueCategorizationSectionForm: React.FC<Props> = ({
   display,
-  categoriesMeta,
-  initialValue,
+  gridView,
+  selectedCategories,
+  expanded,
   definition,
   autoFocus,
-  updateForm,
   toggleCategoryExpanded,
+  toggleSubcategory,
   setCategoriesGridView,
 }) => {
   const shouldFocusFirstElement = display && autoFocus;
   const firstElementRef = useFocus(shouldFocusFirstElement);
-  const featureFlags = getAseloFeatureFlags();
-
-  const { getValues, setValue } = useFormContext();
-  const IssueCategorizationTabDefinition = definition;
-
-  const [, setCategories] = useState(initialValue);
-
-  // Couldn't find a way to provide initial values to an field array, as a workaround, intentionally run this only on first render
-  React.useEffect(() => {
-    setValue('categories', initialValue);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const subcategoriesInputs = React.useMemo(() => {
-    const updateCallback = () => {
-      const { categories } = getValues();
-      updateForm(categories);
-      setCategories(categories);
-    };
-
-    if (IssueCategorizationTabDefinition === null || IssueCategorizationTabDefinition === undefined) return {};
-    const counselorToolkitsEnabled = featureFlags.enable_counselor_toolkits;
-    return createSubCategoriesInputs(
-      IssueCategorizationTabDefinition,
-      ['categories'],
-      updateCallback,
-      counselorToolkitsEnabled,
-    );
-  }, [IssueCategorizationTabDefinition, featureFlags.enable_counselor_toolkits, getValues, updateForm]);
+  const selectedCount = Object.values(selectedCategories).reduce((acc, curr) => acc + curr.length, 0);
 
   return (
-    <CategoriesFromDefinition
-      definition={IssueCategorizationTabDefinition}
-      subcategoriesInputs={subcategoriesInputs}
-      categoriesMeta={categoriesMeta}
-      toggleCategoriesGridView={setCategoriesGridView}
-      toggleExpandCategory={toggleCategoryExpanded}
-      firstElementRef={firstElementRef}
-    />
+    <Container>
+      <CategoryTitle>
+        <Template code="Categories-Title" />
+      </CategoryTitle>
+      <CategorySubtitleSection>
+        <CategoryRequiredText>
+          <Template code="Error-CategoryRequired" />
+        </CategoryRequiredText>
+        <ToggleViewButton onClick={() => setCategoriesGridView(true)} active={gridView}>
+          <GridIcon />
+        </ToggleViewButton>
+        <ToggleViewButton onClick={() => setCategoriesGridView(false)} active={!gridView}>
+          <ListIcon />
+        </ToggleViewButton>
+      </CategorySubtitleSection>
+      <CategoriesWrapper>
+        {Object.entries(definition).map(([category, categoryDefinition], index) => (
+          <Box marginBottom="6px" key={`IssueCategorization_${category}_${index}`}>
+            <Section
+              sectionTitle={category}
+              color={categoryDefinition.color}
+              expanded={expanded[category]}
+              handleExpandClick={() => toggleCategoryExpanded(category)}
+              htmlElRef={index === 0 ? firstElementRef : null}
+              buttonDataTestid={`IssueCategorization-Section-${category}`}
+            >
+              <CategoryCheckboxes
+                gridView={gridView}
+                category={category}
+                categoryDefinition={categoryDefinition}
+                toggleSubcategory={toggleSubcategory}
+                selectedSubcategories={selectedCategories[category] ?? []}
+                counselorToolkitsEnabled={getAseloFeatureFlags().enable_counselor_toolkits}
+                selectedCount={selectedCount}
+              />
+            </Section>
+          </Box>
+        ))}
+      </CategoriesWrapper>
+    </Container>
   );
 };
 
 IssueCategorizationSectionForm.displayName = 'IssueCategorizationTab';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  return { categoriesMeta: ownProps.stateApi.retrieveState(state) };
+  return ownProps.stateApi.retrieveState(state);
 };
 
 const mapDispatchToProps = (dispatch, ownProps: OwnProps) => ({
-  updateForm: ownProps.stateApi.updateFormActionDispatcher(dispatch),
+  toggleSubcategory: ownProps.stateApi.toggleSubcategoryActionDispatcher(dispatch),
   toggleCategoryExpanded: ownProps.stateApi.toggleCategoryExpandedActionDispatcher(dispatch),
   setCategoriesGridView: ownProps.stateApi.setGridViewActionDispatcher(dispatch),
 });

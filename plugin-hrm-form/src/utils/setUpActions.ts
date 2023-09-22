@@ -27,7 +27,7 @@ import { Conversation } from '@twilio/conversations';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
 import { adjustChatCapacity, sendSystemMessage, getDefinitionVersion } from '../services/ServerlessService';
-import { namespace, configurationBase, dualWriteBase } from '../states';
+import { namespace, contactFormsBase, configurationBase, dualWriteBase, RootState } from '../states';
 import * as Actions from '../states/contacts/actions';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
