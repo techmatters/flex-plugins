@@ -16,7 +16,11 @@
 
 import each from 'jest-each';
 
-import { fetchHrmApi } from '../../services/fetchHrmApi';
+import {
+  fetchHrmApi,
+  generateSignedURLPath,
+} from '../../services/fetchHrmApi';
+import { GenerateSignedUrlPathParams, S3Location } from '../../types/types';
 import { ApiError } from '../../services/fetchApi';
 import { getHrmConfig } from '../../hrmConfig';
 
@@ -105,5 +109,39 @@ describe('fetchHrmApi', () => {
         response: mockResponse as Response,
       }),
     );
+  });
+});
+
+
+describe('generateSignedURLPath', () => {
+  const testObjectId = '12345';
+  const testLocation: S3Location = {
+    bucket: 'testBucket',
+    key: 'testKey',
+  };
+
+  const testCases = [
+    { method: 'getObject', objectType: 'contact', mediaType: 'recording' },
+    { method: 'getObject', objectType: 'contact', mediaType: 'transcript' },
+    { method: 'getObject', objectType: 'case', mediaType: 'document' },
+    { method: 'putObject', objectType: 'case', mediaType: 'document' },
+    { method: 'deleteObject', objectType: 'case', mediaType: 'document' },
+  ];
+
+  testCases.forEach(({ method, objectType, mediaType }) => {
+    test(`should return the correct path for ${method} method, for a ${objectType} requesting a ${mediaType}`, () => {
+      const params: GenerateSignedUrlPathParams = {
+        method,
+        objectType,
+        objectId: testObjectId,
+        fileType: mediaType,
+        location: testLocation,
+      };
+
+      const expectedPath = `/files/urls?method=${method}&objectType=${objectType}&objectId=${testObjectId}&fileType=${mediaType}&bucket=${testLocation.bucket}&key=${testLocation.key}`;
+      const actualPath = generateSignedURLPath(params);
+
+      expect(actualPath).toEqual(expectedPath);
+    });
   });
 });

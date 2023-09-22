@@ -125,7 +125,6 @@ export type S3StoredRecording = {
 
 export type S3StoredMedia = S3StoredTranscript | S3StoredRecording;
 
-// Extract the 'type' property from S3StoredMedia to create ContactMediaType
 export type ContactMediaType = S3StoredMedia['type'];
 
 export type ConversationMedia = TwilioStoredMedia | S3StoredMedia;
@@ -135,6 +134,18 @@ export const isS3StoredTranscript = (m: ConversationMedia): m is S3StoredTranscr
   m.store === 'S3' && m.type === 'transcript';
 export const isS3StoredRecording = (m: ConversationMedia): m is S3StoredRecording =>
   m.store === 'S3' && m.type === 'recording';
+
+export type SignedURLMethod = 'getObject' | 'putObject' | 'deleteObject';
+export type ObjectType = 'case' | 'contact';
+export type MediaType = 'recording' | 'transcript' | 'document';
+
+export type GenerateSignedUrlPathParams = {
+  method: SignedURLMethod;
+  objectType: ObjectType;
+  objectId: string; // caseId or contactId
+  fileType: MediaType;
+  location: S3Location;
+};
 
 // Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
 export type ContactRawJson = {
