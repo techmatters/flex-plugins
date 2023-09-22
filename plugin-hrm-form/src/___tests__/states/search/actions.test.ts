@@ -177,7 +177,7 @@ describe('test action creators', () => {
     const dispatch = jest.fn();
 
     await actions.searchCases(dispatch)(taskId)(
-      { dateFrom: '2020-11-23', dateTo: '2020-11-23', anotherProperty: 'anotherProperty' },
+      { dateFrom: '2020-11-23T00:00:00+01:00', dateTo: '2020-11-24T23:59:59+01:00', anotherProperty: 'anotherProperty' },
       CASES_PER_PAGE,
       0,
     );
@@ -191,7 +191,7 @@ describe('test action creators', () => {
         filters: {
           createdAt: {
             from: '2020-11-23T00:00:00+01:00',
-            to: '2020-11-23T23:59:59+01:00',
+            to: '2020-11-24T23:59:59+01:00',
           },
         },
       },
