@@ -25,6 +25,7 @@ import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../../components/search/Se
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { HrmServiceContact } from '../../../types/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
+import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
 jest.mock('../../../services/ContactService', () => ({ searchContacts: jest.fn() }));
 jest.mock('../../../services/CaseService', () => ({ searchCases: jest.fn() }));
@@ -177,7 +178,7 @@ describe('test action creators', () => {
     const dispatch = jest.fn();
 
     await actions.searchCases(dispatch)(taskId)(
-      { dateFrom: '2020-11-23T00:00:00+01:00', dateTo: '2020-11-24T23:59:59+01:00', anotherProperty: 'anotherProperty' },
+      { dateFrom: '2020-11-23', dateTo: '2020-11-23', anotherProperty: 'anotherProperty' },
       CASES_PER_PAGE,
       0,
     );
@@ -190,8 +191,8 @@ describe('test action creators', () => {
         anotherProperty: 'anotherProperty',
         filters: {
           createdAt: {
-            from: '2020-11-23T00:00:00+01:00',
-            to: '2020-11-24T23:59:59+01:00',
+            from: formatISO(startOfDay(parseISO('2020-11-23'))),
+            to: formatISO(endOfDay(parseISO('2020-11-23'))),
           },
         },
       },
