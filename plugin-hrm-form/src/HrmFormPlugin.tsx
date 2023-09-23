@@ -16,7 +16,6 @@
 
 import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin, loadCSS } from '@twilio/flex-plugin';
-import type Rollbar from 'rollbar';
 
 import './styles/global-overrides.css';
 
@@ -45,7 +44,8 @@ import { subscribeNewMessageAlertOnPluginInit } from './notifications/newMessage
 import { subscribeReservedTaskAlert } from './notifications/reservedTask';
 import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
 import { setupConferenceComponents, setUpConferenceActions } from './conference';
-import { setUpTransfers } from './transfer';
+import { setUpTransferActions } from './transfer/setUpTransferActions';
+import { playNotification } from './notifications/playNotification';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -143,30 +143,23 @@ const setUpActions = (
   setupObject: ReturnType<typeof getHrmConfig>,
   getMessage: (key: string) => (language: string) => Promise<string>,
 ) => {
-  ActionFunctions.setUpPostSurvey(featureFlags);
+  ActionFunctions.excludeDeactivateConversationOrchestration(featureFlags);
 
   // bind setupObject to the functions that requires some initialization
-  const transferOverride = ActionFunctions.customTransferTask(setupObject);
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject, getMessage);
   const beforeCompleteAction = ActionFunctions.beforeCompleteTask(featureFlags);
-  const afterWrapupAction = ActionFunctions.afterWrapupTask(featureFlags, setupObject);
 
   Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
 
   Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(featureFlags, setupObject, getMessage));
 
-  if (featureFlags.enable_transfers) Flex.Actions.replaceAction('TransferTask', transferOverride);
-
-  if (featureFlags.enable_transfers)
-    Flex.Actions.addListener('afterCancelTransfer', ActionFunctions.afterCancelTransfer);
+  setUpTransferActions(featureFlags.enable_transfers, setupObject);
 
   Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
 
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
 
   Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
-
-  Flex.Actions.addListener('afterWrapupTask', afterWrapupAction);
 
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
 
@@ -178,8 +171,6 @@ export default class HrmFormPlugin extends FlexPlugin {
     super(PLUGIN_NAME);
   }
 
-  public Rollbar?: Rollbar;
-
   /**
    * This code is run when your plugin is being started
    * Use this to modify any UI components or attach to the actions framework
@@ -187,7 +178,7 @@ export default class HrmFormPlugin extends FlexPlugin {
   init(flex: typeof Flex, manager: Flex.Manager) {
     loadCSS('https://use.fontawesome.com/releases/v5.15.4/css/solid.css');
 
-    setUpMonitoring(this, manager.workerClient, manager.serviceConfiguration);
+    setUpMonitoring(manager.workerClient, manager.serviceConfiguration);
 
     console.log(`Welcome to ${PLUGIN_NAME}`);
     this.registerReducers(manager);
@@ -205,7 +196,6 @@ export default class HrmFormPlugin extends FlexPlugin {
     ActionFunctions.loadCurrentDefinitionVersion();
 
     setUpSharedStateClient();
-    if (featureFlags.enable_transfers) setUpTransfers();
     setUpComponents(featureFlags, config, translateUI);
     setUpActions(featureFlags, config, getMessage);
 
@@ -213,6 +203,8 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     subscribeReservedTaskAlert();
     subscribeNewMessageAlertOnPluginInit();
+    // Force one notification on init so AudioPlayer is eagerly loaded
+    playNotification('silence');
 
     const managerConfiguration: Flex.Config = {
       // colorTheme: HrmTheme,

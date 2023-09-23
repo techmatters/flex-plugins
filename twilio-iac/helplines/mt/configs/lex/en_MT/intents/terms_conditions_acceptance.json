@@ -1,0 +1,32 @@
+{
+  "terms_conditions_acceptance": {
+    "description": "Helpline Specific helplines/mt/configs/lex/en_MT/intents Terms and conditions intent",
+    "sample_utterances": [
+      "trigger_terms_conditions_acceptance"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "OK, thank you.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Sorry, I'm having trouble understanding.",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "terms_conditions_response": {
+        "priority": 0,
+        "description": "terms and conditions",
+        "slot_constraint": "Required",
+        "slot_type": "yes_no",
+        "value_elicitation_prompt": {
+          "content": "Do you accept our Terms and Conditions? https://kellimni.com/chat-terms/ .Please answer with a number: \n1. Yes, I accept the terms and conditions. \n2. No, I don't accept the terms and conditions.",
+          "content_type": "PlainText",
+          "max_attempts": 2
+        }
+      }
+    }
+  }
+}

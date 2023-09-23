@@ -46,6 +46,7 @@ export const ContactActions = {
   VIEW_CONTACT: 'viewContact',
   EDIT_CONTACT: 'editContact',
   VIEW_EXTERNAL_TRANSCRIPT: 'viewExternalTranscript',
+  VIEW_RECORDING: 'viewRecording',
 } as const;
 type ContactActions = typeof ContactActions;
 export const ViewIdentifiersAction = {
@@ -160,7 +161,7 @@ export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], 
   };
 };
 
-export const getPermissionsForContact = (twilioWorkerId: t.SearchAPIContact['overview']['counselor']) => {
+export const getPermissionsForContact = (twilioWorkerId: t.HrmServiceContact['twilioWorkerId']) => {
   const { workerSid, isSupervisor, permissionConfig } = getHrmConfig();
 
   if (!permissionConfig || !twilioWorkerId) return { can: undefined };

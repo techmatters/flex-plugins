@@ -17,17 +17,12 @@
 import { BrowserContext, Page, test } from '@playwright/test';
 import * as webchat from '../webchat';
 import { WebChatPage } from '../webchat';
-import { statusIndicator, WorkerStatus } from '../workerStatus';
-import {
-  botStatement,
-  callerStatement,
-  ChatStatement,
-  ChatStatementOrigin,
-  counselorAutoStatement,
-  counselorStatement,
-} from '../chatModel';
+import { statusIndicator } from '../workerStatus';
+import { ChatStatement, ChatStatementOrigin } from '../chatModel';
+import { getWebchatScript } from '../chatScripts';
 import { flexChat } from '../flexChat';
-import { skipTestIfNotTargeted, skipTestIfDataUpdateDisabled } from '../skipTest';
+import { getConfigValue } from '../config';
+import { skipTestIfNotTargeted } from '../skipTest';
 import { tasks } from '../tasks';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { deleteAllTasksInQueue } from '../twilio/tasks';
@@ -36,9 +31,7 @@ import { navigateToAgentDesktop } from '../agent-desktop';
 import { setupContextAndPage, closePage } from '../browser';
 
 test.describe.serial('Web chat caller', () => {
-  // Eventually this test will need to be refactored to return success before the await form.save() using skipIfDatUpdateDisabled() and a separate test
   skipTestIfNotTargeted();
-  skipTestIfDataUpdateDisabled();
 
   let chatPage: WebChatPage, pluginPage: Page, context: BrowserContext;
   test.beforeAll(async ({ browser }) => {
@@ -50,34 +43,24 @@ test.describe.serial('Web chat caller', () => {
   });
 
   test.afterAll(async () => {
-    await statusIndicator(pluginPage)?.setStatus(WorkerStatus.OFFLINE);
+    await statusIndicator(pluginPage)?.setStatus('OFFLINE');
     if (pluginPage) {
       await notificationBar(pluginPage).dismissAllNotifications();
     }
     await closePage(pluginPage);
-    await deleteAllTasksInQueue('Flex Task Assignment', 'Master Workflow', 'Childline');
+    await deleteAllTasksInQueue();
+  });
+
+  test.afterEach(async () => {
+    await deleteAllTasksInQueue();
   });
 
   test('Chat ', async () => {
     test.setTimeout(180000);
     await chatPage.openChat();
-    // await chatPage.selectHelpline('Fake Helpline'); // Step required in Aselo Dev, not in E2E
-    const chatScript = [
-      botStatement(
-        'Welcome to the helpline. To help us better serve you, please answer the following three questions.',
-      ),
-      botStatement('Are you calling about yourself? Please answer Yes or No.'),
-      callerStatement('yes'),
-      botStatement("Thank you. You can say 'prefer not to answer' (or type X) to any question."),
-      botStatement('How old are you?'),
-      callerStatement('10'),
-      botStatement('What is your gender?'), // Step required in Aselo Dev, not in E2E
-      callerStatement('girl'),
-      botStatement("We'll transfer you now. Please hold for a counsellor."),
-      counselorAutoStatement('Hi, this is the counsellor. How can I help you?'),
-      callerStatement('CALLER TEST CHAT MESSAGE'),
-      counselorStatement('COUNSELLOR TEST CHAT MESSAGE'),
-    ];
+    await chatPage.fillPreEngagementForm();
+
+    const chatScript = getWebchatScript();
 
     const webchatProgress = chatPage.chat(chatScript);
     const flexChatProgress: AsyncIterator<ChatStatement> = flexChat(pluginPage).chat(chatScript);
@@ -91,19 +74,22 @@ test.describe.serial('Web chat caller', () => {
       if (expectedCounselorStatement) {
         switch (expectedCounselorStatement.origin) {
           case ChatStatementOrigin.COUNSELOR_AUTO:
-            if (expectedCounselorStatement.text.startsWith('Hi, this is the counsellor')) {
-              await statusIndicator(pluginPage).setStatus(WorkerStatus.AVAILABLE);
-              await tasks(pluginPage).acceptNextTask();
-            }
+            await statusIndicator(pluginPage).setStatus('AVAILABLE');
+            await tasks(pluginPage).acceptNextTask();
             await flexChatProgress.next();
             break;
           default:
             await flexChatProgress.next();
             break;
         }
-      } else {
       }
     }
+
+    if (getConfigValue('skipDataUpdate') as boolean) {
+      console.log('Skipping saving form');
+      return;
+    }
+
     console.log('Starting filling form');
     const form = contactForm(pluginPage);
     await form.fill([

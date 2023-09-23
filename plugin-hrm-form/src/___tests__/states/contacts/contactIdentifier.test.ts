@@ -17,8 +17,9 @@
 import { callTypes, DefinitionVersion, FormInputType } from 'hrm-form-definitions';
 import each from 'jest-each';
 
-import { contactLabelFromHrmContact, contactLabelFromSearchContact } from '../../../states/contacts/contactIdentifier';
-import { ContactRawJson, HrmServiceContact, SearchAPIContact } from '../../../types/types';
+import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
+import { ContactRawJson, HrmServiceContact } from '../../../types/types';
+import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 const baselineDefinition: Partial<DefinitionVersion> = {
   tabbedForms: {
@@ -33,10 +34,11 @@ const baselineDefinition: Partial<DefinitionVersion> = {
 const baselineRawJson: ContactRawJson = {
   childInformation: {},
   callerInformation: {},
-  caseInformation: { categories: {} },
+  caseInformation: {},
+  categories: {},
   callType: callTypes.child,
-  conversationMedia: [],
   contactlessTask: {
+    ...VALID_EMPTY_CONTACT.rawJson.contactlessTask,
     channel: 'voice',
   },
 };
@@ -55,19 +57,6 @@ const hrmContactWithChildName = (firstName: string, lastName: string): HrmServic
   return baselineHrmContact as HrmServiceContact;
 };
 
-const searchAPIContactWithChildName = (firstName: string, lastName: string): SearchAPIContact => {
-  const baselineContact: Partial<SearchAPIContact> = {
-    contactId: '1234',
-    details: {
-      ...baselineRawJson,
-      childInformation: {
-        lastName,
-        firstName,
-      },
-    },
-  };
-  return baselineContact as SearchAPIContact;
-};
 describe('contactLabel', () => {
   each([
     {
@@ -78,15 +67,6 @@ describe('contactLabel', () => {
       contactLabelFunctionToTest: contactLabelFromHrmContact,
       contactWithChildName: hrmContactWithChildName,
       contactType: 'HrmContact',
-    },
-    {
-      baselineContact: {
-        contactId: '1234',
-        details: baselineRawJson,
-      },
-      contactLabelFunctionToTest: contactLabelFromSearchContact,
-      contactWithChildName: searchAPIContactWithChildName,
-      contactType: 'SearchContact',
     },
   ]).describe('for $contactType', ({ baselineContact, contactLabelFunctionToTest, contactWithChildName }) => {
     describe('ChildInformation has firstName or lastName inputs', () => {

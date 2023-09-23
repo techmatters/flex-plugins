@@ -16,7 +16,7 @@
 
 /* eslint-disable import/no-unused-modules */
 import { ITask } from '@twilio/flex-ui';
-import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions';
+import { CallTypes, DefinitionVersionId } from 'hrm-form-definitions';
 
 import { DateFilterValue } from '../components/caseList/filters/dateFilters';
 import { ChannelTypes } from '../states/DomainConstants';
@@ -29,14 +29,6 @@ export type EntryInfo = {
   updatedBy?: string;
   twilioWorkerId: string;
 };
-
-/*
- * export type ReferralEntry = {
- *   date: string;
- *   referredTo: string;
- *   comments: string;
- * };
- */
 
 export type CaseItemFormValues = { [key: string]: string | boolean };
 
@@ -106,24 +98,30 @@ export type TwilioStoredMedia = {
   reservationSid: string;
 };
 
-export enum ContactMediaType {
-  // RECORDING = 'recording',
-  TRANSCRIPT = 'transcript',
-}
-
 export type S3StoredTranscript = {
   store: 'S3';
-  type: ContactMediaType.TRANSCRIPT;
+  type: 'transcript';
   location?: { bucket?: string; key?: string };
 };
 
-type S3StoredMedia = S3StoredTranscript;
+export type S3StoredRecording = {
+  store: 'S3';
+  type: 'recording';
+  location?: { bucket?: string; key?: string };
+};
+
+type S3StoredMedia = S3StoredTranscript | S3StoredRecording;
+
+// Extract the 'type' property from S3StoredMedia to create ContactMediaType
+export type ContactMediaType = S3StoredMedia['type'];
 
 export type ConversationMedia = TwilioStoredMedia | S3StoredMedia;
 
 export const isTwilioStoredMedia = (m: ConversationMedia): m is TwilioStoredMedia => m.store === 'twilio';
 export const isS3StoredTranscript = (m: ConversationMedia): m is S3StoredTranscript =>
-  m.store === 'S3' && m.type === ContactMediaType.TRANSCRIPT;
+  m.store === 'S3' && m.type === 'transcript';
+export const isS3StoredRecording = (m: ConversationMedia): m is S3StoredRecording =>
+  m.store === 'S3' && m.type === 'recording';
 
 // Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
 export type ContactRawJson = {
@@ -131,24 +129,33 @@ export type ContactRawJson = {
   callType: CallTypes | '';
   childInformation: Record<string, boolean | string>;
   callerInformation: Record<string, boolean | string>;
-  caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
-  contactlessTask: { channel: ChannelTypes; [key: string]: string | boolean };
-  conversationMedia: ConversationMedia[];
+  caseInformation: Record<string, boolean | string>;
+  categories: Record<string, string[]>;
+  contactlessTask: {
+    channel: ChannelTypes;
+    date: string;
+    time: string;
+    createdOnBehalfOf: string;
+    [key: string]: string | boolean;
+  };
 };
 
 export type HrmServiceContact = {
   id: string;
+  accountSid: string;
   twilioWorkerId: string;
   number: string;
   conversationDuration: number;
   csamReports: CSAMReportEntry[];
   referrals?: ResourceReferral[];
+  conversationMedia?: ConversationMedia[];
+  createdAt: string;
   createdBy: string;
   helpline: string;
   taskId: string;
   channel: ChannelTypes | 'default';
   updatedBy: string;
-  updatedAt: string;
+  updatedAt?: string;
   rawJson: ContactRawJson;
   timeOfContact: string;
   queueName: string;
@@ -156,34 +163,9 @@ export type HrmServiceContact = {
   serviceSid: string;
 };
 
-// Information about a single contact, as expected from search contacts endpoint (we might want to reuse this type in backend) - (is this a correct placement for this?)
-export type SearchAPIContact = {
-  contactId: string;
-  overview: {
-    helpline: string;
-    dateTime: string;
-    customerNumber: string;
-    callType: CallTypes | '';
-    categories: {};
-    counselor: string;
-    notes: string;
-    channel: ChannelTypes | 'default';
-    conversationDuration: number;
-    createdBy: string;
-    taskId: string;
-    updatedBy?: string;
-    updatedAt?: string;
-  };
-  details: ContactRawJson;
-  csamReports: CSAMReportEntry[];
-  referrals?: ResourceReferral[];
-};
-
-export type SearchUIContact = SearchAPIContact & { counselorName: string; callerName?: string };
-
 export type SearchContactResult = {
   count: number;
-  contacts: SearchUIContact[];
+  contacts: HrmServiceContact[];
 };
 
 export type SearchCaseResult = {
@@ -255,13 +237,13 @@ export type FeatureFlags = {
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
   enable_external_transcripts: boolean; // Enables Viewing Transcripts Stored Outside of Twilio
-  post_survey_serverless_handled: boolean; // Post Survey handled in serverless instead of in Flex
   enable_csam_clc_report: boolean; // Enables CSAM child Reports
   enable_counselor_toolkits: boolean; // Enables Counselor Toolkits
   enable_emoji_picker: boolean; // Enables Emoji Picker
   enable_aselo_messaging_ui: boolean; // Enables Aselo Messaging UI iinstead of the default Twilio one - reduced functionality for low spec clients.
   enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior
   enable_lex: boolean; // Enables consuming from Lex bots
+  backend_handled_chat_janitor: boolean; // [Temporary flag until all accounts are migrated] Enables handling the janitor from taskrouter event listeners
 };
 /* eslint-enable camelcase */
 
@@ -298,6 +280,7 @@ export type OfflineContactTask = {
     channelType: 'default';
     helplineToSave?: string;
     preEngagementData?: Record<string, string>;
+    skipInsights?: boolean;
   };
   channelType: 'default';
 };

@@ -1,6 +1,6 @@
 [
   {
-    "name": "friendlyName",
+    "name": "firstName",
     "label": "Preferred Name",
     "type": "input",
     "required": {
@@ -117,10 +117,10 @@
     "name": "gender",
     "label": "Gender",
     "type": "select",
-    "unknownOption": "Desconocido",
+    "unknownOption": "Unknown",
     "options": [
       {
-        "value": "Desconocido",
+        "value": "Unknown",
         "label": ""
       },
       {
@@ -143,7 +143,7 @@
   },
   {
     "name": "relationshipToChild",
-    "label": "Relationship to young person",
+    "label": "Relationship to person of concern",
     "type": "select",
     "unknownOption": "",
     "options": [
@@ -164,8 +164,8 @@
         "label": "Parent"
       },
       {
-        "value": "Friend",
-        "label": "Friend"
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ],
     "required": {

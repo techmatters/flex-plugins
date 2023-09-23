@@ -1,0 +1,32 @@
+{
+  "terms_conditions_acceptance": {
+    "description": "Helpline Specific helplines/mt/configs/lex/uk/intents Terms and conditions intent",
+    "sample_utterances": [
+      "trigger_terms_conditions_acceptance"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "Дякую",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Вибачте, наразі я не можу допомогти.",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "terms_conditions_response": {
+        "priority": 0,
+        "description": "terms and conditions",
+        "slot_constraint": "Required",
+        "slot_type": "yes_no",
+        "value_elicitation_prompt": {
+          "content": "Ви приймаєте наші умови? https://kellimni.com/chat-terms/ . Будь ласка, дайте відповідь цифрою: \n1. Так, я приймаю умови. \n2. Ні, я не приймаю умови.",
+          "content_type": "PlainText",
+          "max_attempts": 2
+        }
+      }
+    }
+  }
+}

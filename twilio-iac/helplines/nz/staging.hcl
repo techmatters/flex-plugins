@@ -19,37 +19,37 @@ locals {
 
     #Task router
     phone_numbers = {
-      youthline : ["+18645238101","+6478079100"]
+      youthline : ["+18645238101", "+6478079100"]
     }
 
     #Channels
-     channels = {
+    channels = {
       webchat : {
-        channel_type = "web"
+        channel_type     = "web"
         contact_identity = ""
-        templatefile = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-no-chatbot-operating-hours.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours.tftpl"
         channel_flow_vars = {
-          chat_greeting_message = "Hello, welcome to Youthline. Please wait for a counsellor."
+          chat_greeting_message = "Kia ora, thank you for contacting Youthline. One of our counsellors will get back to you as soon as we can. If you or someone else are in immediate danger, please call 111 immediately."
           widget_from           = "Youthline"
         }
-        chatbot_unique_names =[]
+        chatbot_unique_names = []
       },
       voice : {
-        channel_type = "voice"
+        channel_type     = "voice"
         contact_identity = ""
-        templatefile = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/voice.tftpl"
         channel_flow_vars = {
-          voice_ivr_greeting_message = "Hello, welcome to Youthline. Please wait for a counsellor."
+          voice_ivr_greeting_message = "Kia ora, thank you for contacting Youthline. One of our counsellors will get back to you as soon as we can. If you or someone else are in immediate danger, please call 111 immediately."
           voice_ivr_language         = "en-US"
         }
-        chatbot_unique_names =[]
+        chatbot_unique_names = []
       },
       sms : {
-        channel_type = "sms"
-        contact_identity = "+18645238101"
-        templatefile = "/app/twilio-iac/helplines/templates/studio-flows/sms-basic.tftpl"
-        channel_flow_vars = {}
-        chatbot_unique_names =[]
+        channel_type         = "sms"
+        contact_identity     = "+18645238101"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/sms-basic.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
       }
     }
   }

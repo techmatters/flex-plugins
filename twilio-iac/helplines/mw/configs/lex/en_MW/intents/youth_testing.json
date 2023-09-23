@@ -1,0 +1,33 @@
+{
+  "youth_testing": {
+    "description": "Youth Testing intent",
+    "sample_utterances": [
+      "Incoming webchat contact",
+      "trigger_youth_testing"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "We'll transfer you now. Please hold for a counsellor.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a counsellor.",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "contact_reason": {
+        "priority": 1,
+        "description": "Reason for contacting",
+        "slot_constraint": "Required",
+        "slot_type": "youth_testing",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "Thank you for contacting us, how can we help you today? Choose one of the below options: 1. Looking for information? 2. File a CSAM report? 3. Speak to a counsellor",
+          "content_type": "PlainText"
+        }
+      }
+    }
+  }
+}

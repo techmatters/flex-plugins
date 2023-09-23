@@ -1,0 +1,44 @@
+{
+  "pre_survey": {
+    "description": "Helpline Specific configs/lex/en_JM/intents Pre Survey Intent Survey intent",
+    "sample_utterances": [
+      "Incoming webchat contact",
+      "trigger_pre_survey"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "Зв'яжемо тебе із нашим оператором, з яким ти зможеш поговорити.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Мені шкода, я цього не розумію. Зв'яжемо тебе із нашим оператором, з яким ти зможеш поговорити.",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "aboutSelf": {
+        "priority": 1,
+        "description": "Caller is calling for self or someone else",
+        "slot_constraint": "Required",
+        "slot_type": "yes_no",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "Привіт, це Kék Vonal! Будь ласка, дай відповіді на наступні запитання, щоб ми могли допомогти тобі. Тобі потрібна допомога у власній справі? Будь ласка, дай відповідь «Так» або «Ні».",
+          "content_type": "PlainText"
+        }
+      },
+      "age": {
+        "priority": 2,
+        "description": "Age of caller",
+        "slot_constraint": "Required",
+        "slot_type": "age",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "Скільки тобі років? Будь ласка, дай відповідь цифрою.",
+          "content_type": "PlainText"
+        }
+      }
+    }
+  }
+}

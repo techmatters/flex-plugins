@@ -118,14 +118,6 @@ module "aws" {
   helpline_region                    = "eu-west-1"
 }
 
-module "aws_monitoring" {
-  source            = "../terraform-modules/aws-monitoring/default"
-  helpline          = var.helpline
-  short_helpline    = var.short_helpline
-  environment       = var.environment
-  cloudwatch_region = "eu-west-1"
-}
-
 module "github" {
 
   source             = "../terraform-modules/github/default"

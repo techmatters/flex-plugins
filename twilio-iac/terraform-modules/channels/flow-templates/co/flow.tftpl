@@ -1,0 +1,929 @@
+${
+  jsonencode(
+    {
+
+  "description": flow_description,
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "next": "operating_hours",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "attributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1240,
+          "y": 3850
+        },
+        "workflow": master_workflow_sid,
+        "channel": chat_task_channel_sid,
+        "attributes": channel_attributes
+      }
+    },
+    {
+      "name": "operating_hours",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "check_office_state",
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": 180,
+          "y": 290
+        },
+        "function_sid": operating_hours_function_sid,
+        "parameters": [
+          {
+            "value": "webchat",
+            "key": "channel"
+          }
+        ],
+        "url": "${serverless_url}/operatingHours"
+      }
+    },
+    {
+      "name": "check_office_state",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "closed",
+          "event": "noMatch"
+        },
+        {
+          "next": "closed",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains closed",
+              "arguments": [
+                "{{widgets.operating_hours.body}}"
+              ],
+              "type": "contains",
+              "value": "closed"
+            }
+          ]
+        },
+        {
+          "next": "holiday",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains holiday",
+              "arguments": [
+                "{{widgets.operating_hours.body}}"
+              ],
+              "type": "contains",
+              "value": "holiday"
+            }
+          ]
+        },
+        {
+          "next": "send_greeting",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains open",
+              "arguments": [
+                "{{widgets.operating_hours.body}}"
+              ],
+              "type": "contains",
+              "value": "open"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.operating_hours.body}}",
+        "offset": {
+          "x": 240,
+          "y": 580
+        }
+      }
+    },
+    {
+      "name": "closed",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -170,
+          "y": 890
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "Lo sentimos, por el momento no estamos atendiendo. Vuelve a contactarnos en el siguiente día hábil de 8am a 5pm. ¡Saludos!"
+      }
+    },
+    {
+      "name": "holiday",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 330,
+          "y": 990
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "Lo sentimos, no atendemos durante días festivos. Vuelve a contactarnos en el siguiente día hábil de 8am a 5pm. ¡Saludos!"
+      }
+    },
+    {
+      "name": "get_contact_reason",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "split_contact_reason",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 920,
+          "y": 1100
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Te Guío",
+        "body": "Por favor, escribe solo el número de la opción que corresponda. \n1: Si tienes una emergencia. \n2: Si quieres contactarte con la Línea de Ayuda.\n3: Cualquier otra solicitud.",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "split_contact_reason",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "contact_reason_attempt",
+          "event": "noMatch"
+        },
+        {
+          "next": "counselor_handoff",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.get_contact_reason.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "get_counseling_type",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.get_contact_reason.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "split_web",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.get_contact_reason.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.get_contact_reason.inbound.Body}}",
+        "offset": {
+          "x": 1150,
+          "y": 1350
+        }
+      }
+    },
+    {
+      "name": "send_greeting",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "get_contact_reason",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 860,
+          "y": 800
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Te Guío",
+        "to": "{{contact.channel.address}}",
+        "body": "¡Bienvenido/a a Te Guío!"
+      }
+    },
+    {
+      "name": "get_counseling_type",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "split_counseling_type",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1280,
+          "y": 1710
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Te Guío",
+        "body": "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a la escucha y la orientación de inquietudes que se puedan tener sobre conductas sexuales perjudiciales en niñas, niños y adolescentes. ¡Qué gusto que te contactes con nosotros! \n\nPara empezar a ayudarte, por favor marca únicamente el número de una de las siguientes opciones, según tu caso: \n\n1. Tienes una duda o inquietud y deseas que la respondamos por este chat. En este servicio, nos escribes tu pregunta y te contestamos, sin necesidad de que nos brindes tus datos personales. \n\n2. Deseas tener una cita virtual y recibir una orientación personalizada. Aquí puedes conversar con uno de nuestros guías acerca de tu caso específico. Para ello, solicitamos tus datos personales y la autorización para el uso de los mismos.",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "contact_reason_attempt",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_reason",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "{% if flow.variables.contact_reason_attempt %}{{flow.variables.contact_reason_attempt | plus: 1}}{% else %}0{% endif %}",
+            "key": "contact_reason_attempt"
+          }
+        ],
+        "offset": {
+          "x": 420,
+          "y": 1440
+        }
+      }
+    },
+    {
+      "name": "split_reason",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "get_contact_reason",
+          "event": "noMatch"
+        },
+        {
+          "next": "counselor_handoff",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{flow.variables.contact_reason_attempt}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.contact_reason_attempt}}",
+        "offset": {
+          "x": 620,
+          "y": 1240
+        }
+      }
+    },
+    {
+      "name": "counselor_handoff",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "attributes",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1190,
+          "y": 3530
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Te Guío",
+        "to": "{{contact.channel.address}}",
+        "body": "¡Muchas gracias! En un momento uno de nuestros guías te atenderá. Por favor, espéranos.."
+      }
+    },
+    {
+      "name": "split_counseling_type",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "counseling_type_attempt",
+          "event": "noMatch"
+        },
+        {
+          "next": "request_question",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.get_counseling_type.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "get_age_for_consent",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.get_counseling_type.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.get_counseling_type.inbound.Body}}",
+        "offset": {
+          "x": 1340,
+          "y": 1990
+        }
+      }
+    },
+    {
+      "name": "counseling_type_attempt",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_counseling_type_attempt",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "{% if flow.variables.counseling_type_attempt%}{{flow.variables.counseling_type_attempt| plus: 1}}{% else %}0{% endif %}",
+            "key": "counseling_type_attempt"
+          }
+        ],
+        "offset": {
+          "x": 800,
+          "y": 2010
+        }
+      }
+    },
+    {
+      "name": "split_counseling_type_attempt",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "get_counseling_type",
+          "event": "noMatch"
+        },
+        {
+          "next": "counselor_handoff",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{flow.variables.counseling_type_attempt}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.counseling_type_attempt}}",
+        "offset": {
+          "x": 890,
+          "y": 1710
+        }
+      }
+    },
+    {
+      "name": "request_question",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "counselor_handoff",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1380,
+          "y": 2300
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Te Guío",
+        "body": "Por favor, escríbenos tu pregunta...",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "get_age_for_consent",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "split_age_for_consent",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1860,
+          "y": 2340
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Te Guío",
+        "body": "Gracias. ¿Cuántos años tienes? Escribe solamente el número correspondiente a tu edad.",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "split_age_for_consent",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "age_attempt",
+          "event": "noMatch"
+        },
+        {
+          "next": "counselor_handoff",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 13",
+              "arguments": [
+                "{{widgets.get_age_for_consent.inbound.Body}}"
+              ],
+              "type": "greater_than",
+              "value": "13"
+            }
+          ]
+        },
+        {
+          "next": "get_is_with_caregiver",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value less_than 14",
+              "arguments": [
+                "{{widgets.get_age_for_consent.inbound.Body}}"
+              ],
+              "type": "less_than",
+              "value": "14"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.get_age_for_consent.inbound.Body}}",
+        "offset": {
+          "x": 1960,
+          "y": 2690
+        }
+      }
+    },
+    {
+      "name": "age_attempt",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_age_attempt",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "{% if flow.variables.age_attempt%}{{flow.variables.age_attempt| plus: 1}}{% else %}0{% endif %}",
+            "key": "age_attempt"
+          }
+        ],
+        "offset": {
+          "x": 1340,
+          "y": 2700
+        }
+      }
+    },
+    {
+      "name": "split_age_attempt",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "get_age_for_consent",
+          "event": "noMatch"
+        },
+        {
+          "next": "counselor_handoff",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{flow.variables.age_attempt}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.age_attempt}}",
+        "offset": {
+          "x": 1530,
+          "y": 2500
+        }
+      }
+    },
+    {
+      "name": "get_is_with_caregiver",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "split_caregiver",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2260,
+          "y": 2970
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Te Guío",
+        "body": "Para prestar este servicio, es necesario que me indiques si te encuentras con tu mamá/papá/familiar adulto acudiente.     \n\nPor favor, indícame sólo el número de la opción que corresponda: \n\n1: Si te encuentras en este momento con tu papá, mamá o acudiente adulto. \n\n2: No te encuentra en este momento con tu papá, mamá o acudiente adulto.\n\n3: Si tu padre, madre o tu tutor legal te están haciendo algún tipo de daño.",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "split_caregiver",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "caregiver_attempt",
+          "event": "noMatch"
+        },
+        {
+          "next": "counselor_handoff",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.get_is_with_caregiver.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "no_caregiver_msg",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.get_is_with_caregiver.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "counselor_handoff",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.get_is_with_caregiver.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.get_is_with_caregiver.inbound.Body}}",
+        "offset": {
+          "x": 2260,
+          "y": 3270
+        }
+      }
+    },
+    {
+      "name": "caregiver_attempt",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_caregiver_attempt",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "{% if flow.variables.caregiver_attempt%}{{flow.variables.caregiver_attempt| plus: 1}}{% else %}0{% endif %}",
+            "key": "caregiver_attempt"
+          }
+        ],
+        "offset": {
+          "x": 1670,
+          "y": 3210
+        }
+      }
+    },
+    {
+      "name": "split_caregiver_attempt",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "get_is_with_caregiver",
+          "event": "noMatch"
+        },
+        {
+          "next": "counselor_handoff",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{flow.variables.age_attempt}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.age_attempt}}",
+        "offset": {
+          "x": 1880,
+          "y": 3010
+        }
+      }
+    },
+    {
+      "name": "no_caregiver_msg",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2530,
+          "y": 3560
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Te Guío",
+        "to": "{{contact.channel.address}}",
+        "body": "Lo siento, en este caso, necesitamos esperar hasta que podamos conversar con tu mamá, papá o acudiente. Por favor, avísanos apenas podamos hacerlo. Si no están en este momento contigo, vuelve a contactarnos cuando estén."
+      }
+    },
+    {
+      "name": "social_media_msg",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "send_thanks",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1800,
+          "y": 1890
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Te Guío",
+        "body": "¡OK!, deja tu mensaje y alguien de nuestro equipo de responderá lo más pronto posible.",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "send_thanks",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1940,
+          "y": 2150
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "OK muchas gracias, te contestaremos en breve."
+      }
+    },
+    {
+      "name": "split_web",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "social_media_msg",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_facebook",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to web",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.channel_type}}"
+              ],
+              "type": "equal_to",
+              "value": "web"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.channel_type}}",
+        "offset": {
+          "x": 1620,
+          "y": 1580
+        }
+      }
+    },
+    {
+      "name": "send_facebook",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2220,
+          "y": 1900
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Te Guío",
+        "to": "{{contact.channel.address}}",
+        "body": "Para otras consultas, nos puedes encontrar en Facebook: https://web.facebook.com/teguio.viguias"
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+}
+ )}

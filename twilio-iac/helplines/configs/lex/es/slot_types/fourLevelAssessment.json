@@ -1,0 +1,36 @@
+{
+    "fourLevelAssessment": {
+        "description": "General configs/lex/es/slot_types Four Level Assessment Slot Type",
+        "value_selection_strategy": "TOP_RESOLUTION",
+        "values": {
+            "nada": {
+                "synonyms": [
+                    "1!",
+                    "1.",
+                    "1"
+                ]
+            },
+            "un poco": {
+                "synonyms": [
+                    "2!",
+                    "2.",
+                    "2"
+                ]
+            },
+            "suficiente": {
+                "synonyms": [
+                    "3!",
+                    "3.",
+                    "3"
+                ]
+            },
+            "mucho": {
+                "synonyms": [
+                    "4!",
+                    "4.",
+                    "4"
+                ]
+            }
+        }
+    }
+}

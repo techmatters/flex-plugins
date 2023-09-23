@@ -1,0 +1,59 @@
+{
+  "yes_no": {
+    "description": "General configs/lex/mt/slot_types slot type for Yes-No kind of questions",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "Yes": {
+        "synonyms": [    
+          "Iva",
+          "Għaliex la",
+          "Igen",
+          "Iva grazzi",
+          "Iva jekk jogħġbok",
+          "Minflok Le",
+          "Korreċċa",
+          "Id-dritt",
+          "Jiena nemmen",
+          "Qed nipprova",
+          "Iva jiena għadni qed",
+          "Jiena ma nifhemx, pero",
+          "Aħseb xi darba",
+          "Jekk jogħġbok Iva",
+          "Jekk jogħġbok Għaliex le",
+          "Jekk jogħġbok Għaliex mhux",
+          "Jekk jogħġbok Hux",
+          "Nixtieq ngħid Iva",
+          "1"
+        ]
+      },
+      "No": {
+        "synonyms": [
+          "Le",
+          "Ie",
+          "Le grazzi",
+          "Le jekk jogħġbok",
+          "Ejja grazzi",
+          "Minflok Iva",
+          "Inkorrezzit",
+          "L-aħħar",
+          "Għandni l-impressjoni",
+          "Għandni dubju",
+          "Għandni qed nistaqsi",
+          "Le, għandni xogħol",
+          "Ma nifhemx pero",
+          "Għandni bżonn iktar informazzjoni",
+          "Għandni bzonn iktar ħin",
+          "Le jekk jogħġbok",
+          "Le jiena nistax",
+          "Le jiena qed nitfa' l-kwistjonijiet",
+          "Le m'hemmx bżonn",
+          "Le ħa nara l-isptar",
+          "Le xorta jiena qed",
+          "Le nara baxx",
+          "Le grazzi li tajt il-kura",
+          "2"
+        ]
+      }
+    }
+  }
+}

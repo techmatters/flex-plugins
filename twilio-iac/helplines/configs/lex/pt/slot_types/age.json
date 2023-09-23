@@ -1,0 +1,517 @@
+{
+  "age": {
+    "description": "General configs/lex/pt/slot_types Age Slot Type",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+        "1": {
+          "synonyms": [
+            "um"
+          ]
+        },
+        "2": {
+          "synonyms": [
+            "dois"
+          ]
+        },
+        "3": {
+          "synonyms": [
+            "três"
+          ]
+        },
+        "4": {
+          "synonyms": [
+            "quatro"
+          ]
+        },
+        "5": {
+          "synonyms": [
+            "cinco"
+          ]
+        },
+        "6": {
+          "synonyms": [
+            "seis"
+          ]
+        },
+        "7": {
+          "synonyms": [
+            "sete"
+          ]
+        },
+        "8": {
+          "synonyms": [
+            "oito"
+          ]
+        },
+        "9": {
+          "synonyms": [
+            "nove"
+          ]
+        },
+        "10": {
+          "synonyms": [
+            "dez"
+          ]
+        },
+        "11": {
+          "synonyms": [
+            "onze"
+          ]
+        },
+        "12": {
+          "synonyms": [
+            "doze"
+          ]
+        },
+        "13": {
+          "synonyms": [
+            "treze"
+          ]
+        },
+        "14": {
+          "synonyms": [
+            "catorze"
+          ]
+        },
+        "15": {
+          "synonyms": [
+            "quinze"
+          ]
+        },
+        "16": {
+          "synonyms": [
+            "dezesseis"
+          ]
+        },
+        "17": {
+          "synonyms": [
+            "dezessete"
+          ]
+        },
+        "18": {
+          "synonyms": [
+            "dezoito"
+          ]
+        },
+        "19": {
+          "synonyms": [
+            "dezenove"
+          ]
+        },
+        "20": {
+          "synonyms": [
+            "vinte"
+          ]
+        },
+        "21": {
+          "synonyms": [
+            "vinte e um"
+          ]
+        },
+        "22": {
+          "synonyms": [
+            "vinte e dois"
+          ]
+        },
+        "23": {
+          "synonyms": [
+            "vinte e três"
+          ]
+        },
+        "24": {
+          "synonyms": [
+            "vinte e quatro"
+          ]
+        },
+        "25": {
+          "synonyms": [
+            "vinte e cinco"
+          ]
+        },
+        "26": {
+          "synonyms": [
+            "vinte e seis"
+          ]
+        },
+        "27": {
+          "synonyms": [
+            "vinte e sete"
+          ]
+        },
+        "28": {
+          "synonyms": [
+            "vinte e oito"
+          ]
+        },
+        "29": {
+          "synonyms": [
+            "vinte e nove"
+          ]
+        },
+        "30": {
+          "synonyms": [
+            "trinta"
+          ]
+        },
+        "31": {
+          "synonyms": [
+            "trinta e um"
+          ]
+        },
+        "32": {
+          "synonyms": [
+            "trinta e dois"
+          ]
+        },
+        "33": {
+          "synonyms": [
+            "trinta e três"
+          ]
+        },
+        "34": {
+          "synonyms": [
+            "trinta e quatro"
+          ]
+        },
+        "35": {
+          "synonyms": [
+            "trinta e cinco"
+          ]
+        },
+        "36": {
+          "synonyms": [
+            "trinta e seis"
+          ]
+        },
+        "37": {
+          "synonyms": [
+            "trinta e sete"
+          ]
+        },
+        "38": {
+          "synonyms": [
+            "trinta e oito"
+          ]
+        },
+        "39": {
+          "synonyms": [
+            "trinta e nove"
+          ]
+        },
+        "40": {
+          "synonyms": [
+            "quarenta"
+          ]
+        },
+        "41": {
+          "synonyms": [
+            "quarenta e um"
+          ]
+        },
+        "42": {
+          "synonyms": [
+            "quarenta e dois"
+          ]
+        },
+        "43": {
+          "synonyms": [
+            "quarenta e três"
+          ]
+        },
+        "44": {
+          "synonyms": [
+            "quarenta e quatro"
+          ]
+        },
+        "45": {
+          "synonyms": [
+            "quarenta e cinco"
+          ]
+        },
+        "46": {
+          "synonyms": [
+            "quarenta e seis"
+          ]
+        },
+        "47": {
+          "synonyms": [
+            "quarenta e sete"
+          ]
+        },
+        "48": {
+          "synonyms": [
+            "quarenta e oito"
+          ]
+        },
+        "49": {
+          "synonyms": [
+            "quarenta e nove"
+          ]
+        },
+        "50": {
+          "synonyms": [
+            "cinquenta"
+          ]
+        },
+        "51": {
+          "synonyms": [
+            "cinquenta e um"
+          ]
+        },
+        "52": {
+          "synonyms": [
+            "cinquenta e dois"
+          ]
+        },
+        "53": {
+          "synonyms": [
+            "cinquenta e três"
+          ]
+        },
+        "54": {
+          "synonyms": [
+            "cinquenta e quatro"
+          ]
+        },
+        "55": {
+          "synonyms": [
+            "cinquenta e cinco"
+          ]
+        },
+        "56": {
+          "synonyms": [
+            "cinquenta e seis"
+          ]
+        },
+        "57": {
+          "synonyms": [
+            "cinquenta e sete"
+          ]
+        },
+        "58": {
+          "synonyms": [
+            "cinquenta e oito"
+          ]
+        },
+        "59": {
+          "synonyms": [
+            "cinquenta e nove"
+          ]
+        },
+        "60": {
+          "synonyms": [
+            "sessenta"
+          ]
+        },
+        "61": {
+          "synonyms": [
+            "sessenta e um"
+          ]
+        },
+        "62": {
+          "synonyms": [
+            "sessenta e dois"
+          ]
+        },
+        "63": {
+          "synonyms": [
+            "sessenta e três"
+          ]
+        },
+        "64": {
+          "synonyms": [
+            "sessenta e quatro"
+          ]
+        },
+        "65": {
+          "synonyms": [
+            "sessenta e cinco"
+          ]
+        },
+        "66": {
+          "synonyms": [
+            "sessenta e seis"
+          ]
+        },
+        "67": {
+          "synonyms": [
+            "sessenta e sete"
+          ]
+        },
+        "68": {
+          "synonyms": [
+            "sessenta e oito"
+          ]
+        },
+        "69": {
+          "synonyms": [
+            "sessenta e nove"
+          ]
+        },
+        "70": {
+          "synonyms": [
+            "setenta"
+          ]
+        },
+        "71": {
+          "synonyms": [
+            "setenta e um"
+          ]
+        },
+        "72": {
+          "synonyms": [
+            "setenta e dois"
+          ]
+        },
+        "73": {
+          "synonyms": [
+            "setenta e três"
+          ]
+        },
+        "74": {
+          "synonyms": [
+            "setenta e quatro"
+          ]
+        },
+        "75": {
+          "synonyms": [
+            "setenta e cinco"
+          ]
+        },
+        "76": {
+          "synonyms": [
+            "setenta e seis"
+          ]
+        },
+        "77": {
+          "synonyms": [
+            "setenta e sete"
+          ]
+        },
+        "78": {
+          "synonyms": [
+            "setenta e oito"
+          ]
+        },
+        "79": {
+          "synonyms": [
+            "setenta e nove"
+          ]
+        },
+        "80": {
+          "synonyms": [
+            "oitenta"
+          ]
+        },
+        "81": {
+          "synonyms": [
+            "oitenta e um"
+          ]
+        },
+        "82": {
+          "synonyms": [
+            "oitenta e dois"
+          ]
+        },
+        "83": {
+          "synonyms": [
+            "oitenta e três"
+          ]
+        },
+        "84": {
+          "synonyms": [
+            "oitenta e quatro"
+          ]
+        },
+        "85": {
+          "synonyms": [
+            "oitenta e cinco"
+          ]
+        },
+        "86": {
+          "synonyms": [
+            "oitenta e seis"
+          ]
+        },
+        "87": {
+          "synonyms": [
+            "oitenta e sete"
+          ]
+        },
+        "88": {
+          "synonyms": [
+            "oitenta e oito"
+          ]
+        },
+        "89": {
+          "synonyms": [
+            "oitenta e nove"
+          ]
+        },
+        "90": {
+          "synonyms": [
+            "noventa"
+          ]
+        },
+        "91": {
+          "synonyms": [
+            "noventa e um"
+          ]
+        },
+        "92": {
+          "synonyms": [
+            "noventa e dois"
+          ]
+        },
+        "93": {
+          "synonyms": [
+            "noventa e três"
+          ]
+        },
+        "94": {
+          "synonyms": [
+            "noventa e quatro"
+          ]
+        },
+        "95": {
+          "synonyms": [
+            "noventa e cinco"
+          ]
+        },
+        "96": {
+          "synonyms": [
+            "noventa e seis"
+          ]
+        },
+        "97": {
+          "synonyms": [
+            "noventa e sete"
+          ]
+        },
+        "98": {
+          "synonyms": [
+            "noventa e oito"
+          ]
+        },
+        "99": {
+          "synonyms": [
+            "noventa e nove"
+          ]
+        },
+        "100": {
+          "synonyms": [
+            "cem"
+          ]
+        },
+        "Unknown": {
+          "synonyms": [
+            "X",
+            "prefiro não",
+            "prefiro não responder",
+            "Preferia não dizer",
+            "Gostaria de não dizer"
+          ]
+        }        
+    }
+  }    
+}

@@ -98,6 +98,11 @@ test.describe.serial('Offline Contact (with Case)', () => {
 
     const beforeDate = new Date(); // Capture date here since we'll create case inmediately after saving contact
 
+    // if (getConfigValue('skipDataUpdate') as boolean) {
+    //   console.log('Skipping saving form');
+    //   return;
+    // }
+
     console.log('Saving form');
     await form.save({ saveAndAddToCase: true });
 

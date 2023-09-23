@@ -1,0 +1,45 @@
+{
+  "counsellorGenderPreference": {
+    "description": "Helpline specific ph/configs/lex/common/slot_types counsellorGenderPreference slot_type",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "Female": {
+        "synonyms": [
+          "2",
+          "girl",
+          "lady",
+          "F"
+        ]
+      },
+      "None": {
+        "synonyms": [
+          "don't matter",
+          "No preference",
+          "any",
+          "doesn't matter",
+          "X",
+          "4"
+        ]
+      },
+      "Male": {
+        "synonyms": [
+          "1",
+          "boy",
+          "M",
+          "guy"
+        ]
+      },
+      "Non-binary": {
+        "synonyms": [
+          "lesbian",
+          "questioning",
+          "gay",
+          "3",
+          "bisexual",
+          "lgbtq",
+          "transexual"
+        ]
+      }
+    }
+  }
+}

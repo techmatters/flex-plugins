@@ -9,7 +9,6 @@ locals {
     default_autopilot_chatbot_enabled = false
     task_language                     = "es-CL"
     voice_ivr_language                = "es-MX"
-    contacts_waiting_channels         = ["voice", "web"]
     enable_post_survey                = true
 
     workflows = {
@@ -19,7 +18,7 @@ locals {
       },
       survey : {
         friendly_name : "Survey Workflow"
-        templatefile : "/app/twilio-iac/helplines/templates/workflows/survey.tftpl"
+        templatefile : "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
 
@@ -74,6 +73,10 @@ locals {
     phone_numbers = {
       khp : ["????"],
       g2t : ["????"],
+    }
+
+    lex_bot_languages = {
+      es_CL : ["post_survey"]
     }
 
   }

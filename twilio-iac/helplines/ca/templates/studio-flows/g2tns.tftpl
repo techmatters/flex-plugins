@@ -11,7 +11,7 @@ ${
           "event": "incomingMessage"
         },
         {
-          "next": "split_keys_lang",
+          "next": "G2TNSIntro",
           "event": "incomingCall"
         },
         {
@@ -35,7 +35,8 @@ ${
       "name": "split_keys_lang",
       "type": "split-based-on",
       "transitions": [
-        {
+        { 
+          "next": "intro_set_retry",
           "event": "noMatch"
         },
         {
@@ -45,10 +46,10 @@ ${
             {
               "friendly_name": "If value contains en_number",
               "arguments": [
-                "{{trigger.call.To}}"
+                "{{widgets.G2TNSIntro.Digits}}",
               ],
               "type": "contains",
-              "value": channel_flow_vars["en_number"]
+              "value": "1"
             }
           ]
         },
@@ -59,16 +60,16 @@ ${
             {
               "friendly_name": "If value contains fr_number",
               "arguments": [
-                "{{trigger.call.To}}"
+                "{{widgets.G2TNSIntro.Digits}}"
               ],
               "type": "contains",
-              "value": channel_flow_vars["fr_number"]
+              "value": "2"
             }
           ]
         }
       ],
       "properties": {
-        "input": "{{trigger.call.To}}",
+        "input": "{{widgets.G2TNSIntro.Digits}}",
         "offset": {
           "x": -590,
           "y": -540
@@ -785,6 +786,124 @@ ${
           "y": 1030
         },
         "loop": 1
+      }
+    },
+{
+      "name": "intro_set_retry",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "intro_split_retry",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "{% if flow.variables.retry_counter%} {{flow.variables.retry_counter| plus: 1}} {% else %} 1 {% endif %}",
+            "key": "retry_counter"
+          }
+        ],
+        "offset": {
+          "x": -860,
+          "y": -870
+        }
+      }
+    },
+    {
+      "name": "intro_split_retry",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "intro_disconnect",
+          "event": "noMatch"
+        },
+        {
+          "next": "invalid_intro",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value less_than 3",
+              "arguments": [
+                "{{flow.variables.retry_counter}}"
+              ],
+              "type": "less_than",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.retry_counter}}",
+        "offset": {
+          "x": -1220,
+          "y": -1170
+        }
+      }
+    },
+    {
+      "name": "intro_disconnect",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": channel_flow_vars["en_disconnect_url"],
+        "offset": {
+          "x": -1610,
+          "y": -810
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "invalid_intro",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": channel_flow_vars["en_invalid_url"],
+        "offset": {
+          "x": -1260,
+          "y": -710
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "G2TNSIntro",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_keys_lang",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "intro_set_retry",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": channel_flow_vars["intro_url"],
+        "speech_timeout": "auto",
+        "offset": {
+          "x": -410,
+          "y": -940
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "profanity_filter": "true",
+        "timeout": 2
       }
     }
   ],

@@ -1,13 +1,13 @@
 [
   {
     "name": "child",
-    "label": "Youth calling about self",
+    "label": "Client calling about self",
     "type": "button",
     "category": "data"
   },
   {
     "name": "caller",
-    "label": "Someone calling about a youth",
+    "label": "Client calling about someone else",
     "type": "button",
     "category": "data"
   },
@@ -44,6 +44,24 @@
   {
     "name": "abusive",
     "label": "Abusive",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "officeEnquiry",
+    "label": "Office Enquiry",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "other",
+    "label": "Other",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "test",
+    "label": "Test",
     "type": "button",
     "category": "non-data"
   }

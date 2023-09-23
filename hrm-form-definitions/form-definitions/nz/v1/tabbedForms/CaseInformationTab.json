@@ -10,7 +10,7 @@
   },
   {
     "name": "repeatCaller",
-    "label": "Repeat Caller?",
+    "label": "Suspected Repeat Client",
     "type": "checkbox"
   },
   {
@@ -19,16 +19,16 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Direct interventions by the child helpline",
-        "label": "Direct interventions by the child helpline"
+        "value": "Support provided by Youthline",
+        "label": "Support provided by Youthline"
       },
       {
         "value": "Recommendations of resources",
         "label": "Recommendations of resources"
       },
       {
-        "value": "Referrals to child protection agencies",
-        "label": "Referrals to child protection agencies"
+        "value": "Referrals to Oranga Tamariki",
+        "label": "Referrals to Oranga Tamariki"
       },
       {
         "value": "Referrals to general healthcare services",
@@ -64,10 +64,10 @@
     "name": "howDidYouKnowAboutOurLine",
     "label": "How did you know about our line/number?",
     "type": "select",
-    "unknownOption": "",
+    "unknownOption": "Unknown",
     "options": [
       {
-        "value": "",
+        "value": "Unknown",
         "label": ""
       },
       {
@@ -94,12 +94,12 @@
   },
   {
     "name": "didTheChildFeelWeSolvedTheirProblem",
-    "label": "Did the young person feel we solved their problem?",
+    "label": "Did the client feel supported after contacting us?",
     "type": "mixed-checkbox"
   },
   {
     "name": "didYouDiscussRightsWithTheChild",
-    "label": "Did you discuss privacy rights and consent with the young person?",
+    "label": "Did you discuss privacy rights and consent with the client?",
     "type": "mixed-checkbox"
   }
 ]

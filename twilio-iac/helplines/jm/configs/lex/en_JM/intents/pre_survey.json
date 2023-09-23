@@ -1,0 +1,77 @@
+{
+  "pre_survey": {
+    "description": "Helpline Specific configs/lex/en_JM/intents Pre Survey Intent Survey intent",
+    "sample_utterances": [
+      "Incoming webchat contact",
+      "trigger_pre_survey"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "We'll transfer you now. Please hold for a counsellor.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a counsellor.",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "aboutSelf": {
+        "priority": 1,
+        "description": "Caller is calling for self or someone else",
+        "slot_constraint": "Required",
+        "slot_type": "yes_no",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "Welcome to the helpline. To help us better serve you, please answer the following questions. You can say 'prefer not to answer' (or type X) to any question. \n Are you calling about yourself? Please answer Yes or No.",
+          "content_type": "PlainText"
+        }
+      },
+      "age": {
+        "priority": 2,
+        "description": "Age of caller",
+        "slot_constraint": "Required",
+        "slot_type": "age",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "Thank you. How old are you?",
+          "content_type": "PlainText"
+        }
+      },
+      "gender": {
+        "priority": 3,
+        "description": "Caller's gender",
+        "slot_constraint": "Required",
+        "slot_type": "gender",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "What is your gender?",
+          "content_type": "PlainText"
+        }
+      },
+      "parish": {
+        "priority": 4,
+        "description": "Imported from question 'parish'",
+        "slot_constraint": "Required",
+        "slot_type": "parish",
+        "value_elicitation_prompt": {
+          "content": "What parish are you located in?",
+          "content_type": "PlainText",
+          "max_attempts": 2
+        }
+      },
+      "howDidYouKnowAboutOurLine": {
+        "priority": 5,
+        "description": "Imported from question 'howDidYouKnowAboutOurLine'",
+        "slot_constraint": "Required",
+        "slot_type": "howDidYouKnowAboutOurLine",
+        "value_elicitation_prompt": {
+          "content": "How did you hear about us? Please select one: \n 1: Advertisement \n 2: Social Media \n 3: SMS/Text Message \n 4: Traditional Media \n 5: Word of Mouth",
+          "content_type": "PlainText",
+          "max_attempts": 2
+        }
+      }
+    }
+  }
+}

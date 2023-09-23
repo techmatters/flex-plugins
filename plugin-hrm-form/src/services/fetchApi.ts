@@ -33,6 +33,10 @@ export class ApiError extends Error {
   body: any;
 }
 
+export const generateUrl = (baseUrl: URL, endpointPath: string): URL => {
+  return new URL(path.join(baseUrl.pathname, endpointPath), baseUrl);
+};
+
 /**
  * Low level fetch wrapper to provide some sensible defaults & rudimentary error handling
  * You would normally wrap this rather than calling it directly, see fetchProtectedApi & fetchHrmApi
@@ -42,7 +46,7 @@ export class ApiError extends Error {
  * @param options
  */
 export const fetchApi = async (baseUrl: URL, endpointPath: string, options: RequestInit): Promise<any> => {
-  const url = new URL(path.join(baseUrl.pathname, endpointPath), baseUrl);
+  const url = generateUrl(baseUrl, endpointPath);
 
   const defaultOptions = {
     method: 'GET',

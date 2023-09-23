@@ -1,0 +1,22 @@
+{
+  "pre_survey": {
+    "description": "Helpline Specific hu/configs/lex/ru Bot Pre Survey Bot",
+    "locale": "en-US",
+    "process_behavior": "BUILD",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "enable_model_improvements": true,
+    "abort_statement": {
+      "content": "Мне жаль, я этого не понимаю",
+      "content_type": "PlainText"
+    },
+    "clarification_prompt": {
+      "max_attempts": 2,
+      "content": "Мне жаль, я этого не понимаю",
+      "content_type": "PlainText"
+    },
+    "intents": [
+      "pre_survey"
+    ]
+  }
+}

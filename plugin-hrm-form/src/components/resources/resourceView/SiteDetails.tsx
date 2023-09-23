@@ -26,6 +26,7 @@ import {
 import ExpandableSection from './ExpandableSection';
 import OperatingHours from './OperatingHours';
 import ResourceAttributeWithPrivacy from './ResourceAttributeWithPrivacy';
+import ResourceAttribute from './ResourceAttribute';
 
 type Props = {
   sites: KhpUiResource['attributes']['site'];
@@ -35,7 +36,7 @@ const SiteDetails: React.FC<Props> = ({ sites }) => {
   return (
     <div>
       {sites.map(singleSite => {
-        const { siteId, name, location, email, operations, phoneNumbers } = singleSite;
+        const { siteId, name, location, email, operations, phoneNumbers, coverage } = singleSite;
         const { isPrivate, province, city, country, county, postalCode, address1, address2 } = location ?? {};
         return (
           <ExpandableSection key={siteId} title={name}>
@@ -63,6 +64,13 @@ const SiteDetails: React.FC<Props> = ({ sites }) => {
               <ResourceAttributeDescription>Hours</ResourceAttributeDescription>
               <OperatingHours operations={operations} showDescriptionOfHours={true} />
             </ResourceAttributeContent>
+            <ResourceAttribute
+              key="coverage"
+              description="Resources-View-Coverage"
+              data-testid="Resources-View-Coverage"
+            >
+              {coverage}
+            </ResourceAttribute>
           </ExpandableSection>
         );
       })}

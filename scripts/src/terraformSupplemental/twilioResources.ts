@@ -2,8 +2,6 @@ import yargs from 'yargs';
 import { config } from 'dotenv';
 
 import { checkArgv } from './checkArgv';
-import importResources from './importHCLTwilioResourcesToTerraform';
-import { ResourceType } from './resourceParsers';
 import { importDefaultResources } from './importDefaultTwilioResourcesToTerraform';
 import {
   createTwilioApiKeyAndSsmSecret,
@@ -13,7 +11,6 @@ import {
   patchFeatureFlags,
   updateFlexServiceConfiguration,
 } from './updateFlexServiceConfiguration';
-import { generateChatbotResource } from './generateChatbotResource';
 import { handleTerraformArgs } from './handleTerraformArgs';
 import { handleSsmRoleArg } from './handleSsmRoleArg';
 import { setEnvFromSsm } from './setEnvFromSsm';
@@ -78,71 +75,6 @@ async function main() {
       global: true,
       describe: 'Specify a tfvars file relative to the account directory',
     })
-    .command(
-      'import-tf <tfFilePath>',
-      "Import the current state of all the resources specified in the provided .tf file from a Twilio Account into the provided terraform configuration's state. Requires Twilio account environment variable to be set or the accountDirectory for SSM params, and AWS account variables to be set for anything other than a dry run.",
-      (argv) => {
-        argv.positional('tfFilePath', {
-          describe:
-            'The path of the *.tf file with defines the resources you want to import, relative to the twilio-iac directory',
-          type: 'string',
-        });
-        argv.option('t', {
-          type: 'array',
-          alias: 'type',
-          describe:
-            "Specify a resource type to scan for by its Terraform name, e.g. 'twilio_autopilot_assistants_field_types_v1'. Can be specified multiple times. Omitting this will scan for all supported resource types.",
-        });
-        argv.option('s', {
-          type: 'array',
-          alias: 'sid',
-          describe:
-            'Specify an sid referenced in the tf file which would otherwise come from an external source, e.g. a variable: --sid var.sid=1234 or the sid of a resource defined in another file in the same module: --sid twilio_taskrouter_workspaces_v1.from_other_tf_file.sid=4321',
-        });
-        argv.option('m', {
-          type: 'string',
-          alias: 'modulePath',
-          describe:
-            'Specify a dot separated path for the module, e.g. top_module1.sub_module2. Omit this if the .tf file is in the root module for this configuration',
-        });
-        argv.option('requireTerraform', {
-          type: 'boolean',
-          default: true,
-          hidden: true,
-        });
-      },
-      async (argv) => {
-        const sidKvps = argv.sid as string[];
-        const sids = sidKvps.map((kvp) => {
-          const [name, ...valueBits] = kvp.split('=');
-          return <[string, string]>[name, valueBits.join('=')];
-        });
-
-        const modulePath = ((argv.modulePath as string) ?? '').split('.');
-        if (argv.type && (argv.type as string[]).length > 0) {
-          const types = argv.type as string[];
-          const unrecognisedTypes = types.filter((t) =>
-            Object.values(ResourceType).includes(t as ResourceType),
-          );
-          if (unrecognisedTypes.length) {
-            throw new Error(
-              `The following specified resource types are not supported by this import tool: ${unrecognisedTypes}`,
-            );
-          } else {
-            await importResources(argv.tfFilePath as string, {
-              sids,
-              modulePath,
-              resourceTypes: types as ResourceType[],
-            });
-          }
-        } else {
-          await importResources(argv.tfFilePath as string, {
-            modulePath,
-            sids,
-          });
-        }
-      },
-    )
     .command(
       'import-account-defaults',
       "Import the current state of all the resources specified in the provided .tf file from a Twilio Account into the provided terraform configuration's state. Requires Twilio account environment variable to be set, and AWS account variables to be set for anything other than a dry run.",
@@ -296,33 +228,6 @@ async function main() {
             flagMap,
           );
         }
-      },
-    )
-    .command(
-      'generate-chatbot-tf',
-      'Generates a .tf file with the chatbot assistant configuration as it is in the Twilio account',
-      (argv) => {
-        argv.option('assistantSid', {
-          describe: "Target chatbot's assistant sid to generate .tf from",
-          type: 'string',
-        });
-        argv.option('referenceName', {
-          describe:
-            'The reference name that will be used as the top level resurce (the name of the assistant resource in the .tf file',
-          type: 'string',
-        });
-        argv.option('serverlessUrl', {
-          describe:
-            'The serverless url of the account. If present, will replace it for the dynamic form in the .tf file',
-          type: 'string',
-        });
-      },
-      async (argv) => {
-        await generateChatbotResource(
-          argv.assistantSid as string,
-          argv.referenceName as string,
-          argv.serverlessUrl as string,
-        );
       },
     )
     .demandCommand()

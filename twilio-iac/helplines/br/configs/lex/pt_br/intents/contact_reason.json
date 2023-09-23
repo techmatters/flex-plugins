@@ -1,0 +1,33 @@
+{
+  "contact_reason": {
+    "description": "Helpline Specific helplines/br/configs/lex/pt_br/bot Survey intent",
+    "sample_utterances": [
+      "Incoming webchat contact",
+      "trigger_contact_reason"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "Vamos transferir você. Por favor, aguarde até ser atendido.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Desculpe, não posso ajudar neste momento. Por favor, aguarde para ser transferido.",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "contactReason": {
+        "priority": 1,
+        "description": "Reason for contacting",
+        "slot_constraint": "Required",
+        "slot_type": "contact_reason",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "Obrigada por nos contactar, escolha uma das opções abaixo antes de falar conosco: \n 1 - Você quer denunciar um conteúdo na Internet? \n 2 - Você precisa de ajuda para alguma violência que sofreu na Internet? \n 3 - Você é jornalista ou pesquisador e quer entrevista/dados da SaferNet? \n 4 -Nenhuma das opções acima",
+          "content_type": "PlainText"
+        }
+      }
+    }
+  }
+}

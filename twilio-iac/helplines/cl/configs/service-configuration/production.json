@@ -1,9 +1,8 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_lex": false,
             "enable_save_insights": true,
-            "enable_transcripts": false
+            "enable_fullstory_monitoring": true
         },
         "form_definitions_base_url": "https://assets-production.tl.techmatters.org/form-definitions/",
         "resources_base_url": ""

@@ -83,14 +83,6 @@ module "aws" {
   helpline_region = var.helpline_region
 }
 
-module "aws_monitoring" {
-  source            = "../../aws-monitoring/default"
-  helpline          = var.helpline
-  short_helpline    = upper(var.short_helpline)
-  environment       = title(var.environment)
-  cloudwatch_region = var.aws_monitoring_region
-}
-
 provider "github" {
   owner = "techmatters"
 }

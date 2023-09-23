@@ -38,12 +38,12 @@ moved {
 
 
 
-
 // Workflow
 resource "twilio_taskrouter_workspaces_workflows_v1" "workflow" {
-  for_each      = var.workflows
-  friendly_name = each.value.friendly_name
-  workspace_sid = twilio_taskrouter_workspaces_v1.flex_task_assignment.sid
+  for_each                 = var.workflows
+  friendly_name            = each.value.friendly_name
+  task_reservation_timeout = try(each.value.task_reservation_timeout, null)
+  workspace_sid            = twilio_taskrouter_workspaces_v1.flex_task_assignment.sid
   configuration = templatefile(
     each.value.templatefile,
     {
@@ -60,8 +60,6 @@ moved {
   from = twilio_taskrouter_workspaces_workflows_v1.master_workflow
   to   = twilio_taskrouter_workspaces_workflows_v1.workflow["master"]
 }
-
-
 
 
 //Task Channels

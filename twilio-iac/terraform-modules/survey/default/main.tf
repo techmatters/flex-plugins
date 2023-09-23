@@ -19,15 +19,14 @@ resource "twilio_taskrouter_workspaces_workflows_v1" "survey_workflow" {
   friendly_name = "Survey"
   workspace_sid = var.flex_task_assignment_workspace_sid
   configuration = jsonencode({
-    "task_routing": {
-      "filters": [
+    "task_routing" : {
+      "filters" : [
         {
-          "filter_friendly_name": "Survey Filter",
-          "expression": var.custom_task_routing_filter_expression != "" ? var.custom_task_routing_filter_expression : "isSurveyTask==true",
-          "targets": [
+          "filter_friendly_name" : "CaptureChannel",
+          "expression" : "isChatCaptureControl==true",
+          "targets" : [
             {
-              "expression": var.custom_task_routing_survey_queue_target_filter_expression,
-              "queue": twilio_taskrouter_workspaces_task_queues_v1.survey_queue.sid
+              "queue" : twilio_taskrouter_workspaces_task_queues_v1.survey_queue.sid
             }
           ]
         }
@@ -41,5 +40,5 @@ resource "twilio_taskrouter_workspaces_workflows_v1" "survey_workflow" {
 resource "twilio_taskrouter_workspaces_task_channels_v1" "survey" {
   workspace_sid = var.flex_task_assignment_workspace_sid
   friendly_name = "Survey"
-  unique_name = "survey"
+  unique_name   = "survey"
 }

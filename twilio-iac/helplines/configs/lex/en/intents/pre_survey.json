@@ -1,0 +1,55 @@
+{
+  "pre_survey": {
+    "description": "Survey intent",
+    "sample_utterances": [
+      "Incoming webchat contact",
+      "trigger_pre_survey"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "We'll transfer you now. Please hold for a counsellor.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a counsellor.",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "aboutSelf": {
+        "priority": 1,
+        "description": "Caller is calling for self or someone else",
+        "slot_constraint": "Required",
+        "slot_type": "yes_no",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "Welcome. To help us better serve you, please answer the following questions.\n\nAre you calling about yourself? Please answer Yes or No.",
+          "content_type": "PlainText"
+        }
+      },
+      "age": {
+        "priority": 2,
+        "description": "Age of caller",
+        "slot_constraint": "Required",
+        "slot_type": "age",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "How old are you?",
+          "content_type": "PlainText"
+        }
+      },
+      "gender": {
+        "priority": 3,
+        "description": "Caller's gender",
+        "slot_constraint": "Required",
+        "slot_type": "gender",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "What is your gender?",
+          "content_type": "PlainText"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+    "language": {
+        "description": "Helpline Specific zm/configs/lex/en_ZM/slot_types Language Slot Type",
+        "value_selection_strategy": "TOP_RESOLUTION",
+        "values": {
+          "en-US": {
+            "synonyms": [
+              "1english",
+              "eng",
+              "english",
+              "en-US",
+              "1"
+            ]
+          },
+          "Bemba": {
+            "synonyms": [
+              "b",
+              "bem",
+              "bemb",
+              "2bemba",
+              "Bemba",
+              "2"
+            ]
+          },
+          "Tonga": {
+            "synonyms": [
+              "3tonga",
+              "t",
+              "ton",
+              "tonga",
+              "3"
+            ]
+          },
+          "Lunda": {
+            "synonyms": [
+              "4lunda",
+              "lun",
+              "lunda",
+              "4"
+            ]
+          },
+          "Nyanja": {
+            "synonyms": [
+              "n",
+              "nya",
+              "5nyanja",
+              "nyanja",
+              "5"
+            ]
+          },
+          "Kaonde": {
+            "synonyms": [
+              "6kaonde",
+              "kao",
+              "k",
+              "kaonde",
+              "6"
+            ]
+          },
+          "Lozi": {
+            "synonyms": [
+              "7lozi",
+              "lo",
+              "lozi",
+              "7"
+            ]
+          }
+        }
+      }
+
+}

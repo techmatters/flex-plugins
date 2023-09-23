@@ -1,0 +1,40 @@
+{
+  "contact_reason": {
+    "description": "General configs/lex/pt_br/slot_types slot type for Contact Reason questions",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "1": {
+        "synonyms": [
+          "internet",
+          "conteúdo online",
+          "na internet",
+          "online",
+          "denunciar um conteúdo"
+        ]
+      },
+      "2": {
+        "synonyms": [
+          "crime report",
+          "crime",
+          "Human rights crime",
+          "direitos humanos",
+          "violência",
+          "ajuda"
+        ]
+      },
+      "3": {
+        "synonyms": [
+          "jornalista",
+          "pesquisador",
+          "researcher"
+        ]
+      },
+      "4": {
+        "synonyms": [
+          "other",
+          "nenhuma"
+        ]
+      }
+    }
+  }
+}

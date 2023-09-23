@@ -18,7 +18,7 @@ import { ITask, Manager } from '@twilio/flex-ui';
 import { capitalize } from 'lodash';
 import { callTypes, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
 
-import { LexMemory, AutopilotMemory, FeatureFlags } from '../types/types';
+import { LexMemory, AutopilotMemory } from '../types/types';
 import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
 import { prepopulateForm as prepopulateFormAction } from '../states/contacts/actions';
@@ -164,18 +164,17 @@ const transformAnswers = (answers: AutopilotAnswers): PreSurveyAnswers => {
   );
 };
 
-const getAnswers = (isLexMemory: boolean, memory: LexMemory | AutopilotMemory): PreSurveyAnswers => {
-  if (isLexMemory) {
-    return memory as LexMemory;
-  }
-
+const getAnswers = (memory: LexMemory | AutopilotMemory): PreSurveyAnswers => {
   // This can be removed after every helpline is using Lex
-  const autopilotAnswers = (memory as AutopilotMemory).twilio.collected_data.collect_survey.answers;
-  return transformAnswers(autopilotAnswers);
+  if (typeof memory.twilio === 'object') {
+    const autopilotAnswers = (memory as AutopilotMemory).twilio.collected_data.collect_survey.answers;
+    return transformAnswers(autopilotAnswers);
+  }
+  return memory as LexMemory;
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export const prepopulateForm = (task: ITask, featureFlags: FeatureFlags) => {
+export const prepopulateForm = (task: ITask) => {
   const { memory, preEngagementData } = task.attributes;
 
   if (!memory && !preEngagementData) return;
@@ -208,10 +207,12 @@ export const prepopulateForm = (task: ITask, featureFlags: FeatureFlags) => {
     return;
   }
 
-  const answers = getAnswers(featureFlags.enable_lex, memory);
+  const answers = getAnswers(memory);
 
+  const isValidSurvey = Boolean(answers.aboutSelf); // determines if the memory has valid values or if it was aborted
   const isAboutSelf = answers.aboutSelf === 'Yes';
-  const callType = isAboutSelf || !answers.aboutSelf ? callTypes.child : callTypes.caller;
+  // eslint-disable-next-line no-nested-ternary
+  const callType = isValidSurvey ? (isAboutSelf ? callTypes.child : callTypes.caller) : null;
   const tabFormDefinition = isAboutSelf ? ChildInformationTab : CallerInformationTab;
   const prepopulateSurveyKeys = isAboutSelf ? survey.ChildInformationTab : survey.CallerInformationTab;
   const subroute = isAboutSelf ? 'childInformation' : 'callerInformation';
@@ -220,28 +221,20 @@ export const prepopulateForm = (task: ITask, featureFlags: FeatureFlags) => {
 
   // When a helpline has survey and no preEnagagement form
   if (memory && !preEngagementData) {
-    Manager.getInstance().store.dispatch(prepopulateFormAction(callType, surveyValues, task.taskSid));
+    if (callType) {
+      Manager.getInstance().store.dispatch(prepopulateFormAction(callType, surveyValues, task.taskSid));
 
-    // Open tabbed form to first tab
-    Manager.getInstance().store.dispatch(
-      RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
-    );
+      // Open tabbed form to first tab
+      Manager.getInstance().store.dispatch(
+        RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
+      );
+    }
+
     return;
   }
 
   // When a helpline has survey and preEnagagement form to populate
   if (memory && preEngagementData) {
-    const prepopulatePreengagementKeys = isAboutSelf
-      ? preEngagement.ChildInformationTab
-      : preEngagement.CallerInformationTab;
-    const preEngagementValues = getValuesFromPreEngagementData(
-      preEngagementData,
-      tabFormDefinition,
-      prepopulatePreengagementKeys,
-    );
-    const values = { ...surveyValues, ...preEngagementValues };
-    Manager.getInstance().store.dispatch(prepopulateFormAction(callType, values, task.taskSid));
-
     if (preEngagement.CaseInformationTab.length > 0) {
       const caseInfoValues = getValuesFromPreEngagementData(
         preEngagementData,
@@ -251,9 +244,23 @@ export const prepopulateForm = (task: ITask, featureFlags: FeatureFlags) => {
 
       Manager.getInstance().store.dispatch(prepopulateFormAction(callType, caseInfoValues, task.taskSid, true));
     }
-    // Open tabbed form to first tab
-    Manager.getInstance().store.dispatch(
-      RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
-    );
+
+    if (callType) {
+      const prepopulatePreengagementKeys = isAboutSelf
+        ? preEngagement.ChildInformationTab
+        : preEngagement.CallerInformationTab;
+      const preEngagementValues = getValuesFromPreEngagementData(
+        preEngagementData,
+        tabFormDefinition,
+        prepopulatePreengagementKeys,
+      );
+      const values = { ...surveyValues, ...preEngagementValues };
+      Manager.getInstance().store.dispatch(prepopulateFormAction(callType, values, task.taskSid));
+
+      // Open tabbed form to first tab
+      Manager.getInstance().store.dispatch(
+        RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
+      );
+    }
   }
 };

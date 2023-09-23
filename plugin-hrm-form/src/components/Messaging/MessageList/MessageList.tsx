@@ -59,12 +59,14 @@ const groupMessages = (messages: GroupedMessage[]): GroupedMessagesByDate => mes
 const MessageList: React.FC<Props> = ({ messages }) => {
   const messagesToRender = React.useMemo(() => flattenGroupedMessages(groupMessages(messages)), [messages]);
   const ref = React.useRef(null);
+  let dividerCounter = 0;
   return (
     <MessageListContainer ref={ref}>
       <ViewportList viewportRef={ref} items={messagesToRender}>
         {item => {
           return isItemDateDivider(item) ? (
-            <DateRulerContainer>
+            // eslint-disable-next-line no-plusplus
+            <DateRulerContainer key={`divider_${dividerCounter++}`}>
               <DateRulerHr />
               <DateRulerDateText>{item.dateText}</DateRulerDateText>
               <DateRulerHr />

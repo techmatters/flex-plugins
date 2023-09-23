@@ -18,7 +18,7 @@ import { omit } from 'lodash';
 import { callTypes } from 'hrm-form-definitions';
 
 import * as t from './types';
-import { ContactsState, TaskEntry } from './types';
+import { ContactsState, HrmServiceContactWithMetadata } from './types';
 import {
   DefinitionVersion,
   GeneralActionType,
@@ -53,11 +53,17 @@ import {
 } from './contactDetails';
 import { ADD_EXTERNAL_REPORT_ENTRY, addExternalReportEntryReducer } from '../csam-report/existingContactExternalReport';
 import { ReferralLookupStatus, resourceReferralReducer } from './resourceReferral';
+import { ContactRawJson } from '../../types/types';
+import { ContactCategoryAction, toggleSubCategoriesReducer } from './categories';
+import { configurationBase, RootState } from '..';
+import { transformValues } from '../../services/ContactService';
 
 export const emptyCategories = [];
 
 // eslint-disable-next-line import/no-unused-modules
-export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated: boolean): TaskEntry => {
+export const createContactWithMetadata = (definitions: DefinitionVersion) => (
+  recreated: boolean,
+): HrmServiceContactWithMetadata => {
   const initialChildInformation = definitions.tabbedForms.ChildInformationTab.reduce(createStateItem, {});
   const initialCallerInformation = definitions.tabbedForms.CallerInformationTab.reduce(createStateItem, {});
   const initialCaseInformation = definitions.tabbedForms.CaseInformationTab.reduce(createStateItem, {});
@@ -68,13 +74,16 @@ export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated
 
   const categoriesMeta = {
     gridView: false,
-    expanded: Object.keys(definitions.tabbedForms.IssueCategorizationTab(defaultHelpline)).reduce(
-      (acc, category) => ({ ...acc, [category]: false }),
-      {},
-    ),
+    expanded: {},
   };
 
   const metadata = {
+    draft: {
+      resourceReferralList: {
+        resourceReferralIdToAdd: '',
+        lookupStatus: ReferralLookupStatus.NOT_STARTED,
+      },
+    },
     startMillis: recreated ? null : new Date().getTime(),
     endMillis: null,
     tab: 1,
@@ -87,28 +96,44 @@ export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated
     definition: definitions.tabbedForms.ContactlessTaskTab,
     helplineInformation: definitions.helplineInformation,
   });
-  const contactlessTask: TaskEntry['contactlessTask'] = {
+  const contactlessTask: ContactRawJson['contactlessTask'] = {
     channel: 'web', // default, should be overwritten
+    date: new Date().toISOString(),
+    time: new Date().toTimeString(),
+    createdOnBehalfOf: '',
     ...Object.fromEntries(initialContactlessTaskTabDefinition.map(d => [d.name, getInitialValue(d)])),
   };
 
   return {
-    helpline: '',
-    callType: '',
-    childInformation: initialChildInformation,
-    callerInformation: initialCallerInformation,
-    caseInformation: initialCaseInformation,
-    contactlessTask,
-    categories: emptyCategories,
-    csamReports: [],
-    metadata,
-    isCallTypeCaller: false,
-    draft: {
-      resourceReferralList: {
-        resourceReferralIdToAdd: '',
-        lookupStatus: ReferralLookupStatus.NOT_STARTED,
+    contact: {
+      accountSid: '',
+      id: '',
+      twilioWorkerId: '',
+      timeOfContact: new Date().toISOString(),
+      taskId: '',
+      helpline: '',
+      rawJson: {
+        childInformation: initialChildInformation,
+        callerInformation: initialCallerInformation,
+        caseInformation: initialCaseInformation,
+        callType: '',
+        contactlessTask,
+        categories: {},
       },
+      createdBy: '',
+      createdAt: '',
+      updatedBy: '',
+      updatedAt: '',
+      queueName: '',
+      channel: 'web',
+      number: '',
+      conversationDuration: 0,
+      channelSid: '',
+      serviceSid: '',
+      csamReports: [],
+      conversationMedia: [],
     },
+    metadata,
   };
 };
 
@@ -128,27 +153,33 @@ const boundReferralReducer = resourceReferralReducer(initialState);
 
 // eslint-disable-next-line import/no-unused-modules,complexity
 export function reduce(
+  rootState: RootState['plugin-hrm-form'],
   inputState = initialState,
-  action: t.ContactsActionType | ExistingContactAction | ContactDetailsAction | GeneralActionType,
+  action:
+    | t.ContactsActionType
+    | ExistingContactAction
+    | ContactDetailsAction
+    | ContactCategoryAction
+    | GeneralActionType,
 ): ContactsState {
-  const state = boundReferralReducer(inputState, action as any);
+  let state = boundReferralReducer(inputState, action as any);
+  state = toggleSubCategoriesReducer(state, action as ContactCategoryAction);
   switch (action.type) {
     case INITIALIZE_CONTACT_STATE:
       return {
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: createNewTaskEntry(action.definitions)(false),
+          [action.taskId]: createContactWithMetadata(action.definitions)(false),
         },
       };
     case RECREATE_CONTACT_STATE:
       if (state.tasks[action.taskId]) return state;
-
       return {
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: createNewTaskEntry(action.definitions)(true),
+          [action.taskId]: createContactWithMetadata(action.definitions)(true),
         },
       };
     case REMOVE_CONTACT_STATE:
@@ -156,17 +187,41 @@ export function reduce(
         ...state,
         tasks: omit(state.tasks, action.taskId),
       };
-    case t.UPDATE_FORM:
+    case t.UPDATE_FORM: {
+      const updateFormDefinition =
+        rootState[configurationBase].definitionVersions[state.tasks[action.taskId].contact.rawJson.definitionVersion] ??
+        rootState[configurationBase].currentDefinitionVersion;
+      let updatedForm: ContactRawJson[keyof ContactRawJson];
+      const formDefinitionsMap = {
+        childInformation: updateFormDefinition.tabbedForms.ChildInformationTab,
+        callerInformation: updateFormDefinition.tabbedForms.CallerInformationTab,
+        caseInformation: updateFormDefinition.tabbedForms.CaseInformationTab,
+      };
+      const formDefinition = formDefinitionsMap[action.parent];
+      if (formDefinition) {
+        updatedForm = transformValues(formDefinition)(
+          action.payload as ContactRawJson['childInformation' | 'callerInformation' | 'caseInformation'],
+        );
+      } else {
+        updatedForm = action.payload;
+      }
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...state.tasks[action.taskId],
-            [action.parent]: action.payload,
+            contact: {
+              ...state.tasks[action.taskId].contact,
+              rawJson: {
+                ...state.tasks[action.taskId].contact.rawJson,
+                [action.parent]: updatedForm,
+              },
+            },
           },
         },
       };
+    }
     case t.SAVE_END_MILLIS: {
       const taskToEnd = state.tasks[action.taskId];
 
@@ -242,21 +297,32 @@ export function reduce(
           ...state.tasks,
           [action.taskId]: {
             ...currentTask,
-            callType,
-            [formName]: {
-              ...currentTask[formName],
-              ...values,
+            contact: {
+              ...currentTask.contact,
+              rawJson: {
+                ...currentTask.contact.rawJson,
+                callType: callType ? callType : state.tasks[action.taskId].contact.rawJson.callType,
+                [formName]: {
+                  ...currentTask[formName],
+                  ...values,
+                },
+              },
             },
           },
         },
       };
     }
     case t.RESTORE_ENTIRE_FORM: {
+      const definition =
+        rootState[configurationBase].definitionVersions[action.contact.contact.rawJson.definitionVersion];
       return {
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: action.form,
+          [action.taskId]: {
+            ...(state.tasks[action.taskId] || createContactWithMetadata(definition)(true)),
+            ...action.contact,
+          },
         },
       };
     }
@@ -267,8 +333,14 @@ export function reduce(
           ...state.tasks,
           [action.taskId]: {
             ...state.tasks[action.taskId],
-            helpline: action.helpline,
-            categories: emptyCategories,
+            contact: {
+              ...state.tasks[action.taskId].contact,
+              helpline: action.helpline,
+              rawJson: {
+                ...state.tasks[action.taskId].contact.rawJson,
+                categories: {},
+              },
+            },
           },
         },
       };
@@ -280,7 +352,10 @@ export function reduce(
           ...state.tasks,
           [action.taskId]: {
             ...state.tasks[action.taskId],
-            csamReports: [...state.tasks[action.taskId].csamReports, action.csamReportEntry],
+            contact: {
+              ...state.tasks[action.taskId].contact,
+              csamReports: [...state.tasks[action.taskId].contact.csamReports, action.csamReportEntry],
+            },
           },
         },
       };

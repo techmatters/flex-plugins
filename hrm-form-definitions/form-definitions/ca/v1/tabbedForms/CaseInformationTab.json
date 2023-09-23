@@ -39,6 +39,11 @@
       { "value": "Arousal", "label": "Sexually Inappropriate/Arousal Caller" },
       { "value": "Other", "label": "Other" }
     ]
+  },  
+  {
+    "name": "otherAbuseDetails",
+    "label": "If Other, Provide Details",
+    "type": "input"
   },
   {
     "name": "safetyPlan",

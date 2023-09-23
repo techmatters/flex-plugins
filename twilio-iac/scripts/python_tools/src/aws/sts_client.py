@@ -40,4 +40,4 @@ class STSClient():
         )
 
     def get_session_client(self, service_name: str):
-        return self.session.client(service_name)
+        return self.session.client(service_name, config=self._config)

@@ -1,0 +1,52 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+name: Deploy Flex to all Staging Helplines
+
+on:
+  workflow_dispatch:
+    inputs:
+      changelog:
+        description: Release Changelog - Add a comment about the changes to be included in this release.
+        required: true
+
+jobs:
+  configure:
+    name: Determine Configuration
+    runs-on: ubuntu-latest
+    outputs:
+      target_helplines: ${{ steps.determine-target-helplines.outputs.target_helplines }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - id: determine-target-helplines
+        name: Executing main-action
+        uses: ./.github/actions/determine-target-helplines-action
+        with:
+          environment: staging
+  deploy-helplines:
+    name: Deploy to multiple helplines
+    needs: configure
+    uses: ./.github/workflows/deploy-multiple-helplines.yml
+    secrets: inherit
+    with:
+      project: flex
+      helplines: ${{ needs.configure.outputs.target_helplines }}
+      environments: '[ "STG" ]'
+      changelog: ${{ inputs.changelog }}

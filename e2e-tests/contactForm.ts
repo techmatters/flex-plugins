@@ -39,7 +39,7 @@ export function contactForm(page: Page) {
     topCategorySelector: (category: string) =>
       formArea.locator(`//button[@data-testid='IssueCategorization-Section-${category}']`),
     subCategoryCheckbox: (tabId: string, topCategory: string, subCategory: string) =>
-      formArea.locator(`//input[@value='${tabId}.${topCategory}.${subCategory}']`),
+      formArea.locator(`//input[@data-testid='${tabId}.${topCategory}.${subCategory}']`),
     saveContactButton: formArea.locator(`//button[@data-testid='BottomBar-SaveContact-Button']`),
     saveAndAddToCaseButton: formArea.locator(
       `//button[@data-testid='BottomBar-SaveAndAddToCase-Button']`,
@@ -69,7 +69,7 @@ export function contactForm(page: Page) {
     for (const [topCategory, subCategories] of Object.entries(items)) {
       await selectors.topCategorySelector(topCategory).click();
       for (const subCategory of subCategories) {
-        await selectors.subCategoryCheckbox(id, topCategory, subCategory).check();
+        await selectors.subCategoryCheckbox(id, topCategory, subCategory).check({ timeout: 2000 });
       }
     }
   }

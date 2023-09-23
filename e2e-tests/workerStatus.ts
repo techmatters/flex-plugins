@@ -15,34 +15,42 @@
  */
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { expect, Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 
-export enum WorkerStatus {
-  UNKNOWN,
-  AVAILABLE = 'Available',
-  OFFLINE = 'Offline',
+export const WORKER_STATUS = {
+  AVAILABLE: ['Available', 'Ready'],
+  OFFLINE: ['Offline'],
+};
+
+export type WorkerStatus = keyof typeof WORKER_STATUS;
+
+async function getFirstMatchingStatus(page: Page, statusOptions: string[]): Promise<Locator> {
+  for (let status of statusOptions) {
+    let locator = page.locator(
+      `//div[@aria-label='Activity selection']//button[@data-paste-element='MENU_ITEM']//span[text()='${status}']`,
+    );
+    if (await locator.isVisible()) {
+      return locator;
+    }
+  }
+  throw new Error('No matching status found');
 }
 
 export function statusIndicator(page: Page) {
   const selectors = {
     userActivityDropdownButton: page.locator("//button[@data-test='activity-dropdown-button']"),
-    userActivityDropdownOption: (status: WorkerStatus) =>
-      page.locator(
-        `//div[@aria-label='Activity selection']//button[@data-paste-element='MENU_ITEM']//span[text()='${status}']`,
-      ),
+    activityMenu: page.locator("//div[@data-test='activity-menu']"),
   };
 
   return {
     setStatus: async function (status: WorkerStatus) {
       await selectors.userActivityDropdownButton.click();
       console.log('Worker status dropdown should be open');
-      const statusSelector = selectors.userActivityDropdownOption(status);
-      await statusSelector.waitFor({ state: 'visible' });
+      await selectors.activityMenu.waitFor({ state: 'visible' });
+      const statusSelector = await getFirstMatchingStatus(page, WORKER_STATUS[status]);
       console.log('Worker status option spotted');
       await statusSelector.click();
       console.log('Worker status option clicked');
-      await expect(selectors.userActivityDropdownButton).toContainText(status.toLocaleString());
-      console.log('Status changed');
     },
   };
 }

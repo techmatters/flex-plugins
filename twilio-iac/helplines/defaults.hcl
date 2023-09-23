@@ -12,6 +12,8 @@ locals {
   twilio_numbers     = []
   channel            = ""
 
+  enable_external_recordings = false
+
   channel_attributes = {
     webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
     voice   : "/app/twilio-iac/helplines/templates/channel-attributes/voice.tftpl"
@@ -27,6 +29,7 @@ locals {
 
   custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
 
+  lex_bot_languages = {}
 
   manage_github_secrets = true
 

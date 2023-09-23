@@ -3,6 +3,7 @@
         "attributeUpdates": {
             "assets_bucket_url": "https://assets-development.tl.techmatters.org"
         },
+        "external_recordings_enabled": true,
         "feature_flags": {
             "enable_aselo_messaging_ui": true,
             "enable_counselor_toolkits": true,
@@ -13,8 +14,13 @@
             "enable_resources": true,
             "enable_resources_elastic_search": true,
             "enable_save_insights": true,
-            "enable_transcripts": true
+            "enable_transcripts": true,
+            "backend_handled_chat_janitor": false,
+            "enable_voice_recordings": false,
+            "enable_post_survey": false
+
         },
+
         "multipleOfficeSupport": true,
         "permissionConfig": "dev",
         "previous_ui_version": {
@@ -57,6 +63,7 @@
                 "name": "Simple Light"
             }
         },
+        "logLevel": "debug",
         "showRealtimeQueuesStats": true
     }
 }

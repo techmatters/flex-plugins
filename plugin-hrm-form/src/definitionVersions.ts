@@ -25,7 +25,7 @@ import * as Flex from '@twilio/flex-ui';
  * "https://hrm-{environment}.tl.techmatters.org"
  */
 const getEnvironmentFromHrmBaseUrl = (manager: Flex.Manager) => {
-  const hrmBaseUrl = `${process.env.REACT_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}`;
+  const hrmBaseUrl = `${process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}`;
   const prefix = 'https://hrm-';
   const suffix = '.tl.techmatters.org';
   const environment = hrmBaseUrl.substring(prefix.length, hrmBaseUrl.indexOf(suffix)).replace('-eu', '');

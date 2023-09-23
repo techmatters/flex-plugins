@@ -27,11 +27,19 @@ import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-fo
 
 import { mockGetDefinitionsResponse, mockPartialConfiguration } from '../../mockGetConfig';
 import Case from '../../../components/case';
-import { namespace, configurationBase, contactFormsBase, connectedCaseBase, routingBase } from '../../../states';
+import {
+  namespace,
+  configurationBase,
+  contactFormsBase,
+  connectedCaseBase,
+  routingBase,
+  RootState,
+} from '../../../states';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { StandaloneITask } from '../../../types/types';
 import { LOAD_CONTACT_ACTION } from '../../../states/contacts/existingContacts';
-import { taskFormToSearchContact } from '../../../states/contacts/contactDetailsAdapter';
+import { VALID_EMPTY_CONTACT } from '../../testContacts';
+import { RecursivePartial } from '../../RecursivePartial';
 
 jest.mock('../../../services/CaseService', () => ({ getActivities: jest.fn(() => []), cancelCase: jest.fn() }));
 jest.mock('../../../permissions', () => ({
@@ -56,7 +64,7 @@ function createState(state) {
 let ownProps;
 
 let mockV1;
-let initialState;
+let initialState: RecursivePartial<RootState>;
 
 beforeEach(() => {
   mockReset();
@@ -85,19 +93,24 @@ describe('useState mocked', () => {
       [contactFormsBase]: {
         tasks: {
           task1: {
-            childInformation: {
-              firstName: 'first',
-              lastName: 'last',
+            contact: {
+              ...VALID_EMPTY_CONTACT,
+              rawJson: {
+                ...VALID_EMPTY_CONTACT.rawJson,
+                childInformation: {
+                  firstName: 'first',
+                  lastName: 'last',
+                },
+                caseInformation: {
+                  callSummary: 'contact call summary',
+                },
+                callerInformation: {},
+                categories: {},
+              },
+              taskSid: 'task1',
             },
             metadata: {},
-            caseInformation: {
-              callSummary: 'contact call summary',
-            },
-            callerInformation: {},
-            categories: [],
-            taskSid: 'task1',
           },
-          temporaryCaseInfo: '',
         },
         existingContacts: {},
       },
@@ -135,11 +148,17 @@ describe('useState mocked', () => {
         existingContacts: {},
         tasks: {
           task1: {
-            childInformation: {
-              name: { firstName: 'first', lastName: 'last' },
+            contact: {
+              ...VALID_EMPTY_CONTACT,
+              rawJson: {
+                ...VALID_EMPTY_CONTACT.rawJson,
+                childInformation: {
+                  name: { firstName: 'first', lastName: 'last' },
+                },
+              },
+              taskSid: 'task1',
             },
             metadata: {},
-            taskSid: 'task1',
           },
         },
       },
@@ -185,19 +204,11 @@ describe('useState mocked', () => {
 
     expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('123');
     expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
-    expect(screen.getByTestId('Case-Details_DateOpened').value).toBe('6/29/2020');
-    expect(screen.getByTestId('Case-Details_DateLastUpdated').value).toBe('—');
+    expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe('6/29/2020');
+    expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe('—');
 
     expect(store.dispatch).toHaveBeenCalledWith({
-      contacts: [
-        taskFormToSearchContact(
-          initialState[namespace][connectedCaseBase].tasks.task1,
-          initialState[namespace][contactFormsBase].tasks.task1,
-          expect.anything(),
-          'current-worker-sid',
-          '__unsavedFromCase:123',
-        ),
-      ],
+      contacts: [initialState[namespace][contactFormsBase].tasks.task1.contact],
       reference: 'task1',
       replaceExisting: false,
       type: LOAD_CONTACT_ACTION,
@@ -211,13 +222,8 @@ describe('useState mocked', () => {
         ...initialState[namespace][contactFormsBase],
         existingContacts: {
           '__unsavedFromCase:123': {
-            savedContact: taskFormToSearchContact(
-              initialState[namespace][connectedCaseBase].tasks.task1,
-              initialState[namespace][contactFormsBase].tasks.task1,
-              expect.anything(),
-              'current-worker-sid',
-              '__unsavedFromCase:123',
-            ),
+            savedContact: initialState[namespace][contactFormsBase].tasks.task1.contact,
+
             references: ['task1'],
           },
         },
@@ -238,8 +244,8 @@ describe('useState mocked', () => {
 
     expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('123');
     expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
-    expect(screen.getByTestId('Case-Details_DateOpened').value).toBe('6/29/2020');
-    expect(screen.getByTestId('Case-Details_DateLastUpdated').value).toBe('—');
+    expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe('6/29/2020');
+    expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe('—');
     expect(screen.getByTestId('Case-DetailsHeaderChildName').innerHTML).toContain('first last');
   });
 
@@ -260,19 +266,11 @@ describe('useState mocked', () => {
 
     expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('123');
     expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
-    expect(screen.getByTestId('Case-Details_DateOpened').value).toBe('6/29/2020');
-    expect(screen.getByTestId('Case-Details_DateLastUpdated').value).toBe('6/29/2020');
+    expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe('6/29/2020');
+    expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe('6/29/2020');
 
     expect(store.dispatch).toHaveBeenCalledWith({
-      contacts: [
-        taskFormToSearchContact(
-          initialState[namespace][connectedCaseBase].tasks.task1,
-          initialState[namespace][contactFormsBase].tasks.task1,
-          expect.anything(),
-          'current-worker-sid',
-          '__unsavedFromCase:123',
-        ),
-      ],
+      contacts: [initialState[namespace][contactFormsBase].tasks.task1.contact],
       reference: 'task1',
       replaceExisting: false,
       type: LOAD_CONTACT_ACTION,

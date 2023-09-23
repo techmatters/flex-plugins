@@ -1,0 +1,65 @@
+{
+  "pre_survey": {
+    "description": "Helpline Specific helplines/mt/configs/lex/uk/intents Pre Survey Intent",
+    "sample_utterances": [
+      "trigger_pre_survey"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "Ми переведемо вас зараз, будь ласка, чекайте спеціаліста.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Вибачте, на даний момент я не можу надати допомогу. Ми переведемо вас зараз, будь ласка, чекайте спеціаліста.",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "aboutSelf": {
+        "priority": 0,
+        "description": "Imported from question 'about_self'",
+        "slot_constraint": "Required",
+        "slot_type": "yes_no",
+        "value_elicitation_prompt": {
+          "content": "Ти звертаєшся з приводу себе? так або ні",
+          "content_type": "PlainText",
+          "max_attempts": 2
+        }
+      },
+      "age": {
+        "priority": 1,
+        "description": "Imported from question 'age'",
+        "slot_constraint": "Required",
+        "slot_type": "age",
+        "value_elicitation_prompt": {
+          "content": "Скільки тобі років?",
+          "content_type": "PlainText",
+          "max_attempts": 2
+        }
+      },
+      "gender": {
+        "priority": 2,
+        "description": "Imported from question 'gender'",
+        "slot_constraint": "Required",
+        "slot_type": "gender",
+        "value_elicitation_prompt": {
+          "content": "Яка у вас стать? \n 1. Жінка \n 2. Чоловік \n 3. Інші \n 4. Не хочу відповідати ",
+          "content_type": "PlainText",
+          "max_attempts": 2
+        }
+      },
+      "feeling": {
+        "priority": 3,
+        "description": "Imported from question 'feeling'",
+        "slot_constraint": "Required",
+        "slot_type": "feeling",
+        "value_elicitation_prompt": {
+          "content": "HЯк ти себе почуваєш? \n 1. Щасливий \n 2. Збентежений \n 3. Злий \n 4. Шокований \n 5. Переляканий \n 6. Розгублений ",
+          "content_type": "PlainText",
+          "max_attempts": 2
+        }
+      }
+    }
+  }
+}

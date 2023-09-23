@@ -67,9 +67,8 @@ module "services" {
 
 module "taskRouter" {
   source                                = "../terraform-modules/taskRouter/default"
-  custom_task_routing_filter_expression = "phone=='+3680984590' OR phone=='+3612344587' OR channelType=='web'"
+  custom_task_routing_filter_expression = "phone=='+3680984590' OR phone=='+12014821989' OR channelType=='web' OR isContactlessTask==true"
   serverless_url                        = module.serverless.serverless_environment_production_url
-  skip_timeout_expression               = "1==1"
   include_default_filter                = true
   helpline                              = "Kék Vonal"
 }
@@ -86,9 +85,10 @@ module "studioFlow" {
       master_workflow_sid      = module.taskRouter.master_workflow_sid
       chat_task_channel_sid    = module.taskRouter.chat_task_channel_sid
       default_task_channel_sid = module.taskRouter.default_task_channel_sid
-      chatbot_default_sid      = twilio_autopilot_assistants_v1.chatbot_default.sid
-      chatbot_ru_HU_sid        = twilio_autopilot_assistants_v1.chatbot_ru_HU.sid
-      chatbot_ukr_HU_sid       = twilio_autopilot_assistants_v1.chatbot_ukr_HU.sid
+      serverless_url               = module.serverless.serverless_environment_production_url
+      serverless_service_sid       = module.serverless.serverless_service_sid
+      serverless_environment_sid   = module.serverless.serverless_environment_production_sid
+      capture_channel_with_bot_sid = "ZHd97278ad2b96ffbc537706847f6ee926"
   })
 }
 
@@ -128,14 +128,6 @@ module "aws" {
   post_survey_bot_sid                = twilio_autopilot_assistants_v1.chatbot_postsurvey.sid
   survey_workflow_sid                = module.survey.survey_workflow_sid
   bucket_region                      = "us-east-1"
-}
-
-module "aws_monitoring" {
-  source            = "../terraform-modules/aws-monitoring/default"
-  helpline          = local.helpline
-  short_helpline    = local.short_helpline
-  environment       = local.environment
-  cloudwatch_region = "us-east-1"
 }
 
 module "github" {
