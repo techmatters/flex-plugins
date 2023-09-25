@@ -5,8 +5,8 @@ locals {
 
   local_config = {
 
-   custom_task_routing_filter_expression = "helpline=='SafeSpot' OR channelType=='web' OR to=='+14244147346' OR to=='+18767287042' OR twilioNumber=='instagram:17841444523369053' OR twilioNumber=='messenger:107246798170317'"
-
+     custom_task_routing_filter_expression = "helpline=='SafeSpot' OR channelType=='web' OR to=='+14244147346' OR to=='+18767287042' OR twilioNumber=='instagram:17841444523369053' OR twilioNumber=='messenger:107246798170317'"
+    
     #Studio flow
     flow_vars = {
       service_sid                            = "ZSf7422a38f3b243b8aab97ca268f4ce6b"
