@@ -49,7 +49,7 @@ const CloseCaseDialog: React.FC<Props> = ({ setDialog, handleDontSaveClose, hand
           <Row style={{ justifyContent: 'space-evenly' }}>
             <StyledNextStepButton
               tabIndex={1}
-              secondary
+              secondary="true"
               onClick={handleDontSaveClose}
               margin="15px 0"
               style={{ background: '#fff' }}

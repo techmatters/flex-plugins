@@ -18,7 +18,7 @@
 import { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
 import { ContactRawJson } from '../../types/types';
-import { transformCategories, transformValues } from '../../services/ContactService';
+import { transformValues } from '../../services/ContactService';
 import { SearchContactDraftChanges } from '../../states/contacts/existingContacts';
 
 type ContactFormValues = {
@@ -32,21 +32,7 @@ export type ContactDetailsSectionFormApi = {
   formToPayload: (
     def: DefinitionVersion,
     form: ContactFormValues,
-  ) => {
-    rawJson: Partial<Pick<ContactRawJson, 'callerInformation' | 'childInformation' | 'caseInformation'>>;
-  };
-};
-
-export type IssueCategorizationSectionFormApi = {
-  getFormDefinition: (def: DefinitionVersion) => FormDefinition;
-  getLayoutDefinition: (def: DefinitionVersion) => LayoutDefinition;
-  getFormValues: (def: DefinitionVersion, contact: SearchContactDraftChanges) => { categories: string[] };
-  type: 'IssueCategorizationSectionForm';
-  formToPayload: (
-    def: DefinitionVersion,
-    form: { categories: string[] },
-    helpline: string,
-  ) => { rawJson: { categories: Record<string, string[]> } };
+  ) => Partial<Pick<ContactRawJson, 'callerInformation' | 'childInformation' | 'caseInformation'>>;
 };
 
 const mapFormToDefinition = (
@@ -60,7 +46,6 @@ const mapFormToDefinition = (
 export const contactDetailsSectionFormApi: {
   CHILD_INFORMATION: ContactDetailsSectionFormApi;
   CALLER_INFORMATION: ContactDetailsSectionFormApi;
-  ISSUE_CATEGORIZATION: IssueCategorizationSectionFormApi;
   CASE_INFORMATION: ContactDetailsSectionFormApi;
 } = {
   CHILD_INFORMATION: {
@@ -70,9 +55,8 @@ export const contactDetailsSectionFormApi: {
     getFormDefinition: def => def.tabbedForms.ChildInformationTab,
     getLayoutDefinition: def => def.layoutVersion.contact.childInformation,
     formToPayload: (def, form) => ({
-      rawJson: {
-        childInformation: transformValues(def.tabbedForms.ChildInformationTab)(form.childInformation),
-      },
+      // TODO: Remove this and other calls to 'tranformValues' in components & helpers when we save via redux and can put ut uin the reducer
+      childInformation: transformValues(def.tabbedForms.ChildInformationTab)(form.childInformation),
     }),
   },
   CALLER_INFORMATION: {
@@ -82,22 +66,7 @@ export const contactDetailsSectionFormApi: {
     getFormDefinition: def => def.tabbedForms.CallerInformationTab,
     getLayoutDefinition: def => def.layoutVersion.contact.callerInformation,
     formToPayload: (def, form) => ({
-      rawJson: {
-        callerInformation: transformValues(def.tabbedForms.CallerInformationTab)(form.callerInformation),
-      },
-    }),
-  },
-  ISSUE_CATEGORIZATION: {
-    type: 'IssueCategorizationSectionForm',
-    getFormValues: (def, contact) => ({
-      categories: Object.entries<string[]>(contact.rawJson.categories).flatMap(([category, subCategories]) =>
-        subCategories.map(subCategories => `${category}.${subCategories}`),
-      ),
-    }),
-    getFormDefinition: def => def.tabbedForms.CallerInformationTab,
-    getLayoutDefinition: def => def.layoutVersion.contact.callerInformation,
-    formToPayload: (def, form, helpline) => ({
-      rawJson: { categories: transformCategories(form.categories) },
+      callerInformation: transformValues(def.tabbedForms.CallerInformationTab)(form.callerInformation),
     }),
   },
   CASE_INFORMATION: {
@@ -108,9 +77,7 @@ export const contactDetailsSectionFormApi: {
     getFormDefinition: def => def.tabbedForms.CaseInformationTab,
     getLayoutDefinition: def => def.layoutVersion.contact.caseInformation,
     formToPayload: (def, form) => ({
-      rawJson: {
-        caseInformation: transformValues(def.tabbedForms.CaseInformationTab)(form.caseInformation),
-      },
+      caseInformation: transformValues(def.tabbedForms.CaseInformationTab)(form.caseInformation),
     }),
   },
 } as const;

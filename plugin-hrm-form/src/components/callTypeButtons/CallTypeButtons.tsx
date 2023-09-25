@@ -22,8 +22,8 @@ import { connect, ConnectedProps } from 'react-redux';
 import { callTypes, CallTypeButtonsEntry } from 'hrm-form-definitions';
 
 import { namespace, contactFormsBase, configurationBase, connectedCaseBase, RootState } from '../../states';
-import { updateCallType } from '../../states/contacts/actions';
-import { changeRoute } from '../../states/routing/actions';
+import { updateCallType as newUpdateCallTypeAction } from '../../states/contacts/actions';
+import { changeRoute as newChangeRouteAction } from '../../states/routing/actions';
 import { withLocalization } from '../../contexts/LocalizationContext';
 import { Box, Flex } from '../../styles/HrmStyles';
 import { Container, Label, DataCallTypeButton, NonDataCallTypeButton } from '../../styles/callTypeButtons';
@@ -32,13 +32,12 @@ import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
-import { CustomITask, isOfflineContactTask } from '../../types/types';
+import { CustomITask, HrmServiceContact, isOfflineContactTask } from '../../types/types';
 import { getTemplateStrings } from '../../hrmConfig';
+import { AppRoutes } from '../../states/routing/types';
 
-const isDialogOpen = contactForm =>
-  Boolean(contactForm && contactForm.callType && contactForm.callType && isNonDataCallType(contactForm.callType));
-
-const clearCallType = props => props.dispatch(updateCallType(props.task.taskSid, ''));
+const isDialogOpen = (contact: HrmServiceContact) =>
+  contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType);
 
 type OwnProps = {
   task: CustomITask;
@@ -48,15 +47,24 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const CallTypeButtons: React.FC<Props> = props => {
-  const { contactForm, task, localization, currentDefinitionVersion, caseForm } = props;
+const CallTypeButtons: React.FC<Props> = ({
+  contact,
+  metadata,
+  task,
+  localization,
+  currentDefinitionVersion,
+  caseForm,
+  updateCallType,
+  clearCallType,
+  changeRoute,
+}) => {
   const { isCallTask } = localization;
 
   // Todo: need to handle this error scenario in a better way. Currently is showing a blank screen if there aren't definitions.
   if (!currentDefinitionVersion) return null;
   const { callTypeButtons } = currentDefinitionVersion;
 
-  const handleClick = (taskSid: string, callTypeEntry: CallTypeButtonsEntry) => {
+  const handleClick = (callTypeEntry: CallTypeButtonsEntry) => {
     if (!hasTaskControl(task)) return;
 
     /*
@@ -65,10 +73,10 @@ const CallTypeButtons: React.FC<Props> = props => {
      */
     const callType = callTypes[callTypeEntry.name] ? callTypes[callTypeEntry.name] : callTypeEntry.label;
 
-    props.dispatch(updateCallType(taskSid, callType));
+    updateCallType(callType);
   };
 
-  const handleClickAndRedirect = (taskSid: string, callTypeEntry: CallTypeButtonsEntry) => {
+  const handleClickAndRedirect = (callTypeEntry: CallTypeButtonsEntry) => {
     if (!hasTaskControl(task)) return;
 
     // eslint-disable-next-line no-nested-ternary
@@ -78,15 +86,15 @@ const CallTypeButtons: React.FC<Props> = props => {
       ? 'callerInformation'
       : 'childInformation';
 
-    handleClick(taskSid, callTypeEntry);
-    props.dispatch(changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, taskSid));
+    handleClick(callTypeEntry);
+    changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true });
   };
 
   const handleNonDataClick = (taskSid: string, callTypeEntry: CallTypeButtonsEntry) => {
     if (isOfflineContactTask(task)) {
-      handleClickAndRedirect(taskSid, callTypeEntry);
+      handleClickAndRedirect(callTypeEntry);
     } else {
-      handleClick(taskSid, callTypeEntry);
+      handleClick(callTypeEntry);
     }
   };
 
@@ -94,7 +102,7 @@ const CallTypeButtons: React.FC<Props> = props => {
     if (!hasTaskControl(task)) return;
 
     try {
-      await submitContactForm(task, contactForm, caseForm);
+      await submitContactForm(task, contact, metadata, caseForm);
       await completeTask(task);
     } catch (error) {
       const strings = getTemplateStrings();
@@ -116,7 +124,7 @@ const CallTypeButtons: React.FC<Props> = props => {
             .map((callType, index) => {
               return (
                 <DataCallTypeButton
-                  onClick={() => handleClickAndRedirect(task.taskSid, callType)}
+                  onClick={() => handleClickAndRedirect(callType)}
                   key={callType.name}
                   autoFocus={index === 0}
                   data-testid={`DataCallTypeButton-${callType.name}`}
@@ -149,11 +157,11 @@ const CallTypeButtons: React.FC<Props> = props => {
         </Box>
       </Container>
       <NonDataCallTypeDialog
-        isOpen={isDialogOpen(contactForm)}
+        isOpen={isDialogOpen(contact)}
         isCallTask={!isOfflineContactTask(task) && isCallTask(task)}
         isInWrapupMode={!isOfflineContactTask(task) && TaskHelper.isInWrapupMode(task)}
         handleConfirm={handleConfirmNonDataCallType}
-        handleCancel={() => clearCallType(props)}
+        handleCancel={() => clearCallType()}
       />
     </>
   );
@@ -162,15 +170,21 @@ const CallTypeButtons: React.FC<Props> = props => {
 CallTypeButtons.displayName = 'CallTypeButtons';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
+  const { contact, metadata } = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid] ?? {};
   const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
   const caseForm = caseState && caseState.connectedCase;
   const { currentDefinitionVersion } = state[namespace][configurationBase];
 
-  return { contactForm, caseForm, currentDefinitionVersion };
+  return { contact, metadata, caseForm, currentDefinitionVersion };
 };
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = (dispatch, { task: { taskSid } }: OwnProps) => ({
+  changeRoute: (route: AppRoutes) => dispatch(newChangeRouteAction(route, taskSid)),
+  updateCallType: (callType: string) => dispatch(newUpdateCallTypeAction(taskSid, callType)),
+  clearCallType: () => dispatch(newUpdateCallTypeAction(taskSid, null)),
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(CallTypeButtons);
 
 export default withLocalization(connected);

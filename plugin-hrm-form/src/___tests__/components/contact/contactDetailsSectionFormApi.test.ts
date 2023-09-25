@@ -24,6 +24,7 @@ import {
 
 import { contactDetailsSectionFormApi } from '../../../components/contact/contactDetailsSectionFormApi';
 import { HrmServiceContact } from '../../../types/types';
+import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -153,22 +154,6 @@ describe('getFormValues', () => {
       },
     });
   });
-  test('ISSUE_CATEGORIZATION - flattens overview categories into single string array', () => {
-    expect(
-      contactDetailsSectionFormApi.ISSUE_CATEGORIZATION.getFormValues(definition, {
-        ...emptySearchContact,
-        rawJson: {
-          ...emptySearchContact.rawJson,
-          categories: {
-            category1: ['sub2', 'sub4'],
-            category2: ['sub1', 'sub4'],
-          },
-        },
-      }),
-    ).toStrictEqual({
-      categories: expect.arrayContaining(['category1.sub2', 'category1.sub4', 'category2.sub1', 'category2.sub4']),
-    });
-  });
   test('CASE_INFORMATION - creates undefined props for form items without values', () => {
     expect(
       contactDetailsSectionFormApi.CASE_INFORMATION.getFormValues(definition, {
@@ -199,12 +184,10 @@ describe('formToPayload', () => {
         },
       }),
     ).toStrictEqual({
-      rawJson: {
-        childInformation: {
-          firstName: 'Lorna',
-          lastName: undefined,
-          otherProp: 'something',
-        },
+      childInformation: {
+        firstName: 'Lorna',
+        lastName: undefined,
+        otherProp: 'something',
       },
     });
   });
@@ -218,35 +201,10 @@ describe('formToPayload', () => {
         },
       }),
     ).toStrictEqual({
-      rawJson: {
-        callerInformation: {
-          firstName: 'Lorna',
-          lastName: undefined,
-          prop: 'something',
-        },
-      },
-    });
-  });
-  test('ISSUE_CATEGORIZATION - builds map of boolean maps from flattened category paths', () => {
-    expect(
-      contactDetailsSectionFormApi.ISSUE_CATEGORIZATION.formToPayload(
-        definition,
-        {
-          categories: [
-            'categories.category1.sub2',
-            'categories.category1.sub4',
-            'categories.category2.sub1',
-            'categories.category2.sub4',
-          ],
-        },
-        'test helpline',
-      ),
-    ).toStrictEqual({
-      rawJson: {
-        categories: {
-          category1: ['sub2', 'sub4'],
-          category2: ['sub1', 'sub4'],
-        },
+      callerInformation: {
+        firstName: 'Lorna',
+        lastName: undefined,
+        prop: 'something',
       },
     });
   });
@@ -258,11 +216,9 @@ describe('formToPayload', () => {
         },
       }),
     ).toStrictEqual({
-      rawJson: {
-        caseInformation: {
-          prop1: 'yerp',
-          prop2: undefined,
-        },
+      caseInformation: {
+        prop1: 'yerp',
+        prop2: undefined,
       },
     });
   });

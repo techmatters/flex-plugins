@@ -76,7 +76,7 @@ const CSAMReportChildForm: React.FC<Props> = ({
       </CSAMReportLayout>
       <BottomButtonBar>
         <Box marginRight="15px">
-          <StyledNextStepButton secondary roundCorners onClick={onClickClose}>
+          <StyledNextStepButton secondary="true" roundCorners onClick={onClickClose}>
             <Template code="BottomBar-Cancel" />
           </StyledNextStepButton>
         </Box>

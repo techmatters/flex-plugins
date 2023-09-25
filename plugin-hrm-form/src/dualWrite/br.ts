@@ -18,9 +18,9 @@ import { ITask, Manager } from '@twilio/flex-ui';
 
 import { saveContactToSaferNet } from '../services/ServerlessService';
 import { getMessage } from '../utils/pluginHelpers';
-import { getTaskLanguage } from '../utils/setUpActions';
 import { setCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import { getHrmConfig } from '../hrmConfig';
+import { getTaskLanguage } from '../utils';
 
 const saveContact = async (task: ITask, payload: any) => {
   const { channelSid } = task.attributes;
@@ -28,7 +28,7 @@ const saveContact = async (task: ITask, payload: any) => {
 
   const postSurveyUrl = await saveContactToSaferNet(payload);
   const { helplineLanguage } = getHrmConfig();
-  const language = getTaskLanguage({ helplineLanguage })({ task });
+  const language = getTaskLanguage({ helplineLanguage })(task);
   const message = await getMessage('SaferNet-CustomGoodbyeMsg')(language);
   const customGoodbyeMessage = `${message} ${postSurveyUrl}`;
   Manager.getInstance().store.dispatch(setCustomGoodbyeMessage(task.taskSid, customGoodbyeMessage));

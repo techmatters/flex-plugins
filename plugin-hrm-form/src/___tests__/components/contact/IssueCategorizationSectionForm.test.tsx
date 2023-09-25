@@ -14,21 +14,21 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import * as React from 'react';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { FormProvider } from 'react-hook-form';
 import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import IssueCategorizationSectionForm from '../../../components/contact/IssueCategorizationSectionForm';
 import { ToggleViewButton } from '../../../styles/HrmStyles';
-import HrmTheme from '../../../styles/HrmTheme';
 import { namespace, contactFormsBase } from '../../../states';
 import { setCategoriesGridView } from '../../../states/contacts/actions';
 import { forTask } from '../../../states/contacts/issueCategorizationStateApi';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
+import { VALID_EMPTY_CONTACT } from '../../testContacts';
+import { CustomITask, FeatureFlags } from '../../../types/types';
 
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
 jest.mock('../../../hrmConfig');
@@ -46,14 +46,12 @@ let expanded;
 const taskId = 'task-id';
 const mockStore = configureMockStore([]);
 
-const themeConf = {
-  colorTheme: HrmTheme,
-};
+const mockGetAseloFeatureFlags = getAseloFeatureFlags as jest.MockedFunction<typeof getAseloFeatureFlags>;
 
-getAseloFeatureFlags.mockReturnValue({
+mockGetAseloFeatureFlags.mockReturnValue(
   // eslint-disable-next-line camelcase
-  featureFlags: { enable_counselor_toolkits: true },
-});
+  { enable_counselor_toolkits: true } as FeatureFlags,
+);
 
 const getGridIcon = wrapper => wrapper.find(ToggleViewButton).at(0);
 const getListIcon = wrapper => wrapper.find(ToggleViewButton).at(1);
@@ -75,37 +73,22 @@ beforeAll(async () => {
 test('Click on view subcategories as grid icon', () => {
   const store = mockStore({
     [namespace]: {
-      [contactFormsBase]: { tasks: { [taskId]: { metadata: { categories: { expanded, gridView: false } } } } },
+      [contactFormsBase]: {
+        tasks: { [taskId]: { metadata: { categories: { expanded, gridView: false } }, contact: VALID_EMPTY_CONTACT } },
+      },
     },
   });
   store.dispatch = jest.fn();
 
-  const mockMethods = {
-    register: jest.fn(),
-    unregister: jest.fn(),
-    watch: jest.fn(),
-    setError: jest.fn(),
-    clearErrors: jest.fn(),
-    setValue: jest.fn(),
-    trigger: jest.fn(),
-    errors: jest.fn(),
-    formState: jest.fn(),
-    reset: jest.fn(),
-    getValues: jest.fn(() => ({ categories: [] })),
-    handleSubmit: jest.fn(),
-    control: jest.fn(),
-  };
-
   const wrapper = mount(
-    <StorelessThemeProvider themeConf={themeConf}>
+    <StorelessThemeProvider themeConf={{}}>
       <Provider store={store}>
-        <FormProvider {...mockMethods}>
-          <IssueCategorizationSectionForm
-            definition={definition}
-            display={true}
-            stateApi={forTask({ taskSid: taskId })}
-          />
-        </FormProvider>
+        <IssueCategorizationSectionForm
+          autoFocus={true}
+          definition={definition}
+          display={true}
+          stateApi={forTask({ taskSid: taskId } as CustomITask)}
+        />
       </Provider>
     </StorelessThemeProvider>,
   );
@@ -121,37 +104,24 @@ test('Click on view subcategories as grid icon', () => {
 test('Click on view subcategories as list icon', () => {
   const store = mockStore({
     [namespace]: {
-      [contactFormsBase]: { tasks: { [taskId]: { metadata: { categories: { expanded, gridView: false } } } } },
+      [contactFormsBase]: {
+        tasks: {
+          [taskId]: { contact: { ...VALID_EMPTY_CONTACT }, metadata: { categories: { expanded, gridView: false } } },
+        },
+      },
     },
   });
   store.dispatch = jest.fn();
 
-  const mockMethods = {
-    register: jest.fn(),
-    unregister: jest.fn(),
-    watch: jest.fn(),
-    setError: jest.fn(),
-    clearErrors: jest.fn(),
-    setValue: jest.fn(),
-    trigger: jest.fn(),
-    errors: jest.fn(),
-    formState: jest.fn(),
-    reset: jest.fn(),
-    getValues: jest.fn(() => ({ categories: [] })),
-    handleSubmit: jest.fn(),
-    control: jest.fn(),
-  };
-
   const wrapper = mount(
-    <StorelessThemeProvider themeConf={themeConf}>
+    <StorelessThemeProvider themeConf={{}}>
       <Provider store={store}>
-        <FormProvider {...mockMethods}>
-          <IssueCategorizationSectionForm
-            definition={definition}
-            display={true}
-            stateApi={forTask({ taskSid: taskId })}
-          />
-        </FormProvider>
+        <IssueCategorizationSectionForm
+          autoFocus={true}
+          definition={definition}
+          display={true}
+          stateApi={forTask({ taskSid: taskId } as CustomITask)}
+        />
       </Provider>
     </StorelessThemeProvider>,
   );

@@ -22,7 +22,7 @@ import { connect } from 'react-redux';
 import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
 import { DefinitionVersion, FormDefinition, FormInputType } from 'hrm-form-definitions';
 import { isEqual } from 'lodash';
-import { bindActionCreators } from 'redux';
+import { AnyAction, bindActionCreators } from 'redux';
 
 import {
   BottomButtonBar,
@@ -35,12 +35,11 @@ import {
 } from '../../styles/HrmStyles';
 import { CaseActionFormContainer, CaseActionLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
+import { configurationBase, connectedCaseBase, contactFormsBase, namespace, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { changeRoute } from '../../states/routing/actions';
-import { updateCase } from '../../services/CaseService';
-import type { CustomITask, StandaloneITask } from '../../types/types';
+import type { Case, CustomITask, StandaloneITask } from '../../types/types';
 import { recordingErrorHandler } from '../../fullStory';
 import { caseItemHistory, CaseSummaryWorkingCopy } from '../../states/case/types';
 import CloseCaseDialog from './CloseCaseDialog';
@@ -54,6 +53,8 @@ import { PermissionActions, PermissionActionType } from '../../permissions';
 import { disperseInputs, splitAt } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import { getTemplateStrings } from '../../hrmConfig';
+import { updateCaseAsyncAction } from '../../states/case/saveCase';
+import asyncDispatch from '../../states/asyncDispatch';
 
 export type EditCaseSummaryProps = {
   task: CustomITask | StandaloneITask;
@@ -69,12 +70,12 @@ const EditCaseSummary: React.FC<Props> = ({
   counselorsHash,
   exitRoute,
   connectedCaseState,
-  setConnectedCase,
   workingCopy,
   initialiseWorkingCopy,
   updateWorkingCopy,
   closeActions,
   can,
+  updateCaseAsyncAction,
 }) => {
   const formDefinition: FormDefinition = useMemo(() => {
     try {
@@ -158,8 +159,10 @@ const EditCaseSummary: React.FC<Props> = ({
     const { info, id } = connectedCaseState.connectedCase;
     const { status, ...updatedInfoValues } = workingCopy;
 
-    const updatedCase = await updateCase(id, { status, info: { ...info, ...updatedInfoValues } });
-    setConnectedCase(updatedCase, task.taskSid);
+    updateCaseAsyncAction(id, {
+      status,
+      info: { ...info, ...updatedInfoValues },
+    });
   };
 
   const saveAndLeave = async () => {
@@ -208,7 +211,7 @@ const EditCaseSummary: React.FC<Props> = ({
         <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
         <BottomButtonBar>
           <Box marginRight="15px">
-            <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={checkForEdits}>
+            <StyledNextStepButton data-testid="Case-CloseButton" secondary="true" roundCorners onClick={checkForEdits}>
               <Template code="BottomBar-Cancel" />
             </StyledNextStepButton>
             <CloseCaseDialog
@@ -238,11 +241,13 @@ const mapStateToProps = (state: RootState, ownProps: EditCaseSummaryProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
   const connectedCaseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
   const workingCopy = connectedCaseState?.caseWorkingCopy.caseSummary;
+  const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
 
-  return { connectedCaseState, counselorsHash, workingCopy };
+  return { connectedCaseState, counselorsHash, workingCopy, contactForm };
 };
 
 const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
+  const updateCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
@@ -252,6 +257,8 @@ const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
       dispatch(removeCaseSummaryWorkingCopy(task.taskSid));
       dispatch(changeRoute(route, task.taskSid));
     },
+    updateCaseAsyncAction: (caseId: Case['id'], body: Partial<Case>) =>
+      updateCaseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
   };
 };
 
