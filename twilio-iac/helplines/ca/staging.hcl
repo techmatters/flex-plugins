@@ -202,7 +202,8 @@ locals {
       g2tns : ["+15814810744", "+15812215204"],
       ab211 : ["+13656495517", "+15063065053"],
       hc : ["+12264070015", "+17787663852"],
-      training: ["+15878407089"]
+      training: ["+15878407089"],
+      988 : ["+13656595751", "+13656011530"],
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
