@@ -203,7 +203,7 @@ locals {
       ab211 : ["+13656495517", "+15063065053"],
       hc : ["+12264070015", "+17787663852"],
       training: ["+15878407089"],
-      988 : ["+13656595751", "+13656011530"],
+      988_camh : ["+13656595751", "+13656011530"],
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
