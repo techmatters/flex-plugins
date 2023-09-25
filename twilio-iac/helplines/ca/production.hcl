@@ -194,6 +194,16 @@ locals {
 
         }
         chatbot_unique_names = []
+      },
+ 988camh : {
+        channel_type         = "voice"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/g2ton.tftpl"
+        channel_flow_vars    = {
+          en_number: "3656520724"
+          fr_number: "3656495517"
+        }
+        chatbot_unique_names = []
       }
     }
     phone_numbers = {
