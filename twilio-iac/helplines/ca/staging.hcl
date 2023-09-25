@@ -192,6 +192,16 @@ locals {
           fr_switch_english_url: "https://test-service-dee-4583.twil.io/FrSwitchEnglish.mp3"
         }
         chatbot_unique_names = []
+      },
+ 988camh : {
+        channel_type         = "voice"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/g2ton.tftpl"
+        channel_flow_vars    = {
+          en_number: "3656595751"
+          fr_number: "3656011530"
+        }
+        chatbot_unique_names = []
       }
     }
     #Task router
