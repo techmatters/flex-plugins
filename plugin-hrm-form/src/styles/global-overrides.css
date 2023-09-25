@@ -54,7 +54,12 @@ div.Twilio-MainHeader button.MuiButton-root span {
 div.Twilio-SideNav button.Twilio-Side-Link {
   border-radius: 5px;
   margin-bottom: 2px;
+  /* Fixes offset/icon jumping caused by 1px border in active state */
   margin-left: 1px;
+}
+/* Dirty hack to fix the icon centering when border active */
+div.Twilio-Side-Link-IconContainer .Twilio-Icon {
+  margin-left: -4px;
 }
 div.Twilio-SideNav button.Twilio-Side-Link:active {
   border-radius: 5px;
