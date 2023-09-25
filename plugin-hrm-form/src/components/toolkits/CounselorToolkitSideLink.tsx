@@ -17,7 +17,7 @@
 import React, { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { InformationIcon } from '@twilio-paste/icons/cjs/InformationIcon';
-import { SideLink, SideNavChildrenProps } from '@twilio/flex-ui';
+import { Template, SideLink, SideNavChildrenProps } from '@twilio/flex-ui';
 import { HelplineEntry } from 'hrm-form-definitions';
 
 import CounselorToolkitDialog from './CounselorToolkitDialog';
@@ -68,7 +68,9 @@ const CounselorToolkitSideLink: React.FC<Props> = ({ showLabel, definitionVersio
           showLabel={showLabel}
           icon={<InformationIcon decorative={false} title="Counselor Toolkit" />}
           iconActive={<InformationIcon decorative={false} title="Counselor Toolkit" />}
-        />
+        >
+          <Template code="Counselor Toolkit" />
+        </SideLink>
       </div>
       <CounselorToolkitDialog
         anchorEl={anchorEl}

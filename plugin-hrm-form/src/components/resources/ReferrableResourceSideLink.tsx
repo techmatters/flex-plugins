@@ -31,7 +31,7 @@ const ReferrableResourceSideLink: React.FC<Props> = ({ showLabel, activeView, on
       onClick={onClick}
       data-testid="referrable-resources-side-link"
     >
-      <Template code="ReferrableResource-SideNav" />
+      <Template code="Resources" />
     </SideLink>
   );
 };
