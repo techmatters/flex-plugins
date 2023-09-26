@@ -36,10 +36,10 @@ type Props = {
  * Presentational component used to nicely consume the form values in SectionEntry
  */
 
-const SectionEntryValue: React.FC<Props> = ({ value, definition, layout, notBold }) => {
+const SectionEntryValue: React.FC<Props> = ({ value, definition, layout, notBold, objectId }) => {
   if (definition && definition.type === 'file-upload' && typeof value === 'string') {
-    return <DownloadFile fileNameAtAws={value} />;
-}
+    return <DownloadFile fileNameAtAws={value} objectId={objectId.toString()} />;
+  }
 
   const presentValueTemplate = presentValue(
     code => (
