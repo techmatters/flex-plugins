@@ -91,7 +91,7 @@ const bindOnDeleteFile = (caseId: number) => async (fileName: string) => {
   );
 };
 
-export const bindFileUploadCustomHandlers = (caseId: number) => (): CustomHandlers => {
+export const bindFileUploadCustomHandlers = (caseId: number): CustomHandlers => {
   return {
     onFileChange: bindOnFileChange(caseId),
     onDeleteFile: bindOnDeleteFile(caseId),
