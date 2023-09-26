@@ -484,13 +484,3 @@ export async function connectToCase(contactId, caseId) {
 
   return fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
 }
-
-// export const generateExternalMediaPath = (
-//   contactId: string,
-//   mediaType: ContactMediaType,
-//   bucket: string,
-//   key: string,
-// ) =>
-//   `/files/urls?method=getObject&objectType=contact&objectId=${contactId}&fileType=${mediaType}&bucket=${bucket}&key=${key}`;
-// const externalMediaPath = generateSignedURLPath('getObject', 'contact', contactId, 'recording', bucket, key);
-// console.log(externalMediaPath); // Output should match that of generateExternalMediaPath

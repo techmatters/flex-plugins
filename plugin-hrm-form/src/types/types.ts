@@ -98,6 +98,18 @@ export type TwilioStoredMedia = {
   reservationSid: string;
 };
 
+export type SignedURLMethod = 'getObject' | 'putObject' | 'deleteObject';
+export type ObjectType = 'case' | 'contact';
+export type MediaType = 'recording' | 'transcript' | 'document';
+
+export type GenerateSignedUrlPathParams = {
+  method: SignedURLMethod;
+  objectType: ObjectType;
+  objectId: string;
+  fileType: MediaType;
+  location: S3Location;
+};
+
 export type S3Location = {
   bucket: string;
   key: string;

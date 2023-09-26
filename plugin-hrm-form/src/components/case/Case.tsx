@@ -365,7 +365,7 @@ const Case: React.FC<Props> = ({
         return renderCaseItemPage(incidentSectionApi, PermissionActions.EDIT_INCIDENT);
       case NewCaseSubroutes.Document:
         return renderCaseItemPage(documentSectionApi, PermissionActions.EDIT_DOCUMENT, {
-          customFormHandlers: bindFileUploadCustomHandlers(connectedCase.id)(),
+          customFormHandlers: bindFileUploadCustomHandlers(connectedCase.id),
           reactHookFormOptions: {
             shouldUnregister: false,
           },

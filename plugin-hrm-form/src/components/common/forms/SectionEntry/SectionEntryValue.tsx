@@ -23,22 +23,23 @@ import { presentValue } from '../../../../utils';
 import DownloadFile from '../DownloadFile';
 import { SectionValueText } from '../../../../styles/search';
 import { Flex } from '../../../../styles/HrmStyles';
+import { ObjectType } from '../../../../types/types';
 
 type Props = {
   value?: string | number | boolean;
   notBold?: boolean;
   definition?: FormItemDefinition;
   layout?: LayoutValue;
-  objectId?: string | number;
+  caseObj?: { caseId: string; objectType: ObjectType };
 };
 
 /**
  * Presentational component used to nicely consume the form values in SectionEntry
  */
 
-const SectionEntryValue: React.FC<Props> = ({ value, definition, layout, notBold, objectId }) => {
+const SectionEntryValue: React.FC<Props> = ({ value, definition, layout, notBold, caseObj }) => {
   if (definition && definition.type === 'file-upload' && typeof value === 'string') {
-    return <DownloadFile fileNameAtAws={value} objectId={objectId.toString()} />;
+    return <DownloadFile fileNameAtAws={value} caseObj={caseObj} />;
   }
 
   const presentValueTemplate = presentValue(

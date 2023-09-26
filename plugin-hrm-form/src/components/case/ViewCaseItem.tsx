@@ -26,7 +26,7 @@ import { CaseLayout, FullWidthFormTextContainer } from '../../styles/case';
 import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import ActionHeader from './ActionHeader';
-import type { CustomITask, StandaloneITask } from '../../types/types';
+import type { CustomITask, ObjectType, StandaloneITask } from '../../types/types';
 import { caseItemHistory, CaseState } from '../../states/case/types';
 import { ViewCaseSectionRoute, CaseItemAction } from '../../states/routing/types';
 import * as RoutingActions from '../../states/routing/actions';
@@ -73,6 +73,11 @@ const ViewCaseItem: React.FC<Props> = ({
     changeRoute({ ...routing, action: CaseItemAction.Edit }, task.taskSid);
   };
 
+  const caseObjS3Download: { caseId: string; objectType: ObjectType } = {
+    caseId: connectedCase.id.toString(),
+    objectType: 'case',
+  };
+
   return (
     <CaseLayout>
       <Container>
@@ -93,7 +98,7 @@ const ViewCaseItem: React.FC<Props> = ({
             <>
               {formDefinition.map(e => (
                 <SectionEntry key={`entry-${e.label}`} descriptionKey={e.label}>
-                  <SectionEntryValue value={item.form[e.name]} objectId={connectedCase.id} definition={e} />
+                  <SectionEntryValue value={item.form[e.name]} caseObj={caseObjS3Download} definition={e} />
                 </SectionEntry>
               ))}
             </>
