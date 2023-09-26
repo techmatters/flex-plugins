@@ -33,7 +33,7 @@ export class ApiError extends Error {
   body: any;
 }
 
-const generateUrl = (baseUrl: URL, endpointPath: string): URL => {
+export const generateUrl = (baseUrl: URL, endpointPath: string): URL => {
   return new URL(path.join(baseUrl.pathname, endpointPath), baseUrl);
 };
 

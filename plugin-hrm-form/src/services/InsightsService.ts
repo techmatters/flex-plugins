@@ -38,7 +38,8 @@ import {
   ExternalRecordingInfoSuccess,
   isSuccessfulExternalRecordingInfo,
 } from './getExternalRecordingInfo';
-import { generateSignedURLPath, fetchHrmApi } from './fetchHrmApi';
+import { generateUrl } from './fetchApi';
+import { generateSignedURLPath } from './fetchHrmApi';
 
 /*
  * 'Any' is the best we can do, since we're limited by Twilio here.
@@ -356,9 +357,11 @@ const getInsightsUpdateFunctionsForConfig = (
 
 const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSuccess, contact: HrmServiceContact) => {
   const { bucket, key } = externalRecordingInfo;
+  const { hrmBaseUrl } = getHrmConfig();
 
   try {
-    const mediaUrl = fetchHrmApi(
+    const url_provider = generateUrl(
+      new URL(hrmBaseUrl),
       generateSignedURLPath({
         method: 'getObject',
         objectType: 'contact',
@@ -367,12 +370,12 @@ const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSu
         location: { bucket, key },
       }),
     );
-    console.log('>>> mediaUrl', mediaUrl);
 
     return [
       {
         type: 'VoiceRecording',
-        mediaUrl,
+        // eslint-disable-next-line camelcase
+        url_provider,
       },
     ];
   } catch (error) {
