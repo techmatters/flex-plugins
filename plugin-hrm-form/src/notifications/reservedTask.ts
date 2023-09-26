@@ -44,7 +44,7 @@ const playWhilePending = (reservation: { sid: string; status: string }) => {
       const mediaId = playNotification(notificationTone);
 
       reservedTaskMedias[reservation.sid] = mediaId;
-      setTimeout(playNotificationIfPending, 500);
+      setTimeout(playNotificationIfPending, 3000);
     }
   };
 
