@@ -18,7 +18,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
-import { bindActionCreators } from 'redux';
+import { AnyAction, bindActionCreators } from 'redux';
 
 import {
   configurationBase,
@@ -27,19 +27,20 @@ import {
   namespace,
   RootState,
   routingBase,
+  // saveCaseBase,
 } from '../../states';
-import { connectToCase, transformCategories } from '../../services/ContactService';
-import { cancelCase, updateCase } from '../../services/CaseService';
+import { cancelCase } from '../../services/CaseService';
+import { connectToCase } from '../../services/ContactService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { getActivitiesFromCase, getActivitiesFromContacts, isNoteActivity, sortActivities } from './caseActivities';
-import { getDateFromNotSavedContact, getHelplineData } from './caseHelpers';
+import { getHelplineData } from './caseHelpers';
 import { getLocaleDateTime } from '../../utils/helpers';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import ViewContact from './ViewContact';
 import { Activity, CaseDetails, ConnectedCaseActivity, NoteActivity } from '../../states/case/types';
-import { Case as CaseType, CustomITask, StandaloneITask } from '../../types/types';
+import { Case as CaseType, CustomITask, HrmServiceContact, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import {
   AppRoutes,
@@ -67,10 +68,11 @@ import { referralSectionApi } from '../../states/case/sections/referral';
 import { noteSectionApi } from '../../states/case/sections/note';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import * as ContactActions from '../../states/contacts/existingContacts';
-import { taskFormToHrmServiceContact } from '../../states/contacts/contactDetailsAdapter';
 import { ChannelTypes } from '../../states/DomainConstants';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
+import { updateCaseAsyncAction } from '../../states/case/saveCase';
+import asyncDispatch from '../../states/asyncDispatch';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -89,9 +91,8 @@ const newContactTemporaryId = (connectedCase: CaseType) => `__unsavedFromCase:${
 
 const Case: React.FC<Props> = ({
   task,
-  form,
+  form: { contact, metadata } = {},
   counselorsHash,
-  setConnectedCase,
   removeConnectedCase,
   changeRoute,
   isCreating,
@@ -103,6 +104,7 @@ const Case: React.FC<Props> = ({
   loadContacts,
   releaseContacts,
   cancelNewCase,
+  updateCaseAsyncAction,
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
@@ -153,7 +155,7 @@ const Case: React.FC<Props> = ({
     },
     // savedContacts is not present but savedContactsJson is
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [newContact, savedContactsJson, task, form, props.connectedCaseId, props.connectedCaseState?.connectedCase],
+    [newContact, savedContactsJson, task, contact, props.connectedCaseId, props.connectedCaseState?.connectedCase],
   );
 
   useEffect(() => {
@@ -164,18 +166,9 @@ const Case: React.FC<Props> = ({
       setLoadedContactIds(connectedContacts.map(cc => cc.id));
     } else if (!isStandaloneITask(task)) {
       setLoadedContactIds([newContactTemporaryId(connectedCase)]);
-      loadContact(
-        taskFormToHrmServiceContact(
-          task,
-          form,
-          getDateFromNotSavedContact(task, form).toISOString(),
-          workerSid,
-          newContactTemporaryId(connectedCase),
-        ),
-        task.taskSid,
-      );
+      loadContact(contact, task.taskSid);
     }
-  }, [connectedCase, form, loadContact, loadContacts, releaseContacts, task, workerSid]);
+  }, [connectedCase, contact, loadContact, loadContacts, releaseContacts, task, workerSid]);
 
   const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;
@@ -187,13 +180,12 @@ const Case: React.FC<Props> = ({
     const fetchDefinitionVersions = async () => {
       const definitionVersion = await getDefinitionVersion(version);
       updateDefinitionVersion(connectedCase, version, definitionVersion);
-      setConnectedCase(connectedCase, task.taskSid);
     };
 
     if (version && !definitionVersions[version]) {
       fetchDefinitionVersions();
     }
-  }, [connectedCase, definitionVersions, setConnectedCase, task.taskSid, updateDefinitionVersion, version]);
+  }, [connectedCase, definitionVersions, task.taskSid, updateDefinitionVersion, version]);
 
   if (routing.route === 'csam-report') return null;
 
@@ -218,21 +210,18 @@ const Case: React.FC<Props> = ({
 
   if (!props.connectedCaseState || !definitionVersion) return null;
 
-  const getCategories = firstConnectedContact => {
-    if (firstConnectedContact?.rawJson?.caseInformation) {
-      return firstConnectedContact.rawJson.caseInformation.categories;
+  const getCategories = (firstConnectedContact: HrmServiceContact): Record<string, string[]> => {
+    if (firstConnectedContact?.rawJson) {
+      return firstConnectedContact.rawJson.categories;
     }
-    if (form?.categories && form?.helpline) {
-      return transformCategories(form.categories);
-    }
-    return null;
+    return contact?.rawJson?.categories;
   };
 
   const { can } = getPermissionsForCase(connectedCase.twilioWorkerId, connectedCase.status);
 
   const firstConnectedContact = (savedContacts && savedContacts[0]) ?? newContact;
 
-  const categories = getCategories(firstConnectedContact);
+  const categories = getCategories(firstConnectedContact) ?? {};
   const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase || {};
   const caseCounselor = counselorsHash[twilioWorkerId];
   const currentCounselor = counselorsHash[workerSid];
@@ -252,10 +241,10 @@ const Case: React.FC<Props> = ({
 
   const handleUpdate = async () => {
     setLoading(true);
-
     try {
-      const updatedCase = await updateCase(connectedCase.id, { ...connectedCase });
-      setConnectedCase(updatedCase, task.taskSid);
+      updateCaseAsyncAction(connectedCase.id, {
+        ...connectedCase,
+      });
     } catch (error) {
       console.error(error);
       recordBackendError('Update Case', error);
@@ -278,9 +267,12 @@ const Case: React.FC<Props> = ({
 
     try {
       releaseContacts(loadedContactIds, task.taskSid);
-      const contact = await submitContactForm(task, form, connectedCase);
-      await updateCase(connectedCase.id, { ...connectedCase });
+      updateCaseAsyncAction(connectedCase.id, {
+        ...connectedCase,
+      });
       await connectToCase(contact.id, connectedCase.id);
+      const savedContact = await submitContactForm(task, contact, metadata, connectedCase);
+      await connectToCase(savedContact.id, connectedCase.id);
       await completeTask(task);
     } catch (error) {
       console.error(error);
@@ -400,7 +392,11 @@ const Case: React.FC<Props> = ({
       return (
         <CasePrintView
           caseDetails={caseDetails}
-          {...{ counselorsHash, onClickClose: handleCloseSection, definitionVersion }}
+          {...{
+            counselorsHash,
+            onClickClose: handleCloseSection,
+            definitionVersion,
+          }}
         />
       );
     default:
@@ -452,7 +448,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
+  const updateCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   const cancelNewCase = (taskSid: string, loadedContactIds: string[]) => {
     dispatch(CaseActions.removeConnectedCase(taskSid));
     dispatch(
@@ -462,17 +459,17 @@ const mapDispatchToProps = dispatch => {
   };
   const updateCaseDefinition = (connectedCase: CaseType, taskSid: string, definition) => {
     dispatch(ConfigActions.updateDefinitionVersion(connectedCase.info.definitionVersion, definition));
-    dispatch(CaseActions.setConnectedCase(connectedCase, taskSid));
   };
   return {
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
     removeConnectedCase: bindActionCreators(CaseActions.removeConnectedCase, dispatch),
-    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     updateDefinitionVersion: updateCaseDefinition,
     releaseContacts: bindActionCreators(ContactActions.releaseContacts, dispatch),
     loadContacts: bindActionCreators(ContactActions.loadContacts, dispatch),
     loadContact: bindActionCreators(ContactActions.loadContact, dispatch),
     cancelNewCase,
+    updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
+      updateCaseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
   };
 };
 

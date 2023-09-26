@@ -23,24 +23,24 @@ import _ from 'lodash';
 import { Close } from '@material-ui/icons';
 
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
-import { updateContactInHrm } from '../../services/ContactService';
+import { updateContactsFormInHrm } from '../../services/ContactService';
 import { Box, StyledNextStepButton, BottomButtonBar, Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
 import { CaseActionTitle, EditContactContainer } from '../../styles/case';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-import { ContactDetailsSectionFormApi, IssueCategorizationSectionFormApi } from './contactDetailsSectionFormApi';
+import { ContactDetailsSectionFormApi } from './contactDetailsSectionFormApi';
 import { clearDraft, refreshContact } from '../../states/contacts/existingContacts';
 import CloseCaseDialog from '../case/CloseCaseDialog';
 import * as t from '../../states/contacts/actions';
 import { getTemplateStrings } from '../../hrmConfig';
-import { TaskEntry } from '../../states/contacts/types';
+import { ContactRawJson } from '../../types/types';
 
 type OwnProps = {
   context: DetailsContext;
   contactId: string;
-  contactDetailsSectionForm: ContactDetailsSectionFormApi | IssueCategorizationSectionFormApi;
+  contactDetailsSectionForm?: ContactDetailsSectionFormApi;
   children: React.ReactNode;
-  tabPath: keyof TaskEntry;
+  tabPath: keyof ContactRawJson;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -48,6 +48,7 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const EditContactSection: React.FC<Props> = ({
   savedContact,
+  draftContact,
   contactId,
   definitionVersions,
   refreshContact,
@@ -89,13 +90,17 @@ const EditContactSection: React.FC<Props> = ({
 
   const onSubmitValidForm = async () => {
     setSubmitting(true);
-    const payload = contactDetailsSectionForm.formToPayload(
-      definitionVersion,
-      methods.getValues() as { categories: string[] },
-      savedContact.helpline,
-    );
+    let payload: Partial<Pick<
+      ContactRawJson,
+      'categories' | 'callerInformation' | 'caseInformation' | 'childInformation'
+    >>;
+    if (contactDetailsSectionForm) {
+      payload = contactDetailsSectionForm.formToPayload(definitionVersion, methods.getValues());
+    } else {
+      payload = draftContact?.rawJson;
+    }
     try {
-      const updatedContact = await updateContactInHrm(contactId, payload);
+      const updatedContact = await updateContactsFormInHrm(contactId, payload, savedContact.helpline);
       refreshContact(updatedContact);
     } catch (error) {
       setSubmitting(false);
@@ -117,7 +122,7 @@ const EditContactSection: React.FC<Props> = ({
   };
 
   // With tabPath as an input, this function returns the localized string for section's title
-  const editContactSectionTitle = (tabPath: keyof TaskEntry): string => {
+  const editContactSectionTitle = (tabPath: keyof ContactRawJson): string => {
     if (tabPath === 'callerInformation') {
       return strings['Contact-EditCaller'];
     } else if (tabPath === 'childInformation') {
@@ -157,7 +162,7 @@ const EditContactSection: React.FC<Props> = ({
               roundCorners={true}
               onClick={checkForEdits}
               disabled={isSubmitting}
-              secondary
+              secondary="true"
               data-fs-id="BottomBar-Cancel"
             >
               <Template code="BottomBar-Cancel" />
@@ -206,6 +211,7 @@ const mapStateToProps = (state: RootState, { contactId }: OwnProps) => ({
   definitionVersions: state[namespace][configurationBase].definitionVersions,
   counselorsHash: state[namespace][configurationBase].counselors.hash,
   savedContact: state[namespace][contactFormsBase].existingContacts[contactId]?.savedContact,
+  draftContact: state[namespace][contactFormsBase].existingContacts[contactId]?.draftContact,
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

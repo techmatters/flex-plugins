@@ -25,9 +25,7 @@ import { getTemplateStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   categories?: {
-    [category: string]: {
-      [subcategory: string]: boolean;
-    };
+    [category: string]: string[];
   };
   definitionVersion: DefinitionVersion;
 };

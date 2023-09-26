@@ -28,13 +28,11 @@ import {
 } from 'hrm-form-definitions';
 
 import { isNonDataCallType } from '../states/validationRules';
-import { mapChannelForInsights } from '../utils/mappers';
+import { mapChannelForInsights, formatCategories } from '../utils';
 import { getDateTime } from '../utils/helpers';
-import { Case, CustomITask, HrmServiceContact } from '../types/types';
-import { formatCategories } from '../utils/formatters';
+import { Case, CustomITask, HrmServiceContact, ContactRawJson } from '../types/types';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import { shouldSendInsightsData } from '../utils/setUpActions';
-import { TaskEntry } from '../states/contacts/types';
 import {
   ExternalRecordingInfo,
   ExternalRecordingInfoSuccess,
@@ -55,39 +53,9 @@ type InsightsAttributes = {
 
 const delimiter = ';';
 
-/*
- * Converts an array of categories with a fully-specified path (as stored in Redux)
- * into an object where the top-level categories are the keys and the values
- * are an array of subcategories (as returned from our API).
- * Example:
- * makeCategoryMap(['categories.Cat1.SubcatA', 'categories.Cat1.SubcatB', 'categories.Cat3.SubcatE'])
- *  returns:
- *   {
- *     "Cat1": ["SubcatA", "SubcatB"],
- *     "Cat3": ["SubcatE"],
- *   }
- */
-const makeCategoryMap = (categories: string[]): { [category: string]: string[] } => {
-  return categories.reduce((acc, fullPathCategory) => {
-    const [, cat, subcat] = fullPathCategory.split('.');
-    acc[cat] = acc[cat] || [];
-    acc[cat].push(subcat);
-    return acc;
-  }, {});
-};
-
-const getSubcategories = (contactForm: TaskEntry): string => {
-  if (!contactForm || !contactForm.categories) return '';
-
-  const { categories } = contactForm;
-
-  const categoryMap = makeCategoryMap(categories);
-  return formatCategories(categoryMap).join(delimiter);
-};
-
 type InsightsUpdateFunction = (
   attributes: TaskAttributes,
-  contactForm: TaskEntry,
+  contactForm: HrmServiceContact,
   caseForm: Case,
   savedContact: HrmServiceContact,
 ) => InsightsAttributes;
@@ -151,16 +119,13 @@ type CoreAttributes = {
  */
 const baseUpdates: InsightsUpdateFunction = (
   taskAttributes: TaskAttributes,
-  contactForm: TaskEntry,
-  caseForm: Case,
+  {
+    rawJson: { callType, contactlessTask, childInformation, callerInformation, categories },
+    helpline,
+  }: HrmServiceContact,
 ): CoreAttributes => {
-  const { callType } = contactForm;
   const communication_channel = taskAttributes.isContactlessTask
-    ? mapChannelForInsights(
-        contactForm.contactlessTask.channel
-          ? contactForm.contactlessTask.channel
-          : contactForm.contactlessTask.channel.toString(),
-      )
+    ? mapChannelForInsights(contactlessTask.channel)
     : mapChannelForInsights(taskAttributes.channelType);
 
   // First add the data we add whether or not there's contact form data
@@ -178,14 +143,14 @@ const baseUpdates: InsightsUpdateFunction = (
        */
       [COMMUNICATION_CHANNEL]: communication_channel,
       [CALLTYPE]: sanitizeInsightsValue(callType),
-      [CALLER_AGE]: sanitizeInsightsValue(contactForm.callerInformation.age),
-      [CALLER_GENDER]: sanitizeInsightsValue(contactForm.callerInformation.gender),
-      [HELPLINE]: sanitizeInsightsValue(contactForm.helpline),
-      [LANGUAGE]: sanitizeInsightsValue(contactForm.childInformation.language),
+      [CALLER_AGE]: sanitizeInsightsValue(callerInformation.age),
+      [CALLER_GENDER]: sanitizeInsightsValue(callerInformation.gender),
+      [HELPLINE]: sanitizeInsightsValue(helpline),
+      [LANGUAGE]: sanitizeInsightsValue(childInformation.language),
     },
     customers: {
-      [CHILD_AGE]: sanitizeInsightsValue(contactForm.childInformation.age),
-      [CHILD_GENDER]: sanitizeInsightsValue(contactForm.childInformation.gender),
+      [CHILD_AGE]: sanitizeInsightsValue(childInformation.age),
+      [CHILD_GENDER]: sanitizeInsightsValue(childInformation.gender),
     },
   };
 
@@ -197,20 +162,19 @@ const baseUpdates: InsightsUpdateFunction = (
     ...coreAttributes,
     conversations: {
       ...coreAttributes.conversations,
-      [SUBCATEGORIES]: getSubcategories(contactForm),
+      [SUBCATEGORIES]: formatCategories(categories).join(delimiter),
     },
   };
 };
 
 const contactlessTaskUpdates: InsightsUpdateFunction = (
   attributes: TaskAttributes,
-  contactForm: TaskEntry,
-  caseForm: Case,
+  { rawJson: { contactlessTask } }: HrmServiceContact,
 ): InsightsAttributes => {
   if (!attributes.isContactlessTask) {
     return {};
   }
-  const { date, time } = contactForm.contactlessTask;
+  const { date, time } = contactlessTask;
   const dateTime = getDateTime({ date: date as string, time: time as string });
 
   return {
@@ -225,7 +189,7 @@ const convertMixedCheckbox = (v: string | boolean): number => {
     return 1;
   } else if (v === false) {
     return 0;
-  } else if (v === 'mixed') {
+  } else if (v === null) {
     return null;
   }
   console.error(`Bad mixed checkbox value [${v}], defaulting to null for Insights value`);
@@ -247,11 +211,10 @@ type InsightsCaseForm = {
  */
 const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
   if (!caseForm || Object.keys(caseForm).length === 0) return {};
-  let topLevel: { [key: string]: string } = {};
   let perpetrator: { [key: string]: string } = undefined;
   let incident: { [key: string]: string | boolean } = undefined;
   let referral: { [key: string]: string } = undefined;
-  topLevel = {
+  const topLevel = {
     id: caseForm.id.toString(),
   };
   if (caseForm.info?.perpetrators && caseForm.info.perpetrators.length > 0) {
@@ -288,19 +251,17 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
       date: caseForm.info.referrals[0].date.toString(),
     };
   }
-  // eslint-disable-next-line sonarjs/prefer-immediate-return
-  const newCaseForm: InsightsCaseForm = {
+
+  return {
     topLevel,
     perpetrator,
     incident,
     referral,
   };
-
-  return newCaseForm;
 };
 
-export const processHelplineConfig = (
-  contactForm: TaskEntry,
+const processHelplineConfig = (
+  contactForm: ContactRawJson,
   caseForm: Case,
   oneToOneConfigSpec: OneToOneConfigSpec,
 ): InsightsAttributes => {
@@ -309,7 +270,7 @@ export const processHelplineConfig = (
     conversations: {},
   };
 
-  const formsToProcess: [InsightsFormSpec, TaskEntry | InsightsCaseForm][] = [];
+  const formsToProcess: [InsightsFormSpec, ContactRawJson | InsightsCaseForm][] = [];
   if (oneToOneConfigSpec.contactForm) {
     // Clone the whole object to avoid modifying the real spec. May not be needed.
     const contactSpec = cloneDeep(oneToOneConfigSpec.contactForm);
@@ -340,11 +301,11 @@ export const processHelplineConfig = (
 };
 
 const applyCustomUpdate = (customUpdate: OneToManyConfigSpec): InsightsUpdateFunction => {
-  return (taskAttributes, contactForm, caseForm, savedContact) => {
+  return (taskAttributes, { rawJson }, caseForm, savedContact) => {
     // If it's non data, and specs don't explicitly say to save it, ommit the update
-    if (isNonDataCallType(contactForm.callType) && !customUpdate.saveForNonDataContacts) return {};
+    if (isNonDataCallType(rawJson.callType) && !customUpdate.saveForNonDataContacts) return {};
 
-    const dataSource = { taskAttributes, contactForm, caseForm, savedContact };
+    const dataSource = { taskAttributes, rawJson, caseForm, savedContact };
     // concatenate the values, taken from dataSource using paths (e.g. 'contactForm.childInformation.province')
     const value = customUpdate.paths.map(path => sanitizeInsightsValue(get(dataSource, path, ''))).join(delimiter);
 
@@ -360,10 +321,10 @@ const bindApplyCustomUpdates = (customConfigObject: {
   oneToManyConfigSpecs: OneToManyConfigSpecs;
   oneToOneConfigSpec: OneToOneConfigSpec;
 }): InsightsUpdateFunction[] => {
-  const getProcessedAtts: InsightsUpdateFunction = (attributes, contactForm, caseForm) =>
-    isNonDataCallType(contactForm.callType)
+  const getProcessedAtts: InsightsUpdateFunction = (attributes, { rawJson }, caseForm) =>
+    isNonDataCallType(rawJson.callType)
       ? {}
-      : processHelplineConfig(contactForm, caseForm, customConfigObject.oneToOneConfigSpec);
+      : processHelplineConfig(rawJson, caseForm, customConfigObject.oneToOneConfigSpec);
 
   const customUpdatesFuns = customConfigObject.oneToManyConfigSpecs.map(applyCustomUpdate);
 
@@ -430,7 +391,7 @@ const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSu
  */
 export const buildInsightsData = (
   task: CustomITask,
-  contactForm: TaskEntry,
+  contact: HrmServiceContact,
   caseForm: Case,
   savedContact: HrmServiceContact,
   externalRecordingInfo: ExternalRecordingInfo | null = null,
@@ -443,7 +404,7 @@ export const buildInsightsData = (
 
   // eslint-disable-next-line sonarjs/prefer-immediate-return
   const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(currentDefinitionVersion.insights)
-    .map(f => f(previousAttributes, contactForm, caseForm, savedContact))
+    .map(f => f(previousAttributes, contact, caseForm, savedContact))
     .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
 
   if (isSuccessfulExternalRecordingInfo(externalRecordingInfo)) {

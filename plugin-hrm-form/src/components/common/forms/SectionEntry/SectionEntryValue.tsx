@@ -19,7 +19,7 @@ import type { FormItemDefinition, LayoutValue } from 'hrm-form-definitions';
 import { Template } from '@twilio/flex-ui';
 
 import { formatValue } from '../helpers';
-import { presentValue } from '../../../../utils/formatters';
+import { presentValue } from '../../../../utils';
 import DownloadFile from '../DownloadFile';
 import { SectionValueText } from '../../../../styles/search';
 import { Flex } from '../../../../styles/HrmStyles';
@@ -35,18 +35,25 @@ type Props = {
 /**
  * Presentational component used to nicely consume the form values in SectionEntry
  */
-const SectionEntryValue: React.FC<Props> = ({ value, definition, layout, notBold, objectId }) => {
-  if (definition && definition.type === 'file-upload' && typeof value === 'string' && value !== null) {
-    return <DownloadFile fileNameAtAws={value} objectId={objectId as string} />;
-  }
+
+const SectionEntryValue: React.FC<Props> = ({ value, definition, layout, notBold }) => {
+  if (definition && definition.type === 'file-upload' && typeof value === 'string') {
+    return <DownloadFile fileNameAtAws={value} />;
+}
 
   const presentValueTemplate = presentValue(
-    code => <Template code={code} />,
-    codes => <Flex flexDirection="column">{codes}</Flex>,
+    code => (
+      <SectionValueText notBold={notBold}>
+        <Template code={code} />
+      </SectionValueText>
+    ),
+    codes => (
+      <Flex flexDirection="column">
+        <SectionValueText notBold={notBold}>{codes}</SectionValueText>
+      </Flex>
+    ),
   );
-  const formatted = presentValueTemplate(formatValue(layout)(value))(definition);
-
-  return <SectionValueText notBold={notBold}>{formatted}</SectionValueText>;
+  return <>{presentValueTemplate(formatValue(layout)(value))(definition)}</>;
 };
 
 export default SectionEntryValue;

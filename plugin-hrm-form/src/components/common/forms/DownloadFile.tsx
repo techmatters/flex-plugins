@@ -71,7 +71,7 @@ const DownloadFile: React.FC<Props> = ({ fileNameAtAws, objectId }) => {
   return (
     <Flex flexDirection="column" alignItems="flex-start">
       <Box marginBottom="5px">
-        <StyledNextStepButton secondary onClick={handleClick}>
+        <StyledNextStepButton secondary="true" onClick={handleClick}>
           <DownloadIcon style={{ fontSize: '20px', marginRight: 5 }} />
           <Template code="DownloadFile-ButtonText" />
         </StyledNextStepButton>

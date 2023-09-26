@@ -16,7 +16,7 @@
 
 /* eslint-disable import/no-unused-modules */
 import { ITask } from '@twilio/flex-ui';
-import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions';
+import { CallTypes, DefinitionVersionId } from 'hrm-form-definitions';
 
 import { DateFilterValue } from '../components/caseList/filters/dateFilters';
 import { ChannelTypes } from '../states/DomainConstants';
@@ -29,14 +29,6 @@ export type EntryInfo = {
   updatedBy?: string;
   twilioWorkerId: string;
 };
-
-/*
- * export type ReferralEntry = {
- *   date: string;
- *   referredTo: string;
- *   comments: string;
- * };
- */
 
 export type CaseItemFormValues = { [key: string]: string | boolean };
 
@@ -143,8 +135,14 @@ export type ContactRawJson = {
   childInformation: Record<string, boolean | string>;
   callerInformation: Record<string, boolean | string>;
   caseInformation: Record<string, boolean | string>;
-  contactlessTask: { channel: ChannelTypes; [key: string]: string | boolean };
-  categories?: Record<string, string[]>;
+  categories: Record<string, string[]>;
+  contactlessTask: {
+    channel: ChannelTypes;
+    date: string;
+    time: string;
+    createdOnBehalfOf: string;
+    [key: string]: string | boolean;
+  };
 };
 
 export type HrmServiceContact = {
@@ -168,30 +166,6 @@ export type HrmServiceContact = {
   queueName: string;
   channelSid: string;
   serviceSid: string;
-};
-
-// Information about a single contact, as expected from search contacts endpoint (we might want to reuse this type in backend) - (is this a correct placement for this?)
-export type SearchAPIContact = {
-  contactId: string;
-  overview: {
-    helpline: string;
-    dateTime: string;
-    name: string;
-    customerNumber: string;
-    callType: CallTypes | '';
-    categories: {};
-    counselor: string;
-    notes: string;
-    channel: ChannelTypes | 'default';
-    conversationDuration: number;
-    createdBy: string;
-    taskId: string;
-    updatedBy?: string;
-    updatedAt?: string;
-  };
-  details: ContactRawJson;
-  csamReports: CSAMReportEntry[];
-  referrals?: ResourceReferral[];
 };
 
 export type SearchContactResult = {

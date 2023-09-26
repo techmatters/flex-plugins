@@ -76,7 +76,7 @@ const CSAMReportTypePicker: React.FC<Props> = ({
 
       <BottomButtonBar>
         <Box marginRight="15px">
-          <StyledNextStepButton secondary roundCorners onClick={onClickClose}>
+          <StyledNextStepButton secondary="true" roundCorners onClick={onClickClose}>
             <Template code="BottomBar-Cancel" />
           </StyledNextStepButton>
         </Box>
