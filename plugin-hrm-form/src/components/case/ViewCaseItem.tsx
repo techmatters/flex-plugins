@@ -73,8 +73,8 @@ const ViewCaseItem: React.FC<Props> = ({
     changeRoute({ ...routing, action: CaseItemAction.Edit }, task.taskSid);
   };
 
-  const caseObjS3Download: { caseId: string; objectType: ObjectType } = {
-    caseId: connectedCase.id.toString(),
+  const caseObjS3Download: { caseId: number; objectType: ObjectType } = {
+    caseId: connectedCase?.id,
     objectType: 'case',
   };
 

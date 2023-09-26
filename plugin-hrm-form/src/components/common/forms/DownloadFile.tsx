@@ -27,7 +27,7 @@ import { ObjectType } from '../../../types/types';
 
 type Props = {
   fileNameAtAws: string;
-  caseObj?: { caseId: string; objectType: ObjectType };
+  caseObj?: { caseId: number; objectType: ObjectType };
 };
 
 const DownloadFile: React.FC<Props> = ({ fileNameAtAws, caseObj }) => {
@@ -54,7 +54,7 @@ const DownloadFile: React.FC<Props> = ({ fileNameAtAws, caseObj }) => {
         generateSignedURLPath({
           method: 'getObject',
           objectType,
-          objectId: caseId,
+          objectId: caseId.toString(),
           fileType: 'document',
           location: {
             bucket,

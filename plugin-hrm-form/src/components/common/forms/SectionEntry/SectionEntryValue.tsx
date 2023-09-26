@@ -30,7 +30,7 @@ type Props = {
   notBold?: boolean;
   definition?: FormItemDefinition;
   layout?: LayoutValue;
-  caseObj?: { caseId: string; objectType: ObjectType };
+  caseObj?: { caseId: number; objectType: ObjectType };
 };
 
 /**
