@@ -5,8 +5,32 @@ locals {
 
   local_config = {
 
-     custom_task_routing_filter_expression = "helpline=='SafeSpot' OR channelType=='web' OR to=='+14244147346' OR to=='+18767287042' OR twilioNumber=='instagram:17841444523369053' OR twilioNumber=='messenger:107246798170317'"
-    
+    custom_task_routing_filter_expression = "helpline=='SafeSpot' OR channelType=='web' OR to=='+14244147346' OR to=='+18767287042' OR twilioNumber=='instagram:17841444523369053' OR twilioNumber=='messenger:107246798170317'"
+
+    channels = {
+      webchat : {
+        channel_type         = "web"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      facebook : {
+        channel_type         = "facebook"
+        contact_identity     = "messenger:107246798170317"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      instagram : {
+        channel_type         = "custom"
+        contact_identity     = "instagram"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      }
+    }
+
     #Studio flow
     flow_vars = {
       service_sid                            = "ZSf7422a38f3b243b8aab97ca268f4ce6b"
@@ -18,7 +42,7 @@ locals {
       bot_language                           = "en-JM"
     }
 
-  
- 
+
+
   }
 }
