@@ -95,7 +95,7 @@ module "twilioChannel" {
       channel_attributes    = templatefile("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl", { task_language = local.task_language })
       flow_description      = "${title(each.key)} Messaging Flow"
   })
-  pre_survey_bot_sid    = module.chatbots.pre_survey_bot_sid
+  pre_survey_bot_sid    = "deleted"
   janitor_enabled       = true
   target_task_name      = local.target_task_name
   channel_name          = each.key
@@ -128,7 +128,7 @@ module "aws" {
   shared_state_sync_service_sid      = module.services.shared_state_sync_service_sid
   flex_chat_service_sid              = module.services.flex_chat_service_sid
   flex_proxy_service_sid             = module.services.flex_proxy_service_sid
-  post_survey_bot_sid                = module.chatbots.post_survey_bot_sid
+  post_survey_bot_sid                = "deleted"
   survey_workflow_sid                = module.survey.survey_workflow_sid
 }
 
