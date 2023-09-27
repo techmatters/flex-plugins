@@ -41,7 +41,7 @@ locals {
   secrets                   = jsondecode(data.aws_ssm_parameter.secrets.value)
   //Channels [Voice | Facebook | Webchat | WhatsApp]
   twilio_channels = {
-    "facebook" = { "contact_identity" = "messenger:123236277715368", "channel_type" = "facebook" },
+    #"facebook" = { "contact_identity" = "messenger:123236277715368", "channel_type" = "facebook" },
     "webchat"  = { "contact_identity" = "", "channel_type" = "web" }
   }
 }
