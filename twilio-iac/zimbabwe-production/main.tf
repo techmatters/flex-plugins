@@ -51,10 +51,6 @@ provider "twilio" {
   password = local.secrets.twilio_auth_token
 }
 
-module "chatbots" {
-  source         = "../terraform-modules/chatbots/default"
-  serverless_url = module.serverless.serverless_environment_production_url
-}
 
 module "hrmServiceIntegration" {
   source            = "../terraform-modules/hrmServiceIntegration/default"
