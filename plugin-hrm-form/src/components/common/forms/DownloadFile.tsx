@@ -23,19 +23,18 @@ import { getHrmConfig } from '../../../hrmConfig';
 import { Flex, Box, StyledNextStepButton, HiddenText } from '../../../styles/HrmStyles';
 import { formatFileNameAtAws } from '../../../utils';
 import { fetchHrmApi, generateSignedURLPath } from '../../../services/fetchHrmApi';
-import { ObjectType } from '../../../types/types';
+import { FormTargetObject } from './types';
 
 type Props = {
   fileNameAtAws: string;
-  caseObj?: { caseId: number; objectType: ObjectType };
+  targetObject: FormTargetObject;
 };
 
-const DownloadFile: React.FC<Props> = ({ fileNameAtAws, caseObj }) => {
+const DownloadFile: React.FC<Props> = ({ fileNameAtAws, targetObject }) => {
   // So far, this component is only used to download case document in individual cases from S3
   const [preSignedUrl, setPreSignedUrl] = useState('');
   const downloadLink = useRef<HTMLAnchorElement>();
 
-  const { caseId, objectType } = caseObj;
   useEffect(() => {
     if (preSignedUrl) {
       downloadLink.current.click();
@@ -53,8 +52,8 @@ const DownloadFile: React.FC<Props> = ({ fileNameAtAws, caseObj }) => {
       const { media_url: preSignedUrl } = await fetchHrmApi(
         generateSignedURLPath({
           method: 'getObject',
-          objectType,
-          objectId: caseId.toString(),
+          objectType: targetObject.type,
+          objectId: targetObject.id.toString(),
           fileType: 'document',
           location: {
             bucket,
@@ -67,7 +66,6 @@ const DownloadFile: React.FC<Props> = ({ fileNameAtAws, caseObj }) => {
       const url = URL.createObjectURL(blob);
       setPreSignedUrl(url);
     } catch (error) {
-      // TODO: actually throw something.
       console.log('error', error);
       throw new Error('Error downloading file.');
     }
