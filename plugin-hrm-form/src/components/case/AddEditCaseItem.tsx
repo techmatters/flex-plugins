@@ -39,7 +39,6 @@ import { CaseActionFormContainer, CaseActionLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
-
 import { createStateItem, CustomHandlers, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import type { Case, CaseInfo, CaseItemEntry, CustomITask, StandaloneITask } from '../../types/types';
