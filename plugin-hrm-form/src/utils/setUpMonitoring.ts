@@ -102,7 +102,7 @@ function setUpRollbarLogger(plugin: { Rollbar?: Rollbar }, workerClient: Worker,
 function setUpFullStory() {
   FullStory.init({
     orgId: fullStoryId,
-    devMode: process.env.REACT_APP_ENABLE_MONITORING !== 'true',
+    devMode: process.env.ENABLE_MONITORING !== 'true',
   });
   console.log('Fullstory monitoring is enabled');
 }
@@ -123,7 +123,7 @@ export default function setUpMonitoring(
 ) {
   const monitoringEnv = serviceConfiguration.attributes.monitoringEnv || 'staging';
 
-  if (process.env.REACT_APP_ENABLE_MONITORING === 'true') {
+  if (process.env.ENABLE_MONITORING === 'true') {
     setUpDatadogRum(workerClient, monitoringEnv);
     setUpRollbarLogger(plugin, workerClient, monitoringEnv);
   }
