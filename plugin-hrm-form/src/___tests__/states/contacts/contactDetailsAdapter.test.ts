@@ -14,9 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { configurationBase, namespace } from '../../../states';
-import { retrieveCategories, taskFormToHrmServiceContact } from '../../../states/contacts/contactDetailsAdapter';
-import * as ContactService from '../../../services/ContactService';
+import { retrieveCategories } from '../../../states/contacts/contactDetailsAdapter';
 
 describe('retrieveCategories', () => {
   test('empty object input, empty object output', () => expect(retrieveCategories({})).toStrictEqual({}));
@@ -48,48 +46,4 @@ describe('retrieveCategories', () => {
         category2: { sub1: true, sub2: true, sub3: false },
       }),
     ).toStrictEqual({ category2: ['sub1', 'sub2'] }));
-});
-
-jest.mock('../../../services/ContactService', () => ({
-  ...jest.requireActual('../../../services/ContactService'),
-  transformForm: (form: any) => ({
-    callType: '',
-    childInformation: {},
-    callerInformation: {},
-    contactlessTask: {
-      channel: 'web',
-    },
-    caseInformation: {
-      callSummary: '',
-    },
-    categories: {
-      category1: ['subCategory1', 'subCategory2'],
-      category2: ['subCategory3'],
-    },
-  }),
-}));
-
-describe('taskFormToHrmServiceContact', () => {
-  test('should return Partial<HrmServiceContact>', () => {
-    const task = {
-      taskSid: 'offline-contact-task-sid',
-      channelType: 'default',
-    };
-    const form = {};
-    const date = '2023-01-01';
-    const twilioWorkerId = 'WKxxx';
-    const temporaryId = '123';
-
-    const contact = taskFormToHrmServiceContact(task, form, date, twilioWorkerId, temporaryId);
-
-    expect(contact.id).toEqual(temporaryId);
-    expect(contact.twilioWorkerId).toEqual(twilioWorkerId);
-    expect(contact.timeOfContact).toEqual(date);
-    expect(contact.taskId).toEqual(task.taskSid);
-    expect(contact.channel).toEqual(task.channelType);
-    expect(contact.rawJson?.categories).toStrictEqual({
-      category1: ['subCategory1', 'subCategory2'],
-      category2: ['subCategory3'],
-    });
-  });
 });

@@ -105,7 +105,7 @@ const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, o
               </Box>
               <CopyCodeButton
                 style={{ padding: '5px 17px 5px 12px' }}
-                secondary
+                secondary="true"
                 roundCorners
                 onClick={onCopyCode}
                 data-testid="CSAMReport-CopyCodeButton"
@@ -123,7 +123,7 @@ const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, o
 
       <BottomButtonBar>
         <Box marginRight="15px">
-          <StyledNextStepButton secondary roundCorners onClick={onSendAnotherReport}>
+          <StyledNextStepButton secondary="true" roundCorners onClick={onSendAnotherReport}>
             <Template
               code={csamType === CSAMReportTypes.CHILD ? 'BottomBar-SendAnotherLink' : 'BottomBar-SendAnotherReport'}
             />

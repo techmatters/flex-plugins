@@ -17,6 +17,7 @@
 /* eslint-disable import/no-unused-modules */
 import { Dispatch } from 'redux';
 import { ITask } from '@twilio/flex-ui';
+import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
 import * as t from './types';
 import { HrmServiceContact } from '../../types/types';
@@ -24,7 +25,8 @@ import { searchContacts as searchContactsApiCall } from '../../services/ContactS
 import { searchCases as searchCasesApiCall } from '../../services/CaseService';
 import { updateDefinitionVersion } from '../configuration/actions';
 import { getContactsMissingVersions, getCasesMissingVersions } from '../../utils/definitionVersions';
-import { getNumberFromTask } from '../../utils/task';
+import { getNumberFromTask } from '../../utils';
+import { SearchParams } from './types';
 
 // Action creators
 export const handleSearchFormChange = (taskId: string) => <K extends keyof t.SearchFormValues>(
@@ -40,7 +42,7 @@ export const handleSearchFormChange = (taskId: string) => <K extends keyof t.Sea
 };
 
 export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => async (
-  searchParams: any,
+  searchParams: SearchParams,
   limit: number,
   offset: number,
   dispatchedFromPreviousContacts?: boolean,
@@ -48,7 +50,16 @@ export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => a
   try {
     dispatch({ type: t.SEARCH_CONTACTS_REQUEST, taskId });
 
-    const searchResultRaw = await searchContactsApiCall(searchParams, limit, offset);
+    const { dateFrom, dateTo, ...rest } = searchParams ?? {};
+    const searchParamsToSubmit: SearchParams = rest;
+    if (dateFrom) {
+      searchParamsToSubmit.dateFrom = formatISO(startOfDay(parseISO(dateFrom)));
+    }
+    if (dateTo) {
+      searchParamsToSubmit.dateTo = formatISO(endOfDay(parseISO(dateTo)));
+    }
+
+    const searchResultRaw = await searchContactsApiCall(searchParamsToSubmit, limit, offset);
     const searchResult = { ...searchResultRaw, contacts: searchResultRaw.contacts };
 
     const definitions = await getContactsMissingVersions(searchResultRaw.contacts);
@@ -76,8 +87,8 @@ export const searchCases = (dispatch: Dispatch<any>) => (taskId: string) => asyn
       ...rest,
       filters: {
         createdAt: {
-          from: dateFrom ? new Date(dateFrom).toISOString() : undefined,
-          to: dateTo ? new Date(dateTo).toISOString() : undefined,
+          from: dateFrom ? formatISO(startOfDay(parseISO(dateFrom))) : undefined,
+          to: dateTo ? formatISO(endOfDay(parseISO(dateTo))) : undefined,
         },
       },
     };

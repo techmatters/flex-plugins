@@ -34,7 +34,7 @@ locals {
     task_queues = {
       master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "Master"
+        "friendly_name"  = "SafeSpot"
       },
       survey : {
         "target_workers" = "1==0",
@@ -55,23 +55,7 @@ locals {
       survey : "Survey"
     }
 
-    #Channels
-    channels = {
-      webchat : {
-        channel_type         = "web"
-        contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
-        channel_flow_vars    = {}
-        chatbot_unique_names = []
-      },
-      instagram : {
-        channel_type         = "custom"
-        contact_identity     = "instagram"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
-        channel_flow_vars    = {}
-        chatbot_unique_names = []
-      }
-    }
+    
 
     phone_numbers = {}
 

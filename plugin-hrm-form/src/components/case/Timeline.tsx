@@ -42,13 +42,11 @@ import { isConnectedCaseActivity } from './caseActivities';
 import { Activity, ConnectedCaseActivity, NoteActivity, ReferralActivity } from '../../states/case/types';
 import { getPermissionsForContact, PermissionActions, PermissionActionType } from '../../permissions';
 import { NewCaseSubroutes, AppRoutesWithCase, CaseItemAction } from '../../states/routing/types';
-import { TaskEntry } from '../../states/contacts/types';
 
 type OwnProps = {
   timelineActivities: Activity[];
   can: (action: PermissionActionType) => boolean;
   taskSid: CustomITask['taskSid'];
-  form: TaskEntry;
   route: AppRoutesWithCase['route'];
 };
 

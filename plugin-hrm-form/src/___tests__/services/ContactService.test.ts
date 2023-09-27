@@ -16,6 +16,8 @@
 
 import {
   callTypes,
+  CategoriesDefinition,
+  CategoryEntry,
   DefinitionVersion,
   DefinitionVersionId,
   FormInputType,
@@ -31,15 +33,16 @@ import {
   transformCategories,
   transformForm,
   transformValues,
-  updateContactInHrm,
+  updateContactsFormInHrm,
 } from '../../services/ContactService';
-import { createNewTaskEntry } from '../../states/contacts/reducer';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions, getHrmConfig } from '../../hrmConfig';
-import { offlineContactTaskSid } from '../../types/types';
-import { TaskEntry } from '../../states/contacts/types';
+import { ContactRawJson, offlineContactTaskSid } from '../../types/types';
+import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
+import { HrmServiceContactWithMetadata } from '../../states/contacts/types';
 
-const helpline = 'ChildLine Zambia (ZM)';
+const helpline = 'ChildLine';
+const mockGetHrmConfig = getHrmConfig as jest.Mock;
 
 // eslint-disable-next-line no-empty-function
 global.fetch = global.fetch ? global.fetch : () => Promise.resolve(<any>{ ok: true });
@@ -71,11 +74,25 @@ jest.mock('@twilio/flex-ui', () => ({
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
+/**
+ * Adds a category with the corresponding subcategories set to false to the provided object (obj)
+ */
+const createCategory = <T extends {}>(obj: T, [category, { subcategories }]: [string, CategoryEntry]) => ({
+  ...obj,
+  [category]: subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory.label]: false }), {}),
+});
+
+const createCategoriesObject = (
+  categoriesFormDefinition: CategoriesDefinition,
+): Record<string, Record<string, boolean>> => Object.entries(categoriesFormDefinition).reduce(createCategory, {});
+
 let mockV1;
 
 beforeEach(() => {
   mockReset();
 });
+
+let EMPTY_API_CATEGORIES: Record<string, Record<string, boolean>>;
 
 beforeAll(async () => {
   const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
@@ -83,13 +100,12 @@ beforeAll(async () => {
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
   mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+  EMPTY_API_CATEGORIES = createCategoriesObject(mockV1.tabbedForms.IssueCategorizationTab(helpline));
 });
 
 describe('transformForm', () => {
   test('removes control information and presents values only', () => {
-    const oldForm: TaskEntry = {
-      helpline,
-      isCallTypeCaller: true,
+    const oldForm: ContactRawJson = {
       callType: callTypes.caller,
       callerInformation: {
         firstName: 'myFirstName',
@@ -101,7 +117,9 @@ describe('transformForm', () => {
         gender: 'Male',
         refugee: false,
       },
-      categories: ['categories.Abuse.Abduction'],
+      categories: {
+        Abuse: ['Abduction'],
+      },
       caseInformation: {
         callSummary: 'My summary',
       },
@@ -109,14 +127,16 @@ describe('transformForm', () => {
         channel: channelTypes.web,
         date: '',
         time: '',
+        createdOnBehalfOf: undefined,
       },
-      csamReports: [],
-      metadata: <any>{},
-      draft: <any>{},
-    };  
+    };
 
     const expectedCategories = {
-      Abuse: ['Abduction'],
+      ...EMPTY_API_CATEGORIES,
+      Abuse: {
+        ...EMPTY_API_CATEGORIES.Abuse,
+        Abduction: true,
+      },
     };
 
     const expected = {
@@ -130,17 +150,17 @@ describe('transformForm', () => {
       caseInformation: {
         // copy paste from ContactService. This will come from redux later on and we can mockup definitions
         callSummary: 'My summary',
+        categories: expectedCategories,
       },
       contactlessTask: {
         channel: '',
         date: '',
         time: '',
       },
-      categories: expectedCategories,
       metadata: {},
     };
 
-    const transformed = transformForm(oldForm);
+    const transformed = transformForm(oldForm, helpline);
     // expect().toStrictEqual(expected);
 
     expect(transformed.definitionVersion).toBe('v1');
@@ -150,28 +170,38 @@ describe('transformForm', () => {
     expect(transformed.childInformation.gender).toBe('Male');
     expect(transformed.childInformation.firstName).toBe('child');
     expect(transformed.childInformation.lastName).toBe('');
-    expect(transformed.categories).toStrictEqual(expected.categories);
+    expect(transformed.caseInformation.categories).toStrictEqual(expected.caseInformation.categories);
     expect(transformed.caseInformation.callSummary).toBe('My summary');
     expect(transformed.contactlessTask).toStrictEqual({
       channel: 'web',
+      createdOnBehalfOf: undefined,
       date: '',
       time: '',
     });
   });
 });
 
-const createForm = ({ callType, childFirstName }, contactlessTaskInfo = undefined) => {
-  const blankForm = createNewTaskEntry(mockV1)(false);
+const createContactWithMetadata = (
+  { callType, childFirstName },
+  contactlessTaskInfo = undefined,
+): HrmServiceContactWithMetadata => {
+  const blankForm = VALID_EMPTY_CONTACT.rawJson;
   const contactlessTask = contactlessTaskInfo || blankForm.contactlessTask;
 
   return {
-    ...blankForm,
-    callType,
-    childInformation: {
-      ...blankForm.childInformation,
-      firstName: childFirstName,
+    metadata: VALID_EMPTY_METADATA,
+    contact: {
+      ...VALID_EMPTY_CONTACT,
+      rawJson: {
+        ...VALID_EMPTY_CONTACT.rawJson,
+        callType,
+        childInformation: {
+          ...blankForm.childInformation,
+          firstName: childFirstName,
+        },
+        contactlessTask,
+      },
     },
-    contactlessTask,
   };
 };
 
@@ -191,10 +221,10 @@ describe('saveContact()', () => {
   const fetchSuccess = Promise.resolve(<any>{ ok: true, json: jest.fn(), text: jest.fn() });
 
   test('data calltype saves form data', async () => {
-    const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
+    const { contact, metadata } = createContactWithMetadata({ callType: callTypes.child, childFirstName: 'Jill' });
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveContact(task, form, workerSid, uniqueIdentifier);
+    await saveContact(task, contact, metadata, workerSid, uniqueIdentifier);
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.child);
@@ -204,10 +234,10 @@ describe('saveContact()', () => {
   });
 
   test('non-data calltype do not save form data', async () => {
-    const form = createForm({ callType: 'hang up', childFirstName: 'Jill' });
+    const { contact, metadata } = createContactWithMetadata({ callType: 'hang up', childFirstName: 'Jill' });
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveContact(task, form, workerSid, uniqueIdentifier);
+    await saveContact(task, contact, metadata, workerSid, uniqueIdentifier);
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual('hang up');
@@ -238,11 +268,11 @@ describe('saveContact() (isContactlessTask)', () => {
   });
 
   test('data calltype saves form data', async () => {
-    const form = createForm(
+    const { contact, metadata } = createContactWithMetadata(
       { callType: callTypes.child, childFirstName: 'Jill' },
       { channel: '', date: '2020-11-24', time: '12:00' },
     );
-    await saveContact(task, form, workerSid, uniqueIdentifier);
+    await saveContact(task, contact, metadata, workerSid, uniqueIdentifier);
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.child);
@@ -252,8 +282,11 @@ describe('saveContact() (isContactlessTask)', () => {
 
   test('non-data calltype do not save form data (but captures contactlessTask info)', async () => {
     const contactlessTask = { channel: 'web', date: '2020-11-24', time: '12:00', createdOnBehalfOf: 'someone else' };
-    const form = createForm({ callType: 'hang up', childFirstName: 'Jill' }, contactlessTask);
-    await saveContact({ ...task, taskSid: offlineContactTaskSid }, form, workerSid, uniqueIdentifier);
+    const { contact, metadata } = createContactWithMetadata(
+      { callType: 'hang up', childFirstName: 'Jill' },
+      contactlessTask,
+    );
+    await saveContact({ ...task, taskSid: offlineContactTaskSid }, contact, metadata, workerSid, uniqueIdentifier);
 
     const expected = { ...contactlessTask };
 
@@ -276,9 +309,9 @@ describe('saveContact() (isContactlessTask)', () => {
         preEngagementData: { contactType: 'ip', contactIdentifier: ip },
       },
     };
-    const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
+    const { contact, metadata } = createContactWithMetadata({ callType: callTypes.child, childFirstName: 'Jill' });
 
-    await saveContact(webTaskWithIP, form, workerSid, uniqueIdentifier);
+    await saveContact(webTaskWithIP, contact, metadata, workerSid, uniqueIdentifier);
 
     const numberFromPOST = getNumberFromPOST(mockedFetch);
     expect(numberFromPOST).toEqual(ip);
@@ -296,11 +329,11 @@ describe('saveContact() (isContactlessTask)', () => {
         preEngagementData: { contactType: 'email', contactIdentifier: email },
       },
     };
-    const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
+    const { contact, metadata } = createContactWithMetadata({ callType: callTypes.child, childFirstName: 'Jill' });
 
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveContact(webTaskWithIP, form, workerSid, uniqueIdentifier);
+    await saveContact(webTaskWithIP, contact, metadata, workerSid, uniqueIdentifier);
 
     const numberFromPOST = getNumberFromPOST(mockedFetch);
     expect(numberFromPOST).toEqual(email);
@@ -319,9 +352,9 @@ describe('saveContact() (isContactlessTask)', () => {
         ip: '', // Studio makes it empty string
       },
     };
-    const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
+    const { contact, metadata } = createContactWithMetadata({ callType: callTypes.child, childFirstName: 'Jill' });
 
-    await saveContact(webTaskWithoutIP, form, workerSid, uniqueIdentifier);
+    await saveContact(webTaskWithoutIP, contact, metadata, workerSid, uniqueIdentifier);
 
     const numberFromPOST = getNumberFromPOST(mockedFetch);
     expect(numberFromPOST).toEqual('');
@@ -341,7 +374,7 @@ describe('saveContact() (externalRecording)', () => {
   });
 
   beforeAll(() => {
-    getHrmConfig.mockReturnValue({
+    mockGetHrmConfig.mockReturnValue({
       ...mockBaseConfig,
       externalRecordingsEnabled: true,
     });
@@ -370,8 +403,8 @@ describe('saveContact() (externalRecording)', () => {
       },
     };
 
-    const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
-    await saveContact(task, form, 'workerSid', 'uniqueIdentifier');
+    const { contact, metadata } = createContactWithMetadata({ callType: callTypes.child, childFirstName: 'Jill' });
+    await saveContact(task, contact, metadata, 'workerSid', 'uniqueIdentifier');
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.conversationMedia).toStrictEqual([
@@ -431,22 +464,29 @@ describe('transformValues', () => {
   });
 });
 
-test('updateContactInHrm - calls a PATCH HRM endpoint using the supplied contact ID in the route', async () => {
-  const responseBody = { from: 'HRM' };
-  const mockedFetch = jest.spyOn(global, 'fetch').mockResolvedValue(<Response>{
+// TODO: test category transformation
+test('updateContactsFormInHrm - calls a PATCH HRM endpoint using the supplied contact ID in the route', async () => {
+  const responseBody = { rawJson: { caseInformation: { categories: {} } } };
+  const mockedFetch = jest.spyOn(global, 'fetch').mockResolvedValue(<Response>(<unknown>{
     ok: true,
     json: () => Promise.resolve(responseBody),
     text: () => Promise.resolve(responseBody),
-  });
+  }));
   try {
-    const inputPatch = { rawJson: { caseInformation: { categories: {} } } };
-    const ret = await updateContactInHrm('1234', inputPatch);
-    expect(ret).toStrictEqual(responseBody);
+    const inputPatch = { caseInformation: {}, categories: {} };
+    const ret = await updateContactsFormInHrm('1234', inputPatch, helpline);
+    expect(ret).toStrictEqual({ rawJson: inputPatch });
     expect(mockedFetch).toHaveBeenCalledWith(
       expect.stringContaining('/contacts/1234'),
       expect.objectContaining({
         method: 'PATCH',
-        body: JSON.stringify(inputPatch),
+        body: JSON.stringify({
+          rawJson: {
+            caseInformation: { categories: EMPTY_API_CATEGORIES },
+            categories: {},
+            definitionVersion: DefinitionVersionId.v1,
+          },
+        }),
       }),
     );
   } finally {
@@ -485,42 +525,73 @@ describe('transformCategories', () => {
     };
   });
 
-  test('Categories in input match the paths of those in definition', () => {
-    const transformed = transformCategories(['categories.category1.subCategory2', 'categories.category2.subCategory1']);
+  test("Categories in input match the paths of those in definition - sets the subcategories found in defintions to 'true'", () => {
+    const transformed = transformCategories(
+      'a helpline',
+      { category1: ['subCategory2'], category2: ['subCategory1'] },
+      mockDef,
+    );
     expect(transformed).toStrictEqual({
-      category1: ['subCategory2'],
-      category2: ['subCategory1'],
+      category1: {
+        subCategory1: false,
+        subCategory2: true,
+      },
+      category2: {
+        subCategory1: true,
+        subCategory2: false,
+      },
+    });
+    // Supplied helpline should be used to look up the categories
+    expect(mockDef.tabbedForms.IssueCategorizationTab).toBeCalledWith('a helpline');
+  });
+
+  test("Empty array of categories - produces matrix of categories all set 'false'", () => {
+    const transformed = transformCategories('a helpline', {}, mockDef);
+    expect(transformed).toStrictEqual({
+      category1: {
+        subCategory1: false,
+        subCategory2: false,
+      },
+      category2: {
+        subCategory1: false,
+        subCategory2: false,
+      },
     });
   });
 
-  test('Empty array of categories', () => {
-    const transformed = transformCategories([]);
-    expect(transformed).toStrictEqual({});
-  });
-
-  test("Categories in input don't match the paths of those in definition", () => {
-    const transformed = transformCategories(['categories.category3.subCategory2', 'categories.category2.subCategory1']);
+  test("Categories in input don't match the paths of those in definition - adds the missing paths to the output set to 'true'", () => {
+    const transformed = transformCategories(
+      'a helpline',
+      { category3: ['subCategory2'], category2: ['subCategory1'] },
+      mockDef,
+    );
     expect(transformed).toStrictEqual({
-      category2: ['subCategory1'],
-      category3: ['subCategory2'],
+      category1: {
+        subCategory1: false,
+        subCategory2: false,
+      },
+      category2: {
+        subCategory1: true,
+        subCategory2: false,
+      },
+      category3: {
+        subCategory2: true,
+      },
     });
   });
 
-  test('Categories in input has paths with something other than 2 sections', () => {
-    const transformed = transformCategories([
-      'categories.category2',
-      'categories.category1.subCategory1.subSubCategory',
-    ]);
-    /*
-     * Stuff gets weird, subCategory1 was a boolean, but it now has a sub property so got converted to a 'Boolean' wrapper type.
-     * Probably best to avoid this scenario :-P
-     */
-    // eslint-disable-next-line no-new-wrappers
-    const subCategory1 = new Boolean();
-    (<any>subCategory1).subSubCategory = true;
+  test('Empty categories in input - adds empty category to output', () => {
+    const transformed = transformCategories('a helpline', { category3: [] }, mockDef);
     expect(transformed).toStrictEqual({
-      category1: ['subCategory1'],
-      category2: [],
+      category1: {
+        subCategory1: false,
+        subCategory2: false,
+      },
+      category2: {
+        subCategory1: false,
+        subCategory2: false,
+      },
+      category3: {},
     });
   });
 });
@@ -528,7 +599,7 @@ describe('transformCategories', () => {
 describe('handleTwilioTask() (externalRecording)', () => {
   // eslint-disable-next-line sonarjs/no-identical-functions
   beforeAll(() => {
-    getHrmConfig.mockReturnValue({
+    mockGetHrmConfig.mockReturnValue({
       ...mockBaseConfig,
       externalRecordingsEnabled: true,
     });

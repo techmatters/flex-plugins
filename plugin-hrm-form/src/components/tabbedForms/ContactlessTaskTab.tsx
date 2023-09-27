@@ -15,12 +15,11 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React from 'react';
 import { connect, ConnectedProps, useSelector } from 'react-redux';
 import { FieldError, useFormContext } from 'react-hook-form';
 import { isFuture } from 'date-fns';
 import { get } from 'lodash';
-import { useFlexSelector } from '@twilio/flex-ui';
 import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import { disperseInputs } from '../common/forms/formGenerators';
@@ -31,15 +30,14 @@ import { configurationBase, namespace, RootState } from '../../states';
 import { selectWorkerSid } from '../../states/selectors/flexSelectors';
 import { createContactlessTaskTabDefinition } from './ContactlessTaskTabDefinition';
 import { splitDate, splitTime } from '../../utils/helpers';
-import type { OfflineContactTask } from '../../types/types';
-import { TaskEntry } from '../../states/contacts/types';
+import type { ContactRawJson, OfflineContactTask } from '../../types/types';
 
 type OwnProps = {
   task: OfflineContactTask;
   display: boolean;
   helplineInformation: DefinitionVersion['helplineInformation'];
   definition: DefinitionVersion['tabbedForms']['ContactlessTaskTab'];
-  initialValues: TaskEntry['contactlessTask'];
+  initialValues: ContactRawJson['contactlessTask'];
   autoFocus: boolean;
 };
 

@@ -15,15 +15,17 @@
  */
 
 import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import * as t from '../../../states/search/types';
 import * as actions from '../../../states/search/actions';
-import { SearchAPIContact } from '../../../types/types';
 import { searchContacts } from '../../../services/ContactService';
 import { searchCases } from '../../../services/CaseService';
 import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../../components/search/SearchResults';
 import { getDefinitionVersions } from '../../../hrmConfig';
+import { HrmServiceContact } from '../../../types/types';
+import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 jest.mock('../../../services/ContactService', () => ({ searchContacts: jest.fn() }));
 jest.mock('../../../services/CaseService', () => ({ searchCases: jest.fn() }));
@@ -82,13 +84,12 @@ describe('test action creators', () => {
   });
 
   test('viewContactDetails', () => {
-    const contact: unknown = { contactId: 'fake contact', overview: {}, details: {}, counselor: '', tags: [] };
-    const typedContact = contact as SearchAPIContact; // type casting to avoid writing an entire SearchContact
+    const contact: HrmServiceContact = { ...VALID_EMPTY_CONTACT, id: 'fake contact' };
 
-    expect(actions.viewContactDetails(taskId)(typedContact)).toStrictEqual({
+    expect(actions.viewContactDetails(taskId)(contact)).toStrictEqual({
       type: t.VIEW_CONTACT_DETAILS,
       taskId,
-      contact: typedContact,
+      contact,
     });
   });
 
@@ -128,7 +129,7 @@ describe('test action creators', () => {
     expect(dispatch).toBeCalledWith({ type: t.SEARCH_CONTACTS_FAILURE, taskId, error });
   });
 
-  test('searchCases (succes)', async () => {
+  test('searchCases (success)', async () => {
     const caseObject = {
       createdAt: '2020-11-23T17:38:42.227Z',
       updatedAt: '2020-11-23T17:38:42.227Z',
@@ -190,8 +191,8 @@ describe('test action creators', () => {
         anotherProperty: 'anotherProperty',
         filters: {
           createdAt: {
-            from: '2020-11-23T00:00:00.000Z',
-            to: '2020-11-23T00:00:00.000Z',
+            from: formatISO(startOfDay(parseISO('2020-11-23'))),
+            to: formatISO(endOfDay(parseISO('2020-11-23'))),
           },
         },
       },
