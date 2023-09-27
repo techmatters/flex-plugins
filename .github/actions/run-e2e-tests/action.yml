@@ -47,7 +47,7 @@ runs:
         node-version: '16.x'
 
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v2
       if: ${{ inputs.run-ui-tests == 'false' }}
       with:
         aws-access-key-id: ${{ inputs.aws-access-key-id }}
