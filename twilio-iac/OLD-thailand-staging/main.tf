@@ -8,7 +8,7 @@ terraform {
 
   backend "s3" {
     bucket         = "tl-terraform-state-staging"
-    key            = "twilio/ph/terraform.tfstate"
+    key            = "twilio/th/terraform.tfstate"
     dynamodb_table = "terraform-locks"
     encrypt        = true
     role_arn       = "arn:aws:iam::712893914485:role/tf-twilio-iac-staging"
@@ -27,14 +27,27 @@ data "aws_ssm_parameter" "secrets" {
 }
 
 locals {
-  secrets                      = jsondecode(data.aws_ssm_parameter.secrets.value)
-  helpline                     = "ECPAT"
-  short_helpline               = "PH"
-  operating_info_key           = "ph"
-  environment                  = "Staging"
-  short_environment            = "STG"
-  operating_hours_function_sid = "ZHc6798fb7d700cd812589cf202bb166ca"
-  enable_post_survey           = false
+  helpline                  = "Childline Thailand"
+  task_language             = "th-TH"
+  short_helpline            = "TH"
+  operating_info_key        = "th"
+  environment               = "Staging"
+  short_environment         = "STG"
+  enable_post_survey = false
+
+
+
+  twilio_numbers            = ["messenger:108893035300837", "twitter:1570374172798238722", "instagram:17841455607284645", "line:Uac858d9182b0e0fe1fa1b5850ab662bd"]
+  channel                   = ""
+  custom_channel_attributes = ""
+  secrets                   = jsondecode(data.aws_ssm_parameter.secrets.value)
+  twilio_channels = {
+    "facebook" = { "contact_identity" = "messenger:108893035300837", "channel_type" = "facebook" },
+    "webchat"  = { "contact_identity" = "", "channel_type" = "web" }
+  }
+  custom_channels  = ["twitter", "instagram", "line"]
+ 
+  
   events_filter = [
     "task.created",
     "task.canceled",
@@ -49,10 +62,13 @@ locals {
     "reservation.wrapup",
   ]
 
+custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true OR  twilioNumber IN ['messenger:108893035300837', 'instagram:17841455607284645', 'line:Uac858d9182b0e0fe1fa1b5850ab662bd'] OR to=='+15555555555'"
+
   workflows = {
     master : {
       friendly_name : "Master Workflow"
-      templatefile : "/app/twilio-iac/helplines/ph/templates/workflows/master.tftpl"
+      templatefile : "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+      task_reservation_timeout = 45
     },
     survey : {
       friendly_name : "Survey Workflow"
@@ -63,15 +79,7 @@ locals {
   task_queues = {
     master : {
       "target_workers" = "1==1",
-      "friendly_name"  = "ECPAT"
-    },
-    non_counselling : {
-      "target_workers" = "1==0",
-      "friendly_name"  = "Non Counselling"
-    },
-    outside_operating_hours : {
-      "target_workers" = "1==1",
-      "friendly_name"  = "Outside Operating Hours"
+      "friendly_name"  = "Master"
     },
     survey : {
       "target_workers" = "1==0",
@@ -93,6 +101,7 @@ locals {
     survey : "Survey"
   }
 
+
   //common across all helplines
   channel_attributes = {
     webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
@@ -102,26 +111,42 @@ locals {
   }
 
   flow_vars = {
-    service_sid                           = "ZS45d1a256ef1c4fa2112f7accc40306c5"
-    environment_sid                       = "ZE730f552b9429ca7a2105c822ef7faae4"
-    capture_channel_with_bot_function_sid = "ZH520142ac0ba1c7e75bc2a24ab5d8fce6"
-    operating_hours_function_sid          = "ZHc6798fb7d700cd812589cf202bb166ca"
+    service_sid                  = "ZS54d8a38f0dc4e4fac7304ee21f2b871e"
+    environment_sid              = "ZEc5d32f29ead0d580a4d474101ce44f28"
+    operating_hours_function_sid = "ZH7ebc05f97f15c319d0df431843040fd2"
+
   }
-
-
-   channels = {
+  
+    channels = {
+    webchat : {
+      channel_type         = "web"
+      contact_identity     = ""
+      templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging.tftpl"
+      channel_flow_vars    = {}
+      chatbot_unique_names = []
+    },
     facebook : {
-      channel_type      = "facebook"
-      contact_identity  = "messenger:106378571968698"
-      templatefile      = "/app/twilio-iac/helplines/ph/templates/studio-flows/with-lex-chatbot.tftpl"
-      channel_flow_vars = {}
+      channel_type         = "facebook"
+      contact_identity     = "messenger:108893035300837"
+      templatefile         = "/app/twilio-iac/helplines/th/templates/studio-flows/facebook-flow.tftpl"
+      channel_flow_vars    = {}
+      chatbot_unique_names = []
+    },
+    instagram : {
+      channel_type         = "custom"
+      contact_identity     = ""
+      templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging.tftpl"
+      channel_flow_vars    = {}
+      chatbot_unique_names = []
+    },
+    line : {
+      channel_type         = "custom"
+      contact_identity     = ""
+      templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging.tftpl"
+      channel_flow_vars    = {}
       chatbot_unique_names = []
     }
   }
-
-
-  //serverless
-  ui_editable = true
 
 }
 
@@ -129,7 +154,6 @@ provider "twilio" {
   username = local.secrets.twilio_account_sid
   password = local.secrets.twilio_auth_token
 }
-
 
 module "hrmServiceIntegration" {
   source            = "../terraform-modules/hrmServiceIntegration/default"
@@ -144,7 +168,6 @@ module "serverless" {
   source             = "../terraform-modules/serverless/default"
   twilio_account_sid = local.secrets.twilio_account_sid
   twilio_auth_token  = local.secrets.twilio_auth_token
-  ui_editable        = local.ui_editable
 }
 
 module "services" {
@@ -164,8 +187,12 @@ module "taskRouter" {
   task_queues                           = local.task_queues
   workflows                             = local.workflows
   task_channels                         = local.task_channels
-  helpline = local.helpline
+  custom_task_routing_filter_expression = local.custom_task_routing_filter_expression
+  helpline                              = local.helpline
+
 }
+
+
 
 module "channel" {
 
@@ -176,14 +203,14 @@ module "channel" {
   channels              = local.channels
   enable_post_survey    = local.enable_post_survey
   flex_chat_service_sid = module.services.flex_chat_service_sid
+  task_language         = local.task_language
   flow_vars             = local.flow_vars
   short_environment     = local.short_environment
   short_helpline        = local.short_helpline
   environment           = local.environment
   serverless_url        = module.serverless.serverless_environment_production_url
- 
-}
 
+}
 
 module "aws" {
   source                             = "../terraform-modules/aws/default"
@@ -202,7 +229,7 @@ module "aws" {
   shared_state_sync_service_sid      = module.services.shared_state_sync_service_sid
   flex_chat_service_sid              = module.services.flex_chat_service_sid
   flex_proxy_service_sid             = module.services.flex_proxy_service_sid
-  post_survey_bot_sid                = "DELETED"
+  post_survey_bot_sid                = ""
   survey_workflow_sid                = module.taskRouter.workflow_sids["survey"]
 }
 

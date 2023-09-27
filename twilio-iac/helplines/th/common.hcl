@@ -4,26 +4,23 @@ locals {
   config              = merge(local.defaults_config, local.local_config)
 
   local_config = {
-    helpline                          = "Ecpat"
-    old_dir_prefix                    = "ecpat"
-    definition_version                = "ph-v1"
+    helpline                          = "Childline Thailand"
+    old_dir_prefix                    = "thailand"
+    definition_version                = "th-v1"
     default_autopilot_chatbot_enabled = false
-    task_language                     = "en-PH"
-    helpline_language                 = "en-US"
-    voice_ivr_language                = ""
+    task_language                     = "th-TH"
+    helpline_language                 = "th-TH"
+    contacts_waiting_channels         = ["facebook", "instagram", "line"]
     enable_post_survey                = false
 
 
-    lex_bot_languages = {
-      en_PH : ["pre_survey"],
-      fil_PH : ["pre_survey"]
-    }
 
 
     workflows = {
       master : {
         friendly_name : "Master Workflow"
-        templatefile : "/app/twilio-iac/helplines/ph/templates/workflows/master.tftpl"
+        templatefile : "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+        task_reservation_timeout = 45
       },
       survey : {
         friendly_name : "Survey Workflow"
@@ -31,18 +28,11 @@ locals {
       }
     }
 
+
     task_queues = {
       master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "ECPAT"
-      },
-      non_counselling : {
-        "target_workers" = "1==0",
-        "friendly_name"  = "Non Counselling"
-      },
-      outside_operating_hours : {
-        "target_workers" = "1==1",
-        "friendly_name"  = "Outside Operating Hours"
+        "friendly_name"  = "Master"
       },
       survey : {
         "target_workers" = "1==0",
@@ -53,7 +43,6 @@ locals {
         "friendly_name"  = "E2E Test Queue"
       }
     }
-
     task_channels = {
       default : "Default"
       chat : "Programmable Chat"
@@ -65,5 +54,7 @@ locals {
     }
 
 
+
+    phone_numbers = {}
   }
 }

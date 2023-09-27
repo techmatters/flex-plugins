@@ -51,8 +51,8 @@ ${
           "x": -550,
           "y": -2120
         },
-        "workflow": master_workflow_sid,
-        "channel": chat_task_channel_sid,
+        "workflow": workflow_sids["master"],
+        "channel": task_channel_sids["chat"],
         "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"ECPAT\",\n\"language\":\"en-PH\",\n\"helpline\":\"ECPAT Philippines\",\n\"memory\": {{ trigger.message. ChannelAttributes.memory | to_json}}}"
       }
     },
@@ -213,8 +213,8 @@ ${
           "x": -430,
           "y": -1620
         },
-        "workflow": master_workflow_sid,
-        "channel": chat_task_channel_sid,
+        "workflow": workflow_sids["master"],
+        "channel": task_channel_sids["chat"],
         "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"ECPAT\",\n\"language\":\"tl-PH\",\n\"helpline\":\"ECPAT Philippines\",\n\"memory\": {{trigger.message.ChannelAttributes .memory | to_json}}}"
       }
     },
@@ -255,13 +255,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
+        "service_sid": flow_vars["service_sid"],
+        "environment_sid": flow_vars["environment_sid"],
         "offset": {
           "x": -1160,
           "y": -450
         },
-        "function_sid": operating_hours_function_sid,
+        "function_sid": flow_vars["operating_hours_function_sid"],
         "parameters": [
           {
             "value": "facebook",
@@ -444,13 +444,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
+        "service_sid": flow_vars["service_sid"],
+        "environment_sid": flow_vars["environment_sid"],
         "offset": {
           "x": -200,
           "y": -430
         },
-        "function_sid": operating_hours_function_sid,
+        "function_sid": flow_vars["operating_hours_function_sid"],
         "parameters": [
           {
             "value": "facebook",
@@ -561,8 +561,8 @@ ${
           "x": -2030,
           "y": 200
         },
-        "workflow": master_workflow_sid,
-        "channel": chat_task_channel_sid,
+        "workflow": workflow_sids["master"],
+        "channel": task_channel_sids["chat"],
         "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"Outside Operating Hours\",\n\"language\":\"en-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
         "timeout": "259200"
       }
@@ -586,8 +586,8 @@ ${
           "x": -2350,
           "y": 200
         },
-        "workflow": master_workflow_sid,
-        "channel": chat_task_channel_sid,
+        "workflow": workflow_sids["master"],
+        "channel": task_channel_sids["chat"],
         "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"Non Counselling\",\n\"language\":\"en-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
         "timeout": "604800"
       }
@@ -611,8 +611,8 @@ ${
           "x": -210,
           "y": 430
         },
-        "workflow": master_workflow_sid,
-        "channel": chat_task_channel_sid,
+        "workflow": workflow_sids["master"],
+        "channel": task_channel_sids["chat"],
         "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"Outside Operating Hours\",\n\"language\":\"tl-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
         "timeout": "259200"
       }
@@ -636,8 +636,8 @@ ${
           "x": -580,
           "y": 150
         },
-        "workflow": master_workflow_sid,
-        "channel": chat_task_channel_sid,
+        "workflow": workflow_sids["master"],
+        "channel": task_channel_sids["chat"],
         "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"Non Counselling\",\n\"language\":\"tl-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
         "timeout": "604800"
       }
@@ -1189,13 +1189,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
+        "service_sid": flow_vars["service_sid"],
+        "environment_sid": flow_vars["environment_sid"],
         "offset": {
           "x": -1140,
           "y": 800
         },
-        "function_sid": capture_channel_with_bot_function_sid,
+        "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -1307,13 +1307,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
+        "service_sid": flow_vars["service_sid"],
+        "environment_sid": flow_vars["environment_sid"],
         "offset": {
           "x": 210,
           "y": 820
         },
-        "function_sid": capture_channel_with_bot_function_sid,
+        "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
         "parameters": [
           {
             "value": "{{flow.channel.address}}",

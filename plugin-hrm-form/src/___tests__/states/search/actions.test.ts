@@ -15,6 +15,7 @@
  */
 
 import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import * as t from '../../../states/search/types';
@@ -190,8 +191,8 @@ describe('test action creators', () => {
         anotherProperty: 'anotherProperty',
         filters: {
           createdAt: {
-            from: '2020-11-23T00:00:00Z',
-            to: '2020-11-23T23:59:59Z',
+            from: formatISO(startOfDay(parseISO('2020-11-23'))),
+            to: formatISO(endOfDay(parseISO('2020-11-23'))),
           },
         },
       },
