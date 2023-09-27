@@ -21,6 +21,7 @@ import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 import _ from 'lodash';
 import { Close } from '@material-ui/icons';
+import { AnyAction } from 'redux';
 
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
 import { updateContactsFormInHrm } from '../../services/ContactService';
@@ -34,6 +35,8 @@ import CloseCaseDialog from '../case/CloseCaseDialog';
 import * as t from '../../states/contacts/actions';
 import { getTemplateStrings } from '../../hrmConfig';
 import { ContactRawJson } from '../../types/types';
+import asyncDispatch from '../../states/asyncDispatch';
+import { updateContactsFormInHrmAsyncAction } from '../../states/contacts/saveContact';
 
 type OwnProps = {
   context: DetailsContext;
@@ -58,6 +61,7 @@ const EditContactSection: React.FC<Props> = ({
   tabPath,
   children,
   clearContactDraft,
+  updateContactsFormInHrmAsyncAction,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -100,8 +104,7 @@ const EditContactSection: React.FC<Props> = ({
       payload = draftContact?.rawJson;
     }
     try {
-      const updatedContact = await updateContactsFormInHrm(contactId, payload, savedContact.helpline);
-      refreshContact(updatedContact);
+      updateContactsFormInHrmAsyncAction(true, contactId, payload, savedContact.helpline, undefined);
     } catch (error) {
       setSubmitting(false);
       recordBackendError('Open New Case', error);
@@ -198,14 +201,27 @@ const EditContactSection: React.FC<Props> = ({
   );
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string, any>>, { contactId }: OwnProps) => ({
-  refreshContact: contact => dispatch(refreshContact(contact)),
-  setEditContactPageOpen: () => dispatch(t.setEditContactPageOpen()),
-  setEditContactPageClosed: () => dispatch(t.setEditContactPageClosed()),
-  clearContactDraft: () => {
-    dispatch(clearDraft(contactId));
-  },
-});
+const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string, any>>, { contactId }: OwnProps) => {
+  const updateContactAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
+  return {
+    refreshContact: contact => dispatch(refreshContact(contact)),
+    setEditContactPageOpen: () => dispatch(t.setEditContactPageOpen()),
+    setEditContactPageClosed: () => dispatch(t.setEditContactPageClosed()),
+    clearContactDraft: () => {
+      dispatch(clearDraft(contactId));
+    },
+    updateContactsFormInHrmAsyncAction: (
+      replaceExisting: boolean,
+      contactId: string,
+      body: Partial<ContactRawJson>,
+      helpline: string,
+      reference?: string,
+    ) =>
+      updateContactAsyncDispatch(
+        updateContactsFormInHrmAsyncAction(replaceExisting, contactId, body, helpline, reference),
+      ),
+  };
+};
 
 const mapStateToProps = (state: RootState, { contactId }: OwnProps) => ({
   definitionVersions: state[namespace][configurationBase].definitionVersions,

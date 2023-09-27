@@ -18,6 +18,7 @@ import { omit } from 'lodash';
 
 import { HrmServiceContact } from '../../types/types';
 import { AddExternalReportEntryAction } from '../csam-report/existingContactExternalReport';
+import { SaveContactReducerState, saveContactReducer } from './saveContact';
 
 export enum ContactDetailsRoute {
   EDIT_CALLER_INFORMATION = 'editCallerInformation',
@@ -129,9 +130,11 @@ export const loadContacts = (
   replaceExisting,
 });
 
+export const initialState: ExistingContactsState = {};
+
 export const refreshContact = (contact: any) => loadContact(contact, undefined, true);
 
-export const loadContactReducer = (state: ExistingContactsState, action: LoadContactAction) => {
+export const loadContactReducer = (state = initialState, action: LoadContactAction) => {
   const updateEntries = action.contacts
     .filter(c => {
       return (
