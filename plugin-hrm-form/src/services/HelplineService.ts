@@ -22,15 +22,15 @@ import { getHrmConfig } from '../hrmConfig';
  * Helper used to be the source of truth for the helpline value being passed to HRM and Insights
  * TODO: receive only contactForm.contactlessTask.helpline and contactForm.contactlessTask.createdOnBehalfOf
  */
-export const getHelplineToSave = async (task: CustomITask, contactlessTask: ContactRawJson['contactlessTask']) => {
-  if (isOfflineContactTask(task)) {
+export const getHelplineToSave = async (task: CustomITask, contactlessTask?: ContactRawJson['contactlessTask']) => {
+  if (isOfflineContactTask(task) && contactlessTask) {
     if (contactlessTask.helpline) return contactlessTask.helpline;
 
     const targetWorkerSid = contactlessTask.createdOnBehalfOf as string;
     const targetWorkerAttributes = await getWorkerAttributes(targetWorkerSid);
     return targetWorkerAttributes.helpline;
   }
-
+  const taskHelpline = isOfflineContactTask(task) ? '' : task.attributes.helpline;
   const { helpline: thisWorkerHelpline } = getHrmConfig();
-  return task.attributes.helpline || thisWorkerHelpline || '';
+  return taskHelpline || thisWorkerHelpline || '';
 };

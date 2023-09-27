@@ -18,8 +18,7 @@ import fromentries from 'fromentries';
 
 import * as t from '../../../states/search/types';
 import { handleSearchFormChange } from '../../../states/search/actions';
-import { SearchAPIContact, SearchCaseResult } from '../../../types/types';
-import { ContactDetailsSections } from '../../../components/common/ContactDetails';
+import { HrmServiceContact, SearchCaseResult } from '../../../types/types';
 import {
   INITIALIZE_CONTACT_STATE,
   RECREATE_CONTACT_STATE,
@@ -27,6 +26,7 @@ import {
   GeneralActionType,
 } from '../../../states/types';
 import { reduce, newTaskEntry } from '../../../states/search/reducer';
+import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
 
@@ -122,10 +122,10 @@ describe('search reducer', () => {
   });
 
   test('VIEW_CONTACT_DETAILS action', () => {
-    const contact: unknown = { contactId: 'fake contact', overview: {}, details: {}, counselor: '', tags: [] };
+    const contact: HrmServiceContact = { ...VALID_EMPTY_CONTACT, id: 'fake contact' };
     const action: t.SearchActionType = {
       type: t.VIEW_CONTACT_DETAILS,
-      contact: contact as SearchAPIContact, // type casting to avoid writing an entire SearchContact
+      contact,
       taskId: task.taskSid,
     };
     const result = reduce(state, action);

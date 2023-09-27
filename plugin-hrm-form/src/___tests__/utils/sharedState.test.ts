@@ -18,12 +18,16 @@
 /* eslint-disable global-require */
 /* eslint-disable camelcase */
 import SyncClient from 'twilio-sync';
+import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import { transferStatuses } from '../../states/DomainConstants';
 import { createTask } from '../helpers';
-import { getAseloFeatureFlags } from '../../hrmConfig';
+import { mockGetDefinitionsResponse } from '../mockGetConfig';
+import { getAseloFeatureFlags, getDefinitionVersions, getTemplateStrings } from '../../hrmConfig';
 import { loadFormSharedState, saveFormSharedState, setUpSharedStateClient } from '../../utils/sharedState';
-import { TaskEntry } from '../../states/contacts/types';
+import { HrmServiceContact } from '../../types/types';
+import { ContactMetadata, HrmServiceContactWithMetadata } from '../../states/contacts/types';
+import { VALID_EMPTY_CONTACT } from '../testContacts';
 
 jest.mock('../../services/ServerlessService', () => ({
   issueSyncToken: jest.fn(),
@@ -40,27 +44,48 @@ jest.mock('../../hrmConfig', () => ({
 }));
 
 jest.mock('twilio-sync', () => jest.fn());
-const form = { helpline: 'a helpline' } as TaskEntry;
+const contact = { helpline: 'a helpline' } as HrmServiceContact;
+const metadata = {} as ContactMetadata;
+const form: HrmServiceContactWithMetadata = {
+  contact,
+  metadata,
+};
 const task = createTask();
+
+const mockSharedStateDocuments = {};
 
 const mockSharedState = {
   connectionState: 'connected',
-  documents: {},
   document: async documentName => {
-    if (!mockSharedState.documents[documentName]) {
-      mockSharedState.documents[documentName] = {
+    if (!mockSharedStateDocuments[documentName]) {
+      return {
         set: async data => {
-          mockSharedState.documents[documentName] = { data };
+          mockSharedStateDocuments[documentName] = { data };
         },
       };
     }
-    return mockSharedState.documents[documentName];
+    return mockSharedStateDocuments[documentName];
   },
 };
 
 const mockGetAseloFeatureFlags: jest.Mock = getAseloFeatureFlags as jest.Mock;
 const mockSyncClient: jest.Mock = (SyncClient as unknown) as jest.Mock;
 window.alert = jest.fn();
+let mockV1;
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, buildBaseURL } = useFetchDefinitions();
+
+beforeAll(async () => {
+  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  await mockFetchImplementation(formDefinitionsBaseUrl);
+  mockV1 = await loadDefinition(formDefinitionsBaseUrl);
+  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+  (getTemplateStrings as jest.Mock).mockReturnValue({
+    SharedStateSaveFormError: 'Error saving',
+    SharedStateLoadFormError: 'Error loading',
+  });
+});
 
 describe('Test with no feature flag', () => {
   test('saveFormSharedState', async () => {
@@ -128,17 +153,41 @@ describe('Test with connected sharedState', () => {
   });
 
   test('saveFormSharedState', async () => {
-    const expected = { ...form };
+    const expected = {
+      helpline: 'a helpline',
+      categories: undefined,
+      csamReports: undefined,
+      draft: undefined,
+      metadata: {},
+      referrals: undefined,
+    };
     const documentName = await saveFormSharedState(form, task);
     expect(documentName).toBe('pending-form-taskSid');
-    expect(mockSharedState.documents[documentName].data).toStrictEqual(expected);
+    expect(mockSharedStateDocuments[documentName].data).toStrictEqual(expected);
     await task.setAttributes({
       transferMeta: { transferStatus: transferStatuses.accepted, formDocument: documentName },
     });
   });
 
   test('loadFormSharedState', async () => {
-    const expected = { ...form };
+    const expected: HrmServiceContactWithMetadata = {
+      contact: {
+        ...VALID_EMPTY_CONTACT,
+        rawJson: {
+          categories: undefined,
+          contactlessTask: undefined,
+          draft: undefined,
+        } as any,
+        timeOfContact: expect.any(String),
+        csamReports: undefined,
+        referrals: undefined,
+        helpline: 'a helpline',
+        channel: 'web',
+      },
+      metadata: {
+        draft: undefined,
+      } as ContactMetadata,
+    };
     const loadedForm = await loadFormSharedState(task);
     expect(loadedForm).toStrictEqual(expected);
   });

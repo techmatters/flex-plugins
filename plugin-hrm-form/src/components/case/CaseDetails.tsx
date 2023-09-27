@@ -41,7 +41,7 @@ import { getLocaleDateTime } from '../../utils/helpers';
 type Props = {
   caseId: string;
   contactIdentifier: string;
-  categories: { [category: string]: { [subcategory: string]: boolean } };
+  categories: { [category: string]: string[] };
   counselor: string;
   createdAt: string;
   updatedAt: string | undefined;

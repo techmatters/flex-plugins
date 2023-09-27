@@ -38,7 +38,7 @@ type OwnProps = { selectedTaskSid?: string };
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedTaskSid, offlineContactTask }) => {
+const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedTaskSid, offlineContactForms }) => {
   if (!isAddingOfflineContact) return null;
 
   const onClick = async () => {
@@ -47,9 +47,9 @@ const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedT
 
   const selected = !selectedTaskSid && isAddingOfflineContact;
   const name =
-    offlineContactTask &&
-    (offlineContactTask.childInformation.firstName || offlineContactTask.childInformation.lastName) &&
-    `${offlineContactTask.childInformation.firstName} ${offlineContactTask.childInformation.lastName}`;
+    offlineContactForms &&
+    (offlineContactForms.childInformation.firstName || offlineContactForms.childInformation.lastName) &&
+    `${offlineContactForms.childInformation.firstName} ${offlineContactForms.childInformation.lastName}`;
   const formattedName = name && name.trim() !== '' ? name : <Template code="Anonymous" />;
 
   return (
@@ -78,7 +78,7 @@ OfflineContactTask.displayName = 'OfflineContactTask';
 
 const mapStateToProps = (state: RootState) => ({
   isAddingOfflineContact: state[namespace][routingBase].isAddingOfflineContact,
-  offlineContactTask: state[namespace][contactFormsBase].tasks[offlineContactTaskSid],
+  offlineContactForms: state[namespace][contactFormsBase].tasks[offlineContactTaskSid]?.contact?.rawJson,
 });
 
 const connector = connect(mapStateToProps);

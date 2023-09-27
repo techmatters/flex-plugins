@@ -14,25 +14,27 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import { AnyAction, bindActionCreators } from 'redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/Folder';
 import { SubmitErrorHandler } from 'react-hook-form';
+import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
-import { createCase } from '../../services/CaseService';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import { hasTaskControl } from '../../utils/transfer';
-import { namespace, contactFormsBase, connectedCaseBase } from '../../states';
+import { namespace, contactFormsBase, connectedCaseBase, RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
-import { CustomITask } from '../../types/types';
+import { Case, CustomITask } from '../../types/types';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
+import { createCaseAsyncAction } from '../../states/case/saveCase';
+import asyncDispatch from '../../states/asyncDispatch';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;
@@ -50,12 +52,14 @@ const BottomBar: React.FC<
   showSubmitButton,
   handleSubmitIfValid,
   optionalButtons,
-  contactForm,
+  contact,
+  metadata,
   task,
   changeRoute,
   setConnectedCase,
   nextTab,
   caseForm,
+  createCaseAsyncAction,
 }) => {
   const [isSubmitting, setSubmitting] = useState(false);
   const strings = getTemplateStrings();
@@ -67,9 +71,8 @@ const BottomBar: React.FC<
     if (!hasTaskControl(task)) return;
 
     try {
-      const caseFromDB = await createCase(contactForm, workerSid, definitionVersion);
+      createCaseAsyncAction(contact, workerSid, definitionVersion);
       changeRoute({ route: 'new-case' }, taskSid);
-      setConnectedCase(caseFromDB, taskSid);
     } catch (error) {
       recordBackendError('Open New Case', error);
       window.alert(strings['Error-Backend']);
@@ -82,7 +85,7 @@ const BottomBar: React.FC<
     setSubmitting(true);
 
     try {
-      await submitContactForm(task, contactForm, caseForm);
+      await submitContactForm(task, contact, metadata, caseForm as Case);
       await completeTask(task);
     } catch (error) {
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
@@ -111,7 +114,13 @@ const BottomBar: React.FC<
         {optionalButtons &&
           optionalButtons.map((i, index) => (
             <Box key={`optional-button-${index}`} marginRight="15px">
-              <StyledNextStepButton type="button" roundCorners secondary onClick={i.onClick} disabled={isSubmitting}>
+              <StyledNextStepButton
+                type="button"
+                roundCorners
+                secondary="true"
+                onClick={i.onClick}
+                disabled={isSubmitting}
+              >
                 <Template code={i.label} />
               </StyledNextStepButton>
             </Box>
@@ -124,12 +133,12 @@ const BottomBar: React.FC<
         )}
         {showSubmitButton && (
           <>
-            {featureFlags.enable_case_management && !isNonDataCallType(contactForm.callType) && (
+            {featureFlags.enable_case_management && !isNonDataCallType(contact.rawJson.callType) && (
               <Box marginRight="15px">
                 <StyledNextStepButton
                   type="button"
                   roundCorners
-                  secondary
+                  secondary="true"
                   onClick={handleSubmitIfValid(handleOpenNewCase, onError)}
                   data-fs-id="Contact-SaveAndAddToCase-Button"
                   data-testid="BottomBar-SaveAndAddToCase-Button"
@@ -160,16 +169,20 @@ const BottomBar: React.FC<
 
 BottomBar.displayName = 'BottomBar';
 
-const mapStateToProps = (state, ownProps: BottomBarProps) => {
-  const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
-  const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
-  const caseForm = (caseState && caseState.connectedCase) || {};
-  return { contactForm, caseForm };
+const mapStateToProps = (state: RootState, ownProps: BottomBarProps) => {
+  const { contact, metadata } = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid] ?? {};
+  const caseForm = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase || {};
+  return { contact, metadata, caseForm };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
-  setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
-});
+const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
+  const createCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
+  return {
+    changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
+    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
+    createCaseAsyncAction: (contact, workerSid: string, definitionVersion: DefinitionVersionId) =>
+      createCaseAsyncDispatch(createCaseAsyncAction(contact, task.taskSid, workerSid, definitionVersion)),
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(BottomBar);

@@ -15,24 +15,41 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import CheckIcon from '@material-ui/icons/Check';
 import { Button, Popover } from '@material-ui/core';
-import { Template } from '@twilio/flex-ui';
+import { ITask, Template } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
 
 import { Row } from '../../styles/HrmStyles';
 import { ConfirmContainer, ConfirmText, CancelButton } from '../../styles/search';
 import TabPressWrapper from '../TabPressWrapper';
-import { contactType } from '../../types';
 import { hasTaskControl } from '../../utils/transfer';
+import { HrmServiceContact } from '../../types/types';
 
-const ConnectDialog = ({ anchorEl, currentIsCaller, contact, handleConfirm, handleClose, task, isCallTypeCaller }) => {
+type Props = {
+  anchorEl: Element;
+  currentIsCaller: boolean;
+  contact: HrmServiceContact;
+  handleConfirm: () => void;
+  handleClose: () => void;
+  task: ITask;
+  isCallTypeCaller: boolean;
+};
+
+const ConnectDialog: React.FC<Props> = ({
+  anchorEl,
+  currentIsCaller,
+  contact,
+  handleConfirm,
+  handleClose,
+  task,
+  isCallTypeCaller,
+}) => {
   const isOpen = Boolean(anchorEl);
   const id = isOpen ? 'simple-popover' : undefined;
 
   const getText = () => {
-    const callType = contact && contact.details && contact.details.callType;
+    const callType = contact && contact.rawJson && contact.rawJson.callType;
     if (!callType) return '';
 
     switch (callType) {
@@ -88,18 +105,5 @@ const ConnectDialog = ({ anchorEl, currentIsCaller, contact, handleConfirm, hand
 };
 
 ConnectDialog.displayName = 'ConnectDialog';
-ConnectDialog.propTypes = {
-  anchorEl: PropTypes.instanceOf(Element),
-  currentIsCaller: PropTypes.bool.isRequired,
-  contact: contactType,
-  handleConfirm: PropTypes.func.isRequired,
-  handleClose: PropTypes.func.isRequired,
-  task: PropTypes.shape({}),
-};
-ConnectDialog.defaultProps = {
-  anchorEl: null,
-  contact: null,
-  task: {},
-};
 
 export default ConnectDialog;

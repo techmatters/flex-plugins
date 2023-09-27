@@ -17,14 +17,14 @@
 /* eslint-disable import/no-unused-modules */
 import { Actions, ITask, Manager } from '@twilio/flex-ui';
 
-import { Case, CustomITask, isOfflineContactTask, offlineContactTaskSid } from '../types/types';
+import { Case, CustomITask, HrmServiceContact, isOfflineContactTask, offlineContactTaskSid } from '../types/types';
 import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
 import { saveContact } from './ContactService';
 import { assignOfflineContactInit, assignOfflineContactResolve } from './ServerlessService';
 import { removeContactState } from '../states/actions';
 import { getHrmConfig } from '../hrmConfig';
-import { TaskEntry as ContactForm } from '../states/contacts/types';
+import { ContactMetadata } from '../states/contacts/types';
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
@@ -54,15 +54,20 @@ export const completeContactlessTask = async () => {
 export const completeTask = (task: CustomITask) =>
   isOfflineContactTask(task) ? completeContactlessTask() : completeContactTask(task);
 
-export const submitContactForm = async (task: CustomITask, contactForm: ContactForm, caseForm: Case) => {
+export const submitContactForm = async (
+  task: CustomITask,
+  contact: HrmServiceContact,
+  metadata: ContactMetadata,
+  caseForm: Case,
+) => {
   const { workerSid } = getHrmConfig();
 
   if (isOfflineContactTask(task)) {
-    const targetWorkerSid = contactForm.contactlessTask.createdOnBehalfOf as string;
+    const targetWorkerSid = contact.rawJson.contactlessTask.createdOnBehalfOf as string;
     const inBehalfTask = await assignOfflineContactInit(targetWorkerSid, task.attributes);
     try {
-      const { contact: savedContact } = await saveContact(task, contactForm, workerSid, inBehalfTask.sid);
-      const finalAttributes = buildInsightsData(inBehalfTask, contactForm, caseForm, savedContact);
+      const { contact: savedContact } = await saveContact(task, contact, metadata, workerSid, inBehalfTask.sid);
+      const finalAttributes = buildInsightsData(inBehalfTask, contact, caseForm, savedContact);
       await assignOfflineContactResolve({
         action: 'complete',
         taskSid: inBehalfTask.sid,
@@ -84,12 +89,13 @@ export const submitContactForm = async (task: CustomITask, contactForm: ContactF
 
   const { contact: savedContact, externalRecordingInfo } = await saveContact(
     task,
-    contactForm,
+    contact,
+    metadata,
     workerSid,
     task.taskSid,
   );
 
-  const finalAttributes = buildInsightsData(task, contactForm, caseForm, savedContact, externalRecordingInfo);
+  const finalAttributes = buildInsightsData(task, contact, caseForm, savedContact, externalRecordingInfo);
   await task.setAttributes(finalAttributes);
   return savedContact;
 };

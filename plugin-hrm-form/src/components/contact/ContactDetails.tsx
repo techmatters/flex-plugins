@@ -113,17 +113,10 @@ const ContactDetails: React.FC<Props> = ({
 
   if (draftContact) {
     if (draftContact.rawJson?.categories) {
-      const issueSection = contactDetailsSectionFormApi.ISSUE_CATEGORIZATION;
       return (
-        <EditContactSection
-          context={context}
-          contactId={contactId}
-          contactDetailsSectionForm={contactDetailsSectionFormApi.ISSUE_CATEGORIZATION}
-          tabPath="categories"
-        >
+        <EditContactSection context={context} contactId={contactId} tabPath="categories">
           <IssueCategorizationSectionForm
             definition={definitionVersion.tabbedForms.IssueCategorizationTab(draftContact.helpline)}
-            initialValue={issueSection.getFormValues(definitionVersion, draftContact).categories}
             stateApi={forExistingContact(contactId)}
             display={true}
             autoFocus={true}
