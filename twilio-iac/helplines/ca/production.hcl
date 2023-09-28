@@ -202,6 +202,7 @@ locals {
         channel_flow_vars    = {
           en_number: "3656520724"
           fr_number: "3656495517"
+          ns_fr_number: "7823120154"
         }
         chatbot_unique_names = []
       }
@@ -215,6 +216,7 @@ locals {
       hc : ["+13656540516"],
       training : ["+18252547345"],
       988_camh : ["+13656520724", "+13656495517"]
+      988_ns : ["+17823120154"]
     }
 
     hrm_transcript_retention_days_override = 90
