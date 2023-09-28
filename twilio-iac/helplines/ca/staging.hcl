@@ -200,6 +200,7 @@ locals {
         channel_flow_vars    = {
           en_number: "3656595751"
           fr_number: "3656011530"
+          ns_fr_number: "7823120134"
         }
         chatbot_unique_names = []
       }
@@ -214,6 +215,7 @@ locals {
       hc : ["+12264070015", "+17787663852"],
       training: ["+15878407089"],
       988_camh : ["+13656595751", "+13656011530"],
+      988_ns : ["+17823120134"]
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
