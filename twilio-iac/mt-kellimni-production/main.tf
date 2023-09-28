@@ -34,6 +34,7 @@ locals {
   environment               = "Production"
   short_environment         = "PROD"
   target_task_name          = "greeting"
+  task_language      = "en-US"
   twilio_numbers            = ["instagram:17841400289612325", "messenger:325981127456443", "whatsapp:+15077097720"]
   channel                   = ""
   custom_channel_attributes = ""
