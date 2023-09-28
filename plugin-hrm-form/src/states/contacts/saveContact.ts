@@ -16,9 +16,10 @@
 
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
-import { updateContactsFormInHrm } from '../../services/ContactService';
-import { ContactRawJson, HrmServiceContact } from '../../types/types';
-import { UPDATE_CONTACT_ACTION } from './types';
+import { submitContactForm } from '../../services/formSubmissionHelpers';
+import { connectToCase, updateContactsFormInHrm } from '../../services/ContactService';
+import { Case, ContactRawJson, CustomITask, HrmServiceContact } from '../../types/types';
+import { CONNECT_TO_CASE, ContactMetadata, SET_SAVED_CONTACT, UPDATE_CONTACT_ACTION } from './types';
 import { ExistingContactsState } from './existingContacts';
 
 export const updateContactsFormInHrmAsyncAction = createAsyncAction(
@@ -39,6 +40,27 @@ export const updateContactsFormInHrmAsyncAction = createAsyncAction(
   },
 );
 
+export const connectToCaseAsyncAction = createAsyncAction(
+  CONNECT_TO_CASE,
+  async (contactId: string, caseId: number) => {
+    const connect = await connectToCase(contactId, caseId);
+
+    console.log('connect to case is here', connect);
+  },
+);
+
+export const submitContactFormAsyncAction = createAsyncAction(
+  SET_SAVED_CONTACT,
+  async (
+    task: CustomITask,
+    contact: HrmServiceContact,
+    metadata: ContactMetadata,
+    caseForm: Case,
+  ): Promise<{ contact: Partial<HrmServiceContact> }> => {
+    return { contact: await submitContactForm(task, contact, metadata, caseForm) };
+  },
+);
+
 export type SaveContactReducerState = {
   state: ExistingContactsState;
 };
@@ -52,7 +74,6 @@ const handleAsyncAction = (handleAction, asyncAction) =>
 
 export const saveContactReducer = (initialState: ExistingContactsState) =>
   createReducer(initialState, handleAction => [
-
     handleAsyncAction(handleAction, updateContactsFormInHrmAsyncAction.pending),
 
     handleAction(
@@ -90,4 +111,21 @@ export const saveContactReducer = (initialState: ExistingContactsState) =>
     ),
 
     handleAsyncAction(handleAction, updateContactsFormInHrmAsyncAction.rejected),
+  ]);
+
+export const submitContactFormReducer = (initialState: HrmServiceContact) =>
+  createReducer(initialState, handleAction => [
+    handleAsyncAction(handleAction, submitContactFormAsyncAction.pending),
+
+    handleAction(
+      submitContactFormAsyncAction.fulfilled,
+      (state, { payload }): HrmServiceContact => {
+        return {
+          ...state,
+          ...payload.contact,
+        };
+      },
+    ),
+
+    handleAsyncAction(handleAction, submitContactFormAsyncAction.rejected),
   ]);

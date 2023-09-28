@@ -18,7 +18,7 @@ import { omit } from 'lodash';
 import { callTypes } from 'hrm-form-definitions';
 
 import * as t from './types';
-import { ContactsState, HrmServiceContactWithMetadata, UPDATE_CONTACT_ACTION } from './types';
+import { ContactsState, HrmServiceContactWithMetadata, SET_SAVED_CONTACT, UPDATE_CONTACT_ACTION } from './types';
 import {
   DefinitionVersion,
   GeneralActionType,
@@ -54,11 +54,11 @@ import {
 } from './contactDetails';
 import { ADD_EXTERNAL_REPORT_ENTRY, addExternalReportEntryReducer } from '../csam-report/existingContactExternalReport';
 import { ReferralLookupStatus, resourceReferralReducer } from './resourceReferral';
-import { ContactRawJson } from '../../types/types';
+import { ContactRawJson, HrmServiceContact } from '../../types/types';
 import { ContactCategoryAction, toggleSubCategoriesReducer } from './categories';
 import { configurationBase, RootState } from '..';
 import { transformValues } from '../../services/ContactService';
-import { saveContactReducer } from './saveContact';
+import { saveContactReducer, submitContactFormReducer } from './saveContact';
 
 export const emptyCategories = [];
 
@@ -149,10 +149,12 @@ export const initialState: ContactsState = {
   },
   editingContact: false,
   isCallTypeCaller: false,
+  savedContact: {} as HrmServiceContact,
 };
 
 const boundReferralReducer = resourceReferralReducer(initialState);
 const boundSaveContactReducer = saveContactReducer(existingContactInitialState);
+const boundSubmitContactFormReducer = submitContactFormReducer(initialState.savedContact);
 
 // eslint-disable-next-line import/no-unused-modules,complexity
 export function reduce(
@@ -164,7 +166,8 @@ export function reduce(
     | ContactDetailsAction
     | ContactCategoryAction
     | GeneralActionType
-    | t.UpdatedContactAction,
+    | t.UpdatedContactAction
+    | t.SetSavedContactAction,
 ): ContactsState {
   let state = boundReferralReducer(inputState, action as any);
   state = toggleSubCategoriesReducer(state, action as ContactCategoryAction);
@@ -372,6 +375,9 @@ export function reduce(
     }
     case `${UPDATE_CONTACT_ACTION}_FULFILLED`: {
       return { ...state, existingContacts: boundSaveContactReducer(state.existingContacts, action) };
+    }
+    case `${SET_SAVED_CONTACT}_FULFILLED`: {
+      return { ...state, savedContact: boundSubmitContactFormReducer(state.savedContact, action) };
     }
     case LOAD_CONTACT_ACTION: {
       return { ...state, existingContacts: loadContactReducer(state.existingContacts, action) };

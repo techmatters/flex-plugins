@@ -24,7 +24,6 @@ import { Close } from '@material-ui/icons';
 import { AnyAction } from 'redux';
 
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
-import { updateContactsFormInHrm } from '../../services/ContactService';
 import { Box, StyledNextStepButton, BottomButtonBar, Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
 import { CaseActionTitle, EditContactContainer } from '../../styles/case';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';

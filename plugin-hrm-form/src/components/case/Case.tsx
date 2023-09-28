@@ -30,7 +30,6 @@ import {
   // saveCaseBase,
 } from '../../states';
 import { cancelCase } from '../../services/CaseService';
-import { connectToCase } from '../../services/ContactService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { getActivitiesFromCase, getActivitiesFromContacts, isNoteActivity, sortActivities } from './caseActivities';
 import { getHelplineData } from './caseHelpers';
@@ -73,6 +72,9 @@ import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentif
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
+import { connectToCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
+import { ContactMetadata } from '../../states/contacts/types';
+import { connectToCase } from '../../services/ContactService';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -105,15 +107,20 @@ const Case: React.FC<Props> = ({
   releaseContacts,
   cancelNewCase,
   updateCaseAsyncAction,
+  connectToCaseAsyncAction,
+  submitContactFormAsyncAction,
+  savedContact,
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
   const [loadedContactIds, setLoadedContactIds] = useState([]);
+  const [connectToCase, setConnectToCase] = useState(false);
   const { connectedCase } = props?.connectedCaseState ?? {};
   // This is to provide a stable dep for the useEffect that generates the timeline
   const savedContactsJson = JSON.stringify(savedContacts);
   const { workerSid } = getHrmConfig();
   const strings = getTemplateStrings();
+  const handleCompleteTask = async task => completeTask(task);
 
   const timeline: Activity[] = useMemo(
     () => {
@@ -186,6 +193,28 @@ const Case: React.FC<Props> = ({
       fetchDefinitionVersions();
     }
   }, [connectedCase, definitionVersions, task.taskSid, updateDefinitionVersion, version]);
+
+  /**
+   * Always check to see when savedContact state has been updated.
+   * Then go ahead and execute the connectToCaseAsyncAction
+   */
+  useEffect(() => {
+    // We want to validate that savedContact state is not returning an empty object
+    const validateSavedContact = () => typeof savedContact === 'object' && Object.keys(savedContact).length > 0;
+
+    if (validateSavedContact()) {
+      connectToCaseAsyncAction(savedContact.id, connectedCase.id);
+      setConnectToCase(validateSavedContact());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [savedContact, connectToCaseAsyncAction]);
+
+  /**
+   * Once connectToCase is true, execute the completeTask method
+   */
+  useEffect(() => {
+    if (connectToCase) handleCompleteTask(task);
+  }, [connectToCase, task]);
 
   if (routing.route === 'csam-report') return null;
 
@@ -270,10 +299,9 @@ const Case: React.FC<Props> = ({
       updateCaseAsyncAction(connectedCase.id, {
         ...connectedCase,
       });
-      await connectToCase(contact.id, connectedCase.id);
-      const savedContact = await submitContactForm(task, contact, metadata, connectedCase);
-      await connectToCase(savedContact.id, connectedCase.id);
-      await completeTask(task);
+
+      // This would execute and update the savedContact state
+      submitContactFormAsyncAction(task, contact, metadata, connectedCase);
     } catch (error) {
       console.error(error);
       recordBackendError('Save and End Case', error);
@@ -430,9 +458,9 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
   const { connectedCase } = caseState ?? {};
   const connectedContactIds = new Set((connectedCase?.connectedContacts ?? []).map(cc => cc.id as string));
-  const newSearchContact =
-    state[namespace][contactFormsBase].existingContacts[newContactTemporaryId(connectedCase)]?.savedContact;
+  const contact = state[namespace][contactFormsBase];
   const { definitionVersions, currentDefinitionVersion } = state[namespace][configurationBase];
+
   return {
     form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
     connectedCaseState: caseState,
@@ -444,12 +472,13 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     savedContacts: Object.values(state[namespace][contactFormsBase].existingContacts)
       .filter(contact => connectedContactIds.has(contact.savedContact.id))
       .map(ecs => ecs.savedContact),
-    newContact: newSearchContact,
+    newContact: contact.existingContacts[newContactTemporaryId(connectedCase)]?.savedContact,
+    savedContact: contact.savedContact
   };
 };
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
-  const updateCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
+  const caseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   const cancelNewCase = (taskSid: string, loadedContactIds: string[]) => {
     dispatch(CaseActions.removeConnectedCase(taskSid));
     dispatch(
@@ -469,7 +498,15 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     loadContact: bindActionCreators(ContactActions.loadContact, dispatch),
     cancelNewCase,
     updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
-      updateCaseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
+      caseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
+    connectToCaseAsyncAction: (contactId: string, caseId: number) =>
+      caseAsyncDispatch(connectToCaseAsyncAction(contactId, caseId)),
+    submitContactFormAsyncAction: (
+      task: CustomITask,
+      contact: HrmServiceContact,
+      metadata: ContactMetadata,
+      caseForm: CaseType,
+    ) => caseAsyncDispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
   };
 };
 
