@@ -43,9 +43,7 @@ export const updateContactsFormInHrmAsyncAction = createAsyncAction(
 export const connectToCaseAsyncAction = createAsyncAction(
   CONNECT_TO_CASE,
   async (contactId: string, caseId: number) => {
-    const connect = await connectToCase(contactId, caseId);
-
-    console.log('connect to case is here', connect);
+    await connectToCase(contactId, caseId);
   },
 );
 

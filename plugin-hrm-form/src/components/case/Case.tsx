@@ -194,14 +194,14 @@ const Case: React.FC<Props> = ({
     }
   }, [connectedCase, definitionVersions, task.taskSid, updateDefinitionVersion, version]);
 
+  // We want to validate that savedContact state is not returning an empty object
+  const validateSavedContact = () => typeof savedContact === 'object' && Object.keys(savedContact).length > 0;
+
   /**
    * Always check to see when savedContact state has been updated.
    * Then go ahead and execute the connectToCaseAsyncAction
    */
   useEffect(() => {
-    // We want to validate that savedContact state is not returning an empty object
-    const validateSavedContact = () => typeof savedContact === 'object' && Object.keys(savedContact).length > 0;
-
     if (validateSavedContact()) {
       connectToCaseAsyncAction(savedContact.id, connectedCase.id);
       setConnectToCase(validateSavedContact());
@@ -473,7 +473,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
       .filter(contact => connectedContactIds.has(contact.savedContact.id))
       .map(ecs => ecs.savedContact),
     newContact: contact.existingContacts[newContactTemporaryId(connectedCase)]?.savedContact,
-    savedContact: contact.savedContact
+    savedContact: contact.savedContact,
   };
 };
 
