@@ -1,0 +1,47 @@
+name: Cleanup Old QA Tags
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # This cron job triggers every Sunday at midnight
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Cleanup old tags
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const TWO_WEEKS = 1209600000;  // Two weeks in milliseconds
+
+          // Fetch all tags with the desired pattern
+          let tags = await github.rest.git.listMatchingRefs({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: 'tags/qa/'
+          });
+
+          for (let tagRef of tags.data) {
+            const commitInfo = await github.rest.repos.getCommit({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: tagRef.object.sha
+            });
+
+            const commitDate = new Date(commitInfo.data.commit.author.date);
+            const now = new Date();
+
+            // If the tag is older than 2 weeks, delete it
+            if (now - commitDate > TWO_WEEKS) {
+              console.log(`Deleting old tag: ${tagRef.ref}`);
+              await github.rest.git.deleteRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: tagRef.ref
+              });
+            }
+          }
