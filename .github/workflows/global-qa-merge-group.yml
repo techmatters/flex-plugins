@@ -1,4 +1,4 @@
-name: QA on PR merge to master or release branch
+name: QA on merge group protected branch PR merge
 
 on:
   merge_group:
