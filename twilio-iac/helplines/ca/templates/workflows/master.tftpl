@@ -44,6 +44,17 @@
           ]
         },
         {
+          "filter_friendly_name": "988 NS French",
+          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.988_ns))}] AND language CONTAINS \"fr-CA\")",
+          "targets": [
+            {
+              "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+              "priority": 10,
+              "queue": "${task_queues.988_ns_fr}"
+            }
+          ]
+        },
+        {
           "filter_friendly_name": "French Interpreter",
           "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] AND interpreter CONTAINS \"fr\")",
           "targets": [
