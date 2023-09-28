@@ -105,6 +105,20 @@ ${
           "event": "match",
           "conditions": [
             {
+              "friendly_name": "If value contains 988_ns_fr",
+              "arguments": [
+                "{{trigger.call.To}}"
+              ],
+              "type": "contains",
+              "value": channel_flow_vars["ns_fr_number"]
+            }
+          ]
+        },
+        {
+          "next": "send_to_Q988Fr",
+          "event": "match",
+          "conditions": [
+            {
               "friendly_name": "If value contains 988_fr",
               "arguments": [
                 "{{trigger.call.To}}"
