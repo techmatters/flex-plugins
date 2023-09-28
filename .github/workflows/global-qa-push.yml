@@ -71,3 +71,17 @@ jobs:
           channel-id: "#aselo-engineering"
         env:
           SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+
+      - name: Create Version Tag
+        id: create-version-tag
+        uses: ./.github/actions/create-tag-based-on-regex
+        with:
+          search_text: ${{ github.event.pull_request.title }}
+          regex: 'v[0-9]+\.[0-9]+\.[0-9]+'
+
+      - name: Create Ticket Tag
+        if: ${{ steps.create-version-tag.outputs.tag_created == 'false' }}
+        uses: ./.github/actions/create-tag-based-on-regex
+        with:
+          search_text: ${{ github.event.pull_request.title }}
+          regex: 'CHI-[0-9]+'
