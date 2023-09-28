@@ -34,16 +34,7 @@ locals {
   operating_info_key           = "co"
   environment                  = "Production"
   short_environment            = "PROD"
-  operating_hours_function_sid = "ZHb7ef5682d731ce326be6d61c8a2b2fcf"
-  target_task_name             = "execute_initial_flow"
-  twilio_numbers               = ["messenger:103538615719253", "twitter:1532353002387931139", "instagram:17841453197793547"]
-  channel                      = ""
-  twilio_channels = {
-    "facebook" = { "contact_identity" = "messenger:103538615719253", "channel_type" = "facebook" },
-    "webchat"  = { "contact_identity" = "", "channel_type" = "web" }
-  }
-  custom_channels = ["twitter", "instagram"]
-
+  
   enable_post_survey = false
 
   events_filter = [
@@ -108,9 +99,9 @@ locals {
   }
 
   flow_vars = {
-    service_sid                  = "x"
-    environment_sid              = "x"
-    operating_hours_function_sid = "x"
+    service_sid                  = "ZS70d962b047c1cd528ad2f2cae9f33b8b"
+    environment_sid              = "ZE5dd6ef3cbb63cc2418c472cd51fb2d16"
+    operating_hours_function_sid = "ZHb7ef5682d731ce326be6d61c8a2b2fcf"
   }
 
   channels = {
@@ -123,7 +114,7 @@ locals {
     },
     facebook : {
       channel_type         = "facebook"
-      contact_identity     = "messenger:103574689075106"
+      contact_identity     = "messenger:103538615719253"
       templatefile         = "/app/twilio-iac/helplines/co/templates/studio-flows/messaging-flow.tftpl"
       channel_flow_vars    = {}
       chatbot_unique_names = []
@@ -147,7 +138,6 @@ locals {
     }
   }
 
-  strings = jsondecode(file("${path.module}/../translations/${local.task_language}/strings.json"))
 }
 
 provider "twilio" {
