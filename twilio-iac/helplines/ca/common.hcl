@@ -101,6 +101,10 @@ locals {
         "target_workers" = "routing.skills HAS '988Fr'",
         "friendly_name"  = "988 French"
       },
+      988_ns_fr : {
+        "target_workers" = "routing.skills HAS '988NSFr'",
+        "friendly_name"  = "988 French"
+      },
       e2e_test : {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
         "friendly_name"  = "E2E Test Queue"
