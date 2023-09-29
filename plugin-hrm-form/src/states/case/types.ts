@@ -17,12 +17,21 @@
 import { HelplineEntry, StatusInfo } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
-import { Case, CaseItemEntry, Contact } from '../../types/types';
+import { CaseItemEntry, Contact } from '../../types/types';
 import { ChannelTypes } from '../DomainConstants';
 
 // Action types
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
 export const REMOVE_CONNECTED_CASE = 'REMOVE_CONNECTED_CASE';
+export const UPDATE_CASE_ACTION = 'case-action/update-case';
+export const CREATE_CASE_ACTION = 'case-action/create-case';
+
+export enum SavedCaseStatus {
+  NotSaved,
+  ResultPending,
+  ResultReceived,
+  Error,
+}
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;
@@ -35,7 +44,21 @@ type RemoveConnectedCaseAction = {
   taskId: string;
 };
 
-export type CaseActionType = SetConnectedCaseAction | RemoveConnectedCaseAction;
+type UpdatedCaseAction = {
+  type: typeof UPDATE_CASE_ACTION;
+  payload: Promise<{ taskSid: string; case: t.Case }>;
+  taskId?: string;
+  meta: unknown;
+};
+
+type CreateCaseAction = {
+  type: typeof CREATE_CASE_ACTION;
+  payload: Promise<{ taskSid: string; case: t.Case }>;
+  taskId?: string;
+  meta: unknown;
+};
+
+export type CaseActionType = SetConnectedCaseAction | RemoveConnectedCaseAction | UpdatedCaseAction | CreateCaseAction;
 
 export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
 
@@ -100,7 +123,12 @@ export type CaseDetails = {
 };
 
 export const caseItemHistory = (
-  info: { updatedAt?: string; updatedBy?: string; createdAt: string; twilioWorkerId: string },
+  info: {
+    updatedAt?: string;
+    updatedBy?: string;
+    createdAt: string;
+    twilioWorkerId: string;
+  },
   counselorsHash: Record<string, string>,
 ) => {
   const addingCounsellorName = counselorsHash[info.twilioWorkerId] || 'Unknown';
@@ -129,7 +157,7 @@ export type CaseWorkingCopy = {
 export type CaseState = {
   tasks: {
     [taskId: string]: {
-      connectedCase: Case;
+      connectedCase: t.Case;
       caseWorkingCopy: CaseWorkingCopy;
       availableStatusTransitions: StatusInfo[];
     };

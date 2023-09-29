@@ -18,7 +18,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
-import { bindActionCreators } from 'redux';
+import { AnyAction, bindActionCreators } from 'redux';
 
 import {
   configurationBase,
@@ -27,9 +27,10 @@ import {
   namespace,
   RootState,
   routingBase,
+  // saveCaseBase,
 } from '../../states';
+import { cancelCase } from '../../services/CaseService';
 import { connectToCase } from '../../services/ContactService';
-import { cancelCase, updateCase } from '../../services/CaseService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { getActivitiesFromCase, getActivitiesFromContacts, isNoteActivity, sortActivities } from './caseActivities';
 import { getHelplineData } from './caseHelpers';
@@ -70,6 +71,8 @@ import * as ContactActions from '../../states/contacts/existingContacts';
 import { ChannelTypes } from '../../states/DomainConstants';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
+import { updateCaseAsyncAction } from '../../states/case/saveCase';
+import asyncDispatch from '../../states/asyncDispatch';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -90,7 +93,6 @@ const Case: React.FC<Props> = ({
   task,
   form: { contact, metadata } = {},
   counselorsHash,
-  setConnectedCase,
   removeConnectedCase,
   changeRoute,
   isCreating,
@@ -102,6 +104,7 @@ const Case: React.FC<Props> = ({
   loadContacts,
   releaseContacts,
   cancelNewCase,
+  updateCaseAsyncAction,
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
@@ -177,13 +180,12 @@ const Case: React.FC<Props> = ({
     const fetchDefinitionVersions = async () => {
       const definitionVersion = await getDefinitionVersion(version);
       updateDefinitionVersion(connectedCase, version, definitionVersion);
-      setConnectedCase(connectedCase, task.taskSid);
     };
 
     if (version && !definitionVersions[version]) {
       fetchDefinitionVersions();
     }
-  }, [connectedCase, definitionVersions, setConnectedCase, task.taskSid, updateDefinitionVersion, version]);
+  }, [connectedCase, definitionVersions, task.taskSid, updateDefinitionVersion, version]);
 
   if (routing.route === 'csam-report') return null;
 
@@ -239,10 +241,10 @@ const Case: React.FC<Props> = ({
 
   const handleUpdate = async () => {
     setLoading(true);
-
     try {
-      const updatedCase = await updateCase(connectedCase.id, { ...connectedCase });
-      setConnectedCase(updatedCase, task.taskSid);
+      updateCaseAsyncAction(connectedCase.id, {
+        ...connectedCase,
+      });
     } catch (error) {
       console.error(error);
       recordBackendError('Update Case', error);
@@ -265,8 +267,10 @@ const Case: React.FC<Props> = ({
 
     try {
       releaseContacts(loadedContactIds, task.taskSid);
+      updateCaseAsyncAction(connectedCase.id, {
+        ...connectedCase,
+      });
       const savedContact = await submitContactForm(task, contact, metadata, connectedCase);
-      await updateCase(connectedCase.id, { ...connectedCase });
       await connectToCase(savedContact.id, connectedCase.id);
       await completeTask(task);
     } catch (error) {
@@ -387,7 +391,11 @@ const Case: React.FC<Props> = ({
       return (
         <CasePrintView
           caseDetails={caseDetails}
-          {...{ counselorsHash, onClickClose: handleCloseSection, definitionVersion }}
+          {...{
+            counselorsHash,
+            onClickClose: handleCloseSection,
+            definitionVersion,
+          }}
         />
       );
     default:
@@ -439,7 +447,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
+  const updateCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   const cancelNewCase = (taskSid: string, loadedContactIds: string[]) => {
     dispatch(CaseActions.removeConnectedCase(taskSid));
     dispatch(
@@ -449,17 +458,17 @@ const mapDispatchToProps = dispatch => {
   };
   const updateCaseDefinition = (connectedCase: CaseType, taskSid: string, definition) => {
     dispatch(ConfigActions.updateDefinitionVersion(connectedCase.info.definitionVersion, definition));
-    dispatch(CaseActions.setConnectedCase(connectedCase, taskSid));
   };
   return {
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
     removeConnectedCase: bindActionCreators(CaseActions.removeConnectedCase, dispatch),
-    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     updateDefinitionVersion: updateCaseDefinition,
     releaseContacts: bindActionCreators(ContactActions.releaseContacts, dispatch),
     loadContacts: bindActionCreators(ContactActions.loadContacts, dispatch),
     loadContact: bindActionCreators(ContactActions.loadContact, dispatch),
     cancelNewCase,
+    updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
+      updateCaseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
   };
 };
 

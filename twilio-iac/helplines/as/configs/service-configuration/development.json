@@ -63,6 +63,7 @@
                 "name": "Simple Light"
             }
         },
+        "logLevel": "debug",
         "showRealtimeQueuesStats": true
     }
 }

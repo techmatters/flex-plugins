@@ -17,6 +17,7 @@
 import { ITask } from '@twilio/flex-ui';
 
 import { channelTypes } from '../states/DomainConstants';
+import { getHrmConfig } from '../hrmConfig';
 
 const getContactValueFromWebchat = task => {
   const { preEngagementData } = task.attributes;
@@ -38,7 +39,6 @@ export const getNumberFromTask = (task: ITask) => {
 /**
  *
  * @param {ITask | CustomITask} task
- * @param contactNumberFromTask
  */
 export const getFormattedNumberFromTask = (task: ITask) => {
   return task.channelType === channelTypes.twitter ? `@${task.attributes.twitterUserHandle}` : getNumberFromTask(task);
@@ -54,3 +54,6 @@ export const getContactValueTemplate = task => {
     return 'PreviousContacts-EmailAddress';
   }
 };
+export const getTaskLanguage = ({ helplineLanguage }: Pick<ReturnType<typeof getHrmConfig>, 'helplineLanguage'>) => (
+  task: ITask,
+) => task.attributes.language || helplineLanguage;
