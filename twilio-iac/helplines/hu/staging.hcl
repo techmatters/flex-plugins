@@ -5,11 +5,27 @@ locals {
 
   local_config = {
 
-    #Studio flow
     flow_vars = {
-    
+      service_sid                           = "ZSbb22d7f5e61b8fde6158ece8d28386f1"
+      environment_sid                       = "ZEbaf991c98520207c96c75ee3592292ea"
+      capture_channel_with_bot_function_sid = "ZH8d0ea0faa5530dd54872bb0a4b4dca51"
     }
 
-   
+    channels = {
+      webchat : {
+        channel_type         = "web"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/hu/templates/studio-flows/messaging-lex.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      } /*,
+    voice : {
+        channel_type     = "voice"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/hu/templates/studio-flows/voice-ivr.tftpl"
+        channel_flow_vars = {}
+        chatbot_unique_names = []
+      }*/
+    }
   }
 }

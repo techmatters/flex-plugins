@@ -1,0 +1,466 @@
+${
+  jsonencode(
+     {
+  "description": "IVR for creating a Flex voice task",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "next": "operating_hours",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 40,
+          "y": -380
+        }
+      }
+    },
+    {
+      "name": "Poland",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -420,
+          "y": 760
+        },
+        "workflow": "WW5814cf7617d435faf2103e8bdb3fba52",
+        "channel": "TCfb919f30d890da192c95070faf8ddd18",
+        "attributes": "{\"helpline\": \"International Ukrainian Helpline\", \"type\": \"inbound\", \"phone\": \"{{trigger.call.To}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\", \"channelType\":\"voice\" }"
+      }
+    },
+    {
+      "name": "Romania",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -250,
+          "y": 750
+        },
+        "workflow": "WW5814cf7617d435faf2103e8bdb3fba52",
+        "channel": "TCfb919f30d890da192c95070faf8ddd18",
+        "attributes": "{\"helpline\": \"International Ukrainian Helpline\", \"type\": \"inbound\", \"phone\": \"{{trigger.call.To}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\", \"channelType\":\"voice\" }"
+      }
+    },
+    {
+      "name": "Hungary",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "waitUrl": "",
+        "offset": {
+          "x": 530,
+          "y": 1580
+        },
+        "workflow": "WW5814cf7617d435faf2103e8bdb3fba52",
+        "channel": "TCfb919f30d890da192c95070faf8ddd18",
+        "attributes": "{\"helpline\": \"Kek Vonal\", \"type\": \"inbound\", \"phone\": \"{{trigger.call.To}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\", \"channelType\":\"voice\" }",
+        "waitUrlMethod": "GET"
+      }
+    },
+    {
+      "name": "split_by_phoneNumber",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "Poland",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains +48800012935",
+              "arguments": [
+                "{{trigger.call.To}}"
+              ],
+              "type": "contains",
+              "value": "+48800012935"
+            }
+          ]
+        },
+        {
+          "next": "Romania",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains +40800476029",
+              "arguments": [
+                "{{trigger.call.To}}"
+              ],
+              "type": "contains",
+              "value": "+18445890458"
+            }
+          ]
+        },
+        {
+          "next": "Hungary",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains +3680984590",
+              "arguments": [
+                "{{trigger.call.To}}"
+              ],
+              "type": "contains",
+              "value": "+3680984590"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.call.To}}",
+        "offset": {
+          "x": -760,
+          "y": 380
+        }
+      }
+    },
+    {
+      "name": "engagement",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "eligible_workers",
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "ZS0334b33f8c50e894e7647aa368bedb0e",
+        "environment_sid": "ZE96e60d55af1b2e503a2b37e2cffb1230",
+        "offset": {
+          "x": 180,
+          "y": 210
+        },
+        "function_sid": "ZH5cbc392ca6defc403591a2c7cf5b808f",
+        "url": "https://test-service-1476.twil.io/engagement"
+      }
+    },
+    {
+      "name": "queue_assigned",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "QueueFull",
+          "event": "noMatch"
+        },
+        {
+          "next": "queue_wrapping",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 0",
+              "arguments": [
+                "{{widgets.engagement.parsed.tasks_by_status.assigned}}"
+              ],
+              "type": "less_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.engagement.parsed.tasks_by_status.assigned}}",
+        "offset": {
+          "x": 820,
+          "y": 440
+        }
+      }
+    },
+    {
+      "name": "QueueFull",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "https://test-service-1476.twil.io/ukrainian-busy.mp3",
+        "voice": "Polly.Tatyana",
+        "offset": {
+          "x": 1230,
+          "y": 1130
+        },
+        "loop": 1,
+        "language": "ru-RU"
+      }
+    },
+    {
+      "name": "WelcomeMsg",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "Hungary",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "https://test-service-1476.twil.io/welcome.mp3",
+        "voice": "Polly.Tatyana",
+        "offset": {
+          "x": 930,
+          "y": 1330
+        },
+        "loop": 1,
+        "language": "ru-RU"
+      }
+    },
+    {
+      "name": "queue_wrapping",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "QueueFull",
+          "event": "noMatch"
+        },
+        {
+          "next": "queue_reserved",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 0",
+              "arguments": [
+                "{{widgets.engagement.parsed.tasks_by_status.wrapping}}"
+              ],
+              "type": "less_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.engagement.parsed.tasks_by_status.wrapping}}",
+        "offset": {
+          "x": 1330,
+          "y": 400
+        }
+      }
+    },
+    {
+      "name": "queue_reserved",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "QueueFull",
+          "event": "noMatch"
+        },
+        {
+          "next": "WelcomeMsg",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 0",
+              "arguments": [
+                "{{widgets.engagement.parsed.tasks_by_status.reserved}}"
+              ],
+              "type": "less_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.engagement.parsed.tasks_by_status.reserved}}",
+        "offset": {
+          "x": 1780,
+          "y": 420
+        }
+      }
+    },
+    {
+      "name": "operating_hours",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "check_hours",
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "ZSbb22d7f5e61b8fde6158ece8d28386f1",
+        "environment_sid": "ZEbaf991c98520207c96c75ee3592292ea",
+        "offset": {
+          "x": 250,
+          "y": -180
+        },
+        "function_sid": "ZH2fcbed05a786c45af4628c488f63fb02",
+        "parameters": [
+          {
+            "value": "voice",
+            "key": "channel"
+          }
+        ],
+        "url": "https://serverless-6055-production.twil.io/operatingHours"
+      }
+    },
+    {
+      "name": "check_hours",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "engagement",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to open",
+              "arguments": [
+                "{{widgets.operating_hours.body}}"
+              ],
+              "type": "equal_to",
+              "value": "\"open\""
+            }
+          ]
+        },
+        {
+          "next": "closed",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to closed",
+              "arguments": [
+                "{{widgets.operating_hours.body}}"
+              ],
+              "type": "equal_to",
+              "value": "\"closed\""
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.operating_hours.body}}",
+        "offset": {
+          "x": 830,
+          "y": -120
+        }
+      }
+    },
+    {
+      "name": "closed",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "https://test-service-1476.twil.io/ukrainian-closed.mp3",
+        "voice": "Polly.Tatyana",
+        "offset": {
+          "x": 1390,
+          "y": 100
+        },
+        "loop": 1,
+        "language": "ru-RU"
+      }
+    },
+    {
+      "name": "eligible_workers",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "queue_assigned",
+          "event": "noMatch"
+        },
+        {
+          "next": "QueueFull",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 0",
+              "arguments": [
+                "{{widgets.engagement.parsed.total_available_workers}}"
+              ],
+              "type": "equal_to",
+              "value": "{{widgets.engagement.parsed.tasks_by_status.assigned}}"
+            }
+          ]
+        },
+        {
+          "next": "WelcomeMsg",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value not_equal_to 0",
+              "arguments": [
+                "{{widgets.engagement.parsed.total_available_workers}}"
+              ],
+              "type": "not_equal_to",
+              "value": "{{widgets.engagement.parsed.tasks_by_status.assigned}}"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.engagement.parsed.total_available_workers}}",
+        "offset": {
+          "x": 150,
+          "y": 490
+        }
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+}
+  )
+}
+
