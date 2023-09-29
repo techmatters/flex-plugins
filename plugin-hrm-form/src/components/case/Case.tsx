@@ -270,7 +270,6 @@ const Case: React.FC<Props> = ({
       updateCaseAsyncAction(connectedCase.id, {
         ...connectedCase,
       });
-      await connectToCase(contact.id, connectedCase.id);
       const savedContact = await submitContactForm(task, contact, metadata, connectedCase);
       await connectToCase(savedContact.id, connectedCase.id);
       await completeTask(task);
