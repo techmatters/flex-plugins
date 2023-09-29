@@ -32,10 +32,10 @@ import ContactDetailsSectionForm from './ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
 import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
 import { updateDraft } from '../../states/contacts/existingContacts';
-import { transformValues } from '../../services/ContactService';
 import CSAMReport from '../CSAMReport/CSAMReport';
 import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
 import { getAseloFeatureFlags } from '../../hrmConfig';
+import { transformValues } from '../../states/contacts/contactDetailsAdapter';
 
 type OwnProps = {
   contactId: string;
@@ -102,7 +102,7 @@ const ContactDetails: React.FC<Props> = ({
           dispatch(
             updateDraft(contactId, {
               rawJson: {
-                [formPath]: transformValues(section.getFormDefinition(definitionVersion))(values[formPath]),
+                [formPath]: values[formPath],
               },
             }),
           )}

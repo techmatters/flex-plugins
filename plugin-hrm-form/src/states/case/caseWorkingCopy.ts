@@ -19,6 +19,8 @@ import { v4 as uuidV4 } from 'uuid';
 import { CaseSectionApi } from './sections/api';
 import { CaseItemEntry, CaseItemFormValues } from '../../types/types';
 import { CaseState, CaseSummaryWorkingCopy } from './types';
+import { ConfigurationState } from '../configuration/reducer';
+import { transformValues } from '../contacts/contactDetailsAdapter';
 
 // Update a section of a case's working copy
 export const UPDATE_CASE_SECTION_WORKING_COPY = 'UPDATE_CASE_SECTION_WORKING_COPY';
@@ -46,19 +48,23 @@ export const updateCaseSectionWorkingCopy = (
 
 export const updateCaseSectionWorkingCopyReducer = (
   state: CaseState,
-  action: UpdateCaseSectionWorkingCopyAction,
+  configState: ConfigurationState,
+  { sectionItem, taskId, id, api }: UpdateCaseSectionWorkingCopyAction,
 ): CaseState => {
+  const definition =
+    configState.definitionVersions[state.tasks[taskId].connectedCase.info.definitionVersion] ??
+    configState.currentDefinitionVersion;
+  const transformedSectionItem = {
+    ...sectionItem,
+    form: transformValues(api.getSectionFormDefinition(definition))(sectionItem.form),
+  };
   return {
     ...state,
     tasks: {
       ...state.tasks,
-      [action.taskId]: {
-        ...state.tasks[action.taskId],
-        caseWorkingCopy: action.api.updateWorkingCopy(
-          state.tasks[action.taskId]?.caseWorkingCopy,
-          action.sectionItem,
-          action.id,
-        ),
+      [taskId]: {
+        ...state.tasks[taskId],
+        caseWorkingCopy: api.updateWorkingCopy(state.tasks[taskId]?.caseWorkingCopy, transformedSectionItem, id),
       },
     },
   };
