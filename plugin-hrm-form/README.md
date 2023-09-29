@@ -22,7 +22,7 @@ Use nvm to ensure we use the same node/npm versions for each product. The first 
 Install the dependencies by running:
 
 ```bash
-npm install
+npm ci
 ```
 
 ### Secrets/Configuration download
