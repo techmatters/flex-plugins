@@ -11,11 +11,11 @@ const mountNode = document.getElementById("root");
 
 window.onload = () => {
   /**
-   * This is the configuration that we can pass in from the Twilio console.
+   * This is the appConfig that we can pass into flex-ui to set helpine info.
    * The important thing to note here is that we could potentially pass in
-   * a short code for the helpline, load the configuration dynamically. Flex
-   * stores info about the logged in user/account in local storage, so this will
-   * persist through the session.
+   * a short code for the helpline to a single flex-ui deployment per env/region,
+   * load the configuration dynamically. Flex stores info about the logged in
+   * user/account in local storage, so this will persist through the session.
    *
    * We could also dynamically generate the plugin configuration so that we can
    * point various accounts at different verions of the plugin and/or target
