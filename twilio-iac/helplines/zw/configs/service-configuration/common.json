@@ -6,10 +6,11 @@
             "enable_conferencing": false,
             "enable_counselor_toolkits": false,
             "enable_fullstory_monitoring": true,
+            "enable_csam_report": true,
             "enable_lex": false,
             "enable_post_survey": false,
             "enable_save_insights": true,
-            "enable_transcripts": false
+            "enable_transcripts": true
         },
         "helplineLanguage": "",
         "permissionConfig": "zw"
