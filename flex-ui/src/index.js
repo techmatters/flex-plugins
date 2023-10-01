@@ -7,29 +7,64 @@ import App from "./App";
 import registerServiceWorker from "./registerServiceWorker";
 import { compose, configureStore } from '@reduxjs/toolkit'
 
+const defaultHelplineCode = 'as';
+
 const mountNode = document.getElementById("root");
 
-window.onload = () => {
-  /**
-   * This is the appConfig that we can pass into flex-ui to set helpine info.
-   * The important thing to note here is that we could potentially pass in
-   * a short code for the helpline to a single flex-ui deployment per env/region,
-   * load the configuration dynamically. Flex stores info about the logged in
-   * user/account in local storage, so this will persist through the session.
-   *
-   * We could also dynamically generate the plugin configuration so that we can
-   * point various accounts at different verions of the plugin and/or target
-   * a different version based on a get query param for dynamic test environments.
-   */
-  const predefinedConfig = window.appConfig || {};
+let accountSid;
 
-  const configuration = {
-    ...predefinedConfig,
+const getSubdomain = () => {
+  const { hostname } = window.location;
+  const parts = hostname.split('.');
+  if (parts.length >= 3) {
+    return parts[0];
+  }
+  return defaultHelplineCode;
+}
+
+const getConfig = async () => {
+  const subdomain = getSubdomain();
+  // dynamically fetch config from file in assets/configs/${subdomain}.js
+  try {
+    const config = await fetch(`./assets/configs/${subdomain}.json`)
+
+    if (config.status === 200) {
+      return config.json();
+    }
+  } catch (e) {
+    console.error(`Failed to load config for subdomain ${subdomain}`, e);
+  }
+
+  return (await fetch(`./assets/configs/${defaultHelplineCode}.json`)).json();
+}
+
+window.onload = async () => {
+  /**
+   * In this POC, I demo a pattern of dynamically loading config from a file based on
+   * on the subdomain of the current URL. This would allow us to deploy a single
+   * instance of this app to a cloudfront distribution with a wildcard subdomain
+   * for each environment so that we can have a single entrypoint that can be used
+   * by multiple helplines.
+   *
+   * ex:
+   * ca.aselo.com would load production ca config.
+   * as.staging.tl.techmatters.org would load staging as config.
+   * as.development.tl.techmatters.org would load development as config.
+   *
+   * We could do all kinds of interesting dynamic things with this pattern like
+   * dynamic development deployments, accepting a query param to override the
+   * version of flex plugins to load, etc.
+   */
+  const config = await getConfig();
+  accountSid = config.accountSid;
+
+  const appConfig = {
+    ...config.appConfig,
     router: {
       /**
        * This can be set to either "browser" or "memory".
        *
-       * "browser" is the default and uses react-router-dom to manage routing, but we
+       * "browser" is the default and uses paths in the url to manage routing, but we
        * don't have control over the base URL, so, in our demo app, we can't use it
        * very effectively.
        *
@@ -58,9 +93,9 @@ window.onload = () => {
 
   Flex
     .progress(mountNode)
-    .provideLoginInfo(configuration, mountNode)
+    .provideLoginInfo(appConfig, mountNode)
     .then(() => Flex.Manager.create(
-      configuration,
+      appConfig,
       // store,
     ))
     .then(manager => renderApp(manager))

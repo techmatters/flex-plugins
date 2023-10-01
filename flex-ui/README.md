@@ -1,6 +1,6 @@
 # POC of self hosted flex-ui
 
-This is a very early POC of self hosted flex-ui for research purposes.
+This is a very early POC of self hosted flex-ui for research purposes. This is based on [flex-ui-sample](https://github.com/twilio/flex-ui-sample)
 
 ## How to run POC
 
