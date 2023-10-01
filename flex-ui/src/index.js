@@ -51,6 +51,7 @@ const getConfig = async () => {
     console.error(`Failed to load config for subdomain ${subdomain}`, e);
   }
 
+  // TODO: this should probably throw an error instead of a default in staging/production
   return (await fetch(`/assets/configs/${defaultHelplineCode}.json`)).json();
 }
 
@@ -58,12 +59,12 @@ window.onload = async () => {
   /**
    * In this POC, I demo a pattern of dynamically loading config from a file based on
    * on the subdomain of the current URL. This would allow us to deploy a single
-   * instance of this app to a cloudfront distribution with a wildcard subdomain
-   * for each environment so that we can have a single entrypoint that can be used
-   * by multiple helplines.
+   * instance of this app to a cloudfront distribution fronted s3 bucket with a
+   * wildcard subdomain for each environment so that we can have a single entrypoint
+   * that can be used by multiple helplines.
    *
    * ex:
-   * ca.aselo.com would load production ca config.
+   * ca.aselo.com or similar would load production ca config.
    * as.staging.flex.tl.techmatters.org would load staging as config.
    * as.development.flex.tl.techmatters.org would load development as config.
    *
