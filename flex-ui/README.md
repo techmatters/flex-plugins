@@ -1,6 +1,6 @@
 # POC of self hosted flex-ui
 
-This is a very early POC of self hosted flex-ui for research purposes. This is based on [flex-ui-sample](https://github.com/twilio/flex-ui-sample)
+This is a very early POC of self hosted flex-ui for research purposes. This is based on [flex-ui-sample](https://github.com/twilio/flex-ui-sample).
 
 ## How to run POC
 
@@ -24,9 +24,11 @@ npm run build && npm run deploy:development:as
 
 ### Open the POC in a browser
 
-[https://assets-development.tl.techmatters.org/flex/as](https://assets-development.tl.techmatters.org/flex/as)
+[https://as.development.flex.tl.techmatters.org/](https://as.development.flex.tl.techmatters.org/)
 
 ## Key Learnings
+
+- Wildcard domain must be added to SSO whitelist in [flex twilio console](https://console.twilio.com/us1/develop/flex/manage/single-sign-on).
 
 - We can implement our own complex configuration loader.
 

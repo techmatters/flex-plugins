@@ -26,7 +26,7 @@ const getConfig = async () => {
   const subdomain = getSubdomain();
   // dynamically fetch config from file in assets/configs/${subdomain}.js
   try {
-    const config = await fetch(`./assets/configs/${subdomain}.json`)
+    const config = await fetch(`/assets/configs/${subdomain}.json`)
 
     if (config.status === 200) {
       return config.json();
@@ -35,7 +35,7 @@ const getConfig = async () => {
     console.error(`Failed to load config for subdomain ${subdomain}`, e);
   }
 
-  return (await fetch(`./assets/configs/${defaultHelplineCode}.json`)).json();
+  return (await fetch(`/assets/configs/${defaultHelplineCode}.json`)).json();
 }
 
 window.onload = async () => {
@@ -48,8 +48,8 @@ window.onload = async () => {
    *
    * ex:
    * ca.aselo.com would load production ca config.
-   * as.staging.tl.techmatters.org would load staging as config.
-   * as.development.tl.techmatters.org would load development as config.
+   * as.staging.flex.tl.techmatters.org would load staging as config.
+   * as.development.flex.tl.techmatters.org would load development as config.
    *
    * We could do all kinds of interesting dynamic things with this pattern like
    * dynamic development deployments, accepting a query param to override the
@@ -60,19 +60,19 @@ window.onload = async () => {
 
   const appConfig = {
     ...config.appConfig,
-    router: {
-      /**
-       * This can be set to either "browser" or "memory".
-       *
-       * "browser" is the default and uses paths in the url to manage routing, but we
-       * don't have control over the base URL, so, in our demo app, we can't use it
-       * very effectively.
-       *
-       * In a production app, we would need to deploy this app to a root bucket in S3
-       * so that we could add index handler to make refresh work. So this won't matter.
-       */
-      type: 'memory',
-    }
+    // router: {
+    //   /**
+    //    * This can be set to either "browser" or "memory".
+    //    *
+    //    * "browser" is the default and uses paths in the url to manage routing, but we
+    //    * don't have control over the base URL, so, in our demo app, we can't use it
+    //    * very effectively.
+    //    *
+    //    * In a production app, we would need to deploy this app to a root bucket in S3
+    //    * so that we could add index handler to make refresh work. So this won't matter.
+    //    */
+    //   type: 'memory',
+    // }
   };
 
   /**
