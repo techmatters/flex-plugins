@@ -8,6 +8,6 @@
         "@twilio/flex-ui": "~2.3.3"
       }
     ],
-    "src": "/plugins/hrm-form/plugin-hrm-form.js"
+    "src": "https://assets-development.tl.techmatters.org/flex/plugins/hrm-form/selfHostedDemo/plugin-hrm-form.js"
   }
 ]
