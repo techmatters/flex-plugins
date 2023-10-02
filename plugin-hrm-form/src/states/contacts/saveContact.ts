@@ -24,7 +24,6 @@ import { ExistingContactsState } from './existingContacts';
 export const updateContactsFormInHrmAsyncAction = createAsyncAction(
   UPDATE_CONTACT_ACTION,
   async (
-    replaceExisting: boolean,
     contactId: string,
     body: Partial<ContactRawJson>,
     helpline: string,
@@ -33,7 +32,7 @@ export const updateContactsFormInHrmAsyncAction = createAsyncAction(
     const contact = await updateContactsFormInHrm(contactId, body, helpline);
     return {
       contacts: [contact],
-      replaceExisting,
+      replaceExisting: true,
       reference,
     };
   },
