@@ -21,9 +21,13 @@ import { ErrorFont, LoadMediaButton, LoadMediaButtonText } from './styles';
 import { S3StoredRecording } from '../../../types/types';
 import { fetchHrmApi, generateSignedURLPath } from '../../../services/fetchHrmApi';
 
-type OwnProps = { contactId: string; externalStoredRecording: S3StoredRecording };
+type OwnProps = {
+  contactId: string;
+  externalStoredRecording?: S3StoredRecording;
+  loadConversationIntoOverlay: () => Promise<void>;
+};
 
-const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecording }) => {
+const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecording, loadConversationIntoOverlay }) => {
   const [voiceRecording, setVoiceRecording] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showButton, setShowButton] = useState(true);
@@ -34,17 +38,25 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
       setLoading(true);
       setShowButton(false);
 
-      const { media_url: recordingPreSignedUrl } = await fetchHrmApi(
-        generateSignedURLPath({
-          method: 'getObject',
-          objectType: 'contact',
-          objectId: contactId,
-          fileType: 'recording',
-          location: externalStoredRecording.location,
-        }),
-      );
 
-      setVoiceRecording(recordingPreSignedUrl);
+      if (externalStoredRecording) {
+        const mediaType = 'recording';
+
+        const { media_url: recordingPreSignedUrl } = await fetchHrmApi(
+          generateSignedURLPath({
+            method: 'getObject',
+            objectType: 'contact',
+            objectId: contactId,
+            fileType: 'recording',
+            location: externalStoredRecording.location,
+          }),
+        );
+
+        setVoiceRecording(recordingPreSignedUrl);
+      } else {
+        await loadConversationIntoOverlay();
+        setShowButton(true);
+      }
 
       setLoading(false);
     } catch (error) {

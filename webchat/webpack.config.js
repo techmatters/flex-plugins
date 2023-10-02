@@ -14,46 +14,48 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-const path = require('path');
+const path = require("path");
 
-const webpack = require('webpack');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const BomPlugin = require('webpack-utf8-bom');
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const webpack = require("webpack");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const BomPlugin = require("webpack-utf8-bom");
+const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
+const BundleAnalyzerPlugin =
+  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
-const { checkMODE, setConfigFile } = require('./utils');
+const { checkMODE, setConfigFile } = require("./utils");
 
-const mode = process.env.MODE || 'production'; // If not provided, assume is building production version
+const mode = process.env.MODE || "production"; // If not provided, assume is building production version
 const config = process.env.CONFIG;
 checkMODE(mode);
 setConfigFile(config);
 
-const isDevMode = mode === 'development';
-const devtool = isDevMode ? 'eval-source-map' : undefined;
+const isDevMode = mode === "development";
+const devtool = isDevMode ? "eval-source-map" : undefined;
 
 const webpackConfig = {
   mode,
   devtool,
   devServer: {
-    contentBase: path.join(__dirname, './'),
+    contentBase: path.join(__dirname, "./"),
     compress: true,
     port: 9000,
     open: true,
     inline: true,
     hot: true,
   },
-  entry: './src/index.ts',
+  entry: "./src/index.ts",
   module: {
     rules: [
       {
         test: /\.tsx?$/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
             presets: [
-              '@babel/preset-typescript',
-              ['@babel/preset-react', { targets: 'defaults' }],
+              "@babel/preset-typescript",
+              ["@babel/preset-react", { targets: "defaults" }],
             ],
           },
         },
@@ -62,46 +64,46 @@ const webpackConfig = {
       {
         test: /\.tsx?$/,
         use: {
-          loader: 'ts-loader',
+          loader: "ts-loader",
         },
         exclude: /node_modules/,
       },
       {
         test: /\.json?$/,
-        type: 'javascript/auto',
+        type: "javascript/auto",
         use: {
-          loader: 'raw-loader',
+          loader: "raw-loader",
         },
         exclude: /node_modules/,
       },
     ],
   },
   resolve: {
-    extensions: ['.ts', '.js', '.tsx'],
+    extensions: [".ts", ".js", ".tsx"],
     fallback: {
-      buffer: require.resolve('buffer'),
+      buffer: require.resolve("buffer"),
       fs: false,
     },
   },
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'build'),
-    publicPath: '/',
+    filename: "bundle.js",
+    path: path.resolve(__dirname, "build"),
+    publicPath: "/",
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'src/index.html',
+      template: "src/index.html",
       inject: false, // This prevents webpack from injecting <script defer src='./bundle.js'></script> in the header
     }),
     new webpack.ProvidePlugin({
-      process: 'process/browser',
+      process: "process/browser",
     }),
     new webpack.DefinePlugin({
       // Here it creates webpack.env.CONFIG from the env var CONFIG
-      'webpack.env.CONFIG': JSON.stringify(process.env.CONFIG),
+      "webpack.env.CONFIG": JSON.stringify(process.env.CONFIG),
     }),
     new CopyWebpackPlugin({
-      patterns: [{ from: 'assets' }],
+      patterns: [{ from: "assets" }],
     }),
     new webpack.HotModuleReplacementPlugin(),
     new ReactRefreshWebpackPlugin({
@@ -110,9 +112,13 @@ const webpackConfig = {
   ],
   externals: {
     // eslint-disable-next-line global-require
-    fs: require('fs'),
+    fs: require("fs"),
   },
 };
+
+if (process.env.BUNDLE_ANALYZER) {
+  webpackConfig.plugins.push(new BundleAnalyzerPlugin());
+}
 
 if (!isDevMode) {
   // The bom plugin breaks the dev server and hot

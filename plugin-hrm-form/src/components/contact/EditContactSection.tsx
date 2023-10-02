@@ -52,7 +52,6 @@ const EditContactSection: React.FC<Props> = ({
   contactId,
   definitionVersions,
   refreshContact,
-  contactDetailsSectionForm,
   setEditContactPageOpen,
   setEditContactPageClosed,
   tabPath,
@@ -90,15 +89,10 @@ const EditContactSection: React.FC<Props> = ({
 
   const onSubmitValidForm = async () => {
     setSubmitting(true);
-    let payload: Partial<Pick<
+    const payload: Partial<Pick<
       ContactRawJson,
       'categories' | 'callerInformation' | 'caseInformation' | 'childInformation'
-    >>;
-    if (contactDetailsSectionForm) {
-      payload = contactDetailsSectionForm.formToPayload(definitionVersion, methods.getValues());
-    } else {
-      payload = draftContact?.rawJson;
-    }
+    >> = draftContact.rawJson;
     try {
       const updatedContact = await updateContactsFormInHrm(contactId, payload, savedContact.helpline);
       refreshContact(updatedContact);
