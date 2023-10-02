@@ -203,14 +203,8 @@ const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string,
     clearContactDraft: () => {
       dispatch(clearDraft(contactId));
     },
-    updateContactsFormInHrmAsyncAction: (
-      contactId: string,
-      body: Partial<ContactRawJson>,
-      helpline: string,
-    ) =>
-      updateContactAsyncDispatch(
-        updateContactsFormInHrmAsyncAction(contactId, body, helpline),
-      ),
+    updateContactsFormInHrmAsyncAction: (contactId: string, body: Partial<ContactRawJson>, helpline: string) =>
+      updateContactAsyncDispatch(updateContactsFormInHrmAsyncAction(contactId, body, helpline)),
   };
 };
 

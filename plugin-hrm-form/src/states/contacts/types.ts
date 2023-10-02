@@ -73,7 +73,7 @@ type SaveEndMillisAction = {
 
 export type UpdatedContactAction = {
   type: typeof UPDATE_CONTACT_ACTION;
-  payload: Promise<{ contacts: Partial<HrmServiceContact>[]; }>;
+  payload: Promise<{ contacts: Partial<HrmServiceContact>[] }>;
   meta: unknown;
 };
 
