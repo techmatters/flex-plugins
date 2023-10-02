@@ -27,13 +27,10 @@ export const updateContactsFormInHrmAsyncAction = createAsyncAction(
     contactId: string,
     body: Partial<ContactRawJson>,
     helpline: string,
-    reference?: string,
-  ): Promise<{ contacts: Partial<HrmServiceContact>[]; replaceExisting: boolean; reference?: string }> => {
+  ): Promise<{ contacts: Partial<HrmServiceContact>[]; }> => {
     const contact = await updateContactsFormInHrm(contactId, body, helpline);
     return {
-      contacts: [contact],
-      replaceExisting: true,
-      reference,
+      contacts: [contact],  
     };
   },
 );
@@ -57,11 +54,13 @@ export const saveContactReducer = (initialState: ExistingContactsState) =>
     handleAction(
       updateContactsFormInHrmAsyncAction.fulfilled,
       (state, { payload }): ExistingContactsState => {
+        const reference = 'standalone-task-sid';
+        const replaceExisting = true;
         const updateEntries = payload.contacts
           .filter(c => {
             return (
-              (payload.reference && !(state[c.id]?.references ?? new Set()).has(payload.reference)) ||
-              payload.replaceExisting
+              (reference && !(state[c.id]?.references ?? new Set()).has(reference)) ||
+              replaceExisting
             );
           })
           .map(c => {
@@ -76,8 +75,8 @@ export const saveContactReducer = (initialState: ExistingContactsState) =>
               c.id,
               {
                 ...currentContact,
-                savedContact: payload.replaceExisting || !current.references.size ? c : state[c.id].savedContact,
-                references: payload.reference ? current.references.add(payload.reference) : current.references,
+                savedContact: replaceExisting || !current.references.size ? c : state[c.id].savedContact,
+                references: reference ? current.references.add(reference) : state[c.id].references,
               },
             ];
           });
