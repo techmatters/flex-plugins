@@ -18,8 +18,8 @@
 import { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
 import { ContactRawJson } from '../../types/types';
-import { transformValues } from '../../services/ContactService';
 import { SearchContactDraftChanges } from '../../states/contacts/existingContacts';
+import { transformValues } from '../../states/contacts/contactDetailsAdapter';
 
 type ContactFormValues = {
   [key in 'childInformation' | 'callerInformation' | 'caseInformation']?: Record<string, string | boolean>;
@@ -29,10 +29,6 @@ export type ContactDetailsSectionFormApi = {
   getFormDefinition: (def: DefinitionVersion) => FormDefinition;
   getLayoutDefinition: (def: DefinitionVersion) => LayoutDefinition;
   getFormValues: (def: DefinitionVersion, contact: SearchContactDraftChanges) => ContactFormValues;
-  formToPayload: (
-    def: DefinitionVersion,
-    form: ContactFormValues,
-  ) => Partial<Pick<ContactRawJson, 'callerInformation' | 'childInformation' | 'caseInformation'>>;
 };
 
 const mapFormToDefinition = (
@@ -54,10 +50,6 @@ export const contactDetailsSectionFormApi: {
     }),
     getFormDefinition: def => def.tabbedForms.ChildInformationTab,
     getLayoutDefinition: def => def.layoutVersion.contact.childInformation,
-    formToPayload: (def, form) => ({
-      // TODO: Remove this and other calls to 'tranformValues' in components & helpers when we save via redux and can put ut uin the reducer
-      childInformation: transformValues(def.tabbedForms.ChildInformationTab)(form.childInformation),
-    }),
   },
   CALLER_INFORMATION: {
     getFormValues: (def, contact) => ({
@@ -65,9 +57,6 @@ export const contactDetailsSectionFormApi: {
     }),
     getFormDefinition: def => def.tabbedForms.CallerInformationTab,
     getLayoutDefinition: def => def.layoutVersion.contact.callerInformation,
-    formToPayload: (def, form) => ({
-      callerInformation: transformValues(def.tabbedForms.CallerInformationTab)(form.callerInformation),
-    }),
   },
   CASE_INFORMATION: {
     getFormValues: (def, contact) => {
@@ -76,8 +65,5 @@ export const contactDetailsSectionFormApi: {
     },
     getFormDefinition: def => def.tabbedForms.CaseInformationTab,
     getLayoutDefinition: def => def.layoutVersion.contact.caseInformation,
-    formToPayload: (def, form) => ({
-      caseInformation: transformValues(def.tabbedForms.CaseInformationTab)(form.caseInformation),
-    }),
   },
 } as const;

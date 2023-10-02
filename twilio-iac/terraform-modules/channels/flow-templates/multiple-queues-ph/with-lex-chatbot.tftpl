@@ -53,7 +53,7 @@ ${
         },
         "workflow": master_workflow_sid,
         "channel": chat_task_channel_sid,
-        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"language\":\"en-PH\",\n\"memory\": {{ trigger.message. ChannelAttributes.memory | to_json}}}"
+        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"ECPAT\",\n\"language\":\"en-PH\",\n\"helpline\":\"ECPAT Philippines\",\n\"memory\": {{ trigger.message. ChannelAttributes.memory | to_json}}}"
       }
     },
     {
@@ -215,7 +215,7 @@ ${
         },
         "workflow": master_workflow_sid,
         "channel": chat_task_channel_sid,
-        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"language\":\"tl-PH\",\n\"memory\": {{trigger.message.ChannelAttributes .memory | to_json}}}"
+        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"ECPAT\",\n\"language\":\"tl-PH\",\n\"helpline\":\"ECPAT Philippines\",\n\"memory\": {{trigger.message.ChannelAttributes .memory | to_json}}}"
       }
     },
     {
@@ -561,9 +561,9 @@ ${
           "x": -2030,
           "y": 200
         },
-        "workflow": outside_operating_hours_workflow_sid,
+        "workflow": master_workflow_sid,
         "channel": chat_task_channel_sid,
-        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"language\":\"en-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"Outside Operating Hours\",\n\"language\":\"en-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
         "timeout": "259200"
       }
     },
@@ -586,9 +586,9 @@ ${
           "x": -2350,
           "y": 200
         },
-        "workflow": non_counselling_workflow_sid,
+        "workflow": master_workflow_sid,
         "channel": chat_task_channel_sid,
-        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"language\":\"en-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"Non Counselling\",\n\"language\":\"en-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
         "timeout": "604800"
       }
     },
@@ -611,9 +611,9 @@ ${
           "x": -210,
           "y": 430
         },
-        "workflow": outside_operating_hours_workflow_sid,
+        "workflow": master_workflow_sid,
         "channel": chat_task_channel_sid,
-        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"language\":\"tl-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"Outside Operating Hours\",\n\"language\":\"tl-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
         "timeout": "259200"
       }
     },
@@ -636,9 +636,9 @@ ${
           "x": -580,
           "y": 150
         },
-        "workflow": non_counselling_workflow_sid,
+        "workflow": master_workflow_sid,
         "channel": chat_task_channel_sid,
-        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"language\":\"tl-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"Non Counselling\",\n\"language\":\"tl-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
         "timeout": "604800"
       }
     },

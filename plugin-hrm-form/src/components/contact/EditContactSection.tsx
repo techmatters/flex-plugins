@@ -24,7 +24,6 @@ import { Close } from '@material-ui/icons';
 import { AnyAction } from 'redux';
 
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
-import { updateContactsFormInHrm } from '../../services/ContactService';
 import { Box, StyledNextStepButton, BottomButtonBar, Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
 import { CaseActionTitle, EditContactContainer } from '../../styles/case';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
@@ -93,15 +92,10 @@ const EditContactSection: React.FC<Props> = ({
 
   const onSubmitValidForm = async () => {
     setSubmitting(true);
-    let payload: Partial<Pick<
+    const payload: Partial<Pick<
       ContactRawJson,
       'categories' | 'callerInformation' | 'caseInformation' | 'childInformation'
-    >>;
-    if (contactDetailsSectionForm) {
-      payload = contactDetailsSectionForm.formToPayload(definitionVersion, methods.getValues());
-    } else {
-      payload = draftContact?.rawJson;
-    }
+    >> = draftContact.rawJson;
     try {
       updateContactsFormInHrmAsyncAction(contactId, payload, savedContact.helpline);
     } catch (error) {

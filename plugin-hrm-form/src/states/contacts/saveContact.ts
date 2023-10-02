@@ -54,15 +54,10 @@ export const saveContactReducer = (initialState: ExistingContactsState) =>
     handleAction(
       updateContactsFormInHrmAsyncAction.fulfilled,
       (state, { payload }): ExistingContactsState => {
-        const reference = 'standalone-task-sid';
+       
         const replaceExisting = true;
         const updateEntries = payload.contacts
-          .filter(c => {
-            return (
-              (reference && !(state[c.id]?.references ?? new Set()).has(reference)) ||
-              replaceExisting
-            );
-          })
+          .filter(c => state[c.id]?.references && replaceExisting )
           .map(c => {
             const current = state[c.id] ?? { references: new Set() };
             const { draftContact, ...currentContact } = state[c.id] ?? {
@@ -76,7 +71,7 @@ export const saveContactReducer = (initialState: ExistingContactsState) =>
               {
                 ...currentContact,
                 savedContact: replaceExisting || !current.references.size ? c : state[c.id].savedContact,
-                references: reference ? current.references.add(reference) : state[c.id].references,
+                ...state[c.id].references,
               },
             ];
           });

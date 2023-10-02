@@ -18,7 +18,8 @@ import { omit } from 'lodash';
 
 import { HrmServiceContact } from '../../types/types';
 import { AddExternalReportEntryAction } from '../csam-report/existingContactExternalReport';
-import { SaveContactReducerState, saveContactReducer } from './saveContact';
+import { ConfigurationState } from '../configuration/reducer';
+import { transformValuesForContactForm } from './contactDetailsAdapter';
 
 export enum ContactDetailsRoute {
   EDIT_CALLER_INFORMATION = 'editCallerInformation',
@@ -327,18 +328,32 @@ export const clearDraft = (contactId: string): UpdateDraftAction => ({
   draft: undefined,
 });
 
-export const updateDraftReducer = (state: ExistingContactsState, action: UpdateDraftAction): ExistingContactsState => {
-  if (!state[action.contactId]) {
+export const updateDraftReducer = (
+  state: ExistingContactsState,
+  configState: ConfigurationState,
+  { contactId, draft }: UpdateDraftAction,
+): ExistingContactsState => {
+  if (!state[contactId]) {
     console.error(
-      `Attempted to update draft changes on contact ID '${action.contactId}' but this contact has not been loaded into redux. Load the contact into the existing contacts store using 'loadContact' before attempting to manipulate it's category state`,
+      `Attempted to update draft changes on contact ID '${contactId}' but this contact has not been loaded into redux. Load the contact into the existing contacts store using 'loadContact' before attempting to manipulate it's category state`,
     );
     return state;
   }
+
+  const definition =
+    configState.definitionVersions[state[contactId].savedContact.rawJson.definitionVersion] ??
+    configState.currentDefinitionVersion;
+
+  // Transform from RHF friendly values to the state we want in redux
+  const transformedForm = transformValuesForContactForm(definition)(draft.rawJson);
   return {
     ...state,
-    [action.contactId]: {
-      ...state[action.contactId],
-      draftContact: action.draft,
+    [contactId]: {
+      ...state[contactId],
+      draftContact: {
+        ...draft,
+        rawJson: transformedForm,
+      },
     },
   };
 };
