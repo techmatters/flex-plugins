@@ -20,7 +20,6 @@ import "regenerator-runtime/runtime";
 import * as Flex from "@twilio/flex-ui";
 import "./index.css";
 import App from "./App";
-import registerServiceWorker from "./registerServiceWorker";
 import { compose, configureStore } from '@reduxjs/toolkit'
 
 const defaultHelplineCode = 'as';
@@ -70,7 +69,7 @@ window.onload = async () => {
    *
    * We could do all kinds of interesting dynamic things with this pattern like
    * dynamic development deployments, accepting a query param to override the
-   * version of flex plugins to load, etc.
+   * versions of flex plugins to load, etc.
    */
   const config = await getConfig();
   accountSid = config.accountSid;
@@ -98,15 +97,15 @@ window.onload = async () => {
    * We *should* be able to override the default Flex redux store to add our own middleware and/or enhancers.
    *
    */
-  // const store = configureStore(
-  //   {
-  //    reducer: {
-  //     flex : Flex.FlexReducer,
-  //    },
-  //    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(Flex.getFlexMiddleware()),
-  //    enhancers: [Flex.flexStoreEnhancer]
-  //   },
-  // );
+  const store = configureStore(
+    {
+     reducer: {
+      flex : Flex.FlexReducer,
+     },
+     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(Flex.getFlexMiddleware()),
+     enhancers: [Flex.flexStoreEnhancer]
+    },
+  );
 
   Flex
     .progress(mountNode)
@@ -131,4 +130,7 @@ function handleError(error) {
   console.error("Failed to initialize Flex", error);
 }
 
-registerServiceWorker();
+/**
+ * I thought this was a a twilio requirement, but twilio hosted doesn't run a service worker, so I guess not
+ */
+// registerServiceWorker();

@@ -22,9 +22,11 @@ cd ../plugin-hrm-form && npm run build && cd ../flex-ui
 npm run build && npm run deploy:development
 ```
 
-Service worker reloads are complicated. If you want to see the latest version of the app, you'll need to open dev tools, navigate to the application tab, navigate to the Service workers menu and click the skipWaiting button next to the new service worker. Alternatively, you can just use an incognito window that you close/reopen to get the latest version of the app.
+<!-- I thought service workers were required by flex because it was part of the sample, but apparently not. Flex hosted doesn't run a service worker.
 
-There are several strategies for handling service worker reloads in a user friendly way. We'll need to figure out which one works best for us if we go down this path.
+ Service worker reloads are complicated. If you want to see the latest version of the app, you'll need to open dev tools, navigate to the application tab, navigate to the Service workers menu and click the skipWaiting button next to the new service worker. Alternatively, you can just use an incognito window that you close/reopen to get the latest version of the app.
+
+There are several strategies for handling service worker reloads in a user friendly way. We'll need to figure out which one works best for us if we go down this path. -->
 
 ### Open the POC in a browser
 
@@ -44,4 +46,4 @@ There are several strategies for handling service worker reloads in a user frien
 
 - Subdomain separation should allow us to be logged into multiple helplines at the same time. Not really a user facing benefit, but it's a nice to have for dev/QA.
 
-- Service workers and reloads are always a bit of a PITA when it comes to displaying the latest version of the app. We'll need to figure out how to handle this.
+- ~~Service workers and reloads are always a bit of a PITA when it comes to displaying the latest version of the app. We'll need to figure out how to handle this.~~
