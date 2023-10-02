@@ -29,7 +29,7 @@ import { updateCase, createCase } from '../../../services/CaseService';
 import { SavedCaseStatus } from '../../../states/case/types';
 import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
 
-jest.mock('../../../services/CaseService');
+jest.mock('../../../services/CaseService'); 
 
 const mockUpdateCase = updateCase as jest.Mock<ReturnType<typeof updateCase>>;
 const mockCreateCase = createCase as jest.Mock<ReturnType<typeof createCase>>;

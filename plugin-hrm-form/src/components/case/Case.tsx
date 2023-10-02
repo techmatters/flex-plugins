@@ -90,6 +90,9 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const newContactTemporaryId = (connectedCase: CaseType) => `__unsavedFromCase:${connectedCase?.id}`;
+  
+// We want to validate that savedContact state is not returning an empty object
+export const validateSavedContact = (savedContact: HrmServiceContact) => typeof savedContact === 'object' && Object.keys(savedContact).length > 0;
 
 const Case: React.FC<Props> = ({
   task,
@@ -194,17 +197,14 @@ const Case: React.FC<Props> = ({
     }
   }, [connectedCase, definitionVersions, task.taskSid, updateDefinitionVersion, version]);
 
-  // We want to validate that savedContact state is not returning an empty object
-  const validateSavedContact = () => typeof savedContact === 'object' && Object.keys(savedContact).length > 0;
-
   /**
    * Always check to see when savedContact state has been updated.
    * Then go ahead and execute the connectToCaseAsyncAction
    */
   useEffect(() => {
-    if (validateSavedContact()) {
+    if (validateSavedContact(savedContact)) {
       connectToCaseAsyncAction(savedContact.id, connectedCase.id);
-      setConnectToCase(validateSavedContact());
+      setConnectToCase(validateSavedContact(savedContact));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [savedContact, connectToCaseAsyncAction]);

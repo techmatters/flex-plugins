@@ -53,7 +53,6 @@ const EditContactSection: React.FC<Props> = ({
   draftContact,
   contactId,
   definitionVersions,
-  refreshContact,
   contactDetailsSectionForm,
   setEditContactPageOpen,
   setEditContactPageClosed,
@@ -61,6 +60,7 @@ const EditContactSection: React.FC<Props> = ({
   children,
   clearContactDraft,
   updateContactsFormInHrmAsyncAction,
+  references
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -103,7 +103,7 @@ const EditContactSection: React.FC<Props> = ({
       payload = draftContact?.rawJson;
     }
     try {
-      updateContactsFormInHrmAsyncAction(true, contactId, payload, savedContact.helpline, undefined);
+      updateContactsFormInHrmAsyncAction(contactId, payload, savedContact.helpline, references[0]);
     } catch (error) {
       setSubmitting(false);
       recordBackendError('Open New Case', error);
@@ -210,14 +210,13 @@ const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string,
       dispatch(clearDraft(contactId));
     },
     updateContactsFormInHrmAsyncAction: (
-      replaceExisting: boolean,
       contactId: string,
       body: Partial<ContactRawJson>,
       helpline: string,
       reference?: string,
     ) =>
       updateContactAsyncDispatch(
-        updateContactsFormInHrmAsyncAction(replaceExisting, contactId, body, helpline, reference),
+        updateContactsFormInHrmAsyncAction(contactId, body, helpline, reference),
       ),
   };
 };
@@ -227,6 +226,7 @@ const mapStateToProps = (state: RootState, { contactId }: OwnProps) => ({
   counselorsHash: state[namespace][configurationBase].counselors.hash,
   savedContact: state[namespace][contactFormsBase].existingContacts[contactId]?.savedContact,
   draftContact: state[namespace][contactFormsBase].existingContacts[contactId]?.draftContact,
+  references: state[namespace][contactFormsBase].existingContacts[contactId]?.references,
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
