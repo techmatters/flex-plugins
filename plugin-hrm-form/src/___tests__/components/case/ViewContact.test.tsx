@@ -28,7 +28,7 @@ import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import ViewContact from '../../../components/case/ViewContact';
 import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import { getDefinitionVersions } from '../../../hrmConfig';
-import { SearchAPIContact } from '../../../types/types';
+import { HrmServiceContact } from '../../../types/types';
 import { connectedCaseBase, contactFormsBase, csamReportBase, RootState } from '../../../states';
 import { DetailsContext, TOGGLE_DETAIL_EXPANDED_ACTION } from '../../../states/contacts/contactDetails';
 
@@ -52,12 +52,27 @@ const task = {
   defaultFrom: '+12025550425',
 };
 
-const contact: SearchAPIContact = {
-  contactId: 'TEST_ID',
-  details: {
+const contact: HrmServiceContact = {
+  id: 'TEST_ID',
+  accountSid: '',
+  createdAt: '2020-03-10',
+  updatedBy: 'counselor-id',
+  queueName: '',
+  timeOfContact: '2020-03-10',
+  number: 'Anonymous',
+  twilioWorkerId: 'counselor-id',
+  channel: 'web',
+  conversationDuration: 10,
+  createdBy: 'an SID',
+  helpline: '',
+  taskId: '',
+  csamReports: [],
+  conversationMedia: [],
+  channelSid: '',
+  serviceSid: '',
+  rawJson: {
     definitionVersion: DefinitionVersionId.v1,
-    contactlessTask: { channel: 'voice' },
-    callType: '',
+    callType: 'Child calling about self',
     childInformation: {
       firstName: 'Jill',
       lastName: 'Smith',
@@ -76,7 +91,7 @@ const contact: SearchAPIContact = {
       hiv: false,
     },
     caseInformation: {
-      callSummary: 'Child calling about self',
+      callSummary: 'J Smith Notes',
       referredTo: '',
       status: 'In Progress',
       keepConfidential: true,
@@ -85,7 +100,6 @@ const contact: SearchAPIContact = {
       didYouDiscussRightsWithTheChild: false,
       didTheChildFeelWeSolvedTheirProblem: false,
       wouldTheChildRecommendUsToAFriend: false,
-      categories: {},
     },
     callerInformation: {
       relationshipToChild: '',
@@ -100,22 +114,9 @@ const contact: SearchAPIContact = {
       stateOrCounty: '',
       streetAddress: '',
     },
-    conversationMedia: [],
-  },
-  overview: {
-    dateTime: '2020-03-10',
-    customerNumber: 'Anonymous',
-    callType: 'Child calling about self',
+    contactlessTask: { channel: 'voice' },
     categories: { category1: ['Tag1', 'Tag2'] },
-    counselor: 'counselor-id',
-    notes: 'J Smith Notes',
-    channel: 'web',
-    conversationDuration: 10,
-    createdBy: 'an SID',
-    helpline: '',
-    taskId: '',
   },
-  csamReports: [],
 };
 
 const counselorsHash = {

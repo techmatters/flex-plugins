@@ -16,7 +16,7 @@
 
 /* eslint-disable import/no-unused-modules */
 import { ITask } from '@twilio/flex-ui';
-import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions';
+import { CallTypes, DefinitionVersionId } from 'hrm-form-definitions';
 
 import { DateFilterValue } from '../components/caseList/filters/dateFilters';
 import { ChannelTypes } from '../states/DomainConstants';
@@ -29,14 +29,6 @@ export type EntryInfo = {
   updatedBy?: string;
   twilioWorkerId: string;
 };
-
-/*
- * export type ReferralEntry = {
- *   date: string;
- *   referredTo: string;
- *   comments: string;
- * };
- */
 
 export type CaseItemFormValues = { [key: string]: string | boolean };
 
@@ -120,6 +112,9 @@ export type S3StoredRecording = {
 
 type S3StoredMedia = S3StoredTranscript | S3StoredRecording;
 
+// Extract the 'type' property from S3StoredMedia to create ContactMediaType
+export type ContactMediaType = S3StoredMedia['type'];
+
 export type ConversationMedia = TwilioStoredMedia | S3StoredMedia;
 
 export const isTwilioStoredMedia = (m: ConversationMedia): m is TwilioStoredMedia => m.store === 'twilio';
@@ -134,24 +129,33 @@ export type ContactRawJson = {
   callType: CallTypes | '';
   childInformation: Record<string, boolean | string>;
   callerInformation: Record<string, boolean | string>;
-  caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
-  contactlessTask: { channel: ChannelTypes; [key: string]: string | boolean };
-  conversationMedia: ConversationMedia[];
+  caseInformation: Record<string, boolean | string>;
+  categories: Record<string, string[]>;
+  contactlessTask: {
+    channel: ChannelTypes;
+    date: string;
+    time: string;
+    createdOnBehalfOf: string;
+    [key: string]: string | boolean;
+  };
 };
 
 export type HrmServiceContact = {
   id: string;
+  accountSid: string;
   twilioWorkerId: string;
   number: string;
   conversationDuration: number;
   csamReports: CSAMReportEntry[];
   referrals?: ResourceReferral[];
+  conversationMedia?: ConversationMedia[];
+  createdAt: string;
   createdBy: string;
   helpline: string;
   taskId: string;
   channel: ChannelTypes | 'default';
   updatedBy: string;
-  updatedAt: string;
+  updatedAt?: string;
   rawJson: ContactRawJson;
   timeOfContact: string;
   queueName: string;
@@ -159,34 +163,9 @@ export type HrmServiceContact = {
   serviceSid: string;
 };
 
-// Information about a single contact, as expected from search contacts endpoint (we might want to reuse this type in backend) - (is this a correct placement for this?)
-export type SearchAPIContact = {
-  contactId: string;
-  overview: {
-    helpline: string;
-    dateTime: string;
-    customerNumber: string;
-    callType: CallTypes | '';
-    categories: {};
-    counselor: string;
-    notes: string;
-    channel: ChannelTypes | 'default';
-    conversationDuration: number;
-    createdBy: string;
-    taskId: string;
-    updatedBy?: string;
-    updatedAt?: string;
-  };
-  details: ContactRawJson;
-  csamReports: CSAMReportEntry[];
-  referrals?: ResourceReferral[];
-};
-
-export type SearchUIContact = SearchAPIContact & { counselorName: string; callerName?: string };
-
 export type SearchContactResult = {
   count: number;
-  contacts: SearchUIContact[];
+  contacts: HrmServiceContact[];
 };
 
 export type SearchCaseResult = {

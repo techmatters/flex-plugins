@@ -15,13 +15,12 @@
  */
 
 import * as Flex from '@twilio/flex-ui';
-import Rollbar from 'rollbar';
 import { datadogRum } from '@datadog/browser-rum';
 import * as FullStory from '@fullstory/browser';
 import { ServiceConfiguration } from '@twilio/flex-ui';
 import type { Worker } from 'twilio-taskrouter';
 
-import { rollbarAccessToken, datadogAccessToken, datadogApplicationID, fullStoryId } from '../private/secret';
+import { datadogAccessToken, datadogApplicationID, fullStoryId } from '../private/secret';
 
 function setUpDatadogRum(workerClient: Worker, monitoringEnv: string) {
   datadogRum.init({
@@ -42,63 +41,6 @@ function setUpDatadogRum(workerClient: Worker, monitoringEnv: string) {
   });
 }
 
-function setUpRollbarLogger(plugin: { Rollbar?: Rollbar }, workerClient: Worker, monitoringEnv: string) {
-  plugin.Rollbar = new Rollbar({
-    reportLevel: 'error',
-    accessToken: rollbarAccessToken,
-    captureUncaught: true,
-    captureUnhandledRejections: true,
-    payload: {
-      environment: monitoringEnv,
-      person: {
-        id: workerClient.sid,
-        account: workerClient.accountSid,
-        workspace: workerClient.workspaceSid,
-        helpline: (workerClient.attributes as any).helpline,
-      },
-    },
-    ignoredMessages: ['Warning: Failed prop type'],
-    maxItems: 500,
-    ignoreDuplicateErrors: true,
-    scrubTelemetryInputs: true,
-  });
-
-  const myLogManager = new Flex.Log.LogManager({
-    spies: [
-      {
-        type: Flex.Log.PredefinedSpies.ClassProxy,
-        target: window.console,
-        targetAlias: 'Proxied window.console',
-        methods: ['error'],
-        onStart: proxy => {
-          window.console = proxy;
-        },
-      },
-    ],
-    storage: () => null,
-    formatter: () => entries => entries[0],
-    transport: () => ({
-      flush: entry => {
-        const collectedData = entry && entry.subject && entry.args;
-        if (!collectedData) {
-          return;
-        }
-
-        const args = entry.args.join();
-        const isRollbarMethod = typeof plugin.Rollbar[entry.subject] === 'function';
-
-        if (isRollbarMethod) {
-          plugin.Rollbar[entry.subject](args);
-        } else {
-          plugin.Rollbar.log(args);
-        }
-      },
-    }),
-  });
-
-  myLogManager.prepare().then(myLogManager.start);
-}
-
 function setUpFullStory() {
   FullStory.init({
     orgId: fullStoryId,
@@ -116,16 +58,11 @@ function helplineIdentifierFullStory(workerClient) {
   FullStory.setUserVars({ accountSid });
 }
 
-export default function setUpMonitoring(
-  plugin: { Rollbar?: Rollbar },
-  workerClient: Worker,
-  serviceConfiguration: ServiceConfiguration,
-) {
+export default function setUpMonitoring(workerClient: Worker, serviceConfiguration: ServiceConfiguration) {
   const monitoringEnv = serviceConfiguration.attributes.monitoringEnv || 'staging';
 
   if (process.env.ENABLE_MONITORING === 'true') {
     setUpDatadogRum(workerClient, monitoringEnv);
-    setUpRollbarLogger(plugin, workerClient, monitoringEnv);
   }
 
   if (serviceConfiguration.attributes.feature_flags.enable_fullstory_monitoring) {

@@ -166,7 +166,7 @@ export const CategoryRequiredText = styled('p')`
 `;
 CategoryRequiredText.displayName = 'CategoryRequiredText';
 
-export const StyledInput = styled(Input)`
+const StyledInput = styled(Input)`
   display: flex;
   flex-grow: 0;
   font-size: 12px;
@@ -264,7 +264,7 @@ export const StyledMenuItem = styled(MenuItem)`
 StyledMenuItem.displayName = 'StyledMenuItem';
 
 type StyledNextStepButtonProps = {
-  secondary?: boolean;
+  secondary?: string; // string to prevent console errors
   disabled?: boolean;
   margin?: string;
 };
@@ -274,7 +274,10 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
   align-items: center;
   font-size: 13px;
   letter-spacing: normal;
-  color: ${props => (props.secondary ? HrmTheme.colors.secondaryButtonTextColor : HrmTheme.colors.buttonTextColor)};
+  color: ${props =>
+    props.secondary?.toLowerCase() === 'true'
+      ? HrmTheme.colors.secondaryButtonTextColor
+      : HrmTheme.colors.buttonTextColor};
   border: none;
   border-radius: 4px;
   margin: ${props => (props.margin ? props.margin : '0')};
@@ -283,7 +286,7 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
   background-color: ${props =>
     props.disabled
       ? HrmTheme.colors.disabledColor
-      : props.secondary
+      : props.secondary?.toLowerCase() === 'true'
       ? HrmTheme.colors.secondaryButtonColor
       : HrmTheme.colors.defaultButtonColor};
   cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
@@ -291,7 +294,7 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
     getBackgroundWithHoverCSS(
       p.disabled
         ? HrmTheme.colors.base5
-        : p.secondary
+        : p.secondary?.toLowerCase() === 'true'
         ? HrmTheme.colors.secondaryButtonColor
         : HrmTheme.colors.defaultButtonColor,
       true,

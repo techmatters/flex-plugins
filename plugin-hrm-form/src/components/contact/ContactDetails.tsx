@@ -32,10 +32,10 @@ import ContactDetailsSectionForm from './ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
 import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
 import { updateDraft } from '../../states/contacts/existingContacts';
-import { transformValues } from '../../services/ContactService';
 import CSAMReport from '../CSAMReport/CSAMReport';
 import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
 import { getAseloFeatureFlags } from '../../hrmConfig';
+import { transformValues } from '../../states/contacts/contactDetailsAdapter';
 
 type OwnProps = {
   contactId: string;
@@ -60,7 +60,7 @@ const ContactDetails: React.FC<Props> = ({
   draftCsamReport,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const version = savedContact?.details.definitionVersion;
+  const version = savedContact?.rawJson.definitionVersion;
 
   const featureFlags = getAseloFeatureFlags();
   /**
@@ -101,8 +101,8 @@ const ContactDetails: React.FC<Props> = ({
         updateFormActionDispatcher={dispatch => values =>
           dispatch(
             updateDraft(contactId, {
-              details: {
-                [formPath]: transformValues(section.getFormDefinition(definitionVersion))(values[formPath]),
+              rawJson: {
+                [formPath]: values[formPath],
               },
             }),
           )}
@@ -112,18 +112,11 @@ const ContactDetails: React.FC<Props> = ({
   );
 
   if (draftContact) {
-    if (draftContact.overview?.categories) {
-      const issueSection = contactDetailsSectionFormApi.ISSUE_CATEGORIZATION;
+    if (draftContact.rawJson?.categories) {
       return (
-        <EditContactSection
-          context={context}
-          contactId={contactId}
-          contactDetailsSectionForm={contactDetailsSectionFormApi.ISSUE_CATEGORIZATION}
-          tabPath="categories"
-        >
+        <EditContactSection context={context} contactId={contactId} tabPath="categories">
           <IssueCategorizationSectionForm
-            definition={definitionVersion.tabbedForms.IssueCategorizationTab(draftContact.overview.helpline)}
-            initialValue={issueSection.getFormValues(definitionVersion, draftContact).categories}
+            definition={definitionVersion.tabbedForms.IssueCategorizationTab(draftContact.helpline)}
             stateApi={forExistingContact(contactId)}
             display={true}
             autoFocus={true}
@@ -132,7 +125,7 @@ const ContactDetails: React.FC<Props> = ({
       );
     }
 
-    const { callerInformation, caseInformation, childInformation } = draftContact.details;
+    const { callerInformation, caseInformation, childInformation } = draftContact.rawJson;
 
     if (childInformation)
       return editContactSectionElement(contactDetailsSectionFormApi.CHILD_INFORMATION, 'childInformation');

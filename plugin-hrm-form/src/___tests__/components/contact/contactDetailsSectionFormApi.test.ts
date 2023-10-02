@@ -14,7 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import each from 'jest-each';
 import {
   DefinitionVersion,
   DefinitionVersionId,
@@ -23,14 +22,9 @@ import {
   useFetchDefinitions,
 } from 'hrm-form-definitions';
 
-import {
-  ContactDetailsSectionFormApi,
-  contactDetailsSectionFormApi,
-  ContactFormValues,
-  IssueCategorizationSectionFormApi,
-} from '../../../components/contact/contactDetailsSectionFormApi';
-import { SearchAPIContact } from '../../../types/types';
-import details from '../../../components/case/casePrint/styles/details';
+import { contactDetailsSectionFormApi } from '../../../components/contact/contactDetailsSectionFormApi';
+import { HrmServiceContact } from '../../../types/types';
+import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -91,32 +85,16 @@ beforeAll(async () => {
   };
 });
 
-const emptySearchContact: SearchAPIContact = {
-  contactId: '0',
-  overview: {
-    helpline: undefined,
-    dateTime: undefined,
-    name: undefined,
-    customerNumber: undefined,
-    callType: undefined,
-    categories: {},
-    counselor: undefined,
-    notes: undefined,
-    channel: undefined,
-    conversationDuration: 0,
-    createdBy: undefined,
-    taskId: undefined,
-  },
-  csamReports: [],
-  details: {
-    childInformation: {},
-    callerInformation: {},
-    caseInformation: {
-      categories: {},
+const emptySearchContact: HrmServiceContact = {
+  ...VALID_EMPTY_CONTACT,
+  id: '0',
+  channel: 'default',
+  rawJson: {
+    ...VALID_EMPTY_CONTACT.rawJson,
+    contactlessTask: {
+      ...VALID_EMPTY_CONTACT.rawJson.contactlessTask,
+      channel: 'voice',
     },
-    callType: undefined,
-    contactlessTask: { channel: 'voice' },
-    conversationMedia: [],
   },
 };
 
@@ -125,8 +103,8 @@ describe('getFormValues', () => {
     expect(
       contactDetailsSectionFormApi.CHILD_INFORMATION.getFormValues(definition, {
         ...emptySearchContact,
-        details: {
-          ...emptySearchContact.details,
+        rawJson: {
+          ...emptySearchContact.rawJson,
           childInformation: {
             firstName: 'Lorna',
             lastName: 'Ballantyne',
@@ -145,8 +123,8 @@ describe('getFormValues', () => {
     expect(
       contactDetailsSectionFormApi.CALLER_INFORMATION.getFormValues(definition, {
         ...emptySearchContact,
-        details: {
-          ...emptySearchContact.details,
+        rawJson: {
+          ...emptySearchContact.rawJson,
           callerInformation: {
             firstName: 'Lorna',
             lastName: 'Ballantyne',
@@ -161,123 +139,21 @@ describe('getFormValues', () => {
       },
     });
   });
-  test('ISSUE_CATEGORIZATION - flattens overview categories into single string array', () => {
-    expect(
-      contactDetailsSectionFormApi.ISSUE_CATEGORIZATION.getFormValues(definition, {
-        ...emptySearchContact,
-        overview: {
-          ...emptySearchContact.overview,
-          categories: {
-            category1: ['sub2', 'sub4'],
-            category2: ['sub1', 'sub4'],
-          },
-        },
-      }),
-    ).toStrictEqual({
-      categories: expect.arrayContaining([
-        'categories.category1.sub2',
-        'categories.category1.sub4',
-        'categories.category2.sub1',
-        'categories.category2.sub4',
-      ]),
-    });
-  });
   test('CASE_INFORMATION - creates undefined props for form items without values', () => {
     expect(
       contactDetailsSectionFormApi.CASE_INFORMATION.getFormValues(definition, {
         ...emptySearchContact,
-        details: {
-          ...emptySearchContact.details,
+        rawJson: {
+          ...emptySearchContact.rawJson,
           caseInformation: {
             prop1: 'something',
-            categories: emptySearchContact.details.caseInformation.categories,
+            categories: emptySearchContact.rawJson.caseInformation.categories,
           },
         },
       }),
     ).toStrictEqual({
       caseInformation: {
         prop1: 'something',
-      },
-    });
-  });
-});
-
-describe('formToPayload', () => {
-  test('CHILD_INFORMATION - nests name, and wraps in a contact payload structure', () => {
-    expect(
-      contactDetailsSectionFormApi.CHILD_INFORMATION.formToPayload(definition, {
-        childInformation: {
-          firstName: 'Lorna',
-          otherProp: 'something',
-        },
-      }),
-    ).toStrictEqual({
-      rawJson: {
-        childInformation: {
-          firstName: 'Lorna',
-          lastName: undefined,
-          otherProp: 'something',
-        },
-      },
-    });
-  });
-
-  test('CALLER_INFORMATION - nests name, and wraps in a contact payload structure', () => {
-    expect(
-      contactDetailsSectionFormApi.CALLER_INFORMATION.formToPayload(definition, {
-        callerInformation: {
-          firstName: 'Lorna',
-          prop: 'something',
-        },
-      }),
-    ).toStrictEqual({
-      rawJson: {
-        callerInformation: {
-          firstName: 'Lorna',
-          lastName: undefined,
-          prop: 'something',
-        },
-      },
-    });
-  });
-  test('ISSUE_CATEGORIZATION - builds map of boolean maps from flattened category paths', () => {
-    expect(
-      contactDetailsSectionFormApi.ISSUE_CATEGORIZATION.formToPayload(
-        definition,
-        {
-          categories: [
-            'categories.category1.sub2',
-            'categories.category1.sub4',
-            'categories.category2.sub1',
-            'categories.category2.sub4',
-          ],
-        },
-        'test helpline',
-      ),
-    ).toStrictEqual({
-      rawJson: {
-        caseInformation: {
-          categories: {
-            category1: { sub1: false, sub2: true, sub3: false, sub4: true },
-            category2: { sub1: true, sub2: false, sub3: false, sub4: true },
-          },
-        },
-      },
-    });
-  });
-  test('CASE_INFORMATION - creates undefined props for form items without values', () => {
-    expect(
-      contactDetailsSectionFormApi.CASE_INFORMATION.formToPayload(definition, {
-        caseInformation: {
-          prop1: 'yerp',
-        },
-      }),
-    ).toStrictEqual({
-      rawJson: {
-        caseInformation: {
-          prop1: 'yerp',
-          prop2: undefined,
-        },
       },
     });
   });

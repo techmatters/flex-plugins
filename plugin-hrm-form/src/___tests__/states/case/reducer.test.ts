@@ -25,6 +25,7 @@ import { CaseState } from '../../../states/case/types';
 import { configurationBase, connectedCaseBase, namespace, RootState } from '../../../states';
 import { getAvailableCaseStatusTransitions } from '../../../states/case/caseStatus';
 import { ConfigurationState } from '../../../states/configuration/reducer';
+import { updateCaseAsyncAction } from '../../../states/case/saveCase';
 
 const task = { taskSid: 'task1' };
 const stubRootState = { [configurationBase]: { definitionVersions: {} } } as RootState['plugin-hrm-form'];

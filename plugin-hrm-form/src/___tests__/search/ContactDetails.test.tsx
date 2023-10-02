@@ -28,7 +28,7 @@ import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions } from '../../hrmConfig';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { csamReportBase } from '../../states';
-import { SearchAPIContact } from '../../types/types';
+import { HrmServiceContact } from '../../types/types';
 
 jest.mock('@twilio/flex-ui', () => ({
   ...jest.requireActual('@twilio/flex-ui'),
@@ -40,9 +40,24 @@ const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions
 
 const mockStore = configureMockStore([]);
 
-const contactOfType = (type): SearchAPIContact => ({
-  contactId: 'TEST CONTACT ID',
-  details: {
+const contactOfType = (type): HrmServiceContact => ({
+  id: 'TEST CONTACT ID',
+  accountSid: '',
+  createdAt: '',
+  updatedBy: '',
+  queueName: '',
+  timeOfContact: '2020-03-10',
+  number: 'Anonymous',
+  twilioWorkerId: 'counselor-id',
+  channel: channelTypes.web,
+  conversationDuration: 10,
+  helpline: '',
+  taskId: '',
+  createdBy: 'HASH1',
+  csamReports: [],
+  channelSid: '',
+  serviceSid: '',
+  rawJson: {
     definitionVersion: DefinitionVersionId.v1,
     childInformation: {
       firstName: 'Jill',
@@ -74,7 +89,6 @@ const contactOfType = (type): SearchAPIContact => ({
       didYouDiscussRightsWithTheChild: false,
       didTheChildFeelWeSolvedTheirProblem: false,
       wouldTheChildRecommendUsToAFriend: false,
-      categories: {},
     },
     callerInformation: {
       firstName: '',
@@ -92,26 +106,13 @@ const contactOfType = (type): SearchAPIContact => ({
       stateOrCounty: '',
       streetAddress: '',
     },
-    callType: callTypes.child,
+    categories: { category1: ['Tag1', 'Tag2'] },
+    callType: type,
     contactlessTask: {
       channel: 'voice',
     },
     conversationMedia: [],
   },
-  overview: {
-    dateTime: '2020-03-10',
-    customerNumber: 'Anonymous',
-    callType: type,
-    categories: { category1: ['Tag1', 'Tag2'] },
-    counselor: 'counselor-id',
-    notes: 'Jill Smith Notes',
-    channel: channelTypes.web,
-    conversationDuration: 10,
-    helpline: '',
-    taskId: '',
-    createdBy: 'HASH1',
-  },
-  csamReports: [],
 });
 
 const handleBack = jest.fn();

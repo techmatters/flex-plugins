@@ -19,31 +19,15 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import fetchHrmApi from './fetchHrmApi';
 import { getQueryParams } from './PaginationParams';
-import { Case, SearchCaseResult } from '../types/types';
-import { unNestLegacyRawJson } from './ContactService';
-import { TaskEntry as ContactForm } from '../states/contacts/types';
-
-const convertLegacyContacts = (apiCase: Case): Case => {
-  if (!apiCase.connectedContacts || apiCase.connectedContacts.length === 0) {
-    return apiCase;
-  }
-  const connectedContacts = (apiCase.connectedContacts ?? []).map(cc => ({
-    ...cc,
-    rawJson: unNestLegacyRawJson(cc.rawJson),
-  }));
-
-  return {
-    ...apiCase,
-    connectedContacts,
-  };
-};
+import { Case, HrmServiceContact, SearchCaseResult } from '../types/types';
+import { transformFromApiCategories } from './ContactService';
 
 export async function createCase(
-  contactForm: ContactForm,
+  contact: HrmServiceContact,
   creatingWorkerSid: string,
   definitionVersion: DefinitionVersionId,
 ) {
-  const { helpline } = contactForm;
+  const { helpline, rawJson: contactForm } = contact;
 
   const caseRecord = contactForm.contactlessTask?.createdOnBehalfOf
     ? {
@@ -64,9 +48,7 @@ export async function createCase(
     body: JSON.stringify(caseRecord),
   };
 
-  const responseJson = await fetchHrmApi('/cases', options);
-
-  return convertLegacyContacts(responseJson);
+  return fetchHrmApi('/cases', options);
 }
 
 export async function cancelCase(caseId: Case['id']) {
@@ -83,9 +65,7 @@ export async function updateCase(caseId: Case['id'], body: Partial<Case>) {
     body: JSON.stringify(body),
   };
 
-  const responseJson = await fetchHrmApi(`/cases/${caseId}`, options);
-
-  return convertLegacyContacts(responseJson);
+  return fetchHrmApi(`/cases/${caseId}`, options);
 }
 
 export async function searchCases(searchParams, limit, offset): Promise<SearchCaseResult> {
@@ -100,10 +80,22 @@ export async function listCases(queryParams, listCasesPayload): Promise<SearchCa
     body: JSON.stringify(listCasesPayload),
   };
 
-  const responseJson = await fetchHrmApi(`/cases/search${queryParamsString}`, options);
-
+  const casesFromApi: SearchCaseResult = await fetchHrmApi(`/cases/search${queryParamsString}`, options);
   return {
-    ...responseJson,
-    cases: responseJson.cases.map(convertLegacyContacts),
+    ...casesFromApi,
+    cases: casesFromApi.cases.map(c => ({
+      ...c,
+      connectedContacts: c.connectedContacts.map(cc => {
+        const { categories, ...caseInformation } = cc.rawJson?.caseInformation ?? {};
+        return {
+          ...cc,
+          rawJson: {
+            ...cc.rawJson,
+            categories: transformFromApiCategories((categories ?? {}) as Record<string, Record<string, boolean>>),
+            caseInformation,
+          },
+        };
+      }),
+    })),
   };
 }

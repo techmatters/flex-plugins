@@ -16,9 +16,11 @@
 
 import { omit } from 'lodash';
 
-import { HrmServiceContact, SearchAPIContact } from '../../types/types';
-import { hrmServiceContactToSearchContact } from './contactDetailsAdapter';
+import { HrmServiceContact } from '../../types/types';
 import { AddExternalReportEntryAction } from '../csam-report/existingContactExternalReport';
+import { configurationBase, namespace, RootState } from '..';
+import { ConfigurationState } from '../configuration/reducer';
+import { transformValues, transformValuesForContactForm } from './contactDetailsAdapter';
 
 export enum ContactDetailsRoute {
   EDIT_CALLER_INFORMATION = 'editCallerInformation',
@@ -32,7 +34,7 @@ type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
 };
 
-export type SearchContactDraftChanges = RecursivePartial<SearchAPIContact>;
+export type SearchContactDraftChanges = RecursivePartial<HrmServiceContact>;
 
 // TODO: Update this type when the Lambda worker is "done"
 export type TranscriptMessage = {
@@ -68,7 +70,7 @@ type ExportTranscripParticipants = {
   };
 };
 
-type Transcript = {
+export type Transcript = {
   accountSid: string;
   serviceSid: string;
   channelSid: string;
@@ -89,7 +91,7 @@ export type TranscriptResult = {
 export type ExistingContactsState = {
   [contactId: string]: {
     references: Set<string>;
-    savedContact: SearchAPIContact;
+    savedContact: HrmServiceContact;
     draftContact?: SearchContactDraftChanges;
     categories: {
       gridView: boolean;
@@ -103,63 +105,55 @@ export const LOAD_CONTACT_ACTION = 'LOAD_CONTACT_ACTION';
 
 type LoadContactAction = {
   type: typeof LOAD_CONTACT_ACTION;
-  contacts: SearchAPIContact[];
+  contacts: Partial<HrmServiceContact>[];
   reference?: string;
   replaceExisting: boolean;
 };
 
-export const loadContact = (contact: SearchAPIContact, reference, replaceExisting = false): LoadContactAction => ({
+export const loadContact = (
+  contact: Partial<HrmServiceContact>,
+  reference,
+  replaceExisting = false,
+): LoadContactAction => ({
   type: LOAD_CONTACT_ACTION,
   contacts: [contact],
   reference,
   replaceExisting,
 });
 
-export const loadRawContact = (
-  contact: HrmServiceContact,
+export const loadContacts = (
+  contacts: Partial<HrmServiceContact>[],
   reference: string,
   replaceExisting = false,
 ): LoadContactAction => ({
   type: LOAD_CONTACT_ACTION,
-  contacts: [hrmServiceContactToSearchContact(contact)],
+  contacts,
   reference,
   replaceExisting,
 });
 
-export const loadRawContacts = (
-  contacts: HrmServiceContact[],
-  reference: string,
-  replaceExisting = false,
-): LoadContactAction => ({
-  type: LOAD_CONTACT_ACTION,
-  contacts: contacts.map(c => hrmServiceContactToSearchContact(c)),
-  reference,
-  replaceExisting,
-});
-
-export const refreshRawContact = (contact: any) => loadRawContact(contact, undefined, true);
+export const refreshContact = (contact: any) => loadContact(contact, undefined, true);
 
 export const loadContactReducer = (state: ExistingContactsState, action: LoadContactAction) => {
   const updateEntries = action.contacts
     .filter(c => {
       return (
-        (action.reference && !(state[c.contactId]?.references ?? new Set()).has(action.reference)) ||
-        action.replaceExisting
+        (action.reference && !(state[c.id]?.references ?? new Set()).has(action.reference)) || action.replaceExisting
       );
     })
     .map(c => {
-      const current = state[c.contactId] ?? { references: new Set() };
-      const { draftContact, ...currentContact } = state[c.contactId] ?? {
+      const current = state[c.id] ?? { references: new Set() };
+      const { draftContact, ...currentContact } = state[c.id] ?? {
         categories: {
           expanded: {},
           gridView: false,
         },
       };
       return [
-        c.contactId,
+        c.id,
         {
           ...currentContact,
-          savedContact: action.replaceExisting || !current.references.size ? c : state[c.contactId].savedContact,
+          savedContact: action.replaceExisting || !current.references.size ? c : state[c.id].savedContact,
           references: action.reference ? current.references.add(action.reference) : current.references,
         },
       ];
@@ -333,18 +327,32 @@ export const clearDraft = (contactId: string): UpdateDraftAction => ({
   draft: undefined,
 });
 
-export const updateDraftReducer = (state: ExistingContactsState, action: UpdateDraftAction): ExistingContactsState => {
-  if (!state[action.contactId]) {
+export const updateDraftReducer = (
+  state: ExistingContactsState,
+  configState: ConfigurationState,
+  { contactId, draft }: UpdateDraftAction,
+): ExistingContactsState => {
+  if (!state[contactId]) {
     console.error(
-      `Attempted to update draft changes on contact ID '${action.contactId}' but this contact has not been loaded into redux. Load the contact into the existing contacts store using 'loadContact' before attempting to manipulate it's category state`,
+      `Attempted to update draft changes on contact ID '${contactId}' but this contact has not been loaded into redux. Load the contact into the existing contacts store using 'loadContact' before attempting to manipulate it's category state`,
     );
     return state;
   }
+
+  const definition =
+    configState.definitionVersions[state[contactId].savedContact.rawJson.definitionVersion] ??
+    configState.currentDefinitionVersion;
+
+  // Transform from RHF friendly values to the state we want in redux
+  const transformedForm = transformValuesForContactForm(definition)(draft.rawJson);
   return {
     ...state,
-    [action.contactId]: {
-      ...state[action.contactId],
-      draftContact: action.draft,
+    [contactId]: {
+      ...state[contactId],
+      draftContact: {
+        ...draft,
+        rawJson: transformedForm,
+      },
     },
   };
 };
@@ -376,29 +384,29 @@ export const createDraftReducer = (state: ExistingContactsState, action: CreateD
   switch (action.draftRoute) {
     case ContactDetailsRoute.EDIT_CHILD_INFORMATION:
       newDraft = {
-        details: {
-          childInformation: savedContact.details.childInformation,
+        rawJson: {
+          childInformation: savedContact.rawJson.childInformation,
         },
       };
       break;
     case ContactDetailsRoute.EDIT_CALLER_INFORMATION:
       newDraft = {
-        details: {
-          callerInformation: savedContact.details.callerInformation,
+        rawJson: {
+          callerInformation: savedContact.rawJson.callerInformation,
         },
       };
       break;
     case ContactDetailsRoute.EDIT_CASE_INFORMATION:
       newDraft = {
-        details: {
-          caseInformation: savedContact.details.caseInformation,
+        rawJson: {
+          caseInformation: savedContact.rawJson.caseInformation,
         },
       };
       break;
     case ContactDetailsRoute.EDIT_CATEGORIES:
       newDraft = {
-        overview: {
-          categories: savedContact.overview.categories,
+        rawJson: {
+          categories: savedContact.rawJson.categories,
         },
       };
       break;
