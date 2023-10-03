@@ -25,6 +25,9 @@ import { assignOfflineContactInit, assignOfflineContactResolve } from './Serverl
 import { removeContactState } from '../states/actions';
 import { getHrmConfig } from '../hrmConfig';
 import { ContactMetadata } from '../states/contacts/types';
+import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
+import { RootState } from '../states';
+import * as GeneralActions from '../states/actions';
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
@@ -44,7 +47,11 @@ export const completeContactTask = async (task: ITask) => {
 };
 
 export const removeOfflineContact = () => {
-  Manager.getInstance().store.dispatch(removeContactState(offlineContactTaskSid));
+  const manager = Manager.getInstance();
+  const contactState = findContactByTaskSid(manager.store.getState() as RootState, offlineContactTaskSid);
+  if (contactState) {
+    manager.store.dispatch(GeneralActions.removeContactState(offlineContactTaskSid, contactState.savedContact.id));
+  }
 };
 
 export const completeContactlessTask = async () => {

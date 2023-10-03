@@ -91,14 +91,12 @@ const newContactTemporaryId = (connectedCase: CaseType) => `__unsavedFromCase:${
 
 const Case: React.FC<Props> = ({
   task,
-  form: { contact, metadata } = {},
   counselorsHash,
   removeConnectedCase,
   changeRoute,
   isCreating,
   handleClose,
   routing,
-  newContact,
   savedContacts,
   loadContact,
   loadContacts,
@@ -133,42 +131,19 @@ const Case: React.FC<Props> = ({
         ),
         ...getActivitiesFromContacts(savedContacts ?? []),
       ];
-
-      if (newContact && !isStandaloneITask(task)) {
-        const connectCaseActivity: ConnectedCaseActivity = {
-          contactId: newContact.id,
-          date: newContact.timeOfContact,
-          createdAt: new Date().toISOString(),
-          type: task.channelType,
-          text: newContact.rawJson.caseInformation.callSummary.toString(),
-          twilioWorkerId: workerSid,
-          channel:
-            task.channelType === 'default'
-              ? newContact.rawJson.contactlessTask.channel
-              : (task.channelType as ChannelTypes),
-          callType: newContact.rawJson.callType,
-        };
-
-        timelineActivities.push(connectCaseActivity);
-      }
       return sortActivities(timelineActivities);
     },
     // savedContacts is not present but savedContactsJson is
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [newContact, savedContactsJson, task, contact, props.connectedCaseId, props.connectedCaseState?.connectedCase],
+    [savedContactsJson, task, props.connectedCaseId, props.connectedCaseState?.connectedCase],
   );
 
   useEffect(() => {
     if (!connectedCase) return;
     const { connectedContacts } = connectedCase;
-    if (connectedContacts?.length) {
-      loadContacts(connectedContacts, task.taskSid);
-      setLoadedContactIds(connectedContacts.map(cc => cc.id));
-    } else if (!isStandaloneITask(task)) {
-      setLoadedContactIds([newContactTemporaryId(connectedCase)]);
-      loadContact(contact, task.taskSid);
-    }
-  }, [connectedCase, contact, loadContact, loadContacts, releaseContacts, task, workerSid]);
+    loadContacts(connectedContacts, task.taskSid);
+    setLoadedContactIds(connectedContacts.map(cc => cc.id));
+  }, [connectedCase, loadContact, loadContacts, releaseContacts, task, workerSid]);
 
   const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;
@@ -211,15 +186,12 @@ const Case: React.FC<Props> = ({
   if (!props.connectedCaseState || !definitionVersion) return null;
 
   const getCategories = (firstConnectedContact: Contact): Record<string, string[]> => {
-    if (firstConnectedContact?.rawJson) {
-      return firstConnectedContact.rawJson.categories;
-    }
-    return contact?.rawJson?.categories;
+    return firstConnectedContact?.rawJson.categories ?? {};
   };
 
   const { can } = getPermissionsForCase(connectedCase.twilioWorkerId, connectedCase.status);
 
-  const firstConnectedContact = (savedContacts && savedContacts[0]) ?? newContact;
+  const firstConnectedContact = savedContacts && savedContacts[0];
 
   const categories = getCategories(firstConnectedContact) ?? {};
   const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase || {};
@@ -270,8 +242,7 @@ const Case: React.FC<Props> = ({
       updateCaseAsyncAction(connectedCase.id, {
         ...connectedCase,
       });
-      const savedContact = await submitContactForm(task, contact, metadata, connectedCase);
-      await connectToCase(savedContact.id, connectedCase.id);
+      await connectToCase(firstConnectedContact.id, connectedCase.id);
       await completeTask(task);
     } catch (error) {
       console.error(error);
@@ -429,11 +400,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
   const { connectedCase } = caseState ?? {};
   const connectedContactIds = new Set((connectedCase?.connectedContacts ?? []).map(cc => cc.id as string));
-  const newSearchContact =
-    state[namespace][contactFormsBase].existingContacts[newContactTemporaryId(connectedCase)]?.savedContact;
   const { definitionVersions, currentDefinitionVersion } = state[namespace][configurationBase];
   return {
-    form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
     connectedCaseState: caseState,
     connectedCaseId: connectedCase?.id,
     counselorsHash: state[namespace][configurationBase].counselors.hash,
@@ -443,7 +411,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     savedContacts: Object.values(state[namespace][contactFormsBase].existingContacts)
       .filter(contact => connectedContactIds.has(contact.savedContact.id))
       .map(ecs => ecs.savedContact),
-    newContact: newSearchContact,
   };
 };
 

@@ -35,7 +35,7 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
-const HrmForm: React.FC<Props> = ({ routing, task, featureFlags }) => {
+const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, contact }) => {
   if (!routing) return null;
   const { route } = routing;
 
@@ -57,7 +57,7 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags }) => {
       );
 
     case 'csam-report':
-      return <CSAMReport api={newContactCSAMApi(task.taskSid, routing.previousRoute)} />;
+      return <CSAMReport api={newContactCSAMApi(contact.id, task.taskSid, routing.previousRoute)} />;
 
     case 'select-call-type':
     default:
@@ -69,8 +69,10 @@ HrmForm.displayName = 'HrmForm';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const routingState = state[namespace][routingBase];
+  const contact = Object.values(state[namespace].activeContacts.existingContacts).find(cs => cs?.savedContact.id)
+    .savedContact;
 
-  return { routing: routingState.tasks[ownProps.task.taskSid] };
+  return { routing: routingState.tasks[ownProps.task.taskSid], contact };
 };
 
 export default connect(mapStateToProps, null)(HrmForm);

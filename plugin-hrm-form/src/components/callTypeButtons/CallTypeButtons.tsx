@@ -22,7 +22,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { callTypes, CallTypeButtonsEntry } from 'hrm-form-definitions';
 
 import { namespace, contactFormsBase, configurationBase, connectedCaseBase, RootState } from '../../states';
-import { updateCallType as newUpdateCallTypeAction } from '../../states/contacts/actions';
+import { SearchContactDraftChanges, updateDraft as newUpdateDraftAction } from '../../states/contacts/existingContacts';
 import { changeRoute as newChangeRouteAction } from '../../states/routing/actions';
 import { withLocalization } from '../../contexts/LocalizationContext';
 import { Box, Flex } from '../../styles/HrmStyles';
@@ -36,7 +36,8 @@ import { CustomITask, Contact, isOfflineContactTask } from '../../types/types';
 import { getTemplateStrings } from '../../hrmConfig';
 import { AppRoutes } from '../../states/routing/types';
 
-const isDialogOpen = (contact: Contact) => contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType);
+const isDialogOpen = (contact: SearchContactDraftChanges) =>
+  Boolean(contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType));
 
 type OwnProps = {
   task: CustomITask;
@@ -47,7 +48,8 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const CallTypeButtons: React.FC<Props> = ({
-  contact,
+  savedContact,
+  draftContact,
   metadata,
   task,
   localization,
@@ -72,7 +74,7 @@ const CallTypeButtons: React.FC<Props> = ({
      */
     const callType = callTypes[callTypeEntry.name] ? callTypes[callTypeEntry.name] : callTypeEntry.label;
 
-    updateCallType(callType);
+    updateCallType(savedContact.id, callType);
   };
 
   const handleClickAndRedirect = (callTypeEntry: CallTypeButtonsEntry) => {
@@ -101,7 +103,12 @@ const CallTypeButtons: React.FC<Props> = ({
     if (!hasTaskControl(task)) return;
 
     try {
-      await submitContactForm(task, contact, metadata, caseForm);
+      await submitContactForm(
+        task,
+        { ...savedContact, ...draftContact, rawJson: { ...savedContact.rawJson, ...draftContact.rawJson } },
+        metadata,
+        caseForm,
+      );
       await completeTask(task);
     } catch (error) {
       const strings = getTemplateStrings();
@@ -156,11 +163,11 @@ const CallTypeButtons: React.FC<Props> = ({
         </Box>
       </Container>
       <NonDataCallTypeDialog
-        isOpen={isDialogOpen(contact)}
+        isOpen={isDialogOpen(draftContact)}
         isCallTask={!isOfflineContactTask(task) && isCallTask(task)}
         isInWrapupMode={!isOfflineContactTask(task) && TaskHelper.isInWrapupMode(task)}
         handleConfirm={handleConfirmNonDataCallType}
-        handleCancel={() => clearCallType()}
+        handleCancel={() => clearCallType(savedContact?.id)}
       />
     </>
   );
@@ -169,18 +176,22 @@ const CallTypeButtons: React.FC<Props> = ({
 CallTypeButtons.displayName = 'CallTypeButtons';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const { contact, metadata } = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid] ?? {};
+  const { savedContact, metadata, draftContact } =
+    Object.values(state[namespace][contactFormsBase].existingContacts).find(
+      cs => cs.savedContact.taskId === ownProps.task.taskSid,
+    ) ?? {};
   const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
   const caseForm = caseState && caseState.connectedCase;
   const { currentDefinitionVersion } = state[namespace][configurationBase];
 
-  return { contact, metadata, caseForm, currentDefinitionVersion };
+  return { savedContact, draftContact, metadata, caseForm, currentDefinitionVersion };
 };
 
 const mapDispatchToProps = (dispatch, { task: { taskSid } }: OwnProps) => ({
   changeRoute: (route: AppRoutes) => dispatch(newChangeRouteAction(route, taskSid)),
-  updateCallType: (callType: string) => dispatch(newUpdateCallTypeAction(taskSid, callType)),
-  clearCallType: () => dispatch(newUpdateCallTypeAction(taskSid, null)),
+  updateCallType: (contactId: string, callType: string) =>
+    dispatch(newUpdateDraftAction(contactId, { rawJson: { callType } })),
+  clearCallType: (contactId: string) => dispatch(newUpdateDraftAction(contactId, { rawJson: { callType: null } })),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

@@ -32,6 +32,7 @@ import {
   Box,
   HeaderContainer,
 } from '../../styles/HrmStyles';
+import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
 
 type OwnProps = { selectedTaskSid?: string };
 
@@ -78,7 +79,7 @@ OfflineContactTask.displayName = 'OfflineContactTask';
 
 const mapStateToProps = (state: RootState) => ({
   isAddingOfflineContact: state[namespace][routingBase].isAddingOfflineContact,
-  offlineContactForms: state[namespace][contactFormsBase].tasks[offlineContactTaskSid]?.contact?.rawJson,
+  offlineContactForms: findContactByTaskSid(state, offlineContactTaskSid)?.draftContact?.rawJson,
 });
 
 const connector = connect(mapStateToProps);

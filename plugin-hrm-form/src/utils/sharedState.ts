@@ -21,11 +21,12 @@ import { CallTypes } from 'hrm-form-definitions';
 import { recordBackendError } from '../fullStory';
 import { issueSyncToken } from '../services/ServerlessService';
 import { getAseloFeatureFlags, getDefinitionVersions, getTemplateStrings } from '../hrmConfig';
-import { CSAMReportEntry, Contact } from '../types/types';
+import { CSAMReportEntry, Contact, ContactRawJson } from '../types/types';
 import { ContactMetadata, ContactWithMetadata } from '../states/contacts/types';
-import { createContactWithMetadata } from '../states/contacts/reducer';
+import { newContactState } from '../states/contacts/reducer';
 import { ChannelTypes } from '../states/DomainConstants';
 import { ResourceReferral } from '../states/contacts/resourceReferral';
+import { ContactState } from '../states/contacts/existingContacts';
 
 // Legacy type previously used for unsaved contact forms, kept around to ensure transfers are compatible between new & old clients
 // Not much point in replacing the use of this type in the shared state, since we will drop use of shared state in favour of the HRM DB for managing transfer state soon anyway
@@ -64,11 +65,11 @@ const transferFormCategoriesToContactCategories = (
   return contactCategories;
 };
 
-const transferFormToContact = (transferForm: TransferForm): ContactWithMetadata => {
+const transferFormToContactState = (transferForm: TransferForm): ContactState => {
   const { metadata, helpline, csamReports, referrals, reservationSid, ...form } = transferForm;
   return {
-    contact: {
-      ...createContactWithMetadata(getDefinitionVersions().currentDefinitionVersion)(true).contact,
+    savedContact: {
+      ...newContactState(getDefinitionVersions().currentDefinitionVersion)(true).savedContact,
       helpline,
       csamReports,
       referrals,
@@ -83,6 +84,8 @@ const transferFormToContact = (transferForm: TransferForm): ContactWithMetadata 
       ...metadata,
       draft: form.draft,
     },
+    draftContact: {},
+    references: new Set<string>(),
   };
 };
 
@@ -95,8 +98,12 @@ const contactFormCategoriesToTransferFormCategories = (
   );
 };
 
-const contactToTransferForm = ({ contact, metadata }: ContactWithMetadata): TransferForm => {
-  const { helpline, csamReports, referrals, rawJson } = contact;
+const contactToTransferForm = ({ savedContact, draftContact, metadata }: ContactState): TransferForm => {
+  const { helpline, csamReports, referrals, rawJson } = {
+    ...savedContact,
+    ...(draftContact as Contact),
+    rawJson: { ...savedContact.rawJson, ...(draftContact.rawJson as ContactRawJson) },
+  };
   const { draft } = metadata;
   return {
     helpline,
@@ -143,10 +150,7 @@ const DOCUMENT_TTL_SECONDS = 24 * 60 * 60; // 24 hours
  * @param {*} contactWithMetaData current contact (or undefined)
  * @param task
  */
-export const saveFormSharedState = async (
-  contactWithMetaData: ContactWithMetadata,
-  task: ITask,
-): Promise<string | null> => {
+export const saveFormSharedState = async (contactWithMetaData: ContactState, task: ITask): Promise<string | null> => {
   if (!getAseloFeatureFlags().enable_transfers) return null;
 
   try {
@@ -175,7 +179,7 @@ export const saveFormSharedState = async (
 /**
  * Restores the contact form from Sync Client (if there is any)
  */
-export const loadFormSharedState = async (task: ITask): Promise<ContactWithMetadata> => {
+export const loadFormSharedState = async (task: ITask): Promise<ContactState> => {
   if (!getAseloFeatureFlags().enable_transfers) return null;
 
   try {
@@ -194,7 +198,7 @@ export const loadFormSharedState = async (task: ITask): Promise<ContactWithMetad
     const documentName = task.attributes.transferMeta.formDocument;
     if (documentName) {
       const document = await sharedStateClient.document(documentName);
-      return transferFormToContact(document.data as TransferForm);
+      return transferFormToContactState(document.data as TransferForm);
     }
 
     return null;

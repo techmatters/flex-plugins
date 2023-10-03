@@ -18,17 +18,18 @@ import { omit } from 'lodash';
 import { callTypes } from 'hrm-form-definitions';
 
 import * as t from './types';
-import { ContactsState, ContactWithMetadata } from './types';
+import { ContactMetadata, ContactsState } from './types';
 import {
   DefinitionVersion,
-  GeneralActionType,
   INITIALIZE_CONTACT_STATE,
-  RECREATE_CONTACT_STATE,
+  InitializeContactStateAction,
   REMOVE_CONTACT_STATE,
+  RemoveContactStateAction,
 } from '../types';
 import { createStateItem, getInitialValue } from '../../components/common/forms/formGenerators';
 import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
 import {
+  ContactState,
   createDraftReducer,
   EXISTING_CONTACT_CREATE_DRAFT_ACTION,
   EXISTING_CONTACT_LOAD_TRANSCRIPT,
@@ -53,31 +54,19 @@ import {
 } from './contactDetails';
 import { ADD_EXTERNAL_REPORT_ENTRY, addExternalReportEntryReducer } from '../csam-report/existingContactExternalReport';
 import { ReferralLookupStatus, resourceReferralReducer } from './resourceReferral';
-import { ContactRawJson } from '../../types/types';
+import { Contact, ContactRawJson } from '../../types/types';
 import { ContactCategoryAction, toggleSubCategoriesReducer } from './categories';
 import { configurationBase, RootState } from '..';
-import { transformValuesForContactForm } from './contactDetailsAdapter';
 
 export const emptyCategories = [];
 
-// eslint-disable-next-line import/no-unused-modules
-export const createContactWithMetadata = (definitions: DefinitionVersion) => (
-  recreated: boolean,
-): ContactWithMetadata => {
-  const initialChildInformation = definitions.tabbedForms.ChildInformationTab.reduce(createStateItem, {});
-  const initialCallerInformation = definitions.tabbedForms.CallerInformationTab.reduce(createStateItem, {});
-  const initialCaseInformation = definitions.tabbedForms.CaseInformationTab.reduce(createStateItem, {});
-
-  const { helplines } = definitions.helplineInformation;
-  const defaultHelpline = helplines.find(helpline => helpline.default).value || helplines[0].value;
-  if (defaultHelpline === null || defaultHelpline === undefined) throw new Error('No helpline definition was found');
-
+const newContactMetaData = (recreated: boolean): ContactMetadata => {
   const categoriesMeta = {
     gridView: false,
     expanded: {},
   };
 
-  const metadata = {
+  return {
     draft: {
       resourceReferralList: {
         resourceReferralIdToAdd: '',
@@ -86,10 +75,19 @@ export const createContactWithMetadata = (definitions: DefinitionVersion) => (
     },
     startMillis: recreated ? null : new Date().getTime(),
     endMillis: null,
-    tab: 1,
     recreated,
     categories: categoriesMeta,
   };
+};
+
+const newContact = (definitions: DefinitionVersion): Contact => {
+  const initialChildInformation = definitions.tabbedForms.ChildInformationTab.reduce(createStateItem, {});
+  const initialCallerInformation = definitions.tabbedForms.CallerInformationTab.reduce(createStateItem, {});
+  const initialCaseInformation = definitions.tabbedForms.CaseInformationTab.reduce(createStateItem, {});
+
+  const { helplines } = definitions.helplineInformation;
+  const defaultHelpline = helplines.find(helpline => helpline.default).value || helplines[0].value;
+  if (defaultHelpline === null || defaultHelpline === undefined) throw new Error('No helpline definition was found');
 
   const initialContactlessTaskTabDefinition = createContactlessTaskTabDefinition({
     counselorsList: [],
@@ -105,41 +103,45 @@ export const createContactWithMetadata = (definitions: DefinitionVersion) => (
   };
 
   return {
-    contact: {
-      accountSid: '',
-      id: '',
-      twilioWorkerId: '',
-      timeOfContact: new Date().toISOString(),
-      taskId: '',
-      helpline: '',
-      rawJson: {
-        childInformation: initialChildInformation,
-        callerInformation: initialCallerInformation,
-        caseInformation: initialCaseInformation,
-        callType: '',
-        contactlessTask,
-        categories: {},
-      },
-      createdBy: '',
-      createdAt: '',
-      updatedBy: '',
-      updatedAt: '',
-      queueName: '',
-      channel: 'web',
-      number: '',
-      conversationDuration: 0,
-      channelSid: '',
-      serviceSid: '',
-      csamReports: [],
-      conversationMedia: [],
+    accountSid: '',
+    id: '',
+    twilioWorkerId: '',
+    timeOfContact: new Date().toISOString(),
+    taskId: '',
+    helpline: '',
+    rawJson: {
+      childInformation: initialChildInformation,
+      callerInformation: initialCallerInformation,
+      caseInformation: initialCaseInformation,
+      callType: '',
+      contactlessTask,
+      categories: {},
     },
-    metadata,
+    createdBy: '',
+    createdAt: '',
+    updatedBy: '',
+    updatedAt: '',
+    queueName: '',
+    channel: 'web',
+    number: '',
+    conversationDuration: 0,
+    channelSid: '',
+    serviceSid: '',
+    csamReports: [],
+    conversationMedia: [],
   };
 };
 
+// eslint-disable-next-line import/no-unused-modules
+export const newContactState = (definitions: DefinitionVersion) => (recreated: boolean): ContactState => ({
+  savedContact: newContact(definitions),
+  metadata: newContactMetaData(recreated),
+  draftContact: {},
+  references: new Set(),
+});
+
 // exposed for testing
 export const initialState: ContactsState = {
-  tasks: {},
   existingContacts: {},
   contactDetails: {
     [DetailsContext.CASE_DETAILS]: { detailsExpanded: {} },
@@ -160,7 +162,8 @@ export function reduce(
     | ExistingContactAction
     | ContactDetailsAction
     | ContactCategoryAction
-    | GeneralActionType,
+    | InitializeContactStateAction
+    | RemoveContactStateAction,
 ): ContactsState {
   let state = boundReferralReducer(inputState, action as any);
   state = toggleSubCategoriesReducer(state, action as ContactCategoryAction);
@@ -168,131 +171,65 @@ export function reduce(
     case INITIALIZE_CONTACT_STATE:
       return {
         ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: createContactWithMetadata(action.definitions)(false),
-        },
-      };
-    case RECREATE_CONTACT_STATE:
-      if (state.tasks[action.taskId]) return state;
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: createContactWithMetadata(action.definitions)(true),
-        },
-      };
-    case REMOVE_CONTACT_STATE:
-      return {
-        ...state,
-        tasks: omit(state.tasks, action.taskId),
-      };
-    case t.UPDATE_FORM: {
-      const updateFormDefinition =
-        rootState[configurationBase].definitionVersions[state.tasks[action.taskId].contact.rawJson.definitionVersion] ??
-        rootState[configurationBase].currentDefinitionVersion;
-      const transformedForm = transformValuesForContactForm(updateFormDefinition)({
-        [action.parent]: action.payload,
-      });
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...state.tasks[action.taskId],
-            contact: {
-              ...state.tasks[action.taskId].contact,
-              rawJson: {
-                ...state.tasks[action.taskId].contact.rawJson,
-                ...transformedForm,
-              } as ContactRawJson,
+        existingContacts: {
+          ...state.existingContacts,
+          [action.initialContact.id]: {
+            savedContact: action.initialContact,
+            draftContact: {
+              ...action.initialContact,
+              // Cheap deep copy
+              rawJson: JSON.parse(JSON.stringify(action.initialContact.rawJson)),
             },
+            metadata: action.metadata,
+            references: new Set(),
           },
         },
+      };
+    case REMOVE_CONTACT_STATE: {
+      const contactId = Object.values(state.existingContacts).find(cs => cs.savedContact.taskId === action.taskId)
+        ?.savedContact.id;
+      return {
+        ...state,
+        existingContacts: omit(state.existingContacts, contactId),
       };
     }
     case t.SAVE_END_MILLIS: {
-      const taskToEnd = state.tasks[action.taskId];
+      const currentContact = Object.values(state.existingContacts).find(cs => cs.savedContact.taskId === action.taskId);
 
-      const { metadata } = taskToEnd;
-      const endedTask = { ...taskToEnd, metadata: { ...metadata, endMillis: new Date().getTime() } };
-
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: endedTask,
-        },
-      };
-    }
-    case t.SET_CATEGORIES_GRID_VIEW: {
-      const currentTask = state.tasks[action.taskId];
-      const { metadata } = currentTask;
-      const { categories } = metadata;
-      const taskWithCategoriesViewToggled = {
-        ...currentTask,
-        metadata: {
-          ...metadata,
-          categories: {
-            ...categories,
-            gridView: action.gridView,
-          },
-        },
-      };
+      const { metadata } = currentContact;
+      const endedTask = { ...currentContact, metadata: { ...metadata, endMillis: new Date().getTime() } };
 
       return {
         ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: taskWithCategoriesViewToggled,
-        },
-      };
-    }
-    case t.HANDLE_EXPAND_CATEGORY: {
-      const currentTask = state.tasks[action.taskId];
-      const { metadata } = currentTask;
-      const { categories } = metadata;
-      const taskWithCategoriesExpanded = {
-        ...currentTask,
-        metadata: {
-          ...metadata,
-          categories: {
-            ...categories,
-            expanded: {
-              ...categories.expanded,
-              [action.category]: !categories.expanded[action.category],
-            },
-          },
-        },
-      };
-
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: taskWithCategoriesExpanded,
+        existingContacts: {
+          ...state.existingContacts,
+          [currentContact.savedContact.id]: endedTask,
         },
       };
     }
     case t.PREPOPULATE_FORM: {
-      const currentTask = state.tasks[action.taskId];
+      const currentContact = Object.values(state.existingContacts).find(cs => cs.savedContact.taskId === action.taskId)
+        .savedContact;
+      if (!currentContact) {
+        console.warn(`No contact with task sid ${action.taskId} found in redux state`);
+        return state;
+      }
       const { callType, values, isCaseInfo } = action;
       let formName = callType === callTypes.child ? 'childInformation' : 'callerInformation';
       if (isCaseInfo) formName = 'caseInformation';
 
       return {
         ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...currentTask,
-            contact: {
-              ...currentTask.contact,
+        existingContacts: {
+          ...state.existingContacts,
+          [currentContact.id]: {
+            ...state.existingContacts[currentContact.id],
+            draftContact: {
               rawJson: {
-                ...currentTask.contact.rawJson,
-                callType: callType ? callType : state.tasks[action.taskId].contact.rawJson.callType,
+                callType: callType ? callType : state.existingContacts[currentContact.id].draftContact.rawJson.callType,
                 [formName]: {
-                  ...currentTask[formName],
+                  ...state.existingContacts[currentContact.id].savedContact?.rawJson?.[formName],
+                  ...state.existingContacts[currentContact.id].draftContact?.rawJson?.[formName],
                   ...values,
                 },
               },
@@ -303,48 +240,15 @@ export function reduce(
     }
     case t.RESTORE_ENTIRE_FORM: {
       const definition =
-        rootState[configurationBase].definitionVersions[action.contact.contact.rawJson.definitionVersion];
+        rootState[configurationBase].definitionVersions[action.contact.savedContact.rawJson.definitionVersion];
+      const { savedContact } = action.contact;
       return {
         ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...(state.tasks[action.taskId] || createContactWithMetadata(definition)(true)),
+        existingContacts: {
+          ...state.existingContacts,
+          [savedContact.id]: {
+            ...(state.existingContacts[savedContact.id] || newContactState(definition)(true)),
             ...action.contact,
-          },
-        },
-      };
-    }
-    case t.UPDATE_HELPLINE: {
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...state.tasks[action.taskId],
-            contact: {
-              ...state.tasks[action.taskId].contact,
-              helpline: action.helpline,
-              rawJson: {
-                ...state.tasks[action.taskId].contact.rawJson,
-                categories: {},
-              },
-            },
-          },
-        },
-      };
-    }
-    case t.ADD_CSAM_REPORT_ENTRY: {
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...state.tasks[action.taskId],
-            contact: {
-              ...state.tasks[action.taskId].contact,
-              csamReports: [...state.tasks[action.taskId].contact.csamReports, action.csamReportEntry],
-            },
           },
         },
       };

@@ -16,7 +16,7 @@
 import { createAction, createReducer } from 'redux-promise-middleware-actions';
 import { omit } from 'lodash';
 
-import { GeneralActionType, INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE } from '../types';
+import { INITIALIZE_CONTACT_STATE, InitializeContactStateAction, RECREATE_CONTACT_STATE } from '../types';
 import { removeContactState } from '../actions';
 import { RootState, conferencingBase, namespace } from '..';
 
@@ -90,12 +90,12 @@ const initialState: ConferencingState = {
   tasks: {},
 };
 
-const createNewEntryForTaskId = (state: ConferencingState, payload: GeneralActionType) => {
+const createNewEntryForTaskId = (state: ConferencingState, payload: InitializeContactStateAction) => {
   return {
     ...state,
     tasks: {
       ...state.tasks,
-      [payload.taskId]: newTaskEntry,
+      [payload.initialContact.taskId]: newTaskEntry,
     },
   };
 };
@@ -166,10 +166,7 @@ const conferencingReducer = createReducer(initialState, handleAction => [
 ]);
 
 // eslint-disable-next-line import/no-unused-modules
-export const reduce = (
-  inputState = initialState,
-  action: ConferencingStateAction | GeneralActionType,
-): ConferencingState => {
+export const reduce = (inputState = initialState, action: ConferencingStateAction): ConferencingState => {
   return conferencingReducer(inputState, action);
 };
 

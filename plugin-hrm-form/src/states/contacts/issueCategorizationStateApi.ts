@@ -16,11 +16,9 @@
 
 import { Dispatch } from 'react';
 
-import { CustomITask } from '../../types/types';
 import { contactFormsBase, namespace, RootState } from '..';
-import * as actions from './actions';
 import { setCategoriesGridView, toggleCategoryExpanded } from './existingContacts';
-import { toggleSubcategoryForTask, toggleSubcategory } from './categories';
+import { toggleSubcategory } from './categories';
 
 type IssueCategoriesState = {
   gridView: boolean;
@@ -35,22 +33,9 @@ export type IssueCategorizationStateApi = {
   toggleSubcategoryActionDispatcher: (dispatch: Dispatch<any>) => (category: string, subcategory: string) => void;
 };
 
-export const forTask = (task: CustomITask): IssueCategorizationStateApi => ({
-  retrieveState: state => ({
-    ...state[namespace][contactFormsBase].tasks[task.taskSid].metadata.categories,
-    selectedCategories: state[namespace][contactFormsBase].tasks[task.taskSid].contact.rawJson.categories,
-  }),
-  toggleCategoryExpandedActionDispatcher: dispatch => category =>
-    dispatch(actions.handleExpandCategory(category, task.taskSid)),
-  setGridViewActionDispatcher: dispatch => useGridView =>
-    dispatch(actions.setCategoriesGridView(useGridView, task.taskSid)),
-  toggleSubcategoryActionDispatcher: dispatch => (category, subcategory) =>
-    dispatch(toggleSubcategoryForTask(task.taskSid, category, subcategory)),
-});
-
 export const forExistingContact = (contactId: string): IssueCategorizationStateApi => ({
   retrieveState: state => ({
-    ...state[namespace][contactFormsBase].existingContacts[contactId].categories,
+    ...state[namespace][contactFormsBase].existingContacts[contactId].metadata.categories,
     selectedCategories: state[namespace][contactFormsBase].existingContacts[contactId].draftContact.rawJson.categories,
   }),
   toggleCategoryExpandedActionDispatcher: dispatch => category => dispatch(toggleCategoryExpanded(contactId, category)),

@@ -14,27 +14,46 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { ITask } from '@twilio/flex-ui';
+
 import {
-  GeneralActionType,
   INITIALIZE_CONTACT_STATE,
   RECREATE_CONTACT_STATE,
   REMOVE_CONTACT_STATE,
   DefinitionVersion,
+  InitializeContactStateAction,
+  RemoveContactStateAction,
 } from './types';
+import { Contact } from '../types/types';
+import { ContactMetadata } from './contacts/types';
 
-export const initializeContactState = (definitions: DefinitionVersion) => (taskId: string): GeneralActionType => ({
+export const initializeContactState = (definitions: DefinitionVersion) => (
+  initialContact: Contact,
+  metadata: ContactMetadata,
+): InitializeContactStateAction => {
+  return {
+    type: INITIALIZE_CONTACT_STATE,
+    definitions,
+    initialContact,
+    metadata,
+    recreated: false,
+  };
+};
+
+export const recreateContactState = (definitions: DefinitionVersion) => (
+  initialContact: Contact,
+  metadata: ContactMetadata,
+): InitializeContactStateAction => ({
   type: INITIALIZE_CONTACT_STATE,
   definitions,
-  taskId,
+  initialContact,
+  metadata,
+  recreated: false,
 });
 
-export const recreateContactState = (definitions: DefinitionVersion) => (taskId: string): GeneralActionType => ({
-  type: RECREATE_CONTACT_STATE,
-  definitions,
-  taskId,
-});
-
-export const removeContactState = (taskId: string): GeneralActionType => ({
+// TODO: unify the various task SID maps we have around redux to store contact data under the contacts map, then remove the need for a task ID
+export const removeContactState = (taskId: string, contactId: string): RemoveContactStateAction => ({
   type: REMOVE_CONTACT_STATE,
   taskId,
+  contactId,
 });

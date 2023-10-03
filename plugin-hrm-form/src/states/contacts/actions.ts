@@ -15,76 +15,35 @@
  */
 
 /* eslint-disable import/no-unused-modules */
-import { CallTypes, DataCallTypes } from 'hrm-form-definitions';
+import { callTypes, DataCallTypes } from 'hrm-form-definitions';
 
 import * as t from './types';
-import { ContactRawJson, CSAMReportEntry } from '../../types/types';
-import { ContactWithMetadata } from './types';
-
-// Action creators
-export const updateForm = (
-  taskId: string,
-  parent: keyof ContactRawJson,
-  payload: ContactRawJson[typeof parent],
-): t.ContactsActionType => {
-  return {
-    type: t.UPDATE_FORM,
-    taskId,
-    parent,
-    payload,
-  };
-};
-
-export const updateCallType = (taskId: string, callType: CallTypes | ''): t.ContactsActionType => ({
-  type: t.UPDATE_FORM,
-  taskId,
-  parent: 'callType',
-  payload: callType,
-});
+import { ContactState, EXISTING_CONTACT_UPDATE_DRAFT_ACTION, ExistingContactAction } from './existingContacts';
 
 export const saveEndMillis = (taskId: string): t.ContactsActionType => ({ type: t.SAVE_END_MILLIS, taskId });
-
-export const setCategoriesGridView = (gridView: boolean, taskId: string): t.ContactsActionType => ({
-  type: t.SET_CATEGORIES_GRID_VIEW,
-  gridView,
-  taskId,
-});
-
-export const handleExpandCategory = (category: string, taskId: string) => ({
-  type: t.HANDLE_EXPAND_CATEGORY,
-  category,
-  taskId,
-});
 
 export const prepopulateForm = (
   callType: DataCallTypes,
   values: { [property: string]: string },
-  taskId: string,
+  contactId: string,
   isCaseInfo?: Boolean,
-): t.ContactsActionType => ({
-  type: t.PREPOPULATE_FORM,
-  callType,
-  values,
-  taskId,
-  isCaseInfo,
-});
+): ExistingContactAction => {
+  let formName = callType === callTypes.child ? 'childInformation' : 'callerInformation';
+  if (isCaseInfo) formName = 'caseInformation';
+  return {
+    type: EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
+    contactId,
+    draft: {
+      rawJson: {
+        [formName]: values,
+      },
+    },
+  };
+};
 
-export const restoreEntireContact = (contact: ContactWithMetadata, taskId: string): t.ContactsActionType => ({
+export const restoreEntireContact = (contact: ContactState): t.ContactsActionType => ({
   type: t.RESTORE_ENTIRE_FORM,
   contact,
-  taskId,
-});
-
-export const updateHelpline = (taskId: string, helpline: string): t.ContactsActionType => ({
-  type: t.UPDATE_HELPLINE,
-  helpline,
-  taskId,
-});
-
-export const addCSAMReportEntry = (csamReportEntry: CSAMReportEntry, taskId: string): t.ContactsActionType => ({
-  type: t.ADD_CSAM_REPORT_ENTRY,
-  csamReportEntry,
-  taskId,
 });
 
 export const setEditContactPageOpen = (): t.ContactsActionType => ({

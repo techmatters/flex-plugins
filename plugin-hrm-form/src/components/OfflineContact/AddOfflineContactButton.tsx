@@ -22,9 +22,13 @@ import { connect, ConnectedProps } from 'react-redux';
 import { configurationBase, namespace, RootState, routingBase } from '../../states';
 import type { DefinitionVersion } from '../../states/types';
 import * as GeneralActions from '../../states/actions';
-import { offlineContactTaskSid } from '../../types/types';
+import { Contact, offlineContactTaskSid } from '../../types/types';
 import AddTaskButton from '../common/AddTaskButton';
 import { rerenderAgentDesktop } from '../../rerenderView';
+import { newContactState } from '../../states/contacts/reducer';
+import { createContact } from '../../services/ContactService';
+import { getHrmConfig } from '../../hrmConfig';
+import { ContactMetadata } from '../../states/contacts/types';
 
 type OwnProps = {};
 
@@ -40,8 +44,14 @@ const AddOfflineContactButton: React.FC<Props> = ({
     return null;
   }
 
+  const loadOrCreateContact = async () => {
+    const { savedContact: newContact, metadata } = newContactState(currentDefinitionVersion)(true);
+    const savedContact = await createContact(newContact, getHrmConfig().workerSid, offlineContactTaskSid);
+    recreateContactState(currentDefinitionVersion)(savedContact, metadata);
+  };
+
   const onClick = async () => {
-    recreateContactState(currentDefinitionVersion)(offlineContactTaskSid);
+    await loadOrCreateContact();
     await Actions.invokeAction('SelectTask', { task: undefined });
     await rerenderAgentDesktop();
   };
@@ -69,8 +79,8 @@ const mapStateToProps = (state: RootState) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  recreateContactState: (definitions: DefinitionVersion) => (taskId: string) =>
-    dispatch(GeneralActions.recreateContactState(definitions)(taskId)),
+  recreateContactState: (definitions: DefinitionVersion) => (contact: Contact, metadata: ContactMetadata) =>
+    dispatch(GeneralActions.recreateContactState(definitions)(contact, metadata)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

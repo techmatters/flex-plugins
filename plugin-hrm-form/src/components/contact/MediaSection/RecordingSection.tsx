@@ -24,7 +24,14 @@ import fetchHrmApi from '../../../services/fetchHrmApi';
 
 type OwnProps = { contactId: string; externalStoredRecording: S3StoredRecording };
 
-const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecording }) => {
+const RecordingSection: React.FC<OwnProps> = ({
+  contactId,
+  externalStoredRecording: {
+    storeTypeSpecificData: {
+      location: { key, bucket },
+    },
+  },
+}) => {
   const [voiceRecording, setVoiceRecording] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showButton, setShowButton] = useState(true);
@@ -38,12 +45,7 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
       const mediaType = 'recording';
 
       const { media_url: recordingPreSignedUrl } = await fetchHrmApi(
-        generateExternalMediaPath(
-          contactId,
-          mediaType,
-          externalStoredRecording.location.bucket,
-          externalStoredRecording.location.key,
-        ),
+        generateExternalMediaPath(contactId, mediaType, bucket, key),
       );
 
       setVoiceRecording(recordingPreSignedUrl);
@@ -55,10 +57,7 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
   };
 
   const handleFetchAndLoadException = err => {
-    console.error(
-      `Error loading the recording for contact ${contactId}, recording url ${externalStoredRecording.location.key}`,
-      err,
-    );
+    console.error(`Error loading the recording for contact ${contactId}, recording url ${key}`, err);
     const errorMessage = 'RecordingSection-Error';
 
     setErrorMessage(errorMessage);

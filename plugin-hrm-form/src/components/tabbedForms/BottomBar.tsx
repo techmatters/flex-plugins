@@ -43,6 +43,7 @@ type BottomBarProps = {
   showSubmitButton: boolean;
   nextTab: () => void;
   task: CustomITask;
+  contactId: string;
 };
 
 const BottomBar: React.FC<
@@ -56,7 +57,6 @@ const BottomBar: React.FC<
   metadata,
   task,
   changeRoute,
-  setConnectedCase,
   nextTab,
   caseForm,
   createCaseAsyncAction,
@@ -170,9 +170,14 @@ const BottomBar: React.FC<
 BottomBar.displayName = 'BottomBar';
 
 const mapStateToProps = (state: RootState, ownProps: BottomBarProps) => {
-  const { contact, metadata } = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid] ?? {};
+  const { draftContact, savedContact, metadata } =
+    state[namespace][contactFormsBase].existingContacts[ownProps.contactId] ?? {};
   const caseForm = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase || {};
-  return { contact, metadata, caseForm };
+  return {
+    contact: { ...savedContact, ...draftContact, rawJson: { ...savedContact.rawJson, ...draftContact.rawJson } },
+    metadata,
+    caseForm,
+  };
 };
 
 const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {

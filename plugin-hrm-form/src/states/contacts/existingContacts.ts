@@ -16,11 +16,12 @@
 
 import { omit } from 'lodash';
 
-import { Contact } from '../../types/types';
+import { Contact, ContactRawJson } from '../../types/types';
 import { AddExternalReportEntryAction } from '../csam-report/existingContactExternalReport';
 import { configurationBase, namespace, RootState } from '..';
 import { ConfigurationState } from '../configuration/reducer';
 import { transformValues, transformValuesForContactForm } from './contactDetailsAdapter';
+import { ContactMetadata } from './types';
 
 export enum ContactDetailsRoute {
   EDIT_CALLER_INFORMATION = 'editCallerInformation',
@@ -34,7 +35,7 @@ type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
 };
 
-export type SearchContactDraftChanges = RecursivePartial<Contact>;
+export type SearchContactDraftChanges = Omit<Partial<Contact>, 'rawJson'> & { rawJson?: Partial<ContactRawJson> };
 
 // TODO: Update this type when the Lambda worker is "done"
 export type TranscriptMessage = {
@@ -88,17 +89,16 @@ export type TranscriptResult = {
   channelSid: string;
 };
 
+export type ContactState = {
+  references: Set<string>;
+  savedContact: Contact;
+  draftContact?: SearchContactDraftChanges;
+  metadata: ContactMetadata;
+  transcript?: Transcript;
+};
+
 export type ExistingContactsState = {
-  [contactId: string]: {
-    references: Set<string>;
-    savedContact: Contact;
-    draftContact?: SearchContactDraftChanges;
-    categories: {
-      gridView: boolean;
-      expanded: { [key: string]: boolean };
-    };
-    transcript?: Transcript;
-  };
+  [contactId: string]: ContactState;
 };
 
 export const LOAD_CONTACT_ACTION = 'LOAD_CONTACT_ACTION';
@@ -259,11 +259,14 @@ export const toggleCategoryExpandedReducer = (state: ExistingContactsState, acti
     ...state,
     [action.contactId]: {
       ...state[action.contactId],
-      categories: {
-        ...state[action.contactId].categories,
-        expanded: {
-          ...state[action.contactId].categories.expanded,
-          [action.category]: !state[action.contactId].categories.expanded[action.category],
+      metadata: {
+        ...state[action.contactId].metadata,
+        categories: {
+          ...state[action.contactId].metadata.categories,
+          expanded: {
+            ...state[action.contactId].metadata.categories.expanded,
+            [action.category]: !state[action.contactId].metadata.categories.expanded[action.category],
+          },
         },
       },
     },
@@ -295,9 +298,12 @@ export const setCategoriesGridViewReducer = (state: ExistingContactsState, actio
     ...state,
     [action.contactId]: {
       ...state[action.contactId],
-      categories: {
-        ...state[action.contactId].categories,
-        gridView: action.useGridView,
+      metadata: {
+        ...state[action.contactId].metadata,
+        categories: {
+          ...state[action.contactId].metadata.categories,
+          gridView: action.useGridView,
+        },
       },
     },
   };
@@ -346,8 +352,13 @@ export const updateDraftReducer = (
     [contactId]: {
       ...state[contactId],
       draftContact: {
+        ...state[contactId].draftContact,
         ...draft,
-        rawJson: transformedForm,
+        rawJson: {
+          ...state[contactId].draftContact.rawJson,
+          ...draft.rawJson,
+          ...transformedForm,
+        },
       },
     },
   };

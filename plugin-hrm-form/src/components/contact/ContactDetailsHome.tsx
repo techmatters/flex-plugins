@@ -219,9 +219,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
   );
 
   const loadConversationIntoOverlay = async () => {
-    const twilioStoredMedia = savedContact.conversationMedia.find(isTwilioStoredMedia);
+    const { storeTypeSpecificData } = savedContact.conversationMedia.find(isTwilioStoredMedia);
     await Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_PLAY, {
-      taskSid: twilioStoredMedia.reservationSid,
+      taskSid: storeTypeSpecificData.reservationSid,
     });
   };
 

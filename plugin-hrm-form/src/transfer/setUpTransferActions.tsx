@@ -35,12 +35,14 @@ import { recordEvent } from '../fullStory';
 import { loadFormSharedState, saveFormSharedState } from '../utils/sharedState';
 import { transferChatStart } from '../services/ServerlessService';
 import { getHrmConfig } from '../hrmConfig';
-import { contactFormsBase, namespace } from '../states';
+import { namespace } from '../states';
 import * as Actions from '../states/contacts/actions';
 import { changeRoute } from '../states/routing/actions';
 import { reactivateAseloListeners } from '../conversationListeners';
 import { prepopulateForm } from '../utils/prepopulateForm';
 import { ContactWithMetadata } from '../states/contacts/types';
+import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
+import { ContactState } from '../states/contacts/existingContacts';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type ActionPayload = { task: ITask };
@@ -70,8 +72,8 @@ const safeTransfer = async (transferFunction: () => Promise<any>, task: ITask): 
 /**
  * Given a taskSid, retrieves the state of the form (stored in redux) for that task
  */
-const getStateContactForms = (taskSid: string): ContactWithMetadata => {
-  return Manager.getInstance().store.getState()[namespace][contactFormsBase].tasks[taskSid];
+const getStateContactForms = (taskSid: string): ContactState => {
+  return findContactByTaskSid(Manager.getInstance().store.getState()[namespace], taskSid);
 };
 
 /**
@@ -129,12 +131,12 @@ const afterCancelTransfer = (payload: ActionPayload) => {
 };
 
 const restoreFormIfTransfer = async (task: ITask) => {
-  const contactWithMetadata = await loadFormSharedState(task);
-  if (contactWithMetadata) {
-    Manager.getInstance().store.dispatch(Actions.restoreEntireContact(contactWithMetadata, task.taskSid));
+  const contactState = await loadFormSharedState(task);
+  if (contactState) {
+    Manager.getInstance().store.dispatch(Actions.restoreEntireContact(contactState));
     const {
-      contact: { rawJson },
-    } = contactWithMetadata;
+      savedContact: { rawJson },
+    } = contactState;
     if (rawJson.callType === callTypes.child) {
       Manager.getInstance().store.dispatch(
         changeRoute({ route: 'tabbed-forms', subroute: 'childInformation' }, task.taskSid),

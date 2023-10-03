@@ -17,7 +17,7 @@
 import { TaskHelper } from '@twilio/flex-ui';
 import { CallTypes, DefinitionVersion } from 'hrm-form-definitions';
 
-import { createContactWithMetadata } from '../states/contacts/reducer';
+import { newContactState } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/validationRules';
 import { getQueryParams } from './PaginationParams';
 import { fillEndMillis, getConversationDuration } from '../utils/conversationDuration';
@@ -226,6 +226,9 @@ const adaptConversationMedia = (
  * TODO: Remove this once the API is aligned with the type we use in the front end
  */
 export function transformForm(rawJson: Partial<ContactRawJson>, helpline: string): Partial<ContactRawJsonForApi> {
+  if (!rawJson) {
+    return {};
+  }
   const { categories: inputCategories } = rawJson;
   const { currentDefinitionVersion } = getDefinitionVersions();
   // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
@@ -275,17 +278,21 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
 
     // Store a pending transcript
     returnData.conversationMedia.push({
-      store: 'S3',
-      type: 'transcript',
-      location: undefined,
+      storeType: 'S3',
+      storeTypeSpecificData: {
+        type: 'transcript',
+        location: undefined,
+      },
     });
   }
 
   if (TaskHelper.isChatBasedTask(task) || TaskHelper.isCallTask(task)) {
     // Store reservation sid to use Twilio insights overlay (recordings/transcript)
     returnData.conversationMedia.push({
-      store: 'twilio',
-      reservationSid: task.sid,
+      storeType: 'twilio',
+      storeTypeSpecificData: {
+        reservationSid: task.sid,
+      },
     });
   }
 
@@ -299,11 +306,13 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
   returnData.externalRecordingInfo = externalRecordingInfo;
   const { bucket, key } = externalRecordingInfo;
   returnData.conversationMedia.push({
-    store: 'S3',
-    type: 'recording',
-    location: {
-      bucket,
-      key,
+    storeType: 'S3',
+    storeTypeSpecificData: {
+      type: 'recording',
+      location: {
+        bucket,
+        key,
+      },
     },
   });
 
@@ -314,9 +323,45 @@ type NewContact = Omit<ContactForApi, 'id' | 'accountSid' | 'createdAt' | 'updat
 
 type SaveContactToHrmResponse = {
   response: Contact;
-  request: NewContact;
   externalRecordingInfo?: ExternalRecordingInfoSuccess;
 };
+
+export const createContact = async (contact: Contact, twilioWorkerId: string, taskSid: string): Promise<Contact> => {
+  const contactForApi = convertContactToApiContact({
+    ...contact,
+    twilioWorkerId,
+    taskId: taskSid,
+  });
+
+  const options = {
+    method: 'POST',
+    body: JSON.stringify(contactForApi),
+  };
+
+  return fetchHrmApi(`/contacts`, options);
+};
+
+const updateContactsInHrm = async (
+  contactId: string,
+  body: Omit<Partial<Contact>, 'rawJson'> & { rawJson: Partial<ContactRawJson> },
+): Promise<Contact> => {
+  const options = {
+    method: 'PATCH',
+    body: JSON.stringify(convertContactToApiContact(body as Contact)),
+  };
+
+  const response = await fetchHrmApi(`/contacts/${contactId}`, options);
+  const { categories, ...caseInformationWithoutCategories } = response.rawJson.caseInformation;
+  return {
+    ...response,
+    rawJson: {
+      ...response.rawJson,
+      caseInformation: caseInformationWithoutCategories,
+      categories: transformFromApiCategories(categories),
+    },
+  };
+};
+
 /**
  * Function that saves the form to Contacts table.
  * If you don't intend to complete the twilio task, set shouldFillEndMillis=false
@@ -343,9 +388,9 @@ const saveContactToHrm = async (
   }
 
   if (isNonDataCallType(callType)) {
-    const newContactWithMetaData = createContactWithMetadata(currentDefinitionVersion)(false);
+    const newContactWithMetaData = newContactState(currentDefinitionVersion)(false);
     form = {
-      ...newContactWithMetaData.contact.rawJson,
+      ...newContactWithMetaData.savedContact.rawJson,
       callType,
       ...(isOfflineContactTask(task) && {
         contactlessTask: contact.rawJson.contactlessTask,
@@ -360,6 +405,8 @@ const saveContactToHrm = async (
   const timeOfContact = new Date(getDateTime(form.contactlessTask)).toISOString();
 
   const { conversationMedia, channelSid, serviceSid, externalRecordingInfo } = await handleTwilioTask(task);
+
+  await saveConversationMedia(contact.id, conversationMedia);
 
   /*
    * We do a transform from the original and then add things.
@@ -379,41 +426,18 @@ const saveContactToHrm = async (
     taskId: uniqueIdentifier,
     channelSid,
     serviceSid,
-    conversationMedia,
   };
 
-  const contactForApi = convertContactToApiContact(contactToSave);
+  const response = await updateContactsInHrm(contact.id, contactToSave);
 
-  const options = {
-    method: 'POST',
-    body: JSON.stringify(contactForApi),
+  return {
+    response,
+    externalRecordingInfo,
   };
-
-  const responseJson: Contact = await fetchHrmApi(`/contacts`, options);
-
-  return { response: responseJson, request: contactForApi, externalRecordingInfo };
 };
 
-export const updateContactsFormInHrm = async (
-  contactId: string,
-  body: Partial<ContactRawJson>,
-  helpline: string,
-): Promise<Contact> => {
-  const options = {
-    method: 'PATCH',
-    body: JSON.stringify({ rawJson: transformForm(body, helpline) }),
-  };
-
-  const response = await fetchHrmApi(`/contacts/${contactId}`, options);
-  const { categories, ...caseInformationWithoutCategories } = response.rawJson.caseInformation;
-  return {
-    ...response,
-    rawJson: {
-      ...response.rawJson,
-      caseInformation: caseInformationWithoutCategories,
-      categories: transformFromApiCategories(categories),
-    },
-  };
+export const updateContactsFormInHrm = async (contactId: string, body: Partial<ContactRawJson>): Promise<Contact> => {
+  return updateContactsInHrm(contactId, { rawJson: body });
 };
 
 export const saveContact = async (
@@ -428,7 +452,7 @@ export const saveContact = async (
 
   // TODO: add catch clause to handle saving to Sync Doc
   try {
-    await saveContactToExternalBackend(task, payloads.request);
+    await saveContactToExternalBackend(task, payloads.response);
   } catch (err) {
     console.error(
       `Saving task with sid ${task.taskSid} failed, presumably the attempt to add it to the pending store also failed so this data is likely lost`,
@@ -450,6 +474,15 @@ export async function connectToCase(contactId, caseId) {
   };
 
   return fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
+}
+
+export async function saveConversationMedia(contactId, conversationMedia: ConversationMedia[]) {
+  const options = {
+    method: 'POST',
+    body: JSON.stringify(conversationMedia),
+  };
+
+  return fetchHrmApi(`/contacts/${contactId}/conversationMedia`, options);
 }
 
 export const generateExternalMediaPath = (

@@ -29,8 +29,8 @@ export const transformValues = (def: FormDefinition) => (values: { [key: string]
   def.reduce((acc, e) => (isNonSaveable(e) ? acc : { ...acc, [e.name]: transformValue(e)(values[e.name]) }), {});
 
 export const transformValuesForContactForm = (definition: DefinitionVersion) => (
-  form: RecursivePartial<ContactRawJson>,
-): RecursivePartial<ContactRawJson> => {
+  form: Partial<ContactRawJson>,
+): Partial<ContactRawJson> => {
   // Transform from RHF friendly values to the state we want in redux
   if (!form) return form;
   const transformed = {

@@ -94,7 +94,7 @@ const EditContactSection: React.FC<Props> = ({
       'categories' | 'callerInformation' | 'caseInformation' | 'childInformation'
     >> = draftContact.rawJson;
     try {
-      const updatedContact = await updateContactsFormInHrm(contactId, payload, savedContact.helpline);
+      const updatedContact = await updateContactsFormInHrm(contactId, payload);
       refreshContact(updatedContact);
     } catch (error) {
       setSubmitting(false);

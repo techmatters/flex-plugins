@@ -27,7 +27,6 @@ import { callTypes } from 'hrm-form-definitions';
 import { CaseLayout } from '../../styles/case';
 import Case from '../case';
 import { configurationBase, contactFormsBase, namespace, RootState, routingBase } from '../../states';
-import { updateCallType, updateForm } from '../../states/contacts/actions';
 import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute } from '../../states/routing/actions';
 import { emptyCategories } from '../../states/contacts/reducer';
@@ -45,11 +44,12 @@ import { isNonDataCallType } from '../../states/validationRules';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import CSAMReportButton from './CSAMReportButton';
 import CSAMAttachments from './CSAMAttachments';
-import { forTask } from '../../states/contacts/issueCategorizationStateApi';
-import { newCSAMReportAction } from '../../states/csam-report/actions';
+import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
+import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import { CSAMReportTypes } from '../../states/csam-report/types';
 // Ensure ww import any custom components that might be used in a form
 import '../contact/ResourceReferralList';
+import { updateDraft } from '../../states/contacts/existingContacts';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -73,7 +73,7 @@ const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
 
 const isEmptyCallType = callType => [null, undefined, ''].includes(callType);
 
-const mapTabsToIndex = (task: CustomITask, contactForm: ContactRawJson): TabbedFormSubroutes[] => {
+const mapTabsToIndex = (task: CustomITask, contactForm: Partial<ContactRawJson>): TabbedFormSubroutes[] => {
   const isCallerType = contactForm.callType === callTypes.caller;
 
   if (isOfflineContactTask(task)) {
@@ -105,6 +105,7 @@ const TabbedForms: React.FC<Props> = ({
   routing,
   task,
   contact,
+  draftContact,
   currentDefinitionVersion,
   csamReportEnabled,
   csamClcReportEnabled,
@@ -124,9 +125,9 @@ const TabbedForms: React.FC<Props> = ({
 
   const { setValue } = methods;
   const {
-    helpline,
     rawJson: { callType, callerInformation, childInformation, caseInformation, contactlessTask },
-  } = contact;
+    helpline,
+  } = draftContact;
 
   /**
    * Clear some parts of the form state when helpline changes.
@@ -146,10 +147,10 @@ const TabbedForms: React.FC<Props> = ({
   const onSelectSearchResult = (searchResult: Contact) => {
     const selectedIsCaller = searchResult.rawJson.callType === callTypes.caller;
     if (isCallerType && selectedIsCaller && isCallTypeCaller) {
-      dispatch(updateForm(task.taskSid, 'callerInformation', searchResult.rawJson.callerInformation));
+      dispatch(updateDraft(contact.id, { rawJson: { callerInformation: searchResult.rawJson.callerInformation } }));
       dispatch(changeRoute({ route: 'tabbed-forms', subroute: 'callerInformation' }, taskId));
     } else {
-      dispatch(updateForm(task.taskSid, 'childInformation', searchResult.rawJson.childInformation));
+      dispatch(updateDraft(contact.id, { rawJson: { childInformation: searchResult.rawJson.childInformation } }));
       dispatch(changeRoute({ route: 'tabbed-forms', subroute: 'childInformation' }, taskId));
     }
   };
@@ -157,11 +158,11 @@ const TabbedForms: React.FC<Props> = ({
   const handleBackButton = () => {
     if (!hasTaskControl(task)) return;
 
-    dispatch(updateCallType(taskId, ''));
+    dispatch(updateDraft(contact.id, { rawJson: { callType: '' } }));
     dispatch(changeRoute({ route: 'select-call-type' }, taskId));
   };
 
-  const tabsToIndex = mapTabsToIndex(task, contact.rawJson);
+  const tabsToIndex = mapTabsToIndex(task, draftContact.rawJson);
   const tabs = tabsToIndex.map(mapTabsComponents(methods.errors));
 
   const handleTabsChange = (_event: any, t: number) => {
@@ -208,11 +209,11 @@ const TabbedForms: React.FC<Props> = ({
               csamClcReportEnabled={csamClcReportEnabled}
               csamReportEnabled={csamReportEnabled}
               handleChildCSAMType={() => {
-                dispatch(newCSAMReportAction(taskId, CSAMReportTypes.CHILD, true));
+                dispatch(newCSAMReportActionForContact(contact.id, CSAMReportTypes.CHILD, true));
                 dispatch(changeRoute({ route: 'csam-report', subroute: 'form', previousRoute: routing }, taskId));
               }}
               handleCounsellorCSAMType={() => {
-                dispatch(newCSAMReportAction(taskId, CSAMReportTypes.COUNSELLOR, true));
+                dispatch(newCSAMReportActionForContact(contact.id, CSAMReportTypes.COUNSELLOR, true));
                 dispatch(changeRoute({ route: 'csam-report', subroute: 'form', previousRoute: routing }, taskId));
               }}
             />
@@ -263,7 +264,7 @@ const TabbedForms: React.FC<Props> = ({
                     display={subroute === 'callerInformation'}
                     autoFocus={autoFocus}
                     updateFormActionDispatcher={dispatch => values =>
-                      dispatch(updateForm(task.taskSid, 'callerInformation', values.callerInformation))}
+                      dispatch(updateDraft(contact.id, { rawJson: { callerInformation: values.callerInformation } }))}
                     taskSid={taskId}
                   />
                 </TabbedFormTabContainer>
@@ -279,13 +280,13 @@ const TabbedForms: React.FC<Props> = ({
                       display={subroute === 'childInformation'}
                       autoFocus={autoFocus}
                       updateFormActionDispatcher={dispatch => values =>
-                        dispatch(updateForm(task.taskSid, 'childInformation', values.childInformation))}
+                        dispatch(updateDraft(contact.id, { rawJson: { childInformation: values.childInformation } }))}
                       taskSid={taskId}
                     />
                   </TabbedFormTabContainer>
                   <TabbedFormTabContainer display={subroute === 'categories'}>
                     <IssueCategorizationSectionForm
-                      stateApi={forTask(task)}
+                      stateApi={forExistingContact(contact.id)}
                       display={subroute === 'categories'}
                       definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab(helpline)}
                       autoFocus={autoFocus}
@@ -301,7 +302,7 @@ const TabbedForms: React.FC<Props> = ({
                       autoFocus={autoFocus}
                       extraChildrenRight={csamAttachments}
                       updateFormActionDispatcher={dispatch => values =>
-                        dispatch(updateForm(task.taskSid, 'caseInformation', values.caseInformation))}
+                        dispatch(updateDraft(contact.id, { rawJson: { caseInformation: values.caseInformation } }))}
                       taskSid={taskId}
                     />
                   </TabbedFormTabContainer>
@@ -311,6 +312,7 @@ const TabbedForms: React.FC<Props> = ({
           )}
           <div className="hiddenWhenEditingContact">
             <BottomBar
+              contactId={contact.id}
               task={task}
               nextTab={() =>
                 dispatch(
@@ -334,13 +336,17 @@ TabbedForms.displayName = 'TabbedForms';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const routing = state[namespace][routingBase].tasks[ownProps.task.taskSid];
-  const { contact } = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid] ?? {};
+  const { savedContact, draftContact } =
+    Object.values(state[namespace][contactFormsBase].existingContacts).find(
+      cs => cs.savedContact.taskId === ownProps.task.taskSid,
+    ) ?? {};
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
   const { currentDefinitionVersion } = state[namespace][configurationBase];
   const { isCallTypeCaller } = state[namespace][contactFormsBase];
   return {
     routing,
-    contact,
+    contact: savedContact,
+    draftContact,
     currentDefinitionVersion,
     editContactFormOpen,
     isCallTypeCaller,

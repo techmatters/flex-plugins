@@ -100,7 +100,7 @@ const TranscriptSection: React.FC<Props> = ({
 
   const handleFetchAndLoadException = err => {
     console.error(
-      `Error loading the transcript for contact ${contactId}, transcript url ${externalStoredTranscript.location.key}`,
+      `Error loading the transcript for contact ${contactId}, transcript url ${externalStoredTranscript.storeTypeSpecificData.location.key}`,
       err,
     );
 
@@ -121,19 +121,17 @@ const TranscriptSection: React.FC<Props> = ({
   };
 
   const fetchAndLoadTranscript = async () => {
+    const {
+      storeTypeSpecificData: {
+        location: { key, bucket },
+      },
+    } = externalStoredTranscript;
     try {
       setLoading(true);
 
       const mediaType = 'transcript';
 
-      const transcriptPreSignedUrl = await fetchHrmApi(
-        generateExternalMediaPath(
-          contactId,
-          mediaType,
-          externalStoredTranscript.location.bucket,
-          externalStoredTranscript.location.key,
-        ),
-      );
+      const transcriptPreSignedUrl = await fetchHrmApi(generateExternalMediaPath(contactId, mediaType, bucket, key));
 
       const transcriptResponse = await fetch(transcriptPreSignedUrl.downloadUrl);
 
@@ -185,7 +183,7 @@ const TranscriptSection: React.FC<Props> = ({
   }
 
   // The external transcript is exported but it hasn't been fetched yet
-  if (externalStoredTranscript && externalStoredTranscript.location && !transcript) {
+  if (externalStoredTranscript?.storeTypeSpecificData?.location && !transcript) {
     return (
       <LoadMediaButton type="button" onClick={fetchAndLoadTranscript}>
         <LoadMediaButtonText>
@@ -207,7 +205,7 @@ const TranscriptSection: React.FC<Props> = ({
   }
 
   // External is still pending and Twilio transcript is disabled
-  if (externalStoredTranscript && !externalStoredTranscript.location) {
+  if (externalStoredTranscript && !externalStoredTranscript.storeTypeSpecificData?.location) {
     return (
       <ItalicFont>
         <Template code="TranscriptSection-TranscriptNotAvailableCheckLater" />

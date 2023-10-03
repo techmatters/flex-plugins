@@ -22,7 +22,10 @@ import { LexMemory, AutopilotMemory } from '../types/types';
 import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
 import { prepopulateForm as prepopulateFormAction } from '../states/contacts/actions';
-import { getDefinitionVersions } from '../hrmConfig';
+import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
+import { createContact } from '../services/ContactService';
+import { newContactState } from '../states/contacts/reducer';
+import { initializeContactState } from '../states/actions';
 
 const getUnknownOption = (key: string, definition: FormDefinition) => {
   const inputDef = definition.find(e => e.name === key);
@@ -174,16 +177,22 @@ const getAnswers = (memory: LexMemory | AutopilotMemory): PreSurveyAnswers => {
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export const prepopulateForm = (task: ITask) => {
-  const { memory, preEngagementData } = task.attributes;
-
-  if (!memory && !preEngagementData) return;
-
+export const prepopulateForm = async (task: ITask) => {
   const { currentDefinitionVersion } = getDefinitionVersions();
   if (!currentDefinitionVersion) {
     console.warn('Attempting to prepopulate a form but no definition has been loaded, abandoning attempt.');
     return;
   }
+  const { savedContact: newContact, metadata } = newContactState(currentDefinitionVersion)(false);
+  newContact.taskId = task.taskSid;
+
+  const createdContact = await createContact(newContact, getHrmConfig().workerSid, task.taskSid);
+  Manager.getInstance().store.dispatch(initializeContactState(currentDefinitionVersion)(createdContact, metadata));
+
+  const { memory, preEngagementData } = task.attributes;
+
+  if (!memory && !preEngagementData) return;
+
   const { tabbedForms, prepopulateKeys } = currentDefinitionVersion;
   const { ChildInformationTab, CallerInformationTab, CaseInformationTab } = tabbedForms;
   const { preEngagement, survey } = prepopulateKeys;
