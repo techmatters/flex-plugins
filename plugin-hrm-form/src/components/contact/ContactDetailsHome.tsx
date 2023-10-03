@@ -29,7 +29,7 @@ import {
   isS3StoredTranscript,
   isS3StoredRecording,
   isTwilioStoredMedia,
-  HrmServiceContact,
+  Contact,
 } from '../../types/types';
 import {
   DetailsContainer,

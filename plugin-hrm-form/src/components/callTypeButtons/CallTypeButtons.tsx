@@ -32,12 +32,11 @@ import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
-import { CustomITask, HrmServiceContact, isOfflineContactTask } from '../../types/types';
+import { CustomITask, Contact, isOfflineContactTask } from '../../types/types';
 import { getTemplateStrings } from '../../hrmConfig';
 import { AppRoutes } from '../../states/routing/types';
 
-const isDialogOpen = (contact: HrmServiceContact) =>
-  contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType);
+const isDialogOpen = (contact: Contact) => contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType);
 
 type OwnProps = {
   task: CustomITask;

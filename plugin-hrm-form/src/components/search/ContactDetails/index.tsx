@@ -26,17 +26,17 @@ import { Container } from '../../../styles/HrmStyles';
 import GeneralContactDetails from '../../contact/ContactDetails';
 import ConnectDialog from '../ConnectDialog';
 import BackToSearchResultsButton from '../SearchResults/SearchResultsBackButton';
-import { HrmServiceContact } from '../../../types/types';
+import { Contact } from '../../../types/types';
 import { loadContact, releaseContact } from '../../../states/contacts/existingContacts';
 import { DetailsContext } from '../../../states/contacts/contactDetails';
 
 type OwnProps = {
   task: any;
   currentIsCaller: boolean;
-  contact: HrmServiceContact;
+  contact: Contact;
   showActionIcons: boolean;
   handleBack: () => void;
-  handleSelectSearchResult: (contact: HrmServiceContact) => void;
+  handleSelectSearchResult: (contact: Contact) => void;
 };
 const mapStateToProps = (state: RootState) => {
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;

@@ -18,7 +18,7 @@ import { callTypes, DefinitionVersion, FormInputType } from 'hrm-form-definition
 import each from 'jest-each';
 
 import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
-import { ContactRawJson, HrmServiceContact } from '../../../types/types';
+import { ContactRawJson, Contact } from '../../../types/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 const baselineDefinition: Partial<DefinitionVersion> = {
@@ -43,8 +43,8 @@ const baselineRawJson: ContactRawJson = {
   },
 };
 
-const hrmContactWithChildName = (firstName: string, lastName: string): HrmServiceContact => {
-  const baselineHrmContact: Partial<HrmServiceContact> = {
+const hrmContactWithChildName = (firstName: string, lastName: string): Contact => {
+  const baselineHrmContact: Partial<Contact> = {
     id: '1234',
     rawJson: {
       ...baselineRawJson,
@@ -54,7 +54,7 @@ const hrmContactWithChildName = (firstName: string, lastName: string): HrmServic
       },
     },
   };
-  return baselineHrmContact as HrmServiceContact;
+  return baselineHrmContact as Contact;
 };
 
 describe('contactLabel', () => {
@@ -173,28 +173,18 @@ describe('contactLabel', () => {
         expect(result).toEqual('#1234');
       });
       test('First name and last name both undefined - returns contact ID', () => {
-        const result = contactLabelFunctionToTest(
-          baselineDefinition as DefinitionVersion,
-          baselineContact as HrmServiceContact,
-        );
+        const result = contactLabelFunctionToTest(baselineDefinition as DefinitionVersion, baselineContact as Contact);
         expect(result).toEqual('#1234');
       });
       test('ID undefined - returns placeholder', () => {
         const { id, contactId, ...contactWithoutId } = baselineContact;
-        const result = contactLabelFunctionToTest(
-          baselineDefinition as DefinitionVersion,
-          contactWithoutId as HrmServiceContact,
-        );
+        const result = contactLabelFunctionToTest(baselineDefinition as DefinitionVersion, contactWithoutId as Contact);
         expect(result).toEqual('Unknown');
       });
       test('substituteForId set false - returns placeholder', () => {
-        const result = contactLabelFunctionToTest(
-          baselineDefinition as DefinitionVersion,
-          baselineContact as HrmServiceContact,
-          {
-            substituteForId: false,
-          },
-        );
+        const result = contactLabelFunctionToTest(baselineDefinition as DefinitionVersion, baselineContact as Contact, {
+          substituteForId: false,
+        });
         expect(result).toEqual('Unknown');
       });
       test('substituteForId set false and name provided - returns placeholder', () => {
@@ -211,7 +201,7 @@ describe('contactLabel', () => {
         const { id, contactId, ...contactWithoutId } = baselineContact;
         const result = contactLabelFunctionToTest(
           baselineDefinition as DefinitionVersion,
-          contactWithoutId as HrmServiceContact,
+          contactWithoutId as Contact,
           {
             placeholder: 'CUSTOM_PLACEHOLDER',
           },

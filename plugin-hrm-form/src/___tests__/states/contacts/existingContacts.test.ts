@@ -39,11 +39,11 @@ import {
   updateDraft,
   updateDraftReducer,
 } from '../../../states/contacts/existingContacts';
-import { HrmServiceContact } from '../../../types/types';
+import { Contact } from '../../../types/types';
 import { ConfigurationState } from '../../../states/configuration/reducer';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
-const baseContact: HrmServiceContact = {
+const baseContact: Contact = {
   id: '1337',
   accountSid: '',
   timeOfContact: '',

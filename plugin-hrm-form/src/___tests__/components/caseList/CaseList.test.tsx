@@ -37,7 +37,7 @@ import {
   fetchCaseListSuccess,
 } from '../../../states/caseList/listContent';
 import { caseListSettingsInitialState } from '../../../states/caseList/settings';
-import { Case, ContactRawJson, HrmServiceContact } from '../../../types/types';
+import { Case, ContactRawJson, Contact } from '../../../types/types';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -65,7 +65,7 @@ const mockedCaseList: (Case & { categories: any })[] = [
             lastName: 'Smith',
           },
         } as Partial<ContactRawJson>,
-      } as HrmServiceContact,
+      } as Contact,
     ],
     categories: {},
   },
@@ -88,7 +88,7 @@ const mockedCaseList: (Case & { categories: any })[] = [
             lastName: 'Michels',
           },
         } as Partial<ContactRawJson>,
-      } as HrmServiceContact,
+      } as Contact,
     ],
     categories: {},
   },

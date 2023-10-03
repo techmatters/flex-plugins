@@ -24,7 +24,7 @@ import { searchContacts } from '../../../services/ContactService';
 import { searchCases } from '../../../services/CaseService';
 import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../../components/search/SearchResults';
 import { getDefinitionVersions } from '../../../hrmConfig';
-import { HrmServiceContact } from '../../../types/types';
+import { Contact } from '../../../types/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 jest.mock('../../../services/ContactService', () => ({ searchContacts: jest.fn() }));
@@ -84,7 +84,7 @@ describe('test action creators', () => {
   });
 
   test('viewContactDetails', () => {
-    const contact: HrmServiceContact = { ...VALID_EMPTY_CONTACT, id: 'fake contact' };
+    const contact: Contact = { ...VALID_EMPTY_CONTACT, id: 'fake contact' };
 
     expect(actions.viewContactDetails(taskId)(contact)).toStrictEqual({
       type: t.VIEW_CONTACT_DETAILS,

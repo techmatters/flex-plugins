@@ -22,7 +22,7 @@ import { Template, Tab as TwilioTab } from '@twilio/flex-ui';
 
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
-import { SearchContactResult, SearchCaseResult, HrmServiceContact, Case, CustomITask } from '../../../types/types';
+import { SearchContactResult, SearchCaseResult, Contact, Case, CustomITask } from '../../../types/types';
 import { Row } from '../../../styles/HrmStyles';
 import {
   ResultsHeader,
@@ -64,7 +64,7 @@ type OwnProps = {
   toggleNonDataContacts: () => void;
   toggleClosedCases: () => void;
   handleBack: () => void;
-  handleViewDetails: (contact: HrmServiceContact) => void;
+  handleViewDetails: (contact: Contact) => void;
   changeSearchPage: (SearchPagesType) => void;
   setConnectedCase: (currentCase: Case, taskSid: string) => void;
   currentPage: SearchPagesType;
