@@ -23,7 +23,7 @@ import { connect } from 'react-redux';
 import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
 import type { DefinitionVersion } from 'hrm-form-definitions';
 import { isEqual } from 'lodash';
-import { bindActionCreators } from 'redux';
+import { AnyAction, bindActionCreators } from 'redux';
 
 import {
   BottomButtonBar,
@@ -39,10 +39,9 @@ import { CaseActionFormContainer, CaseActionLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
-import { updateCase } from '../../services/CaseService';
 import { createStateItem, CustomHandlers, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
-import type { CaseInfo, CaseItemEntry, CustomITask, StandaloneITask } from '../../types/types';
+import type { Case, CaseInfo, CaseItemEntry, CustomITask, StandaloneITask } from '../../types/types';
 import {
   AddCaseSectionRoute,
   AppRoutes,
@@ -65,6 +64,8 @@ import {
 } from '../../states/case/caseWorkingCopy';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { transformValues } from '../../states/contacts/contactDetailsAdapter';
+import asyncDispatch from '../../states/asyncDispatch';
+import { updateCaseAsyncAction } from '../../states/case/saveCase';
 
 export type AddEditCaseItemProps = {
   task: CustomITask | StandaloneITask;
@@ -96,6 +97,7 @@ const AddEditCaseItem: React.FC<Props> = ({
   reactHookFormOptions,
   sectionApi,
   workingCopy,
+  updateCaseAsyncAction,
 }) => {
   const { id } = isEditCaseSectionRoute(routing) ? routing : { id: undefined };
 
@@ -201,8 +203,7 @@ const AddEditCaseItem: React.FC<Props> = ({
         }
       });
     }
-    const updatedCase = await updateCase(caseId, { info: newInfo });
-    setConnectedCase(updatedCase, task.taskSid);
+    updateCaseAsyncAction(caseId, { info: newInfo });
   };
 
   function close() {
@@ -321,6 +322,7 @@ const mapStateToProps = (state: RootState, { task, routing, sectionApi }: AddEdi
 const mapDispatchToProps = (dispatch, props: AddEditCaseItemProps) => {
   const { sectionApi, routing, task } = props;
   const id = isEditCaseSectionRoute(routing) ? routing.id : undefined;
+  const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     updateCaseSectionWorkingCopy: bindActionCreators(updateCaseSectionWorkingCopy, dispatch),
@@ -330,6 +332,8 @@ const mapDispatchToProps = (dispatch, props: AddEditCaseItemProps) => {
       dispatch(removeCaseSectionWorkingCopy(task.taskSid, sectionApi, id));
       dispatch(changeRoute(route, task.taskSid));
     },
+    updateCaseAsyncAction: (caseId: Case['id'], body: Partial<Case>) =>
+      searchAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
   };
 };
 

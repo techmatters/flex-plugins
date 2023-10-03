@@ -18,7 +18,7 @@ import * as Flex from '@twilio/flex-ui';
 
 import { buildFormDefinitionsBaseUrlGetter, inferConfiguredFormDefinitionsBaseUrl } from './definitionVersions';
 import { FeatureFlags } from './types/types';
-import { configurationBase, namespace, RootState } from './states';
+import type { RootState } from './states';
 
 const featureFlagEnvVarPrefix = 'REACT_FF_';
 
@@ -149,5 +149,5 @@ export const getAseloFeatureFlags = (): FeatureFlags => cachedConfig.featureFlag
  */
 // eslint-disable-next-line import/no-unused-modules
 export const getDefinitionVersions = () => {
-  return (Flex.Manager.getInstance().store.getState() as RootState)[namespace][configurationBase];
+  return (Flex.Manager.getInstance().store.getState() as RootState)['plugin-hrm-form'].configuration;
 };

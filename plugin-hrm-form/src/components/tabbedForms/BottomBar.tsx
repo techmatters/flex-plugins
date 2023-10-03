@@ -14,25 +14,27 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import { AnyAction, bindActionCreators } from 'redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/Folder';
 import { SubmitErrorHandler } from 'react-hook-form';
+import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
-import { createCase } from '../../services/CaseService';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import { hasTaskControl } from '../../utils/transfer';
 import { namespace, contactFormsBase, connectedCaseBase, RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
-import { CustomITask } from '../../types/types';
+import { Case, CustomITask } from '../../types/types';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
+import { createCaseAsyncAction } from '../../states/case/saveCase';
+import asyncDispatch from '../../states/asyncDispatch';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;
@@ -57,6 +59,7 @@ const BottomBar: React.FC<
   setConnectedCase,
   nextTab,
   caseForm,
+  createCaseAsyncAction,
 }) => {
   const [isSubmitting, setSubmitting] = useState(false);
   const strings = getTemplateStrings();
@@ -68,9 +71,8 @@ const BottomBar: React.FC<
     if (!hasTaskControl(task)) return;
 
     try {
-      const caseFromDB = await createCase(contact, workerSid, definitionVersion);
+      createCaseAsyncAction(contact, workerSid, definitionVersion);
       changeRoute({ route: 'new-case' }, taskSid);
-      setConnectedCase(caseFromDB, taskSid);
     } catch (error) {
       recordBackendError('Open New Case', error);
       window.alert(strings['Error-Backend']);
@@ -83,7 +85,7 @@ const BottomBar: React.FC<
     setSubmitting(true);
 
     try {
-      await submitContactForm(task, contact, metadata, caseForm);
+      await submitContactForm(task, contact, metadata, caseForm as Case);
       await completeTask(task);
     } catch (error) {
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
@@ -169,14 +171,18 @@ BottomBar.displayName = 'BottomBar';
 
 const mapStateToProps = (state: RootState, ownProps: BottomBarProps) => {
   const { contact, metadata } = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid] ?? {};
-  const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
-  const caseForm = caseState && caseState.connectedCase;
+  const caseForm = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase || {};
   return { contact, metadata, caseForm };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
-  setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
-});
+const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
+  const createCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
+  return {
+    changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
+    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
+    createCaseAsyncAction: (contact, workerSid: string, definitionVersion: DefinitionVersionId) =>
+      createCaseAsyncDispatch(createCaseAsyncAction(contact, task.taskSid, workerSid, definitionVersion)),
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(BottomBar);
