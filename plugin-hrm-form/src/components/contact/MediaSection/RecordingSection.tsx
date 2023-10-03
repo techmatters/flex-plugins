@@ -22,15 +22,15 @@ import { S3StoredRecording } from '../../../types/types';
 import { generateExternalMediaPath } from '../../../services/ContactService';
 import fetchHrmApi from '../../../services/fetchHrmApi';
 
-type OwnProps = { contactId: string; externalStoredRecording: S3StoredRecording };
+type OwnProps = {
+  contactId: string;
+  externalStoredRecording?: S3StoredRecording;
+  loadConversationIntoOverlay: () => Promise<void>;
+};
 
 const RecordingSection: React.FC<OwnProps> = ({
   contactId,
-  externalStoredRecording: {
-    storeTypeSpecificData: {
-      location: { key, bucket },
-    },
-  },
+  externalStoredRecording, loadConversationIntoOverlay,
 }) => {
   const [voiceRecording, setVoiceRecording] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -42,13 +42,19 @@ const RecordingSection: React.FC<OwnProps> = ({
       setLoading(true);
       setShowButton(false);
 
-      const mediaType = 'recording';
+      if (externalStoredRecording) {
+        const mediaType = 'recording';
+      const { key, bucket } = externalStoredRecording.storeTypeSpecificData.location;
 
       const { media_url: recordingPreSignedUrl } = await fetchHrmApi(
         generateExternalMediaPath(contactId, mediaType, bucket, key),
       );
 
-      setVoiceRecording(recordingPreSignedUrl);
+        setVoiceRecording(recordingPreSignedUrl);
+      } else {
+        await loadConversationIntoOverlay();
+        setShowButton(true);
+      }
 
       setLoading(false);
     } catch (error) {

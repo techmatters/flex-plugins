@@ -3,25 +3,16 @@ locals {
   defaults_config     = local.defaults_config_hcl.locals
   config              = merge(local.defaults_config, local.local_config)
 
-
   local_config = {
-    helpline                          = "Kék Vonal"
-    old_dir_prefix                    = "kek-vonal"
-    definition_version                = "hu-v1"
+    helpline                          = "Childline Zimbabwe"
+    old_dir_prefix                    = "zimbabwe"
+    definition_version                = "zw-v1"
     default_autopilot_chatbot_enabled = false
-    task_language                     = "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
-    helpline_language                 = "hu-HU"
-    contacts_waiting_channels         = ["web", "voice"]
+    task_language                     = "en-US"
+    helpline_language                 = "en-uS"
+    voice_ivr_language                = ""
+    contacts_waiting_channels         = ["web", "whatsapp", "facebook", "instagram"]
     enable_post_survey                = false
-
-
-    lex_bot_languages = {
-      uk : ["pre_survey"],
-      ru : ["pre_survey"]
-    }
-
-    custom_task_routing_filter_expression = "phone=='+3680984590' OR phone=='+3612344587' OR channelType=='web' OR isContactlessTask==true"
-
 
     workflows = {
       master : {
@@ -37,7 +28,7 @@ locals {
     task_queues = {
       master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "Kék Vonal"
+        "friendly_name"  = "Childline Zimbabwe"
       },
       survey : {
         "target_workers" = "1==0",
@@ -59,7 +50,7 @@ locals {
     }
 
 
-    phone_numbers = {}
 
+    phone_numbers = {}
   }
 }
