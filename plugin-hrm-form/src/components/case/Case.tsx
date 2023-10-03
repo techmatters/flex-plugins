@@ -27,7 +27,6 @@ import {
   namespace,
   RootState,
   routingBase,
-  // saveCaseBase,
 } from '../../states';
 import { cancelCase } from '../../services/CaseService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
@@ -74,7 +73,6 @@ import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import { connectToCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
-import { connectToCase } from '../../services/ContactService';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -90,9 +88,6 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const newContactTemporaryId = (connectedCase: CaseType) => `__unsavedFromCase:${connectedCase?.id}`;
-  
-// We want to validate that savedContact state is not returning an empty object
-export const validateSavedContact = (savedContact: HrmServiceContact) => typeof savedContact === 'object' && Object.keys(savedContact).length > 0;
 
 const Case: React.FC<Props> = ({
   task,
@@ -197,14 +192,18 @@ const Case: React.FC<Props> = ({
     }
   }, [connectedCase, definitionVersions, task.taskSid, updateDefinitionVersion, version]);
 
+  // We want to validate that savedContact state is not returning an empty object
+  const validateSavedContact = () => typeof savedContact === 'object' && Object.keys(savedContact).length > 0;
+
   /**
    * Always check to see when savedContact state has been updated.
    * Then go ahead and execute the connectToCaseAsyncAction
    */
   useEffect(() => {
-    if (validateSavedContact(savedContact)) {
+    if (validateSavedContact()) {
+      setLoading(true);
       connectToCaseAsyncAction(savedContact.id, connectedCase.id);
-      setConnectToCase(validateSavedContact(savedContact));
+      setConnectToCase(validateSavedContact());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [savedContact, connectToCaseAsyncAction]);
@@ -213,7 +212,10 @@ const Case: React.FC<Props> = ({
    * Once connectToCase is true, execute the completeTask method
    */
   useEffect(() => {
-    if (connectToCase) handleCompleteTask(task);
+    if (connectToCase) {
+      handleCompleteTask(task);
+      setLoading(false);
+    }
   }, [connectToCase, task]);
 
   if (routing.route === 'csam-report') return null;

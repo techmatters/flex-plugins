@@ -57,8 +57,8 @@ import { ReferralLookupStatus, resourceReferralReducer } from './resourceReferra
 import { ContactRawJson, HrmServiceContact } from '../../types/types';
 import { ContactCategoryAction, toggleSubCategoriesReducer } from './categories';
 import { configurationBase, RootState } from '..';
-import { transformValues } from '../../services/ContactService';
 import { saveContactReducer, submitContactFormReducer } from './saveContact';
+import { transformValuesForContactForm } from './contactDetailsAdapter';
 
 export const emptyCategories = [];
 
@@ -198,20 +198,9 @@ export function reduce(
       const updateFormDefinition =
         rootState[configurationBase].definitionVersions[state.tasks[action.taskId].contact.rawJson.definitionVersion] ??
         rootState[configurationBase].currentDefinitionVersion;
-      let updatedForm: ContactRawJson[keyof ContactRawJson];
-      const formDefinitionsMap = {
-        childInformation: updateFormDefinition.tabbedForms.ChildInformationTab,
-        callerInformation: updateFormDefinition.tabbedForms.CallerInformationTab,
-        caseInformation: updateFormDefinition.tabbedForms.CaseInformationTab,
-      };
-      const formDefinition = formDefinitionsMap[action.parent];
-      if (formDefinition) {
-        updatedForm = transformValues(formDefinition)(
-          action.payload as ContactRawJson['childInformation' | 'callerInformation' | 'caseInformation'],
-        );
-      } else {
-        updatedForm = action.payload;
-      }
+      const transformedForm = transformValuesForContactForm(updateFormDefinition)({
+        [action.parent]: action.payload,
+      });
       return {
         ...state,
         tasks: {
@@ -222,8 +211,8 @@ export function reduce(
               ...state.tasks[action.taskId].contact,
               rawJson: {
                 ...state.tasks[action.taskId].contact.rawJson,
-                [action.parent]: updatedForm,
-              },
+                ...transformedForm,
+              } as ContactRawJson,
             },
           },
         },
@@ -398,7 +387,10 @@ export function reduce(
       return { ...state, contactDetails: sectionExpandedStateReducer(state.contactDetails, action) };
     }
     case EXISTING_CONTACT_UPDATE_DRAFT_ACTION: {
-      return { ...state, existingContacts: updateDraftReducer(state.existingContacts, action) };
+      return {
+        ...state,
+        existingContacts: updateDraftReducer(state.existingContacts, rootState.configuration, action),
+      };
     }
     case EXISTING_CONTACT_CREATE_DRAFT_ACTION: {
       return { ...state, existingContacts: createDraftReducer(state.existingContacts, action) };

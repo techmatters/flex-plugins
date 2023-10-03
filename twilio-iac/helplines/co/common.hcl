@@ -19,11 +19,11 @@ locals {
     task_language                     = "es-CO"
     voice_ivr_language                = "es-MX"
     enable_post_survey                = false
-
+   
     workflows = {
       master : {
         friendly_name : "Master Workflow"
-        templatefile : "/app/twilio-iac/helplines/co/templates/workflows/master.tftpl"
+        templatefile : "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
       },
       survey : {
         friendly_name : "Survey Workflow"
@@ -32,16 +32,21 @@ locals {
     }
 
     task_queues = {
-      te_guio : {
-        "target_workers" = "1==1",
-        "friendly_name"  = "Te Guío"
-      },
-      survey : {
-        "target_workers" = "1==0",
-        "friendly_name"  = "Survey"
-      }
-
+    master : {
+      "target_workers" = "1==1",
+      "friendly_name"  = "Te Guío"
+    },
+    survey : {
+      "target_workers" = "1==0",
+      "friendly_name"  = "Survey"
+    },
+    e2e_test : {
+      "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
+      "friendly_name"  = "E2E Test Queue"
     }
+  }
+
+
     task_channels = {
       default : "Default"
       chat : "Programmable Chat"

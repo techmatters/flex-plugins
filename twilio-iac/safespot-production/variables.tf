@@ -3,19 +3,3 @@ variable "local_os" {
   type        = string
   default     = "Linux"
 }
-
-variable "helpline" {
-  default = "SafeSpot"
-}
-variable "short_helpline" {
-  default = "JM"
-}
-variable "operating_info_key" {
-  default = "jm"
-}
-variable "environment" {
-  default = "Production"
-}
-variable "short_environment" {
-  default = "PROD"
-}

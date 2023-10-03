@@ -39,7 +39,6 @@ import { CaseActionFormContainer, CaseActionLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
-import { transformValues } from '../../services/ContactService';
 import { createStateItem, CustomHandlers, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import type { Case, CaseInfo, CaseItemEntry, CustomITask, StandaloneITask } from '../../types/types';
@@ -64,6 +63,7 @@ import {
   updateCaseSectionWorkingCopy,
 } from '../../states/case/caseWorkingCopy';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
+import { transformValues } from '../../states/contacts/contactDetailsAdapter';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
 
@@ -171,8 +171,7 @@ const AddEditCaseItem: React.FC<Props> = ({
 
   const save = async () => {
     const { info, id: caseId } = connectedCase;
-    const rawForm = workingCopy.form;
-    const form = transformValues(formDefinition)(rawForm);
+    const { form } = workingCopy;
     const now = new Date().toISOString();
     const { workerSid } = getHrmConfig();
     let newInfo: CaseInfo;
@@ -194,7 +193,7 @@ const AddEditCaseItem: React.FC<Props> = ({
       newInfo = sectionApi.upsertCaseSectionItemFromForm(info, newItem);
       formDefinition.forEach(fd => {
         // A preceding 'filter' call looks nicer but TS type narrowing isn't smart enough to work with that.
-        if (fd.type === 'copy-to' && rawForm[fd.name]) {
+        if (fd.type === 'copy-to' && form[fd.name]) {
           newInfo = copyCaseSectionItem({
             definition: definitionVersion,
             original: newInfo,

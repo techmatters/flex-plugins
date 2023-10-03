@@ -60,7 +60,6 @@ const EditContactSection: React.FC<Props> = ({
   children,
   clearContactDraft,
   updateContactsFormInHrmAsyncAction,
-  references
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -93,17 +92,12 @@ const EditContactSection: React.FC<Props> = ({
 
   const onSubmitValidForm = async () => {
     setSubmitting(true);
-    let payload: Partial<Pick<
+    const payload: Partial<Pick<
       ContactRawJson,
       'categories' | 'callerInformation' | 'caseInformation' | 'childInformation'
-    >>;
-    if (contactDetailsSectionForm) {
-      payload = contactDetailsSectionForm.formToPayload(definitionVersion, methods.getValues());
-    } else {
-      payload = draftContact?.rawJson;
-    }
+    >> = draftContact.rawJson;
     try {
-      updateContactsFormInHrmAsyncAction(contactId, payload, savedContact.helpline, references[0]);
+      updateContactsFormInHrmAsyncAction(contactId, payload, savedContact.helpline);
     } catch (error) {
       setSubmitting(false);
       recordBackendError('Open New Case', error);
@@ -209,15 +203,8 @@ const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string,
     clearContactDraft: () => {
       dispatch(clearDraft(contactId));
     },
-    updateContactsFormInHrmAsyncAction: (
-      contactId: string,
-      body: Partial<ContactRawJson>,
-      helpline: string,
-      reference?: string,
-    ) =>
-      updateContactAsyncDispatch(
-        updateContactsFormInHrmAsyncAction(contactId, body, helpline, reference),
-      ),
+    updateContactsFormInHrmAsyncAction: (contactId: string, body: Partial<ContactRawJson>, helpline: string) =>
+      updateContactAsyncDispatch(updateContactsFormInHrmAsyncAction(contactId, body, helpline)),
   };
 };
 
@@ -226,7 +213,6 @@ const mapStateToProps = (state: RootState, { contactId }: OwnProps) => ({
   counselorsHash: state[namespace][configurationBase].counselors.hash,
   savedContact: state[namespace][contactFormsBase].existingContacts[contactId]?.savedContact,
   draftContact: state[namespace][contactFormsBase].existingContacts[contactId]?.draftContact,
-  references: state[namespace][contactFormsBase].existingContacts[contactId]?.references,
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

@@ -28,13 +28,10 @@ export const updateContactsFormInHrmAsyncAction = createAsyncAction(
     contactId: string,
     body: Partial<ContactRawJson>,
     helpline: string,
-    reference?: string,
-  ): Promise<{ contacts: Partial<HrmServiceContact>[]; replaceExisting: boolean; reference?: string }> => {
+  ): Promise<{ contacts: Partial<HrmServiceContact>[] }> => {
     const contact = await updateContactsFormInHrm(contactId, body, helpline);
     return {
       contacts: [contact],
-      replaceExisting: true,
-      reference,
     };
   },
 );
@@ -58,10 +55,6 @@ export const submitContactFormAsyncAction = createAsyncAction(
   },
 );
 
-export type SaveContactReducerState = {
-  state: ExistingContactsState;
-};
-
 const handleAsyncAction = (handleAction, asyncAction) =>
   handleAction(asyncAction, state => {
     return {
@@ -76,13 +69,9 @@ export const saveContactReducer = (initialState: ExistingContactsState) =>
     handleAction(
       updateContactsFormInHrmAsyncAction.fulfilled,
       (state, { payload }): ExistingContactsState => {
+        const replaceExisting = true;
         const updateEntries = payload.contacts
-          .filter(c => {
-            return (
-              (payload.reference && !(state[c.id]?.references ?? new Set()).has(payload.reference)) ||
-              payload.replaceExisting
-            );
-          })
+          .filter(c => state[c.id]?.references && replaceExisting)
           .map(c => {
             const current = state[c.id] ?? { references: new Set() };
             const { draftContact, ...currentContact } = state[c.id] ?? {
@@ -95,8 +84,8 @@ export const saveContactReducer = (initialState: ExistingContactsState) =>
               c.id,
               {
                 ...currentContact,
-                savedContact: payload.replaceExisting || !current.references.size ? c : state[c.id].savedContact,
-                references: payload.reference ? current.references.add(payload.reference) : current.references,
+                savedContact: replaceExisting || !current.references.size ? c : state[c.id].savedContact,
+                ...state[c.id].references,
               },
             ];
           });
