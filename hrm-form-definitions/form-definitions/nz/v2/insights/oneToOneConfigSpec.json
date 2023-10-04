@@ -2,27 +2,13 @@
     "contactForm": {
       "childInformation": [
         {
-          "name": "district",
-          "insights": [
-            "customers",
-            "area"
-          ]
-        },
-        {
-          "name": "province",
+          "name": "region",
           "insights": [
             "customers",
             "region"
           ]
-        },
-        {
-          "name": "LGBTQI+",
-          "insights": [
-            "customers",
-            "category"
-          ],
-          "type": "checkbox"
         }
+      
       ],
       "caseInformation": [
         {
@@ -32,6 +18,20 @@
             "conversation_attribute_7"
           ],
           "type": "checkbox"
+        },
+        {
+          "name": "howDidYouKnowAboutOurLine",
+          "insights": [
+            "conversations",
+            "conversation_attribute_6"
+          ]
+        },
+        {
+          "name": "actionTaken",
+          "insights": [
+            "conversations",
+            "conversation_attribute_5"
+          ]
         }
       ]
     },
