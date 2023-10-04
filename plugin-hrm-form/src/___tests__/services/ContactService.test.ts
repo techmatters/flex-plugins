@@ -407,13 +407,15 @@ describe('saveContact() (externalRecording)', () => {
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.conversationMedia).toStrictEqual([
-      { store: 'twilio' },
+      { storeType: 'twilio' },
       {
-        store: 'S3',
-        type: 'recording',
-        location: {
-          bucket: 'bucket',
-          key: 'key',
+        storeType: 'S3',
+        storeTypeSpecificData: {
+          type: 'recording',
+          location: {
+            bucket: 'bucket',
+            key: 'key',
+          },
         },
       },
     ]);
@@ -587,14 +589,16 @@ describe('handleTwilioTask() (externalRecording)', () => {
     const result = await handleTwilioTask(task);
     expect(result).toStrictEqual({
       conversationMedia: [
-        { store: 'twilio', reservationSid: undefined },
+        { storeType: 'twilio', reservationSid: undefined },
         {
-          store: 'S3',
-          type: 'recording',
-          location: {
-            bucket: 'bucket',
-            key: 'key',
+          storeType: 'S3',
+          storeTypeSpecificData:{
+            type: 'recording',
+            location: {
+              bucket: 'bucket',
+              key: 'key',
           },
+          }
         },
       ],
       externalRecordingInfo: {
