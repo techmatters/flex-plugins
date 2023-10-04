@@ -51,13 +51,14 @@ type OwnProps = {
 
 const mapStateToProps = (state: RootState, { contactId }: OwnProps) => {
   const {
-    draftContact: { referrals },
+    draftContact,
     metadata: {
       draft: {
         resourceReferralList: { lookupStatus, resourceReferralIdToAdd },
       },
     },
   } = state[namespace][contactFormsBase].existingContacts[contactId];
+  const referrals = draftContact?.referrals ?? [];
   return {
     referrals: referrals ?? [],
     lookupStatus,

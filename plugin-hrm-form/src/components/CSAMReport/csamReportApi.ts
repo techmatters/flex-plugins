@@ -17,7 +17,6 @@
 import { Dispatch } from 'react';
 
 import * as CSAMAction from '../../states/csam-report/actions';
-import * as ContactAction from '../../states/contacts/actions';
 import { csamReportBase, namespace, RootState, routingBase } from '../../states';
 import { changeRoute } from '../../states/routing/actions';
 import { AppRoutes } from '../../states/routing/types';
@@ -104,7 +103,7 @@ const saveChildReport = async (
 const saveReport = async (
   state: CSAMReportStateEntry,
   twilioWorkerId: string,
-  contactId?: string,
+  contactId: string,
 ): Promise<SaveReportResponse> => {
   const numberContactId = contactId ? Number.parseInt(contactId, 10) : undefined;
   if (Number.isNaN(numberContactId)) {
@@ -165,7 +164,7 @@ export const newContactCSAMApi = (contactId: string, taskSid: string, previousRo
   updateStatusDispatcher: dispatch => csamStatus => {
     dispatch(CSAMAction.updateStatusActionForContact(csamStatus, contactId));
   },
-  saveReport,
+  saveReport: (state, twilioWorkerId) => saveReport(state, twilioWorkerId, contactId),
 });
 
 export const existingContactCSAMApi = (contactId: string): CSAMReportApi => ({

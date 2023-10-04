@@ -27,11 +27,11 @@ import { callTypes } from 'hrm-form-definitions';
 import { CaseLayout } from '../../styles/case';
 import Case from '../case';
 import { configurationBase, contactFormsBase, namespace, RootState, routingBase } from '../../states';
-import { completeTask, removeOfflineContact, submitContactForm } from '../../services/formSubmissionHelpers';
+import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute } from '../../states/routing/actions';
 import { emptyCategories } from '../../states/contacts/reducer';
 import { NewCaseSubroutes, TabbedFormSubroutes } from '../../states/routing/types';
-import { ContactRawJson, CustomITask, isOfflineContactTask, Contact, Case as CaseForm } from '../../types/types';
+import { ContactRawJson, CustomITask, isOfflineContactTask, Contact } from '../../types/types';
 import { Box, Row, StyledTabs, TabbedFormsContainer, TabbedFormTabContainer } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import Search from '../search';
@@ -50,8 +50,6 @@ import { CSAMReportTypes } from '../../states/csam-report/types';
 // Ensure ww import any custom components that might be used in a form
 import '../contact/ResourceReferralList';
 import { getUnsavedContact, saveContactChangesInHrm, updateDraft } from '../../states/contacts/existingContacts';
-import { updateContactInHrm } from '../../services/ContactService';
-import { recordBackendError } from '../../fullStory';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -109,7 +107,6 @@ const TabbedForms: React.FC<Props> = ({
   savedContact,
   draftContact,
   updatedContact,
-  metadata,
   currentDefinitionVersion,
   csamReportEnabled,
   csamClcReportEnabled,
@@ -273,7 +270,7 @@ const TabbedForms: React.FC<Props> = ({
                       dispatch(
                         updateDraft(savedContact.id, { rawJson: { callerInformation: values.callerInformation } }),
                       )}
-                    taskSid={taskId}
+                    contactId={savedContact.id}
                   />
                 </TabbedFormTabContainer>
               )}
@@ -291,7 +288,7 @@ const TabbedForms: React.FC<Props> = ({
                         dispatch(
                           updateDraft(savedContact.id, { rawJson: { childInformation: values.childInformation } }),
                         )}
-                      taskSid={taskId}
+                      contactId={savedContact.id}
                     />
                   </TabbedFormTabContainer>
                   <TabbedFormTabContainer display={subroute === 'categories'}>
@@ -315,7 +312,7 @@ const TabbedForms: React.FC<Props> = ({
                         dispatch(
                           updateDraft(savedContact.id, { rawJson: { caseInformation: values.caseInformation } }),
                         )}
-                      taskSid={taskId}
+                      contactId={savedContact.id}
                     />
                   </TabbedFormTabContainer>
                 </>

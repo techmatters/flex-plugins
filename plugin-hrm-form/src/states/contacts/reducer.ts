@@ -62,7 +62,7 @@ import { createCaseAsyncAction } from '../case/saveCase';
 
 export const emptyCategories = [];
 
-const newContactMetaData = (recreated: boolean): ContactMetadata => {
+export const newContactMetaData = (recreated: boolean): ContactMetadata => {
   const categoriesMeta = {
     gridView: false,
     expanded: {},

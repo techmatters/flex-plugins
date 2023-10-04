@@ -131,7 +131,7 @@ export const resourceReferralReducer = (initialState: ContactsState) =>
         if (!state.existingContacts[contactId]) {
           return state;
         }
-        if (state.existingContacts[contactId].draftContact.referrals?.find(r => r.resourceId === resource.id)) {
+        if (state.existingContacts[contactId].draftContact?.referrals?.find(r => r.resourceId === resource.id)) {
           // Don't add a referral if it already exists
           return patchUnsavedContactReferralResourceState(state, contactId, {
             lookupStatus: ReferralLookupStatus.NOT_STARTED,
@@ -146,7 +146,7 @@ export const resourceReferralReducer = (initialState: ContactsState) =>
               draftContact: {
                 ...state.existingContacts[contactId].draftContact,
                 referrals: [
-                  ...(state.existingContacts[contactId].draftContact.referrals ?? []),
+                  ...(state.existingContacts[contactId].draftContact?.referrals ?? []),
                   { resourceId: resource.id, referredAt: new Date().toISOString(), resourceName: resource.name },
                 ],
               },
@@ -168,7 +168,7 @@ export const resourceReferralReducer = (initialState: ContactsState) =>
     handleAction(
       removeResourceReferralForUnsavedContactAction,
       (state, { payload: { contactId, referralId } }): ContactsState => {
-        const referrals = state.existingContacts[contactId].draftContact.referrals.filter(
+        const referrals = state.existingContacts[contactId].draftContact?.referrals.filter(
           referral => referral.resourceId !== referralId,
         );
         return {

@@ -61,7 +61,6 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
   updateForm,
   extraChildrenRight,
   contactId,
-  taskSid,
 }) => {
   const { getValues } = useFormContext();
 
@@ -73,7 +72,7 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
       updateForm(getValues());
     },
     shouldFocusFirstElement: display && autoFocus,
-    context: { taskSid, contactId },
+    context: { contactId },
   });
 
   const [l, r] = React.useMemo(() => {

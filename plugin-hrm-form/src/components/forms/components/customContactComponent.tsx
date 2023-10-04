@@ -20,7 +20,6 @@ import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
 import customContactComponentRegistry from '../customContactComponentRegistry';
 
 type ContactComponentContext = {
-  taskSid?: string;
   contactId?: string;
 };
 
@@ -34,10 +33,8 @@ const customContactFormItemContent = (
   formItemDefinition: FormItemDefinition & { type: FormInputType.CustomContactComponent },
   inputId: string,
   {
-    taskSid,
     contactId,
   }: {
-    taskSid?: string;
     contactId?: string;
   } = {},
 ) => {

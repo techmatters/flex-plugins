@@ -19,7 +19,6 @@ import { omit } from 'lodash';
 import * as t from './types';
 import { CSAMReportStateEntry } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
-import findContactByTaskSid from '../contacts/findContactByTaskSid';
 
 type CSAMReportState = {
   contacts: {

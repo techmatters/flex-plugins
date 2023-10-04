@@ -15,7 +15,6 @@
  */
 
 import { omit } from 'lodash';
-import { callTypes } from 'hrm-form-definitions';
 
 import { Contact, ContactRawJson } from '../../types/types';
 import { AddExternalReportEntryAction } from '../csam-report/existingContactExternalReport';
@@ -23,6 +22,7 @@ import { ConfigurationState } from '../configuration/reducer';
 import { transformValuesForContactForm } from './contactDetailsAdapter';
 import { ContactMetadata } from './types';
 import { updateContactInHrm } from '../../services/ContactService';
+import { newContactMetaData } from './reducer';
 
 export enum ContactDetailsRoute {
   EDIT_CALLER_INFORMATION = 'editCallerInformation',
@@ -144,6 +144,7 @@ export const loadContactReducer = (state: ExistingContactsState, action: LoadCon
       return [
         c.id,
         {
+          metadata: newContactMetaData(true),
           ...currentContact,
           savedContact: action.replaceExisting || !current.references.size ? c : state[c.id].savedContact,
           references: action.reference ? current.references.add(action.reference) : current.references,

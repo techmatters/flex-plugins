@@ -234,7 +234,7 @@ export const prepopulateForm = async (task: ITask) => {
 
   const surveyValues = getValuesFromAnswers(task, answers, tabFormDefinition, prepopulateSurveyKeys);
 
-  // When a helpline has survey and no preEnagagement form
+  // When a helpline has survey and no preEngagement form
   if (memory && !preEngagementData) {
     if (callType) {
       await saveContactChangesInHrm(
@@ -252,7 +252,7 @@ export const prepopulateForm = async (task: ITask) => {
     return;
   }
 
-  // When a helpline has survey and preEnagagement form to populate
+  // When a helpline has survey and preEngagement form to populate
   if (memory && preEngagementData) {
     const changes: ContactDraftChanges = { rawJson: {} };
     if (preEngagement.CaseInformationTab.length > 0) {
