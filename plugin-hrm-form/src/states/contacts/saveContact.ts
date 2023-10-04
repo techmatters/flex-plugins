@@ -27,10 +27,10 @@ export const updateContactsFormInHrmAsyncAction = createAsyncAction(
     contactId: string,
     body: Partial<ContactRawJson>,
     helpline: string,
-  ): Promise<{ contacts: Partial<HrmServiceContact>[] }> => {
+  ): Promise<{ contact: HrmServiceContact }> => {
     const contact = await updateContactsFormInHrm(contactId, body, helpline);
     return {
-      contacts: [contact],
+      contact,
     };
   },
 );
@@ -48,30 +48,14 @@ export const saveContactReducer = (initialState: ExistingContactsState) =>
 
     handleAction(
       updateContactsFormInHrmAsyncAction.fulfilled,
-      (state, { payload }): ExistingContactsState => {
-        const replaceExisting = true;
-        const updateEntries = payload.contacts
-          .filter(c => state[c.id]?.references && replaceExisting)
-          .map(c => {
-            const current = state[c.id] ?? { references: new Set() };
-            const { draftContact, ...currentContact } = state[c.id] ?? {
-              categories: {
-                expanded: {},
-                gridView: false,
-              },
-            };
-            return [
-              c.id,
-              {
-                ...currentContact,
-                savedContact: replaceExisting || !current.references.size ? c : state[c.id].savedContact,
-                ...state[c.id].references,
-              },
-            ];
-          });
+      (state, { payload: { contact } }): ExistingContactsState => {
         return {
           ...state,
-          ...Object.fromEntries(updateEntries),
+          [contact.id]: {
+            ...state[contact.id],
+            draftContact: { rawJson: {} },
+            savedContact: contact,
+          },
         };
       },
     ),
