@@ -90,7 +90,7 @@ export type Case = {
   categories: {};
   createdAt: string;
   updatedAt: string;
-  connectedContacts: HrmServiceContact[];
+  connectedContacts: Contact[];
 };
 
 export type TwilioStoredMedia = {
@@ -157,7 +157,7 @@ export type ContactRawJson = {
   };
 };
 
-export type HrmServiceContact = {
+export type Contact = {
   id: string;
   accountSid: string;
   twilioWorkerId: string;
@@ -182,7 +182,7 @@ export type HrmServiceContact = {
 
 export type SearchContactResult = {
   count: number;
-  contacts: HrmServiceContact[];
+  contacts: Contact[];
 };
 
 export type SearchCaseResult = {

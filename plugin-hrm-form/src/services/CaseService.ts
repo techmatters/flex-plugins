@@ -19,14 +19,10 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { fetchHrmApi } from './fetchHrmApi';
 import { getQueryParams } from './PaginationParams';
-import { Case, HrmServiceContact, SearchCaseResult } from '../types/types';
+import { Case, Contact, SearchCaseResult } from '../types/types';
 import { transformFromApiCategories } from './ContactService';
 
-export async function createCase(
-  contact: HrmServiceContact,
-  creatingWorkerSid: string,
-  definitionVersion: DefinitionVersionId,
-) {
+export async function createCase(contact: Contact, creatingWorkerSid: string, definitionVersion: DefinitionVersionId) {
   const { helpline, rawJson: contactForm } = contact;
 
   const caseRecord = contactForm.contactlessTask?.createdOnBehalfOf

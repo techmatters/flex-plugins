@@ -30,7 +30,7 @@ import {
 import { isNonDataCallType } from '../states/validationRules';
 import { mapChannelForInsights, formatCategories } from '../utils';
 import { getDateTime } from '../utils/helpers';
-import { Case, CustomITask, HrmServiceContact, ContactRawJson } from '../types/types';
+import { Case, CustomITask, Contact, ContactRawJson } from '../types/types';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import { shouldSendInsightsData } from '../utils/setUpActions';
 import {
@@ -56,9 +56,9 @@ const delimiter = ';';
 
 type InsightsUpdateFunction = (
   attributes: TaskAttributes,
-  contactForm: HrmServiceContact,
+  contactForm: Contact,
   caseForm: Case,
-  savedContact: HrmServiceContact,
+  savedContact: Contact,
 ) => InsightsAttributes;
 
 const sanitizeInsightsValue = (value: string | boolean) => {
@@ -120,10 +120,7 @@ type CoreAttributes = {
  */
 const baseUpdates: InsightsUpdateFunction = (
   taskAttributes: TaskAttributes,
-  {
-    rawJson: { callType, contactlessTask, childInformation, callerInformation, categories },
-    helpline,
-  }: HrmServiceContact,
+  { rawJson: { callType, contactlessTask, childInformation, callerInformation, categories }, helpline }: Contact,
 ): CoreAttributes => {
   const communication_channel = taskAttributes.isContactlessTask
     ? mapChannelForInsights(contactlessTask.channel)
@@ -170,7 +167,7 @@ const baseUpdates: InsightsUpdateFunction = (
 
 const contactlessTaskUpdates: InsightsUpdateFunction = (
   attributes: TaskAttributes,
-  { rawJson: { contactlessTask } }: HrmServiceContact,
+  { rawJson: { contactlessTask } }: Contact,
 ): InsightsAttributes => {
   if (!attributes.isContactlessTask) {
     return {};
@@ -355,7 +352,7 @@ const getInsightsUpdateFunctionsForConfig = (
   return [baseUpdates, contactlessTaskUpdates, ...applyCustomUpdates];
 };
 
-const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSuccess, contact: HrmServiceContact) => {
+const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSuccess, contact: Contact) => {
   const { bucket, key } = externalRecordingInfo;
   const { hrmBaseUrl } = getHrmConfig();
 
@@ -374,7 +371,6 @@ const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSu
     return [
       {
         type: 'VoiceRecording',
-        // eslint-disable-next-line camelcase
         url_provider,
       },
     ];
@@ -394,9 +390,9 @@ const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSu
  */
 export const buildInsightsData = (
   task: CustomITask,
-  contact: HrmServiceContact,
+  contact: Contact,
   caseForm: Case,
-  savedContact: HrmServiceContact,
+  savedContact: Contact,
   externalRecordingInfo: ExternalRecordingInfo | null = null,
 ) => {
   const previousAttributes = typeof task.attributes === 'string' ? JSON.parse(task.attributes) : task.attributes;

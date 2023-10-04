@@ -16,7 +16,7 @@
 
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { ContactRawJson, HrmServiceContact } from '../../types/types';
+import { ContactRawJson, Contact } from '../../types/types';
 
 const extractName = (contact: ContactRawJson, placeholder: string) => {
   const { firstName, lastName } = contact?.childInformation ?? {};
@@ -48,6 +48,6 @@ const contactLabel = (
 
 export const contactLabelFromHrmContact = (
   definition: DefinitionVersion,
-  contact: HrmServiceContact,
+  contact: Contact,
   options: ContactLabelOptions = {},
 ) => contactLabel(definition, options, contact?.rawJson, contact?.id);

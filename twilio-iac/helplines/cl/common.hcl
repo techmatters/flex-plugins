@@ -10,7 +10,8 @@ locals {
     task_language                     = "es-CL"
     voice_ivr_language                = "es-MX"
     enable_post_survey                = true
-
+    enable_external_recordings = true
+    
     workflows = {
       master : {
         friendly_name : "Master Workflow"

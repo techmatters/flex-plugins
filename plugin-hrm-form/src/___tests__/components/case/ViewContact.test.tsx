@@ -28,7 +28,7 @@ import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import ViewContact from '../../../components/case/ViewContact';
 import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import { getDefinitionVersions } from '../../../hrmConfig';
-import { HrmServiceContact } from '../../../types/types';
+import { Contact } from '../../../types/types';
 import { connectedCaseBase, contactFormsBase, csamReportBase, RootState } from '../../../states';
 import { DetailsContext, TOGGLE_DETAIL_EXPANDED_ACTION } from '../../../states/contacts/contactDetails';
 
@@ -52,7 +52,7 @@ const task = {
   defaultFrom: '+12025550425',
 };
 
-const contact: HrmServiceContact = {
+const contact: Contact = {
   id: 'TEST_ID',
   accountSid: '',
   createdAt: '2020-03-10',

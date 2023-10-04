@@ -40,7 +40,7 @@ import * as Actions from '../states/contacts/actions';
 import { changeRoute } from '../states/routing/actions';
 import { reactivateAseloListeners } from '../conversationListeners';
 import { prepopulateForm } from '../utils/prepopulateForm';
-import { HrmServiceContactWithMetadata } from '../states/contacts/types';
+import { ContactWithMetadata } from '../states/contacts/types';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type ActionPayload = { task: ITask };
@@ -70,7 +70,7 @@ const safeTransfer = async (transferFunction: () => Promise<any>, task: ITask): 
 /**
  * Given a taskSid, retrieves the state of the form (stored in redux) for that task
  */
-const getStateContactForms = (taskSid: string): HrmServiceContactWithMetadata => {
+const getStateContactForms = (taskSid: string): ContactWithMetadata => {
   return Manager.getInstance().store.getState()[namespace][contactFormsBase].tasks[taskSid];
 };
 
