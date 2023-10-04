@@ -93,14 +93,9 @@ export type Case = {
   connectedContacts: Contact[];
 };
 
-export type TwilioStoredMedia = {
-  store: 'twilio';
-  reservationSid: string;
-};
-
 export type SignedURLMethod = 'getObject' | 'putObject' | 'deleteObject';
 export type ObjectType = 'case' | 'contact';
-export type MediaType = 'recording' | 'transcript' | 'document';
+export type MediaType = ContactMediaType | 'document';
 
 export type GenerateSignedUrlPathParams = {
   method: SignedURLMethod;
@@ -116,29 +111,35 @@ export type S3Location = {
 };
 
 export type S3StoredTranscript = {
-  store: 'S3';
-  type: 'transcript';
-  location?: S3Location;
+  storeType: 'S3';
+  storeTypeSpecificData: {
+    type: 'transcript';
+    location?: S3Location;
+  };
 };
 
 export type S3StoredRecording = {
-  store: 'S3';
-  type: 'recording';
-  location?: S3Location;
+  storeType: 'S3';
+  storeTypeSpecificData: {
+    type: 'recording';
+    location?: S3Location;
+  };
 };
 
+export type TwilioStoredMedia = {
+  storeType: 'twilio';
+  reservationSid: string;
+};
 export type S3StoredMedia = S3StoredTranscript | S3StoredRecording;
-
-// Extract the 'type' property from S3StoredMedia to create ContactMediaType
-export type ContactMediaType = S3StoredMedia['type'];
+export type ContactMediaType = S3StoredMedia['storeTypeSpecificData']['type'];
 
 export type ConversationMedia = TwilioStoredMedia | S3StoredMedia;
 
-export const isTwilioStoredMedia = (m: ConversationMedia): m is TwilioStoredMedia => m.store === 'twilio';
+export const isTwilioStoredMedia = (m: ConversationMedia): m is TwilioStoredMedia => m.storeType === 'twilio';
 export const isS3StoredTranscript = (m: ConversationMedia): m is S3StoredTranscript =>
-  m.store === 'S3' && m.type === 'transcript';
+  m.storeType === 'S3' && m.storeTypeSpecificData.type === 'transcript';
 export const isS3StoredRecording = (m: ConversationMedia): m is S3StoredRecording =>
-  m.store === 'S3' && m.type === 'recording';
+  m.storeType === 'S3' && m.storeTypeSpecificData.type === 'recording';
 
 // Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
 export type ContactRawJson = {
