@@ -31,7 +31,7 @@ import { hasTaskControl } from '../../utils/transfer';
 import { namespace, contactFormsBase, connectedCaseBase, RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
-import { Case, CustomITask, HrmServiceContact } from '../../types/types';
+import { Case, CustomITask, Contact } from '../../types/types';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
@@ -184,12 +184,8 @@ const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     createCaseAsyncAction: (contact, workerSid: string, definitionVersion: DefinitionVersionId) =>
       createCaseAsyncDispatch(createCaseAsyncAction(contact, task.taskSid, workerSid, definitionVersion)),
-    submitContactFormAsyncAction: (
-      task: CustomITask,
-      contact: HrmServiceContact,
-      metadata: ContactMetadata,
-      caseForm: Case,
-    ) => createCaseAsyncDispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
+    submitContactFormAsyncAction: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) =>
+      createCaseAsyncDispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
   };
 };
 
