@@ -25,7 +25,6 @@ import { namespace, contactFormsBase, configurationBase, connectedCaseBase, Root
 import {
   ContactDraftChanges,
   getUnsavedContact,
-  loadContact,
   saveContactChangesInHrm,
   updateDraft as newUpdateDraftAction,
 } from '../../states/contacts/existingContacts';
@@ -38,13 +37,12 @@ import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
-import { Contact, CustomITask, isOfflineContactTask } from '../../types/types';
+import { CustomITask, isOfflineContactTask } from '../../types/types';
 import { getTemplateStrings } from '../../hrmConfig';
 import { AppRoutes } from '../../states/routing/types';
-import { updateContactInHrm } from '../../services/ContactService';
 
-const isDialogOpen = (contact: ContactDraftChanges) =>
-  Boolean(contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType));
+const isDialogOpen = (task: CustomITask, contact: ContactDraftChanges) =>
+  Boolean(!isOfflineContactTask(task) && contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType));
 
 type OwnProps = {
   task: CustomITask;
@@ -169,7 +167,7 @@ const CallTypeButtons: React.FC<Props> = ({
         </Box>
       </Container>
       <NonDataCallTypeDialog
-        isOpen={isDialogOpen(draftContact)}
+        isOpen={isDialogOpen(task, draftContact)}
         isCallTask={!isOfflineContactTask(task) && isCallTask(task)}
         isInWrapupMode={!isOfflineContactTask(task) && TaskHelper.isInWrapupMode(task)}
         handleConfirm={handleConfirmNonDataCallType}
