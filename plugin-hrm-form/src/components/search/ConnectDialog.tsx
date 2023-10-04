@@ -24,12 +24,12 @@ import { Row } from '../../styles/HrmStyles';
 import { ConfirmContainer, ConfirmText, CancelButton } from '../../styles/search';
 import TabPressWrapper from '../TabPressWrapper';
 import { hasTaskControl } from '../../utils/transfer';
-import { HrmServiceContact } from '../../types/types';
+import { Contact } from '../../types/types';
 
 type Props = {
   anchorEl: Element;
   currentIsCaller: boolean;
-  contact: HrmServiceContact;
+  contact: Contact;
   handleConfirm: () => void;
   handleClose: () => void;
   task: ITask;

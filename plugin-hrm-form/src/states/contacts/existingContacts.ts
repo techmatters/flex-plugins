@@ -16,9 +16,10 @@
 
 import { omit } from 'lodash';
 
-import { HrmServiceContact } from '../../types/types';
+import { Contact } from '../../types/types';
 import { AddExternalReportEntryAction } from '../csam-report/existingContactExternalReport';
-import { SaveContactReducerState, saveContactReducer } from './saveContact';
+import { ConfigurationState } from '../configuration/reducer';
+import { transformValuesForContactForm } from './contactDetailsAdapter';
 
 export enum ContactDetailsRoute {
   EDIT_CALLER_INFORMATION = 'editCallerInformation',
@@ -32,7 +33,7 @@ type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
 };
 
-export type SearchContactDraftChanges = RecursivePartial<HrmServiceContact>;
+export type SearchContactDraftChanges = RecursivePartial<Contact>;
 
 // TODO: Update this type when the Lambda worker is "done"
 export type TranscriptMessage = {
@@ -89,7 +90,7 @@ export type TranscriptResult = {
 export type ExistingContactsState = {
   [contactId: string]: {
     references: Set<string>;
-    savedContact: HrmServiceContact;
+    savedContact: Contact;
     draftContact?: SearchContactDraftChanges;
     categories: {
       gridView: boolean;
@@ -103,16 +104,12 @@ export const LOAD_CONTACT_ACTION = 'LOAD_CONTACT_ACTION';
 
 type LoadContactAction = {
   type: typeof LOAD_CONTACT_ACTION;
-  contacts: Partial<HrmServiceContact>[];
+  contacts: Partial<Contact>[];
   reference?: string;
   replaceExisting: boolean;
 };
 
-export const loadContact = (
-  contact: Partial<HrmServiceContact>,
-  reference,
-  replaceExisting = false,
-): LoadContactAction => ({
+export const loadContact = (contact: Partial<Contact>, reference, replaceExisting = false): LoadContactAction => ({
   type: LOAD_CONTACT_ACTION,
   contacts: [contact],
   reference,
@@ -120,7 +117,7 @@ export const loadContact = (
 });
 
 export const loadContacts = (
-  contacts: Partial<HrmServiceContact>[],
+  contacts: Partial<Contact>[],
   reference: string,
   replaceExisting = false,
 ): LoadContactAction => ({
@@ -327,18 +324,32 @@ export const clearDraft = (contactId: string): UpdateDraftAction => ({
   draft: undefined,
 });
 
-export const updateDraftReducer = (state: ExistingContactsState, action: UpdateDraftAction): ExistingContactsState => {
-  if (!state[action.contactId]) {
+export const updateDraftReducer = (
+  state: ExistingContactsState,
+  configState: ConfigurationState,
+  { contactId, draft }: UpdateDraftAction,
+): ExistingContactsState => {
+  if (!state[contactId]) {
     console.error(
-      `Attempted to update draft changes on contact ID '${action.contactId}' but this contact has not been loaded into redux. Load the contact into the existing contacts store using 'loadContact' before attempting to manipulate it's category state`,
+      `Attempted to update draft changes on contact ID '${contactId}' but this contact has not been loaded into redux. Load the contact into the existing contacts store using 'loadContact' before attempting to manipulate it's category state`,
     );
     return state;
   }
+
+  const definition =
+    configState.definitionVersions[state[contactId].savedContact.rawJson.definitionVersion] ??
+    configState.currentDefinitionVersion;
+
+  // Transform from RHF friendly values to the state we want in redux
+  const transformedForm = transformValuesForContactForm(definition)(draft.rawJson);
   return {
     ...state,
-    [action.contactId]: {
-      ...state[action.contactId],
-      draftContact: action.draft,
+    [contactId]: {
+      ...state[contactId],
+      draftContact: {
+        ...draft,
+        rawJson: transformedForm,
+      },
     },
   };
 };

@@ -44,7 +44,7 @@ function setUpDatadogRum(workerClient: Worker, monitoringEnv: string) {
 function setUpFullStory() {
   FullStory.init({
     orgId: fullStoryId,
-    devMode: process.env.REACT_APP_ENABLE_MONITORING !== 'true',
+    devMode: process.env.ENABLE_MONITORING !== 'true',
   });
   console.log('Fullstory monitoring is enabled');
 }
@@ -61,7 +61,7 @@ function helplineIdentifierFullStory(workerClient) {
 export default function setUpMonitoring(workerClient: Worker, serviceConfiguration: ServiceConfiguration) {
   const monitoringEnv = serviceConfiguration.attributes.monitoringEnv || 'staging';
 
-  if (process.env.REACT_APP_ENABLE_MONITORING === 'true') {
+  if (process.env.ENABLE_MONITORING === 'true') {
     setUpDatadogRum(workerClient, monitoringEnv);
   }
 

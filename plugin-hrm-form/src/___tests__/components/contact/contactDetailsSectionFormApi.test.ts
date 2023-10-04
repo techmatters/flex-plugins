@@ -23,7 +23,7 @@ import {
 } from 'hrm-form-definitions';
 
 import { contactDetailsSectionFormApi } from '../../../components/contact/contactDetailsSectionFormApi';
-import { HrmServiceContact } from '../../../types/types';
+import { Contact } from '../../../types/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -85,31 +85,16 @@ beforeAll(async () => {
   };
 });
 
-const emptySearchContact: HrmServiceContact = {
+const emptySearchContact: Contact = {
+  ...VALID_EMPTY_CONTACT,
   id: '0',
-  timeOfContact: '',
-  helpline: '',
-  number: '',
-  twilioWorkerId: '',
   channel: 'default',
-  conversationDuration: 0,
-  createdBy: '',
-  accountSid: '',
-  createdAt: '',
-  updatedBy: '',
-  queueName: '',
-  channelSid: '',
-  serviceSid: '',
-  taskId: '',
-  csamReports: [],
-  conversationMedia: [],
   rawJson: {
-    childInformation: {},
-    callerInformation: {},
-    caseInformation: {},
-    categories: {},
-    callType: '',
-    contactlessTask: { channel: 'voice' },
+    ...VALID_EMPTY_CONTACT.rawJson,
+    contactlessTask: {
+      ...VALID_EMPTY_CONTACT.rawJson.contactlessTask,
+      channel: 'voice',
+    },
   },
 };
 
@@ -169,56 +154,6 @@ describe('getFormValues', () => {
     ).toStrictEqual({
       caseInformation: {
         prop1: 'something',
-      },
-    });
-  });
-});
-
-describe('formToPayload', () => {
-  test('CHILD_INFORMATION - nests name, and wraps in a contact payload structure', () => {
-    expect(
-      contactDetailsSectionFormApi.CHILD_INFORMATION.formToPayload(definition, {
-        childInformation: {
-          firstName: 'Lorna',
-          otherProp: 'something',
-        },
-      }),
-    ).toStrictEqual({
-      childInformation: {
-        firstName: 'Lorna',
-        lastName: undefined,
-        otherProp: 'something',
-      },
-    });
-  });
-
-  test('CALLER_INFORMATION - nests name, and wraps in a contact payload structure', () => {
-    expect(
-      contactDetailsSectionFormApi.CALLER_INFORMATION.formToPayload(definition, {
-        callerInformation: {
-          firstName: 'Lorna',
-          prop: 'something',
-        },
-      }),
-    ).toStrictEqual({
-      callerInformation: {
-        firstName: 'Lorna',
-        lastName: undefined,
-        prop: 'something',
-      },
-    });
-  });
-  test('CASE_INFORMATION - creates undefined props for form items without values', () => {
-    expect(
-      contactDetailsSectionFormApi.CASE_INFORMATION.formToPayload(definition, {
-        caseInformation: {
-          prop1: 'yerp',
-        },
-      }),
-    ).toStrictEqual({
-      caseInformation: {
-        prop1: 'yerp',
-        prop2: undefined,
       },
     });
   });

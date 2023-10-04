@@ -14,36 +14,49 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { retrieveCategories } from '../../../states/contacts/contactDetailsAdapter';
+import { FormInputType } from 'hrm-form-definitions';
 
-describe('retrieveCategories', () => {
-  test('empty object input, empty object output', () => expect(retrieveCategories({})).toStrictEqual({}));
-  test('Categories with enabled subcategories input, categories with enables subcategories in a list as output', () =>
-    expect(
-      retrieveCategories({
-        category1: { sub1: true, sub2: false, sub3: true },
-        category2: { sub1: true, sub2: true, sub3: false },
-      }),
-    ).toStrictEqual({ category1: ['sub1', 'sub3'], category2: ['sub1', 'sub2'] }));
-  test('Falsy categories - throw', () =>
-    expect(() =>
-      retrieveCategories({
-        category1: null,
-        category2: { sub1: true, sub2: true, sub3: false },
-      }),
-    ).toThrow());
-  test('Categories with no subcategories input, not included in output', () =>
-    expect(
-      retrieveCategories({
-        category1: {},
-        category2: { sub1: true, sub2: true, sub3: false },
-      }),
-    ).toStrictEqual({ category2: ['sub1', 'sub2'] }));
-  test('Categories with no enabled subcategories input, not included in output', () =>
-    expect(
-      retrieveCategories({
-        category1: { sub1: false, sub2: false, sub3: false },
-        category2: { sub1: true, sub2: true, sub3: false },
-      }),
-    ).toStrictEqual({ category2: ['sub1', 'sub2'] }));
+import { transformValues } from '../../../states/contacts/contactDetailsAdapter';
+
+describe('transformValues', () => {
+  test('Strips entries in formValues that are not defined in provided form definition and adds undefined entries for form items without values', () => {
+    const result = transformValues([
+      { name: 'input1', type: FormInputType.Input, label: '' },
+      { name: 'input2', type: FormInputType.Input, label: '' },
+      { name: 'input3', type: FormInputType.Input, label: '' },
+      { name: 'input4', type: FormInputType.Input, label: '' },
+    ])({
+      input1: 'something',
+      input2: 'something else',
+      input3: 'another thing',
+      notInDef: 'delete me',
+    });
+
+    expect(result).toStrictEqual({
+      input1: 'something',
+      input2: 'something else',
+      input3: 'another thing',
+      input4: undefined,
+    });
+  });
+  test("Converts 'mixed' values to nulls for mixed-checkbox types", () => {
+    const result = transformValues([
+      { name: 'mixed1', type: FormInputType.MixedCheckbox, label: '' },
+      { name: 'mixed2', type: FormInputType.MixedCheckbox, label: '' },
+      { name: 'mixed3', type: FormInputType.MixedCheckbox, label: '' },
+      { name: 'notMixed', type: FormInputType.Input, label: '' },
+    ])({
+      mixed1: 'mixed',
+      mixed2: true,
+      mixed3: false,
+      notMixed: 'mixed',
+    });
+
+    expect(result).toStrictEqual({
+      mixed1: null,
+      mixed2: true,
+      mixed3: false,
+      notMixed: 'mixed',
+    });
+  });
 });

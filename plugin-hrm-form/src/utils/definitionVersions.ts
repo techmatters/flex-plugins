@@ -16,7 +16,7 @@
 
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
-import { Case, HrmServiceContact } from '../types/types';
+import { Case, Contact } from '../types/types';
 import { getDefinitionVersionsList } from '../services/ServerlessService';
 import { getDefinitionVersions } from '../hrmConfig';
 
@@ -32,7 +32,7 @@ const getMissingDefinitionVersions = async (versions: DefinitionVersionId[]) => 
   return definitions;
 };
 
-export const getContactsMissingVersions = (contacts: HrmServiceContact[]) =>
+export const getContactsMissingVersions = (contacts: Contact[]) =>
   getMissingDefinitionVersions(contacts.map(c => c.rawJson.definitionVersion));
 
 export const getCasesMissingVersions = async (cases: Case[]) =>

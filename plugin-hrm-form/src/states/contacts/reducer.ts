@@ -18,7 +18,7 @@ import { omit } from 'lodash';
 import { callTypes } from 'hrm-form-definitions';
 
 import * as t from './types';
-import { ContactsState, HrmServiceContactWithMetadata, SET_SAVED_CONTACT, UPDATE_CONTACT_ACTION } from './types';
+import { ContactsState, ContactWithMetadata, SET_SAVED_CONTACT, UPDATE_CONTACT_ACTION } from './types';
 import {
   DefinitionVersion,
   GeneralActionType,
@@ -54,18 +54,18 @@ import {
 } from './contactDetails';
 import { ADD_EXTERNAL_REPORT_ENTRY, addExternalReportEntryReducer } from '../csam-report/existingContactExternalReport';
 import { ReferralLookupStatus, resourceReferralReducer } from './resourceReferral';
-import { ContactRawJson, HrmServiceContact } from '../../types/types';
+import { ContactRawJson, Contact } from '../../types/types';
 import { ContactCategoryAction, toggleSubCategoriesReducer } from './categories';
 import { configurationBase, RootState } from '..';
-import { transformValues } from '../../services/ContactService';
 import { saveContactReducer, submitContactFormReducer } from './saveContact';
+import { transformValuesForContactForm } from './contactDetailsAdapter';
 
 export const emptyCategories = [];
 
 // eslint-disable-next-line import/no-unused-modules
 export const createContactWithMetadata = (definitions: DefinitionVersion) => (
   recreated: boolean,
-): HrmServiceContactWithMetadata => {
+): ContactWithMetadata => {
   const initialChildInformation = definitions.tabbedForms.ChildInformationTab.reduce(createStateItem, {});
   const initialCallerInformation = definitions.tabbedForms.CallerInformationTab.reduce(createStateItem, {});
   const initialCaseInformation = definitions.tabbedForms.CaseInformationTab.reduce(createStateItem, {});
@@ -149,7 +149,7 @@ export const initialState: ContactsState = {
   },
   editingContact: false,
   isCallTypeCaller: false,
-  savedContact: {} as HrmServiceContact,
+  savedContact: {} as Contact,
 };
 
 const boundReferralReducer = resourceReferralReducer(initialState);
@@ -198,20 +198,9 @@ export function reduce(
       const updateFormDefinition =
         rootState[configurationBase].definitionVersions[state.tasks[action.taskId].contact.rawJson.definitionVersion] ??
         rootState[configurationBase].currentDefinitionVersion;
-      let updatedForm: ContactRawJson[keyof ContactRawJson];
-      const formDefinitionsMap = {
-        childInformation: updateFormDefinition.tabbedForms.ChildInformationTab,
-        callerInformation: updateFormDefinition.tabbedForms.CallerInformationTab,
-        caseInformation: updateFormDefinition.tabbedForms.CaseInformationTab,
-      };
-      const formDefinition = formDefinitionsMap[action.parent];
-      if (formDefinition) {
-        updatedForm = transformValues(formDefinition)(
-          action.payload as ContactRawJson['childInformation' | 'callerInformation' | 'caseInformation'],
-        );
-      } else {
-        updatedForm = action.payload;
-      }
+      const transformedForm = transformValuesForContactForm(updateFormDefinition)({
+        [action.parent]: action.payload,
+      });
       return {
         ...state,
         tasks: {
@@ -222,8 +211,8 @@ export function reduce(
               ...state.tasks[action.taskId].contact,
               rawJson: {
                 ...state.tasks[action.taskId].contact.rawJson,
-                [action.parent]: updatedForm,
-              },
+                ...transformedForm,
+              } as ContactRawJson,
             },
           },
         },
@@ -398,7 +387,10 @@ export function reduce(
       return { ...state, contactDetails: sectionExpandedStateReducer(state.contactDetails, action) };
     }
     case EXISTING_CONTACT_UPDATE_DRAFT_ACTION: {
-      return { ...state, existingContacts: updateDraftReducer(state.existingContacts, action) };
+      return {
+        ...state,
+        existingContacts: updateDraftReducer(state.existingContacts, rootState.configuration, action),
+      };
     }
     case EXISTING_CONTACT_CREATE_DRAFT_ACTION: {
       return { ...state, existingContacts: createDraftReducer(state.existingContacts, action) };

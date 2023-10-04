@@ -1,0 +1,326 @@
+${
+  jsonencode(
+      {
+    "description": flow_description,
+    "states": [
+      {
+        "name": "Trigger",
+        "type": "trigger",
+        "transitions": [
+          {
+            "next": "split_language",
+            "event": "incomingMessage"
+          },
+          {
+            "event": "incomingCall"
+          },
+          {
+            "event": "incomingConversationMessage"
+          },
+          {
+            "event": "incomingRequest"
+          },
+          {
+            "event": "incomingParent"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -40,
+            "y": -260
+          }
+        }
+      },
+      {
+        "name": "split_language",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to hu-HU",
+                "arguments": [
+                  "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+                ],
+                "type": "equal_to",
+                "value": "hu-HU"
+              }
+            ]
+          },
+          {
+            "next": "pre_survey_complete_ru",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to ru-HU",
+                "arguments": [
+                  "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+                ],
+                "type": "equal_to",
+                "value": "ru-HU"
+              }
+            ]
+          },
+          {
+            "next": "pre_survey_complete_ukr",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to ukr-HU",
+                "arguments": [
+                  "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+                ],
+                "type": "equal_to",
+                "value": "ukr-HU"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}",
+          "offset": {
+            "x": -50,
+            "y": 130
+          }
+        }
+      },
+      {
+        "name": "webAttributesRU",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 390,
+            "y": 1260
+          },
+          "workflow": workflow_sids["master"],
+          "channel": task_channel_sids["chat"],
+          "attributes": "{\"language\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.language}}\", \"ip\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"Kék Vonal\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"preEngagementData\": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}},\n\"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}}"
+        }
+      },
+      {
+        "name": "webAttributesUKR",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 940,
+            "y": 1250
+          },
+          "workflow": workflow_sids[
+            "master"
+          ],
+          "channel": task_channel_sids[
+            "chat"
+          ],
+          "attributes": "{\"language\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.language}}\", \"ip\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"Kék Vonal\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"preEngagementData\": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}},\n\"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}}"
+        }
+      },
+      {
+        "name": "pre_survey_complete_ukr",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "capture_channel_with_bot_ukr",
+            "event": "noMatch"
+          },
+          {
+            "next": "webAttributesUKR",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to true",
+                "arguments": [
+                  "{{trigger.message.ChannelAttributes.preSurveyComplete}}"
+                ],
+                "type": "equal_to",
+                "value": "true"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{trigger.message.ChannelAttributes.preSurveyComplete}}",
+          "offset": {
+            "x": 680,
+            "y": 330
+          }
+        }
+      },
+      {
+        "name": "capture_channel_with_bot_ukr",
+        "type": "run-function",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "fail"
+          }
+        ],
+        "properties": {
+          "service_sid": flow_vars["service_sid"],
+          "environment_sid": flow_vars["environment_sid"],
+          "offset": {
+            "x": 1140,
+            "y": 720
+          },
+          "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
+          "parameters": [
+            {
+              "value": "{{flow.channel.address}}",
+              "key": "channelSid"
+            },
+            {
+              "value": "trigger_pre_survey",
+              "key": "message"
+            },
+            {
+              "value": "{{flow.flow_sid}}",
+              "key": "studioFlowSid"
+            },
+            {
+              "value": "uk",
+              "key": "language"
+            },
+            {
+              "value": "pre_survey",
+              "key": "botSuffix"
+            },
+            {
+              "value": "withUserMessage",
+              "key": "triggerType"
+            },
+            {
+              "value": "triggerStudioFlow",
+              "key": "releaseType"
+            },
+            {
+              "value": "preSurveyComplete",
+              "key": "releaseFlag"
+            }
+          ],
+          "url": "${serverless_url}/channelCapture/captureChannelWithBot"
+        }
+      },
+      {
+        "name": "pre_survey_complete_ru",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "capture_channel_with_bot_ru",
+            "event": "noMatch"
+          },
+          {
+            "next": "webAttributesRU",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to true",
+                "arguments": [
+                  "{{trigger.message.ChannelAttributes.preSurveyComplete}}"
+                ],
+                "type": "equal_to",
+                "value": "true"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{trigger.message.ChannelAttributes.preSurveyComplete}}",
+          "offset": {
+            "x": 30,
+            "y": 420
+          }
+        }
+      },
+      {
+        "name": "capture_channel_with_bot_ru",
+        "type": "run-function",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "fail"
+          }
+        ],
+        "properties": {
+          "service_sid": flow_vars["service_sid"],
+          "environment_sid": flow_vars["environment_sid"],
+          "offset": {
+            "x": -130,
+            "y": 680
+          },
+          "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
+          "parameters": [
+            {
+              "value": "{{flow.channel.address}}",
+              "key": "channelSid"
+            },
+            {
+              "value": "trigger_pre_survey",
+              "key": "message"
+            },
+            {
+              "value": "{{flow.flow_sid}}",
+              "key": "studioFlowSid"
+            },
+            {
+              "value": "ru",
+              "key": "language"
+            },
+            {
+              "value": "pre_survey",
+              "key": "botSuffix"
+            },
+            {
+              "value": "withUserMessage",
+              "key": "triggerType"
+            },
+            {
+              "value": "triggerStudioFlow",
+              "key": "releaseType"
+            },
+            {
+              "value": "preSurveyComplete",
+              "key": "releaseFlag"
+            }
+          ],
+          "url": "${serverless_url}/channelCapture/captureChannelWithBot"
+        }
+      }
+    ],
+    "initial_state": "Trigger",
+    "flags": {
+      "allow_concurrent_calls": true
+    }
+  }
+    
+  )
+}
+

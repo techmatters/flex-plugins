@@ -17,18 +17,17 @@
 /* eslint-disable prefer-destructuring */
 import { differenceInMinutes } from 'date-fns';
 
-import { Case, HrmServiceContact } from '../types/types';
+import { Case, Contact } from '../types/types';
 
-const isSearchContact = (input: HrmServiceContact | Case): input is HrmServiceContact =>
-  Boolean((<HrmServiceContact>input).rawJson);
+const isSearchContact = (input: Contact | Case): input is Contact => Boolean((<Contact>input).rawJson);
 
 /**
- * Takes a raw Case or HrmServiceContact object and calculates its updated date.
+ * Takes a raw Case or Contact object and calculates its updated date.
  * If the case/contact has last been updated within 10 minutes of creation, by the same user who created it,
  * or there is no updated date, it is not considered 'updated' and undefined is returned
  * @param input
  */
-const getUpdatedDate = (input: HrmServiceContact | Case): Date | undefined => {
+const getUpdatedDate = (input: Contact | Case): Date | undefined => {
   let createdAt: Date;
   let updatedAt: Date | undefined;
   let createdBy: string;

@@ -28,12 +28,11 @@ import { CaseLayout } from '../../styles/case';
 import Case from '../case';
 import { configurationBase, contactFormsBase, namespace, RootState, routingBase } from '../../states';
 import { updateCallType, updateForm } from '../../states/contacts/actions';
-import { searchResultToContactForm } from '../../services/ContactService';
 import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute } from '../../states/routing/actions';
 import { emptyCategories } from '../../states/contacts/reducer';
 import { NewCaseSubroutes, TabbedFormSubroutes } from '../../states/routing/types';
-import { ContactRawJson, CustomITask, isOfflineContactTask, HrmServiceContact } from '../../types/types';
+import { ContactRawJson, CustomITask, isOfflineContactTask, Contact } from '../../types/types';
 import { Box, Row, StyledTabs, TabbedFormsContainer, TabbedFormTabContainer } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import Search from '../search';
@@ -144,23 +143,13 @@ const TabbedForms: React.FC<Props> = ({
   const taskId = task.taskSid;
   const isCallerType = contact.rawJson.callType === callTypes.caller;
 
-  const onSelectSearchResult = (searchResult: HrmServiceContact) => {
+  const onSelectSearchResult = (searchResult: Contact) => {
     const selectedIsCaller = searchResult.rawJson.callType === callTypes.caller;
     if (isCallerType && selectedIsCaller && isCallTypeCaller) {
-      const deTransformed = searchResultToContactForm(
-        currentDefinitionVersion.tabbedForms.CallerInformationTab,
-        searchResult.rawJson.callerInformation,
-      );
-
-      dispatch(updateForm(task.taskSid, 'callerInformation', deTransformed));
+      dispatch(updateForm(task.taskSid, 'callerInformation', searchResult.rawJson.callerInformation));
       dispatch(changeRoute({ route: 'tabbed-forms', subroute: 'callerInformation' }, taskId));
     } else {
-      const deTransformed = searchResultToContactForm(
-        currentDefinitionVersion.tabbedForms.ChildInformationTab,
-        searchResult.rawJson.childInformation,
-      );
-
-      dispatch(updateForm(task.taskSid, 'childInformation', deTransformed));
+      dispatch(updateForm(task.taskSid, 'childInformation', searchResult.rawJson.childInformation));
       dispatch(changeRoute({ route: 'tabbed-forms', subroute: 'childInformation' }, taskId));
     }
   };

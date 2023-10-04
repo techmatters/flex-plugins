@@ -8,7 +8,7 @@ terraform {
 }
 
 data "aws_ssm_parameter" "webhook_url_studio_errors" {
-  name = "/${var.environment}/slack/webhook_url_studio_errors"
+  name = "/${lower(var.environment)}/slack/webhook_url_studio_errors"
 }
 
 locals {

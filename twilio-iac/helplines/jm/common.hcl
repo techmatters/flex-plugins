@@ -55,23 +55,7 @@ locals {
       survey : "Survey"
     }
 
-    #Channels
-    channels = {
-      webchat : {
-        channel_type         = "web"
-        contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
-        channel_flow_vars    = {}
-        chatbot_unique_names = []
-      },
-      instagram : {
-        channel_type         = "custom"
-        contact_identity     = "instagram"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
-        channel_flow_vars    = {}
-        chatbot_unique_names = []
-      }
-    }
+    
 
     phone_numbers = {}
 
