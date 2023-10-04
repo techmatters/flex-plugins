@@ -18,7 +18,6 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { TaskHelper } from '@twilio/flex-ui';
-import { bindActionCreators } from 'redux';
 
 import HrmForm from './HrmForm';
 import FormNotEditable from './FormNotEditable';
@@ -77,7 +76,7 @@ const TaskView: React.FC<Props> = props => {
       if (task && !isStandaloneITask(task)) {
         const helplineToSave = await getHelplineToSave(task, contactlessTask);
         if (helpline !== helplineToSave) {
-          updateHelpline(task.taskSid, helplineToSave);
+          updateHelpline(contact.id, helplineToSave);
         }
       }
     };
@@ -89,7 +88,7 @@ const TaskView: React.FC<Props> = props => {
     if (shouldSetHelpline) {
       setHelpline();
     }
-  }, [contactlessTask, contactInitialized, helpline, task, updateHelpline]);
+  }, [contactlessTask, contactInitialized, helpline, task, updateHelpline, contact]);
 
   if (!currentDefinitionVersion) {
     return null;

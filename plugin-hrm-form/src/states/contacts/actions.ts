@@ -35,6 +35,7 @@ export const prepopulateForm = (
     contactId,
     draft: {
       rawJson: {
+        callType,
         [formName]: values,
       },
     },

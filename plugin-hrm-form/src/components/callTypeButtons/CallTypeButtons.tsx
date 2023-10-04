@@ -22,7 +22,11 @@ import { connect, ConnectedProps } from 'react-redux';
 import { callTypes, CallTypeButtonsEntry } from 'hrm-form-definitions';
 
 import { namespace, contactFormsBase, configurationBase, connectedCaseBase, RootState } from '../../states';
-import { SearchContactDraftChanges, updateDraft as newUpdateDraftAction } from '../../states/contacts/existingContacts';
+import {
+  ContactDraftChanges,
+  getUnsavedContact,
+  updateDraft as newUpdateDraftAction,
+} from '../../states/contacts/existingContacts';
 import { changeRoute as newChangeRouteAction } from '../../states/routing/actions';
 import { withLocalization } from '../../contexts/LocalizationContext';
 import { Box, Flex } from '../../styles/HrmStyles';
@@ -32,11 +36,11 @@ import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
-import { CustomITask, Contact, isOfflineContactTask } from '../../types/types';
+import { CustomITask, isOfflineContactTask } from '../../types/types';
 import { getTemplateStrings } from '../../hrmConfig';
 import { AppRoutes } from '../../states/routing/types';
 
-const isDialogOpen = (contact: SearchContactDraftChanges) =>
+const isDialogOpen = (contact: ContactDraftChanges) =>
   Boolean(contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType));
 
 type OwnProps = {
@@ -103,12 +107,7 @@ const CallTypeButtons: React.FC<Props> = ({
     if (!hasTaskControl(task)) return;
 
     try {
-      await submitContactForm(
-        task,
-        { ...savedContact, ...draftContact, rawJson: { ...savedContact.rawJson, ...draftContact.rawJson } },
-        metadata,
-        caseForm,
-      );
+      await submitContactForm(task, getUnsavedContact(savedContact, draftContact), metadata, caseForm);
       await completeTask(task);
     } catch (error) {
       const strings = getTemplateStrings();

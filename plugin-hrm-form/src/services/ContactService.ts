@@ -341,7 +341,7 @@ export const createContact = async (contact: Contact, twilioWorkerId: string, ta
   return fetchHrmApi(`/contacts`, options);
 };
 
-const updateContactsInHrm = async (
+export const updateContactInHrm = async (
   contactId: string,
   body: Omit<Partial<Contact>, 'rawJson'> & { rawJson: Partial<ContactRawJson> },
 ): Promise<Contact> => {
@@ -428,7 +428,7 @@ const saveContactToHrm = async (
     serviceSid,
   };
 
-  const response = await updateContactsInHrm(contact.id, contactToSave);
+  const response = await updateContactInHrm(contact.id, contactToSave);
 
   return {
     response,
@@ -437,7 +437,7 @@ const saveContactToHrm = async (
 };
 
 export const updateContactsFormInHrm = async (contactId: string, body: Partial<ContactRawJson>): Promise<Contact> => {
-  return updateContactsInHrm(contactId, { rawJson: body });
+  return updateContactInHrm(contactId, { rawJson: body });
 };
 
 export const saveContact = async (

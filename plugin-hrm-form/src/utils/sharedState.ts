@@ -22,7 +22,7 @@ import { recordBackendError } from '../fullStory';
 import { issueSyncToken } from '../services/ServerlessService';
 import { getAseloFeatureFlags, getDefinitionVersions, getTemplateStrings } from '../hrmConfig';
 import { CSAMReportEntry, Contact, ContactRawJson } from '../types/types';
-import { ContactMetadata, ContactWithMetadata } from '../states/contacts/types';
+import { ContactMetadata } from '../states/contacts/types';
 import { newContactState } from '../states/contacts/reducer';
 import { ChannelTypes } from '../states/DomainConstants';
 import { ResourceReferral } from '../states/contacts/resourceReferral';

@@ -33,14 +33,15 @@ import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
 import { customChannelTypes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
-import { CustomITask, FeatureFlags, isOfflineContactTask } from '../types/types';
+import { CustomITask, FeatureFlags } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
-import { saveContact } from '../services/ContactService';
+import { createContact } from '../services/ContactService';
 import { newContactState } from '../states/contacts/reducer';
 import type { RootState } from '../states';
 import { getTaskLanguage } from './task';
 import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
+import { loadContact } from '../states/contacts/existingContacts';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -88,10 +89,11 @@ export const initializeContactForm = async ({ task }: ActionPayload) => {
   ].configuration;
   const { savedContact: newContact, metadata } = newContactState(currentDefinitionVersion)(false);
   const { workerSid } = getHrmConfig();
-  const { contact: savedContact } = await saveContact(task, newContact, metadata, workerSid, task.taskSid, false);
+  const savedContact = await createContact(newContact, workerSid, task.taskSid);
   Manager.getInstance().store.dispatch(
     GeneralActions.initializeContactState(currentDefinitionVersion)(savedContact, metadata),
   );
+  Manager.getInstance().store.dispatch(loadContact(savedContact, task.taskSid, true));
 };
 
 const sendMessageOfKey = (messageKey: string) => (

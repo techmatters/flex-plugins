@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { AnyAction, bindActionCreators } from 'redux';
 import { Template } from '@twilio/flex-ui';
@@ -35,6 +35,8 @@ import { Case, CustomITask } from '../../types/types';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
+import { getUnsavedContact } from '../../states/contacts/existingContacts';
+import { updateContactInHrm } from '../../services/ContactService';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;
@@ -71,7 +73,8 @@ const BottomBar: React.FC<
     if (!hasTaskControl(task)) return;
 
     try {
-      createCaseAsyncAction(contact, workerSid, definitionVersion);
+      const updated = await updateContactInHrm(contact.id, contact);
+      await createCaseAsyncAction(updated, workerSid, definitionVersion);
       changeRoute({ route: 'new-case' }, taskSid);
     } catch (error) {
       recordBackendError('Open New Case', error);
@@ -174,7 +177,7 @@ const mapStateToProps = (state: RootState, ownProps: BottomBarProps) => {
     state[namespace][contactFormsBase].existingContacts[ownProps.contactId] ?? {};
   const caseForm = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase || {};
   return {
-    contact: { ...savedContact, ...draftContact, rawJson: { ...savedContact.rawJson, ...draftContact.rawJson } },
+    contact: getUnsavedContact(savedContact, draftContact),
     metadata,
     caseForm,
   };

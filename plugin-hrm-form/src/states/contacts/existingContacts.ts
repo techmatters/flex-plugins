@@ -18,9 +18,8 @@ import { omit } from 'lodash';
 
 import { Contact, ContactRawJson } from '../../types/types';
 import { AddExternalReportEntryAction } from '../csam-report/existingContactExternalReport';
-import { configurationBase, namespace, RootState } from '..';
 import { ConfigurationState } from '../configuration/reducer';
-import { transformValues, transformValuesForContactForm } from './contactDetailsAdapter';
+import { transformValuesForContactForm } from './contactDetailsAdapter';
 import { ContactMetadata } from './types';
 
 export enum ContactDetailsRoute {
@@ -30,12 +29,7 @@ export enum ContactDetailsRoute {
   EDIT_CASE_INFORMATION = 'editCaseInformation',
 }
 
-// From https://stackoverflow.com/questions/47914536/use-partial-in-nested-property-with-typescript
-type RecursivePartial<T> = {
-  [P in keyof T]?: RecursivePartial<T[P]>;
-};
-
-export type SearchContactDraftChanges = Omit<Partial<Contact>, 'rawJson'> & { rawJson?: Partial<ContactRawJson> };
+export type ContactDraftChanges = Omit<Partial<Contact>, 'rawJson'> & { rawJson?: Partial<ContactRawJson> };
 
 // TODO: Update this type when the Lambda worker is "done"
 export type TranscriptMessage = {
@@ -92,7 +86,7 @@ export type TranscriptResult = {
 export type ContactState = {
   references: Set<string>;
   savedContact: Contact;
-  draftContact?: SearchContactDraftChanges;
+  draftContact?: ContactDraftChanges;
   metadata: ContactMetadata;
   transcript?: Transcript;
 };
@@ -151,6 +145,7 @@ export const loadContactReducer = (state: ExistingContactsState, action: LoadCon
           ...currentContact,
           savedContact: action.replaceExisting || !current.references.size ? c : state[c.id].savedContact,
           references: action.reference ? current.references.add(action.reference) : current.references,
+          draftContact: action.replaceExisting ? undefined : draftContact,
         },
       ];
     });
@@ -314,10 +309,10 @@ export const EXISTING_CONTACT_UPDATE_DRAFT_ACTION = 'EXISTING_CONTACT_UPDATE_DRA
 type UpdateDraftAction = {
   type: typeof EXISTING_CONTACT_UPDATE_DRAFT_ACTION;
   contactId: string;
-  draft?: SearchContactDraftChanges;
+  draft?: ContactDraftChanges;
 };
 
-export const updateDraft = (contactId: string, draft: SearchContactDraftChanges): UpdateDraftAction => ({
+export const updateDraft = (contactId: string, draft: ContactDraftChanges): UpdateDraftAction => ({
   type: EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
   contactId,
   draft,
@@ -327,6 +322,15 @@ export const clearDraft = (contactId: string): UpdateDraftAction => ({
   type: EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
   contactId,
   draft: undefined,
+});
+
+export const getUnsavedContact = (savedContact: Contact, draftContact: ContactDraftChanges): Contact => ({
+  ...savedContact,
+  ...draftContact,
+  rawJson: {
+    ...savedContact.rawJson,
+    ...draftContact?.rawJson,
+  },
 });
 
 export const updateDraftReducer = (
@@ -386,7 +390,7 @@ export const createDraftReducer = (state: ExistingContactsState, action: CreateD
     return state;
   }
   const { savedContact } = state[action.contactId];
-  let newDraft: SearchContactDraftChanges;
+  let newDraft: ContactDraftChanges;
 
   switch (action.draftRoute) {
     case ContactDetailsRoute.EDIT_CHILD_INFORMATION:

@@ -16,6 +16,7 @@
 
 import { omit } from 'lodash';
 import { callTypes } from 'hrm-form-definitions';
+import { createReducer } from 'redux-promise-middleware-actions';
 
 import * as t from './types';
 import { ContactMetadata, ContactsState } from './types';
@@ -57,6 +58,7 @@ import { ReferralLookupStatus, resourceReferralReducer } from './resourceReferra
 import { Contact, ContactRawJson } from '../../types/types';
 import { ContactCategoryAction, toggleSubCategoriesReducer } from './categories';
 import { configurationBase, RootState } from '..';
+import { createCaseAsyncAction } from '../case/saveCase';
 
 export const emptyCategories = [];
 
@@ -153,6 +155,30 @@ export const initialState: ContactsState = {
 
 const boundReferralReducer = resourceReferralReducer(initialState);
 
+const newCaseReducer = createReducer(initialState, handleAction => [
+  handleAction(
+    createCaseAsyncAction.fulfilled,
+    (state: ContactsState, { payload: { case: connectedCase, taskSid } }) => {
+      const connectedContacts = connectedCase.connectedContacts
+        .map(({ id }) => state.existingContacts[id])
+        .filter(Boolean);
+      const contactsMap = Object.fromEntries(
+        connectedContacts.map(contact => [
+          contact.savedContact.id,
+          { ...contact, savedContact: { ...contact.savedContact, caseId: connectedCase.id } },
+        ]),
+      );
+      return {
+        ...state,
+        existingContacts: {
+          ...state.existingContacts,
+          ...contactsMap,
+        },
+      };
+    },
+  ),
+]);
+
 // eslint-disable-next-line import/no-unused-modules,complexity
 export function reduce(
   rootState: RootState['plugin-hrm-form'],
@@ -167,6 +193,7 @@ export function reduce(
 ): ContactsState {
   let state = boundReferralReducer(inputState, action as any);
   state = toggleSubCategoriesReducer(state, action as ContactCategoryAction);
+  state = newCaseReducer(state, action as any);
   switch (action.type) {
     case INITIALIZE_CONTACT_STATE:
       return {

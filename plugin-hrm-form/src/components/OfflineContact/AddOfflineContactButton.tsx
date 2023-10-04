@@ -29,6 +29,7 @@ import { newContactState } from '../../states/contacts/reducer';
 import { createContact } from '../../services/ContactService';
 import { getHrmConfig } from '../../hrmConfig';
 import { ContactMetadata } from '../../states/contacts/types';
+import { loadContact } from '../../states/contacts/existingContacts';
 
 type OwnProps = {};
 
@@ -39,6 +40,7 @@ const AddOfflineContactButton: React.FC<Props> = ({
   isAddingOfflineContact,
   currentDefinitionVersion,
   recreateContactState,
+  addReferenceToContactState,
 }) => {
   if (!currentDefinitionVersion) {
     return null;
@@ -48,6 +50,7 @@ const AddOfflineContactButton: React.FC<Props> = ({
     const { savedContact: newContact, metadata } = newContactState(currentDefinitionVersion)(true);
     const savedContact = await createContact(newContact, getHrmConfig().workerSid, offlineContactTaskSid);
     recreateContactState(currentDefinitionVersion)(savedContact, metadata);
+    addReferenceToContactState(savedContact);
   };
 
   const onClick = async () => {
@@ -79,8 +82,12 @@ const mapStateToProps = (state: RootState) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  recreateContactState: (definitions: DefinitionVersion) => (contact: Contact, metadata: ContactMetadata) =>
-    dispatch(GeneralActions.recreateContactState(definitions)(contact, metadata)),
+  recreateContactState: (definitions: DefinitionVersion) => (contact: Contact, metadata: ContactMetadata) => {
+    dispatch(GeneralActions.recreateContactState(definitions)(contact, metadata));
+  },
+  addReferenceToContactState: (contact: Contact) => {
+    dispatch(loadContact(contact, offlineContactTaskSid));
+  },
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

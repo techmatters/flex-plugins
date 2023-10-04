@@ -40,7 +40,6 @@ import * as Actions from '../states/contacts/actions';
 import { changeRoute } from '../states/routing/actions';
 import { reactivateAseloListeners } from '../conversationListeners';
 import { prepopulateForm } from '../utils/prepopulateForm';
-import { ContactWithMetadata } from '../states/contacts/types';
 import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
 import { ContactState } from '../states/contacts/existingContacts';
 
