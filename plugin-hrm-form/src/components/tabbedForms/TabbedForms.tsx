@@ -32,7 +32,7 @@ import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute } from '../../states/routing/actions';
 import { emptyCategories } from '../../states/contacts/reducer';
 import { NewCaseSubroutes, TabbedFormSubroutes } from '../../states/routing/types';
-import { ContactRawJson, CustomITask, isOfflineContactTask, HrmServiceContact } from '../../types/types';
+import { ContactRawJson, CustomITask, isOfflineContactTask, Contact } from '../../types/types';
 import { Box, Row, StyledTabs, TabbedFormsContainer, TabbedFormTabContainer } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import Search from '../search';
@@ -143,7 +143,7 @@ const TabbedForms: React.FC<Props> = ({
   const taskId = task.taskSid;
   const isCallerType = contact.rawJson.callType === callTypes.caller;
 
-  const onSelectSearchResult = (searchResult: HrmServiceContact) => {
+  const onSelectSearchResult = (searchResult: Contact) => {
     const selectedIsCaller = searchResult.rawJson.callType === callTypes.caller;
     if (isCallerType && selectedIsCaller && isCallTypeCaller) {
       dispatch(updateForm(task.taskSid, 'callerInformation', searchResult.rawJson.callerInformation));

@@ -38,7 +38,7 @@ import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions, getHrmConfig } from '../../hrmConfig';
 import { ContactRawJson, offlineContactTaskSid } from '../../types/types';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
-import { HrmServiceContactWithMetadata } from '../../states/contacts/types';
+import { ContactWithMetadata } from '../../states/contacts/types';
 
 const helpline = 'ChildLine';
 const mockGetHrmConfig = getHrmConfig as jest.Mock;
@@ -183,7 +183,7 @@ describe('transformForm', () => {
 const createContactWithMetadata = (
   { callType, childFirstName },
   contactlessTaskInfo = undefined,
-): HrmServiceContactWithMetadata => {
+): ContactWithMetadata => {
   const blankForm = VALID_EMPTY_CONTACT.rawJson;
   const contactlessTask = contactlessTaskInfo || blankForm.contactlessTask;
 

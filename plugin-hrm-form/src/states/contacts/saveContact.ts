@@ -17,7 +17,7 @@
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
 import { updateContactsFormInHrm } from '../../services/ContactService';
-import { ContactRawJson, HrmServiceContact } from '../../types/types';
+import { ContactRawJson, Contact } from '../../types/types';
 import { UPDATE_CONTACT_ACTION } from './types';
 import { ExistingContactsState } from './existingContacts';
 
@@ -27,7 +27,7 @@ export const updateContactsFormInHrmAsyncAction = createAsyncAction(
     contactId: string,
     body: Partial<ContactRawJson>,
     helpline: string,
-  ): Promise<{ contact: HrmServiceContact }> => {
+  ): Promise<{ contact: Contact }> => {
     const contact = await updateContactsFormInHrm(contactId, body, helpline);
     return {
       contact,

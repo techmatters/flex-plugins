@@ -18,7 +18,7 @@ import fromentries from 'fromentries';
 
 import * as t from '../../../states/search/types';
 import { handleSearchFormChange } from '../../../states/search/actions';
-import { HrmServiceContact, SearchCaseResult } from '../../../types/types';
+import { Contact, SearchCaseResult } from '../../../types/types';
 import {
   INITIALIZE_CONTACT_STATE,
   RECREATE_CONTACT_STATE,
@@ -122,7 +122,7 @@ describe('search reducer', () => {
   });
 
   test('VIEW_CONTACT_DETAILS action', () => {
-    const contact: HrmServiceContact = { ...VALID_EMPTY_CONTACT, id: 'fake contact' };
+    const contact: Contact = { ...VALID_EMPTY_CONTACT, id: 'fake contact' };
     const action: t.SearchActionType = {
       type: t.VIEW_CONTACT_DETAILS,
       contact,

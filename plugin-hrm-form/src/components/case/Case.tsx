@@ -40,7 +40,7 @@ import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import ViewContact from './ViewContact';
 import { Activity, CaseDetails, ConnectedCaseActivity, NoteActivity } from '../../states/case/types';
-import { Case as CaseType, CustomITask, HrmServiceContact, StandaloneITask } from '../../types/types';
+import { Case as CaseType, CustomITask, Contact, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import {
   AppRoutes,
@@ -210,7 +210,7 @@ const Case: React.FC<Props> = ({
 
   if (!props.connectedCaseState || !definitionVersion) return null;
 
-  const getCategories = (firstConnectedContact: HrmServiceContact): Record<string, string[]> => {
+  const getCategories = (firstConnectedContact: Contact): Record<string, string[]> => {
     if (firstConnectedContact?.rawJson) {
       return firstConnectedContact.rawJson.categories;
     }
