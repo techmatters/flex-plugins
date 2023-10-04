@@ -16,7 +16,7 @@
 
 import each from 'jest-each';
 
-import fetchHrmApi from '../../services/fetchHrmApi';
+import { fetchHrmApi } from '../../services/fetchHrmApi';
 import { ApiError } from '../../services/fetchApi';
 import { getHrmConfig } from '../../hrmConfig';
 

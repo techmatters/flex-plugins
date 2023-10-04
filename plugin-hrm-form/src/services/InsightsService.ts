@@ -39,7 +39,7 @@ import {
   isSuccessfulExternalRecordingInfo,
 } from './getExternalRecordingInfo';
 import { generateUrl } from './fetchApi';
-import { generateExternalMediaPath } from './ContactService';
+import { generateSignedURLPath } from './fetchHrmApi';
 
 /*
  * 'Any' is the best we can do, since we're limited by Twilio here.
@@ -353,22 +353,31 @@ const getInsightsUpdateFunctionsForConfig = (
 };
 
 const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSuccess, contact: Contact) => {
-  const { hrmMicroserviceBaseUrl } = getHrmConfig();
-  const mediaType = 'recording';
   const { bucket, key } = externalRecordingInfo;
+  const { hrmBaseUrl } = getHrmConfig();
 
-  const url_provider = generateUrl(
-    new URL(hrmMicroserviceBaseUrl),
-    generateExternalMediaPath(contact.id, mediaType, bucket, key),
-  ).toString();
+  try {
+    const url_provider = generateUrl(
+      new URL(hrmBaseUrl),
+      generateSignedURLPath({
+        method: 'getObject',
+        objectType: 'contact',
+        objectId: contact.id.toString(),
+        fileType: 'recording',
+        location: { bucket, key },
+      }),
+    );
 
-  return [
-    {
-      type: 'VoiceRecording',
-      // eslint-disable-next-line camelcase
-      url_provider,
-    },
-  ];
+    return [
+      {
+        type: 'VoiceRecording',
+        url_provider,
+      },
+    ];
+  } catch (error) {
+    console.error('Error generating mediaUrl', error);
+    throw new Error('Error generating mediaUrl');
+  }
 };
 
 /*
