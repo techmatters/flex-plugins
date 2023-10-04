@@ -56,7 +56,6 @@ import AddEditCaseItem, { AddEditCaseItemProps } from './AddEditCaseItem';
 import ViewCaseItem from './ViewCaseItem';
 import documentUploadHandler from './documentUploadHandler';
 import { recordBackendError } from '../../fullStory';
-import { completeTask } from '../../services/formSubmissionHelpers';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
 import { CenteredContainer } from '../../styles/case';
 import EditCaseSummary from './EditCaseSummary';
@@ -81,6 +80,7 @@ type OwnProps = {
   task: CustomITask | StandaloneITask;
   isCreating?: boolean;
   handleClose?: () => void;
+  onNewCaseSaved?: (caseForm: CaseType) => Promise<void>;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -99,6 +99,7 @@ const Case: React.FC<Props> = ({
   releaseContacts,
   cancelNewCase,
   updateCaseAsyncAction,
+  onNewCaseSaved = () => Promise.resolve(),
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
@@ -240,7 +241,7 @@ const Case: React.FC<Props> = ({
       updateCaseAsyncAction(connectedCase.id, {
         ...connectedCase,
       });
-      await completeTask(task);
+      await onNewCaseSaved(connectedCase);
     } catch (error) {
       console.error(error);
       recordBackendError('Save and End Case', error);

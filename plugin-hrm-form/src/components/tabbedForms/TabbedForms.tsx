@@ -27,11 +27,11 @@ import { callTypes } from 'hrm-form-definitions';
 import { CaseLayout } from '../../styles/case';
 import Case from '../case';
 import { configurationBase, contactFormsBase, namespace, RootState, routingBase } from '../../states';
-import { removeOfflineContact } from '../../services/formSubmissionHelpers';
+import { completeTask, removeOfflineContact, submitContactForm } from '../../services/formSubmissionHelpers';
 import { changeRoute } from '../../states/routing/actions';
 import { emptyCategories } from '../../states/contacts/reducer';
 import { NewCaseSubroutes, TabbedFormSubroutes } from '../../states/routing/types';
-import { ContactRawJson, CustomITask, isOfflineContactTask, Contact } from '../../types/types';
+import { ContactRawJson, CustomITask, isOfflineContactTask, Contact, Case as CaseForm } from '../../types/types';
 import { Box, Row, StyledTabs, TabbedFormsContainer, TabbedFormTabContainer } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import Search from '../search';
@@ -51,6 +51,7 @@ import { CSAMReportTypes } from '../../states/csam-report/types';
 import '../contact/ResourceReferralList';
 import { getUnsavedContact, saveContactChangesInHrm, updateDraft } from '../../states/contacts/existingContacts';
 import { updateContactInHrm } from '../../services/ContactService';
+import { recordBackendError } from '../../fullStory';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -108,6 +109,7 @@ const TabbedForms: React.FC<Props> = ({
   savedContact,
   draftContact,
   updatedContact,
+  metadata,
   currentDefinitionVersion,
   csamReportEnabled,
   csamClcReportEnabled,
@@ -343,7 +345,7 @@ TabbedForms.displayName = 'TabbedForms';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const routing = state[namespace][routingBase].tasks[ownProps.task.taskSid];
-  const { savedContact, draftContact } =
+  const { savedContact, draftContact, metadata } =
     Object.values(state[namespace][contactFormsBase].existingContacts).find(
       cs => cs.savedContact.taskId === ownProps.task.taskSid,
     ) ?? {};
@@ -358,6 +360,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     currentDefinitionVersion,
     editContactFormOpen,
     isCallTypeCaller,
+    metadata,
   };
 };
 
