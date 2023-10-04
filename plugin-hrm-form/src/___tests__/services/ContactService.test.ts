@@ -36,7 +36,7 @@ import {
 } from '../../services/ContactService';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions, getHrmConfig } from '../../hrmConfig';
-import { ContactRawJson, offlineContactTaskSid } from '../../types/types';
+import { ContactRawJson } from '../../types/types';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
 import { ContactWithMetadata } from '../../states/contacts/types';
 
@@ -92,6 +92,7 @@ beforeEach(() => {
 });
 
 let EMPTY_API_CATEGORIES: Record<string, Record<string, boolean>>;
+const offlineContactTaskSid = 'offline-contact-task-workerSid';
 
 beforeAll(async () => {
   const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
@@ -430,7 +431,7 @@ test('updateContactsFormInHrm - calls a PATCH HRM endpoint using the supplied co
   }));
   try {
     const inputPatch = { caseInformation: {}, categories: {} };
-    const ret = await updateContactsFormInHrm('1234', inputPatch, helpline);
+    const ret = await updateContactsFormInHrm('1234', inputPatch);
     expect(ret).toStrictEqual({ rawJson: inputPatch });
     expect(mockedFetch).toHaveBeenCalledWith(
       expect.stringContaining('/contacts/1234'),

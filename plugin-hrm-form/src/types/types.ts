@@ -278,9 +278,9 @@ export type AutopilotMemory = {
 /**
  * Custom tasks
  */
-export const offlineContactTaskSid = 'offline-contact-task-sid';
 export type OfflineContactTask = {
-  taskSid: typeof offlineContactTaskSid;
+  // eslint-disable-next-line prettier/prettier
+  taskSid: `offline-contact-task-${string}`
   attributes: {
     isContactlessTask: true;
     channelType: 'default';
@@ -305,7 +305,7 @@ export type InMyBehalfITask = ITask & { attributes: { isContactlessTask: true; i
 export type CustomITask = ITask | OfflineContactTask | InMyBehalfITask;
 
 export function isOfflineContactTask(task: CustomITask): task is OfflineContactTask {
-  return task.taskSid === offlineContactTaskSid;
+  return Boolean(task.taskSid?.startsWith('offline-contact-task-'));
 }
 
 /**

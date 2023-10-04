@@ -148,9 +148,9 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
   recreateContactState: (definitions: DefinitionVersion) => (initialContact: Contact, metadata: ContactMetadata) =>
-    dispatch(GeneralActions.recreateContactState(definitions)(initialContact, metadata)),
+    dispatch(GeneralActions.recreateContactState(definitions)(initialContact, metadata, [task.taskSid])),
   updateHelpline: (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline })),
 });
 

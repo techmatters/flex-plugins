@@ -49,7 +49,8 @@ import { newCSAMReportActionForContact } from '../../states/csam-report/actions'
 import { CSAMReportTypes } from '../../states/csam-report/types';
 // Ensure ww import any custom components that might be used in a form
 import '../contact/ResourceReferralList';
-import { getUnsavedContact, updateDraft } from '../../states/contacts/existingContacts';
+import { getUnsavedContact, saveContactChangesInHrm, updateDraft } from '../../states/contacts/existingContacts';
+import { updateContactInHrm } from '../../services/ContactService';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -158,18 +159,18 @@ const TabbedForms: React.FC<Props> = ({
     }
   };
 
-  const handleBackButton = () => {
+  const handleBackButton = async () => {
     if (!hasTaskControl(task)) return;
-
-    dispatch(updateDraft(savedContact.id, { rawJson: { callType: '' } }));
+    await saveContactChangesInHrm(savedContact.id, { rawJson: { callType: '' } }, dispatch, taskId);
     dispatch(changeRoute({ route: 'select-call-type' }, taskId));
   };
 
   const tabsToIndex = mapTabsToIndex(task, getUnsavedContact(savedContact, draftContact).rawJson);
   const tabs = tabsToIndex.map(mapTabsComponents(methods.errors));
 
-  const handleTabsChange = (_event: any, t: number) => {
+  const handleTabsChange = async (t: number) => {
     const tab = tabsToIndex[t];
+    await saveContactChangesInHrm(savedContact.id, draftContact, dispatch, taskId);
     dispatch(changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, taskId));
   };
 
@@ -237,7 +238,7 @@ const TabbedForms: React.FC<Props> = ({
             variant="scrollable"
             scrollButtons="auto"
             value={tabIndex}
-            onChange={handleTabsChange}
+            onChange={(ev, tab) => handleTabsChange(tab)}
           >
             {tabs}
           </StyledTabs>
@@ -323,11 +324,8 @@ const TabbedForms: React.FC<Props> = ({
             <BottomBar
               contactId={savedContact.id}
               task={task}
-              nextTab={() =>
-                dispatch(
-                  changeRoute({ route: 'tabbed-forms', subroute: tabsToIndex[tabIndex + 1], autoFocus: true }, taskId),
-                )
-              }
+              nextTab={() => handleTabsChange(tabIndex + 1)}
+              saveUpdates={() => saveContactChangesInHrm(savedContact.id, draftContact, dispatch, taskId)}
               // TODO: move this two functions to a separate file to centralize "handle task completions"
               showNextButton={tabIndex !== 0 && tabIndex < tabs.length - 1}
               showSubmitButton={showSubmitButton}

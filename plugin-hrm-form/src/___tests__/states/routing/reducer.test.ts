@@ -17,7 +17,7 @@
 import { reduce, initialState, newTaskEntry } from '../../../states/routing/reducer';
 import * as actions from '../../../states/routing/actions';
 import * as GeneralActions from '../../../states/actions';
-import { offlineContactTaskSid, standaloneTaskSid } from '../../../types/types';
+import { standaloneTaskSid } from '../../../types/types';
 
 const task = { taskSid: 'task1' };
 const voidDefinitions = {
@@ -26,6 +26,8 @@ const voidDefinitions = {
   categoriesFormDefinition: {},
   childFormDefinition: [],
 };
+
+const offlineContactTaskSid = 'offline-contact-task-workerSid';
 
 describe('test reducer (specific actions)', () => {
   let state = undefined;

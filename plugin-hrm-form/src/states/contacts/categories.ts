@@ -15,6 +15,7 @@
  */
 
 import { ContactsState } from './types';
+import { getUnsavedContact } from './existingContacts';
 
 // TODO: Move other categories related actions into here once we have got rid of the new / existing contact split
 const TOGGLE_SUBCATEGORY = 'TOGGLE_SUBCATEGORY';
@@ -45,8 +46,9 @@ const toggleSubcategoryState = (currentSubcategories: string[], selectedSubcateg
 
 export function toggleSubCategoriesReducer(state: ContactsState, action: ContactCategoryAction): ContactsState {
   if (action.type === TOGGLE_SUBCATEGORY) {
+    const { savedContact, draftContact } = state.existingContacts[action.contactId];
     const currentSubcategories =
-      state.existingContacts[action.contactId].draftContact.rawJson.categories[action.category] ?? [];
+      getUnsavedContact(savedContact, draftContact).rawJson.categories[action.category] ?? [];
     const updatedSubcategories = toggleSubcategoryState(currentSubcategories, action.subcategory);
     return {
       ...state,
@@ -58,9 +60,9 @@ export function toggleSubCategoriesReducer(state: ContactsState, action: Contact
           draftContact: {
             ...state.existingContacts[action.contactId].draftContact,
             rawJson: {
-              ...state.existingContacts[action.contactId].draftContact.rawJson,
+              ...state.existingContacts[action.contactId].draftContact?.rawJson,
               categories: {
-                ...state.existingContacts[action.contactId].draftContact.rawJson.categories,
+                ...state.existingContacts[action.contactId].draftContact?.rawJson?.categories,
                 [action.category]: updatedSubcategories,
               },
             },

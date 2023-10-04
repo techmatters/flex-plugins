@@ -15,12 +15,14 @@
  */
 
 import { omit } from 'lodash';
+import { callTypes } from 'hrm-form-definitions';
 
 import { Contact, ContactRawJson } from '../../types/types';
 import { AddExternalReportEntryAction } from '../csam-report/existingContactExternalReport';
 import { ConfigurationState } from '../configuration/reducer';
 import { transformValuesForContactForm } from './contactDetailsAdapter';
 import { ContactMetadata } from './types';
+import { updateContactInHrm } from '../../services/ContactService';
 
 export enum ContactDetailsRoute {
   EDIT_CALLER_INFORMATION = 'editCallerInformation',
@@ -333,6 +335,21 @@ export const getUnsavedContact = (savedContact: Contact, draftContact: ContactDr
   },
 });
 
+export const saveContactChangesInHrm = async (
+  contactId: string,
+  changes: ContactDraftChanges,
+  dispatch: any,
+  reference: string,
+): Promise<Contact> => {
+  if (changes) {
+    const updated = await updateContactInHrm(contactId, changes);
+    dispatch(loadContact(updated, reference, true));
+    dispatch(clearDraft(contactId));
+    return updated;
+  }
+  return undefined;
+};
+
 export const updateDraftReducer = (
   state: ExistingContactsState,
   configState: ConfigurationState,
@@ -349,21 +366,28 @@ export const updateDraftReducer = (
     configState.definitionVersions[state[contactId].savedContact.rawJson.definitionVersion] ??
     configState.currentDefinitionVersion;
 
-  // Transform from RHF friendly values to the state we want in redux
-  const transformedForm = transformValuesForContactForm(definition)(draft.rawJson);
+  if (draft?.rawJson) {
+    // Transform from RHF friendly values to the state we want in redux
+    const transformedForm = transformValuesForContactForm(definition)(draft.rawJson);
+    return {
+      ...state,
+      [contactId]: {
+        ...state[contactId],
+        draftContact: {
+          ...draft,
+          rawJson: {
+            ...draft.rawJson,
+            ...transformedForm,
+          },
+        },
+      },
+    };
+  }
   return {
     ...state,
     [contactId]: {
       ...state[contactId],
-      draftContact: {
-        ...state[contactId].draftContact,
-        ...draft,
-        rawJson: {
-          ...state[contactId].draftContact.rawJson,
-          ...draft.rawJson,
-          ...transformedForm,
-        },
-      },
+      draftContact: draft,
     },
   };
 };

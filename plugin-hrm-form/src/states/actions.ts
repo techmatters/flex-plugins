@@ -30,12 +30,14 @@ import { ContactMetadata } from './contacts/types';
 export const initializeContactState = (definitions: DefinitionVersion) => (
   initialContact: Contact,
   metadata: ContactMetadata,
+  references: string[] = [],
 ): InitializeContactStateAction => {
   return {
     type: INITIALIZE_CONTACT_STATE,
     definitions,
     initialContact,
     metadata,
+    references,
     recreated: false,
   };
 };
@@ -43,12 +45,14 @@ export const initializeContactState = (definitions: DefinitionVersion) => (
 export const recreateContactState = (definitions: DefinitionVersion) => (
   initialContact: Contact,
   metadata: ContactMetadata,
+  references: string[] = [],
 ): InitializeContactStateAction => ({
   type: INITIALIZE_CONTACT_STATE,
   definitions,
   initialContact,
   metadata,
-  recreated: false,
+  references,
+  recreated: true,
 });
 
 // TODO: unify the various task SID maps we have around redux to store contact data under the contacts map, then remove the need for a task ID

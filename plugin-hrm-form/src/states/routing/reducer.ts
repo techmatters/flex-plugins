@@ -23,7 +23,8 @@ import {
   REMOVE_CONTACT_STATE,
   RemoveContactStateAction,
 } from '../types';
-import { offlineContactTaskSid, standaloneTaskSid } from '../../types/types';
+import { standaloneTaskSid } from '../../types/types';
+import getOfflineContactTaskSid from '../contacts/offlineContactTaskSid';
 
 type RoutingState = {
   tasks: {
@@ -56,14 +57,14 @@ export function reduce(
           [action.initialContact.taskId]: newTaskEntry,
         },
         isAddingOfflineContact:
-          action.initialContact.taskId === offlineContactTaskSid ? true : state.isAddingOfflineContact,
+          action.initialContact.taskId === getOfflineContactTaskSid() ? true : state.isAddingOfflineContact,
       };
     }
     case REMOVE_CONTACT_STATE:
       return {
         ...state,
         tasks: omit(state.tasks, action.taskId),
-        isAddingOfflineContact: action.taskId === offlineContactTaskSid ? false : state.isAddingOfflineContact,
+        isAddingOfflineContact: action.taskId === getOfflineContactTaskSid() ? false : state.isAddingOfflineContact,
       };
     case CHANGE_ROUTE: {
       return {

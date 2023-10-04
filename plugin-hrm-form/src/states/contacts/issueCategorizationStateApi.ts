@@ -17,7 +17,7 @@
 import { Dispatch } from 'react';
 
 import { contactFormsBase, namespace, RootState } from '..';
-import { setCategoriesGridView, toggleCategoryExpanded } from './existingContacts';
+import { getUnsavedContact, setCategoriesGridView, toggleCategoryExpanded } from './existingContacts';
 import { toggleSubcategory } from './categories';
 
 type IssueCategoriesState = {
@@ -34,10 +34,13 @@ export type IssueCategorizationStateApi = {
 };
 
 export const forExistingContact = (contactId: string): IssueCategorizationStateApi => ({
-  retrieveState: state => ({
-    ...state[namespace][contactFormsBase].existingContacts[contactId].metadata.categories,
-    selectedCategories: state[namespace][contactFormsBase].existingContacts[contactId].draftContact.rawJson.categories,
-  }),
+  retrieveState: state => {
+    const { savedContact, draftContact } = state[namespace][contactFormsBase].existingContacts[contactId]
+    return {
+      ...state[namespace][contactFormsBase].existingContacts[contactId].metadata.categories,
+      selectedCategories: getUnsavedContact(savedContact, draftContact).rawJson.categories,
+    };
+  },
   toggleCategoryExpandedActionDispatcher: dispatch => category => dispatch(toggleCategoryExpanded(contactId, category)),
   setGridViewActionDispatcher: dispatch => useGridView => dispatch(setCategoriesGridView(contactId, useGridView)),
   toggleSubcategoryActionDispatcher: dispatch => (category, subcategory) =>

@@ -31,6 +31,7 @@ export type InitializeContactStateAction = {
   definitions: DefinitionVersion;
   initialContact: Contact;
   metadata: ContactMetadata;
+  references: string[];
   recreated: boolean;
 };
 

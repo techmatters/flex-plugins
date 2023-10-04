@@ -208,7 +208,7 @@ export function reduce(
               rawJson: JSON.parse(JSON.stringify(action.initialContact.rawJson)),
             },
             metadata: action.metadata,
-            references: new Set(),
+            references: new Set(action.references),
           },
         },
       };

@@ -31,12 +31,11 @@ import { hasTaskControl } from '../../utils/transfer';
 import { namespace, contactFormsBase, connectedCaseBase, RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
-import { Case, CustomITask } from '../../types/types';
+import { Case, Contact, CustomITask } from '../../types/types';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import { getUnsavedContact } from '../../states/contacts/existingContacts';
-import { updateContactInHrm } from '../../services/ContactService';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;
@@ -46,6 +45,7 @@ type BottomBarProps = {
   nextTab: () => void;
   task: CustomITask;
   contactId: string;
+  saveUpdates: () => Promise<Contact>;
 };
 
 const BottomBar: React.FC<
@@ -62,6 +62,7 @@ const BottomBar: React.FC<
   nextTab,
   caseForm,
   createCaseAsyncAction,
+  saveUpdates,
 }) => {
   const [isSubmitting, setSubmitting] = useState(false);
   const strings = getTemplateStrings();
@@ -73,7 +74,7 @@ const BottomBar: React.FC<
     if (!hasTaskControl(task)) return;
 
     try {
-      const updated = await updateContactInHrm(contact.id, contact);
+      const updated = (await saveUpdates()) ?? contact;
       await createCaseAsyncAction(updated, workerSid, definitionVersion);
       changeRoute({ route: 'new-case' }, taskSid);
     } catch (error) {

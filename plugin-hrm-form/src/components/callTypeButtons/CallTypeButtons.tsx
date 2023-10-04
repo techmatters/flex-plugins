@@ -25,6 +25,8 @@ import { namespace, contactFormsBase, configurationBase, connectedCaseBase, Root
 import {
   ContactDraftChanges,
   getUnsavedContact,
+  loadContact,
+  saveContactChangesInHrm,
   updateDraft as newUpdateDraftAction,
 } from '../../states/contacts/existingContacts';
 import { changeRoute as newChangeRouteAction } from '../../states/routing/actions';
@@ -36,9 +38,10 @@ import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
-import { CustomITask, isOfflineContactTask } from '../../types/types';
+import { Contact, CustomITask, isOfflineContactTask } from '../../types/types';
 import { getTemplateStrings } from '../../hrmConfig';
 import { AppRoutes } from '../../states/routing/types';
+import { updateContactInHrm } from '../../services/ContactService';
 
 const isDialogOpen = (contact: ContactDraftChanges) =>
   Boolean(contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType));
@@ -62,6 +65,7 @@ const CallTypeButtons: React.FC<Props> = ({
   updateCallType,
   clearCallType,
   changeRoute,
+  saveContactChangesInHrm,
 }) => {
   const { isCallTask } = localization;
 
@@ -76,12 +80,12 @@ const CallTypeButtons: React.FC<Props> = ({
      *  TODO: We currently save the call type name in English if data or the label string if non-data.
      * I think we should actually save callType.name (instead of label) on the DB, and use it in here.
      */
-    const callType = callTypes[callTypeEntry.name] ? callTypes[callTypeEntry.name] : callTypeEntry.label;
+    const callType = callTypes[callTypeEntry.name] || callTypeEntry.label;
 
     updateCallType(savedContact.id, callType);
   };
 
-  const handleClickAndRedirect = (callTypeEntry: CallTypeButtonsEntry) => {
+  const handleClickAndRedirect = async (callTypeEntry: CallTypeButtonsEntry) => {
     if (!hasTaskControl(task)) return;
 
     // eslint-disable-next-line no-nested-ternary
@@ -92,6 +96,9 @@ const CallTypeButtons: React.FC<Props> = ({
       : 'childInformation';
 
     handleClick(callTypeEntry);
+    await saveContactChangesInHrm(savedContact.id, {
+      rawJson: { callType: callTypes[callTypeEntry.name] || callTypeEntry.label },
+    });
     changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true });
   };
 
@@ -188,6 +195,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 
 const mapDispatchToProps = (dispatch, { task: { taskSid } }: OwnProps) => ({
   changeRoute: (route: AppRoutes) => dispatch(newChangeRouteAction(route, taskSid)),
+  saveContactChangesInHrm: (contactId: string, changes: ContactDraftChanges) =>
+    saveContactChangesInHrm(contactId, changes, dispatch, taskSid),
   updateCallType: (contactId: string, callType: string) =>
     dispatch(newUpdateDraftAction(contactId, { rawJson: { callType } })),
   clearCallType: (contactId: string) => dispatch(newUpdateDraftAction(contactId, { rawJson: { callType: null } })),

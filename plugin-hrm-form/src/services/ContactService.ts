@@ -45,6 +45,7 @@ import {
 import { SearchParams } from '../states/search/types';
 import { ChannelTypes } from '../states/DomainConstants';
 import { ResourceReferral } from '../states/contacts/resourceReferral';
+import { ContactDraftChanges } from '../states/contacts/existingContacts';
 
 type ContactRawJsonForApi = Omit<ContactRawJson, 'categories' | 'caseInformation'> & {
   caseInformation: Record<string, string | boolean | Record<string, Record<string, boolean>>> & {
@@ -341,10 +342,7 @@ export const createContact = async (contact: Contact, twilioWorkerId: string, ta
   return fetchHrmApi(`/contacts`, options);
 };
 
-export const updateContactInHrm = async (
-  contactId: string,
-  body: Omit<Partial<Contact>, 'rawJson'> & { rawJson: Partial<ContactRawJson> },
-): Promise<Contact> => {
+export const updateContactInHrm = async (contactId: string, body: ContactDraftChanges): Promise<Contact> => {
   const options = {
     method: 'PATCH',
     body: JSON.stringify(convertContactToApiContact(body as Contact)),
