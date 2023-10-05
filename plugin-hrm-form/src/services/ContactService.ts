@@ -20,11 +20,10 @@ import { CallTypes, DefinitionVersion } from 'hrm-form-definitions';
 import { isNonDataCallType } from '../states/validationRules';
 import { getQueryParams } from './PaginationParams';
 import { fillEndMillis, getConversationDuration } from '../utils/conversationDuration';
-import { fetchHrmApi, generateSignedURLPath } from './fetchHrmApi';
+import { fetchHrmApi } from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import {
-  ContactMediaType,
   ContactRawJson,
   ConversationMedia,
   CSAMReportEntry,
@@ -391,11 +390,3 @@ async function saveConversationMedia(contactId, conversationMedia: ConversationM
 
   return fetchHrmApi(`/contacts/${contactId}/conversationMedia`, options);
 }
-
-export const generateExternalMediaPath = (
-  contactId: string,
-  mediaType: ContactMediaType,
-  bucket: string,
-  key: string,
-) =>
-  `/files/urls?method=getObject&objectType=contact&objectId=${contactId}&fileType=${mediaType}&bucket=${bucket}&key=${key}`;
