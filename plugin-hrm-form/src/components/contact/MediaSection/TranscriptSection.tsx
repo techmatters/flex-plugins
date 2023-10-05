@@ -22,8 +22,7 @@ import format from 'date-fns/format';
 
 import type { TwilioStoredMedia, S3StoredTranscript } from '../../../types/types';
 import { contactFormsBase, namespace, RootState } from '../../../states';
-import { generateExternalMediaPath } from '../../../services/ContactService';
-import fetchHrmApi from '../../../services/fetchHrmApi';
+import { fetchHrmApi, generateSignedURLPath } from '../../../services/fetchHrmApi';
 import { loadTranscript, TranscriptMessage, TranscriptResult } from '../../../states/contacts/existingContacts';
 import { Box } from '../../../styles/HrmStyles';
 import { GroupedMessage } from '../../Messaging/MessageItem';
@@ -129,11 +128,17 @@ const TranscriptSection: React.FC<Props> = ({
     try {
       setLoading(true);
 
-      const mediaType = 'transcript';
+      const { media_url: transcriptPreSignedUrl } = await fetchHrmApi(
+        generateSignedURLPath({
+          method: 'getObject',
+          objectType: 'contact',
+          objectId: contactId,
+          fileType: 'transcript',
+          location: externalStoredTranscript.location,
+        }),
+      );
 
-      const transcriptPreSignedUrl = await fetchHrmApi(generateExternalMediaPath(contactId, mediaType, bucket, key));
-
-      const transcriptResponse = await fetch(transcriptPreSignedUrl.downloadUrl);
+      const transcriptResponse = await fetch(transcriptPreSignedUrl);
 
       validateFetchResponse(transcriptResponse);
       const transcriptJson: TranscriptResult = await transcriptResponse.json();

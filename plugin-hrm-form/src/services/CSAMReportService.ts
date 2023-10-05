@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import fetchHrmApi from './fetchHrmApi';
+import { fetchHrmApi } from './fetchHrmApi';
 import { CSAMReportEntry } from '../types/types';
 
 type CreateCounsellorCSAMReportParams = {

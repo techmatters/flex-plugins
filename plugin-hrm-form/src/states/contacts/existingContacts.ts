@@ -124,9 +124,11 @@ export const loadContacts = (
   replaceExisting,
 });
 
+export const initialState: ExistingContactsState = {};
+
 export const refreshContact = (contact: any) => loadContact(contact, undefined, true);
 
-export const loadContactReducer = (state: ExistingContactsState, action: LoadContactAction) => {
+export const loadContactReducer = (state = initialState, action: LoadContactAction) => {
   const updateEntries = action.contacts
     .filter(c => {
       return (
@@ -324,7 +326,7 @@ export const updateDraft = (contactId: string, draft: ContactDraftChanges): Upda
 export const clearDraft = (contactId: string): UpdateDraftAction => ({
   type: EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
   contactId,
-  draft: undefined,
+  draft: { rawJson: {} },
 });
 
 export const getUnsavedContact = (savedContact: Contact, draftContact: ContactDraftChanges): Contact => ({

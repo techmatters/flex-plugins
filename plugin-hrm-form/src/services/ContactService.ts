@@ -20,7 +20,7 @@ import { CallTypes, DefinitionVersion } from 'hrm-form-definitions';
 import { isNonDataCallType } from '../states/validationRules';
 import { getQueryParams } from './PaginationParams';
 import { fillEndMillis, getConversationDuration } from '../utils/conversationDuration';
-import fetchHrmApi from './fetchHrmApi';
+import { fetchHrmApi, generateSignedURLPath } from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import {

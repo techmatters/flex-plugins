@@ -66,7 +66,8 @@
             "enable_twilio_transcripts": true,
             "enable_upload_documents": true,
             "enable_voice_recordings": false,
-            "post_survey_serverless_handled": true
+            "post_survey_serverless_handled": true,
+            "backend_handled_chat_janitor": true
         },
         "multipleOfficeSupport": false,
         "WARNING": "These attributes are set using a tool in the twilio-iac repo. If you are seeing this message anywhere else, please stop and use the process described here: https://github.com/techmatters/flex-plugins/blob/master/twilio-iac/docs/service_configuration.md"

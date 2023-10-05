@@ -47,6 +47,9 @@ const readConfig = () => {
   const assetsBucketUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
   const getFormDefinitionsBaseUrl = buildFormDefinitionsBaseUrlGetter(new URL(configuredFormDefinitionsBaseUrl));
 
+  const { helpline_code: helplineCode, environment } = manager.serviceConfiguration.attributes;
+  const docsBucket = `tl-aselo-docs-${helplineCode}-${environment}`;
+
   const externalRecordingsEnabled = manager.serviceConfiguration.attributes.external_recordings_enabled || false;
 
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
@@ -106,6 +109,9 @@ const readConfig = () => {
       permissionConfig,
       contactsWaitingChannels,
       externalRecordingsEnabled,
+      helplineCode,
+      environment,
+      docsBucket,
     },
     referrableResources: {
       resourcesBaseUrl,

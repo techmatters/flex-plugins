@@ -19,8 +19,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { ErrorFont, LoadMediaButton, LoadMediaButtonText } from './styles';
 import { S3StoredRecording } from '../../../types/types';
-import { generateExternalMediaPath } from '../../../services/ContactService';
-import fetchHrmApi from '../../../services/fetchHrmApi';
+import { fetchHrmApi, generateSignedURLPath } from '../../../services/fetchHrmApi';
 
 type OwnProps = {
   contactId: string;
@@ -39,12 +38,19 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
       setLoading(true);
       setShowButton(false);
 
+
       if (externalStoredRecording) {
         const mediaType = 'recording';
         const { key, bucket } = externalStoredRecording.storeTypeSpecificData.location;
 
         const { media_url: recordingPreSignedUrl } = await fetchHrmApi(
-          generateExternalMediaPath(contactId, mediaType, bucket, key),
+          generateSignedURLPath({
+            method: 'getObject',
+            objectType: 'contact',
+            objectId: contactId,
+            fileType: 'recording',
+            location: externalStoredRecording.location,
+          }),
         );
 
         setVoiceRecording(recordingPreSignedUrl);

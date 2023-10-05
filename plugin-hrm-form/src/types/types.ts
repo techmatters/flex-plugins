@@ -100,11 +100,28 @@ export type TwilioStoredMedia = {
   };
 };
 
+export type SignedURLMethod = 'getObject' | 'putObject' | 'deleteObject';
+export type ObjectType = 'case' | 'contact';
+export type MediaType = 'recording' | 'transcript' | 'document';
+
+export type GenerateSignedUrlPathParams = {
+  method: SignedURLMethod;
+  objectType: ObjectType;
+  objectId: string;
+  fileType: MediaType;
+  location: S3Location;
+};
+
+export type S3Location = {
+  bucket: string;
+  key: string;
+};
+
 export type S3StoredTranscript = {
   storeType: 'S3';
   storeTypeSpecificData: {
     type: 'transcript';
-    location?: { bucket?: string; key?: string };
+    location?: S3Location;
   };
 };
 
@@ -112,11 +129,11 @@ export type S3StoredRecording = {
   storeType: 'S3';
   storeTypeSpecificData: {
     type: 'recording';
-    location?: { bucket?: string; key?: string };
+    location?: S3Location;
   };
 };
 
-type S3StoredMedia = S3StoredTranscript | S3StoredRecording;
+export type S3StoredMedia = S3StoredTranscript | S3StoredRecording;
 
 // Extract the 'type' property from S3StoredMedia to create ContactMediaType
 export type ContactMediaType = S3StoredMedia['storeTypeSpecificData']['type'];

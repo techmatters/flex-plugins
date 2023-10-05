@@ -8,6 +8,7 @@ locals {
     old_dir_prefix                    = "kidshelpphone"
     default_autopilot_chatbot_enabled = false
     task_language                     = "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+    enable_external_recordings        = true
     contacts_waiting_channels         = ["voice", "web"]
 
     workflows = {

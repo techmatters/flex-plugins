@@ -19,7 +19,7 @@ import { callTypes } from 'hrm-form-definitions';
 import { createReducer } from 'redux-promise-middleware-actions';
 
 import * as t from './types';
-import { ContactsState } from './types';
+import { ContactsState, UPDATE_CONTACT_ACTION } from './types';
 import {
   INITIALIZE_CONTACT_STATE,
   InitializeContactStateAction,
@@ -42,6 +42,7 @@ import {
   setCategoriesGridViewReducer,
   toggleCategoryExpandedReducer,
   updateDraftReducer,
+  initialState as existingContactInitialState,
 } from './existingContacts';
 import {
   ContactDetailsAction,
@@ -55,6 +56,7 @@ import { ContactCategoryAction, toggleSubCategoriesReducer } from './categories'
 import { configurationBase, RootState } from '..';
 import { createCaseAsyncAction } from '../case/saveCase';
 import { newContactState } from './contactState';
+import { saveContactReducer } from './saveContact';
 
 export const emptyCategories = [];
 
@@ -70,6 +72,7 @@ export const initialState: ContactsState = {
 };
 
 const boundReferralReducer = resourceReferralReducer(initialState);
+const boundSaveContactReducer = saveContactReducer(existingContactInitialState);
 
 const newCaseReducer = createReducer(initialState, handleAction => [
   handleAction(
@@ -105,7 +108,8 @@ export function reduce(
     | ContactDetailsAction
     | ContactCategoryAction
     | InitializeContactStateAction
-    | RemoveContactStateAction,
+    | RemoveContactStateAction
+    | t.UpdatedContactAction,
 ): ContactsState {
   let state = boundReferralReducer(inputState, action as any);
   state = toggleSubCategoriesReducer(state, action as ContactCategoryAction);
@@ -201,6 +205,9 @@ export function reduce(
     }
     case t.SET_EDITING_CONTACT: {
       return { ...state, editingContact: action.editing };
+    }
+    case `${UPDATE_CONTACT_ACTION}_FULFILLED`: {
+      return { ...state, existingContacts: boundSaveContactReducer(state.existingContacts, action) };
     }
     case LOAD_CONTACT_ACTION: {
       return { ...state, existingContacts: loadContactReducer(state.existingContacts, action) };
