@@ -24,18 +24,10 @@ import { ExistingContactsState } from './existingContacts';
 
 export const updateContactsFormInHrmAsyncAction = createAsyncAction(
   UPDATE_CONTACT_ACTION,
-  async (
-    replaceExisting: boolean,
-    contactId: string,
-    body: Partial<ContactRawJson>,
-    helpline: string,
-    reference?: string,
-  ): Promise<{ contacts: Partial<Contact>[]; replaceExisting: boolean; reference?: string }> => {
+  async (contactId: string, body: Partial<ContactRawJson>, helpline: string): Promise<{ contact: Contact }> => {
     const contact = await updateContactsFormInHrm(contactId, body, helpline);
     return {
-      contacts: [contact],
-      replaceExisting,
-      reference,
+      contact,
     };
   },
 );
@@ -72,34 +64,14 @@ export const saveContactReducer = (initialState: ExistingContactsState) =>
 
     handleAction(
       updateContactsFormInHrmAsyncAction.fulfilled,
-      (state, { payload }): ExistingContactsState => {
-        const updateEntries = payload.contacts
-          .filter(c => {
-            return (
-              (payload.reference && !(state[c.id]?.references ?? new Set()).has(payload.reference)) ||
-              payload.replaceExisting
-            );
-          })
-          .map(c => {
-            const current = state[c.id] ?? { references: new Set() };
-            const { draftContact, ...currentContact } = state[c.id] ?? {
-              categories: {
-                expanded: {},
-                gridView: false,
-              },
-            };
-            return [
-              c.id,
-              {
-                ...currentContact,
-                savedContact: payload.replaceExisting || !current.references.size ? c : state[c.id].savedContact,
-                references: payload.reference ? current.references.add(payload.reference) : current.references,
-              },
-            ];
-          });
+      (state, { payload: { contact } }): ExistingContactsState => {
         return {
           ...state,
-          ...Object.fromEntries(updateEntries),
+          [contact.id]: {
+            ...state[contact.id],
+            draftContact: { rawJson: {} },
+            savedContact: contact,
+          },
         };
       },
     ),

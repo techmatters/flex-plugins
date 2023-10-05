@@ -53,7 +53,7 @@ import {
 import CaseHome from './CaseHome';
 import AddEditCaseItem, { AddEditCaseItemProps } from './AddEditCaseItem';
 import ViewCaseItem from './ViewCaseItem';
-import documentUploadHandler from './documentUploadHandler';
+import { bindFileUploadCustomHandlers } from './documentUploadHandler';
 import { recordBackendError } from '../../fullStory';
 import { completeTask } from '../../services/formSubmissionHelpers';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
@@ -392,7 +392,7 @@ const Case: React.FC<Props> = ({
         return renderCaseItemPage(incidentSectionApi, PermissionActions.EDIT_INCIDENT);
       case NewCaseSubroutes.Document:
         return renderCaseItemPage(documentSectionApi, PermissionActions.EDIT_DOCUMENT, {
-          customFormHandlers: documentUploadHandler,
+          customFormHandlers: bindFileUploadCustomHandlers(connectedCase.id),
           reactHookFormOptions: {
             shouldUnregister: false,
           },

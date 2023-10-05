@@ -321,7 +321,7 @@ export const updateDraft = (contactId: string, draft: SearchContactDraftChanges)
 export const clearDraft = (contactId: string): UpdateDraftAction => ({
   type: EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
   contactId,
-  draft: undefined,
+  draft: { rawJson: {} },
 });
 
 export const updateDraftReducer = (

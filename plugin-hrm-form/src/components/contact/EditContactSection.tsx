@@ -53,7 +53,7 @@ const EditContactSection: React.FC<Props> = ({
   draftContact,
   contactId,
   definitionVersions,
-  refreshContact,
+  contactDetailsSectionForm,
   setEditContactPageOpen,
   setEditContactPageClosed,
   tabPath,
@@ -78,7 +78,7 @@ const EditContactSection: React.FC<Props> = ({
   useEffect(() => {
     /*
      * we need this to run only once, hence no need
-     * of adding any dependency inside the array
+     * of adding any dependency inside the array.
      */
     setInitialFormValues(methods.getValues());
     setEditContactPageOpen();
@@ -97,7 +97,7 @@ const EditContactSection: React.FC<Props> = ({
       'categories' | 'callerInformation' | 'caseInformation' | 'childInformation'
     >> = draftContact.rawJson;
     try {
-      updateContactsFormInHrmAsyncAction(true, contactId, payload, savedContact.helpline, undefined);
+      updateContactsFormInHrmAsyncAction(contactId, payload, savedContact.helpline);
     } catch (error) {
       setSubmitting(false);
       recordBackendError('Open New Case', error);
@@ -203,16 +203,8 @@ const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string,
     clearContactDraft: () => {
       dispatch(clearDraft(contactId));
     },
-    updateContactsFormInHrmAsyncAction: (
-      replaceExisting: boolean,
-      contactId: string,
-      body: Partial<ContactRawJson>,
-      helpline: string,
-      reference?: string,
-    ) =>
-      updateContactAsyncDispatch(
-        updateContactsFormInHrmAsyncAction(replaceExisting, contactId, body, helpline, reference),
-      ),
+    updateContactsFormInHrmAsyncAction: (contactId: string, body: Partial<ContactRawJson>, helpline: string) =>
+      updateContactAsyncDispatch(updateContactsFormInHrmAsyncAction(contactId, body, helpline)),
   };
 };
 

@@ -17,7 +17,7 @@
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { cancelCase, createCase } from '../../services/CaseService';
-import fetchHrmApi from '../../services/fetchHrmApi';
+import { fetchHrmApi } from '../../services/fetchHrmApi';
 import { Contact } from '../../types/types';
 import { VALID_EMPTY_CONTACT } from '../testContacts';
 
