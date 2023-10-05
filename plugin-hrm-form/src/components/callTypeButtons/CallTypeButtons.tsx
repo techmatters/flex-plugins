@@ -21,7 +21,7 @@ import { ITask, TaskHelper, Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 import { callTypes, CallTypeButtonsEntry } from 'hrm-form-definitions';
 
-import { namespace, contactFormsBase, configurationBase, connectedCaseBase, RootState } from '../../states';
+import { namespace, configurationBase, connectedCaseBase, RootState } from '../../states';
 import {
   ContactDraftChanges,
   getUnsavedContact,
@@ -40,6 +40,7 @@ import CallTypeIcon from '../common/icons/CallTypeIcon';
 import { CustomITask, isOfflineContactTask } from '../../types/types';
 import { getTemplateStrings } from '../../hrmConfig';
 import { AppRoutes } from '../../states/routing/types';
+import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
 
 const isDialogOpen = (task: CustomITask, contact: ContactDraftChanges) =>
   Boolean(!isOfflineContactTask(task) && contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType));
@@ -180,10 +181,7 @@ const CallTypeButtons: React.FC<Props> = ({
 CallTypeButtons.displayName = 'CallTypeButtons';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const { savedContact, metadata, draftContact } =
-    Object.values(state[namespace][contactFormsBase].existingContacts).find(
-      cs => cs.savedContact.taskId === ownProps.task.taskSid,
-    ) ?? {};
+  const { savedContact, metadata, draftContact } = findContactByTaskSid(state, ownProps.task.taskSid) ?? {};
   const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
   const caseForm = caseState && caseState.connectedCase;
   const { currentDefinitionVersion } = state[namespace][configurationBase];
