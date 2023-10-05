@@ -86,6 +86,7 @@ const baseState: ExistingContactsState = {
   [baseContact.id]: {
     savedContact: baseContact,
     references: new Set('x'),
+    draftContact: { rawJson: {} },
     categories: {
       gridView: false,
       expanded: {},
