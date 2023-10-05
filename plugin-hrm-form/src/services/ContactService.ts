@@ -383,7 +383,7 @@ export async function connectToCase(contactId, caseId) {
   return fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
 }
 
-export async function saveConversationMedia(contactId, conversationMedia: ConversationMedia[]) {
+async function saveConversationMedia(contactId, conversationMedia: ConversationMedia[]) {
   const options = {
     method: 'POST',
     body: JSON.stringify(conversationMedia),

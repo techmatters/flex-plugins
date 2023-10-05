@@ -35,7 +35,7 @@ export type IssueCategorizationStateApi = {
 
 export const forExistingContact = (contactId: string): IssueCategorizationStateApi => ({
   retrieveState: state => {
-    const { savedContact, draftContact } = state[namespace][contactFormsBase].existingContacts[contactId]
+    const { savedContact, draftContact } = state[namespace][contactFormsBase].existingContacts[contactId];
     return {
       ...state[namespace][contactFormsBase].existingContacts[contactId].metadata.categories,
       selectedCategories: getUnsavedContact(savedContact, draftContact).rawJson.categories,

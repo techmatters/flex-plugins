@@ -117,11 +117,13 @@ describe('reduce', () => {
 
   test('when recreateContactState is called with taskId not found in the state, leave state untouched', async () => {
     const initialized = pipe(
+      // eslint-disable-next-line sonarjs/no-identical-functions
       () =>
         reduce(
           undefined,
           recreateContactState(mockV1)({ ...VALID_EMPTY_CONTACT, taskId: 'WT12345' }, VALID_EMPTY_METADATA),
         ),
+      // eslint-disable-next-line sonarjs/no-identical-functions
       state =>
         reduce(
           state,
