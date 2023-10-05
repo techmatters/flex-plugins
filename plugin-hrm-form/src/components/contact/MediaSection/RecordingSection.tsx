@@ -38,18 +38,14 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
       setLoading(true);
       setShowButton(false);
 
-
       if (externalStoredRecording) {
-        const mediaType = 'recording';
-        const { key, bucket } = externalStoredRecording.storeTypeSpecificData.location;
-
         const { media_url: recordingPreSignedUrl } = await fetchHrmApi(
           generateSignedURLPath({
             method: 'getObject',
             objectType: 'contact',
             objectId: contactId,
             fileType: 'recording',
-            location: externalStoredRecording.location,
+            location: externalStoredRecording.storeTypeSpecificData.location,
           }),
         );
 

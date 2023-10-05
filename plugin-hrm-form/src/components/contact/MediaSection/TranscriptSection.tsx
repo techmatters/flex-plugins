@@ -121,9 +121,7 @@ const TranscriptSection: React.FC<Props> = ({
 
   const fetchAndLoadTranscript = async () => {
     const {
-      storeTypeSpecificData: {
-        location: { key, bucket },
-      },
+      storeTypeSpecificData: { location },
     } = externalStoredTranscript;
     try {
       setLoading(true);
@@ -134,7 +132,7 @@ const TranscriptSection: React.FC<Props> = ({
           objectType: 'contact',
           objectId: contactId,
           fileType: 'transcript',
-          location: externalStoredTranscript.location,
+          location,
         }),
       );
 
