@@ -2,6 +2,7 @@
     "attributes": {
         "external_recordings_enabled": "True",
         "feature_flags": {},
-        "helpline_code": "cl"
+        "helpline_code": "cl",
+        "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/"
     }
 }
