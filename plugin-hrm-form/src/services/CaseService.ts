@@ -17,7 +17,7 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
-import fetchHrmApi from './fetchHrmApi';
+import { fetchHrmApi } from './fetchHrmApi';
 import { getQueryParams } from './PaginationParams';
 import { Case, Contact, SearchCaseResult } from '../types/types';
 import { transformFromApiCategories } from './ContactService';

@@ -18,9 +18,8 @@ import { omit } from 'lodash';
 
 import { Contact } from '../../types/types';
 import { AddExternalReportEntryAction } from '../csam-report/existingContactExternalReport';
-import { configurationBase, namespace, RootState } from '..';
 import { ConfigurationState } from '../configuration/reducer';
-import { transformValues, transformValuesForContactForm } from './contactDetailsAdapter';
+import { transformValuesForContactForm } from './contactDetailsAdapter';
 
 export enum ContactDetailsRoute {
   EDIT_CALLER_INFORMATION = 'editCallerInformation',
@@ -128,9 +127,11 @@ export const loadContacts = (
   replaceExisting,
 });
 
+export const initialState: ExistingContactsState = {};
+
 export const refreshContact = (contact: any) => loadContact(contact, undefined, true);
 
-export const loadContactReducer = (state: ExistingContactsState, action: LoadContactAction) => {
+export const loadContactReducer = (state = initialState, action: LoadContactAction) => {
   const updateEntries = action.contacts
     .filter(c => {
       return (
@@ -320,7 +321,7 @@ export const updateDraft = (contactId: string, draft: SearchContactDraftChanges)
 export const clearDraft = (contactId: string): UpdateDraftAction => ({
   type: EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
   contactId,
-  draft: undefined,
+  draft: { rawJson: {} },
 });
 
 export const updateDraftReducer = (
