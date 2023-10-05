@@ -240,8 +240,13 @@ type SaveContactToHrmResponse = {
 };
 
 export const createContact = async (contact: Contact, twilioWorkerId: string, taskSid: string): Promise<Contact> => {
+  const { definitionVersion } = getHrmConfig();
   const contactForApi = {
     ...contact,
+    rawJson: {
+      definitionVersion,
+      ...contact.rawJson,
+    },
     twilioWorkerId,
     taskId: taskSid,
   };
