@@ -16,8 +16,14 @@ printf "The twilio portion of external recordings is not currently automatable. 
 echo "
 Collect Required Information.
 
-1. You will need to lookup the IAM secret key for the ${short_helpline}-${short_environment}-twilio-external-recordings IAM user in the AWS console here:
+1. Read everything in a stage before completing if this is your first time.
+
+2. You will need to lookup the IAM secret key for the ${short_helpline}-${short_environment}-twilio-external-recordings IAM user in the AWS console here:
 https://us-east-1.console.aws.amazon.com/systems-manager/parameters${secret_ssm_key}/description?region=us-east-1&tab=Table
+
+3. Verify that the service config for the account is clean by running \`make service-config-apply HL=${short_helpline} HL_ENV=${environment}\` and checking the output for pending changes. If there are pending changes
+
+4. Read everything in a stage before completing if this is your first time.
 "
 
 press_any_key_to_continue
@@ -63,7 +69,8 @@ https://console.twilio.com/us1/develop/voice/settings/general?frameUrl=%2Fconsol
 
 5. Enter the following value in the "S3 Bucket" field: ${bucket_url}
 
-6. Click the "Save" button.
+6. WARNING: AS SOON AS YOU CLICK SAVE, EXTERNAL RECORDINGS WILL BE ENABLED FOR ALL CALLS TO THIS HELPLINE, the followup service config step MUST be completed ASAP to avoid contacts being saved incorrectly to HRM and Insights.
+   Click the "Save" button.
 "
 
 press_any_key_to_continue

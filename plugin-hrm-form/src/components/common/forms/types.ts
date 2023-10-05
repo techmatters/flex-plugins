@@ -15,6 +15,7 @@
  */
 
 /* eslint-disable import/no-unused-modules */
+import type { ObjectType } from '../../../types/types';
 
 export type FormFieldType = { value: string; error?: string; validation?: string[]; touched?: boolean };
 
@@ -42,4 +43,9 @@ export type DefaultEventHandlers = (
 
 export type HTMLElementRef = {
   current: HTMLElement;
+};
+
+export type FormTargetObject = {
+  id: number;
+  type: ObjectType;
 };

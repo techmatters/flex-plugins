@@ -9,6 +9,19 @@
         {"label": "Unspecified/Other"}
       ]
     },
+    "Online Harms": {
+      "color": "#B971AF",
+      "subcategories": [
+        {"label": "Cyber Bullying"},
+        {"label": "Revenge Porn"},
+        {"label": "Exposure to Porn"},
+        {"label": "Sextortion"},
+        {"label": "Grooming"},
+        {"label": "Hacking"},
+        {"label": "Online Addiction"},
+        {"label":"Other Online Harm"}
+      ]
+    },
     "Violence": {
       "color": "#F5A623",
       "subcategories": [
@@ -156,6 +169,19 @@
         {"label": "Sexually Transmitted Diseases"},
         {"label": "Nutrition"},
         {"label": "Unspecified/Other"}
+      ]
+    },
+    "Online Harms": {
+      "color": "#B971AF",
+      "subcategories": [
+        {"label": "Cyber Bullying"},
+        {"label": "Revenge Porn"},
+        {"label": "Exposure to Porn"},
+        {"label": "Sextortion"},
+        {"label": "Grooming"},
+        {"label": "Hacking"},
+        {"label": "Online Addiction"},
+        {"label":"Other Online Harm"}
       ]
     },
     "Mental Health": {

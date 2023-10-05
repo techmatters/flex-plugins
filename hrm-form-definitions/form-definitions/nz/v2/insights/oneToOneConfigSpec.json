@@ -15,7 +15,6 @@
             "email"
           ]
         }
-      
       ],
       "caseInformation": [
         {
@@ -39,6 +38,7 @@
             "conversations",
             "conversation_attribute_5"
           ]
+
         }
       ]
     },

@@ -33,6 +33,7 @@ export const UPDATE_HELPLINE = 'UPDATE_HELPLINE';
 export const ADD_CSAM_REPORT_ENTRY = 'contacts/ADD_CSAM_REPORT_ENTRY';
 export const SET_EDITING_CONTACT = 'SET_EDITING_CONTACT';
 export const SET_CALL_TYPE = 'SET_CALL_TYPE';
+export const UPDATE_CONTACT_ACTION = 'contact-action/update-contact';
 
 export type ContactMetadata = {
   startMillis: number;
@@ -68,6 +69,12 @@ type UpdateFormAction = {
 type SaveEndMillisAction = {
   type: typeof SAVE_END_MILLIS;
   taskId: string;
+};
+
+export type UpdatedContactAction = {
+  type: typeof UPDATE_CONTACT_ACTION;
+  payload: Promise<{ contact: Contact }>;
+  meta: unknown;
 };
 
 type SetCategoriesGridViewAction = {

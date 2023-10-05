@@ -19,15 +19,19 @@ import React, { useState, useRef, useEffect } from 'react';
 import DownloadIcon from '@material-ui/icons/GetApp';
 import { Template } from '@twilio/flex-ui';
 
+import { getHrmConfig } from '../../../hrmConfig';
 import { Flex, Box, StyledNextStepButton, HiddenText } from '../../../styles/HrmStyles';
 import { formatFileNameAtAws } from '../../../utils';
-import { getFileDownloadUrl } from '../../../services/ServerlessService';
+import { fetchHrmApi, generateSignedURLPath } from '../../../services/fetchHrmApi';
+import { FormTargetObject } from './types';
 
 type Props = {
   fileNameAtAws: string;
+  targetObject: FormTargetObject;
 };
 
-const DownloadFile: React.FC<Props> = ({ fileNameAtAws }) => {
+const DownloadFile: React.FC<Props> = ({ fileNameAtAws, targetObject }) => {
+  // So far, this component is only used to download case document in individual cases from S3
   const [preSignedUrl, setPreSignedUrl] = useState('');
   const downloadLink = useRef<HTMLAnchorElement>();
 
@@ -41,13 +45,30 @@ const DownloadFile: React.FC<Props> = ({ fileNameAtAws }) => {
   const fileName = formatFileNameAtAws(fileNameAtAws);
 
   const handleClick = async () => {
-    const encodedFilename = encodeURIComponent(fileName);
-    const fileUrl = await getFileDownloadUrl(fileNameAtAws, encodedFilename);
-    const response = await fetch(fileUrl.downloadUrl);
+    const { docsBucket: bucket } = getHrmConfig();
+    const key = encodeURIComponent(fileNameAtAws);
 
-    const blob = await response.blob();
-    const url = URL.createObjectURL(blob);
-    setPreSignedUrl(url);
+    try {
+      const { media_url: preSignedUrl } = await fetchHrmApi(
+        generateSignedURLPath({
+          method: 'getObject',
+          objectType: targetObject.type,
+          objectId: targetObject.id.toString(),
+          fileType: 'document',
+          location: {
+            bucket,
+            key,
+          },
+        }),
+      );
+      const response = await fetch(preSignedUrl);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      setPreSignedUrl(url);
+    } catch (error) {
+      console.log('error', error);
+      throw new Error('Error downloading file.');
+    }
   };
   return (
     <Flex flexDirection="column" alignItems="flex-start">
