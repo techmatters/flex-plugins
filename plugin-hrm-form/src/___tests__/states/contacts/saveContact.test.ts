@@ -19,7 +19,7 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { connectToCase, updateContactsFormInHrm } from '../../../services/ContactService';
 import { submitContactForm } from '../../../services/formSubmissionHelpers';
-import { Case, CustomITask, HrmServiceContact } from '../../../types/types';
+import { Case, CustomITask, Contact } from '../../../types/types';
 import {
   ExistingContactsState,
   initialState as existingContactInitialState,
@@ -48,9 +48,9 @@ beforeEach(() => {
 });
 
 const boundSaveContactReducer = saveContactReducer(existingContactInitialState);
-const boundSubmitContactFormReducer = submitContactFormReducer(contactState.savedContact as HrmServiceContact);
+const boundSubmitContactFormReducer = submitContactFormReducer(contactState.savedContact as Contact);
 
-const baseContact: HrmServiceContact = {
+const baseContact: Contact = {
   id: '1337',
   accountSid: '',
   timeOfContact: '',
@@ -103,7 +103,7 @@ const baseCase: Case = {
   categories: {},
   createdAt: '12-05-2023',
   updatedAt: '12-05-2023',
-  connectedContacts: [baseContact] as HrmServiceContact[],
+  connectedContacts: [baseContact] as Contact[],
 };
 
 describe('actions', () => {

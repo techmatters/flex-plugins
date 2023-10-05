@@ -18,20 +18,16 @@ import { createAsyncAction, createReducer } from 'redux-promise-middleware-actio
 
 import { submitContactForm } from '../../services/formSubmissionHelpers';
 import { connectToCase, updateContactsFormInHrm } from '../../services/ContactService';
-import { Case, ContactRawJson, CustomITask, HrmServiceContact } from '../../types/types';
+import { Case, ContactRawJson, CustomITask, Contact } from '../../types/types';
 import { CONNECT_TO_CASE, ContactMetadata, SET_SAVED_CONTACT, UPDATE_CONTACT_ACTION } from './types';
 import { ExistingContactsState } from './existingContacts';
 
 export const updateContactsFormInHrmAsyncAction = createAsyncAction(
   UPDATE_CONTACT_ACTION,
-  async (
-    contactId: string,
-    body: Partial<ContactRawJson>,
-    helpline: string,
-  ): Promise<{ contacts: Partial<HrmServiceContact>[] }> => {
+  async (contactId: string, body: Partial<ContactRawJson>, helpline: string): Promise<{ contact: Contact }> => {
     const contact = await updateContactsFormInHrm(contactId, body, helpline);
     return {
-      contacts: [contact],
+      contact,
     };
   },
 );
@@ -47,10 +43,10 @@ export const submitContactFormAsyncAction = createAsyncAction(
   SET_SAVED_CONTACT,
   async (
     task: CustomITask,
-    contact: HrmServiceContact,
+    contact: Contact,
     metadata: ContactMetadata,
     caseForm: Case,
-  ): Promise<{ contact: Partial<HrmServiceContact> }> => {
+  ): Promise<{ contact: Partial<Contact> }> => {
     return { contact: await submitContactForm(task, contact, metadata, caseForm) };
   },
 );
@@ -68,30 +64,14 @@ export const saveContactReducer = (initialState: ExistingContactsState) =>
 
     handleAction(
       updateContactsFormInHrmAsyncAction.fulfilled,
-      (state, { payload }): ExistingContactsState => {
-        const replaceExisting = true;
-        const updateEntries = payload.contacts
-          .filter(c => state[c.id]?.references && replaceExisting)
-          .map(c => {
-            const current = state[c.id] ?? { references: new Set() };
-            const { draftContact, ...currentContact } = state[c.id] ?? {
-              categories: {
-                expanded: {},
-                gridView: false,
-              },
-            };
-            return [
-              c.id,
-              {
-                ...currentContact,
-                savedContact: replaceExisting || !current.references.size ? c : state[c.id].savedContact,
-                ...state[c.id].references,
-              },
-            ];
-          });
+      (state, { payload: { contact } }): ExistingContactsState => {
         return {
           ...state,
-          ...Object.fromEntries(updateEntries),
+          [contact.id]: {
+            ...state[contact.id],
+            draftContact: { rawJson: {} },
+            savedContact: contact,
+          },
         };
       },
     ),
@@ -99,13 +79,13 @@ export const saveContactReducer = (initialState: ExistingContactsState) =>
     handleAsyncAction(handleAction, updateContactsFormInHrmAsyncAction.rejected),
   ]);
 
-export const submitContactFormReducer = (initialState: HrmServiceContact) =>
+export const submitContactFormReducer = (initialState: Contact) =>
   createReducer(initialState, handleAction => [
     handleAsyncAction(handleAction, submitContactFormAsyncAction.pending),
 
     handleAction(
       submitContactFormAsyncAction.fulfilled,
-      (state, { payload }): HrmServiceContact => {
+      (state, { payload }): Contact => {
         return {
           ...state,
           ...payload.contact,

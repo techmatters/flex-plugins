@@ -29,7 +29,7 @@ import {
   isS3StoredTranscript,
   isS3StoredRecording,
   isTwilioStoredMedia,
-  HrmServiceContact,
+  Contact,
 } from '../../types/types';
 import {
   DetailsContainer,
@@ -240,12 +240,15 @@ const ContactDetailsHome: React.FC<Props> = function ({
       (twilioStoredTranscript || externalStoredTranscript),
   );
 
+  const twilioStoredRecording =
+    featureFlags.enable_voice_recordings && savedContact.conversationMedia?.find(isTwilioStoredMedia);
+  const externalStoredRecording = savedContact.conversationMedia?.find(isS3StoredRecording);
   const showRecordingSection = Boolean(
     isVoiceChannel(channel) &&
+      savedContact.conversationMedia?.length &&
       can(PermissionActions.VIEW_RECORDING) &&
-      savedContact.conversationMedia?.find(isS3StoredRecording),
+      (twilioStoredRecording || externalStoredRecording),
   );
-  const externalStoredRecording = savedContact.conversationMedia?.find(isS3StoredRecording);
 
   const csamReportEnabled = featureFlags.enable_csam_report && featureFlags.enable_csam_clc_report;
 
@@ -421,7 +424,11 @@ const ContactDetailsHome: React.FC<Props> = function ({
           showEditButton={false}
         >
           <Flex justifyContent="center" flexDirection="row" paddingTop="20px">
-            <RecordingSection contactId={contactId} externalStoredRecording={externalStoredRecording} />{' '}
+            <RecordingSection
+              contactId={contactId}
+              externalStoredRecording={externalStoredRecording}
+              loadConversationIntoOverlay={loadConversationIntoOverlay}
+            />{' '}
           </Flex>
         </ContactDetailsSection>
       )}

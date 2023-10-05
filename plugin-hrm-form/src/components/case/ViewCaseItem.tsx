@@ -31,6 +31,7 @@ import { caseItemHistory, CaseState } from '../../states/case/types';
 import { ViewCaseSectionRoute, CaseItemAction } from '../../states/routing/types';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseSectionApi } from '../../states/case/sections/api';
+import { FormTargetObject } from '../common/forms/types';
 
 const mapStateToProps = (state: RootState, ownProps: ViewCaseItemProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
@@ -73,6 +74,11 @@ const ViewCaseItem: React.FC<Props> = ({
     changeRoute({ ...routing, action: CaseItemAction.Edit }, task.taskSid);
   };
 
+  const targetObject: FormTargetObject = {
+    id: connectedCase?.id,
+    type: 'case',
+  };
+
   return (
     <CaseLayout>
       <Container>
@@ -93,7 +99,7 @@ const ViewCaseItem: React.FC<Props> = ({
             <>
               {formDefinition.map(e => (
                 <SectionEntry key={`entry-${e.label}`} descriptionKey={e.label}>
-                  <SectionEntryValue value={item.form[e.name]} definition={e} />
+                  <SectionEntryValue value={item.form[e.name]} targetObject={targetObject} definition={e} />
                 </SectionEntry>
               ))}
             </>

@@ -14,6 +14,5 @@ locals {
     }
 
     ui_editable = true
-    enable_external_recordings = true
   }
 }

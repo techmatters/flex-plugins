@@ -19,12 +19,15 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { ErrorFont, LoadMediaButton, LoadMediaButtonText } from './styles';
 import { S3StoredRecording } from '../../../types/types';
-import { generateExternalMediaPath } from '../../../services/ContactService';
-import fetchHrmApi from '../../../services/fetchHrmApi';
+import { fetchHrmApi, generateSignedURLPath } from '../../../services/fetchHrmApi';
 
-type OwnProps = { contactId: string; externalStoredRecording: S3StoredRecording };
+type OwnProps = {
+  contactId: string;
+  externalStoredRecording?: S3StoredRecording;
+  loadConversationIntoOverlay: () => Promise<void>;
+};
 
-const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecording }) => {
+const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecording, loadConversationIntoOverlay }) => {
   const [voiceRecording, setVoiceRecording] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showButton, setShowButton] = useState(true);
@@ -35,18 +38,24 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
       setLoading(true);
       setShowButton(false);
 
-      const mediaType = 'recording';
+      if (externalStoredRecording) {
+        const mediaType = 'recording';
 
-      const { media_url: recordingPreSignedUrl } = await fetchHrmApi(
-        generateExternalMediaPath(
-          contactId,
-          mediaType,
-          externalStoredRecording.location.bucket,
-          externalStoredRecording.location.key,
-        ),
-      );
+        const { media_url: recordingPreSignedUrl } = await fetchHrmApi(
+          generateSignedURLPath({
+            method: 'getObject',
+            objectType: 'contact',
+            objectId: contactId,
+            fileType: 'recording',
+            location: externalStoredRecording.location,
+          }),
+        );
 
-      setVoiceRecording(recordingPreSignedUrl);
+        setVoiceRecording(recordingPreSignedUrl);
+      } else {
+        await loadConversationIntoOverlay();
+        setShowButton(true);
+      }
 
       setLoading(false);
     } catch (error) {

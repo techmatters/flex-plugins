@@ -16,7 +16,7 @@
 
 import { addDays, addSeconds, subSeconds } from 'date-fns';
 
-import { Case, HrmServiceContact } from '../../types/types';
+import { Case, Contact } from '../../types/types';
 import getUpdatedDate from '../../states/getUpdatedDate';
 
 describe('getUpdatedDate', () => {
@@ -65,16 +65,13 @@ describe('getUpdatedDate', () => {
     });
   });
 
-  describe('HrmServiceContact input', () => {
-    const patchOverView: (original: HrmServiceContact, updates: Partial<HrmServiceContact>) => HrmServiceContact = (
-      original,
-      updates,
-    ) => ({
+  describe('Contact input', () => {
+    const patchOverView: (original: Contact, updates: Partial<Contact>) => Contact = (original, updates) => ({
       ...original,
       ...updates,
     });
 
-    const baseContact: HrmServiceContact = {
+    const baseContact: Contact = {
       id: '0',
       accountSid: '',
       helpline: 'helpline',

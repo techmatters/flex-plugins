@@ -78,7 +78,7 @@ const EditContactSection: React.FC<Props> = ({
   useEffect(() => {
     /*
      * we need this to run only once, hence no need
-     * of adding any dependency inside the array
+     * of adding any dependency inside the array.
      */
     setInitialFormValues(methods.getValues());
     setEditContactPageOpen();

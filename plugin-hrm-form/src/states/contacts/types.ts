@@ -16,7 +16,7 @@
 
 import { DataCallTypes } from 'hrm-form-definitions';
 
-import { ContactRawJson, CSAMReportEntry, HrmServiceContact } from '../../types/types';
+import { ContactRawJson, CSAMReportEntry, Contact } from '../../types/types';
 import { DraftResourceReferralState } from './resourceReferral';
 import { ExistingContactsState } from './existingContacts';
 import { ContactDetailsState } from './contactDetails';
@@ -50,11 +50,11 @@ export type ContactMetadata = {
   };
 };
 
-export type HrmServiceContactWithMetadata = { contact: HrmServiceContact; metadata: ContactMetadata };
+export type ContactWithMetadata = { contact: Contact; metadata: ContactMetadata };
 
 export type ContactsState = {
   tasks: {
-    [taskId: string]: HrmServiceContactWithMetadata;
+    [taskId: string]: ContactWithMetadata;
   };
   existingContacts: ExistingContactsState;
   contactDetails: ContactDetailsState;
@@ -76,7 +76,7 @@ type SaveEndMillisAction = {
 
 export type UpdatedContactAction = {
   type: typeof UPDATE_CONTACT_ACTION;
-  payload: Promise<{ contacts: Partial<HrmServiceContact>[] }>;
+  payload: Promise<{ contact: Contact }>;
   meta: unknown;
 };
 
@@ -108,7 +108,7 @@ type PrePopulateFormAction = {
 
 type RestoreEntireFormAction = {
   type: typeof RESTORE_ENTIRE_FORM;
-  contact: HrmServiceContactWithMetadata;
+  contact: ContactWithMetadata;
   taskId: string;
 };
 

@@ -18,7 +18,7 @@ import { omit } from 'lodash';
 import { callTypes } from 'hrm-form-definitions';
 
 import * as t from './types';
-import { ContactsState, HrmServiceContactWithMetadata, SET_SAVED_CONTACT, UPDATE_CONTACT_ACTION } from './types';
+import { ContactsState, ContactWithMetadata, SET_SAVED_CONTACT, UPDATE_CONTACT_ACTION } from './types';
 import {
   DefinitionVersion,
   GeneralActionType,
@@ -54,7 +54,7 @@ import {
 } from './contactDetails';
 import { ADD_EXTERNAL_REPORT_ENTRY, addExternalReportEntryReducer } from '../csam-report/existingContactExternalReport';
 import { ReferralLookupStatus, resourceReferralReducer } from './resourceReferral';
-import { ContactRawJson, HrmServiceContact } from '../../types/types';
+import { ContactRawJson, Contact } from '../../types/types';
 import { ContactCategoryAction, toggleSubCategoriesReducer } from './categories';
 import { configurationBase, RootState } from '..';
 import { saveContactReducer, submitContactFormReducer } from './saveContact';
@@ -65,7 +65,7 @@ export const emptyCategories = [];
 // eslint-disable-next-line import/no-unused-modules
 export const createContactWithMetadata = (definitions: DefinitionVersion) => (
   recreated: boolean,
-): HrmServiceContactWithMetadata => {
+): ContactWithMetadata => {
   const initialChildInformation = definitions.tabbedForms.ChildInformationTab.reduce(createStateItem, {});
   const initialCallerInformation = definitions.tabbedForms.CallerInformationTab.reduce(createStateItem, {});
   const initialCaseInformation = definitions.tabbedForms.CaseInformationTab.reduce(createStateItem, {});
@@ -149,7 +149,7 @@ export const initialState: ContactsState = {
   },
   editingContact: false,
   isCallTypeCaller: false,
-  savedContact: {} as HrmServiceContact,
+  savedContact: {} as Contact,
 };
 
 const boundReferralReducer = resourceReferralReducer(initialState);

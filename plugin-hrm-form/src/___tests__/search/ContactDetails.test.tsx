@@ -28,7 +28,7 @@ import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions } from '../../hrmConfig';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { csamReportBase } from '../../states';
-import { HrmServiceContact } from '../../types/types';
+import { Contact } from '../../types/types';
 
 jest.mock('@twilio/flex-ui', () => ({
   ...jest.requireActual('@twilio/flex-ui'),
@@ -40,7 +40,7 @@ const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions
 
 const mockStore = configureMockStore([]);
 
-const contactOfType = (type): HrmServiceContact => ({
+const contactOfType = (type): Contact => ({
   id: 'TEST CONTACT ID',
   accountSid: '',
   createdAt: '',

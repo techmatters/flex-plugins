@@ -21,8 +21,8 @@ import { CallTypes } from 'hrm-form-definitions';
 import { recordBackendError } from '../fullStory';
 import { issueSyncToken } from '../services/ServerlessService';
 import { getAseloFeatureFlags, getDefinitionVersions, getTemplateStrings } from '../hrmConfig';
-import { CSAMReportEntry, HrmServiceContact } from '../types/types';
-import { ContactMetadata, HrmServiceContactWithMetadata } from '../states/contacts/types';
+import { CSAMReportEntry, Contact } from '../types/types';
+import { ContactMetadata, ContactWithMetadata } from '../states/contacts/types';
 import { createContactWithMetadata } from '../states/contacts/reducer';
 import { ChannelTypes } from '../states/DomainConstants';
 import { ResourceReferral } from '../states/contacts/resourceReferral';
@@ -54,7 +54,7 @@ let sharedStateClient: SyncClient;
 
 const transferFormCategoriesToContactCategories = (
   transferFormCategories: TaskEntry['categories'],
-): HrmServiceContact['rawJson']['categories'] => {
+): Contact['rawJson']['categories'] => {
   if (!transferFormCategories) return undefined;
   const contactCategories = {};
   transferFormCategories.forEach(transferFormCategories => {
@@ -64,7 +64,7 @@ const transferFormCategoriesToContactCategories = (
   return contactCategories;
 };
 
-const transferFormToContact = (transferForm: TransferForm): HrmServiceContactWithMetadata => {
+const transferFormToContact = (transferForm: TransferForm): ContactWithMetadata => {
   const { metadata, helpline, csamReports, referrals, reservationSid, ...form } = transferForm;
   return {
     contact: {
@@ -74,7 +74,7 @@ const transferFormToContact = (transferForm: TransferForm): HrmServiceContactWit
       referrals,
       rawJson: {
         ...form,
-        contactlessTask: form.contactlessTask as HrmServiceContact['rawJson']['contactlessTask'],
+        contactlessTask: form.contactlessTask as Contact['rawJson']['contactlessTask'],
         categories: transferFormCategoriesToContactCategories(form.categories),
       },
       conversationMedia: [],
@@ -87,7 +87,7 @@ const transferFormToContact = (transferForm: TransferForm): HrmServiceContactWit
 };
 
 const contactFormCategoriesToTransferFormCategories = (
-  contactCategories: HrmServiceContact['rawJson']['categories'],
+  contactCategories: Contact['rawJson']['categories'],
 ): TaskEntry['categories'] => {
   if (!contactCategories) return undefined;
   return Object.entries(contactCategories).flatMap(([category, subCategories]) =>
@@ -95,7 +95,7 @@ const contactFormCategoriesToTransferFormCategories = (
   );
 };
 
-const contactToTransferForm = ({ contact, metadata }: HrmServiceContactWithMetadata): TransferForm => {
+const contactToTransferForm = ({ contact, metadata }: ContactWithMetadata): TransferForm => {
   const { helpline, csamReports, referrals, rawJson } = contact;
   const { draft } = metadata;
   return {
@@ -144,7 +144,7 @@ const DOCUMENT_TTL_SECONDS = 24 * 60 * 60; // 24 hours
  * @param task
  */
 export const saveFormSharedState = async (
-  contactWithMetaData: HrmServiceContactWithMetadata,
+  contactWithMetaData: ContactWithMetadata,
   task: ITask,
 ): Promise<string | null> => {
   if (!getAseloFeatureFlags().enable_transfers) return null;
@@ -175,7 +175,7 @@ export const saveFormSharedState = async (
 /**
  * Restores the contact form from Sync Client (if there is any)
  */
-export const loadFormSharedState = async (task: ITask): Promise<HrmServiceContactWithMetadata> => {
+export const loadFormSharedState = async (task: ITask): Promise<ContactWithMetadata> => {
   if (!getAseloFeatureFlags().enable_transfers) return null;
 
   try {
