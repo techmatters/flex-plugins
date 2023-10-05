@@ -16,7 +16,6 @@
 
 import { DataCallTypes } from 'hrm-form-definitions';
 
-import { ContactRawJson, CSAMReportEntry, Contact } from '../../types/types';
 import { DraftResourceReferralState } from './resourceReferral';
 import { ContactState, ExistingContactsState } from './existingContacts';
 import { ContactDetailsState } from './contactDetails';
@@ -45,8 +44,6 @@ export type ContactMetadata = {
     resourceReferralList: DraftResourceReferralState;
   };
 };
-
-export type ContactWithMetadata = { contact: Contact; metadata: ContactMetadata };
 
 export type ContactsState = {
   existingContacts: ExistingContactsState;

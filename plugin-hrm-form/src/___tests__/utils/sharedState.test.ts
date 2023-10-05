@@ -26,8 +26,9 @@ import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import { getAseloFeatureFlags, getDefinitionVersions, getTemplateStrings } from '../../hrmConfig';
 import { loadFormSharedState, saveFormSharedState, setUpSharedStateClient } from '../../utils/sharedState';
 import { Contact } from '../../types/types';
-import { ContactMetadata, ContactWithMetadata } from '../../states/contacts/types';
+import { ContactMetadata } from '../../states/contacts/types';
 import { VALID_EMPTY_CONTACT } from '../testContacts';
+import { ContactState } from '../../states/contacts/existingContacts';
 
 jest.mock('../../services/ServerlessService', () => ({
   issueSyncToken: jest.fn(),
@@ -46,9 +47,10 @@ jest.mock('../../hrmConfig', () => ({
 jest.mock('twilio-sync', () => jest.fn());
 const contact = { helpline: 'a helpline' } as Contact;
 const metadata = {} as ContactMetadata;
-const form: ContactWithMetadata = {
-  contact,
+const form: ContactState = {
+  savedContact: contact,
   metadata,
+  references: new Set(),
 };
 const task = createTask();
 
@@ -123,13 +125,13 @@ describe('Test with undefined sharedState', () => {
 });
 
 describe('Test with not connected sharedState', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     mockGetAseloFeatureFlags.mockReturnValue({ enable_transfers: true });
     mockSyncClient.mockImplementation(() => ({
       on: jest.fn(),
       connectionState: 'not connected',
     }));
-    setUpSharedStateClient();
+    await setUpSharedStateClient();
   });
 
   test('saveFormSharedState', async () => {
@@ -146,10 +148,10 @@ describe('Test with not connected sharedState', () => {
 });
 
 describe('Test with connected sharedState', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     mockGetAseloFeatureFlags.mockReturnValue({ enable_transfers: true });
     mockSyncClient.mockImplementation(() => mockSharedState);
-    setUpSharedStateClient();
+    await setUpSharedStateClient();
   });
 
   test('saveFormSharedState', async () => {
@@ -170,8 +172,8 @@ describe('Test with connected sharedState', () => {
   });
 
   test('loadFormSharedState', async () => {
-    const expected: ContactWithMetadata = {
-      contact: {
+    const expected: ContactState = {
+      savedContact: {
         ...VALID_EMPTY_CONTACT,
         rawJson: {
           categories: undefined,
@@ -187,6 +189,7 @@ describe('Test with connected sharedState', () => {
       metadata: {
         draft: undefined,
       } as ContactMetadata,
+      references: new Set(),
     };
     const loadedForm = await loadFormSharedState(task);
     expect(loadedForm).toStrictEqual(expected);
@@ -197,7 +200,7 @@ describe('Test throwing errors', () => {
   const error = jest.fn();
   console.error = error;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mockGetAseloFeatureFlags.mockReturnValue({ enable_transfers: true });
     mockSyncClient.mockImplementation(() => ({
       document: () => {
@@ -205,7 +208,7 @@ describe('Test throwing errors', () => {
       },
       on: jest.fn(),
     }));
-    setUpSharedStateClient();
+    await setUpSharedStateClient();
     error.mockReset();
   });
 

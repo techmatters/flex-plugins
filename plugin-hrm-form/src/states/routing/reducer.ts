@@ -54,7 +54,10 @@ export function reduce(
         ...state,
         tasks: {
           ...state.tasks,
-          [action.initialContact.taskId]: newTaskEntry,
+          [action.initialContact.taskId]:
+            action.recreated && state.tasks[action.initialContact.taskId]
+              ? state.tasks[action.initialContact.taskId]
+              : newTaskEntry,
         },
         isAddingOfflineContact:
           action.initialContact.taskId === getOfflineContactTaskSid() ? true : state.isAddingOfflineContact,
