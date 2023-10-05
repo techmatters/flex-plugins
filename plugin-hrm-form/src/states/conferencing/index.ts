@@ -16,9 +16,13 @@
 import { createAction, createReducer } from 'redux-promise-middleware-actions';
 import { omit } from 'lodash';
 
-import { INITIALIZE_CONTACT_STATE, InitializeContactStateAction, RECREATE_CONTACT_STATE } from '../types';
+import {
+  INITIALIZE_CONTACT_STATE,
+  InitializeContactStateAction,
+  RECREATE_CONTACT_STATE,
+  RemoveContactStateAction,
+} from '../types';
 import { removeContactState } from '../actions';
-import { RootState, conferencingBase, namespace } from '..';
 
 export type CallStatus =
   | 'no-call'
@@ -84,7 +88,9 @@ type ConferencingStateAction =
   | ReturnType<typeof setIsDialogOpenAction>
   | ReturnType<typeof setCallStatusAction>
   | ReturnType<typeof setPhoneNumberAction>
-  | ReturnType<typeof addParticipantLabelAction>;
+  | ReturnType<typeof addParticipantLabelAction>
+  | InitializeContactStateAction
+  | RemoveContactStateAction;
 
 const initialState: ConferencingState = {
   tasks: {},
