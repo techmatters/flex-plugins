@@ -32,21 +32,21 @@ import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 const patchResourceReferralState = (
   state: ContactsState,
-  taskId: string,
+  contactId: string,
   resourceReferralState: Partial<DraftResourceReferralState>,
 ): ContactsState => {
   return {
     ...state,
-    tasks: {
-      ...state.tasks,
-      task1: {
-        ...state.tasks[taskId],
+    existingContacts: {
+      ...state.existingContacts,
+      contact1: {
+        ...state.existingContacts[contactId],
         metadata: {
-          ...state.tasks[taskId].metadata,
+          ...state.existingContacts[contactId].metadata,
           draft: {
-            ...state.tasks[taskId].metadata.draft,
+            ...state.existingContacts[contactId].metadata.draft,
             resourceReferralList: {
-              ...state.tasks[taskId].metadata.draft.resourceReferralList,
+              ...state.existingContacts[contactId].metadata.draft.resourceReferralList,
               ...resourceReferralState,
             },
           },
@@ -56,15 +56,19 @@ const patchResourceReferralState = (
   };
 };
 
-const setResourceReferrals = (state: ContactsState, taskId: string, referrals: ResourceReferral[]): ContactsState => {
+const setDraftResourceReferrals = (
+  state: ContactsState,
+  contactId: string,
+  referrals: ResourceReferral[],
+): ContactsState => {
   return {
     ...state,
-    tasks: {
-      ...state.tasks,
-      task1: {
-        ...state.tasks[taskId],
-        contact: {
-          ...state.tasks[taskId].contact,
+    existingContacts: {
+      ...state.existingContacts,
+      contact1: {
+        ...state.existingContacts[contactId],
+        draftContact: {
+          ...(state.existingContacts[contactId].draftContact ?? {}),
           referrals,
         },
       },
@@ -76,9 +80,9 @@ describe('resourceReferralReducer', () => {
   const reducer = resourceReferralReducer(initialState);
   const baseState: ContactsState = {
     ...initialState,
-    tasks: {
-      task1: {
-        contact: {
+    existingContacts: {
+      contact1: {
+        savedContact: {
           ...VALID_EMPTY_CONTACT,
           rawJson: {
             ...VALID_EMPTY_CONTACT.rawJson,
@@ -97,13 +101,14 @@ describe('resourceReferralReducer', () => {
             resourceReferralList: { resourceReferralIdToAdd: '', lookupStatus: ReferralLookupStatus.NOT_STARTED },
           },
         },
+        references: new Set(),
       },
     },
   };
   describe('updateResourceReferralIdToAddForUnsavedContactAction', () => {
     test("contact exists for taskSid - updates draft referral's resourceReferralIdToAdd", () => {
-      const state = reducer(baseState, updateResourceReferralIdToAddForUnsavedContactAction('task1', '1234'));
-      const expectedState = patchResourceReferralState(baseState, 'task1', {
+      const state = reducer(baseState, updateResourceReferralIdToAddForUnsavedContactAction('contact1', '1234'));
+      const expectedState = patchResourceReferralState(baseState, 'contact1', {
         resourceReferralIdToAdd: '1234',
       });
       expect(state).toEqual(expectedState);
@@ -111,13 +116,13 @@ describe('resourceReferralReducer', () => {
 
     test("contact exists for taskSid and draft referrals lookupStatus is not NOT_STARTED - updates draft referral's lookupStatus to NOT_STARTED", () => {
       const state = reducer(
-        patchResourceReferralState(baseState, 'task1', {
+        patchResourceReferralState(baseState, 'contact1', {
           lookupStatus: ReferralLookupStatus.PENDING,
         }),
-        updateResourceReferralIdToAddForUnsavedContactAction('task1', '1234'),
+        updateResourceReferralIdToAddForUnsavedContactAction('contact1', '1234'),
       );
       expect(state).toEqual(
-        patchResourceReferralState(baseState, 'task1', {
+        patchResourceReferralState(baseState, 'contact1', {
           resourceReferralIdToAdd: '1234',
           lookupStatus: ReferralLookupStatus.NOT_STARTED,
         }),
@@ -132,9 +137,9 @@ describe('resourceReferralReducer', () => {
     test("contact exists for taskSid - updates draft referral's lookupStatus", () => {
       const state = reducer(
         baseState,
-        updateResourceReferralLookupStatusForUnsavedContactAction('task1', ReferralLookupStatus.FOUND),
+        updateResourceReferralLookupStatusForUnsavedContactAction('contact1', ReferralLookupStatus.FOUND),
       );
-      const expectedState = patchResourceReferralState(baseState, 'task1', {
+      const expectedState = patchResourceReferralState(baseState, 'contact1', {
         lookupStatus: ReferralLookupStatus.FOUND,
       });
       expect(state).toEqual(expectedState);
@@ -148,19 +153,19 @@ describe('resourceReferralReducer', () => {
     });
   });
   describe('addResourceReferralForUnsavedContactAction', () => {
-    test('contact exists for taskSid with empty referrals - adds referral to contact', () => {
+    test('contact exists for taskSid with empty referrals - adds referral to draft contact', () => {
       const newReferral: ReferrableResource = {
         id: 'res-1234',
         name: 'Resource 1234',
         attributes: {},
       };
-      const state = reducer(baseState, addResourceReferralForUnsavedContactAction('task1', newReferral));
+      const state = reducer(baseState, addResourceReferralForUnsavedContactAction('contact1', newReferral));
       expect(state).toEqual(
-        setResourceReferrals(baseState, 'task1', [
+        setDraftResourceReferrals(baseState, 'contact1', [
           { resourceId: 'res-1234', resourceName: 'Resource 1234', referredAt: expect.any(String) },
         ]),
       );
-      const referredAt = parseISO(state.tasks.task1.contact.referrals[0].referredAt);
+      const referredAt = parseISO(state.existingContacts.contact1.draftContact.referrals[0].referredAt);
       expect(isAfter(referredAt, subHours(new Date(), 1))).toBe(true);
     });
     test('contact exists for taskSid with undefined referrals - adds referral to contact', () => {
@@ -170,23 +175,23 @@ describe('resourceReferralReducer', () => {
         attributes: {},
       };
       const state = reducer(
-        setResourceReferrals(baseState, 'task1', undefined),
-        addResourceReferralForUnsavedContactAction('task1', newReferral),
+        setDraftResourceReferrals(baseState, 'contact1', undefined),
+        addResourceReferralForUnsavedContactAction('contact1', newReferral),
       );
       expect(state).toEqual({
         ...baseState,
-        tasks: {
-          ...baseState.tasks,
-          task1: {
-            ...baseState.tasks.task1,
-            contact: {
-              ...baseState.tasks.task1.contact,
+        existingContacts: {
+          ...baseState.existingContacts,
+          contact1: {
+            ...baseState.existingContacts.contact1,
+            draftContact: {
+              ...(baseState.existingContacts.contact1.draftContact ?? {}),
               referrals: [{ resourceId: 'res-1234', resourceName: 'Resource 1234', referredAt: expect.any(String) }],
             },
           },
         },
       });
-      const referredAt = parseISO(state.tasks.task1.contact.referrals[0].referredAt);
+      const referredAt = parseISO(state.existingContacts.contact1.draftContact.referrals[0].referredAt);
       expect(isAfter(referredAt, subHours(new Date(), 1))).toBe(true);
     });
     test('contact exists for taskSid with other referrals - adds referral to end of list', () => {
@@ -196,22 +201,22 @@ describe('resourceReferralReducer', () => {
         attributes: {},
       };
       const state = reducer(
-        setResourceReferrals(baseState, 'task1', [
+        setDraftResourceReferrals(baseState, 'contact1', [
           {
             resourceId: 'res-existing',
             resourceName: 'Existing Resource',
             referredAt: '2020-01-01T00:00:00.000Z',
           },
         ]),
-        addResourceReferralForUnsavedContactAction('task1', newReferral),
+        addResourceReferralForUnsavedContactAction('contact1', newReferral),
       );
       expect(state).toEqual(
-        setResourceReferrals(baseState, 'task1', [
+        setDraftResourceReferrals(baseState, 'contact1', [
           { resourceId: 'res-existing', resourceName: 'Existing Resource', referredAt: '2020-01-01T00:00:00.000Z' },
           { resourceId: 'res-1234', resourceName: 'Resource 1234', referredAt: expect.any(String) },
         ]),
       );
-      const referredAt = parseISO(state.tasks.task1.contact.referrals[1].referredAt);
+      const referredAt = parseISO(state.existingContacts.contact1.draftContact.referrals[1].referredAt);
       expect(isAfter(referredAt, subHours(new Date(), 1))).toBe(true);
     });
 
@@ -222,17 +227,17 @@ describe('resourceReferralReducer', () => {
         attributes: {},
       };
       const state = reducer(
-        setResourceReferrals(baseState, 'task1', [
+        setDraftResourceReferrals(baseState, 'contact1', [
           {
             resourceId: 'res-1234',
             resourceName: 'Existing Resource',
             referredAt: '2020-01-01T00:00:00.000Z',
           },
         ]),
-        addResourceReferralForUnsavedContactAction('task1', newReferral),
+        addResourceReferralForUnsavedContactAction('contact1', newReferral),
       );
       expect(state).toEqual(
-        setResourceReferrals(baseState, 'task1', [
+        setDraftResourceReferrals(baseState, 'contact1', [
           { resourceId: 'res-1234', resourceName: 'Existing Resource', referredAt: '2020-01-01T00:00:00.000Z' },
         ]),
       );
@@ -244,11 +249,11 @@ describe('resourceReferralReducer', () => {
         name: 'Resource 1234',
         attributes: {},
       };
-      const stateWithPatchedLookupStatus = patchResourceReferralState(baseState, 'task1', {
+      const stateWithPatchedLookupStatus = patchResourceReferralState(baseState, 'contact1', {
         lookupStatus: ReferralLookupStatus.FOUND,
       });
       const state = reducer(
-        setResourceReferrals(stateWithPatchedLookupStatus, 'task1', [
+        setDraftResourceReferrals(stateWithPatchedLookupStatus, 'contact1', [
           {
             resourceId: 'res-existing',
             resourceName: 'Existing Resource',
@@ -256,18 +261,18 @@ describe('resourceReferralReducer', () => {
           },
         ]),
 
-        addResourceReferralForUnsavedContactAction('task1', newReferral),
+        addResourceReferralForUnsavedContactAction('contact1', newReferral),
       );
-      const expectedStateWithPatchedLookupStatus = patchResourceReferralState(baseState, 'task1', {
+      const expectedStateWithPatchedLookupStatus = patchResourceReferralState(baseState, 'contact1', {
         lookupStatus: ReferralLookupStatus.NOT_STARTED,
       });
       expect(state).toEqual(
-        setResourceReferrals(expectedStateWithPatchedLookupStatus, 'task1', [
+        setDraftResourceReferrals(expectedStateWithPatchedLookupStatus, 'contact1', [
           { resourceId: 'res-existing', resourceName: 'Existing Resource', referredAt: '2020-01-01T00:00:00.000Z' },
           { resourceId: 'res-1234', resourceName: 'Resource 1234', referredAt: expect.any(String) },
         ]),
       );
-      const referredAt = parseISO(state.tasks.task1.contact.referrals[1].referredAt);
+      const referredAt = parseISO(state.existingContacts.contact1.draftContact.referrals[1].referredAt);
       expect(isAfter(referredAt, subHours(new Date(), 1))).toBe(true);
     });
 
@@ -277,24 +282,24 @@ describe('resourceReferralReducer', () => {
         name: 'Resource 1234',
         attributes: {},
       };
-      const inputStateWithPatchedLookupStatus = patchResourceReferralState(baseState, 'task1', {
+      const inputStateWithPatchedLookupStatus = patchResourceReferralState(baseState, 'contact1', {
         lookupStatus: ReferralLookupStatus.FOUND,
       });
       const state = reducer(
-        setResourceReferrals(inputStateWithPatchedLookupStatus, 'task1', [
+        setDraftResourceReferrals(inputStateWithPatchedLookupStatus, 'contact1', [
           {
             resourceId: 'res-1234',
             resourceName: 'Existing Resource',
             referredAt: '2020-01-01T00:00:00.000Z',
           },
         ]),
-        addResourceReferralForUnsavedContactAction('task1', newReferral),
+        addResourceReferralForUnsavedContactAction('contact1', newReferral),
       );
-      const expectedStateWithPatchedLookupStatus = patchResourceReferralState(baseState, 'task1', {
+      const expectedStateWithPatchedLookupStatus = patchResourceReferralState(baseState, 'contact1', {
         lookupStatus: ReferralLookupStatus.NOT_STARTED,
       });
       expect(state).toEqual(
-        setResourceReferrals(expectedStateWithPatchedLookupStatus, 'task1', [
+        setDraftResourceReferrals(expectedStateWithPatchedLookupStatus, 'contact1', [
           { resourceId: 'res-1234', resourceName: 'Existing Resource', referredAt: '2020-01-01T00:00:00.000Z' },
         ]),
       );
