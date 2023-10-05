@@ -28,7 +28,7 @@ import { setCategoriesGridView } from '../../../states/contacts/existingContacts
 import { forExistingContact } from '../../../states/contacts/issueCategorizationStateApi';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
-import { CustomITask, FeatureFlags } from '../../../types/types';
+import { FeatureFlags } from '../../../types/types';
 
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
 jest.mock('../../../hrmConfig');
@@ -107,7 +107,7 @@ test('Click on view subcategories as list icon', () => {
   const store = mockStore({
     [namespace]: {
       [contactFormsBase]: {
-        tasks: {
+        existingContacts: {
           [contactId]: {
             savedContact: { ...VALID_EMPTY_CONTACT },
             metadata: { categories: { expanded, gridView: false } },

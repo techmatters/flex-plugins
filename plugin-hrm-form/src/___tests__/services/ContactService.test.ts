@@ -20,7 +20,6 @@ import {
   CategoryEntry,
   DefinitionVersion,
   DefinitionVersionId,
-  FormInputType,
   loadDefinition,
   useFetchDefinitions,
 } from 'hrm-form-definitions';
@@ -31,14 +30,12 @@ import {
   handleTwilioTask,
   saveContact,
   transformCategories,
-  transformForm,
   updateContactsFormInHrm,
 } from '../../services/ContactService';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions, getHrmConfig } from '../../hrmConfig';
-import { ContactRawJson } from '../../types/types';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
-import { ContactWithMetadata } from '../../states/contacts/types';
+import { ContactState } from '../../states/contacts/existingContacts';
 
 const helpline = 'ChildLine';
 const mockGetHrmConfig = getHrmConfig as jest.Mock;
@@ -103,94 +100,13 @@ beforeAll(async () => {
   EMPTY_API_CATEGORIES = createCategoriesObject(mockV1.tabbedForms.IssueCategorizationTab(helpline));
 });
 
-describe('transformForm', () => {
-  test('removes control information and presents values only', () => {
-    const oldForm: ContactRawJson = {
-      callType: callTypes.caller,
-      callerInformation: {
-        firstName: 'myFirstName',
-        lastName: '',
-      },
-      childInformation: {
-        firstName: 'child',
-        lastName: '',
-        gender: 'Male',
-        refugee: false,
-      },
-      categories: {
-        Abuse: ['Abduction'],
-      },
-      caseInformation: {
-        callSummary: 'My summary',
-      },
-      contactlessTask: {
-        channel: channelTypes.web,
-        date: '',
-        time: '',
-        createdOnBehalfOf: undefined,
-      },
-    };
-
-    const expectedCategories = {
-      ...EMPTY_API_CATEGORIES,
-      Abuse: {
-        ...EMPTY_API_CATEGORIES.Abuse,
-        Abduction: true,
-      },
-    };
-
-    const expected = {
-      definitionVersion: 'v1',
-      callType: callTypes.caller,
-      callerInformation: { name: { firstName: 'myFirstName', lastName: '' } },
-      childInformation: {
-        gender: 'Male',
-        name: { firstName: 'child', lastName: '' },
-      },
-      caseInformation: {
-        // copy paste from ContactService. This will come from redux later on and we can mockup definitions
-        callSummary: 'My summary',
-        categories: expectedCategories,
-      },
-      contactlessTask: {
-        channel: '',
-        date: '',
-        time: '',
-      },
-      metadata: {},
-    };
-
-    const transformed = transformForm(oldForm, helpline);
-    // expect().toStrictEqual(expected);
-
-    expect(transformed.definitionVersion).toBe('v1');
-    expect(transformed.callType).toBe(callTypes.caller);
-    expect(transformed.callerInformation.firstName).toBe('myFirstName');
-    expect(transformed.callerInformation.lastName).toBe('');
-    expect(transformed.childInformation.gender).toBe('Male');
-    expect(transformed.childInformation.firstName).toBe('child');
-    expect(transformed.childInformation.lastName).toBe('');
-    expect(transformed.caseInformation.categories).toStrictEqual(expected.caseInformation.categories);
-    expect(transformed.caseInformation.callSummary).toBe('My summary');
-    expect(transformed.contactlessTask).toStrictEqual({
-      channel: 'web',
-      createdOnBehalfOf: undefined,
-      date: '',
-      time: '',
-    });
-  });
-});
-
-const createContactWithMetadata = (
-  { callType, childFirstName },
-  contactlessTaskInfo = undefined,
-): ContactWithMetadata => {
+const createContactState = ({ callType, childFirstName }, contactlessTaskInfo = undefined): ContactState => {
   const blankForm = VALID_EMPTY_CONTACT.rawJson;
   const contactlessTask = contactlessTaskInfo || blankForm.contactlessTask;
 
   return {
     metadata: VALID_EMPTY_METADATA,
-    contact: {
+    savedContact: {
       ...VALID_EMPTY_CONTACT,
       rawJson: {
         ...VALID_EMPTY_CONTACT.rawJson,
@@ -202,12 +118,14 @@ const createContactWithMetadata = (
         contactlessTask,
       },
     },
+    references: new Set(),
   };
 };
 
-const getFormFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).rawJson;
-const getTimeOfContactFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).timeOfContact;
-const getNumberFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).number;
+const getFormFromMediaPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body);
+const getFormFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[1][1].body).rawJson;
+const getTimeOfContactFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[1][1].body).timeOfContact;
+const getNumberFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[1][1].body).number;
 
 describe('saveContact()', () => {
   const task = {
@@ -221,10 +139,10 @@ describe('saveContact()', () => {
   const fetchSuccess = Promise.resolve(<any>{ ok: true, json: jest.fn(), text: jest.fn() });
 
   test('data calltype saves form data', async () => {
-    const { contact, metadata } = createContactWithMetadata({ callType: callTypes.child, childFirstName: 'Jill' });
+    const { savedContact, metadata } = createContactState({ callType: callTypes.child, childFirstName: 'Jill' });
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveContact(task, contact, metadata, workerSid, uniqueIdentifier);
+    await saveContact(task, savedContact, metadata, workerSid, uniqueIdentifier);
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.child);
@@ -234,10 +152,10 @@ describe('saveContact()', () => {
   });
 
   test('non-data calltype do not save form data', async () => {
-    const { contact, metadata } = createContactWithMetadata({ callType: 'hang up', childFirstName: 'Jill' });
+    const { savedContact, metadata } = createContactState({ callType: 'hang up', childFirstName: 'Jill' });
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveContact(task, contact, metadata, workerSid, uniqueIdentifier);
+    await saveContact(task, savedContact, metadata, workerSid, uniqueIdentifier);
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual('hang up');
@@ -256,11 +174,20 @@ describe('saveContact() (isContactlessTask)', () => {
   };
   const workerSid = 'worker-sid';
   const uniqueIdentifier = 'uniqueIdentifier';
-  const fetchSuccess = Promise.resolve(<any>{ ok: true, json: jest.fn(), text: jest.fn() });
+  const fetchJson = jest.fn();
+  const fetchSuccess = Promise.resolve(<any>{
+    ok: true,
+    json: fetchJson,
+    text: jest.fn(),
+    headers: { get: header => ({ 'Content-Type': 'application/json' }[header]) },
+  });
   let mockedFetch;
 
   beforeEach(() => {
-    mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
+    mockedFetch = jest.spyOn(global, 'fetch').mockImplementation((...args) => {
+      console.log('Mock fetch called', ...args);
+      return fetchSuccess;
+    });
   });
 
   afterEach(() => {
@@ -268,11 +195,12 @@ describe('saveContact() (isContactlessTask)', () => {
   });
 
   test('data calltype saves form data', async () => {
-    const { contact, metadata } = createContactWithMetadata(
+    const { savedContact, metadata } = createContactState(
       { callType: callTypes.child, childFirstName: 'Jill' },
       { channel: '', date: '2020-11-24', time: '12:00' },
     );
-    await saveContact(task, contact, metadata, workerSid, uniqueIdentifier);
+    fetchJson.mockResolvedValue([]).mockResolvedValue({ ...savedContact, id: 'contact-id' });
+    await saveContact(task, savedContact, metadata, workerSid, uniqueIdentifier);
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.child);
@@ -282,11 +210,11 @@ describe('saveContact() (isContactlessTask)', () => {
 
   test('non-data calltype do not save form data (but captures contactlessTask info)', async () => {
     const contactlessTask = { channel: 'web', date: '2020-11-24', time: '12:00', createdOnBehalfOf: 'someone else' };
-    const { contact, metadata } = createContactWithMetadata(
+    const { savedContact, metadata } = createContactState(
       { callType: 'hang up', childFirstName: 'Jill' },
       contactlessTask,
     );
-    await saveContact({ ...task, taskSid: offlineContactTaskSid }, contact, metadata, workerSid, uniqueIdentifier);
+    await saveContact({ ...task, taskSid: offlineContactTaskSid }, savedContact, metadata, workerSid, uniqueIdentifier);
 
     const expected = { ...contactlessTask };
 
@@ -309,9 +237,9 @@ describe('saveContact() (isContactlessTask)', () => {
         preEngagementData: { contactType: 'ip', contactIdentifier: ip },
       },
     };
-    const { contact, metadata } = createContactWithMetadata({ callType: callTypes.child, childFirstName: 'Jill' });
+    const { savedContact, metadata } = createContactState({ callType: callTypes.child, childFirstName: 'Jill' });
 
-    await saveContact(webTaskWithIP, contact, metadata, workerSid, uniqueIdentifier);
+    await saveContact(webTaskWithIP, savedContact, metadata, workerSid, uniqueIdentifier);
 
     const numberFromPOST = getNumberFromPOST(mockedFetch);
     expect(numberFromPOST).toEqual(ip);
@@ -329,11 +257,11 @@ describe('saveContact() (isContactlessTask)', () => {
         preEngagementData: { contactType: 'email', contactIdentifier: email },
       },
     };
-    const { contact, metadata } = createContactWithMetadata({ callType: callTypes.child, childFirstName: 'Jill' });
+    const { savedContact, metadata } = createContactState({ callType: callTypes.child, childFirstName: 'Jill' });
 
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveContact(webTaskWithIP, contact, metadata, workerSid, uniqueIdentifier);
+    await saveContact(webTaskWithIP, savedContact, metadata, workerSid, uniqueIdentifier);
 
     const numberFromPOST = getNumberFromPOST(mockedFetch);
     expect(numberFromPOST).toEqual(email);
@@ -352,9 +280,9 @@ describe('saveContact() (isContactlessTask)', () => {
         ip: '', // Studio makes it empty string
       },
     };
-    const { contact, metadata } = createContactWithMetadata({ callType: callTypes.child, childFirstName: 'Jill' });
+    const { savedContact, metadata } = createContactState({ callType: callTypes.child, childFirstName: 'Jill' });
 
-    await saveContact(webTaskWithoutIP, contact, metadata, workerSid, uniqueIdentifier);
+    await saveContact(webTaskWithoutIP, savedContact, metadata, workerSid, uniqueIdentifier);
 
     const numberFromPOST = getNumberFromPOST(mockedFetch);
     expect(numberFromPOST).toEqual('');
@@ -403,27 +331,28 @@ describe('saveContact() (externalRecording)', () => {
       },
     };
 
-    const { contact, metadata } = createContactWithMetadata({ callType: callTypes.child, childFirstName: 'Jill' });
-    await saveContact(task, contact, metadata, 'workerSid', 'uniqueIdentifier');
+    const { savedContact, metadata } = createContactState({ callType: callTypes.child, childFirstName: 'Jill' });
+    await saveContact(task, savedContact, metadata, 'workerSid', 'uniqueIdentifier');
 
-    const formFromPOST = getFormFromPOST(mockedFetch);
-    expect(formFromPOST.conversationMedia).toStrictEqual([
-      { store: 'twilio' },
+    const formFromPOST = getFormFromMediaPOST(mockedFetch);
+    expect(formFromPOST).toStrictEqual([
+      { storeType: 'twilio', storeTypeSpecificData: {} },
       {
-        store: 'S3',
-        type: 'recording',
-        location: {
-          bucket: 'bucket',
-          key: 'key',
+        storeType: 'S3',
+        storeTypeSpecificData: {
+          type: 'recording',
+          location: {
+            bucket: 'bucket',
+            key: 'key',
+          },
         },
       },
     ]);
   });
 });
 
-// TODO: test category transformation
 test('updateContactsFormInHrm - calls a PATCH HRM endpoint using the supplied contact ID in the route', async () => {
-  const responseBody = { rawJson: { caseInformation: { categories: {} } } };
+  const responseBody = { rawJson: { caseInformation: {}, categories: {} } };
   const mockedFetch = jest.spyOn(global, 'fetch').mockResolvedValue(<Response>(<unknown>{
     ok: true,
     json: () => Promise.resolve(responseBody),
@@ -439,9 +368,9 @@ test('updateContactsFormInHrm - calls a PATCH HRM endpoint using the supplied co
         method: 'PATCH',
         body: JSON.stringify({
           rawJson: {
-            caseInformation: { categories: EMPTY_API_CATEGORIES },
-            categories: {},
             definitionVersion: DefinitionVersionId.v1,
+            caseInformation: {},
+            categories: {},
           },
         }),
       }),
