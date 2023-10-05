@@ -24,7 +24,6 @@ import type { DefinitionVersion } from '../../states/types';
 import * as GeneralActions from '../../states/actions';
 import { Contact } from '../../types/types';
 import AddTaskButton from '../common/AddTaskButton';
-import { rerenderAgentDesktop } from '../../rerenderView';
 import { ContactMetadata } from '../../states/contacts/types';
 import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
 import { createContact } from '../../services/ContactService';
@@ -47,6 +46,7 @@ const AddOfflineContactButton: React.FC<Props> = ({
 
   const onClick = async () => {
     const { savedContact: newContact, metadata } = newContactState(currentDefinitionVersion)(false);
+    console.log('Onclick - creating contact');
     const savedContact = await createContact(newContact, getHrmConfig().workerSid, getOfflineContactTaskSid());
     initializeContactState(currentDefinitionVersion)(savedContact, metadata);
 
