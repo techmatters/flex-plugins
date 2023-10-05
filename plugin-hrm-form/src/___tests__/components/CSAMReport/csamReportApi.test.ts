@@ -65,18 +65,6 @@ const stateWithRoute = (taskSid: string, route: AppRoutes): RootState => {
   return (partialState as unknown) as RootState;
 };
 
-const stateWithTaskCsamReport = (taskSid: string, entry: CSAMReportStateEntry): RootState => {
-  const partialState: DeepPartial<RootState> = {
-    [namespace]: {
-      [csamReportBase]: {
-        tasks: {
-          [taskSid]: entry,
-        },
-      },
-    },
-  };
-  return (partialState as unknown) as RootState;
-};
 const stateWithContactCsamReport = (contactId: string, entry: CSAMReportStateEntry): RootState => {
   const partialState: DeepPartial<RootState> = {
     [namespace]: {
@@ -129,13 +117,13 @@ describe('newContactCSAMApi', () => {
   });
 
   describe('reportState', () => {
-    test('CSAM entry exists for task - returns entry', () => {
+    test('CSAM entry exists for contact - returns entry', () => {
       const entry: CSAMReportStateEntry = {};
-      expect(api.reportState(stateWithTaskCsamReport(TEST_TASK_ID, entry))).toBe(entry);
+      expect(api.reportState(stateWithContactCsamReport(TEST_CONTACT_ID, entry))).toBe(entry);
     });
     test("CSAM entry doesn't exist for task - returns entry", () => {
       const entry: CSAMReportStateEntry = {};
-      expect(api.reportState(stateWithTaskCsamReport('not a task', entry))).not.toBeDefined();
+      expect(api.reportState(stateWithContactCsamReport('not a task', entry))).not.toBeDefined();
     });
   });
 
@@ -248,7 +236,7 @@ describe('newContactCSAMApi', () => {
         expect(createCSAMReport).toHaveBeenCalledWith({
           reportType: 'self-generated',
           twilioWorkerId: TEST_WORKER_SID,
-          contactId: undefined,
+          contactId: 1337,
         });
         expect(selfReportToIWF).toHaveBeenCalledWith(EMPTY_CHILD_FORM, UNACKNOWLEDGED_HRM_CSAM_ENTRY.csamReportId);
         expect(acknowledgeCSAMReport).toHaveBeenCalledWith(UNACKNOWLEDGED_HRM_CSAM_ENTRY.id);
@@ -273,7 +261,7 @@ describe('newContactCSAMApi', () => {
         expect(createCSAMReport).toHaveBeenCalledWith({
           reportType: 'self-generated',
           twilioWorkerId: TEST_WORKER_SID,
-          contactId: undefined,
+          contactId: 1337,
         });
         expect(selfReportToIWF).toHaveBeenCalledWith(EMPTY_CHILD_FORM, UNACKNOWLEDGED_HRM_CSAM_ENTRY.csamReportId);
         expect(acknowledgeCSAMReport).not.toHaveBeenCalled();
@@ -340,7 +328,7 @@ describe('newContactCSAMApi', () => {
           reportType: 'counsellor-generated',
           csamReportId: DEFAULT_IWF_REPORT_RESPONSE['IWFReportService1.0'].responseData,
           twilioWorkerId: TEST_WORKER_SID,
-          contactId: undefined,
+          contactId: 1337,
         });
         expect(returned.hrmReport).toStrictEqual(UNACKNOWLEDGED_HRM_CSAM_ENTRY);
         expect(returned.iwfReport).toBe(DEFAULT_IWF_REPORT_RESPONSE['IWFReportService1.0']);

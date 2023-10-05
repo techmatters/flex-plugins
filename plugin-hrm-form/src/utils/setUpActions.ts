@@ -37,11 +37,11 @@ import { CustomITask, FeatureFlags } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
 import { createContact } from '../services/ContactService';
-import { newContactState } from '../states/contacts/reducer';
 import type { RootState } from '../states';
 import { getTaskLanguage } from './task';
 import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
 import { loadContact } from '../states/contacts/existingContacts';
+import { newContactState } from '../states/contacts/contactState';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;

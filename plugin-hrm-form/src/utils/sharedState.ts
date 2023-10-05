@@ -23,10 +23,10 @@ import { issueSyncToken } from '../services/ServerlessService';
 import { getAseloFeatureFlags, getDefinitionVersions, getTemplateStrings } from '../hrmConfig';
 import { CSAMReportEntry, Contact, ContactRawJson } from '../types/types';
 import { ContactMetadata } from '../states/contacts/types';
-import { newContactState } from '../states/contacts/reducer';
 import { ChannelTypes } from '../states/DomainConstants';
 import { ResourceReferral } from '../states/contacts/resourceReferral';
 import { ContactState } from '../states/contacts/existingContacts';
+import { newContactState } from '../states/contacts/contactState';
 
 // Legacy type previously used for unsaved contact forms, kept around to ensure transfers are compatible between new & old clients
 // Not much point in replacing the use of this type in the shared state, since we will drop use of shared state in favour of the HRM DB for managing transfer state soon anyway

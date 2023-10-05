@@ -33,9 +33,9 @@ import { getHelplineToSave } from '../services/HelplineService';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { rerenderAgentDesktop } from '../rerenderView';
 import { createContact } from '../services/ContactService';
-import { newContactState } from '../states/contacts/reducer';
 import { ContactMetadata } from '../states/contacts/types';
 import { updateDraft } from '../states/contacts/existingContacts';
+import { newContactState } from '../states/contacts/contactState';
 
 type OwnProps = {
   task: CustomITask;

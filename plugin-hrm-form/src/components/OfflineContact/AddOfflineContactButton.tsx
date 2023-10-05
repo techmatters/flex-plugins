@@ -27,9 +27,9 @@ import AddTaskButton from '../common/AddTaskButton';
 import { rerenderAgentDesktop } from '../../rerenderView';
 import { ContactMetadata } from '../../states/contacts/types';
 import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
-import { newContactState } from '../../states/contacts/reducer';
 import { createContact } from '../../services/ContactService';
 import { getHrmConfig } from '../../hrmConfig';
+import { newContactState } from '../../states/contacts/contactState';
 
 type OwnProps = {};
 

@@ -588,13 +588,20 @@ describe('handleTwilioTask() (externalRecording)', () => {
     const result = await handleTwilioTask(task);
     expect(result).toStrictEqual({
       conversationMedia: [
-        { store: 'twilio', reservationSid: undefined },
         {
-          store: 'S3',
-          type: 'recording',
-          location: {
-            bucket: 'bucket',
-            key: 'key',
+          storeType: 'twilio',
+          storeTypeSpecificData: {
+            reservationSid: undefined,
+          },
+        },
+        {
+          storeType: 'S3',
+          storeTypeSpecificData: {
+            type: 'recording',
+            location: {
+              bucket: 'bucket',
+              key: 'key',
+            },
           },
         },
       ],

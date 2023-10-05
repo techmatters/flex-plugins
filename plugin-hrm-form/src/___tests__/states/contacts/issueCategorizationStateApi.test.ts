@@ -32,6 +32,7 @@ describe('forExistingCategory', () => {
             [MOCK_CONTACT_ID]: {
               metadata: { categories: mockCategories },
               draftContact: { rawJson: { categories: { category1: ['subcategory1'] } } },
+              savedContact: { rawJson: {} },
             },
           },
         },

@@ -22,7 +22,7 @@ import { ConfigurationState } from '../configuration/reducer';
 import { transformValuesForContactForm } from './contactDetailsAdapter';
 import { ContactMetadata } from './types';
 import { updateContactInHrm } from '../../services/ContactService';
-import { newContactMetaData } from './reducer';
+import { newContactMetaData } from './contactState';
 
 export enum ContactDetailsRoute {
   EDIT_CALLER_INFORMATION = 'editCallerInformation',

@@ -17,7 +17,6 @@
 import { TaskHelper } from '@twilio/flex-ui';
 import { CallTypes, DefinitionVersion } from 'hrm-form-definitions';
 
-import { newContactState } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/validationRules';
 import { getQueryParams } from './PaginationParams';
 import { fillEndMillis, getConversationDuration } from '../utils/conversationDuration';
@@ -46,6 +45,7 @@ import { SearchParams } from '../states/search/types';
 import { ChannelTypes } from '../states/DomainConstants';
 import { ResourceReferral } from '../states/contacts/resourceReferral';
 import { ContactDraftChanges } from '../states/contacts/existingContacts';
+import { newContactState } from '../states/contacts/contactState';
 
 type ContactRawJsonForApi = Omit<ContactRawJson, 'categories' | 'caseInformation'> & {
   caseInformation: Record<string, string | boolean | Record<string, Record<string, boolean>>> & {
