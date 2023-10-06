@@ -14,11 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { fetchHrmApi } from './fetchHrmApi';
 import { fetchApi } from './fetchApi';
 import { getHrmConfig } from '../hrmConfig';
 
+
 //DELETE THIS
-const fetchLocalHrmApi = (endPoint: string, options: Partial<RequestInit> = {}): Promise<any> => {
+export const fetchLocalHrmApi = (endPoint: string, options: Partial<RequestInit> = {}): Promise<any> => {
   const { token } = getHrmConfig();
 
   return fetchApi(new URL('http://localhost:8080/v0/accounts/ACd8a2e89748318adf6ddff7df6948deaf'), endPoint, {
@@ -33,8 +35,8 @@ const fetchLocalHrmApi = (endPoint: string, options: Partial<RequestInit> = {}):
 export const getProfileByIdentifier = async (identifier: string) => {
   let responseJson = 'null';
   try {
-    // responseJson = await fetchHrmApi(`/profiles/identifier/${identifier}`);
-    responseJson = await fetchLocalHrmApi(`/profiles/identifier/${identifier}`);
+    responseJson = await fetchHrmApi(`/profiles/identifier/${identifier}`);
+    // responseJson = await fetchLocalHrmApi(`/profiles/identifier/${identifier}`);
   } catch (error) {
     console.log('>>> error', error);
   }
