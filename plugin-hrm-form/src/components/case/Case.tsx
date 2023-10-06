@@ -55,7 +55,6 @@ import AddEditCaseItem, { AddEditCaseItemProps } from './AddEditCaseItem';
 import ViewCaseItem from './ViewCaseItem';
 import { bindFileUploadCustomHandlers } from './documentUploadHandler';
 import { recordBackendError } from '../../fullStory';
-import { completeTask } from '../../services/formSubmissionHelpers';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
 import { CenteredContainer } from '../../styles/case';
 import EditCaseSummary from './EditCaseSummary';
@@ -108,18 +107,15 @@ const Case: React.FC<Props> = ({
   updateCaseAsyncAction,
   connectToCaseAsyncAction,
   submitContactFormAsyncAction,
-  savedContact,
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
   const [loadedContactIds, setLoadedContactIds] = useState([]);
-  const [connectToCase, setConnectToCase] = useState(false);
   const { connectedCase } = props?.connectedCaseState ?? {};
   // This is to provide a stable dep for the useEffect that generates the timeline
   const savedContactsJson = JSON.stringify(savedContacts);
   const { workerSid } = getHrmConfig();
   const strings = getTemplateStrings();
-  const handleCompleteTask = async task => completeTask(task);
 
   const timeline: Activity[] = useMemo(
     () => {
@@ -192,28 +188,6 @@ const Case: React.FC<Props> = ({
       fetchDefinitionVersions();
     }
   }, [connectedCase, definitionVersions, task.taskSid, updateDefinitionVersion, version]);
-
-  // We want to validate that savedContact state is not returning an empty object
-  const validateSavedContact = () => typeof savedContact === 'object' && Object.keys(savedContact).length > 0;
-
-  /**
-   * Always check to see when savedContact state has been updated.
-   * Then go ahead and execute the connectToCaseAsyncAction
-   */
-  useEffect(() => {
-    if (validateSavedContact()) {
-      connectToCaseAsyncAction(savedContact.id, connectedCase.id);
-      setConnectToCase(validateSavedContact());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [savedContact, connectToCaseAsyncAction]);
-
-  /**
-   * Once connectToCase is true, execute the completeTask method
-   */
-  useEffect(() => {
-    if (connectToCase) handleCompleteTask(task);
-  }, [connectToCase, task]);
 
   if (routing.route === 'csam-report') return null;
 
@@ -298,9 +272,7 @@ const Case: React.FC<Props> = ({
       updateCaseAsyncAction(connectedCase.id, {
         ...connectedCase,
       });
-
-      // This would execute and update the savedContact state
-      submitContactFormAsyncAction(task, contact, metadata, connectedCase);
+      connectToCaseAsyncAction(task, contact, metadata, connectedCase, connectedCase.id);
     } catch (error) {
       console.error(error);
       recordBackendError('Save and End Case', error);
@@ -472,7 +444,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
       .filter(contact => connectedContactIds.has(contact.savedContact.id))
       .map(ecs => ecs.savedContact),
     newContact: contact.existingContacts[newContactTemporaryId(connectedCase)]?.savedContact,
-    savedContact: contact.savedContact,
   };
 };
 
@@ -498,8 +469,13 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     cancelNewCase,
     updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
       caseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
-    connectToCaseAsyncAction: (contactId: string, caseId: number) =>
-      caseAsyncDispatch(connectToCaseAsyncAction(contactId, caseId)),
+    connectToCaseAsyncAction: (
+      task: CustomITask,
+      contact: Contact,
+      metadata: ContactMetadata,
+      caseForm: CaseType,
+      caseId: number,
+    ) => caseAsyncDispatch(connectToCaseAsyncAction(task, contact, metadata, caseForm, caseId)),
     submitContactFormAsyncAction: (
       task: CustomITask,
       contact: Contact,

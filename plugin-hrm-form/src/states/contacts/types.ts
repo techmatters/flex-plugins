@@ -60,7 +60,6 @@ export type ContactsState = {
   contactDetails: ContactDetailsState;
   editingContact: boolean;
   isCallTypeCaller: boolean;
-  savedContact?: Contact;
 };
 type UpdateFormAction = {
   type: typeof UPDATE_FORM;
@@ -77,12 +76,6 @@ type SaveEndMillisAction = {
 export type UpdatedContactAction = {
   type: typeof UPDATE_CONTACT_ACTION;
   payload: Promise<{ contact: Contact }>;
-  meta: unknown;
-};
-
-export type SetSavedContactAction = {
-  type: typeof SET_SAVED_CONTACT;
-  payload: Promise<{ contact: Partial<Contact> }>;
   meta: unknown;
 };
 
