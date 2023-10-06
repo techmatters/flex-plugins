@@ -441,7 +441,7 @@ export const saveContact = async (
   };
 };
 
-export async function connectToCase(contactId, caseId) {
+export async function connectToCase(contactId: string, caseId: number) {
   const body = { caseId };
 
   const options = {
