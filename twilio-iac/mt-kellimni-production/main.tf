@@ -34,7 +34,7 @@ locals {
   environment               = "Production"
   short_environment         = "PROD"
   target_task_name          = "greeting"
-  task_language      = "en-US"
+  task_language             = "en-US"
   twilio_numbers            = ["instagram:17841400289612325", "messenger:325981127456443", "whatsapp:+15077097720"]
   channel                   = ""
   custom_channel_attributes = ""
@@ -47,7 +47,7 @@ locals {
   custom_channels = [
     "instagram"
   ]
-enable_post_survey = false
+  enable_post_survey = false
 
   events_filter = [
     "task.created",
@@ -65,10 +65,11 @@ enable_post_survey = false
 
 
   custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true OR  twilioNumber IN ['instagram:17841400289612325', 'messenger:325981127456443', 'whatsapp:+15077097720']"
-workflows = {
+  workflows = {
     master : {
       friendly_name : "Master Workflow"
       templatefile : "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+      task_reservation_timeout = 120
     },
     survey : {
       friendly_name : "Survey Workflow"
@@ -101,7 +102,7 @@ workflows = {
     survey : "Survey"
   }
 
-   //common across all helplines
+  //common across all helplines
   channel_attributes = {
     webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
     voice : "/app/twilio-iac/helplines/templates/channel-attributes/voice.tftpl"
