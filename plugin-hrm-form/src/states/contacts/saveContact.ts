@@ -16,7 +16,7 @@
 
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
-import { submitContactForm } from '../../services/formSubmissionHelpers';
+import { completeTask, submitContactForm } from '../../services/formSubmissionHelpers';
 import { connectToCase, updateContactsFormInHrm } from '../../services/ContactService';
 import { Case, ContactRawJson, CustomITask, Contact } from '../../types/types';
 import { CONNECT_TO_CASE, ContactMetadata, SET_SAVED_CONTACT, UPDATE_CONTACT_ACTION } from './types';
@@ -34,20 +34,17 @@ export const updateContactsFormInHrmAsyncAction = createAsyncAction(
 
 export const connectToCaseAsyncAction = createAsyncAction(
   CONNECT_TO_CASE,
-  async (contactId: string, caseId: number) => {
-    await connectToCase(contactId, caseId);
+  async (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case, caseId: number) => {
+    const savedContact = await submitContactForm(task, contact, metadata, caseForm);
+    await connectToCase(savedContact.id, caseId);
+    await completeTask(task);
   },
 );
 
 export const submitContactFormAsyncAction = createAsyncAction(
   SET_SAVED_CONTACT,
-  async (
-    task: CustomITask,
-    contact: Contact,
-    metadata: ContactMetadata,
-    caseForm: Case,
-  ): Promise<{ contact: Partial<Contact> }> => {
-    return { contact: await submitContactForm(task, contact, metadata, caseForm) };
+  async (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) => {
+    await submitContactForm(task, contact, metadata, caseForm);
   },
 );
 
@@ -77,21 +74,4 @@ export const saveContactReducer = (initialState: ExistingContactsState) =>
     ),
 
     handleAsyncAction(handleAction, updateContactsFormInHrmAsyncAction.rejected),
-  ]);
-
-export const submitContactFormReducer = (initialState: Contact) =>
-  createReducer(initialState, handleAction => [
-    handleAsyncAction(handleAction, submitContactFormAsyncAction.pending),
-
-    handleAction(
-      submitContactFormAsyncAction.fulfilled,
-      (state, { payload }): Contact => {
-        return {
-          ...state,
-          ...payload.contact,
-        };
-      },
-    ),
-
-    handleAsyncAction(handleAction, submitContactFormAsyncAction.rejected),
   ]);

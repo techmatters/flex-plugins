@@ -1,0 +1,16 @@
+{
+    "label": "Helpline",
+    "helplines": [
+      {
+        "label": "Youthline",
+        "value": "Youthline",
+        "default": true,
+        "manager": {
+          "name": "Helen O'Toole",
+          "phone": "+123 45 678",
+          "email": "helen.otoole@youthline.co.nz"
+        }
+      }
+    ]
+  }
+  
