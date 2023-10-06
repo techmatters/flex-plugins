@@ -17,7 +17,7 @@
 /* eslint-disable import/no-unused-modules */
 import { Actions, ITask, Manager } from '@twilio/flex-ui';
 
-import { Case, CustomITask, HrmServiceContact, isOfflineContactTask, offlineContactTaskSid } from '../types/types';
+import { Case, CustomITask, Contact, isOfflineContactTask, offlineContactTaskSid } from '../types/types';
 import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
 import { saveContact } from './ContactService';
@@ -56,7 +56,7 @@ export const completeTask = (task: CustomITask) =>
 
 export const submitContactForm = async (
   task: CustomITask,
-  contact: HrmServiceContact,
+  contact: Contact,
   metadata: ContactMetadata,
   caseForm: Case,
 ) => {

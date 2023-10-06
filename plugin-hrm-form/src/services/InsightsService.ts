@@ -30,7 +30,7 @@ import {
 import { isNonDataCallType } from '../states/validationRules';
 import { mapChannelForInsights, formatCategories } from '../utils';
 import { getDateTime } from '../utils/helpers';
-import { Case, CustomITask, HrmServiceContact, ContactRawJson } from '../types/types';
+import { Case, CustomITask, Contact, ContactRawJson } from '../types/types';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import { shouldSendInsightsData } from '../utils/setUpActions';
 import {
@@ -39,7 +39,7 @@ import {
   isSuccessfulExternalRecordingInfo,
 } from './getExternalRecordingInfo';
 import { generateUrl } from './fetchApi';
-import { generateExternalMediaPath } from './ContactService';
+import { generateSignedURLPath } from './fetchHrmApi';
 
 /*
  * 'Any' is the best we can do, since we're limited by Twilio here.
@@ -56,9 +56,9 @@ const delimiter = ';';
 
 type InsightsUpdateFunction = (
   attributes: TaskAttributes,
-  contactForm: HrmServiceContact,
+  contactForm: Contact,
   caseForm: Case,
-  savedContact: HrmServiceContact,
+  savedContact: Contact,
 ) => InsightsAttributes;
 
 const sanitizeInsightsValue = (value: string | boolean) => {
@@ -120,10 +120,7 @@ type CoreAttributes = {
  */
 const baseUpdates: InsightsUpdateFunction = (
   taskAttributes: TaskAttributes,
-  {
-    rawJson: { callType, contactlessTask, childInformation, callerInformation, categories },
-    helpline,
-  }: HrmServiceContact,
+  { rawJson: { callType, contactlessTask, childInformation, callerInformation, categories }, helpline }: Contact,
 ): CoreAttributes => {
   const communication_channel = taskAttributes.isContactlessTask
     ? mapChannelForInsights(contactlessTask.channel)
@@ -170,7 +167,7 @@ const baseUpdates: InsightsUpdateFunction = (
 
 const contactlessTaskUpdates: InsightsUpdateFunction = (
   attributes: TaskAttributes,
-  { rawJson: { contactlessTask } }: HrmServiceContact,
+  { rawJson: { contactlessTask } }: Contact,
 ): InsightsAttributes => {
   if (!attributes.isContactlessTask) {
     return {};
@@ -355,23 +352,32 @@ const getInsightsUpdateFunctionsForConfig = (
   return [baseUpdates, contactlessTaskUpdates, ...applyCustomUpdates];
 };
 
-const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSuccess, contact: HrmServiceContact) => {
-  const { hrmMicroserviceBaseUrl } = getHrmConfig();
-  const mediaType = 'recording';
+const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSuccess, contact: Contact) => {
   const { bucket, key } = externalRecordingInfo;
+  const { hrmBaseUrl } = getHrmConfig();
 
-  const url_provider = generateUrl(
-    new URL(hrmMicroserviceBaseUrl),
-    generateExternalMediaPath(contact.id, mediaType, bucket, key),
-  ).toString();
+  try {
+    const url_provider = generateUrl(
+      new URL(hrmBaseUrl),
+      generateSignedURLPath({
+        method: 'getObject',
+        objectType: 'contact',
+        objectId: contact.id.toString(),
+        fileType: 'recording',
+        location: { bucket, key },
+      }),
+    );
 
-  return [
-    {
-      type: 'VoiceRecording',
-      // eslint-disable-next-line camelcase
-      url_provider,
-    },
-  ];
+    return [
+      {
+        type: 'VoiceRecording',
+        url_provider,
+      },
+    ];
+  } catch (error) {
+    console.error('Error generating mediaUrl', error);
+    throw new Error('Error generating mediaUrl');
+  }
 };
 
 /*
@@ -384,9 +390,9 @@ const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSu
  */
 export const buildInsightsData = (
   task: CustomITask,
-  contact: HrmServiceContact,
+  contact: Contact,
   caseForm: Case,
-  savedContact: HrmServiceContact,
+  savedContact: Contact,
   externalRecordingInfo: ExternalRecordingInfo | null = null,
 ) => {
   const previousAttributes = typeof task.attributes === 'string' ? JSON.parse(task.attributes) : task.attributes;

@@ -206,7 +206,5 @@ locals {
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
-
-    enable_external_recordings = true
   }
 }

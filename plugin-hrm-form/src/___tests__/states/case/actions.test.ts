@@ -18,10 +18,6 @@ import { Case } from '../../../types/types';
 import { CaseActionType, REMOVE_CONNECTED_CASE, SET_CONNECTED_CASE } from '../../../states/case/types';
 import * as actions from '../../../states/case/actions';
 
-jest.mock('../../../states/contacts/contactDetailsAdapter', () => ({
-  searchContactToHrmServiceContact: jest.fn(),
-}));
-
 const task = { taskSid: 'task1' };
 
 describe('test action creators', () => {

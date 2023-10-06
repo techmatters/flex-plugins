@@ -1,0 +1,67 @@
+{
+    "contactForm": {
+      "childInformation": [
+        {
+          "name": "district",
+          "insights": [
+            "customers",
+            "area"
+          ]
+        },
+        {
+          "name": "province",
+          "insights": [
+            "customers",
+            "region"
+          ]
+        },
+        {
+          "name": "LGBTQI+",
+          "insights": [
+            "customers",
+            "category"
+          ],
+          "type": "checkbox"
+        }
+      ],
+      "caseInformation": [
+        {
+          "name": "repeatCaller",
+          "insights": [
+            "conversations",
+            "conversation_attribute_7"
+          ],
+          "type": "checkbox"
+        }
+      ]
+    },
+    "caseForm": {
+      "topLevel": [
+        {
+          "name": "id",
+          "insights": [
+            "conversations",
+            "case"
+          ]
+        }
+      ],
+      "incident": [],
+      "referral": [
+        {
+          "name": "referredTo",
+          "insights": [
+            "customers",
+            "customer_manager"
+          ]
+        },
+        {
+            "name": "haveConsent",
+            "insights": [
+              "customers",
+              "market_segment"
+            ]
+          }
+      ]
+    }
+  }
+  

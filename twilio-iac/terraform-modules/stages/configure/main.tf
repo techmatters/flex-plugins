@@ -18,8 +18,6 @@ locals {
   task_router_workflow_sids             = local.provision_config.task_router_workflow_sids
   task_router_task_channel_sids         = local.provision_config.task_router_task_channel_sids
 
-  chatbot_config = data.terraform_remote_state.chatbot.outputs
-  chatbots       = local.chatbot_config.chatbots
 
   stage = "configure"
 }
@@ -35,16 +33,6 @@ data "terraform_remote_state" "provision" {
   }
 }
 
-data "terraform_remote_state" "chatbot" {
-  backend = "s3"
-
-  config = {
-    bucket   = "tl-terraform-state-${var.environment}"
-    key      = "twilio/${var.short_helpline}/chatbot/terraform.tfstate"
-    region   = "us-east-1"
-    role_arn = "arn:aws:iam::${local.aws_account_id}:role/tf-twilio-iac-${var.environment}"
-  }
-}
 
 provider "twilio" {
   username = local.secrets.twilio_account_sid
@@ -58,7 +46,6 @@ module "channel" {
   task_channel_sids     = local.task_router_task_channel_sids
   channel_attributes    = var.channel_attributes
   channels              = var.channels
-  chatbots              = local.chatbots
   enable_post_survey    = var.enable_post_survey
   environment           = var.environment
   flow_vars             = var.flow_vars
@@ -69,90 +56,6 @@ module "channel" {
 }
 
 
-
-module "twilioChannel" {
-  for_each = var.twilio_channels
-  source   = "../../channels/twilio-channel"
-  /**
-   * The big change to make this module configuration driven is that the template file name is passed in as an argument.
-   * We then pass in every possible variable that the template file could use. It isn't pretty, but it will work.
-   * The underlying template files will need to be refactored to use maps with keys for things like chatbot_sids and `strings` instead
-   * of using the variable names directly which will take some work, but should be achievable.
-   *
-   * We can, eventually, do some more work to the underlying modules to make them a bit more "natively configuration driven",
-   * but for the initial pass, this should be sufficient.
-   **/
-  custom_flow_definition = var.twilio_channel_custom_flow_template != "" ? templatefile(
-    var.twilio_channel_custom_flow_template,
-    {
-      channel_name                 = "${each.key}"
-      serverless_url               = local.serverless_url
-      serverless_service_sid       = local.serverless_service_sid
-      serverless_environment_sid   = local.serverless_environment_production_sid
-      operating_hours_function_sid = var.operating_hours_function_sid
-      master_workflow_sid          = local.task_router_master_workflow_sid
-      chat_task_channel_sid        = local.task_router_chat_task_channel_sid
-      channel_attributes           = var.channel_attributes[each.key]
-      flow_description             = "${title(each.key)} Messaging Flow"
-      pre_survey_bot_sid           = local.chatbots.pre_survey["sid"]
-      target_task_name             = var.target_task_name
-      operating_hours_holiday      = var.strings["operating_hours_holiday"]
-      operating_hours_closed       = var.strings["operating_hours_closed"]
-  }) : ""
-  channel_contact_identity = each.value.contact_identity
-  channel_type             = each.value.channel_type
-  pre_survey_bot_sid       = local.chatbots.pre_survey["sid"]
-  target_task_name         = var.target_task_name
-  channel_name             = each.key
-  janitor_enabled          = var.janitor_enabled
-  master_workflow_sid      = local.task_router_master_workflow_sid
-  chat_task_channel_sid    = local.task_router_chat_task_channel_sid
-  flex_chat_service_sid    = local.services_flex_chat_service_sid
-}
-
-module "customChannel" {
-  for_each = toset(var.custom_channels)
-  source   = "../../channels/custom-channel"
-  custom_flow_definition = var.custom_channel_custom_flow_template != "" ? templatefile(
-    var.custom_channel_custom_flow_template,
-    {
-      channel_name                 = "${each.key}"
-      serverless_url               = local.serverless_url
-      serverless_service_sid       = local.serverless_service_sid
-      serverless_environment_sid   = local.serverless_environment_production_sid
-      operating_hours_function_sid = var.operating_hours_function_sid
-      master_workflow_sid          = local.task_router_master_workflow_sid
-      chat_task_channel_sid        = local.task_router_chat_task_channel_sid
-      channel_attributes           = var.custom_channel_attributes[each.key]
-      flow_description             = "${title(each.key)} Messaging Flow"
-      operating_hours_holiday      = var.strings["operating_hours_holiday"]
-      operating_hours_closed       = var.strings["operating_hours_closed"]
-
-  }) : ""
-  channel_name          = each.key
-  janitor_enabled       = var.janitor_enabled
-  master_workflow_sid   = local.task_router_master_workflow_sid
-  chat_task_channel_sid = local.task_router_chat_task_channel_sid
-  flex_chat_service_sid = local.services_flex_chat_service_sid
-  short_helpline        = upper(var.short_helpline)
-  short_environment     = var.short_environment
-}
-
-module "voiceChannel" {
-  source = "../../channels/voice-channel"
-
-  count = var.enable_voice_channel ? 1 : 0
-
-  master_workflow_sid        = local.task_router_master_workflow_sid
-  voice_task_channel_sid     = local.task_router_voice_task_channel_sid
-  voice_ivr_language         = var.voice_ivr_language
-  voice_ivr_greeting_message = var.strings["voice_ivr_greeting_message"]
-}
-
-moved {
-  from = module.voiceChannel
-  to   = module.voiceChannel[0]
-}
 
 resource "aws_ssm_parameter" "transcript_retention_override" {
   count = var.hrm_transcript_retention_days_override >= 0 ? 1 : 0

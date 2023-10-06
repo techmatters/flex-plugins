@@ -34,7 +34,6 @@ import { StyledLink } from '../../../styles/search';
 import UploadIcon from '../icons/UploadIcon';
 import { formatFileNameAtAws } from '../../../utils';
 import type { HTMLElementRef } from './types';
-import DownloadFile from './DownloadFile';
 
 type UploadFileInputProps = {
   label: string | JSX.Element;

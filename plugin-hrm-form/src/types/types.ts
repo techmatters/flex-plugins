@@ -90,7 +90,7 @@ export type Case = {
   categories: {};
   createdAt: string;
   updatedAt: string;
-  connectedContacts: HrmServiceContact[];
+  connectedContacts: Contact[];
 };
 
 export type TwilioStoredMedia = {
@@ -98,19 +98,36 @@ export type TwilioStoredMedia = {
   reservationSid: string;
 };
 
+export type SignedURLMethod = 'getObject' | 'putObject' | 'deleteObject';
+export type ObjectType = 'case' | 'contact';
+export type MediaType = 'recording' | 'transcript' | 'document';
+
+export type GenerateSignedUrlPathParams = {
+  method: SignedURLMethod;
+  objectType: ObjectType;
+  objectId: string;
+  fileType: MediaType;
+  location: S3Location;
+};
+
+export type S3Location = {
+  bucket: string;
+  key: string;
+};
+
 export type S3StoredTranscript = {
   store: 'S3';
   type: 'transcript';
-  location?: { bucket?: string; key?: string };
+  location?: S3Location;
 };
 
 export type S3StoredRecording = {
   store: 'S3';
   type: 'recording';
-  location?: { bucket?: string; key?: string };
+  location?: S3Location;
 };
 
-type S3StoredMedia = S3StoredTranscript | S3StoredRecording;
+export type S3StoredMedia = S3StoredTranscript | S3StoredRecording;
 
 // Extract the 'type' property from S3StoredMedia to create ContactMediaType
 export type ContactMediaType = S3StoredMedia['type'];
@@ -140,7 +157,7 @@ export type ContactRawJson = {
   };
 };
 
-export type HrmServiceContact = {
+export type Contact = {
   id: string;
   accountSid: string;
   twilioWorkerId: string;
@@ -165,7 +182,7 @@ export type HrmServiceContact = {
 
 export type SearchContactResult = {
   count: number;
-  contacts: HrmServiceContact[];
+  contacts: Contact[];
 };
 
 export type SearchCaseResult = {

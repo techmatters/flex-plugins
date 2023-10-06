@@ -40,7 +40,7 @@ import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import ViewContact from './ViewContact';
 import { Activity, CaseDetails, ConnectedCaseActivity, NoteActivity } from '../../states/case/types';
-import { Case as CaseType, CustomITask, HrmServiceContact, StandaloneITask } from '../../types/types';
+import { Case as CaseType, CustomITask, Contact, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import {
   AppRoutes,
@@ -54,7 +54,7 @@ import {
 import CaseHome from './CaseHome';
 import AddEditCaseItem, { AddEditCaseItemProps } from './AddEditCaseItem';
 import ViewCaseItem from './ViewCaseItem';
-import documentUploadHandler from './documentUploadHandler';
+import { bindFileUploadCustomHandlers } from './documentUploadHandler';
 import { recordBackendError } from '../../fullStory';
 import { completeTask, submitContactForm } from '../../services/formSubmissionHelpers';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
@@ -210,7 +210,7 @@ const Case: React.FC<Props> = ({
 
   if (!props.connectedCaseState || !definitionVersion) return null;
 
-  const getCategories = (firstConnectedContact: HrmServiceContact): Record<string, string[]> => {
+  const getCategories = (firstConnectedContact: Contact): Record<string, string[]> => {
     if (firstConnectedContact?.rawJson) {
       return firstConnectedContact.rawJson.categories;
     }
@@ -270,7 +270,6 @@ const Case: React.FC<Props> = ({
       updateCaseAsyncAction(connectedCase.id, {
         ...connectedCase,
       });
-      await connectToCase(contact.id, connectedCase.id);
       const savedContact = await submitContactForm(task, contact, metadata, connectedCase);
       await connectToCase(savedContact.id, connectedCase.id);
       await completeTask(task);
@@ -365,7 +364,7 @@ const Case: React.FC<Props> = ({
         return renderCaseItemPage(incidentSectionApi, PermissionActions.EDIT_INCIDENT);
       case NewCaseSubroutes.Document:
         return renderCaseItemPage(documentSectionApi, PermissionActions.EDIT_DOCUMENT, {
-          customFormHandlers: documentUploadHandler,
+          customFormHandlers: bindFileUploadCustomHandlers(connectedCase.id),
           reactHookFormOptions: {
             shouldUnregister: false,
           },

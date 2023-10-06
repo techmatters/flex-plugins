@@ -16,11 +16,11 @@
 
 import { callTypes } from 'hrm-form-definitions';
 
-import { HrmServiceContact } from '../types/types';
+import { Contact } from '../types/types';
 import { ContactMetadata } from '../states/contacts/types';
 import { ReferralLookupStatus } from '../states/contacts/resourceReferral';
 
-export const VALID_EMPTY_CONTACT: HrmServiceContact = {
+export const VALID_EMPTY_CONTACT: Contact = {
   accountSid: '',
   id: '',
   taskId: '',

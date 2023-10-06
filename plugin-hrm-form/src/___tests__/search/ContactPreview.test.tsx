@@ -27,7 +27,7 @@ import ContactPreview from '../../components/search/ContactPreview';
 import ContactHeader from '../../components/search/ContactPreview/ContactHeader';
 import TagsAndCounselor from '../../components/search/TagsAndCounselor';
 import { getDefinitionVersions } from '../../hrmConfig';
-import { HrmServiceContact } from '../../types/types';
+import { Contact } from '../../types/types';
 import { configurationBase, namespace, RootState } from '../../states';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -65,7 +65,7 @@ test('<ContactPreview> should mount', async () => {
       },
     },
   };
-  const contact: HrmServiceContact = {
+  const contact: Contact = {
     id: '123',
     accountSid: '',
     timeOfContact: '2019-01-01T00:00:00.000Z',

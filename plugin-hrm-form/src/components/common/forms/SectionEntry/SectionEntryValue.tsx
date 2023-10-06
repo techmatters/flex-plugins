@@ -19,24 +19,28 @@ import type { FormItemDefinition, LayoutValue } from 'hrm-form-definitions';
 import { Template } from '@twilio/flex-ui';
 
 import { formatValue } from '../helpers';
+import { FormTargetObject } from '../types';
 import { presentValue } from '../../../../utils';
 import DownloadFile from '../DownloadFile';
 import { SectionValueText } from '../../../../styles/search';
 import { Flex } from '../../../../styles/HrmStyles';
+import { ObjectType } from '../../../../types/types';
 
 type Props = {
   value?: string | number | boolean;
   notBold?: boolean;
   definition?: FormItemDefinition;
   layout?: LayoutValue;
+  targetObject?: FormTargetObject;
 };
 
 /**
  * Presentational component used to nicely consume the form values in SectionEntry
  */
-const SectionEntryValue: React.FC<Props> = ({ value, definition, layout, notBold }) => {
+
+const SectionEntryValue: React.FC<Props> = ({ value, definition, layout, notBold, targetObject }) => {
   if (definition && definition.type === 'file-upload' && typeof value === 'string') {
-    return <DownloadFile fileNameAtAws={value} />;
+    return <DownloadFile fileNameAtAws={value} targetObject={targetObject} />;
   }
 
   const presentValueTemplate = presentValue(

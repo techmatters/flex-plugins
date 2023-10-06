@@ -15,13 +15,13 @@
  */
 
 import { TaskHelper } from '@twilio/flex-ui';
-import { CallTypes, DefinitionVersion, FormDefinition, FormItemDefinition, isNonSaveable } from 'hrm-form-definitions';
+import { CallTypes, DefinitionVersion } from 'hrm-form-definitions';
 
 import { createContactWithMetadata } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/validationRules';
 import { getQueryParams } from './PaginationParams';
 import { fillEndMillis, getConversationDuration } from '../utils/conversationDuration';
-import fetchHrmApi from './fetchHrmApi';
+import { fetchHrmApi, generateSignedURLPath } from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import {
@@ -29,7 +29,7 @@ import {
   ContactRawJson,
   ConversationMedia,
   CSAMReportEntry,
-  HrmServiceContact,
+  Contact,
   isOfflineContactTask,
   isTwilioTask,
 } from '../types/types';
@@ -53,7 +53,7 @@ type ContactRawJsonForApi = Omit<ContactRawJson, 'categories' | 'caseInformation
   conversationMedia: ConversationMedia[];
 };
 
-type HrmServiceContactForApi = Omit<HrmServiceContact, 'rawJson' | 'conversationMedia'> & {
+type ContactForApi = Omit<Contact, 'rawJson' | 'conversationMedia'> & {
   rawJson: ContactRawJsonForApi;
 };
 
@@ -79,7 +79,7 @@ export async function searchContacts(
   offset,
 ): Promise<{
   count: number;
-  contacts: HrmServiceContact[];
+  contacts: Contact[];
 }> {
   const queryParams = getQueryParams({ limit, offset });
   const options = {
@@ -123,14 +123,12 @@ type SearchAPIContact = {
  * This function converts contacts returned by /searchContacts into pure HRM Contacts.
  * This function is meant to be temporary, while HRM is not updated yet.
  */
-const transformSearchAPIContactToContact = (
-  contacts: SearchAPIContact[] | HrmServiceContact[],
-): Partial<HrmServiceContact>[] => {
+const transformSearchAPIContactToContact = (contacts: SearchAPIContact[] | Contact[]): Partial<Contact>[] => {
   const isSearchAPIContact = contact => contact.contactId !== undefined;
   const shouldTransform = contacts.length > 0 && isSearchAPIContact(contacts[0]);
 
   if (!shouldTransform) {
-    return contacts as HrmServiceContact[];
+    return contacts as Contact[];
   }
 
   /**
@@ -170,34 +168,6 @@ const transformSearchAPIContactToContact = (
   });
 };
 
-const transformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
-  if (e.type === 'mixed-checkbox' && value === 'mixed') return null;
-
-  return value;
-};
-
-// TODO: find a place where this is shared, as it's used also in case forms
-export const transformValues = (def: FormDefinition) => (values: { [key: string]: string | boolean }) =>
-  def.reduce((acc, e) => (isNonSaveable(e) ? acc : { ...acc, [e.name]: transformValue(e)(values[e.name]) }), {});
-
-const deTransformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
-  // de-transform mixed checkbox null DB value to be "mixed"
-  if (e.type === 'mixed-checkbox' && value === null) return 'mixed';
-
-  return value;
-};
-
-// TODO: Remove this once the API is aligned with the type we use in the front end
-export const searchResultToContactForm = (def: FormDefinition, information: Record<string, string | boolean>) => {
-  return def.reduce(
-    (acc, e) => ({
-      ...acc,
-      [e.name]: deTransformValue(e)(information[e.name]),
-    }),
-    {},
-  );
-};
-
 // @VisibleForTesting
 // TODO: Remove this once the API is aligned with the type we use in the front end
 export function transformCategories(
@@ -229,16 +199,16 @@ export function transformCategories(
 
 /**
  * Currently we're sending conversationMedia as part of rawJson.
- * But HrmServiceContact has conversationMedia as a top level attribute.
- * This function transforms a HrmServiceContact to the format the backend expects.
+ * But Contact has conversationMedia as a top level attribute.
+ * This function transforms a Contact to the format the backend expects.
  *
  * This adapter is temporary, since we plan on passing conversationMedia as
  * a top level attribute, but it will have a slightly different format.
  * TODO: Remove this once the API is aligned with the type we use in the front end
  */
 const adaptConversationMedia = (
-  contact: HrmServiceContactForApi & { conversationMedia?: ConversationMedia[] },
-): HrmServiceContactForApi => {
+  contact: ContactForApi & { conversationMedia?: ConversationMedia[] },
+): ContactForApi => {
   const { conversationMedia = [], ...rest } = contact;
 
   return {
@@ -276,7 +246,7 @@ export function transformForm(rawJson: Partial<ContactRawJson>, helpline: string
 }
 
 // TODO: Remove this once the API is aligned with the type we use in the front end
-const convertContactToApiContact = (contact: HrmServiceContact): HrmServiceContactForApi => {
+const convertContactToApiContact = (contact: Contact): ContactForApi => {
   return adaptConversationMedia({
     ...contact,
     rawJson: transformForm(contact.rawJson, contact.helpline) as ContactRawJsonForApi,
@@ -340,14 +310,11 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
   return returnData;
 };
 
-type NewHrmServiceContact = Omit<
-  HrmServiceContactForApi,
-  'id' | 'accountSid' | 'createdAt' | 'updatedAt' | 'updatedBy' | 'createdBy'
->;
+type NewContact = Omit<ContactForApi, 'id' | 'accountSid' | 'createdAt' | 'updatedAt' | 'updatedBy' | 'createdBy'>;
 
 type SaveContactToHrmResponse = {
-  response: HrmServiceContact;
-  request: NewHrmServiceContact;
+  response: Contact;
+  request: NewContact;
   externalRecordingInfo?: ExternalRecordingInfoSuccess;
 };
 /**
@@ -356,7 +323,7 @@ type SaveContactToHrmResponse = {
  */
 const saveContactToHrm = async (
   task,
-  contact: HrmServiceContact,
+  contact: Contact,
   metadata: ContactMetadata,
   workerSid: string,
   uniqueIdentifier: string,
@@ -400,7 +367,7 @@ const saveContactToHrm = async (
    * Probably.  It would just require passing the task.
    */
 
-  const contactToSave: HrmServiceContact = {
+  const contactToSave: Contact = {
     ...contact,
     rawJson: form,
     twilioWorkerId,
@@ -422,7 +389,7 @@ const saveContactToHrm = async (
     body: JSON.stringify(contactForApi),
   };
 
-  const responseJson: HrmServiceContact = await fetchHrmApi(`/contacts`, options);
+  const responseJson: Contact = await fetchHrmApi(`/contacts`, options);
 
   return { response: responseJson, request: contactForApi, externalRecordingInfo };
 };
@@ -431,7 +398,7 @@ export const updateContactsFormInHrm = async (
   contactId: string,
   body: Partial<ContactRawJson>,
   helpline: string,
-): Promise<HrmServiceContact> => {
+): Promise<Contact> => {
   const options = {
     method: 'PATCH',
     body: JSON.stringify({ rawJson: transformForm(body, helpline) }),
@@ -451,7 +418,7 @@ export const updateContactsFormInHrm = async (
 
 export const saveContact = async (
   task,
-  contact: HrmServiceContact,
+  contact: Contact,
   metadata: ContactMetadata,
   workerSid: string,
   uniqueIdentifier: string,
@@ -484,11 +451,3 @@ export async function connectToCase(contactId, caseId) {
 
   return fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
 }
-
-export const generateExternalMediaPath = (
-  contactId: string,
-  mediaType: ContactMediaType,
-  bucket: string,
-  key: string,
-) =>
-  `/files/urls?method=getObject&objectType=contact&objectId=${contactId}&fileType=${mediaType}&bucket=${bucket}&key=${key}`;

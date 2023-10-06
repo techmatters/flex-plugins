@@ -25,8 +25,8 @@ import { createTask } from '../helpers';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import { getAseloFeatureFlags, getDefinitionVersions, getTemplateStrings } from '../../hrmConfig';
 import { loadFormSharedState, saveFormSharedState, setUpSharedStateClient } from '../../utils/sharedState';
-import { HrmServiceContact } from '../../types/types';
-import { ContactMetadata, HrmServiceContactWithMetadata } from '../../states/contacts/types';
+import { Contact } from '../../types/types';
+import { ContactMetadata, ContactWithMetadata } from '../../states/contacts/types';
 import { VALID_EMPTY_CONTACT } from '../testContacts';
 
 jest.mock('../../services/ServerlessService', () => ({
@@ -44,9 +44,9 @@ jest.mock('../../hrmConfig', () => ({
 }));
 
 jest.mock('twilio-sync', () => jest.fn());
-const contact = { helpline: 'a helpline' } as HrmServiceContact;
+const contact = { helpline: 'a helpline' } as Contact;
 const metadata = {} as ContactMetadata;
-const form: HrmServiceContactWithMetadata = {
+const form: ContactWithMetadata = {
   contact,
   metadata,
 };
@@ -170,7 +170,7 @@ describe('Test with connected sharedState', () => {
   });
 
   test('loadFormSharedState', async () => {
-    const expected: HrmServiceContactWithMetadata = {
+    const expected: ContactWithMetadata = {
       contact: {
         ...VALID_EMPTY_CONTACT,
         rawJson: {

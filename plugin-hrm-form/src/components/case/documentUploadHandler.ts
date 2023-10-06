@@ -14,8 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { deleteFile, getFileUploadUrl } from '../../services/ServerlessService';
 import { CustomHandlers } from '../common/forms/formGenerators';
+import { getHrmConfig } from '../../hrmConfig';
+import { fetchHrmApi, generateSignedURLPath } from '../../services/fetchHrmApi';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 /**
@@ -43,28 +44,56 @@ const uploadDocument = async (file: File, preSignedUrl: string, mimeType: string
  *
  * It returns the file name at AWS
  */
-const onFileChange = async event => {
+const bindOnFileChange = (caseId: number) => async event => {
   const file = event.target.files[0];
+  const { name, size, type } = file;
 
-  if (file.size > MAX_FILE_SIZE) {
+  if (size > MAX_FILE_SIZE) {
     alert('File exceeds max size.');
     return '';
   }
+  const mimeType = type;
+  const { docsBucket: bucket } = getHrmConfig();
 
-  const mimeType = file.type;
-  const response = await getFileUploadUrl(file.name, mimeType);
-  await uploadDocument(file, response.uploadUrl, mimeType);
+  const key = `${new Date().getTime()}-${name}`;
 
-  return response.fileNameAtAws;
+  const { media_url: preSignedUrl } = await fetchHrmApi(
+    generateSignedURLPath({
+      method: 'putObject',
+      objectType: 'case',
+      objectId: caseId.toString(),
+      fileType: 'document',
+      location: {
+        bucket,
+        key,
+      },
+    }),
+  );
+
+  await uploadDocument(file, preSignedUrl, mimeType);
+
+  return key;
 };
 
-const onDeleteFile = async (fileName: string) => {
-  await deleteFile(fileName);
+const bindOnDeleteFile = (caseId: number) => async (fileName: string) => {
+  const { docsBucket: bucket } = getHrmConfig();
+  await fetchHrmApi(
+    generateSignedURLPath({
+      method: 'deleteObject',
+      objectType: 'case',
+      objectId: caseId.toString(),
+      fileType: 'document',
+      location: {
+        bucket,
+        key: fileName,
+      },
+    }),
+  );
 };
 
-const fileUploadCustomHandlers: CustomHandlers = {
-  onFileChange,
-  onDeleteFile,
+export const bindFileUploadCustomHandlers = (caseId: number): CustomHandlers => {
+  return {
+    onFileChange: bindOnFileChange(caseId),
+    onDeleteFile: bindOnDeleteFile(caseId),
+  };
 };
-
-export default fileUploadCustomHandlers;
