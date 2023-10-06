@@ -15,10 +15,11 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
+import { getProfileByIdentifier } from '../services/ProfileService';
 import {
   viewPreviousContacts as viewPreviousContactsAction,
   searchContacts as searchContactsAction,
@@ -51,6 +52,19 @@ const PreviousContactsBanner: React.FC<Props> = ({
   changeRoute,
   editContactFormOpen,
 }) => {
+  const enableProfilesFlag = true;
+
+  const [profileData, setProfileData] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getProfileByIdentifier('%2B1%20555-555-5555');
+      setProfileData(data[0]);
+    };
+
+    fetchData();
+  }, []);
+
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
@@ -67,9 +81,14 @@ const PreviousContactsBanner: React.FC<Props> = ({
     }
   }, [task, searchContacts, searchCases, previousContacts]);
 
-  const contactsCount = previousContacts?.contacts?.count || 0;
-  const casesCount = previousContacts?.cases?.count || 0;
+  let contactsCount = previousContacts?.contacts?.count || 0;
+  let casesCount = previousContacts?.cases?.count || 0;
   const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
+
+  if (enableProfilesFlag && profileData !== null) {
+    contactsCount = profileData?.contacts?.count;
+    casesCount = profileData?.cases?.count;
+  }
 
   if (!shouldDisplayBanner) return null;
 
@@ -97,8 +116,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   return (
     <div className={editContactFormOpen ? 'editingContact' : ''}>
       <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenEditingContact">
-        {/* eslint-disable-next-line prettier/prettier */}
-      <pre>
+        <pre>
           <Template code="PreviousContacts-ThereAre" />
           &nbsp;
           {contactsCount === 1 ? (
