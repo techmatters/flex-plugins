@@ -67,13 +67,13 @@ locals {
   custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true OR  twilioNumber IN ['instagram:17841400289612325', 'messenger:325981127456443', 'whatsapp:+15077097720']"
   workflows = {
     master : {
-      friendly_name : "Master Workflow"
-      templatefile : "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
-      task_reservation_timeout = 120
+      friendly_name            = "Master Workflow"
+      templatefile             = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+      task_reservation_timeout = 600
     },
     survey : {
-      friendly_name : "Survey Workflow"
-      templatefile : "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+      friendly_name = "Survey Workflow"
+      templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
     }
   }
 
