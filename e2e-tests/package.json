@@ -73,6 +73,6 @@
     "date-fns": "^2.28.0",
     "dotenv": "^16.0.1",
     "global-agent": "^3.0.0",
-    "mockttp": "^3.5.1"
+    "mockttp": "^3.9.2"
   }
 }
