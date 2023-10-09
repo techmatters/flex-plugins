@@ -76,9 +76,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // TODO: remove this is a mock call to getProfileByIdentifier
         const data = await getProfileByIdentifier(contactIdentifier);
-        console.log('>>> Profile data', data);
         setProfileData(data[0]);
       } catch (error) {
         console.error('>>> Error fetching profile data', error);
