@@ -220,8 +220,8 @@ const ensureFilterSelectionsAreValid = (
   };
 };
 
-const rejectedAsyncAction = handleAction =>
-  handleAction(searchResourceAsyncAction.rejected, (state, { payload }) => {
+const rejectedAsyncAction = (handleAction, asyncAction) =>
+  handleAction(asyncAction, (state, { payload }) => {
     return {
       ...state,
       status: ResourceSearchStatus.Error,
@@ -246,7 +246,7 @@ export const suggestSearchReducer = createReducer(suggestSearchInitialState, han
     };
   }),
 
-  rejectedAsyncAction(handleAction),
+  rejectedAsyncAction(handleAction, searchResourceAsyncAction.rejected),
 ]);
 
 export const resourceSearchReducer = createReducer(initialState, handleAction => [
@@ -278,7 +278,7 @@ export const resourceSearchReducer = createReducer(initialState, handleAction =>
     };
   }),
 
-  rejectedAsyncAction(handleAction),
+  rejectedAsyncAction(handleAction, searchResourceAsyncAction.rejected),
 
   handleAction(updateSearchFormAction, (state, { payload }) => {
     const updatedFilterOptions = getFilterOptionsBasedOnSelections({

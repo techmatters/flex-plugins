@@ -1,7 +1,9 @@
 {
     "attributes": {
         "external_recordings_enabled": "True",
-        "feature_flags": {},
+        "feature_flags": {
+            "enable_fullstory_monitoring": true
+        },
         "helpline_code": "cl",
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/"
     }

@@ -18,7 +18,7 @@ import { omit } from 'lodash';
 import { callTypes } from 'hrm-form-definitions';
 
 import * as t from './types';
-import { ContactsState, ContactWithMetadata, UPDATE_CONTACT_ACTION } from './types';
+import { ContactsState, ContactWithMetadata, SET_SAVED_CONTACT, UPDATE_CONTACT_ACTION } from './types';
 import {
   DefinitionVersion,
   GeneralActionType,
@@ -54,7 +54,7 @@ import {
 } from './contactDetails';
 import { ADD_EXTERNAL_REPORT_ENTRY, addExternalReportEntryReducer } from '../csam-report/existingContactExternalReport';
 import { ReferralLookupStatus, resourceReferralReducer } from './resourceReferral';
-import { ContactRawJson } from '../../types/types';
+import { ContactRawJson, Contact, CustomITask, StandaloneITask } from '../../types/types';
 import { ContactCategoryAction, toggleSubCategoriesReducer } from './categories';
 import { configurationBase, RootState } from '..';
 import { saveContactReducer } from './saveContact';
