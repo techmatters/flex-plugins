@@ -35,6 +35,7 @@ import { changeRoute as changeRouteAction } from '../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../utils/task';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../permissions';
 import { CustomITask, isTwilioTask } from '../types/types';
+import { getAseloFeatureFlags } from '../hrmConfig';
 
 type OwnProps = {
   task: CustomITask;
@@ -68,20 +69,21 @@ const PreviousContactsBanner: React.FC<Props> = ({
     contactIdentifier = getFormattedNumberFromTask(task);
   }
 
-  const enableProfilesFlag = true;
+  const {enable_client_profiles} = getAseloFeatureFlags(); 
 
   const [profileData, setProfileData] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
-
-      // TODO: remove this is a mock call to getProfileByIdentifier
-      const data = await getProfileByIdentifier('+1 555-555-5555');
-      
-      // const data = await getProfileByIdentifier(contactIdentifier);
-      setProfileData(data[0]);
+      try {
+        // TODO: remove this is a mock call to getProfileByIdentifier
+        const data = await getProfileByIdentifier(contactIdentifier);
+        console.log('>>> Profile data', data);
+        setProfileData(data[0]);
+      } catch (error) {
+        console.error('>>> Error fetching profile data', error);
+      }
     };
-
     fetchData();
   }, [contactIdentifier]);
 
@@ -107,7 +109,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
   if (!shouldDisplayBanner) return null;
 
-  if (enableProfilesFlag && profileData !== null) {
+  if (enable_client_profiles && profileData !== null) {
     contactsCount = profileData?.contacts?.count;
     casesCount = profileData?.cases?.count;
   }

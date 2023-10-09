@@ -15,34 +15,13 @@
  */
 
 import { fetchHrmApi } from './fetchHrmApi';
-import { fetchApi } from './fetchApi';
-import { getHrmConfig } from '../hrmConfig';
-
-// TODO: Delete this function
-const fetchLocalHrmApi = (endPoint: string, options: Partial<RequestInit> = {}): Promise<any> => {
-  const { token } = getHrmConfig();
-
-  return fetchApi(new URL('http://localhost:8080/v0/accounts/ACd8a2e89748318adf6ddff7df6948deaf'), endPoint, {
-    ...options,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      ...options.headers,
-    },
-  });
-};
 
 export const getProfileByIdentifier = async (identifier: string) => {
   let responseJson;
   try {
-
-    // delete this line once you have the real API deployed
-    responseJson = await fetchLocalHrmApi(`/profiles/identifier/${identifier}`);
-
-    // responseJson = await fetchHrmApi(`/profiles/identifier/${identifier}`);
+    responseJson = await fetchHrmApi(`/profiles/identifier/${identifier}`);
   } catch (error) {
-    // delete this line. its temp to test the results
-    alert('Error getting profile');
-    console.error('>>> getProfileByIdentifier', error);
+    console.error('>>> getProfileByIdentifier catch', error);
   }
 
   return responseJson;

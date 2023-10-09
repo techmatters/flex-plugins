@@ -77,6 +77,7 @@ export const fetchApi = async (baseUrl: URL, endpointPath: string, options: Requ
     } catch (err) {
       body = await response.text();
     }
+    console.log('>>> fetchApi body', body);
     throw new ApiError(`Error response: ${response.status} (${response.statusText})`, { response, body });
   }
 
