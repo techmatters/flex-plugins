@@ -13,42 +13,35 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import promiseMiddleware from 'redux-promise-middleware';
-import { configureStore } from '@reduxjs/toolkit';
-import { DefinitionVersionId } from 'hrm-form-definitions';
-
 import { connectToCase, updateContactsFormInHrm } from '../../../services/ContactService';
-import { submitContactForm } from '../../../services/formSubmissionHelpers';
+import { completeTask, submitContactForm } from '../../../services/formSubmissionHelpers';
 import { Case, CustomITask, Contact } from '../../../types/types';
-import {
-  ExistingContactsState,
-  initialState as existingContactInitialState,
-} from '../../../states/contacts/existingContacts';
+import { initialState as existingContactInitialState } from '../../../states/contacts/existingContacts';
 import { ContactMetadata } from '../../../states/contacts/types';
 import {
+  connectToCaseAsyncAction,
   saveContactReducer,
   submitContactFormAsyncAction,
-  submitContactFormReducer,
   updateContactsFormInHrmAsyncAction,
 } from '../../../states/contacts/saveContact';
-import { initialState as contactState } from '../../../states/contacts/reducer';
 
 jest.mock('../../../services/ContactService');
 jest.mock('../../../services/formSubmissionHelpers');
 jest.mock('../../../components/case/Case');
 
 const mockUpdateContactsFormInHrm = updateContactsFormInHrm as jest.Mock<ReturnType<typeof updateContactsFormInHrm>>;
-const mockConnectToCase = connectToCase as jest.Mock<ReturnType<typeof connectToCase>>;
 const mockSubmitContactForm = submitContactForm as jest.Mock<ReturnType<typeof submitContactForm>>;
+const mockConnectToCase = connectToCase as jest.Mock<ReturnType<typeof connectToCase>>;
+const mockCompleteTask = completeTask as jest.Mock<ReturnType<typeof completeTask>>;
 
 beforeEach(() => {
   mockUpdateContactsFormInHrm.mockReset();
-  mockConnectToCase.mockReset();
   mockSubmitContactForm.mockReset();
+  mockConnectToCase.mockReset();
+  mockCompleteTask.mockReset();
 });
 
 const boundSaveContactReducer = saveContactReducer(existingContactInitialState);
-const boundSubmitContactFormReducer = submitContactFormReducer(contactState.savedContact as Contact);
 
 const baseContact: Contact = {
   id: '1337',
@@ -82,18 +75,6 @@ const baseContact: Contact = {
 const task = <CustomITask>{ taskSid: 'mock task' };
 const metadata = {} as ContactMetadata;
 
-const baseState: ExistingContactsState = {
-  [baseContact.id]: {
-    savedContact: baseContact,
-    references: new Set('x'),
-    draftContact: { rawJson: {} },
-    categories: {
-      gridView: false,
-      expanded: {},
-    },
-  },
-} as const;
-
 const baseCase: Case = {
   accountSid: 'test-id',
   id: 213,
@@ -107,19 +88,32 @@ const baseCase: Case = {
   connectedContacts: [baseContact] as Contact[],
 };
 
+const dispatch = jest.fn();
+
 describe('actions', () => {
-  test('Calls the updateContactsFormInHrm service, and update a contact', () => {
-    updateContactsFormInHrm(baseContact.id, baseContact.rawJson, 'demo-v1');
+  test('Calls the updateContactsFormInHrmAsyncAction action, and update a contact', async () => {
+    dispatch(updateContactsFormInHrmAsyncAction(baseContact.id, baseContact.rawJson, 'demo-v1'));
     expect(updateContactsFormInHrm).toHaveBeenCalledWith(baseContact.id, baseContact.rawJson, 'demo-v1');
   });
 
-  test('Calls the connectToCase service, and connect contact to case', () => {
-    connectToCase(baseContact.id, 234);
-    expect(connectToCase).toHaveBeenCalledWith(baseContact.id, 234);
+  test('Calls the connectToCaseAsyncAction action, and create a contact, connect contact to case, and complete task', async () => {
+    const mockSavedContact = { id: '12' }; // Create a mock savedContact object
+    submitContactForm.mockResolvedValue(mockSavedContact);
+
+    dispatch(connectToCaseAsyncAction(task, baseContact, metadata, baseCase, 234));
+
+    // Wait for the async action to complete
+    await new Promise(resolve => {
+      setImmediate(resolve);
+    });
+
+    expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, metadata, baseCase);
+    expect(connectToCase).toHaveBeenCalledWith(mockSavedContact.id, 234);
+    expect(completeTask).toHaveBeenCalledWith(task);
   });
 
-  test('Calls the submitContactForm service, and create a contact', () => {
-    submitContactForm(task, baseContact, metadata, baseCase);
+  test('Calls the submitContactFormAsyncAction action, and create a contact', async () => {
+    submitContactFormAsyncAction(task, baseContact, metadata, baseCase);
     expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, metadata, baseCase);
   });
 
@@ -156,14 +150,5 @@ describe('actions', () => {
     expect([...newState[baseContact.id].references]).toEqual(
       expect.arrayContaining(['TEST_FIRST_REFERENCE', 'TEST_SECOND_REFERENCE']),
     );
-  });
-
-  test('Should handle submitContactFormAsyncAction in the reducer', () => {
-    const newState = boundSubmitContactFormReducer(
-      baseContact,
-      submitContactFormAsyncAction(task, baseContact, metadata, baseCase),
-    );
-    expect(newState).toStrictEqual(baseContact);
-    expect(newState.rawJson.callType).toStrictEqual('Child calling about self');
   });
 });
