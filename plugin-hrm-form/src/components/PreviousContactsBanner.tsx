@@ -69,8 +69,6 @@ const PreviousContactsBanner: React.FC<Props> = ({
     contactIdentifier = getFormattedNumberFromTask(task);
   }
 
-  const {enable_client_profiles} = getAseloFeatureFlags(); 
-
   const [profileData, setProfileData] = useState(null);
 
   useEffect(() => {
@@ -107,7 +105,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
   if (!shouldDisplayBanner) return null;
 
-  if (enable_client_profiles && profileData !== null) {
+  if (getAseloFeatureFlags().enable_client_profiles && profileData !== null) {
     contactsCount = profileData?.contacts?.count;
     casesCount = profileData?.cases?.count;
   }

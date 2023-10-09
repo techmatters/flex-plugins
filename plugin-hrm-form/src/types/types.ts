@@ -261,7 +261,7 @@ export type FeatureFlags = {
   enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior
   enable_lex: boolean; // Enables consuming from Lex bots
   backend_handled_chat_janitor: boolean; // [Temporary flag until all accounts are migrated] Enables handling the janitor from taskrouter event listeners
-  enable_client_profiles: boolean // Enables Client Profiles
+  enable_client_profiles: boolean; // Enables Client Profiles
 };
 /* eslint-enable camelcase */
 
