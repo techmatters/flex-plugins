@@ -52,18 +52,38 @@ const PreviousContactsBanner: React.FC<Props> = ({
   changeRoute,
   editContactFormOpen,
 }) => {
+  let localizedSourceFromTask: { [channelType in ChannelTypes]: string };
+  let contactIdentifier: string;
+  if (isTwilioTask(task)) {
+    localizedSourceFromTask = {
+      [channelTypes.web]: `${getContactValueTemplate(task)}`,
+      [channelTypes.voice]: 'PreviousContacts-PhoneNumber',
+      [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
+      [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
+      [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
+      [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
+      [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
+      [channelTypes.line]: 'PreviousContacts-LineUser',
+    };
+    contactIdentifier = getFormattedNumberFromTask(task);
+  }
+
   const enableProfilesFlag = true;
 
   const [profileData, setProfileData] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getProfileByIdentifier('%2B1%20555-555-5555');
+
+      // TODO: remove this is a mock call to getProfileByIdentifier
+      const data = await getProfileByIdentifier('+1 555-555-5555');
+      
+      // const data = await getProfileByIdentifier(contactIdentifier);
       setProfileData(data[0]);
     };
 
     fetchData();
-  }, []);
+  }, [contactIdentifier]);
 
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
@@ -83,35 +103,19 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
   let contactsCount = previousContacts?.contacts?.count || 0;
   let casesCount = previousContacts?.cases?.count || 0;
+
   const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
+  if (!shouldDisplayBanner) return null;
 
   if (enableProfilesFlag && profileData !== null) {
     contactsCount = profileData?.contacts?.count;
     casesCount = profileData?.cases?.count;
   }
 
-  if (!shouldDisplayBanner) return null;
-
   const handleClickViewRecords = () => {
     viewPreviousContacts();
     changeRoute({ route: 'tabbed-forms', subroute: 'search' });
   };
-
-  let localizedSourceFromTask: { [channelType in ChannelTypes]: string };
-  let contactIdentifier: string;
-  if (isTwilioTask(task)) {
-    localizedSourceFromTask = {
-      [channelTypes.web]: `${getContactValueTemplate(task)}`,
-      [channelTypes.voice]: 'PreviousContacts-PhoneNumber',
-      [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
-      [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
-      [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
-      [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
-      [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
-      [channelTypes.line]: 'PreviousContacts-LineUser',
-    };
-    contactIdentifier = getFormattedNumberFromTask(task);
-  }
 
   return (
     <div className={editContactFormOpen ? 'editingContact' : ''}>
