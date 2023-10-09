@@ -116,6 +116,4 @@ export async function importDefaultResources(account: string) {
     logWarning('Flex Task Assignment workflow not found to import');
   }
 
-  await locateAndImportDefaultFlexFlow('Flex Messaging Channel Flow', 'messaging_flow');
-  await locateAndImportDefaultFlexFlow('Flex Web Channel Flow', 'webchat_flow');
 }
