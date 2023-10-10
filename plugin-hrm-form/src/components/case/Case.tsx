@@ -72,6 +72,7 @@ import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import { connectToCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
+import { connectToCase } from '../../services/ContactService';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -101,7 +102,7 @@ const Case: React.FC<Props> = ({
   cancelNewCase,
   updateCaseAsyncAction,
   onNewCaseSaved = () => Promise.resolve(),
-  connectToCaseAsyncAction,
+  disconnectFromCase,
   submitContactFormAsyncAction,
   ...props
 }) => {
@@ -228,7 +229,7 @@ const Case: React.FC<Props> = ({
 
   const handleCancelNewCaseAndClose = async () => {
     // TODO: migrate to redux
-    await Promise.all(loadedContactIds.map(id => connectToCase(id, undefined)));
+    await Promise.all(loadedContactIds.map(id => disconnectFromCase(id)));
     await cancelCase(connectedCase.id);
     cancelNewCase(connectedCase.id, loadedContactIds);
   };
@@ -245,7 +246,6 @@ const Case: React.FC<Props> = ({
         ...connectedCase,
       });
       await onNewCaseSaved(connectedCase);
-      connectToCaseAsyncAction(task, contact, metadata, connectedCase, connectedCase.id);
     } catch (error) {
       console.error(error);
       recordBackendError('Save and End Case', error);
@@ -440,13 +440,7 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     cancelNewCase,
     updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
       caseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
-    connectToCaseAsyncAction: (
-      task: CustomITask,
-      contact: Contact,
-      metadata: ContactMetadata,
-      caseForm: CaseType,
-      caseId: number,
-    ) => caseAsyncDispatch(connectToCaseAsyncAction(task, contact, metadata, caseForm, caseId)),
+    disconnectFromCase: (contactId: string) => caseAsyncDispatch(connectToCaseAsyncAction(contactId, null)),
     submitContactFormAsyncAction: (
       task: CustomITask,
       contact: Contact,
