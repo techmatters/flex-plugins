@@ -81,7 +81,8 @@ const PreviousContactsBanner: React.FC<Props> = ({
         console.error('Error fetching profile data', error);
       }
     };
-    enableClientProfiles && fetchData();
+    if (enableClientProfiles) fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contactIdentifier]);
 
   const { canView } = getPermissionsForViewingIdentifiers();
