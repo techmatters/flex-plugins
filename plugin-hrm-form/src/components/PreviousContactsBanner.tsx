@@ -35,10 +35,10 @@ import { changeRoute as changeRouteAction } from '../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../utils/task';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../permissions';
 import { CustomITask, isTwilioTask } from '../types/types';
-import { getAseloFeatureFlags } from '../hrmConfig';
 
 type OwnProps = {
   task: CustomITask;
+  enableClientProfiles?: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -46,6 +46,7 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 
 const PreviousContactsBanner: React.FC<Props> = ({
   task,
+  enableClientProfiles,
   previousContacts,
   viewPreviousContacts,
   searchContacts,
@@ -77,10 +78,10 @@ const PreviousContactsBanner: React.FC<Props> = ({
         const data = await getProfileByIdentifier(contactIdentifier);
         setProfileData(data[0]);
       } catch (error) {
-        console.error('>>> Error fetching profile data', error);
+        console.error('Error fetching profile data', error);
       }
     };
-    fetchData();
+    enableClientProfiles && fetchData();
   }, [contactIdentifier]);
 
   const { canView } = getPermissionsForViewingIdentifiers();
@@ -105,7 +106,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
   if (!shouldDisplayBanner) return null;
 
-  if (getAseloFeatureFlags().enable_client_profiles && profileData !== null) {
+  if (enableClientProfiles && profileData !== null) {
     contactsCount = profileData?.contacts?.count;
     casesCount = profileData?.cases?.count;
   }

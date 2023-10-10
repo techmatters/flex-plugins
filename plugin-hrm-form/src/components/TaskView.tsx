@@ -101,7 +101,7 @@ const TaskView: React.FC<Props> = props => {
 
   return (
     <Flex flexDirection="column" style={{ pointerEvents: isFormLocked ? 'none' : 'auto', height: '100%' }}>
-      {featureFlags.enable_previous_contacts && <PreviousContactsBanner task={task} />}
+      {featureFlags.enable_previous_contacts && <PreviousContactsBanner task={task} enableClientProfiles={featureFlags.enable_client_profiles} />}
       {isFormLocked && <FormNotEditable />}
       <Flex
         flexDirection="column"
