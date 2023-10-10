@@ -51,7 +51,7 @@ test.describe.serial('Resource Search', () => {
 
     console.log('Starting filling form');
     const form = contactForm(pluginPage);
-    await form.selectChildCallType();
+    await form.selectChildCallType(true);
     await form.fill([
       <ContactFormTab>{
         id: 'contactlessTask',

@@ -75,8 +75,11 @@ export function contactForm(page: Page) {
   }
 
   return {
-    selectChildCallType: async () => {
+    selectChildCallType: async (allowSkip: boolean = false) => {
       const childCallTypeButton = selectors.childCallTypeButton();
+      if (!(await childCallTypeButton.isVisible({ timeout: 200 })) && allowSkip) {
+        return;
+      }
       await childCallTypeButton.click();
     },
     fill: async (tabs: ContactFormTab<any>[]) => {
