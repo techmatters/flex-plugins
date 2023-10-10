@@ -15,6 +15,7 @@
  */
 
 import { omit } from 'lodash';
+import { callTypes } from 'hrm-form-definitions';
 
 import { AppRoutes, RoutingActionType, CHANGE_ROUTE } from './types';
 import {
@@ -50,6 +51,19 @@ export function reduce(
 ): RoutingState {
   switch (action.type) {
     case INITIALIZE_CONTACT_STATE: {
+      let initialEntry: AppRoutes = newTaskEntry;
+      const { callType } = action.initialContact.rawJson;
+      if (callType === callTypes.child) {
+        initialEntry = {
+          route: 'tabbed-forms',
+          subroute: 'childInformation',
+        };
+      } else if (callType === callTypes.caller) {
+        initialEntry = {
+          route: 'tabbed-forms',
+          subroute: 'callerInformation',
+        };
+      }
       return {
         ...state,
         tasks: {
@@ -57,7 +71,7 @@ export function reduce(
           [action.initialContact.taskId]:
             action.recreated && state.tasks[action.initialContact.taskId]
               ? state.tasks[action.initialContact.taskId]
-              : newTaskEntry,
+              : initialEntry,
         },
         isAddingOfflineContact:
           action.initialContact.taskId === getOfflineContactTaskSid() ? true : state.isAddingOfflineContact,

@@ -61,7 +61,7 @@ describe('test reducer (specific actions)', () => {
   test('should handle INITIALIZE_CONTACT_STATE', async () => {
     const expected = {
       tasks: {
-        task1: { route: 'select-call-type' },
+        task1: { route: 'tabbed-forms', subroute: 'childInformation' },
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
       isAddingOfflineContact: false,
@@ -110,7 +110,7 @@ describe('test reducer (specific actions)', () => {
   test('should handle RECREATE_CONTACT_STATE and recreate it', async () => {
     const expected = {
       tasks: {
-        task1: { route: 'select-call-type' },
+        task1: { route: 'tabbed-forms', subroute: 'childInformation' },
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
       isAddingOfflineContact: false,
@@ -166,7 +166,7 @@ describe('test reducer (specific actions)', () => {
       tasks: {
         task1: { route: 'new-case' },
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
-        [offlineContactTaskSid]: newTaskEntry,
+        [offlineContactTaskSid]: { ...newTaskEntry, route: 'tabbed-forms', subroute: 'childInformation' },
       },
       isAddingOfflineContact: true,
     };

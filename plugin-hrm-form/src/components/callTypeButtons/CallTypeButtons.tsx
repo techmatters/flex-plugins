@@ -24,7 +24,6 @@ import { callTypes, CallTypeButtonsEntry } from 'hrm-form-definitions';
 import { namespace, configurationBase, connectedCaseBase, RootState } from '../../states';
 import {
   ContactDraftChanges,
-  getUnsavedContact,
   saveContactChangesInHrm,
   updateDraft as newUpdateDraftAction,
 } from '../../states/contacts/existingContacts';
@@ -41,6 +40,7 @@ import { CustomITask, isOfflineContactTask } from '../../types/types';
 import { getTemplateStrings } from '../../hrmConfig';
 import { AppRoutes } from '../../states/routing/types';
 import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
+import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 
 const isDialogOpen = (task: CustomITask, contact: ContactDraftChanges) =>
   Boolean(!isOfflineContactTask(task) && contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType));

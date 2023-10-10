@@ -89,11 +89,16 @@ export const initializeContactForm = async ({ task }: ActionPayload) => {
   ].configuration;
   const { savedContact: newContact, metadata } = newContactState(currentDefinitionVersion)(false);
   const { workerSid } = getHrmConfig();
-  const savedContact = await createContact(newContact, workerSid, task.taskSid);
+  const taskSid = task.attributes?.transferMeta?.originalTask ?? task.taskSid;
+  const savedContact = await createContact(
+    newContact,
+    workerSid,
+    taskSid, // if this is a transfer, use the original task sid to prevent duplication.
+  );
   Manager.getInstance().store.dispatch(
     GeneralActions.initializeContactState(currentDefinitionVersion)(savedContact, metadata),
   );
-  Manager.getInstance().store.dispatch(loadContact(savedContact, task.taskSid, true));
+  Manager.getInstance().store.dispatch(loadContact(savedContact, taskSid, true));
 };
 
 const sendMessageOfKey = (messageKey: string) => (

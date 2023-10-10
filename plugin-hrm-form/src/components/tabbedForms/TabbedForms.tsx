@@ -49,7 +49,8 @@ import { newCSAMReportActionForContact } from '../../states/csam-report/actions'
 import { CSAMReportTypes } from '../../states/csam-report/types';
 // Ensure ww import any custom components that might be used in a form
 import '../contact/ResourceReferralList';
-import { getUnsavedContact, saveContactChangesInHrm, updateDraft } from '../../states/contacts/existingContacts';
+import { saveContactChangesInHrm, updateDraft } from '../../states/contacts/existingContacts';
+import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {

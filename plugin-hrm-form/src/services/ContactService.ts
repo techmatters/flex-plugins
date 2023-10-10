@@ -45,6 +45,7 @@ import { ChannelTypes } from '../states/DomainConstants';
 import { ResourceReferral } from '../states/contacts/resourceReferral';
 import { ContactDraftChanges } from '../states/contacts/existingContacts';
 import { newContactState } from '../states/contacts/contactState';
+import { ApiError, FetchOptions } from './fetchApi';
 
 export async function searchContacts(
   searchParams: SearchParams,
@@ -390,3 +391,18 @@ async function saveConversationMedia(contactId, conversationMedia: ConversationM
 
   return fetchHrmApi(`/contacts/${contactId}/conversationMedia`, options);
 }
+
+export const getContactByTaskSid = async (taskSid: string): Promise<Contact> => {
+  const options: FetchOptions = {
+    method: 'GET',
+    returnNullFor404: true,
+  };
+  try {
+    return fetchHrmApi(`/contacts/byTaskSid/${taskSid}`, options);
+  } catch (err) {
+    if (err instanceof ApiError && err.response.status >= 404) {
+      return null;
+    }
+    throw err;
+  }
+};

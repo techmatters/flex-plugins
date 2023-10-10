@@ -94,8 +94,10 @@ export function contactForm(page: Page) {
       };
       await selectTab(tab);
 
-      if (saveAndAddToCase) await selectors.saveAndAddToCaseButton.click();
-      else await selectors.saveContactButton.click();
+      if (saveAndAddToCase) {
+        await selectors.saveAndAddToCaseButton.click();
+        await page.waitForResponse('**/connectToCase');
+      } else await selectors.saveContactButton.click();
 
       await selectors.tabButton(tab).waitFor({ state: 'detached' });
     },

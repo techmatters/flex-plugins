@@ -27,6 +27,7 @@ import { namespace, RootState, routingBase } from '../states';
 import type { CustomITask, Case as CaseForm } from '../types/types';
 import { newContactCSAMApi } from './CSAMReport/csamReportApi';
 import { completeTask, submitContactForm } from '../services/formSubmissionHelpers';
+import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
 
 type OwnProps = {
   task: CustomITask;
@@ -73,13 +74,11 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact, m
 
 HrmForm.displayName = 'HrmForm';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const routingState = state[namespace][routingBase];
-  const { savedContact, metadata } = Object.values(state[namespace].activeContacts.existingContacts).find(
-    cs => cs?.savedContact.id,
-  );
+  const { savedContact, metadata } = findContactByTaskSid(state, task.taskSid);
 
-  return { routing: routingState.tasks[ownProps.task.taskSid], savedContact, metadata };
+  return { routing: routingState.tasks[task.taskSid], savedContact, metadata };
 };
 
 export default connect(mapStateToProps, null)(HrmForm);

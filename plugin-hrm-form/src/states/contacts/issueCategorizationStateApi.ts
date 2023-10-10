@@ -17,8 +17,9 @@
 import { Dispatch } from 'react';
 
 import { contactFormsBase, namespace, RootState } from '..';
-import { getUnsavedContact, setCategoriesGridView, toggleCategoryExpanded } from './existingContacts';
+import { setCategoriesGridView, toggleCategoryExpanded } from './existingContacts';
 import { toggleSubcategory } from './categories';
+import { getUnsavedContact } from './getUnsavedContact';
 
 type IssueCategoriesState = {
   gridView: boolean;

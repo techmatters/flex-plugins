@@ -33,7 +33,7 @@ import {
 } from '../../styles/HrmStyles';
 import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
 import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
-import { getUnsavedContact } from '../../states/contacts/existingContacts';
+import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 
 type OwnProps = { selectedTaskSid?: string };
 

@@ -30,12 +30,12 @@ import PreviousContactsBanner from './PreviousContactsBanner';
 import { Flex } from '../styles/HrmStyles';
 import { isStandaloneITask } from './case/Case';
 import { getHelplineToSave } from '../services/HelplineService';
-import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
+import { getAseloFeatureFlags } from '../hrmConfig';
 import { rerenderAgentDesktop } from '../rerenderView';
-import { createContact } from '../services/ContactService';
+import { getContactByTaskSid } from '../services/ContactService';
 import { ContactMetadata } from '../states/contacts/types';
 import { updateDraft } from '../states/contacts/existingContacts';
-import { newContactState } from '../states/contacts/contactState';
+import { newContactMetaData } from '../states/contacts/contactState';
 
 type OwnProps = {
   task: CustomITask;
@@ -50,11 +50,10 @@ const TaskView: React.FC<Props> = props => {
 
   React.useEffect(() => {
     if (shouldRecreateState) {
-      const { savedContact: newContact, metadata } = newContactState(currentDefinitionVersion)(true);
-      newContact.taskId = task.taskSid;
-
-      createContact(newContact, getHrmConfig().workerSid, task.taskSid).then(contact => {
-        recreateContactState(currentDefinitionVersion)(contact, metadata);
+      getContactByTaskSid(task.taskSid).then(contact => {
+        if (contact) {
+          recreateContactState(currentDefinitionVersion)(contact, newContactMetaData(true));
+        }
       });
     }
   }, [currentDefinitionVersion, recreateContactState, shouldRecreateState, task]);

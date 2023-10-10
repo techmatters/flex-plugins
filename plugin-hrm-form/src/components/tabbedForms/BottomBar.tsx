@@ -35,7 +35,7 @@ import { Case, Contact, CustomITask } from '../../types/types';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
-import { getUnsavedContact } from '../../states/contacts/existingContacts';
+import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;

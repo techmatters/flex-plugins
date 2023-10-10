@@ -329,15 +329,6 @@ export const clearDraft = (contactId: string): UpdateDraftAction => ({
   draft: { rawJson: {} },
 });
 
-export const getUnsavedContact = (savedContact: Contact, draftContact: ContactDraftChanges): Contact => ({
-  ...savedContact,
-  ...draftContact,
-  rawJson: {
-    ...savedContact.rawJson,
-    ...draftContact?.rawJson,
-  },
-});
-
 export const saveContactChangesInHrm = async (
   contactId: string,
   changes: ContactDraftChanges,

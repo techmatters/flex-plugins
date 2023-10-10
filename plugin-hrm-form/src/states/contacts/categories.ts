@@ -15,7 +15,7 @@
  */
 
 import { ContactsState } from './types';
-import { getUnsavedContact } from './existingContacts';
+import { getUnsavedContact } from './getUnsavedContact';
 
 // TODO: Move other categories related actions into here once we have got rid of the new / existing contact split
 const TOGGLE_SUBCATEGORY = 'TOGGLE_SUBCATEGORY';
