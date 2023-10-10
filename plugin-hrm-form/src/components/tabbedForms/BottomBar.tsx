@@ -26,16 +26,18 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
-import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
+import { completeTask } from '../../services/formSubmissionHelpers';
 import { hasTaskControl } from '../../utils/transfer';
 import { namespace, contactFormsBase, connectedCaseBase, RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
-import { Case, Contact, CustomITask } from '../../types/types';
+import { Case, CustomITask, Contact } from '../../types/types';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
+import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
+import { ContactMetadata } from '../../states/contacts/types';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;
@@ -62,6 +64,7 @@ const BottomBar: React.FC<
   nextTab,
   caseForm,
   createCaseAsyncAction,
+  submitContactFormAsyncAction,
   saveUpdates,
 }) => {
   const [isSubmitting, setSubmitting] = useState(false);
@@ -89,7 +92,7 @@ const BottomBar: React.FC<
     setSubmitting(true);
 
     try {
-      await submitContactForm(task, contact, metadata, caseForm as Case);
+      submitContactFormAsyncAction(task, contact, metadata, caseForm as Case);
       await completeTask(task);
     } catch (error) {
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
@@ -191,6 +194,8 @@ const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     createCaseAsyncAction: (contact, workerSid: string, definitionVersion: DefinitionVersionId) =>
       createCaseAsyncDispatch(createCaseAsyncAction(contact, task.taskSid, workerSid, definitionVersion)),
+    submitContactFormAsyncAction: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) =>
+      createCaseAsyncDispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
   };
 };
 

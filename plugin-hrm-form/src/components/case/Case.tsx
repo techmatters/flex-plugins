@@ -30,7 +30,6 @@ import {
   // saveCaseBase,
 } from '../../states';
 import { cancelCase } from '../../services/CaseService';
-import { connectToCase } from '../../services/ContactService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { getActivitiesFromCase, getActivitiesFromContacts, isNoteActivity, sortActivities } from './caseActivities';
 import { getHelplineData } from './caseHelpers';
@@ -71,6 +70,8 @@ import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentif
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
+import { connectToCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
+import { ContactMetadata } from '../../states/contacts/types';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -100,6 +101,8 @@ const Case: React.FC<Props> = ({
   cancelNewCase,
   updateCaseAsyncAction,
   onNewCaseSaved = () => Promise.resolve(),
+  connectToCaseAsyncAction,
+  submitContactFormAsyncAction,
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
@@ -242,6 +245,7 @@ const Case: React.FC<Props> = ({
         ...connectedCase,
       });
       await onNewCaseSaved(connectedCase);
+      connectToCaseAsyncAction(task, contact, metadata, connectedCase, connectedCase.id);
     } catch (error) {
       console.error(error);
       recordBackendError('Save and End Case', error);
@@ -399,6 +403,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const { connectedCase } = caseState ?? {};
   const connectedContactIds = new Set((connectedCase?.connectedContacts ?? []).map(cc => cc.id as string));
   const { definitionVersions, currentDefinitionVersion } = state[namespace][configurationBase];
+
   return {
     connectedCaseState: caseState,
     connectedCaseId: connectedCase?.id,
@@ -413,7 +418,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 };
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
-  const updateCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
+  const caseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   const cancelNewCase = (caseId: number, loadedContactIds: string[]) => {
     const { taskSid } = task;
     dispatch(CaseActions.removeConnectedCase(taskSid));
@@ -434,7 +439,20 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     loadContact: bindActionCreators(ContactActions.loadContact, dispatch),
     cancelNewCase,
     updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
-      updateCaseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
+      caseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
+    connectToCaseAsyncAction: (
+      task: CustomITask,
+      contact: Contact,
+      metadata: ContactMetadata,
+      caseForm: CaseType,
+      caseId: number,
+    ) => caseAsyncDispatch(connectToCaseAsyncAction(task, contact, metadata, caseForm, caseId)),
+    submitContactFormAsyncAction: (
+      task: CustomITask,
+      contact: Contact,
+      metadata: ContactMetadata,
+      caseForm: CaseType,
+    ) => caseAsyncDispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
   };
 };
 

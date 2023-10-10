@@ -19,7 +19,7 @@ import { callTypes } from 'hrm-form-definitions';
 import { createReducer } from 'redux-promise-middleware-actions';
 
 import * as t from './types';
-import { ContactsState, UPDATE_CONTACT_ACTION } from './types';
+import { ContactsState, SET_SAVED_CONTACT, UPDATE_CONTACT_ACTION } from './types';
 import {
   INITIALIZE_CONTACT_STATE,
   InitializeContactStateAction,
