@@ -16,13 +16,4 @@
 
 import { fetchHrmApi } from './fetchHrmApi';
 
-export const getProfileByIdentifier = async (identifier: string) => {
-  let responseJson;
-  try {
-    responseJson = await fetchHrmApi(`/profiles/identifier/${identifier}`);
-  } catch (error) {
-    console.error('>>> getProfileByIdentifier catch', error);
-  }
-
-  return responseJson;
-};
+export const getProfileByIdentifier = (identifier: string) => fetchHrmApi(`/profiles/identifier/${identifier}`);

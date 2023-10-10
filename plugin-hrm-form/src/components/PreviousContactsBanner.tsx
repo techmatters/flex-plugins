@@ -89,7 +89,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
   useEffect(() => {
-    if (isTwilioTask(task) && previousContacts === undefined) {
+    if (isTwilioTask(task) && previousContacts === undefined && !enableClientProfiles) {
       const contactNumber = getNumberFromTask(task);
       const isTraceableNumber = ![null, undefined, '', 'Anonymous'].includes(contactNumber);
 
@@ -99,18 +99,22 @@ const PreviousContactsBanner: React.FC<Props> = ({
         searchCases(searchParams, CASES_PER_PAGE, 0, true);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task, searchContacts, searchCases, previousContacts]);
 
-  let contactsCount = previousContacts?.contacts?.count || 0;
-  let casesCount = previousContacts?.cases?.count || 0;
-
-  const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
-  if (!shouldDisplayBanner) return null;
+  let contactsCount;
+  let casesCount;
 
   if (enableClientProfiles && profileData !== null) {
     contactsCount = profileData?.contacts?.count;
     casesCount = profileData?.cases?.count;
+  } else {
+    contactsCount = previousContacts?.contacts?.count || 0;
+    casesCount = previousContacts?.cases?.count || 0;
   }
+
+  const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
+  if (!shouldDisplayBanner) return null;
 
   const handleClickViewRecords = () => {
     viewPreviousContacts();
