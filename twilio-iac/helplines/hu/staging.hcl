@@ -5,6 +5,8 @@ locals {
 
   local_config = {
 
+    custom_task_routing_filter_expression = "phone=='+3680984590' OR phone=='+3612344587' OR channelType=='web' OR isContactlessTask==true"
+
     flow_vars = {
       service_sid                           = "ZSbb22d7f5e61b8fde6158ece8d28386f1"
       environment_sid                       = "ZEbaf991c98520207c96c75ee3592292ea"
@@ -35,4 +37,4 @@ locals {
       }
     }
   }
-  }
+}
