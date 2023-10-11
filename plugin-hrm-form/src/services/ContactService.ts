@@ -256,16 +256,20 @@ export const createContact = async (contact: Contact, twilioWorkerId: string, ta
     body: JSON.stringify(contactForApi),
   };
 
-  return fetchHrmApi(`/contacts`, options);
+  return fetchHrmApi(`/contacts?finalize=false`, options);
 };
 
-export const updateContactInHrm = (contactId: string, body: ContactDraftChanges): Promise<Contact> => {
+export const updateContactInHrm = (
+  contactId: string,
+  body: ContactDraftChanges,
+  finalize: boolean = false,
+): Promise<Contact> => {
   const options = {
     method: 'PATCH',
     body: JSON.stringify(body),
   };
 
-  return fetchHrmApi(`/contacts/${contactId}`, options);
+  return fetchHrmApi(`/contacts/${contactId}?finalize=${finalize}`, options);
 };
 
 /**
@@ -334,7 +338,7 @@ const saveContactToHrm = async (
     serviceSid,
   };
 
-  const response = await updateContactInHrm(contact.id, contactToSave);
+  const response = await updateContactInHrm(contact.id, contactToSave, true);
 
   return {
     response,
