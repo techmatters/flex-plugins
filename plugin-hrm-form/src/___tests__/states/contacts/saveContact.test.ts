@@ -16,7 +16,10 @@
 import { connectToCase, updateContactsFormInHrm } from '../../../services/ContactService';
 import { completeTask, submitContactForm } from '../../../services/formSubmissionHelpers';
 import { Case, CustomITask, Contact } from '../../../types/types';
-import { initialState as existingContactInitialState } from '../../../states/contacts/existingContacts';
+import {
+  ExistingContactsState,
+  initialState as existingContactInitialState,
+} from '../../../states/contacts/existingContacts';
 import { ContactMetadata } from '../../../states/contacts/types';
 import {
   connectToCaseAsyncAction,
@@ -88,12 +91,29 @@ const baseCase: Case = {
   connectedContacts: [baseContact] as Contact[],
 };
 
+const baseState: ExistingContactsState = {
+  [baseContact.id]: {
+    savedContact: baseContact,
+    references: new Set('x'),
+    categories: {
+      gridView: false,
+      expanded: {},
+    },
+  },
+} as const;
+
 const dispatch = jest.fn();
 
 describe('actions', () => {
   test('Calls the updateContactsFormInHrmAsyncAction action, and update a contact', async () => {
     dispatch(updateContactsFormInHrmAsyncAction(baseContact.id, baseContact.rawJson, 'demo-v1'));
+    const existingContacts = boundSaveContactReducer(
+      baseState,
+      updateContactsFormInHrmAsyncAction(baseContact.id, baseContact.rawJson, 'demo-v1'),
+    );
+
     expect(updateContactsFormInHrm).toHaveBeenCalledWith(baseContact.id, baseContact.rawJson, 'demo-v1');
+    expect(existingContacts[baseContact.id].savedContact).toStrictEqual(baseContact);
   });
 
   test('Calls the connectToCaseAsyncAction action, and create a contact, connect contact to case, and complete task', async () => {
