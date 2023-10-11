@@ -35,9 +35,9 @@ export const setupConferenceComponents = () => {
   CallCanvasActions.Content.remove('toggleMute', {
     if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
   });
-  CallCanvasActions.Content.remove('dialpad', {
-    if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
-  });
+  // CallCanvasActions.Content.remove('dialpad', {
+  //   if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
+  // });
   CallCanvasActions.Content.remove('hangup', {
     if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
   });
