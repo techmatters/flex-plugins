@@ -16,6 +16,7 @@
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Page } from '@playwright/test';
+import { delay } from './okta/sso-login';
 
 export type CaseSectionForm<T = Record<string, string>> = {
   sectionTypeId: 'note' | 'referral' | 'household' | 'perpetrator' | 'incident' | 'document';
@@ -61,6 +62,12 @@ export const caseHome = (page: Page) => {
 
     const saveButton = selectors.saveCaseItemButton;
     await saveButton.click();
+
+    /**
+     * Fix to addOfflineContact tests flakiness
+     * TODO: investigate root cause
+     */
+    await delay(300);
   }
 
   async function saveCaseAndEnd() {
