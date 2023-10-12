@@ -18,7 +18,7 @@
 import { chromium, expect, FullConfig, request } from '@playwright/test';
 import { getConfigValue } from '../config';
 
-function delay(time: number) {
+export function delay(time: number) {
   return new Promise(function (resolve) {
     setTimeout(resolve, time);
   });

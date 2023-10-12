@@ -4,35 +4,33 @@ locals {
   config              = merge(local.defaults_config, local.local_config)
 
   local_config = {
-    helpline                          = "Kellimni"
-    old_dir_prefix                    = "mt-kellimni"
-    definition_version                = "mt-v1"
+    helpline                          = "Meri Trustline"
+    old_dir_prefix                    = ""
+    definition_version                = "in-v1"
     default_autopilot_chatbot_enabled = false
-    task_language                     = "en-MT"
-    helpline_language                 = "en-MT"
+    task_language                     = "en-IN"
+    helpline_language                 = "en-IN"
     voice_ivr_language                = ""
-    contacts_waiting_channels         = ["web", "whatsapp", "facebook", "instagram"]
     enable_post_survey                = false
-    helpline_region                   = "eu-west-1"
+    helpline_region                   = "us-east-1"
 
-
+     
 
     workflows = {
       master : {
-        friendly_name = "Master Workflow"
-        templatefile = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
-        task_reservation_timeout = 600
+        friendly_name : "Master Workflow"
+        templatefile : "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
       },
       survey : {
-        friendly_name = "Survey Workflow"
-        templatefile = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+        friendly_name : "Survey Workflow"
+        templatefile : "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
 
     task_queues = {
       master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "Kellimni"
+        "friendly_name"  = "Meri Trustline"
       },
       survey : {
         "target_workers" = "1==0",
