@@ -17,14 +17,17 @@
 /* eslint-disable import/no-unused-modules */
 import { Actions, ITask, Manager } from '@twilio/flex-ui';
 
-import { Case, CustomITask, Contact, isOfflineContactTask, offlineContactTaskSid } from '../types/types';
+import { Case, CustomITask, Contact, isOfflineContactTask } from '../types/types';
 import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
 import { saveContact } from './ContactService';
 import { assignOfflineContactInit, assignOfflineContactResolve } from './ServerlessService';
-import { removeContactState } from '../states/actions';
 import { getHrmConfig } from '../hrmConfig';
 import { ContactMetadata } from '../states/contacts/types';
+import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
+import { RootState } from '../states';
+import * as GeneralActions from '../states/actions';
+import getOfflineContactTaskSid from '../states/contacts/offlineContactTaskSid';
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
@@ -44,7 +47,12 @@ export const completeContactTask = async (task: ITask) => {
 };
 
 export const removeOfflineContact = () => {
-  Manager.getInstance().store.dispatch(removeContactState(offlineContactTaskSid));
+  const offlineContactTaskSid = getOfflineContactTaskSid();
+  const manager = Manager.getInstance();
+  const contactState = findContactByTaskSid(manager.store.getState() as RootState, offlineContactTaskSid);
+  if (contactState) {
+    manager.store.dispatch(GeneralActions.removeContactState(offlineContactTaskSid, contactState.savedContact.id));
+  }
 };
 
 export const completeContactlessTask = async () => {

@@ -33,11 +33,15 @@ import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
 import { customChannelTypes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
-import { CustomITask, FeatureFlags, isOfflineContactTask } from '../types/types';
+import { CustomITask, FeatureFlags } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
+import { createContact } from '../services/ContactService';
 import type { RootState } from '../states';
 import { getTaskLanguage } from './task';
+import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
+import { loadContact } from '../states/contacts/existingContacts';
+import { newContactState } from '../states/contacts/contactState';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -79,14 +83,22 @@ const fromActionFunction = (fun: ActionFunction) => async (payload: ActionPayloa
 /**
  * Initializes an empty form (in redux store) for the task within payload
  */
-export const initializeContactForm = (payload: ActionPayload) => {
+export const initializeContactForm = async ({ task }: ActionPayload) => {
   const { currentDefinitionVersion } = (Manager.getInstance().store.getState() as RootState)[
     'plugin-hrm-form'
   ].configuration;
-
-  Manager.getInstance().store.dispatch(
-    GeneralActions.initializeContactState(currentDefinitionVersion)(payload.task.taskSid),
+  const { savedContact: newContact, metadata } = newContactState(currentDefinitionVersion)(false);
+  const { workerSid } = getHrmConfig();
+  const taskSid = task.attributes?.transferMeta?.originalTask ?? task.taskSid;
+  const savedContact = await createContact(
+    newContact,
+    workerSid,
+    taskSid, // if this is a transfer, use the original task sid to prevent duplication.
   );
+  Manager.getInstance().store.dispatch(
+    GeneralActions.initializeContactState(currentDefinitionVersion)(savedContact, metadata),
+  );
+  Manager.getInstance().store.dispatch(loadContact(savedContact, taskSid, true));
 };
 
 const sendMessageOfKey = (messageKey: string) => (
@@ -225,5 +237,8 @@ export const excludeDeactivateConversationOrchestration = (featureFlags: Feature
 
 export const afterCompleteTask = (payload: ActionPayload): void => {
   const manager = Manager.getInstance();
-  manager.store.dispatch(GeneralActions.removeContactState(payload.task.taskSid));
+  const contactState = findContactByTaskSid(manager.store.getState() as RootState, payload.task.taskSid);
+  if (contactState) {
+    manager.store.dispatch(GeneralActions.removeContactState(payload.task.taskSid, contactState.savedContact.id));
+  }
 };

@@ -16,13 +16,12 @@
 
 import { DataCallTypes } from 'hrm-form-definitions';
 
-import { ContactRawJson, CSAMReportEntry, Contact } from '../../types/types';
+import { Contact } from '../../types/types';
 import { DraftResourceReferralState } from './resourceReferral';
-import { ExistingContactsState } from './existingContacts';
+import { ContactState, ExistingContactsState } from './existingContacts';
 import { ContactDetailsState } from './contactDetails';
 
 // Action types
-export const UPDATE_FORM = 'UPDATE_FORM';
 export const SAVE_END_MILLIS = 'SAVE_END_MILLIS';
 export const SET_CATEGORIES_GRID_VIEW = 'SET_CATEGORIES_GRID_VIEW';
 export const HANDLE_EXPAND_CATEGORY = 'HANDLE_EXPAND_CATEGORY';
@@ -50,22 +49,11 @@ export type ContactMetadata = {
   };
 };
 
-export type ContactWithMetadata = { contact: Contact; metadata: ContactMetadata };
-
 export type ContactsState = {
-  tasks: {
-    [taskId: string]: ContactWithMetadata;
-  };
   existingContacts: ExistingContactsState;
   contactDetails: ContactDetailsState;
   editingContact: boolean;
   isCallTypeCaller: boolean;
-};
-type UpdateFormAction = {
-  type: typeof UPDATE_FORM;
-  taskId: string;
-  parent: keyof ContactRawJson;
-  payload: Partial<ContactRawJson[keyof ContactRawJson]>;
 };
 
 type SaveEndMillisAction = {
@@ -79,18 +67,6 @@ export type UpdatedContactAction = {
   meta: unknown;
 };
 
-type SetCategoriesGridViewAction = {
-  type: typeof SET_CATEGORIES_GRID_VIEW;
-  gridView: boolean;
-  taskId: string;
-};
-
-type HandleExpandCategoryAction = {
-  type: typeof HANDLE_EXPAND_CATEGORY;
-  category: string;
-  taskId: string;
-};
-
 type PrePopulateFormAction = {
   type: typeof PREPOPULATE_FORM;
   callType: DataCallTypes | null;
@@ -101,20 +77,7 @@ type PrePopulateFormAction = {
 
 type RestoreEntireFormAction = {
   type: typeof RESTORE_ENTIRE_FORM;
-  contact: ContactWithMetadata;
-  taskId: string;
-};
-
-type UpdateHelpline = {
-  type: typeof UPDATE_HELPLINE;
-  helpline: string;
-  taskId: string;
-};
-
-type AddCSAMReportEntry = {
-  type: typeof ADD_CSAM_REPORT_ENTRY;
-  csamReportEntry: CSAMReportEntry;
-  taskId: string;
+  contact: ContactState;
 };
 
 type SetEditingContact = {
@@ -128,13 +91,8 @@ type CheckButtonDataAction = {
 };
 
 export type ContactsActionType =
-  | UpdateFormAction
   | SaveEndMillisAction
-  | SetCategoriesGridViewAction
-  | HandleExpandCategoryAction
   | PrePopulateFormAction
   | RestoreEntireFormAction
-  | UpdateHelpline
-  | AddCSAMReportEntry
   | SetEditingContact
   | CheckButtonDataAction;

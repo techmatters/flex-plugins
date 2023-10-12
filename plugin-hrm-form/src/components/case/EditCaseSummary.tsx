@@ -241,9 +241,8 @@ const mapStateToProps = (state: RootState, ownProps: EditCaseSummaryProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
   const connectedCaseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
   const workingCopy = connectedCaseState?.caseWorkingCopy.caseSummary;
-  const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
 
-  return { connectedCaseState, counselorsHash, workingCopy, contactForm };
+  return { connectedCaseState, counselorsHash, workingCopy };
 };
 
 const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {

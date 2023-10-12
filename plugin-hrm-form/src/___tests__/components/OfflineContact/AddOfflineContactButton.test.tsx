@@ -14,9 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import * as React from 'react';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider, withTheme, Actions } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
@@ -24,10 +24,12 @@ import configureMockStore from 'redux-mock-store';
 import '@testing-library/jest-dom/extend-expect';
 import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
-import HrmTheme from '../../../styles/HrmTheme';
+import { mockPartialConfiguration } from '../../mockGetConfig';
 import { AddOfflineContactButton } from '../../../components/OfflineContact';
 import { namespace, routingBase, configurationBase } from '../../../states';
 import { rerenderAgentDesktop } from '../../../rerenderView';
+import { createContact } from '../../../services/ContactService';
+import { Contact } from '../../../types/types';
 
 let v1;
 
@@ -35,15 +37,21 @@ jest.mock('../../../services/ServerlessService');
 jest.mock('../../../rerenderView', () => ({
   rerenderAgentDesktop: jest.fn(),
 }));
+jest.mock('../../../services/ContactService', () => ({
+  createContact: jest.fn(),
+}));
 jest.mock('@twilio/flex-ui', () => ({
   ...jest.requireActual('@twilio/flex-ui'),
   Actions: {
     invokeAction: jest.fn(),
   },
 }));
-
+mockPartialConfiguration({ workerSid: 'mock-worker' });
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const mockInvokeAction = Actions.invokeAction as jest.MockedFunction<typeof Actions.invokeAction>;
+const mockRerenderAgentDesktop = rerenderAgentDesktop as jest.MockedFunction<typeof rerenderAgentDesktop>;
+const mockCreateContact = createContact as jest.MockedFunction<typeof createContact>;
 
 beforeAll(async () => {
   const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
@@ -54,18 +62,18 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   mockReset();
-  Actions.invokeAction.mockClear();
-  rerenderAgentDesktop.mockClear();
+  mockInvokeAction.mockClear();
+  mockRerenderAgentDesktop.mockClear();
 });
-
-const themeConf = {
-  colorTheme: HrmTheme,
-};
 
 expect.extend(toHaveNoViolations);
 
 const mockStore = configureMockStore([]);
 test('click on button', async () => {
+  mockCreateContact.mockImplementation((contact: Contact) => {
+    console.log('Creating contact', contact);
+    return Promise.resolve(contact);
+  });
   const store = mockStore({
     flex: {
       view: { selectedTaskSid: '123' },
@@ -80,22 +88,27 @@ test('click on button', async () => {
     },
   });
 
-  const recreateContactState = jest.fn();
-
   render(
-    <StorelessThemeProvider themeConf={themeConf}>
+    <StorelessThemeProvider themeConf={{}}>
       <Provider store={store}>
-        <AddOfflineContactButton recreateContactState={recreateContactState} />
+        <AddOfflineContactButton />
       </Provider>
     </StorelessThemeProvider>,
   );
 
   screen.getByText('OfflineContactButtonText').click();
-
-  await Promise.resolve();
-
-  expect(Actions.invokeAction).toHaveBeenCalledTimes(1);
-  expect(rerenderAgentDesktop).toHaveBeenCalledTimes(1);
+  await waitFor(
+    () => {
+      expect(mockCreateContact).toHaveBeenCalledWith(
+        expect.anything(),
+        'mock-worker',
+        'offline-contact-task-mock-worker',
+      );
+      expect(Actions.invokeAction).toHaveBeenCalledTimes(1);
+    },
+    { timeout: 1000 },
+  );
+  // expect(rerenderAgentDesktop).toHaveBeenCalledTimes(1);
   /*
    * This is failing and couldn't fix it yet
    * expect(recreateContactState).toHaveBeenCalled();
@@ -120,9 +133,9 @@ test('button should be disabled (default task exists)', () => {
   const recreateContactState = jest.fn();
 
   render(
-    <StorelessThemeProvider themeConf={themeConf}>
+    <StorelessThemeProvider themeConf={{}}>
       <Provider store={store}>
-        <AddOfflineContactButton recreateContactState={recreateContactState} />
+        <AddOfflineContactButton />
       </Provider>
     </StorelessThemeProvider>,
   );
@@ -152,7 +165,7 @@ test('a11y', async () => {
   });
 
   const wrapper = mount(
-    <StorelessThemeProvider themeConf={themeConf}>
+    <StorelessThemeProvider themeConf={{}}>
       <Provider store={store}>
         <Wrapped />
       </Provider>

@@ -35,7 +35,6 @@ import { updateDraft } from '../../states/contacts/existingContacts';
 import CSAMReport from '../CSAMReport/CSAMReport';
 import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
 import { getAseloFeatureFlags } from '../../hrmConfig';
-import { transformValues } from '../../states/contacts/contactDetailsAdapter';
 
 type OwnProps = {
   contactId: string;
@@ -90,7 +89,7 @@ const ContactDetails: React.FC<Props> = ({
     section: ContactDetailsSectionFormApi,
     formPath: 'callerInformation' | 'childInformation' | 'caseInformation',
   ) => (
-    <EditContactSection context={context} contactId={contactId} contactDetailsSectionForm={section} tabPath={formPath}>
+    <EditContactSection context={context} contactId={contactId} tabPath={formPath}>
       <ContactDetailsSectionForm
         tabPath={formPath}
         definition={section.getFormDefinition(definitionVersion)}

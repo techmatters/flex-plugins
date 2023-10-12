@@ -41,7 +41,7 @@ import {
 } from '../../../states/contacts/existingContacts';
 import { Contact } from '../../../types/types';
 import { ConfigurationState } from '../../../states/configuration/reducer';
-import { VALID_EMPTY_CONTACT } from '../../testContacts';
+import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
 
 const baseContact: Contact = {
   id: '1337',
@@ -80,10 +80,7 @@ const baseState: ExistingContactsState = {
   [baseContact.id]: {
     savedContact: baseContact,
     references: new Set('x'),
-    categories: {
-      gridView: false,
-      expanded: {},
-    },
+    metadata: VALID_EMPTY_METADATA,
   },
 } as const;
 
@@ -103,7 +100,7 @@ describe('loadContactReducer', () => {
           [baseContact.id]: {
             savedContact: baseContact,
             references: new Set(['TEST_REFERENCE']),
-            categories: { gridView: false, expanded: {} },
+            metadata: VALID_EMPTY_METADATA,
           },
         },
         loadContact(baseContact, 'ANOTHER_TEST_REFERENCE'),
@@ -132,7 +129,7 @@ describe('loadContactReducer', () => {
           [baseContact.id]: {
             savedContact: baseContact,
             references: new Set(['TEST_REFERENCE']),
-            categories: { gridView: false, expanded: {} },
+            metadata: VALID_EMPTY_METADATA,
           },
         },
         loadContact(changedContact, 'ANOTHER_TEST_REFERENCE'),
@@ -161,7 +158,7 @@ describe('loadContactReducer', () => {
           [baseContact.id]: {
             savedContact: baseContact,
             references: new Set(['TEST_REFERENCE']),
-            categories: { gridView: false, expanded: {} },
+            metadata: VALID_EMPTY_METADATA,
           },
         },
         loadContact(changedContact, 'TEST_REFERENCE'),
@@ -187,12 +184,12 @@ describe('loadContactReducer', () => {
           [baseContact.id]: {
             savedContact: baseContact,
             references: new Set(['TEST_REFERENCE']),
-            categories: { gridView: false, expanded: {} },
+            metadata: VALID_EMPTY_METADATA,
           },
           '666': {
             savedContact: { ...baseContact, id: '666' },
             references: new Set(['ANOTHER_TEST_REFERENCE']),
-            categories: { gridView: false, expanded: {} },
+            metadata: VALID_EMPTY_METADATA,
           },
         },
         {
@@ -227,7 +224,7 @@ describe('loadContactReducer', () => {
           [baseContact.id]: {
             savedContact: baseContact,
             references: new Set(['TEST_REFERENCE']),
-            categories: { gridView: false, expanded: {} },
+            metadata: VALID_EMPTY_METADATA,
           },
         },
         loadContact(baseContact, 'ANOTHER_TEST_REFERENCE', true),
@@ -256,7 +253,7 @@ describe('loadContactReducer', () => {
           [baseContact.id]: {
             savedContact: baseContact,
             references: new Set(['TEST_REFERENCE']),
-            categories: { gridView: false, expanded: {} },
+            metadata: VALID_EMPTY_METADATA,
           },
         },
         loadContact(changedContact, 'ANOTHER_TEST_REFERENCE', true),
@@ -285,7 +282,7 @@ describe('loadContactReducer', () => {
           [baseContact.id]: {
             savedContact: baseContact,
             references: new Set(['TEST_REFERENCE']),
-            categories: { gridView: false, expanded: {} },
+            metadata: VALID_EMPTY_METADATA,
           },
         },
         loadContact(changedContact, 'TEST_REFERENCE', true),
@@ -312,12 +309,12 @@ describe('loadContactReducer', () => {
           [baseContact.id]: {
             savedContact: baseContact,
             references: new Set(['TEST_REFERENCE']),
-            categories: { gridView: false, expanded: {} },
+            metadata: VALID_EMPTY_METADATA,
           },
           '666': {
             savedContact: { ...baseContact, id: '666' },
             references: new Set(['ANOTHER_TEST_REFERENCE']),
-            categories: { gridView: false, expanded: {} },
+            metadata: VALID_EMPTY_METADATA,
           },
         },
         {
@@ -367,7 +364,8 @@ describe('releaseContactReducer', () => {
         [baseContact.id]: {
           savedContact: baseContact,
           references: new Set(['TEST_REFERENCE', 'ANOTHER_TEST_REFERENCE']),
-          categories: { gridView: false, expanded: {} },
+
+          metadata: VALID_EMPTY_METADATA,
         },
       },
       releaseContact(baseContact.id, 'TEST_REFERENCE'),
@@ -382,7 +380,10 @@ describe('releaseContactReducer', () => {
         [baseContact.id]: {
           savedContact: baseContact,
           references: new Set(['TEST_REFERENCE']),
-          categories: { gridView: false, expanded: {} },
+          metadata: {
+            ...VALID_EMPTY_METADATA,
+            categories: { gridView: false, expanded: {} },
+          },
         },
       },
       releaseContact(baseContact.id, 'TEST_REFERENCE'),
@@ -395,7 +396,10 @@ describe('releaseContactReducer', () => {
         [baseContact.id]: {
           savedContact: baseContact,
           references: new Set(['ANOTHER_REFERENCE']),
-          categories: { gridView: false, expanded: {} },
+          metadata: {
+            ...VALID_EMPTY_METADATA,
+            categories: { gridView: false, expanded: {} },
+          },
         },
       },
       releaseContact(baseContact.id, 'TEST_REFERENCE'),
@@ -410,7 +414,10 @@ describe('releaseContactReducer', () => {
         [baseContact.id]: {
           savedContact: baseContact,
           references: new Set(),
-          categories: { gridView: false, expanded: {} },
+          metadata: {
+            ...VALID_EMPTY_METADATA,
+            categories: { gridView: false, expanded: {} },
+          },
         },
       },
       releaseContact(baseContact.id, 'ANYTHING'),
@@ -423,12 +430,16 @@ describe('releaseContactReducer', () => {
         [baseContact.id]: {
           savedContact: baseContact,
           references: new Set(['TEST_REFERENCE', 'ANOTHER_TEST_REFERENCE']),
-          categories: { gridView: false, expanded: {} },
+          metadata: VALID_EMPTY_METADATA,
         },
         '666': {
           savedContact: { ...baseContact, id: '666' },
           references: new Set(['TEST_REFERENCE']),
-          categories: { gridView: false, expanded: {} },
+
+          metadata: {
+            ...VALID_EMPTY_METADATA,
+            categories: { gridView: false, expanded: {} },
+          },
         },
       },
       releaseContacts([baseContact.id, '666'], 'TEST_REFERENCE'),
@@ -444,12 +455,19 @@ describe('releaseContactReducer', () => {
         [baseContact.id]: {
           savedContact: baseContact,
           references: new Set(['ANOTHER_TEST_REFERENCE']),
-          categories: { gridView: false, expanded: {} },
+          metadata: {
+            ...VALID_EMPTY_METADATA,
+            categories: { gridView: false, expanded: {} },
+          },
         },
         '666': {
           savedContact: { ...baseContact, id: '666' },
           references: new Set(['TEST_REFERENCE']),
-          categories: { gridView: false, expanded: {} },
+
+          metadata: {
+            ...VALID_EMPTY_METADATA,
+            categories: { gridView: false, expanded: {} },
+          },
         },
       },
       releaseContacts([baseContact.id, '666', '42'], 'TEST_REFERENCE'),
@@ -490,10 +508,13 @@ describe('loadTranscriptReducer', () => {
         [baseContact.id]: {
           savedContact: baseContact,
           references: new Set(['x']),
-          categories: {
-            gridView: false,
-            expanded: {
-              category1: true,
+          metadata: {
+            ...VALID_EMPTY_METADATA,
+            categories: {
+              gridView: false,
+              expanded: {
+                category1: true,
+              },
             },
           },
         },
@@ -511,20 +532,23 @@ describe('toggleCategoryExpandedReducer', () => {
         [baseContact.id]: {
           savedContact: baseContact,
           references: new Set(['x']),
-          categories: {
-            gridView: false,
-            expanded: {
-              category1: true,
+          metadata: {
+            ...VALID_EMPTY_METADATA,
+            categories: {
+              gridView: false,
+              expanded: {
+                category1: true,
+              },
             },
           },
         },
       },
       toggleCategoryExpanded(baseContact.id, 'category1'),
     );
-    expect(newState[baseContact.id].categories.expanded.category1).toBe(false);
+    expect(newState[baseContact.id].metadata.categories.expanded.category1).toBe(false);
     expect(
       toggleCategoryExpandedReducer(newState, toggleCategoryExpanded(baseContact.id, 'category1'))[baseContact.id]
-        .categories.expanded.category1,
+        .metadata.categories.expanded.category1,
     ).toBe(true);
   });
   test("Contact loaded and category not present in expanded map - adds it in a 'true' state", () => {
@@ -533,15 +557,12 @@ describe('toggleCategoryExpandedReducer', () => {
         [baseContact.id]: {
           savedContact: baseContact,
           references: new Set('x'),
-          categories: {
-            gridView: false,
-            expanded: {},
-          },
+          metadata: VALID_EMPTY_METADATA,
         },
       },
       toggleCategoryExpanded(baseContact.id, 'category1'),
     );
-    expect(newState[baseContact.id].categories.expanded.category1).toBe(true);
+    expect(newState[baseContact.id].metadata.categories.expanded.category1).toBe(true);
   });
 
   test('Contact not loaded - noop', () => {
@@ -551,24 +572,27 @@ describe('toggleCategoryExpandedReducer', () => {
 });
 
 describe('setCategoriesGridViewReducer', () => {
-  test('Contact loaded - sets grivView state', () => {
+  test('Contact loaded - sets gridView state', () => {
     const newState = setCategoriesGridViewReducer(
       {
         [baseContact.id]: {
           savedContact: baseContact,
           references: new Set('x'),
-          categories: {
-            gridView: false,
-            expanded: {},
+          metadata: {
+            ...VALID_EMPTY_METADATA,
+            categories: {
+              gridView: false,
+              expanded: {},
+            },
           },
         },
       },
       setCategoriesGridView(baseContact.id, true),
     );
-    expect(newState[baseContact.id].categories.gridView).toBe(true);
+    expect(newState[baseContact.id].metadata.categories.gridView).toBe(true);
     expect(
-      setCategoriesGridViewReducer(newState, setCategoriesGridView(baseContact.id, false))[baseContact.id].categories
-        .gridView,
+      setCategoriesGridViewReducer(newState, setCategoriesGridView(baseContact.id, false))[baseContact.id].metadata
+        .categories.gridView,
     ).toBe(false);
   });
 

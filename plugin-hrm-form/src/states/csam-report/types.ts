@@ -53,10 +53,6 @@ export type CSAMReportStatus = {
   responseDescription: string;
 };
 
-export type CSAMActionForTask = {
-  taskId: string;
-};
-
 export type CSAMActionForContact = {
   contactId: string;
 };
@@ -65,29 +61,34 @@ type UpdateChildFormAction = {
   type: typeof UPDATE_FORM;
   reportType: typeof CSAMReportTypes.CHILD;
   form: ChildCSAMReportForm;
-} & (CSAMActionForContact | CSAMActionForTask);
+  contactId: string;
+};
 
 type UpdateCounselorFormAction = {
   type: typeof UPDATE_FORM;
   reportType: typeof CSAMReportTypes.COUNSELLOR;
   form: CounselorCSAMReportForm;
-} & (CSAMActionForContact | CSAMActionForTask);
+  contactId: string;
+};
 
 type UpdateStatusAction = {
   type: typeof UPDATE_STATUS;
   reportStatus: CSAMReportStatus;
-} & (CSAMActionForContact | CSAMActionForTask);
+  contactId: string;
+};
 
 type RemoveDraftCSAMReportAction = {
   type: typeof REMOVE_DRAFT_CSAM_REPORT;
   reportType?: CSAMReportType;
-} & (CSAMActionForContact | CSAMActionForTask);
+  contactId: string;
+};
 
 type NewDraftCSAMReport = {
   type: typeof NEW_DRAFT_CSAM_REPORT;
   reportType?: CSAMReportType;
   createForm?: boolean;
-} & (CSAMActionForContact | CSAMActionForTask);
+  contactId: string;
+};
 
 export type CSAMReportActionType =
   | UpdateChildFormAction
@@ -95,11 +96,6 @@ export type CSAMReportActionType =
   | UpdateStatusAction
   | RemoveDraftCSAMReportAction
   | NewDraftCSAMReport;
-
-export const isCSAMActionForContact = (
-  action: CSAMReportActionType,
-): action is CSAMReportActionType & CSAMActionForContact =>
-  typeof (action as CSAMActionForContact).contactId === 'string';
 
 export const isCounselorCSAMReportForm = (c: CSAMReportForm): c is CounselorCSAMReportForm => {
   return (c as CounselorCSAMReportForm) !== null;

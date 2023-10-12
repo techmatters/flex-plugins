@@ -75,8 +75,11 @@ export function contactForm(page: Page) {
   }
 
   return {
-    selectChildCallType: async () => {
+    selectChildCallType: async (allowSkip: boolean = false) => {
       const childCallTypeButton = selectors.childCallTypeButton();
+      if (!(await childCallTypeButton.isVisible({ timeout: 200 })) && allowSkip) {
+        return;
+      }
       await childCallTypeButton.click();
     },
     fill: async (tabs: ContactFormTab<any>[]) => {
@@ -94,8 +97,10 @@ export function contactForm(page: Page) {
       };
       await selectTab(tab);
 
-      if (saveAndAddToCase) await selectors.saveAndAddToCaseButton.click();
-      else await selectors.saveContactButton.click();
+      if (saveAndAddToCase) {
+        await selectors.saveAndAddToCaseButton.click();
+        await page.waitForResponse('**/connectToCase');
+      } else await selectors.saveContactButton.click();
 
       await selectors.tabButton(tab).waitFor({ state: 'detached' });
     },
