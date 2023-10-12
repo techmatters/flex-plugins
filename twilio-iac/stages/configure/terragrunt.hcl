@@ -17,7 +17,7 @@ include "root" {
 dependencies {
   paths = include.root.locals.use_local_state ? [] : [
     "../provision",
-    "../chatbot",
+    #"../chatbot",
   ]
 }
 

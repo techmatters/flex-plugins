@@ -30,7 +30,6 @@ import {
   // saveCaseBase,
 } from '../../states';
 import { cancelCase } from '../../services/CaseService';
-import { connectToCase } from '../../services/ContactService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { getActivitiesFromCase, getActivitiesFromContacts, isNoteActivity, sortActivities } from './caseActivities';
 import { getHelplineData } from './caseHelpers';
@@ -56,7 +55,6 @@ import AddEditCaseItem, { AddEditCaseItemProps } from './AddEditCaseItem';
 import ViewCaseItem from './ViewCaseItem';
 import { bindFileUploadCustomHandlers } from './documentUploadHandler';
 import { recordBackendError } from '../../fullStory';
-import { completeTask, submitContactForm } from '../../services/formSubmissionHelpers';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
 import { CenteredContainer } from '../../styles/case';
 import EditCaseSummary from './EditCaseSummary';
@@ -73,6 +71,8 @@ import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentif
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
+import { connectToCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
+import { ContactMetadata } from '../../states/contacts/types';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -105,6 +105,8 @@ const Case: React.FC<Props> = ({
   releaseContacts,
   cancelNewCase,
   updateCaseAsyncAction,
+  connectToCaseAsyncAction,
+  submitContactFormAsyncAction,
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
@@ -270,9 +272,7 @@ const Case: React.FC<Props> = ({
       updateCaseAsyncAction(connectedCase.id, {
         ...connectedCase,
       });
-      const savedContact = await submitContactForm(task, contact, metadata, connectedCase);
-      await connectToCase(savedContact.id, connectedCase.id);
-      await completeTask(task);
+      connectToCaseAsyncAction(task, contact, metadata, connectedCase, connectedCase.id);
     } catch (error) {
       console.error(error);
       recordBackendError('Save and End Case', error);
@@ -429,9 +429,9 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
   const { connectedCase } = caseState ?? {};
   const connectedContactIds = new Set((connectedCase?.connectedContacts ?? []).map(cc => cc.id as string));
-  const newSearchContact =
-    state[namespace][contactFormsBase].existingContacts[newContactTemporaryId(connectedCase)]?.savedContact;
+  const contact = state[namespace][contactFormsBase];
   const { definitionVersions, currentDefinitionVersion } = state[namespace][configurationBase];
+
   return {
     form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
     connectedCaseState: caseState,
@@ -443,12 +443,12 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     savedContacts: Object.values(state[namespace][contactFormsBase].existingContacts)
       .filter(contact => connectedContactIds.has(contact.savedContact.id))
       .map(ecs => ecs.savedContact),
-    newContact: newSearchContact,
+    newContact: contact.existingContacts[newContactTemporaryId(connectedCase)]?.savedContact,
   };
 };
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
-  const updateCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
+  const caseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   const cancelNewCase = (taskSid: string, loadedContactIds: string[]) => {
     dispatch(CaseActions.removeConnectedCase(taskSid));
     dispatch(
@@ -468,7 +468,20 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     loadContact: bindActionCreators(ContactActions.loadContact, dispatch),
     cancelNewCase,
     updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
-      updateCaseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
+      caseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
+    connectToCaseAsyncAction: (
+      task: CustomITask,
+      contact: Contact,
+      metadata: ContactMetadata,
+      caseForm: CaseType,
+      caseId: number,
+    ) => caseAsyncDispatch(connectToCaseAsyncAction(task, contact, metadata, caseForm, caseId)),
+    submitContactFormAsyncAction: (
+      task: CustomITask,
+      contact: Contact,
+      metadata: ContactMetadata,
+      caseForm: CaseType,
+    ) => caseAsyncDispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
   };
 };
 

@@ -38,7 +38,6 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
       setLoading(true);
       setShowButton(false);
 
-
       if (externalStoredRecording) {
         const mediaType = 'recording';
 
