@@ -37,7 +37,7 @@ locals {
         "friendly_name"  = "ECPAT"
       },
       non_counselling : {
-        "target_workers" = "1==0",
+        "target_workers" = "1==1",
         "friendly_name"  = "Non Counselling"
       },
       outside_operating_hours : {
