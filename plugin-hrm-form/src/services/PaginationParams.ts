@@ -16,7 +16,13 @@
 
 import { isNullOrUndefined } from '../utils';
 
-export function getQueryParams({ limit, offset, sortBy = undefined, sortDirection = undefined, helpline = undefined }) {
+export function getQueryParams({
+  limit,
+  offset,
+  sortBy = undefined,
+  sortDirection = undefined,
+  helpline = undefined,
+}): string {
   const hasLimit = !isNullOrUndefined(limit);
   const hasOffset = !isNullOrUndefined(offset);
   const hasSortBy = !isNullOrUndefined(sortBy);
@@ -28,5 +34,7 @@ export function getQueryParams({ limit, offset, sortBy = undefined, sortDirectio
   const appendSortBy = hasSortBy ? `sortBy=${sortBy}` : '';
   const appendSortDirection = hasSortDirection ? `sortDirection=${sortDirection}` : '';
   const appendHelpline = hasHelpline ? `helpline=${helpline}` : '';
-  return `?${[appendLimit, appendOffset, appendSortBy, appendSortDirection, appendHelpline].filter(e => e).join('&')}`;
+  return `?${[appendLimit, appendOffset, appendSortBy, appendSortDirection, appendHelpline, 'legacyFormat=false']
+    .filter(e => e)
+    .join('&')}`;
 }
