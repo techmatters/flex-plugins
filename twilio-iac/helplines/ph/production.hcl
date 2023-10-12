@@ -7,18 +7,18 @@ locals {
 
   local_config = {
 
-    flow_vars = {
-    service_sid                           = "ZS45d1a256ef1c4fa2112f7accc40306c5"
-    environment_sid                       = "ZE730f552b9429ca7a2105c822ef7faae4"
-    capture_channel_with_bot_function_sid = "ZH520142ac0ba1c7e75bc2a24ab5d8fce6"
-    operating_hours_function_sid          = "ZHc6798fb7d700cd812589cf202bb166ca"
+   flow_vars = {
+    service_sid                           = "ZSb150787b898e08503b14c152ff2d67c0"
+    environment_sid                       = "ZE23e7e655d8037662a53530e7fcc98ed2"
+    capture_channel_with_bot_function_sid = "ZHcca7605b98d421e9a6ca3056117cdf44"
+    operating_hours_function_sid          = "ZH6a5fd13e2faf9d0ff507b3dbdec53612"
   }
 
 
    channels = {
     facebook : {
       channel_type      = "facebook"
-      contact_identity  = "messenger:106378571968698"
+      contact_identity  = "messenger:550013548423077"
       templatefile      = "/app/twilio-iac/helplines/ph/templates/studio-flows/with-lex-chatbot.tftpl"
       channel_flow_vars = {}
       chatbot_unique_names = []
