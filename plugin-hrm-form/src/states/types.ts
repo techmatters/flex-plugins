@@ -16,6 +16,9 @@
 
 import type { DefinitionVersion } from 'hrm-form-definitions';
 
+import { Contact } from '../types/types';
+import { ContactMetadata } from './contacts/types';
+
 export type { DefinitionVersion };
 
 // Action types
@@ -23,21 +26,17 @@ export const INITIALIZE_CONTACT_STATE = 'INITIALIZE_CONTACT_STATE';
 export const RECREATE_CONTACT_STATE = 'RECREATE_CONTACT_STATE';
 export const REMOVE_CONTACT_STATE = 'REMOVE_CONTACT_STATE';
 
-type InitializeContactStateAction = {
+export type InitializeContactStateAction = {
   type: typeof INITIALIZE_CONTACT_STATE;
   definitions: DefinitionVersion;
-  taskId: string;
+  initialContact: Contact;
+  metadata: ContactMetadata;
+  references: string[];
+  recreated: boolean;
 };
 
-type RecreateContactStateAction = {
-  type: typeof RECREATE_CONTACT_STATE;
-  definitions: DefinitionVersion;
-  taskId: string;
-};
-
-type RemoveContactStateAction = {
+export type RemoveContactStateAction = {
   type: typeof REMOVE_CONTACT_STATE;
   taskId: string;
+  contactId: string;
 };
-
-export type GeneralActionType = InitializeContactStateAction | RecreateContactStateAction | RemoveContactStateAction;

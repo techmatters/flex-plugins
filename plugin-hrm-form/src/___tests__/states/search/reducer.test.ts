@@ -21,12 +21,12 @@ import { handleSearchFormChange } from '../../../states/search/actions';
 import { Contact, SearchCaseResult } from '../../../types/types';
 import {
   INITIALIZE_CONTACT_STATE,
-  RECREATE_CONTACT_STATE,
   REMOVE_CONTACT_STATE,
-  GeneralActionType,
+  InitializeContactStateAction,
+  RemoveContactStateAction,
 } from '../../../states/types';
 import { reduce, newTaskEntry } from '../../../states/search/reducer';
-import { VALID_EMPTY_CONTACT } from '../../testContacts';
+import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
 
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
 
@@ -42,9 +42,16 @@ describe('search reducer', () => {
 
   let state = null;
   test('INITIALIZE_CONTACT_STATE action (should create a new state)', () => {
-    const action: GeneralActionType = {
+    const action: InitializeContactStateAction = {
       type: INITIALIZE_CONTACT_STATE,
-      taskId: task.taskSid,
+      metadata: VALID_EMPTY_METADATA,
+      references: [],
+      recreated: false,
+      definitions: {} as any,
+      initialContact: {
+        ...VALID_EMPTY_CONTACT,
+        taskId: task.taskSid,
+      },
     };
 
     const result = reduce(initialState, action);
@@ -55,9 +62,16 @@ describe('search reducer', () => {
   });
 
   test('RECREATE_CONTACT_STATE action (should recreate the state)', () => {
-    const action: GeneralActionType = {
-      type: RECREATE_CONTACT_STATE,
-      taskId: task.taskSid,
+    const action: InitializeContactStateAction = {
+      type: INITIALIZE_CONTACT_STATE,
+      metadata: VALID_EMPTY_METADATA,
+      references: [],
+      recreated: true,
+      definitions: {} as any,
+      initialContact: {
+        ...VALID_EMPTY_CONTACT,
+        taskId: task.taskSid,
+      },
     };
 
     const result = reduce(initialState, action);
@@ -69,9 +83,16 @@ describe('search reducer', () => {
   });
 
   test('RECREATE_CONTACT_STATE action (should do nothing)', () => {
-    const action: GeneralActionType = {
-      type: RECREATE_CONTACT_STATE,
-      taskId: task.taskSid,
+    const action: InitializeContactStateAction = {
+      type: INITIALIZE_CONTACT_STATE,
+      metadata: VALID_EMPTY_METADATA,
+      references: [],
+      recreated: true,
+      definitions: {} as any,
+      initialContact: {
+        ...VALID_EMPTY_CONTACT,
+        taskId: task.taskSid,
+      },
     };
     const result1 = reduce(state, handleSearchFormChange(task.taskSid)('firstName', 'one value'));
 
@@ -86,7 +107,7 @@ describe('search reducer', () => {
   });
 
   test('REMOVE_CONTACT_STATE action', () => {
-    const action: GeneralActionType = { type: REMOVE_CONTACT_STATE, taskId: task.taskSid };
+    const action: RemoveContactStateAction = { type: REMOVE_CONTACT_STATE, taskId: task.taskSid, contactId: '' };
     const result = reduce(state, action);
 
     const { tasks } = result;

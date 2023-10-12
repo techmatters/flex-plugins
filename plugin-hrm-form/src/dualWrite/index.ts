@@ -32,8 +32,8 @@ const saveContactByDefinitionVersion: SaveContactByDefinitionVersion = {
 
 export const saveContactToExternalBackend = async (task: ITask, payload: any) => {
   const featureFlags = getAseloFeatureFlags();
-  const { definitionVersion } = getHrmConfig();
   if (!featureFlags.enable_dual_write) return;
+  const { definitionVersion } = getHrmConfig();
 
   const saveContact = saveContactByDefinitionVersion[definitionVersion];
   if (saveContact) {

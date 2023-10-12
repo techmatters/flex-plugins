@@ -21,8 +21,12 @@ import { ITask, TaskHelper, Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 import { callTypes, CallTypeButtonsEntry } from 'hrm-form-definitions';
 
-import { namespace, contactFormsBase, configurationBase, connectedCaseBase, RootState } from '../../states';
-import { updateCallType as newUpdateCallTypeAction } from '../../states/contacts/actions';
+import { namespace, configurationBase, connectedCaseBase, RootState } from '../../states';
+import {
+  ContactDraftChanges,
+  saveContactChangesInHrm,
+  updateDraft as newUpdateDraftAction,
+} from '../../states/contacts/existingContacts';
 import { changeRoute as newChangeRouteAction } from '../../states/routing/actions';
 import { withLocalization } from '../../contexts/LocalizationContext';
 import { Box, Flex } from '../../styles/HrmStyles';
@@ -32,11 +36,14 @@ import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
-import { CustomITask, Contact, isOfflineContactTask } from '../../types/types';
+import { CustomITask, isOfflineContactTask } from '../../types/types';
 import { getTemplateStrings } from '../../hrmConfig';
 import { AppRoutes } from '../../states/routing/types';
+import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
+import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 
-const isDialogOpen = (contact: Contact) => contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType);
+const isDialogOpen = (task: CustomITask, contact: ContactDraftChanges) =>
+  Boolean(!isOfflineContactTask(task) && contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType));
 
 type OwnProps = {
   task: CustomITask;
@@ -47,7 +54,8 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const CallTypeButtons: React.FC<Props> = ({
-  contact,
+  savedContact,
+  draftContact,
   metadata,
   task,
   localization,
@@ -56,6 +64,7 @@ const CallTypeButtons: React.FC<Props> = ({
   updateCallType,
   clearCallType,
   changeRoute,
+  saveContactChangesInHrm,
 }) => {
   const { isCallTask } = localization;
 
@@ -70,12 +79,12 @@ const CallTypeButtons: React.FC<Props> = ({
      *  TODO: We currently save the call type name in English if data or the label string if non-data.
      * I think we should actually save callType.name (instead of label) on the DB, and use it in here.
      */
-    const callType = callTypes[callTypeEntry.name] ? callTypes[callTypeEntry.name] : callTypeEntry.label;
+    const callType = callTypes[callTypeEntry.name] || callTypeEntry.label;
 
-    updateCallType(callType);
+    updateCallType(savedContact.id, callType);
   };
 
-  const handleClickAndRedirect = (callTypeEntry: CallTypeButtonsEntry) => {
+  const handleClickAndRedirect = async (callTypeEntry: CallTypeButtonsEntry) => {
     if (!hasTaskControl(task)) return;
 
     // eslint-disable-next-line no-nested-ternary
@@ -86,6 +95,9 @@ const CallTypeButtons: React.FC<Props> = ({
       : 'childInformation';
 
     handleClick(callTypeEntry);
+    await saveContactChangesInHrm(savedContact.id, {
+      rawJson: { callType: callTypes[callTypeEntry.name] || callTypeEntry.label },
+    });
     changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true });
   };
 
@@ -101,7 +113,7 @@ const CallTypeButtons: React.FC<Props> = ({
     if (!hasTaskControl(task)) return;
 
     try {
-      await submitContactForm(task, contact, metadata, caseForm);
+      await submitContactForm(task, getUnsavedContact(savedContact, draftContact), metadata, caseForm);
       await completeTask(task);
     } catch (error) {
       const strings = getTemplateStrings();
@@ -156,11 +168,11 @@ const CallTypeButtons: React.FC<Props> = ({
         </Box>
       </Container>
       <NonDataCallTypeDialog
-        isOpen={isDialogOpen(contact)}
+        isOpen={isDialogOpen(task, draftContact)}
         isCallTask={!isOfflineContactTask(task) && isCallTask(task)}
         isInWrapupMode={!isOfflineContactTask(task) && TaskHelper.isInWrapupMode(task)}
         handleConfirm={handleConfirmNonDataCallType}
-        handleCancel={() => clearCallType()}
+        handleCancel={() => clearCallType(savedContact?.id)}
       />
     </>
   );
@@ -169,18 +181,21 @@ const CallTypeButtons: React.FC<Props> = ({
 CallTypeButtons.displayName = 'CallTypeButtons';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const { contact, metadata } = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid] ?? {};
+  const { savedContact, metadata, draftContact } = findContactByTaskSid(state, ownProps.task.taskSid) ?? {};
   const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
   const caseForm = caseState && caseState.connectedCase;
   const { currentDefinitionVersion } = state[namespace][configurationBase];
 
-  return { contact, metadata, caseForm, currentDefinitionVersion };
+  return { savedContact, draftContact, metadata, caseForm, currentDefinitionVersion };
 };
 
 const mapDispatchToProps = (dispatch, { task: { taskSid } }: OwnProps) => ({
   changeRoute: (route: AppRoutes) => dispatch(newChangeRouteAction(route, taskSid)),
-  updateCallType: (callType: string) => dispatch(newUpdateCallTypeAction(taskSid, callType)),
-  clearCallType: () => dispatch(newUpdateCallTypeAction(taskSid, null)),
+  saveContactChangesInHrm: (contactId: string, changes: ContactDraftChanges) =>
+    saveContactChangesInHrm(contactId, changes, dispatch, taskSid),
+  updateCallType: (contactId: string, callType: string) =>
+    dispatch(newUpdateDraftAction(contactId, { rawJson: { callType } })),
+  clearCallType: (contactId: string) => dispatch(newUpdateDraftAction(contactId, { rawJson: { callType: null } })),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

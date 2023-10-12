@@ -63,7 +63,6 @@ import {
   updateCaseSectionWorkingCopy,
 } from '../../states/case/caseWorkingCopy';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
-import { transformValues } from '../../states/contacts/contactDetailsAdapter';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
 

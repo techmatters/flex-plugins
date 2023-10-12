@@ -21,8 +21,10 @@ import { callTypes, FormDefinition, FormItemDefinition } from 'hrm-form-definiti
 import { LexMemory, AutopilotMemory } from '../types/types';
 import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
-import { prepopulateForm as prepopulateFormAction } from '../states/contacts/actions';
 import { getDefinitionVersions } from '../hrmConfig';
+import { RootState } from '../states';
+import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
+import { ContactDraftChanges, saveContactChangesInHrm } from '../states/contacts/existingContacts';
 
 const getUnknownOption = (key: string, definition: FormDefinition) => {
   const inputDef = definition.find(e => e.name === key);
@@ -173,17 +175,23 @@ const getAnswers = (memory: LexMemory | AutopilotMemory): PreSurveyAnswers => {
   return memory as LexMemory;
 };
 
+// TODO: Rework this function to build up the prepopulated contact in memory then save it to HRM, rather than saving an empty contact then prepopulating the draft state
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export const prepopulateForm = (task: ITask) => {
-  const { memory, preEngagementData } = task.attributes;
-
-  if (!memory && !preEngagementData) return;
-
+export const prepopulateForm = async (task: ITask) => {
+  const { dispatch } = Manager.getInstance().store;
   const { currentDefinitionVersion } = getDefinitionVersions();
   if (!currentDefinitionVersion) {
     console.warn('Attempting to prepopulate a form but no definition has been loaded, abandoning attempt.');
     return;
   }
+
+  const createdContact = findContactByTaskSid(Manager.getInstance().store.getState() as RootState, task.taskSid)
+    .savedContact;
+
+  const { memory, preEngagementData } = task.attributes;
+
+  if (!memory && !preEngagementData) return;
+
   const { tabbedForms, prepopulateKeys } = currentDefinitionVersion;
   const { ChildInformationTab, CallerInformationTab, CaseInformationTab } = tabbedForms;
   const { preEngagement, survey } = prepopulateKeys;
@@ -196,7 +204,13 @@ export const prepopulateForm = (task: ITask) => {
       ChildInformationTab,
       preEngagement.ChildInformationTab,
     );
-    Manager.getInstance().store.dispatch(prepopulateFormAction(callTypes.child, childInfoValues, task.taskSid));
+
+    await saveContactChangesInHrm(
+      createdContact.id,
+      { rawJson: { callType: callTypes.child, childInformation: childInfoValues } },
+      dispatch,
+      task.taskSid,
+    );
     // Open tabbed form to first tab
     Manager.getInstance().store.dispatch(
       RoutingActions.changeRoute(
@@ -213,17 +227,22 @@ export const prepopulateForm = (task: ITask) => {
   const isAboutSelf = answers.aboutSelf === 'Yes';
   // eslint-disable-next-line no-nested-ternary
   const callType = isValidSurvey ? (isAboutSelf ? callTypes.child : callTypes.caller) : null;
+  const formName = callType === callTypes.child ? 'childInformation' : 'callerInformation';
   const tabFormDefinition = isAboutSelf ? ChildInformationTab : CallerInformationTab;
   const prepopulateSurveyKeys = isAboutSelf ? survey.ChildInformationTab : survey.CallerInformationTab;
   const subroute = isAboutSelf ? 'childInformation' : 'callerInformation';
 
   const surveyValues = getValuesFromAnswers(task, answers, tabFormDefinition, prepopulateSurveyKeys);
 
-  // When a helpline has survey and no preEnagagement form
+  // When a helpline has survey and no preEngagement form
   if (memory && !preEngagementData) {
     if (callType) {
-      Manager.getInstance().store.dispatch(prepopulateFormAction(callType, surveyValues, task.taskSid));
-
+      await saveContactChangesInHrm(
+        createdContact.id,
+        { rawJson: { callType, [formName]: surveyValues } },
+        dispatch,
+        task.taskSid,
+      );
       // Open tabbed form to first tab
       Manager.getInstance().store.dispatch(
         RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
@@ -233,16 +252,15 @@ export const prepopulateForm = (task: ITask) => {
     return;
   }
 
-  // When a helpline has survey and preEnagagement form to populate
+  // When a helpline has survey and preEngagement form to populate
   if (memory && preEngagementData) {
+    const changes: ContactDraftChanges = { rawJson: {} };
     if (preEngagement.CaseInformationTab.length > 0) {
-      const caseInfoValues = getValuesFromPreEngagementData(
+      changes.rawJson.caseInformation = getValuesFromPreEngagementData(
         preEngagementData,
         CaseInformationTab,
         preEngagement.CaseInformationTab,
       );
-
-      Manager.getInstance().store.dispatch(prepopulateFormAction(callType, caseInfoValues, task.taskSid, true));
     }
 
     if (callType) {
@@ -255,7 +273,10 @@ export const prepopulateForm = (task: ITask) => {
         prepopulatePreengagementKeys,
       );
       const values = { ...surveyValues, ...preEngagementValues };
-      Manager.getInstance().store.dispatch(prepopulateFormAction(callType, values, task.taskSid));
+      changes.rawJson.callType = callType;
+      changes.rawJson[formName] = values;
+
+      await saveContactChangesInHrm(createdContact.id, changes, dispatch, task.taskSid);
 
       // Open tabbed form to first tab
       Manager.getInstance().store.dispatch(

@@ -38,7 +38,7 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import ViewContact from './ViewContact';
-import { Activity, CaseDetails, ConnectedCaseActivity, NoteActivity } from '../../states/case/types';
+import { Activity, CaseDetails, NoteActivity } from '../../states/case/types';
 import { Case as CaseType, CustomITask, Contact, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import {
@@ -66,13 +66,13 @@ import { referralSectionApi } from '../../states/case/sections/referral';
 import { noteSectionApi } from '../../states/case/sections/note';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import * as ContactActions from '../../states/contacts/existingContacts';
-import { ChannelTypes } from '../../states/DomainConstants';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import { connectToCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
+import { connectToCase } from '../../services/ContactService';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -82,30 +82,27 @@ type OwnProps = {
   task: CustomITask | StandaloneITask;
   isCreating?: boolean;
   handleClose?: () => void;
+  onNewCaseSaved?: (caseForm: CaseType) => Promise<void>;
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const newContactTemporaryId = (connectedCase: CaseType) => `__unsavedFromCase:${connectedCase?.id}`;
-
 const Case: React.FC<Props> = ({
   task,
-  form: { contact, metadata } = {},
   counselorsHash,
   removeConnectedCase,
   changeRoute,
   isCreating,
   handleClose,
   routing,
-  newContact,
   savedContacts,
-  loadContact,
   loadContacts,
   releaseContacts,
   cancelNewCase,
   updateCaseAsyncAction,
-  connectToCaseAsyncAction,
+  onNewCaseSaved = () => Promise.resolve(),
+  disconnectFromCase,
   submitContactFormAsyncAction,
   ...props
 }) => {
@@ -135,42 +132,19 @@ const Case: React.FC<Props> = ({
         ),
         ...getActivitiesFromContacts(savedContacts ?? []),
       ];
-
-      if (newContact && !isStandaloneITask(task)) {
-        const connectCaseActivity: ConnectedCaseActivity = {
-          contactId: newContact.id,
-          date: newContact.timeOfContact,
-          createdAt: new Date().toISOString(),
-          type: task.channelType,
-          text: newContact.rawJson.caseInformation.callSummary.toString(),
-          twilioWorkerId: workerSid,
-          channel:
-            task.channelType === 'default'
-              ? newContact.rawJson.contactlessTask.channel
-              : (task.channelType as ChannelTypes),
-          callType: newContact.rawJson.callType,
-        };
-
-        timelineActivities.push(connectCaseActivity);
-      }
       return sortActivities(timelineActivities);
     },
     // savedContacts is not present but savedContactsJson is
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [newContact, savedContactsJson, task, contact, props.connectedCaseId, props.connectedCaseState?.connectedCase],
+    [savedContactsJson, task, props.connectedCaseId, props.connectedCaseState?.connectedCase],
   );
 
   useEffect(() => {
     if (!connectedCase) return;
-    const { connectedContacts } = connectedCase;
-    if (connectedContacts?.length) {
-      loadContacts(connectedContacts, task.taskSid);
-      setLoadedContactIds(connectedContacts.map(cc => cc.id));
-    } else if (!isStandaloneITask(task)) {
-      setLoadedContactIds([newContactTemporaryId(connectedCase)]);
-      loadContact(contact, task.taskSid);
-    }
-  }, [connectedCase, contact, loadContact, loadContacts, releaseContacts, task, workerSid]);
+    const { connectedContacts = [] } = connectedCase;
+    loadContacts(connectedContacts, `case-${connectedCase.id}`);
+    setLoadedContactIds(connectedContacts.map(cc => cc.id));
+  }, [connectedCase, loadContacts, releaseContacts, task, workerSid]);
 
   const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;
@@ -213,15 +187,12 @@ const Case: React.FC<Props> = ({
   if (!props.connectedCaseState || !definitionVersion) return null;
 
   const getCategories = (firstConnectedContact: Contact): Record<string, string[]> => {
-    if (firstConnectedContact?.rawJson) {
-      return firstConnectedContact.rawJson.categories;
-    }
-    return contact?.rawJson?.categories;
+    return firstConnectedContact?.rawJson.categories ?? {};
   };
 
   const { can } = getPermissionsForCase(connectedCase.twilioWorkerId, connectedCase.status);
 
-  const firstConnectedContact = (savedContacts && savedContacts[0]) ?? newContact;
+  const firstConnectedContact = savedContacts && savedContacts[0];
 
   const categories = getCategories(firstConnectedContact) ?? {};
   const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase || {};
@@ -257,8 +228,10 @@ const Case: React.FC<Props> = ({
   };
 
   const handleCancelNewCaseAndClose = async () => {
+    // TODO: migrate to redux
+    await Promise.all(loadedContactIds.map(id => disconnectFromCase(id)));
     await cancelCase(connectedCase.id);
-    cancelNewCase(task.taskSid, loadedContactIds);
+    cancelNewCase(connectedCase.id, loadedContactIds);
   };
 
   const handleSaveAndEnd = async () => {
@@ -268,11 +241,11 @@ const Case: React.FC<Props> = ({
     if (isStandaloneITask(task)) return;
 
     try {
-      releaseContacts(loadedContactIds, task.taskSid);
+      releaseContacts(loadedContactIds, `case-${connectedCase.id}`);
       updateCaseAsyncAction(connectedCase.id, {
         ...connectedCase,
       });
-      connectToCaseAsyncAction(task, contact, metadata, connectedCase, connectedCase.id);
+      await onNewCaseSaved(connectedCase);
     } catch (error) {
       console.error(error);
       recordBackendError('Save and End Case', error);
@@ -429,11 +402,9 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
   const { connectedCase } = caseState ?? {};
   const connectedContactIds = new Set((connectedCase?.connectedContacts ?? []).map(cc => cc.id as string));
-  const contact = state[namespace][contactFormsBase];
   const { definitionVersions, currentDefinitionVersion } = state[namespace][configurationBase];
 
   return {
-    form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
     connectedCaseState: caseState,
     connectedCaseId: connectedCase?.id,
     counselorsHash: state[namespace][configurationBase].counselors.hash,
@@ -443,18 +414,18 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     savedContacts: Object.values(state[namespace][contactFormsBase].existingContacts)
       .filter(contact => connectedContactIds.has(contact.savedContact.id))
       .map(ecs => ecs.savedContact),
-    newContact: contact.existingContacts[newContactTemporaryId(connectedCase)]?.savedContact,
   };
 };
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
   const caseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
-  const cancelNewCase = (taskSid: string, loadedContactIds: string[]) => {
+  const cancelNewCase = (caseId: number, loadedContactIds: string[]) => {
+    const { taskSid } = task;
     dispatch(CaseActions.removeConnectedCase(taskSid));
     dispatch(
       RoutingActions.changeRoute({ route: 'tabbed-forms', subroute: 'caseInformation', autoFocus: true }, taskSid),
     );
-    dispatch(ContactActions.releaseContacts(loadedContactIds, taskSid));
+    dispatch(ContactActions.releaseContacts(loadedContactIds, `case-${caseId}`));
   };
   const updateCaseDefinition = (connectedCase: CaseType, taskSid: string, definition) => {
     dispatch(ConfigActions.updateDefinitionVersion(connectedCase.info.definitionVersion, definition));
@@ -469,13 +440,7 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     cancelNewCase,
     updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
       caseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
-    connectToCaseAsyncAction: (
-      task: CustomITask,
-      contact: Contact,
-      metadata: ContactMetadata,
-      caseForm: CaseType,
-      caseId: number,
-    ) => caseAsyncDispatch(connectToCaseAsyncAction(task, contact, metadata, caseForm, caseId)),
+    disconnectFromCase: (contactId: string) => caseAsyncDispatch(connectToCaseAsyncAction(contactId, null)),
     submitContactFormAsyncAction: (
       task: CustomITask,
       contact: Contact,

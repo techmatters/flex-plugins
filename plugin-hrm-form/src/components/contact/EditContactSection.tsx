@@ -28,7 +28,6 @@ import { Box, StyledNextStepButton, BottomButtonBar, Row, HiddenText, HeaderClos
 import { CaseActionTitle, EditContactContainer } from '../../styles/case';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-import { ContactDetailsSectionFormApi } from './contactDetailsSectionFormApi';
 import { clearDraft, refreshContact } from '../../states/contacts/existingContacts';
 import CloseCaseDialog from '../case/CloseCaseDialog';
 import * as t from '../../states/contacts/actions';
@@ -40,7 +39,6 @@ import { updateContactsFormInHrmAsyncAction } from '../../states/contacts/saveCo
 type OwnProps = {
   context: DetailsContext;
   contactId: string;
-  contactDetailsSectionForm?: ContactDetailsSectionFormApi;
   children: React.ReactNode;
   tabPath: keyof ContactRawJson;
 };
@@ -53,7 +51,6 @@ const EditContactSection: React.FC<Props> = ({
   draftContact,
   contactId,
   definitionVersions,
-  contactDetailsSectionForm,
   setEditContactPageOpen,
   setEditContactPageClosed,
   tabPath,
@@ -97,7 +94,7 @@ const EditContactSection: React.FC<Props> = ({
       'categories' | 'callerInformation' | 'caseInformation' | 'childInformation'
     >> = draftContact.rawJson;
     try {
-      updateContactsFormInHrmAsyncAction(contactId, payload, savedContact.helpline);
+      updateContactsFormInHrmAsyncAction(contactId, payload);
     } catch (error) {
       setSubmitting(false);
       recordBackendError('Open New Case', error);
@@ -203,8 +200,8 @@ const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string,
     clearContactDraft: () => {
       dispatch(clearDraft(contactId));
     },
-    updateContactsFormInHrmAsyncAction: (contactId: string, body: Partial<ContactRawJson>, helpline: string) =>
-      updateContactAsyncDispatch(updateContactsFormInHrmAsyncAction(contactId, body, helpline)),
+    updateContactsFormInHrmAsyncAction: (contactId: string, body: Partial<ContactRawJson>) =>
+      updateContactAsyncDispatch(updateContactsFormInHrmAsyncAction(contactId, body)),
   };
 };
 

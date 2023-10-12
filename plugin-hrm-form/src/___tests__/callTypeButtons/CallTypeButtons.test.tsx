@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import * as React from 'react';
 import renderer from 'react-test-renderer';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
@@ -30,8 +30,14 @@ import { DataCallTypeButton, NonDataCallTypeButton, ConfirmButton, CancelButton 
 import LocalizationContext from '../../contexts/LocalizationContext';
 import { namespace, contactFormsBase, connectedCaseBase, configurationBase } from '../../states';
 import { changeRoute } from '../../states/routing/actions';
-import { updateCallType } from '../../states/contacts/actions';
+import { saveContactChangesInHrm, updateDraft } from '../../states/contacts/existingContacts';
 import { completeTask, submitContactForm } from '../../services/formSubmissionHelpers';
+import { Contact } from '../../types/types';
+
+jest.mock('../../states/contacts/existingContacts', () => ({
+  ...jest.requireActual('../../states/contacts/existingContacts'),
+  saveContactChangesInHrm: jest.fn(),
+}));
 
 jest.mock('../../services/ContactService', () => ({
   saveContact: jest.fn(),
@@ -123,9 +129,13 @@ test('<CallTypeButtons> inital render (no dialog)', () => {
   const initialState = {
     [namespace]: {
       [contactFormsBase]: {
-        tasks: {
-          [task.taskSid]: {
-            callType: '',
+        existingContacts: {
+          contact1: {
+            savedContact: {
+              id: 'contact1',
+              callType: '',
+              taskId: task.taskSid,
+            },
           },
         },
       },
@@ -147,7 +157,6 @@ test('<CallTypeButtons> inital render (no dialog)', () => {
     </LocalizationContext.Provider>,
   ).root;
 
-  expect(() => component.findByType(CloseTaskDialogText)).toThrow();
   expect(() => component.findAllByType(DataCallTypeButton)).not.toThrow();
   expect(() => component.findAllByType(NonDataCallTypeButton)).not.toThrow();
 });
@@ -158,9 +167,13 @@ test('<CallTypeButtons> renders dialog with all buttons', () => {
   const initialState = {
     [namespace]: {
       [contactFormsBase]: {
-        tasks: {
-          [task.taskSid]: {
-            callType: 'child',
+        existingContacts: {
+          contact1: {
+            savedContact: {
+              id: 'contact1',
+              callType: 'child',
+              taskId: task.taskSid,
+            },
           },
         },
       },
@@ -198,9 +211,13 @@ test('<CallTypeButtons> renders dialog with END CHAT button', () => {
   const initialState = {
     [namespace]: {
       [contactFormsBase]: {
-        tasks: {
-          [task.taskSid]: {
-            callType: 'child',
+        existingContacts: {
+          contact1: {
+            savedContact: {
+              id: 'contact1',
+              callType: 'child',
+              taskId: task.taskSid,
+            },
           },
         },
       },
@@ -232,9 +249,13 @@ test('<CallTypeButtons> renders dialog with HANG UP button', () => {
   const initialState = {
     [namespace]: {
       [contactFormsBase]: {
-        tasks: {
-          [task.taskSid]: {
-            callType: 'child',
+        existingContacts: {
+          contact1: {
+            savedContact: {
+              id: 'contact1',
+              callType: 'child',
+              taskId: task.taskSid,
+            },
           },
         },
       },
@@ -262,13 +283,18 @@ test('<CallTypeButtons> renders dialog with HANG UP button', () => {
   expect(confirmButtonText.type).toStrictEqual(withEndCall.type);
 });
 
-test('<CallTypeButtons> click on Data (Child) button', () => {
+test('<CallTypeButtons> click on Data (Child) button', async () => {
+  (saveContactChangesInHrm as jest.MockedFunction<typeof saveContactChangesInHrm>).mockResolvedValue({} as Contact);
   const initialState = {
     [namespace]: {
       [contactFormsBase]: {
-        tasks: {
-          [task.taskSid]: {
-            callType: 'child',
+        existingContacts: {
+          contact1: {
+            savedContact: {
+              id: 'contact1',
+              callType: 'child',
+              taskId: task.taskSid,
+            },
           },
         },
       },
@@ -293,20 +319,25 @@ test('<CallTypeButtons> click on Data (Child) button', () => {
 
   expect(screen.getByText('Child calling about self')).toBeInTheDocument();
   screen.getByText('Child calling about self').click();
-
-  expect(store.dispatch).toHaveBeenCalledWith(updateCallType(task.taskSid, callTypes.child));
-  expect(store.dispatch).toHaveBeenCalledWith(
-    changeRoute({ route: 'tabbed-forms', subroute: 'childInformation', autoFocus: true }, task.taskSid),
-  );
+  await waitFor(() => {
+    expect(store.dispatch).toHaveBeenCalledWith(updateDraft('contact1', { rawJson: { callType: callTypes.child } }));
+    expect(store.dispatch).toHaveBeenCalledWith(
+      changeRoute({ route: 'tabbed-forms', subroute: 'childInformation', autoFocus: true }, task.taskSid),
+    );
+  });
 });
 
 test('<CallTypeButtons> click on NonData (Joke) button', () => {
   const initialState = {
     [namespace]: {
       [contactFormsBase]: {
-        tasks: {
-          [task.taskSid]: {
-            callType: 'child',
+        existingContacts: {
+          contact1: {
+            savedContact: {
+              id: 'contact1',
+              callType: 'child',
+              taskId: task.taskSid,
+            },
           },
         },
       },
@@ -332,16 +363,20 @@ test('<CallTypeButtons> click on NonData (Joke) button', () => {
   expect(screen.getByText('Joke')).toBeInTheDocument();
   screen.getByText('Joke').click();
 
-  expect(store.dispatch).toHaveBeenCalledWith(updateCallType(task.taskSid, 'Joke'));
+  expect(store.dispatch).toHaveBeenCalledWith(updateDraft('contact1', { rawJson: { callType: 'Joke' } }));
 });
 
 test('<CallTypeButtons> click on END CHAT button', async () => {
   const initialState = {
     [namespace]: {
       [contactFormsBase]: {
-        tasks: {
-          [task.taskSid]: {
-            callType: 'blank',
+        existingContacts: {
+          contact1: {
+            savedContact: {
+              id: 'contact1',
+              callType: 'blank',
+              taskId: task.taskSid,
+            },
           },
         },
       },
@@ -375,9 +410,9 @@ test('<CallTypeButtons> click on CANCEL button', () => {
   const initialState = {
     [namespace]: {
       [contactFormsBase]: {
-        tasks: {
-          [task.taskSid]: {
-            callType: '',
+        existingContacts: {
+          contact1: {
+            savedContact: { id: 'contact1', callType: '', taskId: task.taskSid },
           },
         },
       },

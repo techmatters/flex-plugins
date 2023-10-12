@@ -19,8 +19,7 @@ import React from 'react';
 import { Actions, Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { namespace, RootState, routingBase, contactFormsBase } from '../../states';
-import { offlineContactTaskSid } from '../../types/types';
+import { namespace, RootState, routingBase } from '../../states';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 import {
   OfflineContactTaskContent,
@@ -32,6 +31,9 @@ import {
   Box,
   HeaderContainer,
 } from '../../styles/HrmStyles';
+import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
+import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
+import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 
 type OwnProps = { selectedTaskSid?: string };
 
@@ -76,10 +78,13 @@ const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedT
 
 OfflineContactTask.displayName = 'OfflineContactTask';
 
-const mapStateToProps = (state: RootState) => ({
-  isAddingOfflineContact: state[namespace][routingBase].isAddingOfflineContact,
-  offlineContactForms: state[namespace][contactFormsBase].tasks[offlineContactTaskSid]?.contact?.rawJson,
-});
+const mapStateToProps = (state: RootState) => {
+  const { savedContact, draftContact } = findContactByTaskSid(state, getOfflineContactTaskSid()) || {};
+  return {
+    isAddingOfflineContact: state[namespace][routingBase].isAddingOfflineContact,
+    offlineContactForms: savedContact ? getUnsavedContact(savedContact, draftContact).rawJson : undefined,
+  };
+};
 
 const connector = connect(mapStateToProps);
 

@@ -18,7 +18,7 @@ import * as t from '../../../states/csam-report/types';
 import * as actions from '../../../states/csam-report/actions';
 import { CSAMReportTypes } from '../../../states/csam-report/types';
 
-const task = { taskSid: 'task-sid' };
+const contactId = 'contact-1';
 
 describe('test action creators', () => {
   test('updateCounsellorFormAction', async () => {
@@ -31,10 +31,10 @@ describe('test action creators', () => {
       email: '',
     };
 
-    expect(actions.updateCounsellorFormAction(form, task.taskSid)).toEqual({
+    expect(actions.updateCounsellorFormActionForContact(form, contactId)).toEqual({
       type: t.UPDATE_FORM,
       form,
-      taskId: task.taskSid,
+      contactId,
       reportType: CSAMReportTypes.COUNSELLOR,
     });
   });
@@ -46,17 +46,17 @@ describe('test action creators', () => {
       responseDescription: '',
     };
 
-    expect(actions.updateStatusAction(reportStatus, task.taskSid)).toEqual({
+    expect(actions.updateStatusActionForContact(reportStatus, contactId)).toEqual({
       type: t.UPDATE_STATUS,
       reportStatus,
-      taskId: task.taskSid,
+      contactId,
     });
   });
 
   test('removeCSAMReportAction', async () => {
-    expect(actions.removeCSAMReportAction(task.taskSid)).toEqual({
+    expect(actions.removeCSAMReportActionForContact(contactId)).toEqual({
       type: t.REMOVE_DRAFT_CSAM_REPORT,
-      taskId: task.taskSid,
+      contactId,
     });
   });
 });

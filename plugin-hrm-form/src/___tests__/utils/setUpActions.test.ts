@@ -15,15 +15,19 @@
  */
 
 /* eslint-disable camelcase */
-import { ITask, ChatOrchestrator } from '@twilio/flex-ui';
+import { ITask, ChatOrchestrator, Manager } from '@twilio/flex-ui';
 
 import { afterCompleteTask, excludeDeactivateConversationOrchestration } from '../../utils/setUpActions';
 import { REMOVE_CONTACT_STATE } from '../../states/types';
 import { FeatureFlags } from '../../types/types';
+import { namespace } from '../../states';
+
+const taskSid = 'THIS IS THE TASK SID!';
 
 const mockFlexManager = {
   store: {
     dispatch: jest.fn(),
+    getState: jest.fn(),
   },
 };
 
@@ -34,7 +38,10 @@ jest.mock('@twilio/flex-ui', () => ({
   },
 }));
 
-jest.mock('../../states', () => ({}));
+jest.mock('../../states', () => ({
+  contactFormsBase: jest.requireActual('../../states').contactFormsBase,
+  namespace: jest.requireActual('../../states').namespace,
+}));
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -42,14 +49,30 @@ afterEach(() => {
 
 describe('afterCompleteTask', () => {
   test('Dispatches a removeContactState action with the specified taskSid', () => {
+    (mockFlexManager.store.getState as jest.Mock).mockReturnValue({
+      [namespace]: {
+        activeContacts: {
+          existingContacts: {
+            1234: {
+              savedContact: {
+                id: '1234',
+                taskId: taskSid,
+              },
+            },
+          },
+        },
+      },
+    });
+    console.log('Fake state', Manager.getInstance().store.getState());
     afterCompleteTask({
       task: <ITask>{
-        taskSid: 'THIS IS THE TASK SID!',
+        taskSid,
       },
     });
     expect(mockFlexManager.store.dispatch).toHaveBeenCalledWith({
       type: REMOVE_CONTACT_STATE,
-      taskId: 'THIS IS THE TASK SID!',
+      taskId: taskSid,
+      contactId: '1234',
     });
   });
 });
