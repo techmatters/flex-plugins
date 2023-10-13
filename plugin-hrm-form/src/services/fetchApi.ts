@@ -37,17 +37,20 @@ export const generateUrl = (baseUrl: URL, endpointPath: string): URL => {
   return new URL(path.join(baseUrl.pathname, endpointPath), baseUrl);
 };
 
+export type FetchOptions = RequestInit & {
+  returnNullFor404?: boolean;
+};
+
 /**
  * Low level fetch wrapper to provide some sensible defaults & rudimentary error handling
  * You would normally wrap this rather than calling it directly, see fetchProtectedApi & fetchHrmApi
  * @param baseUrl
  * @param endpointPath
- * @param token
  * @param options
  */
-export const fetchApi = async (baseUrl: URL, endpointPath: string, options: RequestInit): Promise<any> => {
+export const fetchApi = async (baseUrl: URL, endpointPath: string, options: FetchOptions): Promise<any> => {
   const url = generateUrl(baseUrl, endpointPath);
-
+  const { returnNullFor404, ...requestInit } = options;
   const defaultOptions = {
     method: 'GET',
     headers: {
@@ -57,10 +60,10 @@ export const fetchApi = async (baseUrl: URL, endpointPath: string, options: Requ
 
   const finalOptions = {
     ...defaultOptions,
-    ...options,
+    ...requestInit,
     headers: {
       ...defaultOptions.headers,
-      ...options.headers,
+      ...requestInit.headers,
     },
   };
   let response: Response;
@@ -76,6 +79,9 @@ export const fetchApi = async (baseUrl: URL, endpointPath: string, options: Requ
       body = await response.json();
     } catch (err) {
       body = await response.text();
+    }
+    if (returnNullFor404 && response.status === 404) {
+      return undefined;
     }
     throw new ApiError(`Error response: ${response.status} (${response.statusText})`, { response, body });
   }

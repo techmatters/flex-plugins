@@ -17,7 +17,6 @@
 import { Dispatch } from 'react';
 
 import * as CSAMAction from '../../states/csam-report/actions';
-import * as ContactAction from '../../states/contacts/actions';
 import { csamReportBase, namespace, RootState, routingBase } from '../../states';
 import { changeRoute } from '../../states/routing/actions';
 import { AppRoutes } from '../../states/routing/types';
@@ -34,11 +33,7 @@ import {
 import { addExternalReportEntry } from '../../states/csam-report/existingContactExternalReport';
 import { acknowledgeCSAMReport, createCSAMReport } from '../../services/CSAMReportService';
 import { reportToIWF, selfReportToIWF } from '../../services/ServerlessService';
-import {
-  removeCSAMReportAction,
-  newCSAMReportAction,
-  newCSAMReportActionForContact,
-} from '../../states/csam-report/actions';
+import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 
 export enum CSAMPage {
   ReportTypePicker = 'report-type-picker',
@@ -108,7 +103,7 @@ const saveChildReport = async (
 const saveReport = async (
   state: CSAMReportStateEntry,
   twilioWorkerId: string,
-  contactId?: string,
+  contactId: string,
 ): Promise<SaveReportResponse> => {
   const numberContactId = contactId ? Number.parseInt(contactId, 10) : undefined;
   if (Number.isNaN(numberContactId)) {
@@ -124,7 +119,7 @@ const saveReport = async (
   throw new Error('Invalid CSAM state, cannot be saved');
 };
 
-export const newContactCSAMApi = (taskSid: string, previousRoute: AppRoutes): CSAMReportApi => ({
+export const newContactCSAMApi = (contactId: string, taskSid: string, previousRoute: AppRoutes): CSAMReportApi => ({
   currentPage: (state: RootState) => {
     const { subroute, route } = state[namespace][routingBase].tasks[taskSid];
     if (route === 'csam-report') {
@@ -133,12 +128,12 @@ export const newContactCSAMApi = (taskSid: string, previousRoute: AppRoutes): CS
     }
     return undefined;
   },
-  reportState: (state: RootState) => state[namespace][csamReportBase].tasks[taskSid],
+  reportState: (state: RootState) => state[namespace][csamReportBase].contacts[contactId],
   navigationActionDispatcher: dispatch => (page, reportType) => {
     if (page === CSAMPage.ReportTypePicker) {
-      dispatch(CSAMAction.newCSAMReportAction(taskSid, reportType, false));
+      dispatch(CSAMAction.newCSAMReportActionForContact(contactId, reportType, false));
     } else if (page === CSAMPage.Form) {
-      dispatch(CSAMAction.newCSAMReportAction(taskSid, reportType, true));
+      dispatch(CSAMAction.newCSAMReportActionForContact(contactId, reportType, true));
     }
     dispatch(
       changeRoute(
@@ -152,23 +147,24 @@ export const newContactCSAMApi = (taskSid: string, previousRoute: AppRoutes): CS
     );
   },
   exitActionDispatcher: dispatch => () => {
-    dispatch(removeCSAMReportAction(taskSid));
+    dispatch(CSAMAction.removeCSAMReportActionForContact(contactId));
     dispatch(changeRoute(previousRoute, taskSid));
   },
   addReportDispatcher: dispatch => csamReportEntry => {
-    dispatch(ContactAction.addCSAMReportEntry(csamReportEntry, taskSid));
+    dispatch(addExternalReportEntry(csamReportEntry, contactId));
   },
-  pickReportTypeDispatcher: dispatch => reportType => dispatch(newCSAMReportAction(taskSid, reportType, false)),
+  pickReportTypeDispatcher: dispatch => reportType =>
+    dispatch(CSAMAction.newCSAMReportActionForContact(contactId, reportType, false)),
   updateCounsellorReportDispatcher: dispatch => form => {
-    dispatch(CSAMAction.updateCounsellorFormAction(form, taskSid));
+    dispatch(CSAMAction.updateCounsellorFormActionForContact(form, contactId));
   },
   updateChildReportDispatcher: dispatch => form => {
-    dispatch(CSAMAction.updateChildFormAction(form, taskSid));
+    dispatch(CSAMAction.updateChildFormActionForContact(form, contactId));
   },
   updateStatusDispatcher: dispatch => csamStatus => {
-    dispatch(CSAMAction.updateStatusAction(csamStatus, taskSid));
+    dispatch(CSAMAction.updateStatusActionForContact(csamStatus, contactId));
   },
-  saveReport,
+  saveReport: (state, twilioWorkerId) => saveReport(state, twilioWorkerId, contactId),
 });
 
 export const existingContactCSAMApi = (contactId: string): CSAMReportApi => ({

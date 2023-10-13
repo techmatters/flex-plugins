@@ -17,7 +17,13 @@
 import { omit } from 'lodash';
 
 import * as t from './types';
-import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE, GeneralActionType } from '../types';
+import {
+  INITIALIZE_CONTACT_STATE,
+  InitializeContactStateAction,
+  RECREATE_CONTACT_STATE,
+  REMOVE_CONTACT_STATE,
+  RemoveContactStateAction,
+} from '../types';
 import { Contact, SearchCaseResult, standaloneTaskSid } from '../../types/types';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 
@@ -86,24 +92,18 @@ export const initialState: SearchState = {
 };
 
 // eslint-disable-next-line complexity
-export function reduce(state = initialState, action: t.SearchActionType | GeneralActionType): SearchState {
+export function reduce(
+  state = initialState,
+  action: t.SearchActionType | InitializeContactStateAction | RemoveContactStateAction,
+): SearchState {
   switch (action.type) {
     case INITIALIZE_CONTACT_STATE:
+      if (state.tasks[action.initialContact.taskId] && action.recreated) return state;
       return {
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: newTaskEntry,
-        },
-      };
-    case RECREATE_CONTACT_STATE:
-      if (state.tasks[action.taskId]) return state;
-
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: newTaskEntry,
+          [action.initialContact.taskId]: newTaskEntry,
         },
       };
     case REMOVE_CONTACT_STATE:

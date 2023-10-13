@@ -27,6 +27,7 @@ import {
   newTaskEntry,
 } from '../../../states/conferencing';
 import { initializeContactState, recreateContactState, removeContactState } from '../../../states/actions';
+import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, buildBaseURL } = useFetchDefinitions();
@@ -42,7 +43,10 @@ beforeAll(async () => {
 
 describe('reduce', () => {
   test('when initializeContactState is called on empty state, initializes taskId with newTaskEntry', async () => {
-    const result = reduce(undefined, initializeContactState(mockV1)('WT12345'));
+    const result = reduce(
+      undefined,
+      initializeContactState(mockV1)({ ...VALID_EMPTY_CONTACT, taskId: 'WT12345' }, VALID_EMPTY_METADATA),
+    );
 
     const expected: ConferencingState = { tasks: { WT12345: newTaskEntry } };
 
@@ -50,8 +54,14 @@ describe('reduce', () => {
   });
 
   test('when initializeContactState is called on existing state, initializes taskId with newTaskEntry', async () => {
-    const initialized = reduce(undefined, initializeContactState(mockV1)('WT12345'));
-    const result = reduce(initialized, initializeContactState(mockV1)('WT99999'));
+    const initialized = reduce(
+      undefined,
+      initializeContactState(mockV1)({ ...VALID_EMPTY_CONTACT, taskId: 'WT12345' }, VALID_EMPTY_METADATA),
+    );
+    const result = reduce(
+      initialized,
+      initializeContactState(mockV1)({ ...VALID_EMPTY_CONTACT, taskId: 'WT99999' }, VALID_EMPTY_METADATA),
+    );
 
     const expected: ConferencingState = { tasks: { WT12345: newTaskEntry, WT99999: newTaskEntry } };
 
@@ -59,7 +69,10 @@ describe('reduce', () => {
   });
 
   test('when recreateContactState is called on empty state, initializes taskId with newTaskEntry', async () => {
-    const result = reduce(undefined, recreateContactState(mockV1)('WT12345'));
+    const result = reduce(
+      undefined,
+      recreateContactState(mockV1)({ ...VALID_EMPTY_CONTACT, taskId: 'WT12345' }, VALID_EMPTY_METADATA),
+    );
 
     const expected: ConferencingState = { tasks: { WT12345: newTaskEntry } };
 
@@ -67,8 +80,14 @@ describe('reduce', () => {
   });
 
   test('when recreateContactState is called on existing state, initializes taskId with newTaskEntry', async () => {
-    const initialized = reduce(undefined, recreateContactState(mockV1)('WT12345'));
-    const result = reduce(initialized, recreateContactState(mockV1)('WT99999'));
+    const initialized = reduce(
+      undefined,
+      recreateContactState(mockV1)({ ...VALID_EMPTY_CONTACT, taskId: 'WT12345' }, VALID_EMPTY_METADATA),
+    );
+    const result = reduce(
+      initialized,
+      recreateContactState(mockV1)({ ...VALID_EMPTY_CONTACT, taskId: 'WT99999' }, VALID_EMPTY_METADATA),
+    );
 
     const expected: ConferencingState = { tasks: { WT12345: newTaskEntry, WT99999: newTaskEntry } };
 
@@ -77,11 +96,19 @@ describe('reduce', () => {
 
   test('when recreateContactState is called with taskId found in the state, removes it', async () => {
     const initialized = pipe(
-      () => reduce(undefined, recreateContactState(mockV1)('WT12345')),
-      state => reduce(state, recreateContactState(mockV1)('WT99999')),
+      () =>
+        reduce(
+          undefined,
+          recreateContactState(mockV1)({ ...VALID_EMPTY_CONTACT, taskId: 'WT12345' }, VALID_EMPTY_METADATA),
+        ),
+      state =>
+        reduce(
+          state,
+          recreateContactState(mockV1)({ ...VALID_EMPTY_CONTACT, taskId: 'WT99999' }, VALID_EMPTY_METADATA),
+        ),
     )();
 
-    const result = reduce(initialized, removeContactState('WT12345'));
+    const result = reduce(initialized, removeContactState('WT12345', ''));
 
     const expected: ConferencingState = { tasks: { WT99999: newTaskEntry } };
 
@@ -90,11 +117,21 @@ describe('reduce', () => {
 
   test('when recreateContactState is called with taskId not found in the state, leave state untouched', async () => {
     const initialized = pipe(
-      () => reduce(undefined, recreateContactState(mockV1)('WT12345')),
-      state => reduce(state, recreateContactState(mockV1)('WT99999')),
+      // eslint-disable-next-line sonarjs/no-identical-functions
+      () =>
+        reduce(
+          undefined,
+          recreateContactState(mockV1)({ ...VALID_EMPTY_CONTACT, taskId: 'WT12345' }, VALID_EMPTY_METADATA),
+        ),
+      // eslint-disable-next-line sonarjs/no-identical-functions
+      state =>
+        reduce(
+          state,
+          recreateContactState(mockV1)({ ...VALID_EMPTY_CONTACT, taskId: 'WT99999' }, VALID_EMPTY_METADATA),
+        ),
     )();
 
-    const result = reduce(initialized, removeContactState('WT00000'));
+    const result = reduce(initialized, removeContactState('WT00000', ''));
 
     const expected: ConferencingState = { tasks: { WT12345: newTaskEntry, WT99999: newTaskEntry } };
 
@@ -104,7 +141,10 @@ describe('reduce', () => {
   each([{ value: true }, { value: false }]).test(
     'when setIsDialogOpenAction is called with $value, set isDialogOpen to $value',
     async ({ value }) => {
-      const initializedState = reduce(undefined, initializeContactState(mockV1)('WT12345'));
+      const initializedState = reduce(
+        undefined,
+        initializeContactState(mockV1)({ ...VALID_EMPTY_CONTACT, taskId: 'WT12345' }, VALID_EMPTY_METADATA),
+      );
 
       const result = reduce(initializedState, setIsDialogOpenAction('WT12345', value));
 
@@ -124,7 +164,10 @@ describe('reduce', () => {
     { value: 'in-progress' },
     { value: 'completed' },
   ]).test('when setCallStatusAction is called with $value, set isLoading to $value', async ({ value }) => {
-    const initializedState = reduce(undefined, initializeContactState(mockV1)('WT12345'));
+    const initializedState = reduce(
+      undefined,
+      initializeContactState(mockV1)({ ...VALID_EMPTY_CONTACT, taskId: 'WT12345' }, VALID_EMPTY_METADATA),
+    );
 
     const result = reduce(initializedState, setCallStatusAction('WT12345', value));
 
@@ -134,7 +177,10 @@ describe('reduce', () => {
   });
 
   test('when setPhoneNumberAction is called, set phoneNumber', async () => {
-    const initializedState = reduce(undefined, initializeContactState(mockV1)('WT12345'));
+    const initializedState = reduce(
+      undefined,
+      initializeContactState(mockV1)({ ...VALID_EMPTY_CONTACT, taskId: 'WT12345' }, VALID_EMPTY_METADATA),
+    );
 
     const result = reduce(initializedState, setPhoneNumberAction('WT12345', '+1234567890'));
 

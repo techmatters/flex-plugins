@@ -24,27 +24,27 @@ import { ExistingContactsState } from './existingContacts';
 
 export const updateContactsFormInHrmAsyncAction = createAsyncAction(
   UPDATE_CONTACT_ACTION,
-  async (contactId: string, body: Partial<ContactRawJson>, helpline: string): Promise<{ contact: Contact }> => {
-    const contact = await updateContactsFormInHrm(contactId, body, helpline);
+  async (contactId: string, body: Partial<ContactRawJson>): Promise<{ contact: Contact }> => {
+    const contact = await updateContactsFormInHrm(contactId, body);
     return {
       contact,
     };
   },
 );
 
+// TODO: Update connectedContacts on case in redux state
 export const connectToCaseAsyncAction = createAsyncAction(
   CONNECT_TO_CASE,
-  async (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case, caseId: number) => {
-    const savedContact = await submitContactForm(task, contact, metadata, caseForm);
-    await connectToCase(savedContact.id, caseId);
-    await completeTask(task);
+  async (contactId: string, caseId: number | null): Promise<{ contactId: string; caseId: number }> => {
+    await connectToCase(contactId, caseId);
+    return { contactId, caseId };
   },
 );
 
 export const submitContactFormAsyncAction = createAsyncAction(
   SET_SAVED_CONTACT,
   async (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) => {
-    await submitContactForm(task, contact, metadata, caseForm);
+    return submitContactForm(task, contact, metadata, caseForm);
   },
 );
 

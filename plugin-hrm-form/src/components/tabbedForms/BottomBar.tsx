@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { AnyAction, bindActionCreators } from 'redux';
 import { Template } from '@twilio/flex-ui';
@@ -35,6 +35,7 @@ import { Case, CustomITask, Contact } from '../../types/types';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
+import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
 
@@ -45,6 +46,8 @@ type BottomBarProps = {
   showSubmitButton: boolean;
   nextTab: () => void;
   task: CustomITask;
+  contactId: string;
+  saveUpdates: () => Promise<Contact>;
 };
 
 const BottomBar: React.FC<
@@ -62,6 +65,7 @@ const BottomBar: React.FC<
   caseForm,
   createCaseAsyncAction,
   submitContactFormAsyncAction,
+  saveUpdates,
 }) => {
   const [isSubmitting, setSubmitting] = useState(false);
   const strings = getTemplateStrings();
@@ -73,7 +77,8 @@ const BottomBar: React.FC<
     if (!hasTaskControl(task)) return;
 
     try {
-      createCaseAsyncAction(contact, workerSid, definitionVersion);
+      const updated = (await saveUpdates()) ?? contact;
+      await createCaseAsyncAction(updated, workerSid, definitionVersion);
       changeRoute({ route: 'new-case' }, taskSid);
     } catch (error) {
       recordBackendError('Open New Case', error);
@@ -172,9 +177,14 @@ const BottomBar: React.FC<
 BottomBar.displayName = 'BottomBar';
 
 const mapStateToProps = (state: RootState, ownProps: BottomBarProps) => {
-  const { contact, metadata } = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid] ?? {};
+  const { draftContact, savedContact, metadata } =
+    state[namespace][contactFormsBase].existingContacts[ownProps.contactId] ?? {};
   const caseForm = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase || {};
-  return { contact, metadata, caseForm };
+  return {
+    contact: getUnsavedContact(savedContact, draftContact),
+    metadata,
+    caseForm,
+  };
 };
 
 const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {

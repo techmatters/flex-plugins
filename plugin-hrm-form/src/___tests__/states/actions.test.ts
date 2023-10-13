@@ -14,45 +14,70 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+
 import * as types from '../../states/types';
 import * as actions from '../../states/actions';
+import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
+import { mockGetDefinitionsResponse } from '../mockGetConfig';
+import { getDefinitionVersions } from '../../hrmConfig';
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
 const task = { taskSid: 'task1' };
 
-const voidDefinitions = {
-  callerFormDefinition: [],
-  caseInfoFormDefinition: [],
-  categoriesFormDefinition: {},
-  childFormDefinition: [],
-};
+let mockV1;
+
+beforeEach(() => {
+  mockReset();
+});
+
+beforeAll(async () => {
+  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  await mockFetchImplementation(formDefinitionsBaseUrl);
+
+  mockV1 = await loadDefinition(formDefinitionsBaseUrl);
+  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+});
 
 describe('test action creators', () => {
   test('initializeContactState', async () => {
-    const expected: types.GeneralActionType = {
+    const expected: types.InitializeContactStateAction = {
       type: types.INITIALIZE_CONTACT_STATE,
-      definitions: voidDefinitions,
-      taskId: task.taskSid,
+      definitions: mockV1,
+      metadata: VALID_EMPTY_METADATA,
+      initialContact: { ...VALID_EMPTY_CONTACT, taskId: task.taskSid },
+      recreated: false,
+      references: [],
     };
 
-    expect(actions.initializeContactState(voidDefinitions)(task.taskSid)).toStrictEqual(expected);
+    expect(
+      actions.initializeContactState(mockV1)({ ...VALID_EMPTY_CONTACT, taskId: task.taskSid }, VALID_EMPTY_METADATA),
+    ).toStrictEqual(expected);
   });
 
   test('recreateContactState', async () => {
-    const expected: types.GeneralActionType = {
-      type: types.RECREATE_CONTACT_STATE,
-      definitions: voidDefinitions,
-      taskId: task.taskSid,
+    const expected: types.InitializeContactStateAction = {
+      type: types.INITIALIZE_CONTACT_STATE,
+      definitions: mockV1,
+      metadata: VALID_EMPTY_METADATA,
+      initialContact: { ...VALID_EMPTY_CONTACT, taskId: task.taskSid },
+      recreated: true,
+      references: [],
     };
 
-    expect(actions.recreateContactState(voidDefinitions)(task.taskSid)).toStrictEqual(expected);
+    expect(
+      actions.recreateContactState(mockV1)({ ...VALID_EMPTY_CONTACT, taskId: task.taskSid }, VALID_EMPTY_METADATA),
+    ).toStrictEqual(expected);
   });
 
   test('removeContactState', async () => {
-    const expected: types.GeneralActionType = {
+    const expected: types.RemoveContactStateAction = {
       type: types.REMOVE_CONTACT_STATE,
       taskId: task.taskSid,
+      contactId: 'contact-1',
     };
 
-    expect(actions.removeContactState(task.taskSid)).toStrictEqual(expected);
+    expect(actions.removeContactState(task.taskSid, 'contact-1')).toStrictEqual(expected);
   });
 });

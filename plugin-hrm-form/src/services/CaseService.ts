@@ -20,7 +20,6 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 import { fetchHrmApi } from './fetchHrmApi';
 import { getQueryParams } from './PaginationParams';
 import { Case, Contact, SearchCaseResult } from '../types/types';
-import { transformFromApiCategories } from './ContactService';
 
 export async function createCase(contact: Contact, creatingWorkerSid: string, definitionVersion: DefinitionVersionId) {
   const { helpline, rawJson: contactForm } = contact;
@@ -76,22 +75,5 @@ export async function listCases(queryParams, listCasesPayload): Promise<SearchCa
     body: JSON.stringify(listCasesPayload),
   };
 
-  const casesFromApi: SearchCaseResult = await fetchHrmApi(`/cases/search${queryParamsString}`, options);
-  return {
-    ...casesFromApi,
-    cases: casesFromApi.cases.map(c => ({
-      ...c,
-      connectedContacts: c.connectedContacts.map(cc => {
-        const { categories, ...caseInformation } = cc.rawJson?.caseInformation ?? {};
-        return {
-          ...cc,
-          rawJson: {
-            ...cc.rawJson,
-            categories: transformFromApiCategories((categories ?? {}) as Record<string, Record<string, boolean>>),
-            caseInformation,
-          },
-        };
-      }),
-    })),
-  };
+  return fetchHrmApi(`/cases/search${queryParamsString}`, options);
 }

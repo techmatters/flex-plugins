@@ -13,6 +13,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { configureStore } from '@reduxjs/toolkit';
+import promiseMiddleware from 'redux-promise-middleware';
+
 import { connectToCase, updateContactsFormInHrm } from '../../../services/ContactService';
 import { completeTask, submitContactForm } from '../../../services/formSubmissionHelpers';
 import { Case, CustomITask, Contact } from '../../../types/types';
@@ -45,6 +48,16 @@ beforeEach(() => {
 });
 
 const boundSaveContactReducer = saveContactReducer(existingContactInitialState);
+
+const testStore = (stateChanges: ExistingContactsState) =>
+  configureStore({
+    preloadedState: { ...existingContactInitialState, ...stateChanges },
+    reducer: boundSaveContactReducer,
+    middleware: getDefaultMiddleware => [
+      ...getDefaultMiddleware({ serializableCheck: false, immutableCheck: false }),
+      promiseMiddleware(),
+    ],
+  });
 
 const baseContact: Contact = {
   id: '1337',
@@ -106,30 +119,32 @@ const dispatch = jest.fn();
 
 describe('actions', () => {
   test('Calls the updateContactsFormInHrmAsyncAction action, and update a contact', async () => {
-    dispatch(updateContactsFormInHrmAsyncAction(baseContact.id, baseContact.rawJson, 'demo-v1'));
-    const existingContacts = boundSaveContactReducer(
-      baseState,
-      updateContactsFormInHrmAsyncAction(baseContact.id, baseContact.rawJson, 'demo-v1'),
-    );
+    const { dispatch, getState } = testStore(baseState);
+    const startingState = getState();
+    const mockSavedContact = { id: '12' }; // Create a mock savedContact object
+    updateContactsFormInHrm.mockResolvedValue(mockSavedContact);
 
-    expect(updateContactsFormInHrm).toHaveBeenCalledWith(baseContact.id, baseContact.rawJson, 'demo-v1');
-    expect(existingContacts[baseContact.id].savedContact).toStrictEqual(baseContact);
+    (await (dispatch(updateContactsFormInHrmAsyncAction(baseContact.id, baseContact.rawJson)) as unknown)) as Promise<
+      void
+    >;
+    const state = getState();
+
+    expect(updateContactsFormInHrm).toHaveBeenCalledWith(baseContact.id, baseContact.rawJson);
+
+    expect(state).toStrictEqual({
+      [baseContact.id]: {
+        ...startingState[baseContact.id],
+      },
+      [mockSavedContact.id]: {
+        ...state[mockSavedContact.id],
+      },
+    });
   });
 
   test('Calls the connectToCaseAsyncAction action, and create a contact, connect contact to case, and complete task', async () => {
-    const mockSavedContact = { id: '12' }; // Create a mock savedContact object
-    submitContactForm.mockResolvedValue(mockSavedContact);
+    dispatch(connectToCaseAsyncAction(baseContact.id, baseCase.id));
 
-    dispatch(connectToCaseAsyncAction(task, baseContact, metadata, baseCase, 234));
-
-    // Wait for the async action to complete
-    await new Promise(resolve => {
-      setImmediate(resolve);
-    });
-
-    expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, metadata, baseCase);
-    expect(connectToCase).toHaveBeenCalledWith(mockSavedContact.id, 234);
-    expect(completeTask).toHaveBeenCalledWith(task);
+    expect(connectToCase).toHaveBeenCalledWith(baseContact.id, baseCase.id);
   });
 
   test('Calls the submitContactFormAsyncAction action, and create a contact', async () => {
@@ -146,7 +161,7 @@ describe('actions', () => {
           categories: { gridView: false, expanded: {} },
         },
       },
-      updateContactsFormInHrmAsyncAction(baseContact.id, baseContact.rawJson, 'demo-v1'),
+      updateContactsFormInHrmAsyncAction(baseContact.id, baseContact.rawJson),
     );
     expect(newState[baseContact.id].savedContact).toStrictEqual(baseContact);
     expect(newState[baseContact.id].references.size).toStrictEqual(1);
