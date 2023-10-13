@@ -25,19 +25,20 @@ import { baseMockConfig, mockGetDefinitionsResponse } from '../mockGetConfig';
 import { transferStatuses } from '../../states/DomainConstants';
 import { createTask } from '../helpers';
 import { getDefinitionVersions } from '../../hrmConfig';
-import { ContactState, saveContactChangesInHrm } from '../../states/contacts/existingContacts';
+import { ContactState } from '../../states/contacts/existingContacts';
 import { Contact } from '../../types/types';
 import { ContactMetadata } from '../../states/contacts/types';
 import { VALID_EMPTY_CONTACT } from '../testContacts';
 import { RootState } from '../../states';
 import { RecursivePartial } from '../RecursivePartial';
 import { loadFormSharedState, saveFormSharedState, setUpSharedStateClient } from '../../utils/sharedState';
+import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 
-jest.mock('../../states/contacts/existingContacts', () => ({
-  ...jest.requireActual('../../states/contacts/existingContacts'),
-  saveContactChangesInHrm: jest.fn((id, contact, _, task) => {
-    console.log('saveContactChangesInHrm', id, contact, task);
-    return Promise.resolve({ ...contact, taskId: task });
+jest.mock('../../states/contacts/saveContact', () => ({
+  ...jest.requireActual('../../states/contacts/saveContact'),
+  updateContactInHrmAsyncAction: jest.fn((id, contact, _, task) => {
+    console.log('updateContactInHrmAsyncAction', id, contact, task);
+    return Promise.resolve();
   }),
 }));
 

@@ -22,11 +22,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { callTypes, CallTypeButtonsEntry } from 'hrm-form-definitions';
 
 import { namespace, configurationBase, connectedCaseBase, RootState } from '../../states';
-import {
-  ContactDraftChanges,
-  saveContactChangesInHrm,
-  updateDraft as newUpdateDraftAction,
-} from '../../states/contacts/existingContacts';
+import { ContactDraftChanges, updateDraft as newUpdateDraftAction } from '../../states/contacts/existingContacts';
 import { changeRoute as newChangeRouteAction } from '../../states/routing/actions';
 import { withLocalization } from '../../contexts/LocalizationContext';
 import { Box, Flex } from '../../styles/HrmStyles';
@@ -41,6 +37,8 @@ import { getTemplateStrings } from '../../hrmConfig';
 import { AppRoutes } from '../../states/routing/types';
 import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
+import asyncDispatch from '../../states/asyncDispatch';
+import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 
 const isDialogOpen = (task: CustomITask, contact: ContactDraftChanges) =>
   Boolean(!isOfflineContactTask(task) && contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType));
@@ -192,7 +190,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 const mapDispatchToProps = (dispatch, { task: { taskSid } }: OwnProps) => ({
   changeRoute: (route: AppRoutes) => dispatch(newChangeRouteAction(route, taskSid)),
   saveContactChangesInHrm: (contactId: string, changes: ContactDraftChanges) =>
-    saveContactChangesInHrm(contactId, changes, dispatch, taskSid),
+    asyncDispatch(dispatch)(updateContactInHrmAsyncAction(contactId, changes, taskSid)),
   updateCallType: (contactId: string, callType: string) =>
     dispatch(newUpdateDraftAction(contactId, { rawJson: { callType } })),
   clearCallType: (contactId: string) => dispatch(newUpdateDraftAction(contactId, { rawJson: { callType: null } })),

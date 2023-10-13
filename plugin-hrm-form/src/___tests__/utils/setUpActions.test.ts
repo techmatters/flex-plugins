@@ -17,10 +17,10 @@
 /* eslint-disable camelcase */
 import { ITask, ChatOrchestrator, Manager } from '@twilio/flex-ui';
 
-import { afterCompleteTask, excludeDeactivateConversationOrchestration } from '../../utils/setUpActions';
+import { namespace } from '../../states';
 import { REMOVE_CONTACT_STATE } from '../../states/types';
 import { FeatureFlags } from '../../types/types';
-import { namespace } from '../../states';
+import { afterCompleteTask, excludeDeactivateConversationOrchestration } from '../../utils/setUpActions';
 
 const taskSid = 'THIS IS THE TASK SID!';
 
@@ -36,11 +36,6 @@ jest.mock('@twilio/flex-ui', () => ({
   Manager: {
     getInstance: () => mockFlexManager,
   },
-}));
-
-jest.mock('../../states', () => ({
-  contactFormsBase: jest.requireActual('../../states').contactFormsBase,
-  namespace: jest.requireActual('../../states').namespace,
 }));
 
 afterEach(() => {

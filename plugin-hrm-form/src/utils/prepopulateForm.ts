@@ -24,7 +24,9 @@ import * as RoutingActions from '../states/routing/actions';
 import { getDefinitionVersions } from '../hrmConfig';
 import { RootState } from '../states';
 import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
-import { ContactDraftChanges, saveContactChangesInHrm } from '../states/contacts/existingContacts';
+import { ContactDraftChanges } from '../states/contacts/existingContacts';
+import asyncDispatch from '../states/asyncDispatch';
+import { updateContactInHrmAsyncAction } from '../states/contacts/saveContact';
 
 const getUnknownOption = (key: string, definition: FormDefinition) => {
   const inputDef = definition.find(e => e.name === key);
@@ -179,6 +181,7 @@ const getAnswers = (memory: LexMemory | AutopilotMemory): PreSurveyAnswers => {
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const prepopulateForm = async (task: ITask) => {
   const { dispatch } = Manager.getInstance().store;
+  const asyncDispatcher = asyncDispatch(dispatch);
   const { currentDefinitionVersion } = getDefinitionVersions();
   if (!currentDefinitionVersion) {
     console.warn('Attempting to prepopulate a form but no definition has been loaded, abandoning attempt.');
@@ -205,11 +208,12 @@ export const prepopulateForm = async (task: ITask) => {
       preEngagement.ChildInformationTab,
     );
 
-    await saveContactChangesInHrm(
-      createdContact.id,
-      { rawJson: { callType: callTypes.child, childInformation: childInfoValues } },
-      dispatch,
-      task.taskSid,
+    await asyncDispatcher(
+      updateContactInHrmAsyncAction(
+        createdContact.id,
+        { rawJson: { callType: callTypes.child, childInformation: childInfoValues } },
+        task.taskSid,
+      ),
     );
     // Open tabbed form to first tab
     Manager.getInstance().store.dispatch(
@@ -237,11 +241,12 @@ export const prepopulateForm = async (task: ITask) => {
   // When a helpline has survey and no preEngagement form
   if (memory && !preEngagementData) {
     if (callType) {
-      await saveContactChangesInHrm(
-        createdContact.id,
-        { rawJson: { callType, [formName]: surveyValues } },
-        dispatch,
-        task.taskSid,
+      await asyncDispatcher(
+        updateContactInHrmAsyncAction(
+          createdContact.id,
+          { rawJson: { callType, [formName]: surveyValues } },
+          task.taskSid,
+        ),
       );
       // Open tabbed form to first tab
       Manager.getInstance().store.dispatch(
@@ -276,7 +281,7 @@ export const prepopulateForm = async (task: ITask) => {
       changes.rawJson.callType = callType;
       changes.rawJson[formName] = values;
 
-      await saveContactChangesInHrm(createdContact.id, changes, dispatch, task.taskSid);
+      await asyncDispatcher(updateContactInHrmAsyncAction(createdContact.id, changes, task.taskSid));
 
       // Open tabbed form to first tab
       Manager.getInstance().store.dispatch(

@@ -25,12 +25,13 @@ import { CSAMReportEntry, Contact } from '../types/types';
 import { ContactMetadata } from '../states/contacts/types';
 import { ChannelTypes } from '../states/DomainConstants';
 import { ResourceReferral } from '../states/contacts/resourceReferral';
-import { ContactState, saveContactChangesInHrm } from '../states/contacts/existingContacts';
+import { ContactState } from '../states/contacts/existingContacts';
 import { newContactState } from '../states/contacts/contactState';
 import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
 import { RootState } from '../states';
-import { recreateContactState } from '../states/actions';
 import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
+import asyncDispatch from '../states/asyncDispatch';
+import { updateContactInHrmAsyncAction } from '../states/contacts/saveContact';
 
 // Legacy type previously used for unsaved contact forms, kept around to ensure transfers are compatible between new & old clients
 // Not much point in replacing the use of this type in the shared state, since we will drop use of shared state in favour of the HRM DB for managing transfer state soon anyway
@@ -151,11 +152,9 @@ const DOCUMENT_TTL_SECONDS = 24 * 60 * 60; // 24 hours
  */
 export const saveFormSharedState = async (contactState: ContactState, task: ITask): Promise<string | null> => {
   if (!getAseloFeatureFlags().enable_transfers) return null;
-  await saveContactChangesInHrm(
-    contactState.savedContact.id,
-    contactState.draftContact,
-    Manager.getInstance().store.dispatch,
-    task.taskSid,
+
+  await asyncDispatch(Manager.getInstance().store.dispatch)(
+    updateContactInHrmAsyncAction(contactState.savedContact.id, contactState.savedContact, task.taskSid),
   );
   console.log('Saved form to HRM', contactState.savedContact.id);
   try {
@@ -230,19 +229,8 @@ export const loadFormSharedState = async (task: ITask): Promise<ContactState> =>
       console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
       recordBackendError('Load Form Shared State', new Error('Sync Client Disconnected'));
     }
-    contactState.savedContact = await saveContactChangesInHrm(
-      contactState.savedContact.id,
-      contactState.savedContact,
-      store.dispatch,
-      task.taskSid,
-    );
-
-    store.dispatch(
-      recreateContactState(getDefinitionVersions().currentDefinitionVersion)(
-        contactState.savedContact,
-        contactState.metadata,
-        [task.taskSid],
-      ),
+    await asyncDispatch(store.dispatch)(
+      updateContactInHrmAsyncAction(contactState.savedContact.id, contactState.savedContact, task.taskSid),
     );
   } catch (err) {
     console.error('Error while loading form from shared state', err);

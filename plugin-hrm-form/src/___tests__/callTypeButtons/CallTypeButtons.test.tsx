@@ -30,13 +30,12 @@ import { DataCallTypeButton, NonDataCallTypeButton, ConfirmButton, CancelButton 
 import LocalizationContext from '../../contexts/LocalizationContext';
 import { namespace, contactFormsBase, connectedCaseBase, configurationBase } from '../../states';
 import { changeRoute } from '../../states/routing/actions';
-import { saveContactChangesInHrm, updateDraft } from '../../states/contacts/existingContacts';
+import { updateDraft } from '../../states/contacts/existingContacts';
 import { completeTask, submitContactForm } from '../../services/formSubmissionHelpers';
-import { Contact } from '../../types/types';
 
-jest.mock('../../states/contacts/existingContacts', () => ({
-  ...jest.requireActual('../../states/contacts/existingContacts'),
-  saveContactChangesInHrm: jest.fn(),
+jest.mock('../../states/contacts/saveContact', () => ({
+  ...jest.requireActual('../../states/contacts/saveContact'),
+  updateContactInHrmAsyncAction: jest.fn(),
 }));
 
 jest.mock('../../services/ContactService', () => ({
@@ -284,7 +283,6 @@ test('<CallTypeButtons> renders dialog with HANG UP button', () => {
 });
 
 test('<CallTypeButtons> click on Data (Child) button', async () => {
-  (saveContactChangesInHrm as jest.MockedFunction<typeof saveContactChangesInHrm>).mockResolvedValue({} as Contact);
   const initialState = {
     [namespace]: {
       [contactFormsBase]: {

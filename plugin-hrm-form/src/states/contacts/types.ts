@@ -32,6 +32,7 @@ export const UPDATE_HELPLINE = 'UPDATE_HELPLINE';
 export const ADD_CSAM_REPORT_ENTRY = 'contacts/ADD_CSAM_REPORT_ENTRY';
 export const SET_EDITING_CONTACT = 'SET_EDITING_CONTACT';
 export const SET_CALL_TYPE = 'SET_CALL_TYPE';
+export const CREATE_CONTACT_ACTION = 'contact-action/create-contact';
 export const UPDATE_CONTACT_ACTION = 'contact-action/update-contact';
 export const CONNECT_TO_CASE = 'contact-action/connect-to-case';
 export const SET_SAVED_CONTACT = 'contact-action/set-saved-contact';

@@ -34,7 +34,7 @@ import * as t from '../../states/contacts/actions';
 import { getTemplateStrings } from '../../hrmConfig';
 import { ContactRawJson } from '../../types/types';
 import asyncDispatch from '../../states/asyncDispatch';
-import { updateContactsFormInHrmAsyncAction } from '../../states/contacts/saveContact';
+import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 
 type OwnProps = {
   context: DetailsContext;
@@ -201,7 +201,7 @@ const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string,
       dispatch(clearDraft(contactId));
     },
     updateContactsFormInHrmAsyncAction: (contactId: string, body: Partial<ContactRawJson>) =>
-      updateContactAsyncDispatch(updateContactsFormInHrmAsyncAction(contactId, body)),
+      updateContactAsyncDispatch(updateContactInHrmAsyncAction(contactId, { rawJson: body })),
   };
 };
 

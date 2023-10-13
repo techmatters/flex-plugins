@@ -14,11 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { ITask } from '@twilio/flex-ui';
-
 import {
   INITIALIZE_CONTACT_STATE,
-  RECREATE_CONTACT_STATE,
   REMOVE_CONTACT_STATE,
   DefinitionVersion,
   InitializeContactStateAction,
