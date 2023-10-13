@@ -93,17 +93,17 @@ locals {
         "target_workers" = "routing.skills HAS 'Indigenous/Interpreter'",
         "friendly_name"  = "Indigenous/Interpreter"
       },
-      988_en : {
+      "988_en" : {
         "target_workers" = "routing.skills HAS '988En'",
         "friendly_name"  = "988 English"
       },
-      988_fr : {
+      "988_fr" : {
         "target_workers" = "routing.skills HAS '988Fr'",
         "friendly_name"  = "988 French"
       },
-      988_ns_fr : {
+      "988_ns_fr" : {
         "target_workers" = "routing.skills HAS '988NSFr'",
-        "friendly_name"  = "988 French"
+        "friendly_name"  = "988 NS French"
       },
       e2e_test : {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
