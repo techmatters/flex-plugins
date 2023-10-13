@@ -203,6 +203,10 @@ locals {
           en_number: "3656520724"
           fr_number: "3656495517"
           ns_fr_number: "7823120154"
+
+          en_function_url: "https://twilio-service-4854.twil.io/988_en"
+          fr_function_url: "https://twilio-service-4854.twil.io/988_fr"
+          
         }
         chatbot_unique_names = []
       }
