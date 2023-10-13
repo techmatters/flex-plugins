@@ -3,7 +3,7 @@ locals {
   defaults_config     = local.defaults_config_hcl.locals
   config              = merge(local.defaults_config, local.local_config)
 
- 
+
   local_config = {
     helpline                          = "Tithandizane"
     old_dir_prefix                    = "tithandizane"
@@ -13,12 +13,12 @@ locals {
     helpline_language                 = "en"
     voice_ivr_language                = ""
     enable_post_survey                = false
-    
-   
-    lex_bot_languages  = {
-      en_MW : ["pre_survey","youth_testing"]
+
+
+    lex_bot_languages = {
+      en_MW : ["pre_survey", "youth_testing"]
     }
-    
+
 
     workflows = {
       master : {
@@ -32,13 +32,21 @@ locals {
     }
 
     task_queues = {
-      messaging : {
+      master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "Messaging"
+        "friendly_name"  = "Tithandizane Helpline"
       },
-       survey : {
+      master : {
+        "target_workers" = "1==1",
+        "friendly_name"  = "Yoneco"
+      },
+      survey : {
         "target_workers" = "1==0",
         "friendly_name"  = "Survey"
+      },
+      e2e_test : {
+        "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
+        "friendly_name"  = "E2E Test Queue"
       }
     }
     task_channels = {
@@ -50,18 +58,6 @@ locals {
       email : "Email"
       survey : "Survey"
     }
-
-    #Channels
-    channels = {
-      webchat : {
-        channel_type     = "web"
-        contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex.tftpl"
-        channel_flow_vars = {}
-        chatbot_unique_names = []
-      }
-    }
-    phone_numbers = {}
 
   }
 }
