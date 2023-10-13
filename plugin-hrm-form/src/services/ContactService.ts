@@ -277,16 +277,18 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
 
     // Store a pending transcript
     returnData.conversationMedia.push({
-      store: 'S3',
-      type: 'transcript',
-      location: undefined,
+      storeType: 'S3',
+      storeTypeSpecificData: {
+        type: 'transcript',
+        location: undefined,
+      },
     });
   }
 
   if (TaskHelper.isChatBasedTask(task) || TaskHelper.isCallTask(task)) {
     // Store reservation sid to use Twilio insights overlay (recordings/transcript)
     returnData.conversationMedia.push({
-      store: 'twilio',
+      storeType: 'twilio',
       reservationSid: task.sid,
     });
   }
@@ -301,11 +303,13 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
   returnData.externalRecordingInfo = externalRecordingInfo;
   const { bucket, key } = externalRecordingInfo;
   returnData.conversationMedia.push({
-    store: 'S3',
-    type: 'recording',
-    location: {
-      bucket,
-      key,
+    storeType: 'S3',
+    storeTypeSpecificData: {
+      type: 'recording',
+      location: {
+        bucket,
+        key,
+      },
     },
   });
 
