@@ -65,7 +65,7 @@ describe('search reducer', () => {
       type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
       payload: {
         reference: 'x',
-        initialContact: {
+        contact: {
           ...VALID_EMPTY_CONTACT,
           taskId: task.taskSid,
         },
@@ -91,12 +91,14 @@ describe('search reducer', () => {
         },
       },
     };
-    const result1 = reduce(state, handleSearchFormChange(task.taskSid)('firstName', 'one value'));
+    const result1 = reduce(
+      { tasks: { [task.taskSid]: newTaskEntry } },
+      handleSearchFormChange(task.taskSid)('firstName', 'one value'),
+    );
 
     const result2 = reduce(result1, action);
 
     const { tasks } = result2;
-    expect(tasks[task.taskSid]).not.toBeUndefined();
     expect(tasks[task.taskSid]).not.toStrictEqual(newTaskEntry);
     expect(tasks[task.taskSid].form.firstName).toBe('one value');
 

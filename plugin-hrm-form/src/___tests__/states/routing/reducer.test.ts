@@ -169,7 +169,7 @@ describe('test reducer (specific actions)', () => {
     const result = reduce(state, {
       type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
       payload: {
-        contact: { ...VALID_EMPTY_CONTACT, taskId: task.taskSid },
+        contact: { ...VALID_EMPTY_CONTACT, taskId: offlineContactTaskSid },
         metadata: VALID_EMPTY_METADATA,
       },
     } as any);

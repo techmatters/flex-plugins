@@ -362,7 +362,6 @@ test('updateContactInHrm - calls a PATCH HRM endpoint using the supplied contact
         method: 'PATCH',
         body: JSON.stringify({
           rawJson: {
-            definitionVersion: DefinitionVersionId.v1,
             caseInformation: {},
             categories: {},
           },
