@@ -160,10 +160,8 @@ export const saveFormSharedState = async (contactState: ContactState, task: ITas
   console.log('Saved form to HRM', contactState.savedContact.id);
   try {
     if (!isSharedStateClientConnected(sharedStateClient)) {
-      console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
+      console.error('Error with Sync Client connection. Sync Client object is: ', sharedStateClient);
       recordBackendError('Save Form Shared State', new Error('Sync Client Disconnected'));
-      window.alert(getTemplateStrings().SharedStateSaveFormError);
-      return null;
     }
 
     console.log('Shared state client is connected.');
@@ -205,47 +203,47 @@ export const loadFormSharedState = async (task: ITask): Promise<ContactState> =>
   }
 
   try {
-    if (!isSharedStateClientConnected(sharedStateClient)) {
+    if (isSharedStateClientConnected(sharedStateClient)) {
+      const documentName = task.attributes.transferMeta.formDocument;
+      if (documentName) {
+        const document = await sharedStateClient.document(documentName);
+        const transferredContactState = transferFormToContactState(document.data as TransferForm);
+
+        const updatedContact = {
+          ...contactState.savedContact,
+          ...transferredContactState.savedContact,
+          rawJson: {
+            ...contactState.savedContact.rawJson,
+            ...transferredContactState.savedContact.rawJson,
+          },
+          id: contactState.savedContact.id,
+          accountSid: contactState.savedContact.accountSid,
+          taskId: task.taskSid,
+          twilioWorkerId: getHrmConfig().workerSid,
+        };
+        contactState = {
+          ...transferredContactState,
+          savedContact: updatedContact,
+        };
+      }
+    } else {
       console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
       recordBackendError('Load Form Shared State', new Error('Sync Client Disconnected'));
-      window.alert(getTemplateStrings().SharedStateLoadFormError);
-      return null;
     }
+    contactState.savedContact = await saveContactChangesInHrm(
+      contactState.savedContact.id,
+      contactState.savedContact,
+      store.dispatch,
+      task.taskSid,
+    );
 
-    const documentName = task.attributes.transferMeta.formDocument;
-    if (documentName) {
-      const document = await sharedStateClient.document(documentName);
-      const transferredContactState = transferFormToContactState(document.data as TransferForm);
-      const updatedContact: Contact = {
-        ...contactState.savedContact,
-        ...transferredContactState.savedContact,
-        rawJson: {
-          ...contactState.savedContact.rawJson,
-          ...transferredContactState.savedContact.rawJson,
-        },
-        id: contactState.savedContact.id,
-        accountSid: contactState.savedContact.accountSid,
-        taskId: task.taskSid,
-        twilioWorkerId: getHrmConfig().workerSid,
-      };
-      const savedContact = await saveContactChangesInHrm(
-        updatedContact.id,
-        updatedContact,
-        store.dispatch,
-        task.taskSid,
-      );
-
-      contactState = {
-        ...transferredContactState,
-        savedContact,
-      };
-
-      store.dispatch(
-        recreateContactState(getDefinitionVersions().currentDefinitionVersion)(savedContact, contactState.metadata, [
-          task.taskSid,
-        ]),
-      );
-    }
+    store.dispatch(
+      recreateContactState(getDefinitionVersions().currentDefinitionVersion)(
+        contactState.savedContact,
+        contactState.metadata,
+        [task.taskSid],
+      ),
+    );
   } catch (err) {
     console.error('Error while loading form from shared state', err);
     throw err;

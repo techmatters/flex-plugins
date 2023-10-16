@@ -18,7 +18,6 @@ import {
   callTypes,
   CategoriesDefinition,
   CategoryEntry,
-  DefinitionVersion,
   DefinitionVersionId,
   loadDefinition,
   useFetchDefinitions,
@@ -26,12 +25,7 @@ import {
 import { TaskHelper } from '@twilio/flex-ui';
 
 import { baseMockConfig as mockBaseConfig, mockGetDefinitionsResponse } from '../mockGetConfig';
-import {
-  handleTwilioTask,
-  saveContact,
-  transformCategories,
-  updateContactsFormInHrm,
-} from '../../services/ContactService';
+import { handleTwilioTask, saveContact, updateContactsFormInHrm } from '../../services/ContactService';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions, getHrmConfig } from '../../hrmConfig';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
@@ -378,108 +372,6 @@ test('updateContactsFormInHrm - calls a PATCH HRM endpoint using the supplied co
   } finally {
     mockedFetch.mockClear();
   }
-});
-
-describe('transformCategories', () => {
-  let mockDef: DefinitionVersion;
-  beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
-    await mockFetchImplementation(formDefinitionsBaseUrl);
-
-    const v1Defs = await loadDefinition(formDefinitionsBaseUrl);
-    mockDef = {
-      ...v1Defs,
-      tabbedForms: {
-        ...v1Defs.tabbedForms,
-        IssueCategorizationTab: jest.fn(() => ({
-          category1: {
-            color: '',
-            subcategories: [
-              { label: 'subCategory1', toolkitUrl: '' },
-              { label: 'subCategory2', toolkitUrl: '' },
-            ],
-          },
-          category2: {
-            color: '',
-            subcategories: [
-              { label: 'subCategory1', toolkitUrl: '' },
-              { label: 'subCategory2', toolkitUrl: '' },
-            ],
-          },
-        })),
-      },
-    };
-  });
-
-  test("Categories in input match the paths of those in definition - sets the subcategories found in defintions to 'true'", () => {
-    const transformed = transformCategories(
-      'a helpline',
-      { category1: ['subCategory2'], category2: ['subCategory1'] },
-      mockDef,
-    );
-    expect(transformed).toStrictEqual({
-      category1: {
-        subCategory1: false,
-        subCategory2: true,
-      },
-      category2: {
-        subCategory1: true,
-        subCategory2: false,
-      },
-    });
-    // Supplied helpline should be used to look up the categories
-    expect(mockDef.tabbedForms.IssueCategorizationTab).toBeCalledWith('a helpline');
-  });
-
-  test("Empty array of categories - produces matrix of categories all set 'false'", () => {
-    const transformed = transformCategories('a helpline', {}, mockDef);
-    expect(transformed).toStrictEqual({
-      category1: {
-        subCategory1: false,
-        subCategory2: false,
-      },
-      category2: {
-        subCategory1: false,
-        subCategory2: false,
-      },
-    });
-  });
-
-  test("Categories in input don't match the paths of those in definition - adds the missing paths to the output set to 'true'", () => {
-    const transformed = transformCategories(
-      'a helpline',
-      { category3: ['subCategory2'], category2: ['subCategory1'] },
-      mockDef,
-    );
-    expect(transformed).toStrictEqual({
-      category1: {
-        subCategory1: false,
-        subCategory2: false,
-      },
-      category2: {
-        subCategory1: true,
-        subCategory2: false,
-      },
-      category3: {
-        subCategory2: true,
-      },
-    });
-  });
-
-  test('Empty categories in input - adds empty category to output', () => {
-    const transformed = transformCategories('a helpline', { category3: [] }, mockDef);
-    expect(transformed).toStrictEqual({
-      category1: {
-        subCategory1: false,
-        subCategory2: false,
-      },
-      category2: {
-        subCategory1: false,
-        subCategory2: false,
-      },
-      category3: {},
-    });
-  });
 });
 
 describe('handleTwilioTask() (externalRecording)', () => {
