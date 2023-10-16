@@ -32,8 +32,8 @@ import { changeRoute } from '../../states/routing/actions';
 import { updateDraft } from '../../states/contacts/existingContacts';
 import { completeTask } from '../../services/formSubmissionHelpers';
 import CallTypeButtons from '../../components/callTypeButtons';
-import { namespace, contactFormsBase, connectedCaseBase, configurationBase } from '../../states';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
+import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 
 jest.mock('../../states/conferencing', () => ({}));
 

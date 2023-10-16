@@ -17,11 +17,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { namespace, referrableResourcesBase, RootState } from '../../states';
+import { RootState } from '../../states';
 import { ResourcePage } from '../../states/resources';
 import { ReferrableResourcesContainer } from '../../styles/ReferrableResources';
 import SearchResources from './search/SearchResources';
 import ViewResource from './resourceView/ViewResource';
+import { namespace, referrableResourcesBase } from '../../states/storeNamespaces';
 
 const mapStateToProps = (state: RootState) => ({
   route: state[namespace][referrableResourcesBase].route,

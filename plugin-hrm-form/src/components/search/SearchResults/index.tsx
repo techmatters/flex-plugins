@@ -47,8 +47,8 @@ import * as SearchActions from '../../../states/search/actions';
 import * as CaseActions from '../../../states/case/actions';
 import * as RoutingActions from '../../../states/routing/actions';
 import { SearchPages, SearchPagesType } from '../../../states/search/types';
-import { namespace, searchContactsBase, configurationBase } from '../../../states';
 import { getPermissionsForContact, getPermissionsForCase, PermissionActions } from '../../../permissions';
+import { configurationBase, namespace, searchContactsBase } from '../../../states/storeNamespaces';
 
 export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;

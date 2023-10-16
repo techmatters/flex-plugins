@@ -26,7 +26,6 @@ import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-fo
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import CaseList from '../../../components/caseList';
-import { caseListBase, configurationBase, namespace } from '../../../states';
 import { listCases } from '../../../services/CaseService';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { CaseListState } from '../../../states/caseList/reducer';
@@ -38,6 +37,7 @@ import {
 } from '../../../states/caseList/listContent';
 import { caseListSettingsInitialState } from '../../../states/caseList/settings';
 import { Case, ContactRawJson, Contact } from '../../../types/types';
+import { caseListBase, configurationBase, namespace } from '../../../states/storeNamespaces';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();

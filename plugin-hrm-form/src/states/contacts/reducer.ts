@@ -54,10 +54,11 @@ import {
 import { ADD_EXTERNAL_REPORT_ENTRY, addExternalReportEntryReducer } from '../csam-report/existingContactExternalReport';
 import { resourceReferralReducer } from './resourceReferral';
 import { ContactCategoryAction, toggleSubCategoriesReducer } from './categories';
-import { configurationBase, RootState } from '..';
+import { RootState } from '..';
 import { createCaseAsyncAction } from '../case/saveCase';
 import { newContactState } from './contactState';
 import { saveContactReducer } from './saveContact';
+import { configurationBase } from '../storeNamespaces';
 
 export const emptyCategories = [];
 

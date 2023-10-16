@@ -22,13 +22,14 @@ import { connect, ConnectedProps } from 'react-redux';
 import CSAMReportStatusScreen from './CSAMReportStatusScreen';
 import CSAMReportCounsellorForm from './CSAMReportCounsellorForm';
 import { CenterContent, CSAMReportContainer, CSAMReportLayout } from '../../styles/CSAMReport';
-import { configurationBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import { CSAMPage, CSAMReportApi } from './csamReportApi';
 import * as t from '../../states/contacts/actions';
 import { isChildTaskEntry, isCounsellorTaskEntry } from '../../states/csam-report/types';
 import CSAMReportTypePickerForm from './CSAMReportTypePicker';
 import CSAMReportChildForm from './CSAMReportChildForm';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
+import { configurationBase, namespace } from '../../states/storeNamespaces';
 
 type OwnProps = {
   api: CSAMReportApi;

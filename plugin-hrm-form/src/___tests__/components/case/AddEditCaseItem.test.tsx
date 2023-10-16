@@ -25,7 +25,7 @@ import configureMockStore from 'redux-mock-store';
 import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
-import { configurationBase, connectedCaseBase, contactFormsBase, namespace, RootState } from '../../../states';
+import { RootState } from '../../../states';
 import AddEditCaseItem, { AddEditCaseItemProps } from '../../../components/case/AddEditCaseItem';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { CustomITask } from '../../../types/types';
@@ -34,6 +34,7 @@ import { householdSectionApi } from '../../../states/case/sections/household';
 import { changeRoute } from '../../../states/routing/actions';
 import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
+import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states/storeNamespaces';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();

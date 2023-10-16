@@ -37,7 +37,7 @@ import {
 } from '../../styles/HrmStyles';
 import { CaseActionFormContainer, CaseActionLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import { createStateItem, CustomHandlers, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
@@ -65,6 +65,7 @@ import {
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
+import { configurationBase, connectedCaseBase, namespace } from '../../states/storeNamespaces';
 
 export type AddEditCaseItemProps = {
   task: CustomITask | StandaloneITask;
@@ -91,7 +92,6 @@ const AddEditCaseItem: React.FC<Props> = ({
   initialiseCaseSectionWorkingCopy,
   initialiseNewCaseSectionWorkingCopy,
   closeActions,
-  setConnectedCase,
   customFormHandlers,
   reactHookFormOptions,
   sectionApi,
@@ -323,7 +323,6 @@ const mapDispatchToProps = (dispatch, props: AddEditCaseItemProps) => {
   const id = isEditCaseSectionRoute(routing) ? routing.id : undefined;
   const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
-    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     updateCaseSectionWorkingCopy: bindActionCreators(updateCaseSectionWorkingCopy, dispatch),
     initialiseCaseSectionWorkingCopy: bindActionCreators(initialiseExistingCaseSectionWorkingCopy, dispatch),
     initialiseNewCaseSectionWorkingCopy: bindActionCreators(initialiseNewCaseSectionWorkingCopy, dispatch),

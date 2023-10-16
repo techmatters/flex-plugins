@@ -19,7 +19,7 @@ import React from 'react';
 import { Actions } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { configurationBase, namespace, RootState, routingBase } from '../../states';
+import { RootState } from '../../states';
 import { Contact } from '../../types/types';
 import AddTaskButton from '../common/AddTaskButton';
 import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
@@ -28,6 +28,7 @@ import { newContact } from '../../states/contacts/contactState';
 import asyncDispatch from '../../states/asyncDispatch';
 import { createContactAsyncAction } from '../../states/contacts/saveContact';
 import { rerenderAgentDesktop } from '../../rerenderView';
+import { configurationBase, namespace, routingBase } from '../../states/storeNamespaces';
 
 type OwnProps = {};
 

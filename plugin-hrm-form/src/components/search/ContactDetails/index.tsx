@@ -21,7 +21,7 @@ import React, { useEffect, useState } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { namespace, contactFormsBase, RootState } from '../../../states';
+import { RootState } from '../../../states';
 import { Container } from '../../../styles/HrmStyles';
 import GeneralContactDetails from '../../contact/ContactDetails';
 import ConnectDialog from '../ConnectDialog';
@@ -29,6 +29,7 @@ import BackToSearchResultsButton from '../SearchResults/SearchResultsBackButton'
 import { Contact } from '../../../types/types';
 import { loadContact, releaseContact } from '../../../states/contacts/existingContacts';
 import { DetailsContext } from '../../../states/contacts/contactDetails';
+import { contactFormsBase, namespace } from '../../../states/storeNamespaces';
 
 type OwnProps = {
   task: any;

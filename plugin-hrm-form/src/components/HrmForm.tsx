@@ -23,11 +23,12 @@ import CallTypeButtons from './callTypeButtons';
 import TabbedForms from './tabbedForms';
 import Case from './case';
 import CSAMReport from './CSAMReport/CSAMReport';
-import { namespace, RootState, routingBase } from '../states';
+import { RootState } from '../states';
 import type { CustomITask, Case as CaseForm } from '../types/types';
 import { newContactCSAMApi } from './CSAMReport/csamReportApi';
 import { completeTask, submitContactForm } from '../services/formSubmissionHelpers';
 import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
+import { namespace, routingBase } from '../states/storeNamespaces';
 
 type OwnProps = {
   task: CustomITask;

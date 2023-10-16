@@ -35,10 +35,11 @@ import {
   updateCaseSectionWorkingCopyReducer,
   updateCaseSummaryWorkingCopyReducer,
 } from './caseWorkingCopy';
-import { configurationBase, RootState } from '..';
+import { RootState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { SaveCaseReducerState, saveCaseReducer } from './saveCase';
 import { CaseListContentStateAction } from '../caseList/listContent';
+import { configurationBase } from '../storeNamespaces';
 
 const initialState: CaseState = {
   tasks: {},

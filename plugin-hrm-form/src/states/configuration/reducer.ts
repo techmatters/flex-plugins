@@ -18,7 +18,6 @@ import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import * as t from './types';
 import { defaultLanguage } from '../../utils/pluginHelpers';
-import { createCounselorsHash } from '../helpers';
 
 export type ConfigurationState = {
   language: string;
@@ -51,7 +50,7 @@ export function reduce(state = initialState, action: t.ConfigurationActionType):
       };
     case t.POPULATE_COUNSELORS: {
       const sortedList = action.counselorsList.sort((c1, c2) => c1.fullName.localeCompare(c2.fullName));
-      const counselorsHash = createCounselorsHash(sortedList);
+      const counselorsHash = Object.fromEntries(sortedList.map(({ sid, fullName }) => [sid, fullName]));
       return {
         ...state,
         counselors: {

@@ -20,14 +20,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import { AnyAction, bindActionCreators } from 'redux';
 
-import {
-  configurationBase,
-  connectedCaseBase,
-  contactFormsBase,
-  namespace,
-  RootState,
-  routingBase,
-} from '../../states';
+import { RootState } from '../../states';
 import { cancelCase } from '../../services/CaseService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { getActivitiesFromCase, getActivitiesFromContacts, isNoteActivity, sortActivities } from './caseActivities';
@@ -71,7 +64,13 @@ import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import { connectToCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
-import { connectToCase } from '../../services/ContactService';
+import {
+  configurationBase,
+  connectedCaseBase,
+  contactFormsBase,
+  namespace,
+  routingBase,
+} from '../../states/storeNamespaces';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';

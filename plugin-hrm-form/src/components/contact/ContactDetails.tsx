@@ -22,7 +22,7 @@ import { DefinitionVersion } from 'hrm-form-definitions';
 
 import ContactDetailsHome from './ContactDetailsHome';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-import { configurationBase, contactFormsBase, csamReportBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import EditContactSection from './EditContactSection';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { DetailsContainer } from '../../styles/search';
@@ -35,6 +35,7 @@ import { updateDraft } from '../../states/contacts/existingContacts';
 import CSAMReport from '../CSAMReport/CSAMReport';
 import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
 import { getAseloFeatureFlags } from '../../hrmConfig';
+import { configurationBase, contactFormsBase, csamReportBase, namespace } from '../../states/storeNamespaces';
 
 type OwnProps = {
   contactId: string;

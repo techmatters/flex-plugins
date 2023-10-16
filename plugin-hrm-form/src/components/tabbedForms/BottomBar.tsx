@@ -28,7 +28,7 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { completeTask } from '../../services/formSubmissionHelpers';
 import { hasTaskControl } from '../../utils/transfer';
-import { namespace, contactFormsBase, connectedCaseBase, RootState } from '../../states';
+import { RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { Case, CustomITask, Contact } from '../../types/types';
@@ -38,6 +38,7 @@ import asyncDispatch from '../../states/asyncDispatch';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
+import { connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;

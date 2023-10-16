@@ -17,7 +17,7 @@
 import { Dispatch } from 'react';
 
 import * as CSAMAction from '../../states/csam-report/actions';
-import { csamReportBase, namespace, RootState, routingBase } from '../../states';
+import { RootState } from '../../states';
 import { changeRoute } from '../../states/routing/actions';
 import { AppRoutes } from '../../states/routing/types';
 import { CSAMReportEntry } from '../../types/types';
@@ -34,6 +34,7 @@ import { addExternalReportEntry } from '../../states/csam-report/existingContact
 import { acknowledgeCSAMReport, createCSAMReport } from '../../services/CSAMReportService';
 import { reportToIWF, selfReportToIWF } from '../../services/ServerlessService';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
+import { csamReportBase, namespace, routingBase } from '../../states/storeNamespaces';
 
 export enum CSAMPage {
   ReportTypePicker = 'report-type-picker',

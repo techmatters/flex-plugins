@@ -17,10 +17,10 @@
 /* eslint-disable camelcase */
 import { ITask, ChatOrchestrator, Manager } from '@twilio/flex-ui';
 
-import { namespace } from '../../states';
 import { REMOVE_CONTACT_STATE } from '../../states/types';
 import { FeatureFlags } from '../../types/types';
 import { afterCompleteTask, excludeDeactivateConversationOrchestration } from '../../utils/setUpActions';
+import { namespace } from '../../states/storeNamespaces';
 
 const taskSid = 'THIS IS THE TASK SID!';
 

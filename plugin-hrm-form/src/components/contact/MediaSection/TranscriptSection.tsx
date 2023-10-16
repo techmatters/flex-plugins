@@ -21,13 +21,14 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import format from 'date-fns/format';
 
 import type { TwilioStoredMedia, S3StoredTranscript } from '../../../types/types';
-import { contactFormsBase, namespace, RootState } from '../../../states';
+import { RootState } from '../../../states';
 import { fetchHrmApi, generateSignedURLPath } from '../../../services/fetchHrmApi';
 import { loadTranscript, TranscriptMessage, TranscriptResult } from '../../../states/contacts/existingContacts';
 import { Box } from '../../../styles/HrmStyles';
 import { GroupedMessage } from '../../Messaging/MessageItem';
 import { MessageList } from '../../Messaging/MessageList';
 import { ErrorFont, ItalicFont, LoadMediaButton, LoadMediaButtonText } from './styles';
+import { contactFormsBase, namespace } from '../../../states/storeNamespaces';
 
 type OwnProps = {
   contactId: string;

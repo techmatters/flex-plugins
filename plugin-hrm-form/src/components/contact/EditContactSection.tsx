@@ -23,7 +23,7 @@ import _ from 'lodash';
 import { Close } from '@material-ui/icons';
 import { AnyAction } from 'redux';
 
-import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import { Box, StyledNextStepButton, BottomButtonBar, Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
 import { CaseActionTitle, EditContactContainer } from '../../styles/case';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
@@ -35,6 +35,7 @@ import { getTemplateStrings } from '../../hrmConfig';
 import { Contact, ContactRawJson } from '../../types/types';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
+import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 
 type OwnProps = {
   context: DetailsContext;

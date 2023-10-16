@@ -21,10 +21,11 @@ import { Template } from '@twilio/flex-ui';
 
 import { BottomButtonBar, Container, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseLayout } from '../../styles/case';
-import { connectedCaseBase, contactFormsBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import ContactDetails from '../contact/ContactDetails';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { DetailsContext } from '../../states/contacts/contactDetails';
+import { connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 
 const mapStateToProps = (state: RootState, { task, contactId }: OwnProps) => {
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;

@@ -28,7 +28,8 @@ import ContactHeader from '../../components/search/ContactPreview/ContactHeader'
 import TagsAndCounselor from '../../components/search/TagsAndCounselor';
 import { getDefinitionVersions } from '../../hrmConfig';
 import { Contact } from '../../types/types';
-import { configurationBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
+import { configurationBase, namespace } from '../../states/storeNamespaces';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();

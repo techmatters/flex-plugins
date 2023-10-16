@@ -26,7 +26,7 @@ import { callTypes } from 'hrm-form-definitions';
 
 import { CaseLayout } from '../../styles/case';
 import Case from '../case';
-import { configurationBase, contactFormsBase, namespace, RootState, routingBase } from '../../states';
+import { RootState } from '../../states';
 import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute } from '../../states/routing/actions';
 import { emptyCategories } from '../../states/contacts/reducer';
@@ -53,6 +53,7 @@ import { updateDraft } from '../../states/contacts/existingContacts';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
+import { configurationBase, contactFormsBase, namespace, routingBase } from '../../states/storeNamespaces';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {

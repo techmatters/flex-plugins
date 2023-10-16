@@ -20,7 +20,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 
-import { namespace, referrableResourcesBase, RootState } from '../../../states';
+import { RootState } from '../../../states';
 import { Box, Column } from '../../../styles/HrmStyles';
 import SearchResultsBackButton from '../../search/SearchResults/SearchResultsBackButton';
 import {
@@ -38,6 +38,7 @@ import ResourceAttributeWithPrivacy from './ResourceAttributeWithPrivacy';
 import SiteDetails from './SiteDetails';
 import OperatingHours from './OperatingHours';
 import { convertKHPResourceAttributes } from '../convertKHPResourceAttributes';
+import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
 
 type OwnProps = {
   resourceId: string;

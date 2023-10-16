@@ -26,12 +26,12 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { DefinitionVersion, DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
-import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
 import ViewCaseItem, { ViewCaseItemProps } from '../../../components/case/ViewCaseItem';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { StandaloneITask } from '../../../types/types';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
 import { householdSectionApi } from '../../../states/case/sections/household';
+import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states/storeNamespaces';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();

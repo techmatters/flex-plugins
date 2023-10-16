@@ -22,7 +22,7 @@ import { Template } from '@twilio/flex-ui';
 import { Grid } from '@material-ui/core';
 import debounce from 'lodash/debounce';
 
-import { namespace, referrableResourcesBase, RootState } from '../../../states';
+import { RootState } from '../../../states';
 import {
   BottomButtonBar,
   Box,
@@ -57,6 +57,7 @@ import { getTemplateStrings } from '../../../hrmConfig';
 import asyncDispatch from '../../../states/asyncDispatch';
 import { FiltersCheckbox } from '../../../styles/caseList/filters';
 import SearchAutoComplete from './SearchAutoComplete';
+import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
 
 const NO_AGE_SELECTED = -1;
 const NO_LOCATION_SELECTED = '__NO_LOCATION_SELECTED__';

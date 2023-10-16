@@ -21,7 +21,7 @@ import { TaskHelper } from '@twilio/flex-ui';
 
 import HrmForm from './HrmForm';
 import FormNotEditable from './FormNotEditable';
-import { RootState, namespace, contactFormsBase, searchContactsBase, routingBase, configurationBase } from '../states';
+import { RootState } from '../states';
 import { hasTaskControl } from '../utils/transfer';
 import { CustomITask, isOfflineContactTask, isInMyBehalfITask } from '../types/types';
 import PreviousContactsBanner from './PreviousContactsBanner';
@@ -32,6 +32,13 @@ import { getAseloFeatureFlags } from '../hrmConfig';
 import { rerenderAgentDesktop } from '../rerenderView';
 import { updateDraft } from '../states/contacts/existingContacts';
 import { loadContactFromHrmByTaskSidAsyncAction } from '../states/contacts/saveContact';
+import {
+  configurationBase,
+  contactFormsBase,
+  namespace,
+  routingBase,
+  searchContactsBase,
+} from '../states/storeNamespaces';
 
 type OwnProps = {
   task: CustomITask;

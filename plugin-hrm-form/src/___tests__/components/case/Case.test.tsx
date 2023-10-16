@@ -27,19 +27,19 @@ import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-fo
 
 import { mockGetDefinitionsResponse, mockPartialConfiguration } from '../../mockGetConfig';
 import Case from '../../../components/case';
-import {
-  namespace,
-  configurationBase,
-  contactFormsBase,
-  connectedCaseBase,
-  routingBase,
-  RootState,
-} from '../../../states';
+import { RootState } from '../../../states';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { Contact, StandaloneITask } from '../../../types/types';
 import { LOAD_CONTACT_ACTION } from '../../../states/contacts/existingContacts';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { RecursivePartial } from '../../RecursivePartial';
+import {
+  configurationBase,
+  connectedCaseBase,
+  contactFormsBase,
+  namespace,
+  routingBase,
+} from '../../../states/storeNamespaces';
 
 jest.mock('../../../services/CaseService', () => ({ getActivities: jest.fn(() => []), cancelCase: jest.fn() }));
 jest.mock('../../../permissions', () => ({
