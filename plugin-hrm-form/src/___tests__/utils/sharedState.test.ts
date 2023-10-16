@@ -42,11 +42,6 @@ jest.mock('../../states/contacts/saveContact', () => ({
   }),
 }));
 
-jest.mock('../../states/contacts/actions', () => ({
-  ...jest.requireActual('../../states/contacts/actions'),
-  recreateContactState: jest.fn(),
-}));
-
 jest.mock('@twilio/flex-ui', () => ({
   ...(jest.requireActual('@twilio/flex-ui') as any),
   Manager: {

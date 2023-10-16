@@ -17,37 +17,43 @@
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
 import { submitContactForm } from '../../services/formSubmissionHelpers';
-import { connectToCase, createContact, updateContactInHrm } from '../../services/ContactService';
+import { connectToCase, createContact, getContactByTaskSid, updateContactInHrm } from '../../services/ContactService';
 import { Case, CustomITask, Contact } from '../../types/types';
 import {
   CONNECT_TO_CASE,
   ContactMetadata,
   CREATE_CONTACT_ACTION,
+  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION,
   SET_SAVED_CONTACT,
   UPDATE_CONTACT_ACTION,
 } from './types';
 import { ContactDraftChanges, ExistingContactsState } from './existingContacts';
+import { newContactMetaData } from './contactState';
 
 export const createContactAsyncAction = createAsyncAction(
   CREATE_CONTACT_ACTION,
-  async (contact: Contact, taskSid: string, workerSid: string) => {
+  async (contact: Contact, workerSid: string, taskSid: string) => {
     return {
-      contact: await createContact(contact, taskSid, workerSid),
+      contact: await createContact(contact, workerSid, taskSid),
       reference: taskSid,
+      metadata: newContactMetaData(false),
     };
   },
 );
 
+type FulfilledUpdatedContactActionPayload = { contact: Contact; previousContact: Contact; reference: string };
+
 export const updateContactInHrmAsyncAction = createAsyncAction(
   UPDATE_CONTACT_ACTION,
   async (
-    contactId: string,
+    previousContact: Contact,
     body: ContactDraftChanges,
     reference?: string,
-  ): Promise<{ contact: Contact; reference: string }> => {
-    const contact = await updateContactInHrm(contactId, body);
+  ): Promise<FulfilledUpdatedContactActionPayload> => {
+    const contact = await updateContactInHrm(previousContact.id, body);
     return {
       contact,
+      previousContact,
       reference,
     };
   },
@@ -69,6 +75,16 @@ export const submitContactFormAsyncAction = createAsyncAction(
   },
 );
 
+export const loadContactFromHrmByTaskSidAsyncAction = createAsyncAction(
+  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION,
+  async (taskSid: string, reference: string = taskSid) => {
+    return {
+      contact: await getContactByTaskSid(taskSid),
+      reference,
+    };
+  },
+);
+
 const handleAsyncAction = (handleAction, asyncAction) =>
   handleAction(asyncAction, state => {
     return {
@@ -77,15 +93,22 @@ const handleAsyncAction = (handleAction, asyncAction) =>
   });
 
 // TODO: Consolidate this logic with the loadContactReducer implementation?
-const loadContactIntoRedux = (state: ExistingContactsState, contact: Contact, reference?: string) => {
+const loadContactIntoRedux = (
+  state: ExistingContactsState,
+  contact: Contact,
+  reference?: string,
+  newMetadata?: ContactMetadata,
+) => {
   const references = state[contact.id]?.references ?? new Set();
   if (reference) {
     references.add(reference);
   }
+  const metadata = newMetadata ?? state[contact.id]?.metadata;
   return {
     ...state,
     [contact.id]: {
       ...state[contact.id],
+      metadata,
       draftContact: undefined,
       savedContact: contact,
       references,
@@ -103,9 +126,19 @@ export const saveContactReducer = (initialState: ExistingContactsState) =>
         return loadContactIntoRedux(state, contact, reference);
       },
     ),
-    handleAction(createContactAsyncAction.fulfilled, (state, { payload: { contact, reference } }) => {
-      return loadContactIntoRedux(state, contact, reference);
-    }),
+    handleAction(
+      createContactAsyncAction.fulfilled,
+      (state, { payload: { contact, reference } }): ExistingContactsState => {
+        return loadContactIntoRedux(state, contact, reference, newContactMetaData(false));
+      },
+    ),
+    handleAction(
+      loadContactFromHrmByTaskSidAsyncAction.fulfilled,
+      (state, { payload: { contact, reference } }): ExistingContactsState => {
+        if (!contact) return state;
+        return loadContactIntoRedux(state, contact, reference, newContactMetaData(true));
+      },
+    ),
 
     handleAsyncAction(handleAction, updateContactInHrmAsyncAction.rejected),
   ]);

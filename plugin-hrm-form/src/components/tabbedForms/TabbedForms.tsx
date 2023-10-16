@@ -163,9 +163,7 @@ const TabbedForms: React.FC<Props> = ({
 
   const handleBackButton = async () => {
     if (!hasTaskControl(task)) return;
-    await asyncDispatch(dispatch)(
-      updateContactInHrmAsyncAction(savedContact.id, { rawJson: { callType: '' } }, taskId),
-    );
+    await asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, { rawJson: { callType: '' } }, taskId));
     dispatch(changeRoute({ route: 'select-call-type' }, taskId));
   };
 
@@ -174,7 +172,7 @@ const TabbedForms: React.FC<Props> = ({
 
   const handleTabsChange = async (t: number) => {
     const tab = tabsToIndex[t];
-    await asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact.id, draftContact, taskId));
+    await asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact, taskId));
     dispatch(changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, taskId));
   };
 
@@ -329,7 +327,7 @@ const TabbedForms: React.FC<Props> = ({
               contactId={savedContact.id}
               task={task}
               nextTab={() => handleTabsChange(tabIndex + 1)}
-              saveUpdates={() => asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact.id, draftContact))}
+              saveUpdates={() => asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact))}
               // TODO: move this two functions to a separate file to centralize "handle task completions"
               showNextButton={tabIndex !== 0 && tabIndex < tabs.length - 1}
               showSubmitButton={showSubmitButton}

@@ -18,9 +18,9 @@
 import { Actions, ITask, TaskHelper, Manager } from '@twilio/flex-ui';
 
 import { namespace, conferencingBase, RootState } from '../states';
-import { isCallStatusLoading } from '../states/conferencing';
 import { transferStatuses, transferModes } from '../states/DomainConstants';
 import { CustomITask, isTwilioTask } from '../types/types';
+import { isCallStatusLoading } from '../states/conferencing/callStatus';
 
 export const hasTransferStarted = (task: ITask) => Boolean(task.attributes && task.attributes.transferMeta);
 

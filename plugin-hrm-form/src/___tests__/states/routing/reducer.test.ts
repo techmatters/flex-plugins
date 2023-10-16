@@ -23,6 +23,10 @@ import * as actions from '../../../states/routing/actions';
 import * as GeneralActions from '../../../states/actions';
 import { standaloneTaskSid } from '../../../types/types';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
+import {
+  CREATE_CONTACT_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+} from '../../../states/contacts/types';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -58,7 +62,7 @@ describe('test reducer (specific actions)', () => {
     state = result;
   });
 
-  test('should handle INITIALIZE_CONTACT_STATE', async () => {
+  test('should handle CREATE_CONTACT_ACTION_FULFILLED', async () => {
     const expected = {
       tasks: {
         task1: { route: 'tabbed-forms', subroute: 'childInformation' },
@@ -67,17 +71,16 @@ describe('test reducer (specific actions)', () => {
       isAddingOfflineContact: false,
     };
 
-    const result = reduce(
-      state,
-      GeneralActions.initializeContactState(mockV1)(
-        {
+    const result = reduce(state, {
+      type: CREATE_CONTACT_ACTION_FULFILLED,
+      payload: {
+        contact: {
           ...VALID_EMPTY_CONTACT,
           taskId: task.taskSid,
         },
-        VALID_EMPTY_METADATA,
-        [],
-      ),
-    );
+        metadata: VALID_EMPTY_METADATA,
+      },
+    } as any);
     expect(result).toStrictEqual(expected);
 
     state = result;
@@ -107,7 +110,7 @@ describe('test reducer (specific actions)', () => {
     state = result;
   });
 
-  test('should handle RECREATE_CONTACT_STATE and recreate it', async () => {
+  test('should handle LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED and recreate the state as loaded', async () => {
     const expected = {
       tasks: {
         task1: { route: 'tabbed-forms', subroute: 'childInformation' },
@@ -116,23 +119,19 @@ describe('test reducer (specific actions)', () => {
       isAddingOfflineContact: false,
     };
 
-    const result = reduce(
-      state,
-      GeneralActions.recreateContactState(mockV1)(
-        {
-          ...VALID_EMPTY_CONTACT,
-          taskId: task.taskSid,
-        },
-        VALID_EMPTY_METADATA,
-        [],
-      ),
-    );
+    const result = reduce(state, {
+      type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+      payload: {
+        contact: { ...VALID_EMPTY_CONTACT, taskId: task.taskSid },
+        metadata: VALID_EMPTY_METADATA,
+      },
+    } as any);
     expect(result).toStrictEqual(expected);
 
     state = result;
   });
 
-  test('should handle RECREATE_CONTACT_STATE and do nothing', async () => {
+  test('should handle LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED and do nothing', async () => {
     const expected = {
       tasks: {
         task1: { route: 'new-case' },
@@ -145,23 +144,19 @@ describe('test reducer (specific actions)', () => {
 
     state = result1;
 
-    const result2 = reduce(
-      state,
-      GeneralActions.recreateContactState(mockV1)(
-        {
-          ...VALID_EMPTY_CONTACT,
-          taskId: task.taskSid,
-        },
-        VALID_EMPTY_METADATA,
-        [],
-      ),
-    );
+    const result2 = reduce(state, {
+      type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+      payload: {
+        contact: { ...VALID_EMPTY_CONTACT, taskId: task.taskSid },
+        metadata: VALID_EMPTY_METADATA,
+      },
+    } as any);
     expect(result2).toStrictEqual(expected);
 
     state = result2;
   });
 
-  test('should handle RECREATE_CONTACT_STATE and change isAddingOfflineContact to true', async () => {
+  test('should handle LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED and change isAddingOfflineContact to true', async () => {
     const expected = {
       tasks: {
         task1: { route: 'new-case' },
@@ -171,17 +166,13 @@ describe('test reducer (specific actions)', () => {
       isAddingOfflineContact: true,
     };
 
-    const result = reduce(
-      state,
-      GeneralActions.recreateContactState(mockV1)(
-        {
-          ...VALID_EMPTY_CONTACT,
-          taskId: offlineContactTaskSid,
-        },
-        VALID_EMPTY_METADATA,
-        [],
-      ),
-    );
+    const result = reduce(state, {
+      type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+      payload: {
+        contact: { ...VALID_EMPTY_CONTACT, taskId: task.taskSid },
+        metadata: VALID_EMPTY_METADATA,
+      },
+    } as any);
     expect(result).toStrictEqual(expected);
 
     state = result;

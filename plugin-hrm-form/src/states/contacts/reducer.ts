@@ -19,13 +19,14 @@ import { callTypes } from 'hrm-form-definitions';
 import { createReducer } from 'redux-promise-middleware-actions';
 
 import * as t from './types';
-import { ContactsState, SET_SAVED_CONTACT, UPDATE_CONTACT_ACTION } from './types';
 import {
-  INITIALIZE_CONTACT_STATE,
-  InitializeContactStateAction,
-  REMOVE_CONTACT_STATE,
-  RemoveContactStateAction,
-} from '../types';
+  ContactsState,
+  ContactUpdatingAction,
+  CREATE_CONTACT_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+  UPDATE_CONTACT_ACTION_FULFILLED,
+} from './types';
+import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import {
   createDraftReducer,
   EXISTING_CONTACT_CREATE_DRAFT_ACTION,
@@ -107,31 +108,14 @@ export function reduce(
     | ExistingContactAction
     | ContactDetailsAction
     | ContactCategoryAction
-    | InitializeContactStateAction
     | RemoveContactStateAction
-    | t.UpdatedContactAction,
+    | t.UpdatedContactAction
+    | ContactUpdatingAction,
 ): ContactsState {
   let state = boundReferralReducer(inputState, action as any);
   state = toggleSubCategoriesReducer(state, action as ContactCategoryAction);
   state = newCaseReducer(state, action as any);
   switch (action.type) {
-    case INITIALIZE_CONTACT_STATE:
-      return {
-        ...state,
-        existingContacts: {
-          ...state.existingContacts,
-          [action.initialContact.id]: {
-            savedContact: action.initialContact,
-            draftContact: {
-              ...action.initialContact,
-              // Cheap deep copy
-              rawJson: JSON.parse(JSON.stringify(action.initialContact.rawJson)),
-            },
-            metadata: action.metadata,
-            references: new Set(action.references),
-          },
-        },
-      };
     case REMOVE_CONTACT_STATE: {
       const contactId = Object.values(state.existingContacts).find(cs => cs.savedContact.taskId === action.taskId)
         ?.savedContact.id;
@@ -206,7 +190,9 @@ export function reduce(
     case t.SET_EDITING_CONTACT: {
       return { ...state, editingContact: action.editing };
     }
-    case `${UPDATE_CONTACT_ACTION}_FULFILLED`: {
+    case UPDATE_CONTACT_ACTION_FULFILLED:
+    case CREATE_CONTACT_ACTION_FULFILLED:
+    case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED: {
       return { ...state, existingContacts: boundSaveContactReducer(state.existingContacts, action) };
     }
     case LOAD_CONTACT_ACTION: {

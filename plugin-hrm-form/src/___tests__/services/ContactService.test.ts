@@ -25,7 +25,7 @@ import {
 import { TaskHelper } from '@twilio/flex-ui';
 
 import { baseMockConfig as mockBaseConfig, mockGetDefinitionsResponse } from '../mockGetConfig';
-import { handleTwilioTask, saveContact, updateContactsFormInHrm } from '../../services/ContactService';
+import { handleTwilioTask, saveContact, updateContactInHrm } from '../../services/ContactService';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions, getHrmConfig } from '../../hrmConfig';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
@@ -345,7 +345,7 @@ describe('saveContact() (externalRecording)', () => {
   });
 });
 
-test('updateContactsFormInHrm - calls a PATCH HRM endpoint using the supplied contact ID in the route', async () => {
+test('updateContactInHrm - calls a PATCH HRM endpoint using the supplied contact ID in the route', async () => {
   const responseBody = { rawJson: { caseInformation: {}, categories: {} } };
   const mockedFetch = jest.spyOn(global, 'fetch').mockResolvedValue(<Response>(<unknown>{
     ok: true,
@@ -353,9 +353,9 @@ test('updateContactsFormInHrm - calls a PATCH HRM endpoint using the supplied co
     text: () => Promise.resolve(responseBody),
   }));
   try {
-    const inputPatch = { caseInformation: {}, categories: {} };
-    const ret = await updateContactsFormInHrm('1234', inputPatch);
-    expect(ret).toStrictEqual({ rawJson: inputPatch });
+    const inputPatch = { rawJson: { caseInformation: {}, categories: {} } };
+    const ret = await updateContactInHrm('1234', inputPatch);
+    expect(ret).toStrictEqual(inputPatch);
     expect(mockedFetch).toHaveBeenCalledWith(
       expect.stringContaining('/contacts/1234'),
       expect.objectContaining({

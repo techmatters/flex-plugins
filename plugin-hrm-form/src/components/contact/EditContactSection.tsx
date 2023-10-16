@@ -32,7 +32,7 @@ import { clearDraft, refreshContact } from '../../states/contacts/existingContac
 import CloseCaseDialog from '../case/CloseCaseDialog';
 import * as t from '../../states/contacts/actions';
 import { getTemplateStrings } from '../../hrmConfig';
-import { ContactRawJson } from '../../types/types';
+import { Contact, ContactRawJson } from '../../types/types';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 
@@ -49,7 +49,6 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const EditContactSection: React.FC<Props> = ({
   savedContact,
   draftContact,
-  contactId,
   definitionVersions,
   setEditContactPageOpen,
   setEditContactPageClosed,
@@ -94,7 +93,7 @@ const EditContactSection: React.FC<Props> = ({
       'categories' | 'callerInformation' | 'caseInformation' | 'childInformation'
     >> = draftContact.rawJson;
     try {
-      updateContactsFormInHrmAsyncAction(contactId, payload);
+      updateContactsFormInHrmAsyncAction(savedContact, payload);
     } catch (error) {
       setSubmitting(false);
       recordBackendError('Open New Case', error);
@@ -200,8 +199,8 @@ const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string,
     clearContactDraft: () => {
       dispatch(clearDraft(contactId));
     },
-    updateContactsFormInHrmAsyncAction: (contactId: string, body: Partial<ContactRawJson>) =>
-      updateContactAsyncDispatch(updateContactInHrmAsyncAction(contactId, { rawJson: body })),
+    updateContactsFormInHrmAsyncAction: (contact: Contact, body: Partial<ContactRawJson>) =>
+      updateContactAsyncDispatch(updateContactInHrmAsyncAction(contact, { rawJson: body })),
   };
 };
 

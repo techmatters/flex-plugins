@@ -20,15 +20,14 @@ import { Actions } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { configurationBase, namespace, RootState, routingBase } from '../../states';
-import type { DefinitionVersion } from '../../states/types';
-import * as GeneralActions from '../../states/actions';
 import { Contact } from '../../types/types';
 import AddTaskButton from '../common/AddTaskButton';
-import { ContactMetadata } from '../../states/contacts/types';
 import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
-import { createContact } from '../../services/ContactService';
 import { getHrmConfig } from '../../hrmConfig';
-import { newContactState } from '../../states/contacts/contactState';
+import { newContact } from '../../states/contacts/contactState';
+import asyncDispatch from '../../states/asyncDispatch';
+import { createContactAsyncAction } from '../../states/contacts/saveContact';
+import { rerenderAgentDesktop } from '../../rerenderView';
 
 type OwnProps = {};
 
@@ -38,20 +37,18 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const AddOfflineContactButton: React.FC<Props> = ({
   isAddingOfflineContact,
   currentDefinitionVersion,
-  initializeContactState,
+  createContactState,
 }) => {
   if (!currentDefinitionVersion) {
     return null;
   }
 
   const onClick = async () => {
-    const { savedContact: newContact, metadata } = newContactState(currentDefinitionVersion)(false);
     console.log('Onclick - creating contact');
-    const savedContact = await createContact(newContact, getHrmConfig().workerSid, getOfflineContactTaskSid());
-    initializeContactState(currentDefinitionVersion)(savedContact, metadata);
+    createContactState(newContact(currentDefinitionVersion));
 
     await Actions.invokeAction('SelectTask', { task: undefined });
-    // await rerenderAgentDesktop();
+    await rerenderAgentDesktop();
   };
 
   return (
@@ -77,8 +74,8 @@ const mapStateToProps = (state: RootState) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  initializeContactState: (definitions: DefinitionVersion) => (contact: Contact, metadata: ContactMetadata) => {
-    dispatch(GeneralActions.initializeContactState(definitions)(contact, metadata, [getOfflineContactTaskSid()]));
+  createContactState: (contact: Contact) => {
+    asyncDispatch(dispatch)(createContactAsyncAction(contact, getHrmConfig().workerSid, getOfflineContactTaskSid()));
   },
 });
 

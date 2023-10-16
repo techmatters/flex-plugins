@@ -41,36 +41,6 @@ beforeAll(async () => {
 });
 
 describe('test action creators', () => {
-  test('initializeContactState', async () => {
-    const expected: types.InitializeContactStateAction = {
-      type: types.INITIALIZE_CONTACT_STATE,
-      definitions: mockV1,
-      metadata: VALID_EMPTY_METADATA,
-      initialContact: { ...VALID_EMPTY_CONTACT, taskId: task.taskSid },
-      recreated: false,
-      references: [],
-    };
-
-    expect(
-      actions.initializeContactState(mockV1)({ ...VALID_EMPTY_CONTACT, taskId: task.taskSid }, VALID_EMPTY_METADATA),
-    ).toStrictEqual(expected);
-  });
-
-  test('recreateContactState', async () => {
-    const expected: types.InitializeContactStateAction = {
-      type: types.INITIALIZE_CONTACT_STATE,
-      definitions: mockV1,
-      metadata: VALID_EMPTY_METADATA,
-      initialContact: { ...VALID_EMPTY_CONTACT, taskId: task.taskSid },
-      recreated: true,
-      references: [],
-    };
-
-    expect(
-      actions.recreateContactState(mockV1)({ ...VALID_EMPTY_CONTACT, taskId: task.taskSid }, VALID_EMPTY_METADATA),
-    ).toStrictEqual(expected);
-  });
-
   test('removeContactState', async () => {
     const expected: types.RemoveContactStateAction = {
       type: types.REMOVE_CONTACT_STATE,

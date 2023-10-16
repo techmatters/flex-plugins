@@ -14,18 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import type { DefinitionVersion } from 'hrm-form-definitions';
+export type CallStatus =
+  | 'no-call'
+  | 'initiating'
+  | 'initiated'
+  | 'ringing'
+  | 'busy'
+  | 'failed'
+  | 'in-progress'
+  | 'completed';
 
-import { Contact } from '../types/types';
-import { ContactMetadata } from './contacts/types';
-
-export type { DefinitionVersion };
-
-// Action types
-export const REMOVE_CONTACT_STATE = 'REMOVE_CONTACT_STATE';
-
-export type RemoveContactStateAction = {
-  type: typeof REMOVE_CONTACT_STATE;
-  taskId: string;
-  contactId: string;
-};
+export const isCallStatusLoading = (callStatus: CallStatus) =>
+  callStatus === 'initiating' || callStatus === 'initiated' || callStatus === 'ringing';

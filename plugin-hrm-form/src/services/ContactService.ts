@@ -22,7 +22,7 @@ import { fillEndMillis, getConversationDuration } from '../utils/conversationDur
 import { fetchHrmApi } from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
-import { ContactRawJson, ConversationMedia, Contact, isOfflineContactTask, isTwilioTask } from '../types/types';
+import { ConversationMedia, Contact, isOfflineContactTask, isTwilioTask } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
 import { ContactMetadata } from '../states/contacts/types';
@@ -229,11 +229,6 @@ const saveContactToHrm = async (
   };
 };
 
-export const updateContactsFormInHrm = async (contactId: string, body: Partial<ContactRawJson>): Promise<Contact> => {
-  const { definitionVersion } = getHrmConfig();
-  return updateContactInHrm(contactId, { rawJson: { definitionVersion, ...body } });
-};
-
 export const saveContact = async (
   task,
   contact: Contact,
@@ -294,7 +289,7 @@ async function saveConversationMedia(contactId, conversationMedia: ConversationM
   return fetchHrmApi(`/contacts/${contactId}/conversationMedia`, options);
 }
 
-export const getContactByTaskSid = async (taskSid: string): Promise<Contact> => {
+export const getContactByTaskSid = async (taskSid: string): Promise<Contact | undefined> => {
   const options: FetchOptions = {
     method: 'GET',
     returnNullFor404: true,

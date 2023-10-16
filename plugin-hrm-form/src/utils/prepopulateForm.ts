@@ -210,7 +210,7 @@ export const prepopulateForm = async (task: ITask) => {
 
     await asyncDispatcher(
       updateContactInHrmAsyncAction(
-        createdContact.id,
+        createdContact,
         { rawJson: { callType: callTypes.child, childInformation: childInfoValues } },
         task.taskSid,
       ),
@@ -243,7 +243,7 @@ export const prepopulateForm = async (task: ITask) => {
     if (callType) {
       await asyncDispatcher(
         updateContactInHrmAsyncAction(
-          createdContact.id,
+          createdContact,
           { rawJson: { callType, [formName]: surveyValues } },
           task.taskSid,
         ),
@@ -281,7 +281,7 @@ export const prepopulateForm = async (task: ITask) => {
       changes.rawJson.callType = callType;
       changes.rawJson[formName] = values;
 
-      await asyncDispatcher(updateContactInHrmAsyncAction(createdContact.id, changes, task.taskSid));
+      await asyncDispatcher(updateContactInHrmAsyncAction(createdContact, changes, task.taskSid));
 
       // Open tabbed form to first tab
       Manager.getInstance().store.dispatch(
