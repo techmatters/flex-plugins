@@ -100,7 +100,7 @@ const TranscriptSection: React.FC<Props> = ({
 
   const handleFetchAndLoadException = err => {
     console.error(
-      `Error loading the transcript for contact ${contactId}, transcript url ${externalStoredTranscript.location.key}`,
+      `Error loading the transcript for contact ${contactId}, transcript url ${externalStoredTranscript.storeTypeSpecificData.location.key}`,
       err,
     );
 
@@ -130,12 +130,12 @@ const TranscriptSection: React.FC<Props> = ({
         generateExternalMediaPath(
           contactId,
           mediaType,
-          externalStoredTranscript.location.bucket,
-          externalStoredTranscript.location.key,
+          externalStoredTranscript.storeTypeSpecificData.location.bucket,
+          externalStoredTranscript.storeTypeSpecificData.location.key,
         ),
       );
 
-      const transcriptResponse = await fetch(transcriptPreSignedUrl.downloadUrl);
+      const transcriptResponse = await fetch(transcriptPreSignedUrl.media_url);
 
       validateFetchResponse(transcriptResponse);
       const transcriptJson: TranscriptResult = await transcriptResponse.json();
@@ -185,7 +185,7 @@ const TranscriptSection: React.FC<Props> = ({
   }
 
   // The external transcript is exported but it hasn't been fetched yet
-  if (externalStoredTranscript && externalStoredTranscript.location && !transcript) {
+  if (externalStoredTranscript && externalStoredTranscript.storeTypeSpecificData.location && !transcript) {
     return (
       <LoadMediaButton type="button" onClick={fetchAndLoadTranscript}>
         <LoadMediaButtonText>
@@ -207,7 +207,7 @@ const TranscriptSection: React.FC<Props> = ({
   }
 
   // External is still pending and Twilio transcript is disabled
-  if (externalStoredTranscript && !externalStoredTranscript.location) {
+  if (externalStoredTranscript && !externalStoredTranscript.storeTypeSpecificData.location) {
     return (
       <ItalicFont>
         <Template code="TranscriptSection-TranscriptNotAvailableCheckLater" />

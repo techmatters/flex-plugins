@@ -46,8 +46,8 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
           generateExternalMediaPath(
             contactId,
             mediaType,
-            externalStoredRecording.location.bucket,
-            externalStoredRecording.location.key,
+            externalStoredRecording.storeTypeSpecificData.location.bucket,
+            externalStoredRecording.storeTypeSpecificData.location.key,
           ),
         );
 
@@ -65,7 +65,7 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
 
   const handleFetchAndLoadException = err => {
     console.error(
-      `Error loading the recording for contact ${contactId}, recording url ${externalStoredRecording.location.key}`,
+      `Error loading the recording for contact ${contactId}, recording url ${externalStoredRecording.storeTypeSpecificData.location.key}`,
       err,
     );
     const errorMessage = 'RecordingSection-Error';
