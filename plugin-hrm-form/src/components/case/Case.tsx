@@ -27,7 +27,6 @@ import {
   namespace,
   RootState,
   routingBase,
-  // saveCaseBase,
 } from '../../states';
 import { cancelCase } from '../../services/CaseService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
