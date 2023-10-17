@@ -275,8 +275,7 @@ const TabbedForms: React.FC<Props> = ({
                     initialValues={callerInformation}
                     display={subroute === 'callerInformation'}
                     autoFocus={autoFocus}
-                    updateFormActionDispatcher={() => values =>
-                      updateDraftForm({ callerInformation: values.callerInformation })}
+                    updateForm={values => updateDraftForm({ callerInformation: values.callerInformation })}
                     contactId={savedContact.id}
                   />
                 </TabbedFormTabContainer>
@@ -291,10 +290,7 @@ const TabbedForms: React.FC<Props> = ({
                       initialValues={childInformation}
                       display={subroute === 'childInformation'}
                       autoFocus={autoFocus}
-                      updateFormActionDispatcher={dispatch => values =>
-                        dispatch(
-                          updateDraft(savedContact.id, { rawJson: { childInformation: values.childInformation } }),
-                        )}
+                      updateForm={values => updateDraftForm({ childInformation: values.childInformation })}
                       contactId={savedContact.id}
                     />
                   </TabbedFormTabContainer>
@@ -315,10 +311,7 @@ const TabbedForms: React.FC<Props> = ({
                       display={subroute === 'caseInformation'}
                       autoFocus={autoFocus}
                       extraChildrenRight={csamAttachments}
-                      updateFormActionDispatcher={dispatch => values =>
-                        dispatch(
-                          updateDraft(savedContact.id, { rawJson: { caseInformation: values.caseInformation } }),
-                        )}
+                      updateForm={values => updateDraftForm({ caseInformation: values.caseInformation })}
                       contactId={savedContact.id}
                     />
                   </TabbedFormTabContainer>
