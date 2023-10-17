@@ -18,6 +18,11 @@
     }
   },
   {
+    "name": "anonymousReport",
+    "label": "Anonymous Report",
+    "type": "checkbox"
+  },
+  {
     "name": "multipleVictims",
     "label": "Multiple Victims",
     "type": "checkbox"
