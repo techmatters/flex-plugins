@@ -23,7 +23,8 @@ export type TabbedFormSubroutes =
   | 'callerInformation'
   | 'childInformation'
   | 'categories'
-  | 'caseInformation';
+  | 'caseInformation'
+  | 'profileDetails';
 
 export const NewCaseSectionSubroutes = {
   Note: 'note',
