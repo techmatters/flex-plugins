@@ -4,7 +4,7 @@ locals {
   config              = merge(local.defaults_config, local.local_config)
 
   local_config = {
-    helpline                          = "Ecpat"
+    helpline                          = "ECPAT"
     old_dir_prefix                    = "ecpat"
     definition_version                = "ph-v1"
     default_autopilot_chatbot_enabled = false
@@ -37,7 +37,7 @@ locals {
         "friendly_name"  = "ECPAT"
       },
       non_counselling : {
-        "target_workers" = "1==0",
+        "target_workers" = "1==1",
         "friendly_name"  = "Non Counselling"
       },
       outside_operating_hours : {
