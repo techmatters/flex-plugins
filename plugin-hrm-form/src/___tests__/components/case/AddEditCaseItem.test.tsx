@@ -29,9 +29,9 @@ import { RootState } from '../../../states';
 import AddEditCaseItem, { AddEditCaseItemProps } from '../../../components/case/AddEditCaseItem';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { CustomITask } from '../../../types/types';
-import { AppRoutes, CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
+import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
 import { householdSectionApi } from '../../../states/case/sections/household';
-import { changeRoute } from '../../../states/routing/actions';
+import { newGoBackAction } from '../../../states/routing/actions';
 import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states/storeNamespaces';
@@ -123,11 +123,13 @@ const hrmState: Partial<RootState[typeof namespace]> = {
     editingContact: false,
     isCallTypeCaller: false,
     contactDetails: { contactSearch: { detailsExpanded: {} }, caseDetails: { detailsExpanded: {} } },
-    existingContacts: {},
-    tasks: {
-      task1: {
-        contact: {
+    existingContacts: {
+      1234: {
+        references: new Set(),
+        savedContact: {
           ...VALID_EMPTY_CONTACT,
+          id: '1234',
+          taskId: 'task1',
           rawJson: {
             ...VALID_EMPTY_CONTACT.rawJson,
             childInformation: {
@@ -163,9 +165,7 @@ const hrmState: Partial<RootState[typeof namespace]> = {
   [connectedCaseBase]: addingNewHouseholdCaseState,
   routing: {
     tasks: {
-      task1: {
-        route: 'new-case',
-      },
+      task1: [{ route: 'case', subroute: 'household', action: CaseItemAction.Add }],
     },
     isAddingOfflineContact: false,
   },
@@ -184,11 +184,8 @@ const state2 = {
     ...state1[namespace],
     [connectedCaseBase]: addingNewHouseholdCaseState,
     routing: {
-      route: 'new-case',
       tasks: {
-        task1: {
-          route: 'new-case',
-        },
+        task1: [{ route: 'case', subroute: 'household', action: CaseItemAction.Add }],
       },
     },
   },
@@ -198,9 +195,7 @@ store2.dispatch = jest.fn();
 
 const routing3: RootState[typeof namespace]['routing'] = {
   tasks: {
-    task1: {
-      route: 'new-case',
-    },
+    task1: [{ route: 'case', subroute: 'household', action: CaseItemAction.Add }],
   },
   isAddingOfflineContact: true,
 };
@@ -218,18 +213,16 @@ store3.dispatch = jest.fn();
 const themeConf: ThemeConfigProps = {};
 
 describe('Test AddHousehold', () => {
-  const exitRoute: AppRoutes = { route: 'tabbed-forms', subroute: 'caseInformation' };
   let ownProps: AddEditCaseItemProps;
   beforeEach(
     () =>
       (ownProps = {
         task: { taskSid: 'task1' } as CustomITask,
         counselor: 'Someone',
-        exitRoute,
         sectionApi: householdSectionApi,
         definitionVersion: mockV1,
         routing: {
-          route: 'tabbed-forms',
+          route: 'case',
           subroute: NewCaseSubroutes.Household,
           action: CaseItemAction.Add,
         },
@@ -244,19 +237,19 @@ describe('Test AddHousehold', () => {
       </StorelessThemeProvider>,
     );
 
-    expect(store2.dispatch).not.toHaveBeenCalledWith(changeRoute(exitRoute, 'task1'));
+    expect(store2.dispatch).not.toHaveBeenCalledWith(newGoBackAction('task1'));
 
     expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument();
     screen.getByTestId('Case-CloseCross').click();
 
-    expect(store2.dispatch).toHaveBeenCalledWith(changeRoute(exitRoute, 'task1'));
+    expect(store2.dispatch).toHaveBeenCalledWith(newGoBackAction('task1'));
 
     store2.dispatch.mockClear();
 
     expect(screen.getByTestId('Case-CloseButton')).toBeInTheDocument();
     screen.getByTestId('Case-CloseButton').click();
 
-    expect(store2.dispatch).toHaveBeenCalledWith(changeRoute(exitRoute, 'task1'));
+    expect(store2.dispatch).toHaveBeenCalledWith(newGoBackAction('task1'));
   });
 
   test('a11y', async () => {

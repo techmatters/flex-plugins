@@ -124,7 +124,7 @@ const ContactDetails: React.FC<Props> = ({
       );
     }
 
-    const { callerInformation, caseInformation, childInformation } = draftContact.rawJson;
+    const { callerInformation, caseInformation, childInformation } = draftContact.rawJson ?? {};
 
     if (childInformation)
       return editContactSectionElement(contactDetailsSectionFormApi.CHILD_INFORMATION, 'childInformation');

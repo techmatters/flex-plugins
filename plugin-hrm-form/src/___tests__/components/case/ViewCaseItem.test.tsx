@@ -32,6 +32,7 @@ import { StandaloneITask } from '../../../types/types';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
 import { householdSectionApi } from '../../../states/case/sections/household';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states/storeNamespaces';
+import { newGoBackAction } from '../../../states/routing/actions';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -58,6 +59,14 @@ const household = {
 
 const state = {
   [namespace]: {
+    routing: {
+      tasks: {
+        task1: [
+          { route: 'case', subroute: 'home' },
+          { route: 'case', subroute: NewCaseSubroutes.Household, action: CaseItemAction.View, id: 'HOUSEHOLD_2' },
+        ],
+      },
+    },
     [configurationBase]: {
       counselors: {
         list: [],
@@ -115,7 +124,6 @@ const task = {
 
 describe('Test ViewHousehold', () => {
   let mockV1: DefinitionVersion;
-  const exitItem = jest.fn();
 
   let ownProps: ViewCaseItemProps;
 
@@ -130,12 +138,11 @@ describe('Test ViewHousehold', () => {
 
   beforeEach(async () => {
     ownProps = {
-      exitItem,
       definitionVersion: mockV1,
       task: task as StandaloneITask,
       sectionApi: householdSectionApi,
       routing: {
-        route: 'tabbed-forms',
+        route: 'case',
         subroute: NewCaseSubroutes.Household,
         action: CaseItemAction.View,
         id: 'HOUSEHOLD_2',
@@ -153,21 +160,19 @@ describe('Test ViewHousehold', () => {
       </StorelessThemeProvider>,
     );
 
-    expect(exitItem).not.toHaveBeenCalled();
-
     expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument();
     expect(screen.getByTestId('Case-EditButton')).toBeInTheDocument();
     screen.getByTestId('Case-CloseCross').click();
 
-    expect(exitItem).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(newGoBackAction(task.taskSid));
 
-    exitItem.mockClear();
-    expect(exitItem).not.toHaveBeenCalled();
+    store.dispatch.mockClear();
+    expect(store.dispatch).not.toHaveBeenCalled();
 
     expect(screen.getByTestId('Case-CloseButton')).toBeInTheDocument();
     screen.getByTestId('Case-CloseButton').click();
 
-    expect(exitItem).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(newGoBackAction(task.taskSid));
   });
   test('Test no edit permissions', async () => {
     render(

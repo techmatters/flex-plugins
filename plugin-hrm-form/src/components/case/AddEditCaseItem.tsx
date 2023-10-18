@@ -38,13 +38,11 @@ import {
 import { CaseActionFormContainer, CaseActionLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import { RootState } from '../../states';
-import * as CaseActions from '../../states/case/actions';
 import { createStateItem, CustomHandlers, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import type { Case, CaseInfo, CaseItemEntry, CustomITask, StandaloneITask } from '../../types/types';
 import {
   AddCaseSectionRoute,
-  AppRoutes,
   CaseItemAction,
   EditCaseSectionRoute,
   isEditCaseSectionRoute,
@@ -55,7 +53,7 @@ import CloseCaseDialog from './CloseCaseDialog';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import { lookupApi } from '../../states/case/sections/lookupApi';
 import { copyCaseSectionItem } from '../../states/case/sections/update';
-import { changeRoute } from '../../states/routing/actions';
+import { newGoBackAction } from '../../states/routing/actions';
 import {
   initialiseExistingCaseSectionWorkingCopy,
   initialiseNewCaseSectionWorkingCopy,
@@ -72,7 +70,6 @@ export type AddEditCaseItemProps = {
   counselor: string;
   definitionVersion: DefinitionVersion;
   routing: AddCaseSectionRoute | EditCaseSectionRoute;
-  exitRoute: AppRoutes;
   customFormHandlers?: CustomHandlers;
   reactHookFormOptions?: Partial<{ shouldUnregister: boolean }>;
   sectionApi: CaseSectionApi<unknown>;
@@ -85,7 +82,6 @@ const AddEditCaseItem: React.FC<Props> = ({
   task,
   counselor,
   counselorsHash,
-  exitRoute,
   connectedCase,
   routing,
   updateCaseSectionWorkingCopy,
@@ -206,12 +202,12 @@ const AddEditCaseItem: React.FC<Props> = ({
   };
 
   function close() {
-    closeActions(exitRoute);
+    closeActions();
   }
 
   async function saveAndStay() {
     await save();
-    closeActions({ ...routing, action: CaseItemAction.Add });
+    closeActions(false);
 
     // Reset the entire form state, fields reference, and subscriptions.
     methods.reset();
@@ -219,7 +215,7 @@ const AddEditCaseItem: React.FC<Props> = ({
 
   async function saveAndLeave() {
     await save();
-    closeActions(exitRoute);
+    closeActions();
   }
 
   const strings = getTemplateStrings();
@@ -326,9 +322,11 @@ const mapDispatchToProps = (dispatch, props: AddEditCaseItemProps) => {
     updateCaseSectionWorkingCopy: bindActionCreators(updateCaseSectionWorkingCopy, dispatch),
     initialiseCaseSectionWorkingCopy: bindActionCreators(initialiseExistingCaseSectionWorkingCopy, dispatch),
     initialiseNewCaseSectionWorkingCopy: bindActionCreators(initialiseNewCaseSectionWorkingCopy, dispatch),
-    closeActions: route => {
+    closeActions: (closeForm: boolean = true) => {
       dispatch(removeCaseSectionWorkingCopy(task.taskSid, sectionApi, id));
-      dispatch(changeRoute(route, task.taskSid));
+      if (closeForm) {
+        dispatch(newGoBackAction(task.taskSid));
+      }
     },
     updateCaseAsyncAction: (caseId: Case['id'], body: Partial<Case>) =>
       searchAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
