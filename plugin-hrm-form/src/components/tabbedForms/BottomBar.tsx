@@ -47,7 +47,7 @@ type BottomBarProps = {
   nextTab: () => void;
   task: CustomITask;
   contactId: string;
-  saveUpdates: () => Promise<Contact>;
+  saveUpdates: () => Promise<void>;
 };
 
 const BottomBar: React.FC<
@@ -77,8 +77,8 @@ const BottomBar: React.FC<
     if (!hasTaskControl(task)) return;
 
     try {
-      const updated = (await saveUpdates()) ?? contact;
-      await createCaseAsyncAction(updated, workerSid, definitionVersion);
+      await saveUpdates();
+      await createCaseAsyncAction(contact, workerSid, definitionVersion);
       changeRoute({ route: 'new-case' }, taskSid);
     } catch (error) {
       recordBackendError('Open New Case', error);

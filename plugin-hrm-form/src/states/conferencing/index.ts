@@ -15,24 +15,16 @@
  */
 import { createAction, createReducer } from 'redux-promise-middleware-actions';
 import { omit } from 'lodash';
+import { Action } from 'redux';
 
-import {
-  INITIALIZE_CONTACT_STATE,
-  InitializeContactStateAction,
-  RECREATE_CONTACT_STATE,
-  RemoveContactStateAction,
-} from '../types';
+import { RemoveContactStateAction } from '../types';
 import { removeContactState } from '../actions';
-
-export type CallStatus =
-  | 'no-call'
-  | 'initiating'
-  | 'initiated'
-  | 'ringing'
-  | 'busy'
-  | 'failed'
-  | 'in-progress'
-  | 'completed';
+import {
+  createContactAsyncAction,
+  loadContactFromHrmByTaskSidAsyncAction,
+  updateContactInHrmAsyncAction,
+} from '../contacts/saveContact';
+import { CallStatus } from './callStatus';
 
 export type ConferencingState = {
   tasks: {
@@ -89,31 +81,44 @@ type ConferencingStateAction =
   | ReturnType<typeof setCallStatusAction>
   | ReturnType<typeof setPhoneNumberAction>
   | ReturnType<typeof addParticipantLabelAction>
-  | InitializeContactStateAction
   | RemoveContactStateAction;
 
 const initialState: ConferencingState = {
   tasks: {},
 };
 
-const createNewEntryForTaskId = (state: ConferencingState, payload: InitializeContactStateAction) => {
+const createNewEntryForTaskId = (state: ConferencingState, action: Action) => {
+  const { contact } = (action as any).payload;
+  if (!contact) {
+    return state;
+  }
   return {
     ...state,
     tasks: {
       ...state.tasks,
-      [payload.initialContact.taskId]: newTaskEntry,
+      [contact.taskId]: newTaskEntry,
     },
   };
 };
 
 const conferencingReducer = createReducer(initialState, handleAction => [
   // Handle GeneralActionType
-  {
-    [INITIALIZE_CONTACT_STATE]: createNewEntryForTaskId,
-  },
-  {
-    [RECREATE_CONTACT_STATE]: createNewEntryForTaskId,
-  },
+  handleAction(createContactAsyncAction.fulfilled, createNewEntryForTaskId),
+  handleAction(loadContactFromHrmByTaskSidAsyncAction.fulfilled, createNewEntryForTaskId),
+  handleAction(updateContactInHrmAsyncAction.fulfilled, (state, action) => {
+    const {
+      payload: { contact, previousContact },
+    } = action;
+    let stateWithoutPreviousContact = state;
+    if (previousContact && previousContact.taskId !== contact.taskId) {
+      stateWithoutPreviousContact = {
+        ...state,
+        tasks: omit(state.tasks, previousContact.taskId),
+      };
+    }
+    return createNewEntryForTaskId(stateWithoutPreviousContact, action);
+  }),
+
   handleAction(removeContactState, (state, { taskId }) => {
     if (state.tasks[taskId]) {
       return {
@@ -175,6 +180,3 @@ const conferencingReducer = createReducer(initialState, handleAction => [
 export const reduce = (inputState = initialState, action: ConferencingStateAction): ConferencingState => {
   return conferencingReducer(inputState, action);
 };
-
-export const isCallStatusLoading = (callStatus: CallStatus) =>
-  callStatus === 'initiating' || callStatus === 'initiated' || callStatus === 'ringing';

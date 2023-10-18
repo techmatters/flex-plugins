@@ -22,11 +22,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { callTypes, CallTypeButtonsEntry } from 'hrm-form-definitions';
 
 import { namespace, configurationBase, connectedCaseBase, RootState } from '../../states';
-import {
-  ContactDraftChanges,
-  saveContactChangesInHrm,
-  updateDraft as newUpdateDraftAction,
-} from '../../states/contacts/existingContacts';
+import { ContactDraftChanges, updateDraft as newUpdateDraftAction } from '../../states/contacts/existingContacts';
 import { changeRoute as newChangeRouteAction } from '../../states/routing/actions';
 import { withLocalization } from '../../contexts/LocalizationContext';
 import { Box, Flex } from '../../styles/HrmStyles';
@@ -36,11 +32,13 @@ import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
-import { CustomITask, isOfflineContactTask } from '../../types/types';
+import { Contact, CustomITask, isOfflineContactTask } from '../../types/types';
 import { getTemplateStrings } from '../../hrmConfig';
 import { AppRoutes } from '../../states/routing/types';
 import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
+import asyncDispatch from '../../states/asyncDispatch';
+import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 
 const isDialogOpen = (task: CustomITask, contact: ContactDraftChanges) =>
   Boolean(!isOfflineContactTask(task) && contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType));
@@ -95,7 +93,7 @@ const CallTypeButtons: React.FC<Props> = ({
       : 'childInformation';
 
     handleClick(callTypeEntry);
-    await saveContactChangesInHrm(savedContact.id, {
+    await saveContactChangesInHrm(savedContact, {
       rawJson: { callType: callTypes[callTypeEntry.name] || callTypeEntry.label },
     });
     changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true });
@@ -113,7 +111,7 @@ const CallTypeButtons: React.FC<Props> = ({
     if (!hasTaskControl(task)) return;
 
     try {
-      await submitContactForm(task, getUnsavedContact(savedContact, draftContact), metadata, caseForm);
+      await saveContactChangesInHrm(savedContact, draftContact);
       await completeTask(task);
     } catch (error) {
       const strings = getTemplateStrings();
@@ -191,8 +189,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 
 const mapDispatchToProps = (dispatch, { task: { taskSid } }: OwnProps) => ({
   changeRoute: (route: AppRoutes) => dispatch(newChangeRouteAction(route, taskSid)),
-  saveContactChangesInHrm: (contactId: string, changes: ContactDraftChanges) =>
-    saveContactChangesInHrm(contactId, changes, dispatch, taskSid),
+  saveContactChangesInHrm: (contact: Contact, changes: ContactDraftChanges) =>
+    asyncDispatch(dispatch)(updateContactInHrmAsyncAction(contact, changes, taskSid)),
   updateCallType: (contactId: string, callType: string) =>
     dispatch(newUpdateDraftAction(contactId, { rawJson: { callType } })),
   clearCallType: (contactId: string) => dispatch(newUpdateDraftAction(contactId, { rawJson: { callType: null } })),

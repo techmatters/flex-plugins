@@ -18,14 +18,15 @@ import { omit } from 'lodash';
 import { callTypes } from 'hrm-form-definitions';
 
 import { AppRoutes, RoutingActionType, CHANGE_ROUTE } from './types';
-import {
-  INITIALIZE_CONTACT_STATE,
-  InitializeContactStateAction,
-  REMOVE_CONTACT_STATE,
-  RemoveContactStateAction,
-} from '../types';
-import { standaloneTaskSid } from '../../types/types';
+import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
+import { Contact, standaloneTaskSid } from '../../types/types';
 import getOfflineContactTaskSid from '../contacts/offlineContactTaskSid';
+import {
+  ContactUpdatingAction,
+  CREATE_CONTACT_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+  UPDATE_CONTACT_ACTION_FULFILLED,
+} from '../contacts/types';
 
 type RoutingState = {
   tasks: {
@@ -45,38 +46,59 @@ export const initialState: RoutingState = {
   isAddingOfflineContact: false,
 };
 
+const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingAction): RoutingState => {
+  const recreated = action.type === LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED;
+
+  const { contact, previousContact } = action.payload;
+  if (!contact) {
+    return state;
+  }
+  let stateWithoutPreviousContact = state;
+  if (previousContact && previousContact.taskId !== contact.taskId) {
+    stateWithoutPreviousContact = {
+      ...state,
+      tasks: omit(state.tasks, previousContact.taskId),
+      isAddingOfflineContact:
+        previousContact.taskId === getOfflineContactTaskSid() ? false : state.isAddingOfflineContact,
+    };
+  }
+  const { taskId, rawJson } = contact;
+  let initialEntry: AppRoutes = newTaskEntry;
+  const { callType } = rawJson;
+  if (callType === callTypes.child) {
+    initialEntry = {
+      route: 'tabbed-forms',
+      subroute: 'childInformation',
+    };
+  } else if (callType === callTypes.caller) {
+    initialEntry = {
+      route: 'tabbed-forms',
+      subroute: 'callerInformation',
+    };
+  }
+  return {
+    ...stateWithoutPreviousContact,
+    tasks: {
+      ...stateWithoutPreviousContact.tasks,
+      [taskId]:
+        recreated && stateWithoutPreviousContact.tasks[taskId]
+          ? stateWithoutPreviousContact.tasks[taskId]
+          : initialEntry,
+    },
+    isAddingOfflineContact:
+      taskId === getOfflineContactTaskSid() ? true : stateWithoutPreviousContact.isAddingOfflineContact,
+  };
+};
+
 export function reduce(
   state = initialState,
-  action: RoutingActionType | InitializeContactStateAction | RemoveContactStateAction,
+  action: RoutingActionType | RemoveContactStateAction | ContactUpdatingAction,
 ): RoutingState {
   switch (action.type) {
-    case INITIALIZE_CONTACT_STATE: {
-      let initialEntry: AppRoutes = newTaskEntry;
-      const { callType } = action.initialContact.rawJson;
-      if (callType === callTypes.child) {
-        initialEntry = {
-          route: 'tabbed-forms',
-          subroute: 'childInformation',
-        };
-      } else if (callType === callTypes.caller) {
-        initialEntry = {
-          route: 'tabbed-forms',
-          subroute: 'callerInformation',
-        };
-      }
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.initialContact.taskId]:
-            action.recreated && state.tasks[action.initialContact.taskId]
-              ? state.tasks[action.initialContact.taskId]
-              : initialEntry,
-        },
-        isAddingOfflineContact:
-          action.initialContact.taskId === getOfflineContactTaskSid() ? true : state.isAddingOfflineContact,
-      };
-    }
+    case CREATE_CONTACT_ACTION_FULFILLED:
+    case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED:
+    case UPDATE_CONTACT_ACTION_FULFILLED:
+      return contactUpdatingReducer(state, action);
     case REMOVE_CONTACT_STATE:
       return {
         ...state,

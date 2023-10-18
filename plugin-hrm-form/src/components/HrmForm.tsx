@@ -76,7 +76,7 @@ HrmForm.displayName = 'HrmForm';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const routingState = state[namespace][routingBase];
-  const { savedContact, metadata } = findContactByTaskSid(state, task.taskSid);
+  const { savedContact, metadata } = findContactByTaskSid(state, task.taskSid) ?? {};
 
   return { routing: routingState.tasks[task.taskSid], savedContact, metadata };
 };

@@ -19,14 +19,13 @@ import fromentries from 'fromentries';
 import * as t from '../../../states/search/types';
 import { handleSearchFormChange } from '../../../states/search/actions';
 import { Contact, SearchCaseResult } from '../../../types/types';
-import {
-  INITIALIZE_CONTACT_STATE,
-  REMOVE_CONTACT_STATE,
-  InitializeContactStateAction,
-  RemoveContactStateAction,
-} from '../../../states/types';
+import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../../../states/types';
 import { reduce, newTaskEntry } from '../../../states/search/reducer';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
+import {
+  CREATE_CONTACT_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+} from '../../../states/contacts/types';
 
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
 
@@ -41,16 +40,16 @@ describe('search reducer', () => {
   const task = { taskSid: 'WT123' };
 
   let state = null;
-  test('INITIALIZE_CONTACT_STATE action (should create a new state)', () => {
-    const action: InitializeContactStateAction = {
-      type: INITIALIZE_CONTACT_STATE,
-      metadata: VALID_EMPTY_METADATA,
-      references: [],
-      recreated: false,
-      definitions: {} as any,
-      initialContact: {
-        ...VALID_EMPTY_CONTACT,
-        taskId: task.taskSid,
+  test('CREATE_CONTACT_STATE_FULFILLED action (should create a new state)', () => {
+    const action: any = {
+      type: CREATE_CONTACT_ACTION_FULFILLED,
+      payload: {
+        metadata: VALID_EMPTY_METADATA,
+        reference: 'x',
+        contact: {
+          ...VALID_EMPTY_CONTACT,
+          taskId: task.taskSid,
+        },
       },
     };
 
@@ -61,16 +60,15 @@ describe('search reducer', () => {
     expect(tasks[task.taskSid]).toStrictEqual(newTaskEntry);
   });
 
-  test('RECREATE_CONTACT_STATE action (should recreate the state)', () => {
-    const action: InitializeContactStateAction = {
-      type: INITIALIZE_CONTACT_STATE,
-      metadata: VALID_EMPTY_METADATA,
-      references: [],
-      recreated: true,
-      definitions: {} as any,
-      initialContact: {
-        ...VALID_EMPTY_CONTACT,
-        taskId: task.taskSid,
+  test('LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED action (should recreate the state)', () => {
+    const action: any = {
+      type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+      payload: {
+        reference: 'x',
+        contact: {
+          ...VALID_EMPTY_CONTACT,
+          taskId: task.taskSid,
+        },
       },
     };
 
@@ -82,24 +80,25 @@ describe('search reducer', () => {
     state = result;
   });
 
-  test('RECREATE_CONTACT_STATE action (should do nothing)', () => {
-    const action: InitializeContactStateAction = {
-      type: INITIALIZE_CONTACT_STATE,
-      metadata: VALID_EMPTY_METADATA,
-      references: [],
-      recreated: true,
-      definitions: {} as any,
-      initialContact: {
-        ...VALID_EMPTY_CONTACT,
-        taskId: task.taskSid,
+  test('LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED action (should do nothing)', () => {
+    const action: any = {
+      type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+      payload: {
+        reference: 'x',
+        contact: {
+          ...VALID_EMPTY_CONTACT,
+          taskId: task.taskSid,
+        },
       },
     };
-    const result1 = reduce(state, handleSearchFormChange(task.taskSid)('firstName', 'one value'));
+    const result1 = reduce(
+      { tasks: { [task.taskSid]: newTaskEntry } },
+      handleSearchFormChange(task.taskSid)('firstName', 'one value'),
+    );
 
     const result2 = reduce(result1, action);
 
     const { tasks } = result2;
-    expect(tasks[task.taskSid]).not.toBeUndefined();
     expect(tasks[task.taskSid]).not.toStrictEqual(newTaskEntry);
     expect(tasks[task.taskSid].form.firstName).toBe('one value');
 

@@ -49,8 +49,10 @@ import { newCSAMReportActionForContact } from '../../states/csam-report/actions'
 import { CSAMReportTypes } from '../../states/csam-report/types';
 // Ensure ww import any custom components that might be used in a form
 import '../contact/ResourceReferralList';
-import { saveContactChangesInHrm, updateDraft } from '../../states/contacts/existingContacts';
+import { updateDraft } from '../../states/contacts/existingContacts';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
+import asyncDispatch from '../../states/asyncDispatch';
+import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -161,7 +163,7 @@ const TabbedForms: React.FC<Props> = ({
 
   const handleBackButton = async () => {
     if (!hasTaskControl(task)) return;
-    await saveContactChangesInHrm(savedContact.id, { rawJson: { callType: '' } }, dispatch, taskId);
+    await asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, { rawJson: { callType: '' } }, taskId));
     dispatch(changeRoute({ route: 'select-call-type' }, taskId));
   };
 
@@ -170,7 +172,7 @@ const TabbedForms: React.FC<Props> = ({
 
   const handleTabsChange = async (t: number) => {
     const tab = tabsToIndex[t];
-    await saveContactChangesInHrm(savedContact.id, draftContact, dispatch, taskId);
+    await asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact, taskId));
     dispatch(changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, taskId));
   };
 
@@ -325,7 +327,7 @@ const TabbedForms: React.FC<Props> = ({
               contactId={savedContact.id}
               task={task}
               nextTab={() => handleTabsChange(tabIndex + 1)}
-              saveUpdates={() => saveContactChangesInHrm(savedContact.id, draftContact, dispatch, taskId)}
+              saveUpdates={() => asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact))}
               // TODO: move this two functions to a separate file to centralize "handle task completions"
               showNextButton={tabIndex !== 0 && tabIndex < tabs.length - 1}
               showSubmitButton={showSubmitButton}

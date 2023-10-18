@@ -13,13 +13,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { CustomITask } from '../types/types';
+import { getAseloFeatureFlags } from '../hrmConfig';
+import * as TransferHelpers from './transfer';
 
-import { RootState } from '..';
-import { ContactState } from './existingContacts';
+/* eslint-disable sonarjs/prefer-single-boolean-return */
+export const shouldSendInsightsData = (task: CustomITask) => {
+  const featureFlags = getAseloFeatureFlags();
 
-const findContactByTaskSid = (state: RootState, taskSid: string): ContactState =>
-  Object.values(state['plugin-hrm-form'].activeContacts.existingContacts).find(
-    cs => cs.savedContact?.taskId === taskSid,
-  );
+  if (!featureFlags.enable_save_insights) return false;
+  if (task.attributes?.skipInsights) return false;
+  if (featureFlags.enable_transfers && !TransferHelpers.hasTaskControl(task)) return false;
 
-export default findContactByTaskSid;
+  return true;
+};

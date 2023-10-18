@@ -14,12 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { RootState } from '..';
-import { ContactState } from './existingContacts';
+export type CallStatus =
+  | 'no-call'
+  | 'initiating'
+  | 'initiated'
+  | 'ringing'
+  | 'busy'
+  | 'failed'
+  | 'in-progress'
+  | 'completed';
 
-const findContactByTaskSid = (state: RootState, taskSid: string): ContactState =>
-  Object.values(state['plugin-hrm-form'].activeContacts.existingContacts).find(
-    cs => cs.savedContact?.taskId === taskSid,
-  );
-
-export default findContactByTaskSid;
+export const isCallStatusLoading = (callStatus: CallStatus) =>
+  callStatus === 'initiating' || callStatus === 'initiated' || callStatus === 'ringing';
