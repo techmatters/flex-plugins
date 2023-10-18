@@ -12,17 +12,25 @@
         "value": "Someone else",
         "label": "Someone else"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "gender",
     "label": "Have they already acted to take their own life?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "actionDetails",
@@ -35,10 +43,14 @@
     "label": "Have they expressed thoughts or feelings of wanting to end their life?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "feelingDetails",
@@ -51,10 +63,14 @@
     "label": "Do they have a specific plan to end their life?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "planDetails",
@@ -67,10 +83,14 @@
     "label": "Have they previously acted to end their life?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "previousActionsDetails",
@@ -83,10 +103,14 @@
     "label": "Do they have access to means of acting to end their life?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "accessToMeansDetails",
@@ -99,10 +123,14 @@
     "label": "Have they described a timeframe for acting to end their life?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "timeframeDetails",
@@ -115,10 +143,14 @@
     "label": "Have they recently self-harmed?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "selfHarmDetails",
@@ -131,10 +163,14 @@
     "label": "Was medical attention required?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "medicalAttentionDetails",
@@ -147,10 +183,14 @@
     "label": "Have they expressed thoughts or feelings about self-harming?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "selfHarmFeelingsDetails",
@@ -163,10 +203,14 @@
     "label": "Do they have a specific plan to self-harm?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "selHarmPlanDetails",
@@ -179,10 +223,14 @@
     "label": "Do they have access to means of self-harming?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "accessToSelfHarmDetails",
@@ -195,10 +243,14 @@
     "label": "Have they described a timeframe for self-harming?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "selfHarmTimeframeDetails",
