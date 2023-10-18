@@ -18,7 +18,7 @@ import { omit } from 'lodash';
 import { callTypes } from 'hrm-form-definitions';
 
 import * as t from './types';
-import { ContactsState, ContactWithMetadata } from './types';
+import { ContactsState, ContactWithMetadata, UPDATE_CONTACT_ACTION } from './types';
 import {
   DefinitionVersion,
   GeneralActionType,
@@ -44,6 +44,7 @@ import {
   setCategoriesGridViewReducer,
   toggleCategoryExpandedReducer,
   updateDraftReducer,
+  initialState as existingContactInitialState,
 } from './existingContacts';
 import {
   ContactDetailsAction,
@@ -56,6 +57,7 @@ import { ReferralLookupStatus, resourceReferralReducer } from './resourceReferra
 import { ContactRawJson } from '../../types/types';
 import { ContactCategoryAction, toggleSubCategoriesReducer } from './categories';
 import { configurationBase, RootState } from '..';
+import { saveContactReducer } from './saveContact';
 import { transformValuesForContactForm } from './contactDetailsAdapter';
 
 export const emptyCategories = [];
@@ -150,6 +152,7 @@ export const initialState: ContactsState = {
 };
 
 const boundReferralReducer = resourceReferralReducer(initialState);
+const boundSaveContactReducer = saveContactReducer(existingContactInitialState);
 
 // eslint-disable-next-line import/no-unused-modules,complexity
 export function reduce(
@@ -160,7 +163,8 @@ export function reduce(
     | ExistingContactAction
     | ContactDetailsAction
     | ContactCategoryAction
-    | GeneralActionType,
+    | GeneralActionType
+    | t.UpdatedContactAction,
 ): ContactsState {
   let state = boundReferralReducer(inputState, action as any);
   state = toggleSubCategoriesReducer(state, action as ContactCategoryAction);
@@ -354,6 +358,9 @@ export function reduce(
     }
     case t.SET_EDITING_CONTACT: {
       return { ...state, editingContact: action.editing };
+    }
+    case `${UPDATE_CONTACT_ACTION}_FULFILLED`: {
+      return { ...state, existingContacts: boundSaveContactReducer(state.existingContacts, action) };
     }
     case LOAD_CONTACT_ACTION: {
       return { ...state, existingContacts: loadContactReducer(state.existingContacts, action) };
