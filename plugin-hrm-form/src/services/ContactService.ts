@@ -249,10 +249,10 @@ export function transformForm(rawJson: Partial<ContactRawJson>, helpline: string
 
 // TODO: Remove this once the API is aligned with the type we use in the front end
 const convertContactToApiContact = (contact: HrmServiceContact): HrmServiceContactForApi => {
-  return adaptConversationMedia({
+  return {
     ...contact,
     rawJson: transformForm(contact.rawJson, contact.helpline) as ContactRawJsonForApi,
-  });
+  };
 };
 
 type HandleTwilioTaskResponse = {
@@ -289,7 +289,9 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
     // Store reservation sid to use Twilio insights overlay (recordings/transcript)
     returnData.conversationMedia.push({
       storeType: 'twilio',
-      reservationSid: task.sid,
+      storeTypeSpecificData: {
+        reservationSid: task.sid,
+      },
     });
   }
 
