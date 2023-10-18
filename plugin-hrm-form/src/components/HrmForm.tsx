@@ -17,7 +17,6 @@
 /* eslint-disable react/prop-types */
 import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { callTypes } from 'hrm-form-definitions';
 
 import { CaseLayout } from '../styles/case';
 import CallTypeButtons from './callTypeButtons';
@@ -32,9 +31,7 @@ import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
 import { namespace } from '../states/storeNamespaces';
 import { ContactMetadata } from '../states/contacts/types';
 import { submitContactFormAsyncAction } from '../states/contacts/saveContact';
-import { newCloseModalAction } from '../states/routing/actions';
 import { getCurrentTopmostRouteForTask } from '../states/routing/getRoute';
-import Search from './search';
 
 type OwnProps = {
   task: CustomITask;
@@ -44,15 +41,7 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const HrmForm: React.FC<Props> = ({
-  routing,
-  task,
-  featureFlags,
-  savedContact,
-  metadata,
-  finaliseContact,
-  closeModal,
-}) => {
+const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact, metadata, finaliseContact }) => {
   if (!routing) return null;
   const { route } = routing;
 
@@ -63,6 +52,7 @@ const HrmForm: React.FC<Props> = ({
 
   switch (route) {
     case 'tabbed-forms':
+    case 'search':
       return (
         <TabbedForms
           task={task}
@@ -81,14 +71,6 @@ const HrmForm: React.FC<Props> = ({
 
     case 'csam-report':
       return <CSAMReport api={newContactCSAMApi(savedContact.id, task.taskSid, routing.previousRoute)} />;
-    case 'search':
-      return (
-        <Search
-          task={task}
-          currentIsCaller={savedContact?.rawJson?.callType === callTypes.caller}
-          handleSelectSearchResult={closeModal}
-        />
-      );
     case 'select-call-type':
     default:
       return <CallTypeButtons task={task} />;
@@ -108,7 +90,6 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => {
   return {
     finaliseContact: (contact: Contact, metadata: ContactMetadata, caseForm: CaseForm) =>
       dispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
-    closeModal: () => dispatch(newCloseModalAction(task.taskSid)),
   };
 };
 

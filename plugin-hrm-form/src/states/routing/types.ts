@@ -40,7 +40,7 @@ export type TabbedFormRoute = {
 
 export type SearchRoute = {
   route: 'search';
-  subroute?: 'search';
+  subroute: 'form' | 'case-results' | 'contact-results';
 };
 
 export const NewCaseSectionSubroutes = {

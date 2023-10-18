@@ -43,12 +43,15 @@ import {
 } from '../../../styles/search';
 import Pagination from '../../Pagination';
 import SearchResultsBackButton from './SearchResultsBackButton';
-import * as SearchActions from '../../../states/search/actions';
 import * as CaseActions from '../../../states/case/actions';
 import * as RoutingActions from '../../../states/routing/actions';
 import { SearchPages, SearchPagesType } from '../../../states/search/types';
 import { getPermissionsForContact, getPermissionsForCase, PermissionActions } from '../../../permissions';
-import { configurationBase, namespace, searchContactsBase } from '../../../states/storeNamespaces';
+import { namespace } from '../../../states/storeNamespaces';
+import { RootState } from '../../../states';
+import { getCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
+import { changeRoute } from '../../../states/routing/actions';
+import { SearchRoute } from '../../../states/routing/types';
 
 export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;
@@ -87,12 +90,17 @@ const SearchResults: React.FC<Props> = ({
   handleViewDetails,
   changeSearchPage,
   setConnectedCase,
-  currentPage,
   counselorsHash,
+  routing,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [contactsPage, setContactsPage] = useState(0);
   const [casesPage, setCasesPage] = useState(0);
+
+  if (routing.route !== 'search' || (routing.subroute !== 'case-results' && routing.subroute !== 'contact-results')) {
+    return null;
+  }
+  const currentResultPage = routing.subroute;
 
   const handleContactsChangePage = newPage => {
     setContactsPage(newPage);
@@ -126,9 +134,7 @@ const SearchResults: React.FC<Props> = ({
 
   const toggleTabs = () => {
     // eslint-disable-next-line no-unused-expressions
-    currentPage === SearchPages.resultsContacts
-      ? changeSearchPage(SearchPages.resultsCases)
-      : changeSearchPage(SearchPages.resultsContacts);
+    currentResultPage === 'contact-results' ? changeSearchPage('case-results') : changeSearchPage('contact-results');
   };
 
   const tabSelected = tabName => {
@@ -142,7 +148,7 @@ const SearchResults: React.FC<Props> = ({
         <Row style={{ justifyContent: 'center' }}>
           <div style={{ width: '300px' }}>
             <StyledTabs
-              selectedTabName={currentPage}
+              selectedTabName={currentResultPage}
               onTabSelected={tabSelected}
               alignment="left"
               keepTabsMounted={false}
@@ -150,7 +156,7 @@ const SearchResults: React.FC<Props> = ({
               <TwilioTab
                 key="SearchResultsIndex-Contacts"
                 label={<Template code="SearchResultsIndex-Contacts" />}
-                uniqueName={SearchPages.resultsContacts}
+                uniqueName="contact-results"
               >
                 {[]}
               </TwilioTab>
@@ -162,7 +168,7 @@ const SearchResults: React.FC<Props> = ({
                     <Template code="SearchResultsIndex-Cases" />
                   </StyledTabLabel>
                 }
-                uniqueName={SearchPages.resultsCases}
+                uniqueName="case-results"
               >
                 {[]}
               </TwilioTab>
@@ -176,7 +182,7 @@ const SearchResults: React.FC<Props> = ({
             <StyledResultsText data-testid="SearchResultsCount">
               <>
                 {/* Intentionally we must show the option different at the one currently selected */}
-                {currentPage === SearchPages.resultsContacts ? (
+                {currentResultPage === 'contact-results' ? (
                   <>
                     <Template code={casesCount === 1 ? 'PreviousContacts-ThereIs' : 'PreviousContacts-ThereAre'} />
                     &nbsp;
@@ -204,14 +210,14 @@ const SearchResults: React.FC<Props> = ({
               <Template
                 code={
                   // Intentionally we must show the option different at the one currently selected
-                  currentPage === SearchPages.resultsContacts
+                  currentResultPage === 'contact-results'
                     ? 'SearchResultsIndex-ViewCases'
                     : 'SearchResultsIndex-ViewContacts'
                 }
               />
             </StyledLink>
           </StyledResultsContainer>
-          {currentPage === SearchPages.resultsContacts && (
+          {currentResultPage === 'contact-results' && (
             <>
               <StyledResultsHeader>
                 <StyledCount data-testid="ContactsCount">
@@ -261,7 +267,7 @@ const SearchResults: React.FC<Props> = ({
               )}
             </>
           )}
-          {currentPage === SearchPages.resultsCases && (
+          {currentResultPage === 'case-results' && (
             <>
               <StyledResultsHeader>
                 <StyledCount data-testid="CasesCount">
@@ -320,15 +326,17 @@ const SearchResults: React.FC<Props> = ({
 };
 SearchResults.displayName = 'SearchResults';
 
-const mapStateToProps = (state, ownProps) => {
-  const searchContactsState = state[namespace][searchContactsBase];
-  const taskId = ownProps.task.taskSid;
-  const taskSearchState = searchContactsState.tasks[taskId];
-  const { counselors } = state[namespace][configurationBase];
-
+const mapStateToProps = (
+  { [namespace]: { searchContacts, configuration, routing } }: RootState,
+  { task }: OwnProps,
+) => {
+  const taskId = task.taskSid;
+  const taskSearchState = searchContacts.tasks[taskId];
+  const { counselors } = configuration;
   return {
     currentPage: taskSearchState.currentPage,
     counselorsHash: counselors.hash,
+    routing: getCurrentTopmostRouteForTask(routing, taskId),
   };
 };
 
@@ -336,7 +344,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   const taskId = ownProps.task.taskSid;
 
   return {
-    changeSearchPage: bindActionCreators(SearchActions.changeSearchPage(taskId), dispatch),
+    changeSearchPage: (subroute: SearchRoute['subroute']) =>
+      dispatch(changeRoute({ route: 'search', subroute }, taskId, true)),
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
   };

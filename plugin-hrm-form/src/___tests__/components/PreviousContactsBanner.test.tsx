@@ -14,12 +14,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
-import { StorelessThemeProvider, ThemeConfigProps } from '@twilio/flex-ui';
+import { StorelessThemeProvider } from '@twilio/flex-ui';
 
 import { UnconnectedPreviousContactsBanner } from '../../components/PreviousContactsBanner';
 import { channelTypes } from '../../states/DomainConstants';
@@ -155,7 +155,7 @@ test('Click View Records should redirect user to search results', () => {
 
   const searchContacts = jest.fn();
   const searchCases = jest.fn();
-  const changeRoute = jest.fn();
+  const openModal = jest.fn();
   const viewPreviousContacts = jest.fn();
 
   render(
@@ -166,7 +166,7 @@ test('Click View Records should redirect user to search results', () => {
         previousContacts={previousContacts}
         searchContacts={searchContacts}
         searchCases={searchCases}
-        changeRoute={changeRoute}
+        changeRoute={openModal}
         viewPreviousContacts={viewPreviousContacts}
       />
     </StorelessThemeProvider>,
@@ -177,7 +177,7 @@ test('Click View Records should redirect user to search results', () => {
   expect(searchContacts).not.toHaveBeenCalled();
   expect(searchCases).not.toHaveBeenCalled();
   expect(viewPreviousContacts).toHaveBeenCalled();
-  expect(changeRoute).toHaveBeenCalledWith({ route: 'tabbed-forms', subroute: 'search' });
+  expect(openModal).toHaveBeenCalledWith({ route: 'search', subroute: 'results' });
 });
 
 test('a11y', async () => {

@@ -30,7 +30,7 @@ import { YellowBanner } from '../styles/previousContactsBanner';
 import { Bold } from '../styles/HrmStyles';
 import { StyledLink } from '../styles/search';
 import { ChannelTypes, channelTypes } from '../states/DomainConstants';
-import { changeRoute as changeRouteAction } from '../states/routing/actions';
+import { newOpenModalAction } from '../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../permissions';
 import { CustomITask, isTwilioTask } from '../types/types';
@@ -51,7 +51,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   viewPreviousContacts,
   searchContacts,
   searchCases,
-  changeRoute,
+  openModal,
   modalOpen,
 }) => {
   const { canView } = getPermissionsForViewingIdentifiers();
@@ -78,7 +78,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
   const handleClickViewRecords = () => {
     viewPreviousContacts();
-    changeRoute({ route: 'tabbed-forms', subroute: 'search' });
+    openModal({ route: 'search', subroute: 'contact-results' });
   };
 
   let localizedSourceFromTask: { [channelType in ChannelTypes]: string };
@@ -172,7 +172,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     viewPreviousContacts: viewPreviousContactsAction(dispatch)(task),
     searchContacts: searchContactsAction(dispatch)(taskId),
     searchCases: searchCasesAction(dispatch)(taskId),
-    changeRoute: routing => dispatch(changeRouteAction(routing, taskId)),
+    openModal: routing => dispatch(newOpenModalAction(routing, taskId)),
   };
 };
 

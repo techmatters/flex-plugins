@@ -27,19 +27,16 @@ import SearchForm from './SearchForm';
 import SearchResults, { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './SearchResults';
 import ContactDetails from './ContactDetails';
 import Case from '../case';
-import { SearchPages, SearchParams } from '../../states/search/types';
+import { SearchParams } from '../../states/search/types';
 import { CustomITask, Contact, standaloneTaskSid } from '../../types/types';
 import SearchResultsBackButton from './SearchResults/SearchResultsBackButton';
-import {
-  handleSearchFormChange,
-  changeSearchPage,
-  viewContactDetails,
-  searchContacts,
-  searchCases,
-} from '../../states/search/actions';
+import { handleSearchFormChange, viewContactDetails, searchContacts, searchCases } from '../../states/search/actions';
 import { RootState } from '../../states';
 import { Flex } from '../../styles/HrmStyles';
-import { contactFormsBase, namespace, searchContactsBase } from '../../states/storeNamespaces';
+import { namespace } from '../../states/storeNamespaces';
+import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { changeRoute, newGoBackAction } from '../../states/routing/actions';
+import { SearchRoute } from '../../states/routing/types';
 
 type OwnProps = {
   task: CustomITask;
@@ -55,7 +52,6 @@ const Search: React.FC<Props> = ({
   currentIsCaller,
   searchContacts,
   searchCases,
-  changeSearchPage,
   handleSearchFormChange,
   handleSelectSearchResult,
   viewContactDetails,
@@ -65,6 +61,8 @@ const Search: React.FC<Props> = ({
   searchContactsResults,
   searchCasesResults,
   form,
+  routing,
+  goBack,
 }) => {
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});
@@ -102,7 +100,6 @@ const Search: React.FC<Props> = ({
       };
 
       handleSearchContacts(updatedSearchParams, 0);
-      setSearchParams(updatedSearchParams);
     }
   };
 
@@ -119,20 +116,22 @@ const Search: React.FC<Props> = ({
     }
   };
 
-  const goToForm = () => changeSearchPage('form');
-
-  const goToResultsOnContacts = async () => {
+  const goBackFromContacts = async () => {
+    /*
+     * This returns you to the first page of results from viewing a case, which is safest for now since the UI state is inconsistent otherwise.
+     * We will need a follow on fix to allow returning to the same page of results as the case to work correctly
+     */
     await searchContacts(searchParams, CONTACTS_PER_PAGE, 0);
-    changeSearchPage(SearchPages.resultsContacts);
+    goBack();
   };
 
-  const goToResultsOnCases = async () => {
+  const goBackFromCases = async () => {
     /*
      * This returns you to the first page of results from viewing a case, which is safest for now since the UI state is inconsistent otherwise.
      * We will need a follow on fix to allow returning to the same page of results as the case to work correctly
      */
     await searchCases(searchParams, CASES_PER_PAGE, 0);
-    changeSearchPage(SearchPages.resultsCases);
+    goBack();
   };
 
   const renderMockDialog = () => {
@@ -147,61 +146,66 @@ const Search: React.FC<Props> = ({
   renderMockDialog.displayName = 'MockDialog';
 
   const renderSearchPages = (currentPage, currentContact, searchContactsResults, searchCasesResults, form) => {
-    switch (currentPage) {
-      case SearchPages.form:
+    switch (routing.route) {
+      case 'search': {
+        if (routing.subroute === 'case-results' || routing.subroute === 'contact-results') {
+          return (
+            <SearchResults
+              task={task}
+              currentIsCaller={currentIsCaller}
+              searchContactsResults={searchContactsResults}
+              searchCasesResults={searchCasesResults}
+              onlyDataContacts={searchParams.onlyDataContacts}
+              closedCases={searchParams.closedCases}
+              handleSearchContacts={setOffsetAndHandleSearchContacts}
+              handleSearchCases={setOffsetAndHandleSearchCases}
+              toggleNonDataContacts={toggleNonDataContacts}
+              toggleClosedCases={toggleClosedCases}
+              handleBack={goBack}
+              handleViewDetails={viewContactDetails}
+            />
+          );
+        }
+        // Fall through to default to render the form
+        break;
+      }
+      case 'case': {
         return (
-          <SearchForm
-            task={task}
-            values={form}
-            handleSearchFormChange={handleSearchFormChange}
-            handleSearch={setSearchParamsAndHandleSearch}
-          />
+          <>
+            <Flex marginTop="15px" marginBottom="15px">
+              <SearchResultsBackButton
+                text={<Template code="SearchResultsIndex-BackToResults" />}
+                handleBack={goBackFromCases}
+              />
+            </Flex>
+            <Case task={task} isCreating={false} handleClose={goBack()} />
+          </>
         );
-      case SearchPages.resultsContacts:
-      case SearchPages.resultsCases:
-        return (
-          <SearchResults
-            task={task}
-            currentIsCaller={currentIsCaller}
-            searchContactsResults={searchContactsResults}
-            searchCasesResults={searchCasesResults}
-            onlyDataContacts={searchParams.onlyDataContacts}
-            closedCases={searchParams.closedCases}
-            handleSearchContacts={setOffsetAndHandleSearchContacts}
-            handleSearchCases={setOffsetAndHandleSearchCases}
-            toggleNonDataContacts={toggleNonDataContacts}
-            toggleClosedCases={toggleClosedCases}
-            handleBack={goToForm}
-            handleViewDetails={viewContactDetails}
-          />
-        );
-      case SearchPages.details:
+      }
+      case 'contact': {
         return (
           <ContactDetails
             task={task}
             showActionIcons={showActionIcons}
             currentIsCaller={currentIsCaller}
             contact={currentContact}
-            handleBack={goToResultsOnContacts}
+            handleBack={goBackFromContacts}
             handleSelectSearchResult={handleSelectSearchResult}
             // buttonData={props.checkButtonData('ContactDetails-Section-ChildInformation')}
           />
         );
-      case SearchPages.case:
-        return (
-          <>
-            <Flex marginTop="15px" marginBottom="15px">
-              <SearchResultsBackButton
-                text={<Template code="SearchResultsIndex-BackToResults" />}
-                handleBack={goToResultsOnCases}
-              />
-            </Flex>
-            <Case task={task} isCreating={false} handleClose={goToResultsOnCases} />
-          </>
-        );
+      }
       default:
-        return null;
+        break;
     }
+    return (
+      <SearchForm
+        task={task}
+        values={form}
+        handleSearchFormChange={handleSearchFormChange}
+        handleSearch={setSearchParamsAndHandleSearch}
+      />
+    );
   };
   renderSearchPages.displayName = 'SearchPage';
 
@@ -221,12 +225,15 @@ Search.defaultProps = {
   error: null,
 };
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const searchContactsState = state[namespace][searchContactsBase];
-  const taskId = ownProps.task.taskSid;
-  const taskSearchState = searchContactsState.tasks[taskId];
+const mapStateToProps = (
+  { [namespace]: { searchContacts, activeContacts, routing } }: RootState,
+  { task }: OwnProps,
+) => {
+  const taskId = task.taskSid;
+  const taskSearchState = searchContacts.tasks[taskId];
   const isStandaloneSearch = taskId === standaloneTaskSid;
-  const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
+  const editContactFormOpen = activeContacts.editingContact;
+  const currentRoute = getCurrentTopmostRouteForTask(routing, taskId);
 
   return {
     isRequesting: taskSearchState.isRequesting,
@@ -238,6 +245,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     searchCasesResults: taskSearchState.searchCasesResult,
     showActionIcons: !isStandaloneSearch,
     editContactFormOpen,
+    routing: currentRoute,
   };
 };
 
@@ -246,10 +254,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     handleSearchFormChange: bindActionCreators(handleSearchFormChange(taskId), dispatch),
-    changeSearchPage: bindActionCreators(changeSearchPage(taskId), dispatch),
+    changeSearchPage: (subroute: SearchRoute['subroute']) =>
+      dispatch(changeRoute({ route: 'search', subroute }, taskId)),
     viewContactDetails: bindActionCreators(viewContactDetails(taskId), dispatch),
     searchContacts: searchContacts(dispatch)(taskId),
     searchCases: searchCases(dispatch)(taskId),
+    goBack: () => dispatch(newGoBackAction(taskId)),
   };
 };
 

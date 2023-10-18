@@ -52,6 +52,7 @@ import asyncDispatch from '../../states/asyncDispatch';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import { namespace } from '../../states/storeNamespaces';
 import { getCurrentBaseRoute } from '../../states/routing/getRoute';
+import Search from '../search';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
@@ -122,6 +123,7 @@ const TabbedForms: React.FC<Props> = ({
   navigateToTab,
   openSearchModal,
   task,
+  isCallTypeCaller,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -147,6 +149,27 @@ const TabbedForms: React.FC<Props> = ({
     if (isMounted.current) setValue('categories', emptyCategories);
     else isMounted.current = true;
   }, [helpline, setValue]);
+
+  const onSelectSearchResult = (searchResult: Contact) => {
+    const selectedIsCaller = searchResult.rawJson.callType === callTypes.caller;
+    if (isCallerType && selectedIsCaller && isCallTypeCaller) {
+      updateDraftForm({ callerInformation: searchResult.rawJson.callerInformation });
+      navigateToTab('callerInformation');
+    } else {
+      updateDraftForm({ childInformation: searchResult.rawJson.childInformation });
+      navigateToTab('childInformation');
+    }
+  };
+
+  if (currentRoute.route === 'search') {
+    return (
+      <Search
+        task={task}
+        currentIsCaller={savedContact?.rawJson?.callType === callTypes.caller}
+        handleSelectSearchResult={onSelectSearchResult}
+      />
+    );
+  }
 
   if (currentRoute.route !== 'tabbed-forms') return null;
 
@@ -355,7 +378,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { contactId, task }: OwnPro
     dispatch(changeRoute({ route: 'csam-report', subroute: 'form', previousRoute }, task.taskSid)),
   navigateToTab: (tab: TabbedFormSubroutes) =>
     dispatch(changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, task.taskSid)),
-  openSearchModal: () => dispatch(newOpenModalAction({ route: 'search', subroute: 'search' }, task.taskSid)),
+  openSearchModal: () => dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, task.taskSid)),
   backToCallTypeSelect: () => dispatch(changeRoute({ route: 'select-call-type' }, task.taskSid)),
 });
 

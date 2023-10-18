@@ -176,7 +176,6 @@ export function reduce(
       const previousContacts = action.dispatchedFromPreviousContacts
         ? { ...task.previousContacts, contacts: action.searchResult }
         : task.previousContacts;
-      const currentPage = action.dispatchedFromPreviousContacts ? task.currentPage : t.SearchPages.resultsContacts;
       return {
         ...state,
         tasks: {
@@ -185,7 +184,6 @@ export function reduce(
             ...task,
             searchContactsResult: action.searchResult,
             previousContacts,
-            currentPage,
             isRequesting: false,
             error: null,
           },
