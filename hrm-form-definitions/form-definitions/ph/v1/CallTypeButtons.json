@@ -22,11 +22,5 @@
     "label": "Prank",
     "type": "button",
     "category": "non-data"
-  },
-  {
-    "name": "nonEProtectKids",
-    "label": "Non-eProtectKids",
-    "type": "button",
-    "category": "non-data"
   }
 ]
