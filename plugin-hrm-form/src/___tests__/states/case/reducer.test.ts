@@ -22,10 +22,10 @@ import * as GeneralActions from '../../../states/actions';
 import { Case } from '../../../types/types';
 import { REMOVE_CONTACT_STATE } from '../../../states/types';
 import { CaseState } from '../../../states/case/types';
-import { configurationBase, connectedCaseBase, namespace, RootState } from '../../../states';
+import { RootState } from '../../../states';
 import { getAvailableCaseStatusTransitions } from '../../../states/case/caseStatus';
 import { ConfigurationState } from '../../../states/configuration/reducer';
-import { updateCaseAsyncAction } from '../../../states/case/saveCase';
+import { configurationBase, connectedCaseBase, namespace } from '../../../states/storeNamespaces';
 
 const task = { taskSid: 'task1' };
 const stubRootState = { [configurationBase]: { definitionVersions: {} } } as RootState['plugin-hrm-form'];

@@ -19,7 +19,7 @@ import React from 'react';
 import { Actions, Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { namespace, RootState, routingBase } from '../../states';
+import { RootState } from '../../states';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 import {
   OfflineContactTaskContent,
@@ -34,6 +34,7 @@ import {
 import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
 import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
+import { namespace, routingBase } from '../../states/storeNamespaces';
 
 type OwnProps = { selectedTaskSid?: string };
 

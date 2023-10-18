@@ -16,10 +16,11 @@
 
 import { Dispatch } from 'react';
 
-import { contactFormsBase, namespace, RootState } from '..';
+import { RootState } from '..';
 import { setCategoriesGridView, toggleCategoryExpanded } from './existingContacts';
 import { toggleSubcategory } from './categories';
 import { getUnsavedContact } from './getUnsavedContact';
+import { contactFormsBase, namespace } from '../storeNamespaces';
 
 type IssueCategoriesState = {
   gridView: boolean;

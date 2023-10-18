@@ -28,7 +28,7 @@ import { SearchPages } from '../../states/search/types';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions } from '../../hrmConfig';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-import { csamReportBase } from '../../states';
+import { csamReportBase } from '../../states/storeNamespaces';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();

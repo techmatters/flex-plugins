@@ -26,10 +26,10 @@ import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-fo
 
 import { mockPartialConfiguration } from '../../mockGetConfig';
 import { AddOfflineContactButton } from '../../../components/OfflineContact';
-import { namespace, routingBase, configurationBase } from '../../../states';
 import { rerenderAgentDesktop } from '../../../rerenderView';
 import { createContact } from '../../../services/ContactService';
 import { Contact } from '../../../types/types';
+import { configurationBase, namespace, routingBase } from '../../../states/storeNamespaces';
 
 let v1;
 

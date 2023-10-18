@@ -23,8 +23,8 @@ import each from 'jest-each';
 import * as TransferHelpers from '../../utils/transfer';
 import { transferModes, transferStatuses } from '../../states/DomainConstants';
 import { acceptTask, createTask } from '../helpers';
-import { conferencingBase, namespace } from '../../states';
 import * as callStatus from '../../states/conferencing/callStatus';
+import { conferencingBase, namespace } from '../../states/storeNamespaces';
 
 const members = new Map();
 members.set('some_40identity', { source: { sid: 'member1' } });

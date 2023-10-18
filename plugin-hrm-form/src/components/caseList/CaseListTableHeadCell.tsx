@@ -23,8 +23,9 @@ import { connect, ConnectedProps } from 'react-redux';
 import { CLTableHeaderFont, CLHeaderTableCell } from '../../styles/caseList';
 import { ListCasesQueryParams, ListCasesSortDirection } from '../../types/types';
 import * as CaseListSettingsActions from '../../states/caseList/settings';
-import { caseListBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import { getAseloFeatureFlags } from '../../hrmConfig';
+import { caseListBase, namespace } from '../../states/storeNamespaces';
 
 type SortDirection = ListCasesQueryParams['sortDirection'];
 type SortBy = ListCasesQueryParams['sortBy'];

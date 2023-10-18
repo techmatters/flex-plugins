@@ -16,11 +16,10 @@
 
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { TableBody, CircularProgress, TableFooter, TableRow } from '@material-ui/core';
+import { TableBody, CircularProgress } from '@material-ui/core';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { namespace, configurationBase, RootState, caseListBase } from '../../states';
 import { TableContainer, CLTable, CLTableRow, CLNamesCell, CLTableCell, CLTableBodyFont } from '../../styles/caseList';
 import Filters from './filters/Filters';
 import CaseListTableHead from './CaseListTableHead';
@@ -30,6 +29,7 @@ import { CASES_PER_PAGE } from './CaseList';
 import type { Case } from '../../types/types';
 import * as CaseListSettingsActions from '../../states/caseList/settings';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
+import { caseListBase, configurationBase, namespace } from '../../states/storeNamespaces';
 
 const ROW_HEIGHT = 89;
 

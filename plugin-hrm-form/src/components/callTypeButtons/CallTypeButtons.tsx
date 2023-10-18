@@ -21,7 +21,7 @@ import { ITask, TaskHelper, Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 import { callTypes, CallTypeButtonsEntry } from 'hrm-form-definitions';
 
-import { namespace, configurationBase, connectedCaseBase, RootState } from '../../states';
+import { RootState } from '../../states';
 import { ContactDraftChanges, updateDraft as newUpdateDraftAction } from '../../states/contacts/existingContacts';
 import { changeRoute as newChangeRouteAction } from '../../states/routing/actions';
 import { withLocalization } from '../../contexts/LocalizationContext';
@@ -30,15 +30,15 @@ import { Container, Label, DataCallTypeButton, NonDataCallTypeButton } from '../
 import { isNonDataCallType } from '../../states/validationRules';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';
-import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
+import { completeTask } from '../../services/formSubmissionHelpers';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
 import { Contact, CustomITask, isOfflineContactTask } from '../../types/types';
 import { getTemplateStrings } from '../../hrmConfig';
 import { AppRoutes } from '../../states/routing/types';
 import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
-import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
+import { configurationBase, connectedCaseBase, namespace } from '../../states/storeNamespaces';
 
 const isDialogOpen = (task: CustomITask, contact: ContactDraftChanges) =>
   Boolean(!isOfflineContactTask(task) && contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType));
@@ -54,11 +54,9 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const CallTypeButtons: React.FC<Props> = ({
   savedContact,
   draftContact,
-  metadata,
   task,
   localization,
   currentDefinitionVersion,
-  caseForm,
   updateCallType,
   clearCallType,
   changeRoute,
@@ -179,12 +177,10 @@ const CallTypeButtons: React.FC<Props> = ({
 CallTypeButtons.displayName = 'CallTypeButtons';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const { savedContact, metadata, draftContact } = findContactByTaskSid(state, ownProps.task.taskSid) ?? {};
-  const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
-  const caseForm = caseState && caseState.connectedCase;
+  const { savedContact, draftContact } = findContactByTaskSid(state, ownProps.task.taskSid) ?? {};
   const { currentDefinitionVersion } = state[namespace][configurationBase];
 
-  return { savedContact, draftContact, metadata, caseForm, currentDefinitionVersion };
+  return { savedContact, draftContact, currentDefinitionVersion };
 };
 
 const mapDispatchToProps = (dispatch, { task: { taskSid } }: OwnProps) => ({

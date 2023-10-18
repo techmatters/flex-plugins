@@ -17,7 +17,7 @@
 import { DeepPartial } from 'redux';
 import { Dispatch } from 'react';
 
-import { csamReportBase, namespace, RootState, routingBase } from '../../../states';
+import { RootState } from '../../../states';
 import { AppRoutes } from '../../../states/routing/types';
 import { CSAMPage, existingContactCSAMApi, newContactCSAMApi } from '../../../components/CSAMReport/csamReportApi';
 import {
@@ -39,6 +39,7 @@ import { CSAMReportEntry } from '../../../types/types';
 import { reportToIWF, selfReportToIWF } from '../../../services/ServerlessService';
 import { acknowledgeCSAMReport, createCSAMReport } from '../../../services/CSAMReportService';
 import { addExternalReportEntry } from '../../../states/csam-report/existingContactExternalReport';
+import { csamReportBase, namespace, routingBase } from '../../../states/storeNamespaces';
 
 jest.mock('../../../services/ServerlessService', () => ({
   reportToIWF: jest.fn(),
