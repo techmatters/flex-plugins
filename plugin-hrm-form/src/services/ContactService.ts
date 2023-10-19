@@ -50,10 +50,9 @@ type ContactRawJsonForApi = Omit<ContactRawJson, 'categories' | 'caseInformation
   caseInformation: Record<string, string | boolean | Record<string, Record<string, boolean>>> & {
     categories: Record<string, Record<string, boolean>>;
   };
-  conversationMedia: ConversationMedia[];
 };
 
-type HrmServiceContactForApi = Omit<HrmServiceContact, 'rawJson' | 'conversationMedia'> & {
+type HrmServiceContactForApi = Omit<HrmServiceContact, 'rawJson'> & {
   rawJson: ContactRawJsonForApi;
 };
 
@@ -200,29 +199,6 @@ export function transformCategories(
 }
 
 /**
- * Currently we're sending conversationMedia as part of rawJson.
- * But HrmServiceContact has conversationMedia as a top level attribute.
- * This function transforms a HrmServiceContact to the format the backend expects.
- *
- * This adapter is temporary, since we plan on passing conversationMedia as
- * a top level attribute, but it will have a slightly different format.
- * TODO: Remove this once the API is aligned with the type we use in the front end
- */
-const adaptConversationMedia = (
-  contact: HrmServiceContactForApi & { conversationMedia?: ConversationMedia[] },
-): HrmServiceContactForApi => {
-  const { conversationMedia = [], ...rest } = contact;
-
-  return {
-    ...rest,
-    rawJson: {
-      ...rest.rawJson,
-      conversationMedia,
-    },
-  };
-};
-
-/**
  * Transforms the form to be saved as the backend expects it
  * VisibleForTesting
  * TODO: Remove this once the API is aligned with the type we use in the front end
@@ -242,17 +218,16 @@ export function transformForm(rawJson: Partial<ContactRawJson>, helpline: string
 
   return {
     ...apiForm,
-
     definitionVersion,
   };
 }
 
 // TODO: Remove this once the API is aligned with the type we use in the front end
 const convertContactToApiContact = (contact: HrmServiceContact): HrmServiceContactForApi => {
-  return adaptConversationMedia({
+  return {
     ...contact,
     rawJson: transformForm(contact.rawJson, contact.helpline) as ContactRawJsonForApi,
-  });
+  };
 };
 
 type HandleTwilioTaskResponse = {
@@ -289,7 +264,9 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
     // Store reservation sid to use Twilio insights overlay (recordings/transcript)
     returnData.conversationMedia.push({
       storeType: 'twilio',
-      reservationSid: task.sid,
+      storeTypeSpecificData: {
+        reservationSid: task.sid,
+      },
     });
   }
 

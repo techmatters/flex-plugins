@@ -204,6 +204,7 @@ const createContactWithMetadata = (
   };
 };
 
+const getContactFromPost = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body);
 const getFormFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).rawJson;
 const getTimeOfContactFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).timeOfContact;
 const getNumberFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).number;
@@ -405,9 +406,9 @@ describe('saveContact() (externalRecording)', () => {
     const { contact, metadata } = createContactWithMetadata({ callType: callTypes.child, childFirstName: 'Jill' });
     await saveContact(task, contact, metadata, 'workerSid', 'uniqueIdentifier');
 
-    const formFromPOST = getFormFromPOST(mockedFetch);
-    expect(formFromPOST.conversationMedia).toStrictEqual([
-      { storeType: 'twilio' },
+    const contactPOST = getContactFromPost(mockedFetch);
+    expect(contactPOST.conversationMedia).toStrictEqual([
+      { storeType: 'twilio', storeTypeSpecificData: {} },
       {
         storeType: 'S3',
         storeTypeSpecificData: {
@@ -589,7 +590,7 @@ describe('handleTwilioTask() (externalRecording)', () => {
     const result = await handleTwilioTask(task);
     expect(result).toStrictEqual({
       conversationMedia: [
-        { storeType: 'twilio', reservationSid: undefined },
+        { storeType: 'twilio', storeTypeSpecificData: { reservationSid: undefined } },
         {
           storeType: 'S3',
           storeTypeSpecificData: {
