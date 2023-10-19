@@ -198,7 +198,6 @@ const CaseHome: React.FC<Props> = ({
         <Box marginLeft="25px" marginTop="13px">
           <CaseDetailsComponent
             caseId={id.toString()}
-            contactIdentifier={contactIdentifier}
             statusLabel={statusLabel}
             can={can}
             counselor={caseCounselor}
