@@ -11,13 +11,8 @@
   {
     "name": "externalInterventionTo",
     "label": "External Intervention to",
-    "type": "select",
-    "unknownOption": "",
+    "type": "listbox-multiselect",
     "options": [
-      {
-        "value": "",
-        "label": ""
-      },
       {
         "value": "Ambulance",
         "label": "Ambulance"
