@@ -15,12 +15,12 @@
  */
 
 /* eslint-disable import/no-unused-modules */
-import { ITask } from '@twilio/flex-ui';
-import { CallTypes, DefinitionVersionId } from 'hrm-form-definitions';
+import type { ITask } from '@twilio/flex-ui';
+import type { CallTypes, DefinitionVersionId } from 'hrm-form-definitions';
 
-import { DateFilterValue } from '../components/caseList/filters/dateFilters';
-import { ChannelTypes } from '../states/DomainConstants';
-import { ResourceReferral } from '../states/contacts/resourceReferral';
+import type { DateFilterValue } from '../components/caseList/filters/dateFilters';
+import type { ChannelTypes } from '../states/DomainConstants';
+import type { ResourceReferral } from '../states/contacts/resourceReferral';
 
 export type EntryInfo = {
   id: string;
@@ -323,6 +323,10 @@ export type CustomITask = ITask | OfflineContactTask | InMyBehalfITask;
 
 export function isOfflineContactTask(task: CustomITask): task is OfflineContactTask {
   return Boolean(task.taskSid?.startsWith('offline-contact-task-'));
+}
+
+export function isOfflineContact(contact: Contact): boolean {
+  return Boolean(contact?.taskId?.startsWith('offline-contact-task-'));
 }
 
 /**
