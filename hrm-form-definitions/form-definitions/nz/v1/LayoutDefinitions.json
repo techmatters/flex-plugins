@@ -29,7 +29,7 @@
       "splitFormAt": 6
     },
     "referrals": {
-      "splitFormAt": 2
+      "splitFormAt": 3
     },
     "documents": {
       "splitFormAt": 1

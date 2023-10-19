@@ -27,28 +27,28 @@
         "label": "Recommendations of resources"
       },
       {
-        "value": "Referrals to Oranga Tamariki",
-        "label": "Referrals to Oranga Tamariki"
+        "value": "Resourcing to Oranga Tamariki",
+        "label": "Resourcing to Oranga Tamariki"
       },
       {
-        "value": "Referrals to general healthcare services",
-        "label": "Referrals to general healthcare services"
+        "value": "Resourcing to general healthcare services",
+        "label": "Resourcing to general healthcare services"
       },
       {
-        "value": "Referrals to law enforcement agencies",
-        "label": "Referrals to law enforcement agencies"
+        "value": "Resourcing to law enforcement agencies",
+        "label": "Resourcing to law enforcement agencies"
       },
       {
-        "value": "Referrals to mental health services",
-        "label": "Referrals to mental health services"
+        "value": "Resourcing to mental health services",
+        "label": "Resourcing to mental health services"
       },
       {
-        "value": "Referrals to other organisations",
-        "label": "Referrals to other organisations"
+        "value": "Resourcing to other organisations",
+        "label": "Resourcing to other organisations"
       },
       {
-        "value": "Referrals to school counsellors",
-        "label": "Referrals to school counsellors"
+        "value": "Resourcing to school counsellors",
+        "label": "Resourcing to school counsellors"
       },
       {
         "value": "Reports to Child Sexual Abuse Material",
@@ -62,7 +62,7 @@
   },
   {
     "name": "howDidYouKnowAboutOurLine",
-    "label": "How did you know about our line/number?",
+    "label": "How did you know about us?",
     "type": "select",
     "unknownOption": "Unknown",
     "options": [

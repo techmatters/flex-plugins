@@ -1,45 +1,49 @@
 [
   {
     "name": "date",
-    "label": "Date",
     "type": "date-input",
+    "label": "Date",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
     }
   },
   {
-    "name": "referredTo",
-    "label": "Referred To",
-    "type": "select",
+    "name": "externalInterventionTo",
+    "label": "External Intervention to",
+    "type": "listbox-multiselect",
     "options": [
       {
-        "value": "",
-        "label": ""
+        "value": "Ambulance",
+        "label": "Ambulance"
       },
       {
-        "value": "Clinic",
-        "label": "Clinic"
+        "value": "Caregiver",
+        "label": "Caregiver"
       },
       {
-        "value": "Hospital",
-        "label": "Hospital"
+        "value": "Residential facility",
+        "label": "Residential facility"
       },
       {
-        "value": "Social Welfare",
-        "label": "Social Welfare"
+        "value": "Crisis Assessment Team",
+        "label": "Crisis Assessment Team"
       },
       {
         "value": "Police",
         "label": "Police"
       },
       {
-        "value": "Religious leader",
-        "label": "Religious leader"
+        "value": "Oranga Tamariki",
+        "label": "Oranga Tamariki"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "School",
+        "label": "School"
+      },
+      {
+        "value": "Other specialist support",
+        "label": "Other specialist support"
       }
     ],
     "required": {
@@ -48,8 +52,38 @@
     }
   },
   {
-    "name": "comments",
-    "label": "Comments",
-    "type": "textarea"
+    "name": "externalInterventionDetails",
+    "label": "External Intervention Details",
+    "type": "textarea",
+    "placeholder": ""
+  },
+  {
+    "name": "referenceNumber",
+    "label": "Add Reference number for external interventions (if provided)",
+    "type": "input"
+  },
+  {
+    "name": "haveConsent",
+    "label": "Did we have client consent to the intervention?",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   }
 ]

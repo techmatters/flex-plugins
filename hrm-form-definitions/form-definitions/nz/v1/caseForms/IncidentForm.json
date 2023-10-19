@@ -12,7 +12,11 @@
         "value": "Someone else",
         "label": "Someone else"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "typeOfHarm",
@@ -39,17 +43,25 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "alreadyActed",
     "label": "Have they already acted to harm someone else?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "harmDetails",
@@ -62,10 +74,14 @@
     "label": "Have they expressed thoughts or feelings about harming someone?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "thoughtsDetails",
@@ -78,10 +94,14 @@
     "label": "Have they expressed intending to act to harm someone?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "intentDetails",
@@ -94,10 +114,14 @@
     "label": "Have they described a specific method, means or way of harming someone else that they intend to use?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "methodDetails",
@@ -110,10 +134,14 @@
     "label": "Have they described a timeframe for when they will harm someone else?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "timeframeDetails",
