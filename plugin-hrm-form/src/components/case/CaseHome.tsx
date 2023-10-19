@@ -46,6 +46,7 @@ import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { connectedCaseBase, namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import NavigableContainer from '../NavigableContainer';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -192,7 +193,7 @@ const CaseHome: React.FC<Props> = ({
   };
 
   return (
-    <>
+    <NavigableContainer titleCode={contactIdentifier} task={task} onGoBack={handleClose}>
       <CaseContainer data-testid="CaseHome-CaseDetailsComponent">
         <Box marginLeft="25px" marginTop="13px">
           <CaseDetailsComponent
@@ -292,7 +293,7 @@ const CaseHome: React.FC<Props> = ({
           </>
         )}
       </BottomButtonBar>
-    </>
+    </NavigableContainer>
   );
 };
 

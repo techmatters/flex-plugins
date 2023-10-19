@@ -51,7 +51,7 @@ import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
 import { getCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
 import { changeRoute } from '../../../states/routing/actions';
-import { SearchRoute } from '../../../states/routing/types';
+import { ChangeRouteMode, SearchRoute } from '../../../states/routing/types';
 
 export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;
@@ -345,7 +345,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     changeSearchPage: (subroute: SearchRoute['subroute']) =>
-      dispatch(changeRoute({ route: 'search', subroute }, taskId, true)),
+      dispatch(changeRoute({ route: 'search', subroute }, taskId, ChangeRouteMode.Replace)),
     viewCaseDetails: () => {
       dispatch(changeRoute({ route: 'case', subroute: 'home' }, taskId));
     },

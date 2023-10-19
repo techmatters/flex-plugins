@@ -165,11 +165,18 @@ export type AppRoutes = AppRoutesWithCase | OtherRoutes;
 export function isRouteWithModalSupport(appRoute: any): appRoute is RouteWithModalSupport {
   return ['tabbed-forms', 'case', 'case-list', 'search'].includes(appRoute.route);
 }
+
+export enum ChangeRouteMode {
+  Push = 'push',
+  Replace = 'replace',
+  Reset = 'reset',
+}
+
 type ChangeRouteAction = {
   type: typeof CHANGE_ROUTE;
   routing: AppRoutes;
   taskId: string;
-  replace?: boolean;
+  mode: ChangeRouteMode;
 };
 
 type OpenModalAction = {

@@ -28,7 +28,7 @@ import { RootState } from '../../states';
 import { completeTask, removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute, newCloseModalAction, newGoBackAction, newOpenModalAction } from '../../states/routing/actions';
 import { emptyCategories } from '../../states/contacts/reducer';
-import { AppRoutes, isRouteModal, TabbedFormSubroutes } from '../../states/routing/types';
+import { AppRoutes, ChangeRouteMode, isRouteModal, TabbedFormSubroutes } from '../../states/routing/types';
 import {
   ContactRawJson,
   CustomITask,
@@ -404,10 +404,13 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { contactId, task }: OwnPro
   openCSAMReport: (previousRoute: AppRoutes) =>
     dispatch(changeRoute({ route: 'csam-report', subroute: 'form', previousRoute }, task.taskSid)),
   navigateToTab: (tab: TabbedFormSubroutes) =>
-    dispatch(changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, task.taskSid, true)),
+    dispatch(
+      changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, task.taskSid, ChangeRouteMode.Replace),
+    ),
   openSearchModal: () => dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, task.taskSid)),
   closeSearchModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
-  backToCallTypeSelect: () => dispatch(changeRoute({ route: 'select-call-type' }, task.taskSid, true)),
+  backToCallTypeSelect: () =>
+    dispatch(changeRoute({ route: 'select-call-type' }, task.taskSid, ChangeRouteMode.Replace)),
   goBack: () => dispatch(newGoBackAction(task.taskSid)),
   finaliseContact: (contact: Contact, metadata: ContactMetadata, caseForm: CaseForm) =>
     dispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),

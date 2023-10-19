@@ -21,7 +21,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-import { Template } from '@twilio/flex-ui';
 
 import SearchForm from './SearchForm';
 import SearchResults, { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './SearchResults';
@@ -29,14 +28,13 @@ import ContactDetails from './ContactDetails';
 import Case from '../case';
 import { SearchParams } from '../../states/search/types';
 import { CustomITask, Contact, standaloneTaskSid } from '../../types/types';
-import SearchResultsBackButton from './SearchResults/SearchResultsBackButton';
 import { handleSearchFormChange, searchContacts, searchCases } from '../../states/search/actions';
 import { RootState } from '../../states';
-import { Flex } from '../../styles/HrmStyles';
 import { namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { changeRoute, newGoBackAction } from '../../states/routing/actions';
 import { SearchRoute } from '../../states/routing/types';
+import NavigableContainer from '../NavigableContainer';
 
 type OwnProps = {
   task: CustomITask;
@@ -141,19 +139,21 @@ const Search: React.FC<Props> = ({
       case 'search': {
         if (routing.subroute === 'case-results' || routing.subroute === 'contact-results') {
           return (
-            <SearchResults
-              task={task}
-              currentIsCaller={currentIsCaller}
-              searchContactsResults={searchContactsResults}
-              searchCasesResults={searchCasesResults}
-              onlyDataContacts={searchParams.onlyDataContacts}
-              closedCases={searchParams.closedCases}
-              handleSearchContacts={setOffsetAndHandleSearchContacts}
-              handleSearchCases={setOffsetAndHandleSearchCases}
-              toggleNonDataContacts={toggleNonDataContacts}
-              toggleClosedCases={toggleClosedCases}
-              handleBack={goBack}
-            />
+            <NavigableContainer task={task} titleCode="SearchContactsAndCases-Title">
+              <SearchResults
+                task={task}
+                currentIsCaller={currentIsCaller}
+                searchContactsResults={searchContactsResults}
+                searchCasesResults={searchCasesResults}
+                onlyDataContacts={searchParams.onlyDataContacts}
+                closedCases={searchParams.closedCases}
+                handleSearchContacts={setOffsetAndHandleSearchContacts}
+                handleSearchCases={setOffsetAndHandleSearchCases}
+                toggleNonDataContacts={toggleNonDataContacts}
+                toggleClosedCases={toggleClosedCases}
+                handleBack={goBack}
+              />
+            </NavigableContainer>
           );
         }
         // Fall through to default to render the form
@@ -162,12 +162,6 @@ const Search: React.FC<Props> = ({
       case 'case': {
         return (
           <>
-            <Flex marginTop="15px" marginBottom="15px">
-              <SearchResultsBackButton
-                text={<Template code="SearchResultsIndex-BackToResults" />}
-                handleBack={goBackFromCases}
-              />
-            </Flex>
             <Case task={task} isCreating={false} handleClose={goBackFromCases} />
           </>
         );
@@ -196,12 +190,14 @@ const Search: React.FC<Props> = ({
         break;
     }
     return (
-      <SearchForm
-        task={task}
-        values={form}
-        handleSearchFormChange={handleSearchFormChange}
-        handleSearch={setSearchParamsAndHandleSearch}
-      />
+      <NavigableContainer task={task} titleCode="SearchContactsAndCases-Title">
+        <SearchForm
+          task={task}
+          values={form}
+          handleSearchFormChange={handleSearchFormChange}
+          handleSearch={setSearchParamsAndHandleSearch}
+        />
+      </NavigableContainer>
     );
   };
   renderSearchPages.displayName = 'SearchPage';

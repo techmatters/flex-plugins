@@ -29,7 +29,6 @@ import { getLocaleDateTime } from '../../utils/helpers';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
-import ViewContact from './ViewContact';
 import { Activity, CaseDetails, NoteActivity } from '../../states/case/types';
 import { Case as CaseType, CustomITask, Contact, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
@@ -139,7 +138,8 @@ const Case: React.FC<Props> = ({
       loadContacts(connectedContacts, `case-${connectedCase.id}`);
     }
     setLoadedContactIds(connectedContacts.map(cc => cc.id));
-  }, [connectedCase, loadContacts, releaseContacts, task, workerSid]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connectedCase, task]);
 
   const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;
@@ -339,11 +339,6 @@ const Case: React.FC<Props> = ({
         }}
       />
     );
-  }
-  if (routing.activeModal?.length && routing.activeModal[routing.activeModal.length - 1].route === 'contact') {
-    const modalRouting = routing.activeModal[routing.activeModal.length - 1];
-    if (modalRouting.route !== 'contact') throw new Error('Unexpected modal route');
-    return <ViewContact onClickClose={closeModal} contactId={modalRouting.id} task={task} />;
   }
   return loading || !definitionVersion ? (
     <CenteredContainer>
