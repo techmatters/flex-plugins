@@ -9,8 +9,8 @@
     }
   },
   {
-    "name": "directedTo",
-    "label": "Directed to",
+    "name": "externalInterventionTo",
+    "label": "External Intervention to",
     "type": "select",
     "unknownOption": "",
     "options": [
@@ -19,28 +19,36 @@
         "label": ""
       },
       {
-        "value": "Clinic",
-        "label": "Clinic"
+        "value": "Ambulance",
+        "label": "Ambulance"
       },
       {
-        "value": "Hospital",
-        "label": "Hospital"
+        "value": "Caregiver",
+        "label": "Caregiver"
       },
       {
-        "value": "Social Welfare",
-        "label": "Social Welfare"
+        "value": "Residential facility",
+        "label": "Residential facility"
+      },
+      {
+        "value": "Crisis Assessment Team",
+        "label": "Crisis Assessment Team"
       },
       {
         "value": "Police",
         "label": "Police"
       },
       {
-        "value": "Religious leader",
-        "label": "Religious leader"
+        "value": "Oranga Tamariki",
+        "label": "Oranga Tamariki"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "School",
+        "label": "School"
+      },
+      {
+        "value": "Other specialist support",
+        "label": "Other specialist support"
       }
     ],
     "required": {
