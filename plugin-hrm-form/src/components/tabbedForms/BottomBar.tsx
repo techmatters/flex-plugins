@@ -62,7 +62,7 @@ const BottomBar: React.FC<
   contact,
   metadata,
   task,
-  openModal,
+  changeRoute,
   nextTab,
   caseForm,
   createCaseAsyncAction,
@@ -80,7 +80,7 @@ const BottomBar: React.FC<
     try {
       await saveUpdates();
       await createCaseAsyncAction(contact, workerSid, definitionVersion);
-      openModal({ route: 'case', subroute: 'home' });
+      changeRoute({ route: 'case', subroute: 'home' });
     } catch (error) {
       recordBackendError('Open New Case', error);
       window.alert(strings['Error-Backend']);
@@ -191,7 +191,7 @@ const mapStateToProps = (state: RootState, ownProps: BottomBarProps) => {
 const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
   const createCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
-    changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
+    changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
     openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid)),
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     createCaseAsyncAction: (contact, workerSid: string, definitionVersion: DefinitionVersionId) =>

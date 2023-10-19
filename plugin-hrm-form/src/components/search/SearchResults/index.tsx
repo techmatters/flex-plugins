@@ -45,7 +45,7 @@ import Pagination from '../../Pagination';
 import SearchResultsBackButton from './SearchResultsBackButton';
 import * as CaseActions from '../../../states/case/actions';
 import * as RoutingActions from '../../../states/routing/actions';
-import { SearchPages, SearchPagesType } from '../../../states/search/types';
+import { SearchPagesType } from '../../../states/search/types';
 import { getPermissionsForContact, getPermissionsForCase, PermissionActions } from '../../../permissions';
 import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
@@ -67,7 +67,6 @@ type OwnProps = {
   toggleNonDataContacts: () => void;
   toggleClosedCases: () => void;
   handleBack: () => void;
-  handleViewDetails: (contact: Contact) => void;
   changeSearchPage: (SearchPagesType) => void;
   setConnectedCase: (currentCase: Case, taskSid: string) => void;
   currentPage: SearchPagesType;
@@ -87,8 +86,9 @@ const SearchResults: React.FC<Props> = ({
   toggleNonDataContacts,
   toggleClosedCases,
   handleBack,
-  handleViewDetails,
+  viewContactDetails,
   changeSearchPage,
+  viewCaseDetails,
   setConnectedCase,
   counselorsHash,
   routing,
@@ -124,7 +124,7 @@ const SearchResults: React.FC<Props> = ({
 
   const handleClickViewCase = currentCase => () => {
     setConnectedCase(currentCase, task.taskSid);
-    changeSearchPage(SearchPages.case);
+    viewCaseDetails();
   };
 
   const { count: contactsCount, contacts } = searchContactsResults;
@@ -253,7 +253,7 @@ const SearchResults: React.FC<Props> = ({
                     <ContactPreview
                       key={contact.id}
                       contact={contact}
-                      handleViewDetails={() => can(PermissionActions.VIEW_CONTACT) && handleViewDetails(contact)}
+                      handleViewDetails={() => can(PermissionActions.VIEW_CONTACT) && viewContactDetails(contact)}
                     />
                   );
                 })}
@@ -346,6 +346,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     changeSearchPage: (subroute: SearchRoute['subroute']) =>
       dispatch(changeRoute({ route: 'search', subroute }, taskId, true)),
+    viewCaseDetails: () => {
+      dispatch(changeRoute({ route: 'case', subroute: 'home' }, taskId));
+    },
+    viewContactDetails: ({ id }: Contact) => {
+      dispatch(changeRoute({ route: 'contact', subroute: 'view', id: id.toString() }, taskId));
+    },
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
   };

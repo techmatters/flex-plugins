@@ -30,9 +30,15 @@ export const newOpenModalAction = (routing: AppRoutes, taskId: string): RoutingA
   taskId,
 });
 
-export const newCloseModalAction = (taskId: string): RoutingActionType => ({
+/**
+ * Close modal action
+ * @param taskId
+ * @param topRoute - if this is specified, all modals on top the lowest modal with this route (or the base route, if it matches) will be closed, otherwise just the top modal will be closed
+ */
+export const newCloseModalAction = (taskId: string, topRoute?: AppRoutes['route']): RoutingActionType => ({
   type: CLOSE_MODAL,
   taskId,
+  topRoute,
 });
 
 export const newGoBackAction = (taskId: string): RoutingActionType => ({

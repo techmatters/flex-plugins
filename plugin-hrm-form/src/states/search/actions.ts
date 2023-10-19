@@ -27,7 +27,6 @@ import { updateDefinitionVersion } from '../configuration/actions';
 import { getContactsMissingVersions, getCasesMissingVersions } from '../../utils/definitionVersions';
 import { getNumberFromTask } from '../../utils';
 import { SearchParams } from './types';
-import { changeRoute } from '../routing/actions';
 
 // Action creators
 export const handleSearchFormChange = (taskId: string) => <K extends keyof t.SearchFormValues>(
@@ -67,7 +66,6 @@ export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => a
     definitions.forEach(d => dispatch(updateDefinitionVersion(d.version, d.definition)));
 
     dispatch({ type: t.SEARCH_CONTACTS_SUCCESS, searchResult, taskId, dispatchedFromPreviousContacts });
-    dispatch(changeRoute({ route: 'search', subroute: 'contact-results' }, taskId));
   } catch (error) {
     dispatch({ type: t.SEARCH_CONTACTS_FAILURE, error, taskId, dispatchedFromPreviousContacts });
   }
@@ -101,7 +99,6 @@ export const searchCases = (dispatch: Dispatch<any>) => (taskId: string) => asyn
     definitions.forEach(d => dispatch(updateDefinitionVersion(d.version, d.definition)));
 
     dispatch({ type: t.SEARCH_CASES_SUCCESS, searchResult, taskId, dispatchedFromPreviousContacts });
-    dispatch(changeRoute({ route: 'search', subroute: 'case-results' }, taskId));
   } catch (error) {
     dispatch({ type: t.SEARCH_CASES_FAILURE, error, taskId });
   }

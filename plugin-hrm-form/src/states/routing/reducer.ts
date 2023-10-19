@@ -49,7 +49,9 @@ export const initialState: RoutingState = {
 };
 
 const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingAction): RoutingState => {
-  const recreated = action.type === LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED;
+  const recreated =
+    action.type === LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED ||
+    action.type === UPDATE_CONTACT_ACTION_FULFILLED;
 
   const { contact, previousContact } = action.payload;
   if (!contact) {
@@ -136,16 +138,24 @@ const popTopmostRoute = (baseRouteStack: AppRoutes[]): AppRoutes[] => {
   return baseRouteStack;
 };
 
-const closeTopModal = (routeStack: AppRoutes[], parent?: AppRoutes): AppRoutes[] => {
+const closeTopModal = (
+  routeStack: AppRoutes[],
+  topRoute: AppRoutes['route'] | undefined,
+  parent?: AppRoutes,
+): AppRoutes[] => {
   if (routeStack?.length) {
     const currentRoute = routeStack[routeStack.length - 1];
 
-    if (!isRouteWithModalSupport(currentRoute) || !currentRoute.activeModal) {
+    if (
+      !isRouteWithModalSupport(currentRoute) ||
+      !currentRoute.activeModal ||
+      (topRoute && parent?.route === topRoute)
+    ) {
       // This is the top of the modal stack - if it has a parent, return undefined so the caller removes it
       // Otherwise it's the base route, so just return it as is
       return parent ? undefined : routeStack;
     }
-    const nextStack = closeTopModal(currentRoute.activeModal, currentRoute);
+    const nextStack = closeTopModal(currentRoute.activeModal, topRoute, currentRoute);
     if (nextStack) {
       return [...routeStack.slice(0, -1), { ...currentRoute, activeModal: nextStack }];
     }
@@ -223,7 +233,7 @@ export function reduce(
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: closeTopModal(state.tasks[action.taskId]),
+          [action.taskId]: closeTopModal(state.tasks[action.taskId], action.topRoute),
         },
       };
     }

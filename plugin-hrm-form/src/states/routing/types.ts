@@ -186,6 +186,7 @@ type GoBackAction = {
 type CloseModalAction = {
   type: typeof CLOSE_MODAL;
   taskId: string;
+  topRoute?: AppRoutes['route'];
 };
 
 export type RoutingActionType = ChangeRouteAction | GoBackAction | OpenModalAction | CloseModalAction;

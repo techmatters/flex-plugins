@@ -43,7 +43,7 @@ import * as ListContent from '../../states/caseList/listContent';
 import { getHrmConfig } from '../../hrmConfig';
 import { namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import { newCloseModalAction, newOpenModalAction } from '../../states/routing/actions';
+import { changeRoute, newCloseModalAction, newGoBackAction } from '../../states/routing/actions';
 import ViewContact from '../case/ViewContact';
 
 export const CASES_PER_PAGE = 10;
@@ -66,7 +66,8 @@ const CaseList: React.FC<Props> = ({
   fetchCaseListSuccess,
   fetchCaseListError,
   openCaseDetails,
-  closeModal,
+  closeCaseDetails,
+  closeContactDetails,
   caseList,
   caseCount,
   fetchError,
@@ -119,7 +120,7 @@ const CaseList: React.FC<Props> = ({
   const closeCaseView = async () => {
     // Reload the current page of the list to reflect any updates to the case just being viewed
     await fetchCaseList(currentSettings.page, currentSettings.sort, currentSettings.filter);
-    closeModal();
+    closeCaseDetails();
   };
 
   if (fetchError)
@@ -145,7 +146,7 @@ const CaseList: React.FC<Props> = ({
     return (
       <StandaloneSearchContainer>
         <CaseLayout>
-          <ViewContact onClickClose={closeModal} contactId={routing.id} task={standaloneTask} />
+          <ViewContact onClickClose={closeContactDetails} contactId={routing.id} task={standaloneTask} />
         </CaseLayout>
       </StandaloneSearchContainer>
     );
@@ -181,8 +182,9 @@ const mapDispatchToProps = dispatch => {
     fetchCaseListSuccess: (caseList: CaseType[], caseCount: number) =>
       dispatch(ListContent.fetchCaseListSuccess(caseList, caseCount)),
     fetchCaseListError: error => dispatch(ListContent.fetchCaseListError(error)),
-    openCaseDetails: () => dispatch(newOpenModalAction({ route: 'case', subroute: 'home' }, standaloneTask.taskSid)),
-    closeModal: () => dispatch(newCloseModalAction(standaloneTask.taskSid)),
+    openCaseDetails: () => dispatch(changeRoute({ route: 'case', subroute: 'home' }, standaloneTask.taskSid)),
+    closeCaseDetails: () => dispatch(newGoBackAction(standaloneTask.taskSid)),
+    closeContactDetails: () => dispatch(newCloseModalAction(standaloneTask.taskSid)),
   };
 };
 

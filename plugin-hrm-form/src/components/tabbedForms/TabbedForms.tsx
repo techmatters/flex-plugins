@@ -25,11 +25,18 @@ import { Template } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
 
 import { RootState } from '../../states';
-import { removeOfflineContact } from '../../services/formSubmissionHelpers';
-import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
+import { completeTask, removeOfflineContact } from '../../services/formSubmissionHelpers';
+import { changeRoute, newCloseModalAction, newGoBackAction, newOpenModalAction } from '../../states/routing/actions';
 import { emptyCategories } from '../../states/contacts/reducer';
 import { AppRoutes, isRouteModal, TabbedFormSubroutes } from '../../states/routing/types';
-import { ContactRawJson, CustomITask, isOfflineContactTask, Contact, isOfflineContact } from '../../types/types';
+import {
+  ContactRawJson,
+  CustomITask,
+  isOfflineContactTask,
+  Contact,
+  isOfflineContact,
+  Case as CaseForm,
+} from '../../types/types';
 import { Box, Row, StyledTabs, TabbedFormsContainer, TabbedFormTabContainer } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import IssueCategorizationSectionForm from '../contact/IssueCategorizationSectionForm';
@@ -49,10 +56,13 @@ import '../contact/ResourceReferralList';
 import { ContactDraftChanges, updateDraft } from '../../states/contacts/existingContacts';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import asyncDispatch from '../../states/asyncDispatch';
-import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
+import { submitContactFormAsyncAction, updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import { namespace } from '../../states/storeNamespaces';
-import { getCurrentBaseRoute } from '../../states/routing/getRoute';
 import Search from '../search';
+import { getCurrentBaseRoute, getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { CaseLayout } from '../../styles/case';
+import Case from '../case/Case';
+import { ContactMetadata } from '../../states/contacts/types';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
@@ -120,8 +130,12 @@ const TabbedForms: React.FC<Props> = ({
   clearCallType,
   openCSAMReport,
   backToCallTypeSelect,
+  goBack,
   navigateToTab,
   openSearchModal,
+  closeSearchModal,
+  finaliseContact,
+  metadata,
   task,
   isCallTypeCaller,
 }) => {
@@ -152,6 +166,7 @@ const TabbedForms: React.FC<Props> = ({
 
   const onSelectSearchResult = (searchResult: Contact) => {
     const selectedIsCaller = searchResult.rawJson.callType === callTypes.caller;
+    closeSearchModal();
     if (isCallerType && selectedIsCaller && isCallTypeCaller) {
       updateDraftForm({ callerInformation: searchResult.rawJson.callerInformation });
       navigateToTab('callerInformation');
@@ -161,7 +176,19 @@ const TabbedForms: React.FC<Props> = ({
     }
   };
 
-  if (currentRoute.route === 'search') {
+  const onNewCaseSaved = async (caseForm: CaseForm) => {
+    await finaliseContact(savedContact, metadata, caseForm);
+    await completeTask(task);
+  };
+
+  if (currentRoute.route === 'case' && !modalOpen) {
+    return (
+      <CaseLayout>
+        <Case task={task} isCreating={true} onNewCaseSaved={onNewCaseSaved} handleClose={goBack} />
+      </CaseLayout>
+    );
+  }
+  if (currentRoute.route === 'search' || currentRoute.route === 'contact' || currentRoute.route === 'case') {
     return (
       <Search
         task={task}
@@ -348,10 +375,10 @@ const mapStateToProps = (
   { [namespace]: { routing, activeContacts, configuration } }: RootState,
   { task: { taskSid }, contactId }: OwnProps,
 ) => {
-  const currentRoute = getCurrentBaseRoute(routing, taskSid);
+  const currentRoute = getCurrentTopmostRouteForTask(routing, taskSid);
   const { isCallTypeCaller, existingContacts, editingContact } = activeContacts;
   const { savedContact, draftContact, metadata } = existingContacts[contactId] || {};
-  const modalOpen = editingContact || isRouteModal(currentRoute);
+  const modalOpen = isRouteModal(getCurrentBaseRoute(routing, taskSid));
   const { currentDefinitionVersion } = configuration;
   return {
     currentRoute,
@@ -377,9 +404,13 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { contactId, task }: OwnPro
   openCSAMReport: (previousRoute: AppRoutes) =>
     dispatch(changeRoute({ route: 'csam-report', subroute: 'form', previousRoute }, task.taskSid)),
   navigateToTab: (tab: TabbedFormSubroutes) =>
-    dispatch(changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, task.taskSid)),
+    dispatch(changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, task.taskSid, true)),
   openSearchModal: () => dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, task.taskSid)),
-  backToCallTypeSelect: () => dispatch(changeRoute({ route: 'select-call-type' }, task.taskSid)),
+  closeSearchModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
+  backToCallTypeSelect: () => dispatch(changeRoute({ route: 'select-call-type' }, task.taskSid, true)),
+  goBack: () => dispatch(newGoBackAction(task.taskSid)),
+  finaliseContact: (contact: Contact, metadata: ContactMetadata, caseForm: CaseForm) =>
+    dispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
