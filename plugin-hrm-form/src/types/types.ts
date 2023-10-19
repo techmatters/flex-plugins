@@ -95,7 +95,9 @@ export type Case = {
 
 export type TwilioStoredMedia = {
   storeType: 'twilio';
-  reservationSid: string;
+  storeTypeSpecificData: {
+    reservationSid: string;
+  };
 };
 
 export type S3StoredTranscript = {
