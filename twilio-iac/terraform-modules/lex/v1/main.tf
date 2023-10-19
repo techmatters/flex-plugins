@@ -50,7 +50,7 @@ resource "aws_lex_intent" "this" {
 
   provider = aws.hl-region
 
-  name        = "${local.name_prefix}_${each.key}"
+  name        = replace("${local.name_prefix}_${each.key}", "2", "TO")
   description = each.value.description
 
   sample_utterances = each.value.sample_utterances
@@ -105,7 +105,7 @@ resource "aws_lex_bot" "this" {
 
   provider = aws.hl-region
 
-  name                        = "${local.name_prefix}_${each.key}"
+  name                        = replace("${local.name_prefix}_${each.key}", "2", "TO")
   description                 = each.value.description
   locale                      = each.value.locale
   process_behavior            = each.value.process_behavior
