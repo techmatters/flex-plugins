@@ -244,7 +244,7 @@ describe('useState mocked', () => {
     expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
     expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe('6/29/2020');
     expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe('—');
-    expect(screen.getByTestId('Case-DetailsHeaderChildName').innerHTML).toContain('first last');
+    expect(screen.getByTestId('NavigableContainer-Title').innerHTML).toContain('first last');
   });
 
   test('Case (should render, after update)', async () => {

@@ -27,7 +27,7 @@ import CaseHome, { CaseHomeProps } from '../../../components/case/CaseHome';
 import { HouseholdEntry, PerpetratorEntry, StandaloneITask } from '../../../types/types';
 import { CaseDetails } from '../../../states/case/types';
 import { getDefinitionVersions } from '../../../hrmConfig';
-import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
+import { CaseItemAction, ChangeRouteMode, NewCaseSubroutes } from '../../../states/routing/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import {
   configurationBase,
@@ -209,7 +209,7 @@ describe('useState mocked', () => {
         action: CaseItemAction.Add,
       },
       taskId: 'task1',
-      replace: false,
+      mode: ChangeRouteMode.Push,
       type: 'routing/change-route',
     });
   });
@@ -234,7 +234,7 @@ describe('useState mocked', () => {
         action: CaseItemAction.Add,
       },
       taskId: 'task1',
-      replace: false,
+      mode: ChangeRouteMode.Push,
       type: 'routing/change-route',
     });
   });
@@ -259,7 +259,7 @@ describe('useState mocked', () => {
         action: CaseItemAction.Add,
       },
       taskId: 'task1',
-      replace: false,
+      mode: ChangeRouteMode.Push,
       type: 'routing/change-route',
     });
   });
@@ -284,7 +284,7 @@ describe('useState mocked', () => {
         action: CaseItemAction.Add,
       },
       taskId: 'task1',
-      replace: false,
+      mode: ChangeRouteMode.Push,
       type: 'routing/change-route',
     });
   });
@@ -312,7 +312,7 @@ describe('useState mocked', () => {
         id: 'HOUSEHOLD_ID',
       },
       taskId: 'task1',
-      replace: false,
+      mode: ChangeRouteMode.Push,
       type: 'routing/change-route',
     });
   });
@@ -340,7 +340,7 @@ describe('useState mocked', () => {
         id: 'PERPETRATOR_ID',
       },
       taskId: 'task1',
-      replace: false,
+      mode: ChangeRouteMode.Push,
       type: 'routing/change-route',
     });
   });
@@ -367,7 +367,7 @@ describe('useState mocked', () => {
         id: '',
       },
       taskId: 'task1',
-      replace: false,
+      mode: ChangeRouteMode.Push,
       type: 'routing/change-route',
     });
   });

@@ -92,19 +92,19 @@ const NavigableContainer: React.FC<Props> = ({
     <Container modal={isModal} style={{ paddingTop: '20px' }}>
       <Row style={{ alignItems: 'start' }}>
         {hasHistory && (
-          <StyledBackButton onClick={onGoBack}>
+          <StyledBackButton onClick={onGoBack} data-testid="NavigableContainer-BackButton">
             <Row style={{ paddingTop: '7px' }}>
               <LargeBackIcon />
             </Row>
           </StyledBackButton>
         )}
-        <NavigableContainerTitle data-testid="Search-Title">
+        <NavigableContainerTitle data-testid="NavigableContainer-Title">
           <Template code={titleCode} />
         </NavigableContainerTitle>
         {isModal && (
           <HeaderCloseButton
             onClick={onCloseModal}
-            data-testid="Case-CloseCross"
+            data-testid="NavigableContainer-CloseCross"
             style={{ marginRight: '15px', opacity: '.75' }}
           >
             <HiddenText>

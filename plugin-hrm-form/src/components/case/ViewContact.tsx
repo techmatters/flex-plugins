@@ -57,7 +57,7 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
 const ViewContact: React.FC<Props> = ({ editContactFormOpen, contactId, enableEditing, task, onClickClose }) => {
   return (
-    <CaseLayout className={editContactFormOpen ? 'editingContact' : ''}>
+    <CaseLayout>
       <Container removePadding={editContactFormOpen}>
         <ContactDetails
           contactId={contactId}

@@ -28,10 +28,11 @@ import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import ViewContact from '../../../components/case/ViewContact';
 import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import { getDefinitionVersions } from '../../../hrmConfig';
-import { Contact } from '../../../types/types';
+import { Case, Contact } from '../../../types/types';
 import { RootState } from '../../../states';
 import { DetailsContext, TOGGLE_DETAIL_EXPANDED_ACTION } from '../../../states/contacts/contactDetails';
-import { connectedCaseBase, contactFormsBase, csamReportBase } from '../../../states/storeNamespaces';
+import { connectedCaseBase, csamReportBase } from '../../../states/storeNamespaces';
+import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
 
 jest.mock('@twilio/flex-ui', () => ({
   ...jest.requireActual('@twilio/flex-ui'),
@@ -115,7 +116,7 @@ const contact: Contact = {
       stateOrCounty: '',
       streetAddress: '',
     },
-    contactlessTask: { channel: 'voice' },
+    contactlessTask: { ...VALID_EMPTY_CONTACT.rawJson.contactlessTask, channel: 'voice' },
     categories: { category1: ['Tag1', 'Tag2'] },
   },
 };
@@ -147,6 +148,14 @@ describe('View Contact', () => {
         },
       } as any,
       'plugin-hrm-form': {
+        routing: {
+          tasks: {
+            'task-id': [
+              { route: 'case', subroute: 'home', activeModal: [{ route: 'contact', subroute: 'view', id: 'TEST_ID' }] },
+            ],
+          },
+          isAddingOfflineContact: false,
+        },
         configuration: {
           language: '',
           workerInfo: { chatChannelCapacity: 1 },
@@ -157,18 +166,23 @@ describe('View Contact', () => {
         [connectedCaseBase]: {
           tasks: {
             'task-id': {
-              connectedCase: {},
-              timelineActivities: [],
+              connectedCase: {} as Case,
+              availableStatusTransitions: [],
+              caseWorkingCopy: { sections: {} },
             },
           },
         },
-        [contactFormsBase]: {
-          tasks: {},
+        activeContacts: {
+          editingContact: false,
+          isCallTypeCaller: false,
           existingContacts: {
             TEST_ID: {
               savedContact: contact,
               references: new Set(['task-id']),
-              categories: { gridView: false, expanded: {} },
+              metadata: {
+                ...VALID_EMPTY_METADATA,
+                categories: { gridView: false, expanded: {} },
+              },
             },
           },
           contactDetails: {
@@ -177,7 +191,6 @@ describe('View Contact', () => {
           },
         },
         [csamReportBase]: {
-          tasks: {},
           contacts: {},
         },
       },
@@ -197,8 +210,7 @@ describe('View Contact', () => {
 
     // TODO: Verify interpolated translations contain the expected data
     await waitFor(() => expect(screen.getByTestId('ContactDetails-Container')).toBeInTheDocument());
-    expect(screen.getByText('#TEST_ID')).toBeInTheDocument();
-    expect(screen.getByText('Jill Smith')).toBeInTheDocument();
+    expect(screen.getByText('#TEST_ID Jill Smith')).toBeInTheDocument();
   });
 
   test('click on close button', async () => {
@@ -213,9 +225,9 @@ describe('View Contact', () => {
       </Provider>,
     );
 
-    await waitFor(() => expect(screen.getByTestId('Case-ViewContactScreen-CloseButton')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId('NavigableContainer-CloseCross')).toBeInTheDocument());
 
-    screen.getByTestId('Case-ViewContactScreen-CloseButton').click();
+    screen.getByTestId('NavigableContainer-CloseCross').click();
 
     expect(onClickClose).toHaveBeenCalled();
   });

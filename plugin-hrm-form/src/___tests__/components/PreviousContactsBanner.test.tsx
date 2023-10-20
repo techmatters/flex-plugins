@@ -166,8 +166,8 @@ test('Click View Records should redirect user to search results', () => {
         previousContacts={previousContacts}
         searchContacts={searchContacts}
         searchCases={searchCases}
-        changeRoute={openModal}
         viewPreviousContacts={viewPreviousContacts}
+        openContactSearchResults={openModal}
       />
     </StorelessThemeProvider>,
   );
@@ -177,7 +177,7 @@ test('Click View Records should redirect user to search results', () => {
   expect(searchContacts).not.toHaveBeenCalled();
   expect(searchCases).not.toHaveBeenCalled();
   expect(viewPreviousContacts).toHaveBeenCalled();
-  expect(openModal).toHaveBeenCalledWith({ route: 'search', subroute: 'results' });
+  expect(openModal).toHaveBeenCalled();
 });
 
 test('a11y', async () => {

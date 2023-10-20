@@ -209,7 +209,7 @@ const ContactDetails: React.FC<Props> = ({
   }
 
   return (
-    <NavigableContainer titleCode={childOrUnknown} task={task}>
+    <NavigableContainer titleCode={`#${contactId} ${childOrUnknown}`} onCloseModal={closeContactModal} task={task}>
       <ContactDetailsHome
         task={task}
         context={context}
