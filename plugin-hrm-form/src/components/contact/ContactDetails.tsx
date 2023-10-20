@@ -22,7 +22,7 @@ import { DefinitionVersion } from 'hrm-form-definitions';
 
 import ContactDetailsHome from './ContactDetailsHome';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-import { configurationBase, contactFormsBase, csamReportBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import EditContactSection from './EditContactSection';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { DetailsContainer } from '../../styles/search';
@@ -35,7 +35,8 @@ import { updateDraft } from '../../states/contacts/existingContacts';
 import CSAMReport from '../CSAMReport/CSAMReport';
 import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
 import { getAseloFeatureFlags } from '../../hrmConfig';
-import { transformValues } from '../../states/contacts/contactDetailsAdapter';
+import { configurationBase, contactFormsBase, csamReportBase, namespace } from '../../states/storeNamespaces';
+import { ContactRawJson } from '../../types/types';
 
 type OwnProps = {
   contactId: string;
@@ -58,6 +59,7 @@ const ContactDetails: React.FC<Props> = ({
   draftContact,
   enableEditing = true,
   draftCsamReport,
+  updateDraftForm,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const version = savedContact?.rawJson.definitionVersion;
@@ -90,7 +92,7 @@ const ContactDetails: React.FC<Props> = ({
     section: ContactDetailsSectionFormApi,
     formPath: 'callerInformation' | 'childInformation' | 'caseInformation',
   ) => (
-    <EditContactSection context={context} contactId={contactId} contactDetailsSectionForm={section} tabPath={formPath}>
+    <EditContactSection context={context} contactId={contactId} tabPath={formPath}>
       <ContactDetailsSectionForm
         tabPath={formPath}
         definition={section.getFormDefinition(definitionVersion)}
@@ -98,14 +100,11 @@ const ContactDetails: React.FC<Props> = ({
         initialValues={section.getFormValues(definitionVersion, draftContact)[formPath]}
         display={true}
         autoFocus={true}
-        updateFormActionDispatcher={dispatch => values =>
-          dispatch(
-            updateDraft(contactId, {
-              rawJson: {
-                [formPath]: values[formPath],
-              },
-            }),
-          )}
+        updateForm={values =>
+          updateDraftForm({
+            [formPath]: values[formPath],
+          })
+        }
         contactId={contactId}
       />
     </EditContactSection>
@@ -149,9 +148,10 @@ const ContactDetails: React.FC<Props> = ({
   );
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string, any>>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string, any>>, { contactId }: OwnProps) => ({
   updateDefinitionVersion: (version: string, definitionVersion: DefinitionVersion) =>
     dispatch(ConfigActions.updateDefinitionVersion(version, definitionVersion)),
+  updateDraftForm: (form: Partial<ContactRawJson>) => dispatch(updateDraft(contactId, { rawJson: form })),
 });
 
 const mapStateToProps = (state: RootState, { contactId }: OwnProps) => ({

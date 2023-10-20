@@ -3,34 +3,36 @@ locals {
   common_config     = local.common_config_hcl.locals.config
   config            = merge(local.common_config, local.local_config)
 
-  twilio_numbers = ["messenger:103647528912458"]
 
   local_config = {
 
-   #Studio flow
+    custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true OR  twilioNumber=='messenger:110628727963549'"
+
+    #Studio flow
     flow_vars = {
-      service_sid                            = "xx"
-      environment_sid                        = "xx"
-      capture_channel_with_bot_function_sid  = "xx"
-      capture_channel_with_bot_function_name = "channelCapture/captureChannelWithBot"
+      service_sid                           = "ZS3d6dc8ab3c15e8332ecab26e71550a04"
+      environment_sid                       = "ZE784b608eee68011f587fae611b0266da"
+      capture_channel_with_bot_function_sid = "ZH5b374a5b1381d18776ff3059cb5b92e8"
+      operating_hours_function_sid          = "ZHc104869815fa574a1b5ce70f733bc680"
+      bot_language                          = "en"
     }
 
-   #Channels
+    #Channels
     channels = {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/web.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/et/templates/studio-flows/messaging-chatbot-operating-hours.tftpl"
         channel_flow_vars = {
 
         }
         chatbot_unique_names = []
       },
-       facebook : {
+      facebook : {
         channel_type     = "facebook"
-        contact_identity = "messenger:104153648721033"
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging.tftpl"
-        channel_flow_vars = {         
+        contact_identity = "messenger:110628727963549"
+        templatefile     = "/app/twilio-iac/helplines/et/templates/studio-flows/messaging-chatbot-operating-hours.tftpl"
+        channel_flow_vars = {
         }
         chatbot_unique_names = []
       }
@@ -38,7 +40,5 @@ locals {
 
 
 
-    twilio_numbers = local.twilio_numbers
-    custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", local.twilio_numbers))}]"
   }
 }

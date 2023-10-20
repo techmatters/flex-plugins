@@ -34,6 +34,104 @@ locals {
   operating_info_key = "hu"
   environment        = "Production"
   short_environment  = "PROD"
+  task_language      = "en-US"
+  enable_post_survey = false
+
+  events_filter = [
+    "task.created",
+    "task.canceled",
+    "task.completed",
+    "task.deleted",
+    "task.wrapup",
+    "task-queue.entered",
+    "task.system-deleted",
+    "reservation.accepted",
+    "reservation.rejected",
+    "reservation.timeout",
+    "reservation.wrapup",
+  ]
+
+
+  custom_task_routing_filter_expression = "phone=='+3680984590' OR phone=='+12014821989' OR channelType=='web' OR isContactlessTask==true"
+
+  workflows = {
+    master : {
+      friendly_name : "Master Workflow"
+      templatefile : "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+    },
+    survey : {
+      friendly_name : "Survey Workflow"
+      templatefile : "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+    }
+  }
+
+  task_queues = {
+    master : {
+      "target_workers" = "1==1",
+      "friendly_name"  = "Kék Vonal"
+    },
+    survey : {
+      "target_workers" = "1==0",
+      "friendly_name"  = "Survey"
+    },
+    e2e_test : {
+      "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
+      "friendly_name"  = "E2E Test Queue"
+    }
+  }
+
+  task_channels = {
+    default : "Default"
+    chat : "Programmable Chat"
+    voice : "Voice"
+    sms : "SMS"
+    video : "Video"
+    email : "Email"
+    survey : "Survey"
+  }
+
+
+  //common across all helplines
+  channel_attributes = {
+    webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
+    voice : "/app/twilio-iac/helplines/templates/channel-attributes/voice.tftpl"
+    twitter : "/app/twilio-iac/helplines/templates/channel-attributes/twitter.tftpl"
+    default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
+  }
+
+  flow_vars = {
+      service_sid                           = "ZSbb22d7f5e61b8fde6158ece8d28386f1"
+      environment_sid                       = "ZEbaf991c98520207c96c75ee3592292ea"
+      capture_channel_with_bot_function_sid = "ZH8d0ea0faa5530dd54872bb0a4b4dca51"
+      operating_hours_function_sid          = "ZH2fcbed05a786c45af4628c488f63fb02"
+    }
+
+   channels = {
+      webchat : {
+        channel_type         = "web"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/hu/templates/studio-flows/messaging-lex.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      voice : {
+        channel_type     = "voice"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/hu/templates/studio-flows/voice-ivr.tftpl"
+        channel_flow_vars = {
+          engagement_function_sid      = "ZH2ebce6cbec579b3a40ca30d9386b1d22"
+          test_service_sid             = "ZSf3cffcef8a24637d9f46c60b4c106b83"
+          test_service_environment_sid = "ZE2ae6219e757f93a730c5b095a3d2f8d5"
+          test_service_url             = "https://kek-vonal-service-7245.twil.io"
+
+        }
+        chatbot_unique_names = []
+      }
+    }
+
+
+
+
 }
 
 provider "twilio" {
@@ -66,46 +164,35 @@ module "services" {
 }
 
 module "taskRouter" {
-  source                                = "../terraform-modules/taskRouter/default"
-  custom_task_routing_filter_expression = "phone=='+3680984590' OR phone=='+12014821989' OR channelType=='web' OR isContactlessTask==true"
+  source                                = "../terraform-modules/taskRouter/v1"
   serverless_url                        = module.serverless.serverless_environment_production_url
-  include_default_filter                = true
-  helpline                              = "Kék Vonal"
+  events_filter                         = local.events_filter
+  task_queues                           = local.task_queues
+  workflows                             = local.workflows
+  task_channels                         = local.task_channels
+  custom_task_routing_filter_expression = local.custom_task_routing_filter_expression
+  helpline                              = local.helpline
+
 }
 
-module "studioFlow" {
-  source                   = "../terraform-modules/studioFlow/default"
-  master_workflow_sid      = module.taskRouter.master_workflow_sid
-  chat_task_channel_sid    = module.taskRouter.chat_task_channel_sid
-  default_task_channel_sid = module.taskRouter.default_task_channel_sid
-  pre_survey_bot_sid       = twilio_autopilot_assistants_v1.chatbot_default.sid
-  custom_flow_definition = templatefile(
-    "./flow.tftpl",
-    {
-      master_workflow_sid      = module.taskRouter.master_workflow_sid
-      chat_task_channel_sid    = module.taskRouter.chat_task_channel_sid
-      default_task_channel_sid = module.taskRouter.default_task_channel_sid
-      serverless_url               = module.serverless.serverless_environment_production_url
-      serverless_service_sid       = module.serverless.serverless_service_sid
-      serverless_environment_sid   = module.serverless.serverless_environment_production_sid
-      capture_channel_with_bot_sid = "ZHd97278ad2b96ffbc537706847f6ee926"
-  })
-}
 
-module "flex" {
-  source                          = "../terraform-modules/flex/default"
-  twilio_account_sid              = local.secrets.twilio_account_sid
-  short_environment               = local.short_environment
-  environment                     = local.environment
-  messaging_flow_contact_identity = "+12014821989"
-  flex_chat_service_sid           = module.services.flex_chat_service_sid
-  messaging_studio_flow_sid       = module.studioFlow.messaging_studio_flow_sid
-}
 
-module "survey" {
-  source                             = "../terraform-modules/survey/default"
-  helpline                           = local.helpline
-  flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
+module "channel" {
+
+  source                = "../terraform-modules/channels/v1"
+  workflow_sids         = module.taskRouter.workflow_sids
+  task_channel_sids     = module.taskRouter.task_channel_sids
+  channel_attributes    = local.channel_attributes
+  channels              = local.channels
+  enable_post_survey    = local.enable_post_survey
+  flex_chat_service_sid = module.services.flex_chat_service_sid
+  task_language         = local.task_language
+  flow_vars             = local.flow_vars
+  short_environment     = local.short_environment
+  short_helpline        = local.short_helpline
+  environment           = local.environment
+  serverless_url        = module.serverless.serverless_environment_production_url
+
 }
 
 module "aws" {
@@ -121,12 +208,12 @@ module "aws" {
   datadog_app_id                     = local.secrets.datadog_app_id
   datadog_access_token               = local.secrets.datadog_access_token
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
-  master_workflow_sid                = module.taskRouter.master_workflow_sid
+  master_workflow_sid                = module.taskRouter.workflow_sids["master"]
   shared_state_sync_service_sid      = module.services.shared_state_sync_service_sid
   flex_chat_service_sid              = module.services.flex_chat_service_sid
   flex_proxy_service_sid             = module.services.flex_proxy_service_sid
-  post_survey_bot_sid                = twilio_autopilot_assistants_v1.chatbot_postsurvey.sid
-  survey_workflow_sid                = module.survey.survey_workflow_sid
+  post_survey_bot_sid                = "DELETED"
+  survey_workflow_sid                = module.taskRouter.workflow_sids["survey"]
   bucket_region                      = "us-east-1"
 }
 

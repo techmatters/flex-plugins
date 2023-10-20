@@ -25,16 +25,17 @@ import {
   searchContacts as searchContactsAction,
   searchCases as searchCasesAction,
 } from '../states/search/actions';
-import { namespace, searchContactsBase, configurationBase, RootState, contactFormsBase } from '../states';
+import { RootState } from '../states';
 import { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './search/SearchResults';
 import { YellowBanner } from '../styles/previousContactsBanner';
 import { Bold } from '../styles/HrmStyles';
 import { StyledLink } from '../styles/search';
 import { ChannelTypes, channelTypes } from '../states/DomainConstants';
 import { changeRoute as changeRouteAction } from '../states/routing/actions';
-import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../utils/task';
+import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../permissions';
 import { CustomITask, isTwilioTask } from '../types/types';
+import { configurationBase, contactFormsBase, namespace, searchContactsBase } from '../states/storeNamespaces';
 
 type OwnProps = {
   task: CustomITask;

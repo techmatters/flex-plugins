@@ -27,23 +27,26 @@ import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-fo
 
 import { mockGetDefinitionsResponse, mockPartialConfiguration } from '../../mockGetConfig';
 import Case from '../../../components/case';
-import {
-  namespace,
-  configurationBase,
-  contactFormsBase,
-  connectedCaseBase,
-  routingBase,
-  RootState,
-} from '../../../states';
+import { RootState } from '../../../states';
 import { getDefinitionVersions } from '../../../hrmConfig';
-import { StandaloneITask } from '../../../types/types';
+import { Contact, StandaloneITask } from '../../../types/types';
 import { LOAD_CONTACT_ACTION } from '../../../states/contacts/existingContacts';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { RecursivePartial } from '../../RecursivePartial';
+import {
+  configurationBase,
+  connectedCaseBase,
+  contactFormsBase,
+  namespace,
+  routingBase,
+} from '../../../states/storeNamespaces';
 
 jest.mock('../../../services/CaseService', () => ({ getActivities: jest.fn(() => []), cancelCase: jest.fn() }));
 jest.mock('../../../permissions', () => ({
   getPermissionsForCase: jest.fn(() => ({
+    can: () => true,
+  })),
+  getPermissionsForContact: jest.fn(() => ({
     can: () => true,
   })),
   PermissionActions: {},
@@ -80,6 +83,23 @@ describe('useState mocked', () => {
     mockPartialConfiguration({ workerSid: 'current-worker-sid' });
   });
 
+  const connectedContact: Contact = {
+    ...VALID_EMPTY_CONTACT,
+    rawJson: {
+      ...VALID_EMPTY_CONTACT.rawJson,
+      childInformation: {
+        firstName: 'first',
+        lastName: 'last',
+      },
+      caseInformation: {
+        callSummary: 'contact call summary',
+      },
+      callerInformation: {},
+      categories: {},
+    },
+    taskId: 'task1',
+  };
+
   beforeEach(() => {
     initialState = createState({
       [configurationBase]: {
@@ -91,27 +111,6 @@ describe('useState mocked', () => {
         currentDefinitionVersion: mockV1,
       },
       [contactFormsBase]: {
-        tasks: {
-          task1: {
-            contact: {
-              ...VALID_EMPTY_CONTACT,
-              rawJson: {
-                ...VALID_EMPTY_CONTACT.rawJson,
-                childInformation: {
-                  firstName: 'first',
-                  lastName: 'last',
-                },
-                caseInformation: {
-                  callSummary: 'contact call summary',
-                },
-                callerInformation: {},
-                categories: {},
-              },
-              taskSid: 'task1',
-            },
-            metadata: {},
-          },
-        },
         existingContacts: {},
       },
       [connectedCaseBase]: {
@@ -125,7 +124,7 @@ describe('useState mocked', () => {
               twilioWorkerId: 'worker1',
               status: 'open',
               info: { definitionVersion: 'v1' },
-              connectedContacts: [],
+              connectedContacts: [connectedContact],
             },
           },
         },
@@ -145,10 +144,9 @@ describe('useState mocked', () => {
   test('Case (should return null)', async () => {
     initialState = createState({
       [contactFormsBase]: {
-        existingContacts: {},
-        tasks: {
-          task1: {
-            contact: {
+        existingContacts: {
+          contact1: {
+            savedContact: {
               ...VALID_EMPTY_CONTACT,
               rawJson: {
                 ...VALID_EMPTY_CONTACT.rawJson,
@@ -208,8 +206,8 @@ describe('useState mocked', () => {
     expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe('—');
 
     expect(store.dispatch).toHaveBeenCalledWith({
-      contacts: [initialState[namespace][contactFormsBase].tasks.task1.contact],
-      reference: 'task1',
+      contacts: [connectedContact],
+      reference: 'case-123',
       replaceExisting: false,
       type: LOAD_CONTACT_ACTION,
     });
@@ -221,10 +219,10 @@ describe('useState mocked', () => {
       [contactFormsBase]: {
         ...initialState[namespace][contactFormsBase],
         existingContacts: {
-          '__unsavedFromCase:123': {
-            savedContact: initialState[namespace][contactFormsBase].tasks.task1.contact,
+          contact1: {
+            savedContact: connectedContact,
 
-            references: ['task1'],
+            references: ['case-123'],
           },
         },
       },
@@ -270,8 +268,8 @@ describe('useState mocked', () => {
     expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe('6/29/2020');
 
     expect(store.dispatch).toHaveBeenCalledWith({
-      contacts: [initialState[namespace][contactFormsBase].tasks.task1.contact],
-      reference: 'task1',
+      contacts: [connectedContact],
+      reference: 'case-123',
       replaceExisting: false,
       type: LOAD_CONTACT_ACTION,
     });

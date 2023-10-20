@@ -70,6 +70,7 @@
     "Current or Past Events": {
       "color": "#0095C8",
       "subcategories": [
+        {"label": "Climate change"},
         {"label": "Global/national crisis"},
         {"label": "Historical events"},
         {"label": "News headline"},
@@ -201,8 +202,13 @@
       "Other (i.e., Abusive, Wrong Number, Testing)": {
         "color": "#0095C8",
         "subcategories": [
-          {"label": "Contact Ended Prematurely"},
           {"label": "Other"}
+        ]
+      },
+      "Contact Ended Prematurely": {
+        "color": "#0095C8",
+        "subcategories": [
+          {"label": "Contact Ended Prematurely"}
         ]
       }
     }

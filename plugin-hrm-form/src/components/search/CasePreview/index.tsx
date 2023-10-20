@@ -26,9 +26,10 @@ import getUpdatedDate from '../../../states/getUpdatedDate';
 import { PreviewDescription } from '../PreviewDescription';
 import { getDefinitionVersion } from '../../../services/ServerlessService';
 import { updateDefinitionVersion } from '../../../states/configuration/actions';
-import { configurationBase, namespace, RootState } from '../../../states';
+import { RootState } from '../../../states';
 import TagsAndCounselor from '../TagsAndCounselor';
 import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
+import { configurationBase, namespace } from '../../../states/storeNamespaces';
 
 type OwnProps = {
   currentCase: Case;

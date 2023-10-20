@@ -27,7 +27,6 @@ import {
   updatedPageReducer,
   updatedSortReducer,
 } from './settings';
-import { GeneralActionType } from '../types';
 import {
   CaseListContentState,
   CaseListContentStateAction,
@@ -68,11 +67,7 @@ export const undoCaseListSettingsUpdate = (): UndoCaseListSettingsUpdateAction =
 
 export const reduce = (
   state = initialState,
-  action:
-    | CaseListSettingsActionType
-    | CaseListContentStateAction
-    | UndoCaseListSettingsUpdateAction
-    | GeneralActionType,
+  action: CaseListSettingsActionType | CaseListContentStateAction | UndoCaseListSettingsUpdateAction,
 ): CaseListState => {
   switch (action.type) {
     case UPDATE_CASE_LIST_FILTER:

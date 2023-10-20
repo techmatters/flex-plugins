@@ -24,13 +24,14 @@ import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import { disperseInputs } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
-import { updateForm } from '../../states/contacts/actions';
 import { Container, ColumnarBlock, TwoColumnLayout, ColumnarContent } from '../../styles/HrmStyles';
-import { configurationBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import { selectWorkerSid } from '../../states/selectors/flexSelectors';
 import { createContactlessTaskTabDefinition } from './ContactlessTaskTabDefinition';
 import { splitDate, splitTime } from '../../utils/helpers';
 import type { ContactRawJson, OfflineContactTask } from '../../types/types';
+import { updateDraft } from '../../states/contacts/existingContacts';
+import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 
 type OwnProps = {
   task: OfflineContactTask;
@@ -47,12 +48,12 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const ContactlessTaskTab: React.FC<Props> = ({
   dispatch,
   display,
-  task,
   helplineInformation,
   definition,
   initialValues,
   counselorsList,
   autoFocus,
+  savedContact,
 }) => {
   const { getValues, register, setError, setValue, watch, errors } = useFormContext();
 
@@ -72,7 +73,7 @@ const ContactlessTaskTab: React.FC<Props> = ({
     parentsPath: 'contactlessTask',
     updateCallback: () => {
       const { isFutureAux, ...rest } = getValues().contactlessTask;
-      dispatch(updateForm(task.taskSid, 'contactlessTask', rest));
+      dispatch(updateDraft(savedContact.id, { rawJson: { contactlessTask: { ...rest } } }));
     },
     shouldFocusFirstElement: display && autoFocus,
   });
@@ -124,9 +125,16 @@ const ContactlessTaskTab: React.FC<Props> = ({
 
 ContactlessTaskTab.displayName = 'ContactlessTaskTab';
 
-const mapStateToProps = (state: RootState) => ({
-  counselorsList: state[namespace][configurationBase].counselors.list,
-});
+const mapStateToProps = (state: RootState, { task }: OwnProps) => {
+  const { savedContact } =
+    Object.values(state[namespace][contactFormsBase].existingContacts).find(
+      cs => cs.savedContact.taskId === task.taskSid,
+    ) ?? {};
+  return {
+    counselorsList: state[namespace][configurationBase].counselors.list,
+    savedContact,
+  };
+};
 
 const connector = connect(mapStateToProps);
 const connected = connector(ContactlessTaskTab);

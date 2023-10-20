@@ -26,8 +26,14 @@ import HrmTheme from '../../styles/HrmTheme';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import { SearchPages } from '../../states/search/types';
 import SearchResults from '../../components/search/SearchResults';
-import { configurationBase, searchContactsBase, connectedCaseBase, contactFormsBase, namespace } from '../../states';
 import { getDefinitionVersions } from '../../hrmConfig';
+import {
+  configurationBase,
+  connectedCaseBase,
+  contactFormsBase,
+  namespace,
+  searchContactsBase,
+} from '../../states/storeNamespaces';
 
 jest.mock('../../permissions', () => ({
   getPermissionsForCase: jest.fn(() => ({

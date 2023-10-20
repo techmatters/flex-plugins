@@ -37,8 +37,9 @@ import {
   searchContacts,
   searchCases,
 } from '../../states/search/actions';
-import { namespace, searchContactsBase, routingBase, RootState, contactFormsBase } from '../../states';
+import { RootState } from '../../states';
 import { Flex } from '../../styles/HrmStyles';
+import { contactFormsBase, namespace, routingBase, searchContactsBase } from '../../states/storeNamespaces';
 
 type OwnProps = {
   task: CustomITask;

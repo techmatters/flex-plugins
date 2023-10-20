@@ -26,5 +26,5 @@
 
   "viewPostSurvey": [["isSupervisor"]],
 
-  "viewIdentifiers": [["everyone"]]
+  "viewIdentifiers": []
 }

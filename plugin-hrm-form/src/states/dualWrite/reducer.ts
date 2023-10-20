@@ -17,7 +17,7 @@
 import { omit } from 'lodash';
 
 import * as t from './types';
-import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
+import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 
 type DualWriteState = {
   tasks: {
@@ -29,7 +29,7 @@ type DualWriteState = {
 
 const initialState: DualWriteState = { tasks: {} };
 
-export function reduce(state = initialState, action: t.DualWriteActionType | GeneralActionType): DualWriteState {
+export function reduce(state = initialState, action: t.DualWriteActionType | RemoveContactStateAction): DualWriteState {
   switch (action.type) {
     case t.SET_CUSTOM_GOODBYE_MESSAGE:
       return {

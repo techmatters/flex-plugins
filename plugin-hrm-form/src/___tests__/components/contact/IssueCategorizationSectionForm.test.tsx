@@ -23,12 +23,12 @@ import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-fo
 
 import IssueCategorizationSectionForm from '../../../components/contact/IssueCategorizationSectionForm';
 import { ToggleViewButton } from '../../../styles/HrmStyles';
-import { namespace, contactFormsBase } from '../../../states';
-import { setCategoriesGridView } from '../../../states/contacts/actions';
-import { forTask } from '../../../states/contacts/issueCategorizationStateApi';
+import { setCategoriesGridView } from '../../../states/contacts/existingContacts';
+import { forExistingContact } from '../../../states/contacts/issueCategorizationStateApi';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
-import { CustomITask, FeatureFlags } from '../../../types/types';
+import { FeatureFlags } from '../../../types/types';
+import { contactFormsBase, namespace } from '../../../states/storeNamespaces';
 
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
 jest.mock('../../../hrmConfig');
@@ -43,7 +43,7 @@ let definition;
 // Copy paste from state/contacts initial state
 let expanded;
 
-const taskId = 'task-id';
+const contactId = 'contact-id';
 const mockStore = configureMockStore([]);
 
 const mockGetAseloFeatureFlags = getAseloFeatureFlags as jest.MockedFunction<typeof getAseloFeatureFlags>;
@@ -74,39 +74,8 @@ test('Click on view subcategories as grid icon', () => {
   const store = mockStore({
     [namespace]: {
       [contactFormsBase]: {
-        tasks: { [taskId]: { metadata: { categories: { expanded, gridView: false } }, contact: VALID_EMPTY_CONTACT } },
-      },
-    },
-  });
-  store.dispatch = jest.fn();
-
-  const wrapper = mount(
-    <StorelessThemeProvider themeConf={{}}>
-      <Provider store={store}>
-        <IssueCategorizationSectionForm
-          autoFocus={true}
-          definition={definition}
-          display={true}
-          stateApi={forTask({ taskSid: taskId } as CustomITask)}
-        />
-      </Provider>
-    </StorelessThemeProvider>,
-  );
-  expect(store.dispatch).not.toHaveBeenCalled();
-
-  getGridIcon(wrapper).simulate('click');
-
-  expect(store.dispatch).toHaveBeenCalled();
-  expect(store.dispatch).toHaveBeenCalledWith(setCategoriesGridView(true, taskId));
-  store.dispatch.mockClear();
-});
-
-test('Click on view subcategories as list icon', () => {
-  const store = mockStore({
-    [namespace]: {
-      [contactFormsBase]: {
-        tasks: {
-          [taskId]: { contact: { ...VALID_EMPTY_CONTACT }, metadata: { categories: { expanded, gridView: false } } },
+        existingContacts: {
+          [contactId]: { metadata: { categories: { expanded, gridView: false } }, savedContact: VALID_EMPTY_CONTACT },
         },
       },
     },
@@ -120,7 +89,43 @@ test('Click on view subcategories as list icon', () => {
           autoFocus={true}
           definition={definition}
           display={true}
-          stateApi={forTask({ taskSid: taskId } as CustomITask)}
+          stateApi={forExistingContact(contactId)}
+        />
+      </Provider>
+    </StorelessThemeProvider>,
+  );
+  expect(store.dispatch).not.toHaveBeenCalled();
+
+  getGridIcon(wrapper).simulate('click');
+
+  expect(store.dispatch).toHaveBeenCalled();
+  expect(store.dispatch).toHaveBeenCalledWith(setCategoriesGridView(contactId, true));
+  store.dispatch.mockClear();
+});
+
+test('Click on view subcategories as list icon', () => {
+  const store = mockStore({
+    [namespace]: {
+      [contactFormsBase]: {
+        existingContacts: {
+          [contactId]: {
+            savedContact: { ...VALID_EMPTY_CONTACT },
+            metadata: { categories: { expanded, gridView: false } },
+          },
+        },
+      },
+    },
+  });
+  store.dispatch = jest.fn();
+
+  const wrapper = mount(
+    <StorelessThemeProvider themeConf={{}}>
+      <Provider store={store}>
+        <IssueCategorizationSectionForm
+          autoFocus={true}
+          definition={definition}
+          display={true}
+          stateApi={forExistingContact(contactId)}
         />
       </Provider>
     </StorelessThemeProvider>,
@@ -130,6 +135,6 @@ test('Click on view subcategories as list icon', () => {
   getListIcon(wrapper).simulate('click');
 
   expect(store.dispatch).toHaveBeenCalled();
-  expect(store.dispatch).toHaveBeenCalledWith(setCategoriesGridView(false, taskId));
+  expect(store.dispatch).toHaveBeenCalledWith(setCategoriesGridView(contactId, false));
   store.dispatch.mockClear();
 });

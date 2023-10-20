@@ -24,12 +24,18 @@ import configureMockStore from 'redux-mock-store';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import CaseHome, { CaseHomeProps } from '../../../components/case/CaseHome';
-import { configurationBase, connectedCaseBase, contactFormsBase, namespace, routingBase } from '../../../states';
 import { HouseholdEntry, PerpetratorEntry, StandaloneITask } from '../../../types/types';
 import { CaseDetails } from '../../../states/case/types';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
+import {
+  configurationBase,
+  connectedCaseBase,
+  contactFormsBase,
+  namespace,
+  routingBase,
+} from '../../../states/storeNamespaces';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();

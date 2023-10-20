@@ -37,7 +37,6 @@ import StandaloneSearchSideLink from '../components/sideLinks/StandaloneSearchSi
 import ManualPullButton from '../components/ManualPullButton';
 import { AddOfflineContactButton, OfflineContactTask } from '../components/OfflineContact';
 import { chatCapacityUpdated } from '../states/configuration/actions';
-import { namespace, routingBase } from '../states';
 import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles/HrmStyles';
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
@@ -46,6 +45,7 @@ import { FeatureFlags, isInMyBehalfITask } from '../types/types';
 import { colors } from '../channels/colors';
 import { getHrmConfig } from '../hrmConfig';
 import { AseloMessageInput, AseloMessageList } from '../components/AseloMessaging';
+import { namespace, routingBase } from '../states/storeNamespaces';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 /**

@@ -47,8 +47,9 @@ import * as SearchActions from '../../../states/search/actions';
 import * as CaseActions from '../../../states/case/actions';
 import * as RoutingActions from '../../../states/routing/actions';
 import { SearchPages, SearchPagesType } from '../../../states/search/types';
-import { namespace, searchContactsBase, configurationBase } from '../../../states';
 import { getPermissionsForContact, getPermissionsForCase, PermissionActions } from '../../../permissions';
+import { namespace } from '../../../states/storeNamespaces';
+import { RootState } from '../../../states';
 
 export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;
@@ -89,6 +90,8 @@ const SearchResults: React.FC<Props> = ({
   setConnectedCase,
   currentPage,
   counselorsHash,
+  isRequestingCases,
+  isRequestingContacts,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [contactsPage, setContactsPage] = useState(0);
@@ -229,6 +232,7 @@ const SearchResults: React.FC<Props> = ({
                       size="small"
                       checked={!onlyDataContacts}
                       onChange={handleToggleNonDataContact}
+                      disabled={isRequestingContacts}
                     />
                   }
                   label={
@@ -257,6 +261,7 @@ const SearchResults: React.FC<Props> = ({
                   pagesCount={contactsPageCount}
                   handleChangePage={handleContactsChangePage}
                   transparent
+                  disabled={isRequestingContacts}
                 />
               )}
             </>
@@ -279,6 +284,7 @@ const SearchResults: React.FC<Props> = ({
                       size="small"
                       checked={closedCases}
                       onChange={handleToggleClosedCases}
+                      disabled={isRequestingContacts}
                     />
                   }
                   label={
@@ -309,6 +315,7 @@ const SearchResults: React.FC<Props> = ({
                   pagesCount={casesPageCount}
                   handleChangePage={handleCasesChangePage}
                   transparent
+                  disabled={isRequestingCases}
                 />
               )}
             </>
@@ -320,14 +327,17 @@ const SearchResults: React.FC<Props> = ({
 };
 SearchResults.displayName = 'SearchResults';
 
-const mapStateToProps = (state, ownProps) => {
-  const searchContactsState = state[namespace][searchContactsBase];
-  const taskId = ownProps.task.taskSid;
-  const taskSearchState = searchContactsState.tasks[taskId];
-  const { counselors } = state[namespace][configurationBase];
-
+const mapStateToProps = (
+  { [namespace]: { searchContacts, configuration, routing } }: RootState,
+  { task }: OwnProps,
+) => {
+  const taskId = task.taskSid;
+  const { isRequesting, isRequestingCases, currentPage } = searchContacts.tasks[taskId];
+  const { counselors } = configuration;
   return {
-    currentPage: taskSearchState.currentPage,
+    isRequestingContacts: isRequesting,
+    isRequestingCases,
+    currentPage,
     counselorsHash: counselors.hash,
   };
 };

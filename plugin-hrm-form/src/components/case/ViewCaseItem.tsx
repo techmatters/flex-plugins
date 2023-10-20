@@ -23,7 +23,7 @@ import { DefinitionVersion, isNonSaveable } from 'hrm-form-definitions';
 
 import { BottomButtonBar, Box, Container, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseLayout, FullWidthFormTextContainer } from '../../styles/case';
-import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
@@ -32,6 +32,7 @@ import { ViewCaseSectionRoute, CaseItemAction } from '../../states/routing/types
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import { FormTargetObject } from '../common/forms/types';
+import { configurationBase, connectedCaseBase, namespace } from '../../states/storeNamespaces';
 
 const mapStateToProps = (state: RootState, ownProps: ViewCaseItemProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;

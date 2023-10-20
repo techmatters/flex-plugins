@@ -21,9 +21,10 @@ import { EmojiIcon } from '@twilio-paste/icons/cjs/EmojiIcon';
 import Picker from '@emoji-mart/react';
 
 import { Relative, Popup, SelectEmojiButton } from './styles';
-import { configurationBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import { newUpdateDraftMessageTextAction } from '../../states/conversations';
 import { getAseloFeatureFlags } from '../../hrmConfig';
+import { configurationBase, namespace } from '../../states/storeNamespaces';
 
 type onEmojiSelectPayload = {
   native: string;

@@ -16,11 +16,10 @@
 
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { TableBody, CircularProgress, TableFooter, TableRow } from '@material-ui/core';
+import { TableBody, CircularProgress } from '@material-ui/core';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { namespace, configurationBase, RootState, caseListBase } from '../../states';
 import { TableContainer, CLTable, CLTableRow, CLNamesCell, CLTableCell, CLTableBodyFont } from '../../styles/caseList';
 import Filters from './filters/Filters';
 import CaseListTableHead from './CaseListTableHead';
@@ -30,6 +29,8 @@ import { CASES_PER_PAGE } from './CaseList';
 import type { Case } from '../../types/types';
 import * as CaseListSettingsActions from '../../states/caseList/settings';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
+import { namespace } from '../../states/storeNamespaces';
+import { RootState } from '../../states';
 
 const ROW_HEIGHT = 89;
 
@@ -111,7 +112,13 @@ const CaseListTable: React.FC<Props> = ({
       </TableContainer>
       {caseList.length > 0 ? (
         <div style={{ minHeight: '100px' }}>
-          <Pagination transparent page={currentPage} pagesCount={pagesCount} handleChangePage={updateCaseListPage} />
+          <Pagination
+            transparent
+            page={currentPage}
+            pagesCount={pagesCount}
+            handleChangePage={updateCaseListPage}
+            disabled={loading}
+          />
         </div>
       ) : null}
     </>
@@ -120,10 +127,10 @@ const CaseListTable: React.FC<Props> = ({
 
 CaseListTable.displayName = 'CaseListTable';
 
-const mapStateToProps = state => ({
-  counselorsHash: state[namespace][configurationBase].counselors.hash,
-  currentDefinitionVersion: state[namespace][configurationBase].currentDefinitionVersion,
-  currentPage: state[namespace][caseListBase].currentSettings.page,
+const mapStateToProps = ({ [namespace]: { configuration, caseList } }: RootState) => ({
+  counselorsHash: configuration.counselors.hash,
+  currentDefinitionVersion: configuration.currentDefinitionVersion,
+  currentPage: caseList.currentSettings.page,
 });
 
 const mapDispatchToProps = {

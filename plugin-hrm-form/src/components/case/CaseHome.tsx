@@ -34,7 +34,7 @@ import {
   NewCaseSubroutes,
 } from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
-import { connectedCaseBase, contactFormsBase, namespace, RootState, routingBase } from '../../states';
+import { RootState } from '../../states';
 import { Activity, CaseDetails, CaseState } from '../../states/case/types';
 import { CustomITask, EntryInfo, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
@@ -44,6 +44,7 @@ import DocumentInformationRow from './DocumentInformationRow';
 import { householdSectionApi } from '../../states/case/sections/household';
 import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
 import { getAseloFeatureFlags } from '../../hrmConfig';
+import { connectedCaseBase, namespace, routingBase } from '../../states/storeNamespaces';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;

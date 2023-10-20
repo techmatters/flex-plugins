@@ -29,11 +29,12 @@ import * as CaseActions from '../../states/case/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import { StandaloneSearchContainer } from '../../styles/search';
 import { getCasesMissingVersions } from '../../utils/definitionVersions';
-import { caseListBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import { undoCaseListSettingsUpdate } from '../../states/caseList/reducer';
 import { dateFilterPayloadFromFilters } from './filters/dateFilters';
 import * as ListContent from '../../states/caseList/listContent';
 import { getHrmConfig } from '../../hrmConfig';
+import { caseListBase, namespace } from '../../states/storeNamespaces';
 
 export const CASES_PER_PAGE = 10;
 

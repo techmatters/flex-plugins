@@ -27,8 +27,9 @@ import { PreviewDescription } from '../PreviewDescription';
 import { isNonDataCallType } from '../../../states/validationRules';
 import { getDefinitionVersion } from '../../../services/ServerlessService';
 import { updateDefinitionVersion } from '../../../states/configuration/actions';
-import { configurationBase, namespace, RootState } from '../../../states';
+import { RootState } from '../../../states';
 import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
+import { configurationBase, namespace } from '../../../states/storeNamespaces';
 
 type ContactPreviewProps = {
   contact: Contact;

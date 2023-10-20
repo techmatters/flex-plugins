@@ -23,8 +23,8 @@ import each from 'jest-each';
 import * as TransferHelpers from '../../utils/transfer';
 import { transferModes, transferStatuses } from '../../states/DomainConstants';
 import { acceptTask, createTask } from '../helpers';
-import { conferencingBase, namespace } from '../../states';
-import * as conferencing from '../../states/conferencing';
+import * as callStatus from '../../states/conferencing/callStatus';
+import { conferencingBase, namespace } from '../../states/storeNamespaces';
 
 const members = new Map();
 members.set('some_40identity', { source: { sid: 'member1' } });
@@ -429,41 +429,6 @@ describe('Kick, close and helpers', () => {
   });
 });
 
-describe('TransferredTaskJanitor helpers', () => {
-  const createReservation = (sid, workerSid) => ({
-    reservation_sid: sid,
-    worker_sid: workerSid,
-    status: 'pending',
-    attributes: {},
-    accept() {
-      return { ...this, status: 'accepted' };
-    },
-    wrapUp() {
-      return { ...this, status: 'wrapup' };
-    },
-    complete() {
-      return { ...this, status: 'completed' };
-    },
-    reject() {
-      return { ...this, status: 'rejected' };
-    },
-    timeout() {
-      return { ...this, status: 'timeout' };
-    },
-    setTransferMeta(transferMeta) {
-      return { ...this, attributes: { ...this.attributes, transferMeta } };
-    },
-  });
-
-  const createTransferMeta = (transferStatus, sidWithTaskControl = '') => ({
-    originalTask: 'task1',
-    originalReservation: 'reservation1',
-    originalCounselor: 'worker1',
-    transferStatus,
-    sidWithTaskControl,
-  });
-});
-
 describe('Conference Transfer', () => {
   jest.mock('@twilio/flex-ui', () => ({
     ...jest.requireActual('@twilio/flex-ui'),
@@ -503,7 +468,7 @@ describe('Conference Transfer', () => {
     jest.spyOn(Flex.Manager, 'getInstance').mockReturnValue(instance as any);
   };
   const mockIsCallStatusLoading = (task: Required<{ taskSid: string }>, value: boolean) =>
-    jest.spyOn(conferencing, 'isCallStatusLoading').mockReturnValue(value);
+    jest.spyOn(callStatus, 'isCallStatusLoading').mockReturnValue(value);
 
   test('Cannot transfer if is not live call', () => {
     mockIsChatBasedTask(false);

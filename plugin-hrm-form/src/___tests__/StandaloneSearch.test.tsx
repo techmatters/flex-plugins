@@ -72,8 +72,8 @@ test('<StandaloneSearch> should display <Search />', () => {
    *Commenting this test out since we need to deploy View Case functionality to staging
    *This will be revisited and fixed when we'll working on New Case revamp.
    *
-   *const initialState = createState();
-   *const store = mockStore(initialState);
+   *const initialContact = createState();
+   *const store = mockStore(initialContact);
    *
    *render(
    *  <Provider store={store}>
