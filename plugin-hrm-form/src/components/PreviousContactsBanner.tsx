@@ -25,6 +25,7 @@ import {
   searchContacts as searchContactsAction,
   searchCases as searchCasesAction,
 } from '../states/search/actions';
+import * as ProfileActions from '../states/profile/actions';
 import { namespace, searchContactsBase, configurationBase, RootState, contactFormsBase } from '../states';
 import { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './search/SearchResults';
 import { YellowBanner } from '../styles/previousContactsBanner';
@@ -53,6 +54,8 @@ const PreviousContactsBanner: React.FC<Props> = ({
   searchCases,
   changeRoute,
   editContactFormOpen,
+  addProfileState,
+  setCurrentProfile,
 }) => {
   let localizedSourceFromTask: { [channelType in ChannelTypes]: string };
   let contactIdentifier: string;
@@ -77,11 +80,17 @@ const PreviousContactsBanner: React.FC<Props> = ({
       try {
         const data = await getProfileByIdentifier(contactIdentifier);
         setIdentifierData(data);
+
+        const profile = data?.profiles?.[0];
+        const profileId = profile?.id;
+
+        if (!profileId) return;
+        addProfileState(profileId, profile);
       } catch (error) {
         console.error('Error fetching profile data', error);
       }
     };
-    if (enableClientProfiles) fetchData();
+    if (enableClientProfiles && contactIdentifier) fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contactIdentifier]);
 
@@ -114,12 +123,20 @@ const PreviousContactsBanner: React.FC<Props> = ({
   if (!shouldDisplayBanner) return null;
 
   const handleClickViewRecords = async () => {
-    viewPreviousContacts();
-    changeRoute({ route: 'tabbed-forms', subroute: 'search' });
+    if (enableClientProfiles) {
+      setCurrentProfile(identifierData?.profiles?.[0]?.id);
+    } else {
+      viewPreviousContacts();
+    }
+
+    const subroute = enableClientProfiles ? 'profile' : 'search';
+    changeRoute({ route: 'tabbed-forms', subroute });
   };
 
   return (
     <div className={editContactFormOpen ? 'editingContact' : ''}>
+      {' '}
+      f
       <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenEditingContact">
         <pre>
           <Template code="PreviousContacts-ThereAre" />
@@ -192,6 +209,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     searchContacts: searchContactsAction(dispatch)(taskId),
     searchCases: searchCasesAction(dispatch)(taskId),
     changeRoute: routing => dispatch(changeRouteAction(routing, taskId)),
+    addProfileState: ProfileActions.addProfileState(dispatch),
+    setCurrentProfile: ProfileActions.setCurrentProfile(dispatch),
   };
 };
 

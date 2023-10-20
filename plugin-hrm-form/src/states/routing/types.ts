@@ -24,7 +24,7 @@ export type TabbedFormSubroutes =
   | 'childInformation'
   | 'categories'
   | 'caseInformation'
-  | 'profileDetails';
+  | 'profile';
 
 export const NewCaseSectionSubroutes = {
   Note: 'note',

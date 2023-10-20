@@ -8,8 +8,8 @@ type OwnProps = {
 
 type Props = OwnProps;
 
-const ProfileDetails: React.FC<Props> = ({ profileId }) => {
-  return <div>Details</div>;
+const ProfileContacts: React.FC<Props> = ({ profileId }) => {
+  return <div>Contacts</div>;
 };
 
-export default ProfileDetails;
+export default ProfileContacts;

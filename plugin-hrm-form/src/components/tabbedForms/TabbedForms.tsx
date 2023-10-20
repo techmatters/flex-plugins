@@ -40,6 +40,7 @@ import IssueCategorizationSectionForm from '../contact/IssueCategorizationSectio
 import ContactDetailsSectionForm from '../contact/ContactDetailsSectionForm';
 import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
+import Profile from '../Profile';
 import { hasTaskControl } from '../../utils/transfer';
 import { isNonDataCallType } from '../../states/validationRules';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
@@ -237,8 +238,12 @@ const TabbedForms: React.FC<Props> = ({
           >
             {tabs}
           </StyledTabs>
+          {/* This is a very temporary ternary until Steve's PRs are merged and this is refactored */}
+          {/* eslint-disable no-nested-ternary */}
           {subroute === 'search' ? (
             <Search task={task} currentIsCaller={isCallerType} handleSelectSearchResult={onSelectSearchResult} />
+          ) : subroute === 'profile' ? (
+            <Profile />
           ) : (
             <div style={{ height: '100%', overflow: 'hidden' }}>
               {isOfflineContactTask(task) && (
