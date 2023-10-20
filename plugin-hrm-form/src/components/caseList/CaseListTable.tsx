@@ -29,7 +29,7 @@ import { CASES_PER_PAGE } from './CaseList';
 import type { Case } from '../../types/types';
 import * as CaseListSettingsActions from '../../states/caseList/settings';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
-import { caseListBase, configurationBase, namespace } from '../../states/storeNamespaces';
+import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 
 const ROW_HEIGHT = 89;
