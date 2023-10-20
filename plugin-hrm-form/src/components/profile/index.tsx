@@ -33,11 +33,13 @@ type OwnProps = {
   profileId: ProfileType['id'];
   changeProfileTab: (profileId: ProfileType['id'], tabName: string) => void;
   currentTab: string;
+  profile: ProfileType;
 };
 
 type Props = OwnProps;
 
-const Profile: React.FC<Props> = ({ changeProfileTab, currentTab, profileId }) => {
+const Profile: React.FC<Props> = ({ changeProfileTab, currentTab, profileId, profile }) => {
+  const { contactsCount, casesCount } = profile;
   const tabs = [
     {
       label: 'Details',
@@ -45,12 +47,12 @@ const Profile: React.FC<Props> = ({ changeProfileTab, currentTab, profileId }) =
       component: <ProfileDetails profileId={profileId} />,
     },
     {
-      label: 'Contacts',
+      label: `Contacts (${contactsCount})`,
       key: 'contacts',
       component: <ProfileContacts profileId={profileId} />,
     },
     {
-      label: 'Cases',
+      label: `Cases (${casesCount})`,
       key: 'cases',
       component: <ProfileCases profileId={profileId} />,
     },
@@ -64,11 +66,11 @@ const Profile: React.FC<Props> = ({ changeProfileTab, currentTab, profileId }) =
 
   const renderedLabels = (
     <Row style={{ justifyContent: 'center' }}>
-      <div style={{ width: '300px' }}>
+      <div style={{ width: '400px' }}>
         <StyledTabs
           selectedTabName={currentTab}
           onTabSelected={selectedTab => changeProfileTab(profileId, selectedTab)}
-          alignment="left"
+          alignment="center"
           keepTabsMounted={false}
         >
           {renderedTabs}
@@ -94,6 +96,7 @@ const mapStateToProps = state => {
 
   return {
     currentTab: currentProfileState.currentTab,
+    profile: currentProfileState.profile,
     profileId,
   };
 };
