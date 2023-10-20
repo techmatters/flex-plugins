@@ -90,6 +90,8 @@ const SearchResults: React.FC<Props> = ({
   setConnectedCase,
   counselorsHash,
   routing,
+  isRequestingCases,
+  isRequestingContacts,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [contactsPage, setContactsPage] = useState(0);
@@ -232,6 +234,7 @@ const SearchResults: React.FC<Props> = ({
                       size="small"
                       checked={!onlyDataContacts}
                       onChange={handleToggleNonDataContact}
+                      disabled={isRequestingContacts}
                     />
                   }
                   label={
@@ -260,6 +263,7 @@ const SearchResults: React.FC<Props> = ({
                   pagesCount={contactsPageCount}
                   handleChangePage={handleContactsChangePage}
                   transparent
+                  disabled={isRequestingContacts}
                 />
               )}
             </>
@@ -282,6 +286,7 @@ const SearchResults: React.FC<Props> = ({
                       size="small"
                       checked={closedCases}
                       onChange={handleToggleClosedCases}
+                      disabled={isRequestingContacts}
                     />
                   }
                   label={
@@ -312,6 +317,7 @@ const SearchResults: React.FC<Props> = ({
                   pagesCount={casesPageCount}
                   handleChangePage={handleCasesChangePage}
                   transparent
+                  disabled={isRequestingCases}
                 />
               )}
             </>
@@ -328,10 +334,11 @@ const mapStateToProps = (
   { task }: OwnProps,
 ) => {
   const taskId = task.taskSid;
-  const taskSearchState = searchContacts.tasks[taskId];
+  const { isRequesting, isRequestingCases } = searchContacts.tasks[taskId];
   const { counselors } = configuration;
   return {
-    currentPage: taskSearchState.currentPage,
+    isRequestingContacts: isRequesting,
+    isRequestingCases,
     counselorsHash: counselors.hash,
     routing: getCurrentTopmostRouteForTask(routing, taskId),
   };
