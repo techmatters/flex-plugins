@@ -3,11 +3,9 @@ locals {
   common_config     = local.common_config_hcl.locals.config
   config            = merge(local.common_config, local.local_config)
 
-
-  custom_task_routing_filter_expression = "channelType =='web' OR isContactlessTask==true OR twilioNumber=='messenger:103647528912458'"
-
-
   local_config = {
+
+    custom_task_routing_filter_expression = "channelType =='web' OR isContactlessTask==true OR twilioNumber=='messenger:103647528912458'"
 
     #Studio flow
     flow_vars = {
