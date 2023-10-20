@@ -39,7 +39,8 @@ import {
 } from '../../states/search/actions';
 import { RootState } from '../../states';
 import { Flex } from '../../styles/HrmStyles';
-import { contactFormsBase, namespace, searchContactsBase } from '../../states/storeNamespaces';
+import { contactFormsBase, namespace, routingBase, searchContactsBase } from '../../states/storeNamespaces';
+import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 
 type OwnProps = {
   task: CustomITask;
@@ -65,6 +66,7 @@ const Search: React.FC<Props> = ({
   searchContactsResults,
   searchCasesResults,
   form,
+  routing,
 }) => {
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});
@@ -188,8 +190,17 @@ const Search: React.FC<Props> = ({
           />
         );
       case SearchPages.case:
+        const showBackButton = typeof (routing as any).subroute === 'undefined';
         return (
           <>
+            {showBackButton && (
+              <Flex marginTop="15px" marginBottom="15px">
+                <SearchResultsBackButton
+                  text={<Template code="SearchResultsIndex-BackToResults" />}
+                  handleBack={goToResultsOnCases}
+                />
+              </Flex>
+            )}
             <Flex marginTop="15px" marginBottom="15px">
               <SearchResultsBackButton
                 text={<Template code="SearchResultsIndex-BackToResults" />}
@@ -225,6 +236,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const searchContactsState = state[namespace][searchContactsBase];
   const taskId = ownProps.task.taskSid;
   const taskSearchState = searchContactsState.tasks[taskId];
+  const routing = getCurrentTopmostRouteForTask(state[namespace][routingBase], taskId);
   const isStandaloneSearch = taskId === standaloneTaskSid;
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
 
@@ -238,6 +250,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     searchCasesResults: taskSearchState.searchCasesResult,
     showActionIcons: !isStandaloneSearch,
     editContactFormOpen,
+    routing,
   };
 };
 

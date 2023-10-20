@@ -26,7 +26,7 @@ import { callTypes } from 'hrm-form-definitions';
 
 import { RootState } from '../../states';
 import { removeOfflineContact } from '../../services/formSubmissionHelpers';
-import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
+import { changeRoute } from '../../states/routing/actions';
 import { emptyCategories } from '../../states/contacts/reducer';
 import { AppRoutes, isRouteModal, TabbedFormSubroutes } from '../../states/routing/types';
 import { ContactRawJson, CustomITask, isOfflineContactTask, Contact, isOfflineContact } from '../../types/types';
@@ -120,7 +120,7 @@ const TabbedForms: React.FC<Props> = ({
   openCSAMReport,
   backToCallTypeSelect,
   navigateToTab,
-  openSearchModal,
+  openSearch,
   task,
 }) => {
   const methods = useForm({
@@ -167,7 +167,7 @@ const TabbedForms: React.FC<Props> = ({
     const tab = tabsToIndex[t];
     await saveDraft(savedContact, draftContact);
     if (tab === 'search') {
-      openSearchModal();
+      openSearch();
     } else {
       navigateToTab(tab);
     }
@@ -355,7 +355,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { contactId, task }: OwnPro
     dispatch(changeRoute({ route: 'csam-report', subroute: 'form', previousRoute }, task.taskSid)),
   navigateToTab: (tab: TabbedFormSubroutes) =>
     dispatch(changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, task.taskSid)),
-  openSearchModal: () => dispatch(newOpenModalAction({ route: 'search', subroute: 'search' }, task.taskSid)),
+  openSearch: () => dispatch(changeRoute({ route: 'search', subroute: 'search' }, task.taskSid)),
   backToCallTypeSelect: () => dispatch(changeRoute({ route: 'select-call-type' }, task.taskSid)),
 });
 
