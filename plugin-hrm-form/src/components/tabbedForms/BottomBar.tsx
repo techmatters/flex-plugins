@@ -62,7 +62,7 @@ const BottomBar: React.FC<
   contact,
   metadata,
   task,
-  changeRoute,
+  openModal,
   nextTab,
   caseForm,
   createCaseAsyncAction,
@@ -80,7 +80,7 @@ const BottomBar: React.FC<
     try {
       await saveUpdates();
       await createCaseAsyncAction(contact, workerSid, definitionVersion);
-      changeRoute({ route: 'case', subroute: 'home' });
+      openModal({ route: 'case', subroute: 'home' });
     } catch (error) {
       recordBackendError('Open New Case', error);
       window.alert(strings['Error-Backend']);

@@ -26,7 +26,7 @@ import { Template } from '@twilio/flex-ui';
 
 import { RootState } from '../../states';
 import { completeTask, removeOfflineContact } from '../../services/formSubmissionHelpers';
-import { changeRoute, newCloseModalAction, newGoBackAction, newOpenModalAction } from '../../states/routing/actions';
+import { changeRoute, newCloseModalAction, newOpenModalAction } from '../../states/routing/actions';
 import { emptyCategories } from '../../states/contacts/reducer';
 import { AppRoutes, ChangeRouteMode, isRouteWithModalSupport, TabbedFormSubroutes } from '../../states/routing/types';
 import {
@@ -131,10 +131,9 @@ const TabbedForms: React.FC<Props> = ({
   clearCallType,
   openCSAMReport,
   backToCallTypeSelect,
-  goBack,
   navigateToTab,
   openSearchModal,
-  closeSearchModal,
+  closeModal,
   finaliseContact,
   metadata,
   task,
@@ -167,7 +166,7 @@ const TabbedForms: React.FC<Props> = ({
 
   const onSelectSearchResult = (searchResult: Contact) => {
     const selectedIsCaller = searchResult.rawJson.callType === callTypes.caller;
-    closeSearchModal();
+    closeModal();
     if (isCallerType && selectedIsCaller && isCallTypeCaller) {
       updateDraftForm({ callerInformation: searchResult.rawJson.callerInformation });
       navigateToTab('callerInformation');
@@ -198,7 +197,7 @@ const TabbedForms: React.FC<Props> = ({
   if (currentRoute.route === 'case') {
     return (
       <CaseLayout>
-        <Case task={task} isCreating={true} onNewCaseSaved={onNewCaseSaved} handleClose={goBack} />
+        <Case task={task} isCreating={true} onNewCaseSaved={onNewCaseSaved} handleClose={closeModal} />
       </CaseLayout>
     );
   }
@@ -206,7 +205,7 @@ const TabbedForms: React.FC<Props> = ({
   if (currentRoute.route === 'contact') {
     return (
       <CaseLayout>
-        <ViewContact onClickClose={goBack} contactId={currentRoute.id} task={task} />
+        <ViewContact onClickClose={closeModal} contactId={currentRoute.id} task={task} />
       </CaseLayout>
     );
   }
@@ -424,10 +423,10 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { contactId, task }: OwnPro
       changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, task.taskSid, ChangeRouteMode.Replace),
     ),
   openSearchModal: () => dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, task.taskSid)),
-  closeSearchModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
+  openCaseModal: () => dispatch(newOpenModalAction({ route: 'case', subroute: 'home' }, task.taskSid)),
+  closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
   backToCallTypeSelect: () =>
     dispatch(changeRoute({ route: 'select-call-type' }, task.taskSid, ChangeRouteMode.Replace)),
-  goBack: () => dispatch(newGoBackAction(task.taskSid)),
   finaliseContact: (contact: Contact, metadata: ContactMetadata, caseForm: CaseForm) =>
     dispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
 });

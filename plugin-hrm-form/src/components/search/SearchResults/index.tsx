@@ -344,7 +344,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     changeSearchPage: (subroute: SearchRoute['subroute']) =>
       dispatch(changeRoute({ route: 'search', subroute }, taskId, ChangeRouteMode.Replace)),
     viewCaseDetails: () => {
-      dispatch(changeRoute({ route: 'case', subroute: 'home' }, taskId));
+      dispatch(newOpenModalAction({ route: 'case', subroute: 'home' }, taskId));
     },
     viewContactDetails: ({ id }: Contact) => {
       dispatch(newOpenModalAction({ route: 'contact', subroute: 'view', id: id.toString() }, taskId));

@@ -32,7 +32,7 @@ import { handleSearchFormChange, searchContacts, searchCases } from '../../state
 import { RootState } from '../../states';
 import { namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import { changeRoute, newGoBackAction } from '../../states/routing/actions';
+import { changeRoute, newCloseModalAction } from '../../states/routing/actions';
 import { SearchRoute } from '../../states/routing/types';
 import NavigableContainer from '../NavigableContainer';
 
@@ -57,7 +57,7 @@ const Search: React.FC<Props> = ({
   searchCasesResults,
   form,
   routing,
-  goBack,
+  closeModal,
   changeSearchPage,
 }) => {
   const [mockedMessage, setMockedMessage] = useState('');
@@ -80,7 +80,7 @@ const Search: React.FC<Props> = ({
 
   const setOffsetAndHandleSearchCases = newOffset => handleSearchCases(searchParams, newOffset);
 
-  const toggleNonDataContacts = () => {
+  const toggleNonDataContacts = async () => {
     if (typeof searchParams.onlyDataContacts !== 'undefined') {
       const { onlyDataContacts } = searchParams;
       const updatedSearchParams = {
@@ -88,11 +88,13 @@ const Search: React.FC<Props> = ({
         onlyDataContacts: !onlyDataContacts,
       };
 
-      handleSearchContacts(updatedSearchParams, 0);
+      setSearchParams(updatedSearchParams);
+      return handleSearchContacts(updatedSearchParams, 0);
     }
+    return undefined;
   };
 
-  const toggleClosedCases = () => {
+  const toggleClosedCases = async () => {
     if (typeof searchParams.closedCases !== 'undefined') {
       const { closedCases } = searchParams;
       const updatedSearchParams = {
@@ -100,9 +102,10 @@ const Search: React.FC<Props> = ({
         closedCases: !closedCases,
       };
 
-      handleSearchCases(updatedSearchParams, 0);
       setSearchParams(updatedSearchParams);
+      return handleSearchCases(updatedSearchParams, 0);
     }
+    return undefined;
   };
 
   const goBackFromContacts = async () => {
@@ -111,7 +114,7 @@ const Search: React.FC<Props> = ({
      * We will need a follow on fix to allow returning to the same page of results as the case to work correctly
      */
     await searchContacts(searchParams, CONTACTS_PER_PAGE, 0);
-    goBack();
+    closeModal();
   };
 
   const goBackFromCases = async () => {
@@ -120,7 +123,7 @@ const Search: React.FC<Props> = ({
      * We will need a follow on fix to allow returning to the same page of results as the case to work correctly
      */
     await searchCases(searchParams, CASES_PER_PAGE, 0);
-    goBack();
+    closeModal();
   };
 
   const renderMockDialog = () => {
@@ -243,7 +246,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(changeRoute({ route: 'search', subroute }, taskId)),
     searchContacts: searchContacts(dispatch)(taskId),
     searchCases: searchCases(dispatch)(taskId),
-    goBack: () => dispatch(newGoBackAction(taskId)),
+    closeModal: () => dispatch(newCloseModalAction(taskId)),
   };
 };
 
