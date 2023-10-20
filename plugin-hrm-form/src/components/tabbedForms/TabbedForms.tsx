@@ -21,8 +21,8 @@ import React, { Dispatch } from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import { FormProvider, useForm } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
-import { Template } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
+import { Template } from '@twilio/flex-ui';
 
 import { RootState } from '../../states';
 import { completeTask, removeOfflineContact } from '../../services/formSubmissionHelpers';
@@ -45,7 +45,6 @@ import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
 import { isNonDataCallType } from '../../states/validationRules';
-import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import CSAMReportButton from './CSAMReportButton';
 import CSAMAttachments from './CSAMAttachments';
 import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
@@ -64,6 +63,7 @@ import { CaseLayout } from '../../styles/case';
 import Case from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
 import ViewContact from '../case/ViewContact';
+import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
@@ -257,7 +257,7 @@ const TabbedForms: React.FC<Props> = ({
 
   // eslint-disable-next-line react/display-name
   const HeaderControlButtons = () => (
-    <Box className="hiddenWhenEditingContact" marginTop="10px" marginBottom="10px" paddingLeft="20px">
+    <Box marginTop="10px" marginBottom="10px" paddingLeft="20px">
       <Row>
         <SearchResultsBackButton handleBack={handleBackButton} text={<Template code="TabbedForms-BackButton" />} />
         {csamReportEnabled && (

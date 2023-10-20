@@ -33,7 +33,6 @@ import {
   FormCheckbox,
   Bold,
 } from '../../../styles/HrmStyles';
-import { SearchTitle } from '../../../styles/search';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils';
 import {
   getPermissionsForViewingIdentifiers,
@@ -161,9 +160,6 @@ const SearchForm: React.FC<Props> = ({
   return (
     <>
       <Container data-testid="SearchForm">
-        <SearchTitle data-testid="Search-Title">
-          <Template code="SearchContactsAndCases-Title" />
-        </SearchTitle>
         <Row>
           <FieldText
             id="Search_FirstName"

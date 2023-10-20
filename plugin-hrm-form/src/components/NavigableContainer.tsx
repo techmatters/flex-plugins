@@ -25,28 +25,35 @@ import { RootState } from '../states';
 import { getCurrentBaseRoute, getCurrentTopmostRouteStackForTask } from '../states/routing/getRoute';
 import { isRouteModal } from '../states/routing/types';
 import { changeRoute, newCloseModalAction, newGoBackAction } from '../states/routing/actions';
-import { Contact, CustomITask } from '../types/types';
+import { Contact, CustomITask, StandaloneITask } from '../types/types';
 import * as CaseActions from '../states/case/actions';
 import * as RoutingActions from '../states/routing/actions';
-import { Container, HeaderCloseButton, HiddenText, Row, StyledBackButton } from '../styles/HrmStyles';
-import { BackIcon, SearchTitle } from '../styles/search';
+import {
+  Container,
+  HeaderCloseButton,
+  HiddenText,
+  NavigableContainerTitle,
+  Row,
+  StyledBackButton,
+  LargeBackIcon,
+} from '../styles/HrmStyles';
 
 type OwnProps = {
-  task: CustomITask;
+  task: CustomITask | StandaloneITask;
   titleCode: string;
   onGoBack?: () => void;
+  onCloseModal?: () => void;
 };
 
 const mapStateToProps = (
   { [namespace]: { searchContacts, configuration, routing } }: RootState,
-  { task }: OwnProps,
+  { task: { taskSid } }: OwnProps,
 ) => {
-  const taskId = task.taskSid;
-  const routeStack = getCurrentTopmostRouteStackForTask(routing, taskId);
+  const routeStack = getCurrentTopmostRouteStackForTask(routing, taskSid);
   return {
     routing: routeStack[routeStack.length - 1],
     hasHistory: routeStack.length > 1,
-    isModal: isRouteModal(getCurrentBaseRoute(routing, taskId)),
+    isModal: isRouteModal(getCurrentBaseRoute(routing, taskSid)),
   };
 };
 
@@ -76,30 +83,27 @@ const NavigableContainer: React.FC<Props> = ({
   goBack,
   onGoBack = () => goBack(),
   closeModal,
+  onCloseModal = () => closeModal(),
   titleCode,
   hasHistory,
   isModal,
 }) => {
   return (
-    <Container>
-      <Row>
+    <Container modal={isModal} style={{ paddingTop: '20px' }}>
+      <Row style={{ alignItems: 'start' }}>
         {hasHistory && (
-          <StyledBackButton
-            onClick={() => {
-              onGoBack();
-            }}
-          >
-            <Row>
-              <BackIcon />
+          <StyledBackButton onClick={onGoBack}>
+            <Row style={{ paddingTop: '7px' }}>
+              <LargeBackIcon />
             </Row>
           </StyledBackButton>
         )}
-        <SearchTitle data-testid="Search-Title">
+        <NavigableContainerTitle data-testid="Search-Title">
           <Template code={titleCode} />
-        </SearchTitle>
+        </NavigableContainerTitle>
         {isModal && (
           <HeaderCloseButton
-            onClick={closeModal}
+            onClick={onCloseModal}
             data-testid="Case-CloseCross"
             style={{ marginRight: '15px', opacity: '.75' }}
           >

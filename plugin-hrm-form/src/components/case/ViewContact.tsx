@@ -17,27 +17,31 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { connect } from 'react-redux';
-import { Template } from '@twilio/flex-ui';
 
-import { BottomButtonBar, Container, StyledNextStepButton } from '../../styles/HrmStyles';
+import { Container } from '../../styles/HrmStyles';
 import { CaseLayout } from '../../styles/case';
 import { RootState } from '../../states';
 import ContactDetails from '../contact/ContactDetails';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-import { connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
+import { namespace } from '../../states/storeNamespaces';
 
-const mapStateToProps = (state: RootState, { task, contactId }: OwnProps) => {
-  const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
-  const { connectedCase } = state[namespace][connectedCaseBase].tasks[task.taskSid];
+const mapStateToProps = (
+  { [namespace]: { activeContacts, configuration, connectedCase: connectedCaseState } }: RootState,
+  { task, contactId }: OwnProps,
+) => {
+  const editContactFormOpen = activeContacts.editingContact;
+  const { connectedCase } = connectedCaseState.tasks[task.taskSid];
   if (connectedCase) {
-    const contact = state[namespace][contactFormsBase].existingContacts[contactId]?.savedContact;
+    const contact = activeContacts.existingContacts[contactId]?.savedContact;
+    const definitionVersion = configuration.definitionVersions[contact.rawJson.definitionVersion];
     const enableEditing = Boolean(connectedCase.connectedContacts?.find(cc => cc.id?.toString() === contactId));
     return {
       connectedCase,
       editContactFormOpen,
       contact,
       enableEditing,
+      definitionVersion,
     };
   }
   return { editContactFormOpen };
@@ -51,20 +55,17 @@ type OwnProps = {
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
-const ViewContact: React.FC<Props> = ({ onClickClose, editContactFormOpen, contactId, enableEditing }) => {
-  const handleClose = () => {
-    onClickClose();
-  };
-
+const ViewContact: React.FC<Props> = ({ editContactFormOpen, contactId, enableEditing, task, onClickClose }) => {
   return (
     <CaseLayout className={editContactFormOpen ? 'editingContact' : ''}>
       <Container removePadding={editContactFormOpen}>
-        <ContactDetails contactId={contactId} enableEditing={enableEditing} context={DetailsContext.CASE_DETAILS} />
-        <BottomButtonBar className="hiddenWhenModalOpen" style={{ marginBlockStart: 'auto' }}>
-          <StyledNextStepButton roundCorners onClick={handleClose} data-testid="Case-ViewContactScreen-CloseButton">
-            <Template code="CloseButton" />
-          </StyledNextStepButton>
-        </BottomButtonBar>
+        <ContactDetails
+          contactId={contactId}
+          enableEditing={enableEditing}
+          context={DetailsContext.CASE_DETAILS}
+          task={task}
+          onClose={onClickClose}
+        />
       </Container>
     </CaseLayout>
   );

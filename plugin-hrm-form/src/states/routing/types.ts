@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { ContactRawJson } from '../../types/types';
 
 // Action types
 export const CHANGE_ROUTE = 'routing/change-route';
@@ -145,11 +146,20 @@ export type CSAMReportRoute = {
   previousRoute: AppRoutes;
 };
 
-type ContactRoute = {
+type ContactViewRoute = {
   route: 'contact';
   subroute: 'view';
   id: string;
 };
+
+export type ContactEditRoute = {
+  route: 'contact';
+  subroute: 'edit';
+  id: string;
+  form: keyof Pick<ContactRawJson, 'childInformation' | 'callerInformation' | 'caseInformation' | 'categories'>;
+};
+
+type ContactRoute = ContactViewRoute | ContactEditRoute;
 
 type OtherRoutes =
   | CSAMReportRoute

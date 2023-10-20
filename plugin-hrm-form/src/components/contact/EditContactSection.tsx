@@ -20,26 +20,27 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 import _ from 'lodash';
-import { Close } from '@material-ui/icons';
 import { AnyAction } from 'redux';
 
 import { RootState } from '../../states';
 import { Box, StyledNextStepButton, BottomButtonBar, Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
-import { CaseActionTitle, EditContactContainer } from '../../styles/case';
+import { EditContactContainer } from '../../styles/case';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { clearDraft, refreshContact } from '../../states/contacts/existingContacts';
 import CloseCaseDialog from '../case/CloseCaseDialog';
 import * as t from '../../states/contacts/actions';
 import { getTemplateStrings } from '../../hrmConfig';
-import { Contact, ContactRawJson } from '../../types/types';
+import { Contact, ContactRawJson, CustomITask, StandaloneITask } from '../../types/types';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
+import { newGoBackAction } from '../../states/routing/actions';
 
 type OwnProps = {
   context: DetailsContext;
   contactId: string;
+  task: CustomITask | StandaloneITask;
   children: React.ReactNode;
   tabPath: keyof ContactRawJson;
 };
@@ -51,11 +52,9 @@ const EditContactSection: React.FC<Props> = ({
   savedContact,
   draftContact,
   definitionVersions,
-  setEditContactPageOpen,
-  setEditContactPageClosed,
-  tabPath,
   children,
   clearContactDraft,
+  goBack,
   updateContactsFormInHrmAsyncAction,
 }) => {
   const methods = useForm({
@@ -78,10 +77,6 @@ const EditContactSection: React.FC<Props> = ({
      * of adding any dependency inside the array.
      */
     setInitialFormValues(methods.getValues());
-    setEditContactPageOpen();
-    return () => {
-      setEditContactPageClosed();
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -114,40 +109,11 @@ const EditContactSection: React.FC<Props> = ({
     }
   };
 
-  // With tabPath as an input, this function returns the localized string for section's title
-  const editContactSectionTitle = (tabPath: keyof ContactRawJson): string => {
-    if (tabPath === 'callerInformation') {
-      return strings['Contact-EditCaller'];
-    } else if (tabPath === 'childInformation') {
-      return strings['Contact-EditChild'];
-    } else if (tabPath === 'categories') {
-      return strings['Contact-EditCategories'];
-    } else if (tabPath === 'caseInformation') {
-      return strings['Contact-EditSummary'];
-    }
-    return '';
-  };
-
   const onSubmitForm = methods.handleSubmit(onSubmitValidForm, onError);
 
   return (
     <EditContactContainer>
       <FormProvider {...methods}>
-        <Row style={{ margin: '30px' }}>
-          <CaseActionTitle>
-            <Template code={editContactSectionTitle(tabPath)} />
-          </CaseActionTitle>
-          <HeaderCloseButton
-            onClick={checkForEdits}
-            data-testid="Case-CloseCross"
-            style={{ marginRight: '15px', opacity: '.75' }}
-          >
-            <HiddenText>
-              <Template code="Case-CloseButton" />
-            </HiddenText>
-            <Close />
-          </HeaderCloseButton>
-        </Row>
         {children}
         <BottomButtonBar>
           <Box marginRight="15px">
@@ -166,6 +132,7 @@ const EditContactSection: React.FC<Props> = ({
               setDialog={() => setOpenDialog(false)}
               handleDontSaveClose={() => {
                 clearContactDraft();
+                goBack();
               }}
               handleSaveUpdate={methods.handleSubmit(onSubmitValidForm, onError)}
             />
@@ -191,17 +158,21 @@ const EditContactSection: React.FC<Props> = ({
   );
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string, any>>, { contactId }: OwnProps) => {
+const mapDispatchToProps = (
+  dispatch: Dispatch<{ type: string } & Record<string, any>>,
+  { contactId, task }: OwnProps,
+) => {
   const updateContactAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
     refreshContact: contact => dispatch(refreshContact(contact)),
-    setEditContactPageOpen: () => dispatch(t.setEditContactPageOpen()),
-    setEditContactPageClosed: () => dispatch(t.setEditContactPageClosed()),
+    goBack: () => dispatch(newGoBackAction(task.taskSid)),
     clearContactDraft: () => {
       dispatch(clearDraft(contactId));
     },
-    updateContactsFormInHrmAsyncAction: (contact: Contact, body: Partial<ContactRawJson>) =>
-      updateContactAsyncDispatch(updateContactInHrmAsyncAction(contact, { rawJson: body })),
+    updateContactsFormInHrmAsyncAction: async (contact: Contact, body: Partial<ContactRawJson>) => {
+      await updateContactAsyncDispatch(updateContactInHrmAsyncAction(contact, { rawJson: body }));
+      dispatch(newGoBackAction(task.taskSid));
+    },
   };
 };
 

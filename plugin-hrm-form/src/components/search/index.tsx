@@ -151,7 +151,6 @@ const Search: React.FC<Props> = ({
                 handleSearchCases={setOffsetAndHandleSearchCases}
                 toggleNonDataContacts={toggleNonDataContacts}
                 toggleClosedCases={toggleClosedCases}
-                handleBack={goBack}
               />
             </NavigableContainer>
           );
@@ -160,16 +159,12 @@ const Search: React.FC<Props> = ({
         break;
       }
       case 'case': {
-        return (
-          <>
-            <Case task={task} isCreating={false} handleClose={goBackFromCases} />
-          </>
-        );
+        return <Case task={task} isCreating={false} handleClose={goBackFromCases} />;
       }
       case 'contact': {
         // Find contact in contact search results or connected to one of case search results
         const contact =
-          searchContactsResults.contacts.find(c => c.id.toString() === routing.id) ??
+          searchContactsResults.contacts.find(c => c.id.toString() === routing.id.toString()) ??
           searchCasesResults.cases.flatMap(c => c.connectedContacts ?? []).find(c => c.id.toString() === routing.id);
         if (contact) {
           return (
@@ -230,7 +225,6 @@ const mapStateToProps = (
   return {
     isRequesting: taskSearchState.isRequesting,
     error: taskSearchState.error,
-    currentPage: taskSearchState.currentPage,
     form: taskSearchState.form,
     searchContactsResults: taskSearchState.searchContactsResult,
     searchCasesResults: taskSearchState.searchCasesResult,

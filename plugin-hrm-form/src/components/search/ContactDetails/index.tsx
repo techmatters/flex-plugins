@@ -25,25 +25,24 @@ import { RootState } from '../../../states';
 import { Container } from '../../../styles/HrmStyles';
 import GeneralContactDetails from '../../contact/ContactDetails';
 import ConnectDialog from '../ConnectDialog';
-import BackToSearchResultsButton from '../SearchResults/SearchResultsBackButton';
-import { Contact } from '../../../types/types';
+import { Contact, CustomITask } from '../../../types/types';
 import { loadContact, releaseContact } from '../../../states/contacts/existingContacts';
 import { DetailsContext } from '../../../states/contacts/contactDetails';
-import { contactFormsBase, namespace } from '../../../states/storeNamespaces';
+import { namespace } from '../../../states/storeNamespaces';
 
 type OwnProps = {
-  task: any;
+  task: CustomITask;
   currentIsCaller: boolean;
   contact: Contact;
   showActionIcons: boolean;
   handleBack: () => void;
   handleSelectSearchResult: (contact: Contact) => void;
 };
-const mapStateToProps = (state: RootState) => {
-  const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
-  const { isCallTypeCaller } = state[namespace][contactFormsBase];
 
-  return { editContactFormOpen, isCallTypeCaller };
+const mapStateToProps = ({ [namespace]: { activeContacts, configuration } }: RootState, { contact }: OwnProps) => {
+  const { isCallTypeCaller, editingContact: editContactFormOpen } = activeContacts;
+  const definitionVersion = configuration.definitionVersions[contact.rawJson.definitionVersion];
+  return { editContactFormOpen, isCallTypeCaller, definitionVersion };
 };
 const mapDispatchToProps = {
   loadContactIntoState: loadContact,
@@ -57,7 +56,6 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const ContactDetails: React.FC<Props> = ({
   contact,
   currentIsCaller,
-  handleBack,
   showActionIcons,
   task,
   handleSelectSearchResult,
@@ -72,9 +70,9 @@ const ContactDetails: React.FC<Props> = ({
     loadContactIntoState(contact, task.taskSid);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contact]);
+
   const handleBackToResults = () => {
     releaseContactFromState(contact.id, task.taskSid);
-    handleBack();
   };
 
   const handleCloseDialog = () => {
@@ -91,7 +89,6 @@ const ContactDetails: React.FC<Props> = ({
     e.stopPropagation();
     setAnchorEl(e.currentTarget);
   };
-
   return (
     <Container removePadding={editContactFormOpen} data-testid="ContactDetails">
       <ConnectDialog
@@ -104,18 +101,13 @@ const ContactDetails: React.FC<Props> = ({
         isCallTypeCaller={isCallTypeCaller}
       />
 
-      <div className={`${editContactFormOpen ? 'editingContact' : ''} hiddenWhenEditingContact`}>
-        <BackToSearchResultsButton
-          text={<Template code="SearchResultsIndex-BackToResults" />}
-          handleBack={handleBackToResults}
-        />
-      </div>
-
       <GeneralContactDetails
         context={DetailsContext.CONTACT_SEARCH}
         showActionIcons={showActionIcons}
         contactId={contact.id}
         handleOpenConnectDialog={handleOpenConnectDialog}
+        task={task}
+        onClose={handleBackToResults}
       />
     </Container>
   );

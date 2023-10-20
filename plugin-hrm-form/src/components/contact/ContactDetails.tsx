@@ -34,9 +34,14 @@ import { forExistingContact } from '../../states/contacts/issueCategorizationSta
 import { updateDraft } from '../../states/contacts/existingContacts';
 import CSAMReport from '../CSAMReport/CSAMReport';
 import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
-import { getAseloFeatureFlags } from '../../hrmConfig';
-import { configurationBase, contactFormsBase, csamReportBase, namespace } from '../../states/storeNamespaces';
-import { ContactRawJson } from '../../types/types';
+import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
+import { namespace } from '../../states/storeNamespaces';
+import { ContactRawJson, CustomITask, StandaloneITask } from '../../types/types';
+import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import NavigableContainer from '../NavigableContainer';
+import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
+import { newCloseModalAction } from '../../states/routing/actions';
+import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 
 type OwnProps = {
   contactId: string;
@@ -44,6 +49,8 @@ type OwnProps = {
   handleOpenConnectDialog?: (event: any) => void;
   enableEditing?: boolean;
   showActionIcons?: boolean;
+  task: CustomITask | StandaloneITask;
+  onClose?: () => void;
 };
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
@@ -60,11 +67,16 @@ const ContactDetails: React.FC<Props> = ({
   enableEditing = true,
   draftCsamReport,
   updateDraftForm,
+  task,
+  onClose = () => undefined,
+  closeModal,
+  currentRoute,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const version = savedContact?.rawJson.definitionVersion;
 
   const featureFlags = getAseloFeatureFlags();
+  const strings = getTemplateStrings();
   /**
    * Check if the definitionVersion for this case exists in redux, and look for it if not.
    */
@@ -88,77 +100,118 @@ const ContactDetails: React.FC<Props> = ({
       </DetailsContainer>
     );
 
-  const editContactSectionElement = (
-    section: ContactDetailsSectionFormApi,
-    formPath: 'callerInformation' | 'childInformation' | 'caseInformation',
-  ) => (
-    <EditContactSection context={context} contactId={contactId} tabPath={formPath}>
-      <ContactDetailsSectionForm
-        tabPath={formPath}
-        definition={section.getFormDefinition(definitionVersion)}
-        layoutDefinition={section.getLayoutDefinition(definitionVersion)}
-        initialValues={section.getFormValues(definitionVersion, draftContact)[formPath]}
-        display={true}
-        autoFocus={true}
-        updateForm={values =>
-          updateDraftForm({
-            [formPath]: values[formPath],
-          })
-        }
-        contactId={contactId}
-      />
-    </EditContactSection>
-  );
+  const childOrUnknown = contactLabelFromHrmContact(definitionVersion, savedContact, {
+    substituteForId: false,
+  });
 
-  if (draftContact) {
-    if (draftContact.rawJson?.categories) {
-      return (
-        <EditContactSection context={context} contactId={contactId} tabPath="categories">
-          <IssueCategorizationSectionForm
-            definition={definitionVersion.tabbedForms.IssueCategorizationTab(draftContact.helpline)}
-            stateApi={forExistingContact(contactId)}
-            display={true}
-            autoFocus={true}
-          />
-        </EditContactSection>
-      );
+  // With tabPath as an input, this function returns the localized string for section's title
+  const editContactSectionTitle = (tabPath: keyof ContactRawJson): string => {
+    if (tabPath === 'callerInformation') {
+      return strings['Contact-EditCaller'];
+    } else if (tabPath === 'childInformation') {
+      return strings['Contact-EditChild'];
+    } else if (tabPath === 'categories') {
+      return strings['Contact-EditCategories'];
+    } else if (tabPath === 'caseInformation') {
+      return strings['Contact-EditSummary'];
     }
+    return '';
+  };
 
-    const { callerInformation, caseInformation, childInformation } = draftContact.rawJson ?? {};
+  // With tabPath as an input, this function returns the localized string for section's title
+  const editContactSectionApi = (tabPath: keyof ContactRawJson): ContactDetailsSectionFormApi => {
+    if (tabPath === 'callerInformation') {
+      return contactDetailsSectionFormApi.CALLER_INFORMATION;
+    } else if (tabPath === 'childInformation') {
+      return contactDetailsSectionFormApi.CHILD_INFORMATION;
+    } else if (tabPath === 'caseInformation') {
+      return contactDetailsSectionFormApi.CASE_INFORMATION;
+    }
+    return undefined;
+  };
 
-    if (childInformation)
-      return editContactSectionElement(contactDetailsSectionFormApi.CHILD_INFORMATION, 'childInformation');
-    if (callerInformation)
-      return editContactSectionElement(contactDetailsSectionFormApi.CALLER_INFORMATION, 'callerInformation');
-    if (caseInformation)
-      return editContactSectionElement(contactDetailsSectionFormApi.CASE_INFORMATION, 'caseInformation');
-  }
+  const editContactSectionElement = (
+    formPath: 'callerInformation' | 'childInformation' | 'caseInformation' | 'categories',
+  ) => {
+    const unsavedContact = getUnsavedContact(savedContact, draftContact);
+    return (
+      <NavigableContainer
+        titleCode={editContactSectionTitle(formPath)}
+        task={task}
+        onCloseModal={() => {
+          closeModal();
+          onClose();
+        }}
+      >
+        <EditContactSection context={context} contactId={contactId} tabPath={formPath} task={task}>
+          {formPath === 'categories' ? (
+            <IssueCategorizationSectionForm
+              definition={definitionVersion.tabbedForms.IssueCategorizationTab(unsavedContact.helpline)}
+              stateApi={forExistingContact(contactId)}
+              display={true}
+              autoFocus={true}
+            />
+          ) : (
+            <ContactDetailsSectionForm
+              tabPath={formPath}
+              definition={editContactSectionApi(formPath).getFormDefinition(definitionVersion)}
+              layoutDefinition={editContactSectionApi(formPath).getLayoutDefinition(definitionVersion)}
+              initialValues={editContactSectionApi(formPath).getFormValues(definitionVersion, unsavedContact)[formPath]}
+              display={true}
+              autoFocus={true}
+              updateForm={values =>
+                updateDraftForm({
+                  [formPath]: values[formPath],
+                })
+              }
+              contactId={contactId}
+            />
+          )}
+        </EditContactSection>
+      </NavigableContainer>
+    );
+  };
   if (draftCsamReport) {
     return <CSAMReport api={existingContactCSAMApi(contactId)} />;
   }
 
+  if (currentRoute.route === 'contact' && currentRoute.subroute === 'edit') {
+    return editContactSectionElement(currentRoute.form);
+  }
+
   return (
-    <ContactDetailsHome
-      context={context}
-      showActionIcons={showActionIcons}
-      contactId={contactId}
-      handleOpenConnectDialog={handleOpenConnectDialog}
-      enableEditing={enableEditing && featureFlags.enable_contact_editing}
-    />
+    <NavigableContainer titleCode={childOrUnknown} task={task}>
+      <ContactDetailsHome
+        task={task}
+        context={context}
+        showActionIcons={showActionIcons}
+        contactId={contactId}
+        handleOpenConnectDialog={handleOpenConnectDialog}
+        enableEditing={enableEditing && featureFlags.enable_contact_editing}
+      />
+    </NavigableContainer>
   );
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string, any>>, { contactId }: OwnProps) => ({
+const mapDispatchToProps = (
+  dispatch: Dispatch<{ type: string } & Record<string, any>>,
+  { contactId, task }: OwnProps,
+) => ({
   updateDefinitionVersion: (version: string, definitionVersion: DefinitionVersion) =>
     dispatch(ConfigActions.updateDefinitionVersion(version, definitionVersion)),
   updateDraftForm: (form: Partial<ContactRawJson>) => dispatch(updateDraft(contactId, { rawJson: form })),
+  closeModal: () => dispatch(newCloseModalAction(task.taskSid)),
 });
 
-const mapStateToProps = (state: RootState, { contactId }: OwnProps) => ({
-  definitionVersions: state[namespace][configurationBase].definitionVersions,
-  savedContact: state[namespace][contactFormsBase].existingContacts[contactId]?.savedContact,
-  draftContact: state[namespace][contactFormsBase].existingContacts[contactId]?.draftContact,
-  draftCsamReport: state[namespace][csamReportBase].contacts[contactId],
+const mapStateToProps = (
+  { [namespace]: { configuration, activeContacts, 'csam-report': csamReport, routing } }: RootState,
+  { contactId, task }: OwnProps,
+) => ({
+  definitionVersions: configuration.definitionVersions,
+  savedContact: activeContacts.existingContacts[contactId]?.savedContact,
+  draftContact: activeContacts.existingContacts[contactId]?.draftContact,
+  draftCsamReport: csamReport.contacts[contactId],
+  currentRoute: getCurrentTopmostRouteForTask(routing, task.taskSid),
 });
 
 ContactDetails.displayName = 'ContactDetails';

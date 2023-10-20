@@ -42,7 +42,6 @@ import {
   StyledCount,
 } from '../../../styles/search';
 import Pagination from '../../Pagination';
-import SearchResultsBackButton from './SearchResultsBackButton';
 import * as CaseActions from '../../../states/case/actions';
 import * as RoutingActions from '../../../states/routing/actions';
 import { SearchPagesType } from '../../../states/search/types';
@@ -50,7 +49,7 @@ import { getPermissionsForContact, getPermissionsForCase, PermissionActions } fr
 import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
 import { getCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
-import { changeRoute } from '../../../states/routing/actions';
+import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
 import { ChangeRouteMode, SearchRoute } from '../../../states/routing/types';
 
 export const CONTACTS_PER_PAGE = 20;
@@ -85,7 +84,6 @@ const SearchResults: React.FC<Props> = ({
   handleSearchCases,
   toggleNonDataContacts,
   toggleClosedCases,
-  handleBack,
   viewContactDetails,
   changeSearchPage,
   viewCaseDetails,
@@ -144,7 +142,6 @@ const SearchResults: React.FC<Props> = ({
   return (
     <>
       <ResultsHeader>
-        <SearchResultsBackButton text={<Template code="SearchResultsIndex-Back" />} handleBack={handleBack} />
         <Row style={{ justifyContent: 'center' }}>
           <div style={{ width: '300px' }}>
             <StyledTabs
@@ -350,7 +347,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(changeRoute({ route: 'case', subroute: 'home' }, taskId));
     },
     viewContactDetails: ({ id }: Contact) => {
-      dispatch(changeRoute({ route: 'contact', subroute: 'view', id: id.toString() }, taskId));
+      dispatch(newOpenModalAction({ route: 'contact', subroute: 'view', id: id.toString() }, taskId));
     },
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),

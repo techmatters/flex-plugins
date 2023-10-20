@@ -23,6 +23,7 @@ import { Icon, styled, Button } from '@twilio/flex-ui';
 import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import Tooltip from '@material-ui/core/Tooltip';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
 
 import HrmTheme from './HrmTheme';
 
@@ -118,6 +119,7 @@ const containerLeftRightMargin = '5px';
 
 type ContainerProps = {
   removePadding?: boolean;
+  modal?: boolean;
 };
 export const Container = styled('div')<ContainerProps>`
   display: flex;
@@ -125,9 +127,10 @@ export const Container = styled('div')<ContainerProps>`
   flex-direction: column;
   flex-wrap: nowrap;
   background-color: #ffffff;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-  margin: 0 ${containerLeftRightMargin};
+  ${({ modal }) => (modal ? `border-radius: 8px;` : `border-top-left-radius: 4px; border-top-right-radius: 4px;`)}
+  border-top-left-radius: ${({ modal }) => (modal ? `${containerLeftRightMargin}` : `0 ${containerLeftRightMargin}`)};
+  border-top-left-radius: ${({ modal }) => (modal ? `${containerLeftRightMargin}` : `0 ${containerLeftRightMargin}`)};
+  margin: ${({ modal }) => (modal ? `${containerLeftRightMargin}` : `0 ${containerLeftRightMargin}`)};
   height: 100%;
   overflow-y: auto;
 `;
@@ -1257,3 +1260,17 @@ export const TypingIndicatorText = styled(FontOpenSans)`
   text-overflow: ellipsis;
 `;
 TypingIndicatorText.displayName = 'TypingIndicatorText';
+
+export const NavigableContainerTitle = styled(FontOpenSans)`
+  font-size: 22pt;
+  font-weight: 700;
+  display: inline-block;
+  margin-bottom: 20px;
+  margin-top: 12px;
+`;
+NavigableContainerTitle.displayName = 'NavigableContainerTitle';
+
+export const LargeBackIcon = styled(ChevronLeft)`
+  color: #000000;
+  font-size: 2rem !important; // FU material
+`;

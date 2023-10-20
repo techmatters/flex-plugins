@@ -285,13 +285,6 @@ export const DetailsHeaderTextContainer = styled('div')`
 
 DetailsHeaderTextContainer.displayName = 'DetailsHeaderTextContainer';
 
-export const DetailsHeaderChildName = styled(FontOpenSans)`
-  font-weight: 600;
-  font-size: 20px;
-`;
-
-DetailsHeaderChildName.displayName = 'DetailsHeaderChildName';
-
 export const DetailsHeaderCaseContainer = styled('div')`
   display: flex;
   flex-direction: row;
@@ -372,9 +365,7 @@ export const EditContactContainer = styled('div')`
   display: flex;
   flex-direction: column;
   height: 100%;
-  border: 8px rgba(25, 43, 51, 0.3) solid;
-  border-radius: 4px;
-  overflow-y: clip;
+  overflow-y: hidden;
 `;
 EditContactContainer.displayName = 'EditContactContainer';
 
