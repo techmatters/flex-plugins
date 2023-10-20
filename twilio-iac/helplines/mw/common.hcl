@@ -32,11 +32,11 @@ locals {
     }
 
     task_queues = {
-      master : {
+      tithandizane : {
         "target_workers" = "1==1",
         "friendly_name"  = "Tithandizane Helpline"
       },
-      master : {
+      yoneco : {
         "target_workers" = "1==1",
         "friendly_name"  = "Yoneco"
       },

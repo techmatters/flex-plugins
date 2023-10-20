@@ -13,20 +13,20 @@
       },
       {
         "filter_friendly_name": "Tithandizane Helpline",
-        "expression": "channelType==\"web\" OR isContactlessTask==true OR twilioNumber==\"messenger:103647528912458\"",
+        "expression": "${task_routing_filter_expression}",
         "targets": [
           {
             "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
-            "queue": "WQ4a533333e740807e01d63a3422b5194a"
+            "queue": "${task_queues.tithandizane}"
           }
         ]
       },
       {
         "filter_friendly_name": "Yoneco",
-        "expression": "channelType==\"web\" OR twilioNumber==\"messenger:109935224940740\"",
+        "expression": "${task_routing_filter_expression}",
         "targets": [
           {
-            "queue": "WQd837dcc0c4b9fd9c25dc714747ae1933",
+            "queue": "${task_queues.yoneco}",
             "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
           }
         ]
