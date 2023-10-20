@@ -62,6 +62,7 @@ export function toggleSubCategoriesReducer(state: ContactsState, action: Contact
             rawJson: {
               ...state.existingContacts[action.contactId].draftContact?.rawJson,
               categories: {
+                ...state.existingContacts[action.contactId].savedContact?.rawJson?.categories,
                 ...state.existingContacts[action.contactId].draftContact?.rawJson?.categories,
                 [action.category]: updatedSubcategories,
               },

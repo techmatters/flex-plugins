@@ -15,26 +15,24 @@
  */
 
 import { connect, ConnectedProps } from 'react-redux';
-import React, { Dispatch, useEffect, useState } from 'react';
+import React, { Dispatch, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
-import _ from 'lodash';
 import { AnyAction } from 'redux';
 
 import { RootState } from '../../states';
-import { Box, StyledNextStepButton, BottomButtonBar, Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
+import { Box, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
 import { EditContactContainer } from '../../styles/case';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-import { clearDraft, refreshContact } from '../../states/contacts/existingContacts';
+import { clearDraft, newSetContactDialogStateAction, refreshContact } from '../../states/contacts/existingContacts';
 import CloseCaseDialog from '../case/CloseCaseDialog';
-import * as t from '../../states/contacts/actions';
 import { getTemplateStrings } from '../../hrmConfig';
 import { Contact, ContactRawJson, CustomITask, StandaloneITask } from '../../types/types';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
-import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
+import { namespace } from '../../states/storeNamespaces';
 import { newGoBackAction } from '../../states/routing/actions';
 
 type OwnProps = {
@@ -43,6 +41,7 @@ type OwnProps = {
   task: CustomITask | StandaloneITask;
   children: React.ReactNode;
   tabPath: keyof ContactRawJson;
+  onClose: () => void;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -55,7 +54,11 @@ const EditContactSection: React.FC<Props> = ({
   children,
   clearContactDraft,
   goBack,
+  onClose,
   updateContactsFormInHrmAsyncAction,
+  confirmCloseDialogOpen,
+  confirmBackDialogOpen,
+  closeDialog,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -68,21 +71,10 @@ const EditContactSection: React.FC<Props> = ({
   const definitionVersion = definitionVersions[version];
 
   const [isSubmitting, setSubmitting] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [initialFormValues, setInitialFormValues] = useState({});
-
-  useEffect(() => {
-    /*
-     * we need this to run only once, hence no need
-     * of adding any dependency inside the array.
-     */
-    setInitialFormValues(methods.getValues());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   if (!savedContact || !definitionVersion) return null;
 
-  const onSubmitValidForm = async () => {
+  const onSubmitValidForm = async (closeAction: () => void) => {
     setSubmitting(true);
     const payload: Partial<Pick<
       ContactRawJson,
@@ -90,6 +82,7 @@ const EditContactSection: React.FC<Props> = ({
     >> = draftContact.rawJson;
     try {
       updateContactsFormInHrmAsyncAction(savedContact, payload);
+      closeAction();
     } catch (error) {
       setSubmitting(false);
       recordBackendError('Open New Case', error);
@@ -101,40 +94,31 @@ const EditContactSection: React.FC<Props> = ({
     window.alert(strings['Error-Form']);
   });
 
-  const checkForEdits = () => {
-    if (_.isEqual(methods.getValues(), initialFormValues)) {
-      clearContactDraft();
-    } else {
-      setOpenDialog(true);
-    }
-  };
-
-  const onSubmitForm = methods.handleSubmit(onSubmitValidForm, onError);
-
+  const onSubmitForm = methods.handleSubmit(() => onSubmitValidForm(goBack), onError);
+  const dialogName = confirmCloseDialogOpen ? 'close' : 'back';
   return (
     <EditContactContainer>
       <FormProvider {...methods}>
         {children}
         <BottomButtonBar>
           <Box marginRight="15px">
-            <StyledNextStepButton
-              roundCorners={true}
-              onClick={checkForEdits}
-              disabled={isSubmitting}
-              secondary="true"
-              data-fs-id="BottomBar-Cancel"
-            >
-              <Template code="BottomBar-Cancel" />
-            </StyledNextStepButton>
             <CloseCaseDialog
               data-testid="CloseCaseDialog"
-              openDialog={openDialog}
-              setDialog={() => setOpenDialog(false)}
+              openDialog={confirmCloseDialogOpen || confirmBackDialogOpen}
+              setDialog={() => closeDialog(dialogName)}
               handleDontSaveClose={() => {
+                closeDialog(dialogName);
                 clearContactDraft();
-                goBack();
+                if (confirmCloseDialogOpen) {
+                  onClose();
+                } else {
+                  goBack();
+                }
               }}
-              handleSaveUpdate={methods.handleSubmit(onSubmitValidForm, onError)}
+              handleSaveUpdate={methods.handleSubmit(() => {
+                closeDialog(dialogName);
+                onSubmitValidForm(confirmCloseDialogOpen ? onClose : goBack);
+              }, onError)}
             />
           </Box>
           <Box marginRight="15px">
@@ -160,28 +144,37 @@ const EditContactSection: React.FC<Props> = ({
 
 const mapDispatchToProps = (
   dispatch: Dispatch<{ type: string } & Record<string, any>>,
-  { contactId, task }: OwnProps,
+  { contactId, task, tabPath }: OwnProps,
 ) => {
   const updateContactAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
     refreshContact: contact => dispatch(refreshContact(contact)),
     goBack: () => dispatch(newGoBackAction(task.taskSid)),
-    clearContactDraft: () => {
-      dispatch(clearDraft(contactId));
-    },
     updateContactsFormInHrmAsyncAction: async (contact: Contact, body: Partial<ContactRawJson>) => {
       await updateContactAsyncDispatch(updateContactInHrmAsyncAction(contact, { rawJson: body }));
-      dispatch(newGoBackAction(task.taskSid));
+    },
+    closeDialog: (dismissAction: 'close' | 'back') =>
+      dispatch(newSetContactDialogStateAction(contactId, `${tabPath}-confirm-${dismissAction}`, false)),
+    clearContactDraft: () => {
+      dispatch(clearDraft(contactId));
     },
   };
 };
 
-const mapStateToProps = (state: RootState, { contactId }: OwnProps) => ({
-  definitionVersions: state[namespace][configurationBase].definitionVersions,
-  counselorsHash: state[namespace][configurationBase].counselors.hash,
-  savedContact: state[namespace][contactFormsBase].existingContacts[contactId]?.savedContact,
-  draftContact: state[namespace][contactFormsBase].existingContacts[contactId]?.draftContact,
-});
+const mapStateToProps = (
+  { [namespace]: { activeContacts, configuration } }: RootState,
+  { contactId, tabPath }: OwnProps,
+) => {
+  const contactState = activeContacts.existingContacts[contactId];
+  return {
+    definitionVersions: configuration.definitionVersions,
+    counselorsHash: configuration.counselors.hash,
+    savedContact: contactState?.savedContact,
+    draftContact: contactState?.draftContact,
+    confirmCloseDialogOpen: Boolean(contactState?.metadata?.draft?.dialogsOpen?.[`${tabPath}-confirm-close`]),
+    confirmBackDialogOpen: Boolean(contactState?.metadata?.draft?.dialogsOpen?.[`${tabPath}-confirm-back`]),
+  };
+};
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(EditContactSection);

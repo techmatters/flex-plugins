@@ -19,6 +19,7 @@ import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import { DefinitionVersion } from 'hrm-form-definitions';
+import _ from 'lodash';
 
 import ContactDetailsHome from './ContactDetailsHome';
 import { DetailsContext } from '../../states/contacts/contactDetails';
@@ -31,7 +32,7 @@ import { ContactDetailsSectionFormApi, contactDetailsSectionFormApi } from './co
 import ContactDetailsSectionForm from './ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
 import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
-import { updateDraft } from '../../states/contacts/existingContacts';
+import { clearDraft, newSetContactDialogStateAction, updateDraft } from '../../states/contacts/existingContacts';
 import CSAMReport from '../CSAMReport/CSAMReport';
 import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
@@ -40,7 +41,7 @@ import { ContactRawJson, CustomITask, StandaloneITask } from '../../types/types'
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import NavigableContainer from '../NavigableContainer';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
-import { newCloseModalAction } from '../../states/routing/actions';
+import { newCloseModalAction, newGoBackAction } from '../../states/routing/actions';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 
 type OwnProps = {
@@ -70,7 +71,10 @@ const ContactDetails: React.FC<Props> = ({
   task,
   onClose = () => undefined,
   closeModal,
+  goBack,
+  clearContactDraft,
   currentRoute,
+  openFormConfirmDialog,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const version = savedContact?.rawJson.definitionVersion;
@@ -130,6 +134,27 @@ const ContactDetails: React.FC<Props> = ({
     return undefined;
   };
 
+  const closeContactModal = () => {
+    onClose();
+    closeModal();
+  };
+
+  const onEditFormClose = (form: keyof ContactRawJson, dismissAction: 'close' | 'back') => () => {
+    if (
+      form === 'categories' ||
+      _.isEqual(savedContact.rawJson[form], getUnsavedContact(savedContact, draftContact).rawJson[form])
+    ) {
+      clearContactDraft();
+      if (dismissAction === 'close') {
+        closeContactModal();
+      } else {
+        goBack();
+      }
+    } else {
+      openFormConfirmDialog(form, dismissAction);
+    }
+  };
+
   const editContactSectionElement = (
     formPath: 'callerInformation' | 'childInformation' | 'caseInformation' | 'categories',
   ) => {
@@ -138,12 +163,16 @@ const ContactDetails: React.FC<Props> = ({
       <NavigableContainer
         titleCode={editContactSectionTitle(formPath)}
         task={task}
-        onCloseModal={() => {
-          closeModal();
-          onClose();
-        }}
+        onCloseModal={onEditFormClose(formPath, 'close')}
+        onGoBack={onEditFormClose(formPath, 'back')}
       >
-        <EditContactSection context={context} contactId={contactId} tabPath={formPath} task={task}>
+        <EditContactSection
+          context={context}
+          contactId={contactId}
+          tabPath={formPath}
+          task={task}
+          onClose={closeContactModal}
+        >
           {formPath === 'categories' ? (
             <IssueCategorizationSectionForm
               definition={definitionVersion.tabbedForms.IssueCategorizationTab(unsavedContact.helpline)}
@@ -201,6 +230,12 @@ const mapDispatchToProps = (
     dispatch(ConfigActions.updateDefinitionVersion(version, definitionVersion)),
   updateDraftForm: (form: Partial<ContactRawJson>) => dispatch(updateDraft(contactId, { rawJson: form })),
   closeModal: () => dispatch(newCloseModalAction(task.taskSid)),
+  clearContactDraft: () => {
+    dispatch(clearDraft(contactId));
+  },
+  goBack: () => dispatch(newGoBackAction(task.taskSid)),
+  openFormConfirmDialog: (form: keyof ContactRawJson, dismissAction: 'close' | 'back') =>
+    dispatch(newSetContactDialogStateAction(contactId, `${form}-confirm-${dismissAction}`, true)),
 });
 
 const mapStateToProps = (

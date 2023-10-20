@@ -20,7 +20,6 @@ import { ITask } from '@twilio/flex-ui';
 import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
 import * as t from './types';
-import { Contact } from '../../types/types';
 import { searchContacts as searchContactsApiCall } from '../../services/ContactService';
 import { searchCases as searchCasesApiCall } from '../../services/CaseService';
 import { updateDefinitionVersion } from '../configuration/actions';
@@ -110,15 +109,3 @@ export const viewPreviousContacts = (dispatch: Dispatch<any>) => (task: ITask) =
 
   dispatch({ type: t.VIEW_PREVIOUS_CONTACTS, taskId, contactNumber });
 };
-
-export const changeSearchPage = (taskId: string) => (page: t.SearchPagesType): t.SearchActionType => ({
-  type: t.CHANGE_SEARCH_PAGE,
-  page,
-  taskId,
-});
-
-export const viewContactDetails = (taskId: string) => (contact: Contact): t.SearchActionType => ({
-  type: t.VIEW_CONTACT_DETAILS,
-  contact,
-  taskId,
-});
