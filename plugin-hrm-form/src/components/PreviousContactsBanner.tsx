@@ -136,8 +136,6 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
   return (
     <div className={editContactFormOpen ? 'editingContact' : ''}>
-      {' '}
-      f
       <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenEditingContact">
         <pre>
           <Template code="PreviousContacts-ThereAre" />

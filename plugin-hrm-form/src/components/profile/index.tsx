@@ -25,7 +25,8 @@ import ProfileDetails from './ProfileDetails';
 import { Row } from '../../styles/HrmStyles';
 import * as ProfileActions from '../../states/profile/actions';
 import * as RoutingActions from '../../states/routing/actions';
-import { namespace, profileBase } from '../../states';
+import { namespace, profileBase } from '../../states/storeNamespaces';
+import { RootState } from '../../states';
 import { Profile as ProfileType } from '../../types/types';
 import { StyledTabs } from '../../styles/search'; // just stealing from search until we have a centralized tab style
 
@@ -89,7 +90,7 @@ const Profile: React.FC<Props> = ({ changeProfileTab, currentTab, profileId, pro
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: RootState) => {
   const profileState = state[namespace][profileBase];
   const profileId = profileState.currentProfileId;
   const currentProfileState = profileState.profiles[profileId];

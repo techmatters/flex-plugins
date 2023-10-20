@@ -15,7 +15,6 @@
  */
 
 import * as t from './types';
-import { INITIALIZE_CONTACT_STATE, GeneralActionType } from '../types';
 import { Profile } from '../../types/types';
 
 type profileEntry = {
@@ -30,28 +29,19 @@ type ProfileState = {
   currentProfileId?: string;
 };
 
-export const newProfileEntry: profileEntry = {
+const newProfileEntry: profileEntry = {
   currentTab: t.ProfileTabs.details,
   profile: undefined,
 };
 
-export const initialState: ProfileState = {
+const initialState: ProfileState = {
   profiles: {},
   currentProfileId: undefined,
 };
 
 // eslint-disable-next-line complexity
-export function reduce(state = initialState, action: t.ProfileActionType | GeneralActionType): ProfileState {
+export function reduce(state = initialState, action: t.ProfileActionType): ProfileState {
   switch (action.type) {
-    case INITIALIZE_CONTACT_STATE:
-      return {
-        ...state,
-        profiles: {
-          ...state.profiles,
-        },
-        currentProfileId: undefined,
-      };
-
     case t.ADD_PROFILE_STATE: {
       return {
         ...state,
