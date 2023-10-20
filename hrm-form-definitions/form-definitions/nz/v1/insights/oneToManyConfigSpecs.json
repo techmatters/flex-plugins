@@ -6,5 +6,89 @@
       "savedContact.id"
     ],
     "saveForNonDataContacts": true
+  },
+  {
+    "attributeName": "region",
+    "insightsObject": "customers",
+    "paths": [
+      "contactForm.childInformation.region"
+    ]
+  },
+  {
+    "attributeName": "email",
+    "insightsObject": "customers",
+    "paths": [
+      "contactForm.childInformation.ethnicity"
+    ]
+  },
+  {
+    "attributeName": "conversation_attribute_7",
+    "insightsObject": "conversations",
+    "paths": [
+      "contactForm.caseInformation.repeatCaller"
+    ]
+  },
+  {
+    "attributeName": "conversation_attribute_6",
+    "insightsObject": "conversations",
+    "paths": [
+      "contactForm.caseInformation.howDidYouKnowAboutOurLine"
+    ]
+  },
+  {
+    "attributeName": "conversation_attribute_5",
+    "insightsObject": "conversations",
+    "paths": [
+      "contactForm.caseInformation.actionTaken"
+    ]
+  },
+  {
+    "attributeName": "case",
+    "insightsObject": "conversations",
+    "paths": [
+      "caseForm.topLevel.id"
+    ]
+  },
+  {
+    "attributeName": "acquisition_date",
+    "insightsObject": "customers",
+    "paths": [
+      "caseForm.incident.expressedThoughts"
+    ]
+  },
+  {
+    "attributeName": "customer_manager",
+    "insightsObject": "customers",
+    "paths": [
+      "caseForm.referral.externalInterventionTo"
+    ]
+  },
+  {
+    "attributeName": "market_segment",
+    "insightsObject": "customers",
+    "paths": [
+      "caseForm.referral.haveConsent"
+    ]
+  },
+  {
+    "attributeName": "organization",
+    "insightsObject": "customers",
+    "paths": [
+      "caseForm.household.relationshipToChild"
+    ]
+  },
+  {
+    "attributeName": "area",
+    "insightsObject": "customers",
+    "paths": [
+      "caseForm.household.selfHarmThoughts"
+    ]
+  },
+  {
+    "attributeName": "category",
+    "insightsObject": "customers",
+    "paths": [
+      "caseForm.perpetrator.relationshipToChild"
+    ]
   }
 ]
