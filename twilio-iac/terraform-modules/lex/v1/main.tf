@@ -19,7 +19,7 @@ resource "aws_lex_slot_type" "this" {
 
   provider = aws.hl-region
 
-  name                     = "${local.name_prefix}_${each.key}"
+  name                     = replace("${local.name_prefix}_${each.key}", "2", "T")
   description              = each.value.description
   value_selection_strategy = each.value.value_selection_strategy
 
@@ -50,7 +50,7 @@ resource "aws_lex_intent" "this" {
 
   provider = aws.hl-region
 
-  name        = replace("${local.name_prefix}_${each.key}", "2", "TO")
+  name        = replace("${local.name_prefix}_${each.key}", "2", "T")
   description = each.value.description
 
   sample_utterances = each.value.sample_utterances
@@ -61,7 +61,7 @@ resource "aws_lex_intent" "this" {
       content_type = each.value.conclusion_statement.content_type
     }
   }
-
+ 
   fulfillment_activity {
     type = each.value.fulfillment_activity.type
   }
@@ -83,7 +83,7 @@ resource "aws_lex_intent" "this" {
       priority    = slot.value.priority
 
       slot_constraint   = slot.value.slot_constraint
-      slot_type         = !startswith(slot.value.slot_type, "AMAZON.") ? "${local.name_prefix}_${slot.value.slot_type}" : slot.value.slot_type
+      slot_type         = !startswith(slot.value.slot_type, "AMAZON.") ? replace("${local.name_prefix}_${slot.value.slot_type}", "2", "T") : slot.value.slot_type
       slot_type_version = !startswith(slot.value.slot_type, "AMAZON.") ? aws_lex_slot_type.this[slot.value.slot_type].version : null
      
 
@@ -105,7 +105,7 @@ resource "aws_lex_bot" "this" {
 
   provider = aws.hl-region
 
-  name                        = replace("${local.name_prefix}_${each.key}", "2", "TO")
+  name                        = replace("${local.name_prefix}_${each.key}", "2", "T")
   description                 = each.value.description
   locale                      = each.value.locale
   process_behavior            = each.value.process_behavior
@@ -139,7 +139,7 @@ resource "aws_lex_bot" "this" {
   dynamic "intent" {
     for_each = each.value.intents
     content {
-      intent_name    = "${local.name_prefix}_${intent.value}"
+      intent_name    = replace("${local.name_prefix}_${intent.value}", "2", "T")
       intent_version = aws_lex_intent.this[intent.value].version
     }
   }
