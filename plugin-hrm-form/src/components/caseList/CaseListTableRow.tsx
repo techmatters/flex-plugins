@@ -22,7 +22,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { getDefinitionVersion } from '../../services/ServerlessService';
-import { configurationBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import * as ConfigActions from '../../states/configuration/actions';
 import { Case, CounselorHash } from '../../types/types';
 import {
@@ -42,6 +42,7 @@ import { getContactTags } from '../../utils/categories';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import { getHrmConfig } from '../../hrmConfig';
+import { configurationBase, namespace } from '../../states/storeNamespaces';
 
 const CHAR_LIMIT = 200;
 

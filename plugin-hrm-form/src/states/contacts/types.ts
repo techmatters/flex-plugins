@@ -16,13 +16,12 @@
 
 import { DataCallTypes } from 'hrm-form-definitions';
 
-import { ContactRawJson, CSAMReportEntry, Contact } from '../../types/types';
+import { Contact } from '../../types/types';
 import { DraftResourceReferralState } from './resourceReferral';
-import { ExistingContactsState } from './existingContacts';
+import { ContactState, ExistingContactsState } from './existingContacts';
 import { ContactDetailsState } from './contactDetails';
 
 // Action types
-export const UPDATE_FORM = 'UPDATE_FORM';
 export const SAVE_END_MILLIS = 'SAVE_END_MILLIS';
 export const SET_CATEGORIES_GRID_VIEW = 'SET_CATEGORIES_GRID_VIEW';
 export const HANDLE_EXPAND_CATEGORY = 'HANDLE_EXPAND_CATEGORY';
@@ -33,7 +32,12 @@ export const UPDATE_HELPLINE = 'UPDATE_HELPLINE';
 export const ADD_CSAM_REPORT_ENTRY = 'contacts/ADD_CSAM_REPORT_ENTRY';
 export const SET_EDITING_CONTACT = 'SET_EDITING_CONTACT';
 export const SET_CALL_TYPE = 'SET_CALL_TYPE';
+export const CREATE_CONTACT_ACTION = 'contact-action/create-contact';
+export const CREATE_CONTACT_ACTION_FULFILLED = `${CREATE_CONTACT_ACTION}_FULFILLED` as const;
 export const UPDATE_CONTACT_ACTION = 'contact-action/update-contact';
+export const UPDATE_CONTACT_ACTION_FULFILLED = `${UPDATE_CONTACT_ACTION}_FULFILLED` as const;
+export const LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION = 'contact-action/load-contact-from-hrm-by-task-id';
+export const LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED = `${LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION}_FULFILLED` as const;
 export const CONNECT_TO_CASE = 'contact-action/connect-to-case';
 export const SET_SAVED_CONTACT = 'contact-action/set-saved-contact';
 
@@ -50,22 +54,11 @@ export type ContactMetadata = {
   };
 };
 
-export type ContactWithMetadata = { contact: Contact; metadata: ContactMetadata };
-
 export type ContactsState = {
-  tasks: {
-    [taskId: string]: ContactWithMetadata;
-  };
   existingContacts: ExistingContactsState;
   contactDetails: ContactDetailsState;
   editingContact: boolean;
   isCallTypeCaller: boolean;
-};
-type UpdateFormAction = {
-  type: typeof UPDATE_FORM;
-  taskId: string;
-  parent: keyof ContactRawJson;
-  payload: Partial<ContactRawJson[keyof ContactRawJson]>;
 };
 
 type SaveEndMillisAction = {
@@ -79,18 +72,6 @@ export type UpdatedContactAction = {
   meta: unknown;
 };
 
-type SetCategoriesGridViewAction = {
-  type: typeof SET_CATEGORIES_GRID_VIEW;
-  gridView: boolean;
-  taskId: string;
-};
-
-type HandleExpandCategoryAction = {
-  type: typeof HANDLE_EXPAND_CATEGORY;
-  category: string;
-  taskId: string;
-};
-
 type PrePopulateFormAction = {
   type: typeof PREPOPULATE_FORM;
   callType: DataCallTypes | null;
@@ -101,20 +82,7 @@ type PrePopulateFormAction = {
 
 type RestoreEntireFormAction = {
   type: typeof RESTORE_ENTIRE_FORM;
-  contact: ContactWithMetadata;
-  taskId: string;
-};
-
-type UpdateHelpline = {
-  type: typeof UPDATE_HELPLINE;
-  helpline: string;
-  taskId: string;
-};
-
-type AddCSAMReportEntry = {
-  type: typeof ADD_CSAM_REPORT_ENTRY;
-  csamReportEntry: CSAMReportEntry;
-  taskId: string;
+  contact: ContactState;
 };
 
 type SetEditingContact = {
@@ -128,13 +96,16 @@ type CheckButtonDataAction = {
 };
 
 export type ContactsActionType =
-  | UpdateFormAction
   | SaveEndMillisAction
-  | SetCategoriesGridViewAction
-  | HandleExpandCategoryAction
   | PrePopulateFormAction
   | RestoreEntireFormAction
-  | UpdateHelpline
-  | AddCSAMReportEntry
   | SetEditingContact
   | CheckButtonDataAction;
+
+export type ContactUpdatingAction = {
+  type:
+    | typeof CREATE_CONTACT_ACTION_FULFILLED
+    | typeof UPDATE_CONTACT_ACTION_FULFILLED
+    | typeof LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED;
+  payload: { contact: Contact; previousContact?: Contact };
+};

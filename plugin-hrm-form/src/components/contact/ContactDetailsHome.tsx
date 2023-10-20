@@ -24,13 +24,7 @@ import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
 import { Flex, Box, Row } from '../../styles/HrmStyles';
-import {
-  CSAMReportEntry,
-  isS3StoredTranscript,
-  isS3StoredRecording,
-  isTwilioStoredMedia,
-  Contact,
-} from '../../types/types';
+import { CSAMReportEntry, isS3StoredTranscript, isS3StoredRecording, isTwilioStoredMedia } from '../../types/types';
 import {
   DetailsContainer,
   NameText,
@@ -45,7 +39,7 @@ import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/Domain
 import { isNonDataCallType } from '../../states/validationRules';
 import { formatCategories, formatDuration, mapChannelForInsights } from '../../utils';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
-import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getPermissionsForContact, getPermissionsForViewingIdentifiers, PermissionActions } from '../../permissions';
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
@@ -54,6 +48,7 @@ import { newCSAMReportActionForContact } from '../../states/csam-report/actions'
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import type { ResourceReferral } from '../../states/contacts/resourceReferral';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
+import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -219,9 +214,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
   );
 
   const loadConversationIntoOverlay = async () => {
-    const twilioStoredMedia = savedContact.conversationMedia.find(isTwilioStoredMedia);
+    const { storeTypeSpecificData } = savedContact.conversationMedia.find(isTwilioStoredMedia);
     await Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_PLAY, {
-      taskSid: twilioStoredMedia.reservationSid,
+      taskSid: storeTypeSpecificData.reservationSid,
     });
   };
 

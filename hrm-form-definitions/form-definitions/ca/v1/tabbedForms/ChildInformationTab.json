@@ -613,5 +613,63 @@
     "name": "Newcomer",
     "label": "Newcomer (e.g., Arrived in Canada within 5 years or less)/Recent Immigrant/Refugee",
     "type": "checkbox"
+  },
+  {
+    "name": "supportType",
+    "label": "(Chat Only) What type of support is the service user seeking?",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "I want to talk about my feelings",
+        "label": "I want to talk about my feelings"
+      },
+      {
+        "value": "I'm looking for tips and strategies",
+        "label": "I'm looking for tips and strategies"
+      },
+      {
+        "value": "I want support to solve a conflict/problem",
+        "label": "I want support to solve a conflict/problem"
+      },
+      {
+        "value": "I want to know how to help someone else",
+        "label": "I want to know how to help someone else"
+      },
+      {
+        "value": "I need help finding a resource/information",
+        "label": "I need help finding a resource/information"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown/Did not disclose/Did not ask"
+      }
+    ]
+  },
+  {
+    "name": "suicidalThoughts",
+    "label": "(Chat Only) Is the service user having suicidal thoughts?",
+    "type": "select",
+    "options": [
+        {
+          "value": "N/A - Call",
+          "label": ""
+        },
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        },
+        {
+          "value": "Maybe",
+          "label": "Maybe"
+        },
+        {
+          "value": "Unknown",
+          "label": "Did not disclose"
+        }
+      ]
   }
 ]

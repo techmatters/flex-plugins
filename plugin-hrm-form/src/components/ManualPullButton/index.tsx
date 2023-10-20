@@ -19,10 +19,11 @@ import React, { useState } from 'react';
 import { Notifications } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
-import { configurationBase, namespace, queuesStatusBase, RootState } from '../../states';
+import { RootState } from '../../states';
 import { isAnyChatPending } from '../queuesStatus/helpers';
 import { adjustChatCapacity } from '../../services/ServerlessService';
 import AddTaskButton from '../common/AddTaskButton';
+import { configurationBase, namespace, queuesStatusBase } from '../../states/storeNamespaces';
 
 type OwnProps = {
   workerClient: import('@twilio/flex-ui').Manager['workerClient'];
@@ -82,7 +83,7 @@ const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapac
 
 ManualPullButton.displayName = 'ManualPullButton';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+const mapStateToProps = (state: RootState) => {
   const queuesStatusState = state[namespace][queuesStatusBase];
   const { chatChannelCapacity } = state[namespace][configurationBase].workerInfo;
   const { worker } = state.flex;

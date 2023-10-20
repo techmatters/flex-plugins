@@ -16,35 +16,72 @@
 
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
-import { completeTask, submitContactForm } from '../../services/formSubmissionHelpers';
-import { connectToCase, updateContactsFormInHrm } from '../../services/ContactService';
-import { Case, ContactRawJson, CustomITask, Contact } from '../../types/types';
-import { CONNECT_TO_CASE, ContactMetadata, SET_SAVED_CONTACT, UPDATE_CONTACT_ACTION } from './types';
-import { ExistingContactsState } from './existingContacts';
-
-export const updateContactsFormInHrmAsyncAction = createAsyncAction(
+import { submitContactForm } from '../../services/formSubmissionHelpers';
+import { connectToCase, createContact, getContactByTaskSid, updateContactInHrm } from '../../services/ContactService';
+import { Case, CustomITask, Contact } from '../../types/types';
+import {
+  CONNECT_TO_CASE,
+  ContactMetadata,
+  CREATE_CONTACT_ACTION,
+  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION,
+  SET_SAVED_CONTACT,
   UPDATE_CONTACT_ACTION,
-  async (contactId: string, body: Partial<ContactRawJson>, helpline: string): Promise<{ contact: Contact }> => {
-    const contact = await updateContactsFormInHrm(contactId, body, helpline);
+} from './types';
+import { ContactDraftChanges, ExistingContactsState } from './existingContacts';
+import { newContactMetaData } from './contactState';
+
+export const createContactAsyncAction = createAsyncAction(
+  CREATE_CONTACT_ACTION,
+  async (contact: Contact, workerSid: string, taskSid: string) => {
     return {
-      contact,
+      contact: await createContact(contact, workerSid, taskSid),
+      reference: taskSid,
+      metadata: newContactMetaData(false),
     };
   },
 );
 
+type FulfilledUpdatedContactActionPayload = { contact: Contact; previousContact: Contact; reference: string };
+
+export const updateContactInHrmAsyncAction = createAsyncAction(
+  UPDATE_CONTACT_ACTION,
+  async (
+    previousContact: Contact,
+    body: ContactDraftChanges,
+    reference?: string,
+  ): Promise<FulfilledUpdatedContactActionPayload> => {
+    const contact = await updateContactInHrm(previousContact.id, body);
+    return {
+      contact,
+      previousContact,
+      reference,
+    };
+  },
+);
+
+// TODO: Update connectedContacts on case in redux state
 export const connectToCaseAsyncAction = createAsyncAction(
   CONNECT_TO_CASE,
-  async (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case, caseId: number) => {
-    const savedContact = await submitContactForm(task, contact, metadata, caseForm);
-    await connectToCase(savedContact.id, caseId);
-    await completeTask(task);
+  async (contactId: string, caseId: number | null): Promise<{ contactId: string; caseId: number }> => {
+    await connectToCase(contactId, caseId);
+    return { contactId, caseId };
   },
 );
 
 export const submitContactFormAsyncAction = createAsyncAction(
   SET_SAVED_CONTACT,
   async (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) => {
-    await submitContactForm(task, contact, metadata, caseForm);
+    return submitContactForm(task, contact, metadata, caseForm);
+  },
+);
+
+export const loadContactFromHrmByTaskSidAsyncAction = createAsyncAction(
+  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION,
+  async (taskSid: string, reference: string = taskSid) => {
+    return {
+      contact: await getContactByTaskSid(taskSid),
+      reference,
+    };
   },
 );
 
@@ -55,23 +92,53 @@ const handleAsyncAction = (handleAction, asyncAction) =>
     };
   });
 
+// TODO: Consolidate this logic with the loadContactReducer implementation?
+const loadContactIntoRedux = (
+  state: ExistingContactsState,
+  contact: Contact,
+  reference?: string,
+  newMetadata?: ContactMetadata,
+) => {
+  const references = state[contact.id]?.references ?? new Set();
+  if (reference) {
+    references.add(reference);
+  }
+  const metadata = newMetadata ?? state[contact.id]?.metadata;
+  return {
+    ...state,
+    [contact.id]: {
+      ...state[contact.id],
+      metadata,
+      draftContact: undefined,
+      savedContact: contact,
+      references,
+    },
+  };
+};
+
 export const saveContactReducer = (initialState: ExistingContactsState) =>
   createReducer(initialState, handleAction => [
-    handleAsyncAction(handleAction, updateContactsFormInHrmAsyncAction.pending),
+    handleAsyncAction(handleAction, updateContactInHrmAsyncAction.pending),
 
     handleAction(
-      updateContactsFormInHrmAsyncAction.fulfilled,
-      (state, { payload: { contact } }): ExistingContactsState => {
-        return {
-          ...state,
-          [contact.id]: {
-            ...state[contact.id],
-            draftContact: { rawJson: {} },
-            savedContact: contact,
-          },
-        };
+      updateContactInHrmAsyncAction.fulfilled,
+      (state, { payload: { contact, reference } }): ExistingContactsState => {
+        return loadContactIntoRedux(state, contact, reference);
+      },
+    ),
+    handleAction(
+      createContactAsyncAction.fulfilled,
+      (state, { payload: { contact, reference } }): ExistingContactsState => {
+        return loadContactIntoRedux(state, contact, reference, newContactMetaData(false));
+      },
+    ),
+    handleAction(
+      loadContactFromHrmByTaskSidAsyncAction.fulfilled,
+      (state, { payload: { contact, reference } }): ExistingContactsState => {
+        if (!contact) return state;
+        return loadContactIntoRedux(state, contact, reference, newContactMetaData(true));
       },
     ),
 
-    handleAsyncAction(handleAction, updateContactsFormInHrmAsyncAction.rejected),
+    handleAsyncAction(handleAction, updateContactInHrmAsyncAction.rejected),
   ]);

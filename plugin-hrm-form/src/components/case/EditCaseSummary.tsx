@@ -35,7 +35,7 @@ import {
 } from '../../styles/HrmStyles';
 import { CaseActionFormContainer, CaseActionLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { configurationBase, connectedCaseBase, contactFormsBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { changeRoute } from '../../states/routing/actions';
@@ -55,6 +55,7 @@ import { useCreateFormFromDefinition } from '../forms';
 import { getTemplateStrings } from '../../hrmConfig';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
+import { configurationBase, connectedCaseBase, namespace } from '../../states/storeNamespaces';
 
 export type EditCaseSummaryProps = {
   task: CustomITask | StandaloneITask;
@@ -241,9 +242,8 @@ const mapStateToProps = (state: RootState, ownProps: EditCaseSummaryProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
   const connectedCaseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
   const workingCopy = connectedCaseState?.caseWorkingCopy.caseSummary;
-  const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
 
-  return { connectedCaseState, counselorsHash, workingCopy, contactForm };
+  return { connectedCaseState, counselorsHash, workingCopy };
 };
 
 const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {

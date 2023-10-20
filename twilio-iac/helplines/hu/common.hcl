@@ -20,8 +20,7 @@ locals {
       ru : ["pre_survey"]
     }
 
-    custom_task_routing_filter_expression = "phone=='+3680984590' OR phone=='+3612344587' OR channelType=='web' OR isContactlessTask==true"
-
+    
 
     workflows = {
       master : {

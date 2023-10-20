@@ -29,8 +29,9 @@ import ViewContact from '../../../components/case/ViewContact';
 import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { Contact } from '../../../types/types';
-import { connectedCaseBase, contactFormsBase, csamReportBase, RootState } from '../../../states';
+import { RootState } from '../../../states';
 import { DetailsContext, TOGGLE_DETAIL_EXPANDED_ACTION } from '../../../states/contacts/contactDetails';
+import { connectedCaseBase, contactFormsBase, csamReportBase } from '../../../states/storeNamespaces';
 
 jest.mock('@twilio/flex-ui', () => ({
   ...jest.requireActual('@twilio/flex-ui'),

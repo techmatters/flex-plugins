@@ -21,8 +21,8 @@ import { useEffect, useState } from 'react';
 import ReplyIcon from '@material-ui/icons/Reply';
 import ErrorIcon from '@material-ui/icons/Error';
 
-import customContactComponentRegistry, { isParametersWithContactId } from '../../forms/customContactComponentRegistry';
-import { contactFormsBase, namespace, referrableResourcesBase, RootState } from '../../../states';
+import customContactComponentRegistry from '../../forms/customContactComponentRegistry';
+import { RootState } from '../../../states';
 import {
   ReferralLookupStatus,
   updateResourceReferralIdToAddForUnsavedContactAction,
@@ -44,20 +44,22 @@ import {
   Error,
   DeleteButton,
 } from './styles';
+import { contactFormsBase, namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
 
 type OwnProps = {
-  taskSid: string;
+  contactId: string;
 };
 
-const mapStateToProps = (state: RootState, { taskSid }: OwnProps) => {
+const mapStateToProps = (state: RootState, { contactId }: OwnProps) => {
   const {
-    contact: { referrals },
+    draftContact,
     metadata: {
       draft: {
         resourceReferralList: { lookupStatus, resourceReferralIdToAdd },
       },
     },
-  } = state[namespace][contactFormsBase].tasks[taskSid];
+  } = state[namespace][contactFormsBase].existingContacts[contactId];
+  const referrals = draftContact?.referrals ?? [];
   return {
     referrals: referrals ?? [],
     lookupStatus,
@@ -66,19 +68,19 @@ const mapStateToProps = (state: RootState, { taskSid }: OwnProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch, { taskSid }: OwnProps) => ({
+const mapDispatchToProps = (dispatch, { contactId }: OwnProps) => ({
   updateResourceReferralIdToAdd: (value: string) =>
-    dispatch(updateResourceReferralIdToAddForUnsavedContactAction(taskSid, value)),
+    dispatch(updateResourceReferralIdToAddForUnsavedContactAction(contactId, value)),
 
   updateResourceReferralLookupStatus: (value: ReferralLookupStatus) =>
-    dispatch(updateResourceReferralLookupStatusForUnsavedContactAction(taskSid, value)),
+    dispatch(updateResourceReferralLookupStatusForUnsavedContactAction(contactId, value)),
   loadResource: (resourceId: string) => asyncDispatch(dispatch)(loadResourceAsyncAction(resourceId)),
   addResourceReferral: (resource: ReferrableResource) => {
-    dispatch(addResourceReferralForUnsavedContactAction(taskSid, resource));
+    dispatch(addResourceReferralForUnsavedContactAction(contactId, resource));
   },
 
   updateResourceReferralIdToRemove: (value: string) => {
-    dispatch(removeResourceReferralForUnsavedContactAction(taskSid, value));
+    dispatch(removeResourceReferralForUnsavedContactAction(contactId, value));
   },
 });
 
@@ -203,9 +205,5 @@ ResourceReferralList.displayName = 'ResourceReferralList';
 const ConnectedResourceReferralList = connector(ResourceReferralList);
 
 customContactComponentRegistry.register('resource-referral-list', parameters => {
-  if (!isParametersWithContactId(parameters)) {
-    return <ConnectedResourceReferralList taskSid={parameters.taskSid} />;
-  }
-  // Not supported for contact ID yet
-  return null;
+  return <ConnectedResourceReferralList contactId={parameters.contactId} />;
 });

@@ -23,24 +23,23 @@ import _ from 'lodash';
 import { Close } from '@material-ui/icons';
 import { AnyAction } from 'redux';
 
-import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import { Box, StyledNextStepButton, BottomButtonBar, Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
 import { CaseActionTitle, EditContactContainer } from '../../styles/case';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-import { ContactDetailsSectionFormApi } from './contactDetailsSectionFormApi';
 import { clearDraft, refreshContact } from '../../states/contacts/existingContacts';
 import CloseCaseDialog from '../case/CloseCaseDialog';
 import * as t from '../../states/contacts/actions';
 import { getTemplateStrings } from '../../hrmConfig';
-import { ContactRawJson } from '../../types/types';
+import { Contact, ContactRawJson } from '../../types/types';
 import asyncDispatch from '../../states/asyncDispatch';
-import { updateContactsFormInHrmAsyncAction } from '../../states/contacts/saveContact';
+import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
+import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 
 type OwnProps = {
   context: DetailsContext;
   contactId: string;
-  contactDetailsSectionForm?: ContactDetailsSectionFormApi;
   children: React.ReactNode;
   tabPath: keyof ContactRawJson;
 };
@@ -51,9 +50,7 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const EditContactSection: React.FC<Props> = ({
   savedContact,
   draftContact,
-  contactId,
   definitionVersions,
-  contactDetailsSectionForm,
   setEditContactPageOpen,
   setEditContactPageClosed,
   tabPath,
@@ -97,7 +94,7 @@ const EditContactSection: React.FC<Props> = ({
       'categories' | 'callerInformation' | 'caseInformation' | 'childInformation'
     >> = draftContact.rawJson;
     try {
-      updateContactsFormInHrmAsyncAction(contactId, payload, savedContact.helpline);
+      updateContactsFormInHrmAsyncAction(savedContact, payload);
     } catch (error) {
       setSubmitting(false);
       recordBackendError('Open New Case', error);
@@ -203,8 +200,8 @@ const mapDispatchToProps = (dispatch: Dispatch<{ type: string } & Record<string,
     clearContactDraft: () => {
       dispatch(clearDraft(contactId));
     },
-    updateContactsFormInHrmAsyncAction: (contactId: string, body: Partial<ContactRawJson>, helpline: string) =>
-      updateContactAsyncDispatch(updateContactsFormInHrmAsyncAction(contactId, body, helpline)),
+    updateContactsFormInHrmAsyncAction: (contact: Contact, body: Partial<ContactRawJson>) =>
+      updateContactAsyncDispatch(updateContactInHrmAsyncAction(contact, { rawJson: body })),
   };
 };
 

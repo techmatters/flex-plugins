@@ -16,10 +16,12 @@
 
 import { omit } from 'lodash';
 
-import { Contact } from '../../types/types';
+import { Contact, ContactRawJson } from '../../types/types';
 import { AddExternalReportEntryAction } from '../csam-report/existingContactExternalReport';
 import { ConfigurationState } from '../configuration/reducer';
 import { transformValuesForContactForm } from './contactDetailsAdapter';
+import { ContactMetadata } from './types';
+import { newContactMetaData } from './contactState';
 
 export enum ContactDetailsRoute {
   EDIT_CALLER_INFORMATION = 'editCallerInformation',
@@ -28,12 +30,7 @@ export enum ContactDetailsRoute {
   EDIT_CASE_INFORMATION = 'editCaseInformation',
 }
 
-// From https://stackoverflow.com/questions/47914536/use-partial-in-nested-property-with-typescript
-type RecursivePartial<T> = {
-  [P in keyof T]?: RecursivePartial<T[P]>;
-};
-
-export type SearchContactDraftChanges = RecursivePartial<Contact>;
+export type ContactDraftChanges = Omit<Partial<Contact>, 'rawJson'> & { rawJson?: Partial<ContactRawJson> };
 
 // TODO: Update this type when the Lambda worker is "done"
 export type TranscriptMessage = {
@@ -87,17 +84,16 @@ export type TranscriptResult = {
   channelSid: string;
 };
 
+export type ContactState = {
+  references: Set<string>;
+  savedContact: Contact;
+  draftContact?: ContactDraftChanges;
+  metadata: ContactMetadata;
+  transcript?: Transcript;
+};
+
 export type ExistingContactsState = {
-  [contactId: string]: {
-    references: Set<string>;
-    savedContact: Contact;
-    draftContact?: SearchContactDraftChanges;
-    categories: {
-      gridView: boolean;
-      expanded: { [key: string]: boolean };
-    };
-    transcript?: Transcript;
-  };
+  [contactId: string]: ContactState;
 };
 
 export const LOAD_CONTACT_ACTION = 'LOAD_CONTACT_ACTION';
@@ -149,9 +145,11 @@ export const loadContactReducer = (state = initialState, action: LoadContactActi
       return [
         c.id,
         {
+          metadata: newContactMetaData(true),
           ...currentContact,
           savedContact: action.replaceExisting || !current.references.size ? c : state[c.id].savedContact,
           references: action.reference ? current.references.add(action.reference) : current.references,
+          draftContact: action.replaceExisting ? undefined : draftContact,
         },
       ];
     });
@@ -260,11 +258,14 @@ export const toggleCategoryExpandedReducer = (state: ExistingContactsState, acti
     ...state,
     [action.contactId]: {
       ...state[action.contactId],
-      categories: {
-        ...state[action.contactId].categories,
-        expanded: {
-          ...state[action.contactId].categories.expanded,
-          [action.category]: !state[action.contactId].categories.expanded[action.category],
+      metadata: {
+        ...state[action.contactId].metadata,
+        categories: {
+          ...state[action.contactId].metadata.categories,
+          expanded: {
+            ...state[action.contactId].metadata.categories.expanded,
+            [action.category]: !state[action.contactId].metadata.categories.expanded[action.category],
+          },
         },
       },
     },
@@ -296,9 +297,12 @@ export const setCategoriesGridViewReducer = (state: ExistingContactsState, actio
     ...state,
     [action.contactId]: {
       ...state[action.contactId],
-      categories: {
-        ...state[action.contactId].categories,
-        gridView: action.useGridView,
+      metadata: {
+        ...state[action.contactId].metadata,
+        categories: {
+          ...state[action.contactId].metadata.categories,
+          gridView: action.useGridView,
+        },
       },
     },
   };
@@ -309,10 +313,10 @@ export const EXISTING_CONTACT_UPDATE_DRAFT_ACTION = 'EXISTING_CONTACT_UPDATE_DRA
 type UpdateDraftAction = {
   type: typeof EXISTING_CONTACT_UPDATE_DRAFT_ACTION;
   contactId: string;
-  draft?: SearchContactDraftChanges;
+  draft?: ContactDraftChanges;
 };
 
-export const updateDraft = (contactId: string, draft: SearchContactDraftChanges): UpdateDraftAction => ({
+export const updateDraft = (contactId: string, draft: ContactDraftChanges): UpdateDraftAction => ({
   type: EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
   contactId,
   draft,
@@ -340,16 +344,28 @@ export const updateDraftReducer = (
     configState.definitionVersions[state[contactId].savedContact.rawJson.definitionVersion] ??
     configState.currentDefinitionVersion;
 
-  // Transform from RHF friendly values to the state we want in redux
-  const transformedForm = transformValuesForContactForm(definition)(draft.rawJson);
+  if (draft?.rawJson) {
+    // Transform from RHF friendly values to the state we want in redux
+    const transformedForm = transformValuesForContactForm(definition)(draft.rawJson);
+    return {
+      ...state,
+      [contactId]: {
+        ...state[contactId],
+        draftContact: {
+          ...draft,
+          rawJson: {
+            ...draft.rawJson,
+            ...transformedForm,
+          },
+        },
+      },
+    };
+  }
   return {
     ...state,
     [contactId]: {
       ...state[contactId],
-      draftContact: {
-        ...draft,
-        rawJson: transformedForm,
-      },
+      draftContact: draft,
     },
   };
 };
@@ -376,7 +392,7 @@ export const createDraftReducer = (state: ExistingContactsState, action: CreateD
     return state;
   }
   const { savedContact } = state[action.contactId];
-  let newDraft: SearchContactDraftChanges;
+  let newDraft: ContactDraftChanges;
 
   switch (action.draftRoute) {
     case ContactDetailsRoute.EDIT_CHILD_INFORMATION:

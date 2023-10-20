@@ -22,10 +22,10 @@ import * as GeneralActions from '../../../states/actions';
 import { Case } from '../../../types/types';
 import { REMOVE_CONTACT_STATE } from '../../../states/types';
 import { CaseState } from '../../../states/case/types';
-import { configurationBase, connectedCaseBase, namespace, RootState } from '../../../states';
+import { RootState } from '../../../states';
 import { getAvailableCaseStatusTransitions } from '../../../states/case/caseStatus';
 import { ConfigurationState } from '../../../states/configuration/reducer';
-import { updateCaseAsyncAction } from '../../../states/case/saveCase';
+import { configurationBase, connectedCaseBase, namespace } from '../../../states/storeNamespaces';
 
 const task = { taskSid: 'task1' };
 const stubRootState = { [configurationBase]: { definitionVersions: {} } } as RootState['plugin-hrm-form'];
@@ -58,15 +58,11 @@ describe('test reducer', () => {
     const result = reduce(stubRootState, state, {
       type: REMOVE_CONTACT_STATE,
       taskId: 'TEST_TASK_ID',
+      contactId: 'TEST_CONTACT_ID',
     });
     expect(result).toStrictEqual(expected);
 
     state = result;
-  });
-
-  test('should ignore INITIALIZE_CONTACT_STATE', async () => {
-    const result = reduce(stubRootState, state, GeneralActions.initializeContactState(mockV1)(task.taskSid));
-    expect(result).toStrictEqual(state);
   });
 
   test('SET_CONNECTED_CASE, definition version missing in config state - sets available statuses to empty', async () => {

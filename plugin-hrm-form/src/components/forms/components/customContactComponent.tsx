@@ -20,7 +20,6 @@ import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
 import customContactComponentRegistry from '../customContactComponentRegistry';
 
 type ContactComponentContext = {
-  taskSid?: string;
   contactId?: string;
 };
 
@@ -34,10 +33,8 @@ const customContactFormItemContent = (
   formItemDefinition: FormItemDefinition & { type: FormInputType.CustomContactComponent },
   inputId: string,
   {
-    taskSid,
     contactId,
   }: {
-    taskSid?: string;
     contactId?: string;
   } = {},
 ) => {
@@ -50,14 +47,7 @@ const customContactFormItemContent = (
         </div>
       );
     }
-    if (taskSid) {
-      return componentGenerator({
-        taskSid,
-        props: formItemDefinition.props,
-        name: formItemDefinition.name,
-        label: formItemDefinition.label,
-      });
-    } else if (contactId) {
+    if (contactId) {
       return componentGenerator({
         contactId,
         props: formItemDefinition.props,
@@ -67,8 +57,8 @@ const customContactFormItemContent = (
     }
     return (
       <div data-testid={`context-error-${inputId}`}>
-        Error rendering custom contact form component &lsquo;{formItemDefinition.component}&rsquo;: either a taskSid or
-        a contactId must be provided in the context
+        Error rendering custom contact form component &lsquo;{formItemDefinition.component}&rsquo;: a contactId must be
+        provided in the context
       </div>
     );
   } catch (err) {

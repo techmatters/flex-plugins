@@ -27,8 +27,8 @@ import ContactDetails from '../../components/search/ContactDetails';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions } from '../../hrmConfig';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-import { csamReportBase } from '../../states';
 import { Contact } from '../../types/types';
+import { csamReportBase } from '../../states/storeNamespaces';
 
 jest.mock('@twilio/flex-ui', () => ({
   ...jest.requireActual('@twilio/flex-ui'),

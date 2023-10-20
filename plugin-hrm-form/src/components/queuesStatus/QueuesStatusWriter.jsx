@@ -22,8 +22,8 @@ import { omit } from 'lodash';
 
 import { queuesStatusUpdate, queuesStatusFailure } from '../../states/queuesStatus/actions';
 import * as h from './helpers';
-import { namespace, queuesStatusBase } from '../../states';
 import { listWorkerQueues } from '../../services/ServerlessService';
+import { namespace, queuesStatusBase } from '../../states/storeNamespaces';
 
 export class InnerQueuesStatusWriter extends React.Component {
   static displayName = 'QueuesStatusWriter';

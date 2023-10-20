@@ -19,7 +19,7 @@ import { FlexPlugin, loadCSS } from '@twilio/flex-plugin';
 
 import './styles/global-overrides.css';
 
-import reducers, { namespace } from './states';
+import reducers from './states';
 import HrmTheme, { overrides } from './styles/HrmTheme';
 import { initLocalization } from './utils/pluginHelpers';
 import * as Providers from './utils/setUpProviders';
@@ -46,6 +46,7 @@ import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorTool
 import { setupConferenceComponents, setUpConferenceActions } from './conference';
 import { setUpTransferActions } from './transfer/setUpTransferActions';
 import { playNotification } from './notifications/playNotification';
+import { namespace } from './states/storeNamespaces';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 

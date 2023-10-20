@@ -17,9 +17,15 @@
 import { omit } from 'lodash';
 
 import * as t from './types';
-import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE, GeneralActionType } from '../types';
+import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import { Contact, SearchCaseResult, standaloneTaskSid } from '../../types/types';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../../components/common/ContactDetails';
+import {
+  ContactUpdatingAction,
+  CREATE_CONTACT_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+  UPDATE_CONTACT_ACTION_FULFILLED,
+} from '../contacts/types';
 
 type PreviousContacts = {
   contacts?: t.DetailedSearchContactsResult;
@@ -85,27 +91,38 @@ export const initialState: SearchState = {
   },
 };
 
-// eslint-disable-next-line complexity
-export function reduce(state = initialState, action: t.SearchActionType | GeneralActionType): SearchState {
-  switch (action.type) {
-    case INITIALIZE_CONTACT_STATE:
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: newTaskEntry,
-        },
-      };
-    case RECREATE_CONTACT_STATE:
-      if (state.tasks[action.taskId]) return state;
+const contactUpdatingReducer = (state: SearchState, action: ContactUpdatingAction): SearchState => {
+  const { contact, previousContact } = (action as any).payload as { contact: Contact; previousContact?: Contact };
+  if (!contact?.taskId) return state;
+  let updatedState = state;
+  if (previousContact && previousContact.taskId !== contact.taskId) {
+    updatedState = {
+      ...state,
+      tasks: omit(state.tasks, previousContact.taskId),
+    };
+  }
+  if (state.tasks[contact.taskId] && action.type !== CREATE_CONTACT_ACTION_FULFILLED) return updatedState;
 
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: newTaskEntry,
-        },
-      };
+  return {
+    ...updatedState,
+    tasks: {
+      ...updatedState.tasks,
+      [contact.taskId]: newTaskEntry,
+    },
+  };
+};
+
+// eslint-disable-next-line complexity
+export function reduce(
+  state = initialState,
+  action: t.SearchActionType | RemoveContactStateAction | ContactUpdatingAction,
+): SearchState {
+  switch (action.type) {
+    case CREATE_CONTACT_ACTION_FULFILLED:
+    case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED:
+    case UPDATE_CONTACT_ACTION_FULFILLED: {
+      return contactUpdatingReducer(state, action as ContactUpdatingAction);
+    }
     case REMOVE_CONTACT_STATE:
       return {
         ...state,

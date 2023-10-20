@@ -18,15 +18,11 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { TaskHelper } from '@twilio/flex-ui';
-import { bindActionCreators } from 'redux';
 
 import HrmForm from './HrmForm';
 import FormNotEditable from './FormNotEditable';
-import { RootState, namespace, contactFormsBase, searchContactsBase, routingBase, configurationBase } from '../states';
-import * as GeneralActions from '../states/actions';
-import { updateHelpline as updateHelplineAction } from '../states/contacts/actions';
+import { RootState } from '../states';
 import { hasTaskControl } from '../utils/transfer';
-import type { DefinitionVersion } from '../states/types';
 import { CustomITask, isOfflineContactTask, isInMyBehalfITask } from '../types/types';
 import PreviousContactsBanner from './PreviousContactsBanner';
 import { Flex } from '../styles/HrmStyles';
@@ -34,6 +30,15 @@ import { isStandaloneITask } from './case/Case';
 import { getHelplineToSave } from '../services/HelplineService';
 import { getAseloFeatureFlags } from '../hrmConfig';
 import { rerenderAgentDesktop } from '../rerenderView';
+import { updateDraft } from '../states/contacts/existingContacts';
+import { loadContactFromHrmByTaskSidAsyncAction } from '../states/contacts/saveContact';
+import {
+  configurationBase,
+  contactFormsBase,
+  namespace,
+  routingBase,
+  searchContactsBase,
+} from '../states/storeNamespaces';
 
 type OwnProps = {
   task: CustomITask;
@@ -44,13 +49,20 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const TaskView: React.FC<Props> = props => {
-  const { shouldRecreateState, currentDefinitionVersion, task, contact, updateHelpline, recreateContactState } = props;
+  const {
+    shouldRecreateState,
+    currentDefinitionVersion,
+    task,
+    contact,
+    updateHelpline,
+    loadContactFromHrmByTaskSid,
+  } = props;
 
   React.useEffect(() => {
     if (shouldRecreateState) {
-      recreateContactState(currentDefinitionVersion)(task.taskSid);
+      loadContactFromHrmByTaskSid();
     }
-  }, [currentDefinitionVersion, recreateContactState, shouldRecreateState, task.taskSid]);
+  }, [currentDefinitionVersion, loadContactFromHrmByTaskSid, shouldRecreateState, task]);
 
   // Force a re-render on unmount (temporary fix NoTaskView issue with Offline Contacts)
   React.useEffect(() => {
@@ -69,7 +81,7 @@ const TaskView: React.FC<Props> = props => {
       if (task && !isStandaloneITask(task)) {
         const helplineToSave = await getHelplineToSave(task, contactlessTask);
         if (helpline !== helplineToSave) {
-          updateHelpline(task.taskSid, helplineToSave);
+          updateHelpline(contact.id, helplineToSave);
         }
       }
     };
@@ -81,7 +93,7 @@ const TaskView: React.FC<Props> = props => {
     if (shouldSetHelpline) {
       setHelpline();
     }
-  }, [contactlessTask, contactInitialized, helpline, task, updateHelpline]);
+  }, [contactlessTask, contactInitialized, helpline, task, updateHelpline, contact]);
 
   if (!currentDefinitionVersion) {
     return null;
@@ -126,7 +138,9 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const { task } = ownProps;
   const { currentDefinitionVersion } = state[namespace][configurationBase];
   // Check if the entry for this task exists in each reducer
-  const { contact } = (task && state[namespace][contactFormsBase]?.tasks[task.taskSid]) ?? {};
+  const { savedContact: contact } =
+    (task && Object.values(state[namespace][contactFormsBase]?.existingContacts).find(c => c.savedContact?.taskId)) ??
+    {};
   const contactFormStateExists = Boolean(contact);
   const routingStateExists = Boolean(task && state[namespace][routingBase].tasks[task.taskSid]);
   const searchStateExists = Boolean(task && state[namespace][searchContactsBase].tasks[task.taskSid]);
@@ -141,10 +155,9 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  recreateContactState: (definitions: DefinitionVersion) => (taskId: string) =>
-    dispatch(GeneralActions.recreateContactState(definitions)(taskId)),
-  updateHelpline: bindActionCreators(updateHelplineAction, dispatch),
+const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
+  loadContactFromHrmByTaskSid: () => dispatch(loadContactFromHrmByTaskSidAsyncAction(task.taskSid)),
+  updateHelpline: (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline })),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

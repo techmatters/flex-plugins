@@ -14,27 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  GeneralActionType,
-  INITIALIZE_CONTACT_STATE,
-  RECREATE_CONTACT_STATE,
-  REMOVE_CONTACT_STATE,
-  DefinitionVersion,
-} from './types';
+import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from './types';
 
-export const initializeContactState = (definitions: DefinitionVersion) => (taskId: string): GeneralActionType => ({
-  type: INITIALIZE_CONTACT_STATE,
-  definitions,
-  taskId,
-});
-
-export const recreateContactState = (definitions: DefinitionVersion) => (taskId: string): GeneralActionType => ({
-  type: RECREATE_CONTACT_STATE,
-  definitions,
-  taskId,
-});
-
-export const removeContactState = (taskId: string): GeneralActionType => ({
+// TODO: unify the various task SID maps we have around redux to store contact data under the contacts map, then remove the need for a task ID
+export const removeContactState = (taskId: string, contactId: string): RemoveContactStateAction => ({
   type: REMOVE_CONTACT_STATE,
   taskId,
+  contactId,
 });

@@ -17,7 +17,7 @@
 import { omit } from 'lodash';
 
 import { CaseActionType, CaseState, REMOVE_CONNECTED_CASE, SET_CONNECTED_CASE } from './types';
-import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
+import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import {
   CaseWorkingCopyActionType,
   INIT_EXISTING_CASE_SECTION_WORKING_COPY,
@@ -35,10 +35,11 @@ import {
   updateCaseSectionWorkingCopyReducer,
   updateCaseSummaryWorkingCopyReducer,
 } from './caseWorkingCopy';
-import { configurationBase, RootState } from '..';
+import { RootState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { SaveCaseReducerState, saveCaseReducer } from './saveCase';
 import { CaseListContentStateAction } from '../caseList/listContent';
+import { configurationBase } from '../storeNamespaces';
 
 const initialState: CaseState = {
   tasks: {},
@@ -55,7 +56,7 @@ const boundSaveCaseReducer = saveCaseReducer(saveCaseState);
 export function reduce(
   rootState: RootState['plugin-hrm-form'],
   inputState = initialState,
-  action: CaseActionType | CaseWorkingCopyActionType | GeneralActionType | CaseListContentStateAction,
+  action: CaseActionType | CaseWorkingCopyActionType | RemoveContactStateAction | CaseListContentStateAction,
 ): CaseState {
   const { state } = boundSaveCaseReducer({ state: inputState, rootState }, action as any);
 
@@ -77,11 +78,6 @@ export function reduce(
         },
       };
     case REMOVE_CONNECTED_CASE:
-      return {
-        ...state,
-        tasks: omit(state.tasks, action.taskId),
-      };
-    // eslint-disable-next-line sonarjs/no-duplicated-branches
     case REMOVE_CONTACT_STATE:
       return {
         ...state,
