@@ -1,1 +1,105 @@
-{}
+{
+  "contactForm": {
+    "childInformation": [
+      {
+        "name": "region",
+        "insights": [
+          "customers",
+          "region"
+        ]
+      },
+      {
+        "name": "ethnicity",
+        "insights": [
+          "customers",
+          "email"
+        ]
+      }
+    ],
+    "caseInformation": [
+      {
+        "name": "repeatCaller",
+        "insights": [
+          "conversations",
+          "conversation_attribute_7"
+        ],
+        "type": "checkbox"
+      },
+      {
+        "name": "howDidYouKnowAboutOurLine",
+        "insights": [
+          "conversations",
+          "conversation_attribute_6"
+        ]
+      },
+      {
+        "name": "actionTaken",
+        "insights": [
+          "conversations",
+          "conversation_attribute_5"
+        ]
+      }
+    ]
+  },
+  "caseForm": {
+    "topLevel": [
+      {
+        "name": "id",
+        "insights": [
+          "conversations",
+          "case"
+        ]
+      }
+    ],
+    "household": [
+      {
+        "name": "relationshipToChild",
+        "insights": [
+          "customers",
+          "organization"
+        ]
+      },
+      {
+        "name": "selfHarmThoughts",
+        "insights": [
+          "customers",
+          "area"
+        ]
+      }
+    ],
+    "perpetrator": [
+      {
+        "name": "relationshipToChild",
+        "insights": [
+          "customers",
+          "category"
+        ]
+      }
+    ],
+    "incident": [
+      {
+        "name": "expressedThoughts",
+        "insights": [
+          "customers",
+          "acquisition_date"
+        ]
+      }
+    ],
+    "referral": [
+      {
+        "name": "externalInterventionTo",
+        "insights": [
+          "customers",
+          "customer_manager"
+        ]
+      },
+      {
+        "name": "haveConsent",
+        "insights": [
+          "customers",
+          "market_segment"
+        ]
+      }
+    ]
+  }
+}

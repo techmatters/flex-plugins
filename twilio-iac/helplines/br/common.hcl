@@ -24,7 +24,7 @@ locals {
     workflows = {
       master : {
         friendly_name : "Master Workflow"
-        templatefile : "/app/twilio-iac/helplines/jm/templates/workflows/master.tftpl"
+        templatefile : "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
       },
       survey : {
         friendly_name : "Survey Workflow"
@@ -33,13 +33,17 @@ locals {
     }
 
     task_queues = {
-      messaging : {
+      master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "Messaging"
+        "friendly_name"  = "Safernet"
       },
        survey : {
         "target_workers" = "1==0",
         "friendly_name"  = "Survey"
+      },
+      e2e_test : {
+        "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
+        "friendly_name"  = "E2E Test Queue"
       }
     }
     task_channels = {
@@ -52,17 +56,6 @@ locals {
       survey : "Survey"
     }
 
-    #Channels
-    channels = {
-      webchat : {
-        channel_type     = "web"
-        contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex.tftpl"
-        channel_flow_vars = {}
-        chatbot_unique_names = []
-      }
-    }
-    phone_numbers = {}
 
   }
 }

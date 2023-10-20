@@ -1,5 +1,8 @@
 {
     "attributes": {
-        "definitionVersion": "nz-v2"
+        "feature_flags": {
+            "enable_save_insights": true
+        },
+        "definitionVersion": "nz-v1"
     }
 }
