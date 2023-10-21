@@ -31,13 +31,14 @@ type LoadRelationshipAsyncParams = {
 export const loadRelationshipAsync = createAsyncAction(
   t.LOAD_RELATIONSHIP,
   async ({ profileId, type, page = 0 }: LoadRelationshipAsyncParams): Promise<any> => {
+    const offset = page * PAGE_SIZE;
+    const limit = PAGE_SIZE;
+
     try {
-      const offset = page * PAGE_SIZE;
-      const limit = PAGE_SIZE;
       return await t.PROFILE_RELATIONSHIPS[type].method(profileId, offset, limit);
     } catch (error) {
-      console.log('error', error);
-      return error;
+      // See note in handleFulfilledAction about why we have to handle fetch errors in this goofy way.
+      return { error };
     }
   },
   (params: LoadRelationshipAsyncParams) => params,
@@ -59,8 +60,16 @@ const handlePendingAction = (state: t.ProfileState, action: any) => {
 
 const handleFulfilledAction = (state: t.ProfileState, action: any) => {
   const { profileId, type } = action.meta;
+
+  // This is a little weird, but since we don't have control over middleware we can't add error middleware
+  // to let us use the loadRelationshipAsync.rejected action to handle errors. If we try to use that handler
+  // the exception is thrown and the app crashes. So we have to check for the error here and handle it in
+  // fulfilled.
+  if (action.payload.error) {
+    return handleRejectedAction(state, action);
+  }
+
   const data = action.payload[type];
-  const { count: total } = action.payload;
 
   const profileUpdate = {
     ...state.profiles[profileId],

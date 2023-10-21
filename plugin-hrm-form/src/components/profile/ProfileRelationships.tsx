@@ -53,9 +53,8 @@ const ProfileRelationships: React.FC<Props> = ({
   }
 
   const hasData = data && data.length > 0;
-
   if (!hasData) {
-    return <div>No ${type} found</div>;
+    return <div>No {type} found</div>;
   }
 
   return <>{data.map(d => renderItem(d))}</>;
@@ -65,7 +64,6 @@ const mapStateToProps = (state: RootState, ownProps) => {
   const profileState = state[namespace][profileBase];
   const { profileId, type } = ownProps;
   const currentProfileState = profileState.profiles[profileId];
-
   const { data, loading } = currentProfileState[type];
 
   return {
@@ -80,7 +78,7 @@ const mapDispatchToProps = (dispatch, { type }: OwnProps) => ({
     dispatch(
       ProfileActions.loadRelationshipAsync({
         profileId,
-        type: 'contacts',
+        type,
       }),
     ),
 });
