@@ -19,24 +19,24 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { getProfileByIdentifier } from '../services/ProfileService';
+import { getProfileByIdentifier } from '../../services/ProfileService';
 import {
   viewPreviousContacts as viewPreviousContactsAction,
   searchContacts as searchContactsAction,
   searchCases as searchCasesAction,
-} from '../states/search/actions';
-import * as ProfileActions from '../states/profile/actions';
-import { RootState } from '../states';
-import { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './search/SearchResults';
-import { YellowBanner } from '../styles/previousContactsBanner';
-import { Bold } from '../styles/HrmStyles';
-import { StyledLink } from '../styles/search';
-import { ChannelTypes, channelTypes } from '../states/DomainConstants';
-import { changeRoute as changeRouteAction } from '../states/routing/actions';
-import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../utils';
-import { getPermissionsForViewingIdentifiers, PermissionActions } from '../permissions';
-import { CustomITask, isTwilioTask } from '../types/types';
-import { configurationBase, contactFormsBase, namespace, searchContactsBase } from '../states/storeNamespaces';
+} from '../../states/search/actions';
+import * as ProfileActions from '../../states/profile/actions';
+import { RootState } from '../../states';
+import { CONTACTS_PER_PAGE, CASES_PER_PAGE } from '../search/SearchResults';
+import { YellowBanner } from '../../styles/previousContactsBanner';
+import { Bold } from '../../styles/HrmStyles';
+import { StyledLink } from '../../styles/search';
+import { ChannelTypes, channelTypes } from '../../states/DomainConstants';
+import { changeRoute as changeRouteAction } from '../../states/routing/actions';
+import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../utils';
+import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../permissions';
+import { CustomITask, isTwilioTask } from '../../types/types';
+import { configurationBase, contactFormsBase, namespace, searchContactsBase } from '../../states/storeNamespaces';
 
 type OwnProps = {
   task: CustomITask;

@@ -15,32 +15,34 @@
  */
 
 import * as t from './types';
-import { Profile } from '../../types/types';
+import { LOAD_RELATIONSHIP_ACTIONS, loadRelationshipsReducer } from './loadRelationships';
 
-type profileEntry = {
-  currentTab: t.ProfileTabsType;
-  profile?: Profile;
-};
-
-type ProfileState = {
-  profiles: {
-    [profileId: string]: profileEntry;
-  };
-  currentProfileId?: string;
-};
-
-const newProfileEntry: profileEntry = {
-  currentTab: t.ProfileTabs.details,
+const newProfileEntry: t.ProfileEntry = {
+  currentTab: t.PROFILE_TABS.details,
   profile: undefined,
+  contacts: {
+    loading: false,
+  },
+  cases: {
+    loading: false,
+  },
 };
 
-const initialState: ProfileState = {
+const initialState: t.ProfileState = {
   profiles: {},
   currentProfileId: undefined,
 };
 
+const boundLoadRelationshipsReducer = loadRelationshipsReducer(initialState);
+
 // eslint-disable-next-line complexity
-export function reduce(state = initialState, action: t.ProfileActionType): ProfileState {
+export function reduce(state = initialState, action: t.ProfileActions): t.ProfileState {
+  console.log('>>>action', action);
+
+  if (LOAD_RELATIONSHIP_ACTIONS.includes(action.type)) {
+    return boundLoadRelationshipsReducer(state, action);
+  }
+
   switch (action.type) {
     case t.ADD_PROFILE_STATE: {
       return {

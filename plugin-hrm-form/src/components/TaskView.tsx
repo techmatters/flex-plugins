@@ -24,7 +24,7 @@ import FormNotEditable from './FormNotEditable';
 import { RootState } from '../states';
 import { hasTaskControl } from '../utils/transfer';
 import { CustomITask, isOfflineContactTask, isInMyBehalfITask } from '../types/types';
-import PreviousContactsBanner from './PreviousContactsBanner';
+import PreviousContactsBanner from './profile/PreviousContactsBanner';
 import { Flex } from '../styles/HrmStyles';
 import { isStandaloneITask } from './case/Case';
 import { getHelplineToSave } from '../services/HelplineService';

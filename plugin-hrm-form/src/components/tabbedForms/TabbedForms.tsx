@@ -39,7 +39,7 @@ import IssueCategorizationSectionForm from '../contact/IssueCategorizationSectio
 import ContactDetailsSectionForm from '../contact/ContactDetailsSectionForm';
 import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
-import Profile from '../Profile';
+import Profile from '../profile/Profile';
 import { hasTaskControl } from '../../utils/transfer';
 import { isNonDataCallType } from '../../states/validationRules';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';

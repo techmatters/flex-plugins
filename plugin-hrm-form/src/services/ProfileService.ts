@@ -17,3 +17,11 @@
 import { fetchHrmApi } from './fetchHrmApi';
 
 export const getProfileByIdentifier = (identifier: string) => fetchHrmApi(`/profiles/identifier/${identifier}`);
+
+const getProfileById = (id: string) => fetchHrmApi(`/profiles/${id}`);
+
+export const getProfileContacts = (id: string, offset: number, limit: number) =>
+  fetchHrmApi(`/profiles/${id}/contacts?offset=${offset}&limit=${limit}&legacyFormat=false`);
+
+export const getProfileCases = (id: string, offset: number, limit: number) =>
+  fetchHrmApi(`/profiles/${id}/cases?offset=${offset}&limit=${limit}&legacyFormat=false`);

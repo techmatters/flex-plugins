@@ -14,23 +14,23 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/* eslint-disable import/no-unused-modules */
-import { Dispatch } from 'redux';
-
-import { Profile } from '../../types/types';
 import * as t from './types';
 
-export { loadRelationshipAsync } from './loadRelationships';
-
-// Action creators
-export const addProfileState = (dispatch: Dispatch<any>) => (profileId: Profile['id'], profile: Profile) => {
-  dispatch({ type: t.ADD_PROFILE_STATE, profileId, profile });
+const loadProfileEntryIntoRedux = (state: t.ProfileState, profileId: t.Profile['id'], profile: t.ProfileEntry) => {
+  const { profiles } = state;
+  const existingProfile = profiles[profileId];
+  const newProfile = {
+    ...existingProfile,
+    ...profile,
+  };
+  const newProfiles = {
+    ...profiles,
+    [profileId]: newProfile,
+  };
+  return {
+    ...state,
+    profiles: newProfiles,
+  };
 };
 
-export const setCurrentProfile = (dispatch: Dispatch<any>) => (profileId: Profile['id']) => {
-  dispatch({ type: t.SET_CURRENT_PROFILE, profileId });
-};
-
-export const changeProfileTab = (dispatch: Dispatch<any>) => (profileId: Profile['id'], tab: t.ProfileTabs) => {
-  dispatch({ type: t.CHANGE_PROFILE_TAB, tab, profileId });
-};
+export default loadProfileEntryIntoRedux;

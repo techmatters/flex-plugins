@@ -14,18 +14,84 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import { Profile } from '../../types/types';
+import { namespace, profileBase } from '../../states/storeNamespaces';
+import * as ProfileActions from '../../states/profile/actions';
+import { getPermissionsForContact, PermissionActions } from '../../permissions';
+import * as RoutingActions from '../../states/routing/actions';
+import { RootState } from '../../states';
+import { Contact, Profile } from '../../types/types';
+import ContactPreview from '../search/ContactPreview';
 
 type OwnProps = {
   profileId: Profile['id'];
+  contacts: Contact[];
+  loading: boolean;
+  loadRelationshipAsync: (profileId: Profile['id']) => void;
 };
 
 type Props = OwnProps;
 
-const ProfileContacts: React.FC<Props> = ({ profileId }) => {
-  return <div>Contacts</div>;
+const ProfileContacts: React.FC<Props> = ({ profileId, contacts, loading, loadRelationshipAsync }) => {
+  useEffect(() => {
+    loadRelationshipAsync(profileId);
+  }, [profileId]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  const hasContacts = contacts && contacts.length > 0;
+
+  if (!hasContacts) {
+    return <div>No contacts found</div>;
+  }
+
+  const handleViewDetails = () => {
+    // load contact modal? or page?
+  };
+
+  return (
+    <>
+      {contacts.map(contact => {
+        const { can } = getPermissionsForContact(contact.twilioWorkerId);
+        return (
+          <ContactPreview
+            key={`ContactPreview-${contact.id}`}
+            contact={contact}
+            handleViewDetails={() => can(PermissionActions.VIEW_CONTACT) && handleViewDetails}
+          />
+        );
+      })}
+    </>
+  );
 };
 
-export default ProfileContacts;
+const mapStateToProps = (state: RootState, ownProps) => {
+  const profileState = state[namespace][profileBase];
+  const { profileId } = ownProps;
+  const currentProfileState = profileState.profiles[profileId];
+
+  const { data: contacts, loading } = currentProfileState.contacts;
+
+  return {
+    loading,
+    contacts,
+    profileId,
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  loadRelationshipAsync: (profileId: Profile['id']) =>
+    dispatch(
+      ProfileActions.loadRelationshipAsync({
+        profileId,
+        type: 'contacts',
+      }),
+    ),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileContacts);
