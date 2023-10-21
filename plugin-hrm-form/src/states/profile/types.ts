@@ -43,6 +43,7 @@ export const PROFILE_RELATIONSHIPS = {
 } as const;
 
 export type ProfileRelationships = keyof typeof PROFILE_RELATIONSHIPS;
+export type ProfileRelationshipTypes = Case | Contact;
 
 export type ProfileEntry = {
   currentTab: ProfileTabs;
@@ -50,15 +51,11 @@ export type ProfileEntry = {
   contacts?: {
     data?: Contact[];
     loading: boolean;
-    offset?: number;
-    limit?: number;
     error?: any;
   };
   cases?: {
     data?: Case[];
     loading: boolean;
-    offset?: number;
-    limit?: number;
     error?: any;
   };
 };

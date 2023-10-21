@@ -19,17 +19,21 @@ import { createAsyncAction, createReducer } from 'redux-promise-middleware-actio
 import loadProfileEntryIntoRedux from './loadProfileEntryIntoRedux';
 import * as t from './types';
 
+const PAGE_SIZE = 20;
+
 type LoadRelationshipAsyncParams = {
   profileId: t.Profile['id'];
   type: t.ProfileRelationships;
-  offset?: number;
-  limit?: number;
+  total?: number | null;
+  page?: number;
 };
 
 export const loadRelationshipAsync = createAsyncAction(
   t.LOAD_RELATIONSHIP,
-  async ({ profileId, type, offset = 0, limit = 20 }: LoadRelationshipAsyncParams): Promise<any> => {
+  async ({ profileId, type, page = 0 }: LoadRelationshipAsyncParams): Promise<any> => {
     try {
+      const offset = page * PAGE_SIZE;
+      const limit = PAGE_SIZE;
       return await t.PROFILE_RELATIONSHIPS[type].method(profileId, offset, limit);
     } catch (error) {
       console.log('error', error);
@@ -54,15 +58,14 @@ const handlePendingAction = (state: t.ProfileState, action: any) => {
 };
 
 const handleFulfilledAction = (state: t.ProfileState, action: any) => {
-  const { profileId, type, offset, limit } = action.meta;
+  const { profileId, type } = action.meta;
   const data = action.payload[type];
+  const { count: total } = action.payload;
 
   const profileUpdate = {
     ...state.profiles[profileId],
     [type]: {
-      data,
-      offset,
-      limit,
+      data: [...(state.profiles[profileId][type].data || []), ...data],
       loading: false,
     },
   };

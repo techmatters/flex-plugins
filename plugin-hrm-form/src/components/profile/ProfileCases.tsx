@@ -13,19 +13,46 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
 import React from 'react';
+import { connect } from 'react-redux';
 
-import { Profile } from '../../types/types';
+import { getPermissionsForCase, PermissionActions } from '../../permissions';
+import { Case, Profile } from '../../types/types';
+import CasePreview from '../search/CasePreview';
+import ProfileRelationships from './ProfileRelationships';
+import { namespace } from '../../states/storeNamespaces';
+import { RootState } from '../../states';
 
 type OwnProps = {
   profileId: Profile['id'];
+  counselorsHash: any;
 };
 
-type Props = OwnProps;
+const ProfileCases: React.FC<OwnProps> = ({ profileId, counselorsHash }) => {
+  const renderItem = (cas: Case) => {
+    const { can } = getPermissionsForCase(cas.twilioWorkerId, cas.status);
+    const onClickViewCase = () => {
+      // load case modal? or page?
+    };
 
-const ProfileCases: React.FC<Props> = ({ profileId }) => {
-  return <div>Cases</div>;
+    return (
+      <CasePreview
+        key={`CasePreview-${cas.id}`}
+        currentCase={cas}
+        counselorsHash={counselorsHash}
+        onClickViewCase={can(PermissionActions.VIEW_CASE) && onClickViewCase}
+      />
+    );
+  };
+
+  return <ProfileRelationships profileId={profileId} type="cases" renderItem={renderItem} />;
 };
 
-export default ProfileCases;
+const mapStateToProps = ({ [namespace]: { configuration } }: RootState) => {
+  const { counselors } = configuration;
+  return {
+    counselorsHash: counselors.hash,
+  };
+};
+
+export default connect(mapStateToProps)(ProfileCases);
