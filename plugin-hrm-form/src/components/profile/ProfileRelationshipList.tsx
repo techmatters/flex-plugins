@@ -33,7 +33,7 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ProfileRelationships: React.FC<Props> = ({
+const ProfileRelationshipList: React.FC<Props> = ({
   data,
   exhausted,
   loadedPage,
@@ -105,4 +105,4 @@ const mapDispatchToProps = (dispatch, { profileId, type }: OwnProps) => ({
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
-export default connector(ProfileRelationships);
+export default connector(ProfileRelationshipList);
