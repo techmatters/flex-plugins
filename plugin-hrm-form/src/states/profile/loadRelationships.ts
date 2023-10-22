@@ -18,7 +18,7 @@ import { createAction, createAsyncAction, createReducer } from 'redux-promise-mi
 import loadProfileEntryIntoRedux from './loadProfileEntryIntoRedux';
 import * as t from './types';
 
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 20;
 
 type CommonParams = {
   profileId: t.Profile['id'];
