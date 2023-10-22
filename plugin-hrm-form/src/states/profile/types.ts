@@ -17,12 +17,13 @@
 import { Case, Contact, Profile } from '../../types/types';
 import { getProfileContacts, getProfileCases } from '../../services/ProfileService';
 
-export type { Case, Contact, Profile } from '../../types/types';
+export type { Case, Contact, Identifier, Profile } from '../../types/types';
 
 // Action types
 export const ADD_PROFILE_STATE = 'ADD_PROFILE_STATE';
 export const CHANGE_PROFILE_TAB = 'CHANGE_SEARCH_PAGE';
 export const INCREMENT_PAGE = 'INCREMENT_PAGE';
+export const LOAD_PROFILE = 'LOAD_PROFILE';
 export const LOAD_RELATIONSHIP = 'LOAD_RELATIONSHIP';
 export const SET_CURRENT_PROFILE = 'SET_CURRENT_PROFILE';
 
@@ -64,13 +65,15 @@ export type ProfileEntry = {
     loadedPage?: number;
   };
   currentTab: ProfileTabs;
+  error?: any;
+  loading: boolean;
   profile?: Profile;
 };
 
 export type ProfileState = {
   currentProfileId?: string;
   profiles: {
-    [profileId: string]: ProfileEntry;
+    [profileId: Profile['id']]: ProfileEntry;
   };
 };
 

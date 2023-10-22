@@ -19,7 +19,7 @@ import { getPermissionsForContact, PermissionActions } from '../../permissions';
 import { Contact, Profile } from '../../types/types';
 import ContactPreview from '../search/ContactPreview';
 import * as profileStateTypes from '../../states/profile/types';
-import ProfileRelationships from './ProfileRelationships'; // 1. Import the generic component
+import ProfileRelationships from './ProfileRelationships';
 
 type OwnProps = {
   profileId: Profile['id'];

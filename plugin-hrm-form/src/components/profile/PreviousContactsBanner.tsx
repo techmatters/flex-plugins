@@ -19,7 +19,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { getProfileByIdentifier } from '../../services/ProfileService';
+import { getIdentiferByIdentifier } from '../../services/ProfileService';
 import {
   viewPreviousContacts as viewPreviousContactsAction,
   searchContacts as searchContactsAction,
@@ -79,7 +79,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getProfileByIdentifier(contactIdentifier);
+        const data = await getIdentiferByIdentifier(contactIdentifier);
         setIdentifierData(data);
 
         const profile = data?.profiles?.[0];
@@ -111,6 +111,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   };
 
   useEffect(() => {
+    if (enableClientProfiles) return;
     if (previousContacts !== undefined) return;
 
     performSearch();
@@ -138,8 +139,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
     <div className={editContactFormOpen ? 'editingContact' : ''}>
       <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenEditingContact">
         <pre>
-          <Template code="PreviousContacts-ThereAre" />
-          &nbsp;
+          <Template code="PreviousContacts-ThereAre" />{' '}
           {contactsCount === 1 ? (
             <Bold>
               {contactsCount} <Template code="PreviousContacts-PreviousContact" />
@@ -148,10 +148,8 @@ const PreviousContactsBanner: React.FC<Props> = ({
             <Bold>
               {contactsCount} <Template code="PreviousContacts-PreviousContacts" />
             </Bold>
-          )}
-          &nbsp;
-          <Template code="PreviousContacts-And" />
-          &nbsp;
+          )}{' '}
+          <Template code="PreviousContacts-And" />{' '}
           {casesCount === 1 ? (
             <Bold>
               {casesCount} <Template code="PreviousContacts-Case" />
@@ -160,12 +158,8 @@ const PreviousContactsBanner: React.FC<Props> = ({
             <Bold>
               {casesCount} <Template code="PreviousContacts-Cases" />
             </Bold>
-          )}
-          &nbsp;
-          <Template code="PreviousContacts-From" />
-          &nbsp;
-          <Template code={localizedSourceFromTask[task.channelType]} />
-          &nbsp;
+          )}{' '}
+          <Template code="PreviousContacts-From" /> <Template code={localizedSourceFromTask[task.channelType]} />{' '}
           {maskIdentifiers ? (
             <Bold>
               <Template code="MaskIdentifiers" />
@@ -173,7 +167,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
           ) : (
             <Bold>{contactIdentifier}</Bold>
           )}
-          .&nbsp;
+          .{' '}
         </pre>
         <StyledLink underline data-testid="PreviousContacts-ViewRecords" onClick={handleClickViewRecords}>
           <Template code="PreviousContacts-ViewRecords" />

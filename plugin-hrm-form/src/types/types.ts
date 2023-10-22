@@ -345,6 +345,15 @@ export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === standaloneTaskSid;
 };
 
+export type Identifier = {
+  id: string;
+  identifier: string;
+  accountSid: string;
+  createdAt?: string;
+  updatedAt?: string;
+  profiles: Profile[];
+};
+
 export type Profile = {
   id: string;
   name: string;
@@ -352,4 +361,5 @@ export type Profile = {
   casesCount: number;
   createdAt?: string;
   updatedAt?: string;
+  identifiers?: Identifier[];
 };

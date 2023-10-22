@@ -17,9 +17,9 @@
 import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { namespace, profileBase } from '../../states/storeNamespaces';
-import * as ProfileActions from '../../states/profile/actions';
+import * as profileActions from '../../states/profile/actions';
 import * as profileStateTypes from '../../states/profile/types';
+import * as profileSelectors from '../../states/profile/selectors';
 import { RootState } from '../../states';
 
 type ProfileId = profileStateTypes.Profile['id'];
@@ -48,8 +48,8 @@ const ProfileRelationships: React.FC<Props> = ({
 
   useEffect(() => {
     if (loadedPage === page) return;
-
     loadRelationshipAsync(page);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   const renderData = () => {
@@ -79,11 +79,9 @@ const ProfileRelationships: React.FC<Props> = ({
   );
 };
 
-const getCurrentProfileState = (state: RootState, profileId: ProfileId, type: profileStateTypes.ProfileRelationships) =>
-  state[namespace][profileBase].profiles[profileId][type];
-
 const mapStateToProps = (state: RootState, { profileId, type }) => {
-  const { data, exhausted, loadedPage, loading, page } = getCurrentProfileState(state, profileId, type);
+  const currentProfileState = profileSelectors.getCurrentProfileState(state, profileId);
+  const { data, exhausted, loadedPage, loading, page } = currentProfileState[type];
 
   return {
     data,
@@ -97,15 +95,14 @@ const mapStateToProps = (state: RootState, { profileId, type }) => {
 const mapDispatchToProps = (dispatch, { profileId, type }: OwnProps) => ({
   loadRelationshipAsync: (page: number) =>
     dispatch(
-      ProfileActions.loadRelationshipAsync({
+      profileActions.loadRelationshipAsync({
         profileId,
         type,
         page,
       }),
     ),
-  incrementPage: () => dispatch(ProfileActions.incrementPage({ profileId, type })),
+  incrementPage: () => dispatch(profileActions.incrementPage({ profileId, type })),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
-
 export default connector(ProfileRelationships);

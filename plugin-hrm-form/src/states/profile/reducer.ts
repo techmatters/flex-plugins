@@ -15,10 +15,13 @@
  */
 
 import * as t from './types';
-import { shouldUseLoadRelationshipsReducer, loadRelationshipsReducer } from './loadRelationships';
+import { loadProfileReducer, shouldUseLoadProfileReducer } from './loadProfile';
+import { loadRelationshipsReducer, shouldUseLoadRelationshipsReducer } from './loadRelationships';
 
 const newProfileEntry: t.ProfileEntry = {
   currentTab: t.PROFILE_TABS.details,
+  error: undefined,
+  loading: false,
   profile: undefined,
   contacts: {
     exhausted: false,
@@ -37,10 +40,15 @@ const initialState: t.ProfileState = {
   currentProfileId: undefined,
 };
 
+const boundLoadProfileReducer = loadProfileReducer(initialState);
 const boundLoadRelationshipsReducer = loadRelationshipsReducer(initialState);
 
 // eslint-disable-next-line complexity
 export function reduce(state = initialState, action: t.ProfileActions): t.ProfileState {
+  if (shouldUseLoadProfileReducer(action)) {
+    return boundLoadProfileReducer(state, action);
+  }
+
   if (shouldUseLoadRelationshipsReducer(action)) {
     return boundLoadRelationshipsReducer(state, action);
   }

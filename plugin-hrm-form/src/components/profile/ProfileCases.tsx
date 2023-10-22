@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
 import { Case, Profile } from '../../types/types';
@@ -26,10 +26,12 @@ import { RootState } from '../../states';
 
 type OwnProps = {
   profileId: Profile['id'];
-  counselorsHash: any;
 };
 
-const ProfileCases: React.FC<OwnProps> = ({ profileId, counselorsHash }) => {
+// eslint-disable-next-line no-use-before-define
+type Props = OwnProps & ConnectedProps<typeof connector>;
+
+const ProfileCases: React.FC<Props> = ({ profileId, counselorsHash }) => {
   const renderItem = (cas: Case) => {
     const { can } = getPermissionsForCase(cas.twilioWorkerId, cas.status);
     const onClickViewCase = () => {
@@ -62,4 +64,5 @@ const mapStateToProps = ({ [namespace]: { configuration } }: RootState) => {
   };
 };
 
-export default connect(mapStateToProps)(ProfileCases);
+const connector = connect(mapStateToProps);
+export default connector(ProfileCases);

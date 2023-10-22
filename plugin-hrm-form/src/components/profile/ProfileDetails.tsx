@@ -15,17 +15,48 @@
  */
 
 import React from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 
 import { Profile } from '../../types/types';
+import { RootState } from '../../states';
+import { getCurrentProfileState } from '../../states/profile/selectors';
 
 type OwnProps = {
   profileId: Profile['id'];
 };
 
-type Props = OwnProps;
+// eslint-disable-next-line no-use-before-define
+type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ProfileDetails: React.FC<Props> = ({ profileId }) => {
-  return <div>Details</div>;
+const ProfileDetails: React.FC<Props> = ({ profileId, profile }) => {
+  const renderIdentifiersSection = () => {
+    const { identifiers } = profile;
+
+    if (!identifiers) {
+      return <div>No identifiers found</div>;
+    }
+
+    return (
+      <div>
+        Identifiers:
+        {identifiers?.map(identifier => (
+          <div key={identifier.id}>{identifier.identifier}</div>
+        ))}
+      </div>
+    );
+  };
+
+  return <>{renderIdentifiersSection()}</>;
 };
 
-export default ProfileDetails;
+const mapStateToProps = (state: RootState, { profileId }) => {
+  const currentProfileState = getCurrentProfileState(state, profileId);
+  const { profile } = currentProfileState;
+
+  return {
+    profile,
+  };
+};
+
+const connector = connect(mapStateToProps);
+export default connector(ProfileDetails);

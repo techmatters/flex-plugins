@@ -121,10 +121,10 @@ const handleIncrementPageAction = (state: t.ProfileState, action: any) => {
 
 export const loadRelationshipsReducer = (initialState: t.ProfileState) =>
   createReducer(initialState, handleAction => [
-    handleAction(loadRelationshipAsync.pending, (state, action) => handlePendingAction(state, action)),
-    handleAction(loadRelationshipAsync.fulfilled, (state, action) => handleFulfilledAction(state, action)),
-    handleAction(loadRelationshipAsync.rejected, (state, action) => handleRejectedAction(state, action)),
-    handleAction(incrementPage, (state, action) => handleIncrementPageAction(state, action)),
+    handleAction(loadRelationshipAsync.pending, handlePendingAction),
+    handleAction(loadRelationshipAsync.fulfilled, handleFulfilledAction),
+    handleAction(loadRelationshipAsync.rejected, handleRejectedAction),
+    handleAction(incrementPage, handleIncrementPageAction),
   ]);
 
 export const LOAD_RELATIONSHIP_ACTIONS = [

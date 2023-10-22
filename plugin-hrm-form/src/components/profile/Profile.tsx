@@ -14,8 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Tab as TwilioTab } from '@twilio/flex-ui';
 
@@ -24,22 +24,25 @@ import ProfileContacts from './ProfileContacts';
 import ProfileDetails from './ProfileDetails';
 import { Row } from '../../styles/HrmStyles';
 import * as ProfileActions from '../../states/profile/actions';
+import * as profileStateTypes from '../../states/profile/types';
 import * as RoutingActions from '../../states/routing/actions';
 import { namespace, profileBase } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { Profile as ProfileType } from '../../types/types';
 import { StyledTabs } from '../../styles/search'; // just stealing from search until we have a centralized tab style
 
-type OwnProps = {
-  profileId: ProfileType['id'];
-  changeProfileTab: (profileId: ProfileType['id'], tabName: string) => void;
-  currentTab: string;
-  profile: ProfileType;
-};
+type OwnProps = {};
 
-type Props = OwnProps;
+// eslint-disable-next-line no-use-before-define
+type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const Profile: React.FC<Props> = ({ changeProfileTab, currentTab, profileId, profile }) => {
+const Profile: React.FC<Props> = ({ currentTab, profileId, profile, changeProfileTab, loadProfile }) => {
+  useEffect(() => {
+    loadProfile(profileId);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profileId]);
+
   const { contactsCount, casesCount } = profile;
   const tabs = [
     {
@@ -70,7 +73,7 @@ const Profile: React.FC<Props> = ({ changeProfileTab, currentTab, profileId, pro
       <div style={{ width: '400px' }}>
         <StyledTabs
           selectedTabName={currentTab}
-          onTabSelected={selectedTab => changeProfileTab(profileId, selectedTab)}
+          onTabSelected={(selectedTab: profileStateTypes.ProfileTabs) => changeProfileTab(profileId, selectedTab)}
           alignment="center"
           keepTabsMounted={false}
         >
@@ -102,11 +105,11 @@ const mapStateToProps = (state: RootState) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    changeProfileTab: ProfileActions.changeProfileTab(dispatch),
-    changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
-  };
-};
+const mapDispatchToProps = dispatch => ({
+  loadProfile: profileId => dispatch(ProfileActions.loadProfileAsync(profileId)),
+  changeProfileTab: ProfileActions.changeProfileTab(dispatch),
+  changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export default connector(Profile);
