@@ -24,7 +24,7 @@ import ProfileContacts from './ProfileContacts';
 import ProfileDetails from './ProfileDetails';
 import { Row } from '../../styles/HrmStyles';
 import * as ProfileActions from '../../states/profile/actions';
-import * as profileStateTypes from '../../states/profile/types';
+import * as profileTypes from '../../states/profile/types';
 import * as RoutingActions from '../../states/routing/actions';
 import { namespace, profileBase } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
@@ -73,7 +73,7 @@ const Profile: React.FC<Props> = ({ currentTab, profileId, profile, changeProfil
       <div style={{ width: '400px' }}>
         <StyledTabs
           selectedTabName={currentTab}
-          onTabSelected={(selectedTab: profileStateTypes.ProfileTabs) => changeProfileTab(profileId, selectedTab)}
+          onTabSelected={(selectedTab: profileTypes.ProfileTabs) => changeProfileTab(profileId, selectedTab)}
           alignment="center"
           keepTabsMounted={false}
         >
