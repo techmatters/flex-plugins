@@ -18,6 +18,7 @@ import React from 'react';
 import { getPermissionsForContact, PermissionActions } from '../../permissions';
 import { Contact, Profile } from '../../types/types';
 import ContactPreview from '../search/ContactPreview';
+import * as profileStateTypes from '../../states/profile/types';
 import ProfileRelationships from './ProfileRelationships'; // 1. Import the generic component
 
 type OwnProps = {
@@ -40,7 +41,13 @@ const ProfileContacts: React.FC<OwnProps> = ({ profileId }) => {
     );
   };
 
-  return <ProfileRelationships profileId={profileId} type="contacts" renderItem={renderItem} />;
+  return (
+    <ProfileRelationships
+      profileId={profileId}
+      type={'contacts' as profileStateTypes.ProfileRelationships}
+      renderItem={renderItem}
+    />
+  );
 };
 
 export default ProfileContacts;

@@ -13,18 +13,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
-import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
+import { createAction, createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
 import loadProfileEntryIntoRedux from './loadProfileEntryIntoRedux';
 import * as t from './types';
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 2;
 
-type LoadRelationshipAsyncParams = {
+type CommonParams = {
   profileId: t.Profile['id'];
   type: t.ProfileRelationships;
-  total?: number | null;
+};
+
+type LoadRelationshipAsyncParams = CommonParams & {
   page?: number;
 };
 
@@ -44,6 +45,8 @@ export const loadRelationshipAsync = createAsyncAction(
   (params: LoadRelationshipAsyncParams) => params,
 );
 
+export const incrementPage = createAction(t.INCREMENT_PAGE, (params: CommonParams) => params);
+
 const handlePendingAction = (state: t.ProfileState, action: any) => {
   const { profileId, type } = action.meta;
 
@@ -59,7 +62,7 @@ const handlePendingAction = (state: t.ProfileState, action: any) => {
 };
 
 const handleFulfilledAction = (state: t.ProfileState, action: any) => {
-  const { profileId, type } = action.meta;
+  const { page: loadedPage, profileId, type } = action.meta;
 
   // This is a little weird, but since we don't have control over middleware we can't add error middleware
   // to let us use the loadRelationshipAsync.rejected action to handle errors. If we try to use that handler
@@ -69,13 +72,17 @@ const handleFulfilledAction = (state: t.ProfileState, action: any) => {
     return handleRejectedAction(state, action);
   }
 
-  const data = action.payload[type];
+  const data = [...(state.profiles[profileId][type].data || []), ...action.payload[type]];
+  const exhausted = data.length >= action.payload.count;
 
   const profileUpdate = {
     ...state.profiles[profileId],
     [type]: {
-      data: [...(state.profiles[profileId][type].data || []), ...data],
+      ...state.profiles[profileId][type],
+      data,
       loading: false,
+      exhausted,
+      loadedPage,
     },
   };
 
@@ -98,15 +105,33 @@ const handleRejectedAction = (state: t.ProfileState, action: any) => {
   return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
 };
 
+const handleIncrementPageAction = (state: t.ProfileState, action: any) => {
+  const { profileId, type } = action.payload;
+
+  const profileUpdate = {
+    ...state.profiles[profileId],
+    [type]: {
+      ...state.profiles[profileId][type],
+      page: state.profiles[profileId][type].page + 1,
+    },
+  };
+
+  return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
+};
+
 export const loadRelationshipsReducer = (initialState: t.ProfileState) =>
   createReducer(initialState, handleAction => [
     handleAction(loadRelationshipAsync.pending, (state, action) => handlePendingAction(state, action)),
     handleAction(loadRelationshipAsync.fulfilled, (state, action) => handleFulfilledAction(state, action)),
     handleAction(loadRelationshipAsync.rejected, (state, action) => handleRejectedAction(state, action)),
+    handleAction(incrementPage, (state, action) => handleIncrementPageAction(state, action)),
   ]);
 
 export const LOAD_RELATIONSHIP_ACTIONS = [
   loadRelationshipAsync.pending.toString(),
   loadRelationshipAsync.fulfilled.toString(),
   loadRelationshipAsync.rejected.toString(),
+  incrementPage.toString(),
 ];
+
+export const shouldUseLoadRelationshipsReducer = (action: any) => LOAD_RELATIONSHIP_ACTIONS.includes(action.type);

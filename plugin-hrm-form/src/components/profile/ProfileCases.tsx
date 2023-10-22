@@ -20,6 +20,7 @@ import { getPermissionsForCase, PermissionActions } from '../../permissions';
 import { Case, Profile } from '../../types/types';
 import CasePreview from '../search/CasePreview';
 import ProfileRelationships from './ProfileRelationships';
+import * as profileStateTypes from '../../states/profile/types';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 
@@ -45,7 +46,13 @@ const ProfileCases: React.FC<OwnProps> = ({ profileId, counselorsHash }) => {
     );
   };
 
-  return <ProfileRelationships profileId={profileId} type="cases" renderItem={renderItem} />;
+  return (
+    <ProfileRelationships
+      profileId={profileId}
+      type={'cases' as profileStateTypes.ProfileRelationships}
+      renderItem={renderItem}
+    />
+  );
 };
 
 const mapStateToProps = ({ [namespace]: { configuration } }: RootState) => {

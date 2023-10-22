@@ -15,12 +15,11 @@
  */
 
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 
 import { namespace, profileBase } from '../../states/storeNamespaces';
 import * as ProfileActions from '../../states/profile/actions';
 import * as profileStateTypes from '../../states/profile/types';
-import * as RoutingActions from '../../states/routing/actions';
 import { RootState } from '../../states';
 
 type ProfileId = profileStateTypes.Profile['id'];
@@ -28,59 +27,85 @@ type ProfileId = profileStateTypes.Profile['id'];
 type OwnProps = {
   profileId: ProfileId;
   type: profileStateTypes.ProfileRelationships;
-  data: profileStateTypes.ProfileRelationshipTypes[];
-  loading: boolean;
   renderItem: (d: profileStateTypes.ProfileRelationshipTypes) => React.ReactNode;
-  loadRelationshipAsync: (profileId: ProfileId) => void;
 };
 
-type Props = OwnProps;
+// eslint-disable-next-line no-use-before-define
+type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileRelationships: React.FC<Props> = ({
-  profileId,
-  type,
   data,
+  exhausted,
+  loadedPage,
   loading,
-  renderItem,
+  page,
+  type,
+  incrementPage,
   loadRelationshipAsync,
+  renderItem,
 }) => {
-  useEffect(() => {
-    loadRelationshipAsync(profileId);
-  }, [profileId]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   const hasData = data && data.length > 0;
-  if (!hasData) {
-    return <div>No {type} found</div>;
-  }
 
-  return <>{data.map(d => renderItem(d))}</>;
+  useEffect(() => {
+    if (loadedPage === page) return;
+
+    loadRelationshipAsync(page);
+  }, [page]);
+
+  const renderData = () => {
+    if (!hasData) {
+      return <div>No {type} found</div>;
+    }
+
+    return <>{data.map(d => renderItem(d))}</>;
+  };
+
+  const renderLoadMore = () => {
+    if (loading) return <div>Loading...</div>;
+    if (exhausted) return null;
+
+    return (
+      <button type="button" onClick={incrementPage}>
+        Load more
+      </button>
+    );
+  };
+
+  return (
+    <>
+      {renderData()}
+      {renderLoadMore()}
+    </>
+  );
 };
 
-const mapStateToProps = (state: RootState, ownProps) => {
-  const profileState = state[namespace][profileBase];
-  const { profileId, type } = ownProps;
-  const currentProfileState = profileState.profiles[profileId];
-  const { data, loading } = currentProfileState[type];
+const getCurrentProfileState = (state: RootState, profileId: ProfileId, type: profileStateTypes.ProfileRelationships) =>
+  state[namespace][profileBase].profiles[profileId][type];
+
+const mapStateToProps = (state: RootState, { profileId, type }) => {
+  const { data, exhausted, loadedPage, loading, page } = getCurrentProfileState(state, profileId, type);
 
   return {
-    loading,
     data,
-    profileId,
+    loadedPage,
+    loading,
+    exhausted,
+    page,
   };
 };
 
-const mapDispatchToProps = (dispatch, { type }: OwnProps) => ({
-  loadRelationshipAsync: (profileId: ProfileId) =>
+const mapDispatchToProps = (dispatch, { profileId, type }: OwnProps) => ({
+  loadRelationshipAsync: (page: number) =>
     dispatch(
       ProfileActions.loadRelationshipAsync({
         profileId,
         type,
+        page,
       }),
     ),
+  incrementPage: () => dispatch(ProfileActions.incrementPage({ profileId, type })),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileRelationships);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+export default connector(ProfileRelationships);

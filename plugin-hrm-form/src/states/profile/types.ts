@@ -20,25 +20,26 @@ import { getProfileContacts, getProfileCases } from '../../services/ProfileServi
 export type { Case, Contact, Profile } from '../../types/types';
 
 // Action types
-export const CHANGE_PROFILE_TAB = 'CHANGE_SEARCH_PAGE';
 export const ADD_PROFILE_STATE = 'ADD_PROFILE_STATE';
-export const SET_CURRENT_PROFILE = 'SET_CURRENT_PROFILE';
+export const CHANGE_PROFILE_TAB = 'CHANGE_SEARCH_PAGE';
+export const INCREMENT_PAGE = 'INCREMENT_PAGE';
 export const LOAD_RELATIONSHIP = 'LOAD_RELATIONSHIP';
+export const SET_CURRENT_PROFILE = 'SET_CURRENT_PROFILE';
 
 export const PROFILE_TABS = {
-  contacts: 'contacts',
   cases: 'cases',
+  contacts: 'contacts',
   details: 'details',
 } as const;
 
 export type ProfileTabs = typeof PROFILE_TABS[keyof typeof PROFILE_TABS];
 
 export const PROFILE_RELATIONSHIPS = {
-  contacts: {
-    method: getProfileContacts,
-  },
   cases: {
     method: getProfileCases,
+  },
+  contacts: {
+    method: getProfileContacts,
   },
 } as const;
 
@@ -46,25 +47,31 @@ export type ProfileRelationships = keyof typeof PROFILE_RELATIONSHIPS;
 export type ProfileRelationshipTypes = Case | Contact;
 
 export type ProfileEntry = {
-  currentTab: ProfileTabs;
-  profile?: Profile;
-  contacts?: {
-    data?: Contact[];
-    loading: boolean;
-    error?: any;
-  };
   cases?: {
     data?: Case[];
-    loading: boolean;
     error?: any;
+    exhausted: boolean;
+    loading: boolean;
+    page: number;
+    loadedPage?: number;
   };
+  contacts?: {
+    data?: Contact[];
+    error?: any;
+    exhausted: boolean;
+    loading: boolean;
+    page: number;
+    loadedPage?: number;
+  };
+  currentTab: ProfileTabs;
+  profile?: Profile;
 };
 
 export type ProfileState = {
+  currentProfileId?: string;
   profiles: {
     [profileId: string]: ProfileEntry;
   };
-  currentProfileId?: string;
 };
 
 type AddProfileState = { type: typeof ADD_PROFILE_STATE; profileId: Profile['id']; profile?: Profile };

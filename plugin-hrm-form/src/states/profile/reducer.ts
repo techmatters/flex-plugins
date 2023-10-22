@@ -15,16 +15,20 @@
  */
 
 import * as t from './types';
-import { LOAD_RELATIONSHIP_ACTIONS, loadRelationshipsReducer } from './loadRelationships';
+import { shouldUseLoadRelationshipsReducer, loadRelationshipsReducer } from './loadRelationships';
 
 const newProfileEntry: t.ProfileEntry = {
   currentTab: t.PROFILE_TABS.details,
   profile: undefined,
   contacts: {
+    exhausted: false,
     loading: false,
+    page: 0,
   },
   cases: {
+    exhausted: false,
     loading: false,
+    page: 0,
   },
 };
 
@@ -37,9 +41,7 @@ const boundLoadRelationshipsReducer = loadRelationshipsReducer(initialState);
 
 // eslint-disable-next-line complexity
 export function reduce(state = initialState, action: t.ProfileActions): t.ProfileState {
-  console.log('>>>action', action);
-
-  if (LOAD_RELATIONSHIP_ACTIONS.includes(action.type)) {
+  if (shouldUseLoadRelationshipsReducer(action)) {
     return boundLoadRelationshipsReducer(state, action);
   }
 

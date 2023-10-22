@@ -20,7 +20,7 @@ import { Dispatch } from 'redux';
 import { Profile } from '../../types/types';
 import * as t from './types';
 
-export { loadRelationshipAsync } from './loadRelationships';
+export * from './loadRelationships';
 
 // Action creators
 export const addProfileState = (dispatch: Dispatch<any>) => (profileId: Profile['id'], profile: Profile) => {
