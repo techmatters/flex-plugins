@@ -105,6 +105,7 @@ const ContactDetails: React.FC<Props> = ({
         handleOpenConnectDialog={handleOpenConnectDialog}
         task={task}
         onClose={handleBackToResults}
+        data-testid="ContactDetails"
       />
     </>
   );

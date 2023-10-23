@@ -18,15 +18,13 @@
 /* eslint-disable react/jsx-max-depth */
 import React, { useState, useEffect } from 'react';
 import { Page, Document, View, PDFViewer } from '@react-pdf/renderer';
-import { Template } from '@twilio/flex-ui';
-import { ButtonBase, CircularProgress } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
+import { CircularProgress } from '@material-ui/core';
 import { DefinitionVersion, callTypes } from 'hrm-form-definitions';
 
 import CasePrintSection from './CasePrintSection';
 import CasePrintSummary from './CasePrintSummary';
 import styles, { useThaiFontFamily } from './styles';
-import { CasePrintViewContainer, CasePrintViewSpinner, HiddenText } from '../../../styles/HrmStyles';
+import { CasePrintViewSpinner } from '../../../styles/HrmStyles';
 import CasePrintDetails from './CasePrintDetails';
 import type { CaseDetails } from '../../../states/case/types';
 import CasePrintMultiSection from './CasePrintMultiSection';
@@ -38,16 +36,19 @@ import CasePrintCSAMReports from './CasePrintCSAMReports';
 import { getImageAsString, ImageSource } from './helpers';
 import { getLocaleDateTime } from '../../../utils/helpers';
 import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
+import NavigableContainer from '../../NavigableContainer';
+import { CustomITask, StandaloneITask } from '../../../types/types';
 
 type OwnProps = {
   onClickClose: () => void;
   caseDetails: CaseDetails;
   definitionVersion: DefinitionVersion;
   counselorsHash: { [sid: string]: string };
+  task: CustomITask | StandaloneITask;
 };
 type Props = OwnProps;
 
-const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionVersion, counselorsHash }) => {
+const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionVersion, counselorsHash, task }) => {
   const strings = getTemplateStrings();
   const { pdfImagesSource } = getHrmConfig();
 
@@ -102,13 +103,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
   if (definitionVersion.layoutVersion.thaiCharacterPdfSupport) useThaiFontFamily();
 
   return (
-    <CasePrintViewContainer>
-      <ButtonBase onClick={onClickClose} style={{ marginLeft: 'auto' }} data-testid="CasePrint-CloseCross">
-        <HiddenText>
-          <Template code="Case-CloseButton" />
-        </HiddenText>
-        <Close />
-      </ButtonBase>
+    <NavigableContainer task={task} onGoBack={onClickClose}>
       {loading ? (
         <CasePrintViewSpinner>
           <CircularProgress size={50} />
@@ -214,7 +209,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
           </Document>
         </PDFViewer>
       )}
-    </CasePrintViewContainer>
+    </NavigableContainer>
   );
 };
 

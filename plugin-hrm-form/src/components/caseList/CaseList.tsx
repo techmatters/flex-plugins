@@ -67,7 +67,6 @@ const CaseList: React.FC<Props> = ({
   fetchCaseListError,
   openCaseDetails,
   closeCaseDetails,
-  closeContactDetails,
   caseList,
   caseCount,
   fetchError,
@@ -146,7 +145,7 @@ const CaseList: React.FC<Props> = ({
     return (
       <StandaloneSearchContainer>
         <CaseLayout>
-          <ViewContact onClickClose={closeContactDetails} contactId={routing.id} task={standaloneTask} />
+          <ViewContact contactId={routing.id} task={standaloneTask} />
         </CaseLayout>
       </StandaloneSearchContainer>
     );
@@ -184,7 +183,6 @@ const mapDispatchToProps = dispatch => {
     fetchCaseListError: error => dispatch(ListContent.fetchCaseListError(error)),
     openCaseDetails: () => dispatch(newOpenModalAction({ route: 'case', subroute: 'home' }, standaloneTask.taskSid)),
     closeCaseDetails: () => dispatch(newCloseModalAction(standaloneTask.taskSid)),
-    closeContactDetails: () => dispatch(newCloseModalAction(standaloneTask.taskSid)),
   };
 };
 

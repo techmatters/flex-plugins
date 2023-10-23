@@ -18,13 +18,16 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { useForm } from 'react-hook-form';
+import Close from '@material-ui/icons/Close';
 
 import ActionHeader from '../case/ActionHeader';
-import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyles';
+import { BottomButtonBar, Box, HeaderCloseButton, HiddenText, Row, StyledNextStepButton } from '../../styles/HrmStyles';
 import { BoldDescriptionText, CSAMReportContainer, CSAMReportLayout } from '../../styles/CSAMReport';
 import { addMargin, getInputType } from '../common/forms/formGenerators';
 import { CSAMReportType } from '../../states/csam-report/types';
 import { externalReportDefinition } from './CSAMReportFormDefinition';
+import { CaseActionTitle } from '../../styles/case';
+import useFocus from '../../utils/useFocus';
 
 type Props = {
   renderContactDetails?: boolean;
@@ -54,14 +57,30 @@ const CSAMReportTypePicker: React.FC<Props> = ({
     );
   }, [getValues, pickReportType, reportType]);
 
+  const focusElementRef = useFocus();
   return (
     <CSAMReportContainer data-testid="CSAMReport-TypePicker">
       <CSAMReportLayout>
+        <Row style={{ width: '100%' }}>
+          <CaseActionTitle style={{ marginTop: 'auto' }}>
+            <Template code="Contact-ExternalReport" />
+          </CaseActionTitle>
+          <HeaderCloseButton
+            onClick={onClickClose}
+            data-testid="Case-CloseCross"
+            ref={ref => {
+              focusElementRef.current = ref;
+            }}
+          >
+            <HiddenText>
+              <Template code="Case-CloseButton" />
+            </HiddenText>
+            <Close />
+          </HeaderCloseButton>
+        </Row>
         <ActionHeader
           added={new Date()}
           codeTemplate="CSAMCLC-ActionHeaderAdded"
-          titleTemplate="Contact-ExternalReport"
-          onClickClose={onClickClose}
           addingCounsellor={counselor}
           focusCloseButton={true}
         />

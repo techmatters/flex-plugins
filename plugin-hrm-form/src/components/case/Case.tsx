@@ -263,7 +263,6 @@ const Case: React.FC<Props> = ({
 
     const addScreenProps = {
       task,
-      routing,
       counselor: currentCounselor,
       counselorsHash,
       definitionVersion,
@@ -275,14 +274,7 @@ const Case: React.FC<Props> = ({
       extraAddEditProps: Partial<AddEditCaseItemProps> = {},
     ) => {
       if (isViewCaseSectionRoute(routing)) {
-        return (
-          <ViewCaseItem
-            {...addScreenProps}
-            routing={routing}
-            sectionApi={sectionApi}
-            canEdit={() => can(editPermission)}
-          />
-        );
+        return <ViewCaseItem {...addScreenProps} sectionApi={sectionApi} canEdit={() => can(editPermission)} />;
       }
       return (
         <AddEditCaseItem
@@ -291,7 +283,6 @@ const Case: React.FC<Props> = ({
             ...extraAddEditProps,
             sectionApi,
           }}
-          routing={routing}
         />
       );
     };
@@ -336,6 +327,7 @@ const Case: React.FC<Props> = ({
           counselorsHash,
           onClickClose: goBack,
           definitionVersion,
+          task,
         }}
       />
     );

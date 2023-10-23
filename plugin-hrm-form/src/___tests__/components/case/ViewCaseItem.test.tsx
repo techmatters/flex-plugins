@@ -141,12 +141,6 @@ describe('Test ViewHousehold', () => {
       definitionVersion: mockV1,
       task: task as StandaloneITask,
       sectionApi: householdSectionApi,
-      routing: {
-        route: 'case',
-        subroute: NewCaseSubroutes.Household,
-        action: CaseItemAction.View,
-        id: 'HOUSEHOLD_2',
-      },
       canEdit: () => true,
     };
   });
@@ -160,17 +154,9 @@ describe('Test ViewHousehold', () => {
       </StorelessThemeProvider>,
     );
 
-    expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument();
+    expect(screen.getByTestId('NavigableContainer-BackButton')).toBeInTheDocument();
     expect(screen.getByTestId('Case-EditButton')).toBeInTheDocument();
-    screen.getByTestId('Case-CloseCross').click();
-
-    expect(store.dispatch).toHaveBeenCalledWith(newGoBackAction(task.taskSid));
-
-    store.dispatch.mockClear();
-    expect(store.dispatch).not.toHaveBeenCalled();
-
-    expect(screen.getByTestId('Case-CloseButton')).toBeInTheDocument();
-    screen.getByTestId('Case-CloseButton').click();
+    screen.getByTestId('NavigableContainer-BackButton').click();
 
     expect(store.dispatch).toHaveBeenCalledWith(newGoBackAction(task.taskSid));
   });
@@ -182,7 +168,7 @@ describe('Test ViewHousehold', () => {
         </Provider>
       </StorelessThemeProvider>,
     );
-    expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument();
+    expect(screen.getByTestId('NavigableContainer-BackButton')).toBeInTheDocument();
     expect(screen.queryByTestId('Case-EditButton')).toBeNull();
   });
 

@@ -18,7 +18,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { Container } from '../../styles/HrmStyles';
 import { CaseLayout } from '../../styles/case';
 import { RootState } from '../../states';
 import ContactDetails from '../contact/ContactDetails';
@@ -30,43 +29,34 @@ const mapStateToProps = (
   { [namespace]: { activeContacts, configuration, connectedCase: connectedCaseState } }: RootState,
   { task, contactId }: OwnProps,
 ) => {
-  const editContactFormOpen = activeContacts.editingContact;
   const { connectedCase } = connectedCaseState.tasks[task.taskSid];
   if (connectedCase) {
     const contact = activeContacts.existingContacts[contactId]?.savedContact;
-    const definitionVersion = configuration.definitionVersions[contact.rawJson.definitionVersion];
     const enableEditing = Boolean(connectedCase.connectedContacts?.find(cc => cc.id?.toString() === contactId));
     return {
-      connectedCase,
-      editContactFormOpen,
       contact,
       enableEditing,
-      definitionVersion,
     };
   }
-  return { editContactFormOpen };
+  return {};
 };
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
   contactId: string;
-  onClickClose: () => void;
 };
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
-const ViewContact: React.FC<Props> = ({ editContactFormOpen, contactId, enableEditing, task, onClickClose }) => {
+const ViewContact: React.FC<Props> = ({ contactId, enableEditing, task }) => {
   return (
     <CaseLayout>
-      <Container removePadding={editContactFormOpen}>
-        <ContactDetails
-          contactId={contactId}
-          enableEditing={enableEditing}
-          context={DetailsContext.CASE_DETAILS}
-          task={task}
-          onClose={onClickClose}
-        />
-      </Container>
+      <ContactDetails
+        contactId={contactId}
+        enableEditing={enableEditing}
+        context={DetailsContext.CASE_DETAILS}
+        task={task}
+      />
     </CaseLayout>
   );
 };

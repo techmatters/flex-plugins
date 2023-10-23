@@ -90,6 +90,9 @@ const NavigableContainer: React.FC<Props> = ({
           <StyledBackButton onClick={onGoBack} data-testid="NavigableContainer-BackButton">
             <Row style={{ paddingTop: '7px' }}>
               <LargeBackIcon />
+              <HiddenText>
+                <Template code="NavigableContainer-BackButton" />
+              </HiddenText>
             </Row>
           </StyledBackButton>
         )}
@@ -103,7 +106,7 @@ const NavigableContainer: React.FC<Props> = ({
             style={{ marginRight: '15px', opacity: '.75' }}
           >
             <HiddenText>
-              <Template code="Case-CloseButton" />
+              <Template code="NavigableContainer-CloseButton" />
             </HiddenText>
             <Close />
           </HeaderCloseButton>

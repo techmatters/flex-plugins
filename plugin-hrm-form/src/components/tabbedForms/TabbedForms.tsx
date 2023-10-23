@@ -205,7 +205,7 @@ const TabbedForms: React.FC<Props> = ({
   if (currentRoute.route === 'contact') {
     return (
       <CaseLayout>
-        <ViewContact onClickClose={closeModal} contactId={currentRoute.id} task={task} />
+        <ViewContact contactId={currentRoute.id} task={task} />
       </CaseLayout>
     );
   }

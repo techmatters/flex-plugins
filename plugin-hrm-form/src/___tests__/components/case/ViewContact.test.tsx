@@ -33,6 +33,7 @@ import { RootState } from '../../../states';
 import { DetailsContext, TOGGLE_DETAIL_EXPANDED_ACTION } from '../../../states/contacts/contactDetails';
 import { connectedCaseBase, csamReportBase } from '../../../states/storeNamespaces';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
+import { newCloseModalAction } from '../../../states/routing/actions';
 
 jest.mock('@twilio/flex-ui', () => ({
   ...jest.requireActual('@twilio/flex-ui'),
@@ -203,7 +204,7 @@ describe('View Contact', () => {
     render(
       <Provider store={store}>
         <StorelessThemeProvider themeConf={themeConf}>
-          <ViewContact contactId="TEST_ID" task={task as any} onClickClose={jest.fn()} />
+          <ViewContact contactId="TEST_ID" task={task as any} />
         </StorelessThemeProvider>
       </Provider>,
     );
@@ -214,13 +215,12 @@ describe('View Contact', () => {
   });
 
   test('click on close button', async () => {
-    const onClickClose = jest.fn();
     const store = mockStore(initialState);
 
     render(
       <Provider store={store}>
         <StorelessThemeProvider themeConf={themeConf}>
-          <ViewContact contactId="TEST_ID" task={task as any} onClickClose={onClickClose} />
+          <ViewContact contactId="TEST_ID" task={task as any} />
         </StorelessThemeProvider>
       </Provider>,
     );
@@ -228,19 +228,19 @@ describe('View Contact', () => {
     await waitFor(() => expect(screen.getByTestId('NavigableContainer-CloseCross')).toBeInTheDocument());
 
     screen.getByTestId('NavigableContainer-CloseCross').click();
-
-    expect(onClickClose).toHaveBeenCalled();
+    const actions = store.getActions();
+    expect(actions[actions.length - 1]).toStrictEqual(newCloseModalAction(task.taskSid));
   });
 
   test('click on expand section sends toggle action', async () => {
     const store = mockStore(initialState);
 
     render(
-      <Provider store={store}>
-        <StorelessThemeProvider themeConf={themeConf}>
-          <ViewContact contactId="TEST_ID" task={task as any} onClickClose={jest.fn()} />
-        </StorelessThemeProvider>
-      </Provider>,
+      <StorelessThemeProvider themeConf={themeConf}>
+        <Provider store={store}>
+          <ViewContact contactId="TEST_ID" task={task as any} />
+        </Provider>
+      </StorelessThemeProvider>,
     );
 
     await waitFor(() => expect(screen.getByTestId('ContactDetails-Section-ChildInformation')).toBeInTheDocument());
@@ -259,7 +259,7 @@ describe('View Contact', () => {
     const wrapper = mount(
       <Provider store={store}>
         <StorelessThemeProvider themeConf={themeConf}>
-          <ViewContact contactId="TEST_ID" task={task as any} onClickClose={jest.fn()} />
+          <ViewContact contactId="TEST_ID" task={task as any} />
         </StorelessThemeProvider>
       </Provider>,
     );

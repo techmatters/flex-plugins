@@ -75,6 +75,7 @@ const ContactDetails: React.FC<Props> = ({
   clearContactDraft,
   currentRoute,
   openFormConfirmDialog,
+  ...otherProps
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const version = savedContact?.rawJson.definitionVersion;
@@ -165,6 +166,7 @@ const ContactDetails: React.FC<Props> = ({
         task={task}
         onCloseModal={onEditFormClose(formPath, 'close')}
         onGoBack={onEditFormClose(formPath, 'back')}
+        {...otherProps}
       >
         <EditContactSection
           context={context}
@@ -209,7 +211,12 @@ const ContactDetails: React.FC<Props> = ({
   }
 
   return (
-    <NavigableContainer titleCode={`#${contactId} ${childOrUnknown}`} onCloseModal={closeContactModal} task={task}>
+    <NavigableContainer
+      titleCode={`#${contactId} ${childOrUnknown}`}
+      onCloseModal={closeContactModal}
+      task={task}
+      {...otherProps}
+    >
       <ContactDetailsHome
         task={task}
         context={context}
