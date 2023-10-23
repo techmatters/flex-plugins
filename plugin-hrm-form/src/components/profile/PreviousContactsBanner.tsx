@@ -82,11 +82,10 @@ const PreviousContactsBanner: React.FC<Props> = ({
         const data = await getIdentiferByIdentifier(contactIdentifier);
         setIdentifierData(data);
 
-        const profile = data?.profiles?.[0];
-        const profileId = profile?.id;
-
-        if (!profileId) return;
-        addProfileState(profileId, profile);
+        data?.profiles?.forEach(profile => {
+          if (profile.id === undefined) return;
+          addProfileState(profile.id, profile);
+        });
       } catch (error) {
         console.error('Error fetching profile data', error);
       }
@@ -118,10 +117,13 @@ const PreviousContactsBanner: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [previousContacts]);
 
-  const contactsCount = identifierData?.profiles?.[0]?.contactsCount || previousContacts?.contacts?.count || 0;
+  // Ugh. The previous contacts count is off by one because we immediately create a contact when a task is created.
+  // contacts should really have a status so we can filter out the "active" contact on the db side.
+  const contactsCount = identifierData?.profiles?.[0]?.contactsCount - 1 || previousContacts?.contacts?.count || 0;
   const casesCount = identifierData?.profiles?.[0]?.casesCount || previousContacts?.cases?.count || 0;
 
-  const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
+  // We immediately create a contact when a task is created, so we don't want to show the banner
+  const shouldDisplayBanner = contactsCount > 1 || casesCount > 0;
   if (!shouldDisplayBanner) return null;
 
   const handleClickViewRecords = async () => {

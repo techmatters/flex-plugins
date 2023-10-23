@@ -17,6 +17,7 @@
 import * as t from './types';
 import { loadProfileReducer, shouldUseLoadProfileReducer } from './loadProfile';
 import { loadRelationshipsReducer, shouldUseLoadRelationshipsReducer } from './loadRelationships';
+import loadProfileEntryIntoRedux from './loadProfileEntryIntoRedux';
 
 const newProfileEntry: t.ProfileEntry = {
   currentTab: t.PROFILE_TABS.details,
@@ -43,7 +44,6 @@ const initialState: t.ProfileState = {
 const boundLoadProfileReducer = loadProfileReducer(initialState);
 const boundLoadRelationshipsReducer = loadRelationshipsReducer(initialState);
 
-// eslint-disable-next-line complexity
 export function reduce(state = initialState, action: t.ProfileActions): t.ProfileState {
   if (shouldUseLoadProfileReducer(action)) {
     return boundLoadProfileReducer(state, action);
@@ -55,23 +55,20 @@ export function reduce(state = initialState, action: t.ProfileActions): t.Profil
 
   switch (action.type) {
     case t.ADD_PROFILE_STATE: {
-      return {
-        ...state,
-        profiles: {
-          ...state.profiles,
-          [action.profileId]: { ...newProfileEntry, profile: action.profile },
-        },
+      const profile = state.profiles[action.profileId];
+      const profileUpdate = {
+        ...newProfileEntry,
+        ...profile,
+        profile: action.profile,
       };
+
+      return loadProfileEntryIntoRedux(state, action.profileId, profileUpdate);
     }
     case t.CHANGE_PROFILE_TAB: {
       const profile = state.profiles[action.profileId];
-      return {
-        ...state,
-        profiles: {
-          ...state.profiles,
-          [action.profileId]: { ...profile, currentTab: action.tab },
-        },
-      };
+      const profileUpdate = { ...profile, currentTab: action.tab };
+
+      return loadProfileEntryIntoRedux(state, action.profileId, profileUpdate);
     }
 
     case t.SET_CURRENT_PROFILE:
