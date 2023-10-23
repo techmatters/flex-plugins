@@ -43,7 +43,7 @@ import * as ListContent from '../../states/caseList/listContent';
 import { getHrmConfig } from '../../hrmConfig';
 import { namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import { changeRoute, newCloseModalAction, newGoBackAction } from '../../states/routing/actions';
+import { newCloseModalAction, newOpenModalAction } from '../../states/routing/actions';
 import ViewContact from '../case/ViewContact';
 
 export const CASES_PER_PAGE = 10;
@@ -182,8 +182,8 @@ const mapDispatchToProps = dispatch => {
     fetchCaseListSuccess: (caseList: CaseType[], caseCount: number) =>
       dispatch(ListContent.fetchCaseListSuccess(caseList, caseCount)),
     fetchCaseListError: error => dispatch(ListContent.fetchCaseListError(error)),
-    openCaseDetails: () => dispatch(changeRoute({ route: 'case', subroute: 'home' }, standaloneTask.taskSid)),
-    closeCaseDetails: () => dispatch(newGoBackAction(standaloneTask.taskSid)),
+    openCaseDetails: () => dispatch(newOpenModalAction({ route: 'case', subroute: 'home' }, standaloneTask.taskSid)),
+    closeCaseDetails: () => dispatch(newCloseModalAction(standaloneTask.taskSid)),
     closeContactDetails: () => dispatch(newCloseModalAction(standaloneTask.taskSid)),
   };
 };

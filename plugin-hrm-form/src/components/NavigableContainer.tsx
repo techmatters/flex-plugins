@@ -19,6 +19,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import React from 'react';
 import { Close } from '@material-ui/icons';
+import { StyledProps } from '@material-ui/core';
 
 import { namespace } from '../states/storeNamespaces';
 import { RootState } from '../states';
@@ -28,15 +29,8 @@ import { changeRoute, newCloseModalAction, newGoBackAction } from '../states/rou
 import { Contact, CustomITask, StandaloneITask } from '../types/types';
 import * as CaseActions from '../states/case/actions';
 import * as RoutingActions from '../states/routing/actions';
-import {
-  Container,
-  HeaderCloseButton,
-  HiddenText,
-  NavigableContainerTitle,
-  Row,
-  StyledBackButton,
-  LargeBackIcon,
-} from '../styles/HrmStyles';
+import { HeaderCloseButton, HiddenText, Row, StyledBackButton } from '../styles/HrmStyles';
+import { LargeBackIcon, NavigableContainerBox, NavigableContainerTitle } from '../styles/NavigableContainerStyles';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -76,7 +70,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
+type Props = OwnProps & ConnectedProps<typeof connector> & StyledProps;
 
 const NavigableContainer: React.FC<Props> = ({
   children,
@@ -87,9 +81,10 @@ const NavigableContainer: React.FC<Props> = ({
   titleCode,
   hasHistory,
   isModal,
+  ...boxProps
 }) => {
   return (
-    <Container modal={isModal} style={{ paddingTop: '20px' }}>
+    <NavigableContainerBox modal={isModal} {...boxProps}>
       <Row style={{ alignItems: 'start' }}>
         {hasHistory && (
           <StyledBackButton onClick={onGoBack} data-testid="NavigableContainer-BackButton">
@@ -115,7 +110,7 @@ const NavigableContainer: React.FC<Props> = ({
         )}
       </Row>
       {children}
-    </Container>
+    </NavigableContainerBox>
   );
 };
 

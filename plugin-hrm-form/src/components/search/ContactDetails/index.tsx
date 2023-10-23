@@ -18,11 +18,9 @@
 /* eslint-disable react/require-default-props */
 
 import React, { useEffect, useState } from 'react';
-import { Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState } from '../../../states';
-import { Container } from '../../../styles/HrmStyles';
 import GeneralContactDetails from '../../contact/ContactDetails';
 import ConnectDialog from '../ConnectDialog';
 import { Contact, CustomITask } from '../../../types/types';
@@ -61,7 +59,6 @@ const ContactDetails: React.FC<Props> = ({
   handleSelectSearchResult,
   loadContactIntoState,
   releaseContactFromState,
-  editContactFormOpen,
   isCallTypeCaller,
 }: Props) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -90,7 +87,7 @@ const ContactDetails: React.FC<Props> = ({
     setAnchorEl(e.currentTarget);
   };
   return (
-    <Container removePadding={editContactFormOpen} data-testid="ContactDetails">
+    <>
       <ConnectDialog
         task={task}
         anchorEl={anchorEl}
@@ -109,7 +106,7 @@ const ContactDetails: React.FC<Props> = ({
         task={task}
         onClose={handleBackToResults}
       />
-    </Container>
+    </>
   );
 };
 

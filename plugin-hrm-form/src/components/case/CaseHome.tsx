@@ -259,8 +259,8 @@ const CaseHome: React.FC<Props> = ({
           </Box>
         )}
       </CaseContainer>
-      <BottomButtonBar>
-        {isCreating && (
+      {isCreating && (
+        <BottomButtonBar>
           <>
             <Box marginRight="15px">
               <StyledNextStepButton
@@ -276,22 +276,8 @@ const CaseHome: React.FC<Props> = ({
               <Template code="BottomBar-SaveAndEnd" />
             </StyledNextStepButton>
           </>
-        )}
-        {!isCreating && (
-          <>
-            <Box marginRight="15px">
-              <StyledNextStepButton
-                data-testid="CaseHome-CloseButton"
-                secondary="true"
-                roundCorners
-                onClick={handleClose}
-              >
-                <Template code="BottomBar-Close" />
-              </StyledNextStepButton>
-            </Box>
-          </>
-        )}
-      </BottomButtonBar>
+        </BottomButtonBar>
+      )}
     </NavigableContainer>
   );
 };
