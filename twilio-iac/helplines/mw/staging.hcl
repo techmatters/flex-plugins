@@ -20,7 +20,7 @@ locals {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/webchat-basic.tftpl"
         channel_flow_vars = {
 
         }
@@ -29,7 +29,7 @@ locals {
       facebook : {
         channel_type     = "facebook"
         contact_identity = "messenger:103647528912458"
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
