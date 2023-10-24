@@ -36,7 +36,9 @@ import { changeRoute as changeRouteAction } from '../../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../permissions';
 import { CustomITask, isTwilioTask } from '../../types/types';
-import { configurationBase, contactFormsBase, namespace, searchContactsBase } from '../../states/storeNamespaces';
+import { namespace } from '../../states/storeNamespaces';
+import { isRouteModal } from '../../states/routing/types';
+import { getCurrentBaseRoute } from '../../states/routing/getRoute';
 
 type OwnProps = {
   task: CustomITask;
@@ -54,9 +56,9 @@ const PreviousContactsBanner: React.FC<Props> = ({
   searchContacts,
   searchCases,
   changeRoute,
-  editContactFormOpen,
   addProfileState,
   setCurrentProfile,
+  modalOpen,
 }) => {
   let localizedSourceFromTask: { [channelType in ChannelTypes]: string };
   let contactIdentifier: string;
@@ -138,8 +140,9 @@ const PreviousContactsBanner: React.FC<Props> = ({
   };
 
   return (
-    <div className={editContactFormOpen ? 'editingContact' : ''}>
-      <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenEditingContact">
+    <div className={modalOpen ? 'editingContact' : ''}>
+      <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
+        {/* eslint-disable-next-line prettier/prettier */}
         <pre>
           <Template code="PreviousContacts-ThereAre" />{' '}
           {contactsCount === 1 ? (
@@ -181,17 +184,18 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
 PreviousContactsBanner.displayName = 'PreviousContactsBanner';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const searchContactsState = state[namespace][searchContactsBase];
-  const taskId = ownProps.task.taskSid;
-  const taskSearchState = searchContactsState.tasks[taskId];
-  const { counselors } = state[namespace][configurationBase];
-  const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
+const mapStateToProps = (
+  { [namespace]: { searchContacts, configuration, activeContacts, routing } }: RootState,
+  { task: { taskSid } }: OwnProps,
+) => {
+  const taskSearchState = searchContacts.tasks[taskSid];
+  const { counselors } = configuration;
+  const modalOpen = activeContacts.editingContact || isRouteModal(getCurrentBaseRoute(routing, taskSid));
 
   return {
     previousContacts: taskSearchState.previousContacts,
     counselorsHash: counselors.hash,
-    editContactFormOpen,
+    modalOpen,
   };
 };
 

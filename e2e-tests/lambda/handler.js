@@ -16,15 +16,15 @@
 
 const { spawn } = require('child_process');
 
-module.exports.handler = async (event, context) => {
+module.exports.handler = async (event) => {
   const env = { ...process.env };
 
-  const { testName } = event;
+  const { testName, npmScript } = event;
   if (testName) {
     env.TEST_NAME = testName;
   }
 
-  const cmd = spawn('npm', ['-loglevel silent', 'run', 'test'], {
+  const cmd = spawn('npm', ['-loglevel silent', 'run', npmScript || 'test'], {
     stdio: 'inherit',
     stderr: 'inherit',
     env,

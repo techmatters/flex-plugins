@@ -141,7 +141,7 @@ describe('useState mocked', () => {
           },
         },
       },
-      [routingBase]: { tasks: { task1: { route: 'new-case' } } },
+      [routingBase]: { tasks: { task1: [{ route: 'case', subroute: 'home' }] } },
     });
 
     const setState = jest.fn();
@@ -204,12 +204,13 @@ describe('useState mocked', () => {
     screen.getByText('Case-Note').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
-        route: 'new-case',
+        route: 'case',
         subroute: NewCaseSubroutes.Note,
         action: CaseItemAction.Add,
       },
       taskId: 'task1',
-      type: 'CHANGE_ROUTE',
+      replace: false,
+      type: 'routing/change-route',
     });
   });
 
@@ -228,12 +229,13 @@ describe('useState mocked', () => {
     screen.getByText('Case-Referral').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
-        route: 'new-case',
+        route: 'case',
         subroute: NewCaseSubroutes.Referral,
         action: CaseItemAction.Add,
       },
       taskId: 'task1',
-      type: 'CHANGE_ROUTE',
+      replace: false,
+      type: 'routing/change-route',
     });
   });
 
@@ -252,12 +254,13 @@ describe('useState mocked', () => {
     screen.getByText('Case-Household').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
-        route: 'new-case',
+        route: 'case',
         subroute: NewCaseSubroutes.Household,
         action: CaseItemAction.Add,
       },
       taskId: 'task1',
-      type: 'CHANGE_ROUTE',
+      replace: false,
+      type: 'routing/change-route',
     });
   });
 
@@ -276,12 +279,13 @@ describe('useState mocked', () => {
     screen.getByText('Case-Perpetrator').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
-        route: 'new-case',
+        route: 'case',
         subroute: NewCaseSubroutes.Perpetrator,
         action: CaseItemAction.Add,
       },
       taskId: 'task1',
-      type: 'CHANGE_ROUTE',
+      replace: false,
+      type: 'routing/change-route',
     });
   });
 
@@ -302,13 +306,14 @@ describe('useState mocked', () => {
 
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
-        route: 'new-case',
+        route: 'case',
         subroute: NewCaseSubroutes.Household,
         action: CaseItemAction.View,
         id: 'HOUSEHOLD_ID',
       },
       taskId: 'task1',
-      type: 'CHANGE_ROUTE',
+      replace: false,
+      type: 'routing/change-route',
     });
   });
 
@@ -329,13 +334,14 @@ describe('useState mocked', () => {
 
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
-        route: 'new-case',
+        route: 'case',
         subroute: NewCaseSubroutes.Perpetrator,
         action: CaseItemAction.View,
         id: 'PERPETRATOR_ID',
       },
       taskId: 'task1',
-      type: 'CHANGE_ROUTE',
+      replace: false,
+      type: 'routing/change-route',
     });
   });
 
@@ -355,12 +361,14 @@ describe('useState mocked', () => {
     screen.getByText('Case-EditButton').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
-        route: 'new-case',
+        route: 'case',
         subroute: NewCaseSubroutes.CaseSummary,
         action: CaseItemAction.Edit,
+        id: '',
       },
       taskId: 'task1',
-      type: 'CHANGE_ROUTE',
+      replace: false,
+      type: 'routing/change-route',
     });
   });
 
