@@ -51,7 +51,7 @@ const ProfileDetails: React.FC<Props> = ({ profileId, profile }) => {
 
 const mapStateToProps = (state: RootState, { profileId }) => {
   const currentProfileState = getCurrentProfileState(state, profileId);
-  const { profile } = currentProfileState;
+  const { data: profile } = currentProfileState;
 
   return {
     profile,

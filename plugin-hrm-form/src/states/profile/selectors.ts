@@ -20,3 +20,6 @@ import * as t from './types';
 
 export const getCurrentProfileState = (state: RootState, profileId: t.Profile['id']) =>
   state[namespace][profileBase].profiles[profileId];
+
+export const getIdentiferByIdentifier = (state: RootState, identifier: t.Identifier['identifier']) =>
+  Object.values(state[namespace][profileBase].identifiers).find(entry => entry.data?.identifier === identifier);

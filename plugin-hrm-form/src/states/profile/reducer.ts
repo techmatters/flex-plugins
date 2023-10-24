@@ -15,34 +15,20 @@
  */
 
 import * as t from './types';
+import { loadIdentifierReducer, shouldUseLoadIdentifierReducer } from './loadIdentifier';
 import { loadProfileReducer, shouldUseLoadProfileReducer } from './loadProfile';
 import { loadRelationshipsReducer, shouldUseLoadRelationshipsReducer } from './loadRelationships';
-import loadProfileEntryIntoRedux from './loadProfileEntryIntoRedux';
 
-const newProfileEntry: t.ProfileEntry = {
-  error: undefined,
-  loading: false,
-  profile: undefined,
-  contacts: {
-    exhausted: false,
-    loading: false,
-    page: 0,
-  },
-  cases: {
-    exhausted: false,
-    loading: false,
-    page: 0,
-  },
-};
+const boundLoadIdentifierReducer = loadIdentifierReducer(t.initialState);
+const boundLoadProfileReducer = loadProfileReducer(t.initialState);
+const boundLoadRelationshipsReducer = loadRelationshipsReducer(t.initialState);
 
-const initialState: t.ProfileState = {
-  profiles: {},
-};
+export function reduce(state = t.initialState, action: t.ProfileActions): t.ProfileState {
+  console.log('>>> action', action);
+  if (shouldUseLoadIdentifierReducer(action)) {
+    return boundLoadIdentifierReducer(state, action);
+  }
 
-const boundLoadProfileReducer = loadProfileReducer(initialState);
-const boundLoadRelationshipsReducer = loadRelationshipsReducer(initialState);
-
-export function reduce(state = initialState, action: t.ProfileActions): t.ProfileState {
   if (shouldUseLoadProfileReducer(action)) {
     return boundLoadProfileReducer(state, action);
   }
@@ -51,20 +37,5 @@ export function reduce(state = initialState, action: t.ProfileActions): t.Profil
     return boundLoadRelationshipsReducer(state, action);
   }
 
-  // eslint-disable-next-line sonarjs/no-small-switch
-  switch (action.type) {
-    case t.ADD_PROFILE_STATE: {
-      const profile = state.profiles[action.profileId];
-      const profileUpdate = {
-        ...newProfileEntry,
-        ...profile,
-        profile: action.profile,
-      };
-
-      return loadProfileEntryIntoRedux(state, action.profileId, profileUpdate);
-    }
-
-    default:
-      return state;
-  }
+  return state;
 }

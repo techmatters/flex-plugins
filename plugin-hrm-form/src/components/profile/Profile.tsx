@@ -47,6 +47,10 @@ const Profile: React.FC<Props> = ({ currentTab, profileId, profile, changeProfil
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileId]);
 
+  if (!profile) {
+    return null;
+  }
+
   const { contactsCount, casesCount } = profile;
   const tabs = [
     {
@@ -104,10 +108,11 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const profileId = (route as ProfileRoute).id;
   const currentTab = (route as ProfileRoute).subroute || 'details';
   const currentProfileState = profileState.profiles[profileId];
+  const { data: profile } = currentProfileState;
 
   return {
     currentTab,
-    profile: currentProfileState.profile,
+    profile,
     profileId,
   };
 };

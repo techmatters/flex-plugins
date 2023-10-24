@@ -52,8 +52,9 @@ const handleLoadProfileFulfilledAction = (state: t.ProfileState, action: any) =>
   const { profileId } = action.meta;
 
   const profileUpdate = {
-    profile: {
-      ...state.profiles[profileId].profile,
+    data: {
+      ...t.newProfileEntry,
+      ...state.profiles[profileId].data,
       ...action.payload,
     },
   };

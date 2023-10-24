@@ -14,15 +14,16 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Case, Contact, Profile } from '../../types/types';
+import { Case, Contact, Identifier, Profile } from '../../types/types';
 import { getProfileContacts, getProfileCases } from '../../services/ProfileService';
 import { ParseFetchErrorResult } from '../parseFetchError';
 
-export type { Case, Contact, Identifier, Profile } from '../../types/types';
+export type { Case, Contact, Identifier, Profile };
 
 // Action types
 export const ADD_PROFILE_STATE = 'ADD_PROFILE_STATE';
 export const INCREMENT_PAGE = 'INCREMENT_PAGE';
+export const LOAD_IDENTIFIER_BY_IDENTIFIER = 'LOAD_IDENTIFIER_BY_IDENTIFIER';
 export const LOAD_PROFILE = 'LOAD_PROFILE';
 export const LOAD_RELATIONSHIP = 'LOAD_RELATIONSHIP';
 
@@ -57,10 +58,19 @@ export type ProfileEntry = {
   };
   error?: ParseFetchErrorResult;
   loading: boolean;
-  profile?: Profile;
+  data?: Profile;
+};
+
+export type IdentifierEntry = {
+  error?: ParseFetchErrorResult;
+  data?: Identifier;
+  loading: boolean;
 };
 
 export type ProfileState = {
+  identifiers: {
+    [identifierId: Identifier['id']]: IdentifierEntry;
+  };
   profiles: {
     [profileId: Profile['id']]: ProfileEntry;
   };
@@ -69,3 +79,30 @@ export type ProfileState = {
 type AddProfileState = { type: typeof ADD_PROFILE_STATE; profileId: Profile['id']; profile?: Profile };
 
 export type ProfileActions = AddProfileState;
+
+export const newProfileEntry: ProfileEntry = {
+  error: undefined,
+  loading: false,
+  data: undefined,
+  contacts: {
+    exhausted: false,
+    loading: false,
+    page: 0,
+  },
+  cases: {
+    exhausted: false,
+    loading: false,
+    page: 0,
+  },
+};
+
+export const newIdentifierEntry: IdentifierEntry = {
+  error: undefined,
+  loading: false,
+  data: undefined,
+};
+
+export const initialState: ProfileState = {
+  identifiers: {},
+  profiles: {},
+};

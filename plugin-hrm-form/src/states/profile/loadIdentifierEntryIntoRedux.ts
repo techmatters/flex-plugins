@@ -16,26 +16,42 @@
 
 import * as t from './types';
 
-const loadProfileEntryIntoRedux = (
+const loadIdentifierEntryIntoRedux = (
   state: t.ProfileState,
-  profileId: t.Profile['id'],
-  profileUpdate: Partial<t.ProfileEntry>,
+  identifierId: t.Identifier['id'],
+  identifierUpdate: Partial<t.IdentifierEntry>,
 ): t.ProfileState => {
-  const { profiles: oldProfiles } = state;
-  const existingProfile = oldProfiles[profileId];
-  const newProfile = {
-    ...existingProfile,
-    ...profileUpdate,
+  const { identifiers: oldIdentifiers, profiles } = state;
+  const existingIdentifier = oldIdentifiers[identifierId];
+  const newIdentifier = {
+    ...existingIdentifier,
+    ...identifierUpdate,
   };
-  const profiles = {
-    ...oldProfiles,
-    [profileId]: newProfile,
+  const identifiers = {
+    ...oldIdentifiers,
+    [identifierId]: newIdentifier,
   };
+
+  if (identifierUpdate.data?.profiles) {
+    identifierUpdate.data.profiles.forEach(profile => {
+      const existingProfile = profiles[profile.id];
+      const newProfile = {
+        ...t.newProfileEntry,
+        ...existingProfile,
+        data: {
+          ...existingProfile?.data,
+          ...profile,
+        },
+      };
+      profiles[profile.id] = newProfile;
+    });
+  }
 
   return {
     ...state,
+    identifiers,
     profiles,
   };
 };
 
-export default loadProfileEntryIntoRedux;
+export default loadIdentifierEntryIntoRedux;

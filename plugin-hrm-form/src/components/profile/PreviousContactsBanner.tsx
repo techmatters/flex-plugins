@@ -19,13 +19,15 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { getIdentiferByIdentifier } from '../../services/ProfileService';
+import asyncDispatch from '../../states/asyncDispatch';
 import {
   viewPreviousContacts as viewPreviousContactsAction,
   searchContacts as searchContactsAction,
   searchCases as searchCasesAction,
 } from '../../states/search/actions';
 import * as ProfileActions from '../../states/profile/actions';
+import * as ProfileSelectors from '../../states/profile/selectors';
+import * as ProfileTypes from '../../states/profile/types';
 import { RootState } from '../../states';
 import { CONTACTS_PER_PAGE, CASES_PER_PAGE } from '../search/SearchResults';
 import { YellowBanner } from '../../styles/previousContactsBanner';
@@ -49,18 +51,19 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const PreviousContactsBanner: React.FC<Props> = ({
-  task,
+  contactIdentifier,
   enableClientProfiles,
+  identifierEntry,
   previousContacts,
+  task,
   viewPreviousContacts,
   searchContacts,
   searchCases,
   changeRoute,
-  addProfileState,
+  loadIdentifierByIdentifier,
   modalOpen,
 }) => {
   let localizedSourceFromTask: { [channelType in ChannelTypes]: string };
-  let contactIdentifier: string;
   if (isTwilioTask(task)) {
     localizedSourceFromTask = {
       [channelTypes.web]: `${getContactValueTemplate(task)}`,
@@ -72,24 +75,11 @@ const PreviousContactsBanner: React.FC<Props> = ({
       [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
       [channelTypes.line]: 'PreviousContacts-LineUser',
     };
-    contactIdentifier = getFormattedNumberFromTask(task);
   }
 
-  const [identifierData, setIdentifierData] = useState(null);
-
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getIdentiferByIdentifier(contactIdentifier);
-        setIdentifierData(data);
-
-        data?.profiles?.forEach(profile => {
-          if (profile.id === undefined) return;
-          addProfileState(profile.id, profile);
-        });
-      } catch (error) {
-        console.error('Error fetching profile data', error);
-      }
+    const fetchData = () => {
+      loadIdentifierByIdentifier(contactIdentifier);
     };
     if (enableClientProfiles && contactIdentifier) fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -117,6 +107,10 @@ const PreviousContactsBanner: React.FC<Props> = ({
     performSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [previousContacts]);
+
+  const identifierData = identifierEntry?.data;
+
+  console.log('>>>identifierData', identifierData);
 
   // Ugh. The previous contacts count is off by one because we immediately create a contact when a task is created.
   // contacts should really have a status so we can filter out the "active" contact on the db side.
@@ -185,18 +179,30 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
 PreviousContactsBanner.displayName = 'PreviousContactsBanner';
 
-const mapStateToProps = (
-  { [namespace]: { searchContacts, configuration, activeContacts, routing } }: RootState,
-  { task: { taskSid } }: OwnProps,
-) => {
+const mapStateToProps = (state: RootState, { task }: OwnProps) => {
+  const { profile, searchContacts, routing, activeContacts, configuration } = state[namespace];
+  const { taskSid } = task;
   const taskSearchState = searchContacts.tasks[taskSid];
   const { counselors } = configuration;
   const modalOpen = activeContacts.editingContact || isRouteModal(getCurrentBaseRoute(routing, taskSid));
+
+  let contactIdentifier: ProfileTypes.Identifier['identifier'];
+  let identifierEntry: ProfileTypes.IdentifierEntry;
+  if (isTwilioTask(task)) {
+    console.log('>>>task', task);
+    contactIdentifier = getFormattedNumberFromTask(task);
+    console.log('>>>contactIdentifier', contactIdentifier);
+    console.log('>>>profile.identifiers', profile.identifiers);
+    identifierEntry = ProfileSelectors.getIdentiferByIdentifier(state, contactIdentifier);
+    console.log('>>>identifierEntry', identifierEntry);
+  }
 
   return {
     previousContacts: taskSearchState.previousContacts,
     counselorsHash: counselors.hash,
     modalOpen,
+    contactIdentifier,
+    identifierEntry,
   };
 };
 
@@ -209,7 +215,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     searchContacts: searchContactsAction(dispatch)(taskId),
     searchCases: searchCasesAction(dispatch)(taskId),
     changeRoute: routing => dispatch(changeRouteAction(routing, taskId)),
-    addProfileState: ProfileActions.addProfileState(dispatch),
+    loadIdentifierByIdentifier: identifier =>
+      asyncDispatch(dispatch)(ProfileActions.loadIdentifierByIdentifierAsync(identifier)),
   };
 };
 

@@ -20,8 +20,9 @@ import { Dispatch } from 'redux';
 import { Profile } from '../../types/types';
 import * as t from './types';
 
-export * from './loadRelationships';
+export * from './loadIdentifier';
 export * from './loadProfile';
+export * from './loadRelationships';
 
 // Action creators
 export const addProfileState = (dispatch: Dispatch<any>) => (profileId: Profile['id'], profile: Profile) => {
