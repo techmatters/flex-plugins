@@ -32,13 +32,9 @@ import { getAseloFeatureFlags } from '../hrmConfig';
 import { rerenderAgentDesktop } from '../rerenderView';
 import { updateDraft } from '../states/contacts/existingContacts';
 import { loadContactFromHrmByTaskSidAsyncAction } from '../states/contacts/saveContact';
-import {
-  configurationBase,
-  contactFormsBase,
-  namespace,
-  routingBase,
-  searchContactsBase,
-} from '../states/storeNamespaces';
+import { namespace } from '../states/storeNamespaces';
+import { isRouteModal } from '../states/routing/types';
+import { getCurrentBaseRoute } from '../states/routing/getRoute';
 
 type OwnProps = {
   task: CustomITask;
@@ -56,6 +52,7 @@ const TaskView: React.FC<Props> = props => {
     contact,
     updateHelpline,
     loadContactFromHrmByTaskSid,
+    isModalOpen,
   } = props;
 
   React.useEffect(() => {
@@ -113,9 +110,8 @@ const TaskView: React.FC<Props> = props => {
 
   return (
     <Flex flexDirection="column" style={{ pointerEvents: isFormLocked ? 'none' : 'auto', height: '100%' }}>
-      {featureFlags.enable_previous_contacts && (
-        <PreviousContactsBanner task={task} enableClientProfiles={featureFlags.enable_client_profiles} />
-      )}
+      {featureFlags.enable_previous_contacts && !isModalOpen && <PreviousContactsBanner task={task} />}
+
       {isFormLocked && <FormNotEditable />}
       <Flex
         flexDirection="column"
@@ -134,16 +130,18 @@ const TaskView: React.FC<Props> = props => {
 
 TaskView.displayName = 'TaskView';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+const mapStateToProps = (
+  { [namespace]: { configuration, activeContacts, routing, searchContacts } }: RootState,
+  ownProps: OwnProps,
+) => {
   const { task } = ownProps;
-  const { currentDefinitionVersion } = state[namespace][configurationBase];
+  const { currentDefinitionVersion } = configuration;
   // Check if the entry for this task exists in each reducer
   const { savedContact: contact } =
-    (task && Object.values(state[namespace][contactFormsBase]?.existingContacts).find(c => c.savedContact?.taskId)) ??
-    {};
+    (task && Object.values(activeContacts.existingContacts).find(c => c.savedContact?.taskId)) ?? {};
   const contactFormStateExists = Boolean(contact);
-  const routingStateExists = Boolean(task && state[namespace][routingBase].tasks[task.taskSid]);
-  const searchStateExists = Boolean(task && state[namespace][searchContactsBase].tasks[task.taskSid]);
+  const routingStateExists = Boolean(task && routing.tasks[task.taskSid]);
+  const searchStateExists = Boolean(task && searchContacts.tasks[task.taskSid]);
 
   const shouldRecreateState =
     currentDefinitionVersion && (!contactFormStateExists || !routingStateExists || !searchStateExists);
@@ -152,6 +150,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     contact,
     shouldRecreateState,
     currentDefinitionVersion,
+    isModalOpen: routingStateExists && isRouteModal(getCurrentBaseRoute(routing, task.taskSid)),
   };
 };
 

@@ -126,7 +126,6 @@ const TabbedForms: React.FC<Props> = ({
   csamClcReportEnabled,
   profileModalOpen,
   searchModalOpen,
-  editingContact,
   updateDraftForm,
   newCSAMReport,
   saveDraft,
@@ -286,13 +285,10 @@ const TabbedForms: React.FC<Props> = ({
       </Row>
     </Box>
   );
-  const statefulCssClasses = [
-    ...(searchModalOpen ? ['modalOpen'] : []),
-    ...(editingContact ? ['editingContact'] : []),
-  ].join(' ');
+
   return (
     <FormProvider {...methods}>
-      <div role="form" style={{ height: '100%' }} className={statefulCssClasses}>
+      <div role="form" style={{ height: '100%' }}>
         <TabbedFormsContainer>
           {/* Buttons at the top of the form */}
           <HeaderControlButtons />
@@ -371,7 +367,7 @@ const TabbedForms: React.FC<Props> = ({
               </>
             )}
           </div>
-          <div className="hiddenWhenModalOpen">
+          <div>
             <BottomBar
               contactId={savedContact.id}
               task={task}
@@ -397,7 +393,7 @@ const mapStateToProps = (
   { task: { taskSid }, contactId }: OwnProps,
 ) => {
   const currentRoute = getCurrentTopmostRouteForTask(routing, taskSid);
-  const { isCallTypeCaller, existingContacts, editingContact } = activeContacts;
+  const { isCallTypeCaller, existingContacts } = activeContacts;
   const { savedContact, draftContact, metadata } = existingContacts[contactId] || {};
   const baseRoute = getCurrentBaseRoute(routing, taskSid);
   const searchModalOpen =
@@ -413,7 +409,6 @@ const mapStateToProps = (
     currentDefinitionVersion,
     profileModalOpen,
     searchModalOpen,
-    editingContact,
     isCallTypeCaller,
     metadata,
   };
