@@ -24,17 +24,14 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
 
-import { CaseLayout } from '../../styles/case';
-import Case from '../case';
 import { RootState } from '../../states';
 import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute } from '../../states/routing/actions';
 import { emptyCategories } from '../../states/contacts/reducer';
-import { AppRoutes, NewCaseSubroutes, TabbedFormSubroutes } from '../../states/routing/types';
+import { AppRoutes, isRouteModal, TabbedFormSubroutes } from '../../states/routing/types';
 import { ContactRawJson, CustomITask, isOfflineContactTask, Contact, isOfflineContact } from '../../types/types';
 import { Box, Row, StyledTabs, TabbedFormsContainer, TabbedFormTabContainer } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
-import Search from '../search';
 import IssueCategorizationSectionForm from '../contact/IssueCategorizationSectionForm';
 import ContactDetailsSectionForm from '../contact/ContactDetailsSectionForm';
 import ContactlessTaskTab from './ContactlessTaskTab';
@@ -53,11 +50,11 @@ import { ContactDraftChanges, updateDraft } from '../../states/contacts/existing
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
-import { configurationBase, contactFormsBase, namespace, routingBase } from '../../states/storeNamespaces';
-import { setEditContactPageOpen } from '../../states/contacts/actions';
+import { namespace } from '../../states/storeNamespaces';
+import { getCurrentBaseRoute } from '../../states/routing/getRoute';
 
 // eslint-disable-next-line react/display-name
-const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
+const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
   switch (t) {
     case 'search':
       return <FormTab key="SearchTab" searchTab icon={<SearchIcon style={{ fontSize: '20px' }} />} />;
@@ -78,7 +75,7 @@ const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
 
 const isEmptyCallType = callType => [null, undefined, ''].includes(callType);
 
-const mapTabsToIndex = (contact: Contact, contactForm: Partial<ContactRawJson>): TabbedFormSubroutes[] => {
+const mapTabsToIndex = (contact: Contact, contactForm: Partial<ContactRawJson>): (TabbedFormSubroutes | 'search')[] => {
   const isCallerType = contactForm.callType === callTypes.caller;
 
   if (isOfflineContact(contact)) {
@@ -107,15 +104,15 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const TabbedForms: React.FC<Props> = ({
-  routing,
+  currentRoute,
   savedContact,
   draftContact,
   updatedContact,
   currentDefinitionVersion,
   csamReportEnabled,
   csamClcReportEnabled,
-  editContactFormOpen,
-  isCallTypeCaller,
+  modalOpen,
+  editingContact,
   updateDraftForm,
   newCSAMReport,
   saveDraft,
@@ -123,6 +120,7 @@ const TabbedForms: React.FC<Props> = ({
   openCSAMReport,
   backToCallTypeSelect,
   navigateToTab,
+  openSearch,
   task,
 }) => {
   const methods = useForm({
@@ -150,22 +148,11 @@ const TabbedForms: React.FC<Props> = ({
     else isMounted.current = true;
   }, [helpline, setValue]);
 
-  if (routing.route !== 'tabbed-forms') return null;
+  if (currentRoute.route !== 'tabbed-forms') return null;
 
   if (!currentDefinitionVersion) return null;
 
   const isCallerType = updatedContact.rawJson.callType === callTypes.caller;
-
-  const onSelectSearchResult = (searchResult: Contact) => {
-    const selectedIsCaller = searchResult.rawJson.callType === callTypes.caller;
-    if (isCallerType && selectedIsCaller && isCallTypeCaller) {
-      updateDraftForm({ callerInformation: searchResult.rawJson.callerInformation });
-      navigateToTab('callerInformation');
-    } else {
-      updateDraftForm({ childInformation: searchResult.rawJson.childInformation });
-      navigateToTab('childInformation');
-    }
-  };
 
   const handleBackButton = async () => {
     if (!hasTaskControl(task)) return;
@@ -179,21 +166,16 @@ const TabbedForms: React.FC<Props> = ({
   const handleTabsChange = async (t: number) => {
     const tab = tabsToIndex[t];
     await saveDraft(savedContact, draftContact);
-    navigateToTab(tab);
+    if (tab === 'search') {
+      openSearch();
+    } else {
+      navigateToTab(tab);
+    }
   };
 
-  const { subroute, autoFocus } = routing;
-  let tabIndex = tabsToIndex.findIndex(t => t === subroute);
+  const { subroute, autoFocus } = currentRoute;
 
-  // If the subroute is any from 'new case' we should focus on 'Search' tab and display the entire Case inside TabbedForms.
-  if (Object.values(NewCaseSubroutes).some(r => r === subroute)) {
-    tabIndex = tabsToIndex.findIndex(t => t === 'search');
-    return (
-      <CaseLayout>
-        <Case task={task} isCreating={false} />
-      </CaseLayout>
-    );
-  }
+  const tabIndex = tabsToIndex.findIndex(t => t === subroute);
 
   const optionalButtons =
     isOfflineContact(savedContact) && subroute === 'contactlessTask'
@@ -222,11 +204,11 @@ const TabbedForms: React.FC<Props> = ({
               csamReportEnabled={csamReportEnabled}
               handleChildCSAMType={() => {
                 newCSAMReport(CSAMReportTypes.CHILD);
-                openCSAMReport(routing);
+                openCSAMReport(currentRoute);
               }}
               handleCounsellorCSAMType={() => {
                 newCSAMReport(CSAMReportTypes.COUNSELLOR);
-                openCSAMReport(routing);
+                openCSAMReport(currentRoute);
               }}
             />
           </Box>
@@ -234,14 +216,17 @@ const TabbedForms: React.FC<Props> = ({
       </Row>
     </Box>
   );
+  const statefulCssClasses = [...(modalOpen ? ['modalOpen'] : []), ...(editingContact ? ['editingContact'] : [])].join(
+    ' ',
+  );
   return (
     <FormProvider {...methods}>
-      <div role="form" style={{ height: '100%' }} className={editContactFormOpen ? 'editingContact' : ''}>
+      <div role="form" style={{ height: '100%' }} className={statefulCssClasses}>
         <TabbedFormsContainer>
           {/* Buttons at the top of the form */}
           <HeaderControlButtons />
           <StyledTabs
-            className="hiddenWhenEditingContact"
+            className="hiddenWhenModalOpen"
             name="tab"
             variant="scrollable"
             scrollButtons="auto"
@@ -250,76 +235,72 @@ const TabbedForms: React.FC<Props> = ({
           >
             {tabs}
           </StyledTabs>
-          {subroute === 'search' ? (
-            <Search task={task} currentIsCaller={isCallerType} handleSelectSearchResult={onSelectSearchResult} />
-          ) : (
-            <div style={{ height: '100%', overflow: 'hidden' }}>
-              {isOfflineContactTask(task) && (
-                <TabbedFormTabContainer display={subroute === 'contactlessTask'}>
-                  <ContactlessTaskTab
-                    task={task}
-                    display={subroute === 'contactlessTask'}
-                    helplineInformation={currentDefinitionVersion.helplineInformation}
-                    definition={currentDefinitionVersion.tabbedForms.ContactlessTaskTab}
-                    initialValues={contactlessTask}
-                    autoFocus={autoFocus}
-                  />
-                </TabbedFormTabContainer>
-              )}
-              {isCallerType && (
-                <TabbedFormTabContainer display={subroute === 'callerInformation'}>
+          <div style={{ height: '100%', overflow: 'hidden' }}>
+            {isOfflineContactTask(task) && (
+              <TabbedFormTabContainer display={subroute === 'contactlessTask'}>
+                <ContactlessTaskTab
+                  task={task}
+                  display={subroute === 'contactlessTask'}
+                  helplineInformation={currentDefinitionVersion.helplineInformation}
+                  definition={currentDefinitionVersion.tabbedForms.ContactlessTaskTab}
+                  initialValues={contactlessTask}
+                  autoFocus={autoFocus}
+                />
+              </TabbedFormTabContainer>
+            )}
+            {isCallerType && (
+              <TabbedFormTabContainer display={subroute === 'callerInformation'}>
+                <ContactDetailsSectionForm
+                  tabPath="callerInformation"
+                  definition={currentDefinitionVersion.tabbedForms.CallerInformationTab}
+                  layoutDefinition={currentDefinitionVersion.layoutVersion.contact.callerInformation}
+                  initialValues={callerInformation}
+                  display={subroute === 'callerInformation'}
+                  autoFocus={autoFocus}
+                  updateForm={values => updateDraftForm({ callerInformation: values.callerInformation })}
+                  contactId={savedContact.id}
+                />
+              </TabbedFormTabContainer>
+            )}
+            {isDataCallType && (
+              <>
+                <TabbedFormTabContainer display={subroute === 'childInformation'}>
                   <ContactDetailsSectionForm
-                    tabPath="callerInformation"
-                    definition={currentDefinitionVersion.tabbedForms.CallerInformationTab}
-                    layoutDefinition={currentDefinitionVersion.layoutVersion.contact.callerInformation}
-                    initialValues={callerInformation}
-                    display={subroute === 'callerInformation'}
+                    tabPath="childInformation"
+                    definition={currentDefinitionVersion.tabbedForms.ChildInformationTab}
+                    layoutDefinition={currentDefinitionVersion.layoutVersion.contact.childInformation}
+                    initialValues={childInformation}
+                    display={subroute === 'childInformation'}
                     autoFocus={autoFocus}
-                    updateForm={values => updateDraftForm({ callerInformation: values.callerInformation })}
+                    updateForm={values => updateDraftForm({ childInformation: values.childInformation })}
                     contactId={savedContact.id}
                   />
                 </TabbedFormTabContainer>
-              )}
-              {isDataCallType && (
-                <>
-                  <TabbedFormTabContainer display={subroute === 'childInformation'}>
-                    <ContactDetailsSectionForm
-                      tabPath="childInformation"
-                      definition={currentDefinitionVersion.tabbedForms.ChildInformationTab}
-                      layoutDefinition={currentDefinitionVersion.layoutVersion.contact.childInformation}
-                      initialValues={childInformation}
-                      display={subroute === 'childInformation'}
-                      autoFocus={autoFocus}
-                      updateForm={values => updateDraftForm({ childInformation: values.childInformation })}
-                      contactId={savedContact.id}
-                    />
-                  </TabbedFormTabContainer>
-                  <TabbedFormTabContainer display={subroute === 'categories'}>
-                    <IssueCategorizationSectionForm
-                      stateApi={forExistingContact(savedContact.id)}
-                      display={subroute === 'categories'}
-                      definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab(helpline)}
-                      autoFocus={autoFocus}
-                    />
-                  </TabbedFormTabContainer>
-                  <TabbedFormTabContainer display={subroute === 'caseInformation'}>
-                    <ContactDetailsSectionForm
-                      tabPath="caseInformation"
-                      definition={currentDefinitionVersion.tabbedForms.CaseInformationTab}
-                      layoutDefinition={currentDefinitionVersion.layoutVersion.contact.caseInformation}
-                      initialValues={caseInformation}
-                      display={subroute === 'caseInformation'}
-                      autoFocus={autoFocus}
-                      extraChildrenRight={csamAttachments}
-                      updateForm={values => updateDraftForm({ caseInformation: values.caseInformation })}
-                      contactId={savedContact.id}
-                    />
-                  </TabbedFormTabContainer>
-                </>
-              )}
-            </div>
-          )}
-          <div className="hiddenWhenEditingContact">
+                <TabbedFormTabContainer display={subroute === 'categories'}>
+                  <IssueCategorizationSectionForm
+                    stateApi={forExistingContact(savedContact.id)}
+                    display={subroute === 'categories'}
+                    definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab(helpline)}
+                    autoFocus={autoFocus}
+                  />
+                </TabbedFormTabContainer>
+                <TabbedFormTabContainer display={subroute === 'caseInformation'}>
+                  <ContactDetailsSectionForm
+                    tabPath="caseInformation"
+                    definition={currentDefinitionVersion.tabbedForms.CaseInformationTab}
+                    layoutDefinition={currentDefinitionVersion.layoutVersion.contact.caseInformation}
+                    initialValues={caseInformation}
+                    display={subroute === 'caseInformation'}
+                    autoFocus={autoFocus}
+                    extraChildrenRight={csamAttachments}
+                    updateForm={values => updateDraftForm({ caseInformation: values.caseInformation })}
+                    contactId={savedContact.id}
+                  />
+                </TabbedFormTabContainer>
+              </>
+            )}
+          </div>
+          <div className="hiddenWhenModalOpen">
             <BottomBar
               contactId={savedContact.id}
               task={task}
@@ -340,19 +321,23 @@ const TabbedForms: React.FC<Props> = ({
 
 TabbedForms.displayName = 'TabbedForms';
 
-const mapStateToProps = (state: RootState, { task, contactId }: OwnProps) => {
-  const routing = state[namespace][routingBase].tasks[task.taskSid];
-  const { savedContact, draftContact, metadata } = state[namespace][contactFormsBase].existingContacts[contactId] || {};
-  const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
-  const { currentDefinitionVersion } = state[namespace][configurationBase];
-  const { isCallTypeCaller } = state[namespace][contactFormsBase];
+const mapStateToProps = (
+  { [namespace]: { routing, activeContacts, configuration } }: RootState,
+  { task: { taskSid }, contactId }: OwnProps,
+) => {
+  const currentRoute = getCurrentBaseRoute(routing, taskSid);
+  const { isCallTypeCaller, existingContacts, editingContact } = activeContacts;
+  const { savedContact, draftContact, metadata } = existingContacts[contactId] || {};
+  const modalOpen = editingContact || isRouteModal(currentRoute);
+  const { currentDefinitionVersion } = configuration;
   return {
-    routing,
+    currentRoute,
     savedContact,
     draftContact,
     updatedContact: getUnsavedContact(savedContact, draftContact),
     currentDefinitionVersion,
-    editContactFormOpen,
+    modalOpen,
+    editingContact,
     isCallTypeCaller,
     metadata,
   };
@@ -370,8 +355,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { contactId, task }: OwnPro
     dispatch(changeRoute({ route: 'csam-report', subroute: 'form', previousRoute }, task.taskSid)),
   navigateToTab: (tab: TabbedFormSubroutes) =>
     dispatch(changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, task.taskSid)),
+  openSearch: () => dispatch(changeRoute({ route: 'search', subroute: 'search' }, task.taskSid)),
   backToCallTypeSelect: () => dispatch(changeRoute({ route: 'select-call-type' }, task.taskSid)),
-  setModalLayout: () => dispatch(setEditContactPageOpen()),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

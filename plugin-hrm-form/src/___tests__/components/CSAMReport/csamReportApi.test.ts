@@ -58,7 +58,7 @@ const stateWithRoute = (taskSid: string, route: AppRoutes): RootState => {
     [namespace]: {
       [routingBase]: {
         tasks: {
-          [taskSid]: route,
+          [taskSid]: [route],
         },
       },
     },

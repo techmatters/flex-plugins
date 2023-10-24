@@ -46,7 +46,6 @@ export type ViewCaseItemProps = {
   task: CustomITask | StandaloneITask;
   routing: ViewCaseSectionRoute;
   definitionVersion: DefinitionVersion;
-  exitItem: () => void;
   sectionApi: CaseSectionApi<unknown>;
   includeAddedTime?: boolean;
   canEdit: () => boolean;
@@ -60,7 +59,7 @@ const ViewCaseItem: React.FC<Props> = ({
   routing,
   counselorsHash,
   changeRoute,
-  exitItem,
+  goBack,
   definitionVersion,
   sectionApi,
   connectedCase,
@@ -85,7 +84,7 @@ const ViewCaseItem: React.FC<Props> = ({
       <Container>
         <ActionHeader
           titleTemplate={`Case-View${sectionApi.label}`}
-          onClickClose={exitItem}
+          onClickClose={() => goBack(task.taskSid)}
           addingCounsellor={addingCounsellorName}
           added={added}
           updatingCounsellor={updatingCounsellorName}
@@ -122,7 +121,7 @@ const ViewCaseItem: React.FC<Props> = ({
           </Box>
         )}
         <Box marginRight="15px">
-          <StyledNextStepButton roundCorners onClick={exitItem} data-testid="Case-CloseButton">
+          <StyledNextStepButton roundCorners onClick={() => goBack(task.taskSid)} data-testid="Case-CloseButton">
             <Template code="CloseButton" />
           </StyledNextStepButton>
         </Box>
@@ -135,6 +134,7 @@ ViewCaseItem.displayName = 'ViewCaseItem';
 
 const mapToDispatchProps = {
   changeRoute: RoutingActions.changeRoute,
+  goBack: RoutingActions.newGoBackAction,
 };
 
 export default connect(mapStateToProps, mapToDispatchProps)(ViewCaseItem);

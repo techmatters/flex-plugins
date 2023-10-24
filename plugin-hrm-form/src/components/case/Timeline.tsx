@@ -17,7 +17,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { parseISO } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import Dialog from '@material-ui/core/Dialog';
@@ -41,7 +40,8 @@ import { CustomITask } from '../../types/types';
 import { isConnectedCaseActivity } from './caseActivities';
 import { Activity, ConnectedCaseActivity, NoteActivity, ReferralActivity } from '../../states/case/types';
 import { getPermissionsForContact, PermissionActions, PermissionActionType } from '../../permissions';
-import { NewCaseSubroutes, AppRoutesWithCase, CaseItemAction } from '../../states/routing/types';
+import { NewCaseSubroutes, AppRoutesWithCase, CaseItemAction, AppRoutes } from '../../states/routing/types';
+import { newOpenModalAction } from '../../states/routing/actions';
 
 type OwnProps = {
   timelineActivities: Activity[];
@@ -54,27 +54,27 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const Timeline: React.FC<Props> = props => {
-  const { can, taskSid, changeRoute, route, timelineActivities } = props;
+  const { can, changeRoute, route, timelineActivities, openContactModal } = props;
   const [mockedMessage, setMockedMessage] = useState(null);
 
   const handleViewNoteClick = (activity: NoteActivity) => {
-    changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.View, id: activity.id }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.View, id: activity.id });
   };
 
   const handleViewReferralClick = (activity: ReferralActivity) => {
-    changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.View, id: activity.id }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.View, id: activity.id });
   };
 
-  const handleViewConnectedCaseActivityClick = (activity: ConnectedCaseActivity) => {
-    changeRoute({ route, subroute: NewCaseSubroutes.ViewContact, id: activity.contactId }, taskSid);
+  const handleViewConnectedCaseActivityClick = ({ contactId }: ConnectedCaseActivity) => {
+    openContactModal(contactId);
   };
 
   const handleAddNoteClick = () => {
-    changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.Add }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.Add });
   };
 
   const handleAddReferralClick = () => {
-    changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.Add }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.Add });
   };
 
   const handleViewClick = activity => {
@@ -154,8 +154,10 @@ const Timeline: React.FC<Props> = props => {
 
 Timeline.displayName = 'Timeline';
 
-const mapDispatchToProps = dispatch => ({
-  changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
+const mapDispatchToProps = (dispatch, { taskSid }: OwnProps) => ({
+  changeRoute: (routing: AppRoutes) => dispatch(RoutingActions.changeRoute(routing, taskSid)),
+  openContactModal: (contactId: string) =>
+    dispatch(newOpenModalAction({ route: 'contact', subroute: 'view', id: contactId }, taskSid)),
 });
 
 const connector = connect(null, mapDispatchToProps);

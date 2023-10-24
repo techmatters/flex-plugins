@@ -15,24 +15,27 @@
  */
 
 import * as types from '../../../states/routing/types';
+import { CaseItemAction } from '../../../states/routing/types';
 import * as actions from '../../../states/routing/actions';
-import { AppRoutesWithCase } from '../../../states/routing/types';
 
 const task = { taskSid: 'task1' };
 
 describe('test action creators', () => {
-  test('changeRoute (new-case route)', async () => {
-    expect(actions.changeRoute({ route: 'new-case' }, task.taskSid)).toStrictEqual({
+  test('changeRoute (case home route)', async () => {
+    expect(actions.changeRoute({ route: 'case', subroute: 'home' }, task.taskSid)).toStrictEqual({
       type: types.CHANGE_ROUTE,
-      routing: { route: 'new-case' },
+      routing: { route: 'case', subroute: 'home' },
       taskId: task.taskSid,
+      replace: false,
     });
 
     expect(
-      actions.changeRoute({ route: 'new-case', subroute: 'note' } as AppRoutesWithCase, task.taskSid),
+      actions.changeRoute({ route: 'case', subroute: 'note', action: CaseItemAction.Add }, task.taskSid),
     ).toStrictEqual({
       type: types.CHANGE_ROUTE,
-      routing: { route: 'new-case', subroute: 'note' },
+      routing: { route: 'case', subroute: 'note', action: CaseItemAction.Add },
+
+      replace: false,
       taskId: task.taskSid,
     });
   });
@@ -42,6 +45,7 @@ describe('test action creators', () => {
       type: types.CHANGE_ROUTE,
       routing: { route: 'select-call-type' },
       taskId: task.taskSid,
+      replace: false,
     });
   });
 
@@ -50,19 +54,29 @@ describe('test action creators', () => {
       type: types.CHANGE_ROUTE,
       routing: { route: 'tabbed-forms' },
       taskId: task.taskSid,
+      replace: false,
     });
   });
 
   test('changeRoute (csam-report route)', async () => {
     expect(
       actions.changeRoute(
-        { route: 'csam-report', subroute: 'form', previousRoute: { route: 'new-case' } },
+        { route: 'csam-report', subroute: 'form', previousRoute: { route: 'case', subroute: 'home' } },
         task.taskSid,
       ),
     ).toStrictEqual({
       type: types.CHANGE_ROUTE,
-      routing: { route: 'csam-report', subroute: 'form', previousRoute: { route: 'new-case' } },
+      routing: { route: 'csam-report', subroute: 'form', previousRoute: { route: 'case', subroute: 'home' } },
       taskId: task.taskSid,
+      replace: false,
+    });
+  });
+  test('changeRoute (replace flag set)', async () => {
+    expect(actions.changeRoute({ route: 'case', subroute: 'home' }, task.taskSid, true)).toStrictEqual({
+      type: types.CHANGE_ROUTE,
+      routing: { route: 'case', subroute: 'home' },
+      taskId: task.taskSid,
+      replace: true,
     });
   });
 });

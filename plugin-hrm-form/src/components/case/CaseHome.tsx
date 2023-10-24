@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
@@ -30,7 +30,7 @@ import {
   AppRoutes,
   CaseItemAction,
   CaseSectionSubroute,
-  isAppRouteWithCase,
+  isCaseRoute,
   NewCaseSubroutes,
 } from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
@@ -44,7 +44,8 @@ import DocumentInformationRow from './DocumentInformationRow';
 import { householdSectionApi } from '../../states/case/sections/household';
 import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
 import { getAseloFeatureFlags } from '../../hrmConfig';
-import { connectedCaseBase, namespace, routingBase } from '../../states/storeNamespaces';
+import { connectedCaseBase, namespace } from '../../states/storeNamespaces';
+import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -77,21 +78,21 @@ const CaseHome: React.FC<Props> = ({
   connectedCaseState,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  if (!connectedCaseState || !routing || !isAppRouteWithCase(routing)) return null; // narrow type before deconstructing
+  if (!connectedCaseState || !routing || !isCaseRoute(routing)) return null; // narrow type before deconstructing
 
   const featureFlags = getAseloFeatureFlags();
   const { route } = routing;
 
   const onViewCaseItemClick = (targetSubroute: CaseSectionSubroute) => (id: string) => {
-    changeRoute({ route, subroute: targetSubroute, action: CaseItemAction.View, id } as AppRoutes, task.taskSid);
+    changeRoute({ route: 'case', subroute: targetSubroute, action: CaseItemAction.View, id });
   };
 
   const onAddCaseItemClick = (targetSubroute: CaseSectionSubroute) => () => {
-    changeRoute({ route, subroute: targetSubroute, action: CaseItemAction.Add } as AppRoutes, task.taskSid);
+    changeRoute({ route: 'case', subroute: targetSubroute, action: CaseItemAction.Add });
   };
 
   const onPrintCase = () => {
-    changeRoute({ route, subroute: 'case-print-view' }, task.taskSid);
+    changeRoute({ route: 'case', subroute: 'case-print-view' });
   };
 
   // -- Date cannot be converted here since the date dropdown uses the yyyy-MM-dd format.
@@ -187,10 +188,7 @@ const CaseHome: React.FC<Props> = ({
   };
 
   const onEditCaseSummaryClick = () => {
-    changeRoute(
-      { ...routing, subroute: NewCaseSubroutes.CaseSummary, action: CaseItemAction.Edit } as AppRoutes,
-      task.taskSid,
-    );
+    changeRoute({ route: 'case', subroute: 'caseSummary', action: CaseItemAction.Edit, id: '' });
   };
 
   return (
@@ -300,17 +298,17 @@ const CaseHome: React.FC<Props> = ({
 
 CaseHome.displayName = 'CaseHome';
 
-const mapStateToProps = (state: RootState, ownProps: CaseHomeProps) => {
-  const routing = state[namespace][routingBase].tasks[ownProps.task.taskSid];
+const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
+  const routing = getCurrentTopmostRouteForTask(state[namespace].routing, task.taskSid);
   const caseState: CaseState = state[namespace][connectedCaseBase];
-  const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
+  const connectedCaseState = caseState.tasks[task.taskSid];
 
   return { routing, connectedCaseState };
 };
 
-const mapDispatchToProps = {
-  changeRoute: RoutingActions.changeRoute,
-};
+const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: CaseHomeProps) => ({
+  changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
+});
 const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(CaseHome);
 

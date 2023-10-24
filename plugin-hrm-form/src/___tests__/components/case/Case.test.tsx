@@ -129,7 +129,7 @@ describe('useState mocked', () => {
           },
         },
       },
-      [routingBase]: { tasks: { task1: { route: 'new-case' } } },
+      routing: { tasks: { task1: [{ route: 'case', subroute: 'home' }] } },
     });
 
     ownProps = {
@@ -163,7 +163,7 @@ describe('useState mocked', () => {
       [connectedCaseBase]: {
         tasks: {},
       },
-      [routingBase]: { tasks: { task1: { route: 'new-case' } } },
+      [routingBase]: { tasks: { task1: [{ route: 'case', subroute: 'home' }] } },
       [configurationBase]: {
         counselors: {
           list: [],

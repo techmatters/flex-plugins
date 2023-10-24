@@ -14,11 +14,28 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { RoutingActionType, AppRoutes, CHANGE_ROUTE } from './types';
+import { AppRoutes, CHANGE_ROUTE, CLOSE_MODAL, GO_BACK, OPEN_MODAL, RoutingActionType } from './types';
 
 // Action creators
-export const changeRoute = (routing: AppRoutes, taskId: string): RoutingActionType => ({
+export const changeRoute = (routing: AppRoutes, taskId: string, replace: boolean = false): RoutingActionType => ({
   type: CHANGE_ROUTE,
   routing,
+  taskId,
+  replace,
+});
+
+export const newOpenModalAction = (routing: AppRoutes, taskId: string): RoutingActionType => ({
+  type: OPEN_MODAL,
+  routing,
+  taskId,
+});
+
+export const newCloseModalAction = (taskId: string): RoutingActionType => ({
+  type: CLOSE_MODAL,
+  taskId,
+});
+
+export const newGoBackAction = (taskId: string): RoutingActionType => ({
+  type: GO_BACK,
   taskId,
 });
