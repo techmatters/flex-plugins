@@ -33,8 +33,6 @@ type PreviousContacts = {
 };
 
 type TaskEntry = {
-  currentPage: t.SearchPagesType;
-  currentContact: Contact;
   form: t.SearchFormValues;
   detailsExpanded: {
     [key in ContactDetailsSectionsType]: boolean;
@@ -55,8 +53,6 @@ type SearchState = {
 };
 
 export const newTaskEntry: TaskEntry = {
-  currentPage: t.SearchPages.form,
-  currentContact: null,
   form: {
     firstName: '',
     lastName: '',
@@ -138,26 +134,6 @@ export function reduce(
         },
       };
     }
-    case t.CHANGE_SEARCH_PAGE: {
-      const task = state.tasks[action.taskId];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: { ...task, currentPage: action.page },
-        },
-      };
-    }
-    case t.VIEW_CONTACT_DETAILS: {
-      const task = state.tasks[action.taskId];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: { ...task, currentPage: t.SearchPages.details, currentContact: action.contact },
-        },
-      };
-    }
     case t.SEARCH_CONTACTS_REQUEST: {
       const task = state.tasks[action.taskId];
       return {
@@ -176,7 +152,6 @@ export function reduce(
       const previousContacts = action.dispatchedFromPreviousContacts
         ? { ...task.previousContacts, contacts: action.searchResult }
         : task.previousContacts;
-      const currentPage = action.dispatchedFromPreviousContacts ? task.currentPage : t.SearchPages.resultsContacts;
       return {
         ...state,
         tasks: {
@@ -185,7 +160,6 @@ export function reduce(
             ...task,
             searchContactsResult: action.searchResult,
             previousContacts,
-            currentPage,
             isRequesting: false,
             error: null,
           },
@@ -194,14 +168,12 @@ export function reduce(
     }
     case t.SEARCH_CONTACTS_FAILURE: {
       const task = state.tasks[action.taskId];
-      const currentPage = action.dispatchedFromPreviousContacts ? task.currentPage : t.SearchPages.resultsContacts;
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            currentPage,
             isRequesting: false,
             error: action.error,
           },
@@ -264,7 +236,6 @@ export function reduce(
             ...task,
             searchContactsResult: task.previousContacts.contacts,
             searchCasesResult: task.previousContacts.cases,
-            currentPage: t.SearchPages.resultsContacts,
             form: {
               ...task.form,
               contactNumber: action.contactNumber,

@@ -18,7 +18,7 @@ import { DefinitionVersion, DefinitionVersionId, loadDefinition, useFetchDefinit
 
 import { mockGetDefinitionsResponse, mockPartialConfiguration } from '../../mockGetConfig';
 import { getDefinitionVersions } from '../../../hrmConfig';
-import { reduce, initialState, newTaskEntry } from '../../../states/routing/reducer';
+import { initialState, newTaskEntry, reduce } from '../../../states/routing/reducer';
 import * as actions from '../../../states/routing/actions';
 import * as GeneralActions from '../../../states/actions';
 import { standaloneTaskSid } from '../../../types/types';
@@ -27,7 +27,7 @@ import {
   CREATE_CONTACT_ACTION_FULFILLED,
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
 } from '../../../states/contacts/types';
-import { RoutingState } from '../../../states/routing/types';
+import { ChangeRouteMode, RoutingState } from '../../../states/routing/types';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -111,7 +111,10 @@ describe('test reducer (specific actions)', () => {
       isAddingOfflineContact: false,
     };
 
-    const result = reduce(stateWithTask, actions.changeRoute({ route: 'tabbed-forms' }, task.taskSid, true));
+    const result = reduce(
+      stateWithTask,
+      actions.changeRoute({ route: 'tabbed-forms' }, task.taskSid, ChangeRouteMode.Replace),
+    );
     expect(result).toStrictEqual(expected);
   });
 
@@ -150,7 +153,10 @@ describe('test reducer (specific actions)', () => {
       isAddingOfflineContact: false,
     };
 
-    const result1 = reduce(stateWithTask, actions.changeRoute({ route: 'case', subroute: 'home' }, task.taskSid, true));
+    const result1 = reduce(
+      stateWithTask,
+      actions.changeRoute({ route: 'case', subroute: 'home' }, task.taskSid, ChangeRouteMode.Replace),
+    );
 
     const result2 = reduce(result1, {
       type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,

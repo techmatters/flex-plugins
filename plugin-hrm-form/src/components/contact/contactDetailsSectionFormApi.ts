@@ -18,6 +18,7 @@
 import { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
 import { ContactDraftChanges } from '../../states/contacts/existingContacts';
+import { Contact } from '../../types/types';
 
 type ContactFormValues = {
   [key in 'childInformation' | 'callerInformation' | 'caseInformation']?: Record<string, string | boolean>;
@@ -26,11 +27,14 @@ type ContactFormValues = {
 export type ContactDetailsSectionFormApi = {
   getFormDefinition: (def: DefinitionVersion) => FormDefinition;
   getLayoutDefinition: (def: DefinitionVersion) => LayoutDefinition;
-  getFormValues: (def: DefinitionVersion, contact: ContactDraftChanges) => ContactFormValues;
+  getFormValues: (def: DefinitionVersion, contact: Contact) => ContactFormValues;
 };
 
-const mapFormToDefinition = (def: FormDefinition, contact: ContactDraftChanges): Record<string, string | boolean> => {
-  const entries = Object.entries(def).map(([, { name }]) => [name, contact[name]]);
+const mapFormToDefinition = (
+  def: FormDefinition,
+  form: Record<string, string | boolean>,
+): Record<string, string | boolean> => {
+  const entries = Object.entries(def).map(([, { name }]) => [name, form[name]]);
   return Object.fromEntries(entries);
 };
 

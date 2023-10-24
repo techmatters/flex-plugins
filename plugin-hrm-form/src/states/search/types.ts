@@ -98,11 +98,6 @@ export type SearchCasesSuccessAction = {
 
 type SearchCasesFailureAction = { type: typeof SEARCH_CASES_FAILURE; error: any; taskId: string };
 
-// maybe we can migrate this to be handled by the routing instead later on?
-type SearchChangePageAction = { type: typeof CHANGE_SEARCH_PAGE; page: SearchPagesType; taskId: string };
-
-type SearchViewContactAction = { type: typeof VIEW_CONTACT_DETAILS; contact: Contact; taskId: string };
-
 type ViewPreviousContactsAction = {
   type: typeof VIEW_PREVIOUS_CONTACTS;
   taskId: string;
@@ -117,6 +112,4 @@ export type SearchActionType =
   | SearchCasesRequestAction
   | SearchCasesSuccessAction
   | SearchCasesFailureAction
-  | SearchChangePageAction
-  | SearchViewContactAction
   | ViewPreviousContactsAction;

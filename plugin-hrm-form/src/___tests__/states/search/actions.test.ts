@@ -24,8 +24,6 @@ import { searchContacts } from '../../../services/ContactService';
 import { searchCases } from '../../../services/CaseService';
 import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../../components/search/SearchResults';
 import { getDefinitionVersions } from '../../../hrmConfig';
-import { Contact } from '../../../types/types';
-import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 jest.mock('../../../services/ContactService', () => ({ searchContacts: jest.fn() }));
 jest.mock('../../../services/CaseService', () => ({ searchCases: jest.fn() }));
@@ -51,28 +49,6 @@ describe('test action creators', () => {
       await loadDefinition(formDefinitionsBaseUrl),
     );
   });
-  test('changeSearchPage', () => {
-    expect(actions.changeSearchPage(taskId)('details')).toStrictEqual({
-      type: t.CHANGE_SEARCH_PAGE,
-      taskId,
-      page: t.SearchPages.details,
-    });
-    expect(actions.changeSearchPage(task.taskSid)('form')).toStrictEqual({
-      type: t.CHANGE_SEARCH_PAGE,
-      taskId,
-      page: t.SearchPages.form,
-    });
-    expect(actions.changeSearchPage(task.taskSid)('results.contacts')).toStrictEqual({
-      type: t.CHANGE_SEARCH_PAGE,
-      taskId,
-      page: t.SearchPages.resultsContacts,
-    });
-    expect(actions.changeSearchPage(task.taskSid)('results.cases')).toStrictEqual({
-      type: t.CHANGE_SEARCH_PAGE,
-      taskId,
-      page: t.SearchPages.resultsCases,
-    });
-  });
 
   test('handleSearchFormChange', () => {
     expect(actions.handleSearchFormChange(taskId)('firstName', 'Some name')).toStrictEqual({
@@ -80,16 +56,6 @@ describe('test action creators', () => {
       taskId,
       name: 'firstName',
       value: 'Some name',
-    });
-  });
-
-  test('viewContactDetails', () => {
-    const contact: Contact = { ...VALID_EMPTY_CONTACT, id: 'fake contact' };
-
-    expect(actions.viewContactDetails(taskId)(contact)).toStrictEqual({
-      type: t.VIEW_CONTACT_DETAILS,
-      taskId,
-      contact,
     });
   });
 

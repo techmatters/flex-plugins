@@ -334,13 +334,6 @@ export const BackText = styled(BoldDetailFont)`
   font-weight: 600;
 `;
 
-export const NameText = styled(FontOpenSans)`
-  margin: 25px auto 5px 0;
-  font-weight: 600;
-  font-size: 15px;
-`;
-NameText.displayName = 'NameText';
-
 export const ContactAddedFont = styled(FontOpenSans)`
   font-style: italic;
   font-size: 12px;
@@ -454,14 +447,6 @@ export const SwitchLabel = styled(SummaryText)`
   margin-right: 5px;
 `;
 SwitchLabel.displayName = 'SwitchLabel';
-
-export const SearchTitle = styled(FontOpenSans)`
-  font-size: 14px;
-  font-weight: 600;
-  display: inline-block;
-  margin-bottom: 20px;
-`;
-SearchTitle.displayName = 'SearchTitle';
 
 export const StandaloneSearchContainer = styled(TabbedFormsContainer)`
   max-width: 800px;

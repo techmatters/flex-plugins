@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { ContactRawJson } from '../../types/types';
 
 import { Profile } from '../../types/types';
 
@@ -43,7 +44,7 @@ export type TabbedFormRoute = {
 
 export type SearchRoute = {
   route: 'search';
-  subroute?: 'search';
+  subroute: 'form' | 'case-results' | 'contact-results';
 };
 
 export const NewCaseSectionSubroutes = {
@@ -162,11 +163,20 @@ export type CSAMReportRoute = {
   previousRoute: AppRoutes;
 };
 
-type ContactRoute = {
+type ContactViewRoute = {
   route: 'contact';
   subroute: 'view';
   id: string;
 };
+
+export type ContactEditRoute = {
+  route: 'contact';
+  subroute: 'edit';
+  id: string;
+  form: keyof Pick<ContactRawJson, 'childInformation' | 'callerInformation' | 'caseInformation' | 'categories'>;
+};
+
+type ContactRoute = ContactViewRoute | ContactEditRoute;
 
 type OtherRoutes =
   | CSAMReportRoute
@@ -183,11 +193,18 @@ export type AppRoutes = AppRoutesWithCase | OtherRoutes;
 export function isRouteWithModalSupport(appRoute: any): appRoute is RouteWithModalSupport {
   return ['tabbed-forms', 'case', 'case-list', 'search'].includes(appRoute.route);
 }
+
+export enum ChangeRouteMode {
+  Push = 'push',
+  Replace = 'replace',
+  Reset = 'reset',
+}
+
 type ChangeRouteAction = {
   type: typeof CHANGE_ROUTE;
   routing: AppRoutes;
   taskId: string;
-  replace?: boolean;
+  mode: ChangeRouteMode;
 };
 
 type OpenModalAction = {
@@ -204,6 +221,7 @@ type GoBackAction = {
 type CloseModalAction = {
   type: typeof CLOSE_MODAL;
   taskId: string;
+  topRoute?: AppRoutes['route'];
 };
 
 export type RoutingActionType = ChangeRouteAction | GoBackAction | OpenModalAction | CloseModalAction;

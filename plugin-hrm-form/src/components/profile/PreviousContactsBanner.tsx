@@ -34,7 +34,7 @@ import { YellowBanner } from '../../styles/previousContactsBanner';
 import { Bold } from '../../styles/HrmStyles';
 import { StyledLink } from '../../styles/search';
 import { ChannelTypes, channelTypes } from '../../states/DomainConstants';
-import { changeRoute as changeRouteAction } from '../../states/routing/actions';
+import { changeRoute as changeRouteAction, newOpenModalAction } from '../../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../permissions';
 import { CustomITask, isTwilioTask } from '../../types/types';
@@ -61,6 +61,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   searchCases,
   changeRoute,
   loadIdentifierByIdentifier,
+  openContactSearchResults,
   modalOpen,
 }) => {
   let localizedSourceFromTask: { [channelType in ChannelTypes]: string };
@@ -127,9 +128,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
     }
 
     viewPreviousContacts();
-
-    const subroute = enableClientProfiles ? 'profile' : 'search';
-    changeRoute({ route: 'tabbed-forms', subroute });
+    openContactSearchResults();
   };
 
   return (
@@ -211,6 +210,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     changeRoute: routing => dispatch(changeRouteAction(routing, taskId)),
     loadIdentifierByIdentifier: identifier =>
       asyncDispatch(dispatch)(ProfileActions.loadIdentifierByIdentifierAsync(identifier)),
+    openContactSearchResults: () => {
+      // We put the form 'under' the search results in the modal stack so the back button takes them to the form without needing custom handlers
+      dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, taskId));
+      dispatch(changeRouteAction({ route: 'search', subroute: 'contact-results' }, taskId));
+    },
   };
 };
 

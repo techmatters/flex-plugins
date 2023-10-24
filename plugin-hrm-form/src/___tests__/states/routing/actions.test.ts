@@ -15,7 +15,7 @@
  */
 
 import * as types from '../../../states/routing/types';
-import { CaseItemAction } from '../../../states/routing/types';
+import { CaseItemAction, ChangeRouteMode } from '../../../states/routing/types';
 import * as actions from '../../../states/routing/actions';
 
 const task = { taskSid: 'task1' };
@@ -26,7 +26,7 @@ describe('test action creators', () => {
       type: types.CHANGE_ROUTE,
       routing: { route: 'case', subroute: 'home' },
       taskId: task.taskSid,
-      replace: false,
+      mode: ChangeRouteMode.Push,
     });
 
     expect(
@@ -35,7 +35,7 @@ describe('test action creators', () => {
       type: types.CHANGE_ROUTE,
       routing: { route: 'case', subroute: 'note', action: CaseItemAction.Add },
 
-      replace: false,
+      mode: ChangeRouteMode.Push,
       taskId: task.taskSid,
     });
   });
@@ -45,7 +45,7 @@ describe('test action creators', () => {
       type: types.CHANGE_ROUTE,
       routing: { route: 'select-call-type' },
       taskId: task.taskSid,
-      replace: false,
+      mode: ChangeRouteMode.Push,
     });
   });
 
@@ -54,7 +54,7 @@ describe('test action creators', () => {
       type: types.CHANGE_ROUTE,
       routing: { route: 'tabbed-forms' },
       taskId: task.taskSid,
-      replace: false,
+      mode: ChangeRouteMode.Push,
     });
   });
 
@@ -68,15 +68,17 @@ describe('test action creators', () => {
       type: types.CHANGE_ROUTE,
       routing: { route: 'csam-report', subroute: 'form', previousRoute: { route: 'case', subroute: 'home' } },
       taskId: task.taskSid,
-      replace: false,
+      mode: ChangeRouteMode.Push,
     });
   });
   test('changeRoute (replace flag set)', async () => {
-    expect(actions.changeRoute({ route: 'case', subroute: 'home' }, task.taskSid, true)).toStrictEqual({
+    expect(
+      actions.changeRoute({ route: 'case', subroute: 'home' }, task.taskSid, ChangeRouteMode.Replace),
+    ).toStrictEqual({
       type: types.CHANGE_ROUTE,
       routing: { route: 'case', subroute: 'home' },
       taskId: task.taskSid,
-      replace: true,
+      mode: ChangeRouteMode.Replace,
     });
   });
 });

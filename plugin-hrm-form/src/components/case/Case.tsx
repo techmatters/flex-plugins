@@ -29,7 +29,6 @@ import { getLocaleDateTime } from '../../utils/helpers';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
-import ViewContact from './ViewContact';
 import { Activity, CaseDetails, NoteActivity } from '../../states/case/types';
 import { Case as CaseType, CustomITask, Contact, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
@@ -134,10 +133,13 @@ const Case: React.FC<Props> = ({
 
   useEffect(() => {
     if (!connectedCase) return;
-    const { connectedContacts = [] } = connectedCase;
-    loadContacts(connectedContacts, `case-${connectedCase.id}`);
+    const connectedContacts = connectedCase.connectedContacts ?? [];
+    if (connectedContacts.length) {
+      loadContacts(connectedContacts, `case-${connectedCase.id}`);
+    }
     setLoadedContactIds(connectedContacts.map(cc => cc.id));
-  }, [connectedCase, loadContacts, releaseContacts, task, workerSid]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connectedCase, task]);
 
   const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;
@@ -206,6 +208,7 @@ const Case: React.FC<Props> = ({
     await Promise.all(loadedContactIds.map(id => disconnectFromCase(id)));
     await cancelCase(connectedCase.id);
     cancelNewCase(connectedCase.id, loadedContactIds);
+    handleClose();
   };
 
   const handleSaveAndEnd = async () => {
@@ -260,7 +263,6 @@ const Case: React.FC<Props> = ({
 
     const addScreenProps = {
       task,
-      routing,
       counselor: currentCounselor,
       counselorsHash,
       definitionVersion,
@@ -272,14 +274,7 @@ const Case: React.FC<Props> = ({
       extraAddEditProps: Partial<AddEditCaseItemProps> = {},
     ) => {
       if (isViewCaseSectionRoute(routing)) {
-        return (
-          <ViewCaseItem
-            {...addScreenProps}
-            routing={routing}
-            sectionApi={sectionApi}
-            canEdit={() => can(editPermission)}
-          />
-        );
+        return <ViewCaseItem {...addScreenProps} sectionApi={sectionApi} canEdit={() => can(editPermission)} />;
       }
       return (
         <AddEditCaseItem
@@ -288,7 +283,6 @@ const Case: React.FC<Props> = ({
             ...extraAddEditProps,
             sectionApi,
           }}
-          routing={routing}
         />
       );
     };
@@ -333,14 +327,10 @@ const Case: React.FC<Props> = ({
           counselorsHash,
           onClickClose: goBack,
           definitionVersion,
+          task,
         }}
       />
     );
-  }
-  if (routing.activeModal?.length && routing.activeModal[routing.activeModal.length - 1].route === 'contact') {
-    const modalRouting = routing.activeModal[routing.activeModal.length - 1];
-    if (modalRouting.route !== 'contact') throw new Error('Unexpected modal route');
-    return <ViewContact onClickClose={closeModal} contactId={modalRouting.id} task={task} />;
   }
   return loading || !definitionVersion ? (
     <CenteredContainer>
@@ -391,7 +381,6 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
   const cancelNewCase = (caseId: number, loadedContactIds: string[]) => {
     const { taskSid } = task;
     dispatch(CaseActions.removeConnectedCase(taskSid));
-    dispatch(RoutingActions.newCloseModalAction(taskSid));
     dispatch(ContactActions.releaseContacts(loadedContactIds, `case-${caseId}`));
   };
   const updateCaseDefinition = (connectedCase: CaseType, taskSid: string, definition) => {
@@ -405,7 +394,6 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     updateDefinitionVersion: updateCaseDefinition,
     releaseContacts: bindActionCreators(ContactActions.releaseContacts, dispatch),
     loadContacts: bindActionCreators(ContactActions.loadContacts, dispatch),
-    loadContact: bindActionCreators(ContactActions.loadContact, dispatch),
     cancelNewCase,
     updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
       caseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
