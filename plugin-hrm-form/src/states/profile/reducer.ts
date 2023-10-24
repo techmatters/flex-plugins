@@ -24,7 +24,6 @@ const boundLoadProfileReducer = loadProfileReducer(t.initialState);
 const boundLoadRelationshipsReducer = loadRelationshipsReducer(t.initialState);
 
 export function reduce(state = t.initialState, action: t.ProfileActions): t.ProfileState {
-  console.log('>>> action', action);
   if (shouldUseLoadIdentifierReducer(action)) {
     return boundLoadIdentifierReducer(state, action);
   }

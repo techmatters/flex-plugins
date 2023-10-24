@@ -81,7 +81,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
     const fetchData = () => {
       loadIdentifierByIdentifier(contactIdentifier);
     };
-    if (enableClientProfiles && contactIdentifier) fetchData();
+    if (enableClientProfiles && contactIdentifier && !identifierEntry) fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contactIdentifier]);
 
@@ -109,8 +109,6 @@ const PreviousContactsBanner: React.FC<Props> = ({
   }, [previousContacts]);
 
   const identifierData = identifierEntry?.data;
-
-  console.log('>>>identifierData', identifierData);
 
   // Ugh. The previous contacts count is off by one because we immediately create a contact when a task is created.
   // contacts should really have a status so we can filter out the "active" contact on the db side.
@@ -189,12 +187,8 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   let contactIdentifier: ProfileTypes.Identifier['identifier'];
   let identifierEntry: ProfileTypes.IdentifierEntry;
   if (isTwilioTask(task)) {
-    console.log('>>>task', task);
     contactIdentifier = getFormattedNumberFromTask(task);
-    console.log('>>>contactIdentifier', contactIdentifier);
-    console.log('>>>profile.identifiers', profile.identifiers);
     identifierEntry = ProfileSelectors.getIdentiferByIdentifier(state, contactIdentifier);
-    console.log('>>>identifierEntry', identifierEntry);
   }
 
   return {

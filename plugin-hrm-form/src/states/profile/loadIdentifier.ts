@@ -20,7 +20,6 @@ import { getIdentiferByIdentifier } from '../../services/ProfileService';
 import loadIdentifierEntryIntoRedux from './loadIdentifierEntryIntoRedux';
 import * as t from './types';
 
-type IdentifierId = t.Identifier['id'];
 type IdentfierIdentifier = t.Identifier['identifier'];
 
 export const loadIdentifierByIdentifierAsync = createAsyncAction(
@@ -59,8 +58,6 @@ const handleLoadIdentifierRejectedAction = (state: t.ProfileState, action: any) 
 const handleLoadIdentifierFulfilledAction = (state: t.ProfileState, action: any) => {
   const { id } = action.payload;
 
-  console.log('>>>id', id);
-
   const identifierUpdate = {
     data: {
       ...t.newIdentifierEntry,
@@ -68,8 +65,6 @@ const handleLoadIdentifierFulfilledAction = (state: t.ProfileState, action: any)
       ...action.payload,
     },
   };
-
-  console.log('>>>identifierUpdate', identifierUpdate);
 
   return loadIdentifierEntryIntoRedux(state, id, identifierUpdate);
 };
