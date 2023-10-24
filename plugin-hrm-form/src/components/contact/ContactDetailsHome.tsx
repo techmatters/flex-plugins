@@ -415,11 +415,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           showEditButton={false}
         >
           <Flex justifyContent="center" flexDirection="row" paddingTop="20px">
-            <RecordingSection
-              contactId={contactId}
-              externalStoredRecording={externalStoredRecording}
-              loadConversationIntoOverlay={loadConversationIntoOverlay}
-            />{' '}
+            <RecordingSection loadConversationIntoOverlay={loadConversationIntoOverlay} />{' '}
           </Flex>
         </ContactDetailsSection>
       )}

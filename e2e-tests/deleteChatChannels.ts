@@ -14,35 +14,21 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-const { spawn } = require('child_process');
+/**
+ * This script is used to delete all chat channels for a given user. It is very slow because there
+ * are so many anonymous users in the system. We run it on a schedule instead of as part of the
+ * normal test suite to avoid slowing down the test suite.
+ *
+ * If we don't cleanup chat channels, we will eventually hit the 1000 channel limit and be unable
+ * send new messages from the e2e test user.
+ */
 
-module.exports.handler = async (event) => {
-  const env = { ...process.env };
+import { deleteChatChannels } from './twilio/channels';
+import { initConfig } from './config';
 
-  const { testName, npmScript } = event;
-  if (testName) {
-    env.TEST_NAME = testName;
-  }
-
-  const cmd = spawn('npm', ['-loglevel silent', 'run', npmScript || 'test'], {
-    stdio: 'inherit',
-    stderr: 'inherit',
-    env,
-  });
-
-  const result = await new Promise((resolve, reject) => {
-    cmd.on('exit', (code) => {
-      if (code !== 0) {
-        reject(`Execution error: ${code}`);
-      } else {
-        resolve(`Exited with code: ${code}`);
-      }
-    });
-
-    cmd.on('error', (error) => {
-      reject(`Execution error: ${error}`);
-    });
-  });
-
-  console.log(result);
+const main = async () => {
+  await initConfig();
+  await deleteChatChannels();
 };
+
+main();
