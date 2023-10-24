@@ -13,9 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { ContactRawJson } from '../../types/types';
-
-import { Profile } from '../../types/types';
+import { ContactRawJson, Profile } from '../../types/types';
 
 // Action types
 export const CHANGE_ROUTE = 'routing/change-route';
