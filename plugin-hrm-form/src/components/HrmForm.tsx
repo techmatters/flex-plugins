@@ -21,7 +21,6 @@ import { connect, ConnectedProps } from 'react-redux';
 import CallTypeButtons from './callTypeButtons';
 import TabbedForms from './tabbedForms';
 import CSAMReport from './CSAMReport/CSAMReport';
-import Profile from './profile/Profile';
 import { RootState } from '../states';
 import type { CustomITask } from '../types/types';
 import { newContactCSAMApi } from './CSAMReport/csamReportApi';
@@ -46,6 +45,7 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact })
     case 'search':
     case 'contact':
     case 'case':
+    case 'profile':
       return (
         <TabbedForms
           task={task}
@@ -57,8 +57,6 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact })
 
     case 'csam-report':
       return <CSAMReport api={newContactCSAMApi(savedContact.id, task.taskSid, routing.previousRoute)} />;
-    case 'profile':
-      return <Profile task={task} />;
     case 'select-call-type':
     default:
       return <CallTypeButtons task={task} />;

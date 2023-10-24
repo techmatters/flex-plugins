@@ -57,6 +57,7 @@ import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import asyncDispatch from '../../states/asyncDispatch';
 import { submitContactFormAsyncAction, updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import { namespace } from '../../states/storeNamespaces';
+import Profile from '../profile/Profile';
 import Search from '../search';
 import { getCurrentBaseRoute, getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { CaseLayout } from '../../styles/case';
@@ -123,6 +124,7 @@ const TabbedForms: React.FC<Props> = ({
   currentDefinitionVersion,
   csamReportEnabled,
   csamClcReportEnabled,
+  profileModalOpen,
   searchModalOpen,
   editingContact,
   updateDraftForm,
@@ -192,6 +194,12 @@ const TabbedForms: React.FC<Props> = ({
         handleSelectSearchResult={onSelectSearchResult}
       />
     );
+  }
+
+  console.log('>>> profileModalOpen', profileModalOpen);
+
+  if (profileModalOpen) {
+    return <Profile task={task} />;
   }
 
   if (currentRoute.route === 'case') {
@@ -394,6 +402,8 @@ const mapStateToProps = (
   const baseRoute = getCurrentBaseRoute(routing, taskSid);
   const searchModalOpen =
     isRouteWithModalSupport(baseRoute) && baseRoute.activeModal?.length && baseRoute.activeModal[0].route === 'search';
+  const profileModalOpen =
+    isRouteWithModalSupport(baseRoute) && baseRoute.activeModal?.length && baseRoute.activeModal[0].route === 'profile';
   const { currentDefinitionVersion } = configuration;
   return {
     currentRoute,
@@ -401,6 +411,7 @@ const mapStateToProps = (
     draftContact,
     updatedContact: getUnsavedContact(savedContact, draftContact),
     currentDefinitionVersion,
+    profileModalOpen,
     searchModalOpen,
     editingContact,
     isCallTypeCaller,

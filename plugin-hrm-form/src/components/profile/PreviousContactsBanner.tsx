@@ -34,7 +34,7 @@ import { YellowBanner } from '../../styles/previousContactsBanner';
 import { Bold } from '../../styles/HrmStyles';
 import { StyledLink } from '../../styles/search';
 import { ChannelTypes, channelTypes } from '../../states/DomainConstants';
-import { changeRoute as changeRouteAction, newOpenModalAction } from '../../states/routing/actions';
+import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../permissions';
 import { CustomITask, isTwilioTask } from '../../types/types';
@@ -56,10 +56,10 @@ const PreviousContactsBanner: React.FC<Props> = ({
   identifierEntry,
   previousContacts,
   task,
+  openProfileModal,
   viewPreviousContacts,
   searchContacts,
   searchCases,
-  changeRoute,
   loadIdentifierByIdentifier,
   openContactSearchResults,
   modalOpen,
@@ -123,7 +123,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   const handleClickViewRecords = async () => {
     if (enableClientProfiles) {
       const { id } = identifierData?.profiles?.[0];
-      changeRoute({ route: 'profile', id });
+      openProfileModal(id);
       return;
     }
 
@@ -207,13 +207,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     viewPreviousContacts: viewPreviousContactsAction(dispatch)(task),
     searchContacts: searchContactsAction(dispatch)(taskId),
     searchCases: searchCasesAction(dispatch)(taskId),
-    changeRoute: routing => dispatch(changeRouteAction(routing, taskId)),
     loadIdentifierByIdentifier: identifier =>
       asyncDispatch(dispatch)(ProfileActions.loadIdentifierByIdentifierAsync(identifier)),
+    openProfileModal: id => dispatch(newOpenModalAction({ route: 'profile', id }, taskId)),
     openContactSearchResults: () => {
       // We put the form 'under' the search results in the modal stack so the back button takes them to the form without needing custom handlers
       dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, taskId));
-      dispatch(changeRouteAction({ route: 'search', subroute: 'contact-results' }, taskId));
+      dispatch(changeRoute({ route: 'search', subroute: 'contact-results' }, taskId));
     },
   };
 };
