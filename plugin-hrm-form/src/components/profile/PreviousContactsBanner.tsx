@@ -209,7 +209,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     searchCases: searchCasesAction(dispatch)(taskId),
     loadIdentifierByIdentifier: identifier =>
       asyncDispatch(dispatch)(ProfileActions.loadIdentifierByIdentifierAsync(identifier)),
-    openProfileModal: id => dispatch(newOpenModalAction({ route: 'profile', id }, taskId)),
+    openProfileModal: id => {
+      dispatch(newOpenModalAction({ route: 'profile', id }, taskId));
+    },
     openContactSearchResults: () => {
       // We put the form 'under' the search results in the modal stack so the back button takes them to the form without needing custom handlers
       dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, taskId));

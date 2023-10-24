@@ -19,6 +19,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Tab as TwilioTab } from '@twilio/flex-ui';
 
 import asyncDispatch from '../../states/asyncDispatch';
+import NavigableContainer from '../NavigableContainer';
 import ProfileCases from './ProfileCases';
 import ProfileContacts from './ProfileContacts';
 import ProfileDetails from './ProfileDetails';
@@ -40,7 +41,7 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const Profile: React.FC<Props> = ({ currentTab, profileId, profile, changeProfileTab, loadProfile }) => {
+const Profile: React.FC<Props> = ({ task, currentTab, profileId, profile, changeProfileTab, loadProfile }) => {
   useEffect(() => {
     loadProfile(profileId);
 
@@ -94,10 +95,10 @@ const Profile: React.FC<Props> = ({ currentTab, profileId, profile, changeProfil
   const renderedTab = tabs.find(tab => tab.key === currentTab).component;
 
   return (
-    <>
+    <NavigableContainer task={task} titleCode="Profile-Title">
       {renderedLabels}
       {renderedTab}
-    </>
+    </NavigableContainer>
   );
 };
 
