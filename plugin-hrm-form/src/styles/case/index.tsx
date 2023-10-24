@@ -38,11 +38,6 @@ export const CaseContainer = styled('div')`
 `;
 CaseContainer.displayName = 'CaseContainer';
 
-export const CaseActionLayout = styled(CaseLayout)`
-  background-color: #ffffff;
-`;
-CaseActionLayout.displayName = 'CaseActionLayout';
-
 export const CaseActionFormContainer = styled('div')`
   height: 100%;
   display: flex;
