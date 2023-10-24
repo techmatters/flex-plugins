@@ -16,20 +16,20 @@
 
 export type ParseFetchErrorResult = {
   message: string;
-  code: number;
+  status: number;
+  statusText: string;
 };
 
 export const parseFetchError = (error: any): ParseFetchErrorResult => {
   const result: ParseFetchErrorResult = {
-    message: undefined,
-    code: undefined,
+    message: error.message,
+    status: undefined,
+    statusText: undefined,
   };
 
-  if (error?.response) {
-    result.message = error.response.statusText;
-    result.code = error.response.status;
-  } else {
-    result.message = error.message;
+  if (error.response) {
+    result.statusText = error.response.statusText;
+    result.status = error.response.status;
   }
 
   return result;
