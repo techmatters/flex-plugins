@@ -18,7 +18,7 @@ import React from 'react';
 import { getPermissionsForContact, PermissionActions } from '../../permissions';
 import { Contact, Profile } from '../../types/types';
 import ContactPreview from '../search/ContactPreview';
-import * as profileTypes from '../../states/profile/types';
+import * as ProfileTypes from '../../states/profile/types';
 import ProfileRelationshipList from './ProfileRelationshipList';
 
 type OwnProps = {
@@ -44,7 +44,7 @@ const ProfileContacts: React.FC<OwnProps> = ({ profileId }) => {
   return (
     <ProfileRelationshipList
       profileId={profileId}
-      type={'contacts' as profileTypes.ProfileRelationships}
+      type={'contacts' as ProfileTypes.ProfileRelationships}
       renderItem={renderItem}
     />
   );

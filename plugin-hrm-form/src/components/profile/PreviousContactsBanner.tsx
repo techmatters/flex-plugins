@@ -57,7 +57,6 @@ const PreviousContactsBanner: React.FC<Props> = ({
   searchCases,
   changeRoute,
   addProfileState,
-  setCurrentProfile,
   modalOpen,
 }) => {
   let localizedSourceFromTask: { [channelType in ChannelTypes]: string };
@@ -130,10 +129,12 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
   const handleClickViewRecords = async () => {
     if (enableClientProfiles) {
-      setCurrentProfile(identifierData?.profiles?.[0]?.id);
-    } else {
-      viewPreviousContacts();
+      const { id } = identifierData?.profiles?.[0];
+      changeRoute({ route: 'profile', id });
+      return;
     }
+
+    viewPreviousContacts();
 
     const subroute = enableClientProfiles ? 'profile' : 'search';
     changeRoute({ route: 'tabbed-forms', subroute });
@@ -209,7 +210,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     searchCases: searchCasesAction(dispatch)(taskId),
     changeRoute: routing => dispatch(changeRouteAction(routing, taskId)),
     addProfileState: ProfileActions.addProfileState(dispatch),
-    setCurrentProfile: ProfileActions.setCurrentProfile(dispatch),
   };
 };
 

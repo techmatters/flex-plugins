@@ -22,19 +22,9 @@ export type { Case, Contact, Identifier, Profile } from '../../types/types';
 
 // Action types
 export const ADD_PROFILE_STATE = 'ADD_PROFILE_STATE';
-export const CHANGE_PROFILE_TAB = 'CHANGE_SEARCH_PAGE';
 export const INCREMENT_PAGE = 'INCREMENT_PAGE';
 export const LOAD_PROFILE = 'LOAD_PROFILE';
 export const LOAD_RELATIONSHIP = 'LOAD_RELATIONSHIP';
-export const SET_CURRENT_PROFILE = 'SET_CURRENT_PROFILE';
-
-export const PROFILE_TABS = {
-  cases: 'cases',
-  contacts: 'contacts',
-  details: 'details',
-} as const;
-
-export type ProfileTabs = typeof PROFILE_TABS[keyof typeof PROFILE_TABS];
 
 export const PROFILE_RELATIONSHIPS = {
   cases: {
@@ -65,21 +55,17 @@ export type ProfileEntry = {
     page: number;
     loadedPage?: number;
   };
-  currentTab: ProfileTabs;
   error?: ParseFetchErrorResult;
   loading: boolean;
   profile?: Profile;
 };
 
 export type ProfileState = {
-  currentProfileId?: string;
   profiles: {
     [profileId: Profile['id']]: ProfileEntry;
   };
 };
 
 type AddProfileState = { type: typeof ADD_PROFILE_STATE; profileId: Profile['id']; profile?: Profile };
-type ChangeProfileTab = { type: typeof CHANGE_PROFILE_TAB; tab: ProfileTabs; profileId: Profile['id'] };
-type SetCurrentProfile = { type: typeof SET_CURRENT_PROFILE; profileId: Profile['id'] };
 
-export type ProfileActions = AddProfileState | ChangeProfileTab | SetCurrentProfile;
+export type ProfileActions = AddProfileState;

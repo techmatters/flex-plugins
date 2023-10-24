@@ -24,6 +24,7 @@ import CallTypeButtons from './callTypeButtons';
 import TabbedForms from './tabbedForms';
 import Case from './case';
 import CSAMReport from './CSAMReport/CSAMReport';
+import Profile from './profile/Profile';
 import { RootState } from '../states';
 import type { CustomITask, Case as CaseForm, Contact } from '../types/types';
 import { newContactCSAMApi } from './CSAMReport/csamReportApi';
@@ -81,6 +82,8 @@ const HrmForm: React.FC<Props> = ({
 
     case 'csam-report':
       return <CSAMReport api={newContactCSAMApi(savedContact.id, task.taskSid, routing.previousRoute)} />;
+    case 'profile':
+      return <Profile task={task} />;
     case 'search':
       return (
         <Search

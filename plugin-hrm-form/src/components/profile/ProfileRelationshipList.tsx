@@ -19,16 +19,16 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import asyncDispatch from '../../states/asyncDispatch';
 import * as profileActions from '../../states/profile/actions';
-import * as profileTypes from '../../states/profile/types';
+import * as ProfileTypes from '../../states/profile/types';
 import * as profileSelectors from '../../states/profile/selectors';
 import { RootState } from '../../states';
 
-type ProfileId = profileTypes.Profile['id'];
+type ProfileId = ProfileTypes.Profile['id'];
 
 type OwnProps = {
   profileId: ProfileId;
-  type: profileTypes.ProfileRelationships;
-  renderItem: (d: profileTypes.ProfileRelationshipTypes) => React.ReactNode;
+  type: ProfileTypes.ProfileRelationships;
+  renderItem: (d: ProfileTypes.ProfileRelationshipTypes) => React.ReactNode;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -58,7 +58,7 @@ const ProfileRelationshipList: React.FC<Props> = ({
       return <div>No {type} found</div>;
     }
 
-    return <>{data.map((d: profileTypes.ProfileRelationshipTypes) => renderItem(d))}</>;
+    return <>{data.map((d: ProfileTypes.ProfileRelationshipTypes) => renderItem(d))}</>;
   };
 
   const renderLoadMore = () => {

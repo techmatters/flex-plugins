@@ -20,7 +20,6 @@ import { loadRelationshipsReducer, shouldUseLoadRelationshipsReducer } from './l
 import loadProfileEntryIntoRedux from './loadProfileEntryIntoRedux';
 
 const newProfileEntry: t.ProfileEntry = {
-  currentTab: t.PROFILE_TABS.details,
   error: undefined,
   loading: false,
   profile: undefined,
@@ -38,7 +37,6 @@ const newProfileEntry: t.ProfileEntry = {
 
 const initialState: t.ProfileState = {
   profiles: {},
-  currentProfileId: undefined,
 };
 
 const boundLoadProfileReducer = loadProfileReducer(initialState);
@@ -53,6 +51,7 @@ export function reduce(state = initialState, action: t.ProfileActions): t.Profil
     return boundLoadRelationshipsReducer(state, action);
   }
 
+  // eslint-disable-next-line sonarjs/no-small-switch
   switch (action.type) {
     case t.ADD_PROFILE_STATE: {
       const profile = state.profiles[action.profileId];
@@ -64,18 +63,6 @@ export function reduce(state = initialState, action: t.ProfileActions): t.Profil
 
       return loadProfileEntryIntoRedux(state, action.profileId, profileUpdate);
     }
-    case t.CHANGE_PROFILE_TAB: {
-      const profile = state.profiles[action.profileId];
-      const profileUpdate = { ...profile, currentTab: action.tab };
-
-      return loadProfileEntryIntoRedux(state, action.profileId, profileUpdate);
-    }
-
-    case t.SET_CURRENT_PROFILE:
-      return {
-        ...state,
-        currentProfileId: action.profileId,
-      };
 
     default:
       return state;

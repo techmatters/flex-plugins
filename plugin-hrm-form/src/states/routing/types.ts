@@ -14,6 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { Profile } from '../../types/types';
+
 // Action types
 export const CHANGE_ROUTE = 'routing/change-route';
 export const OPEN_MODAL = 'routing/open-modal';
@@ -115,6 +117,20 @@ export type CaseRoute =
   | CaseHomeRoute
   | CasePrintRoute;
 
+export const PROFILE_TABS = {
+  cases: 'cases',
+  contacts: 'contacts',
+  details: 'details',
+} as const;
+
+export type ProfileTabs = typeof PROFILE_TABS[keyof typeof PROFILE_TABS];
+
+export type ProfileRoute = {
+  route: 'profile';
+  id: Profile['id'];
+  subroute?: ProfileTabs;
+};
+
 export function isAddCaseSectionRoute(appRoute: AppRoutes): appRoute is AddCaseSectionRoute {
   return (<any>appRoute).action === CaseItemAction.Add;
 }
@@ -158,7 +174,8 @@ type OtherRoutes =
   | TabbedFormRoute
   | SearchRoute
   | ContactRoute
-  | CaseListRoute;
+  | CaseListRoute
+  | ProfileRoute;
 
 // The different routes we have in our app
 export type AppRoutes = AppRoutesWithCase | OtherRoutes;

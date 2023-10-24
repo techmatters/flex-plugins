@@ -20,7 +20,7 @@ import { getPermissionsForCase, PermissionActions } from '../../permissions';
 import { Case, Profile } from '../../types/types';
 import CasePreview from '../search/CasePreview';
 import ProfileRelationshipList from './ProfileRelationshipList';
-import * as profileTypes from '../../states/profile/types';
+import * as ProfileTypes from '../../states/profile/types';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 
@@ -51,7 +51,7 @@ const ProfileCases: React.FC<Props> = ({ profileId, counselorsHash }) => {
   return (
     <ProfileRelationshipList
       profileId={profileId}
-      type={'cases' as profileTypes.ProfileRelationships}
+      type={'cases' as ProfileTypes.ProfileRelationships}
       renderItem={renderItem}
     />
   );
