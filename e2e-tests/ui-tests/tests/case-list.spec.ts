@@ -19,8 +19,7 @@
 import { expect, Page, test } from '@playwright/test';
 import * as mockServer from '../flex-in-a-box/proxied-endpoints';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { preload, useUnminifiedFlex } from '../flex-in-a-box/local-resources';
+import '../flex-in-a-box/local-resources';
 import hrmCases from '../aselo-service-mocks/hrm/cases';
 import { caseList, Filter } from '../../caseList';
 import AxeBuilder from '@axe-core/playwright';
@@ -96,6 +95,6 @@ test.describe.serial('Case List', () => {
       .analyze();
     //expect(caseHomeAccessibilityScanResults.violations).toEqual([]);
     warnViolations(caseEditAccessibilityScanResults, `the case summary edit page`);
-    await caseListPage.closeEditCase();
+    await caseListPage.closeModal();
   });
 });
