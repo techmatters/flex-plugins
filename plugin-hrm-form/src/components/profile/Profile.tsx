@@ -19,6 +19,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Tab as TwilioTab } from '@twilio/flex-ui';
 
+import asyncDispatch from '../../states/asyncDispatch';
 import ProfileCases from './ProfileCases';
 import ProfileContacts from './ProfileContacts';
 import ProfileDetails from './ProfileDetails';
@@ -106,7 +107,7 @@ const mapStateToProps = (state: RootState) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  loadProfile: profileId => dispatch(ProfileActions.loadProfileAsync(profileId)),
+  loadProfile: profileId => asyncDispatch(dispatch)(ProfileActions.loadProfileAsync(profileId)),
   changeProfileTab: ProfileActions.changeProfileTab(dispatch),
   changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
 });

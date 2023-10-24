@@ -14,29 +14,23 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import * as t from './types';
-import { RootState } from '..';
-
-const loadProfileEntryIntoRedux = (
-  state: t.ProfileState,
-  profileId: t.Profile['id'],
-  profileUpdate: Partial<t.ProfileEntry>,
-): t.ProfileState => {
-  const { profiles: oldProfiles } = state;
-  const existingProfile = oldProfiles[profileId];
-  const newProfile = {
-    ...existingProfile,
-    ...profileUpdate,
-  };
-  const profiles = {
-    ...oldProfiles,
-    [profileId]: newProfile,
-  };
-
-  return {
-    ...state,
-    profiles,
-  };
+export type ParseFetchErrorResult = {
+  message: string;
+  code: number;
 };
 
-export default loadProfileEntryIntoRedux;
+export const parseFetchError = (error: any): ParseFetchErrorResult => {
+  const result: ParseFetchErrorResult = {
+    message: undefined,
+    code: undefined,
+  };
+
+  if (error?.response) {
+    result.message = error.response.statusText;
+    result.code = error.response.status;
+  } else {
+    result.message = error.message;
+  }
+
+  return result;
+};

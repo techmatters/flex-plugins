@@ -15,6 +15,7 @@
  */
 import { createAction, createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
+import { parseFetchError } from '../parseFetchError';
 import loadProfileEntryIntoRedux from './loadProfileEntryIntoRedux';
 import * as t from './types';
 
@@ -35,12 +36,7 @@ export const loadRelationshipAsync = createAsyncAction(
     const offset = page * PAGE_SIZE;
     const limit = PAGE_SIZE;
 
-    try {
-      return await t.PROFILE_RELATIONSHIPS[type].method(profileId, offset, limit);
-    } catch (error) {
-      // See note in handleFulfilledAction about why we have to handle fetch errors in this goofy way.
-      return { error };
-    }
+    return t.PROFILE_RELATIONSHIPS[type].method(profileId, offset, limit);
   },
   (params: LoadRelationshipAsyncParams) => params,
 );
@@ -51,10 +47,10 @@ const handlePendingAction = (state: t.ProfileState, action: any) => {
   const { profileId, type } = action.meta;
 
   const profileUpdate = {
-    ...state.profiles[profileId],
     [type]: {
       ...state.profiles[profileId][type],
       loading: true,
+      error: undefined,
     },
   };
 
@@ -64,19 +60,10 @@ const handlePendingAction = (state: t.ProfileState, action: any) => {
 const handleFulfilledAction = (state: t.ProfileState, action: any) => {
   const { page: loadedPage, profileId, type } = action.meta;
 
-  // This is a little weird, but since we don't have control over middleware we can't add error middleware
-  // to let us use the loadRelationshipAsync.rejected action to handle errors. If we try to use that handler
-  // the exception is thrown and the app crashes. So we have to check for the error here and handle it in
-  // fulfilled.
-  if (action.payload.error) {
-    return handleRejectedAction(state, action);
-  }
-
   const data = [...(state.profiles[profileId][type].data || []), ...action.payload[type]];
   const exhausted = data.length >= action.payload.count;
 
   const profileUpdate = {
-    ...state.profiles[profileId],
     [type]: {
       ...state.profiles[profileId][type],
       data,
@@ -91,10 +78,9 @@ const handleFulfilledAction = (state: t.ProfileState, action: any) => {
 
 const handleRejectedAction = (state: t.ProfileState, action: any) => {
   const { profileId, type } = action.meta;
-  const error = action.payload;
+  const error = parseFetchError(action.payload);
 
-  const profileUpdate: t.ProfileEntry = {
-    ...state.profiles[profileId],
+  const profileUpdate = {
     [type]: {
       ...state.profiles[profileId][type],
       loading: false,
@@ -109,7 +95,6 @@ const handleIncrementPageAction = (state: t.ProfileState, action: any) => {
   const { profileId, type } = action.payload;
 
   const profileUpdate = {
-    ...state.profiles[profileId],
     [type]: {
       ...state.profiles[profileId][type],
       page: state.profiles[profileId][type].page + 1,

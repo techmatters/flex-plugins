@@ -16,6 +16,7 @@
 
 import { Case, Contact, Profile } from '../../types/types';
 import { getProfileContacts, getProfileCases } from '../../services/ProfileService';
+import { ParseFetchErrorResult } from '../parseFetchError';
 
 export type { Case, Contact, Identifier, Profile } from '../../types/types';
 
@@ -50,7 +51,7 @@ export type ProfileRelationshipTypes = Case | Contact;
 export type ProfileEntry = {
   cases?: {
     data?: Case[];
-    error?: any;
+    errors?: ParseFetchErrorResult;
     exhausted: boolean;
     loading: boolean;
     page: number;
@@ -58,14 +59,14 @@ export type ProfileEntry = {
   };
   contacts?: {
     data?: Contact[];
-    error?: any;
+    error?: ParseFetchErrorResult;
     exhausted: boolean;
     loading: boolean;
     page: number;
     loadedPage?: number;
   };
   currentTab: ProfileTabs;
-  error?: any;
+  error?: ParseFetchErrorResult;
   loading: boolean;
   profile?: Profile;
 };

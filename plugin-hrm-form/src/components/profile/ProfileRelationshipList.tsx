@@ -17,6 +17,7 @@
 import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
+import asyncDispatch from '../../states/asyncDispatch';
 import * as profileActions from '../../states/profile/actions';
 import * as profileTypes from '../../states/profile/types';
 import * as profileSelectors from '../../states/profile/selectors';
@@ -94,7 +95,7 @@ const mapStateToProps = (state: RootState, { profileId, type }) => {
 
 const mapDispatchToProps = (dispatch, { profileId, type }: OwnProps) => ({
   loadRelationshipAsync: (page: number) =>
-    dispatch(
+    asyncDispatch(dispatch)(
       profileActions.loadRelationshipAsync({
         profileId,
         type,

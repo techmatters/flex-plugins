@@ -15,34 +15,23 @@
  */
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
+import { parseFetchError } from '../parseFetchError';
 import { getProfileById } from '../../services/ProfileService';
 import loadProfileEntryIntoRedux from './loadProfileEntryIntoRedux';
 import * as t from './types';
 
 type ProfileId = t.Profile['id'];
 
-export const loadProfileAsync = createAsyncAction(
-  t.LOAD_PROFILE,
-  async (profileId: ProfileId): Promise<any> => {
-    try {
-      return await getProfileById(profileId);
-    } catch (error) {
-      // See note in handleFulfilledAction about why we have to handle fetch errors in this goofy way.
-      return { error };
-    }
-  },
-  (profileId: ProfileId) => ({ profileId }),
-);
+export const loadProfileAsync = createAsyncAction(t.LOAD_PROFILE, getProfileById, (profileId: ProfileId) => ({
+  profileId,
+}));
 
 const handleLoadProfilePendingAction = (state: t.ProfileState, action: any) => {
   const { profileId } = action.meta;
 
   const profileUpdate = {
-    ...state.profiles[profileId],
-    profile: {
-      ...state.profiles[profileId].profile,
-      loading: true,
-    },
+    loading: true,
+    error: undefined,
   };
 
   return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
@@ -50,13 +39,10 @@ const handleLoadProfilePendingAction = (state: t.ProfileState, action: any) => {
 
 const handleLoadProfileRejectedAction = (state: t.ProfileState, action: any) => {
   const { profileId } = action.meta;
+  const error = parseFetchError(action.payload);
 
   const profileUpdate = {
-    ...state.profiles[profileId],
-    profile: {
-      ...state.profiles[profileId].profile,
-      error: action.payload.error,
-    },
+    error,
   };
 
   return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
@@ -65,16 +51,7 @@ const handleLoadProfileRejectedAction = (state: t.ProfileState, action: any) => 
 const handleLoadProfileFulfilledAction = (state: t.ProfileState, action: any) => {
   const { profileId } = action.meta;
 
-  // This is a little weird, but since we don't have control over middleware we can't add error middleware
-  // to let us use the loadRelationshipAsync.rejected action to handle errors. If we try to use that handler
-  // the exception is thrown and the app crashes. So we have to check for the error here and handle it in
-  // fulfilled.
-  if (action.payload.error) {
-    return handleLoadProfileRejectedAction(state, action);
-  }
-
   const profileUpdate = {
-    ...state.profiles[profileId],
     profile: {
       ...state.profiles[profileId].profile,
       ...action.payload,
