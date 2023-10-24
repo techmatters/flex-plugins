@@ -71,7 +71,6 @@ export const initialState: ContactsState = {
     [DetailsContext.CASE_DETAILS]: { detailsExpanded: {} },
     [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {} },
   },
-  editingContact: false,
   isCallTypeCaller: false,
 };
 
@@ -189,9 +188,6 @@ export function reduce(
     }
     case t.SET_CALL_TYPE: {
       return { ...state, isCallTypeCaller: action.isCallTypeCaller };
-    }
-    case t.SET_EDITING_CONTACT: {
-      return { ...state, editingContact: action.editing };
     }
     case UPDATE_CONTACT_ACTION_FULFILLED:
     case CREATE_CONTACT_ACTION_FULFILLED:

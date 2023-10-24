@@ -120,7 +120,6 @@ const hrmState: Partial<RootState[typeof namespace]> = {
     },
   },
   [contactFormsBase]: {
-    editingContact: false,
     isCallTypeCaller: false,
     contactDetails: { contactSearch: { detailsExpanded: {} }, caseDetails: { detailsExpanded: {} } },
     existingContacts: {
