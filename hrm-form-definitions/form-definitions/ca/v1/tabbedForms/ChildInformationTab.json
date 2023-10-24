@@ -610,11 +610,6 @@
       ]
   },
   {
-    "name": "Newcomer",
-    "label": "Newcomer (e.g., Arrived in Canada within 5 years or less)/Recent Immigrant/Refugee",
-    "type": "checkbox"
-  },
-  {
     "name": "supportType",
     "label": "(Chat Only) What type of support is the service user seeking?",
     "type": "listbox-multiselect",
@@ -671,5 +666,10 @@
           "label": "Did not disclose"
         }
       ]
+  },
+  {
+    "name": "Newcomer",
+    "label": "Newcomer (e.g., Arrived in Canada within 5 years or less)/Recent Immigrant/Refugee",
+    "type": "checkbox"
   }
 ]
