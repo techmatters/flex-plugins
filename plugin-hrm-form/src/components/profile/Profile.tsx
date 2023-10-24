@@ -121,7 +121,13 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
   loadProfile: profileId => asyncDispatch(dispatch)(ProfileActions.loadProfileAsync(profileId)),
   changeProfileTab: (id, subroute) =>
-    dispatch(RoutingActions.changeRoute({ route: 'profile', id, subroute }, task.taskSid)),
+    dispatch(
+      RoutingActions.changeRoute(
+        { route: 'profile', id, subroute },
+        task.taskSid,
+        RoutingTypes.ChangeRouteMode.Replace,
+      ),
+    ),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

@@ -33,6 +33,7 @@ import { CONTACTS_PER_PAGE, CASES_PER_PAGE } from '../search/SearchResults';
 import { YellowBanner } from '../../styles/previousContactsBanner';
 import { Bold } from '../../styles/HrmStyles';
 import { StyledLink } from '../../styles/search';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 import { ChannelTypes, channelTypes } from '../../states/DomainConstants';
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../utils';
@@ -52,7 +53,6 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 
 const PreviousContactsBanner: React.FC<Props> = ({
   contactIdentifier,
-  enableClientProfiles,
   identifierEntry,
   previousContacts,
   task,
@@ -65,6 +65,8 @@ const PreviousContactsBanner: React.FC<Props> = ({
   modalOpen,
 }) => {
   let localizedSourceFromTask: { [channelType in ChannelTypes]: string };
+  const { enable_client_profiles: enableClientProfiles } = getAseloFeatureFlags();
+
   if (isTwilioTask(task)) {
     localizedSourceFromTask = {
       [channelTypes.web]: `${getContactValueTemplate(task)}`,
