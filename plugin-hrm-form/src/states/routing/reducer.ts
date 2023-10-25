@@ -142,6 +142,9 @@ const popTopmostRoute = (baseRouteStack: AppRoutes[]): AppRoutes[] => {
     }
     // Don't empty the base route stack, this will result in Bad Things (TM)
     if (baseRouteStack.length <= 1 && !isRouteWithModalSupport(currentRoute)) {
+      console.warn(
+        `Tried to go back in the base route stack but there was ${baseRouteStack.length} routes in the stack so doing nothing. This could indicate a routing logic issue in the components.`,
+      );
       return baseRouteStack;
     }
     return baseRouteStack.slice(0, -1);
