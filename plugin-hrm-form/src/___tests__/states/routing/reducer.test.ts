@@ -15,6 +15,7 @@
  */
 
 import { DefinitionVersion, DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import each from 'jest-each';
 
 import { mockGetDefinitionsResponse, mockPartialConfiguration } from '../../mockGetConfig';
 import { getDefinitionVersions } from '../../../hrmConfig';
@@ -27,7 +28,13 @@ import {
   CREATE_CONTACT_ACTION_FULFILLED,
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
 } from '../../../states/contacts/types';
-import { ChangeRouteMode, RoutingState } from '../../../states/routing/types';
+import {
+  AppRoutes,
+  CaseItemAction,
+  ChangeRouteMode,
+  RoutingActionType,
+  RoutingState,
+} from '../../../states/routing/types';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -89,33 +96,417 @@ describe('test reducer (specific actions)', () => {
     expect(result).toStrictEqual(expected);
   });
 
-  test('should handle CHANGE_ROUTE by adding new route to stack if replace is not set', async () => {
-    const expected = {
-      tasks: {
-        task1: [{ route: 'tabbed-forms', subroute: 'childInformation' }, { route: 'tabbed-forms' }],
-        [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
-      },
-      isAddingOfflineContact: false,
-    };
+  type TestCase = {
+    startingState: RoutingState;
+    expected: RoutingState;
+    action: RoutingActionType;
+    description: string;
+  };
 
-    const result = reduce(stateWithTask, actions.changeRoute({ route: 'tabbed-forms' }, task.taskSid));
+  const genericRoutingTest = async ({ startingState, expected, action }: TestCase) => {
+    const result = reduce(startingState, action);
     expect(result).toStrictEqual(expected);
+  };
+
+  const stateWithRouteStack = (baseRoutes: AppRoutes[]): RoutingState => ({
+    tasks: {
+      task1: baseRoutes,
+      [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
+    },
+    isAddingOfflineContact: false,
   });
 
-  test('should handle CHANGE_ROUTE by replacing topmost route with new route to stack if replace is set', async () => {
-    const expected = {
-      tasks: {
-        task1: [{ route: 'tabbed-forms' }],
-        [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
+  describe('CHANGE_ROUTE action', () => {
+    const tests = (stateGenerator: (routes: AppRoutes[]) => RoutingState, routeDescription: string) => [
+      {
+        startingState: stateGenerator([
+          { route: 'tabbed-forms', subroute: 'childInformation' },
+          { route: 'case', subroute: 'home' },
+        ]),
+        expected: stateGenerator([
+          { route: 'tabbed-forms', subroute: 'childInformation' },
+          { route: 'case', subroute: 'home' },
+          { route: 'tabbed-forms' },
+        ]),
+        action: actions.changeRoute({ route: 'tabbed-forms' }, task.taskSid),
+        description: `should add new route to the ${routeDescription} stack if mode is Push`,
       },
-      isAddingOfflineContact: false,
-    };
+      {
+        startingState: stateGenerator([
+          { route: 'tabbed-forms', subroute: 'childInformation' },
+          { route: 'case', subroute: 'home' },
+        ]),
+        expected: stateGenerator([{ route: 'tabbed-forms', subroute: 'childInformation' }, { route: 'tabbed-forms' }]),
+        action: actions.changeRoute({ route: 'tabbed-forms' }, task.taskSid, ChangeRouteMode.Replace),
+        description: `should replace the most recent ${routeDescription} route with new route to stack if mode is Replace`,
+      },
+      {
+        startingState: stateGenerator([
+          { route: 'tabbed-forms', subroute: 'childInformation' },
+          { route: 'case', subroute: 'home' },
+        ]),
+        expected: stateGenerator([{ route: 'tabbed-forms' }]),
+        action: actions.changeRoute({ route: 'tabbed-forms' }, task.taskSid, ChangeRouteMode.Reset),
+        description: `should replace the whole ${routeDescription} route with a new stack containing the new route as the only item if mode is Reset`,
+      },
+    ];
+    describe('Not currently in a modal', () => {
+      each([...tests(stateWithRouteStack, 'base')]).test('$description', genericRoutingTest);
+    });
 
-    const result = reduce(
-      stateWithTask,
-      actions.changeRoute({ route: 'tabbed-forms' }, task.taskSid, ChangeRouteMode.Replace),
-    );
-    expect(result).toStrictEqual(expected);
+    describe('When modal is open', () => {
+      const stateWithModal = (modalRoutes: AppRoutes[]): RoutingState => ({
+        tasks: {
+          task1: [{ route: 'tabbed-forms', subroute: 'childInformation', activeModal: modalRoutes }],
+          [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
+        },
+        isAddingOfflineContact: false,
+      });
+
+      each([...tests(stateWithModal, 'modal')]).test('$description', genericRoutingTest);
+    });
+  });
+
+  describe('OPEN_MODAL action', () => {
+    const tests: TestCase[] = [
+      {
+        description:
+          'Current route not in a modal - should create activeModal on latest route in base stack with the provided route as the only item',
+        startingState: stateWithRouteStack([
+          { route: 'select-call-type' },
+          { route: 'tabbed-forms', subroute: 'childInformation' },
+        ]),
+        expected: stateWithRouteStack([
+          { route: 'select-call-type' },
+          { route: 'tabbed-forms', subroute: 'childInformation', activeModal: [{ route: 'case', subroute: 'home' }] },
+        ]),
+        action: actions.newOpenModalAction({ route: 'case', subroute: 'home' }, task.taskSid),
+      },
+      {
+        description:
+          "Current route in a modal - should create activeModal on latest route in the top modal's stack with the provided route as the only item",
+        startingState: stateWithRouteStack([
+          { route: 'select-call-type' },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [
+              { route: 'search', subroute: 'form' },
+              { route: 'search', subroute: 'case-results' },
+            ],
+          },
+        ]),
+        expected: stateWithRouteStack([
+          { route: 'select-call-type' },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [
+              { route: 'search', subroute: 'form' },
+              { route: 'search', subroute: 'case-results', activeModal: [{ route: 'case', subroute: 'home' }] },
+            ],
+          },
+        ]),
+        action: actions.newOpenModalAction({ route: 'case', subroute: 'home' }, task.taskSid),
+      },
+      {
+        description:
+          "Current route has active modal on a previous route (shouldn't happen) - should still create activeModal on latest route in base stack",
+        startingState: stateWithRouteStack([
+          { route: 'tabbed-forms', subroute: 'childInformation', activeModal: [{ route: 'case', subroute: 'home' }] },
+          { route: 'tabbed-forms', subroute: 'childInformation' },
+        ]),
+        expected: stateWithRouteStack([
+          { route: 'tabbed-forms', subroute: 'childInformation', activeModal: [{ route: 'case', subroute: 'home' }] },
+          { route: 'tabbed-forms', subroute: 'childInformation', activeModal: [{ route: 'case', subroute: 'home' }] },
+        ]),
+        action: actions.newOpenModalAction({ route: 'case', subroute: 'home' }, task.taskSid),
+      },
+    ];
+
+    each(tests).test('$description', genericRoutingTest);
+  });
+
+  describe('GO_BACK action', () => {
+    const tests: TestCase[] = [
+      {
+        description: 'Current route not in a modal - should pop the latest route from the base stack',
+        startingState: stateWithRouteStack([
+          { route: 'select-call-type' },
+          { route: 'tabbed-forms', subroute: 'childInformation' },
+        ]),
+        expected: stateWithRouteStack([{ route: 'select-call-type' }]),
+        action: actions.newGoBackAction(task.taskSid),
+      },
+      {
+        description: 'Current route in a modal - should pop the latest route from the modal stack',
+        startingState: stateWithRouteStack([
+          { route: 'select-call-type' },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [
+              { route: 'search', subroute: 'form' },
+              { route: 'search', subroute: 'case-results' },
+            ],
+          },
+        ]),
+        expected: stateWithRouteStack([
+          { route: 'select-call-type' },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [{ route: 'search', subroute: 'form' }],
+          },
+        ]),
+        action: actions.newGoBackAction(task.taskSid),
+      },
+      {
+        description: 'Current route in a stack of modals - should pop the latest route from the top modal stack',
+        startingState: stateWithRouteStack([
+          { route: 'select-call-type' },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [
+              { route: 'search', subroute: 'form' },
+              {
+                route: 'search',
+                subroute: 'case-results',
+                activeModal: [
+                  { route: 'case', subroute: 'home' },
+                  { route: 'case', subroute: 'caseSummary', action: CaseItemAction.View, id: '' },
+                ],
+              },
+            ],
+          },
+        ]),
+        expected: stateWithRouteStack([
+          { route: 'select-call-type' },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [
+              { route: 'search', subroute: 'form' },
+              {
+                route: 'search',
+                subroute: 'case-results',
+                activeModal: [{ route: 'case', subroute: 'home' }],
+              },
+            ],
+          },
+        ]),
+        action: actions.newGoBackAction(task.taskSid),
+      },
+      {
+        description:
+          "Current route has active modal on a previous route (shouldn't happen) - should still pop the latest route from the base stack",
+        startingState: stateWithRouteStack([
+          { route: 'tabbed-forms', subroute: 'childInformation', activeModal: [{ route: 'case', subroute: 'home' }] },
+          { route: 'tabbed-forms', subroute: 'childInformation' },
+        ]),
+        expected: stateWithRouteStack([
+          { route: 'tabbed-forms', subroute: 'childInformation', activeModal: [{ route: 'case', subroute: 'home' }] },
+        ]),
+        action: actions.newGoBackAction(task.taskSid),
+      },
+      {
+        description: 'Current route is the only route in the base stack - should do nothing',
+        startingState: stateWithRouteStack([{ route: 'select-call-type' }]),
+        expected: stateWithRouteStack([{ route: 'select-call-type' }]),
+        action: actions.newGoBackAction(task.taskSid),
+      },
+      {
+        description: 'Current route is the only route in the modal stack - should close modal',
+        startingState: stateWithRouteStack([
+          { route: 'select-call-type' },
+          { route: 'tabbed-forms', subroute: 'childInformation', activeModal: [{ route: 'case', subroute: 'home' }] },
+        ]),
+        expected: stateWithRouteStack([
+          { route: 'select-call-type' },
+          { route: 'tabbed-forms', subroute: 'childInformation' },
+        ]),
+        action: actions.newGoBackAction(task.taskSid),
+      },
+    ];
+    each(tests).test('$description', genericRoutingTest);
+  });
+
+  describe('CLOSE_MODAL action', () => {
+    const tests: TestCase[] = [
+      {
+        description: 'Current route not in a modal - should do nothing',
+        startingState: stateWithRouteStack([
+          { route: 'select-call-type' },
+          { route: 'tabbed-forms', subroute: 'childInformation' },
+        ]),
+        expected: stateWithRouteStack([
+          { route: 'select-call-type' },
+          { route: 'tabbed-forms', subroute: 'childInformation' },
+        ]),
+        action: actions.newCloseModalAction(task.taskSid),
+      },
+      {
+        description: 'Current route in a modal - should close the modal',
+        startingState: stateWithRouteStack([
+          { route: 'select-call-type' },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [
+              { route: 'search', subroute: 'form' },
+              { route: 'search', subroute: 'case-results' },
+            ],
+          },
+        ]),
+        expected: stateWithRouteStack([
+          { route: 'select-call-type' },
+          { route: 'tabbed-forms', subroute: 'childInformation' },
+        ]),
+        action: actions.newCloseModalAction(task.taskSid),
+      },
+      {
+        description: 'Current route in a stack of modals - should close the top modal',
+        startingState: stateWithRouteStack([
+          { route: 'select-call-type' },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [
+              { route: 'search', subroute: 'form' },
+              {
+                route: 'search',
+                subroute: 'case-results',
+                activeModal: [
+                  { route: 'case', subroute: 'home' },
+                  { route: 'case', subroute: 'caseSummary', action: CaseItemAction.View, id: '' },
+                ],
+              },
+            ],
+          },
+        ]),
+        expected: stateWithRouteStack([
+          { route: 'select-call-type' },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [
+              { route: 'search', subroute: 'form' },
+              { route: 'search', subroute: 'case-results' },
+            ],
+          },
+        ]),
+        action: actions.newCloseModalAction(task.taskSid),
+      },
+      {
+        description:
+          'Current route in a stack of modals & topRoute set - should close all modals above the one where topRoute is the latest route',
+        startingState: stateWithRouteStack([
+          { route: 'select-call-type' },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [
+              { route: 'search', subroute: 'form' },
+              {
+                route: 'search',
+                subroute: 'case-results',
+                activeModal: [
+                  { route: 'case', subroute: 'home' },
+                  { route: 'case', subroute: 'caseSummary', action: CaseItemAction.View, id: '' },
+                ],
+              },
+            ],
+          },
+        ]),
+        expected: stateWithRouteStack([
+          { route: 'select-call-type' },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+          },
+        ]),
+        action: actions.newCloseModalAction(task.taskSid, 'tabbed-forms'),
+      },
+      {
+        description: 'Current route in a stack of modals & topRoute set to current top modal route - should do nothing',
+        startingState: stateWithRouteStack([
+          { route: 'select-call-type' },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [
+              { route: 'search', subroute: 'form' },
+              {
+                route: 'search',
+                subroute: 'case-results',
+                activeModal: [
+                  { route: 'case', subroute: 'home' },
+                  { route: 'case', subroute: 'caseSummary', action: CaseItemAction.View, id: '' },
+                ],
+              },
+            ],
+          },
+        ]),
+        expected: stateWithRouteStack([
+          { route: 'select-call-type' },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [
+              { route: 'search', subroute: 'form' },
+              {
+                route: 'search',
+                subroute: 'case-results',
+                activeModal: [
+                  { route: 'case', subroute: 'home' },
+                  { route: 'case', subroute: 'caseSummary', action: CaseItemAction.View, id: '' },
+                ],
+              },
+            ],
+          },
+        ]),
+        action: actions.newCloseModalAction(task.taskSid, 'case'),
+      },
+      {
+        // This behaviour is probably not the most logical behaviour, but it simplifies the algorithm,
+        // so until we have a use case for changing it, this is what it does
+        description:
+          'topRoute is the latest route in more than one layer - should close down to the lowest matching route',
+        startingState: stateWithRouteStack([
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [
+              { route: 'select-call-type' },
+              {
+                route: 'tabbed-forms',
+                subroute: 'childInformation',
+                activeModal: [
+                  { route: 'search', subroute: 'form' },
+                  {
+                    route: 'search',
+                    subroute: 'case-results',
+                    activeModal: [
+                      { route: 'case', subroute: 'home' },
+                      { route: 'case', subroute: 'caseSummary', action: CaseItemAction.View, id: '' },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ]),
+        expected: stateWithRouteStack([
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+          },
+        ]),
+        action: actions.newCloseModalAction(task.taskSid, 'tabbed-forms'),
+      },
+    ];
+    each(tests).test('$description', genericRoutingTest);
   });
 
   test('should handle REMOVE_CONTACT_STATE', async () => {
