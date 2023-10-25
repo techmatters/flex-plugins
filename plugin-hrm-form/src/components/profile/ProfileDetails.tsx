@@ -42,7 +42,6 @@ const ProfileDetails: React.FC<Props> = ({ profileId, profile, openProfileEditMo
 
   const editButton = true;
   const handleEditProfileDetails = () => {
-    console.log('>>>Edit Profile Details');
     if (editButton) {
       openProfileEditModal();
     }

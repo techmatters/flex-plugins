@@ -36,9 +36,12 @@ type Props = OwnProps;
 export const ProfileEditDetails: React.FC<Props> = ({ task, profileId }) => {
   // TEMP
   // const labels = ['Abusive', 'Blocked'];
-
+console.log('>>> ProfileEditDetails', task, profileId);
   return (
-    <NavigableContainer>
+    <NavigableContainer 
+    titleCode="Profile-DetailsHeader"
+    task={task}
+    >
       <DetailsWrapper>
         <Column>
           <Bold>

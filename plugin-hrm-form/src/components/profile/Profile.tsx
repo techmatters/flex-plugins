@@ -125,11 +125,8 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const { data: profile } = currentProfileState;
 
   const currentRoute = getCurrentTopmostRouteForTask(routingState, taskSid);
-  console.log('>>> currentRoute', currentRoute);
   const profileEditModalOpen =
-    RoutingTypes.isRouteWithModalSupport(currentRoute) &&
-    currentRoute.activeModal?.length &&
-    currentRoute.activeModal[0].route === 'profileEdit';
+    RoutingTypes.isRouteWithModalSupport(currentRoute) && currentRoute.route.toString() === 'profileEdit';
 
   return {
     currentTab,

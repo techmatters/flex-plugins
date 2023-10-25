@@ -65,7 +65,6 @@ import Case from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
 import ViewContact from '../case/ViewContact';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
-import { ProfileEditDetails } from '../profile/ProfileEditDetails';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
@@ -126,7 +125,6 @@ const TabbedForms: React.FC<Props> = ({
   csamReportEnabled,
   csamClcReportEnabled,
   profileModalOpen,
-  // profileEditModalOpen,
   searchModalOpen,
   updateDraftForm,
   newCSAMReport,
@@ -196,8 +194,6 @@ const TabbedForms: React.FC<Props> = ({
       />
     );
   }
-
-  console.log('>>> profileModalOpen', profileModalOpen);
 
   if (profileModalOpen) {
     return <Profile task={task} />;

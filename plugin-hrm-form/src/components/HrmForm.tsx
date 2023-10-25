@@ -45,6 +45,7 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact })
     case 'search':
     case 'contact':
     case 'case':
+    case 'profileEdit':
     case 'profile':
       return (
         <TabbedForms
