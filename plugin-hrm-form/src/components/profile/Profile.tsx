@@ -55,7 +55,7 @@ const Profile: React.FC<Props> = ({ task, currentTab, profileId, profile, change
   const { contactsCount, casesCount } = profile;
   const tabs = [
     {
-      label: 'Details',
+      label: 'Profile',
       key: 'details',
       component: <ProfileDetails profileId={profileId} />,
     },

@@ -16,10 +16,13 @@
 
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { Template } from '@twilio/flex-ui';
 
 import { Profile } from '../../types/types';
 import { RootState } from '../../states';
 import { getCurrentProfileState } from '../../states/profile/selectors';
+import { DetailsWrapper, EditButton, ProfileSubtitle, StatusLabelPill } from './styles';
+import { Bold, Box, Column } from '../../styles/HrmStyles';
 
 type OwnProps = {
   profileId: Profile['id'];
@@ -29,24 +32,61 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileDetails: React.FC<Props> = ({ profileId, profile }) => {
-  const renderIdentifiersSection = () => {
-    const { identifiers } = profile;
+  console.log('ProfileDetails', profile, profileId);
 
-    if (!identifiers) {
-      return <div>No identifiers found</div>;
+  // TEMP
+  // const labels = ['Abusive', 'Blocked'];
+  let labels;
+  const editButton = true;
+
+  const handleEditProfileDetails = () => {
+    console.log('>>>Edit Profile Details');
+    if(editButton){
+      //openProfileModal(id);
     }
-
-    return (
-      <div>
-        Identifiers:
-        {identifiers?.map(identifier => (
-          <div key={identifier.id}>{identifier.identifier}</div>
-        ))}
-      </div>
-    );
   };
 
-  return <>{renderIdentifiersSection()}</>;
+  return (
+    <DetailsWrapper>
+      <Column>
+        <Bold>
+          <Template code="Profile-DetailsHeader" />
+        </Bold>
+
+        {editButton && (
+          <Box alignSelf="flex-end" marginTop="-20px" marginRight="35px">
+            <EditButton onClick={handleEditProfileDetails}>
+              <Template code="Profile-EditButton" />
+            </EditButton>
+          </Box>
+        )}
+      </Column>
+
+      <br />
+      <ProfileSubtitle>Identifiers</ProfileSubtitle>
+      {profile.identifiers ? (
+        profile.identifiers.map(identifier => <div key={identifier.id}>{identifier.identifier}</div>)
+      ) : (
+        <div>No identifiers found</div>
+      )}
+
+      <br />
+
+      <ProfileSubtitle>Status</ProfileSubtitle>
+      <div>
+        {labels ? (
+          labels.map(label => (
+            <StatusLabelPill key={label} fillColor="#F5EEF4" blocked={label === 'Blocked'}>
+              {label}
+            </StatusLabelPill>
+          ))
+        ) : (
+          <StatusLabelPill>None Listed</StatusLabelPill>
+        )}
+      </div>
+      <hr />
+    </DetailsWrapper>
+  );
 };
 
 const mapStateToProps = (state: RootState, { profileId }) => {
@@ -58,5 +98,19 @@ const mapStateToProps = (state: RootState, { profileId }) => {
   };
 };
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const { task } = ownProps;
+  const taskId = task.taskSid;
+
+  return {
+    
+    // openProfileModal: id => {
+    //   dispatch(newOpenModalAction({ route: 'profile', id }, taskId));
+    // },
+    
+  };
+};
+
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 export default connector(ProfileDetails);
