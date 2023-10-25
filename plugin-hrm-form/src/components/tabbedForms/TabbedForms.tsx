@@ -65,6 +65,7 @@ import Case from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
 import ViewContact from '../case/ViewContact';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
+import { ProfileEditDetails } from '../profile/ProfileEditDetails';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
@@ -125,6 +126,7 @@ const TabbedForms: React.FC<Props> = ({
   csamReportEnabled,
   csamClcReportEnabled,
   profileModalOpen,
+  // profileEditModalOpen,
   searchModalOpen,
   updateDraftForm,
   newCSAMReport,
@@ -400,6 +402,10 @@ const mapStateToProps = (
     isRouteWithModalSupport(baseRoute) && baseRoute.activeModal?.length && baseRoute.activeModal[0].route === 'search';
   const profileModalOpen =
     isRouteWithModalSupport(baseRoute) && baseRoute.activeModal?.length && baseRoute.activeModal[0].route === 'profile';
+  // const profileEditModalOpen =
+  //   isRouteWithModalSupport(baseRoute) &&
+  //   baseRoute.activeModal?.length &&
+  //   baseRoute.activeModal[0].route === 'profileEdit';
   const { currentDefinitionVersion } = configuration;
   return {
     currentRoute,
@@ -408,6 +414,7 @@ const mapStateToProps = (
     updatedContact: getUnsavedContact(savedContact, draftContact),
     currentDefinitionVersion,
     profileModalOpen,
+    // profileEditModalOpen,
     searchModalOpen,
     isCallTypeCaller,
     metadata,

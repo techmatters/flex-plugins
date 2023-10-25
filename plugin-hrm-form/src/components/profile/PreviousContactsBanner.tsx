@@ -81,10 +81,10 @@ const PreviousContactsBanner: React.FC<Props> = ({
   }
 
   useEffect(() => {
-    const fetchData = () => {
+    const fetchIdentifierData = () => {
       loadIdentifierByIdentifier(contactIdentifier);
     };
-    if (enableClientProfiles && contactIdentifier && !identifierEntry) fetchData();
+    if (enableClientProfiles && contactIdentifier && !identifierEntry) fetchIdentifierData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contactIdentifier]);
 

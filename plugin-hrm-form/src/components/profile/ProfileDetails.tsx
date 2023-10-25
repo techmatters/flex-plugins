@@ -18,31 +18,33 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { Profile } from '../../types/types';
+import { Profile, CustomITask } from '../../types/types';
 import { RootState } from '../../states';
 import { getCurrentProfileState } from '../../states/profile/selectors';
 import { DetailsWrapper, EditButton, ProfileSubtitle, StatusLabelPill } from './styles';
 import { Bold, Box, Column } from '../../styles/HrmStyles';
+import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 
 type OwnProps = {
   profileId: Profile['id'];
+  task: CustomITask;
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ProfileDetails: React.FC<Props> = ({ profileId, profile }) => {
+const ProfileDetails: React.FC<Props> = ({ profileId, profile, openProfileEditModal }) => {
   console.log('ProfileDetails', profile, profileId);
 
   // TEMP
-  // const labels = ['Abusive', 'Blocked'];
   let labels;
-  const editButton = true;
+  // labels = ['Abusive', 'Blocked'];
 
+  const editButton = true;
   const handleEditProfileDetails = () => {
     console.log('>>>Edit Profile Details');
-    if(editButton){
-      //openProfileModal(id);
+    if (editButton) {
+      openProfileEditModal();
     }
   };
 
@@ -62,7 +64,6 @@ const ProfileDetails: React.FC<Props> = ({ profileId, profile }) => {
         )}
       </Column>
 
-      <br />
       <ProfileSubtitle>Identifiers</ProfileSubtitle>
       {profile.identifiers ? (
         profile.identifiers.map(identifier => <div key={identifier.id}>{identifier.identifier}</div>)
@@ -98,19 +99,19 @@ const mapStateToProps = (state: RootState, { profileId }) => {
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-  const { task } = ownProps;
+const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
+  const { profileId, task } = ownProps;
   const taskId = task.taskSid;
-
   return {
-    
-    // openProfileModal: id => {
-    //   dispatch(newOpenModalAction({ route: 'profile', id }, taskId));
-    // },
-    
+    openProfileEditModal: () => {
+      dispatch(newOpenModalAction({ route: 'profileEdit', id: profileId }, taskId));
+    },
   };
 };
 
-
 const connector = connect(mapStateToProps, mapDispatchToProps);
 export default connector(ProfileDetails);
+
+// TODO:
+// - Add a loading state
+// - Add Routing for Edit page

@@ -27,7 +27,8 @@ export type TabbedFormSubroutes =
   | 'childInformation'
   | 'categories'
   | 'caseInformation'
-  | 'profile';
+  | 'profile'
+  | 'profileEdit';
 
 export type RouteWithModalSupport = {
   route: 'tabbed-forms' | 'case' | 'case-list' | 'search';
@@ -130,6 +131,11 @@ export type ProfileRoute = {
   subroute?: ProfileTabs;
 };
 
+export type ProfileEditRoute = {
+  route: 'profileEdit';
+  id: Profile['id'];
+};
+
 export function isAddCaseSectionRoute(appRoute: AppRoutes): appRoute is AddCaseSectionRoute {
   return (<any>appRoute).action === CaseItemAction.Add;
 }
@@ -183,13 +189,14 @@ type OtherRoutes =
   | SearchRoute
   | ContactRoute
   | CaseListRoute
-  | ProfileRoute;
+  | ProfileRoute
+  | ProfileEditRoute;
 
 // The different routes we have in our app
 export type AppRoutes = AppRoutesWithCase | OtherRoutes;
 
 export function isRouteWithModalSupport(appRoute: any): appRoute is RouteWithModalSupport {
-  return ['tabbed-forms', 'case', 'case-list', 'profile', 'search'].includes(appRoute.route);
+  return ['tabbed-forms', 'case', 'case-list', 'profile', 'profileEdit', 'search'].includes(appRoute.route);
 }
 
 export enum ChangeRouteMode {

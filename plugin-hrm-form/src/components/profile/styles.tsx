@@ -23,7 +23,7 @@ import HrmTheme from '../../styles/HrmTheme';
 export const DetailsWrapper = styled(FontOpenSans)`
   margin-top: 10px;
   padding: 5px 20px 10px 20px;
-  width: 600px;
+  min-width: 400px;
   box-sizing: border-box;
   background-color: #ffffff;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.06);

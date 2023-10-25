@@ -26,13 +26,14 @@ import ProfileDetails from './ProfileDetails';
 import { Row } from '../../styles/HrmStyles';
 import * as ProfileActions from '../../states/profile/actions';
 import * as RoutingTypes from '../../states/routing/types';
+import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import * as RoutingActions from '../../states/routing/actions';
 import { namespace, profileBase } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileRoute } from '../../states/routing/types';
 import { CustomITask, Profile as ProfileType } from '../../types/types';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { StyledTabs } from '../../styles/search'; // just stealing from search until we have a centralized tab style
+import { ProfileEditDetails } from './ProfileEditDetails';
 
 type OwnProps = {
   task: CustomITask;
@@ -41,7 +42,15 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const Profile: React.FC<Props> = ({ task, currentTab, profileId, profile, changeProfileTab, loadProfile }) => {
+const Profile: React.FC<Props> = ({
+  task,
+  currentTab,
+  profileId,
+  profile,
+  changeProfileTab,
+  loadProfile,
+  profileEditModalOpen,
+}) => {
   useEffect(() => {
     loadProfile(profileId);
 
@@ -52,12 +61,16 @@ const Profile: React.FC<Props> = ({ task, currentTab, profileId, profile, change
     return null;
   }
 
+  if (profileEditModalOpen) {
+    return <ProfileEditDetails task={task} profileId={profileId} />;
+  }
+
   const { contactsCount, casesCount } = profile;
   const tabs = [
     {
       label: 'Profile',
       key: 'details',
-      component: <ProfileDetails profileId={profileId} />,
+      component: <ProfileDetails profileId={profileId} task={task} />,
     },
     {
       label: `Contacts (${contactsCount})`,
@@ -111,10 +124,18 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const currentProfileState = profileState.profiles[profileId];
   const { data: profile } = currentProfileState;
 
+  const currentRoute = getCurrentTopmostRouteForTask(routingState, taskSid);
+  console.log('>>> currentRoute', currentRoute);
+  const profileEditModalOpen =
+    RoutingTypes.isRouteWithModalSupport(currentRoute) &&
+    currentRoute.activeModal?.length &&
+    currentRoute.activeModal[0].route === 'profileEdit';
+
   return {
     currentTab,
     profile,
     profileId,
+    profileEditModalOpen,
   };
 };
 
