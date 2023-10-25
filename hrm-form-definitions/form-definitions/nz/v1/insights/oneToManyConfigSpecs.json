@@ -8,13 +8,6 @@
     "saveForNonDataContacts": true
   },
   {
-    "attributeName": "region",
-    "insightsObject": "customers",
-    "paths": [
-      "contactForm.childInformation.region"
-    ]
-  },
-  {
     "attributeName": "email",
     "insightsObject": "customers",
     "paths": [

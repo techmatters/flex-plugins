@@ -1,3 +1,14 @@
 {
- 
+    "contactForm": {
+      "childInformation": [
+     
+        {
+          "name": "region",
+          "insights": [
+            "customers",
+            "region"
+          ]
+        }
+    ]
+}
 }
