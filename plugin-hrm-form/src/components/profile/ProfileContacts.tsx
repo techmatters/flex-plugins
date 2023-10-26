@@ -14,30 +14,34 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import React from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 
 import { getPermissionsForContact, PermissionActions } from '../../permissions';
-import { Contact, Profile } from '../../types/types';
+import { Contact, CustomITask, Profile } from '../../types/types';
 import ContactPreview from '../search/ContactPreview';
 import * as ProfileTypes from '../../states/profile/types';
+import * as RoutingActions from '../../states/routing/actions';
 import ProfileRelationshipList from './ProfileRelationshipList';
 
 type OwnProps = {
   profileId: Profile['id'];
+  task: CustomITask;
 };
 
-const ProfileContacts: React.FC<OwnProps> = ({ profileId }) => {
+type Props = OwnProps & ConnectedProps<typeof connector>;
+
+const ProfileContacts: React.FC<Props> = ({ profileId, viewContactDetails }) => {
   const renderItem = (contact: Contact) => {
     const { can } = getPermissionsForContact(contact.twilioWorkerId);
     const handleViewDetails = () => {
-      // load contact modal? or page?
+      console.log('>>>handleViewDetails', contact);
+      if (can(PermissionActions.VIEW_CONTACT)) viewContactDetails(contact);
     };
 
+    console.log('>>>can(PermissionActions.VIEW_CONTACT)', can(PermissionActions.VIEW_CONTACT));
+
     return (
-      <ContactPreview
-        key={`ContactPreview-${contact.id}`}
-        contact={contact}
-        handleViewDetails={() => can(PermissionActions.VIEW_CONTACT) && handleViewDetails}
-      />
+      <ContactPreview key={`ContactPreview-${contact.id}`} contact={contact} handleViewDetails={handleViewDetails} />
     );
   };
 
@@ -50,4 +54,14 @@ const ProfileContacts: React.FC<OwnProps> = ({ profileId }) => {
   );
 };
 
-export default ProfileContacts;
+const mapDispatchToProps = (dispatch, { task: { taskSid } }) => {
+  return {
+    viewContactDetails: ({ id }: Contact) => {
+      dispatch(RoutingActions.newOpenModalAction({ route: 'contact', subroute: 'view', id: id.toString() }, taskSid));
+    },
+  };
+};
+
+const connector = connect(null, mapDispatchToProps);
+
+export default connector(ProfileContacts);

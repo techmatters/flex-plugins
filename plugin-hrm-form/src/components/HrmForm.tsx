@@ -19,6 +19,7 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
 import CallTypeButtons from './callTypeButtons';
+import Profile from './profile/Profile';
 import TabbedForms from './tabbedForms';
 import CSAMReport from './CSAMReport/CSAMReport';
 import { RootState } from '../states';
@@ -26,7 +27,8 @@ import type { CustomITask } from '../types/types';
 import { newContactCSAMApi } from './CSAMReport/csamReportApi';
 import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
 import { namespace } from '../states/storeNamespaces';
-import { getCurrentTopmostRouteForTask } from '../states/routing/getRoute';
+import { getCurrentBaseRoute, getCurrentTopmostRouteForTask } from '../states/routing/getRoute';
+import { CSAMReportRoute, isRouteWithModalSupport } from '../states/routing/types';
 
 type OwnProps = {
   task: CustomITask;
@@ -36,32 +38,43 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact }) => {
+const HrmForm: React.FC<Props> = ({ activeModal, routing, task, featureFlags, savedContact }) => {
   if (!routing) return null;
   const { route } = routing;
 
-  switch (route) {
-    case 'tabbed-forms':
-    case 'search':
-    case 'contact':
-    case 'case':
-    case 'profileEdit':
-    case 'profile':
-      return (
+  const routes = [
+    {
+      activeModalRoutes: ['profile'],
+      component: <Profile task={task} />,
+    },
+    // TODO: move hrm form search into it's own component and use it here so all routes are in one place
+    {
+      baseRoutes: ['tabbed-forms', 'search', 'contact', 'case'],
+      component: (
         <TabbedForms
           task={task}
           contactId={savedContact?.id}
           csamClcReportEnabled={featureFlags.enable_csam_clc_report}
           csamReportEnabled={featureFlags.enable_csam_report}
         />
-      );
+      ),
+    },
+    {
+      baseRoutes: ['csam-report'],
+      component: (
+        <CSAMReport
+          api={newContactCSAMApi(savedContact.id, task.taskSid, (routing as CSAMReportRoute).previousRoute)}
+        />
+      ),
+    },
+    { baseRoutes: ['select-call-type'], component: <CallTypeButtons task={task} /> },
+  ];
 
-    case 'csam-report':
-      return <CSAMReport api={newContactCSAMApi(savedContact.id, task.taskSid, routing.previousRoute)} />;
-    case 'select-call-type':
-    default:
-      return <CallTypeButtons task={task} />;
-  }
+  // Modals take precedence over routes
+  const modalComponent = routes.find(m => m.activeModalRoutes?.includes(activeModal));
+  if (modalComponent) return modalComponent.component;
+
+  return routes.find(r => r.baseRoutes?.includes(route))?.component || null;
 };
 
 HrmForm.displayName = 'HrmForm';
@@ -69,8 +82,11 @@ HrmForm.displayName = 'HrmForm';
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const routingState = state[namespace].routing;
   const { savedContact, metadata } = findContactByTaskSid(state, task.taskSid) ?? {};
+  const baseRoute = getCurrentBaseRoute(routingState, task.taskSid);
+  const activeModal =
+    isRouteWithModalSupport(baseRoute) && baseRoute.activeModal?.length && baseRoute.activeModal[0].route;
 
-  return { routing: getCurrentTopmostRouteForTask(routingState, task.taskSid), savedContact, metadata };
+  return { activeModal, routing: getCurrentTopmostRouteForTask(routingState, task.taskSid), savedContact, metadata };
 };
 
 const connector = connect(mapStateToProps);

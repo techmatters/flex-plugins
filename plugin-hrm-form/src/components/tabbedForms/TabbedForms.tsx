@@ -124,7 +124,6 @@ const TabbedForms: React.FC<Props> = ({
   currentDefinitionVersion,
   csamReportEnabled,
   csamClcReportEnabled,
-  profileModalOpen,
   searchModalOpen,
   updateDraftForm,
   newCSAMReport,
@@ -193,10 +192,6 @@ const TabbedForms: React.FC<Props> = ({
         handleSelectSearchResult={onSelectSearchResult}
       />
     );
-  }
-
-  if (profileModalOpen) {
-    return <Profile task={task} />;
   }
 
   if (currentRoute.route === 'case') {
@@ -396,12 +391,7 @@ const mapStateToProps = (
   const baseRoute = getCurrentBaseRoute(routing, taskSid);
   const searchModalOpen =
     isRouteWithModalSupport(baseRoute) && baseRoute.activeModal?.length && baseRoute.activeModal[0].route === 'search';
-  const profileModalOpen =
-    isRouteWithModalSupport(baseRoute) && baseRoute.activeModal?.length && baseRoute.activeModal[0].route === 'profile';
-  // const profileEditModalOpen =
-  //   isRouteWithModalSupport(baseRoute) &&
-  //   baseRoute.activeModal?.length &&
-  //   baseRoute.activeModal[0].route === 'profileEdit';
+
   const { currentDefinitionVersion } = configuration;
   return {
     currentRoute,
@@ -409,8 +399,6 @@ const mapStateToProps = (
     draftContact,
     updatedContact: getUnsavedContact(savedContact, draftContact),
     currentDefinitionVersion,
-    profileModalOpen,
-    // profileEditModalOpen,
     searchModalOpen,
     isCallTypeCaller,
     metadata,
