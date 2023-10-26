@@ -47,8 +47,9 @@ const HrmForm: React.FC<Props> = ({ activeModal, routing, task, featureFlags, sa
       activeModalRoutes: ['profile'],
       component: <Profile task={task} />,
     },
+    // TODO: move hrm form search into it's own component and use it here so all routes are in one place
     {
-      baseRoutes: ['tabbed-forms', 'search', 'contact', 'case', 'profileEdit', 'profile'],
+      baseRoutes: ['tabbed-forms', 'search', 'contact', 'case'],
       component: (
         <TabbedForms
           task={task}
