@@ -19,7 +19,7 @@ import { callTypes } from 'hrm-form-definitions';
 
 import { AppRoutes, RoutingActionType, CHANGE_ROUTE } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
-import { Contact, standaloneTaskSid } from '../../types/types';
+import { standaloneTaskSid } from '../../types/types';
 import getOfflineContactTaskSid from '../contacts/offlineContactTaskSid';
 import {
   ContactUpdatingAction,
@@ -86,7 +86,9 @@ const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingActi
           : initialEntry,
     },
     isAddingOfflineContact:
-      taskId === getOfflineContactTaskSid() ? true : stateWithoutPreviousContact.isAddingOfflineContact,
+      taskId === getOfflineContactTaskSid() && contact?.rawJson?.contactlessTask?.createdOnBehalfOf
+        ? true
+        : stateWithoutPreviousContact.isAddingOfflineContact,
   };
 };
 
