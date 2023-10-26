@@ -19,7 +19,7 @@ import { parseFetchError } from '../parseFetchError';
 import loadProfileEntryIntoRedux from './loadProfileEntryIntoRedux';
 import * as t from './types';
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 2;
 
 type CommonParams = {
   profileId: t.Profile['id'];

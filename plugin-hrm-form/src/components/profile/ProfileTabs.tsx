@@ -30,12 +30,12 @@ import * as RoutingActions from '../../states/routing/actions';
 import { namespace, profileBase } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileRoute } from '../../states/routing/types';
-import { CustomITask, Profile } from '../../types/types';
+import { CustomITask, Profile, StandaloneITask } from '../../types/types';
 import { StyledTabs } from '../../styles/search'; // just stealing from search until we have a centralized tab style
 
 type OwnProps = {
   profileId: Profile['id'];
-  task: CustomITask;
+  task: CustomITask | StandaloneITask;
 };
 
 // eslint-disable-next-line no-use-before-define

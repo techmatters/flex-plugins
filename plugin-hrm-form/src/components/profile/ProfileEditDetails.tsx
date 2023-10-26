@@ -20,14 +20,14 @@ import { Template } from '@twilio/flex-ui';
 
 import { RootState } from '../../states';
 import { getCurrentProfileState } from '../../states/profile/selectors';
-import { CustomITask, Profile } from '../../types/types';
+import { CustomITask, Profile, StandaloneITask } from '../../types/types';
 import { DetailsWrapper, EditButton, ProfileSubtitle, StatusLabelPill } from './styles';
 import { Bold, Box, Column } from '../../styles/HrmStyles';
 import NavigableContainer from '../NavigableContainer';
 
 type OwnProps = {
   profileId: Profile['id'];
-  task: CustomITask;
+  task: CustomITask | StandaloneITask;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -36,12 +36,9 @@ type Props = OwnProps;
 export const ProfileEditDetails: React.FC<Props> = ({ task, profileId }) => {
   // TEMP
   // const labels = ['Abusive', 'Blocked'];
-console.log('>>> ProfileEditDetails', task, profileId);
+  console.log('>>> ProfileEditDetails', task, profileId);
   return (
-    <NavigableContainer 
-    titleCode="Profile-DetailsHeader"
-    task={task}
-    >
+    <NavigableContainer titleCode="Profile-DetailsHeader" task={task}>
       <DetailsWrapper>
         <Column>
           <Bold>

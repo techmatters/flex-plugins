@@ -17,7 +17,7 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { getPermissionsForContact, PermissionActions } from '../../permissions';
-import { Contact, CustomITask, Profile } from '../../types/types';
+import { Contact, CustomITask, Profile, StandaloneITask } from '../../types/types';
 import ContactPreview from '../search/ContactPreview';
 import * as ProfileTypes from '../../states/profile/types';
 import * as RoutingActions from '../../states/routing/actions';
@@ -25,7 +25,7 @@ import ProfileRelationshipList from './ProfileRelationshipList';
 
 type OwnProps = {
   profileId: Profile['id'];
-  task: CustomITask;
+  task: CustomITask | StandaloneITask;
 };
 
 type Props = OwnProps & ConnectedProps<typeof connector>;

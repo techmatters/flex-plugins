@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
@@ -203,21 +203,21 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { task } = ownProps;
-  const taskId = task.taskSid;
+  const { taskSid } = task;
 
   return {
     viewPreviousContacts: viewPreviousContactsAction(dispatch)(task),
-    searchContacts: searchContactsAction(dispatch)(taskId),
-    searchCases: searchCasesAction(dispatch)(taskId),
+    searchContacts: searchContactsAction(dispatch)(taskSid),
+    searchCases: searchCasesAction(dispatch)(taskSid),
     loadIdentifierByIdentifier: identifier =>
       asyncDispatch(dispatch)(ProfileActions.loadIdentifierByIdentifierAsync(identifier)),
     openProfileModal: id => {
-      dispatch(newOpenModalAction({ route: 'profile', id }, taskId));
+      dispatch(newOpenModalAction({ route: 'profile', id }, taskSid));
     },
     openContactSearchResults: () => {
       // We put the form 'under' the search results in the modal stack so the back button takes them to the form without needing custom handlers
-      dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, taskId));
-      dispatch(changeRoute({ route: 'search', subroute: 'contact-results' }, taskId));
+      dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, taskSid));
+      dispatch(changeRoute({ route: 'search', subroute: 'contact-results' }, taskSid));
     },
   };
 };

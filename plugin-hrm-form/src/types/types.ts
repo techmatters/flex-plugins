@@ -176,6 +176,7 @@ export type Contact = {
   createdBy: string;
   helpline: string;
   taskId: string;
+  profileId: Profile['id'];
   channel: ChannelTypes | 'default';
   updatedBy: string;
   updatedAt?: string;

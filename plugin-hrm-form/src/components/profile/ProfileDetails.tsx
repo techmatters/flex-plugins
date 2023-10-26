@@ -18,7 +18,7 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { Profile, CustomITask } from '../../types/types';
+import { CustomITask, Profile, StandaloneITask } from '../../types/types';
 import { RootState } from '../../states';
 import { getCurrentProfileState } from '../../states/profile/selectors';
 import { DetailsWrapper, EditButton, ProfileSubtitle, StatusLabelPill } from './styles';
@@ -27,7 +27,7 @@ import { newOpenModalAction } from '../../states/routing/actions';
 
 type OwnProps = {
   profileId: Profile['id'];
-  task: CustomITask;
+  task: CustomITask | StandaloneITask;
 };
 
 // eslint-disable-next-line no-use-before-define

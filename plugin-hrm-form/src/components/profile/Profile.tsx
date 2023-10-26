@@ -24,11 +24,11 @@ import { getCurrentTopmostRouteForTask, getCurrentTopmostRouteStackForTask } fro
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileRoute } from '../../states/routing/types';
-import { CustomITask, Profile as ProfileType } from '../../types/types';
+import { CustomITask, Profile as ProfileType, StandaloneITask } from '../../types/types';
 import { ProfileEditDetails } from './ProfileEditDetails';
 
 type OwnProps = {
-  task: CustomITask;
+  task: CustomITask | StandaloneITask;
 };
 
 // eslint-disable-next-line no-use-before-define
