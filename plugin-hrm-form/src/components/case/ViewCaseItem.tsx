@@ -23,7 +23,7 @@ import { DefinitionVersion, isNonSaveable } from 'hrm-form-definitions';
 
 import { BottomButtonBar, Box, Container, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseLayout, FullWidthFormTextContainer } from '../../styles/case';
-import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
@@ -32,6 +32,7 @@ import { ViewCaseSectionRoute, CaseItemAction } from '../../states/routing/types
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import { FormTargetObject } from '../common/forms/types';
+import { configurationBase, connectedCaseBase, namespace } from '../../states/storeNamespaces';
 
 const mapStateToProps = (state: RootState, ownProps: ViewCaseItemProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
@@ -45,7 +46,6 @@ export type ViewCaseItemProps = {
   task: CustomITask | StandaloneITask;
   routing: ViewCaseSectionRoute;
   definitionVersion: DefinitionVersion;
-  exitItem: () => void;
   sectionApi: CaseSectionApi<unknown>;
   includeAddedTime?: boolean;
   canEdit: () => boolean;
@@ -59,7 +59,7 @@ const ViewCaseItem: React.FC<Props> = ({
   routing,
   counselorsHash,
   changeRoute,
-  exitItem,
+  goBack,
   definitionVersion,
   sectionApi,
   connectedCase,
@@ -84,7 +84,7 @@ const ViewCaseItem: React.FC<Props> = ({
       <Container>
         <ActionHeader
           titleTemplate={`Case-View${sectionApi.label}`}
-          onClickClose={exitItem}
+          onClickClose={() => goBack(task.taskSid)}
           addingCounsellor={addingCounsellorName}
           added={added}
           updatingCounsellor={updatingCounsellorName}
@@ -121,7 +121,7 @@ const ViewCaseItem: React.FC<Props> = ({
           </Box>
         )}
         <Box marginRight="15px">
-          <StyledNextStepButton roundCorners onClick={exitItem} data-testid="Case-CloseButton">
+          <StyledNextStepButton roundCorners onClick={() => goBack(task.taskSid)} data-testid="Case-CloseButton">
             <Template code="CloseButton" />
           </StyledNextStepButton>
         </Box>
@@ -134,6 +134,7 @@ ViewCaseItem.displayName = 'ViewCaseItem';
 
 const mapToDispatchProps = {
   changeRoute: RoutingActions.changeRoute,
+  goBack: RoutingActions.newGoBackAction,
 };
 
 export default connect(mapStateToProps, mapToDispatchProps)(ViewCaseItem);

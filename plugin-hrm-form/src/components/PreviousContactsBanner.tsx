@@ -24,16 +24,19 @@ import {
   searchContacts as searchContactsAction,
   searchCases as searchCasesAction,
 } from '../states/search/actions';
-import { namespace, searchContactsBase, configurationBase, RootState, contactFormsBase } from '../states';
+import { RootState } from '../states';
 import { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './search/SearchResults';
 import { YellowBanner } from '../styles/previousContactsBanner';
 import { Bold } from '../styles/HrmStyles';
 import { StyledLink } from '../styles/search';
 import { ChannelTypes, channelTypes } from '../states/DomainConstants';
 import { changeRoute as changeRouteAction } from '../states/routing/actions';
-import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../utils/task';
+import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../permissions';
 import { CustomITask, isTwilioTask } from '../types/types';
+import { namespace } from '../states/storeNamespaces';
+import { isRouteModal } from '../states/routing/types';
+import { getCurrentBaseRoute } from '../states/routing/getRoute';
 
 type OwnProps = {
   task: CustomITask;
@@ -49,7 +52,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   searchContacts,
   searchCases,
   changeRoute,
-  editContactFormOpen,
+  modalOpen,
 }) => {
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
@@ -95,8 +98,8 @@ const PreviousContactsBanner: React.FC<Props> = ({
   }
 
   return (
-    <div className={editContactFormOpen ? 'editingContact' : ''}>
-      <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenEditingContact">
+    <div className={modalOpen ? 'editingContact' : ''}>
+      <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
         {/* eslint-disable-next-line prettier/prettier */}
       <pre>
           <Template code="PreviousContacts-ThereAre" />
@@ -146,17 +149,18 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
 PreviousContactsBanner.displayName = 'PreviousContactsBanner';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const searchContactsState = state[namespace][searchContactsBase];
-  const taskId = ownProps.task.taskSid;
-  const taskSearchState = searchContactsState.tasks[taskId];
-  const { counselors } = state[namespace][configurationBase];
-  const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
+const mapStateToProps = (
+  { [namespace]: { searchContacts, configuration, activeContacts, routing } }: RootState,
+  { task: { taskSid } }: OwnProps,
+) => {
+  const taskSearchState = searchContacts.tasks[taskSid];
+  const { counselors } = configuration;
+  const modalOpen = activeContacts.editingContact || isRouteModal(getCurrentBaseRoute(routing, taskSid));
 
   return {
     previousContacts: taskSearchState.previousContacts,
     counselorsHash: counselors.hash,
-    editContactFormOpen,
+    modalOpen,
   };
 };
 

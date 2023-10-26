@@ -37,8 +37,10 @@ import {
   searchContacts,
   searchCases,
 } from '../../states/search/actions';
-import { namespace, searchContactsBase, routingBase, RootState, contactFormsBase } from '../../states';
+import { RootState } from '../../states';
 import { Flex } from '../../styles/HrmStyles';
+import { contactFormsBase, namespace, routingBase, searchContactsBase } from '../../states/storeNamespaces';
+import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 
 type OwnProps = {
   task: CustomITask;
@@ -146,7 +148,7 @@ const Search: React.FC<Props> = ({
   };
   renderMockDialog.displayName = 'MockDialog';
 
-  const renderSearchPages = (currentPage, currentContact, searchContactsResults, searchCasesResults, form, routing) => {
+  const renderSearchPages = (currentPage, currentContact, searchContactsResults, searchCasesResults, form) => {
     switch (currentPage) {
       case SearchPages.form:
         return (
@@ -188,9 +190,7 @@ const Search: React.FC<Props> = ({
           />
         );
       case SearchPages.case:
-        const { subroute } = routing;
-        const showBackButton = typeof subroute === 'undefined';
-
+        const showBackButton = typeof (routing as any).subroute === 'undefined';
         return (
           <>
             {showBackButton && (
@@ -201,6 +201,12 @@ const Search: React.FC<Props> = ({
                 />
               </Flex>
             )}
+            <Flex marginTop="15px" marginBottom="15px">
+              <SearchResultsBackButton
+                text={<Template code="SearchResultsIndex-BackToResults" />}
+                handleBack={goToResultsOnCases}
+              />
+            </Flex>
             <Case task={task} isCreating={false} handleClose={goToResultsOnCases} />
           </>
         );
@@ -214,7 +220,7 @@ const Search: React.FC<Props> = ({
     // TODO: Needs converting to a div and the className={editContactFormOpen ? 'editingContact' : ''} adding, but that messes up the CSS
     <>
       {renderMockDialog()}
-      {renderSearchPages(currentPage, currentContact, searchContactsResults, searchCasesResults, form, routing)}
+      {renderSearchPages(currentPage, currentContact, searchContactsResults, searchCasesResults, form)}
     </>
   );
 };
@@ -230,7 +236,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const searchContactsState = state[namespace][searchContactsBase];
   const taskId = ownProps.task.taskSid;
   const taskSearchState = searchContactsState.tasks[taskId];
-  const routing = state[namespace][routingBase].tasks[taskId];
+  const routing = getCurrentTopmostRouteForTask(state[namespace][routingBase], taskId);
   const isStandaloneSearch = taskId === standaloneTaskSid;
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
 

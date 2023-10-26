@@ -15,10 +15,11 @@
  */
 
 import { forExistingContact } from '../../../states/contacts/issueCategorizationStateApi';
-import { contactFormsBase, namespace, RootState } from '../../../states';
+import { RootState } from '../../../states';
 import { toggleSubcategory } from '../../../states/contacts/categories';
 import * as existingContactActions from '../../../states/contacts/existingContacts';
 import { RecursivePartial } from '../../RecursivePartial';
+import { contactFormsBase, namespace } from '../../../states/storeNamespaces';
 
 describe('forExistingCategory', () => {
   const MOCK_CONTACT_ID = 'mock contact';

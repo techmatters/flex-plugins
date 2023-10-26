@@ -20,15 +20,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import { AnyAction, bindActionCreators } from 'redux';
 
-import {
-  configurationBase,
-  connectedCaseBase,
-  contactFormsBase,
-  namespace,
-  RootState,
-  routingBase,
-  // saveCaseBase,
-} from '../../states';
+import { RootState } from '../../states';
 import { cancelCase } from '../../services/CaseService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { getActivitiesFromCase, getActivitiesFromContacts, isNoteActivity, sortActivities } from './caseActivities';
@@ -42,9 +34,7 @@ import { Activity, CaseDetails, NoteActivity } from '../../states/case/types';
 import { Case as CaseType, CustomITask, Contact, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import {
-  AppRoutes,
-  AppRoutesWithCase,
-  CaseItemAction,
+  CaseRoute,
   isAddCaseSectionRoute,
   isEditCaseSectionRoute,
   isViewCaseSectionRoute,
@@ -72,7 +62,8 @@ import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import { connectToCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
-import { connectToCase } from '../../services/ContactService';
+import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
+import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -93,6 +84,8 @@ const Case: React.FC<Props> = ({
   counselorsHash,
   removeConnectedCase,
   changeRoute,
+  closeModal,
+  goBack,
   isCreating,
   handleClose,
   routing,
@@ -162,25 +155,6 @@ const Case: React.FC<Props> = ({
       fetchDefinitionVersions();
     }
   }, [connectedCase, definitionVersions, task.taskSid, updateDefinitionVersion, version]);
-
-  if (routing.route === 'csam-report') return null;
-
-  // Redirects to the proper view when the user clicks 'Close' button.
-  const closeSubSectionRoute = (): AppRoutesWithCase => {
-    switch (routing.route) {
-      case 'select-call-type': {
-        return { route: 'select-call-type' };
-      }
-      case 'new-case': {
-        return { route: 'new-case' };
-      }
-      default: {
-        return { route: 'tabbed-forms', subroute: 'search' };
-      }
-    }
-  };
-
-  const handleCloseSection = () => changeRoute(closeSubSectionRoute(), task.taskSid);
 
   const definitionVersion = props.definitionVersions[version];
 
@@ -304,13 +278,9 @@ const Case: React.FC<Props> = ({
             routing={routing}
             sectionApi={sectionApi}
             canEdit={() => can(editPermission)}
-            exitItem={handleCloseSection}
           />
         );
       }
-      const exitRoute: AppRoutes = isEditCaseSectionRoute(routing)
-        ? ({ ...routing, action: CaseItemAction.View } as AppRoutes)
-        : closeSubSectionRoute();
       return (
         <AddEditCaseItem
           {...{
@@ -318,7 +288,6 @@ const Case: React.FC<Props> = ({
             ...extraAddEditProps,
             sectionApi,
           }}
-          exitRoute={exitRoute}
           routing={routing}
         />
       );
@@ -347,7 +316,6 @@ const Case: React.FC<Props> = ({
           <EditCaseSummary
             {...{
               ...addScreenProps,
-              exitRoute: closeSubSectionRoute(),
               can,
             }}
           />
@@ -357,49 +325,50 @@ const Case: React.FC<Props> = ({
     }
   }
 
-  switch (routing.subroute) {
-    case NewCaseSubroutes.ViewContact:
-      return <ViewContact onClickClose={handleCloseSection} contactId={routing.id} task={task} />;
-    case NewCaseSubroutes.CasePrintView:
-      return (
-        <CasePrintView
-          caseDetails={caseDetails}
-          {...{
-            counselorsHash,
-            onClickClose: handleCloseSection,
-            definitionVersion,
-          }}
-        />
-      );
-    default:
-      return loading || !definitionVersion ? (
-        <CenteredContainer>
-          <CircularProgress size={50} />
-        </CenteredContainer>
-      ) : (
-        <CaseHome
-          task={task}
-          definitionVersion={definitionVersion}
-          caseDetails={caseDetails}
-          timeline={timeline}
-          handleClose={() => {
-            releaseContacts(loadedContactIds, task.taskSid);
-            handleClose();
-          }}
-          handleCancelNewCaseAndClose={handleCancelNewCaseAndClose}
-          handleUpdate={handleUpdate}
-          handleSaveAndEnd={handleSaveAndEnd}
-          isCreating={isCreating}
-          can={can}
-        />
-      );
+  if (routing.subroute === NewCaseSubroutes.CasePrintView) {
+    return (
+      <CasePrintView
+        caseDetails={caseDetails}
+        {...{
+          counselorsHash,
+          onClickClose: goBack,
+          definitionVersion,
+        }}
+      />
+    );
   }
+  if (routing.activeModal?.length && routing.activeModal[routing.activeModal.length - 1].route === 'contact') {
+    const modalRouting = routing.activeModal[routing.activeModal.length - 1];
+    if (modalRouting.route !== 'contact') throw new Error('Unexpected modal route');
+    return <ViewContact onClickClose={closeModal} contactId={modalRouting.id} task={task} />;
+  }
+  return loading || !definitionVersion ? (
+    <CenteredContainer>
+      <CircularProgress size={50} />
+    </CenteredContainer>
+  ) : (
+    <CaseHome
+      task={task}
+      definitionVersion={definitionVersion}
+      caseDetails={caseDetails}
+      timeline={timeline}
+      handleClose={() => {
+        releaseContacts(loadedContactIds, task.taskSid);
+        handleClose();
+      }}
+      handleCancelNewCaseAndClose={handleCancelNewCaseAndClose}
+      handleUpdate={handleUpdate}
+      handleSaveAndEnd={handleSaveAndEnd}
+      isCreating={isCreating}
+      can={can}
+    />
+  );
 };
 
 Case.displayName = 'Case';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
+const mapStateToProps = (state: RootState, { task }: OwnProps) => {
+  const caseState = state[namespace][connectedCaseBase].tasks[task.taskSid];
   const { connectedCase } = caseState ?? {};
   const connectedContactIds = new Set((connectedCase?.connectedContacts ?? []).map(cc => cc.id as string));
   const { definitionVersions, currentDefinitionVersion } = state[namespace][configurationBase];
@@ -408,7 +377,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     connectedCaseState: caseState,
     connectedCaseId: connectedCase?.id,
     counselorsHash: state[namespace][configurationBase].counselors.hash,
-    routing: state[namespace][routingBase].tasks[ownProps.task.taskSid],
+    routing: getCurrentTopmostRouteForTask(state[namespace].routing, task.taskSid) as CaseRoute,
     definitionVersions,
     currentDefinitionVersion,
     savedContacts: Object.values(state[namespace][contactFormsBase].existingContacts)
@@ -422,9 +391,7 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
   const cancelNewCase = (caseId: number, loadedContactIds: string[]) => {
     const { taskSid } = task;
     dispatch(CaseActions.removeConnectedCase(taskSid));
-    dispatch(
-      RoutingActions.changeRoute({ route: 'tabbed-forms', subroute: 'caseInformation', autoFocus: true }, taskSid),
-    );
+    dispatch(RoutingActions.newCloseModalAction(taskSid));
     dispatch(ContactActions.releaseContacts(loadedContactIds, `case-${caseId}`));
   };
   const updateCaseDefinition = (connectedCase: CaseType, taskSid: string, definition) => {
@@ -432,6 +399,8 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
   };
   return {
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
+    closeModal: () => dispatch(RoutingActions.newCloseModalAction(task.taskSid)),
+    goBack: () => dispatch(RoutingActions.newGoBackAction(task.taskSid)),
     removeConnectedCase: bindActionCreators(CaseActions.removeConnectedCase, dispatch),
     updateDefinitionVersion: updateCaseDefinition,
     releaseContacts: bindActionCreators(ContactActions.releaseContacts, dispatch),

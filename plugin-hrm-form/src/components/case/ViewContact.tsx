@@ -21,10 +21,11 @@ import { Template } from '@twilio/flex-ui';
 
 import { BottomButtonBar, Container, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseLayout } from '../../styles/case';
-import { connectedCaseBase, contactFormsBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import ContactDetails from '../contact/ContactDetails';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { DetailsContext } from '../../states/contacts/contactDetails';
+import { connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 
 const mapStateToProps = (state: RootState, { task, contactId }: OwnProps) => {
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
@@ -59,7 +60,7 @@ const ViewContact: React.FC<Props> = ({ onClickClose, editContactFormOpen, conta
     <CaseLayout className={editContactFormOpen ? 'editingContact' : ''}>
       <Container removePadding={editContactFormOpen}>
         <ContactDetails contactId={contactId} enableEditing={enableEditing} context={DetailsContext.CASE_DETAILS} />
-        <BottomButtonBar className="hiddenWhenEditingContact" style={{ marginBlockStart: 'auto' }}>
+        <BottomButtonBar className="hiddenWhenModalOpen" style={{ marginBlockStart: 'auto' }}>
           <StyledNextStepButton roundCorners onClick={handleClose} data-testid="Case-ViewContactScreen-CloseButton">
             <Template code="CloseButton" />
           </StyledNextStepButton>

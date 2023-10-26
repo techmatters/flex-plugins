@@ -22,7 +22,7 @@ import debounce from 'lodash/debounce';
 import { connect } from 'react-redux';
 
 import CannedResponses from '../../CannedResponses';
-import { conversationsBase, namespace, RootState } from '../../../states';
+import { RootState } from '../../../states';
 import {
   MessageSendStatus,
   newSendMessageeAsyncAction,
@@ -41,6 +41,7 @@ import {
   ButtonContainer,
   SendMessageButton,
 } from './styles';
+import { conversationsBase, namespace } from '../../../states/storeNamespaces';
 
 /**
  * The following CSS attributtes should be set in here

@@ -19,7 +19,7 @@ import PropTypes from 'prop-types';
 import { CircularProgress, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import { connect } from 'react-redux';
 
-import { namespace, configurationBase } from '../../states';
+import { configurationBase, namespace } from '../../states/storeNamespaces';
 
 class Translator extends React.PureComponent {
   static displayName = 'Translator';

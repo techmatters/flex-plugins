@@ -21,7 +21,6 @@ import { AddExternalReportEntryAction } from '../csam-report/existingContactExte
 import { ConfigurationState } from '../configuration/reducer';
 import { transformValuesForContactForm } from './contactDetailsAdapter';
 import { ContactMetadata } from './types';
-import { updateContactInHrm } from '../../services/ContactService';
 import { newContactMetaData } from './contactState';
 
 export enum ContactDetailsRoute {
@@ -328,21 +327,6 @@ export const clearDraft = (contactId: string): UpdateDraftAction => ({
   contactId,
   draft: { rawJson: {} },
 });
-
-export const saveContactChangesInHrm = async (
-  contactId: string,
-  changes: ContactDraftChanges,
-  dispatch: any,
-  reference: string,
-): Promise<Contact> => {
-  if (changes) {
-    const updated = await updateContactInHrm(contactId, changes);
-    dispatch(loadContact(updated, reference, true));
-    dispatch(clearDraft(contactId));
-    return updated;
-  }
-  return undefined;
-};
 
 export const updateDraftReducer = (
   state: ExistingContactsState,

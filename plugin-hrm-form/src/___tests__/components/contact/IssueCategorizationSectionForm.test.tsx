@@ -23,12 +23,12 @@ import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-fo
 
 import IssueCategorizationSectionForm from '../../../components/contact/IssueCategorizationSectionForm';
 import { ToggleViewButton } from '../../../styles/HrmStyles';
-import { namespace, contactFormsBase } from '../../../states';
 import { setCategoriesGridView } from '../../../states/contacts/existingContacts';
 import { forExistingContact } from '../../../states/contacts/issueCategorizationStateApi';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { FeatureFlags } from '../../../types/types';
+import { contactFormsBase, namespace } from '../../../states/storeNamespaces';
 
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
 jest.mock('../../../hrmConfig');

@@ -35,10 +35,10 @@ import {
 } from '../../styles/HrmStyles';
 import { CaseActionFormContainer, CaseActionLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { configurationBase, connectedCaseBase, contactFormsBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
-import { changeRoute } from '../../states/routing/actions';
+import { newGoBackAction } from '../../states/routing/actions';
 import type { Case, CustomITask, StandaloneITask } from '../../types/types';
 import { recordingErrorHandler } from '../../fullStory';
 import { caseItemHistory, CaseSummaryWorkingCopy } from '../../states/case/types';
@@ -48,18 +48,17 @@ import {
   removeCaseSummaryWorkingCopy,
   updateCaseSummaryWorkingCopy,
 } from '../../states/case/caseWorkingCopy';
-import { AppRoutes } from '../../states/routing/types';
 import { PermissionActions, PermissionActionType } from '../../permissions';
 import { disperseInputs, splitAt } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import { getTemplateStrings } from '../../hrmConfig';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
+import { configurationBase, connectedCaseBase, namespace } from '../../states/storeNamespaces';
 
 export type EditCaseSummaryProps = {
   task: CustomITask | StandaloneITask;
   definitionVersion: DefinitionVersion;
-  exitRoute: AppRoutes;
   can: (action: PermissionActionType) => boolean;
 };
 // eslint-disable-next-line no-use-before-define
@@ -68,7 +67,6 @@ type Props = EditCaseSummaryProps & ReturnType<typeof mapStateToProps> & ReturnT
 const EditCaseSummary: React.FC<Props> = ({
   task,
   counselorsHash,
-  exitRoute,
   connectedCaseState,
   workingCopy,
   initialiseWorkingCopy,
@@ -159,7 +157,7 @@ const EditCaseSummary: React.FC<Props> = ({
     const { info, id } = connectedCaseState.connectedCase;
     const { status, ...updatedInfoValues } = workingCopy;
 
-    updateCaseAsyncAction(id, {
+    await updateCaseAsyncAction(id, {
       status,
       info: { ...info, ...updatedInfoValues },
     });
@@ -167,7 +165,7 @@ const EditCaseSummary: React.FC<Props> = ({
 
   const saveAndLeave = async () => {
     await save();
-    closeActions(exitRoute);
+    closeActions();
   };
 
   const strings = getTemplateStrings();
@@ -183,7 +181,7 @@ const EditCaseSummary: React.FC<Props> = ({
 
   const checkForEdits = () => {
     if (isEqual(workingCopy, savedForm)) {
-      closeActions(exitRoute);
+      closeActions();
     } else setOpenDialog(true);
   };
 
@@ -218,7 +216,7 @@ const EditCaseSummary: React.FC<Props> = ({
               data-testid="CloseCaseDialog"
               openDialog={openDialog}
               setDialog={() => setOpenDialog(false)}
-              handleDontSaveClose={() => closeActions(exitRoute)}
+              handleDontSaveClose={() => closeActions()}
               handleSaveUpdate={methods.handleSubmit(saveAndLeave, onError)}
             />
           </Box>
@@ -252,9 +250,9 @@ const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
     initialiseWorkingCopy: bindActionCreators(initialiseCaseSummaryWorkingCopy, dispatch),
     updateWorkingCopy: bindActionCreators(updateCaseSummaryWorkingCopy, dispatch),
-    closeActions: route => {
+    closeActions: () => {
       dispatch(removeCaseSummaryWorkingCopy(task.taskSid));
-      dispatch(changeRoute(route, task.taskSid));
+      dispatch(newGoBackAction(task.taskSid));
     },
     updateCaseAsyncAction: (caseId: Case['id'], body: Partial<Case>) =>
       updateCaseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),

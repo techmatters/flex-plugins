@@ -32,7 +32,7 @@ export const getPaginationNumbers = (page, pageCount) => {
 };
 
 // eslint-disable-next-line react/display-name
-const renderPaginationButton = (page, handleChangePage) => n => {
+const renderPaginationButton = (page, handleChangePage, disabled) => n => {
   if (n === -1)
     return (
       <ButtonText style={{ padding: '6px 10px', margin: '0 2px' }} key={`ellipsis-${Math.random()}`}>
@@ -46,6 +46,7 @@ const renderPaginationButton = (page, handleChangePage) => n => {
       highlight={page === n}
       key={`CaseList-pagination-${n}`}
       onClick={() => handleChangePage(n)}
+      disabled={disabled}
     >
       <ButtonText highlight={page === n}>{n + 1}</ButtonText>
     </PaginationButton>
@@ -77,10 +78,17 @@ type PaginationProps = {
   pagesCount: number;
   handleChangePage: (page: number) => void;
   transparent?: boolean;
+  disabled?: boolean;
 };
 
-const Pagination: React.FC<PaginationProps> = ({ page, pagesCount, handleChangePage, transparent }) => {
-  const renderButtons = renderPaginationButton(page, handleChangePage);
+const Pagination: React.FC<PaginationProps> = ({
+  page,
+  pagesCount,
+  handleChangePage,
+  transparent,
+  disabled = false,
+}) => {
+  const renderButtons = renderPaginationButton(page, handleChangePage, disabled);
 
   const decreasePage = () => {
     if (page > 0) handleChangePage(page - 1);
@@ -93,14 +101,14 @@ const Pagination: React.FC<PaginationProps> = ({ page, pagesCount, handleChangeP
   return (
     <PaginationRow transparent={transparent} data-testid="CaseList-TableFooter">
       <ChevronButton
-        disabled={page === 0}
+        disabled={disabled || page === 0}
         chevronDirection="left"
         onClick={decreasePage}
         templateCode="CaseList-PrevPage"
       />
       {getPaginationNumbers(page, pagesCount).map(renderButtons)}
       <ChevronButton
-        disabled={page === pagesCount - 1}
+        disabled={disabled || page === pagesCount - 1}
         chevronDirection="right"
         onClick={increasePage}
         templateCode="CaseList-NextPage"

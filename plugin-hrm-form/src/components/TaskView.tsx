@@ -21,21 +21,24 @@ import { TaskHelper } from '@twilio/flex-ui';
 
 import HrmForm from './HrmForm';
 import FormNotEditable from './FormNotEditable';
-import { RootState, namespace, contactFormsBase, searchContactsBase, routingBase, configurationBase } from '../states';
-import * as GeneralActions from '../states/actions';
+import { RootState } from '../states';
 import { hasTaskControl } from '../utils/transfer';
-import type { DefinitionVersion } from '../states/types';
-import { CustomITask, isOfflineContactTask, isInMyBehalfITask, Contact } from '../types/types';
+import { CustomITask, isOfflineContactTask, isInMyBehalfITask } from '../types/types';
 import PreviousContactsBanner from './PreviousContactsBanner';
 import { Flex } from '../styles/HrmStyles';
 import { isStandaloneITask } from './case/Case';
 import { getHelplineToSave } from '../services/HelplineService';
 import { getAseloFeatureFlags } from '../hrmConfig';
 import { rerenderAgentDesktop } from '../rerenderView';
-import { getContactByTaskSid } from '../services/ContactService';
-import { ContactMetadata } from '../states/contacts/types';
 import { updateDraft } from '../states/contacts/existingContacts';
-import { newContactMetaData } from '../states/contacts/contactState';
+import { loadContactFromHrmByTaskSidAsyncAction } from '../states/contacts/saveContact';
+import {
+  configurationBase,
+  contactFormsBase,
+  namespace,
+  routingBase,
+  searchContactsBase,
+} from '../states/storeNamespaces';
 
 type OwnProps = {
   task: CustomITask;
@@ -46,17 +49,20 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const TaskView: React.FC<Props> = props => {
-  const { shouldRecreateState, currentDefinitionVersion, task, contact, updateHelpline, recreateContactState } = props;
+  const {
+    shouldRecreateState,
+    currentDefinitionVersion,
+    task,
+    contact,
+    updateHelpline,
+    loadContactFromHrmByTaskSid,
+  } = props;
 
   React.useEffect(() => {
     if (shouldRecreateState) {
-      getContactByTaskSid(task.taskSid).then(contact => {
-        if (contact) {
-          recreateContactState(currentDefinitionVersion)(contact, newContactMetaData(true));
-        }
-      });
+      loadContactFromHrmByTaskSid();
     }
-  }, [currentDefinitionVersion, recreateContactState, shouldRecreateState, task]);
+  }, [currentDefinitionVersion, loadContactFromHrmByTaskSid, shouldRecreateState, task]);
 
   // Force a re-render on unmount (temporary fix NoTaskView issue with Offline Contacts)
   React.useEffect(() => {
@@ -148,8 +154,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 };
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
-  recreateContactState: (definitions: DefinitionVersion) => (initialContact: Contact, metadata: ContactMetadata) =>
-    dispatch(GeneralActions.recreateContactState(definitions)(initialContact, metadata, [task.taskSid])),
+  loadContactFromHrmByTaskSid: () => dispatch(loadContactFromHrmByTaskSidAsyncAction(task.taskSid)),
   updateHelpline: (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline })),
 });
 

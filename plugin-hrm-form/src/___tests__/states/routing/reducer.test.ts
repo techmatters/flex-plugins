@@ -23,6 +23,11 @@ import * as actions from '../../../states/routing/actions';
 import * as GeneralActions from '../../../states/actions';
 import { standaloneTaskSid } from '../../../types/types';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
+import {
+  CREATE_CONTACT_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+} from '../../../states/contacts/types';
+import { RoutingState } from '../../../states/routing/types';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -47,158 +52,155 @@ beforeEach(() => {
 });
 
 describe('test reducer (specific actions)', () => {
-  let state = undefined;
+  const stateWithTask: RoutingState = {
+    tasks: {
+      task1: [{ route: 'tabbed-forms', subroute: 'childInformation' }],
+      [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
+    },
+    isAddingOfflineContact: false,
+  };
 
   test('should return initial state', async () => {
     const expected = initialState;
 
-    const result = reduce(state, {} as any);
+    const result = reduce(undefined, {} as any);
     expect(result).toStrictEqual(expected);
-
-    state = result;
   });
 
-  test('should handle INITIALIZE_CONTACT_STATE', async () => {
+  test('should handle CREATE_CONTACT_ACTION_FULFILLED', async () => {
     const expected = {
       tasks: {
-        task1: { route: 'tabbed-forms', subroute: 'childInformation' },
+        task1: [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
       isAddingOfflineContact: false,
     };
 
-    const result = reduce(
-      state,
-      GeneralActions.initializeContactState(mockV1)(
-        {
+    const result = reduce(initialState, {
+      type: CREATE_CONTACT_ACTION_FULFILLED,
+      payload: {
+        contact: {
           ...VALID_EMPTY_CONTACT,
           taskId: task.taskSid,
         },
-        VALID_EMPTY_METADATA,
-        [],
-      ),
-    );
+        metadata: VALID_EMPTY_METADATA,
+      },
+    } as any);
     expect(result).toStrictEqual(expected);
-
-    state = result;
   });
 
-  test('should handle CHANGE_ROUTE', async () => {
+  test('should handle CHANGE_ROUTE by adding new route to stack if replace is not set', async () => {
     const expected = {
       tasks: {
-        task1: { route: 'tabbed-forms' },
+        task1: [{ route: 'tabbed-forms', subroute: 'childInformation' }, { route: 'tabbed-forms' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
       isAddingOfflineContact: false,
     };
 
-    const result = reduce(state, actions.changeRoute({ route: 'tabbed-forms' }, task.taskSid));
+    const result = reduce(stateWithTask, actions.changeRoute({ route: 'tabbed-forms' }, task.taskSid));
     expect(result).toStrictEqual(expected);
+  });
 
-    state = result;
+  test('should handle CHANGE_ROUTE by replacing topmost route with new route to stack if replace is set', async () => {
+    const expected = {
+      tasks: {
+        task1: [{ route: 'tabbed-forms' }],
+        [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
+      },
+      isAddingOfflineContact: false,
+    };
+
+    const result = reduce(stateWithTask, actions.changeRoute({ route: 'tabbed-forms' }, task.taskSid, true));
+    expect(result).toStrictEqual(expected);
   });
 
   test('should handle REMOVE_CONTACT_STATE', async () => {
     const expected = initialState;
 
-    const result = reduce(state, GeneralActions.removeContactState(task.taskSid, ''));
+    const result = reduce(stateWithTask, GeneralActions.removeContactState(task.taskSid, ''));
     expect(result).toStrictEqual(expected);
-
-    state = result;
   });
 
-  test('should handle RECREATE_CONTACT_STATE and recreate it', async () => {
+  test('should handle LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED and recreate the state as loaded', async () => {
     const expected = {
       tasks: {
-        task1: { route: 'tabbed-forms', subroute: 'childInformation' },
+        task1: [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
       isAddingOfflineContact: false,
     };
 
-    const result = reduce(
-      state,
-      GeneralActions.recreateContactState(mockV1)(
-        {
-          ...VALID_EMPTY_CONTACT,
-          taskId: task.taskSid,
-        },
-        VALID_EMPTY_METADATA,
-        [],
-      ),
-    );
+    const result = reduce(initialState, {
+      type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+      payload: {
+        contact: { ...VALID_EMPTY_CONTACT, taskId: task.taskSid },
+        metadata: VALID_EMPTY_METADATA,
+      },
+    } as any);
     expect(result).toStrictEqual(expected);
-
-    state = result;
   });
 
-  test('should handle RECREATE_CONTACT_STATE and do nothing', async () => {
+  test('should handle LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED and do nothing', async () => {
     const expected = {
       tasks: {
-        task1: { route: 'new-case' },
+        task1: [{ route: 'case', subroute: 'home' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
       isAddingOfflineContact: false,
     };
 
-    const result1 = reduce(state, actions.changeRoute({ route: 'new-case' }, task.taskSid));
+    const result1 = reduce(stateWithTask, actions.changeRoute({ route: 'case', subroute: 'home' }, task.taskSid, true));
 
-    state = result1;
-
-    const result2 = reduce(
-      state,
-      GeneralActions.recreateContactState(mockV1)(
-        {
-          ...VALID_EMPTY_CONTACT,
-          taskId: task.taskSid,
-        },
-        VALID_EMPTY_METADATA,
-        [],
-      ),
-    );
+    const result2 = reduce(result1, {
+      type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+      payload: {
+        contact: { ...VALID_EMPTY_CONTACT, taskId: task.taskSid },
+        metadata: VALID_EMPTY_METADATA,
+      },
+    } as any);
     expect(result2).toStrictEqual(expected);
-
-    state = result2;
   });
 
-  test('should handle RECREATE_CONTACT_STATE and change isAddingOfflineContact to true', async () => {
+  test('should handle LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED and change isAddingOfflineContact to true', async () => {
     const expected = {
       tasks: {
-        task1: { route: 'new-case' },
+        task1: [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
-        [offlineContactTaskSid]: { ...newTaskEntry, route: 'tabbed-forms', subroute: 'childInformation' },
+        [offlineContactTaskSid]: [{ ...newTaskEntry, route: 'tabbed-forms', subroute: 'childInformation' }],
       },
       isAddingOfflineContact: true,
     };
 
-    const result = reduce(
-      state,
-      GeneralActions.recreateContactState(mockV1)(
-        {
-          ...VALID_EMPTY_CONTACT,
-          taskId: offlineContactTaskSid,
-        },
-        VALID_EMPTY_METADATA,
-        [],
-      ),
-    );
+    const result = reduce(stateWithTask, {
+      type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+      payload: {
+        contact: { ...VALID_EMPTY_CONTACT, taskId: offlineContactTaskSid },
+        metadata: VALID_EMPTY_METADATA,
+      },
+    } as any);
     expect(result).toStrictEqual(expected);
-
-    state = result;
   });
 
   test('should handle REMOVE_CONTACT_STATE', async () => {
     const expected = {
       tasks: {
-        task1: { route: 'new-case' },
+        task1: [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
       isAddingOfflineContact: false,
     };
 
-    const result = reduce(state, GeneralActions.removeContactState(offlineContactTaskSid, ''));
+    const result = reduce(
+      {
+        tasks: {
+          ...stateWithTask.tasks,
+          [offlineContactTaskSid]: [{ route: 'tabbed-forms', subroute: 'childInformation' }],
+        },
+        isAddingOfflineContact: true,
+      },
+      GeneralActions.removeContactState(offlineContactTaskSid, ''),
+    );
     expect(result).toStrictEqual(expected);
-
-    state = result;
   });
 });

@@ -21,7 +21,8 @@ import { SideLink, SideNavChildrenProps } from '@twilio/flex-ui';
 import { HelplineEntry } from 'hrm-form-definitions';
 
 import CounselorToolkitDialog from './CounselorToolkitDialog';
-import { configurationBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
+import { configurationBase, namespace } from '../../states/storeNamespaces';
 
 const mapStateToProps = (state: RootState) => ({
   definitionVersion: state[namespace][configurationBase].currentDefinitionVersion,

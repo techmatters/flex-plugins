@@ -26,7 +26,6 @@ import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-fo
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import CaseList from '../../../components/caseList';
-import { caseListBase, configurationBase, namespace } from '../../../states';
 import { listCases } from '../../../services/CaseService';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { CaseListState } from '../../../states/caseList/reducer';
@@ -38,6 +37,7 @@ import {
 } from '../../../states/caseList/listContent';
 import { caseListSettingsInitialState } from '../../../states/caseList/settings';
 import { Case, ContactRawJson, Contact } from '../../../types/types';
+import { caseListBase, configurationBase, namespace } from '../../../states/storeNamespaces';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -140,6 +140,7 @@ test('Should dispatch fetchStarted and fetchSuccess actions if case lists return
       currentDefinitionVersion: mockV1,
     },
     [caseListBase]: blankCaseListState,
+    routing: { tasks: {} },
   });
   const store = mockStore(initialState);
 
@@ -186,6 +187,7 @@ test('Should render list if it is populated', async () => {
         listLoading: false,
       },
     },
+    routing: { tasks: {} },
   });
   const store = mockStore(initialState);
 
@@ -235,6 +237,7 @@ test('Should render no cases and show No Cases Found row', async () => {
         listLoading: false,
       },
     },
+    routing: { tasks: {} },
   });
   const store = mockStore(initialState);
 
@@ -273,6 +276,7 @@ test('Should dispatch fetchStarted and fetchError actions if case lists error', 
       currentDefinitionVersion: mockV1,
     },
     [caseListBase]: blankCaseListState,
+    routing: { tasks: {} },
   });
   const store = mockStore(initialState);
 
@@ -309,6 +313,7 @@ test('Should render error page if fetchError set in store', async () => {
       ...blankCaseListState,
       content: { ...blankCaseListState.content, fetchError: new Error('Some error') },
     },
+    routing: { tasks: {} },
   });
   const store = mockStore(initialState);
 
@@ -347,6 +352,7 @@ test('Should render loading page if listLoading set in store', async () => {
       ...blankCaseListState,
       content: { ...blankCaseListState.content, listLoading: true },
     },
+    routing: { tasks: {} },
   });
   const store = mockStore(initialState);
 
@@ -378,6 +384,7 @@ test('a11y', async () => {
       currentDefinitionVersion: mockV1,
     },
     [caseListBase]: blankCaseListState,
+    routing: { tasks: {} },
   });
   const store = mockStore(initialState);
 

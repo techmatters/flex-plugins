@@ -22,18 +22,7 @@ import { ContactMetadata } from './contacts/types';
 export type { DefinitionVersion };
 
 // Action types
-export const INITIALIZE_CONTACT_STATE = 'INITIALIZE_CONTACT_STATE';
-export const RECREATE_CONTACT_STATE = 'RECREATE_CONTACT_STATE';
 export const REMOVE_CONTACT_STATE = 'REMOVE_CONTACT_STATE';
-
-export type InitializeContactStateAction = {
-  type: typeof INITIALIZE_CONTACT_STATE;
-  definitions: DefinitionVersion;
-  initialContact: Contact;
-  metadata: ContactMetadata;
-  references: string[];
-  recreated: boolean;
-};
 
 export type RemoveContactStateAction = {
   type: typeof REMOVE_CONTACT_STATE;

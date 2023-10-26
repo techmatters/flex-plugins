@@ -15,18 +15,18 @@
  */
 
 import React from 'react';
-import { Template } from '@twilio/flex-ui';
 import type { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { conferenceApi } from '../../../services/ServerlessService';
-import { RootState, conferencingBase, namespace } from '../../../states';
+import { RootState } from '../../../states';
 import { addParticipantLabelAction } from '../../../states/conferencing';
 import { ParticipantLabelContainer, ParticipantLabelText } from './styles';
+import { conferencingBase, namespace } from '../../../states/storeNamespaces';
 
 type Props = ParticipantCanvasChildrenProps;
 
-const ParticipantLabel: React.FC<Props> = ({ participant, task, ...props }) => {
+const ParticipantLabel: React.FC<Props> = ({ participant, task }) => {
   const participantLabel = useSelector(
     (state: RootState) =>
       state[namespace][conferencingBase].tasks[task?.taskSid].participantsLabels[participant?.participantSid],

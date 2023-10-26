@@ -25,12 +25,12 @@ import configureMockStore from 'redux-mock-store';
 import { DefinitionVersion, DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
-import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
 import EditCaseSummary, { EditCaseSummaryProps } from '../../../components/case/EditCaseSummary';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { StandaloneITask } from '../../../types/types';
 import { AppRoutes } from '../../../states/routing/types';
 import { changeRoute } from '../../../states/routing/actions';
+import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states/storeNamespaces';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();

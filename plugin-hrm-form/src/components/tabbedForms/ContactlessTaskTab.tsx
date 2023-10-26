@@ -25,12 +25,13 @@ import type { DefinitionVersion } from 'hrm-form-definitions';
 import { disperseInputs } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import { Container, ColumnarBlock, TwoColumnLayout, ColumnarContent } from '../../styles/HrmStyles';
-import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import { selectWorkerSid } from '../../states/selectors/flexSelectors';
 import { createContactlessTaskTabDefinition } from './ContactlessTaskTabDefinition';
 import { splitDate, splitTime } from '../../utils/helpers';
 import type { ContactRawJson, OfflineContactTask } from '../../types/types';
 import { updateDraft } from '../../states/contacts/existingContacts';
+import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 
 type OwnProps = {
   task: OfflineContactTask;

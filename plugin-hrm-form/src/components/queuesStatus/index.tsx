@@ -19,12 +19,13 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { namespace, queuesStatusBase, RootState } from '../../states';
+import { RootState } from '../../states';
 import QueueCard from './QueueCard';
 import { Container, QueuesContainer } from '../../styles/queuesStatus';
 import { Box, ErrorText, HeaderContainer } from '../../styles/HrmStyles';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 import type { ChannelTypes, ChannelColors } from '../../states/DomainConstants';
+import { namespace, queuesStatusBase } from '../../states/storeNamespaces';
 
 type OwnProps = {
   colors: ChannelColors;
@@ -32,7 +33,7 @@ type OwnProps = {
   contactsWaitingChannels?: ChannelTypes[];
 };
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+const mapStateToProps = (state: RootState) => {
   const queuesStatusState = state[namespace][queuesStatusBase];
 
   return { queuesStatusState };

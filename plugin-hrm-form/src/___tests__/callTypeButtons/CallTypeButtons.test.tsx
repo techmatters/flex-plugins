@@ -25,27 +25,27 @@ import '../mockStyled';
 import '../mockGetConfig';
 import { callTypes } from 'hrm-form-definitions';
 
-import CallTypeButtons from '../../components/callTypeButtons';
+import '../../states/conferencing';
 import { DataCallTypeButton, NonDataCallTypeButton, ConfirmButton, CancelButton } from '../../styles/callTypeButtons';
 import LocalizationContext from '../../contexts/LocalizationContext';
-import { namespace, contactFormsBase, connectedCaseBase, configurationBase } from '../../states';
 import { changeRoute } from '../../states/routing/actions';
-import { saveContactChangesInHrm, updateDraft } from '../../states/contacts/existingContacts';
-import { completeTask, submitContactForm } from '../../services/formSubmissionHelpers';
-import { Contact } from '../../types/types';
+import { updateDraft } from '../../states/contacts/existingContacts';
+import { completeTask } from '../../services/formSubmissionHelpers';
+import CallTypeButtons from '../../components/callTypeButtons';
+import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
+import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 
-jest.mock('../../states/contacts/existingContacts', () => ({
-  ...jest.requireActual('../../states/contacts/existingContacts'),
-  saveContactChangesInHrm: jest.fn(),
-}));
+jest.mock('../../states/conferencing', () => ({}));
 
-jest.mock('../../services/ContactService', () => ({
-  saveContact: jest.fn(),
+jest.mock('../../states/contacts/saveContact', () => ({
+  updateContactInHrmAsyncAction: jest.fn(),
+  saveContactReducer: jest.fn(state => state),
+  loadContactFromHrmByTaskSidAsyncAction: jest.fn(),
+  createContactAsyncAction: jest.fn(),
 }));
 
 jest.mock('../../services/formSubmissionHelpers', () => ({
   completeTask: jest.fn(),
-  submitContactForm: jest.fn(),
 }));
 
 const mockStore = configureMockStore([]);
@@ -64,12 +64,8 @@ const strings = {
 const withEndCall = <Template code="TaskHeaderEndCall" />;
 const withEndChat = <Template code="TaskHeaderEndChat" />;
 
-jest.mock('../../services/ContactService', () => ({
-  saveContact: () => Promise.resolve(),
-}));
-
 afterEach(() => {
-  jest.resetAllMocks();
+  jest.clearAllMocks();
 });
 
 const currentDefinitionVersion = {
@@ -284,7 +280,6 @@ test('<CallTypeButtons> renders dialog with HANG UP button', () => {
 });
 
 test('<CallTypeButtons> click on Data (Child) button', async () => {
-  (saveContactChangesInHrm as jest.MockedFunction<typeof saveContactChangesInHrm>).mockResolvedValue({} as Contact);
   const initialState = {
     [namespace]: {
       [contactFormsBase]: {
@@ -402,11 +397,11 @@ test('<CallTypeButtons> click on END CHAT button', async () => {
   expect(screen.getByText('TaskHeaderEndChat')).toBeInTheDocument();
   screen.getByText('TaskHeaderEndChat').click();
 
-  waitFor(() => expect(submitContactForm).toHaveBeenCalled());
-  waitFor(() => expect(completeTask).toHaveBeenCalledWith(task));
+  await waitFor(() => expect(updateContactInHrmAsyncAction).toHaveBeenCalled());
+  await waitFor(() => expect(completeTask).toHaveBeenCalledWith(task));
 });
 
-test('<CallTypeButtons> click on CANCEL button', () => {
+test('<CallTypeButtons> click on CANCEL button', async () => {
   const initialState = {
     [namespace]: {
       [contactFormsBase]: {
@@ -438,6 +433,6 @@ test('<CallTypeButtons> click on CANCEL button', () => {
   expect(screen.getByText('CancelButton')).toBeInTheDocument();
   screen.getByText('CancelButton').click();
 
-  waitFor(() => expect(completeTask).not.toHaveBeenCalled());
-  waitFor(() => expect(submitContactForm).not.toHaveBeenCalled());
+  await waitFor(() => expect(completeTask).not.toHaveBeenCalled());
+  await waitFor(() => expect(updateContactInHrmAsyncAction).not.toHaveBeenCalled());
 });

@@ -17,7 +17,7 @@
 import { Dispatch } from 'react';
 
 import * as CSAMAction from '../../states/csam-report/actions';
-import { csamReportBase, namespace, RootState, routingBase } from '../../states';
+import { RootState } from '../../states';
 import { changeRoute } from '../../states/routing/actions';
 import { AppRoutes } from '../../states/routing/types';
 import { CSAMReportEntry } from '../../types/types';
@@ -34,6 +34,8 @@ import { addExternalReportEntry } from '../../states/csam-report/existingContact
 import { acknowledgeCSAMReport, createCSAMReport } from '../../services/CSAMReportService';
 import { reportToIWF, selfReportToIWF } from '../../services/ServerlessService';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
+import { csamReportBase, namespace } from '../../states/storeNamespaces';
+import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 
 export enum CSAMPage {
   ReportTypePicker = 'report-type-picker',
@@ -121,9 +123,9 @@ const saveReport = async (
 
 export const newContactCSAMApi = (contactId: string, taskSid: string, previousRoute: AppRoutes): CSAMReportApi => ({
   currentPage: (state: RootState) => {
-    const { subroute, route } = state[namespace][routingBase].tasks[taskSid];
-    if (route === 'csam-report') {
-      const [key] = Object.entries(CSAMPage).find(([, v]) => v === subroute) ?? [];
+    const routing = getCurrentTopmostRouteForTask(state[namespace].routing, taskSid);
+    if (routing.route === 'csam-report') {
+      const [key] = Object.entries(CSAMPage).find(([, v]) => v === routing.subroute) ?? [];
       return CSAMPage[key];
     }
     return undefined;

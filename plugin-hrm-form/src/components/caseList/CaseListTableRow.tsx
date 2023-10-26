@@ -22,7 +22,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { getDefinitionVersion } from '../../services/ServerlessService';
-import { configurationBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import * as ConfigActions from '../../states/configuration/actions';
 import { Case, CounselorHash } from '../../types/types';
 import {
@@ -42,6 +42,7 @@ import { getContactTags } from '../../utils/categories';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import { getHrmConfig } from '../../hrmConfig';
+import { configurationBase, namespace } from '../../states/storeNamespaces';
 
 const CHAR_LIMIT = 200;
 
@@ -107,7 +108,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
       <CLTableRow data-testid="CaseList-TableRow" onClick={handleClickViewCase(caseItem)}>
         <CLNumberCell>
           <CLCaseNumberContainer>
-            <CLCaseIDButton tabIndex={0} onClick={handleClickViewCase(caseItem)} data-testid="CaseList-CaseID-Button">
+            <CLCaseIDButton tabIndex={0} data-testid="CaseList-CaseID-Button">
               <HiddenText>
                 <Template code={statusString} />
                 <Template code="CaseList-THCase" />

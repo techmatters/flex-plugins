@@ -15,19 +15,26 @@
  */
 
 /* eslint-disable react/prop-types */
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { Dispatch } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
+import { callTypes } from 'hrm-form-definitions';
 
 import { CaseLayout } from '../styles/case';
 import CallTypeButtons from './callTypeButtons';
 import TabbedForms from './tabbedForms';
 import Case from './case';
 import CSAMReport from './CSAMReport/CSAMReport';
-import { namespace, RootState, routingBase } from '../states';
-import type { CustomITask, Case as CaseForm } from '../types/types';
+import { RootState } from '../states';
+import type { CustomITask, Case as CaseForm, Contact } from '../types/types';
 import { newContactCSAMApi } from './CSAMReport/csamReportApi';
-import { completeTask, submitContactForm } from '../services/formSubmissionHelpers';
+import { completeTask } from '../services/formSubmissionHelpers';
 import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
+import { namespace } from '../states/storeNamespaces';
+import { ContactMetadata } from '../states/contacts/types';
+import { submitContactFormAsyncAction } from '../states/contacts/saveContact';
+import { newCloseModalAction } from '../states/routing/actions';
+import { getCurrentTopmostRouteForTask } from '../states/routing/getRoute';
+import Search from './search';
 
 type OwnProps = {
   task: CustomITask;
@@ -35,14 +42,22 @@ type OwnProps = {
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps>;
+type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact, metadata }) => {
+const HrmForm: React.FC<Props> = ({
+  routing,
+  task,
+  featureFlags,
+  savedContact,
+  metadata,
+  finaliseContact,
+  closeModal,
+}) => {
   if (!routing) return null;
   const { route } = routing;
 
   const onNewCaseSaved = async (caseForm: CaseForm) => {
-    await submitContactForm(task, savedContact, metadata, caseForm);
+    await finaliseContact(savedContact, metadata, caseForm);
     await completeTask(task);
   };
 
@@ -51,12 +66,13 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact, m
       return (
         <TabbedForms
           task={task}
+          contactId={savedContact?.id}
           csamClcReportEnabled={featureFlags.enable_csam_clc_report}
           csamReportEnabled={featureFlags.enable_csam_report}
         />
       );
 
-    case 'new-case':
+    case 'case':
       return (
         <CaseLayout>
           <Case task={task} isCreating={true} onNewCaseSaved={onNewCaseSaved} />
@@ -65,7 +81,14 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact, m
 
     case 'csam-report':
       return <CSAMReport api={newContactCSAMApi(savedContact.id, task.taskSid, routing.previousRoute)} />;
-
+    case 'search':
+      return (
+        <Search
+          task={task}
+          currentIsCaller={savedContact?.rawJson?.callType === callTypes.caller}
+          handleSelectSearchResult={closeModal}
+        />
+      );
     case 'select-call-type':
     default:
       return <CallTypeButtons task={task} />;
@@ -75,10 +98,20 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact, m
 HrmForm.displayName = 'HrmForm';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const routingState = state[namespace][routingBase];
-  const { savedContact, metadata } = findContactByTaskSid(state, task.taskSid);
+  const routingState = state[namespace].routing;
+  const { savedContact, metadata } = findContactByTaskSid(state, task.taskSid) ?? {};
 
-  return { routing: routingState.tasks[task.taskSid], savedContact, metadata };
+  return { routing: getCurrentTopmostRouteForTask(routingState, task.taskSid), savedContact, metadata };
 };
 
-export default connect(mapStateToProps, null)(HrmForm);
+const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => {
+  return {
+    finaliseContact: (contact: Contact, metadata: ContactMetadata, caseForm: CaseForm) =>
+      dispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
+    closeModal: () => dispatch(newCloseModalAction(task.taskSid)),
+  };
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+export default connector(HrmForm);
