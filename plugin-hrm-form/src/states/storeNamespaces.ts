@@ -28,3 +28,4 @@ export const csamReportBase = 'csam-report';
 export const dualWriteBase = 'dualWrite';
 export const referrableResourcesBase = 'referrableResources';
 export const conferencingBase = 'conferencing';
+export const identifierMaskingBase = 'identifierMasking';

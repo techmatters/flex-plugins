@@ -29,6 +29,7 @@ import { reduce as DualWriteReducer } from './dualWrite/reducer';
 import { reduce as ReferrableResourcesReducer } from './resources';
 import { reduce as ConversationsReducer } from './conversations';
 import { reduce as ConferencingReducer } from './conferencing';
+import { reduce as IdentifierMaskingReducer } from './identifierMasking';
 import { CaseState } from './case/types';
 import { ContactsState } from './contacts/types';
 import {
@@ -45,6 +46,7 @@ import {
   referrableResourcesBase,
   routingBase,
   searchContactsBase,
+  identifierMaskingBase,
 } from './storeNamespaces';
 
 const reducers = {
@@ -58,6 +60,7 @@ const reducers = {
   [referrableResourcesBase]: ReferrableResourcesReducer,
   [conversationsBase]: ConversationsReducer,
   [conferencingBase]: ConferencingReducer,
+  [identifierMaskingBase]: IdentifierMaskingReducer,
   /*
    * [csamClcReportBase]: CSAMCLCReportReducer,
    * [connectedCaseBase] - this is going to be combined manually, rather than using 'combineReducers', so isn't in this map

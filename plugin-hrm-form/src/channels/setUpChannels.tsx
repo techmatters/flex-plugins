@@ -175,24 +175,42 @@ export const setupLineChatChannel = maskIdentifiers => {
 };
 
 const maskIdentifiersByChannel = channelType => {
+  console.log('>>>channelType.templates', channelType, channelType.templates);
   // Task list and panel when a call comes in
-  channelType.templates.TaskListItem.firstLine = 'MaskIdentifiers';
-  if (channelType === Flex.DefaultTaskChannels.Chat) {
-    channelType.templates.TaskListItem.secondLine = 'TaskLineWebChatAssignedMasked';
-  } else {
-    channelType.templates.TaskListItem.secondLine = 'TaskLineChatAssignedMasked';
-  }
-  channelType.templates.IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
-  channelType.templates.CallCanvas.firstLine = 'MaskIdentifiers';
+  // channelType.templates.TaskListItem.firstLine = 'MaskIdentifiers';
+  // if (channelType === Flex.DefaultTaskChannels.Chat) {
+  //   channelType.templates.TaskListItem.secondLine = 'TaskLineWebChatAssignedMasked';
+  // } else {
+  //   channelType.templates.TaskListItem.secondLine = 'TaskLineChatAssignedMasked';
+  // }
+  // channelType.templates.IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
+  // channelType.templates.CallCanvas.firstLine = 'MaskIdentifiers';
+
+  // // Task panel during an active call
+  // channelType.templates.TaskCanvasHeader.title = 'MaskIdentifiers';
+  // channelType.templates.MessageListItem = 'MaskIdentifiers';
+  // // Task Status in Agents page
+  // channelType.templates.TaskCard.firstLine = 'MaskIdentifiers';
+  // // Supervisor
+  // channelType.templates.Supervisor.TaskCanvasHeader.title = 'MaskIdentifiers';
+  // channelType.templates.Supervisor.TaskOverviewCanvas.title = 'MaskIdentifiers';
+};
+
+const unmaskIdentifiersByChannel = channelType => {
+  // Task list and panel when a call comes in
+  channelType.templates.TaskListItem.firstLine = null;
+  channelType.templates.TaskListItem.secondLine = null;
+  channelType.templates.IncomingTaskCanvas.firstLine = null;
+  channelType.templates.CallCanvas.firstLine = null;
 
   // Task panel during an active call
-  channelType.templates.TaskCanvasHeader.title = 'MaskIdentifiers';
-  channelType.templates.MessageListItem = 'MaskIdentifiers';
+  channelType.templates.TaskCanvasHeader.title = null;
+  channelType.templates.MessageListItem = null;
   // Task Status in Agents page
-  channelType.templates.TaskCard.firstLine = 'MaskIdentifiers';
+  channelType.templates.TaskCard.firstLine = null;
   // Supervisor
-  channelType.templates.Supervisor.TaskCanvasHeader.title = 'MaskIdentifiers';
-  channelType.templates.Supervisor.TaskOverviewCanvas.title = 'MaskIdentifiers';
+  channelType.templates.Supervisor.TaskCanvasHeader.title = null;
+  channelType.templates.Supervisor.TaskOverviewCanvas.title = null;
 };
 
 export const maskIdentifiersForDefaultChannels = () => {

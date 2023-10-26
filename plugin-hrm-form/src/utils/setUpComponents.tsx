@@ -36,6 +36,7 @@ import SettingsSideLink from '../components/sideLinks/SettingsSideLink';
 import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
 import StandaloneSearchSideLink from '../components/sideLinks/StandaloneSearchSideLink';
 import ManualPullButton from '../components/ManualPullButton';
+import ToggleIdentifierMasking from '../components/common/ToggleIdentifierMasking';
 import { AddOfflineContactButton, OfflineContactTask } from '../components/OfflineContact';
 import { chatCapacityUpdated } from '../states/configuration/actions';
 import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles/HrmStyles';
@@ -248,6 +249,11 @@ export const setUpTransferComponents = () => {
     if: props => TransferHelpers.shouldShowTransferControls(props.task),
   });
 };
+
+Flex.TaskCanvasHeader.Content.add(<ToggleIdentifierMasking key="toggle-identifier-masking" />, {
+  sortOrder: 1,
+  if: props => true,
+});
 
 /**
  * Add components used only by developers
