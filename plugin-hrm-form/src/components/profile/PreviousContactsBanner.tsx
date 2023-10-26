@@ -16,7 +16,7 @@
 
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import asyncDispatch from '../../states/asyncDispatch';
@@ -49,7 +49,7 @@ type OwnProps = {
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const PreviousContactsBanner: React.FC<Props> = ({
   contactIdentifier,
@@ -223,4 +223,5 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 export const UnconnectedPreviousContactsBanner = PreviousContactsBanner;
-export default connect(mapStateToProps, mapDispatchToProps)(PreviousContactsBanner);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export default connector(PreviousContactsBanner);
