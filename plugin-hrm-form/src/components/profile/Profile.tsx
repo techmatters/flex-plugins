@@ -16,23 +16,15 @@
 
 import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { Tab as TwilioTab } from '@twilio/flex-ui';
 
 import asyncDispatch from '../../states/asyncDispatch';
-import NavigableContainer from '../NavigableContainer';
-import ProfileCases from './ProfileCases';
-import ProfileContacts from './ProfileContacts';
-import ProfileDetails from './ProfileDetails';
-import { Row } from '../../styles/HrmStyles';
+import ProfileTabs from './ProfileTabs';
 import * as ProfileActions from '../../states/profile/actions';
-import * as RoutingTypes from '../../states/routing/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import * as RoutingActions from '../../states/routing/actions';
-import { namespace, profileBase } from '../../states/storeNamespaces';
+import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileRoute } from '../../states/routing/types';
 import { CustomITask, Profile as ProfileType } from '../../types/types';
-import { StyledTabs } from '../../styles/search'; // just stealing from search until we have a centralized tab style
 import { ProfileEditDetails } from './ProfileEditDetails';
 
 type OwnProps = {
@@ -42,95 +34,29 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const Profile: React.FC<Props> = ({
-  task,
-  currentTab,
-  profileId,
-  profile,
-  changeProfileTab,
-  loadProfile,
-  profileEditModalOpen,
-}) => {
+const Profile: React.FC<Props> = ({ task, profileId, loadProfile, profileEditModalOpen }) => {
   useEffect(() => {
     loadProfile(profileId);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileId]);
-
-  if (!profile) {
-    return null;
-  }
 
   if (profileEditModalOpen) {
     return <ProfileEditDetails task={task} profileId={profileId} />;
   }
 
-  const { contactsCount, casesCount } = profile;
-  const tabs = [
-    {
-      label: 'Profile',
-      key: 'details',
-      component: <ProfileDetails profileId={profileId} task={task} />,
-    },
-    {
-      label: `Contacts (${contactsCount})`,
-      key: 'contacts',
-      component: <ProfileContacts profileId={profileId} />,
-    },
-    {
-      label: `Cases (${casesCount})`,
-      key: 'cases',
-      component: <ProfileCases profileId={profileId} />,
-    },
-  ];
-
-  const renderedTabs = tabs.map(tab => (
-    <TwilioTab key={`ProfileTabs-${profileId}-${tab.key}`} label={tab.label} uniqueName={tab.key}>
-      {[]}
-    </TwilioTab>
-  ));
-
-  const renderedLabels = (
-    <Row style={{ justifyContent: 'center' }}>
-      <div style={{ width: '400px' }}>
-        <StyledTabs
-          selectedTabName={currentTab}
-          onTabSelected={(selectedTab: RoutingTypes.ProfileTabs) => changeProfileTab(profileId, selectedTab)}
-          alignment="center"
-          keepTabsMounted={false}
-        >
-          {renderedTabs}
-        </StyledTabs>
-      </div>
-    </Row>
-  );
-
-  const renderedTab = tabs.find(tab => tab.key === currentTab).component;
-
-  return (
-    <NavigableContainer task={task} titleCode="Profile-Title">
-      {renderedLabels}
-      {renderedTab}
-    </NavigableContainer>
-  );
+  return <ProfileTabs task={task} profileId={profileId} />;
 };
 
 const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const routingState = state[namespace].routing;
   const route = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const profileState = state[namespace][profileBase];
   const profileId = (route as ProfileRoute).id;
-  const currentTab = (route as ProfileRoute).subroute || 'details';
-  const currentProfileState = profileState.profiles[profileId];
-  const { data: profile } = currentProfileState;
 
   const currentRoute = getCurrentTopmostRouteForTask(routingState, taskSid);
 
   const profileEditModalOpen = currentRoute.route.toString() === 'profileEdit';
 
   return {
-    currentTab,
-    profile,
     profileId,
     profileEditModalOpen,
   };
@@ -138,14 +64,6 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
   loadProfile: profileId => asyncDispatch(dispatch)(ProfileActions.loadProfileAsync(profileId)),
-  changeProfileTab: (id, subroute) =>
-    dispatch(
-      RoutingActions.changeRoute(
-        { route: 'profile', id, subroute },
-        task.taskSid,
-        RoutingTypes.ChangeRouteMode.Replace,
-      ),
-    ),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

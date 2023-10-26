@@ -73,10 +73,7 @@ const HrmForm: React.FC<Props> = ({ activeModal, routing, task, featureFlags, sa
   const modalComponent = routes.find(m => m.activeModalRoutes?.includes(activeModal));
   if (modalComponent) return modalComponent.component;
 
-  const routeComponent = routes.find(r => r.baseRoutes?.includes(route));
-  if (routeComponent) return routeComponent.component;
-
-  return null;
+  return routes.find(r => r.baseRoutes?.includes(route))?.component || null;
 };
 
 HrmForm.displayName = 'HrmForm';
