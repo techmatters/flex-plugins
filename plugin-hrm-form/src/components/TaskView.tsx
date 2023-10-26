@@ -69,7 +69,8 @@ const TaskView: React.FC<Props> = props => {
     return () => {
       if (isOfflineContactTask(task)) rerenderAgentDesktop();
     };
-  }, [task]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const contactInitialized = Boolean(contact);
   const helpline = contact?.helpline;

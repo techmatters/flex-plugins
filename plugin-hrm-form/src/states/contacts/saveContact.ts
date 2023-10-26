@@ -29,12 +29,19 @@ import {
 } from './types';
 import { ContactDraftChanges, ExistingContactsState } from './existingContacts';
 import { newContactMetaData } from './contactState';
+import { getCase } from '../../services/CaseService';
 
 export const createContactAsyncAction = createAsyncAction(
   CREATE_CONTACT_ACTION,
-  async (contact: Contact, workerSid: string, taskSid: string) => {
+  async (contactToCreate: Contact, workerSid: string, taskSid: string) => {
+    const contact = await createContact(contactToCreate, workerSid, taskSid);
+    let contactCase: Case | undefined;
+    if (contact.caseId) {
+      contactCase = await getCase(contact.caseId);
+    }
     return {
-      contact: await createContact(contact, workerSid, taskSid),
+      contact,
+      contactCase,
       reference: taskSid,
       metadata: newContactMetaData(false),
     };
@@ -78,8 +85,14 @@ export const submitContactFormAsyncAction = createAsyncAction(
 export const loadContactFromHrmByTaskSidAsyncAction = createAsyncAction(
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION,
   async (taskSid: string, reference: string = taskSid) => {
+    const contact = await getContactByTaskSid(taskSid);
+    let contactCase: Case | undefined;
+    if (contact?.caseId) {
+      contactCase = await getCase(contact.caseId);
+    }
     return {
-      contact: await getContactByTaskSid(taskSid),
+      contact,
+      contactCase,
       reference,
     };
   },

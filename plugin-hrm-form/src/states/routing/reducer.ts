@@ -19,7 +19,7 @@ import { callTypes } from 'hrm-form-definitions';
 
 import { AppRoutes, RoutingActionType, CHANGE_ROUTE } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
-import { Contact, standaloneTaskSid } from '../../types/types';
+import { standaloneTaskSid } from '../../types/types';
 import getOfflineContactTaskSid from '../contacts/offlineContactTaskSid';
 import {
   ContactUpdatingAction,
@@ -62,10 +62,14 @@ const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingActi
         previousContact.taskId === getOfflineContactTaskSid() ? false : state.isAddingOfflineContact,
     };
   }
-  const { taskId, rawJson } = contact;
+  const { taskId, rawJson, caseId } = contact;
   let initialEntry: AppRoutes = newTaskEntry;
   const { callType } = rawJson;
-  if (callType === callTypes.child) {
+  if (caseId) {
+    initialEntry = {
+      route: 'new-case',
+    };
+  } else if (callType === callTypes.child) {
     initialEntry = {
       route: 'tabbed-forms',
       subroute: 'childInformation',
