@@ -15,7 +15,7 @@
  */
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 
 export type Categories = Record<string, string[]>;
 
@@ -48,6 +48,8 @@ export function contactForm(page: Page) {
 
   async function selectTab(tab: ContactFormTab<unknown>) {
     const button = selectors.tabButton(tab);
+    await expect(button).toBeVisible();
+    await expect(button).toBeEnabled();
     if ((await button.getAttribute('aria-selected')) !== 'true') {
       await button.click();
     }

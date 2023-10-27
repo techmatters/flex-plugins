@@ -127,6 +127,7 @@ const configOptions: ConfigOptions = {
   twilioAccountSid: {
     envKey: 'TWILIO_ACCOUNT_SID',
     ssmPath: `/${localOverrideEnv}/twilio/${helplineShortCode.toUpperCase()}/account_sid`,
+    default: 'AC_FAKE_UI_TEST_ACCOUNT',
   },
   twilioAuthToken: {
     envKey: 'TWILIO_AUTH_TOKEN',
