@@ -28,6 +28,13 @@ export type UseAllProfileFlags = {
   loadProfileFlags: () => void;
 };
 
+export type UseEditProfileFlags = {
+  associateProfileFlag: (profileFlagId: ProfileFlag['id']) => void;
+  disassociateProfileFlag: (profileFlagId: ProfileFlag['id']) => void;
+};
+
+export type UseProfileFlags = UseAllProfileFlags & UseEditProfileFlags & { profileFlags?: ProfileFlag[] };
+
 /**
  * Access all profile flags for the current account
  * @returns {UseAllProfileFlags} - All profile flags for the current account
@@ -57,11 +64,6 @@ export const useAllProfileFlags = (): UseAllProfileFlags => {
   };
 };
 
-export type UseEditProfileFlags = {
-  associateProfileFlag: (profileFlagId: ProfileFlag['id']) => void;
-  disassociateProfileFlag: (profileFlagId: ProfileFlag['id']) => void;
-};
-
 export const useEditProfileFlags = (profileId?: Profile['id']): UseEditProfileFlags => {
   const dispatch = useDispatch();
 
@@ -86,8 +88,6 @@ export const useEditProfileFlags = (profileId?: Profile['id']): UseEditProfileFl
     disassociateProfileFlag,
   };
 };
-
-export type UseProfileFlags = UseAllProfileFlags & UseEditProfileFlags & { profileFlags?: ProfileFlag[] };
 
 /**
  * Access profile flags for a specific profile, includes all profile flags for the current account and the ability to edit the profile flags for the specific profile
