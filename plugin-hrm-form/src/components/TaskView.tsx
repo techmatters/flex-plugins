@@ -89,11 +89,8 @@ const TaskView: React.FC<Props> = props => {
     };
 
     // Only run setHelpline if a) contactForm.helpline is not set or b) if the task is an offline contact and contactlessTask.helpline has changed
-    const helplineChanged = contactlessTask?.helpline && helpline !== contactlessTask.helpline;
     const shouldSetHelpline =
-      contactInitialized &&
-      contactlessTask?.createdOnBehalfOf &&
-      (!helpline || (isOfflineContactTask(task) && helplineChanged));
+      contactInitialized && (!isOfflineContactTask(task) || contactlessTask?.createdOnBehalfOf) && !helpline;
 
     if (shouldSetHelpline) {
       setHelpline();
