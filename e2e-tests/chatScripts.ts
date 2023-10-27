@@ -25,7 +25,7 @@ import { getConfigValue } from './config';
 
 export const defaultScript: ChatStatement[] = [
   botStatement(
-    'Welcome to the helpline. To help us better serve you, please answer the following three questions.',
+    'Welcome. To help us better serve you, please answer the following three questions.',
   ),
   botStatement('Are you calling about yourself? Please answer Yes or No.'),
   callerStatement('yes'),
