@@ -24,7 +24,7 @@ import { getCurrentProfileState } from '../../states/profile/selectors';
 import { DetailsWrapper, EditButton, ProfileSubtitle, StatusLabelPill } from './styles';
 import { Bold, Box, Column } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
-import { useProfileFlags } from '../../hooks/profile/useProfileFlags';
+import { useProfileFlags } from '../../states/profile/hooks';
 
 type OwnProps = {
   profileId: Profile['id'];

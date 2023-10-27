@@ -16,10 +16,10 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Profile, ProfileFlag } from '../../states/profile/types';
-import * as ProfileFlagActions from '../../states/profile/profileFlags';
-import { namespace, profileBase } from '../../states/storeNamespaces';
-import { RootState } from '../../states';
+import { Profile, ProfileFlag } from '../types';
+import * as ProfileFlagActions from '../profileFlags';
+import { namespace, profileBase } from '../../storeNamespaces';
+import { RootState } from '../../';
 
 export const useProfileFlags = (profileId?: Profile['id']) => {
   const dispatch = useDispatch();
