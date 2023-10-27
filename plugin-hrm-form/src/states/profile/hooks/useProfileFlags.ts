@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Profile, ProfileFlag } from '../types';
 import * as ProfileFlagActions from '../profileFlags';
 import { namespace, profileBase } from '../../storeNamespaces';
-import { RootState } from '../../';
+import { RootState } from '../..';
 
 export const useProfileFlags = (profileId?: Profile['id']) => {
   const dispatch = useDispatch();
