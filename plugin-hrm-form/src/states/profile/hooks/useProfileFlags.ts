@@ -21,12 +21,9 @@ import * as ProfileFlagActions from '../profileFlags';
 import { namespace, profileBase } from '../../storeNamespaces';
 import { RootState } from '../..';
 
-export const useProfileFlags = (profileId?: Profile['id']) => {
+export const useAllProfileFlags = () => {
   const dispatch = useDispatch();
 
-  const profileFlagIds = useSelector((state: RootState) =>
-    profileId ? state[namespace][profileBase].profiles?.[profileId]?.data?.profileFlags : [],
-  );
   const error = useSelector((state: RootState) => state[namespace][profileBase].profileFlags.error);
   const loading = useSelector((state: RootState) => state[namespace][profileBase].profileFlags.loading);
   const allProfileFlags = useSelector((state: RootState) => state[namespace][profileBase].profileFlags.data);
@@ -40,6 +37,41 @@ export const useProfileFlags = (profileId?: Profile['id']) => {
       loadProfileFlags();
     }
   }, [allProfileFlags, loading, loadProfileFlags]);
+
+  return {
+    allProfileFlags,
+    error,
+    loading,
+    loadProfileFlags,
+  };
+};
+
+export const useProfileFlags = (profileId?: Profile['id']) => {
+  const { allProfileFlags, loadProfileFlags } = useAllProfileFlags();
+
+  const profileFlagIds = useSelector((state: RootState) =>
+    profileId ? state[namespace][profileBase].profiles?.[profileId]?.data?.profileFlags : [],
+  );
+
+  const profileFlags = useMemo(() => {
+    if (!allProfileFlags || !profileFlagIds) return [];
+    return profileFlagIds.map(id => allProfileFlags.find(profileFlag => profileFlag.id === id)).filter(Boolean); // Filter out any undefined values
+  }, [profileFlagIds, allProfileFlags]);
+
+  return {
+    allProfileFlags,
+    profileFlagIds,
+    profileFlags,
+    loadProfileFlags,
+  };
+};
+
+export const useEditProfileFlags = (profileId?: Profile['id']) => {
+  const dispatch = useDispatch();
+  const { allProfileFlags, profileFlags } = useProfileFlags(profileId);
+
+  const error = useSelector((state: RootState) => state[namespace][profileBase].profileFlags.error);
+  const loading = useSelector((state: RootState) => state[namespace][profileBase].profileFlags.loading);
 
   const associateProfileFlag = useCallback(
     (profileFlagId: ProfileFlag['id']) => {
@@ -57,19 +89,12 @@ export const useProfileFlags = (profileId?: Profile['id']) => {
     [dispatch, profileId],
   );
 
-  const profileFlags = useMemo(() => {
-    if (!allProfileFlags || !profileFlagIds) return [];
-    return profileFlagIds.map(id => allProfileFlags.find(profileFlag => profileFlag.id === id)).filter(Boolean); // Filter out any undefined values
-  }, [profileFlagIds, allProfileFlags]);
-
   return {
     allProfileFlags,
     error,
     loading,
-    profileFlagIds,
     profileFlags,
     associateProfileFlag,
     disassociateProfileFlag,
-    loadProfileFlags,
   };
 };
