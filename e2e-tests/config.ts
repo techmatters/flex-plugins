@@ -186,6 +186,14 @@ const configOptions: ConfigOptions = {
     envKey: 'TEST_NAME',
     default: () => (getConfigValue('inLambda') ? 'login' : ''),
   },
+
+  hrmRoot: {
+    envKey: 'HRM_ROOT',
+    default: () =>
+      `https://hrm-${localOverrideEnv}.tl.techmatters.org/v0/accounts/${getConfigValue(
+        'twilioAccountSid',
+      )}`,
+  },
 };
 
 export const setConfigValue = (key: string, value: ConfigValue) => {
