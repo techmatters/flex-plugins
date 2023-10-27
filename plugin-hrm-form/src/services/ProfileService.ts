@@ -15,13 +15,19 @@
  */
 
 import { fetchHrmApi } from './fetchHrmApi';
+import { Identifier, Profile } from '../states/profile/types';
 
-export const getIdentiferByIdentifier = (identifier: string) => fetchHrmApi(`/profiles/identifier/${identifier}`);
+type ProfileId = Profile['id'];
 
-export const getProfileById = (id: string) => fetchHrmApi(`/profiles/${id}`);
+export const getIdentiferByIdentifier = (identifier: Identifier['identifier']) =>
+  fetchHrmApi(`/profiles/identifier/${identifier}`);
 
-export const getProfileContacts = (id: string, offset: number, limit: number) =>
+export const getProfileById = (id: ProfileId) => fetchHrmApi(`/profiles/${id}`);
+
+export const getProfileContacts = (id: ProfileId, offset: number, limit: number) =>
   fetchHrmApi(`/profiles/${id}/contacts?offset=${offset}&limit=${limit}`);
 
-export const getProfileCases = (id: string, offset: number, limit: number) =>
+export const getProfileCases = (id: ProfileId, offset: number, limit: number) =>
   fetchHrmApi(`/profiles/${id}/cases?offset=${offset}&limit=${limit}`);
+
+export const getProfileFlags = () => fetchHrmApi(`/profiles/profileFlags`);

@@ -24,6 +24,7 @@ import { getCurrentProfileState } from '../../states/profile/selectors';
 import { DetailsWrapper, EditButton, ProfileSubtitle, StatusLabelPill } from './styles';
 import { Bold, Box, Column } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
+import { useProfileFlags } from '../../hooks/profile/useProfileFlags';
 
 type OwnProps = {
   profileId: Profile['id'];
@@ -34,11 +35,7 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileDetails: React.FC<Props> = ({ profileId, profile, openProfileEditModal }) => {
-  console.log('ProfileDetails', profile, profileId);
-
-  // TEMP
-  let labels;
-  // labels = ['Abusive', 'Blocked'];
+  const { profileFlags } = useProfileFlags(profileId);
 
   const editButton = true;
   const handleEditProfileDetails = () => {
@@ -74,10 +71,10 @@ const ProfileDetails: React.FC<Props> = ({ profileId, profile, openProfileEditMo
 
       <ProfileSubtitle>Status</ProfileSubtitle>
       <div>
-        {labels ? (
-          labels.map(label => (
-            <StatusLabelPill key={label} fillColor="#F5EEF4" blocked={label === 'Blocked'}>
-              {label}
+        {profileFlags ? (
+          profileFlags.map(flag => (
+            <StatusLabelPill key={flag.name} fillColor="#F5EEF4" blocked={flag.name === 'blocked'}>
+              {flag.name}
             </StatusLabelPill>
           ))
         ) : (

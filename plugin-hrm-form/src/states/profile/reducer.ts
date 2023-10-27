@@ -17,10 +17,12 @@
 import * as t from './types';
 import { loadIdentifierReducer, shouldUseLoadIdentifierReducer } from './loadIdentifier';
 import { loadProfileReducer, shouldUseLoadProfileReducer } from './loadProfile';
+import { loadProfileFlagsReducer, shouldUseLoadProfileFlagsReducer } from './loadProfileFlags';
 import { loadRelationshipsReducer, shouldUseLoadRelationshipsReducer } from './loadRelationships';
 
 const boundLoadIdentifierReducer = loadIdentifierReducer(t.initialState);
 const boundLoadProfileReducer = loadProfileReducer(t.initialState);
+const boundLoadProfileFlagsReducer = loadProfileFlagsReducer(t.initialState);
 const boundLoadRelationshipsReducer = loadRelationshipsReducer(t.initialState);
 
 export function reduce(state = t.initialState, action: t.ProfileActions): t.ProfileState {
@@ -30,6 +32,10 @@ export function reduce(state = t.initialState, action: t.ProfileActions): t.Prof
 
   if (shouldUseLoadProfileReducer(action)) {
     return boundLoadProfileReducer(state, action);
+  }
+
+  if (shouldUseLoadProfileFlagsReducer(action)) {
+    return boundLoadProfileFlagsReducer(state, action);
   }
 
   if (shouldUseLoadRelationshipsReducer(action)) {
