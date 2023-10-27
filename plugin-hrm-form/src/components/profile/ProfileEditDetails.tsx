@@ -24,7 +24,7 @@ import { CustomITask, Profile } from '../../types/types';
 import { DetailsWrapper, EditButton, ProfileSubtitle, StatusLabelPill } from './styles';
 import { Bold, Box, Column } from '../../styles/HrmStyles';
 import NavigableContainer from '../NavigableContainer';
-import { useEditProfileFlags } from '../../states/profile/hooks';
+import { useProfileFlags } from '../../states/profile/hooks';
 
 type OwnProps = {
   profileId: Profile['id'];
@@ -35,9 +35,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 export const ProfileEditDetails: React.FC<Props> = ({ task, profileId }) => {
-  const { allProfileFlags, profileFlags, associateProfileFlag, disassociateProfileFlag } = useEditProfileFlags(
-    profileId,
-  );
+  const { allProfileFlags, profileFlags, associateProfileFlag, disassociateProfileFlag } = useProfileFlags(profileId);
   // TEMP
   // const labels = ['Abusive', 'Blocked'];
   console.log('>>> ProfileEditDetails', task, profileId);
