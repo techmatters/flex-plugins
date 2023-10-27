@@ -17,15 +17,15 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Profile } from '../../states/profile/types';
-import { loadProfileFlagsAsync } from '../../states/profile/loadProfileFlags';
+import { loadProfileFlagsAsync } from '../../states/profile/actions';
 import { namespace, profileBase } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 
 export const useProfileFlags = (profileId?: Profile['id']) => {
   const dispatch = useDispatch();
 
-  const profileFlagIds = useSelector(
-    (state: RootState) => state[namespace][profileBase].profiles?.[profileId]?.data?.profileflags,
+  const profileFlagIds = useSelector((state: RootState) =>
+    profileId ? state[namespace][profileBase].profiles?.[profileId]?.data?.profileflags : [],
   );
   const error = useSelector((state: RootState) => state[namespace][profileBase].profileFlags.error);
   const loading = useSelector((state: RootState) => state[namespace][profileBase].profileFlags.loading);

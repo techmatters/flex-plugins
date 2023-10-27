@@ -23,6 +23,7 @@ import * as t from './types';
 export * from './loadIdentifier';
 export * from './loadProfile';
 export * from './loadRelationships';
+export * from './profileFlags';
 
 // Action creators
 export const addProfileState = (dispatch: Dispatch<any>) => (profileId: Profile['id'], profile: Profile) => {
