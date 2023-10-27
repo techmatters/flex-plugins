@@ -68,42 +68,6 @@ export const associateProfileFlagAsync = createAsyncAction(
   }),
 );
 
-const handleAssociateProfileFlagPendingAction = (state: t.ProfileState, action: any) => {
-  const { profileId } = action.meta;
-
-  const profileUpdate = {
-    loading: true,
-    error: undefined,
-  };
-
-  return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
-};
-
-const handleAssociateProfileFlagRejectedAction = (state: t.ProfileState, action: any) => {
-  const { profileId } = action.meta;
-  const error = parseFetchError(action.payload);
-
-  const profileUpdate = {
-    error,
-  };
-
-  return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
-};
-
-const handleAssociateProfileFlagFulfilledAction = (state: t.ProfileState, action: any) => {
-  const { profileId } = action.meta;
-
-  const profileUpdate = {
-    data: {
-      ...t.newProfileEntry,
-      ...state.profiles[profileId].data,
-      ...action.payload,
-    },
-  };
-
-  return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
-};
-
 export const disassociateProfileFlagAsync = createAsyncAction(
   t.DISASSOCIATE_PROFILE_FLAG,
   ProfileService.disassociateProfileFlag,
@@ -113,7 +77,7 @@ export const disassociateProfileFlagAsync = createAsyncAction(
   }),
 );
 
-const handleDisassociateProfileFlagPendingAction = (state: t.ProfileState, action: any) => {
+const handleProfileFlagUpdatePendingAction = (state: t.ProfileState, action: any) => {
   const { profileId } = action.meta;
 
   const profileUpdate = {
@@ -124,7 +88,7 @@ const handleDisassociateProfileFlagPendingAction = (state: t.ProfileState, actio
   return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
 };
 
-const handleDisassociateProfileFlagRejectedAction = (state: t.ProfileState, action: any) => {
+const handleProfileFlagUpdateRejectedAction = (state: t.ProfileState, action: any) => {
   const { profileId } = action.meta;
   const error = parseFetchError(action.payload);
 
@@ -135,7 +99,7 @@ const handleDisassociateProfileFlagRejectedAction = (state: t.ProfileState, acti
   return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
 };
 
-const handleDisassociateProfileFlagFulfilledAction = (state: t.ProfileState, action: any) => {
+const handleProfileFlagUpdateFulfilledAction = (state: t.ProfileState, action: any) => {
   const { profileId } = action.meta;
 
   const profileUpdate = {
@@ -154,12 +118,12 @@ export const profileFlagsReducer = (initialState: t.ProfileState) =>
     handleAction(loadProfileFlagsAsync.pending, handleLoadProfileFlagsPendingAction),
     handleAction(loadProfileFlagsAsync.rejected, handleLoadProfileFlagsRejectedAction),
     handleAction(loadProfileFlagsAsync.fulfilled, handleLoadProfileFlagsFulfilledAction),
-    handleAction(associateProfileFlagAsync.pending, handleAssociateProfileFlagPendingAction),
-    handleAction(associateProfileFlagAsync.rejected, handleAssociateProfileFlagRejectedAction),
-    handleAction(associateProfileFlagAsync.fulfilled, handleAssociateProfileFlagFulfilledAction),
-    handleAction(disassociateProfileFlagAsync.pending, handleDisassociateProfileFlagPendingAction),
-    handleAction(disassociateProfileFlagAsync.rejected, handleDisassociateProfileFlagRejectedAction),
-    handleAction(disassociateProfileFlagAsync.fulfilled, handleDisassociateProfileFlagFulfilledAction),
+    handleAction(associateProfileFlagAsync.pending, handleProfileFlagUpdatePendingAction),
+    handleAction(associateProfileFlagAsync.rejected, handleProfileFlagUpdateRejectedAction),
+    handleAction(associateProfileFlagAsync.fulfilled, handleProfileFlagUpdateFulfilledAction),
+    handleAction(disassociateProfileFlagAsync.pending, handleProfileFlagUpdatePendingAction),
+    handleAction(disassociateProfileFlagAsync.rejected, handleProfileFlagUpdateRejectedAction),
+    handleAction(disassociateProfileFlagAsync.fulfilled, handleProfileFlagUpdateFulfilledAction),
   ]);
 
 const LOAD_PROFILE_FLAGS_ACTIONS = [
