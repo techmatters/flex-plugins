@@ -63,6 +63,7 @@ export const caseList = (page: Page) => {
     caseEditButton: caseListPage.locator(`//button[@data-testid='Case-EditButton']`),
 
     //Case Section view
+    formItem: (itemId: string) => caseListPage.locator(`#${itemId}`),
     formInput: (itemId: string) => caseListPage.locator(`input#${itemId}`),
     formSelect: (itemId: string) => caseListPage.locator(`select#${itemId}`),
     formTextarea: (itemId: string) => caseListPage.locator(`textarea#${itemId}`),
@@ -132,6 +133,8 @@ export const caseList = (page: Page) => {
 
   async function fillSectionForm({ items }: CaseSectionForm) {
     for (let [itemId, value] of Object.entries(items)) {
+      await expect(selectors.formItem(itemId)).toBeVisible();
+      await expect(selectors.formItem(itemId)).toBeEnabled();
       if (await selectors.formInput(itemId).count()) {
         await selectors.formInput(itemId).fill(value);
       } else if (await selectors.formSelect(itemId).count()) {
@@ -150,12 +153,13 @@ export const caseList = (page: Page) => {
     await newSectionButton.waitFor({ state: 'visible' });
     await expect(newSectionButton).toContainText(sectionId);
     await newSectionButton.click();
-
     await fillSectionForm(section);
 
     const saveItemButton = selectors.saveCaseItemButton;
-    await saveItemButton.waitFor({ state: 'visible' });
+    await expect(saveItemButton).toBeVisible();
+    await expect(saveItemButton).toBeEnabled();
     await saveItemButton.click();
+    await page.waitForResponse('**/cases/**');
   }
 
   //Edit Case
@@ -179,6 +183,7 @@ export const caseList = (page: Page) => {
     await updateCaseButton.waitFor({ state: 'visible' });
     await expect(updateCaseButton).toContainText('Save');
     await updateCaseButton.click();
+    await page.waitForResponse('**/cases/**');
 
     console.log('Updated Case Summary');
   }

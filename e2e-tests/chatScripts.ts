@@ -28,7 +28,6 @@ export const defaultScript: ChatStatement[] = [
     'Welcome. To help us better serve you, please answer the following questions. Are you calling about yourself? Please answer Yes or No.',
   ),
   callerStatement('yes'),
-  botStatement("Thank you. You can say 'prefer not to answer' (or type X) to any question."),
   botStatement('How old are you?'),
   callerStatement('10'),
   botStatement('What is your gender?'),
