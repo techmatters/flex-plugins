@@ -15,9 +15,10 @@
  */
 
 import { fetchHrmApi } from './fetchHrmApi';
-import { Identifier, Profile } from '../states/profile/types';
+import { Identifier, Profile, ProfileFlag } from '../states/profile/types';
 
 type ProfileId = Profile['id'];
+type ProfileFlagId = ProfileFlag['id'];
 
 export const getIdentiferByIdentifier = (identifier: Identifier['identifier']) =>
   fetchHrmApi(`/profiles/identifier/${identifier}`);
@@ -31,3 +32,13 @@ export const getProfileCases = (id: ProfileId, offset: number, limit: number) =>
   fetchHrmApi(`/profiles/${id}/cases?offset=${offset}&limit=${limit}`);
 
 export const getProfileFlags = () => fetchHrmApi(`/profiles/profileFlags`);
+
+export const associateProfileFlag = (profileId: ProfileId, profileFlagId: ProfileFlagId) =>
+  fetchHrmApi(`/profiles/${profileId}/profileFlags/${profileFlagId}`, {
+    method: 'POST',
+  });
+
+export const disassociateProfileFlag = (profileId: ProfileId, profileFlagId: ProfileFlagId) =>
+  fetchHrmApi(`/profiles/${profileId}/profileFlags/${profileFlagId}`, {
+    method: 'DELETE',
+  });

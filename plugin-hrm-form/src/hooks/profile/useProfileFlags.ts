@@ -16,8 +16,8 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Profile } from '../../states/profile/types';
-import { loadProfileFlagsAsync } from '../../states/profile/actions';
+import { Profile, ProfileFlag } from '../../states/profile/types';
+import * as ProfileFlagActions from '../../states/profile/profileFlags';
 import { namespace, profileBase } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 
@@ -32,7 +32,7 @@ export const useProfileFlags = (profileId?: Profile['id']) => {
   const allProfileFlags = useSelector((state: RootState) => state[namespace][profileBase].profileFlags.data);
 
   const loadProfileFlags = useCallback(() => {
-    dispatch(loadProfileFlagsAsync());
+    dispatch(ProfileFlagActions.loadProfileFlagsAsync());
   }, [dispatch]);
 
   useEffect(() => {
@@ -40,6 +40,22 @@ export const useProfileFlags = (profileId?: Profile['id']) => {
       loadProfileFlags();
     }
   }, [allProfileFlags, loading, loadProfileFlags]);
+
+  const associateProfileFlag = useCallback(
+    (profileFlagId: ProfileFlag['id']) => {
+      if (!profileId) return;
+      dispatch(ProfileFlagActions.associateProfileFlagAsync(profileId, profileFlagId));
+    },
+    [dispatch, profileId],
+  );
+
+  const disassociateProfileFlag = useCallback(
+    (profileFlagId: ProfileFlag['id']) => {
+      if (!profileId) return;
+      dispatch(ProfileFlagActions.disassociateProfileFlagAsync(profileId, profileFlagId));
+    },
+    [dispatch, profileId],
+  );
 
   const profileFlags = useMemo(() => {
     if (!allProfileFlags || !profileFlagIds) return [];
@@ -52,6 +68,8 @@ export const useProfileFlags = (profileId?: Profile['id']) => {
     loading,
     profileFlagIds,
     profileFlags,
+    associateProfileFlag,
+    disassociateProfileFlag,
     loadProfileFlags,
   };
 };
