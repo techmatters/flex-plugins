@@ -68,7 +68,7 @@ export const useProfileFlags = (profileId?: Profile['id']) => {
 
 export const useEditProfileFlags = (profileId?: Profile['id']) => {
   const dispatch = useDispatch();
-  const { allProfileFlags, profileFlags } = useProfileFlags(profileId);
+  const { allProfileFlags, profileFlags, loadProfileFlags } = useProfileFlags(profileId);
 
   const error = useSelector((state: RootState) => state[namespace][profileBase].profileFlags.error);
   const loading = useSelector((state: RootState) => state[namespace][profileBase].profileFlags.loading);
@@ -96,5 +96,6 @@ export const useEditProfileFlags = (profileId?: Profile['id']) => {
     profileFlags,
     associateProfileFlag,
     disassociateProfileFlag,
+    loadProfileFlags,
   };
 };
