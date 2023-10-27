@@ -35,7 +35,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 export const ProfileEditDetails: React.FC<Props> = ({ task, profileId }) => {
-  const { profileFlags, associateProfileFlag, disassociateProfileFlag } = useProfileFlags(profileId);
+  const { allProfileFlags, profileFlags, associateProfileFlag, disassociateProfileFlag } = useProfileFlags(profileId);
   // TEMP
   // const labels = ['Abusive', 'Blocked'];
   console.log('>>> ProfileEditDetails', task, profileId);
