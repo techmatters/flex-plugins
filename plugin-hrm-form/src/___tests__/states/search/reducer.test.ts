@@ -18,7 +18,7 @@ import fromentries from 'fromentries';
 
 import * as t from '../../../states/search/types';
 import { handleSearchFormChange } from '../../../states/search/actions';
-import { Contact, SearchCaseResult } from '../../../types/types';
+import { SearchCaseResult } from '../../../types/types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../../../states/types';
 import { reduce, newTaskEntry } from '../../../states/search/reducer';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
@@ -125,34 +125,6 @@ describe('search reducer', () => {
 
     const { tasks } = result;
     expect(tasks[task.taskSid].form.firstName).toEqual('Somevalue');
-    state = result;
-  });
-
-  test('CHANGE_SEARCH_PAGE action', () => {
-    const action: t.SearchActionType = {
-      type: t.CHANGE_SEARCH_PAGE,
-      taskId: task.taskSid,
-      page: t.SearchPages.results,
-    };
-    const result = reduce(state, action);
-
-    const { tasks } = result;
-    expect(tasks[task.taskSid].currentPage).toEqual(t.SearchPages.results);
-    state = result;
-  });
-
-  test('VIEW_CONTACT_DETAILS action', () => {
-    const contact: Contact = { ...VALID_EMPTY_CONTACT, id: 'fake contact' };
-    const action: t.SearchActionType = {
-      type: t.VIEW_CONTACT_DETAILS,
-      contact,
-      taskId: task.taskSid,
-    };
-    const result = reduce(state, action);
-
-    const { tasks } = result;
-    expect(tasks[task.taskSid].currentPage).toEqual(t.SearchPages.details);
-    expect(tasks[task.taskSid].currentContact).toEqual(contact);
     state = result;
   });
 

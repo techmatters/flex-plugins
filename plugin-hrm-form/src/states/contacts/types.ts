@@ -51,6 +51,7 @@ export type ContactMetadata = {
   };
   draft: {
     resourceReferralList: DraftResourceReferralState;
+    dialogsOpen: { [key: string]: boolean };
   };
 };
 

@@ -16,19 +16,23 @@
 
 import { AppRoutes, isRouteWithModalSupport, RoutingState } from './types';
 
-const getCurrentTopmostRoute = (baseRouteStack: AppRoutes[]): AppRoutes | undefined => {
+const getCurrentTopmostRouteStack = (baseRouteStack: AppRoutes[]): AppRoutes[] | undefined => {
   if (baseRouteStack?.length) {
     const currentRoute = baseRouteStack[baseRouteStack.length - 1];
     if (isRouteWithModalSupport(currentRoute) && currentRoute.activeModal) {
-      return getCurrentTopmostRoute(currentRoute.activeModal);
+      return getCurrentTopmostRouteStack(currentRoute.activeModal);
     }
-    return currentRoute;
   }
-  return undefined;
+  return baseRouteStack;
 };
 
-export const getCurrentTopmostRouteForTask = (state: RoutingState, taskSid: string): AppRoutes | undefined =>
-  getCurrentTopmostRoute(state.tasks[taskSid]);
+export const getCurrentTopmostRouteStackForTask = (state: RoutingState, taskSid: string): AppRoutes[] =>
+  getCurrentTopmostRouteStack(state.tasks[taskSid]);
+
+export const getCurrentTopmostRouteForTask = (state: RoutingState, taskSid: string): AppRoutes | undefined => {
+  const topStack = getCurrentTopmostRouteStack(state.tasks[taskSid]);
+  return topStack.length ? topStack[topStack.length - 1] : undefined;
+};
 
 export const getCurrentBaseRoute = (state: RoutingState, taskSid: string): AppRoutes | undefined => {
   const baseRouteStack = state.tasks[taskSid];

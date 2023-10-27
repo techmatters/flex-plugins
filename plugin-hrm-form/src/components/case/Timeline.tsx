@@ -35,34 +35,32 @@ import {
 } from '../../styles/case';
 import { Box, Row } from '../../styles/HrmStyles';
 import CaseAddButton from './CaseAddButton';
-import * as RoutingActions from '../../states/routing/actions';
 import { CustomITask } from '../../types/types';
 import { isConnectedCaseActivity } from './caseActivities';
 import { Activity, ConnectedCaseActivity, NoteActivity, ReferralActivity } from '../../states/case/types';
 import { getPermissionsForContact, PermissionActions, PermissionActionType } from '../../permissions';
-import { NewCaseSubroutes, AppRoutesWithCase, CaseItemAction, AppRoutes } from '../../states/routing/types';
+import { NewCaseSubroutes, CaseItemAction, CaseSectionSubroute } from '../../states/routing/types';
 import { newOpenModalAction } from '../../states/routing/actions';
 
 type OwnProps = {
   timelineActivities: Activity[];
   can: (action: PermissionActionType) => boolean;
   taskSid: CustomITask['taskSid'];
-  route: AppRoutesWithCase['route'];
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const Timeline: React.FC<Props> = props => {
-  const { can, changeRoute, route, timelineActivities, openContactModal } = props;
+  const { can, timelineActivities, openContactModal, openViewCaseSectionModal, openAddCaseSectionModal } = props;
   const [mockedMessage, setMockedMessage] = useState(null);
 
-  const handleViewNoteClick = (activity: NoteActivity) => {
-    changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.View, id: activity.id });
+  const handleViewNoteClick = ({ id }: NoteActivity) => {
+    openViewCaseSectionModal(NewCaseSubroutes.Note, id);
   };
 
-  const handleViewReferralClick = (activity: ReferralActivity) => {
-    changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.View, id: activity.id });
+  const handleViewReferralClick = ({ id }: ReferralActivity) => {
+    openViewCaseSectionModal(NewCaseSubroutes.Referral, id);
   };
 
   const handleViewConnectedCaseActivityClick = ({ contactId }: ConnectedCaseActivity) => {
@@ -70,11 +68,11 @@ const Timeline: React.FC<Props> = props => {
   };
 
   const handleAddNoteClick = () => {
-    changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.Add });
+    openAddCaseSectionModal(NewCaseSubroutes.Note);
   };
 
   const handleAddReferralClick = () => {
-    changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.Add });
+    openAddCaseSectionModal(NewCaseSubroutes.Referral);
   };
 
   const handleViewClick = activity => {
@@ -155,9 +153,12 @@ const Timeline: React.FC<Props> = props => {
 Timeline.displayName = 'Timeline';
 
 const mapDispatchToProps = (dispatch, { taskSid }: OwnProps) => ({
-  changeRoute: (routing: AppRoutes) => dispatch(RoutingActions.changeRoute(routing, taskSid)),
   openContactModal: (contactId: string) =>
     dispatch(newOpenModalAction({ route: 'contact', subroute: 'view', id: contactId }, taskSid)),
+  openAddCaseSectionModal: (subroute: CaseSectionSubroute) =>
+    dispatch(newOpenModalAction({ route: 'case', subroute, action: CaseItemAction.Add }, taskSid)),
+  openViewCaseSectionModal: (subroute: CaseSectionSubroute, id: string) =>
+    dispatch(newOpenModalAction({ route: 'case', subroute, id, action: CaseItemAction.View }, taskSid)),
 });
 
 const connector = connect(null, mapDispatchToProps);

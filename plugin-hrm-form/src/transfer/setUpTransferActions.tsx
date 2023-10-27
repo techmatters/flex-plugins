@@ -15,19 +15,19 @@
  */
 
 import React from 'react';
+import * as Flex from '@twilio/flex-ui';
 import {
-  NotificationType,
-  Notifications,
-  Template,
-  ITask,
-  ReplacedActionFunction,
   ActionFunction,
-  TaskHelper,
+  ITask,
   Manager,
+  Notifications,
+  NotificationType,
+  ReplacedActionFunction,
   StateHelper,
+  TaskHelper,
+  Template,
 } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
-import * as Flex from '@twilio/flex-ui';
 
 import * as TransferHelpers from '../utils/transfer';
 import { transferModes } from '../states/DomainConstants';
@@ -41,6 +41,7 @@ import { reactivateAseloListeners } from '../conversationListeners';
 import { prepopulateForm } from '../utils/prepopulateForm';
 import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
 import { ContactState } from '../states/contacts/existingContacts';
+import { ChangeRouteMode } from '../states/routing/types';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type ActionPayload = { task: ITask };
@@ -136,14 +137,16 @@ const restoreFormIfTransfer = async (task: ITask) => {
     } = contactState;
     if (rawJson.callType === callTypes.child) {
       Manager.getInstance().store.dispatch(
-        changeRoute({ route: 'tabbed-forms', subroute: 'childInformation' }, task.taskSid),
+        changeRoute({ route: 'tabbed-forms', subroute: 'childInformation' }, task.taskSid, ChangeRouteMode.Replace),
       );
     } else if (rawJson.callType === callTypes.caller) {
       Manager.getInstance().store.dispatch(
-        changeRoute({ route: 'tabbed-forms', subroute: 'callerInformation' }, task.taskSid),
+        changeRoute({ route: 'tabbed-forms', subroute: 'callerInformation' }, task.taskSid, ChangeRouteMode.Replace),
       );
     } else {
-      Manager.getInstance().store.dispatch(changeRoute({ route: 'select-call-type' }, task.taskSid));
+      Manager.getInstance().store.dispatch(
+        changeRoute({ route: 'select-call-type' }, task.taskSid, ChangeRouteMode.Replace),
+      );
     }
   }
 };

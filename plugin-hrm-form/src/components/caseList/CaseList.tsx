@@ -66,7 +66,7 @@ const CaseList: React.FC<Props> = ({
   fetchCaseListSuccess,
   fetchCaseListError,
   openCaseDetails,
-  closeModal,
+  closeCaseDetails,
   caseList,
   caseCount,
   fetchError,
@@ -119,7 +119,7 @@ const CaseList: React.FC<Props> = ({
   const closeCaseView = async () => {
     // Reload the current page of the list to reflect any updates to the case just being viewed
     await fetchCaseList(currentSettings.page, currentSettings.sort, currentSettings.filter);
-    closeModal();
+    closeCaseDetails();
   };
 
   if (fetchError)
@@ -145,7 +145,7 @@ const CaseList: React.FC<Props> = ({
     return (
       <StandaloneSearchContainer>
         <CaseLayout>
-          <ViewContact onClickClose={closeModal} contactId={routing.id} task={standaloneTask} />
+          <ViewContact contactId={routing.id} task={standaloneTask} />
         </CaseLayout>
       </StandaloneSearchContainer>
     );
@@ -182,7 +182,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(ListContent.fetchCaseListSuccess(caseList, caseCount)),
     fetchCaseListError: error => dispatch(ListContent.fetchCaseListError(error)),
     openCaseDetails: () => dispatch(newOpenModalAction({ route: 'case', subroute: 'home' }, standaloneTask.taskSid)),
-    closeModal: () => dispatch(newCloseModalAction(standaloneTask.taskSid)),
+    closeCaseDetails: () => dispatch(newCloseModalAction(standaloneTask.taskSid)),
   };
 };
 

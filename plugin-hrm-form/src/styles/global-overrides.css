@@ -85,12 +85,6 @@ a.link-text-decoration-none:hover { text-decoration: none; color: #1874e1; }
 a.link-text-decoration-none:focus { text-decoration: none; color: #1874e1; }
 a.link-text-decoration-none:active { text-decoration: none; color: #1874e1; }
 
-.editingContact .hiddenWhenEditingContact {
-    display: none;
-}
-.modalOpen .hiddenWhenModalOpen {
-    display: none;
-}
 
 .Twilio-View-case-list
 .Twilio-View-search

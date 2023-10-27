@@ -20,6 +20,7 @@ import { callTypes } from 'hrm-form-definitions';
 import {
   AppRoutes,
   CHANGE_ROUTE,
+  ChangeRouteMode,
   CLOSE_MODAL,
   GO_BACK,
   isRouteWithModalSupport,
@@ -49,7 +50,9 @@ export const initialState: RoutingState = {
 };
 
 const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingAction): RoutingState => {
-  const recreated = action.type === LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED;
+  const recreated =
+    action.type === LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED ||
+    action.type === UPDATE_CONTACT_ACTION_FULFILLED;
 
   const { contact, previousContact } = action.payload;
   if (!contact) {
@@ -100,23 +103,29 @@ const removeEmptyModalStack = (routeStack: AppRoutes[]): AppRoutes[] => {
         const { activeModal, ...currentRouteWithoutModal } = currentRoute;
         return [...routeStack.slice(0, -1), currentRouteWithoutModal];
       }
-      return removeEmptyModalStack(currentRoute.activeModal);
+      return [
+        ...routeStack.slice(0, -1),
+        { ...currentRoute, activeModal: removeEmptyModalStack(currentRoute.activeModal) },
+      ];
     }
   }
   return routeStack;
 };
 
-const updateTopmostRoute = (baseRouteStack: AppRoutes[], newRoute, replace: boolean): AppRoutes[] => {
+const updateTopmostRoute = (baseRouteStack: AppRoutes[], newRoute, mode: ChangeRouteMode): AppRoutes[] => {
   if (baseRouteStack?.length) {
     const currentRoute = baseRouteStack[baseRouteStack.length - 1];
     if (isRouteWithModalSupport(currentRoute) && currentRoute.activeModal) {
       return [
         ...baseRouteStack.slice(0, -1),
-        { ...currentRoute, activeModal: updateTopmostRoute(currentRoute.activeModal, newRoute, replace) },
+        { ...currentRoute, activeModal: updateTopmostRoute(currentRoute.activeModal, newRoute, mode) },
       ];
     }
   }
-  if (replace && baseRouteStack?.length) {
+  if (mode === ChangeRouteMode.Reset) {
+    return [newRoute];
+  }
+  if (mode === ChangeRouteMode.Replace && baseRouteStack?.length) {
     return [...baseRouteStack.slice(0, -1), newRoute];
   }
   return [...(baseRouteStack ?? []), newRoute];
@@ -136,16 +145,24 @@ const popTopmostRoute = (baseRouteStack: AppRoutes[]): AppRoutes[] => {
   return baseRouteStack;
 };
 
-const closeTopModal = (routeStack: AppRoutes[], parent?: AppRoutes): AppRoutes[] => {
+const closeTopModal = (
+  routeStack: AppRoutes[],
+  topRoute: AppRoutes['route'] | undefined,
+  parent?: AppRoutes,
+): AppRoutes[] => {
   if (routeStack?.length) {
     const currentRoute = routeStack[routeStack.length - 1];
 
-    if (!isRouteWithModalSupport(currentRoute) || !currentRoute.activeModal) {
+    if (
+      !isRouteWithModalSupport(currentRoute) ||
+      !currentRoute.activeModal ||
+      (topRoute && parent?.route === topRoute)
+    ) {
       // This is the top of the modal stack - if it has a parent, return undefined so the caller removes it
       // Otherwise it's the base route, so just return it as is
       return parent ? undefined : routeStack;
     }
-    const nextStack = closeTopModal(currentRoute.activeModal, currentRoute);
+    const nextStack = closeTopModal(currentRoute.activeModal, topRoute, currentRoute);
     if (nextStack) {
       return [...routeStack.slice(0, -1), { ...currentRoute, activeModal: nextStack }];
     }
@@ -196,7 +213,7 @@ export function reduce(
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: updateTopmostRoute(state.tasks[action.taskId], action.routing, Boolean(action.replace)),
+          [action.taskId]: updateTopmostRoute(state.tasks[action.taskId], action.routing, action.mode),
         },
       };
     }
@@ -223,7 +240,7 @@ export function reduce(
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: closeTopModal(state.tasks[action.taskId]),
+          [action.taskId]: closeTopModal(state.tasks[action.taskId], action.topRoute),
         },
       };
     }

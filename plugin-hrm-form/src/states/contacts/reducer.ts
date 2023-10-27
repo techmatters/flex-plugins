@@ -35,15 +35,17 @@ import {
   EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION,
   EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
   ExistingContactAction,
+  initialState as existingContactInitialState,
   LOAD_CONTACT_ACTION,
   loadContactReducer,
   loadTranscriptReducer,
   RELEASE_CONTACT_ACTION,
   releaseContactReducer,
+  SET_CONTACT_DIALOG_STATE,
   setCategoriesGridViewReducer,
+  setContactDialogStateReducer,
   toggleCategoryExpandedReducer,
   updateDraftReducer,
-  initialState as existingContactInitialState,
 } from './existingContacts';
 import {
   ContactDetailsAction,
@@ -213,6 +215,9 @@ export function reduce(
     }
     case TOGGLE_DETAIL_EXPANDED_ACTION: {
       return { ...state, contactDetails: sectionExpandedStateReducer(state.contactDetails, action) };
+    }
+    case SET_CONTACT_DIALOG_STATE: {
+      return { ...state, existingContacts: setContactDialogStateReducer(state.existingContacts, action) };
     }
     case EXISTING_CONTACT_UPDATE_DRAFT_ACTION: {
       return {

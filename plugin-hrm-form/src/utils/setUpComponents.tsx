@@ -48,6 +48,7 @@ import { getHrmConfig } from '../hrmConfig';
 import { AseloMessageInput, AseloMessageList } from '../components/AseloMessaging';
 import { namespace, routingBase } from '../states/storeNamespaces';
 import { changeRoute } from '../states/routing/actions';
+import { ChangeRouteMode } from '../states/routing/types';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
@@ -292,7 +293,7 @@ export const setUpCaseList = () => {
       onClick={() => {
         Flex.Actions.invokeAction('NavigateToView', { viewName: 'case-list' });
         Manager.getInstance().store.dispatch(
-          changeRoute({ route: 'case-list', subroute: 'case-list' }, standaloneTaskSid),
+          changeRoute({ route: 'case-list', subroute: 'case-list' }, standaloneTaskSid, ChangeRouteMode.Reset),
         );
       }}
       reserveSpace={false}
@@ -311,7 +312,12 @@ export const setUpStandaloneSearch = () => {
   Flex.SideNav.Content.add(
     <StandaloneSearchSideLink
       key="StandaloneSearchSideLink"
-      onClick={() => Flex.Actions.invokeAction('NavigateToView', { viewName: 'search' })}
+      onClick={() => {
+        Flex.Actions.invokeAction('NavigateToView', { viewName: 'search' });
+        Manager.getInstance().store.dispatch(
+          changeRoute({ route: 'search', subroute: 'form' }, standaloneTaskSid, ChangeRouteMode.Reset),
+        );
+      }}
       reserveSpace={false}
       showLabel={true}
     />,

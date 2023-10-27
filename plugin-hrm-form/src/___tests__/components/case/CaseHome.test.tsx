@@ -24,18 +24,14 @@ import configureMockStore from 'redux-mock-store';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import CaseHome, { CaseHomeProps } from '../../../components/case/CaseHome';
-import { HouseholdEntry, PerpetratorEntry, StandaloneITask } from '../../../types/types';
+import { CustomITask, HouseholdEntry, PerpetratorEntry } from '../../../types/types';
 import { CaseDetails } from '../../../states/case/types';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
-import {
-  configurationBase,
-  connectedCaseBase,
-  contactFormsBase,
-  namespace,
-  routingBase,
-} from '../../../states/storeNamespaces';
+import { namespace } from '../../../states/storeNamespaces';
+import { RecursivePartial } from '../../RecursivePartial';
+import { RootState } from '../../../states';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -72,7 +68,7 @@ const householdEntry: HouseholdEntry = {
   twilioWorkerId: 'worker1',
 };
 
-function createState(state) {
+function createState(state: RecursivePartial<RootState['plugin-hrm-form']>) {
   return {
     [namespace]: state,
   };
@@ -81,7 +77,7 @@ function createState(state) {
 let ownProps: CaseHomeProps;
 
 let mockV1;
-let initialState;
+let initialState: RecursivePartial<RootState>;
 let caseDetails: CaseDetails;
 
 describe('useState mocked', () => {
@@ -96,7 +92,7 @@ describe('useState mocked', () => {
   beforeEach(() => {
     mockReset();
     initialState = createState({
-      [configurationBase]: {
+      configuration: {
         counselors: {
           list: [],
           hash: { worker1: 'worker1 name' },
@@ -104,11 +100,11 @@ describe('useState mocked', () => {
         definitionVersions: { v1: mockV1 },
         currentDefinitionVersion: mockV1,
       },
-      [contactFormsBase]: {
-        tasks: {
-          task1: {
+      activeContacts: {
+        existingContacts: {
+          contact1: {
             metadata: {},
-            contact: {
+            savedContact: {
               ...VALID_EMPTY_CONTACT,
               rawJson: {
                 ...VALID_EMPTY_CONTACT.rawJson,
@@ -121,27 +117,32 @@ describe('useState mocked', () => {
                 },
                 categories: {},
               },
-              taskSid: 'task1',
+              taskId: 'task1',
             },
           },
         },
       },
-      [connectedCaseBase]: {
+      connectedCase: {
         tasks: {
           task1: {
-            taskSid: 'task1',
             connectedCase: {
               id: 123,
               createdAt: '2020-06-29T22:26:00.208Z',
               twilioWorkerId: 'worker1',
               status: 'open',
-              info: { definitionVersion: 'v1' },
+              info: { definitionVersion: DefinitionVersionId.v1 },
               connectedContacts: [],
             },
           },
         },
       },
-      [routingBase]: { tasks: { task1: [{ route: 'case', subroute: 'home' }] } },
+      routing: {
+        tasks: {
+          task1: [
+            { route: 'tabbed-forms', subroute: 'categories', activeModal: [{ route: 'case', subroute: 'home' }] },
+          ],
+        },
+      },
     });
 
     const setState = jest.fn();
@@ -173,7 +174,7 @@ describe('useState mocked', () => {
     };
 
     ownProps = {
-      task: initialState[namespace][connectedCaseBase].tasks.task1 as StandaloneITask,
+      task: { taskSid: 'task1' } as CustomITask,
       definitionVersion: mockV1,
       can: () => true,
       caseDetails,
@@ -209,8 +210,7 @@ describe('useState mocked', () => {
         action: CaseItemAction.Add,
       },
       taskId: 'task1',
-      replace: false,
-      type: 'routing/change-route',
+      type: 'routing/open-modal',
     });
   });
 
@@ -234,8 +234,7 @@ describe('useState mocked', () => {
         action: CaseItemAction.Add,
       },
       taskId: 'task1',
-      replace: false,
-      type: 'routing/change-route',
+      type: 'routing/open-modal',
     });
   });
 
@@ -259,8 +258,7 @@ describe('useState mocked', () => {
         action: CaseItemAction.Add,
       },
       taskId: 'task1',
-      replace: false,
-      type: 'routing/change-route',
+      type: 'routing/open-modal',
     });
   });
 
@@ -284,8 +282,7 @@ describe('useState mocked', () => {
         action: CaseItemAction.Add,
       },
       taskId: 'task1',
-      replace: false,
-      type: 'routing/change-route',
+      type: 'routing/open-modal',
     });
   });
 
@@ -312,8 +309,7 @@ describe('useState mocked', () => {
         id: 'HOUSEHOLD_ID',
       },
       taskId: 'task1',
-      replace: false,
-      type: 'routing/change-route',
+      type: 'routing/open-modal',
     });
   });
 
@@ -340,8 +336,7 @@ describe('useState mocked', () => {
         id: 'PERPETRATOR_ID',
       },
       taskId: 'task1',
-      replace: false,
-      type: 'routing/change-route',
+      type: 'routing/open-modal',
     });
   });
 
@@ -367,8 +362,7 @@ describe('useState mocked', () => {
         id: '',
       },
       taskId: 'task1',
-      replace: false,
-      type: 'routing/change-route',
+      type: 'routing/open-modal',
     });
   });
 
@@ -402,7 +396,7 @@ describe('useState mocked', () => {
         </Provider>
       </StorelessThemeProvider>,
     );
-    screen.getByTestId('CaseHome-CloseButton').click();
+    screen.getByTestId('NavigableContainer-CloseCross').click();
 
     expect(ownProps.handleCancelNewCaseAndClose).not.toHaveBeenCalled();
     expect(ownProps.handleClose).toHaveBeenCalled();

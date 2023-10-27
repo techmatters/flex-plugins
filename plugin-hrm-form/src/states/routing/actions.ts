@@ -14,14 +14,18 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AppRoutes, CHANGE_ROUTE, CLOSE_MODAL, GO_BACK, OPEN_MODAL, RoutingActionType } from './types';
+import { AppRoutes, CHANGE_ROUTE, ChangeRouteMode, CLOSE_MODAL, GO_BACK, OPEN_MODAL, RoutingActionType } from './types';
 
 // Action creators
-export const changeRoute = (routing: AppRoutes, taskId: string, replace: boolean = false): RoutingActionType => ({
+export const changeRoute = (
+  routing: AppRoutes,
+  taskId: string,
+  mode: ChangeRouteMode = ChangeRouteMode.Push,
+): RoutingActionType => ({
   type: CHANGE_ROUTE,
   routing,
   taskId,
-  replace,
+  mode,
 });
 
 export const newOpenModalAction = (routing: AppRoutes, taskId: string): RoutingActionType => ({
@@ -30,9 +34,15 @@ export const newOpenModalAction = (routing: AppRoutes, taskId: string): RoutingA
   taskId,
 });
 
-export const newCloseModalAction = (taskId: string): RoutingActionType => ({
+/**
+ * Close modal action
+ * @param taskId
+ * @param topRoute - if this is specified, all modals on top the lowest modal with this route (or the base route, if it matches) will be closed, otherwise just the top modal will be closed
+ */
+export const newCloseModalAction = (taskId: string, topRoute?: AppRoutes['route']): RoutingActionType => ({
   type: CLOSE_MODAL,
   taskId,
+  topRoute,
 });
 
 export const newGoBackAction = (taskId: string): RoutingActionType => ({

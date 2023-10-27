@@ -29,7 +29,7 @@ import { RootState } from '../../../states';
 import AddEditCaseItem, { AddEditCaseItemProps } from '../../../components/case/AddEditCaseItem';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { CustomITask } from '../../../types/types';
-import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
+import { CaseItemAction } from '../../../states/routing/types';
 import { householdSectionApi } from '../../../states/case/sections/household';
 import { newGoBackAction } from '../../../states/routing/actions';
 import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
@@ -153,6 +153,7 @@ const hrmState: Partial<RootState[typeof namespace]> = {
           categories: { gridView: false, expanded: {} },
           recreated: false,
           draft: {
+            dialogsOpen: {},
             resourceReferralList: {
               lookupStatus: ReferralLookupStatus.NOT_STARTED,
               resourceReferralIdToAdd: undefined,
@@ -185,7 +186,10 @@ const state2 = {
     [connectedCaseBase]: addingNewHouseholdCaseState,
     routing: {
       tasks: {
-        task1: [{ route: 'case', subroute: 'household', action: CaseItemAction.Add }],
+        task1: [
+          { route: 'case', subroute: 'household', action: CaseItemAction.View },
+          { route: 'case', subroute: 'household', action: CaseItemAction.Add },
+        ],
       },
     },
   },
@@ -221,11 +225,6 @@ describe('Test AddHousehold', () => {
         counselor: 'Someone',
         sectionApi: householdSectionApi,
         definitionVersion: mockV1,
-        routing: {
-          route: 'case',
-          subroute: NewCaseSubroutes.Household,
-          action: CaseItemAction.Add,
-        },
       }),
   );
   test('Test close functionality', async () => {
@@ -239,15 +238,8 @@ describe('Test AddHousehold', () => {
 
     expect(store2.dispatch).not.toHaveBeenCalledWith(newGoBackAction('task1'));
 
-    expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument();
-    screen.getByTestId('Case-CloseCross').click();
-
-    expect(store2.dispatch).toHaveBeenCalledWith(newGoBackAction('task1'));
-
-    store2.dispatch.mockClear();
-
-    expect(screen.getByTestId('Case-CloseButton')).toBeInTheDocument();
-    screen.getByTestId('Case-CloseButton').click();
+    expect(screen.getByTestId('NavigableContainer-BackButton')).toBeInTheDocument();
+    screen.getByTestId('NavigableContainer-BackButton').click();
 
     expect(store2.dispatch).toHaveBeenCalledWith(newGoBackAction('task1'));
   });
