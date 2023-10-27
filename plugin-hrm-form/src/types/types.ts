@@ -362,8 +362,7 @@ export type Profile = {
   createdAt?: string;
   updatedAt?: string;
   identifiers?: Identifier[];
-  // TODO: fix the case in the hrm response
-  profileflags?: number[];
+  profileFlags?: number[];
 };
 
 export type ProfileFlag = {

@@ -31,14 +31,14 @@ export const getProfileContacts = (id: ProfileId, offset: number, limit: number)
 export const getProfileCases = (id: ProfileId, offset: number, limit: number) =>
   fetchHrmApi(`/profiles/${id}/cases?offset=${offset}&limit=${limit}`);
 
-export const getProfileFlags = () => fetchHrmApi(`/profiles/profileFlags`);
+export const getProfileFlags = () => fetchHrmApi(`/profiles/flags`);
 
 export const associateProfileFlag = (profileId: ProfileId, profileFlagId: ProfileFlagId) =>
-  fetchHrmApi(`/profiles/${profileId}/profileFlags/${profileFlagId}`, {
+  fetchHrmApi(`/profiles/${profileId}/flags/${profileFlagId}`, {
     method: 'POST',
   });
 
 export const disassociateProfileFlag = (profileId: ProfileId, profileFlagId: ProfileFlagId) =>
-  fetchHrmApi(`/profiles/${profileId}/profileFlags/${profileFlagId}`, {
+  fetchHrmApi(`/profiles/${profileId}/flags/${profileFlagId}`, {
     method: 'DELETE',
   });

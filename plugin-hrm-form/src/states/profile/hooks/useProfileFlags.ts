@@ -25,7 +25,7 @@ export const useProfileFlags = (profileId?: Profile['id']) => {
   const dispatch = useDispatch();
 
   const profileFlagIds = useSelector((state: RootState) =>
-    profileId ? state[namespace][profileBase].profiles?.[profileId]?.data?.profileflags : [],
+    profileId ? state[namespace][profileBase].profiles?.[profileId]?.data?.profileFlags : [],
   );
   const error = useSelector((state: RootState) => state[namespace][profileBase].profileFlags.error);
   const loading = useSelector((state: RootState) => state[namespace][profileBase].profileFlags.loading);
