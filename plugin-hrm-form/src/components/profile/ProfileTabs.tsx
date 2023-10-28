@@ -94,7 +94,7 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, casesCount, contactsCou
 const mapStateToProps = (state: RootState, { profileId, task: { taskSid } }: OwnProps) => {
   const routingState = state[namespace].routing;
   const route = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const currentTab = (route as ProfileRoute).subroute || 'details';
+  const currentTab = (route as ProfileRoute).subroute || 'contacts';
 
   const currentProfileState = getCurrentProfileState(state, profileId);
   const contactsCount = currentProfileState?.data?.contactsCount || 0;

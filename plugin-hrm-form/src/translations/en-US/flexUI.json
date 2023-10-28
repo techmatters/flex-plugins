@@ -371,9 +371,10 @@
   "PreviousContacts-OnlyShowRecordsFrom": "Only show records from",
 
   "Profile-DetailsHeader": "Overview",
+  "Profile-EditHeader": "Edit Profile",
   "Profile-EditButton": "Edit",
   "Profile-DetailsEditHeader": "Edit Status and Blocking",
-  
+
   "UploadFile-ButtonText": "Upload File",
   "DownloadFile-ButtonText": "Download File",
   "CSAMReportForm-Header": "File a Report: Child Sexual Abuse Material",

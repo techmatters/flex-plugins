@@ -4,11 +4,7 @@
     "rootDir": ".",
     "outDir": "build",
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -29,13 +25,6 @@
       "module": "CommonJS"
     }
   },
-  "include": [
-    "./src/**/*"
-  ],
-  "exclude": [
-    "./**/*.test.ts",
-    "./**/*.test.tsx",
-    "./**/__mocks__/*.ts",
-    "./**/__mocks__/*.tsx"
-  ]
+  "include": ["./src/**/*"],
+  "exclude": ["./**/*.test.ts", "./**/*.test.tsx", "./**/__mocks__/*.ts", "./**/__mocks__/*.tsx"]
 }
