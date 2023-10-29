@@ -21,7 +21,11 @@ import * as fs from 'fs/promises';
 // Clears out any residual offline task data for a worker so the test env is clean
 export const clearOfflineTask = async (hrmRoot: string, workerSid: string) => {
   const stateFile = await fs.readFile(getConfigValue('storageStatePath') as string, 'utf-8');
-
+  console.log(`Stored cookie value lengths:`);
+  const cookies = JSON.parse(stateFile).cookies;
+  cookies.forEach(({ name, value }: { name: string; value: string }) => {
+    console.log(`${name}: ${value.length}`);
+  });
   // Parsing the flex token from the playwright state file seems like the lesser of 2 evils vs starting up a new browser context just to get the cookie value :-)
   const flexToken = JSON.parse(stateFile).cookies.find((c: any) => c.name === 'flex-jwe')?.value;
   if (!flexToken) {
