@@ -16,8 +16,10 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import asyncDispatch from '../../asyncDispatch';
 import { Profile, ProfileFlag } from '../types';
 import * as ProfileFlagActions from '../profileFlags';
+import * as ProfileSelectors from '../selectors';
 import { namespace, profileBase } from '../../storeNamespaces';
 import { RootState } from '../..';
 
@@ -42,12 +44,12 @@ export type UseProfileFlags = UseAllProfileFlags & UseEditProfileFlags & { profi
 export const useAllProfileFlags = (): UseAllProfileFlags => {
   const dispatch = useDispatch();
 
-  const error = useSelector((state: RootState) => state[namespace][profileBase].profileFlags.error);
-  const loading = useSelector((state: RootState) => state[namespace][profileBase].profileFlags.loading);
-  const allProfileFlags = useSelector((state: RootState) => state[namespace][profileBase].profileFlags.data);
+  const error = useSelector((state: RootState) => ProfileSelectors.selectAllProfileFlags(state)?.error);
+  const loading = useSelector((state: RootState) => ProfileSelectors.selectAllProfileFlags(state)?.loading);
+  const allProfileFlags = useSelector((state: RootState) => ProfileSelectors.selectAllProfileFlags(state)?.data);
 
   const loadProfileFlags = useCallback(() => {
-    dispatch(ProfileFlagActions.loadProfileFlagsAsync());
+    asyncDispatch(dispatch)(ProfileFlagActions.loadProfileFlagsAsync());
   }, [dispatch]);
 
   useEffect(() => {
@@ -75,7 +77,7 @@ export const useEditProfileFlags = (profileId?: Profile['id']): UseEditProfileFl
   const associateProfileFlag = useCallback(
     (profileFlagId: ProfileFlag['id']) => {
       if (!profileId) return;
-      dispatch(ProfileFlagActions.associateProfileFlagAsync(profileId, profileFlagId));
+      asyncDispatch(dispatch)(ProfileFlagActions.associateProfileFlagAsync(profileId, profileFlagId));
     },
     [dispatch, profileId],
   );
@@ -83,7 +85,7 @@ export const useEditProfileFlags = (profileId?: Profile['id']): UseEditProfileFl
   const disassociateProfileFlag = useCallback(
     (profileFlagId: ProfileFlag['id']) => {
       if (!profileId) return;
-      dispatch(ProfileFlagActions.disassociateProfileFlagAsync(profileId, profileFlagId));
+      asyncDispatch(dispatch)(ProfileFlagActions.disassociateProfileFlagAsync(profileId, profileFlagId));
     },
     [dispatch, profileId],
   );

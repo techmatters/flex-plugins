@@ -20,7 +20,7 @@ import { Identifier, Profile, ProfileFlag } from '../states/profile/types';
 type ProfileId = Profile['id'];
 type ProfileFlagId = ProfileFlag['id'];
 
-export const getIdentiferByIdentifier = (identifier: Identifier['identifier']) =>
+export const getIdentifierByIdentifier = (identifier: Identifier['identifier']) =>
   fetchHrmApi(`/profiles/identifier/${identifier}`);
 
 export const getProfileById = (id: ProfileId) => fetchHrmApi(`/profiles/${id}`);

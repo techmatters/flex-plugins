@@ -24,7 +24,7 @@ import FormNotEditable from './FormNotEditable';
 import { RootState } from '../states';
 import { hasTaskControl } from '../utils/transfer';
 import { CustomITask, isOfflineContactTask, isInMyBehalfITask } from '../types/types';
-import PreviousContactsBanner from './profile/PreviousContactsBanner';
+import ProfileIdentifierBanner from './profile/ProfileIdentifierBanner';
 import { Flex } from '../styles/HrmStyles';
 import { isStandaloneITask } from './case/Case';
 import { getHelplineToSave } from '../services/HelplineService';
@@ -110,13 +110,13 @@ const TaskView: React.FC<Props> = props => {
 
   return (
     <Flex flexDirection="column" style={{ pointerEvents: isFormLocked ? 'none' : 'auto', height: '100%' }}>
-      {featureFlags.enable_previous_contacts && !isModalOpen && <PreviousContactsBanner task={task} />}
+      {featureFlags.enable_previous_contacts && !isModalOpen && <ProfileIdentifierBanner task={task} />}
 
       {isFormLocked && <FormNotEditable />}
       <Flex
         flexDirection="column"
         style={{
-          // This fixes a UI bug where the PreviousContactsBanner pushes the container down
+          // This fixes a UI bug where the ProfileIdentifierBanner pushes the container down
           height: '100%',
           width: '100%',
           overflow: 'auto',

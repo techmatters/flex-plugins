@@ -56,7 +56,6 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const routingState = state[namespace].routing;
   const route = getCurrentTopmostRouteForTask(routingState, taskSid);
   const profileId = (route as ProfileRoute).id;
-
   const currentRoute = getCurrentTopmostRouteForTask(routingState, taskSid)?.route.toString();
 
   return {

@@ -16,34 +16,50 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import asyncDispatch from '../../asyncDispatch';
 import { Profile } from '../types';
 import * as ProfileActions from '../loadProfile';
-import { namespace, profileBase } from '../../storeNamespaces';
+import * as ProfileSelectors from '../selectors';
 import { RootState } from '../..';
 
-export type UseProfileLoader = {
+export type UseProfileLoaderParams = {
+  profileId: Profile['id'];
+  shouldAutoload?: Boolean;
+};
+
+export type UseProfileLoaderReturn = {
   error?: any;
   loading: boolean;
   loadProfile: () => void;
 };
 
-export type UseProfile = UseProfileLoader & {
+export type UseProfileParams = UseProfileLoaderParams;
+
+export type UseProfileReturn = UseProfileLoaderReturn & {
   profile?: Profile;
 };
 
-const useProfileLoader = (profileId: Profile['id']): UseProfileLoader => {
+/**
+ * Load a profile by id into redux
+ * @param {Profile['id']} profileId - The id of the profile to load
+ * @returns {UseProfileLoaderReturn} - State and actions for the profile
+ */
+export const useProfileLoader = ({
+  profileId,
+  shouldAutoload = false,
+}: UseProfileLoaderParams): UseProfileLoaderReturn => {
   const dispatch = useDispatch();
-  const error = useSelector((state: RootState) => state[namespace][profileBase].profiles[profileId]?.error);
-  const loading = useSelector((state: RootState) => state[namespace][profileBase].profiles[profileId]?.loading);
+  const error = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.error);
+  const loading = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.loading);
   const loadProfile = useCallback(() => {
-    dispatch(ProfileActions.loadProfileAsync(profileId));
+    asyncDispatch(dispatch)(ProfileActions.loadProfileAsync(profileId));
   }, [dispatch, profileId]);
 
   useEffect(() => {
-    if (!loading) {
+    if (shouldAutoload && !loading) {
       loadProfile();
     }
-  }, [profileId, loading, loadProfile]);
+  }, [loading, profileId, shouldAutoload, loadProfile]);
 
   return {
     error,
@@ -58,11 +74,22 @@ const useProfileLoader = (profileId: Profile['id']): UseProfileLoader => {
  * @param {Profile['id']} profileId - The id of the profile to access
  * @returns {UseProfile} - State and actions for the profile
  */
-export const useProfile = (profileId: Profile['id']): UseProfile => {
-  const profile = useSelector((state: RootState) => state[namespace][profileBase].profiles[profileId]?.data);
+export const useProfile = (params: UseProfileParams): UseProfileReturn => {
+  const { profileId } = params;
+  const profile = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.data);
 
   return {
     profile,
-    ...useProfileLoader(profileId),
+    ...useProfileLoader(params),
   };
+};
+
+/**
+ * Access a profile property by id for the current account
+ *
+ * @param {Profile['id']} profileId - The id of the profile to access
+ * @returns {UseProfile} - State and actions for the profile
+ */
+export const useProfileProperty = <T extends keyof Profile>(profileId: Profile['id'], property: T): Profile[T] => {
+  return useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.data?.[property]);
 };

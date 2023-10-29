@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getIdentiferByIdentifier } from '../../services/ProfileService';
+import { getIdentifierByIdentifier } from '../../services/ProfileService';
 import { fetchHrmApi } from '../../services/fetchHrmApi';
 
 jest.mock('../../services/fetchHrmApi');
@@ -24,11 +24,11 @@ beforeEach(() => {
   mockFetchHrmAPi.mockClear();
 });
 
-describe('getIdentiferByIdentifier()', () => {
-  test('getIdentiferByIdentifier calls "GET /profiles/identifier', async () => {
+describe('getIdentifierByIdentifier()', () => {
+  test('getIdentifierByIdentifier calls "GET /profiles/identifier', async () => {
     const identifier = '1234567890';
 
-    await getIdentiferByIdentifier(identifier);
+    await getIdentifierByIdentifier(identifier);
 
     const expectedUrl = `/profiles/identifier/${identifier}`;
     expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl);

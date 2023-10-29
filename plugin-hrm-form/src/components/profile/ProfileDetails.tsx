@@ -34,7 +34,7 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileDetails: React.FC<Props> = ({ profileId, task, openProfileEditModal }) => {
-  const { profile } = useProfile(profileId);
+  const { profile } = useProfile({ profileId });
 
   const editButton = true;
   const handleEditProfileDetails = () => {

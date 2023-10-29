@@ -16,7 +16,7 @@
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
 import { parseFetchError } from '../parseFetchError';
-import { getIdentiferByIdentifier } from '../../services/ProfileService';
+import { getIdentifierByIdentifier } from '../../services/ProfileService';
 import loadIdentifierEntryIntoRedux from './loadIdentifierEntryIntoRedux';
 import * as t from './types';
 
@@ -24,7 +24,7 @@ type IdentfierIdentifier = t.Identifier['identifier'];
 
 export const loadIdentifierByIdentifierAsync = createAsyncAction(
   t.LOAD_IDENTIFIER_BY_IDENTIFIER,
-  getIdentiferByIdentifier,
+  getIdentifierByIdentifier,
   (identifier: IdentfierIdentifier) => ({
     identifier,
   }),
