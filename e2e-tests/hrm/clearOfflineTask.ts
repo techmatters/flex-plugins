@@ -20,14 +20,27 @@ import * as fs from 'fs/promises';
 
 // Clears out any residual offline task data for a worker so the test env is clean
 export const clearOfflineTask = async (hrmRoot: string, workerSid: string) => {
-  const stateFile = await fs.readFile(getConfigValue('storageStatePath') as string, 'utf-8');
-  console.log(`Stored cookie value lengths:`);
-  const cookies = JSON.parse(stateFile).cookies;
-  cookies.forEach(({ name, value }: { name: string; value: string }) => {
-    console.log(`${name}: ${value.length}`);
-  });
-  // Parsing the flex token from the playwright state file seems like the lesser of 2 evils vs starting up a new browser context just to get the cookie value :-)
-  const flexToken = JSON.parse(stateFile).cookies.find((c: any) => c.name === 'flex-jwe')?.value;
+  let flexToken;
+  for (let i = 0; i < 3; i++) {
+    const stateFile = await fs.readFile(getConfigValue('storageStatePath') as string, 'utf-8');
+    console.log(`Stored cookie value lengths:`);
+    const cookies = JSON.parse(stateFile).cookies;
+    // eslint-disable-next-line @typescript-eslint/no-loop-func
+    cookies.forEach(({ name, value }: { name: string; value: string }) => {
+      console.log(`${name}: ${value.length}`);
+    });
+    // Parsing the flex token from the playwright state file seems like the lesser of 2 evils vs starting up a new browser context just to get the cookie value :-)
+    flexToken = JSON.parse(stateFile).cookies.find((c: any) => c.name === 'flex-jwe')?.value;
+    if (flexToken) {
+      break;
+    } else {
+      console.log(
+        `Could not find Flex token in playwright session state file following login, so we cannot clear offline task data in HRM. Retrying...`,
+      );
+      // eslint-disable-next-line @typescript-eslint/no-loop-func
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+  }
   if (!flexToken) {
     throw new Error(
       `Could not find Flex token in playwright session state file following login, so we cannot clear offline task data in HRM. Please check your playwright config.`,
