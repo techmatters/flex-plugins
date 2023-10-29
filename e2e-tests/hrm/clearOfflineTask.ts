@@ -21,7 +21,7 @@ import * as fs from 'fs/promises';
 // Clears out any residual offline task data for a worker so the test env is clean
 export const clearOfflineTask = async (hrmRoot: string, workerSid: string) => {
   let flexToken;
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 30; i++) {
     const stateFile = await fs.readFile(getConfigValue('storageStatePath') as string, 'utf-8');
     console.log(`Stored cookie value lengths:`);
     const cookies = JSON.parse(stateFile).cookies;
