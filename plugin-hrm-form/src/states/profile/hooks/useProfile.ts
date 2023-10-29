@@ -88,6 +88,7 @@ export const useProfile = (params: UseProfileParams): UseProfileReturn => {
  * Access a profile property by id for the current account
  *
  * @param {Profile['id']} profileId - The id of the profile to access
+ * @param {T} property - The property to access
  * @returns {UseProfile} - State and actions for the profile
  */
 export const useProfileProperty = <T extends keyof Profile>(profileId: Profile['id'], property: T): Profile[T] => {
