@@ -59,7 +59,9 @@ export const useProfileLoader = ({
     if (shouldAutoload && !loading) {
       loadProfile();
     }
-  }, [loading, profileId, shouldAutoload, loadProfile]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profileId, shouldAutoload, loadProfile]);
 
   return {
     error,

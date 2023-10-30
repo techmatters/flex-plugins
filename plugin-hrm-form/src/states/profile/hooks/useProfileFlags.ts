@@ -56,7 +56,9 @@ export const useAllProfileFlags = (): UseAllProfileFlags => {
     if (!allProfileFlags && !loading) {
       loadProfileFlags();
     }
-  }, [allProfileFlags, loading, loadProfileFlags]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allProfileFlags, loadProfileFlags]);
 
   return {
     allProfileFlags,

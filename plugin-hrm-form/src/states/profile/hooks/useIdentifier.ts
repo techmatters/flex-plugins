@@ -64,7 +64,8 @@ export const useIdentifierByIdentifierLoader = ({
     if (shouldAutoload && !loading) {
       loadIdentifierByIdentifier();
     }
-  }, [loading, identifierIdentifier, shouldAutoload, loadIdentifierByIdentifier]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [identifierIdentifier, shouldAutoload, loadIdentifierByIdentifier]);
 
   return {
     error,
