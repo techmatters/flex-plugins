@@ -42,6 +42,7 @@ const handleLoadProfileRejectedAction = (state: t.ProfileState, action: any) => 
   const error = parseFetchError(action.payload);
 
   const profileUpdate = {
+    loading: false,
     error,
   };
 
@@ -52,6 +53,7 @@ const handleLoadProfileFulfilledAction = (state: t.ProfileState, action: any) =>
   const { profileId } = action.meta;
 
   const profileUpdate = {
+    loading: false,
     data: {
       ...t.newProfileEntry,
       ...state.profiles[profileId].data,

@@ -30,6 +30,11 @@ export const selectProfilePropertyById = <T extends keyof t.Profile>(
   property: T,
 ): t.Profile[T] | undefined => selectProfileById(state, profileId)?.data?.[property];
 
+export const selectProfileAsyncPropertiesById = (state: RootState, profileId: ProfileIdParam) => ({
+  error: selectProfileById(state, profileId)?.error,
+  loading: selectProfileById(state, profileId)?.loading,
+});
+
 export const selectIdentifierByIdentifier = (state: RootState, identifier: IdentifierIdentifierParam) =>
   Object.values(state[namespace][profileBase].identifiers).find(entry => entry.data?.identifier === identifier);
 

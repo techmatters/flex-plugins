@@ -93,6 +93,7 @@ const handleProfileFlagUpdateRejectedAction = (state: t.ProfileState, action: an
   const error = parseFetchError(action.payload);
 
   const profileUpdate = {
+    loading: false,
     error,
   };
 
@@ -103,6 +104,7 @@ const handleProfileFlagUpdateFulfilledAction = (state: t.ProfileState, action: a
   const { profileId } = action.meta;
 
   const profileUpdate = {
+    loading: false,
     data: {
       ...t.newProfileEntry,
       ...state.profiles[profileId].data,

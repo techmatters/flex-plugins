@@ -49,6 +49,7 @@ const handleLoadIdentifierRejectedAction = (state: t.ProfileState, action: any) 
   const error = parseFetchError(action.payload);
 
   const identifierUpdate = {
+    loading: false,
     error,
   };
 
@@ -59,6 +60,7 @@ const handleLoadIdentifierFulfilledAction = (state: t.ProfileState, action: any)
   const { id } = action.payload;
 
   const identifierUpdate = {
+    loading: false,
     data: {
       ...t.newIdentifierEntry,
       ...state.identifiers?.[id]?.data,

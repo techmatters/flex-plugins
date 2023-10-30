@@ -51,10 +51,10 @@ export const useIdentifierByIdentifierLoader = ({
 }: UseIdentifierByIdentifierLoaderParams): UseIdentifierByIdentifierLoaderReturn => {
   const dispatch = useDispatch();
   const error = useSelector(
-    (state: RootState) => state[namespace][profileBase].identifiers[identifierIdentifier]?.error,
+    (state: RootState) => ProfileSelectors.selectIdentifierByIdentifier(state, identifierIdentifier)?.error,
   );
   const loading = useSelector(
-    (state: RootState) => state[namespace][profileBase].identifiers[identifierIdentifier]?.loading,
+    (state: RootState) => ProfileSelectors.selectIdentifierByIdentifier(state, identifierIdentifier)?.loading,
   );
   const loadIdentifierByIdentifier = useCallback(() => {
     asyncDispatch(dispatch)(IdentifierActions.loadIdentifierByIdentifierAsync(identifierIdentifier));
