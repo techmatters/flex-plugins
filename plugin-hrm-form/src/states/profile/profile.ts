@@ -62,7 +62,7 @@ const handleLoadProfileFulfilledAction = (state: t.ProfileState, action: any) =>
   return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
 };
 
-export const loadProfileReducer = (initialState: t.ProfileState) =>
+export const profileReducer = (initialState: t.ProfileState) =>
   createReducer(initialState, handleAction => [
     handleAction(loadProfileAsync.pending, handleLoadProfilePendingAction),
     handleAction(loadProfileAsync.rejected, handleLoadProfileRejectedAction),
@@ -75,4 +75,4 @@ const LOAD_PROFILE_ACTIONS = [
   loadProfileAsync.fulfilled.toString(),
 ];
 
-export const shouldUseLoadProfileReducer = (action: any) => LOAD_PROFILE_ACTIONS.includes(action.type);
+export const shouldUseProfileReducer = (action: any) => LOAD_PROFILE_ACTIONS.includes(action.type);

@@ -21,6 +21,12 @@ import * as t from './types';
 export const selectProfileById = (state: RootState, profileId: t.Profile['id']) =>
   state[namespace][profileBase].profiles[profileId];
 
+export const selectProfilePropertyById = <T extends keyof t.Profile>(
+  state: RootState,
+  profileId: t.Profile['id'],
+  property: T,
+): t.Profile[T] | undefined => selectProfileById(state, profileId)?.data?.[property];
+
 export const selectIdentifierByIdentifier = (state: RootState, identifier: t.Identifier['identifier']) =>
   Object.values(state[namespace][profileBase].identifiers).find(entry => entry.data?.identifier === identifier);
 

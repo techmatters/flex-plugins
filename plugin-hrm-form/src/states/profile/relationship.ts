@@ -104,7 +104,7 @@ const handleIncrementPageAction = (state: t.ProfileState, action: any) => {
   return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
 };
 
-export const loadRelationshipsReducer = (initialState: t.ProfileState) =>
+export const relationshipReducer = (initialState: t.ProfileState) =>
   createReducer(initialState, handleAction => [
     handleAction(loadRelationshipAsync.pending, handlePendingAction),
     handleAction(loadRelationshipAsync.fulfilled, handleFulfilledAction),
@@ -119,4 +119,4 @@ export const LOAD_RELATIONSHIP_ACTIONS = [
   incrementPage.toString(),
 ];
 
-export const shouldUseLoadRelationshipsReducer = (action: any) => LOAD_RELATIONSHIP_ACTIONS.includes(action.type);
+export const shouldUseRelationshipReducer = (action: any) => LOAD_RELATIONSHIP_ACTIONS.includes(action.type);

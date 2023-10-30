@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import asyncDispatch from '../../asyncDispatch';
 import { Profile } from '../types';
-import * as ProfileActions from '../loadProfile';
+import * as ProfileActions from '../profile';
 import * as ProfileSelectors from '../selectors';
 import { RootState } from '../..';
 
@@ -91,6 +91,9 @@ export const useProfile = (params: UseProfileParams): UseProfileReturn => {
  * @param {T} property - The property to access
  * @returns {UseProfile} - State and actions for the profile
  */
-export const useProfileProperty = <T extends keyof Profile>(profileId: Profile['id'], property: T): Profile[T] => {
-  return useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.data?.[property]);
+export const useProfileProperty = <T extends keyof Profile>(
+  profileId: Profile['id'],
+  property: T,
+): Profile[T] | undefined => {
+  return useSelector((state: RootState) => ProfileSelectors.selectProfilePropertyById(state, profileId, property));
 };

@@ -20,10 +20,10 @@ import { Dispatch } from 'redux';
 import { Profile } from '../../types/types';
 import * as t from './types';
 
-export * from './loadIdentifier';
-export * from './loadProfile';
-export * from './loadRelationships';
-export * from './profileFlags';
+export { loadIdentifierByIdentifierAsync } from './identifier';
+export { loadProfileAsync } from './profile';
+export { loadProfileFlagsAsync } from './profileFlag';
+export { incrementPage, loadRelationshipAsync } from './relationship';
 
 // Action creators
 export const addProfileState = (dispatch: Dispatch<any>) => (profileId: Profile['id'], profile: Profile) => {

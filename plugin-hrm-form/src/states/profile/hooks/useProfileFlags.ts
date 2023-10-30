@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import asyncDispatch from '../../asyncDispatch';
 import { Profile, ProfileFlag } from '../types';
-import * as ProfileFlagActions from '../profileFlags';
+import * as ProfileFlagActions from '../profileFlag';
 import * as ProfileSelectors from '../selectors';
 import { namespace, profileBase } from '../../storeNamespaces';
 import { RootState } from '../..';

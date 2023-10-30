@@ -15,10 +15,10 @@
  */
 
 import * as t from './types';
-import { loadIdentifierReducer, shouldUseLoadIdentifierReducer } from './loadIdentifier';
-import { loadProfileReducer, shouldUseLoadProfileReducer } from './loadProfile';
-import { profileFlagsReducer, shouldUseProfileFlagsReducer } from './profileFlags';
-import { loadRelationshipsReducer, shouldUseLoadRelationshipsReducer } from './loadRelationships';
+import { loadIdentifierReducer, shouldUseLoadIdentifierReducer } from './identifier';
+import { profileReducer, shouldUseProfileReducer } from './profile';
+import { profileFlagsReducer, shouldUseProfileFlagsReducer } from './profileFlag';
+import { relationshipReducer, shouldUseRelationshipReducer } from './relationship';
 
 const reducers = [
   {
@@ -26,16 +26,16 @@ const reducers = [
     reducer: loadIdentifierReducer,
   },
   {
-    shouldUseReducer: shouldUseLoadProfileReducer,
-    reducer: loadProfileReducer,
+    shouldUseReducer: shouldUseProfileReducer,
+    reducer: profileReducer,
   },
   {
     shouldUseReducer: shouldUseProfileFlagsReducer,
     reducer: profileFlagsReducer,
   },
   {
-    shouldUseReducer: shouldUseLoadRelationshipsReducer,
-    reducer: loadRelationshipsReducer,
+    shouldUseReducer: shouldUseRelationshipReducer,
+    reducer: relationshipReducer,
   },
 ];
 

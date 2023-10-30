@@ -17,7 +17,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import asyncDispatch from '../../asyncDispatch';
-import * as IdentifierActions from '../loadIdentifier';
+import * as IdentifierActions from '../identifier';
 import * as ProfileSelectors from '../selectors';
 import { namespace, profileBase } from '../../storeNamespaces';
 import { RootState } from '../..';
