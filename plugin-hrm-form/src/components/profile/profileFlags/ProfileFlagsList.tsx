@@ -15,11 +15,11 @@
  */
 
 import React from 'react';
-import { IconButton } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 
 import { CustomITask, Profile, ProfileFlag } from '../../../types/types';
 import { useProfileFlags } from '../../../states/profile/hooks';
-import { StatusLabelPill } from '../styles';
+import { StatusLabelPill, CloseIconButton } from '../styles';
 
 type OwnProps = {
   enableDisassociate?: boolean;
@@ -48,14 +48,7 @@ const ProfileFlagsList: React.FC<Props> = ({ enableDisassociate, profileId }) =>
       disassociateProfileFlag(flag.id);
     };
 
-    return (
-      <IconButton
-        icon="Close"
-        onMouseDown={event => handleDisassociate(event, flag)}
-        title="Disassociate Flag"
-        themeOverride={{ Icon: { size: '10px' } }}
-      />
-    );
+    return <CloseIconButton onMouseDown={event => handleDisassociate(event, flag)} />;
   };
 
   const renderPill = (flag: ProfileFlag) => {
@@ -67,7 +60,17 @@ const ProfileFlagsList: React.FC<Props> = ({ enableDisassociate, profileId }) =>
     );
   };
 
-  return <>{profileFlags?.length ? profileFlags.map(renderPill) : <StatusLabelPill>No Status</StatusLabelPill>}</>;
+  return (
+    <>
+      {profileFlags?.length ? (
+        profileFlags.map(renderPill)
+      ) : (
+        <StatusLabelPill>
+          <Template code="Profile-NoStatusesListed" />
+        </StatusLabelPill>
+      )}
+    </>
+  );
 };
 
 export default ProfileFlagsList;

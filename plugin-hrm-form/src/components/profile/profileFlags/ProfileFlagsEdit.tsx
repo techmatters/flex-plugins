@@ -15,13 +15,13 @@
  */
 
 import React, { useState } from 'react';
-import { Select } from '@material-ui/core';
 import { ArrowDropDown } from '@material-ui/icons';
 
 import ProfileFlagsList from './ProfileFlagsList';
-import { StyledMenuItem, StyledSelect, TextField } from '../../../styles/HrmStyles';
+import { StyledMenuItem } from '../../../styles/HrmStyles';
 import { CustomITask, Profile, ProfileFlag } from '../../../types/types';
 import { useProfileFlags } from '../../../states/profile/hooks';
+import { StyledStatusSelect } from '../styles';
 
 type OwnProps = {
   profileId: Profile['id'];
@@ -45,20 +45,21 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
     availableFlags.length ? <ArrowDropDown onClick={handleOpen} /> : <ArrowDropDown style={{ visibility: 'hidden' }} />;
 
   return (
-    <Select
+    <StyledStatusSelect
       open={open}
       onOpen={handleOpen}
       onClose={() => setOpen(false)}
       IconComponent={getIconComponent}
       value="false"
       renderValue={renderValue}
+      variant="standard"
     >
       {availableFlags.map((flag: ProfileFlag) => (
         <StyledMenuItem key={flag.id} onClick={() => associateProfileFlag(flag.id)}>
           {flag.name}
         </StyledMenuItem>
       ))}
-    </Select>
+    </StyledStatusSelect>
   );
 };
 

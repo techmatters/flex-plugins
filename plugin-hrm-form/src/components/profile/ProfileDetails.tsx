@@ -59,17 +59,27 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openProfileEditModal
         )}
       </Column>
 
-      <ProfileSubtitle>Identifiers</ProfileSubtitle>
-      {profile.identifiers ? (
-        profile.identifiers.map(identifier => <div key={identifier.id}>{identifier.identifier}</div>)
-      ) : (
-        <div>No identifiers found</div>
-      )}
-      <ProfileSubtitle>Status</ProfileSubtitle>
-      <div>
-        <ProfileFlagsList profileId={profileId} task={task} />
-      </div>
-      <hr />
+      <Box margin="20px 0">
+        <ProfileSubtitle>
+          <Template code="Profile-IdentifiersHeader" />
+        </ProfileSubtitle>
+        <Box margin="15px 4px">
+          {profile.identifiers ? (
+            profile.identifiers.map(identifier => <div key={identifier.id}>{identifier.identifier}</div>)
+          ) : (
+            <Template code="Profile-NoIdentifiersFound" />
+          )}
+        </Box>
+      </Box>
+
+      <Box margin="20px 0">
+        <ProfileSubtitle>
+          <Template code="Profile-StatusHeader" />
+        </ProfileSubtitle>
+        <Box margin="10px 4px">
+          <ProfileFlagsList profileId={profileId} task={task} />
+        </Box>
+      </Box>
     </DetailsWrapper>
   );
 };
@@ -86,7 +96,3 @@ const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
 
 const connector = connect(null, mapDispatchToProps);
 export default connector(ProfileDetails);
-
-// TODO:
-// - Add a loading state
-// - Add Routing for Edit page
