@@ -20,10 +20,10 @@ import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
 import { CaseDetailsBorder, CaseSectionFont, CaseSummaryTextArea } from '../../styles/case';
-import { namespace, connectedCaseBase } from '../../states';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { CaseState } from '../../states/case/types';
 import { getTemplateStrings } from '../../hrmConfig';
+import { connectedCaseBase, namespace } from '../../states/storeNamespaces';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;

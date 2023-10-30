@@ -12,7 +12,11 @@
         "value": "Someone else",
         "label": "Someone else"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "riskDetails",
@@ -49,7 +53,11 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "typeOfHarmDetails",
@@ -150,16 +158,20 @@
         "value": ">64",
         "label": ">64"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "gender",
     "label": "What is their relationship to the person causing the risk?",
     "type": "select",
-    "unknownOption": "Unknown",
+    "unknownOption": "",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
@@ -186,7 +198,11 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "relationshipDetails",
@@ -199,10 +215,14 @@
     "label": "Is there immediate danger to the physical safety of anyone involved?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "immediateDangerDetails",
@@ -215,10 +235,14 @@
     "label": "Does the person causing the risk have continued access to the person who is at risk?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "continuedAccessDetails",
@@ -231,10 +255,14 @@
     "label": "Has the person at risk expressed concern the harm will happen again?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "riskLocation",
@@ -253,10 +281,14 @@
     "label": "Has Oranga Tamariki or the Police been involved due to the risk?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "involnvolvementDetails",
@@ -269,10 +301,14 @@
     "label": "Has anyone aware of the risk indicated any actions they are taking to address it?",
     "type": "select",
     "defaultOption": {
-      "value": "unknown",
+      "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "responseOptions"
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "personDetails",

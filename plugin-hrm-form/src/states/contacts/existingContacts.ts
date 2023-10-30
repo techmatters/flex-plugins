@@ -21,7 +21,6 @@ import { AddExternalReportEntryAction } from '../csam-report/existingContactExte
 import { ConfigurationState } from '../configuration/reducer';
 import { transformValuesForContactForm } from './contactDetailsAdapter';
 import { ContactMetadata } from './types';
-import { updateContactInHrm } from '../../services/ContactService';
 import { newContactMetaData } from './contactState';
 
 export enum ContactDetailsRoute {
@@ -309,6 +308,54 @@ export const setCategoriesGridViewReducer = (state: ExistingContactsState, actio
   };
 };
 
+export const SET_CONTACT_DIALOG_STATE = 'contacts/SET_CONTACT_DIALOG_STATE';
+
+type SetContactDialogStateAction = {
+  type: typeof SET_CONTACT_DIALOG_STATE;
+  contactId: string;
+  dialogName: string;
+  dialogOpen: boolean;
+};
+
+export const newSetContactDialogStateAction = (
+  contactId: string,
+  dialogName: string,
+  dialogOpen: boolean,
+): SetContactDialogStateAction => ({
+  type: SET_CONTACT_DIALOG_STATE,
+  contactId,
+  dialogName,
+  dialogOpen,
+});
+
+export const setContactDialogStateReducer = (
+  state: ExistingContactsState,
+  { dialogName, dialogOpen, contactId }: SetContactDialogStateAction,
+) => {
+  if (!state[contactId]) {
+    console.error(
+      `Attempted to open dialog '${dialogName}' on contact ID '${contactId}' but this contact has not been loaded into redux. Load the contact into the existing contacts store using 'loadContact' before attempting to manipulate it's category state`,
+    );
+    return state;
+  }
+  return {
+    ...state,
+    [contactId]: {
+      ...state[contactId],
+      metadata: {
+        ...state[contactId].metadata,
+        draft: {
+          ...state[contactId].metadata.draft,
+          dialogsOpen: {
+            ...state[contactId].metadata.draft.dialogsOpen,
+            [dialogName]: dialogOpen,
+          },
+        },
+      },
+    },
+  };
+};
+
 export const EXISTING_CONTACT_UPDATE_DRAFT_ACTION = 'EXISTING_CONTACT_UPDATE_DRAFT_ACTION';
 
 type UpdateDraftAction = {
@@ -328,21 +375,6 @@ export const clearDraft = (contactId: string): UpdateDraftAction => ({
   contactId,
   draft: { rawJson: {} },
 });
-
-export const saveContactChangesInHrm = async (
-  contactId: string,
-  changes: ContactDraftChanges,
-  dispatch: any,
-  reference: string,
-): Promise<Contact> => {
-  if (changes) {
-    const updated = await updateContactInHrm(contactId, changes);
-    dispatch(loadContact(updated, reference, true));
-    dispatch(clearDraft(contactId));
-    return updated;
-  }
-  return undefined;
-};
 
 export const updateDraftReducer = (
   state: ExistingContactsState,
@@ -460,4 +492,5 @@ export type ExistingContactAction =
   | SetCategoriesGridViewAction
   | UpdateDraftAction
   | CreateDraftAction
-  | AddExternalReportEntryAction;
+  | AddExternalReportEntryAction
+  | SetContactDialogStateAction;

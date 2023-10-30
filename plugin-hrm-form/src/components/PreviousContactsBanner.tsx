@@ -24,16 +24,19 @@ import {
   searchContacts as searchContactsAction,
   searchCases as searchCasesAction,
 } from '../states/search/actions';
-import { namespace, searchContactsBase, configurationBase, RootState, contactFormsBase } from '../states';
+import { RootState } from '../states';
 import { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './search/SearchResults';
 import { YellowBanner } from '../styles/previousContactsBanner';
 import { Bold } from '../styles/HrmStyles';
 import { StyledLink } from '../styles/search';
 import { ChannelTypes, channelTypes } from '../states/DomainConstants';
-import { changeRoute as changeRouteAction } from '../states/routing/actions';
-import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../utils/task';
+import { changeRoute, newOpenModalAction } from '../states/routing/actions';
+import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../permissions';
 import { CustomITask, isTwilioTask } from '../types/types';
+import { namespace } from '../states/storeNamespaces';
+import { isRouteModal } from '../states/routing/types';
+import { getCurrentBaseRoute } from '../states/routing/getRoute';
 
 type OwnProps = {
   task: CustomITask;
@@ -48,8 +51,8 @@ const PreviousContactsBanner: React.FC<Props> = ({
   viewPreviousContacts,
   searchContacts,
   searchCases,
-  changeRoute,
-  editContactFormOpen,
+  openContactSearchResults,
+  modalOpen,
 }) => {
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
@@ -75,7 +78,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
   const handleClickViewRecords = () => {
     viewPreviousContacts();
-    changeRoute({ route: 'tabbed-forms', subroute: 'search' });
+    openContactSearchResults();
   };
 
   let localizedSourceFromTask: { [channelType in ChannelTypes]: string };
@@ -95,8 +98,8 @@ const PreviousContactsBanner: React.FC<Props> = ({
   }
 
   return (
-    <div className={editContactFormOpen ? 'editingContact' : ''}>
-      <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenEditingContact">
+    <div className={modalOpen ? 'editingContact' : ''}>
+      <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
         {/* eslint-disable-next-line prettier/prettier */}
       <pre>
           <Template code="PreviousContacts-ThereAre" />
@@ -146,17 +149,18 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
 PreviousContactsBanner.displayName = 'PreviousContactsBanner';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const searchContactsState = state[namespace][searchContactsBase];
-  const taskId = ownProps.task.taskSid;
-  const taskSearchState = searchContactsState.tasks[taskId];
-  const { counselors } = state[namespace][configurationBase];
-  const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
+const mapStateToProps = (
+  { [namespace]: { searchContacts, configuration, activeContacts, routing } }: RootState,
+  { task: { taskSid } }: OwnProps,
+) => {
+  const taskSearchState = searchContacts.tasks[taskSid];
+  const { counselors } = configuration;
+  const modalOpen = activeContacts.editingContact || isRouteModal(getCurrentBaseRoute(routing, taskSid));
 
   return {
     previousContacts: taskSearchState.previousContacts,
     counselorsHash: counselors.hash,
-    editContactFormOpen,
+    modalOpen,
   };
 };
 
@@ -168,7 +172,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     viewPreviousContacts: viewPreviousContactsAction(dispatch)(task),
     searchContacts: searchContactsAction(dispatch)(taskId),
     searchCases: searchCasesAction(dispatch)(taskId),
-    changeRoute: routing => dispatch(changeRouteAction(routing, taskId)),
+    openContactSearchResults: () => {
+      // We put the form 'under' the search results in the modal stack so the back button takes them to the form without needing custom handlers
+      dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, taskId));
+      dispatch(changeRoute({ route: 'search', subroute: 'contact-results' }, taskId));
+    },
   };
 };
 

@@ -28,7 +28,7 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { completeTask } from '../../services/formSubmissionHelpers';
 import { hasTaskControl } from '../../utils/transfer';
-import { namespace, contactFormsBase, connectedCaseBase, RootState } from '../../states';
+import { RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { Case, CustomITask, Contact } from '../../types/types';
@@ -38,6 +38,8 @@ import asyncDispatch from '../../states/asyncDispatch';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
+import { connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
+import { AppRoutes } from '../../states/routing/types';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;
@@ -47,7 +49,7 @@ type BottomBarProps = {
   nextTab: () => void;
   task: CustomITask;
   contactId: string;
-  saveUpdates: () => Promise<Contact>;
+  saveUpdates: () => Promise<void>;
 };
 
 const BottomBar: React.FC<
@@ -60,7 +62,7 @@ const BottomBar: React.FC<
   contact,
   metadata,
   task,
-  changeRoute,
+  openModal,
   nextTab,
   caseForm,
   createCaseAsyncAction,
@@ -71,15 +73,14 @@ const BottomBar: React.FC<
   const strings = getTemplateStrings();
 
   const handleOpenNewCase = async () => {
-    const { taskSid } = task;
     const { workerSid, definitionVersion } = getHrmConfig();
 
     if (!hasTaskControl(task)) return;
 
     try {
-      const updated = (await saveUpdates()) ?? contact;
-      await createCaseAsyncAction(updated, workerSid, definitionVersion);
-      changeRoute({ route: 'new-case' }, taskSid);
+      await saveUpdates();
+      await createCaseAsyncAction(contact, workerSid, definitionVersion);
+      openModal({ route: 'case', subroute: 'home' });
     } catch (error) {
       recordBackendError('Open New Case', error);
       window.alert(strings['Error-Backend']);
@@ -92,7 +93,7 @@ const BottomBar: React.FC<
     setSubmitting(true);
 
     try {
-      submitContactFormAsyncAction(task, contact, metadata, caseForm as Case);
+      await submitContactFormAsyncAction(task, contact, metadata, caseForm as Case);
       await completeTask(task);
     } catch (error) {
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
@@ -190,7 +191,8 @@ const mapStateToProps = (state: RootState, ownProps: BottomBarProps) => {
 const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
   const createCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
-    changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
+    changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
+    openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid)),
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     createCaseAsyncAction: (contact, workerSid: string, definitionVersion: DefinitionVersionId) =>
       createCaseAsyncDispatch(createCaseAsyncAction(contact, task.taskSid, workerSid, definitionVersion)),

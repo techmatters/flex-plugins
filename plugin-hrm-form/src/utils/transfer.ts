@@ -17,10 +17,10 @@
 // eslint-disable-next-line no-unused-vars
 import { Actions, ITask, TaskHelper, Manager } from '@twilio/flex-ui';
 
-import { namespace, conferencingBase, RootState } from '../states';
-import { isCallStatusLoading } from '../states/conferencing';
+import type { RootState } from '../states';
 import { transferStatuses, transferModes } from '../states/DomainConstants';
 import { CustomITask, isTwilioTask } from '../types/types';
+import { isCallStatusLoading } from '../states/conferencing/callStatus';
 
 export const hasTransferStarted = (task: ITask) => Boolean(task.attributes && task.attributes.transferMeta);
 
@@ -193,7 +193,7 @@ export const canTransferConference = (task: ITask) => {
   }
 
   const isLiveCall = TaskHelper.isLiveCall(task);
-  const { callStatus } = (Manager.getInstance().store.getState() as RootState)[namespace][conferencingBase].tasks[
+  const { callStatus } = (Manager.getInstance().store.getState() as RootState)['plugin-hrm-form'].conferencing.tasks[
     task.taskSid
   ];
 

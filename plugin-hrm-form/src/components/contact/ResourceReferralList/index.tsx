@@ -22,7 +22,7 @@ import ReplyIcon from '@material-ui/icons/Reply';
 import ErrorIcon from '@material-ui/icons/Error';
 
 import customContactComponentRegistry from '../../forms/customContactComponentRegistry';
-import { contactFormsBase, namespace, referrableResourcesBase, RootState } from '../../../states';
+import { RootState } from '../../../states';
 import {
   ReferralLookupStatus,
   updateResourceReferralIdToAddForUnsavedContactAction,
@@ -44,6 +44,7 @@ import {
   Error,
   DeleteButton,
 } from './styles';
+import { contactFormsBase, namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
 
 type OwnProps = {
   contactId: string;

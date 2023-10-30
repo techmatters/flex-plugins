@@ -35,6 +35,7 @@ export const newContactMetaData = (recreated: boolean): ContactMetadata => {
         resourceReferralIdToAdd: '',
         lookupStatus: ReferralLookupStatus.NOT_STARTED,
       },
+      dialogsOpen: {},
     },
     startMillis: recreated ? null : new Date().getTime(),
     endMillis: null,
@@ -42,7 +43,7 @@ export const newContactMetaData = (recreated: boolean): ContactMetadata => {
     categories: categoriesMeta,
   };
 };
-const newContact = (definitions: DefinitionVersion): Contact => {
+export const newContact = (definitions: DefinitionVersion): Contact => {
   const initialChildInformation = definitions.tabbedForms.ChildInformationTab.reduce(createStateItem, {});
   const initialCallerInformation = definitions.tabbedForms.CallerInformationTab.reduce(createStateItem, {});
   const initialCaseInformation = definitions.tabbedForms.CaseInformationTab.reduce(createStateItem, {});

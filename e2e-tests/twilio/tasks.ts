@@ -21,6 +21,7 @@ import { getConfigValue } from '../config';
 export const deleteAllTasksInQueue = async (): Promise<void> => {
   const accountSid = getConfigValue('twilioAccountSid') as string;
   const authToken = getConfigValue('twilioAuthToken') as string;
+  const helplineShortCode = getConfigValue('helplineShortCode') as string;
   const twilioClient = twilio(accountSid, authToken);
 
   const workspaces = await twilioClient.taskrouter.v1.workspaces.list();
@@ -35,7 +36,8 @@ export const deleteAllTasksInQueue = async (): Promise<void> => {
       tasksInQueue.map((task) => {
         const attributes = JSON.parse(task.attributes);
 
-        if (attributes.e2eTestMode !== 'true') {
+        // For e2e account we ALWAYS want to cleanup. For others, we only want to cleanup tasks with e2eTestMode=true
+        if (helplineShortCode !== 'e2e' && attributes.e2eTestMode !== 'true') {
           return Promise.resolve();
         }
         console.log(`Removing task ${task.sid}`);

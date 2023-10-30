@@ -33,12 +33,12 @@ import {
   StyledNextStepButton,
   TwoColumnLayout,
 } from '../../styles/HrmStyles';
-import { CaseActionFormContainer, CaseActionLayout } from '../../styles/case';
+import { CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { configurationBase, connectedCaseBase, contactFormsBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
-import { changeRoute } from '../../states/routing/actions';
+import { newCloseModalAction, newGoBackAction } from '../../states/routing/actions';
 import type { Case, CustomITask, StandaloneITask } from '../../types/types';
 import { recordingErrorHandler } from '../../fullStory';
 import { caseItemHistory, CaseSummaryWorkingCopy } from '../../states/case/types';
@@ -48,27 +48,32 @@ import {
   removeCaseSummaryWorkingCopy,
   updateCaseSummaryWorkingCopy,
 } from '../../states/case/caseWorkingCopy';
-import { AppRoutes } from '../../states/routing/types';
 import { PermissionActions, PermissionActionType } from '../../permissions';
 import { disperseInputs, splitAt } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import { getTemplateStrings } from '../../hrmConfig';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
+import { configurationBase, connectedCaseBase, namespace } from '../../states/storeNamespaces';
+import NavigableContainer from '../NavigableContainer';
 
 export type EditCaseSummaryProps = {
   task: CustomITask | StandaloneITask;
   definitionVersion: DefinitionVersion;
-  exitRoute: AppRoutes;
   can: (action: PermissionActionType) => boolean;
 };
 // eslint-disable-next-line no-use-before-define
 type Props = EditCaseSummaryProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
+const enum DialogState {
+  Closed,
+  OpenForBack,
+  OpenForClose,
+}
+
 const EditCaseSummary: React.FC<Props> = ({
   task,
   counselorsHash,
-  exitRoute,
   connectedCaseState,
   workingCopy,
   initialiseWorkingCopy,
@@ -122,7 +127,8 @@ const EditCaseSummary: React.FC<Props> = ({
   }, [connectedCaseState.connectedCase]);
 
   const methods = useForm();
-  const [openDialog, setOpenDialog] = React.useState(false);
+
+  const [dialogState, setDialogState] = React.useState<DialogState>(DialogState.Closed);
 
   const { getValues } = methods;
 
@@ -159,7 +165,7 @@ const EditCaseSummary: React.FC<Props> = ({
     const { info, id } = connectedCaseState.connectedCase;
     const { status, ...updatedInfoValues } = workingCopy;
 
-    updateCaseAsyncAction(id, {
+    await updateCaseAsyncAction(id, {
       status,
       info: { ...info, ...updatedInfoValues },
     });
@@ -167,13 +173,13 @@ const EditCaseSummary: React.FC<Props> = ({
 
   const saveAndLeave = async () => {
     await save();
-    closeActions(exitRoute);
+    closeActions(false);
   };
 
   const strings = getTemplateStrings();
   const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler(`Case: EditCaseSummary`, () => {
     window.alert(strings['Error-Form']);
-    if (openDialog) setOpenDialog(false);
+    if (dialogState) setDialogState(DialogState.Closed);
   });
 
   const { added, addingCounsellorName, updated, updatingCounsellorName } = caseItemHistory(
@@ -181,19 +187,22 @@ const EditCaseSummary: React.FC<Props> = ({
     counselorsHash,
   );
 
-  const checkForEdits = () => {
+  const checkForEdits = (closeModal: boolean) => {
     if (isEqual(workingCopy, savedForm)) {
-      closeActions(exitRoute);
-    } else setOpenDialog(true);
+      closeActions(closeModal);
+    } else setDialogState(closeModal ? DialogState.OpenForClose : DialogState.OpenForBack);
   };
 
   return (
     <FormProvider {...methods}>
-      <CaseActionLayout>
+      <NavigableContainer
+        task={task}
+        titleCode="Case-EditCaseSummary"
+        onGoBack={checkForEdits}
+        onCloseModal={checkForEdits}
+      >
         <CaseActionFormContainer>
           <ActionHeader
-            titleTemplate="Case-EditCaseSummary"
-            onClickClose={checkForEdits}
             addingCounsellor={addingCounsellorName}
             added={added}
             updated={updated}
@@ -210,18 +219,6 @@ const EditCaseSummary: React.FC<Props> = ({
         </CaseActionFormContainer>
         <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
         <BottomButtonBar>
-          <Box marginRight="15px">
-            <StyledNextStepButton data-testid="Case-CloseButton" secondary="true" roundCorners onClick={checkForEdits}>
-              <Template code="BottomBar-Cancel" />
-            </StyledNextStepButton>
-            <CloseCaseDialog
-              data-testid="CloseCaseDialog"
-              openDialog={openDialog}
-              setDialog={() => setOpenDialog(false)}
-              handleDontSaveClose={() => closeActions(exitRoute)}
-              handleSaveUpdate={methods.handleSubmit(saveAndLeave, onError)}
-            />
-          </Box>
           <StyledNextStepButton
             data-testid="Case-EditCaseScreen-SaveItem"
             roundCorners
@@ -230,7 +227,14 @@ const EditCaseSummary: React.FC<Props> = ({
             <Template code="BottomBar-SaveCaseSummary" />
           </StyledNextStepButton>
         </BottomButtonBar>
-      </CaseActionLayout>
+        <CloseCaseDialog
+          data-testid="CloseCaseDialog"
+          openDialog={dialogState === DialogState.OpenForClose || dialogState === DialogState.OpenForBack}
+          setDialog={() => setDialogState(DialogState.Closed)}
+          handleDontSaveClose={() => closeActions(dialogState === DialogState.OpenForClose)}
+          handleSaveUpdate={methods.handleSubmit(saveAndLeave, onError)}
+        />
+      </NavigableContainer>
     </FormProvider>
   );
 };
@@ -252,9 +256,9 @@ const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
     initialiseWorkingCopy: bindActionCreators(initialiseCaseSummaryWorkingCopy, dispatch),
     updateWorkingCopy: bindActionCreators(updateCaseSummaryWorkingCopy, dispatch),
-    closeActions: route => {
+    closeActions: (closeModal: boolean) => {
       dispatch(removeCaseSummaryWorkingCopy(task.taskSid));
-      dispatch(changeRoute(route, task.taskSid));
+      dispatch(closeModal ? newCloseModalAction(task.taskSid) : newGoBackAction(task.taskSid));
     },
     updateCaseAsyncAction: (caseId: Case['id'], body: Partial<Case>) =>
       updateCaseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),

@@ -24,11 +24,12 @@ import {
   saveCaseReducer,
   updateCaseAsyncAction,
 } from '../../../states/case/saveCase';
-import { configurationBase, connectedCaseBase, RootState } from '../../../states';
+import { RootState } from '../../../states';
 import { saveCaseState, reduce } from '../../../states/case/reducer';
 import { updateCase, createCase } from '../../../services/CaseService';
 import { connectToCase } from '../../../services/ContactService';
 import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
+import { configurationBase, connectedCaseBase } from '../../../states/storeNamespaces';
 
 jest.mock('../../../services/CaseService');
 jest.mock('../../../services/ContactService');

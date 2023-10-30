@@ -23,9 +23,10 @@ import TaskView from './TaskView';
 import { Absolute } from '../styles/HrmStyles';
 import { populateCounselors } from '../services/ServerlessService';
 import { populateCounselorsState } from '../states/configuration/actions';
-import { RootState, namespace, routingBase } from '../states';
+import { RootState } from '../states';
 import { OfflineContactTask } from '../types/types';
 import getOfflineContactTaskSid from '../states/contacts/offlineContactTaskSid';
+import { namespace, routingBase } from '../states/storeNamespaces';
 
 type OwnProps = {
   task?: ITask;

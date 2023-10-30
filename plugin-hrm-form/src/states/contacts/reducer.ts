@@ -19,13 +19,14 @@ import { callTypes } from 'hrm-form-definitions';
 import { createReducer } from 'redux-promise-middleware-actions';
 
 import * as t from './types';
-import { ContactsState, SET_SAVED_CONTACT, UPDATE_CONTACT_ACTION } from './types';
 import {
-  INITIALIZE_CONTACT_STATE,
-  InitializeContactStateAction,
-  REMOVE_CONTACT_STATE,
-  RemoveContactStateAction,
-} from '../types';
+  ContactsState,
+  ContactUpdatingAction,
+  CREATE_CONTACT_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+  UPDATE_CONTACT_ACTION_FULFILLED,
+} from './types';
+import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import {
   createDraftReducer,
   EXISTING_CONTACT_CREATE_DRAFT_ACTION,
@@ -34,15 +35,17 @@ import {
   EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION,
   EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
   ExistingContactAction,
+  initialState as existingContactInitialState,
   LOAD_CONTACT_ACTION,
   loadContactReducer,
   loadTranscriptReducer,
   RELEASE_CONTACT_ACTION,
   releaseContactReducer,
+  SET_CONTACT_DIALOG_STATE,
   setCategoriesGridViewReducer,
+  setContactDialogStateReducer,
   toggleCategoryExpandedReducer,
   updateDraftReducer,
-  initialState as existingContactInitialState,
 } from './existingContacts';
 import {
   ContactDetailsAction,
@@ -53,10 +56,11 @@ import {
 import { ADD_EXTERNAL_REPORT_ENTRY, addExternalReportEntryReducer } from '../csam-report/existingContactExternalReport';
 import { resourceReferralReducer } from './resourceReferral';
 import { ContactCategoryAction, toggleSubCategoriesReducer } from './categories';
-import { configurationBase, RootState } from '..';
+import { RootState } from '..';
 import { createCaseAsyncAction } from '../case/saveCase';
 import { newContactState } from './contactState';
 import { saveContactReducer } from './saveContact';
+import { configurationBase } from '../storeNamespaces';
 
 export const emptyCategories = [];
 
@@ -107,31 +111,14 @@ export function reduce(
     | ExistingContactAction
     | ContactDetailsAction
     | ContactCategoryAction
-    | InitializeContactStateAction
     | RemoveContactStateAction
-    | t.UpdatedContactAction,
+    | t.UpdatedContactAction
+    | ContactUpdatingAction,
 ): ContactsState {
   let state = boundReferralReducer(inputState, action as any);
   state = toggleSubCategoriesReducer(state, action as ContactCategoryAction);
   state = newCaseReducer(state, action as any);
   switch (action.type) {
-    case INITIALIZE_CONTACT_STATE:
-      return {
-        ...state,
-        existingContacts: {
-          ...state.existingContacts,
-          [action.initialContact.id]: {
-            savedContact: action.initialContact,
-            draftContact: {
-              ...action.initialContact,
-              // Cheap deep copy
-              rawJson: JSON.parse(JSON.stringify(action.initialContact.rawJson)),
-            },
-            metadata: action.metadata,
-            references: new Set(action.references),
-          },
-        },
-      };
     case REMOVE_CONTACT_STATE: {
       const contactId = Object.values(state.existingContacts).find(cs => cs.savedContact.taskId === action.taskId)
         ?.savedContact.id;
@@ -206,7 +193,9 @@ export function reduce(
     case t.SET_EDITING_CONTACT: {
       return { ...state, editingContact: action.editing };
     }
-    case `${UPDATE_CONTACT_ACTION}_FULFILLED`: {
+    case UPDATE_CONTACT_ACTION_FULFILLED:
+    case CREATE_CONTACT_ACTION_FULFILLED:
+    case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED: {
       return { ...state, existingContacts: boundSaveContactReducer(state.existingContacts, action) };
     }
     case LOAD_CONTACT_ACTION: {
@@ -226,6 +215,9 @@ export function reduce(
     }
     case TOGGLE_DETAIL_EXPANDED_ACTION: {
       return { ...state, contactDetails: sectionExpandedStateReducer(state.contactDetails, action) };
+    }
+    case SET_CONTACT_DIALOG_STATE: {
+      return { ...state, existingContacts: setContactDialogStateReducer(state.existingContacts, action) };
     }
     case EXISTING_CONTACT_UPDATE_DRAFT_ACTION: {
       return {

@@ -469,5 +469,7 @@
   "Conference-AddConferenceCallParticipant": "Add Conference Call Participant",
   "Conference-EnterPhoneNumber": "Enter phone number",
   "Conference-DialButton": "Dial",
-  "HangupCallLeaveTooltip": "Leave Call"
+  "HangupCallLeaveTooltip": "Leave Call",
+  "NavigableContainer-BackButton": "Back",
+  "NavigableContainer-CloseButton": "Close"
 }

@@ -15,11 +15,11 @@
  */
 
 /* eslint-disable no-nested-ternary */
-import React, { PropsWithChildren } from 'react';
-import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, withStyles, TabProps } from '@material-ui/core';
+import React from 'react';
+import { ButtonBase, Input, MenuItem, Select, Tab, TabProps, Tabs, withStyles } from '@material-ui/core';
 import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
 import AssignmentInd from '@material-ui/icons/AssignmentIndOutlined';
-import { Icon, styled, Button } from '@twilio/flex-ui';
+import { Button, Icon, styled } from '@twilio/flex-ui';
 import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -497,13 +497,6 @@ export const HiddenText = styled('span')`
   line-height: 0px;
 `;
 HiddenText.displayName = 'HiddenText';
-
-export const CasePrintViewContainer = styled('div')`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-`;
-CasePrintViewContainer.displayName = 'CasePrintViewContainer';
 
 export const CasePrintViewSpinner = styled('div')`
   display: flex;

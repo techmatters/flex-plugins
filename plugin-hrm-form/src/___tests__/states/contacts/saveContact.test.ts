@@ -16,7 +16,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import promiseMiddleware from 'redux-promise-middleware';
 
-import { connectToCase, updateContactsFormInHrm } from '../../../services/ContactService';
+import { connectToCase, updateContactInHrm } from '../../../services/ContactService';
 import { completeTask, submitContactForm } from '../../../services/formSubmissionHelpers';
 import { Case, CustomITask, Contact } from '../../../types/types';
 import {
@@ -28,20 +28,21 @@ import {
   connectToCaseAsyncAction,
   saveContactReducer,
   submitContactFormAsyncAction,
-  updateContactsFormInHrmAsyncAction,
+  updateContactInHrmAsyncAction,
 } from '../../../states/contacts/saveContact';
+import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
 
 jest.mock('../../../services/ContactService');
 jest.mock('../../../services/formSubmissionHelpers');
 jest.mock('../../../components/case/Case');
 
-const mockUpdateContactsFormInHrm = updateContactsFormInHrm as jest.Mock<ReturnType<typeof updateContactsFormInHrm>>;
+const mockUpdateContactInHrm = updateContactInHrm as jest.Mock<ReturnType<typeof updateContactInHrm>>;
 const mockSubmitContactForm = submitContactForm as jest.Mock<ReturnType<typeof submitContactForm>>;
 const mockConnectToCase = connectToCase as jest.Mock<ReturnType<typeof connectToCase>>;
 const mockCompleteTask = completeTask as jest.Mock<ReturnType<typeof completeTask>>;
 
 beforeEach(() => {
-  mockUpdateContactsFormInHrm.mockReset();
+  mockUpdateContactInHrm.mockReset();
   mockSubmitContactForm.mockReset();
   mockConnectToCase.mockReset();
   mockCompleteTask.mockReset();
@@ -84,7 +85,7 @@ const baseContact: Contact = {
     childInformation: { firstName: 'Lorna', lastName: 'Ballantyne' },
     callerInformation: { firstName: 'Charlie', lastName: 'Ballantyne' },
     categories: {},
-    contactlessTask: { channel: 'web' },
+    contactlessTask: { channel: 'web', ...VALID_EMPTY_CONTACT.rawJson.contactlessTask },
   },
 };
 
@@ -108,10 +109,7 @@ const baseState: ExistingContactsState = {
   [baseContact.id]: {
     savedContact: baseContact,
     references: new Set('x'),
-    categories: {
-      gridView: false,
-      expanded: {},
-    },
+    metadata: VALID_EMPTY_METADATA,
   },
 } as const;
 
@@ -121,15 +119,15 @@ describe('actions', () => {
   test('Calls the updateContactsFormInHrmAsyncAction action, and update a contact', async () => {
     const { dispatch, getState } = testStore(baseState);
     const startingState = getState();
-    const mockSavedContact = { id: '12' }; // Create a mock savedContact object
-    updateContactsFormInHrm.mockResolvedValue(mockSavedContact);
+    const mockSavedContact = { id: '12', ...VALID_EMPTY_CONTACT }; // Create a mock savedContact object
+    mockUpdateContactInHrm.mockResolvedValue(mockSavedContact);
 
-    (await (dispatch(updateContactsFormInHrmAsyncAction(baseContact.id, baseContact.rawJson)) as unknown)) as Promise<
-      void
-    >;
+    (await (dispatch(
+      updateContactInHrmAsyncAction(baseContact, { conversationDuration: 1234 }),
+    ) as unknown)) as Promise<void>;
     const state = getState();
 
-    expect(updateContactsFormInHrm).toHaveBeenCalledWith(baseContact.id, baseContact.rawJson);
+    expect(updateContactInHrm).toHaveBeenCalledWith(baseContact.id, { conversationDuration: 1234 });
 
     expect(state).toStrictEqual({
       [baseContact.id]: {
@@ -158,15 +156,15 @@ describe('actions', () => {
         [baseContact.id]: {
           savedContact: baseContact,
           references: new Set(['TEST_REFERENCE']),
-          categories: { gridView: false, expanded: {} },
+          metadata: VALID_EMPTY_METADATA,
         },
       },
-      updateContactsFormInHrmAsyncAction(baseContact.id, baseContact.rawJson),
+      updateContactInHrmAsyncAction(baseContact, { conversationDuration: 1234 }),
     );
     expect(newState[baseContact.id].savedContact).toStrictEqual(baseContact);
     expect(newState[baseContact.id].references.size).toStrictEqual(1);
     expect(newState[baseContact.id].references.has('TEST_REFERENCE')).toBeTruthy();
-    expect(newState[baseContact.id].categories).toStrictEqual({ gridView: false, expanded: {} });
+    expect(newState[baseContact.id].metadata).toStrictEqual(VALID_EMPTY_METADATA);
   });
 
   test('Same contact currently loaded for that ID with a different reference - leaves contact the same and adds the reference', () => {
@@ -175,10 +173,10 @@ describe('actions', () => {
         [baseContact.id]: {
           savedContact: baseContact,
           references: new Set(['TEST_FIRST_REFERENCE', 'TEST_SECOND_REFERENCE']),
-          categories: { gridView: false, expanded: {} },
+          metadata: VALID_EMPTY_METADATA,
         },
       },
-      updateContactsFormInHrmAsyncAction(baseContact.id, baseContact.rawJson, 'demo-v1'),
+      updateContactInHrmAsyncAction(baseContact, { conversationDuration: 1234 }, 'demo-v1'),
     );
     expect(newState[baseContact.id].savedContact).toStrictEqual(baseContact);
     expect(newState[baseContact.id].references.size).toStrictEqual(2);

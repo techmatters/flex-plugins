@@ -39,10 +39,11 @@ import {
   DateFilterValue,
 } from './dateFilters';
 import CategoriesFilter, { Category } from './CategoriesFilter';
-import { caseListBase, configurationBase, namespace, RootState } from '../../../states';
+import { RootState } from '../../../states';
 import * as CaseListSettingsActions from '../../../states/caseList/settings';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 import { canOnlyViewOwnCases } from '../../../permissions';
+import { caseListBase, configurationBase, namespace } from '../../../states/storeNamespaces';
 /**
  * Reads the definition version and returns and array of items (type Item[])
  * to be used as the options for the status filter

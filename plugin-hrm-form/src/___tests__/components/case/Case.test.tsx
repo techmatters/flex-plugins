@@ -27,19 +27,19 @@ import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-fo
 
 import { mockGetDefinitionsResponse, mockPartialConfiguration } from '../../mockGetConfig';
 import Case from '../../../components/case';
-import {
-  namespace,
-  configurationBase,
-  contactFormsBase,
-  connectedCaseBase,
-  routingBase,
-  RootState,
-} from '../../../states';
+import { RootState } from '../../../states';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { Contact, StandaloneITask } from '../../../types/types';
 import { LOAD_CONTACT_ACTION } from '../../../states/contacts/existingContacts';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { RecursivePartial } from '../../RecursivePartial';
+import {
+  configurationBase,
+  connectedCaseBase,
+  contactFormsBase,
+  namespace,
+  routingBase,
+} from '../../../states/storeNamespaces';
 
 jest.mock('../../../services/CaseService', () => ({ getActivities: jest.fn(() => []), cancelCase: jest.fn() }));
 jest.mock('../../../permissions', () => ({
@@ -129,7 +129,7 @@ describe('useState mocked', () => {
           },
         },
       },
-      [routingBase]: { tasks: { task1: { route: 'new-case' } } },
+      routing: { tasks: { task1: [{ route: 'case', subroute: 'home' }] } },
     });
 
     ownProps = {
@@ -163,7 +163,7 @@ describe('useState mocked', () => {
       [connectedCaseBase]: {
         tasks: {},
       },
-      [routingBase]: { tasks: { task1: { route: 'new-case' } } },
+      [routingBase]: { tasks: { task1: [{ route: 'case', subroute: 'home' }] } },
       [configurationBase]: {
         counselors: {
           list: [],
@@ -244,7 +244,7 @@ describe('useState mocked', () => {
     expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
     expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe('6/29/2020');
     expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe('—');
-    expect(screen.getByTestId('Case-DetailsHeaderChildName').innerHTML).toContain('first last');
+    expect(screen.getByTestId('NavigableContainer-Title').innerHTML).toContain('first last');
   });
 
   test('Case (should render, after update)', async () => {

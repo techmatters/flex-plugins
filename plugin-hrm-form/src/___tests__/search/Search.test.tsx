@@ -24,11 +24,15 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import Search from '../../components/search';
-import { SearchPages } from '../../states/search/types';
-import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions } from '../../hrmConfig';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-import { csamReportBase } from '../../states';
+import { csamReportBase } from '../../states/storeNamespaces';
+import { RecursivePartial } from '../RecursivePartial';
+import { RootState } from '../../states';
+import { Contact, SearchCaseResult } from '../../types/types';
+import { VALID_EMPTY_CONTACT } from '../testContacts';
+import { DetailedSearchContactsResult, SearchFormValues } from '../../states/search/types';
+import { AppRoutes } from '../../states/routing/types';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -40,10 +44,31 @@ jest.mock('../../services/ServerlessService', () => ({
   populateCounselors: async () => [],
 }));
 
+jest.mock('@twilio/flex-ui', () => ({
+  ...(jest.requireActual('@twilio/flex-ui') as any),
+  Actions: {
+    invokeAction: jest.fn(),
+  },
+}));
+
 function createState(
   taskId,
-  { currentPage, searchFormValues, currentContact, searchResult, detailsExpanded, previousContacts },
-) {
+  {
+    searchFormValues,
+    currentContact,
+    detailsExpanded,
+    previousContacts,
+    route,
+    searchContactsResult,
+  }: {
+    searchFormValues: SearchFormValues;
+    currentContact: Contact;
+    detailsExpanded: any;
+    previousContacts: { contacts?: DetailedSearchContactsResult; cases?: SearchCaseResult };
+    route: AppRoutes;
+    searchContactsResult?: DetailedSearchContactsResult;
+  },
+): RecursivePartial<RootState> {
   return {
     'plugin-hrm-form': {
       configuration: {
@@ -56,14 +81,13 @@ function createState(
       },
       routing: {
         tasks: {
-          'standalone-task-sid': 'some-id',
+          'standalone-task-sid': [route],
+          [taskId]: [route],
         },
       },
       searchContacts: {
         tasks: {
           [taskId]: {
-            currentPage: currentPage || SearchPages.form,
-            currentContact: currentContact || null,
             form: searchFormValues || {
               firstName: '',
               lastName: '',
@@ -72,24 +96,19 @@ function createState(
               dateFrom: '',
               dateTo: '',
             },
-            searchResult: searchResult || [],
             previousContacts,
             detailsExpanded: detailsExpanded || {},
             isRequesting: false,
             error: null,
+            searchContactsResult,
           },
         },
       },
       activeContacts: {
-        tasks: {
-          [taskId]: {
-            helpline: 'helpline',
-          },
-        },
         existingContacts: {
           'TEST CONTACT ID': {
-            refCount: 1,
-            contact: currentContact,
+            references: ['1'],
+            savedContact: currentContact,
           },
         },
         contactDetails: {
@@ -99,8 +118,14 @@ function createState(
         },
       },
       [csamReportBase]: {
-        tasks: {},
         contacts: {},
+      },
+    },
+    flex: {
+      worker: {
+        attributes: {
+          roles: [] as any,
+        },
       },
     },
   };
@@ -127,24 +152,23 @@ afterEach(() => {
 });
 
 test('<Search> should display <SearchForm />', async () => {
-  const currentPage = SearchPages.form;
-  const searchFormValues = {
+  const searchFormValues: SearchFormValues = {
     firstName: 'Jill',
     lastName: 'Smith',
     counselor: { label: 'Counselor Name', value: 'counselor-id' },
     phoneNumber: 'Anonymous',
     dateFrom: '2020-03-10',
     dateTo: '2020-03-15',
+    contactNumber: undefined,
   };
   const task = { taskSid: 'WT123', attributes: { preEngagementData: {} } };
 
   const initialState = createState(task.taskSid, {
-    currentPage,
     searchFormValues,
     detailsExpanded,
     previousContacts: undefined,
     currentContact: undefined,
-    searchResult: undefined,
+    route: { route: 'search', subroute: 'form' },
   });
   const store = mockStore(initialState);
 
@@ -165,14 +189,14 @@ test('<Search> should display <SearchForm />', async () => {
 });
 
 test('<Search> should display <SearchForm /> with previous contacts checkbox', async () => {
-  const currentPage = SearchPages.form;
-  const searchFormValues = {
+  const searchFormValues: SearchFormValues = {
     firstName: 'Jill',
     lastName: 'Smith',
     counselor: { label: 'Counselor Name', value: 'counselor-id' },
     phoneNumber: 'Anonymous',
     dateFrom: '2020-03-10',
     dateTo: '2020-03-15',
+    contactNumber: undefined,
   };
   const task = {
     taskSid: 'WT123',
@@ -185,16 +209,15 @@ test('<Search> should display <SearchForm /> with previous contacts checkbox', a
 
   const previousContacts = {
     contacts: { count: 3, contacts: [] },
-    casesCount: { count: 1, cases: [] },
+    cases: { count: 1, cases: [] },
   };
 
   const initialState = createState(task.taskSid, {
-    currentPage,
     searchFormValues,
     detailsExpanded,
     previousContacts,
     currentContact: undefined,
-    searchResult: undefined,
+    route: { route: 'search', subroute: 'form' },
   });
   const store = mockStore(initialState);
 
@@ -214,36 +237,34 @@ test('<Search> should display <SearchForm /> with previous contacts checkbox', a
 });
 
 test('<Search> should display <ContactDetails />', async () => {
-  const currentPage = SearchPages.details;
-  const currentContact = {
-    contactId: 'TEST CONTACT ID',
-    details: {
-      definitionVersion: 'v1',
+  const currentContact: Contact = {
+    ...VALID_EMPTY_CONTACT,
+    id: 'TEST CONTACT ID',
+    timeOfContact: new Date().toISOString(),
+    rawJson: {
+      callType: 'Child calling about self',
+      categories: {},
+      contactlessTask: VALID_EMPTY_CONTACT.rawJson.contactlessTask,
+      definitionVersion: DefinitionVersionId.v1,
       childInformation: {
-        name: {
-          firstName: 'Jill',
-          lastName: 'Smith',
-        },
+        firstName: 'Jill',
+        lastName: 'Smith',
         gender: 'Other',
         age: '18-25',
         language: 'Language 1',
         nationality: 'Nationality 1',
         ethnicity: 'Ethnicity 1',
-        location: {
-          streetAddress: '',
-          city: '',
-          stateOrCounty: '',
-          postalCode: '',
-          phone1: '',
-          phone2: '',
-        },
+        streetAddress: '',
+        city: '',
+        stateOrCounty: '',
+        postalCode: '',
+        phone1: '',
+        phone2: '',
         refugee: false,
         disabledOrSpecialNeeds: false,
         hiv: false,
-        school: {
-          name: 'school',
-          gradeLevel: 'some',
-        },
+        name: 'school',
+        gradeLevel: 'some',
       },
       caseInformation: {
         callSummary: 'Child calling about self',
@@ -257,48 +278,32 @@ test('<Search> should display <ContactDetails />', async () => {
         wouldTheChildRecommendUsToAFriend: false,
       },
       callerInformation: {
-        name: {
-          firstName: '',
-          lastName: '',
-        },
+        firstName: '',
+        lastName: '',
         relationshipToChild: '',
         gender: '',
         age: '',
         language: '',
         nationality: '',
         ethnicity: '',
-        location: {
-          city: '',
-          phone1: '',
-          phone2: '',
-          postalCode: '',
-          stateOrCounty: '',
-          streetAddress: '',
-        },
+        city: '',
+        phone1: '',
+        phone2: '',
+        postalCode: '',
+        stateOrCounty: '',
+        streetAddress: '',
       },
     },
-    overview: {
-      dateTime: '2020-03-10',
-      name: 'Jill Smith',
-      customerNumber: 'Anonymous',
-      callType: 'Child calling about self',
-      categories: { category1: ['Tag1', 'Tag2'] },
-      counselor: 'counselor-id',
-      notes: 'Jill Smith Notes',
-      channel: channelTypes.web,
-      conversationDuration: 10,
-    },
-    counselor: 'Counselor',
   };
   const task = { taskSid: 'WT123' };
 
   const initialState = createState(task.taskSid, {
-    currentPage,
     currentContact,
     detailsExpanded,
     searchFormValues: undefined,
     previousContacts: undefined,
-    searchResult: undefined,
+    searchContactsResult: { contacts: [currentContact], count: 1 },
+    route: { route: 'contact', subroute: 'view', id: currentContact.id },
   });
   const store = mockStore(initialState);
 

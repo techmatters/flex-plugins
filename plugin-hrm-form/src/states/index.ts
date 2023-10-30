@@ -31,22 +31,21 @@ import { reduce as ConversationsReducer } from './conversations';
 import { reduce as ConferencingReducer } from './conferencing';
 import { CaseState } from './case/types';
 import { ContactsState } from './contacts/types';
-
-// Register your redux store under a unique namespace
-export const namespace = 'plugin-hrm-form';
-export const contactFormsBase = 'activeContacts';
-export const searchContactsBase = 'searchContacts';
-export const caseListBase = 'caseList';
-export const connectedCaseBase = 'connectedCase';
-export const queuesStatusBase = 'queuesStatusState';
-export const configurationBase = 'configuration';
-export const conversationsBase = 'conversations';
-export const routingBase = 'routing';
-export const csamReportBase = 'csam-report';
-const dualWriteBase = 'dualWrite';
-export const referrableResourcesBase = 'referrableResources';
-// eslint-disable-next-line import/no-unused-modules
-export const conferencingBase = 'conferencing';
+import {
+  caseListBase,
+  conferencingBase,
+  configurationBase,
+  connectedCaseBase,
+  contactFormsBase,
+  conversationsBase,
+  csamReportBase,
+  dualWriteBase,
+  namespace,
+  queuesStatusBase,
+  referrableResourcesBase,
+  routingBase,
+  searchContactsBase,
+} from './storeNamespaces';
 
 const reducers = {
   [searchContactsBase]: SearchFormReducer,

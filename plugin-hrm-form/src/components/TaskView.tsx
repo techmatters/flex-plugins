@@ -21,21 +21,20 @@ import { TaskHelper } from '@twilio/flex-ui';
 
 import HrmForm from './HrmForm';
 import FormNotEditable from './FormNotEditable';
-import { RootState, namespace, contactFormsBase, searchContactsBase, routingBase, configurationBase } from '../states';
-import * as GeneralActions from '../states/actions';
+import { RootState } from '../states';
 import { hasTaskControl } from '../utils/transfer';
-import type { DefinitionVersion } from '../states/types';
-import { CustomITask, isOfflineContactTask, isInMyBehalfITask, Contact } from '../types/types';
+import { CustomITask, isOfflineContactTask, isInMyBehalfITask } from '../types/types';
 import PreviousContactsBanner from './PreviousContactsBanner';
 import { Flex } from '../styles/HrmStyles';
 import { isStandaloneITask } from './case/Case';
 import { getHelplineToSave } from '../services/HelplineService';
 import { getAseloFeatureFlags } from '../hrmConfig';
 import { rerenderAgentDesktop } from '../rerenderView';
-import { getContactByTaskSid } from '../services/ContactService';
-import { ContactMetadata } from '../states/contacts/types';
 import { updateDraft } from '../states/contacts/existingContacts';
-import { newContactMetaData } from '../states/contacts/contactState';
+import { loadContactFromHrmByTaskSidAsyncAction } from '../states/contacts/saveContact';
+import { namespace } from '../states/storeNamespaces';
+import { isRouteModal } from '../states/routing/types';
+import { getCurrentBaseRoute } from '../states/routing/getRoute';
 
 type OwnProps = {
   task: CustomITask;
@@ -46,17 +45,21 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const TaskView: React.FC<Props> = props => {
-  const { shouldRecreateState, currentDefinitionVersion, task, contact, updateHelpline, recreateContactState } = props;
+  const {
+    shouldRecreateState,
+    currentDefinitionVersion,
+    task,
+    contact,
+    updateHelpline,
+    loadContactFromHrmByTaskSid,
+    isModalOpen,
+  } = props;
 
   React.useEffect(() => {
     if (shouldRecreateState) {
-      getContactByTaskSid(task.taskSid).then(contact => {
-        if (contact) {
-          recreateContactState(currentDefinitionVersion)(contact, newContactMetaData(true));
-        }
-      });
+      loadContactFromHrmByTaskSid();
     }
-  }, [currentDefinitionVersion, recreateContactState, shouldRecreateState, task]);
+  }, [currentDefinitionVersion, loadContactFromHrmByTaskSid, shouldRecreateState, task]);
 
   // Force a re-render on unmount (temporary fix NoTaskView issue with Offline Contacts)
   React.useEffect(() => {
@@ -107,7 +110,7 @@ const TaskView: React.FC<Props> = props => {
 
   return (
     <Flex flexDirection="column" style={{ pointerEvents: isFormLocked ? 'none' : 'auto', height: '100%' }}>
-      {featureFlags.enable_previous_contacts && <PreviousContactsBanner task={task} />}
+      {featureFlags.enable_previous_contacts && !isModalOpen && <PreviousContactsBanner task={task} />}
       {isFormLocked && <FormNotEditable />}
       <Flex
         flexDirection="column"
@@ -126,16 +129,18 @@ const TaskView: React.FC<Props> = props => {
 
 TaskView.displayName = 'TaskView';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+const mapStateToProps = (
+  { [namespace]: { configuration, activeContacts, routing, searchContacts } }: RootState,
+  ownProps: OwnProps,
+) => {
   const { task } = ownProps;
-  const { currentDefinitionVersion } = state[namespace][configurationBase];
+  const { currentDefinitionVersion } = configuration;
   // Check if the entry for this task exists in each reducer
   const { savedContact: contact } =
-    (task && Object.values(state[namespace][contactFormsBase]?.existingContacts).find(c => c.savedContact?.taskId)) ??
-    {};
+    (task && Object.values(activeContacts.existingContacts).find(c => c.savedContact?.taskId)) ?? {};
   const contactFormStateExists = Boolean(contact);
-  const routingStateExists = Boolean(task && state[namespace][routingBase].tasks[task.taskSid]);
-  const searchStateExists = Boolean(task && state[namespace][searchContactsBase].tasks[task.taskSid]);
+  const routingStateExists = Boolean(task && routing.tasks[task.taskSid]);
+  const searchStateExists = Boolean(task && searchContacts.tasks[task.taskSid]);
 
   const shouldRecreateState =
     currentDefinitionVersion && (!contactFormStateExists || !routingStateExists || !searchStateExists);
@@ -144,12 +149,12 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     contact,
     shouldRecreateState,
     currentDefinitionVersion,
+    isModalOpen: routingStateExists && isRouteModal(getCurrentBaseRoute(routing, task.taskSid)),
   };
 };
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
-  recreateContactState: (definitions: DefinitionVersion) => (initialContact: Contact, metadata: ContactMetadata) =>
-    dispatch(GeneralActions.recreateContactState(definitions)(initialContact, metadata, [task.taskSid])),
+  loadContactFromHrmByTaskSid: () => dispatch(loadContactFromHrmByTaskSidAsyncAction(task.taskSid)),
   updateHelpline: (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline })),
 });
 

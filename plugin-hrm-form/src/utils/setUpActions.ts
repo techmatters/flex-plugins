@@ -26,7 +26,7 @@ import {
 import { Conversation } from '@twilio/conversations';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
-import { adjustChatCapacity, sendSystemMessage, getDefinitionVersion } from '../services/ServerlessService';
+import { adjustChatCapacity, getDefinitionVersion, sendSystemMessage } from '../services/ServerlessService';
 import * as Actions from '../states/contacts/actions';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
@@ -36,12 +36,12 @@ import * as TransferHelpers from './transfer';
 import { CustomITask, FeatureFlags } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
-import { createContact } from '../services/ContactService';
 import type { RootState } from '../states';
 import { getTaskLanguage } from './task';
 import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
-import { loadContact } from '../states/contacts/existingContacts';
-import { newContactState } from '../states/contacts/contactState';
+import { newContact } from '../states/contacts/contactState';
+import asyncDispatch from '../states/asyncDispatch';
+import { createContactAsyncAction } from '../states/contacts/saveContact';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -56,19 +56,6 @@ export const loadCurrentDefinitionVersion = async () => {
   Manager.getInstance().store.dispatch(updateDefinitionVersion(definitionVersion, definitions));
 };
 
-/**
- * @param task
- */
-/* eslint-disable sonarjs/prefer-single-boolean-return */
-export const shouldSendInsightsData = (task: CustomITask) => {
-  const featureFlags = getAseloFeatureFlags();
-
-  if (!featureFlags.enable_save_insights) return false;
-  if (task.attributes?.skipInsights) return false;
-  if (featureFlags.enable_transfers && !TransferHelpers.hasTaskControl(task)) return false;
-
-  return true;
-};
 /* eslint-enable sonarjs/prefer-single-boolean-return */
 
 const saveEndMillis = async (payload: ActionPayload) => {
@@ -87,18 +74,10 @@ export const initializeContactForm = async ({ task }: ActionPayload) => {
   const { currentDefinitionVersion } = (Manager.getInstance().store.getState() as RootState)[
     'plugin-hrm-form'
   ].configuration;
-  const { savedContact: newContact, metadata } = newContactState(currentDefinitionVersion)(false);
+  const contact = newContact(currentDefinitionVersion);
   const { workerSid } = getHrmConfig();
   const taskSid = task.attributes?.transferMeta?.originalTask ?? task.taskSid;
-  const savedContact = await createContact(
-    newContact,
-    workerSid,
-    taskSid, // if this is a transfer, use the original task sid to prevent duplication.
-  );
-  Manager.getInstance().store.dispatch(
-    GeneralActions.initializeContactState(currentDefinitionVersion)(savedContact, metadata),
-  );
-  Manager.getInstance().store.dispatch(loadContact(savedContact, taskSid, true));
+  await asyncDispatch(Manager.getInstance().store.dispatch)(createContactAsyncAction(contact, workerSid, taskSid));
 };
 
 const sendMessageOfKey = (messageKey: string) => (
