@@ -14,7 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { configurationBase, namespace, RootState } from '..';
+import { RootState } from '..';
+import { configurationBase, namespace } from '../storeNamespaces';
 
 export const selectCannedResponses = (state: RootState) =>
   state[namespace][configurationBase].currentDefinitionVersion?.cannedResponses;

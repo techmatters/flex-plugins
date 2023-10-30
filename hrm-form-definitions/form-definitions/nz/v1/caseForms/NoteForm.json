@@ -6,38 +6,6 @@
     "placeholder": ""
   },
   {
-    "name": "externalIntervention",
-    "label": "Was an external intervention made?",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Yes",
-        "label": "Yes"
-      },
-      {
-        "value": "No",
-        "label": "No"
-      }
-    ]
-  },
-  {
-    "name": "externalInterventionDetails",
-    "label": "External Intervention Details",
-    "type": "textarea",
-    "placeholder": ""
-  },
-  {
-    "name": "referenceNumber",
-    "label": "Reference number for external interventions (if provided)",
-    "type": "textarea",
-    "placeholder": ""
-  },
-  {
     "name": "stepsNeeded",
     "label": "Any next steps that you feel may need to be considered?",
     "type": "textarea",

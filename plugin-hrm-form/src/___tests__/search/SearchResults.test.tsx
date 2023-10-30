@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { Provider } from 'react-redux';
@@ -22,12 +22,19 @@ import configureMockStore from 'redux-mock-store';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
-import HrmTheme from '../../styles/HrmTheme';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
-import { SearchPages } from '../../states/search/types';
 import SearchResults from '../../components/search/SearchResults';
-import { configurationBase, searchContactsBase, connectedCaseBase, contactFormsBase, namespace } from '../../states';
 import { getDefinitionVersions } from '../../hrmConfig';
+import {
+  configurationBase,
+  connectedCaseBase,
+  contactFormsBase,
+  namespace,
+  searchContactsBase,
+} from '../../states/storeNamespaces';
+import { RootState } from '../../states';
+import { RecursivePartial } from '../RecursivePartial';
+import { VALID_EMPTY_METADATA } from '../testContacts';
 
 jest.mock('../../permissions', () => ({
   getPermissionsForCase: jest.fn(() => ({
@@ -45,15 +52,13 @@ jest.mock('../../permissions', () => ({
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
-const themeConf = {
-  colorTheme: HrmTheme,
-};
+const themeConf = {};
 
 const mockStore = configureMockStore([]);
 
 const task = { taskSid: 'task1' };
-let state1;
-let stateOnCasesTab;
+let state1: RecursivePartial<RootState>;
+let stateOnCasesTab: RecursivePartial<RootState>;
 
 let store1;
 let storeOnCasesTab;
@@ -82,21 +87,26 @@ describe('Search Results', () => {
           currentDefinitionVersion: mockV1,
         },
         [contactFormsBase]: {
-          tasks: {
-            task1: {
-              childInformation: {
-                name: { firstName: { value: 'first' }, lastName: { value: 'last' } },
+          existingContacts: {
+            contact1: {
+              savedContact: {
+                rawJson: {
+                  childInformation: {
+                    firstName: 'first',
+                    lastName: 'last',
+                  },
+                },
               },
-              metadata: {},
+              references: [],
+              metadata: { ...VALID_EMPTY_METADATA },
             },
           },
         },
         [connectedCaseBase]: {
           tasks: {
             task1: {
-              temporaryCaseInfo: null,
               connectedCase: {
-                createdAt: 1593469560208,
+                createdAt: new Date(1593469560208).toISOString(),
                 twilioWorkerId: 'worker1',
                 status: 'open',
                 info: null,
@@ -106,16 +116,12 @@ describe('Search Results', () => {
         },
         [searchContactsBase]: {
           tasks: {
-            task1: {
-              currentPage: SearchPages.resultsContacts,
-              temporaryCaseInfo: null,
-              connectedCase: {
-                createdAt: 1593469560208,
-                twilioWorkerId: 'worker1',
-                status: 'open',
-                info: null,
-              },
-            },
+            task1: {},
+          },
+        },
+        routing: {
+          tasks: {
+            task1: [{ route: 'search', subroute: 'contact-results' }],
           },
         },
       },
@@ -124,12 +130,10 @@ describe('Search Results', () => {
     stateOnCasesTab = {
       [namespace]: {
         ...state1[namespace],
-        [searchContactsBase]: {
+
+        routing: {
           tasks: {
-            task1: {
-              ...state1[namespace][searchContactsBase].tasks.task1,
-              currentPage: SearchPages.resultsCases,
-            },
+            task1: [{ route: 'search', subroute: 'case-results' }],
           },
         },
       },

@@ -29,11 +29,12 @@ import {
   isS3StoredTranscript,
   isS3StoredRecording,
   isTwilioStoredMedia,
-  Contact,
+  ContactRawJson,
+  CustomITask,
+  StandaloneITask,
 } from '../../types/types';
 import {
   DetailsContainer,
-  NameText,
   ContactAddedFont,
   SectionActionButton,
   SectionValueText,
@@ -45,15 +46,16 @@ import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/Domain
 import { isNonDataCallType } from '../../states/validationRules';
 import { formatCategories, formatDuration, mapChannelForInsights } from '../../utils';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
-import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
+import { RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getPermissionsForContact, getPermissionsForViewingIdentifiers, PermissionActions } from '../../permissions';
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
 import { TranscriptSection, RecordingSection } from './MediaSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
-import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import type { ResourceReferral } from '../../states/contacts/resourceReferral';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
+import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
+import { changeRoute } from '../../states/routing/actions';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -93,6 +95,7 @@ const formatCsamReport = (report: CSAMReportEntry) => {
 // TODO: complete this type
 type OwnProps = {
   contactId: string;
+  task: CustomITask | StandaloneITask;
   context: DetailsContext;
   showActionIcons?: boolean;
   handleOpenConnectDialog?: (event: any) => void;
@@ -112,7 +115,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   counselorsHash,
   savedContact,
   toggleSectionExpandedForContext,
-  createContactDraft,
+  navigate,
   enableEditing,
   canViewTwilioTranscript,
   createDraftCsamReport,
@@ -174,9 +177,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   // Format the obtained information
   const isDataCall = !isNonDataCallType(callType);
-  const childOrUnknown = contactLabelFromHrmContact(definitionVersion, savedContact, {
-    substituteForId: false,
-  });
   const formattedChannel =
     channel === 'default'
       ? mapChannelForInsights(rawJson.contactlessTask.channel.toString())
@@ -205,7 +205,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const addedBy = counselorsHash[createdBy];
   const counselorName = counselorsHash[twilioWorkerId];
   const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(section);
-  const navigate = (route: ContactDetailsRoute) => createContactDraft(route);
 
   const EditIcon = ContactDetailsIcon(Edit);
 
@@ -219,9 +218,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
   );
 
   const loadConversationIntoOverlay = async () => {
-    const twilioStoredMedia = savedContact.conversationMedia.find(isTwilioStoredMedia);
+    const { storeTypeSpecificData } = savedContact.conversationMedia.find(isTwilioStoredMedia);
     await Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_PLAY, {
-      taskSid: twilioStoredMedia.reservationSid,
+      taskSid: storeTypeSpecificData.reservationSid,
     });
   };
 
@@ -255,16 +254,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
-  const displayContactId = savedContact.id?.toString().startsWith('__unsaved')
-    ? 'ContactDetails-UnsavedContact'
-    : `#${savedContact.id}`;
-
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
-      <NameText>
-        <Template code={displayContactId} /> {childOrUnknown}
-      </NameText>
-
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
 
       {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
@@ -304,7 +295,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           expanded={detailsExpanded[CALLER_INFORMATION]}
           handleExpandClick={() => toggleSection(CALLER_INFORMATION)}
           showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
-          handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CALLER_INFORMATION)}
+          handleEditClick={() => navigate('callerInformation')}
           buttonDataTestid="ContactDetails-Section-CallerInformation"
           handleOpenConnectDialog={handleOpenConnectDialog}
           showActionIcons={showActionIcons}
@@ -323,7 +314,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           expanded={detailsExpanded[CHILD_INFORMATION]}
           handleExpandClick={() => toggleSection(CHILD_INFORMATION)}
           showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
-          handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CHILD_INFORMATION)}
+          handleEditClick={() => navigate('childInformation')}
           buttonDataTestid="ContactDetails-Section-ChildInformation"
           handleOpenConnectDialog={handleOpenConnectDialog}
           showActionIcons={showActionIcons}
@@ -343,7 +334,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           handleExpandClick={() => toggleSection(ISSUE_CATEGORIZATION)}
           buttonDataTestid="ContactDetails-Section-IssueCategorization"
           showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
-          handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CATEGORIES)}
+          handleEditClick={() => navigate('categories')}
         >
           {formattedCategories.length ? (
             formattedCategories.map((c, index) => (
@@ -371,7 +362,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           buttonDataTestid={`ContactDetails-Section-${CONTACT_SUMMARY}`}
           showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
           handleEditClick={() => {
-            navigate(ContactDetailsRoute.EDIT_CASE_INFORMATION);
+            navigate('caseInformation');
           }}
         >
           {definitionVersion.tabbedForms.CaseInformationTab.filter(e => !isNonSaveable(e)).map(e => (
@@ -454,11 +445,14 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   ),
 });
 
-const mapDispatchToProps = (dispatch, { contactId, context }: OwnProps) => ({
+const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) => ({
   toggleSectionExpandedForContext: (section: ContactDetailsSectionsType) =>
     dispatch(toggleDetailSectionExpanded(context, section)),
   createContactDraft: (draftRoute: ContactDetailsRoute) => dispatch(createDraft(contactId, draftRoute)),
   createDraftCsamReport: () => dispatch(newCSAMReportActionForContact(contactId)),
+  navigate: (
+    form: keyof Pick<ContactRawJson, 'caseInformation' | 'callerInformation' | 'categories' | 'childInformation'>,
+  ) => dispatch(changeRoute({ route: 'contact', subroute: 'edit', id: contactId, form }, task.taskSid)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);

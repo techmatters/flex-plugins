@@ -15,6 +15,7 @@
             "enable_twilio_transcripts": false,
             "enable_voice_recordings": false
         },
+        "helplineLanguage": "en-US",
         "permissionConfig": "et"
     },
     "ui_attributes": {

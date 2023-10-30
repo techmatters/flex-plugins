@@ -25,12 +25,14 @@ import configureMockStore from 'redux-mock-store';
 import { DefinitionVersion, DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
-import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
 import EditCaseSummary, { EditCaseSummaryProps } from '../../../components/case/EditCaseSummary';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { StandaloneITask } from '../../../types/types';
-import { AppRoutes } from '../../../states/routing/types';
+import { CaseRoute } from '../../../states/routing/types';
 import { changeRoute } from '../../../states/routing/actions';
+import { namespace } from '../../../states/storeNamespaces';
+import { RecursivePartial } from '../../RecursivePartial';
+import { RootState } from '../../../states';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -40,30 +42,35 @@ let mockV1: DefinitionVersion;
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
 
-const state = {
+const state: RecursivePartial<RootState> = {
   [namespace]: {
-    [configurationBase]: {
+    configuration: {
       counselors: {
         list: [],
         hash: { worker1: 'worker1 name' },
       },
     },
-    [contactFormsBase]: {
-      tasks: {
-        task1: {
-          childInformation: {
-            name: { firstName: { value: 'first' }, lastName: { value: 'last' } },
+    activeContacts: {
+      existingContacts: {
+        contact1: {
+          savedContact: {
+            rawJson: {
+              childInformation: {
+                firstName: 'first',
+                lastName: 'last',
+              },
+            },
           },
           metadata: {},
         },
       },
     },
-    [connectedCaseBase]: {
+    connectedCase: {
       tasks: {
         task1: {
           caseWorkingCopy: { sections: {} },
           connectedCase: {
-            createdAt: 1593469560208,
+            createdAt: new Date().toISOString(),
             twilioWorkerId: 'worker1',
             status: 'open',
             info: {},
@@ -73,11 +80,17 @@ const state = {
       },
     },
     routing: {
-      route: 'new-case',
       tasks: {
-        task1: {
-          route: 'new-case',
-        },
+        task1: [
+          {
+            route: 'case',
+            subroute: 'home',
+          },
+          {
+            route: 'case',
+            subroute: 'caseSummary',
+          },
+        ],
       },
     },
   },
@@ -92,7 +105,7 @@ const task = {
 
 describe('Test EditCaseSummary', () => {
   let ownProps: EditCaseSummaryProps;
-  const exitRoute: AppRoutes = { route: 'new-case' };
+  const exitRoute: CaseRoute = { route: 'case', subroute: 'home' };
 
   beforeAll(async () => {
     const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
@@ -106,7 +119,6 @@ describe('Test EditCaseSummary', () => {
     mockReset();
     ownProps = {
       task: task as StandaloneITask,
-      exitRoute,
       definitionVersion: mockV1,
       can: () => true,
     };
@@ -123,14 +135,8 @@ describe('Test EditCaseSummary', () => {
 
     expect(store.dispatch).not.toHaveBeenCalledWith(changeRoute(exitRoute, 'task1'));
 
-    expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument();
-    screen.getByTestId('Case-CloseCross').click();
-    expect(store.dispatch).not.toHaveBeenCalledWith(changeRoute(exitRoute, 'task1'));
-
-    store.dispatch.mockClear();
-
-    expect(screen.getByTestId('Case-CloseButton')).toBeInTheDocument();
-    screen.getByTestId('Case-CloseButton').click();
+    expect(screen.getByTestId('NavigableContainer-BackButton')).toBeInTheDocument();
+    screen.getByTestId('NavigableContainer-BackButton').click();
     expect(store.dispatch).not.toHaveBeenCalledWith(changeRoute(exitRoute, 'task1'));
   });
 

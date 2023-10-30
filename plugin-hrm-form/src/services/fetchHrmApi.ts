@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { fetchApi } from './fetchApi';
+import { fetchApi, FetchOptions } from './fetchApi';
 import { getHrmConfig } from '../hrmConfig';
 import { GenerateSignedUrlPathParams } from '../types/types';
 
@@ -25,7 +25,7 @@ import { GenerateSignedUrlPathParams } from '../types/types';
  * @param {Partial<RequestInit>} options Same options object that will be passed to the fetch function (here you can include the BODY of the request)
  * @returns {Promise<any>} the api response (if not error)
  */
-export const fetchHrmApi = (endPoint: string, options: Partial<RequestInit> = {}): Promise<any> => {
+export const fetchHrmApi = (endPoint: string, options: Partial<FetchOptions> = {}): Promise<any> => {
   const { hrmBaseUrl, token } = getHrmConfig();
 
   return fetchApi(new URL(hrmBaseUrl), endPoint, {

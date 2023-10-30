@@ -17,26 +17,34 @@ import promiseMiddleware from 'redux-promise-middleware';
 import { configureStore } from '@reduxjs/toolkit';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
+import '../../mockGetConfig';
 import {
   SaveCaseReducerState,
   createCaseAsyncAction,
   saveCaseReducer,
   updateCaseAsyncAction,
 } from '../../../states/case/saveCase';
-import { configurationBase, connectedCaseBase, RootState } from '../../../states';
+import { RootState } from '../../../states';
 import { saveCaseState, reduce } from '../../../states/case/reducer';
 import { updateCase, createCase } from '../../../services/CaseService';
-import { SavedCaseStatus } from '../../../states/case/types';
+import { connectToCase } from '../../../services/ContactService';
 import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
+import { configurationBase, connectedCaseBase } from '../../../states/storeNamespaces';
 
 jest.mock('../../../services/CaseService');
+jest.mock('../../../services/ContactService');
 
 const mockUpdateCase = updateCase as jest.Mock<ReturnType<typeof updateCase>>;
 const mockCreateCase = createCase as jest.Mock<ReturnType<typeof createCase>>;
+const mockConnectedCase = connectToCase as jest.Mock<ReturnType<typeof connectToCase>>;
 
 beforeEach(() => {
   mockUpdateCase.mockReset();
+  mockUpdateCase.mockResolvedValue({ id: 234 });
   mockCreateCase.mockReset();
+  mockCreateCase.mockResolvedValue({ id: 234 });
+  mockConnectedCase.mockReset();
+  mockConnectedCase.mockResolvedValue({ id: 'contact-1' });
 });
 
 const stubRootState = { [configurationBase]: { definitionVersions: {} } } as RootState['plugin-hrm-form'];
@@ -165,7 +173,7 @@ const expectObject = {
 };
 
 describe('actions', () => {
-  test('Calls the updateCase service, and update a case', () => {
+  test('Calls the updateCase service, and update a case', async () => {
     updateCaseAsyncAction(234, mockPayload.taskSid, mockPayload.case);
     expect(updateCase).toHaveBeenCalledWith(234, mockPayload.case);
   });
@@ -178,28 +186,55 @@ describe('actions', () => {
   test('should dispatch updateCaseAsyncAction correctly', async () => {
     const { dispatch, getState } = testStore(nonInitialState);
     const startingState = getState();
-    dispatch(updateCaseAsyncAction(234, mockPayload.taskSid, mockPayload.case));
+    await ((dispatch(updateCaseAsyncAction(234, mockPayload.taskSid, mockPayload.case)) as unknown) as Promise<void>);
     const state = getState();
     expect(state).toStrictEqual({
+      rootState: {
+        configuration: { definitionVersions: {} },
+      },
       state: {
         ...startingState.state,
+        tasks: {
+          ...state.state.tasks,
+          'task-sid': {
+            availableStatusTransitions: [],
+            caseWorkingCopy: {
+              sections: {},
+            },
+            connectedCase: {
+              id: 234,
+            },
+          },
+        },
       },
-      rootState: startingState.rootState,
-      status: SavedCaseStatus.ResultReceived,
     });
   });
 
   test('should dispatch createCaseAsyncAction correctly', async () => {
     const { dispatch, getState } = testStore(nonInitialState);
     const startingState = getState();
-    dispatch(createCaseAsyncAction(contact, mockPayload.taskSid, workerSid, definitionVersion as DefinitionVersionId));
+    await ((dispatch(
+      createCaseAsyncAction(contact, mockPayload.taskSid, workerSid, definitionVersion as DefinitionVersionId),
+    ) as unknown) as Promise<void>);
     const state = getState();
     expect(state).toStrictEqual({
       state: {
         ...startingState.state,
+        tasks: {
+          ...state.state.tasks,
+          'task-sid': {
+            availableStatusTransitions: [],
+            caseWorkingCopy: {
+              sections: {},
+            },
+            connectedCase: {
+              id: 234,
+              connectedContacts: [{ id: 'contact-1' }],
+            },
+          },
+        },
       },
       rootState: startingState.rootState,
-      status: SavedCaseStatus.ResultReceived,
     });
   });
 

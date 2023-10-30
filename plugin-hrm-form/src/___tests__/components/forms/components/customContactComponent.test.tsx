@@ -18,9 +18,7 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { FormInputType } from 'hrm-form-definitions';
 
-import customContactComponentRegistry, {
-  isParametersWithContactId,
-} from '../../../../components/forms/customContactComponentRegistry';
+import customContactComponentRegistry from '../../../../components/forms/customContactComponentRegistry';
 import { generateCustomContactFormItem } from '../../../../components/forms/components/customContactComponent';
 
 afterEach(() => {
@@ -30,17 +28,11 @@ afterEach(() => {
 
 describe('generateCustomContactFormItem', () => {
   beforeAll(() => {
-    customContactComponentRegistry.register('fake-component', parameters =>
-      isParametersWithContactId(parameters) ? (
-        <div data-testid={`fake-contact-component-${parameters.name}-${parameters.contactId}`}>
-          fake component, contactId: {parameters.contactId}
-        </div>
-      ) : (
-        <div data-testid={`fake-task-component-${parameters.name}-${parameters.taskSid}`}>
-          fake component, taskSid: {parameters.taskSid}
-        </div>
-      ),
-    );
+    customContactComponentRegistry.register('fake-component', parameters => (
+      <div data-testid={`fake-contact-component-${parameters.name}-${parameters.contactId}`}>
+        fake component, contactId: {parameters.contactId}
+      </div>
+    ));
     customContactComponentRegistry.register('broken-component', () => {
       throw new Error('This component is broken');
     });
@@ -61,40 +53,6 @@ describe('generateCustomContactFormItem', () => {
       ),
     );
     expect(screen.getByTestId('fake-contact-component-test-contact-id')).toBeInTheDocument();
-  });
-
-  test('should render component passing in taskSid if taskSid provided in context', () => {
-    render(
-      generateCustomContactFormItem(
-        {
-          type: FormInputType.CustomContactComponent,
-          name: 'test',
-          label: 'Custom Component',
-          component: 'fake-component',
-          saveable: false,
-        },
-        'mock-input-id',
-        { taskSid: 'task-sid' },
-      ),
-    );
-    expect(screen.getByTestId('fake-task-component-test-task-sid')).toBeInTheDocument();
-  });
-
-  test('should render component passing in taskSid if both taskSid and contactId are provided in the context', () => {
-    render(
-      generateCustomContactFormItem(
-        {
-          type: FormInputType.CustomContactComponent,
-          name: 'test',
-          label: 'Custom Component',
-          component: 'fake-component',
-          saveable: false,
-        },
-        'mock-input-id',
-        { taskSid: 'task-sid', contactId: 'contact-id' },
-      ),
-    );
-    expect(screen.getByTestId('fake-task-component-test-task-sid')).toBeInTheDocument();
   });
 
   test('should render placeholder message if component not registered', () => {

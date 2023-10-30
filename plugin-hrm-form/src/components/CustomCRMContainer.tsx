@@ -23,14 +23,10 @@ import TaskView from './TaskView';
 import { Absolute } from '../styles/HrmStyles';
 import { populateCounselors } from '../services/ServerlessService';
 import { populateCounselorsState } from '../states/configuration/actions';
-import { RootState, namespace, routingBase } from '../states';
-import { OfflineContactTask, offlineContactTaskSid } from '../types/types';
-
-const offlineContactTask: OfflineContactTask = {
-  taskSid: 'offline-contact-task-sid',
-  channelType: 'default',
-  attributes: { isContactlessTask: true, channelType: 'default' },
-};
+import { RootState } from '../states';
+import { OfflineContactTask } from '../types/types';
+import getOfflineContactTaskSid from '../states/contacts/offlineContactTaskSid';
+import { namespace, routingBase } from '../states/storeNamespaces';
 
 type OwnProps = {
   task?: ITask;
@@ -54,13 +50,21 @@ const CustomCRMContainer: React.FC<Props> = ({ selectedTaskSid, isAddingOfflineC
     fetchPopulateCounselors();
   }, [dispatch]);
 
+  const offlineContactTask: OfflineContactTask = {
+    taskSid: getOfflineContactTaskSid(),
+    channelType: 'default',
+    attributes: { isContactlessTask: true, channelType: 'default' },
+  };
+
   const renderITask = selectedTaskSid && task;
   const renderOfflineContactTask = !selectedTaskSid && isAddingOfflineContact;
 
   return (
     <Absolute top="0" bottom="0" left="0" right="0">
       {renderITask && <TaskView task={task} key={`controller-${selectedTaskSid}`} />}
-      {renderOfflineContactTask && <TaskView task={offlineContactTask} key={`controller-${offlineContactTaskSid}`} />}
+      {renderOfflineContactTask && (
+        <TaskView task={offlineContactTask} key={`controller-${getOfflineContactTaskSid()}`} />
+      )}
     </Absolute>
   );
 };

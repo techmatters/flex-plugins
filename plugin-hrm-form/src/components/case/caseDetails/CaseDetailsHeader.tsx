@@ -21,7 +21,6 @@ import { Template } from '@twilio/flex-ui';
 import { Print as PrintIcon } from '@material-ui/icons';
 
 import {
-  DetailsHeaderChildName,
   DetailsHeaderCaseContainer,
   DetailsHeaderCaseId,
   DetailsHeaderOfficeName,
@@ -35,33 +34,18 @@ import { getHrmConfig } from '../../../hrmConfig';
 
 type OwnProps = {
   caseId: string;
-  contactIdentifier: string;
   office: string;
   counselor: string;
   handlePrintCase: () => void;
   isOrphanedCase: boolean;
 };
 
-const CaseDetailsHeader: React.FC<OwnProps> = ({
-  caseId,
-  contactIdentifier,
-  office,
-  counselor,
-  handlePrintCase,
-  isOrphanedCase,
-}) => {
+const CaseDetailsHeader: React.FC<OwnProps> = ({ caseId, office, counselor, handlePrintCase, isOrphanedCase }) => {
   const { multipleOfficeSupport } = getHrmConfig();
 
   return (
     <DetailsHeaderContainer>
       <DetailsHeaderTextContainer>
-        {contactIdentifier && (
-          <h6 style={{ padding: '6px 0' }}>
-            <DetailsHeaderChildName data-testid="Case-DetailsHeaderChildName">
-              {contactIdentifier}
-            </DetailsHeaderChildName>
-          </h6>
-        )}
         <DetailsHeaderCaseContainer>
           <DetailsHeaderCaseId id="Case-CaseId-label" data-testid="Case-DetailsHeaderCaseId">
             <Template code="Case-CaseNumber" />

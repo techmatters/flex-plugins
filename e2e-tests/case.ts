@@ -72,7 +72,6 @@ export const caseHome = (page: Page) => {
 
   async function saveCaseAndEnd() {
     await selectors.saveCaseAndEndButton.click();
-    await page.waitForResponse('**/connectToCase');
   }
 
   const { getNewCaseId } = selectors;

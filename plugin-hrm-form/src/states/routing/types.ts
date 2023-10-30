@@ -13,17 +13,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { ContactRawJson } from '../../types/types';
 
 // Action types
-export const CHANGE_ROUTE = 'CHANGE_ROUTE';
+export const CHANGE_ROUTE = 'routing/change-route';
+export const OPEN_MODAL = 'routing/open-modal';
+export const CLOSE_MODAL = 'routing/close-modal';
+export const GO_BACK = 'routing/go-back';
 
 export type TabbedFormSubroutes =
-  | 'search'
   | 'contactlessTask'
   | 'callerInformation'
   | 'childInformation'
   | 'categories'
   | 'caseInformation';
+
+export type RouteWithModalSupport = {
+  route: 'tabbed-forms' | 'case' | 'case-list' | 'search';
+  activeModal?: AppRoutes[];
+};
+
+export type TabbedFormRoute = {
+  route: 'tabbed-forms';
+  subroute?: TabbedFormSubroutes;
+  autoFocus?: boolean;
+} & RouteWithModalSupport;
+
+export type SearchRoute = {
+  route: 'search';
+  subroute: 'form' | 'case-results' | 'contact-results';
+};
 
 export const NewCaseSectionSubroutes = {
   Note: 'note',
@@ -37,15 +56,9 @@ export const NewCaseSectionSubroutes = {
 
 const OtherCaseRoutes = {
   CasePrintView: 'case-print-view',
-  ViewContact: 'view-contact',
 } as const;
 
 export type CaseSectionSubroute = typeof NewCaseSectionSubroutes[keyof typeof NewCaseSectionSubroutes];
-
-export type CaseViewContactRoute = CaseRoute & {
-  subroute?: typeof OtherCaseRoutes.ViewContact;
-  id: string;
-};
 
 export const NewCaseSubroutes = Object.freeze({
   ...NewCaseSectionSubroutes,
@@ -58,16 +71,22 @@ export enum CaseItemAction {
   View = 'view',
 }
 
-type CaseRoute =
-  | {
-      route: 'tabbed-forms' | 'new-case';
-      autoFocus?: boolean;
-    }
-  | {
-      route: 'select-call-type';
-    };
+type CaseListRoute = RouteWithModalSupport & {
+  route: 'case-list';
+  subroute: 'case-list';
+};
 
-type CaseSectionRoute = CaseRoute & {
+type CaseCoreRoute = {
+  route: 'case';
+  autoFocus?: boolean;
+};
+
+type CaseHomeRoute = CaseCoreRoute &
+  RouteWithModalSupport & {
+    subroute: 'home';
+  };
+
+type CaseSectionRoute = CaseCoreRoute & {
   subroute?: CaseSectionSubroute;
 };
 
@@ -85,6 +104,17 @@ export type ViewCaseSectionRoute = CaseSectionRoute & {
   id: string;
 };
 
+export type CasePrintRoute = CaseCoreRoute & {
+  subroute: typeof OtherCaseRoutes.CasePrintView;
+};
+
+export type CaseRoute =
+  | AddCaseSectionRoute
+  | EditCaseSectionRoute
+  | ViewCaseSectionRoute
+  | CaseHomeRoute
+  | CasePrintRoute;
+
 export function isAddCaseSectionRoute(appRoute: AppRoutes): appRoute is AddCaseSectionRoute {
   return (<any>appRoute).action === CaseItemAction.Add;
 }
@@ -97,26 +127,17 @@ export function isEditCaseSectionRoute(appRoute: AppRoutes): appRoute is EditCas
   return (<any>appRoute).action === CaseItemAction.Edit;
 }
 
-export function isViewContactRoute(appRoute: AppRoutes): appRoute is CaseViewContactRoute {
-  return (<AppRoutes>appRoute).subroute === 'view-contact';
+export function isRouteModal(route: AppRoutes): boolean {
+  return isRouteWithModalSupport(route) && route.activeModal?.length > 0;
 }
 
 // Routes that may lead to Case screen (maybe we need an improvement here)
 export type AppRoutesWithCase =
   // TODO: enum the possible subroutes on each route
-  | AddCaseSectionRoute
-  | EditCaseSectionRoute
-  | ViewCaseSectionRoute
-  | CaseViewContactRoute
-  | (CaseRoute & { subroute?: TabbedFormSubroutes | 'case-print-view' })
-  | {
-      route: 'tabbed-forms';
-      subroute?: TabbedFormSubroutes;
-      autoFocus?: boolean;
-    };
+  CaseRoute;
 
-export function isAppRouteWithCase(appRoute: AppRoutes): appRoute is AppRoutesWithCase {
-  return ['tabbed-forms', 'new-case', 'select-call-type'].includes(appRoute?.route);
+export function isCaseRoute(appRoute: AppRoutes): appRoute is AppRoutesWithCase {
+  return appRoute?.route === 'case';
 }
 
 export type CSAMReportRoute = {
@@ -125,15 +146,70 @@ export type CSAMReportRoute = {
   previousRoute: AppRoutes;
 };
 
-type OtherRoutes = CSAMReportRoute;
+type ContactViewRoute = {
+  route: 'contact';
+  subroute: 'view';
+  id: string;
+};
+
+export type ContactEditRoute = {
+  route: 'contact';
+  subroute: 'edit';
+  id: string;
+  form: keyof Pick<ContactRawJson, 'childInformation' | 'callerInformation' | 'caseInformation' | 'categories'>;
+};
+
+type ContactRoute = ContactViewRoute | ContactEditRoute;
+
+type OtherRoutes =
+  | CSAMReportRoute
+  | { route: 'select-call-type' }
+  | TabbedFormRoute
+  | SearchRoute
+  | ContactRoute
+  | CaseListRoute;
 
 // The different routes we have in our app
 export type AppRoutes = AppRoutesWithCase | OtherRoutes;
+
+export function isRouteWithModalSupport(appRoute: any): appRoute is RouteWithModalSupport {
+  return ['tabbed-forms', 'case', 'case-list', 'search'].includes(appRoute.route);
+}
+
+export enum ChangeRouteMode {
+  Push = 'push',
+  Replace = 'replace',
+  Reset = 'reset',
+}
 
 type ChangeRouteAction = {
   type: typeof CHANGE_ROUTE;
   routing: AppRoutes;
   taskId: string;
+  mode: ChangeRouteMode;
 };
 
-export type RoutingActionType = ChangeRouteAction;
+type OpenModalAction = {
+  type: typeof OPEN_MODAL;
+  routing: AppRoutes;
+  taskId: string;
+};
+
+type GoBackAction = {
+  type: typeof GO_BACK;
+  taskId: string;
+};
+
+type CloseModalAction = {
+  type: typeof CLOSE_MODAL;
+  taskId: string;
+  topRoute?: AppRoutes['route'];
+};
+
+export type RoutingActionType = ChangeRouteAction | GoBackAction | OpenModalAction | CloseModalAction;
+export type RoutingState = {
+  tasks: {
+    [taskId: string]: AppRoutes[];
+  };
+  isAddingOfflineContact: boolean;
+};

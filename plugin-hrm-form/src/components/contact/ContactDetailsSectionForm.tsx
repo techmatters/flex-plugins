@@ -15,8 +15,7 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { Dispatch } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React from 'react';
 import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 import { useFormContext } from 'react-hook-form';
 
@@ -43,13 +42,12 @@ type OwnProps = {
     | ContactRawJson['caseInformation'];
   autoFocus?: boolean;
   extraChildrenRight?: React.ReactNode;
-  updateFormActionDispatcher?: (dispatch: Dispatch<any>) => (values: any) => void;
+  updateForm?: (values: any) => void;
   contactId?: string;
-  taskSid?: string;
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
+type Props = OwnProps;
 
 const ContactDetailsSectionForm: React.FC<Props> = ({
   display,
@@ -61,7 +59,6 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
   updateForm,
   extraChildrenRight,
   contactId,
-  taskSid,
 }) => {
   const { getValues } = useFormContext();
 
@@ -73,7 +70,7 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
       updateForm(getValues());
     },
     shouldFocusFirstElement: display && autoFocus,
-    context: { taskSid, contactId },
+    context: { contactId },
   });
 
   const [l, r] = React.useMemo(() => {
@@ -106,11 +103,4 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
 
 ContactDetailsSectionForm.displayName = 'TabbedFormTab';
 
-const mapDispatchToProps = (dispatch, ownProps: OwnProps) => ({
-  updateForm: ownProps.updateFormActionDispatcher(dispatch),
-});
-
-const connector = connect(null, mapDispatchToProps);
-const connected = connector(ContactDetailsSectionForm);
-
-export default connected;
+export default ContactDetailsSectionForm;

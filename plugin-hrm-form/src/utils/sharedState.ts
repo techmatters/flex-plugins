@@ -14,18 +14,24 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import type { ITask } from '@twilio/flex-ui';
 import SyncClient from 'twilio-sync';
 import { CallTypes } from 'hrm-form-definitions';
+import { ITask, Manager } from '@twilio/flex-ui';
 
 import { recordBackendError } from '../fullStory';
 import { issueSyncToken } from '../services/ServerlessService';
-import { getAseloFeatureFlags, getDefinitionVersions, getTemplateStrings } from '../hrmConfig';
+import { getAseloFeatureFlags, getDefinitionVersions, getHrmConfig, getTemplateStrings } from '../hrmConfig';
 import { CSAMReportEntry, Contact } from '../types/types';
-import { ContactMetadata, ContactWithMetadata } from '../states/contacts/types';
-import { createContactWithMetadata } from '../states/contacts/reducer';
+import { ContactMetadata } from '../states/contacts/types';
 import { ChannelTypes } from '../states/DomainConstants';
 import { ResourceReferral } from '../states/contacts/resourceReferral';
+import { ContactState } from '../states/contacts/existingContacts';
+import { newContact, newContactState } from '../states/contacts/contactState';
+import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
+import { RootState } from '../states';
+import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
+import asyncDispatch from '../states/asyncDispatch';
+import { updateContactInHrmAsyncAction } from '../states/contacts/saveContact';
 
 // Legacy type previously used for unsaved contact forms, kept around to ensure transfers are compatible between new & old clients
 // Not much point in replacing the use of this type in the shared state, since we will drop use of shared state in favour of the HRM DB for managing transfer state soon anyway
@@ -64,11 +70,11 @@ const transferFormCategoriesToContactCategories = (
   return contactCategories;
 };
 
-const transferFormToContact = (transferForm: TransferForm): ContactWithMetadata => {
+const transferFormToContactState = (transferForm: TransferForm, baselineContact: Contact): ContactState => {
   const { metadata, helpline, csamReports, referrals, reservationSid, ...form } = transferForm;
   return {
-    contact: {
-      ...createContactWithMetadata(getDefinitionVersions().currentDefinitionVersion)(true).contact,
+    savedContact: {
+      ...baselineContact,
       helpline,
       csamReports,
       referrals,
@@ -83,6 +89,7 @@ const transferFormToContact = (transferForm: TransferForm): ContactWithMetadata 
       ...metadata,
       draft: form.draft,
     },
+    references: new Set<string>(),
   };
 };
 
@@ -95,8 +102,8 @@ const contactFormCategoriesToTransferFormCategories = (
   );
 };
 
-const contactToTransferForm = ({ contact, metadata }: ContactWithMetadata): TransferForm => {
-  const { helpline, csamReports, referrals, rawJson } = contact;
+const contactToTransferForm = ({ savedContact, draftContact, metadata }: ContactState): TransferForm => {
+  const { helpline, csamReports, referrals, rawJson } = getUnsavedContact(savedContact, draftContact);
   const { draft } = metadata;
   return {
     helpline,
@@ -109,7 +116,7 @@ const contactToTransferForm = ({ contact, metadata }: ContactWithMetadata): Tran
   };
 };
 
-export const setUpSharedStateClient = () => {
+export const setUpSharedStateClient = async () => {
   const updateSharedStateToken = async () => {
     try {
       const syncToken = await issueSyncToken();
@@ -130,7 +137,7 @@ export const setUpSharedStateClient = () => {
     }
   };
 
-  initSharedStateClient();
+  await initSharedStateClient();
 };
 
 const isSharedStateClientConnected = sharedStateClient =>
@@ -140,31 +147,35 @@ const DOCUMENT_TTL_SECONDS = 24 * 60 * 60; // 24 hours
 
 /**
  * Saves the actual form into the Sync Client
- * @param {*} contactWithMetaData current contact (or undefined)
+ * @param {*} contactState current contact (or undefined)
  * @param task
  */
-export const saveFormSharedState = async (
-  contactWithMetaData: ContactWithMetadata,
-  task: ITask,
-): Promise<string | null> => {
+export const saveFormSharedState = async (contactState: ContactState, task: ITask): Promise<string | null> => {
   if (!getAseloFeatureFlags().enable_transfers) return null;
-
+  if (contactState.draftContact) {
+    await asyncDispatch(Manager.getInstance().store.dispatch)(
+      updateContactInHrmAsyncAction(contactState.savedContact, contactState.draftContact, task.taskSid),
+    );
+  }
+  console.log('Saved form to HRM', contactState.savedContact.id);
   try {
     if (!isSharedStateClientConnected(sharedStateClient)) {
-      console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
+      console.error('Error with Sync Client connection. Sync Client object is: ', sharedStateClient);
       recordBackendError('Save Form Shared State', new Error('Sync Client Disconnected'));
-      window.alert(getTemplateStrings().SharedStateSaveFormError);
-      return null;
     }
 
-    const documentName = contactWithMetaData ? `pending-form-${task.taskSid}` : null;
+    console.log('Shared state client is connected.');
+    const documentName = contactState ? `pending-form-${task.taskSid}` : null;
 
+    console.log('documentName', documentName, 'contactState', contactState);
     if (documentName) {
       const document = await sharedStateClient.document(documentName);
-      await document.set(contactToTransferForm(contactWithMetaData), { ttl: DOCUMENT_TTL_SECONDS }); // set time to live to 24 hours
+      console.log('Saving form to shared state', documentName);
+      await document.set(contactToTransferForm(contactState), { ttl: DOCUMENT_TTL_SECONDS }); // set time to live to 24 hours
+      console.log('Saved form to shared state', documentName);
       return documentName;
     }
-
+    console.error('Could not save form to shared state, no document name');
     return null;
   } catch (err) {
     console.error('Error while saving form to shared state', err);
@@ -175,33 +186,61 @@ export const saveFormSharedState = async (
 /**
  * Restores the contact form from Sync Client (if there is any)
  */
-export const loadFormSharedState = async (task: ITask): Promise<ContactWithMetadata> => {
+export const loadFormSharedState = async (task: ITask): Promise<ContactState> => {
+  const { store } = Manager.getInstance();
   if (!getAseloFeatureFlags().enable_transfers) return null;
+  if (!task.attributes.transferMeta) {
+    console.error('This function should not be called on non-transferred task.');
+    return null;
+  }
+
+  // Should have been loaded already in the beforeAcceptTask handler
+  let contactState = findContactByTaskSid(store.getState() as RootState, task.attributes.transferMeta.originalTask);
+
+  if (!contactState) {
+    console.error('Could not find contact state for original task, aborting loading transferred data');
+    return null;
+  }
 
   try {
-    if (!isSharedStateClientConnected(sharedStateClient)) {
-      console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
+    if (isSharedStateClientConnected(sharedStateClient)) {
+      const documentName = task.attributes.transferMeta.formDocument;
+      if (documentName) {
+        const document = await sharedStateClient.document(documentName);
+        const transferredContactState = transferFormToContactState(
+          document.data as TransferForm,
+          contactState.savedContact ?? newContact(getDefinitionVersions().currentDefinitionVersion),
+        );
+
+        const updatedContact = {
+          ...contactState.savedContact,
+          ...transferredContactState.savedContact,
+          rawJson: {
+            ...contactState.savedContact.rawJson,
+            ...transferredContactState.savedContact.rawJson,
+          },
+          id: contactState.savedContact.id,
+          accountSid: contactState.savedContact.accountSid,
+          twilioWorkerId: getHrmConfig().workerSid,
+        };
+        contactState = {
+          ...transferredContactState,
+          savedContact: updatedContact,
+        };
+      }
+    } else {
+      console.error('Error with Sync Client connection. Sync Client object is: ', sharedStateClient);
       recordBackendError('Load Form Shared State', new Error('Sync Client Disconnected'));
-      window.alert(getTemplateStrings().SharedStateLoadFormError);
-      return null;
     }
-
-    if (!task.attributes.transferMeta) {
-      console.error('This function should not be called on non-transferred task.');
-      return null;
-    }
-
-    const documentName = task.attributes.transferMeta.formDocument;
-    if (documentName) {
-      const document = await sharedStateClient.document(documentName);
-      return transferFormToContact(document.data as TransferForm);
-    }
-
-    return null;
+    contactState.savedContact.taskId = task.taskSid;
+    await asyncDispatch(store.dispatch)(
+      updateContactInHrmAsyncAction(contactState.savedContact, contactState.savedContact, task.taskSid),
+    );
   } catch (err) {
     console.error('Error while loading form from shared state', err);
     throw err;
   }
+  return contactState;
 };
 
 /**
@@ -272,7 +311,7 @@ export const savePendingContactToSharedState = async (task, payload, error) => {
 
 export const createCallStatusSyncDocument = async (onUpdateCallback: ({ data }: any) => void) => {
   if (!isSharedStateClientConnected(sharedStateClient)) {
-    console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
+    console.error('Error with Sync Client connection. Sync Client object is: ', sharedStateClient);
     console.error(getTemplateStrings().SharedStateSaveContactError);
     return { status: 'failure', callStatusSyncDocument: null } as const;
   }

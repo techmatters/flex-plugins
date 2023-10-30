@@ -27,8 +27,8 @@ import ContactDetails from '../../components/search/ContactDetails';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions } from '../../hrmConfig';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-import { csamReportBase } from '../../states';
-import { Contact } from '../../types/types';
+import { Contact, CustomITask } from '../../types/types';
+import { csamReportBase } from '../../states/storeNamespaces';
 
 jest.mock('@twilio/flex-ui', () => ({
   ...jest.requireActual('@twilio/flex-ui'),
@@ -155,6 +155,11 @@ beforeAll(async () => {
         tasks: {},
         contacts: {},
       },
+      routing: {
+        tasks: {
+          TEST_TASK_ID: [{ route: 'contact', subroute: 'view', id: 'TEST CONTACT ID' }],
+        },
+      },
     },
     flex: {
       worker: {
@@ -207,7 +212,7 @@ test(`<ContactDetails> with contact of type ${callTypes.caller}`, async () => {
           currentIsCaller={true}
           handleBack={handleBack}
           handleSelectSearchResult={handleSelectSearchResult}
-          task={{ taskSid: 'TEST_TASK_ID' }}
+          task={{ taskSid: 'TEST_TASK_ID' } as CustomITask}
           showActionIcons={false}
         />
       </Provider>

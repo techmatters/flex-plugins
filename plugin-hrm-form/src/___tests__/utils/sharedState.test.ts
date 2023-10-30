@@ -19,15 +19,35 @@
 /* eslint-disable camelcase */
 import SyncClient from 'twilio-sync';
 import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { Manager } from '@twilio/flex-ui';
 
+import { baseMockConfig, mockGetDefinitionsResponse } from '../mockGetConfig';
 import { transferStatuses } from '../../states/DomainConstants';
 import { createTask } from '../helpers';
-import { mockGetDefinitionsResponse } from '../mockGetConfig';
-import { getAseloFeatureFlags, getDefinitionVersions, getTemplateStrings } from '../../hrmConfig';
-import { loadFormSharedState, saveFormSharedState, setUpSharedStateClient } from '../../utils/sharedState';
+import { getDefinitionVersions } from '../../hrmConfig';
+import { ContactState } from '../../states/contacts/existingContacts';
 import { Contact } from '../../types/types';
-import { ContactMetadata, ContactWithMetadata } from '../../states/contacts/types';
+import { ContactMetadata } from '../../states/contacts/types';
 import { VALID_EMPTY_CONTACT } from '../testContacts';
+import { RootState } from '../../states';
+import { RecursivePartial } from '../RecursivePartial';
+import { loadFormSharedState, saveFormSharedState, setUpSharedStateClient } from '../../utils/sharedState';
+import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
+
+jest.mock('../../states/contacts/saveContact', () => ({
+  ...jest.requireActual('../../states/contacts/saveContact'),
+  updateContactInHrmAsyncAction: jest.fn((id, contact, _, task) => {
+    console.log('updateContactInHrmAsyncAction', id, contact, task);
+    return Promise.resolve();
+  }),
+}));
+
+jest.mock('@twilio/flex-ui', () => ({
+  ...(jest.requireActual('@twilio/flex-ui') as any),
+  Manager: {
+    getInstance: jest.fn(),
+  },
+}));
 
 jest.mock('../../services/ServerlessService', () => ({
   issueSyncToken: jest.fn(),
@@ -35,42 +55,43 @@ jest.mock('../../services/ServerlessService', () => ({
 jest.mock('../../fullStory', () => ({
   recordBackendError: jest.fn(),
 }));
-jest.mock('../../hrmConfig', () => ({
-  getAseloFeatureFlags: jest.fn(),
-  getTemplateStrings: () => ({
-    SharedStateSaveFormError: 'Error saving',
-    SharedStateLoadFormError: 'Error loading',
-  }),
-}));
 
 jest.mock('twilio-sync', () => jest.fn());
+let transferContactState;
+
+let mockFlexManager;
+
 const contact = { helpline: 'a helpline' } as Contact;
 const metadata = {} as ContactMetadata;
-const form: ContactWithMetadata = {
-  contact,
+const form: ContactState = {
+  savedContact: contact,
   metadata,
+  references: new Set(),
 };
 const task = createTask();
 
-const mockSharedStateDocuments = {};
+let mockSharedStateDocuments;
 
 const mockSharedState = {
   connectionState: 'connected',
   document: async documentName => {
+    console.log('mockSharedState.document', documentName);
     if (!mockSharedStateDocuments[documentName]) {
+      console.log('mockSharedState.document.create', documentName);
       return {
         set: async data => {
+          console.log('mockSharedState.document.set', documentName, data);
           mockSharedStateDocuments[documentName] = { data };
+          return data;
         },
       };
     }
+    console.log('mockSharedState.document.get', documentName, mockSharedStateDocuments[documentName]);
     return mockSharedStateDocuments[documentName];
   },
 };
 
-const mockGetAseloFeatureFlags: jest.Mock = getAseloFeatureFlags as jest.Mock;
-const mockSyncClient: jest.Mock = (SyncClient as unknown) as jest.Mock;
-window.alert = jest.fn();
+let mockSyncClient: jest.Mock = (SyncClient as unknown) as jest.Mock;
 let mockV1;
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -80,146 +101,190 @@ beforeAll(async () => {
   const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
   await mockFetchImplementation(formDefinitionsBaseUrl);
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
+  mockSyncClient = (SyncClient as unknown) as jest.Mock;
   mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
-  (getTemplateStrings as jest.Mock).mockReturnValue({
-    SharedStateSaveFormError: 'Error saving',
-    SharedStateLoadFormError: 'Error loading',
-  });
 });
 
-describe('Test with no feature flag', () => {
-  test('saveFormSharedState', async () => {
-    mockGetAseloFeatureFlags.mockReturnValue({});
-    const { saveFormSharedState } = require('../../utils/sharedState');
-
-    const documentName = await saveFormSharedState(form, task);
-    expect(documentName).toBeNull();
-  });
-
-  test('loadFormSharedState', async () => {
-    mockGetAseloFeatureFlags.mockReturnValue({});
-    const { loadFormSharedState } = require('../../utils/sharedState');
-
-    const loadedForm = await loadFormSharedState(task);
-    expect(loadedForm).toBeNull();
-  });
-});
-
-describe('Test with undefined sharedState', () => {
-  test('saveFormSharedState', async () => {
-    mockGetAseloFeatureFlags.mockReturnValue({ enable_transfers: true });
-    const documentName = await saveFormSharedState(form, task);
-    expect(documentName).toBeNull();
-    expect(window.alert).toBeCalledWith('Error saving');
-  });
-
-  test('loadFormSharedState', async () => {
-    mockGetAseloFeatureFlags.mockReturnValue({ enable_transfers: true });
-
-    const loadedForm = await loadFormSharedState(task);
-    expect(loadedForm).toBeNull();
-    expect(window.alert).toBeCalledWith('Error loading');
-  });
-});
-
-describe('Test with not connected sharedState', () => {
-  beforeEach(() => {
-    mockGetAseloFeatureFlags.mockReturnValue({ enable_transfers: true });
-    mockSyncClient.mockImplementation(() => ({
-      on: jest.fn(),
-      connectionState: 'not connected',
-    }));
-    setUpSharedStateClient();
-  });
-
-  test('saveFormSharedState', async () => {
-    const documentName = await saveFormSharedState(form, task);
-    expect(documentName).toBeNull();
-    expect(window.alert).toBeCalledWith('Error saving');
-  });
-
-  test('loadFormSharedState', async () => {
-    const loadedForm = await loadFormSharedState(task);
-    expect(loadedForm).toBeNull();
-    expect(window.alert).toBeCalledWith('Error loading');
-  });
-});
-
-describe('Test with connected sharedState', () => {
-  beforeEach(() => {
-    mockGetAseloFeatureFlags.mockReturnValue({ enable_transfers: true });
-    mockSyncClient.mockImplementation(() => mockSharedState);
-    setUpSharedStateClient();
-  });
-
-  test('saveFormSharedState', async () => {
-    const expected = {
-      helpline: 'a helpline',
-      categories: undefined,
+beforeEach(async () => {
+  jest.clearAllMocks();
+  mockSharedStateDocuments = {};
+  transferContactState = {
+    savedContact: {
+      ...VALID_EMPTY_CONTACT,
+      rawJson: {
+        categories: undefined,
+        contactlessTask: undefined,
+        draft: undefined,
+      } as any,
+      timeOfContact: new Date().toISOString(),
       csamReports: undefined,
-      draft: undefined,
-      metadata: {},
       referrals: undefined,
-    };
-    const documentName = await saveFormSharedState(form, task);
-    expect(documentName).toBe('pending-form-taskSid');
-    expect(mockSharedStateDocuments[documentName].data).toStrictEqual(expected);
-    await task.setAttributes({
-      transferMeta: { transferStatus: transferStatuses.accepted, formDocument: documentName },
+      helpline: 'a helpline',
+      channel: 'web',
+      taskId: 'transferred-task-id',
+    },
+    metadata: {
+      draft: undefined,
+    } as ContactMetadata,
+    references: new Set<string>(),
+  };
+
+  mockFlexManager = {
+    store: {
+      getState: (): RecursivePartial<RootState> => ({
+        'plugin-hrm-form': {
+          activeContacts: {
+            existingContacts: {
+              12345: transferContactState as ContactState,
+            },
+          },
+        },
+      }),
+      dispatch: jest.fn(),
+    },
+  };
+  (Manager.getInstance as jest.Mock).mockReturnValue(mockFlexManager);
+  await task.setAttributes({
+    transferMeta: {
+      originalTask: 'transferred-task-id',
+    },
+  });
+});
+describe('sharedState', () => {
+  describe('Test with no feature flag', () => {
+    test('saveFormSharedState', async () => {
+      baseMockConfig.featureFlags.enable_transfers = false;
+      const { saveFormSharedState } = require('../../utils/sharedState');
+
+      const documentName = await saveFormSharedState(form, task);
+      expect(documentName).toBeNull();
+    });
+
+    test('loadFormSharedState', async () => {
+      baseMockConfig.featureFlags.enable_transfers = false;
+      const { loadFormSharedState } = require('../../utils/sharedState');
+
+      const loadedForm = await loadFormSharedState(task);
+      expect(loadedForm).toBeNull();
     });
   });
 
-  test('loadFormSharedState', async () => {
-    const expected: ContactWithMetadata = {
-      contact: {
-        ...VALID_EMPTY_CONTACT,
-        rawJson: {
+  describe('Test with undefined sharedState', () => {
+    test('saveFormSharedState', async () => {
+      baseMockConfig.featureFlags.enable_transfers = true;
+      const documentName = await saveFormSharedState(form, task);
+      expect(documentName).toBeNull();
+    });
+
+    test('loadFormSharedState', async () => {
+      baseMockConfig.featureFlags.enable_transfers = true;
+
+      const loadedForm = await loadFormSharedState(task);
+      expect(loadedForm).toBe(transferContactState);
+    });
+  });
+
+  describe('Test with not connected sharedState', () => {
+    beforeEach(async () => {
+      baseMockConfig.featureFlags.enable_transfers = true;
+      mockSyncClient.mockImplementation(() => ({
+        on: jest.fn(),
+        connectionState: 'not connected',
+      }));
+      await setUpSharedStateClient();
+    });
+
+    test('saveFormSharedState', async () => {
+      const documentName = await saveFormSharedState(form, task);
+      expect(documentName).toBeNull();
+    });
+
+    test('loadFormSharedState', async () => {
+      const loadedForm = await loadFormSharedState(task);
+      expect(loadedForm).toBe(transferContactState);
+    });
+  });
+
+  describe('Test with connected sharedState', () => {
+    beforeEach(async () => {
+      baseMockConfig.featureFlags.enable_transfers = true;
+      mockSyncClient.mockImplementation(() => mockSharedState);
+      await setUpSharedStateClient();
+    });
+
+    test('saveFormSharedState', async () => {
+      const expected = {
+        helpline: 'a helpline',
+        categories: undefined,
+        csamReports: undefined,
+        draft: undefined,
+        metadata: {},
+        referrals: undefined,
+      };
+      const documentName = await saveFormSharedState(form, task);
+      expect(documentName).toBe('pending-form-taskSid');
+      expect(mockSharedStateDocuments[documentName].data).toStrictEqual(expected);
+      await task.setAttributes({
+        transferMeta: { transferStatus: transferStatuses.accepted, formDocument: documentName },
+      });
+    });
+
+    test('loadFormSharedState', async () => {
+      const expected: ContactState = {
+        ...transferContactState,
+        savedContact: {
+          ...transferContactState.savedContact,
+          timeOfContact: expect.any(String),
+          taskId: 'taskSid',
+        } as Contact,
+      };
+      await task.setAttributes({
+        transferMeta: {
+          originalTask: 'transferred-task-id',
+          formDocument: 'pending-form-transferred-task-id',
+        },
+      });
+      mockSharedStateDocuments['pending-form-transferred-task-id'] = {
+        data: {
           categories: undefined,
           contactlessTask: undefined,
           draft: undefined,
-        } as any,
-        timeOfContact: expect.any(String),
-        csamReports: undefined,
-        referrals: undefined,
-        helpline: 'a helpline',
-        channel: 'web',
-      },
-      metadata: {
-        draft: undefined,
-      } as ContactMetadata,
-    };
-    const loadedForm = await loadFormSharedState(task);
-    expect(loadedForm).toStrictEqual(expected);
-  });
-});
-
-describe('Test throwing errors', () => {
-  const error = jest.fn();
-  console.error = error;
-
-  beforeEach(() => {
-    mockGetAseloFeatureFlags.mockReturnValue({ enable_transfers: true });
-    mockSyncClient.mockImplementation(() => ({
-      document: () => {
-        throw new Error();
-      },
-      on: jest.fn(),
-    }));
-    setUpSharedStateClient();
-    error.mockReset();
+          helpline: 'a helpline',
+        },
+      };
+      const loadedForm = await loadFormSharedState(task);
+      expect(loadedForm).toStrictEqual(expected);
+    });
   });
 
-  test('saveFormSharedState', async () => {
-    expect(error).not.toBeCalled();
-    const documentName = await saveFormSharedState(form, task);
-    expect(documentName).toBeNull();
-    expect(error).toBeCalled();
-  });
+  describe('Test throwing errors', () => {
+    const error = jest.fn();
+    console.error = error;
 
-  test('loadFormSharedState', async () => {
-    expect(error).not.toBeCalled();
-    const loadedForm = await loadFormSharedState(task);
-    expect(loadedForm).toBeNull();
-    expect(error).toBeCalled();
+    beforeEach(async () => {
+      baseMockConfig.featureFlags.enable_transfers = true;
+      mockSyncClient.mockImplementation(() => ({
+        document: () => {
+          throw new Error();
+        },
+        on: jest.fn(),
+      }));
+      await setUpSharedStateClient();
+      error.mockClear();
+    });
+
+    test('saveFormSharedState', async () => {
+      expect(error).not.toBeCalled();
+      const documentName = await saveFormSharedState(form, task);
+      expect(documentName).toBeNull();
+      expect(error).toBeCalled();
+    });
+
+    test('loadFormSharedState', async () => {
+      expect(error).not.toBeCalled();
+      const loadedForm = await loadFormSharedState(task);
+      expect(loadedForm).toBe(transferContactState);
+      expect(error).toBeCalled();
+    });
   });
 });

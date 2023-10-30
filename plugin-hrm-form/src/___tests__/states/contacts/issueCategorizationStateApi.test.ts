@@ -14,54 +14,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { forExistingContact, forTask } from '../../../states/contacts/issueCategorizationStateApi';
-import { CustomITask } from '../../../types/types';
-import { contactFormsBase, namespace, RootState } from '../../../states';
-import * as taskActions from '../../../states/contacts/actions';
-import { toggleSubcategoryForTask, toggleSubcategory } from '../../../states/contacts/categories';
+import { forExistingContact } from '../../../states/contacts/issueCategorizationStateApi';
+import { RootState } from '../../../states';
+import { toggleSubcategory } from '../../../states/contacts/categories';
 import * as existingContactActions from '../../../states/contacts/existingContacts';
-import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { RecursivePartial } from '../../RecursivePartial';
-
-describe('forTask', () => {
-  const api = forTask(<CustomITask>{ taskSid: 'mock task' });
-  test('retrieveState - Returns contact from the tasks area of the state', () => {
-    const mockCategories = { gridView: true, expanded: {} };
-    const selectedCategories = { category1: ['subcategory1'] };
-    const retrieved = api.retrieveState(<any>{
-      [namespace]: {
-        [contactFormsBase]: {
-          tasks: {
-            'mock task': {
-              metadata: { categories: mockCategories },
-              contact: {
-                ...VALID_EMPTY_CONTACT,
-                rawJson: { ...VALID_EMPTY_CONTACT.rawJson, categories: selectedCategories },
-              },
-            },
-          },
-        },
-      },
-    });
-    expect(retrieved).toStrictEqual({ ...mockCategories, selectedCategories });
-  });
-  test('toggleCategoryExpandedActionDispatcher - dispatches an task expand action with the category & task ID', () => {
-    const mockDispatcher = jest.fn();
-    api.toggleCategoryExpandedActionDispatcher(mockDispatcher)('a category');
-    expect(mockDispatcher).toHaveBeenCalledWith(taskActions.handleExpandCategory('a category', 'mock task'));
-  });
-  test('setGridViewActionDispatcher - dispatches an task setGridView action with the category & task ID', () => {
-    const mockDispatcher = jest.fn();
-    api.setGridViewActionDispatcher(mockDispatcher)(true);
-    expect(mockDispatcher).toHaveBeenCalledWith(taskActions.setCategoriesGridView(true, 'mock task'));
-  });
-  test('toggleSubcategoryActionDispatcher - dispatches a toggle category action with the task ID', () => {
-    const mockDispatcher = jest.fn();
-
-    api.toggleSubcategoryActionDispatcher(mockDispatcher)('category1', 'subcategory2');
-    expect(mockDispatcher).toHaveBeenCalledWith(toggleSubcategoryForTask('mock task', 'category1', 'subcategory2'));
-  });
-});
+import { contactFormsBase, namespace } from '../../../states/storeNamespaces';
 
 describe('forExistingCategory', () => {
   const MOCK_CONTACT_ID = 'mock contact';
@@ -73,8 +31,9 @@ describe('forExistingCategory', () => {
         [contactFormsBase]: {
           existingContacts: {
             [MOCK_CONTACT_ID]: {
-              categories: mockCategories,
+              metadata: { categories: mockCategories },
               draftContact: { rawJson: { categories: { category1: ['subcategory1'] } } },
+              savedContact: { rawJson: {} },
             },
           },
         },

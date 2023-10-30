@@ -18,13 +18,16 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { useForm } from 'react-hook-form';
+import Close from '@material-ui/icons/Close';
 
 import ActionHeader from '../case/ActionHeader';
-import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyles';
+import { BottomButtonBar, Box, HeaderCloseButton, HiddenText, Row, StyledNextStepButton } from '../../styles/HrmStyles';
 import { BoldDescriptionText, CSAMReportContainer, CSAMReportLayout } from '../../styles/CSAMReport';
 import { childDefinitionObject, childInitialValues, generateCSAMFormElement } from './CSAMReportFormDefinition';
 import { RequiredAsterisk } from '../common/forms/formGenerators';
 import { ChildCSAMReportForm } from '../../states/csam-report/types';
+import useFocus from '../../utils/useFocus';
+import { CaseActionTitle } from '../../styles/case';
 
 type Props = {
   counselor: string;
@@ -44,14 +47,32 @@ const CSAMReportChildForm: React.FC<Props> = ({
   methods,
 }) => {
   const generateChildFormElement = generateCSAMFormElement(childInitialValues, formValues, update, methods);
+
+  const focusElementRef = useFocus();
+
   return (
     <CSAMReportContainer style={{ padding: '5px' }} data-testid="CSAMReport-FormScreen">
       <CSAMReportLayout>
+        <Row style={{ width: '100%' }}>
+          <CaseActionTitle style={{ marginTop: 'auto' }}>
+            <Template code="Contact-ExternalReport" />
+          </CaseActionTitle>
+          <HeaderCloseButton
+            onClick={onClickClose}
+            data-testid="Case-CloseCross"
+            ref={ref => {
+              focusElementRef.current = ref;
+            }}
+          >
+            <HiddenText>
+              <Template code="Case-CloseButton" />
+            </HiddenText>
+            <Close />
+          </HeaderCloseButton>
+        </Row>
         <ActionHeader
           added={new Date()}
           codeTemplate="CSAMCLC-ActionHeaderAdded"
-          titleTemplate="CSAMCLCReportForm-Header"
-          onClickClose={onClickClose}
           addingCounsellor={counselor}
           focusCloseButton={true}
         />

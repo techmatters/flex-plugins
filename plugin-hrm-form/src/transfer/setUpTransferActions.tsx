@@ -15,19 +15,19 @@
  */
 
 import React from 'react';
+import * as Flex from '@twilio/flex-ui';
 import {
-  NotificationType,
-  Notifications,
-  Template,
-  ITask,
-  ReplacedActionFunction,
   ActionFunction,
-  TaskHelper,
+  ITask,
   Manager,
+  Notifications,
+  NotificationType,
+  ReplacedActionFunction,
   StateHelper,
+  TaskHelper,
+  Template,
 } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
-import * as Flex from '@twilio/flex-ui';
 
 import * as TransferHelpers from '../utils/transfer';
 import { transferModes } from '../states/DomainConstants';
@@ -35,12 +35,13 @@ import { recordEvent } from '../fullStory';
 import { loadFormSharedState, saveFormSharedState } from '../utils/sharedState';
 import { transferChatStart } from '../services/ServerlessService';
 import { getHrmConfig } from '../hrmConfig';
-import { contactFormsBase, namespace } from '../states';
-import * as Actions from '../states/contacts/actions';
+import { RootState } from '../states';
 import { changeRoute } from '../states/routing/actions';
 import { reactivateAseloListeners } from '../conversationListeners';
 import { prepopulateForm } from '../utils/prepopulateForm';
-import { ContactWithMetadata } from '../states/contacts/types';
+import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
+import { ContactState } from '../states/contacts/existingContacts';
+import { ChangeRouteMode } from '../states/routing/types';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type ActionPayload = { task: ITask };
@@ -70,8 +71,8 @@ const safeTransfer = async (transferFunction: () => Promise<any>, task: ITask): 
 /**
  * Given a taskSid, retrieves the state of the form (stored in redux) for that task
  */
-const getStateContactForms = (taskSid: string): ContactWithMetadata => {
-  return Manager.getInstance().store.getState()[namespace][contactFormsBase].tasks[taskSid];
+const getStateContactForms = (taskSid: string): ContactState => {
+  return findContactByTaskSid(Manager.getInstance().store.getState() as RootState, taskSid);
 };
 
 /**
@@ -129,19 +130,22 @@ const afterCancelTransfer = (payload: ActionPayload) => {
 };
 
 const restoreFormIfTransfer = async (task: ITask) => {
-  const contactWithMetadata = await loadFormSharedState(task);
-  if (contactWithMetadata) {
-    Manager.getInstance().store.dispatch(Actions.restoreEntireContact(contactWithMetadata, task.taskSid));
+  const contactState = await loadFormSharedState(task);
+  if (contactState) {
     const {
-      contact: { rawJson },
-    } = contactWithMetadata;
+      savedContact: { rawJson },
+    } = contactState;
     if (rawJson.callType === callTypes.child) {
       Manager.getInstance().store.dispatch(
-        changeRoute({ route: 'tabbed-forms', subroute: 'childInformation' }, task.taskSid),
+        changeRoute({ route: 'tabbed-forms', subroute: 'childInformation' }, task.taskSid, ChangeRouteMode.Replace),
       );
     } else if (rawJson.callType === callTypes.caller) {
       Manager.getInstance().store.dispatch(
-        changeRoute({ route: 'tabbed-forms', subroute: 'callerInformation' }, task.taskSid),
+        changeRoute({ route: 'tabbed-forms', subroute: 'callerInformation' }, task.taskSid, ChangeRouteMode.Replace),
+      );
+    } else {
+      Manager.getInstance().store.dispatch(
+        changeRoute({ route: 'select-call-type' }, task.taskSid, ChangeRouteMode.Replace),
       );
     }
   }
@@ -153,10 +157,10 @@ const takeControlIfTransfer = async (task: ITask) => {
 
 const handleTransferredTask = async (task: ITask) => {
   await takeControlIfTransfer(task);
-  const { source: convo, participants } = StateHelper.getConversationStateForTask(task) ?? {};
+  const { source: convo, participants, isLoadingParticipants } = StateHelper.getConversationStateForTask(task) ?? {};
   if (convo) {
     reactivateAseloListeners(convo);
-    if (participants.size === 0) {
+    if (participants.size === 0 && !isLoadingParticipants) {
       // Force a refresh of the conversation state when accepting a transfer if the current state has no participants
       // This works around an issue where pre-existing state for the conversation being loaded prior to accepting the transfer borks the state once the transfer is accepted for some reason.
       // Reverse engineering an internal Flex action is one level of grevious hackery below deleting the conversation state from the redux store directly =-/
@@ -166,7 +170,11 @@ const handleTransferredTask = async (task: ITask) => {
       });
     }
   }
-  await restoreFormIfTransfer(task);
+  try {
+    await restoreFormIfTransfer(task);
+  } catch (err) {
+    console.error('Error transferring form state as part of task', err);
+  }
 };
 
 const afterAcceptTask = (transfersEnabled: boolean) => async ({ task }: ActionPayload) => {

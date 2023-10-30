@@ -17,14 +17,14 @@
 import React from 'react';
 import CheckIcon from '@material-ui/icons/Check';
 import { Button, Popover } from '@material-ui/core';
-import { ITask, Template } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
 
 import { Row } from '../../styles/HrmStyles';
 import { ConfirmContainer, ConfirmText, CancelButton } from '../../styles/search';
 import TabPressWrapper from '../TabPressWrapper';
 import { hasTaskControl } from '../../utils/transfer';
-import { Contact } from '../../types/types';
+import { Contact, CustomITask } from '../../types/types';
 
 type Props = {
   anchorEl: Element;
@@ -32,7 +32,7 @@ type Props = {
   contact: Contact;
   handleConfirm: () => void;
   handleClose: () => void;
-  task: ITask;
+  task: CustomITask;
   isCallTypeCaller: boolean;
 };
 

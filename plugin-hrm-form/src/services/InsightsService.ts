@@ -32,7 +32,6 @@ import { mapChannelForInsights, formatCategories } from '../utils';
 import { getDateTime } from '../utils/helpers';
 import { Case, CustomITask, Contact, ContactRawJson } from '../types/types';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
-import { shouldSendInsightsData } from '../utils/setUpActions';
 import {
   ExternalRecordingInfo,
   ExternalRecordingInfoSuccess,
@@ -40,6 +39,7 @@ import {
 } from './getExternalRecordingInfo';
 import { generateUrl } from './fetchApi';
 import { generateSignedURLPath } from './fetchHrmApi';
+import { shouldSendInsightsData } from '../utils/shouldSendInsightsData';
 
 /*
  * 'Any' is the best we can do, since we're limited by Twilio here.

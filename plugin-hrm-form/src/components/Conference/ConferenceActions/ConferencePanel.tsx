@@ -24,14 +24,10 @@ import { ConferenceNotifications } from '../../../conference/setUpConferenceActi
 import { conferenceApi } from '../../../services/ServerlessService';
 import PhoneInputDialog from './PhoneInputDialog';
 import { StyledConferenceButtonWrapper, StyledConferenceButton } from './styles';
-import { conferencingBase, namespace, RootState } from '../../../states';
-import {
-  CallStatus,
-  isCallStatusLoading,
-  setCallStatusAction,
-  setIsDialogOpenAction,
-  setPhoneNumberAction,
-} from '../../../states/conferencing';
+import { RootState } from '../../../states';
+import { setCallStatusAction, setIsDialogOpenAction, setPhoneNumberAction } from '../../../states/conferencing';
+import { CallStatus, isCallStatusLoading } from '../../../states/conferencing/callStatus';
+import { conferencingBase, namespace } from '../../../states/storeNamespaces';
 
 type Props = TaskContextProps;
 

@@ -22,6 +22,7 @@ import { Case } from '../../types/types';
 import { UPDATE_CASE_ACTION, CREATE_CASE_ACTION, SavedCaseStatus, CaseState } from './types';
 import type { RootState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
+import { connectToCase } from '../../services/ContactService';
 
 export const createCaseAsyncAction = createAsyncAction(
   CREATE_CASE_ACTION,
@@ -31,7 +32,10 @@ export const createCaseAsyncAction = createAsyncAction(
     workerSid: string,
     definitionVersion: DefinitionVersionId,
   ): Promise<{ taskSid: string; case: Case }> => {
-    return { taskSid, case: await createCase(contact, workerSid, definitionVersion) };
+    // We should probably update the case POST endpoint to accept a connected contact to simplify this and avoid extra calls and inconsistent state
+    const newCase = await createCase(contact, workerSid, definitionVersion);
+    const updatedContact = await connectToCase(contact.id, newCase.id);
+    return { taskSid, case: { ...newCase, connectedContacts: [...(newCase.connectedContacts ?? []), updatedContact] } };
   },
 );
 

@@ -19,7 +19,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 
-import { namespace, referrableResourcesBase, RootState } from '../../../states';
+import { RootState } from '../../../states';
 import { Box, Column } from '../../../styles/HrmStyles';
 import SearchResultsBackButton from '../../search/SearchResults/SearchResultsBackButton';
 import {
@@ -44,6 +44,7 @@ import { viewResourceAction } from '../../../states/resources';
 import Pagination from '../../Pagination';
 import asyncDispatch from '../../../states/asyncDispatch';
 import ResourcePreview from './ResourcePreview';
+import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
 
 type OwnProps = {};
 

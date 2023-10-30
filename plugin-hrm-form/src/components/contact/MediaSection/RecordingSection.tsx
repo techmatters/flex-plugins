@@ -39,15 +39,13 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
       setShowButton(false);
 
       if (externalStoredRecording) {
-        const mediaType = 'recording';
-
         const { media_url: recordingPreSignedUrl } = await fetchHrmApi(
           generateSignedURLPath({
             method: 'getObject',
             objectType: 'contact',
             objectId: contactId,
             fileType: 'recording',
-            location: externalStoredRecording.location,
+            location: externalStoredRecording.storeTypeSpecificData.location,
           }),
         );
 
@@ -65,7 +63,7 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
 
   const handleFetchAndLoadException = err => {
     console.error(
-      `Error loading the recording for contact ${contactId}, recording url ${externalStoredRecording.location.key}`,
+      `Error loading the recording for contact ${contactId}, recording url ${externalStoredRecording?.storeTypeSpecificData?.location.key}`,
       err,
     );
     const errorMessage = 'RecordingSection-Error';
@@ -103,7 +101,13 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
   return (
     <div>
       {voiceRecording ? (
-        <audio controls src={voiceRecording} preload="metadata" onError={handleFetchAndLoadException}>
+        <audio
+          controls
+          controlsList="nodownload"
+          src={voiceRecording}
+          preload="metadata"
+          onError={handleFetchAndLoadException}
+        >
           <track kind="captions" />
         </audio>
       ) : (

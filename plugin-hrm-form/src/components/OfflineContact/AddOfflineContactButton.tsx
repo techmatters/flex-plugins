@@ -19,12 +19,16 @@ import React from 'react';
 import { Actions } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { configurationBase, namespace, RootState, routingBase } from '../../states';
-import type { DefinitionVersion } from '../../states/types';
-import * as GeneralActions from '../../states/actions';
-import { offlineContactTaskSid } from '../../types/types';
+import { RootState } from '../../states';
+import { Contact } from '../../types/types';
 import AddTaskButton from '../common/AddTaskButton';
+import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
+import { getHrmConfig } from '../../hrmConfig';
+import { newContact } from '../../states/contacts/contactState';
+import asyncDispatch from '../../states/asyncDispatch';
+import { createContactAsyncAction } from '../../states/contacts/saveContact';
 import { rerenderAgentDesktop } from '../../rerenderView';
+import { configurationBase, namespace, routingBase } from '../../states/storeNamespaces';
 
 type OwnProps = {};
 
@@ -34,14 +38,16 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const AddOfflineContactButton: React.FC<Props> = ({
   isAddingOfflineContact,
   currentDefinitionVersion,
-  recreateContactState,
+  createContactState,
 }) => {
   if (!currentDefinitionVersion) {
     return null;
   }
 
   const onClick = async () => {
-    recreateContactState(currentDefinitionVersion)(offlineContactTaskSid);
+    console.log('Onclick - creating contact');
+    createContactState(newContact(currentDefinitionVersion));
+
     await Actions.invokeAction('SelectTask', { task: undefined });
     await rerenderAgentDesktop();
   };
@@ -69,8 +75,9 @@ const mapStateToProps = (state: RootState) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  recreateContactState: (definitions: DefinitionVersion) => (taskId: string) =>
-    dispatch(GeneralActions.recreateContactState(definitions)(taskId)),
+  createContactState: (contact: Contact) => {
+    asyncDispatch(dispatch)(createContactAsyncAction(contact, getHrmConfig().workerSid, getOfflineContactTaskSid()));
+  },
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
