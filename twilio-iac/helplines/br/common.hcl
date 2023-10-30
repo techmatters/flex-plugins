@@ -25,7 +25,7 @@ locals {
       master : {
         friendly_name            = "Master Workflow"
         templatefile             = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
-        task_reservation_timeout = 120
+        task_reservation_timeout = 300
       },
       survey : {
         friendly_name = "Survey Workflow"
