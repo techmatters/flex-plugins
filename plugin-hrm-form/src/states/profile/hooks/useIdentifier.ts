@@ -64,7 +64,7 @@ export const useIdentifierByIdentifierLoader = ({
     if (shouldAutoload && !loading) {
       loadIdentifierByIdentifier();
     }
-  }, [loading, identifierIdentifier, shouldAutoload, loadIdentifierByIdentifier]);
+  }, [identifierIdentifier, shouldAutoload, loadIdentifierByIdentifier]);
 
   return {
     error,

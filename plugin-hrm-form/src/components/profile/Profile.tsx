@@ -18,6 +18,7 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
 import ProfileTabs from './ProfileTabs';
+import ProfileNoteEdit from './notes/ProfileNoteEdit';
 import { getCurrentTopmostRouteForTask, getCurrentTopmostRouteStackForTask } from '../../states/routing/getRoute';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
@@ -42,6 +43,10 @@ const Profile: React.FC<Props> = ({ task, profileId, currentRoute }) => {
     {
       routes: ['profileEdit'],
       component: <ProfileEdit {...profileProps} />,
+    },
+    {
+      routes: ['profileEditNote'],
+      component: <ProfileNoteEdit {...profileProps} />,
     },
     {
       routes: ['profile'],

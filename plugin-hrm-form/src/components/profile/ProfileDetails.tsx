@@ -14,16 +14,17 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { Template } from '@twilio/flex-ui';
+import { IconButton, Template } from '@twilio/flex-ui';
 
 import ProfileFlagsList from './profileFlags/ProfileFlagsList';
 import { CustomITask, Profile } from '../../types/types';
 import { DetailsWrapper, EditButton, ProfileSubtitle } from './styles';
-import { Bold, Box, Column } from '../../styles/HrmStyles';
+import { Bold, Box, Column, Flex } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
+import ProfileFlagsEdit from './profileFlags/ProfileFlagsEdit';
 
 type OwnProps = {
   profileId: Profile['id'];
@@ -33,14 +34,77 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ProfileDetails: React.FC<Props> = ({ profileId, task, openProfileEditModal }) => {
+const ProfileDetails: React.FC<Props> = ({ profileId, task, openNoteEditModal }) => {
   const { profile } = useProfile({ profileId });
+  const [editingProfileFlags, setEditingProfileFlags] = useState(false);
+  const toggleEditingProfileFlags = () => setEditingProfileFlags(!editingProfileFlags);
 
-  const editButton = true;
-  const handleEditProfileDetails = () => {
-    if (editButton) {
-      openProfileEditModal();
-    }
+  const noteContent = (
+    <>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+      magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+      consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+      Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </>
+  );
+
+  const sections = [
+    {
+      title: 'Identifiers',
+      renderComponent: () =>
+        profile.identifiers ? (
+          profile.identifiers.map(identifier => <div key={identifier.id}>{identifier.identifier}</div>)
+        ) : (
+          <div>No identifiers found</div>
+        ),
+    },
+    {
+      title: 'Status',
+      renderComponent: () =>
+        editingProfileFlags ? (
+          <ProfileFlagsEdit profileId={profileId} task={task} closeProfileFlagsEdit={toggleEditingProfileFlags} />
+        ) : (
+          <ProfileFlagsList profileId={profileId} task={task} />
+        ),
+      handleEdit: () => toggleEditingProfileFlags(),
+    },
+    {
+      title: 'Summary',
+      renderComponent: () => <Box>{noteContent}</Box>,
+      handleEdit: () => openNoteEditModal(1),
+    },
+    {
+      title: 'Some other note',
+      renderComponent: () => <Box>{noteContent}</Box>,
+      handleEdit: () => openNoteEditModal(1),
+    },
+    {
+      title: 'One more note',
+      renderComponent: () => <Box>{noteContent}</Box>,
+      handleEdit: () => openNoteEditModal(1),
+    },
+  ];
+
+  const renderEditButton = section => {
+    return section.handleEdit ? (
+      <Box alignSelf="center">
+        <IconButton icon="Edit" title="Edit" size="small" onClick={section.handleEdit} />
+      </Box>
+    ) : null;
+  };
+
+  const renderSection = (section: any) => {
+    return (
+      <>
+        <Flex flexDirection="row">
+          <Box alignSelf="center">
+            <ProfileSubtitle>{section.title}</ProfileSubtitle>
+          </Box>
+          {renderEditButton(section)}
+        </Flex>
+        {section.renderComponent()}
+      </>
+    );
   };
 
   return (
@@ -49,26 +113,11 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openProfileEditModal
         <Bold>
           <Template code="Profile-DetailsHeader" />
         </Bold>
-
-        {editButton && (
-          <Box alignSelf="flex-end" marginTop="-20px" marginRight="35px">
-            <EditButton onClick={handleEditProfileDetails}>
-              <Template code="Profile-EditButton" />
-            </EditButton>
-          </Box>
-        )}
       </Column>
 
-      <ProfileSubtitle>Identifiers</ProfileSubtitle>
-      {profile.identifiers ? (
-        profile.identifiers.map(identifier => <div key={identifier.id}>{identifier.identifier}</div>)
-      ) : (
-        <div>No identifiers found</div>
-      )}
-      <ProfileSubtitle>Status</ProfileSubtitle>
-      <div>
-        <ProfileFlagsList profileId={profileId} task={task} />
-      </div>
+      {sections.map(section => (
+        <div key={section.title}>{renderSection(section)}</div>
+      ))}
       <hr />
     </DetailsWrapper>
   );
@@ -78,8 +127,8 @@ const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
   const { profileId, task } = ownProps;
   const taskId = task.taskSid;
   return {
-    openProfileEditModal: () => {
-      dispatch(newOpenModalAction({ route: 'profileEdit', id: profileId }, taskId));
+    openNoteEditModal: id => {
+      dispatch(newOpenModalAction({ route: 'profileEditNote', id, profileId }, taskId));
     },
   };
 };

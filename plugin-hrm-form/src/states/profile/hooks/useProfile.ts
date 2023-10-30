@@ -59,7 +59,7 @@ export const useProfileLoader = ({
     if (shouldAutoload && !loading) {
       loadProfile();
     }
-  }, [loading, profileId, shouldAutoload, loadProfile]);
+  }, [profileId, shouldAutoload, loadProfile]);
 
   return {
     error,

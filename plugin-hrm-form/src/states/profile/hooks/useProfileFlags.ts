@@ -56,7 +56,7 @@ export const useAllProfileFlags = (): UseAllProfileFlags => {
     if (!allProfileFlags && !loading) {
       loadProfileFlags();
     }
-  }, [allProfileFlags, loading, loadProfileFlags]);
+  }, [allProfileFlags, loadProfileFlags]);
 
   return {
     allProfileFlags,

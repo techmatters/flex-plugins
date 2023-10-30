@@ -14,13 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { Select } from '@material-ui/core';
-import { ArrowDropDown } from '@material-ui/icons';
+import { IconButton } from '@twilio/flex-ui';
+import { Paper, Popper } from '@material-ui/core';
 
 import ProfileFlagsList from './ProfileFlagsList';
-import { StyledMenuItem } from '../../../styles/HrmStyles';
+import { Box, Flex, StyledMenuItem } from '../../../styles/HrmStyles';
 import { CustomITask, Profile, ProfileFlag } from '../../../types/types';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
 import { useProfileFlags } from '../../../states/profile/hooks';
@@ -29,43 +29,40 @@ import { RootState } from '../../../states';
 type OwnProps = {
   profileId: Profile['id'];
   task: CustomITask;
+  closeProfileFlagsEdit?: () => void;
 };
 
 type Props = OwnProps;
 
 const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
-  const { profileId } = props;
+  const { profileId, closeProfileFlagsEdit } = props;
   const { allProfileFlags, profileFlags, associateProfileFlag } = useProfileFlags(profileId);
   const { loading } = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId));
-
-  const [open, setOpen] = useState(false);
+  const profileFlagsRef = useRef(null);
 
   const availableFlags = allProfileFlags.filter(flag => !profileFlags.find(f => f.id === flag.id));
-  const renderValue = () => <ProfileFlagsList {...props} enableDisassociate={true} />;
-
-  const shouldAllowAssociate = availableFlags.length && !loading;
-
-  const handleOpen = () => {
-    if (shouldAllowAssociate) setOpen(true);
-  };
-  const getIconComponent = () =>
-    shouldAllowAssociate ? <ArrowDropDown onClick={handleOpen} /> : <ArrowDropDown style={{ visibility: 'hidden' }} />;
+  const shouldAllowAssociate = Boolean(availableFlags.length) && !loading;
 
   return (
-    <Select
-      open={open}
-      onOpen={handleOpen}
-      onClose={() => setOpen(false)}
-      IconComponent={getIconComponent}
-      value="false"
-      renderValue={renderValue}
-    >
-      {availableFlags.map((flag: ProfileFlag) => (
-        <StyledMenuItem key={flag.id} onClick={() => associateProfileFlag(flag.id)}>
-          {flag.name}
-        </StyledMenuItem>
-      ))}
-    </Select>
+    <>
+      <Flex ref={profileFlagsRef} flexDirection="row" justifyContent="space-between" width="100%">
+        <Box alignSelf="center">
+          <ProfileFlagsList {...props} enableDisassociate={true} />
+        </Box>
+        <Box alignSelf="center">
+          <IconButton icon="Close" onClick={closeProfileFlagsEdit} title="Close" size="medium" />
+        </Box>
+      </Flex>
+      <Popper open={shouldAllowAssociate} anchorEl={profileFlagsRef.current} placement="bottom-start">
+        <Paper style={{ width: '400px' }}>
+          {availableFlags.map((flag: ProfileFlag) => (
+            <StyledMenuItem key={flag.id} onClick={() => associateProfileFlag(flag.id)}>
+              {flag.name}
+            </StyledMenuItem>
+          ))}
+        </Paper>
+      </Popper>
+    </>
   );
 };
 
