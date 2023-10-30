@@ -18,16 +18,19 @@ import { RootState } from '..';
 import { namespace, profileBase } from '../storeNamespaces';
 import * as t from './types';
 
-export const selectProfileById = (state: RootState, profileId: t.Profile['id']) =>
-  state[namespace][profileBase].profiles[profileId];
+export type ProfileIdParam = t.Profile['id'] | undefined;
+export type IdentifierIdentifierParam = t.Identifier['identifier'] | undefined;
+
+export const selectProfileById = (state: RootState, profileId: ProfileIdParam) =>
+  profileId ? state[namespace][profileBase].profiles[profileId] : undefined;
 
 export const selectProfilePropertyById = <T extends keyof t.Profile>(
   state: RootState,
-  profileId: t.Profile['id'],
+  profileId: ProfileIdParam,
   property: T,
 ): t.Profile[T] | undefined => selectProfileById(state, profileId)?.data?.[property];
 
-export const selectIdentifierByIdentifier = (state: RootState, identifier: t.Identifier['identifier']) =>
+export const selectIdentifierByIdentifier = (state: RootState, identifier: IdentifierIdentifierParam) =>
   Object.values(state[namespace][profileBase].identifiers).find(entry => entry.data?.identifier === identifier);
 
 export const selectAllProfileFlags = (state: RootState) => state[namespace][profileBase].profileFlags;

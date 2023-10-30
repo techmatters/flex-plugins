@@ -23,7 +23,7 @@ import * as ProfileSelectors from '../selectors';
 import { RootState } from '../..';
 
 export type UseProfileLoaderParams = {
-  profileId: Profile['id'];
+  profileId: ProfileSelectors.ProfileIdParam;
   shouldAutoload?: Boolean;
 };
 
@@ -41,7 +41,7 @@ export type UseProfileReturn = UseProfileLoaderReturn & {
 
 /**
  * Load a profile by id into redux
- * @param {Profile['id']} profileId - The id of the profile to load
+ * @param {UseProfileLoaderParams}
  * @returns {UseProfileLoaderReturn} - State and actions for the profile
  */
 export const useProfileLoader = ({
@@ -71,7 +71,7 @@ export const useProfileLoader = ({
 /**
  * Access a profile by id for the current account
  *
- * @param {Profile['id']} profileId - The id of the profile to access
+ * @param {UseProfileParams}
  * @returns {UseProfile} - State and actions for the profile
  */
 export const useProfile = (params: UseProfileParams): UseProfileReturn => {
@@ -87,12 +87,12 @@ export const useProfile = (params: UseProfileParams): UseProfileReturn => {
 /**
  * Access a profile property by id for the current account
  *
- * @param {Profile['id']} profileId - The id of the profile to access
+ * @param {ProfileSelectors.ProfileIdParam} profileId - The id of the profile to access
  * @param {T} property - The property to access
  * @returns {UseProfile} - State and actions for the profile
  */
 export const useProfileProperty = <T extends keyof Profile>(
-  profileId: Profile['id'],
+  profileId: ProfileSelectors.ProfileIdParam,
   property: T,
 ): Profile[T] | undefined => {
   return useSelector((state: RootState) => ProfileSelectors.selectProfilePropertyById(state, profileId, property));

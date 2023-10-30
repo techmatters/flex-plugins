@@ -42,9 +42,11 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, modalOpen }) => {
-  let identifierIdentifier: Identifier['identifier'];
+  let formattedIdentifier: string = '';
+  let identifierIdentifier: Identifier['identifier'] = '';
   if (isTwilioTask(task)) {
-    identifierIdentifier = getFormattedNumberFromTask(task);
+    formattedIdentifier = getFormattedNumberFromTask(task);
+    identifierIdentifier = getNumberFromTask(task);
   }
   const { identifier } = useIdentifierByIdentifier({ identifierIdentifier, shouldAutoload: true });
   const profileId = identifier?.profiles?.[0]?.id;
@@ -111,7 +113,7 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, moda
               <Template code="MaskIdentifiers" />
             </Bold>
           ) : (
-            <Bold>{identifierIdentifier}</Bold>
+            <Bold>{formattedIdentifier}</Bold>
           )}
           .{' '}
         </pre>
