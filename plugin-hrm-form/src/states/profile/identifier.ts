@@ -76,10 +76,10 @@ export const loadIdentifierReducer = (initialState: t.ProfileState) =>
     handleAction(loadIdentifierByIdentifierAsync.fulfilled, handleLoadIdentifierFulfilledAction),
   ]);
 
-const LOAD_IDENTIFIER_ACTIONS = [
+const IDENTIFIER_ACTIONS = [
   loadIdentifierByIdentifierAsync.pending.toString(),
   loadIdentifierByIdentifierAsync.rejected.toString(),
   loadIdentifierByIdentifierAsync.fulfilled.toString(),
 ];
 
-export const shouldUseLoadIdentifierReducer = (action: any) => LOAD_IDENTIFIER_ACTIONS.includes(action.type);
+export const shouldUseLoadIdentifierReducer = (action: any) => IDENTIFIER_ACTIONS.includes(action.type);

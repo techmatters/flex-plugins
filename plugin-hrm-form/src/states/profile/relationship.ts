@@ -112,11 +112,11 @@ export const relationshipReducer = (initialState: t.ProfileState) =>
     handleAction(incrementPage, handleIncrementPageAction),
   ]);
 
-export const LOAD_RELATIONSHIP_ACTIONS = [
+const RELATIONSHIP_ACTIONS = [
   loadRelationshipAsync.pending.toString(),
   loadRelationshipAsync.fulfilled.toString(),
   loadRelationshipAsync.rejected.toString(),
   incrementPage.toString(),
 ];
 
-export const shouldUseRelationshipReducer = (action: any) => LOAD_RELATIONSHIP_ACTIONS.includes(action.type);
+export const shouldUseRelationshipReducer = (action: any) => RELATIONSHIP_ACTIONS.includes(action.type);

@@ -126,7 +126,7 @@ export const profileFlagsReducer = (initialState: t.ProfileState) =>
     handleAction(disassociateProfileFlagAsync.fulfilled, handleProfileFlagUpdateFulfilledAction),
   ]);
 
-const LOAD_PROFILE_FLAGS_ACTIONS = [
+const PROFILE_FLAGS_ACTIONS = [
   loadProfileFlagsAsync.pending.toString(),
   loadProfileFlagsAsync.rejected.toString(),
   loadProfileFlagsAsync.fulfilled.toString(),
@@ -138,4 +138,4 @@ const LOAD_PROFILE_FLAGS_ACTIONS = [
   disassociateProfileFlagAsync.fulfilled.toString(),
 ];
 
-export const shouldUseProfileFlagsReducer = (action: any) => LOAD_PROFILE_FLAGS_ACTIONS.includes(action.type);
+export const shouldUseProfileFlagsReducer = (action: any) => PROFILE_FLAGS_ACTIONS.includes(action.type);
