@@ -51,7 +51,7 @@ const skipDataUpdateEnvs = ['staging', 'production'];
 const flexEnvs = ['development', 'staging', 'production'];
 
 // This is kindof a hack to get the correct default remote webchat url and twilio account info for the local env
-const localOverrideEnv = helplineEnv == 'local' ? 'development' : helplineEnv;
+export const localOverrideEnv = helplineEnv == 'local' ? 'development' : helplineEnv;
 
 export const config: Config = {};
 
@@ -190,10 +190,7 @@ const configOptions: ConfigOptions = {
 
   hrmRoot: {
     envKey: 'HRM_ROOT',
-    default: () =>
-      `https://hrm-${localOverrideEnv}.tl.techmatters.org/v0/accounts/${getConfigValue(
-        'twilioAccountSid',
-      )}`,
+    default: '', // Default cannot be set up front due to the account sid might not calculated.
   },
 };
 

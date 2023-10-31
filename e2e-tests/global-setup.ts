@@ -18,7 +18,7 @@
 import { FullConfig } from '@playwright/test';
 import { differenceInMilliseconds } from 'date-fns';
 import { oktaSsoLoginViaApi } from './okta/sso-login';
-import { getConfigValue, initConfig } from './config';
+import { getConfigValue, initConfig, localOverrideEnv } from './config';
 import { getSidForWorker } from './twilio/worker';
 import { clearOfflineTask } from './hrm/clearOfflineTask';
 
@@ -40,7 +40,14 @@ async function globalSetup(config: FullConfig) {
   );
   const workerSid = await getSidForWorker(getConfigValue('oktaUsername') as string);
   if (workerSid) {
-    await clearOfflineTask(getConfigValue('hrmRoot') as string, workerSid, flexToken);
+    await clearOfflineTask(
+      (getConfigValue('hrmRoot') as string) ??
+        `https://hrm-${localOverrideEnv}.tl.techmatters.org/v0/accounts/${getConfigValue(
+          'twilioAccountSid',
+        )}`,
+      workerSid,
+      flexToken,
+    );
   } else {
     console.warn(
       `Could not find worker with username ${getConfigValue(
