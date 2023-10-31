@@ -136,8 +136,13 @@ export type ProfileEditRoute = {
   id: Profile['id'];
 };
 
-export type ProfileEditNoteRoute = {
-  route: 'profileEditNote';
+export type ProfileFlagEditRoute = {
+  route: 'profileFlagEdit';
+  id: Profile['id'];
+};
+
+export type ProfileNoteEditRoute = {
+  route: 'profileNoteEdit';
   id: ProfileNote['id'];
   profileId: Profile['id'];
 };
@@ -197,7 +202,8 @@ type OtherRoutes =
   | CaseListRoute
   | ProfileRoute
   | ProfileEditRoute
-  | ProfileEditNoteRoute;
+  | ProfileFlagEditRoute
+  | ProfileNoteEditRoute;
 
 // The different routes we have in our app
 export type AppRoutes = AppRoutesWithCase | OtherRoutes;

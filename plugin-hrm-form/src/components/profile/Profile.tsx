@@ -18,12 +18,13 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
 import ProfileTabs from './ProfileTabs';
-import ProfileNoteEdit from './notes/ProfileNoteEdit';
-import { getCurrentTopmostRouteForTask, getCurrentTopmostRouteStackForTask } from '../../states/routing/getRoute';
+import ProfileFlagEdit from './profileFlag/ProfileFlagEdit';
+import ProfileNoteEdit from './note/ProfileNoteEdit';
+import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileRoute } from '../../states/routing/types';
-import { CustomITask, Profile as ProfileType } from '../../types/types';
+import { CustomITask } from '../../types/types';
 import ProfileEdit from './ProfileEdit';
 
 type OwnProps = {
@@ -45,7 +46,11 @@ const Profile: React.FC<Props> = ({ task, profileId, currentRoute }) => {
       component: <ProfileEdit {...profileProps} />,
     },
     {
-      routes: ['profileEditNote'],
+      routes: ['profileFlagEdit'],
+      component: <ProfileFlagEdit {...profileProps} />,
+    },
+    {
+      routes: ['profileNoteEdit'],
       component: <ProfileNoteEdit {...profileProps} />,
     },
     {

@@ -16,10 +16,7 @@
 
 import React from 'react';
 
-import ProfileFlagsEdit from './profileFlags/ProfileFlagsEdit';
 import { CustomITask, Profile } from '../../types/types';
-import { DetailsWrapper, ProfileSubtitle } from './styles';
-import NavigableContainer from '../NavigableContainer';
 
 type OwnProps = {
   profileId: Profile['id'];
@@ -29,15 +26,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const ProfileEdit: React.FC<Props> = (props: Props) => {
-  const { task } = props;
-  return (
-    <NavigableContainer titleCode="Profile-EditHeader" task={task}>
-      <DetailsWrapper>
-        <ProfileSubtitle>Status</ProfileSubtitle>
-        <ProfileFlagsEdit {...props} />
-      </DetailsWrapper>
-    </NavigableContainer>
-  );
+  return null;
 };
 
 export default ProfileEdit;

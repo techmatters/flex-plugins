@@ -19,7 +19,9 @@ import { useSelector } from 'react-redux';
 import { IconButton } from '@twilio/flex-ui';
 import { Paper, Popper } from '@material-ui/core';
 
-import ProfileFlagsList from './ProfileFlagsList';
+import NavigableContainer from '../../NavigableContainer';
+import ProfileFlagList from './ProfileFlagList';
+import { ProfileSubtitle } from '../styles';
 import { Box, Flex, StyledMenuItem } from '../../../styles/HrmStyles';
 import { CustomITask, Profile, ProfileFlag } from '../../../types/types';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
@@ -29,13 +31,12 @@ import { RootState } from '../../../states';
 type OwnProps = {
   profileId: Profile['id'];
   task: CustomITask;
-  closeProfileFlagsEdit?: () => void;
+  closeProfileFlagEdit?: () => void;
 };
 
 type Props = OwnProps;
 
-const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
-  const { profileId, closeProfileFlagsEdit } = props;
+const ProfileFlagEdit: React.FC<Props> = ({ profileId, task, closeProfileFlagEdit }: Props) => {
   const { allProfileFlags, profileFlags, associateProfileFlag } = useProfileFlags(profileId);
   const { loading } = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId));
   const profileFlagsRef = useRef(null);
@@ -43,27 +44,32 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
   const availableFlags = allProfileFlags.filter(flag => !profileFlags.find(f => f.id === flag.id));
   const shouldAllowAssociate = Boolean(availableFlags.length) && !loading;
 
+  const renderAvailableFlags = () =>
+    availableFlags.length ? (
+      availableFlags.map((flag: ProfileFlag) => (
+        <StyledMenuItem key={flag.id} onClick={() => associateProfileFlag(flag.id)}>
+          {flag.name}
+        </StyledMenuItem>
+      ))
+    ) : (
+      <Box>No flags available</Box>
+    );
+
   return (
-    <>
+    <NavigableContainer titleCode="Profile-EditHeader" task={task}>
       <Flex ref={profileFlagsRef} flexDirection="row" justifyContent="space-between" width="100%">
         <Box alignSelf="center">
-          <ProfileFlagsList {...props} enableDisassociate={true} />
-        </Box>
-        <Box alignSelf="center">
-          <IconButton icon="Close" onClick={closeProfileFlagsEdit} title="Close" size="medium" />
+          <ProfileFlagList profileId={profileId} task={task} enableDisassociate={true} />
         </Box>
       </Flex>
-      <Popper open={shouldAllowAssociate} anchorEl={profileFlagsRef.current} placement="bottom-start">
-        <Paper style={{ width: '400px' }}>
-          {availableFlags.map((flag: ProfileFlag) => (
-            <StyledMenuItem key={flag.id} onClick={() => associateProfileFlag(flag.id)}>
-              {flag.name}
-            </StyledMenuItem>
-          ))}
-        </Paper>
-      </Popper>
-    </>
+      <Flex flexDirection="column">
+        <Box>
+          <ProfileSubtitle>Select a flag to add</ProfileSubtitle>
+        </Box>
+        {renderAvailableFlags()}
+      </Flex>
+    </NavigableContainer>
   );
 };
 
-export default ProfileFlagsEdit;
+export default ProfileFlagEdit;

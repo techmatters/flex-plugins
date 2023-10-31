@@ -14,17 +14,16 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { IconButton, Template } from '@twilio/flex-ui';
 
-import ProfileFlagsList from './profileFlags/ProfileFlagsList';
+import ProfileFlagList from './profileFlag/ProfileFlagList';
 import { CustomITask, Profile } from '../../types/types';
 import { DetailsWrapper, EditButton, ProfileSubtitle } from './styles';
 import { Bold, Box, Column, Flex } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
-import ProfileFlagsEdit from './profileFlags/ProfileFlagsEdit';
 
 type OwnProps = {
   profileId: Profile['id'];
@@ -34,10 +33,8 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ProfileDetails: React.FC<Props> = ({ profileId, task, openNoteEditModal }) => {
+const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, openNoteEditModal }) => {
   const { profile } = useProfile({ profileId });
-  const [editingProfileFlags, setEditingProfileFlags] = useState(false);
-  const toggleEditingProfileFlags = () => setEditingProfileFlags(!editingProfileFlags);
 
   const noteContent = (
     <>
@@ -60,13 +57,8 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openNoteEditModal })
     },
     {
       title: 'Status',
-      renderComponent: () =>
-        editingProfileFlags ? (
-          <ProfileFlagsEdit profileId={profileId} task={task} closeProfileFlagsEdit={toggleEditingProfileFlags} />
-        ) : (
-          <ProfileFlagsList profileId={profileId} task={task} />
-        ),
-      handleEdit: () => toggleEditingProfileFlags(),
+      renderComponent: () => <ProfileFlagList profileId={profileId} task={task} />,
+      handleEdit: () => openFlagEditModal(),
     },
     {
       title: 'Summary',
@@ -127,8 +119,11 @@ const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
   const { profileId, task } = ownProps;
   const taskId = task.taskSid;
   return {
+    openFlagEditModal: () => {
+      dispatch(newOpenModalAction({ route: 'profileFlagEdit', id: profileId }, taskId));
+    },
     openNoteEditModal: id => {
-      dispatch(newOpenModalAction({ route: 'profileEditNote', id, profileId }, taskId));
+      dispatch(newOpenModalAction({ route: 'profileNoteEdit', id, profileId }, taskId));
     },
   };
 };

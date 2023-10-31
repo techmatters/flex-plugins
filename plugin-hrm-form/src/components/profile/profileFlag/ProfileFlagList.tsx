@@ -32,7 +32,7 @@ type OwnProps = {
 
 type Props = OwnProps;
 
-const ProfileFlagsList: React.FC<Props> = ({ enableDisassociate, profileId }) => {
+const ProfileFlagList: React.FC<Props> = ({ enableDisassociate, profileId }) => {
   const { profileFlags, disassociateProfileFlag } = useProfileFlags(profileId);
   const { loading } = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId));
 
@@ -62,4 +62,4 @@ const ProfileFlagsList: React.FC<Props> = ({ enableDisassociate, profileId }) =>
   return <>{profileFlags?.length ? profileFlags.map(renderPill) : <StatusLabelPill>No Status</StatusLabelPill>}</>;
 };
 
-export default ProfileFlagsList;
+export default ProfileFlagList;
