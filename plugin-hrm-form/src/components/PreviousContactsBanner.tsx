@@ -36,7 +36,7 @@ import { getPermissionsForViewingIdentifiers, PermissionActions } from '../permi
 import { CustomITask, isTwilioTask } from '../types/types';
 import { namespace } from '../states/storeNamespaces';
 import { isRouteModal } from '../states/routing/types';
-import { getCurrentBaseRoute } from '../states/routing/getRoute';
+import { selectCurrentBaseRoute } from '../states/routing/selectors';
 
 type OwnProps = {
   task: CustomITask;
@@ -101,7 +101,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
     <div className={modalOpen ? 'editingContact' : ''}>
       <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
         {/* eslint-disable-next-line prettier/prettier */}
-      <pre>
+        <pre>
           <Template code="PreviousContacts-ThereAre" />
           &nbsp;
           {contactsCount === 1 ? (
@@ -149,13 +149,13 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
 PreviousContactsBanner.displayName = 'PreviousContactsBanner';
 
-const mapStateToProps = (
-  { [namespace]: { searchContacts, configuration, activeContacts, routing } }: RootState,
-  { task: { taskSid } }: OwnProps,
-) => {
+const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
+  const {
+    [namespace]: { searchContacts, configuration, activeContacts, routing },
+  } = state;
   const taskSearchState = searchContacts.tasks[taskSid];
   const { counselors } = configuration;
-  const modalOpen = activeContacts.editingContact || isRouteModal(getCurrentBaseRoute(routing, taskSid));
+  const modalOpen = activeContacts.editingContact || isRouteModal(selectCurrentBaseRoute(state, taskSid));
 
   return {
     previousContacts: taskSearchState.previousContacts,

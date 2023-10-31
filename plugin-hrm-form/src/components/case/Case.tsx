@@ -61,8 +61,10 @@ import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import { connectToCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
-import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { contactFormsBase, namespace } from '../../states/storeNamespaces';
+import { selectCaseStateForTask } from '../../states/case/selectors';
+import { selectConfigurationState, selectCounselorsHashState } from '../../states/configuration/selectors';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/selectors';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -358,16 +360,16 @@ const Case: React.FC<Props> = ({
 Case.displayName = 'Case';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const caseState = state[namespace][connectedCaseBase].tasks[task.taskSid];
+  const caseState = selectCaseStateForTask(state, task.taskSid);
   const { connectedCase } = caseState ?? {};
   const connectedContactIds = new Set((connectedCase?.connectedContacts ?? []).map(cc => cc.id as string));
-  const { definitionVersions, currentDefinitionVersion } = state[namespace][configurationBase];
+  const { definitionVersions, currentDefinitionVersion } = selectConfigurationState(state);
 
   return {
     connectedCaseState: caseState,
     connectedCaseId: connectedCase?.id,
-    counselorsHash: state[namespace][configurationBase].counselors.hash,
-    routing: getCurrentTopmostRouteForTask(state[namespace].routing, task.taskSid) as CaseRoute,
+    counselorsHash: selectCounselorsHashState(state),
+    routing: selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseRoute,
     definitionVersions,
     currentDefinitionVersion,
     savedContacts: Object.values(state[namespace][contactFormsBase].existingContacts)

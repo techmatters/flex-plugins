@@ -35,7 +35,7 @@ import { acknowledgeCSAMReport, createCSAMReport } from '../../services/CSAMRepo
 import { reportToIWF, selfReportToIWF } from '../../services/ServerlessService';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import { csamReportBase, namespace } from '../../states/storeNamespaces';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/selectors';
 
 export enum CSAMPage {
   ReportTypePicker = 'report-type-picker',
@@ -123,7 +123,7 @@ const saveReport = async (
 
 export const newContactCSAMApi = (contactId: string, taskSid: string, previousRoute: AppRoutes): CSAMReportApi => ({
   currentPage: (state: RootState) => {
-    const routing = getCurrentTopmostRouteForTask(state[namespace].routing, taskSid);
+    const routing = selectCurrentTopmostRouteForTask(state, taskSid);
     if (routing.route === 'csam-report') {
       const [key] = Object.entries(CSAMPage).find(([, v]) => v === routing.subroute) ?? [];
       return CSAMPage[key];

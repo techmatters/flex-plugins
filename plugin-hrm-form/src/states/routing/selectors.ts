@@ -14,7 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { namespace } from '../storeNamespaces';
 import { AppRoutes, isRouteWithModalSupport, RoutingState } from './types';
+import { RootState } from '..';
 
 const getCurrentTopmostRouteStack = (baseRouteStack: AppRoutes[]): AppRoutes[] | undefined => {
   if (baseRouteStack?.length) {
@@ -26,15 +28,20 @@ const getCurrentTopmostRouteStack = (baseRouteStack: AppRoutes[]): AppRoutes[] |
   return baseRouteStack;
 };
 
-export const getCurrentTopmostRouteStackForTask = (state: RoutingState, taskSid: string): AppRoutes[] =>
-  getCurrentTopmostRouteStack(state.tasks[taskSid]);
+export const selectRoutingState = (state: RootState): RoutingState => state[namespace].routing;
 
-export const getCurrentTopmostRouteForTask = (state: RoutingState, taskSid: string): AppRoutes | undefined => {
-  const topStack = getCurrentTopmostRouteStack(state.tasks[taskSid]);
+export const selectBaseForTask = (state: RootState, taskSid: string): AppRoutes[] | undefined =>
+  selectRoutingState(state).tasks[taskSid];
+
+export const selectCurrentTopmostRouteStackForTask = (state: RootState, taskSid: string): AppRoutes[] =>
+  getCurrentTopmostRouteStack(selectRoutingState(state).tasks[taskSid]);
+
+export const selectCurrentTopmostRouteForTask = (state: RootState, taskSid: string): AppRoutes | undefined => {
+  const topStack = selectCurrentTopmostRouteStackForTask(state, taskSid);
   return topStack.length ? topStack[topStack.length - 1] : undefined;
 };
 
-export const getCurrentBaseRoute = (state: RoutingState, taskSid: string): AppRoutes | undefined => {
-  const baseRouteStack = state.tasks[taskSid];
+export const selectCurrentBaseRoute = (state: RootState, taskSid: string): AppRoutes | undefined => {
+  const baseRouteStack = selectBaseForTask(state, taskSid);
   return baseRouteStack?.length ? baseRouteStack[baseRouteStack.length - 1] : undefined;
 };

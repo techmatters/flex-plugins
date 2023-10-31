@@ -48,7 +48,7 @@ import { SearchPagesType } from '../../../states/search/types';
 import { getPermissionsForContact, getPermissionsForCase, PermissionActions } from '../../../permissions';
 import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
-import { getCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
+import { selectCurrentTopmostRouteForTask } from '../../../states/routing/selectors';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
 import { ChangeRouteMode, SearchRoute } from '../../../states/routing/types';
 
@@ -329,10 +329,10 @@ const SearchResults: React.FC<Props> = ({
 };
 SearchResults.displayName = 'SearchResults';
 
-const mapStateToProps = (
-  { [namespace]: { searchContacts, configuration, routing } }: RootState,
-  { task }: OwnProps,
-) => {
+const mapStateToProps = (state: RootState, { task }: OwnProps) => {
+  const {
+    [namespace]: { searchContacts, configuration, routing },
+  } = state;
   const taskId = task.taskSid;
   const { isRequesting, isRequestingCases } = searchContacts.tasks[taskId];
   const { counselors } = configuration;
@@ -340,7 +340,7 @@ const mapStateToProps = (
     isRequestingContacts: isRequesting,
     isRequestingCases,
     counselorsHash: counselors.hash,
-    routing: getCurrentTopmostRouteForTask(routing, taskId),
+    routing: selectCurrentTopmostRouteForTask(state, taskId),
   };
 };
 

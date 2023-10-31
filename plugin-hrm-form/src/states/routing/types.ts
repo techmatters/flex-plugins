@@ -127,8 +127,8 @@ export function isEditCaseSectionRoute(appRoute: AppRoutes): appRoute is EditCas
   return (<any>appRoute).action === CaseItemAction.Edit;
 }
 
-export function isRouteModal(route: AppRoutes): boolean {
-  return isRouteWithModalSupport(route) && route.activeModal?.length > 0;
+export function isRouteModal(route: AppRoutes | undefined): boolean {
+  return isRouteWithModalSupport(route) && Boolean(route?.activeModal?.length) && route.activeModal!.length > 0;
 }
 
 // Routes that may lead to Case screen (maybe we need an improvement here)

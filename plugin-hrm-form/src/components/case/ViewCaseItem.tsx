@@ -34,17 +34,16 @@ import { CaseSectionApi } from '../../states/case/sections/api';
 import { FormTargetObject } from '../common/forms/types';
 import { namespace } from '../../states/storeNamespaces';
 import NavigableContainer from '../NavigableContainer';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { selectCaseStateForTask } from '../../states/case/selectors';
+import { selectCounselorsHashState } from '../../states/configuration/selectors';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/selectors';
 
-const mapStateToProps = (
-  { [namespace]: { routing, connectedCase: caseState, configuration } }: RootState,
-  { task }: ViewCaseItemProps,
-) => {
-  const counselorsHash = configuration.counselors.hash;
+const mapStateToProps = (state: RootState, { task }: ViewCaseItemProps) => {
+  const counselorsHash = selectCounselorsHashState(state);
 
-  const { connectedCase } = caseState.tasks[task.taskSid];
+  const { connectedCase } = selectCaseStateForTask(state, task.taskSid);
 
-  return { counselorsHash, currentRoute: getCurrentTopmostRouteForTask(routing, task.taskSid), connectedCase };
+  return { counselorsHash, currentRoute: selectCurrentTopmostRouteForTask(state, task.taskSid), connectedCase };
 };
 
 export type ViewCaseItemProps = {

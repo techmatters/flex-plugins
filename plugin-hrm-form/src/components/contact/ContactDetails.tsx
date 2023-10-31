@@ -38,7 +38,7 @@ import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { namespace } from '../../states/storeNamespaces';
 import { ContactRawJson, CustomITask, StandaloneITask } from '../../types/types';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/selectors';
 import NavigableContainer from '../NavigableContainer';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import { newCloseModalAction, newGoBackAction } from '../../states/routing/actions';
@@ -245,16 +245,18 @@ const mapDispatchToProps = (
     dispatch(newSetContactDialogStateAction(contactId, `${form}-confirm-${dismissAction}`, true)),
 });
 
-const mapStateToProps = (
-  { [namespace]: { configuration, activeContacts, 'csam-report': csamReport, routing } }: RootState,
-  { contactId, task }: OwnProps,
-) => ({
-  definitionVersions: configuration.definitionVersions,
-  savedContact: activeContacts.existingContacts[contactId]?.savedContact,
-  draftContact: activeContacts.existingContacts[contactId]?.draftContact,
-  draftCsamReport: csamReport.contacts[contactId],
-  currentRoute: getCurrentTopmostRouteForTask(routing, task.taskSid),
-});
+const mapStateToProps = (state: RootState, { contactId, task }: OwnProps) => {
+  const {
+    [namespace]: { configuration, activeContacts, 'csam-report': csamReport },
+  } = state;
+  return {
+    definitionVersions: configuration.definitionVersions,
+    savedContact: activeContacts.existingContacts[contactId]?.savedContact,
+    draftContact: activeContacts.existingContacts[contactId]?.draftContact,
+    draftCsamReport: csamReport.contacts[contactId],
+    currentRoute: selectCurrentTopmostRouteForTask(state, task.taskSid),
+  };
+};
 
 ContactDetails.displayName = 'ContactDetails';
 

@@ -25,8 +25,7 @@ import { RootState } from '../states';
 import type { CustomITask } from '../types/types';
 import { newContactCSAMApi } from './CSAMReport/csamReportApi';
 import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
-import { namespace } from '../states/storeNamespaces';
-import { getCurrentTopmostRouteForTask } from '../states/routing/getRoute';
+import { selectCurrentTopmostRouteForTask } from '../states/routing/selectors';
 
 type OwnProps = {
   task: CustomITask;
@@ -65,10 +64,9 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact })
 HrmForm.displayName = 'HrmForm';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const routingState = state[namespace].routing;
   const { savedContact, metadata } = findContactByTaskSid(state, task.taskSid) ?? {};
 
-  return { routing: getCurrentTopmostRouteForTask(routingState, task.taskSid), savedContact, metadata };
+  return { routing: selectCurrentTopmostRouteForTask(state, task.taskSid), savedContact, metadata };
 };
 
 const connector = connect(mapStateToProps);
