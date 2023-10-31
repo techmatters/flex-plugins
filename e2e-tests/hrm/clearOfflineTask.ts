@@ -15,35 +15,10 @@
  */
 
 import { request } from '@playwright/test';
-import { getConfigValue } from '../config';
-import * as fs from 'fs/promises';
 
 // Clears out any residual offline task data for a worker so the test env is clean
-export const clearOfflineTask = async (hrmRoot: string, workerSid: string) => {
-  let flexToken;
-  for (let i = 0; i < 5; i++) {
-    const stateFile = await fs.readFile(getConfigValue('storageStatePath') as string, 'utf-8');
-    console.log('Stored state:', stateFile);
-    // Parsing the flex token from the playwright state file seems like the lesser of 2 evils vs starting up a new browser context just to get the cookie value :-)
-    flexToken = JSON.parse(stateFile).cookies.find((c: any) => c.name === 'flex-jwe')?.value;
-    if (flexToken) {
-      break;
-    } else {
-      console.log(
-        `Could not find Flex token in playwright session state file following login, so we cannot clear offline task data in HRM. Retrying...`,
-      );
-      // eslint-disable-next-line @typescript-eslint/no-loop-func
-      await new Promise((r) => setTimeout(r, 1000));
-    }
-  }
-  if (!flexToken) {
-    throw new Error(
-      `Could not find Flex token in playwright session state file following login, so we cannot clear offline task data in HRM. Please check your playwright config.`,
-    );
-  }
-  const apiRequest = await request.newContext({
-    storageState: getConfigValue('storageStatePath') as string,
-  });
+export const clearOfflineTask = async (hrmRoot: string, workerSid: string, flexToken: string) => {
+  const apiRequest = await request.newContext();
   new URL(`${hrmRoot}/contacts/byTaskSid/offline-task-${workerSid}`);
   const resp = await apiRequest.get(`${hrmRoot}/contacts/byTaskSid/offline-task-${workerSid}`, {
     headers: {

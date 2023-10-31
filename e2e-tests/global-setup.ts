@@ -32,7 +32,7 @@ async function globalSetup(config: FullConfig) {
   }
 
   await initConfig();
-  await oktaSsoLoginViaApi(
+  const flexToken = await oktaSsoLoginViaApi(
     getConfigValue('baseURL') as string,
     getConfigValue('oktaUsername') as string,
     getConfigValue('oktaPassword') as string,
@@ -40,7 +40,7 @@ async function globalSetup(config: FullConfig) {
   );
   const workerSid = await getSidForWorker(getConfigValue('oktaUsername') as string);
   if (workerSid) {
-    await clearOfflineTask(getConfigValue('hrmRoot') as string, workerSid);
+    await clearOfflineTask(getConfigValue('hrmRoot') as string, workerSid, flexToken);
   } else {
     console.warn(
       `Could not find worker with username ${getConfigValue(
