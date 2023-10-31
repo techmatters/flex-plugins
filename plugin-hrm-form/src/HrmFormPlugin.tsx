@@ -77,7 +77,9 @@ const setUpComponents = (
   translateUI: (language: string) => Promise<void>,
 ) => {
   const { canView } = getPermissionsForViewingIdentifiers();
-  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
+  // const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
+  const maskIdentifiers = true;
+
 
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);

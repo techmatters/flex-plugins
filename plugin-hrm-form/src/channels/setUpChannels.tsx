@@ -183,10 +183,10 @@ const maskIdentifiersByChannel = channelType => {
     channelType.templates.TaskListItem.secondLine = 'TaskLineChatAssignedMasked';
   }
   channelType.templates.IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
-  channelType.templates.CallCanvas.firstLine = 'MaskIdentifiersIcon';
+  channelType.templates.CallCanvas.firstLine = 'MaskIdentifiersClosedEyeIcon';
 
   // Task panel during an active call
-  channelType.templates.TaskCanvasHeader.title = 'MaskIdentifiersIcon';
+  channelType.templates.TaskCanvasHeader.title = 'MaskIdentifiersClosedEyeIcon';
   channelType.templates.MessageListItem = 'MaskIdentifiers';
   // Task Status in Agents page
   channelType.templates.TaskCard.firstLine = 'MaskIdentifiers';
