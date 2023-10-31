@@ -22,15 +22,28 @@ import { getCurrentTopmostRouteForTask, getCurrentTopmostRouteStackForTask } fro
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileRoute } from '../../states/routing/types';
-import { CustomITask, Profile as ProfileType } from '../../types/types';
+import { RouterTask } from '../../types/types';
 import ProfileEdit from './ProfileEdit';
 
 type OwnProps = {
-  task: CustomITask;
+  task: RouterTask;
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
+
+const PROFILE_ROUTES = {
+  profile: {
+    routes: ['profile'],
+    renderComponent: props => <ProfileTabs {...props} />,
+  },
+  profileEdit: {
+    routes: ['profileEdit'],
+    renderComponent: props => <ProfileEdit {...props} />,
+  },
+};
+
+export const ALL_PROFILE_ROUTES = Object.values(PROFILE_ROUTES).flatMap(({ routes }) => routes);
 
 const Profile: React.FC<Props> = ({ task, profileId, currentRoute }) => {
   const profileProps = {
@@ -38,18 +51,11 @@ const Profile: React.FC<Props> = ({ task, profileId, currentRoute }) => {
     profileId,
   };
 
-  const routes = [
-    {
-      routes: ['profileEdit'],
-      component: <ProfileEdit {...profileProps} />,
-    },
-    {
-      routes: ['profile'],
-      component: <ProfileTabs {...profileProps} />,
-    },
-  ];
-
-  return routes.find(({ routes }) => routes.includes(currentRoute))?.component || null;
+  return (
+    Object.values(PROFILE_ROUTES)
+      .find(({ routes }) => routes.includes(currentRoute))
+      ?.renderComponent(profileProps) || null
+  );
 };
 
 const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {

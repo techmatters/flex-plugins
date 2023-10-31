@@ -90,7 +90,7 @@ export const newContact = (definitions: DefinitionVersion): Contact => {
     conversationDuration: 0,
     channelSid: '',
     serviceSid: '',
-    profileId: '',
+    profileId: null,
     csamReports: [],
     conversationMedia: [],
   };

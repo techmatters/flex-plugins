@@ -176,7 +176,7 @@ export type Contact = {
   createdBy: string;
   helpline: string;
   taskId: string;
-  profileId: Profile['id'];
+  profileId: Profile['id'] | null;
   channel: ChannelTypes | 'default';
   updatedBy: string;
   updatedAt?: string;
@@ -323,7 +323,9 @@ export type InMyBehalfITask = ITask & { attributes: { isContactlessTask: true; i
 
 export type CustomITask = ITask | OfflineContactTask | InMyBehalfITask;
 
-export function isOfflineContactTask(task: CustomITask): task is OfflineContactTask {
+export type RouterTask = CustomITask | StandaloneITask
+
+export function isOfflineContactTask(task: RouterTask): task is OfflineContactTask {
   return Boolean(task.taskSid?.startsWith('offline-contact-task-'));
 }
 
@@ -334,11 +336,11 @@ export function isOfflineContact(contact: Contact): boolean {
 /**
  * Checks if the task is issued by someone else to avoid showing certain things in the UI. This is done by checking isInMyBehalf task attribute (attached while creating offline contacts)
  */
-export function isInMyBehalfITask(task: CustomITask): task is InMyBehalfITask {
+export function isInMyBehalfITask(task: RouterTask): task is InMyBehalfITask {
   return task.attributes && task.attributes.isContactlessTask && (task.attributes as any).isInMyBehalf;
 }
 
-export function isTwilioTask(task: CustomITask): task is ITask {
+export function isTwilioTask(task: RouterTask): task is ITask {
   return task && !isOfflineContactTask(task) && !isInMyBehalfITask(task);
 }
 

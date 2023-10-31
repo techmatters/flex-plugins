@@ -19,7 +19,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import ProfileFlagsList from './profileFlags/ProfileFlagsList';
-import { CustomITask, Profile } from '../../types/types';
+import { RouterTask, Profile } from '../../types/types';
 import { DetailsWrapper, EditButton, ProfileSubtitle } from './styles';
 import { Bold, Box, Column } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
@@ -27,7 +27,7 @@ import { useProfile } from '../../states/profile/hooks';
 
 type OwnProps = {
   profileId: Profile['id'];
-  task: CustomITask;
+  task: RouterTask;
 };
 
 // eslint-disable-next-line no-use-before-define

@@ -26,7 +26,7 @@ export const VALID_EMPTY_CONTACT: Contact = {
   taskId: '',
   serviceSid: '',
   channelSid: '',
-  profileId: '',
+  profileId: null,
   number: '',
   createdBy: '',
   createdAt: '',

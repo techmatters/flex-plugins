@@ -17,13 +17,13 @@
 import React from 'react';
 
 import ProfileFlagsEdit from './profileFlags/ProfileFlagsEdit';
-import { CustomITask, Profile } from '../../types/types';
+import { RouterTask, Profile } from '../../types/types';
 import { DetailsWrapper, ProfileSubtitle } from './styles';
 import NavigableContainer from '../NavigableContainer';
 
 type OwnProps = {
   profileId: Profile['id'];
-  task: CustomITask;
+  task: RouterTask;
 };
 
 type Props = OwnProps;

@@ -25,7 +25,7 @@ import ContactDetailsHome from './ContactDetailsHome';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { RootState } from '../../states';
 import EditContactSection from './EditContactSection';
-import Profile from '../profile/Profile';
+import Profile, { ALL_PROFILE_ROUTES } from '../profile/Profile';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { DetailsContainer } from '../../styles/search';
 import * as ConfigActions from '../../states/configuration/actions';
@@ -75,7 +75,6 @@ const ContactDetails: React.FC<Props> = ({
   closeModal,
   goBack,
   clearContactDraft,
-  activeModal,
   currentRoute,
   openFormConfirmDialog,
   ...otherProps
@@ -98,6 +97,10 @@ const ContactDetails: React.FC<Props> = ({
       fetchDefinitionVersions();
     }
   }, [definitionVersions, updateDefinitionVersion, version, savedContact]);
+
+  console.log('>>> currentRoute', currentRoute);
+  console.log('>>> ALL_PROFILE_ROUTES', ALL_PROFILE_ROUTES);
+  if (ALL_PROFILE_ROUTES.includes(currentRoute.route)) return <Profile task={task} />;
 
   const definitionVersion = definitionVersions[version];
 
@@ -206,14 +209,9 @@ const ContactDetails: React.FC<Props> = ({
     );
   };
 
-  console.log('>>> currentRoute', currentRoute);
-  console.log('>>> activeModal', activeModal);
-
   if (draftCsamReport) {
     return <CSAMReport api={existingContactCSAMApi(contactId)} />;
   }
-
-  if (activeModal === 'profile') return <Profile task={task} />;
 
   if (currentRoute.route === 'contact' && currentRoute.subroute === 'edit') {
     return editContactSectionElement(currentRoute.form);
@@ -259,7 +257,8 @@ const mapStateToProps = (
   { contactId, task }: OwnProps,
 ) => {
   const currentRoute = getCurrentTopmostRouteForTask(routing, task.taskSid);
-  const activeModal = isRouteWithModalSupport(currentRoute) && currentRoute?.activeModal?.[0]?.route;
+  console.log('>>> currentRoute', currentRoute);
+  console.log('>>> isRouteWithModalSupport(currentRoute)', isRouteWithModalSupport(currentRoute));
 
   return {
     definitionVersions: configuration.definitionVersions,
@@ -267,7 +266,6 @@ const mapStateToProps = (
     draftContact: activeContacts.existingContacts[contactId]?.draftContact,
     draftCsamReport: csamReport.contacts[contactId],
     currentRoute,
-    activeModal,
   };
 };
 

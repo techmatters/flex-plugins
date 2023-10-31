@@ -19,11 +19,11 @@ import React from 'react';
 
 import PreviousContactsBanner from './PreviousContactsBanner';
 import IdentifierBanner from './ProfileIdentifierBanner';
-import { CustomITask } from '../../../types/types';
+import { RouterTask } from '../../../types/types';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
 
 type OwnProps = {
-  task: CustomITask;
+  task: RouterTask;
 };
 
 // eslint-disable-next-line no-use-before-define
