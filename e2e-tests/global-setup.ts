@@ -41,7 +41,7 @@ async function globalSetup(config: FullConfig) {
   const workerSid = await getSidForWorker(getConfigValue('oktaUsername') as string);
   if (workerSid) {
     await clearOfflineTask(
-      (getConfigValue('hrmRoot') as string) ??
+      (getConfigValue('hrmRoot') as string) ||
         `https://hrm-${localOverrideEnv}.tl.techmatters.org/v0/accounts/${getConfigValue(
           'twilioAccountSid',
         )}`,
