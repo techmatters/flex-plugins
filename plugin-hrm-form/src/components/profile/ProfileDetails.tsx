@@ -18,27 +18,23 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { CustomITask, Profile, StandaloneITask } from '../../types/types';
-import { RootState } from '../../states';
-import { getCurrentProfileState } from '../../states/profile/selectors';
-import { DetailsWrapper, EditButton, ProfileSubtitle, StatusLabelPill } from './styles';
+import ProfileFlagsList from './profileFlags/ProfileFlagsList';
+import { CustomITask, Profile } from '../../types/types';
+import { DetailsWrapper, EditButton, ProfileSubtitle } from './styles';
 import { Bold, Box, Column } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
+import { useProfile } from '../../states/profile/hooks';
 
 type OwnProps = {
   profileId: Profile['id'];
-  task: CustomITask | StandaloneITask;
+  task: CustomITask;
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ProfileDetails: React.FC<Props> = ({ profileId, profile, openProfileEditModal }) => {
-  console.log('ProfileDetails', profile, profileId);
-
-  // TEMP
-  let labels;
-  // labels = ['Abusive', 'Blocked'];
+const ProfileDetails: React.FC<Props> = ({ profileId, task, openProfileEditModal }) => {
+  const { profile } = useProfile({ profileId });
 
   const editButton = true;
   const handleEditProfileDetails = () => {
@@ -69,33 +65,13 @@ const ProfileDetails: React.FC<Props> = ({ profileId, profile, openProfileEditMo
       ) : (
         <div>No identifiers found</div>
       )}
-
-      <br />
-
       <ProfileSubtitle>Status</ProfileSubtitle>
       <div>
-        {labels ? (
-          labels.map(label => (
-            <StatusLabelPill key={label} fillColor="#F5EEF4" blocked={label === 'Blocked'}>
-              {label}
-            </StatusLabelPill>
-          ))
-        ) : (
-          <StatusLabelPill>None Listed</StatusLabelPill>
-        )}
+        <ProfileFlagsList profileId={profileId} task={task} />
       </div>
       <hr />
     </DetailsWrapper>
   );
-};
-
-const mapStateToProps = (state: RootState, { profileId }) => {
-  const currentProfileState = getCurrentProfileState(state, profileId);
-  const { data: profile } = currentProfileState;
-
-  return {
-    profile,
-  };
 };
 
 const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
@@ -108,7 +84,7 @@ const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
   };
 };
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(null, mapDispatchToProps);
 export default connector(ProfileDetails);
 
 // TODO:

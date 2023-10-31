@@ -42,6 +42,7 @@ const handleLoadProfileRejectedAction = (state: t.ProfileState, action: any) => 
   const error = parseFetchError(action.payload);
 
   const profileUpdate = {
+    loading: false,
     error,
   };
 
@@ -52,6 +53,7 @@ const handleLoadProfileFulfilledAction = (state: t.ProfileState, action: any) =>
   const { profileId } = action.meta;
 
   const profileUpdate = {
+    loading: false,
     data: {
       ...t.newProfileEntry,
       ...state.profiles[profileId].data,
@@ -62,17 +64,17 @@ const handleLoadProfileFulfilledAction = (state: t.ProfileState, action: any) =>
   return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
 };
 
-export const loadProfileReducer = (initialState: t.ProfileState) =>
+export const profileReducer = (initialState: t.ProfileState) =>
   createReducer(initialState, handleAction => [
     handleAction(loadProfileAsync.pending, handleLoadProfilePendingAction),
     handleAction(loadProfileAsync.rejected, handleLoadProfileRejectedAction),
     handleAction(loadProfileAsync.fulfilled, handleLoadProfileFulfilledAction),
   ]);
 
-const LOAD_PROFILE_ACTIONS = [
+const PROFILE_ACTIONS = [
   loadProfileAsync.pending.toString(),
   loadProfileAsync.rejected.toString(),
   loadProfileAsync.fulfilled.toString(),
 ];
 
-export const shouldUseLoadProfileReducer = (action: any) => LOAD_PROFILE_ACTIONS.includes(action.type);
+export const shouldUseProfileReducer = (action: any) => PROFILE_ACTIONS.includes(action.type);

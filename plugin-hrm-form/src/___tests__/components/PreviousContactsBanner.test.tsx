@@ -21,7 +21,7 @@ import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
-import { UnconnectedPreviousContactsBanner } from '../../components/profile/PreviousContactsBanner';
+import { UnconnectedPreviousContactsBanner } from '../../components/profile/ProfileIdentifierBanner/PreviousContactsBanner';
 import { channelTypes } from '../../states/DomainConstants';
 
 jest.mock('../../components/CSAMReport/CSAMReportFormDefinition');

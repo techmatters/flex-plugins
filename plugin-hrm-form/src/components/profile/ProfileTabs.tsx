@@ -23,7 +23,7 @@ import ProfileCases from './ProfileCases';
 import ProfileContacts from './ProfileContacts';
 import ProfileDetails from './ProfileDetails';
 import { Row } from '../../styles/HrmStyles';
-import { getCurrentProfileState } from '../../states/profile/selectors';
+import { useProfile } from '../../states/profile/hooks';
 import * as RoutingTypes from '../../states/routing/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import * as RoutingActions from '../../states/routing/actions';
@@ -41,7 +41,8 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ProfileTabs: React.FC<Props> = ({ profileId, task, casesCount, contactsCount, currentTab, changeProfileTab }) => {
+const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfileTab }) => {
+  const { profile: { contactsCount, casesCount } = {} } = useProfile({ profileId, shouldAutoload: true });
   const tabs = [
     {
       label: 'Profile',
@@ -91,18 +92,12 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, casesCount, contactsCou
   );
 };
 
-const mapStateToProps = (state: RootState, { profileId, task: { taskSid } }: OwnProps) => {
+const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const routingState = state[namespace].routing;
   const route = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const currentTab = (route as ProfileRoute).subroute || 'details';
-
-  const currentProfileState = getCurrentProfileState(state, profileId);
-  const contactsCount = currentProfileState?.data?.contactsCount || 0;
-  const casesCount = currentProfileState?.data?.casesCount || 0;
+  const currentTab = (route as ProfileRoute).subroute || 'contacts';
 
   return {
-    casesCount,
-    contactsCount,
     currentTab,
   };
 };

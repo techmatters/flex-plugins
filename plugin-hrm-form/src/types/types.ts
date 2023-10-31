@@ -347,7 +347,7 @@ export const isStandaloneITask = (task): task is StandaloneITask => {
 };
 
 export type Identifier = {
-  id: string;
+  id: number;
   identifier: string;
   accountSid: string;
   createdAt?: string;
@@ -356,11 +356,19 @@ export type Identifier = {
 };
 
 export type Profile = {
-  id: string;
+  id: number;
   name: string;
   contactsCount: number;
   casesCount: number;
   createdAt?: string;
   updatedAt?: string;
   identifiers?: Identifier[];
+  profileFlags?: number[];
+};
+
+export type ProfileFlag = {
+  id: number;
+  name: string;
+  createdAt?: string;
+  updatedAt?: string;
 };

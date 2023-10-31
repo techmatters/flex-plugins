@@ -16,7 +16,7 @@
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
 import { parseFetchError } from '../parseFetchError';
-import { getIdentiferByIdentifier } from '../../services/ProfileService';
+import { getIdentifierByIdentifier } from '../../services/ProfileService';
 import loadIdentifierEntryIntoRedux from './loadIdentifierEntryIntoRedux';
 import * as t from './types';
 
@@ -24,7 +24,7 @@ type IdentfierIdentifier = t.Identifier['identifier'];
 
 export const loadIdentifierByIdentifierAsync = createAsyncAction(
   t.LOAD_IDENTIFIER_BY_IDENTIFIER,
-  getIdentiferByIdentifier,
+  getIdentifierByIdentifier,
   (identifier: IdentfierIdentifier) => ({
     identifier,
   }),
@@ -49,6 +49,7 @@ const handleLoadIdentifierRejectedAction = (state: t.ProfileState, action: any) 
   const error = parseFetchError(action.payload);
 
   const identifierUpdate = {
+    loading: false,
     error,
   };
 
@@ -59,6 +60,7 @@ const handleLoadIdentifierFulfilledAction = (state: t.ProfileState, action: any)
   const { id } = action.payload;
 
   const identifierUpdate = {
+    loading: false,
     data: {
       ...t.newIdentifierEntry,
       ...state.identifiers?.[id]?.data,
@@ -76,10 +78,10 @@ export const loadIdentifierReducer = (initialState: t.ProfileState) =>
     handleAction(loadIdentifierByIdentifierAsync.fulfilled, handleLoadIdentifierFulfilledAction),
   ]);
 
-const LOAD_IDENTIFIER_ACTIONS = [
+const IDENTIFIER_ACTIONS = [
   loadIdentifierByIdentifierAsync.pending.toString(),
   loadIdentifierByIdentifierAsync.rejected.toString(),
   loadIdentifierByIdentifierAsync.fulfilled.toString(),
 ];
 
-export const shouldUseLoadIdentifierReducer = (action: any) => LOAD_IDENTIFIER_ACTIONS.includes(action.type);
+export const shouldUseLoadIdentifierReducer = (action: any) => IDENTIFIER_ACTIONS.includes(action.type);

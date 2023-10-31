@@ -14,32 +14,25 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
-import asyncDispatch from '../../states/asyncDispatch';
 import ProfileTabs from './ProfileTabs';
-import * as ProfileActions from '../../states/profile/actions';
 import { getCurrentTopmostRouteForTask, getCurrentTopmostRouteStackForTask } from '../../states/routing/getRoute';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileRoute } from '../../states/routing/types';
-import { CustomITask, Profile as ProfileType, StandaloneITask } from '../../types/types';
-import { ProfileEditDetails } from './ProfileEditDetails';
+import { CustomITask, Profile as ProfileType } from '../../types/types';
+import ProfileEdit from './ProfileEdit';
 
 type OwnProps = {
-  task: CustomITask | StandaloneITask;
+  task: CustomITask;
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const Profile: React.FC<Props> = ({ task, profileId, loadProfile, currentRoute }) => {
-  useEffect(() => {
-    loadProfile(profileId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileId]);
-
+const Profile: React.FC<Props> = ({ task, profileId, currentRoute }) => {
   const profileProps = {
     task,
     profileId,
@@ -48,7 +41,7 @@ const Profile: React.FC<Props> = ({ task, profileId, loadProfile, currentRoute }
   const routes = [
     {
       routes: ['profileEdit'],
-      component: <ProfileEditDetails {...profileProps} />,
+      component: <ProfileEdit {...profileProps} />,
     },
     {
       routes: ['profile'],
@@ -63,7 +56,6 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const routingState = state[namespace].routing;
   const route = getCurrentTopmostRouteForTask(routingState, taskSid);
   const profileId = (route as ProfileRoute).id;
-
   const currentRoute = getCurrentTopmostRouteForTask(routingState, taskSid)?.route.toString();
 
   return {
@@ -72,9 +64,5 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
-  loadProfile: profileId => asyncDispatch(dispatch)(ProfileActions.loadProfileAsync(profileId)),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(mapStateToProps);
 export default connector(Profile);

@@ -15,26 +15,34 @@
  */
 
 import * as t from './types';
-import { loadIdentifierReducer, shouldUseLoadIdentifierReducer } from './loadIdentifier';
-import { loadProfileReducer, shouldUseLoadProfileReducer } from './loadProfile';
-import { loadRelationshipsReducer, shouldUseLoadRelationshipsReducer } from './loadRelationships';
+import { loadIdentifierReducer, shouldUseLoadIdentifierReducer } from './identifier';
+import { profileReducer, shouldUseProfileReducer } from './profile';
+import { profileFlagsReducer, shouldUseProfileFlagsReducer } from './profileFlag';
+import { relationshipReducer, shouldUseRelationshipReducer } from './relationship';
 
-const boundLoadIdentifierReducer = loadIdentifierReducer(t.initialState);
-const boundLoadProfileReducer = loadProfileReducer(t.initialState);
-const boundLoadRelationshipsReducer = loadRelationshipsReducer(t.initialState);
+const reducers = [
+  {
+    shouldUseReducer: shouldUseLoadIdentifierReducer,
+    reducer: loadIdentifierReducer,
+  },
+  {
+    shouldUseReducer: shouldUseProfileReducer,
+    reducer: profileReducer,
+  },
+  {
+    shouldUseReducer: shouldUseProfileFlagsReducer,
+    reducer: profileFlagsReducer,
+  },
+  {
+    shouldUseReducer: shouldUseRelationshipReducer,
+    reducer: relationshipReducer,
+  },
+];
 
 export function reduce(state = t.initialState, action: t.ProfileActions): t.ProfileState {
-  console.log('>>>action', action);
-  if (shouldUseLoadIdentifierReducer(action)) {
-    return boundLoadIdentifierReducer(state, action);
-  }
-
-  if (shouldUseLoadProfileReducer(action)) {
-    return boundLoadProfileReducer(state, action);
-  }
-
-  if (shouldUseLoadRelationshipsReducer(action)) {
-    return boundLoadRelationshipsReducer(state, action);
+  const reducer = reducers.find(r => r.shouldUseReducer(action));
+  if (reducer) {
+    return reducer.reducer(t.initialState)(state, action);
   }
 
   return state;

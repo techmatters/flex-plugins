@@ -15,41 +15,29 @@
  */
 
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
-import { Template } from '@twilio/flex-ui';
 
-import { RootState } from '../../states';
-import { getCurrentProfileState } from '../../states/profile/selectors';
-import { CustomITask, Profile, StandaloneITask } from '../../types/types';
-import { DetailsWrapper, EditButton, ProfileSubtitle, StatusLabelPill } from './styles';
-import { Bold, Box, Column } from '../../styles/HrmStyles';
+import ProfileFlagsEdit from './profileFlags/ProfileFlagsEdit';
+import { CustomITask, Profile } from '../../types/types';
+import { DetailsWrapper, ProfileSubtitle } from './styles';
 import NavigableContainer from '../NavigableContainer';
 
 type OwnProps = {
   profileId: Profile['id'];
-  task: CustomITask | StandaloneITask;
+  task: CustomITask;
 };
 
-// eslint-disable-next-line no-use-before-define
 type Props = OwnProps;
 
-export const ProfileEditDetails: React.FC<Props> = ({ task, profileId }) => {
-  // TEMP
-  // const labels = ['Abusive', 'Blocked'];
-  console.log('>>> ProfileEditDetails', task, profileId);
+const ProfileEdit: React.FC<Props> = (props: Props) => {
+  const { task } = props;
   return (
-    <NavigableContainer titleCode="Profile-DetailsHeader" task={task}>
+    <NavigableContainer titleCode="Profile-EditHeader" task={task}>
       <DetailsWrapper>
-        <Column>
-          <Bold>
-            <Template code="Profile-DetailsHeader" />
-          </Bold>
-        </Column>
-        <br />
-        <ProfileSubtitle>Identifiers</ProfileSubtitle>
-        <br />
         <ProfileSubtitle>Status</ProfileSubtitle>
+        <ProfileFlagsEdit {...props} />
       </DetailsWrapper>
     </NavigableContainer>
   );
 };
+
+export default ProfileEdit;
