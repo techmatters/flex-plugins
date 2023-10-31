@@ -31,7 +31,7 @@ import { CustomITask, Contact, standaloneTaskSid } from '../../types/types';
 import { handleSearchFormChange, searchContacts, searchCases } from '../../states/search/actions';
 import { RootState } from '../../states';
 import { namespace } from '../../states/storeNamespaces';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/selectors';
 import { changeRoute, newCloseModalAction } from '../../states/routing/actions';
 import { SearchRoute } from '../../states/routing/types';
 import NavigableContainer from '../NavigableContainer';
@@ -215,15 +215,15 @@ Search.defaultProps = {
   error: null,
 };
 
-const mapStateToProps = (
-  { [namespace]: { searchContacts, activeContacts, routing } }: RootState,
-  { task }: OwnProps,
-) => {
+const mapStateToProps = (state: RootState, { task }: OwnProps) => {
+  const {
+    [namespace]: { searchContacts, activeContacts, routing },
+  } = state;
   const taskId = task.taskSid;
   const taskSearchState = searchContacts.tasks[taskId];
   const isStandaloneSearch = taskId === standaloneTaskSid;
   const editContactFormOpen = activeContacts.editingContact;
-  const currentRoute = getCurrentTopmostRouteForTask(routing, taskId);
+  const currentRoute = selectCurrentTopmostRouteForTask(state, taskId);
 
   return {
     isRequesting: taskSearchState.isRequesting,

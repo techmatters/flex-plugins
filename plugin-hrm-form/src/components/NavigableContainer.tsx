@@ -23,7 +23,7 @@ import { StyledProps } from '@material-ui/core';
 
 import { namespace } from '../states/storeNamespaces';
 import { RootState } from '../states';
-import { getCurrentBaseRoute, getCurrentTopmostRouteStackForTask } from '../states/routing/getRoute';
+import { selectCurrentBaseRoute, selectCurrentTopmostRouteStackForTask } from '../states/routing/selectors';
 import { isRouteModal } from '../states/routing/types';
 import { changeRoute, newCloseModalAction, newGoBackAction } from '../states/routing/actions';
 import { Contact, CustomITask, StandaloneITask } from '../types/types';
@@ -39,15 +39,12 @@ type OwnProps = {
   onCloseModal?: () => void;
 };
 
-const mapStateToProps = (
-  { [namespace]: { searchContacts, configuration, routing } }: RootState,
-  { task: { taskSid } }: OwnProps,
-) => {
-  const routeStack = getCurrentTopmostRouteStackForTask(routing, taskSid);
+const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
+  const routeStack = selectCurrentTopmostRouteStackForTask(state, taskSid);
   return {
     routing: routeStack[routeStack.length - 1],
     hasHistory: routeStack.length > 1,
-    isModal: isRouteModal(getCurrentBaseRoute(routing, taskSid)),
+    isModal: isRouteModal(selectCurrentBaseRoute(state, taskSid)),
   };
 };
 

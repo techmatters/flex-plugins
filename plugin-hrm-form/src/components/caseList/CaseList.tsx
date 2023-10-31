@@ -41,8 +41,8 @@ import { undoCaseListSettingsUpdate } from '../../states/caseList/reducer';
 import { dateFilterPayloadFromFilters } from './filters/dateFilters';
 import * as ListContent from '../../states/caseList/listContent';
 import { getHrmConfig } from '../../hrmConfig';
-import { namespace } from '../../states/storeNamespaces';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { selectCaseListState } from '../../states/caseList/selectors';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/selectors';
 import { newCloseModalAction, newOpenModalAction } from '../../states/routing/actions';
 import ViewContact from '../case/ViewContact';
 
@@ -186,14 +186,14 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-const mapStateToProps = ({ [namespace]: { caseList, routing } }: RootState) => ({
-  currentSettings: caseList.currentSettings,
-  previousSettings: caseList.previousSettings,
-  routing: getCurrentTopmostRouteForTask(routing, standaloneTask.taskSid) ?? {
+const mapStateToProps = (state: RootState) => ({
+  currentSettings: selectCaseListState(state).currentSettings,
+  previousSettings: selectCaseListState(state).previousSettings,
+  routing: selectCurrentTopmostRouteForTask(state, standaloneTask.taskSid) ?? {
     route: 'case-list',
     subroute: 'case-list',
   },
-  ...caseList.content,
+  ...selectCaseListState(state).content,
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

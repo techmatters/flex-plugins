@@ -58,9 +58,10 @@ import {
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
-import { namespace } from '../../states/storeNamespaces';
 import NavigableContainer from '../NavigableContainer';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { selectCaseStateForTask } from '../../states/case/selectors';
+import { selectCounselorsHashState } from '../../states/configuration/selectors';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/selectors';
 
 export type AddEditCaseItemProps = {
   task: CustomITask | StandaloneITask;
@@ -301,14 +302,11 @@ const AddEditCaseItem: React.FC<Props> = ({
 
 AddEditCaseItem.displayName = 'AddEditCaseItem';
 
-const mapStateToProps = (
-  { [namespace]: { routing, configuration, connectedCase: caseState } }: RootState,
-  { task, sectionApi }: AddEditCaseItemProps,
-) => {
-  const currentRoute = getCurrentTopmostRouteForTask(routing, task.taskSid);
+const mapStateToProps = (state: RootState, { task, sectionApi }: AddEditCaseItemProps) => {
+  const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
   const id = isEditCaseSectionRoute(currentRoute) ? currentRoute.id : undefined;
-  const counselorsHash = configuration.counselors.hash;
-  const { connectedCase, caseWorkingCopy } = caseState.tasks[task.taskSid];
+  const counselorsHash = selectCounselorsHashState(state);
+  const { connectedCase, caseWorkingCopy } = selectCaseStateForTask(state, task.taskSid);
   const workingCopy = sectionApi.getWorkingCopy(caseWorkingCopy, id);
 
   return { connectedCase, counselorsHash, workingCopy, currentRoute };

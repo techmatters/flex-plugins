@@ -34,7 +34,7 @@ import { updateDraft } from '../states/contacts/existingContacts';
 import { loadContactFromHrmByTaskSidAsyncAction } from '../states/contacts/saveContact';
 import { namespace } from '../states/storeNamespaces';
 import { isRouteModal } from '../states/routing/types';
-import { getCurrentBaseRoute } from '../states/routing/getRoute';
+import { selectCurrentBaseRoute } from '../states/routing/selectors';
 
 type OwnProps = {
   task: CustomITask;
@@ -129,10 +129,10 @@ const TaskView: React.FC<Props> = props => {
 
 TaskView.displayName = 'TaskView';
 
-const mapStateToProps = (
-  { [namespace]: { configuration, activeContacts, routing, searchContacts } }: RootState,
-  ownProps: OwnProps,
-) => {
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+  const {
+    [namespace]: { configuration, activeContacts, routing, searchContacts },
+  } = state;
   const { task } = ownProps;
   const { currentDefinitionVersion } = configuration;
   // Check if the entry for this task exists in each reducer
@@ -149,7 +149,7 @@ const mapStateToProps = (
     contact,
     shouldRecreateState,
     currentDefinitionVersion,
-    isModalOpen: routingStateExists && isRouteModal(getCurrentBaseRoute(routing, task.taskSid)),
+    isModalOpen: routingStateExists && isRouteModal(selectCurrentBaseRoute(state, task.taskSid)),
   };
 };
 

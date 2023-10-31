@@ -58,7 +58,7 @@ import asyncDispatch from '../../states/asyncDispatch';
 import { submitContactFormAsyncAction, updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import { namespace } from '../../states/storeNamespaces';
 import Search from '../search';
-import { getCurrentBaseRoute, getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { selectCurrentBaseRoute, selectCurrentTopmostRouteForTask } from '../../states/routing/selectors';
 import { CaseLayout } from '../../styles/case';
 import Case from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
@@ -380,14 +380,14 @@ const TabbedForms: React.FC<Props> = ({
 
 TabbedForms.displayName = 'TabbedForms';
 
-const mapStateToProps = (
-  { [namespace]: { routing, activeContacts, configuration } }: RootState,
-  { task: { taskSid }, contactId }: OwnProps,
-) => {
-  const currentRoute = getCurrentTopmostRouteForTask(routing, taskSid);
+const mapStateToProps = (state: RootState, { task: { taskSid }, contactId }: OwnProps) => {
+  const {
+    [namespace]: { routing, activeContacts, configuration },
+  } = state;
+  const currentRoute = selectCurrentTopmostRouteForTask(state, taskSid);
   const { isCallTypeCaller, existingContacts } = activeContacts;
   const { savedContact, draftContact, metadata } = existingContacts[contactId] || {};
-  const baseRoute = getCurrentBaseRoute(routing, taskSid);
+  const baseRoute = selectCurrentBaseRoute(state, taskSid);
   const searchModalOpen =
     isRouteWithModalSupport(baseRoute) && baseRoute.activeModal?.length && baseRoute.activeModal[0].route === 'search';
   const { currentDefinitionVersion } = configuration;
