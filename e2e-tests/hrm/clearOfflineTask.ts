@@ -14,27 +14,18 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { chromium, FullConfig, request } from '@playwright/test';
+import { request } from '@playwright/test';
 import { getConfigValue } from '../config';
-import { setupContextAndPage } from '../browser';
+import * as fs from 'fs/promises';
 
 // Clears out any residual offline task data for a worker so the test env is clean
-export const clearOfflineTask = async (
-  { projects: [project] }: FullConfig,
-  hrmRoot: string,
-  workerSid: string,
-) => {
-  const browser = await chromium.launch(project.use);
-  const { context } = await setupContextAndPage(browser);
-  const allCookies = await context.cookies();
+export const clearOfflineTask = async (hrmRoot: string, workerSid: string) => {
   let flexToken;
-  for (let i = 0; i < 2; i++) {
-    // eslint-disable-next-line @typescript-eslint/no-loop-func
-    allCookies.forEach(({ name, value }: { name: string; value: string }) => {
-      console.log(`${name}: ${value.length}`);
-    });
+  for (let i = 0; i < 5; i++) {
+    const stateFile = await fs.readFile(getConfigValue('storageStatePath') as string, 'utf-8');
+    console.log('Stored state:', stateFile);
     // Parsing the flex token from the playwright state file seems like the lesser of 2 evils vs starting up a new browser context just to get the cookie value :-)
-    flexToken = allCookies.find((c: any) => c.name === 'flex-jwe')?.value;
+    flexToken = JSON.parse(stateFile).cookies.find((c: any) => c.name === 'flex-jwe')?.value;
     if (flexToken) {
       break;
     } else {

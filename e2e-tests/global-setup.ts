@@ -40,7 +40,7 @@ async function globalSetup(config: FullConfig) {
   );
   const workerSid = await getSidForWorker(getConfigValue('oktaUsername') as string);
   if (workerSid) {
-    await clearOfflineTask(config, getConfigValue('hrmRoot') as string, workerSid);
+    await clearOfflineTask(getConfigValue('hrmRoot') as string, workerSid);
   } else {
     console.warn(
       `Could not find worker with username ${getConfigValue(
