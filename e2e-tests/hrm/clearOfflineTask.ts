@@ -20,12 +20,15 @@ import { request } from '@playwright/test';
 export const clearOfflineTask = async (hrmRoot: string, workerSid: string, flexToken: string) => {
   const apiRequest = await request.newContext();
   new URL(`${hrmRoot}/contacts/byTaskSid/offline-task-${workerSid}`);
-  const resp = await apiRequest.get(`${hrmRoot}/contacts/byTaskSid/offline-task-${workerSid}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${flexToken}`,
+  const resp = await apiRequest.get(
+    `${hrmRoot}/contacts/byTaskSid/offline-contact-task-${workerSid}`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${flexToken}`,
+      },
     },
-  });
+  );
   if (resp.ok()) {
     const contactId: string = (await resp.json()).id;
     await apiRequest.patch(`${hrmRoot}/contacts/${contactId}`, {
