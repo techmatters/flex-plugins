@@ -31,7 +31,7 @@ export const clearOfflineTask = async (hrmRoot: string, workerSid: string, flexT
   );
   if (resp.ok()) {
     const contactId: string = (await resp.json()).id;
-    await apiRequest.patch(`${hrmRoot}/contacts/${contactId}`, {
+    await apiRequest.patch(`${hrmRoot}/contacts/${contactId}?finalize=false`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${flexToken}`,
