@@ -184,6 +184,7 @@ export type Contact = {
   queueName: string;
   channelSid: string;
   serviceSid: string;
+  caseId?: number;
 };
 
 export type SearchContactResult = {
