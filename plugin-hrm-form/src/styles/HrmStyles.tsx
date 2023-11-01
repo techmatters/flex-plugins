@@ -269,6 +269,41 @@ type StyledNextStepButtonProps = {
   margin?: string;
 };
 
+export const AddedToCaseButton = styled('p')`
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: normal;
+  color: ${HrmTheme.colors.secondaryButtonTextColor};
+  border: none;
+  padding: 4px 10px;
+  min-width: auto;
+`;
+
+export const SaveAndEndContactButton = styled(Button)<StyledNextStepButtonProps>`
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: normal;
+  color: ${HrmTheme.colors.buttonTextColor};
+  background: linear-gradient(to top, ${HrmTheme.colors.declineColor}, ${HrmTheme.colors.declineColor});
+  border: none;
+  padding: 4px 10px;
+  min-width: auto;
+  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
+
+  &&:focus {
+    outline-style: auto;
+    outline-width: initial;
+  }
+
+  &&:active {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+`;
+
 export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
   display: flex;
   align-items: center;
@@ -1241,6 +1276,43 @@ export const StyledCSAMReportDropdownList = styled('button')`
   border: none;
 `;
 StyledCSAMReportDropdownList.displayName = 'StyledCSAMReportDropdownList';
+
+export const StyledAddNewCaseDropdown = styled('ul')`
+  position: absolute;
+  right: 20%;
+  bottom: 8%;
+  box-shadow: -1px 1px 14px -3px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: -1px 1px 14px -3px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: -1px 1px 14px -3px rgba(0, 0, 0, 0.75);
+  font-size: 0.875rem;
+  z-index: 9999;
+  min-width: 9.5rem;
+  padding: 10px 10px 10px 6px;
+  background-color: #fff;
+  border: 1px;
+  border-radius: 4px 4px;
+  margin-right: 20px;
+`;
+StyledAddNewCaseDropdown.displayName = 'StyledAddNewCaseDropdown';
+
+export const StyledAddNewCaseDropdownList = styled('button')`
+  position: relative;
+  font-size: 14px;
+  display: block;
+  color: inherit;
+  min-width: 10rem;
+  text-align: left;
+  width: 25px;
+  padding: 7px 0 7px 18px;
+  text-decoration: none;
+  &:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
+  }
+  background: none;
+  border: none;
+`;
+StyledAddNewCaseDropdownList.displayName = 'StyledAddNewCaseDropdownList';
 
 export const TypingIndicatorText = styled(FontOpenSans)`
   font-size: 10px;

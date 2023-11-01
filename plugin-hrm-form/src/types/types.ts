@@ -168,6 +168,7 @@ export type Contact = {
   accountSid: string;
   twilioWorkerId: string;
   number: string;
+  caseId?: number | null;
   conversationDuration: number;
   csamReports: CSAMReportEntry[];
   referrals?: ResourceReferral[];

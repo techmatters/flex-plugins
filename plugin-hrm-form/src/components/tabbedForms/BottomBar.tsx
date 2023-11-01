@@ -14,16 +14,24 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { AnyAction, bindActionCreators } from 'redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/Folder';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { SubmitErrorHandler } from 'react-hook-form';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
-import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
+import {
+  Box,
+  BottomButtonBar,
+  StyledNextStepButton,
+  AddedToCaseButton,
+  SaveAndEndContactButton,
+} from '../../styles/HrmStyles';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { completeTask } from '../../services/formSubmissionHelpers';
@@ -40,6 +48,7 @@ import { submitContactFormAsyncAction } from '../../states/contacts/saveContact'
 import { ContactMetadata } from '../../states/contacts/types';
 import { connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { AppRoutes } from '../../states/routing/types';
+import AddNewCaseDropdown from './AddNewCaseDropdown';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;
@@ -68,9 +77,18 @@ const BottomBar: React.FC<
   createCaseAsyncAction,
   submitContactFormAsyncAction,
   saveUpdates,
+  savedContact,
 }) => {
   const [isSubmitting, setSubmitting] = useState(false);
+  const [dropdown, setDropdown] = useState(false);
+
   const strings = getTemplateStrings();
+
+  const handleDropdown = () => {
+    setDropdown(previous => !previous);
+  };
+
+  const isAddedToExistingCase = savedContact?.caseId !== null;
 
   const handleOpenNewCase = async () => {
     const { workerSid, definitionVersion } = getHrmConfig();
@@ -116,9 +134,19 @@ const BottomBar: React.FC<
 
   if (!showBottomBar) return null;
 
+  const openSearchModal = () => {
+    openModal({ route: 'search', subroute: 'form' });
+  };
+
   return (
     <>
-      <BottomButtonBar>
+      <BottomButtonBar
+        onBlurCapture={event => {
+          if (!event.currentTarget.contains(event.relatedTarget)) {
+            setDropdown(false);
+          }
+        }}
+      >
         {optionalButtons &&
           optionalButtons.map((i, index) => (
             <Box key={`optional-button-${index}`} marginRight="15px">
@@ -141,33 +169,60 @@ const BottomBar: React.FC<
         )}
         {showSubmitButton && (
           <>
-            {featureFlags.enable_case_management && !isNonDataCallType(contact.rawJson.callType) && (
-              <Box marginRight="15px">
-                <StyledNextStepButton
-                  type="button"
-                  roundCorners
-                  secondary="true"
-                  onClick={handleSubmitIfValid(handleOpenNewCase, onError)}
-                  data-fs-id="Contact-SaveAndAddToCase-Button"
-                  data-testid="BottomBar-SaveAndAddToCase-Button"
-                >
-                  <FolderIcon style={{ fontSize: '16px', marginRight: '10px' }} />
-                  <Template code="BottomBar-AddContactToNewCase" />
-                </StyledNextStepButton>
+            <AddNewCaseDropdown
+              handleNewCaseType={handleSubmitIfValid(handleOpenNewCase, onError)}
+              handleExistingCaseType={openSearchModal}
+              dropdown={dropdown}
+            />
+            {isAddedToExistingCase ? (
+              <Box marginRight="25px">
+                <AddedToCaseButton>
+                  <Template code="BottomBar-AddedToCase" />
+                </AddedToCaseButton>
               </Box>
+            ) : (
+              featureFlags.enable_case_management &&
+              !isNonDataCallType(contact.rawJson.callType) && (
+                <Box marginRight="15px">
+                  <StyledNextStepButton
+                    type="button"
+                    roundCorners
+                    secondary="true"
+                    onClick={handleDropdown}
+                    data-fs-id="Contact-SaveAndAddToCase-Button"
+                    data-testid="BottomBar-SaveAndAddToCase-Button"
+                  >
+                    <FolderIcon style={{ fontSize: '16px', marginRight: '10px' }} />
+                    <Template code="BottomBar-AddContactToNewCase" />
+                    {dropdown && <KeyboardArrowUpIcon style={{ fontSize: '20px', marginLeft: '10px' }} />}
+                    {!dropdown && <KeyboardArrowDownIcon style={{ fontSize: '20px', marginLeft: '10px' }} />}
+                  </StyledNextStepButton>
+                </Box>
+              )
             )}
-            <StyledNextStepButton
-              roundCorners={true}
-              onClick={handleSubmitIfValid(handleSubmit, onError)}
-              disabled={isSubmitting}
-              data-fs-id="Contact-SaveContact-Button"
-              data-testid="BottomBar-SaveContact-Button"
-            >
-              <span style={{ visibility: isSubmitting ? 'hidden' : 'inherit' }}>
-                <Template code="BottomBar-SaveCaseContact" />
-              </span>
-              {isSubmitting ? <CircularProgress size={12} style={{ position: 'absolute' }} /> : null}
-            </StyledNextStepButton>
+            {isAddedToExistingCase ? (
+              <SaveAndEndContactButton
+                onClick={handleSubmitIfValid(handleSubmit, onError)}
+                roundCorners={true}
+                data-fs-id="Contact-SaveContact-Button"
+                data-testid="BottomBar-SaveContact-Button"
+              >
+                <Template code="BottomBar-SaveAndEnd" />
+              </SaveAndEndContactButton>
+            ) : (
+              <StyledNextStepButton
+                roundCorners={true}
+                onClick={handleSubmitIfValid(handleSubmit, onError)}
+                disabled={isSubmitting}
+                data-fs-id="Contact-SaveContact-Button"
+                data-testid="BottomBar-SaveContact-Button"
+              >
+                <span style={{ visibility: isSubmitting ? 'hidden' : 'inherit' }}>
+                  <Template code="BottomBar-SaveCaseContact" />
+                </span>
+                {isSubmitting ? <CircularProgress size={12} style={{ position: 'absolute' }} /> : null}
+              </StyledNextStepButton>
+            )}
           </>
         )}
       </BottomButtonBar>
@@ -185,6 +240,7 @@ const mapStateToProps = (state: RootState, ownProps: BottomBarProps) => {
     contact: getUnsavedContact(savedContact, draftContact),
     metadata,
     caseForm,
+    savedContact,
   };
 };
 
@@ -198,6 +254,7 @@ const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
       createCaseAsyncDispatch(createCaseAsyncAction(contact, task.taskSid, workerSid, definitionVersion)),
     submitContactFormAsyncAction: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) =>
       createCaseAsyncDispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
+    // openSearchModal: () => dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, task.taskSid)),
   };
 };
 
