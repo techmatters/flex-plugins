@@ -9,16 +9,17 @@ locals {
 
 
     workflow_vars = {
-      free_state_messenger_id = "messenger:108893061823158"
-      mpumalanga_messenger_id = "messenger:104633335590900"
-      national_messenger_id   = "messenger:110516273745020"
+      free_state_messenger_id   = "messenger:108893061823158"
+      mpumalanga_messenger_id   = "messenger:104633335590900"
+      western_cape_messenger_id = "messenger:111065515147888"
+      national_messenger_id     = "messenger:110516273745020"
     }
 
     #Studio flow
     flow_vars = {
-      service_sid                  = ""
-      environment_sid              = ""
-      operating_hours_function_sid = ""
+      service_sid                  = "ZS27e84b6573e9e70a6cede7d8b9e5111d"
+      environment_sid              = "ZEf88d7136c200de2b8072ee4c9a1dadb5"
+      operating_hours_function_sid = "ZH38920759a863f804b58a52fd411a3814"
     }
 
     #Channels
@@ -55,6 +56,15 @@ locals {
         templatefile     = "/app/twilio-iac/helplines/za/templates/studio-flows/messaging-facebook-office.tftpl"
         channel_flow_vars = {
           helpline = "Mpumalanga"
+        }
+        chatbot_unique_names = []
+      },
+      facebook_western_cape : {
+        channel_type     = "facebook"
+        contact_identity = "messenger:111065515147888"
+        templatefile     = "/app/twilio-iac/helplines/za/templates/studio-flows/messaging-facebook-office.tftpl"
+        channel_flow_vars = {
+          helpline = "Western Cape"
         }
         chatbot_unique_names = []
       }

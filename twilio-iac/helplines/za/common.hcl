@@ -44,6 +44,10 @@ locals {
         "target_workers"       = "routing.skills HAS 'Mpumalanga'",
         "friendly_name"        = "Childline Mpumalanga"
       },
+      western_cape : {
+        "target_workers"       = "routing.skills HAS 'Western Cape'",
+        "friendly_name"        = "Childline Western Cape"
+      },
       offline : {
         "target_workers"       = "1==1",
         "friendly_name"        = "Offline"
