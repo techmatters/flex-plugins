@@ -47,6 +47,8 @@ ProfileSubtitle.displayName = 'ProfileSubtitle';
 type EditButtonProps = {
   onClick: () => void;
 };
+
+// eslint-disable-next-line import/no-unused-modules
 export const EditButton = styled(props => <Button roundCorners={false} {...props} />)<EditButtonProps>`
   color: ${HrmTheme.colors.categoryTextColor};
   text-align: right;
