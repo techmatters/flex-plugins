@@ -458,7 +458,7 @@ const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) =>
     form: keyof Pick<ContactRawJson, 'caseInformation' | 'callerInformation' | 'categories' | 'childInformation'>,
   ) => dispatch(changeRoute({ route: 'contact', subroute: 'edit', id: contactId, form }, task.taskSid)),
   openProfileModal: id => {
-    dispatch(newOpenModalAction({ route: 'profile', id }, task.taskSid));
+    dispatch(newOpenModalAction({ route: 'profile', id, subroute: 'details' }, task.taskSid));
   },
 });
 

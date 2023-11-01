@@ -59,8 +59,8 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
       titleCode: 'Profile-IdentifiersHeader',
       margin: '20px 0',
       renderComponent: () =>
-        profile.identifiers ? (
-          profile.identifiers.map(identifier => <div key={identifier.id}>{identifier.identifier}</div>)
+        profile?.identifiers ? (
+          profile.identifiers?.map(identifier => <div key={identifier.id}>{identifier.identifier}</div>)
         ) : (
           <Template code="Profile-NoIdentifiersFound" />
         ),

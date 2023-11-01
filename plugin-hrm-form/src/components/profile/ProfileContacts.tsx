@@ -34,11 +34,8 @@ const ProfileContacts: React.FC<Props> = ({ profileId, viewContactDetails }) => 
   const renderItem = (contact: Contact) => {
     const { can } = getPermissionsForContact(contact.twilioWorkerId);
     const handleViewDetails = () => {
-      console.log('>>>handleViewDetails', contact);
       if (can(PermissionActions.VIEW_CONTACT)) viewContactDetails(contact);
     };
-
-    console.log('>>>can(PermissionActions.VIEW_CONTACT)', can(PermissionActions.VIEW_CONTACT));
 
     return (
       <ContactPreview key={`ContactPreview-${contact.id}`} contact={contact} handleViewDetails={handleViewDetails} />

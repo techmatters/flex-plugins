@@ -252,8 +252,6 @@ const mapStateToProps = (
   { contactId, task }: OwnProps,
 ) => {
   const currentRoute = getCurrentTopmostRouteForTask(routing, task.taskSid);
-  console.log('>>> currentRoute', currentRoute);
-  console.log('>>> isRouteWithModalSupport(currentRoute)', isRouteWithModalSupport(currentRoute));
 
   return {
     definitionVersions: configuration.definitionVersions,
