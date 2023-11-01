@@ -15,6 +15,7 @@
  */
 
 import React from 'react';
+import { Template } from '@twilio/flex-ui';
 
 import ProfileFlagsEdit from './profileFlags/ProfileFlagsEdit';
 import { CustomITask, Profile } from '../../types/types';
@@ -31,9 +32,11 @@ type Props = OwnProps;
 const ProfileEdit: React.FC<Props> = (props: Props) => {
   const { task } = props;
   return (
-    <NavigableContainer titleCode="Profile-EditHeader" task={task}>
+    <NavigableContainer titleCode="Profile-DetailsEditHeader" task={task}>
       <DetailsWrapper>
-        <ProfileSubtitle>Status</ProfileSubtitle>
+        <ProfileSubtitle>
+          <Template code="Profile-StatusHeader" />
+        </ProfileSubtitle>
         <ProfileFlagsEdit {...props} />
       </DetailsWrapper>
     </NavigableContainer>
