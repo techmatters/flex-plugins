@@ -38,18 +38,18 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const HrmForm: React.FC<Props> = ({ activeModal, routing, task, featureFlags, savedContact }) => {
+const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact }) => {
   if (!routing) return null;
   const { route } = routing;
 
   const routes = [
     {
-      activeModalRoutes: ALL_PROFILE_ROUTES,
+      routes: ALL_PROFILE_ROUTES,
       renderComponent: () => <ProfileRouter task={task} />,
     },
     // TODO: move hrm form search into it's own component and use it here so all routes are in one place
     {
-      baseRoutes: ['tabbed-forms', 'search', 'contact', 'case'],
+      routes: ['tabbed-forms', 'search', 'contact', 'case'],
       renderComponent: () => (
         <TabbedForms
           task={task}
@@ -60,21 +60,17 @@ const HrmForm: React.FC<Props> = ({ activeModal, routing, task, featureFlags, sa
       ),
     },
     {
-      baseRoutes: ['csam-report'],
+      routes: ['csam-report'],
       renderComponent: () => (
         <CSAMReport
           api={newContactCSAMApi(savedContact.id, task.taskSid, (routing as CSAMReportRoute).previousRoute)}
         />
       ),
     },
-    { baseRoutes: ['select-call-type'], renderComponent: () => <CallTypeButtons task={task} /> },
+    { routes: ['select-call-type'], renderComponent: () => <CallTypeButtons task={task} /> },
   ];
 
-  // Modals take precedence over routes
-  const modalComponent = routes.find(m => m.activeModalRoutes?.includes(activeModal));
-  if (modalComponent) return modalComponent.renderComponent();
-
-  return routes.find(r => r.baseRoutes?.includes(route))?.renderComponent() || null;
+  return routes.find(r => r.routes?.includes(route))?.renderComponent() || null;
 };
 
 HrmForm.displayName = 'HrmForm';
@@ -82,11 +78,8 @@ HrmForm.displayName = 'HrmForm';
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const routingState = state[namespace].routing;
   const { savedContact, metadata } = findContactByTaskSid(state, task.taskSid) ?? {};
-  const baseRoute = getCurrentBaseRoute(routingState, task.taskSid);
-  const activeModal =
-    isRouteWithModalSupport(baseRoute) && baseRoute.activeModal?.length && baseRoute.activeModal[0].route;
 
-  return { activeModal, routing: getCurrentTopmostRouteForTask(routingState, task.taskSid), savedContact, metadata };
+  return { routing: getCurrentTopmostRouteForTask(routingState, task.taskSid), savedContact, metadata };
 };
 
 const connector = connect(mapStateToProps);

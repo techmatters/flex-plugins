@@ -29,7 +29,7 @@ const mapStateToProps = (
   { [namespace]: { activeContacts, configuration, connectedCase: connectedCaseState } }: RootState,
   { task, contactId }: OwnProps,
 ) => {
-  const { connectedCase } = connectedCaseState.tasks[task.taskSid];
+  const connectedCase = connectedCaseState.tasks[task.taskSid]?.connectedCase;
   if (connectedCase) {
     const contact = activeContacts.existingContacts[contactId]?.savedContact;
     const enableEditing = Boolean(connectedCase.connectedContacts?.find(cc => cc.id?.toString() === contactId));
