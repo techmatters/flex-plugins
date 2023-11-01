@@ -57,9 +57,9 @@ export const caseList = (page: Page) => {
     caseSummaryText: caseListPage.locator(`//textarea[@data-testid='Case-CaseSummary-TextArea']`),
     caseSummaryTextArea: caseListPage.locator(`//textarea[@data-testid='summary']`),
     casePrintButton: caseListPage.locator(`//button[@data-testid='CasePrint-Button']`),
-    casePrintCloseButton: caseListPage.locator(`//button[@data-testid='CasePrint-CloseCross']`),
-    caseCloseButton: caseListPage.locator(`//button[@data-testid='CaseHome-CloseButton']`),
-    caseEditCloseButton: caseListPage.locator(`//button[@data-testid='Case-CloseButton']`),
+    modalCloseButton: caseListPage.locator(
+      `//button[@data-testid='NavigableContainer-CloseCross']`,
+    ),
     updateCaseButton: caseListPage.locator(`//button[@data-testid='Case-EditCaseScreen-SaveItem']`),
     caseEditButton: caseListPage.locator(`//button[@data-testid='Case-EditButton']`),
 
@@ -123,7 +123,7 @@ export const caseList = (page: Page) => {
     await openPrintButton.click();
     console.log('Opened Case Print');
 
-    const closePrintButton = selectors.casePrintCloseButton;
+    const closePrintButton = selectors.modalCloseButton;
     await closePrintButton.waitFor({ state: 'visible' });
     await closePrintButton.click();
     console.log('Close Case Print');
@@ -156,14 +156,6 @@ export const caseList = (page: Page) => {
     console.log('Updated Case Summary');
   }
 
-  // Close Edit case
-  async function closeEditCase() {
-    const caseEditClose = selectors.caseEditCloseButton;
-    await caseEditClose.waitFor({ state: 'visible' });
-    await expect(caseEditClose).toContainText('Cancel');
-    await caseEditClose.click();
-  }
-
   // Verify case summary update
   async function verifyCaseSummaryUpdated() {
     const summaryText = selectors.caseSummaryText;
@@ -178,13 +170,11 @@ export const caseList = (page: Page) => {
     await Promise.all(caseListIdButtons.map((l, idx) => expect(l).toContainText(ids[idx])));
   }
 
-  //Close Case
-  async function closeCase() {
-    const closeCaseButton = selectors.caseCloseButton;
+  //Close Modal (probably can move this to more generic navigation file now we have more standardised navigation)
+  async function closeModal() {
+    const closeCaseButton = selectors.modalCloseButton;
     await closeCaseButton.waitFor({ state: 'visible' });
-    await expect(closeCaseButton).toContainText('Close');
     await closeCaseButton.click();
-    console.log('Closed Case');
   }
 
   return {
@@ -195,9 +185,8 @@ export const caseList = (page: Page) => {
     viewClosePrintView,
     editCase,
     updateCaseSummary,
-    closeEditCase,
     verifyCaseSummaryUpdated,
-    closeCase,
+    closeModal,
     verifyCaseIdsAreInListInOrder,
   };
 };

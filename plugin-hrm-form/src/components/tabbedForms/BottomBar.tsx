@@ -39,6 +39,7 @@ import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
 import { connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
+import { AppRoutes } from '../../states/routing/types';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;
@@ -61,7 +62,7 @@ const BottomBar: React.FC<
   contact,
   metadata,
   task,
-  changeRoute,
+  openModal,
   nextTab,
   caseForm,
   createCaseAsyncAction,
@@ -72,7 +73,6 @@ const BottomBar: React.FC<
   const strings = getTemplateStrings();
 
   const handleOpenNewCase = async () => {
-    const { taskSid } = task;
     const { workerSid, definitionVersion } = getHrmConfig();
 
     if (!hasTaskControl(task)) return;
@@ -80,7 +80,7 @@ const BottomBar: React.FC<
     try {
       await saveUpdates();
       await createCaseAsyncAction(contact, workerSid, definitionVersion);
-      changeRoute({ route: 'new-case' }, taskSid);
+      openModal({ route: 'case', subroute: 'home' });
     } catch (error) {
       recordBackendError('Open New Case', error);
       window.alert(strings['Error-Backend']);
@@ -191,7 +191,8 @@ const mapStateToProps = (state: RootState, ownProps: BottomBarProps) => {
 const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
   const createCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
-    changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
+    changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
+    openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid)),
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     createCaseAsyncAction: (contact, workerSid: string, definitionVersion: DefinitionVersionId) =>
       createCaseAsyncDispatch(createCaseAsyncAction(contact, task.taskSid, workerSid, definitionVersion)),

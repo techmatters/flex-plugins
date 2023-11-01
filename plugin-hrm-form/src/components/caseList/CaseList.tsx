@@ -18,9 +18,16 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 import Case from '../case';
-import { StandaloneITask, ListCasesQueryParams, ListCasesFilters, ListCasesSort } from '../../types/types';
+import {
+  StandaloneITask,
+  ListCasesQueryParams,
+  ListCasesFilters,
+  ListCasesSort,
+  Case as CaseType,
+} from '../../types/types';
 import CaseListTable from './CaseListTable';
 import { CaseListContainer, CenteredContainer, SomethingWentWrongText } from '../../styles/caseList';
 import { listCases } from '../../services/CaseService';
@@ -34,7 +41,10 @@ import { undoCaseListSettingsUpdate } from '../../states/caseList/reducer';
 import { dateFilterPayloadFromFilters } from './filters/dateFilters';
 import * as ListContent from '../../states/caseList/listContent';
 import { getHrmConfig } from '../../hrmConfig';
-import { caseListBase, namespace } from '../../states/storeNamespaces';
+import { namespace } from '../../states/storeNamespaces';
+import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { newCloseModalAction, newOpenModalAction } from '../../states/routing/actions';
+import ViewContact from '../case/ViewContact';
 
 export const CASES_PER_PAGE = 10;
 
@@ -59,9 +69,9 @@ const CaseList: React.FC<Props> = ({
   closeCaseDetails,
   caseList,
   caseCount,
-  caseDetailsOpen,
   fetchError,
   listLoading,
+  routing,
 }) => {
   const { helpline } = getHrmConfig();
 
@@ -121,7 +131,7 @@ const CaseList: React.FC<Props> = ({
       </CenteredContainer>
     );
 
-  if (caseDetailsOpen) {
+  if (routing.route === 'case') {
     return (
       <StandaloneSearchContainer>
         <CaseLayout>
@@ -131,6 +141,15 @@ const CaseList: React.FC<Props> = ({
     );
   }
 
+  if (routing.route === 'contact') {
+    return (
+      <StandaloneSearchContainer>
+        <CaseLayout>
+          <ViewContact contactId={routing.id} task={standaloneTask} />
+        </CaseLayout>
+      </StandaloneSearchContainer>
+    );
+  }
   return (
     <>
       <CaseListContainer>
@@ -152,21 +171,29 @@ CaseList.propTypes = {
   updateDefinitionVersion: PropTypes.func.isRequired,
 };
 
-const mapDispatchToProps = {
-  setConnectedCase: CaseActions.setConnectedCase,
-  updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
-  undoSettingsUpdate: undoCaseListSettingsUpdate,
-  fetchCaseListStarted: ListContent.fetchCaseListStarted,
-  fetchCaseListSuccess: ListContent.fetchCaseListSuccess,
-  fetchCaseListError: ListContent.fetchCaseListError,
-  openCaseDetails: ListContent.openCaseDetails,
-  closeCaseDetails: ListContent.closeCaseDetails,
+const mapDispatchToProps = dispatch => {
+  return {
+    setConnectedCase: (connectedCase, taskId: string) => dispatch(CaseActions.setConnectedCase(connectedCase, taskId)),
+    updateDefinitionVersion: (version: string, definitions: DefinitionVersion) =>
+      dispatch(ConfigActions.updateDefinitionVersion(version, definitions)),
+    undoSettingsUpdate: () => dispatch(undoCaseListSettingsUpdate()),
+    fetchCaseListStarted: () => dispatch(ListContent.fetchCaseListStarted()),
+    fetchCaseListSuccess: (caseList: CaseType[], caseCount: number) =>
+      dispatch(ListContent.fetchCaseListSuccess(caseList, caseCount)),
+    fetchCaseListError: error => dispatch(ListContent.fetchCaseListError(error)),
+    openCaseDetails: () => dispatch(newOpenModalAction({ route: 'case', subroute: 'home' }, standaloneTask.taskSid)),
+    closeCaseDetails: () => dispatch(newCloseModalAction(standaloneTask.taskSid)),
+  };
 };
 
-const mapStateToProps = (state: RootState) => ({
-  currentSettings: state[namespace][caseListBase].currentSettings,
-  previousSettings: state[namespace][caseListBase].previousSettings,
-  ...state[namespace][caseListBase].content,
+const mapStateToProps = ({ [namespace]: { caseList, routing } }: RootState) => ({
+  currentSettings: caseList.currentSettings,
+  previousSettings: caseList.previousSettings,
+  routing: getCurrentTopmostRouteForTask(routing, standaloneTask.taskSid) ?? {
+    route: 'case-list',
+    subroute: 'case-list',
+  },
+  ...caseList.content,
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

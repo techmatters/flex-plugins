@@ -138,16 +138,16 @@ ${
             ]
           },
           {
-            "next": "say_closed",
+            "next": "send_closed",
             "event": "match",
             "conditions": [
               {
-                "friendly_name": "If value equal_to closed",
+                "friendly_name": "If matches_any_of closed,holiday",
                 "arguments": [
                   "{{widgets.check_operating_hours.parsed.status}}"
                 ],
-                "type": "equal_to",
-                "value": "closed"
+                "type": "matches_any_of",
+                "value": "closed,holiday"
               }
             ]
           }

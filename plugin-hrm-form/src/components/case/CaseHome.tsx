@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
@@ -26,13 +26,7 @@ import CaseDetailsComponent from './CaseDetails';
 import Timeline from './Timeline';
 import CaseSection from './CaseSection';
 import { PermissionActions, PermissionActionType } from '../../permissions';
-import {
-  AppRoutes,
-  CaseItemAction,
-  CaseSectionSubroute,
-  isAppRouteWithCase,
-  NewCaseSubroutes,
-} from '../../states/routing/types';
+import { AppRoutes, CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
 import { RootState } from '../../states';
 import { Activity, CaseDetails, CaseState } from '../../states/case/types';
@@ -44,7 +38,8 @@ import DocumentInformationRow from './DocumentInformationRow';
 import { householdSectionApi } from '../../states/case/sections/household';
 import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
 import { getAseloFeatureFlags } from '../../hrmConfig';
-import { connectedCaseBase, namespace, routingBase } from '../../states/storeNamespaces';
+import { connectedCaseBase, namespace } from '../../states/storeNamespaces';
+import NavigableContainer from '../NavigableContainer';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -65,8 +60,7 @@ type Props = CaseHomeProps & ConnectedProps<typeof connector>;
 const CaseHome: React.FC<Props> = ({
   definitionVersion,
   task,
-  routing,
-  changeRoute,
+  openModal,
   isCreating,
   handleClose,
   handleSaveAndEnd,
@@ -77,21 +71,20 @@ const CaseHome: React.FC<Props> = ({
   connectedCaseState,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  if (!connectedCaseState || !routing || !isAppRouteWithCase(routing)) return null; // narrow type before deconstructing
+  if (!connectedCaseState) return null; // narrow type before deconstructing
 
   const featureFlags = getAseloFeatureFlags();
-  const { route } = routing;
 
   const onViewCaseItemClick = (targetSubroute: CaseSectionSubroute) => (id: string) => {
-    changeRoute({ route, subroute: targetSubroute, action: CaseItemAction.View, id } as AppRoutes, task.taskSid);
+    openModal({ route: 'case', subroute: targetSubroute, action: CaseItemAction.View, id });
   };
 
   const onAddCaseItemClick = (targetSubroute: CaseSectionSubroute) => () => {
-    changeRoute({ route, subroute: targetSubroute, action: CaseItemAction.Add } as AppRoutes, task.taskSid);
+    openModal({ route: 'case', subroute: targetSubroute, action: CaseItemAction.Add });
   };
 
   const onPrintCase = () => {
-    changeRoute({ route, subroute: 'case-print-view' }, task.taskSid);
+    openModal({ route: 'case', subroute: 'case-print-view' });
   };
 
   // -- Date cannot be converted here since the date dropdown uses the yyyy-MM-dd format.
@@ -187,19 +180,15 @@ const CaseHome: React.FC<Props> = ({
   };
 
   const onEditCaseSummaryClick = () => {
-    changeRoute(
-      { ...routing, subroute: NewCaseSubroutes.CaseSummary, action: CaseItemAction.Edit } as AppRoutes,
-      task.taskSid,
-    );
+    openModal({ route: 'case', subroute: 'caseSummary', action: CaseItemAction.Edit, id: '' });
   };
 
   return (
-    <>
+    <NavigableContainer titleCode={contactIdentifier} task={task} onGoBack={handleClose} onCloseModal={handleClose}>
       <CaseContainer data-testid="CaseHome-CaseDetailsComponent">
         <Box marginLeft="25px" marginTop="13px">
           <CaseDetailsComponent
             caseId={id.toString()}
-            contactIdentifier={contactIdentifier}
             statusLabel={statusLabel}
             can={can}
             counselor={caseCounselor}
@@ -220,7 +209,7 @@ const CaseHome: React.FC<Props> = ({
           <CaseSummary task={task} />
         </Box>
         <Box margin="25px 0 0 25px">
-          <Timeline timelineActivities={timeline} taskSid={task.taskSid} can={can} route={route} />
+          <Timeline timelineActivities={timeline} taskSid={task.taskSid} can={can} />
         </Box>
         <Box margin="25px 0 0 25px">
           <CaseSection
@@ -261,8 +250,8 @@ const CaseHome: React.FC<Props> = ({
           </Box>
         )}
       </CaseContainer>
-      <BottomButtonBar>
-        {isCreating && (
+      {isCreating && (
+        <BottomButtonBar>
           <>
             <Box marginRight="15px">
               <StyledNextStepButton
@@ -278,39 +267,25 @@ const CaseHome: React.FC<Props> = ({
               <Template code="BottomBar-SaveAndEnd" />
             </StyledNextStepButton>
           </>
-        )}
-        {!isCreating && (
-          <>
-            <Box marginRight="15px">
-              <StyledNextStepButton
-                data-testid="CaseHome-CloseButton"
-                secondary="true"
-                roundCorners
-                onClick={handleClose}
-              >
-                <Template code="BottomBar-Close" />
-              </StyledNextStepButton>
-            </Box>
-          </>
-        )}
-      </BottomButtonBar>
-    </>
+        </BottomButtonBar>
+      )}
+    </NavigableContainer>
   );
 };
 
 CaseHome.displayName = 'CaseHome';
 
-const mapStateToProps = (state: RootState, ownProps: CaseHomeProps) => {
-  const routing = state[namespace][routingBase].tasks[ownProps.task.taskSid];
+const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase];
-  const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
+  const connectedCaseState = caseState.tasks[task.taskSid];
 
-  return { routing, connectedCaseState };
+  return { connectedCaseState };
 };
 
-const mapDispatchToProps = {
-  changeRoute: RoutingActions.changeRoute,
-};
+const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: CaseHomeProps) => ({
+  changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
+  openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid)),
+});
 const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(CaseHome);
 

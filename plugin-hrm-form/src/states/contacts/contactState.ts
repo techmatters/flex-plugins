@@ -35,6 +35,7 @@ export const newContactMetaData = (recreated: boolean): ContactMetadata => {
         resourceReferralIdToAdd: '',
         lookupStatus: ReferralLookupStatus.NOT_STARTED,
       },
+      dialogsOpen: {},
     },
     startMillis: recreated ? null : new Date().getTime(),
     endMillis: null,

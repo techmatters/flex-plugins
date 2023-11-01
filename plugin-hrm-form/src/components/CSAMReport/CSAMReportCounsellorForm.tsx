@@ -18,9 +18,10 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { useForm } from 'react-hook-form';
+import Close from '@material-ui/icons/Close';
 
 import ActionHeader from '../case/ActionHeader';
-import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyles';
+import { BottomButtonBar, Box, HeaderCloseButton, HiddenText, Row, StyledNextStepButton } from '../../styles/HrmStyles';
 import {
   BoldDescriptionText,
   CSAMReportContainer,
@@ -30,6 +31,8 @@ import {
 } from '../../styles/CSAMReport';
 import { definitionObject, generateCSAMFormElement, initialValues } from './CSAMReportFormDefinition';
 import { CounselorCSAMReportForm } from '../../states/csam-report/types';
+import useFocus from '../../utils/useFocus';
+import { CaseActionTitle } from '../../styles/case';
 
 type Props = {
   counselor: string;
@@ -49,15 +52,33 @@ const CSAMReportCounsellorForm: React.FC<Props> = ({
   methods,
 }) => {
   const generateCounselorFormElement = generateCSAMFormElement(initialValues, formValues, update, methods);
+
+  const focusElementRef = useFocus();
+
   return (
     <CSAMReportContainer data-testid="CSAMReport-FormScreen">
       <CSAMReportLayout>
-        <ActionHeader
-          titleTemplate="CSAMReportForm-Header"
-          onClickClose={onClickClose}
-          addingCounsellor={counselor}
-          focusCloseButton={true}
-        />
+        {
+          // TODO: Replace with NavigableContainer once we use standard routing for CSAM reports
+        }
+        <Row style={{ width: '100%' }}>
+          <CaseActionTitle style={{ marginTop: 'auto' }}>
+            <Template code="Contact-ExternalReport" />
+          </CaseActionTitle>
+          <HeaderCloseButton
+            onClick={onClickClose}
+            data-testid="Case-CloseCross"
+            ref={ref => {
+              focusElementRef.current = ref;
+            }}
+          >
+            <HiddenText>
+              <Template code="Case-CloseButton" />
+            </HiddenText>
+            <Close />
+          </HeaderCloseButton>
+        </Row>
+        <ActionHeader addingCounsellor={counselor} focusCloseButton={true} />
 
         {/** Website details */}
         <Box marginTop="20px" marginBottom="5px">

@@ -44,7 +44,6 @@ type OwnProps = {
   extraChildrenRight?: React.ReactNode;
   updateForm?: (values: any) => void;
   contactId?: string;
-  taskSid?: string;
 };
 
 // eslint-disable-next-line no-use-before-define
