@@ -63,6 +63,14 @@ export async function updateCase(caseId: Case['id'], body: Partial<Case>) {
   return fetchHrmApi(`/cases/${caseId}`, options);
 }
 
+export async function getCase(caseId: Case['id']): Promise<Case> {
+  const options = {
+    method: 'GET',
+  };
+
+  return fetchHrmApi(`/cases/${caseId}`, options);
+}
+
 export async function searchCases(searchParams, limit, offset): Promise<SearchCaseResult> {
   return listCases({ limit, offset }, searchParams);
 }
