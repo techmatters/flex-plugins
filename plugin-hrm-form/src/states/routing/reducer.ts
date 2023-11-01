@@ -67,10 +67,15 @@ const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingActi
         previousContact.taskId === getOfflineContactTaskSid() ? false : state.isAddingOfflineContact,
     };
   }
-  const { taskId, rawJson } = contact;
+  const { taskId, rawJson, caseId } = contact;
   let initialEntry: AppRoutes = newTaskEntry;
   const { callType } = rawJson;
-  if (callType === callTypes.child) {
+  if (caseId) {
+    initialEntry = {
+      route: 'case',
+      subroute: 'home',
+    };
+  } else if (callType === callTypes.child) {
     initialEntry = {
       route: 'tabbed-forms',
       subroute: 'childInformation',
@@ -91,7 +96,9 @@ const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingActi
           : [initialEntry],
     },
     isAddingOfflineContact:
-      taskId === getOfflineContactTaskSid() ? true : stateWithoutPreviousContact.isAddingOfflineContact,
+      taskId === getOfflineContactTaskSid() && contact?.rawJson?.contactlessTask?.createdOnBehalfOf
+        ? true
+        : stateWithoutPreviousContact.isAddingOfflineContact,
   };
 };
 

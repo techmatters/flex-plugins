@@ -39,7 +39,12 @@ import { RootState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { SaveCaseReducerState, saveCaseReducer } from './saveCase';
 import { CaseListContentStateAction } from '../caseList/listContent';
-import { configurationBase } from '../storeNamespaces';
+import { configurationBase, namespace } from '../storeNamespaces';
+import {
+  ContactUpdatingAction,
+  CREATE_CONTACT_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+} from '../contacts/types';
 
 const initialState: CaseState = {
   tasks: {},
@@ -52,15 +57,53 @@ export const saveCaseState: SaveCaseReducerState = {
 
 const boundSaveCaseReducer = saveCaseReducer(saveCaseState);
 
+const contactUpdatingReducer = (
+  state: CaseState,
+  { configuration }: RootState[typeof namespace],
+  action: ContactUpdatingAction,
+): CaseState => {
+  if (
+    action.type === CREATE_CONTACT_ACTION_FULFILLED ||
+    action.type === LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED
+  ) {
+    const { contact, contactCase } = action.payload;
+    if (contactCase) {
+      const caseDefinitionVersion = configuration.definitionVersions[contactCase.info.definitionVersion];
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [contact.taskId]: {
+            connectedCase: contactCase,
+            caseWorkingCopy: { sections: {} },
+            availableStatusTransitions: caseDefinitionVersion
+              ? getAvailableCaseStatusTransitions(contactCase, caseDefinitionVersion)
+              : [],
+          },
+        },
+      };
+    }
+  }
+  return state;
+};
+
 // eslint-disable-next-line import/no-unused-modules
 export function reduce(
   rootState: RootState['plugin-hrm-form'],
   inputState = initialState,
-  action: CaseActionType | CaseWorkingCopyActionType | RemoveContactStateAction | CaseListContentStateAction,
+  action:
+    | CaseActionType
+    | CaseWorkingCopyActionType
+    | RemoveContactStateAction
+    | CaseListContentStateAction
+    | ContactUpdatingAction,
 ): CaseState {
   const { state } = boundSaveCaseReducer({ state: inputState, rootState }, action as any);
 
   switch (action.type) {
+    case CREATE_CONTACT_ACTION_FULFILLED:
+    case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED:
+      return contactUpdatingReducer(state, rootState, action);
     case SET_CONNECTED_CASE:
       const caseDefinitionVersion =
         rootState[configurationBase].definitionVersions[action.connectedCase?.info?.definitionVersion];
