@@ -1,0 +1,56 @@
+{
+  "task_routing": {
+    "filters": [
+      {
+        "filter_friendly_name": "ChildLine South Africa - Chat",
+        "expression": "channelType =='web'",
+        "targets": [
+          {
+            "queue": "${task_queues.webchat}",
+            "expression": "(((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.waitingOfflineContact != true)"
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "Offline Contacts",
+        "expression": "isContactlessTask==true",
+        "targets": [
+          {
+            "queue": "${task_queues.offline}",
+            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "Free State",
+        "expression": "twilioNumber=='${workflow_vars["free_state_messenger_id"]}' OR helpline == 'Free State'",
+        "targets": [
+          {
+            "queue": "${task_queues.free_state}",
+            "expression": "(((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.waitingOfflineContact != true)"
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "Mpumalanga",
+        "expression": "twilioNumber=='${workflow_vars["mpumalanga_messenger_id"]}' OR helpline == 'Mpumalanga'",
+        "targets": [
+          {
+            "queue": "${task_queues.mpumalanga}",
+            "expression": "(((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.waitingOfflineContact != true)"
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "Facebook",
+        "expression": "twilioNumber=='${workflow_vars["national_messenger_id"]}'",
+        "targets": [
+          {
+            "queue": "${task_queues.facebook}",
+            "expression": "worker.waitingOfflineContact! = true"
+          }
+        ]
+      }
+    ]
+  }
+}

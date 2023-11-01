@@ -1,0 +1,133 @@
+${
+  jsonencode(
+    {
+        "description": flow_description,
+        "states": [
+            {
+            "name": "Trigger",
+            "type": "trigger",
+            "transitions": [
+                {
+                "next": "check_image",
+                "event": "incomingMessage"
+                },
+                {
+                "event": "incomingCall"
+                },
+                {
+                "event": "incomingConversationMessage"
+                },
+                {
+                "event": "incomingRequest"
+                },
+                {
+                "event": "incomingParent"
+                }
+            ],
+            "properties": {
+                "offset": {
+                "x": -290,
+                "y": -1010
+                }
+            }
+            },
+            {
+            "name": "check_image",
+            "type": "split-based-on",
+            "transitions": [
+                {
+                "event": "noMatch"
+                },
+                {
+                "next": "no_image",
+                "event": "match",
+                "conditions": [
+                    {
+                    "friendly_name": "{{trigger.message.Body}}",
+                    "arguments": [
+                        "{{trigger.message.Body}}"
+                    ],
+                    "type": "is_blank",
+                    "value": "Is Blank"
+                    }
+                ]
+                },
+                {
+                "next": "office_facebook_attributes",
+                "event": "match",
+                "conditions": [
+                    {
+                    "friendly_name": "{{trigger.message.Body}}",
+                    "arguments": [
+                        "{{trigger.message.Body}}"
+                    ],
+                    "type": "is_not_blank",
+                    "value": "Is Not Blank"
+                    }
+                ]
+                }
+            ],
+            "properties": {
+                "input": "{{trigger.message.Body}}",
+                "offset": {
+                "x": -260,
+                "y": -700
+                }
+            }
+            },
+            {
+            "name": "no_image",
+            "type": "send-message",
+            "transitions": [
+                {
+                "event": "sent"
+                },
+                {
+                "event": "failed"
+                }
+            ],
+            "properties": {
+                "offset": {
+                "x": -180,
+                "y": -380
+                },
+                "service": "{{trigger.message.InstanceSid}}",
+                "channel": "{{trigger.message.ChannelSid}}",
+                "from": "{{flow.channel.address}}",
+                "to": "{{contact.channel.address}}",
+                "body": "It is not possible to receive images or media files through Messenger at this time. Please send text only."
+            }
+            },
+            {
+            "name": "office_facebook_attributes",
+            "type": "send-to-flex",
+            "transitions": [
+                {
+                "event": "callComplete"
+                },
+                {
+                "event": "failedToEnqueue"
+                },
+                {
+                "event": "callFailure"
+                }
+            ],
+            "properties": {
+                "offset": {
+                "x": 170,
+                "y": -390
+                },
+                "workflow": "WWcbff7853fc26e43f8ce0327167180f3c",
+                "channel": "TCe1a9e41536f36e7ec4f3bb3d4eba3aa0",
+                "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"helpline\":\"${channel_flow_vars["helpline"]}\"}"
+            }
+            }
+        ],
+        "initial_state": "Trigger",
+        "flags": {
+            "allow_concurrent_calls": true
+        }
+        }
+
+  )
+}
