@@ -122,8 +122,13 @@ export const RequiredAsterisk = () => (
 const getRules = (field: FormItemDefinition): RegisterOptions =>
   pick(field, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
 
-const bindCreateSelectOptions = (path: string) => (o: SelectOption) => (
-  <FormOption key={`${path}-${o.label}-${o.value}`} value={o.value} isEmptyValue={o.value === ''}>
+const bindCreateSelectOptions = (path: string, initialValue: string) => (o: SelectOption) => (
+  <FormOption
+    key={`${path}-${o.label}-${o.value}`}
+    value={o.value}
+    isEmptyValue={o.value === ''}
+    selected={o.value === initialValue}
+  >
     {o.label}
   </FormOption>
 );
@@ -485,7 +490,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
         <ConnectForm key={path}>
           {({ errors, register }) => {
             const error = get(errors, path);
-            const createSelectOptions = bindCreateSelectOptions(path);
+            const createSelectOptions = bindCreateSelectOptions(path, initialValue);
 
             return (
               <FormLabel htmlFor={path}>
@@ -503,7 +508,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     error={Boolean(error)}
                     aria-invalid={Boolean(error)}
                     aria-describedby={`${path}-error`}
-                    onBlur={updateCallback}
+                    onChange={updateCallback}
                     ref={ref => {
                       if (htmlElRef) {
                         htmlElRef.current = ref;
@@ -511,7 +516,6 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
 
                       register(rules)(ref);
                     }}
-                    defaultValue={initialValue}
                     disabled={!isEnabled}
                   >
                     {def.options.map(createSelectOptions)}
@@ -561,7 +565,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
 
             const disabled = !hasOptions && !shouldInitialize;
 
-            const createSelectOptions = bindCreateSelectOptions(path);
+            const createSelectOptions = bindCreateSelectOptions(path, initialValue);
 
             return (
               <DependentSelectLabel htmlFor={path} disabled={disabled}>
@@ -579,7 +583,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     error={Boolean(error)}
                     aria-invalid={Boolean(error)}
                     aria-describedby={`${path}-error`}
-                    onBlur={updateCallback}
+                    onChange={updateCallback}
                     ref={ref => {
                       if (htmlElRef) {
                         htmlElRef.current = ref;
@@ -588,7 +592,6 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                       register({ validate })(ref);
                     }}
                     disabled={!isEnabled || disabled}
-                    defaultValue={initialValue}
                   >
                     {options.map(createSelectOptions)}
                   </FormSelect>

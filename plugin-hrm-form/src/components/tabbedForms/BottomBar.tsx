@@ -93,7 +93,7 @@ const BottomBar: React.FC<
     setSubmitting(true);
 
     try {
-      submitContactFormAsyncAction(task, contact, metadata, caseForm as Case);
+      await submitContactFormAsyncAction(task, contact, metadata, caseForm as Case);
       await completeTask(task);
     } catch (error) {
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {

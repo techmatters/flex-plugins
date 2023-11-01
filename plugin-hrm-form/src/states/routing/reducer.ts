@@ -90,7 +90,9 @@ const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingActi
           : initialEntry,
     },
     isAddingOfflineContact:
-      taskId === getOfflineContactTaskSid() ? true : stateWithoutPreviousContact.isAddingOfflineContact,
+      taskId === getOfflineContactTaskSid() && contact?.rawJson?.contactlessTask?.createdOnBehalfOf
+        ? true
+        : stateWithoutPreviousContact.isAddingOfflineContact,
   };
 };
 
