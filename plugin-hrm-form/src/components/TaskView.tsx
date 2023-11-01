@@ -35,6 +35,7 @@ import { loadContactFromHrmByTaskSidAsyncAction } from '../states/contacts/saveC
 import { namespace } from '../states/storeNamespaces';
 import { isRouteModal } from '../states/routing/types';
 import { getCurrentBaseRoute } from '../states/routing/getRoute';
+import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
 
 type OwnProps = {
   task: CustomITask;
@@ -49,7 +50,7 @@ const TaskView: React.FC<Props> = props => {
     shouldRecreateState,
     currentDefinitionVersion,
     task,
-    contact,
+    unsavedContact,
     updateHelpline,
     loadContactFromHrmByTaskSid,
     isModalOpen,
@@ -66,11 +67,12 @@ const TaskView: React.FC<Props> = props => {
     return () => {
       if (isOfflineContactTask(task)) rerenderAgentDesktop();
     };
-  }, [task]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const contactInitialized = Boolean(contact);
-  const helpline = contact?.helpline;
-  const contactlessTask = contact?.rawJson?.contactlessTask;
+  const contactInitialized = Boolean(unsavedContact);
+  const helpline = unsavedContact?.helpline;
+  const contactlessTask = unsavedContact?.rawJson?.contactlessTask;
 
   // Set contactForm.helpline for all contacts on the first run. React to helpline changes for offline contacts only
   React.useEffect(() => {
@@ -78,19 +80,19 @@ const TaskView: React.FC<Props> = props => {
       if (task && !isStandaloneITask(task)) {
         const helplineToSave = await getHelplineToSave(task, contactlessTask);
         if (helpline !== helplineToSave) {
-          updateHelpline(contact.id, helplineToSave);
+          updateHelpline(unsavedContact.id, helplineToSave);
         }
       }
     };
 
     // Only run setHelpline if a) contactForm.helpline is not set or b) if the task is an offline contact and contactlessTask.helpline has changed
-    const helplineChanged = contactlessTask?.helpline && helpline !== contactlessTask.helpline;
-    const shouldSetHelpline = contactInitialized && (!helpline || (isOfflineContactTask(task) && helplineChanged));
+    const shouldSetHelpline =
+      contactInitialized && (!isOfflineContactTask(task) || contactlessTask?.createdOnBehalfOf) && !helpline;
 
     if (shouldSetHelpline) {
       setHelpline();
     }
-  }, [contactlessTask, contactInitialized, helpline, task, updateHelpline, contact]);
+  }, [contactlessTask, contactInitialized, helpline, task, updateHelpline, unsavedContact.id]);
 
   if (!currentDefinitionVersion) {
     return null;
@@ -136,9 +138,10 @@ const mapStateToProps = (
   const { task } = ownProps;
   const { currentDefinitionVersion } = configuration;
   // Check if the entry for this task exists in each reducer
-  const { savedContact: contact } =
+  const { savedContact, draftContact } =
     (task && Object.values(activeContacts.existingContacts).find(c => c.savedContact?.taskId)) ?? {};
-  const contactFormStateExists = Boolean(contact);
+  const unsavedContact = getUnsavedContact(savedContact, draftContact);
+  const contactFormStateExists = Boolean(savedContact);
   const routingStateExists = Boolean(task && routing.tasks[task.taskSid]);
   const searchStateExists = Boolean(task && searchContacts.tasks[task.taskSid]);
 
@@ -146,7 +149,7 @@ const mapStateToProps = (
     currentDefinitionVersion && (!contactFormStateExists || !routingStateExists || !searchStateExists);
 
   return {
-    contact,
+    unsavedContact,
     shouldRecreateState,
     currentDefinitionVersion,
     isModalOpen: routingStateExists && isRouteModal(getCurrentBaseRoute(routing, task.taskSid)),
