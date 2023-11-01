@@ -50,9 +50,11 @@ export function contactForm(page: Page) {
     const button = selectors.tabButton(tab);
     await expect(button).toBeVisible();
     await expect(button).toBeEnabled();
+    const responsePromise = page.waitForResponse('**/contacts/**');
     if ((await button.getAttribute('aria-selected')) !== 'true') {
       await button.click();
     }
+    await responsePromise;
   }
 
   async function fillStandardTab({ id, items }: ContactFormTab) {
@@ -77,12 +79,11 @@ export function contactForm(page: Page) {
   }
 
   return {
-    selectChildCallType: async (allowSkip: boolean = false) => {
+    selectChildCallType: async () => {
       const childCallTypeButton = selectors.childCallTypeButton();
-      if (!(await childCallTypeButton.isVisible({ timeout: 200 })) && allowSkip) {
-        return;
-      }
+      const responsePromise = page.waitForResponse('**/contacts/**');
       await childCallTypeButton.click();
+      await responsePromise;
     },
     fill: async (tabs: ContactFormTab<any>[]) => {
       for (const tab of tabs) {
@@ -100,9 +101,14 @@ export function contactForm(page: Page) {
       await selectTab(tab);
 
       if (saveAndAddToCase) {
+        const responsePromise = page.waitForResponse('**/connectToCase');
         await selectors.saveAndAddToCaseButton.click();
-        await page.waitForResponse('**/connectToCase');
-      } else await selectors.saveContactButton.click();
+        await responsePromise;
+      } else {
+        const responsePromise = page.waitForResponse('**/contacts/**');
+        await selectors.saveContactButton.click();
+        await responsePromise;
+      }
 
       await selectors.tabButton(tab).waitFor({ state: 'detached' });
     },

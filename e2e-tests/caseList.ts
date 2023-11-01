@@ -16,6 +16,7 @@
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Page, expect } from '@playwright/test';
+import { caseHome } from './case';
 
 export type Filter =
   | 'Status'
@@ -63,10 +64,6 @@ export const caseList = (page: Page) => {
     caseEditButton: caseListPage.locator(`//button[@data-testid='Case-EditButton']`),
 
     //Case Section view
-    formItem: (itemId: string) => caseListPage.locator(`#${itemId}`),
-    formInput: (itemId: string) => caseListPage.locator(`input#${itemId}`),
-    formSelect: (itemId: string) => caseListPage.locator(`select#${itemId}`),
-    formTextarea: (itemId: string) => caseListPage.locator(`textarea#${itemId}`),
     saveCaseItemButton: caseListPage.locator(
       `//button[@data-testid='Case-AddEditItemScreen-SaveItem']`,
     ),
@@ -116,6 +113,7 @@ export const caseList = (page: Page) => {
     await expect(openCaseButton).toContainText(/^OpenCase[0-9]+$/);
     await openCaseButton.click();
     console.log('Opened first case in the results');
+    return caseHome(page);
   }
 
   //Check print view
@@ -129,37 +127,6 @@ export const caseList = (page: Page) => {
     await closePrintButton.waitFor({ state: 'visible' });
     await closePrintButton.click();
     console.log('Close Case Print');
-  }
-
-  async function fillSectionForm({ items }: CaseSectionForm) {
-    for (let [itemId, value] of Object.entries(items)) {
-      await expect(selectors.formItem(itemId)).toBeVisible();
-      await expect(selectors.formItem(itemId)).toBeEnabled();
-      if (await selectors.formInput(itemId).count()) {
-        await selectors.formInput(itemId).fill(value);
-      } else if (await selectors.formSelect(itemId).count()) {
-        await selectors.formSelect(itemId).selectOption(value);
-      } else if (await selectors.formTextarea(itemId).count()) {
-        await selectors.formTextarea(itemId).fill(value);
-      } else throw new Error(`Control ${itemId} not found`);
-    }
-  }
-
-  //Add a section (and close)
-  async function addCaseSection(section: CaseSectionForm) {
-    const sectionId =
-      section.sectionTypeId.charAt(0).toUpperCase() + section.sectionTypeId.slice(1);
-    const newSectionButton = selectors.addSectionButton(sectionId);
-    await newSectionButton.waitFor({ state: 'visible' });
-    await expect(newSectionButton).toContainText(sectionId);
-    await newSectionButton.click();
-    await fillSectionForm(section);
-
-    const saveItemButton = selectors.saveCaseItemButton;
-    await expect(saveItemButton).toBeVisible();
-    await expect(saveItemButton).toBeEnabled();
-    await saveItemButton.click();
-    await page.waitForResponse('**/cases/**');
   }
 
   //Edit Case
@@ -182,8 +149,9 @@ export const caseList = (page: Page) => {
     const updateCaseButton = selectors.updateCaseButton;
     await updateCaseButton.waitFor({ state: 'visible' });
     await expect(updateCaseButton).toContainText('Save');
+    const responsePromise = page.waitForResponse('**/cases/**');
     await updateCaseButton.click();
-    await page.waitForResponse('**/cases/**');
+    await responsePromise;
 
     console.log('Updated Case Summary');
   }
@@ -225,7 +193,6 @@ export const caseList = (page: Page) => {
     filterCases,
     openFirstCaseButton,
     viewClosePrintView,
-    addCaseSection,
     editCase,
     updateCaseSummary,
     closeEditCase,
