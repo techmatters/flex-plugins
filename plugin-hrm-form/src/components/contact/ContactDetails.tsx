@@ -25,7 +25,6 @@ import ContactDetailsHome from './ContactDetailsHome';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { RootState } from '../../states';
 import EditContactSection from './EditContactSection';
-import Profile, { ALL_PROFILE_ROUTES } from '../profile/Profile';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { DetailsContainer } from '../../styles/search';
 import * as ConfigActions from '../../states/configuration/actions';
@@ -97,8 +96,6 @@ const ContactDetails: React.FC<Props> = ({
       fetchDefinitionVersions();
     }
   }, [definitionVersions, updateDefinitionVersion, version, savedContact]);
-
-  if (ALL_PROFILE_ROUTES.includes(currentRoute.route)) return <Profile task={task} />;
 
   const definitionVersion = definitionVersions[version];
 

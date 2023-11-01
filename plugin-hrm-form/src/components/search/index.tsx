@@ -26,7 +26,7 @@ import SearchForm from './SearchForm';
 import SearchResults, { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './SearchResults';
 import ContactDetails from './ContactDetails';
 import Case from '../case';
-import Profile, { ALL_PROFILE_ROUTES } from '../profile/Profile';
+import ProfileRouter, { ALL_PROFILE_ROUTES } from '../profile/ProfileRouter';
 import { SearchParams } from '../../states/search/types';
 import { CustomITask, Contact, standaloneTaskSid } from '../../types/types';
 import { handleSearchFormChange, searchContacts, searchCases } from '../../states/search/actions';
@@ -139,8 +139,7 @@ const Search: React.FC<Props> = ({
   renderMockDialog.displayName = 'MockDialog';
 
   const renderSearchPages = () => {
-    console.log('>>>routing', routing);
-    if (ALL_PROFILE_ROUTES.includes(routing.route)) return <Profile task={task} />;
+    if (ALL_PROFILE_ROUTES.includes(routing.route)) return <ProfileRouter task={task} />;
 
     switch (routing.route) {
       case 'search': {

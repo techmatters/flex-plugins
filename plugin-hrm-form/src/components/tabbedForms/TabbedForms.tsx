@@ -57,7 +57,6 @@ import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import asyncDispatch from '../../states/asyncDispatch';
 import { submitContactFormAsyncAction, updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import { namespace } from '../../states/storeNamespaces';
-import Profile from '../profile/Profile';
 import Search from '../search';
 import { getCurrentBaseRoute, getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { CaseLayout } from '../../styles/case';

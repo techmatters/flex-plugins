@@ -19,7 +19,7 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
 import CallTypeButtons from './callTypeButtons';
-import Profile from './profile/Profile';
+import ProfileRouter, { ALL_PROFILE_ROUTES } from './profile/ProfileRouter';
 import TabbedForms from './tabbedForms';
 import CSAMReport from './CSAMReport/CSAMReport';
 import { RootState } from '../states';
@@ -44,8 +44,8 @@ const HrmForm: React.FC<Props> = ({ activeModal, routing, task, featureFlags, sa
 
   const routes = [
     {
-      activeModalRoutes: ['profile'],
-      renderComponent: () => <Profile task={task} />,
+      activeModalRoutes: ALL_PROFILE_ROUTES,
+      renderComponent: () => <ProfileRouter task={task} />,
     },
     // TODO: move hrm form search into it's own component and use it here so all routes are in one place
     {

@@ -24,6 +24,7 @@ const loadProfileEntryIntoRedux = (
   const { profiles: oldProfiles } = state;
   const existingProfile = oldProfiles[profileId];
   const newProfile = {
+    ...t.newProfileEntry,
     ...existingProfile,
     ...profileUpdate,
   };
