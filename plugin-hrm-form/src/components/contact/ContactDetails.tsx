@@ -98,8 +98,6 @@ const ContactDetails: React.FC<Props> = ({
     }
   }, [definitionVersions, updateDefinitionVersion, version, savedContact]);
 
-  console.log('>>> currentRoute', currentRoute);
-  console.log('>>> ALL_PROFILE_ROUTES', ALL_PROFILE_ROUTES);
   if (ALL_PROFILE_ROUTES.includes(currentRoute.route)) return <Profile task={task} />;
 
   const definitionVersion = definitionVersions[version];
