@@ -30,12 +30,21 @@ type OwnProps = {
   task: CustomITask;
 };
 
+type Section = {
+  titleCode?: string;
+  title?: string;
+  margin: string;
+  renderComponent: () => React.ReactNode;
+  handleEdit?: () => void;
+};
+
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, openNoteEditModal }) => {
   const { profile } = useProfile({ profileId });
 
+  // Temp note content for demo purposes. Set to false to hide notes.
   const noteContent = (
     <>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
@@ -45,7 +54,7 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
     </>
   );
 
-  const sections = [
+  const baseSections: Section[] = [
     {
       titleCode: 'Profile-IdentifiersHeader',
       margin: '20px 0',
@@ -62,25 +71,32 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
       renderComponent: () => <ProfileFlagList profileId={profileId} task={task} />,
       handleEdit: () => openFlagEditModal(),
     },
-    {
-      title: 'Summary',
-      margin: '20px 0',
-      renderComponent: () => noteContent,
-      handleEdit: () => openNoteEditModal(1),
-    },
-    {
-      title: 'Some other note',
-      margin: '20px 0',
-      renderComponent: () => noteContent,
-      handleEdit: () => openNoteEditModal(1),
-    },
-    {
-      title: 'One more note',
-      margin: '20px 0',
-      renderComponent: () => noteContent,
-      handleEdit: () => openNoteEditModal(1),
-    },
   ];
+
+  const noteSections: Section[] = noteContent
+    ? [
+        {
+          title: 'Summary',
+          margin: '20px 0',
+          renderComponent: () => noteContent,
+          handleEdit: () => openNoteEditModal(1),
+        },
+        {
+          title: 'Some other note',
+          margin: '20px 0',
+          renderComponent: () => noteContent,
+          handleEdit: () => openNoteEditModal(1),
+        },
+        {
+          title: 'One more note',
+          margin: '20px 0',
+          renderComponent: () => noteContent,
+          handleEdit: () => openNoteEditModal(1),
+        },
+      ]
+    : [];
+
+  const sections: Section[] = [...baseSections, ...noteSections];
 
   const renderEditButton = section => {
     return section.handleEdit ? (
