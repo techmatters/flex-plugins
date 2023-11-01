@@ -17,11 +17,16 @@
 import { Contact } from '../../types/types';
 import { ContactDraftChanges } from './existingContacts';
 
-export const getUnsavedContact = (savedContact: Contact, draftContact: ContactDraftChanges): Contact => ({
-  ...savedContact,
-  ...draftContact,
-  rawJson: {
-    ...savedContact.rawJson,
-    ...draftContact?.rawJson,
-  },
-});
+export const getUnsavedContact = (savedContact: Contact, draftContact: ContactDraftChanges): Contact => {
+  if (!savedContact && !draftContact) {
+    return undefined;
+  }
+  return {
+    ...savedContact,
+    ...draftContact,
+    rawJson: {
+      ...savedContact?.rawJson,
+      ...draftContact?.rawJson,
+    },
+  };
+};

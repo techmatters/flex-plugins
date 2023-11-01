@@ -17,6 +17,7 @@
 /* eslint-disable react/prop-types */
 import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseLayout } from '../styles/case';
 import CallTypeButtons from './callTypeButtons';
@@ -28,9 +29,11 @@ import type { CustomITask, Case as CaseForm, Contact } from '../types/types';
 import { newContactCSAMApi } from './CSAMReport/csamReportApi';
 import { completeTask } from '../services/formSubmissionHelpers';
 import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
-import { namespace, routingBase } from '../states/storeNamespaces';
+import { namespace } from '../states/storeNamespaces';
 import { ContactMetadata } from '../states/contacts/types';
-import { submitContactFormAsyncAction } from '../states/contacts/saveContact';
+import { createContactAsyncAction, submitContactFormAsyncAction } from '../states/contacts/saveContact';
+import { newContact } from '../states/contacts/contactState';
+import { getHrmConfig } from '../hrmConfig';
 
 type OwnProps = {
   task: CustomITask;
@@ -79,14 +82,21 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact, m
 HrmForm.displayName = 'HrmForm';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const routingState = state[namespace][routingBase];
+  const { routing, configuration } = state[namespace];
   const { savedContact, metadata } = findContactByTaskSid(state, task.taskSid) ?? {};
 
-  return { routing: routingState.tasks[task.taskSid], savedContact, metadata };
+  return {
+    routing: routing.tasks[task.taskSid],
+    savedContact,
+    metadata,
+    definitionVersion: configuration.currentDefinitionVersion,
+  };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => {
   return {
+    createContact: (definition: DefinitionVersion) =>
+      dispatch(createContactAsyncAction(newContact(definition), getHrmConfig().workerSid, task.taskSid)),
     finaliseContact: (contact: Contact, metadata: ContactMetadata, caseForm: CaseForm) =>
       dispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
   };

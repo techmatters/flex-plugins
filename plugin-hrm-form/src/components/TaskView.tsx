@@ -18,6 +18,7 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { TaskHelper } from '@twilio/flex-ui';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 import HrmForm from './HrmForm';
 import FormNotEditable from './FormNotEditable';
@@ -28,10 +29,10 @@ import PreviousContactsBanner from './PreviousContactsBanner';
 import { Flex } from '../styles/HrmStyles';
 import { isStandaloneITask } from './case/Case';
 import { getHelplineToSave } from '../services/HelplineService';
-import { getAseloFeatureFlags } from '../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { rerenderAgentDesktop } from '../rerenderView';
 import { updateDraft } from '../states/contacts/existingContacts';
-import { loadContactFromHrmByTaskSidAsyncAction } from '../states/contacts/saveContact';
+import { createContactAsyncAction, loadContactFromHrmByTaskSidAsyncAction } from '../states/contacts/saveContact';
 import {
   configurationBase,
   contactFormsBase,
@@ -40,6 +41,10 @@ import {
   searchContactsBase,
 } from '../states/storeNamespaces';
 import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
+import ContactNotLoaded from './ContactNotLoaded';
+import { completeTask } from '../services/formSubmissionHelpers';
+import { newContact } from '../states/contacts/contactState';
+import asyncDispatch from '../states/asyncDispatch';
 
 type OwnProps = {
   task: CustomITask;
@@ -57,6 +62,7 @@ const TaskView: React.FC<Props> = props => {
     unsavedContact,
     updateHelpline,
     loadContactFromHrmByTaskSid,
+    createContact,
   } = props;
 
   React.useEffect(() => {
@@ -80,7 +86,7 @@ const TaskView: React.FC<Props> = props => {
   // Set contactForm.helpline for all contacts on the first run. React to helpline changes for offline contacts only
   React.useEffect(() => {
     const setHelpline = async () => {
-      if (task && !isStandaloneITask(task)) {
+      if (unsavedContact && task && !isStandaloneITask(task)) {
         const helplineToSave = await getHelplineToSave(task, contactlessTask);
         if (helpline !== helplineToSave) {
           updateHelpline(unsavedContact.id, helplineToSave);
@@ -95,20 +101,31 @@ const TaskView: React.FC<Props> = props => {
     if (shouldSetHelpline) {
       setHelpline();
     }
-  }, [contactlessTask, contactInitialized, helpline, task, updateHelpline, unsavedContact.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contactlessTask, contactInitialized, helpline, task, updateHelpline, unsavedContact?.id]);
 
   if (!currentDefinitionVersion) {
     return null;
   }
 
   // If this task is not the active task, or if the task is not accepted yet, hide it
-  const show =
-    task &&
-    !shouldRecreateState &&
-    !isInMyBehalfITask(task) &&
-    (isOfflineContactTask(task) || !TaskHelper.isPending(task));
+  const show = task && !isInMyBehalfITask(task) && (isOfflineContactTask(task) || !TaskHelper.isPending(task));
 
   if (!show) return null;
+
+  if (!unsavedContact)
+    return (
+      <ContactNotLoaded
+        onReload={async () => {
+          createContact(currentDefinitionVersion);
+        }}
+        onFinish={async () => completeTask(task)}
+      />
+    );
+  // If state is partially loaded, don't render until everything settles
+  if (shouldRecreateState) {
+    return null;
+  }
 
   const featureFlags = getAseloFeatureFlags();
   const isFormLocked = !hasTaskControl(task);
@@ -158,6 +175,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
   loadContactFromHrmByTaskSid: () => dispatch(loadContactFromHrmByTaskSidAsyncAction(task.taskSid)),
+  createContact: (definition: DefinitionVersion) =>
+    asyncDispatch(dispatch)(createContactAsyncAction(newContact(definition), getHrmConfig().workerSid, task.taskSid)),
   updateHelpline: (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline })),
 });
 
