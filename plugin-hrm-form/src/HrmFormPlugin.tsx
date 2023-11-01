@@ -80,7 +80,6 @@ const setUpComponents = (
   // const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
   const maskIdentifiers = true;
 
-
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus(setupObject);
@@ -121,7 +120,7 @@ const setUpComponents = (
   if (maskIdentifiers) {
     // Mask the identifiers in all default channels
     Channels.maskIdentifiersForDefaultChannels();
-
+    
     // Mask the username within the messable bubbles in an conversation
     Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
       theirDefaultName: 'XXXXXX',
@@ -133,6 +132,8 @@ const setUpComponents = (
     const strings = getTemplateStrings();
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
     strings.CallParticipantCustomerName = strings.MaskIdentifiers;
+    
+    Components.setUpMaskingComponents();
   }
 
   Components.setupTeamViewFilters();

@@ -227,6 +227,39 @@ export const setUpCustomCRMContainer = () => {
 };
 
 /**
+ * Add custom components for masking Identifiers with icons
+ */
+export const setUpMaskingComponents = () => {
+  const manager = Flex.Manager.getInstance();
+
+  const options = { sortOrder: -1 };
+
+  Flex.TaskCanvasHeader.Content.replace(
+    <LocalizationContext.Provider
+      value={{ manager, isCallTask: Flex.TaskHelper.isCallTask }}
+      key="custom-TaskCanvasHeader-masked"
+    >
+      holla
+    </LocalizationContext.Provider>,
+    options,
+  );
+  
+  // This replaces the view after call is accepted with 'call ended', phone icon and the three disabled call buttons
+  Flex.CallCanvas.Content.replace(
+    <LocalizationContext.Provider
+    value={{ manager, isCallTask: Flex.TaskHelper.isCallTask }}
+    key="custom-TaskDetailsPanel-masked"
+    >
+      holls
+    </LocalizationContext.Provider>,
+    options,
+    );
+    
+    //   Flex.TaskCanvasTabs.Content.replace This replaces the whole component with tabs and with 'call ended', phone icon and the disabled call buttons
+ 
+};
+
+/**
  * Add the buttons used to initiate, accept and reject transfers (when it should), and removes the actions button if task is being transferred
  */
 export const setUpTransferComponents = () => {
