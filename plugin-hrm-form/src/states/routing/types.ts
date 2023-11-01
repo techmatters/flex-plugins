@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { ContactRawJson, Profile } from '../../types/types';
+import { ContactRawJson, Profile, ProfileNote } from '../../types/types';
 
 // Action types
 export const CHANGE_ROUTE = 'routing/change-route';
@@ -136,6 +136,17 @@ export type ProfileEditRoute = {
   id: Profile['id'];
 };
 
+export type ProfileFlagEditRoute = {
+  route: 'profileFlagEdit';
+  id: Profile['id'];
+};
+
+export type ProfileNoteEditRoute = {
+  route: 'profileNoteEdit';
+  id: ProfileNote['id'];
+  profileId: Profile['id'];
+};
+
 export function isAddCaseSectionRoute(appRoute: AppRoutes): appRoute is AddCaseSectionRoute {
   return (<any>appRoute).action === CaseItemAction.Add;
 }
@@ -190,7 +201,9 @@ type OtherRoutes =
   | ContactRoute
   | CaseListRoute
   | ProfileRoute
-  | ProfileEditRoute;
+  | ProfileEditRoute
+  | ProfileFlagEditRoute
+  | ProfileNoteEditRoute;
 
 // The different routes we have in our app
 export type AppRoutes = AppRoutesWithCase | OtherRoutes;

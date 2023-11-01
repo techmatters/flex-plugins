@@ -14,29 +14,31 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
-import { Template } from '@twilio/flex-ui';
+import React, { useRef } from 'react';
+import { TextField } from '@material-ui/core';
 
-import { RouterTask, Profile } from '../../types/types';
-import NavigableContainer from '../NavigableContainer';
-import { DetailsWrapper, ProfileSubtitle } from './styles';
+import NavigableContainer from '../../NavigableContainer';
+import { CustomITask, Profile, ProfileNote } from '../../../types/types';
+import { Flex, StyledNextStepButton } from '../../../styles/HrmStyles';
 
 type OwnProps = {
   profileId: Profile['id'];
-  task: RouterTask;
+  task: CustomITask;
 };
 
 type Props = OwnProps;
 
-const ProfileEdit: React.FC<Props> = (props: Props) => {
-  const { task } = props;
+const ProfileNoteEdit = ({ task }: Props) => {
   return (
-    <NavigableContainer titleCode="Profile-EditHeader" task={task}>
-      <DetailsWrapper>
-        <ProfileSubtitle>{/* <Template code="Profile-StatusHeader" /> */}</ProfileSubtitle>
-      </DetailsWrapper>
+    <NavigableContainer titleCode="Profile-EditNoteHeader" task={task}>
+      <TextField multiline rows={40} variant="outlined" />
+      <Flex justifyContent="flex-end" flexDirection="row">
+        <StyledNextStepButton data-testid="Case-EditCaseScreen-SaveItem" roundCorners onClick={() => null}>
+          Save
+        </StyledNextStepButton>
+      </Flex>
     </NavigableContainer>
   );
 };
 
-export default ProfileEdit;
+export default ProfileNoteEdit;

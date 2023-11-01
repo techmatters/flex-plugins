@@ -16,8 +16,10 @@
 
 import React from 'react';
 import { styled, Button } from '@twilio/flex-ui';
+import { withStyles, Select } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 
-import { FontOpenSans, FormInput, Row, Column } from '../../styles/HrmStyles';
+import { FontOpenSans } from '../../styles/HrmStyles';
 import HrmTheme from '../../styles/HrmTheme';
 
 export const DetailsWrapper = styled(FontOpenSans)`
@@ -73,9 +75,28 @@ export const StatusLabelPill = styled('div')<ColorProps>`
   border-radius: 6px;
   white-space: nowrap;
   margin: 5px 6px 5px 1px;
-  padding: 3px 20px;
-  background-color: ${props => (props.fillColor ? `${props.fillColor}` : '#d8d8d8')};
-  border: ${props => (props.blocked ? `2px dashed #D61F1F` : '#d8d8d8')};
+  padding: 5px 20px;
+  background-color: ${props => (props.fillColor ? `${props.fillColor}` : '#F9FAFB')};
+  border: ${props => (props.blocked ? `2px dashed #D61F1F` : '#F9FAFB')};
   color: ${props => (props.blocked ? `#D61F1F` : 'none')};
 `;
 StatusLabelPill.displayName = 'StatusLabelPill';
+
+export const StyledStatusSelect = styled(Select)`
+  background-color: #f9fafb;
+  border-radius: 5px;
+  &:focus-within {
+    outline: 3px solid rgb(0, 95, 204);
+    border-radius: 5px;
+  }
+`;
+
+export const CloseIconButton = withStyles({
+  root: {
+    width: '23px',
+    height: '16px',
+    margin: '5px',
+    padding: '0 2px',
+    cursor: 'pointer',
+  },
+})(CloseIcon);

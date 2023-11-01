@@ -16,15 +16,15 @@
 
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Select } from '@material-ui/core';
 import { ArrowDropDown } from '@material-ui/icons';
 
-import ProfileFlagsList from './ProfileFlagsList';
+import ProfileFlagList from './ProfileFlagList';
 import { StyledMenuItem } from '../../../styles/HrmStyles';
 import { RouterTask, Profile, ProfileFlag } from '../../../types/types';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
 import { useProfileFlags } from '../../../states/profile/hooks';
 import { RootState } from '../../../states';
+import { StyledStatusSelect } from '../styles';
 
 type OwnProps = {
   profileId: Profile['id'];
@@ -41,7 +41,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
   const [open, setOpen] = useState(false);
 
   const availableFlags = allProfileFlags.filter(flag => !profileFlags.find(f => f.id === flag.id));
-  const renderValue = () => <ProfileFlagsList {...props} enableDisassociate={true} />;
+  const renderValue = () => <ProfileFlagList {...props} enableDisassociate={true} />;
 
   const shouldAllowAssociate = availableFlags.length && !loading;
 
@@ -52,20 +52,21 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
     shouldAllowAssociate ? <ArrowDropDown onClick={handleOpen} /> : <ArrowDropDown style={{ visibility: 'hidden' }} />;
 
   return (
-    <Select
+    <StyledStatusSelect
       open={open}
       onOpen={handleOpen}
       onClose={() => setOpen(false)}
       IconComponent={getIconComponent}
       value="false"
       renderValue={renderValue}
+      variant="standard"
     >
       {availableFlags.map((flag: ProfileFlag) => (
         <StyledMenuItem key={flag.id} onClick={() => associateProfileFlag(flag.id)}>
           {flag.name}
         </StyledMenuItem>
       ))}
-    </Select>
+    </StyledStatusSelect>
   );
 };
 

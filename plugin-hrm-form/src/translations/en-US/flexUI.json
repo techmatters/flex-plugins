@@ -371,9 +371,14 @@
   "PreviousContacts-OnlyShowRecordsFrom": "Only show records from",
 
   "Profile-DetailsHeader": "Overview",
+  "Profile-IdentifiersHeader": "Identifiers",
+  "Profile-NoIdentifiersFound": "No identifiers found",
+  "Profile-StatusHeader": "Status",
+  "Profile-NoStatusesListed": "None listed",
   "Profile-EditHeader": "Edit Profile",
+  "Profile-EditNoteHeader": "Edit Note",
   "Profile-EditButton": "Edit",
-  "Profile-DetailsEditHeader": "Edit Status and Blocking",
+  "Profile-FlagEditHeader": "Edit Status and Blocking",
 
   "UploadFile-ButtonText": "Upload File",
   "DownloadFile-ButtonText": "Download File",

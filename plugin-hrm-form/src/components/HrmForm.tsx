@@ -45,12 +45,12 @@ const HrmForm: React.FC<Props> = ({ activeModal, routing, task, featureFlags, sa
   const routes = [
     {
       activeModalRoutes: ['profile'],
-      component: <Profile task={task} />,
+      renderComponent: () => <Profile task={task} />,
     },
     // TODO: move hrm form search into it's own component and use it here so all routes are in one place
     {
       baseRoutes: ['tabbed-forms', 'search', 'contact', 'case'],
-      component: (
+      renderComponent: () => (
         <TabbedForms
           task={task}
           contactId={savedContact?.id}
@@ -61,20 +61,20 @@ const HrmForm: React.FC<Props> = ({ activeModal, routing, task, featureFlags, sa
     },
     {
       baseRoutes: ['csam-report'],
-      component: (
+      renderComponent: () => (
         <CSAMReport
           api={newContactCSAMApi(savedContact.id, task.taskSid, (routing as CSAMReportRoute).previousRoute)}
         />
       ),
     },
-    { baseRoutes: ['select-call-type'], component: <CallTypeButtons task={task} /> },
+    { baseRoutes: ['select-call-type'], renderComponent: () => <CallTypeButtons task={task} /> },
   ];
 
   // Modals take precedence over routes
   const modalComponent = routes.find(m => m.activeModalRoutes?.includes(activeModal));
-  if (modalComponent) return modalComponent.component;
+  if (modalComponent) return modalComponent.renderComponent();
 
-  return routes.find(r => r.baseRoutes?.includes(route))?.component || null;
+  return routes.find(r => r.baseRoutes?.includes(route))?.renderComponent() || null;
 };
 
 HrmForm.displayName = 'HrmForm';

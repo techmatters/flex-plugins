@@ -357,6 +357,14 @@ export type Identifier = {
   profiles: Profile[];
 };
 
+export type ProfileNote = {
+  id: number;
+  type: string;
+  content: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
 export type Profile = {
   id: number;
   name: string;

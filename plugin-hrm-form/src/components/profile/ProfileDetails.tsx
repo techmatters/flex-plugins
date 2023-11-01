@@ -16,31 +16,116 @@
 
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { Template } from '@twilio/flex-ui';
+import { IconButton, Template } from '@twilio/flex-ui';
 
-import ProfileFlagsList from './profileFlags/ProfileFlagsList';
-import { RouterTask, Profile } from '../../types/types';
-import { DetailsWrapper, EditButton, ProfileSubtitle } from './styles';
-import { Bold, Box, Column } from '../../styles/HrmStyles';
+import ProfileFlagList from './profileFlag/ProfileFlagList';
+import { DetailsWrapper, ProfileSubtitle } from './styles';
+import { Bold, Box, Column, Flex } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
+import { RouterTask, Profile } from '../../types/types';
 
 type OwnProps = {
   profileId: Profile['id'];
   task: RouterTask;
 };
 
+type Section = {
+  titleCode?: string;
+  title?: string;
+  margin: string;
+  renderComponent: () => React.ReactNode;
+  handleEdit?: () => void;
+};
+
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ProfileDetails: React.FC<Props> = ({ profileId, task, openProfileEditModal }) => {
+const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, openNoteEditModal }) => {
   const { profile } = useProfile({ profileId });
 
-  const editButton = true;
-  const handleEditProfileDetails = () => {
-    if (editButton) {
-      openProfileEditModal();
+  // Temp note content for demo purposes. Set to false to hide notes.
+  const noteContent = (
+    <>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+      magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+      consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+      Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </>
+  );
+
+  const baseSections: Section[] = [
+    {
+      titleCode: 'Profile-IdentifiersHeader',
+      margin: '20px 0',
+      renderComponent: () =>
+        profile.identifiers ? (
+          profile.identifiers.map(identifier => <div key={identifier.id}>{identifier.identifier}</div>)
+        ) : (
+          <Template code="Profile-NoIdentifiersFound" />
+        ),
+    },
+    {
+      titleCode: 'Profile-StatusHeader',
+      margin: '10px 4px',
+      renderComponent: () => <ProfileFlagList profileId={profileId} task={task} />,
+      handleEdit: () => openFlagEditModal(),
+    },
+  ];
+
+  const noteSections: Section[] = noteContent
+    ? [
+        {
+          title: 'Summary',
+          margin: '20px 0',
+          renderComponent: () => noteContent,
+          handleEdit: () => openNoteEditModal(1),
+        },
+        {
+          title: 'Some other note',
+          margin: '20px 0',
+          renderComponent: () => noteContent,
+          handleEdit: () => openNoteEditModal(1),
+        },
+        {
+          title: 'One more note',
+          margin: '20px 0',
+          renderComponent: () => noteContent,
+          handleEdit: () => openNoteEditModal(1),
+        },
+      ]
+    : [];
+
+  const sections: Section[] = [...baseSections, ...noteSections];
+
+  const renderEditButton = section => {
+    return section.handleEdit ? (
+      <Box alignSelf="center">
+        <IconButton icon="Edit" title="Edit" size="small" onClick={section.handleEdit} />
+      </Box>
+    ) : null;
+  };
+
+  const renderTitle = section => {
+    if (section.titleCode) {
+      return <Template code={section.titleCode} />;
     }
+
+    return section.title;
+  };
+
+  const renderSection = (section: any) => {
+    return (
+      <Box margin="20px 0">
+        <Flex flexDirection="row">
+          <Box alignSelf="center">
+            <ProfileSubtitle>{renderTitle(section)}</ProfileSubtitle>
+          </Box>
+          {renderEditButton(section)}
+        </Flex>
+        <Box margin={section.margin}>{section.renderComponent()}</Box>
+      </Box>
+    );
   };
 
   return (
@@ -49,26 +134,10 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openProfileEditModal
         <Bold>
           <Template code="Profile-DetailsHeader" />
         </Bold>
-
-        {editButton && (
-          <Box alignSelf="flex-end" marginTop="-20px" marginRight="35px">
-            <EditButton onClick={handleEditProfileDetails}>
-              <Template code="Profile-EditButton" />
-            </EditButton>
-          </Box>
-        )}
       </Column>
-
-      <ProfileSubtitle>Identifiers</ProfileSubtitle>
-      {profile.identifiers ? (
-        profile.identifiers.map(identifier => <div key={identifier.id}>{identifier.identifier}</div>)
-      ) : (
-        <div>No identifiers found</div>
-      )}
-      <ProfileSubtitle>Status</ProfileSubtitle>
-      <div>
-        <ProfileFlagsList profileId={profileId} task={task} />
-      </div>
+      {sections.map(section => (
+        <div key={section.title}>{renderSection(section)}</div>
+      ))}
       <hr />
     </DetailsWrapper>
   );
@@ -78,15 +147,14 @@ const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
   const { profileId, task } = ownProps;
   const taskId = task.taskSid;
   return {
-    openProfileEditModal: () => {
-      dispatch(newOpenModalAction({ route: 'profileEdit', id: profileId }, taskId));
+    openFlagEditModal: () => {
+      dispatch(newOpenModalAction({ route: 'profileFlagEdit', id: profileId }, taskId));
+    },
+    openNoteEditModal: id => {
+      dispatch(newOpenModalAction({ route: 'profileNoteEdit', id, profileId }, taskId));
     },
   };
 };
 
 const connector = connect(null, mapDispatchToProps);
 export default connector(ProfileDetails);
-
-// TODO:
-// - Add a loading state
-// - Add Routing for Edit page

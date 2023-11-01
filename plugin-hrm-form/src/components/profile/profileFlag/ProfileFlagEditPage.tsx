@@ -17,26 +17,27 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import { RouterTask, Profile } from '../../types/types';
-import NavigableContainer from '../NavigableContainer';
-import { DetailsWrapper, ProfileSubtitle } from './styles';
+import { CustomITask, Profile } from '../../../types/types';
+import NavigableContainer from '../../NavigableContainer';
+import { DetailsWrapper, ProfileSubtitle } from '../styles';
+import ProfileFlagEdit from './ProfileFlagEdit';
 
 type OwnProps = {
   profileId: Profile['id'];
-  task: RouterTask;
+  task: CustomITask;
 };
 
-type Props = OwnProps;
-
-const ProfileEdit: React.FC<Props> = (props: Props) => {
-  const { task } = props;
+const ProfileFlagEditPage = (props: OwnProps) => {
   return (
-    <NavigableContainer titleCode="Profile-EditHeader" task={task}>
+    <NavigableContainer titleCode="Profile-FlagEditHeader" task={props.task}>
       <DetailsWrapper>
-        <ProfileSubtitle>{/* <Template code="Profile-StatusHeader" /> */}</ProfileSubtitle>
+        <ProfileSubtitle>
+          <Template code="Profile-StatusHeader" />
+        </ProfileSubtitle>
+        <ProfileFlagEdit {...props} />
       </DetailsWrapper>
     </NavigableContainer>
   );
 };
 
-export default ProfileEdit;
+export default ProfileFlagEditPage;
