@@ -28,6 +28,8 @@ import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
 import { RootState } from '../states';
 import * as GeneralActions from '../states/actions';
 import getOfflineContactTaskSid from '../states/contacts/offlineContactTaskSid';
+import asyncDispatch from '../states/asyncDispatch';
+import { newClearContactAsyncAction, connectToCaseAsyncAction } from '../states/contacts/saveContact';
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
@@ -46,17 +48,19 @@ export const completeContactTask = async (task: ITask) => {
   await Actions.invokeAction('CompleteTask', { sid, task });
 };
 
-export const removeOfflineContact = () => {
+export const removeOfflineContact = async () => {
   const offlineContactTaskSid = getOfflineContactTaskSid();
   const manager = Manager.getInstance();
   const contactState = findContactByTaskSid(manager.store.getState() as RootState, offlineContactTaskSid);
   if (contactState) {
+    await asyncDispatch(manager.store.dispatch)(newClearContactAsyncAction(contactState.savedContact));
+    await asyncDispatch(manager.store.dispatch)(connectToCaseAsyncAction(contactState.savedContact.id, undefined));
     manager.store.dispatch(GeneralActions.removeContactState(offlineContactTaskSid, contactState.savedContact.id));
   }
 };
 
 export const completeContactlessTask = async () => {
-  removeOfflineContact();
+  await removeOfflineContact();
 };
 
 export const completeTask = (task: CustomITask) =>

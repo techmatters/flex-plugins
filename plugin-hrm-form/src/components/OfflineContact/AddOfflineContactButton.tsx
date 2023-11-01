@@ -26,9 +26,9 @@ import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSi
 import { getHrmConfig } from '../../hrmConfig';
 import { newContact } from '../../states/contacts/contactState';
 import asyncDispatch from '../../states/asyncDispatch';
-import { createContactAsyncAction } from '../../states/contacts/saveContact';
-import { rerenderAgentDesktop } from '../../rerenderView';
-import { configurationBase, namespace, routingBase } from '../../states/storeNamespaces';
+import { createContactAsyncAction, newRestartOfflineContactAsyncAction } from '../../states/contacts/saveContact';
+import { namespace } from '../../states/storeNamespaces';
+import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
 
 type OwnProps = {};
 
@@ -39,6 +39,8 @@ const AddOfflineContactButton: React.FC<Props> = ({
   isAddingOfflineContact,
   currentDefinitionVersion,
   createContactState,
+  restartContact,
+  draftOfflineContact,
 }) => {
   if (!currentDefinitionVersion) {
     return null;
@@ -46,10 +48,13 @@ const AddOfflineContactButton: React.FC<Props> = ({
 
   const onClick = async () => {
     console.log('Onclick - creating contact');
-    createContactState(newContact(currentDefinitionVersion));
-
+    if (draftOfflineContact) {
+      await restartContact(draftOfflineContact);
+    } else {
+      await createContactState(newContact(currentDefinitionVersion));
+    }
     await Actions.invokeAction('SelectTask', { task: undefined });
-    await rerenderAgentDesktop();
+    // await rerenderAgentDesktop();
   };
 
   return (
@@ -65,20 +70,26 @@ const AddOfflineContactButton: React.FC<Props> = ({
 AddOfflineContactButton.displayName = 'AddOfflineContactButton';
 
 const mapStateToProps = (state: RootState) => {
-  const { currentDefinitionVersion } = state[namespace][configurationBase];
-  const { isAddingOfflineContact } = state[namespace][routingBase];
+  const draftOfflineContact = findContactByTaskSid(state, getOfflineContactTaskSid())?.savedContact;
+  const { currentDefinitionVersion } = state[namespace].configuration;
+  const { isAddingOfflineContact } = state[namespace].routing;
 
   return {
     isAddingOfflineContact,
     currentDefinitionVersion,
+    draftOfflineContact,
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  createContactState: (contact: Contact) => {
-    asyncDispatch(dispatch)(createContactAsyncAction(contact, getHrmConfig().workerSid, getOfflineContactTaskSid()));
-  },
-});
+const mapDispatchToProps = dispatch => {
+  const asyncDispatcher = asyncDispatch(dispatch);
+  return {
+    createContactState: (contact: Contact) =>
+      asyncDispatcher(createContactAsyncAction(contact, getHrmConfig().workerSid, getOfflineContactTaskSid())),
+    restartContact: (contact: Contact) =>
+      asyncDispatcher(newRestartOfflineContactAsyncAction(contact, getHrmConfig().workerSid)),
+  };
+};
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 export default connector(AddOfflineContactButton);

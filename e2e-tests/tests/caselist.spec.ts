@@ -48,21 +48,21 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     //for Categories filter, 2 valid options are required
     await page.filterCases('Categories', 'Accessibility', 'Education');
 
-    await page.openFirstCaseButton();
+    const caseHomePage = await page.openFirstCaseButton();
 
     // Open notifications cover up the print icon :facepalm
     await notificationBar(pluginPage).dismissAllNotifications();
 
     await page.viewClosePrintView();
 
-    await page.addCaseSection({
+    await caseHomePage.addCaseSection({
       sectionTypeId: 'note',
       items: {
         note: 'TEST NOTE',
       },
     });
 
-    await page.addCaseSection({
+    await caseHomePage.addCaseSection({
       sectionTypeId: 'household',
       items: {
         firstName: 'FIRST NAME',
