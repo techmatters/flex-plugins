@@ -47,32 +47,37 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
 
   const sections = [
     {
-      title: 'Identifiers',
+      titleCode: 'Profile-IdentifiersHeader',
+      margin: '20px 0',
       renderComponent: () =>
         profile.identifiers ? (
           profile.identifiers.map(identifier => <div key={identifier.id}>{identifier.identifier}</div>)
         ) : (
-          <div>No identifiers found</div>
+          <Template code="Profile-NoIdentifiersFound" />
         ),
     },
     {
-      title: 'Status',
+      titleCode: 'Profile-StatusHeader',
+      margin: '10px 4px',
       renderComponent: () => <ProfileFlagList profileId={profileId} task={task} />,
       handleEdit: () => openFlagEditModal(),
     },
     {
       title: 'Summary',
-      renderComponent: () => <Box>{noteContent}</Box>,
+      margin: '20px 0',
+      renderComponent: () => noteContent,
       handleEdit: () => openNoteEditModal(1),
     },
     {
       title: 'Some other note',
-      renderComponent: () => <Box>{noteContent}</Box>,
+      margin: '20px 0',
+      renderComponent: () => noteContent,
       handleEdit: () => openNoteEditModal(1),
     },
     {
       title: 'One more note',
-      renderComponent: () => <Box>{noteContent}</Box>,
+      margin: '20px 0',
+      renderComponent: () => noteContent,
       handleEdit: () => openNoteEditModal(1),
     },
   ];
@@ -85,17 +90,25 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
     ) : null;
   };
 
+  const renderTitle = section => {
+    if (section.titleCode) {
+      return <Template code={section.titleCode} />;
+    }
+
+    return section.title;
+  };
+
   const renderSection = (section: any) => {
     return (
-      <>
+      <Box margin="20px 0">
         <Flex flexDirection="row">
           <Box alignSelf="center">
-            <ProfileSubtitle>{section.title}</ProfileSubtitle>
+            <ProfileSubtitle>{renderTitle(section)}</ProfileSubtitle>
           </Box>
           {renderEditButton(section)}
         </Flex>
-        {section.renderComponent()}
-      </>
+        <Box margin={section.margin}>{section.renderComponent()}</Box>
+      </Box>
     );
   };
 
@@ -106,7 +119,6 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
           <Template code="Profile-DetailsHeader" />
         </Bold>
       </Column>
-
       {sections.map(section => (
         <div key={section.title}>{renderSection(section)}</div>
       ))}
@@ -130,7 +142,3 @@ const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
 
 const connector = connect(null, mapDispatchToProps);
 export default connector(ProfileDetails);
-
-// TODO:
-// - Add a loading state
-// - Add Routing for Edit page

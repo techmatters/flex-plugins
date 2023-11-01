@@ -14,62 +14,60 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { IconButton } from '@twilio/flex-ui';
-import { Paper, Popper } from '@material-ui/core';
+import { ArrowDropDown } from '@material-ui/icons';
 
-import NavigableContainer from '../../NavigableContainer';
 import ProfileFlagList from './ProfileFlagList';
-import { ProfileSubtitle } from '../styles';
-import { Box, Flex, StyledMenuItem } from '../../../styles/HrmStyles';
+import { StyledMenuItem } from '../../../styles/HrmStyles';
 import { CustomITask, Profile, ProfileFlag } from '../../../types/types';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
 import { useProfileFlags } from '../../../states/profile/hooks';
 import { RootState } from '../../../states';
+import { StyledStatusSelect } from '../styles';
 
 type OwnProps = {
   profileId: Profile['id'];
   task: CustomITask;
-  closeProfileFlagEdit?: () => void;
 };
 
 type Props = OwnProps;
 
-const ProfileFlagEdit: React.FC<Props> = ({ profileId, task, closeProfileFlagEdit }: Props) => {
+const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
+  const { profileId } = props;
   const { allProfileFlags, profileFlags, associateProfileFlag } = useProfileFlags(profileId);
   const { loading } = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId));
-  const profileFlagsRef = useRef(null);
+
+  const [open, setOpen] = useState(false);
 
   const availableFlags = allProfileFlags.filter(flag => !profileFlags.find(f => f.id === flag.id));
-  const shouldAllowAssociate = Boolean(availableFlags.length) && !loading;
+  const renderValue = () => <ProfileFlagList {...props} enableDisassociate={true} />;
 
-  const renderAvailableFlags = () =>
-    availableFlags.length ? (
-      availableFlags.map((flag: ProfileFlag) => (
+  const shouldAllowAssociate = availableFlags.length && !loading;
+
+  const handleOpen = () => {
+    if (shouldAllowAssociate) setOpen(true);
+  };
+  const getIconComponent = () =>
+    shouldAllowAssociate ? <ArrowDropDown onClick={handleOpen} /> : <ArrowDropDown style={{ visibility: 'hidden' }} />;
+
+  return (
+    <StyledStatusSelect
+      open={open}
+      onOpen={handleOpen}
+      onClose={() => setOpen(false)}
+      IconComponent={getIconComponent}
+      value="false"
+      renderValue={renderValue}
+      variant="standard"
+    >
+      {availableFlags.map((flag: ProfileFlag) => (
         <StyledMenuItem key={flag.id} onClick={() => associateProfileFlag(flag.id)}>
           {flag.name}
         </StyledMenuItem>
-      ))
-    ) : (
-      <Box>No flags available</Box>
-    );
-
-  return (
-    <NavigableContainer titleCode="Profile-EditHeader" task={task}>
-      <Flex ref={profileFlagsRef} flexDirection="row" justifyContent="space-between" width="100%">
-        <Box alignSelf="center">
-          <ProfileFlagList profileId={profileId} task={task} enableDisassociate={true} />
-        </Box>
-      </Flex>
-      <Flex flexDirection="column">
-        <Box>
-          <ProfileSubtitle>Select a flag to add</ProfileSubtitle>
-        </Box>
-        {renderAvailableFlags()}
-      </Flex>
-    </NavigableContainer>
+      ))}
+    </StyledStatusSelect>
   );
 };
 
-export default ProfileFlagEdit;
+export default ProfileFlagsEdit;

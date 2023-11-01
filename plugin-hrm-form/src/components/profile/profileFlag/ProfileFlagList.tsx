@@ -16,12 +16,12 @@
 
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { IconButton } from '@twilio/flex-ui';
+import { IconButton, Template } from '@twilio/flex-ui';
 
 import { CustomITask, Profile, ProfileFlag } from '../../../types/types';
 import { useProfileFlags } from '../../../states/profile/hooks';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
-import { StatusLabelPill } from '../styles';
+import { StatusLabelPill, CloseIconButton } from '../styles';
 import { RootState } from '../../../states';
 
 type OwnProps = {
@@ -32,20 +32,32 @@ type OwnProps = {
 
 type Props = OwnProps;
 
-const ProfileFlagList: React.FC<Props> = ({ enableDisassociate, profileId }) => {
+const ProfileFlagsList: React.FC<Props> = ({ enableDisassociate, profileId }) => {
   const { profileFlags, disassociateProfileFlag } = useProfileFlags(profileId);
   const { loading } = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId));
 
   const renderDisassociate = (flag: ProfileFlag) => {
     if (!enableDisassociate) return null;
 
+    /*
+     * We have to use onMouseDown instead of onClick because this is
+     * rendered inside a Material UI Select component value, which will intercept
+     * the click event and open the dropdown before the event bubbles up.
+     * onMouseDown fires before onClick, so we can stop propagation and prevent
+     * the dropdown from opening.
+     */
+    const handleDisassociate = (event: React.MouseEvent, flag: ProfileFlag) => {
+      event.preventDefault();
+      event.stopPropagation();
+      disassociateProfileFlag(flag.id);
+    };
+
     return (
       <IconButton
-        icon="Close"
-        onClick={() => disassociateProfileFlag(flag.id)}
+        icon={<CloseIconButton />}
+        onMouseDown={event => handleDisassociate(event, flag)}
         title="Disassociate Flag"
         themeOverride={{ Icon: { size: '10px' } }}
-        disabled={loading}
       />
     );
   };
@@ -59,7 +71,17 @@ const ProfileFlagList: React.FC<Props> = ({ enableDisassociate, profileId }) => 
     );
   };
 
-  return <>{profileFlags?.length ? profileFlags.map(renderPill) : <StatusLabelPill>No Status</StatusLabelPill>}</>;
+  return (
+    <>
+      {profileFlags?.length ? (
+        profileFlags.map(renderPill)
+      ) : (
+        <StatusLabelPill>
+          <Template code="Profile-NoStatusesListed" />
+        </StatusLabelPill>
+      )}
+    </>
+  );
 };
 
-export default ProfileFlagList;
+export default ProfileFlagsList;
