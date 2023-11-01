@@ -36,6 +36,7 @@ import SettingsSideLink from '../components/sideLinks/SettingsSideLink';
 import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
 import StandaloneSearchSideLink from '../components/sideLinks/StandaloneSearchSideLink';
 import ManualPullButton from '../components/ManualPullButton';
+import ViewTaskNumber from '../components/common/ViewTaskNumber';
 import { AddOfflineContactButton, OfflineContactTask } from '../components/OfflineContact';
 import { chatCapacityUpdated } from '../states/configuration/actions';
 import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles/HrmStyles';
@@ -249,6 +250,12 @@ export const setUpTransferComponents = () => {
     if: props => TransferHelpers.shouldShowTransferControls(props.task),
   });
 };
+
+// TODO: move this to be configuration flag driven
+Flex.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" />, {
+  sortOrder: 1,
+  if: props => true,
+});
 
 /**
  * Add components used only by developers
