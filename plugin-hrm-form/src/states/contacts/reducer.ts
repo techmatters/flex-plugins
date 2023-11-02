@@ -128,6 +128,10 @@ export function reduce(
     }
     case t.SAVE_END_MILLIS: {
       const currentContact = Object.values(state.existingContacts).find(cs => cs.savedContact.taskId === action.taskId);
+      if (!currentContact) {
+        console.warn(`No contact with task sid ${action.taskId} found in redux state`);
+        return state;
+      }
 
       const { metadata } = currentContact;
       const endedTask = { ...currentContact, metadata: { ...metadata, endMillis: new Date().getTime() } };

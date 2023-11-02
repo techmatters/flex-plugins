@@ -32,7 +32,7 @@ import { changeRoute } from '../../states/routing/actions';
 import { updateDraft } from '../../states/contacts/existingContacts';
 import { completeTask } from '../../services/formSubmissionHelpers';
 import CallTypeButtons from '../../components/callTypeButtons';
-import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
+import { submitContactFormAsyncAction, updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 
 jest.mock('../../states/conferencing', () => ({}));
@@ -41,6 +41,7 @@ jest.mock('../../states/contacts/saveContact', () => ({
   updateContactInHrmAsyncAction: jest.fn(),
   saveContactReducer: jest.fn(state => state),
   loadContactFromHrmByTaskSidAsyncAction: jest.fn(),
+  submitContactFormAsyncAction: jest.fn(),
   createContactAsyncAction: jest.fn(),
 }));
 
@@ -397,7 +398,7 @@ test('<CallTypeButtons> click on END CHAT button', async () => {
   expect(screen.getByText('TaskHeaderEndChat')).toBeInTheDocument();
   screen.getByText('TaskHeaderEndChat').click();
 
-  await waitFor(() => expect(updateContactInHrmAsyncAction).toHaveBeenCalled());
+  await waitFor(() => expect(submitContactFormAsyncAction).toHaveBeenCalled());
   await waitFor(() => expect(completeTask).toHaveBeenCalledWith(task));
 });
 
