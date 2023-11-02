@@ -27,8 +27,9 @@ import {
   PreviewRow,
   SummaryText,
 } from '../../../styles/search';
-import { Flex } from '../../../styles/HrmStyles';
+import { Flex, StyledNextStepButton } from '../../../styles/HrmStyles';
 import { getTemplateStrings } from '../../../hrmConfig';
+import { Contact } from '../../../types/types';
 
 type OwnProps = {
   caseId: number;
@@ -40,6 +41,9 @@ type OwnProps = {
   status: string;
   statusLabel: string;
   onClickViewCase: () => void;
+  taskContact: Contact | undefined;
+  onClickConnectToTaskContact: () => void;
+  isConnectedToTaskContact: boolean;
 };
 
 type Props = OwnProps;
@@ -54,6 +58,9 @@ const CaseHeader: React.FC<Props> = ({
   status,
   statusLabel,
   onClickViewCase,
+  taskContact,
+  isConnectedToTaskContact,
+  onClickConnectToTaskContact,
 }) => {
   const strings = getTemplateStrings();
 
@@ -70,6 +77,17 @@ const CaseHeader: React.FC<Props> = ({
           <Flex style={{ minWidth: 'fit-content' }}>
             <SummaryText style={{ fontWeight: 400 }}>{statusLabel}</SummaryText>
           </Flex>
+          {taskContact && (
+            <Flex style={{ minWidth: 'fit-content' }}>
+              <StyledNextStepButton disabled={isConnectedToTaskContact} onClick={onClickConnectToTaskContact}>
+                <Template
+                  code={
+                    isConnectedToTaskContact ? 'CaseHeader-TaskContactConnected' : 'CaseHeader-ConnectToTaskContact'
+                  }
+                />
+              </StyledNextStepButton>
+            </Flex>
+          )}
         </Flex>
       </PreviewRow>
       <PreviewRow>

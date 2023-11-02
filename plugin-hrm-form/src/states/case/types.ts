@@ -163,3 +163,7 @@ export type CaseState = {
     };
   };
 };
+
+export type CaseUpdatingAction = {
+  type: typeof CREATE_CASE_ACTION | typeof UPDATE_CASE_ACTION;
+}

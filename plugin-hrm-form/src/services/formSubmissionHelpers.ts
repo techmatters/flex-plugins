@@ -52,7 +52,7 @@ export const removeOfflineContact = async () => {
   const offlineContactTaskSid = getOfflineContactTaskSid();
   const manager = Manager.getInstance();
   const contactState = findContactByTaskSid(manager.store.getState() as RootState, offlineContactTaskSid);
-  if (contactState) {
+  if (contactState?.savedContact && !contactState.savedContact.finalizedAt) {
     await asyncDispatch(manager.store.dispatch)(newClearContactAsyncAction(contactState.savedContact));
     await asyncDispatch(manager.store.dispatch)(connectToCaseAsyncAction(contactState.savedContact.id, undefined));
     manager.store.dispatch(GeneralActions.removeContactState(offlineContactTaskSid, contactState.savedContact.id));

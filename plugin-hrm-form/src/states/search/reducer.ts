@@ -21,11 +21,14 @@ import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import { Contact, SearchCaseResult, standaloneTaskSid } from '../../types/types';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 import {
+  CONNECT_TO_CASE_ACTION_FULFILLED,
+  ContactConnectingAction,
   ContactUpdatingAction,
   CREATE_CONTACT_ACTION_FULFILLED,
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
   UPDATE_CONTACT_ACTION_FULFILLED,
 } from '../contacts/types';
+import { CaseUpdatingAction, CREATE_CASE_ACTION, UPDATE_CASE_ACTION } from '../case/types';
 
 type PreviousContacts = {
   contacts?: t.DetailedSearchContactsResult;
@@ -44,6 +47,8 @@ type TaskEntry = {
   isRequestingCases: boolean;
   error: any;
   casesError: any;
+  caseRefreshRequired: boolean;
+  contactRefreshRequired: boolean;
 };
 
 type SearchState = {
@@ -77,6 +82,8 @@ export const newTaskEntry: TaskEntry = {
   previousContacts: undefined,
   isRequesting: false,
   isRequestingCases: false,
+  caseRefreshRequired: false,
+  contactRefreshRequired: false,
   error: null,
   casesError: null,
 };
@@ -110,9 +117,31 @@ const contactUpdatingReducer = (state: SearchState, action: ContactUpdatingActio
 
 // eslint-disable-next-line complexity
 export function reduce(
-  state = initialState,
-  action: t.SearchActionType | RemoveContactStateAction | ContactUpdatingAction,
+  startingState = initialState,
+  action:
+    | t.SearchActionType
+    | RemoveContactStateAction
+    | ContactUpdatingAction
+    | ContactConnectingAction
+    | CaseUpdatingAction,
 ): SearchState {
+  let state = startingState;
+  if ((<string[]>[UPDATE_CONTACT_ACTION_FULFILLED, CREATE_CONTACT_ACTION_FULFILLED]).includes(action.type)) {
+    state = {
+      ...state,
+      tasks: Object.fromEntries(
+        Object.entries(state.tasks).map(([key, value]) => [key, { ...value, contactRefreshRequired: true }]),
+      ),
+    };
+  }
+  if ([CONNECT_TO_CASE_ACTION_FULFILLED, UPDATE_CASE_ACTION, CREATE_CASE_ACTION].includes(action.type)) {
+    state = {
+      ...state,
+      tasks: Object.fromEntries(
+        Object.entries(state.tasks).map(([key, value]) => [key, { ...value, caseRefreshRequired: true }]),
+      ),
+    };
+  }
   switch (action.type) {
     case CREATE_CONTACT_ACTION_FULFILLED:
     case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED:
@@ -143,6 +172,7 @@ export function reduce(
           [action.taskId]: {
             ...task,
             isRequesting: true,
+            contactRefreshRequired: false,
           },
         },
       };
@@ -189,6 +219,7 @@ export function reduce(
           [action.taskId]: {
             ...task,
             isRequestingCases: true,
+            caseRefreshRequired: false,
           },
         },
       };

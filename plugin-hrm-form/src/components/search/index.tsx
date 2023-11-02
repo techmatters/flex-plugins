@@ -108,24 +108,6 @@ const Search: React.FC<Props> = ({
     return undefined;
   };
 
-  const goBackFromContacts = async () => {
-    /*
-     * This returns you to the first page of results from viewing a contact, which is safest for now since the UI state is inconsistent otherwise.
-     * We will need a follow on fix to allow returning to the same page of results as the case to work correctly
-     */
-    await searchContacts(searchParams, CONTACTS_PER_PAGE, 0);
-    closeModal();
-  };
-
-  const goBackFromCases = async () => {
-    /*
-     * This returns you to the first page of results from viewing a case, which is safest for now since the UI state is inconsistent otherwise.
-     * We will need a follow on fix to allow returning to the same page of results as the case to work correctly
-     */
-    await searchCases(searchParams, CASES_PER_PAGE, 0);
-    closeModal();
-  };
-
   const renderMockDialog = () => {
     const isOpen = Boolean(mockedMessage);
 
@@ -162,7 +144,7 @@ const Search: React.FC<Props> = ({
         break;
       }
       case 'case': {
-        return <Case task={task} isCreating={false} handleClose={goBackFromCases} />;
+        return <Case task={task} isCreating={false} />;
       }
       case 'contact': {
         // Find contact in contact search results or connected to one of case search results
@@ -176,7 +158,6 @@ const Search: React.FC<Props> = ({
               task={task}
               showActionIcons={showActionIcons}
               contact={contact}
-              handleBack={goBackFromContacts}
               handleSelectSearchResult={handleSelectSearchResult}
               // buttonData={props.checkButtonData('ContactDetails-Section-ChildInformation')}
             />

@@ -33,7 +33,6 @@ type OwnProps = {
   currentIsCaller: boolean;
   contact: Contact;
   showActionIcons: boolean;
-  handleBack: () => void;
   handleSelectSearchResult: (contact: Contact) => void;
 };
 

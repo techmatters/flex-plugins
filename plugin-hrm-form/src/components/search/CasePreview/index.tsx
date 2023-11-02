@@ -15,10 +15,10 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
+import React, { Dispatch, useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { Case } from '../../../types/types';
+import { Case, Contact, CustomITask } from '../../../types/types';
 import CaseHeader from './CaseHeader';
 import { Flex } from '../../../styles/HrmStyles';
 import { PreviewWrapper } from '../../../styles/search';
@@ -30,22 +30,46 @@ import { RootState } from '../../../states';
 import TagsAndCounselor from '../TagsAndCounselor';
 import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
 import { configurationBase, namespace } from '../../../states/storeNamespaces';
+import asyncDispatch from '../../../states/asyncDispatch';
+import { connectToCaseAsyncAction } from '../../../states/contacts/saveContact';
+import findContactByTaskSid from '../../../states/contacts/findContactByTaskSid';
+import { isStandaloneITask } from '../../case/Case';
+import { newCloseModalAction } from '../../../states/routing/actions';
 
 type OwnProps = {
   currentCase: Case;
   onClickViewCase: () => void;
   counselorsHash: { [sid: string]: string };
+  task: CustomITask;
 };
 
-const mapStateToProps = (state: RootState) => ({
-  definitionVersions: state[namespace][configurationBase].definitionVersions,
+const mapStateToProps = (state: RootState, { task }: OwnProps) => {
+  const taskContact = isStandaloneITask(task) ? undefined : findContactByTaskSid(state, task.taskSid)?.savedContact;
+  return {
+    definitionVersions: state[namespace].configuration.definitionVersions,
+    taskContact,
+  };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<any>, { task, currentCase }: OwnProps) => ({
+  connectCaseToTaskContact: async (taskContact: Contact) =>
+    asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, currentCase.id)),
+  closeModal: () => dispatch(newCloseModalAction(task.taskSid)),
 });
 
-const connector = connect(mapStateToProps);
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselorsHash, definitionVersions }) => {
+const CasePreview: React.FC<Props> = ({
+  currentCase,
+  onClickViewCase,
+  counselorsHash,
+  definitionVersions,
+  taskContact,
+  connectCaseToTaskContact,
+  closeModal,
+}) => {
   const { id, createdAt, connectedContacts, status, info, twilioWorkerId } = currentCase;
   const createdAtObj = new Date(createdAt);
   const updatedAtObj = getUpdatedDate(currentCase);
@@ -71,6 +95,8 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
     substituteForId: false,
     placeholder: '',
   });
+  const isConnectedToTaskContact =
+    taskContact && Boolean(connectedContacts?.find(contact => contact.id === taskContact.id));
 
   return (
     <Flex>
@@ -85,6 +111,12 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
           isOrphanedCase={orphanedCase}
           status={status}
           statusLabel={statusLabel}
+          isConnectedToTaskContact={isConnectedToTaskContact}
+          taskContact={taskContact}
+          onClickConnectToTaskContact={() => {
+            connectCaseToTaskContact(taskContact);
+            closeModal();
+          }}
         />
         {summary && (
           <PreviewDescription expandLinkText="ReadMore" collapseLinkText="ReadLess">
