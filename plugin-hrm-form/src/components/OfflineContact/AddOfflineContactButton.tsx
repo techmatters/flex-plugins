@@ -80,7 +80,7 @@ const AddOfflineContactButton: React.FC<Props> = ({
   return (
     <AddTaskButton
       onClick={onClick}
-      disabled={isAddingOfflineContact || errorTimer}
+      disabled={Boolean(isAddingOfflineContact || errorTimer)}
       label="OfflineContactButtonText"
       data-fs-id="Task-AddOfflineContact-Button"
     />
