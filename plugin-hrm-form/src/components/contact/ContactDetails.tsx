@@ -32,6 +32,7 @@ import { ContactDetailsSectionFormApi, contactDetailsSectionFormApi } from './co
 import ContactDetailsSectionForm from './ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
 import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
+import { loadContactFromHrmByIdAsyncAction } from '../../states/contacts/saveContact';
 import { clearDraft, newSetContactDialogStateAction, updateDraft } from '../../states/contacts/existingContacts';
 import CSAMReport from '../CSAMReport/CSAMReport';
 import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
@@ -42,7 +43,6 @@ import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import NavigableContainer from '../NavigableContainer';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import { newCloseModalAction, newGoBackAction } from '../../states/routing/actions';
-import { isRouteWithModalSupport } from '../../states/routing/types';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 
 type OwnProps = {
@@ -76,9 +76,17 @@ const ContactDetails: React.FC<Props> = ({
   clearContactDraft,
   currentRoute,
   openFormConfirmDialog,
+  loadContactFromHrm,
   ...otherProps
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  console.log('>>> ContactDetails', contactId);
+
+  React.useEffect(() => {
+    if (!savedContact) {
+      loadContactFromHrm();
+    }
+  }, [savedContact, loadContactFromHrm]);
   const version = savedContact?.rawJson.definitionVersion;
 
   const featureFlags = getAseloFeatureFlags();
@@ -245,6 +253,7 @@ const mapDispatchToProps = (
   goBack: () => dispatch(newGoBackAction(task.taskSid)),
   openFormConfirmDialog: (form: keyof ContactRawJson, dismissAction: 'close' | 'back') =>
     dispatch(newSetContactDialogStateAction(contactId, `${form}-confirm-${dismissAction}`, true)),
+  loadContactFromHrm: () => dispatch(loadContactFromHrmByIdAsyncAction(contactId)),
 });
 
 const mapStateToProps = (

@@ -36,6 +36,8 @@ export const CREATE_CONTACT_ACTION = 'contact-action/create-contact';
 export const CREATE_CONTACT_ACTION_FULFILLED = `${CREATE_CONTACT_ACTION}_FULFILLED` as const;
 export const UPDATE_CONTACT_ACTION = 'contact-action/update-contact';
 export const UPDATE_CONTACT_ACTION_FULFILLED = `${UPDATE_CONTACT_ACTION}_FULFILLED` as const;
+export const LOAD_CONTACT_FROM_HRM_BY_ID_ACTION = 'contact-action/load-contact-from-hrm-by-id';
+export const LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED = `${LOAD_CONTACT_FROM_HRM_BY_ID_ACTION}_FULFILLED` as const;
 export const LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION = 'contact-action/load-contact-from-hrm-by-task-id';
 export const LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED = `${LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION}_FULFILLED` as const;
 export const CONNECT_TO_CASE = 'contact-action/connect-to-case';
@@ -107,6 +109,7 @@ export type ContactUpdatingAction = {
   type:
     | typeof CREATE_CONTACT_ACTION_FULFILLED
     | typeof UPDATE_CONTACT_ACTION_FULFILLED
+    | typeof LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED
     | typeof LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED;
   payload: { contact: Contact; previousContact?: Contact };
 };

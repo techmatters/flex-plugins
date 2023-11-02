@@ -17,12 +17,19 @@
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
 import { submitContactForm } from '../../services/formSubmissionHelpers';
-import { connectToCase, createContact, getContactByTaskSid, updateContactInHrm } from '../../services/ContactService';
+import {
+  connectToCase,
+  createContact,
+  getContactById,
+  getContactByTaskSid,
+  updateContactInHrm,
+} from '../../services/ContactService';
 import { Case, CustomITask, Contact } from '../../types/types';
 import {
   CONNECT_TO_CASE,
   ContactMetadata,
   CREATE_CONTACT_ACTION,
+  LOAD_CONTACT_FROM_HRM_BY_ID_ACTION,
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION,
   SET_SAVED_CONTACT,
   UPDATE_CONTACT_ACTION,
@@ -85,6 +92,16 @@ export const loadContactFromHrmByTaskSidAsyncAction = createAsyncAction(
   },
 );
 
+export const loadContactFromHrmByIdAsyncAction = createAsyncAction(
+  LOAD_CONTACT_FROM_HRM_BY_ID_ACTION,
+  async (contactId: string, reference: string = contactId) => {
+    return {
+      contact: await getContactById(contactId),
+      reference,
+    };
+  },
+);
+
 const handleAsyncAction = (handleAction, asyncAction) =>
   handleAction(asyncAction, state => {
     return {
@@ -134,6 +151,13 @@ export const saveContactReducer = (initialState: ExistingContactsState) =>
     ),
     handleAction(
       loadContactFromHrmByTaskSidAsyncAction.fulfilled,
+      (state, { payload: { contact, reference } }): ExistingContactsState => {
+        if (!contact) return state;
+        return loadContactIntoRedux(state, contact, reference, newContactMetaData(true));
+      },
+    ),
+    handleAction(
+      loadContactFromHrmByIdAsyncAction.fulfilled,
       (state, { payload: { contact, reference } }): ExistingContactsState => {
         if (!contact) return state;
         return loadContactIntoRedux(state, contact, reference, newContactMetaData(true));

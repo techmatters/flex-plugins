@@ -49,6 +49,7 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 const Search: React.FC<Props> = ({
   task,
   currentIsCaller,
+  activeContacts,
   searchContacts,
   searchCases,
   handleSearchFormChange,
@@ -170,8 +171,9 @@ const Search: React.FC<Props> = ({
       case 'contact':
         // Find contact in contact search results or connected to one of case search results
         const contact =
-          searchContactsResults.contacts.find(c => c.id.toString() === routing.id.toString()) ??
-          searchCasesResults.cases.flatMap(c => c.connectedContacts ?? []).find(c => c.id.toString() === routing.id);
+          searchContactsResults.contacts.find(c => c.id.toString() === routing.id.toString()) ||
+          searchCasesResults.cases.flatMap(c => c.connectedContacts ?? []).find(c => c.id.toString() === routing.id) ||
+          activeContacts.existingContacts[routing.id.toString()]?.savedContact;
         if (contact) {
           return (
             <ContactDetails
@@ -228,6 +230,7 @@ const mapStateToProps = (
   const currentRoute = getCurrentTopmostRouteForTask(routing, taskId);
 
   return {
+    activeContacts,
     isRequesting: taskSearchState.isRequesting,
     error: taskSearchState.error,
     form: taskSearchState.form,
