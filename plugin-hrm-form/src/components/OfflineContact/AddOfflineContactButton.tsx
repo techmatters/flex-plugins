@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Actions } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
@@ -23,7 +23,7 @@ import { RootState } from '../../states';
 import { Contact } from '../../types/types';
 import AddTaskButton from '../common/AddTaskButton';
 import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
-import { getHrmConfig } from '../../hrmConfig';
+import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { newContact } from '../../states/contacts/contactState';
 import asyncDispatch from '../../states/asyncDispatch';
 import { createContactAsyncAction, newRestartOfflineContactAsyncAction } from '../../states/contacts/saveContact';
@@ -42,6 +42,19 @@ const AddOfflineContactButton: React.FC<Props> = ({
   restartContact,
   draftOfflineContact,
 }) => {
+  const [errorTimer, setErrorTimer] = React.useState<any>(null);
+
+  useEffect(() => {
+    if (isAddingOfflineContact && errorTimer) {
+      clearTimeout(errorTimer);
+      setErrorTimer(null);
+    }
+    return () => {
+      if (errorTimer) {
+        clearTimeout(errorTimer);
+      }
+    };
+  }, [isAddingOfflineContact, errorTimer]);
   if (!currentDefinitionVersion) {
     return null;
   }
@@ -54,13 +67,20 @@ const AddOfflineContactButton: React.FC<Props> = ({
       await createContactState(newContact(currentDefinitionVersion));
     }
     await Actions.invokeAction('SelectTask', { task: undefined });
-    // await rerenderAgentDesktop();
+    // This is a temporary hack to show an error if it hasn't opened an offline contact to edit in 5 seconds
+    // When we add proper loading / error state to our redux contacts we can replace this
+    setErrorTimer(
+      setTimeout(() => {
+        alert(getTemplateStrings()['TaskList-AddOfflineContact-CreateError']);
+        setErrorTimer(null);
+      }, 5000),
+    );
   };
 
   return (
     <AddTaskButton
       onClick={onClick}
-      disabled={isAddingOfflineContact}
+      disabled={isAddingOfflineContact || errorTimer}
       label="OfflineContactButtonText"
       data-fs-id="Task-AddOfflineContact-Button"
     />

@@ -19,7 +19,8 @@ import { Box } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
 import FormNotEditable from './FormNotEditable';
-import { HeaderContainer, Row, StyledNextStepButton } from '../styles/HrmStyles';
+import { HeaderContainer, Row } from '../styles/HrmStyles';
+import { StyledLink } from '../styles/search';
 
 type OwnProps = {
   onReload: () => Promise<void>;
@@ -29,39 +30,43 @@ type OwnProps = {
 type Props = OwnProps;
 
 const ContactNotLoaded: React.FC<Props> = ({ onReload, onFinish }: Props) => {
+  const [reloadDisabled, setReloadDisabled] = React.useState(false);
+  const [finishDisabled, setFinishDisabled] = React.useState(false);
   return (
     <Box style={{ padding: '20px' }}>
-      <HeaderContainer style={{ marginBottom: '10px', fontSize: '24px' }}>
+      <HeaderContainer style={{ marginBottom: '10px' }}>
         <Template code="TabbedForms-ContactNotLoaded-Header" />
       </HeaderContainer>
       <Row>
-        <StyledNextStepButton
-          onClick={async e => {
+        <StyledLink
+          disabled={reloadDisabled}
+          onClick={async () => {
             try {
               const reloadPromise = onReload();
-              e.target.disabled = true;
+              setReloadDisabled(true);
               await reloadPromise;
             } finally {
-              e.target.disabled = false;
+              setReloadDisabled(false);
             }
           }}
         >
           <Template code="TabbedForms-ContactNotLoaded-Retry" />
-        </StyledNextStepButton>
+        </StyledLink>
         &nbsp;
-        <StyledNextStepButton
-          onClick={async e => {
+        <StyledLink
+          disabled={finishDisabled}
+          onClick={async () => {
             try {
               const finishPromise = onFinish();
-              e.target.disabled = true;
+              setFinishDisabled(true);
               await finishPromise;
             } finally {
-              e.target.disabled = false;
+              setFinishDisabled(false);
             }
           }}
         >
           <Template code="TabbedForms-ContactNotLoaded-Finish" />
-        </StyledNextStepButton>
+        </StyledLink>
       </Row>
     </Box>
   );
