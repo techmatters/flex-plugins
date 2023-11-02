@@ -28,7 +28,7 @@ import {
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
   UPDATE_CONTACT_ACTION_FULFILLED,
 } from '../contacts/types';
-import { CaseUpdatingAction, CREATE_CASE_ACTION, UPDATE_CASE_ACTION } from '../case/types';
+import { CaseUpdatingAction, CREATE_CASE_ACTION_FULFILLED, UPDATE_CASE_ACTION_FULFILLED } from '../case/types';
 
 type PreviousContacts = {
   contacts?: t.DetailedSearchContactsResult;
@@ -134,7 +134,11 @@ export function reduce(
       ),
     };
   }
-  if ([CONNECT_TO_CASE_ACTION_FULFILLED, UPDATE_CASE_ACTION, CREATE_CASE_ACTION].includes(action.type)) {
+  if (
+    (<string[]>[CONNECT_TO_CASE_ACTION_FULFILLED, UPDATE_CASE_ACTION_FULFILLED, CREATE_CASE_ACTION_FULFILLED]).includes(
+      action.type,
+    )
+  ) {
     state = {
       ...state,
       tasks: Object.fromEntries(
