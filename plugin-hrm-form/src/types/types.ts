@@ -354,10 +354,10 @@ export type Identifier = {
   profiles: Profile[];
 };
 
-export type ProfileNote = {
+export type ProfileSection = {
   id: number;
-  type: string;
-  content: string;
+  sectionType: string;
+  content?: string;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -371,6 +371,7 @@ export type Profile = {
   updatedAt?: string;
   identifiers?: Identifier[];
   profileFlags?: number[];
+  profileSections?: ProfileSection[];
 };
 
 export type ProfileFlag = {
@@ -379,3 +380,4 @@ export type ProfileFlag = {
   createdAt?: string;
   updatedAt?: string;
 };
+

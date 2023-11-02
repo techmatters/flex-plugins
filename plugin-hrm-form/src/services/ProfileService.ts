@@ -31,7 +31,13 @@ export const getProfileContacts = (id: ProfileId, offset: number, limit: number)
 export const getProfileCases = (id: ProfileId, offset: number, limit: number) =>
   fetchHrmApi(`/profiles/${id}/cases?offset=${offset}&limit=${limit}`);
 
-export const getProfileFlags = () => fetchHrmApi(`/profiles/flags`);
+export const getProfileFlags = () => {
+  console.log('>>>> getProfileFlags');
+  return fetchHrmApi(`/profiles/flags`).then(response => {
+    console.log('>>> getProfileFlags response', response);
+    return response;
+  });
+};
 
 export const associateProfileFlag = (profileId: ProfileId, profileFlagId: ProfileFlagId) =>
   fetchHrmApi(`/profiles/${profileId}/flags/${profileFlagId}`, {
@@ -42,3 +48,25 @@ export const disassociateProfileFlag = (profileId: ProfileId, profileFlagId: Pro
   fetchHrmApi(`/profiles/${profileId}/flags/${profileFlagId}`, {
     method: 'DELETE',
   });
+
+export const getProfileSection = (profileId: ProfileId, sectionId: number) =>
+  fetchHrmApi(`/profiles/${profileId}/sections/${sectionId}`);
+
+// export const getProfileSections = (profileId: ProfileId) => {
+//   const fetchPromises = [1, 2, 3].map(sectionId => fetchHrmApi(`/profiles/${profileId}/sections/${sectionId}`));
+//   return Promise.all(fetchPromises);
+// };
+
+export const createProfileSection = (profileId: ProfileId, content: string, sectionType: string) =>
+  fetchHrmApi(`/profiles/${profileId}/sections`, {
+    method: 'POST',
+    body: JSON.stringify({ content, sectionType }),
+  });
+
+// export const updateProfileSection = (profileId: ProfileId, sectionId: string, content: string) => {
+//   console.log(`>>> PATCH ${profileId}/sections/${sectionId}`);
+//   // return fetchHrmApi(`/profiles/${profileId}/sections/${sectionId}`, {
+//   //   method: 'PATCH',
+//   //   body: JSON.stringify({ content }),
+//   // });
+// };

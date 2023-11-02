@@ -14,11 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Case, Contact, Identifier, Profile, ProfileFlag } from '../../types/types';
+import { Case, Contact, Identifier, Profile, ProfileFlag, ProfileSection } from '../../types/types';
 import { getProfileContacts, getProfileCases } from '../../services/ProfileService';
 import { ParseFetchErrorResult } from '../parseFetchError';
 
-export type { Case, Contact, Identifier, Profile, ProfileFlag };
+export type { Case, Contact, Identifier, Profile, ProfileFlag, ProfileSection };
 
 // Action types
 export const ADD_PROFILE_STATE = 'ADD_PROFILE_STATE';
@@ -29,6 +29,7 @@ export const LOAD_PROFILE_FLAGS = 'LOAD_PROFILE_FLAGS';
 export const LOAD_RELATIONSHIP = 'LOAD_RELATIONSHIP';
 export const ASSOCIATE_PROFILE_FLAG = 'ASSOCIATE_PROFILE_FLAG';
 export const DISASSOCIATE_PROFILE_FLAG = 'DISASSOCIATE_PROFILE_FLAG';
+export const LOAD_PROFILE_SECTIONS = 'LOAD_PROFILE_SECTIONS';
 
 export const PROFILE_RELATIONSHIPS = {
   cases: {
@@ -75,6 +76,11 @@ export type ProfileFlagsState = {
   error?: ParseFetchErrorResult;
   loading: boolean;
 };
+export type ProfileSectionsState = {
+  data?: ProfileSection[];
+  error?: ParseFetchErrorResult;
+  loading: boolean;
+};
 
 export type ProfileState = {
   identifiers: {
@@ -84,6 +90,7 @@ export type ProfileState = {
     [profileId: Profile['id']]: ProfileEntry;
   };
   profileFlags: ProfileFlagsState;
+  profileSections: ProfileSectionsState;
 };
 
 type AddProfileState = { type: typeof ADD_PROFILE_STATE; profileId: Profile['id']; profile?: Profile };
@@ -116,6 +123,9 @@ export const initialState: ProfileState = {
   identifiers: {},
   profiles: {},
   profileFlags: {
+    loading: false,
+  },
+  profileSections: {
     loading: false,
   },
 };

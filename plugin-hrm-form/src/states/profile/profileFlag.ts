@@ -51,6 +51,8 @@ const handleLoadProfileFlagsRejectedAction = (state: t.ProfileState, action: any
 };
 
 const handleLoadProfileFlagsFulfilledAction = (state: t.ProfileState, action: any) => {
+  console.log('>>> handleLoadProfileFlagsFulfilledAction', state, action);
+
   const update = {
     loading: false,
     data: action.payload,
@@ -61,7 +63,12 @@ const handleLoadProfileFlagsFulfilledAction = (state: t.ProfileState, action: an
 
 export const associateProfileFlagAsync = createAsyncAction(
   t.ASSOCIATE_PROFILE_FLAG,
-  ProfileService.associateProfileFlag,
+  async (profileId: t.Profile['id'], profileFlagId: t.ProfileFlag['id']) => {
+    console.log('>>> Calling ProfileService.associateProfileFlag', profileId, profileFlagId);
+    const result = await ProfileService.associateProfileFlag(profileId, profileFlagId);
+    console.log('>>> Got result from ProfileService.associateProfileFlag', result);
+    return result;
+  },
   (profileId: t.Profile['id'], profileFlagId: t.ProfileFlag['id']) => ({
     profileId,
     profileFlagId,

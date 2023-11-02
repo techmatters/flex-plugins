@@ -18,6 +18,7 @@ import * as t from './types';
 import { loadIdentifierReducer, shouldUseLoadIdentifierReducer } from './identifier';
 import { profileReducer, shouldUseProfileReducer } from './profile';
 import { profileFlagsReducer, shouldUseProfileFlagsReducer } from './profileFlag';
+import { profileSectionsReducer, shouldUseProfileSectionsReducer } from './profileSection';
 import { relationshipReducer, shouldUseRelationshipReducer } from './relationship';
 
 const reducers = [
@@ -32,6 +33,10 @@ const reducers = [
   {
     shouldUseReducer: shouldUseProfileFlagsReducer,
     reducer: profileFlagsReducer,
+  },
+  {
+    shouldUseReducer: shouldUseProfileSectionsReducer,
+    reducer: profileSectionsReducer,
   },
   {
     shouldUseReducer: shouldUseRelationshipReducer,

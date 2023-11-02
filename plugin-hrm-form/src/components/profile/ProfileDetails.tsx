@@ -18,6 +18,7 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { IconButton, Template } from '@twilio/flex-ui';
 
+import { getProfileSections } from '../../services/ProfileService';
 import ProfileFlagList from './profileFlag/ProfileFlagList';
 import { CustomITask, Profile } from '../../types/types';
 import { DetailsWrapper, EditButton, ProfileSubtitle } from './styles';
@@ -128,6 +129,14 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
     );
   };
 
+  getProfileSections(profileId)
+    .then(results => {
+      console.log('>>> getProfileSections', results);
+    })
+    .catch(error => {
+      console.error('Error fetching profile sections:', error);
+    });
+
   return (
     <DetailsWrapper>
       <Column>
@@ -135,6 +144,7 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
           <Template code="Profile-DetailsHeader" />
         </Bold>
       </Column>
+
       {sections.map(section => (
         <div key={section.title}>{renderSection(section)}</div>
       ))}

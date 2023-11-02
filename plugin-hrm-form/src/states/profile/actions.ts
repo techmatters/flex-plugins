@@ -23,6 +23,7 @@ import * as t from './types';
 export { loadIdentifierByIdentifierAsync } from './identifier';
 export { loadProfileAsync } from './profile';
 export { loadProfileFlagsAsync } from './profileFlag';
+export { loadProfileSectionAsync } from './profileSection';
 export { incrementPage, loadRelationshipAsync } from './relationship';
 
 // Action creators
