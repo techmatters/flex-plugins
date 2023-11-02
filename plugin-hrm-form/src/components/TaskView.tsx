@@ -18,6 +18,7 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { TaskHelper } from '@twilio/flex-ui';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 import HrmForm from './HrmForm';
 import FormNotEditable from './FormNotEditable';
@@ -28,14 +29,15 @@ import PreviousContactsBanner from './PreviousContactsBanner';
 import { Flex } from '../styles/HrmStyles';
 import { isStandaloneITask } from './case/Case';
 import { getHelplineToSave } from '../services/HelplineService';
-import { getAseloFeatureFlags } from '../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { rerenderAgentDesktop } from '../rerenderView';
 import { updateDraft } from '../states/contacts/existingContacts';
-import { loadContactFromHrmByTaskSidAsyncAction } from '../states/contacts/saveContact';
+import { createContactAsyncAction, loadContactFromHrmByTaskSidAsyncAction } from '../states/contacts/saveContact';
 import { namespace } from '../states/storeNamespaces';
 import { isRouteModal } from '../states/routing/types';
 import { getCurrentBaseRoute } from '../states/routing/getRoute';
 import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
+import { newContact } from '../states/contacts/contactState';
 
 type OwnProps = {
   task: CustomITask;
@@ -53,14 +55,19 @@ const TaskView: React.FC<Props> = props => {
     unsavedContact,
     updateHelpline,
     loadContactFromHrmByTaskSid,
+    createContact,
     isModalOpen,
   } = props;
 
   React.useEffect(() => {
     if (shouldRecreateState) {
-      loadContactFromHrmByTaskSid();
+      if (isOfflineContactTask(task)) {
+        loadContactFromHrmByTaskSid();
+      } else {
+        createContact(currentDefinitionVersion);
+      }
     }
-  }, [currentDefinitionVersion, loadContactFromHrmByTaskSid, shouldRecreateState, task]);
+  }, [createContact, currentDefinitionVersion, loadContactFromHrmByTaskSid, shouldRecreateState, task]);
 
   // Force a re-render on unmount (temporary fix NoTaskView issue with Offline Contacts)
   React.useEffect(() => {
@@ -158,6 +165,8 @@ const mapStateToProps = (
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
   loadContactFromHrmByTaskSid: () => dispatch(loadContactFromHrmByTaskSidAsyncAction(task.taskSid)),
+  createContact: (definitionVersion: DefinitionVersion) =>
+    dispatch(createContactAsyncAction(newContact(definitionVersion), getHrmConfig().workerSid, task.taskSid)),
   updateHelpline: (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline })),
 });
 

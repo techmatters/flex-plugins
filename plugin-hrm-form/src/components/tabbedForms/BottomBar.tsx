@@ -94,11 +94,11 @@ const BottomBar: React.FC<
 
     try {
       await submitContactFormAsyncAction(task, contact, metadata, caseForm as Case);
-      await completeTask(task);
+      await completeTask(task, contact);
     } catch (error) {
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
         recordBackendError('Submit Contact Form TASK COMPLETED WITHOUT RECORDING', error);
-        await completeTask(task);
+        await completeTask(task, contact);
       } else {
         recordBackendError('Submit Contact Form', error);
       }

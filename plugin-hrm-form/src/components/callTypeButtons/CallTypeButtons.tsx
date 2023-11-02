@@ -38,7 +38,7 @@ import { AppRoutes } from '../../states/routing/types';
 import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
-import { configurationBase, connectedCaseBase, namespace } from '../../states/storeNamespaces';
+import { configurationBase, namespace } from '../../states/storeNamespaces';
 
 const isDialogOpen = (task: CustomITask, contact: ContactDraftChanges) =>
   Boolean(!isOfflineContactTask(task) && contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType));
@@ -110,11 +110,11 @@ const CallTypeButtons: React.FC<Props> = ({
 
     try {
       await saveContactChangesInHrm(savedContact, draftContact);
-      await completeTask(task);
+      await completeTask(task, savedContact);
     } catch (error) {
       const strings = getTemplateStrings();
       if (!window.confirm(strings['Error-ContinueWithoutRecording'])) {
-        await completeTask(task);
+        await completeTask(task, savedContact);
       }
     }
   };
