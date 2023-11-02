@@ -16,7 +16,7 @@
 
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { AnyAction, bindActionCreators } from 'redux';
+import { bindActionCreators } from 'redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/Folder';
@@ -34,7 +34,6 @@ import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { Case, CustomITask, Contact } from '../../types/types';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
-import asyncDispatch from '../../states/asyncDispatch';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
@@ -188,16 +187,17 @@ const mapStateToProps = (state: RootState, ownProps: BottomBarProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
-  const createCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
-  return {
-    changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
-    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
-    createCaseAsyncAction: (contact, workerSid: string, definitionVersion: DefinitionVersionId) =>
-      createCaseAsyncDispatch(createCaseAsyncAction(contact, task.taskSid, workerSid, definitionVersion)),
-    submitContactFormAsyncAction: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) =>
-      createCaseAsyncDispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
-  };
-};
+const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => ({
+  changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
+  setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
+  createCaseAsyncAction: (contact, workerSid: string, definitionVersion: DefinitionVersionId) =>
+    // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
+    // TODO: Rework error handling to be based on redux state set by the _REJECTED action
+    dispatch(createCaseAsyncAction(contact, task.taskSid, workerSid, definitionVersion)),
+  submitContactFormAsyncAction: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) =>
+    // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
+    // TODO: Rework error handling to be based on redux state set by the _REJECTED action
+    dispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(BottomBar);
