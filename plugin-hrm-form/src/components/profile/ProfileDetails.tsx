@@ -74,25 +74,29 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
     },
   ];
 
+  formDefinitions.helplineSections.map(section => {
+    const sectionId = profile.profileSections.find(s => s.sectionType === section.sectionType)?.id;
+  });
+
   const noteSections: Section[] = noteContent
     ? [
         {
           title: 'Summary',
           margin: '20px 0',
           renderComponent: () => noteContent,
-          handleEdit: () => openNoteEditModal(1),
+          handleEdit: () => openNoteEditModal(sectionType, 1),
         },
         {
           title: 'Some other note',
           margin: '20px 0',
           renderComponent: () => noteContent,
-          handleEdit: () => openNoteEditModal(1),
+          handleEdit: () => openNoteEditModal(sectionType, 1),
         },
         {
           title: 'One more note',
           margin: '20px 0',
           renderComponent: () => noteContent,
-          handleEdit: () => openNoteEditModal(1),
+          handleEdit: () => openNoteEditModal(sectionType, 1),
         },
       ]
     : [];
