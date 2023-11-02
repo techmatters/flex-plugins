@@ -115,7 +115,10 @@ const CustomCRMContainer: React.FC<Props> = ({
 
 CustomCRMContainer.displayName = 'CustomCRMContainer';
 
-const mapStateToProps = ({ [namespace]: { routing, activeContacts, configuration, connectedCase }, flex }: RootState) => {
+const mapStateToProps = ({
+  [namespace]: { routing, activeContacts, configuration, connectedCase },
+  flex,
+}: RootState) => {
   const { selectedTaskSid } = flex.view;
   const { isAddingOfflineContact } = routing;
   const currentOfflineContact = Object.values(activeContacts.existingContacts).find(
