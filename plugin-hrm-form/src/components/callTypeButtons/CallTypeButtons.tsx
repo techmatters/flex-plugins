@@ -114,11 +114,11 @@ const CallTypeButtons: React.FC<Props> = ({
 
     try {
       await saveFinalizedNonDataContact(savedContact, draftContact, metadata);
-      await completeTask(task);
+      await completeTask(task, savedContact);
     } catch (error) {
       const strings = getTemplateStrings();
       if (!window.confirm(strings['Error-ContinueWithoutRecording'])) {
-        await completeTask(task);
+        await completeTask(task, savedContact);
       }
     }
   };

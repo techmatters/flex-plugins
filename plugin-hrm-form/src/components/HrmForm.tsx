@@ -49,7 +49,7 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact, m
 
   const onNewCaseSaved = async (caseForm: CaseForm) => {
     await finaliseContact(savedContact, metadata, caseForm);
-    await completeTask(task);
+    await completeTask(task, savedContact);
   };
 
   switch (route) {

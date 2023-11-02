@@ -179,6 +179,7 @@ export type Contact = {
   channel: ChannelTypes | 'default';
   updatedBy: string;
   updatedAt?: string;
+  finalizedAt?: string;
   rawJson: ContactRawJson;
   timeOfContact: string;
   queueName: string;
