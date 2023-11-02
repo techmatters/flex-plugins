@@ -139,10 +139,13 @@ const Case: React.FC<Props> = ({
 
   useEffect(() => {
     if (!connectedCase) return;
-    const { connectedContacts = [] } = connectedCase;
-    loadContacts(connectedContacts, `case-${connectedCase.id}`);
+    const connectedContacts = connectedCase.connectedContacts ?? [];
+    if (connectedContacts.length) {
+      loadContacts(connectedContacts, `case-${connectedCase.id}`);
+    }
     setLoadedContactIds(connectedContacts.map(cc => cc.id));
-  }, [connectedCase, loadContacts, releaseContacts, task, workerSid]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connectedCase, task, workerSid]);
 
   const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;
