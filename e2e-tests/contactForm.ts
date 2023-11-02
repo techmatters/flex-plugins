@@ -44,6 +44,9 @@ export function contactForm(page: Page) {
     saveAndAddToCaseButton: formArea.locator(
       `//button[@data-testid='BottomBar-SaveAndAddToCase-Button']`,
     ),
+    addNewCaseButton: formArea.locator(
+      `//button[@data-testid='TabbedForms-AddNewCase-Button']`,
+    ),
   };
 
   async function selectTab(tab: ContactFormTab<unknown>) {
@@ -107,6 +110,7 @@ export function contactForm(page: Page) {
       } else {
         const responsePromise = page.waitForResponse('**/contacts/**');
         await selectors.saveContactButton.click();
+        await selectors.addNewCaseButton.click();
         await responsePromise;
       }
 

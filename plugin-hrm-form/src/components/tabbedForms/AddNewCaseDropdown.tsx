@@ -34,6 +34,7 @@ const AddNewCaseDropdown: React.FC<Props> = ({ handleNewCaseType, handleExisting
         onMouseDown={event => event.preventDefault}
         onClick={handleNewCaseType}
         tabIndex={0}
+        data-testid="TabbedForms-AddNewCase-Button"
       >
         <Template code="TabbedForms-NewCase" />
       </StyledAddNewCaseDropdownList>
