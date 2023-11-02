@@ -168,7 +168,6 @@ export type Contact = {
   accountSid: string;
   twilioWorkerId: string;
   number: string;
-  caseId?: number | null;
   conversationDuration: number;
   csamReports: CSAMReportEntry[];
   referrals?: ResourceReferral[];
@@ -185,6 +184,7 @@ export type Contact = {
   queueName: string;
   channelSid: string;
   serviceSid: string;
+  caseId?: number;
 };
 
 export type SearchContactResult = {
