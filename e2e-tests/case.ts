@@ -15,8 +15,7 @@
  */
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { Page } from '@playwright/test';
-import { delay } from './okta/sso-login';
+import { expect, Page } from '@playwright/test';
 
 export type CaseSectionForm<T = Record<string, string>> = {
   sectionTypeId: 'note' | 'referral' | 'household' | 'perpetrator' | 'incident' | 'document';
@@ -24,26 +23,27 @@ export type CaseSectionForm<T = Record<string, string>> = {
 };
 
 export const caseHome = (page: Page) => {
-  const caseHomeArea = page.locator('div.Twilio-CRMContainer');
+  // const caseHomeArea = page.locator('div.Twilio-CRMContainer');
   const selectors = {
     addSectionButton: (sectionTypeId: string) =>
-      caseHomeArea.locator(
+      page.locator(
         `//button[@data-testid='Case-${
           sectionTypeId.charAt(0).toUpperCase() + sectionTypeId.slice(1)
         }-AddButton']`,
       ),
-    formInput: (itemId: string) => caseHomeArea.locator(`input#${itemId}`),
-    formSelect: (itemId: string) => caseHomeArea.locator(`select#${itemId}`),
-    formTextarea: (itemId: string) => caseHomeArea.locator(`textarea#${itemId}`),
-    saveCaseItemButton: caseHomeArea.locator(
-      `//button[@data-testid='Case-AddEditItemScreen-SaveItem']`,
-    ),
-    saveCaseAndEndButton: caseHomeArea.locator(`//button[@data-testid='BottomBar-SaveCaseAndEnd']`),
-    getNewCaseId: caseHomeArea.locator(`//p[@data-testid='Case-DetailsHeaderCaseId']`),
+    formItem: (itemId: string) => page.locator(`#${itemId}`),
+    formInput: (itemId: string) => page.locator(`input#${itemId}`),
+    formSelect: (itemId: string) => page.locator(`select#${itemId}`),
+    formTextarea: (itemId: string) => page.locator(`textarea#${itemId}`),
+    saveCaseItemButton: page.locator(`//button[@data-testid='Case-AddEditItemScreen-SaveItem']`),
+    saveCaseAndEndButton: page.locator(`//button[@data-testid='BottomBar-SaveCaseAndEnd']`),
+    getNewCaseId: page.locator(`//p[@data-testid='Case-DetailsHeaderCaseId']`),
   };
 
   async function fillSectionForm({ items }: CaseSectionForm) {
     for (let [itemId, value] of Object.entries(items)) {
+      await expect(selectors.formItem(itemId)).toBeVisible();
+      await expect(selectors.formItem(itemId)).toBeEnabled();
       if (await selectors.formInput(itemId).count()) {
         await selectors.formInput(itemId).fill(value);
       } else if (await selectors.formSelect(itemId).count()) {
@@ -54,24 +54,32 @@ export const caseHome = (page: Page) => {
     }
   }
 
-  async function addCaseSection(sectionForm: CaseSectionForm) {
-    const addButton = selectors.addSectionButton(sectionForm.sectionTypeId);
-    await addButton.click();
+  async function addCaseSection(section: CaseSectionForm) {
+    const sectionId =
+      section.sectionTypeId.charAt(0).toUpperCase() + section.sectionTypeId.slice(1);
+    const newSectionButton = selectors.addSectionButton(sectionId);
+    await newSectionButton.waitFor({ state: 'visible' });
+    await expect(newSectionButton).toContainText(sectionId);
+    await newSectionButton.click();
+    await fillSectionForm(section);
 
-    await fillSectionForm(sectionForm);
-
-    const saveButton = selectors.saveCaseItemButton;
-    await saveButton.click();
-
-    /**
-     * Fix to addOfflineContact tests flakiness
-     * TODO: investigate root cause
-     */
-    await delay(300);
+    const saveItemButton = selectors.saveCaseItemButton;
+    await expect(saveItemButton).toBeVisible();
+    await expect(saveItemButton).toBeEnabled();
+    const responsePromise = page.waitForResponse('**/cases/**');
+    await saveItemButton.click();
+    const response = await responsePromise;
+    expect(response.ok()).toBeTruthy();
   }
 
   async function saveCaseAndEnd() {
+    const responsesPromise = Promise.all([
+      page.waitForResponse('**/cases/**'),
+      page.waitForResponse('**/contacts/**'),
+    ]);
     await selectors.saveCaseAndEndButton.click();
+    const responses = await responsesPromise;
+    responses.forEach((response) => expect(response.ok()).toBeTruthy());
   }
 
   const { getNewCaseId } = selectors;

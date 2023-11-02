@@ -16,7 +16,7 @@
 
 import { DataCallTypes } from 'hrm-form-definitions';
 
-import { Contact } from '../../types/types';
+import { Case, Contact } from '../../types/types';
 import { DraftResourceReferralState } from './resourceReferral';
 import { ContactState, ExistingContactsState } from './existingContacts';
 import { ContactDetailsState } from './contactDetails';
@@ -101,5 +101,5 @@ export type ContactUpdatingAction = {
     | typeof CREATE_CONTACT_ACTION_FULFILLED
     | typeof UPDATE_CONTACT_ACTION_FULFILLED
     | typeof LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED;
-  payload: { contact: Contact; previousContact?: Contact };
+  payload: { contact: Contact; contactCase?: Case; previousContact?: Contact };
 };
