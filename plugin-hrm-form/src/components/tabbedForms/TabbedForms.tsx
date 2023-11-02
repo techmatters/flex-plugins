@@ -124,6 +124,7 @@ const TabbedForms: React.FC<Props> = ({
   backToCallTypeSelect,
   navigateToTab,
   task,
+  removeIfOfflineContact,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -200,9 +201,7 @@ const TabbedForms: React.FC<Props> = ({
       ? [
           {
             label: 'CancelOfflineContact',
-            onClick: async () => {
-              removeOfflineContact();
-            },
+            onClick: () => removeIfOfflineContact(savedContact),
           },
         ]
       : undefined;
@@ -372,6 +371,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { contactId, task }: OwnPro
     dispatch(changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, task.taskSid)),
   backToCallTypeSelect: () => dispatch(changeRoute({ route: 'select-call-type' }, task.taskSid)),
   setModalLayout: () => dispatch(setEditContactPageOpen()),
+  removeIfOfflineContact: (contact: Contact) => removeOfflineContact(dispatch, contact),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
