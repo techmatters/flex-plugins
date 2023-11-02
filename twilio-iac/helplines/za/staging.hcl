@@ -18,7 +18,7 @@ locals {
     #Studio flow
     flow_vars = {
       service_sid                  = "ZS27e84b6573e9e70a6cede7d8b9e5111d"
-      environment_sid              = "ZEf88d7136c200de2b8072ee4c9a1dadb5"
+      environment_sid              = "ZE892b70dd054646bd3abca6f7ccbe4af4"
       operating_hours_function_sid = "ZH38920759a863f804b58a52fd411a3814"
     }
 
@@ -37,7 +37,7 @@ locals {
       facebook_national : {
         channel_type         = "facebook"
         contact_identity     = "messenger:110516273745020"
-        templatefile         = "/app/twilio-iac/helplines/br/templates/studio-flows/messaging-facebook-national.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/za/templates/studio-flows/messaging-facebook-national.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
