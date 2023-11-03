@@ -15,10 +15,14 @@
  */
 
 import React, { useRef, useState } from 'react';
-import { IconButton, ITask, ThemeProps } from '@twilio/flex-ui';
-import { Paper, Popper } from '@material-ui/core';
+import { ITask, Template, ThemeProps } from '@twilio/flex-ui';
+import { ButtonBase, Paper, Popper } from '@material-ui/core';
 
 import { getFormattedNumberFromTask } from '../../utils';
+import EyeOpenIcon from './icons/EyeOpenIcon';
+import EyeCloseIcon from './icons/EyeCloseIcon';
+import { HeaderCloseButton, HiddenText } from '../../styles/HrmStyles';
+import { CloseButton } from '../../styles/callTypeButtons';
 
 type Props = ThemeProps & { task?: ITask };
 
@@ -30,16 +34,34 @@ const ViewTaskNumber = ({ task }: Props) => {
     setViewNumber(!viewNumber);
   };
 
+  const handleClose = () => {
+    setViewNumber(!viewNumber);
+  };
+
   const renderTaskNumberPopper = () =>
     viewNumber ? (
       <Popper open={viewNumber} anchorEl={viewNumberRef.current} placement="bottom-start">
-        <Paper style={{ width: '200px', padding: '5px' }}>{getFormattedNumberFromTask(task)}</Paper>
+        <Paper style={{ width: '200px', padding: '30px' }}>
+          <HeaderCloseButton onClick={handleClose} style={{ marginRight: '15px', opacity: '.75' }}>
+            <HiddenText>
+              <Template code="CloseButton" />
+            </HiddenText>
+            <CloseButton/>
+          </HeaderCloseButton>
+          
+          <h2>
+            <strong> Phone Number Revealed</strong>
+          </h2>
+          {getFormattedNumberFromTask(task)}
+        </Paper>
       </Popper>
     ) : null;
 
   return (
     <>
-      <IconButton icon={viewNumber ? 'EyeBold' : 'Eye'} onClick={toggleViewNumber} ref={viewNumberRef} />
+      <ButtonBase onClick={toggleViewNumber} ref={viewNumberRef}>
+        {viewNumber ? <EyeOpenIcon /> : <EyeCloseIcon />}
+      </ButtonBase>
       {renderTaskNumberPopper()}
     </>
   );

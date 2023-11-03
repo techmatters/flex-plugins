@@ -251,11 +251,12 @@ export const setUpTransferComponents = () => {
   });
 };
 
-// TODO: move this to be configuration flag driven
-Flex.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" />, {
-  sortOrder: 1,
-  if: props => true,
-});
+export const setUpViewMaskedVoiceNumber = () => {
+  Flex.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" />, {
+    sortOrder: 1,
+    if: props => props.task.channelType === 'voice',
+  });
+};
 
 /**
  * Add components used only by developers
