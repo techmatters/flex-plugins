@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 import { AnyAction, bindActionCreators } from 'redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
-import FolderIcon from '@material-ui/icons/Folder';
+import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { SubmitErrorHandler } from 'react-hook-form';
@@ -192,10 +192,10 @@ const BottomBar: React.FC<
                     data-fs-id="Contact-SaveAndAddToCase-Button"
                     data-testid="BottomBar-SaveAndAddToCase-Button"
                   >
-                    <FolderIcon style={{ fontSize: '16px', marginRight: '10px' }} />
+                    <FolderIcon style={{ fontSize: '16px', marginRight: '10px', width: '24px', height: '24px' }} />
                     <Template code="BottomBar-AddContactToNewCase" />
-                    {dropdown && <KeyboardArrowUpIcon style={{ fontSize: '20px', marginLeft: '10px' }} />}
-                    {!dropdown && <KeyboardArrowDownIcon style={{ fontSize: '20px', marginLeft: '10px' }} />}
+                    {dropdown && <KeyboardArrowUpIcon style={{ fontSize: '20px', marginLeft: '10px', width: '24px', height: '24px' }} />}
+                    {!dropdown && <KeyboardArrowDownIcon style={{ fontSize: '20px', marginLeft: '10px', width: '24px', height: '24px' }} />}
                   </StyledNextStepButton>
                 </Box>
               )
