@@ -64,9 +64,13 @@ const TaskView: React.FC<Props> = props => {
 
   React.useEffect(() => {
     if (shouldRecreateState) {
-      loadContactFromHrmByTaskSid();
+      if (isOfflineContactTask(task)) {
+        loadContactFromHrmByTaskSid();
+      } else {
+        createContact(currentDefinitionVersion);
+      }
     }
-  }, [currentDefinitionVersion, loadContactFromHrmByTaskSid, shouldRecreateState, task]);
+  }, [createContact, currentDefinitionVersion, loadContactFromHrmByTaskSid, shouldRecreateState, task]);
 
   // Force a re-render on unmount (temporary fix NoTaskView issue with Offline Contacts)
   React.useEffect(() => {
@@ -116,7 +120,9 @@ const TaskView: React.FC<Props> = props => {
         onReload={async () => {
           createContact(currentDefinitionVersion);
         }}
-        onFinish={async () => completeTask(task)}
+        onFinish={async () => {
+          await completeTask(task, undefined);
+        }}
       />
     );
   // If state is partially loaded, don't render until everything settles

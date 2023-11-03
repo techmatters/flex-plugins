@@ -365,7 +365,7 @@ test('<CallTypeButtons> click on NonData (Joke) button', () => {
 test('<CallTypeButtons> click on END CHAT button', async () => {
   const initialState = {
     [namespace]: {
-      [contactFormsBase]: {
+      activeContacts: {
         existingContacts: {
           contact1: {
             savedContact: {
@@ -399,7 +399,13 @@ test('<CallTypeButtons> click on END CHAT button', async () => {
   screen.getByText('TaskHeaderEndChat').click();
 
   await waitFor(() => expect(submitContactFormAsyncAction).toHaveBeenCalled());
-  await waitFor(() => expect(completeTask).toHaveBeenCalledWith(task));
+  await waitFor(() =>
+    expect(completeTask).toHaveBeenCalledWith(task, {
+      id: 'contact1',
+      callType: 'blank',
+      taskId: task.taskSid,
+    }),
+  );
 });
 
 test('<CallTypeButtons> click on CANCEL button', async () => {
