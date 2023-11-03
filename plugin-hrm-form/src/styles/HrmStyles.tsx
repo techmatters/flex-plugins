@@ -1282,9 +1282,9 @@ export const StyledAddNewCaseDropdown = styled('ul')`
   right: 20%;
   bottom: 8%;
   display: flex;
-  box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.20);
-  -webkit-box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.20);
-  -moz-box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.20);
+  box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
+  -webkit-box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
+  -moz-box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
   font-size: 0.875rem;
   z-index: 9999;
   width: 194px;

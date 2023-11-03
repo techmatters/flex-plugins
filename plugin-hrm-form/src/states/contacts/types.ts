@@ -58,7 +58,6 @@ export type ContactMetadata = {
 export type ContactsState = {
   existingContacts: ExistingContactsState;
   contactDetails: ContactDetailsState;
-  editingContact: boolean;
   isCallTypeCaller: boolean;
 };
 
@@ -86,11 +85,6 @@ type RestoreEntireFormAction = {
   contact: ContactState;
 };
 
-type SetEditingContact = {
-  type: typeof SET_EDITING_CONTACT;
-  editing: boolean;
-};
-
 type CheckButtonDataAction = {
   type: typeof SET_CALL_TYPE;
   isCallTypeCaller: boolean;
@@ -100,7 +94,6 @@ export type ContactsActionType =
   | SaveEndMillisAction
   | PrePopulateFormAction
   | RestoreEntireFormAction
-  | SetEditingContact
   | CheckButtonDataAction;
 
 export type ContactUpdatingAction = {
