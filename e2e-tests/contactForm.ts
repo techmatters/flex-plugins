@@ -104,11 +104,11 @@ export function contactForm(page: Page) {
       if (saveAndAddToCase) {
         const responsePromise = page.waitForResponse('**/connectToCase');
         await selectors.saveAndAddToCaseButton.click();
+        await selectors.addNewCaseButton.click();
         await responsePromise;
       } else {
         const responsePromise = page.waitForResponse('**/contacts/**');
         await selectors.saveContactButton.click();
-        await selectors.addNewCaseButton.click();
         await responsePromise;
       }
 
