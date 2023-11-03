@@ -38,7 +38,7 @@ locals {
       facebook_national : {
         channel_type         = "facebook"
         contact_identity     = "messenger:302611956435114"
-        templatefile         = "/app/twilio-iac/helplines/br/templates/studio-flows/messaging-facebook-national.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/za/templates/studio-flows/messaging-facebook-national.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
