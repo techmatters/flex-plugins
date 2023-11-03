@@ -182,7 +182,6 @@ const Search: React.FC<Props> = ({
   renderSearchPages.displayName = 'SearchPage';
 
   return (
-    // TODO: Needs converting to a div and the className={editContactFormOpen ? 'editingContact' : ''} adding, but that messes up the CSS
     <>
       {renderMockDialog()}
       {renderSearchPages()}
@@ -203,7 +202,6 @@ const mapStateToProps = (
   const taskId = task.taskSid;
   const taskSearchState = searchContacts.tasks[taskId];
   const isStandaloneSearch = taskId === standaloneTaskSid;
-  const editContactFormOpen = activeContacts.editingContact;
   const currentRoute = getCurrentTopmostRouteForTask(routing, taskId);
 
   return {
@@ -213,7 +211,6 @@ const mapStateToProps = (
     searchContactsResults: taskSearchState.searchContactsResult,
     searchCasesResults: taskSearchState.searchCasesResult,
     showActionIcons: !isStandaloneSearch,
-    editContactFormOpen,
     routing: currentRoute,
   };
 };
