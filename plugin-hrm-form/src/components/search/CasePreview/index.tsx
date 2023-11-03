@@ -35,6 +35,7 @@ import { connectToCaseAsyncAction } from '../../../states/contacts/saveContact';
 import findContactByTaskSid from '../../../states/contacts/findContactByTaskSid';
 import { isStandaloneITask } from '../../case/Case';
 import { newCloseModalAction } from '../../../states/routing/actions';
+import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../../permissions';
 
 type OwnProps = {
   currentCase: Case;
@@ -95,12 +96,23 @@ const CasePreview: React.FC<Props> = ({
     substituteForId: false,
     placeholder: '',
   });
-  const isConnectedToTaskContact =
-    taskContact && Boolean(connectedContacts?.find(contact => contact.id === taskContact.id));
-  const showConnectButton = Boolean(
-    // getAseloFeatureFlags().enable_case_merging &&
-    taskContact && connectedContacts?.length && (!taskContact.caseId || isConnectedToTaskContact),
-  );
+  let isConnectedToTaskContact = false;
+  let showConnectButton = false;
+  if (
+    taskContact
+    // && getAseloFeatureFlags().enable_case_merging
+  ) {
+    isConnectedToTaskContact = Boolean(connectedContacts?.find(contact => contact.id === taskContact.id));
+
+    const { can: canForCase } = getPermissionsForCase(currentCase.twilioWorkerId, currentCase.status);
+    const { can: canForContact } = getPermissionsForContact(taskContact?.twilioWorkerId);
+    showConnectButton = Boolean(
+      canForCase(PermissionActions.UPDATE_CASE_CONTACTS) &&
+        canForContact(PermissionActions.ADD_CONTACT_TO_CASE) &&
+        connectedContacts?.length &&
+        (!taskContact.caseId || isConnectedToTaskContact),
+    );
+  }
   return (
     <Flex>
       <PreviewWrapper>

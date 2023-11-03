@@ -398,7 +398,13 @@ test('<CallTypeButtons> click on END CHAT button', async () => {
   screen.getByText('TaskHeaderEndChat').click();
 
   await waitFor(() => expect(updateContactInHrmAsyncAction).toHaveBeenCalled());
-  await waitFor(() => expect(completeTask).toHaveBeenCalledWith(task));
+  await waitFor(() =>
+    expect(completeTask).toHaveBeenCalledWith(task, {
+      id: 'contact1',
+      callType: 'blank',
+      taskId: task.taskSid,
+    }),
+  );
 });
 
 test('<CallTypeButtons> click on CANCEL button', async () => {
