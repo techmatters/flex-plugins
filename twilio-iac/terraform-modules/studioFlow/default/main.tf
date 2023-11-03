@@ -14,7 +14,7 @@ locals {
         "transitions": [
           {
             "event": "incomingMessage",
-            "next": "ChatBot"
+            "next": "split_web",
           },
           {
             "event": "incomingCall"
@@ -23,8 +23,6 @@ locals {
             "event": "incomingRequest"
           }
         ],
-        "type": "trigger",
-        "name": "Trigger",
         "properties": {
           "offset": {
             "y": -70,
@@ -47,7 +45,7 @@ locals {
         "type": "send-to-flex",
         "name": "smsAttributes",
         "properties": {
-          "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+          "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}}",
           "workflow": var.master_workflow_sid,
           "channel":  var.chat_task_channel_sid,
           "offset": {
@@ -57,61 +55,96 @@ locals {
         }
       },
       {
-        "transitions": [
-          {
-            "event": "sessionEnded",
-            "next": "check_counselor_handoff"
-          },
-          {
-            "event": "failure"
-          }
-        ],
-        "type": "send-to-auto-pilot",
-        "name": "ChatBot",
-        "properties": {
-          "body": "{{trigger.message.Body}}",
-          "from": "Bot",
-          "chat_service": "{{trigger.message.InstanceSid}}",
-          "target_task": "greeting",
-          "timeout": 14400,
-          "offset": {
-            "y": 110,
-            "x": -20
-          },
-          "chat_channel": "{{trigger.message.ChannelSid}}",
-          "autopilot_assistant_sid": var.pre_survey_bot_sid
+      "name": "language_selector_complete",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "capture_channel_with_language_bot",
+          "event": "noMatch"
+        },
+        {
+          "next": "terms_conditions_complete",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.isSelectLanguageComplete}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
         }
-      },
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.isSelectLanguageComplete}}",
+        "offset": {
+          "x": -360,
+          "y": 190
+        }
+      }
+    },
       {
-        "transitions": [
+      "name": "capture_channel_with_language_bot",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": flow_vars["service_sid"],
+        "environment_sid": flow_vars["environment_sid"],
+        "offset": {
+          "x": -850,
+          "y": 570
+        },
+        "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
+        "parameters": [
           {
-            "event": "noMatch"
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
           },
           {
-            "conditions": [
-              {
-                "type": "equal_to",
-                "friendly_name": "If value equal_to counselor_handoff",
-                "arguments": [
-                  "{{widgets.ChatBot.CurrentTask}}"
-                ],
-                "value": "counselor_handoff"
-              }
-            ],
-            "event": "match",
-            "next": "AdjustAttributes"
+            "value": "trigger_language_selector",
+            "key": "message"
+          },
+          {
+            "value": "{{flow.flow_sid}}",
+            "key": "studioFlowSid"
+          },
+          {
+            "value": "en-MT",
+            "key": "language"
+          },
+          {
+            "value": "language_selector",
+            "key": "botSuffix"
+          },
+          {
+            "value": "withUserMessage",
+            "key": "triggerType"
+          },
+          {
+            "value": "triggerStudioFlow",
+            "key": "releaseType"
+          },
+          {
+            "value": "isSelectLanguageComplete",
+            "key": "releaseFlag"
+          },
+          {
+            "value": "languageMemory",
+            "key": "memoryAttribute"
           }
         ],
-        "type": "split-based-on",
-        "name": "check_counselor_handoff",
-        "properties": {
-          "input": "{{widgets.ChatBot.CurrentTask}}",
-          "offset": {
-            "y": 340,
-            "x": -20
-          }
-        }
-      },
+        "url": "${var.serverless_url}/channelCapture/captureChannelWithBot"
+      }
+    },
       {
         "transitions": [
           {
@@ -127,7 +160,7 @@ locals {
         "type": "send-to-flex",
         "name": "defaultAttributes",
         "properties": {
-          "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+          "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}}",
           "workflow": var.master_workflow_sid,
           "channel":  var.default_task_channel_sid,
           "offset": {
@@ -151,7 +184,7 @@ locals {
         "type": "send-to-flex",
         "name": "whatsappAttributes",
         "properties": {
-          "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+          "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}}",
           "workflow": var.master_workflow_sid,
           "channel":  var.chat_task_channel_sid,
           "offset": {
@@ -175,7 +208,7 @@ locals {
         "type": "send-to-flex",
         "name": "facebookAttributes",
         "properties": {
-          "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+          "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}}",
           "workflow": var.master_workflow_sid,
           "channel":  var.chat_task_channel_sid,
           "offset": {
@@ -199,7 +232,7 @@ locals {
         "type": "send-to-flex",
         "name": "webAttributes",
         "properties": {
-          "attributes": "{\"ip\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.helpline}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"taskLanguage\": \"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+          "attributes": "{\"ip\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.helpline}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"taskLanguage\": \"\",\n\"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}}",
           "workflow": var.master_workflow_sid,
           "channel": var.chat_task_channel_sid,
           "offset": {

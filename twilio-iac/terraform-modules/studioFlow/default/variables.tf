@@ -24,3 +24,8 @@ variable "pre_survey_bot_sid" {
   type        = string
   default ="DELETED"
 }
+
+variable "serverless_url" {
+  description = "Twilio Serverless URL"
+  type        = string
+}
