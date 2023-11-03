@@ -118,9 +118,11 @@ const TaskView: React.FC<Props> = props => {
     return (
       <ContactNotLoaded
         onReload={async () => {
-          createContact(currentDefinitionVersion);
+          await createContact(currentDefinitionVersion);
         }}
-        onFinish={async () => completeTask(task)}
+        onFinish={async () => {
+          await completeTask(task, unsavedContact);
+        }}
       />
     );
   // If state is partially loaded, don't render until everything settles
