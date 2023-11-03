@@ -18,6 +18,7 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
+import { CheckCircleOutlineOutlined, CreateNewFolderOutlined, FolderOutlined } from '@material-ui/icons';
 
 import {
   SubtitleLabel,
@@ -26,10 +27,10 @@ import {
   PreviewHeaderText,
   PreviewRow,
   SummaryText,
+  PreviewActionButton,
 } from '../../../styles/search';
-import { Flex, StyledNextStepButton } from '../../../styles/HrmStyles';
+import { Flex } from '../../../styles/HrmStyles';
 import { getTemplateStrings } from '../../../hrmConfig';
-import { Contact } from '../../../types/types';
 
 type OwnProps = {
   caseId: number;
@@ -41,7 +42,7 @@ type OwnProps = {
   status: string;
   statusLabel: string;
   onClickViewCase: () => void;
-  taskContact: Contact | undefined;
+  showConnectButton: boolean;
   onClickConnectToTaskContact: () => void;
   isConnectedToTaskContact: boolean;
 };
@@ -58,9 +59,9 @@ const CaseHeader: React.FC<Props> = ({
   status,
   statusLabel,
   onClickViewCase,
-  taskContact,
   isConnectedToTaskContact,
   onClickConnectToTaskContact,
+  showConnectButton,
 }) => {
   const strings = getTemplateStrings();
 
@@ -68,49 +69,66 @@ const CaseHeader: React.FC<Props> = ({
     <div>
       <PreviewRow>
         <Flex justifyContent="space-between" width="100%">
-          <Flex style={{ minWidth: 'fit-content' }}>
+          <Flex alignItems="center" style={{ minWidth: 'fit-content' }}>
+            {!isOrphanedCase && (
+              <Flex marginRight="10px">
+                <FolderOutlined style={{ color: '#192b33' }} />
+              </Flex>
+            )}
             <StyledLink underline={true} style={{ minWidth: 'inherit', marginInlineEnd: 10 }} onClick={onClickViewCase}>
               <PreviewHeaderText style={{ textDecoration: 'underline' }}>#{caseId}</PreviewHeaderText>
             </StyledLink>
             <PreviewHeaderText>{isOrphanedCase ? strings['CaseHeader-Voided'] : `${contactLabel}`}</PreviewHeaderText>
           </Flex>
-          <Flex style={{ minWidth: 'fit-content' }}>
-            <SummaryText style={{ fontWeight: 400 }}>{statusLabel}</SummaryText>
-          </Flex>
-          {taskContact && (
+          {showConnectButton && (
             <Flex style={{ minWidth: 'fit-content' }}>
-              <StyledNextStepButton disabled={isConnectedToTaskContact} onClick={onClickConnectToTaskContact}>
+              <PreviewActionButton
+                disabled={isConnectedToTaskContact}
+                onClick={onClickConnectToTaskContact}
+                secondary="true"
+              >
+                {!isConnectedToTaskContact && <CreateNewFolderOutlined />}
+                {isConnectedToTaskContact && <CheckCircleOutlineOutlined />}
+                <div style={{ width: 10 }} />
                 <Template
                   code={
                     isConnectedToTaskContact ? 'CaseHeader-TaskContactConnected' : 'CaseHeader-ConnectToTaskContact'
                   }
                 />
-              </StyledNextStepButton>
+              </PreviewActionButton>
             </Flex>
           )}
         </Flex>
       </PreviewRow>
       <PreviewRow>
-        <SubtitleLabel>
-          <Template code="CaseHeader-Opened" />:
-        </SubtitleLabel>
-        <SubtitleValue>{format(createdAt, 'MMM d, yyyy')}</SubtitleValue>
-        {updatedAt && (
-          <>
+        <Flex justifyContent="space-between" width="100%">
+          <Flex style={{ minWidth: 'fit-content' }}>
             <SubtitleLabel>
-              <Template code={status === 'closed' || isOrphanedCase ? 'CaseHeader-Closed' : 'CaseHeader-Updated'} />:
+              <Template code="CaseHeader-Opened" />:
             </SubtitleLabel>
-            <SubtitleValue>{format(updatedAt, 'MMM d, yyyy')}</SubtitleValue>
-          </>
-        )}
-        {followUpDate && (
-          <>
-            <SubtitleLabel>
-              <Template code="CaseHeader-FollowUpDate" />:
-            </SubtitleLabel>
-            <SubtitleValue>{format(followUpDate, 'MMM d, yyyy')}</SubtitleValue>
-          </>
-        )}
+            <SubtitleValue>{format(createdAt, 'MMM d, yyyy')}</SubtitleValue>
+            {updatedAt && (
+              <>
+                <SubtitleLabel>
+                  <Template code={status === 'closed' || isOrphanedCase ? 'CaseHeader-Closed' : 'CaseHeader-Updated'} />
+                  :
+                </SubtitleLabel>
+                <SubtitleValue>{format(updatedAt, 'MMM d, yyyy')}</SubtitleValue>
+              </>
+            )}
+            {followUpDate && (
+              <>
+                <SubtitleLabel>
+                  <Template code="CaseHeader-FollowUpDate" />:
+                </SubtitleLabel>
+                <SubtitleValue>{format(followUpDate, 'MMM d, yyyy')}</SubtitleValue>
+              </>
+            )}
+          </Flex>
+          <Flex style={{ minWidth: 'fit-content' }}>
+            <SummaryText style={{ fontWeight: 400 }}>{statusLabel}</SummaryText>
+          </Flex>
+        </Flex>
       </PreviewRow>
     </div>
   );

@@ -29,7 +29,7 @@ import { updateDefinitionVersion } from '../../../states/configuration/actions';
 import { RootState } from '../../../states';
 import TagsAndCounselor from '../TagsAndCounselor';
 import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
-import { configurationBase, namespace } from '../../../states/storeNamespaces';
+import { namespace } from '../../../states/storeNamespaces';
 import asyncDispatch from '../../../states/asyncDispatch';
 import { connectToCaseAsyncAction } from '../../../states/contacts/saveContact';
 import findContactByTaskSid from '../../../states/contacts/findContactByTaskSid';
@@ -97,7 +97,10 @@ const CasePreview: React.FC<Props> = ({
   });
   const isConnectedToTaskContact =
     taskContact && Boolean(connectedContacts?.find(contact => contact.id === taskContact.id));
-
+  const showConnectButton = Boolean(
+    // getAseloFeatureFlags().enable_case_merging &&
+    taskContact && connectedContacts?.length && (!taskContact.caseId || isConnectedToTaskContact),
+  );
   return (
     <Flex>
       <PreviewWrapper>
@@ -112,7 +115,7 @@ const CasePreview: React.FC<Props> = ({
           status={status}
           statusLabel={statusLabel}
           isConnectedToTaskContact={isConnectedToTaskContact}
-          taskContact={taskContact}
+          showConnectButton={showConnectButton}
           onClickConnectToTaskContact={() => {
             connectCaseToTaskContact(taskContact);
             closeModal();
