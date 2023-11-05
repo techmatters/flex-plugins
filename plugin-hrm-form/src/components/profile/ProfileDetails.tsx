@@ -18,7 +18,6 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { IconButton, Template } from '@twilio/flex-ui';
 
-import { getProfileSections } from '../../services/ProfileService';
 import ProfileFlagList from './profileFlag/ProfileFlagList';
 import { CustomITask, Profile } from '../../types/types';
 import { DetailsWrapper, EditButton, ProfileSubtitle } from './styles';
@@ -48,10 +47,7 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
   // Temp note content for demo purposes. Set to false to hide notes.
   const noteContent = (
     <>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-      magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-      consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-      Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      Lorem ipsum dolor sit amet
     </>
   );
 
@@ -128,14 +124,6 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
       </Box>
     );
   };
-
-  getProfileSections(profileId)
-    .then(results => {
-      console.log('>>> getProfileSections', results);
-    })
-    .catch(error => {
-      console.error('Error fetching profile sections:', error);
-    });
 
   return (
     <DetailsWrapper>

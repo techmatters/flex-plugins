@@ -21,7 +21,7 @@ import * as ProfileService from '../../services/ProfileService';
 import loadProfileEntryIntoRedux from './loadProfileEntryIntoRedux';
 import * as t from './types';
 
-export const loadProfileSectionAsync = createAsyncAction(t.LOAD_PROFILE_SECTIONS, ProfileService.getProfileSections);
+export const loadProfileSectionAsync = createAsyncAction(t.LOAD_PROFILE_SECTIONS, ProfileService.getProfileSection);
 
 const loadProfileSectionEntryIntoRedux = (state: t.ProfileState, profileSectionUpdate: any) => ({
   ...state,

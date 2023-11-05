@@ -39,3 +39,5 @@ export const selectIdentifierByIdentifier = (state: RootState, identifier: Ident
   Object.values(state[namespace][profileBase].identifiers).find(entry => entry.data?.identifier === identifier);
 
 export const selectAllProfileFlags = (state: RootState) => state[namespace][profileBase].profileFlags;
+
+export const selectAllProfileSections = (state: RootState) => state[namespace][profileBase].profileSections;

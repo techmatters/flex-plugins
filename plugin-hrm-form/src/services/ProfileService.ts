@@ -52,21 +52,15 @@ export const disassociateProfileFlag = (profileId: ProfileId, profileFlagId: Pro
 export const getProfileSection = (profileId: ProfileId, sectionId: number) =>
   fetchHrmApi(`/profiles/${profileId}/sections/${sectionId}`);
 
-// export const getProfileSections = (profileId: ProfileId) => {
-//   const fetchPromises = [1, 2, 3].map(sectionId => fetchHrmApi(`/profiles/${profileId}/sections/${sectionId}`));
-//   return Promise.all(fetchPromises);
-// };
-
 export const createProfileSection = (profileId: ProfileId, content: string, sectionType: string) =>
   fetchHrmApi(`/profiles/${profileId}/sections`, {
     method: 'POST',
     body: JSON.stringify({ content, sectionType }),
   });
 
-// export const updateProfileSection = (profileId: ProfileId, sectionId: string, content: string) => {
-//   console.log(`>>> PATCH ${profileId}/sections/${sectionId}`);
-//   // return fetchHrmApi(`/profiles/${profileId}/sections/${sectionId}`, {
-//   //   method: 'PATCH',
-//   //   body: JSON.stringify({ content }),
-//   // });
-// };
+export const updateProfileSection = (profileId: ProfileId, sectionId: string, content: string) => {
+  return fetchHrmApi(`/profiles/${profileId}/sections/${sectionId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ content }),
+  });
+};
