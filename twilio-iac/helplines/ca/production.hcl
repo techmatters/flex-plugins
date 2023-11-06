@@ -198,7 +198,7 @@ locals {
  "988camh" : {
         channel_type         = "voice"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/g2ton.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/988camh.tftpl"
         channel_flow_vars    = {
           en_number: "3656520724"
           fr_number: "3656495517"
