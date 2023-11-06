@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { connect, ConnectedProps, useSelector } from 'react-redux';
 import { FieldError, useFormContext } from 'react-hook-form';
 import { isFuture } from 'date-fns';
@@ -32,6 +32,7 @@ import { splitDate, splitTime } from '../../utils/helpers';
 import type { ContactRawJson, OfflineContactTask } from '../../types/types';
 import { updateDraft } from '../../states/contacts/existingContacts';
 import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
+import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 
 type OwnProps = {
   task: OfflineContactTask;
@@ -42,18 +43,40 @@ type OwnProps = {
   autoFocus: boolean;
 };
 
-// eslint-disable-next-line no-use-before-define
+const mapStateToProps = (state: RootState, { task }: OwnProps) => {
+  const { savedContact, draftContact } =
+    Object.values(state[namespace][contactFormsBase].existingContacts).find(
+      cs => cs.savedContact.taskId === task.taskSid,
+    ) ?? {};
+  return {
+    counselorsList: state[namespace][configurationBase].counselors.list,
+    unsavedContact: getUnsavedContact(savedContact, draftContact),
+  };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<any>) => {
+  return {
+    updateContactlessTaskDraft: (
+      contactId: string,
+      contactlessTask: ContactRawJson['contactlessTask'],
+      helpline: string,
+    ) => dispatch(updateDraft(contactId, { rawJson: { contactlessTask }, helpline })),
+  };
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ContactlessTaskTab: React.FC<Props> = ({
-  dispatch,
   display,
   helplineInformation,
   definition,
   initialValues,
   counselorsList,
   autoFocus,
-  savedContact,
+  unsavedContact,
+  updateContactlessTaskDraft,
 }) => {
   const { getValues, register, setError, setValue, watch, errors } = useFormContext();
 
@@ -72,8 +95,8 @@ const ContactlessTaskTab: React.FC<Props> = ({
     },
     parentsPath: 'contactlessTask',
     updateCallback: () => {
-      const { isFutureAux, ...rest } = getValues().contactlessTask;
-      dispatch(updateDraft(savedContact.id, { rawJson: { contactlessTask: { ...rest } } }));
+      const { isFutureAux, helpline, ...contactlessTaskFields } = getValues().contactlessTask;
+      updateContactlessTaskDraft(unsavedContact.id, contactlessTaskFields, helpline);
     },
     shouldFocusFirstElement: display && autoFocus,
   });
@@ -124,19 +147,6 @@ const ContactlessTaskTab: React.FC<Props> = ({
 };
 
 ContactlessTaskTab.displayName = 'ContactlessTaskTab';
-
-const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const { savedContact } =
-    Object.values(state[namespace][contactFormsBase].existingContacts).find(
-      cs => cs.savedContact.taskId === task.taskSid,
-    ) ?? {};
-  return {
-    counselorsList: state[namespace][configurationBase].counselors.list,
-    savedContact,
-  };
-};
-
-const connector = connect(mapStateToProps);
 const connected = connector(ContactlessTaskTab);
 
 export default connected;

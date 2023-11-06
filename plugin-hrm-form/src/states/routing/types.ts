@@ -39,7 +39,7 @@ export type TabbedFormRoute = {
   autoFocus?: boolean;
 } & RouteWithModalSupport;
 
-export type SearchRoute = {
+export type SearchRoute = RouteWithModalSupport & {
   route: 'search';
   subroute: 'form' | 'case-results' | 'contact-results';
 };
