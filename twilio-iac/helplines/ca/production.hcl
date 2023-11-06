@@ -195,7 +195,7 @@ locals {
         }
         chatbot_unique_names = []
       },
- 988camh : {
+ "988camh" : {
         channel_type         = "voice"
         contact_identity     = ""
         templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/g2ton.tftpl"
