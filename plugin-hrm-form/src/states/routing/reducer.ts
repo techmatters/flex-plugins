@@ -47,7 +47,9 @@ export const initialState: RoutingState = {
 };
 
 const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingAction): RoutingState => {
-  const recreated = action.type === LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED;
+  const recreated =
+    action.type === LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED ||
+    action.type === UPDATE_CONTACT_ACTION_FULFILLED;
 
   const { contact, previousContact } = action.payload;
   if (!contact) {

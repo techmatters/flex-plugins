@@ -45,8 +45,13 @@ const renderPaginationButton = (page, handleChangePage, disabled) => n => {
       aria-label={`Page ${n + 1}`}
       highlight={page === n}
       key={`CaseList-pagination-${n}`}
-      onClick={() => handleChangePage(n)}
-      disabled={disabled}
+      onClick={() => {
+        if (!disabled) {
+          handleChangePage(n);
+        }
+      }}
+      aria-disabled={disabled}
+      style={{ opacity: disabled ? 0.5 : 1 }}
     >
       <ButtonText highlight={page === n}>{n + 1}</ButtonText>
     </PaginationButton>
@@ -63,7 +68,15 @@ type ChevronButtonProps = {
 const ChevronButton: React.FC<ChevronButtonProps> = ({ chevronDirection, onClick, templateCode, disabled }) => {
   const ChevronIcon = chevronDirection === 'left' ? ChevronLeft : ChevronRight;
   return (
-    <PaginationChevron onClick={onClick} disabled={disabled}>
+    <PaginationChevron
+      onClick={() => {
+        if (!disabled) {
+          onClick();
+        }
+      }}
+      aria-disabled={disabled}
+      style={{ opacity: disabled ? 0.5 : 1 }}
+    >
       <HiddenText>
         <Template code={templateCode} />
       </HiddenText>

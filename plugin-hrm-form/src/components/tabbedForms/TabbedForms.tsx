@@ -179,7 +179,7 @@ const TabbedForms: React.FC<Props> = ({
 
   const handleTabsChange = async (t: number) => {
     const tab = tabsToIndex[t];
-    await saveDraft(savedContact, draftContact);
+    saveDraft(savedContact, draftContact);
     navigateToTab(tab);
   };
 
