@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { Actions, Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
@@ -35,16 +35,30 @@ import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
 import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { namespace, routingBase } from '../../states/storeNamespaces';
+import asyncDispatch from '../../states/asyncDispatch';
+import { newRestartOfflineContactAsyncAction } from '../../states/contacts/saveContact';
+import { Contact } from '../../types/types';
+import { getHrmConfig } from '../../hrmConfig';
 
 type OwnProps = { selectedTaskSid?: string };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedTaskSid, offlineContactForms }) => {
+const OfflineContactTask: React.FC<Props> = ({
+  isAddingOfflineContact,
+  selectedTaskSid,
+  offlineContact,
+  restartContact,
+}) => {
   if (!isAddingOfflineContact) return null;
+  const offlineContactForms = offlineContact?.rawJson;
 
   const onClick = async () => {
+    // Whilst we do this on cancel, doing it again now resets some defaults like timeofcontact
+    if (offlineContact) {
+      await restartContact(offlineContact);
+    }
     await Actions.invokeAction('SelectTask', { task: undefined });
   };
 
@@ -83,10 +97,15 @@ const mapStateToProps = (state: RootState) => {
   const { savedContact, draftContact } = findContactByTaskSid(state, getOfflineContactTaskSid()) || {};
   return {
     isAddingOfflineContact: state[namespace][routingBase].isAddingOfflineContact,
-    offlineContactForms: savedContact ? getUnsavedContact(savedContact, draftContact).rawJson : undefined,
+    offlineContact: savedContact ? getUnsavedContact(savedContact, draftContact) : undefined,
   };
 };
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+  restartContact: (contact: Contact) =>
+    asyncDispatch(dispatch)(newRestartOfflineContactAsyncAction(contact, getHrmConfig().workerSid)),
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
 export default connector(OfflineContactTask);
