@@ -15,9 +15,11 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
+import React, { Dispatch, useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { ITask, withTaskContext } from '@twilio/flex-ui';
+import _ from 'lodash';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 import TaskView from './TaskView';
 import { Absolute } from '../styles/HrmStyles';
@@ -26,7 +28,12 @@ import { populateCounselorsState } from '../states/configuration/actions';
 import { RootState } from '../states';
 import { OfflineContactTask } from '../types/types';
 import getOfflineContactTaskSid from '../states/contacts/offlineContactTaskSid';
-import { namespace, routingBase } from '../states/storeNamespaces';
+import { namespace } from '../states/storeNamespaces';
+import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
+import asyncDispatch from '../states/asyncDispatch';
+import { createContactAsyncAction } from '../states/contacts/saveContact';
+import { getHrmConfig } from '../hrmConfig';
+import { newContact } from '../states/contacts/contactState';
 
 type OwnProps = {
   task?: ITask;
@@ -35,12 +42,23 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const CustomCRMContainer: React.FC<Props> = ({ selectedTaskSid, isAddingOfflineContact, task, dispatch }) => {
+let handleUnloadRef = null;
+
+const CustomCRMContainer: React.FC<Props> = ({
+  selectedTaskSid,
+  isAddingOfflineContact,
+  task,
+  hasUnsavedChanges,
+  populateCounselorList,
+  currentOfflineContact,
+  definitionVersion,
+  loadOrCreateDraftOfflineContact,
+}) => {
   useEffect(() => {
     const fetchPopulateCounselors = async () => {
       try {
         const counselorsList = await populateCounselors();
-        dispatch(populateCounselorsState(counselorsList));
+        populateCounselorList(counselorsList);
       } catch (err) {
         // TODO (Gian): probably we need to handle this in a nicer way
         console.error(err.message);
@@ -48,7 +66,33 @@ const CustomCRMContainer: React.FC<Props> = ({ selectedTaskSid, isAddingOfflineC
     };
 
     fetchPopulateCounselors();
-  }, [dispatch]);
+  }, [populateCounselorList]);
+
+  useEffect(() => {
+    if (!currentOfflineContact && definitionVersion) {
+      loadOrCreateDraftOfflineContact(definitionVersion);
+    }
+  }, [currentOfflineContact, definitionVersion, loadOrCreateDraftOfflineContact]);
+
+  useEffect(() => {
+    if (handleUnloadRef) {
+      window.removeEventListener('beforeunload', handleUnloadRef);
+    }
+    handleUnloadRef = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = 'something';
+        return 'something';
+      }
+      return undefined;
+    };
+    window.addEventListener('beforeunload', handleUnloadRef);
+    return () => {
+      if (handleUnloadRef) {
+        window.removeEventListener('beforeunload', handleUnloadRef);
+      }
+    };
+  }, [hasUnsavedChanges]);
 
   const offlineContactTask: OfflineContactTask = {
     taskSid: getOfflineContactTaskSid(),
@@ -71,15 +115,42 @@ const CustomCRMContainer: React.FC<Props> = ({ selectedTaskSid, isAddingOfflineC
 
 CustomCRMContainer.displayName = 'CustomCRMContainer';
 
-const mapStateToProps = (state: RootState) => {
-  const { selectedTaskSid } = state.flex.view;
-  const { isAddingOfflineContact } = state[namespace][routingBase];
-
+const mapStateToProps = ({
+  [namespace]: { routing, activeContacts, configuration, connectedCase },
+  flex,
+}: RootState) => {
+  const { selectedTaskSid } = flex.view;
+  const { isAddingOfflineContact } = routing;
+  const currentOfflineContact = Object.values(activeContacts.existingContacts).find(
+    contact => contact.savedContact.taskId === getOfflineContactTaskSid(),
+  );
+  const hasUnsavedChanges =
+    Object.values(activeContacts.existingContacts).some(
+      ({ savedContact, draftContact }) => !_.isEqual(savedContact, getUnsavedContact(savedContact, draftContact)),
+    ) ||
+    Object.values(connectedCase.tasks).some(
+      ({ caseWorkingCopy }) =>
+        caseWorkingCopy.caseSummary || Object.values(caseWorkingCopy.sections).some(section => section),
+    );
   return {
     selectedTaskSid,
     isAddingOfflineContact,
+    currentOfflineContact,
+    definitionVersion: configuration.currentDefinitionVersion,
+    hasUnsavedChanges,
   };
 };
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = (dispatch: Dispatch<any>) => {
+  return {
+    loadOrCreateDraftOfflineContact: (definition: DefinitionVersion) =>
+      asyncDispatch(dispatch)(
+        createContactAsyncAction(newContact(definition), getHrmConfig().workerSid, getOfflineContactTaskSid()),
+      ),
+    populateCounselorList: (listPayload: Awaited<ReturnType<typeof populateCounselors>>) =>
+      dispatch(populateCounselorsState(listPayload)),
+  };
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 export default withTaskContext(connector(CustomCRMContainer));

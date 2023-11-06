@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Actions } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
@@ -23,12 +23,12 @@ import { RootState } from '../../states';
 import { Contact } from '../../types/types';
 import AddTaskButton from '../common/AddTaskButton';
 import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
-import { getHrmConfig } from '../../hrmConfig';
+import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { newContact } from '../../states/contacts/contactState';
 import asyncDispatch from '../../states/asyncDispatch';
-import { createContactAsyncAction } from '../../states/contacts/saveContact';
-import { rerenderAgentDesktop } from '../../rerenderView';
-import { configurationBase, namespace, routingBase } from '../../states/storeNamespaces';
+import { createContactAsyncAction, newRestartOfflineContactAsyncAction } from '../../states/contacts/saveContact';
+import { namespace } from '../../states/storeNamespaces';
+import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
 
 type OwnProps = {};
 
@@ -39,23 +39,48 @@ const AddOfflineContactButton: React.FC<Props> = ({
   isAddingOfflineContact,
   currentDefinitionVersion,
   createContactState,
+  restartContact,
+  draftOfflineContact,
 }) => {
+  const [errorTimer, setErrorTimer] = React.useState<any>(null);
+
+  useEffect(() => {
+    if (isAddingOfflineContact && errorTimer) {
+      clearTimeout(errorTimer);
+      setErrorTimer(null);
+    }
+    return () => {
+      if (errorTimer) {
+        clearTimeout(errorTimer);
+      }
+    };
+  }, [isAddingOfflineContact, errorTimer]);
   if (!currentDefinitionVersion) {
     return null;
   }
 
   const onClick = async () => {
     console.log('Onclick - creating contact');
-    createContactState(newContact(currentDefinitionVersion));
-
+    if (draftOfflineContact) {
+      await restartContact(draftOfflineContact);
+    } else {
+      await createContactState(newContact(currentDefinitionVersion));
+    }
     await Actions.invokeAction('SelectTask', { task: undefined });
-    await rerenderAgentDesktop();
+    // This is a temporary hack to show an error if it hasn't opened an offline contact to edit in 5 seconds
+    // When we add proper loading / error state to our redux contacts we can replace this
+    setErrorTimer(
+      setTimeout(() => {
+        alert(getTemplateStrings()['TaskList-AddOfflineContact-CreateError']);
+        setErrorTimer(null);
+      }, 5000),
+    );
   };
 
   return (
     <AddTaskButton
       onClick={onClick}
-      disabled={isAddingOfflineContact}
+      disabled={Boolean(isAddingOfflineContact || errorTimer)}
       label="OfflineContactButtonText"
       data-fs-id="Task-AddOfflineContact-Button"
     />
@@ -65,20 +90,26 @@ const AddOfflineContactButton: React.FC<Props> = ({
 AddOfflineContactButton.displayName = 'AddOfflineContactButton';
 
 const mapStateToProps = (state: RootState) => {
-  const { currentDefinitionVersion } = state[namespace][configurationBase];
-  const { isAddingOfflineContact } = state[namespace][routingBase];
+  const draftOfflineContact = findContactByTaskSid(state, getOfflineContactTaskSid())?.savedContact;
+  const { currentDefinitionVersion } = state[namespace].configuration;
+  const { isAddingOfflineContact } = state[namespace].routing;
 
   return {
     isAddingOfflineContact,
     currentDefinitionVersion,
+    draftOfflineContact,
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  createContactState: (contact: Contact) => {
-    asyncDispatch(dispatch)(createContactAsyncAction(contact, getHrmConfig().workerSid, getOfflineContactTaskSid()));
-  },
-});
+const mapDispatchToProps = dispatch => {
+  const asyncDispatcher = asyncDispatch(dispatch);
+  return {
+    createContactState: (contact: Contact) =>
+      asyncDispatcher(createContactAsyncAction(contact, getHrmConfig().workerSid, getOfflineContactTaskSid())),
+    restartContact: (contact: Contact) =>
+      asyncDispatcher(newRestartOfflineContactAsyncAction(contact, getHrmConfig().workerSid)),
+  };
+};
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 export default connector(AddOfflineContactButton);

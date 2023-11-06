@@ -303,7 +303,7 @@ const applyCustomUpdate = (customUpdate: OneToManyConfigSpec): InsightsUpdateFun
     // If it's non data, and specs don't explicitly say to save it, ommit the update
     if (isNonDataCallType(rawJson.callType) && !customUpdate.saveForNonDataContacts) return {};
 
-    const dataSource = { taskAttributes, rawJson, caseForm, savedContact };
+    const dataSource = { taskAttributes, contactForm: rawJson, caseForm, savedContact };
     // concatenate the values, taken from dataSource using paths (e.g. 'contactForm.childInformation.province')
     const value = customUpdate.paths.map(path => sanitizeInsightsValue(get(dataSource, path, ''))).join(delimiter);
 

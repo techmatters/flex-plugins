@@ -29,9 +29,11 @@ import { AddOfflineContactButton } from '../../../components/OfflineContact';
 import { rerenderAgentDesktop } from '../../../rerenderView';
 import { createContact } from '../../../services/ContactService';
 import { Contact } from '../../../types/types';
-import { configurationBase, namespace, routingBase } from '../../../states/storeNamespaces';
+import { namespace } from '../../../states/storeNamespaces';
+import { RootState } from '../../../states';
+import { RecursivePartial } from '../../RecursivePartial';
 
-let v1;
+let mockV1;
 
 jest.mock('../../../services/ServerlessService');
 jest.mock('../../../rerenderView', () => ({
@@ -46,7 +48,6 @@ jest.mock('@twilio/flex-ui', () => ({
     invokeAction: jest.fn(),
   },
 }));
-mockPartialConfiguration({ workerSid: 'mock-worker' });
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 const mockInvokeAction = Actions.invokeAction as jest.MockedFunction<typeof Actions.invokeAction>;
@@ -57,7 +58,31 @@ beforeAll(async () => {
   const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
-  v1 = await loadDefinition(formDefinitionsBaseUrl);
+  mockV1 = await loadDefinition(formDefinitionsBaseUrl);
+  mockPartialConfiguration({ workerSid: 'mock-worker' });
+  baseState = {
+    flex: {
+      view: { selectedTaskSid: '123' },
+    },
+    [namespace]: {
+      configuration: {
+        currentDefinitionVersion: mockV1,
+      },
+      routing: {
+        isAddingOfflineContact: false,
+      },
+      activeContacts: {
+        existingContacts: {
+          contact1: {
+            savedContact: {
+              id: 'contact1',
+              taskId: '123',
+            },
+          },
+        },
+      },
+    },
+  };
 });
 
 beforeEach(async () => {
@@ -68,25 +93,16 @@ beforeEach(async () => {
 
 expect.extend(toHaveNoViolations);
 
+let baseState: RecursivePartial<RootState>;
+
 const mockStore = configureMockStore([]);
 test('click on button', async () => {
   mockCreateContact.mockImplementation((contact: Contact) => {
     console.log('Creating contact', contact);
     return Promise.resolve(contact);
   });
-  const store = mockStore({
-    flex: {
-      view: { selectedTaskSid: '123' },
-    },
-    [namespace]: {
-      [configurationBase]: {
-        currentDefinitionVersion: v1,
-      },
-      [routingBase]: {
-        isAddingOfflineContact: false,
-      },
-    },
-  });
+
+  const store = mockStore(baseState);
 
   render(
     <StorelessThemeProvider themeConf={{}}>
@@ -116,19 +132,21 @@ test('click on button', async () => {
 });
 
 test('button should be disabled (default task exists)', () => {
-  const store = mockStore({
+  const state: RecursivePartial<RootState> = {
+    ...baseState,
     flex: {
       view: { selectedTaskSid: undefined },
+      ...baseState.flex,
     },
     [namespace]: {
-      [configurationBase]: {
-        currentDefinitionVersion: v1,
-      },
-      [routingBase]: {
+      ...baseState[namespace],
+      routing: {
         isAddingOfflineContact: true,
       },
     },
-  });
+  };
+
+  const store = mockStore(state);
 
   const recreateContactState = jest.fn();
 
@@ -150,19 +168,14 @@ test('button should be disabled (default task exists)', () => {
 const Wrapped = withTheme(props => <AddOfflineContactButton {...props} />);
 
 test('a11y', async () => {
-  const store = mockStore({
+  const state: RecursivePartial<RootState> = {
+    ...baseState,
     flex: {
       view: { selectedTaskSid: '123', activeView: 'some-view' },
+      ...baseState.flex,
     },
-    [namespace]: {
-      [configurationBase]: {
-        currentDefinitionVersion: v1,
-      },
-      [routingBase]: {
-        isAddingOfflineContact: false,
-      },
-    },
-  });
+  };
+  const store = mockStore(state);
 
   const wrapper = mount(
     <StorelessThemeProvider themeConf={{}}>
