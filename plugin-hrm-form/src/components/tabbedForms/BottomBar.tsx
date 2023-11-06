@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -87,7 +87,7 @@ const BottomBar: React.FC<
     setDropdown(previous => !previous);
   };
 
-  const isAddedToExistingCase = savedContact?.caseId !== null;
+  const isAddedToCase = savedContact?.caseId !== null;
 
   const handleOpenNewCase = async () => {
     const { workerSid, definitionVersion } = getHrmConfig();
@@ -168,46 +168,48 @@ const BottomBar: React.FC<
         )}
         {showSubmitButton && (
           <>
-            <AddNewCaseDropdown
-              handleNewCaseType={handleSubmitIfValid(handleOpenNewCase, onError)}
-              handleExistingCaseType={openSearchModal}
-              dropdown={dropdown}
-            />
-            {isAddedToExistingCase ? (
-              <Box marginRight="25px">
-                <AddedToCaseButton>
-                  <Template code="BottomBar-AddedToCase" />
-                </AddedToCaseButton>
-              </Box>
-            ) : (
-              featureFlags.enable_case_management &&
-              !isNonDataCallType(contact.rawJson.callType) && (
-                <Box marginRight="15px">
-                  <StyledNextStepButton
-                    type="button"
-                    roundCorners
-                    secondary="true"
-                    onClick={handleDropdown}
-                    data-fs-id="Contact-SaveAndAddToCase-Button"
-                    data-testid="BottomBar-SaveAndAddToCase-Button"
-                  >
-                    <FolderIcon style={{ fontSize: '16px', marginRight: '10px', width: '24px', height: '24px' }} />
-                    <Template code="BottomBar-AddContactToNewCase" />
-                    {dropdown && (
-                      <KeyboardArrowUpIcon
-                        style={{ fontSize: '20px', marginLeft: '10px', width: '24px', height: '24px' }}
-                      />
-                    )}
-                    {!dropdown && (
-                      <KeyboardArrowDownIcon
-                        style={{ fontSize: '20px', marginLeft: '10px', width: '24px', height: '24px' }}
-                      />
-                    )}
-                  </StyledNextStepButton>
-                </Box>
-              )
+            {featureFlags.enable_case_management && (
+              <AddNewCaseDropdown
+                handleNewCaseType={handleSubmitIfValid(handleOpenNewCase, onError)}
+                handleExistingCaseType={openSearchModal}
+                dropdown={dropdown}
+              />
             )}
-            {isAddedToExistingCase ? (
+            {isAddedToCase
+              ? featureFlags.enable_case_management && (
+                  <Box marginRight="25px">
+                    <AddedToCaseButton>
+                      <Template code="BottomBar-AddedToCase" />
+                    </AddedToCaseButton>
+                  </Box>
+                )
+              : featureFlags.enable_case_management &&
+                !isNonDataCallType(contact.rawJson.callType) && (
+                  <Box marginRight="15px">
+                    <StyledNextStepButton
+                      type="button"
+                      roundCorners
+                      secondary="true"
+                      onClick={handleDropdown}
+                      data-fs-id="Contact-SaveAndAddToCase-Button"
+                      data-testid="BottomBar-SaveAndAddToCase-Button"
+                    >
+                      <FolderIcon style={{ fontSize: '16px', marginRight: '10px', width: '24px', height: '24px' }} />
+                      <Template code="BottomBar-AddContactToNewCase" />
+                      {dropdown && (
+                        <KeyboardArrowUpIcon
+                          style={{ fontSize: '20px', marginLeft: '10px', width: '24px', height: '24px' }}
+                        />
+                      )}
+                      {!dropdown && (
+                        <KeyboardArrowDownIcon
+                          style={{ fontSize: '20px', marginLeft: '10px', width: '24px', height: '24px' }}
+                        />
+                      )}
+                    </StyledNextStepButton>
+                  </Box>
+                )}
+            {isAddedToCase ? (
               <SaveAndEndContactButton
                 onClick={handleSubmitIfValid(handleSubmit, onError)}
                 roundCorners={true}
