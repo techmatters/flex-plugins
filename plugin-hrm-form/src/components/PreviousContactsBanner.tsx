@@ -35,8 +35,6 @@ import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate 
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../permissions';
 import { CustomITask, isTwilioTask } from '../types/types';
 import { namespace } from '../states/storeNamespaces';
-import { isRouteModal } from '../states/routing/types';
-import { getCurrentBaseRoute } from '../states/routing/getRoute';
 
 type OwnProps = {
   task: CustomITask;
@@ -52,7 +50,6 @@ const PreviousContactsBanner: React.FC<Props> = ({
   searchContacts,
   searchCases,
   openContactSearchResults,
-  modalOpen,
 }) => {
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
@@ -98,7 +95,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   }
 
   return (
-    <div className={modalOpen ? 'editingContact' : ''}>
+    <div>
       <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
         {/* eslint-disable-next-line prettier/prettier */}
       <pre>
@@ -155,12 +152,10 @@ const mapStateToProps = (
 ) => {
   const taskSearchState = searchContacts.tasks[taskSid];
   const { counselors } = configuration;
-  const modalOpen = activeContacts.editingContact || isRouteModal(getCurrentBaseRoute(routing, taskSid));
 
   return {
     previousContacts: taskSearchState.previousContacts,
     counselorsHash: counselors.hash,
-    modalOpen,
   };
 };
 

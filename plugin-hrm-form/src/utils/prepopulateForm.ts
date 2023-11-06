@@ -178,7 +178,7 @@ const getAnswers = (memory: LexMemory | AutopilotMemory): PreSurveyAnswers => {
 };
 
 // TODO: Rework this function to build up the prepopulated contact in memory then save it to HRM, rather than saving an empty contact then prepopulating the draft state
-// eslint-disable-next-line sonarjs/cognitive-complexity
+// eslint-disable-next-line sonarjs/cognitive-complexity,complexity
 export const prepopulateForm = async (task: ITask) => {
   const { dispatch } = Manager.getInstance().store;
   const asyncDispatcher = asyncDispatch(dispatch);
@@ -189,7 +189,12 @@ export const prepopulateForm = async (task: ITask) => {
   }
 
   const createdContact = findContactByTaskSid(Manager.getInstance().store.getState() as RootState, task.taskSid)
-    .savedContact;
+    ?.savedContact;
+
+  if (!createdContact) {
+    console.warn('Attempting to prepopulate a form but no contact has been created, abandoning attempt.');
+    return;
+  }
 
   const { memory, preEngagementData } = task.attributes;
 

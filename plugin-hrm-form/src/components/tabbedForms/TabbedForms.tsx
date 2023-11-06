@@ -302,7 +302,7 @@ const TabbedForms: React.FC<Props> = ({
                   display={subroute === 'contactlessTask'}
                   helplineInformation={currentDefinitionVersion.helplineInformation}
                   definition={currentDefinitionVersion.tabbedForms.ContactlessTaskTab}
-                  initialValues={contactlessTask}
+                  initialValues={{ ...contactlessTask, helpline }}
                   autoFocus={autoFocus}
                 />
               </TabbedFormTabContainer>
