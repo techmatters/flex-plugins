@@ -3,7 +3,7 @@ locals {
   defaults_config     = local.defaults_config_hcl.locals
   config              = merge(local.defaults_config, local.local_config)
 
- 
+
   local_config = {
     helpline                          = "SaferNet"
     old_dir_prefix                    = "safernet"
@@ -12,23 +12,24 @@ locals {
     task_language                     = "pt-BR"
     helpline_language                 = "pt-BR"
     voice_ivr_language                = ""
-    contacts_waiting_channels         = ["facebook","instagram"]
+    contacts_waiting_channels         = ["facebook", "instagram"]
     enable_post_survey                = false
-    
-   
-    lex_bot_languages  = {
-      pt_br : ["pre_survey","contact_reason"]
+
+
+    lex_bot_languages = {
+      pt_br : ["pre_survey", "contact_reason"]
     }
-    
+
 
     workflows = {
       master : {
-        friendly_name : "Master Workflow"
-        templatefile : "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+        friendly_name            = "Master Workflow"
+        templatefile             = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+        task_reservation_timeout = 300
       },
       survey : {
-        friendly_name : "Survey Workflow"
-        templatefile : "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+        friendly_name = "Survey Workflow"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
 
@@ -37,7 +38,7 @@ locals {
         "target_workers" = "1==1",
         "friendly_name"  = "Safernet"
       },
-       survey : {
+      survey : {
         "target_workers" = "1==0",
         "friendly_name"  = "Survey"
       },
