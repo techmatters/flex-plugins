@@ -227,6 +227,9 @@ export const setUpCustomCRMContainer = () => {
   );
 };
 
+/**
+ * Adds a custom button for voice channel to show the phone number in emergency situations
+ */
 export const setUpViewMaskedVoiceNumber = () => {
   Flex.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" />, {
     sortOrder: 1,
@@ -257,13 +260,6 @@ export const setUpTransferComponents = () => {
     if: props => TransferHelpers.shouldShowTransferControls(props.task),
   });
 };
-
-// export const setUpViewMaskedVoiceNumber = () => {
-//   Flex.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" />, {
-//     sortOrder: 1,
-//     if: props => props.task.channelType === 'voice',
-//   });
-// };
 
 /**
  * Add components used only by developers
