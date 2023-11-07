@@ -21,7 +21,7 @@ import { FeatureFlags } from './types/types';
 import type { RootState } from './states';
 import { namespace } from './states/storeNamespaces';
 
-const featureFlagEnvVarPrefix = 'REACT_FF_';
+const featureFlagEnvVarPrefix = 'REACT_APP_FF_';
 
 const readConfig = () => {
   const manager = Flex.Manager.getInstance();
