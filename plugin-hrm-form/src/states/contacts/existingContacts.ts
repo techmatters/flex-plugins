@@ -352,8 +352,10 @@ export const updateDraftReducer = (
       [contactId]: {
         ...state[contactId],
         draftContact: {
+          ...state[contactId].draftContact,
           ...draft,
           rawJson: {
+            ...state[contactId].draftContact?.rawJson,
             ...draft.rawJson,
             ...transformedForm,
           },

@@ -55,6 +55,7 @@ import asyncDispatch from '../../states/asyncDispatch';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import { configurationBase, contactFormsBase, namespace, routingBase } from '../../states/storeNamespaces';
 import { setEditContactPageOpen } from '../../states/contacts/actions';
+import { getHrmConfig } from '../../hrmConfig';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -131,6 +132,8 @@ const TabbedForms: React.FC<Props> = ({
     mode: 'onChange',
   });
 
+  const { contactSaveFrequency } = getHrmConfig();
+
   const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={savedContact.csamReports} />, [
     savedContact.csamReports,
   ]);
@@ -179,7 +182,9 @@ const TabbedForms: React.FC<Props> = ({
 
   const handleTabsChange = async (t: number) => {
     const tab = tabsToIndex[t];
-    await saveDraft(savedContact, draftContact);
+    if (contactSaveFrequency === 'onTabChange') {
+      saveDraft(savedContact, draftContact);
+    }
     navigateToTab(tab);
   };
 
