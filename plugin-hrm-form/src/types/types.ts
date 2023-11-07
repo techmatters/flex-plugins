@@ -179,11 +179,13 @@ export type Contact = {
   channel: ChannelTypes | 'default';
   updatedBy: string;
   updatedAt?: string;
+  finalizedAt?: string;
   rawJson: ContactRawJson;
   timeOfContact: string;
   queueName: string;
   channelSid: string;
   serviceSid: string;
+  caseId?: number;
 };
 
 export type SearchContactResult = {
@@ -267,6 +269,7 @@ export type FeatureFlags = {
   enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior
   enable_lex: boolean; // Enables consuming from Lex bots
   backend_handled_chat_janitor: boolean; // [Temporary flag until all accounts are migrated] Enables handling the janitor from taskrouter event listeners
+  enable_case_merging: boolean; // Enables adding contacts to existing cases
 };
 /* eslint-enable camelcase */
 

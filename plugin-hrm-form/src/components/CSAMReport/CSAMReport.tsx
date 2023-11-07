@@ -24,7 +24,6 @@ import CSAMReportCounsellorForm from './CSAMReportCounsellorForm';
 import { CenterContent, CSAMReportContainer, CSAMReportLayout } from '../../styles/CSAMReport';
 import { RootState } from '../../states';
 import { CSAMPage, CSAMReportApi } from './csamReportApi';
-import * as t from '../../states/contacts/actions';
 import { isChildTaskEntry, isCounsellorTaskEntry } from '../../states/csam-report/types';
 import CSAMReportTypePickerForm from './CSAMReportTypePicker';
 import CSAMReportChildForm from './CSAMReportChildForm';
@@ -50,8 +49,6 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { api }: OwnProps) => {
     exit: api.exitActionDispatcher(dispatch),
     addCSAMReportEntry: api.addReportDispatcher(dispatch),
     pickReportType: api.pickReportTypeDispatcher(dispatch),
-    setEditPageOpen: () => dispatch(t.setEditContactPageOpen()),
-    setEditPageClosed: () => dispatch(t.setEditContactPageClosed()),
   };
 };
 
@@ -70,8 +67,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
   currentPage,
   counselorsHash,
   api,
-  setEditPageClosed,
-  setEditPageOpen,
   pickReportType,
 }) => {
   const methods = useForm({ reValidateMode: 'onChange' });
@@ -79,14 +74,6 @@ export const CSAMReportScreen: React.FC<Props> = ({
   const { workerSid } = getHrmConfig();
   const strings = getTemplateStrings();
   const currentCounselor = counselorsHash[workerSid];
-
-  React.useEffect(() => {
-    setEditPageOpen();
-    return () => {
-      setEditPageClosed();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   if (!currentPage) return null;
 

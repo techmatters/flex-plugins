@@ -47,16 +47,6 @@ export const restoreEntireContact = (contact: ContactState): t.ContactsActionTyp
   contact,
 });
 
-export const setEditContactPageOpen = (): t.ContactsActionType => ({
-  type: t.SET_EDITING_CONTACT,
-  editing: true,
-});
-
-export const setEditContactPageClosed = (): t.ContactsActionType => ({
-  type: t.SET_EDITING_CONTACT,
-  editing: false,
-});
-
 export const setCallType = (isCallTypeCaller: boolean): t.ContactsActionType => ({
   type: t.SET_CALL_TYPE,
   isCallTypeCaller,

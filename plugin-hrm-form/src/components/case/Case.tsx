@@ -86,7 +86,7 @@ const Case: React.FC<Props> = ({
   closeModal,
   goBack,
   isCreating,
-  handleClose,
+  handleClose = closeModal,
   routing,
   savedContacts,
   loadContacts,

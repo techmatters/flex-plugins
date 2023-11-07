@@ -33,14 +33,13 @@ type OwnProps = {
   currentIsCaller: boolean;
   contact: Contact;
   showActionIcons: boolean;
-  handleBack: () => void;
   handleSelectSearchResult: (contact: Contact) => void;
 };
 
 const mapStateToProps = ({ [namespace]: { activeContacts, configuration } }: RootState, { contact }: OwnProps) => {
-  const { isCallTypeCaller, editingContact: editContactFormOpen } = activeContacts;
+  const { isCallTypeCaller } = activeContacts;
   const definitionVersion = configuration.definitionVersions[contact.rawJson.definitionVersion];
-  return { editContactFormOpen, isCallTypeCaller, definitionVersion };
+  return { isCallTypeCaller, definitionVersion };
 };
 const mapDispatchToProps = {
   loadContactIntoState: loadContact,

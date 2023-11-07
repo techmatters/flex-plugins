@@ -32,12 +32,12 @@ locals {
 
 resource "twilio_studio_flows_v2" "channel_studio_flow" {
   for_each      = var.channels
-  friendly_name = "${title(each.key)} Studio Flow"
+  friendly_name = "${title(replace(each.key,"_"," "))} Studio Flow"
   status        = "published"
   definition = templatefile(
     each.value.templatefile,
     {
-      flow_description  = "${title(each.key)} Studio Flow",
+      flow_description  = "${title(replace(each.key,"_"," "))} Studio Flow",
       channel_name      = each.key,
       task_language     = var.task_language,
       flow_vars         = var.flow_vars,
@@ -78,7 +78,7 @@ resource "twilio_flex_flex_flows_v1" "channel_flow" {
   }
   channel_type         = each.value.channel_type
   chat_service_sid     = var.flex_chat_service_sid
-  friendly_name        = "Flex ${title(each.key)} Flow"
+  friendly_name        = "Flex ${title(replace(each.key,"_"," "))} Flow"
   integration_type     = "studio"
   janitor_enabled      = !var.enable_post_survey
   contact_identity     = each.value.contact_identity
@@ -94,5 +94,5 @@ resource "aws_ssm_parameter" "channel_flex_flow_sid_parameter" {
   name        = "${var.short_environment}_TWILIO_${var.short_helpline}_${upper(each.key)}_FLEX_FLOW_SID"
   type        = "SecureString"
   value       = twilio_flex_flex_flows_v1.channel_flow[each.key].sid
-  description = "${title(each.key)} Flex Flow SID"
+  description = "${title(replace(each.key,"_"," "))} Flex Flow SID"
 }
