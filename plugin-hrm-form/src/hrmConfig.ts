@@ -22,7 +22,7 @@ import type { RootState } from './states';
 import { namespace } from './states/storeNamespaces';
 
 const featureFlagEnvVarPrefix = 'REACT_FF_';
-export type ContactSaveFrequency = 'onTabChange' | 'onFinalSaveAndTransfer';
+type ContactSaveFrequency = 'onTabChange' | 'onFinalSaveAndTransfer';
 
 const readConfig = () => {
   const manager = Flex.Manager.getInstance();
