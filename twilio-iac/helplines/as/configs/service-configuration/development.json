@@ -20,7 +20,7 @@
             "enable_post_survey": false
 
         },
-
+        "contact_save_frequency": "onFinalSaveAndTransfer",
         "multipleOfficeSupport": true,
         "permissionConfig": "dev",
         "previous_ui_version": {
