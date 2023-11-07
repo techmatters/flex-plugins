@@ -54,7 +54,7 @@ const readConfig = () => {
 
   const externalRecordingsEnabled = manager.serviceConfiguration.attributes.external_recordings_enabled || false;
   const contactSaveFrequency: ContactSaveFrequency =
-    manager.serviceConfiguration.attributes.contact_save_frequency || 'onFinalSaveAndTransfer';
+    manager.serviceConfiguration.attributes.contact_save_frequency || 'onTabChange';
 
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid;
