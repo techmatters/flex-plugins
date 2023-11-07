@@ -17,10 +17,17 @@
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
 import { submitContactForm } from '../../services/formSubmissionHelpers';
-import { connectToCase, createContact, getContactByTaskSid, updateContactInHrm } from '../../services/ContactService';
+import {
+  connectToCase,
+  removeFromCase,
+  createContact,
+  getContactByTaskSid,
+  updateContactInHrm,
+} from '../../services/ContactService';
 import { Case, CustomITask, Contact } from '../../types/types';
 import {
   CONNECT_TO_CASE,
+  REMOVE_FROM_CASE,
   ContactMetadata,
   CREATE_CONTACT_ACTION,
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION,
@@ -64,6 +71,14 @@ export const connectToCaseAsyncAction = createAsyncAction(
   CONNECT_TO_CASE,
   async (contactId: string, caseId: number | null): Promise<{ contactId: string; caseId: number }> => {
     await connectToCase(contactId, caseId);
+    return { contactId, caseId };
+  },
+);
+
+export const removeFromCaseAsyncAction = createAsyncAction(
+  REMOVE_FROM_CASE,
+  async (contactId: string, caseId: number | null): Promise<{ contactId: string; caseId: number }> => {
+    await removeFromCase(contactId, caseId);
     return { contactId, caseId };
   },
 );

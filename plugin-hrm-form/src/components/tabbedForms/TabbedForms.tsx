@@ -64,6 +64,9 @@ import Case from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
 import ViewContact from '../case/ViewContact';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
+import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
+import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
+import { showConnectedToCaseBannerAction, selectCaseMergingBanners } from '../caseMergingBanners/state';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
@@ -124,6 +127,7 @@ const TabbedForms: React.FC<Props> = ({
   csamReportEnabled,
   csamClcReportEnabled,
   searchModalOpen,
+  connectToCase,
   updateDraftForm,
   newCSAMReport,
   saveDraft,
@@ -134,6 +138,8 @@ const TabbedForms: React.FC<Props> = ({
   openSearchModal,
   closeModal,
   finaliseContact,
+  showConnectedToCaseBanner,
+  showRemovedFromCaseBanner,
   metadata,
   task,
   isCallTypeCaller,
@@ -282,6 +288,9 @@ const TabbedForms: React.FC<Props> = ({
     <FormProvider {...methods}>
       <div role="form" style={{ height: '100%' }}>
         <TabbedFormsContainer>
+          <button type="button" onClick={connectToCase}>
+            Fake connect Case
+          </button>
           {/* Buttons at the top of the form */}
           <HeaderControlButtons />
           <StyledTabs
@@ -295,6 +304,10 @@ const TabbedForms: React.FC<Props> = ({
             {tabs}
           </StyledTabs>
           <div style={{ height: '100%', overflow: 'hidden' }}>
+            <Box margin="0 5px">
+              {showConnectedToCaseBanner && <ContactAddedToCaseBanner contactId="3333" caseId={5795} />}
+              {showRemovedFromCaseBanner && <ContactRemovedFromCaseBanner />}
+            </Box>
             {isOfflineContactTask(task) && (
               <TabbedFormTabContainer display={subroute === 'contactlessTask'}>
                 <ContactlessTaskTab
@@ -380,10 +393,10 @@ const TabbedForms: React.FC<Props> = ({
 
 TabbedForms.displayName = 'TabbedForms';
 
-const mapStateToProps = (
-  { [namespace]: { routing, activeContacts, configuration } }: RootState,
-  { task: { taskSid }, contactId }: OwnProps,
-) => {
+const mapStateToProps = (state: RootState, { task: { taskSid }, contactId }: OwnProps) => {
+  const {
+    [namespace]: { routing, activeContacts, configuration },
+  } = state;
   const currentRoute = getCurrentTopmostRouteForTask(routing, taskSid);
   const { isCallTypeCaller, existingContacts } = activeContacts;
   const { savedContact, draftContact, metadata } = existingContacts[contactId] || {};
@@ -391,6 +404,7 @@ const mapStateToProps = (
   const searchModalOpen =
     isRouteWithModalSupport(baseRoute) && baseRoute.activeModal?.length && baseRoute.activeModal[0].route === 'search';
   const { currentDefinitionVersion } = configuration;
+  const { showConnectedToCaseBanner, showRemovedFromCaseBanner } = selectCaseMergingBanners(state);
   return {
     currentRoute,
     savedContact,
@@ -400,6 +414,8 @@ const mapStateToProps = (
     searchModalOpen,
     isCallTypeCaller,
     metadata,
+    showConnectedToCaseBanner,
+    showRemovedFromCaseBanner,
   };
 };
 
@@ -424,6 +440,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { contactId, task }: OwnPro
     dispatch(changeRoute({ route: 'select-call-type' }, task.taskSid, ChangeRouteMode.Replace)),
   finaliseContact: (contact: Contact, metadata: ContactMetadata, caseForm: CaseForm) =>
     dispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
+  connectToCase: () => dispatch(showConnectedToCaseBannerAction()),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
