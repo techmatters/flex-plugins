@@ -29,7 +29,7 @@ import { PermissionActions, PermissionActionType } from '../../permissions';
 import { AppRoutes, CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
 import { RootState } from '../../states';
-import { Activity, CaseDetails, CaseState } from '../../states/case/types';
+import { CaseDetails, CaseState } from '../../states/case/types';
 import { CustomITask, EntryInfo, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
 import InformationRow from './InformationRow';
@@ -45,7 +45,6 @@ export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
   definitionVersion: DefinitionVersion;
   caseDetails: CaseDetails;
-  timeline: Activity[];
   isCreating?: boolean;
   handleClose?: () => void;
   handleSaveAndEnd: () => void;
@@ -65,7 +64,6 @@ const CaseHome: React.FC<Props> = ({
   handleClose,
   handleSaveAndEnd,
   handleCancelNewCaseAndClose,
-  timeline,
   caseDetails,
   can,
   connectedCaseState,
@@ -209,7 +207,7 @@ const CaseHome: React.FC<Props> = ({
           <CaseSummary task={task} />
         </Box>
         <Box margin="25px 0 0 25px">
-          <Timeline timelineActivities={timeline} taskSid={task.taskSid} can={can} />
+          <Timeline taskSid={task.taskSid} can={can} />
         </Box>
         <Box margin="25px 0 0 25px">
           <CaseSection

@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/prop-types,complexity,sonarjs/cognitive-complexity */
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import { AnyAction, bindActionCreators } from 'redux';
@@ -23,13 +23,13 @@ import { AnyAction, bindActionCreators } from 'redux';
 import { RootState } from '../../states';
 import { cancelCase } from '../../services/CaseService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
-import { getActivitiesFromCase, getActivitiesFromContacts, isNoteActivity, sortActivities } from './caseActivities';
+import { getNoteActivities, sortActivities } from './caseActivities';
 import { getHelplineData } from './caseHelpers';
 import { getLocaleDateTime } from '../../utils/helpers';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
-import { Activity, CaseDetails, NoteActivity } from '../../states/case/types';
+import { CaseDetails } from '../../states/case/types';
 import { Case as CaseType, CustomITask, Contact, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import {
@@ -61,8 +61,9 @@ import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import { connectToCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
-import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
+import { configurationBase, connectedCaseBase, namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { selectSavedContacts } from '../../states/case/connectedContacts';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -101,35 +102,9 @@ const Case: React.FC<Props> = ({
   const [loading, setLoading] = useState(false);
   const [loadedContactIds, setLoadedContactIds] = useState([]);
   const { connectedCase } = props?.connectedCaseState ?? {};
-  // This is to provide a stable dep for the useEffect that generates the timeline
-  const savedContactsJson = JSON.stringify(savedContacts);
+
   const { workerSid } = getHrmConfig();
   const strings = getTemplateStrings();
-
-  const timeline: Activity[] = useMemo(
-    () => {
-      const { connectedCaseId, definitionVersions, connectedCaseState } = props;
-      /**
-       * Gets the activities timeline from current caseId
-       * If the case is just being created, adds the case's description as a new activity
-       */
-      if (!connectedCaseId) return [];
-
-      const { connectedCase } = connectedCaseState;
-
-      const timelineActivities = [
-        ...getActivitiesFromCase(
-          connectedCase,
-          definitionVersions[connectedCase.info.definitionVersion] ?? props.currentDefinitionVersion,
-        ),
-        ...getActivitiesFromContacts(savedContacts ?? []),
-      ];
-      return sortActivities(timelineActivities);
-    },
-    // savedContacts is not present but savedContactsJson is
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [savedContactsJson, task, props.connectedCaseId, props.connectedCaseState?.connectedCase],
-  );
 
   useEffect(() => {
     if (!connectedCase) return;
@@ -182,9 +157,9 @@ const Case: React.FC<Props> = ({
   const perpetrators = info && info.perpetrators ? info.perpetrators : [];
   const incidents = info && info.incidents ? info.incidents : [];
   const documents = info && info.documents ? info.documents : [];
+  const notes = sortActivities(getNoteActivities(info?.counsellorNotes, definitionVersion));
   const childIsAtRisk = Boolean(info && info.childIsAtRisk);
   const referrals = info?.referrals;
-  const notes: NoteActivity[] = timeline.filter(x => isNoteActivity(x)) as NoteActivity[];
   const summary = info?.summary;
   const office = getHelplineData(connectedCase.helpline, definitionVersion.helplineInformation);
 
@@ -341,7 +316,6 @@ const Case: React.FC<Props> = ({
       task={task}
       definitionVersion={definitionVersion}
       caseDetails={caseDetails}
-      timeline={timeline}
       handleClose={() => {
         releaseContacts(loadedContactIds, task.taskSid);
         handleClose();
@@ -360,7 +334,6 @@ Case.displayName = 'Case';
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const caseState = state[namespace][connectedCaseBase].tasks[task.taskSid];
   const { connectedCase } = caseState ?? {};
-  const connectedContactIds = new Set((connectedCase?.connectedContacts ?? []).map(cc => cc.id as string));
   const { definitionVersions, currentDefinitionVersion } = state[namespace][configurationBase];
 
   return {
@@ -370,9 +343,7 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
     routing: getCurrentTopmostRouteForTask(state[namespace].routing, task.taskSid) as CaseRoute,
     definitionVersions,
     currentDefinitionVersion,
-    savedContacts: Object.values(state[namespace][contactFormsBase].existingContacts)
-      .filter(contact => connectedContactIds.has(contact.savedContact.id))
-      .map(ecs => ecs.savedContact),
+    savedContacts: selectSavedContacts(state, connectedCase),
   };
 };
 

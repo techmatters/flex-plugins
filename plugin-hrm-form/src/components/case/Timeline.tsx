@@ -37,22 +37,42 @@ import { Box, Row } from '../../styles/HrmStyles';
 import CaseAddButton from './CaseAddButton';
 import { CustomITask } from '../../types/types';
 import { isConnectedCaseActivity } from './caseActivities';
-import { Activity, ConnectedCaseActivity, NoteActivity, ReferralActivity } from '../../states/case/types';
+import { ConnectedCaseActivity, NoteActivity, ReferralActivity } from '../../states/case/types';
 import { getPermissionsForContact, PermissionActions, PermissionActionType } from '../../permissions';
 import { NewCaseSubroutes, CaseItemAction, CaseSectionSubroute } from '../../states/routing/types';
 import { newOpenModalAction } from '../../states/routing/actions';
+import { RootState } from '../../states';
+import { selectCaseActivities } from '../../states/case/timeline';
 
 type OwnProps = {
-  timelineActivities: Activity[];
   can: (action: PermissionActionType) => boolean;
   taskSid: CustomITask['taskSid'];
 };
 
-// eslint-disable-next-line no-use-before-define
+const mapStateToProps = (state: RootState, { taskSid }: OwnProps) => ({
+  timelineActivities: selectCaseActivities(state, taskSid),
+});
+
+const mapDispatchToProps = (dispatch, { taskSid }: OwnProps) => ({
+  openContactModal: (contactId: string) =>
+    dispatch(newOpenModalAction({ route: 'contact', subroute: 'view', id: contactId }, taskSid)),
+  openAddCaseSectionModal: (subroute: CaseSectionSubroute) =>
+    dispatch(newOpenModalAction({ route: 'case', subroute, action: CaseItemAction.Add }, taskSid)),
+  openViewCaseSectionModal: (subroute: CaseSectionSubroute, id: string) =>
+    dispatch(newOpenModalAction({ route: 'case', subroute, id, action: CaseItemAction.View }, taskSid)),
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const Timeline: React.FC<Props> = props => {
-  const { can, timelineActivities, openContactModal, openViewCaseSectionModal, openAddCaseSectionModal } = props;
+const Timeline: React.FC<Props> = ({
+  can,
+  timelineActivities,
+  openContactModal,
+  openViewCaseSectionModal,
+  openAddCaseSectionModal,
+}) => {
   const [mockedMessage, setMockedMessage] = useState(null);
 
   const handleViewNoteClick = ({ id }: NoteActivity) => {
@@ -149,19 +169,8 @@ const Timeline: React.FC<Props> = props => {
     </CaseDetailsBorder>
   );
 };
-
 Timeline.displayName = 'Timeline';
 
-const mapDispatchToProps = (dispatch, { taskSid }: OwnProps) => ({
-  openContactModal: (contactId: string) =>
-    dispatch(newOpenModalAction({ route: 'contact', subroute: 'view', id: contactId }, taskSid)),
-  openAddCaseSectionModal: (subroute: CaseSectionSubroute) =>
-    dispatch(newOpenModalAction({ route: 'case', subroute, action: CaseItemAction.Add }, taskSid)),
-  openViewCaseSectionModal: (subroute: CaseSectionSubroute, id: string) =>
-    dispatch(newOpenModalAction({ route: 'case', subroute, id, action: CaseItemAction.View }, taskSid)),
-});
-
-const connector = connect(null, mapDispatchToProps);
 const connected = connector(Timeline);
 
 export default connected;
