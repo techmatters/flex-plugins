@@ -80,6 +80,25 @@ const setUpComponents = (
   // const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
   const maskIdentifiers = true;
 
+  if (maskIdentifiers) {
+    // Mask the identifiers in all default channels
+    Channels.maskIdentifiersForDefaultChannels();
+
+    // Mask the username within the messable bubbles in an conversation
+    Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
+      theirDefaultName: 'XXXXXX',
+      theirFriendlyNameOverride: false,
+      yourFriendlyNameOverride: true,
+    };
+    Flex.MessageList.Content.remove('0');
+    // Masks TaskInfoPanelContent - TODO: refactor to use a react component
+    const strings = getTemplateStrings();
+    strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+    strings.CallParticipantCustomerName = strings.MaskIdentifiers;
+
+    if (setupObject.helplineCode === 'as' || setupObject.helplineCode === 'ca') Components.setUpViewMaskedVoiceNumber();
+  }
+
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus(setupObject);
@@ -115,25 +134,6 @@ const setUpComponents = (
   } else {
     if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
     if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
-  }
-
-  if (maskIdentifiers) {
-    // Mask the identifiers in all default channels
-    Channels.maskIdentifiersForDefaultChannels();
-
-    // Mask the username within the messable bubbles in an conversation
-    Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
-      theirDefaultName: 'XXXXXX',
-      theirFriendlyNameOverride: false,
-      yourFriendlyNameOverride: true,
-    };
-    Flex.MessageList.Content.remove('0');
-    // Masks TaskInfoPanelContent - TODO: refactor to use a react component
-    const strings = getTemplateStrings();
-    strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
-    strings.CallParticipantCustomerName = strings.MaskIdentifiers;
-
-    if (setupObject.helplineCode === 'as' || setupObject.helplineCode === 'ca') Components.setUpViewMaskedVoiceNumber();
   }
 
   Components.setupTeamViewFilters();

@@ -544,6 +544,15 @@ export const TransferStyledButton = styled('button')<TransferStyledButtonProps>`
 `;
 TransferStyledButton.displayName = 'TransferStyledButton';
 
+export const StyledUnmaskButton = styled(TransferStyledButton)`
+  padding: 0px 4px;
+  background: ${props => (props.background ? props.background : '#ECEDF1')};
+  &:hover:not([disabled]) {
+    padding: 0 3px;
+  }
+`;
+StyledUnmaskButton.displayName = 'StyledUnmaskButton';
+
 export const HeaderContainer = styled(Row)`
   width: 100%;
   justify-items: flex-start;
@@ -1250,3 +1259,10 @@ export const TypingIndicatorText = styled(FontOpenSans)`
   text-overflow: ellipsis;
 `;
 TypingIndicatorText.displayName = 'TypingIndicatorText';
+
+export const PhoneNumberPopperText = styled('p')`
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 14px;
+`;
+PhoneNumberPopperText.displayName = 'PhoneNumberPopperText';

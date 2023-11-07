@@ -16,12 +16,12 @@
 
 import React, { useRef, useState } from 'react';
 import { ITask, Template, ThemeProps } from '@twilio/flex-ui';
-import { ButtonBase, Paper, Popper } from '@material-ui/core';
+import { Paper, Popper } from '@material-ui/core';
 
 import { getFormattedNumberFromTask } from '../../utils';
 import EyeOpenIcon from './icons/EyeOpenIcon';
 import EyeCloseIcon from './icons/EyeCloseIcon';
-import { HeaderCloseButton, HiddenText } from '../../styles/HrmStyles';
+import { HiddenText, Box, PhoneNumberPopperText, StyledUnmaskButton } from '../../styles/HrmStyles';
 import { CloseButton } from '../../styles/callTypeButtons';
 
 type Props = ThemeProps & { task?: ITask };
@@ -40,18 +40,16 @@ const ViewTaskNumber = ({ task }: Props) => {
 
   const renderTaskNumberPopper = () =>
     viewNumber ? (
-      <Popper open={viewNumber} anchorEl={viewNumberRef.current} placement="bottom-start">
-        <Paper style={{ width: '200px', padding: '30px' }}>
-          <HeaderCloseButton onClick={handleClose} style={{ marginRight: '15px', opacity: '.75' }}>
-            <HiddenText>
+      <Popper open={viewNumber} anchorEl={viewNumberRef.current} placement="bottom">
+        <Paper style={{ width: '310px', padding: '25px' }}>
+          <Box style={{ float: 'right' }}>
+            <HiddenText id="CloseButton">
               <Template code="CloseButton" />
             </HiddenText>
-            <CloseButton/>
-          </HeaderCloseButton>
-          
-          <h2>
-            <strong> Phone Number Revealed</strong>
-          </h2>
+            <CloseButton aria-label="CloseButton" onClick={handleClose} />
+          </Box>
+          <PhoneNumberPopperText>Phone Number Revealed</PhoneNumberPopperText>
+          <br />
           {getFormattedNumberFromTask(task)}
         </Paper>
       </Popper>
@@ -59,9 +57,9 @@ const ViewTaskNumber = ({ task }: Props) => {
 
   return (
     <>
-      <ButtonBase onClick={toggleViewNumber} ref={viewNumberRef}>
+      <StyledUnmaskButton onClick={toggleViewNumber} ref={viewNumberRef}>
         {viewNumber ? <EyeOpenIcon /> : <EyeCloseIcon />}
-      </ButtonBase>
+      </StyledUnmaskButton>
       {renderTaskNumberPopper()}
     </>
   );

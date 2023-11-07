@@ -227,6 +227,13 @@ export const setUpCustomCRMContainer = () => {
   );
 };
 
+export const setUpViewMaskedVoiceNumber = () => {
+  Flex.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" />, {
+    sortOrder: 1,
+    if: props => props.task.channelType === 'voice',
+  });
+};
+
 /**
  * Add the buttons used to initiate, accept and reject transfers (when it should), and removes the actions button if task is being transferred
  */
@@ -251,12 +258,12 @@ export const setUpTransferComponents = () => {
   });
 };
 
-export const setUpViewMaskedVoiceNumber = () => {
-  Flex.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" />, {
-    sortOrder: 1,
-    if: props => props.task.channelType === 'voice',
-  });
-};
+// export const setUpViewMaskedVoiceNumber = () => {
+//   Flex.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" />, {
+//     sortOrder: 1,
+//     if: props => props.task.channelType === 'voice',
+//   });
+// };
 
 /**
  * Add components used only by developers
