@@ -209,29 +209,18 @@ const BottomBar: React.FC<
                     </StyledNextStepButton>
                   </Box>
                 )}
-            {isAddedToCase ? (
-              <SaveAndEndContactButton
-                onClick={handleSubmitIfValid(handleSubmit, onError)}
-                roundCorners={true}
-                data-fs-id="Contact-SaveContact-Button"
-                data-testid="BottomBar-SaveContact-Button"
-              >
+            <SaveAndEndContactButton
+              roundCorners={true}
+              onClick={handleSubmitIfValid(handleSubmit, onError)}
+              disabled={isSubmitting}
+              data-fs-id="Contact-SaveContact-Button"
+              data-testid="BottomBar-SaveContact-Button"
+            >
+              <span style={{ visibility: isSubmitting ? 'hidden' : 'inherit' }}>
                 <Template code="BottomBar-SaveAndEnd" />
-              </SaveAndEndContactButton>
-            ) : (
-              <StyledNextStepButton
-                roundCorners={true}
-                onClick={handleSubmitIfValid(handleSubmit, onError)}
-                disabled={isSubmitting}
-                data-fs-id="Contact-SaveContact-Button"
-                data-testid="BottomBar-SaveContact-Button"
-              >
-                <span style={{ visibility: isSubmitting ? 'hidden' : 'inherit' }}>
-                  <Template code="BottomBar-SaveCaseContact" />
-                </span>
-                {isSubmitting ? <CircularProgress size={12} style={{ position: 'absolute' }} /> : null}
-              </StyledNextStepButton>
-            )}
+              </span>
+              {isSubmitting ? <CircularProgress size={12} style={{ position: 'absolute' }} /> : null}
+            </SaveAndEndContactButton>
           </>
         )}
       </BottomButtonBar>
