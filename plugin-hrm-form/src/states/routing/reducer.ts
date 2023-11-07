@@ -72,8 +72,14 @@ const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingActi
   const { callType } = rawJson;
   if (caseId) {
     initialEntry = {
-      route: 'case',
-      subroute: 'home',
+      route: 'tabbed-forms',
+      subroute: 'caseInformation',
+      activeModal: [
+        {
+          route: 'case',
+          subroute: 'home',
+        },
+      ],
     };
   } else if (callType === callTypes.child) {
     initialEntry = {
