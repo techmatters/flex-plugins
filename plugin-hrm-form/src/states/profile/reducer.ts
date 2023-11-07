@@ -40,10 +40,11 @@ const reducers = [
 ];
 
 export function reduce(state = t.initialState, action: t.ProfileActions): t.ProfileState {
-  const reducer = reducers.find(r => r.shouldUseReducer(action));
-  if (reducer) {
-    return reducer.reducer(t.initialState)(state, action);
+  let newState = { ...state };
+  for (const reducer of reducers) {
+    if (!reducer.shouldUseReducer(action)) continue;
+    newState = reducer.reducer(t.initialState)(newState, action);
   }
 
-  return state;
+  return newState;
 }
