@@ -17,15 +17,16 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
-import ProfileTabs from './ProfileTabs';
-import ProfileFlagEditPage from './profileFlag/ProfileFlagEditPage';
-import ProfileNoteEdit from './note/ProfileNoteEdit';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileRoute } from '../../states/routing/types';
 import { RouterTask } from '../../types/types';
 import ProfileEdit from './ProfileEdit';
+import ProfileTabs from './ProfileTabs';
+import ProfileFlagEditPage from './profileFlag/ProfileFlagEditPage';
+import ProfileNoteEdit from './note/ProfileNoteEdit';
+import { ProfileCommonProps } from './types';
 
 type OwnProps = {
   task: RouterTask;
@@ -37,26 +38,26 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const PROFILE_ROUTES = {
   profile: {
     routes: ['profile'],
-    renderComponent: props => <ProfileTabs {...props} />,
+    renderComponent: (props: ProfileCommonProps) => <ProfileTabs {...props} />,
   },
   profileEdit: {
     routes: ['profileEdit'],
-    renderComponent: props => <ProfileEdit {...props} />,
+    renderComponent: (props: ProfileCommonProps) => <ProfileEdit {...props} />,
   },
   profileFlagEdit: {
     routes: ['profileFlagEdit'],
-    renderComponent: props => <ProfileFlagEditPage {...props} />,
+    renderComponent: (props: ProfileCommonProps) => <ProfileFlagEditPage {...props} />,
   },
   profileNoteEdit: {
     routes: ['profileNoteEdit'],
-    renderComponent: props => <ProfileNoteEdit {...props} />,
+    renderComponent: (props: ProfileCommonProps) => <ProfileNoteEdit {...props} />,
   },
 };
 
 export const ALL_PROFILE_ROUTES = Object.values(PROFILE_ROUTES).flatMap(({ routes }) => routes);
 
 const ProfileRouter: React.FC<Props> = ({ task, profileId, currentRoute }) => {
-  const profileProps = {
+  const profileProps: ProfileCommonProps = {
     task,
     profileId,
   };

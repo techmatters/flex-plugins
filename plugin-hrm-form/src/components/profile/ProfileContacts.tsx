@@ -22,11 +22,9 @@ import ContactPreview from '../search/ContactPreview';
 import * as ProfileTypes from '../../states/profile/types';
 import * as RoutingActions from '../../states/routing/actions';
 import ProfileRelationshipList from './ProfileRelationshipList';
+import { ProfileCommonProps } from './types';
 
-type OwnProps = {
-  profileId: Profile['id'];
-  task: RouterTask;
-};
+type OwnProps = ProfileCommonProps;
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
 

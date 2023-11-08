@@ -20,11 +20,9 @@ import { TextField } from '@material-ui/core';
 import NavigableContainer from '../../NavigableContainer';
 import { CustomITask, Profile, ProfileNote } from '../../../types/types';
 import { Flex, StyledNextStepButton } from '../../../styles/HrmStyles';
+import { ProfileCommonProps } from '../types';
 
-type OwnProps = {
-  profileId: Profile['id'];
-  task: CustomITask;
-};
+type OwnProps = ProfileCommonProps;
 
 type Props = OwnProps;
 
