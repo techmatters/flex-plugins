@@ -49,6 +49,7 @@ type TaskEntry = {
   casesError: any;
   caseRefreshRequired: boolean;
   contactRefreshRequired: boolean;
+  searchExistingCaseStatus: boolean;
 };
 
 type SearchState = {
@@ -86,6 +87,7 @@ export const newTaskEntry: TaskEntry = {
   contactRefreshRequired: false,
   error: null,
   casesError: null,
+  searchExistingCaseStatus: false,
 };
 
 export const initialState: SearchState = {
@@ -275,6 +277,19 @@ export function reduce(
               ...task.form,
               contactNumber: action.contactNumber,
             },
+          },
+        },
+      };
+    }
+    case t.SEARCH_EXISTING_CASE: {
+      const task = state.tasks[action.taskId];
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...task,
+            searchExistingCaseStatus: action.searchStatus,
           },
         },
       };

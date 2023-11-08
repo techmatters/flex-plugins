@@ -21,7 +21,7 @@ import { StyledAddNewCaseDropdown, StyledAddNewCaseDropdownList } from '../../st
 
 type OwnProps = {
   handleNewCaseType: () => void;
-  handleExistingCaseType?: () => void;
+  handleExistingCaseType: () => void;
   dropdown: boolean;
 };
 

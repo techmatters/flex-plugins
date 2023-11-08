@@ -48,6 +48,7 @@ import { ContactMetadata } from '../../states/contacts/types';
 import { connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { AppRoutes } from '../../states/routing/types';
 import AddNewCaseDropdown from './AddNewCaseDropdown';
+import { setSearchExistingCase } from '../../states/search/actions';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;
@@ -77,6 +78,7 @@ const BottomBar: React.FC<
   submitContactFormAsyncAction,
   saveUpdates,
   savedContact,
+  searchExistingCase,
 }) => {
   const [isSubmitting, setSubmitting] = useState(false);
   const [dropdown, setDropdown] = useState(false);
@@ -135,6 +137,7 @@ const BottomBar: React.FC<
 
   const openSearchModal = () => {
     openModal({ route: 'search', subroute: 'form' });
+    searchExistingCase(true);
   };
 
   return (
@@ -255,6 +258,7 @@ const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
       // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
       // TODO: Rework error handling to be based on redux state set by the _REJECTED action
       dispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
+    searchExistingCase: (searchStatus: boolean) => dispatch(setSearchExistingCase(searchStatus, task.taskSid)),
   };
 };
 

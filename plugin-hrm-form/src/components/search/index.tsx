@@ -59,6 +59,7 @@ const Search: React.FC<Props> = ({
   routing,
   closeModal,
   changeSearchPage,
+  searchCase,
 }) => {
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});
@@ -71,6 +72,12 @@ const Search: React.FC<Props> = ({
   const handleSearchCases = (newSearchParams, newOffset) => searchCases(newSearchParams, CASES_PER_PAGE, newOffset);
 
   const setSearchParamsAndHandleSearch = async newSearchParams => {
+    if (searchCase) {
+      changeSearchPage('case-results');
+      await Promise.all([handleSearchCases(newSearchParams, 0)]);
+      setSearchParams(newSearchParams);
+      return;
+    }
     changeSearchPage('contact-results');
     await Promise.all([handleSearchContacts(newSearchParams, 0), handleSearchCases(newSearchParams, 0)]);
     setSearchParams(newSearchParams);
@@ -124,7 +131,11 @@ const Search: React.FC<Props> = ({
       case 'search': {
         if (routing.subroute === 'case-results' || routing.subroute === 'contact-results') {
           return (
-            <NavigableContainer task={task} titleCode="SearchContactsAndCases-Title">
+            <NavigableContainer
+              task={task}
+              titleCode={searchCase ? 'Resources-Search-ResultsTitle' : 'SearchContactsAndCases-Title'}
+              searchCase={searchCase}
+            >
               <SearchResults
                 task={task}
                 currentIsCaller={currentIsCaller}
@@ -169,7 +180,11 @@ const Search: React.FC<Props> = ({
         break;
     }
     return (
-      <NavigableContainer task={task} titleCode="SearchContactsAndCases-Title">
+      <NavigableContainer
+        task={task}
+        titleCode={searchCase ? 'SearchContactsAndCases-TitleExistingCase' : 'SearchContactsAndCases-Title'}
+        searchCase={searchCase}
+      >
         <SearchForm
           task={task}
           values={form}
@@ -212,6 +227,7 @@ const mapStateToProps = (
     searchCasesResults: taskSearchState.searchCasesResult,
     showActionIcons: !isStandaloneSearch,
     routing: currentRoute,
+    searchCase: taskSearchState.searchExistingCaseStatus,
   };
 };
 

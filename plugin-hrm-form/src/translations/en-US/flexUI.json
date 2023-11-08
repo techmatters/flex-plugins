@@ -37,6 +37,7 @@
   "OfflineContacts-Header": "Offline Contacts",
   "NonDataCallTypeDialog-CloseConfirm": "Are you sure?",
   "SearchContactsAndCases-Title": "Search",
+  "SearchContactsAndCases-TitleExistingCase": "Search for Cases",
   "SearchForm-Name": "Name",
   "SearchForm-First": "First",
   "SearchForm-Last": "Last",

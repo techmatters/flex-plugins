@@ -109,3 +109,9 @@ export const viewPreviousContacts = (dispatch: Dispatch<any>) => (task: ITask) =
 
   dispatch({ type: t.VIEW_PREVIOUS_CONTACTS, taskId, contactNumber });
 };
+
+export const setSearchExistingCase = (searchStatus: boolean, taskId: string): t.SearchExistingCaseAction => ({
+  type: t.SEARCH_EXISTING_CASE,
+  searchStatus,
+  taskId,
+});
