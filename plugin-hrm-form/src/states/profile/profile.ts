@@ -89,12 +89,3 @@ export const profileReducer = (initialState: t.ProfileState) =>
     handleAction(loadProfileAsync.fulfilled, handleLoadProfileFulfilledAction),
     handleAction(loadIdentifierByIdentifierAsync.fulfilled, handleLoadIdentifierFulfilledAction),
   ]);
-
-const PROFILE_ACTIONS = [
-  loadProfileAsync.pending.toString(),
-  loadProfileAsync.rejected.toString(),
-  loadProfileAsync.fulfilled.toString(),
-  loadIdentifierByIdentifierAsync.fulfilled.toString(),
-];
-
-export const shouldUseProfileReducer = (action: any) => PROFILE_ACTIONS.includes(action.type);

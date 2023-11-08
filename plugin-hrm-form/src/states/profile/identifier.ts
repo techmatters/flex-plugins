@@ -71,17 +71,9 @@ const handleLoadIdentifierFulfilledAction = (state: t.ProfileState, action: any)
   return loadIdentifierEntryIntoRedux(state, id, identifierUpdate);
 };
 
-export const loadIdentifierReducer = (initialState: t.ProfileState) =>
+export const identifierReducer = (initialState: t.ProfileState) =>
   createReducer(initialState, handleAction => [
     handleAction(loadIdentifierByIdentifierAsync.pending, handleLoadIdentifierPendingAction),
     handleAction(loadIdentifierByIdentifierAsync.rejected, handleLoadIdentifierRejectedAction),
     handleAction(loadIdentifierByIdentifierAsync.fulfilled, handleLoadIdentifierFulfilledAction),
   ]);
-
-const IDENTIFIER_ACTIONS = [
-  loadIdentifierByIdentifierAsync.pending.toString(),
-  loadIdentifierByIdentifierAsync.rejected.toString(),
-  loadIdentifierByIdentifierAsync.fulfilled.toString(),
-];
-
-export const shouldUseLoadIdentifierReducer = (action: any) => IDENTIFIER_ACTIONS.includes(action.type);
