@@ -201,7 +201,7 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/988camh.tftpl"
         channel_flow_vars    = {
           en_number: "3656520724"
-          fr_number: "3656495517"
+          fr_number: "6473707639"
           ns_fr_number: "7823120154"
 
           en_function_url: "https://twilio-service-4854.twil.io/988_en"
@@ -219,7 +219,7 @@ locals {
       ab211 : ["+15877412408", "+15876095765"],
       hc : ["+13656540516"],
       training : ["+18252547345"],
-      "988_camh" : ["+13656520724", "+13656495517"]
+      "988_camh" : ["+13656520724", "+16473707639"]
       "988_ns" : ["+17823120154"]
     }
 
