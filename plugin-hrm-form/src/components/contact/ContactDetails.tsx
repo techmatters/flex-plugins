@@ -80,8 +80,6 @@ const ContactDetails: React.FC<Props> = ({
   ...otherProps
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  console.log('>>> ContactDetails', contactId);
-
   React.useEffect(() => {
     if (!savedContact) {
       loadContactFromHrm();

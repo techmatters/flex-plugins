@@ -18,10 +18,6 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Tab as TwilioTab } from '@twilio/flex-ui';
 
-import NavigableContainer from '../NavigableContainer';
-import ProfileCases from './ProfileCases';
-import ProfileContacts from './ProfileContacts';
-import ProfileDetails from './ProfileDetails';
 import { Row } from '../../styles/HrmStyles';
 import { useProfile } from '../../states/profile/hooks';
 import * as RoutingTypes from '../../states/routing/types';
@@ -32,11 +28,13 @@ import { RootState } from '../../states';
 import { ProfileRoute } from '../../states/routing/types';
 import { RouterTask, Profile } from '../../types/types';
 import { StyledTabs } from '../../styles/search'; // just stealing from search until we have a centralized tab style
+import NavigableContainer from '../NavigableContainer';
+import ProfileCases from './ProfileCases';
+import ProfileContacts from './ProfileContacts';
+import ProfileDetails from './ProfileDetails';
+import { ProfileCommonProps } from './types';
 
-type OwnProps = {
-  profileId: Profile['id'];
-  task: RouterTask;
-};
+type OwnProps = ProfileCommonProps;
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
@@ -57,7 +55,7 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
     {
       label: `Cases (${casesCount})`,
       key: 'cases',
-      component: <ProfileCases profileId={profileId} />,
+      component: <ProfileCases profileId={profileId} task={task} />,
     },
   ];
 

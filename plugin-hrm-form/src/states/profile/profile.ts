@@ -17,6 +17,7 @@ import { createAsyncAction, createReducer } from 'redux-promise-middleware-actio
 
 import { parseFetchError } from '../parseFetchError';
 import { getProfileById } from '../../services/ProfileService';
+import { loadIdentifierByIdentifierAsync } from './identifier';
 import loadProfileEntryIntoRedux from './loadProfileEntryIntoRedux';
 import * as t from './types';
 
@@ -63,17 +64,28 @@ const handleLoadProfileFulfilledAction = (state: t.ProfileState, action: any) =>
   return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
 };
 
+const handleLoadIdentifierFulfilledAction = (state: t.ProfileState, action: any) => {
+  const { profiles } = action.payload;
+  let newState = { ...state };
+  for (const profile of profiles) {
+    const profileUpdate = {
+      data: {
+        ...t.newProfileEntry,
+        ...newState.profiles[profile.id]?.data,
+        ...profile,
+      },
+    };
+
+    newState = loadProfileEntryIntoRedux(newState, profile.id, profileUpdate);
+  }
+
+  return newState;
+};
+
 export const profileReducer = (initialState: t.ProfileState) =>
   createReducer(initialState, handleAction => [
     handleAction(loadProfileAsync.pending, handleLoadProfilePendingAction),
     handleAction(loadProfileAsync.rejected, handleLoadProfileRejectedAction),
     handleAction(loadProfileAsync.fulfilled, handleLoadProfileFulfilledAction),
+    handleAction(loadIdentifierByIdentifierAsync.fulfilled, handleLoadIdentifierFulfilledAction),
   ]);
-
-const PROFILE_ACTIONS = [
-  loadProfileAsync.pending.toString(),
-  loadProfileAsync.rejected.toString(),
-  loadProfileAsync.fulfilled.toString(),
-];
-
-export const shouldUseProfileReducer = (action: any) => PROFILE_ACTIONS.includes(action.type);

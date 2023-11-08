@@ -23,10 +23,9 @@ import ProfileRelationshipList from './ProfileRelationshipList';
 import * as ProfileTypes from '../../states/profile/types';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
+import { ProfileCommonProps } from './types';
 
-type OwnProps = {
-  profileId: Profile['id'];
-};
+type OwnProps = ProfileCommonProps;
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;

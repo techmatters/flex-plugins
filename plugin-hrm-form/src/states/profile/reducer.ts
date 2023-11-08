@@ -15,35 +15,18 @@
  */
 
 import * as t from './types';
-import { loadIdentifierReducer, shouldUseLoadIdentifierReducer } from './identifier';
-import { profileReducer, shouldUseProfileReducer } from './profile';
-import { profileFlagsReducer, shouldUseProfileFlagsReducer } from './profileFlag';
-import { relationshipReducer, shouldUseRelationshipReducer } from './relationship';
+import { identifierReducer } from './identifier';
+import { profileReducer } from './profile';
+import { profileFlagsReducer } from './profileFlag';
+import { relationshipReducer } from './relationship';
 
-const reducers = [
-  {
-    shouldUseReducer: shouldUseLoadIdentifierReducer,
-    reducer: loadIdentifierReducer,
-  },
-  {
-    shouldUseReducer: shouldUseProfileReducer,
-    reducer: profileReducer,
-  },
-  {
-    shouldUseReducer: shouldUseProfileFlagsReducer,
-    reducer: profileFlagsReducer,
-  },
-  {
-    shouldUseReducer: shouldUseRelationshipReducer,
-    reducer: relationshipReducer,
-  },
-];
+const reducers = [identifierReducer, profileReducer, profileFlagsReducer, relationshipReducer];
 
 export function reduce(state = t.initialState, action: t.ProfileActions): t.ProfileState {
-  const reducer = reducers.find(r => r.shouldUseReducer(action));
-  if (reducer) {
-    return reducer.reducer(t.initialState)(state, action);
+  let newState = { ...state };
+  for (const reducer of reducers) {
+    newState = reducer(t.initialState)(newState, action);
   }
 
-  return state;
+  return newState;
 }

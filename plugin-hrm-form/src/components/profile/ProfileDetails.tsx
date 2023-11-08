@@ -18,17 +18,14 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { IconButton, Template } from '@twilio/flex-ui';
 
+import { ProfileCommonProps } from './types';
 import ProfileFlagList from './profileFlag/ProfileFlagList';
 import { DetailsWrapper, ProfileSubtitle } from './styles';
 import { Bold, Box, Column, Flex } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
-import { RouterTask, Profile } from '../../types/types';
 
-type OwnProps = {
-  profileId: Profile['id'];
-  task: RouterTask;
-};
+type OwnProps = ProfileCommonProps;
 
 type Section = {
   titleCode?: string;

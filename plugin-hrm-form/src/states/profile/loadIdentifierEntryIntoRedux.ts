@@ -32,27 +32,9 @@ const loadIdentifierEntryIntoRedux = (
     [identifierId]: newIdentifier,
   };
 
-  // We go ahead and update the profiles here as well, since we have partial data
-  const profiles = { ...oldProfiles };
-  if (identifierUpdate.data?.profiles) {
-    identifierUpdate.data.profiles.forEach(profile => {
-      const existingProfile = profiles[profile.id];
-      const newProfile = {
-        ...t.newProfileEntry,
-        ...existingProfile,
-        data: {
-          ...existingProfile?.data,
-          ...profile,
-        },
-      };
-      profiles[profile.id] = newProfile;
-    });
-  }
-
   return {
     ...state,
     identifiers,
-    profiles,
   };
 };
 
