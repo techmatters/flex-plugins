@@ -56,6 +56,7 @@ const handleLoadProfileSectionFulfilledAction = (state: t.ProfileState, action: 
     loading: false,
     data: action.payload,
   };
+  console.log('>>> handleLoadProfileSectionFulfilledAction', update);
 
   return loadProfileSectionEntryIntoRedux(state, update);
 };

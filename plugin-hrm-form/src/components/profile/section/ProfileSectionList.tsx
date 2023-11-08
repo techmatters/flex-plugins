@@ -41,8 +41,6 @@ const ProfileSectionList: React.FC<OwnProps> = ({ profileId, openNoteEditModal }
   const profileSections = useProfileSections(profileId);
   const [showProfileSectionList, setShowProfileSectionList] = useState(false);
 
-  console.log('>>> ProfileSectionList profileSections', profileSections, showProfileSectionList);
-
   useEffect(() => {
     if (profileSections.length > 0) {
       setShowProfileSectionList(true);
@@ -107,10 +105,12 @@ const ProfileSectionList: React.FC<OwnProps> = ({ profileId, openNoteEditModal }
 
   return (
     <>
-      {showProfileSectionList && profileSections.map(section => {
-  console.log(section);
-  return <div key={section?.id}>{section.name}</div>
-})}
+      {showProfileSectionList &&
+        profileSections.map((section, index) => {
+          const key = Object.keys(section)[0];
+          const value = section[key];
+          return <div key={index}>{value}</div>;
+        })}
       {noteSections.map(section => (
         <div key={section.title}>{renderSection(section)}</div>
       ))}

@@ -35,12 +35,9 @@ const ProfileSectionEdit = ({ task, profileId, sectionId }: Props) => {
   profileId = 4;
   // sectionId = 5;
   // createProfileSection(profileId, 'test content 2', 'summary2');
-  console.log('>>> ProfileSectionEdit profileId', profileId, sectionId);
   const section = useProfileSection(profileId, sectionId);
-  console.log('>>> ProfileSectionEdit section', section);
 
   const editedSection = useEditProfileSection(profileId, sectionId);
-  console.log('>>> ProfileSectionEdit editSection', editedSection);
 
   return (
     <NavigableContainer titleCode="Profile-EditNoteHeader" task={task}>

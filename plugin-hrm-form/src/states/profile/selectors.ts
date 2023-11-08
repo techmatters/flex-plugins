@@ -40,9 +40,15 @@ export const selectIdentifierByIdentifier = (state: RootState, identifier: Ident
 
 export const selectAllProfileFlags = (state: RootState) => state[namespace][profileBase].profileFlags;
 
-export const selectAllProfileSections = (state: RootState, profileId: ProfileIdParam) =>
-  state[namespace][profileBase].profiles[profileId]?.data?.profileSections;
+export const selectAllProfileSections = (state: RootState, profileId: ProfileIdParam) => {
+  // eslint-disable-next-line sonarjs/prefer-immediate-return
+  const profileSections = state[namespace][profileBase].profiles[profileId]?.data?.profileSections;
+  return profileSections;
+};
 
 export const selectProfileSectionById = (state: RootState, profileId: ProfileIdParam, sectionId: string) => {
-  return state[namespace][profileBase].profiles[profileId]?.data?.profileSections[sectionId];
+  console.log('>>> selectProfileSectionById called', profileId, sectionId);
+  // eslint-disable-next-line sonarjs/prefer-immediate-return
+  const profileSection = state[namespace][profileBase].profiles[profileId]?.data?.profileSections[sectionId];
+  return profileSection;
 };
