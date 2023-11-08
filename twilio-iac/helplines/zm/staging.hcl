@@ -31,7 +31,7 @@ locals {
     #Studio flow
     flow_vars = {
       service_sid                   = "ZSe4567a77a4d25e4d539aa715c46f0202"
-      environment_sid               = "ZE59bb3360669ff9672ddb903deb3da5ff"
+      environment_sid               = "ZEb5f4d53708997b098f3c7456435c2083"
       send_message_janitor_function_sid = "ZH0b9f111cb63b53f265d487aa63bb4818"
       capture_channel_with_bot_function_sid = "ZHca6a97b33320c5efd5430fb9f1a5480b"
 
