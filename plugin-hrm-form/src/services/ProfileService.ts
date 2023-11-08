@@ -32,9 +32,7 @@ export const getProfileCases = (id: ProfileId, offset: number, limit: number) =>
   fetchHrmApi(`/profiles/${id}/cases?offset=${offset}&limit=${limit}`);
 
 export const getProfileFlags = () => {
-  console.log('>>>> getProfileFlags');
   return fetchHrmApi(`/profiles/flags`).then(response => {
-    console.log('>>> getProfileFlags response', response);
     return response;
   });
 };

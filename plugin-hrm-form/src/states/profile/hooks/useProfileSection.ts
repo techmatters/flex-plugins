@@ -1,3 +1,5 @@
+/* eslint-disable import/order */
+/* eslint-disable import/no-unused-modules */
 /**
  * Copyright (C) 2021-2023 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -13,4 +15,64 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-export {};
+import { useCallback, useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import asyncDispatch from '../../asyncDispatch';
+import { Profile, ProfileSection } from '../types';
+import * as ProfileSectionActions from '../profileSection';
+import * as ProfileSelectors from '../selectors';
+import { namespace, profileBase } from '../../storeNamespaces';
+import { RootState } from '../..';
+
+export const useProfileSection = (profileId: Profile['id'], sectionId): ProfileSection =>
+  useSelector((state: RootState) => ProfileSelectors.selectProfileSectionById(state, profileId, sectionId));
+
+export const useProfileSections = (profileId: Profile['id']): ProfileSection[] =>
+  useSelector((state: RootState) => ProfileSelectors.selectAllProfileSections(state, profileId));
+
+type UseEditProfileSection = {
+  handleEditProfileSection: (sectionId: string, content: string, sectionType: string) => void;
+};
+
+export const useEditProfileSection = (profileId: Profile['id'], sectionId): UseEditProfileSection => {
+  const dispatch = useDispatch();
+
+  const section = useProfileSection(profileId, sectionId);
+
+  console.log('>>> useEditProfileSection useProfileSection section', section);
+
+  const createProfileSection = useCallback(
+    (content: string, sectionType: string) => {
+      asyncDispatch(dispatch)(ProfileSectionActions.createProfileSectionAsync(profileId, content, sectionType));
+    },
+    [dispatch, profileId],
+  );
+
+  const updateProfileSection = useCallback(
+    (sectionId: string, content: string) => {
+      asyncDispatch(dispatch)(ProfileSectionActions.updateProfileSectionAsync(profileId, sectionId, content));
+    },
+    [dispatch, profileId],
+  );
+
+  const profileSection = useMemo(
+    () => ({
+      handleEditProfileSection: (sectionId: string, content: string, sectionType: string) => {
+        console.log('>>> handleEditProfileSection', sectionId, content, sectionType);
+
+        if (content && sectionType) {
+          console.log('>>>Updating profile section', content);
+          updateProfileSection(sectionId, content);
+        } else {
+          console.log('>>>Creating profile section');
+          createProfileSection(content, sectionType);
+        }
+      },
+    }),
+    [createProfileSection, updateProfileSection],
+  );
+
+  return {
+    ...profileSection,
+  };
+};

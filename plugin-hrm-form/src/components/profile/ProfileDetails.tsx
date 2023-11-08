@@ -24,6 +24,8 @@ import { DetailsWrapper, EditButton, ProfileSubtitle } from './styles';
 import { Bold, Box, Column, Flex } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
+import { useProfileSection, useProfileSections } from '../../states/profile/hooks/useProfileSection';
+import ProfileSectionList from './section/ProfileSectionList';
 
 type OwnProps = {
   profileId: Profile['id'];
@@ -44,13 +46,6 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, openNoteEditModal }) => {
   const { profile } = useProfile({ profileId });
 
-  // Temp note content for demo purposes. Set to false to hide notes.
-  const noteContent = (
-    <>
-      Lorem ipsum dolor sit amet
-    </>
-  );
-
   const baseSections: Section[] = [
     {
       titleCode: 'Profile-IdentifiersHeader',
@@ -70,30 +65,13 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
     },
   ];
 
-  const noteSections: Section[] = noteContent
-    ? [
-        {
-          title: 'Summary',
-          margin: '20px 0',
-          renderComponent: () => noteContent,
-          handleEdit: () => openNoteEditModal(1),
-        },
-        {
-          title: 'Some other note',
-          margin: '20px 0',
-          renderComponent: () => noteContent,
-          handleEdit: () => openNoteEditModal(1),
-        },
-        {
-          title: 'One more note',
-          margin: '20px 0',
-          renderComponent: () => noteContent,
-          handleEdit: () => openNoteEditModal(1),
-        },
-      ]
-    : [];
+  const renderTitle = section => {
+    if (section.titleCode) {
+      return <Template code={section.titleCode} />;
+    }
 
-  const sections: Section[] = [...baseSections, ...noteSections];
+    return section.title;
+  };
 
   const renderEditButton = section => {
     return section.handleEdit ? (
@@ -101,14 +79,6 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
         <IconButton icon="Edit" title="Edit" size="small" onClick={section.handleEdit} />
       </Box>
     ) : null;
-  };
-
-  const renderTitle = section => {
-    if (section.titleCode) {
-      return <Template code={section.titleCode} />;
-    }
-
-    return section.title;
   };
 
   const renderSection = (section: any) => {
@@ -125,6 +95,15 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
     );
   };
 
+  const profileSections = useProfileSections(profileId);
+
+  const renderSections = () => {
+    if (profileSections) {
+      return <ProfileSectionList profileId={profileId} task={task} openNoteEditModal={openNoteEditModal} />;
+    }
+    return null;
+  };
+
   return (
     <DetailsWrapper>
       <Column>
@@ -132,10 +111,11 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
           <Template code="Profile-DetailsHeader" />
         </Bold>
       </Column>
-
-      {sections.map(section => (
+      {baseSections.map(section => (
         <div key={section.title}>{renderSection(section)}</div>
       ))}
+
+      {renderSections()}
       <hr />
     </DetailsWrapper>
   );

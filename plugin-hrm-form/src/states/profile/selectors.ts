@@ -40,4 +40,9 @@ export const selectIdentifierByIdentifier = (state: RootState, identifier: Ident
 
 export const selectAllProfileFlags = (state: RootState) => state[namespace][profileBase].profileFlags;
 
-export const selectAllProfileSections = (state: RootState) => state[namespace][profileBase].profileSections;
+export const selectAllProfileSections = (state: RootState, profileId: ProfileIdParam) =>
+  state[namespace][profileBase].profiles[profileId]?.data?.profileSections;
+
+export const selectProfileSectionById = (state: RootState, profileId: ProfileIdParam, sectionId: string) => {
+  return state[namespace][profileBase].profiles[profileId]?.data?.profileSections[sectionId];
+};

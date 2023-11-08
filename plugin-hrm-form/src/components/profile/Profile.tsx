@@ -51,7 +51,7 @@ const Profile: React.FC<Props> = ({ task, profileId, currentRoute }) => {
     },
     {
       routes: ['profileSectionEdit'],
-      component: <ProfileSectionEdit {...profileProps} />,
+      component: <ProfileSectionEdit {...profileProps} sectionId={1} />,
     },
     {
       routes: ['profile'],

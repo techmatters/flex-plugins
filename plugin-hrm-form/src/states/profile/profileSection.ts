@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-identical-functions */
 /**
  * Copyright (C) 2021-2023 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -36,7 +37,6 @@ const handleLoadProfileSectionPendingAction = (state: t.ProfileState) => {
     loading: true,
     error: undefined,
   };
-  console.log('>>> handleLoadProfileSectionPendingAction: update', update);
 
   return loadProfileSectionEntryIntoRedux(state, update);
 };
@@ -47,7 +47,6 @@ const handleLoadProfileSectionRejectedAction = (state: t.ProfileState, action: a
     loading: false,
     error,
   };
-  console.log('>>> handleLoadProfileSectionRejectedAction: update', update);
 
   return loadProfileSectionEntryIntoRedux(state, update);
 };
@@ -58,9 +57,103 @@ const handleLoadProfileSectionFulfilledAction = (state: t.ProfileState, action: 
     data: action.payload,
   };
 
-  console.log('>>> handleLoadProfileSectionFulfilledAction: update', update);
-
   return loadProfileSectionEntryIntoRedux(state, update);
+};
+
+export const createProfileSectionAsync = createAsyncAction(
+  t.CREATE_PROFILE_SECTION,
+  async (profileId: t.Profile['id'], content: string, sectionType: string) => {
+    return ProfileService.createProfileSection(profileId, content, sectionType);
+  },
+  (profileId: t.Profile['id'], content: string, sectionType: string) => ({
+    profileId,
+    content,
+    sectionType,
+  }),
+);
+
+export const updateProfileSectionAsync = createAsyncAction(
+  t.UPDATE_PROFILE_SECTION,
+  async (profileId: t.Profile['id'], sectionId: string, content: string) => {
+    return ProfileService.updateProfileSection(profileId, sectionId, content);
+  },
+  (profileId: t.Profile['id'], sectionId: string, content: string) => ({
+    profileId,
+    sectionId,
+    content,
+  }),
+);
+
+const handleCreateProfileSectionPendingAction = (state: t.ProfileState, action: any) => {
+  const { profileId } = action.meta;
+
+  const profileUpdate = {
+    loading: true,
+    error: undefined,
+  };
+  return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
+};
+
+const handleCreateProfileSectionRejectedAction = (state: t.ProfileState, action: any) => {
+  const { profileId } = action.meta;
+  const error = parseFetchError(action.payload);
+
+  const profileUpdate = {
+    loading: false,
+    error,
+  };
+
+  return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
+};
+
+const handleCreateProfileSectionFulfilledAction = (state: t.ProfileState, action: any) => {
+  const { profileId } = action.meta;
+  const profileUpdate = {
+    loading: false,
+    data: {
+      ...t.newProfileEntry,
+      ...state.profiles[profileId].data,
+      ...action.payload,
+    },
+  };
+
+  return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
+};
+
+const handleUpdateProfileSectionPendingAction = (state: t.ProfileState, action: any) => {
+  const { profileId } = action.meta;
+
+  const profileUpdate = {
+    loading: true,
+    error: undefined,
+  };
+  return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
+};
+
+const handleUpdateProfileSectionRejectedAction = (state: t.ProfileState, action: any) => {
+  const { profileId } = action.meta;
+  const error = parseFetchError(action.payload);
+
+  const profileUpdate = {
+    loading: false,
+    error,
+  };
+
+  return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
+};
+
+const handleUpdateProfileSectionFulfilledAction = (state: t.ProfileState, action: any) => {
+  const { profileId } = action.meta;
+  const profileUpdate = {
+    loading: false,
+    data: {
+      ...t.newProfileEntry,
+      ...state.profiles[profileId].data,
+      ...action.payload,
+    },
+  };
+
+  return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
 };
 
 export const profileSectionsReducer = (initialState: t.ProfileState) =>
@@ -68,12 +161,24 @@ export const profileSectionsReducer = (initialState: t.ProfileState) =>
     handleAction(loadProfileSectionAsync.pending, handleLoadProfileSectionPendingAction),
     handleAction(loadProfileSectionAsync.rejected, handleLoadProfileSectionRejectedAction),
     handleAction(loadProfileSectionAsync.fulfilled, handleLoadProfileSectionFulfilledAction),
+    handleAction(createProfileSectionAsync.pending, handleCreateProfileSectionPendingAction),
+    handleAction(createProfileSectionAsync.rejected, handleCreateProfileSectionRejectedAction),
+    handleAction(createProfileSectionAsync.fulfilled, handleCreateProfileSectionFulfilledAction),
+    handleAction(updateProfileSectionAsync.pending, handleUpdateProfileSectionPendingAction),
+    handleAction(updateProfileSectionAsync.rejected, handleUpdateProfileSectionRejectedAction),
+    handleAction(updateProfileSectionAsync.fulfilled, handleUpdateProfileSectionFulfilledAction),
   ]);
 
 const PROFILE_SECTION_ACTIONS = [
   loadProfileSectionAsync.pending.toString(),
   loadProfileSectionAsync.rejected.toString(),
   loadProfileSectionAsync.fulfilled.toString(),
+  createProfileSectionAsync.pending.toString(),
+  createProfileSectionAsync.rejected.toString(),
+  createProfileSectionAsync.fulfilled.toString(),
+  updateProfileSectionAsync.pending.toString(),
+  updateProfileSectionAsync.rejected.toString(),
+  updateProfileSectionAsync.fulfilled.toString(),
 ];
 
 export const shouldUseProfileSectionsReducer = (action: any) => PROFILE_SECTION_ACTIONS.includes(action.type);
