@@ -19,7 +19,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import ProfileTabs from './ProfileTabs';
 import ProfileFlagEditPage from './profileFlag/ProfileFlagEditPage';
-import ProfileNoteEdit from './note/ProfileNoteEdit';
+import ProfileSectionEdit from './section/ProfileSectionEdit';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
@@ -50,8 +50,8 @@ const Profile: React.FC<Props> = ({ task, profileId, currentRoute }) => {
       component: <ProfileFlagEditPage {...profileProps} />,
     },
     {
-      routes: ['profileNoteEdit'],
-      component: <ProfileNoteEdit {...profileProps} />,
+      routes: ['profileSectionEdit'],
+      component: <ProfileSectionEdit {...profileProps} />,
     },
     {
       routes: ['profile'],

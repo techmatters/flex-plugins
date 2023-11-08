@@ -149,7 +149,7 @@ const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
       dispatch(newOpenModalAction({ route: 'profileFlagEdit', id: profileId }, taskId));
     },
     openNoteEditModal: id => {
-      dispatch(newOpenModalAction({ route: 'profileNoteEdit', id, profileId }, taskId));
+      dispatch(newOpenModalAction({ route: 'profileSectionEdit', id, profileId }, taskId));
     },
   };
 };

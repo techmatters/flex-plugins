@@ -18,7 +18,7 @@ import React, { useRef } from 'react';
 import { TextField } from '@material-ui/core';
 
 import NavigableContainer from '../../NavigableContainer';
-import { CustomITask, Profile, ProfileNote } from '../../../types/types';
+import { CustomITask, Profile, ProfileSection } from '../../../types/types';
 import { Flex, StyledNextStepButton } from '../../../styles/HrmStyles';
 
 type OwnProps = {
@@ -28,7 +28,7 @@ type OwnProps = {
 
 type Props = OwnProps;
 
-const ProfileNoteEdit = ({ task }: Props) => {
+const ProfileSectionEdit = ({ task }: Props) => {
   return (
     <NavigableContainer titleCode="Profile-EditNoteHeader" task={task}>
       <TextField multiline rows={40} variant="outlined" />
@@ -41,4 +41,4 @@ const ProfileNoteEdit = ({ task }: Props) => {
   );
 };
 
-export default ProfileNoteEdit;
+export default ProfileSectionEdit;
