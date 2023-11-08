@@ -79,7 +79,7 @@ module "studioFlow" {
   serverless_url           = module.serverless.serverless_environment_production_url
   service_sid              = module.serverless.serverless_service_sid
   environment_sid          = module.serverless.serverless_environment_production_sid
-  capture_channel_with_bot_function_sid = ""
+  capture_channel_with_bot_function_sid = "ZH774135cb0184df6c39c6378f1598cd09"
 }
 
 module "flex" {
