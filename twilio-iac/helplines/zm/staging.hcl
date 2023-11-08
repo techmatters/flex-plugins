@@ -22,7 +22,7 @@ locals {
       },
       whatsapp : {
         channel_type         = "whatsapp"
-        contact_identity     = "+447450769014"
+        contact_identity     = "whatsapp:+447450769014"
         templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
