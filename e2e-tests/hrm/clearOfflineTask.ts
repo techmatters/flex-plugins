@@ -31,13 +31,14 @@ export const clearOfflineTask = async (hrmRoot: string, workerSid: string, flexT
   );
   if (resp.ok()) {
     const contactId: string = (await resp.json()).id;
-    await apiRequest.patch(`${hrmRoot}/contacts/${contactId}?finalize=false`, {
+    const clearRequest = await apiRequest.patch(`${hrmRoot}/contacts/${contactId}?finalize=false`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${flexToken}`,
       },
       // Copied from plugin-hrm-form/src/services/ContactService.ts
       data: {
+        caseId: null,
         conversationDuration: 0,
         rawJson: {
           callType: '',
@@ -54,6 +55,11 @@ export const clearOfflineTask = async (hrmRoot: string, workerSid: string, flexT
         },
       },
     });
+    if (!clearRequest.ok()) {
+      throw new Error(
+        `Error occurred patching offline task for ${workerSid} in HRM: ${clearRequest.status()}`,
+      );
+    }
   } else {
     if (resp.status() === 404) {
       console.warn(`No offline task found for worker ${workerSid}, cannot clear out offline tasks`);
