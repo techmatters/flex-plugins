@@ -76,6 +76,10 @@ module "studioFlow" {
   chat_task_channel_sid    = module.taskRouter.chat_task_channel_sid
   default_task_channel_sid = module.taskRouter.default_task_channel_sid
   pre_survey_bot_sid       = module.chatbots.pre_survey_bot_sid
+  serverless_url           = module.serverless.serverless_environment_production_url
+  service_sid              = module.serverless.serverless_service_sid
+  environment_sid          = module.serverless.serverless_environment_production_sid
+  capture_channel_with_bot_function_sid = ""
 }
 
 module "flex" {

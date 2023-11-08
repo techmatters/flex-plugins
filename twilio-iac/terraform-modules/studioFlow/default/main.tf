@@ -97,13 +97,13 @@ locals {
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": var.service_sid,
+        "environment_sid": var.environment_sid,
         "offset": {
           "x": -850,
           "y": 570
         },
-        "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
+        "function_sid": var.capture_channel_with_bot_function_sid,
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
