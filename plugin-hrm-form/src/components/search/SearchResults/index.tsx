@@ -206,9 +206,7 @@ const SearchResults: React.FC<Props> = ({
     </>
   );
 
-  if (currentResultPage === 'case-results' && searchCase) {
-    return caseResults();
-  }
+  if (currentResultPage === 'case-results' && searchCase) return caseResults();
 
   return (
     <>
