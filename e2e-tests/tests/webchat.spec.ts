@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { BrowserContext, Page, test } from '@playwright/test';
+import { BrowserContext, Page, request, test } from '@playwright/test';
 import * as webchat from '../webchat';
 import { WebChatPage } from '../webchat';
 import { statusIndicator } from '../workerStatus';
@@ -29,6 +29,8 @@ import { deleteAllTasksInQueue } from '../twilio/tasks';
 import { notificationBar } from '../notificationBar';
 import { navigateToAgentDesktop } from '../agent-desktop';
 import { setupContextAndPage, closePage } from '../browser';
+import { clearOfflineTask } from '../hrm/clearOfflineTask';
+import { apiHrmRequest } from '../hrm/hrmRequest';
 
 test.describe.serial('Web chat caller', () => {
   skipTestIfNotTargeted();
@@ -36,6 +38,12 @@ test.describe.serial('Web chat caller', () => {
   let chatPage: WebChatPage, pluginPage: Page, context: BrowserContext;
   test.beforeAll(async ({ browser }) => {
     ({ context, page: pluginPage } = await setupContextAndPage(browser));
+
+    await clearOfflineTask(
+      apiHrmRequest(await request.newContext(), process.env.FLEX_TOKEN!),
+      process.env.LOGGED_IN_WORKER_SID!,
+    );
+
     await navigateToAgentDesktop(pluginPage);
     console.log('Plugin page visited.');
     chatPage = await webchat.open(context);

@@ -14,60 +14,34 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { request } from '@playwright/test';
-
 // Clears out any residual offline task data for a worker so the test env is clean
-export const clearOfflineTask = async (hrmRoot: string, workerSid: string, flexToken: string) => {
-  const apiRequest = await request.newContext();
-  new URL(`${hrmRoot}/contacts/byTaskSid/offline-task-${workerSid}`);
-  const resp = await apiRequest.get(
-    `${hrmRoot}/contacts/byTaskSid/offline-contact-task-${workerSid}`,
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${flexToken}`,
-      },
-    },
-  );
-  if (resp.ok()) {
-    const contactId: string = (await resp.json()).id;
-    const clearRequest = await apiRequest.patch(`${hrmRoot}/contacts/${contactId}?finalize=false`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${flexToken}`,
-      },
-      // Copied from plugin-hrm-form/src/services/ContactService.ts
-      data: {
-        caseId: null,
-        conversationDuration: 0,
-        rawJson: {
-          callType: '',
-          childInformation: {},
-          callerInformation: {},
-          caseInformation: {},
-          categories: {},
-          contactlessTask: {
-            channel: null,
-            createdOnBehalfOf: null,
-            date: null,
-            time: null,
-          },
+export const clearOfflineTask = async (
+  hrmRequester: (hrmPath: string, method: 'get' | 'delete' | 'patch', body?: any) => Promise<any>,
+  workerSid: string,
+) => {
+  const responseBody = await hrmRequester(`contacts/byTaskSid/offline-task-${workerSid}`, 'get');
+
+  if (responseBody) {
+    const contactId: string = responseBody.id;
+    await hrmRequester(`contacts/${contactId}?finalize=false`, 'patch', {
+      caseId: null,
+      conversationDuration: 0,
+      rawJson: {
+        callType: '',
+        childInformation: {},
+        callerInformation: {},
+        caseInformation: {},
+        categories: {},
+        contactlessTask: {
+          channel: null,
+          createdOnBehalfOf: null,
+          date: null,
+          time: null,
         },
       },
     });
-    if (!clearRequest.ok()) {
-      throw new Error(
-        `Error occurred patching offline task for ${workerSid} in HRM: ${clearRequest.status()}`,
-      );
-    }
   } else {
-    if (resp.status() === 404) {
-      console.warn(`No offline task found for worker ${workerSid}, cannot clear out offline tasks`);
-      return;
-    } else {
-      throw new Error(
-        `Error occurred finding offline tasks for ${workerSid} in HRM: ${resp.status()}`,
-      );
-    }
+    console.warn(`No offline task found for worker ${workerSid}, cannot clear out offline tasks`);
+    return;
   }
 };
