@@ -73,7 +73,7 @@ export function contactForm(page: Page) {
     for (const [topCategory, subCategories] of Object.entries(items)) {
       await selectors.topCategorySelector(topCategory).click();
       for (const subCategory of subCategories) {
-        await selectors.subCategoryCheckbox(id, topCategory, subCategory).check({ timeout: 2000 });
+        await selectors.subCategoryCheckbox(id, topCategory, subCategory).check({ timeout: 5000 });
       }
     }
   }

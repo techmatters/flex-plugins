@@ -19,7 +19,10 @@ export const clearOfflineTask = async (
   hrmRequester: (hrmPath: string, method: 'get' | 'delete' | 'patch', body?: any) => Promise<any>,
   workerSid: string,
 ) => {
-  const responseBody = await hrmRequester(`contacts/byTaskSid/offline-task-${workerSid}`, 'get');
+  const responseBody = await hrmRequester(
+    `contacts/byTaskSid/offline-contact-task-${workerSid}`,
+    'get',
+  );
 
   if (responseBody) {
     const contactId: string = responseBody.id;

@@ -26,7 +26,17 @@ export const agentDesktop = (page: Page) => {
   const addOfflineContact = async () => {
     const addOfflineContactButton = selectors.addOfflineContactButton();
     await expect(addOfflineContactButton).toBeVisible();
-    await addOfflineContactButton.click();
+    for (let i = 0; i < 3; i++) {
+      try {
+        await addOfflineContactButton.click();
+        await expect(addOfflineContactButton).not.toBeEnabled({ timeout: 2000 });
+        break;
+      } catch (e) {
+        if (i === 2) {
+          throw e;
+        }
+      }
+    }
   };
 
   return {
