@@ -30,6 +30,32 @@ export const LOAD_RELATIONSHIP = 'LOAD_RELATIONSHIP';
 export const ASSOCIATE_PROFILE_FLAG = 'ASSOCIATE_PROFILE_FLAG';
 export const DISASSOCIATE_PROFILE_FLAG = 'DISASSOCIATE_PROFILE_FLAG';
 
+export type IdentifierEntry = {
+  data?: Identifier;
+  error?: ParseFetchErrorResult;
+  loading: boolean;
+};
+
+export type IdentifiersState = {
+  [identifierId: Identifier['id']]: IdentifierEntry;
+};
+
+export type ProfilesState = {
+  [profileId: Profile['id']]: ProfileEntry;
+};
+
+export type ProfileFlagsState = {
+  data?: ProfileFlag[];
+  error?: ParseFetchErrorResult;
+  loading: boolean;
+};
+
+export const initialProfileFlagsState: ProfileFlagsState = {
+  error: undefined,
+  loading: false,
+  data: undefined,
+};
+
 export const PROFILE_RELATIONSHIPS = {
   cases: {
     method: getProfileCases,
@@ -64,25 +90,9 @@ export type ProfileEntry = {
   loading: boolean;
 };
 
-export type IdentifierEntry = {
-  data?: Identifier;
-  error?: ParseFetchErrorResult;
-  loading: boolean;
-};
-
-export type ProfileFlagsState = {
-  data?: ProfileFlag[];
-  error?: ParseFetchErrorResult;
-  loading: boolean;
-};
-
 export type ProfileState = {
-  identifiers: {
-    [identifierId: Identifier['id']]: IdentifierEntry;
-  };
-  profiles: {
-    [profileId: Profile['id']]: ProfileEntry;
-  };
+  identifiers: IdentifiersState;
+  profiles: ProfilesState;
   profileFlags: ProfileFlagsState;
 };
 

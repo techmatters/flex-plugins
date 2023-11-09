@@ -17,24 +17,23 @@
 import * as t from './types';
 
 const loadIdentifierEntryIntoRedux = (
-  state: t.ProfileState,
+  state: t.IdentifiersState,
   identifierId: t.Identifier['id'],
   identifierUpdate: Partial<t.IdentifierEntry>,
-): t.ProfileState => {
-  const { identifiers: oldIdentifiers, profiles: oldProfiles } = state;
-  const existingIdentifier = oldIdentifiers[identifierId];
+): t.IdentifiersState => {
+  const existingIdentifier = state[identifierId];
   const newIdentifier = {
     ...existingIdentifier,
     ...identifierUpdate,
   };
   const identifiers = {
-    ...oldIdentifiers,
+    ...state,
     [identifierId]: newIdentifier,
   };
 
   return {
     ...state,
-    identifiers,
+    ...identifiers,
   };
 };
 
