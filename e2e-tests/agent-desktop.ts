@@ -15,7 +15,7 @@
  */
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 
 export const agentDesktop = (page: Page) => {
   const selectors = {
@@ -25,8 +25,18 @@ export const agentDesktop = (page: Page) => {
 
   const addOfflineContact = async () => {
     const addOfflineContactButton = selectors.addOfflineContactButton();
-    await addOfflineContactButton.waitFor({ state: 'visible' });
-    await addOfflineContactButton.click();
+    await expect(addOfflineContactButton).toBeVisible();
+    for (let i = 0; i < 3; i++) {
+      try {
+        await addOfflineContactButton.click();
+        await expect(addOfflineContactButton).not.toBeEnabled({ timeout: 2000 });
+        break;
+      } catch (e) {
+        if (i === 2) {
+          throw e;
+        }
+      }
+    }
   };
 
   return {
