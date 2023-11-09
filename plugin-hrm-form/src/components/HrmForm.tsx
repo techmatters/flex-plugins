@@ -15,20 +15,25 @@
  */
 
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 import CallTypeButtons from './callTypeButtons';
 import ProfileRouter, { ALL_PROFILE_ROUTES } from './profile/ProfileRouter';
 import TabbedForms from './tabbedForms';
 import CSAMReport from './CSAMReport/CSAMReport';
 import { RootState } from '../states';
-import type { CustomITask } from '../types/types';
+import type { CustomITask, Case as CaseForm, Contact } from '../types/types';
 import { newContactCSAMApi } from './CSAMReport/csamReportApi';
 import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
 import { namespace } from '../states/storeNamespaces';
-import { getCurrentBaseRoute, getCurrentTopmostRouteForTask } from '../states/routing/getRoute';
-import { CSAMReportRoute, isRouteWithModalSupport } from '../states/routing/types';
+import { ContactMetadata } from '../states/contacts/types';
+import { createContactAsyncAction, submitContactFormAsyncAction } from '../states/contacts/saveContact';
+import { newContact } from '../states/contacts/contactState';
+import { getHrmConfig } from '../hrmConfig';
+import { getCurrentTopmostRouteForTask } from '../states/routing/getRoute';
+import { CSAMReportRoute } from 'states/routing/types';
 
 type OwnProps = {
   task: CustomITask;
@@ -76,12 +81,26 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact })
 HrmForm.displayName = 'HrmForm';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const routingState = state[namespace].routing;
+  const { routing, configuration } = state[namespace];
   const { savedContact, metadata } = findContactByTaskSid(state, task.taskSid) ?? {};
 
-  return { routing: getCurrentTopmostRouteForTask(routingState, task.taskSid), savedContact, metadata };
+  return {
+    routing: getCurrentTopmostRouteForTask(routing, task.taskSid),
+    savedContact,
+    metadata,
+    definitionVersion: configuration.currentDefinitionVersion,
+  };
 };
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => {
+  return {
+    createContact: (definition: DefinitionVersion) =>
+      dispatch(createContactAsyncAction(newContact(definition), getHrmConfig().workerSid, task.taskSid)),
+    finaliseContact: (contact: Contact, metadata: ContactMetadata, caseForm: CaseForm) =>
+      dispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
+  };
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
 export default connector(HrmForm);

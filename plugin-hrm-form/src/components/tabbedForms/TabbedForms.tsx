@@ -137,6 +137,7 @@ const TabbedForms: React.FC<Props> = ({
   metadata,
   task,
   isCallTypeCaller,
+  removeIfOfflineContact,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -177,7 +178,7 @@ const TabbedForms: React.FC<Props> = ({
 
   const onNewCaseSaved = async (caseForm: CaseForm) => {
     await finaliseContact(savedContact, metadata, caseForm);
-    await completeTask(task);
+    await completeTask(task, savedContact);
   };
 
   if (
@@ -243,9 +244,7 @@ const TabbedForms: React.FC<Props> = ({
       ? [
           {
             label: 'CancelOfflineContact',
-            onClick: async () => {
-              removeOfflineContact();
-            },
+            onClick: () => removeIfOfflineContact(savedContact),
           },
         ]
       : undefined;
@@ -302,7 +301,7 @@ const TabbedForms: React.FC<Props> = ({
                   display={subroute === 'contactlessTask'}
                   helplineInformation={currentDefinitionVersion.helplineInformation}
                   definition={currentDefinitionVersion.tabbedForms.ContactlessTaskTab}
-                  initialValues={contactlessTask}
+                  initialValues={{ ...contactlessTask, helpline }}
                   autoFocus={autoFocus}
                 />
               </TabbedFormTabContainer>
@@ -425,6 +424,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { contactId, task }: OwnPro
     dispatch(changeRoute({ route: 'select-call-type' }, task.taskSid, ChangeRouteMode.Replace)),
   finaliseContact: (contact: Contact, metadata: ContactMetadata, caseForm: CaseForm) =>
     dispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
+  removeIfOfflineContact: (contact: Contact) => removeOfflineContact(dispatch, contact),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

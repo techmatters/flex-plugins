@@ -41,7 +41,7 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, modalOpen }) => {
+const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) => {
   const formattedIdentifier = getFormattedNumberFromTask(task);
   const identifierIdentifier = getNumberFromTask(task);
   const { identifier } = useIdentifierByIdentifier({ identifierIdentifier, shouldAutoload: true });
@@ -76,7 +76,7 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, moda
   };
 
   return (
-    <div className={modalOpen ? 'editingContact' : ''}>
+    <div>
       <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
         {/* eslint-disable-next-line prettier/prettier */}
         <pre>
@@ -120,16 +120,6 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, moda
 
 ProfileIdentifierBanner.displayName = 'PreviousContactsBanner';
 
-const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const { routing, activeContacts } = state[namespace];
-  const { taskSid } = task;
-  const modalOpen = activeContacts.editingContact || isRouteModal(getCurrentBaseRoute(routing, taskSid));
-
-  return {
-    modalOpen,
-  };
-};
-
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { task } = ownProps;
   const taskId = task.taskSid;
@@ -141,5 +131,5 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(null, mapDispatchToProps);
 export default connector(ProfileIdentifierBanner);

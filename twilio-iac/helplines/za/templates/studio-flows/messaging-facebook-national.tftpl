@@ -1,0 +1,294 @@
+${
+  jsonencode(
+    {
+    "description": flow_description,
+    "states": [
+        {
+        "name": "Trigger",
+        "type": "trigger",
+        "transitions": [
+            {
+            "next": "check_image",
+            "event": "incomingMessage"
+            },
+            {
+            "event": "incomingCall"
+            },
+            {
+            "event": "incomingConversationMessage"
+            },
+            {
+            "event": "incomingRequest"
+            },
+            {
+            "event": "incomingParent"
+            }
+        ],
+        "properties": {
+            "offset": {
+            "x": -290,
+            "y": -1010
+            }
+        }
+        },
+        {
+        "name": "facebook_hours",
+        "type": "run-function",
+        "transitions": [
+            {
+            "next": "check_fb_hours",
+            "event": "success"
+            },
+            {
+            "event": "fail"
+            }
+        ],
+        "properties": {
+            "service_sid": flow_vars["service_sid"],
+            "environment_sid": flow_vars["environment_sid"],
+            "offset": {
+            "x": 60,
+            "y": -460
+            },
+            "function_sid": flow_vars["operating_hours_function_sid"],
+            "parameters": [
+            {
+                "value": "facebook",
+                "key": "channel"
+            }
+            ],
+            "url": "${serverless_url}/operatingHours"
+        }
+        },
+        {
+        "name": "check_fb_hours",
+        "type": "split-based-on",
+        "transitions": [
+            {
+            "next": "fb_closed",
+            "event": "noMatch"
+            },
+            {
+            "next": "fb_redirect",
+            "event": "match",
+            "conditions": [
+                {
+                "friendly_name": "If value equal_to open",
+                "arguments": [
+                    "{{widgets.facebook_hours.body}}"
+                ],
+                "type": "contains",
+                "value": "open"
+                }
+            ]
+            },
+            {
+            "next": "fb_closed",
+            "event": "match",
+            "conditions": [
+                {
+                "friendly_name": "If value equal_to closed",
+                "arguments": [
+                    "{{widgets.facebook_hours.body}}"
+                ],
+                "type": "contains",
+                "value": "closed"
+                }
+            ]
+            },
+            {
+            "next": "fb_closed",
+            "event": "match",
+            "conditions": [
+                {
+                "friendly_name": "If value equal_to holiday",
+                "arguments": [
+                    "{{widgets.facebook_hours.body}}"
+                ],
+                "type": "contains",
+                "value": "holiday"
+                }
+            ]
+            }
+        ],
+        "properties": {
+            "input": "{{widgets.facebook_hours.body}}",
+            "offset": {
+            "x": 100,
+            "y": -200
+            }
+        }
+        },
+        {
+        "name": "fb_redirect",
+        "type": "send-message",
+        "transitions": [
+            {
+            "next": "timeout",
+            "event": "sent"
+            },
+            {
+            "event": "failed"
+            }
+        ],
+        "properties": {
+            "offset": {
+            "x": 160,
+            "y": 130
+            },
+            "service": "{{trigger.message.InstanceSid}}",
+            "channel": "{{trigger.message.ChannelSid}}",
+            "from": "{{flow.channel.address}}",
+            "to": "{{contact.channel.address}}",
+            "body": "Thank you for your message. Your message has reached the Childline National Office based in Durban. For us to understand the situation a little better, could you kindly send us a message detailing the situation you require advice on, your age and the area you are in and we shall pass these on to our counsellors as we do not have counsellors on Facebook, or alternatively, refer you to services closer to you. If you would like to speak to a counsellor, you may call us 24X7 on our Tollfree Crisisline - 116. Our Tollfree Crisisline is free from all networks. Sometimes it does get busy due to our high volume of calls. Also, you may also chat to an online counsellor on our website, Monday-Friday, 2-6pm (excluding Public Holidays) by clicking on this link: http://chat.childlinesa.org.za/status.php\nThank you for taking the first step in contacting us.\nKind Regards, Childline SA"
+        }
+        },
+        {
+        "name": "timeout",
+        "type": "send-to-flex",
+        "transitions": [
+            {
+            "event": "callComplete"
+            },
+            {
+            "event": "failedToEnqueue"
+            },
+            {
+            "event": "callFailure"
+            }
+        ],
+        "properties": {
+            "offset": {
+            "x": 170,
+            "y": 360
+            },
+            "workflow": workflow_sids["master"],
+            "channel": task_channel_sids["chat"],
+            "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\"}",
+            "timeout": "1209600"
+        }
+        },
+        {
+        "name": "fb_closed",
+        "type": "send-message",
+        "transitions": [
+            {
+            "next": "timeout_closed",
+            "event": "sent"
+            },
+            {
+            "event": "failed"
+            }
+        ],
+        "properties": {
+            "offset": {
+            "x": 600,
+            "y": 100
+            },
+            "service": "{{trigger.message.InstanceSid}}",
+            "channel": "{{trigger.message.ChannelSid}}",
+            "from": "{{flow.channel.address}}",
+            "to": "{{contact.channel.address}}",
+            "body": "Thanks for your message. We are not here right now, Childline's messaging service is operational, Monday-Friday, 10am-6pm (excluding Public Holidays). Please note that messages sent on this platform out of these hours are not received by our team and if you would like to talk to us out of these times, please call our Toll-Free number on 116."
+        }
+        },
+        {
+        "name": "timeout_closed",
+        "type": "send-to-flex",
+        "transitions": [
+            {
+            "event": "callComplete"
+            },
+            {
+            "event": "failedToEnqueue"
+            },
+            {
+            "event": "callFailure"
+            }
+        ],
+        "properties": {
+            "offset": {
+            "x": 620,
+            "y": 360
+            },
+            "workflow": workflow_sids["master"],
+            "channel": task_channel_sids["chat"],
+            "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\"}",
+            "timeout": "1209600"
+        }
+        },
+        {
+        "name": "check_image",
+        "type": "split-based-on",
+        "transitions": [
+            {
+            "event": "noMatch"
+            },
+            {
+            "next": "no_image",
+            "event": "match",
+            "conditions": [
+                {
+                "friendly_name": "{{trigger.message.Body}}",
+                "arguments": [
+                    "{{trigger.message.Body}}"
+                ],
+                "type": "is_blank",
+                "value": "Is Blank"
+                }
+            ]
+            },
+            {
+            "next": "facebook_hours",
+            "event": "match",
+            "conditions": [
+                {
+                "friendly_name": "{{trigger.message.Body}}",
+                "arguments": [
+                    "{{trigger.message.Body}}"
+                ],
+                "type": "is_not_blank",
+                "value": "Is Not Blank"
+                }
+            ]
+            }
+        ],
+        "properties": {
+            "input": "{{trigger.message.Body}}",
+            "offset": {
+            "x": -260,
+            "y": -780
+            }
+        }
+        },
+        {
+        "name": "no_image",
+        "type": "send-message",
+        "transitions": [
+            {
+            "event": "sent"
+            },
+            {
+            "event": "failed"
+            }
+        ],
+        "properties": {
+            "offset": {
+            "x": -320,
+            "y": -340
+            },
+            "service": "{{trigger.message.InstanceSid}}",
+            "channel": "{{trigger.message.ChannelSid}}",
+            "from": "{{flow.channel.address}}",
+            "to": "{{contact.channel.address}}",
+            "body": "It is not possible to receive images or media files through Messenger at this time. Please send text only."
+        }
+        }
+    ],
+    "initial_state": "Trigger",
+    "flags": {
+        "allow_concurrent_calls": true
+    }
+    }
+  )
+}

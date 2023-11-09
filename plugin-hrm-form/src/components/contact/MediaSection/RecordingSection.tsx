@@ -17,38 +17,105 @@ import React, { useState } from 'react';
 import { Template } from '@twilio/flex-ui';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import { LoadMediaButton, LoadMediaButtonText } from './styles';
+import { ErrorFont, LoadMediaButton, LoadMediaButtonText } from './styles';
 import { S3StoredRecording } from '../../../types/types';
+import { fetchHrmApi, generateSignedURLPath } from '../../../services/fetchHrmApi';
 
 type OwnProps = {
+  contactId: string;
+  externalStoredRecording?: S3StoredRecording;
   loadConversationIntoOverlay: () => Promise<void>;
 };
 
-const RecordingSection: React.FC<OwnProps> = ({ loadConversationIntoOverlay }) => {
+const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecording, loadConversationIntoOverlay }) => {
+  const [voiceRecording, setVoiceRecording] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showButton, setShowButton] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const fetchAndLoadRecording = async () => {
-    setLoading(true);
+    try {
+      setLoading(true);
+      setShowButton(false);
 
-    await loadConversationIntoOverlay();
+      if (externalStoredRecording) {
+        const { media_url: recordingPreSignedUrl } = await fetchHrmApi(
+          generateSignedURLPath({
+            method: 'getObject',
+            objectType: 'contact',
+            objectId: contactId,
+            fileType: 'recording',
+            location: externalStoredRecording.storeTypeSpecificData.location,
+          }),
+        );
 
+        setVoiceRecording(recordingPreSignedUrl);
+      } else {
+        await loadConversationIntoOverlay();
+        setShowButton(true);
+      }
+
+      setLoading(false);
+    } catch (error) {
+      handleFetchAndLoadException(error);
+    }
+  };
+
+  const handleFetchAndLoadException = err => {
+    console.error(
+      `Error loading the recording for contact ${contactId}, recording url ${externalStoredRecording?.storeTypeSpecificData?.location.key}`,
+      err,
+    );
+    const errorMessage = 'RecordingSection-Error';
+
+    setErrorMessage(errorMessage);
     setLoading(false);
   };
+
+  if (errorMessage) {
+    return (
+      <ErrorFont>
+        <Template code={errorMessage} />
+      </ErrorFont>
+    );
+  }
 
   if (loading) {
     return <CircularProgress size={30} />;
   }
 
+  if (showButton) {
+    return (
+      <LoadMediaButton
+        style={{ justifyContent: 'center', paddingTop: '10px', paddingBottom: '10px', whiteSpace: 'nowrap' }}
+        type="button"
+        onClick={fetchAndLoadRecording}
+      >
+        <LoadMediaButtonText>
+          <Template code="ContactDetails-LoadRecording-Button" />
+        </LoadMediaButtonText>
+      </LoadMediaButton>
+    );
+  }
+
   return (
-    <LoadMediaButton
-      style={{ justifyContent: 'center', paddingTop: '10px', paddingBottom: '10px', whiteSpace: 'nowrap' }}
-      type="button"
-      onClick={fetchAndLoadRecording}
-    >
-      <LoadMediaButtonText>
-        <Template code="ContactDetails-LoadRecording-Button" />
-      </LoadMediaButtonText>
-    </LoadMediaButton>
+    <div>
+      {voiceRecording ? (
+        <audio
+          controls
+          controlsList="nodownload"
+          src={voiceRecording}
+          preload="metadata"
+          onError={handleFetchAndLoadException}
+        >
+          <track kind="captions" />
+        </audio>
+      ) : (
+        <ErrorFont>
+          <Template code={errorMessage} />
+        </ErrorFont>
+      )}
+    </div>
   );
 };
 

@@ -37,8 +37,10 @@ import { getTemplateStrings } from '../../hrmConfig';
 import { AppRoutes } from '../../states/routing/types';
 import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
 import asyncDispatch from '../../states/asyncDispatch';
-import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
-import { configurationBase, connectedCaseBase, namespace } from '../../states/storeNamespaces';
+import { submitContactFormAsyncAction, updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
+import { configurationBase, namespace } from '../../states/storeNamespaces';
+import { ContactMetadata } from '../../states/contacts/types';
+import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 
 const isDialogOpen = (task: CustomITask, contact: ContactDraftChanges) =>
   Boolean(!isOfflineContactTask(task) && contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType));
@@ -55,12 +57,14 @@ const CallTypeButtons: React.FC<Props> = ({
   savedContact,
   draftContact,
   task,
+  metadata,
   localization,
   currentDefinitionVersion,
   updateCallType,
   clearCallType,
   changeRoute,
   saveContactChangesInHrm,
+  saveFinalizedNonDataContact,
 }) => {
   const { isCallTask } = localization;
 
@@ -109,12 +113,12 @@ const CallTypeButtons: React.FC<Props> = ({
     if (!hasTaskControl(task)) return;
 
     try {
-      await saveContactChangesInHrm(savedContact, draftContact);
-      await completeTask(task);
+      await saveFinalizedNonDataContact(savedContact, draftContact, metadata);
+      await completeTask(task, savedContact);
     } catch (error) {
       const strings = getTemplateStrings();
       if (!window.confirm(strings['Error-ContinueWithoutRecording'])) {
-        await completeTask(task);
+        await completeTask(task, savedContact);
       }
     }
   };
@@ -177,16 +181,20 @@ const CallTypeButtons: React.FC<Props> = ({
 CallTypeButtons.displayName = 'CallTypeButtons';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const { savedContact, draftContact } = findContactByTaskSid(state, ownProps.task.taskSid) ?? {};
+  const { savedContact, draftContact, metadata } = findContactByTaskSid(state, ownProps.task.taskSid) ?? {};
   const { currentDefinitionVersion } = state[namespace][configurationBase];
 
-  return { savedContact, draftContact, currentDefinitionVersion };
+  return { savedContact, draftContact, metadata, currentDefinitionVersion };
 };
 
-const mapDispatchToProps = (dispatch, { task: { taskSid } }: OwnProps) => ({
-  changeRoute: (route: AppRoutes) => dispatch(newChangeRouteAction(route, taskSid)),
+const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
+  changeRoute: (route: AppRoutes) => dispatch(newChangeRouteAction(route, task.taskSid)),
   saveContactChangesInHrm: (contact: Contact, changes: ContactDraftChanges) =>
-    asyncDispatch(dispatch)(updateContactInHrmAsyncAction(contact, changes, taskSid)),
+    asyncDispatch(dispatch)(updateContactInHrmAsyncAction(contact, changes, task.taskSid)),
+  saveFinalizedNonDataContact: (contact: Contact, changes: ContactDraftChanges, metaData: ContactMetadata) =>
+    // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
+    // TODO: Rework error handling to be based on redux state set by the _REJECTED action
+    dispatch(submitContactFormAsyncAction(task, getUnsavedContact(contact, changes), metaData, undefined)),
   updateCallType: (contactId: string, callType: string) =>
     dispatch(newUpdateDraftAction(contactId, { rawJson: { callType } })),
   clearCallType: (contactId: string) => dispatch(newUpdateDraftAction(contactId, { rawJson: { callType: null } })),

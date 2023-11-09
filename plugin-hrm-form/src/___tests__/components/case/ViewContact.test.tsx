@@ -174,7 +174,6 @@ describe('View Contact', () => {
           },
         },
         activeContacts: {
-          editingContact: false,
           isCallTypeCaller: false,
           existingContacts: {
             TEST_ID: {

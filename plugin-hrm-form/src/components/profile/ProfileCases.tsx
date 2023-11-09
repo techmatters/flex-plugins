@@ -30,7 +30,7 @@ type OwnProps = ProfileCommonProps;
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ProfileCases: React.FC<Props> = ({ profileId, counselorsHash }) => {
+const ProfileCases: React.FC<Props> = ({ profileId, task, counselorsHash }) => {
   const renderItem = (cas: Case) => {
     const { can } = getPermissionsForCase(cas.twilioWorkerId, cas.status);
     const onClickViewCase = () => {
@@ -40,6 +40,7 @@ const ProfileCases: React.FC<Props> = ({ profileId, counselorsHash }) => {
     return (
       <CasePreview
         key={`CasePreview-${cas.id}`}
+        task={task}
         currentCase={cas}
         counselorsHash={counselorsHash}
         onClickViewCase={can(PermissionActions.VIEW_CASE) && onClickViewCase}

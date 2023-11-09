@@ -16,6 +16,7 @@
 
 import { Browser, BrowserContext, Page, chromium } from '@playwright/test';
 import { logPageTelemetry } from './browser-logs';
+import { getConfigValue } from './config';
 
 export type SetupPageReturn = {
   context: BrowserContext;
@@ -45,7 +46,9 @@ export const setupContextAndPage = async (browser: Browser): Promise<SetupPageRe
   await waitForBrowser(browser);
 
   console.log('Launching page');
-  const context = await browser.newContext();
+  const context = await browser.newContext({
+    storageState: getConfigValue('storageStatePath') as string,
+  });
   const page = await context.newPage();
 
   logPageTelemetry(page);

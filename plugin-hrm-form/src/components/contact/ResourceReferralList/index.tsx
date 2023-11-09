@@ -128,7 +128,9 @@ const ResourceReferralList: React.FC<Props> = ({
 
   useEffect(() => {
     if (!lookedUpResource) {
-      loadResource(resourceReferralIdToAdd);
+      if (resourceReferralIdToAdd) {
+        loadResource(resourceReferralIdToAdd);
+      }
     } else if (lookupStatus === ReferralLookupStatus.PENDING) {
       if (lookedUpResource.status === ResourceLoadStatus.Error) {
         updateResourceReferralLookupStatus(ReferralLookupStatus.NOT_FOUND);

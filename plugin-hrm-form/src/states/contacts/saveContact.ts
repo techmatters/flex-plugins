@@ -15,6 +15,7 @@
  */
 
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
+import { format } from 'date-fns';
 
 import { submitContactForm } from '../../services/formSubmissionHelpers';
 import {
@@ -36,12 +37,19 @@ import {
 } from './types';
 import { ContactDraftChanges, ExistingContactsState } from './existingContacts';
 import { newContactMetaData } from './contactState';
+import { getCase } from '../../services/CaseService';
 
 export const createContactAsyncAction = createAsyncAction(
   CREATE_CONTACT_ACTION,
-  async (contact: Contact, workerSid: string, taskSid: string) => {
+  async (contactToCreate: Contact, workerSid: string, taskSid: string) => {
+    const contact = await createContact(contactToCreate, workerSid, taskSid);
+    let contactCase: Case | undefined;
+    if (contact.caseId) {
+      contactCase = await getCase(contact.caseId);
+    }
     return {
-      contact: await createContact(contact, workerSid, taskSid),
+      contact,
+      contactCase,
       reference: taskSid,
       metadata: newContactMetaData(false),
     };
@@ -66,12 +74,56 @@ export const updateContactInHrmAsyncAction = createAsyncAction(
   },
 );
 
+const BLANK_CONTACT_CHANGES: ContactDraftChanges = {
+  conversationDuration: 0,
+  rawJson: {
+    callType: '',
+    childInformation: {},
+    callerInformation: {},
+    caseInformation: {},
+    categories: {},
+    contactlessTask: {
+      channel: null,
+      createdOnBehalfOf: null,
+      date: null,
+      time: null,
+    },
+  },
+};
+
+export const newClearContactAsyncAction = (contact: Contact) =>
+  updateContactInHrmAsyncAction(contact, {
+    ...BLANK_CONTACT_CHANGES,
+    timeOfContact: new Date().toISOString(),
+  });
+
+export const newRestartOfflineContactAsyncAction = (contact: Contact, createdOnBehalfOf: string) => {
+  const now = new Date();
+  const time = format(now, 'HH:mm');
+  const date = format(now, 'yyyy-MM-dd');
+  return updateContactInHrmAsyncAction(contact, {
+    ...BLANK_CONTACT_CHANGES,
+    timeOfContact: now.toISOString(),
+    rawJson: {
+      ...BLANK_CONTACT_CHANGES.rawJson,
+      contactlessTask: {
+        channel: null,
+        createdOnBehalfOf,
+        date,
+        time,
+      },
+    },
+  });
+};
+
+type ConnectToCaseActionPayload = { contactId: string; caseId: number; contact: Contact };
+
 // TODO: Update connectedContacts on case in redux state
 export const connectToCaseAsyncAction = createAsyncAction(
   CONNECT_TO_CASE,
-  async (contactId: string, caseId: number | null): Promise<{ contactId: string; caseId: number }> => {
-    await connectToCase(contactId, caseId);
-    return { contactId, caseId };
+  async (contactId: string, caseId: number | null): Promise<ConnectToCaseActionPayload> => {
+    const contact = await connectToCase(contactId, caseId);
+    return { contactId, caseId, contact };
   },
 );
 
@@ -85,8 +137,14 @@ export const submitContactFormAsyncAction = createAsyncAction(
 export const loadContactFromHrmByTaskSidAsyncAction = createAsyncAction(
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION,
   async (taskSid: string, reference: string = taskSid) => {
+    const contact = await getContactByTaskSid(taskSid);
+    let contactCase: Case | undefined;
+    if (contact?.caseId) {
+      contactCase = await getCase(contact.caseId);
+    }
     return {
-      contact: await getContactByTaskSid(taskSid),
+      contact,
+      contactCase,
       reference,
     };
   },
@@ -161,6 +219,13 @@ export const saveContactReducer = (initialState: ExistingContactsState) =>
       (state, { payload: { contact, reference } }): ExistingContactsState => {
         if (!contact) return state;
         return loadContactIntoRedux(state, contact, reference, newContactMetaData(true));
+      },
+    ),
+    handleAction(
+      connectToCaseAsyncAction.fulfilled,
+      (state, { payload: { contact } }): ExistingContactsState => {
+        if (!contact) return state;
+        return loadContactIntoRedux(state, contact);
       },
     ),
 
