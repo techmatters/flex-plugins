@@ -31,6 +31,7 @@ import setUpMonitoring from './utils/setUpMonitoring';
 import { changeLanguage } from './states/configuration/actions';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from './permissions';
 import {
+  getAseloConfigFlags,
   getAseloFeatureFlags,
   getHrmConfig,
   getTemplateStrings,
@@ -76,7 +77,6 @@ const setUpComponents = (
   setupObject: ReturnType<typeof getHrmConfig>,
   translateUI: (language: string) => Promise<void>,
 ) => {
-  const { enableUnmaskingCalls } = getHrmConfig();
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
   if (maskIdentifiers) {
@@ -95,7 +95,7 @@ const setUpComponents = (
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
     strings.CallParticipantCustomerName = strings.MaskIdentifiers;
 
-    Components.setUpViewMaskedVoiceNumber(featureFlags);
+    Components.setUpViewMaskedVoiceNumber();
   }
 
   // setUp (add) dynamic components

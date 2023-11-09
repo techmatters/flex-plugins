@@ -17,7 +17,7 @@
 import * as Flex from '@twilio/flex-ui';
 
 import { buildFormDefinitionsBaseUrlGetter, inferConfiguredFormDefinitionsBaseUrl } from './definitionVersions';
-import { FeatureFlags } from './types/types';
+import { ConfigFlags, FeatureFlags } from './types/types';
 import type { RootState } from './states';
 import { namespace } from './states/storeNamespaces';
 
@@ -65,9 +65,11 @@ const readConfig = () => {
     pdfImagesSource,
     multipleOfficeSupport,
     permissionConfig,
-    enableUnmaskingCalls,
   } = manager.serviceConfiguration.attributes;
   const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
+
+  const configFlags: ConfigFlags = manager.serviceConfiguration.attributes.config_flags || {};
+
   const featureFlagsFromEnvEntries = Object.entries(process.env)
     .filter(([varName]) => varName.startsWith(featureFlagEnvVarPrefix))
     .map(([name, value]) => [
@@ -85,6 +87,7 @@ const readConfig = () => {
   };
 
   return {
+    configFlags,
     featureFlags,
     strings,
     hrm: {
@@ -108,7 +111,6 @@ const readConfig = () => {
       definitionVersion,
       pdfImagesSource,
       multipleOfficeSupport,
-      enableUnmaskingCalls,
       permissionConfig,
       contactsWaitingChannels,
       externalRecordingsEnabled,
@@ -149,6 +151,7 @@ export const subscribeToConfigUpdates = (manager: Flex.Manager) => {
 export const getHrmConfig = () => cachedConfig.hrm;
 export const getReferrableResourceConfig = () => cachedConfig.referrableResources;
 export const getTemplateStrings = () => cachedConfig.strings;
+export const getAseloConfigFlags = (): ConfigFlags => cachedConfig.configFlags;
 export const getAseloFeatureFlags = (): FeatureFlags => cachedConfig.featureFlags;
 
 /**

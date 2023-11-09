@@ -45,7 +45,7 @@ import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
 import { FeatureFlags, isInMyBehalfITask, standaloneTaskSid } from '../types/types';
 import { colors } from '../channels/colors';
-import { getHrmConfig } from '../hrmConfig';
+import { getHrmConfig, getAseloConfigFlags } from '../hrmConfig';
 import { AseloMessageInput, AseloMessageList } from '../components/AseloMessaging';
 import { namespace, routingBase } from '../states/storeNamespaces';
 import { changeRoute } from '../states/routing/actions';
@@ -230,7 +230,9 @@ export const setUpCustomCRMContainer = () => {
 /**
  * Adds a custom button for voice channel to show the phone number in emergency situations
  */
-export const setUpViewMaskedVoiceNumber = featureFlags => {
+export const setUpViewMaskedVoiceNumber = () => {
+  if (!getAseloConfigFlags().enableUnmaskingCalls) return;
+
   Flex.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" />, {
     sortOrder: 1,
     if: props => props.task.channelType === 'voice',
