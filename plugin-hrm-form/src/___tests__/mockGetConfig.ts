@@ -44,6 +44,9 @@ export const baseMockConfig = {
     'TabbedForms-CategoriesTab': 'Categories',
     'TabbedForms-AddCaseInfoTab': 'Summary',
   },
+  configFlags: {
+    enableExternalRecordings: true,
+  },
   featureFlags: {
     enable_transfers: true,
     enable_save_insights: true,

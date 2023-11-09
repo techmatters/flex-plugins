@@ -51,8 +51,6 @@ const readConfig = () => {
   const { helpline_code: helplineCode, environment } = manager.serviceConfiguration.attributes;
   const docsBucket = `tl-aselo-docs-${helplineCode}-${environment}`;
 
-  const externalRecordingsEnabled = manager.serviceConfiguration.attributes.external_recordings_enabled || false;
-
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid;
   const { helpline, counselorLanguage, full_name: counselorName, roles } = manager.workerClient.attributes as any;
@@ -113,7 +111,6 @@ const readConfig = () => {
       multipleOfficeSupport,
       permissionConfig,
       contactsWaitingChannels,
-      externalRecordingsEnabled,
       helplineCode,
       environment,
       docsBucket,

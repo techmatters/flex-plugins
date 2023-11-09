@@ -27,12 +27,13 @@ import { TaskHelper } from '@twilio/flex-ui';
 import { baseMockConfig as mockBaseConfig, mockGetDefinitionsResponse } from '../mockGetConfig';
 import { handleTwilioTask, saveContact, updateContactInHrm } from '../../services/ContactService';
 import { channelTypes } from '../../states/DomainConstants';
-import { getDefinitionVersions, getHrmConfig } from '../../hrmConfig';
+import { getDefinitionVersions, getHrmConfig, getAseloConfigFlags } from '../../hrmConfig';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
 import { ContactState } from '../../states/contacts/existingContacts';
 
 const helpline = 'ChildLine';
 const mockGetHrmConfig = getHrmConfig as jest.Mock;
+const mockGetAseloConfigFlags = getAseloConfigFlags as jest.Mock;
 
 // eslint-disable-next-line no-empty-function
 global.fetch = global.fetch ? global.fetch : () => Promise.resolve(<any>{ ok: true });
@@ -296,10 +297,8 @@ describe('saveContact() (externalRecording)', () => {
   });
 
   beforeAll(() => {
-    mockGetHrmConfig.mockReturnValue({
-      ...mockBaseConfig,
-      externalRecordingsEnabled: true,
-    });
+    mockGetHrmConfig.mockReturnValue(mockBaseConfig);
+    mockGetAseloConfigFlags.mockReturnValue(mockBaseConfig.configFlags);
 
     TaskHelper.isChatBasedTask = () => false;
     TaskHelper.isCallTask = () => true;
@@ -376,10 +375,8 @@ test('updateContactInHrm - calls a PATCH HRM endpoint using the supplied contact
 describe('handleTwilioTask() (externalRecording)', () => {
   // eslint-disable-next-line sonarjs/no-identical-functions
   beforeAll(() => {
-    mockGetHrmConfig.mockReturnValue({
-      ...mockBaseConfig,
-      externalRecordingsEnabled: true,
-    });
+    mockGetHrmConfig.mockReturnValue(mockBaseConfig);
+    mockGetAseloConfigFlags.mockReturnValue(mockBaseConfig.configFlags);
 
     TaskHelper.isChatBasedTask = () => false;
     TaskHelper.isCallTask = () => true;

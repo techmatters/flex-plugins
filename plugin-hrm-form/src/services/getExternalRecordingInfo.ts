@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getHrmConfig } from '../hrmConfig';
+import { getAseloConfigFlags } from '../hrmConfig';
 import { isVoiceChannel } from '../states/DomainConstants';
 import { CustomITask, isOfflineContactTask, InMyBehalfITask } from '../types/types';
 import { getExternalRecordingS3Location } from './ServerlessService';
@@ -49,8 +49,8 @@ export const shouldGetExternalRecordingInfo = (task: CustomITask): task is InMyB
   const { channelType } = task;
   if (!isVoiceChannel(channelType)) return false;
 
-  const { externalRecordingsEnabled } = getHrmConfig();
-  if (!externalRecordingsEnabled) return false;
+  const { enableExternalRecordings } = getAseloConfigFlags();
+  if (!enableExternalRecordings) return false;
 
   return true;
 };
