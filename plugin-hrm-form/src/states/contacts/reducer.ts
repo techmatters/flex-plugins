@@ -25,6 +25,8 @@ import {
   CREATE_CONTACT_ACTION_FULFILLED,
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
   UPDATE_CONTACT_ACTION_FULFILLED,
+  CONNECT_TO_CASE_ACTION_FULFILLED,
+  REMOVE_FROM_CASE_ACTION_FULFILLED,
 } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import {
@@ -195,6 +197,8 @@ export function reduce(
     }
     case UPDATE_CONTACT_ACTION_FULFILLED:
     case CREATE_CONTACT_ACTION_FULFILLED:
+    case CONNECT_TO_CASE_ACTION_FULFILLED:
+    case REMOVE_FROM_CASE_ACTION_FULFILLED:
     case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED: {
       return { ...state, existingContacts: boundSaveContactReducer(state.existingContacts, action) };
     }

@@ -21,16 +21,27 @@ import { Close } from '@material-ui/icons';
 
 import { HeaderCloseButton, HiddenText } from '../../styles/HrmStyles';
 import { closeRemovedFromCaseBannerAction } from './state';
+import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
 
-const mapDispatchToProps = dispatch => {
+type OwnProps = {
+  taskId: string;
+};
+
+const mapStateToProps = (state, { taskId }: OwnProps) => {
+  const contact = findContactByTaskSid(state, taskId);
+
   return {
-    close: () => dispatch(closeRemovedFromCaseBannerAction()),
+    contactId: contact.savedContact.id,
   };
 };
 
-type Props = ReturnType<typeof mapDispatchToProps>;
+const mapDispatchToProps = dispatch => ({
+  close: (contactId: string) => dispatch(closeRemovedFromCaseBannerAction(contactId)),
+});
 
-const ContactRemovedFromCaseBanner: React.FC<Props> = ({ close }) => (
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+
+const ContactRemovedFromCaseBanner: React.FC<Props> = ({ contactId, close }) => (
   <div
     style={{
       display: 'flex',
@@ -54,7 +65,7 @@ const ContactRemovedFromCaseBanner: React.FC<Props> = ({ close }) => (
     <span style={{ color: '#282A2B', fontWeight: 700, marginLeft: '8px', marginRight: '1ch' }}>
       Contact removed from case
     </span>
-    <HeaderCloseButton onClick={close} data-testid="NavigableContainer-CloseCross" style={{ opacity: '.75' }}>
+    <HeaderCloseButton onClick={() => close(contactId)} style={{ opacity: '.75' }}>
       <HiddenText>
         <Template code="NavigableContainer-CloseButton" />
       </HiddenText>
@@ -63,7 +74,7 @@ const ContactRemovedFromCaseBanner: React.FC<Props> = ({ close }) => (
   </div>
 );
 
-const connector = connect(null, mapDispatchToProps);
+const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(ContactRemovedFromCaseBanner);
 
 export default connected;

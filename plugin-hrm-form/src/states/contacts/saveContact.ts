@@ -117,6 +117,7 @@ export const newRestartOfflineContactAsyncAction = (contact: Contact, createdOnB
 };
 
 type ConnectToCaseActionPayload = { contactId: string; caseId: number; contact: Contact };
+type RemoveFromCaseActionPayload = { contactId: string; caseId: number; contact: Contact };
 
 // TODO: Update connectedContacts on case in redux state
 export const connectToCaseAsyncAction = createAsyncAction(
@@ -129,9 +130,9 @@ export const connectToCaseAsyncAction = createAsyncAction(
 
 export const removeFromCaseAsyncAction = createAsyncAction(
   REMOVE_FROM_CASE,
-  async (contactId: string, caseId: number | null): Promise<{ contactId: string; caseId: number }> => {
-    await removeFromCase(contactId, caseId);
-    return { contactId, caseId };
+  async (contactId: string, caseId: number | null): Promise<RemoveFromCaseActionPayload> => {
+    const contact = await removeFromCase(contactId, caseId);
+    return { contactId, caseId, contact };
   },
 );
 
@@ -214,6 +215,13 @@ export const saveContactReducer = (initialState: ExistingContactsState) =>
     ),
     handleAction(
       connectToCaseAsyncAction.fulfilled,
+      (state, { payload: { contact } }): ExistingContactsState => {
+        if (!contact) return state;
+        return loadContactIntoRedux(state, contact);
+      },
+    ),
+    handleAction(
+      removeFromCaseAsyncAction.fulfilled,
       (state, { payload: { contact } }): ExistingContactsState => {
         if (!contact) return state;
         return loadContactIntoRedux(state, contact);

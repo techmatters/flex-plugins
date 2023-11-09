@@ -46,6 +46,7 @@ import {
   referrableResourcesBase,
   routingBase,
   searchContactsBase,
+  caseMergingBannersBase,
 } from './storeNamespaces';
 
 const reducers = {
@@ -59,7 +60,7 @@ const reducers = {
   [referrableResourcesBase]: ReferrableResourcesReducer,
   [conversationsBase]: ConversationsReducer,
   [conferencingBase]: ConferencingReducer,
-  caseMergingBanners: CaseMergingBannersReducer,
+  [caseMergingBannersBase]: CaseMergingBannersReducer,
   /*
    * [csamClcReportBase]: CSAMCLCReportReducer,
    * [connectedCaseBase] - this is going to be combined manually, rather than using 'combineReducers', so isn't in this map
