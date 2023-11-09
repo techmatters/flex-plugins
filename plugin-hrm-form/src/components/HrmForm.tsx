@@ -33,7 +33,7 @@ import { createContactAsyncAction, submitContactFormAsyncAction } from '../state
 import { newContact } from '../states/contacts/contactState';
 import { getHrmConfig } from '../hrmConfig';
 import { getCurrentTopmostRouteForTask } from '../states/routing/getRoute';
-import { CSAMReportRoute } from 'states/routing/types';
+import type { CSAMReportRoute } from '../states/routing/types';
 
 type OwnProps = {
   task: CustomITask;
