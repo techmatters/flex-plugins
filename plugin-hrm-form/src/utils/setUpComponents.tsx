@@ -230,7 +230,7 @@ export const setUpCustomCRMContainer = () => {
 /**
  * Adds a custom button for voice channel to show the phone number in emergency situations
  */
-export const setUpViewMaskedVoiceNumber = () => {
+export const setUpViewMaskedVoiceNumber = featureFlags => {
   Flex.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" />, {
     sortOrder: 1,
     if: props => props.task.channelType === 'voice',

@@ -77,8 +77,7 @@ const setUpComponents = (
   translateUI: (language: string) => Promise<void>,
 ) => {
   const { canView } = getPermissionsForViewingIdentifiers();
-  // const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
-  const maskIdentifiers = true;
+  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
   if (maskIdentifiers) {
     // Mask the identifiers in all default channels
@@ -96,7 +95,7 @@ const setUpComponents = (
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
     strings.CallParticipantCustomerName = strings.MaskIdentifiers;
 
-    if (setupObject.helplineCode === 'as' || setupObject.helplineCode === 'ca') Components.setUpViewMaskedVoiceNumber();
+    Components.setUpViewMaskedVoiceNumber(featureFlags);
   }
 
   // setUp (add) dynamic components

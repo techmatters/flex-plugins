@@ -23,10 +23,13 @@ import EyeOpenIcon from './icons/EyeOpenIcon';
 import EyeCloseIcon from './icons/EyeCloseIcon';
 import { HiddenText, Box, PhoneNumberPopperText, StyledUnmaskButton } from '../../styles/HrmStyles';
 import { CloseButton } from '../../styles/callTypeButtons';
+import { getPermissionsForViewingIdentifiers } from '../../permissions';
 
 type Props = ThemeProps & { task?: ITask };
 
 const ViewTaskNumber = ({ task }: Props) => {
+  const { canView } = getPermissionsForViewingIdentifiers();
+
   const [viewNumber, setViewNumber] = useState(false);
   const viewNumberRef = useRef(null);
 
@@ -34,33 +37,30 @@ const ViewTaskNumber = ({ task }: Props) => {
     setViewNumber(!viewNumber);
   };
 
-  const handleClose = () => {
-    setViewNumber(!viewNumber);
-  };
-
-  const renderTaskNumberPopper = () =>
-    viewNumber ? (
-      <Popper open={viewNumber} anchorEl={viewNumberRef.current} placement="bottom">
-        <Paper style={{ width: '310px', padding: '25px' }}>
-          <Box style={{ float: 'right' }}>
-            <HiddenText id="CloseButton">
-              <Template code="CloseButton" />
-            </HiddenText>
-            <CloseButton aria-label="CloseButton" onClick={handleClose} />
-          </Box>
-          <PhoneNumberPopperText>Phone Number Revealed</PhoneNumberPopperText>
-          <br />
-          {getFormattedNumberFromTask(task)}
-        </Paper>
-      </Popper>
-    ) : null;
-
   return (
     <>
-      <StyledUnmaskButton onClick={toggleViewNumber} ref={viewNumberRef}>
-        {viewNumber ? <EyeOpenIcon /> : <EyeCloseIcon />}
-      </StyledUnmaskButton>
-      {renderTaskNumberPopper()}
+      {!canView && (
+        <>
+          <StyledUnmaskButton onClick={toggleViewNumber} ref={viewNumberRef}>
+            {viewNumber ? <EyeOpenIcon /> : <EyeCloseIcon />}
+          </StyledUnmaskButton>
+          {viewNumber ? (
+            <Popper open={viewNumber} anchorEl={viewNumberRef.current} placement="bottom">
+              <Paper style={{ width: '310px', padding: '25px' }}>
+                <Box style={{ float: 'right' }}>
+                  <HiddenText id="CloseButton">
+                    <Template code="CloseButton" />
+                  </HiddenText>
+                  <CloseButton aria-label="CloseButton" onClick={toggleViewNumber} />
+                </Box>
+                <PhoneNumberPopperText>Phone Number Revealed</PhoneNumberPopperText>
+                <br />
+                {getFormattedNumberFromTask(task)}
+              </Paper>
+            </Popper>
+          ) : null}
+        </>
+      )}
     </>
   );
 };
