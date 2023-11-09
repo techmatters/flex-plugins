@@ -118,10 +118,10 @@ const TaskView: React.FC<Props> = props => {
     return (
       <ContactNotLoaded
         onReload={async () => {
-          createContact(currentDefinitionVersion);
+          await createContact(currentDefinitionVersion);
         }}
         onFinish={async () => {
-          await completeTask(task, undefined);
+          await completeTask(task, unsavedContact);
         }}
       />
     );

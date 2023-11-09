@@ -138,6 +138,7 @@ const TabbedForms: React.FC<Props> = ({
   task,
   removeIfOfflineContact,
   isCallTypeCaller,
+  removeIfOfflineContact,
 }) => {
   const methods = useForm({
     shouldFocusError: false,

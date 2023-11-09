@@ -56,7 +56,7 @@ export const removeOfflineContact = async (dispatch: Dispatch<any>, contact: Con
   }
 };
 
-export const completeTask = async (task: CustomITask, contact: Contact) =>
+export const completeTask = (task: CustomITask, contact: Contact) =>
   isOfflineContactTask(task)
     ? Manager.getInstance().store.dispatch(GeneralActions.removeContactState(offlineContactTaskSid(), contact.id))
     : completeContactTask(task);

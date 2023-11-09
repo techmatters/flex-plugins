@@ -1,0 +1,151 @@
+${
+  jsonencode(
+{
+  "description": "988 CAMH Flow",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "next": "split_keys_lang",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "send_to_Q988En",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -100,
+          "y": 500
+        },
+        "workflow": workflow_sids["master"],
+        "channel": task_channel_sids["voice"],
+        "waitUrl": channel_flow_vars["en_function_url"],
+        "waitUrlMethod": "GET"
+        "attributes": "{\"language\": \"en-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\"}"
+      }
+    },
+    {
+      "name": "send_to_Q988Fr",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 290,
+          "y": 460
+        },
+        "workflow": workflow_sids["master"],
+        "waitUrl": channel_flow_vars["fr_function_url"],
+        "channel": task_channel_sids["voice"],
+        "attributes": "{\"language\": \"fr-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\"}",
+        "waitUrlMethod": "GET"
+      }
+    },
+    {
+      "name": "split_keys_lang",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "send_to_Q988En",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 988_en",
+              "arguments": [
+                "{{trigger.call.To}}"
+              ],
+              "type": "contains",
+              "value": channel_flow_vars["en_number"]
+            }
+          ]
+        },
+        {
+          "next": "send_to_Q988Fr",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 988_ns_fr",
+              "arguments": [
+                "{{trigger.call.To}}"
+              ],
+              "type": "contains",
+              "value": channel_flow_vars["ns_fr_number"]
+            }
+          ]
+        },
+        {
+          "next": "send_to_Q988Fr",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 988_fr",
+              "arguments": [
+                "{{trigger.call.To}}"
+              ],
+              "type": "contains",
+              "value": channel_flow_vars["fr_number"]
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.call.To}}",
+        "offset": {
+          "x": 110,
+          "y": 150
+        }
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+}  
+)
+}
