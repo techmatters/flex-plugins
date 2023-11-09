@@ -28,7 +28,6 @@ export const SEARCH_CASES_SUCCESS = 'SEARCH_CASES_SUCCESS';
 export const SEARCH_CASES_FAILURE = 'SEARCH_CASES_FAILURE';
 export const SEARCH_CASES_UPDATE = 'SEARCH_CASES_UPDATE';
 export const VIEW_PREVIOUS_CONTACTS = 'VIEW_PREVIOUS_CONTACTS';
-export const SEARCH_EXISTING_CASE = 'SEARCH_EXISTING_CASE';
 
 // types and constants used to construct search form
 export const newSearchFormEntry = {
@@ -105,12 +104,6 @@ type ViewPreviousContactsAction = {
   contactNumber: string;
 };
 
-export type SearchExistingCaseAction = {
-  type: typeof SEARCH_EXISTING_CASE;
-  searchStatus: boolean;
-  taskId: string;
-};
-
 export type SearchActionType =
   | SearchFormChangeAction
   | SearchContactsRequestAction
@@ -119,5 +112,4 @@ export type SearchActionType =
   | SearchCasesRequestAction
   | SearchCasesSuccessAction
   | SearchCasesFailureAction
-  | ViewPreviousContactsAction
-  | SearchExistingCaseAction;
+  | ViewPreviousContactsAction;

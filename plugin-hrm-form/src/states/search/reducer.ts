@@ -281,19 +281,6 @@ export function reduce(
         },
       };
     }
-    case t.SEARCH_EXISTING_CASE: {
-      const task = state.tasks[action.taskId];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...task,
-            searchExistingCaseStatus: action.searchStatus,
-          },
-        },
-      };
-    }
     default:
       return state;
   }

@@ -31,20 +31,15 @@ import * as CaseActions from '../states/case/actions';
 import * as RoutingActions from '../states/routing/actions';
 import { HeaderCloseButton, HiddenText, Row, StyledBackButton } from '../styles/HrmStyles';
 import { LargeBackIcon, NavigableContainerBox, NavigableContainerTitle } from '../styles/NavigableContainerStyles';
-import { setSearchExistingCase } from '../states/search/actions';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
   titleCode: string;
   onGoBack?: () => void;
   onCloseModal?: () => void;
-  searchCase?: boolean;
 };
 
-const mapStateToProps = (
-  { [namespace]: { searchContacts, configuration, routing } }: RootState,
-  { task: { taskSid } }: OwnProps,
-) => {
+const mapStateToProps = ({ [namespace]: { routing } }: RootState, { task: { taskSid } }: OwnProps) => {
   const routeStack = getCurrentTopmostRouteStackForTask(routing, taskSid);
   return {
     routing: routeStack[routeStack.length - 1],
@@ -66,7 +61,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
-    searchExistingCase: (searchStatus: boolean) => dispatch(setSearchExistingCase(searchStatus, ownProps.task.taskSid)),
   };
 };
 
@@ -84,17 +78,8 @@ const NavigableContainer: React.FC<Props> = ({
   titleCode,
   hasHistory,
   isModal,
-  searchCase,
   ...boxProps
 }) => {
-  const handleCloseModal = () => {
-    onCloseModal();
-
-    if (searchCase) {
-      boxProps.searchExistingCase(false);
-    }
-  };
-
   return (
     <NavigableContainerBox modal={isModal} {...boxProps}>
       <Row style={{ alignItems: 'start' }}>
@@ -113,7 +98,7 @@ const NavigableContainer: React.FC<Props> = ({
         </NavigableContainerTitle>
         {isModal && (
           <HeaderCloseButton
-            onClick={handleCloseModal}
+            onClick={onCloseModal}
             data-testid="NavigableContainer-CloseCross"
             style={{ marginRight: '15px', opacity: '.75' }}
           >

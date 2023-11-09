@@ -57,9 +57,7 @@ const Search: React.FC<Props> = ({
   searchCasesResults,
   form,
   routing,
-  closeModal,
   changeSearchPage,
-  searchCase,
 }) => {
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});
@@ -72,12 +70,13 @@ const Search: React.FC<Props> = ({
   const handleSearchCases = (newSearchParams, newOffset) => searchCases(newSearchParams, CASES_PER_PAGE, newOffset);
 
   const setSearchParamsAndHandleSearch = async newSearchParams => {
-    if (searchCase) {
-      changeSearchPage('case-results');
+    if (routing.route === 'search' && routing.action === 'select-case') {
+      changeSearchPage('case-results', 'select-case');
       await Promise.all([handleSearchCases(newSearchParams, 0)]);
       setSearchParams(newSearchParams);
       return;
     }
+
     changeSearchPage('contact-results');
     await Promise.all([handleSearchContacts(newSearchParams, 0), handleSearchCases(newSearchParams, 0)]);
     setSearchParams(newSearchParams);
@@ -133,8 +132,9 @@ const Search: React.FC<Props> = ({
           return (
             <NavigableContainer
               task={task}
-              titleCode={searchCase ? 'Resources-Search-ResultsTitle' : 'SearchContactsAndCases-Title'}
-              searchCase={searchCase}
+              titleCode={
+                routing.action === 'select-case' ? 'Resources-Search-ResultsTitle' : 'SearchContactsAndCases-Title'
+              }
             >
               <SearchResults
                 task={task}
@@ -182,8 +182,11 @@ const Search: React.FC<Props> = ({
     return (
       <NavigableContainer
         task={task}
-        titleCode={searchCase ? 'SearchContactsAndCases-TitleExistingCase' : 'SearchContactsAndCases-Title'}
-        searchCase={searchCase}
+        titleCode={
+          routing.route === 'search' && routing.action === 'select-case'
+            ? 'SearchContactsAndCases-TitleExistingCase'
+            : 'SearchContactsAndCases-Title'
+        }
       >
         <SearchForm
           task={task}
@@ -236,8 +239,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     handleSearchFormChange: bindActionCreators(handleSearchFormChange(taskId), dispatch),
-    changeSearchPage: (subroute: SearchRoute['subroute']) =>
-      dispatch(changeRoute({ route: 'search', subroute }, taskId)),
+    changeSearchPage: (subroute: SearchRoute['subroute'], action?: SearchRoute['action']) =>
+      dispatch(changeRoute({ route: 'search', subroute, action }, taskId)),
     searchContacts: searchContacts(dispatch)(taskId),
     searchCases: searchCases(dispatch)(taskId),
     closeModal: () => dispatch(newCloseModalAction(taskId)),
