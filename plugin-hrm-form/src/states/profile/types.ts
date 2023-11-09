@@ -88,6 +88,13 @@ export type ProfileEntry = {
     page: number;
     loadedPage?: number;
   };
+  sections?: {
+    [sectionType: ProfileSection['type']]: {
+      data?: ProfileSection[];
+      error?: ParseFetchErrorResult;
+      loading: boolean;
+    };
+  };
   data?: Profile;
   error?: ParseFetchErrorResult;
   loading: boolean;
@@ -103,7 +110,6 @@ export type ProfileState = {
   identifiers: IdentifiersState;
   profiles: ProfilesState;
   profileFlags: ProfileFlagsState;
-  profileSections: ProfileSectionsState;
 };
 
 type AddProfileState = { type: typeof ADD_PROFILE_STATE; profileId: Profile['id']; profile?: Profile };
@@ -124,6 +130,7 @@ export const newProfileEntry: ProfileEntry = {
     loading: false,
     page: 0,
   },
+  sections: {},
 };
 
 export const newIdentifierEntry: IdentifierEntry = {
@@ -136,9 +143,6 @@ export const initialState: ProfileState = {
   identifiers: {},
   profiles: {},
   profileFlags: {
-    loading: false,
-  },
-  profileSections: {
     loading: false,
   },
 };

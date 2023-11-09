@@ -19,9 +19,8 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import asyncDispatch from '../../asyncDispatch';
 import { Profile, ProfileSection } from '../types';
-import * as ProfileSectionActions from '../profileSection';
+import * as ProfileActions from '../profile';
 import * as ProfileSelectors from '../selectors';
-import { namespace, profileBase } from '../../storeNamespaces';
 import { RootState } from '../..';
 
 export const useProfileSection = (profileId: Profile['id'], sectionId): ProfileSection =>
@@ -43,14 +42,14 @@ export const useEditProfileSection = (profileId: Profile['id'], sectionId): UseE
 
   const createProfileSection = useCallback(
     (content: string, sectionType: string) => {
-      asyncDispatch(dispatch)(ProfileSectionActions.createProfileSectionAsync(profileId, content, sectionType));
+      asyncDispatch(dispatch)(ProfileActions.createProfileSectionAsync(profileId, content, sectionType));
     },
     [dispatch, profileId],
   );
 
   const updateProfileSection = useCallback(
     (sectionId: string, content: string) => {
-      asyncDispatch(dispatch)(ProfileSectionActions.updateProfileSectionAsync(profileId, sectionId, content));
+      asyncDispatch(dispatch)(ProfileActions.updateProfileSectionAsync(profileId, sectionId, content));
     },
     [dispatch, profileId],
   );

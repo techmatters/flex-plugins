@@ -13,21 +13,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { combineReducers } from 'redux';
 
-import * as t from './types';
+import React, { useState, useEffect } from 'react';
 
-import { identifierReducer } from './identifier';
-import { profileReducer } from './profile';
-import { profileFlagsReducer } from './profileFlag';
+import { ProfileCommonProps } from '../types';
 
-const reducers = {
-  identifiers: identifierReducer(),
-  profiles: profileReducer(),
-  profileFlags: profileFlagsReducer(),
+type OwnProps = ProfileCommonProps & {
+  sectionType: string;
 };
 
-const combinedReducers = combineReducers(reducers);
+const ProfileSectionView = ({ task, profileId, sectionType }: OwnProps) => {
+  const { profileSection } = useProfileSectionByType(profileId, sectionType);
 
-export const reduce = (state = t.initialState, action: t.ProfileActions): t.ProfileState =>
-  combinedReducers(state, action);
+  return null;
+};
+
+export default ProfileSectionView;

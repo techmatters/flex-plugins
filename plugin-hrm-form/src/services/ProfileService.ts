@@ -15,10 +15,11 @@
  */
 
 import { fetchHrmApi } from './fetchHrmApi';
-import { Identifier, Profile, ProfileFlag } from '../states/profile/types';
+import { Identifier, Profile, ProfileFlag, ProfileSection } from '../states/profile/types';
 
 type ProfileId = Profile['id'];
 type ProfileFlagId = ProfileFlag['id'];
+type ProfileSectionId = ProfileSection['id'];
 
 export const getIdentifierByIdentifier = (identifier: Identifier['identifier']) =>
   fetchHrmApi(`/profiles/identifier/${identifier}`);
@@ -47,7 +48,7 @@ export const disassociateProfileFlag = (profileId: ProfileId, profileFlagId: Pro
     method: 'DELETE',
   });
 
-export const getProfileSection = (profileId: ProfileId, sectionId: number) =>
+export const getProfileSection = (profileId: ProfileId, sectionId: ProfileSectionId) =>
   fetchHrmApi(`/profiles/${profileId}/sections/${sectionId}`);
 
 export const createProfileSection = (profileId: ProfileId, content: string, sectionType: string) =>

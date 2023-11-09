@@ -17,7 +17,6 @@ import { createAsyncAction, createReducer } from 'redux-promise-middleware-actio
 
 import { parseFetchError } from '../parseFetchError';
 import * as ProfileService from '../../services/ProfileService';
-import loadProfileEntryIntoRedux from './loadProfileEntryIntoRedux';
 import * as t from './types';
 
 export const loadProfileFlagsAsync = createAsyncAction(t.LOAD_PROFILE_FLAGS, ProfileService.getProfileFlags);

@@ -22,7 +22,6 @@ import { ProfileSection } from '../../../types/types';
 import { Flex, StyledNextStepButton } from '../../../styles/HrmStyles';
 import { useEditProfileSection, useProfileSection } from '../../../states/profile/hooks/useProfileSection';
 import { createProfileSection, getProfileSection } from '../../../services/ProfileService';
-
 import { ProfileCommonProps } from '../types';
 
 type OwnProps = ProfileCommonProps & {

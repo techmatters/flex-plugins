@@ -40,6 +40,10 @@ export const selectIdentifierByIdentifier = (state: RootState, identifier: Ident
 
 export const selectAllProfileFlags = (state: RootState) => state[namespace][profileBase].profileFlags;
 
+export const selectProfileSectionByType = (state: RootState, profileId: ProfileIdParam, sectionType: string) => {
+  //load ids based on sectionType
+};
+
 export const selectAllProfileSections = (state: RootState, profileId: ProfileIdParam) => {
   // eslint-disable-next-line sonarjs/prefer-immediate-return
   const profileSections = state[namespace][profileBase].profiles[profileId]?.data?.profileSections;

@@ -24,8 +24,7 @@ import { DetailsWrapper, ProfileSubtitle } from './styles';
 import { Bold, Box, Column, Flex } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
-import { useProfileSection, useProfileSections } from '../../states/profile/hooks/useProfileSection';
-import ProfileSectionList from './section/ProfileSectionList';
+import ProfileSectionView from './section/ProfileSectionView';
 
 type OwnProps = ProfileCommonProps;
 
@@ -40,7 +39,7 @@ type Section = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, openNoteEditModal }) => {
+const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, openSectionEditModal }) => {
   const { profile } = useProfile({ profileId });
 
   const baseSections: Section[] = [
@@ -61,6 +60,17 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
       handleEdit: () => openFlagEditModal(),
     },
   ];
+
+  const sectionTypes = ['summary', 'actions', 'recommendations'];
+
+  const sectionSections: Section[] = sectionTypes.map(sectionType => ({
+    title: `${sectionType}`,
+    margin: '20px 0',
+    renderComponent: () => <ProfileSectionView profileId={profileId} task={task} sectionType={sectionType} />,
+    // handleEdit: () => openSectionEditModal(1),
+  }));
+
+  const sections = [...baseSections, ...sectionSections];
 
   const renderTitle = section => {
     if (section.titleCode) {
@@ -92,15 +102,6 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
     );
   };
 
-  const profileSections = useProfileSections(profileId);
-
-  const renderSections = () => {
-    if (profileSections) {
-      return <ProfileSectionList profileId={profileId} task={task} openNoteEditModal={openNoteEditModal} />;
-    }
-    return null;
-  };
-
   return (
     <DetailsWrapper>
       <Column>
@@ -108,11 +109,9 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
           <Template code="Profile-DetailsHeader" />
         </Bold>
       </Column>
-      {baseSections.map(section => (
+      {sections.map(section => (
         <div key={section.title}>{renderSection(section)}</div>
       ))}
-
-      {renderSections()}
       <hr />
     </DetailsWrapper>
   );
@@ -125,7 +124,7 @@ const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
     openFlagEditModal: () => {
       dispatch(newOpenModalAction({ route: 'profileFlagEdit', id: profileId }, taskId));
     },
-    openNoteEditModal: id => {
+    openSectionEditModal: id => {
       dispatch(newOpenModalAction({ route: 'profileSectionEdit', id, profileId }, taskId));
     },
   };
