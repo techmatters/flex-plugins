@@ -76,9 +76,9 @@ const setUpComponents = (
   setupObject: ReturnType<typeof getHrmConfig>,
   translateUI: (language: string) => Promise<void>,
 ) => {
+  const { enableUnmaskingCalls } = getHrmConfig();
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
-
   if (maskIdentifiers) {
     // Mask the identifiers in all default channels
     Channels.maskIdentifiersForDefaultChannels();

@@ -65,6 +65,7 @@ const readConfig = () => {
     pdfImagesSource,
     multipleOfficeSupport,
     permissionConfig,
+    enableUnmaskingCalls,
   } = manager.serviceConfiguration.attributes;
   const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
   const featureFlagsFromEnvEntries = Object.entries(process.env)
@@ -107,6 +108,7 @@ const readConfig = () => {
       definitionVersion,
       pdfImagesSource,
       multipleOfficeSupport,
+      enableUnmaskingCalls,
       permissionConfig,
       contactsWaitingChannels,
       externalRecordingsEnabled,
