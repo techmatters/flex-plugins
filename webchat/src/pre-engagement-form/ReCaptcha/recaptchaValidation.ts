@@ -19,11 +19,11 @@
 export async function validateUser(token: string) {
   try {
     // eslint-disable-next-line global-require
-    const { RECAPTCHA_VERIFY_URL } = require("../../../private/secret");
+    const { RECAPTCHA_VERIFY_URL } = require('../../../private/secret');
     const response = await fetch(RECAPTCHA_VERIFY_URL, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: `response=${token}`,
     });
@@ -34,6 +34,7 @@ export async function validateUser(token: string) {
     }
     return false;
   } catch (error) {
+    console.log('>>> error', error);
     return false;
   }
 }
