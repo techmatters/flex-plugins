@@ -17,14 +17,12 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import { CustomITask, Profile } from '../../types/types';
+import { RouterTask, Profile } from '../../types/types';
 import NavigableContainer from '../NavigableContainer';
 import { DetailsWrapper, ProfileSubtitle } from './styles';
+import { ProfileCommonProps } from './types';
 
-type OwnProps = {
-  profileId: Profile['id'];
-  task: CustomITask;
-};
+type OwnProps = ProfileCommonProps;
 
 type Props = OwnProps;
 

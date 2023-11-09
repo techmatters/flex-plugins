@@ -16,7 +16,7 @@
 
 import { DataCallTypes } from 'hrm-form-definitions';
 
-import { Contact } from '../../types/types';
+import { Case, Contact } from '../../types/types';
 import { DraftResourceReferralState } from './resourceReferral';
 import { ContactState, ExistingContactsState } from './existingContacts';
 import { ContactDetailsState } from './contactDetails';
@@ -36,9 +36,12 @@ export const CREATE_CONTACT_ACTION = 'contact-action/create-contact';
 export const CREATE_CONTACT_ACTION_FULFILLED = `${CREATE_CONTACT_ACTION}_FULFILLED` as const;
 export const UPDATE_CONTACT_ACTION = 'contact-action/update-contact';
 export const UPDATE_CONTACT_ACTION_FULFILLED = `${UPDATE_CONTACT_ACTION}_FULFILLED` as const;
+export const LOAD_CONTACT_FROM_HRM_BY_ID_ACTION = 'contact-action/load-contact-from-hrm-by-id';
+export const LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED = `${LOAD_CONTACT_FROM_HRM_BY_ID_ACTION}_FULFILLED` as const;
 export const LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION = 'contact-action/load-contact-from-hrm-by-task-id';
 export const LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED = `${LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION}_FULFILLED` as const;
 export const CONNECT_TO_CASE = 'contact-action/connect-to-case';
+export const CONNECT_TO_CASE_ACTION_FULFILLED = `${CONNECT_TO_CASE}_FULFILLED` as const;
 export const SET_SAVED_CONTACT = 'contact-action/set-saved-contact';
 
 export type ContactMetadata = {
@@ -58,7 +61,6 @@ export type ContactMetadata = {
 export type ContactsState = {
   existingContacts: ExistingContactsState;
   contactDetails: ContactDetailsState;
-  editingContact: boolean;
   isCallTypeCaller: boolean;
 };
 
@@ -86,11 +88,6 @@ type RestoreEntireFormAction = {
   contact: ContactState;
 };
 
-type SetEditingContact = {
-  type: typeof SET_EDITING_CONTACT;
-  editing: boolean;
-};
-
 type CheckButtonDataAction = {
   type: typeof SET_CALL_TYPE;
   isCallTypeCaller: boolean;
@@ -100,13 +97,17 @@ export type ContactsActionType =
   | SaveEndMillisAction
   | PrePopulateFormAction
   | RestoreEntireFormAction
-  | SetEditingContact
   | CheckButtonDataAction;
 
 export type ContactUpdatingAction = {
   type:
     | typeof CREATE_CONTACT_ACTION_FULFILLED
     | typeof UPDATE_CONTACT_ACTION_FULFILLED
+    | typeof LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED
     | typeof LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED;
-  payload: { contact: Contact; previousContact?: Contact };
+  payload: { contact: Contact; contactCase?: Case; previousContact?: Contact };
+};
+
+export type ContactConnectingAction = {
+  type: typeof CONNECT_TO_CASE_ACTION_FULFILLED;
 };

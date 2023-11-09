@@ -67,10 +67,21 @@ const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingActi
         previousContact.taskId === getOfflineContactTaskSid() ? false : state.isAddingOfflineContact,
     };
   }
-  const { taskId, rawJson } = contact;
+  const { taskId, rawJson, caseId } = contact;
   let initialEntry: AppRoutes = newTaskEntry;
   const { callType } = rawJson;
-  if (callType === callTypes.child) {
+  if (caseId) {
+    initialEntry = {
+      route: 'tabbed-forms',
+      subroute: 'caseInformation',
+      activeModal: [
+        {
+          route: 'case',
+          subroute: 'home',
+        },
+      ],
+    };
+  } else if (callType === callTypes.child) {
     initialEntry = {
       route: 'tabbed-forms',
       subroute: 'childInformation',
@@ -91,7 +102,9 @@ const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingActi
           : [initialEntry],
     },
     isAddingOfflineContact:
-      taskId === getOfflineContactTaskSid() ? true : stateWithoutPreviousContact.isAddingOfflineContact,
+      taskId === getOfflineContactTaskSid() && contact?.rawJson?.contactlessTask?.createdOnBehalfOf
+        ? true
+        : stateWithoutPreviousContact.isAddingOfflineContact,
   };
 };
 
@@ -140,6 +153,13 @@ const popTopmostRoute = (baseRouteStack: AppRoutes[]): AppRoutes[] => {
         { ...currentRoute, activeModal: popTopmostRoute(currentRoute.activeModal) },
       ];
     }
+    // Don't empty the base route stack, this will result in Bad Things (TM)
+    if (baseRouteStack.length <= 1 && !isRouteWithModalSupport(currentRoute)) {
+      console.warn(
+        `Tried to go back in the base route stack but there was ${baseRouteStack.length} routes in the stack so doing nothing. This could indicate a routing logic issue in the components.`,
+      );
+      return baseRouteStack;
+    }
     return baseRouteStack.slice(0, -1);
   }
   return baseRouteStack;
@@ -158,9 +178,13 @@ const closeTopModal = (
       !currentRoute.activeModal ||
       (topRoute && parent?.route === topRoute)
     ) {
-      // This is the top of the modal stack - if it has a parent, return undefined so the caller removes it
-      // Otherwise it's the base route, so just return it as is
-      return parent ? undefined : routeStack;
+      // If no parent is set, it must be the base route stack, so don't remove it
+      // Otherwise, if the topRoute is set and doesn't match the parent, the topRoute mustn't be in the stack, so don't remove anything
+      if (!parent || (topRoute && parent?.route !== topRoute)) {
+        return routeStack;
+      }
+      // Otherwise this is the top of the modal stack or a route matching the specified topRoute - return undefined so the caller removes it
+      return undefined;
     }
     const nextStack = closeTopModal(currentRoute.activeModal, topRoute, currentRoute);
     if (nextStack) {

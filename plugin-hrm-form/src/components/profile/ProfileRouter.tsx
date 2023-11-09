@@ -17,49 +17,56 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
-import ProfileTabs from './ProfileTabs';
-import ProfileFlagEditPage from './profileFlag/ProfileFlagEditPage';
-import ProfileSectionEdit from './section/ProfileSectionEdit';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileRoute } from '../../states/routing/types';
-import { CustomITask } from '../../types/types';
+import { RouterTask } from '../../types/types';
 import ProfileEdit from './ProfileEdit';
+import ProfileTabs from './ProfileTabs';
+import ProfileFlagEditPage from './profileFlag/ProfileFlagEditPage';
+import ProfileSectionEdit from './section/ProfileSectionEdit';
+import { ProfileCommonProps } from './types';
 
 type OwnProps = {
-  task: CustomITask;
+  task: RouterTask;
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const Profile: React.FC<Props> = ({ task, profileId, currentRoute }) => {
-  const profileProps = {
+const PROFILE_ROUTES = {
+  profile: {
+    routes: ['profile'],
+    renderComponent: (props: ProfileCommonProps) => <ProfileTabs {...props} />,
+  },
+  profileEdit: {
+    routes: ['profileEdit'],
+    renderComponent: (props: ProfileCommonProps) => <ProfileEdit {...props} />,
+  },
+  profileFlagEdit: {
+    routes: ['profileFlagEdit'],
+    renderComponent: (props: ProfileCommonProps) => <ProfileFlagEditPage {...props} />,
+  },
+  profileSectionEdit: {
+    routes: ['profileNoteEdit'],
+    renderComponent: (props: ProfileCommonProps) => <ProfileSectionEdit {...props} sectionId={1} />,
+  },
+};
+
+export const ALL_PROFILE_ROUTES = Object.values(PROFILE_ROUTES).flatMap(({ routes }) => routes);
+
+const ProfileRouter: React.FC<Props> = ({ task, profileId, currentRoute }) => {
+  const profileProps: ProfileCommonProps = {
     task,
     profileId,
   };
 
-  const routes = [
-    {
-      routes: ['profileEdit'],
-      component: <ProfileEdit {...profileProps} />,
-    },
-    {
-      routes: ['profileFlagEdit'],
-      component: <ProfileFlagEditPage {...profileProps} />,
-    },
-    {
-      routes: ['profileSectionEdit'],
-      component: <ProfileSectionEdit {...profileProps} sectionId={1} />,
-    },
-    {
-      routes: ['profile'],
-      component: <ProfileTabs {...profileProps} />,
-    },
-  ];
-
-  return routes.find(({ routes }) => routes.includes(currentRoute))?.component || null;
+  return (
+    Object.values(PROFILE_ROUTES)
+      .find(({ routes }) => routes.includes(currentRoute))
+      ?.renderComponent(profileProps) || null
+  );
 };
 
 const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
@@ -75,4 +82,4 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
 };
 
 const connector = connect(mapStateToProps);
-export default connector(Profile);
+export default connector(ProfileRouter);

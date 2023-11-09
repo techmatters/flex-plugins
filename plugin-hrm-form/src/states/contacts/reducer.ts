@@ -23,6 +23,7 @@ import {
   ContactsState,
   ContactUpdatingAction,
   CREATE_CONTACT_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED,
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
   UPDATE_CONTACT_ACTION_FULFILLED,
 } from './types';
@@ -71,7 +72,6 @@ export const initialState: ContactsState = {
     [DetailsContext.CASE_DETAILS]: { detailsExpanded: {} },
     [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {} },
   },
-  editingContact: false,
   isCallTypeCaller: false,
 };
 
@@ -129,6 +129,10 @@ export function reduce(
     }
     case t.SAVE_END_MILLIS: {
       const currentContact = Object.values(state.existingContacts).find(cs => cs.savedContact.taskId === action.taskId);
+      if (!currentContact) {
+        console.warn(`No contact with task sid ${action.taskId} found in redux state`);
+        return state;
+      }
 
       const { metadata } = currentContact;
       const endedTask = { ...currentContact, metadata: { ...metadata, endMillis: new Date().getTime() } };
@@ -190,11 +194,9 @@ export function reduce(
     case t.SET_CALL_TYPE: {
       return { ...state, isCallTypeCaller: action.isCallTypeCaller };
     }
-    case t.SET_EDITING_CONTACT: {
-      return { ...state, editingContact: action.editing };
-    }
     case UPDATE_CONTACT_ACTION_FULFILLED:
     case CREATE_CONTACT_ACTION_FULFILLED:
+    case LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED:
     case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED: {
       return { ...state, existingContacts: boundSaveContactReducer(state.existingContacts, action) };
     }

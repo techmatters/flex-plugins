@@ -18,14 +18,14 @@ import React, { useRef } from 'react';
 import { TextField } from '@material-ui/core';
 
 import NavigableContainer from '../../NavigableContainer';
-import { CustomITask, Profile, ProfileSection } from '../../../types/types';
+import { ProfileSection } from '../../../types/types';
 import { Flex, StyledNextStepButton } from '../../../styles/HrmStyles';
 import { useEditProfileSection, useProfileSection } from '../../../states/profile/hooks/useProfileSection';
 import { createProfileSection, getProfileSection } from '../../../services/ProfileService';
 
-type OwnProps = {
-  task: CustomITask;
-  profileId: Profile['id'];
+import { ProfileCommonProps } from '../types';
+
+type OwnProps = ProfileCommonProps & {
   sectionId: ProfileSection['id'];
 };
 

@@ -15,20 +15,25 @@
  */
 
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 import CallTypeButtons from './callTypeButtons';
-import Profile from './profile/Profile';
+import ProfileRouter, { ALL_PROFILE_ROUTES } from './profile/ProfileRouter';
 import TabbedForms from './tabbedForms';
 import CSAMReport from './CSAMReport/CSAMReport';
 import { RootState } from '../states';
-import type { CustomITask } from '../types/types';
+import type { CustomITask, Case as CaseForm, Contact } from '../types/types';
 import { newContactCSAMApi } from './CSAMReport/csamReportApi';
 import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
 import { namespace } from '../states/storeNamespaces';
-import { getCurrentBaseRoute, getCurrentTopmostRouteForTask } from '../states/routing/getRoute';
-import { CSAMReportRoute, isRouteWithModalSupport } from '../states/routing/types';
+import { ContactMetadata } from '../states/contacts/types';
+import { createContactAsyncAction, submitContactFormAsyncAction } from '../states/contacts/saveContact';
+import { newContact } from '../states/contacts/contactState';
+import { getHrmConfig } from '../hrmConfig';
+import { getCurrentTopmostRouteForTask } from '../states/routing/getRoute';
+import type { CSAMReportRoute } from '../states/routing/types';
 
 type OwnProps = {
   task: CustomITask;
@@ -38,19 +43,19 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const HrmForm: React.FC<Props> = ({ activeModal, routing, task, featureFlags, savedContact }) => {
+const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact }) => {
   if (!routing) return null;
   const { route } = routing;
 
   const routes = [
     {
-      activeModalRoutes: ['profile'],
-      component: <Profile task={task} />,
+      routes: ALL_PROFILE_ROUTES,
+      renderComponent: () => <ProfileRouter task={task} />,
     },
     // TODO: move hrm form search into it's own component and use it here so all routes are in one place
     {
-      baseRoutes: ['tabbed-forms', 'search', 'contact', 'case'],
-      component: (
+      routes: ['tabbed-forms', 'search', 'contact', 'case'],
+      renderComponent: () => (
         <TabbedForms
           task={task}
           contactId={savedContact?.id}
@@ -60,35 +65,42 @@ const HrmForm: React.FC<Props> = ({ activeModal, routing, task, featureFlags, sa
       ),
     },
     {
-      baseRoutes: ['csam-report'],
-      component: (
+      routes: ['csam-report'],
+      renderComponent: () => (
         <CSAMReport
           api={newContactCSAMApi(savedContact.id, task.taskSid, (routing as CSAMReportRoute).previousRoute)}
         />
       ),
     },
-    { baseRoutes: ['select-call-type'], component: <CallTypeButtons task={task} /> },
+    { routes: ['select-call-type'], renderComponent: () => <CallTypeButtons task={task} /> },
   ];
 
-  // Modals take precedence over routes
-  const modalComponent = routes.find(m => m.activeModalRoutes?.includes(activeModal));
-  if (modalComponent) return modalComponent.component;
-
-  return routes.find(r => r.baseRoutes?.includes(route))?.component || null;
+  return routes.find(r => r.routes?.includes(route))?.renderComponent() || null;
 };
 
 HrmForm.displayName = 'HrmForm';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const routingState = state[namespace].routing;
+  const { routing, configuration } = state[namespace];
   const { savedContact, metadata } = findContactByTaskSid(state, task.taskSid) ?? {};
-  const baseRoute = getCurrentBaseRoute(routingState, task.taskSid);
-  const activeModal =
-    isRouteWithModalSupport(baseRoute) && baseRoute.activeModal?.length && baseRoute.activeModal[0].route;
 
-  return { activeModal, routing: getCurrentTopmostRouteForTask(routingState, task.taskSid), savedContact, metadata };
+  return {
+    routing: getCurrentTopmostRouteForTask(routing, task.taskSid),
+    savedContact,
+    metadata,
+    definitionVersion: configuration.currentDefinitionVersion,
+  };
 };
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => {
+  return {
+    createContact: (definition: DefinitionVersion) =>
+      dispatch(createContactAsyncAction(newContact(definition), getHrmConfig().workerSid, task.taskSid)),
+    finaliseContact: (contact: Contact, metadata: ContactMetadata, caseForm: CaseForm) =>
+      dispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
+  };
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
 export default connector(HrmForm);

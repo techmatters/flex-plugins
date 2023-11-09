@@ -33,6 +33,32 @@ export const LOAD_PROFILE_SECTIONS = 'LOAD_PROFILE_SECTIONS';
 export const CREATE_PROFILE_SECTION = 'CREATE_PROFILE_SECTION';
 export const UPDATE_PROFILE_SECTION = 'UPDATE_PROFILE_SECTION';
 
+export type IdentifierEntry = {
+  data?: Identifier;
+  error?: ParseFetchErrorResult;
+  loading: boolean;
+};
+
+export type IdentifiersState = {
+  [identifierId: Identifier['id']]: IdentifierEntry;
+};
+
+export type ProfilesState = {
+  [profileId: Profile['id']]: ProfileEntry;
+};
+
+export type ProfileFlagsState = {
+  data?: ProfileFlag[];
+  error?: ParseFetchErrorResult;
+  loading: boolean;
+};
+
+export const initialProfileFlagsState: ProfileFlagsState = {
+  error: undefined,
+  loading: false,
+  data: undefined,
+};
+
 export const PROFILE_RELATIONSHIPS = {
   cases: {
     method: getProfileCases,
@@ -67,17 +93,6 @@ export type ProfileEntry = {
   loading: boolean;
 };
 
-export type IdentifierEntry = {
-  data?: Identifier;
-  error?: ParseFetchErrorResult;
-  loading: boolean;
-};
-
-export type ProfileFlagsState = {
-  data?: ProfileFlag[];
-  error?: ParseFetchErrorResult;
-  loading: boolean;
-};
 export type ProfileSectionsState = {
   data?: ProfileSection[];
   error?: ParseFetchErrorResult;
@@ -85,12 +100,8 @@ export type ProfileSectionsState = {
 };
 
 export type ProfileState = {
-  identifiers: {
-    [identifierId: Identifier['id']]: IdentifierEntry;
-  };
-  profiles: {
-    [profileId: Profile['id']]: ProfileEntry;
-  };
+  identifiers: IdentifiersState;
+  profiles: ProfilesState;
   profileFlags: ProfileFlagsState;
   profileSections: ProfileSectionsState;
 };

@@ -15,7 +15,7 @@
  */
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { chromium, expect, FullConfig, request } from '@playwright/test';
+import { expect, request } from '@playwright/test';
 import { getConfigValue } from '../config';
 
 export function delay(time: number) {
@@ -41,7 +41,7 @@ export async function oktaSsoLoginViaApi(
   username: string,
   password: string,
   accountSid: string,
-): Promise<void> {
+): Promise<string> {
   const apiRequest = await request.newContext();
   // Get the saml location URL
   const authenticateRequestOptions = { data: { products: ['flex'], resource: homeUrl } };
@@ -96,8 +96,12 @@ export async function oktaSsoLoginViaApi(
             RelayState: decodeHtmlSymbols(relayState),
           },
           timeout: 600000, // Long timeout in case a local dev server is still starting up
+          maxRedirects: 0,
         },
       );
+      if (flexPageResponse.status() === 303) {
+        break;
+      }
     } catch (err) {
       const error = <Error>err;
       if (Date.now() > flexTimeoutTime || error.message.indexOf('ECONNREFUSED') === -1) {
@@ -108,37 +112,11 @@ export async function oktaSsoLoginViaApi(
       }
     }
   }
-  expect(flexPageResponse.ok()).toBe(true);
-  await flexPageResponse.dispose(); //Not sure if this is strictly necessary
-
+  expect(flexPageResponse.status()).toBe(303);
+  const redirectHeaders = flexPageResponse.headers();
+  const redirectURL = new URL(redirectHeaders.location ?? redirectHeaders.Location!);
+  const resp = await apiRequest.get(redirectURL.toString());
+  expect(resp.ok()).toBe(true);
   await apiRequest.storageState({ path: getConfigValue('storageStatePath') as string });
-}
-
-export async function oktaSsoLoginViaGui(
-  config: FullConfig,
-  username: string,
-  password: string,
-): Promise<void> {
-  const project = config.projects[0];
-  const browser = await chromium.launch(project.use);
-  console.log('Global setup browser launched');
-  const page = await browser.newPage();
-  page.goto(project.use.baseURL!, { timeout: 30000 });
-  await page.waitForNavigation({ timeout: 30001 });
-  const usernameBox = page.locator('input#okta-signin-username');
-  const passwordBox = page.locator('input#okta-signin-password');
-  const submitButton = page.locator('input#okta-signin-submit');
-  await Promise.all([usernameBox.waitFor(), passwordBox.waitFor(), submitButton.waitFor()]);
-  console.log('Global setup boxes found');
-  await usernameBox.fill(username);
-  await passwordBox.fill(password);
-  await Promise.all([
-    page.waitForNavigation({ timeout: 30000 }), // Waits for the next navigation
-    submitButton.click(), // Triggers a navigation after a timeout
-  ]);
-  const logoImage = page.locator('.Twilio.Twilio-MainHeader img');
-  await logoImage.waitFor();
-  await expect(logoImage).toHaveAttribute('src', /.*aselo.*/);
-  await page.context().storageState({ path: getConfigValue('storageStatePath') as string });
-  await browser.close();
+  return redirectURL.searchParams.get('Token')!;
 }

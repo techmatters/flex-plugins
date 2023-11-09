@@ -7,8 +7,12 @@ locals {
   local_config = {
 
     custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true OR  twilioNumber IN ['messenger:111279668497853']"
-
-
+ 
+    workflow_vars = {
+     helpline_webchat_location = "https://tl-public-chat-mt-stg.s3.eu-west-1.amazonaws.com/mt-chat-staging.html"
+     ecpm_webchat_location = "xx"
+    }
+    
     flow_vars = {
       service_sid                           = "ZS2cf2a4933a3f9782a2907146287f3f1a"
       environment_sid                       = "ZE512e22f5abb4cc30757b4db4181ab40b"

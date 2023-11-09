@@ -4,11 +4,11 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-   custom_task_routing_filter_expression = ""
+    custom_task_routing_filter_expression = "isContactlessTask==true"
 
 
     flow_vars = {}
-    
+
 
     channels = {}
   }

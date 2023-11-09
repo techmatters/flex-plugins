@@ -21,11 +21,9 @@ import { CustomITask, Profile } from '../../../types/types';
 import NavigableContainer from '../../NavigableContainer';
 import { DetailsWrapper, ProfileSubtitle } from '../styles';
 import ProfileFlagEdit from './ProfileFlagEdit';
+import { ProfileCommonProps } from '../types';
 
-type OwnProps = {
-  profileId: Profile['id'];
-  task: CustomITask;
-};
+type OwnProps = ProfileCommonProps;
 
 const ProfileFlagEditPage = (props: OwnProps) => {
   return (

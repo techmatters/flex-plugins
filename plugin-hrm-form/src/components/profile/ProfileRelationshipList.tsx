@@ -83,7 +83,7 @@ const ProfileRelationshipList: React.FC<Props> = ({
 const mapStateToProps = (state: RootState, { profileId, type }) => {
   const currentProfileState = profileSelectors.selectProfileById(state, profileId);
   console.log('currentProfileState', currentProfileState);
-  const { data, exhausted, loadedPage, loading, page } = currentProfileState[type];
+  const { data, exhausted, loadedPage, loading, page } = currentProfileState?.[type] || {};
 
   return {
     data,

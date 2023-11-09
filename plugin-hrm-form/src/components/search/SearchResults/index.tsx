@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Template, Tab as TwilioTab } from '@twilio/flex-ui';
@@ -92,10 +92,21 @@ const SearchResults: React.FC<Props> = ({
   routing,
   isRequestingCases,
   isRequestingContacts,
+  caseRefreshRequired,
+  contactRefreshRequired,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [contactsPage, setContactsPage] = useState(0);
   const [casesPage, setCasesPage] = useState(0);
+
+  useEffect(() => {
+    if (contactRefreshRequired) {
+      handleSearchContacts(CONTACTS_PER_PAGE * contactsPage);
+    }
+    if (caseRefreshRequired) {
+      handleSearchCases(CASES_PER_PAGE * casesPage);
+    }
+  }, [contactRefreshRequired, caseRefreshRequired, handleSearchContacts, casesPage, contactsPage]);
 
   if (routing.route !== 'search' || (routing.subroute !== 'case-results' && routing.subroute !== 'contact-results')) {
     return null;
@@ -308,6 +319,7 @@ const SearchResults: React.FC<Props> = ({
                       currentCase={cas}
                       counselorsHash={counselorsHash}
                       onClickViewCase={can(PermissionActions.VIEW_CASE) && handleClickViewCase(cas)}
+                      task={task}
                     />
                   );
                 })}
@@ -330,17 +342,21 @@ const SearchResults: React.FC<Props> = ({
 SearchResults.displayName = 'SearchResults';
 
 const mapStateToProps = (
-  { [namespace]: { searchContacts, configuration, routing } }: RootState,
+  { [namespace]: { searchContacts, configuration, routing, activeContacts } }: RootState,
   { task }: OwnProps,
 ) => {
   const taskId = task.taskSid;
-  const { isRequesting, isRequestingCases } = searchContacts.tasks[taskId];
+  const { isRequesting, isRequestingCases, caseRefreshRequired, contactRefreshRequired } = searchContacts.tasks[taskId];
   const { counselors } = configuration;
+  const taskContact = activeContacts.existingContacts[taskId]?.savedContact;
   return {
     isRequestingContacts: isRequesting,
     isRequestingCases,
+    caseRefreshRequired,
+    contactRefreshRequired,
     counselorsHash: counselors.hash,
     routing: getCurrentTopmostRouteForTask(routing, taskId),
+    taskContact,
   };
 };
 

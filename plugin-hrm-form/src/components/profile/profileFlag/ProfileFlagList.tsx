@@ -18,7 +18,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { IconButton, Template } from '@twilio/flex-ui';
 
-import { CustomITask, Profile, ProfileFlag } from '../../../types/types';
+import { RouterTask, Profile, ProfileFlag } from '../../../types/types';
 import { useProfileFlags } from '../../../states/profile/hooks';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
 import { StatusLabelPill, CloseIconButton } from '../styles';
@@ -27,7 +27,7 @@ import { RootState } from '../../../states';
 type OwnProps = {
   enableDisassociate?: boolean;
   profileId: Profile['id'];
-  task: CustomITask;
+  task: RouterTask;
 };
 
 type Props = OwnProps;

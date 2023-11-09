@@ -13,42 +13,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { combineReducers } from 'redux';
 
 import * as t from './types';
-import { loadIdentifierReducer, shouldUseLoadIdentifierReducer } from './identifier';
-import { profileReducer, shouldUseProfileReducer } from './profile';
-import { profileFlagsReducer, shouldUseProfileFlagsReducer } from './profileFlag';
-import { profileSectionsReducer, shouldUseProfileSectionsReducer } from './profileSection';
-import { relationshipReducer, shouldUseRelationshipReducer } from './relationship';
 
-const reducers = [
-  {
-    shouldUseReducer: shouldUseLoadIdentifierReducer,
-    reducer: loadIdentifierReducer,
-  },
-  {
-    shouldUseReducer: shouldUseProfileReducer,
-    reducer: profileReducer,
-  },
-  {
-    shouldUseReducer: shouldUseProfileFlagsReducer,
-    reducer: profileFlagsReducer,
-  },
-  {
-    shouldUseReducer: shouldUseProfileSectionsReducer,
-    reducer: profileSectionsReducer,
-  },
-  {
-    shouldUseReducer: shouldUseRelationshipReducer,
-    reducer: relationshipReducer,
-  },
-];
+import { identifierReducer } from './identifier';
+import { profileReducer } from './profile';
+import { profileSectionsReducer } from './profileSection';
+import { profileFlagsReducer } from './profileFlag';
 
-export function reduce(state = t.initialState, action: t.ProfileActions): t.ProfileState {
-  const reducer = reducers.find(r => r.shouldUseReducer(action));
-  if (reducer) {
-    return reducer.reducer(t.initialState)(state, action);
-  }
+const reducers = {
+  identifiers: identifierReducer(),
+  profiles: profileReducer(),
+  profileFlags: profileFlagsReducer(),
+  profileSections: profileSectionsReducer(),
+};
 
-  return state;
-}
+const combinedReducers = combineReducers(reducers);
+
+export const reduce = (state = t.initialState, action: t.ProfileActions): t.ProfileState =>
+  combinedReducers(state, action);

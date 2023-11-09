@@ -18,19 +18,16 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { IconButton, Template } from '@twilio/flex-ui';
 
+import { ProfileCommonProps } from './types';
 import ProfileFlagList from './profileFlag/ProfileFlagList';
-import { CustomITask, Profile } from '../../types/types';
-import { DetailsWrapper, EditButton, ProfileSubtitle } from './styles';
+import { DetailsWrapper, ProfileSubtitle } from './styles';
 import { Bold, Box, Column, Flex } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
 import { useProfileSection, useProfileSections } from '../../states/profile/hooks/useProfileSection';
 import ProfileSectionList from './section/ProfileSectionList';
 
-type OwnProps = {
-  profileId: Profile['id'];
-  task: CustomITask;
-};
+type OwnProps = ProfileCommonProps;
 
 type Section = {
   titleCode?: string;
@@ -51,8 +48,8 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
       titleCode: 'Profile-IdentifiersHeader',
       margin: '20px 0',
       renderComponent: () =>
-        profile.identifiers ? (
-          profile.identifiers.map(identifier => <div key={identifier.id}>{identifier.identifier}</div>)
+        profile?.identifiers ? (
+          profile.identifiers?.map(identifier => <div key={identifier.id}>{identifier.identifier}</div>)
         ) : (
           <Template code="Profile-NoIdentifiersFound" />
         ),

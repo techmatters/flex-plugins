@@ -28,7 +28,7 @@ import { ChannelTypes, channelTypes } from '../../../states/DomainConstants';
 import { newOpenModalAction } from '../../../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
-import { CustomITask, Identifier, isTwilioTask } from '../../../types/types';
+import { CustomITask, isTwilioTask } from '../../../types/types';
 import { namespace } from '../../../states/storeNamespaces';
 import { isRouteModal } from '../../../states/routing/types';
 import { getCurrentBaseRoute } from '../../../states/routing/getRoute';
@@ -41,13 +41,9 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, modalOpen }) => {
-  let formattedIdentifier: string = '';
-  let identifierIdentifier: Identifier['identifier'] = '';
-  if (isTwilioTask(task)) {
-    formattedIdentifier = getFormattedNumberFromTask(task);
-    identifierIdentifier = getNumberFromTask(task);
-  }
+const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) => {
+  const formattedIdentifier = getFormattedNumberFromTask(task);
+  const identifierIdentifier = getNumberFromTask(task);
   const { identifier } = useIdentifierByIdentifier({ identifierIdentifier, shouldAutoload: true });
   const profileId = identifier?.profiles?.[0]?.id;
 
@@ -56,9 +52,6 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, moda
   const contactsCountState = useProfileProperty(profileId, 'contactsCount') || 0;
   const contactsCount = contactsCountState ? contactsCountState - 1 : 0;
   const casesCount = useProfileProperty(profileId, 'casesCount') || 0;
-
-  // Hooks can't be called conditionally, so we have to do this here
-  if (!isTwilioTask(task)) return null;
 
   const localizedSourceFromTask: { [channelType in ChannelTypes]: string } = {
     [channelTypes.web]: `${getContactValueTemplate(task)}`,
@@ -83,7 +76,7 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, moda
   };
 
   return (
-    <div className={modalOpen ? 'editingContact' : ''}>
+    <div>
       <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
         {/* eslint-disable-next-line prettier/prettier */}
         <pre>
@@ -127,16 +120,6 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, moda
 
 ProfileIdentifierBanner.displayName = 'PreviousContactsBanner';
 
-const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const { routing, activeContacts } = state[namespace];
-  const { taskSid } = task;
-  const modalOpen = activeContacts.editingContact || isRouteModal(getCurrentBaseRoute(routing, taskSid));
-
-  return {
-    modalOpen,
-  };
-};
-
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { task } = ownProps;
   const taskId = task.taskSid;
@@ -148,5 +131,5 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(null, mapDispatchToProps);
 export default connector(ProfileIdentifierBanner);

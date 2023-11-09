@@ -20,7 +20,7 @@ import { ArrowDropDown } from '@material-ui/icons';
 
 import ProfileFlagList from './ProfileFlagList';
 import { StyledMenuItem } from '../../../styles/HrmStyles';
-import { CustomITask, Profile, ProfileFlag } from '../../../types/types';
+import { RouterTask, Profile, ProfileFlag } from '../../../types/types';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
 import { useProfileFlags } from '../../../states/profile/hooks';
 import { RootState } from '../../../states';
@@ -28,7 +28,7 @@ import { StyledStatusSelect } from '../styles';
 
 type OwnProps = {
   profileId: Profile['id'];
-  task: CustomITask;
+  task: RouterTask;
 };
 
 type Props = OwnProps;

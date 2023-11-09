@@ -57,6 +57,7 @@ export const useIdentifierByIdentifierLoader = ({
     (state: RootState) => ProfileSelectors.selectIdentifierByIdentifier(state, identifierIdentifier)?.loading,
   );
   const loadIdentifierByIdentifier = useCallback(() => {
+    if (!identifierIdentifier) return;
     asyncDispatch(dispatch)(IdentifierActions.loadIdentifierByIdentifierAsync(identifierIdentifier));
   }, [dispatch, identifierIdentifier]);
 
