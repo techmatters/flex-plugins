@@ -149,10 +149,10 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
 ) => {
   const { task } = payload;
 
+  await initializeContactForm(payload);
   if (getAseloFeatureFlags().enable_transfers && TransferHelpers.hasTransferStarted(task)) {
     await handleTransferredTask(task);
   } else {
-    await initializeContactForm(payload);
     await prepopulateForm(task);
   }
 
