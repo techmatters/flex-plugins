@@ -22,7 +22,7 @@ import { getHrmConfig } from '../hrmConfig';
 const getCategoryColor = (definitionVersion: DefinitionVersion, category: string) => {
   const { helpline } = getHrmConfig();
 
-  const categories = definitionVersion.tabbedForms.IssueCategorizationTab(helpline) ?? {};
+  const categories = definitionVersion?.tabbedForms?.IssueCategorizationTab(helpline) ?? {};
 
   return categories[category] ? categories[category].color : HrmTheme.colors.defaultCategoryColor;
 };

@@ -194,16 +194,33 @@ locals {
 
         }
         chatbot_unique_names = []
+      },
+ "988camh" : {
+        channel_type         = "voice"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/988camh.tftpl"
+        channel_flow_vars    = {
+          en_number: "3656520724"
+          fr_number: "6473707639"
+          ns_fr_number: "7823120154"
+
+          en_function_url: "https://twilio-service-4854.twil.io/988_en"
+          fr_function_url: "https://twilio-service-4854.twil.io/988_fr"
+          
+        }
+        chatbot_unique_names = []
       }
     }
     phone_numbers = {
       khp : ["+12268878353", "+18663931921"],
       g2ton : ["+13656546095", "+13656546120"],
       g2ttr : ["+13656546032", "+13656546120"],
-      g2tns : ["+15878043655", "+15878044316"],
+      g2tns : ["+15878043655"],
       ab211 : ["+15877412408", "+15876095765"],
-      hc : ["+13656540516", "+13656520724"],
-      training : ["+18252547345"]
+      hc : ["+13656540516"],
+      training : ["+18252547345"],
+      "988_camh" : ["+13656520724", "+16473707639"]
+      "988_ns" : ["+17823120154"]
     }
 
     hrm_transcript_retention_days_override = 90

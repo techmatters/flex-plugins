@@ -122,16 +122,28 @@ export const RequiredAsterisk = () => (
 const getRules = (field: FormItemDefinition): RegisterOptions =>
   pick(field, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
 
-const bindCreateSelectOptions = (path: string, initialValue: string) => (o: SelectOption) => (
-  <FormOption
-    key={`${path}-${o.label}-${o.value}`}
-    value={o.value}
-    isEmptyValue={o.value === ''}
-    selected={o.value === initialValue}
-  >
+const bindCreateSelectOptions = (path: string) => (o: SelectOption, selected: boolean) => (
+  <FormOption key={`${path}-${o.label}-${o.value}`} value={o.value} isEmptyValue={o.value === ''} selected={selected}>
     {o.label}
   </FormOption>
 );
+
+const generateSelectOptions = (path: string, options: SelectOption[], currentValue: string): JSX.Element[] => {
+  const createSelectOptions = bindCreateSelectOptions(path);
+  const optionElements: JSX.Element[] = [];
+
+  // Need to select specifically first matching value, which is why we don't just use .map
+  let foundValue = false;
+  options.forEach(option => {
+    if (!foundValue && option.value === currentValue) {
+      foundValue = true;
+      optionElements.push(createSelectOptions(option, true));
+    } else {
+      optionElements.push(createSelectOptions(option, false));
+    }
+  });
+  return optionElements;
+};
 
 /**
  * Helper function used to calclulate the element that should be focused for FormInputType.ListboxMultiselect type inputs
@@ -490,8 +502,6 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
         <ConnectForm key={path}>
           {({ errors, register }) => {
             const error = get(errors, path);
-            const createSelectOptions = bindCreateSelectOptions(path, initialValue);
-
             return (
               <FormLabel htmlFor={path}>
                 <Row>
@@ -518,7 +528,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     }}
                     disabled={!isEnabled}
                   >
-                    {def.options.map(createSelectOptions)}
+                    {generateSelectOptions(path, def.options, initialValue)}
                   </FormSelect>
                 </FormSelectWrapper>
                 {error && (
@@ -565,8 +575,6 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
 
             const disabled = !hasOptions && !shouldInitialize;
 
-            const createSelectOptions = bindCreateSelectOptions(path, initialValue);
-
             return (
               <DependentSelectLabel htmlFor={path} disabled={disabled}>
                 <Row>
@@ -593,7 +601,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     }}
                     disabled={!isEnabled || disabled}
                   >
-                    {options.map(createSelectOptions)}
+                    {generateSelectOptions(path, options, initialValue)}
                   </FormSelect>
                 </FormSelectWrapper>
                 {error && (
