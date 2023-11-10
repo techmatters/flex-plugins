@@ -145,6 +145,7 @@ const sendWelcomeMessageOnConversationJoined = (
 export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupObject, getMessage: GetMessage) => async (
   payload: ActionPayload,
 ) => {
+  await initializeContactForm(payload);
   const { task } = payload;
 
   if (TaskHelper.isChatBasedTask(task)) {
