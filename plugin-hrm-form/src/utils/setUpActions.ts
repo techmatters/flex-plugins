@@ -42,6 +42,8 @@ import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
 import { newContact } from '../states/contacts/contactState';
 import asyncDispatch from '../states/asyncDispatch';
 import { createContactAsyncAction } from '../states/contacts/saveContact';
+import { handleTransferredTask } from '../transfer/setUpTransferActions';
+import { prepopulateForm } from './prepopulateForm';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -145,8 +147,14 @@ const sendWelcomeMessageOnConversationJoined = (
 export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupObject, getMessage: GetMessage) => async (
   payload: ActionPayload,
 ) => {
-  await initializeContactForm(payload);
   const { task } = payload;
+
+  if (getAseloFeatureFlags().enable_transfers && TransferHelpers.hasTransferStarted(task)) {
+    await handleTransferredTask(task);
+  } else {
+    await initializeContactForm(payload);
+    await prepopulateForm(task);
+  }
 
   if (TaskHelper.isChatBasedTask(task)) {
     subscribeAlertOnConversationJoined(task);
