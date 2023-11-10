@@ -88,6 +88,10 @@
         {
           "name": "hubServicesProvided",
           "insights": ["customers", "category"]  
+        },
+        {
+          "name": "numberofConsultations",
+          "insights": ["conversations", "conversation_attribute_9"]  
         }
     ]
   }
