@@ -23,73 +23,103 @@ import * as ProfileActions from '../profile';
 import * as ProfileSelectors from '../selectors';
 import { RootState } from '../..';
 
-// export const useProfileSectionByType = (profileId: Profile['id'], sectionType: string): ProfileSection => {
-//   const dispatch = useDispatch();
-
-//   useEffect(() => {
-//     asyncDispatch(dispatch)(ProfileActions.loadProfileSectionAsync(profileId, sectionType));
-//   }, [dispatch, profileId, sectionType]);
-
-//   return useSelector((state: RootState) => ProfileSelectors.selectProfileSectionByType(state, profileId, sectionType));
-// }
-
-export const useProfileSection = (profileId: Profile['id'], sectionId): ProfileSection =>
-  useSelector((state: RootState) => ProfileSelectors.selectProfileSectionById(state, profileId, sectionId));
-
-export const useProfileSections = (profileId: Profile['id']): ProfileSection[] => {
-  const sections = useSelector((state: RootState) => ProfileSelectors.selectAllProfileSections(state, profileId));
-  console.log(`>>> useProfileSections for profileId ${profileId} returning ${sections}`);
-  const sectionsByType = useSelector((state: RootState) =>
-    ProfileSelectors.selectProfileSectionByType(state, profileId, 'summary'),
-  );
-  console.log(`>>> useProfileSections for profileId ${profileId} returning ${sectionsByType}`);
-  return sections;
+export type useProfileSectionByType = {
+  profileId: Profile['id'];
+  sectionType: string;
 };
 
+export const useProfileSectionLoaderByType = ({ profileId, sectionType }: useProfileSectionByType) => {
+  const dispatch = useDispatch();
+  // We need the profile section out of the profile data to use it in the useEffect below
+  const profileSection = useSelector((state: RootState) =>
+    ProfileSelectors.selectProfileSectionFromProfileByType(state, profileId, sectionType),
+  );
+  const sectionId = profileSection?.id;
+
+  const loadProfileSectionAsync = useCallback(
+    (params: ProfileActions.LoadProfileSectionAsyncParams) => {
+      asyncDispatch(dispatch)(ProfileActions.loadProfileSectionAsync(params));
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
+    if (!sectionId) return;
+
+    loadProfileSectionAsync({ profileId, sectionType, sectionId });
+  }, [profileId, sectionType, sectionId, profileSection]);
+
+  const loading = useSelector(
+    (state: RootState) => ProfileSelectors.selectProfileSectionByType(state, profileId, sectionType)?.loading,
+  );
+  const error = useSelector(
+    (state: RootState) => ProfileSelectors.selectProfileSectionByType(state, profileId, sectionType)?.error,
+  );
+
+  return {
+    loading,
+    error,
+    loadProfileSectionAsync,
+  };
+};
+
+export const useProfileSectionByType = ({ profileId, sectionType }: useProfileSectionByType) => {
+  const section = useSelector(
+    (state: RootState) => ProfileSelectors.selectProfileSectionByType(state, profileId, sectionType)?.data,
+  );
+
+  return {
+    section,
+    ...useProfileSectionLoaderByType({ profileId, sectionType }),
+  };
+};
 
 type UseEditProfileSection = {
-  handleEditProfileSection: (sectionId: string, content: string, sectionType: string) => void;
+  section: ProfileSection;
+  createProfileSection: (params: ProfileActions.CreateProfileSectionAsyncParams) => void;
+  updateProfileSection: (params: ProfileActions.UpdateProfileSectionAsyncParams) => void;
 };
 
-export const useEditProfileSection = (profileId: Profile['id'], sectionId): UseEditProfileSection => {
+export const useEditProfileSection = (params: ProfileActions.ProfileSectionCommonParams): UseEditProfileSection => {
   const dispatch = useDispatch();
+  const { profileId } = params;
 
-  const section = useProfileSection(profileId, sectionId);
-
-  console.log('>>> useEditProfileSection useProfileSection section', section);
+  const profileSection = useProfileSectionByType(params);
+  // const section = profileSection.section;
+  // const sectionId = section?.id;
 
   const createProfileSection = useCallback(
-    (content: string, sectionType: string) => {
-      asyncDispatch(dispatch)(ProfileActions.createProfileSectionAsync(profileId, content, sectionType));
+    (params: ProfileActions.CreateProfileSectionAsyncParams) => {
+      asyncDispatch(dispatch)(ProfileActions.createProfileSectionAsync(params));
     },
     [dispatch, profileId],
   );
 
   const updateProfileSection = useCallback(
-    (sectionId: string, content: string) => {
-      asyncDispatch(dispatch)(ProfileActions.updateProfileSectionAsync(profileId, sectionId, content));
+    (params: ProfileActions.UpdateProfileSectionAsyncParams) => {
+      asyncDispatch(dispatch)(ProfileActions.updateProfileSectionAsync(params));
     },
     [dispatch, profileId],
   );
 
-  const profileSection = useMemo(
-    () => ({
-      handleEditProfileSection: (sectionId: string, content: string, sectionType: string) => {
-        console.log('>>> handleEditProfileSection', sectionId, content, sectionType);
-
-        if (content && sectionType) {
-          console.log('>>>Updating profile section', content);
-          updateProfileSection(sectionId, content);
-        } else {
-          console.log('>>>Creating profile section');
-          createProfileSection(content, sectionType);
-        }
-      },
-    }),
-    [createProfileSection, updateProfileSection],
-  );
-
   return {
     ...profileSection,
+    createProfileSection,
+    updateProfileSection,
   };
 };
+
+// probably unused beyond here.
+
+// export const useProfileSection = (profileId: Profile['id'], sectionId): ProfileSection =>
+//   useSelector((state: RootState) => ProfileSelectors.selectProfileSectionById(state, profileId, sectionId));
+
+// export const useProfileSections = (profileId: Profile['id']): ProfileSection[] => {
+//   const sections = useSelector((state: RootState) => ProfileSelectors.selectAllProfileSections(state, profileId));
+//   console.log(`>>> useProfileSections for profileId ${profileId} returning ${sections}`);
+//   const sectionsByType = useSelector((state: RootState) =>
+//     ProfileSelectors.selectProfileSectionByType(state, profileId, 'summary'),
+//   );
+//   console.log(`>>> useProfileSections for profileId ${profileId} returning ${sectionsByType}`);
+//   return sections;
+// };

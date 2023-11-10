@@ -67,7 +67,7 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
     title: `${sectionType}`,
     margin: '20px 0',
     renderComponent: () => <ProfileSectionView profileId={profileId} task={task} sectionType={sectionType} />,
-    // handleEdit: () => openSectionEditModal(1),
+    handleEdit: () => openSectionEditModal(sectionType),
   }));
 
   const sections = [...baseSections, ...sectionSections];
@@ -124,8 +124,8 @@ const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
     openFlagEditModal: () => {
       dispatch(newOpenModalAction({ route: 'profileFlagEdit', id: profileId }, taskId));
     },
-    openSectionEditModal: id => {
-      dispatch(newOpenModalAction({ route: 'profileSectionEdit', id, profileId }, taskId));
+    openSectionEditModal: type => {
+      dispatch(newOpenModalAction({ route: 'profileSectionEdit', type, profileId }, taskId));
     },
   };
 };

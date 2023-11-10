@@ -40,23 +40,19 @@ export const selectIdentifierByIdentifier = (state: RootState, identifier: Ident
 
 export const selectAllProfileFlags = (state: RootState) => state[namespace][profileBase].profileFlags;
 
-export const selectProfileSectionByType = (state: RootState, profileId: ProfileIdParam, sectionType: string) => {
-  // load ids based on sectionType
-  const profileSectionIds = state[namespace][profileBase].profiles[profileId]?.data?.profileSections[sectionType];
-  console.log('>>> selectProfileSectionByType called', profileId, sectionType, profileSectionIds);
-  return profileSectionIds;
-};
+export const selectAllProfileSectionsFromProfile = (state: RootState, profileId: ProfileIdParam) =>
+  state[namespace][profileBase].profiles[profileId]?.data?.profileSections;
 
-export const selectAllProfileSections = (state: RootState, profileId: ProfileIdParam) => {
-  // eslint-disable-next-line sonarjs/prefer-immediate-return
-  const profileSections = state[namespace][profileBase].profiles[profileId]?.data?.profileSections;
-  return profileSections;
-};
+export const selectProfileSectionFromProfileByType = (
+  state: RootState,
+  profileId: ProfileIdParam,
+  sectionType: string,
+) => selectAllProfileSectionsFromProfile(state, profileId).find(section => section.sectionType === sectionType);
 
-export const selectProfileSectionById = (state: RootState, profileId: ProfileIdParam, sectionId: string) => {
-  console.log('>>> selectProfileSectionById called', profileId, sectionId);
-  // eslint-disable-next-line sonarjs/prefer-immediate-return
-  const profileSection = state[namespace][profileBase].profiles[profileId]?.data?.profileSections[sectionId];
-  return profileSection;
-};
+export const selectProfileSectionByType = (state: RootState, profileId: ProfileIdParam, sectionType: string) =>
+  state[namespace][profileBase].profiles[profileId]?.sections?.[sectionType];
 
+export const selectProfileSectionById = (state: RootState, profileId: ProfileIdParam, sectionId: string) =>
+  Object(state[namespace][profileBase].profiles[profileId]?.sections)
+    .values()
+    .find(section => section.data?.id === sectionId);

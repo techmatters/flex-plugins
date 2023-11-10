@@ -206,26 +206,17 @@ const handleProfileFlagUpdateFulfilledAction = (state: t.ProfilesState, action: 
 
 // sections
 
-export const loadProfileSectionAsync = createAsyncAction(
-  t.LOAD_PROFILE_SECTIONS,
-  ProfileService.getProfileSection,
-  (profileId: t.Profile['id'], sectionId: t.ProfileSection['id']) => ({
-    profileId,
-    sectionId,
-  }),
-);
-
 const loadProfileSectionEntryIntoRedux = (
   state: t.ProfilesState,
   profileId: t.Profile['id'],
-  sectionId: t.ProfileSection['id'],
+  sectionType: t.ProfileSection['sectionType'],
   profileSectionUpdate: any,
 ) => {
   const profileUpdate = {
     sections: {
       ...state[profileId].sections,
-      [sectionId]: {
-        ...state[profileId].sections[sectionId],
+      [sectionType]: {
+        ...state[profileId].sections[sectionType],
         ...profileSectionUpdate,
       },
     },
@@ -234,110 +225,88 @@ const loadProfileSectionEntryIntoRedux = (
   return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
 };
 
+export type ProfileSectionCommonParams = {
+  profileId: t.Profile['id'];
+  sectionType: t.ProfileSection['sectionType'];
+};
+
+export type LoadProfileSectionAsyncParams = ProfileSectionCommonParams & {
+  sectionId: t.ProfileSection['id'];
+};
+
+export const loadProfileSectionAsync = createAsyncAction(
+  t.LOAD_PROFILE_SECTIONS,
+  ({ profileId, sectionId }: LoadProfileSectionAsyncParams) => ProfileService.getProfileSection(profileId, sectionId),
+  (params: LoadProfileSectionAsyncParams) => params,
+);
+
 const handleLoadProfileSectionPendingAction = (state: t.ProfilesState, action: any) => {
-  const { profileId, sectionId } = action.meta;
+  const { profileId, sectionType } = action.meta;
   const update = {
     loading: true,
     error: undefined,
   };
 
-  return loadProfileSectionEntryIntoRedux(state, profileId, sectionId, update);
+  return loadProfileSectionEntryIntoRedux(state, profileId, sectionType, update);
 };
 
 const handleLoadProfileSectionRejectedAction = (state: t.ProfilesState, action: any) => {
-  const { profileId, sectionId } = action.meta;
+  const { profileId, sectionType } = action.meta;
   const error = parseFetchError(action.payload);
   const update = {
     loading: false,
     error,
   };
 
-  return loadProfileSectionEntryIntoRedux(state, profileId, sectionId, update);
+  return loadProfileSectionEntryIntoRedux(state, profileId, sectionType, update);
 };
 
 const handleLoadProfileSectionFulfilledAction = (state: t.ProfilesState, action: any) => {
-  const { profileId, sectionId } = action.meta;
+  const { profileId, sectionType } = action.meta;
   const update = {
     loading: false,
     data: action.payload,
   };
   console.log('>>> handleLoadProfileSectionFulfilledAction', update);
 
-  return loadProfileSectionEntryIntoRedux(state, profileId, sectionId, update);
+  return loadProfileSectionEntryIntoRedux(state, profileId, sectionType, update);
+};
+
+export type CreateProfileSectionAsyncParams = ProfileSectionCommonParams & {
+  content: string;
 };
 
 export const createProfileSectionAsync = createAsyncAction(
   t.CREATE_PROFILE_SECTION,
-  async (profileId: t.Profile['id'], content: string, sectionType: string) => {
+  async ({ profileId, content, sectionType }: CreateProfileSectionAsyncParams) => {
     return ProfileService.createProfileSection(profileId, content, sectionType);
   },
-  (profileId: t.Profile['id'], content: string, sectionType: string) => ({
-    profileId,
-    content,
-    sectionType,
-  }),
+  (params: CreateProfileSectionAsyncParams) => params,
 );
+
+export type UpdateProfileSectionAsyncParams = CreateProfileSectionAsyncParams & {
+  sectionId: t.ProfileSection['id'];
+};
 
 export const updateProfileSectionAsync = createAsyncAction(
   t.UPDATE_PROFILE_SECTION,
-  async (profileId: t.Profile['id'], sectionId: string, content: string) => {
+  async ({ profileId, sectionId, content }: UpdateProfileSectionAsyncParams) => {
     return ProfileService.updateProfileSection(profileId, sectionId, content);
   },
-  (profileId: t.Profile['id'], sectionId: string, content: string) => ({
-    profileId,
-    sectionId,
-    content,
-  }),
+  (params: UpdateProfileSectionAsyncParams) => params,
 );
 
-const handleCreateProfileSectionPendingAction = (state: t.ProfilesState, action: any) => {
-  const { profileId, sectionType } = action.meta;
-
-  const sectionUpdate = {
-    loading: true,
-    error: undefined,
-  };
-  return loadProfileSectionEntryIntoRedux(state, profileId, sectionType, sectionUpdate);
-};
-
-const handleCreateProfileSectionRejectedAction = (state: t.ProfilesState, action: any) => {
-  const { profileId, sectionType } = action.meta;
-  const error = parseFetchError(action.payload);
-
-  const sectionUpdate = {
-    loading: false,
-    error,
-  };
-
-  return loadProfileSectionEntryIntoRedux(state, profileId, sectionType, sectionUpdate);
-};
-
-const handleCreateProfileSectionFulfilledAction = (state: t.ProfilesState, action: any) => {
-  const { profileId } = action.meta;
-
-  const sectionId = action.payload.id;
-  const sectionUpdate = {
-    loading: false,
-    data: action.payload,
-  };
-
-  return loadProfileSectionEntryIntoRedux(state, profileId, sectionId, sectionUpdate);
-};
-
-// eslint-disable-next-line sonarjs/no-identical-functions
 const handleUpdateProfileSectionPendingAction = (state: t.ProfilesState, action: any) => {
-  const { profileId, sectionId } = action.meta;
+  const { profileId, sectionType } = action.meta;
 
   const update = {
     loading: true,
     error: undefined,
   };
-  return loadProfileSectionEntryIntoRedux(state, profileId, sectionId, update);
+  return loadProfileSectionEntryIntoRedux(state, profileId, sectionType, update);
 };
-
-// eslint-disable-next-line sonarjs/no-identical-functions
 const handleUpdateProfileSectionRejectedAction = (state: t.ProfilesState, action: any) => {
-  const { profileId, sectionId } = action.meta;
+  const { profileId, sectionType } = action.meta;
   const error = parseFetchError(action.payload);
 
   const update = {
@@ -345,17 +314,17 @@ const handleUpdateProfileSectionRejectedAction = (state: t.ProfilesState, action
     error,
   };
 
-  return loadProfileSectionEntryIntoRedux(state, profileId, sectionId, update);
+  return loadProfileSectionEntryIntoRedux(state, profileId, sectionType, update);
 };
 
 const handleUpdateProfileSectionFulfilledAction = (state: t.ProfileState, action: any) => {
-  const { profileId, sectionId } = action.meta;
+  const { profileId, sectionType } = action.meta;
   const update = {
     loading: false,
     data: action.payload,
   };
 
-  return loadProfileSectionEntryIntoRedux(state, profileId, sectionId, update);
+  return loadProfileSectionEntryIntoRedux(state, profileId, sectionType, update);
 };
 
 export const profileReducer = (initialState: t.ProfilesState = {}) =>
@@ -377,9 +346,9 @@ export const profileReducer = (initialState: t.ProfilesState = {}) =>
     handleAction(loadProfileSectionAsync.pending, handleLoadProfileSectionPendingAction),
     handleAction(loadProfileSectionAsync.rejected, handleLoadProfileSectionRejectedAction),
     handleAction(loadProfileSectionAsync.fulfilled, handleLoadProfileSectionFulfilledAction),
-    handleAction(createProfileSectionAsync.pending, handleCreateProfileSectionPendingAction),
-    handleAction(createProfileSectionAsync.rejected, handleCreateProfileSectionRejectedAction),
-    handleAction(createProfileSectionAsync.fulfilled, handleCreateProfileSectionFulfilledAction),
+    handleAction(createProfileSectionAsync.pending, handleUpdateProfileSectionPendingAction),
+    handleAction(createProfileSectionAsync.rejected, handleUpdateProfileSectionRejectedAction),
+    handleAction(createProfileSectionAsync.fulfilled, handleUpdateProfileSectionFulfilledAction),
     handleAction(updateProfileSectionAsync.pending, handleUpdateProfileSectionPendingAction),
     handleAction(updateProfileSectionAsync.rejected, handleUpdateProfileSectionRejectedAction),
     handleAction(updateProfileSectionAsync.fulfilled, handleUpdateProfileSectionFulfilledAction),

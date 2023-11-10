@@ -57,7 +57,7 @@ export const createProfileSection = (profileId: ProfileId, content: string, sect
     body: JSON.stringify({ content, sectionType }),
   });
 
-export const updateProfileSection = (profileId: ProfileId, sectionId: string, content: string) => {
+export const updateProfileSection = (profileId: ProfileId, sectionId: ProfileSectionId, content: string) => {
   return fetchHrmApi(`/profiles/${profileId}/sections/${sectionId}`, {
     method: 'PATCH',
     body: JSON.stringify({ content }),

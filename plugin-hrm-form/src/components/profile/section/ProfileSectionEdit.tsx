@@ -20,23 +20,21 @@ import { TextField } from '@material-ui/core';
 import NavigableContainer from '../../NavigableContainer';
 import { ProfileSection } from '../../../types/types';
 import { Flex, StyledNextStepButton } from '../../../styles/HrmStyles';
-import { useEditProfileSection, useProfileSection } from '../../../states/profile/hooks/useProfileSection';
-import { createProfileSection, getProfileSection } from '../../../services/ProfileService';
+import { useEditProfileSection } from '../../../states/profile/hooks/useProfileSection';
 import { ProfileCommonProps } from '../types';
 
 type OwnProps = ProfileCommonProps & {
-  sectionId: ProfileSection['id'];
+  sectionType: ProfileSection['sectionType'];
 };
 
 type Props = OwnProps;
 
-const ProfileSectionEdit = ({ task, profileId, sectionId }: Props) => {
+const ProfileSectionEdit = ({ task, profileId, sectionType }: Props) => {
   profileId = 4;
   // sectionId = 5;
   // createProfileSection(profileId, 'test content 2', 'summary2');
-  const section = useProfileSection(profileId, sectionId);
 
-  const editedSection = useEditProfileSection(profileId, sectionId);
+  const { section, createProfileSection, updateProfileSection } = useEditProfileSection({ profileId, sectionType });
 
   return (
     <NavigableContainer titleCode="Profile-EditNoteHeader" task={task}>

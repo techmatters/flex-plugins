@@ -143,7 +143,7 @@ export type ProfileFlagEditRoute = {
 
 export type ProfileSectionEditRoute = {
   route: 'profileSectionEdit';
-  id: ProfileSection['id'];
+  type: ProfileSection['sectionType'];
   profileId: Profile['id'];
 };
 
