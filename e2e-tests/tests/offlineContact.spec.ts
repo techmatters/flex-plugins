@@ -14,13 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { expect, Page, test } from '@playwright/test';
+import { expect, Page, request, test } from '@playwright/test';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { caseHome } from '../case';
 import { agentDesktop, navigateToAgentDesktop } from '../agent-desktop';
 import { skipTestIfNotTargeted, skipTestIfDataUpdateDisabled } from '../skipTest';
 import { notificationBar } from '../notificationBar';
 import { setupContextAndPage, closePage } from '../browser';
+import { apiHrmRequest } from '../hrm/hrmRequest';
+import { clearOfflineTask } from '../hrm/clearOfflineTask';
 
 test.describe.serial('Offline Contact (with Case)', () => {
   skipTestIfNotTargeted();
@@ -31,6 +33,10 @@ test.describe.serial('Offline Contact (with Case)', () => {
   test.beforeAll(async ({ browser }) => {
     ({ page: pluginPage } = await setupContextAndPage(browser));
 
+    await clearOfflineTask(
+      apiHrmRequest(await request.newContext(), process.env.FLEX_TOKEN!),
+      process.env.LOGGED_IN_WORKER_SID!,
+    );
     await Promise.all([
       // Wait for this to be sure counsellors dropdown is populated
       pluginPage.waitForResponse('**/populateCounselors'),

@@ -38,6 +38,7 @@ import {
 import { ContactDraftChanges, ExistingContactsState } from './existingContacts';
 import { newContactMetaData } from './contactState';
 import { getCase } from '../../services/CaseService';
+import { getUnsavedContact } from './getUnsavedContact';
 
 export const createContactAsyncAction = createAsyncAction(
   CREATE_CONTACT_ACTION,
@@ -72,6 +73,10 @@ export const updateContactInHrmAsyncAction = createAsyncAction(
       reference,
     };
   },
+  (previousContact: Contact, body: ContactDraftChanges) => ({
+    previousContact,
+    changes: body,
+  }),
 );
 
 const BLANK_CONTACT_CHANGES: ContactDraftChanges = {
@@ -184,7 +189,6 @@ const loadContactIntoRedux = (
     [contact.id]: {
       ...state[contact.id],
       metadata,
-      draftContact: undefined,
       savedContact: contact,
       references,
     },
@@ -193,7 +197,19 @@ const loadContactIntoRedux = (
 
 export const saveContactReducer = (initialState: ExistingContactsState) =>
   createReducer(initialState, handleAction => [
-    handleAsyncAction(handleAction, updateContactInHrmAsyncAction.pending),
+    handleAction(
+      updateContactInHrmAsyncAction.pending as typeof updateContactInHrmAsyncAction,
+      (state, { meta: { changes, previousContact } }) => {
+        return {
+          ...state,
+          [previousContact.id]: {
+            ...state[previousContact.id],
+            draftContact: undefined,
+            savedContact: getUnsavedContact(state[previousContact.id]?.savedContact, changes),
+          },
+        };
+      },
+    ),
 
     handleAction(
       updateContactInHrmAsyncAction.fulfilled,
