@@ -17,7 +17,39 @@
       {
         "name": "area",
         "insights": ["customers", "area"]
-      }
+      },
+      {
+        "name": "livingSituation",
+        "insights": ["customers", "customer_attribute_1"]
+      },
+      {
+        "name": "gradeLevel",
+        "insights": ["customers", "acquisition_date"]
+      },
+        {
+          "name": "inConflictWithTheLaw",
+          "insights": ["conversations", "conversation_measure_1"],
+          "type": "mixed-checkbox"
+        },
+        {
+          "name": "livingInPoverty",
+          "insights": ["conversations", "conversation_measure_3"],
+          "type": "mixed-checkbox"
+        },
+        {
+          "name": "childOnTheMove",
+          "insights": ["customers", "email"]
+        },
+        {
+          "name": "childWithDisability",
+          "insights": ["customers", "customer_attribute_3"],
+          "type": "mixed-checkbox"
+        },
+        {
+          "name": "LGBTQI+",
+          "insights": ["conversations", "conversation_measure_5"],
+          "type": "mixed-checkbox"
+        }
     ]
   },
   "caseForm": {
@@ -32,7 +64,30 @@
           "conversations",
           "in_business_hours"
         ]
-      }
+      },
+        {
+          "name": "repeatCaller",
+          "insights": ["conversations", "conversation_attribute_7"],
+          "type": "mixed-checkbox"
+        },
+        {
+          "name": "actionTaken",
+          "insights": ["conversations", "initiative"]
+        },
+        {
+          "name": "howDidYouKnowAboutOurLine",
+          "insights": ["conversations", "conversation_attribute_5"]
+        },
+        {
+          "name": "didTheChildFeelWeSolvedTheirProblem",
+          "insights": ["conversations", "productive"],
+          "type": "mixed-checkbox"
+        },
+        {
+          "name": "wouldTheChildRecommendUsToAFriend",
+          "insights": ["conversations", "conversation_attribute_6"],
+          "type": "mixed-checkbox"
+        }
     ]
   }
 }
