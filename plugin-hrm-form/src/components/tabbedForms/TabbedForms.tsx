@@ -64,6 +64,7 @@ import Case from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
 import ViewContact from '../case/ViewContact';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
+import { getHrmConfig } from '../../hrmConfig';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
@@ -136,13 +137,15 @@ const TabbedForms: React.FC<Props> = ({
   finaliseContact,
   metadata,
   task,
-  isCallTypeCaller,
   removeIfOfflineContact,
+  isCallTypeCaller,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
     mode: 'onChange',
   });
+
+  const { contactSaveFrequency } = getHrmConfig();
 
   const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={savedContact.csamReports} />, [
     savedContact.csamReports,
@@ -227,7 +230,9 @@ const TabbedForms: React.FC<Props> = ({
 
   const handleTabsChange = async (t: number) => {
     const tab = tabsToIndex[t];
-    await saveDraft(savedContact, draftContact);
+    if (contactSaveFrequency === 'onTabChange') {
+      saveDraft(savedContact, draftContact);
+    }
     if (tab === 'search') {
       openSearchModal();
     } else {
@@ -389,6 +394,7 @@ const mapStateToProps = (
   const baseRoute = getCurrentBaseRoute(routing, taskSid);
   const searchModalOpen =
     isRouteWithModalSupport(baseRoute) && baseRoute.activeModal?.length && baseRoute.activeModal[0].route === 'search';
+
   const { currentDefinitionVersion } = configuration;
   return {
     currentRoute,

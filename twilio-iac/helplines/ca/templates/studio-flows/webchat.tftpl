@@ -60,7 +60,7 @@ ${
         "type": "send-to-flex",
         "transitions": [
           {
-            "next": "helpline_parameters",
+            "next": "test_flag_queue",
             "event": "callComplete"
           },
           {
@@ -1535,6 +1535,36 @@ ${
         "offset": {
           "x": 1260,
           "y": -630
+        }
+      }
+    },
+    {
+      "name": "test_flag_queue",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "helpline_parameters",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains false",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.e2eTestMode}}"
+              ],
+              "type": "contains",
+              "value": "false"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.pre_engagement_data.e2eTestMode}}",
+        "offset": {
+          "x": 970,
+          "y": 740
         }
       }
     }

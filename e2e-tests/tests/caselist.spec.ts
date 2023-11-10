@@ -14,11 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Page, test } from '@playwright/test';
+import { Page, request, test } from '@playwright/test';
 import { caseList } from '../caseList';
 import { skipTestIfNotTargeted, skipTestIfDataUpdateDisabled } from '../skipTest';
 import { notificationBar } from '../notificationBar';
 import { setupContextAndPage, closePage } from '../browser';
+import { clearOfflineTask } from '../hrm/clearOfflineTask';
+import { apiHrmRequest } from '../hrm/hrmRequest';
 
 test.describe.serial('Open and Edit a Case in Case List page', () => {
   skipTestIfNotTargeted();
@@ -28,6 +30,11 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
   test.beforeAll(async ({ browser }) => {
     test.setTimeout(600000);
     ({ page: pluginPage } = await setupContextAndPage(browser));
+
+    await clearOfflineTask(
+      apiHrmRequest(await request.newContext(), process.env.FLEX_TOKEN!),
+      process.env.LOGGED_IN_WORKER_SID!,
+    );
 
     // Open Case List
     await pluginPage.goto('/case-list', { waitUntil: 'networkidle', timeout: 20000 });

@@ -44,6 +44,7 @@ export function contactForm(page: Page) {
     saveAndAddToCaseButton: formArea.locator(
       `//button[@data-testid='BottomBar-SaveAndAddToCase-Button']`,
     ),
+    addNewCaseButton: formArea.locator(`//button[@data-testid='TabbedForms-AddNewCase-Button']`),
   };
 
   async function selectTab(tab: ContactFormTab<unknown>) {
@@ -73,7 +74,7 @@ export function contactForm(page: Page) {
     for (const [topCategory, subCategories] of Object.entries(items)) {
       await selectors.topCategorySelector(topCategory).click();
       for (const subCategory of subCategories) {
-        await selectors.subCategoryCheckbox(id, topCategory, subCategory).check({ timeout: 2000 });
+        await selectors.subCategoryCheckbox(id, topCategory, subCategory).check({ timeout: 5000 });
       }
     }
   }
@@ -103,6 +104,7 @@ export function contactForm(page: Page) {
       if (saveAndAddToCase) {
         const responsePromise = page.waitForResponse('**/connectToCase');
         await selectors.saveAndAddToCaseButton.click();
+        await selectors.addNewCaseButton.click();
         await responsePromise;
       } else {
         const responsePromise = page.waitForResponse('**/contacts/**');
