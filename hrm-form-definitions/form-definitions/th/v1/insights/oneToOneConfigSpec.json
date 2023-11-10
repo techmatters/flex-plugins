@@ -60,10 +60,7 @@
       },
       {
         "name": "caseStatus",
-        "insights": [
-          "conversations",
-          "in_business_hours"
-        ]
+        "insights": ["conversations", "in_business_hours"]
       },
         {
           "name": "repeatCaller",
@@ -87,7 +84,11 @@
           "name": "wouldTheChildRecommendUsToAFriend",
           "insights": ["conversations", "conversation_attribute_6"],
           "type": "mixed-checkbox"
-        }
+        },
+        {
+          "name": "hubServicesProvided",
+          "insights": ["customers", "category"]  
+        },
     ]
   }
 }
