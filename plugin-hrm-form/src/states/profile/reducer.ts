@@ -14,18 +14,19 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// Register your redux store under a unique namespace
-export const namespace = 'plugin-hrm-form';
-export const contactFormsBase = 'activeContacts';
-export const searchContactsBase = 'searchContacts';
-export const caseListBase = 'caseList';
-export const connectedCaseBase = 'connectedCase';
-export const queuesStatusBase = 'queuesStatusState';
-export const configurationBase = 'configuration';
-export const conversationsBase = 'conversations';
-export const routingBase = 'routing';
-export const csamReportBase = 'csam-report';
-export const dualWriteBase = 'dualWrite';
-export const referrableResourcesBase = 'referrableResources';
-export const conferencingBase = 'conferencing';
-export const profileBase = 'profile';
+import * as t from './types';
+import { identifierReducer } from './identifier';
+import { profileReducer } from './profile';
+import { profileFlagsReducer } from './profileFlag';
+import { relationshipReducer } from './relationship';
+
+const reducers = [identifierReducer, profileReducer, profileFlagsReducer, relationshipReducer];
+
+export function reduce(state = t.initialState, action: t.ProfileActions): t.ProfileState {
+  let newState = { ...state };
+  for (const reducer of reducers) {
+    newState = reducer(t.initialState)(newState, action);
+  }
+
+  return newState;
+}

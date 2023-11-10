@@ -13,11 +13,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
 import { ITask } from '@twilio/flex-ui';
 
 import { channelTypes } from '../states/DomainConstants';
 import { getHrmConfig } from '../hrmConfig';
+import { CustomITask, isTwilioTask } from '../types/types';
 
 const getContactValueFromWebchat = task => {
   const { preEngagementData } = task.attributes;
@@ -25,7 +25,8 @@ const getContactValueFromWebchat = task => {
   return preEngagementData.contactIdentifier;
 };
 
-export const getNumberFromTask = (task: ITask) => {
+export const getNumberFromTask = (task: CustomITask) => {
+  if (!isTwilioTask(task)) return null;
   if (task.channelType === channelTypes.facebook) {
     return task.defaultFrom.replace('messenger:', '');
   } else if (task.channelType === channelTypes.whatsapp) {
@@ -40,7 +41,7 @@ export const getNumberFromTask = (task: ITask) => {
  *
  * @param {ITask | CustomITask} task
  */
-export const getFormattedNumberFromTask = (task: ITask) => {
+export const getFormattedNumberFromTask = (task: CustomITask) => {
   return task.channelType === channelTypes.twitter ? `@${task.attributes.twitterUserHandle}` : getNumberFromTask(task);
 };
 

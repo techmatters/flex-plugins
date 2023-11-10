@@ -32,6 +32,7 @@ import { ContactDetailsSectionFormApi, contactDetailsSectionFormApi } from './co
 import ContactDetailsSectionForm from './ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
 import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
+import { loadContactFromHrmByIdAsyncAction } from '../../states/contacts/saveContact';
 import { clearDraft, newSetContactDialogStateAction, updateDraft } from '../../states/contacts/existingContacts';
 import CSAMReport from '../CSAMReport/CSAMReport';
 import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
@@ -75,9 +76,15 @@ const ContactDetails: React.FC<Props> = ({
   clearContactDraft,
   currentRoute,
   openFormConfirmDialog,
+  loadContactFromHrm,
   ...otherProps
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  React.useEffect(() => {
+    if (!savedContact) {
+      loadContactFromHrm();
+    }
+  }, [savedContact, loadContactFromHrm]);
   const version = savedContact?.rawJson.definitionVersion;
 
   const featureFlags = getAseloFeatureFlags();
@@ -202,6 +209,7 @@ const ContactDetails: React.FC<Props> = ({
       </NavigableContainer>
     );
   };
+
   if (draftCsamReport) {
     return <CSAMReport api={existingContactCSAMApi(contactId)} />;
   }
@@ -243,18 +251,23 @@ const mapDispatchToProps = (
   goBack: () => dispatch(newGoBackAction(task.taskSid)),
   openFormConfirmDialog: (form: keyof ContactRawJson, dismissAction: 'close' | 'back') =>
     dispatch(newSetContactDialogStateAction(contactId, `${form}-confirm-${dismissAction}`, true)),
+  loadContactFromHrm: () => dispatch(loadContactFromHrmByIdAsyncAction(contactId)),
 });
 
 const mapStateToProps = (
   { [namespace]: { configuration, activeContacts, 'csam-report': csamReport, routing } }: RootState,
   { contactId, task }: OwnProps,
-) => ({
-  definitionVersions: configuration.definitionVersions,
-  savedContact: activeContacts.existingContacts[contactId]?.savedContact,
-  draftContact: activeContacts.existingContacts[contactId]?.draftContact,
-  draftCsamReport: csamReport.contacts[contactId],
-  currentRoute: getCurrentTopmostRouteForTask(routing, task.taskSid),
-});
+) => {
+  const currentRoute = getCurrentTopmostRouteForTask(routing, task.taskSid);
+
+  return {
+    definitionVersions: configuration.definitionVersions,
+    savedContact: activeContacts.existingContacts[contactId]?.savedContact,
+    draftContact: activeContacts.existingContacts[contactId]?.draftContact,
+    draftCsamReport: csamReport.contacts[contactId],
+    currentRoute,
+  };
+};
 
 ContactDetails.displayName = 'ContactDetails';
 
