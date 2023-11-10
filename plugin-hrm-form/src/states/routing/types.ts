@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { ContactRawJson } from '../../types/types';
+import { ContactRawJson, Profile, ProfileNote } from '../../types/types';
 
 // Action types
 export const CHANGE_ROUTE = 'routing/change-route';
@@ -26,7 +26,9 @@ export type TabbedFormSubroutes =
   | 'callerInformation'
   | 'childInformation'
   | 'categories'
-  | 'caseInformation';
+  | 'caseInformation'
+  | 'profile'
+  | 'profileEdit';
 
 export type RouteWithModalSupport = {
   route: 'tabbed-forms' | 'case' | 'case-list' | 'search';
@@ -115,6 +117,36 @@ export type CaseRoute =
   | CaseHomeRoute
   | CasePrintRoute;
 
+export const PROFILE_TABS = {
+  cases: 'cases',
+  contacts: 'contacts',
+  details: 'details',
+} as const;
+
+export type ProfileTabs = typeof PROFILE_TABS[keyof typeof PROFILE_TABS];
+
+export type ProfileRoute = {
+  route: 'profile';
+  id: Profile['id'];
+  subroute?: ProfileTabs;
+};
+
+export type ProfileEditRoute = {
+  route: 'profileEdit';
+  id: Profile['id'];
+};
+
+export type ProfileFlagEditRoute = {
+  route: 'profileFlagEdit';
+  id: Profile['id'];
+};
+
+export type ProfileNoteEditRoute = {
+  route: 'profileNoteEdit';
+  id: ProfileNote['id'];
+  profileId: Profile['id'];
+};
+
 export function isAddCaseSectionRoute(appRoute: AppRoutes): appRoute is AddCaseSectionRoute {
   return (<any>appRoute).action === CaseItemAction.Add;
 }
@@ -167,13 +199,17 @@ type OtherRoutes =
   | TabbedFormRoute
   | SearchRoute
   | ContactRoute
-  | CaseListRoute;
+  | CaseListRoute
+  | ProfileRoute
+  | ProfileEditRoute
+  | ProfileFlagEditRoute
+  | ProfileNoteEditRoute;
 
 // The different routes we have in our app
 export type AppRoutes = AppRoutesWithCase | OtherRoutes;
 
 export function isRouteWithModalSupport(appRoute: any): appRoute is RouteWithModalSupport {
-  return ['tabbed-forms', 'case', 'case-list', 'search'].includes(appRoute.route);
+  return ['tabbed-forms', 'case', 'case-list', 'search', 'select-call-type'].includes(appRoute.route);
 }
 
 export enum ChangeRouteMode {

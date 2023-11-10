@@ -14,18 +14,27 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// Register your redux store under a unique namespace
-export const namespace = 'plugin-hrm-form';
-export const contactFormsBase = 'activeContacts';
-export const searchContactsBase = 'searchContacts';
-export const caseListBase = 'caseList';
-export const connectedCaseBase = 'connectedCase';
-export const queuesStatusBase = 'queuesStatusState';
-export const configurationBase = 'configuration';
-export const conversationsBase = 'conversations';
-export const routingBase = 'routing';
-export const csamReportBase = 'csam-report';
-export const dualWriteBase = 'dualWrite';
-export const referrableResourcesBase = 'referrableResources';
-export const conferencingBase = 'conferencing';
-export const profileBase = 'profile';
+import React from 'react';
+import { Template } from '@twilio/flex-ui';
+
+import { RouterTask, Profile } from '../../types/types';
+import NavigableContainer from '../NavigableContainer';
+import { DetailsWrapper, ProfileSubtitle } from './styles';
+import { ProfileCommonProps } from './types';
+
+type OwnProps = ProfileCommonProps;
+
+type Props = OwnProps;
+
+const ProfileEdit: React.FC<Props> = (props: Props) => {
+  const { task } = props;
+  return (
+    <NavigableContainer titleCode="Profile-EditHeader" task={task}>
+      <DetailsWrapper>
+        <ProfileSubtitle>{/* <Template code="Profile-StatusHeader" /> */}</ProfileSubtitle>
+      </DetailsWrapper>
+    </NavigableContainer>
+  );
+};
+
+export default ProfileEdit;
