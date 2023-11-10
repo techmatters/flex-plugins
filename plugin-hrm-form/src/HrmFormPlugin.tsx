@@ -150,8 +150,6 @@ const setUpActions = (
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject, getMessage);
   const beforeCompleteAction = ActionFunctions.beforeCompleteTask(featureFlags);
 
-  Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
-
   Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(featureFlags, setupObject, getMessage));
 
   setUpTransferActions(featureFlags.enable_transfers, setupObject);
