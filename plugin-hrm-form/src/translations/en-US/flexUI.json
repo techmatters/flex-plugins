@@ -139,7 +139,7 @@
   "TabbedForms-ExistingCase": "Existing Case",
   "TabbedForms-ContactNotLoaded-Header": "Contact not loaded, no data can be recorded",
   "TabbedForms-ContactNotLoaded-Retry": "Retry",
-  "TabbedForms-ContactNotLoaded-Finish": "Finish",
+  "TabbedForms-ContactNotLoaded-Finish": "End Without Saving",
   "NotImplemented": "Not implemented yet!",
   "Error-Backend": "Error from backend system.",
   "Error-ContinueWithoutRecording": "Error from backend system.  Are you sure you want to end the task without recording?",

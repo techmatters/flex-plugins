@@ -36,3 +36,10 @@ export const getSidForWorker = async (friendlyName: string): Promise<string | un
   }
   return undefined;
 };
+
+export const getWorkerFromPage = async (page: any): Promise<string> => {
+  return page.evaluate(() => {
+    const manager = (window as any).Twilio.Flex.Manager.getInstance();
+    return manager.workerClient.sid;
+  });
+};
