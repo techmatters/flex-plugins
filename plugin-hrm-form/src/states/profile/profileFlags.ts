@@ -55,9 +55,11 @@ const handleLoadProfileFlagsFulfilledAction = (state: t.ProfileFlagsState, actio
   return loadProfileFlagsEntryIntoRedux(state, update);
 };
 
-export const profileFlagsReducer = (initialState: t.ProfileFlagsState = t.initialProfileFlagsState) =>
+const profileFlagsReducer = (initialState: t.ProfileFlagsState = t.initialProfileFlagsState) =>
   createReducer(initialState, handleAction => [
     handleAction(loadProfileFlagsAsync.pending, handleLoadProfileFlagsPendingAction),
     handleAction(loadProfileFlagsAsync.rejected, handleLoadProfileFlagsRejectedAction),
     handleAction(loadProfileFlagsAsync.fulfilled, handleLoadProfileFlagsFulfilledAction),
   ]);
+
+export default profileFlagsReducer;

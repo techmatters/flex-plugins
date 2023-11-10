@@ -17,7 +17,7 @@ import { createAction, createAsyncAction, createReducer } from 'redux-promise-mi
 
 import { parseFetchError } from '../parseFetchError';
 import * as ProfileService from '../../services/ProfileService';
-import { loadIdentifierByIdentifierAsync } from './identifier';
+import { loadIdentifierByIdentifierAsync } from './identifiers';
 import loadProfileEntryIntoRedux from './loadProfileEntryIntoRedux';
 import * as t from './types';
 
@@ -307,7 +307,7 @@ const handleUpdateProfileSectionFulfilledAction = (state: t.ProfileState, action
   return loadProfileSectionEntryIntoRedux(state, profileId, sectionType, update);
 };
 
-export const profileReducer = (initialState: t.ProfilesState = {}) =>
+const profilesReducer = (initialState: t.ProfilesState = {}) =>
   createReducer(initialState, handleAction => [
     handleAction(loadProfileAsync.pending, handleLoadProfilePendingAction),
     handleAction(loadProfileAsync.rejected, handleLoadProfileRejectedAction),
@@ -333,3 +333,5 @@ export const profileReducer = (initialState: t.ProfilesState = {}) =>
     handleAction(updateProfileSectionAsync.rejected, handleLoadProfileSectionRejectedAction),
     handleAction(updateProfileSectionAsync.fulfilled, handleUpdateProfileSectionFulfilledAction),
   ]);
+
+export default profilesReducer;

@@ -21,7 +21,6 @@ import { ParseFetchErrorResult } from '../parseFetchError';
 export type { Case, Contact, Identifier, Profile, ProfileFlag, ProfileSection };
 
 // Action types
-export const ADD_PROFILE_STATE = 'ADD_PROFILE_STATE';
 export const INCREMENT_PAGE = 'INCREMENT_PAGE';
 export const LOAD_IDENTIFIER_BY_IDENTIFIER = 'LOAD_IDENTIFIER_BY_IDENTIFIER';
 export const LOAD_PROFILE = 'LOAD_PROFILE';
@@ -111,10 +110,6 @@ export type ProfileState = {
   profiles: ProfilesState;
   profileFlags: ProfileFlagsState;
 };
-
-type AddProfileState = { type: typeof ADD_PROFILE_STATE; profileId: Profile['id']; profile?: Profile };
-
-export type ProfileActions = AddProfileState;
 
 export const newProfileEntry: ProfileEntry = {
   error: undefined,
