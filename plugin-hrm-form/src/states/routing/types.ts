@@ -144,7 +144,7 @@ export type ProfileFlagEditRoute = {
 export type ProfileSectionEditRoute = {
   route: 'profileSectionEdit';
   type: ProfileSection['sectionType'];
-  profileId: Profile['id'];
+  id: Profile['id'];
 };
 
 export function isAddCaseSectionRoute(appRoute: AppRoutes): appRoute is AddCaseSectionRoute {

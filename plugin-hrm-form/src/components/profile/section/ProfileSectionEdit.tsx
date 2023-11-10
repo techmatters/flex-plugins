@@ -14,8 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { TextField } from '@material-ui/core';
+import { set } from 'lodash';
 
 import NavigableContainer from '../../NavigableContainer';
 import { ProfileSection } from '../../../types/types';
@@ -30,17 +31,31 @@ type OwnProps = ProfileCommonProps & {
 type Props = OwnProps;
 
 const ProfileSectionEdit = ({ task, profileId, sectionType }: Props) => {
-  profileId = 4;
-  // sectionId = 5;
-  // createProfileSection(profileId, 'test content 2', 'summary2');
-
   const { section, createProfileSection, updateProfileSection } = useEditProfileSection({ profileId, sectionType });
+
+  const [content, setContent] = useState<string>(section?.content || '');
+  const sectionId: ProfileSection['id'] = section?.id;
+  console.log('>>> ProfileSectionEdit', profileId, sectionType, section, content);
+
+  const handleEdit = () => {
+    if (!sectionId) {
+      return createProfileSection({ profileId, sectionType, content });
+    }
+    return updateProfileSection({ profileId, sectionType, content, sectionId });
+  };
+  console.log('>>> ProfileSectionEdit', profileId, sectionType, section, content);
 
   return (
     <NavigableContainer titleCode="Profile-EditNoteHeader" task={task}>
-      <TextField multiline rows={40} variant="outlined" />
+      <TextField
+        multiline
+        minRows={40}
+        variant="outlined"
+        defaultValue={content}
+        onChange={e => setContent(e.target.value)}
+      />
       <Flex justifyContent="flex-end" flexDirection="row">
-        <StyledNextStepButton data-testid="Case-EditCaseScreen-SaveItem" roundCorners onClick={() => null}>
+        <StyledNextStepButton roundCorners onClick={handleEdit}>
           Save
         </StyledNextStepButton>
       </Flex>

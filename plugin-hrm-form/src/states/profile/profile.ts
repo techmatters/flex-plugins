@@ -291,31 +291,11 @@ export type UpdateProfileSectionAsyncParams = CreateProfileSectionAsyncParams & 
 export const updateProfileSectionAsync = createAsyncAction(
   t.UPDATE_PROFILE_SECTION,
   async ({ profileId, sectionId, content }: UpdateProfileSectionAsyncParams) => {
+    console.log('>>> updateProfileSectionAsync', profileId, sectionId, content);
     return ProfileService.updateProfileSection(profileId, sectionId, content);
   },
   (params: UpdateProfileSectionAsyncParams) => params,
 );
-
-const handleUpdateProfileSectionPendingAction = (state: t.ProfilesState, action: any) => {
-  const { profileId, sectionType } = action.meta;
-
-  const update = {
-    loading: true,
-    error: undefined,
-  };
-  return loadProfileSectionEntryIntoRedux(state, profileId, sectionType, update);
-};
-const handleUpdateProfileSectionRejectedAction = (state: t.ProfilesState, action: any) => {
-  const { profileId, sectionType } = action.meta;
-  const error = parseFetchError(action.payload);
-
-  const update = {
-    loading: false,
-    error,
-  };
-
-  return loadProfileSectionEntryIntoRedux(state, profileId, sectionType, update);
-};
 
 const handleUpdateProfileSectionFulfilledAction = (state: t.ProfileState, action: any) => {
   const { profileId, sectionType } = action.meta;
@@ -346,10 +326,10 @@ export const profileReducer = (initialState: t.ProfilesState = {}) =>
     handleAction(loadProfileSectionAsync.pending, handleLoadProfileSectionPendingAction),
     handleAction(loadProfileSectionAsync.rejected, handleLoadProfileSectionRejectedAction),
     handleAction(loadProfileSectionAsync.fulfilled, handleLoadProfileSectionFulfilledAction),
-    handleAction(createProfileSectionAsync.pending, handleUpdateProfileSectionPendingAction),
-    handleAction(createProfileSectionAsync.rejected, handleUpdateProfileSectionRejectedAction),
+    handleAction(createProfileSectionAsync.pending, handleLoadProfileSectionPendingAction),
+    handleAction(createProfileSectionAsync.rejected, handleLoadProfileSectionRejectedAction),
     handleAction(createProfileSectionAsync.fulfilled, handleUpdateProfileSectionFulfilledAction),
-    handleAction(updateProfileSectionAsync.pending, handleUpdateProfileSectionPendingAction),
-    handleAction(updateProfileSectionAsync.rejected, handleUpdateProfileSectionRejectedAction),
+    handleAction(updateProfileSectionAsync.pending, handleLoadProfileSectionPendingAction),
+    handleAction(updateProfileSectionAsync.rejected, handleLoadProfileSectionRejectedAction),
     handleAction(updateProfileSectionAsync.fulfilled, handleUpdateProfileSectionFulfilledAction),
   ]);

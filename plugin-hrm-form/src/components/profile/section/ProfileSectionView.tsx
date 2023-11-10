@@ -17,15 +17,18 @@
 import React, { useState, useEffect } from 'react';
 
 import { ProfileCommonProps } from '../types';
+import { useProfileSectionByType } from '../../../states/profile/hooks/useProfileSection';
 
 type OwnProps = ProfileCommonProps & {
   sectionType: string;
 };
 
-const ProfileSectionView = ({ task, profileId, sectionType }: OwnProps) => {
-  // const { profileSection } = useProfileSectionByType(profileId, sectionType);
-  console.log('>>> ProfileSectionView', profileId, sectionType);
-  return null;
+const ProfileSectionView = ({ profileId, sectionType }: OwnProps) => {
+  const { section } = useProfileSectionByType({ profileId, sectionType });
+
+  console.log('>>> ProfileSectionView', profileId, sectionType, section);
+
+  return <div>{section?.content}</div>;
 };
 
 export default ProfileSectionView;

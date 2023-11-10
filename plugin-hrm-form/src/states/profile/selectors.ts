@@ -47,7 +47,7 @@ export const selectProfileSectionFromProfileByType = (
   state: RootState,
   profileId: ProfileIdParam,
   sectionType: string,
-) => selectAllProfileSectionsFromProfile(state, profileId).find(section => section.sectionType === sectionType);
+) => selectAllProfileSectionsFromProfile(state, profileId)?.find(section => section.sectionType === sectionType);
 
 export const selectProfileSectionByType = (state: RootState, profileId: ProfileIdParam, sectionType: string) =>
   state[namespace][profileBase].profiles[profileId]?.sections?.[sectionType];

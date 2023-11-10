@@ -73,7 +73,7 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const currentRouteStack = getCurrentTopmostRouteForTask(routingState, taskSid);
   const currentRoute = currentRouteStack?.route.toString();
   const sectionType = (currentRouteStack as ProfileSectionEditRoute)?.type;
-
+  console.log('>>> ProfileRouter', profileId, currentRoute, sectionType);
   return {
     profileId,
     currentRoute,
