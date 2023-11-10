@@ -36,7 +36,7 @@ import {
 import { Box, Row } from '../../styles/HrmStyles';
 import CaseAddButton from './CaseAddButton';
 import { CustomITask } from '../../types/types';
-import { isConnectedCaseActivity } from './caseActivities';
+import { isConnectedCaseActivity } from '../../states/case/caseActivities';
 import { ConnectedCaseActivity, NoteActivity, ReferralActivity } from '../../states/case/types';
 import { getPermissionsForContact, PermissionActions, PermissionActionType } from '../../permissions';
 import { NewCaseSubroutes, CaseItemAction, CaseSectionSubroute } from '../../states/routing/types';

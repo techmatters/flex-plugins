@@ -16,9 +16,9 @@
 
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { Activity, ConnectedCaseActivity, NoteActivity } from '../../states/case/types';
+import { Activity, ConnectedCaseActivity, NoteActivity } from './types';
 import { Case, NoteEntry, ReferralEntry } from '../../types/types';
-import { channelTypes } from '../../states/DomainConstants';
+import { channelTypes } from '../DomainConstants';
 
 const ActivityTypes = {
   createCase: 'create',

@@ -23,7 +23,7 @@ import { AnyAction, bindActionCreators } from 'redux';
 import { RootState } from '../../states';
 import { cancelCase } from '../../services/CaseService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
-import { getNoteActivities, sortActivities } from './caseActivities';
+import { getNoteActivities, sortActivities } from '../../states/case/caseActivities';
 import { getHelplineData } from './caseHelpers';
 import { getLocaleDateTime } from '../../utils/helpers';
 import * as CaseActions from '../../states/case/actions';
