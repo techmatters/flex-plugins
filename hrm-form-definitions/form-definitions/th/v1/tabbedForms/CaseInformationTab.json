@@ -217,5 +217,10 @@
         "label": "โครงการไน้ท์ฮับ"
       }
     ]
+  },
+  { 
+    "name": "numberofConsultations",
+    "label": "(Hub) Number of Consultations",
+    "type": "input"
   }
 ]
