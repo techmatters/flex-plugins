@@ -17,10 +17,12 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
-import { Case, Profile } from '../../types/types';
+import { Case } from '../../types/types';
 import CasePreview from '../search/CasePreview';
 import ProfileRelationshipList from './ProfileRelationshipList';
 import * as ProfileTypes from '../../states/profile/types';
+import * as RoutingActions from '../../states/routing/actions';
+import * as CaseActions from '../../states/case/actions';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileCommonProps } from './types';
@@ -30,11 +32,13 @@ type OwnProps = ProfileCommonProps;
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ProfileCases: React.FC<Props> = ({ profileId, task, counselorsHash }) => {
+const ProfileCases: React.FC<Props> = ({ profileId, task, counselorsHash, viewCaseDetails }) => {
   const renderItem = (cas: Case) => {
     const { can } = getPermissionsForCase(cas.twilioWorkerId, cas.status);
-    const onClickViewCase = () => {
-      // load case modal? or page?
+    const handleClickViewCase = () => {
+      if (can(PermissionActions.VIEW_CASE)) {
+        viewCaseDetails(cas);
+      }
     };
 
     return (
@@ -43,7 +47,7 @@ const ProfileCases: React.FC<Props> = ({ profileId, task, counselorsHash }) => {
         task={task}
         currentCase={cas}
         counselorsHash={counselorsHash}
-        onClickViewCase={can(PermissionActions.VIEW_CASE) && onClickViewCase}
+        onClickViewCase={handleClickViewCase}
       />
     );
   };
@@ -64,5 +68,14 @@ const mapStateToProps = ({ [namespace]: { configuration } }: RootState) => {
   };
 };
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = (dispatch, { task: { taskSid } }) => {
+  return {
+    viewCaseDetails: (cas: Case) => {
+      dispatch(CaseActions.setConnectedCase(cas, taskSid));
+      dispatch(RoutingActions.newOpenModalAction({ route: 'case', subroute: 'home' }, taskSid));
+    },
+  };
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 export default connector(ProfileCases);
