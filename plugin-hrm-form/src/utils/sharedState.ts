@@ -26,7 +26,7 @@ import { ContactMetadata } from '../states/contacts/types';
 import { ChannelTypes } from '../states/DomainConstants';
 import { ResourceReferral } from '../states/contacts/resourceReferral';
 import { ContactState } from '../states/contacts/existingContacts';
-import { newContact, newContactState } from '../states/contacts/contactState';
+import { newContact } from '../states/contacts/contactState';
 import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
 import { RootState } from '../states';
 import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
@@ -209,7 +209,7 @@ export const loadFormSharedState = async (task: ITask): Promise<ContactState> =>
         const document = await sharedStateClient.document(documentName);
         const transferredContactState = transferFormToContactState(
           document.data as TransferForm,
-          contactState.savedContact ?? newContact(getDefinitionVersions().currentDefinitionVersion),
+          contactState.savedContact ?? newContact(getDefinitionVersions().currentDefinitionVersion, task),
         );
 
         const updatedContact = {

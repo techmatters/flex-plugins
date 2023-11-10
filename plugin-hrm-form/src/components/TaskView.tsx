@@ -182,7 +182,9 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
   loadContactFromHrmByTaskSid: () => dispatch(loadContactFromHrmByTaskSidAsyncAction(task.taskSid)),
   createContact: (definition: DefinitionVersion) =>
-    asyncDispatch(dispatch)(createContactAsyncAction(newContact(definition), getHrmConfig().workerSid, task.taskSid)),
+    asyncDispatch(dispatch)(
+      createContactAsyncAction(newContact(definition, task), getHrmConfig().workerSid, task.taskSid),
+    ),
   updateHelpline: (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline })),
 });
 
