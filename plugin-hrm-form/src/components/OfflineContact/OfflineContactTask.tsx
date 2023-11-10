@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { Dispatch } from 'react';
+import React from 'react';
 import { Actions, Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
@@ -35,30 +35,17 @@ import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
 import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { namespace, routingBase } from '../../states/storeNamespaces';
-import asyncDispatch from '../../states/asyncDispatch';
-import { newRestartOfflineContactAsyncAction } from '../../states/contacts/saveContact';
-import { Contact } from '../../types/types';
-import { getHrmConfig } from '../../hrmConfig';
 
 type OwnProps = { selectedTaskSid?: string };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const OfflineContactTask: React.FC<Props> = ({
-  isAddingOfflineContact,
-  selectedTaskSid,
-  offlineContact,
-  restartContact,
-}) => {
+const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedTaskSid, offlineContact }) => {
   if (!isAddingOfflineContact) return null;
   const offlineContactForms = offlineContact?.rawJson;
 
   const onClick = async () => {
-    // Whilst we do this on cancel, doing it again now resets some defaults like timeofcontact
-    if (offlineContact) {
-      await restartContact(offlineContact);
-    }
     await Actions.invokeAction('SelectTask', { task: undefined });
   };
 
@@ -101,11 +88,6 @@ const mapStateToProps = (state: RootState) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
-  restartContact: (contact: Contact) =>
-    asyncDispatch(dispatch)(newRestartOfflineContactAsyncAction(contact, getHrmConfig().workerSid)),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(mapStateToProps);
 
 export default connector(OfflineContactTask);
