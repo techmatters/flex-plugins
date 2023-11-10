@@ -89,7 +89,7 @@ export type ProfileEntry = {
     loadedPage?: number;
   };
   sections?: {
-    [sectionType: ProfileSection['type']]: {
+    [sectionType: ProfileSection['sectionType']]: {
       data?: ProfileSection[];
       error?: ParseFetchErrorResult;
       loading: boolean;

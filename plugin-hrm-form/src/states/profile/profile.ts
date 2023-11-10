@@ -324,6 +324,7 @@ const handleCreateProfileSectionFulfilledAction = (state: t.ProfilesState, actio
   return loadProfileSectionEntryIntoRedux(state, profileId, sectionId, sectionUpdate);
 };
 
+// eslint-disable-next-line sonarjs/no-identical-functions
 const handleUpdateProfileSectionPendingAction = (state: t.ProfilesState, action: any) => {
   const { profileId, sectionId } = action.meta;
 
@@ -334,6 +335,7 @@ const handleUpdateProfileSectionPendingAction = (state: t.ProfilesState, action:
   return loadProfileSectionEntryIntoRedux(state, profileId, sectionId, update);
 };
 
+// eslint-disable-next-line sonarjs/no-identical-functions
 const handleUpdateProfileSectionRejectedAction = (state: t.ProfilesState, action: any) => {
   const { profileId, sectionId } = action.meta;
   const error = parseFetchError(action.payload);

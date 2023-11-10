@@ -23,8 +23,8 @@ type OwnProps = ProfileCommonProps & {
 };
 
 const ProfileSectionView = ({ task, profileId, sectionType }: OwnProps) => {
-  const { profileSection } = useProfileSectionByType(profileId, sectionType);
-
+  // const { profileSection } = useProfileSectionByType(profileId, sectionType);
+  console.log('>>> ProfileSectionView', profileId, sectionType);
   return null;
 };
 

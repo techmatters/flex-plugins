@@ -41,7 +41,10 @@ export const selectIdentifierByIdentifier = (state: RootState, identifier: Ident
 export const selectAllProfileFlags = (state: RootState) => state[namespace][profileBase].profileFlags;
 
 export const selectProfileSectionByType = (state: RootState, profileId: ProfileIdParam, sectionType: string) => {
-  //load ids based on sectionType
+  // load ids based on sectionType
+  const profileSectionIds = state[namespace][profileBase].profiles[profileId]?.data?.profileSections[sectionType];
+  console.log('>>> selectProfileSectionByType called', profileId, sectionType, profileSectionIds);
+  return profileSectionIds;
 };
 
 export const selectAllProfileSections = (state: RootState, profileId: ProfileIdParam) => {
@@ -56,3 +59,4 @@ export const selectProfileSectionById = (state: RootState, profileId: ProfileIdP
   const profileSection = state[namespace][profileBase].profiles[profileId]?.data?.profileSections[sectionId];
   return profileSection;
 };
+

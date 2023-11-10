@@ -23,11 +23,29 @@ import * as ProfileActions from '../profile';
 import * as ProfileSelectors from '../selectors';
 import { RootState } from '../..';
 
+// export const useProfileSectionByType = (profileId: Profile['id'], sectionType: string): ProfileSection => {
+//   const dispatch = useDispatch();
+
+//   useEffect(() => {
+//     asyncDispatch(dispatch)(ProfileActions.loadProfileSectionAsync(profileId, sectionType));
+//   }, [dispatch, profileId, sectionType]);
+
+//   return useSelector((state: RootState) => ProfileSelectors.selectProfileSectionByType(state, profileId, sectionType));
+// }
+
 export const useProfileSection = (profileId: Profile['id'], sectionId): ProfileSection =>
   useSelector((state: RootState) => ProfileSelectors.selectProfileSectionById(state, profileId, sectionId));
 
-export const useProfileSections = (profileId: Profile['id']): ProfileSection[] =>
-  useSelector((state: RootState) => ProfileSelectors.selectAllProfileSections(state, profileId));
+export const useProfileSections = (profileId: Profile['id']): ProfileSection[] => {
+  const sections = useSelector((state: RootState) => ProfileSelectors.selectAllProfileSections(state, profileId));
+  console.log(`>>> useProfileSections for profileId ${profileId} returning ${sections}`);
+  const sectionsByType = useSelector((state: RootState) =>
+    ProfileSelectors.selectProfileSectionByType(state, profileId, 'summary'),
+  );
+  console.log(`>>> useProfileSections for profileId ${profileId} returning ${sectionsByType}`);
+  return sections;
+};
+
 
 type UseEditProfileSection = {
   handleEditProfileSection: (sectionId: string, content: string, sectionType: string) => void;

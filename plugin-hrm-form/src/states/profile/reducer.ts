@@ -16,7 +16,6 @@
 import { combineReducers } from 'redux';
 
 import * as t from './types';
-
 import { identifierReducer } from './identifier';
 import { profileReducer } from './profile';
 import { profileFlagsReducer } from './profileFlag';
