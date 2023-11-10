@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "npx playwright install chromium",
-    "test": "cross-env DEBUG=pw:api npx playwright test --workers 1",
+    "deleteChatChannels": "tsx deleteChatChannels.ts",
+    "test": "npx playwright test --workers 1",
     "test:ui": "npx playwright test --config ui-tests/playwright.ui-test.config.ts",
     "test:local": "cross-env DEBUG=pw:api LOAD_SSM_CONFIG=true npm run test",
     "test:development:as": "cross-env DEBUG=pw:api LOAD_SSM_CONFIG=true HL_ENV=development HL=as SKIP_DATA_UPDATE=true npm run test",
@@ -55,6 +56,7 @@
     "playwright-core": "^1.30.0",
     "plugin-hrm-form": "file:../plugin-hrm-form",
     "prettier": "^2.6.2",
+    "tsx": "^3.12.8",
     "twilio": "^4.10.0",
     "typescript": "^4.7.2"
   },

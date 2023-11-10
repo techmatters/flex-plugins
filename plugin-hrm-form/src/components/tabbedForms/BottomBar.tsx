@@ -13,17 +13,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
-import React, { useState } from 'react';
+/* eslint-disable sonarjs/cognitive-complexity */
+import React, { useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
-import FolderIcon from '@material-ui/icons/Folder';
+import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { SubmitErrorHandler } from 'react-hook-form';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
-import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
+import {
+  Box,
+  BottomButtonBar,
+  StyledNextStepButton,
+  AddedToCaseButton,
+  SaveAndEndContactButton,
+} from '../../styles/HrmStyles';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { completeTask } from '../../services/formSubmissionHelpers';
@@ -38,6 +46,8 @@ import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
 import { connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
+import { AppRoutes } from '../../states/routing/types';
+import AddNewCaseDropdown from './AddNewCaseDropdown';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;
@@ -60,18 +70,26 @@ const BottomBar: React.FC<
   contact,
   metadata,
   task,
-  changeRoute,
+  openModal,
   nextTab,
   caseForm,
   createCaseAsyncAction,
   submitContactFormAsyncAction,
   saveUpdates,
+  savedContact,
 }) => {
   const [isSubmitting, setSubmitting] = useState(false);
+  const [dropdown, setDropdown] = useState(false);
+
   const strings = getTemplateStrings();
 
+  const handleDropdown = () => {
+    setDropdown(previous => !previous);
+  };
+
+  const isAddedToCase = savedContact?.caseId !== null;
+
   const handleOpenNewCase = async () => {
-    const { taskSid } = task;
     const { workerSid, definitionVersion } = getHrmConfig();
 
     if (!hasTaskControl(task)) return;
@@ -79,7 +97,7 @@ const BottomBar: React.FC<
     try {
       await saveUpdates();
       await createCaseAsyncAction(contact, workerSid, definitionVersion);
-      changeRoute({ route: 'new-case' }, taskSid);
+      openModal({ route: 'case', subroute: 'home' });
     } catch (error) {
       recordBackendError('Open New Case', error);
       window.alert(strings['Error-Backend']);
@@ -115,9 +133,19 @@ const BottomBar: React.FC<
 
   if (!showBottomBar) return null;
 
+  const openSearchModal = () => {
+    openModal({ route: 'search', subroute: 'form' });
+  };
+
   return (
     <>
-      <BottomButtonBar>
+      <BottomButtonBar
+        onBlurCapture={event => {
+          if (!event.currentTarget.contains(event.relatedTarget)) {
+            setDropdown(false);
+          }
+        }}
+      >
         {optionalButtons &&
           optionalButtons.map((i, index) => (
             <Box key={`optional-button-${index}`} marginRight="15px">
@@ -140,22 +168,48 @@ const BottomBar: React.FC<
         )}
         {showSubmitButton && (
           <>
-            {featureFlags.enable_case_management && !isNonDataCallType(contact.rawJson.callType) && (
-              <Box marginRight="15px">
-                <StyledNextStepButton
-                  type="button"
-                  roundCorners
-                  secondary="true"
-                  onClick={handleSubmitIfValid(handleOpenNewCase, onError)}
-                  data-fs-id="Contact-SaveAndAddToCase-Button"
-                  data-testid="BottomBar-SaveAndAddToCase-Button"
-                >
-                  <FolderIcon style={{ fontSize: '16px', marginRight: '10px' }} />
-                  <Template code="BottomBar-AddContactToNewCase" />
-                </StyledNextStepButton>
-              </Box>
+            {featureFlags.enable_case_management && (
+              <AddNewCaseDropdown
+                handleNewCaseType={handleSubmitIfValid(handleOpenNewCase, onError)}
+                handleExistingCaseType={openSearchModal}
+                dropdown={dropdown}
+              />
             )}
-            <StyledNextStepButton
+            {isAddedToCase
+              ? featureFlags.enable_case_management && (
+                  <Box marginRight="25px">
+                    <AddedToCaseButton>
+                      <Template code="BottomBar-AddedToCase" />
+                    </AddedToCaseButton>
+                  </Box>
+                )
+              : featureFlags.enable_case_management &&
+                !isNonDataCallType(contact.rawJson.callType) && (
+                  <Box marginRight="15px">
+                    <StyledNextStepButton
+                      type="button"
+                      roundCorners
+                      secondary="true"
+                      onClick={handleDropdown}
+                      data-fs-id="Contact-SaveAndAddToCase-Button"
+                      data-testid="BottomBar-SaveAndAddToCase-Button"
+                    >
+                      <FolderIcon style={{ fontSize: '16px', marginRight: '10px', width: '24px', height: '24px' }} />
+                      <Template code="BottomBar-AddContactToNewCase" />
+                      {dropdown && (
+                        <KeyboardArrowUpIcon
+                          style={{ fontSize: '20px', marginLeft: '10px', width: '24px', height: '24px' }}
+                        />
+                      )}
+                      {!dropdown && (
+                        <KeyboardArrowDownIcon
+                          style={{ fontSize: '20px', marginLeft: '10px', width: '24px', height: '24px' }}
+                        />
+                      )}
+                    </StyledNextStepButton>
+                  </Box>
+                )}
+            <SaveAndEndContactButton
               roundCorners={true}
               onClick={handleSubmitIfValid(handleSubmit, onError)}
               disabled={isSubmitting}
@@ -163,10 +217,10 @@ const BottomBar: React.FC<
               data-testid="BottomBar-SaveContact-Button"
             >
               <span style={{ visibility: isSubmitting ? 'hidden' : 'inherit' }}>
-                <Template code="BottomBar-SaveCaseContact" />
+                <Template code="BottomBar-SaveAndEnd" />
               </span>
               {isSubmitting ? <CircularProgress size={12} style={{ position: 'absolute' }} /> : null}
-            </StyledNextStepButton>
+            </SaveAndEndContactButton>
           </>
         )}
       </BottomButtonBar>
@@ -184,20 +238,24 @@ const mapStateToProps = (state: RootState, ownProps: BottomBarProps) => {
     contact: getUnsavedContact(savedContact, draftContact),
     metadata,
     caseForm,
+    savedContact,
   };
 };
 
-const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => ({
-  changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
-  setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
-  createCaseAsyncAction: (contact, workerSid: string, definitionVersion: DefinitionVersionId) =>
-    // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
-    // TODO: Rework error handling to be based on redux state set by the _REJECTED action
-    dispatch(createCaseAsyncAction(contact, task.taskSid, workerSid, definitionVersion)),
-  submitContactFormAsyncAction: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) =>
-    // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
-    // TODO: Rework error handling to be based on redux state set by the _REJECTED action
-    dispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
-});
+const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
+  return {
+    changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
+    openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid)),
+    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
+    createCaseAsyncAction: (contact, workerSid: string, definitionVersion: DefinitionVersionId) =>
+      // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
+      // TODO: Rework error handling to be based on redux state set by the _REJECTED action
+      dispatch(createCaseAsyncAction(contact, task.taskSid, workerSid, definitionVersion)),
+    submitContactFormAsyncAction: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) =>
+      // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
+      // TODO: Rework error handling to be based on redux state set by the _REJECTED action
+      dispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(BottomBar);

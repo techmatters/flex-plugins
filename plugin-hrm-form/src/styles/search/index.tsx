@@ -22,7 +22,7 @@ import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import { ButtonProps } from '@material-ui/core/Button';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
 
-import { Flex, Row, FontOpenSans, BottomButtonBar, TabbedFormsContainer } from '../HrmStyles';
+import { Flex, Row, FontOpenSans, BottomButtonBar, TabbedFormsContainer, StyledNextStepButton } from '../HrmStyles';
 import HrmTheme from '../HrmTheme';
 
 // CaseViewer Styles
@@ -35,7 +35,9 @@ export const PreviewWrapper = styled('div')`
   width: 600px;
   box-sizing: border-box;
   background-color: #ffffff;
-  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.06);
+  border-color: #d8d8d8;
+  border-style: solid;
+  border-width: 2px;
   border-radius: 4px;
 `;
 
@@ -334,13 +336,6 @@ export const BackText = styled(BoldDetailFont)`
   font-weight: 600;
 `;
 
-export const NameText = styled(FontOpenSans)`
-  margin: 25px auto 5px 0;
-  font-weight: 600;
-  font-size: 15px;
-`;
-NameText.displayName = 'NameText';
-
 export const ContactAddedFont = styled(FontOpenSans)`
   font-style: italic;
   font-size: 12px;
@@ -406,7 +401,7 @@ export const ResultsHeader = styled('div')`
 `;
 
 export const ListContainer = styled(BottomButtonBar)`
-  background-color: #f6f6f6;
+  background-color: #ffffff;
   flex-basis: 0;
   flex-grow: 1;
   padding: 10px;
@@ -455,17 +450,14 @@ export const SwitchLabel = styled(SummaryText)`
 `;
 SwitchLabel.displayName = 'SwitchLabel';
 
-export const SearchTitle = styled(FontOpenSans)`
-  font-size: 14px;
-  font-weight: 600;
-  display: inline-block;
-  margin-bottom: 20px;
-`;
-SearchTitle.displayName = 'SearchTitle';
-
 export const StandaloneSearchContainer = styled(TabbedFormsContainer)`
   max-width: 800px;
   width: 100%;
   background-color: ${HrmTheme.colors.base2};
 `;
 StandaloneSearchContainer.displayName = 'StandaloneSearchContainer';
+
+export const PreviewActionButton = styled(StyledNextStepButton)`
+  padding: 5px 17px 5px 12px;
+`;
+PreviewActionButton.displayName = 'PreviewActionButton';

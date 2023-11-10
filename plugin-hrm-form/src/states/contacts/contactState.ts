@@ -15,13 +15,15 @@
  */
 
 import type { DefinitionVersion } from 'hrm-form-definitions';
+import { ITask, TaskHelper } from '@twilio/flex-ui';
 
 import type { ContactMetadata } from './types';
 import { ReferralLookupStatus } from './resourceReferral';
 import type { ContactState } from './existingContacts';
-import type { Contact, ContactRawJson } from '../../types/types';
+import { Contact, ContactRawJson, OfflineContactTask, isOfflineContactTask } from '../../types/types';
 import { createStateItem, getInitialValue } from '../../components/common/forms/formGenerators';
 import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
+import { getHrmConfig } from '../../hrmConfig';
 
 export const newContactMetaData = (recreated: boolean): ContactMetadata => {
   const categoriesMeta = {
@@ -35,6 +37,7 @@ export const newContactMetaData = (recreated: boolean): ContactMetadata => {
         resourceReferralIdToAdd: '',
         lookupStatus: ReferralLookupStatus.NOT_STARTED,
       },
+      dialogsOpen: {},
     },
     startMillis: recreated ? null : new Date().getTime(),
     endMillis: null,
@@ -42,7 +45,7 @@ export const newContactMetaData = (recreated: boolean): ContactMetadata => {
     categories: categoriesMeta,
   };
 };
-export const newContact = (definitions: DefinitionVersion): Contact => {
+export const newContact = (definitions: DefinitionVersion, task?: ITask | OfflineContactTask): Contact => {
   const initialChildInformation = definitions.tabbedForms.ChildInformationTab.reduce(createStateItem, {});
   const initialCallerInformation = definitions.tabbedForms.CallerInformationTab.reduce(createStateItem, {});
   const initialCaseInformation = definitions.tabbedForms.CaseInformationTab.reduce(createStateItem, {});
@@ -63,6 +66,13 @@ export const newContact = (definitions: DefinitionVersion): Contact => {
     createdOnBehalfOf: '',
     ...Object.fromEntries(initialContactlessTaskTabDefinition.map(d => [d.name, getInitialValue(d)])),
   };
+  const chatSids =
+    task && !isOfflineContactTask(task) && TaskHelper.isChatBasedTask(task)
+      ? {
+          channelSid: task.attributes.channelSid ?? '',
+          serviceSid: getHrmConfig()?.chatServiceSid ?? '',
+        }
+      : { channelSid: '', serviceSid: '' };
 
   return {
     accountSid: '',
@@ -79,6 +89,7 @@ export const newContact = (definitions: DefinitionVersion): Contact => {
       contactlessTask,
       categories: {},
     },
+    ...chatSids,
     createdBy: '',
     createdAt: '',
     updatedBy: '',
@@ -87,15 +98,15 @@ export const newContact = (definitions: DefinitionVersion): Contact => {
     channel: 'web',
     number: '',
     conversationDuration: 0,
-    channelSid: '',
-    serviceSid: '',
     csamReports: [],
     conversationMedia: [],
   };
 };
 // eslint-disable-next-line import/no-unused-modules
-export const newContactState = (definitions: DefinitionVersion) => (recreated: boolean): ContactState => ({
-  savedContact: newContact(definitions),
+export const newContactState = (definitions: DefinitionVersion, task?: ITask | OfflineContactTask) => (
+  recreated: boolean,
+): ContactState => ({
+  savedContact: newContact(definitions, task),
   metadata: newContactMetaData(recreated),
   draftContact: {},
   references: new Set(),

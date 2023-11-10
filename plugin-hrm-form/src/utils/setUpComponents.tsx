@@ -19,6 +19,7 @@
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 import type { FilterDefinitionFactory } from '@twilio/flex-ui/src/components/view/TeamsView';
+import { Manager } from '@twilio/flex-ui';
 
 import { AcceptTransferButton, RejectTransferButton, TransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
@@ -41,11 +42,13 @@ import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles/HrmS
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
-import { FeatureFlags, isInMyBehalfITask } from '../types/types';
+import { FeatureFlags, isInMyBehalfITask, standaloneTaskSid } from '../types/types';
 import { colors } from '../channels/colors';
 import { getHrmConfig } from '../hrmConfig';
 import { AseloMessageInput, AseloMessageList } from '../components/AseloMessaging';
 import { namespace, routingBase } from '../states/storeNamespaces';
+import { changeRoute } from '../states/routing/actions';
+import { ChangeRouteMode } from '../states/routing/types';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
@@ -287,7 +290,12 @@ export const setUpCaseList = () => {
   Flex.SideNav.Content.add(
     <CaseListSideLink
       key="CaseListSideLink"
-      onClick={() => Flex.Actions.invokeAction('NavigateToView', { viewName: 'case-list' })}
+      onClick={() => {
+        Flex.Actions.invokeAction('NavigateToView', { viewName: 'case-list' });
+        Manager.getInstance().store.dispatch(
+          changeRoute({ route: 'case-list', subroute: 'case-list' }, standaloneTaskSid, ChangeRouteMode.Reset),
+        );
+      }}
       reserveSpace={false}
       showLabel={true}
     />,
@@ -304,7 +312,12 @@ export const setUpStandaloneSearch = () => {
   Flex.SideNav.Content.add(
     <StandaloneSearchSideLink
       key="StandaloneSearchSideLink"
-      onClick={() => Flex.Actions.invokeAction('NavigateToView', { viewName: 'search' })}
+      onClick={() => {
+        Flex.Actions.invokeAction('NavigateToView', { viewName: 'search' });
+        Manager.getInstance().store.dispatch(
+          changeRoute({ route: 'search', subroute: 'form' }, standaloneTaskSid, ChangeRouteMode.Reset),
+        );
+      }}
       reserveSpace={false}
       showLabel={true}
     />,
@@ -413,7 +426,8 @@ export const setupWorkerDirectoryFilters = () => {
   const activitiesArray = Array.from(Flex.Manager.getInstance().store.getState().flex.worker.activities.values());
 
   const availableActivities = activitiesArray.filter(a => a.available).map(a => a.name);
-  const hiddenWorkerFilter = `data.activity_name IN ${JSON.stringify(availableActivities)}`;
 
-  Flex.WorkerDirectoryTabs.defaultProps.hiddenWorkerFilter = hiddenWorkerFilter;
+  Flex.WorkerDirectoryTabs.defaultProps.hiddenWorkerFilter = `data.activity_name IN ${JSON.stringify(
+    availableActivities,
+  )}`;
 };

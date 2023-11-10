@@ -40,19 +40,20 @@ export const CaseActions = {
   EDIT_PERPETRATOR: 'editPerpetrator',
   EDIT_INCIDENT: 'editIncident',
   EDIT_DOCUMENT: 'editDocument',
+  UPDATE_CASE_CONTACTS: 'updateCaseContacts',
 } as const;
-type CaseActions = typeof CaseActions;
+
 export const ContactActions = {
   VIEW_CONTACT: 'viewContact',
   EDIT_CONTACT: 'editContact',
   VIEW_EXTERNAL_TRANSCRIPT: 'viewExternalTranscript',
   VIEW_RECORDING: 'viewRecording',
+  ADD_CONTACT_TO_CASE: 'addContactToCase',
 } as const;
-type ContactActions = typeof ContactActions;
+
 export const ViewIdentifiersAction = {
   VIEW_IDENTIFIERS: 'viewIdentifiers',
 } as const;
-type ViewIdentifiersAction = typeof ViewIdentifiersAction;
 
 export const PermissionActions = {
   ...CaseActions,

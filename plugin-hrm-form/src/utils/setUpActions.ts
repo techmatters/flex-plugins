@@ -74,7 +74,7 @@ export const initializeContactForm = async ({ task }: ActionPayload) => {
   const { currentDefinitionVersion } = (Manager.getInstance().store.getState() as RootState)[
     'plugin-hrm-form'
   ].configuration;
-  const contact = newContact(currentDefinitionVersion);
+  const contact = newContact(currentDefinitionVersion, task);
   const { workerSid } = getHrmConfig();
   const taskSid = task.attributes?.transferMeta?.originalTask ?? task.taskSid;
   await asyncDispatch(Manager.getInstance().store.dispatch)(createContactAsyncAction(contact, workerSid, taskSid));

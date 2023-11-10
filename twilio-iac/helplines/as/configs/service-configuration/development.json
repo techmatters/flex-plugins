@@ -18,8 +18,8 @@
             "enable_transcripts": true,
             "backend_handled_chat_janitor": false,
             "enable_voice_recordings": false,
-            "enable_post_survey": false
-
+            "enable_post_survey": false,
+            "enable_case_merging": true
         },
         "contact_save_frequency": "onFinalSaveAndTransfer",
         "multipleOfficeSupport": true,

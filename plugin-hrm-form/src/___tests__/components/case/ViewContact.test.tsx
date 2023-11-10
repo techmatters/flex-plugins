@@ -28,10 +28,12 @@ import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import ViewContact from '../../../components/case/ViewContact';
 import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import { getDefinitionVersions } from '../../../hrmConfig';
-import { Contact } from '../../../types/types';
+import { Case, Contact } from '../../../types/types';
 import { RootState } from '../../../states';
 import { DetailsContext, TOGGLE_DETAIL_EXPANDED_ACTION } from '../../../states/contacts/contactDetails';
-import { connectedCaseBase, contactFormsBase, csamReportBase } from '../../../states/storeNamespaces';
+import { connectedCaseBase, csamReportBase } from '../../../states/storeNamespaces';
+import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
+import { newCloseModalAction } from '../../../states/routing/actions';
 
 jest.mock('@twilio/flex-ui', () => ({
   ...jest.requireActual('@twilio/flex-ui'),
@@ -115,7 +117,7 @@ const contact: Contact = {
       stateOrCounty: '',
       streetAddress: '',
     },
-    contactlessTask: { channel: 'voice' },
+    contactlessTask: { ...VALID_EMPTY_CONTACT.rawJson.contactlessTask, channel: 'voice' },
     categories: { category1: ['Tag1', 'Tag2'] },
   },
 };
@@ -147,6 +149,14 @@ describe('View Contact', () => {
         },
       } as any,
       'plugin-hrm-form': {
+        routing: {
+          tasks: {
+            'task-id': [
+              { route: 'case', subroute: 'home', activeModal: [{ route: 'contact', subroute: 'view', id: 'TEST_ID' }] },
+            ],
+          },
+          isAddingOfflineContact: false,
+        },
         configuration: {
           language: '',
           workerInfo: { chatChannelCapacity: 1 },
@@ -157,18 +167,22 @@ describe('View Contact', () => {
         [connectedCaseBase]: {
           tasks: {
             'task-id': {
-              connectedCase: {},
-              timelineActivities: [],
+              connectedCase: {} as Case,
+              availableStatusTransitions: [],
+              caseWorkingCopy: { sections: {} },
             },
           },
         },
-        [contactFormsBase]: {
-          tasks: {},
+        activeContacts: {
+          isCallTypeCaller: false,
           existingContacts: {
             TEST_ID: {
               savedContact: contact,
               references: new Set(['task-id']),
-              categories: { gridView: false, expanded: {} },
+              metadata: {
+                ...VALID_EMPTY_METADATA,
+                categories: { gridView: false, expanded: {} },
+              },
             },
           },
           contactDetails: {
@@ -177,7 +191,6 @@ describe('View Contact', () => {
           },
         },
         [csamReportBase]: {
-          tasks: {},
           contacts: {},
         },
       },
@@ -190,45 +203,43 @@ describe('View Contact', () => {
     render(
       <Provider store={store}>
         <StorelessThemeProvider themeConf={themeConf}>
-          <ViewContact contactId="TEST_ID" task={task as any} onClickClose={jest.fn()} />
+          <ViewContact contactId="TEST_ID" task={task as any} />
         </StorelessThemeProvider>
       </Provider>,
     );
 
     // TODO: Verify interpolated translations contain the expected data
     await waitFor(() => expect(screen.getByTestId('ContactDetails-Container')).toBeInTheDocument());
-    expect(screen.getByText('#TEST_ID')).toBeInTheDocument();
-    expect(screen.getByText('Jill Smith')).toBeInTheDocument();
+    expect(screen.getByText('#TEST_ID Jill Smith')).toBeInTheDocument();
   });
 
   test('click on close button', async () => {
-    const onClickClose = jest.fn();
     const store = mockStore(initialState);
 
     render(
       <Provider store={store}>
         <StorelessThemeProvider themeConf={themeConf}>
-          <ViewContact contactId="TEST_ID" task={task as any} onClickClose={onClickClose} />
+          <ViewContact contactId="TEST_ID" task={task as any} />
         </StorelessThemeProvider>
       </Provider>,
     );
 
-    await waitFor(() => expect(screen.getByTestId('Case-ViewContactScreen-CloseButton')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId('NavigableContainer-CloseCross')).toBeInTheDocument());
 
-    screen.getByTestId('Case-ViewContactScreen-CloseButton').click();
-
-    expect(onClickClose).toHaveBeenCalled();
+    screen.getByTestId('NavigableContainer-CloseCross').click();
+    const actions = store.getActions();
+    expect(actions[actions.length - 1]).toStrictEqual(newCloseModalAction(task.taskSid));
   });
 
   test('click on expand section sends toggle action', async () => {
     const store = mockStore(initialState);
 
     render(
-      <Provider store={store}>
-        <StorelessThemeProvider themeConf={themeConf}>
-          <ViewContact contactId="TEST_ID" task={task as any} onClickClose={jest.fn()} />
-        </StorelessThemeProvider>
-      </Provider>,
+      <StorelessThemeProvider themeConf={themeConf}>
+        <Provider store={store}>
+          <ViewContact contactId="TEST_ID" task={task as any} />
+        </Provider>
+      </StorelessThemeProvider>,
     );
 
     await waitFor(() => expect(screen.getByTestId('ContactDetails-Section-ChildInformation')).toBeInTheDocument());
@@ -247,7 +258,7 @@ describe('View Contact', () => {
     const wrapper = mount(
       <Provider store={store}>
         <StorelessThemeProvider themeConf={themeConf}>
-          <ViewContact contactId="TEST_ID" task={task as any} onClickClose={jest.fn()} />
+          <ViewContact contactId="TEST_ID" task={task as any} />
         </StorelessThemeProvider>
       </Provider>,
     );

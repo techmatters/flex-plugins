@@ -71,9 +71,6 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
   }
 
   if (TaskHelper.isChatBasedTask(task)) {
-    returnData.channelSid = task.attributes.channelSid;
-    returnData.serviceSid = getHrmConfig().chatServiceSid;
-
     // Store a pending transcript
     returnData.conversationMedia.push({
       storeType: 'S3',
@@ -181,7 +178,7 @@ const saveContactToHrm = async (
   }
 
   if (isNonDataCallType(callType)) {
-    const newContactWithMetaData = newContactState(currentDefinitionVersion)(false);
+    const newContactWithMetaData = newContactState(currentDefinitionVersion, task)(false);
     form = {
       ...newContactWithMetaData.savedContact.rawJson,
       callType,

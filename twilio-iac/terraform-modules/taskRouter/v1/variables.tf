@@ -24,16 +24,17 @@ variable "events_filter" {
 variable "task_queues" {
   description = "Task queues"
   type = map(object({
-    friendly_name  = string
-    target_workers = string
+    friendly_name        = string
+    target_workers       = string
+    max_reserved_workers = optional(number)
   }))
 }
 
 variable "workflows" {
   description = "Workflow template file"
   type = map(object({
-    friendly_name = string
-    templatefile  = string
+    friendly_name            = string
+    templatefile             = string
     task_reservation_timeout = optional(number)
   }))
 }
@@ -52,5 +53,10 @@ variable "custom_task_routing_filter_expression" {
 variable "phone_numbers" {
   description = "Phone numbers"
   type        = map(list(string))
-  default = null
+  default     = null
+}
+
+variable "workflow_vars" {
+  type    = map(string)
+  default = {}
 }

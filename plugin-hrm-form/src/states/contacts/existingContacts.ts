@@ -308,6 +308,54 @@ export const setCategoriesGridViewReducer = (state: ExistingContactsState, actio
   };
 };
 
+export const SET_CONTACT_DIALOG_STATE = 'contacts/SET_CONTACT_DIALOG_STATE';
+
+type SetContactDialogStateAction = {
+  type: typeof SET_CONTACT_DIALOG_STATE;
+  contactId: string;
+  dialogName: string;
+  dialogOpen: boolean;
+};
+
+export const newSetContactDialogStateAction = (
+  contactId: string,
+  dialogName: string,
+  dialogOpen: boolean,
+): SetContactDialogStateAction => ({
+  type: SET_CONTACT_DIALOG_STATE,
+  contactId,
+  dialogName,
+  dialogOpen,
+});
+
+export const setContactDialogStateReducer = (
+  state: ExistingContactsState,
+  { dialogName, dialogOpen, contactId }: SetContactDialogStateAction,
+) => {
+  if (!state[contactId]) {
+    console.error(
+      `Attempted to open dialog '${dialogName}' on contact ID '${contactId}' but this contact has not been loaded into redux. Load the contact into the existing contacts store using 'loadContact' before attempting to manipulate it's category state`,
+    );
+    return state;
+  }
+  return {
+    ...state,
+    [contactId]: {
+      ...state[contactId],
+      metadata: {
+        ...state[contactId].metadata,
+        draft: {
+          ...state[contactId].metadata.draft,
+          dialogsOpen: {
+            ...state[contactId].metadata.draft.dialogsOpen,
+            [dialogName]: dialogOpen,
+          },
+        },
+      },
+    },
+  };
+};
+
 export const EXISTING_CONTACT_UPDATE_DRAFT_ACTION = 'EXISTING_CONTACT_UPDATE_DRAFT_ACTION';
 
 type UpdateDraftAction = {
@@ -446,4 +494,5 @@ export type ExistingContactAction =
   | SetCategoriesGridViewAction
   | UpdateDraftAction
   | CreateDraftAction
-  | AddExternalReportEntryAction;
+  | AddExternalReportEntryAction
+  | SetContactDialogStateAction;

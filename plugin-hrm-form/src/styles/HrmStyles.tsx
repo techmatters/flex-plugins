@@ -15,11 +15,11 @@
  */
 
 /* eslint-disable no-nested-ternary */
-import React, { PropsWithChildren } from 'react';
-import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, withStyles, TabProps } from '@material-ui/core';
+import React from 'react';
+import { ButtonBase, Input, MenuItem, Select, Tab, TabProps, Tabs, withStyles } from '@material-ui/core';
 import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
 import AssignmentInd from '@material-ui/icons/AssignmentIndOutlined';
-import { Icon, styled, Button } from '@twilio/flex-ui';
+import { Button, Icon, styled } from '@twilio/flex-ui';
 import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -269,6 +269,41 @@ type StyledNextStepButtonProps = {
   margin?: string;
 };
 
+export const AddedToCaseButton = styled('p')`
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: normal;
+  color: ${HrmTheme.colors.secondaryButtonTextColor};
+  border: none;
+  padding: 4px 10px;
+  min-width: auto;
+`;
+
+export const SaveAndEndContactButton = styled(Button)<StyledNextStepButtonProps>`
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: normal;
+  color: ${HrmTheme.colors.buttonTextColor};
+  background: linear-gradient(to top, ${HrmTheme.colors.declineColor}, ${HrmTheme.colors.declineColor});
+  border: none;
+  padding: 4px 10px;
+  min-width: auto;
+  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
+
+  &&:focus {
+    outline-style: auto;
+    outline-width: initial;
+  }
+
+  &&:active {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+`;
+
 export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
   display: flex;
   align-items: center;
@@ -497,13 +532,6 @@ export const HiddenText = styled('span')`
   line-height: 0px;
 `;
 HiddenText.displayName = 'HiddenText';
-
-export const CasePrintViewContainer = styled('div')`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-`;
-CasePrintViewContainer.displayName = 'CasePrintViewContainer';
 
 export const CasePrintViewSpinner = styled('div')`
   display: flex;
@@ -1248,6 +1276,48 @@ export const StyledCSAMReportDropdownList = styled('button')`
   border: none;
 `;
 StyledCSAMReportDropdownList.displayName = 'StyledCSAMReportDropdownList';
+
+export const StyledAddNewCaseDropdown = styled('ul')`
+  position: absolute;
+  right: 20%;
+  bottom: 8%;
+  display: flex;
+  box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
+  -webkit-box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
+  -moz-box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
+  font-size: 0.875rem;
+  z-index: 9999;
+  width: 194px;
+  padding: 10px 0 10px 6px;
+  flex-direction: column;
+  align-items: flex-start;
+  background: var(--background-color-background-body, #fff);
+  border: 1px solid var(--border-color-border-weaker, #e1e3ea);
+  border-radius: 8px;
+  margin-right: 20px;
+`;
+StyledAddNewCaseDropdown.displayName = 'StyledAddNewCaseDropdown';
+
+export const StyledAddNewCaseDropdownList = styled('button')`
+  position: relative;
+  font-size: 14px;
+  display: flex;
+  color: inherit;
+  min-width: 10rem;
+  align-items: flex-start;
+  align-self: stretch;
+  width: 25px;
+  // padding: 8px 24px;
+  padding: 7px 0 7px 18px;
+  text-decoration: none;
+  &:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
+  }
+  background: none;
+  border: none;
+`;
+StyledAddNewCaseDropdownList.displayName = 'StyledAddNewCaseDropdownList';
 
 export const TypingIndicatorText = styled(FontOpenSans)`
   font-size: 10px;

@@ -33,13 +33,9 @@ import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { rerenderAgentDesktop } from '../rerenderView';
 import { updateDraft } from '../states/contacts/existingContacts';
 import { createContactAsyncAction, loadContactFromHrmByTaskSidAsyncAction } from '../states/contacts/saveContact';
-import {
-  configurationBase,
-  contactFormsBase,
-  namespace,
-  routingBase,
-  searchContactsBase,
-} from '../states/storeNamespaces';
+import { namespace } from '../states/storeNamespaces';
+import { isRouteModal } from '../states/routing/types';
+import { getCurrentBaseRoute } from '../states/routing/getRoute';
 import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
 import ContactNotLoaded from './ContactNotLoaded';
 import { completeTask } from '../services/formSubmissionHelpers';
@@ -63,6 +59,7 @@ const TaskView: React.FC<Props> = props => {
     updateHelpline,
     loadContactFromHrmByTaskSid,
     createContact,
+    isModalOpen,
   } = props;
 
   React.useEffect(() => {
@@ -121,10 +118,10 @@ const TaskView: React.FC<Props> = props => {
     return (
       <ContactNotLoaded
         onReload={async () => {
-          createContact(currentDefinitionVersion);
+          await createContact(currentDefinitionVersion);
         }}
         onFinish={async () => {
-          await completeTask(task, undefined);
+          await completeTask(task, unsavedContact);
         }}
       />
     );
@@ -138,7 +135,7 @@ const TaskView: React.FC<Props> = props => {
 
   return (
     <Flex flexDirection="column" style={{ pointerEvents: isFormLocked ? 'none' : 'auto', height: '100%' }}>
-      {featureFlags.enable_previous_contacts && <PreviousContactsBanner task={task} />}
+      {featureFlags.enable_previous_contacts && !isModalOpen && <PreviousContactsBanner task={task} />}
       {isFormLocked && <FormNotEditable />}
       <Flex
         flexDirection="column"
@@ -157,17 +154,19 @@ const TaskView: React.FC<Props> = props => {
 
 TaskView.displayName = 'TaskView';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+const mapStateToProps = (
+  { [namespace]: { configuration, activeContacts, routing, searchContacts } }: RootState,
+  ownProps: OwnProps,
+) => {
   const { task } = ownProps;
-  const { currentDefinitionVersion } = state[namespace][configurationBase];
+  const { currentDefinitionVersion } = configuration;
   // Check if the entry for this task exists in each reducer
   const { savedContact, draftContact } =
-    (task && Object.values(state[namespace][contactFormsBase]?.existingContacts).find(c => c.savedContact?.taskId)) ??
-    {};
+    (task && Object.values(activeContacts.existingContacts).find(c => c.savedContact?.taskId)) ?? {};
   const unsavedContact = getUnsavedContact(savedContact, draftContact);
   const contactFormStateExists = Boolean(savedContact);
-  const routingStateExists = Boolean(task && state[namespace][routingBase].tasks[task.taskSid]);
-  const searchStateExists = Boolean(task && state[namespace][searchContactsBase].tasks[task.taskSid]);
+  const routingStateExists = Boolean(task && routing.tasks[task.taskSid]);
+  const searchStateExists = Boolean(task && searchContacts.tasks[task.taskSid]);
 
   const shouldRecreateState =
     currentDefinitionVersion && (!contactFormStateExists || !routingStateExists || !searchStateExists);
@@ -176,13 +175,16 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     unsavedContact,
     shouldRecreateState,
     currentDefinitionVersion,
+    isModalOpen: routingStateExists && isRouteModal(getCurrentBaseRoute(routing, task.taskSid)),
   };
 };
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
   loadContactFromHrmByTaskSid: () => dispatch(loadContactFromHrmByTaskSidAsyncAction(task.taskSid)),
   createContact: (definition: DefinitionVersion) =>
-    asyncDispatch(dispatch)(createContactAsyncAction(newContact(definition), getHrmConfig().workerSid, task.taskSid)),
+    asyncDispatch(dispatch)(
+      createContactAsyncAction(newContact(definition, task), getHrmConfig().workerSid, task.taskSid),
+    ),
   updateHelpline: (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline })),
 });
 

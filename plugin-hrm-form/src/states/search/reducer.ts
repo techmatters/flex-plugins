@@ -21,11 +21,14 @@ import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import { Contact, SearchCaseResult, standaloneTaskSid } from '../../types/types';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 import {
+  CONNECT_TO_CASE_ACTION_FULFILLED,
+  ContactConnectingAction,
   ContactUpdatingAction,
   CREATE_CONTACT_ACTION_FULFILLED,
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
   UPDATE_CONTACT_ACTION_FULFILLED,
 } from '../contacts/types';
+import { CaseUpdatingAction, CREATE_CASE_ACTION_FULFILLED, UPDATE_CASE_ACTION_FULFILLED } from '../case/types';
 
 type PreviousContacts = {
   contacts?: t.DetailedSearchContactsResult;
@@ -33,8 +36,6 @@ type PreviousContacts = {
 };
 
 type TaskEntry = {
-  currentPage: t.SearchPagesType;
-  currentContact: Contact;
   form: t.SearchFormValues;
   detailsExpanded: {
     [key in ContactDetailsSectionsType]: boolean;
@@ -46,6 +47,8 @@ type TaskEntry = {
   isRequestingCases: boolean;
   error: any;
   casesError: any;
+  caseRefreshRequired: boolean;
+  contactRefreshRequired: boolean;
 };
 
 type SearchState = {
@@ -55,8 +58,6 @@ type SearchState = {
 };
 
 export const newTaskEntry: TaskEntry = {
-  currentPage: t.SearchPages.form,
-  currentContact: null,
   form: {
     firstName: '',
     lastName: '',
@@ -81,6 +82,8 @@ export const newTaskEntry: TaskEntry = {
   previousContacts: undefined,
   isRequesting: false,
   isRequestingCases: false,
+  caseRefreshRequired: false,
+  contactRefreshRequired: false,
   error: null,
   casesError: null,
 };
@@ -114,9 +117,35 @@ const contactUpdatingReducer = (state: SearchState, action: ContactUpdatingActio
 
 // eslint-disable-next-line complexity
 export function reduce(
-  state = initialState,
-  action: t.SearchActionType | RemoveContactStateAction | ContactUpdatingAction,
+  startingState = initialState,
+  action:
+    | t.SearchActionType
+    | RemoveContactStateAction
+    | ContactUpdatingAction
+    | ContactConnectingAction
+    | CaseUpdatingAction,
 ): SearchState {
+  let state = startingState;
+  if ((<string[]>[UPDATE_CONTACT_ACTION_FULFILLED, CREATE_CONTACT_ACTION_FULFILLED]).includes(action.type)) {
+    state = {
+      ...state,
+      tasks: Object.fromEntries(
+        Object.entries(state.tasks).map(([key, value]) => [key, { ...value, contactRefreshRequired: true }]),
+      ),
+    };
+  }
+  if (
+    (<string[]>[CONNECT_TO_CASE_ACTION_FULFILLED, UPDATE_CASE_ACTION_FULFILLED, CREATE_CASE_ACTION_FULFILLED]).includes(
+      action.type,
+    )
+  ) {
+    state = {
+      ...state,
+      tasks: Object.fromEntries(
+        Object.entries(state.tasks).map(([key, value]) => [key, { ...value, caseRefreshRequired: true }]),
+      ),
+    };
+  }
   switch (action.type) {
     case CREATE_CONTACT_ACTION_FULFILLED:
     case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED:
@@ -138,26 +167,6 @@ export function reduce(
         },
       };
     }
-    case t.CHANGE_SEARCH_PAGE: {
-      const task = state.tasks[action.taskId];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: { ...task, currentPage: action.page },
-        },
-      };
-    }
-    case t.VIEW_CONTACT_DETAILS: {
-      const task = state.tasks[action.taskId];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: { ...task, currentPage: t.SearchPages.details, currentContact: action.contact },
-        },
-      };
-    }
     case t.SEARCH_CONTACTS_REQUEST: {
       const task = state.tasks[action.taskId];
       return {
@@ -167,6 +176,7 @@ export function reduce(
           [action.taskId]: {
             ...task,
             isRequesting: true,
+            contactRefreshRequired: false,
           },
         },
       };
@@ -176,7 +186,6 @@ export function reduce(
       const previousContacts = action.dispatchedFromPreviousContacts
         ? { ...task.previousContacts, contacts: action.searchResult }
         : task.previousContacts;
-      const currentPage = action.dispatchedFromPreviousContacts ? task.currentPage : t.SearchPages.resultsContacts;
       return {
         ...state,
         tasks: {
@@ -185,7 +194,6 @@ export function reduce(
             ...task,
             searchContactsResult: action.searchResult,
             previousContacts,
-            currentPage,
             isRequesting: false,
             error: null,
           },
@@ -194,14 +202,12 @@ export function reduce(
     }
     case t.SEARCH_CONTACTS_FAILURE: {
       const task = state.tasks[action.taskId];
-      const currentPage = action.dispatchedFromPreviousContacts ? task.currentPage : t.SearchPages.resultsContacts;
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            currentPage,
             isRequesting: false,
             error: action.error,
           },
@@ -217,6 +223,7 @@ export function reduce(
           [action.taskId]: {
             ...task,
             isRequestingCases: true,
+            caseRefreshRequired: false,
           },
         },
       };
@@ -264,7 +271,6 @@ export function reduce(
             ...task,
             searchContactsResult: task.previousContacts.contacts,
             searchCasesResult: task.previousContacts.cases,
-            currentPage: t.SearchPages.resultsContacts,
             form: {
               ...task.form,
               contactNumber: action.contactNumber,
