@@ -131,7 +131,7 @@ const sendWelcomeMessageOnConversationJoined = (
     setTimeout(() => {
       const convoState = StateHelper.getConversationStateForTask(task);
       // if channel is not ready, wait 200ms and retry
-      if (convoState?.isLoadingConversation) {
+      if (!convoState || convoState.isLoadingConversation) {
         if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
         else console.error('Failed to send welcome message: max retries reached.');
       } else {
