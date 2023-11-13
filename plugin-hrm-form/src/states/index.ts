@@ -30,6 +30,7 @@ import { reduce as ReferrableResourcesReducer } from './resources';
 import { reduce as ConversationsReducer } from './conversations';
 import { reduce as ConferencingReducer } from './conferencing';
 import { reduce as CaseMergingBannersReducer } from '../components/caseMergingBanners/state';
+import { reduce as ProfileReducer } from './profile/reducer';
 import { CaseState } from './case/types';
 import { ContactsState } from './contacts/types';
 import {
@@ -47,6 +48,7 @@ import {
   routingBase,
   searchContactsBase,
   caseMergingBannersBase,
+  profileBase,
 } from './storeNamespaces';
 
 const reducers = {
@@ -61,6 +63,8 @@ const reducers = {
   [conversationsBase]: ConversationsReducer,
   [conferencingBase]: ConferencingReducer,
   [caseMergingBannersBase]: CaseMergingBannersReducer,
+  [profileBase]: ProfileReducer,
+
   /*
    * [csamClcReportBase]: CSAMCLCReportReducer,
    * [connectedCaseBase] - this is going to be combined manually, rather than using 'combineReducers', so isn't in this map

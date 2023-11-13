@@ -18,7 +18,7 @@
 import React, { Dispatch, useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { Case, Contact, CustomITask } from '../../../types/types';
+import { Case, Contact, RouterTask } from '../../../types/types';
 import CaseHeader from './CaseHeader';
 import { Flex } from '../../../styles/HrmStyles';
 import { PreviewWrapper } from '../../../styles/search';
@@ -44,7 +44,7 @@ type OwnProps = {
   currentCase: Case;
   onClickViewCase: () => void;
   counselorsHash: { [sid: string]: string };
-  task: CustomITask;
+  task: RouterTask;
 };
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {

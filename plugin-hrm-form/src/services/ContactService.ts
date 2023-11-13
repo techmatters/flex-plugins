@@ -314,3 +314,18 @@ export const getContactByTaskSid = async (taskSid: string): Promise<Contact | un
     throw err;
   }
 };
+
+export const getContactById = async (contactId: string): Promise<Contact | undefined> => {
+  const options: FetchOptions = {
+    method: 'GET',
+    returnNullFor404: true,
+  };
+  try {
+    return fetchHrmApi(`/contacts/${contactId}`, options);
+  } catch (err) {
+    if (err instanceof ApiError && err.response.status >= 404) {
+      return null;
+    }
+    throw err;
+  }
+};

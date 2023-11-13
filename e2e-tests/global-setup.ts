@@ -15,12 +15,13 @@
  */
 
 /* eslint-disable import/no-extraneous-dependencies */
-import { FullConfig } from '@playwright/test';
+import { FullConfig, request } from '@playwright/test';
 import { differenceInMilliseconds } from 'date-fns';
 import { oktaSsoLoginViaApi } from './okta/sso-login';
-import { getConfigValue, initConfig, localOverrideEnv } from './config';
+import { getConfigValue, initConfig } from './config';
 import { getSidForWorker } from './twilio/worker';
 import { clearOfflineTask } from './hrm/clearOfflineTask';
+import { apiHrmRequest } from './hrm/hrmRequest';
 
 async function globalSetup(config: FullConfig) {
   const start = new Date();
@@ -32,21 +33,19 @@ async function globalSetup(config: FullConfig) {
   }
 
   await initConfig();
-  const flexToken = await oktaSsoLoginViaApi(
+  process.env.FLEX_TOKEN = await oktaSsoLoginViaApi(
     getConfigValue('baseURL') as string,
     getConfigValue('oktaUsername') as string,
     getConfigValue('oktaPassword') as string,
     getConfigValue('twilioAccountSid') as string,
   );
-  const workerSid = await getSidForWorker(getConfigValue('oktaUsername') as string);
-  if (workerSid) {
+  process.env.LOGGED_IN_WORKER_SID = await getSidForWorker(
+    getConfigValue('oktaUsername') as string,
+  );
+  if (process.env.LOGGED_IN_WORKER_SID) {
     await clearOfflineTask(
-      (getConfigValue('hrmRoot') as string) ||
-        `https://hrm-${localOverrideEnv}.tl.techmatters.org/v0/accounts/${getConfigValue(
-          'twilioAccountSid',
-        )}`,
-      workerSid,
-      flexToken,
+      apiHrmRequest(await request.newContext(), process.env.FLEX_TOKEN),
+      process.env.LOGGED_IN_WORKER_SID,
     );
   } else {
     console.warn(

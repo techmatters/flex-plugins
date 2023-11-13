@@ -67,6 +67,7 @@ import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackBu
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
 import { selectCaseMergingBanners } from '../caseMergingBanners/state';
+import { getHrmConfig } from '../../hrmConfig';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
@@ -141,13 +142,15 @@ const TabbedForms: React.FC<Props> = ({
   showRemovedFromCaseBanner,
   metadata,
   task,
-  isCallTypeCaller,
   removeIfOfflineContact,
+  isCallTypeCaller,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
     mode: 'onChange',
   });
+
+  const { contactSaveFrequency } = getHrmConfig();
 
   const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={savedContact.csamReports} />, [
     savedContact.csamReports,
@@ -241,7 +244,9 @@ const TabbedForms: React.FC<Props> = ({
 
   const handleTabsChange = async (t: number) => {
     const tab = tabsToIndex[t];
-    await saveDraft(savedContact, draftContact);
+    if (contactSaveFrequency === 'onTabChange') {
+      saveDraft(savedContact, draftContact);
+    }
     if (tab === 'search') {
       openSearchModal();
     } else {
@@ -406,6 +411,7 @@ const mapStateToProps = (state: RootState, { task: { taskSid }, contactId }: Own
   const baseRoute = getCurrentBaseRoute(routing, taskSid);
   const searchModalOpen =
     isRouteWithModalSupport(baseRoute) && baseRoute.activeModal?.length && baseRoute.activeModal[0].route === 'search';
+
   const { currentDefinitionVersion } = configuration;
   const { showConnectedToCaseBanner, showRemovedFromCaseBanner } = selectCaseMergingBanners(state, contactId);
   return {

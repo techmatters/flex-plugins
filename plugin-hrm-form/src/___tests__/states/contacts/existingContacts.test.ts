@@ -654,7 +654,15 @@ describe('updateDraftReducer', () => {
       expect(newState).toEqual<ExistingContactsState>({
         [baseContact.id]: {
           ...baseState[baseContact.id],
-          draftContact: { rawJson: { categories: { category1: ['x', 'y'] } } },
+          draftContact: {
+            rawJson: {
+              childInformation: {
+                firstName: 'Bobby',
+                lastName: 'Ewing',
+              },
+              categories: { category1: ['x', 'y'] },
+            },
+          },
         },
       });
     });
