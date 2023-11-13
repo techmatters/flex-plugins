@@ -111,8 +111,6 @@ const Pagination: React.FC<PaginationProps> = ({
     if (page < pagesCount - 1) handleChangePage(page + 1);
   };
 
-  if (pagesCount <= 1) return null;
-
   return (
     <PaginationRow transparent={transparent} data-testid="CaseList-TableFooter">
       <ChevronButton
