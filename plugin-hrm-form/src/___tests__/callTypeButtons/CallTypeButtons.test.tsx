@@ -365,7 +365,7 @@ test('<CallTypeButtons> click on NonData (Joke) button', () => {
 test('<CallTypeButtons> click on END CHAT button', async () => {
   const initialState = {
     [namespace]: {
-      [contactFormsBase]: {
+      activeContacts: {
         existingContacts: {
           contact1: {
             savedContact: {

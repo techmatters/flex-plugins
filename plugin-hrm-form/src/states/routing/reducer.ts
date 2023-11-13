@@ -70,7 +70,7 @@ const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingActi
   const { taskId, rawJson, caseId } = contact;
   let initialEntry: AppRoutes = newTaskEntry;
   const { callType } = rawJson;
-  if (caseId) {
+  if (caseId && callType) {
     initialEntry = {
       route: 'tabbed-forms',
       subroute: 'caseInformation',

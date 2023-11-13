@@ -64,6 +64,7 @@ import Case from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
 import ViewContact from '../case/ViewContact';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
+import { getHrmConfig } from '../../hrmConfig';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
@@ -136,6 +137,7 @@ const TabbedForms: React.FC<Props> = ({
   finaliseContact,
   metadata,
   task,
+  removeIfOfflineContact,
   isCallTypeCaller,
   removeIfOfflineContact,
 }) => {
@@ -143,6 +145,8 @@ const TabbedForms: React.FC<Props> = ({
     shouldFocusError: false,
     mode: 'onChange',
   });
+
+  const { contactSaveFrequency } = getHrmConfig();
 
   const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={savedContact.csamReports} />, [
     savedContact.csamReports,
@@ -227,7 +231,9 @@ const TabbedForms: React.FC<Props> = ({
 
   const handleTabsChange = async (t: number) => {
     const tab = tabsToIndex[t];
-    await saveDraft(savedContact, draftContact);
+    if (contactSaveFrequency === 'onTabChange') {
+      saveDraft(savedContact, draftContact);
+    }
     if (tab === 'search') {
       openSearchModal();
     } else {
