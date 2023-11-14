@@ -52,10 +52,12 @@ export type ContactMetadata = {
   draft: {
     resourceReferralList: DraftResourceReferralState;
   };
+  saveStatus: 'saving' | 'saved';
 };
 
 export type ContactsState = {
   existingContacts: ExistingContactsState;
+  contactsBeingCreated: Set<string>;
   contactDetails: ContactDetailsState;
   editingContact: boolean;
   isCallTypeCaller: boolean;
@@ -103,6 +105,14 @@ export type ContactsActionType =
   | CheckButtonDataAction;
 
 export type ContactUpdatingAction = {
+  type:
+    | typeof CREATE_CONTACT_ACTION_FULFILLED
+    | typeof UPDATE_CONTACT_ACTION_FULFILLED
+    | typeof LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED;
+  payload: { contact: Contact; contactCase?: Case; previousContact?: Contact };
+};
+
+export type ContactCreatingAction = {
   type:
     | typeof CREATE_CONTACT_ACTION_FULFILLED
     | typeof UPDATE_CONTACT_ACTION_FULFILLED

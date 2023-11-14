@@ -42,8 +42,10 @@ import { configurationBase, namespace } from '../../states/storeNamespaces';
 import { ContactMetadata } from '../../states/contacts/types';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 
-const isDialogOpen = (task: CustomITask, contact: ContactDraftChanges) =>
-  Boolean(!isOfflineContactTask(task) && contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType));
+const isDialogOpen = (task: CustomITask, contact: ContactDraftChanges) => {
+  if (isOfflineContactTask(task)) return false;
+  return Boolean(contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType));
+};
 
 type OwnProps = {
   task: CustomITask;
@@ -58,6 +60,7 @@ const CallTypeButtons: React.FC<Props> = ({
   draftContact,
   task,
   metadata,
+  saveStatus,
   localization,
   currentDefinitionVersion,
   updateCallType,
@@ -109,18 +112,19 @@ const CallTypeButtons: React.FC<Props> = ({
     }
   };
 
-  const handleConfirmNonDataCallType = async () => {
-    if (!hasTaskControl(task)) return;
+  const handleConfirmNonDataCallType = async (): Promise<any> => {
+    if (!hasTaskControl(task)) return undefined;
 
     try {
       await saveFinalizedNonDataContact(savedContact, draftContact, metadata);
-      await completeTask(task, savedContact);
+      return completeTask(task, savedContact);
     } catch (error) {
       const strings = getTemplateStrings();
-      if (!window.confirm(strings['Error-ContinueWithoutRecording'])) {
-        await completeTask(task, savedContact);
+      if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
+        return completeTask(task, savedContact);
       }
     }
+    return undefined;
   };
 
   return (
@@ -139,6 +143,7 @@ const CallTypeButtons: React.FC<Props> = ({
                   key={callType.name}
                   autoFocus={index === 0}
                   data-testid={`DataCallTypeButton-${callType.name}`}
+                  disabled={saveStatus === 'saving'}
                 >
                   <Flex width="50px" marginRight="5px">
                     {/* TODO: We currently need the call type name in English. I think we should actually save callType.name (instead of label) on the DB, and use it in here.  */}
@@ -161,6 +166,7 @@ const CallTypeButtons: React.FC<Props> = ({
                 key={callType.name}
                 onClick={() => handleNonDataClick(task.taskSid, callType)}
                 marginRight={i % 2 === 0}
+                disabled={saveStatus === 'saving'}
               >
                 {callType.label}
               </NonDataCallTypeButton>
@@ -169,6 +175,7 @@ const CallTypeButtons: React.FC<Props> = ({
       </Container>
       <NonDataCallTypeDialog
         isOpen={isDialogOpen(task, draftContact)}
+        isEnabled={saveStatus === 'saved'}
         isCallTask={!isOfflineContactTask(task) && isCallTask(task)}
         isInWrapupMode={!isOfflineContactTask(task) && TaskHelper.isInWrapupMode(task)}
         handleConfirm={handleConfirmNonDataCallType}
@@ -183,8 +190,8 @@ CallTypeButtons.displayName = 'CallTypeButtons';
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const { savedContact, draftContact, metadata } = findContactByTaskSid(state, ownProps.task.taskSid) ?? {};
   const { currentDefinitionVersion } = state[namespace][configurationBase];
-
-  return { savedContact, draftContact, metadata, currentDefinitionVersion };
+  // Return saveStatus as it's own prop so changes to it will trigger a re-render
+  return { savedContact, draftContact, metadata, saveStatus: metadata.saveStatus, currentDefinitionVersion };
 };
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({

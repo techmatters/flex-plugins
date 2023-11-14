@@ -14,15 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  ActionFunction,
-  ChatOrchestrator,
-  ChatOrchestratorEvent,
-  ITask,
-  Manager,
-  StateHelper,
-  TaskHelper,
-} from '@twilio/flex-ui';
+import { ActionFunction, ChatOrchestrator, ChatOrchestratorEvent, ITask, Manager, TaskHelper } from '@twilio/flex-ui';
 import { Conversation } from '@twilio/conversations';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
@@ -126,12 +118,17 @@ const sendWelcomeMessageOnConversationJoined = (
   payload: ActionPayload,
 ) => {
   const manager = Manager.getInstance();
-  const { task } = payload;
   const trySendWelcomeMessage = (convo: Conversation, ms: number, retries: number) => {
     setTimeout(() => {
-      const convoState = StateHelper.getConversationStateForTask(task);
+      const convoState = manager.store.getState().flex.chat.conversations[convo.sid];
+      if (!convoState) {
+        console.warn(
+          `Conversation ${convo.sid}, which should be for task ${payload.task.taskSid} not found in redux store.`,
+        );
+        return;
+      }
       // if channel is not ready, wait 200ms and retry
-      if (!convoState || convoState.isLoadingConversation) {
+      if (convoState.isLoadingParticipants || convoState.isLoadingConversation) {
         if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
         else console.error('Failed to send welcome message: max retries reached.');
       } else {
