@@ -1,0 +1,26 @@
+[
+  {
+    "name": "description",
+    "label": "Description (500 characters)",
+    "type": "textarea",
+    "rows": 20,
+    "width": 300,
+    "placeholder": "Enter a summary of the case"
+  },
+  {
+    "name": "actions",
+    "label": "Actions (500 characters)",
+    "type": "textarea",
+    "rows": 20,
+    "width": 300,
+    "placeholder": "Enter actions taken"
+  },
+  {
+    "name": "recommendations",
+    "label": "Recommendations (500 characters)",
+    "type": "textarea",
+    "rows": 20,
+    "width": 300,
+    "placeholder": "Enter recommendations"
+  }
+]

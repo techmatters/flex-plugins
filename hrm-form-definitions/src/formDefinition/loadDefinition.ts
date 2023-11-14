@@ -167,6 +167,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     prepopulateKeys,
     referenceData,
     blockedEmojis,
+    profileForms
   ] = await Promise.all([
     fetchDefinition<LayoutVersion>('LayoutDefinitions.json'),
     fetchDefinition<FormItemJsonDefinition[]>('caseForms/HouseholdForm.json'),
@@ -195,6 +196,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     ),
     fetchDefinition<Record<string, any>>('ReferenceData.json', {}),
     fetchDefinition<string[]>('BlockedEmojis.json', []),
+    fetchDefinition<FormItemJsonDefinition[]>('profileForms/Sections.json'),
   ]);
 
   const { helplines } = helplineInformation;
@@ -230,5 +232,8 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     prepopulateKeys,
     referenceData,
     blockedEmojis,
+    profileForms: {
+      Sections: expandFormDefinition(profileForms, referenceData),
+    },
   };
 }
