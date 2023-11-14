@@ -123,7 +123,7 @@ export const newRestartOfflineContactAsyncAction = (contact: Contact, createdOnB
   });
 };
 
-type ConnectToCaseActionPayload = { contactId: string; caseId: number; contact: Contact };
+type ConnectToCaseActionPayload = { contactId: string; caseId: number; contact: Contact; contactCase: Case };
 type RemoveFromCaseActionPayload = { contactId: string; caseId: number; contact: Contact };
 
 // TODO: Update connectedContacts on case in redux state
@@ -131,7 +131,8 @@ export const connectToCaseAsyncAction = createAsyncAction(
   CONNECT_TO_CASE,
   async (contactId: string, caseId: number | null): Promise<ConnectToCaseActionPayload> => {
     const contact = await connectToCase(contactId, caseId);
-    return { contactId, caseId, contact };
+    const contactCase = await getCase(caseId);
+    return { contactId, caseId, contact, contactCase };
   },
 );
 

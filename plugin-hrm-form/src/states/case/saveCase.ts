@@ -23,6 +23,7 @@ import { UPDATE_CASE_ACTION, CREATE_CASE_ACTION, SavedCaseStatus, CaseState } fr
 import type { RootState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { connectToCase } from '../../services/ContactService';
+import { connectToCaseAsyncAction } from '../contacts/saveContact';
 
 export const createCaseAsyncAction = createAsyncAction(
   CREATE_CASE_ACTION,
@@ -112,4 +113,27 @@ export const saveCaseReducer = (initialState: SaveCaseReducerState) =>
     handlePendingAction(handleAction, createCaseAsyncAction.pending),
     handleFulfilledAction(handleAction, createCaseAsyncAction.fulfilled),
     handleRejectedAction(handleAction, createCaseAsyncAction.rejected),
+
+    handleAction(connectToCaseAsyncAction.fulfilled, ({ state, rootState }, { payload: { contact, contactCase } }) => {
+      const caseDefinitionVersion = (rootState as RootState['plugin-hrm-form']).configuration.definitionVersions[
+        contactCase?.info?.definitionVersion
+      ];
+
+      return {
+        state: {
+          ...state,
+          tasks: {
+            ...state.tasks,
+            [contact.taskId]: {
+              connectedCase: contactCase,
+              caseWorkingCopy: { sections: {} },
+              availableStatusTransitions: caseDefinitionVersion
+                ? getAvailableCaseStatusTransitions(contactCase, caseDefinitionVersion)
+                : [],
+            },
+          },
+        },
+        rootState,
+      };
+    }),
   ]);

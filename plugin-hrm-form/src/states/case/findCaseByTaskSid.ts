@@ -19,24 +19,7 @@ import { Case } from '../../types/types';
 import { contactFormsBase, connectedCaseBase, searchContactsBase, namespace } from '../storeNamespaces';
 import findContactByTaskSid from '../contacts/findContactByTaskSid';
 
-/**
- * Currently the case connected to the contact can be found at:
- * 1. ConnectedCase state, or
- * 2. SearchContacts state
- *
- * TODO: Unify to fetch the case from a single source, or load the
- * case from the backend, instead.
- */
-const findCaseByTaskSid = (state: RootState, taskSid: string): Case => {
-  const contact = findContactByTaskSid(state, taskSid).savedContact;
-  const { caseId } = state[namespace][contactFormsBase].existingContacts[contact?.id]?.savedContact;
-
-  const caseFromConnectedCase = state[namespace][connectedCaseBase].tasks[taskSid]?.connectedCase;
-  if (caseFromConnectedCase?.id === caseId) {
-    return caseFromConnectedCase;
-  }
-
-  return state[namespace][searchContactsBase].tasks[taskSid].searchCasesResult.cases.find(cas => cas.id === caseId);
-};
+const findCaseByTaskSid = (state: RootState, taskSid: string): Case =>
+  state[namespace][connectedCaseBase].tasks[taskSid]?.connectedCase;
 
 export default findCaseByTaskSid;
