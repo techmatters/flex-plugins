@@ -81,7 +81,10 @@ const sendMessageOfKey = (messageKey: string) => (
 ): ActionFunction => async (payload: ActionPayload) => {
   const taskLanguage = getTaskLanguage(setupObject)(payload.task);
   const message = await getMessage(messageKey)(taskLanguage);
-  await conversation.sendMessage(message);
+  const res = await conversation.sendMessage(message);
+  console.log(
+    `Successfully sent message '${message}' from key ${messageKey} translated to ${taskLanguage}, added as index ${res}`,
+  );
 };
 
 const sendSystemMessageOfKey = (messageKey: string) => (
@@ -128,7 +131,7 @@ const sendWelcomeMessageOnConversationJoined = (
         return;
       }
       // if channel is not ready, wait 200ms and retry
-      if (convoState.isLoadingParticipants || convoState.isLoadingConversation) {
+      if (convoState.isLoadingParticipants || convoState.isLoadingConversation || convoState.isLoadingMessages) {
         if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
         else console.error('Failed to send welcome message: max retries reached.');
       } else {
@@ -145,14 +148,6 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   payload: ActionPayload,
 ) => {
   const { task } = payload;
-
-  await initializeContactForm(payload);
-  if (getAseloFeatureFlags().enable_transfers && TransferHelpers.hasTransferStarted(task)) {
-    await handleTransferredTask(task);
-  } else {
-    await prepopulateForm(task);
-  }
-
   if (TaskHelper.isChatBasedTask(task)) {
     subscribeAlertOnConversationJoined(task);
   }
@@ -160,6 +155,13 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   // If this is the first counsellor that gets the task, say hi
   if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
     sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
+  }
+
+  await initializeContactForm(payload);
+  if (getAseloFeatureFlags().enable_transfers && TransferHelpers.hasTransferStarted(task)) {
+    await handleTransferredTask(task);
+  } else {
+    await prepopulateForm(task);
   }
 };
 
