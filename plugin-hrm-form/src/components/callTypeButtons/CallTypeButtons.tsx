@@ -60,7 +60,6 @@ const CallTypeButtons: React.FC<Props> = ({
   draftContact,
   task,
   metadata,
-  saveStatus,
   localization,
   currentDefinitionVersion,
   updateCallType,
@@ -70,6 +69,7 @@ const CallTypeButtons: React.FC<Props> = ({
   saveFinalizedNonDataContact,
 }) => {
   const { isCallTask } = localization;
+  const { saveStatus } = metadata;
 
   // Todo: need to handle this error scenario in a better way. Currently is showing a blank screen if there aren't definitions.
   if (!currentDefinitionVersion) return null;
@@ -191,7 +191,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const { savedContact, draftContact, metadata } = findContactByTaskSid(state, ownProps.task.taskSid) ?? {};
   const { currentDefinitionVersion } = state[namespace][configurationBase];
   // Return saveStatus as it's own prop so changes to it will trigger a re-render
-  return { savedContact, draftContact, metadata, saveStatus: metadata.saveStatus, currentDefinitionVersion };
+  return { savedContact, draftContact, metadata, currentDefinitionVersion };
 };
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
