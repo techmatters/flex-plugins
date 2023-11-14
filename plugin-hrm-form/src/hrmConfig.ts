@@ -81,6 +81,7 @@ const readConfig = () => {
   const featureFlags = {
     ...featureFlagsFromServiceConfig,
     ...featureFlagsFromEnv,
+    enable_client_profiles: true,
   };
   const { strings } = (manager as unknown) as {
     strings: { [key: string]: string };
