@@ -47,13 +47,7 @@ locals {
       survey : "Survey"
     }
 
-    #Channels
-    channels = {
-    
-    }
-    phone_numbers = {
-    }
-
+   
     lex_bot_languages = {
       en_US : ["pre_survey", "language_selector"],
       bem : ["pre_survey"],
