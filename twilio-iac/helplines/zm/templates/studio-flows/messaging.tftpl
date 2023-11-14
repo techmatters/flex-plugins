@@ -1,0 +1,592 @@
+${
+  jsonencode(
+   {
+  "description": flow_description,
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "next": "pre_survey_complete",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -240,
+          "y": -620
+        }
+      }
+    },
+    {
+      "name": "attributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 600,
+          "y": -100
+        },
+        "workflow": workflow_sids["master"],
+        "channel": task_channel_sids["chat"],
+        "attributes": "{\n  \"name\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"helpline\": \"{{ trigger.message.ChannelAttributes.memory .helpline}}\",\n  \"ignoreAgent\": \"\",\n  \"transferTargetType\": \"\",\n  \"language\": \"{{trigger.message.ChannelAttributes.languageMemory.language }}\",\n  \"memory\": {{ trigger.message.ChannelAttributes.memory | to_json }},\n  \"preEngagementData\": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}} \n}"
+      }
+    },
+    {
+      "name": "check_image",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "language_selector_complete",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "{{trigger.message.Body}}",
+              "arguments": [
+                "{{trigger.message.Body}}"
+              ],
+              "type": "is_not_blank",
+              "value": "Is Not Blank"
+            }
+          ]
+        },
+        {
+          "next": "no_img_msg",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "{{trigger.message.Body}}",
+              "arguments": [
+                "{{trigger.message.Body}}"
+              ],
+              "type": "is_blank",
+              "value": "Is Blank"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.Body}}",
+        "offset": {
+          "x": -580,
+          "y": -150
+        }
+      }
+    },
+    {
+      "name": "no_img_msg",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": flow_vars["service_sid"],
+        "environment_sid": flow_vars["environment_sid"],
+        "offset": {
+          "x": 180,
+          "y": 80
+        },
+        "function_sid": flow_vars["send_message_janitor_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "It is currently not possible to receive images or media files through Messenger at this time. Please send text only.",
+            "key": "message"
+          },
+          {
+            "value": "Childline",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "set_en_US",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "capture_channel_with_bot",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "en-US",
+            "key": "language"
+          }
+        ],
+        "offset": {
+          "x": -1470,
+          "y": 950
+        }
+      }
+    },
+    {
+      "name": "set_bem",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "capture_channel_with_bot",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "bem",
+            "key": "language"
+          }
+        ],
+        "offset": {
+          "x": -1150,
+          "y": 950
+        }
+      }
+    },
+    {
+      "name": "set_toi",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "capture_channel_with_bot",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "toi",
+            "key": "language"
+          }
+        ],
+        "offset": {
+          "x": -830,
+          "y": 950
+        }
+      }
+    },
+    {
+      "name": "set_lun",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "capture_channel_with_bot",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "lun",
+            "key": "language"
+          }
+        ],
+        "offset": {
+          "x": -500,
+          "y": 950
+        }
+      }
+    },
+    {
+      "name": "set_nyz",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "capture_channel_with_bot",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "nyz",
+            "key": "language"
+          }
+        ],
+        "offset": {
+          "x": -170,
+          "y": 950
+        }
+      }
+    },
+    {
+      "name": "set_kqn",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "capture_channel_with_bot",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "kqn",
+            "key": "language"
+          }
+        ],
+        "offset": {
+          "x": 160,
+          "y": 950
+        }
+      }
+    },
+    {
+      "name": "set_loz",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "capture_channel_with_bot",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "loz",
+            "key": "language"
+          }
+        ],
+        "offset": {
+          "x": 500,
+          "y": 950
+        }
+      }
+    },
+    {
+      "name": "capture_channel_with_bot",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": flow_vars["service_sid"],
+        "environment_sid": flow_vars["environment_sid"],
+        "offset": {
+          "x": -510,
+          "y": 1230
+        },
+        "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "trigger_pre_survey",
+            "key": "message"
+          },
+          {
+            "value": "{{flow.flow_sid}}",
+            "key": "studioFlowSid"
+          },
+          {
+            "value": "{{flow.variables.language}}",
+            "key": "language"
+          },
+          {
+            "value": "pre_survey",
+            "key": "botSuffix"
+          },
+          {
+            "value": "withUserMessage",
+            "key": "triggerType"
+          },
+          {
+            "value": "triggerStudioFlow",
+            "key": "releaseType"
+          },
+          {
+            "value": "preSurveyComplete",
+            "key": "releaseFlag"
+          }
+        ],
+        "url": "${serverless_url}/channelCapture/captureChannelWithBot"
+      }
+    },
+    {
+      "name": "pre_survey_complete",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "check_image",
+          "event": "noMatch"
+        },
+        {
+          "next": "attributes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.preSurveyComplete}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.preSurveyComplete}}",
+        "offset": {
+          "x": 20,
+          "y": -380
+        }
+      }
+    },
+    {
+      "name": "language_selector_complete",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "capture_channel_with_language_bot",
+          "event": "noMatch"
+        },
+        {
+          "next": "split_language_from_bot",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.isSelectLanguageComplete}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.isSelectLanguageComplete}}",
+        "offset": {
+          "x": -620,
+          "y": 160
+        }
+      }
+    },
+    {
+      "name": "capture_channel_with_language_bot",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": flow_vars["service_sid"],
+        "environment_sid": flow_vars["environment_sid"],
+        "offset": {
+          "x": -850,
+          "y": 470
+        },
+        "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "trigger_language_selector",
+            "key": "message"
+          },
+          {
+            "value": "{{flow.flow_sid}}",
+            "key": "studioFlowSid"
+          },
+          {
+            "value": "en-US",
+            "key": "language"
+          },
+          {
+            "value": "language_selector",
+            "key": "botSuffix"
+          },
+          {
+            "value": "withUserMessage",
+            "key": "triggerType"
+          },
+          {
+            "value": "triggerStudioFlow",
+            "key": "releaseType"
+          },
+          {
+            "value": "isSelectLanguageComplete",
+            "key": "releaseFlag"
+          },
+          {
+            "value": "languageMemory",
+            "key": "memoryAttribute"
+          }
+        ],
+        "url": "${serverless_url}/channelCapture/captureChannelWithBot"
+      }
+    },
+    {
+      "name": "split_language_from_bot",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_en_US",
+          "event": "noMatch"
+        },
+        {
+          "next": "set_en_US",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to en-US",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.languageMemory.language}}"
+              ],
+              "type": "equal_to",
+              "value": "en-US"
+            }
+          ]
+        },
+        {
+          "next": "set_bem",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to Bemba",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.languageMemory.language}}"
+              ],
+              "type": "equal_to",
+              "value": "Bemba"
+            }
+          ]
+        },
+        {
+          "next": "set_toi",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to Tonga",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.languageMemory.language}}"
+              ],
+              "type": "equal_to",
+              "value": "Tonga"
+            }
+          ]
+        },
+        {
+          "next": "set_lun",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to Lunda",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.languageMemory.language}}"
+              ],
+              "type": "equal_to",
+              "value": "Lunda"
+            }
+          ]
+        },
+        {
+          "next": "set_nyz",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to Nyanja",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.languageMemory.language}}"
+              ],
+              "type": "equal_to",
+              "value": "Nyanja"
+            }
+          ]
+        },
+        {
+          "next": "set_kqn",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to Kaonde",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.languageMemory.language}}"
+              ],
+              "type": "equal_to",
+              "value": "Kaonde"
+            }
+          ]
+        },
+        {
+          "next": "set_loz",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to Lozi",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.languageMemory.language}}"
+              ],
+              "type": "equal_to",
+              "value": "Lozi"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.languageMemory.language}}",
+        "offset": {
+          "x": -360,
+          "y": 470
+        }
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+}
+  )
+}
