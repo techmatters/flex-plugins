@@ -21,7 +21,7 @@ import { loadIdentifierByIdentifierAsync } from './identifiers';
 import loadProfileEntryIntoRedux from './loadProfileEntryIntoRedux';
 import * as t from './types';
 
-const PAGE_SIZE = 2;
+export const PAGE_SIZE = 2;
 
 type ProfileId = t.Profile['id'];
 
@@ -45,9 +45,43 @@ export const loadRelationshipAsync = createAsyncAction(
   (params: LoadRelationshipAsyncParams) => params,
 );
 
-export const incrementPage = createAction(t.INCREMENT_PAGE, (params: CommonRelationshipParams) => params);
+export const incrementRelationshipsPage = createAction(
+  t.PROFILE_RELATIONSHIPS_INCREMENT_PAGE,
+  (params: CommonRelationshipParams) => params,
+);
 
-const handlePendingAction = (state: t.ProfilesState, action: any) => {
+const handleIncrementRelationshipsPageAction = (state: t.ProfilesState, action: any) => {
+  const { profileId, type } = action.payload;
+
+  const profileUpdate = {
+    [type]: {
+      ...state[profileId][type],
+      page: state[profileId][type].page + 1,
+    },
+  };
+
+  return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
+};
+
+export const updateRelationshipsPage = createAction(
+  t.PROFILE_RELATIONSHIPS_UPDATE_PAGE,
+  (params: CommonRelationshipParams & { page: number }) => params,
+);
+
+const handleUpdateRelationshipsPageAction = (state: t.ProfilesState, action: any) => {
+  const { profileId, type, page } = action.payload;
+
+  const profileUpdate = {
+    [type]: {
+      ...state[profileId][type],
+      page,
+    },
+  };
+
+  return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
+};
+
+const handleRelationshipsPendingAction = (state: t.ProfilesState, action: any) => {
   const { profileId, type } = action.meta;
 
   const profileUpdate = {
@@ -61,10 +95,11 @@ const handlePendingAction = (state: t.ProfilesState, action: any) => {
   return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
 };
 
-const handleFulfilledAction = (state: t.ProfilesState, action: any) => {
+const handleRelationshipsFulfilledAction = (state: t.ProfilesState, action: any) => {
   const { page: loadedPage, profileId, type } = action.meta;
 
   const data = [...(state[profileId][type].data || []), ...action.payload[type]];
+  const total = action.payload.count || 0;
   const exhausted = data.length >= action.payload.count;
 
   const profileUpdate = {
@@ -74,13 +109,14 @@ const handleFulfilledAction = (state: t.ProfilesState, action: any) => {
       loading: false,
       exhausted,
       loadedPage,
+      total,
     },
   };
 
   return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
 };
 
-const handleRejectedAction = (state: t.ProfilesState, action: any) => {
+const handleRelationshipsRejectedAction = (state: t.ProfilesState, action: any) => {
   const { profileId, type } = action.meta;
   const error = parseFetchError(action.payload);
 
@@ -89,19 +125,6 @@ const handleRejectedAction = (state: t.ProfilesState, action: any) => {
       ...state[profileId][type],
       loading: false,
       error,
-    },
-  };
-
-  return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
-};
-
-const handleIncrementPageAction = (state: t.ProfilesState, action: any) => {
-  const { profileId, type } = action.payload;
-
-  const profileUpdate = {
-    [type]: {
-      ...state[profileId][type],
-      page: state[profileId][type].page + 1,
     },
   };
 
@@ -313,10 +336,11 @@ const profilesReducer = (initialState: t.ProfilesState = {}) =>
     handleAction(loadProfileAsync.rejected, handleLoadProfileRejectedAction),
     handleAction(loadProfileAsync.fulfilled, handleLoadProfileFulfilledAction),
     handleAction(loadIdentifierByIdentifierAsync.fulfilled, handleLoadIdentifierFulfilledAction),
-    handleAction(loadRelationshipAsync.pending, handlePendingAction),
-    handleAction(loadRelationshipAsync.fulfilled, handleFulfilledAction),
-    handleAction(loadRelationshipAsync.rejected, handleRejectedAction),
-    handleAction(incrementPage, handleIncrementPageAction),
+    handleAction(loadRelationshipAsync.pending, handleRelationshipsPendingAction),
+    handleAction(loadRelationshipAsync.fulfilled, handleRelationshipsFulfilledAction),
+    handleAction(loadRelationshipAsync.rejected, handleRelationshipsRejectedAction),
+    handleAction(incrementRelationshipsPage, handleIncrementRelationshipsPageAction),
+    handleAction(updateRelationshipsPage, handleUpdateRelationshipsPageAction),
     handleAction(associateProfileFlagAsync.pending, handleLoadProfilePendingAction),
     handleAction(associateProfileFlagAsync.rejected, handleLoadProfileRejectedAction),
     handleAction(associateProfileFlagAsync.fulfilled, handleProfileFlagUpdateFulfilledAction),
