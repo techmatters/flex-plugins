@@ -72,7 +72,7 @@ const mapDispatchToProps = (dispatch, { task: { taskSid } }) => {
   return {
     viewCaseDetails: (cas: Case) => {
       dispatch(CaseActions.setConnectedCase(cas, taskSid));
-      dispatch(RoutingActions.newOpenModalAction({ route: 'case', subroute: 'home' }, taskSid));
+      dispatch(RoutingActions.newOpenModalAction({ route: 'case', subroute: 'home', isCreating: false }, taskSid));
     },
   };
 };

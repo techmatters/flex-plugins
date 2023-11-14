@@ -23,6 +23,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 import { Template } from '@twilio/flex-ui';
+import { current } from '@reduxjs/toolkit';
 
 import { RootState } from '../../states';
 import { completeTask, removeOfflineContact } from '../../services/formSubmissionHelpers';
@@ -198,9 +199,16 @@ const TabbedForms: React.FC<Props> = ({
   }
 
   if (currentRoute.route === 'case') {
+    // This is a dirty hack so that case viewing works for the create case form and
+    // the profile view case form. It could use a refactor if/when we move routing
+    // into a separate component, but this *should* mostly work for now.
+    // Editing the case in the profile view case form will probably not work
+    // as expected without some additional work.
+    const isCreating = currentRoute.hasOwnProperty('isCreating') ? currentRoute.isCreating : true;
+    const handleCloseModal = isCreating ? closeModal() : undefined;
     return (
       <CaseLayout>
-        <Case task={task} isCreating={true} onNewCaseSaved={onNewCaseSaved} handleClose={closeModal} />
+        <Case task={task} isCreating={isCreating} onNewCaseSaved={onNewCaseSaved} handleClose={handleCloseModal} />
       </CaseLayout>
     );
   }
