@@ -4,7 +4,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-    custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true"
+    custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true" 
     #Studio flow
     flow_vars = {
       service_sid                           = "ZS35f2808923f66b3f26005e3ad25d0ebf"
