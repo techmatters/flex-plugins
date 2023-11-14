@@ -14,18 +14,29 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// Register your redux store under a unique namespace
-export const namespace = 'plugin-hrm-form';
-export const contactFormsBase = 'activeContacts';
-export const searchContactsBase = 'searchContacts';
-export const caseListBase = 'caseList';
-export const connectedCaseBase = 'connectedCase';
-export const queuesStatusBase = 'queuesStatusState';
-export const configurationBase = 'configuration';
-export const conversationsBase = 'conversations';
-export const routingBase = 'routing';
-export const csamReportBase = 'csam-report';
-export const dualWriteBase = 'dualWrite';
-export const referrableResourcesBase = 'referrableResources';
-export const conferencingBase = 'conferencing';
-export const profileBase = 'profile';
+import * as t from './types';
+
+const loadProfileEntryIntoRedux = (
+  state: t.ProfileState,
+  profileId: t.Profile['id'],
+  profileUpdate: Partial<t.ProfileEntry>,
+): t.ProfileState => {
+  const { profiles: oldProfiles } = state;
+  const existingProfile = oldProfiles[profileId];
+  const newProfile = {
+    ...t.newProfileEntry,
+    ...existingProfile,
+    ...profileUpdate,
+  };
+  const profiles = {
+    ...oldProfiles,
+    [profileId]: newProfile,
+  };
+
+  return {
+    ...state,
+    profiles,
+  };
+};
+
+export default loadProfileEntryIntoRedux;

@@ -14,18 +14,23 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// Register your redux store under a unique namespace
-export const namespace = 'plugin-hrm-form';
-export const contactFormsBase = 'activeContacts';
-export const searchContactsBase = 'searchContacts';
-export const caseListBase = 'caseList';
-export const connectedCaseBase = 'connectedCase';
-export const queuesStatusBase = 'queuesStatusState';
-export const configurationBase = 'configuration';
-export const conversationsBase = 'conversations';
-export const routingBase = 'routing';
-export const csamReportBase = 'csam-report';
-export const dualWriteBase = 'dualWrite';
-export const referrableResourcesBase = 'referrableResources';
-export const conferencingBase = 'conferencing';
-export const profileBase = 'profile';
+import { getIdentifierByIdentifier } from '../../services/ProfileService';
+import { fetchHrmApi } from '../../services/fetchHrmApi';
+
+jest.mock('../../services/fetchHrmApi');
+const mockFetchHrmAPi: jest.Mock = fetchHrmApi as jest.Mock;
+
+beforeEach(() => {
+  mockFetchHrmAPi.mockClear();
+});
+
+describe('getIdentifierByIdentifier()', () => {
+  test('getIdentifierByIdentifier calls "GET /profiles/identifier', async () => {
+    const identifier = '1234567890';
+
+    await getIdentifierByIdentifier(identifier);
+
+    const expectedUrl = `/profiles/identifier/${identifier}`;
+    expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl);
+  });
+});

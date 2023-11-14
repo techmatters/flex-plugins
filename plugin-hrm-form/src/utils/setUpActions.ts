@@ -37,7 +37,7 @@ import { CustomITask, FeatureFlags } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
 import type { RootState } from '../states';
-import { getTaskLanguage } from './task';
+import { getTaskLanguage, getNumberFromTask } from './task';
 import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
 import { newContact } from '../states/contacts/contactState';
 import asyncDispatch from '../states/asyncDispatch';
@@ -74,9 +74,13 @@ export const initializeContactForm = async ({ task }: ActionPayload) => {
   const { currentDefinitionVersion } = (Manager.getInstance().store.getState() as RootState)[
     'plugin-hrm-form'
   ].configuration;
-  const contact = newContact(currentDefinitionVersion);
+  const contact = {
+    ...newContact(currentDefinitionVersion),
+    number: getNumberFromTask(task),
+  };
   const { workerSid } = getHrmConfig();
   const taskSid = task.attributes?.transferMeta?.originalTask ?? task.taskSid;
+
   await asyncDispatch(Manager.getInstance().store.dispatch)(createContactAsyncAction(contact, workerSid, taskSid));
 };
 

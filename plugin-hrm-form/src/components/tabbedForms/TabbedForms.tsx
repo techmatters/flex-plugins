@@ -394,6 +394,7 @@ const mapStateToProps = (
   const baseRoute = getCurrentBaseRoute(routing, taskSid);
   const searchModalOpen =
     isRouteWithModalSupport(baseRoute) && baseRoute.activeModal?.length && baseRoute.activeModal[0].route === 'search';
+
   const { currentDefinitionVersion } = configuration;
   return {
     currentRoute,
