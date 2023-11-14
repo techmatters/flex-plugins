@@ -19,7 +19,7 @@ locals {
     #Studio flow
     flow_vars = {
       service_sid                  = "ZS12b76bbedd5051d075a969d350e2578b"
-      environment_sid              = "ZE426531cd747eedb43fb6ec0712b7bf11"
+      environment_sid              = "ZE3efa83672bf9f29818c7f30812735718"
       operating_hours_function_sid = "ZH0bb0bc4e0c498a1dd7b0fd14227d3058"
     }
 
