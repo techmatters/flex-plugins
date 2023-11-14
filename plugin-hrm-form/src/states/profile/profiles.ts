@@ -290,7 +290,6 @@ const handleLoadProfileSectionFulfilledAction = (state: t.ProfilesState, action:
     loading: false,
     data: action.payload,
   };
-  console.log('>>> handleLoadProfileSectionFulfilledAction', update);
 
   return loadProfileSectionEntryIntoRedux(state, profileId, sectionType, update);
 };

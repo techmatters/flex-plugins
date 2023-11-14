@@ -16,13 +16,13 @@
 
 import React, { useRef, useState } from 'react';
 import { TextField } from '@material-ui/core';
-import { set } from 'lodash';
 
 import NavigableContainer from '../../NavigableContainer';
 import { ProfileSection } from '../../../types/types';
 import { Flex, StyledNextStepButton } from '../../../styles/HrmStyles';
 import { useEditProfileSection } from '../../../states/profile/hooks/useProfileSection';
 import { ProfileCommonProps } from '../types';
+import FieldText from '../../FieldText';
 
 type OwnProps = ProfileCommonProps & {
   sectionType: ProfileSection['sectionType'];
@@ -35,7 +35,6 @@ const ProfileSectionEdit = ({ task, profileId, sectionType }: Props) => {
 
   const [content, setContent] = useState<string>(section?.content || '');
   const sectionId: ProfileSection['id'] = section?.id;
-  console.log('>>> ProfileSectionEdit', profileId, sectionType, section, content);
 
   const handleEdit = () => {
     if (!sectionId) {
@@ -43,7 +42,6 @@ const ProfileSectionEdit = ({ task, profileId, sectionType }: Props) => {
     }
     return updateProfileSection({ profileId, sectionType, content, sectionId });
   };
-  console.log('>>> ProfileSectionEdit', profileId, sectionType, section, content);
 
   return (
     <NavigableContainer titleCode="Profile-EditNoteHeader" task={task}>
@@ -54,6 +52,7 @@ const ProfileSectionEdit = ({ task, profileId, sectionType }: Props) => {
         defaultValue={content}
         onChange={e => setContent(e.target.value)}
       />
+      {/* <FieldText id={sectionId.toString()} field="textarea" /> */}
       <Flex justifyContent="flex-end" flexDirection="row">
         <StyledNextStepButton roundCorners onClick={handleEdit}>
           Save

@@ -26,8 +26,6 @@ type OwnProps = ProfileCommonProps & {
 const ProfileSectionView = ({ profileId, sectionType }: OwnProps) => {
   const { section } = useProfileSectionByType({ profileId, sectionType });
 
-  console.log('>>> ProfileSectionView', profileId, sectionType, section);
-
   return <div>{section?.content}</div>;
 };
 

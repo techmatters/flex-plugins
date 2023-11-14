@@ -30,8 +30,8 @@ type OwnProps = {
 type Props = OwnProps;
 
 const ProfileIdentifierBannerFeatureFlagSwitch: React.FC<Props> = (props: Props) => {
-  const { enable_client_profiles: enableClientProfiles } = getAseloFeatureFlags();
-
+  // const { enable_client_profiles: enableClientProfiles } = getAseloFeatureFlags();
+  const enableClientProfiles = true;
   return enableClientProfiles ? <IdentifierBanner {...props} /> : <PreviousContactsBanner {...props} />;
 };
 

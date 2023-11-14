@@ -47,6 +47,7 @@ export const useProfileSectionLoaderByType = ({ profileId, sectionType }: usePro
     if (!sectionId) return;
 
     loadProfileSectionAsync({ profileId, sectionType, sectionId });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileId, sectionType, sectionId, profileSection]);
 
   const loading = useSelector(
