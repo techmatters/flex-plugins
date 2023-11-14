@@ -47,7 +47,7 @@ export const useProfileSectionLoaderByType = ({ profileId, sectionType }: usePro
     if (!sectionId) return;
 
     loadProfileSectionAsync({ profileId, sectionType, sectionId });
-  }, [profileId, sectionType, sectionId, profileSection]);
+  }, [profileId, sectionId, sectionType, loadProfileSectionAsync]);
 
   const loading = useSelector(
     (state: RootState) => ProfileSelectors.selectProfileSectionByType(state, profileId, sectionType)?.loading,
@@ -82,24 +82,21 @@ type UseEditProfileSection = {
 
 export const useEditProfileSection = (params: ProfileActions.ProfileSectionCommonParams): UseEditProfileSection => {
   const dispatch = useDispatch();
-  const { profileId } = params;
 
   const profileSection = useProfileSectionByType(params);
-  // const section = profileSection.section;
-  // const sectionId = section?.id;
 
   const createProfileSection = useCallback(
     (params: ProfileActions.CreateProfileSectionAsyncParams) => {
       asyncDispatch(dispatch)(ProfileActions.createProfileSectionAsync(params));
     },
-    [dispatch, profileId],
+    [dispatch],
   );
 
   const updateProfileSection = useCallback(
     (params: ProfileActions.UpdateProfileSectionAsyncParams) => {
       asyncDispatch(dispatch)(ProfileActions.updateProfileSectionAsync(params));
     },
-    [dispatch, profileId],
+    [dispatch],
   );
 
   return {
