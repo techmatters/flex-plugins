@@ -22,15 +22,12 @@ import * as t from './types';
 
 export const loadProfileFlagsAsync = createAsyncAction(t.LOAD_PROFILE_FLAGS, ProfileService.getProfileFlags);
 
-const loadProfileFlagsEntryIntoRedux = (state: t.ProfileState, profileFlagsUpdate: any) => ({
+const loadProfileFlagsEntryIntoRedux = (state: t.ProfileFlagsState, profileFlagsUpdate: any) => ({
   ...state,
-  profileFlags: {
-    ...state.profileFlags,
-    ...profileFlagsUpdate,
-  },
+  ...profileFlagsUpdate,
 });
 
-const handleLoadProfileFlagsPendingAction = (state: t.ProfileState) => {
+const handleLoadProfileFlagsPendingAction = (state: t.ProfileFlagsState) => {
   const update = {
     loading: true,
     error: undefined,
@@ -39,7 +36,7 @@ const handleLoadProfileFlagsPendingAction = (state: t.ProfileState) => {
   return loadProfileFlagsEntryIntoRedux(state, update);
 };
 
-const handleLoadProfileFlagsRejectedAction = (state: t.ProfileState, action: any) => {
+const handleLoadProfileFlagsRejectedAction = (state: t.ProfileFlagsState, action: any) => {
   const error = parseFetchError(action.payload);
 
   const update = {
@@ -50,7 +47,7 @@ const handleLoadProfileFlagsRejectedAction = (state: t.ProfileState, action: any
   return loadProfileFlagsEntryIntoRedux(state, update);
 };
 
-const handleLoadProfileFlagsFulfilledAction = (state: t.ProfileState, action: any) => {
+const handleLoadProfileFlagsFulfilledAction = (state: t.ProfileFlagsState, action: any) => {
   const update = {
     loading: false,
     data: action.payload,
@@ -59,71 +56,9 @@ const handleLoadProfileFlagsFulfilledAction = (state: t.ProfileState, action: an
   return loadProfileFlagsEntryIntoRedux(state, update);
 };
 
-export const associateProfileFlagAsync = createAsyncAction(
-  t.ASSOCIATE_PROFILE_FLAG,
-  ProfileService.associateProfileFlag,
-  (profileId: t.Profile['id'], profileFlagId: t.ProfileFlag['id']) => ({
-    profileId,
-    profileFlagId,
-  }),
-);
-
-export const disassociateProfileFlagAsync = createAsyncAction(
-  t.DISASSOCIATE_PROFILE_FLAG,
-  ProfileService.disassociateProfileFlag,
-  (profileId: t.Profile['id'], profileFlagId: t.ProfileFlag['id']) => ({
-    profileId,
-    profileFlagId,
-  }),
-);
-
-const handleProfileFlagUpdatePendingAction = (state: t.ProfileState, action: any) => {
-  const { profileId } = action.meta;
-
-  const profileUpdate = {
-    loading: true,
-    error: undefined,
-  };
-
-  return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
-};
-
-const handleProfileFlagUpdateRejectedAction = (state: t.ProfileState, action: any) => {
-  const { profileId } = action.meta;
-  const error = parseFetchError(action.payload);
-
-  const profileUpdate = {
-    loading: false,
-    error,
-  };
-
-  return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
-};
-
-const handleProfileFlagUpdateFulfilledAction = (state: t.ProfileState, action: any) => {
-  const { profileId } = action.meta;
-
-  const profileUpdate = {
-    loading: false,
-    data: {
-      ...t.newProfileEntry,
-      ...state.profiles[profileId].data,
-      ...action.payload,
-    },
-  };
-
-  return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
-};
-
-export const profileFlagsReducer = (initialState: t.ProfileState) =>
+export const profileFlagsReducer = (initialState: t.ProfileFlagsState = t.initialProfileFlagsState) =>
   createReducer(initialState, handleAction => [
     handleAction(loadProfileFlagsAsync.pending, handleLoadProfileFlagsPendingAction),
     handleAction(loadProfileFlagsAsync.rejected, handleLoadProfileFlagsRejectedAction),
     handleAction(loadProfileFlagsAsync.fulfilled, handleLoadProfileFlagsFulfilledAction),
-    handleAction(associateProfileFlagAsync.pending, handleProfileFlagUpdatePendingAction),
-    handleAction(associateProfileFlagAsync.rejected, handleProfileFlagUpdateRejectedAction),
-    handleAction(associateProfileFlagAsync.fulfilled, handleProfileFlagUpdateFulfilledAction),
-    handleAction(disassociateProfileFlagAsync.pending, handleProfileFlagUpdatePendingAction),
-    handleAction(disassociateProfileFlagAsync.rejected, handleProfileFlagUpdateRejectedAction),
-    handleAction(disassociateProfileFlagAsync.fulfilled, handleProfileFlagUpdateFulfilledAction),
   ]);

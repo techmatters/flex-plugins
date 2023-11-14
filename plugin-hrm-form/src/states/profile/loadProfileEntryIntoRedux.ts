@@ -17,25 +17,20 @@
 import * as t from './types';
 
 const loadProfileEntryIntoRedux = (
-  state: t.ProfileState,
+  state: t.ProfilesState,
   profileId: t.Profile['id'],
   profileUpdate: Partial<t.ProfileEntry>,
-): t.ProfileState => {
-  const { profiles: oldProfiles } = state;
-  const existingProfile = oldProfiles[profileId];
+): t.ProfilesState => {
+  const existingProfile = state[profileId];
   const newProfile = {
     ...t.newProfileEntry,
     ...existingProfile,
     ...profileUpdate,
   };
-  const profiles = {
-    ...oldProfiles,
-    [profileId]: newProfile,
-  };
 
   return {
     ...state,
-    profiles,
+    [profileId]: newProfile,
   };
 };
 
