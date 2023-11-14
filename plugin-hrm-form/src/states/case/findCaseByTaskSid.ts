@@ -16,8 +16,7 @@
 
 import { RootState } from '..';
 import { Case } from '../../types/types';
-import { contactFormsBase, connectedCaseBase, searchContactsBase, namespace } from '../storeNamespaces';
-import findContactByTaskSid from '../contacts/findContactByTaskSid';
+import { connectedCaseBase, namespace } from '../storeNamespaces';
 
 const findCaseByTaskSid = (state: RootState, taskSid: string): Case =>
   state[namespace][connectedCaseBase].tasks[taskSid]?.connectedCase;
