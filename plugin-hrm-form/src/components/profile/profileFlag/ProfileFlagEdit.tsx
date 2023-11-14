@@ -60,6 +60,17 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
       value="false"
       renderValue={renderValue}
       variant="standard"
+      MenuProps={{
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'left',
+        },
+        transformOrigin: {
+          vertical: 'top',
+          horizontal: 'left',
+        },
+        getContentAnchorEl: null,
+      }}
     >
       {availableFlags.map((flag: ProfileFlag) => (
         <StyledMenuItem key={flag.id} onClick={() => associateProfileFlag(flag.id)}>
