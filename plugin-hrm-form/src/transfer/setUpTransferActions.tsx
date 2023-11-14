@@ -152,7 +152,12 @@ const takeControlIfTransfer = async (task: ITask) => {
   if (TransferHelpers.isColdTransfer(task)) await TransferHelpers.takeTaskControl(task);
 };
 
-const handleTransferredTask = async (task: ITask) => {
+export const handleTransferredTask = async (task: ITask) => {
+  try {
+    await restoreFormIfTransfer(task);
+  } catch (err) {
+    console.error('Error transferring form state as part of task', err);
+  }
   await takeControlIfTransfer(task);
   const { source: convo, participants, isLoadingParticipants } = StateHelper.getConversationStateForTask(task) ?? {};
   if (convo) {
@@ -167,21 +172,10 @@ const handleTransferredTask = async (task: ITask) => {
       });
     }
   }
-  try {
-    await restoreFormIfTransfer(task);
-  } catch (err) {
-    console.error('Error transferring form state as part of task', err);
-  }
-};
-
-const afterAcceptTask = (transfersEnabled: boolean) => async ({ task }: ActionPayload) => {
-  if (transfersEnabled && TransferHelpers.hasTransferStarted(task)) await handleTransferredTask(task);
-  else prepopulateForm(task);
 };
 
 export const setUpTransferActions = (transfersEnabled: boolean, setupObject: SetupObject) => {
   setUpTransfersNotifications();
   if (transfersEnabled) Flex.Actions.replaceAction('TransferTask', customTransferTask(setupObject));
-  Flex.Actions.addListener('afterAcceptTask', afterAcceptTask(transfersEnabled));
   Flex.Actions.addListener('afterCancelTransfer', afterCancelTransfer);
 };

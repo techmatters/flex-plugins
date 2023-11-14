@@ -42,6 +42,7 @@ export const newContactMetaData = (recreated: boolean): ContactMetadata => {
     endMillis: null,
     recreated,
     categories: categoriesMeta,
+    saveStatus: 'saved',
   };
 };
 export const newContact = (definitions: DefinitionVersion, task?: ITask | OfflineContactTask): Contact => {

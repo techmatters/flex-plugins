@@ -19,11 +19,7 @@ import promiseMiddleware from 'redux-promise-middleware';
 import { connectToCase, updateContactInHrm } from '../../../services/ContactService';
 import { completeTask, submitContactForm } from '../../../services/formSubmissionHelpers';
 import { Case, CustomITask, Contact } from '../../../types/types';
-import {
-  ExistingContactsState,
-  initialState as existingContactInitialState,
-} from '../../../states/contacts/existingContacts';
-import { ContactMetadata } from '../../../states/contacts/types';
+import { ContactMetadata, ContactsState } from '../../../states/contacts/types';
 import {
   connectToCaseAsyncAction,
   saveContactReducer,
@@ -31,6 +27,7 @@ import {
   updateContactInHrmAsyncAction,
 } from '../../../states/contacts/saveContact';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
+import { initialState } from '../../../states/contacts/reducer';
 
 jest.mock('../../../services/ContactService');
 jest.mock('../../../services/formSubmissionHelpers');
@@ -48,11 +45,11 @@ beforeEach(() => {
   mockCompleteTask.mockReset();
 });
 
-const boundSaveContactReducer = saveContactReducer(existingContactInitialState);
+const boundSaveContactReducer = saveContactReducer(initialState);
 
-const testStore = (stateChanges: ExistingContactsState) =>
+const testStore = (stateChanges: ContactsState) =>
   configureStore({
-    preloadedState: { ...existingContactInitialState, ...stateChanges },
+    preloadedState: { ...initialState, ...stateChanges },
     reducer: boundSaveContactReducer,
     middleware: getDefaultMiddleware => [
       ...getDefaultMiddleware({ serializableCheck: false, immutableCheck: false }),
@@ -105,11 +102,14 @@ const baseCase: Case = {
   connectedContacts: [baseContact] as Contact[],
 };
 
-const baseState: ExistingContactsState = {
-  [baseContact.id]: {
-    savedContact: baseContact,
-    references: new Set('x'),
-    metadata: VALID_EMPTY_METADATA,
+const baseState: ContactsState = {
+  ...initialState,
+  existingContacts: {
+    [baseContact.id]: {
+      savedContact: baseContact,
+      references: new Set('x'),
+      metadata: VALID_EMPTY_METADATA,
+    },
   },
 } as const;
 
@@ -119,27 +119,33 @@ describe('actions', () => {
   test('Calls the updateContactsFormInHrmAsyncAction action, and update a contact', async () => {
     const { dispatch, getState } = testStore(baseState);
     const startingState = getState();
+    const startingContactState = startingState.existingContacts[baseContact.id];
     const mockSavedContact = { id: '12', ...VALID_EMPTY_CONTACT }; // Create a mock savedContact object
     mockUpdateContactInHrm.mockResolvedValue(mockSavedContact);
 
-    (await (dispatch(
-      updateContactInHrmAsyncAction(baseContact, { conversationDuration: 1234 }),
-    ) as unknown)) as Promise<void>;
+    await (dispatch(updateContactInHrmAsyncAction(baseContact, { conversationDuration: 1234 })) as unknown);
     const state = getState();
 
     expect(updateContactInHrm).toHaveBeenCalledWith(baseContact.id, { conversationDuration: 1234 });
 
     expect(state).toStrictEqual({
-      [baseContact.id]: {
-        ...startingState[baseContact.id],
-        draftContact: undefined,
-        savedContact: {
-          ...startingState[baseContact.id].savedContact,
-          conversationDuration: 1234,
+      ...baseState,
+      existingContacts: {
+        [baseContact.id]: {
+          ...startingContactState,
+          draftContact: undefined,
+          savedContact: {
+            ...startingContactState.savedContact,
+            conversationDuration: 1234,
+          },
+          metadata: {
+            ...startingContactState.metadata,
+            saveStatus: 'saving',
+          },
         },
-      },
-      [mockSavedContact.id]: {
-        ...state[mockSavedContact.id],
+        [mockSavedContact.id]: {
+          ...state.existingContacts[mockSavedContact.id],
+        },
       },
     });
   });
@@ -158,35 +164,44 @@ describe('actions', () => {
   test('Nothing currently for that ID - adds the contact with provided reference and blank categories state', () => {
     const newState = boundSaveContactReducer(
       {
-        [baseContact.id]: {
-          savedContact: baseContact,
-          references: new Set(['TEST_REFERENCE']),
-          metadata: VALID_EMPTY_METADATA,
+        ...baseState,
+        existingContacts: {
+          [baseContact.id]: {
+            savedContact: baseContact,
+            references: new Set(['TEST_REFERENCE']),
+            metadata: VALID_EMPTY_METADATA,
+          },
         },
-      },
+      } as ContactsState,
       updateContactInHrmAsyncAction(baseContact, { conversationDuration: 1234 }),
     );
-    expect(newState[baseContact.id].savedContact).toStrictEqual(baseContact);
-    expect(newState[baseContact.id].references.size).toStrictEqual(1);
-    expect(newState[baseContact.id].references.has('TEST_REFERENCE')).toBeTruthy();
-    expect(newState[baseContact.id].metadata).toStrictEqual(VALID_EMPTY_METADATA);
+    const newContactState = newState.existingContacts[baseContact.id];
+    expect(newContactState.savedContact).toStrictEqual(baseContact);
+    expect(newContactState.references.size).toStrictEqual(1);
+    expect(newContactState.references.has('TEST_REFERENCE')).toBeTruthy();
+    expect(newContactState.metadata).toStrictEqual(VALID_EMPTY_METADATA);
   });
 
   test('Same contact currently loaded for that ID with a different reference - leaves contact the same and adds the reference', () => {
     const newState = boundSaveContactReducer(
       {
-        [baseContact.id]: {
-          savedContact: baseContact,
-          references: new Set(['TEST_FIRST_REFERENCE', 'TEST_SECOND_REFERENCE']),
-          metadata: VALID_EMPTY_METADATA,
+        ...baseState,
+        existingContacts: {
+          ...baseState.existingContacts,
+          [baseContact.id]: {
+            savedContact: baseContact,
+            references: new Set(['TEST_FIRST_REFERENCE', 'TEST_SECOND_REFERENCE']),
+            metadata: VALID_EMPTY_METADATA,
+          },
         },
       },
       updateContactInHrmAsyncAction(baseContact, { conversationDuration: 1234 }, 'demo-v1'),
     );
-    expect(newState[baseContact.id].savedContact).toStrictEqual(baseContact);
-    expect(newState[baseContact.id].references.size).toStrictEqual(2);
-    expect([...newState[baseContact.id].references]).toEqual(
-      expect.arrayContaining(['TEST_FIRST_REFERENCE', 'TEST_SECOND_REFERENCE']),
-    );
+    const newContactState = newState.existingContacts[baseContact.id];
+    expect(newContactState.savedContact).toStrictEqual(baseContact);
+    expect(newContactState.references.size).toStrictEqual(2);
+    expect(newContactState.references.has('TEST_FIRST_REFERENCE')).toBeTruthy();
+    expect(newContactState.references.has('TEST_SECOND_REFERENCE')).toBeTruthy();
+    expect(newContactState.references.size).toBe(2);
   });
 });

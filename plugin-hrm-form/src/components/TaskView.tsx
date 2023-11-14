@@ -45,6 +45,7 @@ import ContactNotLoaded from './ContactNotLoaded';
 import { completeTask } from '../services/formSubmissionHelpers';
 import { newContact } from '../states/contacts/contactState';
 import asyncDispatch from '../states/asyncDispatch';
+import selectIsContactCreating from '../states/contacts/selectIsContactCreating';
 
 type OwnProps = {
   task: CustomITask;
@@ -63,13 +64,14 @@ const TaskView: React.FC<Props> = props => {
     updateHelpline,
     loadContactFromHrmByTaskSid,
     createContact,
+    contactIsCreating,
   } = props;
 
   React.useEffect(() => {
     if (shouldRecreateState) {
       if (isOfflineContactTask(task)) {
         loadContactFromHrmByTaskSid();
-      } else {
+      } else if (TaskHelper.isTaskAccepted(task) && hasTaskControl(task)) {
         createContact(currentDefinitionVersion);
       }
     }
@@ -129,7 +131,7 @@ const TaskView: React.FC<Props> = props => {
       />
     );
   // If state is partially loaded, don't render until everything settles
-  if (shouldRecreateState) {
+  if (shouldRecreateState || contactIsCreating) {
     return null;
   }
 
@@ -168,6 +170,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const contactFormStateExists = Boolean(savedContact);
   const routingStateExists = Boolean(task && state[namespace][routingBase].tasks[task.taskSid]);
   const searchStateExists = Boolean(task && state[namespace][searchContactsBase].tasks[task.taskSid]);
+  const contactIsCreating = selectIsContactCreating(state, task.taskSid);
 
   const shouldRecreateState =
     currentDefinitionVersion && (!contactFormStateExists || !routingStateExists || !searchStateExists);
@@ -176,6 +179,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     unsavedContact,
     shouldRecreateState,
     currentDefinitionVersion,
+    contactIsCreating,
   };
 };
 
