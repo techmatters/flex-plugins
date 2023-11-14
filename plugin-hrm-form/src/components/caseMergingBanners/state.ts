@@ -60,7 +60,7 @@ const initialState: CaseMergingBannersState = {};
 
 export const selectCaseMergingBanners = (state: RootState, contactId: string): CaseMergingBannersState['contactId'] =>
   state[namespace].caseMergingBanners[contactId] || {
-    showConnectedToCaseBanner: false,
+    showConnectedToCaseBanner: true,
     showRemovedFromCaseBanner: false,
   };
 

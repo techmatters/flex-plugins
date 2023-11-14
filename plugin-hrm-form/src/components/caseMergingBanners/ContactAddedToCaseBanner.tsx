@@ -18,13 +18,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { showRemovedFromCaseBannerAction } from './state';
-import { namespace } from '../../states/storeNamespaces';
 import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
-import findCaseById from '../../states/case/findCaseById';
 import asyncDispatch from '../../states/asyncDispatch';
 import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { setConnectedCase } from '../../states/case/actions';
+import findCaseByTaskSid from '../../states/case/findCaseByTaskSid';
 import type { Case } from '../../types/types';
 
 type OwnProps = {
@@ -35,12 +34,10 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 
 const mapStateToProps = (state, { taskId }: OwnProps) => {
   const contact = findContactByTaskSid(state, taskId);
-  const { caseId } = contact.savedContact;
-  const cas = findCaseById(state, taskId, caseId);
+  const connectedCase = findCaseByTaskSid(state, taskId);
   return {
-    definitionVersions: state[namespace].configuration.definitionVersions,
     contact: contact.savedContact,
-    cas,
+    connectedCase,
   };
 };
 
@@ -55,8 +52,13 @@ const mapDispatchToProps = (dispatch, { taskId }: OwnProps) => ({
   },
 });
 
-const ContactAddedToCaseBanner: React.FC<Props> = ({ cas, contact, viewCaseDetails, removeContactFromCase }) => {
-  if (cas === undefined) return null;
+const ContactAddedToCaseBanner: React.FC<Props> = ({
+  connectedCase,
+  contact,
+  viewCaseDetails,
+  removeContactFromCase,
+}) => {
+  if (connectedCase === undefined) return null;
 
   return (
     <div
@@ -82,7 +84,7 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({ cas, contact, viewCaseDetai
       <span style={{ color: '#282A2B', fontWeight: 700, marginLeft: '8px', marginRight: '1ch' }}>Contact added to</span>
       <button
         type="button"
-        onClick={() => viewCaseDetails(cas)}
+        onClick={() => viewCaseDetails(connectedCase)}
         style={{
           color: '#0263E0',
           fontSize: '14px',
@@ -92,11 +94,11 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({ cas, contact, viewCaseDetai
           cursor: 'pointer',
         }}
       >
-        Case #{cas.id}
+        Case #{connectedCase.id}
       </button>
       <button
         type="button"
-        onClick={() => removeContactFromCase(contact.id, cas.id)}
+        onClick={() => removeContactFromCase(contact.id, connectedCase.id)}
         style={{ color: '#0263E0', marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer' }}
       >
         Remove from Case
