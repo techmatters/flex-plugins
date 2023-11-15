@@ -24,8 +24,7 @@
             "enable_voice_recordings": true
         },
         "helplineLanguage": "en-CA",
-        "permissionConfig": "ca",
-        "enableUnmaskingCalls": true
+        "permissionConfig": "ca"
     },
     "ui_attributes": {
         "colorTheme": {
