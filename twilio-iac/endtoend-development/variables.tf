@@ -23,23 +23,3 @@ variable "environment" {
 variable "short_environment" {
   default = "DEV"
 }
-
-variable "serverless_url" {
-  description = "Twilio Serverless URL"
-  type        = string
-}
-
-variable "service_sid" {
-  description = "Twilio Serverless Service SID"
-  type        = string
-}
-
-variable "environment_sid" {
-  description = "Twilio Serverless Environment SID"
-  type        = string
-}
-
-variable "capture_channel_with_bot_function_sid" {
-  description = "Twilio Serverless Function capture_channel_with_bot SID"
-  type        = string
-}

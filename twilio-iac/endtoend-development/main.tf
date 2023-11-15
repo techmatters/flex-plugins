@@ -35,11 +35,6 @@ provider "twilio" {
   password = local.secrets.twilio_auth_token
 }
 
-module "chatbots" {
-  source         = "../terraform-modules/chatbots/default"
-  serverless_url = module.serverless.serverless_environment_production_url
-}
-
 module "hrmServiceIntegration" {
   source            = "../terraform-modules/hrmServiceIntegration/default"
   local_os          = var.local_os
@@ -75,7 +70,7 @@ module "studioFlow" {
   master_workflow_sid      = module.taskRouter.master_workflow_sid
   chat_task_channel_sid    = module.taskRouter.chat_task_channel_sid
   default_task_channel_sid = module.taskRouter.default_task_channel_sid
-  pre_survey_bot_sid       = module.chatbots.pre_survey_bot_sid
+  pre_survey_bot_sid       = "Deleted"
   serverless_url           = module.serverless.serverless_environment_production_url
   service_sid              = module.serverless.serverless_service_sid
   environment_sid          = module.serverless.serverless_environment_production_sid
