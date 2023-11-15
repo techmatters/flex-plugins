@@ -48,8 +48,6 @@ export const loadRelationshipAsync = createAsyncAction(
     const offset = loadedPage === 0 ? 0 : loadedPage * PAGE_SIZE;
     const limit = (page + 1 - loadedPage) * PAGE_SIZE || PAGE_SIZE;
 
-    console.log('>>>called loadRelationshipAsync', { loadedPage, page, offset, limit });
-
     return t.PROFILE_RELATIONSHIPS[type].method(profileId, offset, limit);
   },
   (params: LoadRelationshipAsyncParams) => params,
@@ -333,7 +331,6 @@ export type UpdateProfileSectionAsyncParams = CreateProfileSectionAsyncParams & 
 export const updateProfileSectionAsync = createAsyncAction(
   t.UPDATE_PROFILE_SECTION,
   async ({ profileId, sectionId, content }: UpdateProfileSectionAsyncParams) => {
-    console.log('>>> updateProfileSectionAsync', profileId, sectionId, content);
     return ProfileService.updateProfileSection(profileId, sectionId, content);
   },
   (params: UpdateProfileSectionAsyncParams) => params,

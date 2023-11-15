@@ -83,7 +83,6 @@ type CaseCoreRoute = {
   route: 'case';
   autoFocus?: boolean;
   isCreating?: boolean;
-  closeModal?: () => void;
 };
 
 type CaseHomeRoute = CaseCoreRoute &
