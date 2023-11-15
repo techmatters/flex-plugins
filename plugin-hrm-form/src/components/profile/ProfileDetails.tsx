@@ -14,12 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { IconButton, Template } from '@twilio/flex-ui';
 
 import { ProfileCommonProps } from './types';
 import ProfileFlagList from './profileFlag/ProfileFlagList';
+import ProfileFlagEdit from './profileFlag/ProfileFlagEdit';
 import { DetailsWrapper, ProfileSubtitle } from './styles';
 import { Bold, Box, Column, Flex } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
@@ -34,6 +35,7 @@ type Section = {
   margin: string;
   renderComponent: () => React.ReactNode;
   handleEdit?: () => void;
+  inInlineEditMode?: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -41,6 +43,7 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, openSectionEditModal }) => {
   const { profile } = useProfile({ profileId });
+  const [shouldEditProfileFlags, setShouldEditProfileFlags] = useState(false);
 
   const baseSections: Section[] = [
     {
@@ -56,8 +59,14 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
     {
       titleCode: 'Profile-StatusHeader',
       margin: '10px 4px',
-      renderComponent: () => <ProfileFlagList profileId={profileId} task={task} />,
-      handleEdit: () => openFlagEditModal(),
+      renderComponent: () =>
+        shouldEditProfileFlags ? (
+          <ProfileFlagEdit profileId={profileId} task={task} />
+        ) : (
+          <ProfileFlagList profileId={profileId} task={task} />
+        ),
+      handleEdit: () => setShouldEditProfileFlags(!shouldEditProfileFlags),
+      inInlineEditMode: shouldEditProfileFlags,
     },
   ];
 
@@ -81,11 +90,20 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
   };
 
   const renderEditButton = section => {
-    return section.handleEdit ? (
+    if (!section.handleEdit) return null;
+
+    let icon = 'Edit';
+    let title = 'Edit';
+    if (section.hasOwnProperty('inInlineEditMode') && section.inInlineEditMode) {
+      icon = 'Close';
+      title = 'Close Edit';
+    }
+
+    return (
       <Box alignSelf="center">
-        <IconButton icon="Edit" title="Edit" size="small" onClick={section.handleEdit} />
+        <IconButton icon={icon} title={title} size="small" onClick={section.handleEdit} />
       </Box>
-    ) : null;
+    );
   };
 
   const renderSection = (section: any) => {
@@ -124,7 +142,7 @@ const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
     openFlagEditModal: () => {
       dispatch(newOpenModalAction({ route: 'profileFlagEdit', id: profileId }, taskId));
     },
-    openSectionEditModal: type => {
+    openSectionEditModal: (type: string) => {
       dispatch(newOpenModalAction({ route: 'profileSectionEdit', type, id: profileId }, taskId));
     },
   };

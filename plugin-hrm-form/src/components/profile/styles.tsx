@@ -97,8 +97,8 @@ export const CloseIconButton = withStyles({
   root: {
     width: '23px',
     height: '16px',
-    margin: '5px',
-    padding: '0 2px',
+    margin: '1px',
+    padding: '0 1px',
     cursor: 'pointer',
   },
 })(CloseIcon);
