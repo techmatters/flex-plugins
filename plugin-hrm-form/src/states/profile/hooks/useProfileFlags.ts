@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import asyncDispatch from '../../asyncDispatch';
 import { Profile, ProfileFlag } from '../types';
+import * as ProfileActions from '../profile';
 import * as ProfileFlagActions from '../profileFlag';
 import * as ProfileSelectors from '../selectors';
 import { namespace, profileBase } from '../../storeNamespaces';
@@ -78,7 +79,7 @@ export const useEditProfileFlags = (profileId?: Profile['id']): UseEditProfileFl
   const associateProfileFlag = useCallback(
     (profileFlagId: ProfileFlag['id']) => {
       if (!profileId) return;
-      asyncDispatch(dispatch)(ProfileFlagActions.associateProfileFlagAsync(profileId, profileFlagId));
+      asyncDispatch(dispatch)(ProfileActions.associateProfileFlagAsync(profileId, profileFlagId));
     },
     [dispatch, profileId],
   );
@@ -86,7 +87,7 @@ export const useEditProfileFlags = (profileId?: Profile['id']): UseEditProfileFl
   const disassociateProfileFlag = useCallback(
     (profileFlagId: ProfileFlag['id']) => {
       if (!profileId) return;
-      asyncDispatch(dispatch)(ProfileFlagActions.disassociateProfileFlagAsync(profileId, profileFlagId));
+      asyncDispatch(dispatch)(ProfileActions.disassociateProfileFlagAsync(profileId, profileFlagId));
     },
     [dispatch, profileId],
   );

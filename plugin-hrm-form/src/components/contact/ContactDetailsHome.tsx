@@ -255,7 +255,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
-  const profileLink = featureFlags.enable_client_profiles && (
+  const profileLink = featureFlags.enable_client_profiles && savedContact.profileId && (
     <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>
       View Profile
     </SectionActionButton>
