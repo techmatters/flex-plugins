@@ -82,6 +82,7 @@ type CaseListRoute = RouteWithModalSupport & {
 type CaseCoreRoute = {
   route: 'case';
   autoFocus?: boolean;
+  isCreating?: boolean;
 };
 
 type CaseHomeRoute = CaseCoreRoute &

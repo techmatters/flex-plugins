@@ -23,6 +23,7 @@ import { UPDATE_CASE_ACTION, CREATE_CASE_ACTION, SavedCaseStatus, CaseState } fr
 import type { RootState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { connectToCase } from '../../services/ContactService';
+import { connectToCaseAsyncAction } from '../contacts/saveContact';
 
 export const createCaseAsyncAction = createAsyncAction(
   CREATE_CASE_ACTION,
@@ -65,30 +66,39 @@ const handlePendingAction = (handleAction, asyncAction) =>
     };
   });
 
+const updateConnectedCase = (state, rootState, connectedCase, taskSid) => {
+  const caseDefinitionVersion = (rootState as RootState['plugin-hrm-form']).configuration.definitionVersions[
+    connectedCase?.info?.definitionVersion
+  ];
+
+  return {
+    state: {
+      ...state,
+      tasks: {
+        ...state.tasks,
+        [taskSid]: {
+          connectedCase,
+          caseWorkingCopy: { sections: {} },
+          availableStatusTransitions: caseDefinitionVersion
+            ? getAvailableCaseStatusTransitions(connectedCase, caseDefinitionVersion)
+            : [],
+        },
+      },
+    },
+    rootState,
+  };
+};
+
 const handleFulfilledAction = (handleAction, asyncAction) =>
   handleAction(
     asyncAction,
-    ({ state, rootState }, { payload: { case: connectedCase, taskSid } }): SaveCaseReducerState => {
-      const caseDefinitionVersion = (rootState as RootState['plugin-hrm-form']).configuration.definitionVersions[
-        connectedCase?.info?.definitionVersion
-      ];
-      return {
-        state: {
-          ...state,
-          tasks: {
-            ...state.tasks,
-            [taskSid]: {
-              connectedCase,
-              caseWorkingCopy: { sections: {} },
-              availableStatusTransitions: caseDefinitionVersion
-                ? getAvailableCaseStatusTransitions(connectedCase, caseDefinitionVersion)
-                : [],
-            },
-          },
-        },
-        rootState,
-      };
-    },
+    ({ state, rootState }, { payload: { case: connectedCase, taskSid } }): SaveCaseReducerState =>
+      updateConnectedCase(state, rootState, connectedCase, taskSid),
+  );
+
+const handleConnectToCaseFulfilledAction = (handleAction, asyncAction: typeof connectToCaseAsyncAction.fulfilled) =>
+  handleAction(asyncAction, ({ state, rootState }, { payload: { contact, contactCase } }) =>
+    updateConnectedCase(state, rootState, contactCase, contact.taskId),
   );
 
 const handleRejectedAction = (handleAction, asyncAction) =>
@@ -112,4 +122,6 @@ export const saveCaseReducer = (initialState: SaveCaseReducerState) =>
     handlePendingAction(handleAction, createCaseAsyncAction.pending),
     handleFulfilledAction(handleAction, createCaseAsyncAction.fulfilled),
     handleRejectedAction(handleAction, createCaseAsyncAction.rejected),
+
+    handleConnectToCaseFulfilledAction(handleAction, connectToCaseAsyncAction.fulfilled),
   ]);
