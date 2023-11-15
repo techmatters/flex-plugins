@@ -63,6 +63,7 @@ module "taskRouter" {
   source         = "../terraform-modules/taskRouter/default"
   serverless_url = module.serverless.serverless_environment_production_url
   helplines      = ["Childline", ""]
+  custom_task_routing_filter_expression = "helpline IN ['Childline', ''] AND routing.skills HAS 'automated-test'"
 }
 
 module "studioFlow" {
