@@ -33,6 +33,7 @@ import {
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
 
 jest.mock('../../../services/ContactService');
+jest.mock('../../../services/CaseService');
 jest.mock('../../../services/formSubmissionHelpers');
 jest.mock('../../../components/case/Case');
 
