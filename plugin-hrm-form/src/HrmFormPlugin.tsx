@@ -31,7 +31,6 @@ import setUpMonitoring from './utils/setUpMonitoring';
 import { changeLanguage } from './states/configuration/actions';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from './permissions';
 import {
-  getAseloConfigFlags,
   getAseloFeatureFlags,
   getHrmConfig,
   getTemplateStrings,
@@ -48,6 +47,7 @@ import { setupConferenceComponents, setUpConferenceActions } from './conference'
 import { setUpTransferActions } from './transfer/setUpTransferActions';
 import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
+import { setUpMaskedIdentifiers } from './components/common/MaskingIdentifiers';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -79,24 +79,8 @@ const setUpComponents = (
 ) => {
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
-  if (maskIdentifiers) {
-    // Mask the identifiers in all default channels
-    Channels.maskIdentifiersForDefaultChannels();
 
-    // Mask the username within the messable bubbles in an conversation
-    Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
-      theirDefaultName: 'XXXXXX',
-      theirFriendlyNameOverride: false,
-      yourFriendlyNameOverride: true,
-    };
-    Flex.MessageList.Content.remove('0');
-    // Masks TaskInfoPanelContent - TODO: refactor to use a react component
-    const strings = getTemplateStrings();
-    strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
-    strings.CallParticipantCustomerName = strings.MaskIdentifiers;
-
-    Components.setUpViewMaskedVoiceNumber();
-  }
+  if (maskIdentifiers) setUpMaskedIdentifiers();
 
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
@@ -108,6 +92,7 @@ const setUpComponents = (
   Channels.setupTwitterChatChannel(maskIdentifiers);
   Channels.setupInstagramChatChannel(maskIdentifiers);
   Channels.setupLineChatChannel(maskIdentifiers);
+
   if (featureFlags.enable_transfers) {
     Components.setUpTransferComponents();
     Channels.setUpIncomingTransferMessage();
