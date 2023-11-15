@@ -24,7 +24,7 @@ import asyncDispatch from '../../states/asyncDispatch';
 import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { setConnectedCase } from '../../states/case/actions';
-import findCaseByTaskSid from '../../states/case/findCaseByTaskSid';
+import selectCaseByTaskSid from '../../states/case/selectCaseByTaskSid';
 import type { Case } from '../../types/types';
 import { BannerContainer, Text, CaseLink, RemoveFromCaseLink } from './styles';
 import InfoIcon from './InfoIcon';
@@ -37,7 +37,7 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 
 const mapStateToProps = (state, { taskId }: OwnProps) => {
   const contact = findContactByTaskSid(state, taskId);
-  const connectedCase = findCaseByTaskSid(state, taskId);
+  const connectedCase = selectCaseByTaskSid(state, taskId);
   return {
     contact: contact.savedContact,
     connectedCase,

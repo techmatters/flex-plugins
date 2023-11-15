@@ -18,7 +18,7 @@ import { RootState } from '..';
 import { Case } from '../../types/types';
 import { connectedCaseBase, namespace } from '../storeNamespaces';
 
-const findCaseByTaskSid = (state: RootState, taskSid: string): Case =>
+const selectCaseByTaskSid = (state: RootState, taskSid: string): Case =>
   state[namespace][connectedCaseBase].tasks[taskSid]?.connectedCase;
 
-export default findCaseByTaskSid;
+export default selectCaseByTaskSid;

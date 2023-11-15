@@ -53,7 +53,7 @@ Text.displayName = 'Text';
 
 type ButtonProps = {
   onClick: () => void;
-}
+};
 
 export const CaseLink = styled('button')<ButtonProps>`
   color: #0263e0;
