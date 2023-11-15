@@ -39,10 +39,7 @@ type OwnProps = {
   onCloseModal?: () => void;
 };
 
-const mapStateToProps = (
-  { [namespace]: { searchContacts, configuration, routing } }: RootState,
-  { task: { taskSid } }: OwnProps,
-) => {
+const mapStateToProps = ({ [namespace]: { routing } }: RootState, { task: { taskSid } }: OwnProps) => {
   const routeStack = getCurrentTopmostRouteStackForTask(routing, taskSid);
   return {
     routing: routeStack[routeStack.length - 1],

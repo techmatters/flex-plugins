@@ -44,6 +44,7 @@ export type TabbedFormRoute = {
 export type SearchRoute = RouteWithModalSupport & {
   route: 'search';
   subroute: 'form' | 'case-results' | 'contact-results';
+  action?: 'select-case';
 };
 
 export const NewCaseSectionSubroutes = {
