@@ -61,7 +61,7 @@ import { namespace } from '../../states/storeNamespaces';
 import Search from '../search';
 import { getCurrentBaseRoute, getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { CaseLayout } from '../../styles/case';
-import Case from '../case/Case';
+import Case, { OwnProps as CaseProps } from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
 import ViewContact from '../case/ViewContact';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
@@ -205,10 +205,19 @@ const TabbedForms: React.FC<Props> = ({
     // Editing the case in the profile view case form will probably not work
     // as expected without some additional work.
     const isCreating = currentRoute.hasOwnProperty('isCreating') ? currentRoute.isCreating : true;
-    const handleCloseModal = isCreating ? closeModal() : undefined;
+    const caseProps: CaseProps = {
+      task,
+      isCreating,
+    };
+
+    if (isCreating) {
+      caseProps.onNewCaseSaved = onNewCaseSaved;
+      caseProps.handleClose = closeModal;
+    }
+
     return (
       <CaseLayout>
-        <Case task={task} isCreating={isCreating} onNewCaseSaved={onNewCaseSaved} handleClose={handleCloseModal} />
+        <Case {...caseProps} />
       </CaseLayout>
     );
   }
