@@ -312,8 +312,12 @@ describe('test reducer (specific actions)', () => {
       },
       {
         description: 'Current route is the only route in the base stack - should do nothing',
-        startingState: stateWithRouteStack([{ route: 'select-call-type' }]),
-        expected: stateWithRouteStack([{ route: 'select-call-type' }]),
+        startingState: stateWithRouteStack([
+          { route: 'csam-report', subroute: 'status', previousRoute: { route: 'select-call-type' } },
+        ]),
+        expected: stateWithRouteStack([
+          { route: 'csam-report', subroute: 'status', previousRoute: { route: 'select-call-type' } },
+        ]),
         action: actions.newGoBackAction(task.taskSid),
       },
       {

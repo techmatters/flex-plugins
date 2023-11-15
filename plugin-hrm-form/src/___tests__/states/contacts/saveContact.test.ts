@@ -132,6 +132,11 @@ describe('actions', () => {
     expect(state).toStrictEqual({
       [baseContact.id]: {
         ...startingState[baseContact.id],
+        draftContact: undefined,
+        savedContact: {
+          ...startingState[baseContact.id].savedContact,
+          conversationDuration: 1234,
+        },
       },
       [mockSavedContact.id]: {
         ...state[mockSavedContact.id],

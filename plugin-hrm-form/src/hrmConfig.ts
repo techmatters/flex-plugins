@@ -21,7 +21,8 @@ import { ConfigFlags, FeatureFlags } from './types/types';
 import type { RootState } from './states';
 import { namespace } from './states/storeNamespaces';
 
-const featureFlagEnvVarPrefix = 'REACT_FF_';
+const featureFlagEnvVarPrefix = 'REACT_APP_FF_';
+type ContactSaveFrequency = 'onTabChange' | 'onFinalSaveAndTransfer';
 
 const readConfig = () => {
   const manager = Flex.Manager.getInstance();
@@ -52,6 +53,8 @@ const readConfig = () => {
   const docsBucket = `tl-aselo-docs-${helplineCode}-${environment}`;
 
   const externalRecordingsEnabled = manager.serviceConfiguration.attributes.external_recordings_enabled || false;
+  const contactSaveFrequency: ContactSaveFrequency =
+    manager.serviceConfiguration.attributes.contact_save_frequency || 'onTabChange';
 
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid;
@@ -117,6 +120,7 @@ const readConfig = () => {
       helplineCode,
       environment,
       docsBucket,
+      contactSaveFrequency,
     },
     referrableResources: {
       resourcesBaseUrl,

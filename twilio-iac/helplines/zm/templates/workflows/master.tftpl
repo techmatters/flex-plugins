@@ -1,0 +1,46 @@
+{
+  "task_routing": {
+    "filters": [
+      {
+        "filter_friendly_name": "All Counsellors",
+        "expression": "isContactlessTask==true",
+        "targets": [
+          {
+            "queue": "${task_queues.childline}",
+            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "Lifeline Counselors",
+        "expression": "helpline == 'LifeLine Zambia (ZM)'",
+        "targets": [
+          {
+            "queue": "${task_queues.lifeline}",
+            "expression": "worker.routing.skills HAS task.language AND ((worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.waitingOfflineContact != true",
+            "skip_if": "1==1"
+          },
+          {
+            "queue": "${task_queues.lifeline}",
+            "expression": "(task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.waitingOfflineContact != true"
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "Childline Chat Language Counsellors",
+        "expression": "helpline != 'LifeLine Zambia (ZM)'",
+        "targets": [
+          {
+            "queue": "${task_queues.childline}",
+            "expression": "worker.routing.skills HAS task.language AND ((worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.waitingOfflineContact != true",
+            "skip_if": "1 == 1"
+          },
+          {
+            "queue": "${task_queues.childline}",
+            "expression": "(task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.waitingOfflineContact != true"
+          }
+        ]
+      }
+    ]
+  }
+}

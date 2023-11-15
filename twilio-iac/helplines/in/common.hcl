@@ -5,7 +5,7 @@ locals {
 
   local_config = {
     helpline                          = "Meri Trustline"
-    old_dir_prefix                    = ""
+    old_dir_prefix                    = "aarambh"
     definition_version                = "in-v1"
     default_autopilot_chatbot_enabled = false
     task_language                     = "en-IN"

@@ -25,7 +25,7 @@ import FormNotEditable from './FormNotEditable';
 import { RootState } from '../states';
 import { hasTaskControl } from '../utils/transfer';
 import { CustomITask, isOfflineContactTask, isInMyBehalfITask } from '../types/types';
-import PreviousContactsBanner from './PreviousContactsBanner';
+import ProfileIdentifierBanner from './profile/ProfileIdentifierBanner';
 import { Flex } from '../styles/HrmStyles';
 import { isStandaloneITask } from './case/Case';
 import { getHelplineToSave } from '../services/HelplineService';
@@ -64,9 +64,13 @@ const TaskView: React.FC<Props> = props => {
 
   React.useEffect(() => {
     if (shouldRecreateState) {
-      loadContactFromHrmByTaskSid();
+      if (isOfflineContactTask(task)) {
+        loadContactFromHrmByTaskSid();
+      } else {
+        createContact(currentDefinitionVersion);
+      }
     }
-  }, [currentDefinitionVersion, loadContactFromHrmByTaskSid, shouldRecreateState, task]);
+  }, [createContact, currentDefinitionVersion, loadContactFromHrmByTaskSid, shouldRecreateState, task]);
 
   // Force a re-render on unmount (temporary fix NoTaskView issue with Offline Contacts)
   React.useEffect(() => {
@@ -114,9 +118,11 @@ const TaskView: React.FC<Props> = props => {
     return (
       <ContactNotLoaded
         onReload={async () => {
-          createContact(currentDefinitionVersion);
+          await createContact(currentDefinitionVersion);
         }}
-        onFinish={async () => completeTask(task)}
+        onFinish={async () => {
+          await completeTask(task, unsavedContact);
+        }}
       />
     );
   // If state is partially loaded, don't render until everything settles
@@ -129,12 +135,13 @@ const TaskView: React.FC<Props> = props => {
 
   return (
     <Flex flexDirection="column" style={{ pointerEvents: isFormLocked ? 'none' : 'auto', height: '100%' }}>
-      {featureFlags.enable_previous_contacts && !isModalOpen && <PreviousContactsBanner task={task} />}
+      {featureFlags.enable_previous_contacts && !isModalOpen && <ProfileIdentifierBanner task={task} />}
+
       {isFormLocked && <FormNotEditable />}
       <Flex
         flexDirection="column"
         style={{
-          // This fixes a UI bug where the PreviousContactsBanner pushes the container down
+          // This fixes a UI bug where the ProfileIdentifierBanner pushes the container down
           height: '100%',
           width: '100%',
           overflow: 'auto',

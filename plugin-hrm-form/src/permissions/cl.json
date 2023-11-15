@@ -18,11 +18,13 @@
   "editCaseSummary": [["everyone"]],
   "editChildIsAtRisk": [["everyone"]],
   "editFollowUpDate": [["everyone"]],
+  "updateCaseContacts": [["everyone"]],
 
   "viewContact": [["everyone"]],
   "editContact": [["everyone"]],
   "viewExternalTranscript": [["everyone"]],
   "viewRecording": [["everyone"]],
+  "addContactToCase": [["everyone"]],
   
   "viewPostSurvey":  [["isSupervisor"]],
 

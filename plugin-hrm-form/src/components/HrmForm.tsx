@@ -20,6 +20,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import CallTypeButtons from './callTypeButtons';
+import ProfileRouter, { ALL_PROFILE_ROUTES } from './profile/ProfileRouter';
 import TabbedForms from './tabbedForms';
 import CSAMReport from './CSAMReport/CSAMReport';
 import { RootState } from '../states';
@@ -32,6 +33,7 @@ import { createContactAsyncAction, submitContactFormAsyncAction } from '../state
 import { newContact } from '../states/contacts/contactState';
 import { getHrmConfig } from '../hrmConfig';
 import { getCurrentTopmostRouteForTask } from '../states/routing/getRoute';
+import type { CSAMReportRoute } from '../states/routing/types';
 
 type OwnProps = {
   task: CustomITask;
@@ -45,26 +47,35 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact })
   if (!routing) return null;
   const { route } = routing;
 
-  switch (route) {
-    case 'tabbed-forms':
-    case 'search':
-    case 'contact':
-    case 'case':
-      return (
+  const routes = [
+    {
+      routes: ALL_PROFILE_ROUTES,
+      renderComponent: () => <ProfileRouter task={task} />,
+    },
+    // TODO: move hrm form search into it's own component and use it here so all routes are in one place
+    {
+      routes: ['tabbed-forms', 'search', 'contact', 'case'],
+      renderComponent: () => (
         <TabbedForms
           task={task}
           contactId={savedContact?.id}
           csamClcReportEnabled={featureFlags.enable_csam_clc_report}
           csamReportEnabled={featureFlags.enable_csam_report}
         />
-      );
+      ),
+    },
+    {
+      routes: ['csam-report'],
+      renderComponent: () => (
+        <CSAMReport
+          api={newContactCSAMApi(savedContact.id, task.taskSid, (routing as CSAMReportRoute).previousRoute)}
+        />
+      ),
+    },
+    { routes: ['select-call-type'], renderComponent: () => <CallTypeButtons task={task} /> },
+  ];
 
-    case 'csam-report':
-      return <CSAMReport api={newContactCSAMApi(savedContact.id, task.taskSid, routing.previousRoute)} />;
-    case 'select-call-type':
-    default:
-      return <CallTypeButtons task={task} />;
-  }
+  return routes.find(r => r.routes?.includes(route))?.renderComponent() || null;
 };
 
 HrmForm.displayName = 'HrmForm';

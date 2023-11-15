@@ -24,7 +24,9 @@ import { ChannelTypes } from '../DomainConstants';
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
 export const REMOVE_CONNECTED_CASE = 'REMOVE_CONNECTED_CASE';
 export const UPDATE_CASE_ACTION = 'case-action/update-case';
+export const UPDATE_CASE_ACTION_FULFILLED = `${UPDATE_CASE_ACTION}_FULFILLED` as const;
 export const CREATE_CASE_ACTION = 'case-action/create-case';
+export const CREATE_CASE_ACTION_FULFILLED = `${CREATE_CASE_ACTION}_FULFILLED` as const;
 
 export enum SavedCaseStatus {
   NotSaved,
@@ -162,4 +164,8 @@ export type CaseState = {
       availableStatusTransitions: StatusInfo[];
     };
   };
+};
+
+export type CaseUpdatingAction = {
+  type: typeof CREATE_CASE_ACTION_FULFILLED | typeof UPDATE_CASE_ACTION_FULFILLED;
 };

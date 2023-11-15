@@ -86,7 +86,7 @@ const Case: React.FC<Props> = ({
   closeModal,
   goBack,
   isCreating,
-  handleClose,
+  handleClose = closeModal,
   routing,
   savedContacts,
   loadContacts,
@@ -139,7 +139,7 @@ const Case: React.FC<Props> = ({
     }
     setLoadedContactIds(connectedContacts.map(cc => cc.id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connectedCase, task]);
+  }, [connectedCase, task, workerSid]);
 
   const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;

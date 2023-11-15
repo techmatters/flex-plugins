@@ -55,7 +55,7 @@ import { newCSAMReportActionForContact } from '../../states/csam-report/actions'
 import type { ResourceReferral } from '../../states/contacts/resourceReferral';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
-import { changeRoute } from '../../states/routing/actions';
+import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -116,6 +116,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   savedContact,
   toggleSectionExpandedForContext,
   navigate,
+  openProfileModal,
   enableEditing,
   canViewTwilioTranscript,
   createDraftCsamReport,
@@ -254,11 +255,18 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
+  const profileLink = featureFlags.enable_client_profiles && savedContact.profileId && (
+    <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>
+      View Profile
+    </SectionActionButton>
+  );
+
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
-
       {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
+
+      {profileLink}
 
       <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
@@ -453,6 +461,9 @@ const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) =>
   navigate: (
     form: keyof Pick<ContactRawJson, 'caseInformation' | 'callerInformation' | 'categories' | 'childInformation'>,
   ) => dispatch(changeRoute({ route: 'contact', subroute: 'edit', id: contactId, form }, task.taskSid)),
+  openProfileModal: id => {
+    dispatch(newOpenModalAction({ route: 'profile', id, subroute: 'details' }, task.taskSid));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);

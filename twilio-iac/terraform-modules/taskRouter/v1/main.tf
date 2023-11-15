@@ -25,10 +25,11 @@ resource "twilio_taskrouter_workspaces_v1" "flex_task_assignment" {
 
 // Task Queue
 resource "twilio_taskrouter_workspaces_task_queues_v1" "task_queue" {
-  for_each       = var.task_queues
-  friendly_name  = each.value.friendly_name
-  workspace_sid  = twilio_taskrouter_workspaces_v1.flex_task_assignment.sid
-  target_workers = each.value.target_workers
+  for_each             = var.task_queues
+  friendly_name        = each.value.friendly_name
+  max_reserved_workers = try(each.value.max_reserved_workers, null)
+  workspace_sid        = twilio_taskrouter_workspaces_v1.flex_task_assignment.sid
+  target_workers       = each.value.target_workers
 }
 
 moved {
@@ -52,6 +53,7 @@ resource "twilio_taskrouter_workspaces_workflows_v1" "workflow" {
       helplines                      = local.helplines
       task_routing_filter_expression = local.task_routing_filter_expression
       phone_numbers                  = var.phone_numbers
+      workflow_vars                  = var.workflow_vars
     }
   )
 }

@@ -64,6 +64,7 @@ import Case from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
 import ViewContact from '../case/ViewContact';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
+import { getHrmConfig } from '../../hrmConfig';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
@@ -136,12 +137,15 @@ const TabbedForms: React.FC<Props> = ({
   finaliseContact,
   metadata,
   task,
+  removeIfOfflineContact,
   isCallTypeCaller,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
     mode: 'onChange',
   });
+
+  const { contactSaveFrequency } = getHrmConfig();
 
   const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={savedContact.csamReports} />, [
     savedContact.csamReports,
@@ -177,7 +181,7 @@ const TabbedForms: React.FC<Props> = ({
 
   const onNewCaseSaved = async (caseForm: CaseForm) => {
     await finaliseContact(savedContact, metadata, caseForm);
-    await completeTask(task);
+    await completeTask(task, savedContact);
   };
 
   if (
@@ -226,7 +230,9 @@ const TabbedForms: React.FC<Props> = ({
 
   const handleTabsChange = async (t: number) => {
     const tab = tabsToIndex[t];
-    await saveDraft(savedContact, draftContact);
+    if (contactSaveFrequency === 'onTabChange') {
+      saveDraft(savedContact, draftContact);
+    }
     if (tab === 'search') {
       openSearchModal();
     } else {
@@ -243,9 +249,7 @@ const TabbedForms: React.FC<Props> = ({
       ? [
           {
             label: 'CancelOfflineContact',
-            onClick: async () => {
-              removeOfflineContact();
-            },
+            onClick: () => removeIfOfflineContact(savedContact),
           },
         ]
       : undefined;
@@ -390,6 +394,7 @@ const mapStateToProps = (
   const baseRoute = getCurrentBaseRoute(routing, taskSid);
   const searchModalOpen =
     isRouteWithModalSupport(baseRoute) && baseRoute.activeModal?.length && baseRoute.activeModal[0].route === 'search';
+
   const { currentDefinitionVersion } = configuration;
   return {
     currentRoute,
@@ -424,6 +429,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { contactId, task }: OwnPro
     dispatch(changeRoute({ route: 'select-call-type' }, task.taskSid, ChangeRouteMode.Replace)),
   finaliseContact: (contact: Contact, metadata: ContactMetadata, caseForm: CaseForm) =>
     dispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
+  removeIfOfflineContact: (contact: Contact) => removeOfflineContact(dispatch, contact),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Template, Tab as TwilioTab } from '@twilio/flex-ui';
@@ -73,7 +73,7 @@ type OwnProps = {
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
+// eslint-disable-next-line complexity
 const SearchResults: React.FC<Props> = ({
   task,
   searchContactsResults,
@@ -92,10 +92,23 @@ const SearchResults: React.FC<Props> = ({
   routing,
   isRequestingCases,
   isRequestingContacts,
+  caseRefreshRequired,
+  contactRefreshRequired,
+  searchCase,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [contactsPage, setContactsPage] = useState(0);
   const [casesPage, setCasesPage] = useState(0);
+
+  useEffect(() => {
+    if (contactRefreshRequired) {
+      handleSearchContacts(CONTACTS_PER_PAGE * contactsPage);
+    }
+    if (caseRefreshRequired) {
+      handleSearchCases(CASES_PER_PAGE * casesPage);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contactRefreshRequired, caseRefreshRequired, handleSearchContacts, casesPage, contactsPage]);
 
   if (routing.route !== 'search' || (routing.subroute !== 'case-results' && routing.subroute !== 'contact-results')) {
     return null;
@@ -140,6 +153,60 @@ const SearchResults: React.FC<Props> = ({
   const tabSelected = tabName => {
     changeSearchPage(tabName);
   };
+
+  const caseResults = () => (
+    <>
+      <StyledResultsHeader>
+        <StyledCount data-testid="CasesCount">
+          {casesCount}{' '}
+          {casesCount === 1 ? <Template code="PreviousContacts-Case" /> : <Template code="SearchResultsIndex-Cases" />}{' '}
+        </StyledCount>
+        <StyledFormControlLabel
+          control={
+            <StyledSwitch
+              color="default"
+              size="small"
+              checked={closedCases}
+              onChange={handleToggleClosedCases}
+              disabled={isRequestingContacts}
+            />
+          }
+          label={
+            <SwitchLabel>
+              <Template code="SearchResultsIndex-ClosedCases" />
+            </SwitchLabel>
+          }
+          labelPlacement="start"
+        />
+      </StyledResultsHeader>
+
+      {cases &&
+        cases.length > 0 &&
+        cases.map(cas => {
+          const { can } = getPermissionsForCase(cas.twilioWorkerId, cas.status);
+          return (
+            <CasePreview
+              key={cas.id}
+              currentCase={cas}
+              counselorsHash={counselorsHash}
+              onClickViewCase={can(PermissionActions.VIEW_CASE) && handleClickViewCase(cas)}
+              task={task}
+            />
+          );
+        })}
+      {casesPageCount > 1 && (
+        <Pagination
+          page={casesPage}
+          pagesCount={casesPageCount}
+          handleChangePage={handleCasesChangePage}
+          transparent
+          disabled={isRequestingCases}
+        />
+      )}
+    </>
+  );
+
+  if (currentResultPage === 'case-results' && routing.action === 'select-case') return caseResults();
 
   return (
     <>
@@ -268,60 +335,7 @@ const SearchResults: React.FC<Props> = ({
               )}
             </>
           )}
-          {currentResultPage === 'case-results' && (
-            <>
-              <StyledResultsHeader>
-                <StyledCount data-testid="CasesCount">
-                  {casesCount}{' '}
-                  {casesCount === 1 ? (
-                    <Template code="PreviousContacts-Case" />
-                  ) : (
-                    <Template code="SearchResultsIndex-Cases" />
-                  )}{' '}
-                </StyledCount>
-                <StyledFormControlLabel
-                  control={
-                    <StyledSwitch
-                      color="default"
-                      size="small"
-                      checked={closedCases}
-                      onChange={handleToggleClosedCases}
-                      disabled={isRequestingContacts}
-                    />
-                  }
-                  label={
-                    <SwitchLabel>
-                      <Template code="SearchResultsIndex-ClosedCases" />
-                    </SwitchLabel>
-                  }
-                  labelPlacement="start"
-                />
-              </StyledResultsHeader>
-
-              {cases &&
-                cases.length > 0 &&
-                cases.map(cas => {
-                  const { can } = getPermissionsForCase(cas.twilioWorkerId, cas.status);
-                  return (
-                    <CasePreview
-                      key={cas.id}
-                      currentCase={cas}
-                      counselorsHash={counselorsHash}
-                      onClickViewCase={can(PermissionActions.VIEW_CASE) && handleClickViewCase(cas)}
-                    />
-                  );
-                })}
-              {casesPageCount > 1 && (
-                <Pagination
-                  page={casesPage}
-                  pagesCount={casesPageCount}
-                  handleChangePage={handleCasesChangePage}
-                  transparent
-                  disabled={isRequestingCases}
-                />
-              )}
-            </>
-          )}
+          {currentResultPage === 'case-results' && caseResults()}
         </ScrollableList>
       </ListContainer>
     </>
@@ -330,17 +344,22 @@ const SearchResults: React.FC<Props> = ({
 SearchResults.displayName = 'SearchResults';
 
 const mapStateToProps = (
-  { [namespace]: { searchContacts, configuration, routing } }: RootState,
+  { [namespace]: { searchContacts, configuration, routing, activeContacts } }: RootState,
   { task }: OwnProps,
 ) => {
   const taskId = task.taskSid;
-  const { isRequesting, isRequestingCases } = searchContacts.tasks[taskId];
+  const { isRequesting, isRequestingCases, caseRefreshRequired, contactRefreshRequired } = searchContacts.tasks[taskId];
   const { counselors } = configuration;
+  const taskContact = activeContacts.existingContacts[taskId]?.savedContact;
   return {
     isRequestingContacts: isRequesting,
     isRequestingCases,
+    caseRefreshRequired,
+    contactRefreshRequired,
     counselorsHash: counselors.hash,
     routing: getCurrentTopmostRouteForTask(routing, taskId),
+    taskContact,
+    searchCase: searchContacts.tasks[task.taskSid].searchExistingCaseStatus,
   };
 };
 

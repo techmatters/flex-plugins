@@ -26,6 +26,7 @@ import SearchForm from './SearchForm';
 import SearchResults, { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './SearchResults';
 import ContactDetails from './ContactDetails';
 import Case from '../case';
+import ProfileRouter, { ALL_PROFILE_ROUTES } from '../profile/ProfileRouter';
 import { SearchParams } from '../../states/search/types';
 import { CustomITask, Contact, standaloneTaskSid } from '../../types/types';
 import { handleSearchFormChange, searchContacts, searchCases } from '../../states/search/actions';
@@ -48,6 +49,7 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 const Search: React.FC<Props> = ({
   task,
   currentIsCaller,
+  activeContacts,
   searchContacts,
   searchCases,
   handleSearchFormChange,
@@ -57,7 +59,6 @@ const Search: React.FC<Props> = ({
   searchCasesResults,
   form,
   routing,
-  closeModal,
   changeSearchPage,
 }) => {
   const [mockedMessage, setMockedMessage] = useState('');
@@ -71,6 +72,13 @@ const Search: React.FC<Props> = ({
   const handleSearchCases = (newSearchParams, newOffset) => searchCases(newSearchParams, CASES_PER_PAGE, newOffset);
 
   const setSearchParamsAndHandleSearch = async newSearchParams => {
+    if (routing.route === 'search' && routing.action === 'select-case') {
+      changeSearchPage('case-results', 'select-case');
+      await Promise.all([handleSearchCases(newSearchParams, 0)]);
+      setSearchParams(newSearchParams);
+      return;
+    }
+
     changeSearchPage('contact-results');
     await Promise.all([handleSearchContacts(newSearchParams, 0), handleSearchCases(newSearchParams, 0)]);
     setSearchParams(newSearchParams);
@@ -108,24 +116,6 @@ const Search: React.FC<Props> = ({
     return undefined;
   };
 
-  const goBackFromContacts = async () => {
-    /*
-     * This returns you to the first page of results from viewing a contact, which is safest for now since the UI state is inconsistent otherwise.
-     * We will need a follow on fix to allow returning to the same page of results as the case to work correctly
-     */
-    await searchContacts(searchParams, CONTACTS_PER_PAGE, 0);
-    closeModal();
-  };
-
-  const goBackFromCases = async () => {
-    /*
-     * This returns you to the first page of results from viewing a case, which is safest for now since the UI state is inconsistent otherwise.
-     * We will need a follow on fix to allow returning to the same page of results as the case to work correctly
-     */
-    await searchCases(searchParams, CASES_PER_PAGE, 0);
-    closeModal();
-  };
-
   const renderMockDialog = () => {
     const isOpen = Boolean(mockedMessage);
 
@@ -138,11 +128,18 @@ const Search: React.FC<Props> = ({
   renderMockDialog.displayName = 'MockDialog';
 
   const renderSearchPages = () => {
+    if (ALL_PROFILE_ROUTES.includes(routing.route)) return <ProfileRouter task={task} />;
+
     switch (routing.route) {
       case 'search': {
         if (routing.subroute === 'case-results' || routing.subroute === 'contact-results') {
           return (
-            <NavigableContainer task={task} titleCode="SearchContactsAndCases-Title">
+            <NavigableContainer
+              task={task}
+              titleCode={
+                routing.action === 'select-case' ? 'Resources-Search-ResultsTitle' : 'SearchContactsAndCases-Title'
+              }
+            >
               <SearchResults
                 task={task}
                 currentIsCaller={currentIsCaller}
@@ -162,13 +159,14 @@ const Search: React.FC<Props> = ({
         break;
       }
       case 'case': {
-        return <Case task={task} isCreating={false} handleClose={goBackFromCases} />;
+        return <Case task={task} isCreating={false} />;
       }
-      case 'contact': {
+      case 'contact':
         // Find contact in contact search results or connected to one of case search results
         const contact =
-          searchContactsResults.contacts.find(c => c.id.toString() === routing.id.toString()) ??
-          searchCasesResults.cases.flatMap(c => c.connectedContacts ?? []).find(c => c.id.toString() === routing.id);
+          searchContactsResults.contacts.find(c => c.id.toString() === routing.id.toString()) ||
+          searchCasesResults.cases.flatMap(c => c.connectedContacts ?? []).find(c => c.id.toString() === routing.id) ||
+          activeContacts.existingContacts[routing.id.toString()]?.savedContact;
         if (contact) {
           return (
             <ContactDetails
@@ -176,19 +174,24 @@ const Search: React.FC<Props> = ({
               task={task}
               showActionIcons={showActionIcons}
               contact={contact}
-              handleBack={goBackFromContacts}
               handleSelectSearchResult={handleSelectSearchResult}
               // buttonData={props.checkButtonData('ContactDetails-Section-ChildInformation')}
             />
           );
         }
         break;
-      }
       default:
         break;
     }
     return (
-      <NavigableContainer task={task} titleCode="SearchContactsAndCases-Title">
+      <NavigableContainer
+        task={task}
+        titleCode={
+          routing.route === 'search' && routing.action === 'select-case'
+            ? 'SearchContactsAndCases-TitleExistingCase'
+            : 'SearchContactsAndCases-Title'
+        }
+      >
         <SearchForm
           task={task}
           values={form}
@@ -224,6 +227,7 @@ const mapStateToProps = (
   const currentRoute = getCurrentTopmostRouteForTask(routing, taskId);
 
   return {
+    activeContacts,
     isRequesting: taskSearchState.isRequesting,
     error: taskSearchState.error,
     form: taskSearchState.form,
@@ -231,6 +235,7 @@ const mapStateToProps = (
     searchCasesResults: taskSearchState.searchCasesResult,
     showActionIcons: !isStandaloneSearch,
     routing: currentRoute,
+    searchCase: taskSearchState.searchExistingCaseStatus,
   };
 };
 
@@ -239,8 +244,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     handleSearchFormChange: bindActionCreators(handleSearchFormChange(taskId), dispatch),
-    changeSearchPage: (subroute: SearchRoute['subroute']) =>
-      dispatch(changeRoute({ route: 'search', subroute }, taskId)),
+    changeSearchPage: (subroute: SearchRoute['subroute'], action?: SearchRoute['action']) =>
+      dispatch(changeRoute({ route: 'search', subroute, action }, taskId)),
     searchContacts: searchContacts(dispatch)(taskId),
     searchCases: searchCases(dispatch)(taskId),
     closeModal: () => dispatch(newCloseModalAction(taskId)),

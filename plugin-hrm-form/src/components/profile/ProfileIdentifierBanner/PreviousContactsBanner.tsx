@@ -16,70 +16,43 @@
 
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import {
   viewPreviousContacts as viewPreviousContactsAction,
   searchContacts as searchContactsAction,
   searchCases as searchCasesAction,
-} from '../states/search/actions';
-import { RootState } from '../states';
-import { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './search/SearchResults';
-import { YellowBanner } from '../styles/previousContactsBanner';
-import { Bold } from '../styles/HrmStyles';
-import { StyledLink } from '../styles/search';
-import { ChannelTypes, channelTypes } from '../states/DomainConstants';
-import { changeRoute, newOpenModalAction } from '../states/routing/actions';
-import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../utils';
-import { getPermissionsForViewingIdentifiers, PermissionActions } from '../permissions';
-import { CustomITask, isTwilioTask } from '../types/types';
-import { namespace } from '../states/storeNamespaces';
+} from '../../../states/search/actions';
+import { RootState } from '../../../states';
+import { CONTACTS_PER_PAGE, CASES_PER_PAGE } from '../../search/SearchResults';
+import { YellowBanner } from '../../../styles/previousContactsBanner';
+import { Bold } from '../../../styles/HrmStyles';
+import { StyledLink } from '../../../styles/search';
+import { ChannelTypes, channelTypes } from '../../../states/DomainConstants';
+import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
+import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils';
+import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
+import { CustomITask, isTwilioTask } from '../../../types/types';
+import { namespace } from '../../../states/storeNamespaces';
 
 type OwnProps = {
   task: CustomITask;
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const PreviousContactsBanner: React.FC<Props> = ({
-  task,
   previousContacts,
+  task,
   viewPreviousContacts,
   searchContacts,
   searchCases,
   openContactSearchResults,
 }) => {
-  const { canView } = getPermissionsForViewingIdentifiers();
-  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
-
-  useEffect(() => {
-    if (isTwilioTask(task) && previousContacts === undefined) {
-      const contactNumber = getNumberFromTask(task);
-      const isTraceableNumber = ![null, undefined, '', 'Anonymous'].includes(contactNumber);
-
-      if (isTraceableNumber) {
-        const searchParams = { contactNumber };
-        searchContacts(searchParams, CONTACTS_PER_PAGE, 0, true);
-        searchCases(searchParams, CASES_PER_PAGE, 0, true);
-      }
-    }
-  }, [task, searchContacts, searchCases, previousContacts]);
-
-  const contactsCount = previousContacts?.contacts?.count || 0;
-  const casesCount = previousContacts?.cases?.count || 0;
-  const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
-
-  if (!shouldDisplayBanner) return null;
-
-  const handleClickViewRecords = () => {
-    viewPreviousContacts();
-    openContactSearchResults();
-  };
-
   let localizedSourceFromTask: { [channelType in ChannelTypes]: string };
-  let contactIdentifier: string;
+
   if (isTwilioTask(task)) {
     localizedSourceFromTask = {
       [channelTypes.web]: `${getContactValueTemplate(task)}`,
@@ -91,16 +64,53 @@ const PreviousContactsBanner: React.FC<Props> = ({
       [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
       [channelTypes.line]: 'PreviousContacts-LineUser',
     };
-    contactIdentifier = getFormattedNumberFromTask(task);
   }
+
+  const { canView } = getPermissionsForViewingIdentifiers();
+  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
+
+  let contactNumber: ReturnType<typeof getFormattedNumberFromTask>;
+  if (isTwilioTask(task)) {
+    contactNumber = getNumberFromTask(task);
+  }
+
+  const performSearch = () => {
+    const isTraceableNumber = ![null, undefined, '', 'Anonymous'].includes(contactNumber);
+
+    if (isTraceableNumber) {
+      const searchParams = { contactNumber };
+      searchContacts(searchParams, CONTACTS_PER_PAGE, 0, true);
+      searchCases(searchParams, CASES_PER_PAGE, 0, true);
+    }
+  };
+
+  useEffect(() => {
+    if (previousContacts !== undefined) return;
+
+    performSearch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [previousContacts]);
+
+  // Ugh. The previous contacts count is off by one because we immediately create a contact when a task is created.
+  // contacts should really have a status so we can filter out the "active" contact on the db side.
+  const contactsCount = previousContacts?.contacts?.count || 0;
+  const casesCount = previousContacts?.cases?.count || 0;
+
+  // We immediately create a contact when a task is created, so we don't want to show the banner
+  const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
+  if (!shouldDisplayBanner) return null;
+
+  const handleClickViewRecords = async () => {
+    viewPreviousContacts();
+    openContactSearchResults();
+  };
 
   return (
     <div>
       <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
         {/* eslint-disable-next-line prettier/prettier */}
-      <pre>
-          <Template code="PreviousContacts-ThereAre" />
-          &nbsp;
+        <pre>
+          <Template code="PreviousContacts-ThereAre" />{' '}
           {contactsCount === 1 ? (
             <Bold>
               {contactsCount} <Template code="PreviousContacts-PreviousContact" />
@@ -109,10 +119,8 @@ const PreviousContactsBanner: React.FC<Props> = ({
             <Bold>
               {contactsCount} <Template code="PreviousContacts-PreviousContacts" />
             </Bold>
-          )}
-          &nbsp;
-          <Template code="PreviousContacts-And" />
-          &nbsp;
+          )}{' '}
+          <Template code="PreviousContacts-And" />{' '}
           {casesCount === 1 ? (
             <Bold>
               {casesCount} <Template code="PreviousContacts-Case" />
@@ -121,20 +129,16 @@ const PreviousContactsBanner: React.FC<Props> = ({
             <Bold>
               {casesCount} <Template code="PreviousContacts-Cases" />
             </Bold>
-          )}
-          &nbsp;
-          <Template code="PreviousContacts-From" />
-          &nbsp;
-          <Template code={localizedSourceFromTask[task.channelType]} />
-          &nbsp;
+          )}{' '}
+          <Template code="PreviousContacts-From" /> <Template code={localizedSourceFromTask[task.channelType]} />{' '}
           {maskIdentifiers ? (
             <Bold>
               <Template code="MaskIdentifiers" />
             </Bold>
           ) : (
-            <Bold>{contactIdentifier}</Bold>
+            <Bold>{contactNumber}</Bold>
           )}
-          .&nbsp;
+          .{' '}
         </pre>
         <StyledLink underline data-testid="PreviousContacts-ViewRecords" onClick={handleClickViewRecords}>
           <Template code="PreviousContacts-ViewRecords" />
@@ -146,10 +150,9 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
 PreviousContactsBanner.displayName = 'PreviousContactsBanner';
 
-const mapStateToProps = (
-  { [namespace]: { searchContacts, configuration, activeContacts, routing } }: RootState,
-  { task: { taskSid } }: OwnProps,
-) => {
+const mapStateToProps = (state: RootState, { task }: OwnProps) => {
+  const { searchContacts, routing, activeContacts, configuration } = state[namespace];
+  const { taskSid } = task;
   const taskSearchState = searchContacts.tasks[taskSid];
   const { counselors } = configuration;
 
@@ -176,4 +179,5 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 export const UnconnectedPreviousContactsBanner = PreviousContactsBanner;
-export default connect(mapStateToProps, mapDispatchToProps)(PreviousContactsBanner);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export default connector(PreviousContactsBanner);
