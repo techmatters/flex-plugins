@@ -1,6 +1,6 @@
 import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
-import { getActivitiesFromCase, getActivitiesFromContacts, sortActivities } from '../../components/case/caseActivities';
+import { getActivitiesFromCase, getActivitiesFromContacts, sortActivities } from './caseActivities';
 import { selectSavedContacts } from './connectedContacts';
 
 export const selectCaseActivities = (state: RootState, taskSid: string) => {

@@ -32,7 +32,7 @@ import { contactLabelFromHrmContact } from '../../../states/contacts/contactIden
 import { namespace } from '../../../states/storeNamespaces';
 import asyncDispatch from '../../../states/asyncDispatch';
 import { connectToCaseAsyncAction } from '../../../states/contacts/saveContact';
-import findContactByTaskSid from '../../../states/contacts/findContactByTaskSid';
+import selectContactByTaskSid from '../../../states/contacts/selectContactByTaskSid';
 import { isStandaloneITask } from '../../case/Case';
 import { newCloseModalAction } from '../../../states/routing/actions';
 import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../../permissions';
@@ -47,7 +47,7 @@ type OwnProps = {
 };
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const taskContact = isStandaloneITask(task) ? undefined : findContactByTaskSid(state, task.taskSid)?.savedContact;
+  const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
   return {
     definitionVersions: state[namespace].configuration.definitionVersions,
     taskContact,

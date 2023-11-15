@@ -17,8 +17,9 @@
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { Activity, ConnectedCaseActivity, NoteActivity } from './types';
-import { Case, NoteEntry, ReferralEntry } from '../../types/types';
+import { Case, Contact, NoteEntry, ReferralEntry } from '../../types/types';
 import { channelTypes } from '../DomainConstants';
+import { getTemplateStrings } from '../../hrmConfig';
 
 const ActivityTypes = {
   createCase: 'create',
@@ -94,8 +95,19 @@ const referralActivities = (referrals: ReferralEntry[]): Activity[] =>
     })
     .filter(ra => ra);
 
-const connectedContactActivities = (caseContacts): ConnectedCaseActivity[] =>
-  (caseContacts || [])
+const getContactActivityText = (contact: Contact, strings: Record<string, string>): string => {
+  if (contact.rawJson.caseInformation.callSummary) {
+    return contact.rawJson.caseInformation.callSummary.toString();
+  }
+  if (!contact.finalizedAt) {
+    return strings['Case-Timeline-DraftContactSummaryPlaceholder'] ?? '';
+  }
+  return '';
+};
+
+const connectedContactActivities = (caseContacts: Contact[]): ConnectedCaseActivity[] => {
+  const strings = getTemplateStrings();
+  return (caseContacts || [])
     .map(cc => {
       try {
         const type = ActivityTypes.connectContact[cc.channel];
@@ -105,10 +117,11 @@ const connectedContactActivities = (caseContacts): ConnectedCaseActivity[] =>
           date: cc.timeOfContact,
           createdAt: cc.createdAt,
           type,
-          text: cc.rawJson.caseInformation.callSummary,
+          text: getContactActivityText(cc, strings),
           twilioWorkerId: cc.twilioWorkerId,
           channel,
           callType: cc.rawJson.callType,
+          showViewButton: Boolean(cc.finalizedAt),
         };
       } catch (err) {
         console.warn(`Error processing connected contact, excluding from data`, cc, err);
@@ -116,6 +129,7 @@ const connectedContactActivities = (caseContacts): ConnectedCaseActivity[] =>
       }
     })
     .filter(cca => cca);
+};
 
 export const getActivitiesFromCase = (sourceCase: Case, formDefs: DefinitionVersion): Activity[] => {
   return [

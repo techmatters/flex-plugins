@@ -139,8 +139,12 @@ const Timeline: React.FC<Props> = ({
             const date = parseISO(activity.date).toLocaleDateString(navigator.language);
             let canViewActivity = true;
             if (isConnectedCaseActivity(activity)) {
-              const { can } = getPermissionsForContact(activity.twilioWorkerId);
-              canViewActivity = can(PermissionActions.VIEW_CONTACT);
+              if (activity.showViewButton) {
+                const { can } = getPermissionsForContact(activity.twilioWorkerId);
+                canViewActivity = can(PermissionActions.VIEW_CONTACT);
+              } else {
+                canViewActivity = false;
+              }
             }
 
             return (

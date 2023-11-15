@@ -148,6 +148,7 @@
   "Error-Unexpected": "Unexpected error has occurred",
   "Case-CaseNumber": "Case #",
   "Case-TimelineSection": "Timeline",
+  "Case-Timeline-DraftContactSummaryPlaceholder": "In Progress",
   "Case-AddPerpetratorSection": "Perpetrators",
   "Case-AddIncidentSection": "Incidents",
   "Case-AddHouseholdSection": "Household Information",

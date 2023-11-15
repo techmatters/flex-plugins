@@ -25,12 +25,17 @@ import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyl
 import CaseDetailsComponent from './CaseDetails';
 import Timeline from './Timeline';
 import CaseSection from './CaseSection';
-import { PermissionActions, PermissionActionType } from '../../permissions';
+import {
+  getPermissionsForCase,
+  getPermissionsForContact,
+  PermissionActions,
+  PermissionActionType,
+} from '../../permissions';
 import { AppRoutes, CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
 import { RootState } from '../../states';
 import { CaseDetails, CaseState } from '../../states/case/types';
-import { CustomITask, EntryInfo, StandaloneITask } from '../../types/types';
+import { Case, Contact, CustomITask, EntryInfo, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
 import InformationRow from './InformationRow';
 import TimelineInformationRow from './TimelineInformationRow';
@@ -40,6 +45,12 @@ import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { connectedCaseBase, namespace } from '../../states/storeNamespaces';
 import NavigableContainer from '../NavigableContainer';
+import ConnectToCaseButton from './ConnectToCaseButton';
+import { isStandaloneITask } from './Case';
+import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
+import asyncDispatch from '../../states/asyncDispatch';
+import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
+import { newCloseModalAction } from '../../states/routing/actions';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -60,6 +71,8 @@ const CaseHome: React.FC<Props> = ({
   definitionVersion,
   task,
   openModal,
+  closeModal,
+  connectCaseToTaskContact,
   isCreating,
   handleClose,
   handleSaveAndEnd,
@@ -67,6 +80,7 @@ const CaseHome: React.FC<Props> = ({
   caseDetails,
   can,
   connectedCaseState,
+  taskContact,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   if (!connectedCaseState) return null; // narrow type before deconstructing
@@ -108,6 +122,18 @@ const CaseHome: React.FC<Props> = ({
     followUpDate,
   } = caseDetails;
   const statusLabel = definitionVersion.caseStatus[status]?.label ?? status;
+  const isConnectedToTaskContact = taskContact && taskContact.caseId === id;
+
+  const { connectedCase } = connectedCaseState;
+
+  const { can: canForCase } = getPermissionsForCase(connectedCase.twilioWorkerId, connectedCase.status);
+  const { can: canForContact } = getPermissionsForContact(taskContact?.twilioWorkerId);
+
+  const showConnectToCaseButton = Boolean(
+    !isConnectedToTaskContact &&
+      canForCase(PermissionActions.UPDATE_CASE_CONTACTS) &&
+      canForContact(PermissionActions.ADD_CONTACT_TO_CASE),
+  );
 
   const itemRowRenderer = (itemTypeName: string, viewSubroute: CaseSectionSubroute, items: EntryInfo[]) => {
     const itemRows = () => {
@@ -184,6 +210,15 @@ const CaseHome: React.FC<Props> = ({
   return (
     <NavigableContainer titleCode={contactIdentifier} task={task} onGoBack={handleClose} onCloseModal={handleClose}>
       <CaseContainer data-testid="CaseHome-CaseDetailsComponent">
+        {showConnectToCaseButton && (
+          <ConnectToCaseButton
+            isConnectedToTaskContact={isConnectedToTaskContact}
+            onClickConnectToTaskContact={() => {
+              connectCaseToTaskContact(taskContact, connectedCaseState.connectedCase);
+              closeModal();
+            }}
+          />
+        )}
         <Box marginLeft="25px" marginTop="13px">
           <CaseDetailsComponent
             caseId={id.toString()}
@@ -276,13 +311,16 @@ CaseHome.displayName = 'CaseHome';
 const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase];
   const connectedCaseState = caseState.tasks[task.taskSid];
-
-  return { connectedCaseState };
+  const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
+  return { connectedCaseState, taskContact };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: CaseHomeProps) => ({
   changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
   openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid)),
+  connectCaseToTaskContact: async (taskContact: Contact, cas: Case) =>
+    asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, cas.id)),
+  closeModal: () => dispatch(newCloseModalAction(task.taskSid)),
 });
 const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(CaseHome);
