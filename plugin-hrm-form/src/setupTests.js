@@ -14,6 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { TextEncoder, TextDecoder } from 'util';
+
 import { configure } from 'enzyme/build';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17/build';
 
@@ -26,3 +28,8 @@ configure({
 // Workaround for jsdom not supporting media elements: https://github.com/jsdom/jsdom/issues/2155
 window.HTMLMediaElement.prototype.play = () => Promise.resolve();
 window.HTMLMediaElement.prototype.pause = () => undefined;
+
+/* This fixes the ReferenceError: TextDecoder is not defined and the TypeError: Cannot read properties of null (reading '_origin') errors
+ https://stackoverflow.com/questions/68468203/why-am-i-getting-textencoder-is-not-defined-in-jest 
+*/
+Object.assign(global, { TextDecoder, TextEncoder });
