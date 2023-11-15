@@ -19,12 +19,7 @@ import { callTypes } from 'hrm-form-definitions';
 import { createReducer } from 'redux-promise-middleware-actions';
 
 import * as t from './types';
-import {
-  ContactsState,
-  ContactUpdatingAction,
-  CONNECT_TO_CASE_ACTION_FULFILLED,
-  REMOVE_FROM_CASE_ACTION_FULFILLED,
-} from './types';
+import { ContactsState, ContactUpdatingAction } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import {
   createDraftReducer,
@@ -192,10 +187,6 @@ export function reduce(
     }
     case t.SET_CALL_TYPE: {
       return { ...state, isCallTypeCaller: action.isCallTypeCaller };
-    }
-    case CONNECT_TO_CASE_ACTION_FULFILLED:
-    case REMOVE_FROM_CASE_ACTION_FULFILLED: {
-      return { ...state, existingContacts: boundSaveContactReducer(state.existingContacts, action) };
     }
     case LOAD_CONTACT_ACTION: {
       return { ...state, existingContacts: loadContactReducer(state.existingContacts, action) };
