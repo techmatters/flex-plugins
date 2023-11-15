@@ -71,9 +71,11 @@ const handleLoadIdentifierFulfilledAction = (state: t.IdentifiersState, action: 
   return loadIdentifierEntryIntoRedux(state, id, identifierUpdate);
 };
 
-export const identifierReducer = (initialState: t.IdentifiersState = {}) =>
+const identifiersReducer = (initialState: t.IdentifiersState = {}) =>
   createReducer(initialState, handleAction => [
     handleAction(loadIdentifierByIdentifierAsync.pending, handleLoadIdentifierPendingAction),
     handleAction(loadIdentifierByIdentifierAsync.rejected, handleLoadIdentifierRejectedAction),
     handleAction(loadIdentifierByIdentifierAsync.fulfilled, handleLoadIdentifierFulfilledAction),
   ]);
+
+export default identifiersReducer;

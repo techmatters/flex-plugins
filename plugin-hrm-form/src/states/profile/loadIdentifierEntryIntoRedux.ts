@@ -26,14 +26,9 @@ const loadIdentifierEntryIntoRedux = (
     ...existingIdentifier,
     ...identifierUpdate,
   };
-  const identifiers = {
-    ...state,
-    [identifierId]: newIdentifier,
-  };
-
   return {
     ...state,
-    ...identifiers,
+    [identifierId]: newIdentifier,
   };
 };
 
