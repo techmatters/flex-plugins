@@ -114,7 +114,7 @@ module "aws" {
   shared_state_sync_service_sid      = module.services.shared_state_sync_service_sid
   flex_chat_service_sid              = module.services.flex_chat_service_sid
   flex_proxy_service_sid             = module.services.flex_proxy_service_sid
-  post_survey_bot_sid                = module.chatbots.post_survey_bot_sid
+  post_survey_bot_sid                = "Deleted"
   survey_workflow_sid                = module.survey.survey_workflow_sid
 }
 
