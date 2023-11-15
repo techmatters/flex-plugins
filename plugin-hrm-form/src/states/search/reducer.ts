@@ -49,6 +49,7 @@ type TaskEntry = {
   casesError: any;
   caseRefreshRequired: boolean;
   contactRefreshRequired: boolean;
+  searchExistingCaseStatus: boolean;
 };
 
 type SearchState = {
@@ -86,6 +87,7 @@ export const newTaskEntry: TaskEntry = {
   contactRefreshRequired: false,
   error: null,
   casesError: null,
+  searchExistingCaseStatus: false,
 };
 
 export const initialState: SearchState = {

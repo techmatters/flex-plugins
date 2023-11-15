@@ -22,10 +22,6 @@ import * as t from './types';
 import {
   ContactsState,
   ContactUpdatingAction,
-  CREATE_CONTACT_ACTION_FULFILLED,
-  LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED,
-  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
-  UPDATE_CONTACT_ACTION_FULFILLED,
   CONNECT_TO_CASE_ACTION_FULFILLED,
   REMOVE_FROM_CASE_ACTION_FULFILLED,
 } from './types';
@@ -120,6 +116,7 @@ export function reduce(
   let state = boundReferralReducer(inputState, action as any);
   state = toggleSubCategoriesReducer(state, action as ContactCategoryAction);
   state = newCaseReducer(state, action as any);
+  state = { ...state, existingContacts: boundSaveContactReducer(state.existingContacts, action) };
   switch (action.type) {
     case REMOVE_CONTACT_STATE: {
       const contactId = Object.values(state.existingContacts).find(cs => cs.savedContact.taskId === action.taskId)
@@ -196,12 +193,8 @@ export function reduce(
     case t.SET_CALL_TYPE: {
       return { ...state, isCallTypeCaller: action.isCallTypeCaller };
     }
-    case UPDATE_CONTACT_ACTION_FULFILLED:
-    case CREATE_CONTACT_ACTION_FULFILLED:
     case CONNECT_TO_CASE_ACTION_FULFILLED:
-    case REMOVE_FROM_CASE_ACTION_FULFILLED:
-    case LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED:
-    case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED: {
+    case REMOVE_FROM_CASE_ACTION_FULFILLED: {
       return { ...state, existingContacts: boundSaveContactReducer(state.existingContacts, action) };
     }
     case LOAD_CONTACT_ACTION: {

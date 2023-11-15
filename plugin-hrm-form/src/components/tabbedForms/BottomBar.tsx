@@ -136,7 +136,8 @@ const BottomBar: React.FC<
   if (!showBottomBar) return null;
 
   const openSearchModal = () => {
-    openModal({ route: 'search', subroute: 'form' });
+    openModal({ route: 'search', subroute: 'form', action: 'select-case' });
+    // searchExistingCase(true);
   };
 
   return (

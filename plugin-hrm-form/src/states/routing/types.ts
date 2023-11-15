@@ -44,6 +44,7 @@ export type TabbedFormRoute = {
 export type SearchRoute = RouteWithModalSupport & {
   route: 'search';
   subroute: 'form' | 'case-results' | 'contact-results';
+  action?: 'select-case';
 };
 
 export const NewCaseSectionSubroutes = {
@@ -210,7 +211,9 @@ type OtherRoutes =
 export type AppRoutes = AppRoutesWithCase | OtherRoutes;
 
 export function isRouteWithModalSupport(appRoute: any): appRoute is RouteWithModalSupport {
-  return ['tabbed-forms', 'case', 'case-list', 'search', 'select-call-type'].includes(appRoute.route);
+  return ['tabbed-forms', 'case', 'case-list', 'contact', 'profile', 'search', 'select-call-type'].includes(
+    appRoute.route,
+  );
 }
 
 export enum ChangeRouteMode {
