@@ -64,7 +64,8 @@ import Case from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
 import ViewContact from '../case/ViewContact';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
-import { getHrmConfig } from '../../hrmConfig';
+import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
+import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
@@ -145,6 +146,8 @@ const TabbedForms: React.FC<Props> = ({
     mode: 'onChange',
   });
 
+  const strings = getTemplateStrings();
+
   const { contactSaveFrequency } = getHrmConfig();
 
   const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={savedContact.csamReports} />, [
@@ -159,6 +162,20 @@ const TabbedForms: React.FC<Props> = ({
     helpline,
   } = updatedContact;
 
+  const submit = async (caseForm: CaseForm) => {
+    try {
+      await finaliseContact(savedContact, metadata, caseForm);
+      await completeTask(task, savedContact);
+    } catch (error) {
+      if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
+        recordBackendError('Submit Contact Form TASK COMPLETED WITHOUT RECORDING', error);
+        await completeTask(task, savedContact);
+      } else {
+        recordBackendError('Submit Contact Form', error);
+      }
+    }
+  };
+
   /**
    * Clear some parts of the form state when helpline changes.
    */
@@ -166,6 +183,10 @@ const TabbedForms: React.FC<Props> = ({
     if (isMounted.current) setValue('categories', emptyCategories);
     else isMounted.current = true;
   }, [helpline, setValue]);
+
+  const onError = recordingErrorHandler('Tabbed HRM Form', () => {
+    window.alert(strings['Error-Form']);
+  });
 
   const onSelectSearchResult = (searchResult: Contact) => {
     const selectedIsCaller = searchResult.rawJson.callType === callTypes.caller;
@@ -180,8 +201,7 @@ const TabbedForms: React.FC<Props> = ({
   };
 
   const onNewCaseSaved = async (caseForm: CaseForm) => {
-    await finaliseContact(savedContact, metadata, caseForm);
-    await completeTask(task, savedContact);
+    methods.handleSubmit(() => submit(caseForm), onError);
   };
 
   if (

@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Template } from '@twilio/flex-ui';
@@ -171,7 +171,7 @@ const BottomBar: React.FC<
           <>
             {featureFlags.enable_case_management && (
               <AddNewCaseDropdown
-                handleNewCaseType={handleSubmitIfValid(handleOpenNewCase, onError)}
+                handleNewCaseType={handleOpenNewCase}
                 handleExistingCaseType={openSearchModal}
                 dropdown={dropdown}
               />
