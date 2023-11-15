@@ -366,6 +366,7 @@ describe('getActivitiesFromContacts', () => {
       text: 'Child summary',
       twilioWorkerId: 'contact-adder',
       channel: 'facebook',
+      showViewButton: false,
     };
 
     expect(activities).toStrictEqual([expectedActivity]);
@@ -400,6 +401,7 @@ describe('getActivitiesFromContacts', () => {
       text: 'Child summary',
       twilioWorkerId: 'contact-adder',
       channel: 'facebook',
+      showViewButton: false,
     };
 
     expect(activities).toStrictEqual([expectedActivity]);

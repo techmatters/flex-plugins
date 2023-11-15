@@ -33,6 +33,12 @@ import { namespace } from '../../../states/storeNamespaces';
 import { RecursivePartial } from '../../RecursivePartial';
 import { RootState } from '../../../states';
 
+jest.mock('../../../permissions', () => ({
+  ...jest.requireActual('../../../permissions'),
+  getPermissionsForCase: jest.fn(() => ({ can: () => true })),
+  getPermissionsForContact: jest.fn(() => ({ can: () => true })),
+}));
+
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
