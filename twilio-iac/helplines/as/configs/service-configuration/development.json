@@ -31,7 +31,7 @@
             "semver": "2.n",
             "version": "2.2.0"
         },
-        "resources_base_url": "https://hrm-development.tl.techmatters.org",
+        "resources_base_url": "https://hrm-development.tl.techmatters.org"
     },
     "ui_attributes": {
         "colorTheme": {
