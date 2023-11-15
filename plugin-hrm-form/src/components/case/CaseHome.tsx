@@ -130,7 +130,8 @@ const CaseHome: React.FC<Props> = ({
   const { can: canForContact } = getPermissionsForContact(taskContact?.twilioWorkerId);
 
   const showConnectToCaseButton = Boolean(
-    !isConnectedToTaskContact &&
+    taskContact &&
+      !isConnectedToTaskContact &&
       canForCase(PermissionActions.UPDATE_CASE_CONTACTS) &&
       canForContact(PermissionActions.ADD_CONTACT_TO_CASE),
   );
