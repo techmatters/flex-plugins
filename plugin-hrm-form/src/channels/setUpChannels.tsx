@@ -28,7 +28,7 @@ import SmsIcon from '../components/common/icons/SmsIcon';
 import * as TransferHelpers from '../utils/transfer';
 import { colors, mainChannelColor } from './colors';
 import { getTemplateStrings } from '../hrmConfig';
-import { maskIdentifiersByChannel } from '../components/common/MaskingIdentifiers';
+// import { maskIdentifiersByChannel } from '../components/common/MaskingIdentifiers';
 
 const isIncomingTransfer = task => TransferHelpers.hasTransferStarted(task) && task.status === 'pending';
 
@@ -171,4 +171,34 @@ export const setupLineChatChannel = maskIdentifiers => {
   };
 
   Flex.TaskChannels.register(LineChatChannel);
+};
+
+ const maskIdentifiersByChannel = channelType => {
+  // Task list and panel when a call comes in
+  channelType.templates.TaskListItem.firstLine = 'MaskIdentifiers';
+  if (channelType === Flex.DefaultTaskChannels.Chat) {
+    channelType.templates.TaskListItem.secondLine = 'TaskLineWebChatAssignedMasked';
+  } else {
+    channelType.templates.TaskListItem.secondLine = 'TaskLineChatAssignedMasked';
+  }
+  channelType.templates.IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
+  channelType.templates.CallCanvas.firstLine = 'MaskIdentifiers';
+
+  // Task panel during an active call
+  channelType.templates.TaskCanvasHeader.title = 'MaskIdentifiers';
+  channelType.templates.MessageListItem = 'MaskIdentifiers';
+  // Task Status in Agents page
+  channelType.templates.TaskCard.firstLine = 'MaskIdentifiers';
+  // Supervisor
+  channelType.templates.Supervisor.TaskCanvasHeader.title = 'MaskIdentifiers';
+  channelType.templates.Supervisor.TaskOverviewCanvas.title = 'MaskIdentifiers';
+};
+
+export const maskIdentifiersForDefaultChannels = () => {
+  maskIdentifiersByChannel(Flex.DefaultTaskChannels.Call);
+  maskIdentifiersByChannel(Flex.DefaultTaskChannels.Chat);
+  maskIdentifiersByChannel(Flex.DefaultTaskChannels.ChatSms);
+  maskIdentifiersByChannel(Flex.DefaultTaskChannels.Default);
+  maskIdentifiersByChannel(Flex.DefaultTaskChannels.ChatMessenger);
+  maskIdentifiersByChannel(Flex.DefaultTaskChannels.ChatWhatsApp);
 };

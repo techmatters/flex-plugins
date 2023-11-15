@@ -19,7 +19,6 @@
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 import type { FilterDefinitionFactory } from '@twilio/flex-ui/src/components/view/TeamsView';
-import { Manager } from '@twilio/flex-ui';
 
 import { AcceptTransferButton, RejectTransferButton, TransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
@@ -231,6 +230,7 @@ export const setUpCustomCRMContainer = () => {
  * Adds a custom button for voice channel to show the phone number in emergency situations
  */
 export const setUpViewMaskedVoiceNumber = () => {
+  console.log('>>> setUpViewMaskedVoiceNumber', !getAseloConfigFlags().enableUnmaskingCalls );
   if (!getAseloConfigFlags().enableUnmaskingCalls) return;
 
   Flex.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" />, {
@@ -305,7 +305,7 @@ export const setUpCaseList = () => {
       key="CaseListSideLink"
       onClick={() => {
         Flex.Actions.invokeAction('NavigateToView', { viewName: 'case-list' });
-        Manager.getInstance().store.dispatch(
+        Flex.Manager.getInstance().store.dispatch(
           changeRoute({ route: 'case-list', subroute: 'case-list' }, standaloneTaskSid, ChangeRouteMode.Reset),
         );
       }}
@@ -327,7 +327,7 @@ export const setUpStandaloneSearch = () => {
       key="StandaloneSearchSideLink"
       onClick={() => {
         Flex.Actions.invokeAction('NavigateToView', { viewName: 'search' });
-        Manager.getInstance().store.dispatch(
+        Flex.Manager.getInstance().store.dispatch(
           changeRoute({ route: 'search', subroute: 'form' }, standaloneTaskSid, ChangeRouteMode.Reset),
         );
       }}
