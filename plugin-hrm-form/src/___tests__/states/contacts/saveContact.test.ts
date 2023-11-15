@@ -146,24 +146,11 @@ describe('actions', () => {
     });
   });
 
-  /**
-   * Commenting this out for now.
-   * TODO: Investigate:
-   *
-   * 1. connectToCaseAsyncAction calls `await getCase(caseId)`
-   * 2. which calls `await fetchHrmApi(params);`
-   * 3. which calls `await fetch(url, options);`
-   * 4. which calls `getHrmConfig()`
-   * 5. which returns `cachedConfig.hrm;`, but `cachedConfig` is undefined
-   *
-   * None of the actions that calls `await getCase(caseId)` have unit tests,
-   * probably because of this issue.
-   */
-  // test('Calls the connectToCaseAsyncAction action, and create a contact, connect contact to case, and complete task', async () => {
-  //   dispatch(connectToCaseAsyncAction(baseContact.id, baseCase.id));
+  test('Calls the connectToCaseAsyncAction action, and create a contact, connect contact to case, and complete task', async () => {
+    dispatch(connectToCaseAsyncAction(baseContact.id, baseCase.id));
 
-  //   expect(connectToCase).toHaveBeenCalledWith(baseContact.id, baseCase.id);
-  // });
+    expect(connectToCase).toHaveBeenCalledWith(baseContact.id, baseCase.id);
+  });
 
   test('Calls the submitContactFormAsyncAction action, and create a contact', async () => {
     submitContactFormAsyncAction(task, baseContact, metadata, baseCase);
