@@ -58,6 +58,9 @@ const ProfileFlagsList: React.FC<Props> = ({ enableDisassociate, profileId }) =>
         onMouseDown={event => handleDisassociate(event, flag)}
         title="Disassociate Flag"
         themeOverride={{ Icon: { size: '10px' } }}
+        disabled={loading}
+        // TODO: Remove inline styles
+        style={{ width: '1rem', height: '1rem', padding: 0 }}
       />
     );
   };

@@ -21,7 +21,7 @@
             "enable_post_survey": false,
             "enable_case_merging": true
         },
-        "contact_save_frequency": "onFinalSaveAndTransfer",
+        "contact_save_frequency": "onTabChange",
         "multipleOfficeSupport": true,
         "permissionConfig": "dev",
         "previous_ui_version": {

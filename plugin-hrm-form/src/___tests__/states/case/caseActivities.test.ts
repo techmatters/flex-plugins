@@ -19,7 +19,7 @@ import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-fo
 import { Case, CaseInfo } from '../../../types/types';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { getDefinitionVersions } from '../../../hrmConfig';
-import { getActivitiesFromCase, getActivitiesFromContacts } from '../../../components/case/caseActivities';
+import { getActivitiesFromCase, getActivitiesFromContacts } from '../../../states/case/caseActivities';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -366,6 +366,7 @@ describe('getActivitiesFromContacts', () => {
       text: 'Child summary',
       twilioWorkerId: 'contact-adder',
       channel: 'facebook',
+      showViewButton: false,
     };
 
     expect(activities).toStrictEqual([expectedActivity]);
@@ -400,6 +401,7 @@ describe('getActivitiesFromContacts', () => {
       text: 'Child summary',
       twilioWorkerId: 'contact-adder',
       channel: 'facebook',
+      showViewButton: false,
     };
 
     expect(activities).toStrictEqual([expectedActivity]);

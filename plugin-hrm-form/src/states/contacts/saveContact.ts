@@ -20,6 +20,7 @@ import { format } from 'date-fns';
 import { submitContactForm } from '../../services/formSubmissionHelpers';
 import {
   connectToCase,
+  removeFromCase,
   createContact,
   getContactById,
   getContactByTaskSid,
@@ -28,6 +29,7 @@ import {
 import { Case, CustomITask, Contact } from '../../types/types';
 import {
   CONNECT_TO_CASE,
+  REMOVE_FROM_CASE,
   ContactMetadata,
   CREATE_CONTACT_ACTION,
   LOAD_CONTACT_FROM_HRM_BY_ID_ACTION,
@@ -121,13 +123,23 @@ export const newRestartOfflineContactAsyncAction = (contact: Contact, createdOnB
   });
 };
 
-type ConnectToCaseActionPayload = { contactId: string; caseId: number; contact: Contact };
+type ConnectToCaseActionPayload = { contactId: string; caseId: number; contact: Contact; contactCase: Case };
+type RemoveFromCaseActionPayload = { contactId: string; caseId: number; contact: Contact };
 
 // TODO: Update connectedContacts on case in redux state
 export const connectToCaseAsyncAction = createAsyncAction(
   CONNECT_TO_CASE,
   async (contactId: string, caseId: number | null): Promise<ConnectToCaseActionPayload> => {
     const contact = await connectToCase(contactId, caseId);
+    const contactCase = await getCase(caseId);
+    return { contactId, caseId, contact, contactCase };
+  },
+);
+
+export const removeFromCaseAsyncAction = createAsyncAction(
+  REMOVE_FROM_CASE,
+  async (contactId: string, caseId: number | null): Promise<RemoveFromCaseActionPayload> => {
+    const contact = await removeFromCase(contactId, caseId);
     return { contactId, caseId, contact };
   },
 );
@@ -239,6 +251,13 @@ export const saveContactReducer = (initialState: ExistingContactsState) =>
     ),
     handleAction(
       connectToCaseAsyncAction.fulfilled,
+      (state, { payload: { contact } }): ExistingContactsState => {
+        if (!contact) return state;
+        return loadContactIntoRedux(state, contact);
+      },
+    ),
+    handleAction(
+      removeFromCaseAsyncAction.fulfilled,
       (state, { payload: { contact } }): ExistingContactsState => {
         if (!contact) return state;
         return loadContactIntoRedux(state, contact);

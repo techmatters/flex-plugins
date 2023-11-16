@@ -14,8 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/* eslint-disable import/no-unused-modules */
+import { RootState } from '..';
+import { ContactState } from './existingContacts';
+import { namespace } from '../storeNamespaces';
 
-export * from './identifiers';
-export * from './profiles';
-export * from './profileFlags';
+const selectContactByTaskSid = (state: RootState, taskSid: string): ContactState =>
+  Object.values(state[namespace].activeContacts.existingContacts).find(cs => cs.savedContact?.taskId === taskSid);
+
+export default selectContactByTaskSid;

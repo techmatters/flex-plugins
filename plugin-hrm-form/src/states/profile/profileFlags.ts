@@ -17,7 +17,6 @@ import { createAsyncAction, createReducer } from 'redux-promise-middleware-actio
 
 import { parseFetchError } from '../parseFetchError';
 import * as ProfileService from '../../services/ProfileService';
-import loadProfileEntryIntoRedux from './loadProfileEntryIntoRedux';
 import * as t from './types';
 
 export const loadProfileFlagsAsync = createAsyncAction(t.LOAD_PROFILE_FLAGS, ProfileService.getProfileFlags);
@@ -56,9 +55,11 @@ const handleLoadProfileFlagsFulfilledAction = (state: t.ProfileFlagsState, actio
   return loadProfileFlagsEntryIntoRedux(state, update);
 };
 
-export const profileFlagsReducer = (initialState: t.ProfileFlagsState = t.initialProfileFlagsState) =>
+const profileFlagsReducer = (initialState: t.ProfileFlagsState = t.initialProfileFlagsState) =>
   createReducer(initialState, handleAction => [
     handleAction(loadProfileFlagsAsync.pending, handleLoadProfileFlagsPendingAction),
     handleAction(loadProfileFlagsAsync.rejected, handleLoadProfileFlagsRejectedAction),
     handleAction(loadProfileFlagsAsync.fulfilled, handleLoadProfileFlagsFulfilledAction),
   ]);
+
+export default profileFlagsReducer;

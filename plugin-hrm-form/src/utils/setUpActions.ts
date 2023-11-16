@@ -38,7 +38,7 @@ import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
 import type { RootState } from '../states';
 import { getTaskLanguage, getNumberFromTask } from './task';
-import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
+import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { newContact } from '../states/contacts/contactState';
 import asyncDispatch from '../states/asyncDispatch';
 import { createContactAsyncAction } from '../states/contacts/saveContact';
@@ -220,7 +220,7 @@ export const excludeDeactivateConversationOrchestration = (featureFlags: Feature
 
 export const afterCompleteTask = (payload: ActionPayload): void => {
   const manager = Manager.getInstance();
-  const contactState = findContactByTaskSid(manager.store.getState() as RootState, payload.task.taskSid);
+  const contactState = selectContactByTaskSid(manager.store.getState() as RootState, payload.task.taskSid);
   if (contactState) {
     manager.store.dispatch(GeneralActions.removeContactState(payload.task.taskSid, contactState.savedContact.id));
   }

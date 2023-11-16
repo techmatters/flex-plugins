@@ -16,9 +16,10 @@
 
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { Activity, ConnectedCaseActivity, NoteActivity } from '../../states/case/types';
-import { Case, NoteEntry, ReferralEntry } from '../../types/types';
-import { channelTypes } from '../../states/DomainConstants';
+import { Activity, ConnectedCaseActivity, NoteActivity } from './types';
+import { Case, Contact, NoteEntry, ReferralEntry } from '../../types/types';
+import { channelTypes } from '../DomainConstants';
+import { getTemplateStrings } from '../../hrmConfig';
 
 const ActivityTypes = {
   createCase: 'create',
@@ -38,14 +39,12 @@ const ActivityTypes = {
 export const isConnectedCaseActivity = (activity): activity is ConnectedCaseActivity =>
   Boolean(ActivityTypes.connectContact[activity.type]);
 
-/**
- * Returns true if the activity provided is a connected case activity (included in channelsAndDefault const object)
- * @param activity Timeline Activity
- */
-export const isNoteActivity = (activity): activity is ConnectedCaseActivity => activity.type === 'note';
-
-const noteActivities = (counsellorNotes: NoteEntry[], previewFields: string[]): NoteActivity[] =>
-  (counsellorNotes || [])
+export const getNoteActivities = (counsellorNotes: NoteEntry[], formDefs: DefinitionVersion): NoteActivity[] => {
+  let { previewFields } = formDefs.layoutVersion.case.notes ?? {};
+  if (!previewFields || !previewFields.length) {
+    previewFields = formDefs.caseForms.NoteForm.length ? [formDefs.caseForms.NoteForm[0].name] : [];
+  }
+  return (counsellorNotes || [])
     .map(n => {
       try {
         const { id, createdAt: date, updatedAt, updatedBy, twilioWorkerId, ...toCopy } = n;
@@ -70,6 +69,7 @@ const noteActivities = (counsellorNotes: NoteEntry[], previewFields: string[]): 
       }
     })
     .filter(na => na);
+};
 
 const referralActivities = (referrals: ReferralEntry[]): Activity[] =>
   (referrals || [])
@@ -95,8 +95,19 @@ const referralActivities = (referrals: ReferralEntry[]): Activity[] =>
     })
     .filter(ra => ra);
 
-const connectedContactActivities = (caseContacts): ConnectedCaseActivity[] =>
-  (caseContacts || [])
+const getContactActivityText = (contact: Contact, strings: Record<string, string>): string => {
+  if (contact.rawJson.caseInformation.callSummary) {
+    return contact.rawJson.caseInformation.callSummary.toString();
+  }
+  if (!contact.finalizedAt) {
+    return strings['Case-Timeline-DraftContactSummaryPlaceholder'] ?? '';
+  }
+  return '';
+};
+
+const connectedContactActivities = (caseContacts: Contact[]): ConnectedCaseActivity[] => {
+  const strings = getTemplateStrings();
+  return (caseContacts || [])
     .map(cc => {
       try {
         const type = ActivityTypes.connectContact[cc.channel];
@@ -106,10 +117,11 @@ const connectedContactActivities = (caseContacts): ConnectedCaseActivity[] =>
           date: cc.timeOfContact,
           createdAt: cc.createdAt,
           type,
-          text: cc.rawJson.caseInformation.callSummary,
+          text: getContactActivityText(cc, strings),
           twilioWorkerId: cc.twilioWorkerId,
           channel,
           callType: cc.rawJson.callType,
+          showViewButton: Boolean(cc.finalizedAt),
         };
       } catch (err) {
         console.warn(`Error processing connected contact, excluding from data`, cc, err);
@@ -117,14 +129,11 @@ const connectedContactActivities = (caseContacts): ConnectedCaseActivity[] =>
       }
     })
     .filter(cca => cca);
+};
 
 export const getActivitiesFromCase = (sourceCase: Case, formDefs: DefinitionVersion): Activity[] => {
-  let { previewFields } = formDefs.layoutVersion.case.notes ?? {};
-  if (!previewFields || !previewFields.length) {
-    previewFields = formDefs.caseForms.NoteForm.length ? [formDefs.caseForms.NoteForm[0].name] : [];
-  }
   return [
-    ...noteActivities(sourceCase.info.counsellorNotes ?? [], previewFields),
+    ...getNoteActivities(sourceCase.info.counsellorNotes ?? [], formDefs),
     ...referralActivities(sourceCase.info.referrals ?? []),
   ];
 };
@@ -137,5 +146,5 @@ export const getActivitiesFromContacts = (sourceContacts: any[]): Activity[] => 
  * Sort activities from most recent to oldest.
  * @param activities Activities to sort
  */
-export const sortActivities = (activities: Activity[]): Activity[] =>
+export const sortActivities = <T extends Activity = Activity>(activities: T[]): T[] =>
   activities.sort((a, b) => b.date.localeCompare(a.date));

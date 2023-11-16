@@ -64,6 +64,9 @@ import Case from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
 import ViewContact from '../case/ViewContact';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
+import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
+import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
+import { selectCaseMergingBanners } from '../caseMergingBanners/state';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 
@@ -136,6 +139,8 @@ const TabbedForms: React.FC<Props> = ({
   openSearchModal,
   closeModal,
   finaliseContact,
+  showConnectedToCaseBanner,
+  showRemovedFromCaseBanner,
   metadata,
   task,
   removeIfOfflineContact,
@@ -218,9 +223,18 @@ const TabbedForms: React.FC<Props> = ({
   }
 
   if (currentRoute.route === 'case') {
+    /**
+     * By default, we've used to assume that everytime we go to route 'case'
+     * from 'tabbed-forms' we are creating a new case. However, this is not
+     * true anymore, since we can go to route 'case' from 'tabbed-forms' by clicking
+     * on the 'View Case' link from the ContactAddedToCaseBanner.
+     *
+     * TODO: We should refactor this to make it more clear.
+     */
+    const isCreating = currentRoute.isCreating ?? true;
     return (
       <CaseLayout>
-        <Case task={task} isCreating={true} onNewCaseSaved={onNewCaseSaved} handleClose={closeModal} />
+        <Case task={task} isCreating={isCreating} onNewCaseSaved={onNewCaseSaved} handleClose={closeModal} />
       </CaseLayout>
     );
   }
@@ -306,7 +320,6 @@ const TabbedForms: React.FC<Props> = ({
     <FormProvider {...methods}>
       <div role="form" style={{ height: '100%' }}>
         <TabbedFormsContainer>
-          {/* Buttons at the top of the form */}
           <HeaderControlButtons />
           <StyledTabs
             className="hiddenWhenModalOpen"
@@ -319,6 +332,10 @@ const TabbedForms: React.FC<Props> = ({
             {tabs}
           </StyledTabs>
           <div style={{ height: '100%', overflow: 'hidden' }}>
+            <Box margin="0 5px">
+              {showConnectedToCaseBanner && <ContactAddedToCaseBanner taskId={task.taskSid} />}
+              {showRemovedFromCaseBanner && <ContactRemovedFromCaseBanner taskId={task.taskSid} />}
+            </Box>
             {isOfflineContactTask(task) && (
               <TabbedFormTabContainer display={subroute === 'contactlessTask'}>
                 <ContactlessTaskTab
@@ -404,10 +421,10 @@ const TabbedForms: React.FC<Props> = ({
 
 TabbedForms.displayName = 'TabbedForms';
 
-const mapStateToProps = (
-  { [namespace]: { routing, activeContacts, configuration } }: RootState,
-  { task: { taskSid }, contactId }: OwnProps,
-) => {
+const mapStateToProps = (state: RootState, { task: { taskSid }, contactId }: OwnProps) => {
+  const {
+    [namespace]: { routing, activeContacts, configuration },
+  } = state;
   const currentRoute = getCurrentTopmostRouteForTask(routing, taskSid);
   const { isCallTypeCaller, existingContacts } = activeContacts;
   const { savedContact, draftContact, metadata } = existingContacts[contactId] || {};
@@ -416,6 +433,7 @@ const mapStateToProps = (
     isRouteWithModalSupport(baseRoute) && baseRoute.activeModal?.length && baseRoute.activeModal[0].route === 'search';
 
   const { currentDefinitionVersion } = configuration;
+  const { showConnectedToCaseBanner, showRemovedFromCaseBanner } = selectCaseMergingBanners(state, contactId);
   return {
     currentRoute,
     savedContact,
@@ -425,6 +443,8 @@ const mapStateToProps = (
     searchModalOpen,
     isCallTypeCaller,
     metadata,
+    showConnectedToCaseBanner,
+    showRemovedFromCaseBanner,
   };
 };
 

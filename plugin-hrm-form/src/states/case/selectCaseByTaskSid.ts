@@ -14,8 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/* eslint-disable import/no-unused-modules */
+import { RootState } from '..';
+import { Case } from '../../types/types';
+import { connectedCaseBase, namespace } from '../storeNamespaces';
 
-export * from './identifiers';
-export * from './profiles';
-export * from './profileFlags';
+const selectCaseByTaskSid = (state: RootState, taskSid: string): Case =>
+  state[namespace][connectedCaseBase].tasks[taskSid]?.connectedCase;
+
+export default selectCaseByTaskSid;

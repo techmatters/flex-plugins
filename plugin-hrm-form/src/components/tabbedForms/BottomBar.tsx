@@ -48,6 +48,8 @@ import { ContactMetadata } from '../../states/contacts/types';
 import { connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { AppRoutes } from '../../states/routing/types';
 import AddNewCaseDropdown from './AddNewCaseDropdown';
+import asyncDispatch from '../../states/asyncDispatch';
+import { showConnectedToCaseBannerAction } from '../caseMergingBanners/state';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;
@@ -247,11 +249,12 @@ const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
   return {
     changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
     openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid)),
-    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
-    createCaseAsyncAction: (contact, workerSid: string, definitionVersion: DefinitionVersionId) =>
+    createCaseAsyncAction: async (contact, workerSid: string, definitionVersion: DefinitionVersionId) => {
       // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
       // TODO: Rework error handling to be based on redux state set by the _REJECTED action
-      dispatch(createCaseAsyncAction(contact, task.taskSid, workerSid, definitionVersion)),
+      await asyncDispatch(dispatch)(createCaseAsyncAction(contact, task.taskSid, workerSid, definitionVersion));
+      dispatch(showConnectedToCaseBannerAction(contact.id));
+    },
     submitContactFormAsyncAction: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) =>
       // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
       // TODO: Rework error handling to be based on redux state set by the _REJECTED action

@@ -31,7 +31,7 @@ import {
   Box,
   HeaderContainer,
 } from '../../styles/HrmStyles';
-import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
+import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { namespace, routingBase } from '../../states/storeNamespaces';
@@ -81,7 +81,7 @@ const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedT
 OfflineContactTask.displayName = 'OfflineContactTask';
 
 const mapStateToProps = (state: RootState) => {
-  const { savedContact, draftContact } = findContactByTaskSid(state, getOfflineContactTaskSid()) || {};
+  const { savedContact, draftContact } = selectContactByTaskSid(state, getOfflineContactTaskSid()) || {};
   return {
     isAddingOfflineContact: state[namespace][routingBase].isAddingOfflineContact,
     offlineContact: savedContact ? getUnsavedContact(savedContact, draftContact) : undefined,
