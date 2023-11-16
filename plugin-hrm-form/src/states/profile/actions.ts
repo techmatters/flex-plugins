@@ -15,17 +15,7 @@
  */
 
 /* eslint-disable import/no-unused-modules */
-import { Dispatch } from 'redux';
 
-import { Profile } from '../../types/types';
-import * as t from './types';
-
-export { loadIdentifierByIdentifierAsync } from './identifier';
-export { loadProfileAsync } from './profile';
-export { loadProfileFlagsAsync } from './profileFlag';
-export { incrementPage, loadRelationshipAsync } from './relationship';
-
-// Action creators
-export const addProfileState = (dispatch: Dispatch<any>) => (profileId: Profile['id'], profile: Profile) => {
-  dispatch({ type: t.ADD_PROFILE_STATE, profileId, profile });
-};
+export * from './identifiers';
+export * from './profiles';
+export * from './profileFlags';

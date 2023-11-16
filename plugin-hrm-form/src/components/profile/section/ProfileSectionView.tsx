@@ -14,24 +14,21 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import * as t from './types';
+import React, { useState, useEffect } from 'react';
 
-const loadProfileEntryIntoRedux = (
-  state: t.ProfilesState,
-  profileId: t.Profile['id'],
-  profileUpdate: Partial<t.ProfileEntry>,
-): t.ProfilesState => {
-  const existingProfile = state[profileId];
-  const newProfile = {
-    ...t.newProfileEntry,
-    ...existingProfile,
-    ...profileUpdate,
-  };
+import { ProfileCommonProps } from '../types';
+import { useProfileSectionByType } from '../../../states/profile/hooks/useProfileSection';
 
-  return {
-    ...state,
-    [profileId]: newProfile,
-  };
+type OwnProps = ProfileCommonProps & {
+  sectionType: string;
 };
 
-export default loadProfileEntryIntoRedux;
+const ProfileSectionView = ({ profileId, sectionType }: OwnProps) => {
+  const { section } = useProfileSectionByType({ profileId, sectionType });
+
+  console.log('>>> ProfileSectionView', profileId, sectionType, section);
+
+  return <div>{section?.content}</div>;
+};
+
+export default ProfileSectionView;

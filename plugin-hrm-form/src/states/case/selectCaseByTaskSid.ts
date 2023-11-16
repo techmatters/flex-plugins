@@ -14,24 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import * as t from './types';
+import { RootState } from '..';
+import { Case } from '../../types/types';
+import { connectedCaseBase, namespace } from '../storeNamespaces';
 
-const loadProfileEntryIntoRedux = (
-  state: t.ProfilesState,
-  profileId: t.Profile['id'],
-  profileUpdate: Partial<t.ProfileEntry>,
-): t.ProfilesState => {
-  const existingProfile = state[profileId];
-  const newProfile = {
-    ...t.newProfileEntry,
-    ...existingProfile,
-    ...profileUpdate,
-  };
+const selectCaseByTaskSid = (state: RootState, taskSid: string): Case =>
+  state[namespace][connectedCaseBase].tasks[taskSid]?.connectedCase;
 
-  return {
-    ...state,
-    [profileId]: newProfile,
-  };
-};
-
-export default loadProfileEntryIntoRedux;
+export default selectCaseByTaskSid;

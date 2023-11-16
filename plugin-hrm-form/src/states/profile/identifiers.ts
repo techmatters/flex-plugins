@@ -30,7 +30,7 @@ export const loadIdentifierByIdentifierAsync = createAsyncAction(
   }),
 );
 
-const handleLoadIdentifierPendingAction = (state: t.ProfileState, action: any) => {
+const handleLoadIdentifierPendingAction = (state: t.IdentifiersState, action: any): t.IdentifiersState => {
   // This is a little weird, but we will eventually need to support both identifier and id
   // it also ends up with an orphaned identifier entry in the redux store based on the identifier
   // but will be cleaned up in a future PR
@@ -44,7 +44,7 @@ const handleLoadIdentifierPendingAction = (state: t.ProfileState, action: any) =
   return loadIdentifierEntryIntoRedux(state, id || identifier, identifierUpdate);
 };
 
-const handleLoadIdentifierRejectedAction = (state: t.ProfileState, action: any) => {
+const handleLoadIdentifierRejectedAction = (state: t.IdentifiersState, action: any): t.IdentifiersState => {
   const { id, identifier } = action.meta;
   const error = parseFetchError(action.payload);
 
@@ -56,14 +56,14 @@ const handleLoadIdentifierRejectedAction = (state: t.ProfileState, action: any) 
   return loadIdentifierEntryIntoRedux(state, id || identifier, identifierUpdate);
 };
 
-const handleLoadIdentifierFulfilledAction = (state: t.ProfileState, action: any) => {
+const handleLoadIdentifierFulfilledAction = (state: t.IdentifiersState, action: any): t.IdentifiersState => {
   const { id } = action.payload;
 
   const identifierUpdate = {
+    ...t.newIdentifierEntry,
     loading: false,
     data: {
-      ...t.newIdentifierEntry,
-      ...state.identifiers?.[id]?.data,
+      ...state?.[id]?.data,
       ...action.payload,
     },
   };
@@ -71,9 +71,11 @@ const handleLoadIdentifierFulfilledAction = (state: t.ProfileState, action: any)
   return loadIdentifierEntryIntoRedux(state, id, identifierUpdate);
 };
 
-export const identifierReducer = (initialState: t.ProfileState) =>
+const identifiersReducer = (initialState: t.IdentifiersState = {}) =>
   createReducer(initialState, handleAction => [
     handleAction(loadIdentifierByIdentifierAsync.pending, handleLoadIdentifierPendingAction),
     handleAction(loadIdentifierByIdentifierAsync.rejected, handleLoadIdentifierRejectedAction),
     handleAction(loadIdentifierByIdentifierAsync.fulfilled, handleLoadIdentifierFulfilledAction),
   ]);
+
+export default identifiersReducer;

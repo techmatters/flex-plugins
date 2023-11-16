@@ -38,6 +38,7 @@ import { newCloseModalAction } from '../../../states/routing/actions';
 import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../../permissions';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
 import { isNonDataCallType } from '../../../states/validationRules';
+import { showConnectedToCaseBannerAction } from '../../caseMergingBanners/state';
 
 type OwnProps = {
   currentCase: Case;
@@ -55,8 +56,11 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>, { task, currentCase }: OwnProps) => ({
-  connectCaseToTaskContact: async (taskContact: Contact) =>
-    asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, currentCase.id)),
+  connectCaseToTaskContact: async (taskContact: Contact) => {
+    await asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, currentCase.id));
+    // TODO: maybe should change asyncDispatch to throw error instead of handling?
+    dispatch(showConnectedToCaseBannerAction(taskContact.id));
+  },
   closeModal: () => dispatch(newCloseModalAction(task.taskSid)),
 });
 

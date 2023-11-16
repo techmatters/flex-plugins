@@ -14,21 +14,50 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Case, Contact, Identifier, Profile, ProfileFlag } from '../../types/types';
+import { Case, Contact, Identifier, Profile, ProfileFlag, ProfileSection } from '../../types/types';
 import { getProfileContacts, getProfileCases } from '../../services/ProfileService';
 import { ParseFetchErrorResult } from '../parseFetchError';
 
-export type { Case, Contact, Identifier, Profile, ProfileFlag };
+export type { Case, Contact, Identifier, Profile, ProfileFlag, ProfileSection };
 
 // Action types
-export const ADD_PROFILE_STATE = 'ADD_PROFILE_STATE';
-export const INCREMENT_PAGE = 'INCREMENT_PAGE';
-export const LOAD_IDENTIFIER_BY_IDENTIFIER = 'LOAD_IDENTIFIER_BY_IDENTIFIER';
-export const LOAD_PROFILE = 'LOAD_PROFILE';
-export const LOAD_PROFILE_FLAGS = 'LOAD_PROFILE_FLAGS';
-export const LOAD_RELATIONSHIP = 'LOAD_RELATIONSHIP';
-export const ASSOCIATE_PROFILE_FLAG = 'ASSOCIATE_PROFILE_FLAG';
-export const DISASSOCIATE_PROFILE_FLAG = 'DISASSOCIATE_PROFILE_FLAG';
+export const PROFILE_RELATIONSHIPS_INCREMENT_PAGE = 'profile/relationships/INCREMENT_PAGE';
+export const PROFILE_RELATIONSHIPS_UPDATE_PAGE = 'profile/relationships/UPDATE_PAGE';
+export const LOAD_IDENTIFIER_BY_IDENTIFIER = 'profile/identifiers/LOAD_BY_IDENTIFIER';
+export const LOAD_PROFILE = 'profile/profiles/LOAD';
+export const LOAD_PROFILE_FLAGS = 'profile/profileFlags/LOAD';
+export const LOAD_RELATIONSHIP = 'profile/relationships/LOAD';
+export const ASSOCIATE_PROFILE_FLAG = 'profile/profileFlags/ASSOCIATE';
+export const DISASSOCIATE_PROFILE_FLAG = 'profile/profileFlags/DISASSOCIATE';
+export const LOAD_PROFILE_SECTIONS = 'profile/profileSections/LOAD';
+export const CREATE_PROFILE_SECTION = 'profile/profileSections/CREATE';
+export const UPDATE_PROFILE_SECTION = 'profile/profileSections/UPDATE';
+
+export type IdentifierEntry = {
+  data?: Identifier;
+  error?: ParseFetchErrorResult;
+  loading: boolean;
+};
+
+export type IdentifiersState = {
+  [identifierId: Identifier['id']]: IdentifierEntry;
+};
+
+export type ProfilesState = {
+  [profileId: Profile['id']]: ProfileEntry;
+};
+
+export type ProfileFlagsState = {
+  data?: ProfileFlag[];
+  error?: ParseFetchErrorResult;
+  loading: boolean;
+};
+
+export const initialProfileFlagsState: ProfileFlagsState = {
+  error: undefined,
+  loading: false,
+  data: undefined,
+};
 
 export const PROFILE_RELATIONSHIPS = {
   cases: {
@@ -42,53 +71,35 @@ export const PROFILE_RELATIONSHIPS = {
 export type ProfileRelationships = keyof typeof PROFILE_RELATIONSHIPS;
 export type ProfileRelationshipTypes = Case | Contact;
 
-export type ProfileEntry = {
-  cases?: {
-    data?: Case[];
-    errors?: ParseFetchErrorResult;
-    exhausted: boolean;
-    loading: boolean;
-    page: number;
-    loadedPage?: number;
-  };
-  contacts?: {
-    data?: Contact[];
-    error?: ParseFetchErrorResult;
-    exhausted: boolean;
-    loading: boolean;
-    page: number;
-    loadedPage?: number;
-  };
-  data?: Profile;
-  error?: ParseFetchErrorResult;
+export type ProfileAsyncCommon<t> = {
   loading: boolean;
+  error?: ParseFetchErrorResult;
+  data?: t;
 };
 
-export type IdentifierEntry = {
-  data?: Identifier;
-  error?: ParseFetchErrorResult;
-  loading: boolean;
+export type ProfileAsyncRelationships = {
+  [type in ProfileRelationships]: ProfileAsyncCommon<ProfileRelationshipTypes[]> & {
+    exhausted: boolean;
+    page: number;
+    loadedPage?: number;
+    total?: number;
+  };
 };
 
-export type ProfileFlagsState = {
-  data?: ProfileFlag[];
-  error?: ParseFetchErrorResult;
-  loading: boolean;
-};
+export type ProfileEntry = ProfileAsyncRelationships &
+  ProfileAsyncCommon<Profile> & {
+    sections?: {
+      [sectionType: ProfileSection['sectionType']]: ProfileAsyncCommon<ProfileSection>;
+    };
+  };
+
+export type ProfileSectionsState = ProfileAsyncCommon<ProfileSection>;
 
 export type ProfileState = {
-  identifiers: {
-    [identifierId: Identifier['id']]: IdentifierEntry;
-  };
-  profiles: {
-    [profileId: Profile['id']]: ProfileEntry;
-  };
+  identifiers: IdentifiersState;
+  profiles: ProfilesState;
   profileFlags: ProfileFlagsState;
 };
-
-type AddProfileState = { type: typeof ADD_PROFILE_STATE; profileId: Profile['id']; profile?: Profile };
-
-export type ProfileActions = AddProfileState;
 
 export const newProfileEntry: ProfileEntry = {
   error: undefined,
@@ -104,6 +115,7 @@ export const newProfileEntry: ProfileEntry = {
     loading: false,
     page: 0,
   },
+  sections: {},
 };
 
 export const newIdentifierEntry: IdentifierEntry = {

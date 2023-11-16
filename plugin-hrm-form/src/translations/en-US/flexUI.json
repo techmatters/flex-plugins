@@ -38,6 +38,7 @@
   "OfflineContacts-Header": "Offline Contacts",
   "NonDataCallTypeDialog-CloseConfirm": "Are you sure?",
   "SearchContactsAndCases-Title": "Search",
+  "SearchContactsAndCases-TitleExistingCase": "Search for Cases",
   "SearchForm-Name": "Name",
   "SearchForm-First": "First",
   "SearchForm-Last": "Last",
@@ -492,5 +493,9 @@
   "Conference-DialButton": "Dial",
   "HangupCallLeaveTooltip": "Leave Call",
   "NavigableContainer-BackButton": "Back",
-  "NavigableContainer-CloseButton": "Close"
+  "NavigableContainer-CloseButton": "Close",
+
+  "CaseMerging-ContactAddedTo": "Contact added to",
+  "CaseMerging-RemoveFromCase": "Remove from Case",
+  "CaseMerging-ContactRemovedFromCase": "Contact removed from case"
 }
