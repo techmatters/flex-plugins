@@ -584,5 +584,8 @@
   "Preferred method of contact": "วิธีการติดต่อที่ต้องการ",
   "Hub Services Provided": "บริการของโฮบอร์ด",
   "Service Subcategories": "หมวดหมู่บริการย่อย",
-  "Other Relationship to Child": "ความสัมพันธ์อื่นๆกับเด็ก"
+  "Other Relationship to Child": "ความสัมพันธ์อื่นๆกับเด็ก",
+  "CaseMerging-ContactAddedTo": "เพิ่มผู้ติดต่อไปที่",
+  "CaseMerging-RemoveFromCase": "ถอดออกจากเคส",
+  "CaseMerging-ContactRemovedFromCase": "ผู้ติดต่อถูกลบออกจากเคส"
 }
