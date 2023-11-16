@@ -67,7 +67,7 @@ import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackBu
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
 import { selectCaseMergingBanners } from '../caseMergingBanners/state';
-import { getHrmConfig } from '../../hrmConfig';
+import { getHrmConfig, getAseloFeatureFlags } from '../../hrmConfig';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
@@ -151,6 +151,8 @@ const TabbedForms: React.FC<Props> = ({
   });
 
   const { contactSaveFrequency } = getHrmConfig();
+  // eslint-disable-next-line camelcase
+  const { enable_case_merging } = getAseloFeatureFlags();
 
   const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={savedContact.csamReports} />, [
     savedContact.csamReports,
@@ -312,10 +314,13 @@ const TabbedForms: React.FC<Props> = ({
             {tabs}
           </StyledTabs>
           <div style={{ height: '100%', overflow: 'hidden' }}>
-            <Box margin="0 5px">
-              {showConnectedToCaseBanner && <ContactAddedToCaseBanner taskId={task.taskSid} />}
-              {showRemovedFromCaseBanner && <ContactRemovedFromCaseBanner taskId={task.taskSid} />}
-            </Box>
+            {/* eslint-disable-next-line camelcase */}
+            {enable_case_merging && (
+              <Box margin="0 5px">
+                {showConnectedToCaseBanner && <ContactAddedToCaseBanner taskId={task.taskSid} />}
+                {showRemovedFromCaseBanner && <ContactRemovedFromCaseBanner taskId={task.taskSid} />}
+              </Box>
+            )}
             {isOfflineContactTask(task) && (
               <TabbedFormTabContainer display={subroute === 'contactlessTask'}>
                 <ContactlessTaskTab

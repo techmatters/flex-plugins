@@ -1,4 +1,7 @@
 {
   "Case-ChildIsAtRisk": "Reporting in progress?",
-  "TabbedForms-AddChildInfoTab": "Victim Info"
+  "TabbedForms-AddChildInfoTab": "Victim Info",
+  "CaseMerging-ContactAddedTo": "Contact added to",
+  "CaseMerging-RemoveFromCase": "Remove from Case",
+  "CaseMerging-ContactRemovedFromCase": "Contact removed from case"
 }
