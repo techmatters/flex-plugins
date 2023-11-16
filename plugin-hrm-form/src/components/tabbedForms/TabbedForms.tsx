@@ -205,7 +205,7 @@ const TabbedForms: React.FC<Props> = ({
     );
   }
 
-  if (currentRoute.route === 'case') {
+  const renderCaseLayout = () => {
     // This is a dirty hack so that case viewing works for the create case form and
     // the profile view case form. It could use a refactor if/when we move routing
     // into a separate component, but this *should* mostly work for now.
@@ -227,6 +227,10 @@ const TabbedForms: React.FC<Props> = ({
         <Case {...caseProps} />
       </CaseLayout>
     );
+  };
+
+  if (currentRoute.route === 'case') {
+    return renderCaseLayout();
   }
 
   if (currentRoute.route === 'contact') {
