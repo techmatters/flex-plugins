@@ -28,7 +28,6 @@ import SmsIcon from '../components/common/icons/SmsIcon';
 import * as TransferHelpers from '../utils/transfer';
 import { colors, mainChannelColor } from './colors';
 import { getTemplateStrings } from '../hrmConfig';
-// import { maskIdentifiersByChannel } from '../components/common/MaskingIdentifiers';
 
 const isIncomingTransfer = task => TransferHelpers.hasTransferStarted(task) && task.status === 'pending';
 

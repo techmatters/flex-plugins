@@ -47,7 +47,6 @@ import { setupConferenceComponents, setUpConferenceActions } from './conference'
 import { setUpTransferActions } from './transfer/setUpTransferActions';
 import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
-// import { setUpMaskedIdentifiers } from './components/common/MaskingIdentifiers';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
