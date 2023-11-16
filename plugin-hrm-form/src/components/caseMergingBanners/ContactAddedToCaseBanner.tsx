@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import { showRemovedFromCaseBannerAction } from './state';
-import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
+import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import asyncDispatch from '../../states/asyncDispatch';
 import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
 import { newOpenModalAction } from '../../states/routing/actions';
@@ -36,7 +36,7 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const mapStateToProps = (state, { taskId }: OwnProps) => {
-  const contact = findContactByTaskSid(state, taskId);
+  const contact = selectContactByTaskSid(state, taskId);
   const connectedCase = selectCaseByTaskSid(state, taskId);
   return {
     contact: contact.savedContact,

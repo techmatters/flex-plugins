@@ -21,7 +21,7 @@ import { Close } from '@material-ui/icons';
 
 import { HeaderCloseButton, HiddenText } from '../../styles/HrmStyles';
 import { closeRemovedFromCaseBannerAction } from './state';
-import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
+import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import WarningIcon from './WarningIcon';
 import { BannerContainer, Text } from './styles';
 
@@ -30,7 +30,7 @@ type OwnProps = {
 };
 
 const mapStateToProps = (state, { taskId }: OwnProps) => {
-  const contact = findContactByTaskSid(state, taskId);
+  const contact = selectContactByTaskSid(state, taskId);
 
   return {
     contactId: contact.savedContact.id,
