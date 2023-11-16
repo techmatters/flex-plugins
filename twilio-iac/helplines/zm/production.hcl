@@ -19,6 +19,13 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+      },
+      whatsapp : {
+        channel_type         = "whatsapp"
+        contact_identity     = "whatsapp:+260973553422"
+        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
       }
     }
     #Studio flow
