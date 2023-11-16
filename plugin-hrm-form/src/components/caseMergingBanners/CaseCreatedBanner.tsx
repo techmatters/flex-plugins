@@ -17,7 +17,7 @@
 import React from 'react';
 // import { Template } from '@twilio/flex-ui';
 
-import { BannerContainer, Text, RemoveFromCaseLink } from './styles';
+import { BannerContainer, Text, BannerActionLink } from './styles';
 import InfoIcon from './InfoIcon';
 
 type OwnProps = {
@@ -32,9 +32,9 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({ caseId, cancelCase }) => {
     <BannerContainer color="blue">
       <InfoIcon />
       <Text>Case {caseId} created and contact added</Text>
-      <RemoveFromCaseLink type="button" onClick={cancelCase}>
+      <BannerActionLink type="button" onClick={cancelCase}>
         Cancel Case
-      </RemoveFromCaseLink>
+      </BannerActionLink>
     </BannerContainer>
   );
 };
