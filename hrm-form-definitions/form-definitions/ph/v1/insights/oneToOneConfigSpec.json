@@ -16,6 +16,10 @@
         "insights": ["customers", "acquisition_date"]
       },
       {
+        "name": "anonymousReport",
+        "insights": ["customers", "email"]
+      },
+      {
         "name": "livingSituation",
         "insights": ["customers", "customer_attribute_1"]
       },
