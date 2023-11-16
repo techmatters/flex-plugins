@@ -555,5 +555,8 @@
     "Web address": "adres internetowy",
     "Description (500 characters)": "Opis (500 znaków)",
     "File anonymously": "Złożyć anonimowo",
-    "Provide contact details": "Podaj dane kontaktowe"
-}
+    "Provide contact details": "Podaj dane kontaktowe",
+    "CaseMerging-ContactAddedTo": "Kontakt dodany do",
+    "CaseMerging-RemoveFromCase": "Usuń ze skrzynki",
+    "CaseMerging-ContactRemovedFromCase": "Kontakt usunięty ze sprawy"
+    }

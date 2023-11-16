@@ -462,5 +462,9 @@
   "Conference-EnterPhoneNumber": "Enter phone number",
   "Conference-DialButton": "Dial",
   "TaskLineCallEndedTitle": "The call has been ended.",
-  "HangupCallLeaveTooltip": "Leave Call"
+  "HangupCallLeaveTooltip": "Leave Call",
+
+  "CaseMerging-ContactAddedTo": "Contact added to",
+  "CaseMerging-RemoveFromCase": "Remove from Case",
+  "CaseMerging-ContactRemovedFromCase": "Contact removed from case"
 }

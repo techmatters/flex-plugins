@@ -65,7 +65,10 @@ import Case, { OwnProps as CaseProps } from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
 import ViewContact from '../case/ViewContact';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
-import { getHrmConfig } from '../../hrmConfig';
+import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
+import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
+import { selectCaseMergingBanners } from '../caseMergingBanners/state';
+import { getHrmConfig, getAseloFeatureFlags } from '../../hrmConfig';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
@@ -136,6 +139,8 @@ const TabbedForms: React.FC<Props> = ({
   openSearchModal,
   closeModal,
   finaliseContact,
+  showConnectedToCaseBanner,
+  showRemovedFromCaseBanner,
   metadata,
   task,
   removeIfOfflineContact,
@@ -147,6 +152,8 @@ const TabbedForms: React.FC<Props> = ({
   });
 
   const { contactSaveFrequency } = getHrmConfig();
+  // eslint-disable-next-line camelcase
+  const { enable_case_merging } = getAseloFeatureFlags();
 
   const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={savedContact.csamReports} />, [
     savedContact.csamReports,
@@ -303,7 +310,6 @@ const TabbedForms: React.FC<Props> = ({
     <FormProvider {...methods}>
       <div role="form" style={{ height: '100%' }}>
         <TabbedFormsContainer>
-          {/* Buttons at the top of the form */}
           <HeaderControlButtons />
           <StyledTabs
             className="hiddenWhenModalOpen"
@@ -316,6 +322,13 @@ const TabbedForms: React.FC<Props> = ({
             {tabs}
           </StyledTabs>
           <div style={{ height: '100%', overflow: 'hidden' }}>
+            {/* eslint-disable-next-line camelcase */}
+            {enable_case_merging && (
+              <Box margin="0 5px">
+                {showConnectedToCaseBanner && <ContactAddedToCaseBanner taskId={task.taskSid} />}
+                {showRemovedFromCaseBanner && <ContactRemovedFromCaseBanner taskId={task.taskSid} />}
+              </Box>
+            )}
             {isOfflineContactTask(task) && (
               <TabbedFormTabContainer display={subroute === 'contactlessTask'}>
                 <ContactlessTaskTab
@@ -401,10 +414,10 @@ const TabbedForms: React.FC<Props> = ({
 
 TabbedForms.displayName = 'TabbedForms';
 
-const mapStateToProps = (
-  { [namespace]: { routing, activeContacts, configuration } }: RootState,
-  { task: { taskSid }, contactId }: OwnProps,
-) => {
+const mapStateToProps = (state: RootState, { task: { taskSid }, contactId }: OwnProps) => {
+  const {
+    [namespace]: { routing, activeContacts, configuration },
+  } = state;
   const currentRoute = getCurrentTopmostRouteForTask(routing, taskSid);
   const { isCallTypeCaller, existingContacts } = activeContacts;
   const { savedContact, draftContact, metadata } = existingContacts[contactId] || {};
@@ -413,6 +426,7 @@ const mapStateToProps = (
     isRouteWithModalSupport(baseRoute) && baseRoute.activeModal?.length && baseRoute.activeModal[0].route === 'search';
 
   const { currentDefinitionVersion } = configuration;
+  const { showConnectedToCaseBanner, showRemovedFromCaseBanner } = selectCaseMergingBanners(state, contactId);
   return {
     currentRoute,
     savedContact,
@@ -422,6 +436,8 @@ const mapStateToProps = (
     searchModalOpen,
     isCallTypeCaller,
     metadata,
+    showConnectedToCaseBanner,
+    showRemovedFromCaseBanner,
   };
 };
 

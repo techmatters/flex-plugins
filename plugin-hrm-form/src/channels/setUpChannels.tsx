@@ -169,8 +169,6 @@ export const setupLineChatChannel = maskIdentifiers => {
     main: icon,
   };
 
-  if (maskIdentifiers) maskIdentifiersByChannel(LineChatChannel);
-
   Flex.TaskChannels.register(LineChatChannel);
 };
 

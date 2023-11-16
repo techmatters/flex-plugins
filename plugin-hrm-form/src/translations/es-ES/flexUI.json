@@ -559,5 +559,8 @@
   "Web address": "Página web",
   "Description (500 characters)": "Descripción (500 caracteres)",
   "File anonymously": "Reportar de forma anónima",
-  "Provide contact details": "Proporcionar datos de contacto"
+  "Provide contact details": "Proporcionar datos de contacto",
+  "CaseMerging-ContactAddedTo": "Contacto añadido a",
+  "CaseMerging-RemoveFromCase": "Quitar del caso",
+  "CaseMerging-ContactRemovedFromCase": "Contacto eliminado del caso"
 }

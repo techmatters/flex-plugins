@@ -7,5 +7,8 @@
   "ContactDetails-GeneralDetails-Counselor": "Case Worker",
   "Counsellor": "Case Worker",
   "Case-ChildIsAtRisk": "Child in imminent physical danger",
-  "CallSummary-Counselor": "Case Worker: "
+  "CallSummary-Counselor": "Case Worker: ",
+  "CaseMerging-ContactAddedTo": "Contact added to",
+  "CaseMerging-RemoveFromCase": "Remove from Case",
+  "CaseMerging-ContactRemovedFromCase": "Contact removed from case"
 }
