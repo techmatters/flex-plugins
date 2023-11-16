@@ -35,7 +35,6 @@ const ToogleDialpad: React.FC<Props> = ({ call, task, conference, dialpadState }
   };
 
   const isLiveCall = TaskHelper.isLiveCall(task);
-  const buttonText = 'Dialpad';
 
   return (
     <StyledConferenceButtonWrapper>
@@ -43,7 +42,7 @@ const ToogleDialpad: React.FC<Props> = ({ call, task, conference, dialpadState }
         {dialpadState ? <CloseOutlined /> : <DialpadOutlined />}
       </StyledConferenceButton>
       <span>
-        <Template code={buttonText} />
+        <Template code="Dial" />
       </span>
     </StyledConferenceButtonWrapper>
   );
