@@ -50,10 +50,12 @@ type Props = {
   office: string | undefined;
   childIsAtRisk: boolean;
   isOrphanedCase: boolean | undefined;
+  isCreating?: boolean;
   editCaseSummary: () => void;
   handlePrintCase: () => void;
   availableStatusTransitions: StatusInfo[];
   can: (action: string) => boolean;
+  handleCancelNewCaseAndClose: () => void;
 };
 
 const CaseDetails: React.FC<Props> = ({
@@ -71,7 +73,9 @@ const CaseDetails: React.FC<Props> = ({
   handlePrintCase,
   definitionVersion,
   isOrphanedCase = false,
+  isCreating,
   editCaseSummary,
+  handleCancelNewCaseAndClose,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const formattedCreatedAt = getLocaleDateTime(createdAt);
@@ -92,6 +96,8 @@ const CaseDetails: React.FC<Props> = ({
           office={office}
           handlePrintCase={handlePrintCase}
           isOrphanedCase={isOrphanedCase}
+          isCreating={isCreating}
+          handleCancelNewCaseAndClose={handleCancelNewCaseAndClose}
         />
         <div style={{ paddingTop: '15px' }}>
           <CaseTags definitionVersion={definitionVersion} categories={categories} />

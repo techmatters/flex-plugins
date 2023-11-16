@@ -40,6 +40,7 @@ import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { connectedCaseBase, namespace } from '../../states/storeNamespaces';
 import NavigableContainer from '../NavigableContainer';
+import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -203,6 +204,8 @@ const CaseHome: React.FC<Props> = ({
             definitionVersion={definitionVersion}
             isOrphanedCase={!contact}
             editCaseSummary={onEditCaseSummaryClick}
+            isCreating={isCreating}
+            handleCancelNewCaseAndClose={handleCancelNewCaseAndClose}
           />
         </Box>
         <Box margin="25px 0 0 25px">

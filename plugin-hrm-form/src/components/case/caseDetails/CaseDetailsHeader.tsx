@@ -31,6 +31,7 @@ import {
 } from '../../../styles/case';
 import { Flex, Box } from '../../../styles/HrmStyles';
 import { getHrmConfig } from '../../../hrmConfig';
+import CaseCreatedBanner from '../../caseMergingBanners/CaseCreatedBanner';
 
 type OwnProps = {
   caseId: string;
@@ -38,9 +39,19 @@ type OwnProps = {
   counselor: string;
   handlePrintCase: () => void;
   isOrphanedCase: boolean;
+  isCreating?: boolean;
+  handleCancelNewCaseAndClose: () => void;
 };
 
-const CaseDetailsHeader: React.FC<OwnProps> = ({ caseId, office, counselor, handlePrintCase, isOrphanedCase }) => {
+const CaseDetailsHeader: React.FC<OwnProps> = ({
+  caseId,
+  office,
+  counselor,
+  handlePrintCase,
+  handleCancelNewCaseAndClose,
+  isOrphanedCase,
+  isCreating,
+}) => {
   const { multipleOfficeSupport } = getHrmConfig();
 
   return (
@@ -53,6 +64,7 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({ caseId, office, counselor, hand
           </DetailsHeaderCaseId>
           {multipleOfficeSupport && office && <DetailsHeaderOfficeName>({office})</DetailsHeaderOfficeName>}
         </DetailsHeaderCaseContainer>
+        {isCreating && <CaseCreatedBanner caseId={caseId} cancelCase={handleCancelNewCaseAndClose} />}
         <DetailsHeaderCounselor data-testid="Case-DetailsHeaderCounselor">
           <Template code="Case-Counsellor" />: {counselor}
         </DetailsHeaderCounselor>
