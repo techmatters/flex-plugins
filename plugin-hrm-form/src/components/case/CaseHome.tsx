@@ -59,7 +59,6 @@ export type CaseHomeProps = {
   isCreating?: boolean;
   handleClose?: () => void;
   handleSaveAndEnd: () => void;
-  handleCancelNewCaseAndClose: () => void;
   handleUpdate: () => void;
   can: (action: PermissionActionType) => boolean;
 };
@@ -76,7 +75,6 @@ const CaseHome: React.FC<Props> = ({
   isCreating,
   handleClose,
   handleSaveAndEnd,
-  handleCancelNewCaseAndClose,
   caseDetails,
   can,
   connectedCaseState,
@@ -287,16 +285,6 @@ const CaseHome: React.FC<Props> = ({
       {isCreating && (
         <BottomButtonBar>
           <>
-            <Box marginRight="15px">
-              <StyledNextStepButton
-                data-testid="CaseHome-CancelButton"
-                secondary="true"
-                roundCorners
-                onClick={handleCancelNewCaseAndClose}
-              >
-                <Template code="BottomBar-CancelNewCaseAndClose" />
-              </StyledNextStepButton>
-            </Box>
             <StyledNextStepButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
               <Template code="BottomBar-SaveAndEnd" />
             </StyledNextStepButton>

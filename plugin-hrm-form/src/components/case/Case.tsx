@@ -21,7 +21,6 @@ import { CircularProgress } from '@material-ui/core';
 import { AnyAction, bindActionCreators } from 'redux';
 
 import { RootState } from '../../states';
-import { cancelCase } from '../../services/CaseService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { getNoteActivities, sortActivities } from '../../states/case/caseActivities';
 import { getHelplineData } from './caseHelpers';
@@ -92,7 +91,6 @@ const Case: React.FC<Props> = ({
   savedContacts,
   loadContacts,
   releaseContacts,
-  cancelNewCase,
   updateCaseAsyncAction,
   onNewCaseSaved = () => Promise.resolve(),
   disconnectFromCase,
@@ -176,14 +174,6 @@ const Case: React.FC<Props> = ({
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleCancelNewCaseAndClose = async () => {
-    // TODO: migrate to redux
-    await Promise.all(loadedContactIds.map(id => disconnectFromCase(id)));
-    await cancelCase(connectedCase.id);
-    cancelNewCase(connectedCase.id, loadedContactIds);
-    handleClose();
   };
 
   const handleSaveAndEnd = async () => {
@@ -321,7 +311,6 @@ const Case: React.FC<Props> = ({
         releaseContacts(loadedContactIds, task.taskSid);
         handleClose();
       }}
-      handleCancelNewCaseAndClose={handleCancelNewCaseAndClose}
       handleUpdate={handleUpdate}
       handleSaveAndEnd={handleSaveAndEnd}
       isCreating={isCreating}
@@ -350,11 +339,6 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
   const caseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
-  const cancelNewCase = (caseId: number, loadedContactIds: string[]) => {
-    const { taskSid } = task;
-    dispatch(CaseActions.removeConnectedCase(taskSid));
-    dispatch(ContactActions.releaseContacts(loadedContactIds, `case-${caseId}`));
-  };
   const updateCaseDefinition = (connectedCase: CaseType, taskSid: string, definition) => {
     dispatch(ConfigActions.updateDefinitionVersion(connectedCase.info.definitionVersion, definition));
   };
@@ -366,7 +350,6 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     updateDefinitionVersion: updateCaseDefinition,
     releaseContacts: bindActionCreators(ContactActions.releaseContacts, dispatch),
     loadContacts: bindActionCreators(ContactActions.loadContacts, dispatch),
-    cancelNewCase,
     updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
       caseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
     disconnectFromCase: (contactId: string) => caseAsyncDispatch(connectToCaseAsyncAction(contactId, null)),
