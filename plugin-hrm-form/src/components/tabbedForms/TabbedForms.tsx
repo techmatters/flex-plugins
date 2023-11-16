@@ -23,13 +23,18 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 import { Template } from '@twilio/flex-ui';
-import { current } from '@reduxjs/toolkit';
 
 import { RootState } from '../../states';
 import { completeTask, removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute, newCloseModalAction, newOpenModalAction } from '../../states/routing/actions';
 import { emptyCategories } from '../../states/contacts/reducer';
-import { AppRoutes, ChangeRouteMode, isRouteWithModalSupport, TabbedFormSubroutes } from '../../states/routing/types';
+import {
+  AppRoutes,
+  CaseRoute,
+  ChangeRouteMode,
+  isRouteWithModalSupport,
+  TabbedFormSubroutes,
+} from '../../states/routing/types';
 import {
   ContactRawJson,
   CustomITask,
@@ -211,7 +216,7 @@ const TabbedForms: React.FC<Props> = ({
     // into a separate component, but this *should* mostly work for now.
     // Editing the case in the profile view case form will probably not work
     // as expected without some additional work.
-    const isCreating = currentRoute.hasOwnProperty('isCreating') ? currentRoute.isCreating : true;
+    const isCreating = currentRoute.hasOwnProperty('isCreating') ? (currentRoute as CaseRoute).isCreating : true;
     const caseProps: CaseProps = {
       task,
       isCreating,
