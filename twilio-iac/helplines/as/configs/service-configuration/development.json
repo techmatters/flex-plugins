@@ -9,7 +9,7 @@
             "enable_counselor_toolkits": true,
             "enable_csam_clc_report": true,
             "enable_csam_report": true,
-            "enable_client_profiles": false,
+            "enable_client_profiles": true,
             "enable_fullstory_monitoring": true,
             "enable_lex": true,
             "enable_resources": true,
