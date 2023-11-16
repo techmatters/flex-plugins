@@ -43,6 +43,7 @@ type OwnProps = {
   hideIcon?: boolean;
   htmlElRef?: any;
   showEditButton?: boolean;
+  actionButtons?: JSX.Element[];
   handleEditClick?: (event?: any) => void;
   handleOpenConnectDialog?: (event: any) => void;
   showActionIcons?: boolean;
@@ -63,6 +64,7 @@ const ContactDetailsSection: React.FC<Props> = ({
   htmlElRef,
   showEditButton,
   handleOpenConnectDialog,
+  actionButtons,
   showActionIcons,
   handleEditClick,
   callType,
@@ -86,6 +88,7 @@ const ContactDetailsSection: React.FC<Props> = ({
           {!hideIcon && (expanded ? <ArrowDownIcon /> : <ArrowRightIcon />)}
           <SectionTitleText>{sectionTitle}</SectionTitleText>
         </SectionTitleButton>
+        {actionButtons?.map((actionButton, index) => actionButton)}
         {showActionIcons && showCopyButton && (
           <SectionActionButton
             onClick={e => {

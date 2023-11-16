@@ -20,7 +20,7 @@ import { format } from 'date-fns';
 import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes, isNonSaveable } from 'hrm-form-definitions';
-import { Edit } from '@material-ui/icons';
+import { AccountCircleOutlined, Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
 import { Flex, Box, Row } from '../../styles/HrmStyles';
@@ -255,9 +255,12 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
+  const ViewProfileIcon = ContactDetailsIcon(AccountCircleOutlined);
+
   const profileLink = featureFlags.enable_client_profiles && savedContact.profileId && (
     <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>
-      View Profile
+      <ViewProfileIcon style={{ fontSize: '20px' }} />
+      <Template code="Profile-ViewProfileButton" />
     </SectionActionButton>
   );
 
@@ -265,14 +268,12 @@ const ContactDetailsHome: React.FC<Props> = function ({
     <DetailsContainer data-testid="ContactDetails-Container">
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
       {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
-
-      {profileLink}
-
       <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
         expanded={detailsExpanded[GENERAL_DETAILS]}
         handleExpandClick={() => toggleSection(GENERAL_DETAILS)}
         buttonDataTestid={`ContactDetails-Section-${GENERAL_DETAILS}`}
+        actionButtons={profileLink ? [profileLink] : []}
       >
         <SectionEntry descriptionKey="ContactDetails-GeneralDetails-Channel">
           <SectionEntryValue value={formattedChannel} />
