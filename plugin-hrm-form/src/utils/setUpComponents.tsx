@@ -230,7 +230,7 @@ export const setUpCustomCRMContainer = () => {
  * Adds a custom button for voice channel to show the phone number in emergency situations
  */
 export const setUpViewMaskedVoiceNumber = () => {
-  console.log('>>> setUpViewMaskedVoiceNumber', !getAseloConfigFlags().enableUnmaskingCalls );
+  console.log('>>> setUpViewMaskedVoiceNumber', !getAseloConfigFlags().enableUnmaskingCalls);
   if (!getAseloConfigFlags().enableUnmaskingCalls) return;
 
   Flex.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" />, {

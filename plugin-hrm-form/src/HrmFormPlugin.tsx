@@ -78,25 +78,24 @@ const setUpComponents = (
   translateUI: (language: string) => Promise<void>,
 ) => {
   const { canView } = getPermissionsForViewingIdentifiers();
-  const maskIdentifiers = true // !canView(PermissionActions.VIEW_IDENTIFIERS);
+  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
-  // if (maskIdentifiers) setUpMaskedIdentifiers();
-  if(maskIdentifiers) {
+  if (maskIdentifiers) {
     Channels.maskIdentifiersForDefaultChannels();
 
-  // Mask the username within the messable bubbles in an conversation
-  Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
-    theirDefaultName: 'XXXXXX',
-    theirFriendlyNameOverride: false,
-    yourFriendlyNameOverride: true,
-  };
-  Flex.MessageList.Content.remove('0');
-  // Masks TaskInfoPanelContent - TODO: refactor to use a react component
-  const strings = getTemplateStrings();
-  strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
-  strings.CallParticipantCustomerName = strings.MaskIdentifiers;
+    // Mask the username within the messable bubbles in an conversation
+    Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
+      theirDefaultName: 'XXXXXX',
+      theirFriendlyNameOverride: false,
+      yourFriendlyNameOverride: true,
+    };
+    Flex.MessageList.Content.remove('0');
+    // Masks TaskInfoPanelContent - TODO: refactor to use a react component
+    const strings = getTemplateStrings();
+    strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+    strings.CallParticipantCustomerName = strings.MaskIdentifiers;
 
-  Components.setUpViewMaskedVoiceNumber();
+    Components.setUpViewMaskedVoiceNumber();
   }
 
   // setUp (add) dynamic components

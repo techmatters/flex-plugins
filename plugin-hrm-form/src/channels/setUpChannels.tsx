@@ -173,7 +173,7 @@ export const setupLineChatChannel = maskIdentifiers => {
   Flex.TaskChannels.register(LineChatChannel);
 };
 
- const maskIdentifiersByChannel = channelType => {
+const maskIdentifiersByChannel = channelType => {
   // Task list and panel when a call comes in
   channelType.templates.TaskListItem.firstLine = 'MaskIdentifiers';
   if (channelType === Flex.DefaultTaskChannels.Chat) {
