@@ -89,6 +89,26 @@ const setUpComponents = (
   Channels.setupTwitterChatChannel(maskIdentifiers);
   Channels.setupInstagramChatChannel(maskIdentifiers);
   Channels.setupLineChatChannel(maskIdentifiers);
+
+  if (maskIdentifiers) {
+    // Masks TaskInfoPanelContent - TODO: refactor to use a react component
+    const strings = getTemplateStrings();
+    strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+    strings.CallParticipantCustomerName = strings.MaskIdentifiers;
+
+    Channels.maskIdentifiersForDefaultChannels();
+
+    // Mask the username within the messable bubbles in an conversation
+    Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
+      theirDefaultName: 'XXXXXX',
+      theirFriendlyNameOverride: false,
+      yourFriendlyNameOverride: true,
+    };
+    Flex.MessageList.Content.remove('0');
+
+    Components.setUpViewMaskedVoiceNumber();
+  }
+
   if (featureFlags.enable_transfers) {
     Components.setUpTransferComponents();
     Channels.setUpIncomingTransferMessage();
@@ -114,23 +134,6 @@ const setUpComponents = (
   } else {
     if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
     if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
-  }
-
-  if (maskIdentifiers) {
-    // Mask the identifiers in all default channels
-    Channels.maskIdentifiersForDefaultChannels();
-
-    // Mask the username within the messable bubbles in an conversation
-    Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
-      theirDefaultName: 'XXXXXX',
-      theirFriendlyNameOverride: false,
-      yourFriendlyNameOverride: true,
-    };
-    Flex.MessageList.Content.remove('0');
-    // Masks TaskInfoPanelContent - TODO: refactor to use a react component
-    const strings = getTemplateStrings();
-    strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
-    strings.CallParticipantCustomerName = strings.MaskIdentifiers;
   }
 
   Components.setupTeamViewFilters();

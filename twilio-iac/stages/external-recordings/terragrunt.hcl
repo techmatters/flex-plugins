@@ -69,7 +69,7 @@ terraform {
     execute  = [
       "/app/twilio-iac/scripts/python_tools/manageServiceConfig.py",
       "update_prop",
-      "--prop=attributes.external_recordings_enabled",
+      "--prop=attributes.config_flags.enableExternalRecordings",
       "--value=True"
     ]
   }

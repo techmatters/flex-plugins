@@ -4,6 +4,10 @@
             "assets_bucket_url": "https://assets-development.tl.techmatters.org"
         },
         "external_recordings_enabled": true,
+        "config_flags": {
+            "enableExternalRecordings": true,
+            "enableUnmaskingCalls": true
+        },
         "feature_flags": {
             "enable_aselo_messaging_ui": true,
             "enable_counselor_toolkits": true,
@@ -21,7 +25,7 @@
             "enable_post_survey": false,
             "enable_case_merging": true
         },
-        "contact_save_frequency": "onFinalSaveAndTransfer",
+        "contact_save_frequency": "onTabChange",
         "multipleOfficeSupport": true,
         "permissionConfig": "dev",
         "previous_ui_version": {

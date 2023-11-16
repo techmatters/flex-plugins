@@ -19,7 +19,6 @@
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 import type { FilterDefinitionFactory } from '@twilio/flex-ui/src/components/view/TeamsView';
-import { Manager } from '@twilio/flex-ui';
 
 import { AcceptTransferButton, RejectTransferButton, TransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
@@ -36,6 +35,7 @@ import SettingsSideLink from '../components/sideLinks/SettingsSideLink';
 import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
 import StandaloneSearchSideLink from '../components/sideLinks/StandaloneSearchSideLink';
 import ManualPullButton from '../components/ManualPullButton';
+import ViewTaskNumber from '../components/common/MaskingIdentifiers/ViewTaskNumber';
 import { AddOfflineContactButton, OfflineContactTask } from '../components/OfflineContact';
 import { chatCapacityUpdated } from '../states/configuration/actions';
 import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles/HrmStyles';
@@ -44,7 +44,7 @@ import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
 import { FeatureFlags, isInMyBehalfITask, standaloneTaskSid } from '../types/types';
 import { colors } from '../channels/colors';
-import { getHrmConfig } from '../hrmConfig';
+import { getHrmConfig, getAseloConfigFlags } from '../hrmConfig';
 import { AseloMessageInput, AseloMessageList } from '../components/AseloMessaging';
 import { namespace, routingBase } from '../states/storeNamespaces';
 import { changeRoute } from '../states/routing/actions';
@@ -227,6 +227,18 @@ export const setUpCustomCRMContainer = () => {
 };
 
 /**
+ * Adds a custom button for voice channel to show the phone number in emergency situations
+ */
+export const setUpViewMaskedVoiceNumber = () => {
+  if (!getAseloConfigFlags().enableUnmaskingCalls) return;
+
+  Flex.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" />, {
+    sortOrder: 1,
+    if: props => props.task.channelType === 'voice',
+  });
+};
+
+/**
  * Add the buttons used to initiate, accept and reject transfers (when it should), and removes the actions button if task is being transferred
  */
 export const setUpTransferComponents = () => {
@@ -292,7 +304,7 @@ export const setUpCaseList = () => {
       key="CaseListSideLink"
       onClick={() => {
         Flex.Actions.invokeAction('NavigateToView', { viewName: 'case-list' });
-        Manager.getInstance().store.dispatch(
+        Flex.Manager.getInstance().store.dispatch(
           changeRoute({ route: 'case-list', subroute: 'case-list' }, standaloneTaskSid, ChangeRouteMode.Reset),
         );
       }}
@@ -314,7 +326,7 @@ export const setUpStandaloneSearch = () => {
       key="StandaloneSearchSideLink"
       onClick={() => {
         Flex.Actions.invokeAction('NavigateToView', { viewName: 'search' });
-        Manager.getInstance().store.dispatch(
+        Flex.Manager.getInstance().store.dispatch(
           changeRoute({ route: 'search', subroute: 'form' }, standaloneTaskSid, ChangeRouteMode.Reset),
         );
       }}
