@@ -194,9 +194,10 @@ const Case: React.FC<Props> = ({
 
     try {
       releaseContacts(loadedContactIds, `case-${connectedCase.id}`);
-      updateCaseAsyncAction(connectedCase.id, {
+      await updateCaseAsyncAction(connectedCase.id, {
         ...connectedCase,
       });
+      closeModal();
       await onNewCaseSaved(connectedCase);
     } catch (error) {
       console.error(error);

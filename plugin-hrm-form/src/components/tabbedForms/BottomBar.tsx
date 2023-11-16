@@ -16,13 +16,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import { SubmitErrorHandler } from 'react-hook-form';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import {
@@ -32,13 +30,12 @@ import {
   AddedToCaseButton,
   SaveAndEndContactButton,
 } from '../../styles/HrmStyles';
-import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { completeTask } from '../../services/formSubmissionHelpers';
 import { hasTaskControl } from '../../utils/transfer';
 import { RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
-import { recordBackendError, recordingErrorHandler } from '../../fullStory';
+import { recordBackendError } from '../../fullStory';
 import { Case, CustomITask, Contact } from '../../types/types';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
@@ -52,7 +49,7 @@ import asyncDispatch from '../../states/asyncDispatch';
 import { showConnectedToCaseBannerAction } from '../caseMergingBanners/state';
 
 type BottomBarProps = {
-  handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;
+  handleSubmitIfValid: (handleSubmit: () => Promise<void>) => () => void;
   optionalButtons?: { onClick: () => void; label: string }[];
   showNextButton: boolean;
   showSubmitButton: boolean;
@@ -125,10 +122,6 @@ const BottomBar: React.FC<
       setSubmitting(false);
     }
   };
-
-  const onError = recordingErrorHandler('Tabbed HRM Form', () => {
-    window.alert(strings['Error-Form']);
-  });
 
   const showBottomBar = showNextButton || showSubmitButton;
   const featureFlags = getAseloFeatureFlags();
@@ -214,7 +207,7 @@ const BottomBar: React.FC<
                 )}
             <SaveAndEndContactButton
               roundCorners={true}
-              onClick={handleSubmitIfValid(handleSubmit, onError)}
+              onClick={handleSubmitIfValid(handleSubmit)}
               disabled={isSubmitting}
               data-fs-id="Contact-SaveContact-Button"
               data-testid="BottomBar-SaveContact-Button"

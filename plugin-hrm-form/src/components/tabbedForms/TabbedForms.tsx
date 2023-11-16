@@ -179,6 +179,7 @@ const TabbedForms: React.FC<Props> = ({
         recordBackendError('Submit Contact Form', error);
       }
     }
+    return undefined;
   };
 
   /**
@@ -193,6 +194,10 @@ const TabbedForms: React.FC<Props> = ({
     window.alert(strings['Error-Form']);
   });
 
+  const newSubmitHandler = (successHandler: () => Promise<void>) => {
+    return methods.handleSubmit(successHandler, onError);
+  };
+
   const onSelectSearchResult = (searchResult: Contact) => {
     const selectedIsCaller = searchResult.rawJson.callType === callTypes.caller;
     closeModal();
@@ -206,7 +211,7 @@ const TabbedForms: React.FC<Props> = ({
   };
 
   const onNewCaseSaved = async (caseForm: CaseForm) => {
-    methods.handleSubmit(() => submit(caseForm), onError);
+    await newSubmitHandler(() => submit(caseForm))();
   };
 
   if (
@@ -409,7 +414,7 @@ const TabbedForms: React.FC<Props> = ({
               // TODO: move this two functions to a separate file to centralize "handle task completions"
               showNextButton={tabIndex !== 0 && tabIndex < tabs.length - 1}
               showSubmitButton={showSubmitButton}
-              handleSubmitIfValid={methods.handleSubmit} // TODO: this should be used within BottomBar, but that requires a small refactor to make it a functional component
+              handleSubmitIfValid={newSubmitHandler} // TODO: this should be used within BottomBar, but that requires a small refactor to make it a functional component
               optionalButtons={optionalButtons}
             />
           </div>
