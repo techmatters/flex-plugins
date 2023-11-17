@@ -558,5 +558,8 @@
   "Description (500 characters)": "Description (500 characters)",
   "File anonymously": "File anonymously",
   "Provide contact details": "Provide contact details",
-  "CSAMCLC-ActionHeaderAdded": "Added {{date}} at {{time}} &nbsp;&nbsp; Professional: {{counsellor}}"
+  "CSAMCLC-ActionHeaderAdded": "Added {{date}} at {{time}} &nbsp;&nbsp; Professional: {{counsellor}}",
+  "CaseMerging-ContactAddedTo": "Contact added to",
+  "CaseMerging-RemoveFromCase": "Remove from Case",
+  "CaseMerging-ContactRemovedFromCase": "Contact removed from case"
 }

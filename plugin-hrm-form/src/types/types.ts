@@ -243,6 +243,11 @@ export type CounselorHash = {
   [sid: string]: string;
 };
 
+export type ConfigFlags = {
+  enableExternalRecordings: boolean;
+  enableUnmaskingCalls: boolean;
+};
+
 /* eslint-disable camelcase */
 export type FeatureFlags = {
   enable_fullstory_monitoring: boolean; // Enables Full Story

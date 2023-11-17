@@ -50,8 +50,8 @@ const ProfileRelationshipList: React.FC<Props> = ({
   const hasData = data && data.length > 0;
 
   useEffect(() => {
-    if (loadedPage >= page) return;
-    loadRelationshipAsync(page);
+    if (loading || hasData) return;
+    loadRelationshipAsync(page, loadedPage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
@@ -100,12 +100,13 @@ const mapStateToProps = (state: RootState, { profileId, type }) => {
 };
 
 const mapDispatchToProps = (dispatch, { profileId, type }: OwnProps) => ({
-  loadRelationshipAsync: (page: number) =>
+  loadRelationshipAsync: (page: number, loadedPage: number) =>
     asyncDispatch(dispatch)(
       profileActions.loadRelationshipAsync({
         profileId,
         type,
         page,
+        loadedPage,
       }),
     ),
   updatePage: (page: number) =>

@@ -505,5 +505,8 @@
   "CSAMCLCReportForm-LinkReady": "Link de autoreporte está listo",
   "BottomBar-CreateLink": "Crear Link ",
   "BottomBar-SendAnotherLink": "Crear Otro Link",
-  "CopyLink": "Copiar Link"
+  "CopyLink": "Copiar Link",
+  "CaseMerging-ContactAddedTo": "Contacto añadido a",
+  "CaseMerging-RemoveFromCase": "Quitar del caso",
+  "CaseMerging-ContactRemovedFromCase": "Contacto eliminado del caso"
 }

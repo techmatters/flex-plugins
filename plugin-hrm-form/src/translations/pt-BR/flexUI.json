@@ -454,5 +454,9 @@
   "BottomBar-SaveCaseSummary": "Salvar",
   "Case Status": "Status do caso",
   "Case Summary": "Resumo do caso",
-  "Child is in imminent physical danger": "A criança está em risco"
+  "Child is in imminent physical danger": "A criança está em risco",
+
+  "CaseMerging-ContactAddedTo": "Contato adicionado ao",
+  "CaseMerging-RemoveFromCase": "Remover do Caso",
+  "CaseMerging-ContactRemovedFromCase": "Contato removido do caso"
 }

@@ -117,7 +117,7 @@ const CallTypeButtons: React.FC<Props> = ({
       await completeTask(task, savedContact);
     } catch (error) {
       const strings = getTemplateStrings();
-      if (!window.confirm(strings['Error-ContinueWithoutRecording'])) {
+      if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
         await completeTask(task, savedContact);
       }
     }
