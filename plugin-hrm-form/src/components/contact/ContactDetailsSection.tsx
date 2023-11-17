@@ -15,10 +15,13 @@
  */
 
 import React from 'react';
-import { Template } from '@twilio/flex-ui';
+import { Template, Icon } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 import { ArrowDropDownTwoTone, ArrowRightTwoTone, Edit, Link } from '@material-ui/icons';
+// import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 
+import { RootState } from '../../states';
+import { contactFormsBase, namespace } from '../../states/storeNamespaces';
 import {
   SectionTitleContainer,
   SectionTitleButton,
@@ -27,7 +30,10 @@ import {
   ContactDetailsIcon,
   SectionActionButton,
 } from '../../styles/search';
+import { CustomITask, StandaloneITask } from '../../types/types';
 import { setCallType } from '../../states/contacts/actions';
+import { newOpenModalAction } from '../../states/routing/actions';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);
 const ArrowRightIcon = ContactDetailsIcon(ArrowRightTwoTone);
@@ -46,8 +52,9 @@ type OwnProps = {
   handleEditClick?: (event?: any) => void;
   handleOpenConnectDialog?: (event: any) => void;
   showActionIcons?: boolean;
-  task?: any;
+  task?: CustomITask | StandaloneITask;
   callType?: string;
+  contactId?: string;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -66,10 +73,29 @@ const ContactDetailsSection: React.FC<Props> = ({
   showActionIcons,
   handleEditClick,
   callType,
+  savedContact,
+  openProfileModal,
   ...props
 }) => {
   const showCopyButton = () => callType === 'child' || callType === 'caller';
   const handleSetCallType = () => props.setCallType(callType === 'caller');
+
+  const featureFlags = getAseloFeatureFlags();
+
+  const profileLink = featureFlags.enable_client_profiles && savedContact?.profileId && (
+    <SectionActionButton
+      padding="0"
+      type="button"
+      onClick={() => {
+        console.log('>>> doesnt work \n opening profile modal', savedContact);
+        openProfileModal(savedContact?.profileId);
+        console.log('>>> profile modal opened');
+      }}
+    >
+      <Icon icon="DefaultAvatar" />
+      View Client
+    </SectionActionButton>
+  );
 
   return (
     <>
@@ -86,6 +112,7 @@ const ContactDetailsSection: React.FC<Props> = ({
           {!hideIcon && (expanded ? <ArrowDownIcon /> : <ArrowRightIcon />)}
           <SectionTitleText>{sectionTitle}</SectionTitleText>
         </SectionTitleButton>
+
         {showActionIcons && showCopyButton && (
           <SectionActionButton
             onClick={e => {
@@ -98,13 +125,12 @@ const ContactDetailsSection: React.FC<Props> = ({
           </SectionActionButton>
         )}
         {showEditButton && (
-          <>
-            <SectionActionButton type="button" onClick={handleEditClick}>
-              <EditIcon style={{ fontSize: '14px', padding: '-1px 6px 0 6px', marginRight: '6px' }} />
-              <Template code="EditButton" />
-            </SectionActionButton>
-          </>
+          <SectionActionButton type="button" onClick={handleEditClick}>
+            <EditIcon style={{ fontSize: '14px', padding: '-1px 6px 0 6px', marginRight: '6px' }} />
+            <Template code="EditButton" />
+          </SectionActionButton>
         )}
+        {profileLink}
       </SectionTitleContainer>
       <SectionCollapse expanded={expanded} timeout="auto">
         {children}
@@ -115,10 +141,19 @@ const ContactDetailsSection: React.FC<Props> = ({
 
 ContactDetailsSection.displayName = 'ContactDetailsSection';
 
-const mapDispatchToProps = {
-  setCallType,
-};
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
+  savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
+});
 
-const connector = connect(null, mapDispatchToProps);
+const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
+  setCallType,
+  openProfileModal: id => {
+    console.log('>>> openProfileModal called with task', id, task);
+    console.log(`>>> openProfileModal called ${task.taskSid}`, task);
+    dispatch(newOpenModalAction({ route: 'profile', id, subroute: 'details' }, task.taskSid));
+  },
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(ContactDetailsSection);
 export default connected;

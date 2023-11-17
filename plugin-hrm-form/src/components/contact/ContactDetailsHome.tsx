@@ -256,8 +256,16 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
   const profileLink = featureFlags.enable_client_profiles && savedContact.profileId && (
-    <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>
-      View Profile
+    <SectionActionButton
+      padding="0"
+      type="button"
+      onClick={() => {
+        console.log('>>> works \n opening profile modal', savedContact);
+        openProfileModal(savedContact.profileId);
+        console.log('>>> profile modal opened');
+      }}
+    >
+      View Client
     </SectionActionButton>
   );
 
@@ -273,6 +281,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
         expanded={detailsExpanded[GENERAL_DETAILS]}
         handleExpandClick={() => toggleSection(GENERAL_DETAILS)}
         buttonDataTestid={`ContactDetails-Section-${GENERAL_DETAILS}`}
+        contactId={contactId}
       >
         <SectionEntry descriptionKey="ContactDetails-GeneralDetails-Channel">
           <SectionEntryValue value={formattedChannel} />
@@ -462,6 +471,8 @@ const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) =>
     form: keyof Pick<ContactRawJson, 'caseInformation' | 'callerInformation' | 'categories' | 'childInformation'>,
   ) => dispatch(changeRoute({ route: 'contact', subroute: 'edit', id: contactId, form }, task.taskSid)),
   openProfileModal: id => {
+    console.log('>>> openProfileModal called with task', id, task);
+    console.log(`>>> openProfileModal called ${task.taskSid}`, task);
     dispatch(newOpenModalAction({ route: 'profile', id, subroute: 'details' }, task.taskSid));
   },
 });

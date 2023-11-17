@@ -108,7 +108,7 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
     }
 
     return (
-      <ProfileSectionEditButton onClick={section.handleEdit} >
+      <ProfileSectionEditButton onClick={section.handleEdit}>
         <Template code="Profile-EditButton" />
       </ProfileSectionEditButton>
     );
