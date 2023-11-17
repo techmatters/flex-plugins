@@ -39,7 +39,7 @@ export const ProfileSectionWrapper = styled('div')`
 `;
 ProfileSectionWrapper.displayName = 'ProfileSectionWrapper';
 
-export const ProfileSubtitle = styled(FontOpenSans)`
+export const ProfileSectionSubtitle = styled(FontOpenSans)`
   color: ${HrmTheme.colors.categoryTextColor};
   font-size: 10px;
   font-weight: 700;
@@ -48,33 +48,28 @@ export const ProfileSubtitle = styled(FontOpenSans)`
   text-transform: uppercase;
   margin: 15px 0 5px;
 `;
-ProfileSubtitle.displayName = 'ProfileSubtitle';
+ProfileSectionSubtitle.displayName = 'ProfileSectionSubtitle';
 
 type ProfileSectionEditButton = {
   onClick: () => void;
-  showButton: boolean;
 };
 
 // eslint-disable-next-line import/no-unused-modules
 export const ProfileSectionEditButton = styled(Button)<ProfileSectionEditButton>`
-  color: ${props => (props.showButton ? HrmTheme.colors.categoryTextColor : 'inherit')};
-  background-color: ${props => (props.showButton ? '#ecedf1' : 'transparent')};
-  letter-spacing: normal;
+  color: ${HrmTheme.colors.categoryTextColor};
+  background-color: '#ecedf1';
   font-size: 14px;
   box-shadow: none;
   border: none;
   margin-left: auto;
-  height: ${props => (props.showButton ? '30px' : '50px')};
-  width: ${props => (props.showButton ? '40px' : '50px')};
-  border-radius: ${props => (props.showButton ? '4px' : '50%')};
-  cursor: pointer;
+  width: '40px';
+  border-radius: '4px';
 
   :focus,
   :active {
     outline: auto;
     box-shadow: none;
     border: none;
-    padding: unset;
   }
 `;
 ProfileSectionEditButton.displayName = 'ProfileSectionEditButton';
@@ -84,7 +79,7 @@ type ColorProps = {
   blocked?: boolean;
 };
 
-export const StatusLabelPill = styled('div')<ColorProps>`
+export const StatusFlagPill = styled('div')<ColorProps>`
   display: inline-flex;
   align-items: center;
   border-radius: 6px;
@@ -95,9 +90,9 @@ export const StatusLabelPill = styled('div')<ColorProps>`
   border: ${props => (props.blocked ? `2px dashed #D61F1F` : '#F9FAFB')};
   color: ${props => (props.blocked ? `#D61F1F` : 'none')};
 `;
-StatusLabelPill.displayName = 'StatusLabelPill';
+StatusFlagPill.displayName = 'StatusFlagPill';
 
-export const StyledStatusSelect = styled(Select)`
+export const StyledFlagSelect = styled(Select)`
   background-color: #f9fafb;
   border-radius: 5px;
   &:focus-within {

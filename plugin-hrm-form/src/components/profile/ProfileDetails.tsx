@@ -24,7 +24,7 @@ import ProfileFlagEdit from './profileFlag/ProfileFlagEdit';
 import {
   DetailsWrapper,
   ProfileSectionWrapper,
-  ProfileSubtitle,
+  ProfileSectionSubtitle,
   ProfileSectionEditButton,
   CloseIconButton,
 } from './styles';
@@ -108,9 +108,8 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
     }
 
     return (
-      <ProfileSectionEditButton onClick={section.handleEdit} showButton={!icon} data-testid="Profile-EditButton">
-        {icon ? <IconButton icon={<CloseIconButton />} size="large" /> : null}
-        {!icon && <Template code="Profile-EditButton" />}
+      <ProfileSectionEditButton onClick={section.handleEdit} >
+        <Template code="Profile-EditButton" />
       </ProfileSectionEditButton>
     );
   };
@@ -127,9 +126,9 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
           <ProfileSectionWrapper>
             <Box marginBottom="5px">
               <Row>
-                <ProfileSubtitle>
+                <ProfileSectionSubtitle>
                   {section.titleCode ? <Template code={section.titleCode} /> : section.title}
-                </ProfileSubtitle>
+                </ProfileSectionSubtitle>
                 {renderEditButton(section)}
               </Row>
             </Box>
