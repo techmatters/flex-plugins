@@ -73,7 +73,8 @@ import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackBu
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
 import { selectCaseMergingBanners } from '../caseMergingBanners/state';
-import { getHrmConfig, getAseloFeatureFlags } from '../../hrmConfig';
+import { getHrmConfig, getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
+import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
@@ -156,6 +157,8 @@ const TabbedForms: React.FC<Props> = ({
     mode: 'onChange',
   });
 
+  const strings = getTemplateStrings();
+
   const { contactSaveFrequency } = getHrmConfig();
   // eslint-disable-next-line camelcase
   const { enable_case_merging } = getAseloFeatureFlags();
@@ -172,6 +175,21 @@ const TabbedForms: React.FC<Props> = ({
     helpline,
   } = updatedContact;
 
+  const submit = async (caseForm: CaseForm) => {
+    try {
+      await finaliseContact(savedContact, metadata, caseForm);
+      await completeTask(task, savedContact);
+    } catch (error) {
+      if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
+        recordBackendError('Submit Contact Form TASK COMPLETED WITHOUT RECORDING', error);
+        await completeTask(task, savedContact);
+      } else {
+        recordBackendError('Submit Contact Form', error);
+      }
+    }
+    return undefined;
+  };
+
   /**
    * Clear some parts of the form state when helpline changes.
    */
@@ -179,6 +197,14 @@ const TabbedForms: React.FC<Props> = ({
     if (isMounted.current) setValue('categories', emptyCategories);
     else isMounted.current = true;
   }, [helpline, setValue]);
+
+  const onError = recordingErrorHandler('Tabbed HRM Form', () => {
+    window.alert(strings['Error-Form']);
+  });
+
+  const newSubmitHandler = (successHandler: () => Promise<void>) => {
+    return methods.handleSubmit(successHandler, onError);
+  };
 
   const onSelectSearchResult = (searchResult: Contact) => {
     const selectedIsCaller = searchResult.rawJson.callType === callTypes.caller;
@@ -193,8 +219,7 @@ const TabbedForms: React.FC<Props> = ({
   };
 
   const onNewCaseSaved = async (caseForm: CaseForm) => {
-    await finaliseContact(savedContact, metadata, caseForm);
-    await completeTask(task, savedContact);
+    await newSubmitHandler(() => submit(caseForm))();
   };
 
   if (
@@ -411,7 +436,7 @@ const TabbedForms: React.FC<Props> = ({
               // TODO: move this two functions to a separate file to centralize "handle task completions"
               showNextButton={tabIndex !== 0 && tabIndex < tabs.length - 1}
               showSubmitButton={showSubmitButton}
-              handleSubmitIfValid={methods.handleSubmit} // TODO: this should be used within BottomBar, but that requires a small refactor to make it a functional component
+              handleSubmitIfValid={newSubmitHandler} // TODO: this should be used within BottomBar, but that requires a small refactor to make it a functional component
               optionalButtons={optionalButtons}
             />
           </div>
