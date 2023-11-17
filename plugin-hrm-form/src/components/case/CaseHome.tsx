@@ -21,7 +21,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseContainer } from '../../styles/case';
-import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyles';
+import { BottomButtonBar, Box, Flex, StyledNextStepButton } from '../../styles/HrmStyles';
 import CaseDetailsComponent from './CaseDetails';
 import Timeline from './Timeline';
 import CaseSection from './CaseSection';
@@ -51,6 +51,8 @@ import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid
 import asyncDispatch from '../../states/asyncDispatch';
 import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
 import { newCloseModalAction } from '../../states/routing/actions';
+import { BannerContainer, Text } from '../caseMergingBanners/styles';
+import InfoIcon from '../caseMergingBanners/InfoIcon';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -210,13 +212,24 @@ const CaseHome: React.FC<Props> = ({
     <NavigableContainer titleCode={contactIdentifier} task={task} onGoBack={handleClose} onCloseModal={handleClose}>
       <CaseContainer data-testid="CaseHome-CaseDetailsComponent">
         {showConnectToCaseButton && (
-          <ConnectToCaseButton
-            isConnectedToTaskContact={isConnectedToTaskContact}
-            onClickConnectToTaskContact={() => {
-              connectCaseToTaskContact(taskContact, connectedCaseState.connectedCase);
-              closeModal();
-            }}
-          />
+          <BannerContainer color="yellow" style={{ paddingTop: '12px', paddingBottom: '12px' }}>
+            <Flex width="100%" justifyContent="space-between">
+              <Flex alignItems="center">
+                <InfoIcon color="#fed44b" />
+                <Text>
+                  <Template code="CaseMerging-AddContactToCase" />
+                </Text>
+              </Flex>
+              <ConnectToCaseButton
+                isConnectedToTaskContact={isConnectedToTaskContact}
+                onClickConnectToTaskContact={() => {
+                  connectCaseToTaskContact(taskContact, connectedCaseState.connectedCase);
+                  closeModal();
+                }}
+                color="black"
+              />
+            </Flex>
+          </BannerContainer>
         )}
         <Box marginLeft="25px" marginTop="13px">
           <CaseDetailsComponent
