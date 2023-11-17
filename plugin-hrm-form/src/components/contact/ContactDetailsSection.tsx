@@ -48,7 +48,7 @@ type OwnProps = {
   handleEditClick?: (event?: any) => void;
   handleOpenConnectDialog?: (event: any) => void;
   showActionIcons?: boolean;
-  extraActionButtons: React.ReactElement;
+  extraActionButton?: React.ReactElement;
   callType?: string;
   contactId?: string;
 };
