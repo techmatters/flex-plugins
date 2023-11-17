@@ -64,7 +64,7 @@ locals {
   }
 
   task_queues = {
-    rp : {
+    master : {
       "target_workers" = "routing.skills HAS 'RP'",
       "friendly_name"  = "Revenge Porn"
     },
