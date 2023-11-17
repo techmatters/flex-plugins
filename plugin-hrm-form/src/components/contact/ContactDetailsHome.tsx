@@ -274,7 +274,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
       {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
 
-      {profileLink}
+      {/* {profileLink} */}
 
       <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
@@ -282,6 +282,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
         handleExpandClick={() => toggleSection(GENERAL_DETAILS)}
         buttonDataTestid={`ContactDetails-Section-${GENERAL_DETAILS}`}
         contactId={contactId}
+        extraActionButton={profileLink}
       >
         <SectionEntry descriptionKey="ContactDetails-GeneralDetails-Channel">
           <SectionEntryValue value={formattedChannel} />

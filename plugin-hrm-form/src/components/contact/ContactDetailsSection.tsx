@@ -15,10 +15,9 @@
  */
 
 import React from 'react';
-import { Template, Icon } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 import { ArrowDropDownTwoTone, ArrowRightTwoTone, Edit, Link } from '@material-ui/icons';
-// import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 
 import { RootState } from '../../states';
 import { contactFormsBase, namespace } from '../../states/storeNamespaces';
@@ -30,10 +29,7 @@ import {
   ContactDetailsIcon,
   SectionActionButton,
 } from '../../styles/search';
-import { CustomITask, StandaloneITask } from '../../types/types';
 import { setCallType } from '../../states/contacts/actions';
-import { newOpenModalAction } from '../../states/routing/actions';
-import { getAseloFeatureFlags } from '../../hrmConfig';
 
 const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);
 const ArrowRightIcon = ContactDetailsIcon(ArrowRightTwoTone);
@@ -52,7 +48,7 @@ type OwnProps = {
   handleEditClick?: (event?: any) => void;
   handleOpenConnectDialog?: (event: any) => void;
   showActionIcons?: boolean;
-  task?: CustomITask | StandaloneITask;
+  extraActionButtons: React.ReactElement;
   callType?: string;
   contactId?: string;
 };
@@ -74,28 +70,11 @@ const ContactDetailsSection: React.FC<Props> = ({
   handleEditClick,
   callType,
   savedContact,
-  openProfileModal,
+  extraActionButton,
   ...props
 }) => {
   const showCopyButton = () => callType === 'child' || callType === 'caller';
   const handleSetCallType = () => props.setCallType(callType === 'caller');
-
-  const featureFlags = getAseloFeatureFlags();
-
-  const profileLink = featureFlags.enable_client_profiles && savedContact?.profileId && (
-    <SectionActionButton
-      padding="0"
-      type="button"
-      onClick={() => {
-        console.log('>>> doesnt work \n opening profile modal', savedContact);
-        openProfileModal(savedContact?.profileId);
-        console.log('>>> profile modal opened');
-      }}
-    >
-      <Icon icon="DefaultAvatar" />
-      View Client
-    </SectionActionButton>
-  );
 
   return (
     <>
@@ -130,7 +109,7 @@ const ContactDetailsSection: React.FC<Props> = ({
             <Template code="EditButton" />
           </SectionActionButton>
         )}
-        {profileLink}
+        {extraActionButton}
       </SectionTitleContainer>
       <SectionCollapse expanded={expanded} timeout="auto">
         {children}
@@ -145,13 +124,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
 });
 
-const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
+const mapDispatchToProps = () => ({
   setCallType,
-  openProfileModal: id => {
-    console.log('>>> openProfileModal called with task', id, task);
-    console.log(`>>> openProfileModal called ${task.taskSid}`, task);
-    dispatch(newOpenModalAction({ route: 'profile', id, subroute: 'details' }, task.taskSid));
-  },
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
