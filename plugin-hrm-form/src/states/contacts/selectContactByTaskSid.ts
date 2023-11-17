@@ -16,10 +16,9 @@
 
 import { RootState } from '..';
 import { ContactState } from './existingContacts';
+import { namespace } from '../storeNamespaces';
 
-const findContactByTaskSid = (state: RootState, taskSid: string): ContactState =>
-  Object.values(state['plugin-hrm-form'].activeContacts.existingContacts).find(
-    cs => cs.savedContact?.taskId === taskSid,
-  );
+const selectContactByTaskSid = (state: RootState, taskSid: string): ContactState =>
+  Object.values(state[namespace].activeContacts.existingContacts).find(cs => cs.savedContact?.taskId === taskSid);
 
-export default findContactByTaskSid;
+export default selectContactByTaskSid;

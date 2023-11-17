@@ -28,7 +28,7 @@ import { newContact } from '../../states/contacts/contactState';
 import asyncDispatch from '../../states/asyncDispatch';
 import { createContactAsyncAction, newRestartOfflineContactAsyncAction } from '../../states/contacts/saveContact';
 import { namespace } from '../../states/storeNamespaces';
-import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
+import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 
 type OwnProps = {};
 
@@ -90,7 +90,7 @@ const AddOfflineContactButton: React.FC<Props> = ({
 AddOfflineContactButton.displayName = 'AddOfflineContactButton';
 
 const mapStateToProps = (state: RootState) => {
-  const draftOfflineContact = findContactByTaskSid(state, getOfflineContactTaskSid())?.savedContact;
+  const draftOfflineContact = selectContactByTaskSid(state, getOfflineContactTaskSid())?.savedContact;
   const { currentDefinitionVersion } = state[namespace].configuration;
   const { isAddingOfflineContact } = state[namespace].routing;
 

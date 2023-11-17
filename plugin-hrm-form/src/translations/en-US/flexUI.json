@@ -149,6 +149,7 @@
   "Error-Unexpected": "Unexpected error has occurred",
   "Case-CaseNumber": "Case #",
   "Case-TimelineSection": "Timeline",
+  "Case-Timeline-DraftContactSummaryPlaceholder": "In Progress",
   "Case-AddPerpetratorSection": "Perpetrators",
   "Case-AddIncidentSection": "Incidents",
   "Case-AddHouseholdSection": "Household Information",
@@ -495,6 +496,7 @@
   "NavigableContainer-CloseButton": "Close",
 
   "CaseMerging-ContactAddedTo": "Contact added to",
+  "CaseMerging-AddContactToCase": "Add Contact to Case?",
   "CaseMerging-RemoveFromCase": "Remove from Case",
   "CaseMerging-ContactRemovedFromCase": "Contact removed from case"
 }
