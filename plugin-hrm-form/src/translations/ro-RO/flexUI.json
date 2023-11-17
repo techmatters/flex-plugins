@@ -555,5 +555,8 @@
     "Web address": "adresa de internet",
     "Description (500 characters)": "Descriere (500 de caractere)",
     "File anonymously": "Fișier anonim",
-    "Provide contact details": "Furnizați datele de contact"
+    "Provide contact details": "Furnizați datele de contact",
+    "CaseMerging-ContactAddedTo": "Contact adăugat la",
+    "CaseMerging-RemoveFromCase": "Eliminați din carcasă",
+    "CaseMerging-ContactRemovedFromCase": "Contact eliminat din carcasă"
 }

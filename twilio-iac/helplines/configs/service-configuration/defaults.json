@@ -41,6 +41,10 @@
         "monitoringEnv" : "production",
         "pdfImagesSource" : "https://tl-public-chat.s3.amazonaws.com",
         "logo_url" : "https://aselo-logo.s3.amazonaws.com/145+transparent+background+no+TM.png",
+        "config_flags": {
+            "enableExternalRecordings": false,
+            "enableUnmaskingCalls": false
+        },
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_canned_responses": true,
