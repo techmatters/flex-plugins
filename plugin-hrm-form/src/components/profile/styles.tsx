@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { styled, Button } from '@twilio/flex-ui';
-import { withStyles, Select } from '@material-ui/core';
+import { withStyles, Select, ButtonBase } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 
 import { FontOpenSans } from '../../styles/HrmStyles';
@@ -33,6 +33,12 @@ export const DetailsWrapper = styled(FontOpenSans)`
 `;
 DetailsWrapper.displayName = 'DetailsWrapper';
 
+export const ProfileSectionWrapper = styled('div')`
+  margin: 10px 0;
+  padding: 0 0 10px 0;
+`;
+ProfileSectionWrapper.displayName = 'ProfileSectionWrapper';
+
 export const ProfileSubtitle = styled(FontOpenSans)`
   color: ${HrmTheme.colors.categoryTextColor};
   font-size: 10px;
@@ -44,27 +50,34 @@ export const ProfileSubtitle = styled(FontOpenSans)`
 `;
 ProfileSubtitle.displayName = 'ProfileSubtitle';
 
-type EditButtonProps = {
+type ProfileSectionEditButton = {
   onClick: () => void;
+  showButton: boolean;
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export const EditButton = styled(props => <Button roundCorners={false} {...props} />)<EditButtonProps>`
-  color: ${HrmTheme.colors.categoryTextColor};
-  text-align: right;
-  background-color: #ecedf1;
-  height: 28px;
-  border-radius: 4px;
+export const ProfileSectionEditButton = styled(Button)<ProfileSectionEditButton>`
+  color: ${props => (props.showButton ? HrmTheme.colors.categoryTextColor : 'inherit')};
+  background-color: ${props => (props.showButton ? '#ecedf1' : 'transparent')};
   letter-spacing: normal;
-  font-size: 13px;
+  font-size: 14px;
   box-shadow: none;
   border: none;
+  margin-left: auto;
+  height: ${props => (props.showButton ? '30px' : '50px')};
+  width: ${props => (props.showButton ? '40px' : '50px')};
+  border-radius: ${props => (props.showButton ? '4px' : '50%')};
+  cursor: pointer;
 
-  :focus {
+  :focus,
+  :active {
     outline: auto;
+    box-shadow: none;
+    border: none;
+    padding: unset;
   }
 `;
-EditButton.displayName = 'EditButton';
+ProfileSectionEditButton.displayName = 'ProfileSectionEditButton';
 
 type ColorProps = {
   fillColor?: string;
@@ -102,3 +115,28 @@ export const CloseIconButton = withStyles({
     cursor: 'pointer',
   },
 })(CloseIcon);
+
+type StyledTextProps = {
+  hasContent?: boolean;
+};
+export const SectionContentStyledText = styled('p')<StyledTextProps>`
+  font-size: 14px;
+  line-height: 15px;
+  padding: 5px 0 5px 15px;
+  margin: 10px 10px 10px 0;
+  height: 50px;
+  width: 100%;
+  background-color: #f6f6f67d;
+  border: none;
+  border-radius: 2px;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-grow: 1;
+  opacity: ${props => (props.hasContent ? 1 : 0.5)};
+  :focus {
+    outline: none;
+  }
+`;
+SectionContentStyledText.displayName = 'SectionContentStyledText';

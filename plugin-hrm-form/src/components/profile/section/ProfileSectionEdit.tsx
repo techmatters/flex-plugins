@@ -48,7 +48,7 @@ const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props)
   };
 
   return (
-    <NavigableContainer titleCode="Profile-EditNoteHeader" task={task}>
+    <NavigableContainer titleCode={`Edit ${sectionType}`} task={task}>
       <TextField
         multiline
         minRows={40}
@@ -68,7 +68,6 @@ const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props)
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
   return {
     closeModal: () => dispatch(RoutingActions.newCloseModalAction(task.taskSid)),
-    goBack: () => dispatch(RoutingActions.newGoBackAction(task.taskSid)),
   };
 };
 
