@@ -65,7 +65,7 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
 
   return (
     <BannerContainer color="blue">
-      <InfoIcon />
+      <InfoIcon color="#001489" />
       <Text>
         <Template code="CaseMerging-ContactAddedTo" />
       </Text>

@@ -23,13 +23,22 @@ import { PreviewActionButton } from '../../styles/search';
 type OwnProps = {
   isConnectedToTaskContact: boolean;
   onClickConnectToTaskContact: () => void;
+  color?: 'black' | 'grey';
 };
 
 type Props = OwnProps;
 
-const ConnectToCaseButton: React.FC<Props> = ({ isConnectedToTaskContact, onClickConnectToTaskContact }) => {
+const ConnectToCaseButton: React.FC<Props> = ({
+  isConnectedToTaskContact,
+  onClickConnectToTaskContact,
+  color = 'grey',
+}) => {
   return (
-    <PreviewActionButton disabled={isConnectedToTaskContact} onClick={onClickConnectToTaskContact} secondary="true">
+    <PreviewActionButton
+      disabled={isConnectedToTaskContact}
+      onClick={onClickConnectToTaskContact}
+      secondary={color === 'grey' ? 'true' : 'false'}
+    >
       {!isConnectedToTaskContact && <CreateNewFolderOutlined />}
       {isConnectedToTaskContact && <CheckCircleOutlineOutlined />}
       <div style={{ width: 10 }} />
