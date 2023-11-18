@@ -132,6 +132,7 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
       ))}
       <hr />
       <h2>Notes</h2>
+      {/* eslint-disable sonarjs/no-identical-functions */}
       {sectionSections.map(section => (
         <div key={section.title}>
           <ProfileSectionWrapper>
