@@ -305,6 +305,9 @@ export const SectionActionButton = styled('button')<SectionActionButton>`
   padding: ${props => (props.padding ? props.padding : '0 6px')};
   font-family: 'Open Sans';
   cursor: pointer;
+  white-space: nowrap;
+  align-items: center;
+
   :focus {
     outline: auto;
     outline-color: black;

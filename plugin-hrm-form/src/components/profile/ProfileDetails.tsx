@@ -16,18 +16,12 @@
 
 import React, { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { IconButton, Template } from '@twilio/flex-ui';
+import { Icon, Template } from '@twilio/flex-ui';
 
 import { ProfileCommonProps } from './types';
 import ProfileFlagList from './profileFlag/ProfileFlagList';
 import ProfileFlagEdit from './profileFlag/ProfileFlagEdit';
-import {
-  DetailsWrapper,
-  ProfileSectionWrapper,
-  ProfileSectionSubtitle,
-  ProfileSectionEditButton,
-  CloseIconButton,
-} from './styles';
+import { DetailsWrapper, ProfileSectionWrapper, ProfileSectionSubtitle, ProfileSectionEditButton } from './styles';
 import { Bold, Box, Column, Row } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
@@ -96,7 +90,6 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
     renderComponent: () => <ProfileSectionView profileId={profileId} task={task} sectionType={sectionType} />,
     handleEdit: () => openSectionEditModal(sectionType.name),
   }));
-
   const sections = [...baseSections, ...sectionSections];
 
   const renderEditButton = section => {
@@ -109,7 +102,8 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
 
     return (
       <ProfileSectionEditButton onClick={section.handleEdit}>
-        <Template code="Profile-EditButton" />
+        {icon && <Icon icon={icon} />}
+        {!icon && <Template code="Profile-EditButton" />}
       </ProfileSectionEditButton>
     );
   };
@@ -121,7 +115,24 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
           <Template code="Profile-DetailsHeader" />
         </Bold>
       </Column>
-      {sections.map(section => (
+      {baseSections.map(section => (
+        <div key={section.title}>
+          <ProfileSectionWrapper>
+            <Box marginBottom="5px">
+              <Row>
+                <ProfileSectionSubtitle>
+                  {section.titleCode ? <Template code={section.titleCode} /> : section.title}
+                </ProfileSectionSubtitle>
+                {renderEditButton(section)}
+              </Row>
+            </Box>
+            <Box margin={section.margin}>{section.renderComponent()}</Box>
+          </ProfileSectionWrapper>
+        </div>
+      ))}
+      <hr />
+      <h2>Notes</h2>
+      {sectionSections.map(section => (
         <div key={section.title}>
           <ProfileSectionWrapper>
             <Box marginBottom="5px">

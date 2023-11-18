@@ -239,7 +239,7 @@ export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSe
   line-height: 22px;
   border-radius: 4px;
   border: none;
-  boxshadow: none;
+  box-shadow: none;
   padding: 0 7px;
 
   /* hide the arrow */
@@ -816,7 +816,7 @@ export const FormError = styled('span')`
 `;
 FormError.displayName = 'FormError';
 
-type FormInputProps = { error?: boolean; width?: number | string; fullWidth?: boolean };
+type FormInputProps = { error?: boolean; width?: number | string; fullWidth?: boolean;  };
 
 export const FormInput = styled('input')<FormInputProps>`
   /* ---------- Input ---------- */
@@ -838,7 +838,7 @@ export const FormInput = styled('input')<FormInputProps>`
      */
     HrmTheme.colors.darkTextColor};
     border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
-    boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
+    box-shadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
     padding: 0 7px;
   }
   &:focus {
@@ -930,7 +930,7 @@ export const FormTextArea = styled('textarea')<FormInputProps>`
      */
     HrmTheme.colors.darkTextColor};
     border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
-    boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
+    box-shadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
     padding: 5px;
     border-radius: 4px;
   }
@@ -952,7 +952,7 @@ export const FormCheckBoxWrapper = styled(Row)<FormInputProps>`
   height: 36px;
   border-radius: 4px;
   border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
-  boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
+  box-shadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
 `;
 FormCheckBoxWrapper.displayName = 'FormCheckBoxWrapper';
 
@@ -1078,7 +1078,7 @@ export const FormSelect = styled('select')<FormInputProps>`
   line-height: 22px;
   border-radius: 4px;
   border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
-  boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
+  box-shadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
   padding: 0 7px;
 
   /* hide the arrow */

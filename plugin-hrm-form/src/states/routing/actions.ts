@@ -28,14 +28,11 @@ export const changeRoute = (
   mode,
 });
 
-export const newOpenModalAction = (routing: AppRoutes, taskId: string): RoutingActionType => {
-  console.log('>>> Opening modal action', routing, taskId);
-  return {
-    type: OPEN_MODAL,
-    routing,
-    taskId,
-  };
-};
+export const newOpenModalAction = (routing: AppRoutes, taskId: string): RoutingActionType => ({
+  type: OPEN_MODAL,
+  routing,
+  taskId,
+});
 
 /**
  * Close modal action

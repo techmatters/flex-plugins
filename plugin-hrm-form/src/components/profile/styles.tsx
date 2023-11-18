@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { styled, Button } from '@twilio/flex-ui';
-import { withStyles, Select, ButtonBase } from '@material-ui/core';
+import { withStyles, Select } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 
 import { FontOpenSans } from '../../styles/HrmStyles';
@@ -34,8 +34,7 @@ export const DetailsWrapper = styled(FontOpenSans)`
 DetailsWrapper.displayName = 'DetailsWrapper';
 
 export const ProfileSectionWrapper = styled('div')`
-  margin: 10px 0;
-  padding: 0 0 10px 0;
+  padding: 5px 0 10px 5px;
 `;
 ProfileSectionWrapper.displayName = 'ProfileSectionWrapper';
 
@@ -50,20 +49,20 @@ export const ProfileSectionSubtitle = styled(FontOpenSans)`
 `;
 ProfileSectionSubtitle.displayName = 'ProfileSectionSubtitle';
 
-type ProfileSectionEditButton = {
+type ButtonProps = {
   onClick: () => void;
 };
 
-// eslint-disable-next-line import/no-unused-modules
-export const ProfileSectionEditButton = styled(Button)<ProfileSectionEditButton>`
+export const ProfileSectionEditButton = styled(Button)<ButtonProps>`
+  width: 40px;
+  height: 30px;
+  border-radius: 4px;
   color: ${HrmTheme.colors.categoryTextColor};
   background-color: '#ecedf1';
   font-size: 14px;
   box-shadow: none;
   border: none;
   margin-left: auto;
-  width: '40px';
-  border-radius: '4px';
 
   :focus,
   :active {

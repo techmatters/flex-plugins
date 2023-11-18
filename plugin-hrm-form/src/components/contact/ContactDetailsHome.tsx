@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { format } from 'date-fns';
-import { Actions, Insights, Template } from '@twilio/flex-ui';
+import { Actions, Insights, Template, Icon } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
@@ -256,15 +256,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
   const profileLink = featureFlags.enable_client_profiles && savedContact.profileId && (
-    <SectionActionButton
-      padding="0"
-      type="button"
-      onClick={() => {
-        console.log('>>> works \n opening profile modal', savedContact);
-        openProfileModal(savedContact.profileId);
-        console.log('>>> profile modal opened');
-      }}
-    >
+    <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>
+      <Icon icon="DefaultAvatar" />
       View Client
     </SectionActionButton>
   );
@@ -273,8 +266,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
     <DetailsContainer data-testid="ContactDetails-Container">
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
       {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
-
-      {/* {profileLink} */}
 
       <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}

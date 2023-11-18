@@ -20,7 +20,16 @@ import { TextField } from '@material-ui/core';
 
 import NavigableContainer from '../../NavigableContainer';
 import { ProfileSection } from '../../../types/types';
-import { Flex, StyledNextStepButton } from '../../../styles/HrmStyles';
+import {
+  Flex,
+  StyledNextStepButton,
+  Container,
+  Box,
+  TwoColumnLayout,
+  ColumnarBlock,
+  ColumnarContent,
+  FormTextArea,
+} from '../../../styles/HrmStyles';
 import { useEditProfileSection } from '../../../states/profile/hooks/useProfileSection';
 import { ProfileCommonProps } from '../types';
 import * as RoutingActions from '../../../states/routing/actions';
@@ -49,13 +58,22 @@ const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props)
 
   return (
     <NavigableContainer titleCode={`Edit ${sectionType}`} task={task}>
-      <TextField
+      {/* <TextField
         multiline
         minRows={40}
         variant="outlined"
         defaultValue={content}
         onChange={e => setContent(e.target.value)}
-      />
+      /> */}
+      <Container>
+        <Box>
+          <ColumnarBlock>
+            <ColumnarContent>
+              <FormTextArea defaultValue={content} onChange={e => setContent(e.target.value)} rows={10} width={500} />
+            </ColumnarContent>
+          </ColumnarBlock>
+        </Box>
+      </Container>
       <Flex justifyContent="flex-end" flexDirection="row">
         <StyledNextStepButton roundCorners onClick={handleEdit}>
           Save
