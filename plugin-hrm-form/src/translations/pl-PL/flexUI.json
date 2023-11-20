@@ -558,5 +558,7 @@
     "Provide contact details": "Podaj dane kontaktowe",
     "CaseMerging-ContactAddedTo": "Kontakt dodany do",
     "CaseMerging-RemoveFromCase": "Usuń ze skrzynki",
-    "CaseMerging-ContactRemovedFromCase": "Kontakt usunięty ze sprawy"
+    "CaseMerging-ContactRemovedFromCase": "Kontakt usunięty ze sprawy",
+    "CaseMerging-CaseCreatedAndContactAdded": "Utworzono sprawę nr {{caseId}} i dodano kontakt",
+    "CaseMerging-CancelCase": "Anuluj Sprawę"
     }

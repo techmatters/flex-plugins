@@ -587,5 +587,7 @@
   "Other Relationship to Child": "ความสัมพันธ์อื่นๆกับเด็ก",
   "CaseMerging-ContactAddedTo": "เพิ่มผู้ติดต่อไปที่",
   "CaseMerging-RemoveFromCase": "ถอดออกจากเคส",
-  "CaseMerging-ContactRemovedFromCase": "ผู้ติดต่อถูกลบออกจากเคส"
+  "CaseMerging-ContactRemovedFromCase": "ผู้ติดต่อถูกลบออกจากเคส",
+  "CaseMerging-CaseCreatedAndContactAdded": "สร้างเคส #{{caseId}} และเพิ่มผู้ติดต่อแล้ว",
+  "CaseMerging-CancelCase": "ยกเลิกกรณี"
 }

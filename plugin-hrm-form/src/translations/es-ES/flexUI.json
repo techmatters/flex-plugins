@@ -562,5 +562,7 @@
   "Provide contact details": "Proporcionar datos de contacto",
   "CaseMerging-ContactAddedTo": "Contacto añadido a",
   "CaseMerging-RemoveFromCase": "Quitar del caso",
-  "CaseMerging-ContactRemovedFromCase": "Contacto eliminado del caso"
+  "CaseMerging-ContactRemovedFromCase": "Contacto eliminado del caso",
+  "CaseMerging-CaseCreatedAndContactAdded": "Caso #{{caseId}} creado y contacto agregado",
+  "CaseMerging-CancelCase": "Cancelar Caso"
 }

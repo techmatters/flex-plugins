@@ -466,5 +466,7 @@
 
   "CaseMerging-ContactAddedTo": "Contact added to",
   "CaseMerging-RemoveFromCase": "Remove from Case",
-  "CaseMerging-ContactRemovedFromCase": "Contact removed from case"
+  "CaseMerging-ContactRemovedFromCase": "Contact removed from case",
+  "CaseMerging-CaseCreatedAndContactAdded": "Case #{{caseId}} created and contact added",
+  "CaseMerging-CancelCase": "Cancel Case"
 }

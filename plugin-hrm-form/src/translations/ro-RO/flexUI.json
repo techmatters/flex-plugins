@@ -558,5 +558,7 @@
     "Provide contact details": "Furnizați datele de contact",
     "CaseMerging-ContactAddedTo": "Contact adăugat la",
     "CaseMerging-RemoveFromCase": "Eliminați din carcasă",
-    "CaseMerging-ContactRemovedFromCase": "Contact eliminat din carcasă"
+    "CaseMerging-ContactRemovedFromCase": "Contact eliminat din carcasă",
+    "CaseMerging-CaseCreatedAndContactAdded": "Cazul #{{caseId}} a fost creat și persoana de contact a fost adăugată",
+    "CaseMerging-CancelCase": "Anulează Cazul"
 }
