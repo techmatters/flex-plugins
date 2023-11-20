@@ -59,7 +59,7 @@ import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentif
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
-import { connectToCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
+import { removeFromCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
@@ -205,7 +205,7 @@ const Case: React.FC<Props> = ({
 
   const handleCancelNewCaseAndClose = async () => {
     // TODO: migrate to redux
-    await Promise.all(loadedContactIds.map(id => disconnectFromCase(id)));
+    await Promise.all(loadedContactIds.map(id => disconnectFromCase(id, connectedCase.id)));
     await cancelCase(connectedCase.id);
     cancelNewCase(connectedCase.id, loadedContactIds);
     handleClose();
@@ -397,7 +397,8 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     cancelNewCase,
     updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
       caseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
-    disconnectFromCase: (contactId: string) => caseAsyncDispatch(connectToCaseAsyncAction(contactId, null)),
+    disconnectFromCase: (contactId: string, caseId: number) =>
+      caseAsyncDispatch(removeFromCaseAsyncAction(contactId, caseId)),
     submitContactFormAsyncAction: (
       task: CustomITask,
       contact: Contact,
