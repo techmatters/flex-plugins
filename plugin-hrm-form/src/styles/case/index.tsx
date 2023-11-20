@@ -264,21 +264,10 @@ FullWidthFormTextContainer.displayName = 'FullWidthFormTextContainer';
 
 export const DetailsHeaderContainer = styled('div')`
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: space-between;
+  flex-direction: column;
   margin-right: 10px;
 `;
 DetailsHeaderContainer.displayName = 'DetailsHeaderContainer';
-
-export const DetailsHeaderTextContainer = styled('div')`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 70%;
-`;
-
-DetailsHeaderTextContainer.displayName = 'DetailsHeaderTextContainer';
 
 export const DetailsHeaderCaseContainer = styled('div')`
   display: flex;
@@ -298,7 +287,8 @@ DetailsHeaderCounselor.displayName = 'DetailsHeaderCounselor';
 
 export const DetailsHeaderCaseId = styled(FontOpenSans)`
   font-weight: 600;
-  font-size: 14px;
+  font-size: 20px;
+  margin-bottom: 15px;
 `;
 
 DetailsHeaderCaseId.displayName = 'DetailsHeaderCaseId';
@@ -372,7 +362,6 @@ type CaseDetailsBorderProps = {
 
 export const CaseDetailsBorder = styled('div')<CaseDetailsBorderProps>`
   border-bottom: ${props => (props.sectionTypeId ? 'none' : '1px solid #e5e6e7')};
-  margin-right: 25px;
   margin-bottom: ${props => (props.marginBottom ? props.marginBottom : '')};
   padding-bottom: ${props => (props.paddingBottom ? props.paddingBottom : '25px')};
 `;

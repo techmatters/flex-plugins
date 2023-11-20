@@ -26,7 +26,6 @@ import {
   DetailsHeaderOfficeName,
   DetailsHeaderCounselor,
   DetailsHeaderContainer,
-  DetailsHeaderTextContainer,
   StyledPrintButton,
 } from '../../../styles/case';
 import { Flex, Box } from '../../../styles/HrmStyles';
@@ -56,30 +55,30 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
 
   return (
     <DetailsHeaderContainer>
-      <DetailsHeaderTextContainer>
-        <DetailsHeaderCaseContainer>
-          <DetailsHeaderCaseId id="Case-CaseId-label" data-testid="Case-DetailsHeaderCaseId">
-            <Template code="Case-CaseNumber" />
-            {caseId}
-          </DetailsHeaderCaseId>
-          {multipleOfficeSupport && office && <DetailsHeaderOfficeName>({office})</DetailsHeaderOfficeName>}
-        </DetailsHeaderCaseContainer>
-        {isCreating && <CaseCreatedBanner caseId={caseId} cancelCase={handleCancelNewCaseAndClose} />}
+      <DetailsHeaderCaseContainer>
+        <DetailsHeaderCaseId id="Case-CaseId-label" data-testid="Case-DetailsHeaderCaseId">
+          <Template code="Case-CaseNumber" />
+          {caseId}
+        </DetailsHeaderCaseId>
+        {multipleOfficeSupport && office && <DetailsHeaderOfficeName>({office})</DetailsHeaderOfficeName>}
+      </DetailsHeaderCaseContainer>
+      {isCreating && (
+        <Box marginBottom="14px" width="100%">
+          <CaseCreatedBanner caseId={caseId} cancelCase={handleCancelNewCaseAndClose} />
+        </Box>
+      )}
+      <Flex justifyContent="space-between">
         <DetailsHeaderCounselor data-testid="Case-DetailsHeaderCounselor">
           <Template code="Case-Counsellor" />: {counselor}
         </DetailsHeaderCounselor>
-      </DetailsHeaderTextContainer>
-      <Flex flexDirection="column" height="75px">
-        <Box alignSelf="flex-end">
-          {!isOrphanedCase && (
-            <StyledPrintButton
-              onClick={handlePrintCase}
-              aria-label="Print"
-              data-testid="CasePrint-Button"
-              icon={<PrintIcon />}
-            />
-          )}
-        </Box>
+        {!isOrphanedCase && (
+          <StyledPrintButton
+            onClick={handlePrintCase}
+            aria-label="Print"
+            data-testid="CasePrint-Button"
+            icon={<PrintIcon />}
+          />
+        )}
       </Flex>
     </DetailsHeaderContainer>
   );

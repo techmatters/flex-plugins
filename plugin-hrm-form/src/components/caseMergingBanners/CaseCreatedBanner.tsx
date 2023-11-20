@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-// import { Template } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 
 import { BannerContainer, Text, BannerActionLink } from './styles';
 import InfoIcon from './InfoIcon';
@@ -31,9 +31,11 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({ caseId, cancelCase }) => {
   return (
     <BannerContainer color="blue">
       <InfoIcon />
-      <Text>Case {caseId} created and contact added</Text>
+      <Text>
+        <Template code="CaseMerging-CaseCreatedAndContactAdded" caseId={caseId} />
+      </Text>
       <BannerActionLink type="button" onClick={cancelCase}>
-        Cancel Case
+        <Template code="CaseMerging-CancelCase" />
       </BannerActionLink>
     </BannerContainer>
   );
