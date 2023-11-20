@@ -1,5 +1,11 @@
 {
   "contactForm": {
+      "callerInformation": [
+        {
+          "name": "relationshipToChild",
+          "insights": ["conversations", "initiated_by"]
+        }
+      ],
     "caseInformation": [
       {
         "name": "center",
@@ -7,7 +13,38 @@
           "conversations",
           "initiative"
         ]
-      }
+      },
+        {
+          "name": "repeatCaller",
+          "insights": ["conversations", "conversation_attribute_7"],
+          "type": "mixed-checkbox"
+        },
+        {
+          "name": "actionTaken",
+          "insights": ["conversations", "initiative"]
+        },
+        {
+          "name": "howDidYouKnowAboutOurLine",
+          "insights": ["conversations", "conversation_attribute_5"]
+        },
+        {
+          "name": "didTheChildFeelWeSolvedTheirProblem",
+          "insights": ["conversations", "productive"],
+          "type": "mixed-checkbox"
+        },
+        {
+          "name": "wouldTheChildRecommendUsToAFriend",
+          "insights": ["conversations", "conversation_attribute_6"],
+          "type": "mixed-checkbox"
+        },
+        {
+          "name": "hubServicesProvided",
+          "insights": ["customers", "category"]  
+        },
+        {
+          "name": "numberofConsultations",
+          "insights": ["conversations", "conversation_attribute_9"]  
+        }
     ],
      "childInformation": [
       {
@@ -61,38 +98,7 @@
       {
         "name": "caseStatus",
         "insights": ["conversations", "in_business_hours"]
-      },
-        {
-          "name": "repeatCaller",
-          "insights": ["conversations", "conversation_attribute_7"],
-          "type": "mixed-checkbox"
-        },
-        {
-          "name": "actionTaken",
-          "insights": ["conversations", "initiative"]
-        },
-        {
-          "name": "howDidYouKnowAboutOurLine",
-          "insights": ["conversations", "conversation_attribute_5"]
-        },
-        {
-          "name": "didTheChildFeelWeSolvedTheirProblem",
-          "insights": ["conversations", "productive"],
-          "type": "mixed-checkbox"
-        },
-        {
-          "name": "wouldTheChildRecommendUsToAFriend",
-          "insights": ["conversations", "conversation_attribute_6"],
-          "type": "mixed-checkbox"
-        },
-        {
-          "name": "hubServicesProvided",
-          "insights": ["customers", "category"]  
-        },
-        {
-          "name": "numberofConsultations",
-          "insights": ["conversations", "conversation_attribute_9"]  
-        }
+      }
     ]
   }
 }
