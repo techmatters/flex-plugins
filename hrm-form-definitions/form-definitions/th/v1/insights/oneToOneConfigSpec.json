@@ -6,46 +6,6 @@
           "insights": ["conversations", "initiated_by"]
         }
       ],
-    "caseInformation": [
-      {
-        "name": "center",
-        "insights": [
-          "conversations",
-          "initiative"
-        ]
-      },
-        {
-          "name": "repeatCaller",
-          "insights": ["conversations", "conversation_attribute_7"],
-          "type": "mixed-checkbox"
-        },
-        {
-          "name": "actionTaken",
-          "insights": ["conversations", "initiative"]
-        },
-        {
-          "name": "howDidYouKnowAboutOurLine",
-          "insights": ["conversations", "conversation_attribute_5"]
-        },
-        {
-          "name": "didTheChildFeelWeSolvedTheirProblem",
-          "insights": ["conversations", "productive"],
-          "type": "mixed-checkbox"
-        },
-        {
-          "name": "wouldTheChildRecommendUsToAFriend",
-          "insights": ["conversations", "conversation_attribute_6"],
-          "type": "mixed-checkbox"
-        },
-        {
-          "name": "hubServicesProvided",
-          "insights": ["customers", "category"]  
-        },
-        {
-          "name": "numberofConsultations",
-          "insights": ["conversations", "conversation_attribute_9"]  
-        }
-    ],
      "childInformation": [
       {
         "name": "province",
@@ -87,6 +47,43 @@
           "insights": ["conversations", "conversation_measure_5"],
           "type": "mixed-checkbox"
         }
+    ],
+    "caseInformation": [
+      {
+        "name": "center",
+        "insights": ["conversations","initiative"]
+      },
+        {
+          "name": "repeatCaller",
+          "insights": ["conversations", "conversation_measure_2"],
+          "type": "mixed-checkbox"
+        },
+        {
+          "name": "actionTaken",
+          "insights": ["conversations", "language"]
+        },
+        {
+          "name": "howDidYouKnowAboutOurLine",
+          "insights": ["conversations", "conversation_attribute_5"]
+        },
+        {
+          "name": "didTheChildFeelWeSolvedTheirProblem",
+          "insights": ["conversations", "conversation_measure_4"],
+          "type": "mixed-checkbox"
+        },
+        {
+          "name": "wouldTheChildRecommendUsToAFriend",
+          "insights": ["conversations", "conversation_attribute_6"],
+          "type": "mixed-checkbox"
+        },
+        {
+          "name": "hubServicesProvided",
+          "insights": ["customers", "category"]  
+        },
+        {
+          "name": "numberofConsultations",
+          "insights": ["conversations", "conversation_attribute_9"]  
+        }
     ]
   },
   "caseForm": {
@@ -99,6 +96,36 @@
         "name": "caseStatus",
         "insights": ["conversations", "in_business_hours"]
       }
-    ]
+    ],     
+    "perpetrator": [
+        {
+          "name": "relationshipToChild",
+          "insights": ["customers", "organization"]
+        },
+        {
+          "name": "gender",
+          "insights": ["conversations", "followed_by"]
+        },
+        {
+          "name": "age",
+          "insights": ["conversations", "preceded_by"]
+        }
+      ],
+      "incident": [
+        {
+          "name": "duration",
+          "insights": ["conversations", "productive"]
+        },
+        {
+          "name": "location",
+          "insights": ["customers", "market_segment"]
+        }
+      ],
+      "referral": [
+        {
+          "name": "referredTo",
+          "insights": ["customers", "customer_manager"]
+        }
+      ]
   }
 }
