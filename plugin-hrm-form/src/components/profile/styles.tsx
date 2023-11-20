@@ -110,27 +110,52 @@ export const CloseIconButton = withStyles({
   },
 })(CloseIcon);
 
-type StyledTextProps = {
-  hasContent?: boolean;
-};
-export const SectionContentStyledText = styled('p')<StyledTextProps>`
-  font-size: 14px;
+export const SectionText = styled('p')`
+  font-size: 12px;
   line-height: 15px;
-  padding: 5px 0 5px 15px;
-  margin: 10px 10px 10px 0;
-  height: 50px;
+  padding: 5px 5px 5px 15px;
+  margin: 5px 0 10px 0;
+  height: 150%;
   width: 100%;
-  background-color: #f6f6f67d;
+  background-color: rgba(246, 246, 246, 0.49);
   border: none;
   border-radius: 2px;
   box-sizing: border-box;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   flex-grow: 1;
+  font-family: 'Open Sans';
+  box-sizing: border-box;
+  opacity: 0.5;
+  :focus {
+    outline: none;
+  }
+`;
+SectionText.displayName = 'SectionText';
+
+type StyledTextProps = {
+  hasContent?: boolean;
+};
+
+export const SectionContentTextArea = styled('textarea')<StyledTextProps>`
+  font-size: 12px;
+  line-height: 15px;
+  padding: 5px 5px 5px 15px;
+  margin: 20px 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(246, 246, 246, 0.49);
+  border: none;
+  border-radius: 2px;
+  box-sizing: border-box;
+  overflow: hidden;
+  flex-grow: 1;
+  resize: none;
+  font-family: 'Open Sans';
+  font-weight: 400;
+  box-sizing: border-box;
   opacity: ${props => (props.hasContent ? 1 : 0.5)};
   :focus {
     outline: none;
   }
 `;
-SectionContentStyledText.displayName = 'SectionContentStyledText';
+SectionContentTextArea.displayName = 'SectionContentTextArea';

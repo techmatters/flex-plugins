@@ -290,7 +290,6 @@ const handleLoadProfileSectionFulfilledAction = (state: t.ProfilesState, action:
     loading: false,
     data: action.payload,
   };
-  console.log('>>> handleLoadProfileSectionFulfilledAction', update);
 
   return loadProfileSectionEntryIntoRedux(state, profileId, sectionType, update);
 };
@@ -314,21 +313,10 @@ export type UpdateProfileSectionAsyncParams = CreateProfileSectionAsyncParams & 
 export const updateProfileSectionAsync = createAsyncAction(
   t.UPDATE_PROFILE_SECTION,
   async ({ profileId, sectionId, content }: UpdateProfileSectionAsyncParams) => {
-    console.log('>>> updateProfileSectionAsync', profileId, sectionId, content);
     return ProfileService.updateProfileSection(profileId, sectionId, content);
   },
   (params: UpdateProfileSectionAsyncParams) => params,
 );
-
-const handleUpdateProfileSectionFulfilledAction = (state: t.ProfileState, action: any) => {
-  const { profileId, sectionType } = action.meta;
-  const update = {
-    loading: false,
-    data: action.payload,
-  };
-
-  return loadProfileSectionEntryIntoRedux(state, profileId, sectionType, update);
-};
 
 const profilesReducer = (initialState: t.ProfilesState = {}) =>
   createReducer(initialState, handleAction => [
@@ -352,10 +340,10 @@ const profilesReducer = (initialState: t.ProfilesState = {}) =>
     handleAction(loadProfileSectionAsync.fulfilled, handleLoadProfileSectionFulfilledAction),
     handleAction(createProfileSectionAsync.pending, handleLoadProfileSectionPendingAction),
     handleAction(createProfileSectionAsync.rejected, handleLoadProfileSectionRejectedAction),
-    handleAction(createProfileSectionAsync.fulfilled, handleUpdateProfileSectionFulfilledAction),
+    handleAction(createProfileSectionAsync.fulfilled, handleLoadProfileSectionFulfilledAction),
     handleAction(updateProfileSectionAsync.pending, handleLoadProfileSectionPendingAction),
     handleAction(updateProfileSectionAsync.rejected, handleLoadProfileSectionRejectedAction),
-    handleAction(updateProfileSectionAsync.fulfilled, handleUpdateProfileSectionFulfilledAction),
+    handleAction(updateProfileSectionAsync.fulfilled, handleLoadProfileSectionFulfilledAction),
   ]);
 
 export default profilesReducer;

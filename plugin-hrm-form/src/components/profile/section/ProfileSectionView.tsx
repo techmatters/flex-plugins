@@ -14,11 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { ProfileCommonProps } from '../types';
 import { useProfileSectionByType } from '../../../states/profile/hooks/useProfileSection';
-import { SectionContentStyledText } from '../styles';
+import { SectionContentTextArea, SectionText } from '../styles';
 
 type OwnProps = ProfileCommonProps & {
   sectionType: {
@@ -29,11 +29,22 @@ type OwnProps = ProfileCommonProps & {
 
 const ProfileSectionView = ({ profileId, sectionType }: OwnProps) => {
   const { section } = useProfileSectionByType({ profileId, sectionType: sectionType.name });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (section) {
+      setIsLoading(false);
+    }
+  }, [section]);
+
+  if (isLoading) {
+    return <SectionText>Loading...</SectionText>;
+  }
 
   return (
-    <SectionContentStyledText hasContent={Boolean(section?.content)}>
-      {section?.content || `No ${sectionType.name}`}
-    </SectionContentStyledText>
+    <SectionContentTextArea hasContent={Boolean(section?.content)}>
+      {section?.content?.length > 0 ? section?.content : `No ${sectionType.name}`}
+    </SectionContentTextArea>
   );
 };
 

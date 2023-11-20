@@ -105,18 +105,3 @@ export const useEditProfileSection = (params: ProfileActions.ProfileSectionCommo
     updateProfileSection,
   };
 };
-
-// probably unused beyond here.
-
-// export const useProfileSection = (profileId: Profile['id'], sectionId): ProfileSection =>
-//   useSelector((state: RootState) => ProfileSelectors.selectProfileSectionById(state, profileId, sectionId));
-
-// export const useProfileSections = (profileId: Profile['id']): ProfileSection[] => {
-//   const sections = useSelector((state: RootState) => ProfileSelectors.selectAllProfileSections(state, profileId));
-//   console.log(`>>> useProfileSections for profileId ${profileId} returning ${sections}`);
-//   const sectionsByType = useSelector((state: RootState) =>
-//     ProfileSelectors.selectProfileSectionByType(state, profileId, 'summary'),
-//   );
-//   console.log(`>>> useProfileSections for profileId ${profileId} returning ${sectionsByType}`);
-//   return sections;
-// };

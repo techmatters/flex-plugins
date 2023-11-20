@@ -32,7 +32,6 @@ type OwnProps = ProfileCommonProps;
 type Section = {
   titleCode?: string;
   title?: string;
-  margin: string;
   renderComponent: () => React.ReactNode;
   handleEdit?: () => void;
   inInlineEditMode?: boolean;
@@ -48,7 +47,6 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
   const baseSections: Section[] = [
     {
       titleCode: 'Profile-IdentifiersHeader',
-      margin: '20px 0',
       renderComponent: () =>
         profile?.identifiers ? (
           profile.identifiers?.map(identifier => <div key={identifier.id}>{identifier.identifier}</div>)
@@ -58,7 +56,6 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
     },
     {
       titleCode: 'Profile-StatusHeader',
-      margin: '10px 4px',
       renderComponent: () =>
         shouldEditProfileFlags ? (
           <ProfileFlagEdit profileId={profileId} task={task} />
@@ -86,7 +83,6 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
   ];
   const sectionSections: Section[] = sectionTypes.map(sectionType => ({
     title: `${sectionType.name}`,
-    margin: '20px 0',
     renderComponent: () => <ProfileSectionView profileId={profileId} task={task} sectionType={sectionType} />,
     handleEdit: () => openSectionEditModal(sectionType.name),
   }));
@@ -126,7 +122,7 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
                 {renderEditButton(section)}
               </Row>
             </Box>
-            <Box margin={section.margin}>{section.renderComponent()}</Box>
+            <Box>{section.renderComponent()}</Box>
           </ProfileSectionWrapper>
         </div>
       ))}
@@ -144,7 +140,7 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
                 {renderEditButton(section)}
               </Row>
             </Box>
-            <Box margin={section.margin}>{section.renderComponent()}</Box>
+            <Box>{section.renderComponent()}</Box>
           </ProfileSectionWrapper>
         </div>
       ))}
