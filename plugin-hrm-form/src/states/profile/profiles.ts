@@ -302,7 +302,6 @@ const handleLoadProfileSectionRejectedAction = (state: t.ProfilesState, action: 
   return loadProfileSectionEntryIntoRedux(state, profileId, sectionType, update);
 };
 
-
 const handleLoadProfileSectionFulfilledAction = (state: t.ProfilesState, action: any) => {
   const { profileId, sectionType } = action.meta;
   const update = {
@@ -356,7 +355,7 @@ const profilesReducer = (initialState: t.ProfilesState = {}) =>
     handleAction(disassociateProfileFlagAsync.fulfilled, handleProfileFlagUpdateFulfilledAction),
     handleAction(loadProfileSectionAsync.pending, handleLoadProfileSectionPendingAction),
     handleAction(loadProfileSectionAsync.rejected, handleLoadProfileSectionRejectedAction),
-    handleAction(loadProfileSectionAsync.fulfilled, handleProfileSectionFulfilledAction),
+    handleAction(loadProfileSectionAsync.fulfilled, handleLoadProfileSectionFulfilledAction),
     handleAction(createProfileSectionAsync.pending, handleLoadProfileSectionPendingAction),
     handleAction(createProfileSectionAsync.rejected, handleLoadProfileSectionRejectedAction),
     handleAction(createProfileSectionAsync.fulfilled, handleLoadProfileSectionFulfilledAction),
