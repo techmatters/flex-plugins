@@ -150,6 +150,7 @@ const AddEditCaseItem: React.FC<Props> = ({
       updateCaseSectionWorkingCopy(task.taskSid, sectionApi, { ...workingCopy, form }, id);
     },
     customHandlers: customFormHandlers,
+    shouldFocusFirstElement: false,
   });
 
   if (!isEditCaseSectionRoute(currentRoute) && !isAddCaseSectionRoute(currentRoute)) {

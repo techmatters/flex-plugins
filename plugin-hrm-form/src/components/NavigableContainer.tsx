@@ -14,7 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { bindActionCreators } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import React from 'react';
@@ -27,16 +26,18 @@ import { getCurrentBaseRoute, getCurrentTopmostRouteStackForTask } from '../stat
 import { isRouteModal } from '../states/routing/types';
 import { changeRoute, newCloseModalAction, newGoBackAction } from '../states/routing/actions';
 import { Contact, CustomITask, StandaloneITask } from '../types/types';
-import * as CaseActions from '../states/case/actions';
-import * as RoutingActions from '../states/routing/actions';
 import { HeaderCloseButton, HiddenText, Row, StyledBackButton } from '../styles/HrmStyles';
 import { LargeBackIcon, NavigableContainerBox, NavigableContainerTitle } from '../styles/NavigableContainerStyles';
+import useFocus from '../utils/useFocus';
+
+type FocusTarget = 'back' | 'close';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
   titleCode: string;
   onGoBack?: () => void;
   onCloseModal?: () => void;
+  focusPriority: FocusTarget[];
 };
 
 const mapStateToProps = ({ [namespace]: { routing } }: RootState, { task: { taskSid } }: OwnProps) => {
@@ -59,14 +60,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     viewContactDetails: ({ id }: Contact) => {
       dispatch(changeRoute({ route: 'contact', subroute: 'view', id: id.toString() }, taskId));
     },
-    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
-    changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
   };
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
-// eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector> & StyledProps;
 
 const NavigableContainer: React.FC<Props> = ({
@@ -78,19 +76,35 @@ const NavigableContainer: React.FC<Props> = ({
   titleCode,
   hasHistory,
   isModal,
+  focusPriority = ['back', 'close'],
+  routing,
   ...boxProps
 }) => {
+  const validFocusPriority = (focusPriority ?? []).filter(
+    target => (target === 'back' && hasHistory) || (target === 'close' && isModal),
+  );
+  const initialFocusRef = useFocus(Boolean(validFocusPriority.length), [routing]);
+
+  const shouldFocus = (target: FocusTarget): boolean => validFocusPriority.indexOf(target) === 0;
+
   return (
     <NavigableContainerBox modal={isModal} {...boxProps}>
       <Row style={{ alignItems: 'start' }}>
         {hasHistory && (
-          <StyledBackButton onClick={onGoBack} data-testid="NavigableContainer-BackButton">
-            <Row style={{ paddingTop: '7px' }}>
-              <LargeBackIcon />
-              <HiddenText>
-                <Template code="NavigableContainer-BackButton" />
-              </HiddenText>
-            </Row>
+          <StyledBackButton
+            style={{ marginTop: '7px', marginRight: '5px' }}
+            onClick={onGoBack}
+            data-testid="NavigableContainer-BackButton"
+            ref={ref => {
+              if (shouldFocus('back')) {
+                initialFocusRef.current = ref;
+              }
+            }}
+          >
+            <LargeBackIcon />
+            <HiddenText>
+              <Template code="NavigableContainer-BackButton" />
+            </HiddenText>
           </StyledBackButton>
         )}
         <NavigableContainerTitle data-testid="NavigableContainer-Title">
@@ -101,6 +115,11 @@ const NavigableContainer: React.FC<Props> = ({
             onClick={onCloseModal}
             data-testid="NavigableContainer-CloseCross"
             style={{ marginRight: '15px', opacity: '.75' }}
+            ref={ref => {
+              if (shouldFocus('close')) {
+                initialFocusRef.current = ref;
+              }
+            }}
           >
             <HiddenText>
               <Template code="NavigableContainer-CloseButton" />
