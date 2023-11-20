@@ -22,6 +22,10 @@
           "insights": ["customers", "city"]
         },
         {
+          "name": "ageDetails",
+          "insights": ["conversations", "initiative"]
+        },
+        {
           "name": "ethnicity",
           "insights": ["customers", "customer_attribute_2"]
         },
