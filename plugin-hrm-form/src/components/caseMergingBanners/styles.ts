@@ -62,6 +62,7 @@ export const CaseLink = styled('button')<ButtonProps>`
   background: none;
   border: none;
   cursor: pointer;
+  font-family: Open Sans;
 `;
 CaseLink.displayName = 'CaseLink';
 
