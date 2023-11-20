@@ -96,6 +96,7 @@ export type ConnectedCaseActivity = {
   text: string;
   twilioWorkerId: string;
   channel: ChannelTypes;
+  showViewButton: boolean;
 };
 
 export type CaseDetails = {

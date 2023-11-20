@@ -109,11 +109,13 @@ export const newProfileEntry: ProfileEntry = {
     exhausted: false,
     loading: false,
     page: 0,
+    loadedPage: 0,
   },
   cases: {
     exhausted: false,
     loading: false,
     page: 0,
+    loadedPage: 0,
   },
   sections: {},
 };

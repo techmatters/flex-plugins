@@ -28,7 +28,13 @@ import { RootState } from '../../states';
 import { completeTask, removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute, newCloseModalAction, newOpenModalAction } from '../../states/routing/actions';
 import { emptyCategories } from '../../states/contacts/reducer';
-import { AppRoutes, ChangeRouteMode, isRouteWithModalSupport, TabbedFormSubroutes } from '../../states/routing/types';
+import {
+  AppRoutes,
+  CaseRoute,
+  ChangeRouteMode,
+  isRouteWithModalSupport,
+  TabbedFormSubroutes,
+} from '../../states/routing/types';
 import {
   ContactRawJson,
   CustomITask,
@@ -60,14 +66,15 @@ import { namespace } from '../../states/storeNamespaces';
 import Search from '../search';
 import { getCurrentBaseRoute, getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { CaseLayout } from '../../styles/case';
-import Case from '../case/Case';
+import Case, { OwnProps as CaseProps } from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
 import ViewContact from '../case/ViewContact';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
 import { selectCaseMergingBanners } from '../caseMergingBanners/state';
-import { getHrmConfig, getAseloFeatureFlags } from '../../hrmConfig';
+import { getHrmConfig, getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
+import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
@@ -150,6 +157,8 @@ const TabbedForms: React.FC<Props> = ({
     mode: 'onChange',
   });
 
+  const strings = getTemplateStrings();
+
   const { contactSaveFrequency } = getHrmConfig();
   // eslint-disable-next-line camelcase
   const { enable_case_merging } = getAseloFeatureFlags();
@@ -166,6 +175,21 @@ const TabbedForms: React.FC<Props> = ({
     helpline,
   } = updatedContact;
 
+  const submit = async (caseForm: CaseForm) => {
+    try {
+      await finaliseContact(savedContact, metadata, caseForm);
+      await completeTask(task, savedContact);
+    } catch (error) {
+      if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
+        recordBackendError('Submit Contact Form TASK COMPLETED WITHOUT RECORDING', error);
+        await completeTask(task, savedContact);
+      } else {
+        recordBackendError('Submit Contact Form', error);
+      }
+    }
+    return undefined;
+  };
+
   /**
    * Clear some parts of the form state when helpline changes.
    */
@@ -173,6 +197,14 @@ const TabbedForms: React.FC<Props> = ({
     if (isMounted.current) setValue('categories', emptyCategories);
     else isMounted.current = true;
   }, [helpline, setValue]);
+
+  const onError = recordingErrorHandler('Tabbed HRM Form', () => {
+    window.alert(strings['Error-Form']);
+  });
+
+  const newSubmitHandler = (successHandler: () => Promise<void>) => {
+    return methods.handleSubmit(successHandler, onError);
+  };
 
   const onSelectSearchResult = (searchResult: Contact) => {
     const selectedIsCaller = searchResult.rawJson.callType === callTypes.caller;
@@ -187,8 +219,7 @@ const TabbedForms: React.FC<Props> = ({
   };
 
   const onNewCaseSaved = async (caseForm: CaseForm) => {
-    await finaliseContact(savedContact, metadata, caseForm);
-    await completeTask(task, savedContact);
+    await newSubmitHandler(() => submit(caseForm))();
   };
 
   if (
@@ -204,21 +235,32 @@ const TabbedForms: React.FC<Props> = ({
     );
   }
 
-  if (currentRoute.route === 'case') {
-    /**
-     * By default, we've used to assume that everytime we go to route 'case'
-     * from 'tabbed-forms' we are creating a new case. However, this is not
-     * true anymore, since we can go to route 'case' from 'tabbed-forms' by clicking
-     * on the 'View Case' link from the ContactAddedToCaseBanner.
-     *
-     * TODO: We should refactor this to make it more clear.
-     */
-    const isCreating = currentRoute.isCreating ?? true;
+  const renderCaseLayout = () => {
+    // This is a dirty hack so that case viewing works for the create case form and
+    // the profile view case form. It could use a refactor if/when we move routing
+    // into a separate component, but this *should* mostly work for now.
+    // Editing the case in the profile view case form will probably not work
+    // as expected without some additional work.
+    const isCreating = currentRoute.hasOwnProperty('isCreating') ? (currentRoute as CaseRoute).isCreating : true;
+    const caseProps: CaseProps = {
+      task,
+      isCreating,
+    };
+
+    if (isCreating) {
+      caseProps.onNewCaseSaved = onNewCaseSaved;
+      caseProps.handleClose = closeModal;
+    }
+
     return (
       <CaseLayout>
-        <Case task={task} isCreating={isCreating} onNewCaseSaved={onNewCaseSaved} handleClose={closeModal} />
+        <Case {...caseProps} />
       </CaseLayout>
     );
+  };
+
+  if (currentRoute.route === 'case') {
+    return renderCaseLayout();
   }
 
   if (currentRoute.route === 'contact') {
@@ -394,7 +436,7 @@ const TabbedForms: React.FC<Props> = ({
               // TODO: move this two functions to a separate file to centralize "handle task completions"
               showNextButton={tabIndex !== 0 && tabIndex < tabs.length - 1}
               showSubmitButton={showSubmitButton}
-              handleSubmitIfValid={methods.handleSubmit} // TODO: this should be used within BottomBar, but that requires a small refactor to make it a functional component
+              handleSubmitIfValid={newSubmitHandler} // TODO: this should be used within BottomBar, but that requires a small refactor to make it a functional component
               optionalButtons={optionalButtons}
             />
           </div>

@@ -21,7 +21,7 @@ import { loadIdentifierByIdentifierAsync } from './identifiers';
 import loadProfileEntryIntoRedux from './loadProfileEntryIntoRedux';
 import * as t from './types';
 
-export const PAGE_SIZE = 2;
+export const PAGE_SIZE = 20;
 
 type ProfileId = t.Profile['id'];
 
@@ -32,13 +32,21 @@ type CommonRelationshipParams = {
 
 type LoadRelationshipAsyncParams = CommonRelationshipParams & {
   page?: number;
+  loadedPage?: number;
 };
 
 export const loadRelationshipAsync = createAsyncAction(
   t.LOAD_RELATIONSHIP,
-  async ({ profileId, type, page = 0 }: LoadRelationshipAsyncParams): Promise<any> => {
-    const offset = page * PAGE_SIZE;
-    const limit = PAGE_SIZE;
+  async ({ profileId, type, page, loadedPage }: LoadRelationshipAsyncParams): Promise<any> => {
+    /*
+    This handles skipping forward several pages at once and loads the pages in between into state
+    in a single request. This could end up with a large payload if there are dozens of pages and
+    hundreds of records.
+    If the tradeoff is not worth it, we can change this to only load the current page and only store
+    it in state like the current behavior.
+    */
+    const offset = loadedPage === 0 ? 0 : loadedPage * PAGE_SIZE;
+    const limit = (page + 1 - loadedPage) * PAGE_SIZE || PAGE_SIZE;
 
     return t.PROFILE_RELATIONSHIPS[type].method(profileId, offset, limit);
   },
@@ -96,11 +104,13 @@ const handleRelationshipsPendingAction = (state: t.ProfilesState, action: any) =
 };
 
 const handleRelationshipsFulfilledAction = (state: t.ProfilesState, action: any) => {
-  const { page: loadedPage, profileId, type } = action.meta;
+  const { page, profileId, type } = action.meta;
 
   const data = [...(state[profileId][type].data || []), ...action.payload[type]];
   const total = action.payload.count || 0;
   const exhausted = data.length >= action.payload.count;
+
+  const loadedPage = Math.max(page + 1, state[profileId][type].loadedPage);
 
   const profileUpdate = {
     [type]: {
@@ -217,6 +227,14 @@ const handleProfileFlagUpdateFulfilledAction = (state: t.ProfilesState, action: 
 
   const profileUpdate = {
     loading: false,
+    cases: {
+      ...state[profileId].cases,
+      total: action.payload.casesCount,
+    },
+    contacts: {
+      ...state[profileId].contacts,
+      total: action.payload.contactsCount,
+    },
     data: {
       ...t.newProfileEntry,
       ...state[profileId].data,
@@ -284,6 +302,7 @@ const handleLoadProfileSectionRejectedAction = (state: t.ProfilesState, action: 
   return loadProfileSectionEntryIntoRedux(state, profileId, sectionType, update);
 };
 
+
 const handleLoadProfileSectionFulfilledAction = (state: t.ProfilesState, action: any) => {
   const { profileId, sectionType } = action.meta;
   const update = {
@@ -337,7 +356,7 @@ const profilesReducer = (initialState: t.ProfilesState = {}) =>
     handleAction(disassociateProfileFlagAsync.fulfilled, handleProfileFlagUpdateFulfilledAction),
     handleAction(loadProfileSectionAsync.pending, handleLoadProfileSectionPendingAction),
     handleAction(loadProfileSectionAsync.rejected, handleLoadProfileSectionRejectedAction),
-    handleAction(loadProfileSectionAsync.fulfilled, handleLoadProfileSectionFulfilledAction),
+    handleAction(loadProfileSectionAsync.fulfilled, handleProfileSectionFulfilledAction),
     handleAction(createProfileSectionAsync.pending, handleLoadProfileSectionPendingAction),
     handleAction(createProfileSectionAsync.rejected, handleLoadProfileSectionRejectedAction),
     handleAction(createProfileSectionAsync.fulfilled, handleLoadProfileSectionFulfilledAction),
