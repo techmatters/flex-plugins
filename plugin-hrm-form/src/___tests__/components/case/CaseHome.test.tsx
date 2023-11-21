@@ -21,6 +21,7 @@ import { render, screen } from '@testing-library/react';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
+import each from 'jest-each';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import CaseHome, { CaseHomeProps } from '../../../components/case/CaseHome';
@@ -32,6 +33,12 @@ import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { namespace } from '../../../states/storeNamespaces';
 import { RecursivePartial } from '../../RecursivePartial';
 import { RootState } from '../../../states';
+
+jest.mock('../../../permissions', () => ({
+  ...jest.requireActual('../../../permissions'),
+  getPermissionsForCase: jest.fn(() => ({ can: () => true })),
+  getPermissionsForContact: jest.fn(() => ({ can: () => true })),
+}));
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -178,8 +185,6 @@ describe('useState mocked', () => {
       definitionVersion: mockV1,
       can: () => true,
       caseDetails,
-      timeline: [],
-      handleCancelNewCaseAndClose: jest.fn(),
       handleClose: jest.fn(),
       handleUpdate: jest.fn(),
       handleSaveAndEnd: jest.fn(),
@@ -366,9 +371,9 @@ describe('useState mocked', () => {
     });
   });
 
-  test('Click cancel button on new case', async () => {
+  each([true, false]).test('Click close button on case', async isCreating => {
     const store = mockStore(initialState);
-    ownProps.isCreating = true;
+    ownProps.isCreating = isCreating;
 
     render(
       <StorelessThemeProvider themeConf={{}}>
@@ -378,27 +383,9 @@ describe('useState mocked', () => {
       </StorelessThemeProvider>,
     );
 
-    screen.getByTestId('CaseHome-CancelButton').click();
+    screen.getByTestId('NavigableContainer-CloseCross').click();
     // Brittle AF but the HTML the menu component produces makes it difficult to do better.
 
-    expect(ownProps.handleCancelNewCaseAndClose).toHaveBeenCalled();
-    expect(ownProps.handleClose).not.toHaveBeenCalled();
-  });
-
-  test('Click close button on existing case', () => {
-    const store = mockStore(initialState);
-    ownProps.isCreating = false;
-
-    render(
-      <StorelessThemeProvider themeConf={{}}>
-        <Provider store={store}>
-          <CaseHome {...ownProps} />
-        </Provider>
-      </StorelessThemeProvider>,
-    );
-    screen.getByTestId('NavigableContainer-CloseCross').click();
-
-    expect(ownProps.handleCancelNewCaseAndClose).not.toHaveBeenCalled();
     expect(ownProps.handleClose).toHaveBeenCalled();
   });
 });

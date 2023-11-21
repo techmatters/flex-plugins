@@ -26,7 +26,7 @@ import CSAMReport from './CSAMReport/CSAMReport';
 import { RootState } from '../states';
 import type { CustomITask, Case as CaseForm, Contact } from '../types/types';
 import { newContactCSAMApi } from './CSAMReport/csamReportApi';
-import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
+import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { namespace } from '../states/storeNamespaces';
 import { ContactMetadata } from '../states/contacts/types';
 import { createContactAsyncAction, submitContactFormAsyncAction } from '../states/contacts/saveContact';
@@ -82,7 +82,7 @@ HrmForm.displayName = 'HrmForm';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const { routing, configuration } = state[namespace];
-  const { savedContact, metadata } = findContactByTaskSid(state, task.taskSid) ?? {};
+  const { savedContact, metadata } = selectContactByTaskSid(state, task.taskSid) ?? {};
 
   return {
     routing: getCurrentTopmostRouteForTask(routing, task.taskSid),
