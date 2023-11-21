@@ -39,7 +39,7 @@ import {
 } from './types';
 import { ContactDraftChanges, ExistingContactsState } from './existingContacts';
 import { newContactMetaData } from './contactState';
-import { getCase } from '../../services/CaseService';
+import { cancelCase, getCase } from '../../services/CaseService';
 import { getUnsavedContact } from './getUnsavedContact';
 
 export const createContactAsyncAction = createAsyncAction(
@@ -124,7 +124,7 @@ export const newRestartOfflineContactAsyncAction = (contact: Contact, createdOnB
 };
 
 type ConnectToCaseActionPayload = { contactId: string; caseId: number; contact: Contact; contactCase: Case };
-type RemoveFromCaseActionPayload = { contactId: string; caseId: number; contact: Contact };
+type RemoveFromCaseActionPayload = { contactId: string; contact: Contact };
 
 // TODO: Update connectedContacts on case in redux state
 export const connectToCaseAsyncAction = createAsyncAction(
@@ -138,9 +138,12 @@ export const connectToCaseAsyncAction = createAsyncAction(
 
 export const removeFromCaseAsyncAction = createAsyncAction(
   REMOVE_FROM_CASE,
-  async (contactId: string, caseId: number | null): Promise<RemoveFromCaseActionPayload> => {
-    const contact = await removeFromCase(contactId, caseId);
-    return { contactId, caseId, contact };
+  async (contactId: string, deleteCase = false): Promise<RemoveFromCaseActionPayload> => {
+    const contact = await removeFromCase(contactId);
+    if (deleteCase) {
+      await cancelCase(contact.caseId);
+    }
+    return { contactId, contact };
   },
 );
 

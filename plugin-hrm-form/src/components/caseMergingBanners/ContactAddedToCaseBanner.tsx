@@ -49,8 +49,8 @@ const mapDispatchToProps = (dispatch, { taskId }: OwnProps) => ({
     dispatch(setConnectedCase(cas, taskId));
     dispatch(newOpenModalAction({ route: 'case', subroute: 'home', isCreating: false }, taskId));
   },
-  removeContactFromCase: async (contactId: string, caseId: number) => {
-    await asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId, caseId));
+  removeContactFromCase: async (contactId: string) => {
+    await asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId));
     dispatch(showRemovedFromCaseBannerAction(contactId));
   },
 });
@@ -73,7 +73,7 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
         <Template code="Case-CaseNumber" />
         {connectedCase.id}
       </CaseLink>
-      <RemoveFromCaseLink type="button" onClick={() => removeContactFromCase(contact.id, connectedCase.id)}>
+      <RemoveFromCaseLink type="button" onClick={() => removeContactFromCase(contact.id)}>
         <Template code="CaseMerging-RemoveFromCase" />
       </RemoveFromCaseLink>
     </BannerContainer>
