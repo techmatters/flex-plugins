@@ -28,16 +28,9 @@ type OwnProps = ProfileCommonProps & {
 };
 
 const ProfileSectionView = ({ profileId, sectionType }: OwnProps) => {
-  const { section } = useProfileSectionByType({ profileId, sectionType: sectionType.name });
-  const [isLoading, setIsLoading] = useState(true);
+  const { section, loading } = useProfileSectionByType({ profileId, sectionType: sectionType.name });
 
-  useEffect(() => {
-    if (section) {
-      setIsLoading(false);
-    }
-  }, [section]);
-
-  if (isLoading) {
+  if (loading) {
     return <SectionText>Loading...</SectionText>;
   }
 
