@@ -14,17 +14,16 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Icon, Template } from '@twilio/flex-ui';
 
-import { ProfileCommonProps } from './types';
-import ProfileFlagList from './profileFlag/ProfileFlagList';
-import ProfileFlagEdit from './profileFlag/ProfileFlagEdit';
-import { DetailsWrapper, ProfileSectionWrapper, ProfileSectionSubtitle, ProfileSectionEditButton } from './styles';
 import { Bold, Box, Column, Row } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
+import { ProfileCommonProps } from './types';
+import { DetailsWrapper, ProfileSectionWrapper, ProfileSectionSubtitle, ProfileSectionEditButton } from './styles';
+import ProfileFlagSection from './profileFlag/ProfileFlagSection';
 import ProfileSectionView from './section/ProfileSectionView';
 
 type OwnProps = ProfileCommonProps;
@@ -40,9 +39,8 @@ type Section = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, openSectionEditModal }) => {
+const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal }) => {
   const { profile } = useProfile({ profileId });
-  const [shouldEditProfileFlags, setShouldEditProfileFlags] = useState(false);
 
   const baseSections: Section[] = [
     {
@@ -56,14 +54,7 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
     },
     {
       titleCode: 'Profile-StatusHeader',
-      renderComponent: () =>
-        shouldEditProfileFlags ? (
-          <ProfileFlagEdit profileId={profileId} task={task} />
-        ) : (
-          <ProfileFlagList profileId={profileId} task={task} />
-        ),
-      handleEdit: () => setShouldEditProfileFlags(!shouldEditProfileFlags),
-      inInlineEditMode: shouldEditProfileFlags,
+      renderComponent: () => <ProfileFlagSection profileId={profileId} task={task} />,
     },
   ];
 
@@ -86,7 +77,6 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
     renderComponent: () => <ProfileSectionView profileId={profileId} task={task} sectionType={sectionType} />,
     handleEdit: () => openSectionEditModal(sectionType.name),
   }));
-  const sections = [...baseSections, ...sectionSections];
 
   const renderEditButton = section => {
     if (!section || !section.handleEdit) return null;
@@ -153,9 +143,6 @@ const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
   const { profileId, task } = ownProps;
   const taskId = task.taskSid;
   return {
-    openFlagEditModal: () => {
-      dispatch(newOpenModalAction({ route: 'profileFlagEdit', id: profileId }, taskId));
-    },
     openSectionEditModal: (type: string) => {
       dispatch(newOpenModalAction({ route: 'profileSectionEdit', type, id: profileId }, taskId));
     },

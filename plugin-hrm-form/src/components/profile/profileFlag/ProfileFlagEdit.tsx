@@ -29,12 +29,13 @@ import { StyledFlagEditList } from '../styles';
 type OwnProps = {
   profileId: Profile['id'];
   task: RouterTask;
+  modalRef?: React.RefObject<HTMLDivElement>;
 };
 
 type Props = OwnProps;
 
 const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
-  const { profileId } = props;
+  const { modalRef, profileId } = props;
   const { allProfileFlags, profileFlags, associateProfileFlag } = useProfileFlags(profileId);
   const { loading } = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId));
 
@@ -42,21 +43,21 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
 
   const [open, setOpen] = useState(true);
 
-  const availableFlags = allProfileFlags.filter(flag => !profileFlags.find(f => f.id === flag.id));
+  const availableFlags = allProfileFlags?.filter(flag => !profileFlags.find(f => f.id === flag.id));
 
   useEffect(() => {
-    setOpen(Boolean(availableFlags.length));
+    setOpen(Boolean(availableFlags?.length));
   }, [availableFlags]);
 
   const renderValue = () => <ProfileFlagList {...props} enableDisassociate={true} />;
-  const shouldAllowAssociate = availableFlags.length && !loading;
+  const shouldAllowAssociate = availableFlags?.length && !loading;
 
   return (
     <>
       <StyledFlagEditList ref={anchorRef}>{renderValue()}</StyledFlagEditList>
-      <Popper open={open} anchorEl={anchorRef.current} placement="bottom-start">
+      <Popper open={open} anchorEl={anchorRef.current} placement="bottom-start" ref={modalRef}>
         <Paper>
-          {availableFlags.map((flag: ProfileFlag) => (
+          {availableFlags?.map((flag: ProfileFlag) => (
             <StyledMenuItem key={flag.id} onClick={() => shouldAllowAssociate && associateProfileFlag(flag.id)}>
               {flag.name}
             </StyledMenuItem>
