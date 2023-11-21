@@ -15,12 +15,11 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import { useIdentifierByIdentifier, useProfileProperty } from '../../../states/profile/hooks';
-import { RootState } from '../../../states';
 import { YellowBanner } from '../../../styles/previousContactsBanner';
 import { Bold } from '../../../styles/HrmStyles';
 import { StyledLink } from '../../../styles/search';
@@ -28,10 +27,7 @@ import { ChannelTypes, channelTypes } from '../../../states/DomainConstants';
 import { newOpenModalAction } from '../../../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
-import { CustomITask, isTwilioTask } from '../../../types/types';
-import { namespace } from '../../../states/storeNamespaces';
-import { isRouteModal } from '../../../states/routing/types';
-import { getCurrentBaseRoute } from '../../../states/routing/getRoute';
+import { CustomITask } from '../../../types/types';
 
 type OwnProps = {
   task: CustomITask;
