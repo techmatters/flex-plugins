@@ -109,6 +109,8 @@ type TabbedFormTabContainerProps = {
 export const TabbedFormTabContainer = styled(({ display, ...rest }: TabbedFormTabContainerProps) => <Box {...rest} />)<
   TabbedFormTabContainerProps
 >`
+  padding: 32px 20px 12px 20px;
+  background-color: white;
   display: ${({ display }) => (display ? 'block' : 'none')};
   height: ${({ display }) => (display ? '100%' : '0px')};
 `;
@@ -355,7 +357,6 @@ export const BottomButtonBar = styled('div')`
   height: ${BottomButtonBarHeight}px;
   flex-shrink: 0;
   padding: 0 20px;
-  background-color: #f9fafb;
   z-index: 1;
   box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.1);
 `;
@@ -366,7 +367,7 @@ export const ColumnarBlock = styled('div')`
   flex-direction: column;
   flex-grow: 1;
   flex-basis: 0;
-  margin: 0 10px;
+  margin: 0;
 `;
 ColumnarBlock.displayName = 'ColumnarBlock';
 
@@ -1288,7 +1289,7 @@ export const StyledAddNewCaseDropdown = styled('ul')`
   font-size: 0.875rem;
   z-index: 9999;
   width: 194px;
-  padding: 10px 0 10px 6px;
+  padding: 10px 0 10px 0;
   flex-direction: column;
   align-items: flex-start;
   background: var(--background-color-background-body, #fff);
@@ -1303,11 +1304,9 @@ export const StyledAddNewCaseDropdownList = styled('button')`
   font-size: 14px;
   display: flex;
   color: inherit;
-  min-width: 10rem;
+  min-width: 12rem;
   align-items: flex-start;
   align-self: stretch;
-  width: 25px;
-  // padding: 8px 24px;
   padding: 7px 0 7px 18px;
   text-decoration: none;
   &:hover {

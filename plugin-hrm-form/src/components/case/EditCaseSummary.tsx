@@ -33,7 +33,6 @@ import {
   StyledNextStepButton,
   TwoColumnLayout,
 } from '../../styles/HrmStyles';
-import { CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import { RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
@@ -201,22 +200,20 @@ const EditCaseSummary: React.FC<Props> = ({
         onGoBack={checkForEdits}
         onCloseModal={checkForEdits}
       >
-        <CaseActionFormContainer>
-          <ActionHeader
-            addingCounsellor={addingCounsellorName}
-            added={added}
-            updated={updated}
-            updatingCounsellor={updatingCounsellorName}
-          />
-          <Container>
-            <Box paddingBottom={`${BottomButtonBarHeight}px`}>
-              <TwoColumnLayout>
-                <ColumnarBlock>{l}</ColumnarBlock>
-                <ColumnarBlock>{r}</ColumnarBlock>
-              </TwoColumnLayout>
-            </Box>
-          </Container>{' '}
-        </CaseActionFormContainer>
+        <ActionHeader
+          addingCounsellor={addingCounsellorName}
+          added={added}
+          updated={updated}
+          updatingCounsellor={updatingCounsellorName}
+        />
+        <Container removePadding={true}>
+          <Box paddingBottom={`${BottomButtonBarHeight}px`}>
+            <TwoColumnLayout>
+              <ColumnarBlock>{l}</ColumnarBlock>
+              <ColumnarBlock>{r}</ColumnarBlock>
+            </TwoColumnLayout>
+          </Box>
+        </Container>{' '}
         <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
         <BottomButtonBar>
           <StyledNextStepButton

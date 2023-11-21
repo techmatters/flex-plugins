@@ -67,21 +67,10 @@ const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingActi
         previousContact.taskId === getOfflineContactTaskSid() ? false : state.isAddingOfflineContact,
     };
   }
-  const { taskId, rawJson, caseId } = contact;
+  const { taskId, rawJson } = contact;
   let initialEntry: AppRoutes = newTaskEntry;
   const { callType } = rawJson;
-  if (caseId && callType) {
-    initialEntry = {
-      route: 'tabbed-forms',
-      subroute: 'caseInformation',
-      activeModal: [
-        {
-          route: 'case',
-          subroute: 'home',
-        },
-      ],
-    };
-  } else if (callType === callTypes.child) {
+  if (callType === callTypes.child) {
     initialEntry = {
       route: 'tabbed-forms',
       subroute: 'childInformation',

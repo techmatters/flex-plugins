@@ -15,22 +15,55 @@
  */
 
 import React from 'react';
-import { Template } from '@twilio/flex-ui';
+import { connect, ConnectedProps } from 'react-redux';
+import { Template, ITask, withTaskContext } from '@twilio/flex-ui';
 
 import { BannerContainer, Text, BannerActionLink } from './styles';
 import InfoIcon from './InfoIcon';
+import asyncDispatch from '../../states/asyncDispatch';
+import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
+import { showRemovedFromCaseBannerAction } from './state';
+import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
+import selectCaseByTaskSid from '../../states/case/selectCaseByTaskSid';
 
 type OwnProps = {
+  task?: ITask;
   caseId: string;
-  cancelCase: () => void;
 };
 
-type Props = OwnProps;
+// eslint-disable-next-line no-use-before-define
+type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ContactAddedToCaseBanner: React.FC<Props> = ({ caseId, cancelCase }) => {
+const mapStateToProps = (state, { task }: OwnProps) => {
+  const contact = selectContactByTaskSid(state, task.taskSid);
+  const cas = selectCaseByTaskSid(state, task.taskSid);
+  return {
+    contactId: contact.savedContact.id,
+    cas,
+  };
+};
+
+const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
+  removeContactFromCase: async (contactId: string, caseId: number) => {
+    await asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId, caseId));
+    // TODO: close current modal
+    dispatch(showRemovedFromCaseBannerAction(contactId));
+  },
+});
+
+const CreatedCaseBanner: React.FC<Props> = ({ task, caseId, contactId, cas }) => {
+  const cancelCase = async () => {
+    // const contactIds = cas.connectedContacts.map(c => c.id);
+    // await Promise.all(contactIds.map(id => disconnectFromCase(id)));
+    // // TODO: Dont call service directly
+    // await cancelCase(connectedCase.id);
+    // cancelNewCase(connectedCase.id, loadedContactIds);
+    // handleClose();
+  };
+
   return (
     <BannerContainer color="blue">
-      <InfoIcon />
+      <InfoIcon color="#001489" />
       <Text>
         <Template code="CaseMerging-CaseCreatedAndContactAdded" caseId={caseId} />
       </Text>
@@ -41,4 +74,7 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({ caseId, cancelCase }) => {
   );
 };
 
-export default ContactAddedToCaseBanner;
+const connector = connect(mapStateToProps, mapDispatchToProps);
+const connected = connector(CreatedCaseBanner);
+
+export default withTaskContext(connected);

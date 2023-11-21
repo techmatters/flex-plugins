@@ -23,7 +23,7 @@ import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
 import { getDefinitionVersions } from '../hrmConfig';
 import { RootState } from '../states';
-import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
+import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { ContactDraftChanges } from '../states/contacts/existingContacts';
 import asyncDispatch from '../states/asyncDispatch';
 import { updateContactInHrmAsyncAction } from '../states/contacts/saveContact';
@@ -188,7 +188,7 @@ export const prepopulateForm = async (task: ITask) => {
     return;
   }
 
-  const createdContact = findContactByTaskSid(Manager.getInstance().store.getState() as RootState, task.taskSid)
+  const createdContact = selectContactByTaskSid(Manager.getInstance().store.getState() as RootState, task.taskSid)
     ?.savedContact;
 
   if (!createdContact) {

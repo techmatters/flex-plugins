@@ -32,9 +32,9 @@ CaseLayout.displayName = 'CaseLayout';
 export const CaseContainer = styled('div')`
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
   height: 100%;
   background-color: #ffffff;
+  padding-right: 5px;
 `;
 CaseContainer.displayName = 'CaseContainer';
 
@@ -44,7 +44,6 @@ export const CaseActionFormContainer = styled('div')`
   flex-direction: column;
   flex-wrap: nowrap;
   overflow-y: auto;
-  padding: 20px 10px 0 30px;
 `;
 
 export const CenteredContainer = styled(CaseContainer)`

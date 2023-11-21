@@ -61,6 +61,11 @@
     "type": "checkbox"
   },
     {
+    "name": "callerAgreeable",
+    "label": "Was the caller agreeable to an Emergency Referral or Mandatory Report?",
+    "type": "checkbox"
+  },
+    {
         "name": "languageService",
         "label": "If applicable, which Language Interpretation service was used",
         "type": "select",

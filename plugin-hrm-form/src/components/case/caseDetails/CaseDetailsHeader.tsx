@@ -39,7 +39,6 @@ type OwnProps = {
   handlePrintCase: () => void;
   isOrphanedCase: boolean;
   isCreating?: boolean;
-  handleCancelNewCaseAndClose: () => void;
 };
 
 const CaseDetailsHeader: React.FC<OwnProps> = ({
@@ -47,7 +46,6 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
   office,
   counselor,
   handlePrintCase,
-  handleCancelNewCaseAndClose,
   isOrphanedCase,
   isCreating,
 }) => {
@@ -64,7 +62,7 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
       </DetailsHeaderCaseContainer>
       {isCreating && (
         <Box marginBottom="14px" width="100%">
-          <CaseCreatedBanner caseId={caseId} cancelCase={handleCancelNewCaseAndClose} />
+          <CaseCreatedBanner caseId={caseId} />
         </Box>
       )}
       <Flex justifyContent="space-between">

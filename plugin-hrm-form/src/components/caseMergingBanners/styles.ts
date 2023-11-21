@@ -17,17 +17,19 @@
 import { styled } from '@twilio/flex-ui';
 
 type BannerContainerProps = {
-  color: 'blue' | 'orange';
+  color: 'blue' | 'orange' | 'yellow';
 };
 
 const colors = {
   background: {
     blue: '#ebf4ff',
     orange: '#fef5ee',
+    yellow: '#fefad3',
   },
   border: {
     blue: '#0263e0',
     orange: '#ffb37a',
+    yellow: '#fed44b',
   },
 };
 
