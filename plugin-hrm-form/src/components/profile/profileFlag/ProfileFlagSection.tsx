@@ -25,17 +25,14 @@ type Props = ProfileCommonProps;
 
 const ProfileFlagSection: React.FC<Props> = ({ profileId, task }) => {
   const [shouldEditProfileFlags, setShouldEditProfileFlags] = useState(false);
-
-  const toggleEditProfileFlags = () => setShouldEditProfileFlags(!shouldEditProfileFlags);
-
   const profileFlagsModalRef = useRef(null);
 
   return (
-    <ClickOutsideInterceptor onClick={toggleEditProfileFlags} ignoreRefs={[profileFlagsModalRef]}>
+    <ClickOutsideInterceptor onClick={() => setShouldEditProfileFlags(false)} ignoreRefs={[profileFlagsModalRef]}>
       {shouldEditProfileFlags ? (
         <ProfileFlagEdit profileId={profileId} task={task} modalRef={profileFlagsModalRef} />
       ) : (
-        <button type="button" onClick={toggleEditProfileFlags}>
+        <button type="button" onClick={() => setShouldEditProfileFlags(true)}>
           <ProfileFlagList profileId={profileId} task={task} />
         </button>
       )}
