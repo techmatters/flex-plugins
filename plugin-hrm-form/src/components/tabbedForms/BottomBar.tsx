@@ -179,17 +179,19 @@ const BottomBar: React.FC<
       );
     }
     return isAddedToCase ? null : (
-      <StyledNextStepButton
-        type="button"
-        roundCorners
-        secondary="true"
-        onClick={handleSubmitIfValid(handleOpenNewCase)}
-        data-fs-id="Contact-SaveAndAddToCase-Button"
-        data-testid="BottomBar-SaveAndAddToCase-Button"
-      >
-        <FolderIcon style={{ fontSize: '16px', marginRight: '10px', width: '24px', height: '24px' }} />
-        <Template code="BottomBar-AddContactToNewCase" />
-      </StyledNextStepButton>
+      <Box marginRight="15px">
+        <StyledNextStepButton
+          type="button"
+          roundCorners
+          secondary="true"
+          onClick={handleSubmitIfValid(handleOpenNewCase)}
+          data-fs-id="Contact-SaveAndAddToCase-Button"
+          data-testid="BottomBar-SaveAndAddToCase-Button"
+        >
+          <FolderIcon style={{ fontSize: '16px', marginRight: '10px', width: '24px', height: '24px' }} />
+          <Template code="BottomBar-AddContactToNewCase" />
+        </StyledNextStepButton>
+      </Box>
     );
   };
 

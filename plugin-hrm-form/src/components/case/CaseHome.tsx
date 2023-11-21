@@ -85,7 +85,10 @@ const CaseHome: React.FC<Props> = ({
 }) => {
   if (!connectedCaseState) return null; // narrow type before deconstructing
 
-  const { enable_upload_documents: enableUploadDocuments } = getAseloFeatureFlags();
+  const {
+    enable_upload_documents: enableUploadDocuments,
+    enable_case_merging: enableCaseMerging,
+  } = getAseloFeatureFlags();
 
   const onViewCaseItemClick = (targetSubroute: CaseSectionSubroute) => (id: string) => {
     openModal({ route: 'case', subroute: targetSubroute, action: CaseItemAction.View, id });
@@ -307,16 +310,18 @@ const CaseHome: React.FC<Props> = ({
       </CaseContainer>
       {isCreating && (
         <BottomButtonBar>
-          <Box marginRight="15px">
-            <StyledNextStepButton
-              data-testid="CaseHome-CancelButton"
-              secondary="true"
-              roundCorners
-              onClick={handleClose}
-            >
-              <Template code="BottomBar-CancelNewCaseAndClose" />
-            </StyledNextStepButton>
-          </Box>
+          {!enableCaseMerging && (
+            <Box marginRight="15px">
+              <StyledNextStepButton
+                data-testid="CaseHome-CancelButton"
+                secondary="true"
+                roundCorners
+                onClick={handleClose}
+              >
+                <Template code="BottomBar-CancelNewCaseAndClose" />
+              </StyledNextStepButton>
+            </Box>
+          )}
           <StyledNextStepButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
             <Template code="BottomBar-SaveAndEnd" />
           </StyledNextStepButton>
