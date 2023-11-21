@@ -137,7 +137,7 @@ const Search: React.FC<Props> = ({
             <NavigableContainer
               task={task}
               titleCode={
-                routing.action === 'select-case' ? 'Resources-Search-ResultsTitle' : 'SearchContactsAndCases-Title'
+                routing.action === 'select-case' ? 'SearchResultsIndex-SelectCase' : 'SearchContactsAndCases-Title'
               }
             >
               <SearchResults

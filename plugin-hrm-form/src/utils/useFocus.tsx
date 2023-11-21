@@ -27,10 +27,11 @@ import type { HTMLElementRef } from '../components/common/forms/types';
  * using properties such as 'ref', 'innerRef', 'buttonRef' etc.
  *
  * @param shouldFocus optional boolean that indicates if the element should be focused
+ * @param additionalDeps optional array of dependencies to be checked to see whether focusing needs to be reapplied
  * @returns Reference to the focusable element
  */
-const useFocus = (shouldFocus: boolean = true): HTMLElementRef => {
-  const elementRef = useRef(null);
+const useFocus = (shouldFocus: boolean = true, additionalDeps: any[] = []): HTMLElementRef => {
+  const elementRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const setFocus = () => {
@@ -42,7 +43,8 @@ const useFocus = (shouldFocus: boolean = true): HTMLElementRef => {
     if (shouldFocus) {
       setFocus();
     }
-  }, [shouldFocus]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldFocus, ...additionalDeps]);
 
   return elementRef;
 };

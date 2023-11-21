@@ -1219,8 +1219,14 @@ CSAMReportButtonText.displayName = 'CSAMReportButtonText';
 
 const TabbedFormsHeaderButton = styled(ButtonBase)`
   &:focus {
-    outline: auto;
-    padding: 5px;
+    outline-color: ${HrmTheme.colors.focusColor};
+    outline-style: solid;
+    outline-width: medium;
+  }
+
+  &:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
   }
 `;
 TabbedFormsHeaderButton.displayName = 'TabbedFormsHeaderButton';
@@ -1236,8 +1242,15 @@ export const HeaderCloseButton = styled(ButtonBase)`
     margin-left: auto;
   }
 
-  :focus {
-    outline: auto;
+  &:focus {
+    outline-color: ${HrmTheme.colors.focusColor};
+    outline-style: solid;
+    outline-width: medium;
+  }
+
+  &:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
   }
 `;
 HeaderCloseButton.displayName = 'HeaderCloseButton';
@@ -1289,7 +1302,7 @@ export const StyledAddNewCaseDropdown = styled('ul')`
   font-size: 0.875rem;
   z-index: 9999;
   width: 194px;
-  padding: 10px 0 10px 6px;
+  padding: 10px 0 10px 0;
   flex-direction: column;
   align-items: flex-start;
   background: var(--background-color-background-body, #fff);
@@ -1304,11 +1317,9 @@ export const StyledAddNewCaseDropdownList = styled('button')`
   font-size: 14px;
   display: flex;
   color: inherit;
-  min-width: 10rem;
+  min-width: 12rem;
   align-items: flex-start;
   align-self: stretch;
-  width: 25px;
-  // padding: 8px 24px;
   padding: 7px 0 7px 18px;
   text-decoration: none;
   &:hover {
