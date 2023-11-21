@@ -19,15 +19,7 @@ import { createAction, createReducer } from 'redux-promise-middleware-actions';
 import { RootState } from '../../states';
 import { namespace } from '../../states/storeNamespaces';
 
-const SHOW_CONNECTED_TO_CASE_BANNER = 'case-merging-banners/show-connected-to-case-banner';
 const SHOW_REMOVED_FROM_CASE_BANNER = 'case-merging-banners/show-removed-from-case-banner';
-
-export const showConnectedToCaseBannerAction = createAction(SHOW_CONNECTED_TO_CASE_BANNER, (contactId: string) => ({
-  contactId,
-  banners: {
-    showConnectedToCaseBanner: true,
-  },
-}));
 
 export const showRemovedFromCaseBannerAction = createAction(SHOW_REMOVED_FROM_CASE_BANNER, (contactId: string) => ({
   contactId,
@@ -45,24 +37,24 @@ export const closeRemovedFromCaseBannerAction = createAction(SHOW_REMOVED_FROM_C
 }));
 
 type CaseMergingBannersAction =
-  | ReturnType<typeof showConnectedToCaseBannerAction>
   | ReturnType<typeof showRemovedFromCaseBannerAction>
   | ReturnType<typeof closeRemovedFromCaseBannerAction>;
 
 type CaseMergingBannersState = {
   [contactId: string]: {
-    showConnectedToCaseBanner: boolean;
     showRemovedFromCaseBanner: boolean;
   };
 };
 
 const initialState: CaseMergingBannersState = {};
 
-export const selectCaseMergingBanners = (state: RootState, contactId: string): CaseMergingBannersState['contactId'] =>
-  state[namespace].caseMergingBanners[contactId] || {
-    showConnectedToCaseBanner: true,
-    showRemovedFromCaseBanner: false,
-  };
+export const selectCaseMergingBanners = (
+  state: RootState,
+  contactId: string,
+): CaseMergingBannersState['contactId'] & { showConnectedToCaseBanner: boolean } => ({
+  showConnectedToCaseBanner: Boolean(state[namespace].activeContacts.existingContacts[contactId]?.savedContact.caseId),
+  showRemovedFromCaseBanner: state[namespace].caseMergingBanners[contactId]?.showRemovedFromCaseBanner ?? false,
+});
 
 const mergeResultPayloadIntoState = (state, action: CaseMergingBannersAction) => {
   const { contactId, banners } = action.payload;
@@ -77,7 +69,6 @@ const mergeResultPayloadIntoState = (state, action: CaseMergingBannersAction) =>
 };
 
 const caseMergingBannersReducer = createReducer(initialState, handleAction => [
-  handleAction(showConnectedToCaseBannerAction, mergeResultPayloadIntoState),
   handleAction(showRemovedFromCaseBannerAction, mergeResultPayloadIntoState),
   handleAction(closeRemovedFromCaseBannerAction, mergeResultPayloadIntoState),
 ]);
