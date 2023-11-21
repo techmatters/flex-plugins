@@ -60,6 +60,7 @@
   "SearchResultsIndex-ViewContacts": "View Contacts",
   "SearchResultsIndex-ViewCases": "View Cases",
   "Contact-ViewButton": "View",
+  "SearchResultsIndex-SelectCase":"Select Case",
 
   "StandaloneSearch-SideNav": "Search",
   "CaseHeader-Opened": "Opened",
@@ -102,7 +103,7 @@
   "BottomBar-SaveAndAddToCase": "Save and Add to Case...",
   "BottomBar-SaveContact": "Save",
   "BottomBar-SaveCaseContact": "Save Contact",
-  "BottomBar-AddContactToNewCase": "Add to New Case",
+  "BottomBar-AddContactToNewCase": "Add to Case",
   "BottomBar-AddedToCase": "Added to Case",
   "BottomBar-OpenNewCase": "Open New Case",
   "BottomBar-Cancel": "Cancel",
