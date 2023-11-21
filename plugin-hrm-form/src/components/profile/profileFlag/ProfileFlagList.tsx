@@ -18,21 +18,21 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { IconButton, Template } from '@twilio/flex-ui';
 
-import { RouterTask, Profile, ProfileFlag } from '../../../types/types';
+import { ProfileFlag } from '../../../types/types';
 import { useProfileFlags } from '../../../states/profile/hooks';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
 import { FlagPill, CloseIconButton } from '../styles';
 import { RootState } from '../../../states';
+import { ProfileCommonProps } from '../types';
 
-type OwnProps = {
+type OwnProps = ProfileCommonProps & {
+  disassociateRef?: React.RefObject<HTMLButtonElement>;
   enableDisassociate?: boolean;
-  profileId: Profile['id'];
-  task: RouterTask;
 };
 
 type Props = OwnProps;
 
-const ProfileFlagsList: React.FC<Props> = ({ enableDisassociate, profileId }) => {
+const ProfileFlagsList: React.FC<Props> = ({ disassociateRef, enableDisassociate, profileId }) => {
   const { profileFlags, disassociateProfileFlag } = useProfileFlags(profileId);
   const { loading } = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId));
 
@@ -43,34 +43,39 @@ const ProfileFlagsList: React.FC<Props> = ({ enableDisassociate, profileId }) =>
       <IconButton
         icon={<CloseIconButton />}
         onClick={() => disassociateProfileFlag(flag.id)}
-        title="Disassociate Flag"
+        title="Remove associated status"
         themeOverride={{ Icon: { size: '10px' } }}
         disabled={loading}
         // TODO: Remove inline styles
         style={{ width: '1rem', height: '1rem', padding: 0 }}
+        ref={disassociateRef}
       />
     );
   };
 
   const renderPill = (flag: ProfileFlag) => {
     return (
-      <FlagPill key={flag.name} fillColor="#F5EEF4" blocked={flag.name === 'blocked'}>
-        {flag.name}
-        {renderDisassociate(flag)}
-      </FlagPill>
+      <li style={{ display: 'inline-block' }} key={flag.name}>
+        <FlagPill key={flag.name} fillColor="#F5EEF4" blocked={flag.name === 'blocked'}>
+          {flag.name}
+          {renderDisassociate(flag)}
+        </FlagPill>
+      </li>
     );
   };
 
   return (
-    <>
+    <ul style={{ display: 'block' }}>
       {profileFlags?.length ? (
         profileFlags.map(renderPill)
       ) : (
-        <FlagPill>
-          <Template code="Profile-NoStatusesListed" />
-        </FlagPill>
+        <li>
+          <FlagPill>
+            <Template code="Profile-NoStatusesListed" />
+          </FlagPill>
+        </li>
       )}
-    </>
+    </ul>
   );
 };
 

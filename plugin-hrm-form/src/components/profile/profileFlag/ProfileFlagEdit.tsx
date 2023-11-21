@@ -16,52 +16,89 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Popper, Paper } from '@material-ui/core';
+import { IconButton } from '@twilio/flex-ui';
+import { Box, MenuList, Popper, Paper } from '@material-ui/core';
 
-import ProfileFlagList from './ProfileFlagList';
 import { StyledMenuItem } from '../../../styles/HrmStyles';
-import { RouterTask, Profile, ProfileFlag } from '../../../types/types';
+import { ProfileFlag } from '../../../types/types';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
 import { useProfileFlags } from '../../../states/profile/hooks';
 import { RootState } from '../../../states';
 import { StyledFlagEditList } from '../styles';
+import ProfileFlagList from './ProfileFlagList';
+import { ProfileCommonProps } from '../types';
 
-type OwnProps = {
-  profileId: Profile['id'];
-  task: RouterTask;
+type OwnProps = ProfileCommonProps & {
   modalRef?: React.RefObject<HTMLDivElement>;
+  handleClose: () => void;
 };
 
 type Props = OwnProps;
 
 const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
-  const { modalRef, profileId } = props;
+  const { modalRef, profileId, handleClose } = props;
+
   const { allProfileFlags, profileFlags, associateProfileFlag } = useProfileFlags(profileId);
   const { loading } = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId));
 
   const anchorRef = useRef(null);
-
+  const associateRef = useRef(null);
+  const disassociateRef = useRef(null);
   const [open, setOpen] = useState(true);
 
   const availableFlags = allProfileFlags?.filter(flag => !profileFlags.find(f => f.id === flag.id));
+  const hasAvailableFlags = Boolean(availableFlags?.length);
+  const shouldAllowAssociate = hasAvailableFlags && !loading;
 
   useEffect(() => {
-    setOpen(Boolean(availableFlags?.length));
-  }, [availableFlags]);
+    setOpen(hasAvailableFlags);
+  }, [hasAvailableFlags]);
 
-  const renderValue = () => <ProfileFlagList {...props} enableDisassociate={true} />;
-  const shouldAllowAssociate = availableFlags?.length && !loading;
+  useEffect(() => {
+    if (profileFlags?.length) {
+      disassociateRef?.current?.focus();
+      return;
+    }
+    associateRef?.current?.focus();
+  }, [profileFlags]);
+
+  const focusOnAssociateRef = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    associateRef?.current?.focus();
+  };
 
   return (
     <>
-      <StyledFlagEditList ref={anchorRef}>{renderValue()}</StyledFlagEditList>
+      <StyledFlagEditList ref={anchorRef}>
+        <Box display="flex" justifyContent="space-between">
+          <ProfileFlagList {...props} enableDisassociate={true} disassociateRef={disassociateRef} />
+          <Box alignItems="center">
+            <IconButton icon="Close" title="Done Editing" onClick={handleClose} />
+            <IconButton
+              icon="ArrowDown"
+              title="Associate status"
+              onMouseDown={focusOnAssociateRef}
+              aria-controls={open ? 'composition-menu' : undefined}
+              aria-expanded={open ? 'true' : undefined}
+              aria-haspopup="true"
+            />
+          </Box>
+        </Box>
+      </StyledFlagEditList>
       <Popper open={open} anchorEl={anchorRef.current} placement="bottom-start" ref={modalRef}>
         <Paper>
-          {availableFlags?.map((flag: ProfileFlag) => (
-            <StyledMenuItem key={flag.id} onClick={() => shouldAllowAssociate && associateProfileFlag(flag.id)}>
-              {flag.name}
-            </StyledMenuItem>
-          ))}
+          <MenuList>
+            {availableFlags?.map((flag: ProfileFlag, index: number) => (
+              <StyledMenuItem
+                key={flag.id}
+                onClick={() => shouldAllowAssociate && associateProfileFlag(flag.id)}
+                ref={index ? null : associateRef}
+              >
+                {flag.name}
+              </StyledMenuItem>
+            ))}
+          </MenuList>
         </Paper>
       </Popper>
     </>

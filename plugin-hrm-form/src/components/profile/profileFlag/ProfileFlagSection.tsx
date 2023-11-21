@@ -25,14 +25,27 @@ type Props = ProfileCommonProps;
 
 const ProfileFlagSection: React.FC<Props> = ({ profileId, task }) => {
   const [shouldEditProfileFlags, setShouldEditProfileFlags] = useState(false);
+
+  const openEditProfileFlags = () => setShouldEditProfileFlags(true);
+  const closeEditProfileFlags = () => setShouldEditProfileFlags(false);
+
+  /**
+   * We need a ref to attach to the modal so that we can ignore clicks on it
+   * in the ClickOutsideInterceptor since it's not a direct child of the ProfileFlagSection
+   */
   const profileFlagsModalRef = useRef(null);
 
   return (
-    <ClickOutsideInterceptor onClick={() => setShouldEditProfileFlags(false)} ignoreRefs={[profileFlagsModalRef]}>
+    <ClickOutsideInterceptor onClick={closeEditProfileFlags} ignoreRefs={[profileFlagsModalRef]}>
       {shouldEditProfileFlags ? (
-        <ProfileFlagEdit profileId={profileId} task={task} modalRef={profileFlagsModalRef} />
+        <ProfileFlagEdit
+          profileId={profileId}
+          task={task}
+          handleClose={closeEditProfileFlags}
+          modalRef={profileFlagsModalRef}
+        />
       ) : (
-        <button type="button" onClick={() => setShouldEditProfileFlags(true)}>
+        <button type="button" onClick={openEditProfileFlags}>
           <ProfileFlagList profileId={profileId} task={task} />
         </button>
       )}
