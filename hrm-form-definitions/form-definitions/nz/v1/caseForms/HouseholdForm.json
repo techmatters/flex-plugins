@@ -213,7 +213,7 @@
     }
   },
   {
-    "name": "selHarmPlanDetails",
+    "name": "selfHarmPlanDetails",
     "label": "Details of any plan",
     "type": "textarea",
     "placeholder": ""

@@ -89,27 +89,27 @@ const ViewCaseItem: React.FC<Props> = ({
   return (
     <CaseLayout>
       <NavigableContainer task={task} titleCode={`Case-View${sectionApi.label}`}>
-        <ActionHeader
-          addingCounsellor={addingCounsellorName}
-          added={added}
-          updatingCounsellor={updatingCounsellorName}
-          updated={updated}
-        />
-        {formDefinition.length === 1 && formDefinition[0].type === 'textarea' ? (
-          <FullWidthFormTextContainer data-testid="Case-ViewCaseItemScreen-FullWidthTextArea">
-            {item.form[formDefinition[0].name]}
-          </FullWidthFormTextContainer>
-        ) : (
-          <Box paddingTop="10px">
-            <>
+        <Box height="100%">
+          <ActionHeader
+            addingCounsellor={addingCounsellorName}
+            added={added}
+            updatingCounsellor={updatingCounsellorName}
+            updated={updated}
+          />
+          {formDefinition.length === 1 && formDefinition[0].type === 'textarea' ? (
+            <FullWidthFormTextContainer data-testid="Case-ViewCaseItemScreen-FullWidthTextArea">
+              {item.form[formDefinition[0].name]}
+            </FullWidthFormTextContainer>
+          ) : (
+            <Box paddingTop="10px">
               {formDefinition.map(e => (
                 <SectionEntry key={`entry-${e.label}`} descriptionKey={e.label}>
                   <SectionEntryValue value={item.form[e.name]} targetObject={targetObject} definition={e} />
                 </SectionEntry>
               ))}
-            </>
-          </Box>
-        )}
+            </Box>
+          )}
+        </Box>
         {canEdit() && (
           <BottomButtonBar>
             <Box marginRight="15px">

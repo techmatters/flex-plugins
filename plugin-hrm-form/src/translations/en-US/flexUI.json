@@ -67,6 +67,7 @@
   "CaseHeader-Updated": "Updated",
   "CaseHeader-Closed": "Closed",
   "CaseHeader-FollowUpDate": "Follow Up By",
+  "CaseHeader-Status": "Status",
   "CaseHeader-ViewCase": "View Case",
   "CaseHeader-ConnectToTaskContact": "Add to Case",
   "CaseHeader-TaskContactConnected": "Added to Case",

@@ -88,6 +88,14 @@ const CaseHeader: React.FC<Props> = ({
               />
             </Flex>
           )}
+          {!showConnectButton && (
+            <Flex style={{ minWidth: 'fit-content' }}>
+              <SubtitleLabel>
+                <Template code="CaseHeader-Status" />:
+              </SubtitleLabel>
+              <SummaryText style={{ fontWeight: 400 }}>{statusLabel}</SummaryText>
+            </Flex>
+          )}
         </Flex>
       </PreviewRow>
       <PreviewRow>
@@ -115,9 +123,14 @@ const CaseHeader: React.FC<Props> = ({
               </>
             )}
           </Flex>
-          <Flex style={{ minWidth: 'fit-content' }}>
-            <SummaryText style={{ fontWeight: 400 }}>{statusLabel}</SummaryText>
-          </Flex>
+          {showConnectButton && (
+            <Flex style={{ minWidth: 'fit-content' }}>
+              <SubtitleLabel>
+                <Template code="CaseHeader-Status" />:
+              </SubtitleLabel>
+              <SummaryText style={{ fontWeight: 400 }}>{statusLabel}</SummaryText>
+            </Flex>
+          )}
         </Flex>
       </PreviewRow>
     </div>

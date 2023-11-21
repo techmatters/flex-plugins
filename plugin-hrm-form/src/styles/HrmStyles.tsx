@@ -1219,8 +1219,14 @@ CSAMReportButtonText.displayName = 'CSAMReportButtonText';
 
 const TabbedFormsHeaderButton = styled(ButtonBase)`
   &:focus {
-    outline: auto;
-    padding: 5px;
+    outline-color: ${HrmTheme.colors.focusColor};
+    outline-style: solid;
+    outline-width: medium;
+  }
+
+  &:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
   }
 `;
 TabbedFormsHeaderButton.displayName = 'TabbedFormsHeaderButton';
@@ -1236,8 +1242,15 @@ export const HeaderCloseButton = styled(ButtonBase)`
     margin-left: auto;
   }
 
-  :focus {
-    outline: auto;
+  &:focus {
+    outline-color: ${HrmTheme.colors.focusColor};
+    outline-style: solid;
+    outline-width: medium;
+  }
+
+  &:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
   }
 `;
 HeaderCloseButton.displayName = 'HeaderCloseButton';
